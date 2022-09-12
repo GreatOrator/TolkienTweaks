@@ -1,32 +1,28 @@
 buildscript {
     repositories {
         jcenter()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
+        maven { url = "https://maven.minecraftforge.net/" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:4.1.+'
     }
 }
-apply plugin: 'net.minecraftforge.gradle.forge'
+
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id "net.covers1624.signing" version '1.1.4'
+}
+
+apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
 repositories {
-    maven {
-        name = "CoFH Maven"
-        url = "http://maven.covers1624.net"
-    }
-    maven {
-        name 'CB Maven FS'
-        url "http://chickenbones.net/maven/"
-    }
-    maven {
-        name "JEI Maven."
-        url "http://dvs1.progwml6.com/files/maven"
-    }
+    mavenLocal()
+    maven { url = "https://maven.covers1624.net/" }
+    maven { url = "https://maven.theillusivec4.top/" }
+    maven { url = "https://dvs1.progwml6.com/files/maven" }
 }
 
 // Define properties file
@@ -40,21 +36,31 @@ configFile.withReader {
 }
 
 version = "${config.mcversion}-${config.mod_version}"
-group = "com.brandon3055.tolkientweaks"
+group = "com.greatorator.tolkientweaks"
 archivesBaseName = "TolkienTweaks"
 
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 
 minecraft {
-    version = config.mcversion + "-" + config.forge_version
-    runDir = "run"
-    mappings = "${config.mcp_mappings}"
-    replace '${mod_version}', project.config.mod_version
-    replaceIn "TolkienTweaks.java"
-    makeObfSourceJar = false
+    mappings channel: 'official', version: config.mc_version
+    accessTransformer = file("src/main/resources/META-INF/accesstransformer.cfg")
+    runs {
+        client {
+            workingDirectory file('run')
+            mods { tolkienmobs { source sourceSets.main } }
+        }
+        server {
+            workingDirectory file('run')
+            mods { tolkienmobs { source sourceSets.main } }
+        }
+        data {
+            workingDirectory file('run')
+            args '--mod', 'tolkienmobs', '--all', '--output', file("src/generated/resources"), '--existing', file("src/main/resources")
+            mods { tolkienmobs { source sourceSets.main } }
+        }
+    }
 }
-
 String buildNo = "38"
 if(System.getenv("BUILD_NUMBER") != null){
     buildNo = System.getenv("BUILD_NUMBER")
@@ -62,30 +68,28 @@ if(System.getenv("BUILD_NUMBER") != null){
 version = version + ".${buildNo}"
 
 dependencies {
-    compile "com.brandon3055.brandonscore:BrandonsCore:${config.mcversion}-${config.bcore_version}:deobf"
-    compile "codechicken:CodeChickenLib:${config.mcversion}-${config.CCLIB_version}:deobf"
+    minecraft "net.minecraftforge:forge:${config.mc_version}-${config.forge_version}"
+    compile "codechicken:CodeChickenLib:${config.mc_version}-${config.ccl_version}:deobf"
+    compile "com.brandon3055.brandonscore:BrandonsCore:${config.mc_version}-${config.bcore_version}:deobf"
+    compile fg.deobf("top.theillusivec4.curios:curios-forge:${config.mc_version}-${config.curios_version}")
+
+    compile fg.deobf("mezz.jei:jei-${config.mc_version}:${config.jei_version}")
 }
 
-processResources
-        {
-            // this will ensure that this task is redone when the versions change.
-            inputs.property "version", project.version
-            inputs.property "mcversion", project.minecraft.version
+processResources { task ->
+    inputs.property 'mod_version', config.mod_version
+    inputs.property 'mc_version', config.mc_version
 
-            // replace stuff in mcmod.info, nothing else
-            from(sourceSets.main.resources.srcDirs) {
-                include 'mcmod.info'
-
-                // replace version and mcversion
-                expand 'version':project.version, 'mcversion':project.minecraft.version
-            }
-
-            // copy everything else, thats not the mcmod.info
-            from(sourceSets.main.resources.srcDirs) {
-                exclude 'mcmod.info'
-            }
-            rename '(.+_at.cfg)', 'META-INF/$1'
+    from(sourceSets.main.resources.srcDirs) { spec ->
+        spec.include 'META-INF/mods.toml'
+        task.doFirst {
+            spec.expand 'version': config.mod_version,
+                    'mc_version': config.mc_version,
+                    'ccl_version': "[${config.ccl_version.replace('.+', '')},${config.ccl_version_max})",
+                    'bcore_version': resolve("BrandonsCore")
         }
+    }
+}
 
 def commonManifest = {
     attributes 'FMLAT': 'BrandonsCore_at.cfg'
@@ -126,20 +130,20 @@ uploadArchives {
                         name project.archivesBaseName
                         packaging 'jar'
                         description 'TolkienTweaks'
-                        url 'https://github.com/brandon3055/Tolkien-Tweaks'
+                        url 'https://github.com/GreatOrator/TolkienTweaks'
                         scm {
-                            url 'https://github.com/brandon3055/Tolkien-Tweaks'
-                            connection 'scm:git:git@github.com:brandon3055/Draconic-Evolution.git'
-                            developerConnection 'scm:git:git@github.com:brandon3055/Tolkien-Tweaks.git'
+                            url 'https://github.com/GreatOrator/TolkienTweaks'
+                            connection = "scm:git:git://github.com/GreatOrator/TolkienTweaks.git".toString()
+                            connection = "scm:git:git@github.com:GreatOrator/TolkienTweaks.git".toString()
                         }
                         issueManagement {
                             system 'github'
-                            url 'https://github.com/brandon3055/Tolkien-Tweaks/issues'
+                            url 'https://github.com/GreatOrator/TolkienTweaks/issues'
                         }
                         licenses {
                             license {
                                 name 'License'
-                                url 'https://github.com/brandon3055/Tolkien-Tweaks/master/LICENSE.txt'
+                                url 'https://github.com/GreatOrator/TolkienTweaks/master/LICENSE.txt'
                                 distribution 'repo'
                             }
                         }
@@ -148,6 +152,11 @@ uploadArchives {
                                 id 'brandon3055'
                                 name 'brandon3055'
                                 roles { role 'developer' }
+                            }
+                            developer {
+                                id 'GreatOrator'
+                                name 'GreatOrator'
+                                roles { role 'contributor' }
                             }
                         }
                     }

@@ -1,0 +1,20 @@
+{
+  "ring_destroy": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "tolkientweaks:ring_destroy",
+        "stream": false
+      }
+    ]
+  },
+  "hype_horn": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "tolkientweaks:hype_horn",
+        "stream": false
+      }
+    ]
+  }
+}

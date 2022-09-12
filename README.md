@@ -1,6 +1,5 @@
 # Tolkien-Tweaks
 
-This mod was created primarily for the Tolkiencraft Modpack. by GreatOrator.
+Originally created for use in the TolkienCraft Mod-pack by GreatOrator it became large enough that we decided to release it as a public mod for everyone!
 
-ModPacks:
-This mod is primarily meant for the TolkienCraft mod pack but permission is granted for use in any and all mod packs. 
+This mod contains a variety of useful blocks, most of which are found nowhere else in mods!
