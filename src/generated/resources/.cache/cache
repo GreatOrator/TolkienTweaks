@@ -1,0 +1,7 @@
+07b8c3008a1b3501241b72263767511b58512742 assets/tolkientweaks/lang/en_us.json
+b8c5fbacb6b9703e4845ddbd841852af6cd24caa assets/tolkientweaks/models/item/coin_pouch.json
+254f609ac6deaa96ba5bf3c73741eb1ee1ee1971 assets/tolkientweaks/models/item/item_coin_bronze.json
+9937f6d9d5deb40516c54288c74a79a6b02449ec assets/tolkientweaks/models/item/item_coin_gold.json
+e76d32eab58a359295c0a34e53da11b84b1e1b19 assets/tolkientweaks/models/item/item_coin_mithril.json
+6e6432195fb18e1ba19431ff64d66ca755ac514d assets/tolkientweaks/models/item/item_coin_silver.json
+dec8999cb8456887401bcb76ad0c5d8f0dcbe119 data/forge/tags/items/coins.json

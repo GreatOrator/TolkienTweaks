@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[${lang_version},)"
+loaderVersion="[36,)"
 license="MIT License"
 
 [[mods]]
@@ -8,6 +8,8 @@ displayName="Tolkien Tweaks"
 version="${version}"
 authors="GreatOrator, Brandon3055"
 description=''''''
+updateJSONURL=""
+
 [[dependencies.tolkientweaks]]
 modId="forge"
 mandatory=true

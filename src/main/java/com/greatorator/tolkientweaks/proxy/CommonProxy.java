@@ -1,5 +1,9 @@
 package com.greatorator.tolkientweaks.proxy;
 
+import com.greatorator.tolkientweaks.TolkienConfig;
+import com.greatorator.tolkientweaks.TolkienContent;
+import com.greatorator.tolkientweaks.integration.IntegrationHelper;
+import com.greatorator.tolkientweaks.integration.curios.EquipmentManager;
 import com.greatorator.tolkientweaks.util.TTTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,8 +22,14 @@ public class CommonProxy {
 
     public void construct() {
         registerEventListeners();
+        TolkienConfig.load();
+        TolkienContent.init();
+        IntegrationHelper.init();
+        EquipmentManager.initialize();
         TTTags.init();
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {

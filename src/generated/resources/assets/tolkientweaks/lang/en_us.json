@@ -1,0 +1,12 @@
+{
+  "item.tolkientweaks.coin_pouch": "Coin Pouch",
+  "item.tolkientweaks.coin_pouch.lore": "Store your excess coins.",
+  "item.tolkientweaks.item_coin_bronze": "Bronze Coin",
+  "item.tolkientweaks.item_coin_bronze.lore": "64 Can be traded for 1 Silver coin",
+  "item.tolkientweaks.item_coin_gold": "Gold Coin",
+  "item.tolkientweaks.item_coin_gold.lore": "64 Can be traded for 1 Mithril coin",
+  "item.tolkientweaks.item_coin_mithril": "Mithril Coin",
+  "item.tolkientweaks.item_coin_mithril.lore": "Very rare and valuable coin",
+  "item.tolkientweaks.item_coin_silver": "Silver Coin",
+  "item.tolkientweaks.item_coin_silver.lore": "64 Can be traded for 1 Gold coin"
+}

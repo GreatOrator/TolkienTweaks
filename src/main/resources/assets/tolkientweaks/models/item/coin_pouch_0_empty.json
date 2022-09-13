@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "tolkientweaks:item/coin_pouch_icon_0"
+  }
+}

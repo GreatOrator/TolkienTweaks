@@ -24,7 +24,7 @@ public class ItemModelGenerator extends ItemModelProvider {
     @Override
     protected void registerModels() {
         // Block Items - Metals & Gems
-        getBuilder(TolkienContent.COIN_POUCH.get().getRegistryName().getPath()).parent(new ModelFile.UncheckedModelFile(modLoc("item/coin_pouch")));
+        getBuilder(TolkienContent.COIN_POUCH.get().getRegistryName().getPath()).parent(new ModelFile.UncheckedModelFile(modLoc("item/coin_pouch_registry")));
         simpleItem(TolkienContent.ITEM_COIN_BRONZE.get());
         simpleItem(TolkienContent.ITEM_COIN_SILVER.get());
         simpleItem(TolkienContent.ITEM_COIN_GOLD.get());

@@ -22,9 +22,9 @@ import java.util.Locale;
 
 @Mod(TolkienTweaks.MODID)
 public class TolkienTweaks {
-    public static final Logger LOGGER = LogManager.getLogger("TolkienMobs");
+    public static final Logger LOGGER = LogManager.getLogger("TolkienTweaks");
 
-    public static final String MODID = "tolkienmobs";
+    public static final String MODID = "tolkientweaks";
     public static final String NAME = "Tolkien Tweaks";
     public static final String VERSION = "${mod_version}";
     public static TolkienTweaks instance;

@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "tolkientweaks:item_coin_bronze",
+    "tolkientweaks:item_coin_silver",
+    "tolkientweaks:item_coin_gold",
+    "tolkientweaks:item_coin_mithril"
+  ]
+}
