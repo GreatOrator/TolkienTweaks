@@ -1,19 +1,26 @@
 package com.greatorator.tolkientweaks;
 
+import codechicken.lib.gui.SimpleItemGroup;
+import com.greatorator.tolkientweaks.container.CoinPouchContainer;
+import com.greatorator.tolkientweaks.handler.LoreItem;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
+import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -34,7 +41,7 @@ public class TolkienContent {
     private static final DeferredRegister<ContainerType<?>> CONTAINER = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
     public static final DeferredRegister<IRecipeSerializer<?>> RECIPE_SERIALIZER = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MODID);
 
-//    public static ItemGroup toolsGroup = new SimpleItemGroup("tolkienmobs.tools", () -> new ItemStack(TTMContent.PICKAXE_MITHRIL.get()));
+    public static ItemGroup itemsGroup = new SimpleItemGroup("tolkientweaks.items", () -> new ItemStack(TolkienContent.COIN_POUCH.get()));
 //    public static ItemGroup matsGroup = new SimpleItemGroup("tolkienmobs.mats", () -> new ItemStack(TTMContent.INGOT_MITHRIL.get()));
 //    public static ItemGroup decoGroup = new SimpleItemGroup("tolkienmobs.deco", () -> new ItemStack(TTMContent.PIGGYBANK_ITEM.get()));
 //    public static ItemGroup spawnGroup = new SimpleItemGroup("tolkienmobs.spawn", () -> new ItemStack(TTMContent.GOLEM_STONE_SUMMON.get()));
@@ -72,8 +79,11 @@ public class TolkienContent {
     //#################################################################
     // Items
     //#################################################################
-    // Blocks - Metals & Gems
-//    public static RegistryObject<Item> ORE_MITHRIL_ITEM = ITEMS.register("ore_mithril", () -> new ItemBlockBCore(ORE_MITHRIL.get(), new Item.Properties().tab(matsGroup)));
+    public static RegistryObject<Item> COIN_POUCH = ITEMS.register("coin_pouch", () -> new LoreItem(new Item.Properties().stacksTo(1).tab(itemsGroup)).setHasLore());
+    public static RegistryObject<Item> ITEM_COIN_BRONZE = ITEMS.register("item_coin_bronze", () -> new LoreItem(new Item.Properties().tab(itemsGroup)).setHasLore());
+    public static RegistryObject<Item> ITEM_COIN_SILVER = ITEMS.register("item_coin_silver", () -> new LoreItem(new Item.Properties().tab(itemsGroup)).setHasLore());
+    public static RegistryObject<Item> ITEM_COIN_GOLD = ITEMS.register("item_coin_gold", () -> new LoreItem(new Item.Properties().tab(itemsGroup)).setHasLore());
+    public static RegistryObject<Item> ITEM_COIN_MITHRIL = ITEMS.register("item_coin_mithril", () -> new LoreItem(new Item.Properties().tab(itemsGroup)).setHasLore());
 
     //#################################################################
     // Tile Entity Types
@@ -84,10 +94,13 @@ public class TolkienContent {
     //#################################################################
     // Containers
     //#################################################################
-//    public static ContainerType<ContainerBCTile<FireplaceTile>> TMFIREPLACE_CONTAINER;
+    public static ContainerType<CoinPouchContainer> COIN_POUCH_CONTAINER;
 
     public static void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
-//        event.getRegistry().register(TMFIREPLACE_CONTAINER = (ContainerType<ContainerBCTile<FireplaceTile>>) IForgeContainerType.create((id, playerInv, extraData) -> new ContainerBCTile<>(TMFIREPLACE_CONTAINER, id, playerInv, extraData, FireplaceTile.SLOT_LAYOUT)).setRegistryName("tmfireplace_container"));
+        COIN_POUCH_CONTAINER = IForgeContainerType.create(CoinPouchContainer::createContainerClientSide);
+        COIN_POUCH_CONTAINER.setRegistryName("coin_pouch_container");
+        event.getRegistry().register(COIN_POUCH_CONTAINER);
+
     }
 
     //#################################################################

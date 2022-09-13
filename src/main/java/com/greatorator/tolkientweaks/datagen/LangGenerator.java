@@ -1,5 +1,6 @@
 package com.greatorator.tolkientweaks.datagen;
 
+import com.greatorator.tolkientweaks.TolkienContent;
 import com.greatorator.tolkientweaks.TolkienTweaks;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
@@ -43,8 +44,18 @@ public class LangGenerator extends LanguageProvider {
     }
 
     private void items() {
-//        add(TTMContent.GOLEM_STONE_SUMMON.get(), "Summon Legendary " + TextFormatting.AQUA + "Mithril " + TextFormatting.RESET + "Golem");
+//        add(TolkienContent.COIN_POUCH.get(), "Summon Legendary " + TextFormatting.AQUA + "Mithril " + TextFormatting.RESET + "Golem");
 //        addLore(TTMContent.GOLEM_STONE_SUMMON.get(), "Ancient artifact to summon a Legendary Golem");
+        add(TolkienContent.COIN_POUCH.get(), "Coin Pouch");
+        addLore(TolkienContent.COIN_POUCH.get(), "Store your excess coins.");
+        add(TolkienContent.ITEM_COIN_BRONZE.get(), "Bronze Coin");
+        addLore(TolkienContent.ITEM_COIN_BRONZE.get(), "64 Can be traded for 1 Silver coin");
+        add(TolkienContent.ITEM_COIN_SILVER.get(), "Silver Coin");
+        addLore(TolkienContent.ITEM_COIN_SILVER.get(), "64 Can be traded for 1 Gold coin");
+        add(TolkienContent.ITEM_COIN_GOLD.get(), "Gold Coin");
+        addLore(TolkienContent.ITEM_COIN_GOLD.get(), "64 Can be traded for 1 Mithril coin");
+        add(TolkienContent.ITEM_COIN_MITHRIL.get(), "Mithril Coin");
+        addLore(TolkienContent.ITEM_COIN_MITHRIL.get(), "Very rare and valuable coin");
 
 
 //        add("item_info.tolkienmobs.sneak_right_click_activate", "Shift right-click to activate/deactivate effect");

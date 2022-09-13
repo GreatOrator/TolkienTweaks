@@ -1,6 +1,6 @@
 package com.greatorator.tolkientweaks.proxy;
 
-import com.greatorator.tolkientweaks.init.TTTags;
+import com.greatorator.tolkientweaks.util.TTTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
@@ -23,6 +23,7 @@ public class CommonProxy {
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {
+
     }
 
     public void clientSetup(FMLClientSetupEvent event) {

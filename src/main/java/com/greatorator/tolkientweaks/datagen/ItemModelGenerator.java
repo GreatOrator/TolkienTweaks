@@ -1,5 +1,6 @@
 package com.greatorator.tolkientweaks.datagen;
 
+import com.greatorator.tolkientweaks.TolkienContent;
 import com.greatorator.tolkientweaks.TolkienTweaks;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
@@ -23,10 +24,14 @@ public class ItemModelGenerator extends ItemModelProvider {
     @Override
     protected void registerModels() {
         // Block Items - Metals & Gems
+        getBuilder(TolkienContent.COIN_POUCH.get().getRegistryName().getPath()).parent(new ModelFile.UncheckedModelFile(modLoc("item/coin_pouch")));
+        simpleItem(TolkienContent.ITEM_COIN_BRONZE.get());
+        simpleItem(TolkienContent.ITEM_COIN_SILVER.get());
+        simpleItem(TolkienContent.ITEM_COIN_GOLD.get());
+        simpleItem(TolkienContent.ITEM_COIN_MITHRIL.get());
+//        simpleItem(TolkienContent.COIN_POUCH.get());
 //        blockItem(TTMContent.ORE_MITHRIL.get());
-//        simpleItem(TTMContent.MORGULIRON_BARS_ITEM.get());
 //        blockItem(TTMContent.FENCE_GATE_MALLORN.get(), modLoc("block/fence_gate_mallorn_fence_gate"));
-//        getBuilder(TTMContent.ITEM_PLACARD.get().getRegistryName().getPath()).parent(new ModelFile.UncheckedModelFile(modLoc("block/placard_wall_empty")));
 
         // Sleeping Bags
 //        ModelFile itemGenerated = getExistingFile(mcLoc("item/generated"));

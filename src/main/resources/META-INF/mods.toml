@@ -1,0 +1,34 @@
+modLoader="javafml"
+loaderVersion="[${lang_version},)"
+license="MIT License"
+
+[[mods]]
+modId="tolkientweaks"
+displayName="Tolkien Tweaks"
+version="${file.jarVersion}"
+authors="GreatOrator, Brandon3055"
+description=''''''
+[[dependencies.tolkientweaks]]
+modId="forge"
+mandatory=true
+versionRange="[${forge_version},)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.tolkientweaks]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.16,)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.tolkientweaks]]
+modId="codechickenlib"
+mandatory=true
+versionRange="${ccl_version}"
+ordering="AFTER"
+side="BOTH"
+[[dependencies.tolkientweaks]]
+modId="brandonscore"
+mandatory=true
+versionRange="[${bcore_version},)"
+ordering="AFTER"
+side="BOTH"

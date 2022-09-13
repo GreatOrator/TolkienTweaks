@@ -27,7 +27,7 @@ public class TolkienTweaks {
     public static final String MODID = "tolkienmobs";
     public static final String NAME = "Tolkien Tweaks";
     public static final String VERSION = "${mod_version}";
-    private static TolkienTweaks instance;
+    public static TolkienTweaks instance;
     public NetworkHelper networkHelper;
     public static SimpleChannel NETWORK;
     private HashMap<String, Long> modifiedPlayerTimes;

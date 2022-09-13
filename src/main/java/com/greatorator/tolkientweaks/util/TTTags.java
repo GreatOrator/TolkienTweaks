@@ -1,4 +1,4 @@
-package com.greatorator.tolkientweaks.init;
+package com.greatorator.tolkientweaks.util;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -14,26 +14,24 @@ public class TTTags {
         tagkeys.init();
     }
 
-    public static class items{
-        private static void init(){}
-
-//        public static final Tags.IOptionalNamedTag<Item> DUSTS_MITHRIL = tag("dusts/mithril");
-
+    public static class items {
+        private static void init() {
+        }
+        public static final Tags.IOptionalNamedTag<Item> COINS = tag("coins");
 
         private static Tags.IOptionalNamedTag<Item> tag(String name) {
             return ItemTags.createOptional(new ResourceLocation("forge", name));
         }
     }
 
-    public static class blocks{
-        private static void init(){}
-
-//        public static final Tags.IOptionalNamedTag<Block> STORAGE_BLOCKS_MITHRIL = tag("storage_blocks/mithril");
-
+    public static class blocks {
+        private static void init() {
+        }
         private static Tags.IOptionalNamedTag<Block> tag(String name) {
             return BlockTags.createOptional(new ResourceLocation("forge", name));
         }
     }
+
     public static class tagkeys{
         private static void init(){}
 
@@ -44,4 +42,5 @@ public class TTTags {
             return ItemTags.createOptional(new ResourceLocation("forge", name));
         }
     }
+
 }

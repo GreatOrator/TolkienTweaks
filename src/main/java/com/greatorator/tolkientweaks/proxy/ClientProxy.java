@@ -1,11 +1,19 @@
 package com.greatorator.tolkientweaks.proxy;
 
+import com.greatorator.tolkientweaks.client.gui.CoinPouchScreen;
+import com.greatorator.tolkientweaks.item.CoinPouchItem;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemModelsProperties;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
+
+import static com.greatorator.tolkientweaks.TolkienContent.COIN_POUCH;
+import static com.greatorator.tolkientweaks.TolkienContent.COIN_POUCH_CONTAINER;
 
 public class ClientProxy extends CommonProxy {
 
@@ -35,11 +43,17 @@ public class ClientProxy extends CommonProxy {
         // Blocks
 
         // GUIs
+        ScreenManager.register(COIN_POUCH_CONTAINER, CoinPouchScreen::new);
     }
 
     //#################################################################
     // Render Registry
     //#################################################################
+    public static void registerPropertyOverride() {
+        ItemModelsProperties.register(COIN_POUCH.get(), new ResourceLocation("fullness"), CoinPouchItem::getFullnessPropertyOverride);
+        // use lambda function to link the bag fullness to a suitable property override value
+    }
+
     public static void registerEntityRenderer() {
 //        RenderingRegistry.registerEntityRenderingHandler(EntityGenerator.AMMO_BOULDER.get(), new RenderBoulder.RenderFactory());
     }
