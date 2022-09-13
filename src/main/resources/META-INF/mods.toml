@@ -5,13 +5,13 @@ license="MIT License"
 [[mods]]
 modId="tolkientweaks"
 displayName="Tolkien Tweaks"
-version="${file.jarVersion}"
+version="${version}"
 authors="GreatOrator, Brandon3055"
 description=''''''
 [[dependencies.tolkientweaks]]
 modId="forge"
 mandatory=true
-versionRange="[${forge_version},)"
+versionRange="[36.2,)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.tolkientweaks]]

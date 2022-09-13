@@ -1,16 +1,18 @@
 [
-{
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
-  "url": "",
-  "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
-  "logoFile": "",
-  "screenshots": [],
-  "dependencies": []
-}
+  {
+    "modid": "tolkientweaks",
+    "name": "Tolkien Tweaks",
+    "description": "Various Tools for Map Building",
+    "version": "${version}",
+    "mcversion": "${mc_version}",
+    "url": "tolkiencraft.com/",
+    "updateUrl": "",
+    "authorList": ["GreatOrator", "Brandon3055"],
+    "credits": "Brandon3055 for being an awesome friend for so very long and encouraging me to do this",
+    "logoFile": "assets/tolkienmobs/logo.png",
+    "screenshots": [],
+    "dependencies": [
+      "mod_MinecraftForge"
+    ]
+  }
 ]

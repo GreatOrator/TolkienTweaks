@@ -417,6 +417,6 @@ public class RecipeGenerator extends RecipeProvider {
 
     @Override
     public String getName() {
-        return "Tolkien Tweaks - Mobs Edition Recipes";
+        return "Tolkien Tweaks - Recipes";
     }
 }

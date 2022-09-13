@@ -43,6 +43,6 @@ public class LootGenerator extends LootTableProvider {
 
     @Override
     public String getName() {
-        return "Tolkien Tweaks - Mobs Edition Loot Tables";
+        return "Tolkien Tweaks - Loot Tables";
     }
 }

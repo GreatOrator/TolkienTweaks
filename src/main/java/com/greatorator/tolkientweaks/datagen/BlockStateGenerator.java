@@ -234,6 +234,6 @@ public class BlockStateGenerator extends BlockStateProvider {
 
     @Override
     public String getName() {
-        return "Tolkien Tweaks - Mobs Edition Blockstates";
+        return "Tolkien Tweaks - Blockstates";
     }
 }

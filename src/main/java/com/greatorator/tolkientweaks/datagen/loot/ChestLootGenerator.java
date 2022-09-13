@@ -64,4 +64,8 @@ public class ChestLootGenerator extends ChestLootTables {
     public void createInjectPool(BiConsumer<ResourceLocation, LootTable.Builder> consumer, String name, LootTable.Builder builder) {
         consumer.accept(new ResourceLocation(MODID, "inject/chests/" + name), builder);
     }
+
+    public String getName() {
+        return "Tolkien Tweaks - Loot Tables - Chests";
+    }
 }

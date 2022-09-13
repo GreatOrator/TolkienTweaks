@@ -21,6 +21,6 @@ public class BlockTagGenerator extends BlockTagsProvider {
     @Nonnull
     @Override
     public String getName() {
-        return "Tolkien Tweaks - Mobs Edition Block Tags";
+        return "Tolkien Tweaks - Block Tags";
     }
 }

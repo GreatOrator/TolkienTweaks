@@ -20,7 +20,7 @@ apply plugin: 'net.minecraftforge.gradle'
 group = "com.greatorator.tolkientweaks"
 archivesBaseName = "TolkienTweaks"
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 //Add generated resources to main resources.
 sourceSets.main.resources.srcDirs += "src/generated/resources"
@@ -61,16 +61,16 @@ minecraft {
     runs {
         client {
             workingDirectory file('run')
-            mods { tolkienmobs { source sourceSets.main } }
+            mods { tolkientweaks { source sourceSets.main } }
         }
         server {
             workingDirectory file('run')
-            mods { tolkienmobs { source sourceSets.main } }
+            mods { tolkientweaks { source sourceSets.main } }
         }
         data {
             workingDirectory file('run')
-            args '--mod', 'tolkienmobs', '--all', '--output', file("src/generated/resources"), '--existing', file("src/main/resources")
-            mods { tolkienmobs { source sourceSets.main } }
+            args '--mod', 'tolkientweaks', '--all', '--output', file("src/generated/resources"), '--existing', file("src/main/resources")
+            mods { tolkientweaks { source sourceSets.main } }
         }
     }
 }
@@ -153,7 +153,7 @@ publishing {
         }
     }
     publications {
-        TolkienMobs(MavenPublication) {
+        TolkienTweaks(MavenPublication) {
             groupId project.group
             artifactId project.archivesBaseName
             version project.version
@@ -186,12 +186,6 @@ publishing {
                     developer {
                         id = 'GreatOrator'
                         name = 'GreatOrator'
-                    }
-                }
-                developers {
-                    developer {
-                        id = 'Brandon3055'
-                        name = 'Brandon3055'
                     }
                 }
             }

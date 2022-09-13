@@ -64,6 +64,6 @@ public class EntityGenerator {
     }
 
     public String getName() {
-        return "Tolkien Tweaks - Mobs Edition Entities";
+        return "Tolkien Tweaks - Entities";
     }
 }

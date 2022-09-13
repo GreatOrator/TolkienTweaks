@@ -130,6 +130,6 @@ public class ItemModelGenerator extends ItemModelProvider {
 
     @Override
     public String getName() {
-        return "Tolkien Tweaks - Mobs Edition Item Models";
+        return "Tolkien Tweaks - Item Models";
     }
 }

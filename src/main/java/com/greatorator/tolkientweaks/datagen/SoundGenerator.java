@@ -179,6 +179,6 @@ public class SoundGenerator {
     }
 
     public String getName() {
-        return "Tolkien Tweaks - Mobs Edition Music";
+        return "Tolkien Tweaks - Music";
     }
 }

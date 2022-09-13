@@ -82,6 +82,6 @@ public class BlockLootGenerator extends BlockLootTables {
     }
 
     public String getName() {
-        return "Tolkien Tweaks - Mobs Edition Loot Tables - Blocks";
+        return "Tolkien Tweaks - Loot Tables - Blocks";
     }
 }

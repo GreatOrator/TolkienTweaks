@@ -31,6 +31,6 @@ public class ItemTagGenerator extends ItemTagsProvider {
     @Nonnull
     @Override
     public String getName() {
-        return "Tolkien Tweaks - Mobs Edition Item Tags";
+        return "Tolkien Tweaks - Item Tags";
     }
 }
