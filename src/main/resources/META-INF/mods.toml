@@ -26,9 +26,3 @@ mandatory=true
 versionRange="${ccl_version}"
 ordering="AFTER"
 side="BOTH"
-[[dependencies.tolkientweaks]]
-modId="brandonscore"
-mandatory=true
-versionRange="[${bcore_version},)"
-ordering="AFTER"
-side="BOTH"
