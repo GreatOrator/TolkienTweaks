@@ -1,89 +1,187 @@
 package com.greatorator.tolkientweaks.container;
 
 import com.brandon3055.brandonscore.inventory.ContainerBCore;
-import com.greatorator.tolkientweaks.container.slots.SlotsCheckValid;
+import com.brandon3055.brandonscore.inventory.PlayerSlot;
+import com.brandon3055.brandonscore.inventory.SlotCheckValid;
+import com.greatorator.tolkientweaks.TolkienContent;
 import com.greatorator.tolkientweaks.item.CoinPouchItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
-import static com.brandon3055.brandonscore.inventory.ContainerBCTile.getClientTile;
-import static com.greatorator.tolkientweaks.TolkienContent.COIN_POUCH_CONTAINER;
+import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
 public class CoinPouchContainer extends ContainerBCore<CoinPouchItem> {
-    private final InventoryDynamicItemStack itemStackHandlerCoinPouch;
-    private final ItemStack itemStackBeingHeld;
-    private static final int MAX_EXPECTED_BAG_SLOT_COUNT = 18;
     public List<Slot> playerSlots = new ArrayList<>();
-    public List<Slot> playerEquipment = new ArrayList<>();
-    public List<SlotsCheckValid> mainSlots = new ArrayList<>();
+    public List<Slot> mainSlots = new ArrayList<>();
 
-    public BackpackContainer(int windowId, PlayerInventory playerInv, PacketBuffer extraData) {
-        this(COIN_POUCH_CONTAINER, windowId, playerInv, getClientTile(extraData));
-        //^^ Don't forget this!
+    private PlayerSlot slot;
+    public ItemStack stack;
+    private IItemHandler stackItemHandler;
+
+    public CoinPouchContainer(int windowId, PlayerInventory playerInv, PacketBuffer extraData) {
+        super(TolkienContent.COIN_POUCH_CONTAINER, windowId, playerInv, extraData);
+        this.slot = PlayerSlot.fromBuff(extraData);
+        onContainerOpen();
     }
 
-    public CoinPouchContainer(@Nullable ContainerType<?> type, int windowId, PlayerInventory playerInv, InventoryDynamicItemStack itemStackHandlerCoinPouch, ItemStack itemStackBeingHeld) {
-        super(type, windowId,playerInv);
-        this.itemStackHandlerCoinPouch = itemStackHandlerCoinPouch;
-        this.itemStackBeingHeld = itemStackBeingHeld;
+    public CoinPouchContainer(@Nullable ContainerType type, int windowId, PlayerInventory player, PlayerSlot slot) {
+        super(type, windowId, player);
+        this.slot = slot;
+        onContainerOpen();
+    }
 
-        // PLayer Inventory and Hotbar
+    private void initItemHandler() {
+        LazyOptional<IItemHandler> optional = stack.getCapability(ITEM_HANDLER_CAPABILITY);
+        stackItemHandler = optional.orElseThrow(RuntimeException::new);
+    }
+
+    private void onContainerOpen() {
+        stack = slot.getStackInSlot(player);
+        PlayerInventory playerInv = player.inventory;
+        initItemHandler();
+        IItemHandler contentHandler = new TransientItemHandlerWrapper(() -> stackItemHandler);
+
+        //Player Inventory
         for (int i = 0; i < playerInv.items.size(); i++) {
-            playerSlots.add(addSlot(new SlotsCheckValid.IInv(playerInv, i, 0, 0)));
+            playerSlots.add(addSlot(new SlotCheckValid.IInv(playerInv, i, 0, 0)));
         }
 
-        //Pouch Inventory
-        for (int bagSlot = 0; bagSlot < 18; bagSlot++) {
-            mainSlots.add((SlotsCheckValid) addSlot(new SlotsCheckValid(itemStackHandlerCoinPouch, bagSlot, 0, 0)));
+        //Main Inventory
+        for (int i = 0; i < contentHandler.getSlots(); i++) {
+            mainSlots.add(addSlot(new SlotCheckValid(contentHandler, i, 0, 0)));
         }
     }
 
     @Override
-    public boolean stillValid(@Nonnull PlayerEntity player) {
-        ItemStack main = player.getMainHandItem();
-        ItemStack off = player.getOffhandItem();
-
-        return (!main.isEmpty() && main == itemStackBeingHeld) ||
-                (!off.isEmpty() && off == itemStackBeingHeld);
+    public boolean stillValid(PlayerEntity playerIn) {
+        if (stack != slot.getStackInSlot(player)) {
+            return false;
+        }
+        if (stackItemHandler != stack.getCapability(ITEM_HANDLER_CAPABILITY).orElse(null)) {
+            return false; //I dont think this is actually possible... But just in case.
+        }
+        return true;
     }
 
-    @Nonnull
+    @OnlyIn(Dist.CLIENT)
+    public void clientTick() {
+        ItemStack stack = slot.getStackInSlot(player);
+        if (stack != this.stack && !stack.isEmpty() && stack.getCapability(ITEM_HANDLER_CAPABILITY).isPresent()) {
+            this.stack = stack; //Because the client side stack is invalidated every time the server sends an update.
+            initItemHandler();
+        }
+    }
+
     @Override
-    public ItemStack quickMoveStack(PlayerEntity player, int sourceSlotIndex) {
-        Slot sourceSlot = getSlot(sourceSlotIndex);
-        int playerSlots = 36 + 5;
+    public void setAll(List<ItemStack> stacks) {
+        super.setAll(stacks);
+        ItemStack stack = slot.getStackInSlot(player);
+        if (stack != this.stack && !stack.isEmpty() && stack.getCapability(ITEM_HANDLER_CAPABILITY).isPresent()) {
+            this.stack = stack; //Because the client side stack is invalidated every time the server sends an update.
+            initItemHandler();
+        }
+    }
 
-        if (sourceSlot == null || !sourceSlot.hasItem()) return ItemStack.EMPTY;  //EMPTY_ITEM
-        ItemStack sourceStack = sourceSlot.getItem();
-        ItemStack copyOfSourceStack = sourceStack.copy();
+    @Override
+    public void setItem(int slotID, ItemStack stack) {
+        super.setItem(slotID, stack);
+        stack = slot.getStackInSlot(player);
+        if (stack != this.stack && !stack.isEmpty() && stack.getCapability(ITEM_HANDLER_CAPABILITY).isPresent()) {
+            this.stack = stack; //Because the client side stack is invalidated every time the server sends an update.
+            initItemHandler();
+        }
+    }
 
-        if (sourceSlotIndex >= playerSlots) {
-            if (!moveItemStackTo(sourceStack, 0, playerSlots, false)) {
-                return ItemStack.EMPTY; //Return if failed to merge
-            }
-        } else {
-            //Transferring from player to tile
-            if (!moveItemStackTo(sourceStack, playerSlots, playerSlots + MAX_EXPECTED_BAG_SLOT_COUNT, false)) {
-                return ItemStack.EMPTY;  //Return if failed to merge
-            }
+    @Override
+    public LazyOptional<IItemHandler> getItemHandler() {
+        return LazyOptional.of(() -> stackItemHandler);
+    }
+
+    public static class Provider implements INamedContainerProvider {
+        private ItemStack stack;
+
+        private PlayerSlot slot;
+
+        public Provider(ItemStack stack, PlayerSlot slot) {
+            this.stack = stack;
+            this.slot = slot;
         }
 
-        if (sourceStack.getCount() == 0) {
-            sourceSlot.set(ItemStack.EMPTY);
-        } else {
-            sourceSlot.setChanged();
+        @Override
+        public ITextComponent getDisplayName() {
+            return stack.getHoverName().plainCopy().append(" ").append(new TranslationTextComponent("gui.tolkienmobs.coin_pouch.title"));
+        }
+        @Nullable
+        @Override
+        public Container createMenu(int menuID, PlayerInventory playerInventory, PlayerEntity playerEntity) {
+            return new CoinPouchContainer(TolkienContent.COIN_POUCH_CONTAINER, menuID, playerInventory, slot);
         }
 
-        sourceSlot.onTake(player, sourceStack);
-        return copyOfSourceStack;
+    }
+    public static class TransientItemHandlerWrapper implements IItemHandlerModifiable {
+
+        private Supplier<IItemHandler> getHandler;
+
+        public TransientItemHandlerWrapper(Supplier<IItemHandler> getHandler) {
+            this.getHandler = getHandler;
+        }
+
+        @Override
+        public int getSlots() {
+            return getHandler.get().getSlots();
+        }
+
+        @Nonnull
+        @Override
+        public ItemStack getStackInSlot(int slot) {
+            return getHandler.get().getStackInSlot(slot);
+        }
+
+        @Nonnull
+        @Override
+        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+            return getHandler.get().insertItem(slot, stack, simulate);
+        }
+
+        @Nonnull
+        @Override
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            return getHandler.get().extractItem(slot, amount, simulate);
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return getHandler.get().getSlotLimit(slot);
+        }
+
+        @Override
+        public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+            return getHandler.get().isItemValid(slot, stack);
+        }
+        @Override
+        public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+            ((IItemHandlerModifiable)getHandler.get()).setStackInSlot(slot, stack);
+        }
+
     }
 }

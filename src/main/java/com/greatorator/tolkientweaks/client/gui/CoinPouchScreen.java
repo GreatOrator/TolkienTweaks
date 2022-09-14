@@ -4,25 +4,27 @@ import com.brandon3055.brandonscore.client.BCSprites;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
+import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
 import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiScreen;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTexture;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.TGuiBase;
 import com.brandon3055.brandonscore.inventory.SlotMover;
+import com.greatorator.tolkientweaks.container.CoinPouchContainer;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
-public class CoinPouchScreen extends ModularGuiScreen {
+public class CoinPouchScreen extends ModularGuiContainer<CoinPouchContainer> {
     private final PlayerEntity player;
 
     protected GuiToolkit<CoinPouchScreen> toolkit = new GuiToolkit<>(this, 176, 166).setTranslationPrefix("gui.tolkientweaks.coin_pouch");
 
-    public CoinPouchScreen(ITextComponent title, PlayerEntity player) {
-        super(title);
-        this.player = player;
+    public CoinPouchScreen(CoinPouchContainer container, PlayerInventory playerInv, ITextComponent titleIn) {
+        super(container, playerInv, titleIn);
+        this.player = playerInv.player;
     }
 
-    @SuppressWarnings("Convert2MethodRef")
     @Override
     public void addElements(GuiElementManager manager) {
         TGuiBase template = new TGuiBase(this);
@@ -43,5 +45,11 @@ public class CoinPouchScreen extends ModularGuiScreen {
         template.title.setAlignment(GuiAlign.LEFT);
         template.title.setXPos(mainSlots.xPos());
         template.title.setMaxYPos(mainSlots.yPos() - 3, false);
+    }
+
+    @Override
+    public void tick() {
+        container.clientTick();
+        super.tick();
     }
 }

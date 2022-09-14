@@ -70,7 +70,7 @@ public class TolkienContent {
     //#################################################################
     // Items
     //#################################################################
-    public static RegistryObject<Item> COIN_POUCH = ITEMS.register("coin_pouch", () -> new LoreItem(new Item.Properties().stacksTo(1).tab(itemsGroup)).setItemHasUse().setHasLore());
+    public static RegistryObject<Item> COIN_POUCH = ITEMS.register("coin_pouch", () -> new CoinPouchItem(new Item.Properties().stacksTo(1).tab(itemsGroup)).setItemHasUse().setHasLore());
     public static RegistryObject<Item> ITEM_COIN_BRONZE = ITEMS.register("item_coin_bronze", () -> new LoreItem(new Item.Properties().tab(itemsGroup)).setHasLore());
     public static RegistryObject<Item> ITEM_COIN_SILVER = ITEMS.register("item_coin_silver", () -> new LoreItem(new Item.Properties().tab(itemsGroup)).setHasLore());
     public static RegistryObject<Item> ITEM_COIN_GOLD = ITEMS.register("item_coin_gold", () -> new LoreItem(new Item.Properties().tab(itemsGroup)).setHasLore());
@@ -83,10 +83,10 @@ public class TolkienContent {
     //#################################################################
     // Containers
     //#################################################################
-    public static ContainerType<ContainerBCore<CoinPouchItem>> COIN_POUCH_CONTAINER;
+    public static ContainerType<CoinPouchContainer> COIN_POUCH_CONTAINER;
 
     public static void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
-        event.getRegistry().register(COIN_POUCH_CONTAINER = (ContainerType<CoinPouchContainer>) IForgeContainerType.create(CoinPouchContainer::new).setRegistryName("coin_pouch_container")));
+        event.getRegistry().register(COIN_POUCH_CONTAINER = (ContainerType<CoinPouchContainer>) IForgeContainerType.create(CoinPouchContainer::new).setRegistryName("coin_pouch_container"));
     }
 
     //#################################################################

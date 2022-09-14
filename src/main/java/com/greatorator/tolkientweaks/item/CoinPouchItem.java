@@ -1,36 +1,46 @@
 package com.greatorator.tolkientweaks.item;
 
+import codechicken.lib.inventory.InventoryUtils;
+import codechicken.lib.math.MathHelper;
+import com.brandon3055.brandonscore.inventory.PlayerSlot;
+import com.greatorator.tolkientweaks.TolkienContent;
+import com.greatorator.tolkientweaks.capability.ItemStackInventory;
+import com.greatorator.tolkientweaks.container.CoinPouchContainer;
 import com.greatorator.tolkientweaks.container.InventoryDynamicItemStack;
-import com.greatorator.tolkientweaks.container.capability.CapabilityProviderCoinPouch;
 import com.greatorator.tolkientweaks.handler.LoreItem;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
+import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static com.greatorator.tolkientweaks.TolkienTweaks.LOGGER;
+import static com.greatorator.tolkientweaks.TolkienContent.*;
 
 public class CoinPouchItem extends LoreItem {
-    private final String BASE_NBT_TAG = "base";
-    private final String CAPABILITY_NBT_TAG = "cap";
 
     public CoinPouchItem(Properties properties) {
         super(properties);
@@ -38,14 +48,21 @@ public class CoinPouchItem extends LoreItem {
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, @Nonnull Hand hand) {
-        return null;
+    public ActionResult<ItemStack> use(World worldIn, PlayerEntity player, @Nonnull Hand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (player instanceof ServerPlayerEntity) {
+            PlayerSlot slot = new PlayerSlot(player, hand);
+            NetworkHooks.openGui((ServerPlayerEntity) player, new CoinPouchContainer.Provider(stack, slot), slot::toBuff);
+        }
+        return ActionResult.pass(stack);
     }
+
     @Nonnull
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext ctx) {
         World world = ctx.getLevel();
-        if (world.isClientSide) return ActionResultType.PASS;
+        PlayerEntity player = ctx.getPlayer();
+        if (!(player instanceof ServerPlayerEntity)) return ActionResultType.PASS;
 
         BlockPos pos = ctx.getClickedPos();
         Direction side = ctx.getClickedFace();
@@ -68,7 +85,7 @@ public class CoinPouchItem extends LoreItem {
             return ActionResultType.FAIL;
         }
 
-        InventoryDynamicItemStack itemStackHandlerCoinPouch =  itemCoinPouch.getItemStackHandlerCoinPouch(itemStack);
+        IItemHandlerModifiable itemStackHandlerCoinPouch =  (IItemHandlerModifiable)itemCoinPouch.getItemStackHandlerCoinPouch(itemStack);
         for (int i = 0; i < itemStackHandlerCoinPouch.getSlots(); i++) {
             ItemStack coin = itemStackHandlerCoinPouch.getStackInSlot(i);
             ItemStack coinsWhichDidNotFit = ItemHandlerHelper.insertItemStacked(tileInventory, coin, false);
@@ -87,51 +104,57 @@ public class CoinPouchItem extends LoreItem {
     @Nonnull
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT oldCapNbt) {
-
-        return new CapabilityProviderCoinPouch();
-    }
-
-    private static InventoryDynamicItemStack getItemStackHandlerCoinPouch(ItemStack itemStack) {
-        IItemHandler coinPouch = itemStack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).orElse(null);
-        if (coinPouch == null || !(coinPouch instanceof InventoryDynamicItemStack)) {
-            LOGGER.error("Coin Pouch did not have the expected ITEM_HANDLER_CAPABILITY");
-            return new InventoryDynamicItemStack(1);
-        }
-        return (InventoryDynamicItemStack)coinPouch;
+        return new ItemStackInventory(stack, 9*2).setStackValidator(CoinPouchItem::isCoin);
     }
 
     @Nullable
-    @Override
-    public CompoundNBT getShareTag(ItemStack stack) {
-        CompoundNBT baseTag = stack.getTag();
-        InventoryDynamicItemStack itemStackHandlerCoinPouch = getItemStackHandlerCoinPouch(stack);
-        CompoundNBT capabilityTag = itemStackHandlerCoinPouch.serializeNBT();
-        CompoundNBT combinedTag = new CompoundNBT();
-        if (baseTag != null) {
-            combinedTag.put(BASE_NBT_TAG, baseTag);
+    private static IItemHandler getItemStackHandlerCoinPouch(ItemStack itemStack) {
+        LazyOptional<IItemHandler> optional = itemStack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+        if (optional.isPresent()) {
+            return optional.orElseThrow(RuntimeException::new);
         }
-        if (capabilityTag != null) {
-            combinedTag.put(CAPABILITY_NBT_TAG, capabilityTag);
-        }
-        return combinedTag;
+        return null; //If this returns null then someone has broken something.
     }
 
-    @Override
-    public void readShareTag(ItemStack stack, @Nullable CompoundNBT nbt) {
-        if (nbt == null) {
-            stack.setTag(null);
-            return;
+    private static boolean isCoin(ItemStack stack) {
+        return stack.getItem() == ITEM_COIN_BRONZE.get() || stack.getItem() == ITEM_COIN_SILVER.get() || stack.getItem() == ITEM_COIN_GOLD.get() || stack.getItem() == ITEM_COIN_MITHRIL.get();
+    }
+
+    public static void onItemPickup(EntityItemPickupEvent event) {
+        PlayerEntity player = event.getPlayer();
+        ItemStack stack = event.getItem().getItem();
+        if (!(player instanceof ServerPlayerEntity) || !isCoin(stack)) return;
+
+        for (int i = 0; i < player.inventory.getContainerSize(); i++) {
+            ItemStack pouch = player.inventory.getItem(i);
+            if (!pouch.isEmpty() && pouch.getItem() == COIN_POUCH.get()) {
+                IItemHandler handler = getItemStackHandlerCoinPouch(pouch);
+                ItemStack remainder = InventoryUtils.insertItem(handler, stack, false);
+                if (remainder.isEmpty()) {
+                    event.getItem().setItem(ItemStack.EMPTY);
+                    event.getItem().remove();
+                    player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((player.level.random.nextFloat() - player.level.random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                    event.setCanceled(true);
+                    return;
+                } else {
+                    if (!ItemStack.matches(remainder, stack)) {
+                        event.getItem().setItem(remainder);
+                        player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((player.level.random.nextFloat() - player.level.random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                        event.setCanceled(true);
+                    }
+                }
+            }
         }
-        CompoundNBT baseTag = nbt.getCompound(BASE_NBT_TAG);              // empty if not found
-        CompoundNBT capabilityTag = nbt.getCompound(CAPABILITY_NBT_TAG); // empty if not found
-        stack.setTag(baseTag);
-        InventoryDynamicItemStack itemStackHandlerCoinPouch = getItemStackHandlerCoinPouch(stack);
-        itemStackHandlerCoinPouch.deserializeNBT(capabilityTag);
     }
 
     public static float getFullnessPropertyOverride(ItemStack itemStack, @Nullable World world, @Nullable LivingEntity livingEntity) {
-        InventoryDynamicItemStack coinPouch = getItemStackHandlerCoinPouch(itemStack);
-        float fractionEmpty = coinPouch.getNumberOfEmptySlots() / (float)coinPouch.getSlots();
+        IItemHandler coinPouch = getItemStackHandlerCoinPouch(itemStack);
+        if (coinPouch == null) return 0;
+        int count = 0;
+        for (int i = 0; i < coinPouch.getSlots(); i++) {
+            count+=coinPouch.getStackInSlot(i).getCount();
+        }
+        float fractionEmpty = count / (float)(coinPouch.getSlots() * 64);
         return 1.0F - fractionEmpty;
     }
 }
