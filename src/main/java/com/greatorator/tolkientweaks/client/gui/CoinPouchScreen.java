@@ -4,20 +4,22 @@ import com.brandon3055.brandonscore.client.BCSprites;
 import com.brandon3055.brandonscore.client.gui.GuiToolkit;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElement;
 import com.brandon3055.brandonscore.client.gui.modulargui.GuiElementManager;
-import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
+import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiScreen;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTexture;
 import com.brandon3055.brandonscore.client.gui.modulargui.lib.GuiAlign;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.TGuiBase;
 import com.brandon3055.brandonscore.inventory.SlotMover;
-import com.greatorator.tolkientweaks.container.CoinPouchContainer;
-import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.ITextComponent;
 
-public class CoinPouchScreen extends ModularGuiContainer<CoinPouchContainer> {
-    protected GuiToolkit<CoinPouchScreen> toolkit = new GuiToolkit<>(this, 176, 166).setTranslationPrefix("gui.tolkienmobs.coin_pouch");
+public class CoinPouchScreen extends ModularGuiScreen {
+    private final PlayerEntity player;
 
-    public CoinPouchScreen(CoinPouchContainer container, PlayerInventory inv, ITextComponent titleIn) {
-        super(container, inv, titleIn);
+    protected GuiToolkit<CoinPouchScreen> toolkit = new GuiToolkit<>(this, 176, 166).setTranslationPrefix("gui.tolkientweaks.coin_pouch");
+
+    public CoinPouchScreen(ITextComponent title, PlayerEntity player) {
+        super(title);
+        this.player = player;
     }
 
     @SuppressWarnings("Convert2MethodRef")
@@ -41,21 +43,5 @@ public class CoinPouchScreen extends ModularGuiContainer<CoinPouchContainer> {
         template.title.setAlignment(GuiAlign.LEFT);
         template.title.setXPos(mainSlots.xPos());
         template.title.setMaxYPos(mainSlots.yPos() - 3, false);
-
-        // ### Add Armor and off-hand slots ###
-        GuiElement<?> headSlot = toolkit.createSlots(template.background, 1, 1, 0, (x, y) -> new SlotMover(container.playerEquipment.get(3)), BCSprites.getArmorSlot(3));
-        toolkit.placeOutside(headSlot, template.playerSlots, GuiToolkit.LayoutPos.TOP_LEFT, -20, 18);
-        //Chest
-        toolkit.createSlot(template.background, new SlotMover(container.playerEquipment.get(2)), () -> BCSprites.getArmorSlot(2), false)
-                .setRelPos(headSlot, 0, 18);
-        //Legs
-        toolkit.createSlot(template.background, new SlotMover(container.playerEquipment.get(1)), () -> BCSprites.getArmorSlot(1), false)
-                .setRelPos(headSlot, 18, 0);
-        //Boots
-        toolkit.createSlot(template.background, new SlotMover(container.playerEquipment.get(0)), () -> BCSprites.getArmorSlot(0), false)
-                .setRelPos(headSlot, 18, 18);
-        //Off-Hand
-        toolkit.createSlot(template.background, new SlotMover(container.playerEquipment.get(4)), () -> BCSprites.get("slots/armor_shield"), false)
-                .setRelPos(headSlot, 18 / 2, 18 * 2);
     }
 }

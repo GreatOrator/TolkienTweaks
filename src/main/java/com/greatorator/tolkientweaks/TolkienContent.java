@@ -1,8 +1,10 @@
 package com.greatorator.tolkientweaks;
 
 import codechicken.lib.gui.SimpleItemGroup;
+import com.brandon3055.brandonscore.inventory.ContainerBCore;
 import com.greatorator.tolkientweaks.container.CoinPouchContainer;
 import com.greatorator.tolkientweaks.handler.LoreItem;
+import com.greatorator.tolkientweaks.item.CoinPouchItem;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
@@ -42,19 +44,12 @@ public class TolkienContent {
     public static final DeferredRegister<IRecipeSerializer<?>> RECIPE_SERIALIZER = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MODID);
 
     public static ItemGroup itemsGroup = new SimpleItemGroup("tolkientweaks.items", () -> new ItemStack(TolkienContent.COIN_POUCH.get()));
-//    public static ItemGroup matsGroup = new SimpleItemGroup("tolkienmobs.mats", () -> new ItemStack(TTMContent.INGOT_MITHRIL.get()));
-//    public static ItemGroup decoGroup = new SimpleItemGroup("tolkienmobs.deco", () -> new ItemStack(TTMContent.PIGGYBANK_ITEM.get()));
-//    public static ItemGroup spawnGroup = new SimpleItemGroup("tolkienmobs.spawn", () -> new ItemStack(TTMContent.GOLEM_STONE_SUMMON.get()));
-//    public static ItemGroup foodGroup = new SimpleItemGroup("tolkienmobs.food", () -> new ItemStack(TTMContent.LEMBAS.get()));
-//    public static ItemGroup questGroup = new SimpleItemGroup("tolkienmobs.quest", () -> new ItemStack(TTMContent.ITEM_FORTRESSMAP.get()));
 
     public static void init() {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         LOGGER.info("Creating the light of the Valar in the land of Arda...");
-//        EnchantmentGenerator.ENCHANTS.register(modBus);
         LOGGER.info("Asking the Ainur to sing the music of Eru Iluvatar...");
-//        SoundGenerator.SOUND_EVENTS.register(modBus);
         LOGGER.info("Preparing the Dwarves...");
         BLOCKS.register(modBus);
         LOGGER.info("Stocking the markets...");
@@ -63,8 +58,6 @@ public class TolkienContent {
         CONTAINER.register(modBus);
         RECIPE_SERIALIZER.register(modBus);
         LOGGER.info("Populating the peoples of Middle-earth...");
-//        EntityGenerator.ENTITY.register(modBus);
-//        EntityGenerator.SPAWN_EGGS.register(modBus);
         LOGGER.info("Setting the task master to work...");
         LOGGER.info("Time to create the land...");
         modBus.addGenericListener(ContainerType.class, TolkienContent::registerContainers);
@@ -73,13 +66,11 @@ public class TolkienContent {
     //#################################################################
     // Blocks
     //#################################################################
-    // Metals & Gems
-//    public static RegistryObject<Block> ORE_MITHRIL = BLOCKS.register("ore_mithril", () -> new Block(AbstractBlock.Properties.of(Material.METAL)));
 
     //#################################################################
     // Items
     //#################################################################
-    public static RegistryObject<Item> COIN_POUCH = ITEMS.register("coin_pouch", () -> new LoreItem(new Item.Properties().stacksTo(1).tab(itemsGroup)).setHasLore());
+    public static RegistryObject<Item> COIN_POUCH = ITEMS.register("coin_pouch", () -> new LoreItem(new Item.Properties().stacksTo(1).tab(itemsGroup)).setItemHasUse().setHasLore());
     public static RegistryObject<Item> ITEM_COIN_BRONZE = ITEMS.register("item_coin_bronze", () -> new LoreItem(new Item.Properties().tab(itemsGroup)).setHasLore());
     public static RegistryObject<Item> ITEM_COIN_SILVER = ITEMS.register("item_coin_silver", () -> new LoreItem(new Item.Properties().tab(itemsGroup)).setHasLore());
     public static RegistryObject<Item> ITEM_COIN_GOLD = ITEMS.register("item_coin_gold", () -> new LoreItem(new Item.Properties().tab(itemsGroup)).setHasLore());
@@ -88,25 +79,19 @@ public class TolkienContent {
     //#################################################################
     // Tile Entity Types
     //#################################################################
-    // Custom
-//    public static RegistryObject<TileEntityType<FireplaceTile>> TMFIREPLACE_TILE = TILE.register("tmfireplace_tile", () -> TileEntityType.Builder.of(FireplaceTile::new, TTMFIREPLACE.get()).build(null));
 
     //#################################################################
     // Containers
     //#################################################################
-    public static ContainerType<CoinPouchContainer> COIN_POUCH_CONTAINER;
+    public static ContainerType<ContainerBCore<CoinPouchItem>> COIN_POUCH_CONTAINER;
 
     public static void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
-        COIN_POUCH_CONTAINER = IForgeContainerType.create(CoinPouchContainer::createContainerClientSide);
-        COIN_POUCH_CONTAINER.setRegistryName("coin_pouch_container");
-        event.getRegistry().register(COIN_POUCH_CONTAINER);
-
+        event.getRegistry().register(COIN_POUCH_CONTAINER = (ContainerType<CoinPouchContainer>) IForgeContainerType.create(CoinPouchContainer::new).setRegistryName("coin_pouch_container")));
     }
 
     //#################################################################
     // Recipe Serializers
     //#################################################################
-//    public static final RegistryObject<FireplaceRecipe.Serializer> TMFIREPLACE_SERIALIZER = RECIPE_SERIALIZER.register("tmfireplace", FireplaceRecipe.Serializer::new);
 
     private static boolean needsPostProcessing(BlockState state, IBlockReader reader, BlockPos pos) {
         return true;

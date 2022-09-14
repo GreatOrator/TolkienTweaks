@@ -11,6 +11,9 @@ import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
+import java.util.Arrays;
+import java.util.List;
+
 
 /**
  * Created by brandon3055 on 28/2/20.
@@ -23,31 +26,14 @@ public class ItemModelGenerator extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        // Block Items - Metals & Gems
         getBuilder(TolkienContent.COIN_POUCH.get().getRegistryName().getPath()).parent(new ModelFile.UncheckedModelFile(modLoc("item/coin_pouch_registry")));
-        simpleItem(TolkienContent.ITEM_COIN_BRONZE.get());
-        simpleItem(TolkienContent.ITEM_COIN_SILVER.get());
-        simpleItem(TolkienContent.ITEM_COIN_GOLD.get());
-        simpleItem(TolkienContent.ITEM_COIN_MITHRIL.get());
-//        simpleItem(TolkienContent.COIN_POUCH.get());
-//        blockItem(TTMContent.ORE_MITHRIL.get());
-//        blockItem(TTMContent.FENCE_GATE_MALLORN.get(), modLoc("block/fence_gate_mallorn_fence_gate"));
 
-        // Sleeping Bags
-//        ModelFile itemGenerated = getExistingFile(mcLoc("item/generated"));
-//
-//        List<String> sleepingBags = Arrays.asList("black", "blue", "brown", "cyan", "gray", "green", "light_blue", "light_gray", "lime", "magenta", "orange", "pink", "purple", "red", "white", "yellow");
-//        for (String color : sleepingBags) {
-//            simpleMod(itemGenerated, "item/sleeping_bag_"+color);
-//        }
-//        getBuilder(TTMContent.BOTTLE_FANCY.get().getRegistryName().getPath()).parent(new ModelFile.UncheckedModelFile(modLoc("item/bottle_empty")));
+        ModelFile itemGenerated = getExistingFile(mcLoc("item/generated"));
 
-        //region Trinkets
-//        trinketItem(TTMContent.TRINKET_AMULET.get(), modLoc("item/trinket_amulet"), modLoc("item/trinket_amulet"));
-
-        //region Spawn Eggs
-            // Ambient
-//        eggItem(EntityGenerator.EGG_TTMRAT.get());
+        List<String> sleepingBags = Arrays.asList("bronze", "silver", "gold", "mithril");
+        for (String color : sleepingBags) {
+            simpleMod(itemGenerated, "item/item_coin_"+color);
+        }
     }
 
     private ItemModelBuilder simpleMod(ModelFile itemGenerated, String name) {

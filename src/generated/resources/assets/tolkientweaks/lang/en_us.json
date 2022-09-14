@@ -8,5 +8,6 @@
   "item.tolkientweaks.item_coin_mithril": "Mithril Coin",
   "item.tolkientweaks.item_coin_mithril.lore": "Very rare and valuable coin",
   "item.tolkientweaks.item_coin_silver": "Silver Coin",
-  "item.tolkientweaks.item_coin_silver.lore": "64 Can be traded for 1 Gold coin"
+  "item.tolkientweaks.item_coin_silver.lore": "64 Can be traded for 1 Gold coin",
+  "itemGroup.tolkientweaks.items": "TolkienTweaks Items"
 }

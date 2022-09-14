@@ -9,7 +9,7 @@
     "updateUrl": "",
     "authorList": ["GreatOrator", "Brandon3055"],
     "credits": "Brandon3055 for being an awesome friend for so very long and encouraging me to do this",
-    "logoFile": "assets/tolkienmobs/logo.png",
+    "logoFile": "assets/tolkientweaks/logo.png",
     "screenshots": [],
     "dependencies": [
       "mod_MinecraftForge"

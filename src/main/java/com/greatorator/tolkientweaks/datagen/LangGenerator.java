@@ -68,7 +68,7 @@ public class LangGenerator extends LanguageProvider {
     }
 
     private void creativeTabGroups() {
-//        add("itemGroup.tolkienmobs.tools", "TolkienTweaks Tools");
+        add("itemGroup.tolkientweaks.items", "TolkienTweaks Items");
 //        add("itemGroup.tolkienmobs.mats", "TolkienTweaks Materials & World Gen");
 //        add("itemGroup.tolkienmobs.deco", "TolkienTweaks Decorative");
 //        add("itemGroup.tolkienmobs.spawn", "TolkienTweaks Mobs");

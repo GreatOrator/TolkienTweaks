@@ -31,6 +31,7 @@ public class ClientProxy extends CommonProxy {
     public void clientSetup(FMLClientSetupEvent event) {
         super.clientSetup(event);
         setupRenderLayers();
+        registerPropertyOverride();
         registerEntityRenderer();
         registerTileRenderers();
     }
@@ -51,7 +52,6 @@ public class ClientProxy extends CommonProxy {
     //#################################################################
     public static void registerPropertyOverride() {
         ItemModelsProperties.register(COIN_POUCH.get(), new ResourceLocation("fullness"), CoinPouchItem::getFullnessPropertyOverride);
-        // use lambda function to link the bag fullness to a suitable property override value
     }
 
     public static void registerEntityRenderer() {

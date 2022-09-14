@@ -8,16 +8,15 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.network.PacketBuffer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.brandon3055.brandonscore.inventory.ContainerBCTile.getClientTile;
 import static com.greatorator.tolkientweaks.TolkienContent.COIN_POUCH_CONTAINER;
-import static com.greatorator.tolkientweaks.TolkienTweaks.LOGGER;
 
 public class CoinPouchContainer extends ContainerBCore<CoinPouchItem> {
     private final InventoryDynamicItemStack itemStackHandlerCoinPouch;
@@ -27,48 +26,19 @@ public class CoinPouchContainer extends ContainerBCore<CoinPouchItem> {
     public List<Slot> playerEquipment = new ArrayList<>();
     public List<SlotsCheckValid> mainSlots = new ArrayList<>();
 
-    public static CoinPouchContainer createContainerServerSide(int windowID, PlayerInventory playerInventory, InventoryDynamicItemStack bagContents,
-                                                               ItemStack flowerBag) {
-        return new CoinPouchContainer(COIN_POUCH_CONTAINER, windowID, playerInventory, bagContents, flowerBag);
+    public BackpackContainer(int windowId, PlayerInventory playerInv, PacketBuffer extraData) {
+        this(COIN_POUCH_CONTAINER, windowId, playerInv, getClientTile(extraData));
+        //^^ Don't forget this!
     }
 
-    public static CoinPouchContainer createContainerClientSide(int windowID, PlayerInventory playerInventory, net.minecraft.network.PacketBuffer extraData) {
-        // for this example we use extraData for the server to tell the client how many slots for flower itemstacks the flower bag contains.
-        int numberOfCoinSlots = extraData.readInt();
-
-        try {
-            InventoryDynamicItemStack itemStackHandlerCoinPouch = new InventoryDynamicItemStack(numberOfCoinSlots);
-
-            // on the client side there is no parent ItemStack to communicate with - we use a dummy inventory
-            return new CoinPouchContainer(COIN_POUCH_CONTAINER, windowID, playerInventory, itemStackHandlerCoinPouch, ItemStack.EMPTY);
-        } catch (IllegalArgumentException iae) {
-            LOGGER.warn(iae);
-        }
-        return null;
-    }
-
-    private CoinPouchContainer(@Nullable ContainerType<?> type, int windowId, PlayerInventory playerInv, InventoryDynamicItemStack itemStackHandlerCoinPouch, ItemStack itemStackBeingHeld) {
-        super(COIN_POUCH_CONTAINER, windowId,playerInv);
+    public CoinPouchContainer(@Nullable ContainerType<?> type, int windowId, PlayerInventory playerInv, InventoryDynamicItemStack itemStackHandlerCoinPouch, ItemStack itemStackBeingHeld) {
+        super(type, windowId,playerInv);
         this.itemStackHandlerCoinPouch = itemStackHandlerCoinPouch;
         this.itemStackBeingHeld = itemStackBeingHeld;
 
         // PLayer Inventory and Hotbar
         for (int i = 0; i < playerInv.items.size(); i++) {
             playerSlots.add(addSlot(new SlotsCheckValid.IInv(playerInv, i, 0, 0)));
-        }
-
-        //Player Armor
-        for (int i = 0; i < playerInv.armor.size(); i++) {
-            playerEquipment.add(addSlot(new SlotsCheckValid.IInv(playerInv, i + 36, 0, 0)));
-        }
-
-        //Player Off-hand
-        playerEquipment.add(addSlot(new SlotsCheckValid.IInv(playerInv, 36 + 4, 0, 0)));
-
-        int bagSlotCount = itemStackHandlerCoinPouch.getSlots();
-        if (bagSlotCount < 1 || bagSlotCount > MAX_EXPECTED_BAG_SLOT_COUNT) {
-            LOGGER.warn("Unexpected invalid slot count in Coin Pouch(" + bagSlotCount + ")");
-            bagSlotCount = MathHelper.clamp(bagSlotCount, 1, MAX_EXPECTED_BAG_SLOT_COUNT);
         }
 
         //Pouch Inventory
@@ -115,16 +85,5 @@ public class CoinPouchContainer extends ContainerBCore<CoinPouchItem> {
 
         sourceSlot.onTake(player, sourceStack);
         return copyOfSourceStack;
-    }
-
-    @Override
-    public void broadcastChanges() {
-        if (itemStackHandlerCoinPouch.isDirty()) {
-            CompoundNBT nbt = itemStackBeingHeld.getOrCreateTag();
-            int dirtyCounter = nbt.getInt("dirtyCounter");
-            nbt.putInt("dirtyCounter", dirtyCounter + 1);
-            itemStackBeingHeld.setTag(nbt);
-        }
-        super.broadcastChanges();
     }
 }
