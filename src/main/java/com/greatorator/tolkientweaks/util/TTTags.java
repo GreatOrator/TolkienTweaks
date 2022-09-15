@@ -18,6 +18,7 @@ public class TTTags {
         private static void init() {
         }
         public static final Tags.IOptionalNamedTag<Item> COINS = tag("coins");
+        public static final Tags.IOptionalNamedTag<Item> KEYS = tag("keys");
 
         private static Tags.IOptionalNamedTag<Item> tag(String name) {
             return ItemTags.createOptional(new ResourceLocation("forge", name));

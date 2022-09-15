@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "tolkientweaks:bronze_key",
+    "tolkientweaks:silver_key",
+    "tolkientweaks:gold_key",
+    "tolkientweaks:mithril_key",
+    "tolkientweaks:master_key"
+  ]
+}

@@ -1,10 +1,12 @@
 package com.greatorator.tolkientweaks;
 
 import codechicken.lib.gui.SimpleItemGroup;
-import com.brandon3055.brandonscore.inventory.ContainerBCore;
-import com.greatorator.tolkientweaks.container.CoinPouchContainer;
-import com.greatorator.tolkientweaks.handler.LoreItem;
-import com.greatorator.tolkientweaks.item.CoinPouchItem;
+import com.brandon3055.brandonscore.blocks.ItemBlockBCore;
+import com.greatorator.tolkientweaks.block.ChameleonBlock;
+import com.greatorator.tolkientweaks.container.BronzeKeyAccessContainer;
+import com.greatorator.tolkientweaks.container.KeyRingContainer;
+import com.greatorator.tolkientweaks.item.KeyItem;
+import com.greatorator.tolkientweaks.item.KeyRingItem;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
@@ -43,7 +45,8 @@ public class TolkienContent {
     private static final DeferredRegister<ContainerType<?>> CONTAINER = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
     public static final DeferredRegister<IRecipeSerializer<?>> RECIPE_SERIALIZER = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, MODID);
 
-    public static ItemGroup itemsGroup = new SimpleItemGroup("tolkientweaks.items", () -> new ItemStack(TolkienContent.COIN_POUCH.get()));
+    public static ItemGroup itemsGroup = new SimpleItemGroup("tolkientweaks.items", () -> new ItemStack(TolkienContent.KEY_RING.get()));
+    public static ItemGroup blocksGroup = new SimpleItemGroup("tolkientweaks.blocks", () -> new ItemStack(TolkienContent.CHAMELEON_BLOCK.get()));
 
     public static void init() {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -66,15 +69,21 @@ public class TolkienContent {
     //#################################################################
     // Blocks
     //#################################################################
+    public static RegistryObject<Block> CHAMELEON_BLOCK = BLOCKS.register("chameleon_block", () -> new ChameleonBlock(AbstractBlock.Properties.of(Material.DECORATION).noCollission()));
 
     //#################################################################
     // Items
     //#################################################################
-    public static RegistryObject<Item> COIN_POUCH = ITEMS.register("coin_pouch", () -> new CoinPouchItem(new Item.Properties().stacksTo(1).tab(itemsGroup)).setItemHasUse().setHasLore());
-    public static RegistryObject<Item> ITEM_COIN_BRONZE = ITEMS.register("item_coin_bronze", () -> new LoreItem(new Item.Properties().tab(itemsGroup)).setHasLore());
-    public static RegistryObject<Item> ITEM_COIN_SILVER = ITEMS.register("item_coin_silver", () -> new LoreItem(new Item.Properties().tab(itemsGroup)).setHasLore());
-    public static RegistryObject<Item> ITEM_COIN_GOLD = ITEMS.register("item_coin_gold", () -> new LoreItem(new Item.Properties().tab(itemsGroup)).setHasLore());
-    public static RegistryObject<Item> ITEM_COIN_MITHRIL = ITEMS.register("item_coin_mithril", () -> new LoreItem(new Item.Properties().tab(itemsGroup)).setHasLore());
+    // Blocks as Items
+    public static RegistryObject<Item> CHAMELEON_BLOCK_ITEM = ITEMS.register("chameleon_block", () -> new ItemBlockBCore(CHAMELEON_BLOCK.get(), new Item.Properties().tab(blocksGroup)));
+
+    // Items
+    public static RegistryObject<Item> KEY_RING = ITEMS.register("key_ring", () -> new KeyRingItem(new Item.Properties().stacksTo(1).tab(itemsGroup)).setItemHasUse().setHasLore());
+    public static RegistryObject<Item> BRONZE_KEY = ITEMS.register("bronze_key", () -> new KeyItem(new Item.Properties().stacksTo(1).tab(itemsGroup)));
+    public static RegistryObject<Item> SILVER_KEY = ITEMS.register("silver_key", () -> new KeyItem(new Item.Properties().stacksTo(1).tab(itemsGroup)));
+    public static RegistryObject<Item> GOLD_KEY = ITEMS.register("gold_key", () -> new KeyItem(new Item.Properties().stacksTo(1).tab(itemsGroup)));
+    public static RegistryObject<Item> MITHRIL_KEY = ITEMS.register("mithril_key", () -> new KeyItem(new Item.Properties().stacksTo(1).tab(itemsGroup)));
+    public static RegistryObject<Item> MASTER_KEY = ITEMS.register("master_key", () -> new KeyItem(new Item.Properties().stacksTo(1).tab(itemsGroup)));
 
     //#################################################################
     // Tile Entity Types
@@ -83,10 +92,20 @@ public class TolkienContent {
     //#################################################################
     // Containers
     //#################################################################
-    public static ContainerType<CoinPouchContainer> COIN_POUCH_CONTAINER;
+    public static ContainerType<KeyRingContainer> KEY_RING_CONTAINER;
+    public static ContainerType<BronzeKeyAccessContainer> BRONZE_KEY_CONTAINER;
+//    public static ContainerType<BronzeKeyAccessContainer> SILVER_KEY_CONTAINER;
+//    public static ContainerType<BronzeKeyAccessContainer> GOLD_KEY_CONTAINER;
+//    public static ContainerType<BronzeKeyAccessContainer> MITHRIL_KEY_CONTAINER;
+//    public static ContainerType<BronzeKeyAccessContainer> MASTER_KEY_CONTAINER;
 
     public static void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
-        event.getRegistry().register(COIN_POUCH_CONTAINER = (ContainerType<CoinPouchContainer>) IForgeContainerType.create(CoinPouchContainer::new).setRegistryName("coin_pouch_container"));
+        event.getRegistry().register(KEY_RING_CONTAINER = (ContainerType<KeyRingContainer>) IForgeContainerType.create(KeyRingContainer::new).setRegistryName("key_ring_container"));
+        event.getRegistry().register(BRONZE_KEY_CONTAINER = (ContainerType<BronzeKeyAccessContainer>) IForgeContainerType.create(BronzeKeyAccessContainer::new).setRegistryName("bronze_key_container"));
+//        event.getRegistry().register(SILVER_KEY_CONTAINER = (ContainerType<BronzeKeyAccessContainer>) IForgeContainerType.create(BronzeKeyAccessContainer::new).setRegistryName("silver_key_container"));
+//        event.getRegistry().register(GOLD_KEY_CONTAINER = (ContainerType<BronzeKeyAccessContainer>) IForgeContainerType.create(BronzeKeyAccessContainer::new).setRegistryName("gold_key_container"));
+//        event.getRegistry().register(MITHRIL_KEY_CONTAINER = (ContainerType<BronzeKeyAccessContainer>) IForgeContainerType.create(BronzeKeyAccessContainer::new).setRegistryName("mithril_key_container"));
+//        event.getRegistry().register(MASTER_KEY_CONTAINER = (ContainerType<BronzeKeyAccessContainer>) IForgeContainerType.create(BronzeKeyAccessContainer::new).setRegistryName("master_key_container"));
     }
 
     //#################################################################

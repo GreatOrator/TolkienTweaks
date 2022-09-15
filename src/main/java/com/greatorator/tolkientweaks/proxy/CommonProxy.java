@@ -4,7 +4,7 @@ import com.greatorator.tolkientweaks.TolkienConfig;
 import com.greatorator.tolkientweaks.TolkienContent;
 import com.greatorator.tolkientweaks.integration.IntegrationHelper;
 import com.greatorator.tolkientweaks.integration.curios.EquipmentManager;
-import com.greatorator.tolkientweaks.item.CoinPouchItem;
+import com.greatorator.tolkientweaks.item.KeyRingItem;
 import com.greatorator.tolkientweaks.util.TTTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -64,7 +64,7 @@ public class CommonProxy {
     }
 
     public void registerEventListeners() {
-        MinecraftForge.EVENT_BUS.addListener(CoinPouchItem::onItemPickup);
+        MinecraftForge.EVENT_BUS.addListener(KeyRingItem::onItemPickup);
     }
 
     public PlayerEntity getPlayer() {

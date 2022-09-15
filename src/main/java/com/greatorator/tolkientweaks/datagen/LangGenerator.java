@@ -38,27 +38,22 @@ public class LangGenerator extends LanguageProvider {
     }
 
     private void blocks() {
-//        add(TTMContent.ORE_MITHRIL.get(), "Mithril Ore");
+        add(TolkienContent.CHAMELEON_BLOCK.get(), "Chameleon Block");
 //        add(TTMContent.PLACARD.get(), "Country Signs");
 //        addLore(Item.byBlock(TTMContent.PLACARD.get()), "Shift right-click on sign to cycle types");
     }
 
     private void items() {
-//        add(TolkienContent.COIN_POUCH.get(), "Summon Legendary " + TextFormatting.AQUA + "Mithril " + TextFormatting.RESET + "Golem");
-//        addLore(TTMContent.GOLEM_STONE_SUMMON.get(), "Ancient artifact to summon a Legendary Golem");
-        add(TolkienContent.COIN_POUCH.get(), "Coin Pouch");
-        addLore(TolkienContent.COIN_POUCH.get(), "Store your excess coins.");
-        add(TolkienContent.ITEM_COIN_BRONZE.get(), "Bronze Coin");
-        addLore(TolkienContent.ITEM_COIN_BRONZE.get(), "64 Can be traded for 1 Silver coin");
-        add(TolkienContent.ITEM_COIN_SILVER.get(), "Silver Coin");
-        addLore(TolkienContent.ITEM_COIN_SILVER.get(), "64 Can be traded for 1 Gold coin");
-        add(TolkienContent.ITEM_COIN_GOLD.get(), "Gold Coin");
-        addLore(TolkienContent.ITEM_COIN_GOLD.get(), "64 Can be traded for 1 Mithril coin");
-        add(TolkienContent.ITEM_COIN_MITHRIL.get(), "Mithril Coin");
-        addLore(TolkienContent.ITEM_COIN_MITHRIL.get(), "Very rare and valuable coin");
+        add(TolkienContent.KEY_RING.get(), "Key Ring");
+        addLore(TolkienContent.KEY_RING.get(), "Store your excess keys");
+        add(TolkienContent.BRONZE_KEY.get(), "Bronze Key");
+        add(TolkienContent.SILVER_KEY.get(), "Silver Key");
+        add(TolkienContent.GOLD_KEY.get(), "Gold Key");
+        add(TolkienContent.MITHRIL_KEY.get(), "Mithril Key");
+        add(TolkienContent.MASTER_KEY.get(), "Master Key");
 
 
-//        add("item_info.tolkienmobs.sneak_right_click_activate", "Shift right-click to activate/deactivate effect");
+        add("container.tolkientweaks.key_ring", "Key Ring");
     }
 
     private void quest() {
@@ -120,8 +115,8 @@ public class LangGenerator extends LanguageProvider {
     }
 
     private void gui(PrefixHelper helper) {
-//        helper.setPrefix("gui.tolkienmobs.backpack.");
-//        helper.add("fluid_storage",             "Fluid Storage");
+        helper.setPrefix("gui.tolkienmobs.key_ring.");
+        helper.add("title",             "- store keys");
     }
 
     private void keyCommand() {

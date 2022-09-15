@@ -26,13 +26,15 @@ public class ItemModelGenerator extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        getBuilder(TolkienContent.COIN_POUCH.get().getRegistryName().getPath()).parent(new ModelFile.UncheckedModelFile(modLoc("item/coin_pouch_registry")));
+        // Blocks
+        blockItem(TolkienContent.CHAMELEON_BLOCK.get());
+
+//        getBuilder(TolkienContent.KEY_RING.get().getRegistryName().getPath()).parent(new ModelFile.UncheckedModelFile(modLoc("item/key_ring")));
 
         ModelFile itemGenerated = getExistingFile(mcLoc("item/generated"));
-
-        List<String> sleepingBags = Arrays.asList("bronze", "silver", "gold", "mithril");
-        for (String color : sleepingBags) {
-            simpleMod(itemGenerated, "item/item_coin_"+color);
+        List<String> keys = Arrays.asList("bronze", "silver", "gold", "mithril", "master");
+        for (String keyType : keys) {
+            simpleMod(itemGenerated, "item/" + keyType + "_key");
         }
     }
 

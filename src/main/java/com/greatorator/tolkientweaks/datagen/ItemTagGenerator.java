@@ -19,8 +19,7 @@ public class ItemTagGenerator extends ItemTagsProvider {
 
     @Override
     protected void addTags() {
-        tag(TTTags.items.COINS).add(TolkienContent.ITEM_COIN_BRONZE.get(), TolkienContent.ITEM_COIN_SILVER.get(), TolkienContent.ITEM_COIN_GOLD.get(), TolkienContent.ITEM_COIN_MITHRIL.get());
-//        tag(TTMTags.items.LOGS).add(TTMContent.LOG_MALLORN_ITEM.get(), TTMContent.LOG_MIRKWOOD_ITEM.get(), TTMContent.LOG_CULUMALDA_ITEM.get(), TTMContent.LOG_LEBETHRON_ITEM.get());
+        tag(TTTags.items.KEYS).add(TolkienContent.BRONZE_KEY.get(), TolkienContent.SILVER_KEY.get(), TolkienContent.GOLD_KEY.get(), TolkienContent.MITHRIL_KEY.get(), TolkienContent.MASTER_KEY.get());
 //            tag(ItemTags.LOGS_THAT_BURN).addTag(TTMTags.items.LOGS);
 //            tag(ItemTags.LOGS).addTag(TTMTags.items.LOGS);
 

@@ -1,5 +1,6 @@
 package com.greatorator.tolkientweaks.datagen.loot;
 
+import com.greatorator.tolkientweaks.TolkienContent;
 import com.greatorator.tolkientweaks.TolkienTweaks;
 import net.minecraft.advancements.criterion.EnchantmentPredicate;
 import net.minecraft.advancements.criterion.ItemPredicate;
@@ -43,7 +44,7 @@ public class BlockLootGenerator extends BlockLootTables {
     @Override
     protected void addTables() {
         // Blocks - Metals & Gems
-//        dropSelf(TTMContent.BLOCK_MITHRIL.get());
+        dropSelf(TolkienContent.CHAMELEON_BLOCK.get());
 //        add(TTMContent.LOG_DEADWOOD.get(), createSingleItemTable(Items.STICK, RandomValueRange.between(0.0F, 4.0F)));
 //        add(TTMContent.LEAVES_MALLORN.get(), (block) -> createLeavesDrops(block, TTMContent.SAPLING_MALLORN.get(), .05f, .0625f, .083333336f, .1f));
 //        add(TTMContent.BLOCK_BLOOM_DECAY.get(), (p_229434_0_) -> {

@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "tolkientweaks:item/item_coin_mithril"
-  }
-}

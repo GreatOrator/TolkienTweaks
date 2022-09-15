@@ -1,13 +1,13 @@
 {
-  "item.tolkientweaks.coin_pouch": "Coin Pouch",
-  "item.tolkientweaks.coin_pouch.lore": "Store your excess coins.",
-  "item.tolkientweaks.item_coin_bronze": "Bronze Coin",
-  "item.tolkientweaks.item_coin_bronze.lore": "64 Can be traded for 1 Silver coin",
-  "item.tolkientweaks.item_coin_gold": "Gold Coin",
-  "item.tolkientweaks.item_coin_gold.lore": "64 Can be traded for 1 Mithril coin",
-  "item.tolkientweaks.item_coin_mithril": "Mithril Coin",
-  "item.tolkientweaks.item_coin_mithril.lore": "Very rare and valuable coin",
-  "item.tolkientweaks.item_coin_silver": "Silver Coin",
-  "item.tolkientweaks.item_coin_silver.lore": "64 Can be traded for 1 Gold coin",
+  "block.tolkientweaks.chameleon_block": "Chameleon Block",
+  "container.tolkientweaks.key_ring": "Key Ring",
+  "gui.tolkienmobs.key_ring.title": "- store keys",
+  "item.tolkientweaks.bronze_key": "Bronze Key",
+  "item.tolkientweaks.gold_key": "Gold Key",
+  "item.tolkientweaks.key_ring": "Key Ring",
+  "item.tolkientweaks.key_ring.lore": "Store your excess keys",
+  "item.tolkientweaks.master_key": "Master Key",
+  "item.tolkientweaks.mithril_key": "Mithril Key",
+  "item.tolkientweaks.silver_key": "Silver Key",
   "itemGroup.tolkientweaks.items": "TolkienTweaks Items"
 }

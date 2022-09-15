@@ -1,6 +1,7 @@
 package com.greatorator.tolkientweaks.datagen;
 
 import com.google.gson.JsonElement;
+import com.greatorator.tolkientweaks.TolkienContent;
 import com.greatorator.tolkientweaks.TolkienTweaks;
 import net.minecraft.block.*;
 import net.minecraft.data.DataGenerator;
@@ -32,8 +33,7 @@ public class BlockStateGenerator extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        // Metals & Gems
-//        simpleBlock(TTMContent.ORE_MITHRIL.get());
+        simpleBlock(TolkienContent.CHAMELEON_BLOCK.get());
 
         // Custom
 //        simpleBlock(TTMContent.BLOCK_HALLOWED.get(), models().cubeBottomTop("block_hallowed", modLoc("block/block_hallowed_side"), modLoc("block/block_hallowed"), modLoc("block/block_hallowed_top")));
