@@ -1,5 +1,8 @@
 package com.greatorator.tolkienmobs;
 
+import com.greatorator.tolkienmobs.init.TolkienBlocks;
+import com.greatorator.tolkienmobs.init.TolkienItems;
+import com.greatorator.tolkienmobs.init.TolkienTabs;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -24,10 +27,16 @@ public class TolkienMobsMain {
 
     public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
-        modEventBus.addListener(this::addCreative);
-        modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
 
         NeoForge.EVENT_BUS.register(this);
+        TolkienItems.register(modEventBus);
+        TolkienBlocks.register(modEventBus);
+
+        TolkienTabs.register(modEventBus);
+
+
+        modEventBus.addListener(this::addCreative);
+        modContainer.registerConfig(ModConfig.Type.COMMON, TolkienMobsConfig.SPEC);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
