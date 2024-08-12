@@ -41,6 +41,17 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.ORE_NETHER_AMMOLITE);
                         output.accept(TolkienBlocks.ORE_DEEPSLATE_AMMOLITE);
                         output.accept(TolkienItems.GEM_AMMOLITE);
+                        output.accept(TolkienBlocks.PLANKS_MALLORN);
+                        output.accept(TolkienBlocks.LEAVES_MALLORN);
+                        output.accept(TolkienBlocks.PLANKS_MIRKWOOD);
+                        output.accept(TolkienBlocks.LEAVES_MIRKWOOD);
+                        output.accept(TolkienBlocks.PLANKS_CULUMALDA);
+                        output.accept(TolkienBlocks.LEAVES_CULUMALDA);
+                        output.accept(TolkienBlocks.PLANKS_LEBETHRON);
+                        output.accept(TolkienBlocks.LEAVES_LEBETHRON);
+                        output.accept(TolkienBlocks.PLANKS_FANGORNOAK);
+                        output.accept(TolkienBlocks.LEAVES_FANGORNOAK);
+                        output.accept(TolkienBlocks.PLANKS_DEADWOOD);
                         output.accept(TolkienItems.CREBAIN_FEATHER);
                         output.accept(TolkienItems.BIRD_FEATHER);
                         output.accept(TolkienItems.MUMAKIL_LEATHER);
@@ -126,6 +137,14 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.BLOCK_MORGULIRON);
                         output.accept(TolkienBlocks.RAW_MORGULIRON_BLOCK);
                         output.accept(TolkienBlocks.BLOCK_AMMOLITE);
+                        output.accept(TolkienBlocks.STAIRS_MALLORN);
+                        output.accept(TolkienBlocks.SLAB_MALLORN);
+                        output.accept(TolkienBlocks.MALLORN_BUTTON);
+                        output.accept(TolkienBlocks.PRESSURE_PLATE_MALLORN);
+                        output.accept(TolkienBlocks.FENCE_MALLORN);
+                        output.accept(TolkienBlocks.FENCE_GATE_MALLORN);
+                        output.accept(TolkienBlocks.DOOR_MALLORN);
+                        output.accept(TolkienBlocks.TRAPDOOR_MALLORN);
                     }).build());
 
 
