@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "tolkienmobs:block/slab_mithril"
+    },
+    "type=double": {
+      "model": "tolkienmobs:block/block_mithril"
+    },
+    "type=top": {
+      "model": "tolkienmobs:block/slab_mithril_top"
+    }
+  }
+}

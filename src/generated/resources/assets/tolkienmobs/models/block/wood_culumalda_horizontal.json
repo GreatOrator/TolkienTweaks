@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column_horizontal",
+  "textures": {
+    "end": "tolkienmobs:block/wood_culumalda_top",
+    "side": "tolkienmobs:block/wood_culumalda"
+  }
+}

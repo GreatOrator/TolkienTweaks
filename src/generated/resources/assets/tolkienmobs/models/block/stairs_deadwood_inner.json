@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/inner_stairs",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "bottom": "tolkienmobs:block/planks_deadwood",
+    "side": "tolkienmobs:block/planks_deadwood",
+    "top": "tolkienmobs:block/planks_deadwood"
+  }
+}

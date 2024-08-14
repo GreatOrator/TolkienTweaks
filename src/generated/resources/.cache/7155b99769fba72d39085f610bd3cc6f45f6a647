@@ -1,0 +1,10 @@
+// 1.21	2024-08-13T18:39:18.6953773	Tags for minecraft:block mod id tolkienmobs
+7b87e663d9d17bb1465a1de7e799ad751a1c30d6 data/minecraft/tags/block/doors.json
+9e57abe7ba81ae4d4d9c9e30a334c303532d5371 data/minecraft/tags/block/fences.json
+78024698ae6b36d045ad7568377124db6dcf8a3a data/minecraft/tags/block/fence_gates.json
+af99073d7a626b9541aae6f41a847db13fd39062 data/minecraft/tags/block/logs.json
+ac813353c7e439a5c221599b6903abc88768fe15 data/minecraft/tags/block/planks.json
+f883e2bf7f6b3566ba89d3a5437f149f12f70d1d data/minecraft/tags/block/pressure_plates.json
+8413e0743e5d5605df7f3f470e684a9eefa180a8 data/minecraft/tags/block/walls.json
+bcd2a57ea8b79ed2e3e91155a418e57fd12ac578 data/minecraft/tags/block/wooden_doors.json
+358a2798e997a54cbb387fc8406f1b5a32737af0 data/minecraft/tags/block/wooden_pressure_plates.json

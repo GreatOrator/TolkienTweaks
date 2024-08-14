@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "tolkienmobs:block/stripped_log_lebethron_top",
+    "side": "tolkienmobs:block/stripped_log_lebethron"
+  }
+}
