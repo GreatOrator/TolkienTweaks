@@ -5,11 +5,15 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
+import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
+
+import java.util.function.Supplier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -85,7 +89,9 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         fenceGateBlock(((FenceGateBlock) TolkienBlocks.FENCE_GATE_MALLORN.get()), blockTexture(TolkienBlocks.PLANKS_MALLORN.get()));
         doorBlockWithRenderType(((DoorBlock) TolkienBlocks.DOOR_MALLORN.get()), modLoc("block/door_mallorn_bottom"), modLoc("block/door_mallorn_top"), "cutout");
         trapdoorBlockWithRenderType(((TrapDoorBlock) TolkienBlocks.TRAPDOOR_MALLORN.get()), modLoc("block/trapdoor_mallorn"), true, "cutout");
+        torchBlock(TolkienBlocks.TORCH_MALLORN, TolkienBlocks.WALL_TORCH_MALLORN);
 
+        blockItem(TolkienBlocks.TORCH_MALLORN);
         blockItem(TolkienBlocks.LOG_MALLORN);
         blockItem(TolkienBlocks.WOOD_MALLORN);
         blockItem(TolkienBlocks.STRIPPED_MALLORN_LOG);
@@ -95,7 +101,8 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         blockItem(TolkienBlocks.PRESSURE_PLATE_MALLORN);
         blockItem(TolkienBlocks.FENCE_GATE_MALLORN);
         blockItem(TolkienBlocks.TRAPDOOR_MALLORN, "_bottom");
-            // Mirkwood
+
+        // Mirkwood
         logBlock((RotatedPillarBlock)TolkienBlocks.LOG_MIRKWOOD.get());
         logBlock((RotatedPillarBlock)TolkienBlocks.WOOD_MIRKWOOD.get());
         logBlock((RotatedPillarBlock)TolkienBlocks.STRIPPED_MIRKWOOD_LOG.get());
@@ -110,7 +117,9 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         fenceGateBlock(((FenceGateBlock) TolkienBlocks.FENCE_GATE_MIRKWOOD.get()), blockTexture(TolkienBlocks.PLANKS_MIRKWOOD.get()));
         doorBlockWithRenderType(((DoorBlock) TolkienBlocks.DOOR_MIRKWOOD.get()), modLoc("block/door_mirkwood_bottom"), modLoc("block/door_mirkwood_top"), "cutout");
         trapdoorBlockWithRenderType(((TrapDoorBlock) TolkienBlocks.TRAPDOOR_MIRKWOOD.get()), modLoc("block/trapdoor_mirkwood"), true, "cutout");
+        torchBlock(TolkienBlocks.TORCH_MIRKWOOD, TolkienBlocks.WALL_TORCH_MIRKWOOD);
 
+        blockItem(TolkienBlocks.TORCH_MIRKWOOD);
         blockItem(TolkienBlocks.LOG_MIRKWOOD);
         blockItem(TolkienBlocks.WOOD_MIRKWOOD);
         blockItem(TolkienBlocks.STRIPPED_MIRKWOOD_LOG);
@@ -135,7 +144,9 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         fenceGateBlock(((FenceGateBlock) TolkienBlocks.FENCE_GATE_CULUMALDA.get()), blockTexture(TolkienBlocks.PLANKS_CULUMALDA.get()));
         doorBlockWithRenderType(((DoorBlock) TolkienBlocks.DOOR_CULUMALDA.get()), modLoc("block/door_culumalda_bottom"), modLoc("block/door_culumalda_top"), "cutout");
         trapdoorBlockWithRenderType(((TrapDoorBlock) TolkienBlocks.TRAPDOOR_CULUMALDA.get()), modLoc("block/trapdoor_culumalda"), true, "cutout");
+        torchBlock(TolkienBlocks.TORCH_CULUMALDA, TolkienBlocks.WALL_TORCH_CULUMALDA);
 
+        blockItem(TolkienBlocks.TORCH_CULUMALDA);
         blockItem(TolkienBlocks.LOG_CULUMALDA);
         blockItem(TolkienBlocks.WOOD_CULUMALDA);
         blockItem(TolkienBlocks.STRIPPED_CULUMALDA_LOG);
@@ -160,7 +171,9 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         fenceGateBlock(((FenceGateBlock) TolkienBlocks.FENCE_GATE_LEBETHRON.get()), blockTexture(TolkienBlocks.PLANKS_LEBETHRON.get()));
         doorBlockWithRenderType(((DoorBlock) TolkienBlocks.DOOR_LEBETHRON.get()), modLoc("block/door_lebethron_bottom"), modLoc("block/door_lebethron_top"), "cutout");
         trapdoorBlockWithRenderType(((TrapDoorBlock) TolkienBlocks.TRAPDOOR_LEBETHRON.get()), modLoc("block/trapdoor_lebethron"), true, "cutout");
+        torchBlock(TolkienBlocks.TORCH_LEBETHRON, TolkienBlocks.WALL_TORCH_LEBETHRON);
 
+        blockItem(TolkienBlocks.TORCH_LEBETHRON);
         blockItem(TolkienBlocks.LOG_LEBETHRON);
         blockItem(TolkienBlocks.WOOD_LEBETHRON);
         blockItem(TolkienBlocks.STRIPPED_LEBETHRON_LOG);
@@ -185,7 +198,9 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         fenceGateBlock(((FenceGateBlock) TolkienBlocks.FENCE_GATE_FANGORNOAK.get()), blockTexture(TolkienBlocks.PLANKS_FANGORNOAK.get()));
         doorBlockWithRenderType(((DoorBlock) TolkienBlocks.DOOR_FANGORNOAK.get()), modLoc("block/door_fangornoak_bottom"), modLoc("block/door_fangornoak_top"), "cutout");
         trapdoorBlockWithRenderType(((TrapDoorBlock) TolkienBlocks.TRAPDOOR_FANGORNOAK.get()), modLoc("block/trapdoor_fangornoak"), true, "cutout");
+        torchBlock(TolkienBlocks.TORCH_FANGORNOAK, TolkienBlocks.WALL_TORCH_FANGORNOAK);
 
+        blockItem(TolkienBlocks.TORCH_FANGORNOAK);
         blockItem(TolkienBlocks.LOG_FANGORNOAK);
         blockItem(TolkienBlocks.WOOD_FANGORNOAK);
         blockItem(TolkienBlocks.STRIPPED_FANGORNOAK_LOG);
@@ -205,7 +220,9 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         fenceGateBlockWithRenderType(((FenceGateBlock) TolkienBlocks.FENCE_GATE_DEADWOOD.get()), blockTexture(TolkienBlocks.PLANKS_DEADWOOD.get()), "cutout");
         doorBlockWithRenderType(((DoorBlock) TolkienBlocks.DOOR_DEADWOOD.get()), modLoc("block/door_deadwood_bottom"), modLoc("block/door_deadwood_top"), "cutout");
         trapdoorBlockWithRenderType(((TrapDoorBlock) TolkienBlocks.TRAPDOOR_DEADWOOD.get()), modLoc("block/trapdoor_deadwood"), true, "cutout");
+        torchBlock(TolkienBlocks.TORCH_DEADWOOD, TolkienBlocks.WALL_TORCH_DEADWOOD);
 
+        blockItem(TolkienBlocks.TORCH_DEADWOOD);
         blockItem(TolkienBlocks.LOG_DEADWOOD);
         blockItem(TolkienBlocks.WOOD_DEADWOOD);
         blockItem(TolkienBlocks.STRIPPED_DEADWOOD_LOG);
@@ -217,11 +234,37 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         blockItem(TolkienBlocks.TRAPDOOR_DEADWOOD, "_bottom");
             //Flowers & Plants
         makeFlower(TolkienBlocks.FLOWER_SIMBELMYNE, TolkienBlocks.POTTED_FLOWER_SIMBELMYNE);
+        makeFlower(TolkienBlocks.FLOWER_MIRKWOOD, TolkienBlocks.POTTED_FLOWER_MIRKWOOD);
+        makeFlower(TolkienBlocks.FLOWER_ALFIRIN, TolkienBlocks.POTTED_FLOWER_ALFIRIN);
+        makeFlower(TolkienBlocks.FLOWER_ATHELAS, TolkienBlocks.POTTED_FLOWER_ATHELAS);
+        makeFlower(TolkienBlocks.FLOWER_NIPHREDIL, TolkienBlocks.POTTED_FLOWER_NIPHREDIL);
+        makeFlower(TolkienBlocks.FLOWER_SWAMPMILKWEED, TolkienBlocks.POTTED_FLOWER_SWAMPMILKWEED);
+        makeFlower(TolkienBlocks.FLOWER_LILLYOFTHEVALLEY, TolkienBlocks.POTTED_FLOWER_LILLYOFTHEVALLEY);
     }
 
     public void saplingBlock(DeferredBlock<SaplingBlock> blockRegistryObject) {
         simpleBlock(blockRegistryObject.get(),
                 models().cross(BuiltInRegistries.BLOCK.getKey(blockRegistryObject.get()).getPath(), blockTexture(blockRegistryObject.get())).renderType("cutout"));
+    }
+
+    protected ResourceLocation texture(String name) {
+        return modLoc("block/" + name);
+    }
+
+    protected String name(Supplier<? extends Block> block) {
+        return BuiltInRegistries.BLOCK.getKey(block.get()).getPath();
+    }
+
+    public void torchBlock(Supplier<? extends Block> block, Supplier<? extends Block> wall) {
+        ModelFile torch = models().torch(name(block), texture(name(block))).renderType("cutout");
+        ModelFile torchwall = models().torchWall(name(wall), texture(name(block))).renderType("cutout");
+
+        simpleBlock(block.get(), torch);
+        getVariantBuilder(wall.get()).forAllStates(state ->
+                ConfiguredModel.builder()
+                        .modelFile(torchwall)
+                        .rotationY(((int) state.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot() + 90) % 360)
+                        .build());
     }
 
     public void makeFlower(DeferredBlock<Block> flowerBlock, DeferredBlock<FlowerPotBlock> potBlock) {

@@ -34,6 +34,7 @@ public class TolkienDataGenerator {
 
         generator.addProvider(event.includeClient(), new TolkienItemModelProvider(packOutput, existingFileHelper));
         generator.addProvider(event.includeClient(), new TolkienBlockStateProvider(packOutput, existingFileHelper));
+        generator.addProvider(event.includeClient(), new TolkienParticleDescription(packOutput, existingFileHelper));
 
     }
 }

@@ -10,6 +10,7 @@ import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
@@ -88,6 +89,7 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.STRIPPED_MALLORN_WOOD.get());
         dropSelf(TolkienBlocks.PLANKS_MALLORN.get());
         dropLeaves(TolkienBlocks.LEAVES_MALLORN);
+        dropSelf(TolkienBlocks.LEAFPILE_MALLORN.get());
         dropSelf(TolkienBlocks.STAIRS_MALLORN.get());
         this.add(TolkienBlocks.SLAB_MALLORN.get(),
                 block -> createSlabItemTable(TolkienBlocks.SLAB_MALLORN.get()));
@@ -98,6 +100,8 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.TRAPDOOR_MALLORN.get());
         this.add(TolkienBlocks.DOOR_MALLORN.get(),
                 block -> createDoorTable(TolkienBlocks.DOOR_MALLORN.get()));
+        dropSelf(TolkienBlocks.TORCH_MALLORN.get());
+        dropOther(TolkienBlocks.WALL_TORCH_MALLORN, TolkienBlocks.TORCH_MALLORN.get());
             // Mirkwood
         dropSelf(TolkienBlocks.LOG_MIRKWOOD.get());
         dropSelf(TolkienBlocks.WOOD_MIRKWOOD.get());
@@ -105,6 +109,7 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.STRIPPED_MIRKWOOD_WOOD.get());
         dropSelf(TolkienBlocks.PLANKS_MIRKWOOD.get());
         dropLeaves(TolkienBlocks.LEAVES_MIRKWOOD);
+        dropSelf(TolkienBlocks.LEAFPILE_MIRKWOOD.get());
         dropSelf(TolkienBlocks.STAIRS_MIRKWOOD.get());
         this.add(TolkienBlocks.SLAB_MIRKWOOD.get(),
                 block -> createSlabItemTable(TolkienBlocks.SLAB_MIRKWOOD.get()));
@@ -115,13 +120,16 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.TRAPDOOR_MIRKWOOD.get());
         this.add(TolkienBlocks.DOOR_MIRKWOOD.get(),
                 block -> createDoorTable(TolkienBlocks.DOOR_MIRKWOOD.get()));
-            // Culumalda
+        dropSelf(TolkienBlocks.TORCH_MIRKWOOD.get());
+        dropOther(TolkienBlocks.WALL_TORCH_MIRKWOOD, TolkienBlocks.TORCH_MIRKWOOD.get());
+        // Culumalda
         dropSelf(TolkienBlocks.LOG_CULUMALDA.get());
         dropSelf(TolkienBlocks.WOOD_CULUMALDA.get());
         dropSelf(TolkienBlocks.STRIPPED_CULUMALDA_LOG.get());
         dropSelf(TolkienBlocks.STRIPPED_CULUMALDA_WOOD.get());
         dropSelf(TolkienBlocks.PLANKS_CULUMALDA.get());
         dropLeaves(TolkienBlocks.LEAVES_CULUMALDA);
+        dropSelf(TolkienBlocks.LEAFPILE_CULUMALDA.get());
         dropSelf(TolkienBlocks.STAIRS_CULUMALDA.get());
         this.add(TolkienBlocks.SLAB_CULUMALDA.get(),
                 block -> createSlabItemTable(TolkienBlocks.SLAB_CULUMALDA.get()));
@@ -132,13 +140,16 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.TRAPDOOR_CULUMALDA.get());
         this.add(TolkienBlocks.DOOR_CULUMALDA.get(),
                 block -> createDoorTable(TolkienBlocks.DOOR_CULUMALDA.get()));
-            // Lebethron
+        dropSelf(TolkienBlocks.TORCH_CULUMALDA.get());
+        dropOther(TolkienBlocks.WALL_TORCH_CULUMALDA, TolkienBlocks.TORCH_CULUMALDA.get());
+        // Lebethron
         dropSelf(TolkienBlocks.LOG_LEBETHRON.get());
         dropSelf(TolkienBlocks.WOOD_LEBETHRON.get());
         dropSelf(TolkienBlocks.STRIPPED_LEBETHRON_LOG.get());
         dropSelf(TolkienBlocks.STRIPPED_LEBETHRON_WOOD.get());
         dropSelf(TolkienBlocks.PLANKS_LEBETHRON.get());
         dropLeaves(TolkienBlocks.LEAVES_LEBETHRON);
+        dropSelf(TolkienBlocks.LEAFPILE_LEBETHRON.get());
         dropSelf(TolkienBlocks.STAIRS_LEBETHRON.get());
         this.add(TolkienBlocks.SLAB_LEBETHRON.get(),
                 block -> createSlabItemTable(TolkienBlocks.SLAB_LEBETHRON.get()));
@@ -149,13 +160,16 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.TRAPDOOR_LEBETHRON.get());
         this.add(TolkienBlocks.DOOR_LEBETHRON.get(),
                 block -> createDoorTable(TolkienBlocks.DOOR_LEBETHRON.get()));
-            // Fangorn Oak
+        dropSelf(TolkienBlocks.TORCH_LEBETHRON.get());
+        dropOther(TolkienBlocks.WALL_TORCH_LEBETHRON, TolkienBlocks.TORCH_LEBETHRON.get());
+        // Fangorn Oak
         dropSelf(TolkienBlocks.LOG_FANGORNOAK.get());
         dropSelf(TolkienBlocks.WOOD_FANGORNOAK.get());
         dropSelf(TolkienBlocks.STRIPPED_FANGORNOAK_LOG.get());
         dropSelf(TolkienBlocks.STRIPPED_FANGORNOAK_WOOD.get());
         dropSelf(TolkienBlocks.PLANKS_FANGORNOAK.get());
         dropLeaves(TolkienBlocks.LEAVES_FANGORNOAK);
+        dropSelf(TolkienBlocks.LEAFPILE_FANGORNOAK.get());
         dropSelf(TolkienBlocks.STAIRS_FANGORNOAK.get());
         this.add(TolkienBlocks.SLAB_FANGORNOAK.get(),
                 block -> createSlabItemTable(TolkienBlocks.SLAB_FANGORNOAK.get()));
@@ -166,7 +180,9 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.TRAPDOOR_FANGORNOAK.get());
         this.add(TolkienBlocks.DOOR_FANGORNOAK.get(),
                 block -> createDoorTable(TolkienBlocks.DOOR_FANGORNOAK.get()));
-            // Deadwood
+        dropSelf(TolkienBlocks.TORCH_FANGORNOAK.get());
+        dropOther(TolkienBlocks.WALL_TORCH_FANGORNOAK, TolkienBlocks.TORCH_FANGORNOAK.get());
+        // Deadwood
         dropSelf(TolkienBlocks.LOG_DEADWOOD.get());
         dropSelf(TolkienBlocks.WOOD_DEADWOOD.get());
         dropSelf(TolkienBlocks.STRIPPED_DEADWOOD_LOG.get());
@@ -182,9 +198,23 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.TRAPDOOR_DEADWOOD.get());
         this.add(TolkienBlocks.DOOR_DEADWOOD.get(),
                 block -> createDoorTable(TolkienBlocks.DOOR_DEADWOOD.get()));
-            //Flowers & Plants
+        dropSelf(TolkienBlocks.TORCH_DEADWOOD.get());
+        dropOther(TolkienBlocks.WALL_TORCH_DEADWOOD, TolkienBlocks.TORCH_DEADWOOD.get());
+        //Flowers & Plants
         dropSelf(TolkienBlocks.FLOWER_SIMBELMYNE.get());
+        dropSelf(TolkienBlocks.FLOWER_MIRKWOOD.get());
+        dropSelf(TolkienBlocks.FLOWER_ALFIRIN.get());
+        dropSelf(TolkienBlocks.FLOWER_ATHELAS.get());
+        dropSelf(TolkienBlocks.FLOWER_NIPHREDIL.get());
+        dropSelf(TolkienBlocks.FLOWER_SWAMPMILKWEED.get());
+        dropSelf(TolkienBlocks.FLOWER_LILLYOFTHEVALLEY.get());
         dropPottedContents(TolkienBlocks.POTTED_FLOWER_SIMBELMYNE.get());
+        dropPottedContents(TolkienBlocks.POTTED_FLOWER_MIRKWOOD.get());
+        dropPottedContents(TolkienBlocks.POTTED_FLOWER_ALFIRIN.get());
+        dropPottedContents(TolkienBlocks.POTTED_FLOWER_ATHELAS.get());
+        dropPottedContents(TolkienBlocks.POTTED_FLOWER_NIPHREDIL.get());
+        dropPottedContents(TolkienBlocks.POTTED_FLOWER_SWAMPMILKWEED.get());
+        dropPottedContents(TolkienBlocks.POTTED_FLOWER_LILLYOFTHEVALLEY.get());
 
     }
 
@@ -198,6 +228,10 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
                 LootItem.lootTableItem(item)
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(minDrops, maxDrops)))
                         .apply(ApplyBonusCount.addOreBonusCount(registrylookup.getOrThrow(Enchantments.FORTUNE)))));
+    }
+
+    public void dropOther(Supplier<? extends Block> brokenBlock, ItemLike droppedBlock) {
+        this.dropOther(brokenBlock.get(), droppedBlock);
     }
 
     @Override

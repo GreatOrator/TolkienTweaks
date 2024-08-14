@@ -12,10 +12,10 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class BaseFlowerBlock extends FlowerBlock {
+public class TolkienFlowerBlock extends FlowerBlock {
     protected static final VoxelShape SHAPE = Block.box(5.0D, 0.0D, 5.0D, 11.0D, 10.0D, 11.0D);
 
-    public BaseFlowerBlock(Holder<MobEffect> effect, float seconds, Properties properties) {
+    public TolkienFlowerBlock(Holder<MobEffect> effect, float seconds, Properties properties) {
         super(effect, seconds, properties);
     }
 

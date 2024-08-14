@@ -77,6 +77,12 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.STRIPPED_DEADWOOD_LOG);
                         output.accept(TolkienBlocks.STRIPPED_DEADWOOD_WOOD);
                         output.accept(TolkienBlocks.FLOWER_SIMBELMYNE);
+                        output.accept(TolkienBlocks.FLOWER_MIRKWOOD);
+                        output.accept(TolkienBlocks.FLOWER_ALFIRIN);
+                        output.accept(TolkienBlocks.FLOWER_ATHELAS);
+                        output.accept(TolkienBlocks.FLOWER_NIPHREDIL);
+                        output.accept(TolkienBlocks.FLOWER_SWAMPMILKWEED);
+                        output.accept(TolkienBlocks.FLOWER_LILLYOFTHEVALLEY);
                         output.accept(TolkienItems.CREBAIN_FEATHER);
                         output.accept(TolkienItems.BIRD_FEATHER);
                         output.accept(TolkienItems.MUMAKIL_LEATHER);
@@ -185,6 +191,8 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.FENCE_GATE_MALLORN);
                         output.accept(TolkienBlocks.DOOR_MALLORN);
                         output.accept(TolkienBlocks.TRAPDOOR_MALLORN);
+                        output.accept(TolkienBlocks.LEAFPILE_MALLORN);
+                        output.accept(TolkienBlocks.TORCH_MALLORN);
                         output.accept(TolkienBlocks.STAIRS_MIRKWOOD);
                         output.accept(TolkienBlocks.SLAB_MIRKWOOD);
                         output.accept(TolkienBlocks.MIRKWOOD_BUTTON);
@@ -193,6 +201,8 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.FENCE_GATE_MIRKWOOD);
                         output.accept(TolkienBlocks.DOOR_MIRKWOOD);
                         output.accept(TolkienBlocks.TRAPDOOR_MIRKWOOD);
+                        output.accept(TolkienBlocks.LEAFPILE_MIRKWOOD);
+                        output.accept(TolkienBlocks.TORCH_MIRKWOOD);
                         output.accept(TolkienBlocks.STAIRS_CULUMALDA);
                         output.accept(TolkienBlocks.SLAB_CULUMALDA);
                         output.accept(TolkienBlocks.CULUMALDA_BUTTON);
@@ -201,6 +211,8 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.FENCE_GATE_CULUMALDA);
                         output.accept(TolkienBlocks.DOOR_CULUMALDA);
                         output.accept(TolkienBlocks.TRAPDOOR_CULUMALDA);
+                        output.accept(TolkienBlocks.LEAFPILE_CULUMALDA);
+                        output.accept(TolkienBlocks.TORCH_CULUMALDA);
                         output.accept(TolkienBlocks.STAIRS_LEBETHRON);
                         output.accept(TolkienBlocks.SLAB_LEBETHRON);
                         output.accept(TolkienBlocks.LEBETHRON_BUTTON);
@@ -209,6 +221,8 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.FENCE_GATE_LEBETHRON);
                         output.accept(TolkienBlocks.DOOR_LEBETHRON);
                         output.accept(TolkienBlocks.TRAPDOOR_LEBETHRON);
+                        output.accept(TolkienBlocks.LEAFPILE_LEBETHRON);
+                        output.accept(TolkienBlocks.TORCH_LEBETHRON);
                         output.accept(TolkienBlocks.STAIRS_FANGORNOAK);
                         output.accept(TolkienBlocks.SLAB_FANGORNOAK);
                         output.accept(TolkienBlocks.FANGORNOAK_BUTTON);
@@ -217,6 +231,8 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.FENCE_GATE_FANGORNOAK);
                         output.accept(TolkienBlocks.DOOR_FANGORNOAK);
                         output.accept(TolkienBlocks.TRAPDOOR_FANGORNOAK);
+                        output.accept(TolkienBlocks.LEAFPILE_FANGORNOAK);
+                        output.accept(TolkienBlocks.TORCH_FANGORNOAK);
                         output.accept(TolkienBlocks.STAIRS_DEADWOOD);
                         output.accept(TolkienBlocks.SLAB_DEADWOOD);
                         output.accept(TolkienBlocks.DEADWOOD_BUTTON);
@@ -225,6 +241,7 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.FENCE_GATE_DEADWOOD);
                         output.accept(TolkienBlocks.DOOR_DEADWOOD);
                         output.accept(TolkienBlocks.TRAPDOOR_DEADWOOD);
+                        output.accept(TolkienBlocks.TORCH_DEADWOOD);
                     }).build());
 
 
