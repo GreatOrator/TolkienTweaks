@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "tolkienmobs:block/wood_mallorn_top",
+    "side": "tolkienmobs:block/wood_mallorn"
+  }
+}

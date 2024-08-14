@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "tolkienmobs:block/slab_culumalda"
+    },
+    "type=double": {
+      "model": "tolkienmobs:block/planks_culumalda"
+    },
+    "type=top": {
+      "model": "tolkienmobs:block/slab_culumalda_top"
+    }
+  }
+}

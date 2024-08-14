@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/door_bottom_left",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "bottom": "tolkienmobs:block/door_fangornoak_bottom",
+    "top": "tolkienmobs:block/door_fangornoak_top"
+  }
+}
