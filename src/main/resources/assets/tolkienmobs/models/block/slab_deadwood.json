@@ -1,8 +1,9 @@
 {
   "parent": "minecraft:block/slab",
+  "render_type": "minecraft:cutout",
   "textures": {
-    "side": "tolkienmobs:block/planks_deadwood",
     "bottom": "tolkienmobs:block/planks_deadwood",
+    "side": "tolkienmobs:block/planks_deadwood",
     "top": "tolkienmobs:block/planks_deadwood"
   }
 }

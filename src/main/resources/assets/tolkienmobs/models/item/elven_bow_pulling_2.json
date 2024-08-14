@@ -1,6 +1,0 @@
-{
-  "parent": "tolkienmobs:item/elven_bow",
-  "textures": {
-    "layer0": "tolkienmobs:item/elven_bow_pulling_2"
-  }
-}

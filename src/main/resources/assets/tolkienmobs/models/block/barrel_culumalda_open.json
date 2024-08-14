@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/cube_bottom_top",
-  "textures": {
-    "side": "tolkienmobs:block/barrel/barrel_culumalda_side",
-    "bottom": "tolkienmobs:block/barrel/barrel_culumalda_bottom",
-    "top": "tolkienmobs:block/barrel/barrel_culumalda_top_open"
-  }
-}

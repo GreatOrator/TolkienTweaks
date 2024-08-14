@@ -3,6 +3,8 @@ package com.greatorator.tolkienmobs;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienTabs;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.FlowerPotBlock;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -40,7 +42,10 @@ public class TolkienMobsMain {
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
-
+        event.enqueueWork(() -> {
+            FlowerPotBlock pot = (FlowerPotBlock) Blocks.FLOWER_POT;
+            pot.addPlant(TolkienBlocks.FLOWER_SIMBELMYNE.getId(), TolkienBlocks.POTTED_FLOWER_SIMBELMYNE);
+        });
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
