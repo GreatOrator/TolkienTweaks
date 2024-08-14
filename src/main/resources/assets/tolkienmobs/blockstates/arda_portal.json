@@ -1,6 +1,0 @@
-{
-  "variants": {
-    "axis=z": { "model": "tolkienmobs:block/arda_portal_ew" },
-    "axis=x": { "model": "tolkienmobs:block/arda_portal_ns" }
-  }
-}

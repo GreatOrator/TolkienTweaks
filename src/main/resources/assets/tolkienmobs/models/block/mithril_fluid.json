@@ -1,6 +1,0 @@
-{
-  "parent": "tolkienmobs:block/mithril",
-  "textures": {
-    "particle": "tolkienmobs:block/mithril_still"
-  }
-}

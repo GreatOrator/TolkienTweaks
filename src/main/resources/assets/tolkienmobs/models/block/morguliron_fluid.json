@@ -1,6 +1,0 @@
-{
-  "parent": "tolkienmobs:block/morguliron",
-  "textures": {
-    "particle": "tolkienmobs:block/morguliron_still"
-  }
-}

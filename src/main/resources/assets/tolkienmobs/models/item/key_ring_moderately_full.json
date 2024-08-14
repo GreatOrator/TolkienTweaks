@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "tolkienmobs:item/key_ring_2"
-  }
-}
