@@ -1,40 +1,44 @@
-package com.greatorator.tolkienmobs.block;
+package com.greatorator.tolkienmobs.item;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
-public class BaseBlock extends Block {
+public class TolkienItem extends Item {
     public boolean hasEffectOverride = false;
     private boolean canSpawnEntity = false;
     private boolean itemHasUse = false;
     private boolean hasLore = false;
 
-    public BaseBlock(Properties properties) {
+    public TolkienItem(Properties properties) {
         super(properties);
     }
 
-    public BaseBlock setEffectOverride() {
+    public TolkienItem setEffectOverride() {
         this.hasEffectOverride = true;
         return this;
     }
 
-    public BaseBlock setHasLore() {
+    @Override
+    public boolean isFoil(ItemStack stack) {
+        return hasEffectOverride || super.isFoil(stack);
+    }
+
+    public TolkienItem setHasLore() {
         this.hasLore = true;
         return this;
     }
 
-    public BaseBlock setItemHasUse() {
+    public TolkienItem setItemHasUse() {
         this.itemHasUse = true;
         return this;
     }
 
-    public BaseBlock setSpawnInfo() {
+    public TolkienItem setSpawnInfo() {
         this.canSpawnEntity = true;
         return this;
     }

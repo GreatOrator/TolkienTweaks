@@ -1,6 +1,9 @@
 package com.greatorator.tolkienmobs.init;
 
-import com.greatorator.tolkienmobs.block.BaseFlowerBlock;
+import com.greatorator.tolkienmobs.block.LeafPileBlock;
+import com.greatorator.tolkienmobs.block.TolkienFlowerBlock;
+import com.greatorator.tolkienmobs.block.TolkienTorchBlock;
+import com.greatorator.tolkienmobs.block.TolkienWallTorchBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.effect.MobEffects;
@@ -154,6 +157,9 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> LEAVES_MALLORN = registerBlock("leaves_mallorn",
             () -> new LeavesBlock(BlockBehaviour.Properties.of()
                     .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));
+    public static final DeferredBlock<Block> LEAFPILE_MALLORN = registerBlock("leafpile_mallorn",
+            () -> new LeafPileBlock(BlockBehaviour.Properties.of()
+                    .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));
     public static final DeferredBlock<Block> PLANKS_MALLORN = registerBlock("planks_mallorn",
             () -> new Block(BlockBehaviour.Properties.of()
                     .strength(2.0F, 3.0F).requiresCorrectToolForDrops().ignitedByLava().sound(SoundType.WOOD)));
@@ -181,7 +187,17 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> TRAPDOOR_MALLORN = registerBlock("trapdoor_mallorn",
             () -> new TrapDoorBlock(BlockSetType.OAK, BlockBehaviour.Properties.of()
                     .strength(3.0F).requiresCorrectToolForDrops().noOcclusion().sound(SoundType.WOOD)));
-// torch
+    public static final DeferredBlock<Block> TORCH_MALLORN = registerBlock("torch_mallorn",
+            () -> new TolkienTorchBlock(
+                    () -> TolkienParticleTypes.MALLORN_FLAME.get(),
+                    BlockBehaviour.Properties.of()
+                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD)));
+
+    public static final DeferredBlock<Block> WALL_TORCH_MALLORN = registerBlock("wall_torch_mallorn",
+            () -> new TolkienWallTorchBlock(
+                    () -> TolkienParticleTypes.MALLORN_FLAME.get(),
+                    BlockBehaviour.Properties.of()
+                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).lootFrom(TORCH_MALLORN)));
 // sign
 // Barrel
 // leafpile
@@ -202,6 +218,9 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> LEAVES_MIRKWOOD = registerBlock("leaves_mirkwood",
                 () -> new LeavesBlock(BlockBehaviour.Properties.of()
                         .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));
+    public static final DeferredBlock<Block> LEAFPILE_MIRKWOOD = registerBlock("leafpile_mirkwood",
+            () -> new LeafPileBlock(BlockBehaviour.Properties.of()
+                    .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));
     public static final DeferredBlock<Block> PLANKS_MIRKWOOD = registerBlock("planks_mirkwood",
                 () -> new Block(BlockBehaviour.Properties.of()
                         .strength(2.0F, 3.0F).requiresCorrectToolForDrops().ignitedByLava().sound(SoundType.WOOD)));
@@ -229,6 +248,16 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> TRAPDOOR_MIRKWOOD = registerBlock("trapdoor_mirkwood",
             () -> new TrapDoorBlock(BlockSetType.OAK, BlockBehaviour.Properties.of()
                     .strength(3.0F).requiresCorrectToolForDrops().noOcclusion().sound(SoundType.WOOD)));
+    public static final DeferredBlock<Block> TORCH_MIRKWOOD = registerBlock("torch_mirkwood",
+            () -> new TolkienTorchBlock(
+                    () -> TolkienParticleTypes.MIRKWOOD_FLAME.get(),
+                    BlockBehaviour.Properties.of()
+                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD)));
+    public static final DeferredBlock<Block> WALL_TORCH_MIRKWOOD = registerBlock("wall_torch_mirkwood",
+            () -> new TolkienWallTorchBlock(
+                    () -> TolkienParticleTypes.MIRKWOOD_FLAME.get(),
+                    BlockBehaviour.Properties.of()
+                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).lootFrom(TORCH_MIRKWOOD)));
 
         // Culumalda
     public static final DeferredBlock<Block> LOG_CULUMALDA = registerBlock("log_culumalda",
@@ -246,6 +275,9 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> LEAVES_CULUMALDA = registerBlock("leaves_culumalda",
                 () -> new LeavesBlock(BlockBehaviour.Properties.of()
                         .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));
+    public static final DeferredBlock<Block> LEAFPILE_CULUMALDA = registerBlock("leafpile_culumalda",
+            () -> new LeafPileBlock(BlockBehaviour.Properties.of()
+                    .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));
     public static final DeferredBlock<Block> PLANKS_CULUMALDA = registerBlock("planks_culumalda",
                 () -> new Block(BlockBehaviour.Properties.of()
                         .strength(2.0F, 3.0F).requiresCorrectToolForDrops().ignitedByLava().sound(SoundType.WOOD)));
@@ -273,6 +305,16 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> TRAPDOOR_CULUMALDA = registerBlock("trapdoor_culumalda",
             () -> new TrapDoorBlock(BlockSetType.OAK, BlockBehaviour.Properties.of()
                     .strength(3.0F).requiresCorrectToolForDrops().noOcclusion().sound(SoundType.WOOD)));
+    public static final DeferredBlock<Block> TORCH_CULUMALDA = registerBlock("torch_culumalda",
+            () -> new TolkienTorchBlock(
+                    () -> TolkienParticleTypes.CULUMALDA_FLAME.get(),
+                    BlockBehaviour.Properties.of()
+                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD)));
+    public static final DeferredBlock<Block> WALL_TORCH_CULUMALDA = registerBlock("wall_torch_culumalda",
+            () -> new TolkienWallTorchBlock(
+                    () -> TolkienParticleTypes.CULUMALDA_FLAME.get(),
+                    BlockBehaviour.Properties.of()
+                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).lootFrom(TORCH_CULUMALDA)));
 
         // Lebethron
     public static final DeferredBlock<Block> LOG_LEBETHRON = registerBlock("log_lebethron",
@@ -290,6 +332,9 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> LEAVES_LEBETHRON = registerBlock("leaves_lebethron",
                 () -> new LeavesBlock(BlockBehaviour.Properties.of()
                         .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));
+    public static final DeferredBlock<Block> LEAFPILE_LEBETHRON = registerBlock("leafpile_lebethron",
+            () -> new LeafPileBlock(BlockBehaviour.Properties.of()
+                    .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));
     public static final DeferredBlock<Block> PLANKS_LEBETHRON = registerBlock("planks_lebethron",
                 () -> new Block(BlockBehaviour.Properties.of()
                         .strength(2.0F, 3.0F).requiresCorrectToolForDrops().ignitedByLava().sound(SoundType.WOOD)));
@@ -317,6 +362,16 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> TRAPDOOR_LEBETHRON = registerBlock("trapdoor_lebethron",
             () -> new TrapDoorBlock(BlockSetType.OAK, BlockBehaviour.Properties.of()
                     .strength(3.0F).requiresCorrectToolForDrops().noOcclusion().sound(SoundType.WOOD)));
+    public static final DeferredBlock<Block> TORCH_LEBETHRON = registerBlock("torch_lebethron",
+            () -> new TolkienTorchBlock(
+                    () -> TolkienParticleTypes.LEBETHRON_FLAME.get(),
+                    BlockBehaviour.Properties.of()
+                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD)));
+    public static final DeferredBlock<Block> WALL_TORCH_LEBETHRON = registerBlock("wall_torch_lebethron",
+            () -> new TolkienWallTorchBlock(
+                    () -> TolkienParticleTypes.LEBETHRON_FLAME.get(),
+                    BlockBehaviour.Properties.of()
+                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).lootFrom(TORCH_LEBETHRON)));
 
         // Fangorn Oak
     public static final DeferredBlock<Block> LOG_FANGORNOAK = registerBlock("log_fangornoak",
@@ -334,6 +389,9 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> LEAVES_FANGORNOAK = registerBlock("leaves_fangornoak",
                 () -> new LeavesBlock(BlockBehaviour.Properties.of()
                         .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));
+    public static final DeferredBlock<Block> LEAFPILE_FANGORNOAK = registerBlock("leafpile_fangornoak",
+            () -> new LeafPileBlock(BlockBehaviour.Properties.of()
+                    .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));
     public static final DeferredBlock<Block> PLANKS_FANGORNOAK = registerBlock("planks_fangornoak",
                 () -> new Block(BlockBehaviour.Properties.of()
                         .strength(2.0F, 3.0F).requiresCorrectToolForDrops().ignitedByLava().sound(SoundType.WOOD)));
@@ -361,6 +419,16 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> TRAPDOOR_FANGORNOAK = registerBlock("trapdoor_fangornoak",
             () -> new TrapDoorBlock(BlockSetType.OAK, BlockBehaviour.Properties.of()
                     .strength(3.0F).requiresCorrectToolForDrops().noOcclusion().sound(SoundType.WOOD)));
+    public static final DeferredBlock<Block> TORCH_FANGORNOAK = registerBlock("torch_fangornoak",
+            () -> new TolkienTorchBlock(
+                    () -> TolkienParticleTypes.FANGORNOAK_FLAME.get(),
+                    BlockBehaviour.Properties.of()
+                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD)));
+    public static final DeferredBlock<Block> WALL_TORCH_FANGORNOAK = registerBlock("wall_torch_fangornoak",
+            () -> new TolkienWallTorchBlock(
+                    () -> TolkienParticleTypes.FANGORNOAK_FLAME.get(),
+                    BlockBehaviour.Properties.of()
+                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).lootFrom(TORCH_FANGORNOAK)));
 
         // Deadwood
     public static final DeferredBlock<Block> LOG_DEADWOOD = registerBlock("log_deadwood",
@@ -402,10 +470,32 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> TRAPDOOR_DEADWOOD = registerBlock("trapdoor_deadwood",
             () -> new TrapDoorBlock(BlockSetType.OAK, BlockBehaviour.Properties.of()
                     .strength(3.0F).requiresCorrectToolForDrops().noOcclusion().sound(SoundType.WOOD)));
+    public static final DeferredBlock<Block> TORCH_DEADWOOD = registerBlock("torch_deadwood",
+            () -> new TolkienTorchBlock(
+                    () -> TolkienParticleTypes.DEADWOOD_FLAME.get(),
+                    BlockBehaviour.Properties.of()
+                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD)));
+    public static final DeferredBlock<Block> WALL_TORCH_DEADWOOD = registerBlock("wall_torch_deadwood",
+            () -> new TolkienWallTorchBlock(
+                    () -> TolkienParticleTypes.DEADWOOD_FLAME.get(),
+                    BlockBehaviour.Properties.of()
+                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).lootFrom(TORCH_DEADWOOD)));
 
         // Flowers & Plants
-    public static final DeferredBlock<Block> FLOWER_SIMBELMYNE = registerBlock("flower_simbelmyne", () -> new BaseFlowerBlock(MobEffects.HERO_OF_THE_VILLAGE, 7, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY)));
+    public static final DeferredBlock<Block> FLOWER_SIMBELMYNE = registerBlock("flower_simbelmyne", () -> new TolkienFlowerBlock(MobEffects.HERO_OF_THE_VILLAGE, 7, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY)));
+    public static final DeferredBlock<Block> FLOWER_MIRKWOOD = registerBlock("flower_mirkwood", () -> new TolkienFlowerBlock(MobEffects.BAD_OMEN, 7, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY)));
+    public static final DeferredBlock<Block> FLOWER_ALFIRIN = registerBlock("flower_alfirin", () -> new TolkienFlowerBlock(MobEffects.SATURATION, 7, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY)));
+    public static final DeferredBlock<Block> FLOWER_ATHELAS = registerBlock("flower_athelas", () -> new TolkienFlowerBlock(MobEffects.REGENERATION, 7, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY)));
+    public static final DeferredBlock<Block> FLOWER_NIPHREDIL = registerBlock("flower_niphredil", () -> new TolkienFlowerBlock(MobEffects.SATURATION, 7, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY)));
+    public static final DeferredBlock<Block> FLOWER_SWAMPMILKWEED = registerBlock("flower_swamp_milkweed", () -> new TolkienFlowerBlock(MobEffects.MOVEMENT_SLOWDOWN, 7, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY)));
+    public static final DeferredBlock<Block> FLOWER_LILLYOFTHEVALLEY = registerBlock("flower_valley_lilly", () -> new TolkienFlowerBlock(MobEffects.HEAL, 7, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY)));
     public static final DeferredBlock<FlowerPotBlock> POTTED_FLOWER_SIMBELMYNE = BLOCKS.register("potted_flower_simbelmyne", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, FLOWER_SIMBELMYNE, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
+    public static final DeferredBlock<FlowerPotBlock> POTTED_FLOWER_MIRKWOOD = BLOCKS.register("potted_flower_mirkwood", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, FLOWER_MIRKWOOD, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
+    public static final DeferredBlock<FlowerPotBlock> POTTED_FLOWER_ALFIRIN = BLOCKS.register("potted_flower_alfirin", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, FLOWER_ALFIRIN, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
+    public static final DeferredBlock<FlowerPotBlock> POTTED_FLOWER_ATHELAS = BLOCKS.register("potted_flower_athelas", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, FLOWER_ATHELAS, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
+    public static final DeferredBlock<FlowerPotBlock> POTTED_FLOWER_NIPHREDIL = BLOCKS.register("potted_flower_niphredil", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, FLOWER_NIPHREDIL, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
+    public static final DeferredBlock<FlowerPotBlock> POTTED_FLOWER_SWAMPMILKWEED = BLOCKS.register("potted_flower_swamp_milkweed", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, FLOWER_SWAMPMILKWEED, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
+    public static final DeferredBlock<FlowerPotBlock> POTTED_FLOWER_LILLYOFTHEVALLEY = BLOCKS.register("potted_flower_valley_lilly", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, FLOWER_LILLYOFTHEVALLEY, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
 
     private static boolean never(BlockState state, BlockGetter blockGetter, BlockPos pos) {
         return false;

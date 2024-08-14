@@ -27,7 +27,7 @@ public class TolkienBlockTagProvider extends BlockTagsProvider {
         tag(BlockTags.DOORS).add(TolkienBlocks.DOOR_MITHRIL.get(), TolkienBlocks.DOOR_MORGULIRON.get(), TolkienBlocks.DOOR_DURIN.get());
         tag(BlockTags.WOODEN_DOORS).add(TolkienBlocks.DOOR_MALLORN.get(), TolkienBlocks.DOOR_MIRKWOOD.get(), TolkienBlocks.DOOR_CULUMALDA.get(), TolkienBlocks.DOOR_LEBETHRON.get(), TolkienBlocks.DOOR_FANGORNOAK.get(), TolkienBlocks.DOOR_DEADWOOD.get());
         tag(BlockTags.PLANKS).add(TolkienBlocks.PLANKS_MALLORN.get(), TolkienBlocks.PLANKS_MIRKWOOD.get(), TolkienBlocks.PLANKS_CULUMALDA.get(), TolkienBlocks.PLANKS_LEBETHRON.get(), TolkienBlocks.PLANKS_FANGORNOAK.get(), TolkienBlocks.PLANKS_DEADWOOD.get());
-
+        tag(BlockTags.WALL_POST_OVERRIDE).add(TolkienBlocks.TORCH_MALLORN.get(), TolkienBlocks.WALL_TORCH_MALLORN.get(), TolkienBlocks.TORCH_MIRKWOOD.get(), TolkienBlocks.WALL_TORCH_MIRKWOOD.get(), TolkienBlocks.TORCH_CULUMALDA.get(), TolkienBlocks.WALL_TORCH_CULUMALDA.get(), TolkienBlocks.TORCH_LEBETHRON.get(), TolkienBlocks.WALL_TORCH_LEBETHRON.get(), TolkienBlocks.TORCH_FANGORNOAK.get(), TolkienBlocks.WALL_TORCH_FANGORNOAK.get(), TolkienBlocks.TORCH_DEADWOOD.get(), TolkienBlocks.WALL_TORCH_DEADWOOD.get());
 
 
     }

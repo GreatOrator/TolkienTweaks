@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "tolkienmobs:block/wall_torch_deadwood"
+    },
+    "facing=north": {
+      "model": "tolkienmobs:block/wall_torch_deadwood",
+      "y": 270
+    },
+    "facing=south": {
+      "model": "tolkienmobs:block/wall_torch_deadwood",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "tolkienmobs:block/wall_torch_deadwood",
+      "y": 180
+    }
+  }
+}

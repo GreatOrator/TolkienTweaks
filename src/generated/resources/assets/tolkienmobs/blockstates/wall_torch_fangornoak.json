@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "tolkienmobs:block/wall_torch_fangornoak"
+    },
+    "facing=north": {
+      "model": "tolkienmobs:block/wall_torch_fangornoak",
+      "y": 270
+    },
+    "facing=south": {
+      "model": "tolkienmobs:block/wall_torch_fangornoak",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "tolkienmobs:block/wall_torch_fangornoak",
+      "y": 180
+    }
+  }
+}
