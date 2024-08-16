@@ -1,16 +1,10 @@
 {
   "values": [
     "tolkienmobs:torch_mallorn",
-    "tolkienmobs:wall_torch_mallorn",
     "tolkienmobs:torch_mirkwood",
-    "tolkienmobs:wall_torch_mirkwood",
     "tolkienmobs:torch_culumalda",
-    "tolkienmobs:wall_torch_culumalda",
     "tolkienmobs:torch_lebethron",
-    "tolkienmobs:wall_torch_lebethron",
     "tolkienmobs:torch_fangornoak",
-    "tolkienmobs:wall_torch_fangornoak",
-    "tolkienmobs:torch_deadwood",
-    "tolkienmobs:wall_torch_deadwood"
+    "tolkienmobs:torch_deadwood"
   ]
 }

@@ -1,10 +1,12 @@
 package com.greatorator.tolkienmobs.datagen;
 
+import com.greatorator.tolkienmobs.block.custom.PipeweedCropBlock;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
@@ -13,6 +15,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
@@ -240,6 +243,7 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         makeFlower(TolkienBlocks.FLOWER_NIPHREDIL, TolkienBlocks.POTTED_FLOWER_NIPHREDIL);
         makeFlower(TolkienBlocks.FLOWER_SWAMPMILKWEED, TolkienBlocks.POTTED_FLOWER_SWAMPMILKWEED);
         makeFlower(TolkienBlocks.FLOWER_LILLYOFTHEVALLEY, TolkienBlocks.POTTED_FLOWER_LILLYOFTHEVALLEY);
+        makeCrop(((PipeweedCropBlock) TolkienBlocks.PIPEWEED.get()), "pipeweed_crop_stage", "pipeweed_stage");
     }
 
     public void saplingBlock(DeferredBlock<SaplingBlock> blockRegistryObject) {
@@ -253,6 +257,21 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
 
     protected String name(Supplier<? extends Block> block) {
         return BuiltInRegistries.BLOCK.getKey(block.get()).getPath();
+    }
+
+    public void makeCrop(CropBlock block, String modelName, String textureName) {
+        Function<BlockState, ConfiguredModel[]> function = state -> states(state, block, modelName, textureName);
+
+        getVariantBuilder(block).forAllStates(function);
+    }
+
+    private ConfiguredModel[] states(BlockState state, CropBlock block, String modelName, String textureName) {
+        ConfiguredModel[] models = new ConfiguredModel[1];
+        models[0] = new ConfiguredModel(models().crop(modelName + state.getValue(((PipeweedCropBlock) block).getAgeProperty()),
+                ResourceLocation.fromNamespaceAndPath(MODID, "block/" + textureName +
+                        state.getValue(((PipeweedCropBlock) block).getAgeProperty()))).renderType("cutout"));
+
+        return models;
     }
 
     public void torchBlock(Supplier<? extends Block> block, Supplier<? extends Block> wall) {

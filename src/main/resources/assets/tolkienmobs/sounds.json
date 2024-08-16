@@ -1,0 +1,1000 @@
+{
+  "mob.mumakil.say":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/mumakil/mumakil_say0",
+      "tolkienmobs:mob/mumakil/mumakil_say1",
+      "tolkienmobs:mob/mumakil/mumakil_say2",
+      "tolkienmobs:mob/mumakil/mumakil_say3"
+    ]
+  },
+  "mob.mumakil.hurt":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/mumakil/mumakil_hurt"
+    ]
+  },
+  "mob.elementalgolem.death":
+  {
+    "category": "hostile",
+    "sounds":
+    [
+      "tolkienmobs:mob/elementalgolem/elementalgolem_death"
+    ]
+  },
+  "mob.crebain.call":
+  {
+    "category": "hostile",
+    "sounds":
+    [
+      "tolkienmobs:mob/crebain/crebain_cry0",
+      "tolkienmobs:mob/crebain/crebain_cry1",
+      "tolkienmobs:mob/crebain/crebain_cry2",
+      "tolkienmobs:mob/crebain/crebain_cry3"
+    ]
+  },
+  "mob.tmgreateagle.call":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/tmgreateagle/tmgreateagle_cry0",
+      "tolkienmobs:mob/tmgreateagle/tmgreateagle_cry1",
+      "tolkienmobs:mob/tmgreateagle/tmgreateagle_cry2",
+      "tolkienmobs:mob/tmgreateagle/tmgreateagle_cry3"
+    ]
+  },
+  "mob.tmgreateagle.death":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/tmgreateagle/tmgreateagle_death"
+    ]
+  },
+  "mob.tmgreateagle.attack":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/tmgreateagle/tmgreateagle_attack"
+    ]
+  },
+  "mob.tmgreateagle.flapping":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/tmgreateagle/tmgreateagle_flapping"
+    ]
+  },
+  "mob.tmgreateagle.hurt":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/tmgreateagle/tmgreateagle_hurt"
+    ]
+  },
+  "mob.entityttmrat.idle":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/entityttmrat/entityttmrat_say0",
+      "tolkienmobs:mob/entityttmrat/entityttmrat_say1",
+      "tolkienmobs:mob/entityttmrat/entityttmrat_say2",
+      "tolkienmobs:mob/entityttmrat/entityttmrat_say3"
+    ]
+  },
+  "mob.entityttmrat.hurt":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/entityttmrat/entityttmrat_hurt"
+    ]
+  },
+  "mob.entityttmrat.death":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/entityttmrat/entityttmrat_death"
+    ]
+  },
+  "mob.crebain.death":
+  {
+    "category": "hostile",
+    "sounds":
+    [
+      "tolkienmobs:mob/crebain/crebain_death"
+    ]
+  },
+  "mob.crebain.flapping":
+  {
+    "category": "hostile",
+    "sounds":
+    [
+      "tolkienmobs:mob/crebain/crebain_flapping"
+    ]
+  },
+  "mob.crebain.hurt":
+  {
+    "category": "hostile",
+    "sounds":
+    [
+      "tolkienmobs:mob/crebain/crebain_hurt"
+    ]
+  },
+  "mob.troll.hurt":
+  {
+    "category": "hostile",
+    "sounds":
+    [
+      "tolkienmobs:mob/troll/troll_hurt"
+    ]
+  },
+  "mob.troll.angry":
+  {
+    "category": "hostile",
+    "sounds":
+    [
+      "tolkienmobs:mob/troll/troll_angry"
+    ]
+  },
+  "mob.troll.death":
+  {
+    "category": "hostile",
+    "sounds":
+    [
+      "tolkienmobs:mob/troll/troll_death"
+    ]
+  },
+  "mob.troll.idle":
+  {
+    "category": "hostile",
+    "sounds":
+    [
+      "tolkienmobs:mob/troll/troll_say1",
+      "tolkienmobs:mob/troll/troll_say2",
+      "tolkienmobs:mob/troll/troll_say3"
+    ]
+  },
+  "mob.troll.step":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/troll/troll_step1",
+      "tolkienmobs:mob/troll/troll_step2",
+      "tolkienmobs:mob/troll/troll_step3",
+      "tolkienmobs:mob/troll/troll_step4"
+    ]
+  },
+  "entity.mirkwoodspider.shoot":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/mirkwoodspider/shoot1",
+      "tolkienmobs:mob/mirkwoodspider/shoot2"
+    ]
+  },
+  "entity.tornado.shoot":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/ammo/lift_wind1",
+      "tolkienmobs:mob/ammo/lift_wind2",
+      "tolkienmobs:mob/ammo/lift_wind3"
+    ]
+  },
+  "entity.web.shoot":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/ammo/web_impact1",
+      "tolkienmobs:mob/ammo/web_impact2"
+    ]
+  },
+  "entity.boulder.shoot":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/ammo/ammo_boulder_shoot"
+    ]
+  },
+  "mob.dwarf.idle":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/dwarf/dwarf_say1",
+      "tolkienmobs:mob/dwarf/dwarf_say2",
+      "tolkienmobs:mob/dwarf/dwarf_say3",
+      "tolkienmobs:mob/dwarf/dwarf_say4"
+    ]
+  },
+  "mob.dwarf.angry": {
+    "category": "neutral",
+    "sounds": [
+      "tolkienmobs:mob/dwarf/dwarf_angry"
+    ]
+  },
+  "mob.dwarf.hurt": {
+    "category": "neutral",
+    "sounds": [
+      "tolkienmobs:mob/dwarf/dwarf_hurt"
+    ]
+  },
+  "mob.dwarf.death": {
+    "category": "neutral",
+    "sounds": [
+      "tolkienmobs:mob/dwarf/dwarf_death"
+    ]
+  },
+  "mob.goblin.idle":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/goblin/goblin_say0",
+      "tolkienmobs:mob/goblin/goblin_say1",
+      "tolkienmobs:mob/goblin/goblin_say2",
+      "tolkienmobs:mob/goblin/goblin_say3"
+    ]
+  },
+  "mob.goblin.angry":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/goblin/goblin_angry"
+    ]
+  },
+  "mob.goblin.death":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/goblin/goblin_death"
+    ]
+  },
+  "mob.goblin.hurt":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/goblin/goblin_hurt"
+    ]
+  },
+  "mob.balrog.death":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/balrog/balrog_death"
+    ]
+  },
+  "mob.balrog.hurt":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/balrog/balrog_hurt"
+    ]
+  },
+  "mob.balrog.idle":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/balrog/balrog_say0",
+      "tolkienmobs:mob/balrog/balrog_say1",
+      "tolkienmobs:mob/balrog/balrog_say2"
+    ]
+  },
+  "mob.balrog.step":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/balrog/balrog_step"
+    ]
+  },
+  "mob.minotaur.death":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/minotaur/minotaur_death0",
+      "tolkienmobs:mob/minotaur/minotaur_death1"
+    ]
+  },
+  "mob.minotaur.hurt":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/minotaur/minotaur_hurt"
+    ]
+  },
+  "mob.minotaur.idle":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/minotaur/minotaur_say0",
+      "tolkienmobs:mob/minotaur/minotaur_say1",
+      "tolkienmobs:mob/minotaur/minotaur_say2",
+      "tolkienmobs:mob/minotaur/minotaur_say3"
+    ]
+  },
+  "mob.minotaur.step":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/minotaur/minotaur_step"
+    ]
+  },
+  "mob.warg.death":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/warg/warg_death"
+    ]
+  },
+  "mob.warg.hurt":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/warg/warg_hurt"
+    ]
+  },
+  "mob.warg.idle":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/warg/warg_say0",
+      "tolkienmobs:mob/warg/warg_say1"
+    ]
+  },
+  "mob.mimic.step":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/mimicchest/mimic_step0",
+      "tolkienmobs:mob/mimicchest/mimic_step1"
+    ]
+  },
+  "mob.mimic.angry":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/mimicchest/mimic_angry"
+    ]
+  },
+  "mob.gollum.death":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/gollum/gollum_death"
+    ]
+  },
+  "mob.gollum.hurt":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/gollum/gollum_hurt"
+    ]
+  },
+  "mob.gollum.idle":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/gollum/gollum_say0",
+      "tolkienmobs:mob/gollum/gollum_say1",
+      "tolkienmobs:mob/gollum/gollum_say2"
+    ]
+  },
+  "mob.toaddle.death":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/toaddle/toaddle_death"
+    ]
+  },
+  "mob.toaddle.angry":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/toaddle/toaddle_angry"
+    ]
+  },
+  "mob.toaddle.hurt":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/toaddle/toaddle_hurt"
+    ]
+  },
+  "mob.toaddle.idle":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/toaddle/toaddle_say0",
+      "tolkienmobs:mob/toaddle/toaddle_say1",
+      "tolkienmobs:mob/toaddle/toaddle_say2",
+      "tolkienmobs:mob/toaddle/toaddle_say3"
+    ]
+  },
+  "mob.toaddle.step":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/toaddle/toaddle_step"
+    ]
+  },
+  "mob.sosquirrel.death":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/sosquirrel/sosquirrel_death"
+    ]
+  },
+  "mob.sosquirrel.angry":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/sosquirrel/sosquirrel_angry"
+    ]
+  },
+  "mob.sosquirrel.hurt":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/sosquirrel/sosquirrel_hurt"
+    ]
+  },
+  "mob.sosquirrel.idle":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/sosquirrel/sosquirrel_say0",
+      "tolkienmobs:mob/sosquirrel/sosquirrel_say1",
+      "tolkienmobs:mob/sosquirrel/sosquirrel_say2",
+      "tolkienmobs:mob/sosquirrel/sosquirrel_say3"
+    ]
+  },
+  "mob.sosquirrel.step":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/sosquirrel/sosquirrel_step"
+    ]
+  },
+  "mob.goat.death":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/goat/goat_death"
+    ]
+  },
+  "mob.goat.hurt":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/goat/goat_hurt"
+    ]
+  },
+  "mob.goat.scream":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/goat/goat_scream"
+    ]
+  },
+  "mob.goat.idle":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/goat/goat_say0",
+      "tolkienmobs:mob/goat/goat_say1",
+      "tolkienmobs:mob/goat/goat_say2",
+      "tolkienmobs:mob/goat/goat_say3"
+    ]
+  },
+  "mob.goat.angry":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/goat/goat_angry"
+    ]
+  },
+  "mob.witchking.idle":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/witchking/witchking_say0",
+      "tolkienmobs:mob/witchking/witchking_say1",
+      "tolkienmobs:mob/witchking/witchking_say2",
+      "tolkienmobs:mob/witchking/witchking_say3"
+    ]
+  },
+  "mob.witchking.hurt":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/witchking/witchking_hurt"
+    ]
+  },
+  "mob.witchking.death":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/witchking/witchking_death"
+    ]
+  },
+  "mob.witchking.angry":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/witchking/witchking_angry"
+    ]
+  },
+  "mob.witchking.step":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/witchking/witchking_step"
+    ]
+  },
+  "mob.fellbeast.idle":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/fellbeast/fellbeast_say0",
+      "tolkienmobs:mob/fellbeast/fellbeast_say1"
+    ]
+  },
+  "mob.fellbeast.flap":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/fellbeast/fellbeast_flap"
+    ]
+  },
+  "mob.oathbreaker.idle": {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/oathbreaker/oathbreaker_say0",
+      "tolkienmobs:mob/oathbreaker/oathbreaker_say1",
+      "tolkienmobs:mob/oathbreaker/oathbreaker_say2",
+      "tolkienmobs:mob/oathbreaker/oathbreaker_say3"
+    ]
+  },
+  "mob.barrowwight.idle": {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/barrowwight/barrowwight_say0",
+      "tolkienmobs:mob/barrowwight/barrowwight_say1",
+      "tolkienmobs:mob/barrowwight/barrowwight_say2"
+    ]
+  },
+  "mob.barrowwight.hurt": {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/barrowwight/barrowwight_hurt"
+    ]
+  },
+  "music.allthatglittersinerebor": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "tolkienmobs:music/allthatglitterserebor",
+        "stream": true,
+        "preload": true
+      }
+    ]
+  },
+  "music.willowsong": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "tolkienmobs:music/touchofshade",
+        "stream": true,
+        "preload": true
+      }
+    ]
+  },
+  "music.minastirith": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "tolkienmobs:music/minastirith",
+        "stream": true,
+        "preload": true
+      }
+    ]
+  },
+  "music.ridersofrivendell": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "tolkienmobs:music/ridersofrivendell",
+        "stream": true,
+        "preload": true
+      }
+    ]
+  },
+  "music.thelightoflothlorien": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "tolkienmobs:music/thelightoflothlorien",
+        "stream": true,
+        "preload": true
+      }
+    ]
+  },
+  "music.wakeofedoras": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "tolkienmobs:music/wakeofedoras",
+        "stream": true,
+        "preload": true
+      }
+    ]
+  },
+  "music.witchbattle": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "tolkienmobs:music/witchbattle",
+        "stream": true,
+        "preload": true
+      }
+    ]
+  },
+  "music.murderfrog": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "tolkienmobs:music/murderfrog",
+        "stream": true,
+        "preload": true
+      }
+    ]
+  },
+  "music.rederssong": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "tolkienmobs:music/rederssong",
+        "stream": true,
+        "preload": true
+      }
+    ]
+  },
+  "music.trollfumble": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "tolkienmobs:music/trollfumble",
+        "stream": true,
+        "preload": true
+      }
+    ]
+  },
+  "music.mysteryoftombombadil": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "tolkienmobs:music/mysteryoftombombadil",
+        "stream": true,
+        "preload": true
+      }
+    ]
+  },
+  "music.concerninghobbits": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "tolkienmobs:music/concerninghobbits",
+        "stream": true,
+        "preload": true
+      }
+    ]
+  },
+  "ambient.khazaddum": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "tolkienmobs:ambient/khazaddum",
+        "stream": true
+      }
+    ]
+  },
+  "ambient.waterworks": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "tolkienmobs:ambient/waterworks",
+        "stream": true
+      }
+    ]
+  },
+  "ambient.medievalcity": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "tolkienmobs:ambient/medievalcity",
+        "stream": true
+      }
+    ]
+  },
+  "ambient.medievalcitymarket": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "tolkienmobs:ambient/medievalcitymarket",
+        "stream": true
+      }
+    ]
+  },
+  "ambient.medievaltavern": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "tolkienmobs:ambient/medievaltavern",
+        "stream": true
+      }
+    ]
+  },
+  "ambient.medievalseaport": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "tolkienmobs:ambient/medievalseaport",
+        "stream": true
+      }
+    ]
+  },
+  "ambient.pathsofthedead": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "tolkienmobs:ambient/pathsofthedead",
+        "stream": true
+      }
+    ]
+  },
+  "ambient.underworld": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "tolkienmobs:ambient/underworld",
+        "stream": true
+      }
+    ]
+  },
+  "block.cathedralbell": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "tolkienmobs:block/cathedralbell",
+        "stream": true
+      }
+    ]
+  },
+  "lightningbug_ambient": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "tolkienmobs:block/lightningbug",
+        "stream": true
+      }
+    ]
+  },
+  "mob.demonlaugh": {
+    "category": "hostile",
+    "sounds":
+    [
+      "tolkienmobs:mob/demoniclaughter"
+    ]
+  },
+  "mob.evilwitchlaugh": {
+    "category": "hostile",
+    "sounds":
+    [
+      "tolkienmobs:mob/evilwitchlaugh"
+    ]
+  },
+  "mob.ghostlylament": {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/ghostlylament"
+    ]
+  },
+  "mob.midgefly.idle":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/midgefly_say1"
+    ]
+  },
+  "mob.orc.idle":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/orc/orc_say0",
+      "tolkienmobs:mob/orc/orc_say1",
+      "tolkienmobs:mob/orc/orc_say2",
+	  "tolkienmobs:mob/orc/orc_say3"
+    ]
+  },
+  "mob.watcher.death":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/watcher/watcher_death"
+    ]
+  },
+  "mob.watcher.idle":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/watcher/watcher_say0",
+	  "tolkienmobs:mob/watcher/watcher_say1",
+	  "tolkienmobs:mob/watcher/watcher_say2",
+	  "tolkienmobs:mob/watcher/watcher_say3"
+    ]
+  },
+  "mob.romiewalker.idle":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/romiewalker/romiewalker_idle1",
+      "tolkienmobs:mob/romiewalker/romiewalker_idle2"
+    ]
+  },
+  "mob.romiewalker.death":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/romiewalker/romiewalker_death1",
+      "tolkienmobs:mob/romiewalker/romiewalker_death2"
+    ]
+  },
+  "mob.romiewalker.hurt":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/romiewalker/romiewalker_hurt1",
+      "tolkienmobs:mob/romiewalker/romiewalker_hurt2"
+    ]
+  },
+  "mob.romiewalker.angry":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/romiewalker/romiewalker_angry1",
+      "tolkienmobs:mob/romiewalker/romiewalker_angry2"
+    ]
+  },
+  "mob.tmthrush.idle":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/tmthrush/tmthrush_say0",
+      "tolkienmobs:mob/tmthrush/tmthrush_say1",
+      "tolkienmobs:mob/tmthrush/tmthrush_say2",
+      "tolkienmobs:mob/tmthrush/tmthrush_say3"
+    ]
+  },
+  "mob.tmthrush.hurt":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/tmthrush/tmthrush_hurt"
+    ]
+  },
+  "mob.tmthrush.death":
+  {
+    "category": "neutral",
+    "sounds":
+    [
+      "tolkienmobs:mob/tmthrush/tmthrush_death"
+    ]
+  },
+  "hype_horn": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "tolkienmobs:player/hype_horn",
+        "stream": false
+      }
+    ]
+  },
+  "arda_portal": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "tolkienmobs:ambient/arda_portal",
+        "stream": true
+      }
+    ]
+  },
+  "chest_open": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "tolkienmobs:block/chest_open",
+        "stream": true
+      }
+    ]
+  },
+  "chest_close": {
+    "category": "block",
+    "sounds": [
+      {
+        "name": "tolkienmobs:block/chest_close",
+        "stream": true
+      }
+    ]
+  }
+}

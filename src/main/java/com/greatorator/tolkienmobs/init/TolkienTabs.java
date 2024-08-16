@@ -28,6 +28,7 @@ public class TolkienTabs {
                         output.accept(TolkienItems.RAW_MITHRIL);
                         output.accept(TolkienItems.INGOT_MITHRIL);
                         output.accept(TolkienItems.NUGGET_MITHRIL);
+                        output.accept(TolkienFluids.MITHRIL_FLUID_BUCKET);
                         output.accept(TolkienBlocks.ORE_MORGULIRON);
                         output.accept(TolkienBlocks.ORE_END_MORGULIRON);
                         output.accept(TolkienBlocks.ORE_NETHER_MORGULIRON);
@@ -36,6 +37,7 @@ public class TolkienTabs {
                         output.accept(TolkienItems.RAW_MORGULIRON);
                         output.accept(TolkienItems.INGOT_MORGULIRON);
                         output.accept(TolkienItems.NUGGET_MORGULIRON);
+                        output.accept(TolkienFluids.MORGULIRON_FLUID_BUCKET);
                         output.accept(TolkienBlocks.ORE_AMMOLITE);
                         output.accept(TolkienBlocks.ORE_END_AMMOLITE);
                         output.accept(TolkienBlocks.ORE_NETHER_AMMOLITE);
@@ -83,6 +85,8 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.FLOWER_NIPHREDIL);
                         output.accept(TolkienBlocks.FLOWER_SWAMPMILKWEED);
                         output.accept(TolkienBlocks.FLOWER_LILLYOFTHEVALLEY);
+                        output.accept(TolkienItems.PIPEWEED_ITEM);
+                        output.accept(TolkienItems.PIPEWEED_SEEDS);
                         output.accept(TolkienItems.CREBAIN_FEATHER);
                         output.accept(TolkienItems.BIRD_FEATHER);
                         output.accept(TolkienItems.MUMAKIL_LEATHER);
@@ -94,6 +98,12 @@ public class TolkienTabs {
                         output.accept(TolkienItems.GOLEM_STONE_FIRE);
                         output.accept(TolkienItems.GOLEM_STONE_WATER);
                         output.accept(TolkienItems.GOLEM_STONE_SUMMON);
+                        output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_BASE);
+                        output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_SIZE);
+                        output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID);
+                        output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_CRAFTING);
+                        output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_SLEEPING);
+                        output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_CAMPFIRE);
                     }).build());
     public static final Supplier<CreativeModeTab> TOLKIEN_QUEST = CREATIVE_MODE_TAB.register("tolkienmobs_tab_quest",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienItems.ITEM_FORTRESSMAP.get()))
@@ -156,11 +166,30 @@ public class TolkienTabs {
                         output.accept(TolkienItems.ITEM_WATCHERCOMPLETE);
                         output.accept(TolkienItems.ITEM_TOKEN_EASTERN_ALLIANCE);
                         output.accept(TolkienItems.ITEM_TOKEN_WESTERN_ALLIANCE);
+                        output.accept(TolkienItems.RECORD_RIVENDELL);
+                    }).build());
+
+    public static final Supplier<CreativeModeTab> TOLKIEN_FOODS = CREATIVE_MODE_TAB.register("tolkienmobs_tab_food",
+            () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienItems.LEMBAS.get()))
+                    .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_quest"))
+                    .title(Component.translatable("itemGroup.tolkienmobs.food"))
+                    .displayItems((itemDisplayParameters, output) -> {
+                        output.accept(TolkienItems.LEMBAS);
+                        output.accept(TolkienItems.CRAM);
+                        output.accept(TolkienItems.HONEY_CAKE);
+                        output.accept(TolkienItems.FOOD_HONEY);
+                        output.accept(TolkienItems.MONSTER_FLESH);
+                        output.accept(TolkienItems.INSECT);
+                        output.accept(TolkienItems.GOLDEN_INSECT);
+                        output.accept(TolkienItems.TREE_ACORN);
+                        output.accept(TolkienItems.GOLDEN_TREE_ACORN);
+                        output.accept(TolkienItems.MIRUVOR);
+                        output.accept(TolkienItems.GROG);
                     }).build());
 
     public static final Supplier<CreativeModeTab> TOLKIEN_BLOCKS = CREATIVE_MODE_TAB.register("tolkienmobs_tab_deco",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienBlocks.RAW_MITHRIL_BLOCK))
-                    .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_quest"))
+                    .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_food"))
                     .title(Component.translatable("itemGroup.tolkienmobs.deco"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(TolkienBlocks.BLOCK_MITHRIL);

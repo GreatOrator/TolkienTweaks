@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.datagen;
 
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
+import com.greatorator.tolkienmobs.init.TolkienFluids;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -29,10 +30,12 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         basicItem(TolkienItems.DUST_MITHRIL.get());
         basicItem(TolkienItems.NUGGET_MITHRIL.get());
         basicItem(TolkienItems.INGOT_MITHRIL.get());
+        basicItem(TolkienFluids.MITHRIL_FLUID_BUCKET.get());
         basicItem(TolkienItems.RAW_MORGULIRON.get());
         basicItem(TolkienItems.DUST_MORGULIRON.get());
         basicItem(TolkienItems.NUGGET_MORGULIRON.get());
         basicItem(TolkienItems.INGOT_MORGULIRON.get());
+        basicItem(TolkienFluids.MORGULIRON_FLUID_BUCKET.get());
         basicItem(TolkienItems.GEM_AMMOLITE.get());
 
             // Quest
@@ -107,6 +110,32 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         basicItem(TolkienItems.GOLEM_STONE_WATER.get());
         basicItem(TolkienItems.GOLEM_STONE_SUMMON.get());
 
+        // Backpack Upgrades
+        basicItem(TolkienItems.ITEM_BACKPACK_UPGRADE_BASE.get());
+        basicItem(TolkienItems.ITEM_BACKPACK_UPGRADE_SIZE.get());
+        basicItem(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID.get());
+        basicItem(TolkienItems.ITEM_BACKPACK_UPGRADE_CRAFTING.get());
+        basicItem(TolkienItems.ITEM_BACKPACK_UPGRADE_SLEEPING.get());
+        basicItem(TolkienItems.ITEM_BACKPACK_UPGRADE_CAMPFIRE.get());
+
+        // Food
+        basicItem(TolkienItems.LEMBAS.get());
+        basicItem(TolkienItems.CRAM.get());
+        basicItem(TolkienItems.HONEY_CAKE.get());
+        basicItem(TolkienItems.MONSTER_FLESH.get());
+        basicItem(TolkienItems.INSECT.get());
+        basicItem(TolkienItems.GOLDEN_INSECT.get());
+        basicItem(TolkienItems.TREE_ACORN.get());
+        basicItem(TolkienItems.GOLDEN_TREE_ACORN.get());
+        basicItem(TolkienItems.FOOD_HONEY.get());
+
+        // Drink
+        basicItem(TolkienItems.MIRUVOR.get());
+        basicItem(TolkienItems.GROG.get());
+
+        // Crop
+        basicItem(TolkienItems.PIPEWEED_ITEM.get());
+        basicItem(TolkienItems.PIPEWEED_SEEDS.get());
 
         // Blocks
         basicItem(TolkienBlocks.DOOR_MITHRIL.asItem());
@@ -135,6 +164,9 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         basicItem(TolkienBlocks.DOOR_DEADWOOD.asItem());
         buttonItem(TolkienBlocks.DEADWOOD_BUTTON, TolkienBlocks.PLANKS_DEADWOOD);
         fenceItem(TolkienBlocks.FENCE_DEADWOOD, TolkienBlocks.PLANKS_DEADWOOD);
+
+        basicItem(TolkienItems.RECORD_RIVENDELL.get());
+
     }
 
     public void buttonItem(DeferredBlock<Block> block, DeferredBlock<Block> baseBlock) {

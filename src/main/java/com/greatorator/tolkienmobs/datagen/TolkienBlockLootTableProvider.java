@@ -1,7 +1,9 @@
 package com.greatorator.tolkienmobs.datagen;
 
+import com.greatorator.tolkienmobs.block.custom.PipeweedCropBlock;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienItems;
+import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -16,6 +18,8 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 import java.util.Set;
@@ -215,6 +219,12 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropPottedContents(TolkienBlocks.POTTED_FLOWER_NIPHREDIL.get());
         dropPottedContents(TolkienBlocks.POTTED_FLOWER_SWAMPMILKWEED.get());
         dropPottedContents(TolkienBlocks.POTTED_FLOWER_LILLYOFTHEVALLEY.get());
+
+        LootItemCondition.Builder lootItemConditionBuilder = LootItemBlockStatePropertyCondition.hasBlockStateProperties(TolkienBlocks.PIPEWEED.get())
+                .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(PipeweedCropBlock.AGE, 7));
+        this.add(TolkienBlocks.PIPEWEED.get(), this.createCropDrops(TolkienBlocks.PIPEWEED.get(),
+                TolkienItems.PIPEWEED_ITEM.get(), TolkienItems.PIPEWEED_SEEDS.asItem(), lootItemConditionBuilder));
+
 
     }
 

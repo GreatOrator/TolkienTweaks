@@ -1,4 +1,4 @@
-package com.greatorator.tolkienmobs.init;
+package com.greatorator.tolkienmobs.init.types;
 
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
