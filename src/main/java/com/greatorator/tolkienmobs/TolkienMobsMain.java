@@ -1,14 +1,17 @@
 package com.greatorator.tolkienmobs;
 
-import com.greatorator.tolkienmobs.init.TolkienBlocks;
-import com.greatorator.tolkienmobs.init.TolkienItems;
-import com.greatorator.tolkienmobs.init.TolkienParticleTypes;
-import com.greatorator.tolkienmobs.init.TolkienTabs;
+import com.greatorator.tolkienmobs.fluid.TolkienFluid;
+import com.greatorator.tolkienmobs.init.*;
+import com.greatorator.tolkienmobs.init.types.TolkienFluidTypes;
+import com.greatorator.tolkienmobs.init.types.TolkienParticleTypes;
 import com.greatorator.tolkienmobs.particle.provider.TolkienParticleProvider;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FlowerPotBlock;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -37,11 +40,17 @@ public class TolkienMobsMain {
         modEventBus.addListener(this::commonSetup);
 
         NeoForge.EVENT_BUS.register(this);
-        TolkienItems.register(modEventBus);
-        TolkienBlocks.register(modEventBus);
-        TolkienParticleTypes.register(modEventBus);
         TolkienTabs.register(modEventBus);
 
+        TolkienItems.register(modEventBus);
+        TolkienBlocks.register(modEventBus);
+
+        TolkienSounds.register(modEventBus);
+
+        TolkienParticleTypes.register(modEventBus);
+
+        TolkienFluid.register(modEventBus);
+        TolkienFluids.register(modEventBus);
 
         modEventBus.addListener(this::addCreative);
         modContainer.registerConfig(ModConfig.Type.COMMON, TolkienMobsConfig.SPEC);
@@ -73,7 +82,18 @@ public class TolkienMobsMain {
     public static class ClientModEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
+            event.enqueueWork(() -> {
+                ItemBlockRenderTypes.setRenderLayer(TolkienFluids.MITHRIL_FLOWING.get(), RenderType.translucent());
+                ItemBlockRenderTypes.setRenderLayer(TolkienFluids.MORGULIRON_FLOWING.get(), RenderType.translucent());
+            });
+        }
 
+        @SubscribeEvent
+        public static void onClientExtensions(RegisterClientExtensionsEvent event) {
+            event.registerFluidType(((TolkienFluidTypes) TolkienFluid.MOLTEN_MITHRIL_LAVA_FLUID_TYPE.get()).getClientFluidTypeExtensions(),
+                    TolkienFluid.MOLTEN_MITHRIL_LAVA_FLUID_TYPE.get());
+            event.registerFluidType(((TolkienFluidTypes) TolkienFluid.MOLTEN_MORGULIRON_LAVA_FLUID_TYPE.get()).getClientFluidTypeExtensions(),
+                    TolkienFluid.MOLTEN_MORGULIRON_LAVA_FLUID_TYPE.get());
         }
 
         @SubscribeEvent
