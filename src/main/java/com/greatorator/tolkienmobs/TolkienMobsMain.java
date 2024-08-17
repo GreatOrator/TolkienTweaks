@@ -30,11 +30,12 @@ import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 
 import java.util.Locale;
+import java.util.logging.ErrorManager;
 
 @Mod(TolkienMobsMain.MODID)
 public class TolkienMobsMain {
     public static final String MODID = "tolkienmobs";
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
 
     public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
@@ -46,12 +47,17 @@ public class TolkienMobsMain {
         TolkienBlocks.register(modEventBus);
 
         TolkienSounds.register(modEventBus);
+        TolkienEffects.register(modEventBus);
 
+        TolkienPotions.register(modEventBus);
         TolkienParticleTypes.register(modEventBus);
 
         TolkienFluid.register(modEventBus);
         TolkienFluids.register(modEventBus);
 
+        TolkienFeatureModifiers.TRUNK_PLACERS.register(modEventBus);
+        TolkienFeatureModifiers.FOLIAGE_PLACERS.register(modEventBus);
+        TolkienFeatureModifiers.TREE_DECORATORS.register(modEventBus);
         modEventBus.addListener(this::addCreative);
         modContainer.registerConfig(ModConfig.Type.COMMON, TolkienMobsConfig.SPEC);
     }
@@ -104,6 +110,7 @@ public class TolkienMobsMain {
             pEvent.registerSpriteSet(TolkienParticleTypes.LEBETHRON_FLAME.get(), TolkienParticleProvider::new);
             pEvent.registerSpriteSet(TolkienParticleTypes.FANGORNOAK_FLAME.get(), TolkienParticleProvider::new);
             pEvent.registerSpriteSet(TolkienParticleTypes.DEADWOOD_FLAME.get(), TolkienParticleProvider::new);
+            pEvent.registerSpriteSet(TolkienParticleTypes.LIGHTNINGBUG.get(), TolkienParticleProvider::new);
         }
     }
 

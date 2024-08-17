@@ -44,12 +44,14 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.ORE_DEEPSLATE_AMMOLITE);
                         output.accept(TolkienItems.GEM_AMMOLITE);
                         output.accept(TolkienBlocks.PLANKS_MALLORN);
+                        output.accept(TolkienBlocks.SAPLING_MALLORN);
                         output.accept(TolkienBlocks.LEAVES_MALLORN);
                         output.accept(TolkienBlocks.LOG_MALLORN);
                         output.accept(TolkienBlocks.WOOD_MALLORN);
                         output.accept(TolkienBlocks.STRIPPED_MALLORN_LOG);
                         output.accept(TolkienBlocks.STRIPPED_MALLORN_WOOD);
                         output.accept(TolkienBlocks.PLANKS_MIRKWOOD);
+                        output.accept(TolkienBlocks.SAPLING_MIRKWOOD);
                         output.accept(TolkienBlocks.LEAVES_MIRKWOOD);
                         output.accept(TolkienBlocks.LOG_MIRKWOOD);
                         output.accept(TolkienBlocks.WOOD_MIRKWOOD);
@@ -104,6 +106,8 @@ public class TolkienTabs {
                         output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_CRAFTING);
                         output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_SLEEPING);
                         output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_CAMPFIRE);
+//                        output.accept(TolkienBlocks.LIGHTNINGBUG_BLOCK);
+
                     }).build());
     public static final Supplier<CreativeModeTab> TOLKIEN_QUEST = CREATIVE_MODE_TAB.register("tolkienmobs_tab_quest",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienItems.ITEM_FORTRESSMAP.get()))

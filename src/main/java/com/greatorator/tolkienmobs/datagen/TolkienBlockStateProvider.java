@@ -244,11 +244,17 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         makeFlower(TolkienBlocks.FLOWER_SWAMPMILKWEED, TolkienBlocks.POTTED_FLOWER_SWAMPMILKWEED);
         makeFlower(TolkienBlocks.FLOWER_LILLYOFTHEVALLEY, TolkienBlocks.POTTED_FLOWER_LILLYOFTHEVALLEY);
         makeCrop(((PipeweedCropBlock) TolkienBlocks.PIPEWEED.get()), "pipeweed_crop_stage", "pipeweed_stage");
+        saplingBlock(TolkienBlocks.SAPLING_MIRKWOOD);
+        saplingBlock(TolkienBlocks.SAPLING_MALLORN);
+
+            // Custom
+//        directionalBlock(TolkienBlocks.LIGHTNINGBUG_BLOCK.get(), models().getExistingFile(modLoc("block/lightningbug")));
+//        blockItem(TolkienBlocks.LIGHTNINGBUG_BLOCK);
+
     }
 
-    public void saplingBlock(DeferredBlock<SaplingBlock> blockRegistryObject) {
-        simpleBlock(blockRegistryObject.get(),
-                models().cross(BuiltInRegistries.BLOCK.getKey(blockRegistryObject.get()).getPath(), blockTexture(blockRegistryObject.get())).renderType("cutout"));
+    private void saplingBlock(DeferredBlock<Block> deferredBlock) {
+        simpleBlock(deferredBlock.get(), models().cross(BuiltInRegistries.BLOCK.getKey(deferredBlock.get()).getPath(), blockTexture(deferredBlock.get())).renderType("cutout"));
     }
 
     protected ResourceLocation texture(String name) {
