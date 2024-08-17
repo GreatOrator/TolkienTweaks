@@ -1,4 +1,4 @@
-// 1.21	2024-08-16T09:28:02.8168573	Item Models: tolkienmobs
+// 1.21	2024-08-17T04:45:06.7622241	Item Models: tolkienmobs
 978e6e6b022f3f587bcf25d062858abd13135185 assets/tolkienmobs/models/item/culumalda_button.json
 8d800df75c191c4a8891328bb2c082b71942f5b3 assets/tolkienmobs/models/item/deadwood_button.json
 b877576d05d466039dd494bb864a1b713388eeac assets/tolkienmobs/models/item/door_culumalda.json
@@ -118,6 +118,8 @@ a30304a80f1ca0639359762afd34c4ce95e506b1 assets/tolkienmobs/models/item/pipeweed
 c325b34b92d00d7d2874e958c68f17e3187aef4d assets/tolkienmobs/models/item/raw_mithril.json
 9dd9c834a1d0a33be9f6143c7819468caf056727 assets/tolkienmobs/models/item/raw_morguliron.json
 c67601eb889fabc74cab37960a53b603f993a511 assets/tolkienmobs/models/item/record_rivendell.json
+f650de098ae102dec614eeb5591463d636b1b588 assets/tolkienmobs/models/item/sapling_mallorn.json
+c08da245d265c79488cdbcb1abf470daefd12f81 assets/tolkienmobs/models/item/sapling_mirkwood.json
 8d9799136d64e4c25a2d48f6206e3e33c348c741 assets/tolkienmobs/models/item/upgrade_item_backpack_upgrade_base.json
 33585dcdf9ea1d2da80cfe7765e03f2975280677 assets/tolkienmobs/models/item/wall_mithril.json
 28583a6f66d6cd2314aa913688cfd9cf5affa8c3 assets/tolkienmobs/models/item/wall_morguliron.json

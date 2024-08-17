@@ -16,8 +16,12 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 public class TolkienSounds {
     public static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(BuiltInRegistries.SOUND_EVENT, MODID);
 
+    // Music Discs
     public static final Supplier<SoundEvent> RIDERSOFRIVENDELL = registerSoundEvent("music.ridersofrivendell");
     public static final ResourceKey<JukeboxSong> RIDERSOFRIVENDELL_KEY = createSong("music.ridersofrivendell");
+
+    // Ambient
+    public static final Supplier<SoundEvent> LIGHTNINGBUG_AMBIENT = registerSoundEvent("lightningbug_ambient");
 
     private static ResourceKey<JukeboxSong> createSong(String name) {
         return ResourceKey.create(Registries.JUKEBOX_SONG, ResourceLocation.fromNamespaceAndPath(MODID, name));

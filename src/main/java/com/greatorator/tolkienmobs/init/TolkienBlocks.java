@@ -4,8 +4,11 @@ import com.greatorator.tolkienmobs.block.LeafPileBlock;
 import com.greatorator.tolkienmobs.block.TolkienFlowerBlock;
 import com.greatorator.tolkienmobs.block.TolkienTorchBlock;
 import com.greatorator.tolkienmobs.block.TolkienWallTorchBlock;
+import com.greatorator.tolkienmobs.block.custom.LightningBugBlock;
 import com.greatorator.tolkienmobs.block.custom.PipeweedCropBlock;
+import com.greatorator.tolkienmobs.block.custom.TolkienSaplingBlock;
 import com.greatorator.tolkienmobs.init.types.TolkienParticleTypes;
+import com.greatorator.tolkienmobs.world.tree.TolkienTreeGrowers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.effect.MobEffects;
@@ -497,6 +500,13 @@ public class TolkienBlocks {
     public static final DeferredBlock<FlowerPotBlock> POTTED_FLOWER_NIPHREDIL = BLOCKS.register("potted_flower_niphredil", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, FLOWER_NIPHREDIL, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
     public static final DeferredBlock<FlowerPotBlock> POTTED_FLOWER_SWAMPMILKWEED = BLOCKS.register("potted_flower_swamp_milkweed", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, FLOWER_SWAMPMILKWEED, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
     public static final DeferredBlock<FlowerPotBlock> POTTED_FLOWER_LILLYOFTHEVALLEY = BLOCKS.register("potted_flower_valley_lilly", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, FLOWER_LILLYOFTHEVALLEY, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
+    public static final DeferredBlock<Block> SAPLING_MALLORN = registerBlock("sapling_mallorn",
+            () -> new TolkienSaplingBlock(TolkienTreeGrowers.MALLORN, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_SAPLING), Blocks.GRASS_BLOCK));
+    public static final DeferredBlock<Block> SAPLING_MIRKWOOD = registerBlock("sapling_mirkwood",
+            () -> new TolkienSaplingBlock(TolkienTreeGrowers.MIRKWOOD, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_SAPLING), Blocks.GRASS_BLOCK));
+
+        // Custom
+//    public static final DeferredBlock<Block> LIGHTNINGBUG_BLOCK = BLOCKS.register("lightningbug", () -> new LightningBugBlock(BlockBehaviour.Properties.of().noCollission().lightLevel((state) -> 15).sound(SoundType.SLIME_BLOCK).instabreak().noCollission()));
 
     private static boolean never(BlockState state, BlockGetter blockGetter, BlockPos pos) {
         return false;

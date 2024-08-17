@@ -8,6 +8,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -164,9 +165,17 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         basicItem(TolkienBlocks.DOOR_DEADWOOD.asItem());
         buttonItem(TolkienBlocks.DEADWOOD_BUTTON, TolkienBlocks.PLANKS_DEADWOOD);
         fenceItem(TolkienBlocks.FENCE_DEADWOOD, TolkienBlocks.PLANKS_DEADWOOD);
+        saplingItem(TolkienBlocks.SAPLING_MIRKWOOD);
+        saplingItem(TolkienBlocks.SAPLING_MALLORN);
 
         basicItem(TolkienItems.RECORD_RIVENDELL.get());
 
+    }
+
+    private ItemModelBuilder saplingItem(DeferredBlock<Block> item) {
+        return withExistingParent(item.getId().getPath(),
+                ResourceLocation.parse("item/generated")).texture("layer0",
+                ResourceLocation.fromNamespaceAndPath(MODID,"block/" + item.getId().getPath()));
     }
 
     public void buttonItem(DeferredBlock<Block> block, DeferredBlock<Block> baseBlock) {

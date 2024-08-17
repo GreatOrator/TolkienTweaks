@@ -10,6 +10,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
@@ -219,12 +220,15 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropPottedContents(TolkienBlocks.POTTED_FLOWER_NIPHREDIL.get());
         dropPottedContents(TolkienBlocks.POTTED_FLOWER_SWAMPMILKWEED.get());
         dropPottedContents(TolkienBlocks.POTTED_FLOWER_LILLYOFTHEVALLEY.get());
+        dropSelf(TolkienBlocks.SAPLING_MALLORN.get());
+        dropSelf(TolkienBlocks.SAPLING_MIRKWOOD.get());
 
         LootItemCondition.Builder lootItemConditionBuilder = LootItemBlockStatePropertyCondition.hasBlockStateProperties(TolkienBlocks.PIPEWEED.get())
                 .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(PipeweedCropBlock.AGE, 7));
         this.add(TolkienBlocks.PIPEWEED.get(), this.createCropDrops(TolkienBlocks.PIPEWEED.get(),
                 TolkienItems.PIPEWEED_ITEM.get(), TolkienItems.PIPEWEED_SEEDS.asItem(), lootItemConditionBuilder));
 
+//        dropOther(TolkienBlocks.LIGHTNINGBUG_BLOCK.get(), Items.GLOWSTONE);
 
     }
 

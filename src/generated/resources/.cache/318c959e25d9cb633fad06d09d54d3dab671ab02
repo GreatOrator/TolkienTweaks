@@ -1,4 +1,4 @@
-// 1.21	2024-08-16T07:51:22.5152822	Block States: tolkienmobs
+// 1.21	2024-08-17T08:41:16.7063564	Block States: tolkienmobs
 103670786b15b6ca902a9c2dc08f793bb541d8c1 assets/tolkienmobs/blockstates/block_ammolite.json
 05c2c1e08b6dd24d5cc751f78a8e9dc685c71167 assets/tolkienmobs/blockstates/block_mithril.json
 ffbb4110300ea9dd8580326acd55e05430049b10 assets/tolkienmobs/blockstates/block_morguliron.json
@@ -82,6 +82,8 @@ f6debaae7c568c0912c6fc72b7cf8fb798a9468d assets/tolkienmobs/blockstates/pressure
 c12ded29df10a39b8110734c28ebb1d52fcf5748 assets/tolkienmobs/blockstates/pressure_plate_morguliron.json
 67ed0bca502df25aba9ea29b4f80ad78ab5b3e19 assets/tolkienmobs/blockstates/raw_mithril_block.json
 2490868ec941c2e649f65423929b9a4ed8452fde assets/tolkienmobs/blockstates/raw_morguliron_block.json
+e0bfa2dff9f33bfa2bc119980845f24ac8c58ec9 assets/tolkienmobs/blockstates/sapling_mallorn.json
+973476c87f261057d7084c669a6025187f1c3a87 assets/tolkienmobs/blockstates/sapling_mirkwood.json
 fe5bc72dd84b3a339793647d2fe229387484e4a2 assets/tolkienmobs/blockstates/slab_culumalda.json
 87e149b985060bf93a2aad378dd04deee0749b3c assets/tolkienmobs/blockstates/slab_fangornoak.json
 f3b9728ce35a3ded1e3afe73cf999cf8ab40a79a assets/tolkienmobs/blockstates/slab_lebethron.json
@@ -334,6 +336,8 @@ f31a2608b128a4dc174198e6ccc4b1a6a47b31a2 assets/tolkienmobs/models/block/pressur
 8e45ca75fff46176951426bf3a3946f3340c4f21 assets/tolkienmobs/models/block/pressure_plate_morguliron_down.json
 1e8affad9bb0531a3efafdf64faa7a1953787bd8 assets/tolkienmobs/models/block/raw_mithril_block.json
 e237f2003b5ddabd4248de2df5df5ec64aae63a9 assets/tolkienmobs/models/block/raw_morguliron_block.json
+2c7c2ee39cd6684e10098f9c88f8921ab83fdd1c assets/tolkienmobs/models/block/sapling_mallorn.json
+af38bc2799a18c10b61a69507912a5a5b31cd592 assets/tolkienmobs/models/block/sapling_mirkwood.json
 2c94732377fd138b6f0a435c6ebdc5b3fa6eab73 assets/tolkienmobs/models/block/slab_culumalda.json
 788cecce7c93517e38b1e0d633faebb7255cff43 assets/tolkienmobs/models/block/slab_culumalda_top.json
 8b94634ff24f8fe68124cc1b9636c4a7e2419cf4 assets/tolkienmobs/models/block/slab_fangornoak.json
