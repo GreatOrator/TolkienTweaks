@@ -220,8 +220,22 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropPottedContents(TolkienBlocks.POTTED_FLOWER_NIPHREDIL.get());
         dropPottedContents(TolkienBlocks.POTTED_FLOWER_SWAMPMILKWEED.get());
         dropPottedContents(TolkienBlocks.POTTED_FLOWER_LILLYOFTHEVALLEY.get());
+        dropPottedContents(TolkienBlocks.POTTED_SAPLING_MALLORN.get());
+        dropPottedContents(TolkienBlocks.POTTED_SAPLING_MIRKWOOD.get());
+        dropPottedContents(TolkienBlocks.POTTED_SAPLING_CULUMALDA.get());
+        dropPottedContents(TolkienBlocks.POTTED_SAPLING_LEBETHRON.get());
+        dropPottedContents(TolkienBlocks.POTTED_SAPLING_FANGORNOAK.get());
+        dropPottedContents(TolkienBlocks.POTTED_SAPLING_DEADWOOD.get());
+        dropPottedContents(TolkienBlocks.POTTED_MUSHROOM_BLOOM_DECAY.get());
+        dropPottedContents(TolkienBlocks.POTTED_MUSHROOM_DECAY_BLOOM.get());
         dropSelf(TolkienBlocks.SAPLING_MALLORN.get());
         dropSelf(TolkienBlocks.SAPLING_MIRKWOOD.get());
+        dropSelf(TolkienBlocks.SAPLING_CULUMALDA.get());
+        dropSelf(TolkienBlocks.SAPLING_LEBETHRON.get());
+        dropSelf(TolkienBlocks.SAPLING_FANGORNOAK.get());
+        dropSelf(TolkienBlocks.SAPLING_DEADWOOD.get());
+        dropSelf(TolkienBlocks.MUSHROOM_DECAY_BLOOM.get());
+        dropSelf(TolkienBlocks.MUSHROOM_BLOOM_DECAY.get());
 
         LootItemCondition.Builder lootItemConditionBuilder = LootItemBlockStatePropertyCondition.hasBlockStateProperties(TolkienBlocks.PIPEWEED.get())
                 .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(PipeweedCropBlock.AGE, 7));
@@ -229,7 +243,8 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
                 TolkienItems.PIPEWEED_ITEM.get(), TolkienItems.PIPEWEED_SEEDS.asItem(), lootItemConditionBuilder));
 
 //        dropOther(TolkienBlocks.LIGHTNINGBUG_BLOCK.get(), Items.GLOWSTONE);
-
+        dropOther(TolkienBlocks.BLOCK_DECAY_BLOOM, TolkienBlocks.MUSHROOM_DECAY_BLOOM);
+        dropOther(TolkienBlocks.BLOCK_BLOOM_DECAY, TolkienBlocks.MUSHROOM_BLOOM_DECAY);
     }
 
     public void dropLeaves(Supplier<? extends Block> leaves) {

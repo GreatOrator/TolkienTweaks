@@ -7,6 +7,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
@@ -111,5 +112,12 @@ public class TolkienBlockTagProvider extends BlockTagsProvider {
                 .add(TolkienBlocks.ORE_DEEPSLATE_MITHRIL.get())
                 .add(TolkienBlocks.ORE_END_MITHRIL.get());
         tag(TolkienTags.Blocks.ROOT_TRACE_SKIP);
+        tag(TolkienTags.Blocks.DECAY_GROW_BLOCK)
+                .add(Blocks.MYCELIUM)
+                .add(Blocks.PODZOL)
+                .add(Blocks.CRIMSON_NYLIUM)
+                .add(Blocks.WARPED_NYLIUM)
+                .add(Blocks.COBBLESTONE)
+                .add(Blocks.STONE);
     }
 }

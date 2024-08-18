@@ -1,0 +1,82 @@
+{
+  "type": "minecraft:tree",
+  "config": {
+    "decorators": [
+      {
+        "type": "minecraft:trunk_vine"
+      },
+      {
+        "type": "minecraft:leave_vine",
+        "probability": 0.25
+      }
+    ],
+    "dirt_provider": {
+      "type": "minecraft:simple_state_provider",
+      "state": {
+        "Name": "minecraft:grass_block",
+        "Properties": {
+          "snowy": "false"
+        }
+      }
+    },
+    "foliage_placer": {
+      "type": "minecraft:fancy_foliage_placer",
+      "height": 4,
+      "offset": 4,
+      "radius": 4
+    },
+    "foliage_provider": {
+      "type": "minecraft:simple_state_provider",
+      "state": {
+        "Name": "tolkienmobs:leaves_fangornoak",
+        "Properties": {
+          "distance": "7",
+          "persistent": "false",
+          "waterlogged": "false"
+        }
+      }
+    },
+    "force_dirt": false,
+    "ignore_vines": false,
+    "minimum_size": {
+      "type": "minecraft:two_layers_feature_size",
+      "limit": 1,
+      "lower_size": 0,
+      "upper_size": 1
+    },
+    "trunk_placer": {
+      "type": "tolkienmobs:branching_large_trunk_placer",
+      "base_height": 6,
+      "branch_config": {
+        "branch_provider": {
+          "type": "minecraft:simple_state_provider",
+          "state": {
+            "Name": "tolkienmobs:wood_fangornoak",
+            "Properties": {
+              "axis": "y"
+            }
+          }
+        },
+        "count_minimum": 4,
+        "downwards_pitch": 0.2,
+        "length": 10.0,
+        "random_add_count": 0,
+        "random_add_length": 4.0,
+        "spacing_yaw": 0.3
+      },
+      "branch_start_offset_down": 5,
+      "height_rand_a": 6,
+      "height_rand_b": 6,
+      "perpendicular_branches": false
+    },
+    "trunk_provider": {
+      "type": "minecraft:simple_state_provider",
+      "state": {
+        "Name": "tolkienmobs:wood_fangornoak",
+        "Properties": {
+          "axis": "y"
+        }
+      }
+    }
+  }
+}
