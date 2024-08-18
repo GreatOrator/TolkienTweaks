@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.client.model.generators.ModelProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -236,6 +237,7 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         blockItem(TolkienBlocks.FENCE_GATE_DEADWOOD);
         blockItem(TolkienBlocks.TRAPDOOR_DEADWOOD, "_bottom");
             //Flowers & Plants
+
         makeFlower(TolkienBlocks.FLOWER_SIMBELMYNE, TolkienBlocks.POTTED_FLOWER_SIMBELMYNE);
         makeFlower(TolkienBlocks.FLOWER_MIRKWOOD, TolkienBlocks.POTTED_FLOWER_MIRKWOOD);
         makeFlower(TolkienBlocks.FLOWER_ALFIRIN, TolkienBlocks.POTTED_FLOWER_ALFIRIN);
@@ -243,18 +245,19 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         makeFlower(TolkienBlocks.FLOWER_NIPHREDIL, TolkienBlocks.POTTED_FLOWER_NIPHREDIL);
         makeFlower(TolkienBlocks.FLOWER_SWAMPMILKWEED, TolkienBlocks.POTTED_FLOWER_SWAMPMILKWEED);
         makeFlower(TolkienBlocks.FLOWER_LILLYOFTHEVALLEY, TolkienBlocks.POTTED_FLOWER_LILLYOFTHEVALLEY);
+        makeFlower(TolkienBlocks.SAPLING_MALLORN, TolkienBlocks.POTTED_SAPLING_MALLORN);
+        makeFlower(TolkienBlocks.SAPLING_MIRKWOOD, TolkienBlocks.POTTED_SAPLING_MIRKWOOD);
+        makeFlower(TolkienBlocks.SAPLING_CULUMALDA, TolkienBlocks.POTTED_SAPLING_CULUMALDA);
+        makeFlower(TolkienBlocks.SAPLING_LEBETHRON, TolkienBlocks.POTTED_SAPLING_LEBETHRON);
+        makeFlower(TolkienBlocks.SAPLING_FANGORNOAK, TolkienBlocks.POTTED_SAPLING_FANGORNOAK);
+        makeFlower(TolkienBlocks.SAPLING_DEADWOOD, TolkienBlocks.POTTED_SAPLING_DEADWOOD);
+        makeFlower(TolkienBlocks.MUSHROOM_BLOOM_DECAY, TolkienBlocks.POTTED_MUSHROOM_BLOOM_DECAY);
+        makeFlower(TolkienBlocks.MUSHROOM_DECAY_BLOOM, TolkienBlocks.POTTED_MUSHROOM_DECAY_BLOOM);
         makeCrop(((PipeweedCropBlock) TolkienBlocks.PIPEWEED.get()), "pipeweed_crop_stage", "pipeweed_stage");
-        saplingBlock(TolkienBlocks.SAPLING_MIRKWOOD);
-        saplingBlock(TolkienBlocks.SAPLING_MALLORN);
-
             // Custom
 //        directionalBlock(TolkienBlocks.LIGHTNINGBUG_BLOCK.get(), models().getExistingFile(modLoc("block/lightningbug")));
 //        blockItem(TolkienBlocks.LIGHTNINGBUG_BLOCK);
 
-    }
-
-    private void saplingBlock(DeferredBlock<Block> deferredBlock) {
-        simpleBlock(deferredBlock.get(), models().cross(BuiltInRegistries.BLOCK.getKey(deferredBlock.get()).getPath(), blockTexture(deferredBlock.get())).renderType("cutout"));
     }
 
     protected ResourceLocation texture(String name) {

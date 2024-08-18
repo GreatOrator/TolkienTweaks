@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs;
 
+import com.greatorator.tolkienmobs.event.TolkienEvents;
 import com.greatorator.tolkienmobs.fluid.TolkienFluid;
 import com.greatorator.tolkienmobs.init.*;
 import com.greatorator.tolkienmobs.init.types.TolkienFluidTypes;
@@ -30,7 +31,6 @@ import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 
 import java.util.Locale;
-import java.util.logging.ErrorManager;
 
 @Mod(TolkienMobsMain.MODID)
 public class TolkienMobsMain {
@@ -46,6 +46,7 @@ public class TolkienMobsMain {
         TolkienItems.register(modEventBus);
         TolkienBlocks.register(modEventBus);
 
+        TolkienEntities.register(modEventBus);
         TolkienSounds.register(modEventBus);
         TolkienEffects.register(modEventBus);
 
@@ -58,11 +59,13 @@ public class TolkienMobsMain {
         TolkienFeatureModifiers.TRUNK_PLACERS.register(modEventBus);
         TolkienFeatureModifiers.FOLIAGE_PLACERS.register(modEventBus);
         TolkienFeatureModifiers.TREE_DECORATORS.register(modEventBus);
+        TolkienFeatureModifiers.PLACEMENT_MODIFIERS.register(modEventBus);
         modEventBus.addListener(this::addCreative);
         modContainer.registerConfig(ModConfig.Type.COMMON, TolkienMobsConfig.SPEC);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
+        NeoForge.EVENT_BUS.register(new TolkienEvents());
         event.enqueueWork(() -> {
             FlowerPotBlock pot = (FlowerPotBlock) Blocks.FLOWER_POT;
             pot.addPlant(TolkienBlocks.FLOWER_SIMBELMYNE.getId(), TolkienBlocks.POTTED_FLOWER_SIMBELMYNE);
@@ -72,6 +75,14 @@ public class TolkienMobsMain {
             pot.addPlant(TolkienBlocks.FLOWER_NIPHREDIL.getId(), TolkienBlocks.POTTED_FLOWER_NIPHREDIL);
             pot.addPlant(TolkienBlocks.FLOWER_SWAMPMILKWEED.getId(), TolkienBlocks.POTTED_FLOWER_SWAMPMILKWEED);
             pot.addPlant(TolkienBlocks.FLOWER_LILLYOFTHEVALLEY.getId(), TolkienBlocks.POTTED_FLOWER_LILLYOFTHEVALLEY);
+            pot.addPlant(TolkienBlocks.SAPLING_MALLORN.getId(), TolkienBlocks.POTTED_SAPLING_MALLORN);
+            pot.addPlant(TolkienBlocks.SAPLING_MIRKWOOD.getId(), TolkienBlocks.POTTED_SAPLING_MIRKWOOD);
+            pot.addPlant(TolkienBlocks.SAPLING_CULUMALDA.getId(), TolkienBlocks.POTTED_SAPLING_CULUMALDA);
+            pot.addPlant(TolkienBlocks.SAPLING_LEBETHRON.getId(), TolkienBlocks.POTTED_SAPLING_LEBETHRON);
+            pot.addPlant(TolkienBlocks.SAPLING_FANGORNOAK.getId(), TolkienBlocks.POTTED_SAPLING_FANGORNOAK);
+            pot.addPlant(TolkienBlocks.SAPLING_DEADWOOD.getId(), TolkienBlocks.POTTED_SAPLING_DEADWOOD);
+            pot.addPlant(TolkienBlocks.MUSHROOM_BLOOM_DECAY.getId(), TolkienBlocks.POTTED_MUSHROOM_BLOOM_DECAY);
+            pot.addPlant(TolkienBlocks.MUSHROOM_DECAY_BLOOM.getId(), TolkienBlocks.POTTED_MUSHROOM_DECAY_BLOOM);
         });
     }
 

@@ -167,6 +167,12 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         fenceItem(TolkienBlocks.FENCE_DEADWOOD, TolkienBlocks.PLANKS_DEADWOOD);
         saplingItem(TolkienBlocks.SAPLING_MIRKWOOD);
         saplingItem(TolkienBlocks.SAPLING_MALLORN);
+        saplingItem(TolkienBlocks.SAPLING_CULUMALDA);
+        saplingItem(TolkienBlocks.SAPLING_LEBETHRON);
+        saplingItem(TolkienBlocks.SAPLING_FANGORNOAK);
+        saplingItem(TolkienBlocks.SAPLING_DEADWOOD);
+        saplingItem(TolkienBlocks.MUSHROOM_BLOOM_DECAY);
+        saplingItem(TolkienBlocks.MUSHROOM_DECAY_BLOOM);
 
         basicItem(TolkienItems.RECORD_RIVENDELL.get());
 
