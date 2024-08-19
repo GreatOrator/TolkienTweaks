@@ -1,4 +1,4 @@
-// 1.21	2024-08-18T17:44:54.871391	Block States: tolkienmobs
+// 1.21	2024-08-18T19:05:20.3883396	Block States: tolkienmobs
 103670786b15b6ca902a9c2dc08f793bb541d8c1 assets/tolkienmobs/blockstates/block_ammolite.json
 05c2c1e08b6dd24d5cc751f78a8e9dc685c71167 assets/tolkienmobs/blockstates/block_mithril.json
 ffbb4110300ea9dd8580326acd55e05430049b10 assets/tolkienmobs/blockstates/block_morguliron.json
@@ -590,6 +590,12 @@ e55846d68982f489b89f638955de0a39f55c717c assets/tolkienmobs/models/item/torch_ma
 fb81d5e5e9b8bbc1dbeef6f620405c51fffc74f4 assets/tolkienmobs/models/item/trapdoor_mirkwood.json
 18dd9c3c95c329fad98b2eeef7b983fa59f63d35 assets/tolkienmobs/models/item/trapdoor_mithril.json
 7c8deb408d0eb8f6e091c724de5db2d9727900aa assets/tolkienmobs/models/item/trapdoor_morguliron.json
+3abfe43bd8ab5429c88e36e85c73c8c3913cfbcf assets/tolkienmobs/models/item/wall_torch_culumalda.json
+dda1ff138d8a70fe029f9b74c4c74b16264e659d assets/tolkienmobs/models/item/wall_torch_deadwood.json
+0b3618a336f9493ca403a7c1611f26d11c6ec02e assets/tolkienmobs/models/item/wall_torch_fangornoak.json
+22d0d4ac9f6acf40420afb760d707d3735b14556 assets/tolkienmobs/models/item/wall_torch_lebethron.json
+6689f9df2802f3f3daf3b852cf65571accfbb873 assets/tolkienmobs/models/item/wall_torch_mallorn.json
+4a555cfc518746f1063f0de4b5e12db4df015378 assets/tolkienmobs/models/item/wall_torch_mirkwood.json
 80b08ec54761ad497e187615e610bd096f66325c assets/tolkienmobs/models/item/wood_culumalda.json
 523e2666f42e7697234987566c632b89a13f5dfb assets/tolkienmobs/models/item/wood_deadwood.json
 868b7e21bf8e5b00837a3797757129870399eac7 assets/tolkienmobs/models/item/wood_fangornoak.json

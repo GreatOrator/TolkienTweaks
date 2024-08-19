@@ -96,6 +96,7 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         torchBlock(TolkienBlocks.TORCH_MALLORN, TolkienBlocks.WALL_TORCH_MALLORN);
 
         blockItem(TolkienBlocks.TORCH_MALLORN);
+        blockItem(TolkienBlocks.WALL_TORCH_MALLORN);
         blockItem(TolkienBlocks.LOG_MALLORN);
         blockItem(TolkienBlocks.WOOD_MALLORN);
         blockItem(TolkienBlocks.STRIPPED_MALLORN_LOG);
@@ -124,6 +125,7 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         torchBlock(TolkienBlocks.TORCH_MIRKWOOD, TolkienBlocks.WALL_TORCH_MIRKWOOD);
 
         blockItem(TolkienBlocks.TORCH_MIRKWOOD);
+        blockItem(TolkienBlocks.WALL_TORCH_MIRKWOOD);
         blockItem(TolkienBlocks.LOG_MIRKWOOD);
         blockItem(TolkienBlocks.WOOD_MIRKWOOD);
         blockItem(TolkienBlocks.STRIPPED_MIRKWOOD_LOG);
@@ -151,6 +153,7 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         torchBlock(TolkienBlocks.TORCH_CULUMALDA, TolkienBlocks.WALL_TORCH_CULUMALDA);
 
         blockItem(TolkienBlocks.TORCH_CULUMALDA);
+        blockItem(TolkienBlocks.WALL_TORCH_CULUMALDA);
         blockItem(TolkienBlocks.LOG_CULUMALDA);
         blockItem(TolkienBlocks.WOOD_CULUMALDA);
         blockItem(TolkienBlocks.STRIPPED_CULUMALDA_LOG);
@@ -178,6 +181,7 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         torchBlock(TolkienBlocks.TORCH_LEBETHRON, TolkienBlocks.WALL_TORCH_LEBETHRON);
 
         blockItem(TolkienBlocks.TORCH_LEBETHRON);
+        blockItem(TolkienBlocks.WALL_TORCH_LEBETHRON);
         blockItem(TolkienBlocks.LOG_LEBETHRON);
         blockItem(TolkienBlocks.WOOD_LEBETHRON);
         blockItem(TolkienBlocks.STRIPPED_LEBETHRON_LOG);
@@ -205,6 +209,7 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         torchBlock(TolkienBlocks.TORCH_FANGORNOAK, TolkienBlocks.WALL_TORCH_FANGORNOAK);
 
         blockItem(TolkienBlocks.TORCH_FANGORNOAK);
+        blockItem(TolkienBlocks.WALL_TORCH_FANGORNOAK);
         blockItem(TolkienBlocks.LOG_FANGORNOAK);
         blockItem(TolkienBlocks.WOOD_FANGORNOAK);
         blockItem(TolkienBlocks.STRIPPED_FANGORNOAK_LOG);
@@ -227,6 +232,7 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         torchBlock(TolkienBlocks.TORCH_DEADWOOD, TolkienBlocks.WALL_TORCH_DEADWOOD);
 
         blockItem(TolkienBlocks.TORCH_DEADWOOD);
+        blockItem(TolkienBlocks.WALL_TORCH_DEADWOOD);
         blockItem(TolkienBlocks.LOG_DEADWOOD);
         blockItem(TolkienBlocks.WOOD_DEADWOOD);
         blockItem(TolkienBlocks.STRIPPED_DEADWOOD_LOG);
@@ -253,6 +259,8 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         makeFlower(TolkienBlocks.SAPLING_DEADWOOD, TolkienBlocks.POTTED_SAPLING_DEADWOOD);
         makeFlower(TolkienBlocks.MUSHROOM_BLOOM_DECAY, TolkienBlocks.POTTED_MUSHROOM_BLOOM_DECAY);
         makeFlower(TolkienBlocks.MUSHROOM_DECAY_BLOOM, TolkienBlocks.POTTED_MUSHROOM_DECAY_BLOOM);
+        blockItem(TolkienBlocks.BLOCK_DECAY_BLOOM);
+        blockItem(TolkienBlocks.BLOCK_BLOOM_DECAY);
         makeCrop(((PipeweedCropBlock) TolkienBlocks.PIPEWEED.get()), "pipeweed_crop_stage", "pipeweed_stage");
             // Custom
         builtinEntity(TolkienBlocks.LIGHTNINGBUG_BLOCK.get(), "block/blank");

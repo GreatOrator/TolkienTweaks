@@ -15,7 +15,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.*;
@@ -31,17 +30,14 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import java.util.EnumMap;
 import java.util.function.Supplier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
+import static com.greatorator.tolkienmobs.init.TolkienItems.ITEMS;
 
 public class TolkienBlocks {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, MODID);
-
-    public static final EnumMap<DyeColor, DeferredBlock<Block>> SLEEPING_BAGS =
-            new EnumMap<>(DyeColor.class);
 
     /* Metals & Gems */
         // Mithril
@@ -544,20 +540,6 @@ public class TolkienBlocks {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LocustEntity>> LOCUST = BLOCK_ENTITIES.register("locust", () ->
             BlockEntityType.Builder.of(LocustEntity::new, LOCUST_BLOCK.get()).build(null));
 
-//    public static final Supplier<BlockEntityType<SleepingBagBlockEntity>> SLEEPING_BAG_BLOCK_ENTITY;
-
-//    static {
-//        Arrays.stream(DyeColor.values()).forEach(color -> {
-//            SLEEPING_BAGS.put(color,
-//                    BLOCKS.register("sleeping_bag_" + color.getName(), () -> new SleepingBagBlock(color)));
-//        });
-//        SLEEPING_BAGS.values().forEach(
-//                reg -> ITEMS.register(reg.getId().getPath(), () -> new SleepingBagItem(reg.get())));
-//        SLEEPING_BAG_BLOCK_ENTITY = BLOCK_ENTITIES.register("sleeping_bag",
-//                () -> TolkienServices.REGISTRY_UTIL.createBlockEntityType(SleepingBagBlockEntity::new,
-//                        SLEEPING_BAGS.values().stream().map(IRegistryObject::get).toArray(Block[]::new)));
-//    }
-
     private static boolean never(BlockState state, BlockGetter blockGetter, BlockPos pos) {
         return false;
     }
@@ -569,7 +551,7 @@ public class TolkienBlocks {
     }
 
     private static <T extends Block> void registerBlockItem(String name, DeferredBlock<T> block) {
-        TolkienItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
+        ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
     }
 
     public static void register(IEventBus eventBus) {

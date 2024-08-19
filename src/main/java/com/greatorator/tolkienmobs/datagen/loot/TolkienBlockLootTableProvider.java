@@ -6,6 +6,7 @@ import com.greatorator.tolkienmobs.init.TolkienItems;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
@@ -14,14 +15,20 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.BedPart;
+import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
+import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
+import net.neoforged.neoforge.registries.DeferredBlock;
 
 import java.util.Set;
 import java.util.function.Supplier;
@@ -246,6 +253,7 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropOther(TolkienBlocks.LOCUST_BLOCK.get(), Items.GUNPOWDER);
         dropOther(TolkienBlocks.BLOCK_DECAY_BLOOM, TolkienBlocks.MUSHROOM_DECAY_BLOOM);
         dropOther(TolkienBlocks.BLOCK_BLOOM_DECAY, TolkienBlocks.MUSHROOM_BLOOM_DECAY);
+
     }
 
     public void dropLeaves(Supplier<? extends Block> leaves) {
@@ -262,6 +270,29 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
 
     public void dropOther(Supplier<? extends Block> brokenBlock, ItemLike droppedBlock) {
         this.dropOther(brokenBlock.get(), droppedBlock);
+    }
+
+    private LootTable.Builder createTable(Block block) {
+        return LootTable.lootTable()
+                .withPool(
+                        this.applyExplosionCondition(
+                                block,
+                                LootPool.lootPool()
+                                        .setRolls(ConstantValue.exactly(1.0F))
+                                        .add(
+                                                LootItem.lootTableItem(block)
+                                                        .apply(CopyComponentsFunction.copyComponents(
+                                                                CopyComponentsFunction.Source.BLOCK_ENTITY).include(
+                                                                DataComponents.CUSTOM_NAME))
+                                                        .when(
+                                                                LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
+                                                                        .setProperties(
+                                                                                StatePropertiesPredicate.Builder.properties()
+                                                                                        .hasProperty(BedBlock.PART, BedPart.HEAD))
+                                                        )
+                                        )
+                        )
+                );
     }
 
     @Override
