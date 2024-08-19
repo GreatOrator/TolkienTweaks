@@ -839,6 +839,15 @@
       }
     ]
   },
+  "locust_ambient": {
+    "category": "ambient",
+    "sounds": [
+      {
+        "name": "tolkienmobs:block/locust",
+        "stream": true
+      }
+    ]
+  },
   "mob.demonlaugh": {
     "category": "hostile",
     "sounds":

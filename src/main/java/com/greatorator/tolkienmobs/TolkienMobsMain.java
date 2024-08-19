@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs;
 
 import com.greatorator.tolkienmobs.event.TolkienEvents;
+import com.greatorator.tolkienmobs.event.TolkienRegistration;
 import com.greatorator.tolkienmobs.fluid.TolkienFluid;
 import com.greatorator.tolkienmobs.init.*;
 import com.greatorator.tolkienmobs.init.types.TolkienFluidTypes;
@@ -11,6 +12,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FlowerPotBlock;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import org.slf4j.Logger;
@@ -36,8 +38,14 @@ import java.util.Locale;
 public class TolkienMobsMain {
     public static final String MODID = "tolkienmobs";
     public static final Logger LOGGER = LogUtils.getLogger();
+    private static final String MODEL_DIR = "textures/entity/";
+    private static final String BLOCK_DIR = "textures/block/custom/";
 
-    public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer) {
+    public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer, Dist dist) {
+        if (dist.isClient()) {
+            TolkienRegistration.initModBusEvents(modEventBus);
+        }
+
         modEventBus.addListener(this::commonSetup);
 
         NeoForge.EVENT_BUS.register(this);
@@ -65,7 +73,6 @@ public class TolkienMobsMain {
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
-        NeoForge.EVENT_BUS.register(new TolkienEvents());
         event.enqueueWork(() -> {
             FlowerPotBlock pot = (FlowerPotBlock) Blocks.FLOWER_POT;
             pot.addPlant(TolkienBlocks.FLOWER_SIMBELMYNE.getId(), TolkienBlocks.POTTED_FLOWER_SIMBELMYNE);
@@ -123,6 +130,14 @@ public class TolkienMobsMain {
             pEvent.registerSpriteSet(TolkienParticleTypes.DEADWOOD_FLAME.get(), TolkienParticleProvider::new);
             pEvent.registerSpriteSet(TolkienParticleTypes.LIGHTNINGBUG.get(), TolkienParticleProvider::new);
         }
+    }
+
+    public static ResourceLocation getModelTexture(String name) {
+        return ResourceLocation.fromNamespaceAndPath(MODID, MODEL_DIR + name);
+    }
+
+    public static ResourceLocation getBlockModelTexture(String name) {
+        return ResourceLocation.fromNamespaceAndPath(MODID, BLOCK_DIR + name);
     }
 
     public static ResourceLocation prefix(String name) {

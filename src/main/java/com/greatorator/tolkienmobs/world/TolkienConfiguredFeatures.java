@@ -53,7 +53,7 @@ public class TolkienConfiguredFeatures {
                 new FancyFoliagePlacer(ConstantInt.of(4), ConstantInt.of(4), 4),
                 new ThreeLayersFeatureSize(5, 1, 0, 1, 2, OptionalInt.empty()))
                 .dirt(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
-                .decorators(ImmutableList.of(TolkienDecorators.LIVING_ROOTS))
+                .decorators(ImmutableList.of(TolkienDecorators.LIVING_ROOTS, TolkienDecorators.LIGHTNINGBUG))
                 .build());
         register(context, MIRKWOOD_KEY, Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TolkienBlocks.WOOD_MIRKWOOD.get()),
@@ -86,6 +86,7 @@ public class TolkienConfiguredFeatures {
                 BlockStateProvider.simple(TolkienBlocks.LEAVES_MIRKWOOD.get()),
                 new FancyFoliagePlacer(ConstantInt.of(2), ConstantInt.of(4), 4),
                 new TwoLayersFeatureSize(0, 0, 0, OptionalInt.of(4)))
+                .decorators(ImmutableList.of(TolkienDecorators.LOCUST))
                 .build());
         register(context, DEADWOOD_KEY, Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TolkienBlocks.WOOD_DEADWOOD.get()),
@@ -101,7 +102,7 @@ public class TolkienConfiguredFeatures {
                 BlockStateProvider.simple(Blocks.DARK_OAK_LEAVES),
                 new FancyFoliagePlacer(ConstantInt.of(4), ConstantInt.of(4), 4),
                 new TwoLayersFeatureSize(1, 0, 1))
-                .decorators(ImmutableList.of(new LeaveVineDecorator(0.25F)))
+                .decorators(ImmutableList.of(new LeaveVineDecorator(0.25F), TolkienDecorators.LIGHTNINGBUG, TolkienDecorators.LIVING_ROOTS))
                 .dirt(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
                 .build());
         register(context, CULUMALDA_FIRIEN_KEY, Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(

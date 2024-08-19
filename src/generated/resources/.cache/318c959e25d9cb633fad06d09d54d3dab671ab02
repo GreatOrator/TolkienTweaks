@@ -1,4 +1,4 @@
-// 1.21	2024-08-18T08:42:00.7722593	Block States: tolkienmobs
+// 1.21	2024-08-18T17:44:54.871391	Block States: tolkienmobs
 103670786b15b6ca902a9c2dc08f793bb541d8c1 assets/tolkienmobs/blockstates/block_ammolite.json
 05c2c1e08b6dd24d5cc751f78a8e9dc685c71167 assets/tolkienmobs/blockstates/block_mithril.json
 ffbb4110300ea9dd8580326acd55e05430049b10 assets/tolkienmobs/blockstates/block_morguliron.json
@@ -38,6 +38,8 @@ c38f12962048d5b667c13dc00c12f6947bc0c8fa assets/tolkienmobs/blockstates/leaves_f
 0eb23db010afdc38e321a7c3b0690e9d77bf23d0 assets/tolkienmobs/blockstates/leaves_mallorn.json
 db846c1cce809f8a80dd141dfdb39d94307a48d8 assets/tolkienmobs/blockstates/leaves_mirkwood.json
 8713ed17673fd187d93096a5b284fb2b4500b6f2 assets/tolkienmobs/blockstates/lebethron_button.json
+979971a371085100d4235416a580d0b833e3ae2b assets/tolkienmobs/blockstates/lightningbug.json
+79360ddb9e4c8f489a9b494f1f92ee7edfb64cdf assets/tolkienmobs/blockstates/locust.json
 5b041b7236f4df9a0b879d784b5a5803ee5c7451 assets/tolkienmobs/blockstates/log_culumalda.json
 7798c61670adb445d78c55507e2e092a5b095099 assets/tolkienmobs/blockstates/log_deadwood.json
 59b511591c51f3a0ce4eb10a22d503a061995de0 assets/tolkienmobs/blockstates/log_fangornoak.json
@@ -282,6 +284,8 @@ d6968ad2e440e8835313eadaab473ffa83805a45 assets/tolkienmobs/models/block/leaves_
 80a537258da4a0ae1eb97ecd64f49caf1b232bd6 assets/tolkienmobs/models/block/leaves_mirkwood.json
 1f8be6da1ff0b70aa1e9e4762efe6f1c3886e4cb assets/tolkienmobs/models/block/lebethron_button.json
 003feb4ccedfff331f4ad516a9023e7cd10edfad assets/tolkienmobs/models/block/lebethron_button_pressed.json
+e0910a3c0e68a3e3f452bd9e1ac7cdca4ef684df assets/tolkienmobs/models/block/lightningbug.json
+e0910a3c0e68a3e3f452bd9e1ac7cdca4ef684df assets/tolkienmobs/models/block/locust.json
 e5edaaef6b14fc61136845079efe7c95891ce139 assets/tolkienmobs/models/block/log_culumalda.json
 9e2151ccec49c3e872ca919031509f18da84b368 assets/tolkienmobs/models/block/log_culumalda_horizontal.json
 6a888d1da5d97e1838641ed332e890ac39e12d30 assets/tolkienmobs/models/block/log_deadwood.json

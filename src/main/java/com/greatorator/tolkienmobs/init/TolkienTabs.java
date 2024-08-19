@@ -112,7 +112,6 @@ public class TolkienTabs {
                         output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_CRAFTING);
                         output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_SLEEPING);
                         output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_CAMPFIRE);
-//                        output.accept(TolkienBlocks.LIGHTNINGBUG_BLOCK);
 
                     }).build());
     public static final Supplier<CreativeModeTab> TOLKIEN_QUEST = CREATIVE_MODE_TAB.register("tolkienmobs_tab_quest",
@@ -281,6 +280,8 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.DOOR_DEADWOOD);
                         output.accept(TolkienBlocks.TRAPDOOR_DEADWOOD);
                         output.accept(TolkienBlocks.TORCH_DEADWOOD);
+                        output.accept(TolkienBlocks.LIGHTNINGBUG_BLOCK);
+                        output.accept(TolkienBlocks.LOCUST_BLOCK);
                     }).build());
 
 
