@@ -1,4 +1,4 @@
-package com.greatorator.tolkienmobs.block.custom.renderer;
+package com.greatorator.tolkienmobs.block.custom.entity.renderer;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.entity.LightningBugEntity;
