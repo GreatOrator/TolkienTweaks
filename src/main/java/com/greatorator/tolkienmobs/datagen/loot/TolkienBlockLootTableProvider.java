@@ -1,4 +1,4 @@
-package com.greatorator.tolkienmobs.datagen;
+package com.greatorator.tolkienmobs.datagen.loot;
 
 import com.greatorator.tolkienmobs.block.custom.PipeweedCropBlock;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
@@ -27,7 +27,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
-    protected TolkienBlockLootTableProvider(HolderLookup.Provider provider) {
+    public TolkienBlockLootTableProvider(HolderLookup.Provider provider) {
         super(Set.of(), FeatureFlags.REGISTRY.allFlags(), provider);
     }
     @Override
@@ -242,7 +242,8 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         this.add(TolkienBlocks.PIPEWEED.get(), this.createCropDrops(TolkienBlocks.PIPEWEED.get(),
                 TolkienItems.PIPEWEED_ITEM.get(), TolkienItems.PIPEWEED_SEEDS.asItem(), lootItemConditionBuilder));
 
-//        dropOther(TolkienBlocks.LIGHTNINGBUG_BLOCK.get(), Items.GLOWSTONE);
+        dropOther(TolkienBlocks.LIGHTNINGBUG_BLOCK.get(), Items.GLOWSTONE);
+        dropOther(TolkienBlocks.LOCUST_BLOCK.get(), Items.GUNPOWDER);
         dropOther(TolkienBlocks.BLOCK_DECAY_BLOOM, TolkienBlocks.MUSHROOM_DECAY_BLOOM);
         dropOther(TolkienBlocks.BLOCK_BLOOM_DECAY, TolkienBlocks.MUSHROOM_BLOOM_DECAY);
     }

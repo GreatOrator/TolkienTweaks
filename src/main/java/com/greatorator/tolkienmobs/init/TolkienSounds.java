@@ -22,6 +22,7 @@ public class TolkienSounds {
 
     // Ambient
     public static final Supplier<SoundEvent> LIGHTNINGBUG_AMBIENT = registerSoundEvent("lightningbug_ambient");
+    public static final Supplier<SoundEvent> LOCUST_AMBIENT = registerSoundEvent("locust_ambient");
 
     private static ResourceKey<JukeboxSong> createSong(String name) {
         return ResourceKey.create(Registries.JUKEBOX_SONG, ResourceLocation.fromNamespaceAndPath(MODID, name));

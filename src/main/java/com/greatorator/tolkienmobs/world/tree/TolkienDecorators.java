@@ -13,5 +13,6 @@ import net.minecraft.world.level.levelgen.feature.stateproviders.WeightedStatePr
 public class TolkienDecorators {
     public static final BlockStateProvider ROOT_BLEND_PROVIDER = new WeightedStateProvider(new SimpleWeightedRandomList.Builder<BlockState>().add(Blocks.MANGROVE_ROOTS.defaultBlockState(), 6).add(Blocks.MANGROVE_ROOTS.defaultBlockState(), 1).build());
     public static final TreeRootsDecorator LIVING_ROOTS = new TreeRootsDecorator(3, 1, 5, TolkienDecorators.ROOT_BLEND_PROVIDER, 1);
-//    public static final TrunkSideDecorator LIGHTNINGBUG = new TrunkSideDecorator(2, 1.0f, BlockStateProvider.simple(TolkienBlocks.LIGHTNINGBUG_BLOCK.get().defaultBlockState()));
+    public static final TrunkSideDecorator LIGHTNINGBUG = new TrunkSideDecorator(2, 1.0f, BlockStateProvider.simple(TolkienBlocks.LIGHTNINGBUG_BLOCK.get().defaultBlockState()));
+    public static final TrunkSideDecorator LOCUST = new TrunkSideDecorator(2, 1.0f, BlockStateProvider.simple(TolkienBlocks.LOCUST_BLOCK.get().defaultBlockState()));
 }

@@ -255,17 +255,24 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         makeFlower(TolkienBlocks.MUSHROOM_DECAY_BLOOM, TolkienBlocks.POTTED_MUSHROOM_DECAY_BLOOM);
         makeCrop(((PipeweedCropBlock) TolkienBlocks.PIPEWEED.get()), "pipeweed_crop_stage", "pipeweed_stage");
             // Custom
-//        directionalBlock(TolkienBlocks.LIGHTNINGBUG_BLOCK.get(), models().getExistingFile(modLoc("block/lightningbug")));
-//        blockItem(TolkienBlocks.LIGHTNINGBUG_BLOCK);
-
+        builtinEntity(TolkienBlocks.LIGHTNINGBUG_BLOCK.get(), "block/blank");
+        builtinEntity(TolkienBlocks.LOCUST_BLOCK.get(), "block/blank");
     }
 
     protected ResourceLocation texture(String name) {
         return modLoc("block/" + name);
     }
 
+    protected ResourceLocation key(Block block) {
+        return BuiltInRegistries.BLOCK.getKey(block);
+    }
+
     protected String name(Supplier<? extends Block> block) {
         return BuiltInRegistries.BLOCK.getKey(block.get()).getPath();
+    }
+
+    protected String nameB(Block block) {
+        return key(block).getPath();
     }
 
     public void makeCrop(CropBlock block, String modelName, String textureName) {
@@ -281,6 +288,12 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
                         state.getValue(((PipeweedCropBlock) block).getAgeProperty()))).renderType("cutout"));
 
         return models;
+    }
+
+    protected void builtinEntity(Block b, String particle) {
+        simpleBlock(b, models().getBuilder(nameB(b))
+                .parent(new ModelFile.UncheckedModelFile("builtin/entity"))
+                .texture("particle", particle));
     }
 
     public void torchBlock(Supplier<? extends Block> block, Supplier<? extends Block> wall) {

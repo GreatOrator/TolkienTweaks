@@ -4,10 +4,10 @@ import com.greatorator.tolkienmobs.block.custom.*;
 import com.greatorator.tolkienmobs.block.TolkienFlowerBlock;
 import com.greatorator.tolkienmobs.block.TolkienTorchBlock;
 import com.greatorator.tolkienmobs.block.TolkienWallTorchBlock;
-import com.greatorator.tolkienmobs.handler.TolkienServices;
-import com.greatorator.tolkienmobs.handler.interfaces.IRegistryObject;
+import com.greatorator.tolkienmobs.block.custom.LightningBugBlock;
+import com.greatorator.tolkienmobs.block.custom.entity.LightningBugEntity;
+import com.greatorator.tolkienmobs.block.custom.entity.LocustEntity;
 import com.greatorator.tolkienmobs.init.types.TolkienParticleTypes;
-import com.greatorator.tolkienmobs.item.custom.SleepingBagItem;
 import com.greatorator.tolkienmobs.world.TolkienConfiguredFeatures;
 import com.greatorator.tolkienmobs.world.tree.TolkienTreeGrowers;
 import net.minecraft.core.BlockPos;
@@ -28,15 +28,13 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.function.Supplier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
-import static com.greatorator.tolkienmobs.init.TolkienEntities.BLOCK_ENTITIES;
-import static com.greatorator.tolkienmobs.init.TolkienItems.ITEMS;
 
 public class TolkienBlocks {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
@@ -539,9 +537,14 @@ public class TolkienBlocks {
     public static final DeferredBlock<FlowerPotBlock> POTTED_MUSHROOM_DECAY_BLOOM = BLOCKS.register("potted_mushroom_decay_bloom", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, MUSHROOM_DECAY_BLOOM, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
 
         // Custom
-//    public static final Supplier<BlockEntityType<SleepingBagBlockEntity>> SLEEPING_BAG_BLOCK_ENTITY;
+    public static final DeferredBlock<Block> LIGHTNINGBUG_BLOCK = registerBlock("lightningbug", () -> new LightningBugBlock(BlockBehaviour.Properties.of().lightLevel((state) -> 15).instabreak().noCollission().noTerrainParticles().pushReaction(PushReaction.DESTROY).sound(SoundType.SLIME_BLOCK)));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LightningBugEntity>> LIGHTNINGBUG = BLOCK_ENTITIES.register("lightningbug", () ->
+            BlockEntityType.Builder.of(LightningBugEntity::new, LIGHTNINGBUG_BLOCK.get()).build(null));
+    public static final DeferredBlock<Block> LOCUST_BLOCK = registerBlock("locust", () -> new LocustBlock(BlockBehaviour.Properties.of().lightLevel((state) -> 15).instabreak().noCollission().noTerrainParticles().pushReaction(PushReaction.DESTROY).sound(SoundType.SLIME_BLOCK)));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LocustEntity>> LOCUST = BLOCK_ENTITIES.register("locust", () ->
+            BlockEntityType.Builder.of(LocustEntity::new, LOCUST_BLOCK.get()).build(null));
 
-//    public static final DeferredBlock<Block> LIGHTNINGBUG_BLOCK = BLOCKS.register("lightningbug", () -> new LightningBugBlock(BlockBehaviour.Properties.of().noCollission().lightLevel((state) -> 15).sound(SoundType.SLIME_BLOCK).instabreak().noCollission()));
+//    public static final Supplier<BlockEntityType<SleepingBagBlockEntity>> SLEEPING_BAG_BLOCK_ENTITY;
 
 //    static {
 //        Arrays.stream(DyeColor.values()).forEach(color -> {

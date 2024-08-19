@@ -213,6 +213,8 @@ public class TolkienItems {
     // Music Discs
     public static final DeferredItem<Item> RECORD_RIVENDELL = ITEMS.registerItem("record_rivendell", properties -> new Item(properties.jukeboxPlayable(TolkienSounds.RIDERSOFRIVENDELL_KEY).stacksTo(1)));
 
+    // Custom
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

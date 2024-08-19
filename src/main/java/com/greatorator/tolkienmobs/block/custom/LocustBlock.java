@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.block.custom;
 
 import com.greatorator.tolkienmobs.block.TolkienBugBlock;
 import com.greatorator.tolkienmobs.block.custom.entity.LightningBugEntity;
+import com.greatorator.tolkienmobs.block.custom.entity.LocustEntity;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienLootTables;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
@@ -10,8 +11,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -21,11 +20,11 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootTable;
 
-public class LightningBugBlock extends TolkienBugBlock {
+public class LocustBlock extends TolkienBugBlock {
 
-	public static final MapCodec<LightningBugBlock> CODEC = simpleCodec(LightningBugBlock::new);
+	public static final MapCodec<LocustBlock> CODEC = simpleCodec(LocustBlock::new);
 
-	public LightningBugBlock(Properties properties) {
+	public LocustBlock(Properties properties) {
 		super(properties);
 	}
 
@@ -36,23 +35,23 @@ public class LightningBugBlock extends TolkienBugBlock {
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return new LightningBugEntity(pos, state);
+		return new LocustEntity(pos, state);
 	}
 
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		return createTickerHelper(type, TolkienBlocks.LIGHTNINGBUG.get(), LightningBugEntity::tick);
+		return createTickerHelper(type, TolkienBlocks.LOCUST.get(), LocustEntity::tick);
 	}
 
 	@Override
 	public ResourceKey<LootTable> getSquishLootTable() {
-		return TolkienLootTables.LIGHTNINGBUG_SQUISH_DROPS;
+		return TolkienLootTables.LOCUST_SQUISH_DROPS;
 	}
 
 	@Override
 	public void destroy(LevelAccessor accessor, BlockPos pos, BlockState state) {
 		super.destroy(accessor, pos, state);
 		if (accessor.isClientSide())
-			Minecraft.getInstance().getSoundManager().stop(TolkienSounds.LIGHTNINGBUG_AMBIENT.get().getLocation(), SoundSource.NEUTRAL);
+			Minecraft.getInstance().getSoundManager().stop(TolkienSounds.LOCUST_AMBIENT.get().getLocation(), SoundSource.NEUTRAL);
 	}
 }

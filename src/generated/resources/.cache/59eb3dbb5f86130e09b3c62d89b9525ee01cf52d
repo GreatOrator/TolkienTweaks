@@ -1,4 +1,4 @@
-// 1.21	2024-08-18T08:42:00.806253	Loot Tables
+// 1.21	2024-08-18T17:44:54.8963822	Loot Tables
 751cef79643d2dbbe7381bd0fb573883adf8dc34 data/tolkienmobs/loot_table/blocks/block_ammolite.json
 ba4e9f4117f65a59f5ac08563f4b740ae5f8a09b data/tolkienmobs/loot_table/blocks/block_bloom_decay.json
 4a3de122af462d6cd6bff3366ef260e61062d877 data/tolkienmobs/loot_table/blocks/block_decay_bloom.json
@@ -46,6 +46,8 @@ a827ccf0ac90dae0d8bab2ac4f38f137c4ff8324 data/tolkienmobs/loot_table/blocks/leaf
 e7f9512f0511a9e6e9eea423c94c5f4ecd1ed9c7 data/tolkienmobs/loot_table/blocks/leaves_mallorn.json
 a36774c4a29cfa493a942dc7aa85eabe7030b9ea data/tolkienmobs/loot_table/blocks/leaves_mirkwood.json
 45c0b028f5b71543580260ff261dbb41c29ddb75 data/tolkienmobs/loot_table/blocks/lebethron_button.json
+4683be78f147cb9ecbb8ffc7ba2d0c6fb21206a2 data/tolkienmobs/loot_table/blocks/lightningbug.json
+40c056fdd664dc0818cf8883b976793aca3f1f64 data/tolkienmobs/loot_table/blocks/locust.json
 a0ff4423768d9536f51552f356fc0ecb7e20d0fc data/tolkienmobs/loot_table/blocks/log_culumalda.json
 a0452f1596b6f24c4cb8056cd35b502b2f5c7294 data/tolkienmobs/loot_table/blocks/log_deadwood.json
 c3f4352b23a1d4b43067e7215639ef1530de226e data/tolkienmobs/loot_table/blocks/log_fangornoak.json
