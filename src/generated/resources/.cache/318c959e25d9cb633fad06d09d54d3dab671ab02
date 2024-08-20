@@ -1,4 +1,4 @@
-// 1.21	2024-08-18T19:05:20.3883396	Block States: tolkienmobs
+// 1.21	2024-08-19T09:19:46.2486955	Block States: tolkienmobs
 103670786b15b6ca902a9c2dc08f793bb541d8c1 assets/tolkienmobs/blockstates/block_ammolite.json
 05c2c1e08b6dd24d5cc751f78a8e9dc685c71167 assets/tolkienmobs/blockstates/block_mithril.json
 ffbb4110300ea9dd8580326acd55e05430049b10 assets/tolkienmobs/blockstates/block_morguliron.json
@@ -487,6 +487,8 @@ f8997d94570fccf4956fce966be6d6a4bd7e6aa9 assets/tolkienmobs/models/block/wood_ma
 cf4b88f181bad31f1d4f1ec1365d9da8ae6005c2 assets/tolkienmobs/models/block/wood_mirkwood.json
 507d612bc3d97ce29336b68a36f35e3119ba1950 assets/tolkienmobs/models/block/wood_mirkwood_horizontal.json
 81577472e618aa3824e45968a4c525c5993def18 assets/tolkienmobs/models/item/block_ammolite.json
+b25ff4eaa016489059707a43a956fc9ef4d88855 assets/tolkienmobs/models/item/block_bloom_decay.json
+63b28e95f86129029a3b2d6b088339cb67ce7df4 assets/tolkienmobs/models/item/block_decay_bloom.json
 dc195ce2c83d4e40a04a1b5b4ff489675239f0e6 assets/tolkienmobs/models/item/block_mithril.json
 9e676d66174072926830d9b1e154ded4a7dc4218 assets/tolkienmobs/models/item/block_morguliron.json
 b3878d1cad81f3fce1eba446d92228146d1b626f assets/tolkienmobs/models/item/fence_gate_culumalda.json
