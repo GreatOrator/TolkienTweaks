@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "conditions": [
+            {
+              "block": "tolkienmobs:sleeping_bag_cyan",
+              "condition": "minecraft:block_state_property",
+              "properties": {
+                "part": "head"
+              }
+            }
+          ],
+          "name": "tolkienmobs:sleeping_bag_cyan"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "tolkienmobs:blocks/sleeping_bag_cyan"
+}

@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.datagen.loot;
 
 import com.greatorator.tolkienmobs.block.custom.PipeweedCropBlock;
+import com.greatorator.tolkienmobs.block.custom.SleepingBagBlock;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
@@ -243,17 +244,44 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.SAPLING_DEADWOOD.get());
         dropSelf(TolkienBlocks.MUSHROOM_DECAY_BLOOM.get());
         dropSelf(TolkienBlocks.MUSHROOM_BLOOM_DECAY.get());
-
+        dropOther(TolkienBlocks.BLOCK_DECAY_BLOOM, TolkienBlocks.MUSHROOM_DECAY_BLOOM);
+        dropOther(TolkienBlocks.BLOCK_BLOOM_DECAY, TolkienBlocks.MUSHROOM_BLOOM_DECAY);
         LootItemCondition.Builder lootItemConditionBuilder = LootItemBlockStatePropertyCondition.hasBlockStateProperties(TolkienBlocks.PIPEWEED.get())
                 .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(PipeweedCropBlock.AGE, 7));
         this.add(TolkienBlocks.PIPEWEED.get(), this.createCropDrops(TolkienBlocks.PIPEWEED.get(),
                 TolkienItems.PIPEWEED_ITEM.get(), TolkienItems.PIPEWEED_SEEDS.asItem(), lootItemConditionBuilder));
-
+        // Custom
         dropOther(TolkienBlocks.LIGHTNINGBUG_BLOCK.get(), Items.GLOWSTONE);
         dropOther(TolkienBlocks.LOCUST_BLOCK.get(), Items.GUNPOWDER);
-        dropOther(TolkienBlocks.BLOCK_DECAY_BLOOM, TolkienBlocks.MUSHROOM_DECAY_BLOOM);
-        dropOther(TolkienBlocks.BLOCK_BLOOM_DECAY, TolkienBlocks.MUSHROOM_BLOOM_DECAY);
+        dropSelf(TolkienBlocks.SILMARIL_LANTERN.get());
+        dropSelf(TolkienBlocks.ELVEN_LANTERN.get());
+        dropSelf(TolkienBlocks.MORGUL_LANTERN.get());
 
+        // Sleeping Bags
+        this.add(TolkienBlocks.SLEEPING_BAG_BLUE.get(), this::createSleepingBagDrop);
+        this.add(TolkienBlocks.SLEEPING_BAG_RED.get(), this::createSleepingBagDrop);
+        this.add(TolkienBlocks.SLEEPING_BAG_BLACK.get(), this::createSleepingBagDrop);
+        this.add(TolkienBlocks.SLEEPING_BAG_BROWN.get(), this::createSleepingBagDrop);
+        this.add(TolkienBlocks.SLEEPING_BAG_CYAN.get(), this::createSleepingBagDrop);
+        this.add(TolkienBlocks.SLEEPING_BAG_GRAY.get(), this::createSleepingBagDrop);
+        this.add(TolkienBlocks.SLEEPING_BAG_GREEN.get(), this::createSleepingBagDrop);
+        this.add(TolkienBlocks.SLEEPING_BAG_LIGHT_BLUE.get(), this::createSleepingBagDrop);
+        this.add(TolkienBlocks.SLEEPING_BAG_LIGHT_GRAY.get(), this::createSleepingBagDrop);
+        this.add(TolkienBlocks.SLEEPING_BAG_LIME.get(), this::createSleepingBagDrop);
+        this.add(TolkienBlocks.SLEEPING_BAG_MAGENTA.get(), this::createSleepingBagDrop);
+        this.add(TolkienBlocks.SLEEPING_BAG_ORANGE.get(), this::createSleepingBagDrop);
+        this.add(TolkienBlocks.SLEEPING_BAG_PINK.get(), this::createSleepingBagDrop);
+        this.add(TolkienBlocks.SLEEPING_BAG_PURPLE.get(), this::createSleepingBagDrop);
+        this.add(TolkienBlocks.SLEEPING_BAG_WHITE.get(), this::createSleepingBagDrop);
+        this.add(TolkienBlocks.SLEEPING_BAG_YELLOW.get(), this::createSleepingBagDrop);
+    }
+
+    protected LootTable.Builder createSleepingBagDrop(Block block)
+    {
+        return LootTable.lootTable()
+                .withPool(applyExplosionCondition(block, LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
+                        .add(LootItem.lootTableItem(block).when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
+                                .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(SleepingBagBlock.PART, BedPart.HEAD))))));
     }
 
     public void dropLeaves(Supplier<? extends Block> leaves) {
