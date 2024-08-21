@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.util;
 
-import com.greatorator.tolkienmobs.datagen.tags.TolkienBlockTagProvider;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;

@@ -2,7 +2,6 @@ package com.greatorator.tolkienmobs.world.tree.components;
 
 import com.greatorator.tolkienmobs.init.TolkienFeatureModifiers;
 import com.greatorator.tolkienmobs.util.FeaturePlacers;
-import com.greatorator.tolkienmobs.world.TolkienConfiguredFeatures;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

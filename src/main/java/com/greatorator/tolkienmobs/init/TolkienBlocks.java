@@ -1,16 +1,14 @@
 package com.greatorator.tolkienmobs.init;
 
-import com.greatorator.tolkienmobs.block.custom.*;
 import com.greatorator.tolkienmobs.block.TolkienFlowerBlock;
 import com.greatorator.tolkienmobs.block.TolkienTorchBlock;
 import com.greatorator.tolkienmobs.block.TolkienWallTorchBlock;
-import com.greatorator.tolkienmobs.block.custom.LightningBugBlock;
+import com.greatorator.tolkienmobs.block.custom.*;
 import com.greatorator.tolkienmobs.block.custom.entity.LightningBugEntity;
 import com.greatorator.tolkienmobs.block.custom.entity.LocustEntity;
 import com.greatorator.tolkienmobs.init.types.TolkienParticleTypes;
 import com.greatorator.tolkienmobs.world.TolkienConfiguredFeatures;
 import com.greatorator.tolkienmobs.world.tree.TolkienTreeGrowers;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -28,7 +26,6 @@ import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.client.model.obj.ObjMaterialLibrary;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;

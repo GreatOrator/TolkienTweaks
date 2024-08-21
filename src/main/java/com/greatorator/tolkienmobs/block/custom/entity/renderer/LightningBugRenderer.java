@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.block.custom.entity.renderer;
 import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.entity.LightningBugEntity;
 import com.greatorator.tolkienmobs.block.custom.entity.layers.TolkienModelLayers;
+import com.greatorator.tolkienmobs.block.custom.entity.model.LightningBugModel;
 import com.greatorator.tolkienmobs.handler.TolkienAnimationHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -16,7 +17,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.DirectionalBlock;
 import org.jetbrains.annotations.Nullable;
-import com.greatorator.tolkienmobs.block.custom.entity.model.LightningBugModel;
 
 public class LightningBugRenderer implements BlockEntityRenderer<LightningBugEntity> {
 

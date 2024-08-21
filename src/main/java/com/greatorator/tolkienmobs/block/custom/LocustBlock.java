@@ -1,7 +1,6 @@
 package com.greatorator.tolkienmobs.block.custom;
 
 import com.greatorator.tolkienmobs.block.TolkienBugBlock;
-import com.greatorator.tolkienmobs.block.custom.entity.LightningBugEntity;
 import com.greatorator.tolkienmobs.block.custom.entity.LocustEntity;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienLootTables;
