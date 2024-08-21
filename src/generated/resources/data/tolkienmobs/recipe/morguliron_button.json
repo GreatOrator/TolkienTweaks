@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "morguliron",
+  "ingredients": [
+    {
+      "item": "tolkienmobs:block_morguliron"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:morguliron_button"
+  }
+}

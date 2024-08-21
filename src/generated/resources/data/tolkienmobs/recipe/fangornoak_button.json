@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "fangornoak",
+  "ingredients": [
+    {
+      "item": "tolkienmobs:planks_fangornoak"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:fangornoak_button"
+  }
+}

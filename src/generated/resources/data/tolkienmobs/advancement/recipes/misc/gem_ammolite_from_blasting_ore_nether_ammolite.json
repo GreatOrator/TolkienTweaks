@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ore_nether_ammolite": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tolkienmobs:ore_nether_ammolite"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tolkienmobs:gem_ammolite_from_blasting_ore_nether_ammolite"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ore_nether_ammolite"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tolkienmobs:gem_ammolite_from_blasting_ore_nether_ammolite"
+    ]
+  }
+}

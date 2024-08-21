@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "P": {
+      "item": "tolkienmobs:torch_lebethron"
+    },
+    "W": {
+      "item": "tolkienmobs:gem_ammolite"
+    }
+  },
+  "pattern": [
+    "WWW",
+    "WPW",
+    "WWW"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:silmaril_lantern"
+  }
+}

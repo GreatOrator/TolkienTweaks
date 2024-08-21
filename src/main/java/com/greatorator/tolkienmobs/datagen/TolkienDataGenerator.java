@@ -41,6 +41,7 @@ public class TolkienDataGenerator {
         generator.addProvider(event.includeClient(), new TolkienItemModelProvider(packOutput, existingFileHelper));
         generator.addProvider(event.includeClient(), new TolkienBlockStateProvider(packOutput, existingFileHelper));
         generator.addProvider(event.includeClient(), new TolkienParticleDescription(packOutput, existingFileHelper));
+        generator.addProvider(event.includeClient(), new TolkienRecipeProvider(packOutput, lookupProvider));
 
         generator.addProvider(event.includeServer(), new TolkienWorldGenProvider(packOutput, lookupProvider));
     }

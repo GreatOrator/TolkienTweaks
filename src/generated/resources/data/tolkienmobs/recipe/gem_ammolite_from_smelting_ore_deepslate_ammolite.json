@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 0.25,
+  "group": "gem_ammolite",
+  "ingredient": {
+    "item": "tolkienmobs:ore_deepslate_ammolite"
+  },
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:gem_ammolite"
+  }
+}

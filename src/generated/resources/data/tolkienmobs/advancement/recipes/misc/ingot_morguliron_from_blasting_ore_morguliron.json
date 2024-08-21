@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ore_morguliron": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tolkienmobs:ore_morguliron"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tolkienmobs:ingot_morguliron_from_blasting_ore_morguliron"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ore_morguliron"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tolkienmobs:ingot_morguliron_from_blasting_ore_morguliron"
+    ]
+  }
+}

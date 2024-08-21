@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "deadwood",
+  "ingredients": [
+    {
+      "item": "tolkienmobs:planks_deadwood"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:deadwood_button"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_deadwood": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tolkienmobs:planks_deadwood"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tolkienmobs:fence_gate_deadwood"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_deadwood"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tolkienmobs:fence_gate_deadwood"
+    ]
+  }
+}

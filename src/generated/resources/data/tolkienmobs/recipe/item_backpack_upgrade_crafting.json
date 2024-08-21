@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "P": {
+      "item": "minecraft:crafting_table"
+    },
+    "W": {
+      "item": "tolkienmobs:upgrade_item_backpack_upgrade_base"
+    }
+  },
+  "pattern": [
+    "W",
+    "P"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:item_backpack_upgrade_crafting"
+  }
+}

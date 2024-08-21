@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "mirkwood",
+  "ingredients": [
+    {
+      "item": "tolkienmobs:planks_mirkwood"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:mirkwood_button"
+  }
+}

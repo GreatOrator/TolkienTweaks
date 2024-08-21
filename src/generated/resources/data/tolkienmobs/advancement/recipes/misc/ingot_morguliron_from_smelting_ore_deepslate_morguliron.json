@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ore_deepslate_morguliron": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tolkienmobs:ore_deepslate_morguliron"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tolkienmobs:ingot_morguliron_from_smelting_ore_deepslate_morguliron"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ore_deepslate_morguliron"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tolkienmobs:ingot_morguliron_from_smelting_ore_deepslate_morguliron"
+    ]
+  }
+}

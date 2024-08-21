@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "mithril",
+  "ingredients": [
+    {
+      "item": "tolkienmobs:block_mithril"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:mithril_button"
+  }
+}

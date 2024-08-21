@@ -347,10 +347,28 @@ public class TolkienTabs {
                     }).build());
 
     public static final Supplier<CreativeModeTab> TOLKIEN_TOOLS = CREATIVE_MODE_TAB.register("tolkienmobs_tab_tool",
-            () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienItems.RECORD_RIVENDELL.get()))
+            () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienItems.SWORD_MITHRIL.get()))
                     .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_natural"))
                     .title(Component.translatable("itemGroup.tolkienmobs.tools"))
                     .displayItems((itemDisplayParameters, output) -> {
+                        output.accept(TolkienItems.SWORD_MITHRIL);
+                        output.accept(TolkienItems.PICKAXE_MITHRIL);
+                        output.accept(TolkienItems.AXE_MITHRIL);
+                        output.accept(TolkienItems.SHOVEL_MITHRIL);
+                        output.accept(TolkienItems.HOE_MITHRIL);
+                        output.accept(TolkienItems.SHEARS_MITHRIL);
+                        output.accept(TolkienItems.SWORD_MORGULIRON);
+                        output.accept(TolkienItems.PICKAXE_MORGULIRON);
+                        output.accept(TolkienItems.AXE_MORGULIRON);
+                        output.accept(TolkienItems.SHOVEL_MORGULIRON);
+                        output.accept(TolkienItems.HOE_MORGULIRON);
+                        output.accept(TolkienItems.SHEARS_MORGULIRON);
+                        output.accept(TolkienItems.SWORD_AMMOLITE);
+                        output.accept(TolkienItems.PICKAXE_AMMOLITE);
+                        output.accept(TolkienItems.AXE_AMMOLITE);
+                        output.accept(TolkienItems.SHOVEL_AMMOLITE);
+                        output.accept(TolkienItems.HOE_AMMOLITE);
+                        output.accept(TolkienItems.SHEARS_AMMOLITE);
                         output.accept(TolkienItems.RECORD_RIVENDELL);
                     }).build());
 

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "group": "mirkwood",
+  "key": {
+    "#": {
+      "item": "tolkienmobs:planks_mirkwood"
+    }
+  },
+  "pattern": [
+    "##",
+    "##",
+    "##"
+  ],
+  "result": {
+    "count": 3,
+    "id": "tolkienmobs:door_mirkwood"
+  }
+}

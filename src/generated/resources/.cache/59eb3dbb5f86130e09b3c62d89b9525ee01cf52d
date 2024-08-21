@@ -1,4 +1,4 @@
-// 1.21	2024-08-19T13:56:03.964261	Loot Tables
+// 1.21	2024-08-20T07:57:06.9475362	Loot Tables
 751cef79643d2dbbe7381bd0fb573883adf8dc34 data/tolkienmobs/loot_table/blocks/block_ammolite.json
 ba4e9f4117f65a59f5ac08563f4b740ae5f8a09b data/tolkienmobs/loot_table/blocks/block_bloom_decay.json
 4a3de122af462d6cd6bff3366ef260e61062d877 data/tolkienmobs/loot_table/blocks/block_decay_bloom.json
@@ -112,6 +112,7 @@ a21baaa6419e84ed3e222df1dd39ee438e541c47 data/tolkienmobs/loot_table/blocks/sapl
 f07b08ab6920f5264961e2d25a8dd44a951219a3 data/tolkienmobs/loot_table/blocks/sapling_lebethron.json
 e966d8b656d6085b0a6a8eade4b5d3c0ff646e35 data/tolkienmobs/loot_table/blocks/sapling_mallorn.json
 63b67dfe2691e85f2ab054eee57a6367bf717830 data/tolkienmobs/loot_table/blocks/sapling_mirkwood.json
+c755729dfc348372328f15964d27efcd0e4bd2ca data/tolkienmobs/loot_table/blocks/silmaril_lantern.json
 db79c788089430ad5b57f42cabcf446b06633909 data/tolkienmobs/loot_table/blocks/slab_culumalda.json
 8b2edb7fec90587b15955bd845a8c7b24f932145 data/tolkienmobs/loot_table/blocks/slab_deadwood.json
 48712324a2af4c63bc4a736b66abad69a30191d9 data/tolkienmobs/loot_table/blocks/slab_fangornoak.json

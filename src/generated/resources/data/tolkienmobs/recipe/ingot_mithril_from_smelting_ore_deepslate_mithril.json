@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 0.25,
+  "group": "ingot_mithril",
+  "ingredient": {
+    "item": "tolkienmobs:ore_deepslate_mithril"
+  },
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:ingot_mithril"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_flower_mirkwood": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tolkienmobs:flower_mirkwood"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tolkienmobs:red_dye_from_flower_mirkwood"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_flower_mirkwood"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tolkienmobs:red_dye_from_flower_mirkwood"
+    ]
+  }
+}

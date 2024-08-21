@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "P": {
+      "item": "tolkienmobs:torch_mirkwood"
+    },
+    "W": {
+      "item": "tolkienmobs:ingot_morguliron"
+    }
+  },
+  "pattern": [
+    "WWW",
+    "WPW",
+    "WWW"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:morgul_lantern"
+  }
+}
