@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.util;
 
-import com.greatorator.tolkienmobs.util.FeatureLogic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelAccessor;
