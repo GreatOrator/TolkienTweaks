@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "group": "deadwood",
+  "key": {
+    "#": {
+      "item": "tolkienmobs:planks_deadwood"
+    }
+  },
+  "pattern": [
+    "###",
+    "###"
+  ],
+  "result": {
+    "count": 2,
+    "id": "tolkienmobs:trapdoor_deadwood"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "mithril",
+  "key": {
+    "#": {
+      "item": "tolkienmobs:block_mithril"
+    }
+  },
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "result": {
+    "count": 4,
+    "id": "tolkienmobs:stairs_mithril"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "group": "fangornoak",
+  "key": {
+    "#": {
+      "item": "tolkienmobs:planks_fangornoak"
+    }
+  },
+  "pattern": [
+    "##",
+    "##",
+    "##"
+  ],
+  "result": {
+    "count": 3,
+    "id": "tolkienmobs:door_fangornoak"
+  }
+}

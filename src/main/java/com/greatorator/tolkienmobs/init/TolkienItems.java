@@ -1,10 +1,10 @@
 package com.greatorator.tolkienmobs.init;
 
-import com.greatorator.tolkienmobs.item.TolkienFood;
-import com.greatorator.tolkienmobs.item.TolkienItem;
+import com.greatorator.tolkienmobs.item.*;
 import com.greatorator.tolkienmobs.item.custom.SleepingBagItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemNameBlockItem;
+import com.greatorator.tolkienmobs.util.TolkienToolMaterials;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.*;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -233,6 +233,30 @@ public class TolkienItems {
     public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_BLACK = ITEMS.register("sleeping_bag_black", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_BLACK.get(), new Item.Properties()));
 
     //Tools
+    public static final DeferredItem<SwordItem> SWORD_MITHRIL = ITEMS.register("sword_mithril", () -> new TolkienSwordItem(TolkienToolMaterials.MITHRIL, new Item.Properties().attributes(TolkienSwordItem.createAttributes(TolkienToolMaterials.MITHRIL, 8, -1.0F))));
+    public static final DeferredItem<SwordItem> SWORD_MORGULIRON = ITEMS.register("sword_morguliron", () -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, new Item.Properties().attributes(TolkienSwordItem.createAttributes(TolkienToolMaterials.MORGULIRON, 8, -2.0F))));
+    public static final DeferredItem<SwordItem> SWORD_AMMOLITE = ITEMS.register("sword_ammolite", () -> new TolkienSwordItem(TolkienToolMaterials.AMMOLITE, new Item.Properties().attributes(TolkienSwordItem.createAttributes(TolkienToolMaterials.AMMOLITE, 9, -0.5F))).setEffectOverride());
+
+    public static final DeferredItem<PickaxeItem> PICKAXE_MITHRIL = ITEMS.register("pickaxe_mithril", () -> new TolkienPickaxeItem(TolkienToolMaterials.MITHRIL, new Item.Properties().attributes(TolkienPickaxeItem.createAttributes(TolkienToolMaterials.MITHRIL, 8, -1.0F))));
+    public static final DeferredItem<PickaxeItem> PICKAXE_MORGULIRON = ITEMS.register("pickaxe_morguliron", () -> new TolkienPickaxeItem(TolkienToolMaterials.MORGULIRON, new Item.Properties().attributes(TolkienPickaxeItem.createAttributes(TolkienToolMaterials.MORGULIRON, 8, -2.0F))));
+    public static final DeferredItem<PickaxeItem> PICKAXE_AMMOLITE = ITEMS.register("pickaxe_ammolite", () -> new TolkienPickaxeItem(TolkienToolMaterials.AMMOLITE, new Item.Properties().attributes(TolkienPickaxeItem.createAttributes(TolkienToolMaterials.AMMOLITE, 9, -0.5F))).setEffectOverride());
+
+    public static final DeferredItem<AxeItem> AXE_MITHRIL = ITEMS.register("axe_mithril", () -> new TolkienAxeItem(TolkienToolMaterials.MITHRIL, new Item.Properties().attributes(TolkienAxeItem.createAttributes(TolkienToolMaterials.MITHRIL, 8, -1.0F))));
+    public static final DeferredItem<AxeItem> AXE_MORGULIRON = ITEMS.register("axe_morguliron", () -> new TolkienAxeItem(TolkienToolMaterials.MORGULIRON, new Item.Properties().attributes(TolkienAxeItem.createAttributes(TolkienToolMaterials.MORGULIRON, 8, -2.0F))));
+    public static final DeferredItem<AxeItem> AXE_AMMOLITE = ITEMS.register("axe_ammolite", () -> new TolkienAxeItem(TolkienToolMaterials.AMMOLITE, new Item.Properties().attributes(TolkienAxeItem.createAttributes(TolkienToolMaterials.AMMOLITE, 9, -0.5F))).setEffectOverride());
+
+    public static final DeferredItem<ShovelItem> SHOVEL_MITHRIL = ITEMS.register("shovel_mithril", () -> new TolkienShovelItem(TolkienToolMaterials.MITHRIL, new Item.Properties().attributes(TolkienShovelItem.createAttributes(TolkienToolMaterials.MITHRIL, 8, -1.0F))));
+    public static final DeferredItem<ShovelItem> SHOVEL_MORGULIRON = ITEMS.register("shovel_morguliron", () -> new TolkienShovelItem(TolkienToolMaterials.MORGULIRON, new Item.Properties().attributes(TolkienShovelItem.createAttributes(TolkienToolMaterials.MORGULIRON, 8, -2.0F))));
+    public static final DeferredItem<ShovelItem> SHOVEL_AMMOLITE = ITEMS.register("shovel_ammolite", () -> new TolkienShovelItem(TolkienToolMaterials.AMMOLITE, new Item.Properties().attributes(TolkienShovelItem.createAttributes(TolkienToolMaterials.AMMOLITE, 9, -0.5F))).setEffectOverride());
+
+    public static final DeferredItem<HoeItem> HOE_MITHRIL = ITEMS.register("hoe_mithril", () -> new TolkienHoeItem(TolkienToolMaterials.MITHRIL, new Item.Properties().attributes(TolkienHoeItem.createAttributes(TolkienToolMaterials.MITHRIL, 8, -1.0F))));
+    public static final DeferredItem<HoeItem> HOE_MORGULIRON = ITEMS.register("hoe_morguliron", () -> new TolkienHoeItem(TolkienToolMaterials.MORGULIRON, new Item.Properties().attributes(TolkienHoeItem.createAttributes(TolkienToolMaterials.MORGULIRON, 8, -2.0F))));
+    public static final DeferredItem<HoeItem> HOE_AMMOLITE = ITEMS.register("hoe_ammolite", () -> new TolkienHoeItem(TolkienToolMaterials.AMMOLITE, new Item.Properties().attributes(TolkienHoeItem.createAttributes(TolkienToolMaterials.AMMOLITE, 9, -0.5F))).setEffectOverride());
+
+    public static final DeferredItem<ShearsItem> SHEARS_MITHRIL = ITEMS.register("shears_mithril", () -> new TolkienShearsItem(new Item.Properties().durability(512).component(DataComponents.TOOL, TolkienShearsItem.createToolProperties())));
+    public static final DeferredItem<ShearsItem> SHEARS_MORGULIRON = ITEMS.register("shears_morguliron", () -> new TolkienShearsItem(new Item.Properties().durability(320).component(DataComponents.TOOL, TolkienShearsItem.createToolProperties())));
+    public static final DeferredItem<ShearsItem> SHEARS_AMMOLITE = ITEMS.register("shears_ammolite", () -> new TolkienShearsItem(new Item.Properties().durability(768).component(DataComponents.TOOL, TolkienShearsItem.createToolProperties())).setEffectOverride());
+
     //Armor
     //Keys
     //Pouch & Key Ring

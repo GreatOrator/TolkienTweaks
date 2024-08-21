@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "culumalda",
+  "ingredients": [
+    {
+      "item": "tolkienmobs:planks_culumalda"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:culumalda_button"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_block_morguliron": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tolkienmobs:block_morguliron"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tolkienmobs:pressure_plate_morguliron"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_block_morguliron"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tolkienmobs:pressure_plate_morguliron"
+    ]
+  }
+}

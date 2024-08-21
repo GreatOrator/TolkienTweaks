@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "tolkienmobs:block_morguliron"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "tolkienmobs:ingot_morguliron"
+  }
+}

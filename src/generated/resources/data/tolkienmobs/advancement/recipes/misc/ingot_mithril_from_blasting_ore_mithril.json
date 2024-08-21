@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ore_mithril": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tolkienmobs:ore_mithril"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tolkienmobs:ingot_mithril_from_blasting_ore_mithril"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ore_mithril"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tolkienmobs:ingot_mithril_from_blasting_ore_mithril"
+    ]
+  }
+}

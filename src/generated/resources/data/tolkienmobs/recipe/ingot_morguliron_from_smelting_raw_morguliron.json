@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 0.25,
+  "group": "ingot_morguliron",
+  "ingredient": {
+    "item": "tolkienmobs:raw_morguliron"
+  },
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:ingot_morguliron"
+  }
+}

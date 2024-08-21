@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "lebethron",
+  "ingredients": [
+    {
+      "item": "tolkienmobs:planks_lebethron"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:lebethron_button"
+  }
+}

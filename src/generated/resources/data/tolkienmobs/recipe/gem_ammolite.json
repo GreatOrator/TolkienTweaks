@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "tolkienmobs:block_ammolite"
+    }
+  ],
+  "result": {
+    "count": 4,
+    "id": "tolkienmobs:gem_ammolite"
+  }
+}

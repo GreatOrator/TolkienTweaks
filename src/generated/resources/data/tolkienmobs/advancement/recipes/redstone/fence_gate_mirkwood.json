@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_mirkwood": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tolkienmobs:planks_mirkwood"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tolkienmobs:fence_gate_mirkwood"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_mirkwood"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tolkienmobs:fence_gate_mirkwood"
+    ]
+  }
+}

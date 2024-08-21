@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "cookingtime": 100,
+  "experience": 0.25,
+  "group": "ingot_morguliron",
+  "ingredient": {
+    "item": "tolkienmobs:ore_deepslate_morguliron"
+  },
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:ingot_morguliron"
+  }
+}

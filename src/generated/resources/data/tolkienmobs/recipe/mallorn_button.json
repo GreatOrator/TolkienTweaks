@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "mallorn",
+  "ingredients": [
+    {
+      "item": "tolkienmobs:planks_mallorn"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:mallorn_button"
+  }
+}

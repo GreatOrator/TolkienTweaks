@@ -4,16 +4,20 @@ import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienFluids;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
+import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
@@ -176,6 +180,25 @@ public class TolkienItemModelProvider extends ItemModelProvider {
 
         basicItem(TolkienItems.RECORD_RIVENDELL.get());
 
+        buildTool(TolkienItems.SWORD_MITHRIL.get());
+        buildTool(TolkienItems.SWORD_MORGULIRON.get());
+        buildTool(TolkienItems.SWORD_AMMOLITE.get());
+        buildTool(TolkienItems.PICKAXE_MITHRIL.get());
+        buildTool(TolkienItems.PICKAXE_MORGULIRON.get());
+        buildTool(TolkienItems.PICKAXE_AMMOLITE.get());
+        buildTool(TolkienItems.AXE_MITHRIL.get());
+        buildTool(TolkienItems.AXE_MORGULIRON.get());
+        buildTool(TolkienItems.AXE_AMMOLITE.get());
+        buildTool(TolkienItems.SHOVEL_MITHRIL.get());
+        buildTool(TolkienItems.SHOVEL_MORGULIRON.get());
+        buildTool(TolkienItems.SHOVEL_AMMOLITE.get());
+        buildTool(TolkienItems.HOE_MITHRIL.get());
+        buildTool(TolkienItems.HOE_MORGULIRON.get());
+        buildTool(TolkienItems.HOE_AMMOLITE.get());
+        buildTool(TolkienItems.SHEARS_MITHRIL.get());
+        buildTool(TolkienItems.SHEARS_MORGULIRON.get());
+        buildTool(TolkienItems.SHEARS_AMMOLITE.get());
+
     }
 
     private ItemModelBuilder saplingItem(DeferredBlock<Block> item) {
@@ -200,5 +223,15 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         this.withExistingParent(block.getId().getPath(), mcLoc("block/wall_inventory"))
                 .texture("wall",  ResourceLocation.fromNamespaceAndPath(MODID,
                         "block/" + baseBlock.getId().getPath()));
+    }
+
+    public ItemModelBuilder buildTool(Item item) {
+        return basicItem(Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item)));
+    }
+
+    public ItemModelBuilder buildTool(ResourceLocation item) {
+        return getBuilder(item.toString())
+                .parent(new ModelFile.UncheckedModelFile("item/handheld"))
+                .texture("layer0", ResourceLocation.fromNamespaceAndPath(item.getNamespace(), "item/" + item.getPath()));
     }
 }

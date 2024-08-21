@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "P": {
+      "item": "tolkienmobs:torch_mallorn"
+    },
+    "W": {
+      "item": "tolkienmobs:ingot_mithril"
+    }
+  },
+  "pattern": [
+    "WWW",
+    "WPW",
+    "WWW"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:elven_lantern"
+  }
+}

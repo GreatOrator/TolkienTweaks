@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "P": {
+      "item": "minecraft:orange_carpet"
+    },
+    "S": {
+      "item": "minecraft:white_carpet"
+    },
+    "W": {
+      "item": "minecraft:leather"
+    }
+  },
+  "pattern": [
+    "SPP",
+    "WWW"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:sleeping_bag_orange"
+  }
+}

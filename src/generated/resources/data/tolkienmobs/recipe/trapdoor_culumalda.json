@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "group": "culumalda",
+  "key": {
+    "#": {
+      "item": "tolkienmobs:planks_culumalda"
+    }
+  },
+  "pattern": [
+    "###",
+    "###"
+  ],
+  "result": {
+    "count": 2,
+    "id": "tolkienmobs:trapdoor_culumalda"
+  }
+}

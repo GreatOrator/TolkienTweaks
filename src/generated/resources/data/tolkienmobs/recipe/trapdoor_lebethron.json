@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "group": "lebethron",
+  "key": {
+    "#": {
+      "item": "tolkienmobs:planks_lebethron"
+    }
+  },
+  "pattern": [
+    "###",
+    "###"
+  ],
+  "result": {
+    "count": 2,
+    "id": "tolkienmobs:trapdoor_lebethron"
+  }
+}

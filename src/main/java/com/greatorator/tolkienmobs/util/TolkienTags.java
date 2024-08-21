@@ -20,6 +20,7 @@ public class TolkienTags {
     }
 
     public static class Items {
+        public static final TagKey<Item> SLEEPING_BAG = createTag("sleeping_bag");
 
         private static TagKey<Item> createTag(String name) {
             return ItemTags.create(ResourceLocation.fromNamespaceAndPath(MODID, name));
