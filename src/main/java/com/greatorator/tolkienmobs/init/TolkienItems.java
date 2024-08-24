@@ -1,6 +1,8 @@
 package com.greatorator.tolkienmobs.init;
 
 import com.greatorator.tolkienmobs.item.*;
+import com.greatorator.tolkienmobs.item.custom.CoinPouchItem;
+import com.greatorator.tolkienmobs.item.custom.KeyRingItem;
 import com.greatorator.tolkienmobs.item.custom.SleepingBagItem;
 import com.greatorator.tolkienmobs.util.TolkienToolMaterials;
 import net.minecraft.core.component.DataComponents;
@@ -132,27 +134,27 @@ public class TolkienItems {
 
     // Coins & Tokens
     public static final DeferredItem<Item> ITEM_COIN_BRONZE = ITEMS.register("item_coin_bronze",
-            () -> new TolkienItem(new Item.Properties()).setHasLore());
+            () -> new TolkienCoinItem(new Item.Properties()).setHasLore());
     public static final DeferredItem<Item> ITEM_COIN_SILVER = ITEMS.register("item_coin_silver",
-            () -> new TolkienItem(new Item.Properties()).setHasLore());
+            () -> new TolkienCoinItem(new Item.Properties()).setHasLore());
     public static final DeferredItem<Item> ITEM_COIN_GOLD = ITEMS.register("item_coin_gold",
-            () -> new TolkienItem(new Item.Properties()).setHasLore());
+            () -> new TolkienCoinItem(new Item.Properties()).setHasLore());
     public static final DeferredItem<Item> ITEM_COIN_MITHRIL = ITEMS.register("item_coin_mithril",
-            () -> new TolkienItem(new Item.Properties()).setHasLore());
+            () -> new TolkienCoinItem(new Item.Properties()).setHasLore());
     public static final DeferredItem<Item> ITEM_DARKSIGIL = ITEMS.register("item_darksigil",
-            () -> new TolkienItem(new Item.Properties()).setHasLore());
+            () -> new TolkienCoinItem(new Item.Properties()).setHasLore());
     public static final DeferredItem<Item> ITEM_FACTIONCOIN = ITEMS.register("item_coin1",
-            () -> new TolkienItem(new Item.Properties()).setHasLore());
+            () -> new TolkienCoinItem(new Item.Properties()).setHasLore());
     public static final DeferredItem<Item> ITEM_FACTIONTOKEN = ITEMS.register("item_coin2",
-            () -> new TolkienItem(new Item.Properties()).setHasLore());
+            () -> new TolkienCoinItem(new Item.Properties()).setHasLore());
     public static final DeferredItem<Item> ITEM_CAVECOMPLETE = ITEMS.register("item_cavecomplete",
-            () -> new TolkienItem(new Item.Properties().stacksTo(3)).setHasLore());
+            () -> new TolkienCoinItem(new Item.Properties().stacksTo(3)).setHasLore());
     public static final DeferredItem<Item> ITEM_WATCHERCOMPLETE = ITEMS.register("item_watchercomplete",
-            () -> new TolkienItem(new Item.Properties().stacksTo(3)).setHasLore());
+            () -> new TolkienCoinItem(new Item.Properties().stacksTo(3)).setHasLore());
     public static final DeferredItem<Item> ITEM_TOKEN_EASTERN_ALLIANCE = ITEMS.register("item_token_eastern_alliance",
-            () -> new TolkienItem(new Item.Properties().stacksTo(1)).setHasLore());
+            () -> new TolkienCoinItem(new Item.Properties().stacksTo(1)).setHasLore());
     public static final DeferredItem<Item> ITEM_TOKEN_WESTERN_ALLIANCE = ITEMS.register("item_token_western_alliance",
-            () -> new TolkienItem(new Item.Properties().stacksTo(1)).setHasLore());
+            () -> new TolkienCoinItem(new Item.Properties().stacksTo(1)).setHasLore());
 
     // Mob Drops
     public static final DeferredItem<Item> CREBAIN_FEATHER = ITEMS.register("feather_crebain",
@@ -260,6 +262,9 @@ public class TolkienItems {
     //Armor
     //Keys
     //Pouch & Key Ring
+    public static final DeferredItem<Item> COIN_POUCH = ITEMS.register("coin_pouch", () -> new CoinPouchItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> KEY_RING = ITEMS.register("key_ring", () -> new KeyRingItem(new Item.Properties().stacksTo(1)));
+
     //Custom Items
     //Trinkets
     //Music

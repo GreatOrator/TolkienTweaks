@@ -351,6 +351,8 @@ public class TolkienTabs {
                     .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_natural"))
                     .title(Component.translatable("itemGroup.tolkienmobs.tools"))
                     .displayItems((itemDisplayParameters, output) -> {
+                        output.accept(TolkienItems.COIN_POUCH);
+                        output.accept(TolkienItems.KEY_RING);
                         output.accept(TolkienItems.SWORD_MITHRIL);
                         output.accept(TolkienItems.PICKAXE_MITHRIL);
                         output.accept(TolkienItems.AXE_MITHRIL);
