@@ -1,7 +1,10 @@
 package com.greatorator.tolkienmobs;
 
+import com.greatorator.tolkienmobs.containers.screens.CoinPouchScreen;
+import com.greatorator.tolkienmobs.containers.screens.KeyRingScreen;
 import com.greatorator.tolkienmobs.event.TolkienRegistration;
 import com.greatorator.tolkienmobs.fluid.TolkienFluid;
+import com.greatorator.tolkienmobs.handler.TolkienDataComponents;
 import com.greatorator.tolkienmobs.init.*;
 import com.greatorator.tolkienmobs.init.types.TolkienFluidTypes;
 import com.greatorator.tolkienmobs.init.types.TolkienParticleTypes;
@@ -21,6 +24,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -53,6 +57,7 @@ public class TolkienMobsMain {
         TolkienEntities.register(modEventBus);
         TolkienSounds.register(modEventBus);
         TolkienEffects.register(modEventBus);
+        TolkienContainers.register(modEventBus);
 
         TolkienPotions.register(modEventBus);
         TolkienParticleTypes.register(modEventBus);
@@ -64,6 +69,8 @@ public class TolkienMobsMain {
         TolkienFeatureModifiers.FOLIAGE_PLACERS.register(modEventBus);
         TolkienFeatureModifiers.TREE_DECORATORS.register(modEventBus);
         TolkienFeatureModifiers.PLACEMENT_MODIFIERS.register(modEventBus);
+
+        TolkienDataComponents.COMPONENTS.register(modEventBus);
         modEventBus.addListener(this::addCreative);
         modContainer.registerConfig(ModConfig.Type.COMMON, TolkienMobsConfig.SPEC);
     }
@@ -106,6 +113,12 @@ public class TolkienMobsMain {
                 ItemBlockRenderTypes.setRenderLayer(TolkienFluids.MITHRIL_FLOWING.get(), RenderType.translucent());
                 ItemBlockRenderTypes.setRenderLayer(TolkienFluids.MORGULIRON_FLOWING.get(), RenderType.translucent());
             });
+        }
+
+        @SubscribeEvent
+        public static void registerScreens(RegisterMenuScreensEvent event){
+            event.register(TolkienContainers.COIN_POUCH_CONTAINER.get(), CoinPouchScreen::new);
+            event.register(TolkienContainers.KEY_RING_CONTAINER.get(), KeyRingScreen::new);
         }
 
         @SubscribeEvent
