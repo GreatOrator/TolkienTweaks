@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/template_glass_pane_post",
+  "render_type": "minecraft:translucent",
+  "textures": {
+    "edge": "tolkienmobs:block/ammolite_pane_top",
+    "pane": "tolkienmobs:block/block_ammolite"
+  }
+}

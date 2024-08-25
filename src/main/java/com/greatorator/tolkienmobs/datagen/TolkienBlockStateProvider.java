@@ -46,6 +46,7 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         ModelFile barrelMithril = models().cubeBottomTop("barrel_mithril", modLoc("block/barrel/barrel_mithril_side"), modLoc("block/barrel/barrel_mithril_bottom"), modLoc("block/barrel/barrel_mithril_top"));
         ModelFile barrelMithrilOpen = models().cubeBottomTop("barrel_mithril_open", modLoc("block/barrel/barrel_mithril_side"), modLoc("block/barrel/barrel_mithril_bottom"), modLoc("block/barrel/barrel_mithril_top_open"));
         directionalBlock(TolkienBlocks.BARREL_MITHRIL.get(), state -> state.getValue(BarrelBlock.OPEN) ? barrelMithrilOpen : barrelMithril);
+        paneBlockWithRenderType(TolkienBlocks.MITHRIL_BARS.get(), modLoc("block/mithril_bars"), modLoc("block/mithril_bars"), "cutout");
 
         blockItem(TolkienBlocks.STAIRS_MITHRIL);
         blockItem(TolkienBlocks.SLAB_MITHRIL);
@@ -69,6 +70,7 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         ModelFile barrelMorguliron = models().cubeBottomTop("barrel_morguliron", modLoc("block/barrel/barrel_morguliron_side"), modLoc("block/barrel/barrel_morguliron_bottom"), modLoc("block/barrel/barrel_morguliron_top"));
         ModelFile barrelMorgulironOpen = models().cubeBottomTop("barrel_morguliron_open", modLoc("block/barrel/barrel_morguliron_side"), modLoc("block/barrel/barrel_morguliron_bottom"), modLoc("block/barrel/barrel_morguliron_top_open"));
         directionalBlock(TolkienBlocks.BARREL_MORGULIRON.get(), state -> state.getValue(BarrelBlock.OPEN) ? barrelMorgulironOpen : barrelMorguliron);
+        paneBlockWithRenderType(TolkienBlocks.MORGULIRON_BARS.get(), modLoc("block/morguliron_bars"), modLoc("block/morguliron_bars"), "cutout");
 
         blockItem(TolkienBlocks.STAIRS_MORGULIRON);
         blockItem(TolkienBlocks.SLAB_MORGULIRON);
@@ -82,7 +84,7 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         blockWithItem(TolkienBlocks.ORE_DEEPSLATE_AMMOLITE);
         simpleBlock(TolkienBlocks.BLOCK_AMMOLITE.value(), this.models().cubeAll("block_ammolite", modLoc("block/block_ammolite")).renderType("translucent"));
         doorBlockWithRenderType(((DoorBlock) TolkienBlocks.DOOR_DURIN.get()), modLoc("block/door_durin_bottom"), modLoc("block/door_durin_top"), "cutout");
-
+        paneBlockWithRenderType(TolkienBlocks.PANE_AMMOLITE.get(), modLoc("block/block_ammolite"), modLoc("block/ammolite_pane_top"), "translucent");
 
         blockItem(TolkienBlocks.BLOCK_AMMOLITE);
         /* Wood & Foliage */
@@ -295,6 +297,7 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         blockItem(TolkienBlocks.PRESSURE_PLATE_DEADWOOD);
         blockItem(TolkienBlocks.FENCE_GATE_DEADWOOD);
         blockItem(TolkienBlocks.TRAPDOOR_DEADWOOD, "_bottom");
+        blockItem(TolkienBlocks.BARREL_DEADWOOD);
 
             //Flowers & Plants
         makeFlower(TolkienBlocks.FLOWER_SIMBELMYNE, TolkienBlocks.POTTED_FLOWER_SIMBELMYNE);
@@ -324,6 +327,7 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
 
         blockItem(TolkienBlocks.BLOCK_HALLOWED);
         blockItem(TolkienBlocks.STONE_PATH);
+        blockItem(TolkienBlocks.ROCKPILE);
 
             //Placards
         ModelFile placardWallModel = models().getExistingFile(modLoc("block/placard_wall"));

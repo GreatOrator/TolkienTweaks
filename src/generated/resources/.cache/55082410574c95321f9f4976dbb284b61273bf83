@@ -1,4 +1,4 @@
-// 1.21	2024-08-25T13:16:39.1545822	Item Models: tolkienmobs
+// 1.21	2024-08-25T14:07:58.0642915	Item Models: tolkienmobs
 914e29c26c212ad7b8914aa552c5ce18400b5057 assets/tolkienmobs/models/item/axe_ammolite.json
 9a08370f124e62b3c7067b9bf9976a8c617561be assets/tolkienmobs/models/item/axe_mithril.json
 6c3e1ecf8e78654791353669b7c17986e5b4fd21 assets/tolkienmobs/models/item/axe_morguliron.json
@@ -123,16 +123,19 @@ a34c00e5383356f5c4f80bbcb522c398a30f0b84 assets/tolkienmobs/models/item/ladder_m
 f3dc6cfe2e1b92584042d165ae35e21fad840ea1 assets/tolkienmobs/models/item/lebethron_button.json
 b823a8c52ab3d1928a6583367759cc1e9145039d assets/tolkienmobs/models/item/mallorn_button.json
 b51716d51bc129b4a977f26e8a3a434d36ce1432 assets/tolkienmobs/models/item/mirkwood_button.json
+f1a3ca02abd454af9a8ab39514fc9e4fb73bdc11 assets/tolkienmobs/models/item/mithril_bars.json
 41b3702fcaca570831f5aa70d5b956a3aee9f0b9 assets/tolkienmobs/models/item/mithril_button.json
 12ac9f5d2d929db4ac31f175841146ac3604866b assets/tolkienmobs/models/item/mithril_fluid_bucket.json
 1419a78431b1afa437f871e170b65558d53bd360 assets/tolkienmobs/models/item/monster_flesh.json
 f66c68ad54c3c092e8079656e83a412828366526 assets/tolkienmobs/models/item/monster_fur.json
+ad377de9b98c77698b489d2701f4d1b0da916dc7 assets/tolkienmobs/models/item/morguliron_bars.json
 8f0d1f419639a5163138f5162934f5555eab0570 assets/tolkienmobs/models/item/morguliron_button.json
 48872112378777b800080b8e500df633f7d39a77 assets/tolkienmobs/models/item/morguliron_fluid_bucket.json
 b0947e7e900d277ade25ec5e942a9c6f3b1d99bb assets/tolkienmobs/models/item/mushroom_bloom_decay.json
 1a79d10e999cc3341d48d3a4888bb04ee1c60e80 assets/tolkienmobs/models/item/mushroom_decay_bloom.json
 d729d69fde1fc76d469b44cfe08bd652b9aba202 assets/tolkienmobs/models/item/nugget_mithril.json
 64a8b4ef60ae72f8b3bbd11c18ba6f2230c79685 assets/tolkienmobs/models/item/nugget_morguliron.json
+44d1c8e3c9921961a723e7bcdbcc47dc7516af34 assets/tolkienmobs/models/item/pane_ammolite.json
 f98078d3f91944066bf5258df6c8447ffbd103f3 assets/tolkienmobs/models/item/pickaxe_ammolite.json
 8fc06c5a10287b5212ede88796fc8bf5b0c8c5ac assets/tolkienmobs/models/item/pickaxe_mithril.json
 f56fc7cd9209b8627c8f7c15791c3a14ac084ec9 assets/tolkienmobs/models/item/pickaxe_morguliron.json

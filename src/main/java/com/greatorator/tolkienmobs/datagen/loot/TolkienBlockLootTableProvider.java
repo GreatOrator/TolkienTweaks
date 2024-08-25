@@ -57,6 +57,7 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
                 block -> createSlabItemTable(TolkienBlocks.SLAB_MITHRIL.get()));
         dropSelf(TolkienBlocks.PRESSURE_PLATE_MITHRIL.get());
         dropSelf(TolkienBlocks.MITHRIL_BUTTON.get());
+        dropSelf(TolkienBlocks.MITHRIL_BARS.get());
         dropSelf(TolkienBlocks.WALL_MITHRIL.get());
         dropSelf(TolkienBlocks.TRAPDOOR_MITHRIL.get());
         this.add(TolkienBlocks.DOOR_MITHRIL.get(),
@@ -79,6 +80,7 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
                 block -> createSlabItemTable(TolkienBlocks.SLAB_MORGULIRON.get()));
         dropSelf(TolkienBlocks.PRESSURE_PLATE_MORGULIRON.get());
         dropSelf(TolkienBlocks.MORGULIRON_BUTTON.get());
+        dropSelf(TolkienBlocks.MORGULIRON_BARS.get());
         dropSelf(TolkienBlocks.WALL_MORGULIRON.get());
         dropSelf(TolkienBlocks.TRAPDOOR_MORGULIRON.get());
         this.add(TolkienBlocks.DOOR_MORGULIRON.get(),
@@ -87,6 +89,7 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
 
             // Ammolite
         dropSelf(TolkienBlocks.BLOCK_AMMOLITE.get());
+        dropSelf(TolkienBlocks.PANE_AMMOLITE.get());
         this.add(TolkienBlocks.ORE_AMMOLITE.get(),
                 block -> createMultipleOreDrops(TolkienBlocks.ORE_AMMOLITE.get(), TolkienItems.GEM_AMMOLITE.get(),1, 2));
         this.add(TolkienBlocks.ORE_END_AMMOLITE.get(),
@@ -317,6 +320,7 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.BLOCK_HALLOWED.get());
         dropOther(TolkienBlocks.STONE_PATH, Blocks.COBBLESTONE);
         dropSelf(TolkienBlocks.PLACARD.get());
+        dropSelf(TolkienBlocks.ROCKPILE.get());
 
         // Sleeping Bags
         this.add(TolkienBlocks.SLEEPING_BAG_BLUE.get(), this::createSleepingBagDrop);
