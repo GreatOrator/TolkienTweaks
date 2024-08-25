@@ -174,6 +174,27 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         saplingItem(TolkienBlocks.MUSHROOM_BLOOM_DECAY);
         saplingItem(TolkienBlocks.MUSHROOM_DECAY_BLOOM);
 
+        basicItem(TolkienBlocks.MALLORN_SIGN.asItem());
+        basicItem(TolkienBlocks.MIRKWOOD_SIGN.asItem());
+        basicItem(TolkienBlocks.CULUMALDA_SIGN.asItem());
+        basicItem(TolkienBlocks.LEBETHRON_SIGN.asItem());
+        basicItem(TolkienBlocks.FANGORNOAK_SIGN.asItem());
+        basicItem(TolkienBlocks.DEADWOOD_SIGN.asItem());
+
+        basicItem(TolkienBlocks.MALLORN_HANGING_SIGN.asItem());
+        basicItem(TolkienBlocks.MIRKWOOD_HANGING_SIGN.asItem());
+        basicItem(TolkienBlocks.CULUMALDA_HANGING_SIGN.asItem());
+        basicItem(TolkienBlocks.LEBETHRON_HANGING_SIGN.asItem());
+        basicItem(TolkienBlocks.FANGORNOAK_HANGING_SIGN.asItem());
+        basicItem(TolkienBlocks.DEADWOOD_HANGING_SIGN.asItem());
+
+        blockWithOwnFlatTexture(TolkienBlocks.LADDER_MALLORN);
+        blockWithOwnFlatTexture(TolkienBlocks.LADDER_MIRKWOOD);
+        blockWithOwnFlatTexture(TolkienBlocks.LADDER_CULUMALDA);
+        blockWithOwnFlatTexture(TolkienBlocks.LADDER_LEBETHRON);
+        blockWithOwnFlatTexture(TolkienBlocks.LADDER_FANGORNOAK);
+        blockWithOwnFlatTexture(TolkienBlocks.LADDER_DEADWOOD);
+
         basicItem(TolkienItems.RECORD_RIVENDELL.get());
 
         buildTool(TolkienItems.SWORD_MITHRIL.get());
@@ -219,6 +240,15 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         this.withExistingParent(block.getId().getPath(), mcLoc("block/wall_inventory"))
                 .texture("wall",  ResourceLocation.fromNamespaceAndPath(MODID,
                         "block/" + baseBlock.getId().getPath()));
+    }
+
+    private void blockWithOwnFlatTexture(DeferredBlock<Block> block) {
+        withExistingParent(block.getId().getPath(), mcLoc("item/generated"))
+                .texture("layer0", blockTexture(block));
+    }
+
+    private ResourceLocation blockTexture(DeferredBlock<Block> block) {
+        return ResourceLocation.fromNamespaceAndPath(MODID,"block/" + block.getId().getPath());
     }
 
     public ItemModelBuilder buildTool(Item item) {

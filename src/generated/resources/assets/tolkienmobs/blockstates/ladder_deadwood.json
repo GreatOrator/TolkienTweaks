@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "tolkienmobs:block/ladder_deadwood",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "tolkienmobs:block/ladder_deadwood"
+    },
+    "facing=south": {
+      "model": "tolkienmobs:block/ladder_deadwood",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "tolkienmobs:block/ladder_deadwood",
+      "y": 270
+    }
+  }
+}

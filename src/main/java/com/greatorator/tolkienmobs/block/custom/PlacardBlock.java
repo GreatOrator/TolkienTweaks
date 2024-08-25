@@ -1,6 +1,6 @@
 package com.greatorator.tolkienmobs.block.custom;
 
-import com.greatorator.tolkienmobs.block.custom.tiles.PlacardTile;
+import com.greatorator.tolkienmobs.block.custom.entity.PlacardEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
@@ -113,7 +113,7 @@ public class PlacardBlock extends Block implements EntityBlock {
 
     @Override
     public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new PlacardTile(blockPos, blockState);
+        return new PlacardEntity(blockPos, blockState);
     }
 
     public enum PlacardType implements StringRepresentable {

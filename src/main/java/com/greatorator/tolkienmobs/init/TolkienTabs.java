@@ -138,7 +138,7 @@ public class TolkienTabs {
                     }).build());
 
     public static final Supplier<CreativeModeTab> TOLKIEN_FUNCTION = CREATIVE_MODE_TAB.register("tolkienmobs_tab_function",
-            () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienBlocks.ELVEN_LANTERN.get()))
+            () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienBlocks.MALLORN_SIGN.get()))
                     .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_food"))
                     .title(Component.translatable("itemGroup.tolkienmobs.function"))
                     .displayItems((itemDisplayParameters, output) -> {
@@ -151,6 +151,24 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.TORCH_LEBETHRON);
                         output.accept(TolkienBlocks.TORCH_FANGORNOAK);
                         output.accept(TolkienBlocks.TORCH_DEADWOOD);
+                        output.accept(TolkienBlocks.MALLORN_SIGN);
+                        output.accept(TolkienBlocks.MIRKWOOD_SIGN);
+                        output.accept(TolkienBlocks.CULUMALDA_SIGN);
+                        output.accept(TolkienBlocks.LEBETHRON_SIGN);
+                        output.accept(TolkienBlocks.FANGORNOAK_SIGN);
+                        output.accept(TolkienBlocks.DEADWOOD_SIGN);
+                        output.accept(TolkienBlocks.MALLORN_HANGING_SIGN);
+                        output.accept(TolkienBlocks.MIRKWOOD_HANGING_SIGN);
+                        output.accept(TolkienBlocks.CULUMALDA_HANGING_SIGN);
+                        output.accept(TolkienBlocks.LEBETHRON_HANGING_SIGN);
+                        output.accept(TolkienBlocks.FANGORNOAK_HANGING_SIGN);
+                        output.accept(TolkienBlocks.DEADWOOD_HANGING_SIGN);
+                        output.accept(TolkienBlocks.LADDER_MALLORN.asItem());
+                        output.accept(TolkienBlocks.LADDER_MIRKWOOD.asItem());
+                        output.accept(TolkienBlocks.LADDER_CULUMALDA.asItem());
+                        output.accept(TolkienBlocks.LADDER_LEBETHRON.asItem());
+                        output.accept(TolkienBlocks.LADDER_FANGORNOAK.asItem());
+                        output.accept(TolkienBlocks.LADDER_DEADWOOD.asItem());
                         output.accept(TolkienBlocks.SLEEPING_BAG_BLUE);
                         output.accept(TolkienBlocks.SLEEPING_BAG_RED);
                         output.accept(TolkienBlocks.SLEEPING_BAG_BLACK);
@@ -187,6 +205,7 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.TRAPDOOR_MALLORN);
                         output.accept(TolkienBlocks.PRESSURE_PLATE_MALLORN);
                         output.accept(TolkienBlocks.MALLORN_BUTTON);
+                        output.accept(TolkienBlocks.BARREL_MALLORN);
                         output.accept(TolkienBlocks.LOG_MIRKWOOD);
                         output.accept(TolkienBlocks.WOOD_MIRKWOOD);
                         output.accept(TolkienBlocks.STRIPPED_MIRKWOOD_LOG);
@@ -200,6 +219,7 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.TRAPDOOR_MIRKWOOD);
                         output.accept(TolkienBlocks.PRESSURE_PLATE_MIRKWOOD);
                         output.accept(TolkienBlocks.MIRKWOOD_BUTTON);
+                        output.accept(TolkienBlocks.BARREL_MIRKWOOD);
                         output.accept(TolkienBlocks.LOG_CULUMALDA);
                         output.accept(TolkienBlocks.WOOD_CULUMALDA);
                         output.accept(TolkienBlocks.STRIPPED_CULUMALDA_LOG);
@@ -213,6 +233,7 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.TRAPDOOR_CULUMALDA);
                         output.accept(TolkienBlocks.PRESSURE_PLATE_CULUMALDA);
                         output.accept(TolkienBlocks.CULUMALDA_BUTTON);
+                        output.accept(TolkienBlocks.BARREL_CULUMALDA);
                         output.accept(TolkienBlocks.LOG_LEBETHRON);
                         output.accept(TolkienBlocks.WOOD_LEBETHRON);
                         output.accept(TolkienBlocks.STRIPPED_LEBETHRON_LOG);
@@ -226,6 +247,7 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.TRAPDOOR_LEBETHRON);
                         output.accept(TolkienBlocks.PRESSURE_PLATE_LEBETHRON);
                         output.accept(TolkienBlocks.LEBETHRON_BUTTON);
+                        output.accept(TolkienBlocks.BARREL_LEBETHRON);
                         output.accept(TolkienBlocks.LOG_FANGORNOAK);
                         output.accept(TolkienBlocks.WOOD_FANGORNOAK);
                         output.accept(TolkienBlocks.STRIPPED_FANGORNOAK_LOG);
@@ -239,6 +261,7 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.TRAPDOOR_FANGORNOAK);
                         output.accept(TolkienBlocks.PRESSURE_PLATE_FANGORNOAK);
                         output.accept(TolkienBlocks.FANGORNOAK_BUTTON);
+                        output.accept(TolkienBlocks.BARREL_FANGORNOAK);
                         output.accept(TolkienBlocks.LOG_DEADWOOD);
                         output.accept(TolkienBlocks.WOOD_DEADWOOD);
                         output.accept(TolkienBlocks.STRIPPED_DEADWOOD_LOG);
@@ -252,6 +275,7 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.TRAPDOOR_DEADWOOD);
                         output.accept(TolkienBlocks.PRESSURE_PLATE_DEADWOOD);
                         output.accept(TolkienBlocks.DEADWOOD_BUTTON);
+                        output.accept(TolkienBlocks.BARREL_DEADWOOD);
                         output.accept(TolkienBlocks.BLOCK_MITHRIL);
                         output.accept(TolkienBlocks.STAIRS_MITHRIL);
                         output.accept(TolkienBlocks.SLAB_MITHRIL);
@@ -260,6 +284,7 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.TRAPDOOR_MITHRIL);
                         output.accept(TolkienBlocks.PRESSURE_PLATE_MITHRIL);
                         output.accept(TolkienBlocks.MITHRIL_BUTTON);
+                        output.accept(TolkienBlocks.BARREL_MITHRIL);
                         output.accept(TolkienBlocks.BLOCK_MORGULIRON);
                         output.accept(TolkienBlocks.STAIRS_MORGULIRON);
                         output.accept(TolkienBlocks.SLAB_MORGULIRON);
@@ -268,12 +293,13 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.TRAPDOOR_MORGULIRON);
                         output.accept(TolkienBlocks.PRESSURE_PLATE_MORGULIRON);
                         output.accept(TolkienBlocks.MORGULIRON_BUTTON);
+                        output.accept(TolkienBlocks.BARREL_MORGULIRON);
                         output.accept(TolkienBlocks.BLOCK_AMMOLITE);
                         output.accept(TolkienBlocks.DOOR_DURIN);
                     }).build());
 
     public static final Supplier<CreativeModeTab> TOLKIEN_NATURE = CREATIVE_MODE_TAB.register("tolkienmobs_tab_natural",
-            () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienBlocks.RAW_MITHRIL_BLOCK))
+            () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienBlocks.BLOCK_HALLOWED))
                     .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_deco"))
                     .title(Component.translatable("itemGroup.tolkienmobs.natural"))
                     .displayItems((itemDisplayParameters, output) -> {

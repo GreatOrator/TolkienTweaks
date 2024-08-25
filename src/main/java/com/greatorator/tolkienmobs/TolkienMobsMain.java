@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs;
 
-import com.greatorator.tolkienmobs.block.custom.tiles.renderer.PlacardTileRender;
 import com.greatorator.tolkienmobs.containers.screens.CoinPouchScreen;
 import com.greatorator.tolkienmobs.containers.screens.KeyRingScreen;
 import com.greatorator.tolkienmobs.event.TolkienRegistration;
@@ -13,6 +12,7 @@ import com.greatorator.tolkienmobs.particle.provider.TolkienParticleProvider;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
@@ -26,7 +26,6 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
@@ -114,6 +113,12 @@ public class TolkienMobsMain {
     public static class ClientModEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
+            Sheets.addWoodType(TolkienWoodTypes.MALLORN);
+            Sheets.addWoodType(TolkienWoodTypes.MIRKWOOD);
+            Sheets.addWoodType(TolkienWoodTypes.CULUMALDA);
+            Sheets.addWoodType(TolkienWoodTypes.LEBETHRON);
+            Sheets.addWoodType(TolkienWoodTypes.FANGORNOAK);
+            Sheets.addWoodType(TolkienWoodTypes.DEADWOOD);
             event.enqueueWork(() -> {
                 ItemBlockRenderTypes.setRenderLayer(TolkienFluids.MITHRIL_FLOWING.get(), RenderType.translucent());
                 ItemBlockRenderTypes.setRenderLayer(TolkienFluids.MORGULIRON_FLOWING.get(), RenderType.translucent());
@@ -126,12 +131,6 @@ public class TolkienMobsMain {
             event.register(TolkienContainers.KEY_RING_CONTAINER.get(), KeyRingScreen::new);
         }
 
-//        @SubscribeEvent
-//        public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-//            Register Block Entity Renders
-//            event.registerBlockEntityRenderer(TolkienBlocks.PLACARD_TILE.get(), PlacardTileRender::new);
-//        }
-//
 //        @SubscribeEvent
 //        public void registerPropertyOverride() {
 //            ItemProperties.register(COIN_POUCH.get(), new ResourceLocation("fullness"), CoinPouchItem::getFullnessPropertyOverride);
