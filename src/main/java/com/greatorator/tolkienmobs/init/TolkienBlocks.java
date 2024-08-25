@@ -72,9 +72,8 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> MITHRIL_BUTTON = registerBlock("mithril_button",
             () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
                     .strength(4F).requiresCorrectToolForDrops().noCollission()));
-//    public static final DeferredBlock<Block> MITHRIL_BARS = registerBlock("mithril_bars",
-//            () -> new IronBarsBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops()
-//                    .strength(5.0F, 6.0F).sound(SoundType.METAL).noOcclusion()));
+    public static final DeferredBlock<IronBarsBlock> MITHRIL_BARS = registerBlock("mithril_bars", () ->
+            new IronBarsBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS)));
     public static final DeferredBlock<Block> WALL_MITHRIL = registerBlock("wall_mithril",
             () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
 
@@ -119,9 +118,8 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> MORGULIRON_BUTTON = registerBlock("morguliron_button",
             () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
                     .strength(4F).requiresCorrectToolForDrops().noCollission()));
-//    public static final DeferredBlock<Block> MORGULIRON_BARS = registerBlock("morguliron_bars",
-//            () -> new IronBarsBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops()
-//                    .strength(5.0F, 6.0F).sound(SoundType.METAL).noOcclusion()));
+    public static final DeferredBlock<IronBarsBlock> MORGULIRON_BARS = registerBlock("morguliron_bars", () ->
+            new IronBarsBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS)));
     public static final DeferredBlock<Block> WALL_MORGULIRON = registerBlock("wall_morguliron",
             () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
     public static final DeferredBlock<Block> DOOR_MORGULIRON = registerBlock("door_morguliron",
@@ -150,9 +148,7 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> BLOCK_AMMOLITE = registerBlock("block_ammolite",
             () -> new TransparentBlock(BlockBehaviour.Properties.of()
                     .strength(0.3f).requiresCorrectToolForDrops().isValidSpawn(Blocks::never).isRedstoneConductor(TolkienBlocks::never).isSuffocating(TolkienBlocks::never).isViewBlocking(TolkienBlocks::never).noOcclusion().sound(SoundType.GLASS)));
-//    public static final DeferredBlock<Block> PANE_AMMOLITE = registerBlock("pane_ammolite",
-//            () -> new IronBarsBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops()
-//                    .strength(5.0F, 6.0F).sound(SoundType.GLASS).noOcclusion()));
+    public static final DeferredBlock<IronBarsBlock> PANE_AMMOLITE = registerBlock("pane_ammolite", () -> new IronBarsBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.GLASS_PANE)));
     public static final DeferredBlock<Block> DOOR_DURIN = registerBlock("door_durin",
             () -> new DoorBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
                     .strength(4F).requiresCorrectToolForDrops().noOcclusion().sound(SoundType.METAL)));
@@ -597,6 +593,25 @@ public class TolkienBlocks {
             () -> new FancyLanternBlock(BlockBehaviour.Properties.of().strength(3.5F, 3.5F).requiresCorrectToolForDrops().noOcclusion().lightLevel((state) -> state.getValue(LIT) ? 11:0).sound(SoundType.LANTERN)));
     public static final DeferredBlock<Block> BLOCK_HALLOWED = registerBlock("block_hallowed", () -> new HallowedBlock(BlockBehaviour.Properties.of().randomTicks().sound(SoundType.GRAVEL)));
     public static final DeferredBlock<Block> STONE_PATH = registerBlock("block_stone_path", () -> new StonePathBlock(BlockBehaviour.Properties.of().isViewBlocking(TolkienBlocks::never).sound(SoundType.STONE)));
+    public static final DeferredBlock<Block> ROCKPILE = registerBlock("rockpile", () -> new RockPileBlock(BlockBehaviour.Properties.of().noCollission().instabreak().sound(SoundType.STONE).strength(0.2F).dynamicShape()));
+//    public static RegistryObject<Block> TTMFIREPLACE = BLOCKS.register("block_tmfireplace", () -> new FireplaceBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.TERRACOTTA_RED).requiresCorrectToolForDrops().noOcclusion().strength(5f, 6f).lightLevel(litBlockEmission(15))));
+//    public static RegistryObject<Block> PIGGYBANK = BLOCKS.register("block_piggybank", () -> new PiggyBankBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.TERRACOTTA_PINK).requiresCorrectToolForDrops().noOcclusion().strength(5f, 6f)));
+//    public static RegistryObject<Block> BACKPACK = BLOCKS.register("backpack", () -> new BackpackBlock(BlockBehaviour.Properties.of(Material.WOOL, MaterialColor.COLOR_LIGHT_GRAY).requiresCorrectToolForDrops().noOcclusion().strength(1f, 1f)));
+//    public static RegistryObject<Block> CHAMELEON_BLOCK = BLOCKS.register("chameleon_block", () -> new ChameleonBlock<>(BlockBehaviour.Properties.of(Material.DECORATION).noCollission().noOcclusion()));
+//    public static RegistryObject<Block> KEY_STONE_BLOCK = BLOCKS.register("block_key_stone", () -> new CamoKeyStoneBlock(BlockBehaviour.Properties.of(Material.STONE).strength(-1.0F, 3600000.0F).noDrops().noOcclusion()));
+//    public static RegistryObject<Block> CAMO_GLOWSTONE_BLOCK = BLOCKS.register("block_camo_glowstone", () -> new CamoGlowstoneBlock(BlockBehaviour.Properties.of(Material.STONE).strength(-1.0F, 3600000.0F).noDrops().lightLevel((state) -> 15)));
+//    public static RegistryObject<Block> CAMO_SMOKER_BLOCK = BLOCKS.register("block_camo_smoker", () -> new CamoSmokerBlock(BlockBehaviour.Properties.of(Material.STONE).strength(-1.0F, 3600000.0F).noDrops().noOcclusion()));
+//    public static RegistryObject<Block> CAMO_FLUID_BLOCK = BLOCKS.register("block_camo_fluid", () -> new CamoFluidBlock(BlockBehaviour.Properties.of(Material.STONE).strength(-1.0F, 3600000.0F).noDrops().noOcclusion()));
+//    public static RegistryObject<Block> CAMO_CHEST_BLOCK = BLOCKS.register("block_camo_chest", () -> new CamoChestBlock(BlockBehaviour.Properties.of(Material.STONE).strength(-1.0F, 3600000.0F).noDrops().noOcclusion()));
+//    public static RegistryObject<Block> CAMO_SPAWNER_BLOCK = BLOCKS.register("block_camo_spawner", () -> new CamoSpawnerBlock(BlockBehaviour.Properties.of(Material.STONE).strength(-1.0F, 3600000.0F).noDrops().noOcclusion()));
+//    public static RegistryObject<Block> MILESTONE_BLOCK = BLOCKS.register("milestone_block", () -> new MilestoneBlock(BlockBehaviour.Properties.of(Material.STONE).strength(-1.0F, 3600000.0F).noDrops().noOcclusion().lightLevel(litBlockEmission(4))));
+//    public static RegistryObject<Block> LOCKABLE_CHEST_BLOCK = BLOCKS.register("lockable_chest_block", () -> new LockableChestBlock(BlockBehaviour.Properties.of(Material.STONE).strength(-1.0F, 3600000.0F).noDrops().noOcclusion()));
+//    public static RegistryObject<Block> LOCKABLE_TREASURE_CHEST_BLOCK = BLOCKS.register("lockable_treasure_chest_block", () -> new LockableTreasureChestBlock(BlockBehaviour.Properties.of(Material.STONE).strength(-1.0F, 3600000.0F).noDrops().noOcclusion()));
+//    public static RegistryObject<Block> LOCKABLE_DOUBLE_CHEST_BLOCK = BLOCKS.register("lockable_double_chest_block", () -> new LockableDoubleChestBlock(BlockBehaviour.Properties.of(Material.STONE).strength(-1.0F, 3600000.0F).noDrops().noOcclusion()));
+//    public static RegistryObject<Block> LOCKABLE_DOUBLE_TREASURE_CHEST_BLOCK = BLOCKS.register("lockable_double_treasure_chest_block", () -> new LockableDoubleTreasureChestBlock(BlockBehaviour.Properties.of(Material.STONE).strength(-1.0F, 3600000.0F).noDrops().noOcclusion()));
+//    public static RegistryObject<Block> TRINKET_TABLE = BLOCKS.register("trinket_table", () -> new TrinketTableBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.TERRACOTTA_BLUE).sound(SoundType.STONE).requiresCorrectToolForDrops().strength(3.5F, 3.5F).noOcclusion()));
+//    public static RegistryObject<Block> WELL = BLOCKS.register("well_block", () -> new WellBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.TERRACOTTA_BLUE).sound(SoundType.STONE).requiresCorrectToolForDrops().strength(3.5F, 3.5F).noOcclusion()));
+//    public static RegistryObject<Block> ARDA_PORTAL = registerBlockWithoutBlockItem("arda_portal", () -> new ArdaPortalBlock(BlockBehaviour.Properties.of(Material.PORTAL).strength(-1F).noCollission().lightLevel((state) -> 10).noDrops()));
 
         // Sleeping Bags
     public static final DeferredBlock<SleepingBagBlock> SLEEPING_BAG_WHITE = BLOCKS.register("sleeping_bag_white", () -> new SleepingBagBlock(DyeColor.WHITE, Block.Properties.of().mapColor(MapColor.SNOW).sound(SoundType.WOOL).strength(0.2F).noOcclusion().pushReaction(PushReaction.DESTROY)));

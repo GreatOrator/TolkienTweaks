@@ -188,6 +188,9 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         basicItem(TolkienBlocks.FANGORNOAK_HANGING_SIGN.asItem());
         basicItem(TolkienBlocks.DEADWOOD_HANGING_SIGN.asItem());
 
+        basicItem(TolkienBlocks.MITHRIL_BARS.asItem());
+        basicItem(TolkienBlocks.MORGULIRON_BARS.asItem());
+        basicItem(TolkienBlocks.PANE_AMMOLITE.asItem());
         blockWithOwnFlatTexture(TolkienBlocks.LADDER_MALLORN);
         blockWithOwnFlatTexture(TolkienBlocks.LADDER_MIRKWOOD);
         blockWithOwnFlatTexture(TolkienBlocks.LADDER_CULUMALDA);
@@ -196,6 +199,7 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         blockWithOwnFlatTexture(TolkienBlocks.LADDER_DEADWOOD);
 
         basicItem(TolkienItems.RECORD_RIVENDELL.get());
+        basicItem(TolkienBlocks.ROCKPILE.asItem());
 
         buildTool(TolkienItems.SWORD_MITHRIL.get());
         buildTool(TolkienItems.SWORD_MORGULIRON.get());

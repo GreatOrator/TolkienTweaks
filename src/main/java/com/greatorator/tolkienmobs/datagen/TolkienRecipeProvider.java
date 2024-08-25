@@ -219,6 +219,11 @@ public class TolkienRecipeProvider extends RecipeProvider implements IConditionB
         barrelRecipe(pRecipeOutput, TolkienBlocks.BARREL_FANGORNOAK, TolkienBlocks.PLANKS_FANGORNOAK, TolkienBlocks.SLAB_FANGORNOAK);
         barrelRecipe(pRecipeOutput, TolkienBlocks.BARREL_DEADWOOD, TolkienBlocks.PLANKS_DEADWOOD, TolkienBlocks.SLAB_DEADWOOD);
 
+        paneRecipe(pRecipeOutput, TolkienBlocks.MITHRIL_BARS, TolkienItems.INGOT_MITHRIL);
+        paneRecipe(pRecipeOutput, TolkienBlocks.MORGULIRON_BARS, TolkienItems.INGOT_MORGULIRON);
+        paneRecipe(pRecipeOutput, TolkienBlocks.PANE_AMMOLITE, TolkienItems.GEM_AMMOLITE);
+        paneRecipe(pRecipeOutput, TolkienBlocks.ROCKPILE, Blocks.COBBLESTONE_SLAB);
+
         signRecipe(pRecipeOutput, TolkienBlocks.MALLORN_SIGN, TolkienBlocks.PLANKS_MALLORN);
         signRecipe(pRecipeOutput, TolkienBlocks.MIRKWOOD_SIGN, TolkienBlocks.PLANKS_MIRKWOOD);
         signRecipe(pRecipeOutput, TolkienBlocks.CULUMALDA_SIGN, TolkienBlocks.PLANKS_CULUMALDA);
@@ -369,6 +374,15 @@ public class TolkienRecipeProvider extends RecipeProvider implements IConditionB
                 .pattern("WPW")
                 .pattern("WWW")
                 .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(block))
+                .save(recipeOutput);
+    }
+
+    protected static void paneRecipe(RecipeOutput recipeOutput, ItemLike pSign, ItemLike material) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, pSign, 16)
+                .define('#', material)
+                .pattern("###")
+                .pattern("###")
+                .unlockedBy(getHasName(material), has(material))
                 .save(recipeOutput);
     }
 

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ingot_mithril": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tolkienmobs:ingot_mithril"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tolkienmobs:mithril_bars"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ingot_mithril"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tolkienmobs:mithril_bars"
+    ]
+  }
+}

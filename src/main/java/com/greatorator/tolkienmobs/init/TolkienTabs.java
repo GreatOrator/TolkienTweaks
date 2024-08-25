@@ -280,6 +280,7 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.STAIRS_MITHRIL);
                         output.accept(TolkienBlocks.SLAB_MITHRIL);
                         output.accept(TolkienBlocks.WALL_MITHRIL);
+                        output.accept(TolkienBlocks.MITHRIL_BARS);
                         output.accept(TolkienBlocks.DOOR_MITHRIL);
                         output.accept(TolkienBlocks.TRAPDOOR_MITHRIL);
                         output.accept(TolkienBlocks.PRESSURE_PLATE_MITHRIL);
@@ -289,13 +290,19 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.STAIRS_MORGULIRON);
                         output.accept(TolkienBlocks.SLAB_MORGULIRON);
                         output.accept(TolkienBlocks.WALL_MORGULIRON);
+                        output.accept(TolkienBlocks.MORGULIRON_BARS);
                         output.accept(TolkienBlocks.DOOR_MORGULIRON);
                         output.accept(TolkienBlocks.TRAPDOOR_MORGULIRON);
                         output.accept(TolkienBlocks.PRESSURE_PLATE_MORGULIRON);
                         output.accept(TolkienBlocks.MORGULIRON_BUTTON);
                         output.accept(TolkienBlocks.BARREL_MORGULIRON);
                         output.accept(TolkienBlocks.BLOCK_AMMOLITE);
+                        output.accept(TolkienBlocks.PANE_AMMOLITE);
                         output.accept(TolkienBlocks.DOOR_DURIN);
+                        output.accept(TolkienBlocks.BLOCK_HALLOWED);
+                        output.accept(TolkienBlocks.STONE_PATH);
+                        output.accept(TolkienBlocks.PLACARD);
+                        output.accept(TolkienBlocks.ROCKPILE);
                     }).build());
 
     public static final Supplier<CreativeModeTab> TOLKIEN_NATURE = CREATIVE_MODE_TAB.register("tolkienmobs_tab_natural",
@@ -373,6 +380,7 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.BLOCK_HALLOWED);
                         output.accept(TolkienBlocks.STONE_PATH);
                         output.accept(TolkienBlocks.PLACARD);
+                        output.accept(TolkienBlocks.ROCKPILE);
                     }).build());
 
     public static final Supplier<CreativeModeTab> TOLKIEN_TOOLS = CREATIVE_MODE_TAB.register("tolkienmobs_tab_tool",
