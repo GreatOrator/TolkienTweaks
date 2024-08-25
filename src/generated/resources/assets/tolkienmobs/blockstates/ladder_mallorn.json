@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "tolkienmobs:block/ladder_mallorn",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "tolkienmobs:block/ladder_mallorn"
+    },
+    "facing=south": {
+      "model": "tolkienmobs:block/ladder_mallorn",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "tolkienmobs:block/ladder_mallorn",
+      "y": 270
+    }
+  }
+}

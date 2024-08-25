@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "tolkienmobs:block_morguliron"
+    },
+    "M": {
+      "item": "tolkienmobs:slab_morguliron"
+    }
+  },
+  "pattern": [
+    "AMA",
+    "A A",
+    "AMA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:barrel_morguliron"
+  }
+}

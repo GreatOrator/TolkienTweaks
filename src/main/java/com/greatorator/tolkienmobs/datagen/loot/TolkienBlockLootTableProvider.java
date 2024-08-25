@@ -41,7 +41,7 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
     @Override
     protected void generate() {
         /* Metals & Gems */
-        // Mithril
+            // Mithril
         dropSelf(TolkienBlocks.BLOCK_MITHRIL.get());
         dropSelf(TolkienBlocks.RAW_MITHRIL_BLOCK.get());
         this.add(TolkienBlocks.ORE_MITHRIL.get(),
@@ -61,7 +61,9 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.TRAPDOOR_MITHRIL.get());
         this.add(TolkienBlocks.DOOR_MITHRIL.get(),
                 block -> createDoorTable(TolkienBlocks.DOOR_MITHRIL.get()));
-        // Morguliron
+        dropSelf(TolkienBlocks.BARREL_MITHRIL.get());
+
+            // Morguliron
         dropSelf(TolkienBlocks.BLOCK_MORGULIRON.get());
         dropSelf(TolkienBlocks.RAW_MORGULIRON_BLOCK.get());
         this.add(TolkienBlocks.ORE_MORGULIRON.get(),
@@ -81,7 +83,9 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.TRAPDOOR_MORGULIRON.get());
         this.add(TolkienBlocks.DOOR_MORGULIRON.get(),
                 block -> createDoorTable(TolkienBlocks.DOOR_MORGULIRON.get()));
-        // Ammolite
+        dropSelf(TolkienBlocks.BARREL_MORGULIRON.get());
+
+            // Ammolite
         dropSelf(TolkienBlocks.BLOCK_AMMOLITE.get());
         this.add(TolkienBlocks.ORE_AMMOLITE.get(),
                 block -> createMultipleOreDrops(TolkienBlocks.ORE_AMMOLITE.get(), TolkienItems.GEM_AMMOLITE.get(),1, 2));
@@ -115,6 +119,20 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
                 block -> createDoorTable(TolkienBlocks.DOOR_MALLORN.get()));
         dropSelf(TolkienBlocks.TORCH_MALLORN.get());
         dropOther(TolkienBlocks.WALL_TORCH_MALLORN, TolkienBlocks.TORCH_MALLORN.get());
+        dropSelf(TolkienBlocks.BARREL_MALLORN.get());
+        dropSelf(TolkienBlocks.MALLORN_SIGN.get());
+        dropSelf(TolkienBlocks.MALLORN_HANGING_SIGN.get());
+        add(TolkienBlocks.MALLORN_WALL_SIGN.get(),
+                block -> createSingleItemTable(TolkienBlocks.MALLORN_SIGN));
+        add(TolkienBlocks.MALLORN_HANGING_WALL_SIGN.get(),
+                block -> createSingleItemTable(TolkienBlocks.MALLORN_HANGING_SIGN));
+        dropSelf(TolkienBlocks.LADDER_MALLORN.get());
+        dropSelf(TolkienBlocks.LADDER_MIRKWOOD.get());
+        dropSelf(TolkienBlocks.LADDER_CULUMALDA.get());
+        dropSelf(TolkienBlocks.LADDER_LEBETHRON.get());
+        dropSelf(TolkienBlocks.LADDER_FANGORNOAK.get());
+        dropSelf(TolkienBlocks.LADDER_DEADWOOD.get());
+
             // Mirkwood
         dropSelf(TolkienBlocks.LOG_MIRKWOOD.get());
         dropSelf(TolkienBlocks.WOOD_MIRKWOOD.get());
@@ -135,7 +153,15 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
                 block -> createDoorTable(TolkienBlocks.DOOR_MIRKWOOD.get()));
         dropSelf(TolkienBlocks.TORCH_MIRKWOOD.get());
         dropOther(TolkienBlocks.WALL_TORCH_MIRKWOOD, TolkienBlocks.TORCH_MIRKWOOD.get());
-        // Culumalda
+        dropSelf(TolkienBlocks.BARREL_MIRKWOOD.get());
+        dropSelf(TolkienBlocks.MIRKWOOD_SIGN.get());
+        dropSelf(TolkienBlocks.MIRKWOOD_HANGING_SIGN.get());
+        add(TolkienBlocks.MIRKWOOD_WALL_SIGN.get(),
+                block -> createSingleItemTable(TolkienBlocks.MIRKWOOD_SIGN));
+        add(TolkienBlocks.MIRKWOOD_HANGING_WALL_SIGN.get(),
+                block -> createSingleItemTable(TolkienBlocks.MIRKWOOD_HANGING_SIGN));
+
+            // Culumalda
         dropSelf(TolkienBlocks.LOG_CULUMALDA.get());
         dropSelf(TolkienBlocks.WOOD_CULUMALDA.get());
         dropSelf(TolkienBlocks.STRIPPED_CULUMALDA_LOG.get());
@@ -155,7 +181,15 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
                 block -> createDoorTable(TolkienBlocks.DOOR_CULUMALDA.get()));
         dropSelf(TolkienBlocks.TORCH_CULUMALDA.get());
         dropOther(TolkienBlocks.WALL_TORCH_CULUMALDA, TolkienBlocks.TORCH_CULUMALDA.get());
-        // Lebethron
+        dropSelf(TolkienBlocks.BARREL_CULUMALDA.get());
+        dropSelf(TolkienBlocks.CULUMALDA_SIGN.get());
+        dropSelf(TolkienBlocks.CULUMALDA_HANGING_SIGN.get());
+        add(TolkienBlocks.CULUMALDA_WALL_SIGN.get(),
+                block -> createSingleItemTable(TolkienBlocks.CULUMALDA_SIGN));
+        add(TolkienBlocks.CULUMALDA_HANGING_WALL_SIGN.get(),
+                block -> createSingleItemTable(TolkienBlocks.CULUMALDA_HANGING_SIGN));
+
+            // Lebethron
         dropSelf(TolkienBlocks.LOG_LEBETHRON.get());
         dropSelf(TolkienBlocks.WOOD_LEBETHRON.get());
         dropSelf(TolkienBlocks.STRIPPED_LEBETHRON_LOG.get());
@@ -175,7 +209,15 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
                 block -> createDoorTable(TolkienBlocks.DOOR_LEBETHRON.get()));
         dropSelf(TolkienBlocks.TORCH_LEBETHRON.get());
         dropOther(TolkienBlocks.WALL_TORCH_LEBETHRON, TolkienBlocks.TORCH_LEBETHRON.get());
-        // Fangorn Oak
+        dropSelf(TolkienBlocks.BARREL_LEBETHRON.get());
+        dropSelf(TolkienBlocks.LEBETHRON_SIGN.get());
+        dropSelf(TolkienBlocks.LEBETHRON_HANGING_SIGN.get());
+        add(TolkienBlocks.LEBETHRON_WALL_SIGN.get(),
+                block -> createSingleItemTable(TolkienBlocks.LEBETHRON_SIGN));
+        add(TolkienBlocks.LEBETHRON_HANGING_WALL_SIGN.get(),
+                block -> createSingleItemTable(TolkienBlocks.LEBETHRON_HANGING_SIGN));
+
+            // Fangorn Oak
         dropSelf(TolkienBlocks.LOG_FANGORNOAK.get());
         dropSelf(TolkienBlocks.WOOD_FANGORNOAK.get());
         dropSelf(TolkienBlocks.STRIPPED_FANGORNOAK_LOG.get());
@@ -195,7 +237,15 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
                 block -> createDoorTable(TolkienBlocks.DOOR_FANGORNOAK.get()));
         dropSelf(TolkienBlocks.TORCH_FANGORNOAK.get());
         dropOther(TolkienBlocks.WALL_TORCH_FANGORNOAK, TolkienBlocks.TORCH_FANGORNOAK.get());
-        // Deadwood
+        dropSelf(TolkienBlocks.BARREL_FANGORNOAK.get());
+        dropSelf(TolkienBlocks.FANGORNOAK_SIGN.get());
+        dropSelf(TolkienBlocks.FANGORNOAK_HANGING_SIGN.get());
+        add(TolkienBlocks.FANGORNOAK_WALL_SIGN.get(),
+                block -> createSingleItemTable(TolkienBlocks.FANGORNOAK_SIGN));
+        add(TolkienBlocks.FANGORNOAK_HANGING_WALL_SIGN.get(),
+                block -> createSingleItemTable(TolkienBlocks.FANGORNOAK_HANGING_SIGN));
+
+            // Deadwood
         dropSelf(TolkienBlocks.LOG_DEADWOOD.get());
         dropSelf(TolkienBlocks.WOOD_DEADWOOD.get());
         dropSelf(TolkienBlocks.STRIPPED_DEADWOOD_LOG.get());
@@ -213,7 +263,15 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
                 block -> createDoorTable(TolkienBlocks.DOOR_DEADWOOD.get()));
         dropSelf(TolkienBlocks.TORCH_DEADWOOD.get());
         dropOther(TolkienBlocks.WALL_TORCH_DEADWOOD, TolkienBlocks.TORCH_DEADWOOD.get());
-        //Flowers & Plants
+        dropSelf(TolkienBlocks.BARREL_DEADWOOD.get());
+        dropSelf(TolkienBlocks.DEADWOOD_SIGN.get());
+        dropSelf(TolkienBlocks.DEADWOOD_HANGING_SIGN.get());
+        add(TolkienBlocks.DEADWOOD_WALL_SIGN.get(),
+                block -> createSingleItemTable(TolkienBlocks.DEADWOOD_SIGN));
+        add(TolkienBlocks.DEADWOOD_HANGING_WALL_SIGN.get(),
+                block -> createSingleItemTable(TolkienBlocks.DEADWOOD_HANGING_SIGN));
+
+            //Flowers & Plants
         dropSelf(TolkienBlocks.FLOWER_SIMBELMYNE.get());
         dropSelf(TolkienBlocks.FLOWER_MIRKWOOD.get());
         dropSelf(TolkienBlocks.FLOWER_ALFIRIN.get());

@@ -210,6 +210,36 @@ public class TolkienRecipeProvider extends RecipeProvider implements IConditionB
         addTorchRecipe(pRecipeOutput, TolkienBlocks.TORCH_FANGORNOAK, TolkienBlocks.PLANKS_MALLORN);
         addTorchRecipe(pRecipeOutput, TolkienBlocks.TORCH_DEADWOOD, TolkienBlocks.PLANKS_MALLORN);
 
+        barrelRecipe(pRecipeOutput, TolkienBlocks.BARREL_MITHRIL, TolkienBlocks.BLOCK_MITHRIL, TolkienBlocks.SLAB_MITHRIL);
+        barrelRecipe(pRecipeOutput, TolkienBlocks.BARREL_MORGULIRON, TolkienBlocks.BLOCK_MORGULIRON, TolkienBlocks.SLAB_MORGULIRON);
+        barrelRecipe(pRecipeOutput, TolkienBlocks.BARREL_MALLORN, TolkienBlocks.PLANKS_MALLORN, TolkienBlocks.SLAB_MALLORN);
+        barrelRecipe(pRecipeOutput, TolkienBlocks.BARREL_MIRKWOOD, TolkienBlocks.PLANKS_MIRKWOOD, TolkienBlocks.SLAB_MIRKWOOD);
+        barrelRecipe(pRecipeOutput, TolkienBlocks.BARREL_CULUMALDA, TolkienBlocks.PLANKS_CULUMALDA, TolkienBlocks.SLAB_CULUMALDA);
+        barrelRecipe(pRecipeOutput, TolkienBlocks.BARREL_LEBETHRON, TolkienBlocks.PLANKS_LEBETHRON, TolkienBlocks.SLAB_LEBETHRON);
+        barrelRecipe(pRecipeOutput, TolkienBlocks.BARREL_FANGORNOAK, TolkienBlocks.PLANKS_FANGORNOAK, TolkienBlocks.SLAB_FANGORNOAK);
+        barrelRecipe(pRecipeOutput, TolkienBlocks.BARREL_DEADWOOD, TolkienBlocks.PLANKS_DEADWOOD, TolkienBlocks.SLAB_DEADWOOD);
+
+        signRecipe(pRecipeOutput, TolkienBlocks.MALLORN_SIGN, TolkienBlocks.PLANKS_MALLORN);
+        signRecipe(pRecipeOutput, TolkienBlocks.MIRKWOOD_SIGN, TolkienBlocks.PLANKS_MIRKWOOD);
+        signRecipe(pRecipeOutput, TolkienBlocks.CULUMALDA_SIGN, TolkienBlocks.PLANKS_CULUMALDA);
+        signRecipe(pRecipeOutput, TolkienBlocks.LEBETHRON_SIGN, TolkienBlocks.PLANKS_LEBETHRON);
+        signRecipe(pRecipeOutput, TolkienBlocks.FANGORNOAK_SIGN, TolkienBlocks.PLANKS_FANGORNOAK);
+        signRecipe(pRecipeOutput, TolkienBlocks.DEADWOOD_SIGN, TolkienBlocks.PLANKS_DEADWOOD);
+
+        hangingSignRecipe(pRecipeOutput,TolkienBlocks.MALLORN_HANGING_SIGN, TolkienBlocks.PLANKS_MALLORN);
+        hangingSignRecipe(pRecipeOutput, TolkienBlocks.MIRKWOOD_HANGING_SIGN, TolkienBlocks.PLANKS_MIRKWOOD);
+        hangingSignRecipe(pRecipeOutput, TolkienBlocks.CULUMALDA_HANGING_SIGN, TolkienBlocks.PLANKS_CULUMALDA);
+        hangingSignRecipe(pRecipeOutput, TolkienBlocks.LEBETHRON_HANGING_SIGN, TolkienBlocks.PLANKS_LEBETHRON);
+        hangingSignRecipe(pRecipeOutput, TolkienBlocks.FANGORNOAK_HANGING_SIGN, TolkienBlocks.PLANKS_FANGORNOAK);
+        hangingSignRecipe(pRecipeOutput, TolkienBlocks.DEADWOOD_HANGING_SIGN, TolkienBlocks.PLANKS_DEADWOOD);
+
+        ladderRecipe(pRecipeOutput, TolkienBlocks.LADDER_MALLORN, TolkienBlocks.PLANKS_MALLORN);
+        ladderRecipe(pRecipeOutput, TolkienBlocks.LADDER_MIRKWOOD, TolkienBlocks.PLANKS_MIRKWOOD);
+        ladderRecipe(pRecipeOutput, TolkienBlocks.LADDER_CULUMALDA, TolkienBlocks.PLANKS_CULUMALDA);
+        ladderRecipe(pRecipeOutput, TolkienBlocks.LADDER_LEBETHRON, TolkienBlocks.PLANKS_LEBETHRON);
+        ladderRecipe(pRecipeOutput, TolkienBlocks.LADDER_FANGORNOAK, TolkienBlocks.PLANKS_FANGORNOAK);
+        ladderRecipe(pRecipeOutput, TolkienBlocks.LADDER_DEADWOOD, TolkienBlocks.PLANKS_DEADWOOD);
+
         leafPileRecipe(pRecipeOutput, TolkienBlocks.LEAFPILE_MALLORN, TolkienBlocks.LEAVES_MALLORN);
         leafPileRecipe(pRecipeOutput, TolkienBlocks.LEAFPILE_MIRKWOOD, TolkienBlocks.LEAVES_MALLORN);
         leafPileRecipe(pRecipeOutput, TolkienBlocks.LEAFPILE_CULUMALDA, TolkienBlocks.LEAVES_MALLORN);
@@ -263,25 +293,8 @@ public class TolkienRecipeProvider extends RecipeProvider implements IConditionB
         shearsRecipe(pRecipeOutput, TolkienItems.SHEARS_MORGULIRON.get(), TolkienItems.INGOT_MORGULIRON.get());
         shearsRecipe(pRecipeOutput, TolkienItems.SHEARS_AMMOLITE.get(), TolkienItems.GEM_AMMOLITE.get());
 
-        ShapedRecipeBuilder
-                .shaped(RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.BLOCK_HALLOWED.get().asItem(), 8)
-                .define('W', Blocks.GRASS_BLOCK)
-                .define('P', TolkienItems.GEM_AMMOLITE)
-                .pattern("WWW")
-                .pattern("WPW")
-                .pattern("WWW")
-                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(TolkienItems.GEM_AMMOLITE))
-                .save(pRecipeOutput);
-
-        ShapedRecipeBuilder
-                .shaped(RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.STONE_PATH.get().asItem(), 8)
-                .define('A', Items.IRON_PICKAXE)
-                .define('M', Blocks.MOSSY_COBBLESTONE)
-                .pattern("MMM")
-                .pattern("MAM")
-                .pattern("MMM")
-                .unlockedBy("has_iron", InventoryChangeTrigger.TriggerInstance.hasItems(Items.IRON_INGOT))
-                .save(pRecipeOutput);
+        conversionRecipe(pRecipeOutput, TolkienBlocks.BLOCK_HALLOWED, Blocks.GRASS_BLOCK, TolkienItems.GEM_AMMOLITE);
+        conversionRecipe(pRecipeOutput, TolkienBlocks.STONE_PATH, Blocks.MOSSY_COBBLESTONE, Items.IRON_PICKAXE);
 
 //        ShapedRecipeBuilder
 //                .shaped(RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.PLACARD.get().asItem(), 1)
@@ -311,6 +324,42 @@ public class TolkienRecipeProvider extends RecipeProvider implements IConditionB
         ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, planks, count).requires(log).group("planks").unlockedBy("has_logs", has(log)).save(output);
     }
 
+    private void conversionRecipe(RecipeOutput recipeOutput, Supplier<? extends Block> result, ItemLike item1, ItemLike item2) {
+        ShapedRecipeBuilder
+                .shaped(RecipeCategory.BUILDING_BLOCKS, result.get().asItem(), 8)
+                .define('A', item1)
+                .define('M', item2)
+                .pattern("AAA")
+                .pattern("AMA")
+                .pattern("AAA")
+                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(item2))
+                .save(recipeOutput);
+    }
+
+    protected static void ladderRecipe(RecipeOutput recipeOutput, ItemLike ladder, ItemLike material) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ladder, 4)
+                .group("sign")
+                .define('#', material)
+                .define('X', Items.STICK)
+                .pattern("X X")
+                .pattern("X#X")
+                .pattern("X X")
+                .unlockedBy(getHasName(material), has(material))
+                .save(recipeOutput);
+    }
+
+    private void barrelRecipe(RecipeOutput recipeOutput, Supplier<? extends Block> result, ItemLike plank, ItemLike slab) {
+        ShapedRecipeBuilder
+                .shaped(RecipeCategory.MISC, result.get().asItem())
+                .define('A', plank)
+                .define('M', slab)
+                .pattern("AMA")
+                .pattern("A A")
+                .pattern("AMA")
+                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(plank))
+                .save(recipeOutput);
+    }
+
     private void addLampRecipe(RecipeOutput recipeOutput, Supplier<? extends Block> result, ItemLike block, ItemLike ingot) {
         ShapedRecipeBuilder
                 .shaped(RecipeCategory.BUILDING_BLOCKS, result.get().asItem())
@@ -320,6 +369,30 @@ public class TolkienRecipeProvider extends RecipeProvider implements IConditionB
                 .pattern("WPW")
                 .pattern("WWW")
                 .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(block))
+                .save(recipeOutput);
+    }
+
+    protected static void signRecipe(RecipeOutput recipeOutput, ItemLike pSign, ItemLike material) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, pSign, 3)
+                .group("sign")
+                .define('#', material)
+                .define('X', Items.STICK)
+                .pattern("###")
+                .pattern("###")
+                .pattern(" X ")
+                .unlockedBy(getHasName(material), has(material))
+                .save(recipeOutput);
+    }
+
+    protected static void hangingSignRecipe(RecipeOutput recipeOutput, ItemLike sign, ItemLike material) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, sign, 6)
+                .group("hanging_sign")
+                .define('#', material)
+                .define('X', Items.CHAIN)
+                .pattern("X X")
+                .pattern("###")
+                .pattern("###")
+                .unlockedBy("has_stripped_logs", has(material))
                 .save(recipeOutput);
     }
 

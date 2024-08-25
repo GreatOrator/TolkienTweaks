@@ -2,17 +2,17 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "P": {
-      "item": "tolkienmobs:gem_ammolite"
-    },
-    "W": {
+    "A": {
       "item": "minecraft:grass_block"
+    },
+    "M": {
+      "item": "tolkienmobs:gem_ammolite"
     }
   },
   "pattern": [
-    "WWW",
-    "WPW",
-    "WWW"
+    "AAA",
+    "AMA",
+    "AAA"
   ],
   "result": {
     "count": 8,

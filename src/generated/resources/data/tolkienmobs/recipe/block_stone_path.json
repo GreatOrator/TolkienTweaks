@@ -3,16 +3,16 @@
   "category": "building",
   "key": {
     "A": {
-      "item": "minecraft:iron_pickaxe"
+      "item": "minecraft:mossy_cobblestone"
     },
     "M": {
-      "item": "minecraft:mossy_cobblestone"
+      "item": "minecraft:iron_pickaxe"
     }
   },
   "pattern": [
-    "MMM",
-    "MAM",
-    "MMM"
+    "AAA",
+    "AMA",
+    "AAA"
   ],
   "result": {
     "count": 8,
