@@ -1,0 +1,52 @@
+{
+  "variants": {
+    "level=0": {
+      "model": "tolkienmobs:block/mithril"
+    },
+    "level=1": {
+      "model": "tolkienmobs:block/mithril"
+    },
+    "level=10": {
+      "model": "tolkienmobs:block/mithril"
+    },
+    "level=11": {
+      "model": "tolkienmobs:block/mithril"
+    },
+    "level=12": {
+      "model": "tolkienmobs:block/mithril"
+    },
+    "level=13": {
+      "model": "tolkienmobs:block/mithril"
+    },
+    "level=14": {
+      "model": "tolkienmobs:block/mithril"
+    },
+    "level=15": {
+      "model": "tolkienmobs:block/mithril"
+    },
+    "level=2": {
+      "model": "tolkienmobs:block/mithril"
+    },
+    "level=3": {
+      "model": "tolkienmobs:block/mithril"
+    },
+    "level=4": {
+      "model": "tolkienmobs:block/mithril"
+    },
+    "level=5": {
+      "model": "tolkienmobs:block/mithril"
+    },
+    "level=6": {
+      "model": "tolkienmobs:block/mithril"
+    },
+    "level=7": {
+      "model": "tolkienmobs:block/mithril"
+    },
+    "level=8": {
+      "model": "tolkienmobs:block/mithril"
+    },
+    "level=9": {
+      "model": "tolkienmobs:block/mithril"
+    }
+  }
+}

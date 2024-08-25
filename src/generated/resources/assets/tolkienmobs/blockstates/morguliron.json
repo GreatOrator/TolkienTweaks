@@ -1,0 +1,52 @@
+{
+  "variants": {
+    "level=0": {
+      "model": "tolkienmobs:block/morguliron"
+    },
+    "level=1": {
+      "model": "tolkienmobs:block/morguliron"
+    },
+    "level=10": {
+      "model": "tolkienmobs:block/morguliron"
+    },
+    "level=11": {
+      "model": "tolkienmobs:block/morguliron"
+    },
+    "level=12": {
+      "model": "tolkienmobs:block/morguliron"
+    },
+    "level=13": {
+      "model": "tolkienmobs:block/morguliron"
+    },
+    "level=14": {
+      "model": "tolkienmobs:block/morguliron"
+    },
+    "level=15": {
+      "model": "tolkienmobs:block/morguliron"
+    },
+    "level=2": {
+      "model": "tolkienmobs:block/morguliron"
+    },
+    "level=3": {
+      "model": "tolkienmobs:block/morguliron"
+    },
+    "level=4": {
+      "model": "tolkienmobs:block/morguliron"
+    },
+    "level=5": {
+      "model": "tolkienmobs:block/morguliron"
+    },
+    "level=6": {
+      "model": "tolkienmobs:block/morguliron"
+    },
+    "level=7": {
+      "model": "tolkienmobs:block/morguliron"
+    },
+    "level=8": {
+      "model": "tolkienmobs:block/morguliron"
+    },
+    "level=9": {
+      "model": "tolkienmobs:block/morguliron"
+    }
+  }
+}

@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.datagen;
 import com.greatorator.tolkienmobs.block.custom.PipeweedCropBlock;
 import com.greatorator.tolkienmobs.block.custom.PlacardBlock;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
+import com.greatorator.tolkienmobs.init.TolkienFluids;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
@@ -11,10 +12,7 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
-import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
-import net.neoforged.neoforge.client.model.generators.ModelFile;
-import net.neoforged.neoforge.client.model.generators.VariantBlockStateBuilder;
+import net.neoforged.neoforge.client.model.generators.*;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
@@ -124,7 +122,7 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         blockItem(TolkienBlocks.TRAPDOOR_MALLORN, "_bottom");
         blockItem(TolkienBlocks.BARREL_MALLORN);
 
-        // Mirkwood
+            // Mirkwood
         logBlock((RotatedPillarBlock)TolkienBlocks.LOG_MIRKWOOD.get());
         logBlock((RotatedPillarBlock)TolkienBlocks.WOOD_MIRKWOOD.get());
         logBlock((RotatedPillarBlock)TolkienBlocks.STRIPPED_MIRKWOOD_LOG.get());
@@ -159,7 +157,8 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         blockItem(TolkienBlocks.FENCE_GATE_MIRKWOOD);
         blockItem(TolkienBlocks.TRAPDOOR_MIRKWOOD, "_bottom");
         blockItem(TolkienBlocks.BARREL_MIRKWOOD);
-        // Culumalda
+
+            // Culumalda
         logBlock((RotatedPillarBlock)TolkienBlocks.LOG_CULUMALDA.get());
         logBlock((RotatedPillarBlock)TolkienBlocks.WOOD_CULUMALDA.get());
         logBlock((RotatedPillarBlock)TolkienBlocks.STRIPPED_CULUMALDA_LOG.get());
@@ -194,7 +193,8 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         blockItem(TolkienBlocks.FENCE_GATE_CULUMALDA);
         blockItem(TolkienBlocks.TRAPDOOR_CULUMALDA, "_bottom");
         blockItem(TolkienBlocks.BARREL_CULUMALDA);
-        // Lebethron
+
+            // Lebethron
         logBlock((RotatedPillarBlock)TolkienBlocks.LOG_LEBETHRON.get());
         logBlock((RotatedPillarBlock)TolkienBlocks.WOOD_LEBETHRON.get());
         logBlock((RotatedPillarBlock)TolkienBlocks.STRIPPED_LEBETHRON_LOG.get());
@@ -229,7 +229,8 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         blockItem(TolkienBlocks.FENCE_GATE_LEBETHRON);
         blockItem(TolkienBlocks.TRAPDOOR_LEBETHRON, "_bottom");
         blockItem(TolkienBlocks.BARREL_LEBETHRON);
-        // Fangorn Oak
+
+            // Fangorn Oak
         logBlock((RotatedPillarBlock)TolkienBlocks.LOG_FANGORNOAK.get());
         logBlock((RotatedPillarBlock)TolkienBlocks.WOOD_FANGORNOAK.get());
         logBlock((RotatedPillarBlock)TolkienBlocks.STRIPPED_FANGORNOAK_LOG.get());
@@ -264,7 +265,8 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         blockItem(TolkienBlocks.FENCE_GATE_FANGORNOAK);
         blockItem(TolkienBlocks.TRAPDOOR_FANGORNOAK, "_bottom");
         blockItem(TolkienBlocks.BARREL_FANGORNOAK);
-        // Deadwood
+
+            // Deadwood
         logBlock((RotatedPillarBlock)TolkienBlocks.LOG_DEADWOOD.get());
         logBlock((RotatedPillarBlock)TolkienBlocks.WOOD_DEADWOOD.get());
         logBlock((RotatedPillarBlock)TolkienBlocks.STRIPPED_DEADWOOD_LOG.get());
@@ -293,8 +295,8 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         blockItem(TolkienBlocks.PRESSURE_PLATE_DEADWOOD);
         blockItem(TolkienBlocks.FENCE_GATE_DEADWOOD);
         blockItem(TolkienBlocks.TRAPDOOR_DEADWOOD, "_bottom");
-            //Flowers & Plants
 
+            //Flowers & Plants
         makeFlower(TolkienBlocks.FLOWER_SIMBELMYNE, TolkienBlocks.POTTED_FLOWER_SIMBELMYNE);
         makeFlower(TolkienBlocks.FLOWER_MIRKWOOD, TolkienBlocks.POTTED_FLOWER_MIRKWOOD);
         makeFlower(TolkienBlocks.FLOWER_ALFIRIN, TolkienBlocks.POTTED_FLOWER_ALFIRIN);
@@ -313,6 +315,7 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         blockItem(TolkienBlocks.BLOCK_DECAY_BLOOM);
         blockItem(TolkienBlocks.BLOCK_BLOOM_DECAY);
         makeCrop(((PipeweedCropBlock) TolkienBlocks.PIPEWEED.get()), "pipeweed_crop_stage", "pipeweed_stage");
+
             // Custom
         builtinEntity(TolkienBlocks.LIGHTNINGBUG_BLOCK.get(), "block/blank");
         builtinEntity(TolkienBlocks.LOCUST_BLOCK.get(), "block/blank");
@@ -347,6 +350,34 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
             }
         }
         blockItem(TolkienBlocks.PLACARD, "_wall_empty");
+
+        fluid();
+    }
+
+    public void fluid() {
+        String mithrilName = "mithril";
+        String nameMithril = mithrilName.substring(mithrilName.lastIndexOf('.') + 1);
+
+        ModelFile mithrilFile = models()
+                .withExistingParent(nameMithril, modLoc("block/mithril"));
+        BlockModelBuilder mithrilFluid = models()
+                .withExistingParent(nameMithril, modLoc("block/mithril"))
+                .texture("particle", modLoc("block/mithril_still"));
+        getVariantBuilder(TolkienFluids.MITHRIL_BLOCK.get())
+                .forAllStates(state -> ConfiguredModel.builder().modelFile(mithrilFile).build());
+
+        String morgulironName = "morguliron";
+        String nameMorguliron = morgulironName.substring(morgulironName.lastIndexOf('.') + 1);
+
+        ModelFile morgulironFile = models()
+                .withExistingParent(nameMorguliron, modLoc("block/morguliron"));
+        BlockModelBuilder morgulironFluid = models()
+                .withExistingParent(nameMorguliron, modLoc("block/morguliron"))
+                .texture("particle", modLoc("block/morguliron_still"));
+
+        getVariantBuilder(TolkienFluids.MORGULIRON_BLOCK.get())
+                .forAllStates(state -> ConfiguredModel.builder().modelFile(morgulironFile).build());
+
     }
 
     protected ResourceLocation texture(String name) {
