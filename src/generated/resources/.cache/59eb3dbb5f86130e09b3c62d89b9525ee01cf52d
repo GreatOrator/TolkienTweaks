@@ -1,9 +1,11 @@
-// 1.21	2024-08-20T07:57:06.9475362	Loot Tables
+// 1.21	2024-08-24T15:26:09.213324	Loot Tables
 751cef79643d2dbbe7381bd0fb573883adf8dc34 data/tolkienmobs/loot_table/blocks/block_ammolite.json
 ba4e9f4117f65a59f5ac08563f4b740ae5f8a09b data/tolkienmobs/loot_table/blocks/block_bloom_decay.json
 4a3de122af462d6cd6bff3366ef260e61062d877 data/tolkienmobs/loot_table/blocks/block_decay_bloom.json
+693742c217bf3ea6a65f0c76dec0b6c6b505f393 data/tolkienmobs/loot_table/blocks/block_hallowed.json
 5ff5043d501d720f910a0859063bb997d298c36a data/tolkienmobs/loot_table/blocks/block_mithril.json
 9880e52837e6a23bb4e5438f95f95c3aa7e7cd5e data/tolkienmobs/loot_table/blocks/block_morguliron.json
+e6755ad9529588820d1b1a4fcb391d544b0b62cb data/tolkienmobs/loot_table/blocks/block_stone_path.json
 0f54bc88911374a597622a8d8bb7a07ce70ee109 data/tolkienmobs/loot_table/blocks/culumalda_button.json
 60410268c2139b379744121769b509c456d87a39 data/tolkienmobs/loot_table/blocks/deadwood_button.json
 ed49e3b2fae319b82c329f9caa65e68bfd7bad89 data/tolkienmobs/loot_table/blocks/door_culumalda.json
@@ -75,6 +77,7 @@ a95f12db8b4bdb64f80473fd1306bcb672e287f1 data/tolkienmobs/loot_table/blocks/ore_
 864ee0b2bea52333a74e2c2c7664adb888c4d2b6 data/tolkienmobs/loot_table/blocks/ore_nether_mithril.json
 fc9469f927705f0dd0f52e033ca9293f43ad86f5 data/tolkienmobs/loot_table/blocks/ore_nether_morguliron.json
 21f5900ed4e5fc8f3b39bd02c7b3ec0b297d1c65 data/tolkienmobs/loot_table/blocks/pipeweed.json
+2013f43ea75ef7f511e65aa8fa820dacb7601775 data/tolkienmobs/loot_table/blocks/placard.json
 fc262257d4c0ea12cad7f4749e4305037dd7ea0a data/tolkienmobs/loot_table/blocks/planks_culumalda.json
 0967564e55fa4eed279260b5a21aeabcb6b5e9d6 data/tolkienmobs/loot_table/blocks/planks_deadwood.json
 eee25f51b079ca6cd8ab7bc039a9896aa6e9ddac data/tolkienmobs/loot_table/blocks/planks_fangornoak.json

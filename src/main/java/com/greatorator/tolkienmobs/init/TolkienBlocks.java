@@ -6,6 +6,7 @@ import com.greatorator.tolkienmobs.block.TolkienWallTorchBlock;
 import com.greatorator.tolkienmobs.block.custom.*;
 import com.greatorator.tolkienmobs.block.custom.entity.LightningBugEntity;
 import com.greatorator.tolkienmobs.block.custom.entity.LocustEntity;
+import com.greatorator.tolkienmobs.block.custom.tiles.PlacardTile;
 import com.greatorator.tolkienmobs.init.types.TolkienParticleTypes;
 import com.greatorator.tolkienmobs.world.TolkienConfiguredFeatures;
 import com.greatorator.tolkienmobs.world.tree.TolkienTreeGrowers;
@@ -546,6 +547,8 @@ public class TolkienBlocks {
             () -> new FancyLanternBlock(BlockBehaviour.Properties.of().strength(3.5F, 3.5F).requiresCorrectToolForDrops().noOcclusion().lightLevel((state) -> state.getValue(LIT) ? 13:0).sound(SoundType.LANTERN)));
     public static final DeferredBlock<Block> MORGUL_LANTERN = registerBlock("morgul_lantern",
             () -> new FancyLanternBlock(BlockBehaviour.Properties.of().strength(3.5F, 3.5F).requiresCorrectToolForDrops().noOcclusion().lightLevel((state) -> state.getValue(LIT) ? 11:0).sound(SoundType.LANTERN)));
+    public static final DeferredBlock<Block> BLOCK_HALLOWED = registerBlock("block_hallowed", () -> new HallowedBlock(BlockBehaviour.Properties.of().randomTicks().sound(SoundType.GRAVEL)));
+    public static final DeferredBlock<Block> STONE_PATH = registerBlock("block_stone_path", () -> new StonePathBlock(BlockBehaviour.Properties.of().isViewBlocking(TolkienBlocks::never).sound(SoundType.STONE)));
 
         // Sleeping Bags
     public static final DeferredBlock<SleepingBagBlock> SLEEPING_BAG_WHITE = BLOCKS.register("sleeping_bag_white", () -> new SleepingBagBlock(DyeColor.WHITE, Block.Properties.of().mapColor(MapColor.SNOW).sound(SoundType.WOOL).strength(0.2F).noOcclusion().pushReaction(PushReaction.DESTROY)));
@@ -568,6 +571,9 @@ public class TolkienBlocks {
     //Barrels
     //Signs
     //Placards
+    public static final DeferredBlock<Block> PLACARD = registerBlock("placard", () -> new PlacardBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().strength(1f, 1f)));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PlacardTile>> PLACARD_TILE = BLOCK_ENTITIES.register("placard_tile", () -> BlockEntityType.Builder.of(PlacardTile::new, PLACARD.get()).build(null));
+
     //Boats
     //Custom Blocks
     private static boolean never(BlockState state, BlockGetter blockGetter, BlockPos pos) {

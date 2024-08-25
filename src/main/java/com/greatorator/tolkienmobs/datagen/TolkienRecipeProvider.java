@@ -8,6 +8,8 @@ import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -15,6 +17,7 @@ import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 import org.jetbrains.annotations.Nullable;
 
@@ -259,6 +262,37 @@ public class TolkienRecipeProvider extends RecipeProvider implements IConditionB
         shearsRecipe(pRecipeOutput, TolkienItems.SHEARS_MITHRIL.get(), TolkienItems.INGOT_MITHRIL.get());
         shearsRecipe(pRecipeOutput, TolkienItems.SHEARS_MORGULIRON.get(), TolkienItems.INGOT_MORGULIRON.get());
         shearsRecipe(pRecipeOutput, TolkienItems.SHEARS_AMMOLITE.get(), TolkienItems.GEM_AMMOLITE.get());
+
+        ShapedRecipeBuilder
+                .shaped(RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.BLOCK_HALLOWED.get().asItem(), 8)
+                .define('W', Blocks.GRASS_BLOCK)
+                .define('P', TolkienItems.GEM_AMMOLITE)
+                .pattern("WWW")
+                .pattern("WPW")
+                .pattern("WWW")
+                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(TolkienItems.GEM_AMMOLITE))
+                .save(pRecipeOutput);
+
+        ShapedRecipeBuilder
+                .shaped(RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.STONE_PATH.get().asItem(), 8)
+                .define('A', Items.IRON_PICKAXE)
+                .define('M', Blocks.MOSSY_COBBLESTONE)
+                .pattern("MMM")
+                .pattern("MAM")
+                .pattern("MMM")
+                .unlockedBy("has_iron", InventoryChangeTrigger.TriggerInstance.hasItems(Items.IRON_INGOT))
+                .save(pRecipeOutput);
+
+//        ShapedRecipeBuilder
+//                .shaped(RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.PLACARD.get().asItem(), 1)
+//                .define('M', TolkienBlocks.PLANKS_MALLORN)
+//                .define('A', TolkienItems.INGOT_MITHRIL)
+//                .define('-', Items.STICK)
+//                .pattern("AMA")
+//                .pattern("AMA")
+//                .pattern("- -")
+//                .unlockedBy("has_mithril", InventoryChangeTrigger.TriggerInstance.hasItems(TolkienItems.INGOT_MITHRIL.get()))
+//                .save(pRecipeOutput);
     }
 
     protected static void oreSmelting(RecipeOutput pRecipeOutput, List<ItemLike> pIngredients, RecipeCategory pCategory, ItemLike pResult,

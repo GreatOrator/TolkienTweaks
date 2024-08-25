@@ -1,4 +1,6 @@
-// 1.21	2024-08-20T08:50:07.2311368	Recipes
+// 1.21	2024-08-24T14:45:53.3860769	Recipes
+3cd2a545a9e39dbbaf654c81f7b419c733d8c671 data/tolkienmobs/advancement/recipes/building_blocks/block_hallowed.json
+cdb05a9ea185d125a84005eac5324646a05501ff data/tolkienmobs/advancement/recipes/building_blocks/block_stone_path.json
 ee270370e9919bd19089ec31bcb00aab7fe0eeb4 data/tolkienmobs/advancement/recipes/building_blocks/elven_lantern.json
 f9e38b4ed7422410ffe7d298b5468bf88a0e9b5c data/tolkienmobs/advancement/recipes/building_blocks/item_backpack_upgrade_campfire.json
 8b03e8e61fe98f97ebee02c34e379f7e49346efd data/tolkienmobs/advancement/recipes/building_blocks/item_backpack_upgrade_crafting.json
@@ -180,8 +182,10 @@ ffc188949cd7196ee374d626f94f5b6e6295d3c1 data/tolkienmobs/advancement/recipes/to
 bcb067fd8da9193270843bf37c1c6d1ad5ed5e06 data/tolkienmobs/recipe/axe_mithril.json
 e1ac91a838d894edc21fa6133295c56e3dac3b8e data/tolkienmobs/recipe/axe_morguliron.json
 068aed6f2d4c88914a72ce0ef9ee283337ded157 data/tolkienmobs/recipe/block_ammolite.json
+a539a5c7dda8c8d0e75e7b2b7acb1b771e407513 data/tolkienmobs/recipe/block_hallowed.json
 2570140d0900a35ba81df06e4657c092e883b9e6 data/tolkienmobs/recipe/block_mithril.json
 dc3f94ede1f1cef6427a021b4808dac1b85673ac data/tolkienmobs/recipe/block_morguliron.json
+d593e58bfdf2ede5a458f307306b1e325e7f5587 data/tolkienmobs/recipe/block_stone_path.json
 1ec44c622859add62b151bd7893f51b29606d2c8 data/tolkienmobs/recipe/culumalda_button.json
 ac0bca33bf375c3adb71ac2181cd78a0ee77a025 data/tolkienmobs/recipe/cyan_dye_from_flower_swamp_milkweed.json
 959125848e65d108172e2101a5e67cae4ab80c64 data/tolkienmobs/recipe/deadwood_button.json

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "P": {
+      "item": "tolkienmobs:gem_ammolite"
+    },
+    "W": {
+      "item": "minecraft:grass_block"
+    }
+  },
+  "pattern": [
+    "WWW",
+    "WPW",
+    "WWW"
+  ],
+  "result": {
+    "count": 8,
+    "id": "tolkienmobs:block_hallowed"
+  }
+}

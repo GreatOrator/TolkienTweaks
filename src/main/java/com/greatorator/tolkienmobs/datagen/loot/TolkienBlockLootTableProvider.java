@@ -18,6 +18,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -255,6 +256,9 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.SILMARIL_LANTERN.get());
         dropSelf(TolkienBlocks.ELVEN_LANTERN.get());
         dropSelf(TolkienBlocks.MORGUL_LANTERN.get());
+        dropSelf(TolkienBlocks.BLOCK_HALLOWED.get());
+        dropOther(TolkienBlocks.STONE_PATH, Blocks.COBBLESTONE);
+        dropSelf(TolkienBlocks.PLACARD.get());
 
         // Sleeping Bags
         this.add(TolkienBlocks.SLEEPING_BAG_BLUE.get(), this::createSleepingBagDrop);

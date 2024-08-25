@@ -344,6 +344,9 @@ public class TolkienTabs {
                         output.accept(TolkienItems.PIPEWEED_SEEDS);
                         output.accept(TolkienBlocks.LIGHTNINGBUG_BLOCK);
                         output.accept(TolkienBlocks.LOCUST_BLOCK);
+                        output.accept(TolkienBlocks.BLOCK_HALLOWED);
+                        output.accept(TolkienBlocks.STONE_PATH);
+                        output.accept(TolkienBlocks.PLACARD);
                     }).build());
 
     public static final Supplier<CreativeModeTab> TOLKIEN_TOOLS = CREATIVE_MODE_TAB.register("tolkienmobs_tab_tool",
