@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs;
 
+import com.greatorator.tolkienmobs.block.custom.tiles.renderer.PlacardTileRender;
 import com.greatorator.tolkienmobs.containers.screens.CoinPouchScreen;
 import com.greatorator.tolkienmobs.containers.screens.KeyRingScreen;
 import com.greatorator.tolkienmobs.event.TolkienRegistration;
@@ -12,6 +13,7 @@ import com.greatorator.tolkienmobs.particle.provider.TolkienParticleProvider;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FlowerPotBlock;
@@ -24,6 +26,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
@@ -33,6 +36,8 @@ import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import org.slf4j.Logger;
 
 import java.util.Locale;
+
+import static com.greatorator.tolkienmobs.init.TolkienItems.*;
 
 @Mod(TolkienMobsMain.MODID)
 public class TolkienMobsMain {
@@ -53,8 +58,8 @@ public class TolkienMobsMain {
 
         TolkienItems.register(modEventBus);
         TolkienBlocks.register(modEventBus);
-
         TolkienEntities.register(modEventBus);
+
         TolkienSounds.register(modEventBus);
         TolkienEffects.register(modEventBus);
         TolkienContainers.register(modEventBus);
@@ -121,6 +126,18 @@ public class TolkienMobsMain {
             event.register(TolkienContainers.KEY_RING_CONTAINER.get(), KeyRingScreen::new);
         }
 
+//        @SubscribeEvent
+//        public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+//            Register Block Entity Renders
+//            event.registerBlockEntityRenderer(TolkienBlocks.PLACARD_TILE.get(), PlacardTileRender::new);
+//        }
+//
+//        @SubscribeEvent
+//        public void registerPropertyOverride() {
+//            ItemProperties.register(COIN_POUCH.get(), new ResourceLocation("fullness"), CoinPouchItem::getFullnessPropertyOverride);
+//            ItemProperties.register(KEY_RING.get(), new ResourceLocation("fullness"), KeyRingItem::getFullnessPropertyOverride);
+//        }
+
         @SubscribeEvent
         public static void onClientExtensions(RegisterClientExtensionsEvent event) {
             event.registerFluidType(((TolkienFluidTypes) TolkienFluid.MOLTEN_MITHRIL_LAVA_FLUID_TYPE.get()).getClientFluidTypeExtensions(),
@@ -151,5 +168,9 @@ public class TolkienMobsMain {
 
     public static ResourceLocation prefix(String name) {
         return ResourceLocation.fromNamespaceAndPath(MODID, name.toLowerCase(Locale.ROOT));
+    }
+
+    public static ResourceLocation resLoc(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MODID, path);
     }
 }

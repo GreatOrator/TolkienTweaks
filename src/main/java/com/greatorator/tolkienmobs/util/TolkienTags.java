@@ -1,9 +1,12 @@
 package com.greatorator.tolkienmobs.util;
 
+import com.greatorator.tolkienmobs.TolkienMobsMain;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
@@ -24,6 +27,16 @@ public class TolkienTags {
 
         private static TagKey<Item> createTag(String name) {
             return ItemTags.create(ResourceLocation.fromNamespaceAndPath(MODID, name));
+        }
+    }
+
+    public static class DamageTypes {
+        private DamageTypes() {}
+
+        public static final TagKey<DamageType> ILLUVATAR_DAMAGE_GROUP = tag("illuvatar_damage_group");
+
+        private static TagKey<DamageType> tag(String name) {
+            return TagKey.create(Registries.DAMAGE_TYPE, TolkienMobsMain.resLoc(name));
         }
     }
 }

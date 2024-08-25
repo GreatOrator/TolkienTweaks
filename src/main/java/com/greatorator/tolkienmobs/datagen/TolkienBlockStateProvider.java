@@ -1,16 +1,20 @@
 package com.greatorator.tolkienmobs.datagen;
 
 import com.greatorator.tolkienmobs.block.custom.PipeweedCropBlock;
+import com.greatorator.tolkienmobs.block.custom.PlacardBlock;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.client.model.generators.VariantBlockStateBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
@@ -263,6 +267,37 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
             // Custom
         builtinEntity(TolkienBlocks.LIGHTNINGBUG_BLOCK.get(), "block/blank");
         builtinEntity(TolkienBlocks.LOCUST_BLOCK.get(), "block/blank");
+        simpleBlock(TolkienBlocks.BLOCK_HALLOWED.value(), this.models().cubeBottomTop("block_hallowed", modLoc("block/block_hallowed_side"), modLoc("block/block_hallowed"), modLoc("block/block_hallowed_top")));
+        simpleBlock(TolkienBlocks.STONE_PATH.value(), this.models().getExistingFile(modLoc("block/block_stone_path")));
+
+        blockItem(TolkienBlocks.BLOCK_HALLOWED);
+        blockItem(TolkienBlocks.STONE_PATH);
+
+            //Placards
+        ModelFile placardWallModel = models().getExistingFile(modLoc("block/placard_wall"));
+        ModelFile placardStandingModel = models().getExistingFile(modLoc("block/placard_standing"));
+        ModelFile placardHangingModel = models().getExistingFile(modLoc("block/placard_hanging"));
+
+        VariantBlockStateBuilder placardBuilder = getVariantBuilder(TolkienBlocks.PLACARD.get());
+        for (AttachFace face : PlacardBlock.ATTACH_FACE.getPossibleValues()) {
+            for (PlacardBlock.PlacardType type : PlacardBlock.PlacardType.values()) {
+                ModelFile baseModel = face == AttachFace.FLOOR ? placardStandingModel : face == AttachFace.CEILING ? placardHangingModel : placardWallModel;
+                ModelFile model = models().getBuilder("placard_" + face.getSerializedName() + "_" + type.getName()).parent(baseModel).texture("tex", "tolkienmobs:block/signs/placard_" + type.getName());
+                for (Direction dir : PlacardBlock.FACING.getPossibleValues()) {
+
+                    int angle = (int) dir.toYRot();
+                    placardBuilder.partialState()
+                            .with(PlacardBlock.FACING, dir)
+                            .with(PlacardBlock.ATTACH_FACE, face)
+                            .with(PlacardBlock.PLACARD_TYPE, type)
+                            .modelForState()
+                            .modelFile(model)
+                            .rotationY(angle)
+                            .addModel();
+                }
+            }
+        }
+        blockItem(TolkienBlocks.PLACARD, "_wall_empty");
     }
 
     protected ResourceLocation texture(String name) {

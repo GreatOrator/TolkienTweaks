@@ -21,15 +21,15 @@ public class TolkienMobsConfig {
 
     /* Client */
     /* Server */
-    private static final ModConfigSpec.BooleanValue STOP_PHANTOM = BUILDER
-            .comment("If enabled, attempting to sleep in sleeping bags stops phantoms from spawning.")
-            .define("sleepingBagsStopPhantoms", true);
+    private static final ModConfigSpec.BooleanValue FAKE_PLAYER = BUILDER
+            .comment("Disable fake player for Hallowed Earth (Default false)")
+            .define("disableFakePlayer", true);
     private static final ModConfigSpec.BooleanValue AUTO_USE = BUILDER
             .comment("If enabled, players automatically attempt to use sleeping bags when placed.")
             .define("autoUse", true);
-    private static final ModConfigSpec.EnumValue<ComfortsTimeUse> SLEEPING_BAG_TIME_USE = BUILDER
-            .comment("The time of day that sleeping bags can be used.")
-            .defineEnum("sleepingBagUse", ComfortsTimeUse.NIGHT);
+//    private static final ModConfigSpec.EnumValue<ComfortsTimeUse> SLEEPING_BAG_TIME_USE = BUILDER
+//            .comment("The time of day that sleeping bags can be used.")
+//            .defineEnum("sleepingBagUse", ComfortsTimeUse.NIGHT);
 
     private static final ModConfigSpec.IntValue MAGIC_NUMBER = BUILDER
             .comment("A magic number")
@@ -46,7 +46,7 @@ public class TolkienMobsConfig {
 
     static final ModConfigSpec SPEC = BUILDER.build();
 
-    public static boolean sleepingBagsStopPhantoms;
+    public static boolean disableFakePlayer;
     public static boolean autoUse;
     public enum sleepingBagUse {};
     public static int magicNumber;
@@ -61,9 +61,8 @@ public class TolkienMobsConfig {
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event)
     {
-        sleepingBagsStopPhantoms = STOP_PHANTOM.get();
+        disableFakePlayer = FAKE_PLAYER.get();
         autoUse = AUTO_USE.get();
-        ComfortsTimeUse sleepingBagUse = SLEEPING_BAG_TIME_USE.get();
         magicNumber = MAGIC_NUMBER.get();
         magicNumberIntroduction = MAGIC_NUMBER_INTRODUCTION.get();
 
@@ -71,22 +70,5 @@ public class TolkienMobsConfig {
         items = ITEM_STRINGS.get().stream()
                 .map(itemName -> BuiltInRegistries.ITEM.get(ResourceLocation.parse(itemName)))
                 .collect(Collectors.toSet());
-    }
-
-    public enum ComfortsTimeUse {
-        NONE(Component.translatable("block.comforts.no_sleep")),
-        DAY(Component.translatable("block.comforts.hammock.no_sleep")),
-        NIGHT(Component.translatable("block.minecraft.bed.no_sleep")),
-        DAY_OR_NIGHT(Component.translatable("block.comforts.hammock.no_sleep.2"));
-
-        private final Component message;
-
-        ComfortsTimeUse(Component message) {
-            this.message = message;
-        }
-
-        public Component getMessage() {
-            return this.message;
-        }
     }
 }
