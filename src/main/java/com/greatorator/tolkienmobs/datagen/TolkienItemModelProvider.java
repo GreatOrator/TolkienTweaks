@@ -199,8 +199,10 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         blockWithOwnFlatTexture(TolkienBlocks.LADDER_DEADWOOD);
 
         basicItem(TolkienItems.RECORD_RIVENDELL.get());
-        basicItem(TolkienBlocks.ROCKPILE.asItem());
+        basicItem(TolkienItems.HYPE_HORN.get());
 
+        buildTool(TolkienItems.SWORD_WITCHKING.get());
+        buildTool(TolkienItems.SWORD_URUK.get());
         buildTool(TolkienItems.SWORD_MITHRIL.get());
         buildTool(TolkienItems.SWORD_MORGULIRON.get());
         buildTool(TolkienItems.SWORD_AMMOLITE.get());

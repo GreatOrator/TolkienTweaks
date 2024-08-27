@@ -86,11 +86,13 @@ public class PlacardBlock extends Block implements EntityBlock {
         }
     }
 
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
         if (!world.isClientSide() && player.isShiftKeyDown()) {
             world.setBlockAndUpdate(pos, state.setValue(PLACARD_TYPE, state.getValue(PLACARD_TYPE).next()));
+            return InteractionResult.SUCCESS;
         }
-        return InteractionResult.SUCCESS;
+        return InteractionResult.FAIL;
     }
 
     @Override

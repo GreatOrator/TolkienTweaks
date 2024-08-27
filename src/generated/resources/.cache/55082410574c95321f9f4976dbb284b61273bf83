@@ -1,4 +1,4 @@
-// 1.21	2024-08-25T14:07:58.0642915	Item Models: tolkienmobs
+// 1.21	2024-08-25T15:23:34.0826742	Item Models: tolkienmobs
 914e29c26c212ad7b8914aa552c5ce18400b5057 assets/tolkienmobs/models/item/axe_ammolite.json
 9a08370f124e62b3c7067b9bf9976a8c617561be assets/tolkienmobs/models/item/axe_mithril.json
 6c3e1ecf8e78654791353669b7c17986e5b4fd21 assets/tolkienmobs/models/item/axe_morguliron.json
@@ -44,6 +44,7 @@ be60f135736dcae8361903d73e3e9c2f382283eb assets/tolkienmobs/models/item/hanging_
 2671b9e3cff68d749bd3a9ee4b6bcaa485cfab81 assets/tolkienmobs/models/item/hoe_ammolite.json
 df511e919e9f92a57737df71cab4b170f3678561 assets/tolkienmobs/models/item/hoe_mithril.json
 b8209b96a52345d428a6744bcce0333d49b76556 assets/tolkienmobs/models/item/hoe_morguliron.json
+7531e6403a7c39ba118127c9a0662c8a3ea2d36c assets/tolkienmobs/models/item/hype_horn.json
 78b61dffa94d815721636db1d1e88effea589618 assets/tolkienmobs/models/item/ingot_mithril.json
 3d7d2768562e6492cefa88f26be493a8879581f3 assets/tolkienmobs/models/item/ingot_morguliron.json
 a3adaad00c4acf40d316ebb040d80769f93026eb assets/tolkienmobs/models/item/item_artifact.json
@@ -165,6 +166,8 @@ c6d7acc50685afab51b08aa77eec1f66e3cee2dd assets/tolkienmobs/models/item/sign_mal
 9283e67d1e860ec009aa6aef5c8590abb4ad802d assets/tolkienmobs/models/item/sword_ammolite.json
 0081267daa088752308689589faf0cb4be0a03d7 assets/tolkienmobs/models/item/sword_mithril.json
 adda748e6ccc080dd86d8d610524ac9b6f7c743e assets/tolkienmobs/models/item/sword_morguliron.json
+290a1b7f255418a614f8f318eba548884080e74c assets/tolkienmobs/models/item/sword_uruk.json
+82750315bfb5bfd97da5627a4df4c38f368bd14d assets/tolkienmobs/models/item/sword_witchking.json
 8d9799136d64e4c25a2d48f6206e3e33c348c741 assets/tolkienmobs/models/item/upgrade_item_backpack_upgrade_base.json
 33585dcdf9ea1d2da80cfe7765e03f2975280677 assets/tolkienmobs/models/item/wall_mithril.json
 28583a6f66d6cd2314aa913688cfd9cf5affa8c3 assets/tolkienmobs/models/item/wall_morguliron.json
