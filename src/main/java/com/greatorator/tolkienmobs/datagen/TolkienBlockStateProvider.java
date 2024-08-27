@@ -327,7 +327,6 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
 
         blockItem(TolkienBlocks.BLOCK_HALLOWED);
         blockItem(TolkienBlocks.STONE_PATH);
-        blockItem(TolkienBlocks.ROCKPILE);
 
             //Placards
         ModelFile placardWallModel = models().getExistingFile(modLoc("block/placard_wall"));

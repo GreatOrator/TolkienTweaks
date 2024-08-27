@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.init;
 
 import com.greatorator.tolkienmobs.item.*;
 import com.greatorator.tolkienmobs.item.custom.CoinPouchItem;
+import com.greatorator.tolkienmobs.item.custom.HypeHornItem;
 import com.greatorator.tolkienmobs.item.custom.KeyRingItem;
 import com.greatorator.tolkienmobs.item.custom.SleepingBagItem;
 import com.greatorator.tolkienmobs.util.TolkienToolMaterials;
@@ -16,7 +17,7 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 public class TolkienItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
 
-    // Mithril
+        // Mithril
     public static final DeferredItem<Item> RAW_MITHRIL = ITEMS.register("raw_mithril",
             () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> DUST_MITHRIL = ITEMS.register("dust_mithril",
@@ -26,7 +27,7 @@ public class TolkienItems {
     public static final DeferredItem<Item> INGOT_MITHRIL = ITEMS.register("ingot_mithril",
             () -> new Item(new Item.Properties()));
 
-    // Morgul Iron
+        // Morgul Iron
     public static final DeferredItem<Item> RAW_MORGULIRON = ITEMS.register("raw_morguliron",
             () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> DUST_MORGULIRON = ITEMS.register("dust_morguliron",
@@ -36,11 +37,11 @@ public class TolkienItems {
     public static final DeferredItem<Item> INGOT_MORGULIRON = ITEMS.register("ingot_morguliron",
             () -> new Item(new Item.Properties()));
 
-    // Gems
+        // Gems
     public static final DeferredItem<Item> GEM_AMMOLITE = ITEMS.register("gem_ammolite",
             () -> new TolkienItem(new Item.Properties().stacksTo(16)).setEffectOverride());
 
-    // Quest
+        // Quest
     public static final DeferredItem<Item> ITEM_BERYL = ITEMS.register("item_beryl",
             () -> new TolkienItem(new Item.Properties().stacksTo(1)).setEffectOverride().setHasLore());
     public static final DeferredItem<Item> ITEM_FORTRESSMAP = ITEMS.register("item_fortressmap",
@@ -132,7 +133,7 @@ public class TolkienItems {
     public static final DeferredItem<Item> ITEM_RUNE_STONE = ITEMS.register("item_rune_stone",
             () -> new TolkienItem(new Item.Properties().stacksTo(8)).setEffectOverride().setHasLore());
 
-    // Coins & Tokens
+        // Coins & Tokens
     public static final DeferredItem<Item> ITEM_COIN_BRONZE = ITEMS.register("item_coin_bronze",
             () -> new TolkienCoinItem(new Item.Properties()).setHasLore());
     public static final DeferredItem<Item> ITEM_COIN_SILVER = ITEMS.register("item_coin_silver",
@@ -156,7 +157,7 @@ public class TolkienItems {
     public static final DeferredItem<Item> ITEM_TOKEN_WESTERN_ALLIANCE = ITEMS.register("item_token_western_alliance",
             () -> new TolkienCoinItem(new Item.Properties().stacksTo(1)).setHasLore());
 
-    // Mob Drops
+        // Mob Drops
     public static final DeferredItem<Item> CREBAIN_FEATHER = ITEMS.register("feather_crebain",
             () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> BIRD_FEATHER = ITEMS.register("feather_bird",
@@ -180,7 +181,7 @@ public class TolkienItems {
     public static final DeferredItem<Item> GOLEM_STONE_SUMMON = ITEMS.register("item_golem_stone_summon",
             () -> new TolkienItem(new Item.Properties().stacksTo(16)).setEffectOverride().setHasLore().setItemHasUse().setSpawnInfo());
 
-    // Backpack Upgrades
+        // Backpack Upgrades
     public static final DeferredItem<Item> ITEM_BACKPACK_UPGRADE_BASE = ITEMS.register("upgrade_item_backpack_upgrade_base",
             () -> new TolkienItem(new Item.Properties().stacksTo(6)).setHasLore());
     public static final DeferredItem<Item> ITEM_BACKPACK_UPGRADE_SIZE = ITEMS.register("item_backpack_upgrade_size",
@@ -194,7 +195,7 @@ public class TolkienItems {
     public static final DeferredItem<Item> ITEM_BACKPACK_UPGRADE_CAMPFIRE = ITEMS.register("item_backpack_upgrade_campfire",
             () -> new TolkienItem(new Item.Properties().stacksTo(1)).setHasLore());
 
-    // Foods
+        // Foods
     public static final DeferredItem<Item> LEMBAS = ITEMS.registerItem("food_lembas", properties -> new TolkienFood(properties).setEffectOverride(), new Item.Properties().food(TolkienFoods.LEMBAS).stacksTo(64));
     public static final DeferredItem<Item> HONEY_CAKE = ITEMS.registerItem("food_honeycake", TolkienFood::new,new Item.Properties().stacksTo(64).food(TolkienFoods.HONEY_CAKE));
     public static final DeferredItem<Item> CRAM = ITEMS.registerItem("food_cram", TolkienFood::new, new Item.Properties().stacksTo(64).food(TolkienFoods.CRAM));
@@ -205,18 +206,34 @@ public class TolkienItems {
     public static final DeferredItem<Item> GOLDEN_TREE_ACORN = ITEMS.registerItem("food_golden_tree_acorn", properties -> new TolkienFood(properties).setEffectOverride(), new Item.Properties().stacksTo(64).food(TolkienFoods.GOLDEN_TREE_ACORN));
     public static final DeferredItem<Item> FOOD_HONEY = ITEMS.registerItem("food_honey", TolkienFood::new, new Item.Properties().stacksTo(64).food(TolkienFoods.FOOD_HONEY));
 
-    // Drinks
-    public static final DeferredItem<Item> MIRUVOR = ITEMS.registerItem("drink_miruvor", properties -> new TolkienFood(properties).setEffectOverride().setItemUseAction(true), new Item.Properties().stacksTo(64).food(TolkienFoods.FOOD_HONEY));
-    public static final DeferredItem<Item> GROG = ITEMS.registerItem("drink_grog", properties -> new TolkienFood(properties).setEffectOverride().setItemUseAction(true), new Item.Properties().stacksTo(64).food(TolkienFoods.FOOD_HONEY));
+        // Drinks
+    public static final DeferredItem<Item> MIRUVOR = ITEMS.registerItem("drink_miruvor", properties -> new TolkienFood(properties).setEffectOverride().setItemUseAction(true), new Item.Properties().stacksTo(64).food(TolkienFoods.MIRUVOR));
+    public static final DeferredItem<Item> GROG = ITEMS.registerItem("drink_grog", properties -> new TolkienFood(properties).setEffectOverride().setItemUseAction(true), new Item.Properties().stacksTo(64).food(TolkienFoods.GROG));
+//    public static RegistryObject<Item> DRINK_ENT_DRAUGHT = ITEMS.register("drink_ent_draught", () -> new BaseFoodItem(new Item.Properties().tab(foodGroup).stacksTo(16).food(FoodRegister.DRINK_ENT_DRAUGHT)).setEffectOverride().setItemUseAction(true));
+//    public static RegistryObject<Item> DRINK_PERSONAL_BLACKSMITH = ITEMS.register("drink_personal_blacksmith", () -> new BaseFoodItem(new Item.Properties().tab(foodGroup).stacksTo(16).food(FoodRegister.DRINK_PERSONAL_BLACKSMITH)).setEffectOverride().setItemUseAction(true));
+//    public static RegistryObject<Item> DRINK_ELF_FLEETFOOT = ITEMS.register("drink_elf_blessing", () -> new BaseFoodItem(new Item.Properties().tab(foodGroup).stacksTo(16).food(FoodRegister.DRINK_ELF_NIMBLENESS)).setEffectOverride().setItemUseAction(true));
+//    public static RegistryObject<Item> DRINK_ELF_VITALITY = ITEMS.register("drink_elf_vitality", () -> new BaseFoodItem(new Item.Properties().tab(foodGroup).stacksTo(16).food(FoodRegister.DRINK_ELF_VITALITY)).setEffectOverride().setItemUseAction(true));
+//    public static RegistryObject<Item> DRINK_ERU_BLESSING = ITEMS.register("drink_eru_blessing", () -> new BaseFoodItem(new Item.Properties().tab(foodGroup).stacksTo(16).food(FoodRegister.DRINK_ERU_BLESSING)).setEffectOverride().setItemUseAction(true));
 
-    // Crops
+        // Crops
     public static final DeferredItem<Item> PIPEWEED_ITEM = ITEMS.register("pipeweed", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> PIPEWEED_SEEDS = ITEMS.register("pipeweed_seeds", () -> new ItemNameBlockItem(TolkienBlocks.PIPEWEED.get(), new Item.Properties()));
 
-    // Music Discs
+        // Music Discs
     public static final DeferredItem<Item> RECORD_RIVENDELL = ITEMS.registerItem("record_rivendell", properties -> new Item(properties.jukeboxPlayable(TolkienSounds.RIDERSOFRIVENDELL_KEY).stacksTo(1)));
+//    public static RegistryObject<Item> RECORD_LOTHLORIEN = ITEMS.register("record_lothlorien", () -> new BaseRecordItem(2, thelightoflothlorien, (new Item.Properties()).stacksTo(1).tab(questGroup)));
+//    public static RegistryObject<Item> RECORD_EREBOR = ITEMS.register("record_erebor", () -> new BaseRecordItem(3, allthatglittersinerebor, (new Item.Properties()).stacksTo(1).tab(questGroup)));
+//    public static RegistryObject<Item> RECORD_WILLOW = ITEMS.register("record_willow", () -> new BaseRecordItem(4, willowsong, (new Item.Properties()).stacksTo(1).tab(questGroup)));
+//    public static RegistryObject<Item> RECORD_MINASTIRITH = ITEMS.register("record_minastirith", () -> new BaseRecordItem(5, minastirith, (new Item.Properties()).stacksTo(1).tab(questGroup)));
+//    public static RegistryObject<Item> RECORD_EDORAS = ITEMS.register("record_edoras", () -> new BaseRecordItem(6, wakeofedoras, (new Item.Properties()).stacksTo(1).tab(questGroup)));
+//    public static RegistryObject<Item> RECORD_WBATTLE = ITEMS.register("record_wbattle", () -> new BaseRecordItem(7, witchbattle, (new Item.Properties()).stacksTo(1).tab(questGroup)));
+//    public static RegistryObject<Item> RECORD_MURDERFROG = ITEMS.register("record_murderfrog", () -> new BaseRecordItem(8, murderfrog, (new Item.Properties()).stacksTo(1).tab(questGroup)));
+//    public static RegistryObject<Item> RECORD_REDER = ITEMS.register("record_reder", () -> new BaseRecordItem(9, rederssong, (new Item.Properties()).stacksTo(1).tab(questGroup)));
+//    public static RegistryObject<Item> RECORD_FUMBLE = ITEMS.register("record_fumble", () -> new BaseRecordItem(10, trollfumble, (new Item.Properties()).stacksTo(1).tab(questGroup)));
+//    public static RegistryObject<Item> RECORD_BOMBADIL = ITEMS.register("record_bombadil", () -> new BaseRecordItem(11, mysteryoftombombadil, (new Item.Properties()).stacksTo(1).tab(questGroup)));
+//    public static RegistryObject<Item> RECORD_HOBBITS = ITEMS.register("record_hobbits", () -> new BaseRecordItem(12, concerninghobbits, (new Item.Properties()).stacksTo(1).tab(questGroup)));
 
-    // Sleeping Bags
+        // Sleeping Bags
     public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_WHITE = ITEMS.register("sleeping_bag_white", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_WHITE.get(), new Item.Properties()));
     public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_ORANGE = ITEMS.register("sleeping_bag_orange", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_ORANGE.get(), new Item.Properties()));
     public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_MAGENTA = ITEMS.register("sleeping_bag_magenta", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_MAGENTA.get(), new Item.Properties()));
@@ -234,7 +251,9 @@ public class TolkienItems {
     public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_RED = ITEMS.register("sleeping_bag_red", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_RED.get(), new Item.Properties()));
     public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_BLACK = ITEMS.register("sleeping_bag_black", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_BLACK.get(), new Item.Properties()));
 
-    //Tools
+        // Tools
+    public static final DeferredItem<Item> HYPE_HORN = ITEMS.register("hype_horn", () -> new HypeHornItem(new Item.Properties().stacksTo(1)));
+
     public static final DeferredItem<SwordItem> SWORD_MITHRIL = ITEMS.register("sword_mithril", () -> new TolkienSwordItem(TolkienToolMaterials.MITHRIL, new Item.Properties().attributes(TolkienSwordItem.createAttributes(TolkienToolMaterials.MITHRIL, 8, -1.0F))));
     public static final DeferredItem<SwordItem> SWORD_MORGULIRON = ITEMS.register("sword_morguliron", () -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, new Item.Properties().attributes(TolkienSwordItem.createAttributes(TolkienToolMaterials.MORGULIRON, 8, -2.0F))));
     public static final DeferredItem<SwordItem> SWORD_AMMOLITE = ITEMS.register("sword_ammolite", () -> new TolkienSwordItem(TolkienToolMaterials.AMMOLITE, new Item.Properties().attributes(TolkienSwordItem.createAttributes(TolkienToolMaterials.AMMOLITE, 9, -0.5F))).setEffectOverride());
@@ -259,15 +278,58 @@ public class TolkienItems {
     public static final DeferredItem<ShearsItem> SHEARS_MORGULIRON = ITEMS.register("shears_morguliron", () -> new TolkienShearsItem(new Item.Properties().durability(320).component(DataComponents.TOOL, TolkienShearsItem.createToolProperties())));
     public static final DeferredItem<ShearsItem> SHEARS_AMMOLITE = ITEMS.register("shears_ammolite", () -> new TolkienShearsItem(new Item.Properties().durability(768).component(DataComponents.TOOL, TolkienShearsItem.createToolProperties())).setEffectOverride());
 
-    //Armor
-    //Keys
-    //Pouch & Key Ring
+    public static final DeferredItem<SwordItem> SWORD_WITCHKING = ITEMS.register("sword_witchking", () -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, new Item.Properties().attributes(TolkienSwordItem.createAttributes(TolkienToolMaterials.MORGULIRON, 9, -0.5F))).setEffectOverride());
+    public static final DeferredItem<SwordItem> SWORD_URUK = ITEMS.register("sword_uruk", () -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, new Item.Properties().attributes(TolkienSwordItem.createAttributes(TolkienToolMaterials.MORGULIRON, 11, -0.5F))).setEffectOverride());
+    public static final DeferredItem<SwordItem> WHIP_FIRE = ITEMS.register("whip_fire", () -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, new Item.Properties().attributes(TolkienSwordItem.createAttributes(TolkienToolMaterials.MORGULIRON, 15, -0.5F))).setEffectOverride());
+    public static final DeferredItem<SwordItem> CLUB_WOODEN = ITEMS.register("club_wooden", () -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, new Item.Properties().attributes(TolkienSwordItem.createAttributes(TolkienToolMaterials.MORGULIRON, 9, -0.5F))).setEffectOverride());
+
+//    public static RegistryObject<BowItem> ELVEN_BOW = ITEMS.register("elven_bow", () -> new BowItem(new Item.Properties().stacksTo(1).tab(toolsGroup)));
+//    public static RegistryObject<BowItem> URUK_BOW = ITEMS.register("uruk_bow", () -> new BowItem(new Item.Properties().stacksTo(1).tab(toolsGroup)));
+
+//    public static RegistryObject<Item> ITEM_DEV_TOOL = ITEMS.register("item_dev_tool", () -> new BaseItem(new Item.Properties().stacksTo(1).tab(toolsGroup)).setEffectOverride().setHasLore());
+//    public static RegistryObject<Item> ITEM_DEV_DEBUG_TOOL = ITEMS.register("item_dev_debug_tool", () -> new BaseItem(new Item.Properties().stacksTo(1).tab(toolsGroup)).setEffectOverride().setHasLore());
+//    public static RegistryObject<Item> ARDA_STAFF = ITEMS.register("arda_staff", () -> new CatalystItem(new Item.Properties().stacksTo(1).tab(toolsGroup).rarity(Rarity.RARE)).setHasLore());
+//    public static RegistryObject<Item> HOBBIT_RING = ITEMS.register("hobbit_ring", () -> new HobbitRingItem(new Item.Properties().stacksTo(1).tab(toolsGroup).rarity(Rarity.RARE)).setHasLore());
+//    public static RegistryObject<Item> MORGUL_CRYSTAL = ITEMS.register("morgul_crystal", () -> new MorgulCrystalItem(new Item.Properties().stacksTo(1).tab(decoGroup)));
+
+        // Projectiles
+//    public static RegistryObject<ArrowItem> GALADHRIM_ARROW = ITEMS.register("ammo_galadhrim_arrow", () -> new GaladhrimArrowItem((new Item.Properties()).tab(toolsGroup)));
+//    public static RegistryObject<ArrowItem> UTUMNO_ARROW = ITEMS.register("ammo_utumno_arrow", () -> new UtumnoArrowItem((new Item.Properties()).tab(toolsGroup)));
+//    public static RegistryObject<Item> BOULDER = ITEMS.register("ammo_boulder", () -> new BoulderItem((new Item.Properties()).stacksTo(16).tab(toolsGroup)));
+//    public static RegistryObject<Item> FELLBEAST_FIREBALL = ITEMS.register("ammo_fellbeast_fireball", () -> new FellBeastFireballItem((new Item.Properties()).stacksTo(16).tab(toolsGroup)));
+
+        // Armor
+//    public static RegistryObject<ArmorItem> HELMET_MITHRIL = ITEMS.register("helmet_mithril", () -> new MithrilArmorItem(TolkienArmorMaterial.MITHRIL, EquipmentSlot.HEAD, (new Item.Properties()).tab(toolsGroup)));
+//    public static RegistryObject<ArmorItem> CHESTPLATE_MITHRIL = ITEMS.register("chestplate_mithril", () -> new MithrilArmorItem(TolkienArmorMaterial.MITHRIL, EquipmentSlot.CHEST, (new Item.Properties()).tab(toolsGroup)));
+//    public static RegistryObject<ArmorItem> LEGGINGS_MITHRIL = ITEMS.register("leggings_mithril", () -> new MithrilArmorItem(TolkienArmorMaterial.MITHRIL, EquipmentSlot.LEGS, (new Item.Properties()).tab(toolsGroup)));
+//    public static RegistryObject<ArmorItem> BOOTS_MITHRIL = ITEMS.register("boots_mithril", () -> new MithrilArmorItem(TolkienArmorMaterial.MITHRIL, EquipmentSlot.FEET, (new Item.Properties()).tab(toolsGroup)));
+//    public static RegistryObject<Item> MITHRIL_HORSE_ARMOR = ITEMS.register("mithril_horse_armor", () -> new BaseHorseArmorItem(15, "mithril", (new Item.Properties()).stacksTo(1).tab(toolsGroup)));
+//    public static RegistryObject<ArmorItem> HELMET_MORGULIRON = ITEMS.register("helmet_morguliron", () -> new MorgulironArmorItem(TolkienArmorMaterial.MORGULIRON, EquipmentSlot.HEAD, (new Item.Properties()).tab(toolsGroup)));
+//    public static RegistryObject<ArmorItem> CHESTPLATE_MORGULIRON = ITEMS.register("chestplate_morguliron", () -> new MorgulironArmorItem(TolkienArmorMaterial.MORGULIRON, EquipmentSlot.CHEST, (new Item.Properties()).tab(toolsGroup)));
+//    public static RegistryObject<ArmorItem> LEGGINGS_MORGULIRON = ITEMS.register("leggings_morguliron", () -> new MorgulironArmorItem(TolkienArmorMaterial.MORGULIRON, EquipmentSlot.LEGS, (new Item.Properties()).tab(toolsGroup)));
+//    public static RegistryObject<ArmorItem> BOOTS_MORGULIRON = ITEMS.register("boots_morguliron", () -> new MorgulironArmorItem(TolkienArmorMaterial.MORGULIRON, EquipmentSlot.FEET, (new Item.Properties()).tab(toolsGroup)));
+//    public static RegistryObject<Item> MORGULIRON_HORSE_ARMOR = ITEMS.register("morguliron_horse_armor", () -> new BaseHorseArmorItem(13, "morguliron", (new Item.Properties()).stacksTo(1).tab(toolsGroup)));
+
+        // Keys
+//    public static RegistryObject<Item> BRONZE_KEY = ITEMS.register("bronze_key", () -> new BronzeKeyItem(new Item.Properties().stacksTo(1).tab(questGroup), -1));
+//    public static RegistryObject<Item> SILVER_KEY = ITEMS.register("silver_key", () -> new SilverKeyItem(new Item.Properties().stacksTo(1).tab(questGroup), -1));
+//    public static RegistryObject<Item> GOLD_KEY = ITEMS.register("gold_key", () -> new GoldKeyItem(new Item.Properties().stacksTo(1).tab(questGroup), -1));
+//    public static RegistryObject<Item> MITHRIL_KEY = ITEMS.register("mithril_key", () -> new MithrilKeyItem(new Item.Properties().stacksTo(1).tab(questGroup), -1));
+//    public static RegistryObject<Item> MASTER_KEY = ITEMS.register("master_key", () -> new MasterKeyItem(new Item.Properties().stacksTo(1).tab(questGroup), -1));
+
+        // Pouch & Key Ring
     public static final DeferredItem<Item> COIN_POUCH = ITEMS.register("coin_pouch", () -> new CoinPouchItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> KEY_RING = ITEMS.register("key_ring", () -> new KeyRingItem(new Item.Properties().stacksTo(1)));
 
-    //Custom Items
-    //Trinkets
-    //Music
+        // Trinkets
+//    public static RegistryObject<TrinketItem> TRINKET_AMULET = ITEMS.register("trinket_amulet", () -> new TrinketItem(new Item.Properties().stacksTo(1).tab(toolsGroup)));
+//    public static RegistryObject<TrinketItem> TRINKET_CHARM = ITEMS.register("trinket_charm", () -> new TrinketItem(new Item.Properties().stacksTo(1).tab(toolsGroup)));
+//    public static RegistryObject<TrinketItem> TRINKET_RING = ITEMS.register("trinket_ring", () -> new TrinketItem(new Item.Properties().stacksTo(1).tab(toolsGroup)));
+//    public static RegistryObject<TrinketItem> TRINKET_BELT = ITEMS.register("trinket_belt", () -> new TrinketItem(new Item.Properties().stacksTo(1).tab(toolsGroup)));
+//    public static RegistryObject<TrinketItem> TRINKET_GLOVE = ITEMS.register("trinket_glove", () -> new TrinketItem(new Item.Properties().stacksTo(1).tab(toolsGroup)));
+//    public static RegistryObject<TrinketItem> TRINKET_HAT = ITEMS.register("trinket_hat", () -> new TrinketItem(new Item.Properties().stacksTo(1).tab(toolsGroup)));
+//    public static RegistryObject<TrinketItem> TRINKET_CLOAK = ITEMS.register("trinket_cloak", () -> new TrinketItem(new Item.Properties().stacksTo(1).tab(toolsGroup)));
+
     //Potions
     //Enchants
     //Biomes

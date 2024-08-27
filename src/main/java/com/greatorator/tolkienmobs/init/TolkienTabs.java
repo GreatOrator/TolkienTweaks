@@ -390,6 +390,10 @@ public class TolkienTabs {
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(TolkienItems.COIN_POUCH);
                         output.accept(TolkienItems.KEY_RING);
+                        output.accept(TolkienItems.SWORD_WITCHKING);
+                        output.accept(TolkienItems.SWORD_URUK);
+                        output.accept(TolkienItems.WHIP_FIRE);
+                        output.accept(TolkienItems.CLUB_WOODEN);
                         output.accept(TolkienItems.SWORD_MITHRIL);
                         output.accept(TolkienItems.PICKAXE_MITHRIL);
                         output.accept(TolkienItems.AXE_MITHRIL);
@@ -408,6 +412,7 @@ public class TolkienTabs {
                         output.accept(TolkienItems.SHOVEL_AMMOLITE);
                         output.accept(TolkienItems.HOE_AMMOLITE);
                         output.accept(TolkienItems.SHEARS_AMMOLITE);
+                        output.accept(TolkienItems.HYPE_HORN);
                         output.accept(TolkienItems.RECORD_RIVENDELL);
                     }).build());
 
