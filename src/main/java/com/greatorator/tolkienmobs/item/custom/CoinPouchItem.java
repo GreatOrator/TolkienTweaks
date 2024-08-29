@@ -16,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.ComponentItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
@@ -121,24 +122,24 @@ public class CoinPouchItem extends Item {
         return active;
     }
 
-//    @Nullable
-//    private static IItemHandler getItemStackHandlerCoinPouch(ItemStack itemStack) {
-//        IItemHandler optional = itemStack.getCapability(ITEM_HANDLER);
-//        if (optional.isItemValid()) {
-//            return optional.(RuntimeException::new);
-//        }
-//        return null;
-//    }
-//
-//    public static float getFullnessPropertyOverride(ItemStack itemStack, @Nullable ClientLevel world, @Nullable LivingEntity livingEntity, int i) {
-//        IItemHandler keyRing = getItemStackHandlerCoinPouch(itemStack);
-//        if (keyRing == null) return 0;
-//        int count = 0;
-//        int j = i;
-//        for (j = 0; j < keyRing.getSlots(); j++) {
-//            count+=keyRing.getStackInSlot(j).getCount();
-//        }
-//        float fractionEmpty = count / (float)(keyRing.getSlots());
-//        return 0.0F + fractionEmpty;
-//    }
+    @Nullable
+    private static IItemHandler getItemStackHandlerCoinPouch(ItemStack itemStack) {
+        IItemHandler optional = itemStack.getCapability(Capabilities.ItemHandler.ITEM);
+        if (optional != null) {
+            return optional;
+        }
+        return null;
+    }
+
+    public static float getFullnessPropertyOverride(ItemStack itemStack, @Nullable ClientLevel world, @Nullable LivingEntity livingEntity, int i) {
+        IItemHandler coinPouch = getItemStackHandlerCoinPouch(itemStack);
+        if (coinPouch == null) return 0;
+        int count = 0;
+        int j = i;
+        for (j = 0; j < coinPouch.getSlots(); j++) {
+            count+=coinPouch.getStackInSlot(j).getCount();
+        }
+        float fractionEmpty = count / (float)(coinPouch.getSlots());
+        return 0.0F + fractionEmpty;
+    }
 }
