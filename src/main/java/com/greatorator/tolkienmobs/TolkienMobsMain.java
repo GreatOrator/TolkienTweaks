@@ -8,6 +8,8 @@ import com.greatorator.tolkienmobs.handler.TolkienDataComponents;
 import com.greatorator.tolkienmobs.init.*;
 import com.greatorator.tolkienmobs.init.types.TolkienFluidTypes;
 import com.greatorator.tolkienmobs.init.types.TolkienParticleTypes;
+import com.greatorator.tolkienmobs.item.custom.CoinPouchItem;
+import com.greatorator.tolkienmobs.item.custom.KeyRingItem;
 import com.greatorator.tolkienmobs.particle.provider.TolkienParticleProvider;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -131,11 +133,10 @@ public class TolkienMobsMain {
             event.register(TolkienContainers.KEY_RING_CONTAINER.get(), KeyRingScreen::new);
         }
 
-//        @SubscribeEvent
-//        public void registerPropertyOverride() {
-//            ItemProperties.register(COIN_POUCH.get(), new ResourceLocation("fullness"), CoinPouchItem::getFullnessPropertyOverride);
-//            ItemProperties.register(KEY_RING.get(), new ResourceLocation("fullness"), KeyRingItem::getFullnessPropertyOverride);
-//        }
+        public void registerPropertyOverride() {
+            ItemProperties.register(COIN_POUCH.get(), resLoc("fullness"), CoinPouchItem::getFullnessPropertyOverride);
+            ItemProperties.register(KEY_RING.get(), resLoc("fullness"), KeyRingItem::getFullnessPropertyOverride);
+        }
 
         @SubscribeEvent
         public static void onClientExtensions(RegisterClientExtensionsEvent event) {

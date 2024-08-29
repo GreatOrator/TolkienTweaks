@@ -5,18 +5,23 @@ import com.greatorator.tolkienmobs.containers.handlers.KeyRingItemStackHandler;
 import com.greatorator.tolkienmobs.handler.TolkienDataComponents;
 import com.greatorator.tolkienmobs.item.TolkienKeyItem;
 import com.greatorator.tolkienmobs.item.TolkienKeyItem;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.ComponentItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,5 +121,26 @@ public class KeyRingItem extends Item {
         else
             stack.set(TolkienDataComponents.KEY_RING_ACTIVE, active);
         return active;
+    }
+
+    @Nullable
+    private static IItemHandler getItemStackHandlerCoinPouch(ItemStack itemStack) {
+        IItemHandler optional = itemStack.getCapability(Capabilities.ItemHandler.ITEM);
+        if (optional != null) {
+            return optional;
+        }
+        return null;
+    }
+
+    public static float getFullnessPropertyOverride(ItemStack itemStack, @Nullable ClientLevel world, @Nullable LivingEntity livingEntity, int i) {
+        IItemHandler keyRing = getItemStackHandlerCoinPouch(itemStack);
+        if (keyRing == null) return 0;
+        int count = 0;
+        int j = i;
+        for (j = 0; j < keyRing.getSlots(); j++) {
+            count+=keyRing.getStackInSlot(j).getCount();
+        }
+        float fractionEmpty = count / (float)(keyRing.getSlots());
+        return 0.0F + fractionEmpty;
     }
 }
