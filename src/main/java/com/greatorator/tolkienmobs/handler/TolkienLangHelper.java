@@ -55,6 +55,13 @@ public abstract class TolkienLangHelper extends LanguageProvider {
         this.add(key.getDescriptionId() + ".lore", lore);
     }
 
+    public void createPotionSet(String potionPrefix, String potionName) {
+        this.add("item.minecraft.potion.effect." + potionPrefix, "Potion of " + potionName);
+        this.add("item.minecraft.splash_potion.effect." + potionPrefix, "Splash Potion of " + potionName);
+        this.add("item.minecraft.lingering_potion.effect." + potionPrefix, "Lingering Potion of " + potionName);
+        this.add("effect.tolkienmobs." + potionPrefix, potionName);
+    }
+
     public void createGemSet(String gemPrefix, String gemName) {
         this.add("block.tolkienmobs.ore_" + gemPrefix, gemName + " Ore");
         this.add("block.tolkienmobs.ore_deepslate_" + gemPrefix, gemName + " Deepslate Ore");

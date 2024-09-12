@@ -1,23 +1,22 @@
 package com.greatorator.tolkienmobs.effect;
 
-import com.google.common.collect.Lists;
-import com.greatorator.tolkienmobs.TolkienMobsMain;
+import com.greatorator.tolkienmobs.init.TolkienItems;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Predicate;
 
-public class BlacksmithEffect extends TolkienEffect {
-    public static BlacksmithEffect instance = null;
+public class CorrosionEffect extends TolkienEffect {
+    public static CorrosionEffect instance = null;
     private static final Predicate<ItemStack> CAN_REPAIR_ITEM = stack -> !stack.isEmpty() && isRepairableDamagedItem(stack);
+    public static int damageTime = 10;
 
-    public BlacksmithEffect(MobEffectCategory category, int color) {
+    public CorrosionEffect(MobEffectCategory category, int color) {
         super(category, color);
         instance = this;
     }
@@ -49,8 +48,8 @@ public class BlacksmithEffect extends TolkienEffect {
         boolean hasAction = false;
         for (int i = 0; i < inv.getSlots(); i++) {
             ItemStack invStack = inv.getStackInSlot(i);
-            if (canRepairStack.test(invStack)) {
-                invStack.setDamageValue(invStack.getDamageValue() - (amplifier + 1));
+            if (canRepairStack.test(invStack) && invStack.getItem().isRepairable(invStack)) {
+                invStack.setDamageValue(invStack.getDamageValue() + (amplifier + 1));
                 if (!hasAction) {
                     hasAction = true;
                 }
@@ -61,6 +60,6 @@ public class BlacksmithEffect extends TolkienEffect {
 
     @Override
     public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
-        return true;
+        return duration % damageTime == 0;
     }
 }

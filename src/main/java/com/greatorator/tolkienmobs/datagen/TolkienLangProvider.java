@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.datagen;
 
 import com.greatorator.tolkienmobs.handler.TolkienLangHelper;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
+import com.greatorator.tolkienmobs.init.TolkienEffects;
 import com.greatorator.tolkienmobs.init.TolkienFluids;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import net.minecraft.data.PackOutput;
@@ -202,6 +203,23 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addItemScreen(TolkienItems.MASTER_KEY.get(), "Master Key");
             this.addItemScreen(TolkienItems.COIN_POUCH.get(), "Coin Pouch");
             this.addItemScreen(TolkienItems.KEY_RING.get(), "Key Ring");
+
+                // Potions & Effects
+                    // Beneficial
+            this.createPotionSet("personal_blacksmith", "Portable Blacksmith");
+            this.createPotionSet("ent_draught", "Ent Draught");
+            this.createPotionSet("blessing_of_eru", "Eru's Blessing");
+            this.createPotionSet("elf_vitality", "Elvish Life-span");
+            this.createPotionSet("elven_nimbleness", "Elvish Nimbleness");
+                    // Harmful
+            this.createPotionSet("elemental_flight", "Elemental Flying");
+            this.createPotionSet("elemental_drowning", "Elemental Drowning");
+            this.createPotionSet("elemental_lightning", "Elemental Lightning");
+            this.createPotionSet("elemental_burning", "Elemental Burning");
+            this.createPotionSet("sleepnesia", "Sleepnesia");
+            this.createPotionSet("inventory_corrosion", "Corrosion");
+            this.createPotionSet("dread_aura", "Great Dread");
+            this.createPotionSet("crippling_terror", "Paralysing Fear");
 
     }
 }
