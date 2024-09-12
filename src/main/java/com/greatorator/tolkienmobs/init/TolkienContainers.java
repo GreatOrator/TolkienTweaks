@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.init;
 
 import com.greatorator.tolkienmobs.containers.CoinPouchContainer;
+import com.greatorator.tolkienmobs.containers.KeyItemContainer;
 import com.greatorator.tolkienmobs.containers.KeyRingContainer;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
@@ -18,6 +19,8 @@ public class TolkienContainers {
             () -> IMenuTypeExtension.create((windowId, inv, data) -> new CoinPouchContainer(windowId, inv, inv.player, data)));
     public static final DeferredHolder<MenuType<?>, MenuType<KeyRingContainer>> KEY_RING_CONTAINER = CONTAINERS.register("key_ring_container",
             () -> IMenuTypeExtension.create((windowId, inv, data) -> new KeyRingContainer(windowId, inv, inv.player, data)));
+    public static final DeferredHolder<MenuType<?>, MenuType<KeyItemContainer>> KEY_ITEM_CONTAINER = CONTAINERS.register("key_item_container",
+            () -> IMenuTypeExtension.create((windowId, inv, data) -> new KeyItemContainer(windowId, inv, inv.player, data)));
 
     public static void register(IEventBus eventBus) {
         CONTAINERS.register(eventBus);

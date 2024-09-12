@@ -11,6 +11,7 @@ import net.minecraft.data.PackOutput;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
+import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
@@ -27,13 +28,15 @@ public class TolkienDataGenerator {
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
-        generator.addProvider(event.includeServer(), new TolkienLootGenerator(packOutput, lookupProvider));
 
         BlockTagsProvider blockTagsProvider = new TolkienBlockTagProvider(packOutput, lookupProvider, existingFileHelper);
+
+        generator.addProvider(event.includeServer(), new TolkienLootGenerator(packOutput, lookupProvider));
         generator.addProvider(event.includeServer(), blockTagsProvider);
         generator.addProvider(event.includeServer(), new TolkienItemTagProvider(packOutput, lookupProvider, blockTagsProvider.contentsGetter(), existingFileHelper));
         generator.addProvider(event.includeServer(), new TolkienFluidTagProvider(packOutput, lookupProvider, existingFileHelper));
         generator.addProvider(event.includeServer(), new TolkienDamageTagProvider(packOutput, lookupProvider, existingFileHelper));
+        generator.addProvider(event.includeServer(), new TolkienSoundProvider(packOutput, existingFileHelper));
 
         generator.addProvider(event.includeClient(), new TolkienItemModelProvider(packOutput, existingFileHelper));
         generator.addProvider(event.includeClient(), new TolkienBlockStateProvider(packOutput, existingFileHelper));
@@ -41,5 +44,7 @@ public class TolkienDataGenerator {
         generator.addProvider(event.includeClient(), new TolkienRecipeProvider(packOutput, lookupProvider));
 
         generator.addProvider(event.includeServer(), new TolkienWorldGenProvider(packOutput, lookupProvider));
+
+        generator.addProvider(event.includeServer(), new TolkienLangProvider(packOutput));
     }
 }

@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.datagen.tags;
 
 import com.greatorator.tolkienmobs.init.TolkienItems;
-import com.greatorator.tolkienmobs.util.TolkienTags;
+import com.greatorator.tolkienmobs.init.TolkienTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
@@ -24,6 +24,24 @@ public class TolkienItemTagProvider extends ItemTagsProvider {
     @Override
     protected void addTags(HolderLookup.Provider pProvider) {
 
+        tag(TolkienTags.Items.COINS)
+                .add(TolkienItems.ITEM_COIN_BRONZE.get())
+                .add(TolkienItems.ITEM_COIN_SILVER.get())
+                .add(TolkienItems.ITEM_COIN_GOLD.get())
+                .add(TolkienItems.ITEM_COIN_MITHRIL.get())
+                .add(TolkienItems.ITEM_DARKSIGIL.get())
+                .add(TolkienItems.ITEM_FACTIONTOKEN.get())
+                .add(TolkienItems.ITEM_FACTIONCOIN.get())
+                .add(TolkienItems.ITEM_CAVECOMPLETE.get())
+                .add(TolkienItems.ITEM_WATCHERCOMPLETE.get())
+                .add(TolkienItems.ITEM_TOKEN_EASTERN_ALLIANCE.get())
+                .add(TolkienItems.ITEM_TOKEN_WESTERN_ALLIANCE.get());
+        tag(TolkienTags.Items.KEYS)
+                .add(TolkienItems.BRONZE_KEY.get())
+                .add(TolkienItems.SILVER_KEY.get())
+                .add(TolkienItems.GOLD_KEY.get())
+                .add(TolkienItems.MITHRIL_KEY.get())
+                .add(TolkienItems.MASTER_KEY.get());
         tag(TolkienTags.Items.SLEEPING_BAG)
                 .add(TolkienItems.SLEEPING_BAG_BLACK.get())
                 .add(TolkienItems.SLEEPING_BAG_WHITE.get())

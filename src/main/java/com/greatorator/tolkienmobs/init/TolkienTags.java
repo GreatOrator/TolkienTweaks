@@ -1,4 +1,4 @@
-package com.greatorator.tolkienmobs.util;
+package com.greatorator.tolkienmobs.init;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
 import net.minecraft.core.registries.Registries;
@@ -24,6 +24,8 @@ public class TolkienTags {
 
     public static class Items {
         public static final TagKey<Item> SLEEPING_BAG = createTag("sleeping_bag");
+        public static final TagKey<Item> COINS = createTag("coins");
+        public static final TagKey<Item> KEYS = createTag("keys");
 
         private static TagKey<Item> createTag(String name) {
             return ItemTags.create(ResourceLocation.fromNamespaceAndPath(MODID, name));

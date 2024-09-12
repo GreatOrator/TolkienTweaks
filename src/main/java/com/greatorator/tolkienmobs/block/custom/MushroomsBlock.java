@@ -1,6 +1,6 @@
 package com.greatorator.tolkienmobs.block.custom;
 
-import com.greatorator.tolkienmobs.util.TolkienTags;
+import com.greatorator.tolkienmobs.init.TolkienTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;

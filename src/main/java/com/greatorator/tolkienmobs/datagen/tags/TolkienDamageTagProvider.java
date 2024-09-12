@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.datagen.tags;
 
-import com.greatorator.tolkienmobs.util.TolkienTags;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.DamageTypeTagsProvider;

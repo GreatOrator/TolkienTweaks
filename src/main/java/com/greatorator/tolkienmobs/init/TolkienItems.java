@@ -1,10 +1,7 @@
 package com.greatorator.tolkienmobs.init;
 
 import com.greatorator.tolkienmobs.item.*;
-import com.greatorator.tolkienmobs.item.custom.CoinPouchItem;
-import com.greatorator.tolkienmobs.item.custom.HypeHornItem;
-import com.greatorator.tolkienmobs.item.custom.KeyRingItem;
-import com.greatorator.tolkienmobs.item.custom.SleepingBagItem;
+import com.greatorator.tolkienmobs.item.custom.*;
 import com.greatorator.tolkienmobs.util.TolkienToolMaterials;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.*;
@@ -220,18 +217,18 @@ public class TolkienItems {
     public static final DeferredItem<Item> PIPEWEED_SEEDS = ITEMS.register("pipeweed_seeds", () -> new ItemNameBlockItem(TolkienBlocks.PIPEWEED.get(), new Item.Properties()));
 
         // Music Discs
-    public static final DeferredItem<Item> RECORD_RIVENDELL = ITEMS.registerItem("record_rivendell", properties -> new Item(properties.jukeboxPlayable(TolkienSounds.RIDERSOFRIVENDELL_KEY).stacksTo(1)));
-//    public static RegistryObject<Item> RECORD_LOTHLORIEN = ITEMS.register("record_lothlorien", () -> new BaseRecordItem(2, thelightoflothlorien, (new Item.Properties()).stacksTo(1).tab(questGroup)));
-//    public static RegistryObject<Item> RECORD_EREBOR = ITEMS.register("record_erebor", () -> new BaseRecordItem(3, allthatglittersinerebor, (new Item.Properties()).stacksTo(1).tab(questGroup)));
-//    public static RegistryObject<Item> RECORD_WILLOW = ITEMS.register("record_willow", () -> new BaseRecordItem(4, willowsong, (new Item.Properties()).stacksTo(1).tab(questGroup)));
-//    public static RegistryObject<Item> RECORD_MINASTIRITH = ITEMS.register("record_minastirith", () -> new BaseRecordItem(5, minastirith, (new Item.Properties()).stacksTo(1).tab(questGroup)));
-//    public static RegistryObject<Item> RECORD_EDORAS = ITEMS.register("record_edoras", () -> new BaseRecordItem(6, wakeofedoras, (new Item.Properties()).stacksTo(1).tab(questGroup)));
-//    public static RegistryObject<Item> RECORD_WBATTLE = ITEMS.register("record_wbattle", () -> new BaseRecordItem(7, witchbattle, (new Item.Properties()).stacksTo(1).tab(questGroup)));
-//    public static RegistryObject<Item> RECORD_MURDERFROG = ITEMS.register("record_murderfrog", () -> new BaseRecordItem(8, murderfrog, (new Item.Properties()).stacksTo(1).tab(questGroup)));
-//    public static RegistryObject<Item> RECORD_REDER = ITEMS.register("record_reder", () -> new BaseRecordItem(9, rederssong, (new Item.Properties()).stacksTo(1).tab(questGroup)));
-//    public static RegistryObject<Item> RECORD_FUMBLE = ITEMS.register("record_fumble", () -> new BaseRecordItem(10, trollfumble, (new Item.Properties()).stacksTo(1).tab(questGroup)));
-//    public static RegistryObject<Item> RECORD_BOMBADIL = ITEMS.register("record_bombadil", () -> new BaseRecordItem(11, mysteryoftombombadil, (new Item.Properties()).stacksTo(1).tab(questGroup)));
-//    public static RegistryObject<Item> RECORD_HOBBITS = ITEMS.register("record_hobbits", () -> new BaseRecordItem(12, concerninghobbits, (new Item.Properties()).stacksTo(1).tab(questGroup)));
+    public static final DeferredItem<Item> RECORD_EREBOR = ITEMS.registerItem("record_erebor", properties -> new Item(properties.jukeboxPlayable(TolkienJukebox.EREBOR).stacksTo(1)));
+    public static final DeferredItem<Item> RECORD_HOBBITS = ITEMS.registerItem("record_hobbits", properties -> new Item(properties.jukeboxPlayable(TolkienJukebox.HOBBITS).stacksTo(1)));
+    public static final DeferredItem<Item> RECORD_MINASTIRITH = ITEMS.registerItem("record_minastirith", properties -> new Item(properties.jukeboxPlayable(TolkienJukebox.MINASTIRITH).stacksTo(1)));
+    public static final DeferredItem<Item> RECORD_MURDERFROG = ITEMS.registerItem("record_murderfrog", properties -> new Item(properties.jukeboxPlayable(TolkienJukebox.MURDERFROG).stacksTo(1)));
+    public static final DeferredItem<Item> RECORD_BOMBADIL = ITEMS.registerItem("record_bombadil", properties -> new Item(properties.jukeboxPlayable(TolkienJukebox.BOMBADIL).stacksTo(1)));
+    public static final DeferredItem<Item> RECORD_REDER = ITEMS.registerItem("record_reder", properties -> new Item(properties.jukeboxPlayable(TolkienJukebox.REDER).stacksTo(1)));
+    public static final DeferredItem<Item> RECORD_RIVENDELL = ITEMS.registerItem("record_rivendell", properties -> new Item(properties.jukeboxPlayable(TolkienJukebox.RIVENDELL).stacksTo(1)));
+    public static final DeferredItem<Item> RECORD_LOTHLORIEN = ITEMS.registerItem("record_lothlorien", properties -> new Item(properties.jukeboxPlayable(TolkienJukebox.LOTHLORIEN).stacksTo(1)));
+    public static final DeferredItem<Item> RECORD_WILLOW = ITEMS.registerItem("record_willow", properties -> new Item(properties.jukeboxPlayable(TolkienJukebox.SHADE).stacksTo(1)));
+    public static final DeferredItem<Item> RECORD_FUMBLE = ITEMS.registerItem("record_fumble", properties -> new Item(properties.jukeboxPlayable(TolkienJukebox.FUMBLE).stacksTo(1)));
+    public static final DeferredItem<Item> RECORD_EDORAS = ITEMS.registerItem("record_edoras", properties -> new Item(properties.jukeboxPlayable(TolkienJukebox.EDORAS).stacksTo(1)));
+    public static final DeferredItem<Item> RECORD_WBATTLE = ITEMS.registerItem("record_wbattle", properties -> new Item(properties.jukeboxPlayable(TolkienJukebox.WITCHBATTLE).stacksTo(1)));
 
         // Sleeping Bags
     public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_WHITE = ITEMS.register("sleeping_bag_white", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_WHITE.get(), new Item.Properties()));
@@ -278,10 +275,10 @@ public class TolkienItems {
     public static final DeferredItem<ShearsItem> SHEARS_MORGULIRON = ITEMS.register("shears_morguliron", () -> new TolkienShearsItem(new Item.Properties().durability(320).component(DataComponents.TOOL, TolkienShearsItem.createToolProperties())));
     public static final DeferredItem<ShearsItem> SHEARS_AMMOLITE = ITEMS.register("shears_ammolite", () -> new TolkienShearsItem(new Item.Properties().durability(768).component(DataComponents.TOOL, TolkienShearsItem.createToolProperties())).setEffectOverride());
 
-    public static final DeferredItem<SwordItem> SWORD_WITCHKING = ITEMS.register("sword_witchking", () -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, new Item.Properties().attributes(TolkienSwordItem.createAttributes(TolkienToolMaterials.MORGULIRON, 9, -0.5F))).setEffectOverride());
-    public static final DeferredItem<SwordItem> SWORD_URUK = ITEMS.register("sword_uruk", () -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, new Item.Properties().attributes(TolkienSwordItem.createAttributes(TolkienToolMaterials.MORGULIRON, 11, -0.5F))).setEffectOverride());
-    public static final DeferredItem<SwordItem> WHIP_FIRE = ITEMS.register("whip_fire", () -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, new Item.Properties().attributes(TolkienSwordItem.createAttributes(TolkienToolMaterials.MORGULIRON, 15, -0.5F))).setEffectOverride());
-    public static final DeferredItem<SwordItem> CLUB_WOODEN = ITEMS.register("club_wooden", () -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, new Item.Properties().attributes(TolkienSwordItem.createAttributes(TolkienToolMaterials.MORGULIRON, 9, -0.5F))).setEffectOverride());
+    public static final DeferredItem<SwordItem> SWORD_WITCHKING = ITEMS.register("sword_witchking", () -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, new Item.Properties().attributes(TolkienSwordItem.createAttributes(TolkienToolMaterials.MORGULIRON, 9, -0.5F))).setEffectOverride().setHasLore());
+    public static final DeferredItem<SwordItem> SWORD_URUK = ITEMS.register("sword_uruk", () -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, new Item.Properties().attributes(TolkienSwordItem.createAttributes(TolkienToolMaterials.MORGULIRON, 11, -0.5F))).setEffectOverride().setHasLore());
+    public static final DeferredItem<SwordItem> WHIP_FIRE = ITEMS.register("whip_fire", () -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, new Item.Properties().attributes(TolkienSwordItem.createAttributes(TolkienToolMaterials.MORGULIRON, 15, -0.5F))).setEffectOverride().setHasLore());
+    public static final DeferredItem<SwordItem> CLUB_WOODEN = ITEMS.register("club_wooden", () -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, new Item.Properties().attributes(TolkienSwordItem.createAttributes(TolkienToolMaterials.MORGULIRON, 9, -0.5F))).setEffectOverride().setHasLore());
 
 //    public static RegistryObject<BowItem> ELVEN_BOW = ITEMS.register("elven_bow", () -> new BowItem(new Item.Properties().stacksTo(1).tab(toolsGroup)));
 //    public static RegistryObject<BowItem> URUK_BOW = ITEMS.register("uruk_bow", () -> new BowItem(new Item.Properties().stacksTo(1).tab(toolsGroup)));
@@ -311,11 +308,11 @@ public class TolkienItems {
 //    public static RegistryObject<Item> MORGULIRON_HORSE_ARMOR = ITEMS.register("morguliron_horse_armor", () -> new BaseHorseArmorItem(13, "morguliron", (new Item.Properties()).stacksTo(1).tab(toolsGroup)));
 
         // Keys
-//    public static RegistryObject<Item> BRONZE_KEY = ITEMS.register("bronze_key", () -> new BronzeKeyItem(new Item.Properties().stacksTo(1).tab(questGroup), -1));
-//    public static RegistryObject<Item> SILVER_KEY = ITEMS.register("silver_key", () -> new SilverKeyItem(new Item.Properties().stacksTo(1).tab(questGroup), -1));
-//    public static RegistryObject<Item> GOLD_KEY = ITEMS.register("gold_key", () -> new GoldKeyItem(new Item.Properties().stacksTo(1).tab(questGroup), -1));
-//    public static RegistryObject<Item> MITHRIL_KEY = ITEMS.register("mithril_key", () -> new MithrilKeyItem(new Item.Properties().stacksTo(1).tab(questGroup), -1));
-//    public static RegistryObject<Item> MASTER_KEY = ITEMS.register("master_key", () -> new MasterKeyItem(new Item.Properties().stacksTo(1).tab(questGroup), -1));
+    public static DeferredItem<Item> BRONZE_KEY = ITEMS.register("bronze_key", () -> new TolkienKeyItem(new Item.Properties().stacksTo(1)));
+    public static DeferredItem<Item> SILVER_KEY = ITEMS.register("silver_key", () -> new TolkienKeyItem(new Item.Properties().stacksTo(1)));
+    public static DeferredItem<Item> GOLD_KEY = ITEMS.register("gold_key", () -> new TolkienKeyItem(new Item.Properties().stacksTo(1)));
+    public static DeferredItem<Item> MITHRIL_KEY = ITEMS.register("mithril_key", () -> new TolkienKeyItem(new Item.Properties().stacksTo(1)));
+    public static DeferredItem<Item> MASTER_KEY = ITEMS.register("master_key", () -> new TolkienKeyItem(new Item.Properties().stacksTo(1)));
 
         // Pouch & Key Ring
     public static final DeferredItem<Item> COIN_POUCH = ITEMS.register("coin_pouch", () -> new CoinPouchItem(new Item.Properties().stacksTo(1)));

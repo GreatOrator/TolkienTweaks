@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.containers.screens;
 
 import com.greatorator.tolkienmobs.containers.CoinPouchContainer;
-import com.greatorator.tolkienmobs.containers.handlers.CoinPouchSlot;
+import com.greatorator.tolkienmobs.containers.slots.CoinPouchSlot;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;

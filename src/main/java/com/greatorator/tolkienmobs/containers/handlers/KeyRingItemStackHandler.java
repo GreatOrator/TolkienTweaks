@@ -1,8 +1,8 @@
 package com.greatorator.tolkienmobs.containers.handlers;
 
 import com.greatorator.tolkienmobs.handler.TolkienDataComponents;
-import com.greatorator.tolkienmobs.item.TolkienCoinItem;
-import com.greatorator.tolkienmobs.item.TolkienKeyItem;
+import com.greatorator.tolkienmobs.init.TolkienTags;
+import com.greatorator.tolkienmobs.item.custom.TolkienKeyItem;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ComponentItemHandler;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +15,7 @@ public class KeyRingItemStackHandler extends ComponentItemHandler {
     @Override
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
         if (stack.isEmpty()) return true;
-        return (stack.getItem() instanceof TolkienKeyItem);
+        return stack.is(TolkienTags.Items.KEYS);
     }
 
     @Override
