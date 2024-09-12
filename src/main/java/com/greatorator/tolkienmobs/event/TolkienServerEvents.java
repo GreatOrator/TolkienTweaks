@@ -15,7 +15,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerSetSpawnEvent;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 @EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.GAME)
-public class TolkienEvents {
+public class TolkienServerEvents {
 
     @SubscribeEvent
     public static void onBrewingRecipeRegister(RegisterBrewingRecipesEvent event) {
