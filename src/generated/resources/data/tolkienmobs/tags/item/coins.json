@@ -1,0 +1,15 @@
+{
+  "values": [
+    "tolkienmobs:item_coin_bronze",
+    "tolkienmobs:item_coin_silver",
+    "tolkienmobs:item_coin_gold",
+    "tolkienmobs:item_coin_mithril",
+    "tolkienmobs:item_darksigil",
+    "tolkienmobs:item_coin2",
+    "tolkienmobs:item_coin1",
+    "tolkienmobs:item_cavecomplete",
+    "tolkienmobs:item_watchercomplete",
+    "tolkienmobs:item_token_eastern_alliance",
+    "tolkienmobs:item_token_western_alliance"
+  ]
+}

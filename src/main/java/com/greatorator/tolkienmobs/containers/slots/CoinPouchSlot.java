@@ -1,22 +1,22 @@
-package com.greatorator.tolkienmobs.containers.handlers;
+package com.greatorator.tolkienmobs.containers.slots;
 
-import com.greatorator.tolkienmobs.item.TolkienKeyItem;
+import com.greatorator.tolkienmobs.item.TolkienCoinItem;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
 
-public class KeyRingSlot extends SlotItemHandler {
+public class CoinPouchSlot extends SlotItemHandler {
     protected boolean enabled = true;
 
-    public KeyRingSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
+    public CoinPouchSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
         super(itemHandler, index, xPosition, yPosition);
     }
 
     @Override
     public boolean mayPlace(@Nonnull ItemStack stack) {
-        return (stack.getItem() instanceof TolkienKeyItem);
+        return (stack.getItem() instanceof TolkienCoinItem);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class KeyRingSlot extends SlotItemHandler {
         return enabled;
     }
 
-    public KeyRingSlot setEnabled(boolean enabled) {
+    public CoinPouchSlot setEnabled(boolean enabled) {
         this.enabled = enabled;
         return this;
     }

@@ -1,5 +1,7 @@
 package com.greatorator.tolkienmobs.block.custom;
 
+import com.greatorator.tolkienmobs.block.TolkienBlock;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -10,7 +12,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -41,6 +45,7 @@ import java.util.stream.Stream;
 
 public class SleepingBagBlock extends BedBlock
 {
+    private boolean hasLore = false;
     public static final EnumProperty<BedPart> PART = BlockStateProperties.BED_PART;
     public static final BooleanProperty OCCUPIED = BlockStateProperties.OCCUPIED;
     public static final BooleanProperty CAN_DROP = BlockStateProperties.CONDITIONAL;
@@ -244,6 +249,19 @@ public class SleepingBagBlock extends BedBlock
             return List.of();
         }
         return super.getDrops(pState, pParams);
+    }
+
+    public SleepingBagBlock setHasLore() {
+        this.hasLore = true;
+        return this;
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        if (hasLore) {
+            tooltipComponents.add(Component.translatable(getDescriptionId() + ".lore").withStyle(ChatFormatting.GOLD));
+            super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+        }
     }
 
     @Override

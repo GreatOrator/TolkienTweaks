@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.datagen;
 
+import com.greatorator.tolkienmobs.init.TolkienJukebox;
 import com.greatorator.tolkienmobs.world.TolkienBiomeModifiers;
 import com.greatorator.tolkienmobs.world.TolkienConfiguredFeatures;
 import com.greatorator.tolkienmobs.world.TolkienPlacedFeatures;
@@ -19,7 +20,8 @@ public class TolkienWorldGenProvider extends DatapackBuiltinEntriesProvider {
     public static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
             .add(Registries.CONFIGURED_FEATURE, TolkienConfiguredFeatures::bootstrap)
             .add(Registries.PLACED_FEATURE, TolkienPlacedFeatures::bootstrap)
-            .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, TolkienBiomeModifiers::bootstrap);
+            .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, TolkienBiomeModifiers::bootstrap)
+            .add(Registries.JUKEBOX_SONG, TolkienJukebox::bootstrap);
 
     public TolkienWorldGenProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries, BUILDER, Set.of(MODID));

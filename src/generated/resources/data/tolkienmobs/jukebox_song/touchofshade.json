@@ -1,0 +1,8 @@
+{
+  "comparator_output": 15,
+  "description": {
+    "translate": "jukebox_song.tolkienmobs.touchofshade"
+  },
+  "length_in_seconds": 60.0,
+  "sound_event": "tolkienmobs:music_disc.tolkienmobs.touchofshade"
+}

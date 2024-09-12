@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs;
 
 import com.greatorator.tolkienmobs.containers.screens.CoinPouchScreen;
+import com.greatorator.tolkienmobs.containers.screens.KeyItemScreen;
 import com.greatorator.tolkienmobs.containers.screens.KeyRingScreen;
 import com.greatorator.tolkienmobs.event.TolkienRegistration;
 import com.greatorator.tolkienmobs.fluid.TolkienFluid;
@@ -61,7 +62,7 @@ public class TolkienMobsMain {
         TolkienBlocks.register(modEventBus);
         TolkienEntities.register(modEventBus);
 
-        TolkienSounds.register(modEventBus);
+        TolkienSounds.SOUND_EVENTS.register(modEventBus);
         TolkienEffects.register(modEventBus);
         TolkienContainers.register(modEventBus);
 
@@ -131,6 +132,7 @@ public class TolkienMobsMain {
         public static void registerScreens(RegisterMenuScreensEvent event){
             event.register(TolkienContainers.COIN_POUCH_CONTAINER.get(), CoinPouchScreen::new);
             event.register(TolkienContainers.KEY_RING_CONTAINER.get(), KeyRingScreen::new);
+            event.register(TolkienContainers.KEY_ITEM_CONTAINER.get(), KeyItemScreen::new);
         }
 
         public void registerPropertyOverride() {

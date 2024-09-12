@@ -117,6 +117,11 @@ public class TolkienTabs {
                         output.accept(TolkienItems.ITEM_WATCHERCOMPLETE);
                         output.accept(TolkienItems.ITEM_TOKEN_EASTERN_ALLIANCE);
                         output.accept(TolkienItems.ITEM_TOKEN_WESTERN_ALLIANCE);
+                        output.accept(TolkienItems.BRONZE_KEY);
+                        output.accept(TolkienItems.SILVER_KEY);
+                        output.accept(TolkienItems.GOLD_KEY);
+                        output.accept(TolkienItems.MITHRIL_KEY);
+                        output.accept(TolkienItems.MASTER_KEY);
                     }).build());
 
     public static final Supplier<CreativeModeTab> TOLKIEN_FOODS = CREATIVE_MODE_TAB.register("tolkienmobs_tab_food",
@@ -413,7 +418,18 @@ public class TolkienTabs {
                         output.accept(TolkienItems.HOE_AMMOLITE);
                         output.accept(TolkienItems.SHEARS_AMMOLITE);
                         output.accept(TolkienItems.HYPE_HORN);
+                        output.accept(TolkienItems.RECORD_EREBOR);
+                        output.accept(TolkienItems.RECORD_HOBBITS);
+                        output.accept(TolkienItems.RECORD_MINASTIRITH);
+                        output.accept(TolkienItems.RECORD_MURDERFROG);
+                        output.accept(TolkienItems.RECORD_BOMBADIL);
+                        output.accept(TolkienItems.RECORD_REDER);
                         output.accept(TolkienItems.RECORD_RIVENDELL);
+                        output.accept(TolkienItems.RECORD_LOTHLORIEN);
+                        output.accept(TolkienItems.RECORD_WILLOW);
+                        output.accept(TolkienItems.RECORD_FUMBLE);
+                        output.accept(TolkienItems.RECORD_EDORAS);
+                        output.accept(TolkienItems.RECORD_WBATTLE);
                     }).build());
 
     public static void register(IEventBus eventBus) {

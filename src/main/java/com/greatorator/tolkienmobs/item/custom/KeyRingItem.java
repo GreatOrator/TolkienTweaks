@@ -3,8 +3,7 @@ package com.greatorator.tolkienmobs.item.custom;
 import com.greatorator.tolkienmobs.containers.KeyRingContainer;
 import com.greatorator.tolkienmobs.containers.handlers.KeyRingItemStackHandler;
 import com.greatorator.tolkienmobs.handler.TolkienDataComponents;
-import com.greatorator.tolkienmobs.item.TolkienKeyItem;
-import com.greatorator.tolkienmobs.item.TolkienKeyItem;
+import com.greatorator.tolkienmobs.init.TolkienTags;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -60,7 +59,7 @@ public class KeyRingItem extends Item {
         if (entity instanceof Player player && getActive(stack)) {
             for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
                 ItemStack keyStack = player.getInventory().getItem(i);
-                if (keyStack.getItem() instanceof TolkienKeyItem)
+                if (isValidItem(keyStack))
                     addKeyToInventory(stack, keyStack);
             }
         }
@@ -95,6 +94,10 @@ public class KeyRingItem extends Item {
         if (emptySlots.isEmpty()) return key;
         handler.insertItem(emptySlots.get(0), key.split(key.getCount()), false);
         return key;
+    }
+
+    private static boolean isValidItem(ItemStack stack) {
+        return true;
     }
 
     public static UUID getUUID(ItemStack stack) {

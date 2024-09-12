@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.item.custom;
 import com.greatorator.tolkienmobs.containers.CoinPouchContainer;
 import com.greatorator.tolkienmobs.containers.handlers.CoinPouchItemStackHandler;
 import com.greatorator.tolkienmobs.handler.TolkienDataComponents;
+import com.greatorator.tolkienmobs.init.TolkienTags;
 import com.greatorator.tolkienmobs.item.TolkienCoinItem;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
@@ -59,15 +60,13 @@ public class CoinPouchItem extends Item {
         if (entity instanceof Player player && getActive(stack)) {
             for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
                 ItemStack coinStack = player.getInventory().getItem(i);
-                if (coinStack.getItem() instanceof TolkienCoinItem)
+                if (isValidItem(coinStack))
                     addCoinToInventory(stack, coinStack);
             }
         }
     }
 
     public static ItemStack addCoinToInventory(ItemStack coinHolder, ItemStack coin) {
-        if (coin.getItem() instanceof TolkienCoinItem && !coin.isComponentsPatchEmpty())
-            return coin;
         ComponentItemHandler handler = new ComponentItemHandler(coinHolder, TolkienDataComponents.ITEMSTACK_HANDLER.get(), CoinPouchContainer.SLOTS);
         if (handler == null) return coin;
         List<Integer> emptySlots = new ArrayList<>();
@@ -94,6 +93,10 @@ public class CoinPouchItem extends Item {
         if (emptySlots.isEmpty()) return coin;
         handler.insertItem(emptySlots.get(0), coin.split(coin.getCount()), false);
         return coin;
+    }
+
+    private static boolean isValidItem(ItemStack stack) {
+        return stack.is(TolkienTags.Items.COINS);
     }
 
     public static UUID getUUID(ItemStack stack) {

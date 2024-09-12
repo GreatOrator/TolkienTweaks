@@ -1,0 +1,252 @@
+{
+  "ambient.tolkienmobs.arda_portal": {
+    "sounds": [
+      "tolkienmobs:ambient/arda_portal"
+    ],
+    "subtitle": "subtitles.tolkienmobs.ambient.arda_portal"
+  },
+  "ambient.tolkienmobs.khazaddum": {
+    "sounds": [
+      "tolkienmobs:ambient/khazaddum"
+    ],
+    "subtitle": "subtitles.tolkienmobs.ambient.khazaddum"
+  },
+  "ambient.tolkienmobs.medievalcity": {
+    "sounds": [
+      "tolkienmobs:ambient/medievalcity"
+    ],
+    "subtitle": "subtitles.tolkienmobs.ambient.medievalcity"
+  },
+  "ambient.tolkienmobs.medievalcitymarket": {
+    "sounds": [
+      "tolkienmobs:ambient/medievalcitymarket"
+    ],
+    "subtitle": "subtitles.tolkienmobs.ambient.medievalcitymarket"
+  },
+  "ambient.tolkienmobs.medievalseaport": {
+    "sounds": [
+      "tolkienmobs:ambient/medievalseaport"
+    ],
+    "subtitle": "subtitles.tolkienmobs.ambient.medievalseaport"
+  },
+  "ambient.tolkienmobs.medievaltavern": {
+    "sounds": [
+      "tolkienmobs:ambient/medievaltavern"
+    ],
+    "subtitle": "subtitles.tolkienmobs.ambient.medievaltavern"
+  },
+  "ambient.tolkienmobs.pathsofthedead": {
+    "sounds": [
+      "tolkienmobs:ambient/pathsofthedead"
+    ],
+    "subtitle": "subtitles.tolkienmobs.ambient.pathsofthedead"
+  },
+  "ambient.tolkienmobs.underworld": {
+    "sounds": [
+      "tolkienmobs:ambient/underworld"
+    ],
+    "subtitle": "subtitles.tolkienmobs.ambient.underworld"
+  },
+  "ambient.tolkienmobs.waterworks": {
+    "sounds": [
+      "tolkienmobs:ambient/waterworks"
+    ],
+    "subtitle": "subtitles.tolkienmobs.ambient.waterworks"
+  },
+  "block.tolkienmobs.cathedralbell": {
+    "sounds": [
+      "tolkienmobs:block/cathedralbell"
+    ],
+    "subtitle": "subtitles.tolkienmobs.block.cathedralbell"
+  },
+  "block.tolkienmobs.chest_close": {
+    "sounds": [
+      "tolkienmobs:block/chest_close"
+    ],
+    "subtitle": "subtitles.tolkienmobs.block.chest_close"
+  },
+  "block.tolkienmobs.chest_open": {
+    "sounds": [
+      "tolkienmobs:block/chest_open"
+    ],
+    "subtitle": "subtitles.tolkienmobs.block.chest_open"
+  },
+  "block.tolkienmobs.lightningbug_ambient": {
+    "sounds": [
+      "tolkienmobs:block/lightningbug"
+    ],
+    "subtitle": "subtitles.tolkienmobs.block.lightningbug_ambient"
+  },
+  "block.tolkienmobs.locust_ambient": {
+    "sounds": [
+      "tolkienmobs:block/locust"
+    ],
+    "subtitle": "subtitles.tolkienmobs.block.locust_ambient"
+  },
+  "item.tolkienmobs.hype_horn": {
+    "sounds": [
+      "tolkienmobs:item/hype_horn"
+    ],
+    "subtitle": "subtitles.tolkienmobs.item.hype_horn"
+  },
+  "music.tolkienmobs.tolkien_mobs": {
+    "sounds": [
+      {
+        "name": "tolkienmobs:music/allthatglitterserebor",
+        "stream": true,
+        "volume": 0.5
+      },
+      {
+        "name": "tolkienmobs:music/concerninghobbits",
+        "stream": true,
+        "volume": 0.5
+      },
+      {
+        "name": "tolkienmobs:music/minastirith",
+        "stream": true,
+        "volume": 0.5
+      },
+      {
+        "name": "tolkienmobs:music/murderfrog",
+        "stream": true,
+        "volume": 0.5
+      },
+      {
+        "name": "tolkienmobs:music/mysteryoftombombadil",
+        "stream": true,
+        "volume": 0.5
+      },
+      {
+        "name": "tolkienmobs:music/rederssong",
+        "stream": true,
+        "volume": 0.5
+      },
+      {
+        "name": "tolkienmobs:music/ridersofrivendell",
+        "stream": true,
+        "volume": 0.5
+      },
+      {
+        "name": "tolkienmobs:music/thelightoflothlorien",
+        "stream": true,
+        "volume": 0.5
+      },
+      {
+        "name": "tolkienmobs:music/touchofshade",
+        "stream": true,
+        "volume": 0.5
+      },
+      {
+        "name": "tolkienmobs:music/trollfumble",
+        "stream": true,
+        "volume": 0.5
+      },
+      {
+        "name": "tolkienmobs:music/wakeofedoras",
+        "stream": true,
+        "volume": 0.5
+      },
+      {
+        "name": "tolkienmobs:music/witchbattle",
+        "stream": true,
+        "volume": 0.5
+      }
+    ]
+  },
+  "music_disc.tolkienmobs.allthatglitterserebor": {
+    "sounds": [
+      {
+        "name": "tolkienmobs:music/allthatglitterserebor",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.tolkienmobs.concerninghobbits": {
+    "sounds": [
+      {
+        "name": "tolkienmobs:music/concerninghobbits",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.tolkienmobs.minastirith": {
+    "sounds": [
+      {
+        "name": "tolkienmobs:music/minastirith",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.tolkienmobs.murderfrog": {
+    "sounds": [
+      {
+        "name": "tolkienmobs:music/murderfrog",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.tolkienmobs.mysteryoftombombadil": {
+    "sounds": [
+      {
+        "name": "tolkienmobs:music/mysteryoftombombadil",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.tolkienmobs.rederssong": {
+    "sounds": [
+      {
+        "name": "tolkienmobs:music/rederssong",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.tolkienmobs.ridersofrivendell": {
+    "sounds": [
+      {
+        "name": "tolkienmobs:music/ridersofrivendell",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.tolkienmobs.thelightoflothlorien": {
+    "sounds": [
+      {
+        "name": "tolkienmobs:music/thelightoflothlorien",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.tolkienmobs.touchofshade": {
+    "sounds": [
+      {
+        "name": "tolkienmobs:music/touchofshade",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.tolkienmobs.trollfumble": {
+    "sounds": [
+      {
+        "name": "tolkienmobs:music/trollfumble",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.tolkienmobs.wakeofedoras": {
+    "sounds": [
+      {
+        "name": "tolkienmobs:music/wakeofedoras",
+        "stream": true
+      }
+    ]
+  },
+  "music_disc.tolkienmobs.witchbattle": {
+    "sounds": [
+      {
+        "name": "tolkienmobs:music/witchbattle",
+        "stream": true
+      }
+    ]
+  }
+}

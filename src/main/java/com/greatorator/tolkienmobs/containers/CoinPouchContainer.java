@@ -1,6 +1,6 @@
 package com.greatorator.tolkienmobs.containers;
 
-import com.greatorator.tolkienmobs.containers.handlers.CoinPouchSlot;
+import com.greatorator.tolkienmobs.containers.slots.CoinPouchSlot;
 import com.greatorator.tolkienmobs.handler.TolkienDataComponents;
 import com.greatorator.tolkienmobs.init.TolkienContainers;
 import net.minecraft.core.BlockPos;

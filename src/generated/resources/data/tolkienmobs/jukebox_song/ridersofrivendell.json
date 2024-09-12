@@ -1,0 +1,8 @@
+{
+  "comparator_output": 15,
+  "description": {
+    "translate": "jukebox_song.tolkienmobs.ridersofrivendell"
+  },
+  "length_in_seconds": 142.0,
+  "sound_event": "tolkienmobs:music_disc.tolkienmobs.ridersofrivendell"
+}

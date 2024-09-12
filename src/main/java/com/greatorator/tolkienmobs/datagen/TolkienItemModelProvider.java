@@ -198,7 +198,18 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         blockWithOwnFlatTexture(TolkienBlocks.LADDER_FANGORNOAK);
         blockWithOwnFlatTexture(TolkienBlocks.LADDER_DEADWOOD);
 
+        basicItem(TolkienItems.RECORD_EREBOR.get());
+        basicItem(TolkienItems.RECORD_HOBBITS.get());
+        basicItem(TolkienItems.RECORD_MINASTIRITH.get());
+        basicItem(TolkienItems.RECORD_MURDERFROG.get());
+        basicItem(TolkienItems.RECORD_BOMBADIL.get());
+        basicItem(TolkienItems.RECORD_REDER.get());
         basicItem(TolkienItems.RECORD_RIVENDELL.get());
+        basicItem(TolkienItems.RECORD_LOTHLORIEN.get());
+        basicItem(TolkienItems.RECORD_WILLOW.get());
+        basicItem(TolkienItems.RECORD_FUMBLE.get());
+        basicItem(TolkienItems.RECORD_EDORAS.get());
+        basicItem(TolkienItems.RECORD_WBATTLE.get());
         basicItem(TolkienItems.HYPE_HORN.get());
 
         buildTool(TolkienItems.SWORD_WITCHKING.get());
@@ -222,6 +233,11 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         buildTool(TolkienItems.SHEARS_MORGULIRON.get());
         buildTool(TolkienItems.SHEARS_AMMOLITE.get());
 
+        basicItem(TolkienItems.BRONZE_KEY.get());
+        basicItem(TolkienItems.SILVER_KEY.get());
+        basicItem(TolkienItems.GOLD_KEY.get());
+        basicItem(TolkienItems.MITHRIL_KEY.get());
+        basicItem(TolkienItems.MASTER_KEY.get());
     }
 
     private ItemModelBuilder saplingItem(DeferredBlock<Block> item) {
