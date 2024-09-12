@@ -231,22 +231,22 @@ public class TolkienItems {
     public static final DeferredItem<Item> RECORD_WBATTLE = ITEMS.registerItem("record_wbattle", properties -> new Item(properties.jukeboxPlayable(TolkienJukebox.WITCHBATTLE).stacksTo(1)));
 
         // Sleeping Bags
-    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_WHITE = ITEMS.register("sleeping_bag_white", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_WHITE.get(), new Item.Properties()));
-    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_ORANGE = ITEMS.register("sleeping_bag_orange", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_ORANGE.get(), new Item.Properties()));
-    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_MAGENTA = ITEMS.register("sleeping_bag_magenta", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_MAGENTA.get(), new Item.Properties()));
-    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_LIGHT_BLUE = ITEMS.register("sleeping_bag_light_blue", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_LIGHT_BLUE.get(), new Item.Properties()));
-    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_YELLOW = ITEMS.register("sleeping_bag_yellow", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_YELLOW.get(), new Item.Properties()));
-    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_LIME = ITEMS.register("sleeping_bag_lime", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_LIME.get(), new Item.Properties()));
-    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_PINK = ITEMS.register("sleeping_bag_pink", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_PINK.get(), new Item.Properties()));
-    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_GRAY = ITEMS.register("sleeping_bag_gray", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_GRAY.get(), new Item.Properties()));
-    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_LIGHT_GRAY = ITEMS.register("sleeping_bag_light_gray", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_LIGHT_GRAY.get(), new Item.Properties()));
-    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_CYAN = ITEMS.register("sleeping_bag_cyan", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_CYAN.get(), new Item.Properties()));
-    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_PURPLE = ITEMS.register("sleeping_bag_purple", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_PURPLE.get(), new Item.Properties()));
-    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_BLUE = ITEMS.register("sleeping_bag_blue", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_BLUE.get(), new Item.Properties()));
-    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_BROWN = ITEMS.register("sleeping_bag_brown", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_BROWN.get(), new Item.Properties()));
-    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_GREEN = ITEMS.register("sleeping_bag_green", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_GREEN.get(), new Item.Properties()));
-    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_RED = ITEMS.register("sleeping_bag_red", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_RED.get(), new Item.Properties()));
-    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_BLACK = ITEMS.register("sleeping_bag_black", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_BLACK.get(), new Item.Properties()));
+    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_WHITE = ITEMS.register("sleeping_bag_white", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_WHITE.get(), new Item.Properties()).setHasLore());
+    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_ORANGE = ITEMS.register("sleeping_bag_orange", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_ORANGE.get(), new Item.Properties()).setHasLore());
+    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_MAGENTA = ITEMS.register("sleeping_bag_magenta", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_MAGENTA.get(), new Item.Properties()).setHasLore());
+    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_LIGHT_BLUE = ITEMS.register("sleeping_bag_light_blue", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_LIGHT_BLUE.get(), new Item.Properties()).setHasLore());
+    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_YELLOW = ITEMS.register("sleeping_bag_yellow", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_YELLOW.get(), new Item.Properties()).setHasLore());
+    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_LIME = ITEMS.register("sleeping_bag_lime", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_LIME.get(), new Item.Properties()).setHasLore());
+    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_PINK = ITEMS.register("sleeping_bag_pink", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_PINK.get(), new Item.Properties()).setHasLore());
+    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_GRAY = ITEMS.register("sleeping_bag_gray", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_GRAY.get(), new Item.Properties()).setHasLore());
+    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_LIGHT_GRAY = ITEMS.register("sleeping_bag_light_gray", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_LIGHT_GRAY.get(), new Item.Properties()).setHasLore());
+    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_CYAN = ITEMS.register("sleeping_bag_cyan", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_CYAN.get(), new Item.Properties()).setHasLore());
+    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_PURPLE = ITEMS.register("sleeping_bag_purple", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_PURPLE.get(), new Item.Properties()).setHasLore());
+    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_BLUE = ITEMS.register("sleeping_bag_blue", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_BLUE.get(), new Item.Properties()).setHasLore());
+    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_BROWN = ITEMS.register("sleeping_bag_brown", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_BROWN.get(), new Item.Properties()).setHasLore());
+    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_GREEN = ITEMS.register("sleeping_bag_green", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_GREEN.get(), new Item.Properties()).setHasLore());
+    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_RED = ITEMS.register("sleeping_bag_red", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_RED.get(), new Item.Properties()).setHasLore());
+    public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_BLACK = ITEMS.register("sleeping_bag_black", () -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_BLACK.get(), new Item.Properties()).setHasLore());
 
         // Tools
     public static final DeferredItem<Item> HYPE_HORN = ITEMS.register("hype_horn", () -> new HypeHornItem(new Item.Properties().stacksTo(1)));
