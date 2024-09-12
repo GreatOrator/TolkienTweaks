@@ -156,6 +156,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addMusicDisc(TolkienItems.RECORD_FUMBLE, "SnowShepherd - Bumbling Troll");
             this.addMusicDisc(TolkienItems.RECORD_EDORAS, "SnowShepherd - Home of the Horse-lords");
             this.addMusicDisc(TolkienItems.RECORD_WBATTLE, "SnowShepherd - Ephalba's Realm");
+        this.add("itemGroup.tolkienmobs.mats", "TolkienTweaks: Ingredients");
         this.add("itemGroup.tolkienmobs.function", "TolkienTweaks: Functional Blocks");
             this.addBlock(TolkienBlocks.SILMARIL_LANTERN, "Light of Elendil");
             this.addBlock(TolkienBlocks.ELVEN_LANTERN, "Elven Lantern");
@@ -174,6 +175,8 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.createWoodSet("deadwood", "Dead Wood");
             this.createMetalSet("mithril", "Mithril");
             this.createMetalSet("morguliron", "Morgul Iron");
+            this.createGemSet("ammolite", "Ammolite");
+            this.addBlock(TolkienBlocks.DOOR_DURIN, "Door of Durin");
             this.addBlockWithLore(TolkienBlocks.SLEEPING_BAG_BLUE.get(), "Blue Sleeping Bag", "§cDoes not§r reset spawn point.");
             this.addBlockWithLore(TolkienBlocks.SLEEPING_BAG_RED.get(), "Red Sleeping Bag", "§cDoes not§r reset spawn point.");
             this.addBlockWithLore(TolkienBlocks.SLEEPING_BAG_BLACK.get(), "Black Sleeping Bag", "§cDoes not§r reset spawn point.");
@@ -190,5 +193,15 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addBlockWithLore(TolkienBlocks.SLEEPING_BAG_PURPLE.get(), "Purple Sleeping Bag", "§cDoes not§r reset spawn point.");
             this.addBlockWithLore(TolkienBlocks.SLEEPING_BAG_WHITE.get(), "White Sleeping Bag", "§cDoes not§r reset spawn point.");
             this.addBlockWithLore(TolkienBlocks.SLEEPING_BAG_YELLOW.get(), "Yellow Sleeping Bag", "§cDoes not§r reset spawn point.");
+
+                // Screens
+            this.addItemScreen(TolkienItems.BRONZE_KEY.get(), "Bronze Key");
+            this.addItemScreen(TolkienItems.SILVER_KEY.get(), "Silver Key");
+            this.addItemScreen(TolkienItems.GOLD_KEY.get(), "Gold Key");
+            this.addItemScreen(TolkienItems.MITHRIL_KEY.get(), "Mithril Key");
+            this.addItemScreen(TolkienItems.MASTER_KEY.get(), "Master Key");
+            this.addItemScreen(TolkienItems.COIN_POUCH.get(), "Coin Pouch");
+            this.addItemScreen(TolkienItems.KEY_RING.get(), "Key Ring");
+
     }
 }

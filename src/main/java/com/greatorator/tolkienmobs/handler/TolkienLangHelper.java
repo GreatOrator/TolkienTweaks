@@ -10,7 +10,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.data.LanguageProvider;
-import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.HashMap;
@@ -42,6 +41,10 @@ public abstract class TolkienLangHelper extends LanguageProvider {
         this.add(Util.makeDescriptionId("jukebox_song", disc.get().components().get(DataComponents.JUKEBOX_PLAYABLE).song().key().location()), description);
     }
 
+    public void addItemScreen(Item key, String name) {
+        this.add("screen.tolkienmobs." + key.getDescriptionId(), name);
+    }
+
     public void addItemWithLore(Item key, String name, String lore) {
         this.add(key.getDescriptionId(), name);
         this.add(key.getDescriptionId() + ".lore", lore);
@@ -52,11 +55,21 @@ public abstract class TolkienLangHelper extends LanguageProvider {
         this.add(key.getDescriptionId() + ".lore", lore);
     }
 
+    public void createGemSet(String gemPrefix, String gemName) {
+        this.add("block.tolkienmobs.ore_" + gemPrefix, gemName + " Ore");
+        this.add("block.tolkienmobs.ore_deepslate_" + gemPrefix, gemName + " Deepslate Ore");
+        this.add("block.tolkienmobs.ore_end_" + gemPrefix, gemName + " Ender Ore");
+        this.add("block.tolkienmobs.ore_nether_" + gemPrefix, "Firey " + gemName + " Ore");
+        this.add("item.tolkienmobs.gem_" + gemPrefix,  gemName + " Gem");
+        this.add("block.tolkienmobs.block_" + gemPrefix, gemName + " Block");
+        this.add("block.tolkienmobs.pane_" + gemPrefix, gemName + " Pane");
+    }
+
     public void createMetalSet(String metalPrefix, String metalName) {
         this.add("block.tolkienmobs.ore_" + metalPrefix, metalName + " Ore");
         this.add("block.tolkienmobs.ore_deepslate_" + metalPrefix, metalName + " Deepslate Ore");
-        this.add("block.tolkienmobs.ore_end_" + metalPrefix, metalName + " End Ore");
-        this.add("block.tolkienmobs.ore_nether_" + metalPrefix, metalName + " Nether Ore");
+        this.add("block.tolkienmobs.ore_end_" + metalPrefix, metalName + " Ender Ore");
+        this.add("block.tolkienmobs.ore_nether_" + metalPrefix, "Firey " + metalName + " Ore");
         this.add("block.tolkienmobs.raw_" + metalPrefix + "_block", "Raw " + metalName + " Block");
         this.add("block.tolkienmobs.trapdoor_" + metalPrefix, metalName + " Trapdoor");
         this.add("block.tolkienmobs.stairs_" + metalPrefix, metalName + " Stairs");

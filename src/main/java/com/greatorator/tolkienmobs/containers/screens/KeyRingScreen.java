@@ -30,7 +30,7 @@ public class KeyRingScreen extends AbstractContainerScreen<KeyRingContainer> {
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        //super.renderLabels(matrixStack, mouseX, mouseY);
+        guiGraphics.drawString(font, title, 5, 5, 8552833);
     }
 
     @Override
