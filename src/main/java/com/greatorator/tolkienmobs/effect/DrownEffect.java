@@ -2,6 +2,8 @@ package com.greatorator.tolkienmobs.effect;
 
 import com.greatorator.tolkienmobs.init.TolkienEffects;
 import net.minecraft.core.Holder;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -38,8 +40,16 @@ public class DrownEffect extends TolkienEffect {
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity entity, int amplifier) {
-        entity.hurt(entity.damageSources().drown(), 1F);
+    public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
+        livingEntity.hurt(livingEntity.damageSources().drown(), 1F + amplifier);
+
+        if (livingEntity.level() instanceof ServerLevel level) {
+            level.sendParticles(ParticleTypes.BUBBLE,
+                    livingEntity.getX() + (level.getRandom().nextGaussian() / 5.0),
+                    livingEntity.getY() + (level.getRandom().nextGaussian() / 3.0),
+                    livingEntity.getZ() + (level.getRandom().nextGaussian() / 5.0),
+                    5, 0.5, 0.5, 0.5, 0.5F);
+        }
         return true;
     }
 }
