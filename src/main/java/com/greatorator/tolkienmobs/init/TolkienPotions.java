@@ -22,7 +22,7 @@ public class TolkienPotions {
     public static final Holder<Potion> ELF_VITALITY = POTIONS.register("elf_vitality",
             () -> new Potion(new MobEffectInstance(TolkienEffects.ELF_VITALITY, 600, 0)));
     public static final Holder<Potion> ELF_NIMBLENESS = POTIONS.register("elven_nimbleness",
-            () -> new Potion(new MobEffectInstance(TolkienEffects.ELF_VITALITY, 600, 0)));
+            () -> new Potion(new MobEffectInstance(TolkienEffects.ELF_NIMBLENESS, 600, 0)));
 
         // Harmful
     public static final Holder<Potion> INVENTORY_CORROSION = POTIONS.register("inventory_corrosion",
@@ -34,13 +34,13 @@ public class TolkienPotions {
     public static final Holder<Potion> WATCHER_FEAR = POTIONS.register("dread_aura",
             () -> new Potion(new MobEffectInstance(TolkienEffects.WATCHER_FEAR, 600, 0)));
     public static final Holder<Potion> SLEEPNESIA = POTIONS.register("sleepnesia",
-            () -> new Potion(new MobEffectInstance(TolkienEffects.WATCHER_FEAR, 600, 0)));
+            () -> new Potion(new MobEffectInstance(TolkienEffects.SLEEPNESIA, 600, 0)));
     public static final Holder<Potion> ELEMENTAL_BURNING = POTIONS.register("elemental_burning",
-            () -> new Potion(new MobEffectInstance(TolkienEffects.WATCHER_FEAR, 600, 0)));
+            () -> new Potion(new MobEffectInstance(TolkienEffects.ELEMENTAL_BURNING, 600, 0)));
     public static final Holder<Potion> ELEMENTAL_LIGHTNING = POTIONS.register("elemental_lightning",
-            () -> new Potion(new MobEffectInstance(TolkienEffects.WATCHER_FEAR, 600, 0)));
+            () -> new Potion(new MobEffectInstance(TolkienEffects.ELEMENTAL_LIGHTNING, 600, 0)));
     public static final Holder<Potion> ELEMENTAL_DROWNING = POTIONS.register("elemental_drowning",
-            () -> new Potion(new MobEffectInstance(TolkienEffects.WATCHER_FEAR, 600, 0)));
+            () -> new Potion(new MobEffectInstance(TolkienEffects.ELEMENTAL_DROWNING, 600, 0)));
 
     public static void register(IEventBus eventBus) {
         POTIONS.register(eventBus);
