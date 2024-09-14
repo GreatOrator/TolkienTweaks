@@ -19,7 +19,6 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class NimbleEffect extends TolkienEffect {
     static ResourceLocation nimbleStep = ResourceLocation.fromNamespaceAndPath(MODID, "nimbleness");
-    public static float runDuration = 10;
     static boolean canStep = true;
 
     public NimbleEffect(MobEffectCategory category, int color) {
@@ -28,14 +27,14 @@ public class NimbleEffect extends TolkienEffect {
 
     @Override
     public void applyInstantenousEffect(@Nullable Entity source, @Nullable Entity indirectSource, LivingEntity livingEntity, int amplifier, double health) {
-        if (source instanceof Player && livingEntity.hasEffect(TolkienEffects.ELF_NIMBLENESS) && canStep) {
+        if (livingEntity instanceof Player && livingEntity.hasEffect(TolkienEffects.ELF_NIMBLENESS)) {
             canStepUp(livingEntity, amplifier);
         }
     }
 
     @Override
     public boolean applyEffectTick(LivingEntity entity, int amplifier) {
-        if (entity instanceof Player && entity.hasEffect(TolkienEffects.ELF_NIMBLENESS) && !canStep) {
+        if (!canStep) {
             noStepUp(entity);
         }
         return canStep;
@@ -61,11 +60,9 @@ public class NimbleEffect extends TolkienEffect {
 
     @Override
     public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
-        TolkienMobsMain.LOGGER.warn(String.valueOf(canStep));
-        TolkienMobsMain.LOGGER.warn(String.valueOf(duration));
         if (duration <= 5){
             canStep = false;
         }
-        return canStep;
+        return true;
     }
 }
