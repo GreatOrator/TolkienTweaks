@@ -221,5 +221,22 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.createPotionSet("dread_aura", "Great Dread");
             this.createPotionSet("crippling_terror", "Paralysing Fear");
 
+                // Sounds
+            this.addSound("block", "chest_open", "Chest has opened");
+            this.addSound("block", "chest_close", "Chest has closed");
+            this.addSound("block", "cathedralbell", "A bell in ringing");
+            this.addSound("block", "locust_ambient", "Buzzing Locusts");
+            this.addSound("block", "lightningbug_ambient", "Lightning bugs chirping");
+            this.addSound("ambient", "medievalseaport", "Sounds of the sea");
+            this.addSound("ambient", "medievaltavern", "Tavern patrons chattering");
+            this.addSound("ambient", "medievalcitymarket", "People moving around buying in the market");
+            this.addSound("ambient", "medievalcity", "Bustling sounds of the city");
+            this.addSound("ambient", "waterworks", "Ancient cave of machinery");
+            this.addSound("ambient", "underworld", "Creepy cavern underground");
+            this.addSound("ambient", "khazaddum", "Sounds of an ancient Dwarven City");
+            this.addSound("ambient", "pathsofthedead", "The way is shut, and the dead keep it");
+            this.addSound("ambient", "arda_portal", "Portal to Arda beckons");
+            this.addSound("item", "hype_horn", "Celebrating victory");
+
     }
 }
