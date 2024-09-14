@@ -36,6 +36,10 @@ public abstract class TolkienLangHelper extends LanguageProvider {
         this.upsideDownEntries.put(key, LangConversionHelper.convertComponents(splitEnglish));
     }
 
+    public void addSound(String category, String subtitleName, String name) {
+        this.add("subtitles.tolkienmobs." + category + "." + subtitleName, name);
+    }
+
     public void addMusicDisc(DeferredItem<Item> disc, String description) {
         this.addItem(disc, "Music Disc");
         this.add(Util.makeDescriptionId("jukebox_song", disc.get().components().get(DataComponents.JUKEBOX_PLAYABLE).song().key().location()), description);
