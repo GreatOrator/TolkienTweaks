@@ -8,10 +8,11 @@ import com.greatorator.tolkienmobs.event.TolkienRegistration;
 import com.greatorator.tolkienmobs.fluid.TolkienFluid;
 import com.greatorator.tolkienmobs.handler.TolkienDataComponents;
 import com.greatorator.tolkienmobs.init.*;
-import com.greatorator.tolkienmobs.init.types.TolkienFluidTypes;
-import com.greatorator.tolkienmobs.init.types.TolkienParticleTypes;
+import com.greatorator.tolkienmobs.init.TolkienFluidTypes;
+import com.greatorator.tolkienmobs.init.TolkienParticleTypes;
 import com.greatorator.tolkienmobs.item.custom.CoinPouchItem;
 import com.greatorator.tolkienmobs.item.custom.KeyRingItem;
+import com.greatorator.tolkienmobs.particle.LeafParticle;
 import com.greatorator.tolkienmobs.particle.provider.TolkienParticleProvider;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -159,6 +160,7 @@ public class TolkienMobsMain {
             pEvent.registerSpriteSet(TolkienParticleTypes.FANGORNOAK_FLAME.get(), TolkienParticleProvider::new);
             pEvent.registerSpriteSet(TolkienParticleTypes.DEADWOOD_FLAME.get(), TolkienParticleProvider::new);
             pEvent.registerSpriteSet(TolkienParticleTypes.LIGHTNINGBUG.get(), TolkienParticleProvider::new);
+            pEvent.registerSpriteSet(TolkienParticleTypes.FALLING_LEAVES.get(), LeafParticle.Factory::new);
         }
     }
 

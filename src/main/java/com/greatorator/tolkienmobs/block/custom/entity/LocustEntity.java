@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.block.custom.entity;
 
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
-import com.greatorator.tolkienmobs.init.types.TolkienParticleTypes;
+import com.greatorator.tolkienmobs.init.TolkienParticleTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
