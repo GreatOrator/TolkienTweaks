@@ -1,7 +1,9 @@
 package com.greatorator.tolkienmobs.datagen;
 
+import com.greatorator.tolkienmobs.block.custom.LeafPileBlock;
 import com.greatorator.tolkienmobs.block.custom.PipeweedCropBlock;
 import com.greatorator.tolkienmobs.block.custom.PlacardBlock;
+import com.greatorator.tolkienmobs.datagen.helpers.BlockModelBuilders;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienFluids;
 import net.minecraft.core.Direction;
@@ -21,9 +23,9 @@ import java.util.function.Supplier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class TolkienBlockStateProvider extends BlockStateProvider {
+public class TolkienBlockStateProvider extends BlockModelBuilders {
     public TolkienBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
-        super(output, MODID, exFileHelper);
+        super(output, exFileHelper);
     }
 
     @Override
@@ -317,7 +319,89 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         makeFlower(TolkienBlocks.MUSHROOM_DECAY_BLOOM, TolkienBlocks.POTTED_MUSHROOM_DECAY_BLOOM);
         blockItem(TolkienBlocks.BLOCK_DECAY_BLOOM);
         blockItem(TolkienBlocks.BLOCK_BLOOM_DECAY);
+        blockWithItem(TolkienBlocks.LIVING_ROOTS);
         makeCrop(((PipeweedCropBlock) TolkienBlocks.PIPEWEED.get()), "pipeweed_crop_stage", "pipeweed_stage");
+
+        getVariantBuilder(TolkienBlocks.LEAFPILE_MALLORN.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 1).setModels(new ConfiguredModel(buildFallenLeaves("mallorn", 1)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_MALLORN.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 2).setModels(new ConfiguredModel(buildFallenLeaves("mallorn", 2)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_MALLORN.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 3).setModels(new ConfiguredModel(buildFallenLeaves("mallorn", 3)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_MALLORN.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 4).setModels(new ConfiguredModel(buildFallenLeaves("mallorn", 4)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_MALLORN.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 5).setModels(new ConfiguredModel(buildFallenLeaves("mallorn", 5)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_MALLORN.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 6).setModels(new ConfiguredModel(buildFallenLeaves("mallorn", 6)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_MALLORN.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 7).setModels(new ConfiguredModel(buildFallenLeaves("mallorn", 7)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_MALLORN.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 8).setModels(new ConfiguredModel(buildFallenLeaves("mallorn", 8)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_MIRKWOOD.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 1).setModels(new ConfiguredModel(buildFallenLeaves("mirkwood", 1)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_MIRKWOOD.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 2).setModels(new ConfiguredModel(buildFallenLeaves("mirkwood", 2)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_MIRKWOOD.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 3).setModels(new ConfiguredModel(buildFallenLeaves("mirkwood", 3)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_MIRKWOOD.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 4).setModels(new ConfiguredModel(buildFallenLeaves("mirkwood", 4)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_MIRKWOOD.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 5).setModels(new ConfiguredModel(buildFallenLeaves("mirkwood", 5)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_MIRKWOOD.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 6).setModels(new ConfiguredModel(buildFallenLeaves("mirkwood", 6)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_MIRKWOOD.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 7).setModels(new ConfiguredModel(buildFallenLeaves("mirkwood", 7)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_MIRKWOOD.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 8).setModels(new ConfiguredModel(buildFallenLeaves("mirkwood", 8)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_CULUMALDA.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 1).setModels(new ConfiguredModel(buildFallenLeaves("culumalda", 1)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_CULUMALDA.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 2).setModels(new ConfiguredModel(buildFallenLeaves("culumalda", 2)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_CULUMALDA.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 3).setModels(new ConfiguredModel(buildFallenLeaves("culumalda", 3)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_CULUMALDA.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 4).setModels(new ConfiguredModel(buildFallenLeaves("culumalda", 4)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_CULUMALDA.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 5).setModels(new ConfiguredModel(buildFallenLeaves("culumalda", 5)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_CULUMALDA.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 6).setModels(new ConfiguredModel(buildFallenLeaves("culumalda", 6)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_CULUMALDA.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 7).setModels(new ConfiguredModel(buildFallenLeaves("culumalda", 7)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_CULUMALDA.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 8).setModels(new ConfiguredModel(buildFallenLeaves("culumalda", 8)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_LEBETHRON.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 1).setModels(new ConfiguredModel(buildFallenLeaves("lebethron", 1)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_LEBETHRON.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 2).setModels(new ConfiguredModel(buildFallenLeaves("lebethron", 2)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_LEBETHRON.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 3).setModels(new ConfiguredModel(buildFallenLeaves("lebethron", 3)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_LEBETHRON.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 4).setModels(new ConfiguredModel(buildFallenLeaves("lebethron", 4)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_LEBETHRON.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 5).setModels(new ConfiguredModel(buildFallenLeaves("lebethron", 5)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_LEBETHRON.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 6).setModels(new ConfiguredModel(buildFallenLeaves("lebethron", 6)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_LEBETHRON.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 7).setModels(new ConfiguredModel(buildFallenLeaves("lebethron", 7)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_LEBETHRON.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 8).setModels(new ConfiguredModel(buildFallenLeaves("lebethron", 8)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_FANGORNOAK.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 1).setModels(new ConfiguredModel(buildFallenLeaves("fangornoak", 1)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_FANGORNOAK.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 2).setModels(new ConfiguredModel(buildFallenLeaves("fangornoak", 2)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_FANGORNOAK.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 3).setModels(new ConfiguredModel(buildFallenLeaves("fangornoak", 3)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_FANGORNOAK.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 4).setModels(new ConfiguredModel(buildFallenLeaves("fangornoak", 4)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_FANGORNOAK.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 5).setModels(new ConfiguredModel(buildFallenLeaves("fangornoak", 5)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_FANGORNOAK.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 6).setModels(new ConfiguredModel(buildFallenLeaves("fangornoak", 6)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_FANGORNOAK.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 7).setModels(new ConfiguredModel(buildFallenLeaves("fangornoak", 7)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_FANGORNOAK.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 8).setModels(new ConfiguredModel(buildFallenLeaves("fangornoak", 8)));
 
             // Custom
         builtinEntity(TolkienBlocks.LIGHTNINGBUG_BLOCK.get(), "block/blank");
@@ -381,108 +465,5 @@ public class TolkienBlockStateProvider extends BlockStateProvider {
         getVariantBuilder(TolkienFluids.MORGULIRON_BLOCK.get())
                 .forAllStates(state -> ConfiguredModel.builder().modelFile(morgulironFile).build());
 
-    }
-
-    protected ResourceLocation texture(String name) {
-        return modLoc("block/" + name);
-    }
-
-    protected ResourceLocation key(Block block) {
-        return BuiltInRegistries.BLOCK.getKey(block);
-    }
-
-    protected String name(Supplier<? extends Block> block) {
-        return BuiltInRegistries.BLOCK.getKey(block.get()).getPath();
-    }
-
-    protected String nameB(Block block) {
-        return key(block).getPath();
-    }
-
-    public void makeCrop(CropBlock block, String modelName, String textureName) {
-        Function<BlockState, ConfiguredModel[]> function = state -> states(state, block, modelName, textureName);
-
-        getVariantBuilder(block).forAllStates(function);
-    }
-
-    private ConfiguredModel[] states(BlockState state, CropBlock block, String modelName, String textureName) {
-        ConfiguredModel[] models = new ConfiguredModel[1];
-        models[0] = new ConfiguredModel(models().crop(modelName + state.getValue(((PipeweedCropBlock) block).getAgeProperty()),
-                ResourceLocation.fromNamespaceAndPath(MODID, "block/" + textureName +
-                        state.getValue(((PipeweedCropBlock) block).getAgeProperty()))).renderType("cutout"));
-
-        return models;
-    }
-
-    protected void builtinEntity(Block b, String particle) {
-        simpleBlock(b, models().getBuilder(nameB(b))
-                .parent(new ModelFile.UncheckedModelFile("builtin/entity"))
-                .texture("particle", particle));
-    }
-
-    private void ladder(DeferredBlock<Block> ladder, DeferredBlock<Block> fullBlock) {
-        ModelFile ladderModel = models().withExistingParent(ladder.getId().getPath(), "ladder")
-                .texture("particle", texture(name(fullBlock)))
-                .texture("texture", texture(name(ladder))).renderType("cutout")
-                .ao(false);
-        getVariantBuilder(ladder.get())
-                .partialState().with(LadderBlock.FACING, Direction.NORTH)
-                .modelForState().modelFile(ladderModel).addModel()
-                .partialState().with(LadderBlock.FACING, Direction.EAST)
-                .modelForState().modelFile(ladderModel).rotationY(90).addModel()
-                .partialState().with(LadderBlock.FACING, Direction.SOUTH)
-                .modelForState().modelFile(ladderModel).rotationY(180).addModel()
-                .partialState().with(LadderBlock.FACING, Direction.WEST)
-                .modelForState().modelFile(ladderModel).rotationY(270).addModel();
-    }
-
-    private void signBlock(DeferredBlock<Block> standing, DeferredBlock<Block> wall, DeferredBlock<Block> fullBlock) {
-        signBlock((StandingSignBlock) standing.get(), (WallSignBlock) wall.get(), texture(name(fullBlock)));
-    }
-
-    public void hangingSignBlock(DeferredBlock<Block> signBlock, DeferredBlock<Block> wallSignBlock, DeferredBlock<Block> fullBlock) {
-        ModelFile sign =  models().getBuilder(signBlock.getRegisteredName()).texture("particle", texture(name(fullBlock)));
-        simpleBlock(signBlock.get(), sign);
-        simpleBlock(wallSignBlock.get(), sign);
-    }
-
-    public void torchBlock(Supplier<? extends Block> block, Supplier<? extends Block> wall) {
-        ModelFile torch = models().torch(name(block), texture(name(block))).renderType("cutout");
-        ModelFile torchwall = models().torchWall(name(wall), texture(name(block))).renderType("cutout");
-
-        simpleBlock(block.get(), torch);
-        getVariantBuilder(wall.get()).forAllStates(state ->
-                ConfiguredModel.builder()
-                        .modelFile(torchwall)
-                        .rotationY(((int) state.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot() + 90) % 360)
-                        .build());
-    }
-
-    public void makeFlower(DeferredBlock<Block> flowerBlock, DeferredBlock<FlowerPotBlock> potBlock) {
-        simpleBlockItem(flowerBlock.get(), new ModelFile.UncheckedModelFile("tolkienmobs:block/" + flowerBlock.getId().getPath()));
-        simpleBlock(flowerBlock.get(),
-                models().cross(blockTexture(flowerBlock.get()).getPath(),
-                        blockTexture(flowerBlock.get())).renderType("cutout"));
-        simpleBlock(potBlock.get(),
-                models().withExistingParent(potBlock.getId().getPath(),
-                                mcLoc("block/flower_pot_cross")).renderType("cutout")
-                        .texture("plant", blockTexture(flowerBlock.get())));
-    }
-
-    public void leavesBlock(DeferredBlock<Block> blockRegistryObject) {
-        simpleBlockWithItem(blockRegistryObject.get(),
-                models().cubeAll(BuiltInRegistries.BLOCK.getKey(blockRegistryObject.get()).getPath(), blockTexture(blockRegistryObject.get())).renderType("cutout"));
-    }
-
-    private void blockWithItem(DeferredBlock<Block> deferredBlock) {
-        simpleBlockWithItem(deferredBlock.get(), cubeAll(deferredBlock.get()));
-    }
-
-    private void blockItem(DeferredBlock<Block> deferredBlock) {
-        simpleBlockItem(deferredBlock.get(), new ModelFile.UncheckedModelFile("tolkienmobs:block/" + deferredBlock.getId().getPath()));
-    }
-
-    private void blockItem(DeferredBlock<Block> deferredBlock, String appendix) {
-        simpleBlockItem(deferredBlock.get(), new ModelFile.UncheckedModelFile("tolkienmobs:block/" + deferredBlock.getId().getPath() + appendix));
     }
 }

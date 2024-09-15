@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.event;
 
-import com.greatorator.tolkienmobs.block.custom.entity.TolkienSignEntity;
 import com.greatorator.tolkienmobs.block.custom.entity.layers.TolkienModelLayers;
 import com.greatorator.tolkienmobs.block.custom.entity.model.LightningBugModel;
 import com.greatorator.tolkienmobs.block.custom.entity.model.LocustModel;

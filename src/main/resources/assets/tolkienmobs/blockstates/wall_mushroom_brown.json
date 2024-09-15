@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=north":  [
+      { "model": "tolkienmobs:block/wall_mushroom_brown",
+        "x": 0,
+        "y": 270
+      }
+    ],
+    "facing=south":  [
+      { "model": "tolkienmobs:block/wall_mushroom_brown",
+        "x": 0,
+        "y": 90
+      }
+    ],
+    "facing=east":  [
+      { "model": "tolkienmobs:block/wall_mushroom_brown",
+        "x": 0,
+        "y": 0
+      }
+    ],
+    "facing=west":  [
+      { "model": "tolkienmobs:block/wall_mushroom_brown",
+        "x": 0,
+        "y": 180
+      }
+    ]
+  }
+}

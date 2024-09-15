@@ -11,19 +11,13 @@
           "entries": [
             {
               "data": {
-                "Name": "minecraft:mangrove_roots",
-                "Properties": {
-                  "waterlogged": "false"
-                }
+                "Name": "tolkienmobs:living_roots"
               },
               "weight": 6
             },
             {
               "data": {
-                "Name": "minecraft:mangrove_roots",
-                "Properties": {
-                  "waterlogged": "false"
-                }
+                "Name": "tolkienmobs:living_roots"
               },
               "weight": 1
             }

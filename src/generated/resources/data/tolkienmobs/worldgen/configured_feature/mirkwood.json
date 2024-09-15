@@ -1,7 +1,22 @@
 {
   "type": "minecraft:tree",
   "config": {
-    "decorators": [],
+    "decorators": [
+      {
+        "type": "tolkienmobs:trunkside_decorator",
+        "deco_provider": {
+          "type": "minecraft:simple_state_provider",
+          "state": {
+            "Name": "tolkienmobs:wall_decay_bloom",
+            "Properties": {
+              "facing": "north"
+            }
+          }
+        },
+        "placement_count": 2,
+        "probability_of_placement": 1.0
+      }
+    ],
     "dirt_provider": {
       "type": "minecraft:simple_state_provider",
       "state": {

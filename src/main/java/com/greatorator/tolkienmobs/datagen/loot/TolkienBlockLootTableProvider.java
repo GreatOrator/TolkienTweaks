@@ -307,6 +307,11 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.MUSHROOM_BLOOM_DECAY.get());
         dropOther(TolkienBlocks.BLOCK_DECAY_BLOOM, TolkienBlocks.MUSHROOM_DECAY_BLOOM);
         dropOther(TolkienBlocks.BLOCK_BLOOM_DECAY, TolkienBlocks.MUSHROOM_BLOOM_DECAY);
+        dropOther(TolkienBlocks.WALL_DECAY_BLOOM, TolkienBlocks.MUSHROOM_BLOOM_DECAY);
+        dropOther(TolkienBlocks.WALL_MUSHROOM_RED, Blocks.RED_MUSHROOM);
+        dropOther(TolkienBlocks.WALL_MUSHROOM_BROWN, Blocks.BROWN_MUSHROOM);
+        dropOther(TolkienBlocks.LIVING_ROOTS, Items.STICK);
+
         LootItemCondition.Builder lootItemConditionBuilder = LootItemBlockStatePropertyCondition.hasBlockStateProperties(TolkienBlocks.PIPEWEED.get())
                 .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(PipeweedCropBlock.AGE, 7));
         this.add(TolkienBlocks.PIPEWEED.get(), this.createCropDrops(TolkienBlocks.PIPEWEED.get(),

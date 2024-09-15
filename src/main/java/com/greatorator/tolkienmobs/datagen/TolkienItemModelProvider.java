@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.datagen;
 
+import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienFluids;
 import com.greatorator.tolkienmobs.init.TolkienItems;
@@ -11,6 +12,7 @@ import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.client.model.generators.loaders.ItemLayerModelBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
@@ -133,6 +135,11 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         // Drink
         basicItem(TolkienItems.MIRUVOR.get());
         basicItem(TolkienItems.GROG.get());
+        basicItem(TolkienItems.DRINK_PERSONAL_BLACKSMITH.get());
+        basicItem(TolkienItems.DRINK_ERU_BLESSING.get());
+        basicItem(TolkienItems.DRINK_ELF_FLEETFOOT.get());
+        basicItem(TolkienItems.DRINK_ENT_DRAUGHT.get());
+        basicItem(TolkienItems.DRINK_ELF_VITALITY.get());
 
         // Crop
         basicItem(TolkienItems.PIPEWEED_ITEM.get());
@@ -173,6 +180,12 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         saplingItem(TolkienBlocks.SAPLING_DEADWOOD);
         saplingItem(TolkienBlocks.MUSHROOM_BLOOM_DECAY);
         saplingItem(TolkienBlocks.MUSHROOM_DECAY_BLOOM);
+
+        generated(TolkienBlocks.LEAFPILE_MALLORN.getId().getPath(), TolkienMobsMain.prefix("block/leaves_mallorn"));
+        generated(TolkienBlocks.LEAFPILE_MIRKWOOD.getId().getPath(), TolkienMobsMain.prefix("block/leaves_mirkwood"));
+        generated(TolkienBlocks.LEAFPILE_CULUMALDA.getId().getPath(), TolkienMobsMain.prefix("block/leaves_culumalda"));
+        generated(TolkienBlocks.LEAFPILE_LEBETHRON.getId().getPath(), TolkienMobsMain.prefix("block/leaves_lebethron"));
+        generated(TolkienBlocks.LEAFPILE_FANGORNOAK.getId().getPath(), TolkienMobsMain.prefix("block/leaves_fangornoak"));
 
         basicItem(TolkienBlocks.MALLORN_SIGN.asItem());
         basicItem(TolkienBlocks.MIRKWOOD_SIGN.asItem());
@@ -238,6 +251,19 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         basicItem(TolkienItems.GOLD_KEY.get());
         basicItem(TolkienItems.MITHRIL_KEY.get());
         basicItem(TolkienItems.MASTER_KEY.get());
+    }
+
+    private ItemModelBuilder generated(String name, ResourceLocation... layers) {
+        return buildItem(name, "item/generated", 0, layers);
+    }
+
+    private ItemModelBuilder buildItem(String name, String parent, int emissivity, ResourceLocation... layers) {
+        ItemModelBuilder builder = withExistingParent(name, parent);
+        for (int i = 0; i < layers.length; i++) {
+            builder = builder.texture("layer" + i, layers[i]);
+        }
+        if (emissivity > 0) builder = builder.customLoader(ItemLayerModelBuilder::begin).emissive(emissivity, emissivity, 0).renderType("minecraft:translucent", 0).end();
+        return builder;
     }
 
     private ItemModelBuilder saplingItem(DeferredBlock<Block> item) {

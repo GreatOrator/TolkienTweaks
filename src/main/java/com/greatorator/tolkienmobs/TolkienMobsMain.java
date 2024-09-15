@@ -78,6 +78,7 @@ public class TolkienMobsMain {
         TolkienFeatureModifiers.FOLIAGE_PLACERS.register(modEventBus);
         TolkienFeatureModifiers.TREE_DECORATORS.register(modEventBus);
         TolkienFeatureModifiers.PLACEMENT_MODIFIERS.register(modEventBus);
+        TolkienFeatureModifiers.FEATURES.register(modEventBus);
 
         TolkienDataComponents.COMPONENTS.register(modEventBus);
         modEventBus.addListener(this::addCreative);
