@@ -20,6 +20,10 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 public class TolkienPlacedFeatures {
     public static final ResourceKey<PlacedFeature> MALLORN_PLACED_KEY = registerKey("mallorn_placed");
     public static final ResourceKey<PlacedFeature> MIRKWOOD_PLACED_KEY = registerKey("mirkwood_placed");
+    public static final ResourceKey<PlacedFeature> CULUMALDA_PLACED_KEY = registerKey("culumalda_placed");
+    public static final ResourceKey<PlacedFeature> LEBETHRON_PLACED_KEY = registerKey("lebethron_placed");
+    public static final ResourceKey<PlacedFeature> FANGORNOAK_PLACED_KEY = registerKey("fangornoak_placed");
+    public static final ResourceKey<PlacedFeature> DEADWOOD_PLACED_KEY = registerKey("deadwood_placed");
 
     public static void bootstrap(BootstrapContext<PlacedFeature> context) {
         HolderGetter<ConfiguredFeature<?, ?>> configuredFeatures = context.lookup(Registries.CONFIGURED_FEATURE);
@@ -30,6 +34,18 @@ public class TolkienPlacedFeatures {
         register(context, MIRKWOOD_PLACED_KEY, configuredFeatures.getOrThrow(TolkienConfiguredFeatures.MIRKWOOD_KEY),
                 VegetationPlacements.treePlacement(PlacementUtils.countExtra(3, 0.1f, 2),
                         TolkienBlocks.SAPLING_MIRKWOOD.get()));
+        register(context, CULUMALDA_PLACED_KEY, configuredFeatures.getOrThrow(TolkienConfiguredFeatures.CULUMALDA_KEY),
+                VegetationPlacements.treePlacement(PlacementUtils.countExtra(3, 0.1f, 2),
+                        TolkienBlocks.SAPLING_CULUMALDA.get()));
+        register(context, LEBETHRON_PLACED_KEY, configuredFeatures.getOrThrow(TolkienConfiguredFeatures.LEBETHRON_KEY),
+                VegetationPlacements.treePlacement(PlacementUtils.countExtra(3, 0.1f, 2),
+                        TolkienBlocks.SAPLING_LEBETHRON.get()));
+        register(context, FANGORNOAK_PLACED_KEY, configuredFeatures.getOrThrow(TolkienConfiguredFeatures.FANGORNOAK_KEY),
+                VegetationPlacements.treePlacement(PlacementUtils.countExtra(3, 0.1f, 2),
+                        TolkienBlocks.SAPLING_FANGORNOAK.get()));
+        register(context, DEADWOOD_PLACED_KEY, configuredFeatures.getOrThrow(TolkienConfiguredFeatures.DEADWOOD_KEY),
+                VegetationPlacements.treePlacement(PlacementUtils.countExtra(3, 0.1f, 2),
+                        TolkienBlocks.SAPLING_DEADWOOD.get()));
     }
 
     private static ResourceKey<PlacedFeature> registerKey(String name) {

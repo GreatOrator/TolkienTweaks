@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.containers.screens;
 
-import com.greatorator.tolkienmobs.containers.KeyItemContainer;
-import com.greatorator.tolkienmobs.containers.slots.KeyItemSlot;
+import com.greatorator.tolkienmobs.containers.KeyCodeContainer;
+import com.greatorator.tolkienmobs.containers.slots.KeyCodeSlot;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -11,19 +11,18 @@ import net.minecraft.world.entity.player.Inventory;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class KeyItemScreen extends AbstractContainerScreen<KeyItemContainer> {
-    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/small_inventory.png");
-    protected final KeyItemContainer container;
+public class KeyCodeScreen extends AbstractContainerScreen<KeyCodeContainer> {
+    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/key_code.png");
+    protected final KeyCodeContainer container;
 
-    public KeyItemScreen(KeyItemContainer container, Inventory inv, Component name) {
+    public KeyCodeScreen(KeyCodeContainer container, Inventory inv, Component name) {
         super(container, inv, name);
         this.container = container;
-        this.imageHeight = 181;
+        this.imageHeight = 40;
     }
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        //this.renderBackground(guiGraphics);
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
@@ -43,10 +42,8 @@ public class KeyItemScreen extends AbstractContainerScreen<KeyItemContainer> {
 
     @Override
     public boolean mouseClicked(double x, double y, int btn) {
-        if (btn == 1 && hoveredSlot instanceof KeyItemSlot) { //Right click
+        if (btn == 1 && hoveredSlot instanceof KeyCodeSlot) { //Right click
             int slot = hoveredSlot.getSlotIndex();
-            //TODO Bring this back somehow?
-            //PacketDistributor.sendToServer(new OpenCardPayload(slot, new BlockPos(0, -9999, 0), false));
             return true;
         }
         return super.mouseClicked(x, y, btn);

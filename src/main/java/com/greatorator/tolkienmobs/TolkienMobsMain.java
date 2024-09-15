@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs;
 
 import com.greatorator.tolkienmobs.containers.screens.CoinPouchScreen;
+import com.greatorator.tolkienmobs.containers.screens.KeyCodeScreen;
 import com.greatorator.tolkienmobs.containers.screens.KeyItemScreen;
 import com.greatorator.tolkienmobs.containers.screens.KeyRingScreen;
 import com.greatorator.tolkienmobs.event.TolkienRegistration;
@@ -133,6 +134,7 @@ public class TolkienMobsMain {
             event.register(TolkienContainers.COIN_POUCH_CONTAINER.get(), CoinPouchScreen::new);
             event.register(TolkienContainers.KEY_RING_CONTAINER.get(), KeyRingScreen::new);
             event.register(TolkienContainers.KEY_ITEM_CONTAINER.get(), KeyItemScreen::new);
+            event.register(TolkienContainers.KEY_CODE_CONTAINER.get(), KeyCodeScreen::new);
         }
 
         public void registerPropertyOverride() {

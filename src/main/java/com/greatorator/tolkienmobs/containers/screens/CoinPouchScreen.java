@@ -12,7 +12,7 @@ import net.minecraft.world.entity.player.Inventory;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class CoinPouchScreen extends AbstractContainerScreen<CoinPouchContainer> {
-    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/coin_pouch.png");
+    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/small_inventory.png");
     protected final CoinPouchContainer container;
 
     public CoinPouchScreen(CoinPouchContainer container, Inventory inv, Component name) {

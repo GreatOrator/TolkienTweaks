@@ -1,6 +1,6 @@
 package com.greatorator.tolkienmobs.containers;
 
-import com.greatorator.tolkienmobs.containers.slots.KeyItemSlot;
+import com.greatorator.tolkienmobs.containers.slots.KeyCodeSlot;
 import com.greatorator.tolkienmobs.handler.TolkienDataComponents;
 import com.greatorator.tolkienmobs.init.TolkienContainers;
 import net.minecraft.core.BlockPos;
@@ -16,33 +16,32 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import net.neoforged.neoforge.items.wrapper.InvWrapper;
 
-public class KeyItemContainer extends AbstractContainerMenu {
+public class KeyCodeContainer extends AbstractContainerMenu {
     public static final int SLOTS = 15;
-    public ItemStack keyItem;
+    public ItemStack keyCode;
     public Player playerEntity;
     private IItemHandler playerInventory;
     public BlockPos sourceContainer = BlockPos.ZERO;
-    public ComponentItemHandler keyItemHandler;
+    public ComponentItemHandler keyCodeHandler;
 
-    public KeyItemContainer(int windowId, Inventory playerInventory, Player player, RegistryFriendlyByteBuf extraData) {
+    public KeyCodeContainer(int windowId, Inventory playerInventory, Player player, RegistryFriendlyByteBuf extraData) {
         this(windowId, playerInventory, player, ItemStack.OPTIONAL_STREAM_CODEC.decode(extraData));
     }
 
-    public KeyItemContainer(int windowId, Inventory playerInventory, Player player, ItemStack keyItem) {
-        super(TolkienContainers.KEY_ITEM_CONTAINER.get(), windowId);
+    public KeyCodeContainer(int windowId, Inventory playerInventory, Player player, ItemStack coinPouch) {
+        super(TolkienContainers.KEY_CODE_CONTAINER.get(), windowId);
         playerEntity = player;
-        this.keyItemHandler = new ComponentItemHandler(keyItem, TolkienDataComponents.ITEMSTACK_HANDLER.get(), SLOTS);
+        this.keyCodeHandler = new ComponentItemHandler(coinPouch, TolkienDataComponents.ITEMSTACK_HANDLER.get(), SLOTS);
         this.playerInventory = new InvWrapper(playerInventory);
-        this.keyItem = keyItem;
-        if (keyItemHandler != null) {
-            addSlotBox(keyItemHandler, 0, 44, 17, 5, 18, 3, 18);
+        this.keyCode = coinPouch;
+        if (keyCodeHandler != null) {
+            addSlotBox(keyCodeHandler, 0, 44, 17, 5, 18, 3, 18);
         }
-        layoutPlayerInventorySlots(8, 84);
     }
 
     @Override
     public void clicked(int slotId, int dragType, ClickType clickTypeIn, Player player) {
-        if (slotId >= 0 && slotId < SLOTS && slots.get(slotId) instanceof KeyItemSlot) {
+        if (slotId >= 0 && slotId < SLOTS && slots.get(slotId) instanceof KeyCodeSlot) {
             ItemStack carriedItem = getCarried();
             ItemStack stackInSlot = slots.get(slotId).getItem();
             if (stackInSlot.getMaxStackSize() == 1 && stackInSlot.getCount() > 1) {
@@ -55,7 +54,7 @@ public class KeyItemContainer extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player playerIn) {
-        return true;
+        return playerIn.getMainHandItem().equals(keyCode) || playerIn.getOffhandItem().equals(keyCode);
     }
 
     @Override
@@ -145,7 +144,7 @@ public class KeyItemContainer extends AbstractContainerMenu {
 
     @Override
     public boolean canTakeItemForPickAll(ItemStack itemStack, Slot slot) {
-        if (slot instanceof KeyItemSlot)
+        if (slot instanceof KeyCodeSlot)
             return false;
         return true;
     }
@@ -183,7 +182,7 @@ public class KeyItemContainer extends AbstractContainerMenu {
     private int addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx) {
         for (int i = 0; i < amount; i++) {
             if ((handler.getSlots() == SLOTS))
-                addSlot(new KeyItemSlot(handler, index, x, y));
+                addSlot(new KeyCodeSlot(handler, index, x, y));
             else
                 addSlot(new SlotItemHandler(handler, index, x, y));
             x += dx;
@@ -193,16 +192,6 @@ public class KeyItemContainer extends AbstractContainerMenu {
     }
 
     private int addSlotBox(IItemHandler handler, int index, int x, int y, int horAmount, int dx, int verAmount, int dy) {
-        for (int j = 0; j < verAmount; j++) {
-            index = addSlotRange(handler, index, x, y, horAmount, dx);
-            y += dy;
-        }
-        return index;
-    }
-
-
-
-    private int addTextBox(IItemHandler handler, int index, int x, int y, int horAmount, int dx, int verAmount, int dy) {
         for (int j = 0; j < verAmount; j++) {
             index = addSlotRange(handler, index, x, y, horAmount, dx);
             y += dy;

@@ -7,10 +7,10 @@ import net.neoforged.neoforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
 
-public class KeyItemSlot extends SlotItemHandler  {
+public class KeyCodeSlot extends SlotItemHandler  {
     protected boolean enabled = true;
 
-    public KeyItemSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
+    public KeyCodeSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
         super(itemHandler, index, xPosition, yPosition);
     }
 
@@ -36,7 +36,7 @@ public class KeyItemSlot extends SlotItemHandler  {
         return enabled;
     }
 
-    public KeyItemSlot setEnabled(boolean enabled) {
+    public KeyCodeSlot setEnabled(boolean enabled) {
         this.enabled = enabled;
         return this;
     }

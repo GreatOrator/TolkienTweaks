@@ -1,7 +1,9 @@
 package com.greatorator.tolkienmobs.item;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -13,6 +15,7 @@ public class TolkienItem extends Item {
     private boolean canSpawnEntity = false;
     private boolean itemHasUse = false;
     private boolean hasLore = false;
+    private boolean hasInstructions = false;
 
     public TolkienItem(Properties properties) {
         super(properties);
@@ -33,6 +36,11 @@ public class TolkienItem extends Item {
         return this;
     }
 
+    public TolkienItem setInstructions() {
+        this.hasInstructions = true;
+        return this;
+    }
+
     public TolkienItem setItemHasUse() {
         this.itemHasUse = true;
         return this;
@@ -46,7 +54,7 @@ public class TolkienItem extends Item {
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         if (hasLore) {
-            tooltipComponents.add(Component.translatable(getDescriptionId() + ".lore").withStyle(ChatFormatting.GOLD));
+            tooltipComponents.add(Component.translatable(getDescriptionId() + ".lore"));
             super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
         }
     }
