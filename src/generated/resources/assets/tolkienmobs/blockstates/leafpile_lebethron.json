@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "layers=1": {
+      "model": "tolkienmobs:block/leafpile_lebethron1"
+    },
+    "layers=2": {
+      "model": "tolkienmobs:block/leafpile_lebethron2"
+    },
+    "layers=3": {
+      "model": "tolkienmobs:block/leafpile_lebethron3"
+    },
+    "layers=4": {
+      "model": "tolkienmobs:block/leafpile_lebethron4"
+    },
+    "layers=5": {
+      "model": "tolkienmobs:block/leafpile_lebethron5"
+    },
+    "layers=6": {
+      "model": "tolkienmobs:block/leafpile_lebethron6"
+    },
+    "layers=7": {
+      "model": "tolkienmobs:block/leafpile_lebethron7"
+    },
+    "layers=8": {
+      "model": "tolkienmobs:block/leafpile_lebethron8"
+    }
+  }
+}

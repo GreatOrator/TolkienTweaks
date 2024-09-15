@@ -1,17 +1,12 @@
 package com.greatorator.tolkienmobs.datagen;
 
-import com.greatorator.tolkienmobs.handler.TolkienLangHelper;
+import com.greatorator.tolkienmobs.datagen.helpers.TolkienLangHelper;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
-import com.greatorator.tolkienmobs.init.TolkienEffects;
-import com.greatorator.tolkienmobs.init.TolkienFluids;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import net.minecraft.data.PackOutput;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 
 public class TolkienLangProvider extends TolkienLangHelper {
     public static final Map<String, String> SUBTITLE_GENERATOR = new HashMap<>();
@@ -62,6 +57,10 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addBlock(TolkienBlocks.LOCUST_BLOCK, "Locust");
             this.addBlock(TolkienBlocks.BLOCK_HALLOWED, "Hallowed Earth");
             this.addBlock(TolkienBlocks.STONE_PATH, "Stone Path");
+            this.addBlock(TolkienBlocks.WALL_DECAY_BLOOM, "Wall Mushroom - Decay Bloom");
+            this.addBlock(TolkienBlocks.WALL_MUSHROOM_RED, "Wall Mushroom - Red");
+            this.addBlock(TolkienBlocks.WALL_MUSHROOM_BROWN, "Wall Mushroom - Brown");
+            this.addBlock(TolkienBlocks.LIVING_ROOTS, "Living Roots");
             this.addBlockWithLore(TolkienBlocks.PLACARD.get(), "Country Signs", "Shift right-click on sign to cycle types");
             this.addBlock(TolkienBlocks.ROCKPILE, "Rockpile");
         this.add("itemGroup.tolkienmobs.food", "TolkienTweaks: Food & Drinks");

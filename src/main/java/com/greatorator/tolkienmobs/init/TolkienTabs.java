@@ -390,8 +390,12 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.LOCUST_BLOCK);
                         output.accept(TolkienBlocks.BLOCK_HALLOWED);
                         output.accept(TolkienBlocks.STONE_PATH);
+                        output.accept(TolkienBlocks.LIVING_ROOTS);
                         output.accept(TolkienBlocks.PLACARD);
                         output.accept(TolkienBlocks.ROCKPILE);
+                        output.accept(TolkienBlocks.WALL_DECAY_BLOOM);
+                        output.accept(TolkienBlocks.WALL_MUSHROOM_RED);
+                        output.accept(TolkienBlocks.WALL_MUSHROOM_BROWN);
                     }).build());
 
     public static final Supplier<CreativeModeTab> TOLKIEN_TOOLS = CREATIVE_MODE_TAB.register("tolkienmobs_tab_tool",

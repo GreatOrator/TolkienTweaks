@@ -2,6 +2,8 @@ package com.greatorator.tolkienmobs.world;
 
 import com.google.common.collect.ImmutableList;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
+import com.greatorator.tolkienmobs.init.TolkienFeatureModifiers;
+import com.greatorator.tolkienmobs.world.feature.config.RootConfig;
 import com.greatorator.tolkienmobs.world.tree.TolkienDecorators;
 import com.greatorator.tolkienmobs.world.tree.components.SpheroidFoliagePlacer;
 import com.greatorator.tolkienmobs.world.tree.placers.BranchesConfig;
@@ -45,6 +47,9 @@ public class TolkienConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> DEADWOOD_KEY = registerKey("deadwood");
     public static final ResourceKey<ConfiguredFeature<?, ?>> MUSHROOM_BLOOM_DECAY_KEY = registerKey("mushroom_bloom_decay");
     public static final ResourceKey<ConfiguredFeature<?, ?>> MUSHROOM_DECAY_BLOOM_KEY = registerKey("mushroom_decay_bloom");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> FALLEN_LEAVES = registerKey("fallen_leaves");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> WEBS = registerKey("webs");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> WOOD_ROOTS_SPREAD = registerKey("ore/wood_roots_spread");
 
     public static void bootstrap(BootstrapContext<ConfiguredFeature<?, ?>> context) {
         register(context, MALLORN_KEY, Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
@@ -63,6 +68,7 @@ public class TolkienConfiguredFeatures {
                 new SpheroidFoliagePlacer(4.5f, 1.5f, ConstantInt.of(0), 1, 0, -0.25f, LEAF_SHAG_FACTOR),
                 new TwoLayersFeatureSize(20, 0, canopyDistancing))
                 .dirt(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
+                .decorators(ImmutableList.of(TolkienDecorators.WALL_BLOOM))
                 .build());
         register(context, FANGORNOAK_KEY, Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TolkienBlocks.WOOD_FANGORNOAK.get()),
@@ -70,7 +76,7 @@ public class TolkienConfiguredFeatures {
                 BlockStateProvider.simple(TolkienBlocks.LEAVES_FANGORNOAK.get()),
                 new FancyFoliagePlacer(ConstantInt.of(4), ConstantInt.of(4), 4),
                 new TwoLayersFeatureSize(1, 0, 1))
-                .decorators(ImmutableList.of(TrunkVineDecorator.INSTANCE, new LeaveVineDecorator(0.25F)))
+                .decorators(ImmutableList.of(TrunkVineDecorator.INSTANCE, new LeaveVineDecorator(0.25F), TolkienDecorators.WALL_BROWN))
                 .dirt(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
                 .build());
         register(context, CULUMALDA_KEY, Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
@@ -80,6 +86,7 @@ public class TolkienConfiguredFeatures {
                 new FancyFoliagePlacer(ConstantInt.of(2), ConstantInt.of(0), 3),
                 new TwoLayersFeatureSize(0, 0, 0, OptionalInt.of(4)))
                 .dirt(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
+                .decorators(ImmutableList.of(TolkienDecorators.WALL_RED))
                 .build());
         register(context, LEBETHRON_KEY, Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TolkienBlocks.WOOD_LEBETHRON.get()),
@@ -134,6 +141,11 @@ public class TolkienConfiguredFeatures {
                 BlockStateProvider.simple(TolkienBlocks.BLOCK_DECAY_BLOOM.get()),
                 new SpheroidFoliagePlacer(4.25f, 0F, ConstantInt.of(1), 1, 0, 0F, 0),
                 new TwoLayersFeatureSize(11, 0, canopyDistancing)).dirt(BlockStateProvider.simple(Blocks.STONE)).build());
+
+            // Biome Features
+        context.register(FALLEN_LEAVES, new ConfiguredFeature<>(TolkienFeatureModifiers.FALLEN_LEAVES.get(), FeatureConfiguration.NONE));
+        context.register(WEBS, new ConfiguredFeature<>(TolkienFeatureModifiers.WEBS.get(), FeatureConfiguration.NONE));
+        context.register(WOOD_ROOTS_SPREAD, new ConfiguredFeature<>(TolkienFeatureModifiers.WOOD_ROOTS.get(), new RootConfig(TolkienDecorators.ROOT_BLEND_PROVIDER, BlockStateProvider.simple(TolkienBlocks.LIVING_ROOTS.get()))));
 
     }
 

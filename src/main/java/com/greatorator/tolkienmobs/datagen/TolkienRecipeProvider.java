@@ -147,8 +147,12 @@ public class TolkienRecipeProvider extends RecipeProvider implements IConditionB
         trapdoorBuilder(TolkienBlocks.TRAPDOOR_DEADWOOD.get(), Ingredient.of(TolkienBlocks.PLANKS_DEADWOOD.get())).group("deadwood")
                 .unlockedBy("has_deadwood", has(TolkienBlocks.PLANKS_DEADWOOD.get())).save(pRecipeOutput);
 
-        wall(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.WALL_MITHRIL.get(), TolkienBlocks.BLOCK_MITHRIL.get());
-        wall(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.WALL_MORGULIRON.get(), TolkienBlocks.BLOCK_MORGULIRON.get());
+        wall(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.WALL_MITHRIL.get(), TolkienItems.INGOT_MITHRIL.get());
+        wall(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.WALL_MORGULIRON.get(), TolkienItems.INGOT_MORGULIRON.get());
+        wall(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.WALL_DECAY_BLOOM.get(), TolkienBlocks.BLOCK_DECAY_BLOOM.get());
+        wall(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.WALL_MUSHROOM_RED.get(), Blocks.RED_MUSHROOM);
+        wall(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.WALL_MUSHROOM_BROWN.get(), Blocks.BROWN_MUSHROOM);
+
         fenceBuilder(TolkienBlocks.FENCE_MALLORN.get(), Ingredient.of(TolkienBlocks.PLANKS_MALLORN.get())).group("mallorn")
                 .unlockedBy("has_mallorn", has(TolkienBlocks.PLANKS_MALLORN.get())).save(pRecipeOutput);
         fenceBuilder(TolkienBlocks.FENCE_MIRKWOOD.get(), Ingredient.of(TolkienBlocks.PLANKS_MIRKWOOD.get())).group("mirkwood")

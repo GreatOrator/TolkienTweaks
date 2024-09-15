@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "layers=1": {
+      "model": "tolkienmobs:block/leafpile_mallorn1"
+    },
+    "layers=2": {
+      "model": "tolkienmobs:block/leafpile_mallorn2"
+    },
+    "layers=3": {
+      "model": "tolkienmobs:block/leafpile_mallorn3"
+    },
+    "layers=4": {
+      "model": "tolkienmobs:block/leafpile_mallorn4"
+    },
+    "layers=5": {
+      "model": "tolkienmobs:block/leafpile_mallorn5"
+    },
+    "layers=6": {
+      "model": "tolkienmobs:block/leafpile_mallorn6"
+    },
+    "layers=7": {
+      "model": "tolkienmobs:block/leafpile_mallorn7"
+    },
+    "layers=8": {
+      "model": "tolkienmobs:block/leafpile_mallorn8"
+    }
+  }
+}

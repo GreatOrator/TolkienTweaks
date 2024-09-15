@@ -1,4 +1,4 @@
-// 1.21	2024-08-25T14:48:46.2886155	Loot Tables
+// 1.21	2024-09-15T15:01:05.46994	Loot Tables
 33196f79452898a0fc0bcdf16c86f6ad0b3863f6 data/tolkienmobs/loot_table/blocks/barrel_culumalda.json
 8c5b104617485a4e2951a7876e136244e787221c data/tolkienmobs/loot_table/blocks/barrel_deadwood.json
 f591c1c0e1ec38766ecc343a4934d31d46cbcd19 data/tolkienmobs/loot_table/blocks/barrel_fangornoak.json
@@ -76,6 +76,7 @@ e7f9512f0511a9e6e9eea423c94c5f4ecd1ed9c7 data/tolkienmobs/loot_table/blocks/leav
 a36774c4a29cfa493a942dc7aa85eabe7030b9ea data/tolkienmobs/loot_table/blocks/leaves_mirkwood.json
 45c0b028f5b71543580260ff261dbb41c29ddb75 data/tolkienmobs/loot_table/blocks/lebethron_button.json
 4683be78f147cb9ecbb8ffc7ba2d0c6fb21206a2 data/tolkienmobs/loot_table/blocks/lightningbug.json
+73a2e8f781e3be75ddb352b20e753c0e18010076 data/tolkienmobs/loot_table/blocks/living_roots.json
 40c056fdd664dc0818cf8883b976793aca3f1f64 data/tolkienmobs/loot_table/blocks/locust.json
 a0ff4423768d9536f51552f356fc0ecb7e20d0fc data/tolkienmobs/loot_table/blocks/log_culumalda.json
 a0452f1596b6f24c4cb8056cd35b502b2f5c7294 data/tolkienmobs/loot_table/blocks/log_deadwood.json
@@ -216,8 +217,11 @@ a6dc0b1424fcd7fae61d96f610eca714c4eca45d data/tolkienmobs/loot_table/blocks/trap
 cbdb061000c323e943257fe97b8fd98f6da8ae03 data/tolkienmobs/loot_table/blocks/trapdoor_mirkwood.json
 9a5abb8b563b79ebf18aec279170487791da7bcb data/tolkienmobs/loot_table/blocks/trapdoor_mithril.json
 15ac3121b3032d25050c3184fb3a5fe767e79391 data/tolkienmobs/loot_table/blocks/trapdoor_morguliron.json
+9b3a4f7535d2fd3b9a10bc136603ba517bc597fe data/tolkienmobs/loot_table/blocks/wall_decay_bloom.json
 e229a9299a490e641e78fd44bd1f3ee49a829005 data/tolkienmobs/loot_table/blocks/wall_mithril.json
 56ed96fc319a0a85573e799998a5042ff4da9715 data/tolkienmobs/loot_table/blocks/wall_morguliron.json
+5bbf937ec964c9e7e01c3c0f1b613a4b66d980af data/tolkienmobs/loot_table/blocks/wall_mushroom_brown.json
+761c71fa639a29de49625fab49181fdaeafd2884 data/tolkienmobs/loot_table/blocks/wall_mushroom_red.json
 fbc71e2c36b0d37d7e40aae53db3e367d42b6c19 data/tolkienmobs/loot_table/blocks/wood_culumalda.json
 e2467fdb2336adb7bea84ef1c36137c31a74f14d data/tolkienmobs/loot_table/blocks/wood_deadwood.json
 20ad0f7d158e5e4cb0fca583a5110a9f7cce4771 data/tolkienmobs/loot_table/blocks/wood_fangornoak.json

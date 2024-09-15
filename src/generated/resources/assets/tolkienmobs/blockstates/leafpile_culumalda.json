@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "layers=1": {
+      "model": "tolkienmobs:block/leafpile_culumalda1"
+    },
+    "layers=2": {
+      "model": "tolkienmobs:block/leafpile_culumalda2"
+    },
+    "layers=3": {
+      "model": "tolkienmobs:block/leafpile_culumalda3"
+    },
+    "layers=4": {
+      "model": "tolkienmobs:block/leafpile_culumalda4"
+    },
+    "layers=5": {
+      "model": "tolkienmobs:block/leafpile_culumalda5"
+    },
+    "layers=6": {
+      "model": "tolkienmobs:block/leafpile_culumalda6"
+    },
+    "layers=7": {
+      "model": "tolkienmobs:block/leafpile_culumalda7"
+    },
+    "layers=8": {
+      "model": "tolkienmobs:block/leafpile_culumalda8"
+    }
+  }
+}

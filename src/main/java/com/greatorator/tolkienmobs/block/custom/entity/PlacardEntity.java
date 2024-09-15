@@ -7,7 +7,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class PlacardEntity extends BlockEntity {
-
     public PlacardEntity(BlockPos blockPos, BlockState blockState) {
         super(TolkienBlocks.PLACARD_TILE.get(), blockPos, blockState);
     }

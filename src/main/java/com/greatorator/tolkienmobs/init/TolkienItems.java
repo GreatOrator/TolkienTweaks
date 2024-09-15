@@ -4,7 +4,15 @@ import com.greatorator.tolkienmobs.item.*;
 import com.greatorator.tolkienmobs.item.custom.*;
 import com.greatorator.tolkienmobs.util.TolkienToolMaterials;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -212,7 +220,7 @@ public class TolkienItems {
     public static final DeferredItem<Item> DRINK_ELF_VITALITY = ITEMS.registerItem("drink_elf_vitality", properties -> new TolkienFood(properties).setEffectOverride().setItemUseAction(true), new Item.Properties().stacksTo(16).food(TolkienFoods.DRINK_ELF_VITALITY));
     public static final DeferredItem<Item> DRINK_ERU_BLESSING = ITEMS.registerItem("drink_eru_blessing", properties -> new TolkienFood(properties).setEffectOverride().setItemUseAction(true), new Item.Properties().stacksTo(16).food(TolkienFoods.DRINK_ERU_BLESSING));
 
-        // Crops
+        // Crops & Foliage
     public static final DeferredItem<Item> PIPEWEED_ITEM = ITEMS.register("pipeweed", () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> PIPEWEED_SEEDS = ITEMS.register("pipeweed_seeds", () -> new ItemNameBlockItem(TolkienBlocks.PIPEWEED.get(), new Item.Properties()));
 

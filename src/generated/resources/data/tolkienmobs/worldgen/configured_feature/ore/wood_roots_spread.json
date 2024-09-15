@@ -1,0 +1,28 @@
+{
+  "type": "tolkienmobs:wood_roots",
+  "config": {
+    "root_block": {
+      "type": "minecraft:weighted_state_provider",
+      "entries": [
+        {
+          "data": {
+            "Name": "tolkienmobs:living_roots"
+          },
+          "weight": 6
+        },
+        {
+          "data": {
+            "Name": "tolkienmobs:living_roots"
+          },
+          "weight": 1
+        }
+      ]
+    },
+    "root_ore": {
+      "type": "minecraft:simple_state_provider",
+      "state": {
+        "Name": "tolkienmobs:living_roots"
+      }
+    }
+  }
+}

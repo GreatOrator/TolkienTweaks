@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_block_morguliron": {
+    "has_ingot_morguliron": {
       "conditions": {
         "items": [
           {
-            "items": "tolkienmobs:block_morguliron"
+            "items": "tolkienmobs:ingot_morguliron"
           }
         ]
       },
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_block_morguliron"
+      "has_ingot_morguliron"
     ]
   ],
   "rewards": {

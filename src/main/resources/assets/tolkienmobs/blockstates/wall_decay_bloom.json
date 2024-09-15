@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=north":  [
+      { "model": "tolkienmobs:block/wall_decay_bloom",
+        "x": 0,
+        "y": 180
+      }
+    ],
+    "facing=south":  [
+      { "model": "tolkienmobs:block/wall_decay_bloom",
+        "x": 0
+      }
+    ],
+    "facing=east":  [
+      { "model": "tolkienmobs:block/wall_decay_bloom",
+        "x": 0,
+        "y": 270
+      }
+    ],
+    "facing=west":  [
+      { "model": "tolkienmobs:block/wall_decay_bloom",
+        "x": 0,
+        "y": 90
+      }
+    ]
+  }
+}
