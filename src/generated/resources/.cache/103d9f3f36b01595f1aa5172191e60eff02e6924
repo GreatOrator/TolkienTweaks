@@ -1,4 +1,4 @@
-// 1.21	2024-09-11T09:29:24.8007811	Registries
+// 1.21	2024-09-14T08:41:32.9866153	Registries
 b6f8872b792bd66f959c15f46f288d6738767b61 data/tolkienmobs/jukebox_song/allthatglitterserebor.json
 2df232ff47481a307403158bb767819afb6d13d8 data/tolkienmobs/jukebox_song/concerninghobbits.json
 02a8ffc433aa2b09a88656800983df7685e95f0d data/tolkienmobs/jukebox_song/minastirith.json
@@ -23,5 +23,9 @@ dee1694b7cc8939368d45fccc69616c0b93fea72 data/tolkienmobs/worldgen/configured_fe
 b501d01842dce5da8778cce874714bd28dcb8c42 data/tolkienmobs/worldgen/configured_feature/mushroom_bloom_decay.json
 3b07d1a8fe707fb8f690f4a03ba7467e810bb1cd data/tolkienmobs/worldgen/configured_feature/mushroom_decay_bloom.json
 445ef718ebe1b171ec6e672ade4eae8d3a9c7aa2 data/tolkienmobs/worldgen/configured_feature/oldforestoak.json
+dfd84814bc066031fa171bdb60626bc7193d41c6 data/tolkienmobs/worldgen/placed_feature/culumalda_placed.json
+bb3b65cea086745a183a48c45b124514fa090998 data/tolkienmobs/worldgen/placed_feature/deadwood_placed.json
+d68835b0a0ebdc9ac11e0f11dc6d1262b7a34873 data/tolkienmobs/worldgen/placed_feature/fangornoak_placed.json
+11dd6701d3ae4065701e058ce0d369bd7c3bb248 data/tolkienmobs/worldgen/placed_feature/lebethron_placed.json
 a163f699e5791a45c9395ad73cb9ea0b0fd0bd9f data/tolkienmobs/worldgen/placed_feature/mallorn_placed.json
 03ca15d22f88ef9eb02d7a70afa6c2b1827f7ef0 data/tolkienmobs/worldgen/placed_feature/mirkwood_placed.json

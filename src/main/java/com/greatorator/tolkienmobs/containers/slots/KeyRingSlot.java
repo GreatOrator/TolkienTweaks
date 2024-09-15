@@ -1,6 +1,6 @@
 package com.greatorator.tolkienmobs.containers.slots;
 
-import com.greatorator.tolkienmobs.item.custom.TolkienKeyItem;
+import com.greatorator.tolkienmobs.item.custom.KeyItem;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
@@ -16,7 +16,7 @@ public class KeyRingSlot extends SlotItemHandler {
 
     @Override
     public boolean mayPlace(@Nonnull ItemStack stack) {
-        return (stack.getItem() instanceof TolkienKeyItem);
+        return (stack.getItem() instanceof KeyItem);
     }
 
     @Override

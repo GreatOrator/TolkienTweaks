@@ -206,11 +206,11 @@ public class TolkienItems {
         // Drinks
     public static final DeferredItem<Item> MIRUVOR = ITEMS.registerItem("drink_miruvor", properties -> new TolkienFood(properties).setEffectOverride().setItemUseAction(true), new Item.Properties().stacksTo(64).food(TolkienFoods.MIRUVOR));
     public static final DeferredItem<Item> GROG = ITEMS.registerItem("drink_grog", properties -> new TolkienFood(properties).setEffectOverride().setItemUseAction(true), new Item.Properties().stacksTo(64).food(TolkienFoods.GROG));
-//    public static RegistryObject<Item> DRINK_ENT_DRAUGHT = ITEMS.register("drink_ent_draught", () -> new BaseFoodItem(new Item.Properties().tab(foodGroup).stacksTo(16).food(FoodRegister.DRINK_ENT_DRAUGHT)).setEffectOverride().setItemUseAction(true));
-//    public static RegistryObject<Item> DRINK_PERSONAL_BLACKSMITH = ITEMS.register("drink_personal_blacksmith", () -> new BaseFoodItem(new Item.Properties().tab(foodGroup).stacksTo(16).food(FoodRegister.DRINK_PERSONAL_BLACKSMITH)).setEffectOverride().setItemUseAction(true));
-//    public static RegistryObject<Item> DRINK_ELF_FLEETFOOT = ITEMS.register("drink_elf_blessing", () -> new BaseFoodItem(new Item.Properties().tab(foodGroup).stacksTo(16).food(FoodRegister.DRINK_ELF_NIMBLENESS)).setEffectOverride().setItemUseAction(true));
-//    public static RegistryObject<Item> DRINK_ELF_VITALITY = ITEMS.register("drink_elf_vitality", () -> new BaseFoodItem(new Item.Properties().tab(foodGroup).stacksTo(16).food(FoodRegister.DRINK_ELF_VITALITY)).setEffectOverride().setItemUseAction(true));
-//    public static RegistryObject<Item> DRINK_ERU_BLESSING = ITEMS.register("drink_eru_blessing", () -> new BaseFoodItem(new Item.Properties().tab(foodGroup).stacksTo(16).food(FoodRegister.DRINK_ERU_BLESSING)).setEffectOverride().setItemUseAction(true));
+    public static final DeferredItem<Item> DRINK_ENT_DRAUGHT = ITEMS.registerItem("drink_ent_draught", properties -> new TolkienFood(properties).setEffectOverride().setItemUseAction(true), new Item.Properties().stacksTo(16).food(TolkienFoods.DRINK_ENT_DRAUGHT));
+    public static final DeferredItem<Item> DRINK_PERSONAL_BLACKSMITH = ITEMS.registerItem("drink_personal_blacksmith", properties -> new TolkienFood(properties).setEffectOverride().setItemUseAction(true), new Item.Properties().stacksTo(16).food(TolkienFoods.DRINK_PERSONAL_BLACKSMITH));
+    public static final DeferredItem<Item> DRINK_ELF_FLEETFOOT = ITEMS.registerItem("drink_elf_blessing", properties -> new TolkienFood(properties).setEffectOverride().setItemUseAction(true), new Item.Properties().stacksTo(16).food(TolkienFoods.DRINK_ELF_FLEETFOOT));
+    public static final DeferredItem<Item> DRINK_ELF_VITALITY = ITEMS.registerItem("drink_elf_vitality", properties -> new TolkienFood(properties).setEffectOverride().setItemUseAction(true), new Item.Properties().stacksTo(16).food(TolkienFoods.DRINK_ELF_VITALITY));
+    public static final DeferredItem<Item> DRINK_ERU_BLESSING = ITEMS.registerItem("drink_eru_blessing", properties -> new TolkienFood(properties).setEffectOverride().setItemUseAction(true), new Item.Properties().stacksTo(16).food(TolkienFoods.DRINK_ERU_BLESSING));
 
         // Crops
     public static final DeferredItem<Item> PIPEWEED_ITEM = ITEMS.register("pipeweed", () -> new Item(new Item.Properties()));
@@ -286,7 +286,7 @@ public class TolkienItems {
 //    public static RegistryObject<Item> ITEM_DEV_TOOL = ITEMS.register("item_dev_tool", () -> new BaseItem(new Item.Properties().stacksTo(1).tab(toolsGroup)).setEffectOverride().setHasLore());
 //    public static RegistryObject<Item> ITEM_DEV_DEBUG_TOOL = ITEMS.register("item_dev_debug_tool", () -> new BaseItem(new Item.Properties().stacksTo(1).tab(toolsGroup)).setEffectOverride().setHasLore());
 //    public static RegistryObject<Item> ARDA_STAFF = ITEMS.register("arda_staff", () -> new CatalystItem(new Item.Properties().stacksTo(1).tab(toolsGroup).rarity(Rarity.RARE)).setHasLore());
-//    public static RegistryObject<Item> HOBBIT_RING = ITEMS.register("hobbit_ring", () -> new HobbitRingItem(new Item.Properties().stacksTo(1).tab(toolsGroup).rarity(Rarity.RARE)).setHasLore());
+//    public static DeferredItem<Item> HOBBIT_RING = ITEMS.register("hobbit_ring", () -> new HobbitRingItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)).setHasLore());
 //    public static RegistryObject<Item> MORGUL_CRYSTAL = ITEMS.register("morgul_crystal", () -> new MorgulCrystalItem(new Item.Properties().stacksTo(1).tab(decoGroup)));
 
         // Projectiles
@@ -308,11 +308,11 @@ public class TolkienItems {
 //    public static RegistryObject<Item> MORGULIRON_HORSE_ARMOR = ITEMS.register("morguliron_horse_armor", () -> new BaseHorseArmorItem(13, "morguliron", (new Item.Properties()).stacksTo(1).tab(toolsGroup)));
 
         // Keys
-    public static DeferredItem<Item> BRONZE_KEY = ITEMS.register("bronze_key", () -> new TolkienKeyItem(new Item.Properties().stacksTo(1)));
-    public static DeferredItem<Item> SILVER_KEY = ITEMS.register("silver_key", () -> new TolkienKeyItem(new Item.Properties().stacksTo(1)));
-    public static DeferredItem<Item> GOLD_KEY = ITEMS.register("gold_key", () -> new TolkienKeyItem(new Item.Properties().stacksTo(1)));
-    public static DeferredItem<Item> MITHRIL_KEY = ITEMS.register("mithril_key", () -> new TolkienKeyItem(new Item.Properties().stacksTo(1)));
-    public static DeferredItem<Item> MASTER_KEY = ITEMS.register("master_key", () -> new TolkienKeyItem(new Item.Properties().stacksTo(1)));
+    public static DeferredItem<Item> BRONZE_KEY = ITEMS.register("bronze_key", () -> new KeyItem(new Item.Properties().stacksTo(1)));
+    public static DeferredItem<Item> SILVER_KEY = ITEMS.register("silver_key", () -> new KeyItem(new Item.Properties().stacksTo(1)));
+    public static DeferredItem<Item> GOLD_KEY = ITEMS.register("gold_key", () -> new KeyItem(new Item.Properties().stacksTo(1)));
+    public static DeferredItem<Item> MITHRIL_KEY = ITEMS.register("mithril_key", () -> new KeyItem(new Item.Properties().stacksTo(1)));
+    public static DeferredItem<Item> MASTER_KEY = ITEMS.register("master_key", () -> new KeyItem(new Item.Properties().stacksTo(1)));
 
         // Pouch & Key Ring
     public static final DeferredItem<Item> COIN_POUCH = ITEMS.register("coin_pouch", () -> new CoinPouchItem(new Item.Properties().stacksTo(1)));

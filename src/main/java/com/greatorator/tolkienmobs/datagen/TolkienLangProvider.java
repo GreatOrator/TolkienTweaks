@@ -70,6 +70,11 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addItem(TolkienItems.HONEY_CAKE, "Honey Cake");
             this.addItem(TolkienItems.MIRUVOR, "Miruvor");
             this.addItem(TolkienItems.GROG, "Grog");
+            this.addItem(TolkienItems.DRINK_ELF_FLEETFOOT, "Blessing of the Elves");
+            this.addItem(TolkienItems.DRINK_ELF_VITALITY, "Vitality");
+            this.addItem(TolkienItems.DRINK_ERU_BLESSING, "Blessing of Eru Iluvatar");
+            this.addItem(TolkienItems.DRINK_ENT_DRAUGHT, "Ent Draught");
+            this.addItem(TolkienItems.DRINK_PERSONAL_BLACKSMITH, "Portable Blacksmith");
         this.add("itemGroup.tolkienmobs.ma                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ts", "TolkienTweaks: Ingredients");
         this.add("itemGroup.tolkienmobs.quest", "TolkienTweaks: Basic Items");
             this.addItemWithLore(TolkienItems.ITEM_BERYL.get(), "§3Glorfindel's Beryl§r", "Magical gem loaned to you to help on your search");
@@ -128,11 +133,11 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addItemWithLore(TolkienItems.ITEM_WATCHERCOMPLETE.get(), "§3Watcher Token§r", "Proof of defeating the Watcher");
             this.addItemWithLore(TolkienItems.ITEM_TOKEN_EASTERN_ALLIANCE.get(), "§4Eastern Alliance Token§r", "Proof of your decision of who you chose to align with");
             this.addItemWithLore(TolkienItems.ITEM_TOKEN_WESTERN_ALLIANCE.get(), "§1Western Alliance Token§r", "Proof of your decision of who you chose to align with");
-            this.addItemWithLore(TolkienItems.BRONZE_KEY.get(), "Bronze Key", "Uses Left: ");
-            this.addItemWithLore(TolkienItems.SILVER_KEY.get(), "Silver Key", "Uses Left: ");
-            this.addItemWithLore(TolkienItems.GOLD_KEY.get(), "Gold Key", "Uses Left: ");
-            this.addItemWithLore(TolkienItems.MITHRIL_KEY.get(), "Mithril Key", "Uses Left: ");
-            this.addItemWithLore(TolkienItems.MASTER_KEY.get(), "Master Key", "Uses Left: ");
+            this.addItemWithInstructions(TolkienItems.BRONZE_KEY.get(), "Bronze Key", "Uses Left: ", "Hold Shift while in Creative", "Right-click to enter/change key code");
+            this.addItemWithInstructions(TolkienItems.SILVER_KEY.get(), "Silver Key", "Uses Left: ", "Hold Shift while in Creative", "Right-click to enter/change key code");
+            this.addItemWithInstructions(TolkienItems.GOLD_KEY.get(), "Gold Key", "Uses Left: ", "Hold Shift while in Creative", "Right-click to enter/change key code");
+            this.addItemWithInstructions(TolkienItems.MITHRIL_KEY.get(), "Mithril Key", "Uses Left: ", "Hold Shift while in Creative", "Right-click to enter/change key code");
+            this.addItemWithInstructions(TolkienItems.MASTER_KEY.get(), "Master Key", "Uses Left: ", "Hold Shift while in Creative", "Right-click to enter/change key code");
             this.add("itemGroup.tolkienmobs.spawn", "TolkienTweaks: Mobs");
             this.add("itemGroup.tolkienmobs.tools", "TolkienTweaks: Tools");
             this.addItem(TolkienItems.COIN_POUCH, "Coin Pouch");
@@ -197,10 +202,15 @@ public class TolkienLangProvider extends TolkienLangHelper {
 
                 // Screens
             this.addItemScreen(TolkienItems.BRONZE_KEY.get(), "Bronze Key");
+            this.addCodeScreen(TolkienItems.BRONZE_KEY.get(), "Bronze Key - Code");
             this.addItemScreen(TolkienItems.SILVER_KEY.get(), "Silver Key");
+            this.addCodeScreen(TolkienItems.SILVER_KEY.get(), "Silver Key - Code");
             this.addItemScreen(TolkienItems.GOLD_KEY.get(), "Gold Key");
+            this.addCodeScreen(TolkienItems.GOLD_KEY.get(), "Gold Key - Code");
             this.addItemScreen(TolkienItems.MITHRIL_KEY.get(), "Mithril Key");
+            this.addCodeScreen(TolkienItems.MITHRIL_KEY.get(), "Mithril Key - Code");
             this.addItemScreen(TolkienItems.MASTER_KEY.get(), "Master Key");
+            this.addCodeScreen(TolkienItems.MASTER_KEY.get(), "Master Key - Code");
             this.addItemScreen(TolkienItems.COIN_POUCH.get(), "Coin Pouch");
             this.addItemScreen(TolkienItems.KEY_RING.get(), "Key Ring");
 

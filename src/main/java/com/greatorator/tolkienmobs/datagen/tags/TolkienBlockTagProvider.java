@@ -87,6 +87,13 @@ public class TolkienBlockTagProvider extends BlockTagsProvider {
                 .add(TolkienBlocks.FENCE_LEBETHRON.get())
                 .add(TolkienBlocks.FENCE_FANGORNOAK.get())
                 .add(TolkienBlocks.FENCE_DEADWOOD.get());
+        tag(BlockTags.WOODEN_FENCES)
+                .add(TolkienBlocks.FENCE_MALLORN.get())
+                .add(TolkienBlocks.FENCE_MIRKWOOD.get())
+                .add(TolkienBlocks.FENCE_CULUMALDA.get())
+                .add(TolkienBlocks.FENCE_LEBETHRON.get())
+                .add(TolkienBlocks.FENCE_FANGORNOAK.get())
+                .add(TolkienBlocks.FENCE_DEADWOOD.get());
         tag(BlockTags.FENCE_GATES)
                 .add(TolkienBlocks.FENCE_GATE_MALLORN.get())
                 .add(TolkienBlocks.FENCE_GATE_MIRKWOOD.get())

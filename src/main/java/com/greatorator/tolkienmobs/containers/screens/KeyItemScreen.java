@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.containers.screens;
 
 import com.greatorator.tolkienmobs.containers.KeyItemContainer;
-import com.greatorator.tolkienmobs.containers.slots.CoinPouchSlot;
+import com.greatorator.tolkienmobs.containers.slots.KeyItemSlot;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -12,7 +12,7 @@ import net.minecraft.world.entity.player.Inventory;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class KeyItemScreen extends AbstractContainerScreen<KeyItemContainer> {
-    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/coin_pouch.png");
+    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/small_inventory.png");
     protected final KeyItemContainer container;
 
     public KeyItemScreen(KeyItemContainer container, Inventory inv, Component name) {
@@ -43,7 +43,7 @@ public class KeyItemScreen extends AbstractContainerScreen<KeyItemContainer> {
 
     @Override
     public boolean mouseClicked(double x, double y, int btn) {
-        if (btn == 1 && hoveredSlot instanceof CoinPouchSlot) { //Right click
+        if (btn == 1 && hoveredSlot instanceof KeyItemSlot) { //Right click
             int slot = hoveredSlot.getSlotIndex();
             //TODO Bring this back somehow?
             //PacketDistributor.sendToServer(new OpenCardPayload(slot, new BlockPos(0, -9999, 0), false));

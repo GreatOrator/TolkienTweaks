@@ -16,6 +16,7 @@ public class TolkienTags {
     public static class Blocks {
         public static final TagKey<Block> ROOT_TRACE_SKIP = createTag("root_trace_skip");
         public static final TagKey<Block> DECAY_GROW_BLOCK = createTag("decay_grow_block");
+        public static final TagKey<Block> BLACKLIST_HARVEST = createTag("blacklist_harvest");
 
         private static TagKey<Block> createTag(String name) {
             return BlockTags.create(ResourceLocation.fromNamespaceAndPath(MODID, name));

@@ -140,6 +140,12 @@ public class TolkienTabs {
                         output.accept(TolkienItems.GOLDEN_TREE_ACORN);
                         output.accept(TolkienItems.MIRUVOR);
                         output.accept(TolkienItems.GROG);
+                        output.accept(TolkienItems.DRINK_ELF_FLEETFOOT);
+                        output.accept(TolkienItems.DRINK_ENT_DRAUGHT);
+                        output.accept(TolkienItems.DRINK_ELF_VITALITY);
+                        output.accept(TolkienItems.DRINK_ERU_BLESSING);
+                        output.accept(TolkienItems.DRINK_PERSONAL_BLACKSMITH);
+
                     }).build());
 
     public static final Supplier<CreativeModeTab> TOLKIEN_FUNCTION = CREATIVE_MODE_TAB.register("tolkienmobs_tab_function",

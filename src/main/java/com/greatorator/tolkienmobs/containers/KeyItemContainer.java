@@ -1,7 +1,6 @@
 package com.greatorator.tolkienmobs.containers;
 
 import com.greatorator.tolkienmobs.containers.slots.KeyItemSlot;
-import com.greatorator.tolkienmobs.containers.slots.KeyRingSlot;
 import com.greatorator.tolkienmobs.handler.TolkienDataComponents;
 import com.greatorator.tolkienmobs.init.TolkienContainers;
 import net.minecraft.core.BlockPos;
@@ -146,7 +145,7 @@ public class KeyItemContainer extends AbstractContainerMenu {
 
     @Override
     public boolean canTakeItemForPickAll(ItemStack itemStack, Slot slot) {
-        if (slot instanceof KeyRingSlot)
+        if (slot instanceof KeyItemSlot)
             return false;
         return true;
     }
@@ -184,7 +183,7 @@ public class KeyItemContainer extends AbstractContainerMenu {
     private int addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx) {
         for (int i = 0; i < amount; i++) {
             if ((handler.getSlots() == SLOTS))
-                addSlot(new KeyRingSlot(handler, index, x, y));
+                addSlot(new KeyItemSlot(handler, index, x, y));
             else
                 addSlot(new SlotItemHandler(handler, index, x, y));
             x += dx;

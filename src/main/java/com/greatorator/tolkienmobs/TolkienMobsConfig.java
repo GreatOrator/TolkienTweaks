@@ -27,6 +27,9 @@ public class TolkienMobsConfig {
     private static final ModConfigSpec.BooleanValue AUTO_USE = BUILDER
             .comment("If enabled, players automatically attempt to use sleeping bags when placed.")
             .define("autoUse", true);
+    private static final ModConfigSpec.BooleanValue HOBBIT_GROWTH = BUILDER
+            .comment("Turns off abilities for the Hobbit Growth Ring if enabled")
+            .define("disableHobbitGrowth", false);
 //    private static final ModConfigSpec.EnumValue<ComfortsTimeUse> SLEEPING_BAG_TIME_USE = BUILDER
 //            .comment("The time of day that sleeping bags can be used.")
 //            .defineEnum("sleepingBagUse", ComfortsTimeUse.NIGHT);
@@ -48,6 +51,7 @@ public class TolkienMobsConfig {
 
     public static boolean disableFakePlayer;
     public static boolean autoUse;
+    public static boolean disableHobbitGrowth;
     public enum sleepingBagUse {};
     public static int magicNumber;
     public static String magicNumberIntroduction;
@@ -63,6 +67,7 @@ public class TolkienMobsConfig {
     {
         disableFakePlayer = FAKE_PLAYER.get();
         autoUse = AUTO_USE.get();
+        disableHobbitGrowth = AUTO_USE.get();
         magicNumber = MAGIC_NUMBER.get();
         magicNumberIntroduction = MAGIC_NUMBER_INTRODUCTION.get();
 
