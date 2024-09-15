@@ -11,7 +11,6 @@ import net.minecraft.data.PackOutput;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
-import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
@@ -40,7 +39,7 @@ public class TolkienDataGenerator {
 
         generator.addProvider(event.includeClient(), new TolkienItemModelProvider(packOutput, existingFileHelper));
         generator.addProvider(event.includeClient(), new TolkienBlockStateProvider(packOutput, existingFileHelper));
-        generator.addProvider(event.includeClient(), new TolkienParticleDescription(packOutput, existingFileHelper));
+        generator.addProvider(event.includeClient(), new TolkienParticleDescriptionProvider(packOutput, existingFileHelper));
         generator.addProvider(event.includeClient(), new TolkienRecipeProvider(packOutput, lookupProvider));
 
         generator.addProvider(event.includeServer(), new TolkienWorldGenProvider(packOutput, lookupProvider));

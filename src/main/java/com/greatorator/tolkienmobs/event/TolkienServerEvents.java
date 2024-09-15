@@ -22,6 +22,10 @@ public class TolkienServerEvents {
         PotionBrewing.Builder builder = event.getBuilder();
 
         builder.addMix(Potions.AWKWARD, TolkienItems.PIPEWEED_ITEM.get(), TolkienPotions.ENT_DRAUGHT);
+        builder.addMix(Potions.AWKWARD, TolkienItems.INGOT_MITHRIL.get(), TolkienPotions.PORTABLE_REPAIR);
+        builder.addMix(Potions.AWKWARD, TolkienItems.GEM_AMMOLITE.get(), TolkienPotions.ERU_BLESSING);
+        builder.addMix(Potions.AWKWARD, TolkienItems.GOLDEN_TREE_ACORN.get(), TolkienPotions.ELF_NIMBLENESS);
+        builder.addMix(Potions.AWKWARD, TolkienItems.LEMBAS.get(), TolkienPotions.ELF_VITALITY);
     }
 
     @SubscribeEvent

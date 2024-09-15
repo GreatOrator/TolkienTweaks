@@ -1,6 +1,6 @@
 package com.greatorator.tolkienmobs.fluid;
 
-import com.greatorator.tolkienmobs.init.types.TolkienFluidTypes;
+import com.greatorator.tolkienmobs.init.TolkienFluidTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.fluids.FluidType;

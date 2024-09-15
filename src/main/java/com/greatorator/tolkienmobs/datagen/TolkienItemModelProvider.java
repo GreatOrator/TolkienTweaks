@@ -133,11 +133,6 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         // Drink
         basicItem(TolkienItems.MIRUVOR.get());
         basicItem(TolkienItems.GROG.get());
-        basicItem(TolkienItems.DRINK_ENT_DRAUGHT.get());
-        basicItem(TolkienItems.DRINK_ELF_VITALITY.get());
-        basicItem(TolkienItems.DRINK_ELF_FLEETFOOT.get());
-        basicItem(TolkienItems.DRINK_ERU_BLESSING.get());
-        basicItem(TolkienItems.DRINK_PERSONAL_BLACKSMITH.get());
 
         // Crop
         basicItem(TolkienItems.PIPEWEED_ITEM.get());

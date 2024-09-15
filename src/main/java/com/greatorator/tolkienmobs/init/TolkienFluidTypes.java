@@ -1,4 +1,4 @@
-package com.greatorator.tolkienmobs.init.types;
+package com.greatorator.tolkienmobs.init;
 
 import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;

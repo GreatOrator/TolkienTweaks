@@ -1,8 +1,12 @@
-package com.greatorator.tolkienmobs.init.types;
+package com.greatorator.tolkienmobs.init;
 
+import com.greatorator.tolkienmobs.particle.data.LeafParticleData;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -20,6 +24,17 @@ public class TolkienParticleTypes {
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> FANGORNOAK_FLAME = PARTICLES.register("fangornoak_flame", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> DEADWOOD_FLAME = PARTICLES.register("deadwood_flame", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> LIGHTNINGBUG = PARTICLES.register("lightningbug", () -> new SimpleParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, ParticleType<LeafParticleData>> FALLING_LEAVES = PARTICLES.register("falling_leaves", () -> new ParticleType<>(false) {
+        @Override
+        public MapCodec<LeafParticleData> codec() {
+            return LeafParticleData.CODEC;
+        }
+
+        @Override
+        public StreamCodec<? super RegistryFriendlyByteBuf, LeafParticleData> streamCodec() {
+            return LeafParticleData.STREAM_CODEC;
+        }
+    });
 
     public static void register(IEventBus eventBus) {
         PARTICLES.register(eventBus);
