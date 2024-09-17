@@ -129,12 +129,14 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
                 block -> createSingleItemTable(TolkienBlocks.MALLORN_SIGN));
         add(TolkienBlocks.MALLORN_HANGING_WALL_SIGN.get(),
                 block -> createSingleItemTable(TolkienBlocks.MALLORN_HANGING_SIGN));
+
         dropSelf(TolkienBlocks.LADDER_MALLORN.get());
         dropSelf(TolkienBlocks.LADDER_MIRKWOOD.get());
         dropSelf(TolkienBlocks.LADDER_CULUMALDA.get());
         dropSelf(TolkienBlocks.LADDER_LEBETHRON.get());
         dropSelf(TolkienBlocks.LADDER_FANGORNOAK.get());
         dropSelf(TolkienBlocks.LADDER_DEADWOOD.get());
+        dropSelf(TolkienBlocks.LADDER_DWARVEN_MAPLE.get());
 
             // Mirkwood
         dropSelf(TolkienBlocks.LOG_MIRKWOOD.get());
@@ -274,7 +276,123 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         add(TolkienBlocks.DEADWOOD_HANGING_WALL_SIGN.get(),
                 block -> createSingleItemTable(TolkienBlocks.DEADWOOD_HANGING_SIGN));
 
-            //Flowers & Plants
+            // Dwarven Maple
+        dropSelf(TolkienBlocks.LOG_DWARVEN_MAPLE.get());
+        dropSelf(TolkienBlocks.WOOD_DWARVEN_MAPLE.get());
+        dropSelf(TolkienBlocks.STRIPPED_DWARVEN_MAPLE_LOG.get());
+        dropSelf(TolkienBlocks.STRIPPED_DWARVEN_MAPLE_WOOD.get());
+        dropSelf(TolkienBlocks.PLANKS_DWARVEN_MAPLE.get());
+        dropLeaves(TolkienBlocks.LEAVES_DWARVEN_MAPLE);
+        dropSelf(TolkienBlocks.LEAFPILE_DWARVEN_MAPLE.get());
+        dropSelf(TolkienBlocks.STAIRS_DWARVEN_MAPLE.get());
+        this.add(TolkienBlocks.SLAB_DWARVEN_MAPLE.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_DWARVEN_MAPLE.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_DWARVEN_MAPLE.get());
+        dropSelf(TolkienBlocks.DWARVEN_MAPLE_BUTTON.get());
+        dropSelf(TolkienBlocks.FENCE_DWARVEN_MAPLE.get());
+        dropSelf(TolkienBlocks.FENCE_GATE_DWARVEN_MAPLE.get());
+        dropSelf(TolkienBlocks.TRAPDOOR_DWARVEN_MAPLE.get());
+        this.add(TolkienBlocks.DOOR_DWARVEN_MAPLE.get(),
+                block -> createDoorTable(TolkienBlocks.DOOR_DWARVEN_MAPLE.get()));
+        dropSelf(TolkienBlocks.TORCH_DWARVEN_MAPLE.get());
+        dropOther(TolkienBlocks.WALL_TORCH_DWARVEN_MAPLE, TolkienBlocks.TORCH_DWARVEN_MAPLE.get());
+        dropSelf(TolkienBlocks.BARREL_DWARVEN_MAPLE.get());
+        dropSelf(TolkienBlocks.DWARVEN_MAPLE_SIGN.get());
+        dropSelf(TolkienBlocks.DWARVEN_MAPLE_HANGING_SIGN.get());
+        add(TolkienBlocks.DWARVEN_MAPLE_WALL_SIGN.get(),
+                block -> createSingleItemTable(TolkienBlocks.DWARVEN_MAPLE_SIGN));
+        add(TolkienBlocks.DWARVEN_MAPLE_HANGING_WALL_SIGN.get(),
+                block -> createSingleItemTable(TolkienBlocks.DWARVEN_MAPLE_HANGING_SIGN));
+
+            // Darkstone
+        dropSelf(TolkienBlocks.DARK_STONE.get());
+        dropSelf(TolkienBlocks.STAIRS_DARK_STONE.get());
+        this.add(TolkienBlocks.SLAB_DARK_STONE.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_DARK_STONE.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_DARK_STONE.get());
+        dropSelf(TolkienBlocks.DARK_STONE_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_DARK_STONE.get());
+        dropSelf(TolkienBlocks.CHISELED_DARK_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.STAIRS_CHISELED_DARK_STONE_BRICKS.get());
+        this.add(TolkienBlocks.SLAB_CHISELED_DARK_STONE_BRICKS.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_CHISELED_DARK_STONE_BRICKS.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_CHISELED_DARK_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.CHISELED_DARK_STONE_BRICKS_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_CHISELED_DARK_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.COBBLED_DARK_STONE.get());
+        dropSelf(TolkienBlocks.STAIRS_COBBLED_DARK_STONE.get());
+        this.add(TolkienBlocks.SLAB_COBBLED_DARK_STONE.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_COBBLED_DARK_STONE.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_COBBLED_DARK_STONE.get());
+        dropSelf(TolkienBlocks.COBBLED_DARK_STONE_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_COBBLED_DARK_STONE.get());
+        dropSelf(TolkienBlocks.CRACKED_DARK_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.STAIRS_CRACKED_DARK_STONE_BRICKS.get());
+        this.add(TolkienBlocks.SLAB_CRACKED_DARK_STONE_BRICKS.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_CRACKED_DARK_STONE_BRICKS.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_CRACKED_DARK_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.CRACKED_DARK_STONE_BRICKS_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_CRACKED_DARK_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.DARK_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.STAIRS_DARK_STONE_BRICKS.get());
+        this.add(TolkienBlocks.SLAB_DARK_STONE_BRICKS.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_DARK_STONE_BRICKS.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_DARK_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.DARK_STONE_BRICKS_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_DARK_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.SMOOTH_DARK_STONE.get());
+        dropSelf(TolkienBlocks.STAIRS_SMOOTH_DARK_STONE.get());
+        this.add(TolkienBlocks.SLAB_SMOOTH_DARK_STONE.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_SMOOTH_DARK_STONE.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_SMOOTH_DARK_STONE.get());
+        dropSelf(TolkienBlocks.SMOOTH_DARK_STONE_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_SMOOTH_DARK_STONE.get());
+
+            // Dwarven Stone
+        dropSelf(TolkienBlocks.DWARVEN_STONE.get());
+        dropSelf(TolkienBlocks.STAIRS_DWARVEN_STONE.get());
+        this.add(TolkienBlocks.SLAB_DWARVEN_STONE.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_DWARVEN_STONE.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_DWARVEN_STONE.get());
+        dropSelf(TolkienBlocks.DWARVEN_STONE_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_DWARVEN_STONE.get());
+        dropSelf(TolkienBlocks.CHISELED_DWARVEN_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.STAIRS_CHISELED_DWARVEN_STONE_BRICKS.get());
+        this.add(TolkienBlocks.SLAB_CHISELED_DWARVEN_STONE_BRICKS.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_CHISELED_DWARVEN_STONE_BRICKS.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_CHISELED_DWARVEN_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.CHISELED_DWARVEN_STONE_BRICKS_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_CHISELED_DWARVEN_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.COBBLED_DWARVEN_STONE.get());
+        dropSelf(TolkienBlocks.STAIRS_COBBLED_DWARVEN_STONE.get());
+        this.add(TolkienBlocks.SLAB_COBBLED_DWARVEN_STONE.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_COBBLED_DWARVEN_STONE.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_COBBLED_DWARVEN_STONE.get());
+        dropSelf(TolkienBlocks.COBBLED_DWARVEN_STONE_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_COBBLED_DWARVEN_STONE.get());
+        dropSelf(TolkienBlocks.CRACKED_DWARVEN_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.STAIRS_CRACKED_DWARVEN_STONE_BRICKS.get());
+        this.add(TolkienBlocks.SLAB_CRACKED_DWARVEN_STONE_BRICKS.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_CRACKED_DWARVEN_STONE_BRICKS.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_CRACKED_DWARVEN_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.CRACKED_DWARVEN_STONE_BRICKS_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_CRACKED_DWARVEN_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.DWARVEN_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.STAIRS_DWARVEN_STONE_BRICKS.get());
+        this.add(TolkienBlocks.SLAB_DWARVEN_STONE_BRICKS.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_DWARVEN_STONE_BRICKS.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_DWARVEN_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.DWARVEN_STONE_BRICKS_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_DWARVEN_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.SMOOTH_DWARVEN_STONE.get());
+        dropSelf(TolkienBlocks.STAIRS_SMOOTH_DWARVEN_STONE.get());
+        this.add(TolkienBlocks.SLAB_SMOOTH_DWARVEN_STONE.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_SMOOTH_DWARVEN_STONE.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_SMOOTH_DWARVEN_STONE.get());
+        dropSelf(TolkienBlocks.SMOOTH_DWARVEN_STONE_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_SMOOTH_DWARVEN_STONE.get());
+
+        //Flowers & Plants
         dropSelf(TolkienBlocks.FLOWER_SIMBELMYNE.get());
         dropSelf(TolkienBlocks.FLOWER_MIRKWOOD.get());
         dropSelf(TolkienBlocks.FLOWER_ALFIRIN.get());
@@ -282,6 +400,7 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.FLOWER_NIPHREDIL.get());
         dropSelf(TolkienBlocks.FLOWER_SWAMPMILKWEED.get());
         dropSelf(TolkienBlocks.FLOWER_LILLYOFTHEVALLEY.get());
+        dropSelf(TolkienBlocks.FLOWER_ELANOR.get());
         dropPottedContents(TolkienBlocks.POTTED_FLOWER_SIMBELMYNE.get());
         dropPottedContents(TolkienBlocks.POTTED_FLOWER_MIRKWOOD.get());
         dropPottedContents(TolkienBlocks.POTTED_FLOWER_ALFIRIN.get());
@@ -289,12 +408,14 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropPottedContents(TolkienBlocks.POTTED_FLOWER_NIPHREDIL.get());
         dropPottedContents(TolkienBlocks.POTTED_FLOWER_SWAMPMILKWEED.get());
         dropPottedContents(TolkienBlocks.POTTED_FLOWER_LILLYOFTHEVALLEY.get());
+        dropPottedContents(TolkienBlocks.POTTED_FLOWER_ELANOR.get());
         dropPottedContents(TolkienBlocks.POTTED_SAPLING_MALLORN.get());
         dropPottedContents(TolkienBlocks.POTTED_SAPLING_MIRKWOOD.get());
         dropPottedContents(TolkienBlocks.POTTED_SAPLING_CULUMALDA.get());
         dropPottedContents(TolkienBlocks.POTTED_SAPLING_LEBETHRON.get());
         dropPottedContents(TolkienBlocks.POTTED_SAPLING_FANGORNOAK.get());
         dropPottedContents(TolkienBlocks.POTTED_SAPLING_DEADWOOD.get());
+        dropPottedContents(TolkienBlocks.POTTED_SAPLING_DWARVEN_MAPLE.get());
         dropPottedContents(TolkienBlocks.POTTED_MUSHROOM_BLOOM_DECAY.get());
         dropPottedContents(TolkienBlocks.POTTED_MUSHROOM_DECAY_BLOOM.get());
         dropSelf(TolkienBlocks.SAPLING_MALLORN.get());
@@ -303,6 +424,7 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.SAPLING_LEBETHRON.get());
         dropSelf(TolkienBlocks.SAPLING_FANGORNOAK.get());
         dropSelf(TolkienBlocks.SAPLING_DEADWOOD.get());
+        dropSelf(TolkienBlocks.SAPLING_DWARVEN_MAPLE.get());
         dropSelf(TolkienBlocks.MUSHROOM_DECAY_BLOOM.get());
         dropSelf(TolkienBlocks.MUSHROOM_BLOOM_DECAY.get());
         dropOther(TolkienBlocks.BLOCK_DECAY_BLOOM, TolkienBlocks.MUSHROOM_DECAY_BLOOM);

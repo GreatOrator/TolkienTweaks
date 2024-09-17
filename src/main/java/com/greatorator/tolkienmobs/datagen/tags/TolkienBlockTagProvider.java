@@ -43,28 +43,35 @@ public class TolkienBlockTagProvider extends BlockTagsProvider {
                 .add(TolkienBlocks.LOG_DEADWOOD.get())
                 .add(TolkienBlocks.WOOD_DEADWOOD.get())
                 .add(TolkienBlocks.STRIPPED_DEADWOOD_LOG.get())
-                .add(TolkienBlocks.STRIPPED_DEADWOOD_WOOD.get());
+                .add(TolkienBlocks.STRIPPED_DEADWOOD_WOOD.get())
+                .add(TolkienBlocks.LOG_DWARVEN_MAPLE.get())
+                .add(TolkienBlocks.WOOD_DWARVEN_MAPLE.get())
+                .add(TolkienBlocks.STRIPPED_DWARVEN_MAPLE_LOG.get())
+                .add(TolkienBlocks.STRIPPED_DWARVEN_MAPLE_WOOD.get());
         tag(BlockTags.STANDING_SIGNS)
                 .add(TolkienBlocks.MALLORN_SIGN.get())
                 .add(TolkienBlocks.MIRKWOOD_SIGN.get())
                 .add(TolkienBlocks.CULUMALDA_SIGN.get())
                 .add(TolkienBlocks.LEBETHRON_SIGN.get())
                 .add(TolkienBlocks.FANGORNOAK_SIGN.get())
-                .add(TolkienBlocks.DEADWOOD_SIGN.get());
+                .add(TolkienBlocks.DEADWOOD_SIGN.get())
+                .add(TolkienBlocks.DWARVEN_MAPLE_SIGN.get());
         tag(BlockTags.WALL_SIGNS)
                 .add(TolkienBlocks.MALLORN_WALL_SIGN.get())
                 .add(TolkienBlocks.MIRKWOOD_WALL_SIGN.get())
                 .add(TolkienBlocks.CULUMALDA_SIGN.get())
                 .add(TolkienBlocks.LEBETHRON_WALL_SIGN.get())
                 .add(TolkienBlocks.FANGORNOAK_WALL_SIGN.get())
-                .add(TolkienBlocks.DEADWOOD_WALL_SIGN.get());
+                .add(TolkienBlocks.DEADWOOD_WALL_SIGN.get())
+                .add(TolkienBlocks.DWARVEN_MAPLE_WALL_SIGN.get());
         tag(BlockTags.CEILING_HANGING_SIGNS)
                 .add(TolkienBlocks.MALLORN_HANGING_SIGN.get())
                 .add(TolkienBlocks.MIRKWOOD_HANGING_SIGN.get())
                 .add(TolkienBlocks.CULUMALDA_HANGING_SIGN.get())
                 .add(TolkienBlocks.LEBETHRON_HANGING_SIGN.get())
                 .add(TolkienBlocks.FANGORNOAK_HANGING_SIGN.get())
-                .add(TolkienBlocks.DEADWOOD_HANGING_SIGN.get());
+                .add(TolkienBlocks.DEADWOOD_HANGING_SIGN.get())
+                .add(TolkienBlocks.DWARVEN_MAPLE_HANGING_SIGN.get());
         tag(BlockTags.CLIMBABLE)
                 .add(TolkienBlocks.LADDER_MALLORN.get())
                 .add(TolkienBlocks.LADDER_MIRKWOOD.get())
@@ -72,35 +79,39 @@ public class TolkienBlockTagProvider extends BlockTagsProvider {
                 .add(TolkienBlocks.LADDER_LEBETHRON.get())
                 .add(TolkienBlocks.LADDER_FANGORNOAK.get())
                 .add(TolkienBlocks.LADDER_DEADWOOD.get())
-        ;
+                .add(TolkienBlocks.LADDER_DWARVEN_MAPLE.get());
         tag(BlockTags.WALL_HANGING_SIGNS)
                 .add(TolkienBlocks.MALLORN_HANGING_WALL_SIGN.get())
                 .add(TolkienBlocks.MIRKWOOD_HANGING_WALL_SIGN.get())
                 .add(TolkienBlocks.CULUMALDA_HANGING_WALL_SIGN.get())
                 .add(TolkienBlocks.LEBETHRON_HANGING_WALL_SIGN.get())
                 .add(TolkienBlocks.FANGORNOAK_HANGING_WALL_SIGN.get())
-                .add(TolkienBlocks.DEADWOOD_HANGING_WALL_SIGN.get());
+                .add(TolkienBlocks.DEADWOOD_HANGING_WALL_SIGN.get())
+                .add(TolkienBlocks.DWARVEN_MAPLE_HANGING_WALL_SIGN.get());
         tag(BlockTags.FENCES)
                 .add(TolkienBlocks.FENCE_MALLORN.get())
                 .add(TolkienBlocks.FENCE_MIRKWOOD.get())
                 .add(TolkienBlocks.FENCE_CULUMALDA.get())
                 .add(TolkienBlocks.FENCE_LEBETHRON.get())
                 .add(TolkienBlocks.FENCE_FANGORNOAK.get())
-                .add(TolkienBlocks.FENCE_DEADWOOD.get());
+                .add(TolkienBlocks.FENCE_DEADWOOD.get())
+                .add(TolkienBlocks.FENCE_DWARVEN_MAPLE.get());
         tag(BlockTags.WOODEN_FENCES)
                 .add(TolkienBlocks.FENCE_MALLORN.get())
                 .add(TolkienBlocks.FENCE_MIRKWOOD.get())
                 .add(TolkienBlocks.FENCE_CULUMALDA.get())
                 .add(TolkienBlocks.FENCE_LEBETHRON.get())
                 .add(TolkienBlocks.FENCE_FANGORNOAK.get())
-                .add(TolkienBlocks.FENCE_DEADWOOD.get());
+                .add(TolkienBlocks.FENCE_DEADWOOD.get())
+                .add(TolkienBlocks.FENCE_DWARVEN_MAPLE.get());
         tag(BlockTags.FENCE_GATES)
                 .add(TolkienBlocks.FENCE_GATE_MALLORN.get())
                 .add(TolkienBlocks.FENCE_GATE_MIRKWOOD.get())
                 .add(TolkienBlocks.FENCE_GATE_CULUMALDA.get())
                 .add(TolkienBlocks.FENCE_GATE_LEBETHRON.get())
                 .add(TolkienBlocks.FENCE_GATE_FANGORNOAK.get())
-                .add(TolkienBlocks.FENCE_GATE_DEADWOOD.get());
+                .add(TolkienBlocks.FENCE_GATE_DEADWOOD.get())
+                .add(TolkienBlocks.FENCE_DWARVEN_MAPLE.get());
         tag(BlockTags.WALLS)
                 .add(TolkienBlocks.WALL_MITHRIL.get())
                 .add(TolkienBlocks.WALL_MORGULIRON.get());
@@ -110,7 +121,8 @@ public class TolkienBlockTagProvider extends BlockTagsProvider {
                 .add(TolkienBlocks.PRESSURE_PLATE_CULUMALDA.get())
                 .add(TolkienBlocks.PRESSURE_PLATE_LEBETHRON.get())
                 .add(TolkienBlocks.PRESSURE_PLATE_FANGORNOAK.get())
-                .add(TolkienBlocks.PRESSURE_PLATE_DEADWOOD.get());
+                .add(TolkienBlocks.PRESSURE_PLATE_DEADWOOD.get())
+                .add(TolkienBlocks.PRESSURE_PLATE_DWARVEN_MAPLE.get());
         tag(BlockTags.PRESSURE_PLATES)
                 .add(TolkienBlocks.PRESSURE_PLATE_MITHRIL.get())
                 .add(TolkienBlocks.PRESSURE_PLATE_MORGULIRON.get());
@@ -124,21 +136,24 @@ public class TolkienBlockTagProvider extends BlockTagsProvider {
                 .add(TolkienBlocks.DOOR_CULUMALDA.get())
                 .add(TolkienBlocks.DOOR_LEBETHRON.get())
                 .add(TolkienBlocks.DOOR_FANGORNOAK.get())
-                .add(TolkienBlocks.DOOR_DEADWOOD.get());
+                .add(TolkienBlocks.DOOR_DEADWOOD.get())
+                .add(TolkienBlocks.DOOR_DWARVEN_MAPLE.get());
         tag(BlockTags.PLANKS)
                 .add(TolkienBlocks.PLANKS_MALLORN.get())
                 .add(TolkienBlocks.PLANKS_MIRKWOOD.get())
                 .add(TolkienBlocks.PLANKS_CULUMALDA.get())
                 .add(TolkienBlocks.PLANKS_LEBETHRON.get())
                 .add(TolkienBlocks.PLANKS_FANGORNOAK.get())
-                .add(TolkienBlocks.PLANKS_DEADWOOD.get());
+                .add(TolkienBlocks.PLANKS_DEADWOOD.get())
+                .add(TolkienBlocks.PLANKS_DWARVEN_MAPLE.get());
         tag(BlockTags.WALL_POST_OVERRIDE)
                 .add(TolkienBlocks.TORCH_MALLORN.get())
                 .add(TolkienBlocks.TORCH_MIRKWOOD.get())
                 .add(TolkienBlocks.TORCH_CULUMALDA.get())
                 .add(TolkienBlocks.TORCH_LEBETHRON.get())
                 .add(TolkienBlocks.TORCH_FANGORNOAK.get())
-                .add(TolkienBlocks.TORCH_DEADWOOD.get());
+                .add(TolkienBlocks.TORCH_DEADWOOD.get())
+                .add(TolkienBlocks.TORCH_DWARVEN_MAPLE.get());
         tag(BlockTags.MINEABLE_WITH_PICKAXE)
                 .add(TolkienBlocks.BLOCK_MITHRIL.get())
                 .add(TolkienBlocks.ORE_MITHRIL.get())

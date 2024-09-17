@@ -1,9 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "building",
+  "category": "misc",
   "key": {
     "#": {
-      "item": "tolkienmobs:block_decay_bloom"
+      "item": "tolkienmobs:mushroom_decay_bloom"
     }
   },
   "pattern": [
@@ -11,7 +11,7 @@
     "###"
   ],
   "result": {
-    "count": 6,
+    "count": 16,
     "id": "tolkienmobs:wall_decay_bloom"
   }
 }

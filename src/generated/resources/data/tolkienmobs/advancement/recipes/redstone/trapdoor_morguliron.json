@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "tolkienmobs:block_morguliron"
+            "items": "tolkienmobs:ingot_morguliron"
           }
         ]
       },

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "dwarven_maple",
+  "ingredients": [
+    {
+      "item": "tolkienmobs:planks_dwarven_maple"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:dwarven_maple_button"
+  }
+}

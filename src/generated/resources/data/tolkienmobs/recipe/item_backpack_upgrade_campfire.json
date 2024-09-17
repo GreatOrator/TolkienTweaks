@@ -3,7 +3,7 @@
   "category": "building",
   "key": {
     "P": {
-      "item": "tolkienmobs:gem_ammolite"
+      "item": "minecraft:campfire"
     },
     "W": {
       "item": "tolkienmobs:upgrade_item_backpack_upgrade_base"

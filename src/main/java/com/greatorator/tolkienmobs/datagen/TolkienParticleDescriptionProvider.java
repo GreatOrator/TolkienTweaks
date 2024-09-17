@@ -23,6 +23,7 @@ public class TolkienParticleDescriptionProvider extends ParticleDescriptionProvi
         this.sprite(TolkienParticleTypes.LEBETHRON_FLAME.get(), ResourceLocation.fromNamespaceAndPath(MODID, "lebethron_flame"));
         this.sprite(TolkienParticleTypes.FANGORNOAK_FLAME.get(), ResourceLocation.fromNamespaceAndPath(MODID, "fangornoak_flame"));
         this.sprite(TolkienParticleTypes.DEADWOOD_FLAME.get(), ResourceLocation.fromNamespaceAndPath(MODID, "deadwood_flame"));
+        this.sprite(TolkienParticleTypes.DWARVEN_FLAME.get(), ResourceLocation.fromNamespaceAndPath(MODID, "dwarven_flame"));
         this.sprite(TolkienParticleTypes.LIGHTNINGBUG.get(), ResourceLocation.fromNamespaceAndPath(MODID, "lightningbug"));
         this.sprite(TolkienParticleTypes.FALLING_LEAVES.get(), TolkienMobsMain.prefix("falling_leaves"));
     }

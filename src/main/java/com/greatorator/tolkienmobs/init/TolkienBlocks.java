@@ -152,6 +152,202 @@ public class TolkienBlocks {
             () -> new DoorBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
                     .strength(4F).requiresCorrectToolForDrops().noOcclusion().sound(SoundType.METAL)));
 
+        // Darkstone
+    public static final DeferredBlock<Block> DARK_STONE = registerBlock("dark_stone",
+                () -> new Block(BlockBehaviour.Properties.of().strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_DARK_STONE = registerBlock("stairs_dark_stone",
+            () -> new StairBlock(TolkienBlocks.DARK_STONE.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_DARK_STONE = registerBlock("slab_dark_stone",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_DARK_STONE = registerBlock("pressure_plate_dark_stone",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> DARK_STONE_BUTTON = registerBlock("dark_stone_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_DARK_STONE = registerBlock("wall_dark_stone",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> CHISELED_DARK_STONE_BRICKS = registerBlock("chiseled_dark_stone_bricks",
+            () -> new Block(BlockBehaviour.Properties.of().strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_CHISELED_DARK_STONE_BRICKS = registerBlock("stairs_chiseled_dark_stone_bricks",
+            () -> new StairBlock(TolkienBlocks.CHISELED_DARK_STONE_BRICKS.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_CHISELED_DARK_STONE_BRICKS = registerBlock("slab_chiseled_dark_stone_bricks",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_CHISELED_DARK_STONE_BRICKS = registerBlock("pressure_plate_chiseled_dark_stone_bricks",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> CHISELED_DARK_STONE_BRICKS_BUTTON = registerBlock("chiseled_dark_stone_bricks_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_CHISELED_DARK_STONE_BRICKS = registerBlock("wall_chiseled_dark_stone_bricks",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> COBBLED_DARK_STONE = registerBlock("cobbled_dark_stone",
+            () -> new Block(BlockBehaviour.Properties.of().strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_COBBLED_DARK_STONE = registerBlock("stairs_cobbled_dark_stone",
+            () -> new StairBlock(TolkienBlocks.COBBLED_DARK_STONE.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_COBBLED_DARK_STONE = registerBlock("slab_cobbled_dark_stone",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_COBBLED_DARK_STONE = registerBlock("pressure_plate_cobbled_dark_stone",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> COBBLED_DARK_STONE_BUTTON = registerBlock("cobbled_dark_stone_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_COBBLED_DARK_STONE = registerBlock("wall_cobbled_dark_stone",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> CRACKED_DARK_STONE_BRICKS = registerBlock("cracked_dark_stone_bricks",
+            () -> new Block(BlockBehaviour.Properties.of().strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_CRACKED_DARK_STONE_BRICKS = registerBlock("stairs_cracked_dark_stone_bricks",
+            () -> new StairBlock(TolkienBlocks.CRACKED_DARK_STONE_BRICKS.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_CRACKED_DARK_STONE_BRICKS = registerBlock("slab_cracked_dark_stone_bricks",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_CRACKED_DARK_STONE_BRICKS = registerBlock("pressure_plate_cracked_dark_stone_bricks",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> CRACKED_DARK_STONE_BRICKS_BUTTON = registerBlock("cracked_dark_stone_bricks_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_CRACKED_DARK_STONE_BRICKS = registerBlock("wall_cracked_dark_stone_bricks",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> DARK_STONE_BRICKS = registerBlock("dark_stone_bricks",
+            () -> new Block(BlockBehaviour.Properties.of().strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_DARK_STONE_BRICKS = registerBlock("stairs_dark_stone_bricks",
+            () -> new StairBlock(TolkienBlocks.DARK_STONE_BRICKS.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_DARK_STONE_BRICKS = registerBlock("slab_dark_stone_bricks",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_DARK_STONE_BRICKS = registerBlock("pressure_plate_dark_stone_bricks",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> DARK_STONE_BRICKS_BUTTON = registerBlock("dark_stone_bricks_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_DARK_STONE_BRICKS = registerBlock("wall_dark_stone_bricks",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SMOOTH_DARK_STONE = registerBlock("smooth_dark_stone",
+            () -> new Block(BlockBehaviour.Properties.of().strength(2.0F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_SMOOTH_DARK_STONE = registerBlock("stairs_smooth_dark_stone",
+            () -> new StairBlock(TolkienBlocks.SMOOTH_DARK_STONE.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_SMOOTH_DARK_STONE = registerBlock("slab_smooth_dark_stone",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_SMOOTH_DARK_STONE = registerBlock("pressure_plate_smooth_dark_stone",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SMOOTH_DARK_STONE_BUTTON = registerBlock("smooth_dark_stone_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_SMOOTH_DARK_STONE = registerBlock("wall_smooth_dark_stone",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+
+        // Dwarven Stone
+    public static final DeferredBlock<Block> DWARVEN_STONE = registerBlock("dwarven_stone",
+                () -> new Block(BlockBehaviour.Properties.of().strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_DWARVEN_STONE = registerBlock("stairs_dwarven_stone",
+            () -> new StairBlock(TolkienBlocks.DWARVEN_STONE.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_DWARVEN_STONE = registerBlock("slab_dwarven_stone",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_DWARVEN_STONE = registerBlock("pressure_plate_dwarven_stone",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> DWARVEN_STONE_BUTTON = registerBlock("dwarven_stone_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_DWARVEN_STONE = registerBlock("wall_dwarven_stone",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> CHISELED_DWARVEN_STONE_BRICKS = registerBlock("chiseled_dwarven_stone_bricks",
+            () -> new Block(BlockBehaviour.Properties.of().strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_CHISELED_DWARVEN_STONE_BRICKS = registerBlock("stairs_chiseled_dwarven_stone_bricks",
+            () -> new StairBlock(TolkienBlocks.CHISELED_DWARVEN_STONE_BRICKS.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_CHISELED_DWARVEN_STONE_BRICKS = registerBlock("slab_chiseled_dwarven_stone_bricks",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_CHISELED_DWARVEN_STONE_BRICKS = registerBlock("pressure_plate_chiseled_dwarven_stone_bricks",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> CHISELED_DWARVEN_STONE_BRICKS_BUTTON = registerBlock("chiseled_dwarven_stone_bricks_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_CHISELED_DWARVEN_STONE_BRICKS = registerBlock("wall_chiseled_dwarven_stone_bricks",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> COBBLED_DWARVEN_STONE = registerBlock("cobbled_dwarven_stone",
+            () -> new Block(BlockBehaviour.Properties.of().strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_COBBLED_DWARVEN_STONE = registerBlock("stairs_cobbled_dwarven_stone",
+            () -> new StairBlock(TolkienBlocks.COBBLED_DWARVEN_STONE.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_COBBLED_DWARVEN_STONE = registerBlock("slab_cobbled_dwarven_stone",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_COBBLED_DWARVEN_STONE = registerBlock("pressure_plate_cobbled_dwarven_stone",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> COBBLED_DWARVEN_STONE_BUTTON = registerBlock("cobbled_dwarven_stone_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_COBBLED_DWARVEN_STONE = registerBlock("wall_cobbled_dwarven_stone",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> CRACKED_DWARVEN_STONE_BRICKS = registerBlock("cracked_dwarven_stone_bricks",
+            () -> new Block(BlockBehaviour.Properties.of().strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_CRACKED_DWARVEN_STONE_BRICKS = registerBlock("stairs_cracked_dwarven_stone_bricks",
+            () -> new StairBlock(TolkienBlocks.CRACKED_DWARVEN_STONE_BRICKS.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_CRACKED_DWARVEN_STONE_BRICKS = registerBlock("slab_cracked_dwarven_stone_bricks",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_CRACKED_DWARVEN_STONE_BRICKS = registerBlock("pressure_plate_cracked_dwarven_stone_bricks",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> CRACKED_DWARVEN_STONE_BRICKS_BUTTON = registerBlock("cracked_dwarven_stone_bricks_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_CRACKED_DWARVEN_STONE_BRICKS = registerBlock("wall_cracked_dwarven_stone_bricks",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> DWARVEN_STONE_BRICKS = registerBlock("dwarven_stone_bricks",
+            () -> new Block(BlockBehaviour.Properties.of().strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_DWARVEN_STONE_BRICKS = registerBlock("stairs_dwarven_stone_bricks",
+            () -> new StairBlock(TolkienBlocks.DWARVEN_STONE_BRICKS.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_DWARVEN_STONE_BRICKS = registerBlock("slab_dwarven_stone_bricks",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_DWARVEN_STONE_BRICKS = registerBlock("pressure_plate_dwarven_stone_bricks",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> DWARVEN_STONE_BRICKS_BUTTON = registerBlock("dwarven_stone_bricks_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_DWARVEN_STONE_BRICKS = registerBlock("wall_dwarven_stone_bricks",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SMOOTH_DWARVEN_STONE = registerBlock("smooth_dwarven_stone",
+            () -> new Block(BlockBehaviour.Properties.of().strength(2.0F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_SMOOTH_DWARVEN_STONE = registerBlock("stairs_smooth_dwarven_stone",
+            () -> new StairBlock(TolkienBlocks.SMOOTH_DWARVEN_STONE.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_SMOOTH_DWARVEN_STONE = registerBlock("slab_smooth_dwarven_stone",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_SMOOTH_DWARVEN_STONE = registerBlock("pressure_plate_smooth_dwarven_stone",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SMOOTH_DWARVEN_STONE_BUTTON = registerBlock("smooth_dwarven_stone_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_SMOOTH_DWARVEN_STONE = registerBlock("wall_smooth_dwarven_stone",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+
     /* Wood & Foliage */
         // Mallorn
     public static final DeferredBlock<Block> LOG_MALLORN = registerBlock("log_mallorn",
@@ -538,7 +734,73 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> DEADWOOD_HANGING_WALL_SIGN = registerNoItem("hanging_sign_wall_deadwood", () -> new TolkienHangingWallSignBlock(TolkienWoodTypes.DEADWOOD, BlockBehaviour.Properties.ofFullCopy(DEADWOOD_HANGING_SIGN.get())));
     public static final DeferredBlock<Block> LADDER_DEADWOOD = registerBlock("ladder_deadwood", () -> new LadderBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.LADDER)));
 
-        // Flowers & Plants
+        // Dwarven Maple
+    public static final DeferredBlock<Block> LOG_DWARVEN_MAPLE = registerBlock("log_dwarven_maple",
+                () -> new RotatedPillarBlock(BlockBehaviour.Properties.of()
+                        .strength(2.0F, 3.0F).requiresCorrectToolForDrops().ignitedByLava().sound(SoundType.WOOD)));
+    public static final DeferredBlock<Block> WOOD_DWARVEN_MAPLE = registerBlock("wood_dwarven_maple",
+            () -> new RotatedPillarBlock(BlockBehaviour.Properties.of()
+                    .strength(2.0F, 3.0F).requiresCorrectToolForDrops().ignitedByLava().sound(SoundType.WOOD)));
+    public static final DeferredBlock<Block> STRIPPED_DWARVEN_MAPLE_LOG = registerBlock("stripped_log_dwarven_maple",
+            () -> new RotatedPillarBlock(BlockBehaviour.Properties.of()
+                    .strength(2.0F, 3.0F).requiresCorrectToolForDrops().ignitedByLava().sound(SoundType.WOOD)));
+    public static final DeferredBlock<Block> STRIPPED_DWARVEN_MAPLE_WOOD = registerBlock("stripped_wood_dwarven_maple",
+            () -> new RotatedPillarBlock(BlockBehaviour.Properties.of()
+                    .strength(2.0F, 3.0F).requiresCorrectToolForDrops().ignitedByLava().sound(SoundType.WOOD)));
+    public static final DeferredBlock<Block> LEAVES_DWARVEN_MAPLE = registerBlock("leaves_dwarven_maple",
+            () -> new LeavesBlock(BlockBehaviour.Properties.of()
+                    .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));
+    public static final DeferredBlock<Block> LEAFPILE_DWARVEN_MAPLE = registerBlock("leafpile_dwarven_maple",
+            () -> new LeafPileBlock(BlockBehaviour.Properties.of()
+                    .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));
+    public static final DeferredBlock<Block> PLANKS_DWARVEN_MAPLE = registerBlock("planks_dwarven_maple",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .strength(2.0F, 3.0F).requiresCorrectToolForDrops().ignitedByLava().sound(SoundType.WOOD)));
+    public static final DeferredBlock<Block> STAIRS_DWARVEN_MAPLE = registerBlock("stairs_dwarven_maple",
+            () -> new StairBlock(TolkienBlocks.PLANKS_DWARVEN_MAPLE.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(2f).requiresCorrectToolForDrops().ignitedByLava()));
+    public static final DeferredBlock<Block> SLAB_DWARVEN_MAPLE = registerBlock("slab_dwarven_maple",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(2.0F, 3.0F).requiresCorrectToolForDrops().ignitedByLava().sound(SoundType.WOOD)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_DWARVEN_MAPLE = registerBlock("pressure_plate_dwarven_maple",
+            () -> new PressurePlateBlock(BlockSetType.OAK, BlockBehaviour.Properties.of()
+                    .strength(0.5F).requiresCorrectToolForDrops().ignitedByLava()));
+    public static final DeferredBlock<Block> DWARVEN_MAPLE_BUTTON = registerBlock("dwarven_maple_button",
+            () -> new ButtonBlock(BlockSetType.OAK, 30, BlockBehaviour.Properties.of()
+                    .strength(0.5F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> FENCE_DWARVEN_MAPLE = registerBlock("fence_dwarven_maple",
+            () -> new FenceBlock(BlockBehaviour.Properties.of()
+                    .strength(2.0F, 3.0F).requiresCorrectToolForDrops().ignitedByLava().sound(SoundType.WOOD)));
+    public static final DeferredBlock<Block> FENCE_GATE_DWARVEN_MAPLE = registerBlock("fence_gate_dwarven_maple",
+            () -> new FenceGateBlock(WoodType.ACACIA, BlockBehaviour.Properties.of()
+                    .strength(2.0F, 3.0F).ignitedByLava().requiresCorrectToolForDrops().sound(SoundType.WOOD)));
+    public static final DeferredBlock<Block> DOOR_DWARVEN_MAPLE = registerBlock("door_dwarven_maple",
+            () -> new DoorBlock(BlockSetType.OAK, BlockBehaviour.Properties.of()
+                    .strength(3.0F).requiresCorrectToolForDrops().noOcclusion().sound(SoundType.WOOD)));
+    public static final DeferredBlock<Block> TRAPDOOR_DWARVEN_MAPLE = registerBlock("trapdoor_dwarven_maple",
+            () -> new TrapDoorBlock(BlockSetType.OAK, BlockBehaviour.Properties.of()
+                    .strength(3.0F).requiresCorrectToolForDrops().noOcclusion().sound(SoundType.WOOD)));
+    public static final DeferredBlock<Block> TORCH_DWARVEN_MAPLE = registerBlock("torch_dwarven_maple",
+            () -> new TolkienTorchBlock(
+                    () -> TolkienParticleTypes.DWARVEN_FLAME.get(),
+                    BlockBehaviour.Properties.of()
+                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD)));
+
+    public static final DeferredBlock<Block> WALL_TORCH_DWARVEN_MAPLE = registerBlock("wall_torch_dwarven_maple",
+            () -> new TolkienWallTorchBlock(
+                    () -> TolkienParticleTypes.DWARVEN_FLAME.get(),
+                    BlockBehaviour.Properties.of()
+                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).lootFrom(TORCH_DWARVEN_MAPLE)));
+    public static final DeferredBlock<Block> BARREL_DWARVEN_MAPLE = registerBlock("barrel_dwarven_maple",
+            () -> new BarrelBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL)
+                    .mapColor(MapColor.TERRACOTTA_WHITE)));
+    public static final DeferredBlock<Block> DWARVEN_MAPLE_SIGN = registerBlock("sign_dwarven_maple", () -> new TolkienSignBlock(TolkienWoodTypes.DWARVEN_MAPLE, BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().strength(1f, 1f).ignitedByLava()));
+    public static final DeferredBlock<Block> DWARVEN_MAPLE_WALL_SIGN = registerNoItem("sign_wall_dwarven_maple", () -> new TolkienWallSignBlock(TolkienWoodTypes.DWARVEN_MAPLE, BlockBehaviour.Properties.ofFullCopy(DWARVEN_MAPLE_SIGN.get())));
+    public static final DeferredBlock<Block> DWARVEN_MAPLE_HANGING_SIGN = registerBlock("hanging_sign_dwarven_maple", () -> new TolkienHangingSignBlock(TolkienWoodTypes.DWARVEN_MAPLE, BlockBehaviour.Properties.ofFullCopy(DWARVEN_MAPLE_SIGN.get())));
+    public static final DeferredBlock<Block> DWARVEN_MAPLE_HANGING_WALL_SIGN = registerNoItem("hanging_sign_wall_dwarven_maple", () -> new TolkienHangingWallSignBlock(TolkienWoodTypes.DWARVEN_MAPLE, BlockBehaviour.Properties.ofFullCopy(DWARVEN_MAPLE_HANGING_SIGN.get())));
+    public static final DeferredBlock<Block> LADDER_DWARVEN_MAPLE = registerBlock("ladder_dwarven_maple", () -> new LadderBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.LADDER)));
+
+    // Flowers & Plants
     public static final DeferredBlock<Block> PIPEWEED = BLOCKS.register("pipeweed", () -> new PipeweedCropBlock(BlockBehaviour.Properties.of().noCollission().randomTicks().instabreak().sound(SoundType.CROP).pushReaction(PushReaction.DESTROY)));
     public static final DeferredBlock<Block> SAPLING_MALLORN = registerBlock("sapling_mallorn",
             () -> new TolkienSaplingBlock(TolkienTreeGrowers.MALLORN, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_SAPLING), Blocks.GRASS_BLOCK));
@@ -552,6 +814,8 @@ public class TolkienBlocks {
             () -> new TolkienSaplingBlock(TolkienTreeGrowers.FANGORNOAK, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_SAPLING), Blocks.GRASS_BLOCK));
     public static final DeferredBlock<Block> SAPLING_DEADWOOD = registerBlock("sapling_deadwood",
             () -> new TolkienSaplingBlock(TolkienTreeGrowers.DEADWOOD, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_SAPLING), Blocks.GRASS_BLOCK));
+    public static final DeferredBlock<Block> SAPLING_DWARVEN_MAPLE = registerBlock("sapling_dwarven_maple",
+            () -> new TolkienSaplingBlock(TolkienTreeGrowers.DWARVEN_MAPLE, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_SAPLING), Blocks.GRASS_BLOCK));
     public static final DeferredBlock<Block> MUSHROOM_DECAY_BLOOM = registerBlock("mushroom_decay_bloom",
             () -> new MushroomsBlock(TolkienConfiguredFeatures.MUSHROOM_DECAY_BLOOM_KEY, BlockBehaviour.Properties.ofFullCopy(Blocks.BROWN_MUSHROOM)));
     public static final DeferredBlock<Block> MUSHROOM_BLOOM_DECAY = registerBlock("mushroom_bloom_decay",
@@ -566,6 +830,7 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> FLOWER_NIPHREDIL = registerBlock("flower_niphredil", () -> new TolkienFlowerBlock(MobEffects.SATURATION, 7, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY)));
     public static final DeferredBlock<Block> FLOWER_SWAMPMILKWEED = registerBlock("flower_swamp_milkweed", () -> new TolkienFlowerBlock(MobEffects.MOVEMENT_SLOWDOWN, 7, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY)));
     public static final DeferredBlock<Block> FLOWER_LILLYOFTHEVALLEY = registerBlock("flower_valley_lilly", () -> new TolkienFlowerBlock(MobEffects.HEAL, 7, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY)));
+    public static final DeferredBlock<Block> FLOWER_ELANOR = registerBlock("flower_elanor", () -> new TolkienFlowerBlock(MobEffects.MOVEMENT_SPEED, 7, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY)));
     public static final DeferredBlock<FlowerPotBlock> POTTED_FLOWER_SIMBELMYNE = BLOCKS.register("potted_flower_simbelmyne", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, FLOWER_SIMBELMYNE, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
     public static final DeferredBlock<FlowerPotBlock> POTTED_FLOWER_MIRKWOOD = BLOCKS.register("potted_flower_mirkwood", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, FLOWER_MIRKWOOD, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
     public static final DeferredBlock<FlowerPotBlock> POTTED_FLOWER_ALFIRIN = BLOCKS.register("potted_flower_alfirin", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, FLOWER_ALFIRIN, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
@@ -573,12 +838,14 @@ public class TolkienBlocks {
     public static final DeferredBlock<FlowerPotBlock> POTTED_FLOWER_NIPHREDIL = BLOCKS.register("potted_flower_niphredil", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, FLOWER_NIPHREDIL, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
     public static final DeferredBlock<FlowerPotBlock> POTTED_FLOWER_SWAMPMILKWEED = BLOCKS.register("potted_flower_swamp_milkweed", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, FLOWER_SWAMPMILKWEED, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
     public static final DeferredBlock<FlowerPotBlock> POTTED_FLOWER_LILLYOFTHEVALLEY = BLOCKS.register("potted_flower_valley_lilly", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, FLOWER_LILLYOFTHEVALLEY, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
+    public static final DeferredBlock<FlowerPotBlock> POTTED_FLOWER_ELANOR = BLOCKS.register("potted_flower_elanor", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, FLOWER_ELANOR, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
     public static final DeferredBlock<FlowerPotBlock> POTTED_SAPLING_MALLORN = BLOCKS.register("potted_sapling_mallorn", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, SAPLING_MALLORN, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
     public static final DeferredBlock<FlowerPotBlock> POTTED_SAPLING_MIRKWOOD = BLOCKS.register("potted_sapling_mirkwood", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, SAPLING_MIRKWOOD, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
     public static final DeferredBlock<FlowerPotBlock> POTTED_SAPLING_CULUMALDA = BLOCKS.register("potted_sapling_culumalda", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, SAPLING_CULUMALDA, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
     public static final DeferredBlock<FlowerPotBlock> POTTED_SAPLING_LEBETHRON = BLOCKS.register("potted_sapling_lebethron", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, SAPLING_LEBETHRON, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
     public static final DeferredBlock<FlowerPotBlock> POTTED_SAPLING_FANGORNOAK = BLOCKS.register("potted_sapling_fangornoak", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, SAPLING_FANGORNOAK, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
     public static final DeferredBlock<FlowerPotBlock> POTTED_SAPLING_DEADWOOD = BLOCKS.register("potted_sapling_deadwood", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, SAPLING_DEADWOOD, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
+    public static final DeferredBlock<FlowerPotBlock> POTTED_SAPLING_DWARVEN_MAPLE = BLOCKS.register("potted_sapling_dwarven_maple", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, SAPLING_DWARVEN_MAPLE, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
     public static final DeferredBlock<FlowerPotBlock> POTTED_MUSHROOM_BLOOM_DECAY = BLOCKS.register("potted_mushroom_bloom_decay", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, MUSHROOM_BLOOM_DECAY, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
     public static final DeferredBlock<FlowerPotBlock> POTTED_MUSHROOM_DECAY_BLOOM = BLOCKS.register("potted_mushroom_decay_bloom", () -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, MUSHROOM_DECAY_BLOOM, BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT)));
 
@@ -593,7 +860,7 @@ public class TolkienBlocks {
             () -> new FancyLanternBlock(BlockBehaviour.Properties.of().strength(3.5F, 3.5F).requiresCorrectToolForDrops().noOcclusion().lightLevel((state) -> state.getValue(LIT) ? 11:0).sound(SoundType.LANTERN)));
     public static final DeferredBlock<Block> BLOCK_HALLOWED = registerBlock("block_hallowed", () -> new HallowedBlock(BlockBehaviour.Properties.of().randomTicks().sound(SoundType.GRAVEL)));
     public static final DeferredBlock<Block> STONE_PATH = registerBlock("block_stone_path", () -> new StonePathBlock(BlockBehaviour.Properties.of().isViewBlocking(TolkienBlocks::never).sound(SoundType.STONE)));
-    public static final DeferredBlock<Block> ROCKPILE = registerBlock("rockpile", () -> new RockPileBlock(BlockBehaviour.Properties.of().noCollission().instabreak().sound(SoundType.STONE).strength(0.2F).dynamicShape()));
+    public static final DeferredBlock<Block> ROCKPILE = registerBlock("rockpile", () -> new RockPileBlock(BlockBehaviour.Properties.of().offsetType(BlockBehaviour.OffsetType.XZ).noCollission().instabreak().sound(SoundType.STONE).strength(0.2F).dynamicShape()));
     public static final DeferredBlock<Block> WALL_DECAY_BLOOM = registerBlock("wall_decay_bloom", () -> new WallDecayBloomBlock(BlockBehaviour.Properties.of().noCollission().instabreak().sound(SoundType.GRASS).strength(0.2F).dynamicShape()));
     public static final DeferredBlock<Block> WALL_MUSHROOM_RED = registerBlock("wall_mushroom_red", () -> new WallMushroomRedBlock(BlockBehaviour.Properties.of().noCollission().instabreak().sound(SoundType.GRASS).strength(0.2F).dynamicShape()));
     public static final DeferredBlock<Block> WALL_MUSHROOM_BROWN = registerBlock("wall_mushroom_brown", () -> new WallMushroomBrownBlock(BlockBehaviour.Properties.of().noCollission().instabreak().sound(SoundType.GRASS).strength(0.2F).dynamicShape()));
@@ -649,10 +916,10 @@ public class TolkienBlocks {
             BlockEntityType.Builder.of(PlacardEntity::new, PLACARD.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TolkienSignEntity>> TOLKIEN_SIGN_ENTITY =
                 BLOCK_ENTITIES.register("tolkien_sign_entity", () ->
-                        BlockEntityType.Builder.of(TolkienSignEntity::new, MALLORN_SIGN.get(), MALLORN_WALL_SIGN.get(), MIRKWOOD_SIGN.get(), MIRKWOOD_WALL_SIGN.get(), CULUMALDA_SIGN.get(), CULUMALDA_WALL_SIGN.get(), LEBETHRON_SIGN.get(), LEBETHRON_WALL_SIGN.get(), FANGORNOAK_SIGN.get(), FANGORNOAK_WALL_SIGN.get(), DEADWOOD_SIGN.get(), DEADWOOD_WALL_SIGN.get()).build((Type) null));
+                        BlockEntityType.Builder.of(TolkienSignEntity::new, MALLORN_SIGN.get(), MALLORN_WALL_SIGN.get(), MIRKWOOD_SIGN.get(), MIRKWOOD_WALL_SIGN.get(), CULUMALDA_SIGN.get(), CULUMALDA_WALL_SIGN.get(), LEBETHRON_SIGN.get(), LEBETHRON_WALL_SIGN.get(), FANGORNOAK_SIGN.get(), FANGORNOAK_WALL_SIGN.get(), DEADWOOD_SIGN.get(), DEADWOOD_WALL_SIGN.get(), DWARVEN_MAPLE_SIGN.get(), DWARVEN_MAPLE_WALL_SIGN.get()).build((Type) null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TolkienHangingSignBlockEntity>> TOLKIEN_HANGING_SIGN_ENTITY =
             BLOCK_ENTITIES.register("tolkien_hanging_sign_entity", () ->
-                    BlockEntityType.Builder.of(TolkienHangingSignBlockEntity::new, MALLORN_HANGING_SIGN.get(), MALLORN_HANGING_WALL_SIGN.get(), MIRKWOOD_HANGING_SIGN.get(), MIRKWOOD_HANGING_WALL_SIGN.get(), CULUMALDA_HANGING_SIGN.get(), CULUMALDA_HANGING_WALL_SIGN.get(), LEBETHRON_HANGING_SIGN.get(), LEBETHRON_HANGING_WALL_SIGN.get(), FANGORNOAK_HANGING_SIGN.get(), FANGORNOAK_HANGING_WALL_SIGN.get(), DEADWOOD_HANGING_SIGN.get(), DEADWOOD_HANGING_WALL_SIGN.get()).build((Type) null));
+                    BlockEntityType.Builder.of(TolkienHangingSignBlockEntity::new, MALLORN_HANGING_SIGN.get(), MALLORN_HANGING_WALL_SIGN.get(), MIRKWOOD_HANGING_SIGN.get(), MIRKWOOD_HANGING_WALL_SIGN.get(), CULUMALDA_HANGING_SIGN.get(), CULUMALDA_HANGING_WALL_SIGN.get(), LEBETHRON_HANGING_SIGN.get(), LEBETHRON_HANGING_WALL_SIGN.get(), FANGORNOAK_HANGING_SIGN.get(), FANGORNOAK_HANGING_WALL_SIGN.get(), DEADWOOD_HANGING_SIGN.get(), DEADWOOD_HANGING_WALL_SIGN.get(), DWARVEN_MAPLE_HANGING_SIGN.get(), DWARVEN_MAPLE_HANGING_WALL_SIGN.get()).build((Type) null));
 
     private static boolean never(BlockState state, BlockGetter blockGetter, BlockPos pos) {
         return false;

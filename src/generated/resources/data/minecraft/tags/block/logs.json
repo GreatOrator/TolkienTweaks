@@ -23,6 +23,10 @@
     "tolkienmobs:log_deadwood",
     "tolkienmobs:wood_deadwood",
     "tolkienmobs:stripped_log_deadwood",
-    "tolkienmobs:stripped_wood_deadwood"
+    "tolkienmobs:stripped_wood_deadwood",
+    "tolkienmobs:log_dwarven_maple",
+    "tolkienmobs:wood_dwarven_maple",
+    "tolkienmobs:stripped_log_dwarven_maple",
+    "tolkienmobs:stripped_wood_dwarven_maple"
   ]
 }

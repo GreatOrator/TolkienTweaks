@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "group": "dwarven_maple",
+  "key": {
+    "#": {
+      "item": "tolkienmobs:planks_dwarven_maple"
+    }
+  },
+  "pattern": [
+    "###",
+    "###"
+  ],
+  "result": {
+    "count": 2,
+    "id": "tolkienmobs:trapdoor_dwarven_maple"
+  }
+}

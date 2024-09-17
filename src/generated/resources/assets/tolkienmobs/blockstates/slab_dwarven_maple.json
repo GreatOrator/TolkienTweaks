@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "tolkienmobs:block/slab_dwarven_maple"
+    },
+    "type=double": {
+      "model": "tolkienmobs:block/planks_dwarven_maple"
+    },
+    "type=top": {
+      "model": "tolkienmobs:block/slab_dwarven_maple_top"
+    }
+  }
+}

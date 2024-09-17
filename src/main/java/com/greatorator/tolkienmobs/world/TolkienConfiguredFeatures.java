@@ -45,6 +45,7 @@ public class TolkienConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> CULUMALDA_FIRIEN_KEY = registerKey("culumalda_firien");
     public static final ResourceKey<ConfiguredFeature<?, ?>> LEBETHRON_FIRIEN_KEY = registerKey("lebethron_firien");
     public static final ResourceKey<ConfiguredFeature<?, ?>> DEADWOOD_KEY = registerKey("deadwood");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> DWARVEN_MAPLE_KEY = registerKey("dwarven_maple");
     public static final ResourceKey<ConfiguredFeature<?, ?>> MUSHROOM_BLOOM_DECAY_KEY = registerKey("mushroom_bloom_decay");
     public static final ResourceKey<ConfiguredFeature<?, ?>> MUSHROOM_DECAY_BLOOM_KEY = registerKey("mushroom_decay_bloom");
     public static final ResourceKey<ConfiguredFeature<?, ?>> FALLEN_LEAVES = registerKey("fallen_leaves");
@@ -104,6 +105,14 @@ public class TolkienConfiguredFeatures {
                 new TwoLayersFeatureSize(0, 0, 0, OptionalInt.of(4)))
                 .dirt(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
                 .build());
+        register(context, DWARVEN_MAPLE_KEY, Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
+                BlockStateProvider.simple(TolkienBlocks.WOOD_DWARVEN_MAPLE.get()),
+                new BranchingTrunkPlacer(6, 5, 5, 7, new BranchesConfig(BlockStateProvider.simple(TolkienBlocks.WOOD_DWARVEN_MAPLE.get()), 3, 1, 10, 1, 0.3, 0.2), false),
+                BlockStateProvider.simple(TolkienBlocks.LEAVES_DWARVEN_MAPLE.get()),
+                new SpheroidFoliagePlacer(4.5F, 1.5F, ConstantInt.of(0), 1, 0, -0.25F, 0),
+                new TwoLayersFeatureSize(4, 1, canopyDistancing))
+                .dirt(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
+                .build());
         register(context, OLDFORESTOAK_KEY, Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(Blocks.DARK_OAK_WOOD),
                 new BranchingLargeTrunkPlacer(6, 3, 3, 5, new BranchesConfig(BlockStateProvider.simple(Blocks.DARK_OAK_WOOD), 4, 0, 10, 4, 0.3, 0.2), false),
@@ -112,6 +121,7 @@ public class TolkienConfiguredFeatures {
                 new TwoLayersFeatureSize(1, 0, 1))
                 .decorators(ImmutableList.of(new LeaveVineDecorator(0.25F), TolkienDecorators.LIGHTNINGBUG, TolkienDecorators.LIVING_ROOTS))
                 .dirt(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
+                .ignoreVines()
                 .build());
         register(context, CULUMALDA_FIRIEN_KEY, Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TolkienBlocks.WOOD_CULUMALDA.get()),

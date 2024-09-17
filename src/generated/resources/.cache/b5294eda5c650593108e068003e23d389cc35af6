@@ -1,6 +1,7 @@
-// 1.21	2024-09-15T05:50:46.8936211	Particle Descriptions
+// 1.21	2024-09-16T12:43:00.7549613	Particle Descriptions
 e936007fd9ef1542f24112ef492acb6f4d5e852f assets/tolkienmobs/particles/culumalda_flame.json
 503d21b445dc505cf7a0e954df612dadf986290f assets/tolkienmobs/particles/deadwood_flame.json
+cf5d09023e41d59630bdbc12a11137d45b5ac75f assets/tolkienmobs/particles/dwarven_flame.json
 44ef6d3b9e70b50b785447c88a423a5fe4748098 assets/tolkienmobs/particles/falling_leaves.json
 42aff8766e2b0750465a03d403242c7bc2456c85 assets/tolkienmobs/particles/fangornoak_flame.json
 2a87054d8b7fe568ef6dd57ce786ef3248f6c3c7 assets/tolkienmobs/particles/lebethron_flame.json

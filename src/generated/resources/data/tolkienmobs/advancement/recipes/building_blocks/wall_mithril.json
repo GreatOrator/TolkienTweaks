@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_ingot_mithril": {
+    "has_block_mithril": {
       "conditions": {
         "items": [
           {
-            "items": "tolkienmobs:ingot_mithril"
+            "items": "tolkienmobs:block_mithril"
           }
         ]
       },
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_ingot_mithril"
+      "has_block_mithril"
     ]
   ],
   "rewards": {

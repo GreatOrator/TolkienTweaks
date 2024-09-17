@@ -23,6 +23,7 @@ public class TolkienParticleTypes {
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> LEBETHRON_FLAME = PARTICLES.register("lebethron_flame", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> FANGORNOAK_FLAME = PARTICLES.register("fangornoak_flame", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> DEADWOOD_FLAME = PARTICLES.register("deadwood_flame", () -> new SimpleParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> DWARVEN_FLAME = PARTICLES.register("dwarven_flame", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> LIGHTNINGBUG = PARTICLES.register("lightningbug", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, ParticleType<LeafParticleData>> FALLING_LEAVES = PARTICLES.register("falling_leaves", () -> new ParticleType<>(false) {
         @Override

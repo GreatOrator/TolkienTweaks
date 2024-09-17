@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "tolkienmobs:block/pressure_plate_dark_stone"
+    },
+    "powered=true": {
+      "model": "tolkienmobs:block/pressure_plate_dark_stone_down"
+    }
+  }
+}

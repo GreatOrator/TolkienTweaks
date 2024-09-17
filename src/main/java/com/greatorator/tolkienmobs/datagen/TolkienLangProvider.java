@@ -47,10 +47,12 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addFlowerBlock(TolkienBlocks.FLOWER_ALFIRIN.get(), "Alfirin", "alfirin");
             this.addFlowerBlock(TolkienBlocks.FLOWER_ATHELAS.get(), "Kingsfoil", "athelas");
             this.addFlowerBlock(TolkienBlocks.FLOWER_NIPHREDIL.get(), "Niphredil", "niphredil");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_SWAMPMILKWEED.get(), "Swamp Milkweed", "swamp_milkweed");
+            this.addFlowerBlock(TolkienBlocks.FLOWER_SWAMPMILKWEED.get(), "Gallows-weed", "swamp_milkweed");
             this.addFlowerBlock(TolkienBlocks.FLOWER_LILLYOFTHEVALLEY.get(), "Lilly of the Valley", "valley_lilly");
+            this.addFlowerBlock(TolkienBlocks.FLOWER_ELANOR.get(), "Elanor", "elanor");
             this.addFlowerBlock(TolkienBlocks.MUSHROOM_BLOOM_DECAY.get(), "Bloom of Decay", "mushroom_bloom_decay");
             this.addFlowerBlock(TolkienBlocks.MUSHROOM_DECAY_BLOOM.get(), "Bloom of Decay", "mushroom_decay_bloom");
+            this.addBlock(TolkienBlocks.BLOCK_DECAY_BLOOM, "Decay Bloom Block");
             this.addItem(TolkienItems.PIPEWEED_ITEM, "Pipeweed");
             this.addItem(TolkienItems.PIPEWEED_SEEDS, "Pipeweed Seeds");
             this.addBlock(TolkienBlocks.LIGHTNINGBUG_BLOCK, "Lightning Bug");
@@ -74,7 +76,6 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addItem(TolkienItems.DRINK_ERU_BLESSING, "Blessing of Eru Iluvatar");
             this.addItem(TolkienItems.DRINK_ENT_DRAUGHT, "Ent Draught");
             this.addItem(TolkienItems.DRINK_PERSONAL_BLACKSMITH, "Portable Blacksmith");
-        this.add("itemGroup.tolkienmobs.ma                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ts", "TolkienTweaks: Ingredients");
         this.add("itemGroup.tolkienmobs.quest", "TolkienTweaks: Basic Items");
             this.addItemWithLore(TolkienItems.ITEM_BERYL.get(), "§3Glorfindel's Beryl§r", "Magical gem loaned to you to help on your search");
             this.addItemWithLore(TolkienItems.ITEM_FORTRESSMAP.get(), "§3Fortress Plans§r", "Seemingly fragile, surprising it survived so long");
@@ -172,14 +173,28 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addBlock(TolkienBlocks.TORCH_LEBETHRON, "Lebethron Torch");
             this.addBlock(TolkienBlocks.TORCH_FANGORNOAK, "Fangorn Oak Torch");
             this.addBlock(TolkienBlocks.TORCH_DEADWOOD, "Deadwood Torch");
+            this.addBlock(TolkienBlocks.TORCH_DWARVEN_MAPLE, "Dwarven Maple Torch");
             this.createWoodSet("mallorn", "Mallorn");
             this.createWoodSet("mirkwood", "Mirkwood");
             this.createWoodSet("culumalda", "Culumalda");
             this.createWoodSet("lebethron", "Lebethron");
             this.createWoodSet("fangornoak", "Fangorn Oak");
             this.createWoodSet("deadwood", "Dead Wood");
+            this.createWoodSet("dwarven_maple", "Dwarven Maple");
             this.createMetalSet("mithril", "Mithril");
             this.createMetalSet("morguliron", "Morgul Iron");
+            this.createStoneSet("dark_stone", "Dark Stone");
+            this.createStoneSet("chiseled_dark_stone_bricks", "Chiseled Dark Stone Bricks");
+            this.createStoneSet("cobbled_dark_stone", "Cobbled Dark Stone");
+            this.createStoneSet("cracked_dark_stone_bricks", "Cracked Dark Stone");
+            this.createStoneSet("dark_stone_bricks", "Dark Stone Bricks");
+            this.createStoneSet("smooth_dark_stone", "Smooth Dark Stone");
+            this.createStoneSet("dwarven_stone", "Dwarven Stone");
+            this.createStoneSet("chiseled_dwarven_stone_bricks", "Chiseled Dwarven Stone Bricks");
+            this.createStoneSet("cobbled_dwarven_stone", "Cobbled Dwarven Stone");
+            this.createStoneSet("cracked_dwarven_stone_bricks", "Cracked Dwarven Stone");
+            this.createStoneSet("dwarven_stone_bricks", "Dwarven Stone Bricks");
+            this.createStoneSet("smooth_dwarven_stone", "Smooth Dwarven Stone");
             this.createGemSet("ammolite", "Ammolite");
             this.addBlock(TolkienBlocks.DOOR_DURIN, "Door of Durin");
             this.addBlockWithLore(TolkienBlocks.SLEEPING_BAG_BLUE.get(), "Blue Sleeping Bag", "§cDoes not§r reset spawn point.");
@@ -220,7 +235,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.createPotionSet("blessing_of_eru", "Eru's Blessing");
             this.createPotionSet("elf_vitality", "Elvish Life-span");
             this.createPotionSet("elven_nimbleness", "Elvish Nimbleness");
-                    // Harmful
+                // Harmful
             this.createPotionSet("elemental_flight", "Elemental Flying");
             this.createPotionSet("elemental_drowning", "Elemental Drowning");
             this.createPotionSet("elemental_lightning", "Elemental Lightning");

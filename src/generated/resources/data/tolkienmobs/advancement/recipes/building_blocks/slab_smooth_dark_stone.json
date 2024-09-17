@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_smooth_dark_stone": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tolkienmobs:smooth_dark_stone"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tolkienmobs:slab_smooth_dark_stone"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_smooth_dark_stone"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tolkienmobs:slab_smooth_dark_stone"
+    ]
+  }
+}

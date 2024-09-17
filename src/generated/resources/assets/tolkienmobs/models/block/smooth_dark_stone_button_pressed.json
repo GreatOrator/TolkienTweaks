@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/button_pressed",
+  "textures": {
+    "texture": "tolkienmobs:block/smooth_dark_stone"
+  }
+}
