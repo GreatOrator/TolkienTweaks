@@ -301,6 +301,161 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         blockItem(TolkienBlocks.TRAPDOOR_DEADWOOD, "_bottom");
         blockItem(TolkienBlocks.BARREL_DEADWOOD);
 
+            // Dwarven Maple
+        logBlock((RotatedPillarBlock)TolkienBlocks.LOG_DWARVEN_MAPLE.get());
+        logBlock((RotatedPillarBlock)TolkienBlocks.WOOD_DWARVEN_MAPLE.get());
+        logBlock((RotatedPillarBlock)TolkienBlocks.STRIPPED_DWARVEN_MAPLE_LOG.get());
+        logBlock((RotatedPillarBlock)TolkienBlocks.STRIPPED_DWARVEN_MAPLE_WOOD.get());
+        blockWithItem(TolkienBlocks.PLANKS_DWARVEN_MAPLE);
+        leavesBlock(TolkienBlocks.LEAVES_DWARVEN_MAPLE);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_DWARVEN_MAPLE.get()), blockTexture(TolkienBlocks.PLANKS_DWARVEN_MAPLE.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_DWARVEN_MAPLE.get()), blockTexture(TolkienBlocks.PLANKS_DWARVEN_MAPLE.get()), blockTexture(TolkienBlocks.PLANKS_DWARVEN_MAPLE.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_DWARVEN_MAPLE.get()), blockTexture(TolkienBlocks.PLANKS_DWARVEN_MAPLE.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.DWARVEN_MAPLE_BUTTON.get()), blockTexture(TolkienBlocks.PLANKS_DWARVEN_MAPLE.get()));
+        fenceBlock(((FenceBlock) TolkienBlocks.FENCE_DWARVEN_MAPLE.get()), blockTexture(TolkienBlocks.PLANKS_DWARVEN_MAPLE.get()));
+        fenceGateBlock(((FenceGateBlock) TolkienBlocks.FENCE_GATE_DWARVEN_MAPLE.get()), blockTexture(TolkienBlocks.PLANKS_DWARVEN_MAPLE.get()));
+        doorBlockWithRenderType(((DoorBlock) TolkienBlocks.DOOR_DWARVEN_MAPLE.get()), modLoc("block/door_dwarven_maple_bottom"), modLoc("block/door_dwarven_maple_top"), "cutout");
+        trapdoorBlockWithRenderType(((TrapDoorBlock) TolkienBlocks.TRAPDOOR_DWARVEN_MAPLE.get()), modLoc("block/trapdoor_dwarven_maple"), true, "cutout");
+        torchBlock(TolkienBlocks.TORCH_DWARVEN_MAPLE, TolkienBlocks.WALL_TORCH_DWARVEN_MAPLE);
+        ModelFile barrelDwarvenMaple = models().cubeBottomTop("barrel_dwarven_maple", modLoc("block/barrel/barrel_dwarven_maple_side"), modLoc("block/barrel/barrel_dwarven_maple_bottom"), modLoc("block/barrel/barrel_dwarven_maple_top"));
+        ModelFile barrelDwarvenMapleOpen = models().cubeBottomTop("barrel_dwarven_maple_open", modLoc("block/barrel/barrel_dwarven_maple_side"), modLoc("block/barrel/barrel_dwarven_maple_bottom"), modLoc("block/barrel/barrel_dwarven_maple_top_open"));
+        directionalBlock(TolkienBlocks.BARREL_DWARVEN_MAPLE.get(), state -> state.getValue(BarrelBlock.OPEN) ? barrelDwarvenMapleOpen : barrelDwarvenMaple);
+        signBlock(TolkienBlocks.DWARVEN_MAPLE_SIGN, TolkienBlocks.DWARVEN_MAPLE_WALL_SIGN, TolkienBlocks.PLANKS_DWARVEN_MAPLE);
+        hangingSignBlock(TolkienBlocks.DWARVEN_MAPLE_HANGING_SIGN, TolkienBlocks.DWARVEN_MAPLE_HANGING_WALL_SIGN, TolkienBlocks.PLANKS_DWARVEN_MAPLE);
+        ladder(TolkienBlocks.LADDER_DWARVEN_MAPLE, TolkienBlocks.PLANKS_DWARVEN_MAPLE);
+
+        blockItem(TolkienBlocks.TORCH_DWARVEN_MAPLE);
+        blockItem(TolkienBlocks.WALL_TORCH_DWARVEN_MAPLE);
+        blockItem(TolkienBlocks.LOG_DWARVEN_MAPLE);
+        blockItem(TolkienBlocks.WOOD_DWARVEN_MAPLE);
+        blockItem(TolkienBlocks.STRIPPED_DWARVEN_MAPLE_LOG);
+        blockItem(TolkienBlocks.STRIPPED_DWARVEN_MAPLE_WOOD);
+        blockItem(TolkienBlocks.STAIRS_DWARVEN_MAPLE);
+        blockItem(TolkienBlocks.SLAB_DWARVEN_MAPLE);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_DWARVEN_MAPLE);
+        blockItem(TolkienBlocks.FENCE_GATE_DWARVEN_MAPLE);
+        blockItem(TolkienBlocks.TRAPDOOR_DWARVEN_MAPLE, "_bottom");
+        blockItem(TolkienBlocks.BARREL_DWARVEN_MAPLE);
+
+            // Darkstone
+        blockWithItem(TolkienBlocks.DARK_STONE);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_DARK_STONE.get()), blockTexture(TolkienBlocks.DARK_STONE.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_DARK_STONE.get()), blockTexture(TolkienBlocks.DARK_STONE.get()), blockTexture(TolkienBlocks.DARK_STONE.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_DARK_STONE.get()), blockTexture(TolkienBlocks.DARK_STONE.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.DARK_STONE_BUTTON.get()), blockTexture(TolkienBlocks.DARK_STONE.get()));
+        wallBlock(((WallBlock) TolkienBlocks.WALL_DARK_STONE.get()), blockTexture(TolkienBlocks.DARK_STONE.get()));
+        blockWithItem(TolkienBlocks.CHISELED_DARK_STONE_BRICKS);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_CHISELED_DARK_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CHISELED_DARK_STONE_BRICKS.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_CHISELED_DARK_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CHISELED_DARK_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CHISELED_DARK_STONE_BRICKS.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_CHISELED_DARK_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CHISELED_DARK_STONE_BRICKS.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.CHISELED_DARK_STONE_BRICKS_BUTTON.get()), blockTexture(TolkienBlocks.CHISELED_DARK_STONE_BRICKS.get()));
+        wallBlock(((WallBlock) TolkienBlocks.WALL_CHISELED_DARK_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CHISELED_DARK_STONE_BRICKS.get()));
+        blockWithItem(TolkienBlocks.COBBLED_DARK_STONE);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_COBBLED_DARK_STONE.get()), blockTexture(TolkienBlocks.COBBLED_DARK_STONE.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_COBBLED_DARK_STONE.get()), blockTexture(TolkienBlocks.COBBLED_DARK_STONE.get()), blockTexture(TolkienBlocks.COBBLED_DARK_STONE.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_COBBLED_DARK_STONE.get()), blockTexture(TolkienBlocks.COBBLED_DARK_STONE.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.COBBLED_DARK_STONE_BUTTON.get()), blockTexture(TolkienBlocks.COBBLED_DARK_STONE.get()));
+        wallBlock(((WallBlock) TolkienBlocks.WALL_COBBLED_DARK_STONE.get()), blockTexture(TolkienBlocks.COBBLED_DARK_STONE.get()));
+        blockWithItem(TolkienBlocks.CRACKED_DARK_STONE_BRICKS);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_CRACKED_DARK_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CRACKED_DARK_STONE_BRICKS.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_CRACKED_DARK_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CRACKED_DARK_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CRACKED_DARK_STONE_BRICKS.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_CRACKED_DARK_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CRACKED_DARK_STONE_BRICKS.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.CRACKED_DARK_STONE_BRICKS_BUTTON.get()), blockTexture(TolkienBlocks.CRACKED_DARK_STONE_BRICKS.get()));
+        wallBlock(((WallBlock) TolkienBlocks.WALL_CRACKED_DARK_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CRACKED_DARK_STONE_BRICKS.get()));
+        blockWithItem(TolkienBlocks.DARK_STONE_BRICKS);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_DARK_STONE_BRICKS.get()), blockTexture(TolkienBlocks.DARK_STONE_BRICKS.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_DARK_STONE_BRICKS.get()), blockTexture(TolkienBlocks.DARK_STONE_BRICKS.get()), blockTexture(TolkienBlocks.DARK_STONE_BRICKS.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_DARK_STONE_BRICKS.get()), blockTexture(TolkienBlocks.DARK_STONE_BRICKS.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.DARK_STONE_BRICKS_BUTTON.get()), blockTexture(TolkienBlocks.DARK_STONE_BRICKS.get()));
+        wallBlock(((WallBlock) TolkienBlocks.WALL_DARK_STONE_BRICKS.get()), blockTexture(TolkienBlocks.DARK_STONE_BRICKS.get()));
+        blockWithItem(TolkienBlocks.SMOOTH_DARK_STONE);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_SMOOTH_DARK_STONE.get()), blockTexture(TolkienBlocks.SMOOTH_DARK_STONE.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_SMOOTH_DARK_STONE.get()), blockTexture(TolkienBlocks.SMOOTH_DARK_STONE.get()), blockTexture(TolkienBlocks.SMOOTH_DARK_STONE.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_SMOOTH_DARK_STONE.get()), blockTexture(TolkienBlocks.SMOOTH_DARK_STONE.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.SMOOTH_DARK_STONE_BUTTON.get()), blockTexture(TolkienBlocks.SMOOTH_DARK_STONE.get()));
+        wallBlock(((WallBlock) TolkienBlocks.WALL_SMOOTH_DARK_STONE.get()), blockTexture(TolkienBlocks.SMOOTH_DARK_STONE.get()));
+
+        blockItem(TolkienBlocks.STAIRS_SMOOTH_DARK_STONE);
+        blockItem(TolkienBlocks.SLAB_SMOOTH_DARK_STONE);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_SMOOTH_DARK_STONE);
+        blockItem(TolkienBlocks.STAIRS_DARK_STONE_BRICKS);
+        blockItem(TolkienBlocks.SLAB_DARK_STONE_BRICKS);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_DARK_STONE_BRICKS);
+        blockItem(TolkienBlocks.STAIRS_CRACKED_DARK_STONE_BRICKS);
+        blockItem(TolkienBlocks.SLAB_CRACKED_DARK_STONE_BRICKS);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_CRACKED_DARK_STONE_BRICKS);
+        blockItem(TolkienBlocks.STAIRS_COBBLED_DARK_STONE);
+        blockItem(TolkienBlocks.SLAB_COBBLED_DARK_STONE);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_COBBLED_DARK_STONE);
+        blockItem(TolkienBlocks.STAIRS_DARK_STONE_BRICKS);
+        blockItem(TolkienBlocks.SLAB_DARK_STONE_BRICKS);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_DARK_STONE_BRICKS);
+        blockItem(TolkienBlocks.STAIRS_CHISELED_DARK_STONE_BRICKS);
+        blockItem(TolkienBlocks.SLAB_CHISELED_DARK_STONE_BRICKS);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_CHISELED_DARK_STONE_BRICKS);
+        blockItem(TolkienBlocks.STAIRS_DARK_STONE);
+        blockItem(TolkienBlocks.SLAB_DARK_STONE);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_DARK_STONE);
+
+            // Dwarven Stone
+        blockWithItem(TolkienBlocks.DWARVEN_STONE);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_DWARVEN_STONE.get()), blockTexture(TolkienBlocks.DWARVEN_STONE.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_DWARVEN_STONE.get()), blockTexture(TolkienBlocks.DWARVEN_STONE.get()), blockTexture(TolkienBlocks.DWARVEN_STONE.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_DWARVEN_STONE.get()), blockTexture(TolkienBlocks.DWARVEN_STONE.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.DWARVEN_STONE_BUTTON.get()), blockTexture(TolkienBlocks.DWARVEN_STONE.get()));
+        wallBlock(((WallBlock) TolkienBlocks.WALL_DWARVEN_STONE.get()), blockTexture(TolkienBlocks.DWARVEN_STONE.get()));
+        blockWithItem(TolkienBlocks.CHISELED_DWARVEN_STONE_BRICKS);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_CHISELED_DWARVEN_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CHISELED_DWARVEN_STONE_BRICKS.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_CHISELED_DWARVEN_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CHISELED_DWARVEN_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CHISELED_DWARVEN_STONE_BRICKS.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_CHISELED_DWARVEN_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CHISELED_DWARVEN_STONE_BRICKS.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.CHISELED_DWARVEN_STONE_BRICKS_BUTTON.get()), blockTexture(TolkienBlocks.CHISELED_DWARVEN_STONE_BRICKS.get()));
+        wallBlock(((WallBlock) TolkienBlocks.WALL_CHISELED_DWARVEN_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CHISELED_DWARVEN_STONE_BRICKS.get()));
+        blockWithItem(TolkienBlocks.COBBLED_DWARVEN_STONE);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_COBBLED_DWARVEN_STONE.get()), blockTexture(TolkienBlocks.COBBLED_DWARVEN_STONE.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_COBBLED_DWARVEN_STONE.get()), blockTexture(TolkienBlocks.COBBLED_DWARVEN_STONE.get()), blockTexture(TolkienBlocks.COBBLED_DWARVEN_STONE.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_COBBLED_DWARVEN_STONE.get()), blockTexture(TolkienBlocks.COBBLED_DWARVEN_STONE.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.COBBLED_DWARVEN_STONE_BUTTON.get()), blockTexture(TolkienBlocks.COBBLED_DWARVEN_STONE.get()));
+        wallBlock(((WallBlock) TolkienBlocks.WALL_COBBLED_DWARVEN_STONE.get()), blockTexture(TolkienBlocks.COBBLED_DWARVEN_STONE.get()));
+        blockWithItem(TolkienBlocks.CRACKED_DWARVEN_STONE_BRICKS);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_CRACKED_DWARVEN_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CRACKED_DWARVEN_STONE_BRICKS.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_CRACKED_DWARVEN_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CRACKED_DWARVEN_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CRACKED_DWARVEN_STONE_BRICKS.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_CRACKED_DWARVEN_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CRACKED_DWARVEN_STONE_BRICKS.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.CRACKED_DWARVEN_STONE_BRICKS_BUTTON.get()), blockTexture(TolkienBlocks.CRACKED_DWARVEN_STONE_BRICKS.get()));
+        wallBlock(((WallBlock) TolkienBlocks.WALL_CRACKED_DWARVEN_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CRACKED_DWARVEN_STONE_BRICKS.get()));
+        blockWithItem(TolkienBlocks.DWARVEN_STONE_BRICKS);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_DWARVEN_STONE_BRICKS.get()), blockTexture(TolkienBlocks.DWARVEN_STONE_BRICKS.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_DWARVEN_STONE_BRICKS.get()), blockTexture(TolkienBlocks.DWARVEN_STONE_BRICKS.get()), blockTexture(TolkienBlocks.DWARVEN_STONE_BRICKS.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_DWARVEN_STONE_BRICKS.get()), blockTexture(TolkienBlocks.DWARVEN_STONE_BRICKS.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.DWARVEN_STONE_BRICKS_BUTTON.get()), blockTexture(TolkienBlocks.DWARVEN_STONE_BRICKS.get()));
+        wallBlock(((WallBlock) TolkienBlocks.WALL_DWARVEN_STONE_BRICKS.get()), blockTexture(TolkienBlocks.DWARVEN_STONE_BRICKS.get()));
+        blockWithItem(TolkienBlocks.SMOOTH_DWARVEN_STONE);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_SMOOTH_DWARVEN_STONE.get()), blockTexture(TolkienBlocks.SMOOTH_DWARVEN_STONE.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_SMOOTH_DWARVEN_STONE.get()), blockTexture(TolkienBlocks.SMOOTH_DWARVEN_STONE.get()), blockTexture(TolkienBlocks.SMOOTH_DWARVEN_STONE.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_SMOOTH_DWARVEN_STONE.get()), blockTexture(TolkienBlocks.SMOOTH_DWARVEN_STONE.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.SMOOTH_DWARVEN_STONE_BUTTON.get()), blockTexture(TolkienBlocks.SMOOTH_DWARVEN_STONE.get()));
+        wallBlock(((WallBlock) TolkienBlocks.WALL_SMOOTH_DWARVEN_STONE.get()), blockTexture(TolkienBlocks.SMOOTH_DWARVEN_STONE.get()));
+
+        blockItem(TolkienBlocks.STAIRS_SMOOTH_DWARVEN_STONE);
+        blockItem(TolkienBlocks.SLAB_SMOOTH_DWARVEN_STONE);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_SMOOTH_DWARVEN_STONE);
+        blockItem(TolkienBlocks.STAIRS_DWARVEN_STONE_BRICKS);
+        blockItem(TolkienBlocks.SLAB_DWARVEN_STONE_BRICKS);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_DWARVEN_STONE_BRICKS);
+        blockItem(TolkienBlocks.STAIRS_CRACKED_DWARVEN_STONE_BRICKS);
+        blockItem(TolkienBlocks.SLAB_CRACKED_DWARVEN_STONE_BRICKS);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_CRACKED_DWARVEN_STONE_BRICKS);
+        blockItem(TolkienBlocks.STAIRS_COBBLED_DWARVEN_STONE);
+        blockItem(TolkienBlocks.SLAB_COBBLED_DWARVEN_STONE);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_COBBLED_DWARVEN_STONE);
+        blockItem(TolkienBlocks.STAIRS_DWARVEN_STONE_BRICKS);
+        blockItem(TolkienBlocks.SLAB_DWARVEN_STONE_BRICKS);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_DWARVEN_STONE_BRICKS);
+        blockItem(TolkienBlocks.STAIRS_CHISELED_DWARVEN_STONE_BRICKS);
+        blockItem(TolkienBlocks.SLAB_CHISELED_DWARVEN_STONE_BRICKS);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_CHISELED_DWARVEN_STONE_BRICKS);
+        blockItem(TolkienBlocks.STAIRS_DWARVEN_STONE);
+        blockItem(TolkienBlocks.SLAB_DWARVEN_STONE);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_DWARVEN_STONE);
             //Flowers & Plants
         makeFlower(TolkienBlocks.FLOWER_SIMBELMYNE, TolkienBlocks.POTTED_FLOWER_SIMBELMYNE);
         makeFlower(TolkienBlocks.FLOWER_MIRKWOOD, TolkienBlocks.POTTED_FLOWER_MIRKWOOD);
@@ -309,16 +464,18 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         makeFlower(TolkienBlocks.FLOWER_NIPHREDIL, TolkienBlocks.POTTED_FLOWER_NIPHREDIL);
         makeFlower(TolkienBlocks.FLOWER_SWAMPMILKWEED, TolkienBlocks.POTTED_FLOWER_SWAMPMILKWEED);
         makeFlower(TolkienBlocks.FLOWER_LILLYOFTHEVALLEY, TolkienBlocks.POTTED_FLOWER_LILLYOFTHEVALLEY);
+        makeFlower(TolkienBlocks.FLOWER_ELANOR, TolkienBlocks.POTTED_FLOWER_ELANOR);
         makeFlower(TolkienBlocks.SAPLING_MALLORN, TolkienBlocks.POTTED_SAPLING_MALLORN);
         makeFlower(TolkienBlocks.SAPLING_MIRKWOOD, TolkienBlocks.POTTED_SAPLING_MIRKWOOD);
         makeFlower(TolkienBlocks.SAPLING_CULUMALDA, TolkienBlocks.POTTED_SAPLING_CULUMALDA);
         makeFlower(TolkienBlocks.SAPLING_LEBETHRON, TolkienBlocks.POTTED_SAPLING_LEBETHRON);
         makeFlower(TolkienBlocks.SAPLING_FANGORNOAK, TolkienBlocks.POTTED_SAPLING_FANGORNOAK);
         makeFlower(TolkienBlocks.SAPLING_DEADWOOD, TolkienBlocks.POTTED_SAPLING_DEADWOOD);
+        makeFlower(TolkienBlocks.SAPLING_DWARVEN_MAPLE, TolkienBlocks.POTTED_SAPLING_DWARVEN_MAPLE);
         makeFlower(TolkienBlocks.MUSHROOM_BLOOM_DECAY, TolkienBlocks.POTTED_MUSHROOM_BLOOM_DECAY);
         makeFlower(TolkienBlocks.MUSHROOM_DECAY_BLOOM, TolkienBlocks.POTTED_MUSHROOM_DECAY_BLOOM);
-        blockItem(TolkienBlocks.BLOCK_DECAY_BLOOM);
-        blockItem(TolkienBlocks.BLOCK_BLOOM_DECAY);
+        blockWithItem(TolkienBlocks.BLOCK_DECAY_BLOOM);
+        blockWithItem(TolkienBlocks.BLOCK_BLOOM_DECAY);
         blockWithItem(TolkienBlocks.LIVING_ROOTS);
         makeCrop(((PipeweedCropBlock) TolkienBlocks.PIPEWEED.get()), "pipeweed_crop_stage", "pipeweed_stage");
 
@@ -402,6 +559,22 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
                 .with(LeafPileBlock.LAYERS, 7).setModels(new ConfiguredModel(buildFallenLeaves("fangornoak", 7)));
         getVariantBuilder(TolkienBlocks.LEAFPILE_FANGORNOAK.get()).partialState()
                 .with(LeafPileBlock.LAYERS, 8).setModels(new ConfiguredModel(buildFallenLeaves("fangornoak", 8)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_DWARVEN_MAPLE.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 1).setModels(new ConfiguredModel(buildFallenLeaves("dwarven_maple", 1)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_DWARVEN_MAPLE.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 2).setModels(new ConfiguredModel(buildFallenLeaves("dwarven_maple", 2)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_DWARVEN_MAPLE.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 3).setModels(new ConfiguredModel(buildFallenLeaves("dwarven_maple", 3)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_DWARVEN_MAPLE.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 4).setModels(new ConfiguredModel(buildFallenLeaves("dwarven_maple", 4)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_DWARVEN_MAPLE.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 5).setModels(new ConfiguredModel(buildFallenLeaves("dwarven_maple", 5)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_DWARVEN_MAPLE.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 6).setModels(new ConfiguredModel(buildFallenLeaves("dwarven_maple", 6)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_DWARVEN_MAPLE.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 7).setModels(new ConfiguredModel(buildFallenLeaves("dwarven_maple", 7)));
+        getVariantBuilder(TolkienBlocks.LEAFPILE_DWARVEN_MAPLE.get()).partialState()
+                .with(LeafPileBlock.LAYERS, 8).setModels(new ConfiguredModel(buildFallenLeaves("dwarven_maple", 8)));
 
             // Custom
         builtinEntity(TolkienBlocks.LIGHTNINGBUG_BLOCK.get(), "block/blank");
@@ -439,31 +612,5 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         blockItem(TolkienBlocks.PLACARD, "_wall_empty");
 
         fluid();
-    }
-
-    public void fluid() {
-        String mithrilName = "mithril";
-        String nameMithril = mithrilName.substring(mithrilName.lastIndexOf('.') + 1);
-
-        ModelFile mithrilFile = models()
-                .withExistingParent(nameMithril, modLoc("block/mithril"));
-        BlockModelBuilder mithrilFluid = models()
-                .withExistingParent(nameMithril, modLoc("block/mithril"))
-                .texture("particle", modLoc("block/mithril_still"));
-        getVariantBuilder(TolkienFluids.MITHRIL_BLOCK.get())
-                .forAllStates(state -> ConfiguredModel.builder().modelFile(mithrilFile).build());
-
-        String morgulironName = "morguliron";
-        String nameMorguliron = morgulironName.substring(morgulironName.lastIndexOf('.') + 1);
-
-        ModelFile morgulironFile = models()
-                .withExistingParent(nameMorguliron, modLoc("block/morguliron"));
-        BlockModelBuilder morgulironFluid = models()
-                .withExistingParent(nameMorguliron, modLoc("block/morguliron"))
-                .texture("particle", modLoc("block/morguliron_still"));
-
-        getVariantBuilder(TolkienFluids.MORGULIRON_BLOCK.get())
-                .forAllStates(state -> ConfiguredModel.builder().modelFile(morgulironFile).build());
-
     }
 }

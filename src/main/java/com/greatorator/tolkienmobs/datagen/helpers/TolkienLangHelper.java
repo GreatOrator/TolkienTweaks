@@ -87,6 +87,15 @@ public abstract class TolkienLangHelper extends LanguageProvider {
         this.add("block.tolkienmobs.pane_" + gemPrefix, gemName + " Pane");
     }
 
+    public void createStoneSet(String stonePrefix, String stoneName) {
+        this.add("block.tolkienmobs." + stonePrefix, stoneName);
+        this.add("block.tolkienmobs.stairs_" + stonePrefix, stoneName + " Stairs");
+        this.add("block.tolkienmobs.slab_" + stonePrefix, stoneName + " Slab");
+        this.add("block.tolkienmobs.pressure_plate_" + stonePrefix, stoneName + " Pressure Plate");
+        this.add("block.tolkienmobs." + stonePrefix + "_button",  stoneName + " Button");
+        this.add("block.tolkienmobs.wall_" + stonePrefix, stoneName + " Wall");
+    }
+
     public void createMetalSet(String metalPrefix, String metalName) {
         this.add("block.tolkienmobs.ore_" + metalPrefix, metalName + " Ore");
         this.add("block.tolkienmobs.ore_deepslate_" + metalPrefix, metalName + " Deepslate Ore");

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "dark_stone_bricks",
+  "ingredients": [
+    {
+      "item": "tolkienmobs:dark_stone_bricks"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:dark_stone_bricks_button"
+  }
+}

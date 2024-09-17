@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "dwarven_maple",
+  "key": {
+    "#": {
+      "item": "tolkienmobs:planks_dwarven_maple"
+    }
+  },
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "result": {
+    "count": 4,
+    "id": "tolkienmobs:stairs_dwarven_maple"
+  }
+}

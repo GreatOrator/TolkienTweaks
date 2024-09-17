@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "smooth_dwarven_stone",
+  "ingredients": [
+    {
+      "item": "tolkienmobs:smooth_dwarven_stone"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:smooth_dwarven_stone_button"
+  }
+}

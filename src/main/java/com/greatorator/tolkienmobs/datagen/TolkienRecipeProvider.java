@@ -1,30 +1,21 @@
 package com.greatorator.tolkienmobs.datagen;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
+import com.greatorator.tolkienmobs.datagen.helpers.TolkienRecipeHelper;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienTags;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.common.conditions.IConditionBuilder;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.level.block.*;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Supplier;
 
-import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
-
-public class TolkienRecipeProvider extends RecipeProvider implements IConditionBuilder {
+public class TolkienRecipeProvider extends TolkienRecipeHelper {
     public TolkienRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries);
     }
@@ -45,153 +36,61 @@ public class TolkienRecipeProvider extends RecipeProvider implements IConditionB
         oreBlasting(pRecipeOutput, MORGULIRON_SMELTABLES, RecipeCategory.MISC, TolkienItems.INGOT_MORGULIRON.get(), 0.25f, 100, "ingot_morguliron");
         oreBlasting(pRecipeOutput, AMMOLITE_SMELTABLES, RecipeCategory.MISC, TolkienItems.GEM_AMMOLITE.get(), 0.25f, 100, "gem_ammolite");
 
-        SimpleCookingRecipeBuilder
-                .smelting(Ingredient.of(TolkienItems.DUST_MITHRIL), RecipeCategory.MISC, TolkienItems.INGOT_MITHRIL, 0, 200)
-                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(TolkienItems.DUST_MITHRIL.get()))
-                .save(pRecipeOutput, TolkienMobsMain.prefix(TolkienItems.INGOT_MITHRIL.get().getDescriptionId() + "_from_smelting"));
-        SimpleCookingRecipeBuilder
-                .smelting(Ingredient.of(TolkienItems.DUST_MORGULIRON), RecipeCategory.MISC, TolkienItems.INGOT_MORGULIRON, 0, 200)
-                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(TolkienItems.DUST_MORGULIRON.get()))
-                .save(pRecipeOutput, TolkienMobsMain.prefix(TolkienItems.INGOT_MORGULIRON.get().getDescriptionId() + "_from_smelting"));
+        smeltingList(TolkienBlocks.COBBLED_DARK_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.DARK_STONE, 0.25F, 200);
+        smeltingList(TolkienBlocks.COBBLED_DWARVEN_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.DWARVEN_STONE, 0.25F, 200);
+        smeltingList(TolkienBlocks.DARK_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.SMOOTH_DARK_STONE, 0.25F, 200);
+        smeltingList(TolkienBlocks.DWARVEN_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.SMOOTH_DWARVEN_STONE, 0.25F, 200);
 
-        makeMaterialRecipes(pRecipeOutput, TolkienItems.INGOT_MITHRIL.get(), TolkienItems.NUGGET_MITHRIL.get(), TolkienBlocks.BLOCK_MITHRIL.get());
-        makeMaterialRecipes(pRecipeOutput, TolkienItems.INGOT_MORGULIRON.get(), TolkienItems.NUGGET_MORGULIRON.get(), TolkienBlocks.BLOCK_MORGULIRON.get());
-        makeGemRecipes(pRecipeOutput, TolkienItems.GEM_AMMOLITE.get(), TolkienBlocks.BLOCK_AMMOLITE.get());
+        blastingList(TolkienBlocks.COBBLED_DARK_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.DARK_STONE, 0.25F, 100);
+        blastingList(TolkienBlocks.COBBLED_DWARVEN_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.DWARVEN_STONE, 0.25F, 100);
+        blastingList(TolkienBlocks.DARK_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.SMOOTH_DARK_STONE, 0.25F, 100);
+        blastingList(TolkienBlocks.DWARVEN_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.SMOOTH_DWARVEN_STONE, 0.25F, 100);
 
         //Everything Else
-        stairBuilder(TolkienBlocks.STAIRS_MITHRIL.get(), Ingredient.of(TolkienBlocks.BLOCK_MITHRIL.get())).group("mithril")
-                .unlockedBy("has_mithril", has(TolkienBlocks.BLOCK_MITHRIL.get())).save(pRecipeOutput);
-        stairBuilder(TolkienBlocks.STAIRS_MORGULIRON.get(), Ingredient.of(TolkienBlocks.BLOCK_MORGULIRON.get())).group("morguliron")
-                .unlockedBy("has_morguliron", has(TolkienBlocks.BLOCK_MORGULIRON.get())).save(pRecipeOutput);
-        stairBuilder(TolkienBlocks.STAIRS_MALLORN.get(), Ingredient.of(TolkienBlocks.PLANKS_MALLORN.get())).group("mallorn")
-                .unlockedBy("has_mallorn", has(TolkienBlocks.PLANKS_MALLORN.get())).save(pRecipeOutput);
-        stairBuilder(TolkienBlocks.STAIRS_MIRKWOOD.get(), Ingredient.of(TolkienBlocks.PLANKS_MIRKWOOD.get())).group("mirkwood")
-                .unlockedBy("has_mirkwood", has(TolkienBlocks.PLANKS_MIRKWOOD.get())).save(pRecipeOutput);
-        stairBuilder(TolkienBlocks.STAIRS_CULUMALDA.get(), Ingredient.of(TolkienBlocks.PLANKS_CULUMALDA.get())).group("culumalda")
-                .unlockedBy("has_culumalda", has(TolkienBlocks.PLANKS_CULUMALDA.get())).save(pRecipeOutput);
-        stairBuilder(TolkienBlocks.STAIRS_LEBETHRON.get(), Ingredient.of(TolkienBlocks.PLANKS_LEBETHRON.get())).group("lebethron")
-                .unlockedBy("has_lebethron", has(TolkienBlocks.PLANKS_LEBETHRON.get())).save(pRecipeOutput);
-        stairBuilder(TolkienBlocks.STAIRS_FANGORNOAK.get(), Ingredient.of(TolkienBlocks.PLANKS_FANGORNOAK.get())).group("fangornoak")
-                .unlockedBy("has_fangornoak", has(TolkienBlocks.PLANKS_FANGORNOAK.get())).save(pRecipeOutput);
-        stairBuilder(TolkienBlocks.STAIRS_DEADWOOD.get(), Ingredient.of(TolkienBlocks.PLANKS_DEADWOOD.get())).group("deadwood")
-                .unlockedBy("has_deadwood", has(TolkienBlocks.PLANKS_DEADWOOD.get())).save(pRecipeOutput);
+        woodListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "mallorn", TolkienBlocks.PLANKS_MALLORN.get(), TolkienBlocks.LOG_MALLORN.get(), TolkienBlocks.WOOD_MALLORN.get(), TolkienBlocks.STAIRS_MALLORN.get(), TolkienBlocks.SLAB_MALLORN.get(), TolkienBlocks.PRESSURE_PLATE_MALLORN.get(), TolkienBlocks.MALLORN_BUTTON.get(), TolkienBlocks.DOOR_MALLORN.get(), TolkienBlocks.TRAPDOOR_MALLORN.get(), TolkienBlocks.FENCE_MALLORN.get(), TolkienBlocks.FENCE_GATE_MALLORN.get(), TolkienBlocks.MALLORN_SIGN.get(), TolkienBlocks.MALLORN_HANGING_SIGN.get(), TolkienBlocks.LADDER_MALLORN.get(), TolkienBlocks.TORCH_MALLORN, TolkienBlocks.BARREL_MALLORN, TolkienBlocks.LEAFPILE_MALLORN, TolkienBlocks.LEAVES_MALLORN);
+        woodListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "mirkwood", TolkienBlocks.PLANKS_MIRKWOOD.get(), TolkienBlocks.LOG_MIRKWOOD.get(), TolkienBlocks.WOOD_MIRKWOOD.get(), TolkienBlocks.STAIRS_MIRKWOOD.get(), TolkienBlocks.SLAB_MIRKWOOD.get(), TolkienBlocks.PRESSURE_PLATE_MIRKWOOD.get(), TolkienBlocks.MIRKWOOD_BUTTON.get(), TolkienBlocks.DOOR_MIRKWOOD.get(), TolkienBlocks.TRAPDOOR_MIRKWOOD.get(), TolkienBlocks.FENCE_MIRKWOOD.get(), TolkienBlocks.FENCE_GATE_MIRKWOOD.get(), TolkienBlocks.MIRKWOOD_SIGN.get(), TolkienBlocks.MIRKWOOD_HANGING_SIGN.get(), TolkienBlocks.LADDER_MIRKWOOD.get(), TolkienBlocks.TORCH_MIRKWOOD, TolkienBlocks.BARREL_MIRKWOOD, TolkienBlocks.LEAFPILE_MIRKWOOD, TolkienBlocks.LEAVES_MIRKWOOD);
+        woodListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "culumalda", TolkienBlocks.PLANKS_CULUMALDA.get(), TolkienBlocks.LOG_CULUMALDA.get(), TolkienBlocks.WOOD_CULUMALDA.get(), TolkienBlocks.STAIRS_CULUMALDA.get(), TolkienBlocks.SLAB_CULUMALDA.get(), TolkienBlocks.PRESSURE_PLATE_CULUMALDA.get(), TolkienBlocks.CULUMALDA_BUTTON.get(), TolkienBlocks.DOOR_CULUMALDA.get(), TolkienBlocks.TRAPDOOR_CULUMALDA.get(), TolkienBlocks.FENCE_CULUMALDA.get(), TolkienBlocks.FENCE_GATE_CULUMALDA.get(), TolkienBlocks.CULUMALDA_SIGN.get(), TolkienBlocks.CULUMALDA_HANGING_SIGN.get(), TolkienBlocks.LADDER_CULUMALDA.get(), TolkienBlocks.TORCH_CULUMALDA, TolkienBlocks.BARREL_CULUMALDA, TolkienBlocks.LEAFPILE_CULUMALDA, TolkienBlocks.LEAVES_CULUMALDA);
+        woodListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "lebethron", TolkienBlocks.PLANKS_LEBETHRON.get(), TolkienBlocks.LOG_LEBETHRON.get(), TolkienBlocks.WOOD_LEBETHRON.get(), TolkienBlocks.STAIRS_LEBETHRON.get(), TolkienBlocks.SLAB_LEBETHRON.get(), TolkienBlocks.PRESSURE_PLATE_LEBETHRON.get(), TolkienBlocks.LEBETHRON_BUTTON.get(), TolkienBlocks.DOOR_LEBETHRON.get(), TolkienBlocks.TRAPDOOR_LEBETHRON.get(), TolkienBlocks.FENCE_LEBETHRON.get(), TolkienBlocks.FENCE_GATE_LEBETHRON.get(), TolkienBlocks.LEBETHRON_SIGN.get(), TolkienBlocks.LEBETHRON_HANGING_SIGN.get(), TolkienBlocks.LADDER_LEBETHRON.get(), TolkienBlocks.TORCH_LEBETHRON, TolkienBlocks.BARREL_LEBETHRON, TolkienBlocks.LEAFPILE_LEBETHRON, TolkienBlocks.LEAVES_LEBETHRON);
+        woodListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "fangornoak", TolkienBlocks.PLANKS_FANGORNOAK.get(), TolkienBlocks.LOG_FANGORNOAK.get(), TolkienBlocks.WOOD_FANGORNOAK.get(), TolkienBlocks.STAIRS_FANGORNOAK.get(), TolkienBlocks.SLAB_FANGORNOAK.get(), TolkienBlocks.PRESSURE_PLATE_FANGORNOAK.get(), TolkienBlocks.FANGORNOAK_BUTTON.get(), TolkienBlocks.DOOR_FANGORNOAK.get(), TolkienBlocks.TRAPDOOR_FANGORNOAK.get(), TolkienBlocks.FENCE_FANGORNOAK.get(), TolkienBlocks.FENCE_GATE_FANGORNOAK.get(), TolkienBlocks.FANGORNOAK_SIGN.get(), TolkienBlocks.FANGORNOAK_HANGING_SIGN.get(), TolkienBlocks.LADDER_FANGORNOAK.get(), TolkienBlocks.TORCH_FANGORNOAK, TolkienBlocks.BARREL_FANGORNOAK, TolkienBlocks.LEAFPILE_FANGORNOAK, TolkienBlocks.LEAVES_FANGORNOAK);
+        woodListRecipeNoLeaves(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "deadwood", TolkienBlocks.PLANKS_DEADWOOD.get(), TolkienBlocks.LOG_DEADWOOD.get(), TolkienBlocks.WOOD_DEADWOOD.get(), TolkienBlocks.STAIRS_DEADWOOD.get(), TolkienBlocks.SLAB_DEADWOOD.get(), TolkienBlocks.PRESSURE_PLATE_DEADWOOD.get(), TolkienBlocks.DEADWOOD_BUTTON.get(), TolkienBlocks.DOOR_DEADWOOD.get(), TolkienBlocks.TRAPDOOR_DEADWOOD.get(), TolkienBlocks.FENCE_DEADWOOD.get(), TolkienBlocks.FENCE_GATE_DEADWOOD.get(), TolkienBlocks.DEADWOOD_SIGN.get(), TolkienBlocks.DEADWOOD_HANGING_SIGN.get(), TolkienBlocks.LADDER_DEADWOOD.get(), TolkienBlocks.TORCH_DEADWOOD, TolkienBlocks.BARREL_DEADWOOD);
+        woodListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "dwarven_maple", TolkienBlocks.PLANKS_DWARVEN_MAPLE.get(), TolkienBlocks.LOG_DWARVEN_MAPLE.get(), TolkienBlocks.WOOD_DWARVEN_MAPLE.get(), TolkienBlocks.STAIRS_DWARVEN_MAPLE.get(), TolkienBlocks.SLAB_DWARVEN_MAPLE.get(), TolkienBlocks.PRESSURE_PLATE_DWARVEN_MAPLE.get(), TolkienBlocks.DWARVEN_MAPLE_BUTTON.get(), TolkienBlocks.DOOR_DWARVEN_MAPLE.get(), TolkienBlocks.TRAPDOOR_DWARVEN_MAPLE.get(), TolkienBlocks.FENCE_DWARVEN_MAPLE.get(), TolkienBlocks.FENCE_GATE_DWARVEN_MAPLE.get(), TolkienBlocks.DWARVEN_MAPLE_SIGN.get(), TolkienBlocks.DWARVEN_MAPLE_HANGING_SIGN.get(), TolkienBlocks.LADDER_DWARVEN_MAPLE.get(), TolkienBlocks.TORCH_DWARVEN_MAPLE, TolkienBlocks.BARREL_DWARVEN_MAPLE, TolkienBlocks.LEAFPILE_DWARVEN_MAPLE, TolkienBlocks.LEAVES_DWARVEN_MAPLE);
 
-        slab(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.SLAB_MITHRIL.get(), TolkienBlocks.BLOCK_MITHRIL.get());
-        slab(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.SLAB_MORGULIRON.get(), TolkienBlocks.BLOCK_MORGULIRON.get());
-        slab(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.SLAB_MALLORN.get(), TolkienBlocks.PLANKS_MALLORN.get());
-        slab(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.SLAB_MIRKWOOD.get(), TolkienBlocks.PLANKS_MIRKWOOD.get());
-        slab(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.SLAB_CULUMALDA.get(), TolkienBlocks.PLANKS_CULUMALDA.get());
-        slab(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.SLAB_LEBETHRON.get(), TolkienBlocks.PLANKS_LEBETHRON.get());
-        slab(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.SLAB_FANGORNOAK.get(), TolkienBlocks.PLANKS_FANGORNOAK.get());
-        slab(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.SLAB_DEADWOOD.get(), TolkienBlocks.PLANKS_DEADWOOD.get());
+        stoneListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "dark_stone", TolkienBlocks.WALL_DARK_STONE.get(), TolkienBlocks.DARK_STONE_BUTTON.get(), TolkienBlocks.STAIRS_DARK_STONE.get(), TolkienBlocks.DARK_STONE.get(), TolkienBlocks.SLAB_DARK_STONE.get(), TolkienBlocks.PRESSURE_PLATE_DARK_STONE.get());
+        stoneListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "chiseled_dark_stone_bricks", TolkienBlocks.WALL_CHISELED_DARK_STONE_BRICKS.get(), TolkienBlocks.CHISELED_DARK_STONE_BRICKS_BUTTON.get(), TolkienBlocks.STAIRS_CHISELED_DARK_STONE_BRICKS.get(), TolkienBlocks.CHISELED_DARK_STONE_BRICKS.get(), TolkienBlocks.SLAB_CHISELED_DARK_STONE_BRICKS.get(), TolkienBlocks.PRESSURE_PLATE_CHISELED_DARK_STONE_BRICKS.get());
+        stoneListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "dark_stone_bricks", TolkienBlocks.WALL_DARK_STONE_BRICKS.get(), TolkienBlocks.DARK_STONE_BRICKS_BUTTON.get(), TolkienBlocks.STAIRS_DARK_STONE_BRICKS.get(), TolkienBlocks.DARK_STONE_BRICKS.get(), TolkienBlocks.SLAB_DARK_STONE_BRICKS.get(), TolkienBlocks.PRESSURE_PLATE_DARK_STONE_BRICKS.get());
+        stoneListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "cracked_dark_stone_bricks", TolkienBlocks.WALL_CRACKED_DARK_STONE_BRICKS.get(), TolkienBlocks.CRACKED_DARK_STONE_BRICKS_BUTTON.get(), TolkienBlocks.STAIRS_CRACKED_DARK_STONE_BRICKS.get(), TolkienBlocks.CRACKED_DARK_STONE_BRICKS.get(), TolkienBlocks.SLAB_CRACKED_DARK_STONE_BRICKS.get(), TolkienBlocks.PRESSURE_PLATE_CRACKED_DARK_STONE_BRICKS.get());
+        stoneListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "cobbled_dark_stone", TolkienBlocks.WALL_COBBLED_DARK_STONE.get(), TolkienBlocks.COBBLED_DARK_STONE_BUTTON.get(), TolkienBlocks.STAIRS_COBBLED_DARK_STONE.get(), TolkienBlocks.COBBLED_DARK_STONE.get(), TolkienBlocks.SLAB_COBBLED_DARK_STONE.get(), TolkienBlocks.PRESSURE_PLATE_COBBLED_DARK_STONE.get());
+        stoneListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "smooth_dark_stone", TolkienBlocks.WALL_SMOOTH_DARK_STONE.get(), TolkienBlocks.SMOOTH_DARK_STONE_BUTTON.get(), TolkienBlocks.STAIRS_SMOOTH_DARK_STONE.get(), TolkienBlocks.SMOOTH_DARK_STONE.get(), TolkienBlocks.SLAB_SMOOTH_DARK_STONE.get(), TolkienBlocks.PRESSURE_PLATE_SMOOTH_DARK_STONE.get());
+        stoneListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "dwarven_stone", TolkienBlocks.WALL_DWARVEN_STONE.get(), TolkienBlocks.DWARVEN_STONE_BUTTON.get(), TolkienBlocks.STAIRS_DWARVEN_STONE.get(), TolkienBlocks.DWARVEN_STONE.get(), TolkienBlocks.SLAB_DWARVEN_STONE.get(), TolkienBlocks.PRESSURE_PLATE_DWARVEN_STONE.get());
+        stoneListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "cobbled_dwarven_stone", TolkienBlocks.WALL_COBBLED_DWARVEN_STONE.get(), TolkienBlocks.COBBLED_DWARVEN_STONE_BUTTON.get(), TolkienBlocks.STAIRS_COBBLED_DWARVEN_STONE.get(), TolkienBlocks.COBBLED_DWARVEN_STONE.get(), TolkienBlocks.SLAB_COBBLED_DWARVEN_STONE.get(), TolkienBlocks.PRESSURE_PLATE_COBBLED_DWARVEN_STONE.get());
+        stoneListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "smooth_dwarven_stone", TolkienBlocks.WALL_SMOOTH_DWARVEN_STONE.get(), TolkienBlocks.SMOOTH_DWARVEN_STONE_BUTTON.get(), TolkienBlocks.STAIRS_SMOOTH_DWARVEN_STONE.get(), TolkienBlocks.SMOOTH_DWARVEN_STONE.get(), TolkienBlocks.SLAB_SMOOTH_DWARVEN_STONE.get(), TolkienBlocks.PRESSURE_PLATE_SMOOTH_DWARVEN_STONE.get());
+        stoneListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "chiseled_dwarven_stone_bricks", TolkienBlocks.WALL_CHISELED_DWARVEN_STONE_BRICKS.get(), TolkienBlocks.CHISELED_DWARVEN_STONE_BRICKS_BUTTON.get(), TolkienBlocks.STAIRS_CHISELED_DWARVEN_STONE_BRICKS.get(), TolkienBlocks.CHISELED_DWARVEN_STONE_BRICKS.get(), TolkienBlocks.SLAB_CHISELED_DWARVEN_STONE_BRICKS.get(), TolkienBlocks.PRESSURE_PLATE_CHISELED_DWARVEN_STONE_BRICKS.get());
+        stoneListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "dwarven_stone_bricks", TolkienBlocks.WALL_DWARVEN_STONE_BRICKS.get(), TolkienBlocks.DWARVEN_STONE_BRICKS_BUTTON.get(), TolkienBlocks.STAIRS_DWARVEN_STONE_BRICKS.get(), TolkienBlocks.DWARVEN_STONE_BRICKS.get(), TolkienBlocks.SLAB_DWARVEN_STONE_BRICKS.get(), TolkienBlocks.PRESSURE_PLATE_DWARVEN_STONE_BRICKS.get());
+        stoneListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "cracked_dwarven_stone_bricks", TolkienBlocks.WALL_CRACKED_DWARVEN_STONE_BRICKS.get(), TolkienBlocks.CRACKED_DWARVEN_STONE_BRICKS_BUTTON.get(), TolkienBlocks.STAIRS_CRACKED_DWARVEN_STONE_BRICKS.get(), TolkienBlocks.CRACKED_DWARVEN_STONE_BRICKS.get(), TolkienBlocks.SLAB_CRACKED_DWARVEN_STONE_BRICKS.get(), TolkienBlocks.PRESSURE_PLATE_CRACKED_DWARVEN_STONE_BRICKS.get());
 
-        pressurePlate(pRecipeOutput, TolkienBlocks.PRESSURE_PLATE_MITHRIL.get(), TolkienBlocks.BLOCK_MITHRIL.get());
-        pressurePlate(pRecipeOutput, TolkienBlocks.PRESSURE_PLATE_MORGULIRON.get(), TolkienBlocks.BLOCK_MORGULIRON.get());
-        pressurePlate(pRecipeOutput, TolkienBlocks.PRESSURE_PLATE_MALLORN.get(), TolkienBlocks.PLANKS_MALLORN.get());
-        pressurePlate(pRecipeOutput, TolkienBlocks.PRESSURE_PLATE_MIRKWOOD.get(), TolkienBlocks.PLANKS_MIRKWOOD.get());
-        pressurePlate(pRecipeOutput, TolkienBlocks.PRESSURE_PLATE_CULUMALDA.get(), TolkienBlocks.PLANKS_CULUMALDA.get());
-        pressurePlate(pRecipeOutput, TolkienBlocks.PRESSURE_PLATE_LEBETHRON.get(), TolkienBlocks.PLANKS_LEBETHRON.get());
-        pressurePlate(pRecipeOutput, TolkienBlocks.PRESSURE_PLATE_FANGORNOAK.get(), TolkienBlocks.PLANKS_FANGORNOAK.get());
-        pressurePlate(pRecipeOutput, TolkienBlocks.PRESSURE_PLATE_DEADWOOD.get(), TolkienBlocks.PLANKS_DEADWOOD.get());
+        metalListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "mithril", TolkienBlocks.WALL_MITHRIL.get(), TolkienBlocks.DOOR_MITHRIL.get(), TolkienBlocks.TRAPDOOR_MITHRIL.get(), TolkienBlocks.BARREL_MITHRIL, TolkienBlocks.MITHRIL_BUTTON.get(), TolkienBlocks.STAIRS_MITHRIL.get(), TolkienBlocks.BLOCK_MITHRIL.get(), TolkienBlocks.SLAB_MITHRIL.get(), TolkienBlocks.PRESSURE_PLATE_MITHRIL.get(), TolkienBlocks.MITHRIL_BARS, TolkienBlocks.ELVEN_LANTERN, TolkienBlocks.TORCH_MALLORN, TolkienItems.INGOT_MITHRIL.get(), TolkienItems.NUGGET_MITHRIL.get());
+        metalListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "morguliron", TolkienBlocks.WALL_MORGULIRON.get(), TolkienBlocks.DOOR_MORGULIRON.get(), TolkienBlocks.TRAPDOOR_MORGULIRON.get(), TolkienBlocks.BARREL_MORGULIRON, TolkienBlocks.MORGULIRON_BUTTON.get(), TolkienBlocks.STAIRS_MORGULIRON.get(), TolkienBlocks.BLOCK_MORGULIRON.get(), TolkienBlocks.SLAB_MORGULIRON.get(), TolkienBlocks.PRESSURE_PLATE_MORGULIRON.get(), TolkienBlocks.MORGULIRON_BARS, TolkienBlocks.MORGUL_LANTERN, TolkienBlocks.TORCH_MIRKWOOD, TolkienItems.INGOT_MORGULIRON.get(), TolkienItems.NUGGET_MORGULIRON.get());
 
-        buttonBuilder(TolkienBlocks.MITHRIL_BUTTON.get(), Ingredient.of(TolkienBlocks.BLOCK_MITHRIL.get())).group("mithril")
-                .unlockedBy("has_mithril", has(TolkienBlocks.BLOCK_MITHRIL.get())).save(pRecipeOutput);
-        buttonBuilder(TolkienBlocks.MORGULIRON_BUTTON.get(), Ingredient.of(TolkienBlocks.BLOCK_MORGULIRON.get())).group("morguliron")
-                .unlockedBy("has_morguliron", has(TolkienBlocks.BLOCK_MORGULIRON.get())).save(pRecipeOutput);
-        buttonBuilder(TolkienBlocks.MALLORN_BUTTON.get(), Ingredient.of(TolkienBlocks.PLANKS_MALLORN.get())).group("mallorn")
-                .unlockedBy("has_mallorn", has(TolkienBlocks.PLANKS_MALLORN.get())).save(pRecipeOutput);
-        buttonBuilder(TolkienBlocks.MIRKWOOD_BUTTON.get(), Ingredient.of(TolkienBlocks.PLANKS_MIRKWOOD.get())).group("mirkwood")
-                .unlockedBy("has_mirkwood", has(TolkienBlocks.PLANKS_MIRKWOOD.get())).save(pRecipeOutput);
-        buttonBuilder(TolkienBlocks.CULUMALDA_BUTTON.get(), Ingredient.of(TolkienBlocks.PLANKS_CULUMALDA.get())).group("culumalda")
-                .unlockedBy("has_culumalda", has(TolkienBlocks.PLANKS_CULUMALDA.get())).save(pRecipeOutput);
-        buttonBuilder(TolkienBlocks.LEBETHRON_BUTTON.get(), Ingredient.of(TolkienBlocks.PLANKS_LEBETHRON.get())).group("lebethron")
-                .unlockedBy("has_lebethron", has(TolkienBlocks.PLANKS_LEBETHRON.get())).save(pRecipeOutput);
-        buttonBuilder(TolkienBlocks.FANGORNOAK_BUTTON.get(), Ingredient.of(TolkienBlocks.PLANKS_FANGORNOAK.get())).group("fangornoak")
-                .unlockedBy("has_fangornoak", has(TolkienBlocks.PLANKS_FANGORNOAK.get())).save(pRecipeOutput);
-        buttonBuilder(TolkienBlocks.DEADWOOD_BUTTON.get(), Ingredient.of(TolkienBlocks.PLANKS_DEADWOOD.get())).group("deadwood")
-                .unlockedBy("has_deadwood", has(TolkienBlocks.PLANKS_DEADWOOD.get())).save(pRecipeOutput);
+        gemListRecipe(pRecipeOutput, TolkienItems.GEM_AMMOLITE.get(), TolkienBlocks.BLOCK_AMMOLITE.get(), TolkienBlocks.PANE_AMMOLITE);
 
-        doorBuilder(TolkienBlocks.DOOR_MITHRIL.get(), Ingredient.of(TolkienBlocks.BLOCK_MITHRIL.get())).group("mithril")
-                .unlockedBy("has_mithril", has(TolkienBlocks.BLOCK_MITHRIL.get())).save(pRecipeOutput);
-        doorBuilder(TolkienBlocks.DOOR_MORGULIRON.get(), Ingredient.of(TolkienBlocks.BLOCK_MORGULIRON.get())).group("morguliron")
-                .unlockedBy("has_morguliron", has(TolkienBlocks.BLOCK_MORGULIRON.get())).save(pRecipeOutput);
+        toolListRecipe(pRecipeOutput, RecipeCategory.TOOLS, "mithril", TolkienItems.PICKAXE_MITHRIL.get(), TolkienItems.AXE_MITHRIL.get(), TolkienItems.SHOVEL_MITHRIL.get(), TolkienItems.HOE_MITHRIL.get(), TolkienItems.SWORD_MITHRIL.get(), TolkienItems.SHEARS_MITHRIL.get(), TolkienItems.INGOT_MITHRIL.get());
+        toolListRecipe(pRecipeOutput, RecipeCategory.TOOLS, "morguliron", TolkienItems.PICKAXE_MORGULIRON.get(), TolkienItems.AXE_MORGULIRON.get(), TolkienItems.SHOVEL_MORGULIRON.get(), TolkienItems.HOE_MORGULIRON.get(), TolkienItems.SWORD_MORGULIRON.get(), TolkienItems.SHEARS_MORGULIRON.get(), TolkienItems.INGOT_MORGULIRON.get());
+        toolListRecipe(pRecipeOutput, RecipeCategory.TOOLS, "ammolite", TolkienItems.PICKAXE_AMMOLITE.get(), TolkienItems.AXE_AMMOLITE.get(), TolkienItems.SHOVEL_AMMOLITE.get(), TolkienItems.HOE_AMMOLITE.get(), TolkienItems.SWORD_AMMOLITE.get(), TolkienItems.SHEARS_AMMOLITE.get(), TolkienItems.GEM_AMMOLITE.get());
+
+        paneRecipe(pRecipeOutput, TolkienBlocks.WALL_DECAY_BLOOM.get(), TolkienBlocks.MUSHROOM_DECAY_BLOOM);
+        paneRecipe(pRecipeOutput, TolkienBlocks.WALL_MUSHROOM_RED.get(), Blocks.RED_MUSHROOM);
+        paneRecipe(pRecipeOutput, TolkienBlocks.WALL_MUSHROOM_BROWN.get(), Blocks.BROWN_MUSHROOM);
+        paneRecipe(pRecipeOutput, TolkienBlocks.ROCKPILE.get(), Blocks.COBBLESTONE_SLAB);
+
+        containerRecipe(pRecipeOutput, RecipeCategory.TOOLS, "ammolite", TolkienItems.COIN_POUCH, TolkienItems.MUMAKIL_LEATHER, Blocks.CHEST, TolkienItems.GEM_AMMOLITE);
+        containerRecipe(pRecipeOutput, RecipeCategory.TOOLS, "ammolite", TolkienItems.KEY_RING, TolkienItems.INGOT_MITHRIL, Blocks.CHEST, TolkienItems.GEM_AMMOLITE);
+
         doorBuilder(TolkienBlocks.DOOR_DURIN.get(), Ingredient.of(TolkienBlocks.BLOCK_AMMOLITE.get())).group("ammolite")
                 .unlockedBy("has_ammolite", has(TolkienBlocks.BLOCK_AMMOLITE.get())).save(pRecipeOutput);
-        doorBuilder(TolkienBlocks.DOOR_MALLORN.get(), Ingredient.of(TolkienBlocks.PLANKS_MALLORN.get())).group("mallorn")
-                .unlockedBy("has_mallorn", has(TolkienBlocks.PLANKS_MALLORN.get())).save(pRecipeOutput);
-        doorBuilder(TolkienBlocks.DOOR_MIRKWOOD.get(), Ingredient.of(TolkienBlocks.PLANKS_MIRKWOOD.get())).group("mirkwood")
-                .unlockedBy("has_mirkwood", has(TolkienBlocks.PLANKS_MIRKWOOD.get())).save(pRecipeOutput);
-        doorBuilder(TolkienBlocks.DOOR_CULUMALDA.get(), Ingredient.of(TolkienBlocks.PLANKS_CULUMALDA.get())).group("culumalda")
-                .unlockedBy("has_culumalda", has(TolkienBlocks.PLANKS_CULUMALDA.get())).save(pRecipeOutput);
-        doorBuilder(TolkienBlocks.DOOR_LEBETHRON.get(), Ingredient.of(TolkienBlocks.PLANKS_LEBETHRON.get())).group("lebethron")
-                .unlockedBy("has_lebethron", has(TolkienBlocks.PLANKS_LEBETHRON.get())).save(pRecipeOutput);
-        doorBuilder(TolkienBlocks.DOOR_FANGORNOAK.get(), Ingredient.of(TolkienBlocks.PLANKS_FANGORNOAK.get())).group("fangornoak")
-                .unlockedBy("has_fangornoak", has(TolkienBlocks.PLANKS_FANGORNOAK.get())).save(pRecipeOutput);
-        doorBuilder(TolkienBlocks.DOOR_DEADWOOD.get(), Ingredient.of(TolkienBlocks.PLANKS_DEADWOOD.get())).group("deadwood")
-                .unlockedBy("has_deadwood", has(TolkienBlocks.PLANKS_DEADWOOD.get())).save(pRecipeOutput);
 
-        trapdoorBuilder(TolkienBlocks.TRAPDOOR_MITHRIL.get(), Ingredient.of(TolkienBlocks.BLOCK_MITHRIL.get())).group("mithril")
-                .unlockedBy("has_mithril", has(TolkienBlocks.BLOCK_MITHRIL.get())).save(pRecipeOutput);
-        trapdoorBuilder(TolkienBlocks.TRAPDOOR_MORGULIRON.get(), Ingredient.of(TolkienBlocks.BLOCK_MORGULIRON.get())).group("morguliron")
-                .unlockedBy("has_morguliron", has(TolkienBlocks.BLOCK_MORGULIRON.get())).save(pRecipeOutput);
-        trapdoorBuilder(TolkienBlocks.TRAPDOOR_MALLORN.get(), Ingredient.of(TolkienBlocks.PLANKS_MALLORN.get())).group("mallorn")
-                .unlockedBy("has_mallorn", has(TolkienBlocks.PLANKS_MALLORN.get())).save(pRecipeOutput);
-        trapdoorBuilder(TolkienBlocks.TRAPDOOR_MIRKWOOD.get(), Ingredient.of(TolkienBlocks.PLANKS_MIRKWOOD.get())).group("mirkwood")
-                .unlockedBy("has_mirkwood", has(TolkienBlocks.PLANKS_MIRKWOOD.get())).save(pRecipeOutput);
-        trapdoorBuilder(TolkienBlocks.TRAPDOOR_CULUMALDA.get(), Ingredient.of(TolkienBlocks.PLANKS_CULUMALDA.get())).group("culumalda")
-                .unlockedBy("has_culumalda", has(TolkienBlocks.PLANKS_CULUMALDA.get())).save(pRecipeOutput);
-        trapdoorBuilder(TolkienBlocks.TRAPDOOR_LEBETHRON.get(), Ingredient.of(TolkienBlocks.PLANKS_LEBETHRON.get())).group("lebethron")
-                .unlockedBy("has_lebethron", has(TolkienBlocks.PLANKS_LEBETHRON.get())).save(pRecipeOutput);
-        trapdoorBuilder(TolkienBlocks.TRAPDOOR_FANGORNOAK.get(), Ingredient.of(TolkienBlocks.PLANKS_FANGORNOAK.get())).group("fangornoak")
-                .unlockedBy("has_fangornoak", has(TolkienBlocks.PLANKS_FANGORNOAK.get())).save(pRecipeOutput);
-        trapdoorBuilder(TolkienBlocks.TRAPDOOR_DEADWOOD.get(), Ingredient.of(TolkienBlocks.PLANKS_DEADWOOD.get())).group("deadwood")
-                .unlockedBy("has_deadwood", has(TolkienBlocks.PLANKS_DEADWOOD.get())).save(pRecipeOutput);
+        addLampRecipe(pRecipeOutput,TolkienBlocks.SILMARIL_LANTERN, TolkienBlocks.TORCH_LEBETHRON, TolkienItems.GEM_AMMOLITE);
 
-        wall(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.WALL_MITHRIL.get(), TolkienItems.INGOT_MITHRIL.get());
-        wall(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.WALL_MORGULIRON.get(), TolkienItems.INGOT_MORGULIRON.get());
-        wall(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.WALL_DECAY_BLOOM.get(), TolkienBlocks.BLOCK_DECAY_BLOOM.get());
-        wall(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.WALL_MUSHROOM_RED.get(), Blocks.RED_MUSHROOM);
-        wall(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.WALL_MUSHROOM_BROWN.get(), Blocks.BROWN_MUSHROOM);
-
-        fenceBuilder(TolkienBlocks.FENCE_MALLORN.get(), Ingredient.of(TolkienBlocks.PLANKS_MALLORN.get())).group("mallorn")
-                .unlockedBy("has_mallorn", has(TolkienBlocks.PLANKS_MALLORN.get())).save(pRecipeOutput);
-        fenceBuilder(TolkienBlocks.FENCE_MIRKWOOD.get(), Ingredient.of(TolkienBlocks.PLANKS_MIRKWOOD.get())).group("mirkwood")
-                .unlockedBy("has_mirkwood", has(TolkienBlocks.PLANKS_MIRKWOOD.get())).save(pRecipeOutput);
-        fenceBuilder(TolkienBlocks.FENCE_CULUMALDA.get(), Ingredient.of(TolkienBlocks.PLANKS_CULUMALDA.get())).group("culumalda")
-                .unlockedBy("has_culumalda", has(TolkienBlocks.PLANKS_CULUMALDA.get())).save(pRecipeOutput);
-        fenceBuilder(TolkienBlocks.FENCE_LEBETHRON.get(), Ingredient.of(TolkienBlocks.PLANKS_LEBETHRON.get())).group("lebethron")
-                .unlockedBy("has_lebethron", has(TolkienBlocks.PLANKS_LEBETHRON.get())).save(pRecipeOutput);
-        fenceBuilder(TolkienBlocks.FENCE_FANGORNOAK.get(), Ingredient.of(TolkienBlocks.PLANKS_FANGORNOAK.get())).group("fangornoak")
-                .unlockedBy("has_fangornoak", has(TolkienBlocks.PLANKS_FANGORNOAK.get())).save(pRecipeOutput);
-        fenceBuilder(TolkienBlocks.FENCE_DEADWOOD.get(), Ingredient.of(TolkienBlocks.PLANKS_DEADWOOD.get())).group("deadwood")
-                .unlockedBy("has_deadwood", has(TolkienBlocks.PLANKS_DEADWOOD.get())).save(pRecipeOutput);
-
-        fenceGateBuilder(TolkienBlocks.FENCE_GATE_MALLORN.get(), Ingredient.of(TolkienBlocks.PLANKS_MALLORN.get())).group("mallorn")
-                .unlockedBy("has_mallorn", has(TolkienBlocks.PLANKS_MALLORN.get())).save(pRecipeOutput);
-        fenceGateBuilder(TolkienBlocks.FENCE_GATE_MIRKWOOD.get(), Ingredient.of(TolkienBlocks.PLANKS_MIRKWOOD.get())).group("mirkwood")
-                .unlockedBy("has_mirkwood", has(TolkienBlocks.PLANKS_MIRKWOOD.get())).save(pRecipeOutput);
-        fenceGateBuilder(TolkienBlocks.FENCE_GATE_CULUMALDA.get(), Ingredient.of(TolkienBlocks.PLANKS_CULUMALDA.get())).group("culumalda")
-                .unlockedBy("has_culumalda", has(TolkienBlocks.PLANKS_CULUMALDA.get())).save(pRecipeOutput);
-        fenceGateBuilder(TolkienBlocks.FENCE_GATE_LEBETHRON.get(), Ingredient.of(TolkienBlocks.PLANKS_LEBETHRON.get())).group("lebethron")
-                .unlockedBy("has_lebethron", has(TolkienBlocks.PLANKS_LEBETHRON.get())).save(pRecipeOutput);
-        fenceGateBuilder(TolkienBlocks.FENCE_GATE_FANGORNOAK.get(), Ingredient.of(TolkienBlocks.PLANKS_FANGORNOAK.get())).group("fangornoak")
-                .unlockedBy("has_fangornoak", has(TolkienBlocks.PLANKS_FANGORNOAK.get())).save(pRecipeOutput);
-        fenceGateBuilder(TolkienBlocks.FENCE_GATE_DEADWOOD.get(), Ingredient.of(TolkienBlocks.PLANKS_DEADWOOD.get())).group("deadwood")
-                .unlockedBy("has_deadwood", has(TolkienBlocks.PLANKS_DEADWOOD.get())).save(pRecipeOutput);
-
-        planksFromLogs(pRecipeOutput, TolkienBlocks.PLANKS_MALLORN, TolkienBlocks.LOG_MALLORN, 4);
-        planksFromLogs(pRecipeOutput, TolkienBlocks.PLANKS_MIRKWOOD, TolkienBlocks.LOG_MIRKWOOD, 4);
-        planksFromLogs(pRecipeOutput, TolkienBlocks.PLANKS_CULUMALDA, TolkienBlocks.LOG_CULUMALDA, 4);
-        planksFromLogs(pRecipeOutput, TolkienBlocks.PLANKS_LEBETHRON, TolkienBlocks.LOG_LEBETHRON, 4);
-        planksFromLogs(pRecipeOutput, TolkienBlocks.PLANKS_FANGORNOAK, TolkienBlocks.LOG_FANGORNOAK, 4);
-        planksFromLogs(pRecipeOutput, TolkienBlocks.PLANKS_DEADWOOD, TolkienBlocks.LOG_DEADWOOD, 4);
-
-        woodFromLogs(pRecipeOutput, TolkienBlocks.WOOD_MALLORN, TolkienBlocks.LOG_MALLORN);
-        woodFromLogs(pRecipeOutput, TolkienBlocks.WOOD_MIRKWOOD, TolkienBlocks.LOG_MIRKWOOD);
-        woodFromLogs(pRecipeOutput, TolkienBlocks.WOOD_CULUMALDA, TolkienBlocks.LOG_CULUMALDA);
-        woodFromLogs(pRecipeOutput, TolkienBlocks.WOOD_LEBETHRON, TolkienBlocks.LOG_LEBETHRON);
-        woodFromLogs(pRecipeOutput, TolkienBlocks.WOOD_FANGORNOAK, TolkienBlocks.LOG_FANGORNOAK);
-        woodFromLogs(pRecipeOutput, TolkienBlocks.WOOD_DEADWOOD, TolkienBlocks.LOG_DEADWOOD);
+        placardRecipe(pRecipeOutput, TolkienBlocks.PLACARD, TolkienBlocks.PLANKS_MALLORN, TolkienItems.INGOT_MITHRIL);
 
         oneToOneConversionRecipe(pRecipeOutput, Items.LIGHT_GRAY_DYE, TolkienBlocks.FLOWER_SIMBELMYNE.get(), "light_gray_dye", 2);
         oneToOneConversionRecipe(pRecipeOutput, Items.RED_DYE, TolkienBlocks.FLOWER_MIRKWOOD.get(), "red_dye", 2);
@@ -200,57 +99,7 @@ public class TolkienRecipeProvider extends RecipeProvider implements IConditionB
         oneToOneConversionRecipe(pRecipeOutput, Items.WHITE_DYE, TolkienBlocks.FLOWER_NIPHREDIL.get(), "white_dye", 2);
         oneToOneConversionRecipe(pRecipeOutput, Items.CYAN_DYE, TolkienBlocks.FLOWER_SWAMPMILKWEED.get(), "cyan_dye", 2);
         oneToOneConversionRecipe(pRecipeOutput, Items.PINK_DYE, TolkienBlocks.FLOWER_LILLYOFTHEVALLEY.get(), "pink_dye", 2);
-
-        addLampRecipe(pRecipeOutput,TolkienBlocks.ELVEN_LANTERN, TolkienBlocks.TORCH_MALLORN, TolkienItems.INGOT_MITHRIL);
-        addLampRecipe(pRecipeOutput,TolkienBlocks.MORGUL_LANTERN, TolkienBlocks.TORCH_MIRKWOOD, TolkienItems.INGOT_MORGULIRON);
-        addLampRecipe(pRecipeOutput,TolkienBlocks.SILMARIL_LANTERN, TolkienBlocks.TORCH_LEBETHRON, TolkienItems.GEM_AMMOLITE);
-        addTorchRecipe(pRecipeOutput, TolkienBlocks.TORCH_MALLORN, TolkienBlocks.PLANKS_MALLORN);
-        addTorchRecipe(pRecipeOutput, TolkienBlocks.TORCH_MIRKWOOD, TolkienBlocks.PLANKS_MIRKWOOD);
-        addTorchRecipe(pRecipeOutput, TolkienBlocks.TORCH_CULUMALDA, TolkienBlocks.PLANKS_MALLORN);
-        addTorchRecipe(pRecipeOutput, TolkienBlocks.TORCH_LEBETHRON, TolkienBlocks.PLANKS_MALLORN);
-        addTorchRecipe(pRecipeOutput, TolkienBlocks.TORCH_FANGORNOAK, TolkienBlocks.PLANKS_MALLORN);
-        addTorchRecipe(pRecipeOutput, TolkienBlocks.TORCH_DEADWOOD, TolkienBlocks.PLANKS_MALLORN);
-
-        barrelRecipe(pRecipeOutput, TolkienBlocks.BARREL_MITHRIL, TolkienBlocks.BLOCK_MITHRIL, TolkienBlocks.SLAB_MITHRIL);
-        barrelRecipe(pRecipeOutput, TolkienBlocks.BARREL_MORGULIRON, TolkienBlocks.BLOCK_MORGULIRON, TolkienBlocks.SLAB_MORGULIRON);
-        barrelRecipe(pRecipeOutput, TolkienBlocks.BARREL_MALLORN, TolkienBlocks.PLANKS_MALLORN, TolkienBlocks.SLAB_MALLORN);
-        barrelRecipe(pRecipeOutput, TolkienBlocks.BARREL_MIRKWOOD, TolkienBlocks.PLANKS_MIRKWOOD, TolkienBlocks.SLAB_MIRKWOOD);
-        barrelRecipe(pRecipeOutput, TolkienBlocks.BARREL_CULUMALDA, TolkienBlocks.PLANKS_CULUMALDA, TolkienBlocks.SLAB_CULUMALDA);
-        barrelRecipe(pRecipeOutput, TolkienBlocks.BARREL_LEBETHRON, TolkienBlocks.PLANKS_LEBETHRON, TolkienBlocks.SLAB_LEBETHRON);
-        barrelRecipe(pRecipeOutput, TolkienBlocks.BARREL_FANGORNOAK, TolkienBlocks.PLANKS_FANGORNOAK, TolkienBlocks.SLAB_FANGORNOAK);
-        barrelRecipe(pRecipeOutput, TolkienBlocks.BARREL_DEADWOOD, TolkienBlocks.PLANKS_DEADWOOD, TolkienBlocks.SLAB_DEADWOOD);
-
-        paneRecipe(pRecipeOutput, TolkienBlocks.MITHRIL_BARS, TolkienItems.INGOT_MITHRIL);
-        paneRecipe(pRecipeOutput, TolkienBlocks.MORGULIRON_BARS, TolkienItems.INGOT_MORGULIRON);
-        paneRecipe(pRecipeOutput, TolkienBlocks.PANE_AMMOLITE, TolkienItems.GEM_AMMOLITE);
-        paneRecipe(pRecipeOutput, TolkienBlocks.ROCKPILE, Blocks.COBBLESTONE_SLAB);
-
-        signRecipe(pRecipeOutput, TolkienBlocks.MALLORN_SIGN, TolkienBlocks.PLANKS_MALLORN);
-        signRecipe(pRecipeOutput, TolkienBlocks.MIRKWOOD_SIGN, TolkienBlocks.PLANKS_MIRKWOOD);
-        signRecipe(pRecipeOutput, TolkienBlocks.CULUMALDA_SIGN, TolkienBlocks.PLANKS_CULUMALDA);
-        signRecipe(pRecipeOutput, TolkienBlocks.LEBETHRON_SIGN, TolkienBlocks.PLANKS_LEBETHRON);
-        signRecipe(pRecipeOutput, TolkienBlocks.FANGORNOAK_SIGN, TolkienBlocks.PLANKS_FANGORNOAK);
-        signRecipe(pRecipeOutput, TolkienBlocks.DEADWOOD_SIGN, TolkienBlocks.PLANKS_DEADWOOD);
-
-        hangingSignRecipe(pRecipeOutput,TolkienBlocks.MALLORN_HANGING_SIGN, TolkienBlocks.PLANKS_MALLORN);
-        hangingSignRecipe(pRecipeOutput, TolkienBlocks.MIRKWOOD_HANGING_SIGN, TolkienBlocks.PLANKS_MIRKWOOD);
-        hangingSignRecipe(pRecipeOutput, TolkienBlocks.CULUMALDA_HANGING_SIGN, TolkienBlocks.PLANKS_CULUMALDA);
-        hangingSignRecipe(pRecipeOutput, TolkienBlocks.LEBETHRON_HANGING_SIGN, TolkienBlocks.PLANKS_LEBETHRON);
-        hangingSignRecipe(pRecipeOutput, TolkienBlocks.FANGORNOAK_HANGING_SIGN, TolkienBlocks.PLANKS_FANGORNOAK);
-        hangingSignRecipe(pRecipeOutput, TolkienBlocks.DEADWOOD_HANGING_SIGN, TolkienBlocks.PLANKS_DEADWOOD);
-
-        ladderRecipe(pRecipeOutput, TolkienBlocks.LADDER_MALLORN, TolkienBlocks.PLANKS_MALLORN);
-        ladderRecipe(pRecipeOutput, TolkienBlocks.LADDER_MIRKWOOD, TolkienBlocks.PLANKS_MIRKWOOD);
-        ladderRecipe(pRecipeOutput, TolkienBlocks.LADDER_CULUMALDA, TolkienBlocks.PLANKS_CULUMALDA);
-        ladderRecipe(pRecipeOutput, TolkienBlocks.LADDER_LEBETHRON, TolkienBlocks.PLANKS_LEBETHRON);
-        ladderRecipe(pRecipeOutput, TolkienBlocks.LADDER_FANGORNOAK, TolkienBlocks.PLANKS_FANGORNOAK);
-        ladderRecipe(pRecipeOutput, TolkienBlocks.LADDER_DEADWOOD, TolkienBlocks.PLANKS_DEADWOOD);
-
-        leafPileRecipe(pRecipeOutput, TolkienBlocks.LEAFPILE_MALLORN, TolkienBlocks.LEAVES_MALLORN);
-        leafPileRecipe(pRecipeOutput, TolkienBlocks.LEAFPILE_MIRKWOOD, TolkienBlocks.LEAVES_MALLORN);
-        leafPileRecipe(pRecipeOutput, TolkienBlocks.LEAFPILE_CULUMALDA, TolkienBlocks.LEAVES_MALLORN);
-        leafPileRecipe(pRecipeOutput, TolkienBlocks.LEAFPILE_LEBETHRON, TolkienBlocks.LEAVES_MALLORN);
-        leafPileRecipe(pRecipeOutput, TolkienBlocks.LEAFPILE_FANGORNOAK, TolkienBlocks.LEAVES_MALLORN);
+        oneToOneConversionRecipe(pRecipeOutput, Items.YELLOW_DYE, TolkienBlocks.FLOWER_ELANOR.get(), "yellow_dye", 2);
 
         sleepingRecipe(pRecipeOutput, TolkienBlocks.SLEEPING_BAG_RED, Blocks.RED_CARPET);
         sleepingRecipe(pRecipeOutput, TolkienBlocks.SLEEPING_BAG_BLUE, Blocks.BLUE_CARPET);
@@ -273,355 +122,9 @@ public class TolkienRecipeProvider extends RecipeProvider implements IConditionB
         upgradeRecipe(pRecipeOutput, TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID, TolkienItems.ITEM_BACKPACK_UPGRADE_BASE, TolkienItems.BOTTLE_FANCY);
         upgradeRecipe(pRecipeOutput, TolkienItems.ITEM_BACKPACK_UPGRADE_CRAFTING, TolkienItems.ITEM_BACKPACK_UPGRADE_BASE, Blocks.CRAFTING_TABLE);
         upgradeRecipe2(pRecipeOutput, TolkienItems.ITEM_BACKPACK_UPGRADE_SLEEPING, TolkienItems.ITEM_BACKPACK_UPGRADE_BASE, TolkienTags.Items.SLEEPING_BAG);
-        upgradeRecipe(pRecipeOutput, TolkienItems.ITEM_BACKPACK_UPGRADE_CAMPFIRE, TolkienItems.ITEM_BACKPACK_UPGRADE_BASE, TolkienItems.GEM_AMMOLITE);
-
-        swordRecipe(pRecipeOutput, TolkienItems.SWORD_MITHRIL.get(), TolkienItems.INGOT_MITHRIL.get());
-        swordRecipe(pRecipeOutput, TolkienItems.SWORD_MORGULIRON.get(), TolkienItems.INGOT_MORGULIRON.get());
-        swordRecipe(pRecipeOutput, TolkienItems.SWORD_AMMOLITE.get(), TolkienItems.GEM_AMMOLITE.get());
-
-        pickRecipe(pRecipeOutput, TolkienItems.PICKAXE_MITHRIL.get(), TolkienItems.INGOT_MITHRIL.get());
-        pickRecipe(pRecipeOutput, TolkienItems.PICKAXE_MORGULIRON.get(), TolkienItems.INGOT_MORGULIRON.get());
-        pickRecipe(pRecipeOutput, TolkienItems.PICKAXE_AMMOLITE.get(), TolkienItems.GEM_AMMOLITE.get());
-
-        axeRecipe(pRecipeOutput, TolkienItems.AXE_MITHRIL.get(), TolkienItems.INGOT_MITHRIL.get());
-        axeRecipe(pRecipeOutput, TolkienItems.AXE_MORGULIRON.get(), TolkienItems.INGOT_MORGULIRON.get());
-        axeRecipe(pRecipeOutput, TolkienItems.AXE_AMMOLITE.get(), TolkienItems.GEM_AMMOLITE.get());
-
-        shovelRecipe(pRecipeOutput, TolkienItems.SHOVEL_MITHRIL.get(), TolkienItems.INGOT_MITHRIL.get());
-        shovelRecipe(pRecipeOutput, TolkienItems.SHOVEL_MORGULIRON.get(), TolkienItems.INGOT_MORGULIRON.get());
-        shovelRecipe(pRecipeOutput, TolkienItems.SHOVEL_AMMOLITE.get(), TolkienItems.GEM_AMMOLITE.get());
-
-        hoeRecipe(pRecipeOutput, TolkienItems.HOE_MITHRIL.get(), TolkienItems.INGOT_MITHRIL.get());
-        hoeRecipe(pRecipeOutput, TolkienItems.HOE_MORGULIRON.get(), TolkienItems.INGOT_MORGULIRON.get());
-        hoeRecipe(pRecipeOutput, TolkienItems.HOE_AMMOLITE.get(), TolkienItems.GEM_AMMOLITE.get());
-
-        shearsRecipe(pRecipeOutput, TolkienItems.SHEARS_MITHRIL.get(), TolkienItems.INGOT_MITHRIL.get());
-        shearsRecipe(pRecipeOutput, TolkienItems.SHEARS_MORGULIRON.get(), TolkienItems.INGOT_MORGULIRON.get());
-        shearsRecipe(pRecipeOutput, TolkienItems.SHEARS_AMMOLITE.get(), TolkienItems.GEM_AMMOLITE.get());
+        upgradeRecipe(pRecipeOutput, TolkienItems.ITEM_BACKPACK_UPGRADE_CAMPFIRE, TolkienItems.ITEM_BACKPACK_UPGRADE_BASE, Blocks.CAMPFIRE);
 
         conversionRecipe(pRecipeOutput, TolkienBlocks.BLOCK_HALLOWED, Blocks.GRASS_BLOCK, TolkienItems.GEM_AMMOLITE);
         conversionRecipe(pRecipeOutput, TolkienBlocks.STONE_PATH, Blocks.MOSSY_COBBLESTONE, Items.IRON_PICKAXE);
-
-//        ShapedRecipeBuilder
-//                .shaped(RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.PLACARD.get().asItem(), 1)
-//                .define('M', TolkienBlocks.PLANKS_MALLORN)
-//                .define('A', TolkienItems.INGOT_MITHRIL)
-//                .define('-', Items.STICK)
-//                .pattern("AMA")
-//                .pattern("AMA")
-//                .pattern("- -")
-//                .unlockedBy("has_mithril", InventoryChangeTrigger.TriggerInstance.hasItems(TolkienItems.INGOT_MITHRIL.get()))
-//                .save(pRecipeOutput);
-    }
-
-    protected static void oreSmelting(RecipeOutput pRecipeOutput, List<ItemLike> pIngredients, RecipeCategory pCategory, ItemLike pResult,
-                                      float pExperience, int pCookingTIme, String pGroup) {
-        oreCooking(pRecipeOutput, RecipeSerializer.SMELTING_RECIPE, SmeltingRecipe::new, pIngredients, pCategory, pResult,
-                pExperience, pCookingTIme, pGroup, "_from_smelting");
-    }
-
-    protected static void oreBlasting(RecipeOutput pRecipeOutput, List<ItemLike> pIngredients, RecipeCategory pCategory, ItemLike pResult,
-                                      float pExperience, int pCookingTime, String pGroup) {
-        oreCooking(pRecipeOutput, RecipeSerializer.BLASTING_RECIPE, BlastingRecipe::new, pIngredients, pCategory, pResult,
-                pExperience, pCookingTime, pGroup, "_from_blasting");
-    }
-
-    protected static void planksFromLogs(RecipeOutput output, ItemLike planks, ItemLike log, int count) {
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, planks, count).requires(log).group("planks").unlockedBy("has_logs", has(log)).save(output);
-    }
-
-    private void conversionRecipe(RecipeOutput recipeOutput, Supplier<? extends Block> result, ItemLike item1, ItemLike item2) {
-        ShapedRecipeBuilder
-                .shaped(RecipeCategory.BUILDING_BLOCKS, result.get().asItem(), 8)
-                .define('A', item1)
-                .define('M', item2)
-                .pattern("AAA")
-                .pattern("AMA")
-                .pattern("AAA")
-                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(item2))
-                .save(recipeOutput);
-    }
-
-    protected static void ladderRecipe(RecipeOutput recipeOutput, ItemLike ladder, ItemLike material) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ladder, 4)
-                .group("sign")
-                .define('#', material)
-                .define('X', Items.STICK)
-                .pattern("X X")
-                .pattern("X#X")
-                .pattern("X X")
-                .unlockedBy(getHasName(material), has(material))
-                .save(recipeOutput);
-    }
-
-    private void barrelRecipe(RecipeOutput recipeOutput, Supplier<? extends Block> result, ItemLike plank, ItemLike slab) {
-        ShapedRecipeBuilder
-                .shaped(RecipeCategory.MISC, result.get().asItem())
-                .define('A', plank)
-                .define('M', slab)
-                .pattern("AMA")
-                .pattern("A A")
-                .pattern("AMA")
-                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(plank))
-                .save(recipeOutput);
-    }
-
-    private void addLampRecipe(RecipeOutput recipeOutput, Supplier<? extends Block> result, ItemLike block, ItemLike ingot) {
-        ShapedRecipeBuilder
-                .shaped(RecipeCategory.BUILDING_BLOCKS, result.get().asItem())
-                .define('W', ingot)
-                .define('P', block)
-                .pattern("WWW")
-                .pattern("WPW")
-                .pattern("WWW")
-                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(block))
-                .save(recipeOutput);
-    }
-
-    protected static void paneRecipe(RecipeOutput recipeOutput, ItemLike pSign, ItemLike material) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, pSign, 16)
-                .define('#', material)
-                .pattern("###")
-                .pattern("###")
-                .unlockedBy(getHasName(material), has(material))
-                .save(recipeOutput);
-    }
-
-    protected static void signRecipe(RecipeOutput recipeOutput, ItemLike pSign, ItemLike material) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, pSign, 3)
-                .group("sign")
-                .define('#', material)
-                .define('X', Items.STICK)
-                .pattern("###")
-                .pattern("###")
-                .pattern(" X ")
-                .unlockedBy(getHasName(material), has(material))
-                .save(recipeOutput);
-    }
-
-    protected static void hangingSignRecipe(RecipeOutput recipeOutput, ItemLike sign, ItemLike material) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, sign, 6)
-                .group("hanging_sign")
-                .define('#', material)
-                .define('X', Items.CHAIN)
-                .pattern("X X")
-                .pattern("###")
-                .pattern("###")
-                .unlockedBy("has_stripped_logs", has(material))
-                .save(recipeOutput);
-    }
-
-    private void upgradeRecipe(RecipeOutput recipeOutput, Supplier<? extends Item> result, ItemLike input1, ItemLike input2) {
-        ShapedRecipeBuilder
-                .shaped(RecipeCategory.BUILDING_BLOCKS, result.get().asItem())
-                .define('W', input1)
-                .define('P', input2)
-                .pattern("W")
-                .pattern("P")
-                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(input1))
-                .save(recipeOutput);
-    }
-
-    private void upgradeRecipe2(RecipeOutput recipeOutput, Supplier<? extends Item> result, ItemLike input1, TagKey<Item> input2) {
-        ShapedRecipeBuilder
-                .shaped(RecipeCategory.BUILDING_BLOCKS, result.get().asItem())
-                .define('W', input1)
-                .define('P', input2)
-                .pattern("W")
-                .pattern("P")
-                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(input1))
-                .save(recipeOutput);
-    }
-
-    private void addTorchRecipe(RecipeOutput recipeOutput, Supplier<? extends Block> result, ItemLike block) {
-        ShapedRecipeBuilder
-                .shaped(RecipeCategory.BUILDING_BLOCKS, result.get().asItem(),  4)
-                .define('W', Items.STICK)
-                .define('P', block)
-                .pattern("P")
-                .pattern("W")
-                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(block))
-                .save(recipeOutput);
-    }
-
-    private void sleepingRecipe(RecipeOutput recipeOutput, Supplier<? extends Block> result, ItemLike block) {
-        ShapedRecipeBuilder
-                .shaped(RecipeCategory.BUILDING_BLOCKS, result.get().asItem())
-                .define('W', Items.LEATHER)
-                .define('P', block)
-                .define('S', Blocks.WHITE_CARPET)
-                .pattern("SPP")
-                .pattern("WWW")
-                .unlockedBy("has_wool", InventoryChangeTrigger.TriggerInstance.hasItems(block))
-                .save(recipeOutput);
-    }
-
-    private void leafPileRecipe(RecipeOutput recipeOutput, Supplier<? extends Block> result, ItemLike block) {
-        ShapedRecipeBuilder
-                .shaped(RecipeCategory.BUILDING_BLOCKS, result.get().asItem(), 6)
-                .define('P', block)
-                .pattern("PPP")
-                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(block))
-                .save(recipeOutput);
-    }
-
-    private void makeGemRecipes(RecipeOutput recipeOutput, Item gem, Block block ) {
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, gem, 4)
-                .requires(block.asItem())
-                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(block.asItem()))
-                .save(recipeOutput);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, block)
-                .pattern("II ")
-                .pattern("II ")
-                .define('I', gem)
-                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(block.asItem()))
-                .save(recipeOutput);
-    }
-
-    private void pickRecipe(RecipeOutput recipeOutput, Item output, Item ingot) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, output)
-                .pattern("III")
-                .pattern(" S ")
-                .pattern(" S ")
-                .define('I', ingot)
-                .define('S', Items.STICK)
-                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
-                .save(recipeOutput);
-    }
-
-    private void axeRecipe(RecipeOutput recipeOutput, Item output, Item ingot) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, output)
-                .pattern("II")
-                .pattern("IS")
-                .pattern(" S")
-                .define('I', ingot)
-                .define('S', Items.STICK)
-                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
-                .save(recipeOutput);
-    }
-
-    private void shovelRecipe(RecipeOutput recipeOutput, Item output, Item ingot) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, output)
-                .pattern("I")
-                .pattern("S")
-                .pattern("S")
-                .define('I', ingot)
-                .define('S', Items.STICK)
-                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
-                .save(recipeOutput);
-    }
-
-    private void swordRecipe(RecipeOutput recipeOutput, Item output, Item ingot) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, output)
-                .pattern("I")
-                .pattern("I")
-                .pattern("S")
-                .define('I', ingot)
-                .define('S', Items.STICK)
-                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
-                .save(recipeOutput);
-    }
-
-    private void hoeRecipe(RecipeOutput recipeOutput, Item output, Item ingot) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, output)
-                .pattern("II")
-                .pattern(" S")
-                .pattern(" S")
-                .define('I', ingot)
-                .define('S', Items.STICK)
-                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
-                .save(recipeOutput);
-    }
-
-    private void shearsRecipe(RecipeOutput recipeOutput, Item output, Item ingot) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, output)
-                .pattern(" I")
-                .pattern("I ")
-                .define('I', ingot)
-                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
-                .save(recipeOutput);
-    }
-
-    private void helmetRecipe(RecipeOutput recipeOutput, Item output, Item ingot, Item ingot2) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, output)
-                .pattern("III")
-                .pattern("IAI")
-                .define('I', ingot)
-                .define('A', ingot2)
-                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
-                .save(recipeOutput);
-    }
-
-    private void chestRecipe(RecipeOutput recipeOutput, Item output, Item ingot, Item ingot2) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, output)
-                .pattern("IAI")
-                .pattern("III")
-                .pattern("III")
-                .define('I', ingot)
-                .define('A', ingot2)
-                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
-                .save(recipeOutput);
-    }
-
-    private void leggingRecipe(RecipeOutput recipeOutput, Item output, Item ingot, Item ingot2) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, output)
-                .pattern("III")
-                .pattern("IAI")
-                .pattern("I I")
-                .define('I', ingot)
-                .define('A', ingot2)
-                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
-                .save(recipeOutput);
-    }
-
-    private void bootRecipe(RecipeOutput recipeOutput, Item output, Item ingot, Item ingot2) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, output)
-                .pattern("IAI")
-                .pattern("I I")
-                .define('I', ingot)
-                .define('A', ingot2)
-                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
-                .save(recipeOutput);
-    }
-
-    private void makeMaterialRecipes(RecipeOutput recipeOutput, Item ingot, Item nugget, Block block ) {
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ingot, 9)
-                .requires(block.asItem())
-                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(block.asItem()))
-                .save(recipeOutput);
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, nugget, 9)
-                .requires(ingot)
-                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
-                .save(recipeOutput);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, block)
-                .pattern("III")
-                .pattern("III")
-                .pattern("III")
-                .define('I', ingot)
-                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(block.asItem()))
-                .save(recipeOutput);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ingot)
-                .pattern("NNN")
-                .pattern("NNN")
-                .pattern("NNN")
-                .define('N', nugget)
-                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
-                .save(recipeOutput, TolkienMobsMain.prefix(nugget.getDescriptionId() + "_to_ingot"));
-    }
-
-    protected static void oneToOneConversionRecipe(RecipeOutput p_299023_, ItemLike p_176553_, ItemLike p_176554_, @Nullable String p_176555_) {
-        oneToOneConversionRecipe(p_299023_, p_176553_, p_176554_, p_176555_, 1);
-    }
-
-    protected static void oneToOneConversionRecipe(RecipeOutput p_301230_, ItemLike p_176558_, ItemLike p_176559_, @Nullable String p_176560_, int p_176561_) {
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, p_176558_, p_176561_).requires(p_176559_).group(p_176560_).unlockedBy(getHasName(p_176559_), has(p_176559_)).save(p_301230_, MODID + ":" + getConversionRecipeName(p_176558_, p_176559_));
-    }
-
-    protected static <T extends AbstractCookingRecipe> void oreCooking(RecipeOutput pRecipeOutput, RecipeSerializer<T> pCookingSerializer, AbstractCookingRecipe.Factory<T> factory,
-                                                                       List<ItemLike> pIngredients, RecipeCategory pCategory, ItemLike pResult, float pExperience, int pCookingTime, String pGroup, String pRecipeName) {
-        for(ItemLike itemlike : pIngredients) {
-            SimpleCookingRecipeBuilder.generic(Ingredient.of(itemlike), pCategory, pResult, pExperience, pCookingTime, pCookingSerializer, factory).group(pGroup).unlockedBy(getHasName(itemlike), has(itemlike))
-                    .save(pRecipeOutput, MODID + ":" + getItemName(pResult) + pRecipeName + "_" + getItemName(itemlike));
-        }
     }
 }

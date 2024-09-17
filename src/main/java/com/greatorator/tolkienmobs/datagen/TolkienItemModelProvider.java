@@ -172,20 +172,51 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         basicItem(TolkienBlocks.DOOR_DEADWOOD.asItem());
         buttonItem(TolkienBlocks.DEADWOOD_BUTTON, TolkienBlocks.PLANKS_DEADWOOD);
         fenceItem(TolkienBlocks.FENCE_DEADWOOD, TolkienBlocks.PLANKS_DEADWOOD);
+        basicItem(TolkienBlocks.DOOR_DWARVEN_MAPLE.asItem());
+        buttonItem(TolkienBlocks.DWARVEN_MAPLE_BUTTON, TolkienBlocks.PLANKS_DWARVEN_MAPLE);
+        fenceItem(TolkienBlocks.FENCE_DWARVEN_MAPLE, TolkienBlocks.PLANKS_DWARVEN_MAPLE);
         saplingItem(TolkienBlocks.SAPLING_MIRKWOOD);
         saplingItem(TolkienBlocks.SAPLING_MALLORN);
         saplingItem(TolkienBlocks.SAPLING_CULUMALDA);
         saplingItem(TolkienBlocks.SAPLING_LEBETHRON);
         saplingItem(TolkienBlocks.SAPLING_FANGORNOAK);
         saplingItem(TolkienBlocks.SAPLING_DEADWOOD);
+        saplingItem(TolkienBlocks.SAPLING_DWARVEN_MAPLE);
         saplingItem(TolkienBlocks.MUSHROOM_BLOOM_DECAY);
         saplingItem(TolkienBlocks.MUSHROOM_DECAY_BLOOM);
+
+        buttonItem(TolkienBlocks.DARK_STONE_BUTTON, TolkienBlocks.DARK_STONE);
+        buttonItem(TolkienBlocks.DARK_STONE_BRICKS_BUTTON, TolkienBlocks.DARK_STONE_BRICKS);
+        buttonItem(TolkienBlocks.CRACKED_DARK_STONE_BRICKS_BUTTON, TolkienBlocks.CRACKED_DARK_STONE_BRICKS);
+        buttonItem(TolkienBlocks.COBBLED_DARK_STONE_BUTTON, TolkienBlocks.COBBLED_DARK_STONE);
+        buttonItem(TolkienBlocks.SMOOTH_DARK_STONE_BUTTON, TolkienBlocks.SMOOTH_DARK_STONE);
+        buttonItem(TolkienBlocks.CHISELED_DARK_STONE_BRICKS_BUTTON, TolkienBlocks.CHISELED_DARK_STONE_BRICKS);
+        buttonItem(TolkienBlocks.DWARVEN_STONE_BUTTON, TolkienBlocks.DWARVEN_STONE);
+        buttonItem(TolkienBlocks.DWARVEN_STONE_BRICKS_BUTTON, TolkienBlocks.DWARVEN_STONE_BRICKS);
+        buttonItem(TolkienBlocks.CRACKED_DWARVEN_STONE_BRICKS_BUTTON, TolkienBlocks.CRACKED_DWARVEN_STONE_BRICKS);
+        buttonItem(TolkienBlocks.COBBLED_DWARVEN_STONE_BUTTON, TolkienBlocks.COBBLED_DWARVEN_STONE);
+        buttonItem(TolkienBlocks.SMOOTH_DWARVEN_STONE_BUTTON, TolkienBlocks.SMOOTH_DWARVEN_STONE);
+        buttonItem(TolkienBlocks.CHISELED_DWARVEN_STONE_BRICKS_BUTTON, TolkienBlocks.CHISELED_DWARVEN_STONE_BRICKS);
+
+        wallItem(TolkienBlocks.WALL_DWARVEN_STONE, TolkienBlocks.DWARVEN_STONE);
+        wallItem(TolkienBlocks.WALL_DWARVEN_STONE_BRICKS, TolkienBlocks.DWARVEN_STONE_BRICKS);
+        wallItem(TolkienBlocks.WALL_CRACKED_DWARVEN_STONE_BRICKS, TolkienBlocks.CRACKED_DWARVEN_STONE_BRICKS);
+        wallItem(TolkienBlocks.WALL_COBBLED_DWARVEN_STONE, TolkienBlocks.COBBLED_DWARVEN_STONE);
+        wallItem(TolkienBlocks.WALL_SMOOTH_DWARVEN_STONE, TolkienBlocks.SMOOTH_DWARVEN_STONE);
+        wallItem(TolkienBlocks.WALL_CHISELED_DWARVEN_STONE_BRICKS, TolkienBlocks.CHISELED_DWARVEN_STONE_BRICKS);
+        wallItem(TolkienBlocks.WALL_DARK_STONE, TolkienBlocks.DARK_STONE);
+        wallItem(TolkienBlocks.WALL_DARK_STONE_BRICKS, TolkienBlocks.DARK_STONE_BRICKS);
+        wallItem(TolkienBlocks.WALL_CRACKED_DARK_STONE_BRICKS, TolkienBlocks.CRACKED_DARK_STONE_BRICKS);
+        wallItem(TolkienBlocks.WALL_COBBLED_DARK_STONE, TolkienBlocks.COBBLED_DARK_STONE);
+        wallItem(TolkienBlocks.WALL_SMOOTH_DARK_STONE, TolkienBlocks.SMOOTH_DARK_STONE);
+        wallItem(TolkienBlocks.WALL_CHISELED_DARK_STONE_BRICKS, TolkienBlocks.CHISELED_DARK_STONE_BRICKS);
 
         generated(TolkienBlocks.LEAFPILE_MALLORN.getId().getPath(), TolkienMobsMain.prefix("block/leaves_mallorn"));
         generated(TolkienBlocks.LEAFPILE_MIRKWOOD.getId().getPath(), TolkienMobsMain.prefix("block/leaves_mirkwood"));
         generated(TolkienBlocks.LEAFPILE_CULUMALDA.getId().getPath(), TolkienMobsMain.prefix("block/leaves_culumalda"));
         generated(TolkienBlocks.LEAFPILE_LEBETHRON.getId().getPath(), TolkienMobsMain.prefix("block/leaves_lebethron"));
         generated(TolkienBlocks.LEAFPILE_FANGORNOAK.getId().getPath(), TolkienMobsMain.prefix("block/leaves_fangornoak"));
+        generated(TolkienBlocks.LEAFPILE_DWARVEN_MAPLE.getId().getPath(), TolkienMobsMain.prefix("block/leaves_dwarven_maple"));
 
         basicItem(TolkienBlocks.MALLORN_SIGN.asItem());
         basicItem(TolkienBlocks.MIRKWOOD_SIGN.asItem());
@@ -193,6 +224,7 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         basicItem(TolkienBlocks.LEBETHRON_SIGN.asItem());
         basicItem(TolkienBlocks.FANGORNOAK_SIGN.asItem());
         basicItem(TolkienBlocks.DEADWOOD_SIGN.asItem());
+        basicItem(TolkienBlocks.DWARVEN_MAPLE_SIGN.asItem());
 
         basicItem(TolkienBlocks.MALLORN_HANGING_SIGN.asItem());
         basicItem(TolkienBlocks.MIRKWOOD_HANGING_SIGN.asItem());
@@ -200,6 +232,7 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         basicItem(TolkienBlocks.LEBETHRON_HANGING_SIGN.asItem());
         basicItem(TolkienBlocks.FANGORNOAK_HANGING_SIGN.asItem());
         basicItem(TolkienBlocks.DEADWOOD_HANGING_SIGN.asItem());
+        basicItem(TolkienBlocks.DWARVEN_MAPLE_HANGING_SIGN.asItem());
 
         basicItem(TolkienBlocks.MITHRIL_BARS.asItem());
         basicItem(TolkienBlocks.MORGULIRON_BARS.asItem());
@@ -210,6 +243,7 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         blockWithOwnFlatTexture(TolkienBlocks.LADDER_LEBETHRON);
         blockWithOwnFlatTexture(TolkienBlocks.LADDER_FANGORNOAK);
         blockWithOwnFlatTexture(TolkienBlocks.LADDER_DEADWOOD);
+        blockWithOwnFlatTexture(TolkienBlocks.LADDER_DWARVEN_MAPLE);
 
         basicItem(TolkienItems.RECORD_EREBOR.get());
         basicItem(TolkienItems.RECORD_HOBBITS.get());

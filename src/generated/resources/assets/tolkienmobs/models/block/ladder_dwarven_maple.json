@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/ladder",
+  "ambientocclusion": false,
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "tolkienmobs:block/planks_dwarven_maple",
+    "texture": "tolkienmobs:block/ladder_dwarven_maple"
+  }
+}

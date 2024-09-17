@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "tolkienmobs:block/wall_torch_dwarven_maple"
+    },
+    "facing=north": {
+      "model": "tolkienmobs:block/wall_torch_dwarven_maple",
+      "y": 270
+    },
+    "facing=south": {
+      "model": "tolkienmobs:block/wall_torch_dwarven_maple",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "tolkienmobs:block/wall_torch_dwarven_maple",
+      "y": 180
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:blasting",
+  "category": "blocks",
+  "cookingtime": 100,
+  "experience": 0.25,
+  "ingredient": {
+    "item": "tolkienmobs:cobbled_dwarven_stone"
+  },
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:dwarven_stone"
+  }
+}

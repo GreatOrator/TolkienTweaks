@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "cobbled_dwarven_stone",
+  "key": {
+    "#": {
+      "item": "tolkienmobs:cobbled_dwarven_stone"
+    }
+  },
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "result": {
+    "count": 4,
+    "id": "tolkienmobs:stairs_cobbled_dwarven_stone"
+  }
+}

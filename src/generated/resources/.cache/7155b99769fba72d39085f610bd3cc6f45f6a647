@@ -1,22 +1,22 @@
-// 1.21	2024-09-14T09:05:20.8307818	Tags for minecraft:block mod id tolkienmobs
-8fc9ca171e66564297d3cde793c37d5f9e689b47 data/minecraft/tags/block/ceiling_hanging_signs.json
-f33f59d4f2758cf1334f8a6b0ed318e1344b6333 data/minecraft/tags/block/climbable.json
+// 1.21	2024-09-16T21:02:40.3363649	Tags for minecraft:block mod id tolkienmobs
+c697663a63d12d5f108102f51c8b115d85d5192b data/minecraft/tags/block/ceiling_hanging_signs.json
+2425bde7509c8f73e1716b527cdaf196eb24f51a data/minecraft/tags/block/climbable.json
 7b87e663d9d17bb1465a1de7e799ad751a1c30d6 data/minecraft/tags/block/doors.json
-9e57abe7ba81ae4d4d9c9e30a334c303532d5371 data/minecraft/tags/block/fences.json
-78024698ae6b36d045ad7568377124db6dcf8a3a data/minecraft/tags/block/fence_gates.json
-af99073d7a626b9541aae6f41a847db13fd39062 data/minecraft/tags/block/logs.json
+5991e61167d5a55ff878fd59c809c0b1efbe1a11 data/minecraft/tags/block/fences.json
+cd6282b2a9a0d448e676b5183695041d54b7be01 data/minecraft/tags/block/fence_gates.json
+53c2cf115ad60c3904f417bfb5b7ce26aa9bbe72 data/minecraft/tags/block/logs.json
 1246df796a0f35ee95be049fe3f74b36c85a5b1f data/minecraft/tags/block/mineable/pickaxe.json
 13b60c62cacd5e7b7de542465009cf829e16e12d data/minecraft/tags/block/needs_diamond_tool.json
 476a269d01c5c8b29528c147a6844db08aa0ff62 data/minecraft/tags/block/needs_iron_tool.json
-ac813353c7e439a5c221599b6903abc88768fe15 data/minecraft/tags/block/planks.json
+708f326315aa5556802cd0f329a1ed6ac3731125 data/minecraft/tags/block/planks.json
 f883e2bf7f6b3566ba89d3a5437f149f12f70d1d data/minecraft/tags/block/pressure_plates.json
-56339f237cb467eda77b901bfda9e24c3c53765b data/minecraft/tags/block/standing_signs.json
+f38e762d7c09660492e424f7a126f9d110aaf57e data/minecraft/tags/block/standing_signs.json
 8413e0743e5d5605df7f3f470e684a9eefa180a8 data/minecraft/tags/block/walls.json
-6a06f841403fffe01a893af5791819df5adc9167 data/minecraft/tags/block/wall_hanging_signs.json
-1aa0691a01dc5a0e9de57b8004628f1fc9273f6c data/minecraft/tags/block/wall_post_override.json
-4db211426bccfd00f19c2c0959f07735bc04ee31 data/minecraft/tags/block/wall_signs.json
-bcd2a57ea8b79ed2e3e91155a418e57fd12ac578 data/minecraft/tags/block/wooden_doors.json
-9e57abe7ba81ae4d4d9c9e30a334c303532d5371 data/minecraft/tags/block/wooden_fences.json
-358a2798e997a54cbb387fc8406f1b5a32737af0 data/minecraft/tags/block/wooden_pressure_plates.json
+810a4219fde07726dc0f2075c8c68aacdc10ef2f data/minecraft/tags/block/wall_hanging_signs.json
+1de4bd9aa2bb2c2b96c6ca89c7a9d543312311c3 data/minecraft/tags/block/wall_post_override.json
+460dd0dc6d7eb28ef18508ca800121ccb7829906 data/minecraft/tags/block/wall_signs.json
+2e42124093248e13dccc96612c08cbb67d4e9cfc data/minecraft/tags/block/wooden_doors.json
+5991e61167d5a55ff878fd59c809c0b1efbe1a11 data/minecraft/tags/block/wooden_fences.json
+55689406907bfe628b90b7032f8870be0e2a1591 data/minecraft/tags/block/wooden_pressure_plates.json
 d81ccf454ddd1b309f641892b1a525e41248b0d1 data/tolkienmobs/tags/block/decay_grow_block.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/tolkienmobs/tags/block/root_trace_skip.json

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "ammolite",
+  "key": {
+    "C": {
+      "item": "minecraft:chest"
+    },
+    "I": {
+      "item": "tolkienmobs:gem_ammolite"
+    },
+    "L": {
+      "item": "tolkienmobs:ingot_mithril"
+    }
+  },
+  "pattern": [
+    "LIL",
+    "LCL",
+    "LLL"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:key_ring"
+  }
+}

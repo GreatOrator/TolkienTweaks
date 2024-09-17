@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "tolkienmobs:block_mithril"
+            "items": "tolkienmobs:ingot_mithril"
           }
         ]
       },

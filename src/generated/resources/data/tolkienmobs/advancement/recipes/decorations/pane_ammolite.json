@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_gem_ammolite": {
+    "has_block_ammolite": {
       "conditions": {
         "items": [
           {
-            "items": "tolkienmobs:gem_ammolite"
+            "items": "tolkienmobs:block_ammolite"
           }
         ]
       },
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_gem_ammolite"
+      "has_block_ammolite"
     ]
   ],
   "rewards": {

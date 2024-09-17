@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/wall_inventory",
+  "textures": {
+    "wall": "tolkienmobs:block/cracked_dark_stone_bricks"
+  }
+}

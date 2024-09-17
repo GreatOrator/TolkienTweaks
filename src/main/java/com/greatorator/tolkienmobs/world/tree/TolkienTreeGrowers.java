@@ -20,6 +20,8 @@ public class TolkienTreeGrowers {
             Optional.empty(), Optional.of(TolkienConfiguredFeatures.FANGORNOAK_KEY), Optional.empty());
     public static final TreeGrower DEADWOOD = new TreeGrower(MODID + ":deadwood",
             Optional.empty(), Optional.of(TolkienConfiguredFeatures.DEADWOOD_KEY), Optional.empty());
+    public static final TreeGrower DWARVEN_MAPLE = new TreeGrower(MODID + ":dwarven_maple",
+            Optional.empty(), Optional.of(TolkienConfiguredFeatures.DWARVEN_MAPLE_KEY), Optional.empty());
     public static final TreeGrower MUSHROOM_DECAY_BLOOM = new TreeGrower(MODID + ":bloomdecay",
             Optional.empty(), Optional.of(TolkienConfiguredFeatures.MUSHROOM_DECAY_BLOOM_KEY), Optional.empty());
     public static final TreeGrower MUSHROOM_BLOOM_DECAY = new TreeGrower(MODID + ":decaybloom",

@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.datagen.helpers;
 
 import com.greatorator.tolkienmobs.block.custom.PipeweedCropBlock;
+import com.greatorator.tolkienmobs.init.TolkienFluids;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
@@ -261,6 +262,32 @@ public abstract class BlockModelBuilders extends BlockModelHelper {
 			.shade(false)
 			.face(Direction.WEST).uvs(0.0F, 0.0F, 16.0F, 16.0F).texture("#cross2").emissivity(layer2em, layer2em).end()
 			.face(Direction.EAST).uvs(0.0F, 0.0F, 16.0F, 16.0F).texture("#cross2").emissivity(layer2em, layer2em).end().end();
+	}
+
+	public void fluid() {
+		String mithrilName = "mithril";
+		String nameMithril = mithrilName.substring(mithrilName.lastIndexOf('.') + 1);
+
+		ModelFile mithrilFile = models()
+				.withExistingParent(nameMithril, modLoc("block/mithril"));
+		BlockModelBuilder mithrilFluid = models()
+				.withExistingParent(nameMithril, modLoc("block/mithril"))
+				.texture("particle", modLoc("block/mithril_still"));
+		getVariantBuilder(TolkienFluids.MITHRIL_BLOCK.get())
+				.forAllStates(state -> ConfiguredModel.builder().modelFile(mithrilFile).build());
+
+		String morgulironName = "morguliron";
+		String nameMorguliron = morgulironName.substring(morgulironName.lastIndexOf('.') + 1);
+
+		ModelFile morgulironFile = models()
+				.withExistingParent(nameMorguliron, modLoc("block/morguliron"));
+		BlockModelBuilder morgulironFluid = models()
+				.withExistingParent(nameMorguliron, modLoc("block/morguliron"))
+				.texture("particle", modLoc("block/morguliron_still"));
+
+		getVariantBuilder(TolkienFluids.MORGULIRON_BLOCK.get())
+				.forAllStates(state -> ConfiguredModel.builder().modelFile(morgulironFile).build());
+
 	}
 
 	protected BlockModelBuilder buildFallenLeaves(String leafPile, int index) {
