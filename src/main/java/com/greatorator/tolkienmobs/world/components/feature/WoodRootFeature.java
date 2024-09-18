@@ -1,10 +1,10 @@
-package com.greatorator.tolkienmobs.world.feature;
+package com.greatorator.tolkienmobs.world.components.feature;
 
 import com.greatorator.tolkienmobs.util.FeatureLogic;
 import com.greatorator.tolkienmobs.util.FeaturePlacers;
 import com.greatorator.tolkienmobs.util.RootPlacer;
 import com.greatorator.tolkienmobs.util.VoxelBresenhamIterator;
-import com.greatorator.tolkienmobs.world.feature.config.RootConfig;
+import com.greatorator.tolkienmobs.world.components.config.RootConfig;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;

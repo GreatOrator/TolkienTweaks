@@ -1,14 +1,14 @@
 package com.greatorator.tolkienmobs.init;
 
-import com.greatorator.tolkienmobs.world.feature.FallenLeavesFeature;
-import com.greatorator.tolkienmobs.world.feature.WebFeature;
-import com.greatorator.tolkienmobs.world.feature.WoodRootFeature;
-import com.greatorator.tolkienmobs.world.feature.config.RootConfig;
-import com.greatorator.tolkienmobs.world.tree.components.SpheroidFoliagePlacer;
-import com.greatorator.tolkienmobs.world.tree.placers.BranchingLargeTrunkPlacer;
-import com.greatorator.tolkienmobs.world.tree.placers.BranchingTrunkPlacer;
-import com.greatorator.tolkienmobs.world.tree.placers.TreeRootsDecorator;
-import com.greatorator.tolkienmobs.world.tree.placers.TrunkSideDecorator;
+import com.greatorator.tolkienmobs.world.components.feature.FallenLeavesFeature;
+import com.greatorator.tolkienmobs.world.components.feature.WebFeature;
+import com.greatorator.tolkienmobs.world.components.feature.WoodRootFeature;
+import com.greatorator.tolkienmobs.world.components.config.RootConfig;
+import com.greatorator.tolkienmobs.world.components.feature.tree.components.SpheroidFoliagePlacer;
+import com.greatorator.tolkienmobs.world.components.feature.tree.placers.BranchingLargeTrunkPlacer;
+import com.greatorator.tolkienmobs.world.components.feature.tree.placers.BranchingTrunkPlacer;
+import com.greatorator.tolkienmobs.world.components.feature.tree.placers.TreeRootsDecorator;
+import com.greatorator.tolkienmobs.world.components.feature.tree.placers.TrunkSideDecorator;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;

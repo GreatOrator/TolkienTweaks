@@ -1,4 +1,4 @@
-package com.greatorator.tolkienmobs.world.feature;
+package com.greatorator.tolkienmobs.world.components.feature;
 
 import com.greatorator.tolkienmobs.block.custom.LeafPileBlock;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;

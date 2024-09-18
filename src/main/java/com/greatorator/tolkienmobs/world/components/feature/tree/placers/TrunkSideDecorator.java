@@ -1,4 +1,4 @@
-package com.greatorator.tolkienmobs.world.tree.placers;
+package com.greatorator.tolkienmobs.world.components.feature.tree.placers;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.init.TolkienFeatureModifiers;

@@ -25,6 +25,10 @@ repositories {
             includeGroup "mezz.jei"
         }
     }
+    maven {
+        name = "OctoStudios" //Curios
+        url = uri("https://maven.octo-studios.com/releases")
+    }
 }
 
 base {
@@ -124,6 +128,8 @@ dependencies {
     compileOnly "mezz.jei:jei-${jei_mc_version}-common-api:${jei_version}"
     compileOnly "mezz.jei:jei-${jei_mc_version}-neoforge-api:${jei_version}"
     localRuntime "mezz.jei:jei-${jei_mc_version}-neoforge:${jei_version}"
+
+    implementation "top.theillusivec4.curios:curios-neoforge:${project.curios_version}+${project.minecraft_version}"
 
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
     // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
