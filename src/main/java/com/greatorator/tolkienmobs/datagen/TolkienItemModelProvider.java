@@ -144,6 +144,7 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         // Crop
         basicItem(TolkienItems.PIPEWEED_ITEM.get());
         basicItem(TolkienItems.PIPEWEED_SEEDS.get());
+        basicItem(TolkienItems.BRAMBLES_BERRY.get());
 
         // Blocks
         basicItem(TolkienBlocks.DOOR_MITHRIL.asItem());

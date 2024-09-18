@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_flower_aeglos": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tolkienmobs:flower_aeglos"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tolkienmobs:light_blue_dye_from_flower_aeglos"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_flower_aeglos"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tolkienmobs:light_blue_dye_from_flower_aeglos"
+    ]
+  }
+}

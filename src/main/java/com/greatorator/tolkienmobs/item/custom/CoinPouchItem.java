@@ -135,14 +135,17 @@ public class CoinPouchItem extends Item {
     }
 
     public static float getFullnessPropertyOverride(ItemStack itemStack, @Nullable ClientLevel world, @Nullable LivingEntity livingEntity, int i) {
+        int maxSlots = 15;
+        int j=i;
+        int count = itemStack.getOrDefault(TolkienDataComponents.COIN_POUCH_COUNTER, 0);
         IItemHandler coinPouch = getItemStackHandlerCoinPouch(itemStack);
+
         if (coinPouch == null) return 0;
-        int count = 0;
-        int j = i;
+
         for (j = 0; j < coinPouch.getSlots(); j++) {
-            count+=coinPouch.getStackInSlot(j).getCount();
+            itemStack.getOrDefault(TolkienDataComponents.COIN_POUCH_COUNTER, count+=coinPouch.getStackInSlot(j).getCount());
         }
-        float fractionEmpty = count / (float)(coinPouch.getSlots());
-        return 0.0F + fractionEmpty;
+
+        return Math.min(count - maxSlots, 15);
     }
 }

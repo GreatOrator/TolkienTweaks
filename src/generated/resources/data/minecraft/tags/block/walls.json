@@ -1,6 +1,18 @@
 {
   "values": [
     "tolkienmobs:wall_mithril",
-    "tolkienmobs:wall_morguliron"
+    "tolkienmobs:wall_morguliron",
+    "tolkienmobs:wall_chiseled_dark_stone_bricks",
+    "tolkienmobs:wall_chiseled_dwarven_stone_bricks",
+    "tolkienmobs:wall_cobbled_dark_stone",
+    "tolkienmobs:wall_cobbled_dwarven_stone",
+    "tolkienmobs:wall_cracked_dark_stone_bricks",
+    "tolkienmobs:wall_cracked_dwarven_stone_bricks",
+    "tolkienmobs:wall_dark_stone",
+    "tolkienmobs:wall_dwarven_stone",
+    "tolkienmobs:wall_dark_stone_bricks",
+    "tolkienmobs:wall_dwarven_stone_bricks",
+    "tolkienmobs:wall_smooth_dark_stone",
+    "tolkienmobs:wall_smooth_dwarven_stone"
   ]
 }

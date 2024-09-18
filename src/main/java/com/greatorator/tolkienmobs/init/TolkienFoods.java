@@ -26,6 +26,8 @@ public class TolkienFoods {
             .effect(() -> new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 40, 2), 0.3F).build();
     public static final FoodProperties FOOD_HONEY = (new FoodProperties.Builder()).nutrition(2).saturationModifier(3.0F)
             .effect(() -> new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 100, 1), 0.3F).build();
+    public static final FoodProperties FOOD_BRAMBLES_BERRY = (new FoodProperties.Builder()).nutrition(4).saturationModifier(0.1F)
+            .effect(new MobEffectInstance(MobEffects.HUNGER, 600, 0), 0.8F).build();
 
     // Drinks
     public static final FoodProperties MIRUVOR = (new FoodProperties.Builder()).nutrition(1).saturationModifier(1.0F).alwaysEdible()

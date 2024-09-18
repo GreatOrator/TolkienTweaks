@@ -92,14 +92,22 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
 
         placardRecipe(pRecipeOutput, TolkienBlocks.PLACARD, TolkienBlocks.PLANKS_MALLORN, TolkienItems.INGOT_MITHRIL);
 
+        oneToOneConversionRecipe(pRecipeOutput, Items.WHITE_DYE, TolkienBlocks.FLOWER_NIPHREDIL.get(), "white_dye", 2);
         oneToOneConversionRecipe(pRecipeOutput, Items.LIGHT_GRAY_DYE, TolkienBlocks.FLOWER_SIMBELMYNE.get(), "light_gray_dye", 2);
+        // Gray
+        oneToOneConversionRecipe(pRecipeOutput, Items.BLACK_DYE, TolkienBlocks.FLOWER_BRAMBLES.get(), "black_dye", 2);
+        oneToOneConversionRecipe(pRecipeOutput, Items.BROWN_DYE, TolkienBlocks.FLOWER_MALLOS.get(), "brown_dye", 2);
         oneToOneConversionRecipe(pRecipeOutput, Items.RED_DYE, TolkienBlocks.FLOWER_MIRKWOOD.get(), "red_dye", 2);
         oneToOneConversionRecipe(pRecipeOutput, Items.ORANGE_DYE, TolkienBlocks.FLOWER_ALFIRIN.get(), "orange_dye", 2);
-        oneToOneConversionRecipe(pRecipeOutput, Items.GREEN_DYE, TolkienBlocks.FLOWER_ATHELAS.get(), "green_dye", 2);
-        oneToOneConversionRecipe(pRecipeOutput, Items.WHITE_DYE, TolkienBlocks.FLOWER_NIPHREDIL.get(), "white_dye", 2);
-        oneToOneConversionRecipe(pRecipeOutput, Items.CYAN_DYE, TolkienBlocks.FLOWER_SWAMPMILKWEED.get(), "cyan_dye", 2);
-        oneToOneConversionRecipe(pRecipeOutput, Items.PINK_DYE, TolkienBlocks.FLOWER_LILLYOFTHEVALLEY.get(), "pink_dye", 2);
         oneToOneConversionRecipe(pRecipeOutput, Items.YELLOW_DYE, TolkienBlocks.FLOWER_ELANOR.get(), "yellow_dye", 2);
+        // Lime
+        oneToOneConversionRecipe(pRecipeOutput, Items.GREEN_DYE, TolkienBlocks.FLOWER_ATHELAS.get(), "green_dye", 2);
+        oneToOneConversionRecipe(pRecipeOutput, Items.CYAN_DYE, TolkienBlocks.FLOWER_SWAMPMILKWEED.get(), "cyan_dye", 2);
+        oneToOneConversionRecipe(pRecipeOutput, Items.LIGHT_BLUE_DYE, TolkienBlocks.FLOWER_AEGLOS.get(), "light_blue_dye", 2);
+        oneToOneConversionRecipe(pRecipeOutput, Items.BLUE_DYE, TolkienBlocks.FLOWER_LISSUIN.get(), "blue_dye", 2);
+        oneToOneConversionRecipe(pRecipeOutput, Items.PURPLE_DYE, TolkienBlocks.MUSHROOM_BLOOM_DECAY.get(), "purple_dye", 2);
+        oneToOneConversionRecipe(pRecipeOutput, Items.MAGENTA_DYE, TolkienBlocks.MUSHROOM_DECAY_BLOOM.get(), "magenta_dye", 2);
+        oneToOneConversionRecipe(pRecipeOutput, Items.PINK_DYE, TolkienBlocks.FLOWER_LILLYOFTHEVALLEY.get(), "pink_dye", 2);
 
         sleepingRecipe(pRecipeOutput, TolkienBlocks.SLEEPING_BAG_RED, Blocks.RED_CARPET);
         sleepingRecipe(pRecipeOutput, TolkienBlocks.SLEEPING_BAG_BLUE, Blocks.BLUE_CARPET);

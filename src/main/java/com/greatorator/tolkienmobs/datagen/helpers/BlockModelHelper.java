@@ -1,11 +1,16 @@
 package com.greatorator.tolkienmobs.datagen.helpers;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
+import com.greatorator.tolkienmobs.block.custom.BramblesBushBlock;
+import com.greatorator.tolkienmobs.block.custom.LeafPileBlock;
+import com.greatorator.tolkienmobs.block.custom.PipeweedCropBlock;
+import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.SlabType;
@@ -16,6 +21,7 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.prefix;

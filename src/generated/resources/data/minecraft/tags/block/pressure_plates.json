@@ -1,6 +1,18 @@
 {
   "values": [
     "tolkienmobs:pressure_plate_mithril",
-    "tolkienmobs:pressure_plate_morguliron"
+    "tolkienmobs:pressure_plate_morguliron",
+    "tolkienmobs:pressure_plate_chiseled_dark_stone_bricks",
+    "tolkienmobs:pressure_plate_chiseled_dwarven_stone_bricks",
+    "tolkienmobs:pressure_plate_cobbled_dark_stone",
+    "tolkienmobs:pressure_plate_cobbled_dwarven_stone",
+    "tolkienmobs:pressure_plate_cracked_dark_stone_bricks",
+    "tolkienmobs:pressure_plate_cracked_dwarven_stone_bricks",
+    "tolkienmobs:pressure_plate_dark_stone",
+    "tolkienmobs:pressure_plate_dwarven_stone",
+    "tolkienmobs:pressure_plate_dark_stone_bricks",
+    "tolkienmobs:pressure_plate_dwarven_stone_bricks",
+    "tolkienmobs:pressure_plate_smooth_dark_stone",
+    "tolkienmobs:pressure_plate_smooth_dwarven_stone"
   ]
 }

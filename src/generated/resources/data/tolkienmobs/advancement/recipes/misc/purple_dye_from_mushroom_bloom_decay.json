@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_mushroom_bloom_decay": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tolkienmobs:mushroom_bloom_decay"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tolkienmobs:purple_dye_from_mushroom_bloom_decay"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_mushroom_bloom_decay"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tolkienmobs:purple_dye_from_mushroom_bloom_decay"
+    ]
+  }
+}

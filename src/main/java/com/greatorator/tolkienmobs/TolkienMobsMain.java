@@ -50,6 +50,11 @@ public class TolkienMobsMain {
     private static final String MODEL_DIR = "textures/entity/";
     private static final String BLOCK_DIR = "textures/block/custom/";
 
+    /*
+     TODO
+      -Fix Rendering of Coin Pouch and Key Ring States
+     */
+
     public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer, Dist dist) {
         if (dist.isClient()) {
             TolkienRegistration.initModBusEvents(modEventBus);
@@ -96,6 +101,10 @@ public class TolkienMobsMain {
             pot.addPlant(TolkienBlocks.FLOWER_SWAMPMILKWEED.getId(), TolkienBlocks.POTTED_FLOWER_SWAMPMILKWEED);
             pot.addPlant(TolkienBlocks.FLOWER_LILLYOFTHEVALLEY.getId(), TolkienBlocks.POTTED_FLOWER_LILLYOFTHEVALLEY);
             pot.addPlant(TolkienBlocks.FLOWER_ELANOR.getId(), TolkienBlocks.POTTED_FLOWER_ELANOR);
+            pot.addPlant(TolkienBlocks.FLOWER_AEGLOS.getId(), TolkienBlocks.POTTED_FLOWER_AEGLOS);
+            pot.addPlant(TolkienBlocks.FLOWER_LISSUIN.getId(), TolkienBlocks.POTTED_FLOWER_LISSUIN);
+            pot.addPlant(TolkienBlocks.FLOWER_MALLOS.getId(), TolkienBlocks.POTTED_FLOWER_MALLOS);
+            pot.addPlant(TolkienBlocks.FLOWER_BRAMBLES.getId(), TolkienBlocks.POTTED_FLOWER_BRAMBLES);
             pot.addPlant(TolkienBlocks.SAPLING_MALLORN.getId(), TolkienBlocks.POTTED_SAPLING_MALLORN);
             pot.addPlant(TolkienBlocks.SAPLING_MIRKWOOD.getId(), TolkienBlocks.POTTED_SAPLING_MIRKWOOD);
             pot.addPlant(TolkienBlocks.SAPLING_CULUMALDA.getId(), TolkienBlocks.POTTED_SAPLING_CULUMALDA);
@@ -131,6 +140,9 @@ public class TolkienMobsMain {
             event.enqueueWork(() -> {
                 ItemBlockRenderTypes.setRenderLayer(TolkienFluids.MITHRIL_FLOWING.get(), RenderType.translucent());
                 ItemBlockRenderTypes.setRenderLayer(TolkienFluids.MORGULIRON_FLOWING.get(), RenderType.translucent());
+
+                ItemProperties.register(COIN_POUCH.get(), resLoc("fullness"), CoinPouchItem::getFullnessPropertyOverride);
+                ItemProperties.register(KEY_RING.get(), resLoc("fullness"), KeyRingItem::getFullnessPropertyOverride);
             });
         }
 
@@ -140,11 +152,6 @@ public class TolkienMobsMain {
             event.register(TolkienContainers.KEY_RING_CONTAINER.get(), KeyRingScreen::new);
             event.register(TolkienContainers.KEY_ITEM_CONTAINER.get(), KeyItemScreen::new);
             event.register(TolkienContainers.KEY_CODE_CONTAINER.get(), KeyCodeScreen::new);
-        }
-
-        public void registerPropertyOverride() {
-            ItemProperties.register(COIN_POUCH.get(), resLoc("fullness"), CoinPouchItem::getFullnessPropertyOverride);
-            ItemProperties.register(KEY_RING.get(), resLoc("fullness"), KeyRingItem::getFullnessPropertyOverride);
         }
 
         @SubscribeEvent

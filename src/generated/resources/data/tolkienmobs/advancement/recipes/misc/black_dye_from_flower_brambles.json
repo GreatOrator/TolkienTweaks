@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_flower_brambles": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tolkienmobs:flower_brambles"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tolkienmobs:black_dye_from_flower_brambles"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_flower_brambles"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tolkienmobs:black_dye_from_flower_brambles"
+    ]
+  }
+}
