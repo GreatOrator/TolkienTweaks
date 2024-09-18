@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.datagen.loot;
 
+import com.greatorator.tolkienmobs.block.custom.BramblesBushBlock;
 import com.greatorator.tolkienmobs.block.custom.PipeweedCropBlock;
 import com.greatorator.tolkienmobs.block.custom.SleepingBagBlock;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
@@ -401,6 +402,9 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.FLOWER_SWAMPMILKWEED.get());
         dropSelf(TolkienBlocks.FLOWER_LILLYOFTHEVALLEY.get());
         dropSelf(TolkienBlocks.FLOWER_ELANOR.get());
+        dropSelf(TolkienBlocks.FLOWER_AEGLOS.get());
+        dropSelf(TolkienBlocks.FLOWER_LISSUIN.get());
+        dropSelf(TolkienBlocks.FLOWER_MALLOS.get());
         dropPottedContents(TolkienBlocks.POTTED_FLOWER_SIMBELMYNE.get());
         dropPottedContents(TolkienBlocks.POTTED_FLOWER_MIRKWOOD.get());
         dropPottedContents(TolkienBlocks.POTTED_FLOWER_ALFIRIN.get());
@@ -409,6 +413,10 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropPottedContents(TolkienBlocks.POTTED_FLOWER_SWAMPMILKWEED.get());
         dropPottedContents(TolkienBlocks.POTTED_FLOWER_LILLYOFTHEVALLEY.get());
         dropPottedContents(TolkienBlocks.POTTED_FLOWER_ELANOR.get());
+        dropPottedContents(TolkienBlocks.POTTED_FLOWER_AEGLOS.get());
+        dropPottedContents(TolkienBlocks.POTTED_FLOWER_LISSUIN.get());
+        dropPottedContents(TolkienBlocks.POTTED_FLOWER_MALLOS.get());
+        dropPottedContents(TolkienBlocks.POTTED_FLOWER_BRAMBLES.get());
         dropPottedContents(TolkienBlocks.POTTED_SAPLING_MALLORN.get());
         dropPottedContents(TolkienBlocks.POTTED_SAPLING_MIRKWOOD.get());
         dropPottedContents(TolkienBlocks.POTTED_SAPLING_CULUMALDA.get());
@@ -438,7 +446,12 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
                 .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(PipeweedCropBlock.AGE, 7));
         this.add(TolkienBlocks.PIPEWEED.get(), this.createCropDrops(TolkienBlocks.PIPEWEED.get(),
                 TolkienItems.PIPEWEED_ITEM.get(), TolkienItems.PIPEWEED_SEEDS.asItem(), lootItemConditionBuilder));
-        // Custom
+        LootItemCondition.Builder lootItemConditionBuilder2 = LootItemBlockStatePropertyCondition.hasBlockStateProperties(TolkienBlocks.PIPEWEED.get())
+                .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(BramblesBushBlock.AGE, 3));
+        this.add(TolkienBlocks.FLOWER_BRAMBLES.get(), this.createCropDrops(TolkienBlocks.FLOWER_BRAMBLES.get(),
+                TolkienBlocks.FLOWER_BRAMBLES.asItem(), TolkienItems.BRAMBLES_BERRY.asItem(), lootItemConditionBuilder2));
+
+            // Custom
         dropOther(TolkienBlocks.LIGHTNINGBUG_BLOCK.get(), Items.GLOWSTONE);
         dropOther(TolkienBlocks.LOCUST_BLOCK.get(), Items.GUNPOWDER);
         dropSelf(TolkienBlocks.SILMARIL_LANTERN.get());

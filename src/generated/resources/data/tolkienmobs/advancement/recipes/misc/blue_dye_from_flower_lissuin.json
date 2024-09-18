@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_flower_lissuin": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tolkienmobs:flower_lissuin"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tolkienmobs:blue_dye_from_flower_lissuin"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_flower_lissuin"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tolkienmobs:blue_dye_from_flower_lissuin"
+    ]
+  }
+}

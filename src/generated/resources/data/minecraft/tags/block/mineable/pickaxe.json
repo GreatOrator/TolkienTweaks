@@ -5,6 +5,18 @@
     "tolkienmobs:ore_nether_mithril",
     "tolkienmobs:ore_deepslate_mithril",
     "tolkienmobs:ore_end_mithril",
-    "tolkienmobs:block_morguliron"
+    "tolkienmobs:block_morguliron",
+    "tolkienmobs:chiseled_dark_stone_bricks",
+    "tolkienmobs:chiseled_dwarven_stone_bricks",
+    "tolkienmobs:cobbled_dark_stone",
+    "tolkienmobs:cobbled_dwarven_stone",
+    "tolkienmobs:cracked_dark_stone_bricks",
+    "tolkienmobs:cracked_dwarven_stone_bricks",
+    "tolkienmobs:dark_stone",
+    "tolkienmobs:dwarven_stone",
+    "tolkienmobs:dark_stone_bricks",
+    "tolkienmobs:dwarven_stone_bricks",
+    "tolkienmobs:smooth_dark_stone",
+    "tolkienmobs:smooth_dwarven_stone"
   ]
 }

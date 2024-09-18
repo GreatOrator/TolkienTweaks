@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "age=0": {
+      "model": "tolkienmobs:block/flower_brambles0"
+    },
+    "age=1": {
+      "model": "tolkienmobs:block/flower_brambles1"
+    },
+    "age=2": {
+      "model": "tolkienmobs:block/flower_brambles2"
+    },
+    "age=3": {
+      "model": "tolkienmobs:block/flower_brambles3"
+    }
+  }
+}

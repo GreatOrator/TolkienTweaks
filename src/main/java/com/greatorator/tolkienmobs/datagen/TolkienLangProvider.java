@@ -50,11 +50,13 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addFlowerBlock(TolkienBlocks.FLOWER_SWAMPMILKWEED.get(), "Gallows-weed", "swamp_milkweed");
             this.addFlowerBlock(TolkienBlocks.FLOWER_LILLYOFTHEVALLEY.get(), "Lilly of the Valley", "valley_lilly");
             this.addFlowerBlock(TolkienBlocks.FLOWER_ELANOR.get(), "Elanor", "elanor");
+            this.addFlowerBlock(TolkienBlocks.FLOWER_AEGLOS.get(), "Snowthorn", "aeglos");
+            this.addFlowerBlock(TolkienBlocks.FLOWER_LISSUIN.get(), "Lissuin", "lissuin");
+            this.addFlowerBlock(TolkienBlocks.FLOWER_MALLOS.get(), "Mallos", "mallos");
+            this.addFlowerBlock(TolkienBlocks.FLOWER_BRAMBLES.get(), "Brambles of Mordor", "brambles");
             this.addFlowerBlock(TolkienBlocks.MUSHROOM_BLOOM_DECAY.get(), "Bloom of Decay", "mushroom_bloom_decay");
             this.addFlowerBlock(TolkienBlocks.MUSHROOM_DECAY_BLOOM.get(), "Bloom of Decay", "mushroom_decay_bloom");
             this.addBlock(TolkienBlocks.BLOCK_DECAY_BLOOM, "Decay Bloom Block");
-            this.addItem(TolkienItems.PIPEWEED_ITEM, "Pipeweed");
-            this.addItem(TolkienItems.PIPEWEED_SEEDS, "Pipeweed Seeds");
             this.addBlock(TolkienBlocks.LIGHTNINGBUG_BLOCK, "Lightning Bug");
             this.addBlock(TolkienBlocks.LOCUST_BLOCK, "Locust");
             this.addBlock(TolkienBlocks.BLOCK_HALLOWED, "Hallowed Earth");
@@ -69,6 +71,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addItem(TolkienItems.LEMBAS, "Lembas");
             this.addItem(TolkienItems.CRAM, "Cram");
             this.addItem(TolkienItems.HONEY_CAKE, "Honey Cake");
+            this.addItem(TolkienItems.BRAMBLES_BERRY, "Brambles Berry");
             this.addItem(TolkienItems.MIRUVOR, "Miruvor");
             this.addItem(TolkienItems.GROG, "Grog");
             this.addItem(TolkienItems.DRINK_ELF_FLEETFOOT, "Blessing of the Elves");

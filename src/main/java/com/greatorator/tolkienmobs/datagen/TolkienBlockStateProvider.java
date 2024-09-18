@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.datagen;
 
+import com.greatorator.tolkienmobs.block.custom.BramblesBushBlock;
 import com.greatorator.tolkienmobs.block.custom.LeafPileBlock;
 import com.greatorator.tolkienmobs.block.custom.PipeweedCropBlock;
 import com.greatorator.tolkienmobs.block.custom.PlacardBlock;
@@ -465,6 +466,9 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         makeFlower(TolkienBlocks.FLOWER_SWAMPMILKWEED, TolkienBlocks.POTTED_FLOWER_SWAMPMILKWEED);
         makeFlower(TolkienBlocks.FLOWER_LILLYOFTHEVALLEY, TolkienBlocks.POTTED_FLOWER_LILLYOFTHEVALLEY);
         makeFlower(TolkienBlocks.FLOWER_ELANOR, TolkienBlocks.POTTED_FLOWER_ELANOR);
+        makeFlower(TolkienBlocks.FLOWER_AEGLOS, TolkienBlocks.POTTED_FLOWER_AEGLOS);
+        makeFlower(TolkienBlocks.FLOWER_LISSUIN, TolkienBlocks.POTTED_FLOWER_LISSUIN);
+        makeFlower(TolkienBlocks.FLOWER_MALLOS, TolkienBlocks.POTTED_FLOWER_MALLOS);
         makeFlower(TolkienBlocks.SAPLING_MALLORN, TolkienBlocks.POTTED_SAPLING_MALLORN);
         makeFlower(TolkienBlocks.SAPLING_MIRKWOOD, TolkienBlocks.POTTED_SAPLING_MIRKWOOD);
         makeFlower(TolkienBlocks.SAPLING_CULUMALDA, TolkienBlocks.POTTED_SAPLING_CULUMALDA);
@@ -477,108 +481,24 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         blockWithItem(TolkienBlocks.BLOCK_DECAY_BLOOM);
         blockWithItem(TolkienBlocks.BLOCK_BLOOM_DECAY);
         blockWithItem(TolkienBlocks.LIVING_ROOTS);
+
         makeCrop(((PipeweedCropBlock) TolkienBlocks.PIPEWEED.get()), "pipeweed_crop_stage", "pipeweed_stage");
 
-        getVariantBuilder(TolkienBlocks.LEAFPILE_MALLORN.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 1).setModels(new ConfiguredModel(buildFallenLeaves("mallorn", 1)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_MALLORN.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 2).setModels(new ConfiguredModel(buildFallenLeaves("mallorn", 2)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_MALLORN.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 3).setModels(new ConfiguredModel(buildFallenLeaves("mallorn", 3)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_MALLORN.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 4).setModels(new ConfiguredModel(buildFallenLeaves("mallorn", 4)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_MALLORN.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 5).setModels(new ConfiguredModel(buildFallenLeaves("mallorn", 5)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_MALLORN.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 6).setModels(new ConfiguredModel(buildFallenLeaves("mallorn", 6)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_MALLORN.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 7).setModels(new ConfiguredModel(buildFallenLeaves("mallorn", 7)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_MALLORN.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 8).setModels(new ConfiguredModel(buildFallenLeaves("mallorn", 8)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_MIRKWOOD.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 1).setModels(new ConfiguredModel(buildFallenLeaves("mirkwood", 1)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_MIRKWOOD.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 2).setModels(new ConfiguredModel(buildFallenLeaves("mirkwood", 2)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_MIRKWOOD.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 3).setModels(new ConfiguredModel(buildFallenLeaves("mirkwood", 3)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_MIRKWOOD.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 4).setModels(new ConfiguredModel(buildFallenLeaves("mirkwood", 4)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_MIRKWOOD.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 5).setModels(new ConfiguredModel(buildFallenLeaves("mirkwood", 5)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_MIRKWOOD.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 6).setModels(new ConfiguredModel(buildFallenLeaves("mirkwood", 6)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_MIRKWOOD.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 7).setModels(new ConfiguredModel(buildFallenLeaves("mirkwood", 7)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_MIRKWOOD.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 8).setModels(new ConfiguredModel(buildFallenLeaves("mirkwood", 8)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_CULUMALDA.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 1).setModels(new ConfiguredModel(buildFallenLeaves("culumalda", 1)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_CULUMALDA.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 2).setModels(new ConfiguredModel(buildFallenLeaves("culumalda", 2)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_CULUMALDA.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 3).setModels(new ConfiguredModel(buildFallenLeaves("culumalda", 3)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_CULUMALDA.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 4).setModels(new ConfiguredModel(buildFallenLeaves("culumalda", 4)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_CULUMALDA.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 5).setModels(new ConfiguredModel(buildFallenLeaves("culumalda", 5)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_CULUMALDA.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 6).setModels(new ConfiguredModel(buildFallenLeaves("culumalda", 6)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_CULUMALDA.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 7).setModels(new ConfiguredModel(buildFallenLeaves("culumalda", 7)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_CULUMALDA.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 8).setModels(new ConfiguredModel(buildFallenLeaves("culumalda", 8)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_LEBETHRON.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 1).setModels(new ConfiguredModel(buildFallenLeaves("lebethron", 1)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_LEBETHRON.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 2).setModels(new ConfiguredModel(buildFallenLeaves("lebethron", 2)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_LEBETHRON.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 3).setModels(new ConfiguredModel(buildFallenLeaves("lebethron", 3)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_LEBETHRON.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 4).setModels(new ConfiguredModel(buildFallenLeaves("lebethron", 4)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_LEBETHRON.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 5).setModels(new ConfiguredModel(buildFallenLeaves("lebethron", 5)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_LEBETHRON.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 6).setModels(new ConfiguredModel(buildFallenLeaves("lebethron", 6)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_LEBETHRON.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 7).setModels(new ConfiguredModel(buildFallenLeaves("lebethron", 7)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_LEBETHRON.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 8).setModels(new ConfiguredModel(buildFallenLeaves("lebethron", 8)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_FANGORNOAK.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 1).setModels(new ConfiguredModel(buildFallenLeaves("fangornoak", 1)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_FANGORNOAK.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 2).setModels(new ConfiguredModel(buildFallenLeaves("fangornoak", 2)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_FANGORNOAK.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 3).setModels(new ConfiguredModel(buildFallenLeaves("fangornoak", 3)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_FANGORNOAK.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 4).setModels(new ConfiguredModel(buildFallenLeaves("fangornoak", 4)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_FANGORNOAK.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 5).setModels(new ConfiguredModel(buildFallenLeaves("fangornoak", 5)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_FANGORNOAK.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 6).setModels(new ConfiguredModel(buildFallenLeaves("fangornoak", 6)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_FANGORNOAK.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 7).setModels(new ConfiguredModel(buildFallenLeaves("fangornoak", 7)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_FANGORNOAK.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 8).setModels(new ConfiguredModel(buildFallenLeaves("fangornoak", 8)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_DWARVEN_MAPLE.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 1).setModels(new ConfiguredModel(buildFallenLeaves("dwarven_maple", 1)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_DWARVEN_MAPLE.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 2).setModels(new ConfiguredModel(buildFallenLeaves("dwarven_maple", 2)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_DWARVEN_MAPLE.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 3).setModels(new ConfiguredModel(buildFallenLeaves("dwarven_maple", 3)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_DWARVEN_MAPLE.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 4).setModels(new ConfiguredModel(buildFallenLeaves("dwarven_maple", 4)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_DWARVEN_MAPLE.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 5).setModels(new ConfiguredModel(buildFallenLeaves("dwarven_maple", 5)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_DWARVEN_MAPLE.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 6).setModels(new ConfiguredModel(buildFallenLeaves("dwarven_maple", 6)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_DWARVEN_MAPLE.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 7).setModels(new ConfiguredModel(buildFallenLeaves("dwarven_maple", 7)));
-        getVariantBuilder(TolkienBlocks.LEAFPILE_DWARVEN_MAPLE.get()).partialState()
-                .with(LeafPileBlock.LAYERS, 8).setModels(new ConfiguredModel(buildFallenLeaves("dwarven_maple", 8)));
+        makeBush(((BramblesBushBlock) TolkienBlocks.FLOWER_BRAMBLES.get()), TolkienBlocks.POTTED_FLOWER_BRAMBLES, "flower_brambles", "flower_brambles_stage");
+
+        leafpileBuilder(TolkienBlocks.LEAFPILE_MALLORN.get(), "mallorn");
+        leafpileBuilder(TolkienBlocks.LEAFPILE_MIRKWOOD.get(), "mirkwood");
+        leafpileBuilder(TolkienBlocks.LEAFPILE_CULUMALDA.get(), "culumalda");
+        leafpileBuilder(TolkienBlocks.LEAFPILE_LEBETHRON.get(), "lebethron");
+        leafpileBuilder(TolkienBlocks.LEAFPILE_FANGORNOAK.get(), "fangornoak");
+        leafpileBuilder(TolkienBlocks.LEAFPILE_DWARVEN_MAPLE.get(), "dwarven_maple");
+
+        blockItem(TolkienBlocks.FLOWER_BRAMBLES, "3");
 
             // Custom
         builtinEntity(TolkienBlocks.LIGHTNINGBUG_BLOCK.get(), "block/blank");
         builtinEntity(TolkienBlocks.LOCUST_BLOCK.get(), "block/blank");
+
         simpleBlock(TolkienBlocks.BLOCK_HALLOWED.value(), this.models().cubeBottomTop("block_hallowed", modLoc("block/block_hallowed_side"), modLoc("block/block_hallowed"), modLoc("block/block_hallowed_top")));
         simpleBlock(TolkienBlocks.STONE_PATH.value(), this.models().getExistingFile(modLoc("block/block_stone_path")));
 

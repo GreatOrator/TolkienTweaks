@@ -138,6 +138,7 @@ public class TolkienTabs {
                         output.accept(TolkienItems.GOLDEN_INSECT);
                         output.accept(TolkienItems.TREE_ACORN);
                         output.accept(TolkienItems.GOLDEN_TREE_ACORN);
+                        output.accept(TolkienItems.BRAMBLES_BERRY);
                         output.accept(TolkienItems.MIRUVOR);
                         output.accept(TolkienItems.GROG);
                         output.accept(TolkienItems.DRINK_ELF_FLEETFOOT);
@@ -145,7 +146,6 @@ public class TolkienTabs {
                         output.accept(TolkienItems.DRINK_ELF_VITALITY);
                         output.accept(TolkienItems.DRINK_ERU_BLESSING);
                         output.accept(TolkienItems.DRINK_PERSONAL_BLACKSMITH);
-
                     }).build());
 
     public static final Supplier<CreativeModeTab> TOLKIEN_FUNCTION = CREATIVE_MODE_TAB.register("tolkienmobs_tab_function",
@@ -489,6 +489,10 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.FLOWER_SWAMPMILKWEED);
                         output.accept(TolkienBlocks.FLOWER_LILLYOFTHEVALLEY);
                         output.accept(TolkienBlocks.FLOWER_ELANOR);
+                        output.accept(TolkienBlocks.FLOWER_AEGLOS);
+                        output.accept(TolkienBlocks.FLOWER_LISSUIN);
+                        output.accept(TolkienBlocks.FLOWER_MALLOS);
+                        output.accept(TolkienBlocks.FLOWER_BRAMBLES);
                         output.accept(TolkienBlocks.MUSHROOM_BLOOM_DECAY);
                         output.accept(TolkienBlocks.MUSHROOM_DECAY_BLOOM);
                         output.accept(TolkienItems.PIPEWEED_ITEM);

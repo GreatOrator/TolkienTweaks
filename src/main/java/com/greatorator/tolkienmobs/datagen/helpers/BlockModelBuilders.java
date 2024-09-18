@@ -1,6 +1,9 @@
 package com.greatorator.tolkienmobs.datagen.helpers;
 
+import com.greatorator.tolkienmobs.block.custom.BramblesBushBlock;
+import com.greatorator.tolkienmobs.block.custom.LeafPileBlock;
 import com.greatorator.tolkienmobs.block.custom.PipeweedCropBlock;
+import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienFluids;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -290,6 +293,18 @@ public abstract class BlockModelBuilders extends BlockModelHelper {
 
 	}
 
+	protected void leafpileBuilder(Block block, String leafPile) {
+		getVariantBuilder(block).partialState().with(LeafPileBlock.LAYERS, 1).setModels(new ConfiguredModel(buildFallenLeaves(leafPile, 1)));
+		getVariantBuilder(block).partialState().with(LeafPileBlock.LAYERS, 2).setModels(new ConfiguredModel(buildFallenLeaves(leafPile, 2)));
+		getVariantBuilder(block).partialState().with(LeafPileBlock.LAYERS, 3).setModels(new ConfiguredModel(buildFallenLeaves(leafPile, 3)));
+		getVariantBuilder(block).partialState().with(LeafPileBlock.LAYERS, 4).setModels(new ConfiguredModel(buildFallenLeaves(leafPile, 4)));
+		getVariantBuilder(block).partialState().with(LeafPileBlock.LAYERS, 5).setModels(new ConfiguredModel(buildFallenLeaves(leafPile, 5)));
+		getVariantBuilder(block).partialState().with(LeafPileBlock.LAYERS, 6).setModels(new ConfiguredModel(buildFallenLeaves(leafPile, 6)));
+		getVariantBuilder(block).partialState().with(LeafPileBlock.LAYERS, 7).setModels(new ConfiguredModel(buildFallenLeaves(leafPile, 7)));
+		getVariantBuilder(block).partialState().with(LeafPileBlock.LAYERS, 8).setModels(new ConfiguredModel(buildFallenLeaves(leafPile, 8)));
+
+	}
+
 	protected BlockModelBuilder buildFallenLeaves(String leafPile, int index) {
 		return models().getBuilder("leafpile_" + leafPile + index).renderType(CUTOUT).texture("particle", "tolkienmobs:block/leaves_" + leafPile).texture("all", "tolkienmobs:block/leaves_" + leafPile)
 			.element().from(0, 0, 0).to(16, index == 1 ? 0.2F : 2.0F * (index - 1), 16)
@@ -405,13 +420,33 @@ public abstract class BlockModelBuilders extends BlockModelHelper {
 		return key(block).getPath();
 	}
 
-	public void makeCrop(CropBlock block, String modelName, String textureName) {
-		Function<BlockState, ConfiguredModel[]> function = state -> states(state, block, modelName, textureName);
+	public void makeBush(BushBlock block, DeferredBlock<FlowerPotBlock> potBlock, String modelName, String textureName) {
+		Function<BlockState, ConfiguredModel[]> function = state -> bushStates(state, block, modelName, textureName);
+
+		simpleBlock(potBlock.get(),
+				models().withExistingParent(potBlock.getId().getPath(),
+								mcLoc("block/flower_pot_cross")).renderType("cutout")
+						.texture("plant", blockTexture(block)));
 
 		getVariantBuilder(block).forAllStates(function);
 	}
 
-	private ConfiguredModel[] states(BlockState state, CropBlock block, String modelName, String textureName) {
+	public void makeCrop(CropBlock block, String modelName, String textureName) {
+		Function<BlockState, ConfiguredModel[]> function = state -> cropStates(state, block, modelName, textureName);
+
+		getVariantBuilder(block).forAllStates(function);
+	}
+
+	private ConfiguredModel[] bushStates(BlockState state, BushBlock block, String modelName, String textureName) {
+		ConfiguredModel[] models = new ConfiguredModel[1];
+		models[0] = new ConfiguredModel(models().cross(modelName + state.getValue(((BramblesBushBlock) block).getAgeProperty()),
+				ResourceLocation.fromNamespaceAndPath(MODID, "block/" + textureName +
+						state.getValue(((BramblesBushBlock) block).getAgeProperty()))).renderType("cutout"));
+
+		return models;
+	}
+
+	private ConfiguredModel[] cropStates(BlockState state, CropBlock block, String modelName, String textureName) {
 		ConfiguredModel[] models = new ConfiguredModel[1];
 		models[0] = new ConfiguredModel(models().crop(modelName + state.getValue(((PipeweedCropBlock) block).getAgeProperty()),
 				ResourceLocation.fromNamespaceAndPath(MODID, "block/" + textureName +
@@ -489,6 +524,10 @@ public abstract class BlockModelBuilders extends BlockModelHelper {
 	}
 
 	protected void blockItem(DeferredBlock<Block> deferredBlock, String appendix) {
+		simpleBlockItem(deferredBlock.get(), new ModelFile.UncheckedModelFile("tolkienmobs:block/" + deferredBlock.getId().getPath() + appendix));
+	}
+
+	protected void bushItem(DeferredBlock<Block> deferredBlock, String appendix) {
 		simpleBlockItem(deferredBlock.get(), new ModelFile.UncheckedModelFile("tolkienmobs:block/" + deferredBlock.getId().getPath() + appendix));
 	}
 }
