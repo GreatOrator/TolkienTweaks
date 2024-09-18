@@ -53,6 +53,24 @@ public class TolkienMobsMain {
     /*
      TODO
       -Fix Rendering of Coin Pouch and Key Ring States
+        -Fix GUI for Key Codes
+      -Armor Implemented
+      -Bows Implemented
+      -Projectiles Implemented
+      -Biomes
+        -Structures
+        -Features
+      -Arda Portal
+      -Enchantments
+      -Functional Blocks
+        -Fireplace Recipes
+        -Trinket Table Recipes
+      -Trinkets
+      -Entities
+        -Spawn Eggs
+      -Integration
+        -Curios
+        -JEI
      */
 
     public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer, Dist dist) {

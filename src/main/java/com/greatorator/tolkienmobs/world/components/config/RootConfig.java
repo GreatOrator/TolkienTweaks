@@ -1,4 +1,4 @@
-package com.greatorator.tolkienmobs.world.feature.config;
+package com.greatorator.tolkienmobs.world.components.config;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

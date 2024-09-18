@@ -1,4 +1,4 @@
-package com.greatorator.tolkienmobs.world.feature;
+package com.greatorator.tolkienmobs.world.components.feature;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
