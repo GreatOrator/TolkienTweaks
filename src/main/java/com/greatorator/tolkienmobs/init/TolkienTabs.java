@@ -5,6 +5,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -47,7 +48,6 @@ public class TolkienTabs {
                         output.accept(TolkienItems.GOLEM_STONE_AIR);
                         output.accept(TolkienItems.GOLEM_STONE_FIRE);
                         output.accept(TolkienItems.GOLEM_STONE_WATER);
-                        output.accept(TolkienItems.GOLEM_STONE_SUMMON);
                         output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_BASE);
                         output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_SIZE);
                         output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID);
@@ -551,6 +551,14 @@ public class TolkienTabs {
                         output.accept(TolkienItems.RECORD_FUMBLE);
                         output.accept(TolkienItems.RECORD_EDORAS);
                         output.accept(TolkienItems.RECORD_WBATTLE);
+                    }).build());
+
+    public static final Supplier<CreativeModeTab> TOLKIEN_SPAWN = CREATIVE_MODE_TAB.register("tolkienmobs_tab_spawn",
+            () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienItems.GOLEM_STONE_SUMMON.get()))
+                    .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_tool"))
+                    .title(Component.translatable("itemGroup.tolkienmobs.spawn"))
+                    .displayItems((itemDisplayParameters, output) -> {
+                        output.accept(TolkienItems.GOLEM_STONE_SUMMON);
                     }).build());
 
     public static void register(IEventBus eventBus) {
