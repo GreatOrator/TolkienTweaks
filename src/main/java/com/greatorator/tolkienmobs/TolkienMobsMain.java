@@ -77,9 +77,6 @@ public class TolkienMobsMain {
         if (dist.isClient()) {
             TolkienRegistration.initModBusEvents(modEventBus);
         }
-
-        modEventBus.addListener(this::commonSetup);
-
         NeoForge.EVENT_BUS.register(this);
         TolkienTabs.register(modEventBus);
 
@@ -104,7 +101,6 @@ public class TolkienMobsMain {
         TolkienFeatureModifiers.FEATURES.register(modEventBus);
 
         TolkienDataComponents.COMPONENTS.register(modEventBus);
-        modEventBus.addListener(this::addCreative);
         modContainer.registerConfig(ModConfig.Type.COMMON, TolkienMobsConfig.SPEC);
     }
 
@@ -133,10 +129,6 @@ public class TolkienMobsMain {
             pot.addPlant(TolkienBlocks.MUSHROOM_BLOOM_DECAY.getId(), TolkienBlocks.POTTED_MUSHROOM_BLOOM_DECAY);
             pot.addPlant(TolkienBlocks.MUSHROOM_DECAY_BLOOM.getId(), TolkienBlocks.POTTED_MUSHROOM_DECAY_BLOOM);
         });
-    }
-
-    private void addCreative(BuildCreativeModeTabContentsEvent event) {
-
     }
 
     @SubscribeEvent
