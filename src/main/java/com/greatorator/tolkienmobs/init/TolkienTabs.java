@@ -1,11 +1,18 @@
 package com.greatorator.tolkienmobs.init;
 
+import com.greatorator.tolkienmobs.handler.TrinketComponent;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -19,7 +26,7 @@ public class TolkienTabs {
 
     public static final Supplier<CreativeModeTab> TOLKIEN_MATS = CREATIVE_MODE_TAB.register("tolkienmobs_tab_mats",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienItems.INGOT_MITHRIL.get()))
-                    .title(Component.translatable("itemGroup.tolkienmobs.mats"))
+                    .title(Component.translatable("itemgroup.tolkienmobs.mats"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(TolkienItems.RAW_MITHRIL);
                         output.accept(TolkienItems.RAW_MORGULIRON);
@@ -59,7 +66,7 @@ public class TolkienTabs {
     public static final Supplier<CreativeModeTab> TOLKIEN_QUEST = CREATIVE_MODE_TAB.register("tolkienmobs_tab_quest",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienItems.ITEM_FORTRESSMAP.get()))
                     .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_mats"))
-                    .title(Component.translatable("itemGroup.tolkienmobs.quest"))
+                    .title(Component.translatable("itemgroup.tolkienmobs.quest"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(TolkienItems.ITEM_BERYL);
                         output.accept(TolkienItems.ITEM_FORTRESSMAP);
@@ -127,7 +134,7 @@ public class TolkienTabs {
     public static final Supplier<CreativeModeTab> TOLKIEN_FOODS = CREATIVE_MODE_TAB.register("tolkienmobs_tab_food",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienItems.LEMBAS.get()))
                     .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_quest"))
-                    .title(Component.translatable("itemGroup.tolkienmobs.food"))
+                    .title(Component.translatable("itemgroup.tolkienmobs.food"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(TolkienItems.LEMBAS);
                         output.accept(TolkienItems.CRAM);
@@ -151,7 +158,7 @@ public class TolkienTabs {
     public static final Supplier<CreativeModeTab> TOLKIEN_FUNCTION = CREATIVE_MODE_TAB.register("tolkienmobs_tab_function",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienBlocks.MALLORN_SIGN.get()))
                     .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_food"))
-                    .title(Component.translatable("itemGroup.tolkienmobs.function"))
+                    .title(Component.translatable("itemgroup.tolkienmobs.function"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(TolkienBlocks.SILMARIL_LANTERN);
                         output.accept(TolkienBlocks.ELVEN_LANTERN);
@@ -205,7 +212,7 @@ public class TolkienTabs {
     public static final Supplier<CreativeModeTab> TOLKIEN_BLOCKS = CREATIVE_MODE_TAB.register("tolkienmobs_tab_deco",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienBlocks.BLOCK_AMMOLITE))
                     .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_function"))
-                    .title(Component.translatable("itemGroup.tolkienmobs.deco"))
+                    .title(Component.translatable("itemgroup.tolkienmobs.deco"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(TolkienBlocks.LOG_MALLORN);
                         output.accept(TolkienBlocks.WOOD_MALLORN);
@@ -409,7 +416,7 @@ public class TolkienTabs {
     public static final Supplier<CreativeModeTab> TOLKIEN_NATURE = CREATIVE_MODE_TAB.register("tolkienmobs_tab_natural",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienBlocks.BLOCK_HALLOWED))
                     .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_deco"))
-                    .title(Component.translatable("itemGroup.tolkienmobs.natural"))
+                    .title(Component.translatable("itemgroup.tolkienmobs.natural"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(TolkienBlocks.ORE_MITHRIL);
                         output.accept(TolkienBlocks.ORE_END_MITHRIL);
@@ -512,10 +519,11 @@ public class TolkienTabs {
     public static final Supplier<CreativeModeTab> TOLKIEN_TOOLS = CREATIVE_MODE_TAB.register("tolkienmobs_tab_tool",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienItems.SWORD_MITHRIL.get()))
                     .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_natural"))
-                    .title(Component.translatable("itemGroup.tolkienmobs.tools"))
+                    .title(Component.translatable("itemgroup.tolkienmobs.tools"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(TolkienItems.COIN_POUCH);
                         output.accept(TolkienItems.KEY_RING);
+                        output.accept(TolkienItems.HOBBIT_RING);
                         output.accept(TolkienItems.SWORD_WITCHKING);
                         output.accept(TolkienItems.SWORD_URUK);
                         output.accept(TolkienItems.WHIP_FIRE);
@@ -553,15 +561,107 @@ public class TolkienTabs {
                         output.accept(TolkienItems.RECORD_WBATTLE);
                     }).build());
 
+    public static final Supplier<CreativeModeTab> TOLKIEN_TRINKET = CREATIVE_MODE_TAB.register("tolkienmobs_tab_trinket",
+            () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienItems.TRINKET_RING.get()))
+                    .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_tool"))
+                    .title(Component.translatable("itemgroup.tolkienmobs.trinket"))
+                    .displayItems((itemDisplayParameters, output) -> {
+                        itemDisplayParameters.holders()
+                                .lookup(Registries.POTION)
+                                .ifPresent(
+                                        effectTypes -> generatePotionEffectTypes(
+                                                output,
+                                                effectTypes,
+                                                TolkienItems.TRINKET_RING.get(),
+                                                CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS,
+                                                itemDisplayParameters.enabledFeatures()
+                                        )
+                                );
+                        itemDisplayParameters.holders()
+                                .lookup(Registries.POTION)
+                                .ifPresent(
+                                        effectTypes -> generatePotionEffectTypes(
+                                                output,
+                                                effectTypes,
+                                                TolkienItems.TRINKET_BELT.get(),
+                                                CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS,
+                                                itemDisplayParameters.enabledFeatures()
+                                        )
+                                );
+                        itemDisplayParameters.holders()
+                                .lookup(Registries.POTION)
+                                .ifPresent(
+                                        effectTypes -> generatePotionEffectTypes(
+                                                output,
+                                                effectTypes,
+                                                TolkienItems.TRINKET_CHARM.get(),
+                                                CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS,
+                                                itemDisplayParameters.enabledFeatures()
+                                        )
+                                );
+                        itemDisplayParameters.holders()
+                                .lookup(Registries.POTION)
+                                .ifPresent(
+                                        effectTypes -> generatePotionEffectTypes(
+                                                output,
+                                                effectTypes,
+                                                TolkienItems.TRINKET_GLOVE.get(),
+                                                CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS,
+                                                itemDisplayParameters.enabledFeatures()
+                                        )
+                                );
+                        itemDisplayParameters.holders()
+                                .lookup(Registries.POTION)
+                                .ifPresent(
+                                        effectTypes -> generatePotionEffectTypes(
+                                                output,
+                                                effectTypes,
+                                                TolkienItems.TRINKET_AMULET.get(),
+                                                CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS,
+                                                itemDisplayParameters.enabledFeatures()
+                                        )
+                                );
+                        itemDisplayParameters.holders()
+                                .lookup(Registries.POTION)
+                                .ifPresent(
+                                        effectTypes -> generatePotionEffectTypes(
+                                                output,
+                                                effectTypes,
+                                                TolkienItems.TRINKET_CLOAK.get(),
+                                                CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS,
+                                                itemDisplayParameters.enabledFeatures()
+                                        )
+                                );
+                        itemDisplayParameters.holders()
+                                .lookup(Registries.POTION)
+                                .ifPresent(
+                                        effectTypes -> generatePotionEffectTypes(
+                                                output,
+                                                effectTypes,
+                                                TolkienItems.TRINKET_HAT.get(),
+                                                CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS,
+                                                itemDisplayParameters.enabledFeatures()
+                                        )
+                                );
+                    }).build());
+
     public static final Supplier<CreativeModeTab> TOLKIEN_SPAWN = CREATIVE_MODE_TAB.register("tolkienmobs_tab_spawn",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienItems.GOLEM_STONE_SUMMON.get()))
-                    .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_tool"))
-                    .title(Component.translatable("itemGroup.tolkienmobs.spawn"))
+                    .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "itemgroup.tolkienmobs.trinket"))
+                    .title(Component.translatable("itemgroup.tolkienmobs.spawn"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(TolkienItems.GOLEM_STONE_SUMMON);
                     }).build());
 
     public static void register(IEventBus eventBus) {
         CREATIVE_MODE_TAB.register(eventBus);
+    }
+
+    private static void generatePotionEffectTypes(CreativeModeTab.Output output, HolderLookup<Potion> potions, Item item, CreativeModeTab.TabVisibility tabVisibility, FeatureFlagSet requiredFeatures
+    ) {
+            potions.listElements()
+                    .filter(holder -> holder.value().isEnabled(requiredFeatures))
+                    .map(potion -> TrinketComponent.createItemStack(item, potion))
+                    .forEach(itemStack -> output.accept(itemStack, tabVisibility));
     }
 }

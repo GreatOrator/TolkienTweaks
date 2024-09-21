@@ -259,6 +259,15 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         basicItem(TolkienItems.RECORD_EDORAS.get());
         basicItem(TolkienItems.RECORD_WBATTLE.get());
         basicItem(TolkienItems.HYPE_HORN.get());
+        basicItem(TolkienItems.HOBBIT_RING.get());
+
+        trinketItem(TolkienItems.TRINKET_RING.get(), TolkienMobsMain.prefix("item/trinket_ring"), TolkienMobsMain.prefix("item/trinket_ring_gem"));
+        trinketItem(TolkienItems.TRINKET_AMULET.get(), TolkienMobsMain.prefix("item/trinket_amulet"), TolkienMobsMain.prefix("item/trinket_amulet_gem"));
+        trinketItem(TolkienItems.TRINKET_BELT.get(), TolkienMobsMain.prefix("item/trinket_belt"), TolkienMobsMain.prefix("item/trinket_belt_gem"));
+        trinketItem(TolkienItems.TRINKET_CHARM.get(), TolkienMobsMain.prefix("item/trinket_charm"), TolkienMobsMain.prefix("item/trinket_charm_gem"));
+        trinketItem(TolkienItems.TRINKET_HAT.get(), TolkienMobsMain.prefix("item/trinket_hat"), TolkienMobsMain.prefix("item/trinket_hat_gem"));
+        trinketItem(TolkienItems.TRINKET_GLOVE.get(), TolkienMobsMain.prefix("item/trinket_glove"), TolkienMobsMain.prefix("item/trinket_glove_gem"));
+        trinketItem(TolkienItems.TRINKET_CLOAK.get(), TolkienMobsMain.prefix("item/trinket_cloak"), TolkienMobsMain.prefix("item/trinket_cloak_gem"));
 
         buildTool(TolkienItems.SWORD_WITCHKING.get());
         buildTool(TolkienItems.SWORD_URUK.get());
@@ -290,6 +299,13 @@ public class TolkienItemModelProvider extends ItemModelProvider {
 
     private ItemModelBuilder generated(String name, ResourceLocation... layers) {
         return buildItem(name, "item/generated", 0, layers);
+    }
+
+    private ItemModelBuilder trinketItem(Item item, ResourceLocation texture, ResourceLocation overlay) {
+        return getBuilder(item.toString())
+                .parent(new ModelFile.UncheckedModelFile("item/generated"))
+                .texture("layer0", texture)
+                .texture("layer1", overlay);
     }
 
     private ItemModelBuilder buildItem(String name, String parent, int emissivity, ResourceLocation... layers) {

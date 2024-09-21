@@ -2,12 +2,16 @@ package com.greatorator.tolkienmobs.datagen.helpers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.greatorator.tolkienmobs.handler.TolkienDataComponents;
+import com.greatorator.tolkienmobs.handler.TrinketComponent;
 import com.greatorator.tolkienmobs.util.LangConversionHelper;
 import com.greatorator.tolkienmobs.util.LangFormatSplitter;
 import net.minecraft.Util;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -15,6 +19,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -34,6 +39,10 @@ public abstract class TolkienLangHelper extends LanguageProvider {
         super.add(key, value);
         List<LangFormatSplitter.Component> splitEnglish = LangFormatSplitter.split(value);
         this.upsideDownEntries.put(key, LangConversionHelper.convertComponents(splitEnglish));
+    }
+
+    public void addTrinket(Item key, String name) {
+        this.add(key.getDescriptionId() + ".effect.water", name);
     }
 
     public void addSound(String category, String subtitleName, String name) {
@@ -69,6 +78,10 @@ public abstract class TolkienLangHelper extends LanguageProvider {
         this.add(key.getDescriptionId(), name);
         this.add(key.getDescriptionId() + ".lore", lore);
     }
+
+//    public void createTrinketSet(ItemStack stack, String trinketType) {
+//        Potion.getName(stack.getOrDefault(TolkienDataComponents.POTION_CONTENTS, TrinketComponent.EMPTY).potion(), "item.tolkienmobs.trinket_"+trinketType+".effect.");
+//    }
 
     public void createPotionSet(String potionPrefix, String potionName) {
         this.add("item.minecraft.potion.effect." + potionPrefix, "Potion of " + potionName);
