@@ -42,6 +42,14 @@ public class TolkienItemTagProvider extends ItemTagsProvider {
                 .add(TolkienItems.GOLD_KEY.get())
                 .add(TolkienItems.MITHRIL_KEY.get())
                 .add(TolkienItems.MASTER_KEY.get());
+        tag(TolkienTags.Items.TRINKET)
+                .add(TolkienItems.TRINKET_RING.get())
+                .add(TolkienItems.TRINKET_AMULET.get())
+                .add(TolkienItems.TRINKET_CLOAK.get())
+                .add(TolkienItems.TRINKET_HAT.get())
+                .add(TolkienItems.TRINKET_GLOVE.get())
+                .add(TolkienItems.TRINKET_CHARM.get())
+                .add(TolkienItems.TRINKET_BELT.get());
         tag(TolkienTags.Items.SLEEPING_BAG)
                 .add(TolkienItems.SLEEPING_BAG_BLACK.get())
                 .add(TolkienItems.SLEEPING_BAG_WHITE.get())

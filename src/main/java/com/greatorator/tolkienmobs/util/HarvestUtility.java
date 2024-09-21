@@ -1,26 +1,25 @@
 package com.greatorator.tolkienmobs.util;
 
-import com.greatorator.tolkienmobs.init.TolkienTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.SpecialPlantable;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class HarvestUtility {
@@ -45,11 +44,11 @@ public class HarvestUtility {
             Block crop = state.getBlock();
 
             if (harvest) {
-                harvestBlock(serverLevel, currentPos, (ServerPlayer) player);
+                harvestBlock(serverLevel, currentPos, state);
             } else if (crop instanceof CropBlock growable) {
                 if (!growable.isValidBonemealTarget(serverLevel, currentPos, state)) {
                     if (!leaveBottomBlock(crop) || serverLevel.getBlockState(currentPos.below()).is(crop)) {
-                        harvestBlock(serverLevel, currentPos, (ServerPlayer) player);
+                        harvestBlock(serverLevel, currentPos, state);
                     }
                 } else if (!isGrassLikeBlock(crop)) {
                     if (serverLevel.random.nextInt(chance) == 0) {
@@ -67,12 +66,12 @@ public class HarvestUtility {
                     if (crop == Blocks.SUGAR_CANE || crop == Blocks.CACTUS) {
                         if (serverLevel.getBlockState(currentPos.above()).is(crop) && serverLevel.getBlockState(currentPos.above(2)).is(crop)) {
                             for (int i = crop == Blocks.SUGAR_CANE ? 1 : 0; i < 3; i++) {
-                                harvestBlock(serverLevel, currentPos.above(i), (ServerPlayer) player);
+                                harvestBlock(serverLevel, currentPos.above(i), state);
                             }
                         }
                     } else if (crop == Blocks.NETHER_WART) {
                         if (state.getValue(NetherWartBlock.AGE) == 3) {
-                            harvestBlock(serverLevel, currentPos, (ServerPlayer) player);
+                            harvestBlock(serverLevel, currentPos, state);
                         }
                     }
                 }
@@ -85,8 +84,54 @@ public class HarvestUtility {
         }
     }
 
-    private static void harvestBlock(Level level, BlockPos pos, @Nullable ServerPlayer player) {
-            level.destroyBlock(pos, true, player);
+    public static List<ItemStack> harvestBlock(ServerLevel pLevel, BlockPos cropPos, BlockState crop) {
+        List<ItemStack> drops = new ArrayList<>();
+        if (crop.getBlock() instanceof CropBlock cropBlock) {
+            if (cropBlock.isMaxAge(crop)) {
+                BlockState placeState = Blocks.AIR.defaultBlockState();
+                BlockEntity blockEntity = pLevel.getBlockEntity(cropPos);
+                drops.addAll(Block.getDrops(crop, pLevel, cropPos, blockEntity));
+                for (ItemStack drop : drops) {
+                    if (drop.getItem() instanceof BlockItem blockItem) {
+                        placeState = blockItem.getBlock().defaultBlockState();
+                        drop.shrink(1);
+                        break;
+                    }
+                }
+                pLevel.destroyBlock(cropPos, true);
+                pLevel.setBlockAndUpdate(cropPos, placeState);
+            }
+        } else if (crop.is(Blocks.NETHER_WART) && crop.getValue(NetherWartBlock.AGE) == NetherWartBlock.MAX_AGE) {
+            BlockState placeState = Blocks.AIR.defaultBlockState();
+            BlockEntity blockEntity = pLevel.getBlockEntity(cropPos);
+            drops.addAll(Block.getDrops(crop, pLevel, cropPos, blockEntity));
+            for (ItemStack drop : drops) {
+                if (drop.getItem() instanceof BlockItem blockItem) {
+                    placeState = blockItem.getBlock().defaultBlockState();
+                    drop.shrink(1);
+                    break;
+                }
+            }
+            pLevel.destroyBlock(cropPos, true);
+            pLevel.setBlockAndUpdate(cropPos, placeState);
+        } else if (crop.getBlock() instanceof SugarCaneBlock || crop.getBlock() instanceof CactusBlock || crop.is(Blocks.BAMBOO)) {
+            List<BlockPos> posToCheck = new ArrayList<>();
+            for (int i = 0; i < 10; i++) { //In case it grew a lot since last check
+                BlockPos pos = cropPos.above(i);
+                if (pLevel.getBlockState(pos).is(crop.getBlock()))
+                    posToCheck.add(pos);
+                else
+                    break;
+            }
+            for (int i = posToCheck.size() - 1; i >= 0; i--) {
+                BlockPos clearPos = posToCheck.get(i);
+                BlockEntity blockEntity = pLevel.getBlockEntity(clearPos);
+                drops.addAll(Block.getDrops(pLevel.getBlockState(clearPos), pLevel, clearPos, blockEntity));
+                pLevel.destroyBlock(clearPos, true);
+            }
+        }
+
+        return drops;
     }
 
     private static boolean leaveBottomBlock(Block crop) {

@@ -17,7 +17,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
 
     @Override
     protected void addTranslations() {
-        this.add("itemGroup.tolkienmobs.deco", "TolkienTweaks: Building Blocks");
+        this.add("itemgroup.tolkienmobs.deco", "TolkienTweaks: Building Blocks");
             this.addItem(TolkienItems.CREBAIN_FEATHER, "Crebain Feather");
             this.addItem(TolkienItems.BIRD_FEATHER, "Bird Feather");
             this.addItem(TolkienItems.MUMAKIL_LEATHER, "Mumakil Leather");
@@ -41,7 +41,9 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_CRAFTING.get(), "Backpack Upgrade - Crafting", "Allows crating anywhere (Max-1)");
             this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_SLEEPING.get(), "Backpack Upgrade - Sleeping Bag", "Carry around a sleeping bag (Max-1)");
             this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_CAMPFIRE.get(), "Backpack Upgrade - Campfire", "Quick use campfire (Max-1)");
-        this.add("itemGroup.tolkienmobs.natural", "TolkienTweaks: Natural Blocks");
+        this.add("itemgroup.tolkienmobs.natural", "TolkienTweaks: Natural Blocks");
+            this.addItem(TolkienItems.PIPEWEED_SEEDS, "Pipeweed Seeds");
+            this.addItem(TolkienItems.PIPEWEED_ITEM, "Pipeweed");
             this.addFlowerBlock(TolkienBlocks.FLOWER_SIMBELMYNE.get(), "Simbelmyne", "simbelmyne");
             this.addFlowerBlock(TolkienBlocks.FLOWER_MIRKWOOD.get(), "Seregon", "mirkwood");
             this.addFlowerBlock(TolkienBlocks.FLOWER_ALFIRIN.get(), "Alfirin", "alfirin");
@@ -67,7 +69,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addBlock(TolkienBlocks.LIVING_ROOTS, "Living Roots");
             this.addBlockWithLore(TolkienBlocks.PLACARD.get(), "Country Signs", "Shift right-click on sign to cycle types");
             this.addBlock(TolkienBlocks.ROCKPILE, "Rockpile");
-        this.add("itemGroup.tolkienmobs.food", "TolkienTweaks: Food & Drinks");
+        this.add("itemgroup.tolkienmobs.food", "TolkienTweaks: Food & Drinks");
             this.addItem(TolkienItems.LEMBAS, "Lembas");
             this.addItem(TolkienItems.CRAM, "Cram");
             this.addItem(TolkienItems.HONEY_CAKE, "Honey Cake");
@@ -79,7 +81,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addItem(TolkienItems.DRINK_ERU_BLESSING, "Blessing of Eru Iluvatar");
             this.addItem(TolkienItems.DRINK_ENT_DRAUGHT, "Ent Draught");
             this.addItem(TolkienItems.DRINK_PERSONAL_BLACKSMITH, "Portable Blacksmith");
-        this.add("itemGroup.tolkienmobs.quest", "TolkienTweaks: Basic Items");
+        this.add("itemgroup.tolkienmobs.quest", "TolkienTweaks: Basic Items");
             this.addItemWithLore(TolkienItems.ITEM_BERYL.get(), "§3Glorfindel's Beryl§r", "Magical gem loaned to you to help on your search");
             this.addItemWithLore(TolkienItems.ITEM_FORTRESSMAP.get(), "§3Fortress Plans§r", "Seemingly fragile, surprising it survived so long");
             this.addItemWithLore(TolkienItems.ITEM_WATCHERHEART.get(), "§5Stone Heart§r", "This heart has a disturbing and fearful energy");
@@ -141,10 +143,19 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addItemWithInstructions(TolkienItems.GOLD_KEY.get(), "Gold Key", "Uses Left: ", "Hold Shift while in Creative", "Right-click to enter/change key code");
             this.addItemWithInstructions(TolkienItems.MITHRIL_KEY.get(), "Mithril Key", "Uses Left: ", "Hold Shift while in Creative", "Right-click to enter/change key code");
             this.addItemWithInstructions(TolkienItems.MASTER_KEY.get(), "Master Key", "Uses Left: ", "Hold Shift while in Creative", "Right-click to enter/change key code");
-            this.add("itemGroup.tolkienmobs.spawn", "TolkienTweaks: Mobs");
-            this.add("itemGroup.tolkienmobs.tools", "TolkienTweaks: Tools");
+        this.add("itemgroup.tolkienmobs.spawn", "TolkienTweaks: Mobs");
+        this.add("itemgroup.tolkienmobs.trinket", "TolkienTweaks: Trinkets");
+            this.addTrinket(TolkienItems.TRINKET_RING.get(), "Magical Ring");
+            this.addTrinket(TolkienItems.TRINKET_AMULET.get(), "Magical Amulet");
+            this.addTrinket(TolkienItems.TRINKET_BELT.get(), "Magical Belt");
+            this.addTrinket(TolkienItems.TRINKET_CHARM.get(), "Magical Charm");
+            this.addTrinket(TolkienItems.TRINKET_CLOAK.get(), "Magical Cloak");
+            this.addTrinket(TolkienItems.TRINKET_GLOVE.get(), "Magical Glove");
+            this.addTrinket(TolkienItems.TRINKET_HAT.get(), "Magical Hat");
+        this.add("itemgroup.tolkienmobs.tools", "TolkienTweaks: Tools");
             this.addItem(TolkienItems.COIN_POUCH, "Coin Pouch");
             this.addItem(TolkienItems.KEY_RING, "Key Ring");
+            this.addItemWithLore(TolkienItems.HOBBIT_RING.get(), "Hobbit Ring of Growth", "Gift from the elves to enhance farming");
             this.addItemWithLore(TolkienItems.SWORD_WITCHKING.get(), "§4Sword of the Witch-king§r", "Forged in fear, the powerful weapon of the Witch-king");
             this.addItemWithLore(TolkienItems.SWORD_URUK.get(), "Uruk Sword", "Forged in fire beneath Isengard");
             this.addItemWithLore(TolkienItems.WHIP_FIRE.get(), "§4Whip of Fire§r","Primary weapon of the fearsome Balrog");
@@ -165,8 +176,8 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addMusicDisc(TolkienItems.RECORD_FUMBLE, "SnowShepherd - Bumbling Troll");
             this.addMusicDisc(TolkienItems.RECORD_EDORAS, "SnowShepherd - Home of the Horse-lords");
             this.addMusicDisc(TolkienItems.RECORD_WBATTLE, "SnowShepherd - Ephalba's Realm");
-        this.add("itemGroup.tolkienmobs.mats", "TolkienTweaks: Ingredients");
-        this.add("itemGroup.tolkienmobs.function", "TolkienTweaks: Functional Blocks");
+        this.add("itemgroup.tolkienmobs.mats", "TolkienTweaks: Ingredients");
+        this.add("itemgroup.tolkienmobs.function", "TolkienTweaks: Functional Blocks");
             this.addBlock(TolkienBlocks.SILMARIL_LANTERN, "Light of Elendil");
             this.addBlock(TolkienBlocks.ELVEN_LANTERN, "Elven Lantern");
             this.addBlock(TolkienBlocks.MORGUL_LANTERN, "Morgul Lantern");
@@ -248,6 +259,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.createPotionSet("dread_aura", "Great Dread");
             this.createPotionSet("crippling_terror", "Paralysing Fear");
 
+//            this.createTrinketSet(TolkienItems.TRINKET_RING.toStack(), "ring");
                 // Sounds
             this.addSound("block", "chest_open", "Chest has opened");
             this.addSound("block", "chest_close", "Chest has closed");

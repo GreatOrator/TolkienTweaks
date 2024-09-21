@@ -27,6 +27,7 @@ public class TolkienTags {
         public static final TagKey<Item> SLEEPING_BAG = createTag("sleeping_bag");
         public static final TagKey<Item> COINS = createTag("coins");
         public static final TagKey<Item> KEYS = createTag("keys");
+        public static final TagKey<Item> TRINKET = createTag("trinket");
 
         private static TagKey<Item> createTag(String name) {
             return ItemTags.create(ResourceLocation.fromNamespaceAndPath(MODID, name));

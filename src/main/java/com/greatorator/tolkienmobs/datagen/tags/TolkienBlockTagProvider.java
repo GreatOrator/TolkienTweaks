@@ -223,5 +223,6 @@ public class TolkienBlockTagProvider extends BlockTagsProvider {
                 .add(Blocks.WARPED_NYLIUM)
                 .add(Blocks.COBBLESTONE)
                 .add(Blocks.STONE);
+        tag(TolkienTags.Blocks.BLACKLIST_HARVEST);
     }
 }
