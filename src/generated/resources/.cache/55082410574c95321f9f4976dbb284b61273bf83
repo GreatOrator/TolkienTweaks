@@ -1,4 +1,4 @@
-// 1.21	2024-09-18T07:23:34.930349	Item Models: tolkienmobs
+// 1.21	2024-09-20T07:01:13.953613	Item Models: tolkienmobs
 914e29c26c212ad7b8914aa552c5ce18400b5057 assets/tolkienmobs/models/item/axe_ammolite.json
 9a08370f124e62b3c7067b9bf9976a8c617561be assets/tolkienmobs/models/item/axe_mithril.json
 6c3e1ecf8e78654791353669b7c17986e5b4fd21 assets/tolkienmobs/models/item/axe_morguliron.json
@@ -63,6 +63,7 @@ b349b95b21bdf90d090e393c8ff87584063005e4 assets/tolkienmobs/models/item/gem_ammo
 b3902cb87188b1a35c12f4fea167b47bc4e2532f assets/tolkienmobs/models/item/hanging_sign_lebethron.json
 e73c321bccbf3eb9e4599123979d9a273eae9b50 assets/tolkienmobs/models/item/hanging_sign_mallorn.json
 be60f135736dcae8361903d73e3e9c2f382283eb assets/tolkienmobs/models/item/hanging_sign_mirkwood.json
+c600de0c4b5cd8ec15cb47a741bb02d089a31b33 assets/tolkienmobs/models/item/hobbit_ring.json
 2671b9e3cff68d749bd3a9ee4b6bcaa485cfab81 assets/tolkienmobs/models/item/hoe_ammolite.json
 df511e919e9f92a57737df71cab4b170f3678561 assets/tolkienmobs/models/item/hoe_mithril.json
 b8209b96a52345d428a6744bcce0333d49b76556 assets/tolkienmobs/models/item/hoe_morguliron.json
@@ -215,6 +216,13 @@ c6d7acc50685afab51b08aa77eec1f66e3cee2dd assets/tolkienmobs/models/item/sign_mal
 adda748e6ccc080dd86d8d610524ac9b6f7c743e assets/tolkienmobs/models/item/sword_morguliron.json
 290a1b7f255418a614f8f318eba548884080e74c assets/tolkienmobs/models/item/sword_uruk.json
 82750315bfb5bfd97da5627a4df4c38f368bd14d assets/tolkienmobs/models/item/sword_witchking.json
+ed8e1d37aeaa7c3973de443cdaf1a10b24ce7a65 assets/tolkienmobs/models/item/trinket_amulet.json
+a6fb4ca248c96887299eae571dfa8e6a3dc68b26 assets/tolkienmobs/models/item/trinket_belt.json
+598eac9617b6eba49245f143a9029eda3e2999a1 assets/tolkienmobs/models/item/trinket_charm.json
+1ffb151ad3198033a6ce7a150a8dd2c7875528fe assets/tolkienmobs/models/item/trinket_cloak.json
+0dc398941d95db1bec11d3a0d73b06347d4ea873 assets/tolkienmobs/models/item/trinket_glove.json
+f50a61fbda77d4e7b413565e5505e3eb05628911 assets/tolkienmobs/models/item/trinket_hat.json
+3ed68de7392ce7ac2da87e2f1b06bd184138dbaf assets/tolkienmobs/models/item/trinket_ring.json
 8d9799136d64e4c25a2d48f6206e3e33c348c741 assets/tolkienmobs/models/item/upgrade_item_backpack_upgrade_base.json
 d4b831e2dbee2f43b27f9bdda5a227eff6d4171d assets/tolkienmobs/models/item/wall_chiseled_dark_stone_bricks.json
 922b3cc382066342c03d64abc4549aaca46a37d7 assets/tolkienmobs/models/item/wall_chiseled_dwarven_stone_bricks.json

@@ -1,14 +1,17 @@
 package com.greatorator.tolkienmobs;
 
+import com.greatorator.tolkienmobs.item.custom.TrinketItem;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,9 +37,15 @@ public class TolkienMobsConfig {
 //            .comment("The time of day that sleeping bags can be used.")
 //            .defineEnum("sleepingBagUse", ComfortsTimeUse.NIGHT);
 
-    private static final ModConfigSpec.IntValue MAGIC_NUMBER = BUILDER
-            .comment("A magic number")
-            .defineInRange("magicNumber", 42, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue PICKUP_RANGE = BUILDER
+            .comment("Range of pickup for Hobbit Ring")
+            .defineInRange("pickupRange", 7, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue GROWTH_RANGE = BUILDER
+            .comment("Range of growth for Hobbit Ring")
+            .defineInRange("growthRange", 7, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue GROW_TIMER = BUILDER
+            .comment("How often the Hobbit Ring will try to grow a block (in ticks)")
+            .defineInRange("growthTimer", 20, 0, Integer.MAX_VALUE);
 
     public static final ModConfigSpec.ConfigValue<String> MAGIC_NUMBER_INTRODUCTION = BUILDER
             .comment("What you want the introduction message to be for the magic number")
@@ -53,7 +62,9 @@ public class TolkienMobsConfig {
     public static boolean autoUse;
     public static boolean disableHobbitGrowth;
     public enum sleepingBagUse {};
-    public static int magicNumber;
+    public static int pickupRange;
+    public static int growthRange;
+    public static int growthTimer;
     public static String magicNumberIntroduction;
     public static Set<Item> items;
 
@@ -68,7 +79,9 @@ public class TolkienMobsConfig {
         disableFakePlayer = FAKE_PLAYER.get();
         autoUse = AUTO_USE.get();
         disableHobbitGrowth = AUTO_USE.get();
-        magicNumber = MAGIC_NUMBER.get();
+        pickupRange = PICKUP_RANGE.get();
+        growthRange = GROWTH_RANGE.get();
+        growthTimer = GROW_TIMER.get();
         magicNumberIntroduction = MAGIC_NUMBER_INTRODUCTION.get();
 
         // convert the list of strings into a set of items

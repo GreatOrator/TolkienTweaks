@@ -1,4 +1,4 @@
-// 1.21	2024-09-18T09:07:41.0269179	Tags for minecraft:block mod id tolkienmobs
+// 1.21	2024-09-19T19:50:31.7736547	Tags for minecraft:block mod id tolkienmobs
 c697663a63d12d5f108102f51c8b115d85d5192b data/minecraft/tags/block/ceiling_hanging_signs.json
 2425bde7509c8f73e1716b527cdaf196eb24f51a data/minecraft/tags/block/climbable.json
 7b87e663d9d17bb1465a1de7e799ad751a1c30d6 data/minecraft/tags/block/doors.json
@@ -18,5 +18,6 @@ f38e762d7c09660492e424f7a126f9d110aaf57e data/minecraft/tags/block/standing_sign
 2e42124093248e13dccc96612c08cbb67d4e9cfc data/minecraft/tags/block/wooden_doors.json
 5991e61167d5a55ff878fd59c809c0b1efbe1a11 data/minecraft/tags/block/wooden_fences.json
 55689406907bfe628b90b7032f8870be0e2a1591 data/minecraft/tags/block/wooden_pressure_plates.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/tolkienmobs/tags/block/blacklist_harvest.json
 d81ccf454ddd1b309f641892b1a525e41248b0d1 data/tolkienmobs/tags/block/decay_grow_block.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/tolkienmobs/tags/block/root_trace_skip.json

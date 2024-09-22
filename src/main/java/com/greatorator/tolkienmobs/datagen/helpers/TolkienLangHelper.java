@@ -7,8 +7,14 @@ import com.greatorator.tolkienmobs.handler.TrinketComponent;
 import com.greatorator.tolkienmobs.util.LangConversionHelper;
 import com.greatorator.tolkienmobs.util.LangFormatSplitter;
 import net.minecraft.Util;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
@@ -19,6 +25,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
@@ -42,7 +49,7 @@ public abstract class TolkienLangHelper extends LanguageProvider {
     }
 
     public void addTrinket(Item key, String name) {
-        this.add(key.getDescriptionId() + ".effect.water", name);
+        this.add(key.getDescriptionId() + ".water", name);
     }
 
     public void addSound(String category, String subtitleName, String name) {
@@ -79,9 +86,46 @@ public abstract class TolkienLangHelper extends LanguageProvider {
         this.add(key.getDescriptionId() + ".lore", lore);
     }
 
-//    public void createTrinketSet(ItemStack stack, String trinketType) {
-//        Potion.getName(stack.getOrDefault(TolkienDataComponents.POTION_CONTENTS, TrinketComponent.EMPTY).potion(), "item.tolkienmobs.trinket_"+trinketType+".effect.");
-//    }
+    public void createTrinketSet(String trinketType, String descriptionType) {
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".empty", "Base " + descriptionType);
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".water", "Magical " + descriptionType + " of Nothingness");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".mundane", "Magical " + descriptionType + " of Nothingness");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".thick", "Magical " + descriptionType + " of Nothingness");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".awkward", "Magical " + descriptionType + " of Nothingness");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".night_vision", "Magical " + descriptionType + " of Night Vision");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".invisibility", "Magical " + descriptionType + " of Invisibility");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".leaping", "Magical " + descriptionType + " of Leaping");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".fire_resistance", "Magical " + descriptionType + " of Fire Resistance");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".swiftness", "Magical " + descriptionType + " of Speed");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".slowness", "Magical " + descriptionType + " of Slowing");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".turtle_master", "Magical " + descriptionType + " of Turtles");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".water_breathing", "Magical " + descriptionType + " of Water Breathing");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".healing", "Magical " + descriptionType + " of Healing");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".harming", "Magical " + descriptionType + " of Pain");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".poison", "Magical " + descriptionType + " of Poison");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".regeneration", "Magical " + descriptionType + " of Regeneration");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".strength", "Magical " + descriptionType + " of Strength");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".weakness", "Magical " + descriptionType + " of Weakness");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".luck", "Magical " + descriptionType + " of Luck");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".slow_falling", "Magical " + descriptionType + " of Feathers");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".wind_charged", "Magical " + descriptionType + " of Wind Charged");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".weaving", "Magical " + descriptionType + " of Weaving");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".oozing", "Magical " + descriptionType + " of Oozing");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".infested", "Magical " + descriptionType + " of Infestation");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".ent_draught", "Magical " + descriptionType + " of Ent Draught");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".personal_blacksmith", "Magical " + descriptionType + " of Repair");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".blessing_of_eru", "Magical " + descriptionType + " of Eru's Blessing");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".elf_vitality", "Magical " + descriptionType + " of Elven Vitality");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".elven_nimbleness", "Magical " + descriptionType + " of Elven Nimbleness");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".inventory_corrosion", "Magical " + descriptionType + " of Rusting");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".elemental_flight", "Magical " + descriptionType + " of Levitation");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".crippling_terror", "Magical " + descriptionType + " of Terror");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".dread_aura", "Magical " + descriptionType + " of Fear");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".sleepnesia", "Magical " + descriptionType + " of Sleeping");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".elemental_burning", "Magical " + descriptionType + " of Fire");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".elemental_lightning", "Magical " + descriptionType + " of Shock");
+        this.add("item.tolkienmobs.trinket_" + trinketType + ".elemental_drowning", "Magical " + descriptionType + " of Suffocation");
+    }
 
     public void createPotionSet(String potionPrefix, String potionName) {
         this.add("item.minecraft.potion.effect." + potionPrefix, "Potion of " + potionName);

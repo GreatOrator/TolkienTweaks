@@ -145,13 +145,13 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addItemWithInstructions(TolkienItems.MASTER_KEY.get(), "Master Key", "Uses Left: ", "Hold Shift while in Creative", "Right-click to enter/change key code");
         this.add("itemgroup.tolkienmobs.spawn", "TolkienTweaks: Mobs");
         this.add("itemgroup.tolkienmobs.trinket", "TolkienTweaks: Trinkets");
-            this.addTrinket(TolkienItems.TRINKET_RING.get(), "Magical Ring");
-            this.addTrinket(TolkienItems.TRINKET_AMULET.get(), "Magical Amulet");
-            this.addTrinket(TolkienItems.TRINKET_BELT.get(), "Magical Belt");
-            this.addTrinket(TolkienItems.TRINKET_CHARM.get(), "Magical Charm");
-            this.addTrinket(TolkienItems.TRINKET_CLOAK.get(), "Magical Cloak");
-            this.addTrinket(TolkienItems.TRINKET_GLOVE.get(), "Magical Glove");
-            this.addTrinket(TolkienItems.TRINKET_HAT.get(), "Magical Hat");
+            this.createTrinketSet("ring", "Ring");
+            this.createTrinketSet("amulet", "Amulet");
+            this.createTrinketSet("charm", "Charm");
+            this.createTrinketSet("belt", "Belt");
+            this.createTrinketSet("glove", "Glove");
+            this.createTrinketSet("hat", "Hat");
+            this.createTrinketSet("cloak", "Cloak");
         this.add("itemgroup.tolkienmobs.tools", "TolkienTweaks: Tools");
             this.addItem(TolkienItems.COIN_POUCH, "Coin Pouch");
             this.addItem(TolkienItems.KEY_RING, "Key Ring");
@@ -259,7 +259,6 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.createPotionSet("dread_aura", "Great Dread");
             this.createPotionSet("crippling_terror", "Paralysing Fear");
 
-//            this.createTrinketSet(TolkienItems.TRINKET_RING.toStack(), "ring");
                 // Sounds
             this.addSound("block", "chest_open", "Chest has opened");
             this.addSound("block", "chest_close", "Chest has closed");
