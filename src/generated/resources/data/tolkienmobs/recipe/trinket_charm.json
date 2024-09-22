@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "tolkienmobs:gem_ammolite"
+    },
+    "C": {
+      "item": "minecraft:terracotta"
+    },
+    "G": {
+      "item": "tolkienmobs:leather_mumakil"
+    },
+    "M": {
+      "item": "tolkienmobs:ingot_mithril"
+    }
+  },
+  "pattern": [
+    "MMG",
+    "CAC",
+    "MMM"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:trinket_charm"
+  }
+}

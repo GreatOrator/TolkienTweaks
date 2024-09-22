@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "G": {
+      "item": "tolkienmobs:gem_ammolite"
+    },
+    "M": {
+      "item": "tolkienmobs:ingot_mithril"
+    }
+  },
+  "pattern": [
+    "GM ",
+    "M M",
+    " M "
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:trinket_ring"
+  }
+}

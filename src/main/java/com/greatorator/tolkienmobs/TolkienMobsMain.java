@@ -6,6 +6,7 @@ import com.greatorator.tolkienmobs.containers.screens.KeyItemScreen;
 import com.greatorator.tolkienmobs.containers.screens.KeyRingScreen;
 import com.greatorator.tolkienmobs.event.TolkienRegistration;
 import com.greatorator.tolkienmobs.fluid.TolkienFluid;
+import com.greatorator.tolkienmobs.handler.ColorHandler;
 import com.greatorator.tolkienmobs.handler.TolkienDataComponents;
 import com.greatorator.tolkienmobs.init.*;
 import com.greatorator.tolkienmobs.init.TolkienFluidTypes;
@@ -31,6 +32,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
@@ -65,7 +67,6 @@ public class TolkienMobsMain {
       -Functional Blocks
         -Fireplace Recipes
         -Trinket Table Recipes
-      -Trinkets
       -Entities
         -Spawn Eggs
       -Integration
@@ -102,6 +103,9 @@ public class TolkienMobsMain {
 
         TolkienDataComponents.COMPONENTS.register(modEventBus);
         modContainer.registerConfig(ModConfig.Type.COMMON, TolkienMobsConfig.SPEC);
+        if (FMLLoader.getDist().isClient()) {
+            modEventBus.addListener(ColorHandler::itemColourEvent);
+        }
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -155,6 +159,10 @@ public class TolkienMobsMain {
                 ItemProperties.register(KEY_RING.get(), resLoc("fullness"), KeyRingItem::getFullnessPropertyOverride);
             });
         }
+
+//        public static void initModBusEvents(IEventBus bus) {
+//            bus.addListener(ColorHandler::itemColourEvent);
+//        }
 
         @SubscribeEvent
         public static void registerScreens(RegisterMenuScreensEvent event){
