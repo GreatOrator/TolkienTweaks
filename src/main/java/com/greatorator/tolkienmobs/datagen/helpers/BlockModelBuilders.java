@@ -527,6 +527,7 @@ public abstract class BlockModelBuilders extends BlockModelHelper {
 		simpleBlockItem(deferredBlock.get(), new ModelFile.UncheckedModelFile("tolkienmobs:block/" + deferredBlock.getId().getPath() + appendix));
 	}
 
+
 	protected void bushItem(DeferredBlock<Block> deferredBlock, String appendix) {
 		simpleBlockItem(deferredBlock.get(), new ModelFile.UncheckedModelFile("tolkienmobs:block/" + deferredBlock.getId().getPath() + appendix));
 	}

@@ -461,6 +461,12 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropOther(TolkienBlocks.STONE_PATH, Blocks.COBBLESTONE);
         dropSelf(TolkienBlocks.PLACARD.get());
         dropSelf(TolkienBlocks.ROCKPILE.get());
+        dropSelf(TolkienBlocks.TRINKET_TABLE.get());
+        dropSelf(TolkienBlocks.FIREPLACE.get());
+        dropSelf(TolkienBlocks.PIGGYBANK.get());
+        dropSelf(TolkienBlocks.BACKPACK.get());
+        dropSelf(TolkienBlocks.CHAMELEON_BLOCK.get());
+        dropSelf(TolkienBlocks.WELL.get());
 
         // Sleeping Bags
         this.add(TolkienBlocks.SLEEPING_BAG_BLUE.get(), this::createSleepingBagDrop);

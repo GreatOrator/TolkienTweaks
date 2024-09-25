@@ -1,9 +1,6 @@
 package com.greatorator.tolkienmobs.init;
 
-import com.greatorator.tolkienmobs.containers.CoinPouchContainer;
-import com.greatorator.tolkienmobs.containers.KeyCodeContainer;
-import com.greatorator.tolkienmobs.containers.KeyItemContainer;
-import com.greatorator.tolkienmobs.containers.KeyRingContainer;
+import com.greatorator.tolkienmobs.containers.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.bus.api.IEventBus;
@@ -24,6 +21,8 @@ public class TolkienContainers {
             () -> IMenuTypeExtension.create((windowId, inv, data) -> new KeyItemContainer(windowId, inv, inv.player, data)));
     public static final DeferredHolder<MenuType<?>, MenuType<KeyCodeContainer>> KEY_CODE_CONTAINER = CONTAINERS.register("key_code_container",
             () -> IMenuTypeExtension.create((windowId, inv, data) -> new KeyCodeContainer(windowId, inv, inv.player, data)));
+    public static final DeferredHolder<MenuType<?>, MenuType<TrinketTableContainer>> TRINKET_TABLE_CONTAINER = CONTAINERS.register("trinket_table_container",
+            () -> IMenuTypeExtension.create(TrinketTableContainer::new));
 
     public static void register(IEventBus eventBus) {
         CONTAINERS.register(eventBus);

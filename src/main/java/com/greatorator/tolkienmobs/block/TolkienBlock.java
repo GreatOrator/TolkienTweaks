@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.Block;
 
 import java.util.List;
 
-public class TolkienBlock extends Block {
+public abstract class TolkienBlock extends Block {
     public boolean hasEffectOverride = false;
     private boolean canSpawnEntity = false;
     private boolean itemHasUse = false;

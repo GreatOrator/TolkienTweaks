@@ -18,6 +18,7 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -203,6 +204,9 @@ public class TolkienItems {
             () -> new TolkienItem(new Item.Properties().stacksTo(1)).setHasLore());
     public static final DeferredItem<Item> ITEM_BACKPACK_UPGRADE_CAMPFIRE = ITEMS.register("item_backpack_upgrade_campfire",
             () -> new TolkienItem(new Item.Properties().stacksTo(1)).setHasLore());
+    public static final DeferredItem<Item> TEMPLATE_MITHRIL = ITEMS.register("template_mithril", () -> new TolkienItem(new Item.Properties()));
+    public static final DeferredItem<Item> TEMPLATE_MORGULIRON = ITEMS.register("template_morguliron", () -> new TolkienItem(new Item.Properties()));
+    public static final DeferredItem<Item> TEMPLATE_AMMOLITE = ITEMS.register("template_ammolite", () -> new TolkienItem(new Item.Properties()));
 
         // Foods
     public static final DeferredItem<Item> LEMBAS = ITEMS.registerItem("food_lembas", properties -> new TolkienFood(properties).setEffectOverride(), new Item.Properties().food(TolkienFoods.LEMBAS).stacksTo(64));

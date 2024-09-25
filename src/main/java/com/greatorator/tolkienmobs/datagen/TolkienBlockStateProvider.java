@@ -1,28 +1,14 @@
 package com.greatorator.tolkienmobs.datagen;
 
-import com.greatorator.tolkienmobs.block.custom.BramblesBushBlock;
-import com.greatorator.tolkienmobs.block.custom.LeafPileBlock;
-import com.greatorator.tolkienmobs.block.custom.PipeweedCropBlock;
-import com.greatorator.tolkienmobs.block.custom.PlacardBlock;
+import com.greatorator.tolkienmobs.block.custom.*;
 import com.greatorator.tolkienmobs.datagen.helpers.BlockModelBuilders;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
-import com.greatorator.tolkienmobs.init.TolkienFluids;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.AttachFace;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.client.model.generators.*;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.registries.DeferredBlock;
-
-import java.util.function.Function;
-import java.util.function.Supplier;
-
-import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class TolkienBlockStateProvider extends BlockModelBuilders {
     public TolkienBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
@@ -457,6 +443,7 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         blockItem(TolkienBlocks.STAIRS_DWARVEN_STONE);
         blockItem(TolkienBlocks.SLAB_DWARVEN_STONE);
         blockItem(TolkienBlocks.PRESSURE_PLATE_DWARVEN_STONE);
+
             //Flowers & Plants
         makeFlower(TolkienBlocks.FLOWER_SIMBELMYNE, TolkienBlocks.POTTED_FLOWER_SIMBELMYNE);
         makeFlower(TolkienBlocks.FLOWER_MIRKWOOD, TolkienBlocks.POTTED_FLOWER_MIRKWOOD);
@@ -530,6 +517,53 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
             }
         }
         blockItem(TolkienBlocks.PLACARD, "_wall_empty");
+
+        simpleBlock(TolkienBlocks.CAMO_GLOWSTONE_BLOCK.get());
+        simpleBlock(TolkienBlocks.CAMO_SMOKER_BLOCK.get());
+        simpleBlock(TolkienBlocks.CAMO_FLUID_BLOCK.get());
+        simpleBlock(TolkienBlocks.CHAMELEON_BLOCK.get());
+        simpleBlock(TolkienBlocks.CAMO_CHEST_BLOCK.get(), models().getExistingFile(modLoc("block/block_camo_chest")));
+        simpleBlock(TolkienBlocks.CAMO_SPAWNER_BLOCK.value(), this.models().cubeAll("block_camo_spawner", modLoc("block/block_camo_spawner")).renderType("translucent"));
+        horizontalBlock(TolkienBlocks.LOCKABLE_CHEST_BLOCK.get(), models().getExistingFile(modLoc("block/lockable_chest_block")), 180);
+        horizontalBlock(TolkienBlocks.LOCKABLE_TREASURE_CHEST_BLOCK.get(), models().getExistingFile(modLoc("block/lockable_treasure_chest_block")), 180);
+        horizontalBlock(TolkienBlocks.LOCKABLE_DOUBLE_CHEST_BLOCK.get(), models().getExistingFile(modLoc("block/lockable_double_chest_block")), 180);
+        horizontalBlock(TolkienBlocks.LOCKABLE_DOUBLE_TREASURE_CHEST_BLOCK.get(), models().getExistingFile(modLoc("block/lockable_double_treasure_chest_block")), 180);
+        horizontalBlock(TolkienBlocks.BACKPACK.get(), models().getExistingFile(modLoc("block/container_backpack")), 0);
+        horizontalBlock(TolkienBlocks.WELL.get(), models().getExistingFile(modLoc("block/well_block")), 0);
+
+        ModelFile trinketActive = models().getExistingFile(modLoc("block/trinket_table_active"));
+        ModelFile trinketInactive = models().getExistingFile(modLoc("block/trinket_table"));
+        horizontalBlock(TolkienBlocks.TRINKET_TABLE.get(), state -> state.getValue(TrinketTableBlock.LIT) ? trinketActive : trinketInactive, 0);
+
+        ModelFile bankFull = models().getExistingFile(modLoc("block/block_piggybank_full"));
+        ModelFile bankEmpty = models().getExistingFile(modLoc("block/block_piggybank"));
+        horizontalBlock(TolkienBlocks.PIGGYBANK.get(), e -> e.getValue(PiggyBankBlock.FULL) ? bankFull : bankEmpty, 180);
+
+        ModelFile fireActive = models().getExistingFile(modLoc("block/fireplace_active"));
+        ModelFile fireInactive = models().getExistingFile(modLoc("block/fireplace_inactive"));
+        horizontalBlock(TolkienBlocks.FIREPLACE.get(), e -> e.getValue(FireplaceBlock.LIT) ? fireActive : fireInactive, 180);
+
+        ModelFile keyActive = models().getExistingFile(modLoc("block/block_key_stone_active"));
+        ModelFile keyInactive = models().getExistingFile(modLoc("block/block_key_stone"));
+        horizontalBlock(TolkienBlocks.KEY_STONE_BLOCK.get(), e -> e.getValue(CamoKeyStoneBlock.ACTIVE) ? keyActive : keyInactive, 180);
+
+        ModelFile mileActive = models().getExistingFile(modLoc("block/milestone_block_active"));
+        ModelFile mileInactive = models().getExistingFile(modLoc("block/milestone_block"));
+        horizontalBlock(TolkienBlocks.MILESTONE_BLOCK.get(), e -> e.getValue(MilestoneBlock.LIT) ? mileActive : mileInactive, 180);
+
+        blockItem(TolkienBlocks.TRINKET_TABLE);
+        simpleBlockItem(TolkienBlocks.FIREPLACE.get(), models().getExistingFile(modLoc("block/fireplace_active")));
+        blockItem(TolkienBlocks.PIGGYBANK);
+        simpleBlockItem(TolkienBlocks.BACKPACK.get(), models().getExistingFile(modLoc("block/container_backpack")));
+        blockItem(TolkienBlocks.CAMO_FLUID_BLOCK);
+        blockItem(TolkienBlocks.CAMO_CHEST_BLOCK);
+        blockItem(TolkienBlocks.CAMO_SPAWNER_BLOCK);
+        blockItem(TolkienBlocks.CAMO_GLOWSTONE_BLOCK);
+        blockItem(TolkienBlocks.CHAMELEON_BLOCK);
+        blockItem(TolkienBlocks.CAMO_SMOKER_BLOCK);
+        blockItem(TolkienBlocks.KEY_STONE_BLOCK);
+        blockItem(TolkienBlocks.MILESTONE_BLOCK);
+        blockItem(TolkienBlocks.WELL);
 
         fluid();
     }

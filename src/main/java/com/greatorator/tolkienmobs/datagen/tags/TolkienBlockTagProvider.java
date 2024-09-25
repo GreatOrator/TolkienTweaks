@@ -177,7 +177,14 @@ public class TolkienBlockTagProvider extends BlockTagsProvider {
                 .add(TolkienBlocks.TORCH_LEBETHRON.get())
                 .add(TolkienBlocks.TORCH_FANGORNOAK.get())
                 .add(TolkienBlocks.TORCH_DEADWOOD.get())
-                .add(TolkienBlocks.TORCH_DWARVEN_MAPLE.get());
+                .add(TolkienBlocks.TORCH_DWARVEN_MAPLE.get())
+                .add(TolkienBlocks.WALL_TORCH_MALLORN.get())
+                .add(TolkienBlocks.WALL_TORCH_MIRKWOOD.get())
+                .add(TolkienBlocks.WALL_TORCH_CULUMALDA.get())
+                .add(TolkienBlocks.WALL_TORCH_LEBETHRON.get())
+                .add(TolkienBlocks.WALL_TORCH_FANGORNOAK.get())
+                .add(TolkienBlocks.WALL_TORCH_DEADWOOD.get())
+                .add(TolkienBlocks.WALL_TORCH_DWARVEN_MAPLE.get());
         tag(BlockTags.MINEABLE_WITH_PICKAXE)
                 .add(TolkienBlocks.BLOCK_MITHRIL.get())
                 .add(TolkienBlocks.ORE_MITHRIL.get())
@@ -224,5 +231,7 @@ public class TolkienBlockTagProvider extends BlockTagsProvider {
                 .add(Blocks.COBBLESTONE)
                 .add(Blocks.STONE);
         tag(TolkienTags.Blocks.BLACKLIST_HARVEST);
+        tag(TolkienTags.Blocks.PORTAL_FRAME_BLOCKS)
+                .add(TolkienBlocks.BLOCK_AMMOLITE.get());
     }
 }

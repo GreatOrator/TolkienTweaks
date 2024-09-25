@@ -1,12 +1,15 @@
 package com.greatorator.tolkienmobs.datagen;
 
 import com.greatorator.tolkienmobs.datagen.helpers.TolkienRecipeHelper;
+import com.greatorator.tolkienmobs.handler.recipes.TrinketRecipeBuilder;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienTags;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
@@ -14,6 +17,8 @@ import net.minecraft.world.level.block.*;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+
+import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class TolkienRecipeProvider extends TolkienRecipeHelper {
     public TolkienRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
@@ -109,6 +114,10 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
         oneToOneConversionRecipe(pRecipeOutput, Items.MAGENTA_DYE, TolkienBlocks.MUSHROOM_DECAY_BLOOM.get(), "magenta_dye", 2);
         oneToOneConversionRecipe(pRecipeOutput, Items.PINK_DYE, TolkienBlocks.FLOWER_LILLYOFTHEVALLEY.get(), "pink_dye", 2);
 
+        twoToTwoConversionRecipe(pRecipeOutput, TolkienItems.TEMPLATE_MITHRIL.get(), TolkienItems.INGOT_MITHRIL.get(), "mithril");
+        twoToTwoConversionRecipe(pRecipeOutput, TolkienItems.TEMPLATE_MORGULIRON.get(), TolkienItems.INGOT_MORGULIRON.get(), "morguliron");
+        twoToTwoConversionRecipe(pRecipeOutput, TolkienItems.TEMPLATE_AMMOLITE.get(), TolkienItems.GEM_AMMOLITE.get(), "ammolite");
+
         sleepingRecipe(pRecipeOutput, TolkienBlocks.SLEEPING_BAG_RED, Blocks.RED_CARPET);
         sleepingRecipe(pRecipeOutput, TolkienBlocks.SLEEPING_BAG_BLUE, Blocks.BLUE_CARPET);
         sleepingRecipe(pRecipeOutput, TolkienBlocks.SLEEPING_BAG_BLACK, Blocks.BLACK_CARPET);
@@ -134,6 +143,25 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
 
         conversionRecipe(pRecipeOutput, TolkienBlocks.BLOCK_HALLOWED, Blocks.GRASS_BLOCK, TolkienItems.GEM_AMMOLITE);
         conversionRecipe(pRecipeOutput, TolkienBlocks.STONE_PATH, Blocks.MOSSY_COBBLESTONE, Items.IRON_PICKAXE);
+
+        trinket(pRecipeOutput, "trinket_ring", TolkienItems.TRINKET_RING, Ingredient.of(Items.POTION), TolkienItems.TRINKET_AMULET);
+
+        smithingUpgrade(pRecipeOutput, "mithril", TolkienItems.SWORD_MITHRIL.get(), TolkienItems.TEMPLATE_MITHRIL.get(), Items.NETHERITE_SWORD, TolkienItems.INGOT_MITHRIL.get());
+        smithingUpgrade(pRecipeOutput, "mithril", TolkienItems.PICKAXE_MITHRIL.get(), TolkienItems.TEMPLATE_MITHRIL.get(), Items.NETHERITE_PICKAXE, TolkienItems.INGOT_MITHRIL.get());
+        smithingUpgrade(pRecipeOutput, "mithril", TolkienItems.AXE_MITHRIL.get(), TolkienItems.TEMPLATE_MITHRIL.get(), Items.NETHERITE_AXE, TolkienItems.INGOT_MITHRIL.get());
+        smithingUpgrade(pRecipeOutput, "mithril", TolkienItems.SHOVEL_MITHRIL.get(), TolkienItems.TEMPLATE_MITHRIL.get(), Items.NETHERITE_SHOVEL, TolkienItems.INGOT_MITHRIL.get());
+        smithingUpgrade(pRecipeOutput, "mithril", TolkienItems.HOE_MITHRIL.get(), TolkienItems.TEMPLATE_MITHRIL.get(), Items.NETHERITE_HOE, TolkienItems.INGOT_MITHRIL.get());
+        smithingUpgrade(pRecipeOutput, "morguliron", TolkienItems.SWORD_MORGULIRON.get(), TolkienItems.TEMPLATE_MORGULIRON.get(), Items.NETHERITE_SWORD, TolkienItems.INGOT_MORGULIRON.get());
+        smithingUpgrade(pRecipeOutput, "morguliron", TolkienItems.PICKAXE_MORGULIRON.get(), TolkienItems.TEMPLATE_MORGULIRON.get(), Items.NETHERITE_PICKAXE, TolkienItems.INGOT_MORGULIRON.get());
+        smithingUpgrade(pRecipeOutput, "morguliron", TolkienItems.AXE_MORGULIRON.get(), TolkienItems.TEMPLATE_MORGULIRON.get(), Items.NETHERITE_AXE, TolkienItems.INGOT_MORGULIRON.get());
+        smithingUpgrade(pRecipeOutput, "morguliron", TolkienItems.SHOVEL_MORGULIRON.get(), TolkienItems.TEMPLATE_MORGULIRON.get(), Items.NETHERITE_SHOVEL, TolkienItems.INGOT_MORGULIRON.get());
+        smithingUpgrade(pRecipeOutput, "morguliron", TolkienItems.HOE_MORGULIRON.get(), TolkienItems.TEMPLATE_MORGULIRON.get(), Items.NETHERITE_HOE, TolkienItems.INGOT_MORGULIRON.get());
+        smithingUpgrade(pRecipeOutput, "ammolite", TolkienItems.SWORD_AMMOLITE.get(), TolkienItems.TEMPLATE_AMMOLITE.get(), Items.NETHERITE_SWORD, TolkienItems.GEM_AMMOLITE.get());
+        smithingUpgrade(pRecipeOutput, "ammolite", TolkienItems.PICKAXE_AMMOLITE.get(), TolkienItems.TEMPLATE_AMMOLITE.get(), Items.NETHERITE_PICKAXE, TolkienItems.GEM_AMMOLITE.get());
+        smithingUpgrade(pRecipeOutput, "ammolite", TolkienItems.AXE_AMMOLITE.get(), TolkienItems.TEMPLATE_AMMOLITE.get(), Items.NETHERITE_AXE, TolkienItems.GEM_AMMOLITE.get());
+        smithingUpgrade(pRecipeOutput, "ammolite", TolkienItems.SHOVEL_AMMOLITE.get(), TolkienItems.TEMPLATE_AMMOLITE.get(), Items.NETHERITE_SHOVEL, TolkienItems.GEM_AMMOLITE.get());
+        smithingUpgrade(pRecipeOutput, "ammolite", TolkienItems.HOE_AMMOLITE.get(), TolkienItems.TEMPLATE_AMMOLITE.get(), Items.NETHERITE_HOE, TolkienItems.GEM_AMMOLITE.get());
+
         ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, TolkienItems.HOBBIT_RING, 1)
                 .define('A', Blocks.BONE_BLOCK)
                 .define('G', TolkienItems.GEM_AMMOLITE)

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_template_mithril": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tolkienmobs:template_mithril"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tolkienmobs:pickaxe_mithril-templateupgrade"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_template_mithril"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tolkienmobs:pickaxe_mithril-templateupgrade"
+    ]
+  }
+}

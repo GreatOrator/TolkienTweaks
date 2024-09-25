@@ -1,69 +1,171 @@
 package com.greatorator.tolkienmobs.recipe;
 
-import com.greatorator.tolkienmobs.init.TolkienItems;
-import com.greatorator.tolkienmobs.item.TolkienItem;
-import com.greatorator.tolkienmobs.item.custom.TrinketItem;
+import com.greatorator.tolkienmobs.TolkienMobsMain;
+import com.greatorator.tolkienmobs.init.TolkienRecipesTypes;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CustomRecipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
-public class TrinketRecipe extends CustomRecipe {
-    public TrinketRecipe(CraftingBookCategory category) {
-        super(category);
+import java.util.Objects;
+
+public class TrinketRecipe implements Recipe<RecipeInput> {
+    private static final Codec<TrinketProcessType> MODE_CODEC = Codec.stringResolver(
+            mode -> switch (mode) {
+                case CRAFT -> "inscribe";
+                case CHANGE -> "press";
+            },
+            mode -> switch (mode) {
+                default -> TrinketProcessType.CRAFT;
+                case "press" -> TrinketProcessType.CHANGE;
+            });
+    public static final MapCodec<TrinketRecipe> CODEC = RecordCodecBuilder.mapCodec(
+            builder -> builder
+                    .group(
+                            Ingredients.CODEC.fieldOf("ingredients")
+                                    .forGetter(TrinketRecipe::getSerializedIngredients),
+                            ItemStack.CODEC.fieldOf("result").forGetter(ir -> ir.output),
+                            MODE_CODEC.fieldOf("mode").forGetter(ir -> ir.processType))
+                    .apply(builder, TrinketRecipe::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, TrinketRecipe> STREAM_CODEC = StreamCodec.composite(
+            Ingredients.STREAM_CODEC,
+            TrinketRecipe::getSerializedIngredients,
+            ItemStack.STREAM_CODEC,
+            TrinketRecipe::getResultItem,
+            NeoForgeStreamCodecs.enumCodec(TrinketProcessType.class),
+            TrinketRecipe::getProcessType,
+            TrinketRecipe::new);
+
+    @Deprecated(forRemoval = true, since = "1.21.1")
+    public static final ResourceLocation TYPE_ID = TolkienMobsMain.resLoc("trinket");
+
+    @Deprecated(forRemoval = true, since = "1.21.1")
+    public static final RecipeType<TrinketRecipe> TYPE = TolkienRecipesTypes.TRINKET_TABLE;
+
+    private final Ingredient middleInput;
+    private final Ingredient topOptional;
+    private final Ingredient bottomOptional;
+    private final ItemStack output;
+    private final TrinketProcessType processType;
+
+    private TrinketRecipe(Ingredients ingredients, ItemStack output, TrinketProcessType processType) {
+        this(ingredients.middle(), output, ingredients.top(), ingredients.bottom(), processType);
     }
 
-    public boolean matches(CraftingInput input, Level level) {
-        if (input.width() == 3 && input.height() == 3) {
-            for (int i = 0; i < input.height(); i++) {
-                for (int j = 0; j < input.width(); j++) {
-                    ItemStack itemstack = input.getItem(j, i);
-                    if (itemstack.isEmpty()) {
-                        return false;
-                    }
-
-                    if (j == 1 && i == 1) {
-                        if (!itemstack.is(Items.LINGERING_POTION)) {
-                            return false;
-                        }
-                    } else if (!itemstack.is(TolkienItems.TRINKET_RING)) {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
-        } else {
-            return false;
-        }
+    public TrinketRecipe(Ingredient middleInput, ItemStack output,
+                           Ingredient topOptional, Ingredient bottomOptional, TrinketProcessType processType) {
+        this.middleInput = Objects.requireNonNull(middleInput, "middleInput");
+        this.output = Objects.requireNonNull(output, "output");
+        this.topOptional = Objects.requireNonNull(topOptional, "topOptional");
+        this.bottomOptional = Objects.requireNonNull(bottomOptional, "bottomOptional");
+        this.processType = Objects.requireNonNull(processType, "processType");
     }
 
-    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
-        ItemStack itemstack = input.getItem(1, 1);
-        if (!itemstack.is(Items.LINGERING_POTION)) {
-            return ItemStack.EMPTY;
-        } else {
-            ItemStack itemstack1 = new ItemStack(Items.TIPPED_ARROW, 8);
-            itemstack1.set(DataComponents.POTION_CONTENTS, itemstack.get(DataComponents.POTION_CONTENTS));
-            return itemstack1;
-        }
+    @Override
+    public boolean matches(RecipeInput inv, Level level) {
+        return false;
     }
 
-    /**
-     * Used to determine if this recipe can fit in a grid of the given width/height
-     */
+    @Override
+    public ItemStack assemble(RecipeInput inv, HolderLookup.Provider registries) {
+        return getResultItem(registries).copy();
+    }
+
     @Override
     public boolean canCraftInDimensions(int width, int height) {
-        return width >= 3 && height >= 3;
+        return true;
+    }
+
+    @Override
+    public ItemStack getResultItem(HolderLookup.Provider registries) {
+        return getResultItem();
+    }
+
+    public ItemStack getResultItem() {
+        return this.output;
     }
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return RecipeSerializer.TIPPED_ARROW;
+        return TrinketRecipeSerializer.INSTANCE;
     }
+
+    @Override
+    public RecipeType<?> getType() {
+        return TYPE;
+    }
+
+    @Override
+    public NonNullList<Ingredient> getIngredients() {
+        NonNullList<Ingredient> ingredients = NonNullList.create();
+        ingredients.add(this.topOptional);
+        ingredients.add(this.middleInput);
+        ingredients.add(this.bottomOptional);
+        return ingredients;
+    }
+
+    public Ingredient getMiddleInput() {
+        return middleInput;
+    }
+
+    public Ingredient getTopOptional() {
+        return topOptional;
+    }
+
+    public Ingredient getBottomOptional() {
+        return bottomOptional;
+    }
+
+    public TrinketProcessType getProcessType() {
+        return processType;
+    }
+
+    @Override
+    public boolean isSpecial() {
+        return true;
+    }
+
+    private Ingredients getSerializedIngredients() {
+        return new Ingredients(
+                topOptional,
+                middleInput,
+                bottomOptional);
+    }
+
+    public int duration() {
+        return 100;
+    }
+
+    private record Ingredients(
+            Ingredient top,
+            Ingredient middle,
+            Ingredient bottom) {
+        public static final Codec<Ingredients> CODEC = RecordCodecBuilder.create(builder -> builder.group(
+                        Ingredient.CODEC.optionalFieldOf("top", Ingredient.EMPTY)
+                                .forGetter(Ingredients::top),
+                        Ingredient.CODEC_NONEMPTY.fieldOf("middle")
+                                .forGetter(Ingredients::middle),
+                        Ingredient.CODEC.optionalFieldOf("bottom", Ingredient.EMPTY)
+                                .forGetter(Ingredients::bottom))
+                .apply(builder, Ingredients::new));
+
+        public static final StreamCodec<RegistryFriendlyByteBuf, Ingredients> STREAM_CODEC = StreamCodec.composite(
+                Ingredient.CONTENTS_STREAM_CODEC,
+                Ingredients::top,
+                Ingredient.CONTENTS_STREAM_CODEC,
+                Ingredients::middle,
+                Ingredient.CONTENTS_STREAM_CODEC,
+                Ingredients::bottom,
+                Ingredients::new);
+    }
+
 }

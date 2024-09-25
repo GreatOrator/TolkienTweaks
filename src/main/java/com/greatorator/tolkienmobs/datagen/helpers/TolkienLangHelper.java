@@ -65,6 +65,10 @@ public abstract class TolkienLangHelper extends LanguageProvider {
         this.add("screen.tolkienmobs." + key.getDescriptionId(), name);
     }
 
+    public void addBlockScreen(Block key, String name) {
+        this.add("screen.tolkienmobs." + key.getDescriptionId(), name);
+    }
+
     public void addCodeScreen(Item key, String name) {
         this.add("screen.tolkienmobs.code" + key.getDescriptionId(), name);
     }

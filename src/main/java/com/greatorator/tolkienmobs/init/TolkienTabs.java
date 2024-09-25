@@ -61,6 +61,9 @@ public class TolkienTabs {
                         output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_CRAFTING);
                         output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_SLEEPING);
                         output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_CAMPFIRE);
+                        output.accept(TolkienItems.TEMPLATE_MITHRIL);
+                        output.accept(TolkienItems.TEMPLATE_MORGULIRON);
+                        output.accept(TolkienItems.TEMPLATE_AMMOLITE);
 
                     }).build());
     public static final Supplier<CreativeModeTab> TOLKIEN_QUEST = CREATIVE_MODE_TAB.register("tolkienmobs_tab_quest",
@@ -160,6 +163,23 @@ public class TolkienTabs {
                     .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_food"))
                     .title(Component.translatable("itemgroup.tolkienmobs.function"))
                     .displayItems((itemDisplayParameters, output) -> {
+                        output.accept(TolkienBlocks.TRINKET_TABLE);
+                        output.accept(TolkienBlocks.FIREPLACE);
+                        output.accept(TolkienBlocks.PIGGYBANK);
+                        output.accept(TolkienBlocks.BACKPACK);
+                        output.accept(TolkienBlocks.CHAMELEON_BLOCK);
+                        output.accept(TolkienBlocks.KEY_STONE_BLOCK);
+                        output.accept(TolkienBlocks.CAMO_FLUID_BLOCK);
+                        output.accept(TolkienBlocks.CAMO_CHEST_BLOCK);
+                        output.accept(TolkienBlocks.CAMO_GLOWSTONE_BLOCK);
+                        output.accept(TolkienBlocks.CAMO_SMOKER_BLOCK);
+                        output.accept(TolkienBlocks.CAMO_SPAWNER_BLOCK);
+                        output.accept(TolkienBlocks.MILESTONE_BLOCK);
+                        output.accept(TolkienBlocks.WELL);
+                        output.accept(TolkienBlocks.LOCKABLE_CHEST_BLOCK);
+                        output.accept(TolkienBlocks.LOCKABLE_TREASURE_CHEST_BLOCK);
+                        output.accept(TolkienBlocks.LOCKABLE_DOUBLE_CHEST_BLOCK);
+                        output.accept(TolkienBlocks.LOCKABLE_DOUBLE_TREASURE_CHEST_BLOCK);
                         output.accept(TolkienBlocks.SILMARIL_LANTERN);
                         output.accept(TolkienBlocks.ELVEN_LANTERN);
                         output.accept(TolkienBlocks.MORGUL_LANTERN);
