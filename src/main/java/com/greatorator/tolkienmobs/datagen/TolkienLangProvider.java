@@ -41,6 +41,9 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_CRAFTING.get(), "Backpack Upgrade - Crafting", "Allows crating anywhere (Max-1)");
             this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_SLEEPING.get(), "Backpack Upgrade - Sleeping Bag", "Carry around a sleeping bag (Max-1)");
             this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_CAMPFIRE.get(), "Backpack Upgrade - Campfire", "Quick use campfire (Max-1)");
+            this.addItem(TolkienItems.TEMPLATE_MITHRIL, "Template: Mithril");
+            this.addItem(TolkienItems.TEMPLATE_MORGULIRON, "Template: Morgul Iron");
+            this.addItem(TolkienItems.TEMPLATE_AMMOLITE, "Template: Ammolite");
         this.add("itemgroup.tolkienmobs.natural", "TolkienTweaks: Natural Blocks");
             this.addItem(TolkienItems.PIPEWEED_SEEDS, "Pipeweed Seeds");
             this.addItem(TolkienItems.PIPEWEED_ITEM, "Pipeweed");
@@ -178,6 +181,23 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addMusicDisc(TolkienItems.RECORD_WBATTLE, "SnowShepherd - Ephalba's Realm");
         this.add("itemgroup.tolkienmobs.mats", "TolkienTweaks: Ingredients");
         this.add("itemgroup.tolkienmobs.function", "TolkienTweaks: Functional Blocks");
+            this.addBlock(TolkienBlocks.TRINKET_TABLE, "Trinket Table");
+            this.add(TolkienBlocks.FIREPLACE.get(), "Fireplace");
+            this.add(TolkienBlocks.PIGGYBANK.get(), "Piggy Bank");
+            this.add(TolkienBlocks.BACKPACK.get(), "Adventurer's Backpack");
+            this.add(TolkienBlocks.CHAMELEON_BLOCK.get(), "Chameleon Block");
+            this.add(TolkienBlocks.KEY_STONE_BLOCK.get(), "Camouflage Key Stone");
+            this.add(TolkienBlocks.CAMO_GLOWSTONE_BLOCK.get(), "Camouflage Glowstone");
+            this.add(TolkienBlocks.CAMO_SMOKER_BLOCK.get(), "Camouflage Smoker");
+            this.addBlockWithLore(TolkienBlocks.CAMO_FLUID_BLOCK.get(), "Camouflage Fluid Source", "Right-click with bucket to set fluid");
+            this.add(TolkienBlocks.CAMO_CHEST_BLOCK.get(), "Camouflage Chest");
+            this.add(TolkienBlocks.CAMO_SPAWNER_BLOCK.get(), "Camouflage Spawner");
+            this.add(TolkienBlocks.MILESTONE_BLOCK.get(), "Fast-travel Milestone");
+            this.add(TolkienBlocks.WELL.get(), "Water Well");
+            this.add(TolkienBlocks.LOCKABLE_CHEST_BLOCK.get(), "Lockable Chest");
+            this.add(TolkienBlocks.LOCKABLE_TREASURE_CHEST_BLOCK.get(), "Lockable Treasure Chest");
+            this.add(TolkienBlocks.LOCKABLE_DOUBLE_CHEST_BLOCK.get(), "Lockable Double Chest");
+            this.add(TolkienBlocks.LOCKABLE_DOUBLE_TREASURE_CHEST_BLOCK.get(), "Lockable Double Treasure Chest");
             this.addBlock(TolkienBlocks.SILMARIL_LANTERN, "Light of Elendil");
             this.addBlock(TolkienBlocks.ELVEN_LANTERN, "Elven Lantern");
             this.addBlock(TolkienBlocks.MORGUL_LANTERN, "Morgul Lantern");
@@ -240,7 +260,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addItemScreen(TolkienItems.MASTER_KEY.get(), "Master Key");
             this.addCodeScreen(TolkienItems.MASTER_KEY.get(), "Master Key - Code");
             this.addItemScreen(TolkienItems.COIN_POUCH.get(), "Coin Pouch");
-            this.addItemScreen(TolkienItems.KEY_RING.get(), "Key Ring");
+            this.addBlockScreen(TolkienBlocks.TRINKET_TABLE.get(), "Trinket Crafting");
 
                 // Potions & Effects
                     // Beneficial

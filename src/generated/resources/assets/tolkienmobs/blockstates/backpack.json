@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "tolkienmobs:block/container_backpack",
+      "y": 270
+    },
+    "facing=north": {
+      "model": "tolkienmobs:block/container_backpack",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "tolkienmobs:block/container_backpack"
+    },
+    "facing=west": {
+      "model": "tolkienmobs:block/container_backpack",
+      "y": 90
+    }
+  }
+}

@@ -1,9 +1,6 @@
 package com.greatorator.tolkienmobs;
 
-import com.greatorator.tolkienmobs.containers.screens.CoinPouchScreen;
-import com.greatorator.tolkienmobs.containers.screens.KeyCodeScreen;
-import com.greatorator.tolkienmobs.containers.screens.KeyItemScreen;
-import com.greatorator.tolkienmobs.containers.screens.KeyRingScreen;
+import com.greatorator.tolkienmobs.containers.screens.*;
 import com.greatorator.tolkienmobs.event.TolkienRegistration;
 import com.greatorator.tolkienmobs.fluid.TolkienFluid;
 import com.greatorator.tolkienmobs.handler.ColorHandler;
@@ -100,8 +97,10 @@ public class TolkienMobsMain {
         TolkienFeatureModifiers.TREE_DECORATORS.register(modEventBus);
         TolkienFeatureModifiers.PLACEMENT_MODIFIERS.register(modEventBus);
         TolkienFeatureModifiers.FEATURES.register(modEventBus);
-
         TolkienDataComponents.COMPONENTS.register(modEventBus);
+        TolkienRecipesTypes.RECIPE_TYPE.register(modEventBus);
+        TolkienRecipeSerializers.RECIPE_SERIALIZER.register(modEventBus);
+
         modContainer.registerConfig(ModConfig.Type.COMMON, TolkienMobsConfig.SPEC);
         if (FMLLoader.getDist().isClient()) {
             modEventBus.addListener(ColorHandler::itemColourEvent);
@@ -160,16 +159,13 @@ public class TolkienMobsMain {
             });
         }
 
-//        public static void initModBusEvents(IEventBus bus) {
-//            bus.addListener(ColorHandler::itemColourEvent);
-//        }
-
         @SubscribeEvent
         public static void registerScreens(RegisterMenuScreensEvent event){
             event.register(TolkienContainers.COIN_POUCH_CONTAINER.get(), CoinPouchScreen::new);
             event.register(TolkienContainers.KEY_RING_CONTAINER.get(), KeyRingScreen::new);
             event.register(TolkienContainers.KEY_ITEM_CONTAINER.get(), KeyItemScreen::new);
             event.register(TolkienContainers.KEY_CODE_CONTAINER.get(), KeyCodeScreen::new);
+            event.register(TolkienContainers.TRINKET_TABLE_CONTAINER.get(), TrinketTableScreen::new);
         }
 
         @SubscribeEvent
@@ -208,5 +204,10 @@ public class TolkienMobsMain {
 
     public static ResourceLocation resLoc(String path) {
         return ResourceLocation.fromNamespaceAndPath(MODID, path);
+    }
+
+    public static ResourceLocation createResourceLocation(String path)
+    {
+        return ResourceLocation.tryBuild(MODID, path);
     }
 }

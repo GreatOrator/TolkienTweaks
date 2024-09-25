@@ -1,4 +1,4 @@
-// 1.21	2024-09-20T07:01:13.953613	Item Models: tolkienmobs
+// 1.21	2024-09-25T07:28:00.6634032	Item Models: tolkienmobs
 914e29c26c212ad7b8914aa552c5ce18400b5057 assets/tolkienmobs/models/item/axe_ammolite.json
 9a08370f124e62b3c7067b9bf9976a8c617561be assets/tolkienmobs/models/item/axe_mithril.json
 6c3e1ecf8e78654791353669b7c17986e5b4fd21 assets/tolkienmobs/models/item/axe_morguliron.json
@@ -216,6 +216,9 @@ c6d7acc50685afab51b08aa77eec1f66e3cee2dd assets/tolkienmobs/models/item/sign_mal
 adda748e6ccc080dd86d8d610524ac9b6f7c743e assets/tolkienmobs/models/item/sword_morguliron.json
 290a1b7f255418a614f8f318eba548884080e74c assets/tolkienmobs/models/item/sword_uruk.json
 82750315bfb5bfd97da5627a4df4c38f368bd14d assets/tolkienmobs/models/item/sword_witchking.json
+78889f73dbf92720b5829c4d1b97ec30dce02259 assets/tolkienmobs/models/item/template_ammolite.json
+0a3cdfdb706a74b3fe658ddadfd04961196d0dec assets/tolkienmobs/models/item/template_mithril.json
+e55b24487733f40ea4763377c2eea032bff0a99e assets/tolkienmobs/models/item/template_morguliron.json
 ed8e1d37aeaa7c3973de443cdaf1a10b24ce7a65 assets/tolkienmobs/models/item/trinket_amulet.json
 a6fb4ca248c96887299eae571dfa8e6a3dc68b26 assets/tolkienmobs/models/item/trinket_belt.json
 598eac9617b6eba49245f143a9029eda3e2999a1 assets/tolkienmobs/models/item/trinket_charm.json

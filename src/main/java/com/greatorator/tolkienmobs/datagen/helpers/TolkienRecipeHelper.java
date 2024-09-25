@@ -1,10 +1,14 @@
 package com.greatorator.tolkienmobs.datagen.helpers;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
+import com.greatorator.tolkienmobs.handler.recipes.TrinketRecipeBuilder;
+import com.greatorator.tolkienmobs.init.TolkienItems;
+import com.greatorator.tolkienmobs.recipe.TrinketProcessType;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -12,6 +16,7 @@ import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 import org.jetbrains.annotations.Nullable;
 
@@ -206,6 +211,22 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .define('I', ingot)
                 .unlockedBy("has_"+group, InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
                 .save(pRecipeOutput);
+    }
+
+    protected static void smithingUpgrade(RecipeOutput consumer, String type, Item output, ItemLike template, ItemLike input1, ItemLike input2) {
+        SmithingTransformRecipeBuilder.smithing(Ingredient.of(template), Ingredient.of(input1),
+                        Ingredient.of(input2), RecipeCategory.MISC, output)
+                .unlocks("has_template_" + type, InventoryChangeTrigger.TriggerInstance.hasItems(template))
+                .save(consumer, (output + "-templateupgrade"));
+    }
+
+    protected static void trinket(RecipeOutput consumer, String name, ItemLike trinket, Ingredient potion, ItemLike trinketResult) {
+        // Making the Trinket
+        TrinketRecipeBuilder.inscribe(potion, trinketResult, 1)
+                .setTop(Ingredient.of(trinket))
+                .setBottom(Ingredient.of(TolkienItems.GEM_AMMOLITE))
+                .setMode(TrinketProcessType.CRAFT)
+                .save(consumer, TolkienMobsMain.resLoc("trinket/" + name));
     }
 
     protected static void smeltingList(ItemLike input, RecipeOutput recipeOutput, RecipeCategory category, ItemLike output, float experience, int cookingTime) {
@@ -439,8 +460,12 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .save(recipeOutput);
     }
 
-    protected static void oneToOneConversionRecipe(RecipeOutput p_301230_, ItemLike p_176558_, ItemLike p_176559_, @Nullable String p_176560_, int p_176561_) {
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, p_176558_, p_176561_).requires(p_176559_).group(p_176560_).unlockedBy(getHasName(p_176559_), has(p_176559_)).save(p_301230_, MODID + ":" + getConversionRecipeName(p_176558_, p_176559_));
+    protected static void oneToOneConversionRecipe(RecipeOutput recipeOutput, ItemLike output, ItemLike ingredient, @Nullable String group, int resultCount) {
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, output, resultCount).requires(ingredient).group(group).unlockedBy(getHasName(ingredient), has(ingredient)).save(recipeOutput, MODID + ":" + getConversionRecipeName(output, ingredient));
+    }
+
+    protected static void twoToTwoConversionRecipe(RecipeOutput recipeOutput, ItemLike output, ItemLike ingredient, @Nullable String group) {
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, output, 2).requires(output).requires(ingredient, 2).group(group).unlockedBy(getHasName(output), has(output)).save(recipeOutput, MODID + ":" + getConversionRecipeName(output, ingredient));
     }
 
     protected static <T extends AbstractCookingRecipe> void oreCooking(RecipeOutput pRecipeOutput, RecipeSerializer<T> pCookingSerializer, AbstractCookingRecipe.Factory<T> factory,

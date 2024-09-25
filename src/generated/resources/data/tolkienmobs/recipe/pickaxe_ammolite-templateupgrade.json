@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": {
+    "item": "tolkienmobs:gem_ammolite"
+  },
+  "base": {
+    "item": "minecraft:netherite_pickaxe"
+  },
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:pickaxe_ammolite"
+  },
+  "template": {
+    "item": "tolkienmobs:template_ammolite"
+  }
+}
