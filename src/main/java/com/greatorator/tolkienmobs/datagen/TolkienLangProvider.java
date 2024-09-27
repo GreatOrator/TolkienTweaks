@@ -296,5 +296,16 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addSound("ambient", "arda_portal", "Portal to Arda beckons");
             this.addSound("item", "hype_horn", "Celebrating victory");
 
+                // Entities
+                    // Villager
+            this.add("entity.minecraft.villager.tolkienmobs.coin_trader", "Coin Trader");
+            this.add("entity.minecraft.villager.tolkienmobs.grocery_store", "Grocery Store");
+            this.add("entity.minecraft.villager.tolkienmobs.pet_merchant", "Junk Trader");
+            this.add("entity.minecraft.villager.tolkienmobs.junk_trader", "Pet Merchant");
+            this.add("entity.minecraft.villager.tolkienmobs.trinket_smith", "Magical Armourer");
+            this.add("entity.minecraft.villager.tolkienmobs.trinket_tailor", "Magical Tailor");
+
+                // Enchantments
+            this.add("enchantment.tolkienmobs.balrog_mark_key", "Balrog's Mark");
     }
 }

@@ -2,11 +2,11 @@ package com.greatorator.tolkienmobs;
 
 import com.greatorator.tolkienmobs.containers.screens.*;
 import com.greatorator.tolkienmobs.event.TolkienRegistration;
-import com.greatorator.tolkienmobs.fluid.TolkienFluid;
+import com.greatorator.tolkienmobs.fluid.TolkienFluidTypes;
 import com.greatorator.tolkienmobs.handler.ColorHandler;
 import com.greatorator.tolkienmobs.handler.TolkienDataComponents;
 import com.greatorator.tolkienmobs.init.*;
-import com.greatorator.tolkienmobs.init.TolkienFluidTypes;
+import com.greatorator.tolkienmobs.fluid.TolkienFluidType;
 import com.greatorator.tolkienmobs.init.TolkienParticleTypes;
 import com.greatorator.tolkienmobs.item.custom.CoinPouchItem;
 import com.greatorator.tolkienmobs.item.custom.KeyRingItem;
@@ -34,7 +34,6 @@ import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import org.slf4j.Logger;
 
@@ -65,6 +64,7 @@ public class TolkienMobsMain {
         -Fireplace Recipes
         -Trinket Table Recipes
       -Entities
+        -Villager Trades
         -Spawn Eggs
       -Integration
         -Curios
@@ -72,10 +72,11 @@ public class TolkienMobsMain {
      */
 
     public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer, Dist dist) {
+        modEventBus.addListener(this::commonSetup);
+
         if (dist.isClient()) {
             TolkienRegistration.initModBusEvents(modEventBus);
         }
-        NeoForge.EVENT_BUS.register(this);
         TolkienTabs.register(modEventBus);
 
         TolkienItems.register(modEventBus);
@@ -88,9 +89,12 @@ public class TolkienMobsMain {
 
         TolkienPotions.register(modEventBus);
         TolkienParticleTypes.register(modEventBus);
+        TolkienVillagers.register(modEventBus);
 
-        TolkienFluid.register(modEventBus);
+        TolkienFluidTypes.register(modEventBus);
         TolkienFluids.register(modEventBus);
+
+        TolkienEnchantmentEffects.register(modEventBus);
 
         TolkienFeatureModifiers.TRUNK_PLACERS.register(modEventBus);
         TolkienFeatureModifiers.FOLIAGE_PLACERS.register(modEventBus);
@@ -100,6 +104,8 @@ public class TolkienMobsMain {
         TolkienDataComponents.COMPONENTS.register(modEventBus);
         TolkienRecipesTypes.RECIPE_TYPE.register(modEventBus);
         TolkienRecipeSerializers.RECIPE_SERIALIZER.register(modEventBus);
+
+        NeoForge.EVENT_BUS.register(this);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, TolkienMobsConfig.SPEC);
         if (FMLLoader.getDist().isClient()) {
@@ -170,10 +176,10 @@ public class TolkienMobsMain {
 
         @SubscribeEvent
         public static void onClientExtensions(RegisterClientExtensionsEvent event) {
-            event.registerFluidType(((TolkienFluidTypes) TolkienFluid.MOLTEN_MITHRIL_LAVA_FLUID_TYPE.get()).getClientFluidTypeExtensions(),
-                    TolkienFluid.MOLTEN_MITHRIL_LAVA_FLUID_TYPE.get());
-            event.registerFluidType(((TolkienFluidTypes) TolkienFluid.MOLTEN_MORGULIRON_LAVA_FLUID_TYPE.get()).getClientFluidTypeExtensions(),
-                    TolkienFluid.MOLTEN_MORGULIRON_LAVA_FLUID_TYPE.get());
+            event.registerFluidType(((TolkienFluidType) TolkienFluidTypes.MOLTEN_MITHRIL_LAVA_FLUID_TYPE.get()).getClientFluidTypeExtensions(),
+                    TolkienFluidTypes.MOLTEN_MITHRIL_LAVA_FLUID_TYPE.get());
+            event.registerFluidType(((TolkienFluidType) TolkienFluidTypes.MOLTEN_MORGULIRON_LAVA_FLUID_TYPE.get()).getClientFluidTypeExtensions(),
+                    TolkienFluidTypes.MOLTEN_MORGULIRON_LAVA_FLUID_TYPE.get());
         }
 
         @SubscribeEvent

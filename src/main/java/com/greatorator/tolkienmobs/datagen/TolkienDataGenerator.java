@@ -42,7 +42,7 @@ public class TolkienDataGenerator {
         generator.addProvider(event.includeClient(), new TolkienParticleDescriptionProvider(packOutput, existingFileHelper));
         generator.addProvider(event.includeClient(), new TolkienRecipeProvider(packOutput, lookupProvider));
 
-        generator.addProvider(event.includeServer(), new TolkienWorldGenProvider(packOutput, lookupProvider));
+        generator.addProvider(event.includeServer(), new TolkienDataRegistryProvider(packOutput, lookupProvider));
 
         generator.addProvider(event.includeServer(), new TolkienLangProvider(packOutput));
     }

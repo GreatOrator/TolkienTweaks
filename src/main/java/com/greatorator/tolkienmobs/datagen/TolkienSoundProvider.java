@@ -41,7 +41,11 @@ public class TolkienSoundProvider extends SoundDefinitionsProvider {
         this.generateNewSoundWithSubtitle(TolkienSounds.UNDERWORLD, "ambient/underworld", 1, "Dark and dreary underworld");
         this.generateNewSoundWithSubtitle(TolkienSounds.WATERWORKS, "ambient/waterworks", 1, "Lost power room of the dwarves");
 
-            // Records
+        // Entity
+            // Villager
+        this.generateNewSoundWithSubtitle(TolkienSounds.VILLAGER_COIN_TRADER, "mob/villager/coin_trader", 1, "A wild Coin Trader Appears!");
+
+        // Records
         this.makeMusicDisc(TolkienSounds.MUSIC_DISC_ALLTHATGLITTERS, "allthatglitterserebor");
         this.makeMusicDisc(TolkienSounds.MUSIC_DISC_CONCERNINGHOBBITS, "concerninghobbits");
         this.makeMusicDisc(TolkienSounds.MUSIC_DISC_MINASTIRITH, "minastirith");

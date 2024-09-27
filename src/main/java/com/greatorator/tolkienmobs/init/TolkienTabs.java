@@ -1,21 +1,22 @@
 package com.greatorator.tolkienmobs.init;
 
 import com.greatorator.tolkienmobs.handler.TrinketComponent;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.flag.FeatureFlagSet;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
@@ -64,6 +65,16 @@ public class TolkienTabs {
                         output.accept(TolkienItems.TEMPLATE_MITHRIL);
                         output.accept(TolkienItems.TEMPLATE_MORGULIRON);
                         output.accept(TolkienItems.TEMPLATE_AMMOLITE);
+                        itemDisplayParameters.holders().lookup(Registries.ENCHANTMENT).ifPresent(reg -> {
+                            addEnchantmentBook(reg.get(TolkienEnchantments.GONDORIAN_RESOLVE_KEY), output);
+                            addEnchantmentBook(reg.get(TolkienEnchantments.ELVEN_LONGEVITY_KEY), output);
+                            addEnchantmentBook(reg.get(TolkienEnchantments.ELVEN_FLEETFOOT_KEY), output);
+                            addEnchantmentBook(reg.get(TolkienEnchantments.BALROG_MARK_KEY), output);
+                            addEnchantmentBook(reg.get(TolkienEnchantments.DWARVEN_ENDURANCE_KEY), output);
+                            addEnchantmentBook(reg.get(TolkienEnchantments.DWARVEN_MINING_KEY), output);
+                            addEnchantmentBook(reg.get(TolkienEnchantments.HOBBIT_PLOW_KEY), output);
+                            addEnchantmentBook(reg.get(TolkienEnchantments.HOBBIT_HARVEST_KEY), output);
+                        });
 
                     }).build());
     public static final Supplier<CreativeModeTab> TOLKIEN_QUEST = CREATIVE_MODE_TAB.register("tolkienmobs_tab_quest",
@@ -667,7 +678,7 @@ public class TolkienTabs {
 
     public static final Supplier<CreativeModeTab> TOLKIEN_SPAWN = CREATIVE_MODE_TAB.register("tolkienmobs_tab_spawn",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienItems.GOLEM_STONE_SUMMON.get()))
-                    .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "itemgroup.tolkienmobs.trinket"))
+                    .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_trinket"))
                     .title(Component.translatable("itemgroup.tolkienmobs.spawn"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(TolkienItems.GOLEM_STONE_SUMMON);
@@ -683,5 +694,12 @@ public class TolkienTabs {
                     .filter(holder -> holder.value().isEnabled(requiredFeatures))
                     .map(potion -> TrinketComponent.createItemStack(item, potion))
                     .forEach(itemStack -> output.accept(itemStack, tabVisibility));
+    }
+
+    private static void addEnchantmentBook(Optional<Holder.Reference<Enchantment>> holder, CreativeModeTab.Output output) {
+        holder.ifPresent(ref -> {
+            EnchantmentInstance instance = new EnchantmentInstance(ref, ref.value().getMaxLevel());
+            output.accept(EnchantedBookItem.createForEnchantment(instance));
+        });
     }
 }
