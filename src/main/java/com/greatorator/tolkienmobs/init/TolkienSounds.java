@@ -56,7 +56,9 @@ public class TolkienSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> WATERWORKS = createEvent("ambient.tolkienmobs.waterworks");
 
     // Entities
-        // Ambient
+        // Villager
+    public static final DeferredHolder<SoundEvent, SoundEvent> VILLAGER_COIN_TRADER = createEvent("mob.tolkienmobs.coin_trader");
+
 
     private static DeferredHolder<SoundEvent, SoundEvent> createEvent(String sound) {
         return SOUND_EVENTS.register(sound, () -> SoundEvent.createVariableRangeEvent(TolkienMobsMain.prefix(sound)));

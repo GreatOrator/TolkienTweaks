@@ -1,6 +1,6 @@
 package com.greatorator.tolkienmobs.init;
 
-import com.greatorator.tolkienmobs.fluid.TolkienFluid;
+import com.greatorator.tolkienmobs.fluid.TolkienFluidTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
@@ -42,11 +42,11 @@ public class TolkienFluids {
             properties -> new BucketItem(TolkienFluids.MORGULIRON_FLUID.get(), properties.craftRemainder(Items.BUCKET).stacksTo(1)));
 
     public static final BaseFlowingFluid.Properties MOLTEN_MITHRIL_WATER_PROPERTIES = new BaseFlowingFluid.Properties(
-            TolkienFluid.MOLTEN_MITHRIL_LAVA_FLUID_TYPE, MITHRIL_FLUID, MITHRIL_FLOWING)
+            TolkienFluidTypes.MOLTEN_MITHRIL_LAVA_FLUID_TYPE, MITHRIL_FLUID, MITHRIL_FLOWING)
             .slopeFindDistance(2).levelDecreasePerBlock(1)
             .block(TolkienFluids.MITHRIL_BLOCK).bucket(TolkienFluids.MITHRIL_FLUID_BUCKET);
     public static final BaseFlowingFluid.Properties MOLTEN_MORGULIRON_WATER_PROPERTIES = new BaseFlowingFluid.Properties(
-            TolkienFluid.MOLTEN_MORGULIRON_LAVA_FLUID_TYPE, MORGULIRON_FLUID, MORGULIRON_FLOWING)
+            TolkienFluidTypes.MOLTEN_MORGULIRON_LAVA_FLUID_TYPE, MORGULIRON_FLUID, MORGULIRON_FLOWING)
             .slopeFindDistance(2).levelDecreasePerBlock(1)
             .block(TolkienFluids.MORGULIRON_BLOCK).bucket(TolkienFluids.MORGULIRON_FLUID_BUCKET);
 

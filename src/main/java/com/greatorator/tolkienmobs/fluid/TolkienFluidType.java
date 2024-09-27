@@ -1,4 +1,4 @@
-package com.greatorator.tolkienmobs.init;
+package com.greatorator.tolkienmobs.fluid;
 
 import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -12,15 +12,15 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
-public class TolkienFluidTypes extends FluidType {
+public class TolkienFluidType extends FluidType {
     private final ResourceLocation stillTexture;
     private final ResourceLocation flowingTexture;
     private final ResourceLocation overlayTexture;
     private final int tintColor;
     private final Vector3f fogColor;
 
-    public TolkienFluidTypes(final ResourceLocation stillTexture, final ResourceLocation flowingTexture, final ResourceLocation overlayTexture,
-                             final int tintColor, final Vector3f fogColor, final Properties properties) {
+    public TolkienFluidType(final ResourceLocation stillTexture, final ResourceLocation flowingTexture, final ResourceLocation overlayTexture,
+                            final int tintColor, final Vector3f fogColor, final Properties properties) {
         super(properties);
         this.stillTexture = stillTexture;
         this.flowingTexture = flowingTexture;

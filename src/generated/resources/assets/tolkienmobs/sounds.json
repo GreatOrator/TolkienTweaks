@@ -89,6 +89,12 @@
     ],
     "subtitle": "subtitles.tolkienmobs.item.hype_horn"
   },
+  "mob.tolkienmobs.coin_trader": {
+    "sounds": [
+      "tolkienmobs:mob/villager/coin_trader"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.coin_trader"
+  },
   "music.tolkienmobs.tolkien_mobs": {
     "sounds": [
       {
