@@ -393,6 +393,94 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.SMOOTH_DWARVEN_STONE_BUTTON.get());
         dropSelf(TolkienBlocks.WALL_SMOOTH_DWARVEN_STONE.get());
 
+            // Elven Marble
+        dropSelf(TolkienBlocks.ELVEN_MARBLE.get());
+        dropSelf(TolkienBlocks.STAIRS_ELVEN_MARBLE.get());
+        this.add(TolkienBlocks.SLAB_ELVEN_MARBLE.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_ELVEN_MARBLE.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_ELVEN_MARBLE.get());
+        dropSelf(TolkienBlocks.ELVEN_MARBLE_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_ELVEN_MARBLE.get());
+        dropSelf(TolkienBlocks.CHISELED_ELVEN_MARBLE_BRICKS.get());
+        dropSelf(TolkienBlocks.STAIRS_CHISELED_ELVEN_MARBLE_BRICKS.get());
+        this.add(TolkienBlocks.SLAB_CHISELED_ELVEN_MARBLE_BRICKS.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_CHISELED_ELVEN_MARBLE_BRICKS.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_CHISELED_ELVEN_MARBLE_BRICKS.get());
+        dropSelf(TolkienBlocks.CHISELED_ELVEN_MARBLE_BRICKS_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_CHISELED_ELVEN_MARBLE_BRICKS.get());
+        dropSelf(TolkienBlocks.COBBLED_ELVEN_MARBLE.get());
+        dropSelf(TolkienBlocks.STAIRS_COBBLED_ELVEN_MARBLE.get());
+        this.add(TolkienBlocks.SLAB_COBBLED_ELVEN_MARBLE.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_COBBLED_ELVEN_MARBLE.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_COBBLED_ELVEN_MARBLE.get());
+        dropSelf(TolkienBlocks.COBBLED_ELVEN_MARBLE_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_COBBLED_ELVEN_MARBLE.get());
+        dropSelf(TolkienBlocks.CRACKED_ELVEN_MARBLE_BRICKS.get());
+        dropSelf(TolkienBlocks.STAIRS_CRACKED_ELVEN_MARBLE_BRICKS.get());
+        this.add(TolkienBlocks.SLAB_CRACKED_ELVEN_MARBLE_BRICKS.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_CRACKED_ELVEN_MARBLE_BRICKS.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_CRACKED_ELVEN_MARBLE_BRICKS.get());
+        dropSelf(TolkienBlocks.CRACKED_ELVEN_MARBLE_BRICKS_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_CRACKED_ELVEN_MARBLE_BRICKS.get());
+        dropSelf(TolkienBlocks.ELVEN_MARBLE_BRICKS.get());
+        dropSelf(TolkienBlocks.STAIRS_ELVEN_MARBLE_BRICKS.get());
+        this.add(TolkienBlocks.SLAB_ELVEN_MARBLE_BRICKS.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_ELVEN_MARBLE_BRICKS.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_ELVEN_MARBLE_BRICKS.get());
+        dropSelf(TolkienBlocks.ELVEN_MARBLE_BRICKS_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_ELVEN_MARBLE_BRICKS.get());
+        dropSelf(TolkienBlocks.SMOOTH_ELVEN_MARBLE.get());
+        dropSelf(TolkienBlocks.STAIRS_SMOOTH_ELVEN_MARBLE.get());
+        this.add(TolkienBlocks.SLAB_SMOOTH_ELVEN_MARBLE.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_SMOOTH_ELVEN_MARBLE.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_SMOOTH_ELVEN_MARBLE.get());
+        dropSelf(TolkienBlocks.SMOOTH_ELVEN_MARBLE_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_SMOOTH_ELVEN_MARBLE.get());
+
+            // Mountain Stone
+        dropSelf(TolkienBlocks.MOUNTAIN_STONE.get());
+        dropSelf(TolkienBlocks.STAIRS_MOUNTAIN_STONE.get());
+        this.add(TolkienBlocks.SLAB_MOUNTAIN_STONE.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_MOUNTAIN_STONE.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_MOUNTAIN_STONE.get());
+        dropSelf(TolkienBlocks.MOUNTAIN_STONE_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_MOUNTAIN_STONE.get());
+        dropSelf(TolkienBlocks.CHISELED_MOUNTAIN_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.STAIRS_CHISELED_MOUNTAIN_STONE_BRICKS.get());
+        this.add(TolkienBlocks.SLAB_CHISELED_MOUNTAIN_STONE_BRICKS.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_CHISELED_MOUNTAIN_STONE_BRICKS.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_CHISELED_MOUNTAIN_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.CHISELED_MOUNTAIN_STONE_BRICKS_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_CHISELED_MOUNTAIN_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.COBBLED_MOUNTAIN_STONE.get());
+        dropSelf(TolkienBlocks.STAIRS_COBBLED_MOUNTAIN_STONE.get());
+        this.add(TolkienBlocks.SLAB_COBBLED_MOUNTAIN_STONE.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_COBBLED_MOUNTAIN_STONE.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_COBBLED_MOUNTAIN_STONE.get());
+        dropSelf(TolkienBlocks.COBBLED_MOUNTAIN_STONE_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_COBBLED_MOUNTAIN_STONE.get());
+        dropSelf(TolkienBlocks.CRACKED_MOUNTAIN_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.STAIRS_CRACKED_MOUNTAIN_STONE_BRICKS.get());
+        this.add(TolkienBlocks.SLAB_CRACKED_MOUNTAIN_STONE_BRICKS.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_CRACKED_MOUNTAIN_STONE_BRICKS.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_CRACKED_MOUNTAIN_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.CRACKED_MOUNTAIN_STONE_BRICKS_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_CRACKED_MOUNTAIN_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.MOUNTAIN_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.STAIRS_MOUNTAIN_STONE_BRICKS.get());
+        this.add(TolkienBlocks.SLAB_MOUNTAIN_STONE_BRICKS.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_MOUNTAIN_STONE_BRICKS.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_MOUNTAIN_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.MOUNTAIN_STONE_BRICKS_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_MOUNTAIN_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.SMOOTH_MOUNTAIN_STONE.get());
+        dropSelf(TolkienBlocks.STAIRS_SMOOTH_MOUNTAIN_STONE.get());
+        this.add(TolkienBlocks.SLAB_SMOOTH_MOUNTAIN_STONE.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_SMOOTH_MOUNTAIN_STONE.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_SMOOTH_MOUNTAIN_STONE.get());
+        dropSelf(TolkienBlocks.SMOOTH_MOUNTAIN_STONE_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_SMOOTH_MOUNTAIN_STONE.get());
+
         //Flowers & Plants
         dropSelf(TolkienBlocks.FLOWER_SIMBELMYNE.get());
         dropSelf(TolkienBlocks.FLOWER_MIRKWOOD.get());

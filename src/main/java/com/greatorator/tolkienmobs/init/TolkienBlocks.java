@@ -351,6 +351,202 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> WALL_SMOOTH_DWARVEN_STONE = registerBlock("wall_smooth_dwarven_stone",
             () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
 
+        // Elven Marble
+    public static final DeferredBlock<Block> ELVEN_MARBLE = registerBlock("elven_marble",
+                () -> new Block(BlockBehaviour.Properties.of().strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_ELVEN_MARBLE = registerBlock("stairs_elven_marble",
+            () -> new StairBlock(TolkienBlocks.ELVEN_MARBLE.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_ELVEN_MARBLE = registerBlock("slab_elven_marble",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_ELVEN_MARBLE = registerBlock("pressure_plate_elven_marble",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> ELVEN_MARBLE_BUTTON = registerBlock("elven_marble_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_ELVEN_MARBLE = registerBlock("wall_elven_marble",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> CHISELED_ELVEN_MARBLE_BRICKS = registerBlock("chiseled_elven_marble_bricks",
+            () -> new Block(BlockBehaviour.Properties.of().strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_CHISELED_ELVEN_MARBLE_BRICKS = registerBlock("stairs_chiseled_elven_marble_bricks",
+            () -> new StairBlock(TolkienBlocks.CHISELED_ELVEN_MARBLE_BRICKS.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_CHISELED_ELVEN_MARBLE_BRICKS = registerBlock("slab_chiseled_elven_marble_bricks",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_CHISELED_ELVEN_MARBLE_BRICKS = registerBlock("pressure_plate_chiseled_elven_marble_bricks",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> CHISELED_ELVEN_MARBLE_BRICKS_BUTTON = registerBlock("chiseled_elven_marble_bricks_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_CHISELED_ELVEN_MARBLE_BRICKS = registerBlock("wall_chiseled_elven_marble_bricks",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> COBBLED_ELVEN_MARBLE = registerBlock("cobbled_elven_marble",
+            () -> new Block(BlockBehaviour.Properties.of().strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_COBBLED_ELVEN_MARBLE = registerBlock("stairs_cobbled_elven_marble",
+            () -> new StairBlock(TolkienBlocks.COBBLED_ELVEN_MARBLE.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_COBBLED_ELVEN_MARBLE = registerBlock("slab_cobbled_elven_marble",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_COBBLED_ELVEN_MARBLE = registerBlock("pressure_plate_cobbled_elven_marble",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> COBBLED_ELVEN_MARBLE_BUTTON = registerBlock("cobbled_elven_marble_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_COBBLED_ELVEN_MARBLE = registerBlock("wall_cobbled_elven_marble",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> CRACKED_ELVEN_MARBLE_BRICKS = registerBlock("cracked_elven_marble_bricks",
+            () -> new Block(BlockBehaviour.Properties.of().strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_CRACKED_ELVEN_MARBLE_BRICKS = registerBlock("stairs_cracked_elven_marble_bricks",
+            () -> new StairBlock(TolkienBlocks.CRACKED_ELVEN_MARBLE_BRICKS.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_CRACKED_ELVEN_MARBLE_BRICKS = registerBlock("slab_cracked_elven_marble_bricks",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_CRACKED_ELVEN_MARBLE_BRICKS = registerBlock("pressure_plate_cracked_elven_marble_bricks",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> CRACKED_ELVEN_MARBLE_BRICKS_BUTTON = registerBlock("cracked_elven_marble_bricks_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_CRACKED_ELVEN_MARBLE_BRICKS = registerBlock("wall_cracked_elven_marble_bricks",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> ELVEN_MARBLE_BRICKS = registerBlock("elven_marble_bricks",
+            () -> new Block(BlockBehaviour.Properties.of().strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_ELVEN_MARBLE_BRICKS = registerBlock("stairs_elven_marble_bricks",
+            () -> new StairBlock(TolkienBlocks.ELVEN_MARBLE_BRICKS.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_ELVEN_MARBLE_BRICKS = registerBlock("slab_elven_marble_bricks",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_ELVEN_MARBLE_BRICKS = registerBlock("pressure_plate_elven_marble_bricks",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> ELVEN_MARBLE_BRICKS_BUTTON = registerBlock("elven_marble_bricks_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_ELVEN_MARBLE_BRICKS = registerBlock("wall_elven_marble_bricks",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SMOOTH_ELVEN_MARBLE = registerBlock("smooth_elven_marble",
+            () -> new Block(BlockBehaviour.Properties.of().strength(2.0F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_SMOOTH_ELVEN_MARBLE = registerBlock("stairs_smooth_elven_marble",
+            () -> new StairBlock(TolkienBlocks.SMOOTH_ELVEN_MARBLE.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_SMOOTH_ELVEN_MARBLE = registerBlock("slab_smooth_elven_marble",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_SMOOTH_ELVEN_MARBLE = registerBlock("pressure_plate_smooth_elven_marble",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SMOOTH_ELVEN_MARBLE_BUTTON = registerBlock("smooth_elven_marble_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_SMOOTH_ELVEN_MARBLE = registerBlock("wall_smooth_elven_marble",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+
+        // Mountain Stone
+    public static final DeferredBlock<Block> MOUNTAIN_STONE = registerBlock("mountain_stone",
+            () -> new Block(BlockBehaviour.Properties.of().strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_MOUNTAIN_STONE = registerBlock("stairs_mountain_stone",
+            () -> new StairBlock(TolkienBlocks.MOUNTAIN_STONE.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_MOUNTAIN_STONE = registerBlock("slab_mountain_stone",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_MOUNTAIN_STONE = registerBlock("pressure_plate_mountain_stone",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> MOUNTAIN_STONE_BUTTON = registerBlock("mountain_stone_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_MOUNTAIN_STONE = registerBlock("wall_mountain_stone",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> CHISELED_MOUNTAIN_STONE_BRICKS = registerBlock("chiseled_mountain_stone_bricks",
+            () -> new Block(BlockBehaviour.Properties.of().strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_CHISELED_MOUNTAIN_STONE_BRICKS = registerBlock("stairs_chiseled_mountain_stone_bricks",
+            () -> new StairBlock(TolkienBlocks.CHISELED_MOUNTAIN_STONE_BRICKS.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_CHISELED_MOUNTAIN_STONE_BRICKS = registerBlock("slab_chiseled_mountain_stone_bricks",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_CHISELED_MOUNTAIN_STONE_BRICKS = registerBlock("pressure_plate_chiseled_mountain_stone_bricks",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> CHISELED_MOUNTAIN_STONE_BRICKS_BUTTON = registerBlock("chiseled_mountain_stone_bricks_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_CHISELED_MOUNTAIN_STONE_BRICKS = registerBlock("wall_chiseled_mountain_stone_bricks",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> COBBLED_MOUNTAIN_STONE = registerBlock("cobbled_mountain_stone",
+            () -> new Block(BlockBehaviour.Properties.of().strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_COBBLED_MOUNTAIN_STONE = registerBlock("stairs_cobbled_mountain_stone",
+            () -> new StairBlock(TolkienBlocks.COBBLED_MOUNTAIN_STONE.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_COBBLED_MOUNTAIN_STONE = registerBlock("slab_cobbled_mountain_stone",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_COBBLED_MOUNTAIN_STONE = registerBlock("pressure_plate_cobbled_mountain_stone",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> COBBLED_MOUNTAIN_STONE_BUTTON = registerBlock("cobbled_mountain_stone_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_COBBLED_MOUNTAIN_STONE = registerBlock("wall_cobbled_mountain_stone",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> CRACKED_MOUNTAIN_STONE_BRICKS = registerBlock("cracked_mountain_stone_bricks",
+            () -> new Block(BlockBehaviour.Properties.of().strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_CRACKED_MOUNTAIN_STONE_BRICKS = registerBlock("stairs_cracked_mountain_stone_bricks",
+            () -> new StairBlock(TolkienBlocks.CRACKED_MOUNTAIN_STONE_BRICKS.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_CRACKED_MOUNTAIN_STONE_BRICKS = registerBlock("slab_cracked_mountain_stone_bricks",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_CRACKED_MOUNTAIN_STONE_BRICKS = registerBlock("pressure_plate_cracked_mountain_stone_bricks",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> CRACKED_MOUNTAIN_STONE_BRICKS_BUTTON = registerBlock("cracked_mountain_stone_bricks_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_CRACKED_MOUNTAIN_STONE_BRICKS = registerBlock("wall_cracked_mountain_stone_bricks",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> MOUNTAIN_STONE_BRICKS = registerBlock("mountain_stone_bricks",
+            () -> new Block(BlockBehaviour.Properties.of().strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_MOUNTAIN_STONE_BRICKS = registerBlock("stairs_mountain_stone_bricks",
+            () -> new StairBlock(TolkienBlocks.MOUNTAIN_STONE_BRICKS.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_MOUNTAIN_STONE_BRICKS = registerBlock("slab_mountain_stone_bricks",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_MOUNTAIN_STONE_BRICKS = registerBlock("pressure_plate_mountain_stone_bricks",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> MOUNTAIN_STONE_BRICKS_BUTTON = registerBlock("mountain_stone_bricks_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_MOUNTAIN_STONE_BRICKS = registerBlock("wall_mountain_stone_bricks",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SMOOTH_MOUNTAIN_STONE = registerBlock("smooth_mountain_stone",
+            () -> new Block(BlockBehaviour.Properties.of().strength(2.0F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_SMOOTH_MOUNTAIN_STONE = registerBlock("stairs_smooth_mountain_stone",
+            () -> new StairBlock(TolkienBlocks.SMOOTH_MOUNTAIN_STONE.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_SMOOTH_MOUNTAIN_STONE = registerBlock("slab_smooth_mountain_stone",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_SMOOTH_MOUNTAIN_STONE = registerBlock("pressure_plate_smooth_mountain_stone",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SMOOTH_MOUNTAIN_STONE_BUTTON = registerBlock("smooth_mountain_stone_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_SMOOTH_MOUNTAIN_STONE = registerBlock("wall_smooth_mountain_stone",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+
     /* Wood & Foliage */
         // Mallorn
     public static final DeferredBlock<Block> LOG_MALLORN = registerBlock("log_mallorn",
@@ -875,10 +1071,8 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> WALL_DECAY_BLOOM = registerBlock("wall_decay_bloom", () -> new WallDecayBloomBlock(BlockBehaviour.Properties.of().noCollission().instabreak().sound(SoundType.GRASS).strength(0.2F).dynamicShape()));
     public static final DeferredBlock<Block> WALL_MUSHROOM_RED = registerBlock("wall_mushroom_red", () -> new WallMushroomRedBlock(BlockBehaviour.Properties.of().noCollission().instabreak().sound(SoundType.GRASS).strength(0.2F).dynamicShape()));
     public static final DeferredBlock<Block> WALL_MUSHROOM_BROWN = registerBlock("wall_mushroom_brown", () -> new WallMushroomBrownBlock(BlockBehaviour.Properties.of().noCollission().instabreak().sound(SoundType.GRASS).strength(0.2F).dynamicShape()));
-    public static final DeferredBlock<Block> TRINKET_TABLE = registerBlock("trinket_table",
-            () -> new TrinketTableBlock(BlockBehaviour.Properties.of().strength(3.5F, 3.5F).requiresCorrectToolForDrops().noOcclusion().sound(SoundType.STONE)));
-    public static final DeferredBlock<Block> FIREPLACE = registerBlock("fireplace",
-            () -> new FireplaceBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().sound(SoundType.STONE).strength(5f, 6f).lightLevel((state) -> state.getValue(LIT) ? 15:0)));
+    public static final DeferredBlock<Block> TRINKET_TABLE = registerBlock("trinket_table", () -> new TrinketTableBlock(BlockBehaviour.Properties.of().strength(3.5F, 3.5F).requiresCorrectToolForDrops().noOcclusion().sound(SoundType.STONE)));
+    public static final DeferredBlock<Block> FIREPLACE = registerBlock("fireplace", () -> new FireplaceBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().sound(SoundType.STONE).strength(5f, 6f).lightLevel((state) -> state.getValue(LIT) ? 15:0)));
     public static final DeferredBlock<Block> PIGGYBANK = registerBlock("block_piggybank", () -> new PiggyBankBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().strength(5f, 6f)));
     public static final DeferredBlock<Block> BACKPACK = registerBlock("backpack", () -> new BackpackBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().strength(1f, 1f)));
     public static final DeferredBlock<Block> CHAMELEON_BLOCK = registerBlock("chameleon_block", () -> new ChameleonBlock(BlockBehaviour.Properties.of().noCollission().noOcclusion()));
@@ -920,20 +1114,24 @@ public class TolkienBlocks {
     //Boats
 
         // Block Entities
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LightningBugEntity>> LIGHTNINGBUG = BLOCK_ENTITIES.register("lightningbug", () ->
-                BlockEntityType.Builder.of(LightningBugEntity::new, LIGHTNINGBUG_BLOCK.get()).build(null));
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LocustEntity>> LOCUST = BLOCK_ENTITIES.register("locust", () ->
-            BlockEntityType.Builder.of(LocustEntity::new, LOCUST_BLOCK.get()).build(null));
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PlacardEntity>> PLACARD_TILE = BLOCK_ENTITIES.register("placard_tile", () ->
-            BlockEntityType.Builder.of(PlacardEntity::new, PLACARD.get()).build(null));
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TolkienSignEntity>> TOLKIEN_SIGN_ENTITY =
-                BLOCK_ENTITIES.register("tolkien_sign_entity", () ->
-                        BlockEntityType.Builder.of(TolkienSignEntity::new, MALLORN_SIGN.get(), MALLORN_WALL_SIGN.get(), MIRKWOOD_SIGN.get(), MIRKWOOD_WALL_SIGN.get(), CULUMALDA_SIGN.get(), CULUMALDA_WALL_SIGN.get(), LEBETHRON_SIGN.get(), LEBETHRON_WALL_SIGN.get(), FANGORNOAK_SIGN.get(), FANGORNOAK_WALL_SIGN.get(), DEADWOOD_SIGN.get(), DEADWOOD_WALL_SIGN.get(), DWARVEN_MAPLE_SIGN.get(), DWARVEN_MAPLE_WALL_SIGN.get()).build((Type) null));
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TolkienHangingSignBlockEntity>> TOLKIEN_HANGING_SIGN_ENTITY =
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LightningBugEntity>> LIGHTNINGBUG_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("lightningbug", () ->
+                    BlockEntityType.Builder.of(LightningBugEntity::new, LIGHTNINGBUG_BLOCK.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LocustEntity>> LOCUST_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("locust", () ->
+                    BlockEntityType.Builder.of(LocustEntity::new, LOCUST_BLOCK.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PlacardEntity>> PLACARD_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("placard_tile", () ->
+                    BlockEntityType.Builder.of(PlacardEntity::new, PLACARD.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TolkienSignEntity>> TOLKIEN_SIGN_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("tolkien_sign_entity", () ->
+                    BlockEntityType.Builder.of(TolkienSignEntity::new, MALLORN_SIGN.get(), MALLORN_WALL_SIGN.get(), MIRKWOOD_SIGN.get(), MIRKWOOD_WALL_SIGN.get(), CULUMALDA_SIGN.get(), CULUMALDA_WALL_SIGN.get(), LEBETHRON_SIGN.get(), LEBETHRON_WALL_SIGN.get(), FANGORNOAK_SIGN.get(), FANGORNOAK_WALL_SIGN.get(), DEADWOOD_SIGN.get(), DEADWOOD_WALL_SIGN.get(), DWARVEN_MAPLE_SIGN.get(), DWARVEN_MAPLE_WALL_SIGN.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TolkienHangingSignBlockEntity>> TOLKIEN_HANGING_SIGN_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("tolkien_hanging_sign_entity", () ->
-                    BlockEntityType.Builder.of(TolkienHangingSignBlockEntity::new, MALLORN_HANGING_SIGN.get(), MALLORN_HANGING_WALL_SIGN.get(), MIRKWOOD_HANGING_SIGN.get(), MIRKWOOD_HANGING_WALL_SIGN.get(), CULUMALDA_HANGING_SIGN.get(), CULUMALDA_HANGING_WALL_SIGN.get(), LEBETHRON_HANGING_SIGN.get(), LEBETHRON_HANGING_WALL_SIGN.get(), FANGORNOAK_HANGING_SIGN.get(), FANGORNOAK_HANGING_WALL_SIGN.get(), DEADWOOD_HANGING_SIGN.get(), DEADWOOD_HANGING_WALL_SIGN.get(), DWARVEN_MAPLE_HANGING_SIGN.get(), DWARVEN_MAPLE_HANGING_WALL_SIGN.get()).build((Type) null));
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TrinketTableEntity>> TRINKETTABLE = BLOCK_ENTITIES.register("trinket_table", () ->
-            BlockEntityType.Builder.of(TrinketTableEntity::new, TRINKET_TABLE.get()).build(null));
+                    BlockEntityType.Builder.of(TolkienHangingSignBlockEntity::new, MALLORN_HANGING_SIGN.get(), MALLORN_HANGING_WALL_SIGN.get(), MIRKWOOD_HANGING_SIGN.get(), MIRKWOOD_HANGING_WALL_SIGN.get(), CULUMALDA_HANGING_SIGN.get(), CULUMALDA_HANGING_WALL_SIGN.get(), LEBETHRON_HANGING_SIGN.get(), LEBETHRON_HANGING_WALL_SIGN.get(), FANGORNOAK_HANGING_SIGN.get(), FANGORNOAK_HANGING_WALL_SIGN.get(), DEADWOOD_HANGING_SIGN.get(), DEADWOOD_HANGING_WALL_SIGN.get(), DWARVEN_MAPLE_HANGING_SIGN.get(), DWARVEN_MAPLE_HANGING_WALL_SIGN.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TrinketTableEntity>> TRINKET_TABLE_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("trinket_table", () ->
+                    BlockEntityType.Builder.of(TrinketTableEntity::new, TRINKET_TABLE.get()).build(null));
 
     private static boolean never(BlockState state, BlockGetter blockGetter, BlockPos pos) {
         return false;

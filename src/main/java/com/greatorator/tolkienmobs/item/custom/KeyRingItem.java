@@ -128,10 +128,7 @@ public class KeyRingItem extends Item {
     @Nullable
     private static IItemHandler getItemStackHandlerCoinPouch(ItemStack itemStack) {
         IItemHandler optional = itemStack.getCapability(Capabilities.ItemHandler.ITEM);
-        if (optional != null) {
-            return optional;
-        }
-        return null;
+        return optional;
     }
 
     public static float getFullnessPropertyOverride(ItemStack itemStack, @Nullable ClientLevel world, @Nullable LivingEntity livingEntity, int i) {

@@ -1,14 +1,10 @@
 package com.greatorator.tolkienmobs.datagen.helpers;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
-import com.greatorator.tolkienmobs.handler.recipes.TrinketRecipeBuilder;
-import com.greatorator.tolkienmobs.init.TolkienItems;
-import com.greatorator.tolkienmobs.recipe.TrinketProcessType;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -16,7 +12,6 @@ import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 import org.jetbrains.annotations.Nullable;
 
@@ -222,11 +217,6 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
 
     protected static void trinket(RecipeOutput consumer, String name, ItemLike trinket, Ingredient potion, ItemLike trinketResult) {
         // Making the Trinket
-        TrinketRecipeBuilder.inscribe(potion, trinketResult, 1)
-                .setTop(Ingredient.of(trinket))
-                .setBottom(Ingredient.of(TolkienItems.GEM_AMMOLITE))
-                .setMode(TrinketProcessType.CRAFT)
-                .save(consumer, TolkienMobsMain.resLoc("trinket/" + name));
     }
 
     protected static void smeltingList(ItemLike input, RecipeOutput recipeOutput, RecipeCategory category, ItemLike output, float experience, int cookingTime) {

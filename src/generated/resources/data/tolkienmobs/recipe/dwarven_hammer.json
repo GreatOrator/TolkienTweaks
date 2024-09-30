@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "tolkienmobs:dwarven_stone"
+    },
+    "G": {
+      "item": "minecraft:stick"
+    },
+    "R": {
+      "item": "tolkienmobs:gem_ammolite"
+    }
+  },
+  "pattern": [
+    " AR",
+    " GA",
+    "G  "
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:dwarven_hammer"
+  }
+}

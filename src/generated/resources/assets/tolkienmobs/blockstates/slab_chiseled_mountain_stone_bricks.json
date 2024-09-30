@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "tolkienmobs:block/slab_chiseled_mountain_stone_bricks"
+    },
+    "type=double": {
+      "model": "tolkienmobs:block/chiseled_mountain_stone_bricks"
+    },
+    "type=top": {
+      "model": "tolkienmobs:block/slab_chiseled_mountain_stone_bricks_top"
+    }
+  }
+}

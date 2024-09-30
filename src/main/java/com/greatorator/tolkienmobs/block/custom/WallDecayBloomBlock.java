@@ -100,7 +100,7 @@ public class WallDecayBloomBlock extends BushBlock  {
 
     @Override
     public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
-        Direction direction = (Direction) state.getValue(FACING);
+        Direction direction = state.getValue(FACING);
         BlockPos blockPos = pos.relative(direction.getOpposite());
         BlockState blockState = world.getBlockState(blockPos);
         return blockState.isFaceSturdy(world, blockPos, direction);

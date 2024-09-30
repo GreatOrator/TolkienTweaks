@@ -9,11 +9,11 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class TolkienSignEntity extends SignBlockEntity {
     public TolkienSignEntity(BlockPos pos, BlockState state) {
-        super(TolkienBlocks.TOLKIEN_SIGN_ENTITY.get(), pos, state);
+        super(TolkienBlocks.TOLKIEN_SIGN_BLOCK_ENTITY.get(), pos, state);
     }
 
     @Override
     public BlockEntityType<?> getType() {
-        return TolkienBlocks.TOLKIEN_SIGN_ENTITY.get();
+        return TolkienBlocks.TOLKIEN_SIGN_BLOCK_ENTITY.get();
     }
 }

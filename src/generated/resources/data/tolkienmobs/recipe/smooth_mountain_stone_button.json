@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "smooth_mountain_stone",
+  "ingredients": [
+    {
+      "item": "tolkienmobs:smooth_mountain_stone"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:smooth_mountain_stone_button"
+  }
+}

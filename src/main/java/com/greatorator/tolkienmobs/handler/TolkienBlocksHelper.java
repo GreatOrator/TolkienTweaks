@@ -118,11 +118,11 @@ public class TolkienBlocksHelper {
 	}
 
 	public static BlockState rotateHorizontal(BlockState state, Rotation rotation, Property<Direction> facing) {
-		return (BlockState) state.setValue(facing, rotation.rotate((Direction) state.getValue(facing)));
+		return state.setValue(facing, rotation.rotate(state.getValue(facing)));
 	}
 
 	public static BlockState mirrorHorizontal(BlockState state, Mirror mirror, Property<Direction> facing) {
-		return state.rotate(mirror.getRotation((Direction) state.getValue(facing)));
+		return state.rotate(mirror.getRotation(state.getValue(facing)));
 	}
 
 	public static int getLengthDown(ServerLevel world, BlockPos pos, Block block) {

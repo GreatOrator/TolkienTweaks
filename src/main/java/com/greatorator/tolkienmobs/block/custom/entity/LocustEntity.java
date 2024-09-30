@@ -18,7 +18,7 @@ public class LocustEntity extends BlockEntity {
 	private int glowDelay;
 
 	public LocustEntity(BlockPos pos, BlockState state) {
-		super(TolkienBlocks.LOCUST.get(), pos, state);
+		super(TolkienBlocks.LOCUST_BLOCK_ENTITY.get(), pos, state);
 	}
 
 	public static void tick(Level level, BlockPos pos, BlockState state, LocustEntity te) {

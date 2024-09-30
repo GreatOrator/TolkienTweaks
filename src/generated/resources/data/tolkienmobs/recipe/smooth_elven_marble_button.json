@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "smooth_elven_marble",
+  "ingredients": [
+    {
+      "item": "tolkienmobs:smooth_elven_marble"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:smooth_elven_marble_button"
+  }
+}

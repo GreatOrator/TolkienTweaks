@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "cracked_mountain_stone_bricks",
+  "ingredients": [
+    {
+      "item": "tolkienmobs:cracked_mountain_stone_bricks"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:cracked_mountain_stone_bricks_button"
+  }
+}

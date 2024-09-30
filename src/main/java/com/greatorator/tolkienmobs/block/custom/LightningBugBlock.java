@@ -39,7 +39,7 @@ public class LightningBugBlock extends TolkienBugBlock {
 
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		return createTickerHelper(type, TolkienBlocks.LIGHTNINGBUG.get(), LightningBugEntity::tick);
+		return createTickerHelper(type, TolkienBlocks.LIGHTNINGBUG_BLOCK_ENTITY.get(), LightningBugEntity::tick);
 	}
 
 	@Override

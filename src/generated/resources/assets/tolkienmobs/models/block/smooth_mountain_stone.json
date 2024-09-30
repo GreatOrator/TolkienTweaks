@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "tolkienmobs:block/smooth_mountain_stone"
+  }
+}

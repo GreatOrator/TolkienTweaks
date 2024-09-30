@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "tolkienmobs:block/pressure_plate_chiseled_elven_marble_bricks"
+    },
+    "powered=true": {
+      "model": "tolkienmobs:block/pressure_plate_chiseled_elven_marble_bricks_down"
+    }
+  }
+}

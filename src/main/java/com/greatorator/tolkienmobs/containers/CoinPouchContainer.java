@@ -20,7 +20,7 @@ public class CoinPouchContainer extends AbstractContainerMenu {
     public static final int SLOTS = 15;
     public ItemStack coinPouch;
     public Player playerEntity;
-    private IItemHandler playerInventory;
+    private final IItemHandler playerInventory;
     public BlockPos sourceContainer = BlockPos.ZERO;
     public ComponentItemHandler coinPouchHandler;
 
@@ -146,9 +146,7 @@ public class CoinPouchContainer extends AbstractContainerMenu {
 
     @Override
     public boolean canTakeItemForPickAll(ItemStack itemStack, Slot slot) {
-        if (slot instanceof CoinPouchSlot)
-            return false;
-        return true;
+        return !(slot instanceof CoinPouchSlot);
     }
 
     @Override

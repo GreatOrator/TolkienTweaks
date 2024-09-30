@@ -193,8 +193,8 @@ public abstract class TolkienLangHelper extends LanguageProvider {
         this.add("block.tolkienmobs.trapdoor_" + woodPrefix, woodName + " Trapdoor");
         this.add("block.tolkienmobs.door_" + woodPrefix, woodName + " Door");
         this.add("block.tolkienmobs.sign_" + woodPrefix, woodName + " Sign");
-        this.add("block.tolkienmobs.wall_sign_" + woodPrefix + "", woodName + " Wall Sign");
-        this.add("block.tolkienmobs.hanging_sign_" + woodPrefix + "", woodName + " Hanging Sign");
+        this.add("block.tolkienmobs.wall_sign_" + woodPrefix, woodName + " Wall Sign");
+        this.add("block.tolkienmobs.hanging_sign_" + woodPrefix, woodName + " Hanging Sign");
         this.add("block.tolkienmobs.wall_hanging_sign_" + woodPrefix, woodName + " Wall Hanging Sign");
         this.add("block.tolkienmobs.barrel_" + woodPrefix, woodName + " Barrel");
         this.add("block.tolkienmobs.log_" + woodPrefix, woodName + " Log");

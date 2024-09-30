@@ -166,6 +166,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addTools("mithril", "Mithril");
             this.addTools("morguliron", "Morgul Iron");
             this.addTools("ammolite", "Ammolite");
+            this.addItem(TolkienItems.DWARVEN_HAMMER, "Dwarven Mining Hammer");
             this.addItem(TolkienItems.HYPE_HORN, "Hype Horn");
             this.addMusicDisc(TolkienItems.RECORD_EREBOR, "SnowShepherd - All That Glitters in Erebor");
             this.addMusicDisc(TolkienItems.RECORD_HOBBITS, "Harry Murrell - Concerning Hobbits");
@@ -208,6 +209,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addBlock(TolkienBlocks.TORCH_FANGORNOAK, "Fangorn Oak Torch");
             this.addBlock(TolkienBlocks.TORCH_DEADWOOD, "Deadwood Torch");
             this.addBlock(TolkienBlocks.TORCH_DWARVEN_MAPLE, "Dwarven Maple Torch");
+
             this.createWoodSet("mallorn", "Mallorn");
             this.createWoodSet("mirkwood", "Mirkwood");
             this.createWoodSet("culumalda", "Culumalda");
@@ -217,20 +219,30 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.createWoodSet("dwarven_maple", "Dwarven Maple");
             this.createMetalSet("mithril", "Mithril");
             this.createMetalSet("morguliron", "Morgul Iron");
-            this.createStoneSet("dark_stone", "Dark Stone");
-            this.createStoneSet("chiseled_dark_stone_bricks", "Chiseled Dark Stone Bricks");
-            this.createStoneSet("cobbled_dark_stone", "Cobbled Dark Stone");
-            this.createStoneSet("cracked_dark_stone_bricks", "Cracked Dark Stone");
-            this.createStoneSet("dark_stone_bricks", "Dark Stone Bricks");
-            this.createStoneSet("smooth_dark_stone", "Smooth Dark Stone");
+
             this.createStoneSet("dwarven_stone", "Dwarven Stone");
             this.createStoneSet("chiseled_dwarven_stone_bricks", "Chiseled Dwarven Stone Bricks");
             this.createStoneSet("cobbled_dwarven_stone", "Cobbled Dwarven Stone");
             this.createStoneSet("cracked_dwarven_stone_bricks", "Cracked Dwarven Stone");
             this.createStoneSet("dwarven_stone_bricks", "Dwarven Stone Bricks");
             this.createStoneSet("smooth_dwarven_stone", "Smooth Dwarven Stone");
+            this.createStoneSet("elven_marble", "Elven Marble");
+            this.createStoneSet("chiseled_elven_marble_bricks", "Chiseled Elven Marble Bricks");
+            this.createStoneSet("cobbled_elven_marble", "Cobbled Elven Marble");
+            this.createStoneSet("cracked_elven_marble_bricks", "Cracked Elven Marble");
+            this.createStoneSet("elven_marble_bricks", "Elven Marble Bricks");
+            this.createStoneSet("smooth_elven_marble", "Smooth Elven Marble");
+            this.createStoneSet("mountain_stone", "Mountain Stone");
+            this.createStoneSet("chiseled_mountain_stone_bricks", "Chiseled Mountain Stone Bricks");
+            this.createStoneSet("cobbled_mountain_stone", "Cobbled Mountain Stone");
+            this.createStoneSet("cracked_mountain_stone_bricks", "Cracked Mountain Stone");
+            this.createStoneSet("mountain_stone_bricks", "Mountain Stone Bricks");
+            this.createStoneSet("smooth_mountain_stone", "Smooth Mountain Stone");
+
             this.createGemSet("ammolite", "Ammolite");
+
             this.addBlock(TolkienBlocks.DOOR_DURIN, "Door of Durin");
+
             this.addBlockWithLore(TolkienBlocks.SLEEPING_BAG_BLUE.get(), "Blue Sleeping Bag", "§cDoes not§r reset spawn point.");
             this.addBlockWithLore(TolkienBlocks.SLEEPING_BAG_RED.get(), "Red Sleeping Bag", "§cDoes not§r reset spawn point.");
             this.addBlockWithLore(TolkienBlocks.SLEEPING_BAG_BLACK.get(), "Black Sleeping Bag", "§cDoes not§r reset spawn point.");
@@ -261,7 +273,10 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addCodeScreen(TolkienItems.MASTER_KEY.get(), "Master Key - Code");
             this.addItemScreen(TolkienItems.COIN_POUCH.get(), "Coin Pouch");
             this.addBlockScreen(TolkienBlocks.TRINKET_TABLE.get(), "Trinket Crafting");
+            this.add("screen.tolkienmobs.namefieldtext", "Enter Code");
+            this.add("screen.tolkienmobs.keycodeplaceholder", "No Code Found");
 
+            this.add("buttons.tolkienmobs.save", "Save Code");
                 // Potions & Effects
                     // Beneficial
             this.createPotionSet("personal_blacksmith", "Portable Blacksmith");
@@ -295,6 +310,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addSound("ambient", "pathsofthedead", "The way is shut, and the dead keep it");
             this.addSound("ambient", "arda_portal", "Portal to Arda beckons");
             this.addSound("item", "hype_horn", "Celebrating victory");
+            this.addSound("mob", "coin_trader", "A Wild Coin Trader appears!");
 
                 // Entities
                     // Villager

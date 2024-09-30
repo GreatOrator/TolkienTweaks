@@ -33,7 +33,7 @@ public class LightningEffect extends TolkienEffect {
             lightningboltentity.moveTo(Vec3.atBottomCenterOf(blockpos));
             lightningboltentity.setCause(null);
             world.addFreshEntity(lightningboltentity);
-            world.playSound((Player) null, pLivingEntity.getX(), pLivingEntity.getY(), pLivingEntity.getZ(), SoundEvents.TRIDENT_THUNDER, SoundSource.WEATHER, 5.0f, 1.0f);
+            world.playSound(null, pLivingEntity.getX(), pLivingEntity.getY(), pLivingEntity.getZ(), SoundEvents.TRIDENT_THUNDER, SoundSource.WEATHER, 5.0f, 1.0f);
         }
         return false;
     }

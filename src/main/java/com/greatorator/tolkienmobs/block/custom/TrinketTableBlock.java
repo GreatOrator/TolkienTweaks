@@ -1,21 +1,18 @@
 package com.greatorator.tolkienmobs.block.custom;
 
-import com.greatorator.tolkienmobs.block.TolkienBlock;
 import com.greatorator.tolkienmobs.block.custom.entity.TrinketTableEntity;
-import com.greatorator.tolkienmobs.containers.TrinketTableContainer;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ItemParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -32,14 +29,14 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.capabilities.Capabilities;
 
 import javax.annotation.Nullable;
 
-public class TrinketTableBlock extends TolkienBlock implements EntityBlock {
-    public static final MapCodec<TrinketTableBlock> CODEC = simpleCodec(TrinketTableBlock::new);
+public class TrinketTableBlock extends BaseEntityBlock {
+    public static final Component TextComponent = Component.translatable("screen.tolkienmobs.block.tolkienmobs.trinket_table");
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
+    public static final MapCodec<TrinketTableBlock> CODEC = simpleCodec(TrinketTableBlock::new);
     protected static final VoxelShape SHAPE_NORTH = Shapes.or(
             Block.box(3, 0, 3, 13, 1, 13),
             Block.box(6, 1, 6, 10, 9, 10),
@@ -103,12 +100,38 @@ public class TrinketTableBlock extends TolkienBlock implements EntityBlock {
 
     public TrinketTableBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(LIT, false));
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
+    /* Facing */
+    @Override
+    public BlockState rotate(BlockState blockState, Rotation rotation) {
+        return blockState.setValue(FACING, rotation.rotate(blockState.getValue(FACING).getOpposite()));
+    }
+
+    @Override
+    protected BlockState mirror(BlockState pState, Mirror pMirror) {
+        return pState.rotate(pMirror.getRotation(pState.getValue(FACING)));
+    }
+
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection()).setValue(LIT, false);
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(FACING, LIT);
+        super.createBlockStateDefinition(builder);
     }
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext context) {
-        switch((Direction)state.getValue(FACING)) {
+        switch(state.getValue(FACING)) {
             default:
             case NORTH:
                 return SHAPE_NORTH;
@@ -121,31 +144,23 @@ public class TrinketTableBlock extends TolkienBlock implements EntityBlock {
         }
     }
 
+    /* Entity Stuff */
+    @Nullable
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, LIT);
-        super.createBlockStateDefinition(builder);
+    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+        return new TrinketTableEntity(blockPos, blockState);
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection());
+    protected RenderShape getRenderShape(BlockState pState) {
+        return RenderShape.MODEL;
     }
 
-    @Override
-    public BlockState rotate(BlockState blockState, Rotation rotation) {
-        return blockState.setValue(FACING, rotation.rotate(blockState.getValue(FACING).getOpposite()));
-    }
-
-    /** Entity Stuff */
     @Override
     public void onRemove(BlockState state, Level worldIn, BlockPos pPos, BlockState newState, boolean isMoving) {
         if (state.getBlock() != newState.getBlock()) {
             if (worldIn.getBlockEntity(pPos) instanceof TrinketTableEntity blockEntity) {
-                if (worldIn instanceof ServerLevel serverLevel) {
-                    blockEntity.drops(serverLevel);
-                    Block.popResource(worldIn, pPos, new ItemStack(TolkienBlocks.TRINKET_TABLE));
-                }
+                blockEntity.drops();
             }
         }
 
@@ -166,29 +181,40 @@ public class TrinketTableBlock extends TolkienBlock implements EntityBlock {
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new TrinketTableEntity(blockPos, blockState);
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
+        if(pLevel.isClientSide()) {
+            return null;
+        }
+
+        return createTickerHelper(pBlockEntityType, TolkienBlocks.TRINKET_TABLE_BLOCK_ENTITY.get(),
+                (pLevel1, pPos, pState1, pBlockEntity) -> pBlockEntity.tick(pLevel1, pPos, pState1));
     }
 
     @Override
     public void animateTick(BlockState pState, Level pLevel, BlockPos pPos, RandomSource pRandom) {
-//        if (pState.getValue(BlockStateProperties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.LOWER) {
-//            if (pState.getValue(IcariaBlockStateProperties.KETTLE) == Kettle.ACTIVE) {
-//                pLevel.addParticle(IcariaParticleTypes.STEAM.get(), pPos.getX() + this.getX(pState) + pRandom.nextDouble() / 8.0D * (pRandom.nextBoolean() ? 1 : -1), pPos.getY() + 0.875D, pPos.getZ() + this.getZ(pState) + pRandom.nextDouble() / 8.0D * (pRandom.nextBoolean() ? 1 : -1), 0.0D, 0.0D, 0.0D);
-//                pLevel.addParticle(ParticleTypes.SMALL_FLAME, pPos.getX() + this.getX(pState) + pRandom.nextDouble() / 4.0D * (pRandom.nextBoolean() ? 1 : -1), pPos.getY() + 0.125D, pPos.getZ() + this.getZ(pState) + pRandom.nextDouble() / 4.0D * (pRandom.nextBoolean() ? 1 : -1), 0.0D, 0.0D, 0.0D);
-//                if (IcariaConfig.KETTLE_SOUNDS.get() && pRandom.nextDouble() < 0.1D) {
-//                    pLevel.playLocalSound(pPos, SoundEvents.FIRE_AMBIENT, SoundSource.BLOCKS, 1.0F, 1.0F, false);
-//                }
-//            } else if (pState.getValue(IcariaBlockStateProperties.KETTLE) == Kettle.BREWING) {
-//                pLevel.addParticle(IcariaParticleTypes.BUBBLE.get(), pPos.getX() + this.getX(pState) + pRandom.nextDouble() / 8.0D * (pRandom.nextBoolean() ? 1 : -1), pPos.getY() + 0.75D, pPos.getZ() + this.getZ(pState) + pRandom.nextDouble() / 8.0D * (pRandom.nextBoolean() ? 1 : -1), 0.0D, 0.0D, 0.0D);
-//                pLevel.addParticle(IcariaParticleTypes.STEAM.get(), pPos.getX() + this.getX(pState) + pRandom.nextDouble() / 8.0D * (pRandom.nextBoolean() ? 1 : -1), pPos.getY() + 0.875D, pPos.getZ() + this.getZ(pState) + pRandom.nextDouble() / 8.0D * (pRandom.nextBoolean() ? 1 : -1), 0.0D, 0.0D, 0.0D);
-//                pLevel.addParticle(ParticleTypes.SMALL_FLAME, pPos.getX() + this.getX(pState) + pRandom.nextDouble() / 4.0D * (pRandom.nextBoolean() ? 1 : -1), pPos.getY() + 0.125D, pPos.getZ() + this.getZ(pState) + pRandom.nextDouble() / 4.0D * (pRandom.nextBoolean() ? 1 : -1), 0.0D, 0.0D, 0.0D);
-//                if (IcariaConfig.KETTLE_SOUNDS.get() && pRandom.nextDouble() < 0.1D) {
-//                    pLevel.playLocalSound(pPos, SoundEvents.FIRE_AMBIENT, SoundSource.BLOCKS, 1.0F, 1.0F, false);
-//                } else if (IcariaConfig.KETTLE_SOUNDS.get() && pRandom.nextDouble() > 0.9D) {
-//                    pLevel.playLocalSound(pPos, IcariaSoundEvents.KETTLE_CONCOCT, SoundSource.BLOCKS, 1.0F, 1.0F, false);
-//                }
-//            }
-//        }
+        if (!pState.getValue(LIT)) {
+            return;
+        }
+        double xPos = (double)pPos.getX() + 0.5;
+        double yPos = pPos.getY();
+        double zPos = (double)pPos.getZ() + 0.5;
+        if (pRandom.nextDouble() < 0.15) {
+            pLevel.playLocalSound(xPos, yPos, zPos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 1.0f, 1.0f, false);
+        }
+
+        Direction direction = pState.getValue(FACING);
+        Direction.Axis axis = direction.getAxis();
+
+        double defaultOffset = pRandom.nextDouble() * 0.6 - 0.3;
+        double xOffsets = axis == Direction.Axis.X ? (double)direction.getStepX() * 0.52 : defaultOffset;
+        double yOffset = pRandom.nextDouble() * 6.0 / 8.0;
+        double zOffset = axis == Direction.Axis.Z ? (double)direction.getStepZ() * 0.52 : defaultOffset;
+
+        pLevel.addParticle(ParticleTypes.SMOKE, xPos + xOffsets, yPos + yOffset, zPos + zOffset, 0.0, 0.0, 0.0);
+
+        if(pLevel.getBlockEntity(pPos) instanceof TrinketTableEntity crystallizerBlockEntity && !crystallizerBlockEntity.itemHandler.getStackInSlot(1).isEmpty()) {
+            pLevel.addParticle(new ItemParticleOption(ParticleTypes.ITEM, crystallizerBlockEntity.itemHandler.getStackInSlot(1)),
+                    xPos + xOffsets, yPos + yOffset, zPos + zOffset, 0.0, 0.0, 0.0);
+        }
     }
 }
