@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.grower.TreeGrower;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class TolkienSaplingBlock extends SaplingBlock {
-    private Block block;
+    private final Block block;
 
     public TolkienSaplingBlock(TreeGrower treeGrower, Properties properties, Block block) {
         super(treeGrower, properties);

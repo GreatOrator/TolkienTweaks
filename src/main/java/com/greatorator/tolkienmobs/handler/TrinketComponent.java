@@ -60,14 +60,14 @@ public record TrinketComponent(Optional<Holder<Potion>> potion, Optional<Integer
     }
 
     public boolean is(Holder<Potion> potion) {
-        return this.potion.isPresent() && ((Holder)this.potion.get()).is(potion) && this.customEffects.isEmpty();
+        return this.potion.isPresent() && this.potion.get().is(potion) && this.customEffects.isEmpty();
     }
 
     public Iterable<MobEffectInstance> getAllEffects() {
         if (this.potion.isEmpty()) {
             return this.customEffects;
         } else {
-            return (Iterable)(this.customEffects.isEmpty() ? ((Potion)((Holder)this.potion.get()).value()).getEffects() : Iterables.concat(((Potion)((Holder)this.potion.get()).value()).getEffects(), this.customEffects));
+            return this.customEffects.isEmpty() ? ((Potion)((Holder)this.potion.get()).value()).getEffects() : Iterables.concat(((Potion)((Holder)this.potion.get()).value()).getEffects(), this.customEffects);
         }
     }
 
@@ -101,7 +101,7 @@ public record TrinketComponent(Optional<Holder<Potion>> potion, Optional<Integer
     }
 
     public int getColor() {
-        return this.customColor.isPresent() ? (Integer)this.customColor.get() : getColor(this.getAllEffects());
+        return this.customColor.isPresent() ? this.customColor.get() : getColor(this.getAllEffects());
     }
 
     public static int getColor(Iterable<MobEffectInstance> effects) {
@@ -118,7 +118,7 @@ public record TrinketComponent(Optional<Holder<Potion>> potion, Optional<Integer
         while(var5.hasNext()) {
             MobEffectInstance mobeffectinstance = (MobEffectInstance)var5.next();
             if (mobeffectinstance.isVisible()) {
-                int i1 = ((MobEffect)mobeffectinstance.getEffect().value()).getColor();
+                int i1 = mobeffectinstance.getEffect().value().getColor();
                 int j1 = mobeffectinstance.getAmplifier() + 1;
                 i += j1 * FastColor.ARGB32.red(i1);
                 j += j1 * FastColor.ARGB32.green(i1);
@@ -131,7 +131,7 @@ public record TrinketComponent(Optional<Holder<Potion>> potion, Optional<Integer
     }
 
     public boolean hasEffects() {
-        return !this.customEffects.isEmpty() ? true : this.potion.isPresent() && !((Potion)((Holder)this.potion.get()).value()).getEffects().isEmpty();
+        return !this.customEffects.isEmpty() || this.potion.isPresent() && !((Potion) ((Holder) this.potion.get()).value()).getEffects().isEmpty();
     }
 
     public List<MobEffectInstance> customEffects() {
@@ -158,11 +158,11 @@ public record TrinketComponent(Optional<Holder<Potion>> potion, Optional<Integer
                 list.add(new Pair(p_331556_, p_330860_));
             });
             if (mobeffectinstance.getAmplifier() > 0) {
-                mutablecomponent = Component.translatable("potion.withAmplifier", new Object[]{mutablecomponent, Component.translatable("potion.potency." + mobeffectinstance.getAmplifier())});
+                mutablecomponent = Component.translatable("potion.withAmplifier", mutablecomponent, Component.translatable("potion.potency." + mobeffectinstance.getAmplifier()));
             }
 
             if (!mobeffectinstance.endsWithin(20)) {
-                mutablecomponent = Component.translatable("potion.withDuration", new Object[]{mutablecomponent, MobEffectUtil.formatDuration(mobeffectinstance, durationFactor, ticksPerSecond)});
+                mutablecomponent = Component.translatable("potion.withDuration", mutablecomponent, MobEffectUtil.formatDuration(mobeffectinstance, durationFactor, ticksPerSecond));
             }
         }
 
@@ -177,7 +177,7 @@ public record TrinketComponent(Optional<Holder<Potion>> potion, Optional<Integer
 
             while(var6.hasNext()) {
                 Pair<Holder<Attribute>, AttributeModifier> pair = (Pair)var6.next();
-                AttributeModifier attributemodifier = (AttributeModifier)pair.getSecond();
+                AttributeModifier attributemodifier = pair.getSecond();
                 double d1 = attributemodifier.amount();
                 double d0;
                 if (attributemodifier.operation() != AttributeModifier.Operation.ADD_MULTIPLIED_BASE && attributemodifier.operation() != AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL) {
@@ -187,10 +187,10 @@ public record TrinketComponent(Optional<Holder<Potion>> potion, Optional<Integer
                 }
 
                 if (d1 > 0.0) {
-                    tooltipAdder.accept(Component.translatable("attribute.modifier.plus." + attributemodifier.operation().id(), new Object[]{ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(d0), Component.translatable(((Attribute)((Holder)pair.getFirst()).value()).getDescriptionId())}).withStyle(ChatFormatting.BLUE));
+                    tooltipAdder.accept(Component.translatable("attribute.modifier.plus." + attributemodifier.operation().id(), ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(d0), Component.translatable(((Attribute)((Holder)pair.getFirst()).value()).getDescriptionId())).withStyle(ChatFormatting.BLUE));
                 } else if (d1 < 0.0) {
                     d0 *= -1.0;
-                    tooltipAdder.accept(Component.translatable("attribute.modifier.take." + attributemodifier.operation().id(), new Object[]{ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(d0), Component.translatable(((Attribute)((Holder)pair.getFirst()).value()).getDescriptionId())}).withStyle(ChatFormatting.RED));
+                    tooltipAdder.accept(Component.translatable("attribute.modifier.take." + attributemodifier.operation().id(), ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(d0), Component.translatable(((Attribute)((Holder)pair.getFirst()).value()).getDescriptionId())).withStyle(ChatFormatting.RED));
                 }
             }
         }

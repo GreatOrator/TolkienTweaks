@@ -1,0 +1,29 @@
+{
+  "type": "tolkienmobs:trinket",
+  "cookingtime": 100,
+  "experience": 0.25,
+  "materials": [
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "tolkienmobs:trinket_ring"
+      }
+    },
+    {
+      "count": 1,
+      "ingredient": {
+        "item": "minecraft:potion"
+      }
+    },
+    {
+      "count": 1,
+      "ingredient": {
+        "tag": "tolkienmobs:gem_ammolite"
+      }
+    }
+  ],
+  "output": {
+    "item": "tolkienmobs:trinket_amulet"
+  },
+  "xp": 20
+}

@@ -267,6 +267,7 @@ public class TolkienItems {
 
         // Tools
     public static final DeferredItem<Item> HYPE_HORN = ITEMS.register("hype_horn", () -> new HypeHornItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<DwarvenHammerItem> DWARVEN_HAMMER = ITEMS.register("dwarven_hammer", () -> new DwarvenHammerItem(TolkienToolMaterials.MITHRIL, new Item.Properties().attributes(TolkienPickaxeItem.createAttributes(TolkienToolMaterials.MITHRIL, 8, -3.0F))));
 
     public static final DeferredItem<SwordItem> SWORD_MITHRIL = ITEMS.register("sword_mithril", () -> new TolkienSwordItem(TolkienToolMaterials.MITHRIL, new Item.Properties().attributes(TolkienSwordItem.createAttributes(TolkienToolMaterials.MITHRIL, 8, -1.0F))));
     public static final DeferredItem<SwordItem> SWORD_MORGULIRON = ITEMS.register("sword_morguliron", () -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, new Item.Properties().attributes(TolkienSwordItem.createAttributes(TolkienToolMaterials.MORGULIRON, 8, -2.0F))));

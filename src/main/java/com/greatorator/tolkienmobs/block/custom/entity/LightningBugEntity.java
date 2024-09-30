@@ -18,7 +18,7 @@ public class LightningBugEntity extends BlockEntity {
 	private int glowDelay;
 
 	public LightningBugEntity(BlockPos pos, BlockState state) {
-		super(TolkienBlocks.LIGHTNINGBUG.get(), pos, state);
+		super(TolkienBlocks.LIGHTNINGBUG_BLOCK_ENTITY.get(), pos, state);
 	}
 
 	public static void tick(Level level, BlockPos pos, BlockState state, LightningBugEntity te) {

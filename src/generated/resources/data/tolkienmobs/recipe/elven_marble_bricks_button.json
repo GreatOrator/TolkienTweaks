@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "elven_marble_bricks",
+  "ingredients": [
+    {
+      "item": "tolkienmobs:elven_marble_bricks"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:elven_marble_bricks_button"
+  }
+}

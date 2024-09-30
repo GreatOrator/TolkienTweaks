@@ -42,5 +42,4 @@ public class PlacardRenderer implements BlockEntityRenderer<PlacardEntity> {
 
         mStack.popPose();
     }
-
 }

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "cobbled_elven_marble",
+  "ingredients": [
+    {
+      "item": "tolkienmobs:cobbled_elven_marble"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:cobbled_elven_marble_button"
+  }
+}

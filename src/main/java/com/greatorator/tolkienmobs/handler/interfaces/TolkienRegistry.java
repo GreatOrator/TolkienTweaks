@@ -10,6 +10,6 @@ import net.minecraft.resources.ResourceLocation;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public interface TolkienRegistry {
-    static final ResourceKey<Registry<TolkienWoodTypes>> WOOD_TYPE_REGISTRY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(MODID, "b_wood_type"));
-    public static final ResourceKey<Registry<TrinketRecipe>> TRINKET_RECIPES = ResourceKey.createRegistryKey(TolkienMobsMain.createResourceLocation("recipes/trinket_table"));
+    ResourceKey<Registry<TolkienWoodTypes>> WOOD_TYPE_REGISTRY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(MODID, "b_wood_type"));
+    ResourceKey<Registry<TrinketRecipe>> TRINKET_RECIPES = ResourceKey.createRegistryKey(TolkienMobsMain.createResourceLocation("recipes/trinket_table"));
 }

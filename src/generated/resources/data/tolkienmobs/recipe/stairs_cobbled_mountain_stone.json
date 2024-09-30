@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "cobbled_mountain_stone",
+  "key": {
+    "#": {
+      "item": "tolkienmobs:cobbled_mountain_stone"
+    }
+  },
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "result": {
+    "count": 4,
+    "id": "tolkienmobs:stairs_cobbled_mountain_stone"
+  }
+}

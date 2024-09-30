@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_smooth_elven_marble": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tolkienmobs:smooth_elven_marble"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tolkienmobs:slab_smooth_elven_marble"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_smooth_elven_marble"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tolkienmobs:slab_smooth_elven_marble"
+    ]
+  }
+}

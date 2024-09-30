@@ -5,6 +5,7 @@ import com.greatorator.tolkienmobs.handler.TolkienDataComponents;
 import com.greatorator.tolkienmobs.handler.TrinketComponent;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;

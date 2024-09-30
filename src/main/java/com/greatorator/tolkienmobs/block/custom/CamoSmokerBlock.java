@@ -27,7 +27,7 @@ public class CamoSmokerBlock extends ChameleonBlock {
     @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState blockState, Level worldIn, BlockPos pos, RandomSource random) {
         double d0 = (double)pos.getX() + 0.5D;
-        double d1 = (double)pos.getY();
+        double d1 = pos.getY();
         double d2 = (double)pos.getZ() + 0.5D;
         worldIn.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, d0 + random.nextDouble() / 3.0D * (double)(random.nextBoolean() ? 1 : -1), d1 + random.nextDouble() + random.nextDouble(), d2 + random.nextDouble() / 3.0D * (double)(random.nextBoolean() ? 1 : -1), 0.0D, 0.07D, 0.0D);
     }

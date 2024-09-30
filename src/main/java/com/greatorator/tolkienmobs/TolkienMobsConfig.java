@@ -61,7 +61,8 @@ public class TolkienMobsConfig {
     public static boolean disableFakePlayer;
     public static boolean autoUse;
     public static boolean disableHobbitGrowth;
-    public enum sleepingBagUse {};
+    public enum sleepingBagUse {}
+
     public static int pickupRange;
     public static int growthRange;
     public static int growthTimer;

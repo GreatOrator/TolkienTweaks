@@ -1,15 +1,12 @@
 package com.greatorator.tolkienmobs.datagen;
 
 import com.greatorator.tolkienmobs.datagen.helpers.TolkienRecipeHelper;
-import com.greatorator.tolkienmobs.handler.recipes.TrinketRecipeBuilder;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienTags;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
@@ -17,8 +14,6 @@ import net.minecraft.world.level.block.*;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-
-import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class TolkienRecipeProvider extends TolkienRecipeHelper {
     public TolkienRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
@@ -42,14 +37,22 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
         oreBlasting(pRecipeOutput, AMMOLITE_SMELTABLES, RecipeCategory.MISC, TolkienItems.GEM_AMMOLITE.get(), 0.25f, 100, "gem_ammolite");
 
         smeltingList(TolkienBlocks.COBBLED_DARK_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.DARK_STONE, 0.25F, 200);
-        smeltingList(TolkienBlocks.COBBLED_DWARVEN_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.DWARVEN_STONE, 0.25F, 200);
         smeltingList(TolkienBlocks.DARK_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.SMOOTH_DARK_STONE, 0.25F, 200);
+        smeltingList(TolkienBlocks.COBBLED_DWARVEN_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.DWARVEN_STONE, 0.25F, 200);
         smeltingList(TolkienBlocks.DWARVEN_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.SMOOTH_DWARVEN_STONE, 0.25F, 200);
+        smeltingList(TolkienBlocks.COBBLED_ELVEN_MARBLE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.ELVEN_MARBLE, 0.25F, 200);
+        smeltingList(TolkienBlocks.ELVEN_MARBLE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.SMOOTH_ELVEN_MARBLE, 0.25F, 200);
+        smeltingList(TolkienBlocks.COBBLED_MOUNTAIN_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.MOUNTAIN_STONE, 0.25F, 200);
+        smeltingList(TolkienBlocks.MOUNTAIN_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.SMOOTH_MOUNTAIN_STONE, 0.25F, 200);
 
         blastingList(TolkienBlocks.COBBLED_DARK_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.DARK_STONE, 0.25F, 100);
-        blastingList(TolkienBlocks.COBBLED_DWARVEN_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.DWARVEN_STONE, 0.25F, 100);
         blastingList(TolkienBlocks.DARK_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.SMOOTH_DARK_STONE, 0.25F, 100);
+        blastingList(TolkienBlocks.COBBLED_DWARVEN_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.DWARVEN_STONE, 0.25F, 100);
         blastingList(TolkienBlocks.DWARVEN_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.SMOOTH_DWARVEN_STONE, 0.25F, 100);
+        blastingList(TolkienBlocks.COBBLED_ELVEN_MARBLE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.ELVEN_MARBLE, 0.25F, 100);
+        blastingList(TolkienBlocks.ELVEN_MARBLE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.SMOOTH_ELVEN_MARBLE, 0.25F, 100);
+        blastingList(TolkienBlocks.COBBLED_MOUNTAIN_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.MOUNTAIN_STONE, 0.25F, 100);
+        blastingList(TolkienBlocks.MOUNTAIN_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.SMOOTH_MOUNTAIN_STONE, 0.25F, 100);
 
         //Everything Else
         woodListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "mallorn", TolkienBlocks.PLANKS_MALLORN.get(), TolkienBlocks.LOG_MALLORN.get(), TolkienBlocks.WOOD_MALLORN.get(), TolkienBlocks.STAIRS_MALLORN.get(), TolkienBlocks.SLAB_MALLORN.get(), TolkienBlocks.PRESSURE_PLATE_MALLORN.get(), TolkienBlocks.MALLORN_BUTTON.get(), TolkienBlocks.DOOR_MALLORN.get(), TolkienBlocks.TRAPDOOR_MALLORN.get(), TolkienBlocks.FENCE_MALLORN.get(), TolkienBlocks.FENCE_GATE_MALLORN.get(), TolkienBlocks.MALLORN_SIGN.get(), TolkienBlocks.MALLORN_HANGING_SIGN.get(), TolkienBlocks.LADDER_MALLORN.get(), TolkienBlocks.TORCH_MALLORN, TolkienBlocks.BARREL_MALLORN, TolkienBlocks.LEAFPILE_MALLORN, TolkienBlocks.LEAVES_MALLORN);
@@ -72,6 +75,18 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
         stoneListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "chiseled_dwarven_stone_bricks", TolkienBlocks.WALL_CHISELED_DWARVEN_STONE_BRICKS.get(), TolkienBlocks.CHISELED_DWARVEN_STONE_BRICKS_BUTTON.get(), TolkienBlocks.STAIRS_CHISELED_DWARVEN_STONE_BRICKS.get(), TolkienBlocks.CHISELED_DWARVEN_STONE_BRICKS.get(), TolkienBlocks.SLAB_CHISELED_DWARVEN_STONE_BRICKS.get(), TolkienBlocks.PRESSURE_PLATE_CHISELED_DWARVEN_STONE_BRICKS.get());
         stoneListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "dwarven_stone_bricks", TolkienBlocks.WALL_DWARVEN_STONE_BRICKS.get(), TolkienBlocks.DWARVEN_STONE_BRICKS_BUTTON.get(), TolkienBlocks.STAIRS_DWARVEN_STONE_BRICKS.get(), TolkienBlocks.DWARVEN_STONE_BRICKS.get(), TolkienBlocks.SLAB_DWARVEN_STONE_BRICKS.get(), TolkienBlocks.PRESSURE_PLATE_DWARVEN_STONE_BRICKS.get());
         stoneListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "cracked_dwarven_stone_bricks", TolkienBlocks.WALL_CRACKED_DWARVEN_STONE_BRICKS.get(), TolkienBlocks.CRACKED_DWARVEN_STONE_BRICKS_BUTTON.get(), TolkienBlocks.STAIRS_CRACKED_DWARVEN_STONE_BRICKS.get(), TolkienBlocks.CRACKED_DWARVEN_STONE_BRICKS.get(), TolkienBlocks.SLAB_CRACKED_DWARVEN_STONE_BRICKS.get(), TolkienBlocks.PRESSURE_PLATE_CRACKED_DWARVEN_STONE_BRICKS.get());
+        stoneListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "elven_marble", TolkienBlocks.WALL_ELVEN_MARBLE.get(), TolkienBlocks.ELVEN_MARBLE_BUTTON.get(), TolkienBlocks.STAIRS_ELVEN_MARBLE.get(), TolkienBlocks.ELVEN_MARBLE.get(), TolkienBlocks.SLAB_ELVEN_MARBLE.get(), TolkienBlocks.PRESSURE_PLATE_ELVEN_MARBLE.get());
+        stoneListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "chiseled_elven_marble_bricks", TolkienBlocks.WALL_CHISELED_ELVEN_MARBLE_BRICKS.get(), TolkienBlocks.CHISELED_ELVEN_MARBLE_BRICKS_BUTTON.get(), TolkienBlocks.STAIRS_CHISELED_ELVEN_MARBLE_BRICKS.get(), TolkienBlocks.CHISELED_ELVEN_MARBLE_BRICKS.get(), TolkienBlocks.SLAB_CHISELED_ELVEN_MARBLE_BRICKS.get(), TolkienBlocks.PRESSURE_PLATE_CHISELED_ELVEN_MARBLE_BRICKS.get());
+        stoneListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "elven_marble_bricks", TolkienBlocks.WALL_ELVEN_MARBLE_BRICKS.get(), TolkienBlocks.ELVEN_MARBLE_BRICKS_BUTTON.get(), TolkienBlocks.STAIRS_ELVEN_MARBLE_BRICKS.get(), TolkienBlocks.ELVEN_MARBLE_BRICKS.get(), TolkienBlocks.SLAB_ELVEN_MARBLE_BRICKS.get(), TolkienBlocks.PRESSURE_PLATE_ELVEN_MARBLE_BRICKS.get());
+        stoneListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "cracked_elven_marble_bricks", TolkienBlocks.WALL_CRACKED_ELVEN_MARBLE_BRICKS.get(), TolkienBlocks.CRACKED_ELVEN_MARBLE_BRICKS_BUTTON.get(), TolkienBlocks.STAIRS_CRACKED_ELVEN_MARBLE_BRICKS.get(), TolkienBlocks.CRACKED_ELVEN_MARBLE_BRICKS.get(), TolkienBlocks.SLAB_CRACKED_ELVEN_MARBLE_BRICKS.get(), TolkienBlocks.PRESSURE_PLATE_CRACKED_ELVEN_MARBLE_BRICKS.get());
+        stoneListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "cobbled_elven_marble", TolkienBlocks.WALL_COBBLED_ELVEN_MARBLE.get(), TolkienBlocks.COBBLED_ELVEN_MARBLE_BUTTON.get(), TolkienBlocks.STAIRS_COBBLED_ELVEN_MARBLE.get(), TolkienBlocks.COBBLED_ELVEN_MARBLE.get(), TolkienBlocks.SLAB_COBBLED_ELVEN_MARBLE.get(), TolkienBlocks.PRESSURE_PLATE_COBBLED_ELVEN_MARBLE.get());
+        stoneListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "smooth_elven_marble", TolkienBlocks.WALL_SMOOTH_ELVEN_MARBLE.get(), TolkienBlocks.SMOOTH_ELVEN_MARBLE_BUTTON.get(), TolkienBlocks.STAIRS_SMOOTH_ELVEN_MARBLE.get(), TolkienBlocks.SMOOTH_ELVEN_MARBLE.get(), TolkienBlocks.SLAB_SMOOTH_ELVEN_MARBLE.get(), TolkienBlocks.PRESSURE_PLATE_SMOOTH_ELVEN_MARBLE.get());
+        stoneListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "mountain_stone", TolkienBlocks.WALL_MOUNTAIN_STONE.get(), TolkienBlocks.MOUNTAIN_STONE_BUTTON.get(), TolkienBlocks.STAIRS_MOUNTAIN_STONE.get(), TolkienBlocks.MOUNTAIN_STONE.get(), TolkienBlocks.SLAB_MOUNTAIN_STONE.get(), TolkienBlocks.PRESSURE_PLATE_MOUNTAIN_STONE.get());
+        stoneListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "chiseled_mountain_stone_bricks", TolkienBlocks.WALL_CHISELED_MOUNTAIN_STONE_BRICKS.get(), TolkienBlocks.CHISELED_MOUNTAIN_STONE_BRICKS_BUTTON.get(), TolkienBlocks.STAIRS_CHISELED_MOUNTAIN_STONE_BRICKS.get(), TolkienBlocks.CHISELED_MOUNTAIN_STONE_BRICKS.get(), TolkienBlocks.SLAB_CHISELED_MOUNTAIN_STONE_BRICKS.get(), TolkienBlocks.PRESSURE_PLATE_CHISELED_MOUNTAIN_STONE_BRICKS.get());
+        stoneListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "mountain_stone_bricks", TolkienBlocks.WALL_MOUNTAIN_STONE_BRICKS.get(), TolkienBlocks.MOUNTAIN_STONE_BRICKS_BUTTON.get(), TolkienBlocks.STAIRS_MOUNTAIN_STONE_BRICKS.get(), TolkienBlocks.MOUNTAIN_STONE_BRICKS.get(), TolkienBlocks.SLAB_MOUNTAIN_STONE_BRICKS.get(), TolkienBlocks.PRESSURE_PLATE_MOUNTAIN_STONE_BRICKS.get());
+        stoneListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "cracked_mountain_stone_bricks", TolkienBlocks.WALL_CRACKED_MOUNTAIN_STONE_BRICKS.get(), TolkienBlocks.CRACKED_MOUNTAIN_STONE_BRICKS_BUTTON.get(), TolkienBlocks.STAIRS_CRACKED_MOUNTAIN_STONE_BRICKS.get(), TolkienBlocks.CRACKED_MOUNTAIN_STONE_BRICKS.get(), TolkienBlocks.SLAB_CRACKED_MOUNTAIN_STONE_BRICKS.get(), TolkienBlocks.PRESSURE_PLATE_CRACKED_MOUNTAIN_STONE_BRICKS.get());
+        stoneListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "cobbled_mountain_stone", TolkienBlocks.WALL_COBBLED_MOUNTAIN_STONE.get(), TolkienBlocks.COBBLED_MOUNTAIN_STONE_BUTTON.get(), TolkienBlocks.STAIRS_COBBLED_MOUNTAIN_STONE.get(), TolkienBlocks.COBBLED_MOUNTAIN_STONE.get(), TolkienBlocks.SLAB_COBBLED_MOUNTAIN_STONE.get(), TolkienBlocks.PRESSURE_PLATE_COBBLED_MOUNTAIN_STONE.get());
+        stoneListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "smooth_mountain_stone", TolkienBlocks.WALL_SMOOTH_MOUNTAIN_STONE.get(), TolkienBlocks.SMOOTH_MOUNTAIN_STONE_BUTTON.get(), TolkienBlocks.STAIRS_SMOOTH_MOUNTAIN_STONE.get(), TolkienBlocks.SMOOTH_MOUNTAIN_STONE.get(), TolkienBlocks.SLAB_SMOOTH_MOUNTAIN_STONE.get(), TolkienBlocks.PRESSURE_PLATE_SMOOTH_MOUNTAIN_STONE.get());
 
         metalListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "mithril", TolkienBlocks.WALL_MITHRIL.get(), TolkienBlocks.DOOR_MITHRIL.get(), TolkienBlocks.TRAPDOOR_MITHRIL.get(), TolkienBlocks.BARREL_MITHRIL, TolkienBlocks.MITHRIL_BUTTON.get(), TolkienBlocks.STAIRS_MITHRIL.get(), TolkienBlocks.BLOCK_MITHRIL.get(), TolkienBlocks.SLAB_MITHRIL.get(), TolkienBlocks.PRESSURE_PLATE_MITHRIL.get(), TolkienBlocks.MITHRIL_BARS, TolkienBlocks.ELVEN_LANTERN, TolkienBlocks.TORCH_MALLORN, TolkienItems.INGOT_MITHRIL.get(), TolkienItems.NUGGET_MITHRIL.get());
         metalListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "morguliron", TolkienBlocks.WALL_MORGULIRON.get(), TolkienBlocks.DOOR_MORGULIRON.get(), TolkienBlocks.TRAPDOOR_MORGULIRON.get(), TolkienBlocks.BARREL_MORGULIRON, TolkienBlocks.MORGULIRON_BUTTON.get(), TolkienBlocks.STAIRS_MORGULIRON.get(), TolkienBlocks.BLOCK_MORGULIRON.get(), TolkienBlocks.SLAB_MORGULIRON.get(), TolkienBlocks.PRESSURE_PLATE_MORGULIRON.get(), TolkienBlocks.MORGULIRON_BARS, TolkienBlocks.MORGUL_LANTERN, TolkienBlocks.TORCH_MIRKWOOD, TolkienItems.INGOT_MORGULIRON.get(), TolkienItems.NUGGET_MORGULIRON.get());
@@ -144,7 +159,7 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
         conversionRecipe(pRecipeOutput, TolkienBlocks.BLOCK_HALLOWED, Blocks.GRASS_BLOCK, TolkienItems.GEM_AMMOLITE);
         conversionRecipe(pRecipeOutput, TolkienBlocks.STONE_PATH, Blocks.MOSSY_COBBLESTONE, Items.IRON_PICKAXE);
 
-        trinket(pRecipeOutput, "trinket_ring", TolkienItems.TRINKET_RING, Ingredient.of(Items.POTION), TolkienItems.TRINKET_AMULET);
+//        trinket(pRecipeOutput, "trinket_ring", TolkienItems.TRINKET_RING, Ingredient.of(Items.POTION), TolkienItems.TRINKET_AMULET);
 
         smithingUpgrade(pRecipeOutput, "mithril", TolkienItems.SWORD_MITHRIL.get(), TolkienItems.TEMPLATE_MITHRIL.get(), Items.NETHERITE_SWORD, TolkienItems.INGOT_MITHRIL.get());
         smithingUpgrade(pRecipeOutput, "mithril", TolkienItems.PICKAXE_MITHRIL.get(), TolkienItems.TEMPLATE_MITHRIL.get(), Items.NETHERITE_PICKAXE, TolkienItems.INGOT_MITHRIL.get());
@@ -233,6 +248,15 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
                 .define('A', TolkienItems.INGOT_MITHRIL.get())
                 .define('M', TolkienItems.MUMAKIL_LEATHER.get())
                 .unlockedBy("has_mithril", has(TolkienItems.INGOT_MITHRIL))
+                .save(pRecipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, TolkienItems.DWARVEN_HAMMER, 1)
+                .define('A', TolkienBlocks.DWARVEN_STONE)
+                .define('G', Items.STICK)
+                .define('R', TolkienItems.GEM_AMMOLITE)
+                .pattern(" AR")
+                .pattern(" GA")
+                .pattern("G  ")
+                .unlockedBy("has_ammolite", has(TolkienItems.GEM_AMMOLITE))
                 .save(pRecipeOutput);
     }
 }

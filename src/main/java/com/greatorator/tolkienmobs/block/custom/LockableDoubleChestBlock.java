@@ -39,7 +39,7 @@ public class LockableDoubleChestBlock extends TolkienBlock {
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext context) {
-        switch((Direction)state.getValue(FACING)) {
+        switch(state.getValue(FACING)) {
             default:
             case NORTH:
                 return LOCKABLE_SHAPE_N;

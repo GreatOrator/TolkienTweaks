@@ -201,6 +201,18 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         buttonItem(TolkienBlocks.COBBLED_DWARVEN_STONE_BUTTON, TolkienBlocks.COBBLED_DWARVEN_STONE);
         buttonItem(TolkienBlocks.SMOOTH_DWARVEN_STONE_BUTTON, TolkienBlocks.SMOOTH_DWARVEN_STONE);
         buttonItem(TolkienBlocks.CHISELED_DWARVEN_STONE_BRICKS_BUTTON, TolkienBlocks.CHISELED_DWARVEN_STONE_BRICKS);
+        buttonItem(TolkienBlocks.ELVEN_MARBLE_BUTTON, TolkienBlocks.ELVEN_MARBLE);
+        buttonItem(TolkienBlocks.ELVEN_MARBLE_BRICKS_BUTTON, TolkienBlocks.ELVEN_MARBLE_BRICKS);
+        buttonItem(TolkienBlocks.CRACKED_ELVEN_MARBLE_BRICKS_BUTTON, TolkienBlocks.CRACKED_ELVEN_MARBLE_BRICKS);
+        buttonItem(TolkienBlocks.COBBLED_ELVEN_MARBLE_BUTTON, TolkienBlocks.COBBLED_ELVEN_MARBLE);
+        buttonItem(TolkienBlocks.SMOOTH_ELVEN_MARBLE_BUTTON, TolkienBlocks.SMOOTH_ELVEN_MARBLE);
+        buttonItem(TolkienBlocks.CHISELED_ELVEN_MARBLE_BRICKS_BUTTON, TolkienBlocks.CHISELED_ELVEN_MARBLE_BRICKS);
+        buttonItem(TolkienBlocks.MOUNTAIN_STONE_BUTTON, TolkienBlocks.MOUNTAIN_STONE);
+        buttonItem(TolkienBlocks.MOUNTAIN_STONE_BRICKS_BUTTON, TolkienBlocks.MOUNTAIN_STONE_BRICKS);
+        buttonItem(TolkienBlocks.CRACKED_MOUNTAIN_STONE_BRICKS_BUTTON, TolkienBlocks.CRACKED_MOUNTAIN_STONE_BRICKS);
+        buttonItem(TolkienBlocks.COBBLED_MOUNTAIN_STONE_BUTTON, TolkienBlocks.COBBLED_MOUNTAIN_STONE);
+        buttonItem(TolkienBlocks.SMOOTH_MOUNTAIN_STONE_BUTTON, TolkienBlocks.SMOOTH_MOUNTAIN_STONE);
+        buttonItem(TolkienBlocks.CHISELED_MOUNTAIN_STONE_BRICKS_BUTTON, TolkienBlocks.CHISELED_MOUNTAIN_STONE_BRICKS);
 
         wallItem(TolkienBlocks.WALL_DWARVEN_STONE, TolkienBlocks.DWARVEN_STONE);
         wallItem(TolkienBlocks.WALL_DWARVEN_STONE_BRICKS, TolkienBlocks.DWARVEN_STONE_BRICKS);
@@ -214,6 +226,18 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         wallItem(TolkienBlocks.WALL_COBBLED_DARK_STONE, TolkienBlocks.COBBLED_DARK_STONE);
         wallItem(TolkienBlocks.WALL_SMOOTH_DARK_STONE, TolkienBlocks.SMOOTH_DARK_STONE);
         wallItem(TolkienBlocks.WALL_CHISELED_DARK_STONE_BRICKS, TolkienBlocks.CHISELED_DARK_STONE_BRICKS);
+        wallItem(TolkienBlocks.WALL_ELVEN_MARBLE, TolkienBlocks.ELVEN_MARBLE);
+        wallItem(TolkienBlocks.WALL_ELVEN_MARBLE_BRICKS, TolkienBlocks.ELVEN_MARBLE_BRICKS);
+        wallItem(TolkienBlocks.WALL_CRACKED_ELVEN_MARBLE_BRICKS, TolkienBlocks.CRACKED_ELVEN_MARBLE_BRICKS);
+        wallItem(TolkienBlocks.WALL_COBBLED_ELVEN_MARBLE, TolkienBlocks.COBBLED_ELVEN_MARBLE);
+        wallItem(TolkienBlocks.WALL_SMOOTH_ELVEN_MARBLE, TolkienBlocks.SMOOTH_ELVEN_MARBLE);
+        wallItem(TolkienBlocks.WALL_CHISELED_ELVEN_MARBLE_BRICKS, TolkienBlocks.CHISELED_ELVEN_MARBLE_BRICKS);
+        wallItem(TolkienBlocks.WALL_MOUNTAIN_STONE, TolkienBlocks.MOUNTAIN_STONE);
+        wallItem(TolkienBlocks.WALL_MOUNTAIN_STONE_BRICKS, TolkienBlocks.MOUNTAIN_STONE_BRICKS);
+        wallItem(TolkienBlocks.WALL_CRACKED_MOUNTAIN_STONE_BRICKS, TolkienBlocks.CRACKED_MOUNTAIN_STONE_BRICKS);
+        wallItem(TolkienBlocks.WALL_COBBLED_MOUNTAIN_STONE, TolkienBlocks.COBBLED_MOUNTAIN_STONE);
+        wallItem(TolkienBlocks.WALL_SMOOTH_MOUNTAIN_STONE, TolkienBlocks.SMOOTH_MOUNTAIN_STONE);
+        wallItem(TolkienBlocks.WALL_CHISELED_MOUNTAIN_STONE_BRICKS, TolkienBlocks.CHISELED_MOUNTAIN_STONE_BRICKS);
 
         generated(TolkienBlocks.LEAFPILE_MALLORN.getId().getPath(), TolkienMobsMain.prefix("block/leaves_mallorn"));
         generated(TolkienBlocks.LEAFPILE_MIRKWOOD.getId().getPath(), TolkienMobsMain.prefix("block/leaves_mirkwood"));
@@ -272,26 +296,27 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         trinketItem(TolkienItems.TRINKET_GLOVE.get(), TolkienMobsMain.prefix("item/trinket_glove"), TolkienMobsMain.prefix("item/trinket_glove_gem"));
         trinketItem(TolkienItems.TRINKET_CLOAK.get(), TolkienMobsMain.prefix("item/trinket_cloak"), TolkienMobsMain.prefix("item/trinket_cloak_gem"));
 
-        buildTool(TolkienItems.SWORD_WITCHKING.get());
-        buildTool(TolkienItems.SWORD_URUK.get());
-        buildTool(TolkienItems.SWORD_MITHRIL.get());
-        buildTool(TolkienItems.SWORD_MORGULIRON.get());
-        buildTool(TolkienItems.SWORD_AMMOLITE.get());
-        buildTool(TolkienItems.PICKAXE_MITHRIL.get());
-        buildTool(TolkienItems.PICKAXE_MORGULIRON.get());
-        buildTool(TolkienItems.PICKAXE_AMMOLITE.get());
-        buildTool(TolkienItems.AXE_MITHRIL.get());
-        buildTool(TolkienItems.AXE_MORGULIRON.get());
-        buildTool(TolkienItems.AXE_AMMOLITE.get());
-        buildTool(TolkienItems.SHOVEL_MITHRIL.get());
-        buildTool(TolkienItems.SHOVEL_MORGULIRON.get());
-        buildTool(TolkienItems.SHOVEL_AMMOLITE.get());
-        buildTool(TolkienItems.HOE_MITHRIL.get());
-        buildTool(TolkienItems.HOE_MORGULIRON.get());
-        buildTool(TolkienItems.HOE_AMMOLITE.get());
-        buildTool(TolkienItems.SHEARS_MITHRIL.get());
-        buildTool(TolkienItems.SHEARS_MORGULIRON.get());
-        buildTool(TolkienItems.SHEARS_AMMOLITE.get());
+        handheldItem(TolkienItems.SWORD_WITCHKING.get());
+        handheldItem(TolkienItems.SWORD_URUK.get());
+        handheldItem(TolkienItems.SWORD_MITHRIL.get());
+        handheldItem(TolkienItems.SWORD_MORGULIRON.get());
+        handheldItem(TolkienItems.SWORD_AMMOLITE.get());
+        handheldItem(TolkienItems.PICKAXE_MITHRIL.get());
+        handheldItem(TolkienItems.PICKAXE_MORGULIRON.get());
+        handheldItem(TolkienItems.PICKAXE_AMMOLITE.get());
+        handheldItem(TolkienItems.AXE_MITHRIL.get());
+        handheldItem(TolkienItems.AXE_MORGULIRON.get());
+        handheldItem(TolkienItems.AXE_AMMOLITE.get());
+        handheldItem(TolkienItems.SHOVEL_MITHRIL.get());
+        handheldItem(TolkienItems.SHOVEL_MORGULIRON.get());
+        handheldItem(TolkienItems.SHOVEL_AMMOLITE.get());
+        handheldItem(TolkienItems.HOE_MITHRIL.get());
+        handheldItem(TolkienItems.HOE_MORGULIRON.get());
+        handheldItem(TolkienItems.HOE_AMMOLITE.get());
+        handheldItem(TolkienItems.SHEARS_MITHRIL.get());
+        handheldItem(TolkienItems.SHEARS_MORGULIRON.get());
+        handheldItem(TolkienItems.SHEARS_AMMOLITE.get());
+        handheldItem(TolkienItems.DWARVEN_HAMMER.get());
 
         basicItem(TolkienItems.BRONZE_KEY.get());
         basicItem(TolkienItems.SILVER_KEY.get());
@@ -353,11 +378,11 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         return ResourceLocation.fromNamespaceAndPath(MODID,"block/" + block.getId().getPath());
     }
 
-    public ItemModelBuilder buildTool(Item item) {
+    public ItemModelBuilder handheldItem(Item item) {
         return basicItem(Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item)));
     }
 
-    public ItemModelBuilder buildTool(ResourceLocation item) {
+    public ItemModelBuilder handheldItem(ResourceLocation item) {
         return getBuilder(item.toString())
                 .parent(new ModelFile.UncheckedModelFile("item/handheld"))
                 .texture("layer0", ResourceLocation.fromNamespaceAndPath(item.getNamespace(), "item/" + item.getPath()));

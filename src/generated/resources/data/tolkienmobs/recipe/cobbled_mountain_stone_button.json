@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "cobbled_mountain_stone",
+  "ingredients": [
+    {
+      "item": "tolkienmobs:cobbled_mountain_stone"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:cobbled_mountain_stone_button"
+  }
+}

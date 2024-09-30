@@ -34,7 +34,7 @@ public class BackpackBlock extends TolkienBlock {
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext context) {
-        switch((Direction)state.getValue(FACING)) {
+        switch(state.getValue(FACING)) {
             case NORTH:
                 return SHAPE_NORTH;
             case SOUTH:

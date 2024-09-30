@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "smooth_mountain_stone",
+  "key": {
+    "#": {
+      "item": "tolkienmobs:smooth_mountain_stone"
+    }
+  },
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "result": {
+    "count": 4,
+    "id": "tolkienmobs:stairs_smooth_mountain_stone"
+  }
+}

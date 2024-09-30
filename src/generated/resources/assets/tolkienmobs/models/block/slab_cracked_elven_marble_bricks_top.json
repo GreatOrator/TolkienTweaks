@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "tolkienmobs:block/cracked_elven_marble_bricks",
+    "side": "tolkienmobs:block/cracked_elven_marble_bricks",
+    "top": "tolkienmobs:block/cracked_elven_marble_bricks"
+  }
+}

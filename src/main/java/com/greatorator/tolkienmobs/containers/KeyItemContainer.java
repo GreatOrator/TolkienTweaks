@@ -20,7 +20,7 @@ public class KeyItemContainer extends AbstractContainerMenu {
     public static final int SLOTS = 15;
     public ItemStack keyItem;
     public Player playerEntity;
-    private IItemHandler playerInventory;
+    private final IItemHandler playerInventory;
     public BlockPos sourceContainer = BlockPos.ZERO;
     public ComponentItemHandler keyItemHandler;
 
@@ -145,9 +145,7 @@ public class KeyItemContainer extends AbstractContainerMenu {
 
     @Override
     public boolean canTakeItemForPickAll(ItemStack itemStack, Slot slot) {
-        if (slot instanceof KeyItemSlot)
-            return false;
-        return true;
+        return !(slot instanceof KeyItemSlot);
     }
 
     @Override

@@ -39,7 +39,7 @@ public class LocustBlock extends TolkienBugBlock {
 
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		return createTickerHelper(type, TolkienBlocks.LOCUST.get(), LocustEntity::tick);
+		return createTickerHelper(type, TolkienBlocks.LOCUST_BLOCK_ENTITY.get(), LocustEntity::tick);
 	}
 
 	@Override

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "tolkienmobs:block/mountain_stone",
+    "side": "tolkienmobs:block/mountain_stone",
+    "top": "tolkienmobs:block/mountain_stone"
+  }
+}

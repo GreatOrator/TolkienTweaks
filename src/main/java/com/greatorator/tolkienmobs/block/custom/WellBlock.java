@@ -37,7 +37,7 @@ public class WellBlock extends TolkienBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-    protected static final VoxelShape SHAPE_N = Block.box(-7.0D, 0.0D, 1.0D, 23.0D, 32.0D, 15.0D);;
+    protected static final VoxelShape SHAPE_N = Block.box(-7.0D, 0.0D, 1.0D, 23.0D, 32.0D, 15.0D);
     protected static final VoxelShape SHAPE_S = Block.box(1.0D, 0.0D, -7.0D, 15.0D, 32.0D, 23.0D);
     protected static final VoxelShape SHAPE_E = Block.box(1.0D, 0.0D, -7.0D, 15.0D, 32.0D, 23.0D);
     protected static final VoxelShape SHAPE_W = Block.box(-7.0D, 0.0D, 1.0D, 23.0D, 32.0D, 15.0D);
@@ -50,7 +50,7 @@ public class WellBlock extends TolkienBlock {
     @SuppressWarnings("deprecation")
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos pos, CollisionContext context) {
-        switch((Direction)state.getValue(FACING)) {
+        switch(state.getValue(FACING)) {
             default:
             case NORTH:
                 return SHAPE_N;

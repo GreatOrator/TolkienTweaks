@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "tolkienmobs:block/slab_elven_marble_bricks"
+    },
+    "type=double": {
+      "model": "tolkienmobs:block/elven_marble_bricks"
+    },
+    "type=top": {
+      "model": "tolkienmobs:block/slab_elven_marble_bricks_top"
+    }
+  }
+}

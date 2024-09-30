@@ -10,6 +10,7 @@ import com.greatorator.tolkienmobs.fluid.TolkienFluidType;
 import com.greatorator.tolkienmobs.init.TolkienParticleTypes;
 import com.greatorator.tolkienmobs.item.custom.CoinPouchItem;
 import com.greatorator.tolkienmobs.item.custom.KeyRingItem;
+import com.greatorator.tolkienmobs.network.PacketHandler;
 import com.greatorator.tolkienmobs.particle.LeafParticle;
 import com.greatorator.tolkienmobs.particle.provider.TolkienParticleProvider;
 import com.mojang.logging.LogUtils;
@@ -51,7 +52,7 @@ public class TolkienMobsMain {
     /*
      TODO
       -Fix Rendering of Coin Pouch and Key Ring States
-        -Fix GUI for Key Codes
+        -Fix Storing of Key Codes
       -Armor Implemented
       -Bows Implemented
       -Projectiles Implemented
@@ -104,6 +105,8 @@ public class TolkienMobsMain {
         TolkienDataComponents.COMPONENTS.register(modEventBus);
         TolkienRecipesTypes.RECIPE_TYPE.register(modEventBus);
         TolkienRecipeSerializers.RECIPE_SERIALIZER.register(modEventBus);
+
+        modEventBus.addListener(PacketHandler::registerNetworking);
 
         NeoForge.EVENT_BUS.register(this);
 
