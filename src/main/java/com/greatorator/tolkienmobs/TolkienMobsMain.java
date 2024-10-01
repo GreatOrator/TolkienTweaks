@@ -53,7 +53,7 @@ public class TolkienMobsMain {
      TODO
       -Fix Rendering of Coin Pouch and Key Ring States
         -Fix Storing of Key Codes
-      -Armor Implemented
+      -Horse Armor Implemented
       -Bows Implemented
       -Projectiles Implemented
       -Biomes

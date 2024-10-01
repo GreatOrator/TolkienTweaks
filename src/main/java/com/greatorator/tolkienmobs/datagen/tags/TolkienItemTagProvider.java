@@ -87,5 +87,14 @@ public class TolkienItemTagProvider extends ItemTagsProvider {
                 .add(TolkienItems.HOE_MITHRIL.get())
                 .add(TolkienItems.HOE_MORGULIRON.get())
                 .add(TolkienItems.HOE_AMMOLITE.get());
+        tag(ItemTags.TRIMMABLE_ARMOR)
+                .add(TolkienItems.HELMET_MITHRIL.get())
+                .add(TolkienItems.CHESTPLATE_MITHRIL.get())
+                .add(TolkienItems.LEGGINGS_MITHRIL.get())
+                .add(TolkienItems.BOOTS_MITHRIL.get())
+                .add(TolkienItems.HELMET_MORGULIRON.get())
+                .add(TolkienItems.CHESTPLATE_MORGULIRON.get())
+                .add(TolkienItems.LEGGINGS_MORGULIRON.get())
+                .add(TolkienItems.BOOTS_MORGULIRON.get());
     }
 }

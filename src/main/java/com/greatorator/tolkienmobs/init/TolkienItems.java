@@ -4,6 +4,7 @@ import com.greatorator.tolkienmobs.handler.TolkienDataComponents;
 import com.greatorator.tolkienmobs.handler.TrinketComponent;
 import com.greatorator.tolkienmobs.item.*;
 import com.greatorator.tolkienmobs.item.custom.*;
+import com.greatorator.tolkienmobs.util.TolkienArmorMaterials;
 import com.greatorator.tolkienmobs.util.TolkienToolMaterials;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.InteractionHand;
@@ -314,15 +315,32 @@ public class TolkienItems {
 //    public static RegistryObject<Item> FELLBEAST_FIREBALL = ITEMS.register("ammo_fellbeast_fireball", () -> new FellBeastFireballItem((new Item.Properties()).stacksTo(16).tab(toolsGroup)));
 
         // Armor
-//    public static RegistryObject<ArmorItem> HELMET_MITHRIL = ITEMS.register("helmet_mithril", () -> new MithrilArmorItem(TolkienArmorMaterial.MITHRIL, EquipmentSlot.HEAD, (new Item.Properties()).tab(toolsGroup)));
-//    public static RegistryObject<ArmorItem> CHESTPLATE_MITHRIL = ITEMS.register("chestplate_mithril", () -> new MithrilArmorItem(TolkienArmorMaterial.MITHRIL, EquipmentSlot.CHEST, (new Item.Properties()).tab(toolsGroup)));
-//    public static RegistryObject<ArmorItem> LEGGINGS_MITHRIL = ITEMS.register("leggings_mithril", () -> new MithrilArmorItem(TolkienArmorMaterial.MITHRIL, EquipmentSlot.LEGS, (new Item.Properties()).tab(toolsGroup)));
-//    public static RegistryObject<ArmorItem> BOOTS_MITHRIL = ITEMS.register("boots_mithril", () -> new MithrilArmorItem(TolkienArmorMaterial.MITHRIL, EquipmentSlot.FEET, (new Item.Properties()).tab(toolsGroup)));
+    public static final DeferredItem<ArmorItem> HELMET_MITHRIL = ITEMS.register("helmet_mithril",
+                () -> new TolkienArmorItem(TolkienArmorMaterials.MITHRIL_ARMOR_MATERIAL, ArmorItem.Type.HELMET,
+                        new Item.Properties().durability(ArmorItem.Type.HELMET.getDurability(41))));
+    public static final DeferredItem<ArmorItem> CHESTPLATE_MITHRIL = ITEMS.register("chestplate_mithril",
+            () -> new TolkienArmorItem(TolkienArmorMaterials.MITHRIL_ARMOR_MATERIAL, ArmorItem.Type.CHESTPLATE,
+                    new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(41))));
+    public static final DeferredItem<ArmorItem> LEGGINGS_MITHRIL = ITEMS.register("leggings_mithril",
+            () -> new TolkienArmorItem(TolkienArmorMaterials.MITHRIL_ARMOR_MATERIAL, ArmorItem.Type.LEGGINGS,
+                    new Item.Properties().durability(ArmorItem.Type.LEGGINGS.getDurability(41))));
+    public static final DeferredItem<ArmorItem> BOOTS_MITHRIL = ITEMS.register("boots_mithril",
+            () -> new TolkienArmorItem(TolkienArmorMaterials.MITHRIL_ARMOR_MATERIAL, ArmorItem.Type.BOOTS,
+                    new Item.Properties().durability(ArmorItem.Type.BOOTS.getDurability(41))));
+    public static final DeferredItem<ArmorItem> HELMET_MORGULIRON = ITEMS.register("helmet_morguliron",
+            () -> new TolkienArmorItem(TolkienArmorMaterials.MORGULIRON_ARMOR_MATERIAL, ArmorItem.Type.HELMET,
+                    new Item.Properties().durability(ArmorItem.Type.HELMET.getDurability(39))));
+    public static final DeferredItem<ArmorItem> CHESTPLATE_MORGULIRON = ITEMS.register("chestplate_morguliron",
+            () -> new TolkienArmorItem(TolkienArmorMaterials.MORGULIRON_ARMOR_MATERIAL, ArmorItem.Type.CHESTPLATE,
+                    new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(39))));
+    public static final DeferredItem<ArmorItem> LEGGINGS_MORGULIRON = ITEMS.register("leggings_morguliron",
+            () -> new TolkienArmorItem(TolkienArmorMaterials.MORGULIRON_ARMOR_MATERIAL, ArmorItem.Type.LEGGINGS,
+                    new Item.Properties().durability(ArmorItem.Type.LEGGINGS.getDurability(39))));
+    public static final DeferredItem<ArmorItem> BOOTS_MORGULIRON = ITEMS.register("boots_morguliron",
+            () -> new TolkienArmorItem(TolkienArmorMaterials.MORGULIRON_ARMOR_MATERIAL, ArmorItem.Type.BOOTS,
+                    new Item.Properties().durability(ArmorItem.Type.BOOTS.getDurability(39))));
+
 //    public static RegistryObject<Item> MITHRIL_HORSE_ARMOR = ITEMS.register("mithril_horse_armor", () -> new BaseHorseArmorItem(15, "mithril", (new Item.Properties()).stacksTo(1).tab(toolsGroup)));
-//    public static RegistryObject<ArmorItem> HELMET_MORGULIRON = ITEMS.register("helmet_morguliron", () -> new MorgulironArmorItem(TolkienArmorMaterial.MORGULIRON, EquipmentSlot.HEAD, (new Item.Properties()).tab(toolsGroup)));
-//    public static RegistryObject<ArmorItem> CHESTPLATE_MORGULIRON = ITEMS.register("chestplate_morguliron", () -> new MorgulironArmorItem(TolkienArmorMaterial.MORGULIRON, EquipmentSlot.CHEST, (new Item.Properties()).tab(toolsGroup)));
-//    public static RegistryObject<ArmorItem> LEGGINGS_MORGULIRON = ITEMS.register("leggings_morguliron", () -> new MorgulironArmorItem(TolkienArmorMaterial.MORGULIRON, EquipmentSlot.LEGS, (new Item.Properties()).tab(toolsGroup)));
-//    public static RegistryObject<ArmorItem> BOOTS_MORGULIRON = ITEMS.register("boots_morguliron", () -> new MorgulironArmorItem(TolkienArmorMaterial.MORGULIRON, EquipmentSlot.FEET, (new Item.Properties()).tab(toolsGroup)));
 //    public static RegistryObject<Item> MORGULIRON_HORSE_ARMOR = ITEMS.register("morguliron_horse_armor", () -> new BaseHorseArmorItem(13, "morguliron", (new Item.Properties()).stacksTo(1).tab(toolsGroup)));
 
         // Keys
