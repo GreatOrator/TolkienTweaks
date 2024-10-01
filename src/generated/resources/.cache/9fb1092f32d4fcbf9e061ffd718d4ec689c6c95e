@@ -1,4 +1,4 @@
-// 1.21	2024-09-28T18:17:32.7988957	Recipes
+// 1.21	2024-10-01T11:03:36.7572668	Recipes
 d19567913dbfd6ba6d00c4306abe737d82e289eb data/tolkienmobs/advancement/recipes/building_blocks/block.tolkienmobs.dark_stone_from_blasting.json
 fdc081cd058634a34dc62f77cad3483eb182215e data/tolkienmobs/advancement/recipes/building_blocks/block.tolkienmobs.dark_stone_from_smelting.json
 c65228514dc61115e43a564010366b1cdeb5060a data/tolkienmobs/advancement/recipes/building_blocks/block.tolkienmobs.dwarven_stone_from_blasting.json
@@ -752,7 +752,6 @@ d07b2c1a97af71ceca323489fa7439a777a856df data/tolkienmobs/recipe/trapdoor_lebeth
 e50efe9fcda72dbf0fb16bf43f4e4c80d587dd15 data/tolkienmobs/recipe/trapdoor_mirkwood.json
 83a8d787e9decb8a8b3e85e8b4919fbfbf736c88 data/tolkienmobs/recipe/trapdoor_mithril.json
 c0338c53375be1161279b8feca82577c08509745 data/tolkienmobs/recipe/trapdoor_morguliron.json
-880ddab7d6f45493783108adf18116d24202e6f1 data/tolkienmobs/recipe/trinket/trinket_ring.json
 6a44f044a933742d21e3b6c2a78fa4729b324d7b data/tolkienmobs/recipe/trinket_amulet.json
 19e826e41e68cf7827b5125de377021319597b7f data/tolkienmobs/recipe/trinket_belt.json
 db21c73ada6bf2e637a69066d9659c5dcf715678 data/tolkienmobs/recipe/trinket_charm.json

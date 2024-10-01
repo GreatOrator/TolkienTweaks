@@ -168,6 +168,14 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addTools("ammolite", "Ammolite");
             this.addItem(TolkienItems.DWARVEN_HAMMER, "Dwarven Mining Hammer");
             this.addItem(TolkienItems.HYPE_HORN, "Hype Horn");
+            this.addItem(TolkienItems.HELMET_MITHRIL, "Mithril Helmet");
+            this.addItem(TolkienItems.CHESTPLATE_MITHRIL, "Mithril Chestplate");
+            this.addItem(TolkienItems.LEGGINGS_MITHRIL, "Mithril Leggings");
+            this.addItem(TolkienItems.BOOTS_MITHRIL, "Mithril Boots");
+            this.addItem(TolkienItems.HELMET_MORGULIRON, "Morgul Iron Helmet");
+            this.addItem(TolkienItems.CHESTPLATE_MORGULIRON, "Morgul Iron Chestplate");
+            this.addItem(TolkienItems.LEGGINGS_MORGULIRON, "Morgul Iron Leggings");
+            this.addItem(TolkienItems.BOOTS_MORGULIRON, "Morgul Iron Boots");
             this.addMusicDisc(TolkienItems.RECORD_EREBOR, "SnowShepherd - All That Glitters in Erebor");
             this.addMusicDisc(TolkienItems.RECORD_HOBBITS, "Harry Murrell - Concerning Hobbits");
             this.addMusicDisc(TolkienItems.RECORD_MINASTIRITH, "SnowShepherd - Grandeur of Minas Tirith");

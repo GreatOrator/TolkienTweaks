@@ -1,9 +1,10 @@
-// 1.21	2024-09-20T07:01:13.9586136	Tags for minecraft:item mod id tolkienmobs
+// 1.21	2024-10-01T11:03:36.7572668	Tags for minecraft:item mod id tolkienmobs
 783f2b27cdbb364620056b0af824582199d4dc97 data/minecraft/tags/item/axes.json
 5472f78327d95c0c11666f5a996b71d4e18ca49d data/minecraft/tags/item/hoes.json
 ded5a2b899bfb277a9deeb38576f4ea872f7dd4e data/minecraft/tags/item/pickaxes.json
 03f372c841dac89054f9f48c07804740f36beeb7 data/minecraft/tags/item/shovels.json
 f10a17797a6a55ef1aa772f3faf622969ff3e808 data/minecraft/tags/item/swords.json
+6445f32638e0b7eb7c0b028b95c663f73be42ea0 data/minecraft/tags/item/trimmable_armor.json
 4bec3919e9dceb2876731fc32e360537c2cf29b9 data/tolkienmobs/tags/item/coins.json
 d0429b6a877ae544644772767b7132d84c481698 data/tolkienmobs/tags/item/keys.json
 27c4d225010ce6207698d54fcd8cfd130bc9c923 data/tolkienmobs/tags/item/sleeping_bag.json
