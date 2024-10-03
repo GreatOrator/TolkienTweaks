@@ -166,16 +166,28 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
         smithingUpgrade(pRecipeOutput, "mithril", TolkienItems.AXE_MITHRIL.get(), TolkienItems.TEMPLATE_MITHRIL.get(), Items.NETHERITE_AXE, TolkienItems.INGOT_MITHRIL.get());
         smithingUpgrade(pRecipeOutput, "mithril", TolkienItems.SHOVEL_MITHRIL.get(), TolkienItems.TEMPLATE_MITHRIL.get(), Items.NETHERITE_SHOVEL, TolkienItems.INGOT_MITHRIL.get());
         smithingUpgrade(pRecipeOutput, "mithril", TolkienItems.HOE_MITHRIL.get(), TolkienItems.TEMPLATE_MITHRIL.get(), Items.NETHERITE_HOE, TolkienItems.INGOT_MITHRIL.get());
+        smithingUpgrade(pRecipeOutput, "mithril", TolkienItems.HELMET_MITHRIL.get(), TolkienItems.TEMPLATE_MITHRIL.get(), Items.NETHERITE_HELMET, TolkienItems.INGOT_MITHRIL.get());
+        smithingUpgrade(pRecipeOutput, "mithril", TolkienItems.CHESTPLATE_MITHRIL.get(), TolkienItems.TEMPLATE_MITHRIL.get(), Items.NETHERITE_CHESTPLATE, TolkienItems.INGOT_MITHRIL.get());
+        smithingUpgrade(pRecipeOutput, "mithril", TolkienItems.LEGGINGS_MITHRIL.get(), TolkienItems.TEMPLATE_MITHRIL.get(), Items.NETHERITE_LEGGINGS, TolkienItems.INGOT_MITHRIL.get());
+        smithingUpgrade(pRecipeOutput, "mithril", TolkienItems.BOOTS_MITHRIL.get(), TolkienItems.TEMPLATE_MITHRIL.get(), Items.NETHERITE_BOOTS, TolkienItems.INGOT_MITHRIL.get());
         smithingUpgrade(pRecipeOutput, "morguliron", TolkienItems.SWORD_MORGULIRON.get(), TolkienItems.TEMPLATE_MORGULIRON.get(), Items.NETHERITE_SWORD, TolkienItems.INGOT_MORGULIRON.get());
         smithingUpgrade(pRecipeOutput, "morguliron", TolkienItems.PICKAXE_MORGULIRON.get(), TolkienItems.TEMPLATE_MORGULIRON.get(), Items.NETHERITE_PICKAXE, TolkienItems.INGOT_MORGULIRON.get());
         smithingUpgrade(pRecipeOutput, "morguliron", TolkienItems.AXE_MORGULIRON.get(), TolkienItems.TEMPLATE_MORGULIRON.get(), Items.NETHERITE_AXE, TolkienItems.INGOT_MORGULIRON.get());
         smithingUpgrade(pRecipeOutput, "morguliron", TolkienItems.SHOVEL_MORGULIRON.get(), TolkienItems.TEMPLATE_MORGULIRON.get(), Items.NETHERITE_SHOVEL, TolkienItems.INGOT_MORGULIRON.get());
         smithingUpgrade(pRecipeOutput, "morguliron", TolkienItems.HOE_MORGULIRON.get(), TolkienItems.TEMPLATE_MORGULIRON.get(), Items.NETHERITE_HOE, TolkienItems.INGOT_MORGULIRON.get());
+        smithingUpgrade(pRecipeOutput, "morguliron", TolkienItems.HELMET_MORGULIRON.get(), TolkienItems.TEMPLATE_MORGULIRON.get(), Items.NETHERITE_HELMET, TolkienItems.INGOT_MORGULIRON.get());
+        smithingUpgrade(pRecipeOutput, "morguliron", TolkienItems.CHESTPLATE_MORGULIRON.get(), TolkienItems.TEMPLATE_MORGULIRON.get(), Items.NETHERITE_CHESTPLATE, TolkienItems.INGOT_MORGULIRON.get());
+        smithingUpgrade(pRecipeOutput, "morguliron", TolkienItems.LEGGINGS_MORGULIRON.get(), TolkienItems.TEMPLATE_MORGULIRON.get(), Items.NETHERITE_LEGGINGS, TolkienItems.INGOT_MORGULIRON.get());
+        smithingUpgrade(pRecipeOutput, "morguliron", TolkienItems.BOOTS_MORGULIRON.get(), TolkienItems.TEMPLATE_MORGULIRON.get(), Items.NETHERITE_BOOTS, TolkienItems.INGOT_MORGULIRON.get());
         smithingUpgrade(pRecipeOutput, "ammolite", TolkienItems.SWORD_AMMOLITE.get(), TolkienItems.TEMPLATE_AMMOLITE.get(), Items.NETHERITE_SWORD, TolkienItems.GEM_AMMOLITE.get());
         smithingUpgrade(pRecipeOutput, "ammolite", TolkienItems.PICKAXE_AMMOLITE.get(), TolkienItems.TEMPLATE_AMMOLITE.get(), Items.NETHERITE_PICKAXE, TolkienItems.GEM_AMMOLITE.get());
         smithingUpgrade(pRecipeOutput, "ammolite", TolkienItems.AXE_AMMOLITE.get(), TolkienItems.TEMPLATE_AMMOLITE.get(), Items.NETHERITE_AXE, TolkienItems.GEM_AMMOLITE.get());
         smithingUpgrade(pRecipeOutput, "ammolite", TolkienItems.SHOVEL_AMMOLITE.get(), TolkienItems.TEMPLATE_AMMOLITE.get(), Items.NETHERITE_SHOVEL, TolkienItems.GEM_AMMOLITE.get());
         smithingUpgrade(pRecipeOutput, "ammolite", TolkienItems.HOE_AMMOLITE.get(), TolkienItems.TEMPLATE_AMMOLITE.get(), Items.NETHERITE_HOE, TolkienItems.GEM_AMMOLITE.get());
+        smithingUpgrade(pRecipeOutput, "ammolite", TolkienItems.HELMET_AMMOLITE.get(), TolkienItems.TEMPLATE_AMMOLITE.get(), Items.NETHERITE_HELMET, TolkienItems.GEM_AMMOLITE.get());
+        smithingUpgrade(pRecipeOutput, "ammolite", TolkienItems.CHESTPLATE_AMMOLITE.get(), TolkienItems.TEMPLATE_AMMOLITE.get(), Items.NETHERITE_CHESTPLATE, TolkienItems.GEM_AMMOLITE.get());
+        smithingUpgrade(pRecipeOutput, "ammolite", TolkienItems.LEGGINGS_AMMOLITE.get(), TolkienItems.TEMPLATE_AMMOLITE.get(), Items.NETHERITE_LEGGINGS, TolkienItems.GEM_AMMOLITE.get());
+        smithingUpgrade(pRecipeOutput, "ammolite", TolkienItems.BOOTS_AMMOLITE.get(), TolkienItems.TEMPLATE_AMMOLITE.get(), Items.NETHERITE_BOOTS, TolkienItems.GEM_AMMOLITE.get());
 
         ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, TolkienItems.HOBBIT_RING, 1)
                 .define('A', Blocks.BONE_BLOCK)

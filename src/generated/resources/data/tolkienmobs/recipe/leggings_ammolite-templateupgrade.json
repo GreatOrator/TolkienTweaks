@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": {
+    "item": "tolkienmobs:gem_ammolite"
+  },
+  "base": {
+    "item": "minecraft:netherite_leggings"
+  },
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:leggings_ammolite"
+  },
+  "template": {
+    "item": "tolkienmobs:template_ammolite"
+  }
+}

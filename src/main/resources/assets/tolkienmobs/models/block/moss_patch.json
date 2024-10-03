@@ -1,0 +1,5 @@
+{
+  "loader": "tolkienmobs:patch",
+  "texture": "tolkienmobs:block/moss_patch",
+  "shaggify": true
+}

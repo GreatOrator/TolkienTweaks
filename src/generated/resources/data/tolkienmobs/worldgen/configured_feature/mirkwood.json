@@ -15,6 +15,31 @@
         },
         "placement_count": 2,
         "probability_of_placement": 1.0
+      },
+      {
+        "type": "tolkienmobs:tree_roots",
+        "additional_random_strands": 1,
+        "base_strand_count": 3,
+        "ground_roots_provider": {
+          "type": "minecraft:weighted_state_provider",
+          "entries": [
+            {
+              "data": {
+                "Name": "tolkienmobs:living_roots"
+              },
+              "weight": 6
+            },
+            {
+              "data": {
+                "Name": "tolkienmobs:living_roots"
+              },
+              "weight": 1
+            }
+          ]
+        },
+        "rootPenetrability": 1,
+        "root_length": 5,
+        "y_offset": 0
       }
     ],
     "dirt_provider": {
@@ -32,9 +57,9 @@
       "offset": 0,
       "random_add_horizontal": 1,
       "random_add_vertical": 0,
-      "shag_factor": 24,
-      "vertical_filler_bias": -0.25,
-      "vertical_radius": 1.5
+      "shag_factor": 36,
+      "vertical_filler_bias": 0.45,
+      "vertical_radius": 2.25
     },
     "foliage_provider": {
       "type": "minecraft:simple_state_provider",
@@ -51,9 +76,9 @@
     "ignore_vines": false,
     "minimum_size": {
       "type": "minecraft:two_layers_feature_size",
-      "limit": 20,
-      "lower_size": 0,
-      "upper_size": 5
+      "limit": 4,
+      "lower_size": 1,
+      "upper_size": 1
     },
     "trunk_placer": {
       "type": "tolkienmobs:branching_trunk_placer",
@@ -68,12 +93,12 @@
             }
           }
         },
-        "count_minimum": 3,
-        "downwards_pitch": 0.2,
-        "length": 10.0,
-        "random_add_count": 1,
-        "random_add_length": 1.0,
-        "spacing_yaw": 0.3
+        "count_minimum": 4,
+        "downwards_pitch": 0.23,
+        "length": 8.0,
+        "random_add_count": 0,
+        "random_add_length": 2.0,
+        "spacing_yaw": 0.23
       },
       "branch_start_offset_down": 12,
       "height_rand_a": 5,

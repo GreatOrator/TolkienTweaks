@@ -13,8 +13,8 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class TolkienLootGenerator extends LootTableProvider {
-	public TolkienLootGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
+public class TolkienLootTableProvider extends LootTableProvider {
+	public TolkienLootTableProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
 		super(output, TolkienLootTables.allBuiltin(), List.of(
 			new LootTableProvider.SubProviderEntry(TolkienBlockLootTableProvider::new, LootContextParamSets.BLOCK)
 //			new LootTableProvider.SubProviderEntry(ChestLootTables::new, LootContextParamSets.CHEST),

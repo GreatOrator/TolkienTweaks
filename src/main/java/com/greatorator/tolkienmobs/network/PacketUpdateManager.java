@@ -1,11 +1,9 @@
 package com.greatorator.tolkienmobs.network;
 
 import com.greatorator.tolkienmobs.containers.KeyCodeContainer;
-import com.greatorator.tolkienmobs.handler.TolkienDataComponents;
-import net.minecraft.server.level.ServerPlayer;
+import com.greatorator.tolkienmobs.handler.data.TolkienDataComponents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class PacketUpdateManager {

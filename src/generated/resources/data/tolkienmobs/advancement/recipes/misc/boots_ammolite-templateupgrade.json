@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_template_ammolite": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tolkienmobs:template_ammolite"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tolkienmobs:boots_ammolite-templateupgrade"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_template_ammolite"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tolkienmobs:boots_ammolite-templateupgrade"
+    ]
+  }
+}

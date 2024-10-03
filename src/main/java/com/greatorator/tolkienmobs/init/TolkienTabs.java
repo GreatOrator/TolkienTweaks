@@ -1,16 +1,14 @@
 package com.greatorator.tolkienmobs.init;
 
-import com.greatorator.tolkienmobs.handler.TrinketComponent;
+import com.greatorator.tolkienmobs.handler.data.TrinketComponent;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.neoforged.bus.api.IEventBus;
@@ -629,6 +627,8 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.WALL_DECAY_BLOOM);
                         output.accept(TolkienBlocks.WALL_MUSHROOM_RED);
                         output.accept(TolkienBlocks.WALL_MUSHROOM_BROWN);
+                        output.accept(TolkienBlocks.MOSS_PATCH);
+                        output.accept(TolkienBlocks.CLOVER_PATCH);
                     }).build());
 
     public static final Supplier<CreativeModeTab> TOLKIEN_TOOLS = CREATIVE_MODE_TAB.register("tolkienmobs_tab_tool",
@@ -663,6 +663,10 @@ public class TolkienTabs {
                         output.accept(TolkienItems.SHOVEL_MORGULIRON);
                         output.accept(TolkienItems.HOE_MORGULIRON);
                         output.accept(TolkienItems.SHEARS_MORGULIRON);
+                        output.accept(TolkienItems.HELMET_AMMOLITE);
+                        output.accept(TolkienItems.CHESTPLATE_AMMOLITE);
+                        output.accept(TolkienItems.LEGGINGS_AMMOLITE);
+                        output.accept(TolkienItems.BOOTS_AMMOLITE);
                         output.accept(TolkienItems.SWORD_AMMOLITE);
                         output.accept(TolkienItems.PICKAXE_AMMOLITE);
                         output.accept(TolkienItems.AXE_AMMOLITE);

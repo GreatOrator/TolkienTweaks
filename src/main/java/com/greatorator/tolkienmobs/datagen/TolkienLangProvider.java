@@ -72,6 +72,8 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addBlock(TolkienBlocks.LIVING_ROOTS, "Living Roots");
             this.addBlockWithLore(TolkienBlocks.PLACARD.get(), "Country Signs", "Shift right-click on sign to cycle types");
             this.addBlock(TolkienBlocks.ROCKPILE, "Rockpile");
+            this.addBlock(TolkienBlocks.MOSS_PATCH, "Moss Patch");
+            this.addBlock(TolkienBlocks.CLOVER_PATCH, "Clover Patch");
         this.add("itemgroup.tolkienmobs.food", "TolkienTweaks: Food & Drinks");
             this.addItem(TolkienItems.LEMBAS, "Lembas");
             this.addItem(TolkienItems.CRAM, "Cram");
@@ -176,6 +178,10 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addItem(TolkienItems.CHESTPLATE_MORGULIRON, "Morgul Iron Chestplate");
             this.addItem(TolkienItems.LEGGINGS_MORGULIRON, "Morgul Iron Leggings");
             this.addItem(TolkienItems.BOOTS_MORGULIRON, "Morgul Iron Boots");
+            this.addItem(TolkienItems.HELMET_AMMOLITE, "Ammolite Helmet");
+            this.addItem(TolkienItems.CHESTPLATE_AMMOLITE, "Ammolite Chestplate");
+            this.addItem(TolkienItems.LEGGINGS_AMMOLITE, "Ammolite Leggings");
+            this.addItem(TolkienItems.BOOTS_AMMOLITE, "Ammolite Boots");
             this.addMusicDisc(TolkienItems.RECORD_EREBOR, "SnowShepherd - All That Glitters in Erebor");
             this.addMusicDisc(TolkienItems.RECORD_HOBBITS, "Harry Murrell - Concerning Hobbits");
             this.addMusicDisc(TolkienItems.RECORD_MINASTIRITH, "SnowShepherd - Grandeur of Minas Tirith");
