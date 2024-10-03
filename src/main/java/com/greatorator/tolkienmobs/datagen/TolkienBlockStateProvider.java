@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.datagen;
 
+import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.*;
 import com.greatorator.tolkienmobs.datagen.helpers.BlockModelBuilders;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
@@ -588,6 +589,8 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         blockWithItem(TolkienBlocks.BLOCK_DECAY_BLOOM);
         blockWithItem(TolkienBlocks.BLOCK_BLOOM_DECAY);
         blockWithItem(TolkienBlocks.LIVING_ROOTS);
+        simpleBlock(TolkienBlocks.MOSS_PATCH.get(), new ConfiguredModel(new ModelFile.UncheckedModelFile(TolkienMobsMain.prefix("block/moss_patch"))));
+        simpleBlock(TolkienBlocks.CLOVER_PATCH.get(), new ConfiguredModel(new ModelFile.UncheckedModelFile(TolkienMobsMain.prefix("block/clover_patch"))));
 
         makeCrop(((PipeweedCropBlock) TolkienBlocks.PIPEWEED.get()), "pipeweed_crop_stage", "pipeweed_stage");
 

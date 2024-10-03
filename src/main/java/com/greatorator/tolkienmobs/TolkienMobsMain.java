@@ -4,7 +4,7 @@ import com.greatorator.tolkienmobs.containers.screens.*;
 import com.greatorator.tolkienmobs.event.TolkienRegistration;
 import com.greatorator.tolkienmobs.fluid.TolkienFluidTypes;
 import com.greatorator.tolkienmobs.handler.ColorHandler;
-import com.greatorator.tolkienmobs.handler.TolkienDataComponents;
+import com.greatorator.tolkienmobs.handler.data.TolkienDataComponents;
 import com.greatorator.tolkienmobs.init.*;
 import com.greatorator.tolkienmobs.fluid.TolkienFluidType;
 import com.greatorator.tolkienmobs.init.TolkienParticleTypes;
@@ -55,6 +55,7 @@ public class TolkienMobsMain {
         -Fix Storing of Key Codes
       -Horse Armor Implemented
       -Bows Implemented
+      -Boats Implemented
       -Projectiles Implemented
       -Biomes
         -Structures
@@ -65,7 +66,7 @@ public class TolkienMobsMain {
         -Fireplace Recipes
         -Trinket Table Recipes
       -Entities
-        -Villager Trades
+        -POI working for villagers
         -Spawn Eggs
       -Integration
         -Curios
@@ -162,9 +163,6 @@ public class TolkienMobsMain {
             event.enqueueWork(() -> {
                 ItemBlockRenderTypes.setRenderLayer(TolkienFluids.MITHRIL_FLOWING.get(), RenderType.translucent());
                 ItemBlockRenderTypes.setRenderLayer(TolkienFluids.MORGULIRON_FLOWING.get(), RenderType.translucent());
-
-                ItemProperties.register(COIN_POUCH.get(), resLoc("fullness"), CoinPouchItem::getFullnessPropertyOverride);
-                ItemProperties.register(KEY_RING.get(), resLoc("fullness"), KeyRingItem::getFullnessPropertyOverride);
             });
         }
 

@@ -1,8 +1,7 @@
 package com.greatorator.tolkienmobs.containers.handlers;
 
-import com.greatorator.tolkienmobs.handler.TolkienDataComponents;
+import com.greatorator.tolkienmobs.handler.data.TolkienDataComponents;
 import com.greatorator.tolkienmobs.init.TolkienTags;
-import com.greatorator.tolkienmobs.item.TolkienCoinItem;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ComponentItemHandler;
 import org.jetbrains.annotations.NotNull;

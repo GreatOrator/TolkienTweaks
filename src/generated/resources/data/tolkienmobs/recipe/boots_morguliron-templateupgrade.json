@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": {
+    "item": "tolkienmobs:ingot_morguliron"
+  },
+  "base": {
+    "item": "minecraft:netherite_boots"
+  },
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:boots_morguliron"
+  },
+  "template": {
+    "item": "tolkienmobs:template_morguliron"
+  }
+}

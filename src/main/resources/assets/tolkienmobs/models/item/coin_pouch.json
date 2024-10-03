@@ -5,11 +5,31 @@
   },
   "__comment": "we use the fullness property override to choose which bag icon to render",
   "overrides": [
-    { "predicate": { "fullness": 0 }, "model": "tolkienmobs:item/coin_pouch" },
-    { "predicate": { "fullness": 1 }, "model": "tolkienmobs:item/coin_pouch_almost_empty" },
-    { "predicate": { "fullness": 5 }, "model": "tolkienmobs:item/coin_pouch_moderately_full" },
-    { "predicate": { "fullness": 10 }, "model": "tolkienmobs:item/coin_pouch_mostly_full" },
-    { "predicate": { "fullness": 15 }, "model": "tolkienmobs:item/coin_pouch_full" }
+    { "model": "tolkienmobs:item/coin_pouch",
+      "predicate": {
+        "fullness": 0
+      }
+    },
+    { "model": "tolkienmobs:item/coin_pouch_fullness1",
+      "predicate": {
+        "fullness": 1
+      }
+    },
+    { "model": "tolkienmobs:item/coin_pouch_fullness2",
+      "predicate": {
+        "fullness": 5
+      }
+    },
+    { "model": "tolkienmobs:item/coin_pouch_fullness3",
+      "predicate": {
+        "fullness": 10
+      }
+    },
+    { "model": "tolkienmobs:item/coin_pouch_fullness4",
+      "predicate": {
+        "fullness": 15
+      }
+    }
   ]
 }
 

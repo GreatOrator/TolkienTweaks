@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": {
+    "item": "tolkienmobs:ingot_mithril"
+  },
+  "base": {
+    "item": "minecraft:netherite_boots"
+  },
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:boots_mithril"
+  },
+  "template": {
+    "item": "tolkienmobs:template_mithril"
+  }
+}

@@ -1,12 +1,14 @@
 package com.greatorator.tolkienmobs.item.custom;
 
+import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.containers.CoinPouchContainer;
 import com.greatorator.tolkienmobs.containers.handlers.CoinPouchItemStackHandler;
-import com.greatorator.tolkienmobs.handler.TolkienDataComponents;
+import com.greatorator.tolkienmobs.handler.data.CoinPouchContents;
+import com.greatorator.tolkienmobs.handler.data.TolkienDataComponents;
 import com.greatorator.tolkienmobs.init.TolkienTags;
-import com.greatorator.tolkienmobs.item.TolkienCoinItem;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -28,6 +30,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class CoinPouchItem extends Item {
+    public static final ResourceLocation FILLED_PREDICATE = TolkienMobsMain.resLoc("fullness");
     public CoinPouchItem(Properties properties) {
         super(properties);
     }
@@ -131,18 +134,9 @@ public class CoinPouchItem extends Item {
         return optional;
     }
 
-    public static float getFullnessPropertyOverride(ItemStack itemStack, @Nullable ClientLevel world, @Nullable LivingEntity livingEntity, int i) {
-        int maxSlots = 15;
-        int j=i;
-        int count = itemStack.getOrDefault(TolkienDataComponents.COIN_POUCH_COUNTER, 0);
-        IItemHandler coinPouch = getItemStackHandlerCoinPouch(itemStack);
+    public static float getFullnessPropertyOverride(ItemStack itemStack) {
+        CoinPouchContents coinPouchContents = itemStack.getOrDefault(TolkienDataComponents.COIN_POUCH_CONTENTS, CoinPouchContents.EMPTY);
+        return coinPouchContents.weight().floatValue();
 
-        if (coinPouch == null) return 0;
-
-        for (j = 0; j < coinPouch.getSlots(); j++) {
-            itemStack.getOrDefault(TolkienDataComponents.COIN_POUCH_COUNTER, count+=coinPouch.getStackInSlot(j).getCount());
-        }
-
-        return Math.min(count - maxSlots, 15);
     }
 }

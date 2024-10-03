@@ -1,10 +1,8 @@
 package com.greatorator.tolkienmobs.containers.screens;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.containers.KeyCodeContainer;
 import com.greatorator.tolkienmobs.containers.slots.KeyCodeSlot;
-import com.greatorator.tolkienmobs.handler.TolkienDataComponents;
-import com.greatorator.tolkienmobs.network.KeyCodePayload;
+import com.greatorator.tolkienmobs.handler.data.TolkienDataComponents;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -14,13 +12,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
-import net.neoforged.neoforge.network.PacketDistributor;
-
-import java.util.Objects;
-import java.util.UUID;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 

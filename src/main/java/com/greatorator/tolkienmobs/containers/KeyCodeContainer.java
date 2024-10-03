@@ -2,7 +2,7 @@ package com.greatorator.tolkienmobs.containers;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.containers.slots.KeyCodeSlot;
-import com.greatorator.tolkienmobs.handler.TolkienDataComponents;
+import com.greatorator.tolkienmobs.handler.data.TolkienDataComponents;
 import com.greatorator.tolkienmobs.init.TolkienContainers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;

@@ -1,14 +1,13 @@
 package com.greatorator.tolkienmobs.init;
 
-import com.greatorator.tolkienmobs.world.components.feature.FallenLeavesFeature;
-import com.greatorator.tolkienmobs.world.components.feature.WebFeature;
-import com.greatorator.tolkienmobs.world.components.feature.WoodRootFeature;
+import com.greatorator.tolkienmobs.world.components.feature.*;
 import com.greatorator.tolkienmobs.world.components.config.RootConfig;
 import com.greatorator.tolkienmobs.world.components.feature.tree.components.SpheroidFoliagePlacer;
 import com.greatorator.tolkienmobs.world.components.feature.tree.placers.BranchingLargeTrunkPlacer;
 import com.greatorator.tolkienmobs.world.components.feature.tree.placers.BranchingTrunkPlacer;
 import com.greatorator.tolkienmobs.world.components.feature.tree.placers.TreeRootsDecorator;
 import com.greatorator.tolkienmobs.world.components.feature.tree.placers.TrunkSideDecorator;
+import com.greatorator.tolkienmobs.world.components.placements.AvoidLandmarkModifier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
@@ -39,7 +38,14 @@ public class TolkienFeatureModifiers {
     public static final DeferredHolder<TrunkPlacerType<?>, TrunkPlacerType<BranchingTrunkPlacer>> TRUNK_BRANCHING = TRUNK_PLACERS.register("branching_trunk_placer", () -> new TrunkPlacerType<>(BranchingTrunkPlacer.CODEC));
     public static final DeferredHolder<TrunkPlacerType<?>, TrunkPlacerType<BranchingLargeTrunkPlacer>> TRUNK_LARGE_BRANCHING = TRUNK_PLACERS.register("branching_large_trunk_placer", () -> new TrunkPlacerType<>(BranchingLargeTrunkPlacer.CODEC));
 
-    public static final DeferredHolder<Feature<?>, Feature<NoneFeatureConfiguration>> FALLEN_LEAVES = FEATURES.register("fallen_leaves", () -> new FallenLeavesFeature(NoneFeatureConfiguration.CODEC));
+    public static final DeferredHolder<PlacementModifierType<?>, PlacementModifierType<AvoidLandmarkModifier>> NO_STRUCTURE = registerPlacer("no_structure", () -> () -> AvoidLandmarkModifier.CODEC);
+
+    public static final DeferredHolder<Feature<?>, Feature<NoneFeatureConfiguration>> MALLORN_FALLEN_LEAVES = FEATURES.register("mallorn_fallen_leaves", () -> new FallenMallornLeavesFeature(NoneFeatureConfiguration.CODEC));
+    public static final DeferredHolder<Feature<?>, Feature<NoneFeatureConfiguration>> MIRKWOOD_FALLEN_LEAVES = FEATURES.register("mirkwood_fallen_leaves", () -> new FallenMirkwoodLeavesFeature(NoneFeatureConfiguration.CODEC));
+    public static final DeferredHolder<Feature<?>, Feature<NoneFeatureConfiguration>> CULUMALDA_FALLEN_LEAVES = FEATURES.register("culumalda_fallen_leaves", () -> new FallenCulumaldaLeavesFeature(NoneFeatureConfiguration.CODEC));
+    public static final DeferredHolder<Feature<?>, Feature<NoneFeatureConfiguration>> LEBETHRON_FALLEN_LEAVES = FEATURES.register("lebethron_fallen_leaves", () -> new FallenLebethronLeavesFeature(NoneFeatureConfiguration.CODEC));
+    public static final DeferredHolder<Feature<?>, Feature<NoneFeatureConfiguration>> FANGORNOAK_FALLEN_LEAVES = FEATURES.register("fangornoak_fallen_leaves", () -> new FallenFangornOakLeavesFeature(NoneFeatureConfiguration.CODEC));
+    public static final DeferredHolder<Feature<?>, Feature<NoneFeatureConfiguration>> DWARVEN_MAPLE_FALLEN_LEAVES = FEATURES.register("dwarven_maple_fallen_leaves", () -> new FallenDwarvenMapleLeavesFeature(NoneFeatureConfiguration.CODEC));
     public static final DeferredHolder<Feature<?>, Feature<NoneFeatureConfiguration>> WEBS = FEATURES.register("webs", () -> new WebFeature(NoneFeatureConfiguration.CODEC));
     public static final DeferredHolder<Feature<?>, Feature<RootConfig>> WOOD_ROOTS = FEATURES.register("wood_roots", () -> new WoodRootFeature(RootConfig.CODEC));
 

@@ -266,6 +266,8 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         generated(TolkienBlocks.LEAFPILE_LEBETHRON.getId().getPath(), TolkienMobsMain.prefix("block/leaves_lebethron"));
         generated(TolkienBlocks.LEAFPILE_FANGORNOAK.getId().getPath(), TolkienMobsMain.prefix("block/leaves_fangornoak"));
         generated(TolkienBlocks.LEAFPILE_DWARVEN_MAPLE.getId().getPath(), TolkienMobsMain.prefix("block/leaves_dwarven_maple"));
+        generated(TolkienBlocks.MOSS_PATCH.getId().getPath(), TolkienMobsMain.prefix("block/patch/moss"));
+        generated(TolkienBlocks.CLOVER_PATCH.getId().getPath(), TolkienMobsMain.prefix("block/patch/clover"));
 
         basicItem(TolkienBlocks.MALLORN_SIGN.asItem());
         basicItem(TolkienBlocks.MIRKWOOD_SIGN.asItem());
@@ -347,6 +349,10 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         trimmedArmorItem(TolkienItems.CHESTPLATE_MORGULIRON);
         trimmedArmorItem(TolkienItems.LEGGINGS_MORGULIRON);
         trimmedArmorItem(TolkienItems.BOOTS_MORGULIRON);
+        trimmedArmorItem(TolkienItems.HELMET_AMMOLITE);
+        trimmedArmorItem(TolkienItems.CHESTPLATE_AMMOLITE);
+        trimmedArmorItem(TolkienItems.LEGGINGS_AMMOLITE);
+        trimmedArmorItem(TolkienItems.BOOTS_AMMOLITE);
 
         basicItem(TolkienItems.BRONZE_KEY.get());
         basicItem(TolkienItems.SILVER_KEY.get());

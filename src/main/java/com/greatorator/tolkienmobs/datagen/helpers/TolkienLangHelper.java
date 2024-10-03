@@ -2,22 +2,12 @@ package com.greatorator.tolkienmobs.datagen.helpers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.greatorator.tolkienmobs.handler.TolkienDataComponents;
-import com.greatorator.tolkienmobs.handler.TrinketComponent;
 import com.greatorator.tolkienmobs.util.LangConversionHelper;
 import com.greatorator.tolkienmobs.util.LangFormatSplitter;
 import net.minecraft.Util;
-import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -25,8 +15,6 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.Supplier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 

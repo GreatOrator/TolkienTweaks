@@ -14,13 +14,13 @@ import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.material.Fluids;
 
-public class FallenLeavesFeature extends Feature<NoneFeatureConfiguration> {
+public class FallenMallornLeavesFeature extends Feature<NoneFeatureConfiguration> {
 
-	public FallenLeavesFeature(Codec<NoneFeatureConfiguration> config) {
+	public FallenMallornLeavesFeature(Codec<NoneFeatureConfiguration> config) {
 		super(config);
 	}
 
-	private final BlockState state = TolkienBlocks.LEAFPILE_CULUMALDA.get().defaultBlockState();
+	private final BlockState state = TolkienBlocks.LEAFPILE_MALLORN.get().defaultBlockState();
 
 	@Override
 	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> ctx) {

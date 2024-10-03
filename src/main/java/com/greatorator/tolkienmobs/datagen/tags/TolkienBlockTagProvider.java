@@ -12,6 +12,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import java.util.concurrent.CompletableFuture;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
+import static com.greatorator.tolkienmobs.init.TolkienTags.Blocks.PLANTS_HANG_ON;
 
 public class TolkienBlockTagProvider extends BlockTagsProvider {
     public TolkienBlockTagProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper existingFileHelper) {
@@ -257,7 +258,10 @@ public class TolkienBlockTagProvider extends BlockTagsProvider {
                 .add(TolkienBlocks.DWARVEN_STONE.get())
                 .add(TolkienBlocks.MOUNTAIN_STONE.get())
                 .add(TolkienBlocks.ELVEN_MARBLE.get());
-        tag(TolkienTags.Blocks.ROOT_TRACE_SKIP);
+        tag(TolkienTags.Blocks.ROOT_TRACE_SKIP)
+                .addTag(BlockTags.LOGS)
+                .add(TolkienBlocks.LIVING_ROOTS.get())
+                .addTag(BlockTags.FEATURES_CANNOT_REPLACE);
         tag(TolkienTags.Blocks.DECAY_GROW_BLOCK)
                 .add(Blocks.MYCELIUM)
                 .add(Blocks.PODZOL)
@@ -268,5 +272,8 @@ public class TolkienBlockTagProvider extends BlockTagsProvider {
         tag(TolkienTags.Blocks.BLACKLIST_HARVEST);
         tag(TolkienTags.Blocks.PORTAL_FRAME_BLOCKS)
                 .add(TolkienBlocks.BLOCK_AMMOLITE.get());
+        tag(TolkienTags.Blocks.PLANTS_HANG_ON)
+                .addTag(BlockTags.DIRT)
+                .add(Blocks.MOSS_BLOCK, TolkienBlocks.LIVING_ROOTS.get());
     }
 }

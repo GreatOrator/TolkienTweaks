@@ -24,9 +24,11 @@ import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.predicates.BonusLevelTableCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
@@ -36,6 +38,8 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
+    private static final float[] DEFAULT_SAPLING_DROP_RATES = new float[]{0.05F, 0.0625F, 0.083333336F, 0.1F};
+
     public TolkienBlockLootTableProvider(HolderLookup.Provider provider) {
         super(Set.of(), FeatureFlags.REGISTRY.allFlags(), provider);
     }
@@ -109,7 +113,7 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.STRIPPED_MALLORN_LOG.get());
         dropSelf(TolkienBlocks.STRIPPED_MALLORN_WOOD.get());
         dropSelf(TolkienBlocks.PLANKS_MALLORN.get());
-        dropLeaves(TolkienBlocks.LEAVES_MALLORN);
+        add(TolkienBlocks.LEAVES_MALLORN.get(), createExtraLeavesDrops(TolkienBlocks.LEAVES_MALLORN.get(), TolkienBlocks.SAPLING_MALLORN.get(), TolkienItems.TREE_ACORN.get(), DEFAULT_SAPLING_DROP_RATES));
         dropSelf(TolkienBlocks.LEAFPILE_MALLORN.get());
         dropSelf(TolkienBlocks.STAIRS_MALLORN.get());
         this.add(TolkienBlocks.SLAB_MALLORN.get(),
@@ -145,7 +149,7 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.STRIPPED_MIRKWOOD_LOG.get());
         dropSelf(TolkienBlocks.STRIPPED_MIRKWOOD_WOOD.get());
         dropSelf(TolkienBlocks.PLANKS_MIRKWOOD.get());
-        dropLeaves(TolkienBlocks.LEAVES_MIRKWOOD);
+        add(TolkienBlocks.LEAVES_MIRKWOOD.get(), silkAndStick(TolkienBlocks.LEAVES_MIRKWOOD.get(), TolkienBlocks.SAPLING_MIRKWOOD.get(), DEFAULT_SAPLING_DROP_RATES));
         dropSelf(TolkienBlocks.LEAFPILE_MIRKWOOD.get());
         dropSelf(TolkienBlocks.STAIRS_MIRKWOOD.get());
         this.add(TolkienBlocks.SLAB_MIRKWOOD.get(),
@@ -173,7 +177,7 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.STRIPPED_CULUMALDA_LOG.get());
         dropSelf(TolkienBlocks.STRIPPED_CULUMALDA_WOOD.get());
         dropSelf(TolkienBlocks.PLANKS_CULUMALDA.get());
-        dropLeaves(TolkienBlocks.LEAVES_CULUMALDA);
+        add(TolkienBlocks.LEAVES_CULUMALDA.get(), silkAndStick(TolkienBlocks.LEAVES_CULUMALDA.get(), TolkienBlocks.SAPLING_CULUMALDA.get(), DEFAULT_SAPLING_DROP_RATES));
         dropSelf(TolkienBlocks.LEAFPILE_CULUMALDA.get());
         dropSelf(TolkienBlocks.STAIRS_CULUMALDA.get());
         this.add(TolkienBlocks.SLAB_CULUMALDA.get(),
@@ -201,7 +205,7 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.STRIPPED_LEBETHRON_LOG.get());
         dropSelf(TolkienBlocks.STRIPPED_LEBETHRON_WOOD.get());
         dropSelf(TolkienBlocks.PLANKS_LEBETHRON.get());
-        dropLeaves(TolkienBlocks.LEAVES_LEBETHRON);
+        add(TolkienBlocks.LEAVES_LEBETHRON.get(), silkAndStick(TolkienBlocks.LEAVES_LEBETHRON.get(), TolkienBlocks.SAPLING_LEBETHRON.get(), DEFAULT_SAPLING_DROP_RATES));
         dropSelf(TolkienBlocks.LEAFPILE_LEBETHRON.get());
         dropSelf(TolkienBlocks.STAIRS_LEBETHRON.get());
         this.add(TolkienBlocks.SLAB_LEBETHRON.get(),
@@ -229,7 +233,7 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.STRIPPED_FANGORNOAK_LOG.get());
         dropSelf(TolkienBlocks.STRIPPED_FANGORNOAK_WOOD.get());
         dropSelf(TolkienBlocks.PLANKS_FANGORNOAK.get());
-        dropLeaves(TolkienBlocks.LEAVES_FANGORNOAK);
+        add(TolkienBlocks.LEAVES_FANGORNOAK.get(), createExtraLeavesDrops(TolkienBlocks.LEAVES_FANGORNOAK.get(), TolkienBlocks.SAPLING_FANGORNOAK.get(), TolkienItems.INSECT.get(), DEFAULT_SAPLING_DROP_RATES));
         dropSelf(TolkienBlocks.LEAFPILE_FANGORNOAK.get());
         dropSelf(TolkienBlocks.STAIRS_FANGORNOAK.get());
         this.add(TolkienBlocks.SLAB_FANGORNOAK.get(),
@@ -283,7 +287,7 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.STRIPPED_DWARVEN_MAPLE_LOG.get());
         dropSelf(TolkienBlocks.STRIPPED_DWARVEN_MAPLE_WOOD.get());
         dropSelf(TolkienBlocks.PLANKS_DWARVEN_MAPLE.get());
-        dropLeaves(TolkienBlocks.LEAVES_DWARVEN_MAPLE);
+        add(TolkienBlocks.LEAVES_DWARVEN_MAPLE.get(), silkAndStick(TolkienBlocks.LEAVES_DWARVEN_MAPLE.get(), TolkienBlocks.SAPLING_DWARVEN_MAPLE.get(), DEFAULT_SAPLING_DROP_RATES));
         dropSelf(TolkienBlocks.LEAFPILE_DWARVEN_MAPLE.get());
         dropSelf(TolkienBlocks.STAIRS_DWARVEN_MAPLE.get());
         this.add(TolkienBlocks.SLAB_DWARVEN_MAPLE.get(),
@@ -529,6 +533,8 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropOther(TolkienBlocks.WALL_MUSHROOM_RED, Blocks.RED_MUSHROOM);
         dropOther(TolkienBlocks.WALL_MUSHROOM_BROWN, Blocks.BROWN_MUSHROOM);
         dropOther(TolkienBlocks.LIVING_ROOTS, Items.STICK);
+        add(TolkienBlocks.MOSS_PATCH.get(), createShearsOnlyDrop(TolkienBlocks.MOSS_PATCH.get()));
+        add(TolkienBlocks.CLOVER_PATCH.get(), createShearsOnlyDrop(TolkienBlocks.CLOVER_PATCH.get()));
 
         LootItemCondition.Builder lootItemConditionBuilder = LootItemBlockStatePropertyCondition.hasBlockStateProperties(TolkienBlocks.PIPEWEED.get())
                 .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(PipeweedCropBlock.AGE, 7));
@@ -583,9 +589,29 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
                                 .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(SleepingBagBlock.PART, BedPart.HEAD))))));
     }
 
-    public void dropLeaves(Supplier<? extends Block> leaves) {
-        this.add(leaves.get(), block -> createLeavesDrops(block, leaves.get(), NORMAL_LEAVES_SAPLING_CHANCES));
+    private LootTable.Builder silkAndStick(Block block, ItemLike nonSilk, float... nonSilkFortune) {
+        HolderLookup.RegistryLookup<Enchantment> registrylookup = this.registries.lookupOrThrow(Registries.ENCHANTMENT);
+        return createSilkTouchOrShearsDispatchTable(block, this.applyExplosionCondition(block, LootItem.lootTableItem(nonSilk.asItem())).when(BonusLevelTableCondition.bonusLevelFlatChance(registrylookup.getOrThrow(Enchantments.FORTUNE), nonSilkFortune))).withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1)).when((HAS_SHEARS.or(this.hasSilkTouch())).invert()).add(applyExplosionDecay(block, LootItem.lootTableItem(Items.STICK).apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F)))).when(BonusLevelTableCondition.bonusLevelFlatChance(registrylookup.getOrThrow(Enchantments.FORTUNE), 0.02F, 0.022222223F, 0.025F, 0.033333335F, 0.1F))));
     }
+
+    protected LootTable.Builder createExtraLeavesDrops(Block leavesBlock, Block saplingBlock, ItemLike extraItem, float... chances) {
+        HolderLookup.RegistryLookup<Enchantment> registrylookup = this.registries.lookupOrThrow(Registries.ENCHANTMENT);
+        return this.createLeavesDrops(leavesBlock, saplingBlock, chances)
+                .withPool(
+                        LootPool.lootPool()
+                                .setRolls(ConstantValue.exactly(1.0F))
+                                .when(doesNotHaveSilkTouch())
+                                .add(
+                                        ((LootPoolSingletonContainer.Builder)this.applyExplosionCondition(leavesBlock, LootItem.lootTableItem(extraItem)))
+                                                .when(
+                                                        BonusLevelTableCondition.bonusLevelFlatChance(
+                                                                registrylookup.getOrThrow(Enchantments.FORTUNE), 0.005F, 0.0055555557F, 0.00625F, 0.008333334F, 0.025F
+                                                        )
+                                                )
+                                )
+                );
+    }
+
 
     protected LootTable.Builder createMultipleOreDrops(Block pBlock, Item item, float minDrops, float maxDrops) {
         HolderLookup.RegistryLookup<Enchantment> registrylookup = this.registries.lookupOrThrow(Registries.ENCHANTMENT);
