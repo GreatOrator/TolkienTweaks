@@ -1,12 +1,9 @@
 package com.greatorator.tolkienmobs.init;
 
 import com.greatorator.tolkienmobs.handler.data.CoinPouchContents;
-import com.greatorator.tolkienmobs.handler.data.TolkienDataComponents;
 import com.greatorator.tolkienmobs.handler.data.TrinketComponent;
 import com.greatorator.tolkienmobs.item.*;
 import com.greatorator.tolkienmobs.item.custom.*;
-import com.greatorator.tolkienmobs.util.TolkienArmorMaterials;
-import com.greatorator.tolkienmobs.util.TolkienToolMaterials;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.*;
 import net.neoforged.bus.api.IEventBus;

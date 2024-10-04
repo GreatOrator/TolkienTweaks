@@ -2,7 +2,7 @@ package com.greatorator.tolkienmobs.containers.screens;
 
 import com.greatorator.tolkienmobs.containers.KeyCodeContainer;
 import com.greatorator.tolkienmobs.containers.slots.KeyCodeSlot;
-import com.greatorator.tolkienmobs.handler.data.TolkienDataComponents;
+import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;

@@ -2,7 +2,7 @@ package com.greatorator.tolkienmobs.block.custom;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.greatorator.tolkienmobs.handler.TolkienBlocksHelper;
+import com.greatorator.tolkienmobs.util.TolkienBlocksHelper;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -13,10 +13,8 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -25,8 +23,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.EnumMap;
 import java.util.stream.Stream;
-
-import static net.minecraft.world.level.block.state.properties.AttachFace.*;
 
 public class WallDecayBloomBlock extends BushBlock  {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;

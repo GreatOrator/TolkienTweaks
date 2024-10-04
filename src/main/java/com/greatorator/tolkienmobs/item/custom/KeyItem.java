@@ -4,7 +4,7 @@ import com.greatorator.tolkienmobs.containers.CoinPouchContainer;
 import com.greatorator.tolkienmobs.containers.KeyCodeContainer;
 import com.greatorator.tolkienmobs.containers.KeyItemContainer;
 import com.greatorator.tolkienmobs.containers.handlers.CoinPouchItemStackHandler;
-import com.greatorator.tolkienmobs.handler.data.TolkienDataComponents;
+import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.greatorator.tolkienmobs.item.TolkienItem;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;

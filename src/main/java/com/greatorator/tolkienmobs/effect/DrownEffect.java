@@ -1,10 +1,8 @@
 package com.greatorator.tolkienmobs.effect;
 
-import com.greatorator.tolkienmobs.init.TolkienEffects;
-import net.minecraft.core.Holder;
+import com.greatorator.tolkienmobs.init.TolkienMobEffects;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -24,7 +22,7 @@ public class DrownEffect extends TolkienEffect {
 
     @SubscribeEvent
     public void onHeal(LivingHealEvent event) {
-        var effect = event.getEntity().getEffect(TolkienEffects.ELEMENTAL_DROWNING);
+        var effect = event.getEntity().getEffect(TolkienMobEffects.ELEMENTAL_DROWNING);
         if (effect == null)
             return;
         var chance = (effect.getAmplifier() + 1) / 15F;

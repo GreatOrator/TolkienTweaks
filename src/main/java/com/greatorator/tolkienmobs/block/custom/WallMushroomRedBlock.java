@@ -2,7 +2,7 @@ package com.greatorator.tolkienmobs.block.custom;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.greatorator.tolkienmobs.handler.TolkienBlocksHelper;
+import com.greatorator.tolkienmobs.util.TolkienBlocksHelper;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

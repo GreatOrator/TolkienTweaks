@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.handler.data;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

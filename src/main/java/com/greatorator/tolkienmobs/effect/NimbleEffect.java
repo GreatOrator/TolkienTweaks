@@ -1,7 +1,6 @@
 package com.greatorator.tolkienmobs.effect;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
-import com.greatorator.tolkienmobs.init.TolkienEffects;
+import com.greatorator.tolkienmobs.init.TolkienMobEffects;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
@@ -10,10 +9,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.*;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -27,7 +23,7 @@ public class NimbleEffect extends TolkienEffect {
 
     @Override
     public void applyInstantenousEffect(@Nullable Entity source, @Nullable Entity indirectSource, LivingEntity livingEntity, int amplifier, double health) {
-        if (livingEntity instanceof Player && livingEntity.hasEffect(TolkienEffects.ELF_NIMBLENESS)) {
+        if (livingEntity instanceof Player && livingEntity.hasEffect(TolkienMobEffects.ELF_NIMBLENESS)) {
             canStepUp(livingEntity, amplifier);
         }
     }
@@ -43,7 +39,7 @@ public class NimbleEffect extends TolkienEffect {
     private static void canStepUp (LivingEntity livingEntity, int amplifier){
         AttributeInstance hasStep = livingEntity.getAttribute(Attributes.STEP_HEIGHT);
 
-        if (hasStep != null && livingEntity.hasEffect(TolkienEffects.ELF_NIMBLENESS)) {
+        if (hasStep != null && livingEntity.hasEffect(TolkienMobEffects.ELF_NIMBLENESS)) {
             canStep = true;
             hasStep.addPermanentModifier(new AttributeModifier(nimbleStep, amplifier + 1, AttributeModifier.Operation.ADD_VALUE));
         }

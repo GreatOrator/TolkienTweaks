@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.network;
 
 import com.greatorator.tolkienmobs.containers.KeyCodeContainer;
-import com.greatorator.tolkienmobs.handler.data.TolkienDataComponents;
+import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.neoforged.neoforge.network.handling.IPayloadContext;

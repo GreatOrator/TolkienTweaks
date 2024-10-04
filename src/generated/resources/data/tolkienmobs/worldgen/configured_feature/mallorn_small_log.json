@@ -1,0 +1,17 @@
+{
+  "type": "tolkienmobs:small_log",
+  "config": {
+    "hollow": {
+      "Name": "tolkienmobs:log_mallorn",
+      "Properties": {
+        "axis": "y"
+      }
+    },
+    "normal": {
+      "Name": "tolkienmobs:log_mallorn",
+      "Properties": {
+        "axis": "y"
+      }
+    }
+  }
+}

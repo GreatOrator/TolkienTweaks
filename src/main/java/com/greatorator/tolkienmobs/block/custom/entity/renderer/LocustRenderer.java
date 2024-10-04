@@ -4,7 +4,7 @@ import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.entity.LocustEntity;
 import com.greatorator.tolkienmobs.block.custom.entity.layers.TolkienModelLayers;
 import com.greatorator.tolkienmobs.block.custom.entity.model.LocustModel;
-import com.greatorator.tolkienmobs.handler.TolkienAnimationHelper;
+import com.greatorator.tolkienmobs.util.TolkienAnimationHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;

@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.init;
 
-import com.greatorator.tolkienmobs.fluid.TolkienFluidTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;

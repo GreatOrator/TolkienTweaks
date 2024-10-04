@@ -1,4 +1,4 @@
-package com.greatorator.tolkienmobs.handler;
+package com.greatorator.tolkienmobs.util;
 
 import net.minecraft.util.RandomSource;
 

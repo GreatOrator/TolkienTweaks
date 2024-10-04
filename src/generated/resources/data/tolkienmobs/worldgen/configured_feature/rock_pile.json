@@ -1,0 +1,8 @@
+{
+  "type": "tolkienmobs:rock_pile",
+  "config": {
+    "state": {
+      "Name": "tolkienmobs:rockpile"
+    }
+  }
+}

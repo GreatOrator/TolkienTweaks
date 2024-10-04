@@ -1,5 +1,7 @@
-package com.greatorator.tolkienmobs.handler.data;
+package com.greatorator.tolkienmobs.init;
 
+import com.greatorator.tolkienmobs.handler.data.CoinPouchContents;
+import com.greatorator.tolkienmobs.handler.data.TrinketComponent;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentType;

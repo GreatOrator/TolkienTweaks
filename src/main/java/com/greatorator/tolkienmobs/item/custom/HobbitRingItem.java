@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.item.custom;
 
 import com.greatorator.tolkienmobs.TolkienMobsConfig;
-import com.greatorator.tolkienmobs.handler.data.TolkienDataComponents;
+import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.greatorator.tolkienmobs.item.TolkienItem;
 import com.greatorator.tolkienmobs.util.HarvestUtility;
 import net.minecraft.core.BlockPos;
