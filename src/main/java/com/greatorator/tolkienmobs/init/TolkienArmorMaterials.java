@@ -1,6 +1,5 @@
-package com.greatorator.tolkienmobs.util;
+package com.greatorator.tolkienmobs.init;
 
-import com.greatorator.tolkienmobs.init.TolkienItems;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -8,13 +7,10 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.neoforged.neoforge.common.SimpleTier;
 
 import java.util.EnumMap;
 import java.util.List;

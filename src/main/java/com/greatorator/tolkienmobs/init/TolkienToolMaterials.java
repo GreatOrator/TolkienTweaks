@@ -1,6 +1,5 @@
-package com.greatorator.tolkienmobs.util;
+package com.greatorator.tolkienmobs.init;
 
-import com.greatorator.tolkienmobs.init.TolkienItems;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;

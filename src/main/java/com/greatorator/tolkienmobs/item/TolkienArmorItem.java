@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.item;
 
 import com.google.common.collect.ImmutableMap;
-import com.greatorator.tolkienmobs.util.TolkienArmorMaterials;
+import com.greatorator.tolkienmobs.init.TolkienArmorMaterials;
 import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;

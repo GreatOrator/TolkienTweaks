@@ -1,0 +1,9 @@
+{
+  "asset_name": "ammolite",
+  "description": {
+    "color": "#854B69",
+    "translate": "trim_material.tolkienmobs.ammolite"
+  },
+  "ingredient": "tolkienmobs:gem_ammolite",
+  "item_model_index": 0.1
+}

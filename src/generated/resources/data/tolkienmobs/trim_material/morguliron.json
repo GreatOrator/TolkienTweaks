@@ -1,0 +1,9 @@
+{
+  "asset_name": "morguliron",
+  "description": {
+    "color": "#062E9B",
+    "translate": "trim_material.tolkienmobs.morguliron"
+  },
+  "ingredient": "tolkienmobs:ingot_morguliron",
+  "item_model_index": 0.7
+}

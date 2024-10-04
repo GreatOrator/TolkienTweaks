@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.handler.data;
 
 import com.google.common.collect.Lists;
+import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;

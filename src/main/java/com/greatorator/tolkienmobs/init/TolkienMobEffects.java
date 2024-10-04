@@ -1,7 +1,6 @@
 package com.greatorator.tolkienmobs.init;
 
 import com.greatorator.tolkienmobs.effect.*;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
@@ -14,7 +13,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class TolkienEffects {
+public class TolkienMobEffects {
     public static final DeferredRegister<MobEffect> MOB_EFFECTS = DeferredRegister.create(BuiltInRegistries.MOB_EFFECT, MODID);
 
         // Beneficial

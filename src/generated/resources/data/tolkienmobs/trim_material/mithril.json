@@ -1,0 +1,9 @@
+{
+  "asset_name": "mithril",
+  "description": {
+    "color": "#F29819",
+    "translate": "trim_material.tolkienmobs.mithril"
+  },
+  "ingredient": "tolkienmobs:ingot_mithril",
+  "item_model_index": 0.2
+}

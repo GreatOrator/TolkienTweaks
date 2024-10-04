@@ -35,14 +35,14 @@ public class TolkienFoods {
     public static final FoodProperties GROG = (new FoodProperties.Builder()).nutrition(10).saturationModifier(8.0F).alwaysEdible()
             .effect(() -> new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 1500, 1), 0.3F).effect(() -> new MobEffectInstance(MobEffects.REGENERATION, 300, 3), 0.3F).effect(() -> new MobEffectInstance(MobEffects.CONFUSION, 100, 3), 0.3F).build();
     public static final FoodProperties DRINK_ENT_DRAUGHT = (new FoodProperties.Builder()).nutrition(1).saturationModifier(1.0F).alwaysEdible()
-            .effect(() -> new MobEffectInstance(TolkienEffects.ENT_STANCE, 600, 0), 0.3F).build();
+            .effect(() -> new MobEffectInstance(TolkienMobEffects.ENT_STANCE, 600, 0), 0.3F).build();
     public static final FoodProperties DRINK_PERSONAL_BLACKSMITH = (new FoodProperties.Builder()).nutrition(1).saturationModifier(1.0F).alwaysEdible()
-            .effect(() -> new MobEffectInstance(TolkienEffects.PERSONAL_BLACKSMITH, 600, 0), 0.3F).build();
+            .effect(() -> new MobEffectInstance(TolkienMobEffects.PERSONAL_BLACKSMITH, 600, 0), 0.3F).build();
     public static final FoodProperties DRINK_ELF_FLEETFOOT = (new FoodProperties.Builder()).nutrition(1).saturationModifier(1.0F).alwaysEdible()
-            .effect(() -> new MobEffectInstance(TolkienEffects.ELF_NIMBLENESS, 600, 0), 0.3F).build();
+            .effect(() -> new MobEffectInstance(TolkienMobEffects.ELF_NIMBLENESS, 600, 0), 0.3F).build();
     public static final FoodProperties DRINK_ELF_VITALITY = (new FoodProperties.Builder()).nutrition(1).saturationModifier(1.0F).alwaysEdible()
-           .effect(() -> new MobEffectInstance(TolkienEffects.ELF_VITALITY, 600, 0), 0.3F).build();
+           .effect(() -> new MobEffectInstance(TolkienMobEffects.ELF_VITALITY, 600, 0), 0.3F).build();
     public static final FoodProperties DRINK_ERU_BLESSING = (new FoodProperties.Builder()).nutrition(10).saturationModifier(8.0F).alwaysEdible()
-            .effect(() -> new MobEffectInstance(TolkienEffects.BLESSING_OF_ERU, 100, 0), 0.3F).build();
+            .effect(() -> new MobEffectInstance(TolkienMobEffects.BLESSING_OF_ERU, 100, 0), 0.3F).build();
 
 }

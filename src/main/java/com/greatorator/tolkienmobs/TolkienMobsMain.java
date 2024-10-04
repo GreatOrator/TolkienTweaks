@@ -2,14 +2,12 @@ package com.greatorator.tolkienmobs;
 
 import com.greatorator.tolkienmobs.containers.screens.*;
 import com.greatorator.tolkienmobs.event.TolkienRegistration;
-import com.greatorator.tolkienmobs.fluid.TolkienFluidTypes;
+import com.greatorator.tolkienmobs.init.TolkienFluidTypes;
 import com.greatorator.tolkienmobs.handler.ColorHandler;
-import com.greatorator.tolkienmobs.handler.data.TolkienDataComponents;
+import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.greatorator.tolkienmobs.init.*;
 import com.greatorator.tolkienmobs.fluid.TolkienFluidType;
 import com.greatorator.tolkienmobs.init.TolkienParticleTypes;
-import com.greatorator.tolkienmobs.item.custom.CoinPouchItem;
-import com.greatorator.tolkienmobs.item.custom.KeyRingItem;
 import com.greatorator.tolkienmobs.network.PacketHandler;
 import com.greatorator.tolkienmobs.particle.LeafParticle;
 import com.greatorator.tolkienmobs.particle.provider.TolkienParticleProvider;
@@ -17,7 +15,6 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FlowerPotBlock;
@@ -40,8 +37,6 @@ import org.slf4j.Logger;
 
 import java.util.Locale;
 
-import static com.greatorator.tolkienmobs.init.TolkienItems.*;
-
 @Mod(TolkienMobsMain.MODID)
 public class TolkienMobsMain {
     public static final String MODID = "tolkienmobs";
@@ -59,7 +54,6 @@ public class TolkienMobsMain {
       -Projectiles Implemented
       -Biomes
         -Structures
-        -Features
       -Arda Portal
       -Enchantments
       -Functional Blocks
@@ -83,10 +77,10 @@ public class TolkienMobsMain {
 
         TolkienItems.register(modEventBus);
         TolkienBlocks.register(modEventBus);
-        TolkienEntities.register(modEventBus);
+//        TolkienEntities.register(modEventBus);
 
         TolkienSounds.SOUND_EVENTS.register(modEventBus);
-        TolkienEffects.register(modEventBus);
+        TolkienMobEffects.register(modEventBus);
         TolkienContainers.register(modEventBus);
 
         TolkienPotions.register(modEventBus);
@@ -102,7 +96,7 @@ public class TolkienMobsMain {
         TolkienFeatureModifiers.FOLIAGE_PLACERS.register(modEventBus);
         TolkienFeatureModifiers.TREE_DECORATORS.register(modEventBus);
         TolkienFeatureModifiers.PLACEMENT_MODIFIERS.register(modEventBus);
-        TolkienFeatureModifiers.FEATURES.register(modEventBus);
+        TolkienFeatures.FEATURES.register(modEventBus);
         TolkienDataComponents.COMPONENTS.register(modEventBus);
         TolkienRecipesTypes.RECIPE_TYPE.register(modEventBus);
         TolkienRecipeSerializers.RECIPE_SERIALIZER.register(modEventBus);
@@ -194,6 +188,7 @@ public class TolkienMobsMain {
             pEvent.registerSpriteSet(TolkienParticleTypes.DWARVEN_FLAME.get(), TolkienParticleProvider::new);
             pEvent.registerSpriteSet(TolkienParticleTypes.LIGHTNINGBUG.get(), TolkienParticleProvider::new);
             pEvent.registerSpriteSet(TolkienParticleTypes.FALLING_LEAVES.get(), LeafParticle.Factory::new);
+            pEvent.registerSpriteSet(TolkienParticleTypes.WANDERING_LIGHTNINGBUG.get(), TolkienParticleProvider::new);
         }
     }
 

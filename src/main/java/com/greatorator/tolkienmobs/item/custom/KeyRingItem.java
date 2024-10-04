@@ -2,7 +2,7 @@ package com.greatorator.tolkienmobs.item.custom;
 
 import com.greatorator.tolkienmobs.containers.KeyRingContainer;
 import com.greatorator.tolkienmobs.containers.handlers.KeyRingItemStackHandler;
-import com.greatorator.tolkienmobs.handler.data.TolkienDataComponents;
+import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;

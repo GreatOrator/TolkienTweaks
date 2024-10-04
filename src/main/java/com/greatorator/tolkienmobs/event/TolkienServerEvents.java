@@ -72,7 +72,7 @@ public class TolkienServerEvents {
                 return;
             }
 
-            for(BlockPos pos : DwarvenHammerItem.getBlocksToBeDestroyed(2, initialBlockPos, serverPlayer)) {
+            for(BlockPos pos : DwarvenHammerItem.getBlocksToBeDestroyed(1, initialBlockPos, serverPlayer)) {
                 if(pos == initialBlockPos || !hammer.isCorrectToolForDrops(mainHandItem, event.getLevel().getBlockState(pos))) {
                     continue;
                 }
