@@ -2,7 +2,7 @@ package com.greatorator.tolkienmobs.block.custom.entity.renderer;
 
 
 import com.greatorator.tolkienmobs.block.custom.PlacardBlock;
-import com.greatorator.tolkienmobs.block.custom.entity.PlacardEntity;
+import com.greatorator.tolkienmobs.block.custom.entity.PlacardBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -11,13 +11,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import org.joml.Quaternionf;
 
-public class PlacardRenderer implements BlockEntityRenderer<PlacardEntity> {
+public class PlacardRenderer implements BlockEntityRenderer<PlacardBlockEntity> {
     public PlacardRenderer(BlockEntityRendererProvider.Context context) {
 
     }
 
     @Override
-    public void render(PlacardEntity te, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
+    public void render(PlacardBlockEntity te, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
         BlockState state = te.getBlockState();
         Direction facing = state.getValue(PlacardBlock.FACING);
 

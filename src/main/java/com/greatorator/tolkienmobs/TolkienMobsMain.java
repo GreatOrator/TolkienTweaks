@@ -98,6 +98,7 @@ public class TolkienMobsMain {
         TolkienFeatureModifiers.PLACEMENT_MODIFIERS.register(modEventBus);
         TolkienFeatures.FEATURES.register(modEventBus);
         TolkienDataComponents.COMPONENTS.register(modEventBus);
+        TolkienDataComponents.DATA_COMPONENTS.register(modEventBus);
         TolkienRecipesTypes.RECIPE_TYPE.register(modEventBus);
         TolkienRecipeSerializers.RECIPE_SERIALIZER.register(modEventBus);
 
@@ -167,6 +168,7 @@ public class TolkienMobsMain {
             event.register(TolkienContainers.KEY_ITEM_CONTAINER.get(), KeyItemScreen::new);
             event.register(TolkienContainers.KEY_CODE_CONTAINER.get(), KeyCodeScreen::new);
             event.register(TolkienContainers.TRINKET_TABLE_CONTAINER.get(), TrinketTableScreen::new);
+            event.register(TolkienContainers.PIGGY_BANK_CONTAINER.get(), PiggyBankScreen::new);
         }
 
         @SubscribeEvent

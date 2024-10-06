@@ -160,6 +160,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
         this.add("itemgroup.tolkienmobs.tools", "TolkienTweaks: Tools");
             this.addItem(TolkienItems.COIN_POUCH, "Coin Pouch");
             this.addItem(TolkienItems.KEY_RING, "Key Ring");
+            this.addItemWithLore(TolkienItems.ITEM_DEV_TOOL.get(), "Dev Tool", "Use to temporarily reset camo blocks to default texture");
             this.addItemWithLore(TolkienItems.HOBBIT_RING.get(), "Hobbit Ring of Growth", "Gift from the elves to enhance farming");
             this.addItemWithLore(TolkienItems.SWORD_WITCHKING.get(), "§4Sword of the Witch-king§r", "Forged in fear, the powerful weapon of the Witch-king");
             this.addItemWithLore(TolkienItems.SWORD_URUK.get(), "Uruk Sword", "Forged in fire beneath Isengard");
@@ -287,6 +288,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addCodeScreen(TolkienItems.MASTER_KEY.get(), "Master Key - Code");
             this.addItemScreen(TolkienItems.COIN_POUCH.get(), "Coin Pouch");
             this.addBlockScreen(TolkienBlocks.TRINKET_TABLE.get(), "Trinket Crafting");
+            this.addBlockScreen(TolkienBlocks.PIGGYBANK.get(), "Piggy Bank");
             this.add("screen.tolkienmobs.namefieldtext", "Enter Code");
             this.add("screen.tolkienmobs.keycodeplaceholder", "No Code Found");
 

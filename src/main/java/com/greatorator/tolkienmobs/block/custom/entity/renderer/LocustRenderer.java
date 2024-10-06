@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.block.custom.entity.renderer;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
-import com.greatorator.tolkienmobs.block.custom.entity.LocustEntity;
+import com.greatorator.tolkienmobs.block.custom.entity.LocustBlockEntity;
 import com.greatorator.tolkienmobs.block.custom.entity.layers.TolkienModelLayers;
 import com.greatorator.tolkienmobs.block.custom.entity.model.LocustModel;
 import com.greatorator.tolkienmobs.util.TolkienAnimationHelper;
@@ -16,7 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.DirectionalBlock;
 import org.jetbrains.annotations.Nullable;
 
-public class LocustRenderer implements BlockEntityRenderer<LocustEntity> {
+public class LocustRenderer implements BlockEntityRenderer<LocustBlockEntity> {
 
 	private final LocustModel locustModel;
 	private static final ResourceLocation TEXTURE = TolkienMobsMain.getBlockModelTexture("locust.png");
@@ -26,7 +26,7 @@ public class LocustRenderer implements BlockEntityRenderer<LocustEntity> {
 	}
 
 	@Override
-	public void render(@Nullable LocustEntity entity, float partialTicks, PoseStack stack, MultiBufferSource buffer, int light, int overlay) {
+	public void render(@Nullable LocustBlockEntity entity, float partialTicks, PoseStack stack, MultiBufferSource buffer, int light, int overlay) {
 		int yaw = entity != null ? entity.currentYaw : TolkienAnimationHelper.currentYaw;
 
 		stack.pushPose();

@@ -1,6 +1,6 @@
 package com.greatorator.tolkienmobs.block;
 
-import com.greatorator.tolkienmobs.block.custom.entity.TolkienSignEntity;
+import com.greatorator.tolkienmobs.block.custom.entity.TolkienSignBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.WallSignBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -14,6 +14,6 @@ public class TolkienWallSignBlock extends WallSignBlock {
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new TolkienSignEntity(pos, state);
+        return new TolkienSignBlockEntity(pos, state);
     }
 }

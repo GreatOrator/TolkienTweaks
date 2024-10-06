@@ -1,6 +1,8 @@
 package com.greatorator.tolkienmobs.block.custom;
 
 import com.greatorator.tolkienmobs.block.TolkienBlock;
+import com.greatorator.tolkienmobs.block.TolkienEntityBlock;
+import com.greatorator.tolkienmobs.block.custom.entity.ChameleonBlockEntity;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;

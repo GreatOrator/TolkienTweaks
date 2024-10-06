@@ -359,6 +359,7 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         basicItem(TolkienItems.GOLD_KEY.get());
         basicItem(TolkienItems.MITHRIL_KEY.get());
         basicItem(TolkienItems.MASTER_KEY.get());
+        basicItem(TolkienItems.ITEM_DEV_TOOL.get());
     }
 
     private ItemModelBuilder generated(String name, ResourceLocation... layers) {

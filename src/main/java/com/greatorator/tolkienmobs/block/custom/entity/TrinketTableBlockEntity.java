@@ -23,9 +23,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
-
-public class TrinketTableEntity extends BlockEntity implements MenuProvider {
+public class TrinketTableBlockEntity extends BlockEntity implements MenuProvider {
     public final ItemStackHandler itemHandler = new ItemStackHandler(4) {
         @Override
         protected void onContentsChanged(int slot) {
@@ -45,14 +43,14 @@ public class TrinketTableEntity extends BlockEntity implements MenuProvider {
     private final int DEFAULT_MAX_PROGRESS = 100;
     private float rotation;
 
-    public TrinketTableEntity(BlockPos pPos, BlockState pBlockState) {
+    public TrinketTableBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(TolkienBlocks.TRINKET_TABLE_BLOCK_ENTITY.get(), pPos, pBlockState);
         this.data = new ContainerData() {
             @Override
             public int get(int pIndex) {
                 return switch (pIndex) {
-                    case 0 -> TrinketTableEntity.this.progress;
-                    case 1 -> TrinketTableEntity.this.maxProgress;
+                    case 0 -> TrinketTableBlockEntity.this.progress;
+                    case 1 -> TrinketTableBlockEntity.this.maxProgress;
                     default -> 0;
                 };
             }
@@ -60,8 +58,8 @@ public class TrinketTableEntity extends BlockEntity implements MenuProvider {
             @Override
             public void set(int pIndex, int pValue) {
                 switch (pIndex) {
-                    case 0: TrinketTableEntity.this.progress = pValue;
-                    case 1: TrinketTableEntity.this.maxProgress = pValue;
+                    case 0: TrinketTableBlockEntity.this.progress = pValue;
+                    case 1: TrinketTableBlockEntity.this.maxProgress = pValue;
                 }
             }
 

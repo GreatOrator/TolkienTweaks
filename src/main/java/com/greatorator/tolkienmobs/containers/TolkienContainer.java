@@ -10,9 +10,12 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
 
 import javax.annotation.Nullable;
+import javax.swing.plaf.basic.BasicComboBoxUI;
 
 public abstract class TolkienContainer extends AbstractContainerMenu {
     public ItemStackHandler handler;
@@ -36,6 +39,20 @@ public abstract class TolkienContainer extends AbstractContainerMenu {
             int x = inX + row * 18;
             int y = inY + 86;
             addSlot(new Slot(playerInventory, row, x, y));
+        }
+    }
+
+    void addContainerSlots(IItemHandler itemHandler, int cols, int rows) {
+        int slot_index = 0;
+
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                int x = -15 + col * 18;
+                int y = 13 + row * 18;
+
+                this.addSlot(new SlotItemHandler(itemHandler, slot_index, x, y));
+                slot_index++;
+            }
         }
     }
 }
