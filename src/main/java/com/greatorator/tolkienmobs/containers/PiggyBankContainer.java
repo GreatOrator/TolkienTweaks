@@ -1,31 +1,21 @@
 package com.greatorator.tolkienmobs.containers;
 
-import com.greatorator.tolkienmobs.block.custom.entity.PiggyBankEntity;
+import com.greatorator.tolkienmobs.block.custom.entity.PiggyBankBlockEntity;
 import com.greatorator.tolkienmobs.containers.handlers.PiggyBankItemStackHandler;
-import com.greatorator.tolkienmobs.containers.slots.CoinPouchSlot;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienContainers;
-import com.greatorator.tolkienmobs.init.TolkienDataComponents;
-import com.greatorator.tolkienmobs.init.TolkienTags;
-import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.ItemContainerContents;
-import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.items.ComponentItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
-import org.jetbrains.annotations.NotNull;
 
 public class PiggyBankContainer extends TolkienContainer {
-    private final PiggyBankEntity tileEntity;
+    private final PiggyBankBlockEntity tileEntity;
     private final Level level;
     private static final int TE_INVENTORY_SLOT_COUNT = 63;  // must be the number of slots you have!
     private static final int HOTBAR_SLOT_COUNT = 9;
@@ -43,7 +33,7 @@ public class PiggyBankContainer extends TolkienContainer {
 
     public PiggyBankContainer(int pContainerId, Inventory inv, BlockEntity blockEntity) {
         super(TolkienContainers.PIGGY_BANK_CONTAINER.get(), pContainerId);
-        this.tileEntity = ((PiggyBankEntity) blockEntity);
+        this.tileEntity = ((PiggyBankBlockEntity) blockEntity);
         this.level = inv.player.level();
 
         addContainerSlots(this.tileEntity.itemHandler, COLUMNS, ROWS);

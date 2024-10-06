@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.block.custom;
 
 import com.greatorator.tolkienmobs.block.TolkienEntityBlock;
-import com.greatorator.tolkienmobs.block.custom.entity.PiggyBankEntity;
+import com.greatorator.tolkienmobs.block.custom.entity.PiggyBankBlockEntity;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -78,7 +78,7 @@ public class PiggyBankBlock extends TolkienEntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new PiggyBankEntity(blockPos, blockState);
+        return new PiggyBankBlockEntity(blockPos, blockState);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class PiggyBankBlock extends TolkienEntityBlock {
     @Override
     public void onRemove(BlockState state, Level worldIn, BlockPos pPos, BlockState newState, boolean isMoving) {
         if (state.getBlock() != newState.getBlock()) {
-            if (worldIn.getBlockEntity(pPos) instanceof PiggyBankEntity blockEntity) {
+            if (worldIn.getBlockEntity(pPos) instanceof PiggyBankBlockEntity blockEntity) {
                 blockEntity.drops();
             }
         }
@@ -100,7 +100,7 @@ public class PiggyBankBlock extends TolkienEntityBlock {
     @Override
     public InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult hit) {
         if (!level.isClientSide()) {
-            if (level.getBlockEntity(blockPos) instanceof PiggyBankEntity blockEntity) {
+            if (level.getBlockEntity(blockPos) instanceof PiggyBankBlockEntity blockEntity) {
                 player.openMenu(blockEntity, blockPos);
             }
         }
