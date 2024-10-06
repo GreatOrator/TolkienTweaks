@@ -567,6 +567,8 @@
   "item.tolkienmobs.item_darksaddle.lore": "Taken from the corpse of an evil Horse",
   "item.tolkienmobs.item_darksigil": "§5Dark Sigil§r",
   "item.tolkienmobs.item_darksigil.lore": "Dark symbol dropped by a minion",
+  "item.tolkienmobs.item_dev_tool": "Dev Tool",
+  "item.tolkienmobs.item_dev_tool.lore": "Use to temporarily reset camo blocks to default texture",
   "item.tolkienmobs.item_fancyarmor": "§5Cromhes' Armour§r §2(Repaired)§r",
   "item.tolkienmobs.item_fancyarmor.lore": "After repairs, Cromhes' armour looks amazing",
   "item.tolkienmobs.item_fancycloth": "§2Fine Cloth§r",
