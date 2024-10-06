@@ -1,10 +1,7 @@
 package com.greatorator.tolkienmobs.block.custom.entity;
 
-import com.greatorator.tolkienmobs.block.custom.PiggyBankBlock;
 import com.greatorator.tolkienmobs.containers.PiggyBankContainer;
-import com.greatorator.tolkienmobs.containers.TrinketTableContainer;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
-import com.greatorator.tolkienmobs.init.TolkienTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -18,17 +15,13 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.AbstractFurnaceBlock;
-import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
-public class PiggyBankEntity extends BlockEntity implements MenuProvider {
+public class PiggyBankBlockEntity extends BlockEntity implements MenuProvider {
     public final ItemStackHandler itemHandler = new ItemStackHandler(63) {
         @Override
         protected int getStackLimit(int slot, ItemStack stack) {
@@ -44,7 +37,7 @@ public class PiggyBankEntity extends BlockEntity implements MenuProvider {
         }
     };
 
-    public PiggyBankEntity(BlockPos pPos, BlockState pBlockState) {
+    public PiggyBankBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(TolkienBlocks.PIGGY_BANK_BLOCK_ENTITY.get(), pPos, pBlockState);
     }
 
