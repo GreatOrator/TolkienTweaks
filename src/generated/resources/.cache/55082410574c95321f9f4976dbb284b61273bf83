@@ -1,4 +1,4 @@
-// 1.21	2024-10-03T06:32:29.334579	Item Models: tolkienmobs
+// 1.21	2024-10-05T18:41:07.8998936	Item Models: tolkienmobs
 914e29c26c212ad7b8914aa552c5ce18400b5057 assets/tolkienmobs/models/item/axe_ammolite.json
 9a08370f124e62b3c7067b9bf9976a8c617561be assets/tolkienmobs/models/item/axe_mithril.json
 6c3e1ecf8e78654791353669b7c17986e5b4fd21 assets/tolkienmobs/models/item/axe_morguliron.json
@@ -197,6 +197,7 @@ da0e08f12fc97943662233e9c591f031f00aee51 assets/tolkienmobs/models/item/item_coi
 9007992cf1d9842fc382931bc58138b2c846f8bf assets/tolkienmobs/models/item/item_coin_silver.json
 d6b5db5c66fac430a3e1e7d16d63e76ad869beba assets/tolkienmobs/models/item/item_darksaddle.json
 324effaa2dc263aef323535f1dcd9dc4fe974759 assets/tolkienmobs/models/item/item_darksigil.json
+26c372d74b1ba31e161b74c56f63a048bb6b7add assets/tolkienmobs/models/item/item_dev_tool.json
 78246cdcef2b4fc969fedc118382ecb5882970c7 assets/tolkienmobs/models/item/item_fancyarmor.json
 fe82f51d73e8c3be5fdebc2b6b0446ec382b6423 assets/tolkienmobs/models/item/item_fancycloth.json
 3b295244aa7c73c322405f6c170c584ec0b6132b assets/tolkienmobs/models/item/item_fancyhammer.json
