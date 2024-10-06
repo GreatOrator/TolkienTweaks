@@ -8,7 +8,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class LightningBugEntity extends BlockEntity {
+public class LocustBlockEntity extends BlockEntity {
 	public final float randRot = RandomSource.create().nextInt(4) * 90.0F;
 	public int currentYaw;
 	public float glowIntensity;
@@ -17,11 +17,11 @@ public class LightningBugEntity extends BlockEntity {
 	private boolean glowing;
 	private int glowDelay;
 
-	public LightningBugEntity(BlockPos pos, BlockState state) {
-		super(TolkienBlocks.LIGHTNINGBUG_BLOCK_ENTITY.get(), pos, state);
+	public LocustBlockEntity(BlockPos pos, BlockState state) {
+		super(TolkienBlocks.LOCUST_BLOCK_ENTITY.get(), pos, state);
 	}
 
-	public static void tick(Level level, BlockPos pos, BlockState state, LightningBugEntity te) {
+	public static void tick(Level level, BlockPos pos, BlockState state, LocustBlockEntity te) {
 		if (level.isClientSide()) {
 			if (te.anyPlayerInRange() && level.getRandom().nextInt(20) == 0) {
 				te.spawnParticles();

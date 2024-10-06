@@ -1115,24 +1115,27 @@ public class TolkienBlocks {
     //Boats
 
         // Block Entities
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LightningBugEntity>> LIGHTNINGBUG_BLOCK_ENTITY =
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LightningBugBlockEntity>> LIGHTNINGBUG_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("lightningbug", () ->
-                    BlockEntityType.Builder.of(LightningBugEntity::new, LIGHTNINGBUG_BLOCK.get()).build(null));
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LocustEntity>> LOCUST_BLOCK_ENTITY =
+                    BlockEntityType.Builder.of(LightningBugBlockEntity::new, LIGHTNINGBUG_BLOCK.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LocustBlockEntity>> LOCUST_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("locust", () ->
-                    BlockEntityType.Builder.of(LocustEntity::new, LOCUST_BLOCK.get()).build(null));
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PlacardEntity>> PLACARD_BLOCK_ENTITY =
+                    BlockEntityType.Builder.of(LocustBlockEntity::new, LOCUST_BLOCK.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PlacardBlockEntity>> PLACARD_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("placard_tile", () ->
-                    BlockEntityType.Builder.of(PlacardEntity::new, PLACARD.get()).build(null));
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TolkienSignEntity>> TOLKIEN_SIGN_BLOCK_ENTITY =
+                    BlockEntityType.Builder.of(PlacardBlockEntity::new, PLACARD.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TolkienSignBlockEntity>> TOLKIEN_SIGN_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("tolkien_sign_entity", () ->
-                    BlockEntityType.Builder.of(TolkienSignEntity::new, MALLORN_SIGN.get(), MALLORN_WALL_SIGN.get(), MIRKWOOD_SIGN.get(), MIRKWOOD_WALL_SIGN.get(), CULUMALDA_SIGN.get(), CULUMALDA_WALL_SIGN.get(), LEBETHRON_SIGN.get(), LEBETHRON_WALL_SIGN.get(), FANGORNOAK_SIGN.get(), FANGORNOAK_WALL_SIGN.get(), DEADWOOD_SIGN.get(), DEADWOOD_WALL_SIGN.get(), DWARVEN_MAPLE_SIGN.get(), DWARVEN_MAPLE_WALL_SIGN.get()).build(null));
+                    BlockEntityType.Builder.of(TolkienSignBlockEntity::new, MALLORN_SIGN.get(), MALLORN_WALL_SIGN.get(), MIRKWOOD_SIGN.get(), MIRKWOOD_WALL_SIGN.get(), CULUMALDA_SIGN.get(), CULUMALDA_WALL_SIGN.get(), LEBETHRON_SIGN.get(), LEBETHRON_WALL_SIGN.get(), FANGORNOAK_SIGN.get(), FANGORNOAK_WALL_SIGN.get(), DEADWOOD_SIGN.get(), DEADWOOD_WALL_SIGN.get(), DWARVEN_MAPLE_SIGN.get(), DWARVEN_MAPLE_WALL_SIGN.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TolkienHangingSignBlockEntity>> TOLKIEN_HANGING_SIGN_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("tolkien_hanging_sign_entity", () ->
                     BlockEntityType.Builder.of(TolkienHangingSignBlockEntity::new, MALLORN_HANGING_SIGN.get(), MALLORN_HANGING_WALL_SIGN.get(), MIRKWOOD_HANGING_SIGN.get(), MIRKWOOD_HANGING_WALL_SIGN.get(), CULUMALDA_HANGING_SIGN.get(), CULUMALDA_HANGING_WALL_SIGN.get(), LEBETHRON_HANGING_SIGN.get(), LEBETHRON_HANGING_WALL_SIGN.get(), FANGORNOAK_HANGING_SIGN.get(), FANGORNOAK_HANGING_WALL_SIGN.get(), DEADWOOD_HANGING_SIGN.get(), DEADWOOD_HANGING_WALL_SIGN.get(), DWARVEN_MAPLE_HANGING_SIGN.get(), DWARVEN_MAPLE_HANGING_WALL_SIGN.get()).build(null));
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TrinketTableEntity>> TRINKET_TABLE_BLOCK_ENTITY =
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TrinketTableBlockEntity>> TRINKET_TABLE_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("trinket_table", () ->
-                    BlockEntityType.Builder.of(TrinketTableEntity::new, TRINKET_TABLE.get()).build(null));
+                    BlockEntityType.Builder.of(TrinketTableBlockEntity::new, TRINKET_TABLE.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PiggyBankEntity>> PIGGY_BANK_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("block_piggybank", () ->
+                    BlockEntityType.Builder.of(PiggyBankEntity::new, PIGGYBANK.get()).build(null));
 
     private static boolean never(BlockState state, BlockGetter blockGetter, BlockPos pos) {
         return false;

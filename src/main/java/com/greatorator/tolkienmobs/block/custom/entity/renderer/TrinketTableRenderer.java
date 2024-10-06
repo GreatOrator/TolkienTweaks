@@ -2,7 +2,7 @@ package com.greatorator.tolkienmobs.block.custom.entity.renderer;
 
 
 import com.greatorator.tolkienmobs.block.custom.TrinketTableBlock;
-import com.greatorator.tolkienmobs.block.custom.entity.TrinketTableEntity;
+import com.greatorator.tolkienmobs.block.custom.entity.TrinketTableBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -21,13 +20,13 @@ import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.state.BlockState;
 import org.joml.Quaternionf;
 
-public class TrinketTableRenderer implements BlockEntityRenderer<TrinketTableEntity> {
+public class TrinketTableRenderer implements BlockEntityRenderer<TrinketTableBlockEntity> {
     public TrinketTableRenderer(BlockEntityRendererProvider.Context context) {
 
     }
 
     @Override
-    public void render(TrinketTableEntity te, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
+    public void render(TrinketTableBlockEntity te, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
         ItemStack stack1 = te.itemHandler.getStackInSlot(0);
         ItemStack stack2 = te.itemHandler.getStackInSlot(1);
         ItemStack stack3 = te.itemHandler.getStackInSlot(2);

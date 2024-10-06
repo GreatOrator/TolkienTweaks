@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.block.custom;
 
 import com.greatorator.tolkienmobs.block.TolkienBugBlock;
-import com.greatorator.tolkienmobs.block.custom.entity.LocustEntity;
+import com.greatorator.tolkienmobs.block.custom.entity.LocustBlockEntity;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienLootTables;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
@@ -34,12 +34,12 @@ public class LocustBlock extends TolkienBugBlock {
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return new LocustEntity(pos, state);
+		return new LocustBlockEntity(pos, state);
 	}
 
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		return createTickerHelper(type, TolkienBlocks.LOCUST_BLOCK_ENTITY.get(), LocustEntity::tick);
+		return createTickerHelper(type, TolkienBlocks.LOCUST_BLOCK_ENTITY.get(), LocustBlockEntity::tick);
 	}
 
 	@Override

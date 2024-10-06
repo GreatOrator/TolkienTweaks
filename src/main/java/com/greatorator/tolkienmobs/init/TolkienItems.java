@@ -286,11 +286,11 @@ public class TolkienItems {
     public static final DeferredItem<SwordItem> WHIP_FIRE = ITEMS.register("whip_fire", () -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, new Item.Properties().attributes(TolkienSwordItem.createAttributes(TolkienToolMaterials.MORGULIRON, 15, -0.5F))).setEffectOverride().setHasLore());
     public static final DeferredItem<SwordItem> CLUB_WOODEN = ITEMS.register("club_wooden", () -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, new Item.Properties().attributes(TolkienSwordItem.createAttributes(TolkienToolMaterials.MORGULIRON, 9, -0.5F))).setEffectOverride().setHasLore());
 
-    public static DeferredItem<Item> HOBBIT_RING = ITEMS.register("hobbit_ring", () -> new HobbitRingItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)).setHasLore());
+    public static final DeferredItem<Item> HOBBIT_RING = ITEMS.register("hobbit_ring", () -> new HobbitRingItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)).setHasLore());
 //    public static RegistryObject<BowItem> ELVEN_BOW = ITEMS.register("elven_bow", () -> new BowItem(new Item.Properties().stacksTo(1).tab(toolsGroup)));
 //    public static RegistryObject<BowItem> URUK_BOW = ITEMS.register("uruk_bow", () -> new BowItem(new Item.Properties().stacksTo(1).tab(toolsGroup)));
 
-//    public static RegistryObject<Item> ITEM_DEV_TOOL = ITEMS.register("item_dev_tool", () -> new BaseItem(new Item.Properties().stacksTo(1).tab(toolsGroup)).setEffectOverride().setHasLore());
+    public static final DeferredItem<Item> ITEM_DEV_TOOL = ITEMS.register("item_dev_tool", () -> new TolkienItem(new Item.Properties().stacksTo(1)).setEffectOverride().setHasLore());
 //    public static RegistryObject<Item> ITEM_DEV_DEBUG_TOOL = ITEMS.register("item_dev_debug_tool", () -> new BaseItem(new Item.Properties().stacksTo(1).tab(toolsGroup)).setEffectOverride().setHasLore());
 //    public static RegistryObject<Item> ARDA_STAFF = ITEMS.register("arda_staff", () -> new CatalystItem(new Item.Properties().stacksTo(1).tab(toolsGroup).rarity(Rarity.RARE)).setHasLore());
 //    public static RegistryObject<Item> MORGUL_CRYSTAL = ITEMS.register("morgul_crystal", () -> new MorgulCrystalItem(new Item.Properties().stacksTo(1).tab(decoGroup)));

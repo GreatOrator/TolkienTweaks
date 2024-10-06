@@ -13,19 +13,19 @@ import net.minecraft.world.level.block.state.BlockState;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class TolkienBedEntity extends BlockEntity implements Nameable {
+public abstract class TolkienBedBlockEntity extends BlockEntity implements Nameable {
 
   private DyeColor color;
   @Nullable
   protected Component name;
 
-  public TolkienBedEntity(BlockEntityType<?> blockEntityType, BlockPos pos,
-                                 BlockState state) {
+  public TolkienBedBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos,
+                               BlockState state) {
     super(blockEntityType, pos, state);
   }
 
-  public TolkienBedEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state,
-                                 DyeColor colorIn) {
+  public TolkienBedBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state,
+                               DyeColor colorIn) {
     this(blockEntityType, pos, state);
     this.setColor(colorIn);
   }

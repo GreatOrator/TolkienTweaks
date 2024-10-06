@@ -1,12 +1,11 @@
 package com.greatorator.tolkienmobs.block.custom;
 
-import com.greatorator.tolkienmobs.block.custom.entity.PlacardEntity;
+import com.greatorator.tolkienmobs.block.custom.entity.PlacardBlockEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -123,7 +122,7 @@ public class PlacardBlock extends Block implements EntityBlock {
 
     @Override
     public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new PlacardEntity(blockPos, blockState);
+        return new PlacardBlockEntity(blockPos, blockState);
     }
 
     public PlacardBlock setHasLore() {

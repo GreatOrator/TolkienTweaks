@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.containers;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
-import com.greatorator.tolkienmobs.block.custom.entity.TrinketTableEntity;
+import com.greatorator.tolkienmobs.block.custom.entity.TrinketTableBlockEntity;
 import com.greatorator.tolkienmobs.containers.slots.GemSlot;
 import com.greatorator.tolkienmobs.containers.slots.OutputSlot;
 import com.greatorator.tolkienmobs.containers.slots.PotionSlot;
@@ -17,11 +17,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class TrinketTableContainer extends TolkienContainer implements RecipeInput {
-    private final TrinketTableEntity tileEntity;
+    private final TrinketTableBlockEntity tileEntity;
     private final Level level;
     private final ContainerData containerData;
     public static final ResourceLocation TEXTURE_LOC_SLOT_TRINKET = TolkienMobsMain.resLoc("item/ring");
@@ -46,7 +45,7 @@ public class TrinketTableContainer extends TolkienContainer implements RecipeInp
 
     public TrinketTableContainer(int pContainerId, Inventory inv, BlockEntity entity, ContainerData data) {
         super(TolkienContainers.TRINKET_TABLE_CONTAINER.get(), pContainerId);
-        tileEntity = ((TrinketTableEntity) entity);
+        tileEntity = ((TrinketTableBlockEntity) entity);
         this.level = inv.player.level();
         this.containerData = data;
 

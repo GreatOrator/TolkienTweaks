@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.block.custom;
 
 import com.greatorator.tolkienmobs.block.TolkienBugBlock;
-import com.greatorator.tolkienmobs.block.custom.entity.LightningBugEntity;
+import com.greatorator.tolkienmobs.block.custom.entity.LightningBugBlockEntity;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienLootTables;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
@@ -34,12 +34,12 @@ public class LightningBugBlock extends TolkienBugBlock {
 
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return new LightningBugEntity(pos, state);
+		return new LightningBugBlockEntity(pos, state);
 	}
 
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		return createTickerHelper(type, TolkienBlocks.LIGHTNINGBUG_BLOCK_ENTITY.get(), LightningBugEntity::tick);
+		return createTickerHelper(type, TolkienBlocks.LIGHTNINGBUG_BLOCK_ENTITY.get(), LightningBugBlockEntity::tick);
 	}
 
 	@Override

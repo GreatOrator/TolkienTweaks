@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.block.custom;
 
-import com.greatorator.tolkienmobs.block.custom.entity.TrinketTableEntity;
+import com.greatorator.tolkienmobs.block.TolkienEntityBlock;
+import com.greatorator.tolkienmobs.block.custom.entity.TrinketTableBlockEntity;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -32,7 +33,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
 
-public class TrinketTableBlock extends BaseEntityBlock {
+public class TrinketTableBlock extends TolkienEntityBlock {
     public static final Component TextComponent = Component.translatable("screen.tolkienmobs.block.tolkienmobs.trinket_table");
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
@@ -148,7 +149,7 @@ public class TrinketTableBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new TrinketTableEntity(blockPos, blockState);
+        return new TrinketTableBlockEntity(blockPos, blockState);
     }
 
     @Override
@@ -159,7 +160,7 @@ public class TrinketTableBlock extends BaseEntityBlock {
     @Override
     public void onRemove(BlockState state, Level worldIn, BlockPos pPos, BlockState newState, boolean isMoving) {
         if (state.getBlock() != newState.getBlock()) {
-            if (worldIn.getBlockEntity(pPos) instanceof TrinketTableEntity blockEntity) {
+            if (worldIn.getBlockEntity(pPos) instanceof TrinketTableBlockEntity blockEntity) {
                 blockEntity.drops();
             }
         }
@@ -171,7 +172,7 @@ public class TrinketTableBlock extends BaseEntityBlock {
     public InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult hit) {
         if (!level.isClientSide())
         {
-            if (level.getBlockEntity(blockPos) instanceof TrinketTableEntity trinketTable)
+            if (level.getBlockEntity(blockPos) instanceof TrinketTableBlockEntity trinketTable)
             {
                 player.openMenu(trinketTable, blockPos);
             }
@@ -212,7 +213,7 @@ public class TrinketTableBlock extends BaseEntityBlock {
 
         pLevel.addParticle(ParticleTypes.SMOKE, xPos + xOffsets, yPos + yOffset, zPos + zOffset, 0.0, 0.0, 0.0);
 
-        if(pLevel.getBlockEntity(pPos) instanceof TrinketTableEntity crystallizerBlockEntity && !crystallizerBlockEntity.itemHandler.getStackInSlot(1).isEmpty()) {
+        if(pLevel.getBlockEntity(pPos) instanceof TrinketTableBlockEntity crystallizerBlockEntity && !crystallizerBlockEntity.itemHandler.getStackInSlot(1).isEmpty()) {
             pLevel.addParticle(new ItemParticleOption(ParticleTypes.ITEM, crystallizerBlockEntity.itemHandler.getStackInSlot(1)),
                     xPos + xOffsets, yPos + yOffset, zPos + zOffset, 0.0, 0.0, 0.0);
         }
