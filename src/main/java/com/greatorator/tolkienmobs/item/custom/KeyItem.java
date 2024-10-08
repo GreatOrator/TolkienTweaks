@@ -31,10 +31,6 @@ public class KeyItem extends TolkienItem {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
-//        if (itemstack.get(TolkienDataComponents.KEY_CODE) == null) {
-//            itemstack.set(TolkienDataComponents.KEY_CODE, new KeyCodeComponent("No Code Set", -1));
-//        }
-//        this.getDefaultInstance();
 
         if (level.isClientSide()) return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
 
@@ -68,7 +64,7 @@ public class KeyItem extends TolkienItem {
             return false;
         if (keyCode.length() > 50)
             return false;
-        if (keyUses < 0)
+        if (keyUses < -1)
             return false;
         keyItem.set(TolkienDataComponents.KEY_CODE, new KeyCodeComponent(keyCode, keyUses));
         return true;
