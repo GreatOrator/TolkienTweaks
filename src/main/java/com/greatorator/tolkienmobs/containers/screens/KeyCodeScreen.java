@@ -16,6 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
@@ -116,8 +117,8 @@ public class KeyCodeScreen extends AbstractContainerScreen<KeyCodeContainer> {
         this.keyCode = this.keyCode.trim();
         var success = KeyItem.setKeyData(this.keyStack, this.keyCode, -1);
 
-//        if (success) {
-//            PacketDistributor.sendToServer(new KeyCodeUpdateManager(this.hand, this.keyCode, this.keyUses));
-//        }
+        if (success) {
+            PacketDistributor.sendToServer(new KeyCodeUpdateManager(InteractionHand.MAIN_HAND, this.keyCode, this.keyUses));
+        }
     }
 }

@@ -29,7 +29,6 @@ public record KeyCodeUpdateManager(InteractionHand hand, String keyCode, int key
     public static void handle(KeyCodeUpdateManager message, IPayloadContext context) {
         var player = context.player();
         var itemStackToUpdate = player.getItemInHand(message.hand);
-        TolkienMobsMain.LOGGER.warn(itemStackToUpdate.getItem() + ", " + message.keyCode + ", " + message.keyUses);
 
         if (itemStackToUpdate.getItem() instanceof KeyItem) {
             KeyItem.setKeyCode(itemStackToUpdate, message.keyCode, message.keyUses);
