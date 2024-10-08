@@ -653,6 +653,7 @@ public class TolkienTabs {
                         output.accept(TolkienItems.SHOVEL_MITHRIL);
                         output.accept(TolkienItems.HOE_MITHRIL);
                         output.accept(TolkienItems.SHEARS_MITHRIL);
+                        output.accept(TolkienItems.MITHRIL_HORSE_ARMOR);
                         output.accept(TolkienItems.HELMET_MORGULIRON);
                         output.accept(TolkienItems.CHESTPLATE_MORGULIRON);
                         output.accept(TolkienItems.LEGGINGS_MORGULIRON);
@@ -663,6 +664,7 @@ public class TolkienTabs {
                         output.accept(TolkienItems.SHOVEL_MORGULIRON);
                         output.accept(TolkienItems.HOE_MORGULIRON);
                         output.accept(TolkienItems.SHEARS_MORGULIRON);
+                        output.accept(TolkienItems.MORGULIRON_HORSE_ARMOR);
                         output.accept(TolkienItems.HELMET_AMMOLITE);
                         output.accept(TolkienItems.CHESTPLATE_AMMOLITE);
                         output.accept(TolkienItems.LEGGINGS_AMMOLITE);
@@ -673,6 +675,7 @@ public class TolkienTabs {
                         output.accept(TolkienItems.SHOVEL_AMMOLITE);
                         output.accept(TolkienItems.HOE_AMMOLITE);
                         output.accept(TolkienItems.SHEARS_AMMOLITE);
+                        output.accept(TolkienItems.AMMOLITE_HORSE_ARMOR);
                         output.accept(TolkienItems.DWARVEN_HAMMER);
                         output.accept(TolkienItems.HYPE_HORN);
                         output.accept(TolkienItems.RECORD_EREBOR);

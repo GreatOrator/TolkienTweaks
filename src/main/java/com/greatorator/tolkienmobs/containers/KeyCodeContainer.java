@@ -4,6 +4,7 @@ import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.containers.slots.KeyCodeSlot;
 import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.greatorator.tolkienmobs.init.TolkienContainers;
+import com.greatorator.tolkienmobs.item.custom.KeyItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -37,7 +38,7 @@ public class KeyCodeContainer extends AbstractContainerMenu {
         this.keyCodeHandler = new ComponentItemHandler(keyStack, TolkienDataComponents.ITEMSTACK_HANDLER.get(), 1);
         this.playerInventory = new InvWrapper(playerInventory);
         KeyCodeContainer.keyStack = keyStack;
-        this.keyCode = keyStack.getOrDefault(TolkienDataComponents.KEY_CODE, Component.translatable("screen.tolkienmobs.namefieldtext").getString());
+        this.keyCode = KeyItem.getKeyCode(this.keyStack);
 //        if (keyCodeHandler != null) {
 //            addSlotBox(keyCodeHandler, 0, 44, 17, 5, 18, 3, 18);
 //        }
@@ -64,13 +65,6 @@ public class KeyCodeContainer extends AbstractContainerMenu {
         keyStack.set(keyCode, code);
 
         return keyStack;
-    }
-
-    public String getCode () {
-        if (!keyStack.has(TolkienDataComponents.KEY_CODE))
-            return keyStack.set(TolkienDataComponents.KEY_CODE, "No Code Set");
-
-        return this.keyCode;
     }
 
     @Override

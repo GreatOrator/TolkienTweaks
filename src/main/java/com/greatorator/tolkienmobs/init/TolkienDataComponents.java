@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.init;
 import com.greatorator.tolkienmobs.handler.data.CoinPouchContents;
 import com.greatorator.tolkienmobs.handler.data.SavedBlockState;
 import com.greatorator.tolkienmobs.handler.data.TrinketComponent;
+import com.greatorator.tolkienmobs.network.KeyCodeComponent;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentType;
@@ -11,6 +12,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemContainerContents;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.NotNull;
@@ -18,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -39,31 +42,37 @@ public class TolkienDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<UUID>> KEY_RING_UUID = COMPONENTS.register("key_ring_uuid", () -> DataComponentType.<UUID>builder().persistent(UUIDUtil.CODEC).networkSynchronized(UUIDUtil.STREAM_CODEC).build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> KEY_RING_ACTIVE = COMPONENTS.register("key_ring_active", () -> DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> KEY_RING_COUNTER = COMPONENTS.register("key_ring_counter", () -> DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT).build());
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> KEY_CODE = COMPONENTS.register("key_code", () -> DataComponentType.<String>builder().persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8).build());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<KeyCodeComponent>> KEY_CODE = register("key_code", builder -> builder.persistent(KeyCodeComponent.CODEC).networkSynchronized(KeyCodeComponent.STREAM_CODEC));
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<SavedBlockState>> SAVED_BLOCK_STATE = DATA_COMPONENTS.registerComponentType("saved_block_state", builder -> builder.persistent(SavedBlockState.CODEC).networkSynchronized(SavedBlockState.STREAM_CODEC).cacheEncoding());
 
-    public static final DataComponentType<CustomData> MISSING_CONTENT_ITEMSTACK_DATA = register("missing_content_itemstack_data", builder -> builder.persistent(CustomData.CODEC).networkSynchronized(CustomData.STREAM_CODEC));
-    public static final DataComponentType<String> MISSING_CONTENT_ERROR = register("missing_content_error", builder -> builder.persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8));
-    public static final DataComponentType<CustomData> MISSING_CONTENT_TOLKIENKEY_DATA = register("missing_content_tolkienkey_data", builder -> builder.persistent(CustomData.CODEC).networkSynchronized(CustomData.STREAM_CODEC));
 
-    private static @NotNull <T> DeferredHolder<DataComponentType<?>, DataComponentType<T>> register(String name, final Codec<T> codec) {
-        return register(name, codec, null);
+    private static <T>DeferredHolder<DataComponentType<?>, DataComponentType<T>> register(String name, UnaryOperator<DataComponentType.Builder<T>> builderOperator) {
+        return COMPONENTS.register(name, () -> builderOperator.apply(DataComponentType.builder()).build());
     }
 
-    private static <T> DataComponentType<T> register(String name, Consumer<DataComponentType.Builder<T>> customizer) {
-        var builder = DataComponentType.<T>builder();
-        customizer.accept(builder);
-        var componentType = builder.build();
-        COMPONENTS.register(name, () -> componentType);
-        return componentType;
+    public static void register(IEventBus eventBus) {
+        COMPONENTS.register(eventBus);
+        DATA_COMPONENTS.register(eventBus);
     }
 
-    private static @NotNull <T> DeferredHolder<DataComponentType<?>, DataComponentType<T>> register(String name, final Codec<T> codec, @Nullable final StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec) {
-        if (streamCodec == null) {
-            return COMPONENTS.register(name, () -> DataComponentType.<T>builder().persistent(codec).build());
-        } else {
-            return COMPONENTS.register(name, () -> DataComponentType.<T>builder().persistent(codec).networkSynchronized(streamCodec).build());
-        }
-    }
+//    private static @NotNull <T> DeferredHolder<DataComponentType<?>, DataComponentType<T>> register(String name, final Codec<T> codec) {
+//        return register(name, codec, null);
+//    }
+
+//    private static <T> DataComponentType<T> register(String name, Consumer<DataComponentType.Builder<T>> customizer) {
+//        var builder = DataComponentType.<T>builder();
+//        customizer.accept(builder);
+//        var componentType = builder.build();
+//        COMPONENTS.register(name, () -> componentType);
+//        return componentType;
+//    }
+
+//    private static @NotNull <T> DeferredHolder<DataComponentType<?>, DataComponentType<T>> register(String name, final Codec<T> codec, @Nullable final StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec) {
+//        if (streamCodec == null) {
+//            return COMPONENTS.register(name, () -> DataComponentType.<T>builder().persistent(codec).build());
+//        } else {
+//            return COMPONENTS.register(name, () -> DataComponentType.<T>builder().persistent(codec).networkSynchronized(streamCodec).build());
+//        }
+//    }
 }
