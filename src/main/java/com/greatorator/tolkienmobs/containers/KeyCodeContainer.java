@@ -39,9 +39,6 @@ public class KeyCodeContainer extends AbstractContainerMenu {
         this.playerInventory = new InvWrapper(playerInventory);
         KeyCodeContainer.keyStack = keyStack;
         this.keyCode = KeyItem.getKeyCode(this.keyStack);
-//        if (keyCodeHandler != null) {
-//            addSlotBox(keyCodeHandler, 0, 44, 17, 5, 18, 3, 18);
-//        }
     }
 
     @Override
@@ -57,14 +54,6 @@ public class KeyCodeContainer extends AbstractContainerMenu {
     @Override
     public boolean stillValid(Player playerIn) {
         return true;
-//        return playerIn.getMainHandItem().getComponents().has(TolkienDataComponents.KEY_CODE.get()) || playerIn.getOffhandItem().getComponents().has(TolkienDataComponents.KEY_CODE.get());
-    }
-
-    public static ItemStack setCode(DeferredHolder<DataComponentType<?>, DataComponentType<String>> keyCode, String code) {
-        TolkienMobsMain.LOGGER.warn(keyCode + code);
-        keyStack.set(keyCode, code);
-
-        return keyStack;
     }
 
     @Override
@@ -156,65 +145,6 @@ public class KeyCodeContainer extends AbstractContainerMenu {
     public boolean canTakeItemForPickAll(ItemStack itemStack, Slot slot) {
         return !(slot instanceof KeyCodeSlot);
     }
-
-//    @Override
-//    public ItemStack quickMoveStack(Player playerIn, int index) {
-//        ItemStack itemstack = ItemStack.EMPTY;
-//        Slot slot = this.slots.get(index);
-//        if (slot.hasItem()) {
-//            ItemStack stack = slot.getItem();
-//            //If its one of the 15 slots at the top try to move it into your inventory
-//            if (index < SLOTS) {
-//                if (playerIn.getInventory().getFreeSlot() != -1) {
-//                    this.moveItemStackTo(stack, SLOTS, 36 + SLOTS, true);
-//                    slot.setByPlayer(stack);
-//                } else {
-//                    return ItemStack.EMPTY;
-//                }
-//                slot.onQuickCraft(stack, itemstack);
-//            } else {
-//                if (!this.moveItemStackTo(stack, 0, SLOTS, false)) {
-//                    return ItemStack.EMPTY;
-//                }
-//            }
-//
-//            slot.onTake(playerIn, stack);
-//            if (stack.getCount() < itemstack.getCount()) {
-//                return ItemStack.EMPTY;
-//            }
-//        }
-//
-//        return itemstack;
-//    }
-//
-//    private int addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx) {
-//        for (int i = 0; i < amount; i++) {
-//            if ((handler.getSlots() == SLOTS))
-//                addSlot(new KeyCodeSlot(handler, index, x, y));
-//            else
-//                addSlot(new SlotItemHandler(handler, index, x, y));
-//            x += dx;
-//            index++;
-//        }
-//        return index;
-//    }
-//
-//    private int addSlotBox(IItemHandler handler, int index, int x, int y, int horAmount, int dx, int verAmount, int dy) {
-//        for (int j = 0; j < verAmount; j++) {
-//            index = addSlotRange(handler, index, x, y, horAmount, dx);
-//            y += dy;
-//        }
-//        return index;
-//    }
-//
-//    private void layoutPlayerInventorySlots(int leftCol, int topRow) {
-//        // Player inventory
-//        addSlotBox(playerInventory, 9, leftCol, topRow, 9, 18, 3, 18);
-//
-//        // Hotbar
-//        topRow += 58;
-//        addSlotRange(playerInventory, 0, leftCol, topRow, 9, 18);
-//    }
 
     @Override
     public void removed(Player playerIn) {
