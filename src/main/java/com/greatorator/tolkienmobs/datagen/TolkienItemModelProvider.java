@@ -345,14 +345,17 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         trimmedArmorItem(TolkienItems.CHESTPLATE_MITHRIL);
         trimmedArmorItem(TolkienItems.LEGGINGS_MITHRIL);
         trimmedArmorItem(TolkienItems.BOOTS_MITHRIL);
+        basicItem(TolkienItems.MITHRIL_HORSE_ARMOR.get());
         trimmedArmorItem(TolkienItems.HELMET_MORGULIRON);
         trimmedArmorItem(TolkienItems.CHESTPLATE_MORGULIRON);
         trimmedArmorItem(TolkienItems.LEGGINGS_MORGULIRON);
         trimmedArmorItem(TolkienItems.BOOTS_MORGULIRON);
+        basicItem(TolkienItems.MORGULIRON_HORSE_ARMOR.get());
         trimmedArmorItem(TolkienItems.HELMET_AMMOLITE);
         trimmedArmorItem(TolkienItems.CHESTPLATE_AMMOLITE);
         trimmedArmorItem(TolkienItems.LEGGINGS_AMMOLITE);
         trimmedArmorItem(TolkienItems.BOOTS_AMMOLITE);
+        basicItem(TolkienItems.AMMOLITE_HORSE_ARMOR.get());
 
         basicItem(TolkienItems.BRONZE_KEY.get());
         basicItem(TolkienItems.SILVER_KEY.get());

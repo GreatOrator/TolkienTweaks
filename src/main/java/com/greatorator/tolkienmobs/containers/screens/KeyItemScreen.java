@@ -12,7 +12,7 @@ import net.minecraft.world.entity.player.Inventory;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class KeyItemScreen extends AbstractContainerScreen<KeyItemContainer> {
-    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/small_inventory.png");
+    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory_small.png");
     protected final KeyItemContainer container;
 
     public KeyItemScreen(KeyItemContainer container, Inventory inv, Component name) {

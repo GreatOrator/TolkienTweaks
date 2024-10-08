@@ -1136,6 +1136,9 @@ public class TolkienBlocks {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PiggyBankBlockEntity>> PIGGY_BANK_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("block_piggybank", () ->
                     BlockEntityType.Builder.of(PiggyBankBlockEntity::new, PIGGYBANK.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BackpackBlockEntity>> BACKPACK_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("backpack", () ->
+                    BlockEntityType.Builder.of(BackpackBlockEntity::new, BACKPACK.get()).build(null));
 
     private static boolean never(BlockState state, BlockGetter blockGetter, BlockPos pos) {
         return false;

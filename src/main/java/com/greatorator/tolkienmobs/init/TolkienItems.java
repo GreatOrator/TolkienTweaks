@@ -339,8 +339,9 @@ public class TolkienItems {
             () -> new TolkienArmorItem(TolkienArmorMaterials.AMMOLITE_ARMOR_MATERIAL, ArmorItem.Type.BOOTS,
                     new Item.Properties().durability(ArmorItem.Type.BOOTS.getDurability(35))));
 
-//    public static RegistryObject<Item> MITHRIL_HORSE_ARMOR = ITEMS.register("mithril_horse_armor", () -> new BaseHorseArmorItem(15, "mithril", (new Item.Properties()).stacksTo(1).tab(toolsGroup)));
-//    public static RegistryObject<Item> MORGULIRON_HORSE_ARMOR = ITEMS.register("morguliron_horse_armor", () -> new BaseHorseArmorItem(13, "morguliron", (new Item.Properties()).stacksTo(1).tab(toolsGroup)));
+    public static final DeferredItem<Item> MITHRIL_HORSE_ARMOR = ITEMS.register("mithril_horse_armor", () -> new TolkienAnimalArmorItem(TolkienArmorMaterials.MITHRIL_ARMOR_MATERIAL, AnimalArmorItem.BodyType.EQUESTRIAN, false, (new Item.Properties()).stacksTo(1)));
+    public static final DeferredItem<Item> MORGULIRON_HORSE_ARMOR = ITEMS.register("morguliron_horse_armor", () -> new TolkienAnimalArmorItem(TolkienArmorMaterials.MORGULIRON_ARMOR_MATERIAL, AnimalArmorItem.BodyType.EQUESTRIAN, false, (new Item.Properties()).stacksTo(1)));
+    public static final DeferredItem<Item> AMMOLITE_HORSE_ARMOR = ITEMS.register("ammolite_horse_armor", () -> new TolkienAnimalArmorItem(TolkienArmorMaterials.AMMOLITE_ARMOR_MATERIAL, AnimalArmorItem.BodyType.EQUESTRIAN, false, (new Item.Properties()).stacksTo(1)));
 
         // Keys
     public static DeferredItem<Item> BRONZE_KEY = ITEMS.register("bronze_key", () -> new KeyItem(new Item.Properties().stacksTo(1)));

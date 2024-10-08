@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class PiggyBankScreen extends AbstractContainerScreen<PiggyBankContainer> {
-    private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory_base_upgrade_2.png");
+    private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory_extra_large.png");
 
     public PiggyBankScreen(PiggyBankContainer container, Inventory inv, Component name) {
         super(container, inv, Component.literal(""));

@@ -48,7 +48,6 @@ public class TolkienMobsMain {
      TODO
       -Fix Rendering of Coin Pouch and Key Ring States
         -Fix Storing of Key Codes
-      -Horse Armor Implemented
       -Bows Implemented
       -Boats Implemented
       -Projectiles Implemented
@@ -73,6 +72,8 @@ public class TolkienMobsMain {
         if (dist.isClient()) {
             TolkienRegistration.initModBusEvents(modEventBus);
         }
+        PacketHandler.register(modEventBus);
+
         TolkienTabs.register(modEventBus);
 
         TolkienItems.register(modEventBus);
@@ -97,12 +98,9 @@ public class TolkienMobsMain {
         TolkienFeatureModifiers.TREE_DECORATORS.register(modEventBus);
         TolkienFeatureModifiers.PLACEMENT_MODIFIERS.register(modEventBus);
         TolkienFeatures.FEATURES.register(modEventBus);
-        TolkienDataComponents.COMPONENTS.register(modEventBus);
-        TolkienDataComponents.DATA_COMPONENTS.register(modEventBus);
+        TolkienDataComponents.register(modEventBus);
         TolkienRecipesTypes.RECIPE_TYPE.register(modEventBus);
         TolkienRecipeSerializers.RECIPE_SERIALIZER.register(modEventBus);
-
-        modEventBus.addListener(PacketHandler::registerNetworking);
 
         NeoForge.EVENT_BUS.register(this);
 

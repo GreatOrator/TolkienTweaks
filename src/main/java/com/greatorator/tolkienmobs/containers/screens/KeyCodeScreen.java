@@ -1,61 +1,74 @@
 package com.greatorator.tolkienmobs.containers.screens;
 
+import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.containers.KeyCodeContainer;
-import com.greatorator.tolkienmobs.containers.slots.KeyCodeSlot;
-import com.greatorator.tolkienmobs.init.TolkienDataComponents;
+import com.greatorator.tolkienmobs.containers.widget.ButtonTexture;
+import com.greatorator.tolkienmobs.containers.widget.TolkienButton;
+import com.greatorator.tolkienmobs.item.custom.KeyItem;
+import com.greatorator.tolkienmobs.network.KeyCodeUpdateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
+import org.jetbrains.annotations.NotNull;
+import org.lwjgl.glfw.GLFW;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class KeyCodeScreen extends AbstractContainerScreen<KeyCodeContainer> {
-    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/key_code.png");
+    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory_text.png");
     protected final KeyCodeContainer container;
-    public ItemStack keyStack;
+    public static ItemStack keyStack;
+    private final InteractionHand hand;
     private EditBox nameField;
-    private Button buttonSave;
+    private String keyCode;
+    private final int keyUses;
 
-    public KeyCodeScreen(KeyCodeContainer container, Inventory inv, Component name) {
-        super(container, inv, name);
-        this.keyStack = inv.player.getItemInHand(InteractionHand.MAIN_HAND);
+    public KeyCodeScreen(KeyCodeContainer container, Inventory inv, Component title) {
+        super(container, inv, title);
+        keyStack = inv.player.getItemInHand(InteractionHand.MAIN_HAND);
+        this.hand = inv.player.swingingArm;
         this.container = container;
         this.imageHeight = 62;
+        this.keyCode = KeyItem.getKeyCode(this.keyStack);
+        this.keyUses = KeyItem.getUses(this.keyStack);
+
     }
 
     @Override
     public void init() {
         super.init();
-        this.nameField = new EditBox(this.font, (this.leftPos) + 16, topPos + 17, imageWidth - 31, this.font.lineHeight + 7, Component.translatable(""));
-        updateNameField();
+        this.nameField = new EditBox(this.font, (this.leftPos) + 16, topPos + 17, imageWidth - 31, this.font.lineHeight + 7, Component.translatable("screen.tolkienmobs.namefieldtext"));
+        var doneButton = this.addRenderableWidget(TolkienButton
+                .builder(Component.translatable("buttons.tolkienmobs.save"), button -> {
+                    sendMessageToServer();
+                    this.minecraft.setScreen(null);
+                }, ButtonTexture.LARGE_BUTTON)
+                .size(64, 20)
+                .build());
+        var layout = new LinearLayout((leftPos - 20) + 122, topPos + 36,
+                LinearLayout.Orientation.HORIZONTAL);
+        layout.spacing(4);
+        layout.addChild(doneButton);
+        layout.arrangeElements();
 
-        buttonSave = new ExtendedButton((leftPos - 20) + 122, topPos + 36, 60, 13, Component.translatable("buttons.tolkienmobs.save"), (button) -> {
-            KeyCodeContainer.setCode(TolkienDataComponents.KEY_CODE, this.nameField.getValue());
-        });
-
-        addRenderableWidget(buttonSave);
+        this.nameField.setValue(this.keyCode);
         this.nameField.setMaxLength(50);
         this.nameField.setVisible(true);
         addRenderableWidget(nameField);
-
     }
 
         @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
-    }
-
-    public void updateNameField() {
-        this.nameField.setValue(TolkienDataComponents.KEY_CODE.get().toString());
+        this.nameField.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override
@@ -63,7 +76,7 @@ public class KeyCodeScreen extends AbstractContainerScreen<KeyCodeContainer> {
         guiGraphics.drawString(font, title, 5, 5, 8552833);
 
         if (!nameField.isFocused() && nameField.getValue().isEmpty())
-            guiGraphics.drawString(font, container.getCode(), nameField.getX() - leftPos + 4, (nameField.getY() + 2) - topPos, -10197916);
+            guiGraphics.drawString(font, KeyItem.getKeyCode(this.keyStack), nameField.getX() - leftPos + 4, (nameField.getY() + 2) - topPos, -10197916);
     }
 
     @Override
@@ -78,20 +91,33 @@ public class KeyCodeScreen extends AbstractContainerScreen<KeyCodeContainer> {
 
     @Override
     public boolean mouseClicked(double x, double y, int btn) {
-        if (btn == 1 && hoveredSlot instanceof KeyCodeSlot) { //Right click
-            int slot = hoveredSlot.getSlotIndex();
-            return true;
+        boolean ret = super.mouseClicked(x, y, btn);
+        if(this.nameField.mouseClicked(x, y, btn)) {
+            this.nameField.setFocused(true);
+            ret = true;
         }
-        return super.mouseClicked(x, y, btn);
+        else if(this.nameField.isFocused()) {
+            this.nameField.setFocused(false);
+            ret = true;
+        }
+        return ret;
     }
 
     @Override
-    public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
-        if (p_keyPressed_1_ == 256) {
-            this.onClose();
-            return true;
-        }
+    public boolean keyPressed(int key, int scancode, int p_keyPressed_3_) {
+        if(this.nameField.isFocused()&&key!=GLFW.GLFW_KEY_ESCAPE)
+            if(this.nameField.keyPressed(key, scancode, p_keyPressed_3_)||this.nameField.canConsumeInput())
+                return true;
+        return super.keyPressed(key, scancode, p_keyPressed_3_);
+    }
 
-        return this.nameField.isFocused() ? this.nameField.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_) : super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
+    private void sendMessageToServer() {
+        this.keyCode = this.nameField.getValue();
+        this.keyCode = this.keyCode.trim();
+        var success = KeyItem.setKeyData(this.keyStack, this.keyCode, -1);
+
+//        if (success) {
+//            PacketDistributor.sendToServer(new KeyCodeUpdateManager(this.hand, this.keyCode, this.keyUses));
+//        }
     }
 }

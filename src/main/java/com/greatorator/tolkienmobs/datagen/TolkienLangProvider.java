@@ -175,14 +175,17 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addItem(TolkienItems.CHESTPLATE_MITHRIL, "Mithril Chestplate");
             this.addItem(TolkienItems.LEGGINGS_MITHRIL, "Mithril Leggings");
             this.addItem(TolkienItems.BOOTS_MITHRIL, "Mithril Boots");
+            this.addItem(TolkienItems.MITHRIL_HORSE_ARMOR, "Mithril Horse Armor");
             this.addItem(TolkienItems.HELMET_MORGULIRON, "Morgul Iron Helmet");
             this.addItem(TolkienItems.CHESTPLATE_MORGULIRON, "Morgul Iron Chestplate");
             this.addItem(TolkienItems.LEGGINGS_MORGULIRON, "Morgul Iron Leggings");
             this.addItem(TolkienItems.BOOTS_MORGULIRON, "Morgul Iron Boots");
+            this.addItem(TolkienItems.MORGULIRON_HORSE_ARMOR, "Morguliron Horse Armor");
             this.addItem(TolkienItems.HELMET_AMMOLITE, "Ammolite Helmet");
             this.addItem(TolkienItems.CHESTPLATE_AMMOLITE, "Ammolite Chestplate");
             this.addItem(TolkienItems.LEGGINGS_AMMOLITE, "Ammolite Leggings");
             this.addItem(TolkienItems.BOOTS_AMMOLITE, "Ammolite Boots");
+            this.addItem(TolkienItems.AMMOLITE_HORSE_ARMOR, "Ammolite Horse Armor");
             this.addMusicDisc(TolkienItems.RECORD_EREBOR, "SnowShepherd - All That Glitters in Erebor");
             this.addMusicDisc(TolkienItems.RECORD_HOBBITS, "Harry Murrell - Concerning Hobbits");
             this.addMusicDisc(TolkienItems.RECORD_MINASTIRITH, "SnowShepherd - Grandeur of Minas Tirith");
