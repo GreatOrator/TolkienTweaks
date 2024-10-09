@@ -1,13 +1,14 @@
 package com.greatorator.tolkienmobs.containers;
 
+import com.greatorator.tolkienmobs.containers.slots.SlotArmor;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -54,5 +55,23 @@ public abstract class TolkienContainer extends AbstractContainerMenu {
                 slot_index++;
             }
         }
+    }
+
+    protected void addPlayerArmorInventory(Inventory inventory, int offsetX, int offsetY) {
+        this.addSlot(new SlotArmor(inventory, (4 * 9), offsetX + 18, offsetY, inventory.player, EquipmentSlot.CHEST));
+        this.addSlot(new SlotArmor(inventory, (4 * 9) + 1, offsetX, offsetY, inventory.player, EquipmentSlot.HEAD));
+        this.addSlot(new SlotArmor(inventory, (4 * 9) + 2, offsetX, offsetY + 18, inventory.player, EquipmentSlot.LEGS));
+        this.addSlot(new SlotArmor(inventory, (4 * 9) + 3, offsetX + 18, offsetY + 18, inventory.player, EquipmentSlot.FEET));
+
+        this.addSlot(new Slot(inventory, (4 * 9) + 4, offsetX + 9, offsetY + 36) {
+            public void setByPlayer(ItemStack stack, ItemStack type) {
+                inventory.player.onEquipItem(EquipmentSlot.OFFHAND, type, stack);
+                super.setByPlayer(stack, type);
+            }
+
+            public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
+                return Pair.of(InventoryMenu.BLOCK_ATLAS, InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD);
+            }
+        });
     }
 }

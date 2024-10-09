@@ -1,6 +1,6 @@
 package com.greatorator.tolkienmobs.containers.screens;
 
-import com.greatorator.tolkienmobs.containers.PiggyBankContainer;
+import com.greatorator.tolkienmobs.containers.BackpackBlockContainer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -13,12 +13,13 @@ import javax.annotation.Nullable;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class PiggyBankScreen extends AbstractContainerScreen<PiggyBankContainer> {
-    private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory_large.png");
+public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockContainer> {
+    private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_2.png");
 
-    public PiggyBankScreen(PiggyBankContainer container, Inventory inv, Component name) {
+    public BackpackBlockScreen(BackpackBlockContainer container, Inventory inv, Component name) {
         super(container, inv, Component.literal(""));
-        this.imageHeight = 221;
+        this.imageHeight = 256;
+        this.imageWidth = 256;
     }
 
     @Override
@@ -38,8 +39,8 @@ public class PiggyBankScreen extends AbstractContainerScreen<PiggyBankContainer>
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.block.tolkienmobs.block_piggybank"), -15, 3, 8552833, false);
-        guiGraphics.drawString(this.font, this.playerInventoryTitle, -15, 128, 8552833, false);
+        guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.block.tolkienmobs.backpack"), 64, 3, 8552833, false);
+        guiGraphics.drawString(this.font, this.playerInventoryTitle, 64, 163, 8552833, false);
     }
 
     @Override

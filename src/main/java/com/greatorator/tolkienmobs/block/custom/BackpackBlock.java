@@ -1,23 +1,26 @@
 package com.greatorator.tolkienmobs.block.custom;
 
-import com.greatorator.tolkienmobs.block.TolkienBlock;
+import com.greatorator.tolkienmobs.block.TolkienEntityBlock;
+import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
 
-public class BackpackBlock extends TolkienBlock {
+public class BackpackBlock extends TolkienEntityBlock {
     public static final MapCodec<BackpackBlock> CODEC = simpleCodec(BackpackBlock::new);
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
@@ -62,5 +65,42 @@ public class BackpackBlock extends TolkienBlock {
     @Override
     public BlockState rotate(BlockState state, Rotation direction) {
         return state.setValue(FACING, direction.rotate(state.getValue(FACING)));
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+        return new BackpackBlockEntity(blockPos, blockState);
+    }
+
+    @Override
+    protected RenderShape getRenderShape(BlockState pState) {
+        return RenderShape.MODEL;
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level worldIn, BlockPos pPos, BlockState newState, boolean isMoving) {
+        if (state.getBlock() != newState.getBlock()) {
+            if (worldIn.getBlockEntity(pPos) instanceof BackpackBlockEntity blockEntity) {
+                blockEntity.drops();
+            }
+        }
+
+        super.onRemove(state, worldIn, pPos, newState, isMoving);
+    }
+
+    @Override
+    public InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult hit) {
+        if (!level.isClientSide()) {
+            if (level.getBlockEntity(blockPos) instanceof BackpackBlockEntity blockEntity) {
+                player.openMenu(blockEntity, blockPos);
+            }
+        }
+        return InteractionResult.SUCCESS;
     }
 }

@@ -292,6 +292,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addItemScreen(TolkienItems.COIN_POUCH.get(), "Coin Pouch");
             this.addBlockScreen(TolkienBlocks.TRINKET_TABLE.get(), "Trinket Crafting");
             this.addBlockScreen(TolkienBlocks.PIGGYBANK.get(), "Piggy Bank");
+            this.addBlockScreen(TolkienBlocks.BACKPACK.get(), "Adventurer's Backpack");
             this.add("screen.tolkienmobs.namefieldtext", "Enter Code");
             this.add("screen.tolkienmobs.keycodeplaceholder", "No Code Found");
             this.add("screen.tolkienmobs.keyuses", "-1");

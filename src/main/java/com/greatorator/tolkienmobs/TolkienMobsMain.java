@@ -47,7 +47,6 @@ public class TolkienMobsMain {
     /*
      TODO
       -Fix Rendering of Coin Pouch and Key Ring States
-        -Fix Storing of Key Codes
       -Bows Implemented
       -Boats Implemented
       -Projectiles Implemented
@@ -167,6 +166,7 @@ public class TolkienMobsMain {
             event.register(TolkienContainers.KEY_CODE_CONTAINER.get(), KeyCodeScreen::new);
             event.register(TolkienContainers.TRINKET_TABLE_CONTAINER.get(), TrinketTableScreen::new);
             event.register(TolkienContainers.PIGGY_BANK_CONTAINER.get(), PiggyBankScreen::new);
+            event.register(TolkienContainers.BACKPACK_CONTAINER.get(), BackpackBlockScreen::new);
         }
 
         @SubscribeEvent

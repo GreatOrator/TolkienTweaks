@@ -1,45 +1,43 @@
 package com.greatorator.tolkienmobs.containers;
 
+import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
 import com.greatorator.tolkienmobs.block.custom.entity.PiggyBankBlockEntity;
+import com.greatorator.tolkienmobs.containers.handlers.BackpackItemStackHandler;
 import com.greatorator.tolkienmobs.containers.handlers.PiggyBankItemStackHandler;
-import com.greatorator.tolkienmobs.init.TolkienBlocks;
+import com.greatorator.tolkienmobs.containers.slots.OutputSlot;
+import com.greatorator.tolkienmobs.containers.slots.SlotArmor;
 import com.greatorator.tolkienmobs.init.TolkienContainers;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.IItemHandler;
 
-public class PiggyBankContainer extends TolkienContainer {
-    private final PiggyBankBlockEntity tileEntity;
+public class BackpackBlockContainer extends TolkienContainer{
+    private final BackpackBlockEntity tileEntity;
     private final Level level;
-    private static final int TE_INVENTORY_SLOT_COUNT = 54;  // must be the number of slots you have!
-    private static final int HOTBAR_SLOT_COUNT = 9;
-    private static final int PLAYER_INVENTORY_ROW_COUNT = 3;
-    private static final int PLAYER_INVENTORY_COLUMN_COUNT = 9;
-    private static final int PLAYER_INVENTORY_SLOT_COUNT = PLAYER_INVENTORY_COLUMN_COUNT * PLAYER_INVENTORY_ROW_COUNT;
-    private static final int VANILLA_SLOT_COUNT = HOTBAR_SLOT_COUNT + PLAYER_INVENTORY_SLOT_COUNT;
-    private static final int VANILLA_FIRST_SLOT_INDEX = 0;
     public static final int COLUMNS = 9;
-    public static final int ROWS = 6;
-
-    public PiggyBankContainer(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
+    public static final int ROWS = 8;
+    public BackpackBlockContainer(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
         this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()));
     }
 
-    public PiggyBankContainer(int pContainerId, Inventory inv, BlockEntity blockEntity) {
-        super(TolkienContainers.PIGGY_BANK_CONTAINER.get(), pContainerId);
-        this.tileEntity = ((PiggyBankBlockEntity) blockEntity);
+    public BackpackBlockContainer(int pContainerId, Inventory inv, BlockEntity blockEntity) {
+        super(TolkienContainers.BACKPACK_CONTAINER.get(), pContainerId);
+        this.tileEntity = ((BackpackBlockEntity) blockEntity);
         this.level = inv.player.level();
 
         addContainerSlots(this.tileEntity.itemHandler, COLUMNS, ROWS);
 
-        addPlayerInventory(inv, -15, 111);
-        addPlayerHotbar(inv, -15, 111);
+        addPlayerInventory(inv, 65, 146);
+        addPlayerHotbar(inv, 65, 146);
+        addPlayerArmorInventory(inv, 23, 197);
     }
 
     @Override
@@ -68,9 +66,8 @@ public class PiggyBankContainer extends TolkienContainer {
     }
 
     @Override
-    public boolean stillValid(Player pPlayer) {
-        return stillValid(ContainerLevelAccess.create(level, tileEntity.getBlockPos()),
-                pPlayer, TolkienBlocks.PIGGYBANK.get());
+    public boolean stillValid(Player player) {
+        return true;
     }
 
     @Override
@@ -79,10 +76,10 @@ public class PiggyBankContainer extends TolkienContainer {
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                int x = -15 + col * 18;
+                int x = 65 + col * 18;
                 int y = 13 + row * 18;
 
-                this.addSlot(new PiggyBankItemStackHandler(itemHandler, slot_index, x, y));
+                this.addSlot(new BackpackItemStackHandler(itemHandler, slot_index, x, y));
                 slot_index++;
             }
         }
