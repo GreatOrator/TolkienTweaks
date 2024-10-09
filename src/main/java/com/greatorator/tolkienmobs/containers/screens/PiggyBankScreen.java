@@ -14,11 +14,11 @@ import javax.annotation.Nullable;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class PiggyBankScreen extends AbstractContainerScreen<PiggyBankContainer> {
-    private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory_extra_large.png");
+    private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory_large.png");
 
     public PiggyBankScreen(PiggyBankContainer container, Inventory inv, Component name) {
         super(container, inv, Component.literal(""));
-        this.imageHeight = 239;
+        this.imageHeight = 221;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class PiggyBankScreen extends AbstractContainerScreen<PiggyBankContainer>
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.block.tolkienmobs.block_piggybank"), -15, 3, 8552833, false);
-        guiGraphics.drawString(this.font, this.playerInventoryTitle, -15, 145, 8552833, false);
+        guiGraphics.drawString(this.font, this.playerInventoryTitle, -15, 128, 8552833, false);
     }
 
     @Override

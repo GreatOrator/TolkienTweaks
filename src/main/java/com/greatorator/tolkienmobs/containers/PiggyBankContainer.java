@@ -17,7 +17,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 public class PiggyBankContainer extends TolkienContainer {
     private final PiggyBankBlockEntity tileEntity;
     private final Level level;
-    private static final int TE_INVENTORY_SLOT_COUNT = 63;  // must be the number of slots you have!
+    private static final int TE_INVENTORY_SLOT_COUNT = 54;  // must be the number of slots you have!
     private static final int HOTBAR_SLOT_COUNT = 9;
     private static final int PLAYER_INVENTORY_ROW_COUNT = 3;
     private static final int PLAYER_INVENTORY_COLUMN_COUNT = 9;
@@ -25,7 +25,7 @@ public class PiggyBankContainer extends TolkienContainer {
     private static final int VANILLA_SLOT_COUNT = HOTBAR_SLOT_COUNT + PLAYER_INVENTORY_SLOT_COUNT;
     private static final int VANILLA_FIRST_SLOT_INDEX = 0;
     public static final int COLUMNS = 9;
-    public static final int ROWS = 7;
+    public static final int ROWS = 6;
 
     public PiggyBankContainer(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
         this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()));
@@ -38,8 +38,8 @@ public class PiggyBankContainer extends TolkienContainer {
 
         addContainerSlots(this.tileEntity.itemHandler, COLUMNS, ROWS);
 
-        addPlayerInventory(inv, -15, 129);
-        addPlayerHotbar(inv, -15, 129);
+        addPlayerInventory(inv, -15, 111);
+        addPlayerHotbar(inv, -15, 111);
     }
 
     @Override

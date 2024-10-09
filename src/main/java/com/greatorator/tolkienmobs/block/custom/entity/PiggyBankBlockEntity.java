@@ -22,10 +22,10 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
 public class PiggyBankBlockEntity extends BlockEntity implements MenuProvider {
-    public final ItemStackHandler itemHandler = new ItemStackHandler(63) {
+    public final ItemStackHandler itemHandler = new ItemStackHandler(54) {
         @Override
         protected int getStackLimit(int slot, ItemStack stack) {
-            return 63;
+            return 54;
         }
 
         @Override
