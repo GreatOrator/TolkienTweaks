@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.containers.screens;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.containers.KeyCodeContainer;
 import com.greatorator.tolkienmobs.containers.widget.ButtonTexture;
 import com.greatorator.tolkienmobs.containers.widget.TolkienButton;
@@ -28,8 +27,9 @@ public class KeyCodeScreen extends AbstractContainerScreen<KeyCodeContainer> {
     public static ItemStack keyStack;
     private final InteractionHand hand;
     private EditBox nameField;
+    private EditBox usesField;
     private String keyCode;
-    private final int keyUses;
+    private int keyUses;
 
     public KeyCodeScreen(KeyCodeContainer container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -46,8 +46,9 @@ public class KeyCodeScreen extends AbstractContainerScreen<KeyCodeContainer> {
     public void init() {
         super.init();
         this.nameField = new EditBox(this.font, (this.leftPos) + 16, topPos + 17, imageWidth - 31, this.font.lineHeight + 7, Component.translatable("screen.tolkienmobs.namefieldtext"));
-        var doneButton = this.addRenderableWidget(TolkienButton
-                .builder(Component.translatable("buttons.tolkienmobs.save"), button -> {
+        this.usesField = new EditBox(this.font, (this.leftPos) + 16, topPos + 39, 21, this.font.lineHeight + 7, Component.translatable("screen.tolkienmobs.keyuses"));
+        var saveCodeButton = this.addRenderableWidget(TolkienButton
+                .builder(Component.translatable("buttons.tolkienmobs.saveinfo"), button -> {
                     sendMessageToServer();
                     this.minecraft.setScreen(null);
                 }, ButtonTexture.LARGE_BUTTON)
@@ -56,21 +57,27 @@ public class KeyCodeScreen extends AbstractContainerScreen<KeyCodeContainer> {
         var layout = new LinearLayout((leftPos - 20) + 122, topPos + 36,
                 LinearLayout.Orientation.HORIZONTAL);
         layout.spacing(4);
-        layout.addChild(doneButton);
+        layout.addChild(saveCodeButton);
         layout.arrangeElements();
 
         this.nameField.setValue(this.keyCode);
         this.nameField.setMaxLength(50);
         this.nameField.setVisible(true);
         addRenderableWidget(nameField);
+
+        this.usesField.setValue(Integer.toString(this.keyUses));
+        this.usesField.setMaxLength(2);
+        this.usesField.setVisible(true);
+        addRenderableWidget(usesField);
     }
 
         @Override
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        this.renderTooltip(guiGraphics, mouseX, mouseY);
         this.nameField.render(guiGraphics, mouseX, mouseY, partialTicks);
-    }
+        this.usesField.render(guiGraphics, mouseX, mouseY, partialTicks);
+        this.renderTooltip(guiGraphics, mouseX, mouseY);
+        }
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
@@ -115,7 +122,8 @@ public class KeyCodeScreen extends AbstractContainerScreen<KeyCodeContainer> {
     private void sendMessageToServer() {
         this.keyCode = this.nameField.getValue();
         this.keyCode = this.keyCode.trim();
-        var success = KeyItem.setKeyData(this.keyStack, this.keyCode, -1);
+        this.keyUses = Integer.parseInt(this.usesField.getValue());
+        var success = KeyItem.setKeyData(this.keyStack, this.keyCode, this.keyUses);
 
         if (success) {
             PacketDistributor.sendToServer(new KeyCodeUpdateManager(InteractionHand.MAIN_HAND, this.keyCode, this.keyUses));
