@@ -294,8 +294,14 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addBlockScreen(TolkienBlocks.PIGGYBANK.get(), "Piggy Bank");
             this.add("screen.tolkienmobs.namefieldtext", "Enter Code");
             this.add("screen.tolkienmobs.keycodeplaceholder", "No Code Found");
+            this.add("screen.tolkienmobs.keyuses", "-1");
 
-            this.add("buttons.tolkienmobs.save", "Save Code");
+                // Buttons
+            this.add("buttons.tolkienmobs.saveinfo", "Save Info");
+
+                // General Messages
+            this.add("tolkienmobs.msg.wrong_key", "You need the correct key!");
+
                 // Potions & Effects
                     // Beneficial
             this.createPotionSet("personal_blacksmith", "Portable Blacksmith");

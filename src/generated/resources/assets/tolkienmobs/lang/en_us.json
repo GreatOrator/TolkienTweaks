@@ -409,7 +409,7 @@
   "block.tolkienmobs.wood_lebethron": "Lebethron Wood",
   "block.tolkienmobs.wood_mallorn": "Mallorn Wood",
   "block.tolkienmobs.wood_mirkwood": "Mirkwood Wood",
-  "buttons.tolkienmobs.save": "Save Code",
+  "buttons.tolkienmobs.saveinfo": "Save Info",
   "effect.tolkienmobs.blessing_of_eru": "Eru's Blessing",
   "effect.tolkienmobs.crippling_terror": "Paralysing Fear",
   "effect.tolkienmobs.dread_aura": "Great Dread",
@@ -1034,6 +1034,7 @@
   "screen.tolkienmobs.item.tolkienmobs.mithril_key": "Mithril Key",
   "screen.tolkienmobs.item.tolkienmobs.silver_key": "Silver Key",
   "screen.tolkienmobs.keycodeplaceholder": "No Code Found",
+  "screen.tolkienmobs.keyuses": "-1",
   "screen.tolkienmobs.namefieldtext": "Enter Code",
   "subtitles.tolkienmobs.ambient.arda_portal": "Portal to Arda beckons",
   "subtitles.tolkienmobs.ambient.khazaddum": "Sounds of an ancient Dwarven City",
@@ -1050,5 +1051,6 @@
   "subtitles.tolkienmobs.block.lightningbug_ambient": "Lightning bugs chirping",
   "subtitles.tolkienmobs.block.locust_ambient": "Buzzing Locusts",
   "subtitles.tolkienmobs.item.hype_horn": "Celebrating victory",
-  "subtitles.tolkienmobs.mob.coin_trader": "A Wild Coin Trader appears!"
+  "subtitles.tolkienmobs.mob.coin_trader": "A Wild Coin Trader appears!",
+  "tolkienmobs.msg.wrong_key": "You need the correct key!"
 }
