@@ -4,6 +4,7 @@ import com.greatorator.tolkienmobs.block.*;
 import com.greatorator.tolkienmobs.block.custom.*;
 import com.greatorator.tolkienmobs.block.custom.entity.*;
 import com.greatorator.tolkienmobs.datagen.world.TolkienWorldConfigurationProvider;
+import com.greatorator.tolkienmobs.handler.capability.TolkienFluidTank;
 import com.greatorator.tolkienmobs.handler.interfaces.TolkienRegistry;
 import com.greatorator.tolkienmobs.world.components.feature.tree.TolkienTreeGrowers;
 import net.minecraft.core.BlockPos;
@@ -24,6 +25,7 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -1140,6 +1142,21 @@ public class TolkienBlocks {
             BLOCK_ENTITIES.register("backpack", () ->
                     BlockEntityType.Builder.of(BackpackBlockEntity::new, BACKPACK.get()).build(null));
 
+        // Attachment Types
+    public static final Supplier<AttachmentType<ItemStackHandler>> BACKPACK_HANDLER = ATTACHMENT_TYPES.register(
+            "backpack_handler", () -> AttachmentType.serializable(holder -> {
+                if (holder instanceof BackpackBlockEntity backpackBlockEntity)
+                    return new ItemStackHandler(backpackBlockEntity.BUCKET_SLOTS);
+                return new ItemStackHandler(1);
+            }).build());
+    public static final Supplier<AttachmentType<TolkienFluidTank>> BACKPACK_FLUID_HANDLER = ATTACHMENT_TYPES.register(
+            "backpack_fluid_handler", () -> AttachmentType.serializable(holder -> {
+                if (holder instanceof BackpackBlockEntity backpackBlockEntity)
+                    return new TolkienFluidTank(backpackBlockEntity.getMaxMB());
+                return new TolkienFluidTank(0);
+            }).build());
+
+
     private static boolean never(BlockState state, BlockGetter blockGetter, BlockPos pos) {
         return false;
     }
@@ -1166,5 +1183,6 @@ public class TolkienBlocks {
         BLOCKS.register(eventBus);
         BLOCK_ENTITIES.register(eventBus);
         WOOD_TYPES.register(eventBus);
+        ATTACHMENT_TYPES.register(eventBus);
     }
 }

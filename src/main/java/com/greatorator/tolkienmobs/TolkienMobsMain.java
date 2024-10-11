@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs;
 
+import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
 import com.greatorator.tolkienmobs.containers.screens.*;
 import com.greatorator.tolkienmobs.event.TolkienRegistration;
 import com.greatorator.tolkienmobs.init.TolkienFluidTypes;
@@ -28,6 +29,8 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
@@ -67,6 +70,7 @@ public class TolkienMobsMain {
 
     public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer, Dist dist) {
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(this::registerCapabilities);
 
         if (dist.isClient()) {
             TolkienRegistration.initModBusEvents(modEventBus);
@@ -139,6 +143,26 @@ public class TolkienMobsMain {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
 
+    }
+
+    private void registerCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerBlock(Capabilities.ItemHandler.BLOCK,
+                (level, pos, state, be, side) -> {
+                    if (be instanceof BackpackBlockEntity)
+                        return be.getData(TolkienBlocks.BACKPACK_HANDLER);
+                    return null;
+                },
+                TolkienBlocks.BACKPACK.get()
+        );
+        event.registerBlock(Capabilities.FluidHandler.BLOCK,
+                (level, pos, state, be, side) -> {
+                    if (be instanceof BackpackBlockEntity) {
+                        return be.getData(TolkienBlocks.BACKPACK_FLUID_HANDLER);
+                    }
+                    return null;
+                },
+                TolkienBlocks.BACKPACK.get()
+        );
     }
 
     @EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
