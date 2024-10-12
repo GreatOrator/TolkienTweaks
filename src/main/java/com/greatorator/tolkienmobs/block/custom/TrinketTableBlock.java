@@ -213,8 +213,8 @@ public class TrinketTableBlock extends TolkienEntityBlock {
 
         pLevel.addParticle(ParticleTypes.SMOKE, xPos + xOffsets, yPos + yOffset, zPos + zOffset, 0.0, 0.0, 0.0);
 
-        if(pLevel.getBlockEntity(pPos) instanceof TrinketTableBlockEntity crystallizerBlockEntity && !crystallizerBlockEntity.itemHandler.getStackInSlot(1).isEmpty()) {
-            pLevel.addParticle(new ItemParticleOption(ParticleTypes.ITEM, crystallizerBlockEntity.itemHandler.getStackInSlot(1)),
+        if(pLevel.getBlockEntity(pPos) instanceof TrinketTableBlockEntity blockEntity && !blockEntity.itemHandler.getStackInSlot(1).isEmpty()) {
+            pLevel.addParticle(new ItemParticleOption(ParticleTypes.ITEM, blockEntity.itemHandler.getStackInSlot(1)),
                     xPos + xOffsets, yPos + yOffset, zPos + zOffset, 0.0, 0.0, 0.0);
         }
     }

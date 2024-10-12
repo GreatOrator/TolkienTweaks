@@ -12,6 +12,7 @@ import com.greatorator.tolkienmobs.init.TolkienParticleTypes;
 import com.greatorator.tolkienmobs.network.PacketHandler;
 import com.greatorator.tolkienmobs.particle.LeafParticle;
 import com.greatorator.tolkienmobs.particle.provider.TolkienParticleProvider;
+import com.greatorator.tolkienmobs.util.TolkienItemProperties;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -50,7 +51,6 @@ public class TolkienMobsMain {
     /*
      TODO
       -Fix Rendering of Coin Pouch and Key Ring States
-      -Bows Implemented
       -Boats Implemented
       -Projectiles Implemented
       -Biomes
@@ -60,6 +60,11 @@ public class TolkienMobsMain {
       -Functional Blocks
         -Fireplace Recipes
         -Trinket Table Recipes
+        -Backpack
+            -Upgrade System
+            -Fluid Handling
+            -Sleeping Bag deploy
+            -Campfire Deploy
       -Entities
         -POI working for villagers
         -Spawn Eggs
@@ -180,6 +185,8 @@ public class TolkienMobsMain {
                 ItemBlockRenderTypes.setRenderLayer(TolkienFluids.MITHRIL_FLOWING.get(), RenderType.translucent());
                 ItemBlockRenderTypes.setRenderLayer(TolkienFluids.MORGULIRON_FLOWING.get(), RenderType.translucent());
             });
+
+            TolkienItemProperties.addCustomItemProperties();
         }
 
         @SubscribeEvent
@@ -189,6 +196,7 @@ public class TolkienMobsMain {
             event.register(TolkienContainers.KEY_ITEM_CONTAINER.get(), KeyItemScreen::new);
             event.register(TolkienContainers.KEY_CODE_CONTAINER.get(), KeyCodeScreen::new);
             event.register(TolkienContainers.TRINKET_TABLE_CONTAINER.get(), TrinketTableScreen::new);
+            event.register(TolkienContainers.FIREPLACE_CONTAINER.get(), FireplaceScreen::new);
             event.register(TolkienContainers.PIGGY_BANK_CONTAINER.get(), PiggyBankScreen::new);
             event.register(TolkienContainers.BACKPACK_CONTAINER.get(), BackpackBlockScreen::new);
         }

@@ -1075,7 +1075,7 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> WALL_MUSHROOM_RED = registerBlock("wall_mushroom_red", () -> new WallMushroomRedBlock(BlockBehaviour.Properties.of().noCollission().instabreak().sound(SoundType.GRASS).strength(0.2F).dynamicShape()));
     public static final DeferredBlock<Block> WALL_MUSHROOM_BROWN = registerBlock("wall_mushroom_brown", () -> new WallMushroomBrownBlock(BlockBehaviour.Properties.of().noCollission().instabreak().sound(SoundType.GRASS).strength(0.2F).dynamicShape()));
     public static final DeferredBlock<Block> TRINKET_TABLE = registerBlock("trinket_table", () -> new TrinketTableBlock(BlockBehaviour.Properties.of().strength(3.5F, 3.5F).requiresCorrectToolForDrops().noOcclusion().sound(SoundType.STONE)));
-    public static final DeferredBlock<Block> FIREPLACE = registerBlock("fireplace", () -> new FireplaceBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().sound(SoundType.STONE).strength(5f, 6f).lightLevel((state) -> state.getValue(LIT) ? 15:0)));
+    public static final DeferredBlock<Block> FIREPLACE = registerBlock("fireplace", () -> new FireplaceBlock(true, BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().sound(SoundType.STONE).strength(5f, 6f).lightLevel((state) -> state.getValue(LIT) ? 15:0)));
     public static final DeferredBlock<Block> PIGGYBANK = registerBlock("block_piggybank", () -> new PiggyBankBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().strength(5f, 6f)));
     public static final DeferredBlock<Block> BACKPACK = registerBlock("backpack", () -> new BackpackBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().strength(1f, 1f)));
     public static final DeferredBlock<Block> CHAMELEON_BLOCK = registerBlock("chameleon_block", () -> new ChameleonBlock(BlockBehaviour.Properties.of().noCollission().noOcclusion()));
@@ -1135,6 +1135,9 @@ public class TolkienBlocks {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TrinketTableBlockEntity>> TRINKET_TABLE_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("trinket_table", () ->
                     BlockEntityType.Builder.of(TrinketTableBlockEntity::new, TRINKET_TABLE.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FireplaceBlockEntity>> FIREPLACE_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("fireplace", () ->
+                    BlockEntityType.Builder.of(FireplaceBlockEntity::new, FIREPLACE.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PiggyBankBlockEntity>> PIGGY_BANK_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("block_piggybank", () ->
                     BlockEntityType.Builder.of(PiggyBankBlockEntity::new, PIGGYBANK.get()).build(null));

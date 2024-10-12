@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.init;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
+import com.greatorator.tolkienmobs.recipe.FireplaceRecipe;
 import com.greatorator.tolkienmobs.recipe.TrinketRecipe;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.Recipe;
@@ -17,6 +18,7 @@ public class TolkienRecipesTypes {
             .create(Registries.RECIPE_TYPE, MODID);
 
     public static final RecipeType<TrinketRecipe> TRINKET_TABLE = register("trinket");
+    public static final RecipeType<FireplaceRecipe> FIREPLACE = register("fireplace");
 
     private static <T extends Recipe<?>> RecipeType<T> register(String id) {
         RecipeType<T> type = RecipeType.simple(TolkienMobsMain.resLoc(id));

@@ -25,6 +25,7 @@ public class TolkienContainers {
             () -> IMenuTypeExtension.create((windowId, inv, data) -> new KeyCodeContainer(windowId, inv, inv.player, data)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<TrinketTableContainer>> TRINKET_TABLE_CONTAINER = registerMenuType("trinket_table_container", TrinketTableContainer::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<FireplaceContainer>> FIREPLACE_CONTAINER = registerMenuType("fireplace_container", FireplaceContainer::new);
     public static final DeferredHolder<MenuType<?>, MenuType<PiggyBankContainer>> PIGGY_BANK_CONTAINER = registerMenuType("block_piggybank_container", PiggyBankContainer::new);
     public static final DeferredHolder<MenuType<?>, MenuType<BackpackBlockContainer>> BACKPACK_CONTAINER = registerMenuType("backpack_container", BackpackBlockContainer::new);
 

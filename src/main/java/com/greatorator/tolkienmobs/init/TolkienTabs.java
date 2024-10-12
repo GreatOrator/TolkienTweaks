@@ -676,6 +676,8 @@ public class TolkienTabs {
                         output.accept(TolkienItems.HOE_AMMOLITE);
                         output.accept(TolkienItems.SHEARS_AMMOLITE);
                         output.accept(TolkienItems.AMMOLITE_HORSE_ARMOR);
+                        output.accept(TolkienItems.ELVEN_BOW);
+                        output.accept(TolkienItems.URUK_BOW);
                         output.accept(TolkienItems.DWARVEN_HAMMER);
                         output.accept(TolkienItems.HYPE_HORN);
                         output.accept(TolkienItems.RECORD_EREBOR);

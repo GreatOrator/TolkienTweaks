@@ -5,10 +5,7 @@ import com.greatorator.tolkienmobs.block.custom.entity.layers.TolkienModelLayers
 import com.greatorator.tolkienmobs.block.custom.entity.model.LightningBugModel;
 import com.greatorator.tolkienmobs.block.custom.entity.model.LocustModel;
 import com.greatorator.tolkienmobs.block.custom.entity.model.PatchModelLoader;
-import com.greatorator.tolkienmobs.block.custom.entity.renderer.LightningBugRenderer;
-import com.greatorator.tolkienmobs.block.custom.entity.renderer.LocustRenderer;
-import com.greatorator.tolkienmobs.block.custom.entity.renderer.PlacardRenderer;
-import com.greatorator.tolkienmobs.block.custom.entity.renderer.TrinketTableRenderer;
+import com.greatorator.tolkienmobs.block.custom.entity.renderer.*;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.item.custom.CoinPouchItem;
 import com.greatorator.tolkienmobs.item.custom.KeyRingItem;
@@ -38,6 +35,7 @@ public class TolkienRegistration {
         event.registerBlockEntityRenderer(TolkienBlocks.LOCUST_BLOCK_ENTITY.get(), LocustRenderer::new);
         event.registerBlockEntityRenderer(TolkienBlocks.PLACARD_BLOCK_ENTITY.get(), PlacardRenderer::new);
         event.registerBlockEntityRenderer(TolkienBlocks.TRINKET_TABLE_BLOCK_ENTITY.get(), TrinketTableRenderer::new);
+        event.registerBlockEntityRenderer(TolkienBlocks.FIREPLACE_BLOCK_ENTITY.get(), FireplaceRenderer::new);
         event.registerBlockEntityRenderer(TolkienBlocks.TOLKIEN_SIGN_BLOCK_ENTITY.get(), SignRenderer::new);
         event.registerBlockEntityRenderer(TolkienBlocks.TOLKIEN_HANGING_SIGN_BLOCK_ENTITY.get(), HangingSignRenderer::new);
     }
