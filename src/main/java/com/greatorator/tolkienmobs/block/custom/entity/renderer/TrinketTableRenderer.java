@@ -38,14 +38,11 @@ public class TrinketTableRenderer implements BlockEntityRenderer<TrinketTableBlo
         mStack.pushPose();
 
         switch (facing) {
-            case NORTH:
+            case NORTH, WEST:
                 mStack.mulPose(new Quaternionf().rotationXYZ(0, 0, 90));
                 break;
             case SOUTH:
                 mStack.mulPose(new Quaternionf().rotationXYZ(0, 0, -90));
-                break;
-            case WEST:
-                mStack.mulPose(new Quaternionf().rotationXYZ(0, 0, 90));
                 break;
             case EAST:
                 mStack.mulPose(new Quaternionf().rotationXYZ(0, 0, 180));

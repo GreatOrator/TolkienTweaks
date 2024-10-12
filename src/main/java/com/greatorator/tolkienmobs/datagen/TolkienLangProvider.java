@@ -186,6 +186,8 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addItem(TolkienItems.LEGGINGS_AMMOLITE, "Ammolite Leggings");
             this.addItem(TolkienItems.BOOTS_AMMOLITE, "Ammolite Boots");
             this.addItem(TolkienItems.AMMOLITE_HORSE_ARMOR, "Ammolite Horse Armor");
+            this.addItem(TolkienItems.ELVEN_BOW, "Elven Bow");
+            this.addItem(TolkienItems.URUK_BOW, "Uruk Bow");
             this.addMusicDisc(TolkienItems.RECORD_EREBOR, "SnowShepherd - All That Glitters in Erebor");
             this.addMusicDisc(TolkienItems.RECORD_HOBBITS, "Harry Murrell - Concerning Hobbits");
             this.addMusicDisc(TolkienItems.RECORD_MINASTIRITH, "SnowShepherd - Grandeur of Minas Tirith");
@@ -291,6 +293,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addCodeScreen(TolkienItems.MASTER_KEY.get(), "Master Key - Code");
             this.addItemScreen(TolkienItems.COIN_POUCH.get(), "Coin Pouch");
             this.addBlockScreen(TolkienBlocks.TRINKET_TABLE.get(), "Trinket Crafting");
+            this.addBlockScreen(TolkienBlocks.FIREPLACE.get(), "Fireplace");
             this.addBlockScreen(TolkienBlocks.PIGGYBANK.get(), "Piggy Bank");
             this.addBlockScreen(TolkienBlocks.BACKPACK.get(), "Adventurer's Backpack");
             this.add("screen.tolkienmobs.namefieldtext", "Enter Code");
