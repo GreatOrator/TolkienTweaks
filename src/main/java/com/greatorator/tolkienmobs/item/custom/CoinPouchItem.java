@@ -3,32 +3,29 @@ package com.greatorator.tolkienmobs.item.custom;
 import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.containers.CoinPouchContainer;
 import com.greatorator.tolkienmobs.containers.handlers.CoinPouchItemStackHandler;
-import com.greatorator.tolkienmobs.handler.data.CoinPouchContents;
 import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.greatorator.tolkienmobs.init.TolkienTags;
+import com.greatorator.tolkienmobs.item.TolkienCoinItem;
+import com.greatorator.tolkienmobs.item.TolkienItem;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.MutableDataComponentHolder;
 import net.neoforged.neoforge.items.ComponentItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
-public class CoinPouchItem extends Item {
-    public static final ResourceLocation FILLED_PREDICATE = TolkienMobsMain.resLoc("fullness");
+public class CoinPouchItem extends TolkienItem {
     public CoinPouchItem(Properties properties) {
         super(properties);
     }
@@ -36,6 +33,7 @@ public class CoinPouchItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
+
         if (level.isClientSide()) return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
 
         if (player.isShiftKeyDown()) {
@@ -100,15 +98,6 @@ public class CoinPouchItem extends Item {
         return stack.is(TolkienTags.Items.COINS);
     }
 
-    public static UUID getUUID(ItemStack stack) {
-        if (!stack.has(TolkienDataComponents.COIN_POUCH_UUID)) {
-            UUID newId = UUID.randomUUID();
-            stack.set(TolkienDataComponents.COIN_POUCH_UUID, newId);
-            return newId;
-        }
-        return stack.get(TolkienDataComponents.COIN_POUCH_UUID);
-    }
-
     @Override
     public boolean isFoil(ItemStack itemStack) {
         return getActive(itemStack);
@@ -126,15 +115,13 @@ public class CoinPouchItem extends Item {
         return active;
     }
 
-    @Nullable
-    private static IItemHandler getItemStackHandlerCoinPouch(ItemStack itemStack) {
-        IItemHandler optional = itemStack.getCapability(Capabilities.ItemHandler.ITEM);
-        return optional;
-    }
-
-    public static float getFullnessPropertyOverride(ItemStack itemStack) {
-        CoinPouchContents coinPouchContents = itemStack.getOrDefault(TolkienDataComponents.COIN_POUCH_CONTENTS, CoinPouchContents.EMPTY);
-        return coinPouchContents.weight().floatValue();
-
+    public static float getCoinCount(ItemStack stack) {
+        ComponentItemHandler handler = new ComponentItemHandler(stack, TolkienDataComponents.ITEMSTACK_HANDLER.get(), CoinPouchContainer.SLOTS);
+        int count = 0;
+        int j;
+        for (j = 0; j < handler.getSlots(); j++) {
+            count+=handler.getStackInSlot(j).getCount();
+        }
+        return count / (float)(handler.getSlots() * 64);
     }
 }

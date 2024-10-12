@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.init;
 
-import com.greatorator.tolkienmobs.handler.data.CoinPouchContents;
 import com.greatorator.tolkienmobs.handler.data.TrinketComponent;
 import com.greatorator.tolkienmobs.item.*;
 import com.greatorator.tolkienmobs.item.custom.*;
@@ -351,7 +350,7 @@ public class TolkienItems {
     public static DeferredItem<Item> MASTER_KEY = ITEMS.register("master_key", () -> new KeyItem(new Item.Properties().stacksTo(1)));
 
         // Pouch & Key Ring
-    public static final DeferredItem<Item> COIN_POUCH = ITEMS.register("coin_pouch", () -> new CoinPouchItem(new Item.Properties().stacksTo(1).component(TolkienDataComponents.COIN_POUCH_CONTENTS, CoinPouchContents.EMPTY)));
+    public static final DeferredItem<Item> COIN_POUCH = ITEMS.register("coin_pouch", () -> new CoinPouchItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> KEY_RING = ITEMS.register("key_ring", () -> new KeyRingItem(new Item.Properties().stacksTo(1)));
 
         // Trinkets

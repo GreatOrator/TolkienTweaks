@@ -7,27 +7,27 @@
   "overrides": [
     { "model": "tolkienmobs:item/coin_pouch",
       "predicate": {
-        "fullness": 0
+        "fullness": 0.0
       }
     },
-    { "model": "tolkienmobs:item/coin_pouch_fullness1",
+    { "model": "tolkienmobs:item/coin_pouch_fullness_0",
       "predicate": {
-        "fullness": 1
+        "fullness": 0.01
       }
     },
-    { "model": "tolkienmobs:item/coin_pouch_fullness2",
+    { "model": "tolkienmobs:item/coin_pouch_fullness_1",
       "predicate": {
-        "fullness": 5
+        "fullness": 0.33
       }
     },
-    { "model": "tolkienmobs:item/coin_pouch_fullness3",
+    { "model": "tolkienmobs:item/coin_pouch_fullness_2",
       "predicate": {
-        "fullness": 10
+        "fullness": 0.66
       }
     },
-    { "model": "tolkienmobs:item/coin_pouch_fullness4",
+    { "model": "tolkienmobs:item/coin_pouch_fullness_3",
       "predicate": {
-        "fullness": 15
+        "fullness": 0.99
       }
     }
   ]
