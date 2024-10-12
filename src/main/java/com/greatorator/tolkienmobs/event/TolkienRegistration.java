@@ -26,7 +26,6 @@ public class TolkienRegistration {
         bus.addListener(TolkienRegistration::registerEntityRenderers);
         bus.addListener(TolkienRegistration::registerLayerDefinitions);
         bus.addListener(TolkienRegistration::registerModelLoaders);
-        bus.addListener(TolkienRegistration::registerPropertyOverride);
     }
 
     private static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
@@ -48,10 +47,5 @@ public class TolkienRegistration {
         //Block Models
         event.registerLayerDefinition(TolkienModelLayers.LIGHTNINGBUG, LightningBugModel::create);
         event.registerLayerDefinition(TolkienModelLayers.LOCUST, LocustModel::create);
-    }
-
-    private static void registerPropertyOverride(ModelEvent.ModifyBakingResult event) {
-        ItemProperties.register(COIN_POUCH.get(), CoinPouchItem.FILLED_PREDICATE, (stack, level, entity, seed) -> CoinPouchItem.getFullnessPropertyOverride(stack));
-//        ItemProperties.register(KEY_RING.get(), ResourceLocation.parse("fullness"), KeyRingItem::getFullnessPropertyOverride);
     }
 }

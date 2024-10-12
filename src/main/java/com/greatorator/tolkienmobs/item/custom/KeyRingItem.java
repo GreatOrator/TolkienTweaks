@@ -1,16 +1,16 @@
 package com.greatorator.tolkienmobs.item.custom;
 
+import com.greatorator.tolkienmobs.containers.CoinPouchContainer;
 import com.greatorator.tolkienmobs.containers.KeyRingContainer;
 import com.greatorator.tolkienmobs.containers.handlers.KeyRingItemStackHandler;
 import com.greatorator.tolkienmobs.init.TolkienDataComponents;
-import net.minecraft.client.multiplayer.ClientLevel;
+import com.greatorator.tolkienmobs.init.TolkienTags;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -46,10 +46,6 @@ public class KeyRingItem extends Item {
         }));
 
         return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
-    }
-
-    public KeyRingItemStackHandler getItemHandler(ItemStack stack) {
-        return new KeyRingItemStackHandler(KeyRingContainer.SLOTS, stack);
     }
 
     @Override
@@ -96,16 +92,7 @@ public class KeyRingItem extends Item {
     }
 
     private static boolean isValidItem(ItemStack stack) {
-        return true;
-    }
-
-    public static UUID getUUID(ItemStack stack) {
-        if (!stack.has(TolkienDataComponents.KEY_RING_UUID)) {
-            UUID newId = UUID.randomUUID();
-            stack.set(TolkienDataComponents.KEY_RING_UUID, newId);
-            return newId;
-        }
-        return stack.get(TolkienDataComponents.KEY_RING_UUID);
+        return stack.is(TolkienTags.Items.KEYS);
     }
 
     @Override
@@ -125,21 +112,13 @@ public class KeyRingItem extends Item {
         return active;
     }
 
-    @Nullable
-    private static IItemHandler getItemStackHandlerCoinPouch(ItemStack itemStack) {
-        IItemHandler optional = itemStack.getCapability(Capabilities.ItemHandler.ITEM);
-        return optional;
-    }
-
-    public static float getFullnessPropertyOverride(ItemStack itemStack, @Nullable ClientLevel world, @Nullable LivingEntity livingEntity, int i) {
-        IItemHandler keyRing = getItemStackHandlerCoinPouch(itemStack);
-        if (keyRing == null) return 0;
+    public static float getKeyCount(ItemStack stack) {
+        ComponentItemHandler handler = new ComponentItemHandler(stack, TolkienDataComponents.ITEMSTACK_HANDLER.get(), KeyRingContainer.SLOTS);
         int count = 0;
-        int j = i;
-        for (j = 0; j < keyRing.getSlots(); j++) {
-            count+=keyRing.getStackInSlot(j).getCount();
+        int j;
+        for (j = 0; j < handler.getSlots(); j++) {
+            count+=handler.getStackInSlot(j).getCount();
         }
-        float fractionEmpty = count / (float)(keyRing.getSlots());
-        return 0.0F + fractionEmpty;
+        return count / (float)(handler.getSlots());
     }
 }

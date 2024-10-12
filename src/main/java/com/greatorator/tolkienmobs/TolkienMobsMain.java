@@ -50,7 +50,6 @@ public class TolkienMobsMain {
 
     /*
      TODO
-      -Fix Rendering of Coin Pouch and Key Ring States
       -Boats Implemented
       -Projectiles Implemented
       -Biomes
