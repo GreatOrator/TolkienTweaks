@@ -27,10 +27,10 @@ public class LockableDoubleChestBlock extends TolkienBlock {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
 
-    protected static final VoxelShape LOCKABLE_SHAPE_N = Block.box(-7.0D, 0.0D, 1.0D, 23.0D, 15.0D, 15.0D);
-    protected static final VoxelShape LOCKABLE_SHAPE_S = Block.box(1.0D, 0.0D, -7.0D, 15.0D, 15.0D, 23.0D);
-    protected static final VoxelShape LOCKABLE_SHAPE_E = Block.box(1.0D, 0.0D, -7.0D, 15.0D, 15.0D, 23.0D);
-    protected static final VoxelShape LOCKABLE_SHAPE_W = Block.box(-7.0D, 0.0D, 1.0D, 23.0D, 15.0D, 15.0D);
+    protected static final VoxelShape LOCKABLE_SHAPE_N = Block.box(-15.0D, 0.0D, 1.0D, 15.0D, 15.0D, 15.0D);
+    protected static final VoxelShape LOCKABLE_SHAPE_S = Block.box(1.0D, 0.0D, 1.0D, 15.0D, 15.0D, 31.0D);
+    protected static final VoxelShape LOCKABLE_SHAPE_W = Block.box(1.0D, 0.0D, 1.0D, 31.0D, 15.0D, 15.0D);
+    protected static final VoxelShape LOCKABLE_SHAPE_E = Block.box(1.0D, 0.0D, -15.0D, 15.0D, 15.0D, 15.0D);
 
     public LockableDoubleChestBlock(Properties properties) {
         super(properties);
