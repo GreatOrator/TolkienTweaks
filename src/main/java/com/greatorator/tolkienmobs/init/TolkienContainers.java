@@ -27,6 +27,7 @@ public class TolkienContainers {
     public static final DeferredHolder<MenuType<?>, MenuType<TrinketTableContainer>> TRINKET_TABLE_CONTAINER = registerMenuType("trinket_table_container", TrinketTableContainer::new);
     public static final DeferredHolder<MenuType<?>, MenuType<FireplaceContainer>> FIREPLACE_CONTAINER = registerMenuType("fireplace_container", FireplaceContainer::new);
     public static final DeferredHolder<MenuType<?>, MenuType<PiggyBankContainer>> PIGGY_BANK_CONTAINER = registerMenuType("block_piggybank_container", PiggyBankContainer::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<LockableChestContainer>> LOCKABLE_CHEST_CONTAINER = registerMenuType("lockable_chest_container", LockableChestContainer::new);
     public static final DeferredHolder<MenuType<?>, MenuType<BackpackBlockContainer>> BACKPACK_CONTAINER = registerMenuType("backpack_container", BackpackBlockContainer::new);
 
     private static <T extends AbstractContainerMenu>DeferredHolder<MenuType<?>, MenuType<T>> registerMenuType(String name,

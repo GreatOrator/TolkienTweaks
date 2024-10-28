@@ -692,6 +692,8 @@ public class TolkienTabs {
                         output.accept(TolkienItems.RECORD_FUMBLE);
                         output.accept(TolkienItems.RECORD_EDORAS);
                         output.accept(TolkienItems.RECORD_WBATTLE);
+                        output.accept(TolkienItems.ITEM_DEV_TOOL);
+                        output.accept(TolkienItems.ITEM_DEV_DEBUG_TOOL);
                     }).build());
 
     public static final Supplier<CreativeModeTab> TOLKIEN_TRINKET = CREATIVE_MODE_TAB.register("tolkienmobs_tab_trinket",

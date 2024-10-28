@@ -161,6 +161,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addItem(TolkienItems.COIN_POUCH, "Coin Pouch");
             this.addItem(TolkienItems.KEY_RING, "Key Ring");
             this.addItemWithLore(TolkienItems.ITEM_DEV_TOOL.get(), "Dev Tool", "Use to temporarily reset camo blocks to default texture");
+            this.addItemWithLore(TolkienItems.ITEM_DEV_DEBUG_TOOL.get(), "Dev Tool - Debug", "Used to reset certain blocks");
             this.addItemWithLore(TolkienItems.HOBBIT_RING.get(), "Hobbit Ring of Growth", "Gift from the elves to enhance farming");
             this.addItemWithLore(TolkienItems.SWORD_WITCHKING.get(), "§4Sword of the Witch-king§r", "Forged in fear, the powerful weapon of the Witch-king");
             this.addItemWithLore(TolkienItems.SWORD_URUK.get(), "Uruk Sword", "Forged in fire beneath Isengard");
@@ -297,6 +298,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addBlockScreen(TolkienBlocks.FIREPLACE.get(), "Fireplace");
             this.addBlockScreen(TolkienBlocks.PIGGYBANK.get(), "Piggy Bank");
             this.addBlockScreen(TolkienBlocks.BACKPACK.get(), "Adventurer's Backpack");
+            this.addBlockScreen(TolkienBlocks.LOCKABLE_CHEST_BLOCK.get(), "Lockable Chest");
             this.add("screen.tolkienmobs.namefieldtext", "Enter Code");
             this.add("screen.tolkienmobs.keycodeplaceholder", "No Code Found");
             this.add("screen.tolkienmobs.keyuses", "-1");
