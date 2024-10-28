@@ -290,9 +290,9 @@ public class TolkienItems {
     public static final DeferredItem<Item> URUK_BOW = ITEMS.register("uruk_bow", () -> new BowItem(new Item.Properties().durability(800).stacksTo(1)));
 
     public static final DeferredItem<Item> ITEM_DEV_TOOL = ITEMS.register("item_dev_tool", () -> new TolkienItem(new Item.Properties().stacksTo(1)).setEffectOverride().setHasLore());
-//    public static RegistryObject<Item> ITEM_DEV_DEBUG_TOOL = ITEMS.register("item_dev_debug_tool", () -> new BaseItem(new Item.Properties().stacksTo(1).tab(toolsGroup)).setEffectOverride().setHasLore());
-//    public static RegistryObject<Item> ARDA_STAFF = ITEMS.register("arda_staff", () -> new CatalystItem(new Item.Properties().stacksTo(1).tab(toolsGroup).rarity(Rarity.RARE)).setHasLore());
-//    public static RegistryObject<Item> MORGUL_CRYSTAL = ITEMS.register("morgul_crystal", () -> new MorgulCrystalItem(new Item.Properties().stacksTo(1).tab(decoGroup)));
+    public static final DeferredItem<Item> ITEM_DEV_DEBUG_TOOL = ITEMS.register("item_dev_debug_tool", () -> new TolkienItem(new Item.Properties().stacksTo(1)).setEffectOverride().setHasLore());
+//    public final DeferredItem<Item> ARDA_STAFF = ITEMS.register("arda_staff", () -> new CatalystItem(new Item.Properties().stacksTo(1).tab(toolsGroup).rarity(Rarity.RARE)).setHasLore());
+//    public final DeferredItem<Item> MORGUL_CRYSTAL = ITEMS.register("morgul_crystal", () -> new MorgulCrystalItem(new Item.Properties().stacksTo(1).tab(decoGroup)));
 
         // Projectiles
 //    public static RegistryObject<ArrowItem> GALADHRIM_ARROW = ITEMS.register("ammo_galadhrim_arrow", () -> new GaladhrimArrowItem((new Item.Properties()).tab(toolsGroup)));
@@ -362,9 +362,6 @@ public class TolkienItems {
     public static final DeferredItem<Item> TRINKET_HAT = ITEMS.register("trinket_hat", () -> new TrinketItem(new Item.Properties().component(TolkienDataComponents.POTION_CONTENTS, TrinketComponent.EMPTY).stacksTo(1)));
     public static final DeferredItem<Item> TRINKET_CLOAK = ITEMS.register("trinket_cloak", () -> new TrinketItem(new Item.Properties().component(TolkienDataComponents.POTION_CONTENTS, TrinketComponent.EMPTY).stacksTo(1)));
 
-    //Enchants
-    //Biomes
-    //Villagers
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

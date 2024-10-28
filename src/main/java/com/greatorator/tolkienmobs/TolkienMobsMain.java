@@ -56,7 +56,18 @@ public class TolkienMobsMain {
         -Structures
       -Arda Portal
       -Enchantments
+      -Torches won't go on walls
+      -Items
+        -Arda Staff
+        -Dev Tools
       -Functional Blocks
+        -Morgul Crystal
+        -Chameleon Blocks
+        -Keystone Block
+        -Milestone
+        -Fluid Block
+        -Spawner
+        -Lockable Chests
         -Fireplace Recipes
         -Trinket Table Recipes
         -Backpack
@@ -198,6 +209,7 @@ public class TolkienMobsMain {
             event.register(TolkienContainers.FIREPLACE_CONTAINER.get(), FireplaceScreen::new);
             event.register(TolkienContainers.PIGGY_BANK_CONTAINER.get(), PiggyBankScreen::new);
             event.register(TolkienContainers.BACKPACK_CONTAINER.get(), BackpackBlockScreen::new);
+            event.register(TolkienContainers.LOCKABLE_CHEST_CONTAINER.get(), LockableChestScreen::new);
         }
 
         @SubscribeEvent

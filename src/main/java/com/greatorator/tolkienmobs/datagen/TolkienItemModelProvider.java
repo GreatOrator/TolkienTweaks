@@ -357,12 +357,14 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         trimmedArmorItem(TolkienItems.BOOTS_AMMOLITE);
         basicItem(TolkienItems.AMMOLITE_HORSE_ARMOR.get());
 
+        basicItem(TolkienItems.ITEM_DEV_TOOL.get());
+        basicItem(TolkienItems.ITEM_DEV_DEBUG_TOOL.get());
+
         basicItem(TolkienItems.BRONZE_KEY.get());
         basicItem(TolkienItems.SILVER_KEY.get());
         basicItem(TolkienItems.GOLD_KEY.get());
         basicItem(TolkienItems.MITHRIL_KEY.get());
         basicItem(TolkienItems.MASTER_KEY.get());
-        basicItem(TolkienItems.ITEM_DEV_TOOL.get());
     }
 
     private ItemModelBuilder generated(String name, ResourceLocation... layers) {
