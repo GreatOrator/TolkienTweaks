@@ -3,7 +3,7 @@ package com.greatorator.tolkienmobs.init;
 import com.greatorator.tolkienmobs.block.*;
 import com.greatorator.tolkienmobs.block.custom.*;
 import com.greatorator.tolkienmobs.block.custom.entity.*;
-import com.greatorator.tolkienmobs.datagen.world.TolkienWorldConfigurationProvider;
+import com.greatorator.tolkienmobs.world.TolkienConfiguredFeatures;
 import com.greatorator.tolkienmobs.handler.capability.TolkienFluidTank;
 import com.greatorator.tolkienmobs.handler.interfaces.TolkienRegistry;
 import com.greatorator.tolkienmobs.world.components.feature.tree.TolkienTreeGrowers;
@@ -1019,9 +1019,9 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> SAPLING_DWARVEN_MAPLE = registerBlock("sapling_dwarven_maple",
             () -> new TolkienSaplingBlock(TolkienTreeGrowers.DWARVEN_MAPLE, BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_SAPLING), Blocks.GRASS_BLOCK));
     public static final DeferredBlock<Block> MUSHROOM_DECAY_BLOOM = registerBlock("mushroom_decay_bloom",
-            () -> new MushroomsBlock(TolkienWorldConfigurationProvider.MUSHROOM_DECAY_BLOOM_KEY, BlockBehaviour.Properties.ofFullCopy(Blocks.BROWN_MUSHROOM)));
+            () -> new MushroomsBlock(TolkienConfiguredFeatures.MUSHROOM_DECAY_BLOOM_KEY, BlockBehaviour.Properties.ofFullCopy(Blocks.BROWN_MUSHROOM)));
     public static final DeferredBlock<Block> MUSHROOM_BLOOM_DECAY = registerBlock("mushroom_bloom_decay",
-            () -> new MushroomsBlock(TolkienWorldConfigurationProvider.MUSHROOM_BLOOM_DECAY_KEY, BlockBehaviour.Properties.ofFullCopy(Blocks.RED_MUSHROOM)));
+            () -> new MushroomsBlock(TolkienConfiguredFeatures.MUSHROOM_BLOOM_DECAY_KEY, BlockBehaviour.Properties.ofFullCopy(Blocks.RED_MUSHROOM)));
     public static final DeferredBlock<Block> BLOCK_DECAY_BLOOM = registerBlock("block_decay_bloom", () -> new HugeMushroomBlock(BlockBehaviour.Properties.of().noCollission().instabreak().sound(SoundType.WOOD).strength(0.2F)));
     public static final DeferredBlock<Block> BLOCK_BLOOM_DECAY = registerBlock("block_bloom_decay", () -> new HugeMushroomBlock(BlockBehaviour.Properties.of().noCollission().instabreak().sound(SoundType.WOOD).strength(0.2F)));
     public static final DeferredBlock<Block> LIVING_ROOTS = registerBlock("living_roots", () -> new Block(BlockBehaviour.Properties.of().noCollission().ignitedByLava().instabreak().sound(SoundType.GRASS).strength(2.0F, 3.0F)));
@@ -1147,6 +1147,9 @@ public class TolkienBlocks {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BackpackBlockEntity>> BACKPACK_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("backpack", () ->
                     BlockEntityType.Builder.of(BackpackBlockEntity::new, BACKPACK.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CamoSpawnerBlockEntity>> CAMO_SPAWNER_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("camo_spawner", () ->
+                    BlockEntityType.Builder.of(CamoSpawnerBlockEntity::new, CAMO_SPAWNER_BLOCK.get()).build(null));
 
         // Attachment Types
     public static final Supplier<AttachmentType<ItemStackHandler>> BACKPACK_HANDLER = ATTACHMENT_TYPES.register(

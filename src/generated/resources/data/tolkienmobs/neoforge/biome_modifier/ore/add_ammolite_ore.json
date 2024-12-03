@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "minecraft:dark_forest",
+  "features": "tolkienmobs:ammolite_ore_placed",
+  "step": "underground_ores"
+}
