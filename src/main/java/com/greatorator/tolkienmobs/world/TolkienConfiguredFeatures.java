@@ -1,8 +1,7 @@
-package com.greatorator.tolkienmobs.datagen.world;
+package com.greatorator.tolkienmobs.world;
 
 import com.google.common.collect.ImmutableList;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
-import com.greatorator.tolkienmobs.init.TolkienFeatureModifiers;
 import com.greatorator.tolkienmobs.init.TolkienFeatures;
 import com.greatorator.tolkienmobs.world.components.config.RootConfig;
 import com.greatorator.tolkienmobs.world.components.feature.config.HollowLogConfig;
@@ -15,12 +14,14 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 import net.minecraft.world.level.levelgen.feature.featuresize.ThreeLayersFeatureSize;
 import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize;
@@ -31,47 +32,92 @@ import net.minecraft.world.level.levelgen.feature.treedecorators.LeaveVineDecora
 import net.minecraft.world.level.levelgen.feature.treedecorators.TrunkVineDecorator;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.FancyTrunkPlacer;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.StraightTrunkPlacer;
+import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTest;
+import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
+import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 
+import java.util.List;
 import java.util.OptionalInt;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class TolkienWorldConfigurationProvider {
+public class TolkienConfiguredFeatures {
     private final static int LEAF_SHAG_FACTOR = 24;
     private static final int canopyDistancing = 5;
 
-    public static final ResourceKey<ConfiguredFeature<?, ?>> MALLORN_KEY = registerConfiguredKey("mallorn");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> MIRKWOOD_KEY = registerConfiguredKey("mirkwood");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> FANGORNOAK_KEY = registerConfiguredKey("fangornoak");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> OLDFORESTOAK_KEY = registerConfiguredKey("oldforestoak");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> CULUMALDA_KEY = registerConfiguredKey("culumalda");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> LEBETHRON_KEY = registerConfiguredKey("lebethron");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> CULUMALDA_FIRIEN_KEY = registerConfiguredKey("culumalda_firien");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> LEBETHRON_FIRIEN_KEY = registerConfiguredKey("lebethron_firien");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> DEADWOOD_KEY = registerConfiguredKey("deadwood");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> DWARVEN_MAPLE_KEY = registerConfiguredKey("dwarven_maple");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> MUSHROOM_BLOOM_DECAY_KEY = registerConfiguredKey("mushroom_bloom_decay");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> MUSHROOM_DECAY_BLOOM_KEY = registerConfiguredKey("mushroom_decay_bloom");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> MALLORN_FALLEN_LEAVES = registerConfiguredKey("mallorn_fallen_leaves");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> MIRKWOOD_FALLEN_LEAVES = registerConfiguredKey("mirkwood_fallen_leaves");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> CULUMALDA_FALLEN_LEAVES = registerConfiguredKey("culumalda_fallen_leaves");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> LEBETHRON_FALLEN_LEAVES = registerConfiguredKey("lebethron_fallen_leaves");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> FANGORNOAK_FALLEN_LEAVES = registerConfiguredKey("fangornoak_fallen_leaves");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> DWARVEN_MAPLE_FALLEN_LEAVES = registerConfiguredKey("dwarven_maple_fallen_leaves");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> WEBS = registerConfiguredKey("webs");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> STONE_SPIKE = registerConfiguredKey("stone_spike");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> MALLORN_SMALL_LOG = registerConfiguredKey("mallorn_small_log");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> MIRKWOOD_SMALL_LOG = registerConfiguredKey("mirkwood_small_log");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> CULUMALDA_SMALL_LOG = registerConfiguredKey("culumalda_small_log");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> LEBETHRON_SMALL_LOG = registerConfiguredKey("lebethron_small_log");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> FANGORNOAK_SMALL_LOG = registerConfiguredKey("fangornoak_small_log");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> DEADWOOD_SMALL_LOG = registerConfiguredKey("deadwood_small_log");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> DWARVEN_SMALL_LOG = registerConfiguredKey("dwarven_small_log");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> RANDOM_RUBBLE = registerConfiguredKey("random_rubble");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> ROCK_PILE = registerConfiguredKey("rock_pile");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> MALLORN_KEY = registerConfiguredKey("tree/mallorn");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> MIRKWOOD_KEY = registerConfiguredKey("tree/mirkwood");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> FANGORNOAK_KEY = registerConfiguredKey("tree/fangornoak");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> OLDFORESTOAK_KEY = registerConfiguredKey("tree/oldforestoak");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> CULUMALDA_KEY = registerConfiguredKey("tree/culumalda");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> LEBETHRON_KEY = registerConfiguredKey("tree/lebethron");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> CULUMALDA_FIRIEN_KEY = registerConfiguredKey("tree/culumalda_firien");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> LEBETHRON_FIRIEN_KEY = registerConfiguredKey("tree/lebethron_firien");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> DEADWOOD_KEY = registerConfiguredKey("tree/deadwood");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> DWARVEN_MAPLE_KEY = registerConfiguredKey("tree/dwarven_maple");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> MUSHROOM_BLOOM_DECAY_KEY = registerConfiguredKey("tree/mushroom_bloom_decay");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> MUSHROOM_DECAY_BLOOM_KEY = registerConfiguredKey("tree/mushroom_decay_bloom");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> MALLORN_FALLEN_LEAVES = registerConfiguredKey("ground/mallorn_fallen_leaves");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> MIRKWOOD_FALLEN_LEAVES = registerConfiguredKey("ground/mirkwood_fallen_leaves");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> CULUMALDA_FALLEN_LEAVES = registerConfiguredKey("ground/culumalda_fallen_leaves");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> LEBETHRON_FALLEN_LEAVES = registerConfiguredKey("ground/lebethron_fallen_leaves");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> FANGORNOAK_FALLEN_LEAVES = registerConfiguredKey("ground/fangornoak_fallen_leaves");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> DWARVEN_MAPLE_FALLEN_LEAVES = registerConfiguredKey("ground/dwarven_maple_fallen_leaves");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> WEBS = registerConfiguredKey("decoration/webs");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> STONE_SPIKE = registerConfiguredKey("ground/stone_spike");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> MALLORN_SMALL_LOG = registerConfiguredKey("ground/mallorn_small_log");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> MIRKWOOD_SMALL_LOG = registerConfiguredKey("ground/mirkwood_small_log");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> CULUMALDA_SMALL_LOG = registerConfiguredKey("ground/culumalda_small_log");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> LEBETHRON_SMALL_LOG = registerConfiguredKey("ground/lebethron_small_log");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> FANGORNOAK_SMALL_LOG = registerConfiguredKey("ground/fangornoak_small_log");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> DEADWOOD_SMALL_LOG = registerConfiguredKey("ground/deadwood_small_log");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> DWARVEN_SMALL_LOG = registerConfiguredKey("ground/dwarven_small_log");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> RANDOM_RUBBLE = registerConfiguredKey("ground/random_rubble");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> ROCK_PILE = registerConfiguredKey("decoration/rock_pile");
     public static final ResourceKey<ConfiguredFeature<?, ?>> WOOD_ROOTS_SPREAD = registerConfiguredKey("ore/wood_roots_spread");
 
+    public static final ResourceKey<ConfiguredFeature<?, ?>> OVERWORLD_ORE_MITHRIL_KEY = registerConfiguredKey("ore/ore_mithril");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> NETHER_ORE_MITHRIL_KEY = registerConfiguredKey("ore/nether_ore_mithril");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> END_ORE_MITHRIL_KEY = registerConfiguredKey("ore/end_ore_mithril");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> OVERWORLD_ORE_MORGULIRON_KEY = registerConfiguredKey("ore/ore_morguliron");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> NETHER_ORE_MORGULIRON_KEY = registerConfiguredKey("ore/nether_ore_morguliron");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> END_ORE_MORGULIRON_KEY = registerConfiguredKey("ore/end_ore_morguliron");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> OVERWORLD_ORE_AMMOLITE_KEY = registerConfiguredKey("ore/ore_ammolite");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> NETHER_ORE_AMMOLITE_KEY = registerConfiguredKey("ore/nether_ore_ammolite");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> END_ORE_AMMOLITE_KEY = registerConfiguredKey("ore/end_ore_ammolite");
+
     public static void bootstrap(BootstrapContext<ConfiguredFeature<?,?>> context) {
+        RuleTest stoneReplaceables = new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES);
+        RuleTest deepslateReplaceables = new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
+        RuleTest netherrackReplaceables = new BlockMatchTest(Blocks.NETHERRACK);
+        RuleTest endReplaceables = new BlockMatchTest(Blocks.END_STONE);
+
+        List<OreConfiguration.TargetBlockState> overworldMithrilOres = List.of(
+                OreConfiguration.target(stoneReplaceables, TolkienBlocks.ORE_MITHRIL.get().defaultBlockState()),
+                OreConfiguration.target(deepslateReplaceables, TolkienBlocks.ORE_DEEPSLATE_MITHRIL.get().defaultBlockState()));
+        List<OreConfiguration.TargetBlockState> overworldMorgulironOres = List.of(
+                OreConfiguration.target(stoneReplaceables, TolkienBlocks.ORE_MORGULIRON.get().defaultBlockState()),
+                OreConfiguration.target(deepslateReplaceables, TolkienBlocks.ORE_DEEPSLATE_MORGULIRON.get().defaultBlockState()));
+        List<OreConfiguration.TargetBlockState> overworldAmmoliteOres = List.of(
+                OreConfiguration.target(stoneReplaceables, TolkienBlocks.ORE_AMMOLITE.get().defaultBlockState()),
+                OreConfiguration.target(deepslateReplaceables, TolkienBlocks.ORE_DEEPSLATE_AMMOLITE.get().defaultBlockState()));
+
+        registerConfigured(context, OVERWORLD_ORE_MITHRIL_KEY, Feature.ORE, new OreConfiguration(overworldMithrilOres, 5));
+        registerConfigured(context, NETHER_ORE_MITHRIL_KEY, Feature.ORE, new OreConfiguration(netherrackReplaceables,
+                TolkienBlocks.ORE_NETHER_MITHRIL.get().defaultBlockState(), 4));
+        registerConfigured(context, END_ORE_MITHRIL_KEY, Feature.ORE, new OreConfiguration(endReplaceables,
+                TolkienBlocks.ORE_END_MITHRIL.get().defaultBlockState(), 6));
+        registerConfigured(context, OVERWORLD_ORE_MORGULIRON_KEY, Feature.ORE, new OreConfiguration(overworldMorgulironOres, 5));
+        registerConfigured(context, NETHER_ORE_MORGULIRON_KEY, Feature.ORE, new OreConfiguration(netherrackReplaceables,
+                TolkienBlocks.ORE_NETHER_MORGULIRON.get().defaultBlockState(), 4));
+        registerConfigured(context, END_ORE_MORGULIRON_KEY, Feature.ORE, new OreConfiguration(endReplaceables,
+                TolkienBlocks.ORE_END_MORGULIRON.get().defaultBlockState(), 6));
+        registerConfigured(context, OVERWORLD_ORE_AMMOLITE_KEY, Feature.ORE, new OreConfiguration(overworldAmmoliteOres, 5));
+        registerConfigured(context, NETHER_ORE_AMMOLITE_KEY, Feature.ORE, new OreConfiguration(netherrackReplaceables,
+                TolkienBlocks.ORE_NETHER_AMMOLITE.get().defaultBlockState(), 4));
+        registerConfigured(context, END_ORE_AMMOLITE_KEY, Feature.ORE, new OreConfiguration(endReplaceables,
+                TolkienBlocks.ORE_END_AMMOLITE.get().defaultBlockState(), 6));
+
         registerConfigured(context, MALLORN_KEY, Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TolkienBlocks.WOOD_MALLORN.get()),
                 new BranchingLargeTrunkPlacer(10, 3, 3, 5, new BranchesConfig(BlockStateProvider.simple(TolkienBlocks.WOOD_MALLORN.get()), 4, 1, 10, 4, 0.23, 0.23), false),

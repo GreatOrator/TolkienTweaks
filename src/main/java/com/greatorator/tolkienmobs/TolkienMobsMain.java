@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs;
 
+import com.google.common.collect.Maps;
 import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
 import com.greatorator.tolkienmobs.containers.screens.*;
 import com.greatorator.tolkienmobs.event.TolkienRegistration;
@@ -18,6 +19,7 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FlowerPotBlock;
 import net.neoforged.api.distmarker.Dist;
@@ -130,6 +132,22 @@ public class TolkienMobsMain {
 
     private void commonSetup(final FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
+            AxeItem.STRIPPABLES = Maps.newHashMap(AxeItem.STRIPPABLES);
+            AxeItem.STRIPPABLES.put(TolkienBlocks.LOG_MALLORN.get(), TolkienBlocks.STRIPPED_MALLORN_LOG.get());
+            AxeItem.STRIPPABLES.put(TolkienBlocks.LOG_MIRKWOOD.get(), TolkienBlocks.STRIPPED_MIRKWOOD_LOG.get());
+            AxeItem.STRIPPABLES.put(TolkienBlocks.LOG_CULUMALDA.get(), TolkienBlocks.STRIPPED_CULUMALDA_LOG.get());
+            AxeItem.STRIPPABLES.put(TolkienBlocks.LOG_LEBETHRON.get(), TolkienBlocks.STRIPPED_LEBETHRON_LOG.get());
+            AxeItem.STRIPPABLES.put(TolkienBlocks.LOG_FANGORNOAK.get(), TolkienBlocks.STRIPPED_FANGORNOAK_LOG.get());
+            AxeItem.STRIPPABLES.put(TolkienBlocks.LOG_DEADWOOD.get(), TolkienBlocks.STRIPPED_DEADWOOD_LOG.get());
+            AxeItem.STRIPPABLES.put(TolkienBlocks.LOG_DWARVEN_MAPLE.get(), TolkienBlocks.STRIPPED_DWARVEN_MAPLE_LOG.get());
+            AxeItem.STRIPPABLES.put(TolkienBlocks.WOOD_MALLORN.get(), TolkienBlocks.STRIPPED_MALLORN_WOOD.get());
+            AxeItem.STRIPPABLES.put(TolkienBlocks.WOOD_MIRKWOOD.get(), TolkienBlocks.STRIPPED_MIRKWOOD_WOOD.get());
+            AxeItem.STRIPPABLES.put(TolkienBlocks.WOOD_CULUMALDA.get(), TolkienBlocks.STRIPPED_CULUMALDA_WOOD.get());
+            AxeItem.STRIPPABLES.put(TolkienBlocks.WOOD_LEBETHRON.get(), TolkienBlocks.STRIPPED_LEBETHRON_WOOD.get());
+            AxeItem.STRIPPABLES.put(TolkienBlocks.WOOD_FANGORNOAK.get(), TolkienBlocks.STRIPPED_FANGORNOAK_WOOD.get());
+            AxeItem.STRIPPABLES.put(TolkienBlocks.WOOD_DEADWOOD.get(), TolkienBlocks.STRIPPED_DEADWOOD_WOOD.get());
+            AxeItem.STRIPPABLES.put(TolkienBlocks.WOOD_DWARVEN_MAPLE.get(), TolkienBlocks.STRIPPED_DWARVEN_MAPLE_WOOD.get());
+
             FlowerPotBlock pot = (FlowerPotBlock) Blocks.FLOWER_POT;
             pot.addPlant(TolkienBlocks.FLOWER_SIMBELMYNE.getId(), TolkienBlocks.POTTED_FLOWER_SIMBELMYNE);
             pot.addPlant(TolkienBlocks.FLOWER_MIRKWOOD.getId(), TolkienBlocks.POTTED_FLOWER_MIRKWOOD);

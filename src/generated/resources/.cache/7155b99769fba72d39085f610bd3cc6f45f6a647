@@ -1,4 +1,4 @@
-// 1.21	2024-10-02T08:54:06.9252153	Tags for minecraft:block mod id tolkienmobs
+// 1.21	2024-12-03T15:38:23.0869615	Tags for minecraft:block mod id tolkienmobs
 8df1ebd98d8c41af8db4773580ab309386bab274 data/minecraft/tags/block/base_stone_overworld.json
 c697663a63d12d5f108102f51c8b115d85d5192b data/minecraft/tags/block/ceiling_hanging_signs.json
 2425bde7509c8f73e1716b527cdaf196eb24f51a data/minecraft/tags/block/climbable.json
@@ -6,6 +6,7 @@ c697663a63d12d5f108102f51c8b115d85d5192b data/minecraft/tags/block/ceiling_hangi
 5991e61167d5a55ff878fd59c809c0b1efbe1a11 data/minecraft/tags/block/fences.json
 cd6282b2a9a0d448e676b5183695041d54b7be01 data/minecraft/tags/block/fence_gates.json
 53c2cf115ad60c3904f417bfb5b7ce26aa9bbe72 data/minecraft/tags/block/logs.json
+53c2cf115ad60c3904f417bfb5b7ce26aa9bbe72 data/minecraft/tags/block/logs_that_burn.json
 3950175eeafe4eae027b9326aca3a70d65eb40f9 data/minecraft/tags/block/mineable/pickaxe.json
 9ce077a7c80f6fb26e02ac0c3cd011433f855abb data/minecraft/tags/block/needs_diamond_tool.json
 476a269d01c5c8b29528c147a6844db08aa0ff62 data/minecraft/tags/block/needs_iron_tool.json
