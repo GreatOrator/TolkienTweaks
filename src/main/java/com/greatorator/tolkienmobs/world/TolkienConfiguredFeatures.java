@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.world;
 
 import com.google.common.collect.ImmutableList;
+import com.greatorator.tolkienmobs.block.custom.BramblesBushBlock;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienFeatures;
 import com.greatorator.tolkienmobs.world.components.config.RootConfig;
@@ -12,6 +13,7 @@ import com.greatorator.tolkienmobs.world.components.feature.tree.placers.Branchi
 import com.greatorator.tolkienmobs.world.components.feature.tree.placers.BranchingTrunkPlacer;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -19,10 +21,7 @@ import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.*;
 import net.minecraft.world.level.levelgen.feature.featuresize.ThreeLayersFeatureSize;
 import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FancyFoliagePlacer;
@@ -40,6 +39,7 @@ import java.util.List;
 import java.util.OptionalInt;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
+import static com.greatorator.tolkienmobs.world.TolkienPlacedFeatures.FLOWER_BRAMBLES_PLACED_KEY;
 
 public class TolkienConfiguredFeatures {
     private final static int LEAF_SHAG_FACTOR = 24;
@@ -75,6 +75,19 @@ public class TolkienConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> RANDOM_RUBBLE = registerConfiguredKey("ground/random_rubble");
     public static final ResourceKey<ConfiguredFeature<?, ?>> ROCK_PILE = registerConfiguredKey("decoration/rock_pile");
     public static final ResourceKey<ConfiguredFeature<?, ?>> WOOD_ROOTS_SPREAD = registerConfiguredKey("ore/wood_roots_spread");
+
+    public static final ResourceKey<ConfiguredFeature<?, ?>> FLOWER_SIMBELMYNE_KEY = registerConfiguredKey("plants/flower_simbelmyne");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> FLOWER_MIRKWOOD_KEY = registerConfiguredKey("plants/flower_mirkwood");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> FLOWER_ALFIRIN_KEY = registerConfiguredKey("plants/flower_alfirin");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> FLOWER_ATHELAS_KEY = registerConfiguredKey("plants/flower_athelas");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> FLOWER_NIPHREDIL_KEY = registerConfiguredKey("plants/flower_niphredil");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> FLOWER_SWAMPMILKWEED_KEY = registerConfiguredKey("plants/flower_swamp_milkweed");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> FLOWER_LILLYOFTHEVALLEY_KEY = registerConfiguredKey("plants/flower_valley_lilly");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> FLOWER_ELANOR_KEY = registerConfiguredKey("plants/flower_elanor");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> FLOWER_AEGLOS_KEY = registerConfiguredKey("plants/flower_aeglos");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> FLOWER_LISSUIN_KEY = registerConfiguredKey("plants/flower_lissuin");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> FLOWER_MALLOS_KEY = registerConfiguredKey("plants/flower_mallos");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> FLOWER_BRAMBLES_KEY = registerConfiguredKey("plants/flower_brambles");
 
     public static final ResourceKey<ConfiguredFeature<?, ?>> OVERWORLD_ORE_MITHRIL_KEY = registerConfiguredKey("ore/ore_mithril");
     public static final ResourceKey<ConfiguredFeature<?, ?>> NETHER_ORE_MITHRIL_KEY = registerConfiguredKey("ore/nether_ore_mithril");
@@ -117,6 +130,56 @@ public class TolkienConfiguredFeatures {
                 TolkienBlocks.ORE_NETHER_AMMOLITE.get().defaultBlockState(), 4));
         registerConfigured(context, END_ORE_AMMOLITE_KEY, Feature.ORE, new OreConfiguration(endReplaceables,
                 TolkienBlocks.ORE_END_AMMOLITE.get().defaultBlockState(), 6));
+
+        registerConfigured(context, FLOWER_SIMBELMYNE_KEY, Feature.RANDOM_PATCH,
+                FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK,
+                        new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_SIMBELMYNE.get())
+                        ), List.of(Blocks.GRASS_BLOCK)));
+        registerConfigured(context, FLOWER_MIRKWOOD_KEY, Feature.RANDOM_PATCH,
+                FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK,
+                        new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_MIRKWOOD.get())
+                        ), List.of(Blocks.GRASS_BLOCK)));
+        registerConfigured(context, FLOWER_ALFIRIN_KEY, Feature.RANDOM_PATCH,
+                FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK,
+                        new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_ALFIRIN.get())
+                        ), List.of(Blocks.GRASS_BLOCK)));
+        registerConfigured(context, FLOWER_ATHELAS_KEY, Feature.RANDOM_PATCH,
+                FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK,
+                        new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_ATHELAS.get())
+                        ), List.of(Blocks.GRASS_BLOCK)));
+        registerConfigured(context, FLOWER_NIPHREDIL_KEY, Feature.RANDOM_PATCH,
+                FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK,
+                        new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_NIPHREDIL.get())
+                        ), List.of(Blocks.GRASS_BLOCK)));
+        registerConfigured(context, FLOWER_SWAMPMILKWEED_KEY, Feature.RANDOM_PATCH,
+                FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK,
+                        new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_SWAMPMILKWEED.get())
+                        ), List.of(Blocks.GRASS_BLOCK)));
+        registerConfigured(context, FLOWER_LILLYOFTHEVALLEY_KEY, Feature.RANDOM_PATCH,
+                FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK,
+                        new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_LILLYOFTHEVALLEY.get())
+                        ), List.of(Blocks.GRASS_BLOCK)));
+        registerConfigured(context, FLOWER_ELANOR_KEY, Feature.RANDOM_PATCH,
+                FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK,
+                        new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_ELANOR.get())
+                        ), List.of(Blocks.GRASS_BLOCK)));
+        registerConfigured(context, FLOWER_AEGLOS_KEY, Feature.RANDOM_PATCH,
+                FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK,
+                        new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_AEGLOS.get())
+                        ), List.of(Blocks.GRASS_BLOCK)));
+        registerConfigured(context, FLOWER_LISSUIN_KEY, Feature.RANDOM_PATCH,
+                FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK,
+                        new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_LISSUIN.get())
+                        ), List.of(Blocks.GRASS_BLOCK)));
+        registerConfigured(context, FLOWER_MALLOS_KEY, Feature.RANDOM_PATCH,
+                FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK,
+                        new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_MALLOS.get())
+                        ), List.of(Blocks.GRASS_BLOCK)));
+        registerConfigured(context, FLOWER_BRAMBLES_KEY, Feature.RANDOM_PATCH,
+                FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK,
+                        new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_BRAMBLES.get()
+                                .defaultBlockState().setValue(BramblesBushBlock.AGE, 3))
+                        ), List.of(Blocks.GRASS_BLOCK)));
 
         registerConfigured(context, MALLORN_KEY, Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TolkienBlocks.WOOD_MALLORN.get()),
