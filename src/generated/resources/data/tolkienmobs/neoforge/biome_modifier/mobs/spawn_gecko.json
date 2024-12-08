@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "minecraft:plains",
+  "spawners": {
+    "type": "tolkienmobs:entityttmgecko",
+    "maxCount": 4,
+    "minCount": 2,
+    "weight": 20
+  }
+}

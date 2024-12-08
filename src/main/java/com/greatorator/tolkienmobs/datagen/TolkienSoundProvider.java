@@ -45,6 +45,22 @@ public class TolkienSoundProvider extends SoundDefinitionsProvider {
             // Villager
         this.generateNewSoundWithSubtitle(TolkienSounds.VILLAGER_COIN_TRADER, "mob/villager/coin_trader", 1, "A wild Coin Trader Appears!");
 
+            //Ambient
+        this.generateNewSound(TolkienSounds.IDLE_RAT, "mob/entityttmrat/entityttmrat_say", 4, " ");
+        this.generateNewSound(TolkienSounds.HURT_RAT, "mob/entityttmrat/entityttmrat_hurt", 1, " ");
+        this.generateNewSound(TolkienSounds.DEATH_RAT, "mob/entityttmrat/entityttmrat_death", 1, " ");
+        this.generateNewSound(TolkienSounds.IDLE_SQUIRREL, "mob/sosquirrel/sosquirrel_say", 4, " ");
+        this.generateNewSound(TolkienSounds.HURT_SQUIRREL, "mob/sosquirrel/sosquirrel_hurt", 1, " ");
+        this.generateNewSound(TolkienSounds.DEATH_SQUIRREL, "mob/sosquirrel/sosquirrel_death", 1, " ");
+        this.generateNewSound(TolkienSounds.STEP_SQUIRREL, "mob/sosquirrel/sosquirrel_step", 1, " ");
+        this.generateNewSound(TolkienSounds.ANGRY_SQUIRREL, "mob/sosquirrel/sosquirrel_angry", 1, " ");
+        this.generateNewSound(TolkienSounds.IDLE_FROG, "mob/toaddle/toaddle_say", 4, " ");
+        this.generateNewSound(TolkienSounds.HURT_FROG, "mob/toaddle/toaddle_hurt", 1, " ");
+        this.generateNewSound(TolkienSounds.DEATH_FROG, "mob/toaddle/toaddle_death", 1, " ");
+        this.generateNewSound(TolkienSounds.STEP_FROG, "mob/toaddle/toaddle_step", 1, " ");
+        this.generateNewSound(TolkienSounds.ANGRY_FROG, "mob/toaddle/toaddle_angry", 1, " ");
+        this.generateNewSound(TolkienSounds.IDLE_SWARM, "mob/midgefly_say1", 1, " ");
+
         // Records
         this.makeMusicDisc(TolkienSounds.MUSIC_DISC_ALLTHATGLITTERS, "allthatglitterserebor");
         this.makeMusicDisc(TolkienSounds.MUSIC_DISC_CONCERNINGHOBBITS, "concerninghobbits");

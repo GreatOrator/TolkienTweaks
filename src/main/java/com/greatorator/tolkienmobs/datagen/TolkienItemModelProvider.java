@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.datagen;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
+import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienFluids;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -365,6 +366,12 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         basicItem(TolkienItems.GOLD_KEY.get());
         basicItem(TolkienItems.MITHRIL_KEY.get());
         basicItem(TolkienItems.MASTER_KEY.get());
+
+        withExistingParent(TolkienEntities.EGG_TTMGECKO.getId().getPath(), mcLoc("item/template_spawn_egg"));
+        withExistingParent(TolkienEntities.EGG_TTMRAT.getId().getPath(), mcLoc("item/template_spawn_egg"));
+        withExistingParent(TolkienEntities.EGG_TTMSQUIRREL.getId().getPath(), mcLoc("item/template_spawn_egg"));
+        withExistingParent(TolkienEntities.EGG_TTMFROG.getId().getPath(), mcLoc("item/template_spawn_egg"));
+        withExistingParent(TolkienEntities.EGG_TTMSWARM.getId().getPath(), mcLoc("item/template_spawn_egg"));
     }
 
     private ItemModelBuilder generated(String name, ResourceLocation... layers) {

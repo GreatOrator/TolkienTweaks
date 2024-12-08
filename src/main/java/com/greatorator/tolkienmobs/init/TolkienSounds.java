@@ -59,6 +59,21 @@ public class TolkienSounds {
         // Villager
     public static final DeferredHolder<SoundEvent, SoundEvent> VILLAGER_COIN_TRADER = createEvent("mob.tolkienmobs.coin_trader");
 
+        // Ambient
+    public static final DeferredHolder<SoundEvent, SoundEvent> IDLE_RAT = createEvent("mob.entityttmrat.idle");
+    public static final DeferredHolder<SoundEvent, SoundEvent> HURT_RAT = createEvent("mob.entityttmrat.hurt");
+    public static final DeferredHolder<SoundEvent, SoundEvent> DEATH_RAT = createEvent("mob.entityttmrat.death");
+    public static final DeferredHolder<SoundEvent, SoundEvent> IDLE_SQUIRREL = createEvent("mob.entityttmsquirrel.idle");
+    public static final DeferredHolder<SoundEvent, SoundEvent> HURT_SQUIRREL = createEvent("mob.entityttmsquirrel.hurt");
+    public static final DeferredHolder<SoundEvent, SoundEvent> DEATH_SQUIRREL = createEvent("mob.entityttmsquirrel.death");
+    public static final DeferredHolder<SoundEvent, SoundEvent> STEP_SQUIRREL = createEvent("mob.entityttmsquirrel.step");
+    public static final DeferredHolder<SoundEvent, SoundEvent> ANGRY_SQUIRREL = createEvent("mob.entityttmsquirrel.angry");
+    public static final DeferredHolder<SoundEvent, SoundEvent> IDLE_FROG = createEvent("mob.entityttmfrog.idle");
+    public static final DeferredHolder<SoundEvent, SoundEvent> HURT_FROG = createEvent("mob.entityttmfrog.hurt");
+    public static final DeferredHolder<SoundEvent, SoundEvent> DEATH_FROG = createEvent("mob.entityttmfrog.death");
+    public static final DeferredHolder<SoundEvent, SoundEvent> STEP_FROG = createEvent("mob.entityttmfrog.step");
+    public static final DeferredHolder<SoundEvent, SoundEvent> ANGRY_FROG = createEvent("mob.entityttmfrog.angry");
+    public static final DeferredHolder<SoundEvent, SoundEvent> IDLE_SWARM = createEvent("mob.midgefly.idle");
 
     private static DeferredHolder<SoundEvent, SoundEvent> createEvent(String sound) {
         return SOUND_EVENTS.register(sound, () -> SoundEvent.createVariableRangeEvent(TolkienMobsMain.prefix(sound)));
