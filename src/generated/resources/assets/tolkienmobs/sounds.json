@@ -89,6 +89,99 @@
     ],
     "subtitle": "subtitles.tolkienmobs.item.hype_horn"
   },
+  "mob.entityttmfrog.angry": {
+    "sounds": [
+      "tolkienmobs:mob/toaddle/toaddle_angry"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.angry"
+  },
+  "mob.entityttmfrog.death": {
+    "sounds": [
+      "tolkienmobs:mob/toaddle/toaddle_death"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.death"
+  },
+  "mob.entityttmfrog.hurt": {
+    "sounds": [
+      "tolkienmobs:mob/toaddle/toaddle_hurt"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.hurt"
+  },
+  "mob.entityttmfrog.idle": {
+    "sounds": [
+      "tolkienmobs:mob/toaddle/toaddle_say1",
+      "tolkienmobs:mob/toaddle/toaddle_say2",
+      "tolkienmobs:mob/toaddle/toaddle_say3",
+      "tolkienmobs:mob/toaddle/toaddle_say4"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.idle"
+  },
+  "mob.entityttmfrog.step": {
+    "sounds": [
+      "tolkienmobs:mob/toaddle/toaddle_step"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.step"
+  },
+  "mob.entityttmrat.death": {
+    "sounds": [
+      "tolkienmobs:mob/entityttmrat/entityttmrat_death"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.death"
+  },
+  "mob.entityttmrat.hurt": {
+    "sounds": [
+      "tolkienmobs:mob/entityttmrat/entityttmrat_hurt"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.hurt"
+  },
+  "mob.entityttmrat.idle": {
+    "sounds": [
+      "tolkienmobs:mob/entityttmrat/entityttmrat_say1",
+      "tolkienmobs:mob/entityttmrat/entityttmrat_say2",
+      "tolkienmobs:mob/entityttmrat/entityttmrat_say3",
+      "tolkienmobs:mob/entityttmrat/entityttmrat_say4"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.idle"
+  },
+  "mob.entityttmsquirrel.angry": {
+    "sounds": [
+      "tolkienmobs:mob/sosquirrel/sosquirrel_angry"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.angry"
+  },
+  "mob.entityttmsquirrel.death": {
+    "sounds": [
+      "tolkienmobs:mob/sosquirrel/sosquirrel_death"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.death"
+  },
+  "mob.entityttmsquirrel.hurt": {
+    "sounds": [
+      "tolkienmobs:mob/sosquirrel/sosquirrel_hurt"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.hurt"
+  },
+  "mob.entityttmsquirrel.idle": {
+    "sounds": [
+      "tolkienmobs:mob/sosquirrel/sosquirrel_say1",
+      "tolkienmobs:mob/sosquirrel/sosquirrel_say2",
+      "tolkienmobs:mob/sosquirrel/sosquirrel_say3",
+      "tolkienmobs:mob/sosquirrel/sosquirrel_say4"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.idle"
+  },
+  "mob.entityttmsquirrel.step": {
+    "sounds": [
+      "tolkienmobs:mob/sosquirrel/sosquirrel_step"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.step"
+  },
+  "mob.midgefly.idle": {
+    "sounds": [
+      "tolkienmobs:mob/midgefly_say1"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.idle"
+  },
   "mob.tolkienmobs.coin_trader": {
     "sounds": [
       "tolkienmobs:mob/villager/coin_trader"

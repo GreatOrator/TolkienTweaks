@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.datagen;
 
 import com.greatorator.tolkienmobs.datagen.helpers.TolkienLangHelper;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
+import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import net.minecraft.data.PackOutput;
 
@@ -343,6 +344,10 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addSound("ambient", "arda_portal", "Portal to Arda beckons");
             this.addSound("item", "hype_horn", "Celebrating victory");
             this.addSound("mob", "coin_trader", "A Wild Coin Trader appears!");
+            this.addSound("mob", "entityttmrat", " ");
+            this.addSound("mob", "entityttmsquirrel", " ");
+            this.addSound("mob", "entityttmfrog", " ");
+            this.addSound("mob", "entityttmswarm", " ");
 
                 // Entities
                     // Villager
@@ -353,7 +358,19 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add("entity.minecraft.villager.tolkienmobs.trinket_smith", "Magical Armourer");
             this.add("entity.minecraft.villager.tolkienmobs.trinket_tailor", "Magical Tailor");
 
-                // Enchantments
+                    //Ambient
+            this.add(TolkienEntities.ENTITY_TTM_GECKO.get(), "Gecko");
+            this.add(TolkienEntities.EGG_TTMGECKO.get(), "Gecko Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_RAT.get(), "Rat");
+            this.add(TolkienEntities.EGG_TTMRAT.get(), "Rat Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), "Squirrel");
+            this.add(TolkienEntities.EGG_TTMSQUIRREL.get(), "Squirrel Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_FROG.get(), "Frog");
+            this.add(TolkienEntities.EGG_TTMFROG.get(), "Frog Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_SWARM.get(), "MidgeFly");
+            this.add(TolkienEntities.EGG_TTMSWARM.get(), "MidgeFly Spawn Egg");
+
+        // Enchantments
             this.add("enchantment.tolkienmobs.balrog_mark_key", "Balrog's Mark");
     }
 }

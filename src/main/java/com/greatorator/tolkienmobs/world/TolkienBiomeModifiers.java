@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.world;
 
+import com.greatorator.tolkienmobs.init.TolkienEntities;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -7,10 +8,13 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.BiomeModifiers;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
+
+import java.util.List;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 import static com.greatorator.tolkienmobs.world.TolkienPlacedFeatures.*;
@@ -46,6 +50,11 @@ public class TolkienBiomeModifiers {
     public static final ResourceKey<BiomeModifier> ADD_AMMOLITE_ORE = registerBiomeKey("ore/add_ammolite_ore");
     public static final ResourceKey<BiomeModifier> ADD_NETHER_AMMOLITE_ORE = registerBiomeKey("ore/add_nether_ammolite_ore");
     public static final ResourceKey<BiomeModifier> ADD_END_AMMOLITE_ORE = registerBiomeKey("ore/add_end_ammolite_ore");
+
+    public static final ResourceKey<BiomeModifier> SPAWN_GECKO = registerBiomeKey("mobs/spawn_gecko");
+    public static final ResourceKey<BiomeModifier> SPAWN_RAT = registerBiomeKey("mobs/spawn_rat");
+    public static final ResourceKey<BiomeModifier> SPAWN_SQUIRREL = registerBiomeKey("mobs/spawn_squirrel");
+    public static final ResourceKey<BiomeModifier> SPAWN_FROG = registerBiomeKey("mobs/spawn_frog");
 
     // Random Bunches
     public static final ResourceKey<BiomeModifier> FIRIEN_WOODS = registerBiomeKey("tree/selector/firien_woods");
@@ -168,6 +177,19 @@ public class TolkienBiomeModifiers {
                 HolderSet.direct(biomes.getOrThrow(Biomes.PLAINS)),
                 HolderSet.direct(placedFeatures.getOrThrow(FLOWER_BRAMBLES_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
+
+        context.register(SPAWN_GECKO, new BiomeModifiers.AddSpawnsBiomeModifier(
+                HolderSet.direct(biomes.getOrThrow(Biomes.PLAINS)),
+                List.of(new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_GECKO.get(), 20, 2, 4))));
+        context.register(SPAWN_RAT, new BiomeModifiers.AddSpawnsBiomeModifier(
+                HolderSet.direct(biomes.getOrThrow(Biomes.PLAINS)),
+                List.of(new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_RAT.get(), 20, 2, 4))));
+        context.register(SPAWN_SQUIRREL, new BiomeModifiers.AddSpawnsBiomeModifier(
+                HolderSet.direct(biomes.getOrThrow(Biomes.PLAINS)),
+                List.of(new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 20, 2, 4))));
+        context.register(SPAWN_FROG, new BiomeModifiers.AddSpawnsBiomeModifier(
+                HolderSet.direct(biomes.getOrThrow(Biomes.PLAINS)),
+                List.of(new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_FROG.get(), 20, 2, 4))));
     }
 
     private static ResourceKey<BiomeModifier> registerBiomeKey(String name) {

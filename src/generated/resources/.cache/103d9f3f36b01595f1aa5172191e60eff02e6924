@@ -1,4 +1,4 @@
-// 1.21.1	2024-12-08T08:43:27.8629736	Registries
+// 1.21.1	2024-12-08T13:11:18.2589471	Registries
 bd1b1a0f064d6e9033ca5205329576e738bdc28e data/tolkienmobs/enchantment/balrog_mark_key.json
 552d6b636135deaef3e5158de5e26f4da0b3e58c data/tolkienmobs/enchantment/dwarven_endurance_key.json
 fa9a8560d5498fadef0ec491f176dbb1bf84eeaf data/tolkienmobs/enchantment/dwarven_mining_key.json
@@ -19,6 +19,10 @@ a5cdec30bf191aac632755038ad0d5c18194f9a5 data/tolkienmobs/jukebox_song/thelighto
 b9f88a40fc5d5457aab7adccb4c5cccc78cafa20 data/tolkienmobs/jukebox_song/trollfumble.json
 250cdb6bffe60d756a044250448dd15653deba1d data/tolkienmobs/jukebox_song/wakeofedoras.json
 d47aa66a21d677dde7ae8d774750a356e4f16873 data/tolkienmobs/jukebox_song/witchbattle.json
+df84cf261ac8e84347ea1d105dff2dc36c92b7a5 data/tolkienmobs/neoforge/biome_modifier/mobs/spawn_frog.json
+8b635840ea624fe0bd0e4fd32f751bfdfbea85b4 data/tolkienmobs/neoforge/biome_modifier/mobs/spawn_gecko.json
+5dbc3a61a8fabff9d5b4f1482711897c5bfc8086 data/tolkienmobs/neoforge/biome_modifier/mobs/spawn_rat.json
+b2b83bcf871d62989ee54dbafd48fdc6d0058576 data/tolkienmobs/neoforge/biome_modifier/mobs/spawn_squirrel.json
 7d89e2f0e97c91ddd947d558484bcb93cce0357b data/tolkienmobs/neoforge/biome_modifier/ore/add_ammolite_ore.json
 3544ddf655d763cdc8922295030cf05039e9549c data/tolkienmobs/neoforge/biome_modifier/ore/add_end_ammolite_ore.json
 0ee52fc9dae92227fcdb1b231ccbee8bbc6c92e5 data/tolkienmobs/neoforge/biome_modifier/ore/add_end_mithril_ore.json

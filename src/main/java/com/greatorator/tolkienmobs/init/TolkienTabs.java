@@ -786,6 +786,11 @@ public class TolkienTabs {
                     .title(Component.translatable("itemgroup.tolkienmobs.spawn"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(TolkienItems.GOLEM_STONE_SUMMON);
+                        output.accept(TolkienEntities.EGG_TTMGECKO);
+                        output.accept(TolkienEntities.EGG_TTMRAT);
+                        output.accept(TolkienEntities.EGG_TTMSQUIRREL);
+                        output.accept(TolkienEntities.EGG_TTMFROG);
+                        output.accept(TolkienEntities.EGG_TTMSWARM);
                     }).build());
 
     public static void register(IEventBus eventBus) {

@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs;
 import com.google.common.collect.Maps;
 import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
 import com.greatorator.tolkienmobs.containers.screens.*;
+import com.greatorator.tolkienmobs.entity.ambient.render.*;
 import com.greatorator.tolkienmobs.event.TolkienRegistration;
 import com.greatorator.tolkienmobs.init.TolkienFluidTypes;
 import com.greatorator.tolkienmobs.handler.ColorHandler;
@@ -18,6 +19,7 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.level.block.Blocks;
@@ -78,6 +80,7 @@ public class TolkienMobsMain {
             -Sleeping Bag deploy
             -Campfire Deploy
       -Entities
+        -Frog Model Broken
         -POI working for villagers
         -Spawn Eggs
       -Integration
@@ -98,7 +101,7 @@ public class TolkienMobsMain {
 
         TolkienItems.register(modEventBus);
         TolkienBlocks.register(modEventBus);
-//        TolkienEntities.register(modEventBus);
+        TolkienEntities.register(modEventBus);
 
         TolkienSounds.SOUND_EVENTS.register(modEventBus);
         TolkienMobEffects.register(modEventBus);
@@ -215,6 +218,14 @@ public class TolkienMobsMain {
             });
 
             TolkienItemProperties.addCustomItemProperties();
+
+            //Entity Renders
+                // Ambient
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_GECKO.get(), GeckoRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_RAT.get(), RatRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), SquirrelRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_FROG.get(), FrogRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_SWARM.get(), SwarmRender::new);
         }
 
         @SubscribeEvent
