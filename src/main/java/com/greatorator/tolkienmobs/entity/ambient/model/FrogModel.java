@@ -29,24 +29,12 @@ public class FrogModel<T extends FrogEntity> extends HierarchicalModel<T> {
 	private final ModelPart head;
 	private final ModelPart mouth;
 	private final ModelPart bulge;
-	private final ModelPart tongue;
 	private final ModelPart frontLegLeft;
 	private final ModelPart frontLegRight;
 	private final ModelPart haunchLeft;
 	private final ModelPart rearFootLeft;
 	private final ModelPart haunchRight;
 	private final ModelPart rearFootRight;
-	private final ModelPart insect;
-	private final ModelPart body2;
-	private final ModelPart leaf;
-	private final ModelPart head2;
-	private final ModelPart antennae;
-	private final ModelPart right_arm;
-	private final ModelPart left_arm;
-	private final ModelPart right_leg_1;
-	private final ModelPart left_leg_3;
-	private final ModelPart right_leg_2;
-	private final ModelPart right_leg_3;
 
 	public FrogModel(ModelPart root) {
 		this.root = root.getChild("root");
@@ -54,24 +42,12 @@ public class FrogModel<T extends FrogEntity> extends HierarchicalModel<T> {
 		this.head = this.body.getChild("head");
 		this.mouth = this.head.getChild("mouth");
 		this.bulge = this.mouth.getChild("bulge");
-		this.tongue = this.mouth.getChild("tongue");
 		this.frontLegLeft = this.root.getChild("frontLegLeft");
 		this.frontLegRight = this.root.getChild("frontLegRight");
 		this.haunchLeft = this.root.getChild("haunchLeft");
 		this.rearFootLeft = this.haunchLeft.getChild("rearFootLeft");
 		this.haunchRight = this.root.getChild("haunchRight");
 		this.rearFootRight = this.haunchRight.getChild("rearFootRight");
-		this.insect = this.root.getChild("insect");
-		this.body2 = this.insect.getChild("body2");
-		this.leaf = this.body2.getChild("leaf");
-		this.head2 = this.leaf.getChild("head2");
-		this.antennae = this.head2.getChild("antennae");
-		this.right_arm = this.body2.getChild("right_arm");
-		this.left_arm = this.body2.getChild("left_arm");
-		this.right_leg_1 = this.insect.getChild("right_leg_1");
-		this.left_leg_3 = this.insect.getChild("left_leg_3");
-		this.right_leg_2 = this.insect.getChild("right_leg_2");
-		this.right_leg_3 = this.insect.getChild("right_leg_3");
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -83,7 +59,7 @@ public class FrogModel<T extends FrogEntity> extends HierarchicalModel<T> {
 		PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-3.0F, -2.5F, -5.0F, 6.0F, 5.0F, 10.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -6.2402F, 3.1305F, -0.3491F, 0.0F, 0.0F));
 
 		PartDefinition head = body.addOrReplaceChild("head", CubeListBuilder.create().texOffs(32, 0).addBox(-2.5F, -2.6237F, -4.5374F, 5.0F, 3.0F, 5.0F, new CubeDeformation(0.0F))
-		.texOffs(34, 2).addBox(-2.5F, -0.6237F, -1.5374F, 5.0F, 2.0F, 3.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(0.0F, -1.335F, -5.1054F, 0.3491F, 0.0F, 0.0F));
+				.texOffs(34, 2).addBox(-2.5F, -0.6237F, -1.5374F, 5.0F, 2.0F, 3.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(0.0F, -1.335F, -5.1054F, 0.3491F, 0.0F, 0.0F));
 
 		PartDefinition head_r1 = head.addOrReplaceChild("head_r1", CubeListBuilder.create().texOffs(58, 3).addBox(-1.5F, -13.25F, -5.0F, 2.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.0F, 9.3763F, -1.5374F, 0.0F, -1.5708F, 0.0F));
 
@@ -116,28 +92,6 @@ public class FrogModel<T extends FrogEntity> extends HierarchicalModel<T> {
 		PartDefinition rearFootRight = haunchRight.addOrReplaceChild("rearFootRight", CubeListBuilder.create(), PartPose.offset(0.0F, 2.7811F, 1.4554F));
 
 		PartDefinition rearFootRight_r1 = rearFootRight.addOrReplaceChild("rearFootRight_r1", CubeListBuilder.create().texOffs(8, 24).addBox(-4.0F, 1.0F, 2.0F, 2.0F, 1.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(3.0F, 1.7189F, -7.6554F, 0.3927F, 0.0F, 0.0F));
-
-		PartDefinition insect = root.addOrReplaceChild("insect", CubeListBuilder.create(), PartPose.offset(0.0F, 7.0F, 1.0F));
-
-		PartDefinition body2 = insect.addOrReplaceChild("body2", CubeListBuilder.create(), PartPose.offset(0.0F, -2.0F, 0.0F));
-
-		PartDefinition leaf = body2.addOrReplaceChild("leaf", CubeListBuilder.create().texOffs(0, 49).addBox(-3.5F, -1.0F, -1.0F, 3.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(2.0F, 0.0F, -1.0F));
-
-		PartDefinition head2 = leaf.addOrReplaceChild("head2", CubeListBuilder.create().texOffs(14, 49).addBox(-1.0F, -1.5F, -3.0F, 2.0F, 2.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(-2.0F, -0.5F, -1.0F));
-
-		PartDefinition antennae = head2.addOrReplaceChild("antennae", CubeListBuilder.create().texOffs(20, 54).addBox(-1.0F, -1.5F, -2.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -1.0F, -3.0F));
-
-		PartDefinition right_arm = body2.addOrReplaceChild("right_arm", CubeListBuilder.create().texOffs(0, 37).addBox(-3.2F, 0.0F, -4.5F, 3.0F, 0.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, -3.5F, 0.4363F, 0.2182F, 0.0F));
-
-		PartDefinition left_arm = body2.addOrReplaceChild("left_arm", CubeListBuilder.create().texOffs(0, 32).addBox(0.2F, 0.0F, -4.5F, 3.0F, 0.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, -3.5F, 0.4363F, -0.2182F, 0.0F));
-
-		PartDefinition right_leg_1 = insect.addOrReplaceChild("right_leg_1", CubeListBuilder.create().texOffs(10, 46).addBox(-5.0F, 0.0F, -2.0F, 5.0F, 0.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -2.0F, -1.0F, 0.3927F, -0.2182F, -0.2967F));
-
-		PartDefinition left_leg_3 = insect.addOrReplaceChild("left_leg_3", CubeListBuilder.create().texOffs(10, 43).addBox(0.0F, 0.0F, -2.0F, 5.0F, 0.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -2.0F, -1.0F, 0.3927F, 0.2182F, 0.2967F));
-
-		PartDefinition right_leg_2 = insect.addOrReplaceChild("right_leg_2", CubeListBuilder.create().texOffs(0, 46).addBox(-5.0F, 0.0F, -1.0F, 5.0F, 0.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.4F, -2.0F, 0.0F, -0.3927F, 0.3927F, -0.3578F));
-
-		PartDefinition right_leg_3 = insect.addOrReplaceChild("right_leg_3", CubeListBuilder.create().texOffs(0, 43).addBox(0.0F, 0.0F, -1.0F, 5.0F, 0.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.4F, -2.0F, 0.0F, -0.3927F, -0.3927F, 0.3578F));
 
 		return LayerDefinition.create(meshdefinition, 64, 64);
 	}
