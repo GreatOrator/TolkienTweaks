@@ -40,9 +40,9 @@ public class SquirrelRender extends MobRenderer<SquirrelEntity, SquirrelModel<Sq
     @Override
     public void render(SquirrelEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         if(entity.isBaby()) {
-            poseStack.scale(0.1f, 0.1f, 0.1f);
+            poseStack.scale(0.05f, 0.05f, 0.05f);
         } else {
-            poseStack.scale(0.2F, 0.2F, 0.2F);
+            poseStack.scale(0.1f, 0.1f, 0.1f);
         }
 
         super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);

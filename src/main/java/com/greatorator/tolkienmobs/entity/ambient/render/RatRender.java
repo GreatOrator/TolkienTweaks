@@ -40,9 +40,9 @@ public class RatRender extends MobRenderer<RatEntity, RatModel<RatEntity>> {
     @Override
     public void render(RatEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         if(entity.isBaby()) {
-            poseStack.scale(0.45f, 0.45f, 0.45f);
+            poseStack.scale(0.20f, 0.20f, 0.20f);
         } else {
-            poseStack.scale(1f, 1f, 1f);
+            poseStack.scale(0.50f, 0.50f, 0.50f);
         }
 
         super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);

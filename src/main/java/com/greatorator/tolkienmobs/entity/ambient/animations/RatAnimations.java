@@ -1,15 +1,10 @@
-package com.greatorator.tolkienmobs.entity.ambient.animations;// Save this class in your mod and generate all required imports
+package com.greatorator.tolkienmobs.entity.ambient.animations;
 
 import net.minecraft.client.animation.AnimationChannel;
 import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.animation.Keyframe;
 import net.minecraft.client.animation.KeyframeAnimations;
 
-/**
- * Made with Blockbench 4.11.1
- * Exported for Minecraft version 1.19 or later with Mojang mappings
- * @author Author
- */
 public class RatAnimations {
 	public static final AnimationDefinition idle = AnimationDefinition.Builder.withLength(1.9167F).looping()
 		.addAnimation("body", new AnimationChannel(AnimationChannel.Targets.ROTATION,
