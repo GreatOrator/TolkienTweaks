@@ -60,6 +60,15 @@ public class RatEntity extends Animal {
         }
     }
 
+    @Override
+    public void tick() {
+        super.tick();
+
+        if (this.level().isClientSide()) {
+            this.setupAnimationStates();
+        }
+    }
+
     public static AttributeSupplier.Builder createAttributes() {
         return Animal.createLivingAttributes()
                 .add(Attributes.MAX_HEALTH, 6.0D)

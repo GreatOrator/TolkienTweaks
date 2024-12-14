@@ -89,6 +89,20 @@
     ],
     "subtitle": "subtitles.tolkienmobs.item.hype_horn"
   },
+  "mob.barrow.hurt": {
+    "sounds": [
+      "tolkienmobs:mob/barrowwight/barrowwight_hurt"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.hurt"
+  },
+  "mob.barrow.idle": {
+    "sounds": [
+      "tolkienmobs:mob/barrowwight/barrowwight_say1",
+      "tolkienmobs:mob/barrowwight/barrowwight_say2",
+      "tolkienmobs:mob/barrowwight/barrowwight_say3"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.idle"
+  },
   "mob.entityttmfrog.angry": {
     "sounds": [
       "tolkienmobs:mob/toaddle/toaddle_angry"

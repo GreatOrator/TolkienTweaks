@@ -53,6 +53,7 @@ public class FrogEntity extends Animal {
     private void setupAnimationStates() {
         if (this.idleAnimationTimeout <= 0) {
             this.idleAnimationTimeout = 80;
+            this.spawnSprintParticle();
             this.idleAnimationState.start(this.tickCount);
         } else {
             --this.idleAnimationTimeout;

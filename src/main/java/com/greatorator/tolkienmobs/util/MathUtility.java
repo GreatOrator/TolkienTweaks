@@ -54,6 +54,10 @@ public class MathUtility {
         return a + x * (b - a);
     }
 
+    public static int secondsInTicks(int seconds) {
+        return seconds * 20;
+    }
+
     @Nullable
     public static EntityHitResult clipEntities(Entity shooter, double range, @Nullable Predicate<Entity> filter) {
         return clipEntities(shooter, range, 0, filter);
