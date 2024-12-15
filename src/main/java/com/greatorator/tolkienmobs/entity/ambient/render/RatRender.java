@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.entity.ambient.render;
 
 import com.google.common.collect.Maps;
-import com.greatorator.tolkienmobs.entity.TolkienVariant;
+import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.greatorator.tolkienmobs.entity.ambient.RatEntity;
 import com.greatorator.tolkienmobs.entity.ambient.model.RatModel;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -21,10 +21,36 @@ public class RatRender extends MobRenderer<RatEntity, RatModel<RatEntity>> {
                 map.put(TolkienVariant.DEFAULT,
                         ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat1.png"));
                 map.put(TolkienVariant.RED,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat2.png"));
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat1.png"));
                 map.put(TolkienVariant.ORANGE,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat3.png"));
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat2.png"));
                 map.put(TolkienVariant.YELLOW,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat3.png"));
+                map.put(TolkienVariant.GREEN,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat4.png"));
+                map.put(TolkienVariant.BLUE,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat1.png"));
+                map.put(TolkienVariant.INDIGO,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat2.png"));
+                map.put(TolkienVariant.VIOLET,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat3.png"));
+                map.put(TolkienVariant.MAGENTA,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat4.png"));
+                map.put(TolkienVariant.PINK,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat1.png"));
+                map.put(TolkienVariant.GRAY,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat2.png"));
+                map.put(TolkienVariant.AQUA,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat3.png"));
+                map.put(TolkienVariant.BEIGE,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat4.png"));
+                map.put(TolkienVariant.BROWN,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat1.png"));
+                map.put(TolkienVariant.CORAL,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat2.png"));
+                map.put(TolkienVariant.CYAN,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat3.png"));
+                map.put(TolkienVariant.LAVENDER,
                         ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat4.png"));
             });
 

@@ -190,6 +190,27 @@
     ],
     "subtitle": "subtitles.tolkienmobs.mob.step"
   },
+  "mob.entityttmthrush.death": {
+    "sounds": [
+      "tolkienmobs:mob/tmthrush/tmthrush_death"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.death"
+  },
+  "mob.entityttmthrush.hurt": {
+    "sounds": [
+      "tolkienmobs:mob/tmthrush/tmthrush_hurt"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.hurt"
+  },
+  "mob.entityttmthrush.idle": {
+    "sounds": [
+      "tolkienmobs:mob/tmthrush/tmthrush_say1",
+      "tolkienmobs:mob/tmthrush/tmthrush_say2",
+      "tolkienmobs:mob/tmthrush/tmthrush_say3",
+      "tolkienmobs:mob/tmthrush/tmthrush_say4"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.idle"
+  },
   "mob.midgefly.idle": {
     "sounds": [
       "tolkienmobs:mob/midgefly_say1"
