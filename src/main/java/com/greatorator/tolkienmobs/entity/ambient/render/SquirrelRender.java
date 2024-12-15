@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.entity.ambient.render;
 
 import com.google.common.collect.Maps;
-import com.greatorator.tolkienmobs.entity.TolkienVariant;
+import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.greatorator.tolkienmobs.entity.ambient.SquirrelEntity;
 import com.greatorator.tolkienmobs.entity.ambient.model.SquirrelModel;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -21,11 +21,37 @@ public class SquirrelRender extends MobRenderer<SquirrelEntity, SquirrelModel<Sq
                 map.put(TolkienVariant.DEFAULT,
                         ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/sosquirrel/sosquirrel1.png"));
                 map.put(TolkienVariant.RED,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/sosquirrel/sosquirrel2.png"));
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/sosquirrel/sosquirrel1.png"));
                 map.put(TolkienVariant.ORANGE,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/sosquirrel/sosquirrel3.png"));
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/sosquirrel/sosquirrel2.png"));
                 map.put(TolkienVariant.YELLOW,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/sosquirrel/sosquirrel3.png"));
+                map.put(TolkienVariant.GREEN,
                         ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/sosquirrel/sosquirrel4.png"));
+                map.put(TolkienVariant.BLUE,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/sosquirrel/sosquirrel1.png"));
+                map.put(TolkienVariant.INDIGO,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/sosquirrel/sosquirrel2.png"));
+                map.put(TolkienVariant.VIOLET,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/sosquirrel/sosquirrel3.png"));
+                map.put(TolkienVariant.MAGENTA,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/sosquirrel/sosquirrel4.png"));
+                map.put(TolkienVariant.PINK,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/sosquirrel/sosquirrel1.png"));
+                map.put(TolkienVariant.GRAY,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/sosquirrel/sosquirrel2.png"));
+                map.put(TolkienVariant.AQUA,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/sosquirrel/sosquirrel3.png"));
+                map.put(TolkienVariant.BEIGE,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/sosquirrel/sosquirrel4.png"));
+                map.put(TolkienVariant.BROWN,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/sosquirrel/sosquirrel1.png"));
+                map.put(TolkienVariant.CORAL,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/sosquirrel/sosquirrel2.png"));
+                map.put(TolkienVariant.CYAN,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/sosquirrel/sosquirrel3.png"));
+                map.put(TolkienVariant.LAVENDER,
+                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/sosquirrel/killer_squirrel.png"));
             });
 
     public SquirrelRender(EntityRendererProvider.Context context) {
@@ -41,6 +67,8 @@ public class SquirrelRender extends MobRenderer<SquirrelEntity, SquirrelModel<Sq
     public void render(SquirrelEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         if(entity.isBaby()) {
             poseStack.scale(0.05f, 0.05f, 0.05f);
+        } else if(entity.getVariant().getId() == 16){
+            poseStack.scale(0.75F, 0.75F, 0.75F);
         } else {
             poseStack.scale(0.1f, 0.1f, 0.1f);
         }
