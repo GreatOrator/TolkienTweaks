@@ -39,7 +39,6 @@ import java.util.List;
 import java.util.OptionalInt;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
-import static com.greatorator.tolkienmobs.world.TolkienPlacedFeatures.FLOWER_BRAMBLES_PLACED_KEY;
 
 public class TolkienConfiguredFeatures {
     private final static int LEAF_SHAG_FACTOR = 24;

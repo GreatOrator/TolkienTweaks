@@ -1,19 +1,15 @@
 package com.greatorator.tolkienmobs.world.components.feature;
 
-import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.mojang.serialization.Codec;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelSimulatedReader;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
 public class RockpileFeature extends Feature<BlockStateConfiguration> {
     public RockpileFeature(Codec<BlockStateConfiguration> config) {

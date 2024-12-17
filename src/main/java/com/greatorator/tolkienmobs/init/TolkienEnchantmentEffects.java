@@ -8,8 +8,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import java.util.function.Supplier;
-
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class TolkienEnchantmentEffects {

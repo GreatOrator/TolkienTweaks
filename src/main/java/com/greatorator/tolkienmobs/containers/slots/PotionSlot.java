@@ -8,8 +8,6 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
-
 public class PotionSlot extends SlotItemHandler {
     public static final ResourceLocation backgroundLoc = null;
 

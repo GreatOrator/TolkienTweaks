@@ -3,7 +3,6 @@ package com.greatorator.tolkienmobs.datagen.helpers;
 import com.greatorator.tolkienmobs.block.custom.BramblesBushBlock;
 import com.greatorator.tolkienmobs.block.custom.LeafPileBlock;
 import com.greatorator.tolkienmobs.block.custom.PipeweedCropBlock;
-import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienFluids;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;

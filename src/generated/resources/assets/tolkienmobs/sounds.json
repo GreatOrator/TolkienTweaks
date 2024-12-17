@@ -103,6 +103,27 @@
     ],
     "subtitle": "subtitles.tolkienmobs.mob.idle"
   },
+  "mob.entityttmcrebain.death": {
+    "sounds": [
+      "tolkienmobs:mob/crebain/crebain_death"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.death"
+  },
+  "mob.entityttmcrebain.hurt": {
+    "sounds": [
+      "tolkienmobs:mob/crebain/crebain_hurt"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.hurt"
+  },
+  "mob.entityttmcrebain.idle": {
+    "sounds": [
+      "tolkienmobs:mob/crebain/crebain_cry1",
+      "tolkienmobs:mob/crebain/crebain_cry2",
+      "tolkienmobs:mob/crebain/crebain_cry3",
+      "tolkienmobs:mob/crebain/crebain_cry4"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.idle"
+  },
   "mob.entityttmfrog.angry": {
     "sounds": [
       "tolkienmobs:mob/toaddle/toaddle_angry"

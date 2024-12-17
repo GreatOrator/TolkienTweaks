@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.block.custom;
 
-import com.greatorator.tolkienmobs.block.custom.entity.TolkienChestEntityBlock;
 import com.greatorator.tolkienmobs.block.custom.entity.LockableChestBlockEntity;
+import com.greatorator.tolkienmobs.block.custom.entity.TolkienChestEntityBlock;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;

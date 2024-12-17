@@ -7,19 +7,11 @@ import com.greatorator.tolkienmobs.block.custom.entity.model.LocustModel;
 import com.greatorator.tolkienmobs.block.custom.entity.model.PatchModelLoader;
 import com.greatorator.tolkienmobs.block.custom.entity.renderer.*;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
-import com.greatorator.tolkienmobs.item.custom.CoinPouchItem;
-import com.greatorator.tolkienmobs.item.custom.KeyRingItem;
 import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
 import net.minecraft.client.renderer.blockentity.SignRenderer;
-import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
-import net.neoforged.neoforge.event.village.VillagerTradesEvent;
-
-import static com.greatorator.tolkienmobs.init.TolkienItems.COIN_POUCH;
-import static com.greatorator.tolkienmobs.init.TolkienItems.KEY_RING;
 
 public class TolkienRegistration {
     public static void initModBusEvents(IEventBus bus) {

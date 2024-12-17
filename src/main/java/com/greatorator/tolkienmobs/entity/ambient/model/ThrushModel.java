@@ -1,7 +1,6 @@
 package com.greatorator.tolkienmobs.entity.ambient.model;
 
 import com.greatorator.tolkienmobs.entity.ambient.ThrushEntity;
-import com.greatorator.tolkienmobs.entity.ambient.animations.FrogAnimations;
 import com.greatorator.tolkienmobs.entity.ambient.animations.ThrushAnimations;
 import com.greatorator.tolkienmobs.entity.util.ModelAnimator;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -46,14 +45,6 @@ public class ThrushModel<T extends ThrushEntity> extends HierarchicalModel<T> {
 	private final ModelPart leg_left;
 	private final ModelPart noga_left;
 	private final ModelPart foot_left;
-	private final ModelPart legband;
-	private final ModelPart snail;
-	private final ModelPart head2;
-	private final ModelPart antennae;
-	private final ModelPart right;
-	private final ModelPart left;
-	private final ModelPart shell;
-	private final ModelPart tail2;
 
 	public ThrushModel(ModelPart root) {
 		this.root = root.getChild("root");
@@ -84,14 +75,6 @@ public class ThrushModel<T extends ThrushEntity> extends HierarchicalModel<T> {
 		this.leg_left = this.root.getChild("leg_left");
 		this.noga_left = this.leg_left.getChild("noga_left");
 		this.foot_left = this.noga_left.getChild("foot_left");
-		this.legband = this.leg_left.getChild("legband");
-		this.snail = this.root.getChild("snail");
-		this.head2 = this.snail.getChild("head2");
-		this.antennae = this.head2.getChild("antennae");
-		this.right = this.antennae.getChild("right");
-		this.left = this.antennae.getChild("left");
-		this.shell = this.snail.getChild("shell");
-		this.tail2 = this.snail.getChild("tail2");
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -190,30 +173,9 @@ public class ThrushModel<T extends ThrushEntity> extends HierarchicalModel<T> {
 
 		PartDefinition foot_left = noga_left.addOrReplaceChild("foot_left", CubeListBuilder.create().texOffs(27, 0).mirror().addBox(-1.5F, 0.0F, -2.5F, 3.0F, 0.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(0.0F, 4.0F, 0.0F));
 
-		PartDefinition legband = leg_left.addOrReplaceChild("legband", CubeListBuilder.create().texOffs(0, 8).addBox(-0.5F, 2.0F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.1F)), PartPose.offset(0.0F, 0.0F, 0.0F));
-
-		PartDefinition snail = root.addOrReplaceChild("snail", CubeListBuilder.create(), PartPose.offsetAndRotation(13.0F, 0.0F, -0.5F, 0.0F, 3.1416F, 0.0F));
-
-		PartDefinition head2 = snail.addOrReplaceChild("head2", CubeListBuilder.create().texOffs(52, 54).addBox(-1.0F, -1.0F, 0.0F, 2.0F, 2.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -1.0F, 0.0F));
-
-		PartDefinition antennae = head2.addOrReplaceChild("antennae", CubeListBuilder.create(), PartPose.offset(0.0F, -1.0F, 4.0F));
-
-		PartDefinition right = antennae.addOrReplaceChild("right", CubeListBuilder.create(), PartPose.offset(1.0F, 0.0F, 0.0F));
-
-		PartDefinition right_r1 = right.addOrReplaceChild("right_r1", CubeListBuilder.create().texOffs(40, 48).addBox(-0.5F, -2.7F, 0.0F, 1.0F, 3.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.5236F, 0.0F, 0.3491F));
-
-		PartDefinition left = antennae.addOrReplaceChild("left", CubeListBuilder.create(), PartPose.offset(-1.0F, 0.0F, 0.0F));
-
-		PartDefinition left_r1 = left.addOrReplaceChild("left_r1", CubeListBuilder.create().texOffs(42, 48).addBox(-0.5F, -2.7F, 0.0F, 1.0F, 3.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.5236F, 0.0F, -0.3491F));
-
-		PartDefinition shell = snail.addOrReplaceChild("shell", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
-
-		PartDefinition shell_r1 = shell.addOrReplaceChild("shell_r1", CubeListBuilder.create().texOffs(40, 48).addBox(-1.5F, -4.5086F, -3.1305F, 3.0F, 5.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -1.0F, 0.0F, 0.1309F, 0.0F, 0.0F));
-
-		PartDefinition tail2 = snail.addOrReplaceChild("tail2", CubeListBuilder.create().texOffs(40, 58).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 1.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, -4.0F));
-
 		return LayerDefinition.create(meshdefinition, 64, 64);
 	}
+
 	@Override
 	public void setupAnim(ThrushEntity entity, float limbSwing, float limbSwingAmount, float age, float headYaw, float headPitch) {
 		root.getAllParts().forEach(ModelPart::resetPose);
