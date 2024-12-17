@@ -1,14 +1,11 @@
 package com.greatorator.tolkienmobs.containers;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.containers.slots.KeyCodeSlot;
-import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.greatorator.tolkienmobs.init.TolkienContainers;
+import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.greatorator.tolkienmobs.item.custom.KeyItem;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -18,7 +15,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ComponentItemHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.wrapper.InvWrapper;
-import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class KeyCodeContainer extends AbstractContainerMenu {
     public static ItemStack keyStack;

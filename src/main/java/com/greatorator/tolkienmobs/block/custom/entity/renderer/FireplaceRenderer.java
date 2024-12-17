@@ -4,7 +4,6 @@ package com.greatorator.tolkienmobs.block.custom.entity.renderer;
 import com.greatorator.tolkienmobs.block.custom.FireplaceBlock;
 import com.greatorator.tolkienmobs.block.custom.entity.FireplaceBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;

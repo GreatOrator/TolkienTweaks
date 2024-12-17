@@ -3,7 +3,6 @@ package com.greatorator.tolkienmobs.entity.ambient;
 import com.greatorator.tolkienmobs.entity.TolkienAmbientEntity;
 import com.greatorator.tolkienmobs.entity.util.BinaryAnimation;
 import com.greatorator.tolkienmobs.entity.util.Easings;
-import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
 import com.greatorator.tolkienmobs.init.TolkienTags;
 import net.minecraft.SharedConstants;
@@ -35,10 +34,10 @@ import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 
-public class ThrushEntity extends Animal implements FlyingAnimal {
+public class CrebainEntity extends Animal implements FlyingAnimal {
     public final BinaryAnimation flyAnimationState = new BinaryAnimation(SharedConstants.TICKS_PER_SECOND / 4, Easings::inOutSine);
 
-    public ThrushEntity(EntityType<? extends Animal> entityType, Level level) {
+    public CrebainEntity(EntityType<? extends Animal> entityType, Level level) {
         super(entityType, level);
 
         moveControl = new FlyingMoveControl(this, 20, true);
@@ -73,7 +72,7 @@ public class ThrushEntity extends Animal implements FlyingAnimal {
         this.goalSelector.addGoal(1, new PanicGoal(this, 2.0));
         this.goalSelector.addGoal(2, new TemptGoal(this, 1.25, stack -> stack.is(TolkienTags.Items.INSECTS), false));
         this.goalSelector.addGoal(2, new BreedGoal(this, 1.0));
-        this.goalSelector.addGoal(3, new WanderGoal(this, 1.0));
+        this.goalSelector.addGoal(3, new CrebainEntity.WanderGoal(this, 1.0));
         this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.25));
 
         this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0));
@@ -109,12 +108,12 @@ public class ThrushEntity extends Animal implements FlyingAnimal {
 
     @Override
     public boolean isFood(ItemStack stack) {
-        return stack.is(TolkienTags.Items.INSECTS);
+        return false;
     }
 
     @Override
-    public ThrushEntity getBreedOffspring(ServerLevel world, AgeableMob mate) {
-        return TolkienEntities.ENTITY_TTM_THRUSH.get().create(world);
+    public CrebainEntity getBreedOffspring(ServerLevel world, AgeableMob mate) {
+        return null;
     }
 
     public static class WanderGoal extends WaterAvoidingRandomFlyingGoal {

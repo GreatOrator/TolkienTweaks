@@ -1,8 +1,5 @@
 package com.greatorator.tolkienmobs.init;
 
-import com.greatorator.tolkienmobs.world.components.feature.*;
-import com.greatorator.tolkienmobs.world.components.config.RootConfig;
-import com.greatorator.tolkienmobs.world.components.feature.config.HollowLogConfig;
 import com.greatorator.tolkienmobs.world.components.feature.tree.components.SpheroidFoliagePlacer;
 import com.greatorator.tolkienmobs.world.components.feature.tree.placers.BranchingLargeTrunkPlacer;
 import com.greatorator.tolkienmobs.world.components.feature.tree.placers.BranchingTrunkPlacer;
@@ -10,9 +7,6 @@ import com.greatorator.tolkienmobs.world.components.feature.tree.placers.TreeRoo
 import com.greatorator.tolkienmobs.world.components.feature.tree.placers.TrunkSideDecorator;
 import com.greatorator.tolkienmobs.world.components.placements.AvoidLandmarkModifier;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerType;
 import net.minecraft.world.level.levelgen.feature.treedecorators.TreeDecoratorType;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;

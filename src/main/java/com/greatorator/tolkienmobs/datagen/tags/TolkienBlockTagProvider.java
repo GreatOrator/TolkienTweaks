@@ -12,7 +12,6 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import java.util.concurrent.CompletableFuture;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
-import static com.greatorator.tolkienmobs.init.TolkienTags.Blocks.PLANTS_HANG_ON;
 
 public class TolkienBlockTagProvider extends BlockTagsProvider {
     public TolkienBlockTagProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper existingFileHelper) {

@@ -1,15 +1,14 @@
 package com.greatorator.tolkienmobs.block.custom;
 
-import com.greatorator.tolkienmobs.block.TolkienBlock;
-import com.greatorator.tolkienmobs.init.TolkienBlocks;
+import com.greatorator.tolkienmobs.block.TolkienEntityBlock;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -22,12 +21,11 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.model.data.ModelProperty;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
-import java.util.*;
 
-public class ChameleonBlock extends TolkienBlock implements SimpleWaterloggedBlock {
+public class ChameleonBlock<C> extends TolkienEntityBlock implements SimpleWaterloggedBlock {
     public static final MapCodec<ChameleonBlock> CODEC = simpleCodec(ChameleonBlock::new);
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -44,6 +42,11 @@ public class ChameleonBlock extends TolkienBlock implements SimpleWaterloggedBlo
     public ChameleonBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, Boolean.FALSE));
+    }
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
     }
 
     @Override
@@ -124,5 +127,11 @@ public class ChameleonBlock extends TolkienBlock implements SimpleWaterloggedBlo
     @Override
     public boolean propagatesSkylightDown(BlockState p_200123_1_, BlockGetter p_200123_2_, BlockPos p_200123_3_) {
         return true;
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+        return null;
     }
 }

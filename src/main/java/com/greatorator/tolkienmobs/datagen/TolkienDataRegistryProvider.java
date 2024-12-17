@@ -1,12 +1,12 @@
 package com.greatorator.tolkienmobs.datagen;
 
-import com.greatorator.tolkienmobs.world.TolkienBiomeModifiers;
-import com.greatorator.tolkienmobs.world.TolkienConfiguredFeatures;
-import com.greatorator.tolkienmobs.world.TolkienPlacedFeatures;
 import com.greatorator.tolkienmobs.init.TolkienBiomes;
 import com.greatorator.tolkienmobs.init.TolkienEnchantments;
 import com.greatorator.tolkienmobs.init.TolkienJukebox;
 import com.greatorator.tolkienmobs.init.TolkienTrimMaterials;
+import com.greatorator.tolkienmobs.world.TolkienBiomeModifiers;
+import com.greatorator.tolkienmobs.world.TolkienConfiguredFeatures;
+import com.greatorator.tolkienmobs.world.TolkienPlacedFeatures;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;

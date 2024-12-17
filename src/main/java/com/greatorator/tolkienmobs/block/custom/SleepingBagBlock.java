@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.block.custom;
 
-import com.greatorator.tolkienmobs.block.TolkienBlock;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

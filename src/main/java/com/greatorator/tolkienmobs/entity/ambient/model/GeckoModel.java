@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.entity.ambient.model;
 
-import com.greatorator.tolkienmobs.entity.ambient.animations.GeckoAnimations;
 import com.greatorator.tolkienmobs.entity.ambient.GeckoEntity;
+import com.greatorator.tolkienmobs.entity.ambient.animations.GeckoAnimations;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.HierarchicalModel;

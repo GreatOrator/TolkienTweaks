@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.effect;
 
-import net.minecraft.client.particle.Particle;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;

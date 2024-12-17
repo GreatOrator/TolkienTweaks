@@ -6,14 +6,11 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.SectionPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
-import net.minecraft.world.level.levelgen.structure.StructureStart;
 
-import java.util.Optional;
 import java.util.stream.Stream;
 
 public class AvoidLandmarkModifier extends PlacementModifier {

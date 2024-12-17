@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.recipe;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.containers.TrinketTableContainer;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienRecipeSerializers;
@@ -10,9 +9,11 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 

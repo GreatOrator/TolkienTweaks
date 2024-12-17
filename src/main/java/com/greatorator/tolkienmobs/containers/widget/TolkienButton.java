@@ -1,9 +1,6 @@
 package com.greatorator.tolkienmobs.containers.widget;
 
-import java.util.function.Function;
-
 import com.greatorator.tolkienmobs.TolkienMobsMain;
-import org.jetbrains.annotations.Nullable;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -12,6 +9,9 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Function;
 
 public class TolkienButton extends Button {
 

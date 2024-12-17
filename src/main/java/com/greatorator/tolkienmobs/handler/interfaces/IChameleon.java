@@ -1,13 +1,13 @@
 package com.greatorator.tolkienmobs.handler.interfaces;
 
-import java.util.Optional;
-
 import com.greatorator.tolkienmobs.block.custom.entity.ChameleonBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.Optional;
 
 public interface IChameleon {
 	public static BlockState getChameleonStateOrDefault(BlockState state, BlockGetter level, BlockPos pos) {

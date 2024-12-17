@@ -1,8 +1,8 @@
 package com.greatorator.tolkienmobs.containers;
 
 import com.greatorator.tolkienmobs.containers.slots.KeyItemSlot;
-import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.greatorator.tolkienmobs.init.TolkienContainers;
+import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;

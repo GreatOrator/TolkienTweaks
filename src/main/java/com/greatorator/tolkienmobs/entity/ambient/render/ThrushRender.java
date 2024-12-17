@@ -1,17 +1,12 @@
 package com.greatorator.tolkienmobs.entity.ambient.render;
 
-import com.google.common.collect.Maps;
 import com.greatorator.tolkienmobs.entity.ambient.ThrushEntity;
 import com.greatorator.tolkienmobs.entity.ambient.model.ThrushModel;
-import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.Util;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
-
-import java.util.Map;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 

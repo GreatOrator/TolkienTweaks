@@ -3,9 +3,7 @@ package com.greatorator.tolkienmobs.entity.ambient.model;// Made with Blockbench
 // Paste this class into your mod and generate all required imports
 
 
-import com.greatorator.tolkienmobs.entity.ambient.RatEntity;
 import com.greatorator.tolkienmobs.entity.ambient.SquirrelEntity;
-import com.greatorator.tolkienmobs.entity.ambient.animations.RatAnimations;
 import com.greatorator.tolkienmobs.entity.ambient.animations.SquirrelAnimations;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;

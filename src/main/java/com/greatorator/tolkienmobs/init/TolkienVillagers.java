@@ -1,7 +1,6 @@
 package com.greatorator.tolkienmobs.init;
 
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.ai.village.poi.PoiType;

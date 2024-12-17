@@ -1,7 +1,5 @@
 package com.greatorator.tolkienmobs.util;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
-import com.greatorator.tolkienmobs.containers.CoinPouchContainer;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.item.custom.CoinPouchItem;
 import com.greatorator.tolkienmobs.item.custom.KeyRingItem;

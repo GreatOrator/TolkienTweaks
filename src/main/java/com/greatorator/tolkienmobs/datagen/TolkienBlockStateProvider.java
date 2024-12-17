@@ -8,7 +8,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.AttachFace;
-import net.neoforged.neoforge.client.model.generators.*;
+import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
+import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.client.model.generators.VariantBlockStateBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class TolkienBlockStateProvider extends BlockModelBuilders {

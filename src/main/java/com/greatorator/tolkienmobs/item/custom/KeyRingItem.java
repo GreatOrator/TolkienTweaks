@@ -1,8 +1,6 @@
 package com.greatorator.tolkienmobs.item.custom;
 
-import com.greatorator.tolkienmobs.containers.CoinPouchContainer;
 import com.greatorator.tolkienmobs.containers.KeyRingContainer;
-import com.greatorator.tolkienmobs.containers.handlers.KeyRingItemStackHandler;
 import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.greatorator.tolkienmobs.init.TolkienTags;
 import net.minecraft.network.chat.Component;
@@ -15,15 +13,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.ComponentItemHandler;
-import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class KeyRingItem extends Item {
     public KeyRingItem(Properties properties) {

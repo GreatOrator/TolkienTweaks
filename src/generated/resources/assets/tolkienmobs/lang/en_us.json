@@ -431,6 +431,7 @@
   "entity.minecraft.villager.tolkienmobs.trinket_smith": "Magical Armourer",
   "entity.minecraft.villager.tolkienmobs.trinket_tailor": "Magical Tailor",
   "entity.tolkienmobs.entityttmbarrow": "Barrow Wight",
+  "entity.tolkienmobs.entityttmcrebain": "Crebain",
   "entity.tolkienmobs.entityttmfrog": "Frog",
   "entity.tolkienmobs.entityttmfrog.murder_frog": "§4Murder Frog§r",
   "entity.tolkienmobs.entityttmgecko": "Gecko",
@@ -515,6 +516,7 @@
   "item.tolkienmobs.dwarven_maple_chest_boat": "Dwarven Maple Chest Boat",
   "item.tolkienmobs.elven_bow": "Elven Bow",
   "item.tolkienmobs.entityttmbarrow_spawn_egg": "Barrow Wight Spawn Egg",
+  "item.tolkienmobs.entityttmcrebain_spawn_egg": "Crebain Spawn Egg",
   "item.tolkienmobs.entityttmfrog_spawn_egg": "Frog Spawn Egg",
   "item.tolkienmobs.entityttmgecko_spawn_egg": "Gecko Spawn Egg",
   "item.tolkienmobs.entityttmrat_spawn_egg": "Rat Spawn Egg",
@@ -1077,9 +1079,11 @@
   "subtitles.tolkienmobs.item.hype_horn": "Celebrating victory",
   "subtitles.tolkienmobs.mob.coin_trader": "A Wild Coin Trader appears!",
   "subtitles.tolkienmobs.mob.entityttmbarrow": " ",
+  "subtitles.tolkienmobs.mob.entityttmcrebain": " ",
   "subtitles.tolkienmobs.mob.entityttmfrog": " ",
   "subtitles.tolkienmobs.mob.entityttmrat": " ",
   "subtitles.tolkienmobs.mob.entityttmsquirrel": " ",
   "subtitles.tolkienmobs.mob.entityttmswarm": " ",
+  "subtitles.tolkienmobs.mob.entityttmthrush": " ",
   "tolkienmobs.msg.wrong_key": "You need the correct key!"
 }

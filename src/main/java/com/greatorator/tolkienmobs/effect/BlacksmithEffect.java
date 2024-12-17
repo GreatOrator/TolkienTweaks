@@ -1,7 +1,5 @@
 package com.greatorator.tolkienmobs.effect;
 
-import com.google.common.collect.Lists;
-import com.greatorator.tolkienmobs.TolkienMobsMain;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -9,8 +7,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Predicate;
 
 public class BlacksmithEffect extends TolkienEffect {

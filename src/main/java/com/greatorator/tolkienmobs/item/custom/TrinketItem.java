@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.item.custom;
 
-import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.greatorator.tolkienmobs.handler.data.TrinketComponent;
+import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -22,8 +22,9 @@ import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
 
-import java.util.*;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 public class TrinketItem extends Item {
     private static int trinket_effect = 0;

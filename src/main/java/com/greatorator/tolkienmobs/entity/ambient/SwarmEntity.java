@@ -1,7 +1,6 @@
 package com.greatorator.tolkienmobs.entity.ambient;
 
 import com.greatorator.tolkienmobs.init.TolkienSounds;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;

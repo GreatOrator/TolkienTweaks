@@ -10,12 +10,10 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
@@ -27,15 +25,11 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.DamageSourceCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
-import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.Optional;
-
-import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class TolkienEnchantments {
     public static final ResourceKey<Enchantment> GONDORIAN_RESOLVE_KEY = create("gondorian_resolve_key");

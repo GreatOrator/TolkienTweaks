@@ -1,25 +1,10 @@
 package com.greatorator.tolkienmobs.event;
 
-import com.google.common.base.Suppliers;
-import com.greatorator.tolkienmobs.block.custom.entity.function.ChameleonBlockDynamicBakedModel;
-import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienItems;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateHolder;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ComputeFovModifierEvent;
-import net.neoforged.neoforge.client.event.ModelEvent;
-
-import java.util.Map;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
