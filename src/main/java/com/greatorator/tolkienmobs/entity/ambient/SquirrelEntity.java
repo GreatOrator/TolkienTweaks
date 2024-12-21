@@ -65,7 +65,11 @@ public class SquirrelEntity extends TolkienAmbientEntity {
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-        return TolkienEntities.ENTITY_TTM_SQUIRREL.get().create(serverLevel);
+        TolkienVariant variant = Util.getRandom(TolkienVariant.values(), this.random);
+        SquirrelEntity baby = TolkienEntities.ENTITY_TTM_SQUIRREL.get().create(serverLevel);
+        baby.setVariant(variant);
+
+        return baby;
     }
 
     /**

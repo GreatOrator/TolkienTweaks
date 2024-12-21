@@ -46,7 +46,11 @@ public class GeckoEntity extends TolkienAmbientEntity {
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-        return TolkienEntities.ENTITY_TTM_GECKO.get().create(serverLevel);
+        TolkienVariant variant = Util.getRandom(TolkienVariant.values(), this.random);
+        GeckoEntity baby = TolkienEntities.ENTITY_TTM_GECKO.get().create(serverLevel);
+        baby.setVariant(variant);
+
+        return baby;
     }
 
     /**

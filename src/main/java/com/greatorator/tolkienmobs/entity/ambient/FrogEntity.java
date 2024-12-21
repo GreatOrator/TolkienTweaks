@@ -66,7 +66,11 @@ public class FrogEntity extends TolkienAmbientEntity {
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-        return TolkienEntities.ENTITY_TTM_FROG.get().create(serverLevel);
+        TolkienVariant variant = Util.getRandom(TolkienVariant.values(), this.random);
+        FrogEntity baby = TolkienEntities.ENTITY_TTM_FROG.get().create(serverLevel);
+        baby.setVariant(variant);
+
+        return baby;
     }
 
     /**
