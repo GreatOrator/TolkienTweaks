@@ -220,7 +220,10 @@ public class CrebainModel<T extends CrebainEntity> extends HierarchicalModel<T> 
 		}
 
 		if (walkAnimation > 0.0f) {
-			this.animate(entity.idleAnimationState, CrebainAnimations.idle, age, 1f);
+			try (ModelAnimator.Cycle walk = ModelAnimator.cycle(limbSwing, limbSwingAmount * walkAnimation)) {
+				leg_left.xRot += walk.eval(1.0f, 1.0f);
+				leg_right.xRot += walk.eval(1.0f, -1.0f);
+			}
 		}
 	}
 

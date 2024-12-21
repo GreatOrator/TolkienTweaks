@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.entity.ambient.model;
 
 import com.greatorator.tolkienmobs.entity.ambient.ThrushEntity;
+import com.greatorator.tolkienmobs.entity.ambient.animations.FrogAnimations;
 import com.greatorator.tolkienmobs.entity.ambient.animations.ThrushAnimations;
 import com.greatorator.tolkienmobs.entity.util.ModelAnimator;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -190,6 +191,7 @@ public class ThrushModel<T extends ThrushEntity> extends HierarchicalModel<T> {
 			if (flightAnimation > 0.0f) {
 				body.xRot += Mth.DEG_TO_RAD * flightAnimation;
 				head.xRot -= Mth.DEG_TO_RAD * flightAnimation;
+//				this.animateWalk(ThrushAnimations.fly, limbSwing, limbSwingAmount, 2f, 2.5f);
 
 				tail.xRot -= Mth.DEG_TO_RAD * flightAnimation;
 
@@ -213,7 +215,12 @@ public class ThrushModel<T extends ThrushEntity> extends HierarchicalModel<T> {
 		}
 
 		if (walkAnimation > 0.0f) {
-			this.animate(entity.idleAnimationState, ThrushAnimations.idle, age, 1f);
+//			this.animate(entity.idleAnimationState, ThrushAnimations.idle, age, 1f);
+
+			try (ModelAnimator.Cycle walk = ModelAnimator.cycle(limbSwing, limbSwingAmount * walkAnimation)) {
+				leg_left.xRot += walk.eval(1.0f, 1.0f);
+				leg_right.xRot += walk.eval(1.0f, -1.0f);
+			}
 		}
 	}
 
