@@ -5,6 +5,7 @@ import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
 import com.greatorator.tolkienmobs.init.TolkienTags;
+import com.greatorator.tolkienmobs.util.MathUtility;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -36,12 +37,17 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.animatable.GeoAnimatable;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.*;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nonnull;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class FrogEntity extends TolkienAmbientEntity {
+public class FrogEntity extends TolkienAmbientEntity implements GeoEntity {
     private static final EntityDataAccessor<Integer> VARIANT =
             SynchedEntityData.defineId(FrogEntity.class, EntityDataSerializers.INT);
 
@@ -170,5 +176,47 @@ public class FrogEntity extends TolkienAmbientEntity {
     @Override
     public SoundSource getSoundSource() {
         return this.getVariant() == TolkienVariant.LAVENDER ? SoundSource.HOSTILE : SoundSource.NEUTRAL;
+    }
+
+    /**
+     * Animations
+     */
+    private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "Idle2", 1, (event) -> {
+            if (!event.isMoving() && !event.getAnimatable().isAggressive()) {
+                event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
+                return PlayState.CONTINUE;
+            }
+            return PlayState.STOP;
+        }));
+        controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
+            if (event.isMoving()) {
+                event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
+                return PlayState.CONTINUE;
+            }
+            return PlayState.STOP;
+        }));
+        controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
+            if (event.getAnimatable().isAggressive()) {
+                event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
+                return PlayState.CONTINUE;
+            }
+            return PlayState.STOP;
+        }));
+        controllers.add(new AnimationController<>(this, "Swim", 1, (event) -> {
+            if (event.isMoving() && event.getAnimatable().isInWater()) {
+                event.getController().setAnimation(RawAnimation.begin().thenPlay("swim"));
+                return PlayState.CONTINUE;
+            }
+            return PlayState.STOP;
+        }));
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return this.geoCache;
     }
 }

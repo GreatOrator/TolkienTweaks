@@ -2,7 +2,9 @@ package com.greatorator.tolkienmobs.entity.ambient.render;
 
 import com.google.common.collect.Maps;
 import com.greatorator.tolkienmobs.entity.ambient.RatEntity;
+import com.greatorator.tolkienmobs.entity.ambient.SquirrelEntity;
 import com.greatorator.tolkienmobs.entity.ambient.model.RatModel;
+import com.greatorator.tolkienmobs.entity.ambient.model.SquirrelModel;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.Util;
@@ -10,12 +12,13 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 import java.util.Map;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class RatRender extends MobRenderer<RatEntity, RatModel<RatEntity>> {
+public class RatRender extends GeoEntityRenderer<RatEntity> {
     private static final Map<TolkienVariant, ResourceLocation> LOCATION_BY_VARIANT =
             Util.make(Maps.newEnumMap(TolkienVariant.class), map -> {
                 map.put(TolkienVariant.DEFAULT,
@@ -55,7 +58,7 @@ public class RatRender extends MobRenderer<RatEntity, RatModel<RatEntity>> {
             });
 
     public RatRender(EntityRendererProvider.Context context) {
-        super(context, new RatModel<>(context.bakeLayer(RatModel.LAYER_LOCATION)), 0.25f);
+        super(context, new RatModel());
     }
 
     @Override

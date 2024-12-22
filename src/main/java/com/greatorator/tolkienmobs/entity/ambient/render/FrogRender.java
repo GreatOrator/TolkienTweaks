@@ -10,13 +10,14 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 import java.util.Map;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class FrogRender extends MobRenderer<FrogEntity, FrogModel<FrogEntity>> {
-    private static final Map<TolkienVariant, ResourceLocation> LOCATION_BY_VARIANT =
+public class FrogRender extends GeoEntityRenderer<FrogEntity> {
+    public static final Map<TolkienVariant, ResourceLocation> LOCATION_BY_VARIANT =
             Util.make(Maps.newEnumMap(TolkienVariant.class), map -> {
                 map.put(TolkienVariant.DEFAULT,
                         ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/toaddle/toaddle_black.png"));
@@ -55,7 +56,7 @@ public class FrogRender extends MobRenderer<FrogEntity, FrogModel<FrogEntity>> {
             });
 
     public FrogRender(EntityRendererProvider.Context context) {
-        super(context, new FrogModel<>(context.bakeLayer(FrogModel.LAYER_LOCATION)), 0.25f);
+        super(context, new FrogModel());
     }
 
     @Override

@@ -19,6 +19,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
@@ -33,12 +34,16 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.*;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nonnull;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class SquirrelEntity extends TolkienAmbientEntity {
+public class SquirrelEntity extends TolkienAmbientEntity implements GeoEntity {
     public final AnimationState idleAnimationState = new AnimationState();
     private int idleAnimationTimeout = 0;
     private static final EntityDataAccessor<Integer> VARIANT =
@@ -168,5 +173,40 @@ public class SquirrelEntity extends TolkienAmbientEntity {
     @Override
     public SoundSource getSoundSource() {
         return this.getVariant() == TolkienVariant.LAVENDER ? SoundSource.HOSTILE : SoundSource.NEUTRAL;
+    }
+
+    /**
+     * Animations
+     */
+    private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
+            if (!event.isMoving() && !event.getAnimatable().isAggressive()) {
+                event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
+                return PlayState.CONTINUE;
+            }
+            return PlayState.STOP;
+        }));
+        controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
+            if (event.isMoving()) {
+                event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
+                return PlayState.CONTINUE;
+            }
+            return PlayState.STOP;
+        }));
+        controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
+            if (event.getAnimatable().isAggressive()) {
+                event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
+                return PlayState.CONTINUE;
+            }
+            return PlayState.STOP;
+        }));
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return this.geoCache;
     }
 }

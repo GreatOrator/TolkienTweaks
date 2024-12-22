@@ -15,16 +15,21 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.*;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nonnull;
 
-public class RatEntity extends TolkienAmbientEntity {
+public class RatEntity extends TolkienAmbientEntity implements GeoEntity {
     public final AnimationState idleAnimationState = new AnimationState();
     private int idleAnimationTimeout = 0;
     private static final EntityDataAccessor<Integer> VARIANT =
@@ -112,5 +117,33 @@ public class RatEntity extends TolkienAmbientEntity {
     @Override
     protected SoundEvent getDeathSound() {
         return TolkienSounds.DEATH_RAT.get();
+    }
+
+    /**
+     * Animations
+     */
+    private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
+            if (!event.isMoving() && !event.getAnimatable().isAggressive()) {
+                event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
+                return PlayState.CONTINUE;
+            }
+            return PlayState.STOP;
+        }));
+        controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
+            if (event.isMoving()) {
+                event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
+                return PlayState.CONTINUE;
+            }
+            return PlayState.STOP;
+        }));
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return this.geoCache;
     }
 }

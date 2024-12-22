@@ -32,12 +32,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
+import software.bernie.geckolib.animatable.GeoEntity;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.*;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 
-public class ThrushEntity extends Animal implements FlyingAnimal {
-    public final BinaryAnimation flyAnimationState = new BinaryAnimation(SharedConstants.TICKS_PER_SECOND / 4, Easings::inOutSine);
-
+public class ThrushEntity extends Animal implements GeoEntity, FlyingAnimal {
     public ThrushEntity(EntityType<? extends Animal> entityType, Level level) {
         super(entityType, level);
 
@@ -79,18 +81,6 @@ public class ThrushEntity extends Animal implements FlyingAnimal {
         this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        if (level().isClientSide()) {
-            flyAnimationState.tick(isFlying());
-        }
-    }
-
-    public float getFlightAnimation(float partialTicks) {
-        return flyAnimationState.get(partialTicks);
     }
 
     @Override
@@ -182,5 +172,47 @@ public class ThrushEntity extends Animal implements FlyingAnimal {
     @Override
     protected SoundEvent getDeathSound() {
         return TolkienSounds.DEATH_THRUSH.get();
+    }
+
+    /**
+     * Animations
+     */
+    private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
+            if (!event.isMoving() && !event.getAnimatable().isAggressive()) {
+                event.getController().setAnimation(RawAnimation.begin().thenPlay("idle2"));
+                return PlayState.CONTINUE;
+            }
+            return PlayState.STOP;
+        }));
+        controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
+            if (event.isMoving() && !isFlying()) {
+                event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
+                return PlayState.CONTINUE;
+            }
+            return PlayState.STOP;
+        }));
+        controllers.add(new AnimationController<>(this, "Glide", 1, (event) -> {
+            if (!event.isMoving() & isFlying()) {
+                event.getController().setAnimation(RawAnimation.begin().thenPlay("glide"));
+                return PlayState.CONTINUE;
+            }
+            return PlayState.STOP;
+        }));
+        controllers.add(new AnimationController<>(this, "Fly", 1, (event) -> {
+            if (event.isMoving() & isFlying()) {
+                event.getController().setAnimation(RawAnimation.begin().thenPlay("fly"));
+                return PlayState.CONTINUE;
+            }
+            return PlayState.STOP;
+        }));
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return this.geoCache;
     }
 }
