@@ -16,9 +16,9 @@ import java.util.concurrent.CompletableFuture;
 public class TolkienLootTableProvider extends LootTableProvider {
 	public TolkienLootTableProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
 		super(output, TolkienLootTables.allBuiltin(), List.of(
-			new LootTableProvider.SubProviderEntry(TolkienBlockLootTableProvider::new, LootContextParamSets.BLOCK)
+			new LootTableProvider.SubProviderEntry(TolkienBlockLootTableProvider::new, LootContextParamSets.BLOCK),
+			new LootTableProvider.SubProviderEntry(TolkienEntityLootTables::new, LootContextParamSets.ENTITY)
 //			new LootTableProvider.SubProviderEntry(ChestLootTables::new, LootContextParamSets.CHEST),
-//			new LootTableProvider.SubProviderEntry(EntityLootTables::new, LootContextParamSets.ENTITY),
 //			new LootTableProvider.SubProviderEntry(SpecialLootTables::new, LootContextParamSets.EMPTY)
 		), provider);
 	}

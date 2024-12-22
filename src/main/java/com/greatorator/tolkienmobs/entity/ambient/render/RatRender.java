@@ -2,15 +2,12 @@ package com.greatorator.tolkienmobs.entity.ambient.render;
 
 import com.google.common.collect.Maps;
 import com.greatorator.tolkienmobs.entity.ambient.RatEntity;
-import com.greatorator.tolkienmobs.entity.ambient.SquirrelEntity;
 import com.greatorator.tolkienmobs.entity.ambient.model.RatModel;
-import com.greatorator.tolkienmobs.entity.ambient.model.SquirrelModel;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
@@ -59,6 +56,7 @@ public class RatRender extends GeoEntityRenderer<RatEntity> {
 
     public RatRender(EntityRendererProvider.Context context) {
         super(context, new RatModel());
+        this.shadowRadius = 0.25f;
     }
 
     @Override

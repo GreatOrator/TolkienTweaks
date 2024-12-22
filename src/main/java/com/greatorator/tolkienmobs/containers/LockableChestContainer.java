@@ -1,15 +1,10 @@
 package com.greatorator.tolkienmobs.containers;
 
-import com.greatorator.tolkienmobs.block.custom.LockableChestBlock;
 import com.greatorator.tolkienmobs.block.custom.entity.LockableChestBlockEntity;
-import com.greatorator.tolkienmobs.block.custom.entity.PiggyBankBlockEntity;
 import com.greatorator.tolkienmobs.containers.slots.KeyCodeSlot;
 import com.greatorator.tolkienmobs.init.TolkienContainers;
-import com.greatorator.tolkienmobs.init.TolkienDataComponents;
-import com.greatorator.tolkienmobs.item.custom.KeyItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -19,8 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.ComponentItemHandler;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.wrapper.InvWrapper;
 
 public class LockableChestContainer extends AbstractContainerMenu {
     private final LockableChestBlockEntity tileEntity;

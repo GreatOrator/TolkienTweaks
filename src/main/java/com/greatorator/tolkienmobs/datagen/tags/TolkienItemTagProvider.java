@@ -42,6 +42,12 @@ public class TolkienItemTagProvider extends ItemTagsProvider {
                 .add(TolkienItems.GOLD_KEY.get())
                 .add(TolkienItems.MITHRIL_KEY.get())
                 .add(TolkienItems.MASTER_KEY.get());
+        tag(TolkienTags.Items.INSECTS)
+                .add(TolkienItems.INSECT.get())
+                .add(TolkienItems.GOLDEN_INSECT.get());
+        tag(TolkienTags.Items.ACORNS)
+                .add(TolkienItems.TREE_ACORN.get())
+                .add(TolkienItems.GOLDEN_TREE_ACORN.get());
         tag(TolkienTags.Items.TRINKET)
                 .add(TolkienItems.TRINKET_RING.get())
                 .add(TolkienItems.TRINKET_AMULET.get())

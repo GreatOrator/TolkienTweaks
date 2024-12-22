@@ -1,4 +1,4 @@
-// 1.21.1	2024-12-08T08:43:27.8489698	Loot Tables
+// 1.21.1	2024-12-22T14:55:44.4459354	Loot Tables
 533799de7814d0570626fc9d1015935dda878d4d data/tolkienmobs/loot_table/blocks/backpack.json
 33196f79452898a0fc0bcdf16c86f6ad0b3863f6 data/tolkienmobs/loot_table/blocks/barrel_culumalda.json
 8c5b104617485a4e2951a7876e136244e787221c data/tolkienmobs/loot_table/blocks/barrel_deadwood.json
@@ -414,3 +414,14 @@ e2467fdb2336adb7bea84ef1c36137c31a74f14d data/tolkienmobs/loot_table/blocks/wood
 e85d2f89d2ff9e43cd3e126a9470b70c94bb6f59 data/tolkienmobs/loot_table/blocks/wood_lebethron.json
 2101db3c348bf9dbadf0162a8a74a483ac2fe32f data/tolkienmobs/loot_table/blocks/wood_mallorn.json
 863cea41baaa76a1251fa0b0b0f38db7102b04f5 data/tolkienmobs/loot_table/blocks/wood_mirkwood.json
+a1e7dc5ddf79ec07567844a2017834da92446d2a data/tolkienmobs/loot_table/entities/entityttmauroch.json
+e919258e0038d5459a948c7fc3c06c7ac931a84e data/tolkienmobs/loot_table/entities/entityttmbarrow.json
+bfb6f10e1b8b1bd8d2234109788814f885ac0c66 data/tolkienmobs/loot_table/entities/entityttmcrebain.json
+c0aa89d32c34bf5efe87759f5b03ce02f578ea5e data/tolkienmobs/loot_table/entities/entityttmfrog.json
+d5b324476817f0f0c5138ba5ed1f78b240aa4657 data/tolkienmobs/loot_table/entities/entityttmgecko.json
+11a3e6342e04900215157b3350191fab9c976f99 data/tolkienmobs/loot_table/entities/entityttmgoat.json
+cdbb1f36173b0e27e86a432d3dff321f830665e4 data/tolkienmobs/loot_table/entities/entityttmmumakil.json
+7e9aec852af0f47fa658c54fd3b5a11f1ab7573f data/tolkienmobs/loot_table/entities/entityttmrat.json
+72d12bfe4a5dc0ecdb8b9adffb548bebeada83fa data/tolkienmobs/loot_table/entities/entityttmsquirrel.json
+a2276dedaba82a4fde63bf333e570b33c7024b94 data/tolkienmobs/loot_table/entities/entityttmswarm.json
+3f0ba9694dad47c88a969df906b779fba83811c7 data/tolkienmobs/loot_table/entities/entityttmthrush.json

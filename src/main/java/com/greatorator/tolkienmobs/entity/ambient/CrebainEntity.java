@@ -1,11 +1,7 @@
 package com.greatorator.tolkienmobs.entity.ambient;
 
-import com.greatorator.tolkienmobs.entity.TolkienAmbientEntity;
-import com.greatorator.tolkienmobs.entity.util.BinaryAnimation;
-import com.greatorator.tolkienmobs.entity.util.Easings;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
 import com.greatorator.tolkienmobs.init.TolkienTags;
-import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;

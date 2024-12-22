@@ -8,7 +8,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
@@ -57,6 +56,7 @@ public class FrogRender extends GeoEntityRenderer<FrogEntity> {
 
     public FrogRender(EntityRendererProvider.Context context) {
         super(context, new FrogModel());
+        this.shadowRadius = 0.25f;
     }
 
     @Override

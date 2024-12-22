@@ -163,6 +163,54 @@
     ],
     "subtitle": "subtitles.tolkienmobs.mob.step"
   },
+  "mob.entityttmgoat.angry": {
+    "sounds": [
+      "tolkienmobs:mob/goat/goat_angry"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.angry"
+  },
+  "mob.entityttmgoat.death": {
+    "sounds": [
+      "tolkienmobs:mob/goat/goat_death"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.death"
+  },
+  "mob.entityttmgoat.hurt": {
+    "sounds": [
+      "tolkienmobs:mob/goat/goat_hurt"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.hurt"
+  },
+  "mob.entityttmgoat.idle": {
+    "sounds": [
+      "tolkienmobs:mob/goat/goat_say1",
+      "tolkienmobs:mob/goat/goat_say2",
+      "tolkienmobs:mob/goat/goat_say3",
+      "tolkienmobs:mob/goat/goat_say4"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.idle"
+  },
+  "mob.entityttmgoat.scream": {
+    "sounds": [
+      "tolkienmobs:mob/goat/goat_scream"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.scream"
+  },
+  "mob.entityttmmumakil.hurt": {
+    "sounds": [
+      "tolkienmobs:mob/mumakil/mumakil_hurt"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.hurt"
+  },
+  "mob.entityttmmumakil.idle": {
+    "sounds": [
+      "tolkienmobs:mob/mumakil/mumakil_say1",
+      "tolkienmobs:mob/mumakil/mumakil_say2",
+      "tolkienmobs:mob/mumakil/mumakil_say3",
+      "tolkienmobs:mob/mumakil/mumakil_say4"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.idle"
+  },
   "mob.entityttmrat.death": {
     "sounds": [
       "tolkienmobs:mob/entityttmrat/entityttmrat_death"
