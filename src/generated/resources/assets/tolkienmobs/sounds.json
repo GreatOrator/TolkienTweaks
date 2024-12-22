@@ -83,6 +83,12 @@
     ],
     "subtitle": "subtitles.tolkienmobs.block.locust_ambient"
   },
+  "entity.boulder.shoot": {
+    "sounds": [
+      "tolkienmobs:mob/ammo/ammo_boulder_shoot"
+    ],
+    "subtitle": "subtitles.tolkienmobs.entity.shoot"
+  },
   "item.tolkienmobs.hype_horn": {
     "sounds": [
       "tolkienmobs:item/hype_horn"
