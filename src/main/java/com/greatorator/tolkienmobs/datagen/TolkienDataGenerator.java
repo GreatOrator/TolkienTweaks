@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.datagen;
 
+import com.greatorator.tolkienmobs.datagen.loot.TolkienEntityLootTables;
 import com.greatorator.tolkienmobs.datagen.loot.TolkienLootTableProvider;
 import com.greatorator.tolkienmobs.datagen.tags.TolkienBlockTagProvider;
 import com.greatorator.tolkienmobs.datagen.tags.TolkienDamageTagProvider;

@@ -2,7 +2,9 @@ package com.greatorator.tolkienmobs.containers;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.entity.FireplaceBlockEntity;
-import com.greatorator.tolkienmobs.containers.slots.*;
+import com.greatorator.tolkienmobs.containers.slots.FireplaceSlot;
+import com.greatorator.tolkienmobs.containers.slots.FuelSlot;
+import com.greatorator.tolkienmobs.containers.slots.OutputSlot;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienContainers;
 import net.minecraft.network.FriendlyByteBuf;
