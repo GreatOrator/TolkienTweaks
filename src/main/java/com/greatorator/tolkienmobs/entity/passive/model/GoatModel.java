@@ -35,7 +35,13 @@ public class GoatModel extends GeoModel<GoatEntity> {
 	public void setCustomAnimations(GoatEntity entity, long uniqueID, AnimationState<GoatEntity> customPredicate) {
 		super.setCustomAnimations(entity, uniqueID, customPredicate);
 		GeoBone head = this.getAnimationProcessor().getBone("head");
+		GeoBone chested = this.getAnimationProcessor().getBone("chest");
+		GeoBone saddled = this.getAnimationProcessor().getBone("Saddle");
 		assert customPredicate != null;
+
+		saddled.setHidden(!entity.isSaddled());
+		chested.setHidden(!entity.hasChest());
+
 		EntityModelData extraData = (EntityModelData) customPredicate.getData(DataTickets.ENTITY_MODEL_DATA);
 		head.setRotX(extraData.headPitch() * ((float) Math.PI / 180F));
 		head.setRotY(extraData.netHeadYaw() *0.5f* ((float) Math.PI / 180F));
