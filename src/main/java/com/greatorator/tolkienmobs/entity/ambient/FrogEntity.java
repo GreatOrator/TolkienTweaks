@@ -5,6 +5,7 @@ import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
 import com.greatorator.tolkienmobs.init.TolkienTags;
+import com.greatorator.tolkienmobs.util.MathUtility;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -46,8 +47,8 @@ import javax.annotation.Nonnull;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class FrogEntity extends TolkienAmbientEntity implements GeoEntity {
-    private static final EntityDataAccessor<Integer> VARIANT =
-            SynchedEntityData.defineId(FrogEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(FrogEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> INSECT = SynchedEntityData.defineId(FrogEntity.class, EntityDataSerializers.BOOLEAN);
 
     private static final ResourceLocation EVIL_ATTACK_POWER_MODIFIER = ResourceLocation.fromNamespaceAndPath(MODID, "evil");
     private static final ResourceLocation MURDER_FROG = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/toaddle/murderfrog.png");
@@ -84,6 +85,7 @@ public class FrogEntity extends TolkienAmbientEntity implements GeoEntity {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(VARIANT, 0);
+        builder.define(INSECT, false);
     }
 
     private int getTypeVariant() {
@@ -140,6 +142,14 @@ public class FrogEntity extends TolkienAmbientEntity implements GeoEntity {
         return getVariant().equals(TolkienVariant.LAVENDER) ? name : super.getName();
     }
 
+    public void setCatching(boolean catching) {
+        this.entityData.set(INSECT, catching);
+    }
+
+    public boolean isCatching() {
+        return this.entityData.get(INSECT);
+    }
+
     /**
      * Sounds
      */
@@ -183,10 +193,21 @@ public class FrogEntity extends TolkienAmbientEntity implements GeoEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "Idle2", 1, (event) -> {
+        int rand = MathUtility.getRandomInteger(100, 1);
+        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
             if (!event.isMoving() && !event.getAnimatable().isAggressive()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
-                return PlayState.CONTINUE;
+                if (rand < 50) {
+                    event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
+                    return PlayState.CONTINUE;
+                }else if (rand > 50 && rand < 80) {
+                    setCatching(true);
+                    event.getController().setAnimation(RawAnimation.begin().thenPlay("idle2"));
+                    setCatching(false);
+                    return PlayState.CONTINUE;
+                }else {
+                    event.getController().setAnimation(RawAnimation.begin().thenPlay("idle3"));
+                    return PlayState.CONTINUE;
+                }
             }
             return PlayState.STOP;
         }));
