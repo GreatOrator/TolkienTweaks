@@ -1,0 +1,82 @@
+{
+  "credit": "Made with Blockbench",
+  "texture_size": [32, 16],
+  "textures": {
+    "0": "tolkienmobs:item/ammo/ammo_cobweb",
+    "particle": "tolkienmobs:item/ammo/ammo_cobweb"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "translation": [
+        0,
+        0,
+        1
+      ],
+      "scale": [
+        0.55,
+        0.55,
+        0.55
+      ]
+    },
+    "thirdperson_lefthand": {
+      "translation": [
+        0,
+        0,
+        1
+      ],
+      "scale": [
+        0.55,
+        0.55,
+        0.55
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        8,
+        -19.75,
+        25
+      ],
+      "translation": [
+        1.13,
+        1.2000000000000002,
+        1.13
+      ],
+      "scale": [
+        0.68,
+        0.68,
+        0.68
+      ]
+    },
+    "gui": {
+      "rotation": [
+        -128.78,
+        56.17,
+        132.75
+      ],
+      "translation": [
+        1.5,
+        -1,
+        0
+      ]
+    },
+    "head": {
+      "translation": [
+        0,
+        6.5,
+        0
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        -64.8,
+        -60.93,
+        -70.87
+      ],
+      "translation": [
+        -1.75,
+        0,
+        0
+      ]
+    }
+  }
+}

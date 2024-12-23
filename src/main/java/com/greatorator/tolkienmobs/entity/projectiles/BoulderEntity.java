@@ -27,7 +27,7 @@ public class BoulderEntity extends AbstractArrow {
 
     @Override
     protected ItemStack getDefaultPickupItem() {
-        return new ItemStack(TolkienItems.BOULDER.get());
+        return null;
     }
 
     public float getRenderingRotation() {
