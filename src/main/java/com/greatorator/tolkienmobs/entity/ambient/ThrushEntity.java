@@ -2,10 +2,15 @@ package com.greatorator.tolkienmobs.entity.ambient;
 
 import com.greatorator.tolkienmobs.entity.TolkienAmbientEntity;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
+import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
 import com.greatorator.tolkienmobs.init.TolkienTags;
+import com.greatorator.tolkienmobs.util.MathUtility;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.BlockTags;
@@ -24,7 +29,9 @@ import net.minecraft.world.entity.ai.util.LandRandomPos;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.PathType;
@@ -38,9 +45,14 @@ import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 public class ThrushEntity extends TolkienAmbientEntity implements GeoEntity, FlyingAnimal {
-    public ThrushEntity(EntityType<? extends Animal> entityType, Level level) {
+    protected static final EntityDataAccessor<Boolean> PECKING = SynchedEntityData.defineId(ThrushEntity.class, EntityDataSerializers.BOOLEAN);
+
+   public ThrushEntity(EntityType<? extends Animal> entityType, Level level) {
         super(entityType, level);
 
         moveControl = new FlyingMoveControl(this, 20, true);
@@ -83,6 +95,10 @@ public class ThrushEntity extends TolkienAmbientEntity implements GeoEntity, Fly
         this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
     }
 
+    public boolean isTame() {
+        return false;
+    }
+
     @Override
     public boolean isFlying() {
         return !onGround();
@@ -100,6 +116,19 @@ public class ThrushEntity extends TolkienAmbientEntity implements GeoEntity, Fly
     @Override
     public boolean isFood(ItemStack stack) {
         return stack.is(TolkienTags.Items.INSECTS);
+    }
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(PECKING, false);
+    }
+    public void setPecking(boolean pecking) {
+        this.entityData.set(PECKING, pecking);
+    }
+
+    public boolean isPecking() {
+        return this.entityData.get(PECKING);
     }
 
     @Override
@@ -181,10 +210,21 @@ public class ThrushEntity extends TolkienAmbientEntity implements GeoEntity, Fly
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        int rand = MathUtility.getRandomInteger(100, 1);
         controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
-            if (!event.isMoving() && !event.getAnimatable().isAggressive()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("idle2"));
+            if (!event.isMoving() && !isFlying()) {
+                if (rand < 50) {
+                    event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
                 return PlayState.CONTINUE;
+                }else if (rand > 50 && rand < 80) {
+                    setPecking(true);
+                    event.getController().setAnimation(RawAnimation.begin().thenPlay("idle3"));
+                    setPecking(false);
+                    return PlayState.CONTINUE;
+                }else {
+                    event.getController().setAnimation(RawAnimation.begin().thenPlay("idle2"));
+                    return PlayState.CONTINUE;
+                }
             }
             return PlayState.STOP;
         }));
@@ -215,4 +255,6 @@ public class ThrushEntity extends TolkienAmbientEntity implements GeoEntity, Fly
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return this.geoCache;
     }
+
+    /** Goals */
 }

@@ -222,6 +222,57 @@
 					"cubes": [
 						{"origin": [1.25, 0.75, 1], "size": [1, 1, 1], "inflate": 0.1, "uv": [0, 8]}
 					]
+				},
+				{
+					"name": "snail",
+					"parent": "root",
+					"pivot": [13, 0, -0.5],
+					"rotation": [0, 180, 0]
+				},
+				{
+					"name": "head2",
+					"parent": "snail",
+					"pivot": [13, 1, -0.5],
+					"cubes": [
+						{"origin": [12, 0, -0.5], "size": [2, 2, 4], "uv": [52, 54]}
+					]
+				},
+				{
+					"name": "antennae",
+					"parent": "head2",
+					"pivot": [13, 2, 3.5]
+				},
+				{
+					"name": "right",
+					"parent": "antennae",
+					"pivot": [14, 2, 3.5],
+					"cubes": [
+						{"origin": [13.5, 1.7, 3.5], "size": [1, 3, 0], "pivot": [14, 2, 3.5], "rotation": [-30, 0, 20], "uv": [40, 48]}
+					]
+				},
+				{
+					"name": "left",
+					"parent": "antennae",
+					"pivot": [12, 2, 3.5],
+					"cubes": [
+						{"origin": [11.5, 1.7, 3.5], "size": [1, 3, 0], "pivot": [12, 2, 3.5], "rotation": [-30, 0, -20], "uv": [42, 48]}
+					]
+				},
+				{
+					"name": "shell",
+					"parent": "snail",
+					"pivot": [13, 0, -0.5],
+					"cubes": [
+						{"origin": [11.5, 0.50856, -3.63053], "size": [3, 5, 5], "pivot": [13, 1, -0.5], "rotation": [7.5, 0, 0], "uv": [40, 48]}
+					]
+				},
+				{
+					"name": "tail2",
+					"parent": "snail",
+					"pivot": [13, 0, -4.5],
+					"cubes": [
+						{"origin": [12, 0, -5.5], "size": [2, 1, 5], "uv": [40, 58]}
+					]
 				}
 			]
 		}
