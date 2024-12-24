@@ -1,7 +1,7 @@
 {
 	"format_version": "1.8.0",
 	"animations": {
-		"animation.hobbit.idle": {
+		"idle": {
 			"loop": true,
 			"animation_length": 3.5,
 			"override_previous_animation": true,
@@ -56,7 +56,7 @@
 				}
 			}
 		},
-		"animation.hobbit.walk": {
+		"walk": {
 			"loop": true,
 			"animation_length": 3.5,
 			"bones": {

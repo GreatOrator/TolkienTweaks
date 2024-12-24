@@ -16,7 +16,7 @@ import java.util.Map;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class RatRender extends GeoEntityRenderer<RatEntity> {
-    private static final Map<TolkienVariant, ResourceLocation> LOCATION_BY_VARIANT =
+    public static final Map<TolkienVariant, ResourceLocation> LOCATION_BY_VARIANT =
             Util.make(Maps.newEnumMap(TolkienVariant.class), map -> {
                 map.put(TolkienVariant.DEFAULT,
                         ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat1.png"));

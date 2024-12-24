@@ -5,10 +5,15 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
+
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -18,22 +23,28 @@ public class TolkienVillagers {
 
         // POI
     public static final DeferredHolder<PoiType, PoiType> COIN_TRADER_POI = POI_TYPES.register("coin_trader_poi",
-            () -> new PoiType(ImmutableSet.copyOf(TolkienBlocks.PIGGYBANK.get().getStateDefinition().getPossibleStates()),
+            () -> new PoiType(
+                    ImmutableSet.copyOf(Blocks.GOLD_BLOCK.getStateDefinition().getPossibleStates()),
                     1, 1));
     public static final DeferredHolder<PoiType, PoiType> GROCERY_STORE_POI = POI_TYPES.register("grocery_store_poi",
-            () -> new PoiType(ImmutableSet.copyOf(TolkienBlocks.FIREPLACE.get().getStateDefinition().getPossibleStates()),
+            () -> new PoiType(
+                    ImmutableSet.copyOf(Blocks.BAMBOO_BLOCK.getStateDefinition().getPossibleStates()),
                     1, 1));
     public static final DeferredHolder<PoiType, PoiType> PET_MERCHANT_POI = POI_TYPES.register("pet_merchant_poi",
-            () -> new PoiType(ImmutableSet.copyOf(Blocks.HAY_BLOCK.getStateDefinition().getPossibleStates()),
+            () -> new PoiType(
+                    ImmutableSet.copyOf(Blocks.HAY_BLOCK.getStateDefinition().getPossibleStates()),
                     1, 1));
     public static final DeferredHolder<PoiType, PoiType> JUNK_TRADER_POI = POI_TYPES.register("junk_trader_poi",
-            () -> new PoiType(ImmutableSet.copyOf(TolkienBlocks.BARREL_MALLORN.get().getStateDefinition().getPossibleStates()),
+            () -> new PoiType(
+                    ImmutableSet.copyOf(Blocks.ANVIL.getStateDefinition().getPossibleStates()),
                     1, 1));
     public static final DeferredHolder<PoiType, PoiType> TRINKET_SMITH_POI = POI_TYPES.register("trinket_smith_poi",
-            () -> new PoiType(ImmutableSet.copyOf(TolkienBlocks.TRINKET_TABLE.get().getStateDefinition().getPossibleStates()),
+            () -> new PoiType(
+                    ImmutableSet.copyOf(Blocks.ANCIENT_DEBRIS.getStateDefinition().getPossibleStates()),
                     1, 1));
     public static final DeferredHolder<PoiType, PoiType> TRINKET_TAILOR_POI = POI_TYPES.register("trinket_tailor_poi",
-            () -> new PoiType(ImmutableSet.copyOf(TolkienBlocks.BACKPACK.get().getStateDefinition().getPossibleStates()),
+            () -> new PoiType(
+                    ImmutableSet.copyOf(Blocks.AMETHYST_BLOCK.getStateDefinition().getPossibleStates()),
                     1, 1));
 
         // Profession
