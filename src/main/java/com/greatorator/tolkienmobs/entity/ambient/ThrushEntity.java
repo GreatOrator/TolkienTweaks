@@ -13,12 +13,13 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.AgeableMob;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
@@ -49,18 +50,22 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-public class ThrushEntity extends TolkienAmbientEntity implements GeoEntity, FlyingAnimal {
-    protected static final EntityDataAccessor<Boolean> PECKING = SynchedEntityData.defineId(ThrushEntity.class, EntityDataSerializers.BOOLEAN);
+public class ThrushEntity extends TamableAnimal implements GeoEntity, FlyingAnimal {
+    public float flap;
+    public float flapSpeed;
+    public float oFlapSpeed;
+    public float oFlap;
+    private float flapping = 1.0F;
+    private float nextFlap = 1.0F;    protected static final EntityDataAccessor<Boolean> PECKING = SynchedEntityData.defineId(ThrushEntity.class, EntityDataSerializers.BOOLEAN);
 
-   public ThrushEntity(EntityType<? extends Animal> entityType, Level level) {
+   public ThrushEntity(EntityType<? extends ThrushEntity> entityType, Level level) {
         super(entityType, level);
 
-        moveControl = new FlyingMoveControl(this, 20, true);
+       setTame(false, false);
+       moveControl = new FlyingMoveControl(this, 20, true);
 
         setPathfindingMalus(PathType.DANGER_FIRE, -1.0f);
         setPathfindingMalus(PathType.DAMAGE_FIRE, -1.0f);
-        setPathfindingMalus(PathType.WATER, -1.0f);
-        setPathfindingMalus(PathType.FENCE, -1.0f);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -82,17 +87,80 @@ public class ThrushEntity extends TolkienAmbientEntity implements GeoEntity, Fly
     @Override
     protected void registerGoals() {
         super.registerGoals();
+        this.goalSelector.addGoal(0, new PanicGoal(this, 1.25D));
         this.goalSelector.addGoal(0, new FloatGoal(this));
-
-        this.goalSelector.addGoal(1, new PanicGoal(this, 2.0));
+        this.goalSelector.addGoal(1, new BreedGoal(this, 1.0D));
+        this.goalSelector.addGoal(1, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(2, new TemptGoal(this, 1.25, stack -> stack.is(TolkienTags.Items.INSECTS), false));
-        this.goalSelector.addGoal(2, new BreedGoal(this, 1.0));
-        this.goalSelector.addGoal(3, new WanderGoal(this, 1.0));
-        this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.25));
+        this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
+        this.goalSelector.addGoal(2, new FollowOwnerGoal(this, 1.0D, 5.0F, 1.0F));
+        this.goalSelector.addGoal(2, new WaterAvoidingRandomFlyingGoal(this, 1.0D));
+        this.goalSelector.addGoal(3, new FollowMobGoal(this, 1.0D, 3.0F, 7.0F));
+    }
 
-        this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0));
-        this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
-        this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
+    @Override
+    public void aiStep() {
+        super.aiStep();
+        calculateFlapping();
+    }
+
+    private void calculateFlapping() {
+        this.oFlap = this.flap;
+        this.oFlapSpeed = this.flapSpeed;
+        this.flapSpeed += (!this.onGround() && !this.isPassenger() ? 4 : -1) * 0.3F;
+        this.flapSpeed = Mth.clamp(this.flapSpeed, 0.0F, 1.0F);
+        if(!this.onGround() && this.flapping < 1.0F) {
+            this.flapping = 1.0F;
+        }
+
+        this.flapping *= 0.9F;
+        Vec3 vec3 = this.getDeltaMovement();
+        if(!this.onGround() && vec3.y < 0.0D) {
+            this.setDeltaMovement(vec3.multiply(1.0D, 0.6D, 1.0D));
+        }
+
+        this.flap += this.flapping * 2.0F;
+    }
+
+    @SuppressWarnings("resource")
+    @Override
+    public InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
+        ItemStack itemstack = pPlayer.getItemInHand(pHand);
+        if(!this.isTame() && itemstack.is(TolkienTags.Items.INSECTS)) {
+            if(!pPlayer.getAbilities().instabuild) {
+                itemstack.shrink(1);
+            }
+
+            if(!this.isSilent()) {
+                this.level().playSound((Player) null, this.getX(), this.getY(), this.getZ(), SoundEvents.PARROT_EAT, this.getSoundSource(), 1.0F,
+                        1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.2F);
+            }
+
+            if(!this.level().isClientSide) {
+                if(this.random.nextInt(6) == 0 && !net.neoforged.neoforge.event.EventHooks.onAnimalTame(this, pPlayer)) {
+                    this.tame(pPlayer);
+                    this.level().broadcastEntityEvent(this, (byte) 7);
+                }
+                else {
+                    this.level().broadcastEntityEvent(this, (byte) 6);
+                }
+            }
+
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
+        }
+        else if(this.isTame() && this.isOwnedBy(pPlayer)) {
+            if(isFood(itemstack)) {
+                return super.mobInteract(pPlayer, pHand);
+            }
+            else if(!this.isFlying() && !this.level().isClientSide) {
+                this.setOrderedToSit(!this.isOrderedToSit());
+            }
+
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
+        }
+        else {
+            return super.mobInteract(pPlayer, pHand);
+        }
     }
 
     public boolean isTame() {
@@ -114,6 +182,42 @@ public class ThrushEntity extends TolkienAmbientEntity implements GeoEntity, Fly
     }
 
     @Override
+    public boolean canMate(Animal otherAnimal) {
+        if(otherAnimal == this)
+            return false;
+        else if(!isTame())
+            return false;
+        else if(!(otherAnimal instanceof ThrushEntity))
+            return false;
+        else {
+            ThrushEntity otherEagle = (ThrushEntity) otherAnimal;
+            if(!otherEagle.isTame())
+                return false;
+            else if(otherEagle.isInSittingPose())
+                return false;
+            else
+                return isInLove() && otherEagle.isInLove();
+        }
+    }
+
+    @Override
+    public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob otherParent) {
+        var child = TolkienEntities.ENTITY_TTM_THRUSH.get().create(level);
+        if(child != null /*&& otherParent instanceof BaldEagle eagle*/) {
+            if(this.isTame()) {
+                child.setOwnerUUID(this.getOwnerUUID());
+                child.setTame(true, true);
+            }
+        }
+        return child;
+    }
+
+    @Override
+    public boolean doHurtTarget(Entity pEntity) {
+        return pEntity.hurt(pEntity.damageSources().mobAttack(this), 3.0F);
+    }
+
+    @Override
     public boolean isFood(ItemStack stack) {
         return stack.is(TolkienTags.Items.INSECTS);
     }
@@ -129,60 +233,6 @@ public class ThrushEntity extends TolkienAmbientEntity implements GeoEntity, Fly
 
     public boolean isPecking() {
         return this.entityData.get(PECKING);
-    }
-
-    @Override
-    public ThrushEntity getBreedOffspring(ServerLevel world, AgeableMob mate) {
-        return TolkienEntities.ENTITY_TTM_THRUSH.get().create(world);
-    }
-
-    public static class WanderGoal extends WaterAvoidingRandomFlyingGoal {
-        private static final int TREE_HORIZONTAL_RANGE = 3;
-        private static final int TREE_VERTICAL_RANGE = 6;
-
-        public WanderGoal(PathfinderMob mob, double speed) {
-            super(mob, speed);
-        }
-
-        @Override
-        @Nullable
-        protected Vec3 getPosition() {
-            Vec3 target = null;
-            if (mob.isInWater()) {
-                target = LandRandomPos.getPos(mob, 15, 15);
-            }
-
-            if (mob.getRandom().nextFloat() >= probability) {
-                target = findTreePos();
-            }
-
-            return target == null ? super.getPosition() : target;
-        }
-
-        @Nullable
-        private Vec3 findTreePos() {
-            Level level = mob.level();
-            BlockPos currentPos = mob.blockPosition();
-            BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
-
-            for (BlockPos pos : BlockPos.betweenClosed(
-                    Mth.floor(mob.getX() - TREE_HORIZONTAL_RANGE), Mth.floor(mob.getY() - TREE_VERTICAL_RANGE), Mth.floor(mob.getZ() - TREE_HORIZONTAL_RANGE),
-                    Mth.floor(mob.getX() + TREE_HORIZONTAL_RANGE), Mth.floor(mob.getY() + TREE_VERTICAL_RANGE), Mth.floor(mob.getZ() + TREE_HORIZONTAL_RANGE))
-            ) {
-                if (currentPos.equals(pos)) {
-                    continue;
-                }
-                BlockState belowState = level.getBlockState(mutablePos.setWithOffset(pos, Direction.DOWN));
-                if (belowState.is(BlockTags.LEAVES) || belowState.is(BlockTags.LOGS)) {
-                    BlockPos abovePos = mutablePos.setWithOffset(pos, Direction.UP);
-                    if (level.isEmptyBlock(pos) && level.isEmptyBlock(abovePos)) {
-                        return Vec3.atBottomCenterOf(pos);
-                    }
-                }
-            }
-
-            return null;
-        }
     }
 
     /**
@@ -201,6 +251,44 @@ public class ThrushEntity extends TolkienAmbientEntity implements GeoEntity, Fly
     @Override
     protected SoundEvent getDeathSound() {
         return TolkienSounds.DEATH_THRUSH.get();
+    }
+
+    @Override
+    protected boolean isFlapping() {
+        return this.flyDist > this.nextFlap;
+    }
+
+    @Override
+    protected void onFlap() {
+        this.playSound(TolkienSounds.FLAP_THRUSH.get(), 0.15F, 1.0F);
+        this.nextFlap = this.flyDist + this.flapSpeed / 2.0F;
+    }
+
+    @Override
+    public boolean isPushable() {
+        return true;
+    }
+
+    @Override
+    protected void doPush(Entity pEntity) {
+        if(!(pEntity instanceof Player)) {
+            super.doPush(pEntity);
+        }
+    }
+
+    @SuppressWarnings("resource")
+    @Override
+    public boolean hurt(DamageSource pSource, float pAmount) {
+        if(this.isInvulnerableTo(pSource)) {
+            return false;
+        }
+        else {
+            if(!this.level().isClientSide) {
+                this.setOrderedToSit(false);
+            }
+
+            return super.hurt(pSource, pAmount);
+        }
     }
 
     /**
@@ -235,15 +323,24 @@ public class ThrushEntity extends TolkienAmbientEntity implements GeoEntity, Fly
             }
             return PlayState.STOP;
         }));
+        controllers.add(new AnimationController<>(this, "Sit", 1, (event) -> {
+            if (isOrderedToSit()) {
+                setOnGround(true);
+                event.getController().setAnimation(RawAnimation.begin().thenPlay("sit"));
+                return PlayState.CONTINUE;
+            }
+            return PlayState.STOP;
+        }));
         controllers.add(new AnimationController<>(this, "Glide", 1, (event) -> {
-            if (!event.isMoving() & isFlying()) {
+            if (event.isMoving() & isFlying()) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("glide"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Fly", 1, (event) -> {
-            if (event.isMoving() & isFlying()) {
+            if (!event.isMoving() & isFlying()) {
+                onFlap();
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("fly"));
                 return PlayState.CONTINUE;
             }
