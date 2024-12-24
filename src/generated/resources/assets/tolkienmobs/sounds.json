@@ -292,6 +292,12 @@
     ],
     "subtitle": "subtitles.tolkienmobs.mob.idle"
   },
+  "mob.tmgreateagle.flapping": {
+    "sounds": [
+      "tolkienmobs:mob/tmgreateagle/tmgreateagle_flapping"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.flapping"
+  },
   "mob.tolkienmobs.coin_trader": {
     "sounds": [
       "tolkienmobs:mob/villager/coin_trader"
