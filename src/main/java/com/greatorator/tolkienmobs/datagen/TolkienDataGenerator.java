@@ -2,10 +2,7 @@ package com.greatorator.tolkienmobs.datagen;
 
 import com.greatorator.tolkienmobs.datagen.loot.TolkienEntityLootTables;
 import com.greatorator.tolkienmobs.datagen.loot.TolkienLootTableProvider;
-import com.greatorator.tolkienmobs.datagen.tags.TolkienBlockTagProvider;
-import com.greatorator.tolkienmobs.datagen.tags.TolkienDamageTagProvider;
-import com.greatorator.tolkienmobs.datagen.tags.TolkienFluidTagProvider;
-import com.greatorator.tolkienmobs.datagen.tags.TolkienItemTagProvider;
+import com.greatorator.tolkienmobs.datagen.tags.*;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -36,6 +33,7 @@ public class TolkienDataGenerator {
         generator.addProvider(event.includeServer(), new TolkienItemTagProvider(packOutput, lookupProvider, blockTagsProvider.contentsGetter(), existingFileHelper));
         generator.addProvider(event.includeServer(), new TolkienFluidTagProvider(packOutput, lookupProvider, existingFileHelper));
         generator.addProvider(event.includeServer(), new TolkienDamageTagProvider(packOutput, lookupProvider, existingFileHelper));
+        generator.addProvider(event.includeServer(), new TolkienPoiTypeTagProvider(packOutput, lookupProvider, existingFileHelper));
         generator.addProvider(event.includeServer(), new TolkienSoundProvider(packOutput, existingFileHelper));
 
         generator.addProvider(event.includeClient(), new TolkienItemModelProvider(packOutput, existingFileHelper));

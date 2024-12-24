@@ -14,9 +14,12 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
@@ -49,6 +52,8 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 public class FrogEntity extends TolkienAmbientEntity implements GeoEntity {
     private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(FrogEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> INSECT = SynchedEntityData.defineId(FrogEntity.class, EntityDataSerializers.BOOLEAN);
+    private final ServerBossEvent bossEvent =
+            new ServerBossEvent(Component.literal("Murder Frog"), BossEvent.BossBarColor.YELLOW, BossEvent.BossBarOverlay.NOTCHED_10);
 
     private static final ResourceLocation EVIL_ATTACK_POWER_MODIFIER = ResourceLocation.fromNamespaceAndPath(MODID, "evil");
     private static final ResourceLocation MURDER_FROG = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/toaddle/murderfrog.png");
@@ -99,6 +104,8 @@ public class FrogEntity extends TolkienAmbientEntity implements GeoEntity {
     private void setVariant(TolkienVariant variant) {
         if (variant == TolkienVariant.LAVENDER) {
             this.getAttribute(Attributes.ARMOR).setBaseValue(8.0);
+            this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(80.0);
+            this.heal(100F);
             this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.4, true));
             this.targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers());
             this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
@@ -237,5 +244,32 @@ public class FrogEntity extends TolkienAmbientEntity implements GeoEntity {
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return this.geoCache;
+    }
+
+    /**
+     *BOSS BAR
+     */
+    @Override
+    public void startSeenByPlayer(ServerPlayer serverPlayer) {
+        if (this.getVariant() == TolkienVariant.LAVENDER) {
+            super.startSeenByPlayer(serverPlayer);
+            this.bossEvent.addPlayer(serverPlayer);
+        }
+    }
+
+    @Override
+    public void stopSeenByPlayer(ServerPlayer serverPlayer) {
+        if (this.getVariant() == TolkienVariant.LAVENDER) {
+            super.stopSeenByPlayer(serverPlayer);
+            this.bossEvent.removePlayer(serverPlayer);
+        }
+    }
+
+    @Override
+    public void aiStep() {
+        if (this.getVariant() == TolkienVariant.LAVENDER) {
+            super.aiStep();
+            this.bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
+        }
     }
 }

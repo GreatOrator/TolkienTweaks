@@ -7,6 +7,7 @@ import com.greatorator.tolkienmobs.util.LangFormatSplitter;
 import net.minecraft.Util;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.PackOutput;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.data.LanguageProvider;
@@ -34,6 +35,31 @@ public abstract class TolkienLangHelper extends LanguageProvider {
         super.add(key, value);
         List<LangFormatSplitter.Component> splitEnglish = LangFormatSplitter.split(value);
         this.upsideDownEntries.put(key, LangConversionHelper.convertComponents(splitEnglish));
+    }
+
+    public void addVillager(EntityType<?> key, String name) {
+        this.add(key.getDescriptionId(), name);
+        this.add(key.getDescriptionId() + ".tolkienmobs.none", "Human");
+        this.add(key.getDescriptionId() + ".tolkienmobs.coin_trader", "Coin Trader");
+        this.add(key.getDescriptionId() + ".tolkienmobs.grocery_store", "Grocery Store");
+        this.add(key.getDescriptionId() + ".tolkienmobs.pet_merchant", "Junk Trader");
+        this.add(key.getDescriptionId() + ".tolkienmobs.junk_trader", "Pet Merchant");
+        this.add(key.getDescriptionId() + ".tolkienmobs.trinket_smith", "Magical Armourer");
+        this.add(key.getDescriptionId() + ".tolkienmobs.trinket_tailor", "Magical Tailor");
+        this.add(key.getDescriptionId() + ".armorer", "Armorer");
+        this.add(key.getDescriptionId() + ".butcher", "Butcher");
+        this.add(key.getDescriptionId() + ".cartographer", "Cartographer");
+        this.add(key.getDescriptionId() + ".cleric", "Cleric");
+        this.add(key.getDescriptionId() + ".farmer", "Farmer");
+        this.add(key.getDescriptionId() + ".fisherman", "Fisherman");
+        this.add(key.getDescriptionId() + ".leatherworker", "Leather Worker");
+        this.add(key.getDescriptionId() + ".librarian", "Librarian");
+        this.add(key.getDescriptionId() + ".mason", "Mason");
+        this.add(key.getDescriptionId() + ".nitwit", "Nitwit");
+        this.add(key.getDescriptionId() + ".shepherd", "Shepherd");
+        this.add(key.getDescriptionId() + ".toolsmith", "Tool Smith");
+        this.add(key.getDescriptionId() + ".weaponsmith", "Weapon Smith");
+        this.add(key.getDescriptionId() + ".fletcher", "Fletcher");
     }
 
     public void addTrinket(Item key, String name) {

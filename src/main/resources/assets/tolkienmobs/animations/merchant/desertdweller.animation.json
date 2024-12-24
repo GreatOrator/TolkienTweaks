@@ -1,7 +1,7 @@
 {
 	"format_version": "1.8.0",
 	"animations": {
-		"animation.desertdweller.idle": {
+		"idle": {
 			"loop": true,
 			"animation_length": 3.5,
 			"override_previous_animation": true,
@@ -82,7 +82,7 @@
 				}
 			}
 		},
-		"animation.desertdweller.walk": {
+		"walk": {
 			"loop": true,
 			"animation_length": 3.5,
 			"bones": {

@@ -3,7 +3,7 @@ package com.greatorator.tolkienmobs.entity.ambient.model;// Made with Blockbench
 // Paste this class into your mod and generate all required imports
 
 import com.greatorator.tolkienmobs.entity.ambient.RatEntity;
-import com.greatorator.tolkienmobs.entity.ambient.render.FrogRender;
+import com.greatorator.tolkienmobs.entity.ambient.render.RatRender;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 
@@ -20,7 +20,7 @@ public class RatModel extends GeoModel<RatEntity> {
 
 	@Override
 	public ResourceLocation getTextureResource(RatEntity object) {
-		return FrogRender.LOCATION_BY_VARIANT.get(object.getVariant());
+		return RatRender.LOCATION_BY_VARIANT.get(object.getVariant());
 	}
 
 	@Override

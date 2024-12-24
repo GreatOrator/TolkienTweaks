@@ -109,6 +109,33 @@
     ],
     "subtitle": "subtitles.tolkienmobs.mob.idle"
   },
+  "mob.dwarf.angry": {
+    "sounds": [
+      "tolkienmobs:mob/dwarf/dwarf_angry"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.angry"
+  },
+  "mob.dwarf.death": {
+    "sounds": [
+      "tolkienmobs:mob/dwarf/dwarf_death"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.death"
+  },
+  "mob.dwarf.hurt": {
+    "sounds": [
+      "tolkienmobs:mob/dwarf/dwarf_hurt"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.hurt"
+  },
+  "mob.dwarf.idle": {
+    "sounds": [
+      "tolkienmobs:mob/dwarf/dwarf_say1",
+      "tolkienmobs:mob/dwarf/dwarf_say2",
+      "tolkienmobs:mob/dwarf/dwarf_say3",
+      "tolkienmobs:mob/dwarf/dwarf_say4"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.idle"
+  },
   "mob.entityttmcrebain.death": {
     "sounds": [
       "tolkienmobs:mob/crebain/crebain_death"

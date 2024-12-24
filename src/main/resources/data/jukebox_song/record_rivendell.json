@@ -1,8 +1,0 @@
-{
-  "comparator_output": 15,
-  "description": {
-    "translate": "item.tolkienmobs.record_rivendell.desc"
-  },
-  "length_in_seconds": 142.0,
-  "sound_event": "tolkienmobs:music.ridersofrivendell"
-}
