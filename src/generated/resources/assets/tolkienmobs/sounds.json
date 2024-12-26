@@ -319,6 +319,15 @@
     ],
     "subtitle": "subtitles.tolkienmobs.mob.idle"
   },
+  "mob.orc.idle": {
+    "sounds": [
+      "tolkienmobs:mob/orc/orc_say1",
+      "tolkienmobs:mob/orc/orc_say2",
+      "tolkienmobs:mob/orc/orc_say3",
+      "tolkienmobs:mob/orc/orc_say4"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.idle"
+  },
   "mob.tmgreateagle.flapping": {
     "sounds": [
       "tolkienmobs:mob/tmgreateagle/tmgreateagle_flapping"
