@@ -26,6 +26,7 @@ public class TolkienParticleTypes {
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> DWARVEN_FLAME = PARTICLES.register("dwarven_flame", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> LIGHTNINGBUG = PARTICLES.register("lightningbug", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> WANDERING_LIGHTNINGBUG = PARTICLES.register("wandering_lightningbug", () -> new SimpleParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> FELLBEAST_BREATH = PARTICLES.register("fell_beast_breath", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, ParticleType<LeafParticleData>> FALLING_LEAVES = PARTICLES.register("falling_leaves", () -> new ParticleType<>(false) {
         @Override
         public MapCodec<LeafParticleData> codec() {
