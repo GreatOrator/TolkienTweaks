@@ -24,9 +24,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerSetSpawnEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -113,6 +111,7 @@ public class TolkienServerEvents {
                     new ItemStack(TolkienItems.ITEM_COIN_GOLD.get(), 64), 16, 25, 0.00f
             ));
         }
+
         if(event.getType() == TolkienVillagers.GROCERY_STORE_PROFESSION.value()) {
             Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
 
@@ -153,37 +152,194 @@ public class TolkienServerEvents {
                     new ItemStack(TolkienItems.DRINK_ENT_DRAUGHT.get(), 2), 16, 100, 0.50F
             ));
         }
+
         if(event.getType() == TolkienVillagers.PET_MERCHANT_PROFESSION.value()) {
             Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
 
             trades.get(1).add((pTrader, pRandom) -> new MerchantOffer(
                     new ItemCost(TolkienItems.ITEM_COIN_BRONZE.get(), 36),
-                    new ItemStack(TolkienItems.HONEY_CAKE.get(), 6), 16, 25, 0.50F
+                    new ItemStack(TolkienItems.INSECT.get(), 6), 16, 25, 0.50F
             ));
             trades.get(1).add((pTrader, pRandom) -> new MerchantOffer(
                     new ItemCost(TolkienItems.ITEM_COIN_BRONZE.get(), 24),
-                    new ItemStack(TolkienItems.CRAM.get(), 4), 16, 25, 0.50F
+                    new ItemStack(TolkienItems.TREE_ACORN.get(), 4), 16, 25, 0.50F
             ));
             trades.get(2).add((pTrader, pRandom) -> new MerchantOffer(
                     new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 3),
-                    new ItemStack(TolkienItems.FOOD_HONEY.get(), 6), 16, 50, 0.50F
+                    new ItemStack(TolkienItems.GOLDEN_INSECT.get(), 6), 16, 50, 0.50F
             ));
             trades.get(2).add((pTrader, pRandom) -> new MerchantOffer(
                     new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
-                    new ItemStack(TolkienItems.LEMBAS.get(), 4), 16, 50, 0.50F
+                    new ItemStack(TolkienItems.GOLDEN_TREE_ACORN.get(), 4), 16, 50, 0.50F
             ));
         }
+
         if(event.getType() == TolkienVillagers.TRINKET_SMITH_PROFESSION.value()) {
             Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
-
+            trades.get(1).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
+                    new TradesHandler.setTrinketForSaleWithPotion(TolkienItems.TRINKET_CHARM.get()).getOffer(), 16, 50, 0.50F
+            ));
+            trades.get(1).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
+                    new TradesHandler.setTrinketForSaleWithPotion(TolkienItems.TRINKET_AMULET.get()).getOffer(), 16, 50, 0.50F
+            ));
+            trades.get(1).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
+                    new TradesHandler.setTrinketForSaleWithPotion(TolkienItems.TRINKET_RING.get()).getOffer(), 16, 50, 0.50F
+            ));
+            trades.get(2).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
+                    new TradesHandler.setTrinketForSaleWithPotion(TolkienItems.TRINKET_CHARM.get()).getOffer(), 16, 50, 0.50F
+            ));
+            trades.get(2).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
+                    new TradesHandler.setTrinketForSaleWithPotion(TolkienItems.TRINKET_AMULET.get()).getOffer(), 16, 50, 0.50F
+            ));
+            trades.get(2).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
+                    new TradesHandler.setTrinketForSaleWithPotion(TolkienItems.TRINKET_RING.get()).getOffer(), 16, 50, 0.50F
+            ));
+            trades.get(3).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
+                    new TradesHandler.setTrinketForSaleWithPotion(TolkienItems.TRINKET_CHARM.get()).getOffer(), 16, 50, 0.50F
+            ));
+            trades.get(3).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
+                    new TradesHandler.setTrinketForSaleWithPotion(TolkienItems.TRINKET_AMULET.get()).getOffer(), 16, 50, 0.50F
+            ));
+            trades.get(3).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
+                    new TradesHandler.setTrinketForSaleWithPotion(TolkienItems.TRINKET_RING.get()).getOffer(), 16, 50, 0.50F
+            ));
+            trades.get(4).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
+                    new TradesHandler.setTrinketForSaleWithPotion(TolkienItems.TRINKET_CHARM.get()).getOffer(), 16, 50, 0.50F
+            ));
+            trades.get(4).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
+                    new TradesHandler.setTrinketForSaleWithPotion(TolkienItems.TRINKET_AMULET.get()).getOffer(), 16, 50, 0.50F
+            ));
+            trades.get(4).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
+                    new TradesHandler.setTrinketForSaleWithPotion(TolkienItems.TRINKET_RING.get()).getOffer(), 16, 50, 0.50F
+            ));
         }
+
         if(event.getType() == TolkienVillagers.TRINKET_TAILOR_PROFESSION.value()) {
             Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
-
+            trades.get(1).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
+                    new TradesHandler.setTrinketForSaleWithPotion(TolkienItems.TRINKET_BELT.get()).getOffer(), 16, 50, 0.50F
+            ));
+            trades.get(1).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
+                    new TradesHandler.setTrinketForSaleWithPotion(TolkienItems.TRINKET_GLOVE.get()).getOffer(), 16, 50, 0.50F
+            ));
+            trades.get(1).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
+                    new TradesHandler.setTrinketForSaleWithPotion(TolkienItems.TRINKET_CLOAK.get()).getOffer(), 16, 50, 0.50F
+            ));
+            trades.get(1).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
+                    new TradesHandler.setTrinketForSaleWithPotion(TolkienItems.TRINKET_HAT.get()).getOffer(), 16, 50, 0.50F
+            ));
+            trades.get(2).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
+                    new TradesHandler.setTrinketForSaleWithPotion(TolkienItems.TRINKET_BELT.get()).getOffer(), 16, 50, 0.50F
+            ));
+            trades.get(2).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
+                    new TradesHandler.setTrinketForSaleWithPotion(TolkienItems.TRINKET_GLOVE.get()).getOffer(), 16, 50, 0.50F
+            ));
+            trades.get(2).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
+                    new TradesHandler.setTrinketForSaleWithPotion(TolkienItems.TRINKET_CLOAK.get()).getOffer(), 16, 50, 0.50F
+            ));
+            trades.get(2).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
+                    new TradesHandler.setTrinketForSaleWithPotion(TolkienItems.TRINKET_HAT.get()).getOffer(), 16, 50, 0.50F
+            ));
+            trades.get(3).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
+                    new TradesHandler.setTrinketForSaleWithPotion(TolkienItems.TRINKET_BELT.get()).getOffer(), 16, 50, 0.50F
+            ));
+            trades.get(3).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
+                    new TradesHandler.setTrinketForSaleWithPotion(TolkienItems.TRINKET_GLOVE.get()).getOffer(), 16, 50, 0.50F
+            ));
+            trades.get(3).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
+                    new TradesHandler.setTrinketForSaleWithPotion(TolkienItems.TRINKET_CLOAK.get()).getOffer(), 16, 50, 0.50F
+            ));
+            trades.get(3).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
+                    new TradesHandler.setTrinketForSaleWithPotion(TolkienItems.TRINKET_HAT.get()).getOffer(), 16, 50, 0.50F
+            ));
+            trades.get(4).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
+                    new TradesHandler.setTrinketForSaleWithPotion(TolkienItems.TRINKET_BELT.get()).getOffer(), 16, 50, 0.50F
+            ));
+            trades.get(4).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
+                    new TradesHandler.setTrinketForSaleWithPotion(TolkienItems.TRINKET_GLOVE.get()).getOffer(), 16, 50, 0.50F
+            ));
+            trades.get(4).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
+                    new TradesHandler.setTrinketForSaleWithPotion(TolkienItems.TRINKET_CLOAK.get()).getOffer(), 16, 50, 0.50F
+            ));
+            trades.get(4).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.ITEM_COIN_SILVER.get(), 5),
+                    new TradesHandler.setTrinketForSaleWithPotion(TolkienItems.TRINKET_HAT.get()).getOffer(), 16, 50, 0.50F
+            ));
         }
+
         if(event.getType() == TolkienVillagers.JUNK_TRADER_PROFESSION.value()) {
             Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
-
+            trades.get(1).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.BOTTLE_FANCY.get(), 16),
+                    new ItemStack(TolkienItems.ITEM_COIN_BRONZE.get(), 6), 16, 25, 0.50F
+            ));
+            trades.get(1).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.MONSTER_FUR.get(), 16),
+                    new ItemStack(TolkienItems.ITEM_COIN_BRONZE.get(), 6), 16, 25, 0.50F
+            ));
+            trades.get(1).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.MONSTER_FLESH.get(), 16),
+                    new ItemStack(TolkienItems.ITEM_COIN_BRONZE.get(), 6), 16, 25, 0.50F
+            ));
+            trades.get(2).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.MUMAKIL_LEATHER.get(), 16),
+                    new ItemStack(TolkienItems.ITEM_COIN_SILVER.get(), 6), 16, 50, 0.50F
+            ));
+            trades.get(2).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.CREBAIN_FEATHER.get(), 16),
+                    new ItemStack(TolkienItems.ITEM_COIN_SILVER.get(), 6), 16, 50, 0.50F
+            ));
+            trades.get(2).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.BIRD_FEATHER.get(), 16),
+                    new ItemStack(TolkienItems.ITEM_COIN_SILVER.get(), 6), 16, 50, 0.50F
+            ));
+            trades.get(3).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.GOLEM_STONE.get(), 6),
+                    new ItemStack(TolkienItems.ITEM_COIN_GOLD.get(), 1), 16, 75, 0.50F
+            ));
+            trades.get(3).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.GOLEM_STONE_EARTH.get(), 6),
+                    new ItemStack(TolkienItems.ITEM_COIN_GOLD.get(), 1), 16, 75, 0.50F
+            ));
+            trades.get(3).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.GOLEM_STONE_AIR.get(), 6),
+                    new ItemStack(TolkienItems.ITEM_COIN_GOLD.get(), 1), 16, 75, 0.50F
+            ));
+            trades.get(3).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.GOLEM_STONE_FIRE.get(), 6),
+                    new ItemStack(TolkienItems.ITEM_COIN_GOLD.get(), 1), 16, 75, 0.50F
+            ));
+            trades.get(3).add((pTrader, pRandom) -> new MerchantOffer(
+                    new ItemCost(TolkienItems.GOLEM_STONE_WATER.get(), 6),
+                    new ItemStack(TolkienItems.ITEM_COIN_GOLD.get(), 1), 16, 75, 0.50F
+            ));
         }
     }
 }
