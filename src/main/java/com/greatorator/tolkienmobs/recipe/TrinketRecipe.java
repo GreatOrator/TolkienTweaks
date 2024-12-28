@@ -1,112 +1,78 @@
 package com.greatorator.tolkienmobs.recipe;
 
-import com.greatorator.tolkienmobs.containers.TrinketTableContainer;
-import com.greatorator.tolkienmobs.init.TolkienBlocks;
-import com.greatorator.tolkienmobs.init.TolkienRecipeSerializers;
-import com.greatorator.tolkienmobs.init.TolkienRecipesTypes;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.google.common.base.Suppliers;
+import com.greatorator.tolkienmobs.datagen.helpers.TolkienRecipeHelper;
+import com.greatorator.tolkienmobs.handler.data.TrinketComponent;
+import com.greatorator.tolkienmobs.init.*;
+import com.greatorator.tolkienmobs.item.custom.TrinketItem;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
-public class TrinketRecipe implements Recipe<TrinketTableContainer> {
-    public final ItemStack output;
-    private final Ingredient trinket;
-    private final Ingredient gem;
-    private final Ingredient potion;
+public class TrinketRecipe extends ShapelessRecipe {
+    private static final List<Predicate<ItemStack>> ITEM_PREDICATES = List.of(
+            stack -> stack.getItem() instanceof PotionItem,
+            stack -> stack.getItem() instanceof TrinketItem,
+            stack -> stack.getItem() == TolkienItems.GEM_AMMOLITE.get()
+    );
+    private static final Supplier<Ingredient> POTIONS = Suppliers.memoize(() ->
+            Ingredient.of(BuiltInRegistries.POTION.holders().flatMap(TrinketRecipe::potionStacks))
+    );
 
-    public TrinketRecipe(Ingredient trinket, Ingredient potion, Ingredient gem, ItemStack output) {
-        this.trinket = trinket;
-        this.potion = potion;
-        this.gem = gem;
-        this.output = output;
+    public TrinketRecipe(CraftingBookCategory category) {
+        super("", category, TolkienItems.TRINKET_RING.get().getDefaultInstance(), NonNullList.of(Ingredient.EMPTY, Ingredient.of(TolkienItems.TRINKET_RING.get()), POTIONS.get(), Ingredient.of(TolkienItems.GEM_AMMOLITE.get())));
     }
 
-    @Override @ParametersAreNonnullByDefault
-    public boolean matches(TrinketTableContainer container, Level level) {
-        boolean testTrinket = trinket.test(container.getItem(TrinketTableContainer.TRINKET_SLOT_ID));
-        boolean testPotion = potion.test(container.getItem(TrinketTableContainer.POTION_SLOT_ID));
-        boolean testGem = gem.test(container.getItem(TrinketTableContainer.GEM_SLOT_ID));
-        return (testTrinket && testPotion && testGem);
-    }
-
-    @Override @ParametersAreNonnullByDefault
-    public @NotNull ItemStack assemble(TrinketTableContainer container, HolderLookup.Provider provider) {
-        return output;
-    }
-
-    @Override
-    public boolean canCraftInDimensions(int width, int height) { return true; }
-
-    @Override
-    public @NotNull ItemStack getResultItem(@NotNull HolderLookup.Provider provider) {
-        return output.copy();
+    private static Stream<ItemStack> potionStacks(Holder<Potion> potion) {
+        return Stream.of(
+                PotionContents.createItemStack(Items.POTION, potion),
+                PotionContents.createItemStack(Items.SPLASH_POTION, potion),
+                PotionContents.createItemStack(Items.LINGERING_POTION, potion)
+        );
     }
 
     @Override
-    public @NotNull ItemStack getToastSymbol() {
-        return TolkienBlocks.TRINKET_TABLE.get().asItem().getDefaultInstance();
+    public boolean matches(CraftingInput container, Level level) {
+        return TolkienRecipeHelper.allPresent(container, ITEM_PREDICATES);
     }
 
     @Override
-    public @NotNull RecipeSerializer<?> getSerializer() {
+    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registryAccess) {
+        List<ItemStack> stacks = TolkienRecipeHelper.findItems(inv, ITEM_PREDICATES);
+        if (stacks.size() == 3) {
+            ItemStack potion = stacks.get(0);
+            Holder<Potion> potioncontents = (potion.get(DataComponents.POTION_CONTENTS)).potion().get();
+            ItemStack trinket = stacks.get(1).copy();
+            ItemStack gem = stacks.get(2).copy();
+            if (!trinket.isEmpty() && !potion.isEmpty() && !gem.isEmpty()) {
+                trinket.set(TolkienDataComponents.POTION_CONTENTS, new TrinketComponent(potioncontents));
+                return trinket;
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public boolean canCraftInDimensions(int w, int h) {
+        return w * h >= 2;
+    }
+
+    @Override
+    public RecipeSerializer<?> getSerializer() {
         return TolkienRecipeSerializers.TRINKET_TABLE_SERIALIZER.get();
-    }
-
-    public Ingredient getIngredient() {
-        return trinket;
-    }
-
-    @Override
-    public @NotNull RecipeType<?> getType() {
-        return TolkienRecipesTypes.TRINKET_TABLE; }
-
-
-    public static class Type implements RecipeType<TrinketRecipe> {
-        public Type() { }
-    }
-
-    public static class Serializer implements RecipeSerializer<TrinketRecipe> {
-        public static final MapCodec<TrinketRecipe> CODEC = RecordCodecBuilder.mapCodec((builder) -> builder.group(
-                Ingredient.CODEC_NONEMPTY.fieldOf("trinket").forGetter((recipe) -> recipe.trinket),
-                Ingredient.CODEC_NONEMPTY.fieldOf("potion").forGetter((recipe) -> recipe.trinket),
-                Ingredient.CODEC_NONEMPTY.fieldOf("gem").forGetter((recipe) -> recipe.trinket),
-                ItemStack.STRICT_CODEC.fieldOf("output").forGetter((recipe) -> recipe.output)
-        ).apply(builder, TrinketRecipe::new));
-
-        public static final StreamCodec<RegistryFriendlyByteBuf, TrinketRecipe> STREAM_CODEC = StreamCodec.of(TrinketRecipe.Serializer::toNetwork, TrinketRecipe.Serializer::fromNetwork);
-
-        private static TrinketRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
-            var trinket = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
-            var potion = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
-            var gem = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
-            var output = ItemStack.STREAM_CODEC.decode(buffer);
-            return new TrinketRecipe(trinket, potion, gem, output);
-        }
-
-        private static void toNetwork(RegistryFriendlyByteBuf buffer, TrinketRecipe recipe) {
-            Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.getIngredient());
-            ItemStack.STREAM_CODEC.encode(buffer, recipe.output);
-        }
-
-        @Override
-        public @NotNull MapCodec<TrinketRecipe> codec() {
-            return CODEC;
-        }
-
-        @Override
-        public @NotNull StreamCodec<RegistryFriendlyByteBuf, TrinketRecipe> streamCodec() {
-            return STREAM_CODEC;
-        }
-    }
-}
+    }}

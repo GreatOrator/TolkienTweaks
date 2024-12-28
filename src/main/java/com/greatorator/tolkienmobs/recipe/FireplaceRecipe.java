@@ -60,7 +60,7 @@ public class FireplaceRecipe implements Recipe<FireplaceContainer> {
 
     @Override
     public @NotNull RecipeSerializer<?> getSerializer() {
-        return TolkienRecipeSerializers.TRINKET_TABLE_SERIALIZER.get();
+        return TolkienRecipeSerializers.FIREPLACE_SERIALIZER.get();
     }
 
     public Ingredient getIngredient() {
@@ -69,7 +69,7 @@ public class FireplaceRecipe implements Recipe<FireplaceContainer> {
 
     @Override
     public @NotNull RecipeType<?> getType() {
-        return TolkienRecipesTypes.TRINKET_TABLE; }
+        return TolkienRecipesTypes.FIREPLACE_TYPE.get(); }
 
 
     public static class Type implements RecipeType<FireplaceRecipe> {

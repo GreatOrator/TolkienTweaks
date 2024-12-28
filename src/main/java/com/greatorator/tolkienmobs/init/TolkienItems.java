@@ -7,6 +7,8 @@ import com.greatorator.tolkienmobs.item.projectile.BoulderItem;
 import com.greatorator.tolkienmobs.item.projectile.FellBeastFireballItem;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;

@@ -1,4 +1,4 @@
-// 1.21.1	2024-12-08T08:43:27.8569719	Recipes
+// 1.21.1	2024-12-27T15:38:12.686889	Recipes
 d19567913dbfd6ba6d00c4306abe737d82e289eb data/tolkienmobs/advancement/recipes/building_blocks/block.tolkienmobs.dark_stone_from_blasting.json
 fdc081cd058634a34dc62f77cad3483eb182215e data/tolkienmobs/advancement/recipes/building_blocks/block.tolkienmobs.dark_stone_from_smelting.json
 c65228514dc61115e43a564010366b1cdeb5060a data/tolkienmobs/advancement/recipes/building_blocks/block.tolkienmobs.dwarven_stone_from_blasting.json
@@ -782,6 +782,7 @@ db21c73ada6bf2e637a69066d9659c5dcf715678 data/tolkienmobs/recipe/trinket_charm.j
 1dec1cdbe1be4f38984c2134c886c28511687121 data/tolkienmobs/recipe/trinket_cloak.json
 4678c09b8b37c3455e2badafaa70b0cbb89ad745 data/tolkienmobs/recipe/trinket_glove.json
 a858ae6993680995a84a515f7d01174185196a59 data/tolkienmobs/recipe/trinket_hat.json
+3fa3abde304023ed9159d4be858e73f4b99314de data/tolkienmobs/recipe/trinket_potion_crafting.json
 0bfe664c821c427c12333bc7b1ab9b9852daa4aa data/tolkienmobs/recipe/trinket_ring.json
 e3cf5d1a9757a299c6d9cfcaf48851007579e449 data/tolkienmobs/recipe/wall_chiseled_dark_stone_bricks.json
 c23cf9dfebc6285bf03d656ca44a21596251bb98 data/tolkienmobs/recipe/wall_chiseled_dwarven_stone_bricks.json
