@@ -1,13 +1,22 @@
 package com.greatorator.tolkienmobs.datagen.helpers;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
+import com.greatorator.tolkienmobs.handler.data.TrinketComponent;
+import com.greatorator.tolkienmobs.init.TolkienDataComponents;
+import com.greatorator.tolkienmobs.recipe.TrinketRecipe;
+import com.greatorator.tolkienmobs.recipe.TrinketRecipeBuilder;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -15,11 +24,16 @@ import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
+import static com.greatorator.tolkienmobs.TolkienMobsMain.resLoc;
 
 public class TolkienRecipeHelper extends RecipeProvider implements IConditionBuilder  {
     public TolkienRecipeHelper(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
@@ -179,35 +193,6 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .save(pRecipeOutput);
     }
 
-    protected static void armorListRecipe(RecipeOutput pRecipeOutput, RecipeCategory pCategory, String group, Item helmet, Item chest, Item leggings, Item boots, Item ingot) {
-        ShapedRecipeBuilder.shaped(pCategory, helmet)
-                .pattern("III")
-                .pattern("I I")
-                .define('I', ingot)
-                .unlockedBy("has_"+group, InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
-                .save(pRecipeOutput);
-        ShapedRecipeBuilder.shaped(pCategory, chest)
-                .pattern("I I")
-                .pattern("III")
-                .pattern("III")
-                .define('I', ingot)
-                .unlockedBy("has_"+group, InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
-                .save(pRecipeOutput);
-        ShapedRecipeBuilder.shaped(pCategory, leggings)
-                .pattern("III")
-                .pattern("I I")
-                .pattern("I I")
-                .define('I', ingot)
-                .unlockedBy("has_"+group, InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
-                .save(pRecipeOutput);
-        ShapedRecipeBuilder.shaped(pCategory, boots)
-                .pattern("I I")
-                .pattern("I I")
-                .define('I', ingot)
-                .unlockedBy("has_"+group, InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
-                .save(pRecipeOutput);
-    }
-
     protected static void smithingUpgrade(RecipeOutput consumer, String type, Item output, ItemLike template, ItemLike input1, ItemLike input2) {
         SmithingTransformRecipeBuilder.smithing(Ingredient.of(template), Ingredient.of(input1),
                         Ingredient.of(input2), RecipeCategory.MISC, output)
@@ -215,9 +200,11 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .save(consumer, (output + "-templateupgrade"));
     }
 
-    protected static void trinket(RecipeOutput consumer, String name, ItemLike trinket, Ingredient potion, ItemLike trinketResult) {
-        // Making the Trinket
-    }
+//    protected static void trinket(RecipeOutput recipeOutput, ItemLike trinket, ItemLike output, ItemLike potion) {
+//        new TrinketRecipeBuilder(RecipeCategory.TOOLS, "ammolite", output, Ingredient.of(trinket), potion)
+//                .unlockedBy("has_", InventoryChangeTrigger.TriggerInstance.hasItems(trinket))
+//                .save(recipeOutput, TolkienMobsMain.prefix(output.asItem().getDescriptionId() + "_from_trinket_table"));
+//    }
 
     protected static void smeltingList(ItemLike input, RecipeOutput recipeOutput, RecipeCategory category, ItemLike output, float experience, int cookingTime) {
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(input), category, output, experience, cookingTime)
@@ -464,5 +451,41 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
             SimpleCookingRecipeBuilder.generic(Ingredient.of(itemlike), pCategory, pResult, pExperience, pCookingTime, pCookingSerializer, factory).group(pGroup).unlockedBy(getHasName(itemlike), has(itemlike))
                     .save(pRecipeOutput, MODID + ":" + getItemName(pResult) + pRecipeName + "_" + getItemName(itemlike));
         }
+    }
+
+    public static List<ItemStack> findItems(CraftingInput inv, List<Predicate<ItemStack>> predicates) {
+        List<ItemStack> res = new ArrayList<>();
+        BitSet matchedSlots = new BitSet(inv.size());
+
+        for (var pred : predicates) {
+            boolean found = false;
+            for (int i = 0; i < inv.size(); i++) {
+                if (!matchedSlots.get(i)) {
+                    ItemStack stack = inv.getItem(i);
+                    if (pred.test(stack)) {
+                        res.add(stack);
+                        matchedSlots.set(i);
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            if (!found) return List.of();
+        }
+
+        // check any unmatched slots for extraneous items
+        for (int i = 0; i < inv.size(); i++) {
+            if (!matchedSlots.get(i) && !inv.getItem(i).isEmpty()) return List.of();
+        }
+
+        return res;
+    }
+
+    public static boolean allPresent(CraftingInput inv, List<Predicate<ItemStack>> predicates) {
+        return findItems(inv, predicates).size() == predicates.size();
+    }
+
+    protected String getId(String s) {
+        return resLoc(s).toString();
     }
 }
