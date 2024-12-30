@@ -23,6 +23,14 @@ public class MathUtility {
         return ((int) (Math.random()*(maximum - minimum))) + minimum;
     }
 
+    public static float sqrt(float f) {
+        return (float)Math.sqrt((double)f);
+    }
+
+    public static float sqrt(double f) {
+        return (float)Math.sqrt(f);
+    }
+
     public static double nextDouble(Random rand) {
         return 2 * rand.nextDouble() - 1;
     }
