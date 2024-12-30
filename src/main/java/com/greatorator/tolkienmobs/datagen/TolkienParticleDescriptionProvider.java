@@ -27,6 +27,7 @@ public class TolkienParticleDescriptionProvider extends ParticleDescriptionProvi
         this.sprite(TolkienParticleTypes.LIGHTNINGBUG.get(), ResourceLocation.fromNamespaceAndPath(MODID, "lightningbug"));
         this.sprite(TolkienParticleTypes.FALLING_LEAVES.get(), TolkienMobsMain.prefix("falling_leaves"));
         this.sprite(TolkienParticleTypes.FELLBEAST_BREATH.get(), ResourceLocation.fromNamespaceAndPath(MODID, "fellbeast_breath"));
+        this.sprite(TolkienParticleTypes.WIND_PARTICLE.get(), TolkienMobsMain.prefix("wind"));
         this.sprite(TolkienParticleTypes.WANDERING_LIGHTNINGBUG.get(), TolkienMobsMain.prefix("lightningbug"));
     }
 }
