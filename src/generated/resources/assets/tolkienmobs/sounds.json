@@ -89,6 +89,13 @@
     ],
     "subtitle": "subtitles.tolkienmobs.entity.shoot"
   },
+  "entity.web.shoot": {
+    "sounds": [
+      "tolkienmobs:mob/ammo/web_impact1",
+      "tolkienmobs:mob/ammo/web_impact2"
+    ],
+    "subtitle": "subtitles.tolkienmobs.entity.shoot"
+  },
   "item.tolkienmobs.hype_horn": {
     "sounds": [
       "tolkienmobs:item/hype_horn"
@@ -313,9 +320,65 @@
     ],
     "subtitle": "subtitles.tolkienmobs.mob.idle"
   },
+  "mob.goblin.angry": {
+    "sounds": [
+      "tolkienmobs:mob/goblin/goblin_angry"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.angry"
+  },
+  "mob.goblin.death": {
+    "sounds": [
+      "tolkienmobs:mob/goblin/goblin_death"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.death"
+  },
+  "mob.goblin.hurt": {
+    "sounds": [
+      "tolkienmobs:mob/goblin/goblin_hurt"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.hurt"
+  },
+  "mob.goblin.idle": {
+    "sounds": [
+      "tolkienmobs:mob/goblin/goblin_say1",
+      "tolkienmobs:mob/goblin/goblin_say2",
+      "tolkienmobs:mob/goblin/goblin_say3",
+      "tolkienmobs:mob/goblin/goblin_say4"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.idle"
+  },
   "mob.midgefly.idle": {
     "sounds": [
       "tolkienmobs:mob/midgefly_say1"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.idle"
+  },
+  "mob.mimic.angry": {
+    "sounds": [
+      "tolkienmobs:mob/mimicchest/mimic_angry"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.angry"
+  },
+  "mob.mimic.step": {
+    "sounds": [
+      "tolkienmobs:mob/mimicchest/mimic_step1",
+      "tolkienmobs:mob/mimicchest/mimic_step2"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.step"
+  },
+  "mob.mirkwoodspider.shoot": {
+    "sounds": [
+      "tolkienmobs:mob/mirkwoodspider/shoot1",
+      "tolkienmobs:mob/mirkwoodspider/shoot2"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.shoot"
+  },
+  "mob.oathbreaker.idle": {
+    "sounds": [
+      "tolkienmobs:mob/oathbreaker/oathbreaker_say1",
+      "tolkienmobs:mob/oathbreaker/oathbreaker_say2",
+      "tolkienmobs:mob/oathbreaker/oathbreaker_say3",
+      "tolkienmobs:mob/oathbreaker/oathbreaker_say4"
     ],
     "subtitle": "subtitles.tolkienmobs.mob.idle"
   },
@@ -325,6 +388,27 @@
       "tolkienmobs:mob/orc/orc_say2",
       "tolkienmobs:mob/orc/orc_say3",
       "tolkienmobs:mob/orc/orc_say4"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.idle"
+  },
+  "mob.romiewalker.death": {
+    "sounds": [
+      "tolkienmobs:mob/romiewalker/romiewalker_death1",
+      "tolkienmobs:mob/romiewalker/romiewalker_death2"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.death"
+  },
+  "mob.romiewalker.hurt": {
+    "sounds": [
+      "tolkienmobs:mob/romiewalker/romiewalker_hurt1",
+      "tolkienmobs:mob/romiewalker/romiewalker_hurt2"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.hurt"
+  },
+  "mob.romiewalker.idle": {
+    "sounds": [
+      "tolkienmobs:mob/romiewalker/romiewalker_idle1",
+      "tolkienmobs:mob/romiewalker/romiewalker_idle2"
     ],
     "subtitle": "subtitles.tolkienmobs.mob.idle"
   },

@@ -1,8 +1,8 @@
 package com.greatorator.tolkienmobs.entity.monster.model;
 
 
-import com.greatorator.tolkienmobs.entity.monster.BarrowWightEntity;
-import com.greatorator.tolkienmobs.entity.monster.render.BarrowWightRender;
+import com.greatorator.tolkienmobs.entity.monster.GoblinEntity;
+import com.greatorator.tolkienmobs.entity.monster.render.GoblinRender;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
@@ -12,27 +12,27 @@ import software.bernie.geckolib.model.data.EntityModelData;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class BarrowWightModel extends GeoModel<BarrowWightEntity> {
-	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "geo/monster/base.geo.json");
-	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/monster/base.animation.json");
+public class GoblinModel extends GeoModel<GoblinEntity> {
+	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "geo/monster/goblin.geo.json");
+	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/monster/goblin.animation.json");
 
 	@Override
-	public ResourceLocation getModelResource(BarrowWightEntity object) {
+	public ResourceLocation getModelResource(GoblinEntity object) {
 		return this.model;
 	}
 
 	@Override
-	public ResourceLocation getTextureResource(BarrowWightEntity object) {
-		return BarrowWightRender.LOCATION_BY_VARIANT.get(object.getVariant());
+	public ResourceLocation getTextureResource(GoblinEntity object) {
+		return GoblinRender.LOCATION_BY_VARIANT.get(object.getVariant());
 	}
 
 	@Override
-	public ResourceLocation getAnimationResource(BarrowWightEntity object) {
+	public ResourceLocation getAnimationResource(GoblinEntity object) {
 		return this.animations;
 	}
 
 	@Override
-	public void setCustomAnimations(BarrowWightEntity entity, long uniqueID, AnimationState<BarrowWightEntity> customPredicate) {
+	public void setCustomAnimations(GoblinEntity entity, long uniqueID, AnimationState<GoblinEntity> customPredicate) {
 		super.setCustomAnimations(entity, uniqueID, customPredicate);
 		GeoBone head = this.getAnimationProcessor().getBone("head");
 		assert customPredicate != null;

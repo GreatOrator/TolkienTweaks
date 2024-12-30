@@ -1,8 +1,8 @@
 package com.greatorator.tolkienmobs.entity.monster.model;
 
 
-import com.greatorator.tolkienmobs.entity.monster.BarrowWightEntity;
-import com.greatorator.tolkienmobs.entity.monster.render.BarrowWightRender;
+import com.greatorator.tolkienmobs.entity.monster.OathBreakerEntity;
+import com.greatorator.tolkienmobs.entity.monster.render.OathBreakerRender;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
@@ -12,27 +12,27 @@ import software.bernie.geckolib.model.data.EntityModelData;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class BarrowWightModel extends GeoModel<BarrowWightEntity> {
+public class OathBreakerModel extends GeoModel<OathBreakerEntity> {
 	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "geo/monster/base.geo.json");
 	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/monster/base.animation.json");
 
 	@Override
-	public ResourceLocation getModelResource(BarrowWightEntity object) {
+	public ResourceLocation getModelResource(OathBreakerEntity object) {
 		return this.model;
 	}
 
 	@Override
-	public ResourceLocation getTextureResource(BarrowWightEntity object) {
-		return BarrowWightRender.LOCATION_BY_VARIANT.get(object.getVariant());
+	public ResourceLocation getTextureResource(OathBreakerEntity object) {
+		return OathBreakerRender.LOCATION_BY_VARIANT.get(object.getVariant());
 	}
 
 	@Override
-	public ResourceLocation getAnimationResource(BarrowWightEntity object) {
+	public ResourceLocation getAnimationResource(OathBreakerEntity object) {
 		return this.animations;
 	}
 
 	@Override
-	public void setCustomAnimations(BarrowWightEntity entity, long uniqueID, AnimationState<BarrowWightEntity> customPredicate) {
+	public void setCustomAnimations(OathBreakerEntity entity, long uniqueID, AnimationState<OathBreakerEntity> customPredicate) {
 		super.setCustomAnimations(entity, uniqueID, customPredicate);
 		GeoBone head = this.getAnimationProcessor().getBone("head");
 		assert customPredicate != null;
