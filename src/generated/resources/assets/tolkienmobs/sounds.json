@@ -366,6 +366,34 @@
     ],
     "subtitle": "subtitles.tolkienmobs.mob.step"
   },
+  "mob.minotaur.death": {
+    "sounds": [
+      "tolkienmobs:mob/minotaur/minotaur_death1",
+      "tolkienmobs:mob/minotaur/minotaur_death2"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.death"
+  },
+  "mob.minotaur.hurt": {
+    "sounds": [
+      "tolkienmobs:mob/minotaur/minotaur_hurt"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.hurt"
+  },
+  "mob.minotaur.idle": {
+    "sounds": [
+      "tolkienmobs:mob/minotaur/minotaur_say1",
+      "tolkienmobs:mob/minotaur/minotaur_say2",
+      "tolkienmobs:mob/minotaur/minotaur_say3",
+      "tolkienmobs:mob/minotaur/minotaur_say4"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.idle"
+  },
+  "mob.minotaur.step": {
+    "sounds": [
+      "tolkienmobs:mob/minotaur/minotaur_step"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.step"
+  },
   "mob.mirkwoodspider.shoot": {
     "sounds": [
       "tolkienmobs:mob/mirkwoodspider/shoot1",
@@ -423,6 +451,83 @@
       "tolkienmobs:mob/villager/coin_trader"
     ],
     "subtitle": "subtitles.tolkienmobs.mob.coin_trader"
+  },
+  "mob.treeent.death": {
+    "sounds": [
+      "tolkienmobs:mob/treeent/treeent_death"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.death"
+  },
+  "mob.treeent.hurt": {
+    "sounds": [
+      "tolkienmobs:mob/treeent/treeent_hurt1",
+      "tolkienmobs:mob/treeent/treeent_hurt2",
+      "tolkienmobs:mob/treeent/treeent_hurt3"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.hurt"
+  },
+  "mob.treeent.idle": {
+    "sounds": [
+      "tolkienmobs:mob/treeent/treeent_say1",
+      "tolkienmobs:mob/treeent/treeent_say2",
+      "tolkienmobs:mob/treeent/treeent_say3"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.idle"
+  },
+  "mob.treeent.step": {
+    "sounds": [
+      "tolkienmobs:mob/treeent/treeent_step1",
+      "tolkienmobs:mob/treeent/treeent_step2"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.step"
+  },
+  "mob.troll.death": {
+    "sounds": [
+      "tolkienmobs:mob/troll/troll_death"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.death"
+  },
+  "mob.troll.hurt": {
+    "sounds": [
+      "tolkienmobs:mob/troll/troll_hurt"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.hurt"
+  },
+  "mob.troll.idle": {
+    "sounds": [
+      "tolkienmobs:mob/troll/troll_say1",
+      "tolkienmobs:mob/troll/troll_say2",
+      "tolkienmobs:mob/troll/troll_say3"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.idle"
+  },
+  "mob.troll.step": {
+    "sounds": [
+      "tolkienmobs:mob/troll/troll_step1",
+      "tolkienmobs:mob/troll/troll_step2",
+      "tolkienmobs:mob/troll/troll_step3",
+      "tolkienmobs:mob/troll/troll_step4"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.step"
+  },
+  "mob.warg.death": {
+    "sounds": [
+      "tolkienmobs:mob/warg/warg_death"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.death"
+  },
+  "mob.warg.hurt": {
+    "sounds": [
+      "tolkienmobs:mob/warg/warg_hurt"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.hurt"
+  },
+  "mob.warg.idle": {
+    "sounds": [
+      "tolkienmobs:mob/warg/warg_say1",
+      "tolkienmobs:mob/warg/warg_say2"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.idle"
   },
   "music.tolkienmobs.tolkien_mobs": {
     "sounds": [

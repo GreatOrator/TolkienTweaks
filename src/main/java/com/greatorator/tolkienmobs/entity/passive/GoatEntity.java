@@ -1,6 +1,8 @@
 package com.greatorator.tolkienmobs.entity.passive;
 
+import com.greatorator.tolkienmobs.entity.npc.DwarfEntity;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
+import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
 import net.minecraft.Util;
@@ -15,6 +17,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
@@ -36,6 +39,8 @@ import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
+
+import java.util.Random;
 
 public class GoatEntity extends AbstractChestedHorse implements GeoEntity {
     private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(GoatEntity.class, EntityDataSerializers.INT);
@@ -165,6 +170,14 @@ public class GoatEntity extends AbstractChestedHorse implements GeoEntity {
 
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+        if (level.getRandom().nextInt(100) == 0) {
+            DwarfEntity dwarfentity = TolkienEntities.ENTITY_TTM_DWARF.get().create(this.level);
+            dwarfentity.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
+            dwarfentity.finalizeSpawn(level, difficulty, spawnType, null);
+            this.setTamed(true);
+            dwarfentity.startRiding(this);
+        }
+
         TolkienVariant variant = Util.getRandom(TolkienVariant.values(), this.random);
 
         this.setVariant(variant);
