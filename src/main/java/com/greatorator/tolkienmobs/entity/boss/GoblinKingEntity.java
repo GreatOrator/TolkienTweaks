@@ -3,9 +3,6 @@ package com.greatorator.tolkienmobs.entity.boss;
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
 import com.greatorator.tolkienmobs.entity.monster.GoblinEntity;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
-import com.greatorator.tolkienmobs.event.entity.GoblinEvent;
-import com.greatorator.tolkienmobs.event.entity.ServerEvents;
-import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
 import com.greatorator.tolkienmobs.util.MathUtility;
 import net.minecraft.ChatFormatting;
@@ -23,7 +20,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -40,7 +36,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RangedAttackGoal;
-import net.minecraft.world.entity.ai.goal.RemoveBlockGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.IronGolem;
@@ -49,17 +44,14 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Snowball;
-import net.minecraft.world.level.*;
-import net.minecraft.world.level.block.Blocks;
-import net.neoforged.bus.api.Event;
-import net.neoforged.neoforge.event.entity.living.MobSpawnEvent.SpawnPlacementCheck.Result;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.*;
 import software.bernie.geckolib.util.GeckoLibUtil;
-
-import java.util.Objects;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -109,13 +101,12 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
         double d2 = d0 - snowballentity.getY();
         double d3 = entity.getZ() - this.getZ();
         float f = MathUtility.sqrt(d1 * d1 + d3 * d3) * 0.2F;
-        snowballentity.shoot(d1, d2 + (double)f, d3, 1.6F, 12.0F);
         this.playSound(SoundEvents.SNOW_GOLEM_SHOOT, 1.0F, 0.4F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
         this.level.addFreshEntity(snowballentity);
     }
 
     /**
-     * Special Attack
+     * Special Attack        snowballentity.shoot(d1, d2 + (double)f, d3, 1.6F, 12.0F);
      */
     @Override
     public boolean hurt(DamageSource source, float amount) {

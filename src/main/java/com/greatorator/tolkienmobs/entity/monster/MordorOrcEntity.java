@@ -136,7 +136,10 @@ public class MordorOrcEntity extends TolkienMonsterEntity implements GeoEntity {
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
-            if (!event.isMoving() && !event.getAnimatable().isAggressive()) {
+            if (this.isPassenger()) {
+                event.getController().setAnimation(RawAnimation.begin().thenPlay("sitting"));
+                return PlayState.CONTINUE;
+            }else if (!event.isMoving() && !event.getAnimatable().isAggressive()) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
                 return PlayState.CONTINUE;
             }

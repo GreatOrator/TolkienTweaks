@@ -426,6 +426,31 @@
 					}
 				}
 			}
+		},
+		"sitting": {
+			"loop": true,
+			"bones": {
+				"body": {
+					"position": [0, -8, 0]
+				},
+				"head": {
+					"position": [0, -8, 0]
+				},
+				"rightLeg": {
+					"rotation": [-90, -15, 0],
+					"position": [0, -8, 0]
+				},
+				"leftLeg": {
+					"rotation": [-90, 15, 0],
+					"position": [0, -8, 0]
+				},
+				"leftArm": {
+					"position": [0, -8, 0]
+				},
+				"rightArm": {
+					"position": [0, -8, 0]
+				}
+			}
 		}
 	},
 	"geckolib_format_version": 2

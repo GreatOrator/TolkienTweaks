@@ -23,6 +23,16 @@ public class MathUtility {
         return ((int) (Math.random()*(maximum - minimum))) + minimum;
     }
 
+    public static int floor(double d) {
+        int i = (int)d;
+        return d < (double)i ? i - 1 : i;
+    }
+
+    public static int floor(float f) {
+        int i = (int)f;
+        return f < (float)i ? i - 1 : i;
+    }
+
     public static float sqrt(float f) {
         return (float)Math.sqrt((double)f);
     }
