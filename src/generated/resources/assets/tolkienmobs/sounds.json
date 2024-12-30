@@ -89,6 +89,14 @@
     ],
     "subtitle": "subtitles.tolkienmobs.entity.shoot"
   },
+  "entity.tornado.shoot": {
+    "sounds": [
+      "tolkienmobs:mob/ammo/lift_wind1",
+      "tolkienmobs:mob/ammo/lift_wind2",
+      "tolkienmobs:mob/ammo/lift_wind3"
+    ],
+    "subtitle": "subtitles.tolkienmobs.entity.shoot"
+  },
   "entity.web.shoot": {
     "sounds": [
       "tolkienmobs:mob/ammo/web_impact1",

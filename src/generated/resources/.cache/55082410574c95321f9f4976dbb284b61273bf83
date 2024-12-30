@@ -1,4 +1,4 @@
-// 1.21.1	2024-12-30T12:36:09.7225459	Item Models: tolkienmobs
+// 1.21.1	2024-12-30T15:57:51.4063086	Item Models: tolkienmobs
 2744b0cddb66f773a20c0030bb5381576093ca96 assets/tolkienmobs/models/item/ammolite_horse_armor.json
 914e29c26c212ad7b8914aa552c5ce18400b5057 assets/tolkienmobs/models/item/axe_ammolite.json
 9a08370f124e62b3c7067b9bf9976a8c617561be assets/tolkienmobs/models/item/axe_mithril.json
@@ -120,6 +120,7 @@ fc0ac3241c24b08f9f4e60b952ddf7a2a11f2b50 assets/tolkienmobs/models/item/elven_ma
 63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/tolkienmobs/models/item/entityttmdeepclaw_spawn_egg.json
 63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/tolkienmobs/models/item/entityttmduergar_spawn_egg.json
 63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/tolkienmobs/models/item/entityttmdwarf_spawn_egg.json
+63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/tolkienmobs/models/item/entityttmelementalgolem_spawn_egg.json
 63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/tolkienmobs/models/item/entityttmelves_spawn_egg.json
 63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/tolkienmobs/models/item/entityttmfellspirit_spawn_egg.json
 63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/tolkienmobs/models/item/entityttmfrog_spawn_egg.json
