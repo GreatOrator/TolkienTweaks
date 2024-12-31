@@ -7,7 +7,10 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.flag.FeatureFlagSet;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.EnchantedBookItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
@@ -692,6 +695,8 @@ public class TolkienTabs {
                         output.accept(TolkienItems.RECORD_FUMBLE);
                         output.accept(TolkienItems.RECORD_EDORAS);
                         output.accept(TolkienItems.RECORD_WBATTLE);
+                        output.accept(TolkienItems.BOULDER);
+                        output.accept(TolkienItems.FELLBEAST_FIREBALL);
                         output.accept(TolkienItems.ITEM_DEV_TOOL);
                         output.accept(TolkienItems.ITEM_DEV_DEBUG_TOOL);
                     }).build());
@@ -785,12 +790,50 @@ public class TolkienTabs {
                     .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_trinket"))
                     .title(Component.translatable("itemgroup.tolkienmobs.spawn"))
                     .displayItems((itemDisplayParameters, output) -> {
-                        output.accept(TolkienItems.GOLEM_STONE_SUMMON);
+                        output.accept(TolkienEntities.EGG_TTMCREBAIN);
+                        output.accept(TolkienEntities.EGG_TTMFROG);
                         output.accept(TolkienEntities.EGG_TTMGECKO);
+                        output.accept(TolkienEntities.EGG_TTMGREATEAGLE);
                         output.accept(TolkienEntities.EGG_TTMRAT);
                         output.accept(TolkienEntities.EGG_TTMSQUIRREL);
-                        output.accept(TolkienEntities.EGG_TTMFROG);
                         output.accept(TolkienEntities.EGG_TTMSWARM);
+                        output.accept(TolkienEntities.EGG_TTMTHRUSH);
+                        output.accept(TolkienItems.GOLEM_STONE_SUMMON);
+
+                        output.accept(TolkienEntities.EGG_TTMAUROCH);
+                        output.accept(TolkienEntities.EGG_TTMGOAT);
+                        output.accept(TolkienEntities.EGG_TTMMUMAKIL);
+
+                        output.accept(TolkienEntities.EGG_TTMDWARF);
+                        output.accept(TolkienEntities.EGG_TTMELVES);
+                        output.accept(TolkienEntities.EGG_TTMHOBBIT);
+                        output.accept(TolkienEntities.EGG_TTMHUMAN);
+                        output.accept(TolkienEntities.EGG_TTMORC_TRADER);
+                        output.accept(TolkienEntities.EGG_TTMSOUTHRON);
+
+                        output.accept(TolkienEntities.EGG_TTMBARROW);
+                        output.accept(TolkienEntities.EGG_TTMBRIGAND);
+                        output.accept(TolkienEntities.EGG_TTMDEEPCLAW);
+                        output.accept(TolkienEntities.EGG_TTMDUERGAR);
+                        output.accept(TolkienEntities.EGG_TTMELEMENTALGOLEM);
+                        output.accept(TolkienEntities.EGG_TTMFELLSPIRIT);
+                        output.accept(TolkienEntities.EGG_TTMGOBLIN);
+                        output.accept(TolkienEntities.EGG_TTMHARADRIM);
+                        output.accept(TolkienEntities.EGG_TTMHURON);
+                        output.accept(TolkienEntities.EGG_TTMMIMICCHEST);
+                        output.accept(TolkienEntities.EGG_TTMMINOTAUR);
+                        output.accept(TolkienEntities.EGG_TTMMIRKWOODSPIDER);
+                        output.accept(TolkienEntities.EGG_TTMMORDORORC);
+                        output.accept(TolkienEntities.EGG_TTMOATHBREAKER);
+                        output.accept(TolkienEntities.EGG_TTMROCKGOLEM);
+                        output.accept(TolkienEntities.EGG_TTMROMIEWALKER);
+                        output.accept(TolkienEntities.EGG_TTMSWAMPHAG);
+                        output.accept(TolkienEntities.EGG_TTMTREEENT);
+                        output.accept(TolkienEntities.EGG_TTMTROLL);
+                        output.accept(TolkienEntities.EGG_TTMURUKHAI);
+                        output.accept(TolkienEntities.EGG_TTMWARG);
+
+                        output.accept(TolkienEntities.EGG_TTMGOBLINKING);
                     }).build());
 
     public static void register(IEventBus eventBus) {

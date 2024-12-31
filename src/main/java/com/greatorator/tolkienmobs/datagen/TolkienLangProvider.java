@@ -103,7 +103,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addItemWithLore(TolkienItems.ITEM_FANCYKEY.get(), "§3Dungeon Key§r", "Key made by Elssuli from the items you collected");
             this.addItemWithLore(TolkienItems.ITEM_FANCYPICK.get(), "Fancy Pick", "");
             this.addItemWithLore(TolkienItems.ITEM_FANCYSHIELD.get(), "Fancy Shield", "");
-            this.addItemWithLore(TolkienItems.ITEM_FANCYSHIELD2.get(), "§5Cromhes' Shield§r §2(Repaired)§r", "This shield hails from an unknown origin though it belongs to Cromhes");
+            this.addItemWithLore(TolkienItems.ITEM_FANCYSHIELD2.get(), "§5Cromhes' Shield§r §2(Repaired)§r", "This shield hails from an com.greatorator.tolkienmobs.entity.monster.model.unknown origin though it belongs to Cromhes");
             this.addItemWithLore(TolkienItems.ITEM_FANCYSWORD.get(), "§5Cromhes' Sword§r §2(Repaired)§r", "The smith has done an amazing job on this sword");
             this.addItemWithLore(TolkienItems.ITEM_FANCYSWORD2.get(), "§4Apostle§r", "Hope of Vengeance");
             this.addItemWithLore(TolkienItems.ITEM_LETTER.get(), "§6Thurdan's Letter§r", "Thurdan's letter about Dreulhara");
@@ -189,6 +189,8 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addItem(TolkienItems.BOOTS_AMMOLITE, "Ammolite Boots");
             this.addItem(TolkienItems.AMMOLITE_HORSE_ARMOR, "Ammolite Horse Armor");
             this.addItem(TolkienItems.ELVEN_BOW, "Elven Bow");
+            this.addItem(TolkienItems.BOULDER, "Boulder");
+            this.addItem(TolkienItems.FELLBEAST_FIREBALL, "Fell Beast Fireball");
             this.addItem(TolkienItems.URUK_BOW, "Uruk Bow");
             this.addMusicDisc(TolkienItems.RECORD_EREBOR, "SnowShepherd - All That Glitters in Erebor");
             this.addMusicDisc(TolkienItems.RECORD_HOBBITS, "Harry Murrell - Concerning Hobbits");
@@ -248,6 +250,12 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.createStoneSet("cracked_dwarven_stone_bricks", "Cracked Dwarven Stone");
             this.createStoneSet("dwarven_stone_bricks", "Dwarven Stone Bricks");
             this.createStoneSet("smooth_dwarven_stone", "Smooth Dwarven Stone");
+            this.createStoneSet("dark_stone", "Dark Stone");
+            this.createStoneSet("chiseled_dark_stone_bricks", "Chiseled Dark Stone Bricks");
+            this.createStoneSet("cobbled_dark_stone", "Cobbled Dark Stone");
+            this.createStoneSet("cracked_dark_stone_bricks", "Cracked Dark Stone");
+            this.createStoneSet("dark_stone_bricks", "Dark Stone Bricks");
+            this.createStoneSet("smooth_dark_stone", "Smooth Dark Stone");
             this.createStoneSet("elven_marble", "Elven Marble");
             this.createStoneSet("chiseled_elven_marble_bricks", "Chiseled Elven Marble Bricks");
             this.createStoneSet("cobbled_elven_marble", "Cobbled Elven Marble");
@@ -344,10 +352,6 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addSound("ambient", "arda_portal", "Portal to Arda beckons");
             this.addSound("item", "hype_horn", "Celebrating victory");
             this.addSound("mob", "coin_trader", "A Wild Coin Trader appears!");
-            this.addSound("mob", "entityttmrat", " ");
-            this.addSound("mob", "entityttmsquirrel", " ");
-            this.addSound("mob", "entityttmfrog", " ");
-            this.addSound("mob", "entityttmswarm", " ");
 
                 // Entities
                     // Villager
@@ -364,13 +368,125 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add(TolkienEntities.ENTITY_TTM_RAT.get(), "Rat");
             this.add(TolkienEntities.EGG_TTMRAT.get(), "Rat Spawn Egg");
             this.add(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), "Squirrel");
+            this.add("entity.tolkienmobs.entityttmsquirrel.killer_squirrel", "§4Killer Squirrel§r");
             this.add(TolkienEntities.EGG_TTMSQUIRREL.get(), "Squirrel Spawn Egg");
             this.add(TolkienEntities.ENTITY_TTM_FROG.get(), "Frog");
+            this.add("entity.tolkienmobs.entityttmfrog.murder_frog", "§4Murder Frog§r");
             this.add(TolkienEntities.EGG_TTMFROG.get(), "Frog Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_THRUSH.get(), "Thrush");
+            this.add(TolkienEntities.EGG_TTMTHRUSH.get(), "Thrush Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_CREBAIN.get(), "Crebain");
+            this.add(TolkienEntities.EGG_TTMCREBAIN.get(), "Crebain Spawn Egg");
             this.add(TolkienEntities.ENTITY_TTM_SWARM.get(), "MidgeFly");
             this.add(TolkienEntities.EGG_TTMSWARM.get(), "MidgeFly Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_GREAT_EAGLE.get(), "Great Eagle");
+            this.add(TolkienEntities.EGG_TTMGREATEAGLE.get(), "Great Eagle Spawn Egg");
+
+                    // Passive
+            this.add(TolkienEntities.ENTITY_TTM_AUROCH.get(), "Auroch");
+            this.add(TolkienEntities.EGG_TTMAUROCH.get(), "Auroch Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_MUMAKIL.get(), "Mumakil");
+            this.add(TolkienEntities.EGG_TTMMUMAKIL.get(), "Mumakil Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_GOAT.get(), "Battle Goat");
+            this.add(TolkienEntities.EGG_TTMGOAT.get(), "Battle Goat Spawn Egg");
+
+                    // NPC
+            this.addVillager(TolkienEntities.ENTITY_TTM_HUMAN.get(), "Human");
+            this.add(TolkienEntities.EGG_TTMHUMAN.get(), "Human Spawn Egg");
+            this.addVillager(TolkienEntities.ENTITY_TTM_DWARF.get(), "Dwarf");
+            this.add(TolkienEntities.EGG_TTMDWARF.get(), "Dwarf Spawn Egg");
+            this.addVillager(TolkienEntities.ENTITY_TTM_ELVES.get(), "Elf");
+            this.add(TolkienEntities.EGG_TTMELVES.get(), "Elf Spawn Egg");
+            this.addVillager(TolkienEntities.ENTITY_TTM_HOBBIT.get(), "Hobbit");
+            this.add(TolkienEntities.EGG_TTMHOBBIT.get(), "Hobbit Spawn Egg");
+            this.addVillager(TolkienEntities.ENTITY_TTM_SOUTHRON.get(), "Southron");
+            this.add(TolkienEntities.EGG_TTMSOUTHRON.get(), "Southron Spawn Egg");
+            this.addVillager(TolkienEntities.ENTITY_TTM_ORC_TRADER.get(), "Orc Trader");
+            this.add(TolkienEntities.EGG_TTMORC_TRADER.get(), "Orc Trader Spawn Egg");
+
+                    //Monster
+            this.add(TolkienEntities.ENTITY_TTM_BARROW.get(), "Barrow Wight");
+            this.add(TolkienEntities.EGG_TTMBARROW.get(), "Barrow Wight Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_OATHBREAKER.get(), "Oath Breaker");
+            this.add(TolkienEntities.EGG_TTMOATHBREAKER.get(), "Oath Breaker Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_FELLSPIRIT.get(), "Fell Spirit");
+            this.add(TolkienEntities.EGG_TTMFELLSPIRIT.get(), "Fell Spirit Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_BRIGAND.get(), "Brigand");
+            this.add(TolkienEntities.EGG_TTMBRIGAND.get(), "Brigand Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_HARADRIM.get(), "Haradrim");
+            this.add(TolkienEntities.EGG_TTMHARADRIM.get(), "Haradrim Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_ROMIEWALKER.get(), "Romie Walker");
+            this.add(TolkienEntities.EGG_TTMROMIEWALKER.get(), "Romie Walker Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_MIMICCHEST.get(), "Mimic Chest");
+            this.add(TolkienEntities.EGG_TTMMIMICCHEST.get(), "Mimic Chest Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_MORDORORC.get(), "Mordor Orc");
+            this.add(TolkienEntities.EGG_TTMMORDORORC.get(), "Mordor Orc Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_URUKHAI.get(), "Uruk Hai");
+            this.add(TolkienEntities.EGG_TTMURUKHAI.get(), "Uruk Hai Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_DUERGAR.get(), "Duergar");
+            this.add(TolkienEntities.EGG_TTMDUERGAR.get(), "Duergar Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_GOBLIN.get(), "Goblin");
+            this.add(TolkienEntities.EGG_TTMGOBLIN.get(), "Goblin Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_MIRKWOODSPIDER.get(), "Mirkwood Spider");
+            this.add(TolkienEntities.EGG_TTMMIRKWOODSPIDER.get(), "Mirkwood Spider Spawn Egg");
+            this.add(TolkienEntities.ENTITY_ROCKGOLEM.get(), "Rock Golem");
+            this.add(TolkienEntities.EGG_TTMROCKGOLEM.get(), "Rock Golem Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_HURON.get(), "Huron");
+            this.add(TolkienEntities.EGG_TTMHURON.get(), "Huron Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_MINOTAUR.get(), "Minotaur");
+            this.add(TolkienEntities.EGG_TTMMINOTAUR.get(), "Minotaur Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_DEEPCLAW.get(), "Deepclaw");
+            this.add(TolkienEntities.EGG_TTMDEEPCLAW.get(), "Deepclaw Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_TROLL.get(), "Cave Troll");
+            this.add(TolkienEntities.EGG_TTMTROLL.get(), "Cave Troll Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_TREEENT.get(), "Tree Ent");
+            this.add(TolkienEntities.EGG_TTMTREEENT.get(), "Tree Ent Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_SWAMPHAG.get(), "Swamp Hag");
+            this.add(TolkienEntities.EGG_TTMSWAMPHAG.get(), "Swamp Hag Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_WARG.get(), "Warg");
+            this.add(TolkienEntities.EGG_TTMWARG.get(), "Warg Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_ELEMENTALGOLEM.get(), "Elemental Golem");
+            this.add(TolkienEntities.EGG_TTMELEMENTALGOLEM.get(), "Elemental Golem Spawn Egg");
+
+                    // Boss
+            this.add(TolkienEntities.ENTITY_TTM_GOBLINKING.get(), "Goblin King");
+            this.add(TolkienEntities.EGG_TTMGOBLINKING.get(), "Goblin King Spawn Egg");
+
 
         // Enchantments
             this.add("enchantment.tolkienmobs.balrog_mark_key", "Balrog's Mark");
+
+        // Chat Messages
+            this.add("tolkienmobs.msg.helpcomming", "Goblin King is attempting to call for help...Reinforcements have arrived!");
+            this.add("tolkienmobs.msg.nohelp", "Goblin King is attempting to call for help, but no help came.");
+            this.add("tolkienmobs.msg.nodrown", "Goblin King doesn't want to drown.");
+            this.add("tolkienmobs.msg.onfire", "Goblin King is protecting himself from fire.");
+            this.add("tolkienmobs.msg.healself", "Goblin King is hurt and is healing.");
+            this.add("tolkienmobs.msg.speedup", "Goblin King is attempting to match your speed.");
+            this.add("tolkienmobs.msg.nodrown.balrog", "The Balrog doesn't want to drown.");
+            this.add("tolkienmobs.msg.onfire.balrog", "The Balrog is protecting himself from fire.");
+            this.add("tolkienmobs.msg.healself.balrog", "The Balrog is hurt and is healing.");
+            this.add("tolkienmobs.msg.speedup.balrog", "The Balrog is attempting to match your speed.");
+            this.add("tolkienmobs.msg.nodrown.gwahir", "Gwahir doesn't want to drown.");
+            this.add("tolkienmobs.msg.onfire.gwahir", "Gwahir is protecting himself from fire.");
+            this.add("tolkienmobs.msg.healself.gwahir", "Gwahir is hurt and is healing.");
+            this.add("tolkienmobs.msg.speedup.gwahir", "Gwahir is attempting to match your speed.");
+            this.add("tolkienmobs.msg.helpcomming.shelob", "Shelob is attempting to call for help...Reinforcements have arrived!");
+            this.add("tolkienmobs.msg.nohelp.shelob", "Shelob is attempting to call for help, but no help came.");
+            this.add("tolkienmobs.msg.nodrown.shelob", "Shelob doesn't want to drown.");
+            this.add("tolkienmobs.msg.onfire.shelob", "Shelob is protecting herself from fire.");
+            this.add("tolkienmobs.msg.healself.shelob", "Shelob is hurt and is healing.");
+            this.add("tolkienmobs.msg.speedup.shelob", "Shelob is attempting to match your speed.");
+            this.add("tolkienmobs.msg.healself.watcher", "The Watcher is hurt and is healing.");
+            this.add("tolkienmobs.msg.speedup.watcher", "The Watcher is attempting to match your speed.");
+            this.add("tolkienmobs.msg.deploy_sleeping_bag", "Something is blocking the Sleepingbag.");
+            this.add("tolkienmobs.msg.deploy_campfire", "Something is blocking the Campfire.");
+            this.add("tolkienmobs.msg.key_used", "Key has no remaining uses.");
+            this.add("tolkienmobs.msg.cleared.entities", "All existing entities cleared...");
+            this.add("tolkienmobs.msg.added.entities", "Entity added...");
+            this.add("tolkienmobs.msg.payment", "Payment item set to...");
+            this.add("tolkienmobs.msg.payment.insufficient", "Not enough for teleport!");
+            this.add("tolkienmobs.msg.destination", "Destination not found");
+
     }
 }

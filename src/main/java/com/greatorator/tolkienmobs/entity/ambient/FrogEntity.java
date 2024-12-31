@@ -27,6 +27,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.TemptGoal;
@@ -66,6 +67,14 @@ public class FrogEntity extends TolkienAmbientEntity implements GeoEntity {
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(3, new TemptGoal(this, 1.25, stack -> stack.is(TolkienTags.Items.INSECTS), false));
+    }
+
+    public static AttributeSupplier.Builder createAttributes() {
+        return Animal.createLivingAttributes()
+                .add(Attributes.ATTACK_DAMAGE, 3.0)
+                .add(Attributes.MAX_HEALTH, 6.0D)
+                .add(Attributes.MOVEMENT_SPEED, 0.3D)
+                .add(Attributes.FOLLOW_RANGE, 24D);
     }
 
     @Override

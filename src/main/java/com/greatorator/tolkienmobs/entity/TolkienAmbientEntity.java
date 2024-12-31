@@ -1,11 +1,15 @@
 package com.greatorator.tolkienmobs.entity;
 
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
@@ -14,10 +18,8 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 public class TolkienAmbientEntity extends Animal {
-    public final AnimationState flyAnimationState = new AnimationState();
-    private int flyAnimationTimeout = 0;
-    public final AnimationState idleAnimationState = new AnimationState();
-    private int idleAnimationTimeout = 0;
+    protected static final EntityDataAccessor<Boolean> FLYING = SynchedEntityData.defineId(TolkienAmbientEntity.class, EntityDataSerializers.BOOLEAN);
+    public MoveControl moveControl;
 
     public TolkienAmbientEntity(EntityType<? extends Animal> entityType, Level level) {
         super(entityType, level);
@@ -57,24 +59,19 @@ public class TolkienAmbientEntity extends Animal {
     }
 
     /**
-     * Animations
+     * VARIANT
      */
-    private void setupAnimationStates() {
-        if (this.idleAnimationTimeout <= 0) {
-            this.idleAnimationTimeout = 80;
-            this.spawnSprintParticle();
-            this.idleAnimationState.start(this.tickCount);
-        } else {
-            --this.idleAnimationTimeout;
-        }
+    @Override
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(FLYING, false);
     }
 
-    @Override
-    public void tick() {
-        super.tick();
+    public void setFlying(boolean flying) {
+        this.entityData.set(FLYING, flying);
+    }
 
-        if (this.level().isClientSide()) {
-            this.setupAnimationStates();
-        }
+    public boolean getFlying() {
+        return (boolean)this.entityData.get(FLYING);
     }
 }
