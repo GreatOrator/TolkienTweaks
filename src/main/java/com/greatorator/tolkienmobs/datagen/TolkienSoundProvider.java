@@ -3,7 +3,6 @@ package com.greatorator.tolkienmobs.datagen;
 import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.SoundDefinition;
@@ -45,21 +44,83 @@ public class TolkienSoundProvider extends SoundDefinitionsProvider {
             // Villager
         this.generateNewSoundWithSubtitle(TolkienSounds.VILLAGER_COIN_TRADER, "mob/villager/coin_trader", 1, "A wild Coin Trader Appears!");
 
+            // NPC
+        this.generateNewSoundWithSubtitle(TolkienSounds.IDLE_DWARF, "mob/dwarf/dwarf_say", 4, "Dwarf speaking");
+        this.generateNewSoundWithSubtitle(TolkienSounds.HURT_DWARF, "mob/dwarf/dwarf_hurt", 1, "Dwarf being hurt");
+        this.generateNewSoundWithSubtitle(TolkienSounds.ANGRY_DWARF, "mob/dwarf/dwarf_angry", 1, "Dwarf getting angry");
+        this.generateNewSoundWithSubtitle(TolkienSounds.DEATH_DWARF, "mob/dwarf/dwarf_death", 1, "Dwarf dying");
+
             //Ambient
-        this.generateNewSound(TolkienSounds.IDLE_RAT, "mob/entityttmrat/entityttmrat_say", 4, " ");
-        this.generateNewSound(TolkienSounds.HURT_RAT, "mob/entityttmrat/entityttmrat_hurt", 1, " ");
-        this.generateNewSound(TolkienSounds.DEATH_RAT, "mob/entityttmrat/entityttmrat_death", 1, " ");
-        this.generateNewSound(TolkienSounds.IDLE_SQUIRREL, "mob/sosquirrel/sosquirrel_say", 4, " ");
-        this.generateNewSound(TolkienSounds.HURT_SQUIRREL, "mob/sosquirrel/sosquirrel_hurt", 1, " ");
-        this.generateNewSound(TolkienSounds.DEATH_SQUIRREL, "mob/sosquirrel/sosquirrel_death", 1, " ");
-        this.generateNewSound(TolkienSounds.STEP_SQUIRREL, "mob/sosquirrel/sosquirrel_step", 1, " ");
-        this.generateNewSound(TolkienSounds.ANGRY_SQUIRREL, "mob/sosquirrel/sosquirrel_angry", 1, " ");
-        this.generateNewSound(TolkienSounds.IDLE_FROG, "mob/toaddle/toaddle_say", 4, " ");
-        this.generateNewSound(TolkienSounds.HURT_FROG, "mob/toaddle/toaddle_hurt", 1, " ");
-        this.generateNewSound(TolkienSounds.DEATH_FROG, "mob/toaddle/toaddle_death", 1, " ");
-        this.generateNewSound(TolkienSounds.STEP_FROG, "mob/toaddle/toaddle_step", 1, " ");
-        this.generateNewSound(TolkienSounds.ANGRY_FROG, "mob/toaddle/toaddle_angry", 1, " ");
-        this.generateNewSound(TolkienSounds.IDLE_SWARM, "mob/midgefly_say1", 1, " ");
+        this.generateNewSound(TolkienSounds.IDLE_RAT, "mob/entityttmrat/entityttmrat_say", 4, "Rat squeaking");
+        this.generateNewSound(TolkienSounds.HURT_RAT, "mob/entityttmrat/entityttmrat_hurt", 1, "Rat hurting");
+        this.generateNewSound(TolkienSounds.DEATH_RAT, "mob/entityttmrat/entityttmrat_death", 1, "Rat dying");
+        this.generateNewSound(TolkienSounds.IDLE_SQUIRREL, "mob/sosquirrel/sosquirrel_say", 4, "Squirrel making noise ");
+        this.generateNewSound(TolkienSounds.HURT_SQUIRREL, "mob/sosquirrel/sosquirrel_hurt", 1, "Squirrel hurting");
+        this.generateNewSound(TolkienSounds.DEATH_SQUIRREL, "mob/sosquirrel/sosquirrel_death", 1, "Squirrel dying");
+        this.generateNewSound(TolkienSounds.STEP_SQUIRREL, "mob/sosquirrel/sosquirrel_step", 1, "Squirrel Moving");
+        this.generateNewSound(TolkienSounds.ANGRY_SQUIRREL, "mob/sosquirrel/sosquirrel_angry", 1, "Squirrel angry");
+        this.generateNewSound(TolkienSounds.IDLE_FROG, "mob/toaddle/toaddle_say", 4, "Frog croaking");
+        this.generateNewSound(TolkienSounds.HURT_FROG, "mob/toaddle/toaddle_hurt", 1, "Frog being hurt");
+        this.generateNewSound(TolkienSounds.DEATH_FROG, "mob/toaddle/toaddle_death", 1, "Frog dying");
+        this.generateNewSound(TolkienSounds.STEP_FROG, "mob/toaddle/toaddle_step", 1, "Frog moving");
+        this.generateNewSound(TolkienSounds.ANGRY_FROG, "mob/toaddle/toaddle_angry", 1, "Frog angry");
+        this.generateNewSound(TolkienSounds.IDLE_THRUSH, "mob/tmthrush/tmthrush_say", 4, "Thrush chirping");
+        this.generateNewSound(TolkienSounds.HURT_THRUSH, "mob/tmthrush/tmthrush_hurt", 1, "Thrush Hurt");
+        this.generateNewSound(TolkienSounds.DEATH_THRUSH, "mob/tmthrush/tmthrush_death", 1, "Thrush Dying");
+        this.generateNewSound(TolkienSounds.FLAP_THRUSH, "mob/tmgreateagle/tmgreateagle_flapping", 1, "Bird wings flapping");
+        this.generateNewSound(TolkienSounds.IDLE_CREBAIN, "mob/crebain/crebain_cry", 4, "Crebain Cawing");
+        this.generateNewSound(TolkienSounds.HURT_CREBAIN, "mob/crebain/crebain_hurt", 1, "Crebain Hurt");
+        this.generateNewSound(TolkienSounds.DEATH_CREBAIN, "mob/crebain/crebain_death", 1, "Crebain Dying");
+        this.generateNewSound(TolkienSounds.IDLE_SWARM, "mob/midgefly_say1", 1, "Buzzing Flies");
+        this.generateNewSound(TolkienSounds.IDLE_GREAT_EAGLE, "mob/tmgreateagle/tmgreateagle_flapping", 1, "Bird wings flapping");
+        this.generateNewSound(TolkienSounds.HURT_GREAT_EAGLE, "mob/tmgreateagle/tmgreateagle_hurt", 1, "Crebain Hurt");
+        this.generateNewSound(TolkienSounds.DEATH_GREAT_EAGLE, "mob/tmgreateagle/tmgreateagle_death", 1, "Crebain Dying");
+        this.generateNewSound(TolkienSounds.ATTACK_GREAT_EAGLE, "mob/tmgreateagle/tmgreateagle_attack", 1, "Buzzing Flies");
+
+            //Passive
+        this.generateNewSound(TolkienSounds.IDLE_MUMAKIL, "mob/mumakil/mumakil_say", 4, "Mumakil Trumpets");
+        this.generateNewSound(TolkienSounds.HURT_MUMAKIL, "mob/mumakil/mumakil_hurt", 1, "Mumakil has been hurt");
+        this.generateNewSound(TolkienSounds.IDLE_GOAT, "mob/goat/goat_say", 4, "Bleating Battle Goat");
+        this.generateNewSound(TolkienSounds.HURT_GOAT, "mob/goat/goat_hurt", 1, "Hurt Battle Goat");
+        this.generateNewSound(TolkienSounds.DEATH_GOAT, "mob/goat/goat_death", 1, "Dying Battle Goat");
+        this.generateNewSound(TolkienSounds.SCREAM_GOAT, "mob/goat/goat_scream", 1, "Yelling Battle Goat");
+        this.generateNewSound(TolkienSounds.ANGRY_GOAT, "mob/goat/goat_angry", 1, "Angry Battle Goat");
+
+            //Monster
+        this.generateNewSound(TolkienSounds.IDLE_OATH_BREAKER, "mob/oathbreaker/oathbreaker_say", 4, "Eerie Groan");
+        this.generateNewSound(TolkienSounds.IDLE_BARROW, "mob/barrowwight/barrowwight_say", 3, "Eerie Groan");
+        this.generateNewSound(TolkienSounds.HURT_BARROW, "mob/barrowwight/barrowwight_hurt", 1, "Damaged Spirit");
+        this.generateNewSound(TolkienSounds.IDLE_ROMIE_WALKER, "mob/romiewalker/romiewalker_idle", 2, "Eerie Groan");
+        this.generateNewSound(TolkienSounds.HURT_ROMIE_WALKER, "mob/romiewalker/romiewalker_hurt", 2, "Damaged Spirit");
+        this.generateNewSound(TolkienSounds.DEATH_ROMIE_WALKER, "mob/romiewalker/romiewalker_death", 2, "Damaged Spirit");
+        this.generateNewSound(TolkienSounds.IDLE_ORC, "mob/orc/orc_say", 4, "Casual Orc");
+        this.generateNewSound(TolkienSounds.STEP_MIMIC, "mob/mimicchest/mimic_step", 2, "A chest started moving");
+        this.generateNewSound(TolkienSounds.ANGRY_MIMIC, "mob/mimicchest/mimic_angry", 1, "Chest is now Angry");
+        this.generateNewSound(TolkienSounds.IDLE_GOBLIN, "mob/goblin/goblin_say", 4, "Eerie Groan");
+        this.generateNewSound(TolkienSounds.HURT_GOBLIN, "mob/goblin/goblin_hurt", 1, "Eerie Groan");
+        this.generateNewSound(TolkienSounds.DEATH_GOBLIN, "mob/goblin/goblin_death", 1, "Damaged Spirit");
+        this.generateNewSound(TolkienSounds.ANGRY_GOBLIN, "mob/goblin/goblin_angry", 1, "Eerie Groan");
+        this.generateNewSound(TolkienSounds.SHOOT_SPIDER, "mob/mirkwoodspider/shoot", 2, "Web shooting");
+        this.generateNewSound(TolkienSounds.IDLE_MINOTAUR, "mob/minotaur/minotaur_say", 4, "Minotaur of the maze");
+        this.generateNewSound(TolkienSounds.STEP_MINOTAUR, "mob/minotaur/minotaur_step", 1, "The Minotaur approaches");
+        this.generateNewSound(TolkienSounds.HURT_MINOTAUR, "mob/minotaur/minotaur_hurt", 1, "Screams in pain");
+        this.generateNewSound(TolkienSounds.DEATH_MINOTAUR, "mob/minotaur/minotaur_death", 2, "Death of the beast");
+        this.generateNewSound(TolkienSounds.IDLE_TROLL, "mob/troll/troll_say", 3, "Cave Troll!");
+        this.generateNewSound(TolkienSounds.STEP_TROLL, "mob/troll/troll_step", 4, "The Troll approaches");
+        this.generateNewSound(TolkienSounds.HURT_TROLL, "mob/troll/troll_hurt", 1, "Screams in pain");
+        this.generateNewSound(TolkienSounds.DEATH_TROLL, "mob/troll/troll_death", 1, "Death of the beast");
+        this.generateNewSound(TolkienSounds.IDLE_TREEENT, "mob/treeent/treeent_say", 3, "It takes a long time to say anything in Entish");
+        this.generateNewSound(TolkienSounds.STEP_TREEENT, "mob/treeent/treeent_step", 2, "Is that tree moving?");
+        this.generateNewSound(TolkienSounds.HURT_TREEENT, "mob/treeent/treeent_hurt", 3, "Weapon against wood");
+        this.generateNewSound(TolkienSounds.DEATH_TREEENT, "mob/treeent/treeent_death", 1, "An ent falls");
+        this.generateNewSound(TolkienSounds.IDLE_WARG, "mob/warg/warg_say", 2, "Wolf-like growls");
+        this.generateNewSound(TolkienSounds.HURT_WARG, "mob/warg/warg_hurt", 1, "Warg whimpers");
+        this.generateNewSound(TolkienSounds.DEATH_WARG, "mob/warg/warg_death", 1, "End to the foul beast");
+
+            // Projectile
+        this.generateNewSound(TolkienSounds.SHOOT_BOULDER, "mob/ammo/ammo_boulder_shoot", 1, " ");
+        this.generateNewSound(TolkienSounds.SHOOT_WEB, "mob/ammo/web_impact", 2, " ");
+        this.generateNewSound(TolkienSounds.SHOOT_TORNADO, "mob/ammo/lift_wind", 3, " ");
 
         // Records
         this.makeMusicDisc(TolkienSounds.MUSIC_DISC_ALLTHATGLITTERS, "allthatglitterserebor");

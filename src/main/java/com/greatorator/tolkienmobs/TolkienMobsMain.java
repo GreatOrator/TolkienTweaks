@@ -4,15 +4,24 @@ import com.google.common.collect.Maps;
 import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
 import com.greatorator.tolkienmobs.containers.screens.*;
 import com.greatorator.tolkienmobs.entity.ambient.render.*;
+import com.greatorator.tolkienmobs.entity.boss.render.GoblinKingRender;
+import com.greatorator.tolkienmobs.entity.monster.MinotaurEntity;
+import com.greatorator.tolkienmobs.entity.monster.MordorOrcEntity;
+import com.greatorator.tolkienmobs.entity.monster.render.*;
+import com.greatorator.tolkienmobs.entity.npc.render.*;
+import com.greatorator.tolkienmobs.entity.passive.render.AurochRender;
+import com.greatorator.tolkienmobs.entity.passive.render.GoatRender;
+import com.greatorator.tolkienmobs.entity.passive.render.MumakilRender;
+import com.greatorator.tolkienmobs.entity.projectiles.render.BoulderRender;
+import com.greatorator.tolkienmobs.entity.projectiles.render.FellBeastFireballRender;
 import com.greatorator.tolkienmobs.event.TolkienRegistration;
-import com.greatorator.tolkienmobs.init.TolkienFluidTypes;
-import com.greatorator.tolkienmobs.handler.ColorHandler;
-import com.greatorator.tolkienmobs.init.TolkienDataComponents;
-import com.greatorator.tolkienmobs.init.*;
 import com.greatorator.tolkienmobs.fluid.TolkienFluidType;
-import com.greatorator.tolkienmobs.init.TolkienParticleTypes;
+import com.greatorator.tolkienmobs.handler.ColorHandler;
+import com.greatorator.tolkienmobs.init.*;
 import com.greatorator.tolkienmobs.network.PacketHandler;
+import com.greatorator.tolkienmobs.particle.FellBeastBreathParticle;
 import com.greatorator.tolkienmobs.particle.LeafParticle;
+import com.greatorator.tolkienmobs.particle.WindParticle;
 import com.greatorator.tolkienmobs.particle.provider.TolkienParticleProvider;
 import com.greatorator.tolkienmobs.util.TolkienItemProperties;
 import com.mojang.logging.LogUtils;
@@ -49,44 +58,40 @@ import java.util.Locale;
 public class TolkienMobsMain {
     public static final String MODID = "tolkienmobs";
     public static final Logger LOGGER = LogUtils.getLogger();
-    private static final String MODEL_DIR = "textures/entity/";
     private static final String BLOCK_DIR = "textures/block/custom/";
 
-    /*
-     TODO
-      -Boats Implemented
-      -Projectiles Implemented
-      -Biomes
-        -Structures
-      -Arda Portal
-      -Enchantments
-      -Torches won't go on walls
-      -Items
-        -Arda Staff
-        -Dev Tools
-      -Functional Blocks
-        -Morgul Crystal
-        -Chameleon Blocks
-        -Keystone Block
-        -Milestone
-        -Fluid Block
-        -Spawner
-        -Lockable Chests
-        -Fireplace Recipes
-        -Trinket Table Recipes
-        -Backpack
-            -Upgrade System
-            -Fluid Handling
-            -Sleeping Bag deploy
-            -Campfire Deploy
-      -Entities
-        -Frog Model Broken
-        -POI working for villagers
-        -Spawn Eggs
-      -Integration
-        -Curios
-        -JEI
-     */
+    // TODO
+    //  -Barrels Crashing when placing
+    //  -Signs not placing on vertical surfaces
+    //  -Torches won't go on walls
+    //  -Boats Implemented
+    //  -Projectiles Implemented
+    //  -Biomes
+    //    -Structures
+    //  -Arda Portal
+    //  -Enchantments
+    //  -Items
+    //    -Arda Staff
+    //    -Dev Tools
+    //  -Functional Blocks
+    //    -Morgul Crystal
+    //    -Chameleon Blocks
+    //    -Keystone Block
+    //    -Milestone
+    //    -Fluid Block
+    //    -Spawner
+    //    -Lockable Chests
+    //    -Fireplace Recipes
+    //    -Trinket Table Recipes
+    //      -Working in Trinket Table
+    //    -Backpack
+    //        -Upgrade System
+    //        -Fluid Handling
+    //        -Sleeping Bag deploy
+    //        -Campfire Deploy
+    //  -Integration
+    //    -Curios
+    //    -JEI
 
     public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer, Dist dist) {
         modEventBus.addListener(this::commonSetup);
@@ -114,6 +119,7 @@ public class TolkienMobsMain {
         TolkienFluidTypes.register(modEventBus);
         TolkienFluids.register(modEventBus);
 
+        TolkienLootFunctions.LOOT_FUNCTIONS.register(modEventBus);
         TolkienEnchantmentEffects.register(modEventBus);
 
         TolkienFeatureModifiers.TRUNK_PLACERS.register(modEventBus);
@@ -225,7 +231,53 @@ public class TolkienMobsMain {
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_RAT.get(), RatRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), SquirrelRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_FROG.get(), FrogRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_THRUSH.get(), ThrushRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_CREBAIN.get(), CrebainRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_SWARM.get(), SwarmRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_GREAT_EAGLE.get(), GreatEagleRender::new);
+
+                // Passive
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_AUROCH.get(), AurochRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_MUMAKIL.get(), MumakilRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_GOAT.get(), GoatRender::new);
+
+                // Monster
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_BARROW.get(), BarrowWightRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_OATHBREAKER.get(), OathBreakerRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_FELLSPIRIT.get(), FellSpiritRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_BRIGAND.get(), BrigandRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_HARADRIM.get(), HaradrimRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_ROMIEWALKER.get(), RomieWalkerRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_MIMICCHEST.get(), MimicChestRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_MORDORORC.get(), MordorOrcRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_URUKHAI.get(), UrukHaiRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_DUERGAR.get(), DuergarRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_GOBLIN.get(), GoblinRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_MIRKWOODSPIDER.get(), MirkwoodSpiderRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_ROCKGOLEM.get(), RockGolemRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_HURON.get(), HuronRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_MINOTAUR.get(), MinotaurRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_DEEPCLAW.get(), DeepClawRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_TROLL.get(), TrollRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_TREEENT.get(), TreeEntRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_SWAMPHAG.get(), SwampHagRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_WARG.get(), WargRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_ELEMENTALGOLEM.get(), ElementalGolemRender::new);
+
+                // Boss
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_GOBLINKING.get(), GoblinKingRender::new);
+
+                // NPC
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_HUMAN.get(), HumanRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_DWARF.get(), DwarfRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_ELVES.get(), ElvesRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_HOBBIT.get(), HobbitRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_SOUTHRON.get(), SouthronRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_ORC_TRADER.get(), OrcTraderRender::new);
+
+            // Projectile
+            EntityRenderers.register(TolkienEntities.AMMO_BOULDER.get(), BoulderRender::new);
+            EntityRenderers.register(TolkienEntities.AMMO_FELLBEAST_FIREBALL.get(), FellBeastFireballRender::new);
         }
 
         @SubscribeEvent
@@ -260,12 +312,10 @@ public class TolkienMobsMain {
             pEvent.registerSpriteSet(TolkienParticleTypes.DWARVEN_FLAME.get(), TolkienParticleProvider::new);
             pEvent.registerSpriteSet(TolkienParticleTypes.LIGHTNINGBUG.get(), TolkienParticleProvider::new);
             pEvent.registerSpriteSet(TolkienParticleTypes.FALLING_LEAVES.get(), LeafParticle.Factory::new);
+            pEvent.registerSpriteSet(TolkienParticleTypes.FELLBEAST_BREATH.get(), FellBeastBreathParticle.Provider::new);
+            pEvent.registerSpriteSet(TolkienParticleTypes.WIND_PARTICLE.get(), WindParticle.Provider::new);
             pEvent.registerSpriteSet(TolkienParticleTypes.WANDERING_LIGHTNINGBUG.get(), TolkienParticleProvider::new);
         }
-    }
-
-    public static ResourceLocation getModelTexture(String name) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, MODEL_DIR + name);
     }
 
     public static ResourceLocation getBlockModelTexture(String name) {

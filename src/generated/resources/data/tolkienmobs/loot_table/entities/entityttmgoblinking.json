@@ -21,7 +21,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:strong_swiftness"
+              "id": "tolkienmobs:elemental_flight"
             },
             {
               "add": false,

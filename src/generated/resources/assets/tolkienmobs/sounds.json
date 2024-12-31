@@ -448,11 +448,35 @@
     ],
     "subtitle": "subtitles.tolkienmobs.mob.idle"
   },
+  "mob.tmgreateagle.attack": {
+    "sounds": [
+      "tolkienmobs:mob/tmgreateagle/tmgreateagle_attack"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.attack"
+  },
+  "mob.tmgreateagle.death": {
+    "sounds": [
+      "tolkienmobs:mob/tmgreateagle/tmgreateagle_death"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.death"
+  },
   "mob.tmgreateagle.flapping": {
     "sounds": [
       "tolkienmobs:mob/tmgreateagle/tmgreateagle_flapping"
     ],
     "subtitle": "subtitles.tolkienmobs.mob.flapping"
+  },
+  "mob.tmgreateagle.hurt": {
+    "sounds": [
+      "tolkienmobs:mob/tmgreateagle/tmgreateagle_hurt"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.hurt"
+  },
+  "mob.tmgreateagle.idle": {
+    "sounds": [
+      "tolkienmobs:mob/tmgreateagle/tmgreateagle_flapping"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.idle"
   },
   "mob.tolkienmobs.coin_trader": {
     "sounds": [
