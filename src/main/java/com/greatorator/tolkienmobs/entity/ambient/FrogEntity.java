@@ -53,8 +53,6 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 public class FrogEntity extends TolkienAmbientEntity implements GeoEntity {
     private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(FrogEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> INSECT = SynchedEntityData.defineId(FrogEntity.class, EntityDataSerializers.BOOLEAN);
-    private final ServerBossEvent bossEvent =
-            new ServerBossEvent(Component.literal("Murder Frog"), BossEvent.BossBarColor.YELLOW, BossEvent.BossBarOverlay.NOTCHED_10);
 
     private static final ResourceLocation EVIL_ATTACK_POWER_MODIFIER = ResourceLocation.fromNamespaceAndPath(MODID, "evil");
     private static final ResourceLocation MURDER_FROG = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/toaddle/murderfrog.png");
@@ -258,6 +256,9 @@ public class FrogEntity extends TolkienAmbientEntity implements GeoEntity {
     /**
      *BOSS BAR
      */
+    private final ServerBossEvent bossEvent =
+            new ServerBossEvent(Component.literal("Murder Frog"), BossEvent.BossBarColor.YELLOW, BossEvent.BossBarOverlay.NOTCHED_10);
+
     @Override
     public void startSeenByPlayer(ServerPlayer serverPlayer) {
         if (this.getVariant() == TolkienVariant.LAVENDER) {
