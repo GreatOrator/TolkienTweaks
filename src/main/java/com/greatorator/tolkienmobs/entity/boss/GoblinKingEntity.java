@@ -56,8 +56,6 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity {
-    private final ServerBossEvent bossEvent =
-            new ServerBossEvent(Component.literal("Goblin King"), BossEvent.BossBarColor.PINK, BossEvent.BossBarOverlay.NOTCHED_10);
     private static final EntityDataAccessor<Boolean> ATTACKING =
             SynchedEntityData.defineId(GoblinKingEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> VARIANT =
@@ -303,6 +301,9 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
     /**
      *BOSS BAR
      */
+    private final ServerBossEvent bossEvent =
+            new ServerBossEvent(Component.literal("Goblin King"), BossEvent.BossBarColor.PINK, BossEvent.BossBarOverlay.NOTCHED_10);
+
     @Override
     public void startSeenByPlayer(ServerPlayer serverPlayer) {
             super.startSeenByPlayer(serverPlayer);

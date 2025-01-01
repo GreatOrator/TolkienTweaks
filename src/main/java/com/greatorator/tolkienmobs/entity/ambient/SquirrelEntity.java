@@ -52,8 +52,6 @@ public class SquirrelEntity extends TolkienAmbientEntity implements GeoEntity {
     private int idleAnimationTimeout = 0;
     private static final EntityDataAccessor<Integer> VARIANT =
             SynchedEntityData.defineId(SquirrelEntity.class, EntityDataSerializers.INT);
-    private final ServerBossEvent bossEvent =
-            new ServerBossEvent(Component.literal("Killer Squirrel"), BossEvent.BossBarColor.YELLOW, BossEvent.BossBarOverlay.NOTCHED_10);
 
     private static final ResourceLocation EVIL_ATTACK_POWER_MODIFIER = ResourceLocation.fromNamespaceAndPath(MODID, "evil");
     private static final ResourceLocation KILLER_SQUIRREL = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/sosquirrel/killer_squirrel.png");
@@ -229,6 +227,9 @@ public class SquirrelEntity extends TolkienAmbientEntity implements GeoEntity {
     /**
      *BOSS BAR
      */
+    private final ServerBossEvent bossEvent =
+            new ServerBossEvent(Component.literal("Killer Squirrel"), BossEvent.BossBarColor.YELLOW, BossEvent.BossBarOverlay.NOTCHED_10);
+
     @Override
     public void startSeenByPlayer(ServerPlayer serverPlayer) {
         if (this.getVariant() == TolkienVariant.LAVENDER) {
