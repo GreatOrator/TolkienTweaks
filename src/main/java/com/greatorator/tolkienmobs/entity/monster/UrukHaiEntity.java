@@ -142,12 +142,12 @@ public class UrukHaiEntity extends TolkienMonsterEntity implements GeoEntity {
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
-            if (this.swinging) {
+            if (this.swinging && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
                 event.getController().forceAnimationReset();
                 event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
                 this.swinging =false;
                 return PlayState.CONTINUE;
-            }else if(this.getRanged()) {
+            }else if(this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
                 event.getController().forceAnimationReset();
                 event.getController().setAnimation(RawAnimation.begin().then("ranged", Animation.LoopType.PLAY_ONCE));
                 this.ranged =false;

@@ -236,19 +236,22 @@ public class GreatEagleEntity extends TolkienAmbientEntity implements GeoEntity,
             if (!event.isMoving() && !event.getAnimatable().isAggressive() && this.onGround()) {
                 if (rand <= 10 && this.isPecking()) {
                     event.getController().setAnimation(RawAnimation.begin().thenPlay("idle3"));
+                    return PlayState.CONTINUE;
                 }else if (rand <=30) {
                     event.getController().setAnimation(RawAnimation.begin().thenPlay("idle2"));
+                    return PlayState.CONTINUE;
                 }else {
                     event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
+                    return PlayState.CONTINUE;
                 }
             }
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
-            if (event.getAnimatable().isAggressive() && this.onGround()) {
+            if (event.getAnimatable().isAggressive() && this.onGround() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
                 event.getController().setAnimation(RawAnimation.begin().then("attack_ground", Animation.LoopType.PLAY_ONCE));
                 return PlayState.CONTINUE;
-            }else if (event.getAnimatable().isAggressive() && !this.onGround()) {
+            }else if (event.getAnimatable().isAggressive() && !this.onGround() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("attack_flight"));
                 return PlayState.CONTINUE;
             }
@@ -258,10 +261,12 @@ public class GreatEagleEntity extends TolkienAmbientEntity implements GeoEntity,
             double speed = getMovementSpeed(this);
             if (event.isMoving() && this.onGround() && speed > (double)0.2F) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("run"));
+                return PlayState.CONTINUE;
             }else if (event.isMoving() && this.onGround()) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
+                return PlayState.CONTINUE;
             }
-            return PlayState.CONTINUE;
+            return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Glide", 1, (event) -> {
             if (!this.onGround() & isFlying()) {

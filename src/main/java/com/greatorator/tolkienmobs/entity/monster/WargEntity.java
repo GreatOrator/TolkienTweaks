@@ -63,6 +63,15 @@ public class WargEntity extends TolkienMonsterEntity implements GeoEntity {
         }
     }
 
+    @Override
+    protected void positionRider(Entity passenger, Entity.MoveFunction callback) {
+        super.positionRider(passenger, callback);
+        if (passenger instanceof LivingEntity entity) {
+            callback.accept(entity, getX(), getY() + 1.90f, getZ());
+            this.xRotO = entity.xRotO;
+        }
+    }
+
     /**
      * VARIANT
      */
@@ -135,7 +144,7 @@ public class WargEntity extends TolkienMonsterEntity implements GeoEntity {
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
-            if (this.swinging) {
+            if (this.swinging && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
                 event.getController().forceAnimationReset();
                 event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
                 this.swinging =false;

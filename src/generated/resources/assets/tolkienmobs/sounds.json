@@ -355,6 +355,27 @@
     ],
     "subtitle": "subtitles.tolkienmobs.mob.idle"
   },
+  "mob.gollum.death": {
+    "sounds": [
+      "tolkienmobs:mob/gollum/gollum_death"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.death"
+  },
+  "mob.gollum.hurt": {
+    "sounds": [
+      "tolkienmobs:mob/gollum/gollum_hurt"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.hurt"
+  },
+  "mob.gollum.idle": {
+    "sounds": [
+      "tolkienmobs:mob/gollum/gollum_say1",
+      "tolkienmobs:mob/gollum/gollum_say2",
+      "tolkienmobs:mob/gollum/gollum_say3",
+      "tolkienmobs:mob/gollum/gollum_say4"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.idle"
+  },
   "mob.midgefly.idle": {
     "sounds": [
       "tolkienmobs:mob/midgefly_say1"
@@ -408,6 +429,33 @@
       "tolkienmobs:mob/mirkwoodspider/shoot2"
     ],
     "subtitle": "subtitles.tolkienmobs.mob.shoot"
+  },
+  "mob.nazgul.death": {
+    "sounds": [
+      "tolkienmobs:mob/witchking/witchking_death"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.death"
+  },
+  "mob.nazgul.hurt": {
+    "sounds": [
+      "tolkienmobs:mob/witchking/witchking_hurt"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.hurt"
+  },
+  "mob.nazgul.idle": {
+    "sounds": [
+      "tolkienmobs:mob/witchking/witchking_say1",
+      "tolkienmobs:mob/witchking/witchking_say2",
+      "tolkienmobs:mob/witchking/witchking_say3",
+      "tolkienmobs:mob/witchking/witchking_say4"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.idle"
+  },
+  "mob.nazgul.step": {
+    "sounds": [
+      "tolkienmobs:mob/witchking/witchking_step"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.step"
   },
   "mob.oathbreaker.idle": {
     "sounds": [
