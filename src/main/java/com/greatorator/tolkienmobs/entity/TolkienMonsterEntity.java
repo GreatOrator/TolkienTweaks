@@ -136,7 +136,6 @@ public class TolkienMonsterEntity extends Monster implements RangedAttackMob {
         }
     }
 
-
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);

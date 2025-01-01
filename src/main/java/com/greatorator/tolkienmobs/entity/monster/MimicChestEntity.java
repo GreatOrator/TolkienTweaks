@@ -189,7 +189,7 @@ public class MimicChestEntity extends TolkienMonsterEntity implements GeoEntity 
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
-            if (event.isMoving() && this.isActive()) {
+            if (this.isActive() && this.swinging && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
                 event.getController().forceAnimationReset();
                 this.playSound(TolkienSounds.ANGRY_MIMIC.get(), 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
                 event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));

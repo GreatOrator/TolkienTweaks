@@ -258,11 +258,12 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
-            if (this.swinging && !this.getRanged()) {
+            if (this.swinging && !this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
                 event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
                 return PlayState.CONTINUE;
-            }else if (this.isAggressive() && this.getRanged()){
+            }else if (this.isAggressive() && this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)){
                 event.getController().setAnimation(RawAnimation.begin().then("ranged", Animation.LoopType.PLAY_ONCE));
+                return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));

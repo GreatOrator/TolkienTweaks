@@ -173,10 +173,10 @@ public class MirkwoodSpiderEntity extends TolkienMonsterEntity implements GeoEnt
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
-            if (!this.isWebShooting()) {
+            if (this.swinging && !this.isWebShooting() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
                 event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
                 return PlayState.CONTINUE;
-            } else if (this.isWebShooting()){
+            } else if (this.isWebShooting() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)){
                 event.getController().setAnimation(RawAnimation.begin().then("attack_web", Animation.LoopType.PLAY_ONCE));
                 return PlayState.CONTINUE;
             }

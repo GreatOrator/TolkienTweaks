@@ -107,6 +107,15 @@ public class GoatEntity extends AbstractChestedHorse implements GeoEntity {
         return false;
     }
 
+    @Override
+    protected void positionRider(Entity passenger, Entity.MoveFunction callback) {
+        super.positionRider(passenger, callback);
+        if (passenger instanceof LivingEntity entity) {
+            callback.accept(entity, getX(), getY() + 0.65f, getZ());
+            this.xRotO = entity.xRotO;
+        }
+    }
+
     /**
      * VARIANT
      */
@@ -175,6 +184,7 @@ public class GoatEntity extends AbstractChestedHorse implements GeoEntity {
             dwarfentity.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
             dwarfentity.finalizeSpawn(level, difficulty, spawnType, null);
             this.setTamed(true);
+            this.isSaddled();
             dwarfentity.startRiding(this);
         }
 

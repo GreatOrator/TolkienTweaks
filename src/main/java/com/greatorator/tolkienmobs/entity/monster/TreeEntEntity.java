@@ -99,6 +99,15 @@ public class TreeEntEntity extends TolkienMonsterEntity implements GeoEntity, Ne
         this.level.addFreshEntity(entityboulder);
     }
 
+    @Override
+    protected void positionRider(Entity passenger, Entity.MoveFunction callback) {
+        super.positionRider(passenger, callback);
+        if (passenger instanceof LivingEntity entity) {
+            callback.accept(entity, getX(), getY() + 4.65f, getZ());
+            this.xRotO = entity.xRotO;
+        }
+    }
+
     /**
      * VARIANT
      */
@@ -155,7 +164,7 @@ public class TreeEntEntity extends TolkienMonsterEntity implements GeoEntity, Ne
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
-            if (this.swinging && !this.getRanged()) {
+            if (this.swinging && !this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
                 event.getController().forceAnimationReset();
                 if (MathUtility.getRandomInteger(6, 1) <= 3){
                     event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
@@ -163,7 +172,7 @@ public class TreeEntEntity extends TolkienMonsterEntity implements GeoEntity, Ne
                     event.getController().setAnimation(RawAnimation.begin().then("stomp", Animation.LoopType.PLAY_ONCE));
                 }
                 this.swinging =false;
-            }else if (this.getRanged()) {
+            }else if (this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
                 event.getController().forceAnimationReset();
                 event.getController().setAnimation(RawAnimation.begin().then("ranged", Animation.LoopType.PLAY_ONCE));
                 this.ranged = false;

@@ -105,10 +105,10 @@ public class RockGolemEntity extends TolkienMonsterEntity implements GeoEntity {
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
-            if (this.swinging) {
+            if (this.swinging && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
                 event.getController().setAnimation(RawAnimation.begin().then("punch", Animation.LoopType.PLAY_ONCE));
                 this.swinging =false;
-            }else if (this.getRanged()){
+            }else if (this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)){
                 event.getController().setAnimation(RawAnimation.begin().then("rage", Animation.LoopType.PLAY_ONCE));
                 this.ranged =false;
             }

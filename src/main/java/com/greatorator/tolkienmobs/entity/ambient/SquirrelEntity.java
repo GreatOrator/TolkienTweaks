@@ -211,7 +211,7 @@ public class SquirrelEntity extends TolkienAmbientEntity implements GeoEntity {
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
-            if (event.getAnimatable().isAggressive()) {
+            if (event.getAnimatable().isAggressive() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
                 event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
                 return PlayState.CONTINUE;
             }
