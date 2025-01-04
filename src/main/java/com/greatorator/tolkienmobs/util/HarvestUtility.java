@@ -145,7 +145,7 @@ public class HarvestUtility {
     public static boolean growWaterPlant(ServerLevel level, BlockPos pos, BlockState state, @Nullable Direction side) {
         boolean success = false;
         if (state.is(Blocks.WATER) && state.getFluidState().getAmount() == 8) {
-            Random random = (Random) level.getRandom();
+            RandomSource random = level.getRandom();
             label76:
             for (int i = 0; i < 128; ++i) {
                 BlockPos blockpos = pos;

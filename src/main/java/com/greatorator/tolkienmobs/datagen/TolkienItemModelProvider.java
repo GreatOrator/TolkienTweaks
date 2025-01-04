@@ -379,6 +379,10 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         withExistingParent(TolkienEntities.EGG_TTMAUROCH.getId().getPath(), mcLoc("item/template_spawn_egg"));
         withExistingParent(TolkienEntities.EGG_TTMMUMAKIL.getId().getPath(), mcLoc("item/template_spawn_egg"));
         withExistingParent(TolkienEntities.EGG_TTMGOAT.getId().getPath(), mcLoc("item/template_spawn_egg"));
+        withExistingParent(TolkienEntities.EGG_TTMSHADOWFAX.getId().getPath(), mcLoc("item/template_spawn_egg"));
+        withExistingParent(TolkienEntities.EGG_TTMNAZGULSTEED.getId().getPath(), mcLoc("item/template_spawn_egg"));
+        withExistingParent(TolkienEntities.EGG_TTMGOLLUM.getId().getPath(), mcLoc("item/template_spawn_egg"));
+        withExistingParent(TolkienEntities.EGG_TTMISTARI.getId().getPath(), mcLoc("item/template_spawn_egg"));
 
         withExistingParent(TolkienEntities.EGG_TTMHUMAN.getId().getPath(), mcLoc("item/template_spawn_egg"));
         withExistingParent(TolkienEntities.EGG_TTMDWARF.getId().getPath(), mcLoc("item/template_spawn_egg"));
@@ -408,6 +412,7 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         withExistingParent(TolkienEntities.EGG_TTMSWAMPHAG.getId().getPath(), mcLoc("item/template_spawn_egg"));
         withExistingParent(TolkienEntities.EGG_TTMWARG.getId().getPath(), mcLoc("item/template_spawn_egg"));
         withExistingParent(TolkienEntities.EGG_TTMELEMENTALGOLEM.getId().getPath(), mcLoc("item/template_spawn_egg"));
+        withExistingParent(TolkienEntities.EGG_TTMNAZGUL.getId().getPath(), mcLoc("item/template_spawn_egg"));
 
         withExistingParent(TolkienEntities.EGG_TTMGOBLINKING.getId().getPath(), mcLoc("item/template_spawn_egg"));
     }

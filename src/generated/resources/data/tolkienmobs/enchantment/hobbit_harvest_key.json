@@ -4,18 +4,21 @@
     "translate": "enchantment.tolkienmobs.hobbit_harvest_key"
   },
   "effects": {
-    "minecraft:post_attack": [
+    "tolkienmobs:use_on_block": [
       {
-        "affected": "victim",
         "effect": {
           "type": "tolkienmobs:hobbit_harvest",
           "level": 1
         },
-        "enchanted": "attacker"
+        "requirements": {
+          "condition": "minecraft:match_tool",
+          "predicate": {
+            "items": "#minecraft:hoes"
+          }
+        }
       }
     ]
   },
-  "exclusive_set": "#minecraft:exclusive_set/mining",
   "max_cost": {
     "base": 25,
     "per_level_above_first": 8
@@ -25,10 +28,9 @@
     "base": 5,
     "per_level_above_first": 8
   },
-  "primary_items": "#minecraft:enchantable/mining",
   "slots": [
     "hand"
   ],
-  "supported_items": "#minecraft:enchantable/mining",
+  "supported_items": "#minecraft:hoes",
   "weight": 5
 }

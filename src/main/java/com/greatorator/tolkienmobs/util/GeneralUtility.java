@@ -1,7 +1,9 @@
 package com.greatorator.tolkienmobs.util;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -29,6 +31,22 @@ public class GeneralUtility {
     static {
         Calendar calendar = Calendar.getInstance();
         DECK_THE_HALLS = calendar.get(Calendar.MONTH) == Calendar.DECEMBER && calendar.get(Calendar.DAY_OF_MONTH) >= 19;
+    }
+
+    public static Component formatEffectNumber(float number, int decimalPlaces, String suffix) {
+        String numberString = "";
+        if (number >= 0) {
+            numberString += "+";
+        } else {
+            numberString += "-";
+        }
+        numberString += String.format("%." + decimalPlaces + "f", number);
+        numberString += suffix;
+        return Component.literal(numberString).withStyle(ChatFormatting.GREEN);
+    }
+
+    public static Component formatEffectNumber(int number, String suffix) {
+        return formatEffectNumber(number, 0, suffix);
     }
 
     @Nullable
