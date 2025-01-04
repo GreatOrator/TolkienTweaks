@@ -295,7 +295,7 @@ public class TolkienItems {
 
     public static final DeferredItem<Item> ITEM_DEV_TOOL = ITEMS.register("item_dev_tool", () -> new TolkienItem(new Item.Properties().stacksTo(1)).setEffectOverride().setHasLore());
     public static final DeferredItem<Item> ITEM_DEV_DEBUG_TOOL = ITEMS.register("item_dev_debug_tool", () -> new TolkienItem(new Item.Properties().stacksTo(1)).setEffectOverride().setHasLore());
-//    public final DeferredItem<Item> ARDA_STAFF = ITEMS.register("arda_staff", () -> new CatalystItem(new Item.Properties().stacksTo(1).tab(toolsGroup).rarity(Rarity.RARE)).setHasLore());
+    public static final DeferredItem<Item> ARDA_STAFF = ITEMS.register("arda_staff", () -> new CatalystItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)).setHasLore());
 //    public final DeferredItem<Item> MORGUL_CRYSTAL = ITEMS.register("morgul_crystal", () -> new MorgulCrystalItem(new Item.Properties().stacksTo(1).tab(decoGroup)));
 
         // Projectiles

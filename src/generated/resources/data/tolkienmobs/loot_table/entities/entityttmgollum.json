@@ -64,7 +64,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "tolkienmobs:elven_nimbleness"
+              "id": "minecraft:long_slow_falling"
             },
             {
               "add": false,

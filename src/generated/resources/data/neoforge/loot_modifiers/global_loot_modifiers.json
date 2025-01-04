@@ -1,0 +1,7 @@
+{
+  "entries": [
+    "tolkienmobs:add_bronze_coin_in_zombie_kill",
+    "tolkienmobs:bronze_coin_in_village_temple_chest"
+  ],
+  "replace": false
+}

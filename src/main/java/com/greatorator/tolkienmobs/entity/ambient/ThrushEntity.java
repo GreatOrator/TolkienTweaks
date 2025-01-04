@@ -35,8 +35,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.event.EventHooks;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
@@ -57,6 +59,7 @@ public class ThrushEntity extends TamableAnimal implements GeoEntity, FlyingAnim
     public float oFlap;
     private float flapping = 1.0F;
     private float nextFlap = 1.0F;    protected static final EntityDataAccessor<Boolean> PECKING = SynchedEntityData.defineId(ThrushEntity.class, EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<Long> LAST_POSE_CHANGE_TICK = SynchedEntityData.defineId(ThrushEntity.class, EntityDataSerializers.LONG);
 
    public ThrushEntity(EntityType<? extends ThrushEntity> entityType, Level level) {
         super(entityType, level);
@@ -98,6 +101,42 @@ public class ThrushEntity extends TamableAnimal implements GeoEntity, FlyingAnim
         this.goalSelector.addGoal(3, new FollowMobGoal(this, 1.0D, 3.0F, 7.0F));
     }
 
+    public void resetLastPoseChangeTick(long pLastPoseChangeTick) {
+        this.entityData.set(LAST_POSE_CHANGE_TICK, pLastPoseChangeTick);
+    }
+
+    public boolean isSitting() {
+        return this.entityData.get(LAST_POSE_CHANGE_TICK) < 0L;
+    }
+    public void toggleSitting() {
+        if (this.isSitting()) {
+            standUp();
+        } else {
+            sitDown();
+        }
+    }
+
+    public void sitDown() {
+        if (!this.isSitting()) {
+            this.makeSound(SoundEvents.CAMEL_SIT);
+            this.setPose(Pose.SITTING);
+            this.gameEvent(GameEvent.ENTITY_ACTION);
+            this.resetLastPoseChangeTick(-this.level().getGameTime());
+        }
+        setOrderedToSit(true);
+        setInSittingPose(true);
+    }
+    public void standUp() {
+        if (this.isSitting()) {
+            this.makeSound(SoundEvents.CAMEL_STAND);
+            this.setPose(Pose.STANDING);
+            this.gameEvent(GameEvent.ENTITY_ACTION);
+            this.resetLastPoseChangeTick(this.level().getGameTime());
+        }
+        setOrderedToSit(false);
+        setInSittingPose(false);
+    }
+
     @Override
     public void aiStep() {
         super.aiStep();
@@ -126,6 +165,11 @@ public class ThrushEntity extends TamableAnimal implements GeoEntity, FlyingAnim
     @Override
     public InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
         ItemStack itemstack = pPlayer.getItemInHand(pHand);
+        if(isTame() && pHand == InteractionHand.MAIN_HAND && !isFood(itemstack)) {
+            toggleSitting();
+            return InteractionResult.SUCCESS;
+        }
+
         if(!this.isTame() && itemstack.is(TolkienTags.Items.INSECTS)) {
             if(!pPlayer.getAbilities().instabuild) {
                 itemstack.shrink(1);
@@ -152,7 +196,7 @@ public class ThrushEntity extends TamableAnimal implements GeoEntity, FlyingAnim
             if(isFood(itemstack)) {
                 return super.mobInteract(pPlayer, pHand);
             }
-            else if(!this.isFlying() && !this.level().isClientSide) {
+            else if(!this.level().isClientSide) {
                 this.setOrderedToSit(!this.isOrderedToSit());
             }
 
@@ -161,10 +205,6 @@ public class ThrushEntity extends TamableAnimal implements GeoEntity, FlyingAnim
         else {
             return super.mobInteract(pPlayer, pHand);
         }
-    }
-
-    public boolean isTame() {
-        return false;
     }
 
     @Override
@@ -226,7 +266,8 @@ public class ThrushEntity extends TamableAnimal implements GeoEntity, FlyingAnim
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(PECKING, false);
-    }
+        builder.define(LAST_POSE_CHANGE_TICK, 0L);
+   }
     public void setPecking(boolean pecking) {
         this.entityData.set(PECKING, pecking);
     }
@@ -284,6 +325,7 @@ public class ThrushEntity extends TamableAnimal implements GeoEntity, FlyingAnim
         }
         else {
             if(!this.level().isClientSide) {
+                this.setOnGround(true);
                 this.setOrderedToSit(false);
             }
 
@@ -300,7 +342,7 @@ public class ThrushEntity extends TamableAnimal implements GeoEntity, FlyingAnim
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         int rand = MathUtility.getRandomInteger(100, 1);
         controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
-            if (!event.isMoving() && !isFlying()) {
+            if (!event.isMoving() && !isFlying() ) {
                 if (rand < 50) {
                     event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
                 return PlayState.CONTINUE;
@@ -352,6 +394,4 @@ public class ThrushEntity extends TamableAnimal implements GeoEntity, FlyingAnim
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return this.geoCache;
     }
-
-    /** Goals */
 }

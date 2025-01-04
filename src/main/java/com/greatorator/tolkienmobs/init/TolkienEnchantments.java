@@ -2,10 +2,7 @@ package com.greatorator.tolkienmobs.init;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.enchantment.*;
-import net.minecraft.advancements.critereon.DamageSourcePredicate;
-import net.minecraft.advancements.critereon.EntityFlagsPredicate;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.TagPredicate;
+import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -28,6 +25,7 @@ import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvi
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.DamageSourceCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
+import net.minecraft.world.level.storage.loot.predicates.MatchTool;
 
 import java.util.Optional;
 
@@ -141,19 +139,36 @@ public class TolkienEnchantments {
                 .exclusiveWith(enchantment.getOrThrow(EnchantmentTags.MINING_EXCLUSIVE))
                 .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER,
                         EnchantmentTarget.VICTIM, new HobbitPlowEnchantmentEffect(1)).build(HOBBIT_PLOW_KEY.location()));
-        context.register(HOBBIT_HARVEST_KEY, Enchantment.enchantment(Enchantment.definition(items.getOrThrow(ItemTags.MINING_ENCHANTABLE),
-                        items.getOrThrow(ItemTags.MINING_ENCHANTABLE), 5, 4,
-                        Enchantment.dynamicCost(5, 8), Enchantment.dynamicCost(25, 8), 3, EquipmentSlotGroup.HAND))
-                .exclusiveWith(enchantment.getOrThrow(EnchantmentTags.MINING_EXCLUSIVE))
-                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER,
-                        EnchantmentTarget.VICTIM, new HobbitHarvestEnchantmentEffect(1)).build(HOBBIT_HARVEST_KEY.location()));
+        register(
+            context,
+            HOBBIT_HARVEST_KEY,
+            Enchantment.enchantment(
+                Enchantment.definition(
+                    items.getOrThrow(ItemTags.HOES),
+                    5,
+                   4,
+                    Enchantment.dynamicCost(5, 8),
+                    Enchantment.dynamicCost(25, 8),
+                    3,
+                    EquipmentSlotGroup.HAND)
+                )
+            .withEffect(
+                TolkienEnchantmentEffectComponents.USE_ON_BLOCK,
+                new HobbitHarvestEnchantmentEffect(1),
+                MatchTool.toolMatches(
+                        ItemPredicate.Builder.item()
+                                .of(ItemTags.HOES)
+                )
+            )
+        );
     }
 
     private static ResourceKey<Enchantment> create(String name) {
         return ResourceKey.create(Registries.ENCHANTMENT, TolkienMobsMain.resLoc(name));
     }
 
-//    private static void register(BootstrapContext<Enchantment> context, ResourceKey<Enchantment> key, Enchantment.Builder builder) {
-//        context.register(key, builder.build(key.location()));
-//    }
+    public static void register(
+            BootstrapContext<Enchantment> context, ResourceKey<Enchantment> key, Enchantment.Builder builder) {
+        context.register(key, builder.build(key.location()));
+    }
 }
