@@ -1,7 +1,20 @@
 {
   "entries": [
+    "tolkienmobs:add_silver_coin_in_guardian_kill",
+    "tolkienmobs:add_gold_coin_in_elder_guardian_kill",
+    "tolkienmobs:add_bronze_coin_in_creeper_kill",
     "tolkienmobs:add_bronze_coin_in_zombie_kill",
-    "tolkienmobs:bronze_coin_in_village_temple_chest"
+    "tolkienmobs:add_silver_coin_in_wither_skeleton_kill",
+    "tolkienmobs:add_silver_coin_in_enderman_kill",
+    "tolkienmobs:bronze_coin_in_village_temple_chest",
+    "tolkienmobs:add_silver_coin_in_drowned_kill",
+    "tolkienmobs:add_gold_coin_in_ghast_kill",
+    "tolkienmobs:add_silver_coin_in_skeleton_kill",
+    "tolkienmobs:add_bronze_coin_in_stray_kill",
+    "tolkienmobs:add_bronze_coin_in_magma_cube_kill",
+    "tolkienmobs:add_bronze_coin_in_zombie_villager_kill",
+    "tolkienmobs:add_gold_coin_in_blaze_kill",
+    "tolkienmobs:add_silver_coin_in_husk_kill"
   ],
   "replace": false
 }

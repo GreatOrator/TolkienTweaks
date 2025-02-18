@@ -4,9 +4,7 @@ import com.greatorator.tolkienmobs.entity.ambient.*;
 import com.greatorator.tolkienmobs.entity.boss.GoblinKingEntity;
 import com.greatorator.tolkienmobs.entity.monster.*;
 import com.greatorator.tolkienmobs.entity.npc.*;
-import com.greatorator.tolkienmobs.entity.passive.AurochEntity;
-import com.greatorator.tolkienmobs.entity.passive.GoatEntity;
-import com.greatorator.tolkienmobs.entity.passive.MumakilEntity;
+import com.greatorator.tolkienmobs.entity.passive.*;
 import com.greatorator.tolkienmobs.entity.projectiles.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;
@@ -62,6 +60,18 @@ public class TolkienEntities {
     public static final Supplier<EntityType<GoatEntity>> ENTITY_TTM_GOAT =
             ENTITY_TYPES.register("entityttmgoat", () -> EntityType.Builder.of(GoatEntity::new, MobCategory.CREATURE)
                     .sized(0.875F, 1.875F).build("entityttmgoat"));
+    public static final Supplier<EntityType<NazgulSteedEntity>> ENTITY_TTM_NAZGULSTEED =
+            ENTITY_TYPES.register("entityttmnazgulsteed", () -> EntityType.Builder.of(NazgulSteedEntity::new, MobCategory.CREATURE)
+                    .sized(1.0F, 1.5F).build("entityttmnazgulsteed"));
+    public static final Supplier<EntityType<ShadowfaxEntity>> ENTITY_TTM_SHADOWFAX =
+            ENTITY_TYPES.register("entityttmshadowfax", () -> EntityType.Builder.of(ShadowfaxEntity::new, MobCategory.CREATURE)
+                    .sized(1.0F, 1.5F).build("entityttmshadowfax"));
+    public static final Supplier<EntityType<GollumEntity>> ENTITY_TTM_GOLLUM =
+            ENTITY_TYPES.register("entityttmgollum", () -> EntityType.Builder.of(GollumEntity::new, MobCategory.CREATURE)
+                    .sized(0.625F, 1.5625F).build("entityttmgollum"));
+    public static final Supplier<EntityType<IstariEntity>> ENTITY_TTM_ISTARI =
+            ENTITY_TYPES.register("entityttmistari", () -> EntityType.Builder.of(IstariEntity::new, MobCategory.CREATURE)
+                    .sized(0.75F, 2.0F).build("entityttmistari"));
 
         // NPC
     public static final Supplier<EntityType<HumanEntity>> ENTITY_TTM_HUMAN =
@@ -138,7 +148,7 @@ public class TolkienEntities {
                     .sized(0.75F, 2.625F).build("entityttmtroll"));
     public static final Supplier<EntityType<TreeEntEntity>> ENTITY_TTM_TREEENT =
             ENTITY_TYPES.register("entityttmtreeent", () -> EntityType.Builder.of(TreeEntEntity::new, MobCategory.MONSTER)
-                    .sized(1.125F, 5.5F).ridingOffset(1.0F).build("entityttmtreeent"));
+                    .sized(1.125F, 5.5F).build("entityttmtreeent"));
     public static final Supplier<EntityType<SwampHagEntity>> ENTITY_TTM_SWAMPHAG =
             ENTITY_TYPES.register("entityttmswamphag", () -> EntityType.Builder.of(SwampHagEntity::new, MobCategory.MONSTER)
                     .sized(1.0625F, 2.125F).build("entityttmswamphag"));
@@ -148,6 +158,9 @@ public class TolkienEntities {
     public static final Supplier<EntityType<ElementalGolemEntity>> ENTITY_TTM_ELEMENTALGOLEM =
             ENTITY_TYPES.register("entityttmelementalgolem", () -> EntityType.Builder.of(ElementalGolemEntity::new, MobCategory.MONSTER)
                     .sized(1.0F, 3.125F).build("entityttmelementalgolem"));
+    public static final Supplier<EntityType<NazgulEntity>> ENTITY_TTM_NAZGUL =
+            ENTITY_TYPES.register("entityttmnazgul", () -> EntityType.Builder.of(NazgulEntity::new, MobCategory.MONSTER)
+                    .sized(0.55F, 2.2F).build("entityttmnazgul"));
 
         // Boss
     public static final Supplier<EntityType<GoblinKingEntity>> ENTITY_TTM_GOBLINKING =
@@ -208,6 +221,18 @@ public class TolkienEntities {
                     new Item.Properties()));
     public static final DeferredItem<Item> EGG_TTMGOAT = SPAWN_EGGS.register("entityttmgoat_spawn_egg",
             () -> new DeferredSpawnEggItem(ENTITY_TTM_GOAT, 7668978, 7405383,
+                    new Item.Properties()));
+    public static final DeferredItem<Item> EGG_TTMSHADOWFAX = SPAWN_EGGS.register("entityttmshadowfax_spawn_egg",
+            () -> new DeferredSpawnEggItem(ENTITY_TTM_SHADOWFAX, 2576351, 5600397,
+                    new Item.Properties()));
+    public static final DeferredItem<Item> EGG_TTMNAZGULSTEED = SPAWN_EGGS.register("entityttmnazgulsteed_spawn_egg",
+            () -> new DeferredSpawnEggItem(ENTITY_TTM_NAZGULSTEED, 2576351, 7405383,
+                    new Item.Properties()));
+    public static final DeferredItem<Item> EGG_TTMGOLLUM = SPAWN_EGGS.register("entityttmgollum_spawn_egg",
+            () -> new DeferredSpawnEggItem(ENTITY_TTM_GOLLUM, 2576351, 12198412,
+                    new Item.Properties()));
+    public static final DeferredItem<Item> EGG_TTMISTARI = SPAWN_EGGS.register("entityttmistari_spawn_egg",
+            () -> new DeferredSpawnEggItem(ENTITY_TTM_ISTARI, 2576351, 16739362,
                     new Item.Properties()));
 
         // NPC
@@ -293,6 +318,9 @@ public class TolkienEntities {
                     new Item.Properties()));
     public static final DeferredItem<Item> EGG_TTMELEMENTALGOLEM = SPAWN_EGGS.register("entityttmelementalgolem_spawn_egg",
             () -> new DeferredSpawnEggItem(ENTITY_TTM_ELEMENTALGOLEM, 585619, 7893889,
+                    new Item.Properties()));
+    public static final DeferredItem<Item> EGG_TTMNAZGUL = SPAWN_EGGS.register("entityttmnazgul_spawn_egg",
+            () -> new DeferredSpawnEggItem(ENTITY_TTM_NAZGUL, 2576351, 14289362,
                     new Item.Properties()));
 
         // Boss

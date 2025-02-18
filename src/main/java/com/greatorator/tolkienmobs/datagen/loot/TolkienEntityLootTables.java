@@ -8,22 +8,17 @@ import net.minecraft.advancements.critereon.EntityFlagsPredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.EntityLootSubProvider;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.entries.NestedLootTable;
 import net.minecraft.world.level.storage.loot.functions.EnchantedCountIncreaseFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
-import net.minecraft.world.level.storage.loot.functions.SetPotionFunction;
 import net.minecraft.world.level.storage.loot.functions.SmeltItemFunction;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemKilledByPlayerCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceWithEnchantedBonusCondition;
@@ -31,7 +26,6 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -202,6 +196,96 @@ public class TolkienEntityLootTables extends EntityLootSubProvider {
                                         .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
                                         .apply(SmeltItemFunction.smelted().when(LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS, EntityPredicate.Builder.entity().flags(EntityFlagsPredicate.Builder.flags().setOnFire(true)))))
                                 .when(LootItemKilledByPlayerCondition.killedByPlayer()))));
+        add(TolkienEntities.ENTITY_TTM_SHADOWFAX.get(),
+                LootTable.lootTable()
+                        .withPool(LootPool.lootPool()
+                                .setRolls(ConstantValue.exactly(1))
+                                .add(LootItem.lootTableItem(TolkienItems.MONSTER_FUR.get())
+                                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 3.0F)))
+                                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F))))
+                                .when(LootItemKilledByPlayerCondition.killedByPlayer()))
+                        .withPool(LootPool.lootPool()
+                                .setRolls(ConstantValue.exactly(1))
+                                .add(LootItem.lootTableItem(Items.LEATHER)
+                                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F)))
+                                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F))))
+                                .when(LootItemKilledByPlayerCondition.killedByPlayer()))
+                        .withPool(LootPool.lootPool()
+                                .setRolls(ConstantValue.exactly(1))
+                                .add(LootItem.lootTableItem(Items.BEEF)
+                                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F)))
+                                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
+                                        .apply(SmeltItemFunction.smelted().when(LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS, EntityPredicate.Builder.entity().flags(EntityFlagsPredicate.Builder.flags().setOnFire(true)))))
+                                .when(LootItemKilledByPlayerCondition.killedByPlayer()))));
+        add(TolkienEntities.ENTITY_TTM_NAZGULSTEED.get(),
+                LootTable.lootTable()
+                        .withPool(LootPool.lootPool()
+                                .setRolls(ConstantValue.exactly(1))
+                                .add(LootItem.lootTableItem(TolkienItems.MONSTER_FUR.get())
+                                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 3.0F)))
+                                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F))))
+                                .when(LootItemKilledByPlayerCondition.killedByPlayer()))
+                        .withPool(LootPool.lootPool()
+                                .setRolls(ConstantValue.exactly(1))
+                                .add(LootItem.lootTableItem(Items.LEATHER)
+                                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F)))
+                                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F))))
+                                .when(LootItemKilledByPlayerCondition.killedByPlayer()))
+                        .withPool(LootPool.lootPool()
+                                .setRolls(ConstantValue.exactly(1))
+                                .add(LootItem.lootTableItem(TolkienItems.MONSTER_FLESH.get())
+                                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 4.0F)))
+                                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F))))
+                                .when(LootItemKilledByPlayerCondition.killedByPlayer())));
+        add(TolkienEntities.ENTITY_TTM_GOLLUM.get(),
+                LootTable.lootTable()
+                        .withPool(BRONZE)
+                        .withPool(RING)
+                        .withPool(LootPool.lootPool()
+                                .setRolls(ConstantValue.exactly(1))
+                                .add(LootItem.lootTableItem(TolkienItems.MONSTER_FLESH.get())
+                                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F)))
+                                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F))))
+                                .when(LootItemKilledByPlayerCondition.killedByPlayer()))
+                        .withPool(LootPool.lootPool()
+                                .setRolls(ConstantValue.exactly(1))
+                                .add(LootItem.lootTableItem(TolkienItems.SHOVEL_MORGULIRON.get())
+                                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F)))
+                                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 0.0F))))
+                                .when(LootItemKilledByPlayerCondition.killedByPlayer()))
+                        .withPool(LootPool.lootPool()
+                                .setRolls(ConstantValue.exactly(1))
+                                .add(LootItem.lootTableItem(Items.BUNDLE)
+                                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F)))
+                                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 0.0F))))
+                                .when(LootItemKilledByPlayerCondition.killedByPlayer()))
+                        .withPool(LootPool.lootPool()
+                                .setRolls(ConstantValue.exactly(1))
+                                .add(LootItem.lootTableItem(Items.SALMON)
+                                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F)))
+                                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
+                                        .apply(SmeltItemFunction.smelted().when(LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS, EntityPredicate.Builder.entity().flags(EntityFlagsPredicate.Builder.flags().setOnFire(true)))))
+                                .when(LootItemKilledByPlayerCondition.killedByPlayer()))));
+        add(TolkienEntities.ENTITY_TTM_ISTARI.get(),
+                LootTable.lootTable()
+                        .withPool(LootPool.lootPool()
+                                .setRolls(ConstantValue.exactly(1))
+                                .add(LootItem.lootTableItem(TolkienItems.ARDA_STAFF.get())
+                                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 1.0F)))
+                                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F))))
+                                .when(LootItemKilledByPlayerCondition.killedByPlayer()))
+                        .withPool(LootPool.lootPool()
+                                .setRolls(ConstantValue.exactly(1))
+                                .add(LootItem.lootTableItem(Items.LEATHER)
+                                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F)))
+                                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F))))
+                                .when(LootItemKilledByPlayerCondition.killedByPlayer()))
+                        .withPool(LootPool.lootPool()
+                                .setRolls(ConstantValue.exactly(1))
+                                .add(LootItem.lootTableItem(TolkienItems.MONSTER_FLESH.get())
+                                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 4.0F)))
+                                        .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F))))
+                                .when(LootItemKilledByPlayerCondition.killedByPlayer())));
 
         // Monster
         add(TolkienEntities.ENTITY_TTM_BARROW.get(),
@@ -731,6 +815,18 @@ public class TolkienEntityLootTables extends EntityLootSubProvider {
                                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 3.0F)))
                                         .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
                                         .when(LootItemKilledByPlayerCondition.killedByPlayer()))));
+        add(TolkienEntities.ENTITY_TTM_NAZGUL.get(),
+                LootTable.lootTable()
+                        .withPool(GOLD)
+                        .withPool(CLOAK)
+                        .withPool(FACTION_COIN)
+                        .withPool(FACTION_TOKEN)
+                        .withPool(DARK_SIGIL)
+                        .withPool(LootPool.lootPool()
+                                .setRolls(ConstantValue.exactly(1))
+                                .add(LootItem.lootTableItem(TolkienItems.SWORD_MORGULIRON.get())
+                                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 1.0F))))
+                                .when(LootItemKilledByPlayerCondition.killedByPlayer())));
 
         // Boss
         add(TolkienEntities.ENTITY_TTM_GOBLINKING.get(),

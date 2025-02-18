@@ -699,6 +699,7 @@ public class TolkienTabs {
                         output.accept(TolkienItems.FELLBEAST_FIREBALL);
                         output.accept(TolkienItems.ITEM_DEV_TOOL);
                         output.accept(TolkienItems.ITEM_DEV_DEBUG_TOOL);
+                        output.accept(TolkienItems.ARDA_STAFF);
                     }).build());
 
     public static final Supplier<CreativeModeTab> TOLKIEN_TRINKET = CREATIVE_MODE_TAB.register("tolkienmobs_tab_trinket",
@@ -802,7 +803,11 @@ public class TolkienTabs {
 
                         output.accept(TolkienEntities.EGG_TTMAUROCH);
                         output.accept(TolkienEntities.EGG_TTMGOAT);
+                        output.accept(TolkienEntities.EGG_TTMGOLLUM);
+                        output.accept(TolkienEntities.EGG_TTMISTARI);
                         output.accept(TolkienEntities.EGG_TTMMUMAKIL);
+                        output.accept(TolkienEntities.EGG_TTMNAZGULSTEED);
+                        output.accept(TolkienEntities.EGG_TTMSHADOWFAX);
 
                         output.accept(TolkienEntities.EGG_TTMDWARF);
                         output.accept(TolkienEntities.EGG_TTMELVES);
@@ -824,6 +829,7 @@ public class TolkienTabs {
                         output.accept(TolkienEntities.EGG_TTMMINOTAUR);
                         output.accept(TolkienEntities.EGG_TTMMIRKWOODSPIDER);
                         output.accept(TolkienEntities.EGG_TTMMORDORORC);
+                        output.accept(TolkienEntities.EGG_TTMNAZGUL);
                         output.accept(TolkienEntities.EGG_TTMOATHBREAKER);
                         output.accept(TolkienEntities.EGG_TTMROCKGOLEM);
                         output.accept(TolkienEntities.EGG_TTMROMIEWALKER);

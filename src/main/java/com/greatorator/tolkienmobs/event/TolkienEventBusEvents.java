@@ -6,9 +6,7 @@ import com.greatorator.tolkienmobs.entity.ambient.model.SwarmModel;
 import com.greatorator.tolkienmobs.entity.boss.GoblinKingEntity;
 import com.greatorator.tolkienmobs.entity.monster.*;
 import com.greatorator.tolkienmobs.entity.npc.*;
-import com.greatorator.tolkienmobs.entity.passive.AurochEntity;
-import com.greatorator.tolkienmobs.entity.passive.GoatEntity;
-import com.greatorator.tolkienmobs.entity.passive.MumakilEntity;
+import com.greatorator.tolkienmobs.entity.passive.*;
 import com.greatorator.tolkienmobs.entity.projectiles.model.BoulderModel;
 import com.greatorator.tolkienmobs.entity.projectiles.model.FellBeastFireballModel;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
@@ -53,6 +51,10 @@ public class TolkienEventBusEvents {
         event.put(TolkienEntities.ENTITY_TTM_AUROCH.get(), AurochEntity.createAttributes().build());
         event.put(TolkienEntities.ENTITY_TTM_MUMAKIL.get(), MumakilEntity.createAttributes().build());
         event.put(TolkienEntities.ENTITY_TTM_GOAT.get(), GoatEntity.createAttributes().build());
+        event.put(TolkienEntities.ENTITY_TTM_SHADOWFAX.get(), ShadowfaxEntity.createAttributes().build());
+        event.put(TolkienEntities.ENTITY_TTM_NAZGULSTEED.get(), NazgulSteedEntity.createAttributes().build());
+        event.put(TolkienEntities.ENTITY_TTM_GOLLUM.get(), GollumEntity.createAttributes().build());
+        event.put(TolkienEntities.ENTITY_TTM_ISTARI.get(), IstariEntity.createAttributes().build());
 
         // NPC
         event.put(TolkienEntities.ENTITY_TTM_HUMAN.get(), HumanEntity.createAttributes().build());
@@ -84,6 +86,7 @@ public class TolkienEventBusEvents {
         event.put(TolkienEntities.ENTITY_TTM_SWAMPHAG.get(), SwampHagEntity.createAttributes().build());
         event.put(TolkienEntities.ENTITY_TTM_WARG.get(), WargEntity.createAttributes().build());
         event.put(TolkienEntities.ENTITY_TTM_ELEMENTALGOLEM.get(), ElementalGolemEntity.createAttributes().build());
+        event.put(TolkienEntities.ENTITY_TTM_NAZGUL.get(), NazgulEntity.createAttributes().build());
 
         // Boss
         event.put(TolkienEntities.ENTITY_TTM_GOBLINKING.get(), GoblinKingEntity.createAttributes().build());
@@ -115,6 +118,14 @@ public class TolkienEventBusEvents {
         event.register(TolkienEntities.ENTITY_TTM_MUMAKIL.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 Animal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
         event.register(TolkienEntities.ENTITY_TTM_GOAT.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                Animal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(TolkienEntities.ENTITY_TTM_SHADOWFAX.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                Animal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(TolkienEntities.ENTITY_TTM_NAZGULSTEED.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                Animal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(TolkienEntities.ENTITY_TTM_GOLLUM.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(TolkienEntities.ENTITY_TTM_ISTARI.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 Animal::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
 
         // Hostile
@@ -157,6 +168,8 @@ public class TolkienEventBusEvents {
         event.register(TolkienEntities.ENTITY_TTM_WARG.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
         event.register(TolkienEntities.ENTITY_TTM_ELEMENTALGOLEM.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(TolkienEntities.ENTITY_TTM_NAZGUL.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
 
         // Boss

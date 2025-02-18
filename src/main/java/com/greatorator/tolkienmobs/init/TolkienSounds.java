@@ -145,6 +145,17 @@ public class TolkienSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> HURT_MINOTAUR = createEvent("mob.minotaur.hurt");
     public static final DeferredHolder<SoundEvent, SoundEvent> DEATH_MINOTAUR = createEvent("mob.minotaur.death");
 
+            // Nazgul
+    public static final DeferredHolder<SoundEvent, SoundEvent> IDLE_NAZGUL = createEvent("mob.nazgul.idle");
+    public static final DeferredHolder<SoundEvent, SoundEvent> STEP_NAZGUL = createEvent("mob.nazgul.step");
+    public static final DeferredHolder<SoundEvent, SoundEvent> HURT_NAZGUL = createEvent("mob.nazgul.hurt");
+    public static final DeferredHolder<SoundEvent, SoundEvent> DEATH_NAZGUL = createEvent("mob.nazgul.death");
+
+            // Nazgul
+    public static final DeferredHolder<SoundEvent, SoundEvent> IDLE_GOLLUM = createEvent("mob.gollum.idle");
+    public static final DeferredHolder<SoundEvent, SoundEvent> HURT_GOLLUM = createEvent("mob.gollum.hurt");
+    public static final DeferredHolder<SoundEvent, SoundEvent> DEATH_GOLLUM = createEvent("mob.gollum.death");
+
             // Tree Ent
     public static final DeferredHolder<SoundEvent, SoundEvent> IDLE_TREEENT = createEvent("mob.treeent.idle");
     public static final DeferredHolder<SoundEvent, SoundEvent> STEP_TREEENT = createEvent("mob.treeent.step");
