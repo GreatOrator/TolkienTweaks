@@ -1,0 +1,12 @@
+{
+  "type": "tolkienmobs:add_items",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "minecraft:entities/blaze"
+    }
+  ],
+  "items": {
+    "tolkienmobs:item_coin_gold": 0.25
+  }
+}

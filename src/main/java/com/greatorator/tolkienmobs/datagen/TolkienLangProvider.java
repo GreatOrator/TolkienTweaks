@@ -163,6 +163,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addItem(TolkienItems.KEY_RING, "Key Ring");
             this.addItemWithLore(TolkienItems.ITEM_DEV_TOOL.get(), "Dev Tool", "Use to temporarily reset camo blocks to default texture");
             this.addItemWithLore(TolkienItems.ITEM_DEV_DEBUG_TOOL.get(), "Dev Tool - Debug", "Used to reset certain blocks");
+            this.addItemWithLore(TolkienItems.ARDA_STAFF.get(), "Arda Staff", "Right-click on portal frame to activate");
             this.addItemWithLore(TolkienItems.HOBBIT_RING.get(), "Hobbit Ring of Growth", "Gift from the elves to enhance farming");
             this.addItemWithLore(TolkienItems.SWORD_WITCHKING.get(), "§4Sword of the Witch-king§r", "Forged in fear, the powerful weapon of the Witch-king");
             this.addItemWithLore(TolkienItems.SWORD_URUK.get(), "Uruk Sword", "Forged in fire beneath Isengard");
@@ -325,7 +326,8 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.createPotionSet("blessing_of_eru", "Eru's Blessing");
             this.createPotionSet("elf_vitality", "Elvish Life-span");
             this.createPotionSet("elven_nimbleness", "Elvish Nimbleness");
-                // Harmful
+
+                    // Harmful
             this.createPotionSet("elemental_flight", "Elemental Flying");
             this.createPotionSet("elemental_drowning", "Elemental Drowning");
             this.createPotionSet("elemental_lightning", "Elemental Lightning");
@@ -389,6 +391,14 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add(TolkienEntities.EGG_TTMMUMAKIL.get(), "Mumakil Spawn Egg");
             this.add(TolkienEntities.ENTITY_TTM_GOAT.get(), "Battle Goat");
             this.add(TolkienEntities.EGG_TTMGOAT.get(), "Battle Goat Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_NAZGULSTEED.get(), "Nazgul Steed");
+            this.add(TolkienEntities.EGG_TTMNAZGULSTEED.get(), "Nazgul Steed Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_SHADOWFAX.get(), "Shadowfax");
+            this.add(TolkienEntities.EGG_TTMSHADOWFAX.get(), "Shadowfax Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_GOLLUM.get(), "Gollum");
+            this.add(TolkienEntities.EGG_TTMGOLLUM.get(), "Gollum Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_ISTARI.get(), "Istari");
+            this.add(TolkienEntities.EGG_TTMISTARI.get(), "Istari Spawn Egg");
 
                     // NPC
             this.addVillager(TolkienEntities.ENTITY_TTM_HUMAN.get(), "Human");
@@ -447,6 +457,8 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add(TolkienEntities.EGG_TTMWARG.get(), "Warg Spawn Egg");
             this.add(TolkienEntities.ENTITY_TTM_ELEMENTALGOLEM.get(), "Elemental Golem");
             this.add(TolkienEntities.EGG_TTMELEMENTALGOLEM.get(), "Elemental Golem Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_NAZGUL.get(), "Nazgul");
+            this.add(TolkienEntities.EGG_TTMNAZGUL.get(), "Nazgul Spawn Egg");
 
                     // Boss
             this.add(TolkienEntities.ENTITY_TTM_GOBLINKING.get(), "Goblin King");
@@ -454,7 +466,8 @@ public class TolkienLangProvider extends TolkienLangHelper {
 
 
         // Enchantments
-            this.add("enchantment.tolkienmobs.balrog_mark_key", "Balrog's Mark");
+        this.add("enchantment.tolkienmobs.balrog_mark_key", "Balrog's Mark");
+        this.add("effect.tolkienmobs.elven_nimbleness.tooltip", " step height");
 
         // Chat Messages
             this.add("tolkienmobs.msg.helpcomming", "Goblin King is attempting to call for help...Reinforcements have arrived!");

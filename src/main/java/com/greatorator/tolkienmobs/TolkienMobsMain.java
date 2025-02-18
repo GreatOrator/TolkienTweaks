@@ -9,9 +9,7 @@ import com.greatorator.tolkienmobs.entity.monster.MinotaurEntity;
 import com.greatorator.tolkienmobs.entity.monster.MordorOrcEntity;
 import com.greatorator.tolkienmobs.entity.monster.render.*;
 import com.greatorator.tolkienmobs.entity.npc.render.*;
-import com.greatorator.tolkienmobs.entity.passive.render.AurochRender;
-import com.greatorator.tolkienmobs.entity.passive.render.GoatRender;
-import com.greatorator.tolkienmobs.entity.passive.render.MumakilRender;
+import com.greatorator.tolkienmobs.entity.passive.render.*;
 import com.greatorator.tolkienmobs.entity.projectiles.render.BoulderRender;
 import com.greatorator.tolkienmobs.entity.projectiles.render.FellBeastFireballRender;
 import com.greatorator.tolkienmobs.event.TolkienRegistration;
@@ -63,16 +61,13 @@ public class TolkienMobsMain {
     // TODO
     //  -Barrels Crashing when placing
     //  -Signs not placing on vertical surfaces
-    //  -Torches won't go on walls
+    //  -Torches not placing on vertical surfaces
     //  -Boats Implemented
     //  -Projectiles Implemented
     //  -Biomes
     //    -Structures
     //  -Arda Portal
     //  -Enchantments
-    //  -Items
-    //    -Arda Staff
-    //    -Dev Tools
     //  -Functional Blocks
     //    -Morgul Crystal
     //    -Chameleon Blocks
@@ -120,6 +115,9 @@ public class TolkienMobsMain {
         TolkienFluids.register(modEventBus);
 
         TolkienLootFunctions.LOOT_FUNCTIONS.register(modEventBus);
+        TolkienLootContextParamSets.registerAll();
+        TolkienLootModifier.register(modEventBus);
+        TolkienEnchantmentEffectComponents.register(modEventBus);
         TolkienEnchantmentEffects.register(modEventBus);
 
         TolkienFeatureModifiers.TRUNK_PLACERS.register(modEventBus);
@@ -240,6 +238,10 @@ public class TolkienMobsMain {
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_AUROCH.get(), AurochRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_MUMAKIL.get(), MumakilRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_GOAT.get(), GoatRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_SHADOWFAX.get(), ShadowfaxRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_NAZGULSTEED.get(), NazgulSteedRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_GOLLUM.get(), GollumRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_ISTARI.get(), IstariRender::new);
 
                 // Monster
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_BARROW.get(), BarrowWightRender::new);
@@ -263,6 +265,7 @@ public class TolkienMobsMain {
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_SWAMPHAG.get(), SwampHagRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_WARG.get(), WargRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_ELEMENTALGOLEM.get(), ElementalGolemRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_NAZGUL.get(), NazgulRender::new);
 
                 // Boss
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_GOBLINKING.get(), GoblinKingRender::new);

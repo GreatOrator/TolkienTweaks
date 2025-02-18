@@ -21,7 +21,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:harming"
+              "id": "minecraft:regeneration"
             },
             {
               "add": false,

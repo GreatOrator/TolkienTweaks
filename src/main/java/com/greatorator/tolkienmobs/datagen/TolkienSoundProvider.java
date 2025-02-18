@@ -116,6 +116,13 @@ public class TolkienSoundProvider extends SoundDefinitionsProvider {
         this.generateNewSound(TolkienSounds.IDLE_WARG, "mob/warg/warg_say", 2, "Wolf-like growls");
         this.generateNewSound(TolkienSounds.HURT_WARG, "mob/warg/warg_hurt", 1, "Warg whimpers");
         this.generateNewSound(TolkienSounds.DEATH_WARG, "mob/warg/warg_death", 1, "End to the foul beast");
+        this.generateNewSound(TolkienSounds.IDLE_NAZGUL, "mob/witchking/witchking_say", 4, "The Nazgul Screams");
+        this.generateNewSound(TolkienSounds.STEP_NAZGUL, "mob/witchking/witchking_step", 1, "The Nazgul approaches");
+        this.generateNewSound(TolkienSounds.HURT_NAZGUL, "mob/witchking/witchking_hurt", 1, "Screams in pain");
+        this.generateNewSound(TolkienSounds.DEATH_NAZGUL, "mob/witchking/witchking_death", 1, "Death of Evil...or is it?");
+        this.generateNewSound(TolkienSounds.IDLE_GOLLUM, "mob/gollum/gollum_say", 4, "Something lurks nearby");
+        this.generateNewSound(TolkienSounds.HURT_GOLLUM, "mob/gollum/gollum_hurt", 1, "Screams in pain");
+        this.generateNewSound(TolkienSounds.DEATH_GOLLUM, "mob/gollum/gollum_death", 1, "Gollum death.");
 
             // Projectile
         this.generateNewSound(TolkienSounds.SHOOT_BOULDER, "mob/ammo/ammo_boulder_shoot", 1, " ");
