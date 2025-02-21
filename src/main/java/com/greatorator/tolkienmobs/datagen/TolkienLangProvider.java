@@ -466,7 +466,14 @@ public class TolkienLangProvider extends TolkienLangHelper {
 
 
         // Enchantments
-        this.add("enchantment.tolkienmobs.balrog_mark_key", "Balrog's Mark");
+        this.addEnchantment("balrog_mark_key", "Balrog's Mark");
+        this.addEnchantment("dwarven_endurance_key", "[WIP] Dwarven Endurance");
+        this.addEnchantment("dwarven_mining_key", "[WIP] Dwarven Mining");
+        this.addEnchantment("elven_fleetfoot_key", "[WIP] Elven FleetFoot");
+        this.addEnchantment("elven_longevity_key", "[WIP] Elven Longevity");
+        this.addEnchantment("gondorian_resolve_key", "[WIP] Gondorian's Resolve");
+        this.addEnchantment("hobbit_harvest_key", "[WIP] Hobbit's Harvest");
+        this.addEnchantment("hobbit_plow_key", "[WIP] Hobbit's Plow");
         this.add("effect.tolkienmobs.elven_nimbleness.tooltip", " step height");
 
         // Chat Messages
