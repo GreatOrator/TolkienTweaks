@@ -104,6 +104,10 @@ public abstract class TolkienLangHelper extends LanguageProvider {
         this.add(key.getDescriptionId() + ".lore", lore);
     }
 
+    public void addEnchantment(String key, String name) {
+        this.add("enchantment.tolkienmobs." + key, name);
+    }
+
     public void createTrinketSet(String trinketType, String descriptionType) {
         this.add("item.tolkienmobs.trinket_" + trinketType + ".empty", "Base " + descriptionType);
         this.add("item.tolkienmobs.trinket_" + trinketType + ".water", "Magical " + descriptionType + " of Nothingness");
@@ -216,7 +220,7 @@ public abstract class TolkienLangHelper extends LanguageProvider {
         this.add("block.tolkienmobs.stripped_log_" + woodPrefix, woodName + " Stripped Log");
         this.add("block.tolkienmobs.stripped_wood_" + woodPrefix, woodName + " Stripped Wood");
         this.add("block.tolkienmobs.sapling_" + woodPrefix, woodName + " Sapling");
-        this.add("block.tolkienmobs.potted_sapling_" + woodPrefix, "Potted" + woodName + " Sapling");
+        this.add("block.tolkienmobs.potted_sapling_" + woodPrefix, "Potted " + woodName + " Sapling");
         this.add("block.tolkienmobs.leaves_" + woodPrefix, woodName + " Leaves");
         this.add("block.tolkienmobs.leafpile_" + woodPrefix, woodName + " Leaf Pile");
         this.add("item.tolkienmobs." + woodPrefix + "_boat", woodName + " Boat");
@@ -234,6 +238,6 @@ public abstract class TolkienLangHelper extends LanguageProvider {
 
     protected void addFlowerBlock(Block key, String name, String flower) {
         this.add(key.getDescriptionId(), name);
-        this.add("block.tolkienmobs.potted_" + flower, "Potted" + name);
+        this.add("block.tolkienmobs.potted_" + flower, "Potted " + name);
     }
 }
