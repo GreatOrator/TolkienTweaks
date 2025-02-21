@@ -256,14 +256,6 @@ public class SleepingBagBlock extends BedBlock
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        if (hasLore) {
-            tooltipComponents.add(Component.translatable(getDescriptionId() + ".lore").withStyle(ChatFormatting.GOLD));
-            super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-        }
-    }
-
-    @Override
     public BlockEntity newBlockEntity(BlockPos p_152175_, BlockState p_152176_)
     {
         return null;
