@@ -64,7 +64,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:night_vision"
+              "id": "minecraft:long_turtle_master"
             },
             {
               "add": false,

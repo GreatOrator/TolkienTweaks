@@ -18,6 +18,9 @@ import javax.annotation.Nullable;
 
 public abstract class TolkienContainer extends AbstractContainerMenu {
     public ItemStackHandler handler;
+    private static final EquipmentSlot[] EQUIPMENT_SLOTS = new EquipmentSlot[] {
+            EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
+    protected static final int ITEMBOX = 18;
 
     public TolkienContainer(@Nullable MenuType<?> p_i50105_1_, int p_i50105_2_) {
         super(p_i50105_1_, p_i50105_2_);
@@ -55,13 +58,21 @@ public abstract class TolkienContainer extends AbstractContainerMenu {
         }
     }
 
-    protected void addPlayerArmorInventory(Inventory inventory, int offsetX, int offsetY) {
-        this.addSlot(new SlotArmor(inventory, (4 * 9), offsetX + 18, offsetY, inventory.player, EquipmentSlot.CHEST));
-        this.addSlot(new SlotArmor(inventory, (4 * 9) + 1, offsetX, offsetY, inventory.player, EquipmentSlot.HEAD));
-        this.addSlot(new SlotArmor(inventory, (4 * 9) + 2, offsetX, offsetY + 18, inventory.player, EquipmentSlot.LEGS));
-        this.addSlot(new SlotArmor(inventory, (4 * 9) + 3, offsetX + 18, offsetY + 18, inventory.player, EquipmentSlot.FEET));
+    protected void addPlayerArmorInventory(Inventory inventory) {
+        int slot_index = 0;
 
-        this.addSlot(new Slot(inventory, (4 * 9) + 4, offsetX + 9, offsetY + 36) {
+        for (int k = 0; k < 2; ++k) {
+            for (int l = 0; l < 2; l++) {
+                int x = 23 + (k * ITEMBOX);
+                int y = 197 + (l * ITEMBOX);
+                EquipmentSlot equipmentSlot = EQUIPMENT_SLOTS[slot_index];
+
+                this.addSlot(new SlotArmor(inventory, 4 * 9 + (3 - slot_index), x, y, inventory.player, equipmentSlot));
+                slot_index++;
+            }
+        }
+
+        this.addSlot(new Slot(inventory, (4 * 9) + 4, 23 + 9, 197 + 36) {
             public void setByPlayer(ItemStack stack, ItemStack type) {
                 inventory.player.onEquipItem(EquipmentSlot.OFFHAND, type, stack);
                 super.setByPlayer(stack, type);

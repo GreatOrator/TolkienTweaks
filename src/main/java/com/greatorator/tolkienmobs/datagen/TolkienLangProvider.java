@@ -466,15 +466,19 @@ public class TolkienLangProvider extends TolkienLangHelper {
 
 
         // Enchantments
-        this.addEnchantment("balrog_mark_key", "Balrog's Mark");
-        this.addEnchantment("dwarven_endurance_key", "[WIP] Dwarven Endurance");
-        this.addEnchantment("dwarven_mining_key", "[WIP] Dwarven Mining");
-        this.addEnchantment("elven_fleetfoot_key", "[WIP] Elven FleetFoot");
-        this.addEnchantment("elven_longevity_key", "[WIP] Elven Longevity");
-        this.addEnchantment("gondorian_resolve_key", "[WIP] Gondorian's Resolve");
-        this.addEnchantment("hobbit_harvest_key", "[WIP] Hobbit's Harvest");
-        this.addEnchantment("hobbit_plow_key", "[WIP] Hobbit's Plow");
-        this.add("effect.tolkienmobs.elven_nimbleness.tooltip", " step height");
+            this.addEnchantment("balrog_mark_key", "Balrog's Mark");
+            this.addEnchantment("dwarven_endurance_key", "[WIP] Dwarven Endurance");
+            this.addEnchantment("dwarven_mining_key", "[WIP] Dwarven Mining");
+            this.addEnchantment("elven_fleetfoot_key", "[WIP] Elven FleetFoot");
+            this.addEnchantment("elven_longevity_key", "[WIP] Elven Longevity");
+            this.addEnchantment("gondorian_resolve_key", "[WIP] Gondorian's Resolve");
+            this.addEnchantment("hobbit_harvest_key", "[WIP] Hobbit's Harvest");
+            this.addEnchantment("hobbit_plow_key", "[WIP] Hobbit's Plow");
+            this.add("effect.tolkienmobs.elven_nimbleness.tooltip", " step height");
+
+        // Biomes
+            this.add("biome.tolkienmobs.fangorn_forest", "Fangorn Forest");
+            this.add("biome.tolkienmobs.mordor", "Mordor");
 
         // Chat Messages
             this.add("tolkienmobs.msg.helpcomming", "Goblin King is attempting to call for help...Reinforcements have arrived!");
@@ -507,6 +511,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add("tolkienmobs.msg.payment", "Payment item set to...");
             this.add("tolkienmobs.msg.payment.insufficient", "Not enough for teleport!");
             this.add("tolkienmobs.msg.destination", "Destination not found");
-
+            this.add("tolkienmobs.tooltip.liquid.amount.with.capacity", "%s / %s mB");
+            this.add("tolkienmobs.tooltip.liquid.amount", "%s mB");
     }
 }
