@@ -3,7 +3,6 @@ package com.greatorator.tolkienmobs.containers;
 import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
 import com.greatorator.tolkienmobs.containers.handlers.BackpackItemStackHandler;
 import com.greatorator.tolkienmobs.init.TolkienContainers;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -18,9 +17,6 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
@@ -57,7 +53,7 @@ public class BackpackBlockContainer extends TolkienContainer{
 
         addPlayerInventory(inv, 65, 146);
         addPlayerHotbar(inv, 65, 146);
-        addPlayerArmorInventory(inv, 23, 197);
+        addPlayerArmorInventory(inv);
         addCraftingSlots();
         addFluidSlots();
         addDataSlots(fluidData);
@@ -157,17 +153,5 @@ public class BackpackBlockContainer extends TolkienContainer{
     public void addFluidSlots() {
         fluidHandler = tileEntity.getMachineHandler();
         addSlotRange(fluidHandler, 0, 38, 11, BUCKET_SLOTS, 18);
-    }
-
-    public int getFluidAmount() {
-        return this.fluidData == null ? 0 : ((this.fluidData.get(2) << 16) | this.fluidData.get(1));
-    }
-
-    public Fluid getFluidType() {
-        return this.fluidData == null ? Fluids.EMPTY : BuiltInRegistries.FLUID.byId(this.fluidData.get(0));
-    }
-
-    public FluidStack getFluidStack() {
-        return new FluidStack(getFluidType(), getFluidAmount());
     }
 }

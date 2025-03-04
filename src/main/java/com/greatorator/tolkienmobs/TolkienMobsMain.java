@@ -81,7 +81,7 @@ public class TolkienMobsMain {
     //      -Working in Trinket Table
     //    -Backpack
     //        -Upgrade System
-    //        -Fluid Handling
+    //        -Bucket inside Inventory not working
     //        -Sleeping Bag deploy
     //        -Campfire Deploy
     //  -Integration
@@ -194,15 +194,7 @@ public class TolkienMobsMain {
                 },
                 TolkienBlocks.BACKPACK.get()
         );
-        event.registerBlock(Capabilities.FluidHandler.BLOCK,
-                (level, pos, state, be, side) -> {
-                    if (be instanceof BackpackBlockEntity) {
-                        return be.getData(TolkienBlocks.BACKPACK_FLUID_HANDLER);
-                    }
-                    return null;
-                },
-                TolkienBlocks.BACKPACK.get()
-        );
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, TolkienBlocks.BACKPACK_BLOCK_ENTITY.get(), BackpackBlockEntity::getTank);
     }
 
     @EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
