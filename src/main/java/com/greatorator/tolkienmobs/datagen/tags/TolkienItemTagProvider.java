@@ -7,6 +7,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
@@ -102,5 +103,23 @@ public class TolkienItemTagProvider extends ItemTagsProvider {
                 .add(TolkienItems.CHESTPLATE_MORGULIRON.get())
                 .add(TolkienItems.LEGGINGS_MORGULIRON.get())
                 .add(TolkienItems.BOOTS_MORGULIRON.get());
+        tag(Tags.Items.FOODS)
+                .add(TolkienItems.CRAM.get())
+                .add(TolkienItems.FOOD_HONEY.get())
+                .add(TolkienItems.LEMBAS.get())
+                .add(TolkienItems.HONEY_CAKE.get())
+                .add(TolkienItems.MONSTER_FLESH.get())
+                .add(TolkienItems.INSECT.get())
+                .add(TolkienItems.GOLDEN_INSECT.get())
+                .add(TolkienItems.TREE_ACORN.get())
+                .add(TolkienItems.GOLDEN_TREE_ACORN.get())
+                .add(TolkienItems.BRAMBLES_BERRY.get())
+                .add(TolkienItems.MIRUVOR.get())
+                .add(TolkienItems.GROG.get())
+                .add(TolkienItems.DRINK_ELF_FLEETFOOT.get())
+                .add(TolkienItems.DRINK_ENT_DRAUGHT.get())
+                .add(TolkienItems.DRINK_ELF_VITALITY.get())
+                .add(TolkienItems.DRINK_ERU_BLESSING.get())
+                .add(TolkienItems.DRINK_PERSONAL_BLACKSMITH.get());
     }
 }

@@ -6,107 +6,147 @@ import com.greatorator.tolkienmobs.init.TolkienRecipeSerializers;
 import com.greatorator.tolkienmobs.init.TolkienRecipesTypes;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-public class FireplaceRecipe implements Recipe<FireplaceContainer> {
-    public final ItemStack output;
-    private final Ingredient trinket;
-    private final Ingredient gem;
-    private final Ingredient potion;
+import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-    public FireplaceRecipe(Ingredient trinket, Ingredient potion, Ingredient gem, ItemStack output) {
-        this.trinket = trinket;
-        this.potion = potion;
-        this.gem = gem;
-        this.output = output;
-    }
+public record FireplaceRecipe(List<SizedIngredient> inputItems, List<ItemStack> output) implements Recipe<FireplaceRecipeInput> {
 
     @Override @ParametersAreNonnullByDefault
-    public boolean matches(FireplaceContainer container, Level level) {
-        boolean testTrinket = trinket.test(container.getItem(FireplaceContainer.INGREDIENT_1_SLOT_ID));
-        boolean testPotion = potion.test(container.getItem(FireplaceContainer.INGREDIENT_2_SLOT_ID));
-        boolean testGem = gem.test(container.getItem(FireplaceContainer.FUEL_SLOT_ID));
-        return (testTrinket && testPotion && testGem);
+    public boolean matches(FireplaceRecipeInput container, Level level) {
+        if (level.isClientSide()) {
+            return false;
+        }
+
+        List<ItemStack> inputItems = container.inputItems();
+        List<SizedIngredient> remainingIngredients = new ArrayList<>(this.inputItems);
+
+        for (ItemStack itemStack : inputItems) {
+            if (itemStack.isEmpty()) {
+                continue;
+            }
+
+            boolean ingredientFound = false;
+            Iterator<SizedIngredient> iterator = remainingIngredients.iterator();
+
+            while (iterator.hasNext()) {
+                SizedIngredient ingredient = iterator.next();
+                if (ingredient.ingredient().test(itemStack)) {
+                    iterator.remove();
+                    ingredientFound = true;
+                    break;
+                }
+            }
+
+            if (!ingredientFound) {
+                return false;
+            }
+        }
+
+        return remainingIngredients.isEmpty();
     }
 
-    @Override @ParametersAreNonnullByDefault
-    public @NotNull ItemStack assemble(FireplaceContainer container, HolderLookup.Provider provider) {
+    @Override
+    public ItemStack assemble(FireplaceRecipeInput fireplaceRecipeInput, HolderLookup.Provider provider) {
+        return output.isEmpty() ? ItemStack.EMPTY : output.get(0).copy();
+    }
+
+    @Override
+    public boolean canCraftInDimensions(int i, int i1) {
+        return true;
+    }
+
+    @Override
+    public ItemStack getResultItem(HolderLookup.Provider provider) {
+        return output.isEmpty() ? ItemStack.EMPTY : output.get(0).copy();
+    }
+
+    @Override
+    public RecipeSerializer<? extends Recipe<FireplaceRecipeInput>> getSerializer() {
+        return (RecipeSerializer<? extends Recipe<FireplaceRecipeInput>>) TolkienRecipeSerializers.FIREPLACE_SERIALIZER.get();
+    }
+
+    @Override
+    public RecipeType<? extends Recipe<FireplaceRecipeInput>> getType() {
+        return TolkienRecipesTypes.FIREPLACE_TYPE.get();
+    }
+
+    public List<SizedIngredient> getInputItems() {
+        return inputItems;
+    }
+
+    public List<ItemStack> getOutput() {
         return output;
     }
 
-    @Override
-    public boolean canCraftInDimensions(int width, int height) { return true; }
+    public static class Serializer implements RecipeSerializer<FireplaceRecipe>{
+        public static final FireplaceRecipe.Serializer INSTANCE = new FireplaceRecipe.Serializer();
+        public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(MODID, "fireplace");
 
-    @Override
-    public @NotNull ItemStack getResultItem(@NotNull HolderLookup.Provider provider) {
-        return output.copy();
-    }
+        private final MapCodec<FireplaceRecipe> CODEC = RecordCodecBuilder.mapCodec(alloySmeltingRecipeInstance -> alloySmeltingRecipeInstance.group(
+                SizedIngredient.FLAT_CODEC.listOf().fieldOf("ingredients").forGetter(FireplaceRecipe::getInputItems),
+                ItemStack.CODEC.listOf().fieldOf("output").forGetter(FireplaceRecipe::getOutput)
+        ).apply(alloySmeltingRecipeInstance, FireplaceRecipe::new));
 
-    @Override
-    public @NotNull ItemStack getToastSymbol() {
-        return TolkienBlocks.TRINKET_TABLE.get().asItem().getDefaultInstance();
-    }
-
-    @Override
-    public @NotNull RecipeSerializer<?> getSerializer() {
-        return TolkienRecipeSerializers.FIREPLACE_SERIALIZER.get();
-    }
-
-    public Ingredient getIngredient() {
-        return trinket;
-    }
-
-    @Override
-    public @NotNull RecipeType<?> getType() {
-        return TolkienRecipesTypes.FIREPLACE_TYPE.get(); }
-
-
-    public static class Type implements RecipeType<FireplaceRecipe> {
-        public Type() { }
-    }
-
-    public static class Serializer implements RecipeSerializer<FireplaceRecipe> {
-        public static final MapCodec<FireplaceRecipe> CODEC = RecordCodecBuilder.mapCodec((builder) -> builder.group(
-                Ingredient.CODEC_NONEMPTY.fieldOf("trinket").forGetter((recipe) -> recipe.trinket),
-                Ingredient.CODEC_NONEMPTY.fieldOf("potion").forGetter((recipe) -> recipe.trinket),
-                Ingredient.CODEC_NONEMPTY.fieldOf("gem").forGetter((recipe) -> recipe.trinket),
-                ItemStack.STRICT_CODEC.fieldOf("output").forGetter((recipe) -> recipe.output)
-        ).apply(builder, FireplaceRecipe::new));
-
-        public static final StreamCodec<RegistryFriendlyByteBuf, FireplaceRecipe> STREAM_CODEC = StreamCodec.of(FireplaceRecipe.Serializer::toNetwork, FireplaceRecipe.Serializer::fromNetwork);
-
-        private static FireplaceRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
-            var trinket = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
-            var potion = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
-            var gem = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
-            var output = ItemStack.STREAM_CODEC.decode(buffer);
-            return new FireplaceRecipe(trinket, potion, gem, output);
-        }
-
-        private static void toNetwork(RegistryFriendlyByteBuf buffer, FireplaceRecipe recipe) {
-            Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.getIngredient());
-            ItemStack.STREAM_CODEC.encode(buffer, recipe.output);
-        }
+        public static final StreamCodec<RegistryFriendlyByteBuf, FireplaceRecipe> STREAM_CODEC = StreamCodec.of(
+                FireplaceRecipe.Serializer::toNetwork, FireplaceRecipe.Serializer::fromNetwork
+        );
 
         @Override
-        public @NotNull MapCodec<FireplaceRecipe> codec() {
+        public MapCodec<FireplaceRecipe> codec() {
             return CODEC;
         }
 
         @Override
-        public @NotNull StreamCodec<RegistryFriendlyByteBuf, FireplaceRecipe> streamCodec() {
+        public StreamCodec<RegistryFriendlyByteBuf, FireplaceRecipe> streamCodec() {
             return STREAM_CODEC;
+        }
+
+        private static FireplaceRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
+            int ingredientCount = buffer.readVarInt();
+            List<SizedIngredient> inputItems = new ArrayList<>(ingredientCount);
+            for (int i = 0; i < ingredientCount; i++) {
+                inputItems.add(SizedIngredient.STREAM_CODEC.decode(buffer));
+            }
+
+            int outputCount = buffer.readVarInt();
+            List<ItemStack> result = new ArrayList<>(outputCount);
+            for (int i = 0; i < outputCount; i++) {
+                result.add(ItemStack.STREAM_CODEC.decode(buffer));
+            }
+
+            return new FireplaceRecipe(inputItems, result);
+        }
+
+        private static void toNetwork(RegistryFriendlyByteBuf buffer, FireplaceRecipe recipe) {
+            buffer.writeVarInt(recipe.inputItems.size());
+            for (SizedIngredient ingredient : recipe.inputItems) {
+                SizedIngredient.STREAM_CODEC.encode(buffer, ingredient);
+            }
+
+            buffer.writeVarInt(recipe.output.size());
+            for (ItemStack itemStack : recipe.output) {
+                ItemStack.STREAM_CODEC.encode(buffer, itemStack);
+            }
+
         }
     }
 }

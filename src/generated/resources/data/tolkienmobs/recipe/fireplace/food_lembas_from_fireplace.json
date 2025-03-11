@@ -1,0 +1,19 @@
+{
+  "type": "tolkienmobs:fireplace_cooking",
+  "ingredients": [
+    {
+      "count": 1,
+      "item": "tolkienmobs:food_cram"
+    },
+    {
+      "count": 1,
+      "item": "tolkienmobs:food_honey"
+    }
+  ],
+  "output": [
+    {
+      "count": 1,
+      "id": "tolkienmobs:food_lembas"
+    }
+  ]
+}

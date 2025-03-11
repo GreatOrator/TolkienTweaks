@@ -19,9 +19,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 
-public class FireplaceContainer extends TolkienContainer implements RecipeInput {
+public class FireplaceContainer extends TolkienContainer {
     private final FireplaceBlockEntity tileEntity;
     private final Level level;
     private final ContainerData containerData;
@@ -36,28 +38,30 @@ public class FireplaceContainer extends TolkienContainer implements RecipeInput 
     private static final int VANILLA_FIRST_SLOT_INDEX = 0;
     private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
     private static final int TE_INVENTORY_SLOT_COUNT = 4;  // must be the number of slots you have!
-    public static final int INGREDIENT_1_SLOT_ID = 0;
-    public static final int INGREDIENT_2_SLOT_ID = 1;
-    public static final int FUEL_SLOT_ID = 2;
-    public static final int RESULT_SLOT_ID = 4;
 
     public FireplaceContainer(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
-        this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(2));
+        this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(6));
     }
 
     public FireplaceContainer(int pContainerId, Inventory inv, BlockEntity entity, ContainerData data) {
         super(TolkienContainers.FIREPLACE_CONTAINER.get(), pContainerId);
-        tileEntity = ((FireplaceBlockEntity) entity);
+        checkContainerSize(inv, 6);
+        tileEntity = (FireplaceBlockEntity) entity;
         this.level = inv.player.level();
         this.containerData = data;
 
         addPlayerInventory(inv, -15, 56);
         addPlayerHotbar(inv, -15, 56);
 
-        this.addSlot(new FireplaceSlot(this.tileEntity.itemHandler, 0, 23, 15, TEXTURE_LOC_SLOT_INGREDIENT_1));
-        this.addSlot(new FireplaceSlot(this.tileEntity.itemHandler, 1, 45, 15, TEXTURE_LOC_SLOT_INGREDIENT_2));
-        this.addSlot(new FuelSlot(this.tileEntity.itemHandler, 2, 34, 55, TEXTURE_LOC_SLOT_FUEL));
-        this.addSlot(new OutputSlot(this.tileEntity.itemHandler, 3, 91, 35));
+        IItemHandler fuelHandler = tileEntity.getFuelHandler();
+        this.addSlot(new FuelSlot(fuelHandler, 0, 34, 55, TEXTURE_LOC_SLOT_FUEL, this));
+
+        IItemHandler itemHandler = tileEntity.getInputHandler();
+        this.addSlot(new FireplaceSlot(itemHandler, 0, 23, 15, TEXTURE_LOC_SLOT_INGREDIENT_1, this));
+        this.addSlot(new FireplaceSlot(itemHandler, 1, 45, 15, TEXTURE_LOC_SLOT_INGREDIENT_2, this));
+
+        IItemHandler outputHandler = tileEntity.getOutputHandler();
+        this.addSlot(new OutputSlot(outputHandler, 0, 91, 35));
 
         addDataSlots(data);
     }
@@ -69,7 +73,7 @@ public class FireplaceContainer extends TolkienContainer implements RecipeInput 
     public int getScaledArrowProgress() {
         int progress = this.containerData.get(0);
         int maxProgress = this.containerData.get(1);
-        int arrowPixelSize = 24;
+        int arrowPixelSize = 18;
 
         return maxProgress != 0 && progress != 0 ? progress * arrowPixelSize / maxProgress : 0;
     }
@@ -119,15 +123,5 @@ public class FireplaceContainer extends TolkienContainer implements RecipeInput 
     public boolean stillValid(Player pPlayer) {
         return stillValid(ContainerLevelAccess.create(level, tileEntity.getBlockPos()),
                 pPlayer, TolkienBlocks.FIREPLACE.get());
-    }
-
-    @Override
-    public @NotNull ItemStack getItem(int index) {
-        return this.tileEntity.itemHandler.getStackInSlot(index);
-    }
-
-    @Override
-    public int size() {
-        return 4;
     }
 }

@@ -16,6 +16,7 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -32,6 +33,8 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
                 TolkienBlocks.ORE_MORGULIRON, TolkienBlocks.ORE_END_MORGULIRON, TolkienBlocks.ORE_NETHER_MORGULIRON, TolkienBlocks.ORE_DEEPSLATE_MORGULIRON);
         List<ItemLike> AMMOLITE_SMELTABLES = List.of(TolkienItems.GEM_AMMOLITE,
                 TolkienBlocks.ORE_AMMOLITE, TolkienBlocks.ORE_END_AMMOLITE, TolkienBlocks.ORE_NETHER_AMMOLITE, TolkienBlocks.ORE_DEEPSLATE_AMMOLITE);
+
+        fireplaceRecipe(pRecipeOutput, SizedIngredient.of(TolkienItems.CRAM.get(), 1), SizedIngredient.of(TolkienItems.FOOD_HONEY.get(), 1), TolkienItems.LEMBAS.get(), 1);
 
         oreSmelting(pRecipeOutput, MITHRIL_SMELTABLES, RecipeCategory.MISC, TolkienItems.INGOT_MITHRIL.get(), 0.25f, 200, "ingot_mithril");
         oreSmelting(pRecipeOutput, MORGULIRON_SMELTABLES, RecipeCategory.MISC, TolkienItems.INGOT_MORGULIRON.get(), 0.25f, 200, "ingot_morguliron");

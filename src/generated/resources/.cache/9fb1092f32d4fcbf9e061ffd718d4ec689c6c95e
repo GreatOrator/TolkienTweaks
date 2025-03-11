@@ -1,4 +1,4 @@
-// 1.21.1	2024-12-27T15:38:12.686889	Recipes
+// 1.21.1	2025-03-10T15:54:12.4311918	Recipes
 d19567913dbfd6ba6d00c4306abe737d82e289eb data/tolkienmobs/advancement/recipes/building_blocks/block.tolkienmobs.dark_stone_from_blasting.json
 fdc081cd058634a34dc62f77cad3483eb182215e data/tolkienmobs/advancement/recipes/building_blocks/block.tolkienmobs.dark_stone_from_smelting.json
 c65228514dc61115e43a564010366b1cdeb5060a data/tolkienmobs/advancement/recipes/building_blocks/block.tolkienmobs.dwarven_stone_from_blasting.json
@@ -199,6 +199,7 @@ d6855e947f4f5343c8f311726e696f76dcd8922a data/tolkienmobs/advancement/recipes/de
 fc984978ca711695b0f7ea6b7782ac44dc948362 data/tolkienmobs/advancement/recipes/decorations/wall_decay_bloom.json
 393e602f73320b9d88550517ec1d02d9bb93a4c6 data/tolkienmobs/advancement/recipes/decorations/wall_mushroom_brown.json
 de99dcfeaa1d565d2877448e2d2fd29fa4f07003 data/tolkienmobs/advancement/recipes/decorations/wall_mushroom_red.json
+08a56b9497181e4acc513d3500ee133c7ed18c4d data/tolkienmobs/advancement/recipes/fireplace/food_lembas_from_fireplace.json
 8c2b89c2d7a1684217bdabeb117338e409e67275 data/tolkienmobs/advancement/recipes/misc/axe_ammolite-templateupgrade.json
 c3b36ed19be747dd661b755fbd235d81e5af65c6 data/tolkienmobs/advancement/recipes/misc/axe_mithril-templateupgrade.json
 6dca3c515a845a9c4e82a9d7f3af3e35bfeacb96 data/tolkienmobs/advancement/recipes/misc/axe_morguliron-templateupgrade.json
@@ -505,6 +506,7 @@ f7bfdd02e5b9afbae30c2039aa8b643ac4644fb2 data/tolkienmobs/recipe/fence_gate_fang
 7eef45b607634cb073fd201f71d1141f4d633010 data/tolkienmobs/recipe/fence_lebethron.json
 5596fa2ec0d18beb45c25188d989c3d1786a698a data/tolkienmobs/recipe/fence_mallorn.json
 07ff72ddea5097e7d7010bacf534dcd07f41fce0 data/tolkienmobs/recipe/fence_mirkwood.json
+c1844f52c0727fdf2d724f055a1bef6a47960717 data/tolkienmobs/recipe/fireplace/food_lembas_from_fireplace.json
 8d4dbccb8b12d2a75df4f906ccf9be4b24540d3d data/tolkienmobs/recipe/gem_ammolite.json
 95405ab80056740cb044ebc79fc218fae75f2f7d data/tolkienmobs/recipe/gem_ammolite_from_blasting_gem_ammolite.json
 f69d57f69c8a5e10d189268b9e5d727e08c230f0 data/tolkienmobs/recipe/gem_ammolite_from_blasting_ore_ammolite.json

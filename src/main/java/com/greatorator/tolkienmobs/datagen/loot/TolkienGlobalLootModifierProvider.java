@@ -21,6 +21,7 @@ public class TolkienGlobalLootModifierProvider extends GlobalLootModifierProvide
     }
     @Override
     protected void start() {
+        /* Plants */
 
         /* Chests */
         add("bronze_coin_in_village_temple_chest", new TolkienItemsModifier(
