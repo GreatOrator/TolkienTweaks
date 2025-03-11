@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.integration;
 
+import com.greatorator.tolkienmobs.containers.screens.FireplaceScreen;
 import com.greatorator.tolkienmobs.init.TolkienRecipesTypes;
 import com.greatorator.tolkienmobs.recipe.FireplaceRecipe;
 import com.greatorator.tolkienmobs.recipe.FireplaceRecipeCategory;
@@ -7,6 +8,7 @@ import com.greatorator.tolkienmobs.recipe.TrinketRecipe;
 import com.greatorator.tolkienmobs.recipe.TrinketRecipeCategory;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
@@ -15,6 +17,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Objects;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
@@ -30,17 +33,27 @@ public class TolkienJEIPlugin implements IModPlugin {
 
     @Override
     public void registerCategories(@NotNull IRecipeCategoryRegistration registration) {
-        registration.addRecipeCategories(new TrinketRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+//        registration.addRecipeCategories(new TrinketRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+        registration.addRecipeCategories(new FireplaceRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+
     }
 
     @Override
     public void registerRecipes(@NotNull IRecipeRegistration registration) {
         RecipeManager manager = Objects.requireNonNull(Minecraft.getInstance().level).getRecipeManager();
 
-        var recipes = manager.getAllRecipesFor(TolkienRecipesTypes.TRINKET_TABLE_TYPE.get()).stream().map(RecipeHolder::value).toList();
-        var recipes2 = manager.getAllRecipesFor(TolkienRecipesTypes.FIREPLACE_TYPE.get()).stream().map(RecipeHolder::value).toList();
+//        var recipes = manager.getAllRecipesFor(TolkienRecipesTypes.TRINKET_TABLE_TYPE.get()).stream().map(RecipeHolder::value).toList();
 
-        registration.addRecipes(new RecipeType<>(TrinketRecipeCategory.UID, TrinketRecipe.class), recipes);
-        registration.addRecipes(new RecipeType<>(FireplaceRecipeCategory.UID, FireplaceRecipe.class), recipes2);
+        List<RecipeHolder<FireplaceRecipe>> meltingRecipes = manager.getAllRecipesFor(TolkienRecipesTypes.FIREPLACE_TYPE.get());
+        List<FireplaceRecipe> fireplaceRecipeListRecipeList = meltingRecipes.stream().map(RecipeHolder::value).toList();
+
+//        registration.addRecipes(new RecipeType<>(TrinketRecipeCategory.UID, TrinketRecipe.class), recipes);
+
+        registration.addRecipes(new RecipeType<>(FireplaceRecipeCategory.UID, FireplaceRecipe.class), fireplaceRecipeListRecipeList);
     }
+
+//    @Override
+//    public void registerGuiHandlers(IGuiHandlerRegistration registration) {
+//        registration.addRecipeClickArea(FireplaceScreen.class, 100, 31, 18, 23, FireplaceRecipeCategory.UID);
+//    }
 }

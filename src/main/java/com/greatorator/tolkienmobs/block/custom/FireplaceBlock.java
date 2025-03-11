@@ -143,7 +143,7 @@ public class FireplaceBlock extends TolkienEntityBlock {
 
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
-//        if (state.getValue(LIT)) {
+        if (state.getValue(LIT)) {
             if (random.nextInt(10) == 0) {
                 level.playLocalSound(
                         (double)pos.getX() + 0.5,
@@ -181,7 +181,7 @@ public class FireplaceBlock extends TolkienEntityBlock {
                     0.07,
                     0.0
             );
-//        }
+        }
     }
 
     public static void makeParticles(Level level, BlockPos pos, boolean isSignalFire, boolean spawnExtraSmoke) {

@@ -1,7 +1,8 @@
-package com.greatorator.tolkienmobs.recipe;
+package com.greatorator.tolkienmobs.datagen.helpers;
 
 import com.greatorator.tolkienmobs.handler.data.TrinketComponent;
 import com.greatorator.tolkienmobs.init.TolkienDataComponents;
+import com.greatorator.tolkienmobs.recipe.TrinketRecipe;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;

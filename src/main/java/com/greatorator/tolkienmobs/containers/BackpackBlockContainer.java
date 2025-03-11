@@ -59,29 +59,46 @@ public class BackpackBlockContainer extends TolkienContainer{
         addDataSlots(fluidData);
     }
 
+    protected int getSlotStart(int originSlot, int slotStart, boolean reverse) {
+        return slotStart;
+    }
+
+    protected int getSlotRange(int originSlot, int slotRange, boolean reverse) {
+        return slotRange;
+    }
+
     @Override
     public ItemStack quickMoveStack(Player playerIn, int pIndex) {
-        ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.slots.get(pIndex);
-        if (slot != null && slot.hasItem()) {
-            ItemStack itemstack1 = slot.getItem();
-            itemstack = itemstack1.copy();
-            if (pIndex < ROWS * 9) {
-                if (!this.moveItemStackTo(itemstack1, ROWS * 9, this.slots.size(), true)) {
+        ItemStack stack = ItemStack.EMPTY;
+        Slot slot = slots.get(pIndex);
+        int slots = 72;
+
+        if(slot != null && slot.hasItem()) {
+            ItemStack stackInSlot = slot.getItem().copy();
+            stack = stackInSlot.copy();
+
+            if(pIndex < slots) { // Click in tile -> player inventory
+                if(!moveItemStackTo(stackInSlot, getSlotStart(pIndex, slots, true), getSlotRange(pIndex, this.slots.size(), true), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if (!this.moveItemStackTo(itemstack1, 0, ROWS * 9, false)) {
+            } else if(!moveItemStackTo(stackInSlot, getSlotStart(pIndex, 0, false), getSlotRange(pIndex, slots, false), false)) { // Click in player inventory -> tile
                 return ItemStack.EMPTY;
             }
 
-            if (itemstack1.isEmpty()) {
-                slot.setByPlayer(ItemStack.EMPTY);
+            if(stackInSlot.getCount() == 0) {
+                slot.set(ItemStack.EMPTY);
             } else {
-                slot.setChanged();
+                slot.set(stackInSlot);
             }
+
+            if(stackInSlot.getCount() == stack.getCount()) {
+                return ItemStack.EMPTY;
+            }
+
+            slot.onTake(player, stackInSlot);
         }
 
-        return itemstack;
+        return stack;
     }
 
     @Override

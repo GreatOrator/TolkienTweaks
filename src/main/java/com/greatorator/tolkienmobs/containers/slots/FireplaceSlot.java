@@ -1,18 +1,22 @@
 package com.greatorator.tolkienmobs.containers.slots;
 
+import com.greatorator.tolkienmobs.containers.FireplaceContainer;
 import com.greatorator.tolkienmobs.item.custom.TrinketItem;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class FireplaceSlot extends SlotItemHandler {
     public static final ResourceLocation backgroundLoc = null;
+    private final FireplaceContainer menu;
 
-    public FireplaceSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition, ResourceLocation backgroundLoc) {
+    public FireplaceSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition, ResourceLocation backgroundLoc, FireplaceContainer menu) {
         super(itemHandler, index, xPosition, yPosition);
+        this.menu = menu;
         this.setBackground(InventoryMenu.BLOCK_ATLAS, backgroundLoc);
     }
 
@@ -20,18 +24,5 @@ public class FireplaceSlot extends SlotItemHandler {
     public @NotNull FireplaceSlot setBackground(@NotNull ResourceLocation atlas, @NotNull ResourceLocation sprite) {
         super.setBackground(atlas, sprite);
         return this;
-    }
-
-    @Override
-    public boolean mayPlace(ItemStack itemstack) {
-        if (itemstack.getItem() instanceof TrinketItem) {
-            return (itemstack.getItem() instanceof TrinketItem);
-        }
-            return false;
-    }
-
-    @Override
-    public int getMaxStackSize() {
-        return 1;
     }
 }

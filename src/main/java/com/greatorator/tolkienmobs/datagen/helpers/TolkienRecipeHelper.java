@@ -1,33 +1,26 @@
 package com.greatorator.tolkienmobs.datagen.helpers;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
-import com.greatorator.tolkienmobs.handler.data.TrinketComponent;
-import com.greatorator.tolkienmobs.init.TolkienDataComponents;
-import com.greatorator.tolkienmobs.recipe.TrinketRecipe;
-import com.greatorator.tolkienmobs.recipe.TrinketRecipeBuilder;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.conditions.IConditionBuilder;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -142,6 +135,15 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
         barrelRecipe(pRecipeOutput, barrel, block, slab);
         doorBuilder(door, Ingredient.of(block)).group(group).unlockedBy("has_"+group, has(ingot)).save(pRecipeOutput);
         trapdoorBuilder(trapdoor, Ingredient.of(block)).group(group).unlockedBy("has_"+group, has(ingot)).save(pRecipeOutput);
+    }
+
+    protected static void fireplaceRecipe(RecipeOutput recipeOutput, SizedIngredient ingredients1, SizedIngredient ingredients2, ItemLike result, int outputCount){
+        FireplaceRecipeBuilder.fireplaceRecipe()
+                .addIngredient(ingredients1)
+                .addIngredient(ingredients2)
+                .addOutput(new ItemStack(result, outputCount))
+                .unlockedBy(getHasName(ingredients1.ingredient().getItems()[0].getItem()), has(ingredients1.ingredient().getItems()[0].getItem()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath(MODID, "fireplace/" + getItemName(result) + "_from_fireplace"));
     }
 
     protected static void toolListRecipe(RecipeOutput pRecipeOutput, RecipeCategory pCategory, String group, Item pick, Item axe, Item shovel, Item hoe, Item sword, Item shears, Item ingot) {
