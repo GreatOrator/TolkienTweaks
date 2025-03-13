@@ -77,7 +77,7 @@ public class TolkienMobsMain {
     //    -Spawner
     //    -Lockable Chests
     //    -Fireplace
-    //      -Actually use fuel
+    //      -Actually use fuel properly
     //    -Trinket Table Recipes
     //      -Working in Trinket Table
     //    -Backpack

@@ -6,6 +6,7 @@ import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienRecipesTypes;
 import com.greatorator.tolkienmobs.recipe.FireplaceRecipe;
 import com.greatorator.tolkienmobs.recipe.FireplaceRecipeInput;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -13,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
@@ -23,8 +25,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -61,7 +62,6 @@ public class FireplaceBlockEntity extends BlockEntity implements MenuProvider {
             setChanged();
         }
     };
-
     public final ItemStackHandler outputHandler = new ItemStackHandler(1){
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
@@ -73,12 +73,20 @@ public class FireplaceBlockEntity extends BlockEntity implements MenuProvider {
             setChanged();
         }
     };
+    public final Object2IntOpenHashMap<ResourceLocation> recipes = new Object2IntOpenHashMap<>();
+    public RecipeType<? extends AbstractCookingRecipe> recipeType;
+    private final RecipeManager.CachedCheck<SingleRecipeInput, ? extends AbstractCookingRecipe> recipeCheckSmelting;
+    private final RecipeManager.CachedCheck<SingleRecipeInput, ? extends AbstractCookingRecipe> recipeCheckSmoking;
+    private final RecipeManager.CachedCheck<FireplaceRecipeInput, ? extends FireplaceRecipe> recipeCheckGenerator;
+
     private static final int OUTPUT_SLOT = 0;
     protected final ContainerData data;
     private int progress = 0;
     private int maxProgress = 100;
     private int burnProgress = 0;
     private int maxBurnProgress = 0;
+    private int fuelTime = 0;
+    private int maxFuelTime = 0;
     private boolean isBurning = false;
 
     public FireplaceBlockEntity(BlockPos pPos, BlockState pBlockState) {
@@ -89,6 +97,8 @@ public class FireplaceBlockEntity extends BlockEntity implements MenuProvider {
                 return switch (pIndex) {
                     case 0 -> FireplaceBlockEntity.this.progress;
                     case 1 -> FireplaceBlockEntity.this.maxProgress;
+                    case 2 -> FireplaceBlockEntity.this.fuelTime;
+                    case 3 -> FireplaceBlockEntity.this.maxFuelTime;
                     case 4 -> FireplaceBlockEntity.this.burnProgress;
                     case 5 -> FireplaceBlockEntity.this.maxBurnProgress;
                     default -> 0;
@@ -100,6 +110,8 @@ public class FireplaceBlockEntity extends BlockEntity implements MenuProvider {
                 switch (pIndex) {
                     case 0 -> FireplaceBlockEntity.this.progress = pValue;
                     case 1 -> FireplaceBlockEntity.this.maxProgress = pValue;
+                    case 2 -> FireplaceBlockEntity.this.fuelTime = pValue;
+                    case 3 -> FireplaceBlockEntity.this.maxFuelTime = pValue;
                     case 5 -> FireplaceBlockEntity.this.maxBurnProgress = pValue;
                 }
             }
@@ -109,6 +121,10 @@ public class FireplaceBlockEntity extends BlockEntity implements MenuProvider {
                 return 6;
             }
         };
+        recipeCheckSmelting = RecipeManager.createCheck(RecipeType.SMELTING);
+        recipeCheckSmoking = RecipeManager.createCheck(RecipeType.SMOKING);
+        recipeCheckGenerator = RecipeManager.createCheck(TolkienRecipesTypes.FIREPLACE_TYPE.get());
+        recipeType = RecipeType.SMELTING;
     }
 
     @Override
@@ -140,6 +156,8 @@ public class FireplaceBlockEntity extends BlockEntity implements MenuProvider {
 
         pTag.putInt("progress", progress);
         pTag.putInt("burnProgress", burnProgress);
+        pTag.putInt("fuelTime", fuelTime);
+        pTag.putInt("maxFuelTime", maxFuelTime);
         pTag.putInt("maxBurnProgress", maxBurnProgress);
         pTag.putBoolean("isBurning", isBurning);
 
@@ -155,6 +173,8 @@ public class FireplaceBlockEntity extends BlockEntity implements MenuProvider {
 
         progress = pTag.getInt("progress");
         burnProgress = pTag.getInt("burnProgress");
+        fuelTime = pTag.getInt("fuelTime");
+        maxFuelTime = pTag.getInt("maxFuelTime");
         maxBurnProgress = pTag.getInt("maxBurnProgress");
         isBurning = pTag.getBoolean("isBurning");
     }
@@ -175,6 +195,26 @@ public class FireplaceBlockEntity extends BlockEntity implements MenuProvider {
         return data;
     }
 
+    private void tryConsumeFuel() {
+        assert level != null;
+        this.maxFuelTime = 0;
+        //pull in new fuel
+        ItemStack stack = fuelHandler.getStackInSlot(0);
+        final int factor = 1;
+        int burnTimeTicks = factor * stack.getBurnTime(RecipeType.SMELTING);
+        if (burnTimeTicks > 0) {
+            // BURN IT
+            this.maxFuelTime = burnTimeTicks;
+            this.fuelTime = this.maxFuelTime;
+            if (stack.getCount() == 1 && stack.hasCraftingRemainingItem()) {
+                fuelHandler.setStackInSlot(0, stack.getCraftingRemainingItem().copy());
+            }
+            else {
+                stack.shrink(1);
+            }
+        }
+    }
+
     @Override
     public void onLoad() {
         super.onLoad();
@@ -191,11 +231,14 @@ public class FireplaceBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     public void tick(Level level, BlockPos pPos, BlockState pState) {
+        tryConsumeFuel();
         setChanged(level, pPos, pState);
 
         if(hasRecipe() && isOutputSlotEmptyOrReceivable()){
             level.setBlockAndUpdate(pPos, pState.setValue(FireplaceBlock.LIT, true));
             increaseCraftingProgress();
+            fuelTime=fuelTime-10;
+
             setChanged(level, pPos, pState);
 
             if(hasProgressFinished()) {
