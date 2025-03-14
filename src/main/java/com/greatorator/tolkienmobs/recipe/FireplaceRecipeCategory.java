@@ -23,10 +23,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class FireplaceRecipeCategory implements IRecipeCategory<FireplaceRecipe> {
-    private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/trinkettable/fireplace_gui.png");
+    private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/fireplace/fireplace_gui.png");
     public static final ResourceLocation UID = TolkienMobsMain.resLoc("fireplace");
     private final IDrawable background;
     private final IDrawable icon;
+
+    public static final RecipeType<FireplaceRecipe> FIREPLACE_RECIPE_TYPE =
+            new RecipeType<>(UID, FireplaceRecipe.class);
 
     public FireplaceRecipeCategory(IGuiHelper guiHelper) {
         background = guiHelper.createDrawable(GUI, 0, 0, 176, 166);
@@ -34,7 +37,7 @@ public class FireplaceRecipeCategory implements IRecipeCategory<FireplaceRecipe>
     }
 
     @Override
-    public @NotNull RecipeType<FireplaceRecipe> getRecipeType() {return TolkienJEIPlugin.FIREPLACE_CRAFTING;}
+    public @NotNull RecipeType<FireplaceRecipe> getRecipeType() {return FIREPLACE_RECIPE_TYPE;}
 
     @Override
     public @NotNull Component getTitle() {return FireplaceBlock.TextComponent;}
