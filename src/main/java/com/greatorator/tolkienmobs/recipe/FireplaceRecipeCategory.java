@@ -24,7 +24,7 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class FireplaceRecipeCategory implements IRecipeCategory<FireplaceRecipe> {
     private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/fireplace/fireplace_gui.png");
-    public static final ResourceLocation UID = TolkienMobsMain.resLoc("fireplace");
+    public static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(MODID, "fireplace");
     private final IDrawable background;
     private final IDrawable icon;
 
@@ -32,8 +32,8 @@ public class FireplaceRecipeCategory implements IRecipeCategory<FireplaceRecipe>
             new RecipeType<>(UID, FireplaceRecipe.class);
 
     public FireplaceRecipeCategory(IGuiHelper guiHelper) {
-        background = guiHelper.createDrawable(GUI, 0, 0, 176, 166);
-        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(TolkienBlocks.FIREPLACE));
+        this.background = guiHelper.createDrawable(GUI, 0, 0, 176, 166);
+        this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(TolkienBlocks.FIREPLACE));
     }
 
     @Override
@@ -43,10 +43,10 @@ public class FireplaceRecipeCategory implements IRecipeCategory<FireplaceRecipe>
     public @NotNull Component getTitle() {return FireplaceBlock.TextComponent;}
 
     @Override
-    public @NotNull IDrawable getBackground() {return background;}
+    public @NotNull IDrawable getIcon() {return icon;}
 
     @Override
-    public @NotNull IDrawable getIcon() {return icon;}
+    public @NotNull IDrawable getBackground() {return background;}
 
     @Override @ParametersAreNonnullByDefault
     public void setRecipe(IRecipeLayoutBuilder builder, FireplaceRecipe recipe, IFocusGroup focuses) {
