@@ -127,8 +127,8 @@ public class TolkienMobsMain {
         TolkienFeatureModifiers.PLACEMENT_MODIFIERS.register(modEventBus);
         TolkienFeatures.FEATURES.register(modEventBus);
         TolkienDataComponents.register(modEventBus);
-        TolkienRecipesTypes.RECIPE_TYPE.register(modEventBus);
-        TolkienRecipeSerializers.RECIPE_SERIALIZER.register(modEventBus);
+        TolkienRecipesTypes.register(modEventBus);
+        TolkienRecipeSerializers.register(modEventBus);
 
         NeoForge.EVENT_BUS.register(this);
 
