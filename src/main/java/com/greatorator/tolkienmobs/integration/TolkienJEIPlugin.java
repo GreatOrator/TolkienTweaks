@@ -1,14 +1,11 @@
 package com.greatorator.tolkienmobs.integration;
 
-import com.greatorator.tolkienmobs.containers.screens.FireplaceScreen;
 import com.greatorator.tolkienmobs.init.TolkienRecipesTypes;
 import com.greatorator.tolkienmobs.recipe.FireplaceRecipe;
 import com.greatorator.tolkienmobs.recipe.FireplaceRecipeCategory;
 import com.greatorator.tolkienmobs.recipe.TrinketRecipe;
-import com.greatorator.tolkienmobs.recipe.TrinketRecipeCategory;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
@@ -23,9 +20,6 @@ import java.util.Objects;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class TolkienJEIPlugin implements IModPlugin {
-    public static final RecipeType<TrinketRecipe> TRINKET_CRAFTING = RecipeType.create(MODID, "trinket", TrinketRecipe.class);
-    public static final RecipeType<FireplaceRecipe> FIREPLACE_CRAFTING = RecipeType.create(MODID, "fireplace", FireplaceRecipe.class);
-
     @Override
     public ResourceLocation getPluginUid() {
         return ResourceLocation.fromNamespaceAndPath(MODID, "jei_plugin");
@@ -44,12 +38,12 @@ public class TolkienJEIPlugin implements IModPlugin {
 
 //        var recipes = manager.getAllRecipesFor(TolkienRecipesTypes.TRINKET_TABLE_TYPE.get()).stream().map(RecipeHolder::value).toList();
 
-        List<RecipeHolder<FireplaceRecipe>> meltingRecipes = manager.getAllRecipesFor(TolkienRecipesTypes.FIREPLACE_TYPE.get());
-        List<FireplaceRecipe> fireplaceRecipeListRecipeList = meltingRecipes.stream().map(RecipeHolder::value).toList();
+        List<FireplaceRecipe> fireplaceRecipes = manager
+                .getAllRecipesFor(TolkienRecipesTypes.FIREPLACE_TYPE.get()).stream().map(RecipeHolder::value).toList();
 
 //        registration.addRecipes(new RecipeType<>(TrinketRecipeCategory.UID, TrinketRecipe.class), recipes);
 
-        registration.addRecipes(new RecipeType<>(FireplaceRecipeCategory.UID, FireplaceRecipe.class), fireplaceRecipeListRecipeList);
+        registration.addRecipes(FireplaceRecipeCategory.FIREPLACE_RECIPE_TYPE, fireplaceRecipes);
     }
 
 //    @Override

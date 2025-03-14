@@ -28,13 +28,16 @@ public class TrinketRecipeCategory implements IRecipeCategory<TrinketRecipe> {
     private final IDrawable background;
     private final IDrawable icon;
 
+    public static final RecipeType<TrinketRecipe> TRINKETTABLE_RECIPE_TYPE =
+            new RecipeType<>(UID, TrinketRecipe.class);
+
     public TrinketRecipeCategory(IGuiHelper guiHelper) {
         background = guiHelper.createDrawable(GUI, 0, 0, 176, 166);
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(TolkienBlocks.TRINKET_TABLE.get()));
     }
 
     @Override
-    public @NotNull RecipeType<TrinketRecipe> getRecipeType() {return TolkienJEIPlugin.TRINKET_CRAFTING;}
+    public @NotNull RecipeType<TrinketRecipe> getRecipeType() {return TRINKETTABLE_RECIPE_TYPE;}
 
     @Override
     public @NotNull Component getTitle() {return TrinketTableBlock.TextComponent;}
