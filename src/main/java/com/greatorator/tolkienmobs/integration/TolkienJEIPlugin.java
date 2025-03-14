@@ -5,9 +5,12 @@ import com.greatorator.tolkienmobs.recipe.FireplaceRecipe;
 import com.greatorator.tolkienmobs.recipe.FireplaceRecipeCategory;
 import com.greatorator.tolkienmobs.recipe.TrinketRecipe;
 import mezz.jei.api.IModPlugin;
+import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -19,10 +22,21 @@ import java.util.Objects;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
+@JeiPlugin
 public class TolkienJEIPlugin implements IModPlugin {
     @Override
     public ResourceLocation getPluginUid() {
         return ResourceLocation.fromNamespaceAndPath(MODID, "jei_plugin");
+    }
+
+    @Override
+    public void registerItemSubtypes(ISubtypeRegistration registration) {
+//        registration.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, DimletModule.ATTRIBUTE_DIMLET.get(), DimletInterpreter.INSTANCE);
+//        registration.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, DimletModule.TERRAIN_DIMLET.get(), DimletInterpreter.INSTANCE);
+//        registration.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, DimletModule.FLUID_DIMLET.get(), DimletInterpreter.INSTANCE);
+//        registration.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, DimletModule.FEATURE_DIMLET.get(), DimletInterpreter.INSTANCE);
+//        registration.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, DimletModule.BIOME_DIMLET.get(), DimletInterpreter.INSTANCE);
+//        registration.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, DimletModule.BIOME_CONTROLLER_DIMLET.get(), DimletInterpreter.INSTANCE);
     }
 
     @Override
