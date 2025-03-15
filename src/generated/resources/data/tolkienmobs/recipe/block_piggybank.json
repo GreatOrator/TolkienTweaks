@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:brick"
+    },
+    "I": {
+      "tag": "tolkienmobs:coins"
+    },
+    "S": {
+      "item": "minecraft:stone_slab"
+    }
+  },
+  "pattern": [
+    "SSS",
+    "BIB",
+    "SSS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:block_piggybank"
+  }
+}
