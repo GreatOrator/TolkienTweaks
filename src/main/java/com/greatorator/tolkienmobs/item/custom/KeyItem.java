@@ -56,9 +56,6 @@ public class KeyItem extends TolkienItem {
         }
         player.sendSystemMessage(Component.translatable(MODID + ".msg.wrong_key").withStyle(ChatFormatting.RED));
 
-
-
-
         return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
     }
 

@@ -18,6 +18,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 public class LockableChestBlockEntity extends BlockEntity implements MenuProvider {
+    private String keyCode;
+
     public LockableChestBlockEntity(BlockPos pos, BlockState blockState) {
         super(TolkienBlocks.LOCKABLE_CHEST_BLOCK_ENTITY.get(), pos, blockState);
     }
@@ -33,31 +35,25 @@ public class LockableChestBlockEntity extends BlockEntity implements MenuProvide
         return new LockableChestContainer(pContainerId, pPlayerInventory, this);
     }
 
-    @Nullable
-    @Override
-    public Packet<ClientGamePacketListener> getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
         return saveWithoutMetadata(pRegistries);
     }
 
-//    @Override
-//    protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-//        pTag.put("inventory", itemHandler.serializeNBT(pRegistries));
-//        pTag.putInt("progress", progress);
-//        pTag.putInt("max_progress", maxProgress);
-//
-//        super.saveAdditional(pTag, pRegistries);
-//    }
-//
-//    @Override
-//    protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-//        super.loadAdditional(pTag, pRegistries);
-//        itemHandler.deserializeNBT(pRegistries, pTag.getCompound("inventory"));
-//        progress = pTag.getInt("progress");
-//        maxProgress = pTag.getInt("max_progress");
-//    }
+    @Override
+    protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+        pTag.putString("key_code", keyCode);
+        super.saveAdditional(pTag, pRegistries);
+    }
+
+    @Override
+    protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+        super.loadAdditional(pTag, pRegistries);
+        keyCode = pTag.getString("key_code");
+    }
+
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
 }
