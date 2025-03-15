@@ -22,7 +22,7 @@ import org.lwjgl.glfw.GLFW;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class LockableChestScreen extends AbstractContainerScreen<LockableChestContainer> {
-    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory_text_2.png");
+    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/chests/chest_text.png");
     protected final LockableChestContainer container;
     public static ItemStack keyStack;
     private final InteractionHand hand;

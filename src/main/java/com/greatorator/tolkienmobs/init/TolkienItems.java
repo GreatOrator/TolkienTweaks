@@ -186,15 +186,15 @@ public class TolkienItems {
     public static final DeferredItem<Item> ITEM_BACKPACK_UPGRADE_BASE = ITEMS.register("upgrade_item_backpack_upgrade_base",
             () -> new TolkienItem(new Item.Properties().stacksTo(6)).setHasLore());
     public static final DeferredItem<Item> ITEM_BACKPACK_UPGRADE_SIZE = ITEMS.register("item_backpack_upgrade_size",
-            () -> new TolkienItem(new Item.Properties().stacksTo(2)).setHasLore());
+            () -> new UpgradeItem(new Item.Properties().stacksTo(2)).setHasLore());
     public static final DeferredItem<Item> ITEM_BACKPACK_UPGRADE_FLUID = ITEMS.register("item_backpack_upgrade_fluid",
-            () -> new TolkienItem(new Item.Properties().stacksTo(1)).setHasLore());
+            () -> new UpgradeItem(new Item.Properties().stacksTo(1)).setHasLore());
     public static final DeferredItem<Item> ITEM_BACKPACK_UPGRADE_CRAFTING = ITEMS.register("item_backpack_upgrade_crafting",
-            () -> new TolkienItem(new Item.Properties().stacksTo(1)).setHasLore());
+            () -> new UpgradeItem(new Item.Properties().stacksTo(1)).setHasLore());
     public static final DeferredItem<Item> ITEM_BACKPACK_UPGRADE_SLEEPING = ITEMS.register("item_backpack_upgrade_sleeping",
-            () -> new TolkienItem(new Item.Properties().stacksTo(1)).setHasLore());
+            () -> new UpgradeItem(new Item.Properties().stacksTo(1)).setHasLore());
     public static final DeferredItem<Item> ITEM_BACKPACK_UPGRADE_CAMPFIRE = ITEMS.register("item_backpack_upgrade_campfire",
-            () -> new TolkienItem(new Item.Properties().stacksTo(1)).setHasLore());
+            () -> new UpgradeItem(new Item.Properties().stacksTo(1)).setHasLore());
     public static final DeferredItem<Item> TEMPLATE_MITHRIL = ITEMS.register("template_mithril", () -> new TolkienItem(new Item.Properties()));
     public static final DeferredItem<Item> TEMPLATE_MORGULIRON = ITEMS.register("template_morguliron", () -> new TolkienItem(new Item.Properties()));
     public static final DeferredItem<Item> TEMPLATE_AMMOLITE = ITEMS.register("template_ammolite", () -> new TolkienItem(new Item.Properties()));

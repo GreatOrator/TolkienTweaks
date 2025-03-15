@@ -58,6 +58,15 @@ public abstract class TolkienContainer extends AbstractContainerMenu {
         }
     }
 
+    void addUpgradeSlots(IItemHandler itemHandler, int cols) {
+        int slot_index = 0;
+
+        for (int col = 0; col < cols; col++) {
+            this.addSlot(new SlotItemHandler(itemHandler, slot_index, 0, 0));
+            slot_index++;
+        }
+    }
+
     protected void addPlayerArmorInventory(Inventory inventory) {
         int slot_index = 0;
 
