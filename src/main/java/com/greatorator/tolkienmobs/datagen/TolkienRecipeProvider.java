@@ -197,6 +197,7 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
         smithingUpgrade(pRecipeOutput, "ammolite", TolkienItems.LEGGINGS_AMMOLITE.get(), TolkienItems.TEMPLATE_AMMOLITE.get(), Items.NETHERITE_LEGGINGS, TolkienItems.GEM_AMMOLITE.get());
         smithingUpgrade(pRecipeOutput, "ammolite", TolkienItems.BOOTS_AMMOLITE.get(), TolkienItems.TEMPLATE_AMMOLITE.get(), Items.NETHERITE_BOOTS, TolkienItems.GEM_AMMOLITE.get());
 
+        // Special Tools
         ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, TolkienItems.HOBBIT_RING, 1)
                 .define('A', Blocks.BONE_BLOCK)
                 .define('G', TolkienItems.GEM_AMMOLITE)
@@ -277,6 +278,26 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
                 .pattern(" GA")
                 .pattern("G  ")
                 .unlockedBy("has_ammolite", has(TolkienItems.GEM_AMMOLITE))
+                .save(pRecipeOutput);
+
+        // Special Blocks
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, TolkienBlocks.FIREPLACE, 1)
+                .pattern("SSS")
+                .pattern("BIB")
+                .pattern("SSS")
+                .define('S', Items.STONE_SLAB)
+                .define('B', Items.BRICK)
+                .define('I', Items.IRON_BARS)
+                .unlockedBy("has_brick", has(Items.BRICK))
+                .save(pRecipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, TolkienBlocks.PIGGYBANK, 1)
+                .pattern("SSS")
+                .pattern("BIB")
+                .pattern("SSS")
+                .define('S', Items.STONE_SLAB)
+                .define('B', Items.BRICK)
+                .define('I', TolkienTags.Items.COINS)
+                .unlockedBy("has_brick", has(Items.BRICK))
                 .save(pRecipeOutput);
     }
 }
