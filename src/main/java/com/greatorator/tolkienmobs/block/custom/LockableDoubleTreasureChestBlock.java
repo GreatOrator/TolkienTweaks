@@ -1,6 +1,6 @@
 package com.greatorator.tolkienmobs.block.custom;
 
-import com.greatorator.tolkienmobs.block.custom.entity.LockableDoubleChestBlockEntity;
+import com.greatorator.tolkienmobs.block.custom.entity.LockableDoubleTreasureChestBlockEntity;
 import com.greatorator.tolkienmobs.block.custom.entity.TolkienChestEntityBlock;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.client.gui.screens.Screen;
@@ -26,8 +26,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-public class LockableDoubleChestBlock extends TolkienChestEntityBlock {
-    public static final MapCodec<LockableDoubleChestBlock> CODEC = simpleCodec(LockableDoubleChestBlock::new);
+public class LockableDoubleTreasureChestBlock extends TolkienChestEntityBlock {
+    public static final MapCodec<LockableDoubleTreasureChestBlock> CODEC = simpleCodec(LockableDoubleTreasureChestBlock::new);
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
@@ -37,7 +37,7 @@ public class LockableDoubleChestBlock extends TolkienChestEntityBlock {
     protected static final VoxelShape LOCKABLE_SHAPE_W = Block.box(1.0D, 0.0D, 1.0D, 31.0D, 15.0D, 15.0D);
     protected static final VoxelShape LOCKABLE_SHAPE_E = Block.box(1.0D, 0.0D, -15.0D, 15.0D, 15.0D, 15.0D);
 
-    public LockableDoubleChestBlock(Properties properties) {
+    public LockableDoubleTreasureChestBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, Boolean.FALSE).setValue(OPEN, Boolean.FALSE));
     }
@@ -98,7 +98,7 @@ public class LockableDoubleChestBlock extends TolkienChestEntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new LockableDoubleChestBlockEntity(blockPos, blockState);
+        return new LockableDoubleTreasureChestBlockEntity(blockPos, blockState);
     }
 
     @Override
@@ -109,7 +109,7 @@ public class LockableDoubleChestBlock extends TolkienChestEntityBlock {
     @Override
     public InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult hit) {
         if (!level.isClientSide() && Screen.hasShiftDown() && player.isCreative()) {
-            if (level.getBlockEntity(blockPos) instanceof LockableDoubleChestBlockEntity blockEntity) {
+            if (level.getBlockEntity(blockPos) instanceof LockableDoubleTreasureChestBlockEntity blockEntity) {
                 player.openMenu(blockEntity, blockPos);
             }
         }

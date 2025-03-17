@@ -1,7 +1,6 @@
 package com.greatorator.tolkienmobs.block.custom.entity;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
-import com.greatorator.tolkienmobs.containers.LockableChestContainer;
+import com.greatorator.tolkienmobs.containers.LockableDoubleChestContainer;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import net.minecraft.core.BlockPos;
@@ -19,27 +18,27 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-public class LockableChestBlockEntity extends BlockEntity implements MenuProvider {
+public class LockableDoubleChestBlockEntity extends BlockEntity implements MenuProvider {
     private static String keyCode;
 
 
-    public LockableChestBlockEntity(BlockPos pos, BlockState blockState) {
-        super(TolkienBlocks.LOCKABLE_CHEST_BLOCK_ENTITY.get(), pos, blockState);
+    public LockableDoubleChestBlockEntity(BlockPos pos, BlockState blockState) {
+        super(TolkienBlocks.LOCKABLE_DOUBLE_CHEST_BLOCK_ENTITY.get(), pos, blockState);
         keyCode = this.getData(TolkienDataComponents.CHEST_CODE);
     }
 
     @Override
     public Component getDisplayName() {
-        return Component.translatable("screen.tolkienmobs.block.tolkienmobs.lockable_chest_block");
+        return Component.translatable("screen.tolkienmobs.block.tolkienmobs.lockable_double_chest_block");
     }
 
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
-        return new LockableChestContainer(pContainerId, pPlayerInventory, this);
+        return new LockableDoubleChestContainer(pContainerId, pPlayerInventory, this);
     }
 
-    public static void setKeyCode(LockableChestBlockEntity entity, String text) {
+    public static void setKeyCode(LockableDoubleChestBlockEntity entity, String text) {
         keyCode = entity.setData(TolkienDataComponents.CHEST_CODE, text);
     }
 

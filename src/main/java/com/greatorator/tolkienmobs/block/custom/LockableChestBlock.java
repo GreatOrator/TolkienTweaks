@@ -102,10 +102,4 @@ public class LockableChestBlock extends TolkienChestEntityBlock {
         }
         return InteractionResult.SUCCESS;
     }
-
-//    @Override
-//    protected ItemInteractionResult useItemOn(ItemStack itemStack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
-//        if (level.isClientSide) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-//        return null;
-//    }
 }

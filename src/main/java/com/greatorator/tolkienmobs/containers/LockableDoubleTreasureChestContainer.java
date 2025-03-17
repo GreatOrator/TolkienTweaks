@@ -1,11 +1,10 @@
 package com.greatorator.tolkienmobs.containers;
 
-import com.greatorator.tolkienmobs.block.custom.entity.LockableChestBlockEntity;
+import com.greatorator.tolkienmobs.block.custom.entity.LockableDoubleTreasureChestBlockEntity;
 import com.greatorator.tolkienmobs.containers.slots.KeyCodeSlot;
 import com.greatorator.tolkienmobs.init.TolkienContainers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -15,26 +14,23 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.ComponentItemHandler;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
-
-public class LockableChestContainer extends AbstractContainerMenu {
-    public final LockableChestBlockEntity tileEntity;
+public class LockableDoubleTreasureChestContainer extends AbstractContainerMenu {
+    public final LockableDoubleTreasureChestBlockEntity tileEntity;
     private final Level level;
     public String keyCode = null;
     public Player playerEntity;
     public BlockPos sourceContainer = BlockPos.ZERO;
     public ComponentItemHandler keyCodeHandler;
 
-    public LockableChestContainer(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
+    public LockableDoubleTreasureChestContainer(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
         this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()));
     }
 
-    public LockableChestContainer(int pContainerId, Inventory inv, BlockEntity blockEntity) {
-        super(TolkienContainers.LOCKABLE_CHEST_CONTAINER.get(), pContainerId);
+    public LockableDoubleTreasureChestContainer(int pContainerId, Inventory inv, BlockEntity blockEntity) {
+        super(TolkienContainers.LOCKABLE_DOUBLE_TREASURE_CHEST_CONTAINER.get(), pContainerId);
         this.level = inv.player.level();
-        this.tileEntity = ((LockableChestBlockEntity) blockEntity);
+        this.tileEntity = ((LockableDoubleTreasureChestBlockEntity) blockEntity);
         this.keyCode = tileEntity.getKeyCode();
     }
 

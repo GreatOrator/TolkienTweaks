@@ -1,13 +1,24 @@
 package com.greatorator.tolkienmobs.item.custom;
 
+import com.greatorator.tolkienmobs.TolkienMobsMain;
+import com.greatorator.tolkienmobs.block.custom.entity.LockableChestBlockEntity;
+import com.greatorator.tolkienmobs.block.custom.entity.LockableDoubleChestBlockEntity;
+import com.greatorator.tolkienmobs.block.custom.entity.LockableDoubleTreasureChestBlockEntity;
+import com.greatorator.tolkienmobs.block.custom.entity.LockableTreasureChestBlockEntity;
 import com.greatorator.tolkienmobs.containers.KeyCodeContainer;
 import com.greatorator.tolkienmobs.containers.KeyItemContainer;
 import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.greatorator.tolkienmobs.item.TolkienItem;
 import com.greatorator.tolkienmobs.network.KeyCodeComponent;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -16,7 +27,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -32,7 +46,6 @@ public class KeyItem extends TolkienItem {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
-
         if (level.isClientSide()) return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
 
         if (Screen.hasShiftDown() && player.isCreative()) {
@@ -54,9 +67,43 @@ public class KeyItem extends TolkienItem {
                 ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, itemstack);
             }));
         }
-        player.sendSystemMessage(Component.translatable(MODID + ".msg.wrong_key").withStyle(ChatFormatting.RED));
 
         return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
+    }
+
+    @Override
+    public InteractionResult useOn(UseOnContext context) {
+        Level level = context.getLevel();
+        BlockEntity entity = level.getBlockEntity(context.getClickedPos());
+        Player player = context.getPlayer();
+        ItemStack itemstack = context.getItemInHand();
+        int uses = getUses(itemstack);
+
+      if (entity instanceof LockableChestBlockEntity || entity instanceof LockableTreasureChestBlockEntity || entity instanceof LockableDoubleChestBlockEntity || entity instanceof LockableDoubleTreasureChestBlockEntity){
+          if (getKeyCode(context.getItemInHand()).equals(entity.getData(TolkienDataComponents.CHEST_CODE))) {
+              if (uses >= 0) {
+                  level.sendBlockUpdated(context.getClickedPos(), entity.getBlockState(), entity.getBlockState(), 3);
+
+                  if (uses == 0){
+                        level.playSound(context.getPlayer(), context.getClickedPos(), SoundEvents.ITEM_BREAK, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
+                        itemstack.shrink(1);
+                        player.sendSystemMessage(Component.translatable(MODID + ".msg.key_used").withStyle(ChatFormatting.RED));
+                        return InteractionResult.CONSUME;
+                    }
+
+                  setKeyData(itemstack, getKeyCode(itemstack), uses - 1);
+              }
+              level.playSound(context.getPlayer(), context.getClickedPos(), SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
+              player.openMenu(new SimpleMenuProvider(
+                      (windowId, playerInventory, playerEntity) -> new KeyItemContainer(windowId, playerInventory, player, itemstack), Component.translatable("screen.tolkienmobs." + itemstack.getDescriptionId())), (buf -> {
+                  ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, itemstack);
+              }));
+          } else {
+              level.playSound(context.getPlayer(), context.getClickedPos(), SoundEvents.CHEST_LOCKED, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
+              player.sendSystemMessage(Component.translatable(MODID + ".msg.wrong_key").withStyle(ChatFormatting.RED));
+          }
+      }
+        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -66,7 +113,7 @@ public class KeyItem extends TolkienItem {
                 tooltipComponents.add(Component.translatable(getDescriptionId() + ".shift_down"));
             }
             if (getUses(stack) > 0) {
-                tooltipComponents.add(Component.translatable(getDescriptionId() + "Number of uses left: " + getUses(stack)));
+                tooltipComponents.add(Component.translatable("Number of uses left: " + getUses(stack)));
             }
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
@@ -76,7 +123,7 @@ public class KeyItem extends TolkienItem {
             return;
         if (keyCode.length() > 50)
             return;
-        if (keyUses < -1)
+        if (keyUses <= -1)
             return;
         keyItem.set(TolkienDataComponents.KEY_CODE, new KeyCodeComponent(keyCode, keyUses));
     }

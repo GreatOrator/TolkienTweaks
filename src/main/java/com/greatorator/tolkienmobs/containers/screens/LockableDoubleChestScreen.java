@@ -1,13 +1,10 @@
 package com.greatorator.tolkienmobs.containers.screens;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
-import com.greatorator.tolkienmobs.block.custom.entity.LockableChestBlockEntity;
-import com.greatorator.tolkienmobs.containers.LockableChestContainer;
+import com.greatorator.tolkienmobs.containers.LockableDoubleChestContainer;
 import com.greatorator.tolkienmobs.containers.widget.ButtonTexture;
 import com.greatorator.tolkienmobs.containers.widget.TolkienButton;
 import com.greatorator.tolkienmobs.item.custom.KeyItem;
-import com.greatorator.tolkienmobs.network.KeyCodeUpdateManager;
-import com.greatorator.tolkienmobs.network.LockedChestUpdateManager;
+import com.greatorator.tolkienmobs.network.LockedDoubleChestUpdateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
@@ -23,20 +20,18 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.Optional;
-
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class LockableChestScreen extends AbstractContainerScreen<LockableChestContainer> {
+public class LockableDoubleChestScreen extends AbstractContainerScreen<LockableDoubleChestContainer> {
     private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/chests/chest_text.png");
-    protected final LockableChestContainer container;
+    protected final LockableDoubleChestContainer container;
     public static ItemStack keyStack;
     private final InteractionHand hand;
     private EditBox nameField;
     private String keyCode;
     private int keyUses;
 
-    public LockableChestScreen(LockableChestContainer container, Inventory inv, Component title) {
+    public LockableDoubleChestScreen(LockableDoubleChestContainer container, Inventory inv, Component title) {
         super(container, inv, title);
         keyStack = inv.player.getItemInHand(InteractionHand.MAIN_HAND);
         this.hand = inv.player.swingingArm;
@@ -121,6 +116,6 @@ public class LockableChestScreen extends AbstractContainerScreen<LockableChestCo
         this.keyCode = this.nameField.getValue();
         BlockPos pos = container.tileEntity.getBlockPos();
 
-        PacketDistributor.sendToServer(new LockedChestUpdateManager(pos, this.keyCode));
+        PacketDistributor.sendToServer(new LockedDoubleChestUpdateManager(pos, this.keyCode));
     }
 }

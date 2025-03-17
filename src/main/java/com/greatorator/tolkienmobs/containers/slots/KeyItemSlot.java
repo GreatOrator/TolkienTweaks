@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.containers.slots;
 
+import com.greatorator.tolkienmobs.init.TolkienTags;
 import com.greatorator.tolkienmobs.item.custom.KeyItem;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -16,7 +17,7 @@ public class KeyItemSlot extends SlotItemHandler  {
 
     @Override
     public boolean mayPlace(@Nonnull ItemStack stack) {
-        return (stack.getItem() instanceof KeyItem);
+        return true;
     }
 
     @Override
