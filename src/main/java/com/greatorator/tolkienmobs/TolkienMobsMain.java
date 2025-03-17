@@ -75,7 +75,6 @@ public class TolkienMobsMain {
     //    -Milestone
     //    -Fluid Block
     //    -Spawner
-    //    -Lockable Chests
     //    -Fireplace
     //      -Actually use fuel properly
     //    -Trinket Table Recipes
@@ -287,6 +286,9 @@ public class TolkienMobsMain {
             event.register(TolkienContainers.PIGGY_BANK_CONTAINER.get(), PiggyBankScreen::new);
             event.register(TolkienContainers.BACKPACK_CONTAINER.get(), BackpackBlockScreen::new);
             event.register(TolkienContainers.LOCKABLE_CHEST_CONTAINER.get(), LockableChestScreen::new);
+            event.register(TolkienContainers.LOCKABLE_TREASURE_CHEST_CONTAINER.get(), LockableTreasureChestScreen::new);
+            event.register(TolkienContainers.LOCKABLE_DOUBLE_CHEST_CONTAINER.get(), LockableDoubleChestScreen::new);
+            event.register(TolkienContainers.LOCKABLE_DOUBLE_TREASURE_CHEST_CONTAINER.get(), LockableDoubleTreasureChestScreen::new);
         }
 
         @SubscribeEvent

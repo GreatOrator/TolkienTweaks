@@ -1089,7 +1089,7 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> LOCKABLE_CHEST_BLOCK = registerBlock("lockable_chest_block", () -> new LockableChestBlock(BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).noLootTable().noOcclusion()));
     public static final DeferredBlock<Block> LOCKABLE_TREASURE_CHEST_BLOCK = registerBlock("lockable_treasure_chest_block", () -> new LockableTreasureChestBlock(BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).noLootTable().noOcclusion()));
     public static final DeferredBlock<Block> LOCKABLE_DOUBLE_CHEST_BLOCK = registerBlock("lockable_double_chest_block", () -> new LockableDoubleChestBlock(BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).noLootTable().noOcclusion()));
-    public static final DeferredBlock<Block> LOCKABLE_DOUBLE_TREASURE_CHEST_BLOCK = registerBlock("lockable_double_treasure_chest_block", () -> new LockableDoubleChestBlock(BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).noLootTable().noOcclusion()));
+    public static final DeferredBlock<Block> LOCKABLE_DOUBLE_TREASURE_CHEST_BLOCK = registerBlock("lockable_double_treasure_chest_block", () -> new LockableDoubleTreasureChestBlock(BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).noLootTable().noOcclusion()));
     public static final DeferredBlock<Block> WELL = registerBlock("well_block", () -> new WellBlock(BlockBehaviour.Properties.of().sound(SoundType.STONE).requiresCorrectToolForDrops().strength(3.5F, 3.5F).noOcclusion()));
     public static final DeferredBlock<Block> ARDA_PORTAL = registerBlockWithoutBlockItem("arda_portal", () -> new ArdaPortalBlock(BlockBehaviour.Properties.of().strength(-1F).noCollission().lightLevel((state) -> 10).noLootTable()));
 
@@ -1141,9 +1141,20 @@ public class TolkienBlocks {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PiggyBankBlockEntity>> PIGGY_BANK_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("block_piggybank", () ->
                     BlockEntityType.Builder.of(PiggyBankBlockEntity::new, PIGGYBANK.get()).build(null));
+
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LockableChestBlockEntity>> LOCKABLE_CHEST_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("lockable_chest_block", () ->
                     BlockEntityType.Builder.of(LockableChestBlockEntity::new, LOCKABLE_CHEST_BLOCK.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LockableTreasureChestBlockEntity>> LOCKABLE_TREASURE_CHEST_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("lockable_treasure_chest_block", () ->
+                    BlockEntityType.Builder.of(LockableTreasureChestBlockEntity::new, LOCKABLE_TREASURE_CHEST_BLOCK.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LockableDoubleChestBlockEntity>> LOCKABLE_DOUBLE_CHEST_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("lockable_double_chest_block", () ->
+                    BlockEntityType.Builder.of(LockableDoubleChestBlockEntity::new, LOCKABLE_DOUBLE_CHEST_BLOCK.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LockableDoubleTreasureChestBlockEntity>> LOCKABLE_DOUBLE_TREASURE_CHEST_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("lockable_double_treasure_chest_block", () ->
+                    BlockEntityType.Builder.of(LockableDoubleTreasureChestBlockEntity::new, LOCKABLE_DOUBLE_TREASURE_CHEST_BLOCK.get()).build(null));
+
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BackpackBlockEntity>> BACKPACK_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("backpack", () ->
                     BlockEntityType.Builder.of(BackpackBlockEntity::new, BACKPACK.get()).build(null));

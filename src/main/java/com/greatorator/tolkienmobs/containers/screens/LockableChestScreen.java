@@ -1,15 +1,19 @@
 package com.greatorator.tolkienmobs.containers.screens;
 
+import com.greatorator.tolkienmobs.TolkienMobsMain;
+import com.greatorator.tolkienmobs.block.custom.entity.LockableChestBlockEntity;
 import com.greatorator.tolkienmobs.containers.LockableChestContainer;
 import com.greatorator.tolkienmobs.containers.widget.ButtonTexture;
 import com.greatorator.tolkienmobs.containers.widget.TolkienButton;
 import com.greatorator.tolkienmobs.item.custom.KeyItem;
 import com.greatorator.tolkienmobs.network.KeyCodeUpdateManager;
+import com.greatorator.tolkienmobs.network.LockedChestUpdateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -18,6 +22,8 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.Optional;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -36,8 +42,8 @@ public class LockableChestScreen extends AbstractContainerScreen<LockableChestCo
         this.hand = inv.player.swingingArm;
         this.container = container;
         this.imageHeight = 62;
-        this.keyCode = KeyItem.getKeyCode(this.keyStack);
-        this.keyUses = KeyItem.getUses(this.keyStack);
+        this.keyCode = container.keyCode;
+        this.keyUses = KeyItem.getUses(keyStack);
 
     }
 
@@ -113,11 +119,8 @@ public class LockableChestScreen extends AbstractContainerScreen<LockableChestCo
 
     private void sendMessageToServer() {
         this.keyCode = this.nameField.getValue();
-        this.keyCode = this.keyCode.trim();
-        var success = KeyItem.setKeyData(this.keyStack, this.keyCode, this.keyUses);
+        BlockPos pos = container.tileEntity.getBlockPos();
 
-        if (success) {
-            PacketDistributor.sendToServer(new KeyCodeUpdateManager(InteractionHand.MAIN_HAND, this.keyCode, this.keyUses));
-        }
+        PacketDistributor.sendToServer(new LockedChestUpdateManager(pos, this.keyCode));
     }
 }

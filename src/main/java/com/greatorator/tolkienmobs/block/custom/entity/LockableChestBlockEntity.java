@@ -1,7 +1,9 @@
 package com.greatorator.tolkienmobs.block.custom.entity;
 
+import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.containers.LockableChestContainer;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
+import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -18,10 +20,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 public class LockableChestBlockEntity extends BlockEntity implements MenuProvider {
-    private String keyCode;
+    private static String keyCode;
+
 
     public LockableChestBlockEntity(BlockPos pos, BlockState blockState) {
         super(TolkienBlocks.LOCKABLE_CHEST_BLOCK_ENTITY.get(), pos, blockState);
+        keyCode = this.getData(TolkienDataComponents.CHEST_CODE);
     }
 
     @Override
@@ -35,21 +39,32 @@ public class LockableChestBlockEntity extends BlockEntity implements MenuProvide
         return new LockableChestContainer(pContainerId, pPlayerInventory, this);
     }
 
+    public static void setKeyCode(LockableChestBlockEntity entity, String text) {
+        keyCode = entity.setData(TolkienDataComponents.CHEST_CODE, text);
+    }
+
+    public String getKeyCode() {
+        return this.getData(TolkienDataComponents.CHEST_CODE);
+    }
+
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
-        return saveWithoutMetadata(pRegistries);
+        CompoundTag nbt = this.saveWithoutMetadata(pRegistries);
+        nbt.putString("chest_code", keyCode);
+
+        return nbt;
     }
 
     @Override
     protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        pTag.putString("key_code", keyCode);
+        pTag.putString("chest_code", keyCode);
         super.saveAdditional(pTag, pRegistries);
     }
 
     @Override
     protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
         super.loadAdditional(pTag, pRegistries);
-        keyCode = pTag.getString("key_code");
+        keyCode = String.valueOf(pTag.get("chest_code"));
     }
 
     @Override

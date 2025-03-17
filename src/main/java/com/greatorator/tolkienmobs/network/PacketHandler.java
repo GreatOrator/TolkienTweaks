@@ -21,6 +21,14 @@ public final class PacketHandler {
     private static void registerClientToServer(PayloadRegistrar registrar) {
         registrar.playToServer(KeyCodeUpdateManager.TYPE,
                 KeyCodeUpdateManager.STREAM_CODEC, KeyCodeUpdateManager::handle);
+        registrar.playToServer(LockedChestUpdateManager.TYPE,
+                LockedChestUpdateManager.STREAM_CODEC, LockedChestUpdateManager::handle);
+        registrar.playToServer(LockedTreasureChestUpdateManager.TYPE,
+                LockedTreasureChestUpdateManager.STREAM_CODEC, LockedTreasureChestUpdateManager::handle);
+        registrar.playToServer(LockedDoubleChestUpdateManager.TYPE,
+                LockedDoubleChestUpdateManager.STREAM_CODEC, LockedDoubleChestUpdateManager::handle);
+        registrar.playToServer(LockedDoubleTreasureChestUpdateManager.TYPE,
+                LockedDoubleTreasureChestUpdateManager.STREAM_CODEC, LockedDoubleTreasureChestUpdateManager::handle);
     }
 
     private static void registerServerToClient(PayloadRegistrar registrar) {
