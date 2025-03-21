@@ -34,18 +34,16 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 public class FireplaceRecipeCategory implements IRecipeCategory<FireplaceRecipe> {
     private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/fireplace/fireplace_gui.png");
     public static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(MODID, "fireplace");
-    private final IDrawable background;
     private final Component localizedName;
-    private final IDrawable overlay;
+    private final IDrawable background;
     private final IDrawable icon;
 
     public static final RecipeType<FireplaceRecipe> FIREPLACE_RECIPE_TYPE =
             new RecipeType<>(UID, FireplaceRecipe.class);
 
     public FireplaceRecipeCategory(IGuiHelper guiHelper) {
-        this.background = guiHelper.createDrawable(GUI, 0, 0, 176, 166);
+        this.background = guiHelper.createDrawable(GUI, 0, 0, 176, 83);
         this.localizedName = FireplaceBlock.TextComponent;
-        this.overlay = guiHelper.createDrawable(GUI, 42, 29, 64, 64);
         this.icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(TolkienBlocks.FIREPLACE));
     }
 
@@ -67,5 +65,11 @@ public class FireplaceRecipeCategory implements IRecipeCategory<FireplaceRecipe>
         builder.addSlot(RecipeIngredientRole.INPUT, 45, 15).addIngredients(recipe.getIngredients().get(1));
 
         builder.addSlot(RecipeIngredientRole.OUTPUT, 91, 35).addItemStack(recipe.getResultItem(null));
+    }
+
+    @Override
+    public void draw(FireplaceRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+        IRecipeCategory.super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);
+        background.draw(guiGraphics);
     }
 }
