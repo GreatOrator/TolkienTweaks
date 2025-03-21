@@ -16,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -41,13 +42,19 @@ public class FireplaceRecipeCategory implements IRecipeCategory<FireplaceRecipe>
     public @NotNull RecipeType<FireplaceRecipe> getRecipeType() {return FIREPLACE_RECIPE_TYPE;}
 
     @Override
-    public @NotNull Component getTitle() {return localizedName;}
+    public Component getTitle() {
+        return localizedName;
+    }
 
     @Override
-    public @NotNull IDrawable getIcon() {return icon;}
+    public @Nullable IDrawable getIcon() {
+        return icon;
+    }
 
     @Override
-    public @NotNull IDrawable getBackground() {return background;}
+    public IDrawable getBackground() {
+        return background;
+    }
 
     @Override @ParametersAreNonnullByDefault
     public void setRecipe(IRecipeLayoutBuilder builder, FireplaceRecipe recipe, IFocusGroup focuses) {
