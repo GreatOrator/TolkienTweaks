@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.integration;
 
+import com.greatorator.tolkienmobs.containers.screens.FireplaceScreen;
 import com.greatorator.tolkienmobs.init.TolkienRecipesTypes;
 import com.greatorator.tolkienmobs.recipe.FireplaceRecipe;
 import com.greatorator.tolkienmobs.recipe.FireplaceRecipeCategory;
@@ -8,6 +9,7 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
@@ -60,8 +62,8 @@ public class TolkienJEIPlugin implements IModPlugin {
         registration.addRecipes(FireplaceRecipeCategory.FIREPLACE_RECIPE_TYPE, fireplaceRecipes);
     }
 
-//    @Override
-//    public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-//        registration.addRecipeClickArea(FireplaceScreen.class, 100, 31, 18, 23, FireplaceRecipeCategory.UID);
-//    }
+    @Override
+    public void registerGuiHandlers(IGuiHandlerRegistration registration) {
+        registration.addRecipeClickArea(FireplaceScreen.class, 100, 31, 18, 23, FireplaceRecipeCategory.FIREPLACE_RECIPE_TYPE);
+    }
 }
