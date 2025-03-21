@@ -56,10 +56,4 @@ public class FireplaceRecipeCategory implements IRecipeCategory<FireplaceRecipe>
 
         builder.addSlot(RecipeIngredientRole.OUTPUT, 91, 35).addItemStack(recipe.getResultItem(null));
     }
-
-    @Override
-    public void draw(FireplaceRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
-        IRecipeCategory.super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);
-        background.draw(guiGraphics);
-    }
 }
