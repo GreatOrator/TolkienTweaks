@@ -315,16 +315,16 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addBlockScreen(TolkienBlocks.KEY_STONE_BLOCK.get(), "KeyStone Block");
             this.add("screen.tolkienmobs.namefieldtext", "Enter Code");
             this.add("screen.tolkienmobs.keycodeplaceholder", "No Code Found");
-            this.add("screen.tolkienmobs.keyuses", "-1");
+            this.add("screen.tolkienmobs.keyuses", "Number of uses if enabled");
             this.add("screen.tolkienmobs.keystone.always", "Redstone Toggled with key - Not Active");
             this.add("screen.tolkienmobs.keystone.always.active", "Redstone Toggled with key - Active");
             this.add("screen.tolkienmobs.keystone.delay", "Redstone stays on for x ticks - Not Active");
             this.add("screen.tolkienmobs.keystone.delay.active", "Redstone stays on for x ticks - Active");
             this.add("screen.tolkienmobs.keystone.pulse", "Redstone acts like button when key used - Not Active");
             this.add("screen.tolkienmobs.keystone.pulse.active", "Redstone acts like button when key used - Active");
-            this.add("screen.tolkienmobs.keystone.key.consume", "Key taken when used");
-            this.add("screen.tolkienmobs.keystone.key.keep", "Player keeps key");
-            this.add("screen.tolkienmobs.keystone.tickdelay", "**Tick Delay Mode Only** \n Set the amount of delay for redstone");
+            this.add("screen.tolkienmobs.keystone.key.consume", "Key taken when used or has uses");
+            this.add("screen.tolkienmobs.keystone.key.keep", "Player keeps key until uses exhausted");
+            this.add("screen.tolkienmobs.keystone.tickdelay", "§l**Tick Delay Mode Only**§r Set the amount of delay for redstone");
 
                 // Buttons
             this.add("buttons.tolkienmobs.saveinfo", "Save Info");

@@ -1,10 +1,7 @@
 package com.greatorator.tolkienmobs.item.custom;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
-import com.greatorator.tolkienmobs.block.custom.entity.LockableChestBlockEntity;
-import com.greatorator.tolkienmobs.block.custom.entity.LockableDoubleChestBlockEntity;
-import com.greatorator.tolkienmobs.block.custom.entity.LockableDoubleTreasureChestBlockEntity;
-import com.greatorator.tolkienmobs.block.custom.entity.LockableTreasureChestBlockEntity;
+import com.greatorator.tolkienmobs.block.custom.entity.*;
 import com.greatorator.tolkienmobs.containers.KeyCodeContainer;
 import com.greatorator.tolkienmobs.containers.KeyItemContainer;
 import com.greatorator.tolkienmobs.init.TolkienDataComponents;
@@ -71,40 +68,45 @@ public class KeyItem extends TolkienItem {
         return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
     }
 
-    @Override
-    public InteractionResult useOn(UseOnContext context) {
-        Level level = context.getLevel();
-        BlockEntity entity = level.getBlockEntity(context.getClickedPos());
-        Player player = context.getPlayer();
-        ItemStack itemstack = context.getItemInHand();
-        int uses = getUses(itemstack);
-
-      if (entity instanceof LockableChestBlockEntity || entity instanceof LockableTreasureChestBlockEntity || entity instanceof LockableDoubleChestBlockEntity || entity instanceof LockableDoubleTreasureChestBlockEntity){
-          if (getKeyCode(context.getItemInHand()).equals(entity.getData(TolkienDataComponents.CHEST_CODE))) {
-              if (uses >= 0) {
-                  level.sendBlockUpdated(context.getClickedPos(), entity.getBlockState(), entity.getBlockState(), 3);
-
-                  if (uses == 0){
-                        level.playSound(context.getPlayer(), context.getClickedPos(), SoundEvents.ITEM_BREAK, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
-                        itemstack.shrink(1);
-                        player.sendSystemMessage(Component.translatable(MODID + ".msg.key_used").withStyle(ChatFormatting.RED));
-                        return InteractionResult.CONSUME;
-                    }
-
-                  setKeyData(itemstack, getKeyCode(itemstack), uses - 1);
-              }
-              level.playSound(context.getPlayer(), context.getClickedPos(), SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
-              player.openMenu(new SimpleMenuProvider(
-                      (windowId, playerInventory, playerEntity) -> new KeyItemContainer(windowId, playerInventory, player, itemstack), Component.translatable("screen.tolkienmobs." + itemstack.getDescriptionId())), (buf -> {
-                  ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, itemstack);
-              }));
-          } else {
-              level.playSound(context.getPlayer(), context.getClickedPos(), SoundEvents.CHEST_LOCKED, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
-              player.sendSystemMessage(Component.translatable(MODID + ".msg.wrong_key").withStyle(ChatFormatting.RED));
-          }
-      }
-        return InteractionResult.SUCCESS;
-    }
+//    @Override
+//    public InteractionResult useOn(UseOnContext context) {
+//        Level level = context.getLevel();
+//        BlockEntity entity = level.getBlockEntity(context.getClickedPos());
+//        Player player = context.getPlayer();
+//        ItemStack itemstack = context.getItemInHand();
+//        int uses = getUses(itemstack);
+//        boolean mode = getMode(itemstack);
+//
+//        if (entity instanceof LockableChestBlockEntity || entity instanceof LockableTreasureChestBlockEntity || entity instanceof LockableDoubleChestBlockEntity || entity instanceof LockableDoubleTreasureChestBlockEntity) {
+//            if (getKeyCode(context.getItemInHand()).equals(entity.getData(TolkienDataComponents.CHEST_CODE))) {
+//                if (mode) {
+//                    if (uses >= 0) {
+//                        level.sendBlockUpdated(context.getClickedPos(), entity.getBlockState(), entity.getBlockState(), 3);
+//
+//                        if (uses == 0) {
+//                            level.playSound(context.getPlayer(), context.getClickedPos(), SoundEvents.ITEM_BREAK, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
+//                            itemstack.shrink(1);
+//                            player.sendSystemMessage(Component.translatable("tolkienmobs.msg.key_used").withStyle(ChatFormatting.RED));
+//                            return InteractionResult.CONSUME;
+//                        }
+//
+//                        setKeyData(itemstack, getKeyCode(itemstack), uses - 1, getMode(itemstack));
+//                    }
+//                }
+//                level.playSound(context.getPlayer(), context.getClickedPos(), SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
+//                player.openMenu(new SimpleMenuProvider(
+//                        (windowId, playerInventory, playerEntity) -> new KeyItemContainer(windowId, playerInventory, player, itemstack), Component.translatable("screen.tolkienmobs." + itemstack.getDescriptionId())), (buf -> {
+//                    ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, itemstack);
+//                }));
+//            }
+//        } else if (entity instanceof CamoKeyStoneBlockEntity) {
+//            player.sendSystemMessage(Component.translatable("tolkienmobs.msg.key_used").withStyle(ChatFormatting.RED));
+//            return InteractionResult.SUCCESS;
+//    }
+//        level.playSound(context.getPlayer(), context.getClickedPos(), SoundEvents.CHEST_LOCKED, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
+//          player.sendSystemMessage(Component.translatable("tolkienmobs.msg.wrong_key").withStyle(ChatFormatting.RED));
+//        return InteractionResult.SUCCESS;
+//    }
 
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
@@ -118,24 +120,25 @@ public class KeyItem extends TolkienItem {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 
-    public static void setKeyCode(ItemStack keyItem, String keyCode, int keyUses) {
+    public static void setKeyCode(ItemStack keyItem, String keyCode, int keyUses, boolean mode) {
         if (keyItem.isEmpty() || !(keyItem.getItem() instanceof KeyItem))
             return;
         if (keyCode.length() > 50)
             return;
         if (keyUses <= -1)
             return;
-        keyItem.set(TolkienDataComponents.KEY_CODE, new KeyCodeComponent(keyCode, keyUses));
+        keyItem.set(TolkienDataComponents.KEY_CODE, new KeyCodeComponent(keyCode, keyUses, mode));
     }
 
-    public static boolean setKeyData(ItemStack keyItem, String keyCode, int keyUses) {
+    public static boolean setKeyData(ItemStack keyItem, String keyCode, int keyUses, boolean keyMode) {
         if (keyItem.isEmpty() || !(keyItem.getItem() instanceof KeyItem))
             return false;
         if (keyCode.length() > 50)
             return false;
         if (keyUses < -1)
             return false;
-        keyItem.set(TolkienDataComponents.KEY_CODE, new KeyCodeComponent(keyCode, keyUses));
+
+        keyItem.set(TolkienDataComponents.KEY_CODE, new KeyCodeComponent(keyCode, keyUses, keyMode));
         return true;
     }
 
@@ -150,10 +153,18 @@ public class KeyItem extends TolkienItem {
 
     public static int getUses(ItemStack key) {
         if (key.isEmpty() || !(key.getItem() instanceof KeyItem))
-            return -1;
+            return 20;
         if (!key.has(TolkienDataComponents.KEY_CODE))
-            return -1;
+            return 20;
         var keyData = key.get(TolkienDataComponents.KEY_CODE);
         return keyData.uses();
+    }
+
+    public static boolean getMode(ItemStack key) {
+        var keyData = key.get(TolkienDataComponents.KEY_CODE);
+        if (!key.has(TolkienDataComponents.KEY_CODE))
+            return false;
+        assert keyData != null;
+        return keyData.mode();
     }
 }

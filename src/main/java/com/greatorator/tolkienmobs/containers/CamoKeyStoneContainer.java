@@ -31,6 +31,7 @@ public class CamoKeyStoneContainer extends AbstractContainerMenu {
         this.level = inv.player.level();
         this.tileEntity = ((CamoKeyStoneBlockEntity) blockEntity);
         this.keyCode = tileEntity.getKeyCode();
+        this.tickDelay = tileEntity.getTickDelay();
     }
 
     @Override

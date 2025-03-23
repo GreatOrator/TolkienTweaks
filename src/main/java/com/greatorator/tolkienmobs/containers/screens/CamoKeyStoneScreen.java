@@ -1,15 +1,15 @@
 package com.greatorator.tolkienmobs.containers.screens;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.entity.CamoKeyStoneBlockEntity;
 import com.greatorator.tolkienmobs.containers.CamoKeyStoneContainer;
 import com.greatorator.tolkienmobs.containers.handlers.ToggleButtonFactory;
 import com.greatorator.tolkienmobs.containers.widget.*;
 import com.greatorator.tolkienmobs.network.KeyStoneDataUpdateManager;
+import com.greatorator.tolkienmobs.network.KeyStoneDelayUpdateManager;
 import com.greatorator.tolkienmobs.network.KeyStoneRedstoneUpdateManager;
 import com.greatorator.tolkienmobs.network.KeyStoneSettingsUpdateManager;
 import com.greatorator.tolkienmobs.util.GeneralUtility;
-import com.greatorator.tolkienmobs.util.KeyStoneData;
+import com.greatorator.tolkienmobs.util.KeyStoneCode;
 import com.greatorator.tolkienmobs.util.KeyStoneSettings;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -17,7 +17,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -38,16 +40,9 @@ public class CamoKeyStoneScreen extends AbstractContainerScreen<CamoKeyStoneCont
     private EditBox nameField;
     private String keyCode;
     protected KeyStoneSettings keyStoneSettings;
-    protected KeyStoneData keyStoneData;
+    protected KeyStoneCode keyStoneCode;
     protected GeneralUtility.RedstoneMode redstoneMode;
     public int tickDelay;
-    public int tickActive;
-    public boolean keyConsume;
-    public boolean rsAlways;
-    public boolean rsPulse;
-    public boolean rsDelay;
-    public boolean blockActive;
-    public boolean blockPowered;
     protected boolean renderablesChanged = false;
     protected List<AbstractWidget> widgetsToRemove = new ArrayList<>();
     protected List<AbstractWidget> widgetsToAdd = new ArrayList<>();
@@ -55,38 +50,33 @@ public class CamoKeyStoneScreen extends AbstractContainerScreen<CamoKeyStoneCont
     public CamoKeyStoneScreen(CamoKeyStoneContainer menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
         this.container = menu;
-        this.imageHeight = 128;
-        this.imageWidth = 192;
+        this.imageHeight = 115;
         this.keyCode = menu.keyCode;
         tileEntity = container.tileEntity;
         this.keyStoneSettings = tileEntity.getKeyStoneSettings();
         this.redstoneMode = GeneralUtility.RedstoneMode.TOGGLE;
+        this.tickDelay = tileEntity.getTickDelay();
     }
 
     @Override
     public void init() {
         super.init();
-        this.nameField = new EditBox(this.font, (this.leftPos) + 16, topPos + 17, imageWidth - 31, this.font.lineHeight + 7, Component.literal(tileEntity.getKeyCode()));
         var saveCodeButton = this.addRenderableWidget(TolkienButton
                 .builder(Component.translatable("buttons.tolkienmobs.saveinfo"), button -> {
-                    sendMessageToServer();
+                    PacketDistributor.sendToServer(new KeyStoneDataUpdateManager(this.nameField.getValue()));
                     this.minecraft.setScreen(null);
                 }, ButtonTexture.LARGE_BUTTON)
                 .size(64, 20)
                 .build());
-        var layout = new LinearLayout((leftPos - 20) + 89, topPos + this.font.lineHeight + 67,
+        var layout = new LinearLayout((leftPos - 20) + 72, topPos + this.font.lineHeight + 67,
                 LinearLayout.Orientation.HORIZONTAL);
         layout.spacing(4);
         layout.addChild(saveCodeButton);
         layout.arrangeElements();
 
-        this.nameField.setValue(this.keyCode);
-        this.nameField.setMaxLength(50);
-        this.nameField.setVisible(true);
-
-        addRenderableWidget(nameField);
-
+        addNameField();
         addKeyStoneButtons();
+        addTickDelayButton();
     }
 
     @Override
@@ -103,6 +93,9 @@ public class CamoKeyStoneScreen extends AbstractContainerScreen<CamoKeyStoneCont
             if (renderable instanceof TolkienButton button && !button.getLocalization(pX, pY).equals(Component.empty()))
                 pGuiGraphics.renderTooltip(font, button.getLocalization(pX, pY), pX, pY);
         }
+        Component tooltip = Component.literal("");
+        tooltip = Component.translatable("screen.tolkienmobs.namefieldtext");
+        this.nameField.setTooltip(Tooltip.create(tooltip));
     }
 
     @Override
@@ -126,6 +119,17 @@ public class CamoKeyStoneScreen extends AbstractContainerScreen<CamoKeyStoneCont
             updateRenderables();
     }
 
+    public int adjustNumberButton(int value, int change, int min, int max) {
+        if (Screen.hasShiftDown()) change *= 10;
+        if (Screen.hasControlDown()) change *= 64;
+        if (change < 0) {
+            value = (Math.max(value + change, min));
+        } else {
+            value = (Math.min(value + change, max));
+        }
+        return value;
+    }
+
     @Override
     public boolean mouseClicked(double x, double y, int btn) {
         boolean ret = super.mouseClicked(x, y, btn);
@@ -138,6 +142,15 @@ public class CamoKeyStoneScreen extends AbstractContainerScreen<CamoKeyStoneCont
             ret = true;
         }
         for (Renderable renderable : this.renderables) {
+            if (renderable instanceof NumberButton numberButton && GeneralUtility.inBounds(numberButton.getX(), numberButton.getY(), numberButton.getWidth(), numberButton.getHeight(), x, y)) {
+                if (btn == 0)
+                    numberButton.setValue(adjustNumberButton(numberButton.getValue(), 1, numberButton.min, numberButton.max));
+                else if (btn == 1)
+                    numberButton.setValue(adjustNumberButton(numberButton.getValue(), -1, numberButton.min, numberButton.max));
+                numberButton.onPress();
+                numberButton.playDownSound(Minecraft.getInstance().getSoundManager());
+                return true;
+            }
             if (renderable instanceof ToggleButton toggleButton && GeneralUtility.inBounds(toggleButton.getX(), toggleButton.getY(), toggleButton.getWidth(), toggleButton.getHeight(), x, y)) {
                 if (btn == 1) {
                     toggleButton.onClick(x, y, btn);
@@ -156,18 +169,40 @@ public class CamoKeyStoneScreen extends AbstractContainerScreen<CamoKeyStoneCont
         return super.keyPressed(key, scancode, p_keyPressed_3_);
     }
 
+    public void addNameField() {
+        addRenderableWidget(this.nameField = new EditBox(this.font, (this.leftPos) + 16, topPos + 17, imageWidth - 31, this.font.lineHeight + 7, Component.literal(tileEntity.getKeyCode())));
+
+        this.nameField.setValue(this.keyCode);
+        this.nameField.setMaxLength(50);
+        this.nameField.setVisible(true);
+    }
+
     public void addKeyStoneButtons() {
         int offsetX = (this.width - this.imageWidth) / 2;
         int offsetY = (this.height - this.imageHeight) / 2;
-        addRenderableWidget(ToggleButtonFactory.KEEPKEYBUTTON(offsetX + 81, offsetY + 36, keyStoneSettings.keepKey, b -> {
+        addRenderableWidget(ToggleButtonFactory.KEEPKEYBUTTON(offsetX + 67, offsetY + 36, keyStoneSettings.keepKey, b -> {
             keyStoneSettings.keepKey = !keyStoneSettings.keepKey;
-            saveSettings();
+            PacketDistributor.sendToServer(new KeyStoneSettingsUpdateManager(keyStoneSettings.keepKey));
         }));
 
-        addRenderableWidget(ToggleButtonFactory.REDSTONE_TOGGLE_BUTTON(offsetX + 102, offsetY + 36, redstoneMode.ordinal(), b -> {
+        addRenderableWidget(ToggleButtonFactory.REDSTONE_TOGGLE_BUTTON(offsetX + 85, offsetY + 36, tileEntity.getRedstoneControlData().redstoneMode.ordinal(), b -> {
             redstoneMode = GeneralUtility.RedstoneMode.values()[((ToggleButton) b).getTexturePosition()];
 
-            saveSettings();
+            PacketDistributor.sendToServer(new KeyStoneRedstoneUpdateManager(redstoneMode.ordinal()));
+        }));
+    }
+
+    @Override
+    protected void containerTick() {
+        super.containerTick();
+    }
+
+    public void addTickDelayButton() {
+        int offsetX = (this.width - this.imageWidth) / 2;
+        int offsetY = (this.height - this.imageHeight) / 2;
+        addRenderableWidget(ToggleButtonFactory.TICKDELAYBUTTON(offsetX + 71, offsetY + 58, tickDelay, b -> {
+            tickDelay = ((NumberButton) b).getValue();
+            PacketDistributor.sendToServer(new KeyStoneDelayUpdateManager(tickDelay));
         }));
     }
 
@@ -185,15 +220,5 @@ public class CamoKeyStoneScreen extends AbstractContainerScreen<CamoKeyStoneCont
             widgetsToAdd.clear();
         }
         renderablesChanged = false;
-    }
-
-    private void saveSettings() {
-        PacketDistributor.sendToServer(new KeyStoneSettingsUpdateManager(keyStoneSettings.keepKey));
-        TolkienMobsMain.LOGGER.warn(String.valueOf(new KeyStoneRedstoneUpdateManager(redstoneMode.ordinal())));
-        PacketDistributor.sendToServer(new KeyStoneRedstoneUpdateManager(redstoneMode.ordinal()));
-    }
-
-    private void sendMessageToServer() {
-        PacketDistributor.sendToServer(new KeyStoneDataUpdateManager(this.nameField.getValue()));
     }
 }

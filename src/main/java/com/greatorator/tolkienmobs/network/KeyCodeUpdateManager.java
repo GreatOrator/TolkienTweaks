@@ -10,7 +10,7 @@ import net.minecraft.world.InteractionHand;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public record KeyCodeUpdateManager(InteractionHand hand, String keyCode, int keyUses) implements CustomPacketPayload {
+public record KeyCodeUpdateManager(InteractionHand hand, String keyCode, int keyUses, boolean mode) implements CustomPacketPayload {
     public static final Type<KeyCodeUpdateManager> TYPE =
             new Type<>(TolkienMobsMain.resLoc("edit_keycode"));
 
@@ -19,6 +19,7 @@ public record KeyCodeUpdateManager(InteractionHand hand, String keyCode, int key
                     NeoForgeStreamCodecs.enumCodec(InteractionHand.class), KeyCodeUpdateManager::hand,
                     ByteBufCodecs.STRING_UTF8, KeyCodeUpdateManager::keyCode,
                     ByteBufCodecs.INT, KeyCodeUpdateManager::keyUses,
+                    ByteBufCodecs.BOOL, KeyCodeUpdateManager::mode,
                     KeyCodeUpdateManager::new);
 
     @Override
@@ -31,7 +32,7 @@ public record KeyCodeUpdateManager(InteractionHand hand, String keyCode, int key
         var itemStackToUpdate = player.getItemInHand(message.hand);
 
         if (itemStackToUpdate.getItem() instanceof KeyItem) {
-            KeyItem.setKeyCode(itemStackToUpdate, message.keyCode, message.keyUses);
+            KeyItem.setKeyCode(itemStackToUpdate, message.keyCode, message.keyUses, message.mode);
         }
     }
 }

@@ -1,13 +1,17 @@
 package com.greatorator.tolkienmobs.block.custom;
 
+import com.greatorator.tolkienmobs.block.custom.entity.CamoKeyStoneBlockEntity;
 import com.greatorator.tolkienmobs.block.custom.entity.LockableChestBlockEntity;
 import com.greatorator.tolkienmobs.block.custom.entity.TolkienChestEntityBlock;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -94,12 +98,21 @@ public class LockableChestBlock extends TolkienChestEntityBlock {
     }
 
     @Override
-    public InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult hit) {
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        BlockEntity tile = level.getBlockEntity(pos);
+        LockableChestBlockEntity lockableChest = (LockableChestBlockEntity) tile;
         if (!level.isClientSide() && Screen.hasShiftDown() && player.isCreative()) {
-            if (level.getBlockEntity(blockPos) instanceof LockableChestBlockEntity blockEntity) {
-                player.openMenu(blockEntity, blockPos);
+            if (level.getBlockEntity(pos) instanceof LockableChestBlockEntity blockEntity) {
+                player.openMenu(blockEntity, pos);
             }
         }
-        return InteractionResult.SUCCESS;
+
+        if (!level.isClientSide) {
+            if (tile != null) {
+                lockableChest.onRightClick(state, player, hand);
+                return ItemInteractionResult.SUCCESS;
+            }
+        }
+        return ItemInteractionResult.SUCCESS;
     }
 }

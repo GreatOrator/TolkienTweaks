@@ -35,6 +35,8 @@ public final class PacketHandler {
                 KeyStoneSettingsUpdateManager.STREAM_CODEC, KeyStoneSettingsUpdateManager::handle);
         registrar.playToServer(KeyStoneRedstoneUpdateManager.TYPE,
                 KeyStoneRedstoneUpdateManager.STREAM_CODEC, KeyStoneRedstoneUpdateManager::handle);
+        registrar.playToServer(KeyStoneDelayUpdateManager.TYPE,
+                KeyStoneDelayUpdateManager.STREAM_CODEC, KeyStoneDelayUpdateManager::handle);
     }
 
     private static void registerServerToClient(PayloadRegistrar registrar) {
