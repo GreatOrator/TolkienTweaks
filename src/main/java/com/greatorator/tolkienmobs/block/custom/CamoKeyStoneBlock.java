@@ -2,23 +2,30 @@ package com.greatorator.tolkienmobs.block.custom;
 
 import com.greatorator.tolkienmobs.block.custom.entity.CamoKeyStoneBlockEntity;
 import com.mojang.serialization.MapCodec;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 
 public class CamoKeyStoneBlock extends ChameleonBlock<CamoKeyStoneBlockEntity> {
     public static final MapCodec<CamoKeyStoneBlock> CODEC = simpleCodec(CamoKeyStoneBlock::new);
@@ -94,5 +101,27 @@ public class CamoKeyStoneBlock extends ChameleonBlock<CamoKeyStoneBlockEntity> {
         if (blockState.getValue(POWERED) && random.nextFloat() < 0.25F) {
             blockState.setValue(ACTIVE, true);
         }
+    }
+
+    // Entity Stuff
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+        return new CamoKeyStoneBlockEntity(blockPos, blockState);
+    }
+
+    @Override
+    public InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult hit) {
+        if (!level.isClientSide() && Screen.hasShiftDown() && player.isCreative()) {
+            if (level.getBlockEntity(blockPos) instanceof CamoKeyStoneBlockEntity blockEntity) {
+                player.openMenu(blockEntity, blockPos);
+            }
+        }
+        return InteractionResult.SUCCESS;
     }
 }
