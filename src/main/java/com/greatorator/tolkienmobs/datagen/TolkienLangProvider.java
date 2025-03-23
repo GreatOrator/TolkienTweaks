@@ -212,7 +212,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add(TolkienBlocks.PIGGYBANK.get(), "Piggy Bank");
             this.add(TolkienBlocks.BACKPACK.get(), "Adventurer's Backpack");
             this.add(TolkienBlocks.CHAMELEON_BLOCK.get(), "Chameleon Block");
-            this.add(TolkienBlocks.KEY_STONE_BLOCK.get(), "Camouflage Key Stone");
+            this.add(TolkienBlocks.KEY_STONE_BLOCK.get(), "Camouflage Key Stone Block");
             this.add(TolkienBlocks.CAMO_GLOWSTONE_BLOCK.get(), "Camouflage Glowstone");
             this.add(TolkienBlocks.CAMO_SMOKER_BLOCK.get(), "Camouflage Smoker");
             this.addBlockWithLore(TolkienBlocks.CAMO_FLUID_BLOCK.get(), "Camouflage Fluid Source", "Right-click with bucket to set fluid");
@@ -312,9 +312,18 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addBlockScreen(TolkienBlocks.LOCKABLE_TREASURE_CHEST_BLOCK.get(), "Lockable Treasure Chest");
             this.addBlockScreen(TolkienBlocks.LOCKABLE_DOUBLE_CHEST_BLOCK.get(), "Lockable Double Chest");
             this.addBlockScreen(TolkienBlocks.LOCKABLE_DOUBLE_TREASURE_CHEST_BLOCK.get(), "Lockable Double Treasure Chest");
+            this.addBlockScreen(TolkienBlocks.KEY_STONE_BLOCK.get(), "KeyStone Block");
             this.add("screen.tolkienmobs.namefieldtext", "Enter Code");
             this.add("screen.tolkienmobs.keycodeplaceholder", "No Code Found");
             this.add("screen.tolkienmobs.keyuses", "-1");
+            this.add("screen.tolkienmobs.keystone.always", "Redstone Toggled with key - Not Active");
+            this.add("screen.tolkienmobs.keystone.always.active", "Redstone Toggled with key - Active");
+            this.add("screen.tolkienmobs.keystone.delay", "Redstone stays on for x ticks - Not Active");
+            this.add("screen.tolkienmobs.keystone.delay.active", "Redstone stays on for x ticks - Active");
+            this.add("screen.tolkienmobs.keystone.pulse", "Redstone acts like button when key used - Not Active");
+            this.add("screen.tolkienmobs.keystone.pulse.active", "Redstone acts like button when key used - Active");
+            this.add("screen.tolkienmobs.keystone.key.consume", "Key taken when used");
+            this.add("screen.tolkienmobs.keystone.key.keep", "Player keeps key");
 
                 // Buttons
             this.add("buttons.tolkienmobs.saveinfo", "Save Info");
