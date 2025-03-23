@@ -304,5 +304,6 @@ public class TolkienBlockTagProvider extends BlockTagsProvider {
         tag(TolkienTags.Blocks.PLANTS_HANG_ON)
                 .addTag(BlockTags.DIRT)
                 .add(Blocks.MOSS_BLOCK, TolkienBlocks.LIVING_ROOTS.get());
+        tag(TolkienTags.Blocks.TICK_SPEED_DENY);
     }
 }

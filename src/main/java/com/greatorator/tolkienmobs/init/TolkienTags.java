@@ -19,6 +19,7 @@ public class TolkienTags {
         public static final TagKey<Block> BLACKLIST_HARVEST = createTag("blacklist_harvest");
         public static final TagKey<Block> PORTAL_FRAME_BLOCKS = createTag("portal_frame_blocks");
         public static final TagKey<Block> PLANTS_HANG_ON = createTag("plants_hang_on");
+        public static final TagKey<Block> TICK_SPEED_DENY = BlockTags.create(ResourceLocation.fromNamespaceAndPath(MODID, "tick_speed_deny"));
 
         private static TagKey<Block> createTag(String name) {
             return BlockTags.create(ResourceLocation.fromNamespaceAndPath(MODID, name));

@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.containers.widget;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
+import com.greatorator.tolkienmobs.util.GeneralUtility;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -14,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Function;
 
 public class TolkienButton extends Button {
-
+  protected Component localization = Component.empty();
   private static final ResourceLocation WIDGETS_LOCATION =
       TolkienMobsMain.resLoc("textures/gui/widgets.png");
 
@@ -24,6 +25,20 @@ public class TolkienButton extends Button {
     super(builder.x, builder.y, builder.width, builder.height, builder.message, builder.onPress,
         builder.createNarration);
     this.texturePosition = builder.texturePosition;
+  }
+
+  protected TolkienButton(int pX, int pY, int pWidth, int pHeight, Component pMessage, OnPress pOnPress, CreateNarration pCreateNarration) {
+    super(pX, pY, pWidth, pHeight, pMessage, pOnPress, pCreateNarration);
+  }
+
+  public Component getLocalization() {
+    return localization;
+  }
+
+  public Component getLocalization(int mouseX, int mouseY) {
+    if (GeneralUtility.inBounds(getX(), getY(), getWidth(), getHeight(), mouseX, mouseY))
+      return getLocalization();
+    return Component.empty();
   }
 
   public void setTexturePosition(TexturePosition texturePosition) {

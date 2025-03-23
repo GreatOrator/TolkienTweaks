@@ -1,4 +1,4 @@
-// 1.21.1	2024-12-08T08:43:27.865974	Tags for minecraft:block mod id tolkienmobs
+// 1.21.1	2025-03-22T08:59:54.5941349	Tags for minecraft:block mod id tolkienmobs
 8df1ebd98d8c41af8db4773580ab309386bab274 data/minecraft/tags/block/base_stone_overworld.json
 c697663a63d12d5f108102f51c8b115d85d5192b data/minecraft/tags/block/ceiling_hanging_signs.json
 2425bde7509c8f73e1716b527cdaf196eb24f51a data/minecraft/tags/block/climbable.json
@@ -25,3 +25,4 @@ d81ccf454ddd1b309f641892b1a525e41248b0d1 data/tolkienmobs/tags/block/decay_grow_
 bb208dd8d0232aeb1c15015ea6e48e99d671edfb data/tolkienmobs/tags/block/plants_hang_on.json
 5143b60dda8fb120540c5e7ab5ba5710fa2cd3fb data/tolkienmobs/tags/block/portal_frame_blocks.json
 83d61765f28401ae9922907898155645c87f77c0 data/tolkienmobs/tags/block/root_trace_skip.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/tolkienmobs/tags/block/tick_speed_deny.json

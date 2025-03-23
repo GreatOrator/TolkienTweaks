@@ -1141,7 +1141,6 @@ public class TolkienBlocks {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PiggyBankBlockEntity>> PIGGY_BANK_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("block_piggybank", () ->
                     BlockEntityType.Builder.of(PiggyBankBlockEntity::new, PIGGYBANK.get()).build(null));
-
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LockableChestBlockEntity>> LOCKABLE_CHEST_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("lockable_chest_block", () ->
                     BlockEntityType.Builder.of(LockableChestBlockEntity::new, LOCKABLE_CHEST_BLOCK.get()).build(null));
@@ -1154,13 +1153,15 @@ public class TolkienBlocks {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LockableDoubleTreasureChestBlockEntity>> LOCKABLE_DOUBLE_TREASURE_CHEST_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("lockable_double_treasure_chest_block", () ->
                     BlockEntityType.Builder.of(LockableDoubleTreasureChestBlockEntity::new, LOCKABLE_DOUBLE_TREASURE_CHEST_BLOCK.get()).build(null));
-
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BackpackBlockEntity>> BACKPACK_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("backpack", () ->
                     BlockEntityType.Builder.of(BackpackBlockEntity::new, BACKPACK.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CamoSpawnerBlockEntity>> CAMO_SPAWNER_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("camo_spawner", () ->
                     BlockEntityType.Builder.of(CamoSpawnerBlockEntity::new, CAMO_SPAWNER_BLOCK.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CamoKeyStoneBlockEntity>> KEY_STONE_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("block_key_stone", () ->
+                    BlockEntityType.Builder.of(CamoKeyStoneBlockEntity::new, KEY_STONE_BLOCK.get()).build(null));
 
         // Attachment Types
     public static final Supplier<AttachmentType<ItemStackHandler>> BACKPACK_HANDLER = ATTACHMENT_TYPES.register(

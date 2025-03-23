@@ -33,6 +33,10 @@ public class TolkienMobsConfig {
 //            .comment("The time of day that sleeping bags can be used.")
 //            .defineEnum("sleepingBagUse", ComfortsTimeUse.NIGHT);
 
+    public static ModConfigSpec.IntValue MINIMUM_TICK_SPEED = BUILDER
+            .comment("Minimum speed anything that ticks can be set to. Defaults to 1, or every tick")
+            .defineInRange("minimum_tick_speed", 1, 1, 100);
+
     private static final ModConfigSpec.IntValue PICKUP_RANGE = BUILDER
             .comment("Range of pickup for Hobbit Ring")
             .defineInRange("pickupRange", 7, 0, Integer.MAX_VALUE);
