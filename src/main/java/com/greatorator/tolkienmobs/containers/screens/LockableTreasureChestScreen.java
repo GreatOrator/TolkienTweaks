@@ -8,6 +8,7 @@ import com.greatorator.tolkienmobs.network.LockedTreasureChestUpdateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
@@ -88,6 +89,14 @@ public class LockableTreasureChestScreen extends AbstractContainerScreen<Lockabl
         guiGraphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
 
         this.nameField.render(guiGraphics, mouseX, mouseY, partialTicks);
+    }
+
+    @Override
+    protected void renderTooltip(GuiGraphics pGuiGraphics, int pX, int pY) {
+        super.renderTooltip(pGuiGraphics, pX, pY);
+        Component tooltip = Component.literal("");
+        tooltip = Component.translatable("screen.tolkienmobs.namefieldtext");
+        this.nameField.setTooltip(Tooltip.create(tooltip));
     }
 
     @Override
