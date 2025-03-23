@@ -1320,6 +1320,7 @@
   "screen.tolkienmobs.keystone.key.keep": "Player keeps key",
   "screen.tolkienmobs.keystone.pulse": "Redstone acts like button when key used - Not Active",
   "screen.tolkienmobs.keystone.pulse.active": "Redstone acts like button when key used - Active",
+  "screen.tolkienmobs.keystone.tickdelay": "**Tick Delay Mode Only** \n Set the amount of delay for redstone",
   "screen.tolkienmobs.keyuses": "-1",
   "screen.tolkienmobs.namefieldtext": "Enter Code",
   "subtitles.tolkienmobs.ambient.arda_portal": "Portal to Arda beckons",

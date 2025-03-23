@@ -324,6 +324,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add("screen.tolkienmobs.keystone.pulse.active", "Redstone acts like button when key used - Active");
             this.add("screen.tolkienmobs.keystone.key.consume", "Key taken when used");
             this.add("screen.tolkienmobs.keystone.key.keep", "Player keeps key");
+            this.add("screen.tolkienmobs.keystone.tickdelay", "**Tick Delay Mode Only** \n Set the amount of delay for redstone");
 
                 // Buttons
             this.add("buttons.tolkienmobs.saveinfo", "Save Info");

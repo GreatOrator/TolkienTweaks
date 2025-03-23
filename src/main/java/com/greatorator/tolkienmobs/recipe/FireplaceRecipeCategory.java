@@ -51,6 +51,7 @@ public class FireplaceRecipeCategory implements IRecipeCategory<FireplaceRecipe>
         return icon;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public IDrawable getBackground() {
         return background;
