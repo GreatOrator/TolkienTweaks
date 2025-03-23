@@ -29,6 +29,12 @@ public final class PacketHandler {
                 LockedDoubleChestUpdateManager.STREAM_CODEC, LockedDoubleChestUpdateManager::handle);
         registrar.playToServer(LockedDoubleTreasureChestUpdateManager.TYPE,
                 LockedDoubleTreasureChestUpdateManager.STREAM_CODEC, LockedDoubleTreasureChestUpdateManager::handle);
+        registrar.playToServer(KeyStoneDataUpdateManager.TYPE,
+                KeyStoneDataUpdateManager.STREAM_CODEC, KeyStoneDataUpdateManager::handle);
+        registrar.playToServer(KeyStoneSettingsUpdateManager.TYPE,
+                KeyStoneSettingsUpdateManager.STREAM_CODEC, KeyStoneSettingsUpdateManager::handle);
+        registrar.playToServer(KeyStoneRedstoneUpdateManager.TYPE,
+                KeyStoneRedstoneUpdateManager.STREAM_CODEC, KeyStoneRedstoneUpdateManager::handle);
     }
 
     private static void registerServerToClient(PayloadRegistrar registrar) {

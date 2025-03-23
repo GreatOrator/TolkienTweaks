@@ -42,6 +42,7 @@ public class TolkienDataComponents {
             "chest_code", () -> AttachmentType.builder(() -> "Enter Code").serialize(Codec.STRING).build()
     );
 
+
     private static <T>DeferredHolder<DataComponentType<?>, DataComponentType<T>> register(String name, UnaryOperator<DataComponentType.Builder<T>> builderOperator) {
         return COMPONENTS.register(name, () -> builderOperator.apply(DataComponentType.builder()).build());
     }

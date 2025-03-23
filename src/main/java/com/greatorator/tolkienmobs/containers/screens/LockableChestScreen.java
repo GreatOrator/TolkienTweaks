@@ -23,8 +23,6 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.Optional;
-
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class LockableChestScreen extends AbstractContainerScreen<LockableChestContainer> {
@@ -75,7 +73,7 @@ public class LockableChestScreen extends AbstractContainerScreen<LockableChestCo
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         this.nameField.render(guiGraphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
-        }
+    }
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
