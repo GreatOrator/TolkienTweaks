@@ -2,17 +2,11 @@ package com.greatorator.tolkienmobs.block.custom.entity;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.containers.CamoKeyStoneContainer;
-import com.greatorator.tolkienmobs.containers.KeyItemContainer;
 import com.greatorator.tolkienmobs.handler.interfaces.TolkienRegistry;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.item.custom.KeyItem;
-import com.greatorator.tolkienmobs.network.KeyStoneRedstoneUpdateManager;
-import com.greatorator.tolkienmobs.util.GeneralUtility;
-import com.greatorator.tolkienmobs.util.KeyStoneCode;
-import com.greatorator.tolkienmobs.util.KeyStoneSettings;
-import com.greatorator.tolkienmobs.util.RedstoneControlData;
+import com.greatorator.tolkienmobs.util.*;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -24,19 +18,15 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.HopperBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.Nullable;
 
-import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 import static com.greatorator.tolkienmobs.block.custom.ChameleonBlock.ACTIVE;
 import static com.greatorator.tolkienmobs.block.custom.ChameleonBlock.POWERED;
 
@@ -212,5 +202,10 @@ public class CamoKeyStoneBlockEntity extends BlockEntity implements MenuProvider
     }
 
     public void tickClient() {
+    }
+
+    @Override
+    public BackpackSettings getBackpackSettings() {
+        return null;
     }
 }

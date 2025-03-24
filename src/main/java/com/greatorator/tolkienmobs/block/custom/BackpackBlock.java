@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.block.custom;
 
 import com.greatorator.tolkienmobs.block.TolkienEntityBlock;
 import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
+import com.greatorator.tolkienmobs.block.custom.entity.CamoKeyStoneBlockEntity;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -19,6 +20,8 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
@@ -152,5 +155,22 @@ public class BackpackBlock extends TolkienEntityBlock {
             }
         }
         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+        if (level.isClientSide()) {
+            return (lvl, pos, blockState, t) -> {
+                if (t instanceof BackpackBlockEntity tile) {
+                    tile.tickClient();
+                }
+            };
+        }
+        return (lvl, pos, blockState, t) -> {
+            if (t instanceof BackpackBlockEntity tile) {
+                tile.tickServer();
+            }
+        };
     }
 }
