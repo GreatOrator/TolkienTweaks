@@ -325,12 +325,17 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add("screen.tolkienmobs.keystone.key.consume", "Key taken when used or has uses");
             this.add("screen.tolkienmobs.keystone.key.keep", "Player keeps key until uses exhausted");
             this.add("screen.tolkienmobs.keystone.tickdelay", "§l**Tick Delay Mode Only**§r Set the amount of delay for redstone");
+            this.add("screen.tolkienmobs.backpack.bed.deployed", "Lay out Sleepingbag");
+            this.add("screen.tolkienmobs.backpack.bed.remove", "Pick up Sleepingbag");
+            this.add("screen.tolkienmobs.backpack.campfire.deployed", "Set up Campfire");
+            this.add("screen.tolkienmobs.backpack.campfire.remove", "Pick up Campfire");
+            this.add("screen.tolkienmobs.backpack.close.upgrade", "Close upgrade window");
+            this.add("screen.tolkienmobs.backpack.open.upgrade", "Open upgrade window");
+            this.add("screen.tolkienmobs.backpack.fluid", "Fluid:");
+            this.add("screen.tolkienmobs.backpack.fluid_storage", "Fluid Storage");
 
                 // Buttons
             this.add("buttons.tolkienmobs.saveinfo", "Save Info");
-
-                // General Messages
-            this.add("tolkienmobs.msg.wrong_key", "You need the correct key!");
 
                 // Potions & Effects
                     // Beneficial
@@ -526,5 +531,6 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add("tolkienmobs.msg.destination", "Destination not found");
             this.add("tolkienmobs.tooltip.liquid.amount.with.capacity", "%s / %s mB");
             this.add("tolkienmobs.tooltip.liquid.amount", "%s mB");
+            this.add("tolkienmobs.msg.wrong_key", "You need the correct key!");
     }
 }

@@ -2,8 +2,7 @@ package com.greatorator.tolkienmobs.network;
 
 import com.greatorator.tolkienmobs.block.custom.entity.CamoKeyStoneBlockEntity;
 import com.greatorator.tolkienmobs.containers.CamoKeyStoneContainer;
-import com.greatorator.tolkienmobs.util.KeyStoneData;
-import com.greatorator.tolkienmobs.util.KeyStoneSettings;
+import com.greatorator.tolkienmobs.util.KeyStoneCode;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -27,9 +26,6 @@ public record KeyStoneDataUpdateManager(
 
     public static final StreamCodec<FriendlyByteBuf, KeyStoneDataUpdateManager> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8, KeyStoneDataUpdateManager::keyCode,
-//            ByteBufCodecs.BOOL, KeyStoneDataUpdateManager::rsToggle,
-//            ByteBufCodecs.BOOL, KeyStoneDataUpdateManager::rsPulse,
-//            ByteBufCodecs.BOOL, KeyStoneDataUpdateManager::rsDelay,
             KeyStoneDataUpdateManager::new
     );
 
@@ -39,7 +35,7 @@ public record KeyStoneDataUpdateManager(
             AbstractContainerMenu container = sender.containerMenu;
 
             if (container instanceof CamoKeyStoneContainer keyStoneContainer && keyStoneContainer.tileEntity instanceof CamoKeyStoneBlockEntity keyStoneBE) {
-                keyStoneBE.setKeyStoneData(new KeyStoneData(payload.keyCode()));
+                keyStoneBE.setKeyStoneData(new KeyStoneCode(payload.keyCode()));
             }
         });
     }

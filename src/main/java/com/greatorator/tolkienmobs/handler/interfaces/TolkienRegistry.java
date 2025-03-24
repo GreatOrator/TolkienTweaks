@@ -1,13 +1,11 @@
 package com.greatorator.tolkienmobs.handler.interfaces;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
+import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
 import com.greatorator.tolkienmobs.block.custom.entity.CamoKeyStoneBlockEntity;
 import com.greatorator.tolkienmobs.init.TolkienWoodTypes;
 import com.greatorator.tolkienmobs.recipe.TrinketRecipe;
-import com.greatorator.tolkienmobs.util.GeneralUtility;
-import com.greatorator.tolkienmobs.util.KeyStoneCode;
-import com.greatorator.tolkienmobs.util.KeyStoneSettings;
-import com.greatorator.tolkienmobs.util.RedstoneControlData;
+import com.greatorator.tolkienmobs.util.*;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -24,6 +22,7 @@ public interface TolkienRegistry {
 
     RedstoneControlData getRedstoneControlData();
     KeyStoneSettings getKeyStoneSettings();
+    BackpackSettings getBackpackSettings();
     KeyStoneCode getKeyStoneData();
     BlockEntity getBlockEntity();
 
@@ -82,5 +81,25 @@ public interface TolkienRegistry {
         getKeyStoneSettings().keepKey = keyStoneData.keepKey;
         if (getBlockEntity() instanceof CamoKeyStoneBlockEntity keyStoneBE)
             keyStoneBE.markDirtyClient();
+    }
+
+    default void saveBackpackSettings(CompoundTag tag) {
+        tag.putBoolean("sleepingBag", getBackpackSettings().sleepingBag);
+        tag.putBoolean("campfire", getBackpackSettings().campfire);
+        tag.putBoolean("upgrade", getBackpackSettings().upgrade);
+    }
+
+    default void loadBackpackSettings(CompoundTag tag) {
+        getBackpackSettings().sleepingBag = tag.getBoolean("sleepingBag");
+        getBackpackSettings().campfire = tag.getBoolean("campfire");
+        getBackpackSettings().upgrade = tag.getBoolean("upgrade");
+        }
+
+    default void setBackpackSettings(BackpackSettings backpackData) {
+        getBackpackSettings().sleepingBag = backpackData.sleepingBag;
+        getBackpackSettings().campfire = backpackData.campfire;
+        getBackpackSettings().upgrade = backpackData.upgrade;
+        if (getBlockEntity() instanceof BackpackBlockEntity backpackBE)
+            backpackBE.markDirtyClient();
     }
 }
