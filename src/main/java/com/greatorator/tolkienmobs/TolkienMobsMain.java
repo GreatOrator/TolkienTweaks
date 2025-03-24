@@ -82,8 +82,7 @@ public class TolkienMobsMain {
     //    -Backpack
     //        -Upgrade System
     //        -Bucket inside Inventory not working
-    //        -Sleeping Bag deploy
-    //        -Campfire Deploy
+    //        -Deploy buttons work, but wonky
     //  -Integration
     //    -Curios
     //    -JEI
