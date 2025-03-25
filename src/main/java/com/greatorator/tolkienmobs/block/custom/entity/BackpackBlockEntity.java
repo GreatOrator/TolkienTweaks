@@ -142,20 +142,6 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, To
     @Nullable
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
-        boolean sleepingbagOut = getBackpackSettings().sleepingBag;
-        boolean campfireOut = getBackpackSettings().campfire;
-
-        if (!sleepingbagOut) {
-            deploySleepingbag();
-        }else {
-            removeSleepingbag();
-        }
-
-        if (!campfireOut) {
-            deployCampfire();
-        }else {
-            removeCampfire();
-        }
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
@@ -194,17 +180,18 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, To
         return level.getBlockState(getBlockPos()).getValue(BackpackBlock.FACING);
     }
 
-    private void deploySleepingbag() {
+    public void deploySleepingbag() {
         Direction direction = this.getBlockDirection();
         BlockPos sleepingBagPos1 = this.getBlockPos().relative(direction);
         BlockPos sleepingBagPos2 = sleepingBagPos1.relative(direction);
 
-        if (!level.isClientSide && !getBackpackSettings().campfire) {
+        if (!level.isClientSide) {
             getBackpackSettings().campfire = !getBackpackSettings().sleepingBag;
+            PacketDistributor.sendToServer(new BackpackSettingsUpdateManager(backpackSettings.sleepingBag, backpackSettings.campfire, backpackSettings.upgrade));
+
             setChanged();
 
-            level.playSound(null, this.getBlockPos().relative(direction), SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 0.5F, 1.0F);
-            level.setBlockAndUpdate(this.getBlockPos().relative(direction), Blocks.AIR.defaultBlockState());
+            removeCampfire();
         }
 
         level.setBlockAndUpdate(sleepingBagPos1, TolkienBlocks.SLEEPING_BAG_BLUE.get().defaultBlockState().setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.FOOT));
@@ -214,7 +201,21 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, To
         level.updateNeighborsAt(sleepingBagPos2, TolkienBlocks.SLEEPING_BAG_BLUE.get());
     }
 
-    private void removeSleepingbag() {
+    public void deployCampfire() {
+        Direction direction = level.getBlockState(worldPosition).getValue(BackpackBlock.FACING);
+
+        if (!level.isClientSide) {
+            getBackpackSettings().sleepingBag = !getBackpackSettings().campfire;
+            PacketDistributor.sendToServer(new BackpackSettingsUpdateManager(backpackSettings.sleepingBag, backpackSettings.campfire, backpackSettings.upgrade));
+
+            setChanged();
+
+            removeSleepingbag();
+        }
+        level.setBlockAndUpdate(this.getBlockPos().relative(direction), Blocks.CAMPFIRE.defaultBlockState());
+    }
+
+    public void removeSleepingbag() {
         Direction direction = this.getBlockDirection();
         BlockPos sleepingBagPos1 = this.getBlockPos().relative(direction);
         BlockPos sleepingBagPos2 = sleepingBagPos1.relative(direction);
@@ -224,29 +225,16 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, To
         level.setBlockAndUpdate(sleepingBagPos1, Blocks.AIR.defaultBlockState());
     }
 
-    private void deployCampfire() {
-        Direction direction = level.getBlockState(worldPosition).getValue(BackpackBlock.FACING);
-
-        if (!level.isClientSide && !backpackSettings.sleepingBag) {
-            BlockPos sleepingBagPos1 = this.getBlockPos().relative(direction);
-            BlockPos sleepingBagPos2 = sleepingBagPos1.relative(direction);
-
-            getBackpackSettings().sleepingBag = !getBackpackSettings().campfire;
-
-            setChanged();
-
-            level.playSound(null, sleepingBagPos2, SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 0.5F, 1.0F);
-            level.setBlockAndUpdate(sleepingBagPos2, Blocks.AIR.defaultBlockState());
-            level.setBlockAndUpdate(sleepingBagPos1, Blocks.AIR.defaultBlockState());
-        }
-            level.setBlockAndUpdate(this.getBlockPos().relative(direction), Blocks.CAMPFIRE.defaultBlockState());
-    }
-
-    private void removeCampfire() {
+    public void removeCampfire() {
         Direction facing = level.getBlockState(this.getBlockPos()).getValue(BackpackBlock.FACING);
 
         level.playSound(null, this.getBlockPos().relative(facing), SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 0.5F, 1.0F);
         level.setBlockAndUpdate(this.getBlockPos().relative(facing), Blocks.AIR.defaultBlockState());
+    }
+
+    @Override
+    public void setChanged() {
+        super.setChanged();
     }
 
     private void pushFluidToAboveNeighbour() {
