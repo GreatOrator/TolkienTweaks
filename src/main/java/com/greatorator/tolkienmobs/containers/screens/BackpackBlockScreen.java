@@ -153,11 +153,21 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
         addRenderableWidget(ToggleButtonFactory.SLEEPING_BAG_TOGGLE_BUTTON(offsetX + 173, offsetY + 156, backpackSettings.sleepingBag, b -> {
             backpackSettings.sleepingBag = !backpackSettings.sleepingBag;
             PacketDistributor.sendToServer(new BackpackSettingsUpdateManager(backpackSettings.sleepingBag, backpackSettings.campfire, backpackSettings.upgrade));
+            if (!backpackSettings.sleepingBag) {
+                tileEntity.deploySleepingbag();
+            }else {
+                tileEntity.removeSleepingbag();
+            }
         }));
 
         addRenderableWidget(ToggleButtonFactory.CAMPFIRE_TOGGLE_BUTTON(offsetX + 191, offsetY + 156, backpackSettings.campfire, b -> {
             backpackSettings.campfire = !backpackSettings.campfire;
             PacketDistributor.sendToServer(new BackpackSettingsUpdateManager(backpackSettings.sleepingBag, backpackSettings.campfire, backpackSettings.upgrade));
+            if (!backpackSettings.campfire) {
+                tileEntity.deployCampfire();
+            }else {
+                tileEntity.removeCampfire();
+            }
         }));
 
         addRenderableWidget(ToggleButtonFactory.UPGRADE_TOGGLE_BUTTON(offsetX + 209, offsetY + 156, backpackSettings.upgrade, b -> {
