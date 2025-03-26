@@ -1,7 +1,6 @@
 package com.greatorator.tolkienmobs.entity.passive.model;
 
 
-import com.greatorator.tolkienmobs.entity.monster.BarrowWightEntity;
 import com.greatorator.tolkienmobs.entity.passive.AurochEntity;
 import com.greatorator.tolkienmobs.entity.passive.render.AurochRender;
 import net.minecraft.resources.ResourceLocation;

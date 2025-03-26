@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.entity.passive.model;
 
-import com.greatorator.tolkienmobs.entity.monster.BrigandEntity;
 import com.greatorator.tolkienmobs.entity.passive.GollumEntity;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.animation.AnimationState;

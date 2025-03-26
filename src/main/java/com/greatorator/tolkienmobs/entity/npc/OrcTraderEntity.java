@@ -4,7 +4,6 @@ import com.greatorator.tolkienmobs.entity.TolkienWanderingEntity;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;

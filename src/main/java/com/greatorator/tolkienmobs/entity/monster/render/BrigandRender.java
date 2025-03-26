@@ -1,7 +1,6 @@
 package com.greatorator.tolkienmobs.entity.monster.render;
 
 import com.google.common.collect.Maps;
-import com.greatorator.tolkienmobs.entity.monster.BarrowWightEntity;
 import com.greatorator.tolkienmobs.entity.monster.BrigandEntity;
 import com.greatorator.tolkienmobs.entity.monster.model.BrigandModel;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
@@ -10,7 +9,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;

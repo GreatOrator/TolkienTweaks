@@ -1,6 +1,6 @@
 package com.greatorator.tolkienmobs.containers.widget;
 
-import com.greatorator.tolkienmobs.containers.handlers.ToggleButtonFactory.*;
+import com.greatorator.tolkienmobs.containers.handlers.ToggleButtonFactory.TextureLocalization;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;

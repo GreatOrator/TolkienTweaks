@@ -1,0 +1,66 @@
+{
+  "carvers": {},
+  "downfall": 0.8,
+  "effects": {
+    "fog_color": 5988193,
+    "foliage_color": 5156174,
+    "grass_color": 5156174,
+    "mood_sound": {
+      "block_search_extent": 8,
+      "offset": 2.0,
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000
+    },
+    "particle": {
+      "options": {
+        "type": "tolkienmobs:wandering_lightningbug"
+      },
+      "probability": 0.001
+    },
+    "sky_color": 7907327,
+    "water_color": 54011,
+    "water_fog_color": 54011
+  },
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "tolkienmobs:fangornoak_placed",
+      "minecraft:patch_grass_jungle",
+      "tolkienmobs:fangorn_fallen_leaves",
+      "tolkienmobs:fangorn_fallen_log"
+    ]
+  ],
+  "has_precipitation": true,
+  "spawn_costs": {
+    "tolkienmobs:entityttmtreeent": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    }
+  },
+  "spawners": {
+    "ambient": [],
+    "axolotls": [],
+    "creature": [],
+    "misc": [],
+    "monster": [
+      {
+        "type": "tolkienmobs:entityttmtreeent",
+        "maxCount": 1,
+        "minCount": 1,
+        "weight": 1
+      }
+    ],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "temperature": 0.07
+}

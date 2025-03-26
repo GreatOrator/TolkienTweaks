@@ -1,34 +1,25 @@
 package com.greatorator.tolkienmobs.entity.passive;
 
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
-import com.greatorator.tolkienmobs.entity.boss.GoblinKingEntity;
-import com.greatorator.tolkienmobs.entity.monster.GoblinEntity;
-import com.greatorator.tolkienmobs.entity.monster.MordorOrcEntity;
-import com.greatorator.tolkienmobs.entity.monster.UrukHaiEntity;
-import com.greatorator.tolkienmobs.entity.projectiles.BoulderEntity;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
-import com.greatorator.tolkienmobs.util.MathUtility;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.*;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.FleeSunGoal;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.LeapAtTargetGoal;
+import net.minecraft.world.entity.ai.goal.MoveToBlockGoal;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
@@ -41,7 +32,6 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.EnumSet;
-import java.util.Random;
 
 public class GollumEntity extends TolkienMonsterEntity implements GeoEntity {
     private static final EntityDataAccessor<Boolean> EATING = SynchedEntityData.defineId(GollumEntity.class, EntityDataSerializers.BOOLEAN);

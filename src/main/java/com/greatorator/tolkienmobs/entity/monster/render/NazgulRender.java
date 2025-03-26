@@ -1,13 +1,10 @@
 package com.greatorator.tolkienmobs.entity.monster.render;
 
-import com.google.common.collect.Maps;
 import com.greatorator.tolkienmobs.entity.monster.NazgulEntity;
 import com.greatorator.tolkienmobs.entity.monster.model.NazgulModel;
-import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.Util;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -18,7 +15,6 @@ import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.BlockAndItemGeoLayer;
 
 import javax.annotation.Nullable;
-import java.util.Map;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 

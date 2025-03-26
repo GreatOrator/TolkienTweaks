@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.entity.npc.model;
 
-import com.greatorator.tolkienmobs.entity.monster.BarrowWightEntity;
 import com.greatorator.tolkienmobs.entity.npc.HumanEntity;
 import com.greatorator.tolkienmobs.entity.npc.render.HumanRender;
 import net.minecraft.resources.ResourceLocation;

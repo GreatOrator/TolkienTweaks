@@ -8,8 +8,6 @@ import com.greatorator.tolkienmobs.containers.widget.ToggleButton;
 import com.greatorator.tolkienmobs.containers.widget.TolkienButton;
 import com.greatorator.tolkienmobs.item.custom.KeyItem;
 import com.greatorator.tolkienmobs.network.KeyCodeUpdateManager;
-import com.greatorator.tolkienmobs.network.KeyStoneRedstoneUpdateManager;
-import com.greatorator.tolkienmobs.network.KeyStoneSettingsUpdateManager;
 import com.greatorator.tolkienmobs.util.GeneralUtility;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;

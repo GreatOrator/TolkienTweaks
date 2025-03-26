@@ -1,9 +1,5 @@
 package com.greatorator.tolkienmobs.entity.projectiles.render;
 
-import com.greatorator.tolkienmobs.entity.ambient.model.CrebainModel;
-import com.greatorator.tolkienmobs.entity.ambient.render.GeckoRender;
-import com.greatorator.tolkienmobs.entity.monster.BarrowWightEntity;
-import com.greatorator.tolkienmobs.entity.projectiles.BoulderEntity;
 import com.greatorator.tolkienmobs.entity.projectiles.TornadoEntity;
 import com.greatorator.tolkienmobs.entity.projectiles.model.BoulderModel;
 import com.greatorator.tolkienmobs.entity.projectiles.model.TornadoModel;
@@ -12,15 +8,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 

@@ -1,10 +1,8 @@
 package com.greatorator.tolkienmobs.network;
 
-import com.greatorator.tolkienmobs.block.custom.entity.CamoKeyStoneBlockEntity;
 import com.greatorator.tolkienmobs.containers.CamoKeyStoneContainer;
 import com.greatorator.tolkienmobs.handler.interfaces.TolkienRegistry;
 import com.greatorator.tolkienmobs.util.KeyStoneSettings;
-import com.greatorator.tolkienmobs.util.RedstoneControlData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;

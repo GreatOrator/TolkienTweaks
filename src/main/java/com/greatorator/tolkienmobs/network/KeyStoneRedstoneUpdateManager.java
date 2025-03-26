@@ -2,7 +2,6 @@ package com.greatorator.tolkienmobs.network;
 
 import com.greatorator.tolkienmobs.containers.CamoKeyStoneContainer;
 import com.greatorator.tolkienmobs.handler.interfaces.TolkienRegistry;
-import com.greatorator.tolkienmobs.util.KeyStoneSettings;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;

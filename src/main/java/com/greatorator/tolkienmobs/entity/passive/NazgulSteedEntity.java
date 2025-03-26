@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.entity.passive;
 
-import com.greatorator.tolkienmobs.entity.monster.MordorOrcEntity;
 import com.greatorator.tolkienmobs.entity.monster.NazgulEntity;
 import com.greatorator.tolkienmobs.handler.interfaces.CommonTraits;
 import com.greatorator.tolkienmobs.init.TolkienEntities;

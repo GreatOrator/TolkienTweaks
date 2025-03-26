@@ -2,7 +2,6 @@ package com.greatorator.tolkienmobs.entity.monster;
 
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
-import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
