@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.block.custom.entity;
 
+import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.BackpackBlock;
 import com.greatorator.tolkienmobs.block.custom.SleepingBagBlock;
 import com.greatorator.tolkienmobs.containers.BackpackBlockContainer;
@@ -327,6 +328,10 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, To
     @Override
     public BackpackSettings getBackpackSettings() {
         return backpackSettings;
+    }
+
+    public void openUpgradeScreen() {
+        TolkienMobsMain.LOGGER.warn("So far, so good");
     }
 
     @Override
