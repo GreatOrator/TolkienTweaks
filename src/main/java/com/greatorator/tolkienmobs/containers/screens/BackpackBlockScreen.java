@@ -13,6 +13,7 @@ import com.greatorator.tolkienmobs.util.MouseUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -39,6 +40,7 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
     private FluidTankRenderer fluidRenderer;
     protected BackpackSettings backpackSettings;
     protected boolean renderablesChanged = false;
+    private Button configureButton;
     protected List<AbstractWidget> widgetsToRemove = new ArrayList<>();
     protected List<AbstractWidget> widgetsToAdd = new ArrayList<>();
 
@@ -156,9 +158,11 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
             }
         }));
 
-        addRenderableWidget(ToggleButtonFactory.UPGRADE_TOGGLE_BUTTON(offsetX + 209, offsetY + 156, backpackSettings.upgrade, b -> {
-            backpackSettings.upgrade = !backpackSettings.upgrade;
-        }));
+        addRenderableWidget(ToggleButtonFactory.UPGRADE_TOGGLE_BUTTON(offsetX + 209, offsetY + 156, backpackSettings.upgrade, this::onConfigurePressed));
+    }
+
+    private void onConfigurePressed(Button b) {
+        menu.openConfigurationScreen();
     }
 
     public void updateRenderables() {
