@@ -1,44 +1,30 @@
 package com.greatorator.tolkienmobs.containers.screens;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
 import com.greatorator.tolkienmobs.containers.BackpackBlockContainer;
 import com.greatorator.tolkienmobs.containers.handlers.FluidTankRenderer;
 import com.greatorator.tolkienmobs.containers.handlers.ToggleButtonFactory;
-import com.greatorator.tolkienmobs.containers.widget.NumberButton;
 import com.greatorator.tolkienmobs.containers.widget.ToggleButton;
 import com.greatorator.tolkienmobs.containers.widget.TolkienButton;
 import com.greatorator.tolkienmobs.network.BackpackSettingsUpdateManager;
-import com.greatorator.tolkienmobs.network.KeyStoneRedstoneUpdateManager;
-import com.greatorator.tolkienmobs.network.KeyStoneSettingsUpdateManager;
 import com.greatorator.tolkienmobs.util.BackpackSettings;
 import com.greatorator.tolkienmobs.util.GeneralUtility;
-import com.greatorator.tolkienmobs.util.KeyStoneSettings;
 import com.greatorator.tolkienmobs.util.MouseUtil;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
