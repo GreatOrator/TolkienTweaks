@@ -121,5 +121,11 @@ public class TolkienItemTagProvider extends ItemTagsProvider {
                 .add(TolkienItems.DRINK_ELF_VITALITY.get())
                 .add(TolkienItems.DRINK_ERU_BLESSING.get())
                 .add(TolkienItems.DRINK_PERSONAL_BLACKSMITH.get());
+        tag(TolkienTags.Items.UPGRADES)
+                .add(TolkienItems.ITEM_BACKPACK_UPGRADE_SIZE.get())
+                .add(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID.get())
+                .add(TolkienItems.ITEM_BACKPACK_UPGRADE_CRAFTING.get())
+                .add(TolkienItems.ITEM_BACKPACK_UPGRADE_SLEEPING.get())
+                .add(TolkienItems.ITEM_BACKPACK_UPGRADE_CAMPFIRE.get());
     }
 }
