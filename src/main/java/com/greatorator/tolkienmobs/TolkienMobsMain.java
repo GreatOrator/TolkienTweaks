@@ -5,8 +5,6 @@ import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
 import com.greatorator.tolkienmobs.containers.screens.*;
 import com.greatorator.tolkienmobs.entity.ambient.render.*;
 import com.greatorator.tolkienmobs.entity.boss.render.GoblinKingRender;
-import com.greatorator.tolkienmobs.entity.monster.MinotaurEntity;
-import com.greatorator.tolkienmobs.entity.monster.MordorOrcEntity;
 import com.greatorator.tolkienmobs.entity.monster.render.*;
 import com.greatorator.tolkienmobs.entity.npc.render.*;
 import com.greatorator.tolkienmobs.entity.passive.render.*;
@@ -284,6 +282,7 @@ public class TolkienMobsMain {
             event.register(TolkienContainers.FIREPLACE_CONTAINER.get(), FireplaceScreen::new);
             event.register(TolkienContainers.PIGGY_BANK_CONTAINER.get(), PiggyBankScreen::new);
             event.register(TolkienContainers.BACKPACK_CONTAINER.get(), BackpackBlockScreen::new);
+            event.register(TolkienContainers.BACKPACK_UPGRADE_CONTAINER.get(), BackpackUpgradeScreen::new);
             event.register(TolkienContainers.LOCKABLE_CHEST_CONTAINER.get(), LockableChestScreen::new);
             event.register(TolkienContainers.LOCKABLE_TREASURE_CHEST_CONTAINER.get(), LockableTreasureChestScreen::new);
             event.register(TolkienContainers.LOCKABLE_DOUBLE_CHEST_CONTAINER.get(), LockableDoubleChestScreen::new);

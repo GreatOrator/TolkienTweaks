@@ -331,6 +331,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add("screen.tolkienmobs.backpack.campfire.remove", "Pick up Campfire");
             this.add("screen.tolkienmobs.backpack.close.upgrade", "Close upgrade window");
             this.add("screen.tolkienmobs.backpack.open.upgrade", "Open upgrade window");
+            this.add("screen.tolkienmobs.backpack.backpack_upgrade", "Backpack Upgrades");
             this.add("screen.tolkienmobs.backpack.fluid", "Fluid:");
             this.add("screen.tolkienmobs.backpack.fluid_storage", "Fluid Storage");
 
