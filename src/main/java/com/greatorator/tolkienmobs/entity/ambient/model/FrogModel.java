@@ -3,17 +3,12 @@ package com.greatorator.tolkienmobs.entity.ambient.model;
 
 import com.greatorator.tolkienmobs.entity.ambient.FrogEntity;
 import com.greatorator.tolkienmobs.entity.ambient.render.FrogRender;
-import com.greatorator.tolkienmobs.entity.monster.BarrowWightEntity;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.model.data.EntityModelData;
-
-import javax.annotation.Nullable;
-import java.util.List;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 

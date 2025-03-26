@@ -1,9 +1,7 @@
 package com.greatorator.tolkienmobs.entity.monster.model;
 
 
-import com.greatorator.tolkienmobs.entity.monster.BrigandEntity;
 import com.greatorator.tolkienmobs.entity.monster.MirkwoodSpiderEntity;
-import com.greatorator.tolkienmobs.entity.monster.render.BrigandRender;
 import com.greatorator.tolkienmobs.entity.monster.render.MirkwoodSpiderRender;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.animation.AnimationState;

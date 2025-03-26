@@ -1,9 +1,6 @@
 {
   "type": "neoforge:add_features",
-  "biomes": [
-    "minecraft:plains",
-    "minecraft:birch_forest"
-  ],
+  "biomes": "tolkienmobs:fangorn_forest",
   "features": "tolkienmobs:fangornoak_placed",
   "step": "vegetal_decoration"
 }

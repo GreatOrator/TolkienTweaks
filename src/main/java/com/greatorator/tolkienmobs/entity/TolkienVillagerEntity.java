@@ -1,13 +1,8 @@
 package com.greatorator.tolkienmobs.entity;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
-import com.greatorator.tolkienmobs.entity.npc.HumanEntity;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
-import com.greatorator.tolkienmobs.init.TolkienVillagers;
-import com.mojang.serialization.DataResult;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -18,8 +13,6 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.FleeSunGoal;
-import net.minecraft.world.entity.ai.goal.RestrictSunGoal;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.npc.VillagerData;
 import net.minecraft.world.entity.npc.VillagerProfession;
@@ -27,7 +20,6 @@ import net.minecraft.world.entity.npc.VillagerType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
@@ -37,8 +29,6 @@ import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nonnull;
-import java.util.Objects;
-import java.util.function.Consumer;
 
 public class TolkienVillagerEntity extends Villager implements GeoEntity {
     private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(TolkienVillagerEntity.class, EntityDataSerializers.INT);

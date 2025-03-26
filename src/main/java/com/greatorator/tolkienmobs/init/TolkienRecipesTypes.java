@@ -1,10 +1,8 @@
 package com.greatorator.tolkienmobs.init;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.recipe.FireplaceRecipe;
 import com.greatorator.tolkienmobs.recipe.TrinketRecipe;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;

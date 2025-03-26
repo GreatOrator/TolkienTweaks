@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.block.custom.entity;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.containers.KeyItemContainer;
 import com.greatorator.tolkienmobs.containers.LockableChestContainer;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;

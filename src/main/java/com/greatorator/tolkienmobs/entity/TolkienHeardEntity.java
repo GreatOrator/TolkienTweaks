@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.entity;
 
-import com.greatorator.tolkienmobs.init.TolkienTags;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;

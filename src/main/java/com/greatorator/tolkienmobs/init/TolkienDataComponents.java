@@ -1,15 +1,11 @@
 package com.greatorator.tolkienmobs.init;
 
 import com.greatorator.tolkienmobs.handler.data.TrinketComponent;
-import com.greatorator.tolkienmobs.network.ChestCodeComponent;
 import com.greatorator.tolkienmobs.network.KeyCodeComponent;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -17,7 +13,6 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
-import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;

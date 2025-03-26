@@ -1,38 +1,27 @@
 package com.greatorator.tolkienmobs.entity.monster;
 
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
-import com.greatorator.tolkienmobs.entity.boss.GoblinKingEntity;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
-import com.greatorator.tolkienmobs.init.TolkienItems;
-import com.greatorator.tolkienmobs.init.TolkienSounds;
 import net.minecraft.Util;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.*;
 import software.bernie.geckolib.util.GeckoLibUtil;
-
-import java.time.LocalDate;
-import java.time.temporal.ChronoField;
 
 public class DeepClawEntity extends TolkienMonsterEntity implements GeoEntity {
     private static final EntityDataAccessor<Integer> VARIANT =

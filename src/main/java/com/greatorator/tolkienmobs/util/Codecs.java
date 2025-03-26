@@ -22,7 +22,6 @@ import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
-import com.greatorator.tolkienmobs.world.components.structure.placements.AvoidLandmarkGridPlacement;
 
 import java.util.Arrays;
 import java.util.List;

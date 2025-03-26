@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.entity.ambient.model;
 
-import com.greatorator.tolkienmobs.entity.ambient.FrogEntity;
 import com.greatorator.tolkienmobs.entity.ambient.ThrushEntity;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.animation.AnimationState;

@@ -1,0 +1,71 @@
+{
+  "carvers": {},
+  "downfall": 0.0,
+  "effects": {
+    "fog_color": 12638463,
+    "foliage_color": 2329,
+    "grass_color": 2329,
+    "mood_sound": {
+      "block_search_extent": 8,
+      "offset": 2.0,
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000
+    },
+    "particle": {
+      "options": {
+        "type": "minecraft:ash"
+      },
+      "probability": 0.00625
+    },
+    "sky_color": 7254527,
+    "water_color": 0,
+    "water_fog_color": 329011
+  },
+  "features": [
+    [],
+    [
+      "minecraft:lake_lava_surface"
+    ],
+    [],
+    [],
+    [],
+    [],
+    [
+      "tolkienmobs:morguliron_ore_placed"
+    ],
+    [],
+    [],
+    [
+      "tolkienmobs:deadwood_placed",
+      "minecraft:patch_grass_jungle",
+      "tolkienmobs:deadwood_fallen_log",
+      "tolkienmobs:rockpile",
+      "tolkienmobs:stone_spike"
+    ]
+  ],
+  "has_precipitation": false,
+  "spawn_costs": {
+    "tolkienmobs:entityttmmordororc": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    }
+  },
+  "spawners": {
+    "ambient": [],
+    "axolotls": [],
+    "creature": [],
+    "misc": [],
+    "monster": [
+      {
+        "type": "tolkienmobs:entityttmmordororc",
+        "maxCount": 1,
+        "minCount": 1,
+        "weight": 5
+      }
+    ],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "temperature": 2.0
+}

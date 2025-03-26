@@ -1,19 +1,13 @@
 package com.greatorator.tolkienmobs.entity.passive.render;
 
-import com.google.common.collect.Maps;
-import com.greatorator.tolkienmobs.entity.monster.BarrowWightEntity;
 import com.greatorator.tolkienmobs.entity.passive.ShadowfaxEntity;
 import com.greatorator.tolkienmobs.entity.passive.model.ShadowfaxModel;
-import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.Util;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
-
-import java.util.Map;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 

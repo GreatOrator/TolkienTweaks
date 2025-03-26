@@ -24,7 +24,9 @@ import net.neoforged.neoforge.event.entity.player.PlayerSetSpawnEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 

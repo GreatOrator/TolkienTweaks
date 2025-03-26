@@ -2,7 +2,6 @@ package com.greatorator.tolkienmobs.block.custom;
 
 import com.greatorator.tolkienmobs.block.TolkienEntityBlock;
 import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
-import com.greatorator.tolkienmobs.block.custom.entity.CamoKeyStoneBlockEntity;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

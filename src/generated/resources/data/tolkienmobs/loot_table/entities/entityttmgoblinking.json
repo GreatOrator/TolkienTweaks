@@ -21,7 +21,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:swiftness"
+              "id": "tolkienmobs:blessing_of_eru"
             },
             {
               "add": false,
