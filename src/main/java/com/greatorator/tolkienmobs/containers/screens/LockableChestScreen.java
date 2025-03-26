@@ -1,17 +1,13 @@
 package com.greatorator.tolkienmobs.containers.screens;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
-import com.greatorator.tolkienmobs.block.custom.entity.LockableChestBlockEntity;
 import com.greatorator.tolkienmobs.containers.LockableChestContainer;
 import com.greatorator.tolkienmobs.containers.widget.ButtonTexture;
 import com.greatorator.tolkienmobs.containers.widget.TolkienButton;
 import com.greatorator.tolkienmobs.item.custom.KeyItem;
-import com.greatorator.tolkienmobs.network.KeyCodeUpdateManager;
 import com.greatorator.tolkienmobs.network.LockedChestUpdateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;

@@ -4,6 +4,7 @@ import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.BackpackBlock;
 import com.greatorator.tolkienmobs.block.custom.SleepingBagBlock;
 import com.greatorator.tolkienmobs.containers.BackpackBlockContainer;
+import com.greatorator.tolkienmobs.containers.screens.BackpackUpgradeScreen;
 import com.greatorator.tolkienmobs.handler.capability.TolkienFluidTank;
 import com.greatorator.tolkienmobs.handler.data.BackpackFluidData;
 import com.greatorator.tolkienmobs.handler.interfaces.BackpackFluids;
@@ -14,6 +15,8 @@ import com.greatorator.tolkienmobs.util.BackpackSettings;
 import com.greatorator.tolkienmobs.util.KeyStoneCode;
 import com.greatorator.tolkienmobs.util.KeyStoneSettings;
 import com.greatorator.tolkienmobs.util.RedstoneControlData;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -51,6 +54,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, To
     public final BackpackFluidData backpackFluidData;
     public int BUCKET_SLOTS = 1;
     public BackpackSettings backpackSettings = new BackpackSettings(true, true, true);
+    private static final Component NAME = Component.translatable("screen.tolkienmobs.backpack.backpack_upgrade");
     public final ItemStackHandler itemHandler = new ItemStackHandler(72) {
         @Override
         protected int getStackLimit(int slot, ItemStack stack) {
@@ -332,7 +336,20 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, To
 
     public void openUpgradeScreen() {
         TolkienMobsMain.LOGGER.warn("So far, so good");
+//        displayBackpackUpgradeScreen(this);
     }
+
+    public static void runOnRenderThread(Runnable runnable) {
+        Minecraft.getInstance().execute(runnable);
+    }
+
+//    public void displayBackpackUpgradeScreen(BackpackBlockEntity entity) {
+//        openMenu(new BackpackUpgradeScreen(entity, Minecraft.getInstance().screen));
+//    }
+
+//    public static void openMenu(Screen screen) {
+//        runOnRenderThread(() -> Minecraft.getInstance().setScreen(screen));
+//    }
 
     @Override
     public RedstoneControlData getRedstoneControlData() {
