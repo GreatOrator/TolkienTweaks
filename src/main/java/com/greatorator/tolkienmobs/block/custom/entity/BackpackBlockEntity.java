@@ -4,6 +4,7 @@ import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.BackpackBlock;
 import com.greatorator.tolkienmobs.block.custom.SleepingBagBlock;
 import com.greatorator.tolkienmobs.containers.BackpackBlockContainer;
+import com.greatorator.tolkienmobs.containers.BackpackUpgradeContainer;
 import com.greatorator.tolkienmobs.containers.screens.BackpackUpgradeScreen;
 import com.greatorator.tolkienmobs.handler.capability.TolkienFluidTank;
 import com.greatorator.tolkienmobs.handler.data.BackpackFluidData;
@@ -336,20 +337,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, To
 
     public void openUpgradeScreen() {
         TolkienMobsMain.LOGGER.warn("So far, so good");
-//        displayBackpackUpgradeScreen(this);
     }
-
-    public static void runOnRenderThread(Runnable runnable) {
-        Minecraft.getInstance().execute(runnable);
-    }
-
-//    public void displayBackpackUpgradeScreen(BackpackBlockEntity entity) {
-//        openMenu(new BackpackUpgradeScreen(entity, Minecraft.getInstance().screen));
-//    }
-
-//    public static void openMenu(Screen screen) {
-//        runOnRenderThread(() -> Minecraft.getInstance().setScreen(screen));
-//    }
 
     @Override
     public RedstoneControlData getRedstoneControlData() {
