@@ -33,6 +33,7 @@ public class TolkienTags {
         public static final TagKey<Item> TRINKET = createTag("trinket");
         public static final TagKey<Item> INSECTS = createTag("insects");
         public static final TagKey<Item> ACORNS = createTag("acorns");
+        public static final TagKey<Item> UPGRADES = createTag("upgrades");
 
         private static TagKey<Item> createTag(String name) {
             return ItemTags.create(ResourceLocation.fromNamespaceAndPath(MODID, name));
