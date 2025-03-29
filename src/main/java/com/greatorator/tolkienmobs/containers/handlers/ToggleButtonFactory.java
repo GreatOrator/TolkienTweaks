@@ -61,8 +61,8 @@ public class ToggleButtonFactory {
 
     /** Upgrade Menu **/
     private static final List<TextureLocalization> UPGRADE_TOGGLE_TEXTURES = List.of(
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/close_upgrade.png"), Component.translatable("screen.tolkienmobs.backpack.open.upgrade")),
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/upgrade.png"), Component.translatable("screen.tolkienmobs.backpack.close.upgrade"))
+            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/upgrade.png"), Component.translatable("screen.tolkienmobs.backpack.open.upgrade")),
+            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/close_upgrade.png"), Component.translatable("screen.tolkienmobs.backpack.close.upgrade"))
     );
     public static ToggleButton UPGRADE_TOGGLE_BUTTON(int x, int y, boolean startingValue, Button.OnPress onPress) {
         return new ToggleButton(x, y, STANDARD_WIDTH, STANDARD_HEIGHT, UPGRADE_TOGGLE_TEXTURES, startingValue, onPress);

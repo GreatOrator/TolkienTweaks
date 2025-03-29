@@ -121,10 +121,6 @@ public class BackpackBlockContainer extends TolkienContainer{
         }
     }
 
-    public void openConfigurationScreen() {
-        this.tileEntity.openUpgradeScreen();
-    }
-
     // Crafting
     private void addCraftingSlots() {
         this.addSlot(this.resultSlot);

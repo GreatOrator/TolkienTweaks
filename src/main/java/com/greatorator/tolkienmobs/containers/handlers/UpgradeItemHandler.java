@@ -10,6 +10,7 @@ import net.neoforged.neoforge.items.SlotItemHandler;
 public class UpgradeItemHandler extends SlotItemHandler {
     private final IItemHandler itemHandler;
     protected final int index;
+    protected boolean enabled = true;
 
     public UpgradeItemHandler(IItemHandler itemHandler, int slotIndex, int xPosition, int yPosition) {
         super(itemHandler, slotIndex, xPosition, yPosition);
@@ -20,5 +21,15 @@ public class UpgradeItemHandler extends SlotItemHandler {
 
     public boolean mayPlace(ItemStack stack) {
         return stack.is(TolkienTags.Items.UPGRADES) && this.itemHandler.isItemValid(this.index, stack);
+    }
+
+    @Override
+    public boolean isActive() {
+        return enabled;
+    }
+
+    public UpgradeItemHandler setEnabled(boolean enabled) {
+        this.enabled = enabled;
+        return this;
     }
 }
