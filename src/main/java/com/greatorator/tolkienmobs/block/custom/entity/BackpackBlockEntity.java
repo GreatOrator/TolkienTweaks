@@ -59,7 +59,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, To
     public final ItemStackHandler itemHandler = new ItemStackHandler(72) {
         @Override
         protected int getStackLimit(int slot, ItemStack stack) {
-            return 72;
+            return 64;
         }
 
         @Override
@@ -70,7 +70,20 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, To
             }
         }
     };
+    public final ItemStackHandler upgradeItemHandler = new ItemStackHandler(9) {
+        @Override
+        protected int getStackLimit(int slot, ItemStack stack) {
+            return 64;
+        }
 
+        @Override
+        protected void onContentsChanged(int slot) {
+            setChanged();
+            if(!level.isClientSide()) {
+                level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+            }
+        }
+    };
     private final FluidTank FLUID_TANK = createFluidTank();
     private FluidTank createFluidTank() {
         return new FluidTank(64000) {
@@ -248,9 +261,9 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, To
     }
 
     private void transferFluidFromTankToHandler() {
-        FluidActionResult result = FluidUtil.tryFillContainer(itemHandler.getStackInSlot(1), this.FLUID_TANK, Integer.MAX_VALUE, null, true);
+        FluidActionResult result = FluidUtil.tryFillContainer(itemHandler.getStackInSlot(0), this.FLUID_TANK, Integer.MAX_VALUE, null, true);
         if(result.result != ItemStack.EMPTY) {
-            itemHandler.setStackInSlot(1, result.result);
+            itemHandler.setStackInSlot(0, result.result);
         }
     }
 
@@ -335,6 +348,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, To
         return backpackSettings;
     }
 
+    /** Unused Settings */
     @Override
     public RedstoneControlData getRedstoneControlData() {
         return null;

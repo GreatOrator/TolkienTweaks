@@ -105,6 +105,9 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.block.tolkienmobs.backpack"), 64, 3, 8552833, false);
+        if (backpackSettings.upgrade) {
+            guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.backpack.backpack_upgrade"), -84, 29, 8552833, false);
+        }
         guiGraphics.drawString(this.font, this.playerInventoryTitle, 64, 163, 8552833, false);
         int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
@@ -164,13 +167,16 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
     }
 
     private void toggleUpgradeSlots() {
-        for (int i = 83; i < 83 + BackpackUpgradeContainer.SLOTS; i++) {
-            if (i >= container.slots.size()) continue;
-            Slot slot = container.getSlot(i);
-            if (!(slot instanceof UpgradeItemHandler)) continue;
-            TolkienMobsMain.LOGGER.warn(String.valueOf(upgradeContainer));
-            ((UpgradeItemHandler) slot).setEnabled(upgradeContainer);
+        if (upgradeContainer) {
+            TolkienMobsMain.LOGGER.warn(String.valueOf(true));
         }
+//        for (int i = 9; i < 9; i++) {
+//            if (i >= container.slots.size()) continue;
+//            Slot slot = container.getSlot(i);
+//            if (!(slot instanceof UpgradeItemHandler)) continue;
+//            TolkienMobsMain.LOGGER.warn(String.valueOf(upgradeContainer));
+//            ((UpgradeItemHandler) slot).setEnabled(upgradeContainer);
+//        }
     }
 
     public void addUpgradeButtons() {
@@ -199,7 +205,7 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
         addRenderableWidget(ToggleButtonFactory.UPGRADE_TOGGLE_BUTTON(offsetX + 209, offsetY + 156, backpackSettings.upgrade, b -> {
             backpackSettings.upgrade = !backpackSettings.upgrade;
             PacketDistributor.sendToServer(new BackpackSettingsUpdateManager(backpackSettings.sleepingBag, backpackSettings.campfire, backpackSettings.upgrade));
-            Minecraft.getInstance().setScreen(null);
+//            Minecraft.getInstance().setScreen(null);
         }));
 
     }
