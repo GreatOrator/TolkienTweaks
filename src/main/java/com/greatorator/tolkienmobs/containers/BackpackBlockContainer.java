@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.containers;
 
 import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
 import com.greatorator.tolkienmobs.containers.handlers.BackpackItemStackHandler;
+import com.greatorator.tolkienmobs.containers.handlers.UpgradeItemHandler;
 import com.greatorator.tolkienmobs.init.TolkienContainers;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
@@ -19,6 +20,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
 
 import java.util.Optional;
 
@@ -35,6 +37,8 @@ public class BackpackBlockContainer extends TolkienContainer{
     public int BUCKET_SLOTS = 1;
     public static final int COLUMNS = 9;
     public static final int ROWS = 8;
+    public static final int UPGRADE_COLUMNS = 3;
+    public static final int UPGRADE_ROWS = 3;
 
     public BackpackBlockContainer(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
         this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()));
@@ -50,10 +54,12 @@ public class BackpackBlockContainer extends TolkienContainer{
         this.fluidData = tileEntity.getFluidContainerData();
 
         addContainerSlots(this.tileEntity.itemHandler, COLUMNS, ROWS);
+        addUpgradeSlots(this.tileEntity.upgradeItemHandler, UPGRADE_COLUMNS, UPGRADE_ROWS);
 
         addPlayerInventory(inv, 65, 146);
         addPlayerHotbar(inv, 65, 146);
         addPlayerArmorInventory(inv);
+
         addCraftingSlots();
         addFluidSlots();
         addDataSlots(fluidData);
@@ -121,6 +127,20 @@ public class BackpackBlockContainer extends TolkienContainer{
         }
     }
 
+    void addUpgradeSlots(IItemHandler itemHandler, int cols, int rows) {
+        int slot_index = 0;
+
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                int x = (-83) + col * 18;
+                int y = 41 + row * 18;
+
+                this.addSlot(new UpgradeItemHandler(itemHandler, slot_index, x, y));
+                slot_index++;
+            }
+        }
+    }
+
     // Crafting
     private void addCraftingSlots() {
         this.addSlot(this.resultSlot);
@@ -169,6 +189,13 @@ public class BackpackBlockContainer extends TolkienContainer{
         // Fluid Tank
     public void addFluidSlots() {
         fluidHandler = tileEntity.getMachineHandler();
-        addSlotRange(fluidHandler, 0, 38, 11, BUCKET_SLOTS, 18);
+            addSlotRange(fluidHandler, 0, 38, 11, BUCKET_SLOTS, 18);
+//        this.addSlot(new SlotItemHandler(fluidHandler, 0, 38, 11));
+//        this.addSlot(new SlotItemHandler(fluidHandler, 1, 38, 58) {
+//            @Override
+//            public int getMaxStackSize() {
+//                return 1;
+//            }
+//        });
     }
 }

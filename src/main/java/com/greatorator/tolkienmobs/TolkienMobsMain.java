@@ -78,9 +78,8 @@ public class TolkienMobsMain {
     //    -Trinket Table Recipes
     //      -Working in Trinket Table
     //    -Backpack
-    //        -Upgrade System
+    //        -Upgrade slots Show/Hide
     //        -Bucket inside Inventory not working
-    //        -Deploy buttons work, but wonky
     //  -Integration
     //    -Curios
     //    -JEI
