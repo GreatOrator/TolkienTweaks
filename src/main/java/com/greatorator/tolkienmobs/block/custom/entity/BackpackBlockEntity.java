@@ -335,10 +335,6 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, To
         return backpackSettings;
     }
 
-    public void openUpgradeScreen() {
-        TolkienMobsMain.LOGGER.warn("So far, so good");
-    }
-
     @Override
     public RedstoneControlData getRedstoneControlData() {
         return null;

@@ -1,19 +1,22 @@
 package com.greatorator.tolkienmobs.containers.screens;
 
+import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
 import com.greatorator.tolkienmobs.containers.BackpackBlockContainer;
+import com.greatorator.tolkienmobs.containers.BackpackUpgradeContainer;
 import com.greatorator.tolkienmobs.containers.handlers.FluidTankRenderer;
 import com.greatorator.tolkienmobs.containers.handlers.ToggleButtonFactory;
+import com.greatorator.tolkienmobs.containers.handlers.UpgradeItemHandler;
 import com.greatorator.tolkienmobs.containers.widget.ToggleButton;
 import com.greatorator.tolkienmobs.containers.widget.TolkienButton;
 import com.greatorator.tolkienmobs.network.BackpackSettingsUpdateManager;
 import com.greatorator.tolkienmobs.util.BackpackSettings;
 import com.greatorator.tolkienmobs.util.GeneralUtility;
 import com.greatorator.tolkienmobs.util.MouseUtil;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -36,11 +39,11 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
     private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_full_upgrade_2.png");
     protected final ResourceLocation FLUIDBAR = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/tank_overlay.png");
     protected BackpackBlockContainer container;
+    protected BackpackSettings backpackSettings;
+    private boolean upgradeContainer;
     private final BackpackBlockEntity tileEntity;
     private FluidTankRenderer fluidRenderer;
-    protected BackpackSettings backpackSettings;
     protected boolean renderablesChanged = false;
-    private Button configureButton;
     protected List<AbstractWidget> widgetsToRemove = new ArrayList<>();
     protected List<AbstractWidget> widgetsToAdd = new ArrayList<>();
 
@@ -51,6 +54,7 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
         this.container = container;
         tileEntity = container.tileEntity;
         this.backpackSettings = tileEntity.getBackpackSettings();
+        upgradeContainer = backpackSettings.upgrade;
     }
 
     @Override
@@ -61,6 +65,13 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
         this.titleLabelY = 10000;
         assignFluidRenderer();
         addUpgradeButtons();
+    }
+
+    @Override
+    protected boolean hasClickedOutside(double mouseX, double mouseY, int guiLeftIn, int guiTopIn, int mouseButton) {
+        if (upgradeContainer)
+            return mouseX < (double) guiLeftIn - 100 || mouseY < (double) guiTopIn || mouseX >= (double) (guiLeftIn + this.imageWidth) || mouseY >= (double) (guiTopIn + this.imageHeight);
+        return super.hasClickedOutside(mouseX, mouseY, guiLeftIn, guiTopIn, mouseButton);
     }
 
     private void assignFluidRenderer() {
@@ -77,6 +88,7 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        validateUpgrade();
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
@@ -119,6 +131,11 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
         int y = (height - imageHeight) / 2;
 
         fluidRenderer.render(guiGraphics, x, y + 4, menu.tileEntity.getFluid());
+        if (upgradeContainer) {
+            ResourceLocation upgradeGUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_upgrade.png");
+            RenderSystem.setShaderTexture(0, upgradeGUI);
+            guiGraphics.blit(upgradeGUI, getGuiLeft() - 100, getGuiTop() + 24, 0, 0, this.imageWidth, this.imageHeight);
+        }
     }
 
     @Override
@@ -133,6 +150,27 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
             }
         }
         return ret;
+    }
+
+    public boolean validateUpgrade() {
+        if (backpackSettings.upgrade){
+            upgradeContainer = true;
+            toggleUpgradeSlots();
+            return true;
+        }
+        upgradeContainer = false;
+        toggleUpgradeSlots();
+        return false;
+    }
+
+    private void toggleUpgradeSlots() {
+        for (int i = 83; i < 83 + BackpackUpgradeContainer.SLOTS; i++) {
+            if (i >= container.slots.size()) continue;
+            Slot slot = container.getSlot(i);
+            if (!(slot instanceof UpgradeItemHandler)) continue;
+            TolkienMobsMain.LOGGER.warn(String.valueOf(upgradeContainer));
+            ((UpgradeItemHandler) slot).setEnabled(upgradeContainer);
+        }
     }
 
     public void addUpgradeButtons() {
@@ -158,11 +196,12 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
             }
         }));
 
-        addRenderableWidget(ToggleButtonFactory.UPGRADE_TOGGLE_BUTTON(offsetX + 209, offsetY + 156, backpackSettings.upgrade, this::onConfigurePressed));
-    }
+        addRenderableWidget(ToggleButtonFactory.UPGRADE_TOGGLE_BUTTON(offsetX + 209, offsetY + 156, backpackSettings.upgrade, b -> {
+            backpackSettings.upgrade = !backpackSettings.upgrade;
+            PacketDistributor.sendToServer(new BackpackSettingsUpdateManager(backpackSettings.sleepingBag, backpackSettings.campfire, backpackSettings.upgrade));
+            Minecraft.getInstance().setScreen(null);
+        }));
 
-    private void onConfigurePressed(Button b) {
-        menu.openConfigurationScreen();
     }
 
     public void updateRenderables() {

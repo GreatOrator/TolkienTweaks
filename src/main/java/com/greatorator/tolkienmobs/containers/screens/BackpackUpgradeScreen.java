@@ -19,16 +19,15 @@ public class BackpackUpgradeScreen extends AbstractContainerScreen<BackpackUpgra
     private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_upgrade.png");
     private static final Component NAME = Component.translatable("screen.tolkienmobs.backpack.backpack_upgrade");
 
-    public BackpackUpgradeScreen(BackpackUpgradeContainer menu, Inventory playerInventory) {
+    public BackpackUpgradeScreen(BackpackUpgradeContainer menu, Inventory playerInventory, Component name) {
         super(menu, playerInventory, NAME);
 
-        this.imageHeight = 133;
-        this.imageWidth = 176;
+        this.imageHeight = 86;
+        this.imageWidth = 86;
     }
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
@@ -36,7 +35,6 @@ public class BackpackUpgradeScreen extends AbstractContainerScreen<BackpackUpgra
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.backpack.backpack_upgrade"), -15, 3, 8552833, false);
-        guiGraphics.drawString(this.font, this.playerInventoryTitle, -15, 128, 8552833, false);
     }
 
     @Override
