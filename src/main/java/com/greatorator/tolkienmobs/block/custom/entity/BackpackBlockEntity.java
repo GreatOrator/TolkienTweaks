@@ -1,23 +1,18 @@
 package com.greatorator.tolkienmobs.block.custom.entity;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.BackpackBlock;
 import com.greatorator.tolkienmobs.block.custom.SleepingBagBlock;
 import com.greatorator.tolkienmobs.containers.BackpackBlockContainer;
-import com.greatorator.tolkienmobs.containers.BackpackUpgradeContainer;
-import com.greatorator.tolkienmobs.containers.screens.BackpackUpgradeScreen;
 import com.greatorator.tolkienmobs.handler.capability.TolkienFluidTank;
 import com.greatorator.tolkienmobs.handler.data.BackpackFluidData;
 import com.greatorator.tolkienmobs.handler.interfaces.BackpackFluids;
 import com.greatorator.tolkienmobs.handler.interfaces.TolkienRegistry;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
+import com.greatorator.tolkienmobs.init.TolkienItems;
+import com.greatorator.tolkienmobs.init.TolkienTags;
+import com.greatorator.tolkienmobs.item.custom.UpgradeItem;
 import com.greatorator.tolkienmobs.network.BackpackSettingsUpdateManager;
-import com.greatorator.tolkienmobs.util.BackpackSettings;
-import com.greatorator.tolkienmobs.util.KeyStoneCode;
-import com.greatorator.tolkienmobs.util.KeyStoneSettings;
-import com.greatorator.tolkienmobs.util.RedstoneControlData;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
+import com.greatorator.tolkienmobs.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -47,15 +42,20 @@ import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Predicate;
 
 public class BackpackBlockEntity extends BlockEntity implements MenuProvider, TolkienRegistry, BackpackFluids {
     public final BackpackFluidData backpackFluidData;
     public int BUCKET_SLOTS = 1;
     public BackpackSettings backpackSettings = new BackpackSettings(true, true, true);
-    private static final Component NAME = Component.translatable("screen.tolkienmobs.backpack.backpack_upgrade");
+    public BackpackUpgrades backpackUpgrades = new BackpackUpgrades(false, false, false, false, false);
+    public BackpackFluidUpgrades backpackFluidUpgrades = new BackpackFluidUpgrades(false, false, false, false, false);
+    private static final Predicate<ItemStack> IS_UPGRADE_ITEM = stack -> !stack.isEmpty() && isUpgradeItem(stack);
     public final ItemStackHandler itemHandler = new ItemStackHandler(72) {
         @Override
         protected int getStackLimit(int slot, ItemStack stack) {
@@ -70,6 +70,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, To
             }
         }
     };
+
     public final ItemStackHandler upgradeItemHandler = new ItemStackHandler(9) {
         @Override
         protected int getStackLimit(int slot, ItemStack stack) {
@@ -86,7 +87,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, To
     };
     private final FluidTank FLUID_TANK = createFluidTank();
     private FluidTank createFluidTank() {
-        return new FluidTank(64000) {
+        return new FluidTank(getMaxMB()) {
             @Override
             protected void onContentsChanged() {
                 setChanged();
@@ -141,8 +142,11 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, To
     @Override
     protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
         pTag.put("inventory", itemHandler.serializeNBT(pRegistries));
+        pTag.put("upgradeInventory", upgradeItemHandler.serializeNBT(pRegistries));
         pTag = FLUID_TANK.writeToNBT(pRegistries, pTag);
         this.saveBackpackSettings(pTag);
+        this.saveBackpackUpgrades(pTag);
+        this.saveBackpackFluidUpgrades(pTag);
 
         super.saveAdditional(pTag, pRegistries);
     }
@@ -152,8 +156,11 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, To
         super.loadAdditional(pTag, pRegistries);
 
         itemHandler.deserializeNBT(pRegistries, pTag.getCompound("inventory"));
+        upgradeItemHandler.deserializeNBT(pRegistries, pTag.getCompound("upgradeInventory"));
         FLUID_TANK.readFromNBT(pRegistries, pTag);
         this.loadBackpackSettings(pTag);
+        this.loadBackpackUpgrades(pTag);
+        this.loadBackpackFluidUpgrades(pTag);
     }
 
     @Nullable
@@ -167,9 +174,60 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, To
         super.onDataPacket(net, pkt, pRegistries);
     }
 
-    // Fluid Handling
+    /** Upgrade Handling */
+    private static boolean isUpgradeItem(ItemStack stack) {
+        return stack.is(TolkienTags.Items.UPGRADES);
+    }
+
+    public void getUpgradeItems() {
+        getUpgradeItems(this.upgradeItemHandler, IS_UPGRADE_ITEM);
+    }
+
+    private boolean getUpgradeItems(IItemHandler inv, Predicate<ItemStack> isUpgradeStack) {
+        boolean hasUpgrade = false;
+        for (int i = 0; i < 9; i++) {
+            inv = this.upgradeItemHandler;
+            ItemStack invStack = inv.getStackInSlot(i);
+            if (isUpgradeStack.test(invStack) && invStack.getItem() instanceof UpgradeItem) {
+                if (invStack.getItem() == TolkienItems.ITEM_BACKPACK_UPGRADE_CAMPFIRE.get()) {
+                    this.backpackUpgrades.campfire = true;
+                } else if (invStack.getItem() == TolkienItems.ITEM_BACKPACK_UPGRADE_SLEEPING.get()) {
+                    this.backpackUpgrades.sleepingBag = true;
+                } else if (invStack.getItem() == TolkienItems.ITEM_BACKPACK_UPGRADE_CRAFTING.get()) {
+                    this.backpackUpgrades.crafting = true;
+                } else if (invStack.getItem() == TolkienItems.ITEM_BACKPACK_UPGRADE_SIZE.get()) {
+                    this.backpackUpgrades.size_upgrade = true;
+                } else if (invStack.getItem() == TolkienItems.ITEM_BACKPACK_UPGRADE_SIZE_2.get()) {
+                    this.backpackUpgrades.size_upgrade_2 = true;
+                } else if (invStack.getItem() == TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID.get()) {
+                    this.backpackFluidUpgrades.fluid_tank = true;
+                } else if (invStack.getItem() == TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_2.get()) {
+                    this.backpackFluidUpgrades.fluid_tank_2 = true;
+                } else if (invStack.getItem() == TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_3.get()) {
+                    this.backpackFluidUpgrades.fluid_tank_3 = true;
+                } else if (invStack.getItem() == TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_4.get()) {
+                    this.backpackFluidUpgrades.fluid_tank_4 = true;
+                } else if (invStack.getItem() == TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_5.get()) {
+                    this.backpackFluidUpgrades.fluid_tank_5 = true;
+                }
+            }
+        }
+        return hasUpgrade;
+    }
+
+    /** Fluid Handling */
+    @Override
     public int getMaxMB() {
-        return 8000;
+        if (this.backpackFluidUpgrades.fluid_tank_5) {
+            return Integer.MAX_VALUE;
+        }else if (this.backpackFluidUpgrades.fluid_tank_4) {
+            return 128000;
+        }else if (this.backpackFluidUpgrades.fluid_tank_3) {
+            return 32000;
+        }else if (this.backpackFluidUpgrades.fluid_tank_2) {
+            return 8000;
+        }
+        return 2000;
     }
 
     @Override
@@ -346,6 +404,16 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, To
     @Override
     public BackpackSettings getBackpackSettings() {
         return backpackSettings;
+    }
+
+    @Override
+    public BackpackUpgrades getBackpackUpgrades() {
+        return backpackUpgrades;
+    }
+
+    @Override
+    public BackpackFluidUpgrades getBackpackFluidUpgrades() {
+        return backpackFluidUpgrades;
     }
 
     /** Unused Settings */

@@ -1,4 +1,4 @@
-// 1.21.1	2025-01-02T16:22:56.5543388	Item Models: tolkienmobs
+// 1.21.1	2025-03-30T07:55:06.3387912	Item Models: tolkienmobs
 2744b0cddb66f773a20c0030bb5381576093ca96 assets/tolkienmobs/models/item/ammolite_horse_armor.json
 914e29c26c212ad7b8914aa552c5ce18400b5057 assets/tolkienmobs/models/item/axe_ammolite.json
 9a08370f124e62b3c7067b9bf9976a8c617561be assets/tolkienmobs/models/item/axe_mithril.json
@@ -228,7 +228,12 @@ a3adaad00c4acf40d316ebb040d80769f93026eb assets/tolkienmobs/models/item/item_art
 5c1623ecb665e21ce235282a53d1f7730f0aff4f assets/tolkienmobs/models/item/item_backpack_upgrade_campfire.json
 6239d56a5e53c1fe0af1e73a33df5da2e6d0e17b assets/tolkienmobs/models/item/item_backpack_upgrade_crafting.json
 12be202a28a932b8075d36cc2fffd092f85a85fb assets/tolkienmobs/models/item/item_backpack_upgrade_fluid.json
+69f9ebcffdca7d78c24b7757cb7b898effec447a assets/tolkienmobs/models/item/item_backpack_upgrade_fluid_2.json
+2cfb5b37c8187771c1fa371d5ea3900fd31db97d assets/tolkienmobs/models/item/item_backpack_upgrade_fluid_3.json
+d02a47dbf2d227798f9e2c670199ee8a34785714 assets/tolkienmobs/models/item/item_backpack_upgrade_fluid_4.json
+b853061635c0e9048fcda8d0e34e8712574f0647 assets/tolkienmobs/models/item/item_backpack_upgrade_fluid_5.json
 4e98f0ae2adb2c12fb0f70d8b46aaae384c271b4 assets/tolkienmobs/models/item/item_backpack_upgrade_size.json
+bbf714e8d532890b6bf483bbb1fe20b58c5ccc9f assets/tolkienmobs/models/item/item_backpack_upgrade_size_2.json
 90731dc4c302d6a35f68700118610f5080a0556f assets/tolkienmobs/models/item/item_backpack_upgrade_sleeping.json
 932fde0e738023ec3c3a3f949af1f232e5bfeabd assets/tolkienmobs/models/item/item_beryl.json
 764023bdb3c30e2a696a110557daff8e5923ff18 assets/tolkienmobs/models/item/item_blankpaper.json

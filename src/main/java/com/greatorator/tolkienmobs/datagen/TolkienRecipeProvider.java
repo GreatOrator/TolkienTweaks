@@ -160,8 +160,13 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
         upgradeRecipe(pRecipeOutput, TolkienItems.ITEM_BACKPACK_UPGRADE_SIZE, TolkienItems.ITEM_BACKPACK_UPGRADE_BASE, TolkienItems.GEM_AMMOLITE);
         upgradeRecipe(pRecipeOutput, TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID, TolkienItems.ITEM_BACKPACK_UPGRADE_BASE, TolkienItems.BOTTLE_FANCY);
         upgradeRecipe(pRecipeOutput, TolkienItems.ITEM_BACKPACK_UPGRADE_CRAFTING, TolkienItems.ITEM_BACKPACK_UPGRADE_BASE, Blocks.CRAFTING_TABLE);
-        upgradeRecipe2(pRecipeOutput, TolkienItems.ITEM_BACKPACK_UPGRADE_SLEEPING, TolkienItems.ITEM_BACKPACK_UPGRADE_BASE, TolkienTags.Items.SLEEPING_BAG);
         upgradeRecipe(pRecipeOutput, TolkienItems.ITEM_BACKPACK_UPGRADE_CAMPFIRE, TolkienItems.ITEM_BACKPACK_UPGRADE_BASE, Blocks.CAMPFIRE);
+        upgradeRecipe2(pRecipeOutput, TolkienItems.ITEM_BACKPACK_UPGRADE_SLEEPING, TolkienItems.ITEM_BACKPACK_UPGRADE_BASE, TolkienTags.Items.SLEEPING_BAG);
+        upgradeRecipe3(pRecipeOutput, TolkienItems.ITEM_BACKPACK_UPGRADE_SIZE_2, TolkienItems.ITEM_BACKPACK_UPGRADE_SIZE, Items.IRON_INGOT);
+        upgradeRecipe3(pRecipeOutput, TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_2, TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID, Items.IRON_INGOT);
+        upgradeRecipe3(pRecipeOutput, TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_3, TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_2, Items.GOLD_INGOT);
+        upgradeRecipe3(pRecipeOutput, TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_4, TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_3, TolkienItems.INGOT_MITHRIL);
+        upgradeRecipe3(pRecipeOutput, TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_5, TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_4, TolkienItems.GEM_AMMOLITE);
 
         conversionRecipe(pRecipeOutput, TolkienBlocks.BLOCK_HALLOWED, Blocks.GRASS_BLOCK, TolkienItems.GEM_AMMOLITE);
         conversionRecipe(pRecipeOutput, TolkienBlocks.STONE_PATH, Blocks.MOSSY_COBBLESTONE, Items.IRON_PICKAXE);

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "tolkienmobs:item_backpack_upgrade_size"
+    },
+    "M": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "pattern": [
+    "AAA",
+    "AMA",
+    "AAA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:item_backpack_upgrade_size_2"
+  }
+}

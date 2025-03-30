@@ -27,7 +27,11 @@ public interface BackpackFluids {
     }
 
     default void setAmountStored(int value) {
-        getFluidTank().getFluid().setAmount(value);
+        if (getAmountStored() > 128000) {
+            getFluidTank().getFluid().setAmount(Integer.MAX_VALUE);
+        } else {
+            getFluidTank().getFluid().setAmount(value);
+        }
     }
 
     default boolean isFull() {

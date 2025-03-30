@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.containers;
 
+import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
 import com.greatorator.tolkienmobs.containers.handlers.BackpackItemStackHandler;
 import com.greatorator.tolkienmobs.containers.handlers.UpgradeItemHandler;
@@ -20,7 +21,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
 
 import java.util.Optional;
 
@@ -51,18 +51,46 @@ public class BackpackBlockContainer extends TolkienContainer{
         this.player = inv.player;
         this.access = ContainerLevelAccess.create(this.level, this.tileEntity.getBlockPos());
         this.resultSlot = new ResultSlot(this.player, this.craftSlots, this.resultSlots, 0, 19, 151);
-        this.fluidData = tileEntity.getFluidContainerData();
 
-        addContainerSlots(this.tileEntity.itemHandler, COLUMNS, ROWS);
-        addUpgradeSlots(this.tileEntity.upgradeItemHandler, UPGRADE_COLUMNS, UPGRADE_ROWS);
+        if(this.tileEntity.backpackFluidUpgrades.fluid_tank) {
+            this.fluidData = tileEntity.getFluidContainerData();
+        }
+
+        if (tileEntity.backpackUpgrades.size_upgrade_2) {
+            addContainerSlots(this.tileEntity.itemHandler, COLUMNS, 8);
+        } else if (tileEntity.backpackUpgrades.size_upgrade) {
+            addContainerSlots(this.tileEntity.itemHandler, COLUMNS, 6);
+        } else {
+            addContainerSlots(this.tileEntity.itemHandler, COLUMNS, 3);
+        }
+
+        if(tileEntity.backpackSettings.upgrade) {
+            addUpgradeSlots(this.tileEntity.upgradeItemHandler, UPGRADE_COLUMNS, UPGRADE_ROWS);
+        }
 
         addPlayerInventory(inv, 65, 146);
         addPlayerHotbar(inv, 65, 146);
         addPlayerArmorInventory(inv);
 
-        addCraftingSlots();
-        addFluidSlots();
-        addDataSlots(fluidData);
+        if(this.tileEntity.backpackUpgrades.crafting) {
+            addCraftingSlots();
+        }
+
+        if(this.tileEntity.backpackFluidUpgrades.fluid_tank) {
+            addFluidSlots();
+            addDataSlots(fluidData);
+        }
+
+    }
+
+    private int getSizeUpgrade() {
+        assert this.tileEntity != null;
+        if (this.tileEntity.getBackpackUpgrades().size_upgrade_2) {
+            return 8;
+        } else if (this.tileEntity.getBackpackUpgrades().size_upgrade) {
+            return 6;
+        }
+        return 3;
     }
 
     protected int getSlotStart(int originSlot, int slotStart, boolean reverse) {
@@ -77,7 +105,7 @@ public class BackpackBlockContainer extends TolkienContainer{
     public ItemStack quickMoveStack(Player playerIn, int pIndex) {
         ItemStack stack = ItemStack.EMPTY;
         Slot slot = slots.get(pIndex);
-        int slots = 72;
+        int slots = getStorageSize();
 
         if(slot != null && slot.hasItem()) {
             ItemStack stackInSlot = slot.getItem().copy();
@@ -107,6 +135,15 @@ public class BackpackBlockContainer extends TolkienContainer{
         return stack;
     }
 
+    public int getStorageSize() {
+        if (this.tileEntity.getBackpackUpgrades().size_upgrade_2) {
+            return 72;
+        } else if (this.tileEntity.getBackpackUpgrades().size_upgrade) {
+            return 54;
+        }
+        return 27;
+    }
+
     @Override
     public boolean stillValid(Player player) {
         return true;
@@ -127,13 +164,14 @@ public class BackpackBlockContainer extends TolkienContainer{
         }
     }
 
+    /** Upgrade Function */
     void addUpgradeSlots(IItemHandler itemHandler, int cols, int rows) {
         int slot_index = 0;
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                int x = (-83) + col * 18;
-                int y = 41 + row * 18;
+                int x = 237 + col * 18;
+                int y = 53 + row * 18;
 
                 this.addSlot(new UpgradeItemHandler(itemHandler, slot_index, x, y));
                 slot_index++;
@@ -141,7 +179,7 @@ public class BackpackBlockContainer extends TolkienContainer{
         }
     }
 
-    // Crafting
+    /** Crafting */
     private void addCraftingSlots() {
         this.addSlot(this.resultSlot);
         for (int i = 0; i < 3; ++i) {
@@ -186,16 +224,9 @@ public class BackpackBlockContainer extends TolkienContainer{
         }
     }
 
-        // Fluid Tank
+    /** Fluid Tank */
     public void addFluidSlots() {
         fluidHandler = tileEntity.getMachineHandler();
-            addSlotRange(fluidHandler, 0, 38, 11, BUCKET_SLOTS, 18);
-//        this.addSlot(new SlotItemHandler(fluidHandler, 0, 38, 11));
-//        this.addSlot(new SlotItemHandler(fluidHandler, 1, 38, 58) {
-//            @Override
-//            public int getMaxStackSize() {
-//                return 1;
-//            }
-//        });
+        addSlotRange(fluidHandler, 0, 38, 11, BUCKET_SLOTS, 18);
     }
 }

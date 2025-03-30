@@ -39,6 +39,10 @@ public final class PacketHandler {
                 KeyStoneDelayUpdateManager.STREAM_CODEC, KeyStoneDelayUpdateManager::handle);
         registrar.playToServer(BackpackSettingsUpdateManager.TYPE,
                 BackpackSettingsUpdateManager.STREAM_CODEC, BackpackSettingsUpdateManager::handle);
+        registrar.playToServer(BackpackUpgradesUpdateManager.TYPE,
+                BackpackUpgradesUpdateManager.STREAM_CODEC, BackpackUpgradesUpdateManager::handle);
+        registrar.playToServer(BackpackFluidUpgradesUpdateManager.TYPE,
+                BackpackFluidUpgradesUpdateManager.STREAM_CODEC, BackpackFluidUpgradesUpdateManager::handle);
     }
 
     private static void registerServerToClient(PayloadRegistrar registrar) {

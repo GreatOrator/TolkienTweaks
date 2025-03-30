@@ -1,4 +1,4 @@
-// 1.21.1	2025-03-28T17:16:00.9988372	Tags for minecraft:item mod id tolkienmobs
+// 1.21.1	2025-03-30T07:51:39.5938749	Tags for minecraft:item mod id tolkienmobs
 2f4c702ad8459691204c5fdd4e4e74995ba9f268 data/c/tags/item/foods.json
 783f2b27cdbb364620056b0af824582199d4dc97 data/minecraft/tags/item/axes.json
 5472f78327d95c0c11666f5a996b71d4e18ca49d data/minecraft/tags/item/hoes.json
@@ -12,4 +12,4 @@ f10a17797a6a55ef1aa772f3faf622969ff3e808 data/minecraft/tags/item/swords.json
 d0429b6a877ae544644772767b7132d84c481698 data/tolkienmobs/tags/item/keys.json
 27c4d225010ce6207698d54fcd8cfd130bc9c923 data/tolkienmobs/tags/item/sleeping_bag.json
 2c5afe66f71f544ea893d186ee6b839e2394a77a data/tolkienmobs/tags/item/trinket.json
-bec687b83ffcd0ea5905ccc0b6e88c6ce1edcd77 data/tolkienmobs/tags/item/upgrades.json
+974b91d0b6973ce81f90c65d36467ffb688f7a09 data/tolkienmobs/tags/item/upgrades.json

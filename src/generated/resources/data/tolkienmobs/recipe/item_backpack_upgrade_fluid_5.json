@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "tolkienmobs:item_backpack_upgrade_fluid_4"
+    },
+    "M": {
+      "item": "tolkienmobs:gem_ammolite"
+    }
+  },
+  "pattern": [
+    "AAA",
+    "AMA",
+    "AAA"
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:item_backpack_upgrade_fluid_5"
+  }
+}
