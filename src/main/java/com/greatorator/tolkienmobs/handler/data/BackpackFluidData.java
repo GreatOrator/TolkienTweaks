@@ -28,7 +28,8 @@ public class BackpackFluidData implements ContainerData {
                     fluidBackpackData.setFluidStack(BuiltInRegistries.FLUID.byId(value), fluidBackpackData.getAmountStored()); //Double it'll be used by who knows
             case 1 ->
                     fluidBackpackData.setAmountStored((fluidBackpackData.getAmountStored() & 0xFFFF0000) | (value & 0xFFFF));
-            case 2 -> fluidBackpackData.setAmountStored((fluidBackpackData.getAmountStored() & 0xFFFF) | (value << 16));
+            case 2 ->
+                    fluidBackpackData.setAmountStored((fluidBackpackData.getAmountStored() & 0xFFFF) | (value << 16));
             default -> throw new IllegalArgumentException("Invalid index: " + index);
         }
     }

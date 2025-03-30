@@ -208,4 +208,14 @@ public class CamoKeyStoneBlockEntity extends BlockEntity implements MenuProvider
     public BackpackSettings getBackpackSettings() {
         return null;
     }
+
+    @Override
+    public BackpackUpgrades getBackpackUpgrades() {
+        return null;
+    }
+
+    @Override
+    public BackpackFluidUpgrades getBackpackFluidUpgrades() {
+        return null;
+    }
 }

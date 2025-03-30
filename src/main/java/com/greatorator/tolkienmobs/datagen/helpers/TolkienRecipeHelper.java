@@ -345,7 +345,7 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
 
     protected void upgradeRecipe(RecipeOutput recipeOutput, Supplier<? extends Item> result, ItemLike input1, ItemLike input2) {
         ShapedRecipeBuilder
-                .shaped(RecipeCategory.BUILDING_BLOCKS, result.get().asItem())
+                .shaped(RecipeCategory.MISC, result.get().asItem())
                 .define('W', input1)
                 .define('P', input2)
                 .pattern("W")
@@ -356,12 +356,24 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
 
     protected void upgradeRecipe2(RecipeOutput recipeOutput, Supplier<? extends Item> result, ItemLike input1, TagKey<Item> input2) {
         ShapedRecipeBuilder
-                .shaped(RecipeCategory.BUILDING_BLOCKS, result.get().asItem())
+                .shaped(RecipeCategory.MISC, result.get().asItem())
                 .define('W', input1)
                 .define('P', input2)
                 .pattern("W")
                 .pattern("P")
                 .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(input1))
+                .save(recipeOutput);
+    }
+
+    protected void upgradeRecipe3(RecipeOutput recipeOutput, Supplier<? extends Item> result, ItemLike item1, ItemLike item2) {
+        ShapedRecipeBuilder
+                .shaped(RecipeCategory.MISC, result.get().asItem(), 1)
+                .define('A', item1)
+                .define('M', item2)
+                .pattern("AAA")
+                .pattern("AMA")
+                .pattern("AAA")
+                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(item2))
                 .save(recipeOutput);
     }
 

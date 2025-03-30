@@ -184,8 +184,18 @@ public class TolkienItems {
     public static final DeferredItem<Item> ITEM_BACKPACK_UPGRADE_BASE = ITEMS.register("upgrade_item_backpack_upgrade_base",
             () -> new TolkienItem(new Item.Properties().stacksTo(6)).setHasLore());
     public static final DeferredItem<Item> ITEM_BACKPACK_UPGRADE_SIZE = ITEMS.register("item_backpack_upgrade_size",
-            () -> new UpgradeItem(new Item.Properties().stacksTo(2)).setHasLore());
+            () -> new UpgradeItem(new Item.Properties().stacksTo(1)).setHasLore());
+    public static final DeferredItem<Item> ITEM_BACKPACK_UPGRADE_SIZE_2 = ITEMS.register("item_backpack_upgrade_size_2",
+            () -> new UpgradeItem(new Item.Properties().stacksTo(1)).setHasLore());
     public static final DeferredItem<Item> ITEM_BACKPACK_UPGRADE_FLUID = ITEMS.register("item_backpack_upgrade_fluid",
+            () -> new UpgradeItem(new Item.Properties().stacksTo(1)).setHasLore());
+    public static final DeferredItem<Item> ITEM_BACKPACK_UPGRADE_FLUID_2 = ITEMS.register("item_backpack_upgrade_fluid_2",
+            () -> new UpgradeItem(new Item.Properties().stacksTo(1)).setHasLore());
+    public static final DeferredItem<Item> ITEM_BACKPACK_UPGRADE_FLUID_3 = ITEMS.register("item_backpack_upgrade_fluid_3",
+            () -> new UpgradeItem(new Item.Properties().stacksTo(1)).setHasLore());
+    public static final DeferredItem<Item> ITEM_BACKPACK_UPGRADE_FLUID_4 = ITEMS.register("item_backpack_upgrade_fluid_4",
+            () -> new UpgradeItem(new Item.Properties().stacksTo(1)).setHasLore());
+    public static final DeferredItem<Item> ITEM_BACKPACK_UPGRADE_FLUID_5 = ITEMS.register("item_backpack_upgrade_fluid_5",
             () -> new UpgradeItem(new Item.Properties().stacksTo(1)).setHasLore());
     public static final DeferredItem<Item> ITEM_BACKPACK_UPGRADE_CRAFTING = ITEMS.register("item_backpack_upgrade_crafting",
             () -> new UpgradeItem(new Item.Properties().stacksTo(1)).setHasLore());

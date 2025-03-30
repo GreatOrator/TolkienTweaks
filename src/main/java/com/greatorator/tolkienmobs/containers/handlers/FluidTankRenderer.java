@@ -167,8 +167,14 @@ public class FluidTankRenderer {
         Fluid fluidType = fluidStack.getFluid();
         try {
             if (fluidType.isSame(Fluids.EMPTY)) {
-                tooltip.add(Component.literal("Empty"));
-                tooltip.add(Component.translatable("tolkienmobs.tooltip.liquid.amount.with.capacity", 0, nf.format(capacity)).withStyle(ChatFormatting.GRAY));
+                MutableComponent amountString;
+                if (capacity > 128000) {
+                    tooltip.add(Component.translatable("tolkienmobs.tooltip.liquid.amount.empty"));
+                    amountString = Component.translatable("tolkienmobs.tooltip.liquid.amount.with.capacity", 0, Component.literal("∞"));
+                } else {
+                    amountString = Component.translatable("tolkienmobs.tooltip.liquid.amount.with.capacity", 0, nf.format(capacity));
+                }
+                tooltip.add(amountString.withStyle(ChatFormatting.GRAY));
                 return tooltip;
             }
 
@@ -179,7 +185,14 @@ public class FluidTankRenderer {
             long milliBuckets = (amount * 1000) / FluidType.BUCKET_VOLUME;
 
             if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
-                MutableComponent amountString = Component.translatable("tolkienmobs.tooltip.liquid.amount.with.capacity", nf.format(milliBuckets), nf.format(capacity));
+                MutableComponent amountString;
+                if (capacity > 128000 && milliBuckets < 128000) {
+                    amountString = Component.translatable("tolkienmobs.tooltip.liquid.amount.with.capacity", nf.format(milliBuckets), Component.literal("∞"));
+                } else if (capacity > 128000 && milliBuckets > 128000){
+                    amountString = Component.translatable("tolkienmobs.tooltip.liquid.amount.with.capacity", nf.format("∞"), Component.literal("∞"));
+                } else {
+                    amountString = Component.translatable("tolkienmobs.tooltip.liquid.amount.with.capacity", nf.format(milliBuckets), nf.format(capacity));
+                }
                 tooltip.add(amountString.withStyle(ChatFormatting.GRAY));
             } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
                 MutableComponent amountString = Component.translatable("tolkienmobs.tooltip.liquid.amount", nf.format(milliBuckets));

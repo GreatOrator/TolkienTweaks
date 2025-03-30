@@ -1,7 +1,12 @@
 {
   "values": [
     "tolkienmobs:item_backpack_upgrade_size",
+    "tolkienmobs:item_backpack_upgrade_size_2",
     "tolkienmobs:item_backpack_upgrade_fluid",
+    "tolkienmobs:item_backpack_upgrade_fluid_2",
+    "tolkienmobs:item_backpack_upgrade_fluid_3",
+    "tolkienmobs:item_backpack_upgrade_fluid_4",
+    "tolkienmobs:item_backpack_upgrade_fluid_5",
     "tolkienmobs:item_backpack_upgrade_crafting",
     "tolkienmobs:item_backpack_upgrade_sleeping",
     "tolkienmobs:item_backpack_upgrade_campfire"

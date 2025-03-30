@@ -138,7 +138,12 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         // Backpack Upgrades
         basicItem(TolkienItems.ITEM_BACKPACK_UPGRADE_BASE.get());
         basicItem(TolkienItems.ITEM_BACKPACK_UPGRADE_SIZE.get());
+        basicItem(TolkienItems.ITEM_BACKPACK_UPGRADE_SIZE_2.get());
         basicItem(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID.get());
+        basicItem(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_2.get());
+        basicItem(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_3.get());
+        basicItem(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_4.get());
+        basicItem(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_5.get());
         basicItem(TolkienItems.ITEM_BACKPACK_UPGRADE_CRAFTING.get());
         basicItem(TolkienItems.ITEM_BACKPACK_UPGRADE_SLEEPING.get());
         basicItem(TolkienItems.ITEM_BACKPACK_UPGRADE_CAMPFIRE.get());

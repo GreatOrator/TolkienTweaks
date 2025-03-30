@@ -37,8 +37,13 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addItem(TolkienItems.GOLEM_STONE_WATER, "Golem Stone: §9Water§r");
             this.addItemWithLore(TolkienItems.GOLEM_STONE_SUMMON.get(), "Golem Stone: §bMithril§r", "Ancient artifact to summon a Legendary Golem");
             this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_BASE.get(), "Backpack Upgrade - Base", "Used to create backpack upgrades");
-            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_SIZE.get(), "Backpack Upgrade - Size", "Increase the storage capacity of your backpack (Max-2)");
-            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID.get(), "Backpack Upgrade - Fluid Storage", "Allows the carrying of 16 buckets of fluid (Max-1)");
+            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_SIZE.get(), "Backpack Upgrade - Size - Level 1", "Increase the storage capacity of your backpack (+27 Slots, Max-1)");
+            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_SIZE_2.get(), "Backpack Upgrade - Size - Level 2", "Further increase backpack storage (+27 Slots, Max-1)");
+            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID.get(), "Backpack Upgrade - Fluid Storage - Level 1", "Allows the carrying of 8 buckets of fluid (Max-1)");
+            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_2.get(), "Backpack Upgrade - Fluid Storage - Level 2", "Allows the carrying of 16 buckets of fluid (Max-1)");
+            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_3.get(), "Backpack Upgrade - Fluid Storage - Level 3", "Allows the carrying of 32 buckets of fluid (Max-1)");
+            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_4.get(), "Backpack Upgrade - Fluid Storage - Level 4", "Allows the carrying of 128 buckets of fluid (Max-1)");
+            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_5.get(), "Backpack Upgrade - Fluid Storage - Level 5", "Allows fluid stored to be infinite (Max-1)");
             this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_CRAFTING.get(), "Backpack Upgrade - Crafting", "Allows crating anywhere (Max-1)");
             this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_SLEEPING.get(), "Backpack Upgrade - Sleeping Bag", "Carry around a sleeping bag (Max-1)");
             this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_CAMPFIRE.get(), "Backpack Upgrade - Campfire", "Quick use campfire (Max-1)");
@@ -530,6 +535,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add("tolkienmobs.msg.payment", "Payment item set to...");
             this.add("tolkienmobs.msg.payment.insufficient", "Not enough for teleport!");
             this.add("tolkienmobs.msg.destination", "Destination not found");
+            this.add("tolkienmobs.tooltip.liquid.amount.empty", "Tank Empty");
             this.add("tolkienmobs.tooltip.liquid.amount.with.capacity", "%s / %s mB");
             this.add("tolkienmobs.tooltip.liquid.amount", "%s mB");
             this.add("tolkienmobs.msg.wrong_key", "You need the correct key!");

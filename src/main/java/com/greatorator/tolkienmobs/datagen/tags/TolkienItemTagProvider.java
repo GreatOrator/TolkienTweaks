@@ -123,7 +123,12 @@ public class TolkienItemTagProvider extends ItemTagsProvider {
                 .add(TolkienItems.DRINK_PERSONAL_BLACKSMITH.get());
         tag(TolkienTags.Items.UPGRADES)
                 .add(TolkienItems.ITEM_BACKPACK_UPGRADE_SIZE.get())
+                .add(TolkienItems.ITEM_BACKPACK_UPGRADE_SIZE_2.get())
                 .add(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID.get())
+                .add(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_2.get())
+                .add(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_3.get())
+                .add(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_4.get())
+                .add(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_5.get())
                 .add(TolkienItems.ITEM_BACKPACK_UPGRADE_CRAFTING.get())
                 .add(TolkienItems.ITEM_BACKPACK_UPGRADE_SLEEPING.get())
                 .add(TolkienItems.ITEM_BACKPACK_UPGRADE_CAMPFIRE.get());

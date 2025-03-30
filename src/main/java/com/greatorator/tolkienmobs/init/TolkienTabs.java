@@ -59,7 +59,12 @@ public class TolkienTabs {
                         output.accept(TolkienItems.GOLEM_STONE_WATER);
                         output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_BASE);
                         output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_SIZE);
+                        output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_SIZE_2);
                         output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID);
+                        output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_2);
+                        output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_3);
+                        output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_4);
+                        output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_5);
                         output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_CRAFTING);
                         output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_SLEEPING);
                         output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_CAMPFIRE);
