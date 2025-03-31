@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.network;
 
+import com.greatorator.tolkienmobs.block.custom.entity.CamoKeyStoneBlockEntity;
 import com.greatorator.tolkienmobs.containers.CamoKeyStoneContainer;
-import com.greatorator.tolkienmobs.handler.interfaces.TolkienRegistry;
 import com.greatorator.tolkienmobs.util.KeyStoneSettings;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -34,7 +34,7 @@ public record KeyStoneSettingsUpdateManager(
             Player sender = context.player();
             AbstractContainerMenu container = sender.containerMenu;
 
-            if (container instanceof CamoKeyStoneContainer keyStoneContainer && keyStoneContainer.tileEntity instanceof TolkienRegistry keyStoneBE) {
+            if (container instanceof CamoKeyStoneContainer keyStoneContainer && keyStoneContainer.tileEntity instanceof CamoKeyStoneBlockEntity keyStoneBE) {
                 keyStoneBE.setKeyStoneSettings(new KeyStoneSettings(payload.keepKey()));
             }
         });

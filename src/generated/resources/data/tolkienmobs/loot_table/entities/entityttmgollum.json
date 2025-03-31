@@ -64,7 +64,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:strong_leaping"
+              "id": "tolkienmobs:dread_aura"
             },
             {
               "add": false,
