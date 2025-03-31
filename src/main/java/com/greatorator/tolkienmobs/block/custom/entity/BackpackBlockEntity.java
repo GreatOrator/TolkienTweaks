@@ -5,14 +5,18 @@ import com.greatorator.tolkienmobs.block.custom.SleepingBagBlock;
 import com.greatorator.tolkienmobs.containers.BackpackBlockContainer;
 import com.greatorator.tolkienmobs.handler.capability.TolkienFluidTank;
 import com.greatorator.tolkienmobs.handler.data.BackpackFluidData;
+import com.greatorator.tolkienmobs.handler.interfaces.BackpackFluidUpgradesBlockEntity;
 import com.greatorator.tolkienmobs.handler.interfaces.BackpackFluids;
-import com.greatorator.tolkienmobs.handler.interfaces.TolkienRegistry;
+import com.greatorator.tolkienmobs.handler.interfaces.BackpackSettingsBlockEntity;
+import com.greatorator.tolkienmobs.handler.interfaces.BackpackUpgradesBlockEntity;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienTags;
 import com.greatorator.tolkienmobs.item.custom.UpgradeItem;
 import com.greatorator.tolkienmobs.network.BackpackSettingsUpdateManager;
-import com.greatorator.tolkienmobs.util.*;
+import com.greatorator.tolkienmobs.util.BackpackFluidUpgrades;
+import com.greatorator.tolkienmobs.util.BackpackSettings;
+import com.greatorator.tolkienmobs.util.BackpackUpgrades;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -49,7 +53,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
 
-public class BackpackBlockEntity extends BlockEntity implements MenuProvider, TolkienRegistry, BackpackFluids {
+public class BackpackBlockEntity extends BlockEntity implements MenuProvider, BackpackFluidUpgradesBlockEntity, BackpackUpgradesBlockEntity, BackpackSettingsBlockEntity, BackpackFluids {
     public final BackpackFluidData backpackFluidData;
     public int BUCKET_SLOTS = 1;
     public BackpackSettings backpackSettings = new BackpackSettings(true, true, true);
@@ -417,23 +421,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, To
     }
 
     /** Unused Settings */
-    @Override
-    public RedstoneControlData getRedstoneControlData() {
-        return null;
-    }
-
-    @Override
-    public KeyStoneSettings getKeyStoneSettings() {
-        return null;
-    }
-
-    @Override
-    public KeyStoneCode getKeyStoneData() {
-        return null;
-    }
-
     public void drops() {
-
     }
 
     public void tickServer() {

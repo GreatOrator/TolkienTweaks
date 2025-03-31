@@ -2,10 +2,14 @@ package com.greatorator.tolkienmobs.block.custom.entity;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.containers.CamoKeyStoneContainer;
-import com.greatorator.tolkienmobs.handler.interfaces.TolkienRegistry;
+import com.greatorator.tolkienmobs.handler.interfaces.KeystoneCodeBlockEntity;
+import com.greatorator.tolkienmobs.handler.interfaces.KeystoneSettingsBlockEntity;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.item.custom.KeyItem;
-import com.greatorator.tolkienmobs.util.*;
+import com.greatorator.tolkienmobs.util.GeneralUtility;
+import com.greatorator.tolkienmobs.util.KeyStoneCode;
+import com.greatorator.tolkienmobs.util.KeyStoneSettings;
+import com.greatorator.tolkienmobs.util.RedstoneControlData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -30,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
 import static com.greatorator.tolkienmobs.block.custom.ChameleonBlock.ACTIVE;
 import static com.greatorator.tolkienmobs.block.custom.ChameleonBlock.POWERED;
 
-public class CamoKeyStoneBlockEntity extends BlockEntity implements MenuProvider, TolkienRegistry {
+public class CamoKeyStoneBlockEntity extends BlockEntity implements MenuProvider, KeystoneCodeBlockEntity, KeystoneSettingsBlockEntity {
     public RedstoneControlData redstoneControlData = new RedstoneControlData();
     public KeyStoneSettings keyStoneSettings = new KeyStoneSettings(true);
     public KeyStoneCode keyStoneCode = new KeyStoneCode("Enter Code");
@@ -202,20 +206,5 @@ public class CamoKeyStoneBlockEntity extends BlockEntity implements MenuProvider
     }
 
     public void tickClient() {
-    }
-
-    @Override
-    public BackpackSettings getBackpackSettings() {
-        return null;
-    }
-
-    @Override
-    public BackpackUpgrades getBackpackUpgrades() {
-        return null;
-    }
-
-    @Override
-    public BackpackFluidUpgrades getBackpackFluidUpgrades() {
-        return null;
     }
 }
