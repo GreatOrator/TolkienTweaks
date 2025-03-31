@@ -4,6 +4,7 @@ import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.containers.CamoKeyStoneContainer;
 import com.greatorator.tolkienmobs.handler.interfaces.KeystoneCodeBlockEntity;
 import com.greatorator.tolkienmobs.handler.interfaces.KeystoneSettingsBlockEntity;
+import com.greatorator.tolkienmobs.handler.interfaces.RedstoneControlledBlockEntity;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.item.custom.KeyItem;
 import com.greatorator.tolkienmobs.util.GeneralUtility;
@@ -34,7 +35,7 @@ import org.jetbrains.annotations.Nullable;
 import static com.greatorator.tolkienmobs.block.custom.ChameleonBlock.ACTIVE;
 import static com.greatorator.tolkienmobs.block.custom.ChameleonBlock.POWERED;
 
-public class CamoKeyStoneBlockEntity extends BlockEntity implements MenuProvider, KeystoneCodeBlockEntity, KeystoneSettingsBlockEntity {
+public class CamoKeyStoneBlockEntity extends BlockEntity implements MenuProvider, RedstoneControlledBlockEntity, KeystoneCodeBlockEntity, KeystoneSettingsBlockEntity {
     public RedstoneControlData redstoneControlData = new RedstoneControlData();
     public KeyStoneSettings keyStoneSettings = new KeyStoneSettings(true);
     public KeyStoneCode keyStoneCode = new KeyStoneCode("Enter Code");
