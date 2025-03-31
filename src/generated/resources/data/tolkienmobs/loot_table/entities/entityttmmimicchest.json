@@ -64,7 +64,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:long_strength"
+              "id": "minecraft:oozing"
             },
             {
               "add": false,
