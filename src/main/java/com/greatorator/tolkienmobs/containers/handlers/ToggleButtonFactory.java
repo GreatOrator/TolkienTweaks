@@ -31,6 +31,69 @@ public class ToggleButtonFactory {
         return new ToggleButton(x, y, STANDARD_WIDTH, STANDARD_HEIGHT, KEEP_KEY_TEXTURES, startingValue, onPress);
     }
 
+    /** Spawner Button **/
+    private static final List<TextureLocalization> IGNORE_PARTICLES = List.of(
+            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/particles.png"), Component.translatable("screen.tolkienmobs.camo_spawner.spawnerParticles.enabled")),
+            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/hide_particles.png"), Component.translatable("screen.tolkienmobs.camo_spawner.spawnerParticles.disabled"))
+    );
+    private static final List<TextureLocalization> IGNORE_PLAYER = List.of(
+            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/player.png"), Component.translatable("screen.tolkienmobs.camo_spawner.requirePlayer.enabled")),
+            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/ignore_player.png"), Component.translatable("screen.tolkienmobs.camo_spawner.requirePlayer.disabled"))
+    );
+    private static final List<TextureLocalization> IGNORE_REQUIREMENTS = List.of(
+            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/spawn_requirements.png"), Component.translatable("screen.tolkienmobs.camo_spawner.ignoreSpawnReq.enabled")),
+            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/ignore_spawn_requirements.png"), Component.translatable("screen.tolkienmobs.camo_spawner.ignoreSpawnReq.ignored"))
+    );
+
+    public static ToggleButton IGNORE_PARTICLES_BUTTON(int x, int y, boolean startingValue, Button.OnPress onPress) {
+        return new ToggleButton(x, y, STANDARD_WIDTH, STANDARD_HEIGHT, IGNORE_PARTICLES, startingValue, onPress);
+    }
+    public static ToggleButton IGNORE_PLAYER_BUTTON(int x, int y, boolean startingValue, Button.OnPress onPress) {
+        return new ToggleButton(x, y, STANDARD_WIDTH, STANDARD_HEIGHT, IGNORE_PLAYER, startingValue, onPress);
+    }
+    public static ToggleButton IGNORE_REQUIREMENTS_BUTTON(int x, int y, boolean startingValue, Button.OnPress onPress) {
+        return new ToggleButton(x, y, STANDARD_WIDTH, STANDARD_HEIGHT, IGNORE_REQUIREMENTS, startingValue, onPress);
+    }
+
+    /** Spawner Numbers **/
+    private static final Component spawnerDelayMinLocalization = Component.translatable("screen.tolkienmobs.camo_spawner.minDelayValue");
+    private static final Component spawnerDelayMaxLocalization = Component.translatable("screen.tolkienmobs.camo_spawner.maxDelayValue");
+
+
+    private static final Component activationRangeLocalization = Component.translatable("screen.tolkienmobs.camo_spawner.activationRange");
+    private static final Component spawnRangeLocalization = Component.translatable("screen.tolkienmobs.camo_spawner.spawnRange");
+    private static final Component spawnCountLocalization = Component.translatable("screen.tolkienmobs.camo_spawner.spawnCount");
+    private static final Component maxClusterLocalization = Component.translatable("screen.tolkienmobs.camo_spawner.maxCluster");
+    private static final Component clusterRangeLocalization = Component.translatable("screen.tolkienmobs.camo_spawner.clusterRange");
+
+    public static NumberButton SPAWNER_ACTIVATION_RANGE(int x, int y, int value, Button.OnPress onPress) {
+        return new NumberButton(x, y, 24, 16, value, 1, 200, activationRangeLocalization, onPress);
+    }
+
+    public static NumberButton SPAWNER_SPAWN_RANGE(int x, int y, int value, Button.OnPress onPress) {
+        return new NumberButton(x, y, 24, 16, value, 1, 200, spawnRangeLocalization, onPress);
+    }
+
+    public static NumberButton SPAWNER_SPAWN_COUNT(int x, int y, int value, Button.OnPress onPress) {
+        return new NumberButton(x, y, 24, 16, value, 1, 200, spawnCountLocalization, onPress);
+    }
+
+    public static NumberButton SPAWNER_MAX_CLUSTER(int x, int y, int value, Button.OnPress onPress) {
+        return new NumberButton(x, y, 24, 16, value, 1, 200, maxClusterLocalization, onPress);
+    }
+
+    public static NumberButton SPAWNER_CLUSTER_RANGE(int x, int y, int value, Button.OnPress onPress) {
+        return new NumberButton(x, y, 24, 16, value, 1, 200, clusterRangeLocalization, onPress);
+    }
+
+    public static NumberButton SPAWNER_MIN_DELAY(int x, int y, int value, Button.OnPress onPress) {
+        return new NumberButton(x, y, 24, 16, value, 1, 200, spawnerDelayMinLocalization, onPress);
+    }
+
+    public static NumberButton SPAWNER_MAX_DELAY(int x, int y, int value, Button.OnPress onPress) {
+        return new NumberButton(x, y, 24, 16, value, 1, 200, spawnerDelayMaxLocalization, onPress);
+    }
+
     /** Redstone Mode **/
     private static final List<TextureLocalization> REDSTONE_TOGGLE_TEXTURES = List.of(
             new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/keystone/redstone_always.png"), Component.translatable("screen.tolkienmobs.keystone.always.active")),

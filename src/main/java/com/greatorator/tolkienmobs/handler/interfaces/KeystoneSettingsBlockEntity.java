@@ -13,14 +13,14 @@ public interface KeystoneSettingsBlockEntity {
     RedstoneControlData getRedstoneControlData();
 
     default void saveKeyStoneSettings(CompoundTag tag) {
-        tag.putBoolean("keepKey", getKeyStoneSettings().keepKey);
+        tag.putBoolean("requirePlayer", getKeyStoneSettings().keepKey);
         tag.putInt("redstoneMode", getRedstoneControlData().redstoneMode.ordinal());
         tag.putBoolean("pulsed", getRedstoneControlData().pulsed);
         tag.putBoolean("receivingRedstone", getRedstoneControlData().receivingRedstone);
     }
 
     default void loadKeyStoneSettings(CompoundTag tag) {
-        getKeyStoneSettings().keepKey = tag.getBoolean("keepKey");
+        getKeyStoneSettings().keepKey = tag.getBoolean("requirePlayer");
         if (tag.contains("redstoneMode")) { //Assume all the others are there too...
             getRedstoneControlData().redstoneMode = GeneralUtility.RedstoneMode.values()[tag.getInt("redstoneMode")];
             getRedstoneControlData().pulsed = tag.getBoolean("pulsed");

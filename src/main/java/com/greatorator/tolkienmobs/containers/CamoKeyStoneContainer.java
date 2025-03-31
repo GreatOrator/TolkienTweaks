@@ -13,14 +13,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class CamoKeyStoneContainer extends AbstractContainerMenu {
     public final CamoKeyStoneBlockEntity tileEntity;
-    private final Level level;
     public String keyCode;
     public int tickDelay;
-    public int tickActive;
-    public boolean keyConsume;
-    public boolean rsAlways;
-    public boolean rsPulse;
-    public boolean rsDelay;
 
     public CamoKeyStoneContainer(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
         this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()));
@@ -28,7 +22,6 @@ public class CamoKeyStoneContainer extends AbstractContainerMenu {
 
     public CamoKeyStoneContainer(int pContainerId, Inventory inv, BlockEntity blockEntity) {
         super(TolkienContainers.KEY_STONE_CONTAINER.get(), pContainerId);
-        this.level = inv.player.level();
         this.tileEntity = ((CamoKeyStoneBlockEntity) blockEntity);
         this.keyCode = tileEntity.getKeyCode();
         this.tickDelay = tileEntity.getTickDelay();

@@ -35,6 +35,13 @@ public final class PacketHandler {
                 KeyStoneSettingsUpdateManager.STREAM_CODEC, KeyStoneSettingsUpdateManager::handle);
         registrar.playToServer(KeyStoneRedstoneUpdateManager.TYPE,
                 KeyStoneRedstoneUpdateManager.STREAM_CODEC, KeyStoneRedstoneUpdateManager::handle);
+        registrar.playToServer(SpawnerSettingsUpdateManager.TYPE,
+                SpawnerSettingsUpdateManager.STREAM_CODEC, SpawnerSettingsUpdateManager::handle);
+        registrar.playToServer(SpawnerDelaysUpdateManager.TYPE,
+                SpawnerDelaysUpdateManager.STREAM_CODEC, SpawnerDelaysUpdateManager::handle);
+        registrar.playToServer(SpawnerRangesUpdateManager.TYPE,
+                SpawnerRangesUpdateManager.STREAM_CODEC, SpawnerRangesUpdateManager::handle);
+
         registrar.playToServer(KeyStoneDelayUpdateManager.TYPE,
                 KeyStoneDelayUpdateManager.STREAM_CODEC, KeyStoneDelayUpdateManager::handle);
         registrar.playToServer(BackpackSettingsUpdateManager.TYPE,

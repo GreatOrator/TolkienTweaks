@@ -286,6 +286,7 @@ public class TolkienMobsMain {
             event.register(TolkienContainers.LOCKABLE_DOUBLE_CHEST_CONTAINER.get(), LockableDoubleChestScreen::new);
             event.register(TolkienContainers.LOCKABLE_DOUBLE_TREASURE_CHEST_CONTAINER.get(), LockableDoubleTreasureChestScreen::new);
             event.register(TolkienContainers.KEY_STONE_CONTAINER.get(), CamoKeyStoneScreen::new);
+            event.register(TolkienContainers.CAMO_SPAWNER_CONTAINER.get(), CamoSpawnerScreen::new);
         }
 
         @SubscribeEvent

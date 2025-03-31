@@ -339,9 +339,40 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add("screen.tolkienmobs.backpack.backpack_upgrade", "Upgrades");
             this.add("screen.tolkienmobs.backpack.fluid", "Fluid:");
             this.add("screen.tolkienmobs.backpack.fluid_storage", "Fluid Storage");
+            this.add("screen.tolkienmobs.camo_spawner", "Spawner Setup");
+            this.add("screen.tolkienmobs.camo_spawner.actRngeValue", "How far away player is before becoming active");
+            this.add("screen.tolkienmobs.camo_spawner.activationRange", "Activate Range");
+            this.add("screen.tolkienmobs.camo_spawner.clusterRange", "Search Range");
+            this.add("screen.tolkienmobs.camo_spawner.clusterRangeValue", "Range to search for mobs to decide if anymore will spawn");
+            this.add("screen.tolkienmobs.camo_spawner.entityTags", "Entity List");
+            this.add("screen.tolkienmobs.camo_spawner.ignoreSpawnReq.enabled", "Spawn Requirements - Enabled");
+            this.add("screen.tolkienmobs.camo_spawner.ignoreSpawnReq.ignored", "Spawn Requirements - Ignored");
+            this.add("screen.tolkienmobs.camo_spawner.requirePlayer.enabled", "Player required - Enabled");
+            this.add("screen.tolkienmobs.camo_spawner.requirePlayer.disabled", "Player required - Disabled");
+            this.add("screen.tolkienmobs.camo_spawner.spawnerParticles.disabled", "Spawner Particles Disabled");
+            this.add("screen.tolkienmobs.camo_spawner.spwnCountValue", "Maximum number of mobs to spawn");
+            this.add("screen.tolkienmobs.camo_spawner.maxCluster", "Spawn-Max");
+            this.add("screen.tolkienmobs.camo_spawner.maxClusterValue", "Number of mobs allowed before no more will spawn nearby");
+            this.add("screen.tolkienmobs.camo_spawner.maxDelayValue", "Maximum start value for spawn countdown");
+            this.add("screen.tolkienmobs.camo_spawner.maxSpawnDelay", "Delay-Max");
+            this.add("screen.tolkienmobs.camo_spawner.minDelayValue", "Minimum start value for spawn countdown");
+            this.add("screen.tolkienmobs.camo_spawner.minSpawnDelay", "Delay-Min");
+            this.add("screen.tolkienmobs.camo_spawner.saveValue", "Save Values");
+            this.add("screen.tolkienmobs.camo_spawner.spawnCount", "Spawn Count");
+            this.add("screen.tolkienmobs.camo_spawner.spawnRange", "Spawn Range");
+            this.add("screen.tolkienmobs.camo_spawner.spawnerParticles.enabled", "Spawner Particles Enabled");
+            this.add("screen.tolkienmobs.camo_spawner.spwnRngeValue", "Max distance mobs will spawn from spawner");
+            this.add("screen.tolkienmobs.camo_spawner.title", "Camouflage Spawner");
 
                 // Buttons
             this.add("buttons.tolkienmobs.saveinfo", "Save Info");
+
+                // Fluid Tooltips
+            this.add("tolkienmobs.tooltip.liquid.amount.empty", "Tank Empty");
+            this.add("tolkienmobs.tooltip.liquid.amount.with.capacity", "%s / %s mB");
+            this.add("tolkienmobs.tooltip.liquid.amount", "%s mB");
+
+                // Spawner Tooltips
 
                 // Potions & Effects
                     // Beneficial
@@ -535,9 +566,6 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add("tolkienmobs.msg.payment", "Payment item set to...");
             this.add("tolkienmobs.msg.payment.insufficient", "Not enough for teleport!");
             this.add("tolkienmobs.msg.destination", "Destination not found");
-            this.add("tolkienmobs.tooltip.liquid.amount.empty", "Tank Empty");
-            this.add("tolkienmobs.tooltip.liquid.amount.with.capacity", "%s / %s mB");
-            this.add("tolkienmobs.tooltip.liquid.amount", "%s mB");
             this.add("tolkienmobs.msg.wrong_key", "You need the correct key!");
     }
 }
