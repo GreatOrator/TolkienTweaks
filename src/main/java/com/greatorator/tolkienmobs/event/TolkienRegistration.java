@@ -29,6 +29,7 @@ public class TolkienRegistration {
         event.registerBlockEntityRenderer(TolkienBlocks.FIREPLACE_BLOCK_ENTITY.get(), FireplaceRenderer::new);
         event.registerBlockEntityRenderer(TolkienBlocks.TOLKIEN_SIGN_BLOCK_ENTITY.get(), SignRenderer::new);
         event.registerBlockEntityRenderer(TolkienBlocks.TOLKIEN_HANGING_SIGN_BLOCK_ENTITY.get(), HangingSignRenderer::new);
+        event.registerBlockEntityRenderer(TolkienBlocks.CAMO_SPAWNER_BLOCK_ENTITY.get(), CamoSpawnerRenderer::new);
     }
 
     private static void registerModelLoaders(ModelEvent.RegisterGeometryLoaders event) {

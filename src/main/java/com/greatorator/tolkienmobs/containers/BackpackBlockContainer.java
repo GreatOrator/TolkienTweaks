@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.containers;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
 import com.greatorator.tolkienmobs.containers.handlers.BackpackItemStackHandler;
 import com.greatorator.tolkienmobs.containers.handlers.UpgradeItemHandler;
@@ -81,16 +80,6 @@ public class BackpackBlockContainer extends TolkienContainer{
             addDataSlots(fluidData);
         }
 
-    }
-
-    private int getSizeUpgrade() {
-        assert this.tileEntity != null;
-        if (this.tileEntity.getBackpackUpgrades().size_upgrade_2) {
-            return 8;
-        } else if (this.tileEntity.getBackpackUpgrades().size_upgrade) {
-            return 6;
-        }
-        return 3;
     }
 
     protected int getSlotStart(int originSlot, int slotStart, boolean reverse) {

@@ -41,6 +41,8 @@ public final class PacketHandler {
                 SpawnerDelaysUpdateManager.STREAM_CODEC, SpawnerDelaysUpdateManager::handle);
         registrar.playToServer(SpawnerRangesUpdateManager.TYPE,
                 SpawnerRangesUpdateManager.STREAM_CODEC, SpawnerRangesUpdateManager::handle);
+        registrar.playToServer(SpawnerEntityUpdateManager.TYPE,
+                SpawnerEntityUpdateManager.STREAM_CODEC, SpawnerEntityUpdateManager::handle);
 
         registrar.playToServer(KeyStoneDelayUpdateManager.TYPE,
                 KeyStoneDelayUpdateManager.STREAM_CODEC, KeyStoneDelayUpdateManager::handle);
