@@ -44,6 +44,14 @@ public class ToggleButtonFactory {
             new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/spawn_requirements.png"), Component.translatable("screen.tolkienmobs.camo_spawner.ignoreSpawnReq.enabled")),
             new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/ignore_spawn_requirements.png"), Component.translatable("screen.tolkienmobs.camo_spawner.ignoreSpawnReq.ignored"))
     );
+    private static final List<TextureLocalization> REMOVE = List.of(
+            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/delete.png"), Component.translatable("screen.tolkienmobs.camo_spawner.remove_mob")),
+            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/delete.png"), Component.translatable("screen.tolkienmobs.camo_spawner.remove_mob"))
+    );
+
+    public static ToggleButton REMOVE_MOB_BUTTON(int x, int y, boolean startingValue, Button.OnPress onPress) {
+        return new ToggleButton(x, y, STANDARD_WIDTH, STANDARD_HEIGHT, REMOVE, startingValue, onPress);
+    }
 
     public static ToggleButton IGNORE_PARTICLES_BUTTON(int x, int y, boolean startingValue, Button.OnPress onPress) {
         return new ToggleButton(x, y, STANDARD_WIDTH, STANDARD_HEIGHT, IGNORE_PARTICLES, startingValue, onPress);
@@ -67,31 +75,31 @@ public class ToggleButtonFactory {
     private static final Component clusterRangeLocalization = Component.translatable("screen.tolkienmobs.camo_spawner.clusterRange");
 
     public static NumberButton SPAWNER_ACTIVATION_RANGE(int x, int y, int value, Button.OnPress onPress) {
-        return new NumberButton(x, y, 24, 16, value, 1, 200, activationRangeLocalization, onPress);
+        return new NumberButton(x, y, 24, 16, value, 1, 32, activationRangeLocalization, onPress);
     }
 
     public static NumberButton SPAWNER_SPAWN_RANGE(int x, int y, int value, Button.OnPress onPress) {
-        return new NumberButton(x, y, 24, 16, value, 1, 200, spawnRangeLocalization, onPress);
+        return new NumberButton(x, y, 24, 16, value, 1, 32, spawnRangeLocalization, onPress);
     }
 
     public static NumberButton SPAWNER_SPAWN_COUNT(int x, int y, int value, Button.OnPress onPress) {
-        return new NumberButton(x, y, 24, 16, value, 1, 200, spawnCountLocalization, onPress);
+        return new NumberButton(x, y, 24, 16, value, 1, 16, spawnCountLocalization, onPress);
     }
 
     public static NumberButton SPAWNER_MAX_CLUSTER(int x, int y, int value, Button.OnPress onPress) {
-        return new NumberButton(x, y, 24, 16, value, 1, 200, maxClusterLocalization, onPress);
+        return new NumberButton(x, y, 24, 16, value, 1, 16, maxClusterLocalization, onPress);
     }
 
     public static NumberButton SPAWNER_CLUSTER_RANGE(int x, int y, int value, Button.OnPress onPress) {
-        return new NumberButton(x, y, 24, 16, value, 1, 200, clusterRangeLocalization, onPress);
+        return new NumberButton(x, y, 24, 16, value, 1, 32, clusterRangeLocalization, onPress);
     }
 
     public static NumberButton SPAWNER_MIN_DELAY(int x, int y, int value, Button.OnPress onPress) {
-        return new NumberButton(x, y, 24, 16, value, 1, 200, spawnerDelayMinLocalization, onPress);
+        return new NumberButton(x, y, 24, 16, value, 20, 200, spawnerDelayMinLocalization, onPress);
     }
 
     public static NumberButton SPAWNER_MAX_DELAY(int x, int y, int value, Button.OnPress onPress) {
-        return new NumberButton(x, y, 24, 16, value, 1, 200, spawnerDelayMaxLocalization, onPress);
+        return new NumberButton(x, y, 24, 16, value, 40, 800, spawnerDelayMaxLocalization, onPress);
     }
 
     /** Redstone Mode **/
@@ -146,7 +154,7 @@ public class ToggleButtonFactory {
     }
 
     /** Other Button Examples **/
-    private static final ResourceLocation EXTRACT_EXP_BUTTON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/buttons/remove.png");
+    private static final ResourceLocation EXTRACT_EXP_BUTTON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/mob_label_base.png");
     private static final Component EXTRACT_EXP_BUTTON_LOCALIZATION = Component.translatable("justdirethings.screen.retrieveexp");
 
     public static GrayscaleButton EXTRACTEXPBUTTON(int x, int y, boolean startingValue, Button.OnPress onPress) {

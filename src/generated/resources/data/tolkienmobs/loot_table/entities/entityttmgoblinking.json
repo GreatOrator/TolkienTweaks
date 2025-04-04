@@ -21,7 +21,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:night_vision"
+              "id": "minecraft:turtle_master"
             },
             {
               "add": false,
