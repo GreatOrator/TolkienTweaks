@@ -1402,7 +1402,7 @@
   "tolkienmobs.msg.nodrown.shelob": "Shelob doesn't want to drown.",
   "tolkienmobs.msg.nohelp": "Goblin King is attempting to call for help, but no help came.",
   "tolkienmobs.msg.nohelp.shelob": "Shelob is attempting to call for help, but no help came.",
-  "tolkienmobs.msg.nomore.entities": "Can't add more than 12 entities...",
+  "tolkienmobs.msg.nomore.entities": "Can't add more than 6 entities, first one replaced...",
   "tolkienmobs.msg.onfire": "Goblin King is protecting himself from fire.",
   "tolkienmobs.msg.onfire.balrog": "The Balrog is protecting himself from fire.",
   "tolkienmobs.msg.onfire.gwahir": "Gwahir is protecting himself from fire.",

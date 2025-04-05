@@ -563,7 +563,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add("tolkienmobs.msg.key_used", "Key has no remaining uses.");
             this.add("tolkienmobs.msg.cleared.entities", "All existing entities cleared...");
             this.add("tolkienmobs.msg.added.entities", "Entity added...");
-            this.add("tolkienmobs.msg.nomore.entities", "Can't add more than 12 entities...");
+            this.add("tolkienmobs.msg.nomore.entities", "Can't add more than 6 entities, first one replaced...");
             this.add("screen.tolkienmobs.camo_spawner.remove_mob", "Clear all Mobs");
             this.add("tolkienmobs.msg.payment", "Payment item set to...");
             this.add("tolkienmobs.msg.payment.insufficient", "Not enough for teleport!");
