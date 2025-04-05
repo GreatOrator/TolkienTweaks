@@ -220,7 +220,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add(TolkienBlocks.KEY_STONE_BLOCK.get(), "Camouflage Key Stone Block");
             this.add(TolkienBlocks.CAMO_GLOWSTONE_BLOCK.get(), "Camouflage Glowstone");
             this.add(TolkienBlocks.CAMO_SMOKER_BLOCK.get(), "Camouflage Smoker");
-            this.addBlockWithLore(TolkienBlocks.CAMO_FLUID_BLOCK.get(), "Camouflage Fluid Source", "Right-click with bucket to set fluid");
+            this.add(TolkienBlocks.CAMO_FLUID_BLOCK.get(), "Camouflage Fluid Source");
             this.add(TolkienBlocks.CAMO_CHEST_BLOCK.get(), "Camouflage Chest");
             this.add(TolkienBlocks.CAMO_SPAWNER_BLOCK.get(), "Camouflage Spawner");
             this.add(TolkienBlocks.MILESTONE_BLOCK.get(), "Fast-travel Milestone");
@@ -371,6 +371,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add("tolkienmobs.tooltip.liquid.amount.empty", "Tank Empty");
             this.add("tolkienmobs.tooltip.liquid.amount.with.capacity", "%s / %s mB");
             this.add("tolkienmobs.tooltip.liquid.amount", "%s mB");
+            this.add("tolkienmobs.camo_fluid.fluid.instructions", "Place fluid bucket in slot");
 
                 // Spawner Tooltips
 

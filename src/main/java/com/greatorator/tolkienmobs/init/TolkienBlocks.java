@@ -1162,6 +1162,9 @@ public class TolkienBlocks {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CamoKeyStoneBlockEntity>> KEY_STONE_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("block_key_stone", () ->
                     BlockEntityType.Builder.of(CamoKeyStoneBlockEntity::new, KEY_STONE_BLOCK.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CamoFluidBlockEntity>> CAMO_FLUID_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("block_camo_fluid", () ->
+                    BlockEntityType.Builder.of(CamoFluidBlockEntity::new, CAMO_FLUID_BLOCK.get()).build(null));
 
         // Attachment Types
     public static final Supplier<AttachmentType<ItemStackHandler>> BACKPACK_HANDLER = ATTACHMENT_TYPES.register(
