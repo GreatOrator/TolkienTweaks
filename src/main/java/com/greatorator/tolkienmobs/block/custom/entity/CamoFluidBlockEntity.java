@@ -31,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class CamoFluidBlockEntity extends BlockEntity implements MenuProvider {
+    private final List<BlockPos> airLocations = new ArrayList<>();
     public final ItemStackHandler mainInventory = new ItemStackHandler(1) {
         @Override
         protected int getStackLimit(int slot, ItemStack stack) {
@@ -96,40 +97,8 @@ public class CamoFluidBlockEntity extends BlockEntity implements MenuProvider {
         return saveWithoutMetadata(pRegistries);
     }
 
-    public List<BlockPos> findAirBlocks(BlockPos pos) {
-        final Set<BlockPos> seen = new HashSet<>(64);
-        final List<BlockPos> blockPositions = new ArrayList<>(27);
-        final BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
-
-        blockPositions.add(pos);
-        for (int i = 0; i < blockPositions.size(); i++)
-        {
-            final BlockPos log = blockPositions.get(i);
-            for (int dx = -1; dx <= 1; dx++)
-            {
-                for (int dy = -1; dy <= 1; dy++)
-                {
-                    for (int dz = -1; dz <= 1; dz++)
-                    {
-                        cursor.setWithOffset(log, dx, dy, dz);
-                        if (!seen.contains(cursor)) {
-                            final BlockPos cursorPos = cursor.immutable();
-                            final BlockState cursorState = level.getBlockState(cursorPos);
-
-                            if (cursorState.is(Blocks.AIR)) {
-                                blockPositions.add(cursorPos);
-                                seen.add(cursorPos);
-                            } else {
-                                seen.add(cursorPos);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        Collections.reverse(blockPositions);
-        return blockPositions;
+    public List<BlockPos> findAirBlocks() {
+        return this.airLocations;
     }
 
     public void onNeighborChange(Level level) {
@@ -143,8 +112,10 @@ public class CamoFluidBlockEntity extends BlockEntity implements MenuProvider {
         }
 
         for (Direction facing : Direction.values()) {
-//            List<BlockPos> fluidToPlace = new ArrayList<>(27);
+//            List<BlockPos> fluidToPlace = new ArrayList<>(this.airLocations);
 //            fluidToPlace.add(worldPosition.relative(facing));
+//            int r = 1;
+
             BlockPos blockPos = worldPosition.relative(facing);
             Fluid fluid = fluidHandlerItem.getFluidInTank(0).getFluid();
             if (fluid == Fluids.EMPTY) {
