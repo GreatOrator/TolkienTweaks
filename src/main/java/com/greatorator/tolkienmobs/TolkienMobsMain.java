@@ -69,16 +69,17 @@ public class TolkienMobsMain {
     //  -Functional Blocks
     //    -Morgul Crystal
     //    -Chameleon Blocks
-    //    -Keystone Block
     //    -Milestone
     //    -Fluid Block
     //    -Spawner
+    //      -Using the custom Entity list
     //    -Fireplace
     //      -Actually use fuel properly
     //    -Trinket Table Recipes
     //      -Working in Trinket Table
     //    -Backpack
-    //        -Bucket inside Inventory not working
+    //      -Bucket inside Inventory not working
+    //      -Upgrades clearing when removed
     //  -Integration
     //    -Curios
     //    -JEI
