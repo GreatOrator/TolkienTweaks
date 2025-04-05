@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.containers;
 
 import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
 import com.greatorator.tolkienmobs.containers.handlers.BackpackItemStackHandler;
+import com.greatorator.tolkienmobs.containers.handlers.BucketItemHandler;
 import com.greatorator.tolkienmobs.containers.handlers.UpgradeItemHandler;
 import com.greatorator.tolkienmobs.init.TolkienContainers;
 import net.minecraft.network.FriendlyByteBuf;
@@ -216,6 +217,6 @@ public class BackpackBlockContainer extends TolkienContainer{
     /** Fluid Tank */
     public void addFluidSlots() {
         fluidHandler = tileEntity.getMachineHandler();
-        addSlotRange(fluidHandler, 0, 38, 11, BUCKET_SLOTS, 18);
+        this.addSlot(new BucketItemHandler(fluidHandler, 0, 38, 11));
     }
 }

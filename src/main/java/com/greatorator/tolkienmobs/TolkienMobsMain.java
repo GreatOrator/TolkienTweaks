@@ -71,8 +71,9 @@ public class TolkienMobsMain {
     //    -Chameleon Blocks
     //    -Milestone
     //    -Fluid Block
+    //      -Figure out how to place fluids in full 3x3x3 area instead of each face
     //    -Spawner
-    //      -Using the custom Entity list
+    //      -Using the custom entity list for what to spawn
     //    -Fireplace
     //      -Actually use fuel properly
     //    -Trinket Table Recipes
@@ -288,6 +289,7 @@ public class TolkienMobsMain {
             event.register(TolkienContainers.LOCKABLE_DOUBLE_TREASURE_CHEST_CONTAINER.get(), LockableDoubleTreasureChestScreen::new);
             event.register(TolkienContainers.KEY_STONE_CONTAINER.get(), CamoKeyStoneScreen::new);
             event.register(TolkienContainers.CAMO_SPAWNER_CONTAINER.get(), CamoSpawnerScreen::new);
+            event.register(TolkienContainers.CAMO_FLUID_CONTAINER.get(), CamoFluidBlockScreen::new);
         }
 
         @SubscribeEvent

@@ -64,7 +64,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:slow_falling"
+              "id": "minecraft:strong_turtle_master"
             },
             {
               "add": false,
