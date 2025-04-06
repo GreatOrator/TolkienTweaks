@@ -63,12 +63,23 @@ public class TolkienMobsMain {
     //  -Boats Implemented
     //  -Projectiles Implemented
     //  -Biomes
+    //    -Generation
     //    -Structures
     //  -Arda Portal
     //  -Enchantments
-    //  -Functional Blocks
+    //  -Entities
     //    -Morgul Crystal
+    //    -Balrog
+    //    -Fell Beast
+    //    -Gwahir
+    //    -Mithril Golem
+    //    -Morgul Iron Golem
+    //    -Shelob
+    //    -Watcher
+    //    -Witch King
+    //  -Functional Blocks
     //    -Chameleon Blocks
+    //      -Figuring out the camouflage aspect
     //    -Milestone
     //    -Fluid Block
     //      -Figure out how to place fluids in full 3x3x3 area instead of each face
