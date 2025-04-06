@@ -1,5 +1,7 @@
 package com.greatorator.tolkienmobs.event;
 
+import com.google.common.base.Suppliers;
+import com.greatorator.tolkienmobs.block.custom.entity.function.ChameleonBlockDynamicBakedModel;
 import com.greatorator.tolkienmobs.entity.ambient.*;
 import com.greatorator.tolkienmobs.entity.ambient.model.GeckoModel;
 import com.greatorator.tolkienmobs.entity.ambient.model.SwarmModel;
@@ -9,21 +11,61 @@ import com.greatorator.tolkienmobs.entity.npc.*;
 import com.greatorator.tolkienmobs.entity.passive.*;
 import com.greatorator.tolkienmobs.entity.projectiles.model.BoulderModel;
 import com.greatorator.tolkienmobs.entity.projectiles.model.FellBeastFireballModel;
+import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
+import net.minecraft.client.renderer.block.BlockModelShaper;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 
+import java.util.Map;
+import java.util.function.Supplier;
+
+import static com.greatorator.tolkienmobs.TolkienMobsMain.LOGGER;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 @EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD)
 public class TolkienEventBusEvents {
+    private static final Supplier<Block[]> chameleonBlocks = Suppliers.memoize(() -> new Block[] {
+            TolkienBlocks.CHAMELEON_BLOCK.get(),
+            TolkienBlocks.CAMO_CHEST_BLOCK.get(),
+            TolkienBlocks.CAMO_FLUID_BLOCK.get(),
+            TolkienBlocks.CAMO_GLOWSTONE_BLOCK.get(),
+            TolkienBlocks.KEY_STONE_BLOCK.get(),
+            TolkienBlocks.CAMO_SMOKER_BLOCK.get(),
+            TolkienBlocks.CAMO_SPAWNER_BLOCK.get()
+    });
+
+    @SubscribeEvent
+    public static void onModelBakeEvent(ModelEvent.ModifyBakingResult event) {
+        Map<ModelResourceLocation, BakedModel> modelRegistry = event.getModels();
+
+        for (Block block : chameleonBlocks.get()) {
+            for (BlockState blockState : block.getStateDefinition().getPossibleStates()) {
+                ModelResourceLocation variantMRL = BlockModelShaper.stateToModelLocation(blockState);
+                BakedModel existingModel = event.getModels().get(variantMRL);
+                if (existingModel == null) {
+                    LOGGER.warn("Did not find the expected vanilla baked model(s) for blockCamouflage in registry");
+                } else if (existingModel instanceof ChameleonBlockDynamicBakedModel) {
+                    LOGGER.warn("Tried to replace CamouflagedBakedModel twice");
+                } else {
+                    ChameleonBlockDynamicBakedModel customModel = new ChameleonBlockDynamicBakedModel(existingModel);
+                    event.getModels().put(variantMRL, customModel);
+                }
+            }
+        }
+    }
     @SubscribeEvent
     public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         // Ambient
