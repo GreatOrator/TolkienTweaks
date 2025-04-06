@@ -17,8 +17,8 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class FireplaceScreen extends AbstractContainerScreen<FireplaceContainer> {
     private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/fireplace/fireplace_gui.png");
-    private static final ResourceLocation ARROW_TEXTURE = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/fireplace/craft_full.png");
-    private static final ResourceLocation FIRE_TEXTURE = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/fireplace/fire_full.png");
+    public static final ResourceLocation ARROW_TEXTURE = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/fireplace/craft_full.png");
+    public static final ResourceLocation FIRE_TEXTURE = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/fireplace/fire_full.png");
 
     public FireplaceScreen(FireplaceContainer container, Inventory inv, Component name) {
         super(container, inv, Component.literal(""));
