@@ -90,7 +90,6 @@ public class TolkienMobsMain {
     //      -Upgrades clearing when removed
     //  -Integration
     //    -Curios
-    //    -JEI
 
     public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer, Dist dist) {
         modEventBus.addListener(this::commonSetup);
