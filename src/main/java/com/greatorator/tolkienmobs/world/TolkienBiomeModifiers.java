@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.world;
 
+import com.greatorator.tolkienmobs.init.TolkienBiomes;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
@@ -80,7 +81,7 @@ public class TolkienBiomeModifiers {
                 HolderSet.direct(placedFeatures.getOrThrow(LEBETHRON_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
         context.register(ADD_TREE_FANGORNOAK, new BiomeModifiers.AddFeaturesBiomeModifier(
-                HolderSet.direct(biomes.getOrThrow(Biomes.PLAINS), biomes.getOrThrow(Biomes.BIRCH_FOREST)),
+                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.FANGORN)),
                 HolderSet.direct(placedFeatures.getOrThrow(FANGORNOAK_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
         context.register(ADD_TREE_DEADWOOD, new BiomeModifiers.AddFeaturesBiomeModifier(
@@ -93,7 +94,7 @@ public class TolkienBiomeModifiers {
                 GenerationStep.Decoration.VEGETAL_DECORATION));
 
         context.register(ADD_MITHRIL_ORE, new BiomeModifiers.AddFeaturesBiomeModifier(
-                HolderSet.direct(biomes.getOrThrow(Biomes.STONY_PEAKS)),
+                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.MORDOR)),
                 HolderSet.direct(placedFeatures.getOrThrow(MITHRIL_ORE_PLACED_KEY)),
                 GenerationStep.Decoration.UNDERGROUND_ORES));
         context.register(ADD_NETHER_MITHRIL_ORE, new BiomeModifiers.AddFeaturesBiomeModifier(

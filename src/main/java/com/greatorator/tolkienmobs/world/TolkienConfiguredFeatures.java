@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.greatorator.tolkienmobs.block.custom.BramblesBushBlock;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienFeatures;
+import com.greatorator.tolkienmobs.init.TolkienSounds;
 import com.greatorator.tolkienmobs.world.components.config.RootConfig;
 import com.greatorator.tolkienmobs.world.components.feature.config.HollowLogConfig;
 import com.greatorator.tolkienmobs.world.components.feature.tree.TolkienDecorators;
@@ -11,16 +12,20 @@ import com.greatorator.tolkienmobs.world.components.feature.tree.components.Sphe
 import com.greatorator.tolkienmobs.world.components.feature.tree.placers.BranchesConfig;
 import com.greatorator.tolkienmobs.world.components.feature.tree.placers.BranchingLargeTrunkPlacer;
 import com.greatorator.tolkienmobs.world.components.feature.tree.placers.BranchingTrunkPlacer;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.data.worldgen.features.FeatureUtils;
+import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.Music;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.WeightedPlacedFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.*;
 import net.minecraft.world.level.levelgen.feature.featuresize.ThreeLayersFeatureSize;
 import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize;
@@ -98,11 +103,14 @@ public class TolkienConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> NETHER_ORE_AMMOLITE_KEY = registerConfiguredKey("ore/nether_ore_ammolite");
     public static final ResourceKey<ConfiguredFeature<?, ?>> END_ORE_AMMOLITE_KEY = registerConfiguredKey("ore/end_ore_ammolite");
 
+    public static final Music FANGORN_AMBIENCE = new Music(TolkienSounds.MUSIC_DISC_MINASTIRITH, 1200, 12000, true);
+
     public static void bootstrap(BootstrapContext<ConfiguredFeature<?,?>> context) {
         RuleTest stoneReplaceables = new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES);
         RuleTest deepslateReplaceables = new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
         RuleTest netherrackReplaceables = new BlockMatchTest(Blocks.NETHERRACK);
         RuleTest endReplaceables = new BlockMatchTest(Blocks.END_STONE);
+        HolderGetter<ConfiguredFeature<?, ?>> features = context.lookup(Registries.CONFIGURED_FEATURE);
 
         List<OreConfiguration.TargetBlockState> overworldMithrilOres = List.of(
                 OreConfiguration.target(stoneReplaceables, TolkienBlocks.ORE_MITHRIL.get().defaultBlockState()),
@@ -291,7 +299,7 @@ public class TolkienConfiguredFeatures {
         context.register(FANGORNOAK_FALLEN_LEAVES, new ConfiguredFeature<>(TolkienFeatures.FANGORNOAK_FALLEN_LEAVES.get(), FeatureConfiguration.NONE));
         context.register(DWARVEN_MAPLE_FALLEN_LEAVES, new ConfiguredFeature<>(TolkienFeatures.DWARVEN_MAPLE_FALLEN_LEAVES.get(), FeatureConfiguration.NONE));
         context.register(WEBS, new ConfiguredFeature<>(TolkienFeatures.WEBS.get(), FeatureConfiguration.NONE));
-        context.register(STONE_SPIKE, new ConfiguredFeature<>(TolkienFeatures.STONE_SPIKE.get(), FeatureConfiguration.NONE));
+        context.register(STONE_SPIKE, new ConfiguredFeature<>(Feature.RANDOM_SELECTOR, new RandomFeatureConfiguration(ImmutableList.of(new WeightedPlacedFeature(PlacementUtils.inlinePlaced(features.getOrThrow(STONE_SPIKE)), 0.05F)), PlacementUtils.inlinePlaced(features.getOrThrow(STONE_SPIKE)))));
         context.register(MALLORN_SMALL_LOG, new ConfiguredFeature<>(TolkienFeatures.SMALL_LOG.get(), new HollowLogConfig(TolkienBlocks.LOG_MALLORN.get().defaultBlockState(), TolkienBlocks.LOG_MALLORN.get().defaultBlockState())));
         context.register(MIRKWOOD_SMALL_LOG, new ConfiguredFeature<>(TolkienFeatures.SMALL_LOG.get(), new HollowLogConfig(TolkienBlocks.LOG_MIRKWOOD.get().defaultBlockState(), TolkienBlocks.LOG_MIRKWOOD.get().defaultBlockState())));
         context.register(CULUMALDA_SMALL_LOG, new ConfiguredFeature<>(TolkienFeatures.SMALL_LOG.get(), new HollowLogConfig(TolkienBlocks.LOG_CULUMALDA.get().defaultBlockState(), TolkienBlocks.LOG_CULUMALDA.get().defaultBlockState())));

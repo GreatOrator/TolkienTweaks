@@ -1,11 +1,14 @@
 package com.greatorator.tolkienmobs.world;
 
+import com.google.common.collect.ImmutableList;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
+import com.greatorator.tolkienmobs.world.components.placements.AvoidLandmarkModifier;
 import com.greatorator.tolkienmobs.world.components.placements.TolkienOrePlacement;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.data.worldgen.features.VegetationFeatures;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.data.worldgen.placement.VegetationPlacements;
 import net.minecraft.resources.ResourceKey;
@@ -41,6 +44,15 @@ public class TolkienPlacedFeatures {
     public static final ResourceKey<PlacedFeature> FLOWER_MALLOS_PLACED_KEY = registerPlacedKey("flower_mallos_placed");
     public static final ResourceKey<PlacedFeature> FLOWER_BRAMBLES_PLACED_KEY = registerPlacedKey("flower_brambles_placed");
 
+    public static final ResourceKey<PlacedFeature> PLACED_FANGORN_FALLEN_LOG = registerPlacedKey("fangorn_fallen_log");
+    public static final ResourceKey<PlacedFeature> PLACED_DEADWOOD_FALLEN_LOG = registerPlacedKey("deadwood_fallen_log");
+
+    public static final ResourceKey<PlacedFeature> PLACED_FANGORN_FALLEN_LEAVES = registerPlacedKey("fangorn_fallen_leaves");
+
+    public static final ResourceKey<PlacedFeature> PLACED_ROCKPILE = registerPlacedKey("rockpile");
+    public static final ResourceKey<PlacedFeature> PLACED_STONE_SPIKE = registerPlacedKey("stone_spike");
+    public static final ResourceKey<PlacedFeature> PLACED_RANDOM_RUBBLE = registerPlacedKey("random_rubble");
+
     public static final ResourceKey<PlacedFeature> MITHRIL_ORE_PLACED_KEY = registerPlacedKey("mithril_ore_placed");
     public static final ResourceKey<PlacedFeature> NETHER_MITHRIL_ORE_PLACED_KEY = registerPlacedKey("nether_mithril_ore_placed");
     public static final ResourceKey<PlacedFeature> END_MITHRIL_ORE_PLACED_KEY = registerPlacedKey("end_mithril_ore_placed");
@@ -51,8 +63,14 @@ public class TolkienPlacedFeatures {
     public static final ResourceKey<PlacedFeature> NETHER_AMMOLITE_ORE_PLACED_KEY = registerPlacedKey("nether_ammolite_ore_placed");
     public static final ResourceKey<PlacedFeature> END_AMMOLITE_ORE_PLACED_KEY = registerPlacedKey("end_ammolite_ore_placed");
 
+    private static ImmutableList.Builder<PlacementModifier> tolkienFeatureCheckArea(AvoidLandmarkModifier filter, int rarity, PlacementModifier... extra) {
+        return ImmutableList.<PlacementModifier>builder().add(extra).add(filter, RarityFilter.onAverageOnceEvery(rarity), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP, BiomeFilter.biome());
+    }
+
     public static void bootstrap(BootstrapContext<PlacedFeature> context) {
         HolderGetter<ConfiguredFeature<?, ?>> configuredFeatures = context.lookup(Registries.CONFIGURED_FEATURE);
+        Holder<ConfiguredFeature<?, ?>> grassConfig = configuredFeatures.getOrThrow(VegetationFeatures.PATCH_GRASS);
+        Holder<ConfiguredFeature<?, ?>> tallGrassConfig = configuredFeatures.getOrThrow(VegetationFeatures.PATCH_TALL_GRASS);
 
         registerPlaced(context, MALLORN_PLACED_KEY, configuredFeatures.getOrThrow(MALLORN_KEY),
                 VegetationPlacements.treePlacement(PlacementUtils.countExtra(3, 0.1f, 2),
@@ -119,6 +137,15 @@ public class TolkienPlacedFeatures {
                 List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome()));
         registerPlaced(context, FLOWER_BRAMBLES_PLACED_KEY, configuredFeatures.getOrThrow(TolkienConfiguredFeatures.FLOWER_BRAMBLES_KEY),
                 List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome()));
+
+        registerPlaced(context, PLACED_FANGORN_FALLEN_LOG, configuredFeatures.getOrThrow(TolkienConfiguredFeatures.FANGORNOAK_SMALL_LOG), tolkienFeatureCheckArea(AvoidLandmarkModifier.checkBoth(), 40).build());
+        registerPlaced(context, PLACED_DEADWOOD_FALLEN_LOG, configuredFeatures.getOrThrow(DEADWOOD_SMALL_LOG), tolkienFeatureCheckArea(AvoidLandmarkModifier.checkBoth(), 40).build());
+
+        registerPlaced(context, PLACED_FANGORN_FALLEN_LEAVES, configuredFeatures.getOrThrow(TolkienConfiguredFeatures.FANGORNOAK_FALLEN_LEAVES), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome()).build());
+
+        registerPlaced(context, PLACED_ROCKPILE, configuredFeatures.getOrThrow(ROCK_PILE), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome()).build());
+        registerPlaced(context, PLACED_RANDOM_RUBBLE, configuredFeatures.getOrThrow(RANDOM_RUBBLE), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome()).build());
+        registerPlaced(context, PLACED_STONE_SPIKE, configuredFeatures.getOrThrow(STONE_SPIKE), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome()).build());
     }
 
     private static ResourceKey<PlacedFeature> registerPlacedKey(String name) {
