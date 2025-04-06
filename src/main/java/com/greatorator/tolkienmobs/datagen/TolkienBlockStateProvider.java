@@ -643,10 +643,10 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         }
         blockItem(TolkienBlocks.PLACARD, "_wall_empty");
 
-        simpleBlock(TolkienBlocks.CAMO_GLOWSTONE_BLOCK.get());
-        simpleBlock(TolkienBlocks.CAMO_SMOKER_BLOCK.get());
-        simpleBlock(TolkienBlocks.CAMO_FLUID_BLOCK.get());
-        simpleBlock(TolkienBlocks.CHAMELEON_BLOCK.get());
+        simpleBlock(TolkienBlocks.CAMO_GLOWSTONE_BLOCK.get(), this.models().cubeAll("block_camo_glowstone", modLoc("block/block_camo_glowstone")).renderType("translucent"));
+        simpleBlock(TolkienBlocks.CAMO_SMOKER_BLOCK.get(), this.models().cubeAll("block_camo_smoker", modLoc("block/block_camo_smoker")).renderType("translucent"));
+        simpleBlock(TolkienBlocks.CAMO_FLUID_BLOCK.get(), this.models().cubeAll("block_camo_fluid", modLoc("block/block_camo_fluid")).renderType("translucent"));
+        simpleBlock(TolkienBlocks.CHAMELEON_BLOCK.get(), this.models().cubeAll("chameleon_block", modLoc("block/chameleon_block")).renderType("translucent"));
         simpleBlock(TolkienBlocks.CAMO_CHEST_BLOCK.get(), models().getExistingFile(modLoc("block/block_camo_chest")));
         simpleBlock(TolkienBlocks.CAMO_SPAWNER_BLOCK.value(), this.models().cubeAll("block_camo_spawner", modLoc("block/block_camo_spawner")).renderType("translucent"));
         horizontalBlock(TolkienBlocks.LOCKABLE_CHEST_BLOCK.get(), models().getExistingFile(modLoc("block/lockable_chest_block")), 180);

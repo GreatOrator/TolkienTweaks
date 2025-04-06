@@ -1,10 +1,12 @@
 package com.greatorator.tolkienmobs.block.custom;
 
 import com.greatorator.tolkienmobs.block.TolkienEntityBlock;
+import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.*;
@@ -21,15 +23,16 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
+import java.util.*;
 
 public class ChameleonBlock<C> extends TolkienEntityBlock implements SimpleWaterloggedBlock {
     public static final MapCodec<ChameleonBlock> CODEC = simpleCodec(ChameleonBlock::new);
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-    public static final BooleanProperty LIT = BlockStateProperties.LIT;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
@@ -111,6 +114,95 @@ public class ChameleonBlock<C> extends TolkienEntityBlock implements SimpleWater
     @Override
     public RenderShape getRenderShape(BlockState iBlockState) {
         return RenderShape.MODEL;
+    }
+
+    public BlockState selectBestAdjacentBlock(@Nonnull BlockAndTintGetter world, @Nonnull BlockPos blockPos) {
+        TreeMap<Direction, BlockState> adjacentSolidBlocks = new TreeMap<Direction, BlockState>();
+
+        HashMap<BlockState, Integer> adjacentBlockCount = new HashMap<BlockState, Integer>();
+        for (Direction facing : Direction.values()) {
+            BlockPos adjacentPosition = blockPos.offset(facing.getStepX(),
+                    facing.getStepY(),
+                    facing.getStepZ());
+            BlockState adjacentBS = world.getBlockState(adjacentPosition);
+            if (!adjacentBS.isAir()) {
+                adjacentSolidBlocks.put(facing, adjacentBS);
+                if (adjacentBlockCount.containsKey(adjacentBS)) {
+                    adjacentBlockCount.put(adjacentBS, 1 + adjacentBlockCount.get(adjacentBS));
+                } else if (adjacentBS.getBlock() != TolkienBlocks.CHAMELEON_BLOCK.get()
+                        && adjacentBS.getBlock() != Blocks.GRASS_BLOCK) {
+                    adjacentBlockCount.put(adjacentBS, 1);
+                }
+            }
+        }
+
+        if (adjacentBlockCount.isEmpty()) {
+            return this.defaultBlockState();
+        }
+
+        if (adjacentSolidBlocks.size() == 1) {
+            BlockState singleAdjacentBlock = adjacentSolidBlocks.firstEntry().getValue();
+            if (singleAdjacentBlock.getBlock() == TolkienBlocks.CHAMELEON_BLOCK.get()) {
+                return this.defaultBlockState();
+            } else {
+                return singleAdjacentBlock;
+            }
+        }
+
+        int maxCount = 0;
+        ArrayList<BlockState> maxCountIBlockStates = new ArrayList<BlockState>();
+        for (Map.Entry<BlockState, Integer> entry : adjacentBlockCount.entrySet()) {
+            if (entry.getValue() > maxCount) {
+                maxCountIBlockStates.clear();
+                maxCountIBlockStates.add(entry.getKey());
+                maxCount = entry.getValue();
+            } else if (entry.getValue() == maxCount) { // a tie
+                maxCountIBlockStates.add(entry.getKey());
+            }
+        }
+
+        if (maxCountIBlockStates.isEmpty()) throw new AssertionError("maxCountIBlockStates.isEmpty()");
+        if (maxCountIBlockStates.size() == 1) {               // one clear winner
+            return maxCountIBlockStates.get(0);
+        }
+
+        for (Map.Entry<Direction, BlockState> entry : adjacentSolidBlocks.entrySet()) {
+            BlockState iBlockState = entry.getValue();
+            if (maxCountIBlockStates.contains(iBlockState)) {
+                Direction oppositeSide = entry.getKey().getOpposite();
+                BlockState oppositeBlock = adjacentSolidBlocks.get(oppositeSide);
+                if (oppositeBlock != null && (oppositeBlock == iBlockState || oppositeBlock.getBlock() == TolkienBlocks.CHAMELEON_BLOCK.get()) ) {
+                    adjacentBlockCount.put(iBlockState, 10 + adjacentBlockCount.get(iBlockState));
+                }
+            }
+        }
+
+        maxCount = 0;
+        maxCountIBlockStates.clear();
+        for (Map.Entry<BlockState, Integer> entry : adjacentBlockCount.entrySet()) {
+            if (entry.getValue() > maxCount) {
+                maxCountIBlockStates.clear();
+                maxCountIBlockStates.add(entry.getKey());
+                maxCount = entry.getValue();
+            } else if (entry.getValue() == maxCount) {
+                maxCountIBlockStates.add(entry.getKey());
+            }
+        }
+        if (maxCountIBlockStates.isEmpty()) throw new AssertionError("maxCountIBlockStates.isEmpty()");
+        if (maxCountIBlockStates.size() == 1) {  // one clear winner
+            return maxCountIBlockStates.getFirst();
+        }
+
+        Direction[] orderOfPreference = new Direction[] {Direction.NORTH, Direction.SOUTH, Direction.EAST,
+                Direction.WEST, Direction.DOWN, Direction.UP};
+
+        for (Direction testFace : orderOfPreference) {
+            if (adjacentSolidBlocks.containsKey(testFace) &&
+                    maxCountIBlockStates.contains(adjacentSolidBlocks.get(testFace))) {
+                return adjacentSolidBlocks.get(testFace);
+            }
+        }
+        throw new AssertionError("unreachable code");
     }
 
     @Override

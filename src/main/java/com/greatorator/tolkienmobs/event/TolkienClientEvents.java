@@ -10,26 +10,6 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 @EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class TolkienClientEvents {
-//    private static final Supplier<Block[]> chameleonBlocks = Suppliers.memoize(() -> new Block[] {
-//            TolkienBlocks.CHAMELEON_BLOCK.get(),
-//            TolkienBlocks.CAMO_GLOWSTONE_BLOCK.get()
-//    });
-//
-//    @SubscribeEvent
-//    public static void onModelBakingCompleted(ModelEvent.ModifyBakingResult event) {
-//        Map<ModelResourceLocation, BakedModel> modelRegistry = event.getModels();
-//
-//        for (Block block : chameleonBlocks.get()) {
-//            for (BlockState state : block.getStateDefinition().getPossibleStates()) {
-//                registerChameleonModel(modelRegistry, BuiltInRegistries.BLOCK.getKey(block), state.getValues().entrySet().stream().map(StateHolder.PROPERTY_ENTRY_TO_STRING_FUNCTION).collect(Collectors.joining(",")));
-//            }
-//        }
-//    }
-//    private static void registerChameleonModel(Map<ModelResourceLocation, BakedModel> modelRegistry, ResourceLocation rl, String stateString) {
-//    ModelResourceLocation mrl = new ModelResourceLocation(rl, stateString);
-//
-//    modelRegistry.put(mrl, new ChameleonBlockDynamicBakedModel(modelRegistry.get(mrl)));
-//    }
 
     @SubscribeEvent
     public static void onComputeFovModifierEvent(ComputeFovModifierEvent event) {

@@ -78,8 +78,6 @@ public class TolkienMobsMain {
     //    -Watcher
     //    -Witch King
     //  -Functional Blocks
-    //    -Chameleon Blocks
-    //      -Figuring out the camouflage aspect
     //    -Milestone
     //    -Spawner
     //      -Using the custom entity list for what to spawn
