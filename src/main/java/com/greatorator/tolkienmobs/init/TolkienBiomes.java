@@ -9,11 +9,12 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
-//import static com.greatorator.tolkienmobs.world.registration.BiomeHelper.*;
+import static com.greatorator.tolkienmobs.world.registration.BiomeHelper.*;
 
 
 public class TolkienBiomes {
-//    public static final ResourceKey<Biome> FOREST = makeKey("forest");
+    public static final ResourceKey<Biome> FANGORN = makeKey("fangorn_forest");
+    public static final ResourceKey<Biome> MORDOR = makeKey("mordor");
 
     private static ResourceKey<Biome> makeKey(String name) {
         return ResourceKey.create(Registries.BIOME, TolkienMobsMain.prefix(name));
@@ -23,6 +24,7 @@ public class TolkienBiomes {
         HolderGetter<PlacedFeature> featureGetter = context.lookup(Registries.PLACED_FEATURE);
         HolderGetter<ConfiguredWorldCarver<?>> carverGetter = context.lookup(Registries.CONFIGURED_CARVER);
 
-//        context.register(FOREST, biomeWithDefaults(fireflyParticles(defaultAmbientBuilder()), defaultMobSpawning(), twilightForestGen(featureGetter, carverGetter)).build());
+        context.register(FANGORN, makeBiomeFangorn(forestParticles(fangornAmbientBuilder()).skyColor(getSkyColorWithTemperatureModifier(0.8F)).waterColor(0x00D2FB).fogColor(0x5B5F61).foliageColorOverride(0x4EAD4E).grassColorOverride(0x4EAD4E), fangornForestSpawning(), fangornForestGen(featureGetter, carverGetter)).hasPrecipitation(true).temperature(0.07F).downfall(0.8F).build());
+        context.register(MORDOR, makeBiomeMordor(desolateParticles(mordorAmbientBuilder()).skyColor(getSkyColorWithTemperatureModifier(2.0F)).waterColor(0).fogColor(12638463).foliageColorOverride(2329).grassColorOverride(2329), mordorSpawning(), mordorGen(featureGetter, carverGetter)).hasPrecipitation(false).temperature(2.0F).downfall(0.0F).build());
     }
 }
