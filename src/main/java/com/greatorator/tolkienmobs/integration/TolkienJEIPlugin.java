@@ -65,7 +65,7 @@ public class TolkienJEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        registration.addRecipeCatalyst(new ItemStack(TolkienBlocks.FIREPLACE.get().asItem()),
+        registration.addRecipeCatalyst(new ItemStack(TolkienBlocks.FIREPLACE.get()),
                 FireplaceRecipeCategory.FIREPLACE_RECIPE_TYPE);
     }
 }

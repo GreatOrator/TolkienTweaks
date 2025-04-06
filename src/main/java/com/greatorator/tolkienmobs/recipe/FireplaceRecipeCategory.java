@@ -1,15 +1,20 @@
 package com.greatorator.tolkienmobs.recipe;
 
 import com.greatorator.tolkienmobs.block.custom.FireplaceBlock;
+import com.greatorator.tolkienmobs.containers.screens.FireplaceScreen;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.Util;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -55,11 +60,30 @@ public class FireplaceRecipeCategory implements IRecipeCategory<FireplaceRecipe>
         return background;
     }
 
+//    @Override
+//    public void draw(FireplaceRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+//        IRecipeCategory.super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);
+//    }
+
     @Override @ParametersAreNonnullByDefault
     public void setRecipe(IRecipeLayoutBuilder builder, FireplaceRecipe recipe, IFocusGroup focuses) {
-        builder.addSlot(RecipeIngredientRole.INPUT, 23, 15).addIngredients(recipe.getIngredients().get(0));
-        builder.addSlot(RecipeIngredientRole.INPUT, 45, 15).addIngredients(recipe.getIngredients().get(1));
+        for (int i = 0; i < recipe.getInputItems().size(); i++) {
+            var input = recipe.getInputItems().get(i);
+            var slot = builder.addSlot(RecipeIngredientRole.INPUT, 2 + (i + recipe.getInputItems().size()) * 22, 15);
+            for (var stack : input.ingredient().getItems()) {
+                slot.addIngredient(VanillaTypes.ITEM_STACK, Util.make(stack.copy(), s -> s.setCount(input.count())));
+            }
+        }
 
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 91, 35).addItemStack(recipe.getResultItem(null));
+        for (int i = 0; i < recipe.getOutput().size(); i++) {
+            var output = recipe.getOutput().get(i);
+            builder.addSlot(RecipeIngredientRole.OUTPUT, 114, 35)
+                    .addItemStack(output.getItem().getDefaultInstance());
+        }
+
+//        builder.addSlot(RecipeIngredientRole.INPUT, 23, 15).addIngredients(recipe.getIngredients().get(0));
+//        builder.addSlot(RecipeIngredientRole.INPUT, 45, 15).addIngredients(recipe.getIngredients().get(1));
+//
+//        builder.addSlot(RecipeIngredientRole.OUTPUT, 91, 35).addItemStack(recipe.getResultItem(null));
     }
 }
