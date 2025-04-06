@@ -88,8 +88,6 @@ public class TolkienMobsMain {
     //    -Backpack
     //      -Bucket inside Inventory not working
     //      -Upgrades clearing when removed
-    //  -Integration
-    //    -Curios
 
     public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer, Dist dist) {
         modEventBus.addListener(this::commonSetup);

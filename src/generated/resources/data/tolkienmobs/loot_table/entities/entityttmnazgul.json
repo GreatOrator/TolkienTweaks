@@ -64,7 +64,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:strength"
+              "id": "tolkienmobs:blessing_of_eru"
             },
             {
               "add": false,
