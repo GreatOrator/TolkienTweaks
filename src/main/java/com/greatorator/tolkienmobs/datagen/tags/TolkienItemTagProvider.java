@@ -132,5 +132,19 @@ public class TolkienItemTagProvider extends ItemTagsProvider {
                 .add(TolkienItems.ITEM_BACKPACK_UPGRADE_CRAFTING.get())
                 .add(TolkienItems.ITEM_BACKPACK_UPGRADE_SLEEPING.get())
                 .add(TolkienItems.ITEM_BACKPACK_UPGRADE_CAMPFIRE.get());
+        tag(TolkienTags.Items.CURIOS_AMULET)
+                .add(TolkienItems.TRINKET_AMULET.get());
+        tag(TolkienTags.Items.CURIOS_RING)
+                .add(TolkienItems.TRINKET_RING.get());
+        tag(TolkienTags.Items.CURIOS_CHARM)
+                .add(TolkienItems.TRINKET_CHARM.get());
+        tag(TolkienTags.Items.CURIOS_BELT)
+                .add(TolkienItems.TRINKET_BELT.get());
+        tag(TolkienTags.Items.CURIOS_HANDS)
+                .add(TolkienItems.TRINKET_GLOVE.get());
+        tag(TolkienTags.Items.CURIOS_BODY)
+                .add(TolkienItems.TRINKET_CLOAK.get());
+        tag(TolkienTags.Items.CURIOS_HEAD)
+                .add(TolkienItems.TRINKET_HAT.get());
     }
 }
