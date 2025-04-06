@@ -81,8 +81,6 @@ public class TolkienMobsMain {
     //    -Chameleon Blocks
     //      -Figuring out the camouflage aspect
     //    -Milestone
-    //    -Fluid Block
-    //      -Figure out how to place fluids in full 3x3x3 area instead of each face
     //    -Spawner
     //      -Using the custom entity list for what to spawn
     //    -Fireplace

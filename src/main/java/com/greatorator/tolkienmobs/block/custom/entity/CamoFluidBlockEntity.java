@@ -31,7 +31,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class CamoFluidBlockEntity extends BlockEntity implements MenuProvider {
-    private final List<BlockPos> airLocations = new ArrayList<>();
     public final ItemStackHandler mainInventory = new ItemStackHandler(1) {
         @Override
         protected int getStackLimit(int slot, ItemStack stack) {
@@ -97,8 +96,32 @@ public class CamoFluidBlockEntity extends BlockEntity implements MenuProvider {
         return saveWithoutMetadata(pRegistries);
     }
 
-    public List<BlockPos> findAirBlocks() {
-        return this.airLocations;
+    public List<BlockPos> findAirBlocks(Level world, BlockPos aPos, Direction side) {
+        List<BlockPos> positions = new ArrayList<>();
+        int xRange = 2;
+        int yRange = 1;
+        int zRange = 2;
+
+        if (side.getAxis() != Direction.Axis.Y) {
+            aPos = aPos.above();
+            if (world.isEmptyBlock(aPos)) {
+                positions.add(aPos.immutable());
+            }
+        }
+
+        for (int xPos = aPos.getX() - xRange; xPos <= aPos.getX() + xRange; xPos++) {
+            for (int yPos = aPos.getY() - yRange; yPos <= aPos.getY() + yRange; yPos++) {
+                for (int zPos = aPos.getZ() - zRange; zPos <= aPos.getZ() + zRange; zPos++) {
+                    if (!(aPos.getX() == xPos && aPos.getY() == yPos && aPos.getZ() == zPos)) {
+                        BlockPos thePos = new BlockPos(xPos, yPos, zPos);
+                        if (world.isEmptyBlock(thePos)) {
+                            positions.add(thePos.immutable());
+                        }
+                    }
+                }
+            }
+        }
+     return positions;
     }
 
     public void onNeighborChange(Level level) {
@@ -112,17 +135,15 @@ public class CamoFluidBlockEntity extends BlockEntity implements MenuProvider {
         }
 
         for (Direction facing : Direction.values()) {
-//            List<BlockPos> fluidToPlace = new ArrayList<>(this.airLocations);
-//            fluidToPlace.add(worldPosition.relative(facing));
-//            int r = 1;
-
             BlockPos blockPos = worldPosition.relative(facing);
+            List<BlockPos> fluidToPlace = findAirBlocks(level, blockPos, facing);
+
             Fluid fluid = fluidHandlerItem.getFluidInTank(0).getFluid();
             if (fluid == Fluids.EMPTY) {
                 return;
             }
-            if (level.isEmptyBlock(blockPos)) {
-                level.setBlockAndUpdate(blockPos, fluid.defaultFluidState().createLegacyBlock());
+            for (BlockPos airPos : fluidToPlace) {
+                level.setBlockAndUpdate(airPos, fluid.defaultFluidState().createLegacyBlock());
             }
         }
     }
