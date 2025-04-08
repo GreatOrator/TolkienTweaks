@@ -64,7 +64,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:water_breathing"
+              "id": "minecraft:long_slowness"
             },
             {
               "add": false,

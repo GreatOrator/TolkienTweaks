@@ -264,7 +264,7 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.TRAPDOOR_MALLORN);
                         output.accept(TolkienBlocks.PRESSURE_PLATE_MALLORN);
                         output.accept(TolkienBlocks.MALLORN_BUTTON);
-//                        output.accept(TolkienBlocks.BARREL_MALLORN);
+                        output.accept(TolkienBlocks.BARREL_MALLORN);
                         output.accept(TolkienBlocks.LOG_MIRKWOOD);
                         output.accept(TolkienBlocks.WOOD_MIRKWOOD);
                         output.accept(TolkienBlocks.STRIPPED_MIRKWOOD_LOG);
@@ -278,7 +278,7 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.TRAPDOOR_MIRKWOOD);
                         output.accept(TolkienBlocks.PRESSURE_PLATE_MIRKWOOD);
                         output.accept(TolkienBlocks.MIRKWOOD_BUTTON);
-//                        output.accept(TolkienBlocks.BARREL_MIRKWOOD);
+                        output.accept(TolkienBlocks.BARREL_MIRKWOOD);
                         output.accept(TolkienBlocks.LOG_CULUMALDA);
                         output.accept(TolkienBlocks.WOOD_CULUMALDA);
                         output.accept(TolkienBlocks.STRIPPED_CULUMALDA_LOG);
@@ -292,7 +292,7 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.TRAPDOOR_CULUMALDA);
                         output.accept(TolkienBlocks.PRESSURE_PLATE_CULUMALDA);
                         output.accept(TolkienBlocks.CULUMALDA_BUTTON);
-//                        output.accept(TolkienBlocks.BARREL_CULUMALDA);
+                        output.accept(TolkienBlocks.BARREL_CULUMALDA);
                         output.accept(TolkienBlocks.LOG_LEBETHRON);
                         output.accept(TolkienBlocks.WOOD_LEBETHRON);
                         output.accept(TolkienBlocks.STRIPPED_LEBETHRON_LOG);
@@ -306,7 +306,7 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.TRAPDOOR_LEBETHRON);
                         output.accept(TolkienBlocks.PRESSURE_PLATE_LEBETHRON);
                         output.accept(TolkienBlocks.LEBETHRON_BUTTON);
-//                        output.accept(TolkienBlocks.BARREL_LEBETHRON);
+                        output.accept(TolkienBlocks.BARREL_LEBETHRON);
                         output.accept(TolkienBlocks.LOG_FANGORNOAK);
                         output.accept(TolkienBlocks.WOOD_FANGORNOAK);
                         output.accept(TolkienBlocks.STRIPPED_FANGORNOAK_LOG);
@@ -320,7 +320,7 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.TRAPDOOR_FANGORNOAK);
                         output.accept(TolkienBlocks.PRESSURE_PLATE_FANGORNOAK);
                         output.accept(TolkienBlocks.FANGORNOAK_BUTTON);
-//                        output.accept(TolkienBlocks.BARREL_FANGORNOAK);
+                        output.accept(TolkienBlocks.BARREL_FANGORNOAK);
                         output.accept(TolkienBlocks.LOG_DEADWOOD);
                         output.accept(TolkienBlocks.WOOD_DEADWOOD);
                         output.accept(TolkienBlocks.STRIPPED_DEADWOOD_LOG);
@@ -334,7 +334,7 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.TRAPDOOR_DEADWOOD);
                         output.accept(TolkienBlocks.PRESSURE_PLATE_DEADWOOD);
                         output.accept(TolkienBlocks.DEADWOOD_BUTTON);
-//                        output.accept(TolkienBlocks.BARREL_DEADWOOD);
+                        output.accept(TolkienBlocks.BARREL_DEADWOOD);
                         output.accept(TolkienBlocks.LOG_DWARVEN_MAPLE);
                         output.accept(TolkienBlocks.WOOD_DWARVEN_MAPLE);
                         output.accept(TolkienBlocks.STRIPPED_DWARVEN_MAPLE_LOG);
@@ -348,7 +348,7 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.TRAPDOOR_DWARVEN_MAPLE);
                         output.accept(TolkienBlocks.PRESSURE_PLATE_DWARVEN_MAPLE);
                         output.accept(TolkienBlocks.DWARVEN_MAPLE_BUTTON);
-//                        output.accept(TolkienBlocks.BARREL_DWARVEN_MAPLE);
+                        output.accept(TolkienBlocks.BARREL_DWARVEN_MAPLE);
                         output.accept(TolkienBlocks.BLOCK_MITHRIL);
                         output.accept(TolkienBlocks.STAIRS_MITHRIL);
                         output.accept(TolkienBlocks.SLAB_MITHRIL);
@@ -358,7 +358,7 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.TRAPDOOR_MITHRIL);
                         output.accept(TolkienBlocks.PRESSURE_PLATE_MITHRIL);
                         output.accept(TolkienBlocks.MITHRIL_BUTTON);
-//                        output.accept(TolkienBlocks.BARREL_MITHRIL);
+                        output.accept(TolkienBlocks.BARREL_MITHRIL);
                         output.accept(TolkienBlocks.BLOCK_MORGULIRON);
                         output.accept(TolkienBlocks.STAIRS_MORGULIRON);
                         output.accept(TolkienBlocks.SLAB_MORGULIRON);
@@ -368,7 +368,7 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.TRAPDOOR_MORGULIRON);
                         output.accept(TolkienBlocks.PRESSURE_PLATE_MORGULIRON);
                         output.accept(TolkienBlocks.MORGULIRON_BUTTON);
-//                        output.accept(TolkienBlocks.BARREL_MORGULIRON);
+                        output.accept(TolkienBlocks.BARREL_MORGULIRON);
                         output.accept(TolkienBlocks.DARK_STONE);
                         output.accept(TolkienBlocks.STAIRS_DARK_STONE);
                         output.accept(TolkienBlocks.SLAB_DARK_STONE);
