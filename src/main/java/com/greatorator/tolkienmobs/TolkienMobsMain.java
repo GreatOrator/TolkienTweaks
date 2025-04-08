@@ -57,7 +57,6 @@ public class TolkienMobsMain {
     private static final String BLOCK_DIR = "textures/block/custom/";
 
     // TODO
-    //  -Barrels Crashing when placing
     //  -Signs not placing on vertical surfaces
     //  -Torches not placing on vertical surfaces
     //  -Boats Implemented
