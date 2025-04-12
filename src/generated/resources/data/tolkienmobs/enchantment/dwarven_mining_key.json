@@ -1,34 +1,35 @@
 {
-  "anvil_cost": 3,
+  "anvil_cost": 2,
   "description": {
     "translate": "enchantment.tolkienmobs.dwarven_mining_key"
   },
   "effects": {
-    "minecraft:post_attack": [
+    "tolkienmobs:post_break_block": [
       {
-        "affected": "victim",
         "effect": {
-          "type": "tolkienmobs:dwarven_mining",
-          "level": 1
+          "type": "tolkienmobs:dwarven_mining"
         },
-        "enchanted": "attacker"
+        "requirements": {
+          "condition": "minecraft:match_tool",
+          "predicate": {
+            "items": "#minecraft:pickaxes"
+          }
+        }
       }
     ]
   },
-  "exclusive_set": "#minecraft:exclusive_set/mining",
   "max_cost": {
-    "base": 25,
-    "per_level_above_first": 8
+    "base": 15,
+    "per_level_above_first": 10
   },
   "max_level": 5,
   "min_cost": {
-    "base": 5,
-    "per_level_above_first": 8
+    "base": 1,
+    "per_level_above_first": 10
   },
-  "primary_items": "#minecraft:enchantable/mining",
   "slots": [
-    "hand"
+    "mainhand"
   ],
-  "supported_items": "#minecraft:enchantable/mining",
+  "supported_items": "#minecraft:pickaxes",
   "weight": 5
 }

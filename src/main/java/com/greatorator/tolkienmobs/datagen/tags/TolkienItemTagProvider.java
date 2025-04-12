@@ -5,7 +5,9 @@ import com.greatorator.tolkienmobs.init.TolkienTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -146,5 +148,18 @@ public class TolkienItemTagProvider extends ItemTagsProvider {
                 .add(TolkienItems.TRINKET_CLOAK.get());
         tag(TolkienTags.Items.CURIOS_HEAD)
                 .add(TolkienItems.TRINKET_HAT.get());
+        tag(TolkienTags.Items.CANNOT_AUTO_CONSUME)
+                .add(Items.CHORUS_FRUIT)
+                .add(Items.ENCHANTED_GOLDEN_APPLE)
+                .add(Items.GOLDEN_APPLE)
+                .add(Items.OMINOUS_BOTTLE)
+                .addOptionalTag(Tags.Items.FOODS_RAW_MEAT)
+                .addOptionalTag(Tags.Items.FOODS_RAW_FISH)
+                .addOptionalTag(Tags.Items.FOODS_FOOD_POISONING)
+                .addOptionalTag(ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "foods/doughs")))
+                .addOptionalTag(ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "foods/pastas")))
+                .addOptionalTag(ResourceLocation.parse("farmersdelight:dog_food"))
+                .addOptionalTag(ResourceLocation.parse("farmersdelight:pie_crust"))
+                .addOptionalTag(ResourceLocation.parse("spelunkery:portal_fluid_bottle"));
     }
 }

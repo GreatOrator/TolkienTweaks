@@ -1,34 +1,30 @@
 {
-  "anvil_cost": 3,
+  "anvil_cost": 2,
   "description": {
     "translate": "enchantment.tolkienmobs.elven_fleetfoot_key"
   },
   "effects": {
-    "minecraft:post_attack": [
+    "minecraft:tick": [
       {
-        "affected": "victim",
         "effect": {
           "type": "tolkienmobs:elven_fleetfoot",
-          "level": 1
-        },
-        "enchanted": "attacker"
+          "speed": 1
+        }
       }
     ]
   },
-  "exclusive_set": "#minecraft:exclusive_set/armor",
   "max_cost": {
     "base": 25,
     "per_level_above_first": 8
   },
-  "max_level": 4,
+  "max_level": 5,
   "min_cost": {
     "base": 5,
     "per_level_above_first": 8
   },
-  "primary_items": "#minecraft:enchantable/leg_armor",
   "slots": [
-    "chest"
+    "feet"
   ],
-  "supported_items": "#minecraft:enchantable/leg_armor",
+  "supported_items": "#minecraft:enchantable/foot_armor",
   "weight": 5
 }

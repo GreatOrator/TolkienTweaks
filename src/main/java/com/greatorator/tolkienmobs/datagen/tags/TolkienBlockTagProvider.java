@@ -305,5 +305,11 @@ public class TolkienBlockTagProvider extends BlockTagsProvider {
                 .addTag(BlockTags.DIRT)
                 .add(Blocks.MOSS_BLOCK, TolkienBlocks.LIVING_ROOTS.get());
         tag(TolkienTags.Blocks.TICK_SPEED_DENY);
+        tag(TolkienTags.Blocks.TILLABLES)
+                .add(Blocks.GRASS_BLOCK)
+                .add(Blocks.DIRT_PATH)
+                .add(Blocks.DIRT)
+                .add(Blocks.COARSE_DIRT)
+                .add(Blocks.ROOTED_DIRT);
     }
 }

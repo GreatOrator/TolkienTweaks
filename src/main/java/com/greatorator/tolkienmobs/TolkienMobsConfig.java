@@ -36,6 +36,9 @@ public class TolkienMobsConfig {
     public static ModConfigSpec.IntValue MINIMUM_TICK_SPEED = BUILDER
             .comment("Minimum speed anything that ticks can be set to. Defaults to 1, or every tick")
             .defineInRange("minimum_tick_speed", 1, 1, 100);
+    public static ModConfigSpec.IntValue BLOCKS_PER_LEVEL = BUILDER
+            .comment("Range per level for Dwarven Mining Enchant.  Default is 1 (3x3)")
+            .defineInRange("minimum_tick_speed", 9, 9, 81);
 
     private static final ModConfigSpec.IntValue PICKUP_RANGE = BUILDER
             .comment("Range of pickup for Hobbit Ring")

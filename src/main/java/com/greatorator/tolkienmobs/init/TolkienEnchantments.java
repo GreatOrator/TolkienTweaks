@@ -2,32 +2,20 @@ package com.greatorator.tolkienmobs.init;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.enchantment.*;
-import net.minecraft.advancements.critereon.*;
-import net.minecraft.core.Vec3i;
+import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
-import net.minecraft.world.item.enchantment.EnchantmentTarget;
-import net.minecraft.world.item.enchantment.LevelBasedValue;
-import net.minecraft.world.item.enchantment.effects.DamageImmunity;
-import net.minecraft.world.item.enchantment.effects.ReplaceDisk;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
-import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
-import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.predicates.DamageSourceCondition;
-import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.predicates.MatchTool;
-
-import java.util.Optional;
 
 public class TolkienEnchantments {
     public static final ResourceKey<Enchantment> GONDORIAN_RESOLVE_KEY = create("gondorian_resolve_key");
@@ -40,126 +28,152 @@ public class TolkienEnchantments {
     public static final ResourceKey<Enchantment> HOBBIT_HARVEST_KEY = create("hobbit_harvest_key");
 
     public static void bootstrap(BootstrapContext<Enchantment> context) {
-        var enchantment = context.lookup(Registries.ENCHANTMENT);
-        var items = context.lookup(Registries.ITEM);
+        HolderGetter<Enchantment> enchantmentHolderGetter = context.lookup(Registries.ENCHANTMENT);
+        HolderGetter<Item> itemHolderGetter = context.lookup(Registries.ITEM);
+        HolderGetter<DamageType> damageTypeHolderGetter = context.lookup(Registries.DAMAGE_TYPE);
+        HolderGetter<Block> blockHolderGetter = context.lookup(Registries.BLOCK);
 
-        context.register(
-            GONDORIAN_RESOLVE_KEY,
+        register(
+                context,
+                HOBBIT_HARVEST_KEY,
                 Enchantment.enchantment(
-                    Enchantment.definition(
-                        items.getOrThrow(ItemTags.LEG_ARMOR_ENCHANTABLE), items.getOrThrow(ItemTags.LEG_ARMOR_ENCHANTABLE),
-                        5,
-                        5,
-                        Enchantment.dynamicCost(5,  8),
-                        Enchantment.dynamicCost(25, 8),
-                        3,
-                        EquipmentSlotGroup.LEGS
-                    )
-                )
-                .exclusiveWith(enchantment.getOrThrow(EnchantmentTags.ARMOR_EXCLUSIVE))
-                .withEffect(
-                        EnchantmentEffectComponents.POST_ATTACK,
-                        EnchantmentTarget.ATTACKER,
-                        EnchantmentTarget.VICTIM,
-                        new GondorResolveEnchantmentEffect(1)
-                ).build(GONDORIAN_RESOLVE_KEY.location())
+                                Enchantment.definition(
+                                        itemHolderGetter.getOrThrow(ItemTags.HOES),
+                                        5,
+                                        5,
+                                        Enchantment.dynamicCost(5, 8),
+                                        Enchantment.dynamicCost(25, 8),
+                                        3,
+                                        EquipmentSlotGroup.MAINHAND)
+                        )
+                        .withEffect(
+                                TolkienEnchantmentEffectComponents.USE_ON_BLOCK,
+                                new HobbitHarvestEnchantmentEffect(1),
+                                MatchTool.toolMatches(
+                                        ItemPredicate.Builder.item()
+                                                .of(ItemTags.HOES)
+                                )
+                        )
         );
-        context.register(ELVEN_LONGEVITY_KEY, Enchantment.enchantment(Enchantment.definition(items.getOrThrow(ItemTags.CHEST_ARMOR_ENCHANTABLE),
-                        items.getOrThrow(ItemTags.CHEST_ARMOR_ENCHANTABLE), 5, 4,
-                        Enchantment.dynamicCost(5, 8), Enchantment.dynamicCost(25, 8), 3, EquipmentSlotGroup.CHEST))
-                .exclusiveWith(enchantment.getOrThrow(EnchantmentTags.ARMOR_EXCLUSIVE))
-                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER,
-                        EnchantmentTarget.VICTIM, new ElvenLongevityEnchantmentEffect(1)).build(ELVEN_LONGEVITY_KEY.location()));
-        context.register(ELVEN_FLEETFOOT_KEY, Enchantment.enchantment(Enchantment.definition(items.getOrThrow(ItemTags.LEG_ARMOR_ENCHANTABLE),
-                        items.getOrThrow(ItemTags.LEG_ARMOR_ENCHANTABLE), 5, 4,
-                        Enchantment.dynamicCost(5, 8), Enchantment.dynamicCost(25, 8), 3, EquipmentSlotGroup.CHEST))
-                .exclusiveWith(enchantment.getOrThrow(EnchantmentTags.ARMOR_EXCLUSIVE))
-                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER,
-                        EnchantmentTarget.VICTIM, new ElvenFleetfootEnchantmentEffect(1)).build(ELVEN_FLEETFOOT_KEY.location()));
-        context.register(
-            BALROG_MARK_KEY,
+        register(
+                context,
+                HOBBIT_PLOW_KEY,
+                Enchantment.enchantment(Enchantment.definition(
+                        itemHolderGetter.getOrThrow(ItemTags.HOES),
+                        1,
+                        4,
+                        Enchantment.dynamicCost(10, 10),
+                        Enchantment.dynamicCost(25, 10),
+                        4,
+                        EquipmentSlotGroup.MAINHAND)
+                ).exclusiveWith(
+                        enchantmentHolderGetter.getOrThrow(EnchantmentTags.MINING_EXCLUSIVE)
+                ).withEffect(
+                        TolkienEnchantmentEffectComponents.USE_ON_BLOCK,
+                        new HobbitPlowEnchantmentEffect(1)
+                )
+        );
+        register(
+                context,
+                DWARVEN_MINING_KEY,
                 Enchantment.enchantment(
                         Enchantment.definition(
-                                items.getOrThrow(ItemTags.FOOT_ARMOR_ENCHANTABLE), items.getOrThrow(ItemTags.FOOT_ARMOR_ENCHANTABLE),
+                                itemHolderGetter.getOrThrow(ItemTags.PICKAXES),
                                 5,
+                                5,
+                                Enchantment.dynamicCost(1, 10),
+                                Enchantment.dynamicCost(15, 10),
                                 2,
+                                EquipmentSlotGroup.MAINHAND
+                        )
+                ).withEffect(
+                        TolkienEnchantmentEffectComponents.POST_BREAK_BLOCK,
+                        new DwarvenMinerEnchantmentEffect(3),
+                        MatchTool.toolMatches(
+                                ItemPredicate.Builder.item()
+                                        .of(ItemTags.PICKAXES)
+                        )
+                )
+        );
+        register(
+                context,
+                ELVEN_LONGEVITY_KEY,
+                Enchantment.enchantment(Enchantment.definition(
+                                itemHolderGetter.getOrThrow(ItemTags.CHEST_ARMOR_ENCHANTABLE),
+                                5,
+                                5,
                                 Enchantment.dynamicCost(5, 8),
                                 Enchantment.dynamicCost(25, 8),
-                                3,
-                                EquipmentSlotGroup.FEET
-                        )
+                                2,
+                                EquipmentSlotGroup.CHEST)
+                        ).withEffect(
+                                EnchantmentEffectComponents.TICK,
+                                new ElvenLongevityEnchantmentEffect(1)
                 )
-                .exclusiveWith(enchantment.getOrThrow(EnchantmentTags.BOOTS_EXCLUSIVE))
-                .withEffect(
-                        EnchantmentEffectComponents.DAMAGE_IMMUNITY,
-                        DamageImmunity.INSTANCE,
-                        DamageSourceCondition.hasDamageSource(
-                                DamageSourcePredicate.Builder.damageType()
-                                        .tag(TagPredicate.is(DamageTypeTags.BURN_FROM_STEPPING))
-                                        .tag(TagPredicate.isNot(DamageTypeTags.BYPASSES_INVULNERABILITY))
-                        )
-                )
-                .withEffect(
-                        EnchantmentEffectComponents.LOCATION_CHANGED,
-                        new ReplaceDisk(
-                                new LevelBasedValue.Clamped(LevelBasedValue.perLevel(3.0F, 1.0F), 0.0F, 16.0F),
-                                LevelBasedValue.constant(1.0F),
-                                new Vec3i(0, -1, 0),
-                                Optional.of(
-                                        BlockPredicate.allOf(
-                                                BlockPredicate.matchesTag(new Vec3i(0, 1, 0), BlockTags.AIR),
-                                                BlockPredicate.matchesBlocks(Blocks.DIRT),
-                                                BlockPredicate.matchesBlocks(Blocks.STONE),
-                                                BlockPredicate.unobstructed()
-                                        )
-                                ),
-                                BlockStateProvider.simple(Blocks.MAGMA_BLOCK),
-                                Optional.of(GameEvent.BLOCK_PLACE)
-                        ),
-                        LootItemEntityPropertyCondition.hasProperties(
-                                LootContext.EntityTarget.THIS, EntityPredicate.Builder.entity().flags(EntityFlagsPredicate.Builder.flags().setOnGround(true))
-                        )
-                ).build(BALROG_MARK_KEY.location())
         );
-        context.register(DWARVEN_ENDURANCE_KEY, Enchantment.enchantment(Enchantment.definition(items.getOrThrow(ItemTags.HEAD_ARMOR_ENCHANTABLE),
-                        items.getOrThrow(ItemTags.HEAD_ARMOR_ENCHANTABLE), 5, 4,
-                        Enchantment.dynamicCost(5, 8), Enchantment.dynamicCost(25, 8), 3, EquipmentSlotGroup.HEAD))
-                .exclusiveWith(enchantment.getOrThrow(EnchantmentTags.ARMOR_EXCLUSIVE))
-                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER,
-                        EnchantmentTarget.VICTIM, new DwarvenEnduranceEnchantmentEffect(1)).build(DWARVEN_ENDURANCE_KEY.location()));
-        context.register(DWARVEN_MINING_KEY, Enchantment.enchantment(Enchantment.definition(items.getOrThrow(ItemTags.MINING_ENCHANTABLE),
-                        items.getOrThrow(ItemTags.MINING_ENCHANTABLE), 5, 5,
-                        Enchantment.dynamicCost(5, 8), Enchantment.dynamicCost(25, 8), 3, EquipmentSlotGroup.HAND))
-                .exclusiveWith(enchantment.getOrThrow(EnchantmentTags.MINING_EXCLUSIVE))
-                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER,
-                        EnchantmentTarget.VICTIM, new DwarvenMinerEnchantmentEffect(1)).build(DWARVEN_MINING_KEY.location()));
-        context.register(HOBBIT_PLOW_KEY, Enchantment.enchantment(Enchantment.definition(items.getOrThrow(ItemTags.MINING_ENCHANTABLE),
-                        items.getOrThrow(ItemTags.MINING_ENCHANTABLE), 5, 4,
-                        Enchantment.dynamicCost(5, 8), Enchantment.dynamicCost(25, 8), 3, EquipmentSlotGroup.HAND))
-                .exclusiveWith(enchantment.getOrThrow(EnchantmentTags.MINING_EXCLUSIVE))
-                .withEffect(EnchantmentEffectComponents.POST_ATTACK, EnchantmentTarget.ATTACKER,
-                        EnchantmentTarget.VICTIM, new HobbitPlowEnchantmentEffect(1)).build(HOBBIT_PLOW_KEY.location()));
         register(
-            context,
-            HOBBIT_HARVEST_KEY,
-            Enchantment.enchantment(
-                Enchantment.definition(
-                    items.getOrThrow(ItemTags.HOES),
-                    5,
-                   4,
-                    Enchantment.dynamicCost(5, 8),
-                    Enchantment.dynamicCost(25, 8),
-                    3,
-                    EquipmentSlotGroup.HAND)
+                context,
+                ELVEN_FLEETFOOT_KEY,
+                Enchantment.enchantment(Enchantment.definition(
+                        itemHolderGetter.getOrThrow(ItemTags.FOOT_ARMOR_ENCHANTABLE),
+                        5,
+                        5,
+                        Enchantment.dynamicCost(5, 8),
+                        Enchantment.dynamicCost(25, 8),
+                        2,
+                        EquipmentSlotGroup.FEET)
+                ).withEffect(
+                        EnchantmentEffectComponents.TICK,
+                        new ElvenFleetfootEnchantmentEffect(1)
                 )
-            .withEffect(
-                TolkienEnchantmentEffectComponents.USE_ON_BLOCK,
-                new HobbitHarvestEnchantmentEffect(1),
-                MatchTool.toolMatches(
-                        ItemPredicate.Builder.item()
-                                .of(ItemTags.HOES)
+        );
+        register(
+                context,
+                GONDORIAN_RESOLVE_KEY,
+                Enchantment.enchantment(Enchantment.definition(
+                        itemHolderGetter.getOrThrow(ItemTags.LEG_ARMOR_ENCHANTABLE),
+                        5,
+                        5,
+                        Enchantment.dynamicCost(5, 8),
+                        Enchantment.dynamicCost(25, 8),
+                        2,
+                        EquipmentSlotGroup.LEGS)
+                ).withEffect(
+                        EnchantmentEffectComponents.TICK,
+                        new GondorResolveEnchantmentEffect(1)
                 )
-            )
+        );
+        register(
+                context,
+                BALROG_MARK_KEY,
+                Enchantment.enchantment(Enchantment.definition(
+                        itemHolderGetter.getOrThrow(ItemTags.FOOT_ARMOR_ENCHANTABLE),
+                                1,
+                                3,
+                                Enchantment.dynamicCost(10, 10),
+                                Enchantment.dynamicCost(25, 10),
+                                4,
+                                EquipmentSlotGroup.FEET)
+                ).withEffect(
+                        EnchantmentEffectComponents.TICK,
+                        new BalrogMarkEnchantmentEffect(1)
+                )
+        );
+        register(
+                context,
+                DWARVEN_ENDURANCE_KEY,
+                Enchantment.enchantment(Enchantment.definition(
+                        itemHolderGetter.getOrThrow(ItemTags.HEAD_ARMOR_ENCHANTABLE),
+                        1,
+                        1,
+                        Enchantment.dynamicCost(10, 10),
+                        Enchantment.dynamicCost(25, 10),
+                        4,
+                        EquipmentSlotGroup.HEAD)
+                ).withEffect(
+                        EnchantmentEffectComponents.TICK,
+                        new DwarvenEnduranceEnchantmentEffect(14)
+                )
         );
     }
 

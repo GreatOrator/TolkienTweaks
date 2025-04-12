@@ -1,21 +1,18 @@
 {
-  "anvil_cost": 3,
+  "anvil_cost": 2,
   "description": {
     "translate": "enchantment.tolkienmobs.gondorian_resolve_key"
   },
   "effects": {
-    "minecraft:post_attack": [
+    "minecraft:tick": [
       {
-        "affected": "victim",
         "effect": {
           "type": "tolkienmobs:gondorian_resolve",
-          "level": 1
-        },
-        "enchanted": "attacker"
+          "resistance": 1
+        }
       }
     ]
   },
-  "exclusive_set": "#minecraft:exclusive_set/armor",
   "max_cost": {
     "base": 25,
     "per_level_above_first": 8
@@ -25,7 +22,6 @@
     "base": 5,
     "per_level_above_first": 8
   },
-  "primary_items": "#minecraft:enchantable/leg_armor",
   "slots": [
     "legs"
   ],

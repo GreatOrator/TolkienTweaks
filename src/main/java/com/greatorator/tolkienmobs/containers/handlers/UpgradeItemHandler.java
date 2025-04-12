@@ -1,8 +1,6 @@
 package com.greatorator.tolkienmobs.containers.handlers;
 
 import com.greatorator.tolkienmobs.init.TolkienTags;
-import com.greatorator.tolkienmobs.item.custom.UpgradeItem;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
