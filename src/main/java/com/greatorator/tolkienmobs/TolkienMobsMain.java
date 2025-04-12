@@ -57,15 +57,6 @@ public class TolkienMobsMain {
     private static final String BLOCK_DIR = "textures/block/custom/";
 
     // TODO
-    //  -Signs not placing on vertical surfaces
-    //  -Torches not placing on vertical surfaces
-    //  -Boats Implemented
-    //  -Projectiles Implemented
-    //  -Biomes
-    //    -Generation
-    //    -Structures
-    //  -Arda Portal
-    //  -Enchantments
     //  -Entities
     //    -Morgul Crystal
     //    -Balrog
@@ -76,8 +67,22 @@ public class TolkienMobsMain {
     //    -Shelob
     //    -Watcher
     //    -Witch King
+    //  -Biomes
+    //    -Generation
+    //    -Structures
+    //  -Signs not placing on vertical surfaces
+    //  -Torches not placing on vertical surfaces
+    //  -Boats Implemented
+    //  -Projectiles Implemented
+    //  -Arda Portal
+    //    -Needs implementation
+    //  -Enchantments
+    //    -Hobbit Plow
+    //    -Hobbit Harvest
+    //    -Dwarven Miner
     //  -Functional Blocks
     //    -Milestone
+    //      -Needs implementation
     //    -Spawner
     //      -Using the custom entity list for what to spawn
     //    -Fireplace
@@ -114,11 +119,11 @@ public class TolkienMobsMain {
         TolkienFluidTypes.register(modEventBus);
         TolkienFluids.register(modEventBus);
 
-        TolkienLootFunctions.LOOT_FUNCTIONS.register(modEventBus);
         TolkienLootContextParamSets.registerAll();
         TolkienLootModifier.register(modEventBus);
         TolkienEnchantmentEffectComponents.register(modEventBus);
         TolkienEnchantmentEffects.register(modEventBus);
+        TolkienLootFunctions.LOOT_FUNCTIONS.register(modEventBus);
 
         TolkienFeatureModifiers.TRUNK_PLACERS.register(modEventBus);
         TolkienFeatureModifiers.FOLIAGE_PLACERS.register(modEventBus);

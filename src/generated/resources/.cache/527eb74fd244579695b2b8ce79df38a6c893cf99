@@ -1,4 +1,4 @@
-// 1.21.1	2025-04-06T16:44:27.5646018	Tags for minecraft:item mod id tolkienmobs
+// 1.21.1	2025-04-12T10:18:37.8902419	Tags for minecraft:item mod id tolkienmobs
 b6759930b66528ef1b59e66a6340de083ab9fd64 data/curios/tags/item/amulet.json
 b2ac0eab8c80c7ead347e9077e4c30bfc0c5ae24 data/curios/tags/item/belt.json
 dadb5bec68e95d642081a4c6ec54aa7d5e675a1a data/curios/tags/item/body.json
@@ -15,6 +15,7 @@ f10a17797a6a55ef1aa772f3faf622969ff3e808 data/minecraft/tags/item/swords.json
 6445f32638e0b7eb7c0b028b95c663f73be42ea0 data/minecraft/tags/item/trimmable_armor.json
 7479e082f757f7af2ea11bce804fc6fcae314d0b data/tolkienmobs/tags/item/acorns.json
 4bec3919e9dceb2876731fc32e360537c2cf29b9 data/tolkienmobs/tags/item/coins.json
+9433ff3031991111861b2433ff5e312ef1197a92 data/tolkienmobs/tags/item/eating.json
 22d7952a242afbc0cff76a4fdc9e6dffc48fe299 data/tolkienmobs/tags/item/insects.json
 d0429b6a877ae544644772767b7132d84c481698 data/tolkienmobs/tags/item/keys.json
 27c4d225010ce6207698d54fcd8cfd130bc9c923 data/tolkienmobs/tags/item/sleeping_bag.json

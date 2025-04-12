@@ -1,19 +1,16 @@
 package com.greatorator.tolkienmobs.containers;
 
-import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
 import com.greatorator.tolkienmobs.block.custom.entity.CamoFluidBlockEntity;
 import com.greatorator.tolkienmobs.containers.handlers.BucketItemHandler;
-import com.greatorator.tolkienmobs.containers.handlers.UpgradeItemHandler;
 import com.greatorator.tolkienmobs.init.TolkienContainers;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.*;
-import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.items.ItemStackHandler;
 
 public class CamoFluidBlockContainer extends TolkienContainer {
     public final CamoFluidBlockEntity tileEntity;

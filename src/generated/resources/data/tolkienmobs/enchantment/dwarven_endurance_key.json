@@ -1,34 +1,30 @@
 {
-  "anvil_cost": 3,
+  "anvil_cost": 4,
   "description": {
     "translate": "enchantment.tolkienmobs.dwarven_endurance_key"
   },
   "effects": {
-    "minecraft:post_attack": [
+    "minecraft:tick": [
       {
-        "affected": "victim",
         "effect": {
           "type": "tolkienmobs:dwarven_endurance",
-          "level": 1
-        },
-        "enchanted": "attacker"
+          "hunger_range": 14
+        }
       }
     ]
   },
-  "exclusive_set": "#minecraft:exclusive_set/armor",
   "max_cost": {
     "base": 25,
-    "per_level_above_first": 8
+    "per_level_above_first": 10
   },
-  "max_level": 4,
+  "max_level": 1,
   "min_cost": {
-    "base": 5,
-    "per_level_above_first": 8
+    "base": 10,
+    "per_level_above_first": 10
   },
-  "primary_items": "#minecraft:enchantable/head_armor",
   "slots": [
     "head"
   ],
   "supported_items": "#minecraft:enchantable/head_armor",
-  "weight": 5
+  "weight": 1
 }

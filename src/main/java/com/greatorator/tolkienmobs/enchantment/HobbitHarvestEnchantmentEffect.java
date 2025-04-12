@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
-public record HobbitHarvestEnchantmentEffect(int level) implements EnchantmentEntityEffect {
+public record HobbitHarvestEnchantmentEffect(int area) implements EnchantmentEntityEffect {
     private static final List<BlockPos> ITERATING_OFFSET = new ArrayList<>();
     static {
         for (int dx = -1; dx <= 1; dx++) {
@@ -30,8 +30,9 @@ public record HobbitHarvestEnchantmentEffect(int level) implements EnchantmentEn
         }
     }
     public static final MapCodec<HobbitHarvestEnchantmentEffect> CODEC = RecordCodecBuilder.mapCodec(instance ->
-            instance.group(Codec.INT.optionalFieldOf("level", 3).forGetter(HobbitHarvestEnchantmentEffect::level))
-                    .apply(instance, HobbitHarvestEnchantmentEffect::new));
+            instance.group(Codec.INT.optionalFieldOf("area", 3)
+                            .forGetter(HobbitHarvestEnchantmentEffect::area)
+                    ).apply(instance, HobbitHarvestEnchantmentEffect::new));
 
     @Override
     public void apply(ServerLevel serverLevel, int enchantmentLevel, EnchantedItemInUse enchantedItemInUse, Entity entity, Vec3 vec3) {

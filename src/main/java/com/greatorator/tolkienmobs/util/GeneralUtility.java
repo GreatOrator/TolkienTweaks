@@ -38,6 +38,20 @@ import java.util.function.Consumer;
 
 public class GeneralUtility {
     public static final boolean DECK_THE_HALLS;
+    public static final Direction[] HORIZONTAL_DIRECTIONS = new Direction[]{
+            Direction.SOUTH,
+            Direction.WEST,
+            Direction.EAST,
+            Direction.NORTH
+    };
+    public static final Direction[] VERTICAL_DIRECTIONS = new Direction[]{
+            Direction.UP,
+            Direction.DOWN
+    };
+    public static final Direction[][] CORNER_DIRECTIONS = new Direction[][]{
+            {Direction.EAST, Direction.NORTH}, {Direction.EAST, Direction.SOUTH},
+            {Direction.WEST, Direction.NORTH}, {Direction.WEST, Direction.SOUTH},
+    };
     public enum RedstoneMode {
         TOGGLE,
         PULSE,
@@ -321,5 +335,26 @@ public class GeneralUtility {
         MutableComponent current = Component.translatable(string);
         current.setStyle(style);
         return current;
+    }
+
+    public static void acceptDirections(BlockPos blockPos, Consumer<BlockPos> blockPosConsumer) {
+        for (Direction direction : Direction.values()) {
+            blockPosConsumer.accept(blockPos.relative(direction));
+        }
+        for (Direction horizontal : HORIZONTAL_DIRECTIONS) {
+            for (Direction vertical : VERTICAL_DIRECTIONS) {
+                blockPosConsumer.accept(blockPos.relative(horizontal).relative(vertical));
+            }
+        }
+        for (Direction[] corner : CORNER_DIRECTIONS) {
+            BlockPos pos1 = blockPos;
+            for (Direction direction : corner) {
+                pos1 = pos1.relative(direction);
+            }
+            for (Direction verticalDirection : VERTICAL_DIRECTIONS) {
+                pos1 = pos1.relative(verticalDirection);
+                blockPosConsumer.accept(pos1);
+            }
+        }
     }
 }

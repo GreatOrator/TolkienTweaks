@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.containers.handlers;
 
-import com.greatorator.tolkienmobs.init.TolkienTags;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;

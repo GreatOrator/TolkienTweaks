@@ -1,16 +1,11 @@
 package com.greatorator.tolkienmobs.init;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-
-import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class TolkienTags {
     public static class Blocks {
@@ -20,6 +15,7 @@ public class TolkienTags {
         public static final TagKey<Block> PORTAL_FRAME_BLOCKS = blockTag("tolkienmobs:portal_frame_blocks");
         public static final TagKey<Block> PLANTS_HANG_ON = blockTag("tolkienmobs:plants_hang_on");
         public static final TagKey<Block> TICK_SPEED_DENY = blockTag("tolkienmobs:tick_speed_deny");
+        public static final TagKey<Block> TILLABLES = blockTag("tolkienmobs:farming");
 
         private static TagKey<Block> blockTag(String name) {
             return net.minecraft.tags.TagKey.create(Registries.BLOCK, ResourceLocation.parse(name));
@@ -34,6 +30,7 @@ public class TolkienTags {
         public static final TagKey<Item> INSECTS = createTag("tolkienmobs:insects");
         public static final TagKey<Item> ACORNS = createTag("tolkienmobs:acorns");
         public static final TagKey<Item> UPGRADES = createTag("tolkienmobs:upgrades");
+        public static final TagKey<Item> CANNOT_AUTO_CONSUME = createTag("tolkienmobs:eating");
         public static final TagKey<Item> CURIOS_RING = createTag("curios:ring");
         public static final TagKey<Item> CURIOS_CHARM = createTag("curios:charm");
         public static final TagKey<Item> CURIOS_BELT = createTag("curios:belt");
