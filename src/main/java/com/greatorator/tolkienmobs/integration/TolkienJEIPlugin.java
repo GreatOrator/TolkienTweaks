@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.integration;
 
 import com.greatorator.tolkienmobs.containers.screens.FireplaceScreen;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
+import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienRecipesTypes;
 import com.greatorator.tolkienmobs.recipe.FireplaceRecipe;
 import com.greatorator.tolkienmobs.recipe.FireplaceRecipeCategory;
@@ -29,12 +30,8 @@ public class TolkienJEIPlugin implements IModPlugin {
 
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registration) {
-//        registration.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, DimletModule.ATTRIBUTE_DIMLET.get(), DimletInterpreter.INSTANCE);
-//        registration.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, DimletModule.TERRAIN_DIMLET.get(), DimletInterpreter.INSTANCE);
-//        registration.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, DimletModule.FLUID_DIMLET.get(), DimletInterpreter.INSTANCE);
-//        registration.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, DimletModule.FEATURE_DIMLET.get(), DimletInterpreter.INSTANCE);
-//        registration.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, DimletModule.BIOME_DIMLET.get(), DimletInterpreter.INSTANCE);
-//        registration.registerSubtypeInterpreter(VanillaTypes.ITEM_STACK, DimletModule.BIOME_CONTROLLER_DIMLET.get(), DimletInterpreter.INSTANCE);
+        List.of(TolkienItems.TRINKET_RING.get(), TolkienItems.TRINKET_HAT.get(), TolkienItems.TRINKET_CLOAK.get(), TolkienItems.TRINKET_GLOVE.get(), TolkienItems.TRINKET_BELT.get(), TolkienItems.TRINKET_AMULET.get(), TolkienItems.TRINKET_CHARM.get())
+                .forEach(item -> registration.registerSubtypeInterpreter(item, new TrinketSubtypeInterpreter()));
     }
 
     @Override
@@ -60,7 +57,7 @@ public class TolkienJEIPlugin implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-        registration.addRecipeClickArea(FireplaceScreen.class, 100, 31, 18, 23, FireplaceRecipeCategory.FIREPLACE_RECIPE_TYPE);
+        registration.addRecipeClickArea(FireplaceScreen.class, 67, 31, 18, 23, FireplaceRecipeCategory.FIREPLACE_RECIPE_TYPE);
     }
 
     @Override
