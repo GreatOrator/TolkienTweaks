@@ -304,6 +304,21 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         blockWithOwnFlatTexture(TolkienBlocks.LADDER_DEADWOOD);
         blockWithOwnFlatTexture(TolkienBlocks.LADDER_DWARVEN_MAPLE);
 
+        basicItem(TolkienItems.MALLORN_BOAT.get());
+        basicItem(TolkienItems.MALLORN_CHEST_BOAT.get());
+        basicItem(TolkienItems.MIRKWOOD_BOAT.get());
+        basicItem(TolkienItems.MIRKWOOD_CHEST_BOAT.get());
+        basicItem(TolkienItems.CULUMALDA_BOAT.get());
+        basicItem(TolkienItems.CULUMALDA_CHEST_BOAT.get());
+        basicItem(TolkienItems.LEBETHRON_BOAT.get());
+        basicItem(TolkienItems.LEBETHRON_CHEST_BOAT.get());
+        basicItem(TolkienItems.FANGORNOAK_BOAT.get());
+        basicItem(TolkienItems.FANGORNOAK_CHEST_BOAT.get());
+        basicItem(TolkienItems.DEADWOOD_BOAT.get());
+        basicItem(TolkienItems.DEADWOOD_CHEST_BOAT.get());
+        basicItem(TolkienItems.DWARVEN_MAPLE_BOAT.get());
+        basicItem(TolkienItems.DWARVEN_MAPLE_CHEST_BOAT.get());
+
         basicItem(TolkienItems.RECORD_EREBOR.get());
         basicItem(TolkienItems.RECORD_HOBBITS.get());
         basicItem(TolkienItems.RECORD_MINASTIRITH.get());

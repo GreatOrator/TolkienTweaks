@@ -48,8 +48,20 @@ public class TolkienItems {
             () -> new TolkienItem(new Item.Properties().stacksTo(16)).setEffectOverride());
 
         // Boats
-    public static final DeferredItem<Item> MALLORN_BOAT = ITEMS.register("boat_mallorn", () -> new MallornBoatItem(false, new Item.Properties().stacksTo(1)));
-    public static final DeferredItem<Item> MALLORN_CHEST_BOAT = ITEMS.register("chest_boat_mallorn", () -> new MallornBoatItem(true, new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> MALLORN_BOAT = ITEMS.register("boat_mallorn", () -> new MallornBoatItem(false, new Item.Properties().stacksTo(1), TolkienWoodTypes.MALLORN));
+    public static final DeferredItem<Item> MALLORN_CHEST_BOAT = ITEMS.register("chest_boat_mallorn", () -> new MallornBoatItem(true, new Item.Properties().stacksTo(1), TolkienWoodTypes.MALLORN));
+    public static final DeferredItem<Item> MIRKWOOD_BOAT = ITEMS.register("boat_mirkwood", () -> new MirkwoodBoatItem(false, new Item.Properties().stacksTo(1), TolkienWoodTypes.MIRKWOOD));
+    public static final DeferredItem<Item> MIRKWOOD_CHEST_BOAT = ITEMS.register("chest_boat_mirkwood", () -> new MirkwoodBoatItem(true, new Item.Properties().stacksTo(1), TolkienWoodTypes.MIRKWOOD));
+    public static final DeferredItem<Item> CULUMALDA_BOAT = ITEMS.register("boat_culumalda", () -> new CulumaldaBoatItem(false, new Item.Properties().stacksTo(1), TolkienWoodTypes.CULUMALDA));
+    public static final DeferredItem<Item> CULUMALDA_CHEST_BOAT = ITEMS.register("chest_boat_culumalda", () -> new CulumaldaBoatItem(true, new Item.Properties().stacksTo(1), TolkienWoodTypes.CULUMALDA));
+    public static final DeferredItem<Item> LEBETHRON_BOAT = ITEMS.register("boat_lebethron", () -> new LebethronBoatItem(false, new Item.Properties().stacksTo(1), TolkienWoodTypes.LEBETHRON));
+    public static final DeferredItem<Item> LEBETHRON_CHEST_BOAT = ITEMS.register("chest_boat_lebethron", () -> new LebethronBoatItem(true, new Item.Properties().stacksTo(1), TolkienWoodTypes.LEBETHRON));
+    public static final DeferredItem<Item> FANGORNOAK_BOAT = ITEMS.register("boat_fangornoak", () -> new FangornoakBoatItem(false, new Item.Properties().stacksTo(1), TolkienWoodTypes.FANGORNOAK));
+    public static final DeferredItem<Item> FANGORNOAK_CHEST_BOAT = ITEMS.register("chest_boat_fangornoak", () -> new FangornoakBoatItem(true, new Item.Properties().stacksTo(1), TolkienWoodTypes.FANGORNOAK));
+    public static final DeferredItem<Item> DEADWOOD_BOAT = ITEMS.register("boat_deadwood", () -> new DeadwoodBoatItem(false, new Item.Properties().stacksTo(1), TolkienWoodTypes.DEADWOOD));
+    public static final DeferredItem<Item> DEADWOOD_CHEST_BOAT = ITEMS.register("chest_boat_deadwood", () -> new DeadwoodBoatItem(true, new Item.Properties().stacksTo(1), TolkienWoodTypes.DEADWOOD));
+    public static final DeferredItem<Item> DWARVEN_MAPLE_BOAT = ITEMS.register("boat_dwarven_maple", () -> new DwarvenMapleBoatItem(false, new Item.Properties().stacksTo(1), TolkienWoodTypes.DWARVEN_MAPLE));
+    public static final DeferredItem<Item> DWARVEN_MAPLE_CHEST_BOAT = ITEMS.register("chest_boat_dwarven_maple", () -> new DwarvenMapleBoatItem(true, new Item.Properties().stacksTo(1), TolkienWoodTypes.DWARVEN_MAPLE));
 
 
     // Quest

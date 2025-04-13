@@ -21,7 +21,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:strong_healing"
+              "id": "minecraft:long_poison"
             },
             {
               "add": false,

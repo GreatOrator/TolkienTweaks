@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.init;
 import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.entity.ambient.*;
 import com.greatorator.tolkienmobs.entity.boss.GoblinKingEntity;
+import com.greatorator.tolkienmobs.entity.item.*;
 import com.greatorator.tolkienmobs.entity.monster.*;
 import com.greatorator.tolkienmobs.entity.npc.*;
 import com.greatorator.tolkienmobs.entity.passive.*;
@@ -197,9 +198,48 @@ public class TolkienEntities {
                     .sized(0.75F, 0.75F).build("trap_simple"));
 
         // Boats
-//    public static final DeferredHolder<EntityType<?>, EntityType<Boat>> MALLORN_BOAT =
-//                registerMisc("boat_mallorn", EntityType.Builder.<Boat>of((type, level) -> new Boat(type, level, TolkienItems.MALLORN_BOAT.get()), MobCategory.MISC)
-//                    .sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
+    public static final DeferredHolder<EntityType<?>, EntityType<MallornBoatEntity>> MALLORN_BOAT =
+            ENTITY_TYPES.register("boat_mallorn", () -> EntityType.Builder.<MallornBoatEntity>of(MallornBoatEntity::new, MobCategory.MISC)
+                    .sized(1.375F, 0.5625F).clientTrackingRange(10).build("boat_mallorn"));
+    public static final DeferredHolder<EntityType<?>, EntityType<MallornChestBoatEntity>> MALLORN_CHEST_BOAT =
+            ENTITY_TYPES.register("chest_boat_mallorn", () -> EntityType.Builder.<MallornChestBoatEntity>of(MallornChestBoatEntity::new, MobCategory.MISC)
+                    .sized(1.375F, 0.5625F).clientTrackingRange(10).build("boat_mallorn"));
+    public static final DeferredHolder<EntityType<?>, EntityType<MirkwoodBoatEntity>> MIRKWOOD_BOAT =
+            ENTITY_TYPES.register("boat_mirkwood", () -> EntityType.Builder.<MirkwoodBoatEntity>of(MirkwoodBoatEntity::new, MobCategory.MISC)
+                    .sized(1.375F, 0.5625F).clientTrackingRange(10).build("boat_mirkwood"));
+    public static final DeferredHolder<EntityType<?>, EntityType<MirkwoodChestBoatEntity>> MIRKWOOD_CHEST_BOAT =
+            ENTITY_TYPES.register("chest_boat_mirkwood", () -> EntityType.Builder.<MirkwoodChestBoatEntity>of(MirkwoodChestBoatEntity::new, MobCategory.MISC)
+                    .sized(1.375F, 0.5625F).clientTrackingRange(10).build("boat_mirkwood"));
+    public static final DeferredHolder<EntityType<?>, EntityType<CulumaldaBoatEntity>> CULUMALDA_BOAT =
+            ENTITY_TYPES.register("boat_culumalda", () -> EntityType.Builder.<CulumaldaBoatEntity>of(CulumaldaBoatEntity::new, MobCategory.MISC)
+                    .sized(1.375F, 0.5625F).clientTrackingRange(10).build("boat_culumalda"));
+    public static final DeferredHolder<EntityType<?>, EntityType<CulumaldaChestBoatEntity>> CULUMALDA_CHEST_BOAT =
+            ENTITY_TYPES.register("chest_boat_culumalda", () -> EntityType.Builder.<CulumaldaChestBoatEntity>of(CulumaldaChestBoatEntity::new, MobCategory.MISC)
+                    .sized(1.375F, 0.5625F).clientTrackingRange(10).build("boat_culumalda"));
+    public static final DeferredHolder<EntityType<?>, EntityType<LebethronBoatEntity>> LEBETHRON_BOAT =
+            ENTITY_TYPES.register("boat_lebethron", () -> EntityType.Builder.<LebethronBoatEntity>of(LebethronBoatEntity::new, MobCategory.MISC)
+                    .sized(1.375F, 0.5625F).clientTrackingRange(10).build("boat_lebethron"));
+    public static final DeferredHolder<EntityType<?>, EntityType<LebethronChestBoatEntity>> LEBETHRON_CHEST_BOAT =
+            ENTITY_TYPES.register("chest_boat_lebethron", () -> EntityType.Builder.<LebethronChestBoatEntity>of(LebethronChestBoatEntity::new, MobCategory.MISC)
+                    .sized(1.375F, 0.5625F).clientTrackingRange(10).build("boat_lebethron"));
+    public static final DeferredHolder<EntityType<?>, EntityType<FangornoakBoatEntity>> FANGORNOAK_BOAT =
+            ENTITY_TYPES.register("boat_fangornoak", () -> EntityType.Builder.<FangornoakBoatEntity>of(FangornoakBoatEntity::new, MobCategory.MISC)
+                    .sized(1.375F, 0.5625F).clientTrackingRange(10).build("boat_fangornoak"));
+    public static final DeferredHolder<EntityType<?>, EntityType<FangornoakChestBoatEntity>> FANGORNOAK_CHEST_BOAT =
+            ENTITY_TYPES.register("chest_boat_fangornoak", () -> EntityType.Builder.<FangornoakChestBoatEntity>of(FangornoakChestBoatEntity::new, MobCategory.MISC)
+                    .sized(1.375F, 0.5625F).clientTrackingRange(10).build("boat_fangornoak"));
+    public static final DeferredHolder<EntityType<?>, EntityType<DeadwoodBoatEntity>> DEADWOOD_BOAT =
+            ENTITY_TYPES.register("boat_deadwood", () -> EntityType.Builder.<DeadwoodBoatEntity>of(DeadwoodBoatEntity::new, MobCategory.MISC)
+                    .sized(1.375F, 0.5625F).clientTrackingRange(10).build("boat_deadwood"));
+    public static final DeferredHolder<EntityType<?>, EntityType<DeadwoodChestBoatEntity>> DEADWOOD_CHEST_BOAT =
+            ENTITY_TYPES.register("chest_boat_deadwood", () -> EntityType.Builder.<DeadwoodChestBoatEntity>of(DeadwoodChestBoatEntity::new, MobCategory.MISC)
+                    .sized(1.375F, 0.5625F).clientTrackingRange(10).build("boat_deadwood"));
+    public static final DeferredHolder<EntityType<?>, EntityType<DwarvenMapleBoatEntity>> DWARVEN_MAPLE_BOAT =
+            ENTITY_TYPES.register("boat_dwarven_maple", () -> EntityType.Builder.<DwarvenMapleBoatEntity>of(DwarvenMapleBoatEntity::new, MobCategory.MISC)
+                    .sized(1.375F, 0.5625F).clientTrackingRange(10).build("boat_dwarven_maple"));
+    public static final DeferredHolder<EntityType<?>, EntityType<DwarvenMapleChestBoatEntity>> DWARVEN_MAPLE_CHEST_BOAT =
+            ENTITY_TYPES.register("chest_boat_dwarven_maple", () -> EntityType.Builder.<DwarvenMapleChestBoatEntity>of(DwarvenMapleChestBoatEntity::new, MobCategory.MISC)
+                    .sized(1.375F, 0.5625F).clientTrackingRange(10).build("boat_dwarven_maple"));
 
     /** Spawn Eggs */
         // Ambient
