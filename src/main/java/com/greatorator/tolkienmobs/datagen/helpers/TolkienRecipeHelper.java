@@ -34,7 +34,7 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
         super(output, registries);
     }
 
-    protected static void woodListRecipe(RecipeOutput pRecipeOutput, RecipeCategory pCategory, String group, ItemLike planks, ItemLike log, ItemLike wood, ItemLike stairs, ItemLike slab, ItemLike plate, ItemLike button, ItemLike door, ItemLike trapdoor, ItemLike fence, ItemLike fenceGate, ItemLike sign, ItemLike hangingSign, ItemLike ladder, Supplier<? extends Block> torch, Supplier<? extends Block> barrel, Supplier<? extends Block> leaves, ItemLike leafpile) {
+    protected static void woodListRecipe(RecipeOutput pRecipeOutput, RecipeCategory pCategory, String group, ItemLike planks, ItemLike log, ItemLike wood, ItemLike stairs, ItemLike slab, ItemLike plate, ItemLike button, ItemLike door, ItemLike trapdoor, ItemLike fence, ItemLike fenceGate, ItemLike sign, ItemLike hangingSign, ItemLike ladder, ItemLike boat, ItemLike chestBoat, Supplier<? extends Block> torch, Supplier<? extends Block> barrel, Supplier<? extends Block> leaves, ItemLike leafpile) {
         leafPileRecipe(pRecipeOutput, leaves, leafpile);
         stairBuilder(stairs, Ingredient.of(planks)).group(group).unlockedBy("has_"+group, has(planks)).save(pRecipeOutput);
         slab(pRecipeOutput, pCategory, slab, planks);
@@ -51,9 +51,11 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
         signRecipe(pRecipeOutput, sign, planks);
         hangingSignRecipe(pRecipeOutput, hangingSign, planks);
         ladderRecipe(pRecipeOutput, ladder, planks);
+        woodenBoat(pRecipeOutput, boat, planks);
+        chestBoat(pRecipeOutput, chestBoat, planks);
     }
 
-    protected static void woodListRecipeNoLeaves(RecipeOutput pRecipeOutput, RecipeCategory pCategory, String group, ItemLike planks, ItemLike log, ItemLike wood, ItemLike stairs, ItemLike slab, ItemLike plate, ItemLike button, ItemLike door, ItemLike trapdoor, ItemLike fence, ItemLike fenceGate, ItemLike sign, ItemLike hangingSign, ItemLike ladder, Supplier<? extends Block> torch, Supplier<? extends Block> barrel) {
+    protected static void woodListRecipeNoLeaves(RecipeOutput pRecipeOutput, RecipeCategory pCategory, String group, ItemLike planks, ItemLike log, ItemLike wood, ItemLike stairs, ItemLike slab, ItemLike plate, ItemLike button, ItemLike door, ItemLike trapdoor, ItemLike fence, ItemLike fenceGate, ItemLike sign, ItemLike hangingSign, ItemLike ladder, ItemLike boat, ItemLike chestBoat, Supplier<? extends Block> torch, Supplier<? extends Block> barrel) {
         stairBuilder(stairs, Ingredient.of(planks)).group(group).unlockedBy("has_"+group, has(planks)).save(pRecipeOutput);
         slab(pRecipeOutput, pCategory, slab, planks);
         pressurePlate(pRecipeOutput, plate, planks);
@@ -69,6 +71,8 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
         signRecipe(pRecipeOutput, sign, planks);
         hangingSignRecipe(pRecipeOutput, hangingSign, planks);
         ladderRecipe(pRecipeOutput, ladder, planks);
+        woodenBoat(pRecipeOutput, boat, planks);
+        chestBoat(pRecipeOutput, chestBoat, planks);
     }
 
     protected static void stoneListRecipe(RecipeOutput pRecipeOutput, RecipeCategory pCategory, String group, ItemLike wall, ItemLike button, ItemLike stair, ItemLike block, ItemLike slab, ItemLike plate) {

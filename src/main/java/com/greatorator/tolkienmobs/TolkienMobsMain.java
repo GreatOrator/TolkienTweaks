@@ -5,6 +5,8 @@ import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
 import com.greatorator.tolkienmobs.containers.screens.*;
 import com.greatorator.tolkienmobs.entity.ambient.render.*;
 import com.greatorator.tolkienmobs.entity.boss.render.GoblinKingRender;
+import com.greatorator.tolkienmobs.entity.item.DwarvenMapleBoatEntity;
+import com.greatorator.tolkienmobs.entity.item.render.*;
 import com.greatorator.tolkienmobs.entity.monster.render.*;
 import com.greatorator.tolkienmobs.entity.npc.render.*;
 import com.greatorator.tolkienmobs.entity.passive.render.*;
@@ -275,11 +277,27 @@ public class TolkienMobsMain {
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_SOUTHRON.get(), SouthronRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_ORC_TRADER.get(), OrcTraderRender::new);
 
-            // Projectile
+                // Projectile
             EntityRenderers.register(TolkienEntities.AMMO_BOULDER.get(), BoulderRender::new);
             EntityRenderers.register(TolkienEntities.AMMO_FELLBEAST_FIREBALL.get(), FellBeastFireballRender::new);
             EntityRenderers.register(TolkienEntities.AMMO_ARROW_GALADHRIM.get(), (context) -> new TolkienArrowRenderer(context, "ammo_galadhrim_arrow"));
             EntityRenderers.register(TolkienEntities.AMMO_ARROW_UTUMNO.get(), (context) -> new TolkienArrowRenderer(context, "ammo_utumno_arrow"));
+
+                // Boats
+            EntityRenderers.register(TolkienEntities.MALLORN_BOAT.get(), (context) -> new MallornBoatRenderer(context, false));
+            EntityRenderers.register(TolkienEntities.MALLORN_CHEST_BOAT.get(), (context) -> new MallornBoatRenderer(context, true));
+            EntityRenderers.register(TolkienEntities.MIRKWOOD_BOAT.get(), (context) -> new MirkwoodBoatRenderer(context, false));
+            EntityRenderers.register(TolkienEntities.MIRKWOOD_CHEST_BOAT.get(), (context) -> new MirkwoodBoatRenderer(context, true));
+            EntityRenderers.register(TolkienEntities.CULUMALDA_BOAT.get(), (context) -> new CulumaldaBoatRenderer(context, false));
+            EntityRenderers.register(TolkienEntities.CULUMALDA_CHEST_BOAT.get(), (context) -> new CulumaldaBoatRenderer(context, true));
+            EntityRenderers.register(TolkienEntities.LEBETHRON_BOAT.get(), (context) -> new LebethronBoatRenderer(context, false));
+            EntityRenderers.register(TolkienEntities.LEBETHRON_CHEST_BOAT.get(), (context) -> new LebethronBoatRenderer(context, true));
+            EntityRenderers.register(TolkienEntities.FANGORNOAK_BOAT.get(), (context) -> new FangornoakBoatRenderer(context, false));
+            EntityRenderers.register(TolkienEntities.FANGORNOAK_CHEST_BOAT.get(), (context) -> new FangornoakBoatRenderer(context, true));
+            EntityRenderers.register(TolkienEntities.DEADWOOD_BOAT.get(), (context) -> new DeadwoodBoatRenderer(context, false));
+            EntityRenderers.register(TolkienEntities.DEADWOOD_CHEST_BOAT.get(), (context) -> new DeadwoodBoatRenderer(context, true));
+            EntityRenderers.register(TolkienEntities.DWARVEN_MAPLE_BOAT.get(), (context) -> new DwarvenMapleBoatRenderer(context, false));
+            EntityRenderers.register(TolkienEntities.DWARVEN_MAPLE_CHEST_BOAT.get(), (context) -> new DwarvenMapleBoatRenderer(context, true));
         }
 
         @SubscribeEvent
