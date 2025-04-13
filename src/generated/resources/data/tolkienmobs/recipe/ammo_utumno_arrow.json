@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:stick"
+    },
+    {
+      "item": "tolkienmobs:feather_bird"
+    },
+    {
+      "item": "tolkienmobs:ingot_morguliron"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:ammo_utumno_arrow"
+  }
+}

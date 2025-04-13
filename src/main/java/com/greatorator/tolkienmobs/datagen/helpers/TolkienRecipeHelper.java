@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.datagen.helpers;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
+import com.greatorator.tolkienmobs.init.TolkienItems;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -97,7 +98,7 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .save(recipeOutput);
     }
 
-    protected static void metalListRecipe(RecipeOutput pRecipeOutput, RecipeCategory pCategory, String group, ItemLike wall, ItemLike door, ItemLike trapdoor, Supplier<? extends Block> barrel, ItemLike button, ItemLike stair, ItemLike block, ItemLike slab, ItemLike plate, ItemLike bars, Supplier<? extends Block> lantern, ItemLike torch, Item ingot, Item nugget) {
+    protected static void metalListRecipe(RecipeOutput pRecipeOutput, RecipeCategory pCategory, String group, ItemLike wall, ItemLike door, ItemLike trapdoor, Supplier<? extends Block> barrel, ItemLike button, ItemLike stair, ItemLike block, ItemLike slab, ItemLike plate, ItemLike bars, Supplier<? extends Block> lantern, ItemLike torch, Item ingot, Item nugget, Item arrow) {
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ingot, 9)
                 .requires(block.asItem())
                 .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(block.asItem()))
@@ -135,6 +136,12 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
         barrelRecipe(pRecipeOutput, barrel, block, slab);
         doorBuilder(door, Ingredient.of(block)).group(group).unlockedBy("has_"+group, has(ingot)).save(pRecipeOutput);
         trapdoorBuilder(trapdoor, Ingredient.of(block)).group(group).unlockedBy("has_"+group, has(ingot)).save(pRecipeOutput);
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, arrow)
+                .requires(Items.STICK)
+                .requires(TolkienItems.BIRD_FEATHER)
+                .requires(ingot)
+                .unlockedBy("has_mithril", has(ingot))
+                .save(pRecipeOutput);
     }
 
     protected static void fireplaceRecipe(RecipeOutput recipeOutput, SizedIngredient ingredients1, SizedIngredient ingredients2, ItemLike result, int outputCount){

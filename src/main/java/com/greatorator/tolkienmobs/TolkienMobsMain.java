@@ -8,8 +8,10 @@ import com.greatorator.tolkienmobs.entity.boss.render.GoblinKingRender;
 import com.greatorator.tolkienmobs.entity.monster.render.*;
 import com.greatorator.tolkienmobs.entity.npc.render.*;
 import com.greatorator.tolkienmobs.entity.passive.render.*;
+import com.greatorator.tolkienmobs.entity.projectiles.GaladhrimArrowEntity;
 import com.greatorator.tolkienmobs.entity.projectiles.render.BoulderRender;
 import com.greatorator.tolkienmobs.entity.projectiles.render.FellBeastFireballRender;
+import com.greatorator.tolkienmobs.entity.projectiles.render.TolkienArrowRenderer;
 import com.greatorator.tolkienmobs.event.TolkienRegistration;
 import com.greatorator.tolkienmobs.fluid.TolkienFluidType;
 import com.greatorator.tolkienmobs.handler.ColorHandler;
@@ -71,9 +73,7 @@ public class TolkienMobsMain {
     //    -Generation
     //    -Structures
     //  -Signs not placing on vertical surfaces
-    //  -Torches not placing on vertical surfaces
     //  -Boats Implemented
-    //  -Projectiles Implemented
     //  -Arda Portal
     //    -Needs implementation
     //  -Enchantments
@@ -278,6 +278,8 @@ public class TolkienMobsMain {
             // Projectile
             EntityRenderers.register(TolkienEntities.AMMO_BOULDER.get(), BoulderRender::new);
             EntityRenderers.register(TolkienEntities.AMMO_FELLBEAST_FIREBALL.get(), FellBeastFireballRender::new);
+            EntityRenderers.register(TolkienEntities.AMMO_ARROW_GALADHRIM.get(), (context) -> new TolkienArrowRenderer(context, "ammo_galadhrim_arrow"));
+            EntityRenderers.register(TolkienEntities.AMMO_ARROW_UTUMNO.get(), (context) -> new TolkienArrowRenderer(context, "ammo_utumno_arrow"));
         }
 
         @SubscribeEvent

@@ -5,11 +5,18 @@ import com.greatorator.tolkienmobs.item.*;
 import com.greatorator.tolkienmobs.item.custom.*;
 import com.greatorator.tolkienmobs.item.projectile.BoulderItem;
 import com.greatorator.tolkienmobs.item.projectile.FellBeastFireballItem;
+import com.greatorator.tolkienmobs.item.projectile.GaladhrimArrowItem;
+import com.greatorator.tolkienmobs.item.projectile.UtumnoArrowItem;
+import com.greatorator.tolkienmobs.util.ColorUtility;
+import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.*;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
+
+import java.util.Properties;
+import java.util.function.Supplier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -40,7 +47,12 @@ public class TolkienItems {
     public static final DeferredItem<Item> GEM_AMMOLITE = ITEMS.register("gem_ammolite",
             () -> new TolkienItem(new Item.Properties().stacksTo(16)).setEffectOverride());
 
-        // Quest
+        // Boats
+    public static final DeferredItem<Item> MALLORN_BOAT = ITEMS.register("boat_mallorn", () -> new MallornBoatItem(false, new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> MALLORN_CHEST_BOAT = ITEMS.register("chest_boat_mallorn", () -> new MallornBoatItem(true, new Item.Properties().stacksTo(1)));
+
+
+    // Quest
     public static final DeferredItem<Item> ITEM_BERYL = ITEMS.register("item_beryl",
             () -> new TolkienItem(new Item.Properties().stacksTo(1)).setEffectOverride().setHasLore());
     public static final DeferredItem<Item> ITEM_FORTRESSMAP = ITEMS.register("item_fortressmap",
@@ -298,8 +310,8 @@ public class TolkienItems {
     public static final DeferredItem<SwordItem> CLUB_WOODEN = ITEMS.register("club_wooden", () -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, new Item.Properties().attributes(TolkienSwordItem.createAttributes(TolkienToolMaterials.MORGULIRON, 9, -0.5F))).setEffectOverride().setHasLore());
 
     public static final DeferredItem<Item> HOBBIT_RING = ITEMS.register("hobbit_ring", () -> new HobbitRingItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)).setHasLore());
-    public static final DeferredItem<Item> ELVEN_BOW = ITEMS.register("elven_bow", () -> new BowItem(new Item.Properties().durability(1000).stacksTo(1)));
-    public static final DeferredItem<Item> URUK_BOW = ITEMS.register("uruk_bow", () -> new BowItem(new Item.Properties().durability(800).stacksTo(1)));
+    public static final DeferredItem<Item> ELVEN_BOW = ITEMS.register("elven_bow", () -> new TolkienBowItem(new Item.Properties(), 0, 14400, 1.7F, null, ColorUtility.SILVER));
+    public static final DeferredItem<Item> URUK_BOW = ITEMS.register("uruk_bow", () -> new TolkienBowItem(new Item.Properties(), 0, 36000, 1.5F, null, ColorUtility.SEAGREEN));
 
     public static final DeferredItem<Item> ITEM_DEV_TOOL = ITEMS.register("item_dev_tool", () -> new TolkienItem(new Item.Properties().stacksTo(1)).setEffectOverride().setHasLore());
     public static final DeferredItem<Item> ITEM_DEV_DEBUG_TOOL = ITEMS.register("item_dev_debug_tool", () -> new TolkienItem(new Item.Properties().stacksTo(1)).setEffectOverride().setHasLore());
@@ -309,8 +321,8 @@ public class TolkienItems {
         // Projectiles
     public static final DeferredItem<Item> BOULDER = ITEMS.register("ammo_boulder", () -> new BoulderItem(new Item.Properties().stacksTo(16)));
     public static final DeferredItem<Item> FELLBEAST_FIREBALL = ITEMS.register("ammo_fellbeast_fireball", () -> new FellBeastFireballItem(new Item.Properties().stacksTo(16)));
-//    public static RegistryObject<ArrowItem> GALADHRIM_ARROW = ITEMS.register("ammo_galadhrim_arrow", () -> new GaladhrimArrowItem((new Item.Properties()).tab(toolsGroup)));
-//    public static RegistryObject<ArrowItem> UTUMNO_ARROW = ITEMS.register("ammo_utumno_arrow", () -> new UtumnoArrowItem((new Item.Properties()).tab(toolsGroup)));
+    public static final DeferredItem<Item> GALADHRIM_ARROW = ITEMS.register("ammo_galadhrim_arrow", () -> new GaladhrimArrowItem((new Item.Properties())));
+    public static final DeferredItem<Item> UTUMNO_ARROW = ITEMS.register("ammo_utumno_arrow", () -> new UtumnoArrowItem((new Item.Properties())));
 
         // Armor
     public static final DeferredItem<ArmorItem> HELMET_MITHRIL = ITEMS.register("helmet_mithril",
@@ -373,6 +385,20 @@ public class TolkienItems {
     public static final DeferredItem<Item> TRINKET_GLOVE = ITEMS.register("trinket_glove", () -> new TrinketItem(new Item.Properties().component(TolkienDataComponents.POTION_CONTENTS, TrinketComponent.EMPTY).stacksTo(1)));
     public static final DeferredItem<Item> TRINKET_HAT = ITEMS.register("trinket_hat", () -> new TrinketItem(new Item.Properties().component(TolkienDataComponents.POTION_CONTENTS, TrinketComponent.EMPTY).stacksTo(1)));
     public static final DeferredItem<Item> TRINKET_CLOAK = ITEMS.register("trinket_cloak", () -> new TrinketItem(new Item.Properties().component(TolkienDataComponents.POTION_CONTENTS, TrinketComponent.EMPTY).stacksTo(1)));
+
+        // Torches
+    public static final DeferredItem<Item> MALLORN_TORCH_ITEM = registerBlockItem("torch_mallorn", () -> new StandingAndWallBlockItem(TolkienBlocks.TORCH_MALLORN.get(), TolkienBlocks.WALL_TORCH_MALLORN.get(), new Item.Properties(), Direction.DOWN));
+    public static final DeferredItem<Item> MIRKWOOD_TORCH_ITEM = registerBlockItem("torch_mirkwood", () -> new StandingAndWallBlockItem(TolkienBlocks.TORCH_MIRKWOOD.get(), TolkienBlocks.WALL_TORCH_MIRKWOOD.get(), new Item.Properties(), Direction.DOWN));
+    public static final DeferredItem<Item> CULUMALDA_TORCH_ITEM = registerBlockItem("torch_culumalda", () -> new StandingAndWallBlockItem(TolkienBlocks.TORCH_CULUMALDA.get(), TolkienBlocks.WALL_TORCH_CULUMALDA.get(), new Item.Properties(), Direction.DOWN));
+    public static final DeferredItem<Item> LEBETHRON_TORCH_ITEM = registerBlockItem("torch_lebethron", () -> new StandingAndWallBlockItem(TolkienBlocks.TORCH_LEBETHRON.get(), TolkienBlocks.WALL_TORCH_LEBETHRON.get(), new Item.Properties(), Direction.DOWN));
+    public static final DeferredItem<Item> FANGORNOAK_TORCH_ITEM = registerBlockItem("torch_fangornoak", () -> new StandingAndWallBlockItem(TolkienBlocks.TORCH_FANGORNOAK.get(), TolkienBlocks.WALL_TORCH_FANGORNOAK.get(), new Item.Properties(), Direction.DOWN));
+    public static final DeferredItem<Item> DEADWOOD_TORCH_ITEM = registerBlockItem("torch_deadwood", () -> new StandingAndWallBlockItem(TolkienBlocks.TORCH_DEADWOOD.get(), TolkienBlocks.WALL_TORCH_DEADWOOD.get(), new Item.Properties(), Direction.DOWN));
+    public static final DeferredItem<Item> DWARVEN_MAPLE_TORCH_ITEM = registerBlockItem("torch_dwarven_maple", () -> new StandingAndWallBlockItem(TolkienBlocks.TORCH_DWARVEN_MAPLE.get(), TolkienBlocks.WALL_TORCH_DWARVEN_MAPLE.get(), new Item.Properties(), Direction.DOWN));
+
+    private static <T extends Item> DeferredItem<T> registerBlockItem(String registryId, Supplier<T> item) {
+        DeferredItem<T> i = ITEMS.register(registryId, item);
+        return i;
+    }
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

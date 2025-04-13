@@ -15,6 +15,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.armortrim.TrimMaterial;
 import net.minecraft.world.item.armortrim.TrimMaterials;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SignBlock;
 import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
@@ -25,6 +26,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.LinkedHashMap;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -275,21 +277,21 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         generated(TolkienBlocks.MOSS_PATCH.getId().getPath(), TolkienMobsMain.prefix("block/patch/moss"));
         generated(TolkienBlocks.CLOVER_PATCH.getId().getPath(), TolkienMobsMain.prefix("block/patch/clover"));
 
-        basicItem(TolkienBlocks.MALLORN_SIGN.asItem());
-        basicItem(TolkienBlocks.MIRKWOOD_SIGN.asItem());
-        basicItem(TolkienBlocks.CULUMALDA_SIGN.asItem());
-        basicItem(TolkienBlocks.LEBETHRON_SIGN.asItem());
-        basicItem(TolkienBlocks.FANGORNOAK_SIGN.asItem());
-        basicItem(TolkienBlocks.DEADWOOD_SIGN.asItem());
-        basicItem(TolkienBlocks.DWARVEN_MAPLE_SIGN.asItem());
+        sign(TolkienBlocks.MALLORN_SIGN);
+        sign(TolkienBlocks.MIRKWOOD_SIGN);
+        sign(TolkienBlocks.CULUMALDA_SIGN);
+        sign(TolkienBlocks.LEBETHRON_SIGN);
+        sign(TolkienBlocks.FANGORNOAK_SIGN);
+        sign(TolkienBlocks.DEADWOOD_SIGN);
+        sign(TolkienBlocks.DWARVEN_MAPLE_SIGN);
 
-        basicItem(TolkienBlocks.MALLORN_HANGING_SIGN.asItem());
-        basicItem(TolkienBlocks.MIRKWOOD_HANGING_SIGN.asItem());
-        basicItem(TolkienBlocks.CULUMALDA_HANGING_SIGN.asItem());
-        basicItem(TolkienBlocks.LEBETHRON_HANGING_SIGN.asItem());
-        basicItem(TolkienBlocks.FANGORNOAK_HANGING_SIGN.asItem());
-        basicItem(TolkienBlocks.DEADWOOD_HANGING_SIGN.asItem());
-        basicItem(TolkienBlocks.DWARVEN_MAPLE_HANGING_SIGN.asItem());
+        sign(TolkienBlocks.MALLORN_HANGING_SIGN);
+        sign(TolkienBlocks.MIRKWOOD_HANGING_SIGN);
+        sign(TolkienBlocks.CULUMALDA_HANGING_SIGN);
+        sign(TolkienBlocks.LEBETHRON_HANGING_SIGN);
+        sign(TolkienBlocks.FANGORNOAK_HANGING_SIGN);
+        sign(TolkienBlocks.DEADWOOD_HANGING_SIGN);
+        sign(TolkienBlocks.DWARVEN_MAPLE_HANGING_SIGN);
 
         basicItem(TolkienBlocks.MITHRIL_BARS.asItem());
         basicItem(TolkienBlocks.MORGULIRON_BARS.asItem());
@@ -365,6 +367,8 @@ public class TolkienItemModelProvider extends ItemModelProvider {
 
         basicItem(TolkienItems.ITEM_DEV_TOOL.get());
         basicItem(TolkienItems.ITEM_DEV_DEBUG_TOOL.get());
+        basicItem(TolkienItems.GALADHRIM_ARROW.get());
+        basicItem(TolkienItems.UTUMNO_ARROW.get());
 
         basicItem(TolkienItems.BRONZE_KEY.get());
         basicItem(TolkienItems.SILVER_KEY.get());
@@ -424,6 +428,15 @@ public class TolkienItemModelProvider extends ItemModelProvider {
 
     private ItemModelBuilder generated(String name, ResourceLocation... layers) {
         return buildItem(name, "item/generated", 0, layers);
+    }
+
+    public void sign(Supplier<? extends SignBlock> sign) {
+        withExistingParent(blockName(sign), mcLoc("item/generated"))
+                .texture("layer0", modLoc("item/" + blockName(sign)));
+    }
+
+    private String blockName(Supplier<? extends Block> block) {
+        return BuiltInRegistries.BLOCK.getKey(block.get()).getPath();
     }
 
     private ItemModelBuilder trinketItem(Item item, ResourceLocation texture, ResourceLocation overlay) {

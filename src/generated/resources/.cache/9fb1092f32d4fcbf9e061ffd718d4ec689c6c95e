@@ -1,4 +1,4 @@
-// 1.21.1	2025-03-30T07:51:39.5948964	Recipes
+// 1.21.1	2025-04-13T03:29:43.3076659	Recipes
 d19567913dbfd6ba6d00c4306abe737d82e289eb data/tolkienmobs/advancement/recipes/building_blocks/block.tolkienmobs.dark_stone_from_blasting.json
 fdc081cd058634a34dc62f77cad3483eb182215e data/tolkienmobs/advancement/recipes/building_blocks/block.tolkienmobs.dark_stone_from_smelting.json
 c65228514dc61115e43a564010366b1cdeb5060a data/tolkienmobs/advancement/recipes/building_blocks/block.tolkienmobs.dwarven_stone_from_blasting.json
@@ -197,6 +197,8 @@ fc984978ca711695b0f7ea6b7782ac44dc948362 data/tolkienmobs/advancement/recipes/de
 393e602f73320b9d88550517ec1d02d9bb93a4c6 data/tolkienmobs/advancement/recipes/decorations/wall_mushroom_brown.json
 de99dcfeaa1d565d2877448e2d2fd29fa4f07003 data/tolkienmobs/advancement/recipes/decorations/wall_mushroom_red.json
 08a56b9497181e4acc513d3500ee133c7ed18c4d data/tolkienmobs/advancement/recipes/fireplace/food_lembas_from_fireplace.json
+44681626f7276ac59b49040ac3ad93c1d18bee7f data/tolkienmobs/advancement/recipes/misc/ammo_galadhrim_arrow.json
+26f129d5e648f414a4f5c8b5cc76a80150d8e08f data/tolkienmobs/advancement/recipes/misc/ammo_utumno_arrow.json
 8c2b89c2d7a1684217bdabeb117338e409e67275 data/tolkienmobs/advancement/recipes/misc/axe_ammolite-templateupgrade.json
 c3b36ed19be747dd661b755fbd235d81e5af65c6 data/tolkienmobs/advancement/recipes/misc/axe_mithril-templateupgrade.json
 6dca3c515a845a9c4e82a9d7f3af3e35bfeacb96 data/tolkienmobs/advancement/recipes/misc/axe_morguliron-templateupgrade.json
@@ -418,6 +420,8 @@ f22f1c076b05158657fa0c77e273070755ac38ea data/tolkienmobs/advancement/recipes/to
 63e0ec07a191c1bac8d43f1394c348180bb34c3c data/tolkienmobs/advancement/recipes/tools/trinket_glove.json
 2256ad889b867ae5c65eddafb18bccb50a4bbce9 data/tolkienmobs/advancement/recipes/tools/trinket_hat.json
 ed1c46a44132964126319b8e72afbe7537fb8b21 data/tolkienmobs/advancement/recipes/tools/trinket_ring.json
+d0b363931d1c970ed2e113d9368f148c651b957d data/tolkienmobs/recipe/ammo_galadhrim_arrow.json
+9df3a386944deb6c20d5c48ef1103dd9b53a9ff9 data/tolkienmobs/recipe/ammo_utumno_arrow.json
 ecf92fb0e946199864ffbe4c4038517136e2e575 data/tolkienmobs/recipe/axe_ammolite-templateupgrade.json
 01bc54f603457d84db5e9457da764681dd7622ea data/tolkienmobs/recipe/axe_ammolite.json
 9bda65916865b73f5ed243c3def8615071972756 data/tolkienmobs/recipe/axe_mithril-templateupgrade.json
