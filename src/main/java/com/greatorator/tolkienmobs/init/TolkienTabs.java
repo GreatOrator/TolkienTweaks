@@ -702,6 +702,8 @@ public class TolkienTabs {
                         output.accept(TolkienItems.RECORD_WBATTLE);
                         output.accept(TolkienItems.BOULDER);
                         output.accept(TolkienItems.FELLBEAST_FIREBALL);
+                        output.accept(TolkienItems.GALADHRIM_ARROW);
+                        output.accept(TolkienItems.UTUMNO_ARROW);
                         output.accept(TolkienItems.ITEM_DEV_TOOL);
                         output.accept(TolkienItems.ITEM_DEV_DEBUG_TOOL);
                         output.accept(TolkienItems.ARDA_STAFF);

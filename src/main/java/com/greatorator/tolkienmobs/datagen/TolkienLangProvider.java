@@ -198,6 +198,8 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addItem(TolkienItems.BOULDER, "Boulder");
             this.addItem(TolkienItems.FELLBEAST_FIREBALL, "Fell Beast Fireball");
             this.addItem(TolkienItems.URUK_BOW, "Uruk Bow");
+            this.addItem(TolkienItems.GALADHRIM_ARROW, "Galadhrim Arrows");
+            this.addItem(TolkienItems.UTUMNO_ARROW, "Utumno Arrows");
             this.addMusicDisc(TolkienItems.RECORD_EREBOR, "SnowShepherd - All That Glitters in Erebor");
             this.addMusicDisc(TolkienItems.RECORD_HOBBITS, "Harry Murrell - Concerning Hobbits");
             this.addMusicDisc(TolkienItems.RECORD_MINASTIRITH, "SnowShepherd - Grandeur of Minas Tirith");
@@ -373,7 +375,12 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add("tolkienmobs.tooltip.liquid.amount", "%s mB");
             this.add("tolkienmobs.camo_fluid.fluid.instructions", "Place fluid bucket in slot");
 
-                // Spawner Tooltips
+                // Miscellaneous Tooltips
+            this.add("tooltip.tolkienmobs.ranged.power", " %sx Shooting Power");
+            this.add("tooltip.tolkienmobs.bow_speed.faster", " %sx Faster Pull");
+            this.add("tooltip.tolkienmobs.bow_speed.slower", " %sx Slower Pull");
+            this.add("tooltip.tolkienmobs.ammo.infinite", "Infinity");
+            this.add("tooltip.tolkienmobs.damage.base", " %s Base Damage");
 
                 // Potions & Effects
                     // Beneficial

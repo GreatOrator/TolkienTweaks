@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.datagen.tags;
 
+import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienTags;
 import net.minecraft.core.HolderLookup;
@@ -161,5 +162,24 @@ public class TolkienItemTagProvider extends ItemTagsProvider {
                 .addOptionalTag(ResourceLocation.parse("farmersdelight:dog_food"))
                 .addOptionalTag(ResourceLocation.parse("farmersdelight:pie_crust"))
                 .addOptionalTag(ResourceLocation.parse("spelunkery:portal_fluid_bottle"));
+        tag(ItemTags.ARROWS)
+                .add(TolkienItems.GALADHRIM_ARROW.get())
+                .add(TolkienItems.UTUMNO_ARROW.get());
+        tag(ItemTags.SIGNS)
+                .add(TolkienBlocks.MALLORN_SIGN.get().asItem())
+                .add(TolkienBlocks.MIRKWOOD_SIGN.get().asItem())
+                .add(TolkienBlocks.CULUMALDA_SIGN.get().asItem())
+                .add(TolkienBlocks.LEBETHRON_SIGN.get().asItem())
+                .add(TolkienBlocks.FANGORNOAK_SIGN.get().asItem())
+                .add(TolkienBlocks.DEADWOOD_SIGN.get().asItem())
+                .add(TolkienBlocks.DWARVEN_MAPLE_SIGN.get().asItem());
+        tag(ItemTags.HANGING_SIGNS)
+                .add(TolkienBlocks.MALLORN_HANGING_SIGN.get().asItem())
+                .add(TolkienBlocks.MIRKWOOD_HANGING_SIGN.get().asItem())
+                .add(TolkienBlocks.CULUMALDA_HANGING_SIGN.get().asItem())
+                .add(TolkienBlocks.LEBETHRON_HANGING_SIGN.get().asItem())
+                .add(TolkienBlocks.FANGORNOAK_HANGING_SIGN.get().asItem())
+                .add(TolkienBlocks.DEADWOOD_HANGING_SIGN.get().asItem())
+                .add(TolkienBlocks.DWARVEN_MAPLE_HANGING_SIGN.get().asItem());
     }
 }

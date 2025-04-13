@@ -1,5 +1,7 @@
-// 1.21.1	2025-03-30T07:55:06.3387912	Item Models: tolkienmobs
+// 1.21.1	2025-04-12T17:44:20.6624208	Item Models: tolkienmobs
 2744b0cddb66f773a20c0030bb5381576093ca96 assets/tolkienmobs/models/item/ammolite_horse_armor.json
+be4f4d0eaa4937bd1aa214d8797a516f30f4540a assets/tolkienmobs/models/item/ammo_galadhrim_arrow.json
+5cd103fa46a9ba3855a613b86b4f3fb53fb2092c assets/tolkienmobs/models/item/ammo_utumno_arrow.json
 914e29c26c212ad7b8914aa552c5ce18400b5057 assets/tolkienmobs/models/item/axe_ammolite.json
 9a08370f124e62b3c7067b9bf9976a8c617561be assets/tolkienmobs/models/item/axe_mithril.json
 6c3e1ecf8e78654791353669b7c17986e5b4fd21 assets/tolkienmobs/models/item/axe_morguliron.json

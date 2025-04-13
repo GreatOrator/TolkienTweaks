@@ -476,14 +476,14 @@ public abstract class BlockModelBuilders extends BlockModelHelper {
 				.modelForState().modelFile(ladderModel).rotationY(270).addModel();
 	}
 
-	protected void signBlock(DeferredBlock<Block> standing, DeferredBlock<Block> wall, DeferredBlock<Block> fullBlock) {
-		signBlock((StandingSignBlock) standing.get(), (WallSignBlock) wall.get(), texture(name(fullBlock)));
+	public void sign(Supplier<? extends StandingSignBlock> standingBlock, Supplier<? extends WallSignBlock> wallBlock, String name) {
+		signBlock(standingBlock.get(), wallBlock.get(), modLoc("block/" + name));
 	}
 
-	public void hangingSignBlock(DeferredBlock<Block> signBlock, DeferredBlock<Block> wallSignBlock, DeferredBlock<Block> fullBlock) {
-		ModelFile sign =  models().getBuilder(signBlock.getRegisteredName()).texture("particle", texture(name(fullBlock)));
-		simpleBlock(signBlock.get(), sign);
-		simpleBlock(wallSignBlock.get(), sign);
+	public void hangingSign(Supplier<? extends CeilingHangingSignBlock> standingBlock, Supplier<? extends WallHangingSignBlock> wallBlock, String name) {
+		ModelFile model = models().getBuilder(name(standingBlock)).texture("particle", modLoc("block/" + name));
+		simpleBlock(standingBlock.get(), model);
+		simpleBlock(wallBlock.get(), model);
 	}
 
 	public void torchBlock(Supplier<? extends Block> block, Supplier<? extends Block> wall) {

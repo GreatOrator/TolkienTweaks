@@ -595,13 +595,13 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> TRAPDOOR_MALLORN = registerBlock("trapdoor_mallorn",
             () -> new TrapDoorBlock(BlockSetType.OAK, BlockBehaviour.Properties.of()
                     .strength(3.0F).requiresCorrectToolForDrops().noOcclusion().sound(SoundType.WOOD)));
-    public static final DeferredBlock<Block> TORCH_MALLORN = registerBlock("torch_mallorn",
+    public static final DeferredBlock<Block> TORCH_MALLORN = registerNoItem("torch_mallorn",
             () -> new TolkienTorchBlock(
                     () -> TolkienParticleTypes.MALLORN_FLAME.get(),
                     BlockBehaviour.Properties.of()
                             .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD)));
 
-    public static final DeferredBlock<Block> WALL_TORCH_MALLORN = registerBlock("wall_torch_mallorn",
+    public static final DeferredBlock<Block> WALL_TORCH_MALLORN = registerNoItem("wall_torch_mallorn",
             () -> new TolkienWallTorchBlock(
                     () -> TolkienParticleTypes.MALLORN_FLAME.get(),
                     BlockBehaviour.Properties.of()
@@ -609,10 +609,10 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> BARREL_MALLORN = registerBlock("barrel_mallorn",
             () -> new TolkienBarrelBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL)
                     .mapColor(MapColor.TERRACOTTA_WHITE)));
-    public static final DeferredBlock<Block> MALLORN_SIGN = registerBlock("sign_mallorn", () -> new TolkienSignBlock(TolkienWoodTypes.MALLORN, BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().strength(1f, 1f).ignitedByLava()));
-    public static final DeferredBlock<Block> MALLORN_WALL_SIGN = registerNoItem("sign_wall_mallorn", () -> new TolkienWallSignBlock(TolkienWoodTypes.MALLORN, BlockBehaviour.Properties.ofFullCopy(MALLORN_SIGN.get())));
-    public static final DeferredBlock<Block> MALLORN_HANGING_SIGN = registerBlock("hanging_sign_mallorn", () -> new TolkienHangingSignBlock(TolkienWoodTypes.MALLORN, BlockBehaviour.Properties.ofFullCopy(MALLORN_SIGN.get())));
-    public static final DeferredBlock<Block> MALLORN_HANGING_WALL_SIGN = registerNoItem("hanging_sign_wall_mallorn", () -> new TolkienHangingWallSignBlock(TolkienWoodTypes.MALLORN, BlockBehaviour.Properties.ofFullCopy(MALLORN_HANGING_SIGN.get())));
+    public static final DeferredBlock<StandingSignBlock> MALLORN_SIGN = registerBlock("sign_mallorn", () -> new TolkienSignBlock(TolkienWoodTypes.MALLORN, BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().strength(1f, 1f).ignitedByLava()));
+    public static final DeferredBlock<WallSignBlock> MALLORN_WALL_SIGN = BLOCKS.register("sign_wall_mallorn", () -> new TolkienWallSignBlock(TolkienWoodTypes.MALLORN, BlockBehaviour.Properties.ofFullCopy(MALLORN_SIGN.get())));
+    public static final DeferredBlock<CeilingHangingSignBlock> MALLORN_HANGING_SIGN = registerBlock("hanging_sign_mallorn", () -> new TolkienHangingSignBlock(TolkienWoodTypes.MALLORN, BlockBehaviour.Properties.ofFullCopy(MALLORN_SIGN.get())));
+    public static final DeferredBlock<WallHangingSignBlock> MALLORN_HANGING_WALL_SIGN = BLOCKS.register("hanging_sign_wall_mallorn", () -> new TolkienHangingWallSignBlock(TolkienWoodTypes.MALLORN, BlockBehaviour.Properties.ofFullCopy(MALLORN_HANGING_SIGN.get())));
     public static final DeferredBlock<Block> LADDER_MALLORN = registerBlock("ladder_mallorn", () -> new LadderBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.LADDER)));
 
     // Mirkwood
@@ -661,12 +661,12 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> TRAPDOOR_MIRKWOOD = registerBlock("trapdoor_mirkwood",
             () -> new TrapDoorBlock(BlockSetType.OAK, BlockBehaviour.Properties.of()
                     .strength(3.0F).requiresCorrectToolForDrops().noOcclusion().sound(SoundType.WOOD)));
-    public static final DeferredBlock<Block> TORCH_MIRKWOOD = registerBlock("torch_mirkwood",
+    public static final DeferredBlock<Block> TORCH_MIRKWOOD = registerNoItem("torch_mirkwood",
             () -> new TolkienTorchBlock(
                     () -> TolkienParticleTypes.MIRKWOOD_FLAME.get(),
                     BlockBehaviour.Properties.of()
                             .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD)));
-    public static final DeferredBlock<Block> WALL_TORCH_MIRKWOOD = registerBlock("wall_torch_mirkwood",
+    public static final DeferredBlock<Block> WALL_TORCH_MIRKWOOD = registerNoItem("wall_torch_mirkwood",
             () -> new TolkienWallTorchBlock(
                     () -> TolkienParticleTypes.MIRKWOOD_FLAME.get(),
                     BlockBehaviour.Properties.of()
@@ -674,10 +674,10 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> BARREL_MIRKWOOD = registerBlock("barrel_mirkwood",
             () -> new TolkienBarrelBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL)
                     .mapColor(MapColor.TERRACOTTA_BLACK)));
-    public static final DeferredBlock<Block> MIRKWOOD_SIGN = registerBlock("sign_mirkwood", () -> new TolkienSignBlock(TolkienWoodTypes.MIRKWOOD, BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().strength(1f, 1f).ignitedByLava()));
-    public static final DeferredBlock<Block> MIRKWOOD_WALL_SIGN = registerNoItem("sign_wall_mirkwood", () -> new TolkienWallSignBlock(TolkienWoodTypes.MIRKWOOD, BlockBehaviour.Properties.ofFullCopy(MIRKWOOD_SIGN.get())));
-    public static final DeferredBlock<Block> MIRKWOOD_HANGING_SIGN = registerBlock("hanging_sign_mirkwood", () -> new TolkienHangingSignBlock(TolkienWoodTypes.MIRKWOOD, BlockBehaviour.Properties.ofFullCopy(MIRKWOOD_SIGN.get())));
-    public static final DeferredBlock<Block> MIRKWOOD_HANGING_WALL_SIGN = registerNoItem("hanging_sign_wall_mirkwood", () -> new TolkienHangingWallSignBlock(TolkienWoodTypes.MIRKWOOD, BlockBehaviour.Properties.ofFullCopy(MIRKWOOD_HANGING_SIGN.get())));
+    public static final DeferredBlock<StandingSignBlock> MIRKWOOD_SIGN = registerBlock("sign_mirkwood", () -> new TolkienSignBlock(TolkienWoodTypes.MIRKWOOD, BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().strength(1f, 1f).ignitedByLava()));
+    public static final DeferredBlock<WallSignBlock> MIRKWOOD_WALL_SIGN = BLOCKS.register("sign_wall_mirkwood", () -> new TolkienWallSignBlock(TolkienWoodTypes.MIRKWOOD, BlockBehaviour.Properties.ofFullCopy(MIRKWOOD_SIGN.get())));
+    public static final DeferredBlock<CeilingHangingSignBlock> MIRKWOOD_HANGING_SIGN = registerBlock("hanging_sign_mirkwood", () -> new TolkienHangingSignBlock(TolkienWoodTypes.MIRKWOOD, BlockBehaviour.Properties.ofFullCopy(MIRKWOOD_SIGN.get())));
+    public static final DeferredBlock<WallHangingSignBlock> MIRKWOOD_HANGING_WALL_SIGN = BLOCKS.register("hanging_sign_wall_mirkwood", () -> new TolkienHangingWallSignBlock(TolkienWoodTypes.MIRKWOOD, BlockBehaviour.Properties.ofFullCopy(MIRKWOOD_HANGING_SIGN.get())));
     public static final DeferredBlock<Block> LADDER_MIRKWOOD = registerBlock("ladder_mirkwood", () -> new LadderBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.LADDER)));
 
         // Culumalda
@@ -726,12 +726,12 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> TRAPDOOR_CULUMALDA = registerBlock("trapdoor_culumalda",
             () -> new TrapDoorBlock(BlockSetType.OAK, BlockBehaviour.Properties.of()
                     .strength(3.0F).requiresCorrectToolForDrops().noOcclusion().sound(SoundType.WOOD)));
-    public static final DeferredBlock<Block> TORCH_CULUMALDA = registerBlock("torch_culumalda",
+    public static final DeferredBlock<Block> TORCH_CULUMALDA = registerNoItem("torch_culumalda",
             () -> new TolkienTorchBlock(
                     () -> TolkienParticleTypes.CULUMALDA_FLAME.get(),
                     BlockBehaviour.Properties.of()
                             .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD)));
-    public static final DeferredBlock<Block> WALL_TORCH_CULUMALDA = registerBlock("wall_torch_culumalda",
+    public static final DeferredBlock<Block> WALL_TORCH_CULUMALDA = registerNoItem("wall_torch_culumalda",
             () -> new TolkienWallTorchBlock(
                     () -> TolkienParticleTypes.CULUMALDA_FLAME.get(),
                     BlockBehaviour.Properties.of()
@@ -739,10 +739,10 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> BARREL_CULUMALDA = registerBlock("barrel_culumalda",
             () -> new TolkienBarrelBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL)
                     .mapColor(MapColor.TERRACOTTA_GRAY)));
-    public static final DeferredBlock<Block> CULUMALDA_SIGN = registerBlock("sign_culumalda", () -> new TolkienSignBlock(TolkienWoodTypes.CULUMALDA, BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().strength(1f, 1f).ignitedByLava()));
-    public static final DeferredBlock<Block> CULUMALDA_WALL_SIGN = registerNoItem("sign_wall_culumalda", () -> new TolkienWallSignBlock(TolkienWoodTypes.CULUMALDA, BlockBehaviour.Properties.ofFullCopy(CULUMALDA_SIGN.get())));
-    public static final DeferredBlock<Block> CULUMALDA_HANGING_SIGN = registerBlock("hanging_sign_culumalda", () -> new TolkienHangingSignBlock(TolkienWoodTypes.CULUMALDA, BlockBehaviour.Properties.ofFullCopy(CULUMALDA_SIGN.get())));
-    public static final DeferredBlock<Block> CULUMALDA_HANGING_WALL_SIGN = registerNoItem("hanging_sign_wall_culumalda", () -> new TolkienHangingWallSignBlock(TolkienWoodTypes.CULUMALDA, BlockBehaviour.Properties.ofFullCopy(CULUMALDA_HANGING_SIGN.get())));
+    public static final DeferredBlock<StandingSignBlock> CULUMALDA_SIGN = registerBlock("sign_culumalda", () -> new TolkienSignBlock(TolkienWoodTypes.CULUMALDA, BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().strength(1f, 1f).ignitedByLava()));
+    public static final DeferredBlock<WallSignBlock> CULUMALDA_WALL_SIGN = BLOCKS.register("sign_wall_culumalda", () -> new TolkienWallSignBlock(TolkienWoodTypes.CULUMALDA, BlockBehaviour.Properties.ofFullCopy(CULUMALDA_SIGN.get())));
+    public static final DeferredBlock<CeilingHangingSignBlock> CULUMALDA_HANGING_SIGN = registerBlock("hanging_sign_culumalda", () -> new TolkienHangingSignBlock(TolkienWoodTypes.CULUMALDA, BlockBehaviour.Properties.ofFullCopy(CULUMALDA_SIGN.get())));
+    public static final DeferredBlock<WallHangingSignBlock> CULUMALDA_HANGING_WALL_SIGN = BLOCKS.register("hanging_sign_wall_culumalda", () -> new TolkienHangingWallSignBlock(TolkienWoodTypes.CULUMALDA, BlockBehaviour.Properties.ofFullCopy(CULUMALDA_HANGING_SIGN.get())));
     public static final DeferredBlock<Block> LADDER_CULUMALDA = registerBlock("ladder_culumalda", () -> new LadderBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.LADDER)));
 
         // Lebethron
@@ -791,12 +791,12 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> TRAPDOOR_LEBETHRON = registerBlock("trapdoor_lebethron",
             () -> new TrapDoorBlock(BlockSetType.OAK, BlockBehaviour.Properties.of()
                     .strength(3.0F).requiresCorrectToolForDrops().noOcclusion().sound(SoundType.WOOD)));
-    public static final DeferredBlock<Block> TORCH_LEBETHRON = registerBlock("torch_lebethron",
+    public static final DeferredBlock<Block> TORCH_LEBETHRON = registerNoItem("torch_lebethron",
             () -> new TolkienTorchBlock(
                     () -> TolkienParticleTypes.LEBETHRON_FLAME.get(),
                     BlockBehaviour.Properties.of()
                             .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD)));
-    public static final DeferredBlock<Block> WALL_TORCH_LEBETHRON = registerBlock("wall_torch_lebethron",
+    public static final DeferredBlock<Block> WALL_TORCH_LEBETHRON = registerNoItem("wall_torch_lebethron",
             () -> new TolkienWallTorchBlock(
                     () -> TolkienParticleTypes.LEBETHRON_FLAME.get(),
                     BlockBehaviour.Properties.of()
@@ -804,10 +804,10 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> BARREL_LEBETHRON = registerBlock("barrel_lebethron",
             () -> new TolkienBarrelBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL)
                     .mapColor(MapColor.TERRACOTTA_LIGHT_GRAY)));
-    public static final DeferredBlock<Block> LEBETHRON_SIGN = registerBlock("sign_lebethron", () -> new TolkienSignBlock(TolkienWoodTypes.LEBETHRON, BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().strength(1f, 1f).ignitedByLava()));
-    public static final DeferredBlock<Block> LEBETHRON_WALL_SIGN = registerNoItem("sign_wall_lebethron", () -> new TolkienWallSignBlock(TolkienWoodTypes.LEBETHRON, BlockBehaviour.Properties.ofFullCopy(LEBETHRON_SIGN.get())));
-    public static final DeferredBlock<Block> LEBETHRON_HANGING_SIGN = registerBlock("hanging_sign_lebethron", () -> new TolkienHangingSignBlock(TolkienWoodTypes.LEBETHRON, BlockBehaviour.Properties.ofFullCopy(LEBETHRON_SIGN.get())));
-    public static final DeferredBlock<Block> LEBETHRON_HANGING_WALL_SIGN = registerNoItem("hanging_sign_wall_lebethron", () -> new TolkienHangingWallSignBlock(TolkienWoodTypes.LEBETHRON, BlockBehaviour.Properties.ofFullCopy(LEBETHRON_HANGING_SIGN.get())));
+    public static final DeferredBlock<StandingSignBlock> LEBETHRON_SIGN = registerBlock("sign_lebethron", () -> new TolkienSignBlock(TolkienWoodTypes.LEBETHRON, BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().strength(1f, 1f).ignitedByLava()));
+    public static final DeferredBlock<WallSignBlock> LEBETHRON_WALL_SIGN = BLOCKS.register("sign_wall_lebethron", () -> new TolkienWallSignBlock(TolkienWoodTypes.LEBETHRON, BlockBehaviour.Properties.ofFullCopy(LEBETHRON_SIGN.get())));
+    public static final DeferredBlock<CeilingHangingSignBlock> LEBETHRON_HANGING_SIGN = registerBlock("hanging_sign_lebethron", () -> new TolkienHangingSignBlock(TolkienWoodTypes.LEBETHRON, BlockBehaviour.Properties.ofFullCopy(LEBETHRON_SIGN.get())));
+    public static final DeferredBlock<WallHangingSignBlock> LEBETHRON_HANGING_WALL_SIGN = BLOCKS.register("hanging_sign_wall_lebethron", () -> new TolkienHangingWallSignBlock(TolkienWoodTypes.LEBETHRON, BlockBehaviour.Properties.ofFullCopy(LEBETHRON_HANGING_SIGN.get())));
     public static final DeferredBlock<Block> LADDER_LEBETHRON = registerBlock("ladder_lebethron", () -> new LadderBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.LADDER)));
 
         // Fangorn Oak
@@ -856,12 +856,12 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> TRAPDOOR_FANGORNOAK = registerBlock("trapdoor_fangornoak",
             () -> new TrapDoorBlock(BlockSetType.OAK, BlockBehaviour.Properties.of()
                     .strength(3.0F).requiresCorrectToolForDrops().noOcclusion().sound(SoundType.WOOD)));
-    public static final DeferredBlock<Block> TORCH_FANGORNOAK = registerBlock("torch_fangornoak",
+    public static final DeferredBlock<Block> TORCH_FANGORNOAK = registerNoItem("torch_fangornoak",
             () -> new TolkienTorchBlock(
                     () -> TolkienParticleTypes.FANGORNOAK_FLAME.get(),
                     BlockBehaviour.Properties.of()
                             .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD)));
-    public static final DeferredBlock<Block> WALL_TORCH_FANGORNOAK = registerBlock("wall_torch_fangornoak",
+    public static final DeferredBlock<Block> WALL_TORCH_FANGORNOAK = registerNoItem("wall_torch_fangornoak",
             () -> new TolkienWallTorchBlock(
                     () -> TolkienParticleTypes.FANGORNOAK_FLAME.get(),
                     BlockBehaviour.Properties.of()
@@ -869,10 +869,10 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> BARREL_FANGORNOAK = registerBlock("barrel_fangornoak",
             () -> new TolkienBarrelBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL)
                     .mapColor(MapColor.TERRACOTTA_LIGHT_GREEN)));
-    public static final DeferredBlock<Block> FANGORNOAK_SIGN = registerBlock("sign_fangornoak", () -> new TolkienSignBlock(TolkienWoodTypes.FANGORNOAK, BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().strength(1f, 1f).ignitedByLava()));
-    public static final DeferredBlock<Block> FANGORNOAK_WALL_SIGN = registerNoItem("sign_wall_fangornoak", () -> new TolkienWallSignBlock(TolkienWoodTypes.FANGORNOAK, BlockBehaviour.Properties.ofFullCopy(FANGORNOAK_SIGN.get())));
-    public static final DeferredBlock<Block> FANGORNOAK_HANGING_SIGN = registerBlock("hanging_sign_fangornoak", () -> new TolkienHangingSignBlock(TolkienWoodTypes.FANGORNOAK, BlockBehaviour.Properties.ofFullCopy(FANGORNOAK_SIGN.get())));
-    public static final DeferredBlock<Block> FANGORNOAK_HANGING_WALL_SIGN = registerNoItem("hanging_sign_wall_fangornoak", () -> new TolkienHangingWallSignBlock(TolkienWoodTypes.FANGORNOAK, BlockBehaviour.Properties.ofFullCopy(FANGORNOAK_HANGING_SIGN.get())));
+    public static final DeferredBlock<StandingSignBlock> FANGORNOAK_SIGN = registerBlock("sign_fangornoak", () -> new TolkienSignBlock(TolkienWoodTypes.FANGORNOAK, BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().strength(1f, 1f).ignitedByLava()));
+    public static final DeferredBlock<WallSignBlock> FANGORNOAK_WALL_SIGN = BLOCKS.register("sign_wall_fangornoak", () -> new TolkienWallSignBlock(TolkienWoodTypes.FANGORNOAK, BlockBehaviour.Properties.ofFullCopy(FANGORNOAK_SIGN.get())));
+    public static final DeferredBlock<CeilingHangingSignBlock> FANGORNOAK_HANGING_SIGN = registerBlock("hanging_sign_fangornoak", () -> new TolkienHangingSignBlock(TolkienWoodTypes.FANGORNOAK, BlockBehaviour.Properties.ofFullCopy(FANGORNOAK_SIGN.get())));
+    public static final DeferredBlock<WallHangingSignBlock> FANGORNOAK_HANGING_WALL_SIGN = BLOCKS.register("hanging_sign_wall_fangornoak", () -> new TolkienHangingWallSignBlock(TolkienWoodTypes.FANGORNOAK, BlockBehaviour.Properties.ofFullCopy(FANGORNOAK_HANGING_SIGN.get())));
     public static final DeferredBlock<Block> LADDER_FANGORNOAK = registerBlock("ladder_fangornoak", () -> new LadderBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.LADDER)));
 
         // Deadwood
@@ -915,12 +915,12 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> TRAPDOOR_DEADWOOD = registerBlock("trapdoor_deadwood",
             () -> new TrapDoorBlock(BlockSetType.OAK, BlockBehaviour.Properties.of()
                     .strength(3.0F).requiresCorrectToolForDrops().noOcclusion().sound(SoundType.WOOD)));
-    public static final DeferredBlock<Block> TORCH_DEADWOOD = registerBlock("torch_deadwood",
+    public static final DeferredBlock<Block> TORCH_DEADWOOD = registerNoItem("torch_deadwood",
             () -> new TolkienTorchBlock(
                     () -> TolkienParticleTypes.DEADWOOD_FLAME.get(),
                     BlockBehaviour.Properties.of()
                             .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD)));
-    public static final DeferredBlock<Block> WALL_TORCH_DEADWOOD = registerBlock("wall_torch_deadwood",
+    public static final DeferredBlock<Block> WALL_TORCH_DEADWOOD = registerNoItem("wall_torch_deadwood",
             () -> new TolkienWallTorchBlock(
                     () -> TolkienParticleTypes.DEADWOOD_FLAME.get(),
                     BlockBehaviour.Properties.of()
@@ -928,10 +928,10 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> BARREL_DEADWOOD = registerBlock("barrel_deadwood",
             () -> new TolkienBarrelBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL)
                     .mapColor(MapColor.TERRACOTTA_ORANGE)));
-    public static final DeferredBlock<Block> DEADWOOD_SIGN = registerBlock("sign_deadwood", () -> new TolkienSignBlock(TolkienWoodTypes.DEADWOOD, BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().strength(1f, 1f).ignitedByLava()));
-    public static final DeferredBlock<Block> DEADWOOD_WALL_SIGN = registerNoItem("sign_wall_deadwood", () -> new TolkienWallSignBlock(TolkienWoodTypes.DEADWOOD, BlockBehaviour.Properties.ofFullCopy(DEADWOOD_SIGN.get())));
-    public static final DeferredBlock<Block> DEADWOOD_HANGING_SIGN = registerBlock("hanging_sign_deadwood", () -> new TolkienHangingSignBlock(TolkienWoodTypes.DEADWOOD, BlockBehaviour.Properties.ofFullCopy(DEADWOOD_SIGN.get())));
-    public static final DeferredBlock<Block> DEADWOOD_HANGING_WALL_SIGN = registerNoItem("hanging_sign_wall_deadwood", () -> new TolkienHangingWallSignBlock(TolkienWoodTypes.DEADWOOD, BlockBehaviour.Properties.ofFullCopy(DEADWOOD_HANGING_SIGN.get())));
+    public static final DeferredBlock<StandingSignBlock> DEADWOOD_SIGN = registerBlock("sign_deadwood", () -> new TolkienSignBlock(TolkienWoodTypes.DEADWOOD, BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().strength(1f, 1f).ignitedByLava()));
+    public static final DeferredBlock<WallSignBlock> DEADWOOD_WALL_SIGN = BLOCKS.register("sign_wall_deadwood", () -> new TolkienWallSignBlock(TolkienWoodTypes.DEADWOOD, BlockBehaviour.Properties.ofFullCopy(DEADWOOD_SIGN.get())));
+    public static final DeferredBlock<CeilingHangingSignBlock> DEADWOOD_HANGING_SIGN = registerBlock("hanging_sign_deadwood", () -> new TolkienHangingSignBlock(TolkienWoodTypes.DEADWOOD, BlockBehaviour.Properties.ofFullCopy(DEADWOOD_SIGN.get())));
+    public static final DeferredBlock<WallHangingSignBlock> DEADWOOD_HANGING_WALL_SIGN = BLOCKS.register("hanging_sign_wall_deadwood", () -> new TolkienHangingWallSignBlock(TolkienWoodTypes.DEADWOOD, BlockBehaviour.Properties.ofFullCopy(DEADWOOD_HANGING_SIGN.get())));
     public static final DeferredBlock<Block> LADDER_DEADWOOD = registerBlock("ladder_deadwood", () -> new LadderBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.LADDER)));
 
         // Dwarven Maple
@@ -980,13 +980,13 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> TRAPDOOR_DWARVEN_MAPLE = registerBlock("trapdoor_dwarven_maple",
             () -> new TrapDoorBlock(BlockSetType.OAK, BlockBehaviour.Properties.of()
                     .strength(3.0F).requiresCorrectToolForDrops().noOcclusion().sound(SoundType.WOOD)));
-    public static final DeferredBlock<Block> TORCH_DWARVEN_MAPLE = registerBlock("torch_dwarven_maple",
+    public static final DeferredBlock<Block> TORCH_DWARVEN_MAPLE = registerNoItem("torch_dwarven_maple",
             () -> new TolkienTorchBlock(
                     () -> TolkienParticleTypes.DWARVEN_FLAME.get(),
                     BlockBehaviour.Properties.of()
                             .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD)));
 
-    public static final DeferredBlock<Block> WALL_TORCH_DWARVEN_MAPLE = registerBlock("wall_torch_dwarven_maple",
+    public static final DeferredBlock<Block> WALL_TORCH_DWARVEN_MAPLE = registerNoItem("wall_torch_dwarven_maple",
             () -> new TolkienWallTorchBlock(
                     () -> TolkienParticleTypes.DWARVEN_FLAME.get(),
                     BlockBehaviour.Properties.of()
@@ -994,10 +994,10 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> BARREL_DWARVEN_MAPLE = registerBlock("barrel_dwarven_maple",
             () -> new TolkienBarrelBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL)
                     .mapColor(MapColor.TERRACOTTA_WHITE)));
-    public static final DeferredBlock<Block> DWARVEN_MAPLE_SIGN = registerBlock("sign_dwarven_maple", () -> new TolkienSignBlock(TolkienWoodTypes.DWARVEN_MAPLE, BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().strength(1f, 1f).ignitedByLava()));
-    public static final DeferredBlock<Block> DWARVEN_MAPLE_WALL_SIGN = registerNoItem("sign_wall_dwarven_maple", () -> new TolkienWallSignBlock(TolkienWoodTypes.DWARVEN_MAPLE, BlockBehaviour.Properties.ofFullCopy(DWARVEN_MAPLE_SIGN.get())));
-    public static final DeferredBlock<Block> DWARVEN_MAPLE_HANGING_SIGN = registerBlock("hanging_sign_dwarven_maple", () -> new TolkienHangingSignBlock(TolkienWoodTypes.DWARVEN_MAPLE, BlockBehaviour.Properties.ofFullCopy(DWARVEN_MAPLE_SIGN.get())));
-    public static final DeferredBlock<Block> DWARVEN_MAPLE_HANGING_WALL_SIGN = registerNoItem("hanging_sign_wall_dwarven_maple", () -> new TolkienHangingWallSignBlock(TolkienWoodTypes.DWARVEN_MAPLE, BlockBehaviour.Properties.ofFullCopy(DWARVEN_MAPLE_HANGING_SIGN.get())));
+    public static final DeferredBlock<StandingSignBlock> DWARVEN_MAPLE_SIGN = registerBlock("sign_dwarven_maple", () -> new TolkienSignBlock(TolkienWoodTypes.DWARVEN_MAPLE, BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().strength(1f, 1f).ignitedByLava()));
+    public static final DeferredBlock<WallSignBlock> DWARVEN_MAPLE_WALL_SIGN = BLOCKS.register("sign_wall_dwarven_maple", () -> new TolkienWallSignBlock(TolkienWoodTypes.DWARVEN_MAPLE, BlockBehaviour.Properties.ofFullCopy(DWARVEN_MAPLE_SIGN.get())));
+    public static final DeferredBlock<CeilingHangingSignBlock> DWARVEN_MAPLE_HANGING_SIGN = registerBlock("hanging_sign_dwarven_maple", () -> new TolkienHangingSignBlock(TolkienWoodTypes.DWARVEN_MAPLE, BlockBehaviour.Properties.ofFullCopy(DWARVEN_MAPLE_SIGN.get())));
+    public static final DeferredBlock<WallHangingSignBlock> DWARVEN_MAPLE_HANGING_WALL_SIGN = BLOCKS.register("hanging_sign_wall_dwarven_maple", () -> new TolkienHangingWallSignBlock(TolkienWoodTypes.DWARVEN_MAPLE, BlockBehaviour.Properties.ofFullCopy(DWARVEN_MAPLE_HANGING_SIGN.get())));
     public static final DeferredBlock<Block> LADDER_DWARVEN_MAPLE = registerBlock("ladder_dwarven_maple", () -> new LadderBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.LADDER)));
 
     // Flowers & Plants

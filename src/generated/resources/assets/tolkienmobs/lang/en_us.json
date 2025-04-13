@@ -688,6 +688,8 @@
   "item.minecraft.splash_potion.effect.sleepnesia": "Splash Potion of Sleepnesia",
   "item.tolkienmobs.ammo_boulder": "Boulder",
   "item.tolkienmobs.ammo_fellbeast_fireball": "Fell Beast Fireball",
+  "item.tolkienmobs.ammo_galadhrim_arrow": "Galadhrim Arrows",
+  "item.tolkienmobs.ammo_utumno_arrow": "Utumno Arrows",
   "item.tolkienmobs.ammolite_horse_armor": "Ammolite Horse Armor",
   "item.tolkienmobs.arda_staff": "Arda Staff",
   "item.tolkienmobs.arda_staff.lore": "Right-click on portal frame to activate",
@@ -1417,5 +1419,10 @@
   "tolkienmobs.msg.wrong_key": "You need the correct key!",
   "tolkienmobs.tooltip.liquid.amount": "%s mB",
   "tolkienmobs.tooltip.liquid.amount.empty": "Tank Empty",
-  "tolkienmobs.tooltip.liquid.amount.with.capacity": "%s / %s mB"
+  "tolkienmobs.tooltip.liquid.amount.with.capacity": "%s / %s mB",
+  "tooltip.tolkienmobs.ammo.infinite": "Infinity",
+  "tooltip.tolkienmobs.bow_speed.faster": " %sx Faster Pull",
+  "tooltip.tolkienmobs.bow_speed.slower": " %sx Slower Pull",
+  "tooltip.tolkienmobs.damage.base": " %s Base Damage",
+  "tooltip.tolkienmobs.ranged.power": " %sx Shooting Power"
 }

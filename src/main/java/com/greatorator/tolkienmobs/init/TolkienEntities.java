@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.init;
 
+import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.entity.ambient.*;
 import com.greatorator.tolkienmobs.entity.boss.GoblinKingEntity;
 import com.greatorator.tolkienmobs.entity.monster.*;
@@ -7,11 +8,16 @@ import com.greatorator.tolkienmobs.entity.npc.*;
 import com.greatorator.tolkienmobs.entity.passive.*;
 import com.greatorator.tolkienmobs.entity.projectiles.*;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -177,13 +183,23 @@ public class TolkienEntities {
     public static final Supplier<EntityType<CobwebProjectileEntity>> AMMO_COBWEB =
             ENTITY_TYPES.register("ammo_cobweb", () -> EntityType.Builder.<CobwebProjectileEntity>of(CobwebProjectileEntity::new, MobCategory.MISC)
                     .sized(0.75F, 0.75F).build("ammo_cobweb"));
-    public static final Supplier<EntityType<    TornadoEntity>> AMMO_TORNADO =
+    public static final Supplier<EntityType<TornadoEntity>> AMMO_TORNADO =
             ENTITY_TYPES.register("ammo_tornado", () -> EntityType.Builder.<TornadoEntity>of(TornadoEntity::new, MobCategory.MISC)
                     .sized(0.75F, 0.75F).build("ammo_tornado"));
-
+    public static final Supplier<EntityType<GaladhrimArrowEntity>> AMMO_ARROW_GALADHRIM =
+            ENTITY_TYPES.register("ammo_galadhrim_arrow", () -> EntityType.Builder.<GaladhrimArrowEntity>of(GaladhrimArrowEntity::new, MobCategory.MISC)
+                    .sized(0.75F, 0.75F).build("ammo_galadhrim_arrow"));
+    public static final Supplier<EntityType<UtumnoArrowEntity>> AMMO_ARROW_UTUMNO =
+            ENTITY_TYPES.register("ammo_utumno_arrow", () -> EntityType.Builder.<UtumnoArrowEntity>of(UtumnoArrowEntity::new, MobCategory.MISC)
+                    .sized(0.75F, 0.75F).build("ammo_utumno_arrow"));
     public static final Supplier<EntityType<SimpleTrapEntity>> TRAP_SIMPLE =
             ENTITY_TYPES.register("trap_simple", () -> EntityType.Builder.of(SimpleTrapEntity::new, MobCategory.MISC)
                     .sized(0.75F, 0.75F).build("trap_simple"));
+
+        // Boats
+//    public static final DeferredHolder<EntityType<?>, EntityType<Boat>> MALLORN_BOAT =
+//                registerMisc("boat_mallorn", EntityType.Builder.<Boat>of((type, level) -> new Boat(type, level, TolkienItems.MALLORN_BOAT.get()), MobCategory.MISC)
+//                    .sized(1.375F, 0.5625F).eyeHeight(0.5625F).clientTrackingRange(10));
 
     /** Spawn Eggs */
         // Ambient

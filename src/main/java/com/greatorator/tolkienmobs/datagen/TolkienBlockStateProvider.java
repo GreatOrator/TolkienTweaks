@@ -99,8 +99,8 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         ModelFile barrelMallorn = models().cubeBottomTop("barrel_mallorn", modLoc("block/barrel/barrel_mallorn_side"), modLoc("block/barrel/barrel_mallorn_bottom"), modLoc("block/barrel/barrel_mallorn_top"));
         ModelFile barrelMallornOpen = models().cubeBottomTop("barrel_mallorn_open", modLoc("block/barrel/barrel_mallorn_side"), modLoc("block/barrel/barrel_mallorn_bottom"), modLoc("block/barrel/barrel_mallorn_top_open"));
         directionalBlock(TolkienBlocks.BARREL_MALLORN.get(), state -> state.getValue(BarrelBlock.OPEN) ? barrelMallornOpen : barrelMallorn);
-        signBlock(TolkienBlocks.MALLORN_SIGN, TolkienBlocks.MALLORN_WALL_SIGN, TolkienBlocks.PLANKS_MALLORN);
-        hangingSignBlock(TolkienBlocks.MALLORN_HANGING_SIGN, TolkienBlocks.MALLORN_HANGING_WALL_SIGN, TolkienBlocks.PLANKS_MALLORN);
+        sign(TolkienBlocks.MALLORN_SIGN, TolkienBlocks.MALLORN_WALL_SIGN, "planks_mallorn");
+        hangingSign(TolkienBlocks.MALLORN_HANGING_SIGN, TolkienBlocks.MALLORN_HANGING_WALL_SIGN, "stripped_log_mallorn");
         ladder(TolkienBlocks.LADDER_MALLORN, TolkienBlocks.PLANKS_MALLORN);
 
         blockItem(TolkienBlocks.TORCH_MALLORN);
@@ -135,8 +135,8 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         ModelFile barrelMirkwood = models().cubeBottomTop("barrel_mirkwood", modLoc("block/barrel/barrel_mirkwood_side"), modLoc("block/barrel/barrel_mirkwood_bottom"), modLoc("block/barrel/barrel_mirkwood_top"));
         ModelFile barrelMirkwoodOpen = models().cubeBottomTop("barrel_mirkwood_open", modLoc("block/barrel/barrel_mirkwood_side"), modLoc("block/barrel/barrel_mirkwood_bottom"), modLoc("block/barrel/barrel_mirkwood_top_open"));
         directionalBlock(TolkienBlocks.BARREL_MIRKWOOD.get(), state -> state.getValue(BarrelBlock.OPEN) ? barrelMirkwoodOpen : barrelMirkwood);
-        signBlock(TolkienBlocks.MIRKWOOD_SIGN, TolkienBlocks.MIRKWOOD_WALL_SIGN, TolkienBlocks.PLANKS_MIRKWOOD);
-        hangingSignBlock(TolkienBlocks.MIRKWOOD_HANGING_SIGN, TolkienBlocks.MIRKWOOD_HANGING_WALL_SIGN, TolkienBlocks.PLANKS_MIRKWOOD);
+        sign(TolkienBlocks.MIRKWOOD_SIGN, TolkienBlocks.MIRKWOOD_WALL_SIGN, "planks_mirkwood");
+        hangingSign(TolkienBlocks.MIRKWOOD_HANGING_SIGN, TolkienBlocks.MIRKWOOD_HANGING_WALL_SIGN, "stripped_log_mirkwood");
         ladder(TolkienBlocks.LADDER_MIRKWOOD, TolkienBlocks.PLANKS_MIRKWOOD);
 
         blockItem(TolkienBlocks.TORCH_MIRKWOOD);
@@ -171,8 +171,8 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         ModelFile barrelCulumalda = models().cubeBottomTop("barrel_culumalda", modLoc("block/barrel/barrel_culumalda_side"), modLoc("block/barrel/barrel_culumalda_bottom"), modLoc("block/barrel/barrel_culumalda_top"));
         ModelFile barrelCulumaldaOpen = models().cubeBottomTop("barrel_culumalda_open", modLoc("block/barrel/barrel_culumalda_side"), modLoc("block/barrel/barrel_culumalda_bottom"), modLoc("block/barrel/barrel_culumalda_top_open"));
         directionalBlock(TolkienBlocks.BARREL_CULUMALDA.get(), state -> state.getValue(BarrelBlock.OPEN) ? barrelCulumaldaOpen : barrelCulumalda);
-        signBlock(TolkienBlocks.CULUMALDA_SIGN, TolkienBlocks.CULUMALDA_WALL_SIGN, TolkienBlocks.PLANKS_CULUMALDA);
-        hangingSignBlock(TolkienBlocks.CULUMALDA_HANGING_SIGN, TolkienBlocks.CULUMALDA_HANGING_WALL_SIGN, TolkienBlocks.PLANKS_CULUMALDA);
+        sign(TolkienBlocks.CULUMALDA_SIGN, TolkienBlocks.CULUMALDA_WALL_SIGN, "planks_culumalda");
+        hangingSign(TolkienBlocks.CULUMALDA_HANGING_SIGN, TolkienBlocks.CULUMALDA_HANGING_WALL_SIGN, "stripped_log_culumalda");
         ladder(TolkienBlocks.LADDER_CULUMALDA, TolkienBlocks.PLANKS_CULUMALDA);
 
         blockItem(TolkienBlocks.TORCH_CULUMALDA);
@@ -207,8 +207,8 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         ModelFile barrelLebethron = models().cubeBottomTop("barrel_lebethron", modLoc("block/barrel/barrel_lebethron_side"), modLoc("block/barrel/barrel_lebethron_bottom"), modLoc("block/barrel/barrel_lebethron_top"));
         ModelFile barrelLebethronOpen = models().cubeBottomTop("barrel_lebethron_open", modLoc("block/barrel/barrel_lebethron_side"), modLoc("block/barrel/barrel_lebethron_bottom"), modLoc("block/barrel/barrel_lebethron_top_open"));
         directionalBlock(TolkienBlocks.BARREL_LEBETHRON.get(), state -> state.getValue(BarrelBlock.OPEN) ? barrelLebethronOpen : barrelLebethron);
-        signBlock(TolkienBlocks.LEBETHRON_SIGN, TolkienBlocks.LEBETHRON_WALL_SIGN, TolkienBlocks.PLANKS_LEBETHRON);
-        hangingSignBlock(TolkienBlocks.LEBETHRON_HANGING_SIGN, TolkienBlocks.LEBETHRON_HANGING_WALL_SIGN, TolkienBlocks.PLANKS_LEBETHRON);
+        sign(TolkienBlocks.LEBETHRON_SIGN, TolkienBlocks.LEBETHRON_WALL_SIGN, "planks_lebethron");
+        hangingSign(TolkienBlocks.LEBETHRON_HANGING_SIGN, TolkienBlocks.LEBETHRON_HANGING_WALL_SIGN, "stripped_log_lebethron");
         ladder(TolkienBlocks.LADDER_LEBETHRON, TolkienBlocks.PLANKS_LEBETHRON);
 
         blockItem(TolkienBlocks.TORCH_LEBETHRON);
@@ -243,8 +243,8 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         ModelFile barrelFangornOak = models().cubeBottomTop("barrel_fangornoak", modLoc("block/barrel/barrel_fangornoak_side"), modLoc("block/barrel/barrel_fangornoak_bottom"), modLoc("block/barrel/barrel_fangornoak_top"));
         ModelFile barrelFangornOakOpen = models().cubeBottomTop("barrel_fangornoak_open", modLoc("block/barrel/barrel_fangornoak_side"), modLoc("block/barrel/barrel_fangornoak_bottom"), modLoc("block/barrel/barrel_fangornoak_top_open"));
         directionalBlock(TolkienBlocks.BARREL_FANGORNOAK.get(), state -> state.getValue(BarrelBlock.OPEN) ? barrelFangornOakOpen : barrelFangornOak);
-        signBlock(TolkienBlocks.FANGORNOAK_SIGN, TolkienBlocks.FANGORNOAK_WALL_SIGN, TolkienBlocks.PLANKS_FANGORNOAK);
-        hangingSignBlock(TolkienBlocks.FANGORNOAK_HANGING_SIGN, TolkienBlocks.FANGORNOAK_HANGING_WALL_SIGN, TolkienBlocks.PLANKS_FANGORNOAK);
+        sign(TolkienBlocks.FANGORNOAK_SIGN, TolkienBlocks.FANGORNOAK_WALL_SIGN, "planks_fangornoak");
+        hangingSign(TolkienBlocks.FANGORNOAK_HANGING_SIGN, TolkienBlocks.FANGORNOAK_HANGING_WALL_SIGN, "stripped_log_fangornoak");
         ladder(TolkienBlocks.LADDER_FANGORNOAK, TolkienBlocks.PLANKS_FANGORNOAK);
 
         blockItem(TolkienBlocks.TORCH_FANGORNOAK);
@@ -274,8 +274,8 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         ModelFile barrelDeadwood = models().cubeBottomTop("barrel_deadwood", modLoc("block/barrel/barrel_deadwood_side"), modLoc("block/barrel/barrel_deadwood_bottom"), modLoc("block/barrel/barrel_deadwood_top"));
         ModelFile barrelDeadwoodOpen = models().cubeBottomTop("barrel_deadwood_open", modLoc("block/barrel/barrel_deadwood_side"), modLoc("block/barrel/barrel_deadwood_bottom"), modLoc("block/barrel/barrel_deadwood_top_open"));
         directionalBlock(TolkienBlocks.BARREL_DEADWOOD.get(), state -> state.getValue(BarrelBlock.OPEN) ? barrelDeadwoodOpen : barrelDeadwood);
-        signBlock(TolkienBlocks.DEADWOOD_SIGN, TolkienBlocks.DEADWOOD_WALL_SIGN, TolkienBlocks.PLANKS_DEADWOOD);
-        hangingSignBlock(TolkienBlocks.DEADWOOD_HANGING_SIGN, TolkienBlocks.DEADWOOD_HANGING_WALL_SIGN, TolkienBlocks.PLANKS_DEADWOOD);
+        sign(TolkienBlocks.DEADWOOD_SIGN, TolkienBlocks.DEADWOOD_WALL_SIGN, "planks_deadwood");
+        hangingSign(TolkienBlocks.DEADWOOD_HANGING_SIGN, TolkienBlocks.DEADWOOD_HANGING_WALL_SIGN, "stripped_log_deadwood");
         ladder(TolkienBlocks.LADDER_DEADWOOD, TolkienBlocks.PLANKS_DEADWOOD);
 
         blockItem(TolkienBlocks.TORCH_DEADWOOD);
@@ -310,8 +310,8 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         ModelFile barrelDwarvenMaple = models().cubeBottomTop("barrel_dwarven_maple", modLoc("block/barrel/barrel_dwarven_maple_side"), modLoc("block/barrel/barrel_dwarven_maple_bottom"), modLoc("block/barrel/barrel_dwarven_maple_top"));
         ModelFile barrelDwarvenMapleOpen = models().cubeBottomTop("barrel_dwarven_maple_open", modLoc("block/barrel/barrel_dwarven_maple_side"), modLoc("block/barrel/barrel_dwarven_maple_bottom"), modLoc("block/barrel/barrel_dwarven_maple_top_open"));
         directionalBlock(TolkienBlocks.BARREL_DWARVEN_MAPLE.get(), state -> state.getValue(BarrelBlock.OPEN) ? barrelDwarvenMapleOpen : barrelDwarvenMaple);
-        signBlock(TolkienBlocks.DWARVEN_MAPLE_SIGN, TolkienBlocks.DWARVEN_MAPLE_WALL_SIGN, TolkienBlocks.PLANKS_DWARVEN_MAPLE);
-        hangingSignBlock(TolkienBlocks.DWARVEN_MAPLE_HANGING_SIGN, TolkienBlocks.DWARVEN_MAPLE_HANGING_WALL_SIGN, TolkienBlocks.PLANKS_DWARVEN_MAPLE);
+        sign(TolkienBlocks.DWARVEN_MAPLE_SIGN, TolkienBlocks.DWARVEN_MAPLE_WALL_SIGN, "planks_dwarven_maple");
+        hangingSign(TolkienBlocks.DWARVEN_MAPLE_HANGING_SIGN, TolkienBlocks.DWARVEN_MAPLE_HANGING_WALL_SIGN, "stripped_log_dwarven_maple");
         ladder(TolkienBlocks.LADDER_DWARVEN_MAPLE, TolkienBlocks.PLANKS_DWARVEN_MAPLE);
 
         blockItem(TolkienBlocks.TORCH_DWARVEN_MAPLE);
