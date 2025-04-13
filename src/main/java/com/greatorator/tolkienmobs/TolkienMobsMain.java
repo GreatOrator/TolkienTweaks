@@ -75,7 +75,6 @@ public class TolkienMobsMain {
     //    -Generation
     //    -Structures
     //  -Signs not placing on vertical surfaces
-    //  -Boats Implemented
     //  -Arda Portal
     //    -Needs implementation
     //  -Enchantments
