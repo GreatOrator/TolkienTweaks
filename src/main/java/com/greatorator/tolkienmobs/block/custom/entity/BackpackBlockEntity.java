@@ -429,4 +429,26 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Ba
 
     public void tickClient() {
     }
+
+//    public static BlockState getProperSleepingBag(int sleepingBagColor) {
+//        return switch(sleepingBagColor) {
+//            case 0 -> ModBlocks.WHITE_SLEEPING_BAG.get().defaultBlockState();
+//            case 1 -> ModBlocks.ORANGE_SLEEPING_BAG.get().defaultBlockState();
+//            case 2 -> ModBlocks.MAGENTA_SLEEPING_BAG.get().defaultBlockState();
+//            case 3 -> ModBlocks.LIGHT_BLUE_SLEEPING_BAG.get().defaultBlockState();
+//            case 4 -> ModBlocks.YELLOW_SLEEPING_BAG.get().defaultBlockState();
+//            case 5 -> ModBlocks.LIME_SLEEPING_BAG.get().defaultBlockState();
+//            case 6 -> ModBlocks.PINK_SLEEPING_BAG.get().defaultBlockState();
+//            case 7 -> ModBlocks.GRAY_SLEEPING_BAG.get().defaultBlockState();
+//            case 8 -> ModBlocks.LIGHT_GRAY_SLEEPING_BAG.get().defaultBlockState();
+//            case 9 -> ModBlocks.CYAN_SLEEPING_BAG.get().defaultBlockState();
+//            case 10 -> ModBlocks.PURPLE_SLEEPING_BAG.get().defaultBlockState();
+//            case 11 -> ModBlocks.BLUE_SLEEPING_BAG.get().defaultBlockState();
+//            case 12 -> ModBlocks.BROWN_SLEEPING_BAG.get().defaultBlockState();
+//            case 13 -> ModBlocks.GREEN_SLEEPING_BAG.get().defaultBlockState();
+//            case 14 -> ModBlocks.RED_SLEEPING_BAG.get().defaultBlockState();
+//            case 15 -> ModBlocks.BLACK_SLEEPING_BAG.get().defaultBlockState();
+//            default -> ModBlocks.RED_SLEEPING_BAG.get().defaultBlockState();
+//        };
+//    }
 }
