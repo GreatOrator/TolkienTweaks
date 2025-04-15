@@ -21,7 +21,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:long_poison"
+              "id": "minecraft:long_fire_resistance"
             },
             {
               "add": false,

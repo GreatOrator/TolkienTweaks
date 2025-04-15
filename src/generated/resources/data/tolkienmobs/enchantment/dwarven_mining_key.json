@@ -4,16 +4,10 @@
     "translate": "enchantment.tolkienmobs.dwarven_mining_key"
   },
   "effects": {
-    "tolkienmobs:post_break_block": [
+    "minecraft:hit_block": [
       {
         "effect": {
           "type": "tolkienmobs:dwarven_mining"
-        },
-        "requirements": {
-          "condition": "minecraft:match_tool",
-          "predicate": {
-            "items": "#minecraft:pickaxes"
-          }
         }
       }
     ]
@@ -28,7 +22,7 @@
     "per_level_above_first": 10
   },
   "slots": [
-    "mainhand"
+    "hand"
   ],
   "supported_items": "#minecraft:pickaxes",
   "weight": 5

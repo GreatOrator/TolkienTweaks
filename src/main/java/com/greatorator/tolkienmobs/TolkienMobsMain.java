@@ -80,7 +80,6 @@ public class TolkienMobsMain {
     //  -Enchantments
     //    -Hobbit Plow
     //    -Hobbit Harvest
-    //    -Dwarven Miner
     //  -Functional Blocks
     //    -Milestone
     //      -Needs implementation
