@@ -189,6 +189,19 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Ba
 
     private boolean getUpgradeItems(IItemHandler inv, Predicate<ItemStack> isUpgradeStack) {
         boolean hasUpgrade = false;
+
+        this.backpackUpgrades.campfire = false;
+        this.backpackUpgrades.sleepingBag = false;
+        this.backpackUpgrades.crafting = false;
+        this.backpackUpgrades.size_upgrade = false;
+        this.backpackUpgrades.size_upgrade_2 = false;
+        this.backpackFluidUpgrades.fluid_tank = false;
+        this.backpackFluidUpgrades.fluid_tank_2 = false;
+        this.backpackFluidUpgrades.fluid_tank_3 = false;
+        this.backpackFluidUpgrades.fluid_tank_4 = false;
+        this.backpackFluidUpgrades.fluid_tank_5 = false;
+        this.markDirtyClient();
+        this.setChanged();
         for (int i = 0; i < 9; i++) {
             inv = this.upgradeItemHandler;
             ItemStack invStack = inv.getStackInSlot(i);
