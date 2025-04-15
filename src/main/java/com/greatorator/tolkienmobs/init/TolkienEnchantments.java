@@ -84,16 +84,12 @@ public class TolkienEnchantments {
                                 Enchantment.dynamicCost(1, 10),
                                 Enchantment.dynamicCost(15, 10),
                                 2,
-                                EquipmentSlotGroup.MAINHAND
+                                EquipmentSlotGroup.HAND
                         )
                 ).withEffect(
-                        TolkienEnchantmentEffectComponents.POST_BREAK_BLOCK,
-                        new DwarvenMinerEnchantmentEffect(3),
-                        MatchTool.toolMatches(
-                                ItemPredicate.Builder.item()
-                                        .of(ItemTags.PICKAXES)
+                        EnchantmentEffectComponents.HIT_BLOCK,
+                        new DwarvenMinerEnchantmentEffect(3)
                         )
-                )
         );
         register(
                 context,
