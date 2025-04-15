@@ -92,7 +92,7 @@ public class TolkienMobsMain {
     //      -Working in Trinket Table
     //    -Backpack
     //      -Bucket inside Inventory not working
-    //      -Upgrades clearing when removed
+    //      -Sleeping Bag and Campfire actually place instead of being ghost blocks
 
     public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer, Dist dist) {
         modEventBus.addListener(this::commonSetup);
