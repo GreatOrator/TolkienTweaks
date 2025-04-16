@@ -85,8 +85,6 @@ public class TolkienMobsMain {
     //      -Needs implementation
     //    -Spawner
     //      -Using the custom entity list for what to spawn
-    //    -Fireplace
-    //      -Actually use fuel properly
     //    -Trinket Table Recipes
     //      -Working in Trinket Table
     //    -Backpack

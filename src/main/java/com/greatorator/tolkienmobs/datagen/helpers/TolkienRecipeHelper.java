@@ -157,6 +157,14 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath(MODID, "fireplace/" + getItemName(result) + "_from_fireplace"));
     }
 
+    protected static void fireplaceFoodRecipe(RecipeOutput recipeOutput, SizedIngredient ingredients1, ItemLike result, int outputCount){
+        FireplaceRecipeBuilder.fireplaceRecipe()
+                .addIngredient(ingredients1)
+                .addOutput(new ItemStack(result, outputCount))
+                .unlockedBy(getHasName(ingredients1.ingredient().getItems()[0].getItem()), has(ingredients1.ingredient().getItems()[0].getItem()))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath(MODID, "fireplace/" + getItemName(result) + "_from_fireplace"));
+    }
+
     protected static void toolListRecipe(RecipeOutput pRecipeOutput, RecipeCategory pCategory, String group, Item pick, Item axe, Item shovel, Item hoe, Item sword, Item shears, Item ingot) {
         ShapedRecipeBuilder.shaped(pCategory, pick)
                 .pattern("III")

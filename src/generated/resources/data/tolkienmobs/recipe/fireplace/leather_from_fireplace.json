@@ -1,0 +1,15 @@
+{
+  "type": "tolkienmobs:fireplace",
+  "ingredients": [
+    {
+      "count": 1,
+      "item": "tolkienmobs:monster_flesh"
+    }
+  ],
+  "output": [
+    {
+      "count": 1,
+      "id": "minecraft:leather"
+    }
+  ]
+}

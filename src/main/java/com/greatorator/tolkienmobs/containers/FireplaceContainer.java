@@ -23,7 +23,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 public class FireplaceContainer extends TolkienContainer {
     private final FireplaceBlockEntity tileEntity;
     private final Level level;
-    private final ContainerData containerData;
+    public final ContainerData containerData;
     public static final ResourceLocation TEXTURE_LOC_SLOT_INGREDIENT_1 = TolkienMobsMain.resLoc("item/food");
     public static final ResourceLocation TEXTURE_LOC_SLOT_INGREDIENT_2 = TolkienMobsMain.resLoc("item/food");
     public static final ResourceLocation TEXTURE_LOC_SLOT_FUEL = TolkienMobsMain.resLoc("item/fuel");
@@ -76,11 +76,11 @@ public class FireplaceContainer extends TolkienContainer {
     }
 
     public int getScaledFireplaceProgress() {
-        int progress = this.containerData.get(0);
-        int maxProgress = this.containerData.get(1);
+        int fuelTime = this.containerData.get(2);
+        int maxFuelTime = this.containerData.get(3);
         int crystalPixelSize = 16;
 
-        return maxProgress != 0 && progress != 0 ? progress * crystalPixelSize / maxProgress : 0;
+        return maxFuelTime != 0 && fuelTime != 0 ? fuelTime * crystalPixelSize / maxFuelTime : 0;
     }
 
     @Override

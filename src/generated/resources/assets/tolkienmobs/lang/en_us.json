@@ -463,12 +463,12 @@
   "effect.tolkienmobs.sleepnesia": "Sleepnesia",
   "enchantment.tolkienmobs.balrog_mark_key": "Balrog's Mark",
   "enchantment.tolkienmobs.dwarven_endurance_key": "Dwarven Endurance",
-  "enchantment.tolkienmobs.dwarven_mining_key": "[WIP] Dwarven Mining",
+  "enchantment.tolkienmobs.dwarven_mining_key": "Dwarven Mining",
   "enchantment.tolkienmobs.elven_fleetfoot_key": "Elven FleetFoot",
   "enchantment.tolkienmobs.elven_longevity_key": "Elven Longevity",
   "enchantment.tolkienmobs.gondorian_resolve_key": "Gondorian's Resolve",
   "enchantment.tolkienmobs.hobbit_harvest_key": "[WIP] Hobbit's Harvest",
-  "enchantment.tolkienmobs.hobbit_plow_key": "[WIP] Hobbit's Plow",
+  "enchantment.tolkienmobs.hobbit_plow_key": "Hobbit's Plow",
   "entity.minecraft.villager.tolkienmobs.coin_trader": "Coin Trader",
   "entity.minecraft.villager.tolkienmobs.grocery_store": "Grocery Store",
   "entity.minecraft.villager.tolkienmobs.junk_trader": "Pet Merchant",
@@ -1424,5 +1424,6 @@
   "tooltip.tolkienmobs.bow_speed.faster": " %sx Faster Pull",
   "tooltip.tolkienmobs.bow_speed.slower": " %sx Slower Pull",
   "tooltip.tolkienmobs.damage.base": " %s Base Damage",
+  "tooltip.tolkienmobs.fuel.remaining": " %s Remaining Fuel (Max 16000)",
   "tooltip.tolkienmobs.ranged.power": " %sx Shooting Power"
 }
