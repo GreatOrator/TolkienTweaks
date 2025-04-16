@@ -20,7 +20,7 @@ public record ElvenLongevityEnchantmentEffect(int potency) implements Enchantmen
     @Override
     public void apply(ServerLevel serverLevel, int enchantmentLevel, EnchantedItemInUse enchantedItemInUse, Entity entity, Vec3 vec3) {
         Player player = (Player) entity;
-        player.addEffect(new MobEffectInstance(MobEffects.HEALTH_BOOST, 100, potency(), false, false, false));
+        player.addEffect(new MobEffectInstance(MobEffects.HEALTH_BOOST, 100, potency() * 2, false, false, false));
     }
 
     @Override

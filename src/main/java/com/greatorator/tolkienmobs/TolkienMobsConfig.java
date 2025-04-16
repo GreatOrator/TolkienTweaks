@@ -45,7 +45,7 @@ public class TolkienMobsConfig {
             .defineInRange("pickupRange", 7, 0, Integer.MAX_VALUE);
     private static final ModConfigSpec.IntValue GROWTH_RANGE = BUILDER
             .comment("Range of growth for Hobbit Ring")
-            .defineInRange("growthRange", 7, 0, Integer.MAX_VALUE);
+            .defineInRange("growthRange", 4, 0, Integer.MAX_VALUE);
     private static final ModConfigSpec.IntValue GROW_TIMER = BUILDER
             .comment("How often the Hobbit Ring will try to grow a block (in ticks)")
             .defineInRange("growthTimer", 20, 0, Integer.MAX_VALUE);

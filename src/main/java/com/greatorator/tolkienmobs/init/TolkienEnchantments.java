@@ -40,19 +40,15 @@ public class TolkienEnchantments {
                                 Enchantment.definition(
                                         itemHolderGetter.getOrThrow(ItemTags.HOES),
                                         5,
-                                        5,
+                                        1,
                                         Enchantment.dynamicCost(5, 8),
                                         Enchantment.dynamicCost(25, 8),
                                         3,
                                         EquipmentSlotGroup.MAINHAND)
                         )
                         .withEffect(
-                                TolkienEnchantmentEffectComponents.USE_ON_BLOCK,
-                                new HobbitHarvestEnchantmentEffect(1),
-                                MatchTool.toolMatches(
-                                        ItemPredicate.Builder.item()
-                                                .of(ItemTags.HOES)
-                                )
+                                EnchantmentEffectComponents.TICK,
+                                new HobbitHarvestEnchantmentEffect(1)
                         )
         );
         register(
@@ -61,7 +57,7 @@ public class TolkienEnchantments {
                 Enchantment.enchantment(Enchantment.definition(
                         itemHolderGetter.getOrThrow(ItemTags.HOES),
                         1,
-                        4,
+                        1,
                         Enchantment.dynamicCost(10, 10),
                         Enchantment.dynamicCost(25, 10),
                         4,
