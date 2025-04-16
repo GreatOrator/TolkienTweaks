@@ -61,6 +61,7 @@ public class TolkienMobsMain {
     private static final String BLOCK_DIR = "textures/block/custom/";
 
     // TODO
+    //  -Signs not placing on vertical surfaces
     //  -Entities
     //    -Morgul Crystal
     //    -Balrog
@@ -74,12 +75,11 @@ public class TolkienMobsMain {
     //  -Biomes
     //    -Generation
     //    -Structures
-    //  -Signs not placing on vertical surfaces
     //  -Arda Portal
     //    -Needs implementation
     //  -Enchantments
-    //    -Hobbit Plow
     //    -Hobbit Harvest
+    //      -Why is this not ticking
     //  -Functional Blocks
     //    -Milestone
     //      -Needs implementation

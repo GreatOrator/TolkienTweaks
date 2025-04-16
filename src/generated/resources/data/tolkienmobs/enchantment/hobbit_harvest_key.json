@@ -4,17 +4,11 @@
     "translate": "enchantment.tolkienmobs.hobbit_harvest_key"
   },
   "effects": {
-    "tolkienmobs:use_on_block": [
+    "minecraft:tick": [
       {
         "effect": {
           "type": "tolkienmobs:hobbit_harvest",
           "area": 1
-        },
-        "requirements": {
-          "condition": "minecraft:match_tool",
-          "predicate": {
-            "items": "#minecraft:hoes"
-          }
         }
       }
     ]
@@ -23,7 +17,7 @@
     "base": 25,
     "per_level_above_first": 8
   },
-  "max_level": 5,
+  "max_level": 1,
   "min_cost": {
     "base": 5,
     "per_level_above_first": 8
