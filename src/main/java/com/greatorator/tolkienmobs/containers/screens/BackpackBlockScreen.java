@@ -22,12 +22,14 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
@@ -52,6 +54,7 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
     protected BackpackFluidUpgrades backpackFluidUpgrades;
     private boolean upgradeContainer;
     private final BackpackBlockEntity tileEntity;
+    private Level level;
     private FluidTankRenderer fluidRenderer;
     protected boolean renderablesChanged = false;
     protected List<AbstractWidget> widgetsToRemove = new ArrayList<>();
@@ -199,9 +202,9 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
                 backpackSettings.sleepingBag = !backpackSettings.sleepingBag;
                 PacketDistributor.sendToServer(new BackpackSettingsUpdateManager(backpackSettings.sleepingBag, backpackSettings.campfire, backpackSettings.upgrade));
                 if (!backpackSettings.sleepingBag) {
-                    tileEntity.deploySleepingbag();
+                    tileEntity.deploySleepingbag(Objects.requireNonNull(this.tileEntity.getLevel()), tileEntity.getBlockPos());
                 } else {
-                    tileEntity.removeSleepingbag();
+                    tileEntity.removeSleepingbag(Objects.requireNonNull(this.tileEntity.getLevel()), tileEntity.getBlockDirection());
                 }
             }));
         }
@@ -211,9 +214,9 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
                 backpackSettings.campfire = !backpackSettings.campfire;
                 PacketDistributor.sendToServer(new BackpackSettingsUpdateManager(backpackSettings.sleepingBag, backpackSettings.campfire, backpackSettings.upgrade));
                 if (!backpackSettings.campfire) {
-                    tileEntity.deployCampfire();
+                    tileEntity.deployCampfire(Objects.requireNonNull(this.tileEntity.getLevel()), tileEntity.getBlockPos());
                 } else {
-                    tileEntity.removeCampfire();
+                    tileEntity.removeCampfire(Objects.requireNonNull(this.tileEntity.getLevel()), tileEntity.getBlockPos());
                 }
             }));
         }
