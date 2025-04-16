@@ -1,8 +1,14 @@
 package com.greatorator.tolkienmobs.containers.screens;
 
 import com.greatorator.tolkienmobs.containers.FireplaceContainer;
+import com.greatorator.tolkienmobs.containers.handlers.BucketItemHandler;
+import com.greatorator.tolkienmobs.containers.slots.FuelSlot;
+import com.greatorator.tolkienmobs.containers.widget.TolkienButton;
+import com.greatorator.tolkienmobs.util.LangTranslationUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -41,6 +47,16 @@ public class FireplaceScreen extends AbstractContainerScreen<FireplaceContainer>
     }
 
     @Override
+    protected void renderTooltip(GuiGraphics pGuiGraphics, int pX, int pY) {
+        super.renderTooltip(pGuiGraphics, pX, pY);
+        int relX = (this.width - this.imageWidth) / 2;
+        int relY = (this.height - this.imageHeight) / 2;
+        if (hoveredSlot instanceof FuelSlot) {
+            pGuiGraphics.renderTooltip(this.font, LangTranslationUtils.remainingFuel(menu.containerData.get(2)), relX + 33, relY + 35);
+        }
+    }
+
+    @Override
     protected void renderSlotContents(GuiGraphics guiGraphics, ItemStack itemstack, Slot slot, @Nullable String countString) {
         super.renderSlotContents(guiGraphics, itemstack, slot, countString);
     }
@@ -71,7 +87,7 @@ public class FireplaceScreen extends AbstractContainerScreen<FireplaceContainer>
 
     private void renderProgressFireplace(GuiGraphics guiGraphics, int x, int y) {
         if(menu.isCrafting()) {
-            guiGraphics.blit(FIRE_TEXTURE, x + 33, y + 36 + 16 - menu.getScaledFireplaceProgress(), 0, 16 - menu.getScaledFireplaceProgress(), 16, menu.getScaledFireplaceProgress(),18, 16);
+            guiGraphics.blit(FIRE_TEXTURE, x + 33, y + 35 + 16 - menu.getScaledFireplaceProgress(), 0, 16 - menu.getScaledFireplaceProgress(), 16, menu.getScaledFireplaceProgress(),18, 18);
         }
     }
 

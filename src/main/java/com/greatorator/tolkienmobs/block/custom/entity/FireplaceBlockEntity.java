@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.block.custom.entity;
 
+import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.FireplaceBlock;
 import com.greatorator.tolkienmobs.containers.FireplaceContainer;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
@@ -38,6 +39,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+
+import static com.greatorator.tolkienmobs.block.custom.FireplaceBlock.LIT;
 
 public class FireplaceBlockEntity extends BlockEntity implements MenuProvider {
     private final ItemStackHandler fuelHandler = new ItemStackHandler(1){
@@ -86,7 +89,7 @@ public class FireplaceBlockEntity extends BlockEntity implements MenuProvider {
     private int burnProgress = 0;
     private int maxBurnProgress = 0;
     private int fuelTime = 0;
-    private int maxFuelTime = 0;
+    private int maxFuelTime = 16000;
     private boolean isBurning = false;
 
     public FireplaceBlockEntity(BlockPos pPos, BlockState pBlockState) {
@@ -143,7 +146,7 @@ public class FireplaceBlockEntity extends BlockEntity implements MenuProvider {
         int l;
         if (randomsource.nextFloat() < 0.11F) {
             for(l = 0; l < randomsource.nextInt(2) + 2; ++l) {
-                FireplaceBlock.makeParticles(level, pos, (Boolean)state.getValue(FireplaceBlock.LIT), false);
+                FireplaceBlock.makeParticles(level, pos, (Boolean)state.getValue(LIT), false);
             }
         }
     }
@@ -196,20 +199,15 @@ public class FireplaceBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     private void tryConsumeFuel() {
-        assert level != null;
-        this.maxFuelTime = 0;
-        //pull in new fuel
         ItemStack stack = fuelHandler.getStackInSlot(0);
         final int factor = 1;
         int burnTimeTicks = factor * stack.getBurnTime(RecipeType.SMELTING);
-        if (burnTimeTicks > 0) {
-            // BURN IT
-            this.maxFuelTime = burnTimeTicks;
-            this.fuelTime = this.maxFuelTime;
-            if (stack.getCount() == 1 && stack.hasCraftingRemainingItem()) {
-                fuelHandler.setStackInSlot(0, stack.getCraftingRemainingItem().copy());
-            }
-            else {
+
+        if (this.getBlockState().getValue(LIT)) {
+            fuelTime--;
+        } else {
+            if (fuelTime < maxFuelTime && ((maxFuelTime - fuelTime) >= burnTimeTicks)) {
+                fuelTime = fuelTime + burnTimeTicks;
                 stack.shrink(1);
             }
         }
@@ -235,10 +233,8 @@ public class FireplaceBlockEntity extends BlockEntity implements MenuProvider {
         setChanged(level, pPos, pState);
 
         if(hasRecipe() && isOutputSlotEmptyOrReceivable()){
-            level.setBlockAndUpdate(pPos, pState.setValue(FireplaceBlock.LIT, true));
+            level.setBlockAndUpdate(pPos, pState.setValue(LIT, true));
             increaseCraftingProgress();
-            fuelTime=fuelTime-10;
-
             setChanged(level, pPos, pState);
 
             if(hasProgressFinished()) {
@@ -248,7 +244,7 @@ public class FireplaceBlockEntity extends BlockEntity implements MenuProvider {
             }
         } else {
             resetProgress();
-            level.setBlockAndUpdate(pPos, pState.setValue(FireplaceBlock.LIT, false));
+            level.setBlockAndUpdate(pPos, pState.setValue(LIT, false));
             setChanged(level, pPos, pState);
         }
     }

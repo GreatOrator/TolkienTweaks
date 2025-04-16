@@ -34,6 +34,18 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
                 TolkienBlocks.ORE_AMMOLITE, TolkienBlocks.ORE_END_AMMOLITE, TolkienBlocks.ORE_NETHER_AMMOLITE, TolkienBlocks.ORE_DEEPSLATE_AMMOLITE);
 
         fireplaceRecipe(pRecipeOutput, SizedIngredient.of(TolkienItems.CRAM.get(), 1), SizedIngredient.of(TolkienItems.FOOD_HONEY.get(), 1), TolkienItems.LEMBAS.get(), 1);
+        fireplaceFoodRecipe(pRecipeOutput, SizedIngredient.of(Items.POTATO, 1), Items.BAKED_POTATO, 1);
+        fireplaceFoodRecipe(pRecipeOutput, SizedIngredient.of(Items.BEEF, 1), Items.COOKED_BEEF, 1);
+        fireplaceFoodRecipe(pRecipeOutput, SizedIngredient.of(Items.PORKCHOP, 1), Items.COOKED_PORKCHOP, 1);
+        fireplaceFoodRecipe(pRecipeOutput, SizedIngredient.of(Items.MUTTON, 1), Items.COOKED_MUTTON, 1);
+        fireplaceFoodRecipe(pRecipeOutput, SizedIngredient.of(Items.CHICKEN, 1), Items.COOKED_CHICKEN, 1);
+        fireplaceFoodRecipe(pRecipeOutput, SizedIngredient.of(Items.COD, 1), Items.COOKED_COD, 1);
+        fireplaceFoodRecipe(pRecipeOutput, SizedIngredient.of(Items.RABBIT, 1), Items.COOKED_RABBIT, 1);
+        fireplaceFoodRecipe(pRecipeOutput, SizedIngredient.of(Items.SALMON, 1), Items.COOKED_SALMON, 1);
+        fireplaceFoodRecipe(pRecipeOutput, SizedIngredient.of(TolkienItems.MONSTER_FLESH, 1), Items.LEATHER, 1);
+        fireplaceFoodRecipe(pRecipeOutput, SizedIngredient.of(Items.WHEAT, 3), Items.BREAD, 2);
+        fireplaceRecipe(pRecipeOutput, SizedIngredient.of(Items.WHEAT, 2), SizedIngredient.of(Items.COCOA_BEANS, 1), Items.COOKIE, 12);
+        fireplaceRecipe(pRecipeOutput, SizedIngredient.of(Items.CAKE, 1), SizedIngredient.of(TolkienItems.FOOD_HONEY, 1), TolkienItems.HONEY_CAKE, 1);
 
         oreSmelting(pRecipeOutput, MITHRIL_SMELTABLES, RecipeCategory.MISC, TolkienItems.INGOT_MITHRIL.get(), 0.25f, 200, "ingot_mithril");
         oreSmelting(pRecipeOutput, MORGULIRON_SMELTABLES, RecipeCategory.MISC, TolkienItems.INGOT_MORGULIRON.get(), 0.25f, 200, "ingot_morguliron");

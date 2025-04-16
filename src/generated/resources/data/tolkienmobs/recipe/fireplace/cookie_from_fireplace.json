@@ -1,0 +1,19 @@
+{
+  "type": "tolkienmobs:fireplace",
+  "ingredients": [
+    {
+      "count": 2,
+      "item": "minecraft:wheat"
+    },
+    {
+      "count": 1,
+      "item": "minecraft:cocoa_beans"
+    }
+  ],
+  "output": [
+    {
+      "count": 12,
+      "id": "minecraft:cookie"
+    }
+  ]
+}

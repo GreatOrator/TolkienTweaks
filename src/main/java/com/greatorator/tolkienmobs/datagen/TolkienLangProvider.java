@@ -381,6 +381,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add("tooltip.tolkienmobs.bow_speed.slower", " %sx Slower Pull");
             this.add("tooltip.tolkienmobs.ammo.infinite", "Infinity");
             this.add("tooltip.tolkienmobs.damage.base", " %s Base Damage");
+            this.add("tooltip.tolkienmobs.fuel.remaining", " %s Remaining Fuel (Max 16000)");
 
                 // Potions & Effects
                     // Beneficial
