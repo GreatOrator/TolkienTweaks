@@ -64,7 +64,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:strength"
+              "id": "minecraft:strong_regeneration"
             },
             {
               "add": false,

@@ -25,7 +25,7 @@ public class TolkienEnchantments {
     public static final ResourceKey<Enchantment> DWARVEN_ENDURANCE_KEY = create("dwarven_endurance_key");
     public static final ResourceKey<Enchantment> DWARVEN_MINING_KEY = create("dwarven_mining_key");
     public static final ResourceKey<Enchantment> HOBBIT_PLOW_KEY = create("hobbit_plow_key");
-    public static final ResourceKey<Enchantment> HOBBIT_HARVEST_KEY = create("hobbit_harvest_key");
+//    public static final ResourceKey<Enchantment> HOBBIT_HARVEST_KEY = create("hobbit_harvest_key");
 
     public static void bootstrap(BootstrapContext<Enchantment> context) {
         HolderGetter<Enchantment> enchantmentHolderGetter = context.lookup(Registries.ENCHANTMENT);
@@ -33,24 +33,24 @@ public class TolkienEnchantments {
         HolderGetter<DamageType> damageTypeHolderGetter = context.lookup(Registries.DAMAGE_TYPE);
         HolderGetter<Block> blockHolderGetter = context.lookup(Registries.BLOCK);
 
-        register(
-                context,
-                HOBBIT_HARVEST_KEY,
-                Enchantment.enchantment(
-                                Enchantment.definition(
-                                        itemHolderGetter.getOrThrow(ItemTags.HOES),
-                                        5,
-                                        1,
-                                        Enchantment.dynamicCost(5, 8),
-                                        Enchantment.dynamicCost(25, 8),
-                                        3,
-                                        EquipmentSlotGroup.MAINHAND)
-                        )
-                        .withEffect(
-                                EnchantmentEffectComponents.TICK,
-                                new HobbitHarvestEnchantmentEffect(1)
-                        )
-        );
+//        register(
+//                context,
+//                HOBBIT_HARVEST_KEY,
+//                Enchantment.enchantment(
+//                                Enchantment.definition(
+//                                        itemHolderGetter.getOrThrow(ItemTags.HOES),
+//                                        5,
+//                                        1,
+//                                        Enchantment.dynamicCost(5, 8),
+//                                        Enchantment.dynamicCost(25, 8),
+//                                        3,
+//                                        EquipmentSlotGroup.MAINHAND)
+//                        )
+//                        .withEffect(
+//                                EnchantmentEffectComponents.TICK,
+//                                new HobbitHarvestEnchantmentEffect(1)
+//                        )
+//        );
         register(
                 context,
                 HOBBIT_PLOW_KEY,

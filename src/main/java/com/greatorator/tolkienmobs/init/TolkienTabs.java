@@ -79,7 +79,7 @@ public class TolkienTabs {
                             addEnchantmentBook(reg.get(TolkienEnchantments.DWARVEN_ENDURANCE_KEY), output);
                             addEnchantmentBook(reg.get(TolkienEnchantments.DWARVEN_MINING_KEY), output);
                             addEnchantmentBook(reg.get(TolkienEnchantments.HOBBIT_PLOW_KEY), output);
-                            addEnchantmentBook(reg.get(TolkienEnchantments.HOBBIT_HARVEST_KEY), output);
+//                            addEnchantmentBook(reg.get(TolkienEnchantments.HOBBIT_HARVEST_KEY), output);
                         });
 
                     }).build());

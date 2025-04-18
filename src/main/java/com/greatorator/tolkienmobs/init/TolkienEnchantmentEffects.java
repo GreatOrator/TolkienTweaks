@@ -21,7 +21,6 @@ public class TolkienEnchantmentEffects {
         ENTITY_ENCHANTMENT_EFFECTS.register("dwarven_endurance", () -> DwarvenEnduranceEnchantmentEffect.CODEC);
         ENTITY_ENCHANTMENT_EFFECTS.register("dwarven_mining", () -> DwarvenMinerEnchantmentEffect.CODEC);
         ENTITY_ENCHANTMENT_EFFECTS.register("hobbit_plow", () -> HobbitPlowEnchantmentEffect.CODEC);
-        ENTITY_ENCHANTMENT_EFFECTS.register("hobbit_harvest", () -> HobbitHarvestEnchantmentEffect.CODEC);
     }
 
     public static void register(IEventBus eventBus) {
