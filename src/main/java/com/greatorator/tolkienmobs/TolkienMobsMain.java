@@ -5,12 +5,10 @@ import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
 import com.greatorator.tolkienmobs.containers.screens.*;
 import com.greatorator.tolkienmobs.entity.ambient.render.*;
 import com.greatorator.tolkienmobs.entity.boss.render.GoblinKingRender;
-import com.greatorator.tolkienmobs.entity.item.DwarvenMapleBoatEntity;
 import com.greatorator.tolkienmobs.entity.item.render.*;
 import com.greatorator.tolkienmobs.entity.monster.render.*;
 import com.greatorator.tolkienmobs.entity.npc.render.*;
 import com.greatorator.tolkienmobs.entity.passive.render.*;
-import com.greatorator.tolkienmobs.entity.projectiles.GaladhrimArrowEntity;
 import com.greatorator.tolkienmobs.entity.projectiles.render.BoulderRender;
 import com.greatorator.tolkienmobs.entity.projectiles.render.FellBeastFireballRender;
 import com.greatorator.tolkienmobs.entity.projectiles.render.TolkienArrowRenderer;
@@ -78,8 +76,6 @@ public class TolkienMobsMain {
     //  -Arda Portal
     //    -Needs implementation
     //  -Enchantments
-    //    -Hobbit Harvest
-    //      -Why is this not ticking
     //  -Functional Blocks
     //    -Milestone
     //      -Needs implementation
