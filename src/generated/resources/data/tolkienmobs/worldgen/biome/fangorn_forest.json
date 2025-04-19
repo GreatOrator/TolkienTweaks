@@ -32,10 +32,9 @@
     [],
     [],
     [
-      "tolkienmobs:fangornoak_placed",
       "minecraft:patch_grass_jungle",
-      "tolkienmobs:fangorn_fallen_leaves",
-      "tolkienmobs:fangorn_fallen_log"
+      "tolkienmobs:fangorn_fallen_log",
+      "tolkienmobs:fangorn_fallen_leaves"
     ]
   ],
   "has_precipitation": true,

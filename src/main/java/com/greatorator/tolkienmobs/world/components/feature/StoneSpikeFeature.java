@@ -84,7 +84,7 @@ public class StoneSpikeFeature extends Feature<NoneFeatureConfiguration> {
                             break;
                         }
 
-                        this.setBlock(worldgenlevel, blockpos1, Blocks.STONE.defaultBlockState());
+                        this.setBlock(worldgenlevel, blockpos1, TolkienBlocks.DARK_STONE.get().defaultBlockState());
                         blockpos1 = blockpos1.below();
                         --j2;
                         if (j2 <= 0) {

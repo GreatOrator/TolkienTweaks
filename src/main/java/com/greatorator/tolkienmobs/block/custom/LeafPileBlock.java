@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.block.custom;
 
 import com.greatorator.tolkienmobs.block.TolkienPlantBlock;
+import com.greatorator.tolkienmobs.init.TolkienParticleTypes;
 import com.greatorator.tolkienmobs.network.SpawnFallenLeafFromPacket;
 import com.greatorator.tolkienmobs.particle.data.LeafParticleData;
 import com.mojang.serialization.MapCodec;
@@ -128,7 +129,7 @@ public class LeafPileBlock extends TolkienPlantBlock {
             int r = Mth.clamp(((color >> 16) & 0xFF) + random.nextInt(0x22) - 0x11, 0x00, 0xFF);
             int g = Mth.clamp(((color >> 8) & 0xFF) + random.nextInt(0x22) - 0x11, 0x00, 0xFF);
             int b = Mth.clamp((color & 0xFF) + random.nextInt(0x22) - 0x11, 0x00, 0xFF);
-            level.addParticle(new LeafParticleData(r, g, b), pos.getX() + random.nextFloat(), pos.getY() + dist - 0.25F, pos.getZ() + random.nextFloat(), 0.0D, 0.0D, 0.0D);
+            level.addParticle(TolkienParticleTypes.FALLING_LEAVES.get(), pos.getX() + random.nextFloat(), pos.getY() + dist - 0.25F, pos.getZ() + random.nextFloat(), 0.0D, 0.0D, 0.0D);
         }
     }
 
