@@ -64,7 +64,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:long_slow_falling"
+              "id": "minecraft:strong_leaping"
             },
             {
               "add": false,
