@@ -28,17 +28,7 @@ public class TolkienParticleTypes {
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> WANDERING_LIGHTNINGBUG = PARTICLES.register("wandering_lightningbug", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> FELLBEAST_BREATH = PARTICLES.register("fell_beast_breath", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> WIND_PARTICLE = PARTICLES.register("windparticle", () -> new SimpleParticleType(false));
-    public static final DeferredHolder<ParticleType<?>, ParticleType<LeafParticleData>> FALLING_LEAVES = PARTICLES.register("falling_leaves", () -> new ParticleType<>(false) {
-        @Override
-        public MapCodec<LeafParticleData> codec() {
-            return LeafParticleData.CODEC;
-        }
-
-        @Override
-        public StreamCodec<? super RegistryFriendlyByteBuf, LeafParticleData> streamCodec() {
-            return LeafParticleData.STREAM_CODEC;
-        }
-    });
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> FALLING_LEAVES = PARTICLES.register("falling_leaves", () -> new SimpleParticleType(false));
 
     public static void register(IEventBus eventBus) {
         PARTICLES.register(eventBus);

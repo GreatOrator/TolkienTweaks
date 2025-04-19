@@ -8,6 +8,7 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import org.joml.Quaternionf;
@@ -128,12 +129,12 @@ public class LeafParticle extends TextureSheetParticle {
         return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
-    public record Factory(SpriteSet sprite) implements ParticleProvider<LeafParticleData> {
+    public record Factory(SpriteSet sprite) implements ParticleProvider<SimpleParticleType> {
 
         @Override
-        public Particle createParticle(LeafParticleData data, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(SimpleParticleType data, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             LeafParticle particle = new LeafParticle(level, x, y, z, xSpeed, ySpeed, zSpeed);
-            particle.setColor(data.r() / 255.0F, data.g() / 255.0F, data.b() / 255.0F);
+//            particle.setColor(data.r() / 255.0F, data.g() / 255.0F, data.b() / 255.0F);
             particle.pickSprite(this.sprite);
             return particle;
         }

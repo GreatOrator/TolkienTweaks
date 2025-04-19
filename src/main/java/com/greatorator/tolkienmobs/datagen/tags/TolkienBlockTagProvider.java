@@ -311,5 +311,7 @@ public class TolkienBlockTagProvider extends BlockTagsProvider {
                 .add(Blocks.DIRT)
                 .add(Blocks.COARSE_DIRT)
                 .add(Blocks.ROOTED_DIRT);
+        tag(BlockTags.PORTALS)
+                .add(TolkienBlocks.ARDA_PORTAL.get());
     }
 }

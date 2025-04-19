@@ -1,4 +1,4 @@
-// 1.21.1	2025-04-12T10:18:37.8943313	Tags for minecraft:block mod id tolkienmobs
+// 1.21.1	2025-04-19T05:31:29.7218303	Tags for minecraft:block mod id tolkienmobs
 8df1ebd98d8c41af8db4773580ab309386bab274 data/minecraft/tags/block/base_stone_overworld.json
 c697663a63d12d5f108102f51c8b115d85d5192b data/minecraft/tags/block/ceiling_hanging_signs.json
 2425bde7509c8f73e1716b527cdaf196eb24f51a data/minecraft/tags/block/climbable.json
@@ -11,6 +11,7 @@ cd6282b2a9a0d448e676b5183695041d54b7be01 data/minecraft/tags/block/fence_gates.j
 9ce077a7c80f6fb26e02ac0c3cd011433f855abb data/minecraft/tags/block/needs_diamond_tool.json
 476a269d01c5c8b29528c147a6844db08aa0ff62 data/minecraft/tags/block/needs_iron_tool.json
 708f326315aa5556802cd0f329a1ed6ac3731125 data/minecraft/tags/block/planks.json
+5155b1893aa04269a1a1eb0d179922bb3f75d025 data/minecraft/tags/block/portals.json
 a76d716a5b982a5072028914e7f9b754bc7a4b47 data/minecraft/tags/block/pressure_plates.json
 f38e762d7c09660492e424f7a126f9d110aaf57e data/minecraft/tags/block/standing_signs.json
 80ab6ac09df101932502f93df88bf15421c70fb1 data/minecraft/tags/block/walls.json
