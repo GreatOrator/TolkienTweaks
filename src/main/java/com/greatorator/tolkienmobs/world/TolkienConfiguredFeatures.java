@@ -299,7 +299,7 @@ public class TolkienConfiguredFeatures {
         context.register(FANGORNOAK_FALLEN_LEAVES, new ConfiguredFeature<>(TolkienFeatures.FANGORNOAK_FALLEN_LEAVES.get(), FeatureConfiguration.NONE));
         context.register(DWARVEN_MAPLE_FALLEN_LEAVES, new ConfiguredFeature<>(TolkienFeatures.DWARVEN_MAPLE_FALLEN_LEAVES.get(), FeatureConfiguration.NONE));
         context.register(WEBS, new ConfiguredFeature<>(TolkienFeatures.WEBS.get(), FeatureConfiguration.NONE));
-        context.register(STONE_SPIKE, new ConfiguredFeature<>(Feature.RANDOM_SELECTOR, new RandomFeatureConfiguration(ImmutableList.of(new WeightedPlacedFeature(PlacementUtils.inlinePlaced(features.getOrThrow(STONE_SPIKE)), 0.05F)), PlacementUtils.inlinePlaced(features.getOrThrow(STONE_SPIKE)))));
+        context.register(STONE_SPIKE, new ConfiguredFeature<>(TolkienFeatures.STONE_SPIKE.get(), FeatureConfiguration.NONE));
         context.register(MALLORN_SMALL_LOG, new ConfiguredFeature<>(TolkienFeatures.SMALL_LOG.get(), new HollowLogConfig(TolkienBlocks.LOG_MALLORN.get().defaultBlockState(), TolkienBlocks.LOG_MALLORN.get().defaultBlockState())));
         context.register(MIRKWOOD_SMALL_LOG, new ConfiguredFeature<>(TolkienFeatures.SMALL_LOG.get(), new HollowLogConfig(TolkienBlocks.LOG_MIRKWOOD.get().defaultBlockState(), TolkienBlocks.LOG_MIRKWOOD.get().defaultBlockState())));
         context.register(CULUMALDA_SMALL_LOG, new ConfiguredFeature<>(TolkienFeatures.SMALL_LOG.get(), new HollowLogConfig(TolkienBlocks.LOG_CULUMALDA.get().defaultBlockState(), TolkienBlocks.LOG_CULUMALDA.get().defaultBlockState())));
