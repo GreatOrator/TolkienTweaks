@@ -72,7 +72,6 @@ public class TolkienMobsMain {
     //  -Biomes
     //    -Generation
     //    -Structures
-    //  -Enchantments
     //  -Functional Blocks
     //    -Milestone
     //      -Needs implementation
