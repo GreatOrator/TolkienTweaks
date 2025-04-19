@@ -820,7 +820,6 @@ public class TolkienTabs {
                         output.accept(TolkienEntities.EGG_TTMSQUIRREL);
                         output.accept(TolkienEntities.EGG_TTMSWARM);
                         output.accept(TolkienEntities.EGG_TTMTHRUSH);
-                        output.accept(TolkienItems.GOLEM_STONE_SUMMON);
 
                         output.accept(TolkienEntities.EGG_TTMAUROCH);
                         output.accept(TolkienEntities.EGG_TTMGOAT);
@@ -861,6 +860,9 @@ public class TolkienTabs {
                         output.accept(TolkienEntities.EGG_TTMWARG);
 
                         output.accept(TolkienEntities.EGG_TTMGOBLINKING);
+
+                        output.accept(TolkienItems.GOLEM_STONE_SUMMON);
+                        output.accept(TolkienItems.MORGUL_CRYSTAL);
                     }).build());
 
     public static void register(IEventBus eventBus) {

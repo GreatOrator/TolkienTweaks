@@ -1,4 +1,4 @@
-// 1.21.1	2025-04-13T06:52:14.4344881	Item Models: tolkienmobs
+// 1.21.1	2025-04-19T06:53:06.8121998	Item Models: tolkienmobs
 2744b0cddb66f773a20c0030bb5381576093ca96 assets/tolkienmobs/models/item/ammolite_horse_armor.json
 be4f4d0eaa4937bd1aa214d8797a516f30f4540a assets/tolkienmobs/models/item/ammo_galadhrim_arrow.json
 5cd103fa46a9ba3855a613b86b4f3fb53fb2092c assets/tolkienmobs/models/item/ammo_utumno_arrow.json
@@ -376,6 +376,7 @@ ad377de9b98c77698b489d2701f4d1b0da916dc7 assets/tolkienmobs/models/item/morgulir
 8f0d1f419639a5163138f5162934f5555eab0570 assets/tolkienmobs/models/item/morguliron_button.json
 48872112378777b800080b8e500df633f7d39a77 assets/tolkienmobs/models/item/morguliron_fluid_bucket.json
 1048d417eb29ac9bfe38a9f4714c77990db5f53c assets/tolkienmobs/models/item/morguliron_horse_armor.json
+b3f79383d41d2bf889cc453bb535f81740584504 assets/tolkienmobs/models/item/morgul_crystal.json
 1b2ec8cc85661dacb69808175bb1b75cf470d58e assets/tolkienmobs/models/item/moss_patch.json
 043fb7e80d8fd8b2fa31339798882c6ae625231f assets/tolkienmobs/models/item/mountain_stone_bricks_button.json
 4673f203216d23f192c439cf136781996cf5d0f4 assets/tolkienmobs/models/item/mountain_stone_button.json
