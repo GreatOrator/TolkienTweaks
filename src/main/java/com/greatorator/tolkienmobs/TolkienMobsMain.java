@@ -73,8 +73,6 @@ public class TolkienMobsMain {
     //  -Biomes
     //    -Generation
     //    -Structures
-    //  -Arda Portal
-    //    -Needs implementation
     //  -Enchantments
     //  -Functional Blocks
     //    -Milestone

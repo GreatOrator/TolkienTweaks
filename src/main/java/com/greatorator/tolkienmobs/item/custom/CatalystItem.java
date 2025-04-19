@@ -1,8 +1,17 @@
 package com.greatorator.tolkienmobs.item.custom;
 
+import com.greatorator.tolkienmobs.block.custom.ArdaPortalBlock;
+import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.item.TolkienItem;
 import com.greatorator.tolkienmobs.item.custom.render.CatalystRender;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
 import software.bernie.geckolib.animatable.client.GeoRenderProvider;
@@ -21,24 +30,24 @@ public class CatalystItem extends TolkienItem implements GeoItem {
         SingletonGeoAnimatable.registerSyncedAnimatable(this);
     }
 
-//    @Override
-//    public InteractionResult useOn(UseOnContext context) {
-//        if(context.getPlayer() != null) {
-//            if(context.getPlayer().level.dimension() == TolkienDimensions.ARDA_KEY
-//                    || context.getPlayer().level.dimension() == Level.OVERWORLD) {
-//                for(Direction direction : Direction.Plane.VERTICAL) {
-//                    BlockPos framePos = context.getClickedPos().relative(direction);
-//                    if(((ArdaPortalBlock) TolkienBlocks.ARDA_PORTAL.get()).trySpawnPortal(context.getLevel(), framePos)) {
-//                        context.getLevel().playSound(context.getPlayer(), framePos,
-//                                SoundEvents.PORTAL_TRIGGER, SoundSource.BLOCKS, 1.0F, 1.0F);
-//                        return InteractionResult.CONSUME;
-//                    }
-//                    else return InteractionResult.FAIL;
-//                }
-//            }
-//        }
-//        return InteractionResult.FAIL;
-//    }
+    @Override
+    public InteractionResult useOn(UseOnContext context) {
+        if(context.getPlayer() != null) {
+            if(/*context.getPlayer().level.dimension() == TolkienDimensions.ARDA_KEY
+                    || */context.getPlayer().level.dimension() == Level.OVERWORLD) {
+                for(Direction direction : Direction.Plane.VERTICAL) {
+                    BlockPos framePos = context.getClickedPos().relative(direction);
+                    if(((ArdaPortalBlock) TolkienBlocks.ARDA_PORTAL.get()).trySpawnPortal(context.getLevel(), framePos)) {
+                        context.getLevel().playSound(context.getPlayer(), framePos,
+                                SoundEvents.PORTAL_TRIGGER, SoundSource.BLOCKS, 1.0F, 1.0F);
+                        return InteractionResult.CONSUME;
+                    }
+                    else return InteractionResult.FAIL;
+                }
+            }
+        }
+        return InteractionResult.FAIL;
+    }
 
     /**
      * Animations
