@@ -61,7 +61,6 @@ public class TolkienMobsMain {
     // TODO
     //  -Signs not placing on vertical surfaces
     //  -Entities
-    //    -Morgul Crystal
     //    -Balrog
     //    -Fell Beast
     //    -Gwahir
@@ -288,6 +287,9 @@ public class TolkienMobsMain {
             EntityRenderers.register(TolkienEntities.DEADWOOD_CHEST_BOAT.get(), (context) -> new DeadwoodBoatRenderer(context, true));
             EntityRenderers.register(TolkienEntities.DWARVEN_MAPLE_BOAT.get(), (context) -> new DwarvenMapleBoatRenderer(context, false));
             EntityRenderers.register(TolkienEntities.DWARVEN_MAPLE_CHEST_BOAT.get(), (context) -> new DwarvenMapleBoatRenderer(context, true));
+
+                // Items
+            EntityRenderers.register(TolkienEntities.MORGUL_CRYSTAL.get(), MorgulCrystalRenderer::new);
         }
 
         @SubscribeEvent

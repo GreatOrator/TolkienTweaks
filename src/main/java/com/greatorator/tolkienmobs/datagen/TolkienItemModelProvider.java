@@ -136,6 +136,7 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         basicItem(TolkienItems.GOLEM_STONE_FIRE.get());
         basicItem(TolkienItems.GOLEM_STONE_WATER.get());
         basicItem(TolkienItems.GOLEM_STONE_SUMMON.get());
+        basicItem(TolkienItems.MORGUL_CRYSTAL.get());
 
         // Backpack Upgrades
         basicItem(TolkienItems.ITEM_BACKPACK_UPGRADE_BASE.get());

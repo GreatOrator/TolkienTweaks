@@ -241,6 +241,11 @@ public class TolkienEntities {
             ENTITY_TYPES.register("chest_boat_dwarven_maple", () -> EntityType.Builder.<DwarvenMapleChestBoatEntity>of(DwarvenMapleChestBoatEntity::new, MobCategory.MISC)
                     .sized(1.375F, 0.5625F).clientTrackingRange(10).build("boat_dwarven_maple"));
 
+    /** Items */
+    public static final DeferredHolder<EntityType<?>, EntityType<MorgulCrystalEntity>> MORGUL_CRYSTAL =
+            ENTITY_TYPES.register("morgul_crystal", () -> EntityType.Builder.<MorgulCrystalEntity>of(MorgulCrystalEntity::new, MobCategory.MISC)
+                    .sized(2.0F, 2.0F).clientTrackingRange(16).updateInterval(Integer.MAX_VALUE).build(MODID + ":morgul_crystal"));
+
     /** Spawn Eggs */
         // Ambient
     public static final DeferredItem<Item> EGG_TTMGECKO = SPAWN_EGGS.register("entityttmgecko_spawn_egg",
