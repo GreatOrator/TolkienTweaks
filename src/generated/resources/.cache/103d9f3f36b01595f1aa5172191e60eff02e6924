@@ -1,4 +1,4 @@
-// 1.21.1	2025-04-19T13:55:47.9333707	Registries
+// 1.21.1	2025-04-19T16:22:06.3730246	Registries
 adb61ced2ddb6c105f64a819c752d7474b56bd2f data/tolkienmobs/enchantment/balrog_mark_key.json
 ce45d07f00b8d7a977a6bc8be99c1187ea414d94 data/tolkienmobs/enchantment/dwarven_endurance_key.json
 3f1c47232bc9ce27e60bf52e5f857159fbfb59b1 data/tolkienmobs/enchantment/dwarven_mining_key.json
@@ -53,7 +53,7 @@ bcac1bdae89233e020330c24e6b09757024951ef data/tolkienmobs/neoforge/biome_modifie
 1e554bf366b6f168ed505d9ea6d2640d45a9a06f data/tolkienmobs/trim_material/ammolite.json
 882bd91e82b65f57764243cbbe626700c3e0628b data/tolkienmobs/trim_material/mithril.json
 588e8a19af9cbe8a3610911f4ede4486742a8c68 data/tolkienmobs/trim_material/morguliron.json
-91cc6f0472b4f09165e1fae7a8dd309fb47a5104 data/tolkienmobs/worldgen/biome/fangorn_forest.json
+b21cfa4b8d7f9ee4b98b33d6dc4137929a2aa81f data/tolkienmobs/worldgen/biome/fangorn_forest.json
 375b12bdd465876bf630a4c16e14507df16b3e85 data/tolkienmobs/worldgen/biome/marshes.json
 616c86873646f023fcd7e53bad7643eb897cd759 data/tolkienmobs/worldgen/biome/mordor.json
 0f9711bfdc447d1472991520e57fc190e707cce7 data/tolkienmobs/worldgen/configured_feature/decoration/rock_pile.json
