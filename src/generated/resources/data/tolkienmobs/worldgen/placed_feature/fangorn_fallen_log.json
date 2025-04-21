@@ -5,7 +5,7 @@
       "type": "tolkienmobs:no_structure",
       "additional_clearance": 0,
       "occupies_surface": true,
-      "occupies_underground": true
+      "occupies_underground": false
     },
     {
       "type": "minecraft:rarity_filter",

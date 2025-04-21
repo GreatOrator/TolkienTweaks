@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "tolkienmobs:old_forest",
+  "features": "tolkienmobs:oldforestoak_placed",
+  "step": "vegetal_decoration"
+}

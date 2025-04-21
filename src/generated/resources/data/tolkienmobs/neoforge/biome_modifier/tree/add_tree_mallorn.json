@@ -1,9 +1,6 @@
 {
   "type": "neoforge:add_features",
-  "biomes": [
-    "minecraft:plains",
-    "minecraft:birch_forest"
-  ],
+  "biomes": "tolkienmobs:lorinand",
   "features": "tolkienmobs:mallorn_placed",
   "step": "vegetal_decoration"
 }

@@ -1,0 +1,96 @@
+{
+  "carvers": {},
+  "creature_spawn_probability": 0.15,
+  "downfall": 0.1,
+  "effects": {
+    "fog_color": 12648408,
+    "mood_sound": {
+      "block_search_extent": 8,
+      "offset": 2.0,
+      "sound": "minecraft:ambient.cave",
+      "tick_delay": 6000
+    },
+    "sky_color": 2105930,
+    "water_color": 4159204,
+    "water_fog_color": 329011
+  },
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "tolkienmobs:legacy_coal_ore",
+      "tolkienmobs:legacy_iron_ore",
+      "tolkienmobs:legacy_gold_ore",
+      "tolkienmobs:legacy_redstone_ore",
+      "tolkienmobs:legacy_diamond_ore",
+      "tolkienmobs:legacy_lapis_ore",
+      "tolkienmobs:legacy_copper_ore",
+      "tolkienmobs:small_andesite",
+      "tolkienmobs:small_diorite",
+      "tolkienmobs:small_granite"
+    ],
+    [],
+    [],
+    [
+      "minecraft:seagrass_normal",
+      "minecraft:seagrass_simple"
+    ],
+    [
+      "minecraft:freeze_top_layer"
+    ]
+  ],
+  "has_precipitation": true,
+  "spawn_costs": {},
+  "spawners": {
+    "ambient": [],
+    "axolotls": [],
+    "creature": [
+      {
+        "type": "tolkienmobs:entityttmauroch",
+        "maxCount": 4,
+        "minCount": 4,
+        "weight": 12
+      },
+      {
+        "type": "minecraft:chicken",
+        "maxCount": 4,
+        "minCount": 4,
+        "weight": 10
+      },
+      {
+        "type": "minecraft:wolf",
+        "maxCount": 4,
+        "minCount": 4,
+        "weight": 5
+      },
+      {
+        "type": "tolkienmobs:entityttmthrush",
+        "maxCount": 8,
+        "minCount": 4,
+        "weight": 15
+      },
+      {
+        "type": "tolkienmobs:entityttmsquirrel",
+        "maxCount": 4,
+        "minCount": 2,
+        "weight": 10
+      },
+      {
+        "type": "tolkienmobs:entityttmcrebain",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 10
+      }
+    ],
+    "misc": [],
+    "monster": [],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "temperature": 0.5
+}

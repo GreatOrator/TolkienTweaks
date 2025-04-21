@@ -29,13 +29,15 @@
     [],
     [],
     [
-      "tolkienmobs:rockpile",
       "tolkienmobs:stone_spike",
       "tolkienmobs:random_rubble"
     ],
     [],
     [
-      "tolkienmobs:morguliron_ore_placed"
+      "tolkienmobs:morguliron_ore_placed",
+      "tolkienmobs:small_andesite",
+      "tolkienmobs:small_diorite",
+      "tolkienmobs:small_granite"
     ],
     [],
     [],
@@ -47,22 +49,63 @@
   ],
   "has_precipitation": false,
   "spawn_costs": {
+    "tolkienmobs:entityttmcrebain": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmgoblin": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
     "tolkienmobs:entityttmmordororc": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmurukhai": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmwarg": {
       "charge": 0.6,
       "energy_budget": 0.15
     }
   },
   "spawners": {
-    "ambient": [],
+    "ambient": [
+      {
+        "type": "tolkienmobs:entityttmcrebain",
+        "maxCount": 4,
+        "minCount": 1,
+        "weight": 10
+      }
+    ],
     "axolotls": [],
     "creature": [],
     "misc": [],
     "monster": [
       {
-        "type": "tolkienmobs:entityttmmordororc",
-        "maxCount": 1,
+        "type": "tolkienmobs:entityttmgoblin",
+        "maxCount": 5,
         "minCount": 1,
-        "weight": 5
+        "weight": 20
+      },
+      {
+        "type": "tolkienmobs:entityttmwarg",
+        "maxCount": 3,
+        "minCount": 1,
+        "weight": 25
+      },
+      {
+        "type": "tolkienmobs:entityttmmordororc",
+        "maxCount": 4,
+        "minCount": 1,
+        "weight": 25
+      },
+      {
+        "type": "tolkienmobs:entityttmurukhai",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 35
       }
     ],
     "underground_water_creature": [],

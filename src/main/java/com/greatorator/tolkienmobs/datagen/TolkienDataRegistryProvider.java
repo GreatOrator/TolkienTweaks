@@ -1,12 +1,10 @@
 package com.greatorator.tolkienmobs.datagen;
 
-import com.greatorator.tolkienmobs.init.TolkienBiomes;
-import com.greatorator.tolkienmobs.init.TolkienEnchantments;
-import com.greatorator.tolkienmobs.init.TolkienJukebox;
-import com.greatorator.tolkienmobs.init.TolkienTrimMaterials;
+import com.greatorator.tolkienmobs.init.*;
 import com.greatorator.tolkienmobs.world.TolkienBiomeModifiers;
 import com.greatorator.tolkienmobs.world.TolkienConfiguredFeatures;
 import com.greatorator.tolkienmobs.world.TolkienPlacedFeatures;
+import com.greatorator.tolkienmobs.world.registration.BiomeMaker;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -27,7 +25,12 @@ public class TolkienDataRegistryProvider extends DatapackBuiltinEntriesProvider 
 
             .add(Registries.CONFIGURED_FEATURE, TolkienConfiguredFeatures::bootstrap)
             .add(Registries.PLACED_FEATURE, TolkienPlacedFeatures::bootstrap)
+            .add(Registries.CONFIGURED_CARVER, TolkienCaveCarvers::bootstrap)
+            .add(Registries.DENSITY_FUNCTION, TolkienDensityFunctions::bootstrap)
+            .add(Registries.NOISE_SETTINGS, TolkienDimensionData::bootstrapNoise)
+            .add(TolkienBiomes.Keys.BIOME_STACK, TolkienLayerStack::bootstrap)
             .add(Registries.BIOME, TolkienBiomes::bootstrap)
+            .add(TolkienBiomes.Keys.BIOME_TERRAIN_DATA, TolkienLayerStack::bootstrapData)
             .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, TolkienBiomeModifiers::bootstrap);
 
     public TolkienDataRegistryProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {

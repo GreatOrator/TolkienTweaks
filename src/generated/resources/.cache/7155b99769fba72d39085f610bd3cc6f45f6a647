@@ -1,4 +1,4 @@
-// 1.21.1	2025-04-19T05:31:29.7218303	Tags for minecraft:block mod id tolkienmobs
+// 1.21.1	2025-04-20T08:53:35.8071393	Tags for minecraft:block mod id tolkienmobs
 8df1ebd98d8c41af8db4773580ab309386bab274 data/minecraft/tags/block/base_stone_overworld.json
 c697663a63d12d5f108102f51c8b115d85d5192b data/minecraft/tags/block/ceiling_hanging_signs.json
 2425bde7509c8f73e1716b527cdaf196eb24f51a data/minecraft/tags/block/climbable.json
@@ -22,6 +22,7 @@ f38e762d7c09660492e424f7a126f9d110aaf57e data/minecraft/tags/block/standing_sign
 5991e61167d5a55ff878fd59c809c0b1efbe1a11 data/minecraft/tags/block/wooden_fences.json
 55689406907bfe628b90b7032f8870be0e2a1591 data/minecraft/tags/block/wooden_pressure_plates.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/tolkienmobs/tags/block/blacklist_harvest.json
+c55a1566df31827f00cf563728704464bd98219c data/tolkienmobs/tags/block/carver_replaceables.json
 d81ccf454ddd1b309f641892b1a525e41248b0d1 data/tolkienmobs/tags/block/decay_grow_block.json
 bbe72078e028c46592fa9494f690b06161bdae8c data/tolkienmobs/tags/block/farming.json
 bb208dd8d0232aeb1c15015ea6e48e99d671edfb data/tolkienmobs/tags/block/plants_hang_on.json
