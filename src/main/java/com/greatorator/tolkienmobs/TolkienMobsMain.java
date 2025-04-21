@@ -12,16 +12,19 @@ import com.greatorator.tolkienmobs.entity.passive.render.*;
 import com.greatorator.tolkienmobs.entity.projectiles.render.BoulderRender;
 import com.greatorator.tolkienmobs.entity.projectiles.render.FellBeastFireballRender;
 import com.greatorator.tolkienmobs.entity.projectiles.render.TolkienArrowRenderer;
+import com.greatorator.tolkienmobs.event.client.TolkienClientEvents;
 import com.greatorator.tolkienmobs.event.TolkienRegistration;
 import com.greatorator.tolkienmobs.fluid.TolkienFluidType;
 import com.greatorator.tolkienmobs.handler.ColorHandler;
 import com.greatorator.tolkienmobs.init.*;
 import com.greatorator.tolkienmobs.network.PacketHandler;
+import com.greatorator.tolkienmobs.network.SpawnFallenLeafFromPacket;
 import com.greatorator.tolkienmobs.particle.FellBeastBreathParticle;
 import com.greatorator.tolkienmobs.particle.LeafParticle;
 import com.greatorator.tolkienmobs.particle.WindParticle;
 import com.greatorator.tolkienmobs.particle.provider.TolkienParticleProvider;
 import com.greatorator.tolkienmobs.util.TolkienItemProperties;
+import com.greatorator.tolkienmobs.world.components.layer.BiomeDensitySource;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -48,6 +51,10 @@ import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import net.neoforged.neoforge.registries.DataPackRegistryEvent;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
 import org.slf4j.Logger;
 
 import java.util.Locale;
@@ -57,6 +64,7 @@ public class TolkienMobsMain {
     public static final String MODID = "tolkienmobs";
     public static final Logger LOGGER = LogUtils.getLogger();
     private static final String BLOCK_DIR = "textures/block/custom/";
+    private static final String ENVIRO_DIR = "textures/environment/";
 
     // TODO
     //  -Signs not placing on vertical surfaces
@@ -86,9 +94,13 @@ public class TolkienMobsMain {
     public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer, Dist dist) {
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::registerCapabilities);
+        modEventBus.addListener(this::createNewRegistries);
+        modEventBus.addListener(this::setRegistriesForDatapack);
+        modEventBus.addListener(this::setupPackets);
 
         if (dist.isClient()) {
             TolkienRegistration.initModBusEvents(modEventBus);
+            TolkienClientEvents.initGameEvents();
         }
         PacketHandler.register(modEventBus);
 
@@ -116,10 +128,13 @@ public class TolkienMobsMain {
         TolkienLootFunctions.LOOT_FUNCTIONS.register(modEventBus);
 
         TolkienFeatureModifiers.TRUNK_PLACERS.register(modEventBus);
+        TolkienLayerTypes.BIOME_LAYER_TYPES.register(modEventBus);
         TolkienFeatureModifiers.FOLIAGE_PLACERS.register(modEventBus);
         TolkienFeatureModifiers.TREE_DECORATORS.register(modEventBus);
         TolkienFeatureModifiers.PLACEMENT_MODIFIERS.register(modEventBus);
+        TolkienDensityFunctions.DENSITY_FUNCTION_TYPES.register(modEventBus);
         TolkienFeatures.FEATURES.register(modEventBus);
+        TolkienCaveCarvers.CARVER_TYPES.register(modEventBus);
         TolkienDataComponents.register(modEventBus);
         TolkienRecipesTypes.register(modEventBus);
         TolkienRecipeSerializers.register(modEventBus);
@@ -180,6 +195,15 @@ public class TolkienMobsMain {
 
     }
 
+    public void createNewRegistries(NewRegistryEvent event) {
+        event.register(TolkienBiomes.BIOME_LAYER_TYPE);
+    }
+
+    public void setRegistriesForDatapack(DataPackRegistryEvent.NewRegistry event) {
+        event.dataPackRegistry(TolkienBiomes.Keys.BIOME_TERRAIN_DATA, BiomeDensitySource.CODEC);
+        event.dataPackRegistry(TolkienBiomes.Keys.BIOME_STACK, TolkienLayerStack.DISPATCH_CODEC);
+    }
+
     private void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.registerBlock(Capabilities.ItemHandler.BLOCK,
                 (level, pos, state, be, side) -> {
@@ -192,7 +216,12 @@ public class TolkienMobsMain {
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, TolkienBlocks.BACKPACK_BLOCK_ENTITY.get(), BackpackBlockEntity::getTank);
     }
 
-    @EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+    public void setupPackets(RegisterPayloadHandlersEvent event) {
+        PayloadRegistrar registrar = event.registrar(MODID).versioned("1.0.0").optional();
+        registrar.playToClient(SpawnFallenLeafFromPacket.TYPE, SpawnFallenLeafFromPacket.STREAM_CODEC, SpawnFallenLeafFromPacket::handle);
+    }
+
+        @EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
@@ -347,6 +376,11 @@ public class TolkienMobsMain {
     public static ResourceLocation resLoc(String path) {
         return ResourceLocation.fromNamespaceAndPath(MODID, path);
     }
+
+    public static ResourceLocation getEnvTexture(String name) {
+        return ResourceLocation.fromNamespaceAndPath(MODID, ENVIRO_DIR + name);
+    }
+
 
     public static ResourceLocation createResourceLocation(String path)
     {

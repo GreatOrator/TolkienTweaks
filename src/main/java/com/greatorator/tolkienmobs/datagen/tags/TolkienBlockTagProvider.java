@@ -4,7 +4,9 @@ import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -313,5 +315,8 @@ public class TolkienBlockTagProvider extends BlockTagsProvider {
                 .add(Blocks.ROOTED_DIRT);
         tag(BlockTags.PORTALS)
                 .add(TolkienBlocks.ARDA_PORTAL.get());
+        tag(TolkienTags.Blocks.CARVER_REPLACEABLES)
+                .addTag(BlockTags.OVERWORLD_CARVER_REPLACEABLES)
+                .add(Blocks.SNOW_BLOCK);
     }
 }

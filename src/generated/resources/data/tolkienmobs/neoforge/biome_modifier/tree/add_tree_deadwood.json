@@ -1,6 +1,9 @@
 {
   "type": "neoforge:add_features",
-  "biomes": "tolkienmobs:mordor",
+  "biomes": [
+    "tolkienmobs:mordor",
+    "tolkienmobs:barrow_downs"
+  ],
   "features": "tolkienmobs:deadwood_placed",
   "step": "vegetal_decoration"
 }

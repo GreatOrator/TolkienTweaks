@@ -543,7 +543,16 @@ public class TolkienLangProvider extends TolkienLangHelper {
         // Biomes
             this.add("biome.tolkienmobs.fangorn_forest", "Fangorn Forest");
             this.add("biome.tolkienmobs.mordor", "Mordor");
+            this.add("biome.tolkienmobs.ash_mountains", "Ered Lithui");
             this.add("biome.tolkienmobs.marshes", "Nindalf Marsh");
+            this.add("biome.tolkienmobs.mirkwood", "Mirkwood Forest");
+            this.add("biome.tolkienmobs.lorinand", "Lothlorien");
+            this.add("biome.tolkienmobs.barrow_downs", "Tyrn Gorthad");
+            this.add("biome.tolkienmobs.old_forest", "Old Forest");
+
+            this.add("biome.tolkienmobs.stream", "Stream");
+            this.add("biome.tolkienmobs.underground", "Underground");
+            this.add("biome.tolkienmobs.lake", "Lake");
 
         // Chat Messages
             this.add("tolkienmobs.msg.helpcomming", "Goblin King is attempting to call for help...Reinforcements have arrived!");

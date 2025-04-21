@@ -54,7 +54,7 @@
         "type": "tolkienmobs:entityttmtreeent",
         "maxCount": 1,
         "minCount": 1,
-        "weight": 1
+        "weight": 25
       }
     ],
     "underground_water_creature": [],

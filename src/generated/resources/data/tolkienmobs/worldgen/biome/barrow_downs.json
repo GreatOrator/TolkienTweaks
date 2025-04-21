@@ -1,0 +1,84 @@
+{
+  "carvers": {},
+  "downfall": 0.8,
+  "effects": {
+    "ambient_sound": "tolkienmobs:ambient.tolkienmobs.pathsofthedead",
+    "fog_color": 11119017,
+    "foliage_color": 14481884,
+    "grass_color": 14481884,
+    "sky_color": 7907327,
+    "water_color": 808080,
+    "water_fog_color": 5541815
+  },
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "tolkienmobs:legacy_coal_ore",
+      "tolkienmobs:legacy_iron_ore",
+      "tolkienmobs:legacy_gold_ore",
+      "tolkienmobs:legacy_redstone_ore",
+      "tolkienmobs:legacy_diamond_ore",
+      "tolkienmobs:legacy_lapis_ore",
+      "tolkienmobs:legacy_copper_ore"
+    ],
+    [],
+    [],
+    [
+      "minecraft:patch_grass_forest",
+      "minecraft:brown_mushroom_normal",
+      "minecraft:red_mushroom_normal",
+      "tolkienmobs:deadwood_fallen_log"
+    ]
+  ],
+  "has_precipitation": true,
+  "spawn_costs": {
+    "tolkienmobs:entityttmbarrow": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmcrebain": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmswarm": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    }
+  },
+  "spawners": {
+    "ambient": [],
+    "axolotls": [],
+    "creature": [
+      {
+        "type": "tolkienmobs:entityttmswarm",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 20
+      },
+      {
+        "type": "tolkienmobs:entityttmcrebain",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 10
+      }
+    ],
+    "misc": [],
+    "monster": [
+      {
+        "type": "tolkienmobs:entityttmbarrow",
+        "maxCount": 5,
+        "minCount": 1,
+        "weight": 45
+      }
+    ],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "temperature": 0.25
+}

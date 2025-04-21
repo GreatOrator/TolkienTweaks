@@ -16,6 +16,7 @@ public class TolkienTags {
         public static final TagKey<Block> PLANTS_HANG_ON = blockTag("tolkienmobs:plants_hang_on");
         public static final TagKey<Block> TICK_SPEED_DENY = blockTag("tolkienmobs:tick_speed_deny");
         public static final TagKey<Block> TILLABLES = blockTag("tolkienmobs:farming");
+        public static final TagKey<Block> CARVER_REPLACEABLES = blockTag("tolkienmobs:carver_replaceables");
 
         private static TagKey<Block> blockTag(String name) {
             return net.minecraft.tags.TagKey.create(Registries.BLOCK, ResourceLocation.parse(name));

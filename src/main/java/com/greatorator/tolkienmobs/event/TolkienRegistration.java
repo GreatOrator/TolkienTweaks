@@ -7,24 +7,36 @@ import com.greatorator.tolkienmobs.block.custom.entity.model.LocustModel;
 import com.greatorator.tolkienmobs.block.custom.entity.model.PatchModelLoader;
 import com.greatorator.tolkienmobs.block.custom.entity.renderer.*;
 import com.greatorator.tolkienmobs.entity.item.render.*;
+import com.greatorator.tolkienmobs.event.client.TolkienRenderInfo;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import net.minecraft.client.model.BoatModel;
 import net.minecraft.client.model.ChestBoatModel;
+import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
 import net.minecraft.client.renderer.blockentity.SignRenderer;
+import net.minecraft.data.worldgen.DimensionTypes;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.neoforged.neoforge.event.BlockEntityTypeAddBlocksEvent;
 
 public class TolkienRegistration {
+    public static final ResourceLocation OVERWORLD_EFFECTS = ResourceLocation.withDefaultNamespace("overworld");
     public static void initModBusEvents(IEventBus bus) {
         bus.addListener(TolkienRegistration::registerEntityRenderers);
         bus.addListener(TolkienRegistration::registerLayerDefinitions);
         bus.addListener(TolkienRegistration::registerModelLoaders);
         bus.addListener(TolkienRegistration::registerBETypes);
+        bus.addListener(TolkienRegistration::registerDimEffects);
+    }
+
+    private static void registerDimEffects(RegisterDimensionSpecialEffectsEvent event) {
+        event.register(OVERWORLD_EFFECTS, new TolkienRenderInfo(128.0F, false, DimensionSpecialEffects.SkyType.NONE, false, false));
     }
 
     private static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {

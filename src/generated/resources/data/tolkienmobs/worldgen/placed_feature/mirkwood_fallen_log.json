@@ -1,0 +1,25 @@
+{
+  "feature": "tolkienmobs:ground/mirkwood_small_log",
+  "placement": [
+    {
+      "type": "tolkienmobs:no_structure",
+      "additional_clearance": 0,
+      "occupies_surface": true,
+      "occupies_underground": true
+    },
+    {
+      "type": "minecraft:rarity_filter",
+      "chance": 40
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:heightmap",
+      "heightmap": "MOTION_BLOCKING"
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

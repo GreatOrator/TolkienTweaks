@@ -1,10 +1,11 @@
-package com.greatorator.tolkienmobs.event;
+package com.greatorator.tolkienmobs.event.client;
 
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ComputeFovModifierEvent;
+import net.neoforged.neoforge.common.NeoForge;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -37,5 +38,10 @@ public class TolkienClientEvents {
             fovModifier *= 1f - deltaTicks * 0.15f;
             event.setNewFovModifier(fovModifier);
         }
+    }
+
+    public static void initGameEvents() {
+        NeoForge.EVENT_BUS.addListener(FogHandler::renderFog);
+        NeoForge.EVENT_BUS.addListener(FogHandler::unloadFog);
     }
 }

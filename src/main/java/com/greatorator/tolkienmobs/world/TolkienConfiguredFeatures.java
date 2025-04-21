@@ -78,7 +78,12 @@ public class TolkienConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> DWARVEN_SMALL_LOG = registerConfiguredKey("ground/dwarven_small_log");
     public static final ResourceKey<ConfiguredFeature<?, ?>> RANDOM_RUBBLE = registerConfiguredKey("ground/random_rubble");
     public static final ResourceKey<ConfiguredFeature<?, ?>> ROCK_PILE = registerConfiguredKey("decoration/rock_pile");
+
     public static final ResourceKey<ConfiguredFeature<?, ?>> WOOD_ROOTS_SPREAD = registerConfiguredKey("ore/wood_roots_spread");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> SMALL_GRANITE = registerConfiguredKey("small_granite");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> SMALL_DIORITE = registerConfiguredKey("small_diorite");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> SMALL_ANDESITE = registerConfiguredKey("small_andesite");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> PLANT_ROOTS = registerConfiguredKey("plant_roots");
 
     public static final ResourceKey<ConfiguredFeature<?, ?>> FLOWER_SIMBELMYNE_KEY = registerConfiguredKey("plants/flower_simbelmyne");
     public static final ResourceKey<ConfiguredFeature<?, ?>> FLOWER_MIRKWOOD_KEY = registerConfiguredKey("plants/flower_mirkwood");
@@ -102,6 +107,15 @@ public class TolkienConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> OVERWORLD_ORE_AMMOLITE_KEY = registerConfiguredKey("ore/ore_ammolite");
     public static final ResourceKey<ConfiguredFeature<?, ?>> NETHER_ORE_AMMOLITE_KEY = registerConfiguredKey("ore/nether_ore_ammolite");
     public static final ResourceKey<ConfiguredFeature<?, ?>> END_ORE_AMMOLITE_KEY = registerConfiguredKey("ore/end_ore_ammolite");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> COAL_ORE = registerConfiguredKey("coal_ore");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> IRON_ORE = registerConfiguredKey("iron_ore");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> GOLD_ORE = registerConfiguredKey("gold_ore");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> REDSTONE_ORE = registerConfiguredKey("redstone_ore");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> DIAMOND_ORE = registerConfiguredKey("diamond_ore");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> LAPIS_ORE = registerConfiguredKey("lapis_ore");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> COPPER_ORE = registerConfiguredKey("copper_ore");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> BLOOM_DECAY_MUSHROOMS = registerConfiguredKey("bloom_decay_mushrooms");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> DECAY_BLOOM_MUSHROOMS = registerConfiguredKey("decay_bloom_mushrooms");
 
     public static final Music FANGORN_AMBIENCE = new Music(TolkienSounds.MUSIC_DISC_MINASTIRITH, 1200, 12000, true);
 
@@ -121,6 +135,14 @@ public class TolkienConfiguredFeatures {
         List<OreConfiguration.TargetBlockState> overworldAmmoliteOres = List.of(
                 OreConfiguration.target(stoneReplaceables, TolkienBlocks.ORE_AMMOLITE.get().defaultBlockState()),
                 OreConfiguration.target(deepslateReplaceables, TolkienBlocks.ORE_DEEPSLATE_AMMOLITE.get().defaultBlockState()));
+        context.register(COAL_ORE, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), Blocks.COAL_ORE.defaultBlockState(), 16)));
+        context.register(IRON_ORE, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), Blocks.IRON_ORE.defaultBlockState(), 9)));
+        context.register(GOLD_ORE, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), Blocks.GOLD_ORE.defaultBlockState(), 9)));
+        context.register(REDSTONE_ORE, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), Blocks.REDSTONE_ORE.defaultBlockState(), 8)));
+        context.register(DIAMOND_ORE, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), Blocks.DIAMOND_ORE.defaultBlockState(), 8)));
+        context.register(LAPIS_ORE, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), Blocks.LAPIS_ORE.defaultBlockState(), 7)));
+        context.register(COPPER_ORE, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), Blocks.COPPER_ORE.defaultBlockState(), 10)));
+
 
         registerConfigured(context, OVERWORLD_ORE_MITHRIL_KEY, Feature.ORE, new OreConfiguration(overworldMithrilOres, 5));
         registerConfigured(context, NETHER_ORE_MITHRIL_KEY, Feature.ORE, new OreConfiguration(netherrackReplaceables,
@@ -310,6 +332,12 @@ public class TolkienConfiguredFeatures {
         context.register(RANDOM_RUBBLE, new ConfiguredFeature<>(TolkienFeatures.RANDOM_RUBBLE.get(), FeatureConfiguration.NONE));
         context.register(ROCK_PILE, new ConfiguredFeature<>(TolkienFeatures.ROCK_PILE.get(), new BlockStateConfiguration(TolkienBlocks.ROCKPILE.get().defaultBlockState())));
         context.register(WOOD_ROOTS_SPREAD, new ConfiguredFeature<>(TolkienFeatures.WOOD_ROOTS.get(), new RootConfig(TolkienDecorators.ROOT_BLEND_PROVIDER, BlockStateProvider.simple(TolkienBlocks.LIVING_ROOTS.get()))));
+        context.register(SMALL_GRANITE, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), Blocks.GRANITE.defaultBlockState(), 16)));
+        context.register(SMALL_DIORITE, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), Blocks.DIORITE.defaultBlockState(), 16)));
+        context.register(SMALL_ANDESITE, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), Blocks.ANDESITE.defaultBlockState(), 16)));
+        context.register(PLANT_ROOTS, new ConfiguredFeature<>(TolkienFeatures.UNDERGROUND_PLANTS.get(), new BlockStateConfiguration(TolkienBlocks.LIVING_ROOTS.get().defaultBlockState())));
+        context.register(BLOOM_DECAY_MUSHROOMS, new ConfiguredFeature<>(TolkienFeatures.UNDERGROUND_PLANTS.get(), new BlockStateConfiguration(TolkienBlocks.MUSHROOM_BLOOM_DECAY.get().defaultBlockState())));
+        context.register(DECAY_BLOOM_MUSHROOMS, new ConfiguredFeature<>(TolkienFeatures.UNDERGROUND_PLANTS.get(), new BlockStateConfiguration(TolkienBlocks.MUSHROOM_DECAY_BLOOM.get().defaultBlockState())));
     }
 
     public static ResourceKey<ConfiguredFeature<?, ?>> registerConfiguredKey(String name) {

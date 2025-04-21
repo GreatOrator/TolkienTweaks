@@ -1,0 +1,12 @@
+{
+  "common_biomes": [
+    "tolkienmobs:mirkwood",
+    "tolkienmobs:fangorn_forest"
+  ],
+  "layer_type": "tolkienmobs:random_biomes",
+  "rare_biome_chance": 15,
+  "rare_biomes": [
+    "tolkienmobs:mirkwood"
+  ],
+  "salt": 1
+}

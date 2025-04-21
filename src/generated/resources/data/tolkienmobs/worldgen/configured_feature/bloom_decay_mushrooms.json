@@ -1,0 +1,8 @@
+{
+  "type": "tolkienmobs:underground_plants",
+  "config": {
+    "state": {
+      "Name": "tolkienmobs:mushroom_bloom_decay"
+    }
+  }
+}
