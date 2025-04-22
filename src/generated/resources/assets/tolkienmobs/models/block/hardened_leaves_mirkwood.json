@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/leaves",
+  "textures": {
+    "all": "tolkienmobs:block/leaves_mirkwood"
+  }
+}

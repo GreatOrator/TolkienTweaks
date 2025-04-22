@@ -104,6 +104,7 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         ladder(TolkienBlocks.LADDER_MALLORN, TolkienBlocks.PLANKS_MALLORN);
 
         blockItem(TolkienBlocks.TORCH_MALLORN);
+        blockItem(TolkienBlocks.HARDENED_LEAVES_MIRKWOOD);
         blockItem(TolkienBlocks.WALL_TORCH_MALLORN);
         blockItem(TolkienBlocks.LOG_MALLORN);
         blockItem(TolkienBlocks.WOOD_MALLORN);
@@ -123,6 +124,7 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         logBlock((RotatedPillarBlock)TolkienBlocks.STRIPPED_MIRKWOOD_WOOD.get());
         blockWithItem(TolkienBlocks.PLANKS_MIRKWOOD);
         leavesBlock(TolkienBlocks.LEAVES_MIRKWOOD);
+        singleBlockBoilerPlate(TolkienBlocks.HARDENED_LEAVES_MIRKWOOD.get(), "block/leaves", m -> m.texture("all", "block/leaves_mirkwood"));
         stairsBlock(((StairBlock) TolkienBlocks.STAIRS_MIRKWOOD.get()), blockTexture(TolkienBlocks.PLANKS_MIRKWOOD.get()));
         slabBlock(((SlabBlock) TolkienBlocks.SLAB_MIRKWOOD.get()), blockTexture(TolkienBlocks.PLANKS_MIRKWOOD.get()), blockTexture(TolkienBlocks.PLANKS_MIRKWOOD.get()));
         pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_MIRKWOOD.get()), blockTexture(TolkienBlocks.PLANKS_MIRKWOOD.get()));

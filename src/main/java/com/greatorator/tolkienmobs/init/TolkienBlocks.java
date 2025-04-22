@@ -629,8 +629,11 @@ public class TolkienBlocks {
             () -> new RotatedPillarBlock(BlockBehaviour.Properties.of()
                     .strength(2.0F, 3.0F).requiresCorrectToolForDrops().ignitedByLava().sound(SoundType.WOOD)));
     public static final DeferredBlock<Block> LEAVES_MIRKWOOD = registerBlock("leaves_mirkwood",
-                () -> new LeavesBlock(BlockBehaviour.Properties.of()
-                        .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));
+            () -> new LeavesBlock(BlockBehaviour.Properties.of()
+                    .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));
+    public static final DeferredBlock<Block> HARDENED_LEAVES_MIRKWOOD = registerBlock("hardened_leaves_mirkwood",
+            () -> new HardenedMirkwoodLeavesBlock(BlockBehaviour.Properties.of()
+                    .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));
     public static final DeferredBlock<Block> LEAFPILE_MIRKWOOD = registerBlock("leafpile_mirkwood",
             () -> new LeafPileBlock(BlockBehaviour.Properties.of()
                     .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));

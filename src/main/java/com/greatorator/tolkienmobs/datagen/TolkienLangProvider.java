@@ -556,6 +556,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add("biome.tolkienmobs.gladden", "Gladden Fields");
             this.add("biome.tolkienmobs.hithaeglir", "Misty Mountains");
             this.add("biome.tolkienmobs.iron_hills", "Iron Hills");
+            this.add("block.tolkienmobs.hardened_leaves_mirkwood", "Mirkwood Leaves");
 
             this.add("biome.tolkienmobs.stream", "Stream");
             this.add("biome.tolkienmobs.underground", "Underground");
