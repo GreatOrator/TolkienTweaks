@@ -64,7 +64,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:luck"
+              "id": "minecraft:leaping"
             },
             {
               "add": false,
