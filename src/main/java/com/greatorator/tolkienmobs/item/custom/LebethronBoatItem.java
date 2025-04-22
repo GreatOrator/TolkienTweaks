@@ -1,7 +1,5 @@
 package com.greatorator.tolkienmobs.item.custom;
 
-import com.greatorator.tolkienmobs.entity.item.CulumaldaBoatEntity;
-import com.greatorator.tolkienmobs.entity.item.CulumaldaChestBoatEntity;
 import com.greatorator.tolkienmobs.entity.item.LebethronBoatEntity;
 import com.greatorator.tolkienmobs.entity.item.LebethronChestBoatEntity;
 import net.minecraft.core.BlockPos;

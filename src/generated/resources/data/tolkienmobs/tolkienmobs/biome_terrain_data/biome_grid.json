@@ -7,16 +7,25 @@
       },
       "depth": 5.5,
       "key_biome": "tolkienmobs:ash_mountains",
-      "scale": 0.5,
+      "scale": 1.75,
       "weight": 1.15
     },
     {
       "biome_layers": {
         "0.0": "tolkienmobs:barrow_downs"
       },
-      "depth": 0.20000000298023224,
+      "depth": 0.2,
       "key_biome": "tolkienmobs:barrow_downs",
-      "scale": 0.20000000298023224,
+      "scale": 0.2,
+      "weight": 1.0
+    },
+    {
+      "biome_layers": {
+        "0.0": "tolkienmobs:dagorlad"
+      },
+      "depth": 0.125,
+      "key_biome": "tolkienmobs:dagorlad",
+      "scale": 0.05,
       "weight": 1.0
     },
     {
@@ -27,6 +36,53 @@
       "depth": -0.8,
       "key_biome": "tolkienmobs:fangorn_forest",
       "scale": 3.9,
+      "weight": 1.0
+    },
+    {
+      "biome_layers": {
+        "0.0": "tolkienmobs:firien"
+      },
+      "depth": -0.5,
+      "key_biome": "tolkienmobs:firien",
+      "scale": 0.25,
+      "weight": 1.0
+    },
+    {
+      "biome_layers": {
+        "0.0": "tolkienmobs:gladden"
+      },
+      "depth": 0.125,
+      "key_biome": "tolkienmobs:gladden",
+      "scale": 0.05,
+      "weight": 1.0
+    },
+    {
+      "biome_layers": {
+        "0.0": "tolkienmobs:haradwaith"
+      },
+      "depth": 0.125,
+      "key_biome": "tolkienmobs:haradwaith",
+      "scale": 0.05,
+      "weight": 1.0
+    },
+    {
+      "biome_layers": {
+        "-1.0": "tolkienmobs:hithaeglir",
+        "-3.0": "tolkienmobs:underground"
+      },
+      "depth": 5.5,
+      "key_biome": "tolkienmobs:hithaeglir",
+      "scale": 1.75,
+      "weight": 1.0
+    },
+    {
+      "biome_layers": {
+        "-1.0": "tolkienmobs:iron_hills",
+        "-3.0": "tolkienmobs:underground"
+      },
+      "depth": 5.5,
+      "key_biome": "tolkienmobs:iron_hills",
+      "scale": 1.75,
       "weight": 1.0
     },
     {
@@ -45,7 +101,7 @@
       },
       "depth": 0.125,
       "key_biome": "tolkienmobs:lorinand",
-      "scale": 0.05000000074505806,
+      "scale": 0.05,
       "weight": 1.0
     },
     {
@@ -82,7 +138,16 @@
       },
       "depth": 0.125,
       "key_biome": "tolkienmobs:old_forest",
-      "scale": 0.05000000074505806,
+      "scale": 0.05,
+      "weight": 1.0
+    },
+    {
+      "biome_layers": {
+        "0.0": "tolkienmobs:shire"
+      },
+      "depth": 0.125,
+      "key_biome": "tolkienmobs:shire",
+      "scale": 0.05,
       "weight": 1.0
     },
     {

@@ -46,7 +46,8 @@
       "minecraft:brown_mushroom_old_growth",
       "minecraft:red_mushroom_old_growth",
       "minecraft:forest_flowers",
-      "tolkienmobs:fangorn_fallen_leaves"
+      "tolkienmobs:fangorn_fallen_leaves",
+      "tolkienmobs:stumps"
     ]
   ],
   "has_precipitation": true,

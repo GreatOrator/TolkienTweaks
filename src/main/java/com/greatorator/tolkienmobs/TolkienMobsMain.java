@@ -12,8 +12,8 @@ import com.greatorator.tolkienmobs.entity.passive.render.*;
 import com.greatorator.tolkienmobs.entity.projectiles.render.BoulderRender;
 import com.greatorator.tolkienmobs.entity.projectiles.render.FellBeastFireballRender;
 import com.greatorator.tolkienmobs.entity.projectiles.render.TolkienArrowRenderer;
-import com.greatorator.tolkienmobs.event.client.TolkienClientEvents;
 import com.greatorator.tolkienmobs.event.TolkienRegistration;
+import com.greatorator.tolkienmobs.event.client.TolkienClientEvents;
 import com.greatorator.tolkienmobs.fluid.TolkienFluidType;
 import com.greatorator.tolkienmobs.handler.ColorHandler;
 import com.greatorator.tolkienmobs.init.*;
@@ -78,7 +78,6 @@ public class TolkienMobsMain {
     //    -Watcher
     //    -Witch King
     //  -Biomes
-    //    -Generation
     //    -Structures
     //  -Functional Blocks
     //    -Milestone

@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.particle;
 
-import com.greatorator.tolkienmobs.particle.data.LeafParticleData;
 import com.greatorator.tolkienmobs.util.BreezeUtility;
 import com.greatorator.tolkienmobs.util.MathUtility;
 import com.mojang.blaze3d.vertex.VertexConsumer;

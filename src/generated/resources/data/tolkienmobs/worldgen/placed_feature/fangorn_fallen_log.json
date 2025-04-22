@@ -2,12 +2,6 @@
   "feature": "tolkienmobs:ground/fangornoak_small_log",
   "placement": [
     {
-      "type": "tolkienmobs:no_structure",
-      "additional_clearance": 0,
-      "occupies_surface": true,
-      "occupies_underground": false
-    },
-    {
       "type": "minecraft:rarity_filter",
       "chance": 40
     },
@@ -16,7 +10,13 @@
     },
     {
       "type": "minecraft:heightmap",
-      "heightmap": "MOTION_BLOCKING"
+      "heightmap": "OCEAN_FLOOR"
+    },
+    {
+      "type": "tolkienmobs:no_structure",
+      "additional_clearance": 0,
+      "occupies_surface": true,
+      "occupies_underground": false
     },
     {
       "type": "minecraft:biome"

@@ -16,7 +16,6 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.data.worldgen.features.FeatureUtils;
-import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.Music;
@@ -25,7 +24,6 @@ import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.WeightedPlacedFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.*;
 import net.minecraft.world.level.levelgen.feature.featuresize.ThreeLayersFeatureSize;
 import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize;
@@ -78,6 +76,7 @@ public class TolkienConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> DWARVEN_SMALL_LOG = registerConfiguredKey("ground/dwarven_small_log");
     public static final ResourceKey<ConfiguredFeature<?, ?>> RANDOM_RUBBLE = registerConfiguredKey("ground/random_rubble");
     public static final ResourceKey<ConfiguredFeature<?, ?>> ROCK_PILE = registerConfiguredKey("decoration/rock_pile");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> STUMPS = registerConfiguredKey("decoration/stumps");
 
     public static final ResourceKey<ConfiguredFeature<?, ?>> WOOD_ROOTS_SPREAD = registerConfiguredKey("ore/wood_roots_spread");
     public static final ResourceKey<ConfiguredFeature<?, ?>> SMALL_GRANITE = registerConfiguredKey("small_granite");
@@ -331,6 +330,7 @@ public class TolkienConfiguredFeatures {
         context.register(DWARVEN_SMALL_LOG, new ConfiguredFeature<>(TolkienFeatures.SMALL_LOG.get(), new HollowLogConfig(TolkienBlocks.LOG_DWARVEN_MAPLE.get().defaultBlockState(), TolkienBlocks.LOG_DWARVEN_MAPLE.get().defaultBlockState())));
         context.register(RANDOM_RUBBLE, new ConfiguredFeature<>(TolkienFeatures.RANDOM_RUBBLE.get(), FeatureConfiguration.NONE));
         context.register(ROCK_PILE, new ConfiguredFeature<>(TolkienFeatures.ROCK_PILE.get(), new BlockStateConfiguration(TolkienBlocks.ROCKPILE.get().defaultBlockState())));
+        context.register(STUMPS, new ConfiguredFeature<>(TolkienFeatures.STUMPS.get(), FeatureConfiguration.NONE));
         context.register(WOOD_ROOTS_SPREAD, new ConfiguredFeature<>(TolkienFeatures.WOOD_ROOTS.get(), new RootConfig(TolkienDecorators.ROOT_BLEND_PROVIDER, BlockStateProvider.simple(TolkienBlocks.LIVING_ROOTS.get()))));
         context.register(SMALL_GRANITE, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), Blocks.GRANITE.defaultBlockState(), 16)));
         context.register(SMALL_DIORITE, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), Blocks.DIORITE.defaultBlockState(), 16)));

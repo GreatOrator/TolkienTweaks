@@ -1,0 +1,115 @@
+{
+  "carvers": {},
+  "downfall": 0.3,
+  "effects": {
+    "ambient_sound": "minecraft:ambient.warped_forest.mood",
+    "fog_color": 10518688,
+    "foliage_color": 2292007,
+    "grass_color": 2292007,
+    "sky_color": 8168447,
+    "water_color": 4159204,
+    "water_fog_color": 329011
+  },
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "tolkienmobs:mithril_ore_placed",
+      "minecraft:ore_coal_upper",
+      "minecraft:ore_coal_lower",
+      "minecraft:ore_iron_upper",
+      "minecraft:ore_iron_middle",
+      "minecraft:ore_iron_small",
+      "minecraft:ore_gold",
+      "minecraft:ore_gold_lower",
+      "minecraft:ore_redstone",
+      "minecraft:ore_redstone_lower",
+      "minecraft:ore_diamond",
+      "minecraft:ore_diamond_medium",
+      "minecraft:ore_diamond_large",
+      "minecraft:ore_diamond_buried",
+      "minecraft:ore_lapis",
+      "minecraft:ore_lapis_buried",
+      "minecraft:ore_copper",
+      "minecraft:underwater_magma",
+      "tolkienmobs:legacy_coal_ore",
+      "tolkienmobs:legacy_iron_ore",
+      "tolkienmobs:legacy_gold_ore",
+      "tolkienmobs:legacy_redstone_ore",
+      "tolkienmobs:legacy_diamond_ore",
+      "tolkienmobs:legacy_lapis_ore",
+      "tolkienmobs:legacy_copper_ore"
+    ],
+    [],
+    [],
+    [
+      "minecraft:patch_grass_forest",
+      "tolkienmobs:dwarven_maple_fallen_leaves",
+      "tolkienmobs:dwarven_maple_fallen_log",
+      "minecraft:trees_windswept_hills"
+    ],
+    [
+      "minecraft:freeze_top_layer"
+    ]
+  ],
+  "has_precipitation": true,
+  "spawn_costs": {
+    "tolkienmobs:entityttmcrebain": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmduergar": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmgoblin": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmtroll": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    }
+  },
+  "spawners": {
+    "ambient": [],
+    "axolotls": [],
+    "creature": [
+      {
+        "type": "tolkienmobs:entityttmduergar",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 20
+      },
+      {
+        "type": "tolkienmobs:entityttmcrebain",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 10
+      }
+    ],
+    "misc": [],
+    "monster": [
+      {
+        "type": "tolkienmobs:entityttmtroll",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 35
+      },
+      {
+        "type": "tolkienmobs:entityttmgoblin",
+        "maxCount": 5,
+        "minCount": 1,
+        "weight": 45
+      }
+    ],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "temperature": 0.2
+}

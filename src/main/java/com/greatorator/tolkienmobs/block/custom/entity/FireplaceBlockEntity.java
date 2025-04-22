@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.block.custom.entity;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.FireplaceBlock;
 import com.greatorator.tolkienmobs.containers.FireplaceContainer;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;

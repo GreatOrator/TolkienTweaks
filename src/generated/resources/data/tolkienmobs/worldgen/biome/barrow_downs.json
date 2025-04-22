@@ -32,7 +32,8 @@
       "minecraft:patch_grass_forest",
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
-      "tolkienmobs:deadwood_fallen_log"
+      "tolkienmobs:deadwood_fallen_log",
+      "tolkienmobs:stumps"
     ]
   ],
   "has_precipitation": true,

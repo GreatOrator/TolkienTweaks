@@ -36,6 +36,7 @@ public class TolkienDataGenerator {
         generator.addProvider(event.includeServer(), new TolkienDamageTagProvider(packOutput, lookupProvider, existingFileHelper));
         generator.addProvider(event.includeServer(), new TolkienPoiTypeTagProvider(packOutput, lookupProvider, existingFileHelper));
         generator.addProvider(event.includeServer(), new TolkienSoundProvider(packOutput, existingFileHelper));
+//        generator.addProvider(event.includeServer(), new TolkienBiomeTagProvider(packOutput, lookupProvider, existingFileHelper));
 
         generator.addProvider(event.includeClient(), new TolkienItemModelProvider(packOutput, existingFileHelper));
         generator.addProvider(event.includeClient(), new TolkienBlockStateProvider(packOutput, existingFileHelper));
