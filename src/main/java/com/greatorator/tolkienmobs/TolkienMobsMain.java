@@ -14,6 +14,7 @@ import com.greatorator.tolkienmobs.entity.projectiles.render.FellBeastFireballRe
 import com.greatorator.tolkienmobs.entity.projectiles.render.TolkienArrowRenderer;
 import com.greatorator.tolkienmobs.event.TolkienRegistration;
 import com.greatorator.tolkienmobs.event.client.TolkienClientEvents;
+import com.greatorator.tolkienmobs.event.entity.PlayerEvents;
 import com.greatorator.tolkienmobs.fluid.TolkienFluidType;
 import com.greatorator.tolkienmobs.handler.ColorHandler;
 import com.greatorator.tolkienmobs.init.*;
