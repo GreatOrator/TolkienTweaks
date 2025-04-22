@@ -1,6 +1,9 @@
 {
   "type": "neoforge:add_features",
-  "biomes": "tolkienmobs:mirkwood",
+  "biomes": [
+    "tolkienmobs:mirkwood",
+    "tolkienmobs:mirkwood_spooky"
+  ],
   "features": "tolkienmobs:mirkwood_placed",
   "step": "vegetal_decoration"
 }

@@ -31,7 +31,8 @@ public class TolkienLayerStack {
     public static void bootstrap(BootstrapContext<BiomeLayerFactory> context) {
         BiomeLayerFactory biomes = new RandomBiomeLayer.Factory(1L, 15, ImmutableList.of(
                 TolkienBiomes.MIRKWOOD,
-                TolkienBiomes.FANGORN
+                TolkienBiomes.FANGORN,
+                TolkienBiomes.MIRKWOOD_SPOOKY
         ), ImmutableList.of(
                 TolkienBiomes.MIRKWOOD
         ));

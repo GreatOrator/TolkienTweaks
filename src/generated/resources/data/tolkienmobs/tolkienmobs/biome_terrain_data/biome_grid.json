@@ -124,6 +124,15 @@
     },
     {
       "biome_layers": {
+        "0.0": "tolkienmobs:mirkwood_spooky"
+      },
+      "depth": 0.1,
+      "key_biome": "tolkienmobs:mirkwood_spooky",
+      "scale": 1.25,
+      "weight": 0.5
+    },
+    {
+      "biome_layers": {
         "-1.0": "tolkienmobs:mordor",
         "-3.0": "tolkienmobs:underground"
       },

@@ -23,6 +23,7 @@ public class BiomeMaker extends BiomeHelper{
     public static List<TerrainColumn> makeBiomeList(HolderGetter<Biome> biomeRegistry, Holder<Biome> undergroundBiome) {
         return List.of(
                 biomeColumnToBedrock(0.1D, 1.25D, 0.5D, biomeRegistry, TolkienBiomes.MIRKWOOD),
+                biomeColumnToBedrock(0.1D, 1.25D, 0.5D, biomeRegistry, TolkienBiomes.MIRKWOOD_SPOOKY),
                 biomeColumnWithUnderground(-0.8D, 3.9D, 1.0D, biomeRegistry, TolkienBiomes.FANGORN, undergroundBiome),
                 biomeColumnWithUnderground(0.05D, 1.15D, 1.0D, biomeRegistry, TolkienBiomes.MORDOR, undergroundBiome),
                 biomeColumnWithUnderground(5.5D, 1.75D, 1.15D, biomeRegistry, TolkienBiomes.ASH_MOUNTAINS, undergroundBiome),
