@@ -1,9 +1,11 @@
 package com.greatorator.tolkienmobs.entity.projectiles.render;
 
 import com.greatorator.tolkienmobs.entity.TolkienArrowEntity;
-import net.minecraft.client.renderer.entity.*;
+import net.minecraft.client.renderer.entity.ArrowRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.*;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 

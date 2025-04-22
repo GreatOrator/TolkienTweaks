@@ -1,9 +1,6 @@
 package com.greatorator.tolkienmobs.enchantment;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
-import com.greatorator.tolkienmobs.init.TolkienEnchantments;
 import com.greatorator.tolkienmobs.init.TolkienTags;
-import com.greatorator.tolkienmobs.util.GeneralUtility;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -26,7 +23,6 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;

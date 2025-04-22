@@ -2,7 +2,6 @@ package com.greatorator.tolkienmobs.init;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.enchantment.*;
-import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -15,7 +14,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.storage.loot.predicates.MatchTool;
 
 public class TolkienEnchantments {
     public static final ResourceKey<Enchantment> GONDORIAN_RESOLVE_KEY = create("gondorian_resolve_key");

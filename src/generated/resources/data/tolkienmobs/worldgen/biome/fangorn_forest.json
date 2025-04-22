@@ -13,9 +13,9 @@
     },
     "particle": {
       "options": {
-        "type": "tolkienmobs:wandering_lightningbug"
+        "type": "tolkienmobs:falling_leaves"
       },
-      "probability": 0.001
+      "probability": 0.00625
     },
     "sky_color": 7907327,
     "water_color": 54011,
@@ -34,6 +34,7 @@
     [
       "minecraft:patch_grass_jungle",
       "tolkienmobs:fangorn_fallen_log",
+      "tolkienmobs:stumps",
       "tolkienmobs:fangorn_fallen_leaves"
     ]
   ],

@@ -4,7 +4,6 @@ import com.greatorator.tolkienmobs.init.*;
 import com.greatorator.tolkienmobs.world.TolkienBiomeModifiers;
 import com.greatorator.tolkienmobs.world.TolkienConfiguredFeatures;
 import com.greatorator.tolkienmobs.world.TolkienPlacedFeatures;
-import com.greatorator.tolkienmobs.world.registration.BiomeMaker;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;

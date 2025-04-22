@@ -5,14 +5,12 @@ import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponentType;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Optional;
 
 public class TrinketSubtypeInterpreter implements ISubtypeInterpreter<ItemStack> {
 	public String apply(ItemStack stack, UidContext context) {

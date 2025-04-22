@@ -26,6 +26,7 @@ public class TolkienFeatures {
     public static final DeferredHolder<Feature<?>, Feature<HollowLogConfig>> SMALL_LOG = FEATURES.register("small_log", () -> new SmallFallenLogFeature(HollowLogConfig.CODEC));
     public static final DeferredHolder<Feature<?>, Feature<NoneFeatureConfiguration>> RANDOM_RUBBLE = FEATURES.register("random_rubble", () -> new RubbleFeature(NoneFeatureConfiguration.CODEC));
     public static final DeferredHolder<Feature<?>, Feature<BlockStateConfiguration>> ROCK_PILE = FEATURES.register("rock_pile", () -> new RockpileFeature(BlockStateConfiguration.CODEC));
+    public static final DeferredHolder<Feature<?>, Feature<NoneFeatureConfiguration>> STUMPS = FEATURES.register("stumps", () -> new StumpFeature(NoneFeatureConfiguration.CODEC));
     public static final DeferredHolder<Feature<?>, Feature<RootConfig>> WOOD_ROOTS = FEATURES.register("wood_roots", () -> new WoodRootFeature(RootConfig.CODEC));
     public static final DeferredHolder<Feature<?>, Feature<BlockStateConfiguration>> UNDERGROUND_PLANTS = FEATURES.register("underground_plants", () -> new UndergroundPlantFeature(BlockStateConfiguration.CODEC));
 }

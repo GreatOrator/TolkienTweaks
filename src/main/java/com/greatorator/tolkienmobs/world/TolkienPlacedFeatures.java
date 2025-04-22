@@ -53,14 +53,22 @@ public class TolkienPlacedFeatures {
     public static final ResourceKey<PlacedFeature> PLACED_DEADWOOD_FALLEN_LOG = registerPlacedKey("deadwood_fallen_log");
     public static final ResourceKey<PlacedFeature> PLACED_MIRKWOOD_FALLEN_LOG = registerPlacedKey("mirkwood_fallen_log");
     public static final ResourceKey<PlacedFeature> PLACED_MALLORN_FALLEN_LOG = registerPlacedKey("mallorn_fallen_log");
+    public static final ResourceKey<PlacedFeature> PLACED_LEBETHRON_FALLEN_LOG = registerPlacedKey("lebethron_fallen_log");
+    public static final ResourceKey<PlacedFeature> PLACED_CULUMALDA_FALLEN_LOG = registerPlacedKey("culumalda_fallen_log");
+    public static final ResourceKey<PlacedFeature> PLACED_DWARVEN_MAPLE_FALLEN_LOG = registerPlacedKey("dwarven_maple_fallen_log");
 
     public static final ResourceKey<PlacedFeature> PLACED_FANGORN_FALLEN_LEAVES = registerPlacedKey("fangorn_fallen_leaves");
     public static final ResourceKey<PlacedFeature> PLACED_MIRKWOOD_FALLEN_LEAVES = registerPlacedKey("mirkwood_fallen_leaves");
     public static final ResourceKey<PlacedFeature> PLACED_MALLORN_FALLEN_LEAVES = registerPlacedKey("mallorn_fallen_leaves");
+    public static final ResourceKey<PlacedFeature> PLACED_CULUMALDA_FALLEN_LEAVES = registerPlacedKey("culumalda_fallen_leaves");
+    public static final ResourceKey<PlacedFeature> PLACED_LEBETHRON_FALLEN_LEAVES = registerPlacedKey("lebethron_fallen_leaves");
+    public static final ResourceKey<PlacedFeature> PLACED_DWARVEN_MAPLE_FALLEN_LEAVES = registerPlacedKey("dwarven_maple_fallen_leaves");
 
     public static final ResourceKey<PlacedFeature> PLACED_ROCKPILE = registerPlacedKey("rockpile");
     public static final ResourceKey<PlacedFeature> PLACED_STONE_SPIKE = registerPlacedKey("stone_spike");
     public static final ResourceKey<PlacedFeature> PLACED_RANDOM_RUBBLE = registerPlacedKey("random_rubble");
+    public static final ResourceKey<PlacedFeature> PLACED_WEBS = registerPlacedKey("webs");
+    public static final ResourceKey<PlacedFeature> PLACED_STUMPS = registerPlacedKey("stumps");
 
     public static final ResourceKey<PlacedFeature> MITHRIL_ORE_PLACED_KEY = registerPlacedKey("mithril_ore_placed");
     public static final ResourceKey<PlacedFeature> NETHER_MITHRIL_ORE_PLACED_KEY = registerPlacedKey("nether_mithril_ore_placed");
@@ -90,6 +98,10 @@ public class TolkienPlacedFeatures {
         return ImmutableList.<PlacementModifier>builder().add(extra).add(filter, RarityFilter.onAverageOnceEvery(rarity), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP, BiomeFilter.biome());
     }
 
+    private static ImmutableList.Builder<PlacementModifier> hollowLog(AvoidLandmarkModifier filter) {
+        return ImmutableList.<PlacementModifier>builder().add(RarityFilter.onAverageOnceEvery(40), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_OCEAN_FLOOR, filter, BiomeFilter.biome());
+    }
+
     public static void bootstrap(BootstrapContext<PlacedFeature> context) {
         HolderGetter<ConfiguredFeature<?, ?>> configuredFeatures = context.lookup(Registries.CONFIGURED_FEATURE);
         Holder<ConfiguredFeature<?, ?>> grassConfig = configuredFeatures.getOrThrow(VegetationFeatures.PATCH_GRASS);
@@ -114,7 +126,7 @@ public class TolkienPlacedFeatures {
                 VegetationPlacements.treePlacement(PlacementUtils.countExtra(3, 0.1f, 2),
                         TolkienBlocks.SAPLING_DEADWOOD.get()));
         registerPlaced(context, DWARVEN_PLACED_KEY, configuredFeatures.getOrThrow(DWARVEN_MAPLE_KEY),
-                VegetationPlacements.treePlacement(PlacementUtils.countExtra(3, 0.1f, 2),
+                VegetationPlacements.treePlacement(PlacementUtils.countExtra(1, 0.1f, 2),
                         TolkienBlocks.SAPLING_DWARVEN_MAPLE.get()));
         registerPlaced(context, OLDFORESTOAK_PLACED_KEY, configuredFeatures.getOrThrow(OLDFORESTOAK_KEY),
                 VegetationPlacements.treePlacement(PlacementUtils.countExtra(35, 0.1f, 2),
@@ -175,18 +187,26 @@ public class TolkienPlacedFeatures {
         registerPlaced(context, PLACED_DECAY_BLOOM_MUSHROOMS, configuredFeatures.getOrThrow(DECAY_BLOOM_MUSHROOMS), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.absolute(15)), CountPlacement.of(3), AvoidLandmarkModifier.checkUnderground(), BiomeFilter.biome()).build());
         registerPlaced(context, PLACED_BLOOM_DECAY_MUSHROOMS, configuredFeatures.getOrThrow(BLOOM_DECAY_MUSHROOMS), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.absolute(15)), CountPlacement.of(3), AvoidLandmarkModifier.checkUnderground(), BiomeFilter.biome()).build());
 
-        registerPlaced(context, PLACED_FANGORN_FALLEN_LOG, configuredFeatures.getOrThrow(FANGORNOAK_SMALL_LOG), tolkienFeatureCheckArea(AvoidLandmarkModifier.checkSurface(), 40).build());
-        registerPlaced(context, PLACED_DEADWOOD_FALLEN_LOG, configuredFeatures.getOrThrow(DEADWOOD_SMALL_LOG), tolkienFeatureCheckArea(AvoidLandmarkModifier.checkBoth(), 40).build());
-        registerPlaced(context, PLACED_MIRKWOOD_FALLEN_LOG, configuredFeatures.getOrThrow(MIRKWOOD_SMALL_LOG), tolkienFeatureCheckArea(AvoidLandmarkModifier.checkBoth(), 40).build());
-        registerPlaced(context, PLACED_MALLORN_FALLEN_LOG, configuredFeatures.getOrThrow(MALLORN_SMALL_LOG), tolkienFeatureCheckArea(AvoidLandmarkModifier.checkBoth(), 40).build());
+        registerPlaced(context, PLACED_MALLORN_FALLEN_LOG, configuredFeatures.getOrThrow(MALLORN_SMALL_LOG), hollowLog(AvoidLandmarkModifier.checkSurface()).build());
+        registerPlaced(context, PLACED_MIRKWOOD_FALLEN_LOG, configuredFeatures.getOrThrow(MIRKWOOD_SMALL_LOG), hollowLog(AvoidLandmarkModifier.checkSurface()).build());
+        registerPlaced(context, PLACED_CULUMALDA_FALLEN_LOG, configuredFeatures.getOrThrow(CULUMALDA_SMALL_LOG), hollowLog(AvoidLandmarkModifier.checkSurface()).build());
+        registerPlaced(context, PLACED_LEBETHRON_FALLEN_LOG, configuredFeatures.getOrThrow(LEBETHRON_SMALL_LOG), hollowLog(AvoidLandmarkModifier.checkSurface()).build());
+        registerPlaced(context, PLACED_FANGORN_FALLEN_LOG, configuredFeatures.getOrThrow(FANGORNOAK_SMALL_LOG), hollowLog(AvoidLandmarkModifier.checkSurface()).build());
+        registerPlaced(context, PLACED_DEADWOOD_FALLEN_LOG, configuredFeatures.getOrThrow(DEADWOOD_SMALL_LOG), hollowLog(AvoidLandmarkModifier.checkSurface()).build());
+        registerPlaced(context, PLACED_DWARVEN_MAPLE_FALLEN_LOG, configuredFeatures.getOrThrow(DWARVEN_SMALL_LOG), hollowLog(AvoidLandmarkModifier.checkSurface()).build());
 
-        registerPlaced(context, PLACED_FANGORN_FALLEN_LEAVES, configuredFeatures.getOrThrow(FANGORNOAK_FALLEN_LEAVES), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome()).build());
-        registerPlaced(context, PLACED_MIRKWOOD_FALLEN_LEAVES, configuredFeatures.getOrThrow(MIRKWOOD_FALLEN_LEAVES), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome()).build());
-        registerPlaced(context, PLACED_MALLORN_FALLEN_LEAVES, configuredFeatures.getOrThrow(MALLORN_FALLEN_LEAVES), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome()).build());
+        registerPlaced(context, PLACED_MALLORN_FALLEN_LEAVES, configuredFeatures.getOrThrow(MALLORN_FALLEN_LEAVES), tolkienFeatureCheckArea(AvoidLandmarkModifier.checkSurface(), 1).build());
+        registerPlaced(context, PLACED_MIRKWOOD_FALLEN_LEAVES, configuredFeatures.getOrThrow(MIRKWOOD_FALLEN_LEAVES), tolkienFeatureCheckArea(AvoidLandmarkModifier.checkSurface(), 1).build());
+        registerPlaced(context, PLACED_CULUMALDA_FALLEN_LEAVES, configuredFeatures.getOrThrow(CULUMALDA_FALLEN_LEAVES), tolkienFeatureCheckArea(AvoidLandmarkModifier.checkSurface(), 1).build());
+        registerPlaced(context, PLACED_LEBETHRON_FALLEN_LEAVES, configuredFeatures.getOrThrow(LEBETHRON_FALLEN_LEAVES), tolkienFeatureCheckArea(AvoidLandmarkModifier.checkSurface(), 1).build());
+        registerPlaced(context, PLACED_FANGORN_FALLEN_LEAVES, configuredFeatures.getOrThrow(FANGORNOAK_FALLEN_LEAVES), tolkienFeatureCheckArea(AvoidLandmarkModifier.checkSurface(), 1).build());
+        registerPlaced(context, PLACED_DWARVEN_MAPLE_FALLEN_LEAVES, configuredFeatures.getOrThrow(DWARVEN_MAPLE_FALLEN_LEAVES), tolkienFeatureCheckArea(AvoidLandmarkModifier.checkSurface(), 1).build());
 
-        registerPlaced(context, PLACED_ROCKPILE, configuredFeatures.getOrThrow(ROCK_PILE), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome()).build());
-        registerPlaced(context, PLACED_RANDOM_RUBBLE, configuredFeatures.getOrThrow(RANDOM_RUBBLE), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome()).build());
-        registerPlaced(context, PLACED_STONE_SPIKE, configuredFeatures.getOrThrow(STONE_SPIKE), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome()).build());
+        registerPlaced(context, PLACED_ROCKPILE, configuredFeatures.getOrThrow(ROCK_PILE), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(30), InSquarePlacement.spread(), BiomeFilter.biome()).build());
+        registerPlaced(context, PLACED_RANDOM_RUBBLE, configuredFeatures.getOrThrow(RANDOM_RUBBLE), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(40), InSquarePlacement.spread(), BiomeFilter.biome()).build());
+        registerPlaced(context, PLACED_STONE_SPIKE, configuredFeatures.getOrThrow(STONE_SPIKE), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(30), InSquarePlacement.spread(), BiomeFilter.biome()).build());
+        registerPlaced(context, PLACED_WEBS, configuredFeatures.getOrThrow(WEBS), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(60), InSquarePlacement.spread(), BiomeFilter.biome()).build());
+        registerPlaced(context, PLACED_STUMPS, configuredFeatures.getOrThrow(STUMPS), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(50), InSquarePlacement.spread(), BiomeFilter.biome()).build());
 
         registerPlaced(context, PLACED_SMALL_GRANITE, configuredFeatures.getOrThrow(TolkienConfiguredFeatures.SMALL_GRANITE), ImmutableList.<PlacementModifier>builder().add(HeightRangePlacement.triangle(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(64)), RarityFilter.onAverageOnceEvery(10), InSquarePlacement.spread(), CountPlacement.of(5), BiomeFilter.biome()).build());
         registerPlaced(context, PLACED_SMALL_DIORITE, configuredFeatures.getOrThrow(TolkienConfiguredFeatures.SMALL_DIORITE), ImmutableList.<PlacementModifier>builder().add(HeightRangePlacement.triangle(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(64)), RarityFilter.onAverageOnceEvery(10), InSquarePlacement.spread(), CountPlacement.of(5), BiomeFilter.biome()).build());

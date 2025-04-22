@@ -23,7 +23,7 @@ public class TolkienDimensionData {
 
         NoiseSettings tfNoise = NoiseSettings.create(
                 -32,
-                256,
+                320,
                 2,
                 2
         );

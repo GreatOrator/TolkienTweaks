@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "tolkienmobs:shire",
+    "tolkienmobs:firien"
+  ],
+  "features": "tolkienmobs:lebethron_placed",
+  "step": "vegetal_decoration"
+}

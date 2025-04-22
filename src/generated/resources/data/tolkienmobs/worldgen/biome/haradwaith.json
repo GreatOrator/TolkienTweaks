@@ -1,0 +1,85 @@
+{
+  "carvers": {},
+  "downfall": 0.0,
+  "effects": {
+    "ambient_sound": "minecraft:ambient.basalt_deltas.loop",
+    "fog_color": 12638463,
+    "sky_color": 7254527,
+    "water_color": 4159204,
+    "water_fog_color": 329011
+  },
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [
+      "minecraft:desert_well"
+    ],
+    [],
+    [
+      "tolkienmobs:legacy_coal_ore",
+      "tolkienmobs:legacy_iron_ore",
+      "tolkienmobs:legacy_gold_ore",
+      "tolkienmobs:legacy_redstone_ore",
+      "tolkienmobs:legacy_diamond_ore",
+      "tolkienmobs:legacy_lapis_ore",
+      "tolkienmobs:legacy_copper_ore"
+    ],
+    [],
+    [],
+    [
+      "minecraft:patch_dead_bush_2",
+      "minecraft:patch_sugar_cane_desert",
+      "minecraft:patch_pumpkin",
+      "minecraft:patch_cactus_desert"
+    ]
+  ],
+  "has_precipitation": true,
+  "spawn_costs": {
+    "tolkienmobs:entityttmcrebain": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmharadrim": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmmumakil": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    }
+  },
+  "spawners": {
+    "ambient": [
+      {
+        "type": "tolkienmobs:entityttmcrebain",
+        "maxCount": 1,
+        "minCount": 1,
+        "weight": 15
+      }
+    ],
+    "axolotls": [],
+    "creature": [
+      {
+        "type": "tolkienmobs:entityttmmumakil",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 25
+      }
+    ],
+    "misc": [],
+    "monster": [
+      {
+        "type": "tolkienmobs:entityttmharadrim",
+        "maxCount": 4,
+        "minCount": 1,
+        "weight": 45
+      }
+    ],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "temperature": 2.0
+}

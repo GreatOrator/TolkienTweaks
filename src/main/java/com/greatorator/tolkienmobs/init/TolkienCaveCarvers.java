@@ -1,7 +1,6 @@
 package com.greatorator.tolkienmobs.init;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
-import com.greatorator.tolkienmobs.datagen.tags.TolkienBlockTagProvider;
 import com.greatorator.tolkienmobs.world.components.TolkienCavesCarver;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;

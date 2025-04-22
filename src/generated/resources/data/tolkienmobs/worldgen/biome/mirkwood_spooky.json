@@ -1,0 +1,101 @@
+{
+  "carvers": {},
+  "downfall": 0.8,
+  "effects": {
+    "ambient_sound": "minecraft:ambient.warped_forest.loop",
+    "fog_color": 5988193,
+    "foliage_color": 738353,
+    "grass_color": 738353,
+    "sky_color": 8037887,
+    "water_color": 0,
+    "water_fog_color": 5541815
+  },
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "minecraft:patch_grass_forest",
+      "minecraft:patch_large_fern",
+      "minecraft:brown_mushroom_old_growth",
+      "minecraft:red_mushroom_old_growth",
+      "tolkienmobs:flower_mirkwood_placed",
+      "tolkienmobs:mirkwood_fallen_log",
+      "tolkienmobs:mirkwood_fallen_leaves",
+      "tolkienmobs:webs",
+      "tolkienmobs:stumps"
+    ]
+  ],
+  "has_precipitation": true,
+  "spawn_costs": {
+    "tolkienmobs:entityttmbrigand": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmcrebain": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmfellspirit": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmgoblin": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmmirkwoodspider": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    }
+  },
+  "spawners": {
+    "ambient": [
+      {
+        "type": "tolkienmobs:entityttmcrebain",
+        "maxCount": 4,
+        "minCount": 1,
+        "weight": 10
+      }
+    ],
+    "axolotls": [],
+    "creature": [],
+    "misc": [],
+    "monster": [
+      {
+        "type": "tolkienmobs:entityttmgoblin",
+        "maxCount": 5,
+        "minCount": 1,
+        "weight": 20
+      },
+      {
+        "type": "tolkienmobs:entityttmfellspirit",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 25
+      },
+      {
+        "type": "tolkienmobs:entityttmbrigand",
+        "maxCount": 3,
+        "minCount": 1,
+        "weight": 25
+      },
+      {
+        "type": "tolkienmobs:entityttmmirkwoodspider",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 35
+      }
+    ],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "temperature": 0.25
+}

@@ -548,7 +548,13 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add("biome.tolkienmobs.mirkwood", "Mirkwood Forest");
             this.add("biome.tolkienmobs.lorinand", "Lothlorien");
             this.add("biome.tolkienmobs.barrow_downs", "Tyrn Gorthad");
-            this.add("biome.tolkienmobs.old_forest", "Old Forest");
+            this.add("biome.tolkienmobs.shire", "The Shire");
+            this.add("biome.tolkienmobs.firien", "Firien Wood");
+            this.add("biome.tolkienmobs.dagorlad", "The Brown Lands");
+            this.add("biome.tolkienmobs.haradwaith", "Haradwaith");
+            this.add("biome.tolkienmobs.gladden", "Gladden Fields");
+            this.add("biome.tolkienmobs.hithaeglir", "Misty Mountains");
+            this.add("biome.tolkienmobs.iron_hills", "Iron Hills");
 
             this.add("biome.tolkienmobs.stream", "Stream");
             this.add("biome.tolkienmobs.underground", "Underground");

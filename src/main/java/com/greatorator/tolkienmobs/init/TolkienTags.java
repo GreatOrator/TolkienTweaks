@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 
 public class TolkienTags {
@@ -42,6 +43,16 @@ public class TolkienTags {
 
         private static TagKey<Item> createTag(String name) {
             return net.minecraft.tags.TagKey.create(Registries.ITEM, ResourceLocation.parse(name));
+        }
+    }
+
+    public static class Biomes {
+        private Biomes() {}
+
+        public static final TagKey<Biome> IS_ARDA = createTag("tolkienmobs:is_arda");
+
+        private static TagKey<Biome> createTag(String name) {
+            return net.minecraft.tags.TagKey.create(Registries.BIOME, ResourceLocation.parse(name));
         }
     }
 

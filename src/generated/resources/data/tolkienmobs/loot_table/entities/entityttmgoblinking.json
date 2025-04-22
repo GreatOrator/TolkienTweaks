@@ -21,7 +21,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "tolkienmobs:elf_vitality"
+              "id": "tolkienmobs:personal_blacksmith"
             },
             {
               "add": false,
