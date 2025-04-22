@@ -612,6 +612,7 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.SAPLING_DWARVEN_MAPLE);
                         output.accept(TolkienBlocks.LEAVES_MALLORN);
                         output.accept(TolkienBlocks.LEAVES_MIRKWOOD);
+                        output.accept(TolkienBlocks.HARDENED_LEAVES_MIRKWOOD);
                         output.accept(TolkienBlocks.LEAVES_CULUMALDA);
                         output.accept(TolkienBlocks.LEAVES_LEBETHRON);
                         output.accept(TolkienBlocks.LEAVES_FANGORNOAK);

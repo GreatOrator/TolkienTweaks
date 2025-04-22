@@ -1,5 +1,5 @@
 {
-  "feature": "tolkienmobs:tree/mirkwood",
+  "feature": "tolkienmobs:tree/hardened_mirkwood",
   "placement": [
     {
       "type": "minecraft:count",
@@ -7,11 +7,11 @@
         "type": "minecraft:weighted_list",
         "distribution": [
           {
-            "data": 3,
+            "data": 80,
             "weight": 9
           },
           {
-            "data": 5,
+            "data": 82,
             "weight": 1
           }
         ]

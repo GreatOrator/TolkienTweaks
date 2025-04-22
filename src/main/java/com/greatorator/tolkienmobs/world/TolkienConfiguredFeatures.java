@@ -49,6 +49,7 @@ public class TolkienConfiguredFeatures {
 
     public static final ResourceKey<ConfiguredFeature<?, ?>> MALLORN_KEY = registerConfiguredKey("tree/mallorn");
     public static final ResourceKey<ConfiguredFeature<?, ?>> MIRKWOOD_KEY = registerConfiguredKey("tree/mirkwood");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> HARDENED_MIRKWOOD_KEY = registerConfiguredKey("tree/hardened_mirkwood");
     public static final ResourceKey<ConfiguredFeature<?, ?>> FANGORNOAK_KEY = registerConfiguredKey("tree/fangornoak");
     public static final ResourceKey<ConfiguredFeature<?, ?>> OLDFORESTOAK_KEY = registerConfiguredKey("tree/oldforestoak");
     public static final ResourceKey<ConfiguredFeature<?, ?>> CULUMALDA_KEY = registerConfiguredKey("tree/culumalda");
@@ -222,6 +223,15 @@ public class TolkienConfiguredFeatures {
                 BlockStateProvider.simple(TolkienBlocks.WOOD_MIRKWOOD.get()),
                 new BranchingTrunkPlacer(10, 5, 5, 12, new BranchesConfig(BlockStateProvider.simple(TolkienBlocks.WOOD_MIRKWOOD.get()), 4, 0, 8, 2, 0.23, 0.23), false),
                 BlockStateProvider.simple(TolkienBlocks.LEAVES_MIRKWOOD.get()),
+                new SpheroidFoliagePlacer(4.5f, 2.25f, ConstantInt.of(0), 1, 0, 0.45f, (int) (LEAF_SHAG_FACTOR * 1.5f)),
+                new TwoLayersFeatureSize(4, 1, 1))
+                .dirt(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
+                .decorators(ImmutableList.of(TolkienDecorators.WALL_BLOOM, TolkienDecorators.LIVING_ROOTS))
+                .build());
+        registerConfigured(context, HARDENED_MIRKWOOD_KEY, Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
+                BlockStateProvider.simple(TolkienBlocks.WOOD_MIRKWOOD.get()),
+                new BranchingTrunkPlacer(10, 5, 5, 12, new BranchesConfig(BlockStateProvider.simple(TolkienBlocks.WOOD_MIRKWOOD.get()), 4, 0, 8, 2, 0.23, 0.23), false),
+                BlockStateProvider.simple(TolkienBlocks.HARDENED_LEAVES_MIRKWOOD.get()),
                 new SpheroidFoliagePlacer(4.5f, 2.25f, ConstantInt.of(0), 1, 0, 0.45f, (int) (LEAF_SHAG_FACTOR * 1.5f)),
                 new TwoLayersFeatureSize(4, 1, 1))
                 .dirt(BlockStateProvider.simple(Blocks.GRASS_BLOCK))

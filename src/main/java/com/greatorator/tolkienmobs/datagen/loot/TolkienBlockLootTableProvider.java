@@ -150,6 +150,7 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.STRIPPED_MIRKWOOD_WOOD.get());
         dropSelf(TolkienBlocks.PLANKS_MIRKWOOD.get());
         add(TolkienBlocks.LEAVES_MIRKWOOD.get(), silkAndStick(TolkienBlocks.LEAVES_MIRKWOOD.get(), TolkienBlocks.SAPLING_MIRKWOOD.get(), DEFAULT_SAPLING_DROP_RATES));
+        add(TolkienBlocks.HARDENED_LEAVES_MIRKWOOD.get(), silkAndStick(TolkienBlocks.LEAVES_MIRKWOOD.get(), TolkienBlocks.SAPLING_MIRKWOOD.get(), DEFAULT_SAPLING_DROP_RATES));
         dropSelf(TolkienBlocks.LEAFPILE_MIRKWOOD.get());
         dropSelf(TolkienBlocks.STAIRS_MIRKWOOD.get());
         this.add(TolkienBlocks.SLAB_MIRKWOOD.get(),

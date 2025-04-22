@@ -4,6 +4,6 @@
     "tolkienmobs:mirkwood",
     "tolkienmobs:mirkwood_spooky"
   ],
-  "features": "tolkienmobs:mirkwood_placed",
+  "features": "tolkienmobs:hardened_mirkwood_placed",
   "step": "vegetal_decoration"
 }
