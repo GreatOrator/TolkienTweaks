@@ -70,7 +70,7 @@ public class TolkienBiomeModifiers {
                 HolderSet.direct(placedFeatures.getOrThrow(MALLORN_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
         context.register(ADD_TREE_MIRKWOOD, new BiomeModifiers.AddFeaturesBiomeModifier(
-                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.MIRKWOOD)),
+                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.MIRKWOOD), biomes.getOrThrow(TolkienBiomes.MIRKWOOD_SPOOKY)),
                 HolderSet.direct(placedFeatures.getOrThrow(MIRKWOOD_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
         context.register(ADD_TREE_CULUMALDA, new BiomeModifiers.AddFeaturesBiomeModifier(
