@@ -36,30 +36,26 @@
   "spawn_costs": {
     "tolkienmobs:entityttmbrigand": {
       "charge": 0.6,
-      "energy_budget": 0.15
+      "energy_budget": 0.3
     },
     "tolkienmobs:entityttmcrebain": {
       "charge": 0.6,
-      "energy_budget": 0.15
-    },
-    "tolkienmobs:entityttmfellspirit": {
-      "charge": 0.6,
-      "energy_budget": 0.15
+      "energy_budget": 0.3
     },
     "tolkienmobs:entityttmgoblin": {
       "charge": 0.6,
-      "energy_budget": 0.15
+      "energy_budget": 0.3
     },
     "tolkienmobs:entityttmmirkwoodspider": {
       "charge": 0.6,
-      "energy_budget": 0.15
+      "energy_budget": 0.02
     }
   },
   "spawners": {
     "ambient": [
       {
         "type": "tolkienmobs:entityttmcrebain",
-        "maxCount": 4,
+        "maxCount": 2,
         "minCount": 1,
         "weight": 10
       }
@@ -70,27 +66,21 @@
     "monster": [
       {
         "type": "tolkienmobs:entityttmgoblin",
-        "maxCount": 5,
-        "minCount": 1,
-        "weight": 20
-      },
-      {
-        "type": "tolkienmobs:entityttmfellspirit",
         "maxCount": 2,
         "minCount": 1,
-        "weight": 25
+        "weight": 15
       },
       {
         "type": "tolkienmobs:entityttmbrigand",
-        "maxCount": 3,
+        "maxCount": 2,
         "minCount": 1,
-        "weight": 25
+        "weight": 15
       },
       {
         "type": "tolkienmobs:entityttmmirkwoodspider",
-        "maxCount": 2,
+        "maxCount": 4,
         "minCount": 1,
-        "weight": 35
+        "weight": 55
       }
     ],
     "underground_water_creature": [],

@@ -363,6 +363,19 @@ public abstract class BiomeHelper {
 				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15);
 	}
 
+	public static MobSpawnSettings.Builder mirkwoodSpookySpawning() {
+
+		return new MobSpawnSettings.Builder()
+				.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 15, 1, 2))
+				.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_BRIGAND.get(), 15, 1, 2))
+				.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_MIRKWOODSPIDER.get(), 55, 1, 4))
+				.addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 10, 1, 2))
+				.addMobCharge(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 0.6, 0.30)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_BRIGAND.get(), 0.6, 0.30)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_MIRKWOODSPIDER.get(), 0.6, 0.02)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.30);
+	}
+
 	public static MobSpawnSettings.Builder mirkwoodSpawning() {
 
         return new MobSpawnSettings.Builder()
@@ -758,14 +771,6 @@ public abstract class BiomeHelper {
 	public static void addCaves(BiomeGenerationSettings.Builder biome) {
 		biome.addCarver(GenerationStep.Carving.AIR, TolkienCaveCarvers.CAVES_CONFIGURED);
 		biome.addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, TolkienPlacedFeatures.PLACED_PLANT_ROOTS);
-		addLegacyOres(biome);
-	}
-
-	public static void addHighlandCaves(BiomeGenerationSettings.Builder biome) {
-		biome.addCarver(GenerationStep.Carving.AIR, TolkienCaveCarvers.HIGHLANDCAVES_CONFIGURED);
-		biome.addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, TolkienPlacedFeatures.PLACED_PLANT_ROOTS);
-		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_DECAY_BLOOM_MUSHROOMS);
-		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_BLOOM_DECAY_MUSHROOMS);
 		addLegacyOres(biome);
 	}
 

@@ -1,4 +1,4 @@
-// 1.21.1	2025-04-21T18:35:08.2295387	Registries
+// 1.21.1	2025-04-21T19:11:44.9032723	Registries
 adb61ced2ddb6c105f64a819c752d7474b56bd2f data/tolkienmobs/enchantment/balrog_mark_key.json
 ce45d07f00b8d7a977a6bc8be99c1187ea414d94 data/tolkienmobs/enchantment/dwarven_endurance_key.json
 3f1c47232bc9ce27e60bf52e5f857159fbfb59b1 data/tolkienmobs/enchantment/dwarven_mining_key.json
@@ -70,7 +70,7 @@ ab52e948b397ea4fb00100cbf2faeb0f773bda8e data/tolkienmobs/worldgen/biome/iron_hi
 f67d3aac017c5dd3129128294671bb12b8ebf390 data/tolkienmobs/worldgen/biome/lorinand.json
 0d1ec263e70a0d6f52f1c877140f05baf0a9c450 data/tolkienmobs/worldgen/biome/marshes.json
 0a86be20c01399fd7bd1b21be4fffb1fea80f698 data/tolkienmobs/worldgen/biome/mirkwood.json
-2d7ac34369da6201a156a6ea527480d83711d009 data/tolkienmobs/worldgen/biome/mirkwood_spooky.json
+af348bbea8a37ebe6383aa1816388c5ac71c31c8 data/tolkienmobs/worldgen/biome/mirkwood_spooky.json
 c0e9502deaa20a5f97de9c18f1fdf7a5fead9882 data/tolkienmobs/worldgen/biome/mordor.json
 eac85ccfce0ae805c4b5f09f36b474c4c6472069 data/tolkienmobs/worldgen/biome/old_forest.json
 6f921781129014a3285748353c32a0bc0e7c855a data/tolkienmobs/worldgen/biome/shire.json
