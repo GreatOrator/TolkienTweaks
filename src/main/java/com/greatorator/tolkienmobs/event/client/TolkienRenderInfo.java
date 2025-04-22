@@ -35,7 +35,7 @@ public class TolkienRenderInfo extends DimensionSpecialEffects {
 		if (player != null) {
 			Optional<ResourceKey<Biome>> biome = player.level().getBiome(player.blockPosition()).unwrapKey();
 			if (biome.isPresent()) {
-				boolean spooky = biome.get() == TolkienBiomes.MIRKWOOD || biome.get() == TolkienBiomes.FANGORN;
+				boolean spooky = biome.get() == TolkienBiomes.MIRKWOOD || biome.get() == TolkienBiomes.FANGORN || biome.get() == TolkienBiomes.MIRKWOOD_SPOOKY;
 
 				if (player.position().y > 20 && !spooky) {
 					return false; // If player is above the dark forest then no need to make it so spooky. The darkwood leaves cover everything as low as y42.
