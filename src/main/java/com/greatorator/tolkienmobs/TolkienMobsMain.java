@@ -69,7 +69,6 @@ public class TolkienMobsMain {
     //  -Signs not placing on vertical surfaces
     //  -Entities
     //    -Fell Beast
-    //    -Gwahir
     //  -Biomes
     //    -Structures
     //  -Functional Blocks
