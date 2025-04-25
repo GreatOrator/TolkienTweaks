@@ -178,6 +178,23 @@ public class TolkienSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> SHOOT_WEB = createEvent("entity.web.shoot");
     public static final DeferredHolder<SoundEvent, SoundEvent> SHOOT_TORNADO = createEvent("entity.tornado.shoot");
 
+    // Boss
+        // Balrog
+    public static final DeferredHolder<SoundEvent, SoundEvent> IDLE_BALROG = createEvent("mob.balrog.idle");
+    public static final DeferredHolder<SoundEvent, SoundEvent> STEP_BALROG = createEvent("mob.balrog.step");
+    public static final DeferredHolder<SoundEvent, SoundEvent> HURT_BALROG = createEvent("mob.balrog.hurt");
+    public static final DeferredHolder<SoundEvent, SoundEvent> DEATH_BALROG = createEvent("mob.balrog.death");
+
+        // Witch King
+    public static final DeferredHolder<SoundEvent, SoundEvent> IDLE_WITCHKING = createEvent("mob.witchking.idle");
+    public static final DeferredHolder<SoundEvent, SoundEvent> STEP_WITCHKING = createEvent("mob.witchking.step");
+    public static final DeferredHolder<SoundEvent, SoundEvent> HURT_WITCHKING = createEvent("mob.witchking.hurt");
+    public static final DeferredHolder<SoundEvent, SoundEvent> DEATH_WITCHKING = createEvent("mob.witchking.death");
+    public static final DeferredHolder<SoundEvent, SoundEvent> ANGRY_WITCHKING = createEvent("mob.witchking.angry");
+    public static final DeferredHolder<SoundEvent, SoundEvent> IDLE_WATCHER = createEvent("mob.watcher.idle");
+    public static final DeferredHolder<SoundEvent, SoundEvent> DEATH_WATCHER = createEvent("mob.watcher.death");
+
+
     private static DeferredHolder<SoundEvent, SoundEvent> createEvent(String sound) {
         return SOUND_EVENTS.register(sound, () -> SoundEvent.createVariableRangeEvent(TolkienMobsMain.prefix(sound)));
     }

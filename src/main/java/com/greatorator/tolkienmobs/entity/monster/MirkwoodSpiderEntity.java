@@ -5,6 +5,7 @@ import com.greatorator.tolkienmobs.entity.ai.goal.RangedWebAttackGoal;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.greatorator.tolkienmobs.handler.interfaces.TrapsTarget;
 import com.greatorator.tolkienmobs.handler.interfaces.WebShooter;
+import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
 import net.minecraft.Util;
@@ -55,6 +56,10 @@ public class MirkwoodSpiderEntity extends TolkienMonsterEntity implements GeoEnt
 
     public MirkwoodSpiderEntity(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
+    }
+
+    public MirkwoodSpiderEntity(Level level) {
+        this(TolkienEntities.ENTITY_TTM_MIRKWOODSPIDER.get(), level);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

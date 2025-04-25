@@ -124,7 +124,20 @@ public class TolkienSoundProvider extends SoundDefinitionsProvider {
         this.generateNewSound(TolkienSounds.HURT_GOLLUM, "mob/gollum/gollum_hurt", 1, "Screams in pain");
         this.generateNewSound(TolkienSounds.DEATH_GOLLUM, "mob/gollum/gollum_death", 1, "Gollum death.");
 
-            // Projectile
+            //Boss
+        this.generateNewSound(TolkienSounds.IDLE_BALROG, "mob/balrog/balrog_say", 3, "The Balrog Roars");
+        this.generateNewSound(TolkienSounds.STEP_BALROG, "mob/balrog/balrog_step", 1, "Then something came into the chamber...");
+        this.generateNewSound(TolkienSounds.HURT_BALROG, "mob/balrog/balrog_hurt", 1, "Screams in pain");
+        this.generateNewSound(TolkienSounds.DEATH_BALROG, "mob/balrog/balrog_death", 1, "Death of the scourge of fire cloaked in shadow");
+        this.generateNewSound(TolkienSounds.IDLE_WITCHKING, "mob/witchking/witchking_say", 4, "The Witch King Screams");
+        this.generateNewSound(TolkienSounds.STEP_WITCHKING, "mob/witchking/witchking_step", 1, "The Witch King approaches");
+        this.generateNewSound(TolkienSounds.HURT_WITCHKING, "mob/witchking/witchking_hurt", 1, "Screams in pain");
+        this.generateNewSound(TolkienSounds.DEATH_WITCHKING, "mob/witchking/witchking_death", 1, "Death of Evil...or is it?");
+        this.generateNewSound(TolkienSounds.ANGRY_WITCHKING, "mob/witchking/witchking_angry", 1, "You have drawn the attention of the Witch King");
+        this.generateNewSound(TolkienSounds.IDLE_WATCHER, "mob/watcher/watcher_say", 4, "Beware the creatures of the deep");
+        this.generateNewSound(TolkienSounds.DEATH_WATCHER, "mob/watcher/watcher_death", 1, "The end of things deeper and darker.");
+
+        // Projectile
         this.generateNewSound(TolkienSounds.SHOOT_BOULDER, "mob/ammo/ammo_boulder_shoot", 1, " ");
         this.generateNewSound(TolkienSounds.SHOOT_WEB, "mob/ammo/web_impact", 2, " ");
         this.generateNewSound(TolkienSounds.SHOOT_TORNADO, "mob/ammo/lift_wind", 3, " ");

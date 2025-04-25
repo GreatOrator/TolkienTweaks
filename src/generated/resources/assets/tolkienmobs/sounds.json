@@ -110,6 +110,32 @@
     ],
     "subtitle": "subtitles.tolkienmobs.item.hype_horn"
   },
+  "mob.balrog.death": {
+    "sounds": [
+      "tolkienmobs:mob/balrog/balrog_death"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.death"
+  },
+  "mob.balrog.hurt": {
+    "sounds": [
+      "tolkienmobs:mob/balrog/balrog_hurt"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.hurt"
+  },
+  "mob.balrog.idle": {
+    "sounds": [
+      "tolkienmobs:mob/balrog/balrog_say1",
+      "tolkienmobs:mob/balrog/balrog_say2",
+      "tolkienmobs:mob/balrog/balrog_say3"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.idle"
+  },
+  "mob.balrog.step": {
+    "sounds": [
+      "tolkienmobs:mob/balrog/balrog_step"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.step"
+  },
   "mob.barrow.hurt": {
     "sounds": [
       "tolkienmobs:mob/barrowwight/barrowwight_hurt"
@@ -608,6 +634,54 @@
       "tolkienmobs:mob/warg/warg_say2"
     ],
     "subtitle": "subtitles.tolkienmobs.mob.idle"
+  },
+  "mob.watcher.death": {
+    "sounds": [
+      "tolkienmobs:mob/watcher/watcher_death"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.death"
+  },
+  "mob.watcher.idle": {
+    "sounds": [
+      "tolkienmobs:mob/watcher/watcher_say1",
+      "tolkienmobs:mob/watcher/watcher_say2",
+      "tolkienmobs:mob/watcher/watcher_say3",
+      "tolkienmobs:mob/watcher/watcher_say4"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.idle"
+  },
+  "mob.witchking.angry": {
+    "sounds": [
+      "tolkienmobs:mob/witchking/witchking_angry"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.angry"
+  },
+  "mob.witchking.death": {
+    "sounds": [
+      "tolkienmobs:mob/witchking/witchking_death"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.death"
+  },
+  "mob.witchking.hurt": {
+    "sounds": [
+      "tolkienmobs:mob/witchking/witchking_hurt"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.hurt"
+  },
+  "mob.witchking.idle": {
+    "sounds": [
+      "tolkienmobs:mob/witchking/witchking_say1",
+      "tolkienmobs:mob/witchking/witchking_say2",
+      "tolkienmobs:mob/witchking/witchking_say3",
+      "tolkienmobs:mob/witchking/witchking_say4"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.idle"
+  },
+  "mob.witchking.step": {
+    "sounds": [
+      "tolkienmobs:mob/witchking/witchking_step"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.step"
   },
   "music.tolkienmobs.tolkien_mobs": {
     "sounds": [

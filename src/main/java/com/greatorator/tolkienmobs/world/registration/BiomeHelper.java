@@ -242,7 +242,7 @@ public abstract class BiomeHelper {
 				.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_MORDORORC.get(), 35, 1, 4))
 				.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_URUKHAI.get(), 25, 1, 4))
 				.addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 25, 1, 2))
-				.addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SWARM.get(), 15, 1, 1))
+				.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SWARM.get(), 15, 1, 1))
 				.addMobCharge(TolkienEntities.ENTITY_TTM_BRIGAND.get(), 0.6, 0.15)
 				.addMobCharge(TolkienEntities.ENTITY_TTM_WARG.get(), 0.6, 0.15)
 				.addMobCharge(TolkienEntities.ENTITY_TTM_MORDORORC.get(), 0.6, 0.15)
@@ -267,8 +267,8 @@ public abstract class BiomeHelper {
 		return new MobSpawnSettings.Builder()
 				.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_TROLL.get(), 35, 1, 2))
 				.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 45, 1, 5))
-				.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_DUERGAR.get(), 20, 1, 2))
-				.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 10, 1, 2))
+				.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_DUERGAR.get(), 20, 1, 2))
+				.addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 10, 1, 2))
 				.addMobCharge(TolkienEntities.ENTITY_TTM_TROLL.get(), 0.6, 0.15)
 				.addMobCharge(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 0.6, 0.15)
 				.addMobCharge(TolkienEntities.ENTITY_TTM_DUERGAR.get(), 0.6, 0.15)
@@ -281,7 +281,7 @@ public abstract class BiomeHelper {
 				.addSpawn(MobCategory.MISC, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_ELVES.get(), 35, 1, 2))
 				.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_HURON.get(), 45, 1, 5))
 				.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 20, 1, 2))
-				.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 10, 1, 2))
+				.addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 10, 1, 2))
 				.addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 10, 1, 2))
 				.addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_FROG.get(), 10, 1, 2))
 				.addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_THRUSH.get(), 10, 1, 2))
@@ -340,7 +340,7 @@ public abstract class BiomeHelper {
 		return new MobSpawnSettings.Builder()
 				.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_HURON.get(), 45, 1, 5))
 				.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 20, 1, 2))
-				.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 10, 1, 2))
+				.addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 10, 1, 2))
 				.addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 10, 1, 2))
 				.addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_FROG.get(), 10, 1, 2))
 				.addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_THRUSH.get(), 10, 1, 2))
@@ -356,8 +356,8 @@ public abstract class BiomeHelper {
 
 		return new MobSpawnSettings.Builder()
 				.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_BARROW.get(), 45, 1, 5))
-				.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SWARM.get(), 20, 1, 2))
-				.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 10, 1, 2))
+				.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SWARM.get(), 20, 1, 2))
+				.addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 10, 1, 2))
 				.addMobCharge(TolkienEntities.ENTITY_TTM_BARROW.get(), 0.6, 0.15)
 				.addMobCharge(TolkienEntities.ENTITY_TTM_SWARM.get(), 0.6, 0.15)
 				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15);
@@ -419,7 +419,7 @@ public abstract class BiomeHelper {
 				.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_FELLSPIRIT.get(), 25, 1, 3))
 				.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SWAMPHAG.get(), 25, 1, 2))
 				.addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_FROG.get(), 35, 1, 2))
-				.addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SWARM.get(), 10, 1, 4))
+				.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SWARM.get(), 10, 1, 4))
 				.addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 20, 1, 5))
 				.addMobCharge(TolkienEntities.ENTITY_TTM_FELLSPIRIT.get(), 0.6, 0.15)
 				.addMobCharge(TolkienEntities.ENTITY_TTM_SWAMPHAG.get(), 0.6, 0.15)
@@ -696,9 +696,9 @@ public abstract class BiomeHelper {
 		spawnInfo.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_AUROCH.get(), 12, 4, 4));
 		spawnInfo.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.CHICKEN, 10, 4, 4));
 		spawnInfo.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 5, 4, 4));
-		spawnInfo.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_THRUSH.get(), 15, 4, 8));
-		spawnInfo.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 10, 2, 4));
-		spawnInfo.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 10, 1, 2));
+		spawnInfo.addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_THRUSH.get(), 15, 4, 8));
+		spawnInfo.addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 10, 2, 4));
+		spawnInfo.addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 10, 1, 2));
 
 		return spawnInfo;
 	}

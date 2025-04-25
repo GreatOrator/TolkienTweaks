@@ -49,6 +49,30 @@ public class MathUtility {
         return minimum >= maximum ? minimum : random.nextInt(maximum - minimum + 1) + minimum;
     }
 
+    public static float clip(float value, float min, float max) {
+        if (value > max) {
+            value = max;
+        }
+
+        if (value < min) {
+            value = min;
+        }
+
+        return value;
+    }
+
+    public static int clip(int value, int min, int max) {
+        if (value > max) {
+            value = max;
+        }
+
+        if (value < min) {
+            value = min;
+        }
+
+        return value;
+    }
+
     public static float degToRad(float degrees)
     {
         return degrees * (float)Math.PI / 180 ;

@@ -4,7 +4,7 @@ import com.google.common.collect.Maps;
 import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
 import com.greatorator.tolkienmobs.containers.screens.*;
 import com.greatorator.tolkienmobs.entity.ambient.render.*;
-import com.greatorator.tolkienmobs.entity.boss.render.GoblinKingRender;
+import com.greatorator.tolkienmobs.entity.boss.render.*;
 import com.greatorator.tolkienmobs.entity.item.render.*;
 import com.greatorator.tolkienmobs.entity.monster.render.*;
 import com.greatorator.tolkienmobs.entity.npc.render.*;
@@ -64,19 +64,12 @@ public class TolkienMobsMain {
     public static final String MODID = "tolkienmobs";
     public static final Logger LOGGER = LogUtils.getLogger();
     private static final String BLOCK_DIR = "textures/block/custom/";
-    private static final String ENVIRO_DIR = "textures/environment/";
 
     // TODO
     //  -Signs not placing on vertical surfaces
     //  -Entities
-    //    -Balrog
     //    -Fell Beast
     //    -Gwahir
-    //    -Mithril Golem
-    //    -Morgul Iron Golem
-    //    -Shelob
-    //    -Watcher
-    //    -Witch King
     //  -Biomes
     //    -Structures
     //  -Functional Blocks
@@ -284,6 +277,13 @@ public class TolkienMobsMain {
 
                 // Boss
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_GOBLINKING.get(), GoblinKingRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_BALROG.get(), BalrogRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_SHELOB.get(), ShelobRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_WITCHKING.get(), WitchKingRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_WATCHER.get(), WatcherRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_MITHRILGOLEM.get(), MithrilGolemRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_MORGULIRONGOLEM.get(), MorgulironGolemRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_GWAHIR.get(), GwahirRender::new);
 
                 // NPC
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_HUMAN.get(), HumanRender::new);
@@ -375,11 +375,6 @@ public class TolkienMobsMain {
     public static ResourceLocation resLoc(String path) {
         return ResourceLocation.fromNamespaceAndPath(MODID, path);
     }
-
-    public static ResourceLocation getEnvTexture(String name) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, ENVIRO_DIR + name);
-    }
-
 
     public static ResourceLocation createResourceLocation(String path)
     {

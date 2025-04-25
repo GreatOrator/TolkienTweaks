@@ -861,6 +861,13 @@ public class TolkienTabs {
                         output.accept(TolkienEntities.EGG_TTMWARG);
 
                         output.accept(TolkienEntities.EGG_TTMGOBLINKING);
+                        output.accept(TolkienEntities.EGG_TTMBALROG);
+                        output.accept(TolkienEntities.EGG_TTMSHELOB);
+                        output.accept(TolkienEntities.EGG_TTMWITCHKING);
+                        output.accept(TolkienEntities.EGG_TTMWATCHER);
+                        output.accept(TolkienEntities.EGG_TTMMITHRILGOLEM);
+                        output.accept(TolkienEntities.EGG_TTMMORGULIRONGOLEM);
+                        output.accept(TolkienEntities.EGG_TTMGWAHIR);
 
                         output.accept(TolkienItems.GOLEM_STONE_SUMMON);
                         output.accept(TolkienItems.MORGUL_CRYSTAL);
