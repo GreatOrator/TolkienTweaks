@@ -5,7 +5,7 @@ import com.greatorator.tolkienmobs.block.custom.entity.function.ChameleonBlockDy
 import com.greatorator.tolkienmobs.entity.ambient.*;
 import com.greatorator.tolkienmobs.entity.ambient.model.GeckoModel;
 import com.greatorator.tolkienmobs.entity.ambient.model.SwarmModel;
-import com.greatorator.tolkienmobs.entity.boss.GoblinKingEntity;
+import com.greatorator.tolkienmobs.entity.boss.*;
 import com.greatorator.tolkienmobs.entity.monster.*;
 import com.greatorator.tolkienmobs.entity.npc.*;
 import com.greatorator.tolkienmobs.entity.passive.*;
@@ -132,6 +132,13 @@ public class TolkienEventBusEvents {
 
         // Boss
         event.put(TolkienEntities.ENTITY_TTM_GOBLINKING.get(), GoblinKingEntity.createAttributes().build());
+        event.put(TolkienEntities.ENTITY_TTM_BALROG.get(), BalrogEntity.createAttributes().build());
+        event.put(TolkienEntities.ENTITY_TTM_SHELOB.get(), ShelobEntity.createAttributes().build());
+        event.put(TolkienEntities.ENTITY_TTM_WITCHKING.get(), WitchKingEntity.createAttributes().build());
+        event.put(TolkienEntities.ENTITY_TTM_WATCHER.get(), WatcherEntity.createAttributes().build());
+        event.put(TolkienEntities.ENTITY_TTM_MITHRILGOLEM.get(), MithrilGolemEntity.createAttributes().build());
+        event.put(TolkienEntities.ENTITY_TTM_MORGULIRONGOLEM.get(), MorgulironGolemEntity.createAttributes().build());
+        event.put(TolkienEntities.ENTITY_TTM_GWAHIR.get(), GwahirEntity.createAttributes().build());
     }
 
     @SubscribeEvent

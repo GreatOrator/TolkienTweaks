@@ -173,7 +173,7 @@ public class MimicChestEntity extends TolkienMonsterEntity implements GeoEntity 
             }
         }));
         controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
-            if (event.isMoving()) {
+            if (this.isActive() && event.isMoving() && !event.getAnimatable().isAggressive()) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
                 return PlayState.CONTINUE;
             }

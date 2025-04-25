@@ -116,12 +116,6 @@
         "maxCount": 2,
         "minCount": 1,
         "weight": 25
-      },
-      {
-        "type": "tolkienmobs:entityttmswarm",
-        "maxCount": 1,
-        "minCount": 1,
-        "weight": 15
       }
     ],
     "axolotls": [],
@@ -151,6 +145,12 @@
         "maxCount": 4,
         "minCount": 1,
         "weight": 25
+      },
+      {
+        "type": "tolkienmobs:entityttmswarm",
+        "maxCount": 1,
+        "minCount": 1,
+        "weight": 15
       }
     ],
     "underground_water_creature": [],

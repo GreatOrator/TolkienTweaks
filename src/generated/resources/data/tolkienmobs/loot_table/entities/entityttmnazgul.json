@@ -64,7 +64,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:strong_strength"
+              "id": "minecraft:long_weakness"
             },
             {
               "add": false,

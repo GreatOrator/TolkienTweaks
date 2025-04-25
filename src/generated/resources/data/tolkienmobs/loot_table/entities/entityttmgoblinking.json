@@ -21,7 +21,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:long_slowness"
+              "id": "tolkienmobs:elemental_burning"
             },
             {
               "add": false,

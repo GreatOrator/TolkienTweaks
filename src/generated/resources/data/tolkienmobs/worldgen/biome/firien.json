@@ -109,6 +109,12 @@
   "spawners": {
     "ambient": [
       {
+        "type": "tolkienmobs:entityttmcrebain",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 10
+      },
+      {
         "type": "tolkienmobs:entityttmsquirrel",
         "maxCount": 2,
         "minCount": 1,
@@ -134,12 +140,6 @@
         "maxCount": 2,
         "minCount": 1,
         "weight": 20
-      },
-      {
-        "type": "tolkienmobs:entityttmcrebain",
-        "maxCount": 2,
-        "minCount": 1,
-        "weight": 10
       },
       {
         "type": "minecraft:sheep",

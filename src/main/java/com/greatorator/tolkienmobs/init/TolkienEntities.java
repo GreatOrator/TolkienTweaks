@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.init;
 
 import com.greatorator.tolkienmobs.entity.ambient.*;
-import com.greatorator.tolkienmobs.entity.boss.GoblinKingEntity;
+import com.greatorator.tolkienmobs.entity.boss.*;
 import com.greatorator.tolkienmobs.entity.item.*;
 import com.greatorator.tolkienmobs.entity.monster.*;
 import com.greatorator.tolkienmobs.entity.npc.*;
@@ -131,7 +131,7 @@ public class TolkienEntities {
             ENTITY_TYPES.register("entityttmgoblin", () -> EntityType.Builder.<GoblinEntity>of(GoblinEntity::new, MobCategory.MONSTER)
                     .sized(0.375F, 0.9375F).build("entityttmgoblin"));
     public static final Supplier<EntityType<MirkwoodSpiderEntity>> ENTITY_TTM_MIRKWOODSPIDER =
-            ENTITY_TYPES.register("entityttmmirkwoodspider", () -> EntityType.Builder.of(MirkwoodSpiderEntity::new, MobCategory.MONSTER)
+            ENTITY_TYPES.register("entityttmmirkwoodspider", () -> EntityType.Builder.<MirkwoodSpiderEntity>of(MirkwoodSpiderEntity::new, MobCategory.MONSTER)
                     .sized(1.25F, 0.8125F).build("entityttmmirkwoodspider"));
     public static final Supplier<EntityType<RockGolemEntity>> ENTITY_ROCKGOLEM =
             ENTITY_TYPES.register("entityttmrockgolem", () -> EntityType.Builder.of(RockGolemEntity::new, MobCategory.MONSTER)
@@ -166,8 +166,29 @@ public class TolkienEntities {
 
         // Boss
     public static final Supplier<EntityType<GoblinKingEntity>> ENTITY_TTM_GOBLINKING =
-                ENTITY_TYPES.register("entityttmgoblinking", () -> EntityType.Builder.of(GoblinKingEntity::new, MobCategory.MONSTER)
-                        .sized(0.5F, 1.25F).build("entityttmgoblinking"));
+            ENTITY_TYPES.register("entityttmgoblinking", () -> EntityType.Builder.of(GoblinKingEntity::new, MobCategory.MONSTER)
+                    .sized(0.5F, 1.25F).build("entityttmgoblinking"));
+    public static final Supplier<EntityType<BalrogEntity>> ENTITY_TTM_BALROG =
+            ENTITY_TYPES.register("entityttmbalrog", () -> EntityType.Builder.of(BalrogEntity::new, MobCategory.MONSTER)
+                    .sized(1.0625F, 3.5F).build("entityttmbalrog"));
+    public static final Supplier<EntityType<ShelobEntity>> ENTITY_TTM_SHELOB =
+            ENTITY_TYPES.register("entityttmshelob", () -> EntityType.Builder.of(ShelobEntity::new, MobCategory.MONSTER)
+                    .sized(1.6875F, 1.78125F).build("entityttmshelob"));
+    public static final Supplier<EntityType<WitchKingEntity>> ENTITY_TTM_WITCHKING =
+            ENTITY_TYPES.register("entityttmwitchking", () -> EntityType.Builder.of(WitchKingEntity::new, MobCategory.MONSTER)
+                    .sized(0.65F, 2.6F).build("entityttmwitchking"));
+    public static final Supplier<EntityType<WatcherEntity>> ENTITY_TTM_WATCHER =
+            ENTITY_TYPES.register("entityttmwatcher", () -> EntityType.Builder.of(WatcherEntity::new, MobCategory.MONSTER)
+                    .sized(7.5F, 7.5F).build("entityttmwatcher"));
+    public static final Supplier<EntityType<MithrilGolemEntity>> ENTITY_TTM_MITHRILGOLEM =
+            ENTITY_TYPES.register("entityttmmithrilgolem", () -> EntityType.Builder.of(MithrilGolemEntity::new, MobCategory.MONSTER)
+                    .sized(1.0F, 3.125F).build("entityttmmithrilgolem"));
+    public static final Supplier<EntityType<MorgulironGolemEntity>> ENTITY_TTM_MORGULIRONGOLEM =
+            ENTITY_TYPES.register("entityttmmorgulirongolem", () -> EntityType.Builder.of(MorgulironGolemEntity::new, MobCategory.MONSTER)
+                    .sized(1.0F, 3.125F).build("entityttmmorgulirongolem"));
+    public static final Supplier<EntityType<GwahirEntity>> ENTITY_TTM_GWAHIR =
+            ENTITY_TYPES.register("entityttmgwahir", () -> EntityType.Builder.of(GwahirEntity::new, MobCategory.MONSTER)
+                    .sized(1.4F, 1.9F).build("entityttmgwahir"));
 
         // Projectiles
     public static final Supplier<EntityType<BoulderEntity>> AMMO_BOULDER =
@@ -381,7 +402,28 @@ public class TolkienEntities {
 
         // Boss
     public static final DeferredItem<Item> EGG_TTMGOBLINKING = SPAWN_EGGS.register("entityttmgoblinking_spawn_egg",
-            () -> new DeferredSpawnEggItem(ENTITY_TTM_GOBLINKING, 15673963, 7405383,
+            () -> new DeferredSpawnEggItem(ENTITY_TTM_GOBLINKING, 15673963, 16121867,
+                    new Item.Properties()));
+    public static final DeferredItem<Item> EGG_TTMBALROG = SPAWN_EGGS.register("entityttmbalrog_spawn_egg",
+            () -> new DeferredSpawnEggItem(ENTITY_TTM_BALROG, 15673963, 5600397,
+                    new Item.Properties()));
+    public static final DeferredItem<Item> EGG_TTMSHELOB = SPAWN_EGGS.register("entityttmshelob_spawn_egg",
+            () -> new DeferredSpawnEggItem(ENTITY_TTM_SHELOB, 15673963, 7405383,
+                    new Item.Properties()));
+    public static final DeferredItem<Item> EGG_TTMWITCHKING = SPAWN_EGGS.register("entityttmwitchking_spawn_egg",
+            () -> new DeferredSpawnEggItem(ENTITY_TTM_WITCHKING, 15673963, 14289362,
+                    new Item.Properties()));
+    public static final DeferredItem<Item> EGG_TTMWATCHER = SPAWN_EGGS.register("entityttmwatcher_spawn_egg",
+            () -> new DeferredSpawnEggItem(ENTITY_TTM_WATCHER, 15673963, 12198412,
+                    new Item.Properties()));
+    public static final DeferredItem<Item> EGG_TTMMITHRILGOLEM = SPAWN_EGGS.register("entityttmmithrilgolem_spawn_egg",
+            () -> new DeferredSpawnEggItem(ENTITY_TTM_MITHRILGOLEM, 15673963, 16739362,
+                    new Item.Properties()));
+    public static final DeferredItem<Item> EGG_TTMMORGULIRONGOLEM = SPAWN_EGGS.register("entityttmmorgulirongolem_spawn_egg",
+            () -> new DeferredSpawnEggItem(ENTITY_TTM_MORGULIRONGOLEM, 15673963, 14088652,
+                    new Item.Properties()));
+    public static final DeferredItem<Item> EGG_TTMGWAHIR = SPAWN_EGGS.register("entityttmgwahir_spawn_egg",
+            () -> new DeferredSpawnEggItem(ENTITY_TTM_GWAHIR, 15673963, 9467561,
                     new Item.Properties()));
 
     public static void register(IEventBus eventBus) {

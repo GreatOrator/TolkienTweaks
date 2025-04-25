@@ -52,15 +52,7 @@
     }
   },
   "spawners": {
-    "ambient": [],
-    "axolotls": [],
-    "creature": [
-      {
-        "type": "tolkienmobs:entityttmswarm",
-        "maxCount": 2,
-        "minCount": 1,
-        "weight": 20
-      },
+    "ambient": [
       {
         "type": "tolkienmobs:entityttmcrebain",
         "maxCount": 2,
@@ -68,6 +60,8 @@
         "weight": 10
       }
     ],
+    "axolotls": [],
+    "creature": [],
     "misc": [],
     "monster": [
       {
@@ -75,6 +69,12 @@
         "maxCount": 5,
         "minCount": 1,
         "weight": 45
+      },
+      {
+        "type": "tolkienmobs:entityttmswarm",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 20
       }
     ],
     "underground_water_creature": [],

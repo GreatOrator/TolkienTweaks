@@ -200,9 +200,7 @@ public class GreatEagleEntity extends TolkienAmbientEntity implements GeoEntity,
         }
     }
 
-    /**
-     * Sounds
-     */
+    /** Sounds */
     @Override
     protected SoundEvent getAmbientSound() {
         return TolkienSounds.IDLE_GREAT_EAGLE.get();
@@ -223,9 +221,7 @@ public class GreatEagleEntity extends TolkienAmbientEntity implements GeoEntity,
         this.playSound(TolkienSounds.ATTACK_GREAT_EAGLE.get(), 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
     }
 
-    /**
-     * Animations
-     */
+    /** Animations */
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
     @Override
@@ -288,9 +284,7 @@ public class GreatEagleEntity extends TolkienAmbientEntity implements GeoEntity,
         return this.geoCache;
     }
 
-    /**
-     * Goals
-     */
+    /** Goals */
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);

@@ -527,6 +527,20 @@ public class TolkienLangProvider extends TolkienLangHelper {
                     // Boss
             this.add(TolkienEntities.ENTITY_TTM_GOBLINKING.get(), "Goblin King");
             this.add(TolkienEntities.EGG_TTMGOBLINKING.get(), "Goblin King Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_BALROG.get(), "Balrog");
+            this.add(TolkienEntities.EGG_TTMBALROG.get(), "Balrog Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_SHELOB.get(), "Shelob");
+            this.add(TolkienEntities.EGG_TTMSHELOB.get(), "Shelob Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_WITCHKING.get(), "Witch King of Angmar");
+            this.add(TolkienEntities.EGG_TTMWITCHKING.get(), "Witch King Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_WATCHER.get(), "Watcher of the Water");
+            this.add(TolkienEntities.EGG_TTMWATCHER.get(), "Watcher Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_MITHRILGOLEM.get(), "Mithril Golem");
+            this.add(TolkienEntities.EGG_TTMMITHRILGOLEM.get(), "Mithril Golem Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_MORGULIRONGOLEM.get(), "Morgul Iron Golem");
+            this.add(TolkienEntities.EGG_TTMMORGULIRONGOLEM.get(), "Morgul Iron Golem Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_GWAHIR.get(), "Gwahir, Lord of the Eagles");
+            this.add(TolkienEntities.EGG_TTMGWAHIR.get(), "Gwahir Spawn Egg");
 
 
         // Enchantments

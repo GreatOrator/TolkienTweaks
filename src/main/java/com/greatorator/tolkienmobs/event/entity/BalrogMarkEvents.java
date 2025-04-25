@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.event.entity;
 
 
-import com.greatorator.tolkienmobs.enchantment.BalrogMarkEnchantmentEffect;
+import com.greatorator.tolkienmobs.entity.boss.BalrogEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.player.Player;
@@ -20,7 +20,7 @@ public class BalrogMarkEvents {
     @SubscribeEvent
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
         // Check if the block being broken is temporary obsidian
-        if (BalrogMarkEnchantmentEffect.isTemporaryMagmaBlock((Level) event.getLevel(), event.getPos())) {
+        if (BalrogEntity.isTemporaryMagmaBlock((Level) event.getLevel(), event.getPos())) {
             event.setCanceled(true); // Cancel the event to prevent breaking
         }
     }
@@ -40,14 +40,14 @@ public class BalrogMarkEvents {
     public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
         Player player = event.getEntity();
         if (player.level() instanceof ServerLevel serverLevel) {
-            BalrogMarkEnchantmentEffect.removeAllTemporaryBlocks(serverLevel);
+            BalrogEntity.removeAllTemporaryBlocks(serverLevel);
         }
     }
 
     @SubscribeEvent
     public static void onWorldUnload(LevelEvent.Unload event) {
         if (event.getLevel() instanceof ServerLevel serverLevel) {
-            BalrogMarkEnchantmentEffect.removeAllTemporaryBlocks(serverLevel);
+            BalrogEntity.removeAllTemporaryBlocks(serverLevel);
         }
     }
 }
