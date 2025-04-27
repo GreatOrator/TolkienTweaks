@@ -136,6 +136,8 @@ public class TolkienSoundProvider extends SoundDefinitionsProvider {
         this.generateNewSound(TolkienSounds.ANGRY_WITCHKING, "mob/witchking/witchking_angry", 1, "You have drawn the attention of the Witch King");
         this.generateNewSound(TolkienSounds.IDLE_WATCHER, "mob/watcher/watcher_say", 4, "Beware the creatures of the deep");
         this.generateNewSound(TolkienSounds.DEATH_WATCHER, "mob/watcher/watcher_death", 1, "The end of things deeper and darker.");
+        this.generateNewSound(TolkienSounds.IDLE_FELLBEAST, "mob/fellbeast/fellbeast_say", 2, "A mighty Dragon roar");
+        this.generateNewSound(TolkienSounds.FLAP_FELLBEAST, "mob/fellbeast/fellbeast_flap", 1, "The beast takes flight.");
 
         // Projectile
         this.generateNewSound(TolkienSounds.SHOOT_BOULDER, "mob/ammo/ammo_boulder_shoot", 1, " ");

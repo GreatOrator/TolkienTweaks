@@ -1020,6 +1020,7 @@ public class TolkienEntityLootTables extends EntityLootSubProvider {
                                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(3.0F, 5.0F)))
                                         .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
                                         .when(LootItemKilledByPlayerCondition.killedByPlayer()))));
+        add(TolkienEntities.ENTITY_FELL_BEAST.get(), emptyLootTable());
     }
 
     public LootTable.Builder emptyLootTable() {

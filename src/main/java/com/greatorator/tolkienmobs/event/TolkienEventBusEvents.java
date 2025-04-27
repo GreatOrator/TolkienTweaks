@@ -139,6 +139,7 @@ public class TolkienEventBusEvents {
         event.put(TolkienEntities.ENTITY_TTM_MITHRILGOLEM.get(), MithrilGolemEntity.createAttributes().build());
         event.put(TolkienEntities.ENTITY_TTM_MORGULIRONGOLEM.get(), MorgulironGolemEntity.createAttributes().build());
         event.put(TolkienEntities.ENTITY_TTM_GWAHIR.get(), GwahirEntity.createAttributes().build());
+        event.put(TolkienEntities.ENTITY_FELL_BEAST.get(), FellBeastEntity.createAttributes().build());
     }
 
     @SubscribeEvent

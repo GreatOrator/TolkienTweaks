@@ -191,8 +191,15 @@ public class TolkienSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> HURT_WITCHKING = createEvent("mob.witchking.hurt");
     public static final DeferredHolder<SoundEvent, SoundEvent> DEATH_WITCHKING = createEvent("mob.witchking.death");
     public static final DeferredHolder<SoundEvent, SoundEvent> ANGRY_WITCHKING = createEvent("mob.witchking.angry");
+
+        // Watcher
     public static final DeferredHolder<SoundEvent, SoundEvent> IDLE_WATCHER = createEvent("mob.watcher.idle");
     public static final DeferredHolder<SoundEvent, SoundEvent> DEATH_WATCHER = createEvent("mob.watcher.death");
+
+        // Fell Beast
+    public static final DeferredHolder<SoundEvent, SoundEvent> IDLE_FELLBEAST = createEvent("mob.fellbeast.idle");
+    public static final DeferredHolder<SoundEvent, SoundEvent> FLAP_FELLBEAST = createEvent("mob.fellbeast.flap");
+
 
 
     private static DeferredHolder<SoundEvent, SoundEvent> createEvent(String sound) {

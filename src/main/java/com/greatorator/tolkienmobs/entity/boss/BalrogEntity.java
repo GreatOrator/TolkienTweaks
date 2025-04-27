@@ -195,7 +195,8 @@ public class BalrogEntity extends TolkienMonsterEntity implements GeoEntity {
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
-        }));    controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
+        }));
+        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
             if (!event.isMoving() && !event.getAnimatable().isAggressive()) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
                 return PlayState.CONTINUE;

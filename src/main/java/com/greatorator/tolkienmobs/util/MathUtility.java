@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.util;
 
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -41,7 +42,7 @@ public class MathUtility {
         return (float)Math.sqrt(f);
     }
 
-    public static double nextDouble(Random rand) {
+    public static double nextDouble(RandomSource rand) {
         return 2 * rand.nextDouble() - 1;
     }
 

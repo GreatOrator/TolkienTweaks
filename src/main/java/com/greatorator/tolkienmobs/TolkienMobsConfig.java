@@ -49,6 +49,9 @@ public class TolkienMobsConfig {
     private static final ModConfigSpec.IntValue GROW_TIMER = BUILDER
             .comment("How often the Hobbit Ring will try to grow a block (in ticks)")
             .defineInRange("growthTimer", 20, 0, Integer.MAX_VALUE);
+    private static final ModConfigSpec.IntValue HOME_RADIUS = BUILDER
+            .comment("How far the FellBeast will roam from home (Default 32)")
+            .defineInRange("homeRadius", 32, 32, 128);
 
     public static final ModConfigSpec.ConfigValue<String> MAGIC_NUMBER_INTRODUCTION = BUILDER
             .comment("What you want the introduction message to be for the magic number")
@@ -69,6 +72,7 @@ public class TolkienMobsConfig {
     public static int pickupRange;
     public static int growthRange;
     public static int growthTimer;
+    public static int homeRadius;
     public static String magicNumberIntroduction;
     public static Set<Item> items;
 
@@ -86,6 +90,7 @@ public class TolkienMobsConfig {
         pickupRange = PICKUP_RANGE.get();
         growthRange = GROWTH_RANGE.get();
         growthTimer = GROW_TIMER.get();
+        homeRadius = HOME_RADIUS.get();
         magicNumberIntroduction = MAGIC_NUMBER_INTRODUCTION.get();
 
         // convert the list of strings into a set of items

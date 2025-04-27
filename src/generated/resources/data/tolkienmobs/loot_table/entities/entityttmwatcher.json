@@ -21,7 +21,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:strong_slowness"
+              "id": "minecraft:night_vision"
             },
             {
               "add": false,

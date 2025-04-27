@@ -95,7 +95,6 @@ public class TolkienEntities {
             ENTITY_TYPES.register("entityttmorc_trader", () -> EntityType.Builder.of(OrcTraderEntity::new, MobCategory.MISC)
                     .sized(0.5F, 2.0F).build("entityttmorc_trader"));
 
-
         // Hostile
     public static final Supplier<EntityType<BarrowWightEntity>> ENTITY_TTM_BARROW =
             ENTITY_TYPES.register("entityttmbarrow", () -> EntityType.Builder.of(BarrowWightEntity::new, MobCategory.MONSTER)
@@ -189,6 +188,9 @@ public class TolkienEntities {
     public static final Supplier<EntityType<GwahirEntity>> ENTITY_TTM_GWAHIR =
             ENTITY_TYPES.register("entityttmgwahir", () -> EntityType.Builder.of(GwahirEntity::new, MobCategory.MONSTER)
                     .sized(1.4F, 1.9F).build("entityttmgwahir"));
+    public static final Supplier<EntityType<FellBeastEntity>> ENTITY_FELL_BEAST =
+            ENTITY_TYPES.register("entityttmfellbeast", () -> EntityType.Builder.of(FellBeastEntity::new, MobCategory.MONSTER)
+                    .sized(2.625F, 4.25F).build("entityttmfellbeast"));
 
         // Projectiles
     public static final Supplier<EntityType<BoulderEntity>> AMMO_BOULDER =
@@ -424,6 +426,9 @@ public class TolkienEntities {
                     new Item.Properties()));
     public static final DeferredItem<Item> EGG_TTMGWAHIR = SPAWN_EGGS.register("entityttmgwahir_spawn_egg",
             () -> new DeferredSpawnEggItem(ENTITY_TTM_GWAHIR, 15673963, 9467561,
+                    new Item.Properties()));
+    public static final DeferredItem<Item> EGG_TTMFELLBEAST = SPAWN_EGGS.register("entityttmfellbeast_spawn_egg",
+            () -> new DeferredSpawnEggItem(ENTITY_FELL_BEAST, 15673963, 8807990,
                     new Item.Properties()));
 
     public static void register(IEventBus eventBus) {
