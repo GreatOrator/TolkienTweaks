@@ -541,7 +541,8 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add(TolkienEntities.EGG_TTMMORGULIRONGOLEM.get(), "Morgul Iron Golem Spawn Egg");
             this.add(TolkienEntities.ENTITY_TTM_GWAHIR.get(), "Gwahir, Lord of the Eagles");
             this.add(TolkienEntities.EGG_TTMGWAHIR.get(), "Gwahir Spawn Egg");
-
+            this.add(TolkienEntities.ENTITY_FELL_BEAST.get(), "Fell Beast");
+            this.add(TolkienEntities.EGG_TTMFELLBEAST.get(), "Fell Beast Spawn Egg");
 
         // Enchantments
             this.addEnchantment("balrog_mark_key", "Balrog's Mark");

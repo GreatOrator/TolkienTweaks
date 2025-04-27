@@ -67,8 +67,6 @@ public class TolkienMobsMain {
 
     // TODO
     //  -Signs not placing on vertical surfaces
-    //  -Entities
-    //    -Fell Beast
     //  -Biomes
     //    -Structures
     //  -Functional Blocks
@@ -283,6 +281,7 @@ public class TolkienMobsMain {
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_MITHRILGOLEM.get(), MithrilGolemRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_MORGULIRONGOLEM.get(), MorgulironGolemRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_GWAHIR.get(), GwahirRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_FELL_BEAST.get(), FellBeastRender::new);
 
                 // NPC
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_HUMAN.get(), HumanRender::new);

@@ -447,6 +447,7 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         withExistingParent(TolkienEntities.EGG_TTMMITHRILGOLEM.getId().getPath(), mcLoc("item/template_spawn_egg"));
         withExistingParent(TolkienEntities.EGG_TTMMORGULIRONGOLEM.getId().getPath(), mcLoc("item/template_spawn_egg"));
         withExistingParent(TolkienEntities.EGG_TTMGWAHIR.getId().getPath(), mcLoc("item/template_spawn_egg"));
+        withExistingParent(TolkienEntities.EGG_TTMFELLBEAST.getId().getPath(), mcLoc("item/template_spawn_egg"));
     }
 
     private ItemModelBuilder generated(String name, ResourceLocation... layers) {

@@ -1,4 +1,4 @@
-// 1.21.1	2025-04-25T06:40:22.4898117	Item Models: tolkienmobs
+// 1.21.1	2025-04-26T18:06:35.3274702	Item Models: tolkienmobs
 2744b0cddb66f773a20c0030bb5381576093ca96 assets/tolkienmobs/models/item/ammolite_horse_armor.json
 be4f4d0eaa4937bd1aa214d8797a516f30f4540a assets/tolkienmobs/models/item/ammo_galadhrim_arrow.json
 5cd103fa46a9ba3855a613b86b4f3fb53fb2092c assets/tolkienmobs/models/item/ammo_utumno_arrow.json
@@ -139,6 +139,7 @@ fc0ac3241c24b08f9f4e60b952ddf7a2a11f2b50 assets/tolkienmobs/models/item/elven_ma
 63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/tolkienmobs/models/item/entityttmdwarf_spawn_egg.json
 63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/tolkienmobs/models/item/entityttmelementalgolem_spawn_egg.json
 63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/tolkienmobs/models/item/entityttmelves_spawn_egg.json
+63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/tolkienmobs/models/item/entityttmfellbeast_spawn_egg.json
 63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/tolkienmobs/models/item/entityttmfellspirit_spawn_egg.json
 63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/tolkienmobs/models/item/entityttmfrog_spawn_egg.json
 63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/tolkienmobs/models/item/entityttmgecko_spawn_egg.json

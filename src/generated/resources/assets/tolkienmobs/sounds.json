@@ -354,6 +354,19 @@
     ],
     "subtitle": "subtitles.tolkienmobs.mob.idle"
   },
+  "mob.fellbeast.flap": {
+    "sounds": [
+      "tolkienmobs:mob/fellbeast/fellbeast_flap"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.flap"
+  },
+  "mob.fellbeast.idle": {
+    "sounds": [
+      "tolkienmobs:mob/fellbeast/fellbeast_say1",
+      "tolkienmobs:mob/fellbeast/fellbeast_say2"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.idle"
+  },
   "mob.goblin.angry": {
     "sounds": [
       "tolkienmobs:mob/goblin/goblin_angry"
