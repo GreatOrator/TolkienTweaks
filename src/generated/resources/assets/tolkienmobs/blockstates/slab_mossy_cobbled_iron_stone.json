@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "tolkienmobs:block/slab_mossy_cobbled_iron_stone"
+    },
+    "type=double": {
+      "model": "tolkienmobs:block/mossy_cobbled_iron_stone"
+    },
+    "type=top": {
+      "model": "tolkienmobs:block/slab_mossy_cobbled_iron_stone_top"
+    }
+  }
+}

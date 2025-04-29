@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/button",
+  "textures": {
+    "texture": "tolkienmobs:block/mossy_iron_stone_bricks"
+  }
+}

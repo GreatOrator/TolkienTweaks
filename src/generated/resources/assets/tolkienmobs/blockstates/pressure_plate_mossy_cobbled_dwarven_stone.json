@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "tolkienmobs:block/pressure_plate_mossy_cobbled_dwarven_stone"
+    },
+    "powered=true": {
+      "model": "tolkienmobs:block/pressure_plate_mossy_cobbled_dwarven_stone_down"
+    }
+  }
+}

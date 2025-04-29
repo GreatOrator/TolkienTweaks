@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_mossy_cobbled_dwarven_stone": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tolkienmobs:mossy_cobbled_dwarven_stone"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tolkienmobs:stairs_mossy_cobbled_dwarven_stone"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_mossy_cobbled_dwarven_stone"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tolkienmobs:stairs_mossy_cobbled_dwarven_stone"
+    ]
+  }
+}

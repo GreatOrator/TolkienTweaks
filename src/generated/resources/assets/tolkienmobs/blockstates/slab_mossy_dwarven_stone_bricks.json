@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "tolkienmobs:block/slab_mossy_dwarven_stone_bricks"
+    },
+    "type=double": {
+      "model": "tolkienmobs:block/mossy_dwarven_stone_bricks"
+    },
+    "type=top": {
+      "model": "tolkienmobs:block/slab_mossy_dwarven_stone_bricks_top"
+    }
+  }
+}

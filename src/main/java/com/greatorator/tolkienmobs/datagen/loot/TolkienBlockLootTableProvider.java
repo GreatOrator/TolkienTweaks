@@ -318,6 +318,20 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.PRESSURE_PLATE_DARK_STONE.get());
         dropSelf(TolkienBlocks.DARK_STONE_BUTTON.get());
         dropSelf(TolkienBlocks.WALL_DARK_STONE.get());
+        dropSelf(TolkienBlocks.MOSSY_COBBLED_DARK_STONE.get());
+        dropSelf(TolkienBlocks.STAIRS_MOSSY_COBBLED_DARK_STONE.get());
+        this.add(TolkienBlocks.SLAB_MOSSY_COBBLED_DARK_STONE.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_MOSSY_COBBLED_DARK_STONE.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_MOSSY_COBBLED_DARK_STONE.get());
+        dropSelf(TolkienBlocks.MOSSY_COBBLED_DARK_STONE_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_MOSSY_COBBLED_DARK_STONE.get());
+        dropSelf(TolkienBlocks.MOSSY_DARK_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.STAIRS_MOSSY_DARK_STONE_BRICKS.get());
+        this.add(TolkienBlocks.SLAB_MOSSY_DARK_STONE_BRICKS.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_MOSSY_DARK_STONE_BRICKS.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_MOSSY_DARK_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.MOSSY_DARK_STONE_BRICKS_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_MOSSY_DARK_STONE_BRICKS.get());
         dropSelf(TolkienBlocks.CHISELED_DARK_STONE_BRICKS.get());
         dropSelf(TolkienBlocks.STAIRS_CHISELED_DARK_STONE_BRICKS.get());
         this.add(TolkienBlocks.SLAB_CHISELED_DARK_STONE_BRICKS.get(),
@@ -376,6 +390,20 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.PRESSURE_PLATE_COBBLED_DWARVEN_STONE.get());
         dropSelf(TolkienBlocks.COBBLED_DWARVEN_STONE_BUTTON.get());
         dropSelf(TolkienBlocks.WALL_COBBLED_DWARVEN_STONE.get());
+        dropSelf(TolkienBlocks.MOSSY_COBBLED_DWARVEN_STONE.get());
+        dropSelf(TolkienBlocks.STAIRS_MOSSY_COBBLED_DWARVEN_STONE.get());
+        this.add(TolkienBlocks.SLAB_MOSSY_COBBLED_DWARVEN_STONE.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_MOSSY_COBBLED_DWARVEN_STONE.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_MOSSY_COBBLED_DWARVEN_STONE.get());
+        dropSelf(TolkienBlocks.MOSSY_COBBLED_DWARVEN_STONE_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_MOSSY_COBBLED_DWARVEN_STONE.get());
+        dropSelf(TolkienBlocks.MOSSY_DWARVEN_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.STAIRS_MOSSY_DWARVEN_STONE_BRICKS.get());
+        this.add(TolkienBlocks.SLAB_MOSSY_DWARVEN_STONE_BRICKS.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_MOSSY_DWARVEN_STONE_BRICKS.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_MOSSY_DWARVEN_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.MOSSY_DWARVEN_STONE_BRICKS_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_MOSSY_DWARVEN_STONE_BRICKS.get());
         dropSelf(TolkienBlocks.CRACKED_DWARVEN_STONE_BRICKS.get());
         dropSelf(TolkienBlocks.STAIRS_CRACKED_DWARVEN_STONE_BRICKS.get());
         this.add(TolkienBlocks.SLAB_CRACKED_DWARVEN_STONE_BRICKS.get(),
@@ -441,6 +469,20 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.PRESSURE_PLATE_SMOOTH_ELVEN_MARBLE.get());
         dropSelf(TolkienBlocks.SMOOTH_ELVEN_MARBLE_BUTTON.get());
         dropSelf(TolkienBlocks.WALL_SMOOTH_ELVEN_MARBLE.get());
+        dropSelf(TolkienBlocks.MOSSY_ELVEN_MARBLE_BRICKS.get());
+        dropSelf(TolkienBlocks.STAIRS_MOSSY_ELVEN_MARBLE_BRICKS.get());
+        this.add(TolkienBlocks.SLAB_MOSSY_ELVEN_MARBLE_BRICKS.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_MOSSY_ELVEN_MARBLE_BRICKS.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_MOSSY_ELVEN_MARBLE_BRICKS.get());
+        dropSelf(TolkienBlocks.MOSSY_ELVEN_MARBLE_BRICKS_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_MOSSY_ELVEN_MARBLE_BRICKS.get());
+        dropSelf(TolkienBlocks.MOSSY_COBBLED_ELVEN_MARBLE.get());
+        dropSelf(TolkienBlocks.STAIRS_MOSSY_COBBLED_ELVEN_MARBLE.get());
+        this.add(TolkienBlocks.SLAB_MOSSY_COBBLED_ELVEN_MARBLE.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_MOSSY_COBBLED_ELVEN_MARBLE.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_MOSSY_COBBLED_ELVEN_MARBLE.get());
+        dropSelf(TolkienBlocks.MOSSY_COBBLED_ELVEN_MARBLE_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_MOSSY_COBBLED_ELVEN_MARBLE.get());
 
             // Mountain Stone
         dropSelf(TolkienBlocks.MOUNTAIN_STONE.get());
@@ -450,6 +492,13 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.PRESSURE_PLATE_MOUNTAIN_STONE.get());
         dropSelf(TolkienBlocks.MOUNTAIN_STONE_BUTTON.get());
         dropSelf(TolkienBlocks.WALL_MOUNTAIN_STONE.get());
+        dropSelf(TolkienBlocks.MOSSY_COBBLED_MOUNTAIN_STONE.get());
+        dropSelf(TolkienBlocks.STAIRS_MOSSY_COBBLED_MOUNTAIN_STONE.get());
+        this.add(TolkienBlocks.SLAB_MOSSY_COBBLED_MOUNTAIN_STONE.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_MOSSY_COBBLED_MOUNTAIN_STONE.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_MOSSY_COBBLED_MOUNTAIN_STONE.get());
+        dropSelf(TolkienBlocks.MOSSY_COBBLED_MOUNTAIN_STONE_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_MOSSY_COBBLED_MOUNTAIN_STONE.get());
         dropSelf(TolkienBlocks.CHISELED_MOUNTAIN_STONE_BRICKS.get());
         dropSelf(TolkienBlocks.STAIRS_CHISELED_MOUNTAIN_STONE_BRICKS.get());
         this.add(TolkienBlocks.SLAB_CHISELED_MOUNTAIN_STONE_BRICKS.get(),
@@ -485,6 +534,71 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.PRESSURE_PLATE_SMOOTH_MOUNTAIN_STONE.get());
         dropSelf(TolkienBlocks.SMOOTH_MOUNTAIN_STONE_BUTTON.get());
         dropSelf(TolkienBlocks.WALL_SMOOTH_MOUNTAIN_STONE.get());
+        dropSelf(TolkienBlocks.MOSSY_MOUNTAIN_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.STAIRS_MOSSY_MOUNTAIN_STONE_BRICKS.get());
+        this.add(TolkienBlocks.SLAB_MOSSY_MOUNTAIN_STONE_BRICKS.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_MOSSY_MOUNTAIN_STONE_BRICKS.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_MOSSY_MOUNTAIN_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.MOSSY_MOUNTAIN_STONE_BRICKS_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_MOSSY_MOUNTAIN_STONE_BRICKS.get());
+
+            // Iron Stone
+        dropSelf(TolkienBlocks.IRON_STONE.get());
+        dropSelf(TolkienBlocks.STAIRS_IRON_STONE.get());
+        this.add(TolkienBlocks.SLAB_IRON_STONE.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_IRON_STONE.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_IRON_STONE.get());
+        dropSelf(TolkienBlocks.IRON_STONE_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_IRON_STONE.get());
+        dropSelf(TolkienBlocks.MOSSY_COBBLED_IRON_STONE.get());
+        dropSelf(TolkienBlocks.STAIRS_MOSSY_COBBLED_IRON_STONE.get());
+        this.add(TolkienBlocks.SLAB_MOSSY_COBBLED_IRON_STONE.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_MOSSY_COBBLED_IRON_STONE.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_MOSSY_COBBLED_IRON_STONE.get());
+        dropSelf(TolkienBlocks.MOSSY_COBBLED_IRON_STONE_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_MOSSY_COBBLED_IRON_STONE.get());
+        dropSelf(TolkienBlocks.MOSSY_IRON_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.STAIRS_MOSSY_IRON_STONE_BRICKS.get());
+        this.add(TolkienBlocks.SLAB_MOSSY_IRON_STONE_BRICKS.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_MOSSY_IRON_STONE_BRICKS.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_MOSSY_IRON_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.MOSSY_IRON_STONE_BRICKS_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_MOSSY_IRON_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.CHISELED_IRON_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.STAIRS_CHISELED_IRON_STONE_BRICKS.get());
+        this.add(TolkienBlocks.SLAB_CHISELED_IRON_STONE_BRICKS.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_CHISELED_IRON_STONE_BRICKS.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_CHISELED_IRON_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.CHISELED_IRON_STONE_BRICKS_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_CHISELED_IRON_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.COBBLED_IRON_STONE.get());
+        dropSelf(TolkienBlocks.STAIRS_COBBLED_IRON_STONE.get());
+        this.add(TolkienBlocks.SLAB_COBBLED_IRON_STONE.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_COBBLED_IRON_STONE.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_COBBLED_IRON_STONE.get());
+        dropSelf(TolkienBlocks.COBBLED_IRON_STONE_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_COBBLED_IRON_STONE.get());
+        dropSelf(TolkienBlocks.CRACKED_IRON_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.STAIRS_CRACKED_IRON_STONE_BRICKS.get());
+        this.add(TolkienBlocks.SLAB_CRACKED_IRON_STONE_BRICKS.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_CRACKED_IRON_STONE_BRICKS.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_CRACKED_IRON_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.CRACKED_IRON_STONE_BRICKS_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_CRACKED_IRON_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.IRON_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.STAIRS_IRON_STONE_BRICKS.get());
+        this.add(TolkienBlocks.SLAB_IRON_STONE_BRICKS.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_IRON_STONE_BRICKS.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_IRON_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.IRON_STONE_BRICKS_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_IRON_STONE_BRICKS.get());
+        dropSelf(TolkienBlocks.SMOOTH_IRON_STONE.get());
+        dropSelf(TolkienBlocks.STAIRS_SMOOTH_IRON_STONE.get());
+        this.add(TolkienBlocks.SLAB_SMOOTH_IRON_STONE.get(),
+                block -> createSlabItemTable(TolkienBlocks.SLAB_SMOOTH_IRON_STONE.get()));
+        dropSelf(TolkienBlocks.PRESSURE_PLATE_SMOOTH_IRON_STONE.get());
+        dropSelf(TolkienBlocks.SMOOTH_IRON_STONE_BUTTON.get());
+        dropSelf(TolkienBlocks.WALL_SMOOTH_IRON_STONE.get());
 
         //Flowers & Plants
         dropSelf(TolkienBlocks.FLOWER_SIMBELMYNE.get());

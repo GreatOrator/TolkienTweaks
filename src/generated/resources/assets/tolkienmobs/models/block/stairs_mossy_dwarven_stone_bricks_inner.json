@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/inner_stairs",
+  "textures": {
+    "bottom": "tolkienmobs:block/mossy_dwarven_stone_bricks",
+    "side": "tolkienmobs:block/mossy_dwarven_stone_bricks",
+    "top": "tolkienmobs:block/mossy_dwarven_stone_bricks"
+  }
+}

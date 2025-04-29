@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "tolkienmobs:block/iron_stone_bricks",
+    "side": "tolkienmobs:block/iron_stone_bricks",
+    "top": "tolkienmobs:block/iron_stone_bricks"
+  }
+}

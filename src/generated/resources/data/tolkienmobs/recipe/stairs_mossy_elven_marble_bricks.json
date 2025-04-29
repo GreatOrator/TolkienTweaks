@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "mossy_elven_marble_bricks",
+  "key": {
+    "#": {
+      "item": "tolkienmobs:mossy_elven_marble_bricks"
+    }
+  },
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "result": {
+    "count": 4,
+    "id": "tolkienmobs:stairs_mossy_elven_marble_bricks"
+  }
+}

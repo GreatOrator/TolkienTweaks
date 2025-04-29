@@ -69,6 +69,7 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         blockItem(TolkienBlocks.PRESSURE_PLATE_MORGULIRON);
         blockItem(TolkienBlocks.TRAPDOOR_MORGULIRON, "_bottom");
         blockItem(TolkienBlocks.BARREL_MORGULIRON);
+
         //Ammolite
         blockWithItem(TolkienBlocks.ORE_AMMOLITE);
         blockWithItem(TolkienBlocks.ORE_END_AMMOLITE);
@@ -79,6 +80,7 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         paneBlockWithRenderType(TolkienBlocks.PANE_AMMOLITE.get(), modLoc("block/block_ammolite"), modLoc("block/ammolite_pane_top"), "translucent");
 
         blockItem(TolkienBlocks.BLOCK_AMMOLITE);
+
         /* Wood & Foliage */
             // Mallorn
         logBlock((RotatedPillarBlock)TolkienBlocks.LOG_MALLORN.get());
@@ -336,6 +338,12 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_DARK_STONE.get()), blockTexture(TolkienBlocks.DARK_STONE.get()));
         buttonBlock(((ButtonBlock) TolkienBlocks.DARK_STONE_BUTTON.get()), blockTexture(TolkienBlocks.DARK_STONE.get()));
         wallBlock(((WallBlock) TolkienBlocks.WALL_DARK_STONE.get()), blockTexture(TolkienBlocks.DARK_STONE.get()));
+        blockWithItem(TolkienBlocks.MOSSY_COBBLED_DARK_STONE);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_MOSSY_COBBLED_DARK_STONE.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_DARK_STONE.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_MOSSY_COBBLED_DARK_STONE.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_DARK_STONE.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_DARK_STONE.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_MOSSY_COBBLED_DARK_STONE.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_DARK_STONE.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.MOSSY_COBBLED_DARK_STONE_BUTTON.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_DARK_STONE.get()));
+        wallBlock(((WallBlock) TolkienBlocks.WALL_MOSSY_COBBLED_DARK_STONE.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_DARK_STONE.get()));
         blockWithItem(TolkienBlocks.CHISELED_DARK_STONE_BRICKS);
         stairsBlock(((StairBlock) TolkienBlocks.STAIRS_CHISELED_DARK_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CHISELED_DARK_STONE_BRICKS.get()));
         slabBlock(((SlabBlock) TolkienBlocks.SLAB_CHISELED_DARK_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CHISELED_DARK_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CHISELED_DARK_STONE_BRICKS.get()));
@@ -366,6 +374,12 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_SMOOTH_DARK_STONE.get()), blockTexture(TolkienBlocks.SMOOTH_DARK_STONE.get()));
         buttonBlock(((ButtonBlock) TolkienBlocks.SMOOTH_DARK_STONE_BUTTON.get()), blockTexture(TolkienBlocks.SMOOTH_DARK_STONE.get()));
         wallBlock(((WallBlock) TolkienBlocks.WALL_SMOOTH_DARK_STONE.get()), blockTexture(TolkienBlocks.SMOOTH_DARK_STONE.get()));
+        blockWithItem(TolkienBlocks.MOSSY_DARK_STONE_BRICKS);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_MOSSY_DARK_STONE_BRICKS.get()), blockTexture(TolkienBlocks.MOSSY_DARK_STONE_BRICKS.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_MOSSY_DARK_STONE_BRICKS.get()), blockTexture(TolkienBlocks.MOSSY_DARK_STONE_BRICKS.get()), blockTexture(TolkienBlocks.MOSSY_DARK_STONE_BRICKS.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_MOSSY_DARK_STONE_BRICKS.get()), blockTexture(TolkienBlocks.MOSSY_DARK_STONE_BRICKS.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.MOSSY_DARK_STONE_BRICKS_BUTTON.get()), blockTexture(TolkienBlocks.MOSSY_DARK_STONE_BRICKS.get()));
+        wallBlock(((WallBlock) TolkienBlocks.WALL_MOSSY_DARK_STONE_BRICKS.get()), blockTexture(TolkienBlocks.MOSSY_DARK_STONE_BRICKS.get()));
 
         blockItem(TolkienBlocks.STAIRS_SMOOTH_DARK_STONE);
         blockItem(TolkienBlocks.SLAB_SMOOTH_DARK_STONE);
@@ -388,6 +402,12 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         blockItem(TolkienBlocks.STAIRS_DARK_STONE);
         blockItem(TolkienBlocks.SLAB_DARK_STONE);
         blockItem(TolkienBlocks.PRESSURE_PLATE_DARK_STONE);
+        blockItem(TolkienBlocks.STAIRS_MOSSY_COBBLED_DARK_STONE);
+        blockItem(TolkienBlocks.SLAB_MOSSY_COBBLED_DARK_STONE);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_MOSSY_COBBLED_DARK_STONE);
+        blockItem(TolkienBlocks.STAIRS_MOSSY_DARK_STONE_BRICKS);
+        blockItem(TolkienBlocks.SLAB_MOSSY_DARK_STONE_BRICKS);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_MOSSY_DARK_STONE_BRICKS);
 
             // Dwarven Stone
         blockWithItem(TolkienBlocks.DWARVEN_STONE);
@@ -396,6 +416,12 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_DWARVEN_STONE.get()), blockTexture(TolkienBlocks.DWARVEN_STONE.get()));
         buttonBlock(((ButtonBlock) TolkienBlocks.DWARVEN_STONE_BUTTON.get()), blockTexture(TolkienBlocks.DWARVEN_STONE.get()));
         wallBlock(((WallBlock) TolkienBlocks.WALL_DWARVEN_STONE.get()), blockTexture(TolkienBlocks.DWARVEN_STONE.get()));
+        blockWithItem(TolkienBlocks.MOSSY_DWARVEN_STONE_BRICKS);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_MOSSY_DWARVEN_STONE_BRICKS.get()), blockTexture(TolkienBlocks.MOSSY_DWARVEN_STONE_BRICKS.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_MOSSY_DWARVEN_STONE_BRICKS.get()), blockTexture(TolkienBlocks.MOSSY_DWARVEN_STONE_BRICKS.get()), blockTexture(TolkienBlocks.MOSSY_DWARVEN_STONE_BRICKS.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_MOSSY_DWARVEN_STONE_BRICKS.get()), blockTexture(TolkienBlocks.MOSSY_DWARVEN_STONE_BRICKS.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.MOSSY_DWARVEN_STONE_BRICKS_BUTTON.get()), blockTexture(TolkienBlocks.MOSSY_DWARVEN_STONE_BRICKS.get()));
+        wallBlock(((WallBlock) TolkienBlocks.WALL_MOSSY_DWARVEN_STONE_BRICKS.get()), blockTexture(TolkienBlocks.MOSSY_DWARVEN_STONE_BRICKS.get()));
         blockWithItem(TolkienBlocks.CHISELED_DWARVEN_STONE_BRICKS);
         stairsBlock(((StairBlock) TolkienBlocks.STAIRS_CHISELED_DWARVEN_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CHISELED_DWARVEN_STONE_BRICKS.get()));
         slabBlock(((SlabBlock) TolkienBlocks.SLAB_CHISELED_DWARVEN_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CHISELED_DWARVEN_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CHISELED_DWARVEN_STONE_BRICKS.get()));
@@ -426,6 +452,12 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_SMOOTH_DWARVEN_STONE.get()), blockTexture(TolkienBlocks.SMOOTH_DWARVEN_STONE.get()));
         buttonBlock(((ButtonBlock) TolkienBlocks.SMOOTH_DWARVEN_STONE_BUTTON.get()), blockTexture(TolkienBlocks.SMOOTH_DWARVEN_STONE.get()));
         wallBlock(((WallBlock) TolkienBlocks.WALL_SMOOTH_DWARVEN_STONE.get()), blockTexture(TolkienBlocks.SMOOTH_DWARVEN_STONE.get()));
+        blockWithItem(TolkienBlocks.MOSSY_COBBLED_DWARVEN_STONE);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_MOSSY_COBBLED_DWARVEN_STONE.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_DWARVEN_STONE.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_MOSSY_COBBLED_DWARVEN_STONE.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_DWARVEN_STONE.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_DWARVEN_STONE.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_MOSSY_COBBLED_DWARVEN_STONE.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_DWARVEN_STONE.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.MOSSY_COBBLED_DWARVEN_STONE_BUTTON.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_DWARVEN_STONE.get()));
+        wallBlock(((WallBlock) TolkienBlocks.WALL_MOSSY_COBBLED_DWARVEN_STONE.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_DWARVEN_STONE.get()));
 
         blockItem(TolkienBlocks.STAIRS_SMOOTH_DWARVEN_STONE);
         blockItem(TolkienBlocks.SLAB_SMOOTH_DWARVEN_STONE);
@@ -448,6 +480,12 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         blockItem(TolkienBlocks.STAIRS_DWARVEN_STONE);
         blockItem(TolkienBlocks.SLAB_DWARVEN_STONE);
         blockItem(TolkienBlocks.PRESSURE_PLATE_DWARVEN_STONE);
+        blockItem(TolkienBlocks.STAIRS_MOSSY_DWARVEN_STONE_BRICKS);
+        blockItem(TolkienBlocks.SLAB_MOSSY_DWARVEN_STONE_BRICKS);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_MOSSY_DWARVEN_STONE_BRICKS);
+        blockItem(TolkienBlocks.STAIRS_MOSSY_COBBLED_DWARVEN_STONE);
+        blockItem(TolkienBlocks.SLAB_MOSSY_COBBLED_DWARVEN_STONE);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_MOSSY_COBBLED_DWARVEN_STONE);
 
             // Elven Marble
         blockWithItem(TolkienBlocks.ELVEN_MARBLE);
@@ -486,6 +524,96 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_SMOOTH_ELVEN_MARBLE.get()), blockTexture(TolkienBlocks.SMOOTH_ELVEN_MARBLE.get()));
         buttonBlock(((ButtonBlock) TolkienBlocks.SMOOTH_ELVEN_MARBLE_BUTTON.get()), blockTexture(TolkienBlocks.SMOOTH_ELVEN_MARBLE.get()));
         wallBlock(((WallBlock) TolkienBlocks.WALL_SMOOTH_ELVEN_MARBLE.get()), blockTexture(TolkienBlocks.SMOOTH_ELVEN_MARBLE.get()));
+        blockWithItem(TolkienBlocks.MOSSY_ELVEN_MARBLE_BRICKS);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_MOSSY_ELVEN_MARBLE_BRICKS.get()), blockTexture(TolkienBlocks.MOSSY_ELVEN_MARBLE_BRICKS.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_MOSSY_ELVEN_MARBLE_BRICKS.get()), blockTexture(TolkienBlocks.MOSSY_ELVEN_MARBLE_BRICKS.get()), blockTexture(TolkienBlocks.MOSSY_ELVEN_MARBLE_BRICKS.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_MOSSY_ELVEN_MARBLE_BRICKS.get()), blockTexture(TolkienBlocks.MOSSY_ELVEN_MARBLE_BRICKS.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.MOSSY_ELVEN_MARBLE_BRICKS_BUTTON.get()), blockTexture(TolkienBlocks.MOSSY_ELVEN_MARBLE_BRICKS.get()));
+        wallBlock(((WallBlock) TolkienBlocks.WALL_MOSSY_ELVEN_MARBLE_BRICKS.get()), blockTexture(TolkienBlocks.MOSSY_ELVEN_MARBLE_BRICKS.get()));
+        blockWithItem(TolkienBlocks.MOSSY_COBBLED_ELVEN_MARBLE);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_MOSSY_COBBLED_ELVEN_MARBLE.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_ELVEN_MARBLE.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_MOSSY_COBBLED_ELVEN_MARBLE.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_ELVEN_MARBLE.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_ELVEN_MARBLE.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_MOSSY_COBBLED_ELVEN_MARBLE.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_ELVEN_MARBLE.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.MOSSY_COBBLED_ELVEN_MARBLE_BUTTON.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_ELVEN_MARBLE.get()));
+        wallBlock(((WallBlock) TolkienBlocks.WALL_MOSSY_COBBLED_ELVEN_MARBLE.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_ELVEN_MARBLE.get()));
+
+            // Iron Stone
+        blockWithItem(TolkienBlocks.IRON_STONE);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_IRON_STONE.get()), blockTexture(TolkienBlocks.IRON_STONE.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_IRON_STONE.get()), blockTexture(TolkienBlocks.IRON_STONE.get()), blockTexture(TolkienBlocks.IRON_STONE.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_IRON_STONE.get()), blockTexture(TolkienBlocks.IRON_STONE.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.IRON_STONE_BUTTON.get()), blockTexture(TolkienBlocks.IRON_STONE.get()));
+        wallBlock(((WallBlock) TolkienBlocks.WALL_IRON_STONE.get()), blockTexture(TolkienBlocks.IRON_STONE.get()));
+        blockWithItem(TolkienBlocks.CHISELED_IRON_STONE_BRICKS);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_CHISELED_IRON_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CHISELED_IRON_STONE_BRICKS.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_CHISELED_IRON_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CHISELED_IRON_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CHISELED_IRON_STONE_BRICKS.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_CHISELED_IRON_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CHISELED_IRON_STONE_BRICKS.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.CHISELED_IRON_STONE_BRICKS_BUTTON.get()), blockTexture(TolkienBlocks.CHISELED_IRON_STONE_BRICKS.get()));
+        wallBlock(((WallBlock) TolkienBlocks.WALL_CHISELED_IRON_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CHISELED_IRON_STONE_BRICKS.get()));
+        blockWithItem(TolkienBlocks.COBBLED_IRON_STONE);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_COBBLED_IRON_STONE.get()), blockTexture(TolkienBlocks.COBBLED_IRON_STONE.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_COBBLED_IRON_STONE.get()), blockTexture(TolkienBlocks.COBBLED_IRON_STONE.get()), blockTexture(TolkienBlocks.COBBLED_IRON_STONE.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_COBBLED_IRON_STONE.get()), blockTexture(TolkienBlocks.COBBLED_IRON_STONE.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.COBBLED_IRON_STONE_BUTTON.get()), blockTexture(TolkienBlocks.COBBLED_IRON_STONE.get()));
+        wallBlock(((WallBlock) TolkienBlocks.WALL_COBBLED_IRON_STONE.get()), blockTexture(TolkienBlocks.COBBLED_IRON_STONE.get()));
+        blockWithItem(TolkienBlocks.CRACKED_IRON_STONE_BRICKS);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_CRACKED_IRON_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CRACKED_IRON_STONE_BRICKS.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_CRACKED_IRON_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CRACKED_IRON_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CRACKED_IRON_STONE_BRICKS.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_CRACKED_IRON_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CRACKED_IRON_STONE_BRICKS.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.CRACKED_IRON_STONE_BRICKS_BUTTON.get()), blockTexture(TolkienBlocks.CRACKED_IRON_STONE_BRICKS.get()));
+        wallBlock(((WallBlock) TolkienBlocks.WALL_CRACKED_IRON_STONE_BRICKS.get()), blockTexture(TolkienBlocks.CRACKED_IRON_STONE_BRICKS.get()));
+        blockWithItem(TolkienBlocks.IRON_STONE_BRICKS);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_IRON_STONE_BRICKS.get()), blockTexture(TolkienBlocks.IRON_STONE_BRICKS.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_IRON_STONE_BRICKS.get()), blockTexture(TolkienBlocks.IRON_STONE_BRICKS.get()), blockTexture(TolkienBlocks.IRON_STONE_BRICKS.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_IRON_STONE_BRICKS.get()), blockTexture(TolkienBlocks.IRON_STONE_BRICKS.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.IRON_STONE_BRICKS_BUTTON.get()), blockTexture(TolkienBlocks.IRON_STONE_BRICKS.get()));
+        wallBlock(((WallBlock) TolkienBlocks.WALL_IRON_STONE_BRICKS.get()), blockTexture(TolkienBlocks.IRON_STONE_BRICKS.get()));
+        blockWithItem(TolkienBlocks.SMOOTH_IRON_STONE);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_SMOOTH_IRON_STONE.get()), blockTexture(TolkienBlocks.SMOOTH_IRON_STONE.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_SMOOTH_IRON_STONE.get()), blockTexture(TolkienBlocks.SMOOTH_IRON_STONE.get()), blockTexture(TolkienBlocks.SMOOTH_IRON_STONE.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_SMOOTH_IRON_STONE.get()), blockTexture(TolkienBlocks.SMOOTH_IRON_STONE.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.SMOOTH_IRON_STONE_BUTTON.get()), blockTexture(TolkienBlocks.SMOOTH_IRON_STONE.get()));
+        wallBlock(((WallBlock) TolkienBlocks.WALL_SMOOTH_IRON_STONE.get()), blockTexture(TolkienBlocks.SMOOTH_IRON_STONE.get()));
+        blockWithItem(TolkienBlocks.MOSSY_IRON_STONE_BRICKS);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_MOSSY_IRON_STONE_BRICKS.get()), blockTexture(TolkienBlocks.MOSSY_IRON_STONE_BRICKS.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_MOSSY_IRON_STONE_BRICKS.get()), blockTexture(TolkienBlocks.MOSSY_IRON_STONE_BRICKS.get()), blockTexture(TolkienBlocks.MOSSY_IRON_STONE_BRICKS.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_MOSSY_IRON_STONE_BRICKS.get()), blockTexture(TolkienBlocks.MOSSY_IRON_STONE_BRICKS.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.MOSSY_IRON_STONE_BRICKS_BUTTON.get()), blockTexture(TolkienBlocks.MOSSY_IRON_STONE_BRICKS.get()));
+        wallBlock(((WallBlock) TolkienBlocks.WALL_MOSSY_IRON_STONE_BRICKS.get()), blockTexture(TolkienBlocks.MOSSY_IRON_STONE_BRICKS.get()));
+        blockWithItem(TolkienBlocks.MOSSY_COBBLED_IRON_STONE);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_MOSSY_COBBLED_IRON_STONE.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_IRON_STONE.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_MOSSY_COBBLED_IRON_STONE.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_IRON_STONE.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_IRON_STONE.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_MOSSY_COBBLED_IRON_STONE.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_IRON_STONE.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.MOSSY_COBBLED_IRON_STONE_BUTTON.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_IRON_STONE.get()));
+        wallBlock(((WallBlock) TolkienBlocks.WALL_MOSSY_COBBLED_IRON_STONE.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_IRON_STONE.get()));
+
+        blockItem(TolkienBlocks.STAIRS_SMOOTH_IRON_STONE);
+        blockItem(TolkienBlocks.SLAB_SMOOTH_IRON_STONE);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_SMOOTH_IRON_STONE);
+        blockItem(TolkienBlocks.STAIRS_IRON_STONE_BRICKS);
+        blockItem(TolkienBlocks.SLAB_IRON_STONE_BRICKS);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_IRON_STONE_BRICKS);
+        blockItem(TolkienBlocks.STAIRS_CRACKED_IRON_STONE_BRICKS);
+        blockItem(TolkienBlocks.SLAB_CRACKED_IRON_STONE_BRICKS);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_CRACKED_IRON_STONE_BRICKS);
+        blockItem(TolkienBlocks.STAIRS_COBBLED_IRON_STONE);
+        blockItem(TolkienBlocks.SLAB_COBBLED_IRON_STONE);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_COBBLED_IRON_STONE);
+        blockItem(TolkienBlocks.STAIRS_IRON_STONE_BRICKS);
+        blockItem(TolkienBlocks.SLAB_IRON_STONE_BRICKS);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_IRON_STONE_BRICKS);
+        blockItem(TolkienBlocks.STAIRS_CHISELED_IRON_STONE_BRICKS);
+        blockItem(TolkienBlocks.SLAB_CHISELED_IRON_STONE_BRICKS);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_CHISELED_IRON_STONE_BRICKS);
+        blockItem(TolkienBlocks.STAIRS_IRON_STONE);
+        blockItem(TolkienBlocks.SLAB_IRON_STONE);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_IRON_STONE);
+        blockItem(TolkienBlocks.STAIRS_MOSSY_IRON_STONE_BRICKS);
+        blockItem(TolkienBlocks.SLAB_MOSSY_IRON_STONE_BRICKS);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_MOSSY_IRON_STONE_BRICKS);
+        blockItem(TolkienBlocks.STAIRS_MOSSY_COBBLED_IRON_STONE);
+        blockItem(TolkienBlocks.SLAB_MOSSY_COBBLED_IRON_STONE);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_MOSSY_COBBLED_IRON_STONE);
 
         blockItem(TolkienBlocks.STAIRS_SMOOTH_ELVEN_MARBLE);
         blockItem(TolkienBlocks.SLAB_SMOOTH_ELVEN_MARBLE);
@@ -508,6 +636,12 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         blockItem(TolkienBlocks.STAIRS_ELVEN_MARBLE);
         blockItem(TolkienBlocks.SLAB_ELVEN_MARBLE);
         blockItem(TolkienBlocks.PRESSURE_PLATE_ELVEN_MARBLE);
+        blockItem(TolkienBlocks.STAIRS_MOSSY_ELVEN_MARBLE_BRICKS);
+        blockItem(TolkienBlocks.SLAB_MOSSY_ELVEN_MARBLE_BRICKS);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_MOSSY_ELVEN_MARBLE_BRICKS);
+        blockItem(TolkienBlocks.STAIRS_MOSSY_COBBLED_ELVEN_MARBLE);
+        blockItem(TolkienBlocks.SLAB_MOSSY_COBBLED_ELVEN_MARBLE);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_MOSSY_COBBLED_ELVEN_MARBLE);
 
             // Mountain Stone
         blockWithItem(TolkienBlocks.MOUNTAIN_STONE);
@@ -546,6 +680,18 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_SMOOTH_MOUNTAIN_STONE.get()), blockTexture(TolkienBlocks.SMOOTH_MOUNTAIN_STONE.get()));
         buttonBlock(((ButtonBlock) TolkienBlocks.SMOOTH_MOUNTAIN_STONE_BUTTON.get()), blockTexture(TolkienBlocks.SMOOTH_MOUNTAIN_STONE.get()));
         wallBlock(((WallBlock) TolkienBlocks.WALL_SMOOTH_MOUNTAIN_STONE.get()), blockTexture(TolkienBlocks.SMOOTH_MOUNTAIN_STONE.get()));
+        blockWithItem(TolkienBlocks.MOSSY_COBBLED_MOUNTAIN_STONE);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_MOSSY_COBBLED_MOUNTAIN_STONE.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_MOUNTAIN_STONE.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_MOSSY_COBBLED_MOUNTAIN_STONE.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_MOUNTAIN_STONE.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_MOUNTAIN_STONE.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_MOSSY_COBBLED_MOUNTAIN_STONE.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_MOUNTAIN_STONE.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.MOSSY_COBBLED_MOUNTAIN_STONE_BUTTON.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_MOUNTAIN_STONE.get()));
+        wallBlock(((WallBlock) TolkienBlocks.WALL_MOSSY_COBBLED_MOUNTAIN_STONE.get()), blockTexture(TolkienBlocks.MOSSY_COBBLED_MOUNTAIN_STONE.get()));
+        blockWithItem(TolkienBlocks.MOSSY_MOUNTAIN_STONE_BRICKS);
+        stairsBlock(((StairBlock) TolkienBlocks.STAIRS_MOSSY_MOUNTAIN_STONE_BRICKS.get()), blockTexture(TolkienBlocks.MOSSY_MOUNTAIN_STONE_BRICKS.get()));
+        slabBlock(((SlabBlock) TolkienBlocks.SLAB_MOSSY_MOUNTAIN_STONE_BRICKS.get()), blockTexture(TolkienBlocks.MOSSY_MOUNTAIN_STONE_BRICKS.get()), blockTexture(TolkienBlocks.MOSSY_MOUNTAIN_STONE_BRICKS.get()));
+        pressurePlateBlock(((PressurePlateBlock) TolkienBlocks.PRESSURE_PLATE_MOSSY_MOUNTAIN_STONE_BRICKS.get()), blockTexture(TolkienBlocks.MOSSY_MOUNTAIN_STONE_BRICKS.get()));
+        buttonBlock(((ButtonBlock) TolkienBlocks.MOSSY_MOUNTAIN_STONE_BRICKS_BUTTON.get()), blockTexture(TolkienBlocks.MOSSY_MOUNTAIN_STONE_BRICKS.get()));
+        wallBlock(((WallBlock) TolkienBlocks.WALL_MOSSY_MOUNTAIN_STONE_BRICKS.get()), blockTexture(TolkienBlocks.MOSSY_MOUNTAIN_STONE_BRICKS.get()));
 
         blockItem(TolkienBlocks.STAIRS_SMOOTH_MOUNTAIN_STONE);
         blockItem(TolkienBlocks.SLAB_SMOOTH_MOUNTAIN_STONE);
@@ -568,6 +714,12 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         blockItem(TolkienBlocks.STAIRS_MOUNTAIN_STONE);
         blockItem(TolkienBlocks.SLAB_MOUNTAIN_STONE);
         blockItem(TolkienBlocks.PRESSURE_PLATE_MOUNTAIN_STONE);
+        blockItem(TolkienBlocks.STAIRS_MOSSY_COBBLED_MOUNTAIN_STONE);
+        blockItem(TolkienBlocks.SLAB_MOSSY_COBBLED_MOUNTAIN_STONE);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_MOSSY_COBBLED_MOUNTAIN_STONE);
+        blockItem(TolkienBlocks.STAIRS_MOSSY_MOUNTAIN_STONE_BRICKS);
+        blockItem(TolkienBlocks.SLAB_MOSSY_MOUNTAIN_STONE_BRICKS);
+        blockItem(TolkienBlocks.PRESSURE_PLATE_MOSSY_MOUNTAIN_STONE_BRICKS);
 
         //Flowers & Plants
         makeFlower(TolkienBlocks.FLOWER_SIMBELMYNE, TolkienBlocks.POTTED_FLOWER_SIMBELMYNE);
