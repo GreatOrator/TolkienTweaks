@@ -21,7 +21,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:strong_regeneration"
+              "id": "minecraft:strong_swiftness"
             },
             {
               "add": false,

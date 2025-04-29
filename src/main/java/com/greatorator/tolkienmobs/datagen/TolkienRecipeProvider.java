@@ -63,6 +63,8 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
         smeltingList(TolkienBlocks.ELVEN_MARBLE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.SMOOTH_ELVEN_MARBLE, 0.25F, 200);
         smeltingList(TolkienBlocks.COBBLED_MOUNTAIN_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.MOUNTAIN_STONE, 0.25F, 200);
         smeltingList(TolkienBlocks.MOUNTAIN_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.SMOOTH_MOUNTAIN_STONE, 0.25F, 200);
+        smeltingList(TolkienBlocks.COBBLED_IRON_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.IRON_STONE, 0.25F, 200);
+        smeltingList(TolkienBlocks.IRON_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.SMOOTH_IRON_STONE, 0.25F, 200);
 
         blastingList(TolkienBlocks.COBBLED_DARK_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.DARK_STONE, 0.25F, 100);
         blastingList(TolkienBlocks.DARK_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.SMOOTH_DARK_STONE, 0.25F, 100);
@@ -72,6 +74,8 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
         blastingList(TolkienBlocks.ELVEN_MARBLE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.SMOOTH_ELVEN_MARBLE, 0.25F, 100);
         blastingList(TolkienBlocks.COBBLED_MOUNTAIN_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.MOUNTAIN_STONE, 0.25F, 100);
         blastingList(TolkienBlocks.MOUNTAIN_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.SMOOTH_MOUNTAIN_STONE, 0.25F, 100);
+        blastingList(TolkienBlocks.COBBLED_IRON_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.IRON_STONE, 0.25F, 100);
+        blastingList(TolkienBlocks.IRON_STONE, pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, TolkienBlocks.SMOOTH_IRON_STONE, 0.25F, 100);
 
         //Everything Else
         woodListRecipe(pRecipeOutput, RecipeCategory.BUILDING_BLOCKS, "mallorn", TolkienBlocks.PLANKS_MALLORN.get(), TolkienBlocks.LOG_MALLORN.get(), TolkienBlocks.WOOD_MALLORN.get(), TolkienBlocks.STAIRS_MALLORN.get(), TolkienBlocks.SLAB_MALLORN.get(), TolkienBlocks.PRESSURE_PLATE_MALLORN.get(), TolkienBlocks.MALLORN_BUTTON.get(), TolkienBlocks.DOOR_MALLORN.get(), TolkienBlocks.TRAPDOOR_MALLORN.get(), TolkienBlocks.FENCE_MALLORN.get(), TolkienBlocks.FENCE_GATE_MALLORN.get(), TolkienBlocks.MALLORN_SIGN.get(), TolkienBlocks.MALLORN_HANGING_SIGN.get(), TolkienBlocks.LADDER_MALLORN.get(), TolkienItems.MALLORN_BOAT, TolkienItems.MALLORN_CHEST_BOAT, TolkienBlocks.TORCH_MALLORN, TolkienBlocks.BARREL_MALLORN, TolkienBlocks.LEAFPILE_MALLORN, TolkienBlocks.LEAVES_MALLORN);
