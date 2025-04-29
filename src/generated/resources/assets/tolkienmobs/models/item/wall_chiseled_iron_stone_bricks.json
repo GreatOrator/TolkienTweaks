@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/wall_inventory",
+  "textures": {
+    "wall": "tolkienmobs:block/chiseled_iron_stone_bricks"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "mossy_dwarven_stone_bricks",
+  "ingredients": [
+    {
+      "item": "tolkienmobs:mossy_dwarven_stone_bricks"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:mossy_dwarven_stone_bricks_button"
+  }
+}

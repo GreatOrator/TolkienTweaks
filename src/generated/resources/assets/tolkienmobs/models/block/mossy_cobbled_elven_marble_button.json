@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/button",
+  "textures": {
+    "texture": "tolkienmobs:block/mossy_cobbled_elven_marble"
+  }
+}

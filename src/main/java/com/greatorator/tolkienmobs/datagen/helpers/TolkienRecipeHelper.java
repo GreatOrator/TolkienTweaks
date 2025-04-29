@@ -75,6 +75,21 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
         chestBoat(pRecipeOutput, chestBoat, planks);
     }
 
+    protected static void mossyRecipe(RecipeOutput pRecipeOutput, ItemLike wall, ItemLike base) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, wall)
+                .pattern("IV ")
+                .define('I', base)
+                .define('V', Blocks.VINE)
+                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(Blocks.VINE))
+                .save(pRecipeOutput, MODID + ":" + getConversionRecipeName(wall, Blocks.VINE));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, wall)
+                .pattern("IV ")
+                .define('I', base)
+                .define('V', Blocks.MOSS_BLOCK)
+                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(Blocks.MOSS_BLOCK))
+                .save(pRecipeOutput, MODID + ":" + getConversionRecipeName(wall, Blocks.MOSS_BLOCK));
+    }
+
     protected static void stoneListRecipe(RecipeOutput pRecipeOutput, RecipeCategory pCategory, String group, ItemLike wall, ItemLike button, ItemLike stair, ItemLike block, ItemLike slab, ItemLike plate) {
         stairBuilder(stair, Ingredient.of(block)).group(group).unlockedBy("has_"+group, has(block)).save(pRecipeOutput);
         slab(pRecipeOutput, pCategory, slab, block);

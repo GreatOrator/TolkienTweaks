@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "tolkienmobs:iron_stone_bricks"
+    },
+    "V": {
+      "item": "minecraft:moss_block"
+    }
+  },
+  "pattern": [
+    "IV "
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:mossy_iron_stone_bricks"
+  }
+}

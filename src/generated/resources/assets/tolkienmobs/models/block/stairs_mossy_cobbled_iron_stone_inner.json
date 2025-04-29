@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/inner_stairs",
+  "textures": {
+    "bottom": "tolkienmobs:block/mossy_cobbled_iron_stone",
+    "side": "tolkienmobs:block/mossy_cobbled_iron_stone",
+    "top": "tolkienmobs:block/mossy_cobbled_iron_stone"
+  }
+}

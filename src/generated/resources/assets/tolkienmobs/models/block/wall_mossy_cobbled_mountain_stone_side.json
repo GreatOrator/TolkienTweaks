@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/template_wall_side",
+  "textures": {
+    "wall": "tolkienmobs:block/mossy_cobbled_mountain_stone"
+  }
+}

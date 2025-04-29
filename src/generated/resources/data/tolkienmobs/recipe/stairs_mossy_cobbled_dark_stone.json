@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "mossy_cobbled_dark_stone",
+  "key": {
+    "#": {
+      "item": "tolkienmobs:mossy_cobbled_dark_stone"
+    }
+  },
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "result": {
+    "count": 4,
+    "id": "tolkienmobs:stairs_mossy_cobbled_dark_stone"
+  }
+}

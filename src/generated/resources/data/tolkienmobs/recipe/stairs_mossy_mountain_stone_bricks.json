@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "mossy_mountain_stone_bricks",
+  "key": {
+    "#": {
+      "item": "tolkienmobs:mossy_mountain_stone_bricks"
+    }
+  },
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "result": {
+    "count": 4,
+    "id": "tolkienmobs:stairs_mossy_mountain_stone_bricks"
+  }
+}

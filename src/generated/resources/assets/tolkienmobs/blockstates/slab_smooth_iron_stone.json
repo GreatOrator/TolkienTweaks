@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "tolkienmobs:block/slab_smooth_iron_stone"
+    },
+    "type=double": {
+      "model": "tolkienmobs:block/smooth_iron_stone"
+    },
+    "type=top": {
+      "model": "tolkienmobs:block/slab_smooth_iron_stone_top"
+    }
+  }
+}

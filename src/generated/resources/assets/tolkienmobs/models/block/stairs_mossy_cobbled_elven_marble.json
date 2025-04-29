@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "tolkienmobs:block/mossy_cobbled_elven_marble",
+    "side": "tolkienmobs:block/mossy_cobbled_elven_marble",
+    "top": "tolkienmobs:block/mossy_cobbled_elven_marble"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "tolkienmobs:elven_marble_bricks"
+    },
+    "V": {
+      "item": "minecraft:vine"
+    }
+  },
+  "pattern": [
+    "IV "
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:mossy_elven_marble_bricks"
+  }
+}

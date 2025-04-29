@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "tolkienmobs:mountain_stone_bricks"
+    },
+    "V": {
+      "item": "minecraft:vine"
+    }
+  },
+  "pattern": [
+    "IV "
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:mossy_mountain_stone_bricks"
+  }
+}

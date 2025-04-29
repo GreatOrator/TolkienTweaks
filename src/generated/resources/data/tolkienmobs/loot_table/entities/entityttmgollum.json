@@ -64,7 +64,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:strong_harming"
+              "id": "minecraft:water_breathing"
             },
             {
               "add": false,
