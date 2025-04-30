@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "chiseled_angainor_bricks",
+  "key": {
+    "#": {
+      "item": "tolkienmobs:chiseled_angainor_bricks"
+    }
+  },
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "result": {
+    "count": 4,
+    "id": "tolkienmobs:stairs_chiseled_angainor_bricks"
+  }
+}

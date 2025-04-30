@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "tolkienmobs:block/slab_cracked_angainor_bricks"
+    },
+    "type=double": {
+      "model": "tolkienmobs:block/cracked_angainor_bricks"
+    },
+    "type=top": {
+      "model": "tolkienmobs:block/slab_cracked_angainor_bricks_top"
+    }
+  }
+}

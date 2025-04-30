@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "tolkienmobs:block/slab_smooth_angainor"
+    },
+    "type=double": {
+      "model": "tolkienmobs:block/smooth_angainor"
+    },
+    "type=top": {
+      "model": "tolkienmobs:block/slab_smooth_angainor_top"
+    }
+  }
+}

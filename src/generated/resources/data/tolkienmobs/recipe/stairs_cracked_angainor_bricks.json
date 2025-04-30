@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "cracked_angainor_bricks",
+  "key": {
+    "#": {
+      "item": "tolkienmobs:cracked_angainor_bricks"
+    }
+  },
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "result": {
+    "count": 4,
+    "id": "tolkienmobs:stairs_cracked_angainor_bricks"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_angainor": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tolkienmobs:angainor"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tolkienmobs:stairs_angainor"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_angainor"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tolkienmobs:stairs_angainor"
+    ]
+  }
+}

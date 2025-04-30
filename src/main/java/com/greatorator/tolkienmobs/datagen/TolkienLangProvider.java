@@ -292,6 +292,14 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.createStoneSet("mossy_iron_stone_bricks", "Mossy Iron Hills Stone Bricks");
             this.createStoneSet("smooth_iron_stone", "Smooth Iron Hills Stone");
             this.createStoneSet("mossy_cobbled_iron_stone", "Mossy Cobbled Iron Hills Stone");
+            this.createStoneSet("angainor", "Angainor Stone");
+            this.createStoneSet("chiseled_angainor_bricks", "Chiseled Angainor Stone Bricks");
+            this.createStoneSet("cobbled_angainor", "Cobbled Angainor Stone");
+            this.createStoneSet("cracked_angainor_bricks", "Cracked Angainor Stone");
+            this.createStoneSet("angainor_bricks", "Angainor Stone Bricks");
+            this.createStoneSet("mossy_angainor_bricks", "Mossy Angainor Stone Bricks");
+            this.createStoneSet("smooth_angainor", "Smooth Angainor Stone");
+            this.createStoneSet("mossy_cobbled_angainor", "Mossy Cobbled Angainor Stone");
 
             this.createGemSet("ammolite", "Ammolite");
 

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "angainor_bricks",
+  "ingredients": [
+    {
+      "item": "tolkienmobs:angainor_bricks"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:angainor_bricks_button"
+  }
+}
