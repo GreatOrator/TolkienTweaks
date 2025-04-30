@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "iron_stone",
+  "key": {
+    "#": {
+      "item": "tolkienmobs:iron_stone"
+    }
+  },
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "result": {
+    "count": 4,
+    "id": "tolkienmobs:stairs_iron_stone"
+  }
+}

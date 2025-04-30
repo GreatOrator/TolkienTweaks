@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/button_pressed",
+  "textures": {
+    "texture": "tolkienmobs:block/chiseled_angainor_bricks"
+  }
+}

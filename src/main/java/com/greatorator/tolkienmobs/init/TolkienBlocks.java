@@ -806,6 +806,136 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> WALL_SMOOTH_IRON_STONE = registerBlock("wall_smooth_iron_stone",
             () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
 
+        // Angainor
+    public static final DeferredBlock<Block> ANGAINOR = registerBlock("angainor",
+            () -> new Block(BlockBehaviour.Properties.of().strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_ANGAINOR = registerBlock("stairs_angainor",
+            () -> new StairBlock(TolkienBlocks.ANGAINOR.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_ANGAINOR = registerBlock("slab_angainor",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_ANGAINOR = registerBlock("pressure_plate_angainor",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> ANGAINOR_BUTTON = registerBlock("angainor_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_ANGAINOR = registerBlock("wall_angainor",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> MOSSY_COBBLED_ANGAINOR = registerBlock("mossy_cobbled_angainor",
+            () -> new Block(BlockBehaviour.Properties.of().strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_MOSSY_COBBLED_ANGAINOR = registerBlock("stairs_mossy_cobbled_angainor",
+            () -> new StairBlock(TolkienBlocks.MOSSY_COBBLED_ANGAINOR.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_MOSSY_COBBLED_ANGAINOR = registerBlock("slab_mossy_cobbled_angainor",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_MOSSY_COBBLED_ANGAINOR = registerBlock("pressure_plate_mossy_cobbled_angainor",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> MOSSY_COBBLED_ANGAINOR_BUTTON = registerBlock("mossy_cobbled_angainor_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_MOSSY_COBBLED_ANGAINOR = registerBlock("wall_mossy_cobbled_angainor",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> MOSSY_ANGAINOR_BRICKS = registerBlock("mossy_angainor_bricks",
+            () -> new Block(BlockBehaviour.Properties.of().strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_MOSSY_ANGAINOR_BRICKS = registerBlock("stairs_mossy_angainor_bricks",
+            () -> new StairBlock(TolkienBlocks.MOSSY_ANGAINOR_BRICKS.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_MOSSY_ANGAINOR_BRICKS = registerBlock("slab_mossy_angainor_bricks",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_MOSSY_ANGAINOR_BRICKS = registerBlock("pressure_plate_mossy_angainor_bricks",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> MOSSY_ANGAINOR_BRICKS_BUTTON = registerBlock("mossy_angainor_bricks_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_MOSSY_ANGAINOR_BRICKS = registerBlock("wall_mossy_angainor_bricks",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> CHISELED_ANGAINOR_BRICKS = registerBlock("chiseled_angainor_bricks",
+            () -> new Block(BlockBehaviour.Properties.of().strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_CHISELED_ANGAINOR_BRICKS = registerBlock("stairs_chiseled_angainor_bricks",
+            () -> new StairBlock(TolkienBlocks.CHISELED_ANGAINOR_BRICKS.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_CHISELED_ANGAINOR_BRICKS = registerBlock("slab_chiseled_angainor_bricks",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_CHISELED_ANGAINOR_BRICKS = registerBlock("pressure_plate_chiseled_angainor_bricks",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> CHISELED_ANGAINOR_BRICKS_BUTTON = registerBlock("chiseled_angainor_bricks_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_CHISELED_ANGAINOR_BRICKS = registerBlock("wall_chiseled_angainor_bricks",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> COBBLED_ANGAINOR = registerBlock("cobbled_angainor",
+            () -> new Block(BlockBehaviour.Properties.of().strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_COBBLED_ANGAINOR = registerBlock("stairs_cobbled_angainor",
+            () -> new StairBlock(TolkienBlocks.COBBLED_ANGAINOR.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_COBBLED_ANGAINOR = registerBlock("slab_cobbled_angainor",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_COBBLED_ANGAINOR = registerBlock("pressure_plate_cobbled_angainor",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> COBBLED_ANGAINOR_BUTTON = registerBlock("cobbled_angainor_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_COBBLED_ANGAINOR = registerBlock("wall_cobbled_angainor",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> CRACKED_ANGAINOR_BRICKS = registerBlock("cracked_angainor_bricks",
+            () -> new Block(BlockBehaviour.Properties.of().strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_CRACKED_ANGAINOR_BRICKS = registerBlock("stairs_cracked_angainor_bricks",
+            () -> new StairBlock(TolkienBlocks.CRACKED_ANGAINOR_BRICKS.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_CRACKED_ANGAINOR_BRICKS = registerBlock("slab_cracked_angainor_bricks",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_CRACKED_ANGAINOR_BRICKS = registerBlock("pressure_plate_cracked_angainor_bricks",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> CRACKED_ANGAINOR_BRICKS_BUTTON = registerBlock("cracked_angainor_bricks_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_CRACKED_ANGAINOR_BRICKS = registerBlock("wall_cracked_angainor_bricks",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> ANGAINOR_BRICKS = registerBlock("angainor_bricks",
+            () -> new Block(BlockBehaviour.Properties.of().strength(1.5F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_ANGAINOR_BRICKS = registerBlock("stairs_angainor_bricks",
+            () -> new StairBlock(TolkienBlocks.ANGAINOR_BRICKS.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_ANGAINOR_BRICKS = registerBlock("slab_angainor_bricks",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_ANGAINOR_BRICKS = registerBlock("pressure_plate_angainor_bricks",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> ANGAINOR_BRICKS_BUTTON = registerBlock("angainor_bricks_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_ANGAINOR_BRICKS = registerBlock("wall_angainor_bricks",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SMOOTH_ANGAINOR = registerBlock("smooth_angainor",
+            () -> new Block(BlockBehaviour.Properties.of().strength(2.0F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.BASALT)));
+    public static final DeferredBlock<Block> STAIRS_SMOOTH_ANGAINOR = registerBlock("stairs_smooth_angainor",
+            () -> new StairBlock(TolkienBlocks.SMOOTH_ANGAINOR.get().defaultBlockState(), BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SLAB_SMOOTH_ANGAINOR = registerBlock("slab_smooth_angainor",
+            () -> new SlabBlock(BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final DeferredBlock<Block> PRESSURE_PLATE_SMOOTH_ANGAINOR = registerBlock("pressure_plate_smooth_angainor",
+            () -> new PressurePlateBlock(BlockSetType.IRON, BlockBehaviour.Properties.of()
+                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SMOOTH_ANGAINOR_BUTTON = registerBlock("smooth_angainor_button",
+            () -> new ButtonBlock(BlockSetType.IRON, 10, BlockBehaviour.Properties.of()
+                    .strength(4F).requiresCorrectToolForDrops().noCollission()));
+    public static final DeferredBlock<Block> WALL_SMOOTH_ANGAINOR = registerBlock("wall_smooth_angainor",
+            () -> new WallBlock(BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops()));
+
     /* Wood & Foliage */
         // Mallorn
     public static final DeferredBlock<Block> LOG_MALLORN = registerBlock("log_mallorn",

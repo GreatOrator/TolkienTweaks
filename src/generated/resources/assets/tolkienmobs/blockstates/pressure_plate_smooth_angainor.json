@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "tolkienmobs:block/pressure_plate_smooth_angainor"
+    },
+    "powered=true": {
+      "model": "tolkienmobs:block/pressure_plate_smooth_angainor_down"
+    }
+  }
+}

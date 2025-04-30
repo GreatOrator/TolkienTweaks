@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_DeferredHolder{ResourceKey[minecraft:block / tolkienmobs:angainor]}": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tolkienmobs:angainor"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tolkienmobs:block.tolkienmobs.smooth_angainor_from_blasting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_DeferredHolder{ResourceKey[minecraft:block / tolkienmobs:angainor]}"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tolkienmobs:block.tolkienmobs.smooth_angainor_from_blasting"
+    ]
+  }
+}

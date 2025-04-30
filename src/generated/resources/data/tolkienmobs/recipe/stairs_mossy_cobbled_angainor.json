@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "mossy_cobbled_angainor",
+  "key": {
+    "#": {
+      "item": "tolkienmobs:mossy_cobbled_angainor"
+    }
+  },
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "result": {
+    "count": 4,
+    "id": "tolkienmobs:stairs_mossy_cobbled_angainor"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "smooth_angainor",
+  "ingredients": [
+    {
+      "item": "tolkienmobs:smooth_angainor"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:smooth_angainor_button"
+  }
+}

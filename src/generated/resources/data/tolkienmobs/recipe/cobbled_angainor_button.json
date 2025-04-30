@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "cobbled_angainor",
+  "ingredients": [
+    {
+      "item": "tolkienmobs:cobbled_angainor"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:cobbled_angainor_button"
+  }
+}

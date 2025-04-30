@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "mossy_cobbled_angainor",
+  "ingredients": [
+    {
+      "item": "tolkienmobs:mossy_cobbled_angainor"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:mossy_cobbled_angainor_button"
+  }
+}

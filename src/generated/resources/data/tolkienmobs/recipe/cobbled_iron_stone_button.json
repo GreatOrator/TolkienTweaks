@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "group": "cobbled_iron_stone",
+  "ingredients": [
+    {
+      "item": "tolkienmobs:cobbled_iron_stone"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "tolkienmobs:cobbled_iron_stone_button"
+  }
+}

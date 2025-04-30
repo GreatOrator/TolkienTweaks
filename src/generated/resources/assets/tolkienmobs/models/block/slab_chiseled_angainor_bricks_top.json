@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "tolkienmobs:block/chiseled_angainor_bricks",
+    "side": "tolkienmobs:block/chiseled_angainor_bricks",
+    "top": "tolkienmobs:block/chiseled_angainor_bricks"
+  }
+}

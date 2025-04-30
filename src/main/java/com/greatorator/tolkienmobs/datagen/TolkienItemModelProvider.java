@@ -260,6 +260,14 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         buttonItem(TolkienBlocks.CHISELED_IRON_STONE_BRICKS_BUTTON, TolkienBlocks.CHISELED_IRON_STONE_BRICKS);
         buttonItem(TolkienBlocks.MOSSY_IRON_STONE_BRICKS_BUTTON, TolkienBlocks.MOSSY_IRON_STONE_BRICKS);
         buttonItem(TolkienBlocks.MOSSY_COBBLED_IRON_STONE_BUTTON, TolkienBlocks.MOSSY_COBBLED_IRON_STONE);
+        buttonItem(TolkienBlocks.ANGAINOR_BUTTON, TolkienBlocks.ANGAINOR);
+        buttonItem(TolkienBlocks.ANGAINOR_BRICKS_BUTTON, TolkienBlocks.ANGAINOR_BRICKS);
+        buttonItem(TolkienBlocks.CRACKED_ANGAINOR_BRICKS_BUTTON, TolkienBlocks.CRACKED_ANGAINOR_BRICKS);
+        buttonItem(TolkienBlocks.COBBLED_ANGAINOR_BUTTON, TolkienBlocks.COBBLED_ANGAINOR);
+        buttonItem(TolkienBlocks.SMOOTH_ANGAINOR_BUTTON, TolkienBlocks.SMOOTH_ANGAINOR);
+        buttonItem(TolkienBlocks.CHISELED_ANGAINOR_BRICKS_BUTTON, TolkienBlocks.CHISELED_ANGAINOR_BRICKS);
+        buttonItem(TolkienBlocks.MOSSY_ANGAINOR_BRICKS_BUTTON, TolkienBlocks.MOSSY_ANGAINOR_BRICKS);
+        buttonItem(TolkienBlocks.MOSSY_COBBLED_ANGAINOR_BUTTON, TolkienBlocks.MOSSY_COBBLED_ANGAINOR);
 
         wallItem(TolkienBlocks.WALL_DWARVEN_STONE, TolkienBlocks.DWARVEN_STONE);
         wallItem(TolkienBlocks.WALL_DWARVEN_STONE_BRICKS, TolkienBlocks.DWARVEN_STONE_BRICKS);
@@ -302,6 +310,14 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         wallItem(TolkienBlocks.WALL_SMOOTH_IRON_STONE, TolkienBlocks.SMOOTH_IRON_STONE);
         wallItem(TolkienBlocks.WALL_CHISELED_IRON_STONE_BRICKS, TolkienBlocks.CHISELED_IRON_STONE_BRICKS);
         wallItem(TolkienBlocks.WALL_MOSSY_COBBLED_IRON_STONE, TolkienBlocks.MOSSY_COBBLED_IRON_STONE);
+        wallItem(TolkienBlocks.WALL_ANGAINOR, TolkienBlocks.ANGAINOR);
+        wallItem(TolkienBlocks.WALL_MOSSY_ANGAINOR_BRICKS, TolkienBlocks.MOSSY_ANGAINOR_BRICKS);
+        wallItem(TolkienBlocks.WALL_ANGAINOR_BRICKS, TolkienBlocks.ANGAINOR_BRICKS);
+        wallItem(TolkienBlocks.WALL_CRACKED_ANGAINOR_BRICKS, TolkienBlocks.CRACKED_ANGAINOR_BRICKS);
+        wallItem(TolkienBlocks.WALL_COBBLED_ANGAINOR, TolkienBlocks.COBBLED_ANGAINOR);
+        wallItem(TolkienBlocks.WALL_SMOOTH_ANGAINOR, TolkienBlocks.SMOOTH_ANGAINOR);
+        wallItem(TolkienBlocks.WALL_CHISELED_ANGAINOR_BRICKS, TolkienBlocks.CHISELED_ANGAINOR_BRICKS);
+        wallItem(TolkienBlocks.WALL_MOSSY_COBBLED_ANGAINOR, TolkienBlocks.MOSSY_COBBLED_ANGAINOR);
 
         generated(TolkienBlocks.LEAFPILE_MALLORN.getId().getPath(), TolkienMobsMain.prefix("block/leaves_mallorn"));
         generated(TolkienBlocks.LEAFPILE_MIRKWOOD.getId().getPath(), TolkienMobsMain.prefix("block/leaves_mirkwood"));
