@@ -1565,7 +1565,7 @@ public class TolkienBlocks {
             "backpack_handler", () -> AttachmentType.serializable(holder -> {
                 if (holder instanceof BackpackBlockEntity backpackBlockEntity)
                     return new ItemStackHandler(backpackBlockEntity.BUCKET_SLOTS);
-                return new ItemStackHandler(1);
+                return new ItemStackHandler(2);
             }).build());
     public static final Supplier<AttachmentType<TolkienFluidTank>> BACKPACK_FLUID_HANDLER = ATTACHMENT_TYPES.register(
             "backpack_fluid_handler", () -> AttachmentType.serializable(holder -> {
