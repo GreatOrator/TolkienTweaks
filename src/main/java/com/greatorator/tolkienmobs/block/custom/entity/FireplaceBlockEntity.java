@@ -76,11 +76,6 @@ public class FireplaceBlockEntity extends BlockEntity implements MenuProvider {
         }
     };
     public final Object2IntOpenHashMap<ResourceLocation> recipes = new Object2IntOpenHashMap<>();
-    public RecipeType<? extends AbstractCookingRecipe> recipeType;
-    private final RecipeManager.CachedCheck<SingleRecipeInput, ? extends AbstractCookingRecipe> recipeCheckSmelting;
-    private final RecipeManager.CachedCheck<SingleRecipeInput, ? extends AbstractCookingRecipe> recipeCheckSmoking;
-    private final RecipeManager.CachedCheck<FireplaceRecipeInput, ? extends FireplaceRecipe> recipeCheckGenerator;
-
     private static final int OUTPUT_SLOT = 0;
     protected final ContainerData data;
     private int progress = 0;
@@ -123,10 +118,6 @@ public class FireplaceBlockEntity extends BlockEntity implements MenuProvider {
                 return 6;
             }
         };
-        recipeCheckSmelting = RecipeManager.createCheck(RecipeType.SMELTING);
-        recipeCheckSmoking = RecipeManager.createCheck(RecipeType.SMOKING);
-        recipeCheckGenerator = RecipeManager.createCheck(TolkienRecipesTypes.FIREPLACE_TYPE.get());
-        recipeType = RecipeType.SMELTING;
     }
 
     @Override

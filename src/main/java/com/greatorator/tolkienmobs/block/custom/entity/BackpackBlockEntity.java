@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.block.custom.entity;
 
+import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.BackpackBlock;
 import com.greatorator.tolkienmobs.block.custom.SleepingBagBlock;
 import com.greatorator.tolkienmobs.containers.BackpackBlockContainer;
@@ -56,11 +57,12 @@ import java.util.function.Predicate;
 
 public class BackpackBlockEntity extends BlockEntity implements MenuProvider, BackpackFluidUpgradesBlockEntity, BackpackUpgradesBlockEntity, BackpackSettingsBlockEntity, BackpackFluids {
     public final BackpackFluidData backpackFluidData;
-    public int BUCKET_SLOTS = 1;
+    public int BUCKET_SLOTS = 2;
     public BackpackSettings backpackSettings = new BackpackSettings(true, true, true);
     public BackpackUpgrades backpackUpgrades = new BackpackUpgrades(false, false, false, false, false);
     public BackpackFluidUpgrades backpackFluidUpgrades = new BackpackFluidUpgrades(false, false, false, false, false);
     private static final Predicate<ItemStack> IS_UPGRADE_ITEM = stack -> !stack.isEmpty() && isUpgradeItem(stack);
+    public ItemStackHandler fluidHandler;
     public final ItemStackHandler itemHandler = new ItemStackHandler(72) {
         @Override
         protected int getStackLimit(int slot, ItemStack stack) {
@@ -233,40 +235,6 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Ba
         return hasUpgrade;
     }
 
-    /** Fluid Handling */
-    @Override
-    public int getMaxMB() {
-        if (this.backpackFluidUpgrades.fluid_tank_5) {
-            return Integer.MAX_VALUE;
-        }else if (this.backpackFluidUpgrades.fluid_tank_4) {
-            return 128000;
-        }else if (this.backpackFluidUpgrades.fluid_tank_3) {
-            return 32000;
-        }else if (this.backpackFluidUpgrades.fluid_tank_2) {
-            return 8000;
-        }
-        return 2000;
-    }
-
-    @Override
-    public ContainerData getFluidContainerData() {
-        return backpackFluidData;
-    }
-
-    public void tick() {
-        handleItemStack();
-
-        if (hasFluidStackInFirstSlot()) {
-            transferFluidToTank();
-        }
-
-        if(hasFluidHandlerInSecondSlot()) {
-            transferFluidFromTankToHandler();
-        }
-
-        pushFluidToAboveNeighbour();
-    }
-
     public Direction getBlockDirection() {
         if(level == null || !(level.getBlockState(getBlockPos()).getBlock() instanceof BackpackBlock) || !level.getBlockState(getBlockPos()).hasProperty(BackpackBlock.FACING))
             return Direction.NORTH;
@@ -331,6 +299,40 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Ba
         super.setChanged();
     }
 
+    /** Fluid Handling */
+    @Override
+    public int getMaxMB() {
+        if (this.backpackFluidUpgrades.fluid_tank_5) {
+            return Integer.MAX_VALUE;
+        }else if (this.backpackFluidUpgrades.fluid_tank_4) {
+            return 128000;
+        }else if (this.backpackFluidUpgrades.fluid_tank_3) {
+            return 32000;
+        }else if (this.backpackFluidUpgrades.fluid_tank_2) {
+            return 8000;
+        }
+        return 2000;
+    }
+
+    @Override
+    public ContainerData getFluidContainerData() {
+        return backpackFluidData;
+    }
+
+    public void tickServer() {
+        handleItemStack();
+
+        if (hasFluidStackInFirstSlot()) {
+            transferFluidToTank();
+        }
+
+        if(hasFluidHandlerInSecondSlot()) {
+            transferFluidFromTankToHandler();
+        }
+
+        pushFluidToAboveNeighbour();
+    }
+
     private void pushFluidToAboveNeighbour() {
         FluidUtil.getFluidHandler(level, worldPosition.above(), null).ifPresent(iFluidHandler -> {
             FluidUtil.tryFluidTransfer(iFluidHandler, this.FLUID_TANK, Integer.MAX_VALUE, true);
@@ -338,31 +340,35 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Ba
     }
 
     private void transferFluidFromTankToHandler() {
-        FluidActionResult result = FluidUtil.tryFillContainer(itemHandler.getStackInSlot(0), this.FLUID_TANK, Integer.MAX_VALUE, null, true);
+        fluidHandler = this.getMachineHandler();
+        FluidActionResult result = FluidUtil.tryFillContainer(fluidHandler.getStackInSlot(1), this.FLUID_TANK, Integer.MAX_VALUE, null, true);
         if(result.result != ItemStack.EMPTY) {
-            itemHandler.setStackInSlot(0, result.result);
+            fluidHandler.setStackInSlot(1, result.result);
+            this.level.playSound(null, this.getBlockPos(), SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1F, 1.0F);
         }
     }
 
     private boolean hasFluidHandlerInSecondSlot() {
-        return !itemHandler.getStackInSlot(1).isEmpty()
-                && itemHandler.getStackInSlot(1).getCapability(Capabilities.FluidHandler.ITEM, null) != null
-                && (itemHandler.getStackInSlot(1).getCapability(Capabilities.FluidHandler.ITEM, null).getFluidInTank(0).isEmpty() ||
-                FluidUtil.tryFluidTransfer(itemHandler.getStackInSlot(1).getCapability(Capabilities.FluidHandler.ITEM, null),
-                        FLUID_TANK, Integer.MAX_VALUE, false) != FluidStack.EMPTY);
+        fluidHandler = this.getMachineHandler();
+        return !fluidHandler.getStackInSlot(1).isEmpty()
+                && fluidHandler.getStackInSlot(1).getCapability(Capabilities.FluidHandler.ITEM, null) != null
+                && fluidHandler.getStackInSlot(1).getCapability(Capabilities.FluidHandler.ITEM, null).getFluidInTank(0).isEmpty();
     }
 
     private void transferFluidToTank() {
-        FluidActionResult result = FluidUtil.tryEmptyContainer(itemHandler.getStackInSlot(0), this.FLUID_TANK, Integer.MAX_VALUE, null, true);
+        fluidHandler = this.getMachineHandler();
+        FluidActionResult result = FluidUtil.tryEmptyContainer(fluidHandler.getStackInSlot(0), this.FLUID_TANK, Integer.MAX_VALUE, null, true);
         if(result.result != ItemStack.EMPTY) {
-            itemHandler.setStackInSlot(0, result.result);
+            fluidHandler.setStackInSlot(0, result.result);
+            this.level.playSound(null, this.getBlockPos(), SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1F, 1.0F);
         }
     }
 
     private boolean hasFluidStackInFirstSlot() {
-        return !itemHandler.getStackInSlot(0).isEmpty()
-                && itemHandler.getStackInSlot(0).getCapability(Capabilities.FluidHandler.ITEM, null) != null
-                && !itemHandler.getStackInSlot(0).getCapability(Capabilities.FluidHandler.ITEM, null).getFluidInTank(0).isEmpty();
+        fluidHandler = this.getMachineHandler();
+        return !fluidHandler.getStackInSlot(0).isEmpty()
+                && fluidHandler.getStackInSlot(0).getCapability(Capabilities.FluidHandler.ITEM, null) != null
+                && !fluidHandler.getStackInSlot(0).getCapability(Capabilities.FluidHandler.ITEM, null).getFluidInTank(0).isEmpty();
     }
 
     public TolkienFluidTank getFluidTank() {
@@ -439,7 +445,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Ba
     public void drops() {
     }
 
-    public void tickServer() {
+    public void tick() {
     }
 
     public void tickClient() {

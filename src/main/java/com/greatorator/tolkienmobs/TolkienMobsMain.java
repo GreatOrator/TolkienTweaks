@@ -68,16 +68,15 @@ public class TolkienMobsMain {
     // TODO
     //  -Signs not placing on vertical surfaces
     //  -Biomes
+    //    -Generate using new stone variants
     //    -Structures
+    //    -Separate Dimension
     //  -Functional Blocks
     //    -Milestone
     //      -Needs implementation
     //    -Spawner
     //      -Using the custom entity list for what to spawn
-    //    -Trinket Table Recipes
-    //      -Working in Trinket Table
     //    -Backpack
-    //      -Bucket inside Inventory not working
     //      -Sleeping Bag and Campfire actually place instead of being ghost blocks
 
     public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer, Dist dist) {

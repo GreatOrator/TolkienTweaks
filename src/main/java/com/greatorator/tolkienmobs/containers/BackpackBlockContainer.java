@@ -5,10 +5,12 @@ import com.greatorator.tolkienmobs.containers.handlers.BackpackItemStackHandler;
 import com.greatorator.tolkienmobs.containers.handlers.BucketItemHandler;
 import com.greatorator.tolkienmobs.containers.handlers.UpgradeItemHandler;
 import com.greatorator.tolkienmobs.init.TolkienContainers;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
@@ -34,9 +36,7 @@ public class BackpackBlockContainer extends TolkienContainer{
     private final Player player;
     public ItemStackHandler fluidHandler;
     public ContainerData fluidData;
-    public int BUCKET_SLOTS = 1;
     public static final int COLUMNS = 9;
-    public static final int ROWS = 8;
     public static final int UPGRADE_COLUMNS = 3;
     public static final int UPGRADE_ROWS = 3;
 
@@ -218,5 +218,6 @@ public class BackpackBlockContainer extends TolkienContainer{
     public void addFluidSlots() {
         fluidHandler = tileEntity.getMachineHandler();
         this.addSlot(new BucketItemHandler(fluidHandler, 0, 38, 11));
+        this.addSlot(new BucketItemHandler(fluidHandler, 1, 38, 58));
     }
 }
