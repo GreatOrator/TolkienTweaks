@@ -76,8 +76,6 @@ public class TolkienMobsMain {
     //      -Needs implementation
     //    -Spawner
     //      -Using the custom entity list for what to spawn
-    //    -Backpack
-    //      -Sleeping Bag and Campfire actually place instead of being ghost blocks
 
     public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer, Dist dist) {
         modEventBus.addListener(this::commonSetup);

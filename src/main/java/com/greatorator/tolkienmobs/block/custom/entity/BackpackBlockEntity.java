@@ -6,16 +6,15 @@ import com.greatorator.tolkienmobs.block.custom.SleepingBagBlock;
 import com.greatorator.tolkienmobs.containers.BackpackBlockContainer;
 import com.greatorator.tolkienmobs.handler.capability.TolkienFluidTank;
 import com.greatorator.tolkienmobs.handler.data.BackpackFluidData;
-import com.greatorator.tolkienmobs.handler.interfaces.BackpackFluidUpgradesBlockEntity;
-import com.greatorator.tolkienmobs.handler.interfaces.BackpackFluids;
-import com.greatorator.tolkienmobs.handler.interfaces.BackpackSettingsBlockEntity;
-import com.greatorator.tolkienmobs.handler.interfaces.BackpackUpgradesBlockEntity;
+import com.greatorator.tolkienmobs.handler.interfaces.*;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienTags;
 import com.greatorator.tolkienmobs.item.custom.UpgradeItem;
+import com.greatorator.tolkienmobs.network.BackpackPlacementUpdateManager;
 import com.greatorator.tolkienmobs.network.BackpackSettingsUpdateManager;
 import com.greatorator.tolkienmobs.util.BackpackFluidUpgrades;
+import com.greatorator.tolkienmobs.util.BackpackPlacement;
 import com.greatorator.tolkienmobs.util.BackpackSettings;
 import com.greatorator.tolkienmobs.util.BackpackUpgrades;
 import net.minecraft.core.BlockPos;
@@ -55,10 +54,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
 
-public class BackpackBlockEntity extends BlockEntity implements MenuProvider, BackpackFluidUpgradesBlockEntity, BackpackUpgradesBlockEntity, BackpackSettingsBlockEntity, BackpackFluids {
+public class BackpackBlockEntity extends BlockEntity implements MenuProvider, BackpackFluidUpgradesBlockEntity, BackpackUpgradesBlockEntity, BackpackSettingsBlockEntity, BackpackPlacementBlockEntity, BackpackFluids {
     public final BackpackFluidData backpackFluidData;
     public int BUCKET_SLOTS = 2;
     public BackpackSettings backpackSettings = new BackpackSettings(true, true, true);
+    public BackpackPlacement backpackPlacement = new BackpackPlacement(false, false);
     public BackpackUpgrades backpackUpgrades = new BackpackUpgrades(false, false, false, false, false);
     public BackpackFluidUpgrades backpackFluidUpgrades = new BackpackFluidUpgrades(false, false, false, false, false);
     private static final Predicate<ItemStack> IS_UPGRADE_ITEM = stack -> !stack.isEmpty() && isUpgradeItem(stack);
@@ -241,26 +241,14 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Ba
         return level.getBlockState(getBlockPos()).getValue(BackpackBlock.FACING);
     }
 
-    public void deploySleepingbag(Level level, BlockPos pos) {
-        Direction direction = this.getBlockDirection();
-        BlockPos sleepingBagPos1 = pos.relative(direction);
-        BlockPos sleepingBagPos2 = sleepingBagPos1.relative(direction);
-
+    public void deploySleepingbag() {
         if (!level.isClientSide()) {
             getBackpackSettings().campfire = !getBackpackSettings().sleepingBag;
             PacketDistributor.sendToServer(new BackpackSettingsUpdateManager(backpackSettings.sleepingBag, backpackSettings.campfire, backpackSettings.upgrade));
 
             setChanged();
-
-            removeCampfire(level, pos);
         }
-
-        BlockState bagState = TolkienBlocks.SLEEPING_BAG_BLUE.get().defaultBlockState();
-        level.setBlock(sleepingBagPos1, bagState.setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.FOOT).setValue(SleepingBagBlock.CAN_DROP, false), 3);
-        level.setBlock(sleepingBagPos2, bagState.setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.HEAD).setValue(SleepingBagBlock.CAN_DROP, false), 3);
-
-        level.updateNeighborsAt(pos, bagState.getBlock());
-        level.updateNeighborsAt(sleepingBagPos2, bagState.getBlock());
+        PacketDistributor.sendToServer(new BackpackPlacementUpdateManager(backpackPlacement.sleepingBag, backpackPlacement.campfire));
     }
 
     public void deployCampfire(Level level, BlockPos pos) {
@@ -271,27 +259,12 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Ba
             PacketDistributor.sendToServer(new BackpackSettingsUpdateManager(backpackSettings.sleepingBag, backpackSettings.campfire, backpackSettings.upgrade));
 
             setChanged();
-
-            removeSleepingbag(level, direction);
         }
-        level.setBlock(pos.relative(direction), Blocks.CAMPFIRE.defaultBlockState(), 3);
-        level.updateNeighborsAt(pos, Blocks.CAMPFIRE.defaultBlockState().getBlock());
+        PacketDistributor.sendToServer(new BackpackPlacementUpdateManager(backpackPlacement.sleepingBag, backpackPlacement.campfire));
     }
 
-    public void removeSleepingbag(Level level, Direction direction) {
-        BlockPos sleepingBagPos1 = this.getBlockPos().relative(direction);
-        BlockPos sleepingBagPos2 = sleepingBagPos1.relative(direction);
-
-        level.playSound(null, sleepingBagPos2, SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 0.5F, 1.0F);
-        level.setBlock(sleepingBagPos2, Blocks.AIR.defaultBlockState(), 3);
-        level.setBlock(sleepingBagPos1, Blocks.AIR.defaultBlockState(), 3);
-    }
-
-    public void removeCampfire(Level level, BlockPos pos) {
-        Direction facing = level.getBlockState(pos).getValue(BackpackBlock.FACING);
-
-        level.playSound(null, pos.relative(facing), SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 0.5F, 1.0F);
-        level.setBlockAndUpdate(pos.relative(facing), Blocks.AIR.defaultBlockState());
+    public void updatePlacement() {
+        PacketDistributor.sendToServer(new BackpackPlacementUpdateManager(backpackPlacement.sleepingBag, backpackPlacement.campfire));
     }
 
     @Override
@@ -419,6 +392,11 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Ba
         if (amtFilled == 0)
             return false;
         return true;
+    }
+
+    @Override
+    public BackpackPlacement getBackpackPlacement() {
+        return backpackPlacement;
     }
 
     @Override

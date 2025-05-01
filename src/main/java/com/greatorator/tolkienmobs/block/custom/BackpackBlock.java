@@ -101,10 +101,11 @@ public class BackpackBlock extends TolkienEntityBlock {
         if (state.getBlock() != newState.getBlock()) {
             if (worldIn.getBlockEntity(pPos) instanceof BackpackBlockEntity blockEntity) {
                 blockEntity.drops();
-                blockEntity.getBackpackSettings().sleepingBag = false;
-                blockEntity.getBackpackSettings().campfire = false;
-                blockEntity.removeSleepingbag(worldIn, blockEntity.getBlockDirection());
-                blockEntity.removeCampfire(worldIn, blockEntity.getBlockPos());
+                blockEntity.getBackpackSettings().sleepingBag = true;
+                blockEntity.getBackpackSettings().campfire = true;
+                blockEntity.getBackpackPlacement().sleepingBag = true;
+                blockEntity.getBackpackPlacement().campfire = true;
+                blockEntity.updatePlacement();
             }
         }
 
