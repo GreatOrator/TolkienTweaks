@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.containers.screens;
 
+import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
 import com.greatorator.tolkienmobs.containers.BackpackBlockContainer;
 import com.greatorator.tolkienmobs.containers.handlers.FluidTankRenderer;
@@ -7,6 +8,7 @@ import com.greatorator.tolkienmobs.containers.handlers.ToggleButtonFactory;
 import com.greatorator.tolkienmobs.containers.widget.ToggleButton;
 import com.greatorator.tolkienmobs.containers.widget.TolkienButton;
 import com.greatorator.tolkienmobs.network.BackpackFluidUpgradesUpdateManager;
+import com.greatorator.tolkienmobs.network.BackpackPlacementUpdateManager;
 import com.greatorator.tolkienmobs.network.BackpackSettingsUpdateManager;
 import com.greatorator.tolkienmobs.network.BackpackUpgradesUpdateManager;
 import com.greatorator.tolkienmobs.util.*;
@@ -50,6 +52,7 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
     protected final ResourceLocation FLUIDBAR = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/tank_overlay.png");
     protected BackpackBlockContainer container;
     protected BackpackSettings backpackSettings;
+    protected BackpackPlacement backpackPlacement;
     protected BackpackUpgrades backpackUpgrades;
     protected BackpackFluidUpgrades backpackFluidUpgrades;
     private boolean upgradeContainer;
@@ -67,6 +70,7 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
         this.container = container;
         tileEntity = container.tileEntity;
         this.backpackSettings = tileEntity.getBackpackSettings();
+        this.backpackPlacement = tileEntity.getBackpackPlacement();
         this.backpackUpgrades = tileEntity.getBackpackUpgrades();
         this.backpackFluidUpgrades = tileEntity.getBackpackFluidUpgrades();
         upgradeContainer = backpackSettings.upgrade;
@@ -200,24 +204,18 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
         if (this.tileEntity.backpackUpgrades.sleepingBag) {
             addRenderableWidget(ToggleButtonFactory.SLEEPING_BAG_TOGGLE_BUTTON(offsetX + 173, offsetY + 156, backpackSettings.sleepingBag, b -> {
                 backpackSettings.sleepingBag = !backpackSettings.sleepingBag;
+                backpackPlacement.sleepingBag = backpackSettings.sleepingBag;
                 PacketDistributor.sendToServer(new BackpackSettingsUpdateManager(backpackSettings.sleepingBag, backpackSettings.campfire, backpackSettings.upgrade));
-                if (!backpackSettings.sleepingBag) {
-                    tileEntity.deploySleepingbag(Objects.requireNonNull(this.tileEntity.getLevel()), tileEntity.getBlockPos());
-                } else {
-                    tileEntity.removeSleepingbag(Objects.requireNonNull(this.tileEntity.getLevel()), tileEntity.getBlockDirection());
-                }
+                PacketDistributor.sendToServer(new BackpackPlacementUpdateManager(backpackPlacement.sleepingBag, !backpackPlacement.campfire));
             }));
         }
 
         if (this.tileEntity.backpackUpgrades.campfire) {
             addRenderableWidget(ToggleButtonFactory.CAMPFIRE_TOGGLE_BUTTON(offsetX + 191, offsetY + 156, backpackSettings.campfire, b -> {
                 backpackSettings.campfire = !backpackSettings.campfire;
+                backpackPlacement.campfire = backpackSettings.campfire;
                 PacketDistributor.sendToServer(new BackpackSettingsUpdateManager(backpackSettings.sleepingBag, backpackSettings.campfire, backpackSettings.upgrade));
-                if (!backpackSettings.campfire) {
-                    tileEntity.deployCampfire(Objects.requireNonNull(this.tileEntity.getLevel()), tileEntity.getBlockPos());
-                } else {
-                    tileEntity.removeCampfire(Objects.requireNonNull(this.tileEntity.getLevel()), tileEntity.getBlockPos());
-                }
+                PacketDistributor.sendToServer(new BackpackPlacementUpdateManager(!backpackPlacement.sleepingBag, backpackPlacement.campfire));
             }));
         }
 

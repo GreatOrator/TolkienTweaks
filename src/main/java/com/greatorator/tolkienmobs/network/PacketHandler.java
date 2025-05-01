@@ -46,6 +46,8 @@ public final class PacketHandler {
                 KeyStoneDelayUpdateManager.STREAM_CODEC, KeyStoneDelayUpdateManager::handle);
         registrar.playToServer(BackpackSettingsUpdateManager.TYPE,
                 BackpackSettingsUpdateManager.STREAM_CODEC, BackpackSettingsUpdateManager::handle);
+        registrar.playToServer(BackpackPlacementUpdateManager.TYPE,
+                BackpackPlacementUpdateManager.STREAM_CODEC, BackpackPlacementUpdateManager::handle);
         registrar.playToServer(BackpackUpgradesUpdateManager.TYPE,
                 BackpackUpgradesUpdateManager.STREAM_CODEC, BackpackUpgradesUpdateManager::handle);
         registrar.playToServer(BackpackFluidUpgradesUpdateManager.TYPE,
