@@ -151,7 +151,6 @@ public interface FastStream<T> extends Iterable<T> {
         if (max == -1) return this;
         if (max <= 0) return empty();
 
-        // TODO, special implementation if underlying stream is 'sorted'
         return new Sliced<>(this, 0, max);
     }
 
