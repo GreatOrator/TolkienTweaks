@@ -10,7 +10,6 @@ import java.util.Optional;
 
 public class DragonLookController extends LookControl
 {
-    //TODO: Improve + name
     private final DragonEntity dragon;
     private boolean stopLooking;
 

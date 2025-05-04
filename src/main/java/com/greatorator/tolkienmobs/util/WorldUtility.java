@@ -75,7 +75,7 @@ public final class WorldUtility {
 //	public static int getGeneratorSeaLevel(LevelAccessor level) {
 //		return level.getChunkSource() instanceof ServerChunkCache chunkSource
 //			? chunkSource.chunkMap.generator().getSeaLevel()
-//			: TFDimensionData.SEALEVEL; // Should only ever hit if this method is called on client FIXME Fix causes
+//			: TFDimensionData.SEALEVEL; // Should only ever hit if this method is called on client
 //	}
 //
 //	public static Optional<Pair<BlockPos, Holder<Structure>>> findNearestMapLandmark(ServerLevel level, HolderSet<Structure> targetStructures, BlockPos pos, int chunkSearchRadius, boolean skipKnownStructures) {

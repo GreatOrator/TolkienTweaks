@@ -77,7 +77,7 @@ public class TolkienMobsMain {
     //    -Separate Dimension
     //  -Functional Blocks
     //    -Milestone
-    //      -Needs implementation
+    //      -Data storage and access
     //    -Spawner
     //      -Displaying the current mob in menu
 

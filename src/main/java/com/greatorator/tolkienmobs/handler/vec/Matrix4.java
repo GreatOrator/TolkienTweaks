@@ -580,7 +580,7 @@ public class Matrix4 extends Transformation {
     }
 
     @Override
-    public Transformation inverse() {//TODO this should be done, even if it is a waste..
+    public Transformation inverse() {
         throw new IrreversibleTransformationException(this);//Don't waste your cpu with matrix inverses
     }
 

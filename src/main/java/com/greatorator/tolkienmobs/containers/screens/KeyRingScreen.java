@@ -45,8 +45,6 @@ public class KeyRingScreen extends AbstractContainerScreen<KeyRingContainer> {
     public boolean mouseClicked(double x, double y, int btn) {
         if (btn == 1 && hoveredSlot instanceof KeyRingSlot) { //Right click
             int slot = hoveredSlot.getSlotIndex();
-            //TODO Bring this back somehow?
-            //PacketDistributor.sendToServer(new OpenCardPayload(slot, new BlockPos(0, -9999, 0), false));
             return true;
         }
         return super.mouseClicked(x, y, btn);
