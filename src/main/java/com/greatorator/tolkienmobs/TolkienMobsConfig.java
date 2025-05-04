@@ -36,6 +36,20 @@ public class TolkienMobsConfig {
     public static ModConfigSpec.IntValue MINIMUM_TICK_SPEED = BUILDER
             .comment("Minimum speed anything that ticks can be set to. Defaults to 1, or every tick")
             .defineInRange("minimum_tick_speed", 1, 1, 100);
+
+    public static ModConfigSpec.IntValue DISTANCE_COST = BUILDER
+            .comment("Minimum Default cost for fast-travel (Default 500")
+            .defineInRange("distance_cost", 500, 500, 5000);
+    public static ModConfigSpec.IntValue DIMENSION_COST = BUILDER
+            .comment("Default multiplier to fast-travel across dimensions (Default 1)")
+            .defineInRange("minimum_tick_speed", 1, 1, 10);
+    public static final ModConfigSpec.ConfigValue<String> PAYMENT_ITEM = BUILDER
+            .comment("Item to use for payment to teleport")
+            .define("item", "tolkienmobs:item_coin_bronze", TolkienMobsConfig::validateItemName);
+    public static final ModConfigSpec.BooleanValue PAYMENT_TYPE = BUILDER
+            .comment("You want to use an item or experience for teleporting? (Default true to use Items")
+            .define("paymentType", false);
+
     public static ModConfigSpec.IntValue BLOCKS_PER_LEVEL = BUILDER
             .comment("Range per level for Dwarven Mining Enchant.  Default is 1 (3x3)")
             .defineInRange("minimum_tick_speed", 9, 9, 81);
@@ -49,6 +63,7 @@ public class TolkienMobsConfig {
     private static final ModConfigSpec.IntValue GROW_TIMER = BUILDER
             .comment("How often the Hobbit Ring will try to grow a block (in ticks)")
             .defineInRange("growthTimer", 20, 0, Integer.MAX_VALUE);
+
     private static final ModConfigSpec.IntValue HOME_RADIUS = BUILDER
             .comment("How far the FellBeast will roam from home (Default 32)")
             .defineInRange("homeRadius", 32, 32, 128);
@@ -57,24 +72,22 @@ public class TolkienMobsConfig {
             .comment("What you want the introduction message to be for the magic number")
             .define("magicNumberIntroduction", "The magic number is... ");
 
-    // a list of strings that are treated as resource locations for items
-    private static final ModConfigSpec.ConfigValue<List<? extends String>> ITEM_STRINGS = BUILDER
-            .comment("A list of items to log on common setup.")
-            .defineListAllowEmpty("items", List.of("minecraft:iron_ingot"), TolkienMobsConfig::validateItemName);
-
     static final ModConfigSpec SPEC = BUILDER.build();
 
     public static boolean disableFakePlayer;
     public static boolean autoUse;
     public static boolean disableHobbitGrowth;
+    public static boolean paymentType;
     public enum sleepingBagUse {}
 
+    public static int distanceCost;
+    public static int dimensionCost;
     public static int pickupRange;
     public static int growthRange;
     public static int growthTimer;
     public static int homeRadius;
     public static String magicNumberIntroduction;
-    public static Set<Item> items;
+    public static Set<Item> item;
 
     private static boolean validateItemName(final Object obj)
     {
@@ -92,10 +105,8 @@ public class TolkienMobsConfig {
         growthTimer = GROW_TIMER.get();
         homeRadius = HOME_RADIUS.get();
         magicNumberIntroduction = MAGIC_NUMBER_INTRODUCTION.get();
-
-        // convert the list of strings into a set of items
-        items = ITEM_STRINGS.get().stream()
-                .map(itemName -> BuiltInRegistries.ITEM.get(ResourceLocation.parse(itemName)))
-                .collect(Collectors.toSet());
+        distanceCost = DISTANCE_COST.get();
+        dimensionCost = DIMENSION_COST.get();
+        paymentType = PAYMENT_TYPE.get();
     }
 }

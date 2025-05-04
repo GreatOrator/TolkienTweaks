@@ -2,7 +2,7 @@ package com.greatorator.tolkienmobs.block.custom;
 
 import com.greatorator.tolkienmobs.block.TolkienPlantBlock;
 import com.greatorator.tolkienmobs.init.TolkienParticleTypes;
-import com.greatorator.tolkienmobs.network.SpawnFallenLeafFromPacket;
+import com.greatorator.tolkienmobs.network.manager.SpawnFallenLeafFromPacket;
 import com.greatorator.tolkienmobs.particle.data.LeafParticleData;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.client.Minecraft;

@@ -4,7 +4,9 @@ import com.greatorator.tolkienmobs.TolkienMobsConfig;
 import com.greatorator.tolkienmobs.containers.widget.GrayscaleButton;
 import com.greatorator.tolkienmobs.containers.widget.NumberButton;
 import com.greatorator.tolkienmobs.containers.widget.ToggleButton;
+import com.greatorator.tolkienmobs.util.LangTranslationUtils;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -144,6 +146,27 @@ public class ToggleButtonFactory {
 
     public static NumberButton KEYUSESBUTTON(int x, int y, int value, Button.OnPress onPress) {
         return new NumberButton(x, y, 24, 16, value, TolkienMobsConfig.MINIMUM_TICK_SPEED.get(), 50, usesButtonLocalization, onPress);
+    }
+
+    /** Milestone Settings **/
+    private static final Component distanceButtonLocalization = Component.translatable("screen.tolkienmobs.milestone.distance");
+    private static final Component dimensionButtonLocalization = Component.translatable("screen.tolkienmobs.milestone.dimension");
+    private static final Component itemPaymentButtonLocalization = LangTranslationUtils.paymentItem(BuiltInRegistries.ITEM.get(ResourceLocation.parse(TolkienMobsConfig.PAYMENT_ITEM.get())).getDefaultInstance().getDisplayName());
+    private static final Component experiencePaymentButtonLocalization = LangTranslationUtils.paymentItem(BuiltInRegistries.ITEM.get(ResourceLocation.parse("tolkienmobs:experience_orb")).getDefaultInstance().getDisplayName());
+
+    public static NumberButton DISTANCE_BUTTON(int x, int y, int value, Button.OnPress onPress) {
+        return new NumberButton(x, y, 24, 16, value, TolkienMobsConfig.DISTANCE_COST.get(), 5000, distanceButtonLocalization, onPress);
+    }
+
+    public static NumberButton DIMENSION_BUTTON(int x, int y, int value, Button.OnPress onPress) {
+        return new NumberButton(x, y, 24, 16, value, TolkienMobsConfig.DIMENSION_COST.get(), 10, dimensionButtonLocalization, onPress);
+    }
+
+    public static NumberButton ITEM_PAYMENT_METHOD(int x, int y, int value, Button.OnPress onPress) {
+        return new NumberButton(x, y, 16, 16, value, 1, 1, itemPaymentButtonLocalization, onPress);
+    }
+    public static NumberButton EXPERIENCE_PAYMENT_METHOD(int x, int y, int value, Button.OnPress onPress) {
+        return new NumberButton(x, y, 16, 16, value, 1, 1, experiencePaymentButtonLocalization, onPress);
     }
 
     /** Set Tick Delay Amount **/

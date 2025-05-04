@@ -1,4 +1,4 @@
-// 1.21.1	2025-04-29T17:22:09.8222927	Item Models: tolkienmobs
+// 1.21.1	2025-05-03T08:09:48.2971007	Item Models: tolkienmobs
 2744b0cddb66f773a20c0030bb5381576093ca96 assets/tolkienmobs/models/item/ammolite_horse_armor.json
 be4f4d0eaa4937bd1aa214d8797a516f30f4540a assets/tolkienmobs/models/item/ammo_galadhrim_arrow.json
 5cd103fa46a9ba3855a613b86b4f3fb53fb2092c assets/tolkienmobs/models/item/ammo_utumno_arrow.json
@@ -189,6 +189,7 @@ fc0ac3241c24b08f9f4e60b952ddf7a2a11f2b50 assets/tolkienmobs/models/item/elven_ma
 63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/tolkienmobs/models/item/entityttmwarg_spawn_egg.json
 63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/tolkienmobs/models/item/entityttmwatcher_spawn_egg.json
 63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/tolkienmobs/models/item/entityttmwitchking_spawn_egg.json
+4017e608c54fc514f65db1adcaba0fcf9bd590af assets/tolkienmobs/models/item/experience_orb.json
 54ba13a4e04b296303b6c693ba82fd09a1166489 assets/tolkienmobs/models/item/fangornoak_button.json
 0d46a2b29c41d1beeb3a9ff2aeb4cff2099db45e assets/tolkienmobs/models/item/feather_bird.json
 a1f36458820afb48565363a3218b9ec07152438b assets/tolkienmobs/models/item/feather_crebain.json

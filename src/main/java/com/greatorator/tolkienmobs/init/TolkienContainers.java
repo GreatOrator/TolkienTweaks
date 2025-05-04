@@ -36,6 +36,7 @@ public class TolkienContainers {
     public static final DeferredHolder<MenuType<?>, MenuType<CamoKeyStoneContainer>> KEY_STONE_CONTAINER = registerMenuType("keystone_container", CamoKeyStoneContainer::new);
     public static final DeferredHolder<MenuType<?>, MenuType<CamoSpawnerContainer>> CAMO_SPAWNER_CONTAINER = registerMenuType("camo_spawner_container", CamoSpawnerContainer::new);
     public static final DeferredHolder<MenuType<?>, MenuType<CamoFluidBlockContainer>> CAMO_FLUID_CONTAINER = registerMenuType("camo_fluid_container", CamoFluidBlockContainer::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<MilestoneContainer>> MILESTONE_CONTAINER = registerMenuType("milestone_container", MilestoneContainer::new);
 
     private static <T extends AbstractContainerMenu>DeferredHolder<MenuType<?>, MenuType<T>> registerMenuType(String name,
                                                                                                               IContainerFactory<T> factory) {

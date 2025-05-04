@@ -4,7 +4,7 @@ import com.greatorator.tolkienmobs.containers.LockableChestContainer;
 import com.greatorator.tolkienmobs.containers.widget.ButtonTexture;
 import com.greatorator.tolkienmobs.containers.widget.TolkienButton;
 import com.greatorator.tolkienmobs.item.custom.KeyItem;
-import com.greatorator.tolkienmobs.network.LockedChestUpdateManager;
+import com.greatorator.tolkienmobs.network.manager.LockedChestUpdateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;

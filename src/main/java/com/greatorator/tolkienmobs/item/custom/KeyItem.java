@@ -4,7 +4,7 @@ import com.greatorator.tolkienmobs.containers.KeyCodeContainer;
 import com.greatorator.tolkienmobs.containers.KeyItemContainer;
 import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.greatorator.tolkienmobs.item.TolkienItem;
-import com.greatorator.tolkienmobs.network.KeyCodeComponent;
+import com.greatorator.tolkienmobs.network.component.KeyCodeComponent;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;

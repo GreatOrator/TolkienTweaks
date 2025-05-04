@@ -149,6 +149,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addItemWithLore(TolkienItems.ITEM_WATCHERCOMPLETE.get(), "§3Watcher Token§r", "Proof of defeating the Watcher");
             this.addItemWithLore(TolkienItems.ITEM_TOKEN_EASTERN_ALLIANCE.get(), "§4Eastern Alliance Token§r", "Proof of your decision of who you chose to align with");
             this.addItemWithLore(TolkienItems.ITEM_TOKEN_WESTERN_ALLIANCE.get(), "§1Western Alliance Token§r", "Proof of your decision of who you chose to align with");
+            this.addItem(TolkienItems.ITEM_EXPERIENCE_ORB, "§2Experience§r");
             this.addItemWithInstructions(TolkienItems.BRONZE_KEY.get(), "Bronze Key", "Uses Left: ", "Hold Shift while in Creative", "Right-click to enter/change key code");
             this.addItemWithInstructions(TolkienItems.SILVER_KEY.get(), "Silver Key", "Uses Left: ", "Hold Shift while in Creative", "Right-click to enter/change key code");
             this.addItemWithInstructions(TolkienItems.GOLD_KEY.get(), "Gold Key", "Uses Left: ", "Hold Shift while in Creative", "Right-click to enter/change key code");
@@ -389,9 +390,14 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add("screen.tolkienmobs.camo_spawner.spawnerParticles.enabled", "Spawner Particles Enabled");
             this.add("screen.tolkienmobs.camo_spawner.spwnRngeValue", "Max distance mobs will spawn from spawner");
             this.add("screen.tolkienmobs.camo_spawner.title", "Camouflage Spawner");
+            this.add("screen.tolkienmobs.milestone", "Pick your destination");
+            this.add("screen.tolkienmobs.milestone.distance", "Distance per X blocks (cost will be distance divided by this number)");
+            this.add("screen.tolkienmobs.milestone.dimension", "Cross-dimensional cost multiplier");
+            this.add("screen.tolkienmobs.milestone.instructions", "Set the name for this Milestone");
 
                 // Buttons
             this.add("buttons.tolkienmobs.saveinfo", "Save Info");
+            this.add("buttons.tolkienmobs.milestone.saveinfo", "Save");
 
                 // Fluid Tooltips
             this.add("tolkienmobs.tooltip.liquid.amount.empty", "Tank Empty");
@@ -406,6 +412,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add("tooltip.tolkienmobs.ammo.infinite", "Infinity");
             this.add("tooltip.tolkienmobs.damage.base", " %s Base Damage");
             this.add("tooltip.tolkienmobs.fuel.remaining", " %s Remaining Fuel (Max 16000)");
+            this.add("tooltip.tolkienmobs.milestone.payment_method", "Payment Method - %s");
 
                 // Potions & Effects
                     // Beneficial

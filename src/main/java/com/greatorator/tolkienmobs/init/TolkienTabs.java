@@ -1,6 +1,6 @@
 package com.greatorator.tolkienmobs.init;
 
-import com.greatorator.tolkienmobs.handler.data.TrinketComponent;
+import com.greatorator.tolkienmobs.network.component.TrinketComponent;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;

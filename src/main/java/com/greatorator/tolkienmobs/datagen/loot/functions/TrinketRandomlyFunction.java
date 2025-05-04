@@ -1,6 +1,6 @@
 package com.greatorator.tolkienmobs.datagen.loot.functions;
 
-import com.greatorator.tolkienmobs.handler.data.TrinketComponent;
+import com.greatorator.tolkienmobs.network.component.TrinketComponent;
 import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.greatorator.tolkienmobs.init.TolkienLootFunctions;
 import com.mojang.serialization.MapCodec;

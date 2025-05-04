@@ -1,6 +1,6 @@
 package com.greatorator.tolkienmobs.handler.data;
 
-import com.greatorator.tolkienmobs.handler.interfaces.BackpackFluids;
+import com.greatorator.tolkienmobs.handler.interfaces.block.BackpackFluids;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.inventory.ContainerData;
 

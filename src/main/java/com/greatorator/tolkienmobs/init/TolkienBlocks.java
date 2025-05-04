@@ -1559,6 +1559,9 @@ public class TolkienBlocks {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TolkienBarrelBlockEntity>> TOLKIEN_BARREL_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("tolkien_barrel_block_entity", () ->
                     BlockEntityType.Builder.of(TolkienBarrelBlockEntity::new, BARREL_MALLORN.get(), BARREL_MIRKWOOD.get(), BARREL_CULUMALDA.get(), BARREL_DEADWOOD.get(), BARREL_MITHRIL.get(), BARREL_FANGORNOAK.get(), BARREL_MORGULIRON.get(), BARREL_DWARVEN_MAPLE.get(), BARREL_LEBETHRON.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MilestoneBlockEntity>> MILESTONE_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("milestone_block", () ->
+                    BlockEntityType.Builder.of(MilestoneBlockEntity::new, MILESTONE_BLOCK.get()).build(null));
 
         // Attachment Types
     public static final Supplier<AttachmentType<ItemStackHandler>> BACKPACK_HANDLER = ATTACHMENT_TYPES.register(
