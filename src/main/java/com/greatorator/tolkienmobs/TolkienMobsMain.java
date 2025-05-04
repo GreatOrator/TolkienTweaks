@@ -58,10 +58,7 @@ import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import org.slf4j.Logger;
 
-import javax.annotation.Nullable;
 import java.util.Locale;
-
-import static java.util.Objects.requireNonNull;
 
 @Mod(TolkienMobsMain.MODID)
 public class TolkienMobsMain {

@@ -371,7 +371,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add("screen.tolkienmobs.camo_spawner.activationRange", "Activate Range");
             this.add("screen.tolkienmobs.camo_spawner.clusterRange", "Search Range");
             this.add("screen.tolkienmobs.camo_spawner.clusterRangeValue", "Range to search for mobs to decide if anymore will spawn");
-            this.add("screen.tolkienmobs.camo_spawner.entityTags", "Entity List");
+            this.add("screen.tolkienmobs.camo_spawner.entityTags", "Current Entity");
             this.add("screen.tolkienmobs.camo_spawner.ignoreSpawnReq.enabled", "Spawn Requirements - Enabled");
             this.add("screen.tolkienmobs.camo_spawner.ignoreSpawnReq.ignored", "Spawn Requirements - Ignored");
             this.add("screen.tolkienmobs.camo_spawner.requirePlayer.enabled", "Player required - Enabled");
@@ -636,7 +636,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add("tolkienmobs.msg.key_used", "Key has no remaining uses.");
             this.add("tolkienmobs.msg.cleared.entities", "All existing entities cleared...");
             this.add("tolkienmobs.msg.added.entities", "Entity added...");
-            this.add("tolkienmobs.msg.nomore.entities", "Can't add more than 6 entities, first one replaced...");
+            this.add("tolkienmobs.msg.nomore.entities", "Can't add more than 1 entity, first one replaced...");
             this.add("screen.tolkienmobs.camo_spawner.remove_mob", "Clear all Mobs");
             this.add("tolkienmobs.msg.payment", "Payment item set to...");
             this.add("tolkienmobs.msg.payment.insufficient", "Not enough for teleport!");
