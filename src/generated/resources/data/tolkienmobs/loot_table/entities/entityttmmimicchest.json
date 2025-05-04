@@ -64,7 +64,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "tolkienmobs:elemental_flight"
+              "id": "minecraft:long_swiftness"
             },
             {
               "add": false,

@@ -48,7 +48,7 @@ public class CamoSpawnerBlockEntity extends BlockEntity implements MenuProvider,
     public SpawnerSettings spawnerSettings = new SpawnerSettings(true, true, true);
     public SpawnerDelays spawnerDelays = new SpawnerDelays(200, 800, 20);
     public SpawnerRanges spawnerRanges = new SpawnerRanges(4, 4, 4, 6, 16);
-    public List<CompoundTag> entityTags = new ArrayList<>(6);
+    public List<CompoundTag> entityTags = new ArrayList<>(1);
     private final TolkienBaseSpawner spawnerBase = new TolkienBaseSpawner(this) {
         @Override
         public void broadcastEvent(Level level, BlockPos blockPos, int p_155769_) {
@@ -90,14 +90,14 @@ public class CamoSpawnerBlockEntity extends BlockEntity implements MenuProvider,
             entityTag.putString("entityID", BuiltInRegistries.ENTITY_TYPE.getKey(entityType).toString());
             Optional<EntityType<?>> optional = EntityType.byString(BuiltInRegistries.ENTITY_TYPE.getKey(entityType).toString());
 
-            if(!this.entityTags.contains(entityTag) && this.entityTags.size() <= 6) {
+            if(!this.entityTags.contains(entityTag) && this.entityTags.size() == 1) {
                 TolkienMobsMain.LOGGER.warn(String.valueOf(this.entityTags.size()));
                 this.entityTags.add(entityTag);
                 this.markDirtyClient();
                 this.setChanged();
                 player.sendSystemMessage(Component.translatable("tolkienmobs.msg.added.entities").append(" " + optional.get().getDescription().getString()).withStyle(ChatFormatting.DARK_GREEN));
             } else {
-                this.entityTags.removeFirst();
+                this.entityTags.clear();
                 this.entityTags.add(entityTag);
                 this.markDirtyClient();
                 this.setChanged();

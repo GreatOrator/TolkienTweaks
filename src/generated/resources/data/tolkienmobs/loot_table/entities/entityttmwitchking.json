@@ -21,7 +21,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:invisibility"
+              "id": "minecraft:long_slow_falling"
             },
             {
               "add": false,
