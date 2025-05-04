@@ -607,6 +607,7 @@
   "block.tolkienmobs.wood_lebethron": "Lebethron Wood",
   "block.tolkienmobs.wood_mallorn": "Mallorn Wood",
   "block.tolkienmobs.wood_mirkwood": "Mirkwood Wood",
+  "buttons.tolkienmobs.milestone.saveinfo": "Save",
   "buttons.tolkienmobs.saveinfo": "Save Info",
   "effect.tolkienmobs.blessing_of_eru": "Eru's Blessing",
   "effect.tolkienmobs.crippling_terror": "Paralysing Fear",
@@ -949,6 +950,7 @@
   "item.tolkienmobs.entityttmwarg_spawn_egg": "Warg Spawn Egg",
   "item.tolkienmobs.entityttmwatcher_spawn_egg": "Watcher Spawn Egg",
   "item.tolkienmobs.entityttmwitchking_spawn_egg": "Witch King Spawn Egg",
+  "item.tolkienmobs.experience_orb": "§2Experience§r",
   "item.tolkienmobs.fangornoak_boat": "Fangorn Oak Boat",
   "item.tolkienmobs.fangornoak_chest_boat": "Fangorn Oak Chest Boat",
   "item.tolkienmobs.feather_bird": "Bird Feather",
@@ -1544,6 +1546,10 @@
   "screen.tolkienmobs.keystone.pulse.active": "Redstone acts like button when key used - Active",
   "screen.tolkienmobs.keystone.tickdelay": "§l**Tick Delay Mode Only**§r Set the amount of delay for redstone",
   "screen.tolkienmobs.keyuses": "Number of uses if enabled",
+  "screen.tolkienmobs.milestone": "Pick your destination",
+  "screen.tolkienmobs.milestone.dimension": "Cross-dimensional cost multiplier",
+  "screen.tolkienmobs.milestone.distance": "Distance per X blocks (cost will be distance divided by this number)",
+  "screen.tolkienmobs.milestone.instructions": "Set the name for this Milestone",
   "screen.tolkienmobs.namefieldtext": "Enter Code",
   "subtitles.tolkienmobs.ambient.arda_portal": "Portal to Arda beckons",
   "subtitles.tolkienmobs.ambient.khazaddum": "Sounds of an ancient Dwarven City",
@@ -1602,5 +1608,6 @@
   "tooltip.tolkienmobs.bow_speed.slower": " %sx Slower Pull",
   "tooltip.tolkienmobs.damage.base": " %s Base Damage",
   "tooltip.tolkienmobs.fuel.remaining": " %s Remaining Fuel (Max 16000)",
+  "tooltip.tolkienmobs.milestone.payment_method": "Payment Method - %s",
   "tooltip.tolkienmobs.ranged.power": " %sx Shooting Power"
 }

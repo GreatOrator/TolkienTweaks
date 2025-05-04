@@ -1,5 +1,6 @@
 {
 	"credit": "Made with Blockbench",
+	"render_type": "minecraft:translucent",
 	"texture_size": [64, 32],
 	"textures": {
 		"0": "tolkienmobs:block/milestone/milestone_block_active",

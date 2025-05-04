@@ -1,6 +1,6 @@
 package com.greatorator.tolkienmobs.init;
 
-import com.greatorator.tolkienmobs.handler.data.TrinketComponent;
+import com.greatorator.tolkienmobs.network.component.TrinketComponent;
 import com.greatorator.tolkienmobs.item.*;
 import com.greatorator.tolkienmobs.item.custom.*;
 import com.greatorator.tolkienmobs.item.projectile.BoulderItem;
@@ -154,6 +154,8 @@ public class TolkienItems {
             () -> new TolkienItem(new Item.Properties().stacksTo(16)).setHasLore());
     public static final DeferredItem<Item> ITEM_RUNE_STONE = ITEMS.register("item_rune_stone",
             () -> new TolkienItem(new Item.Properties().stacksTo(8)).setEffectOverride().setHasLore());
+    public static final DeferredItem<Item> ITEM_EXPERIENCE_ORB = ITEMS.register("experience_orb",
+            () -> new TolkienItem(new Item.Properties().stacksTo(1)).setEffectOverride());
 
         // Coins & Tokens
     public static final DeferredItem<Item> ITEM_COIN_BRONZE = ITEMS.register("item_coin_bronze",

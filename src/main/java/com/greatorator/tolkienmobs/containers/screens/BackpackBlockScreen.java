@@ -1,17 +1,20 @@
 package com.greatorator.tolkienmobs.containers.screens;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
 import com.greatorator.tolkienmobs.containers.BackpackBlockContainer;
 import com.greatorator.tolkienmobs.containers.handlers.FluidTankRenderer;
 import com.greatorator.tolkienmobs.containers.handlers.ToggleButtonFactory;
 import com.greatorator.tolkienmobs.containers.widget.ToggleButton;
 import com.greatorator.tolkienmobs.containers.widget.TolkienButton;
-import com.greatorator.tolkienmobs.network.BackpackFluidUpgradesUpdateManager;
-import com.greatorator.tolkienmobs.network.BackpackPlacementUpdateManager;
-import com.greatorator.tolkienmobs.network.BackpackSettingsUpdateManager;
-import com.greatorator.tolkienmobs.network.BackpackUpgradesUpdateManager;
+import com.greatorator.tolkienmobs.network.manager.BackpackFluidUpgradesUpdateManager;
+import com.greatorator.tolkienmobs.network.manager.BackpackPlacementUpdateManager;
+import com.greatorator.tolkienmobs.network.manager.BackpackSettingsUpdateManager;
+import com.greatorator.tolkienmobs.network.manager.BackpackUpgradesUpdateManager;
 import com.greatorator.tolkienmobs.util.*;
+import com.greatorator.tolkienmobs.util.block.BackpackFluidUpgrades;
+import com.greatorator.tolkienmobs.util.block.BackpackPlacement;
+import com.greatorator.tolkienmobs.util.block.BackpackSettings;
+import com.greatorator.tolkienmobs.util.block.BackpackUpgrades;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -31,7 +34,6 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;

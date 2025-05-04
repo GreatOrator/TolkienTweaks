@@ -34,6 +34,16 @@ public class MathUtility {
         return f < (float)i ? i - 1 : i;
     }
 
+    public static int ceil(double d) {
+        int i = (int) d;
+        return d > (double) i ? i + 1 : i;
+    }
+
+    public static int ceil(float f) {
+        int i = (int) f;
+        return f > (float) i ? i + 1 : i;
+    }
+
     public static float sqrt(float f) {
         return (float)Math.sqrt((double)f);
     }
@@ -50,15 +60,23 @@ public class MathUtility {
         return minimum >= maximum ? minimum : random.nextInt(maximum - minimum + 1) + minimum;
     }
 
+    public static double clip(double value, double min, double max) {
+        if (value > max) {
+            value = max;
+        }
+        if (value < min) {
+            value = min;
+        }
+        return value;
+    }
+
     public static float clip(float value, float min, float max) {
         if (value > max) {
             value = max;
         }
-
         if (value < min) {
             value = min;
         }
-
         return value;
     }
 
@@ -66,12 +84,14 @@ public class MathUtility {
         if (value > max) {
             value = max;
         }
-
         if (value < min) {
             value = min;
         }
-
         return value;
+    }
+
+    public static boolean between(double min, double value, double max) {
+        return min <= value && value <= max;
     }
 
     public static float degToRad(float degrees)

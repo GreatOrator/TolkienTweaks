@@ -124,6 +124,7 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         basicItem(TolkienItems.ITEM_WATCHERCOMPLETE.get());
         basicItem(TolkienItems.ITEM_TOKEN_EASTERN_ALLIANCE.get());
         basicItem(TolkienItems.ITEM_TOKEN_WESTERN_ALLIANCE.get());
+        basicItem(TolkienItems.ITEM_EXPERIENCE_ORB.get());
 
             // Mob Drops
         basicItem(TolkienItems.CREBAIN_FEATHER.get());

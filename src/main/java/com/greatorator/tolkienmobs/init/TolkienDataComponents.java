@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.init;
 
-import com.greatorator.tolkienmobs.handler.data.TrinketComponent;
-import com.greatorator.tolkienmobs.network.KeyCodeComponent;
+import com.greatorator.tolkienmobs.network.component.TrinketComponent;
+import com.greatorator.tolkienmobs.network.component.KeyCodeComponent;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;

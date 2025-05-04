@@ -1,12 +1,31 @@
 package com.greatorator.tolkienmobs.network;
 
+import com.greatorator.tolkienmobs.TolkienMobsMain;
+import com.greatorator.tolkienmobs.handler.MilestoneHandler;
+import com.greatorator.tolkienmobs.network.internal.ClientConfigurationPacketHandler;
+import com.greatorator.tolkienmobs.network.manager.*;
+import com.greatorator.tolkienmobs.network.packet.PacketCustom;
+import com.greatorator.tolkienmobs.network.packet.PacketCustomChannel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.NetworkChannel;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public final class PacketHandler {
+    public static final ResourceLocation NET_CHANNEL = ResourceLocation.fromNamespaceAndPath(MODID, "network");
+    public static final int C_SEND_MILESTONES = 1;
+    public static final int L_CONFIG_SYNC = 1;
+    public static final PacketCustomChannel CHANNEL = new PacketCustomChannel(NET_CHANNEL)
+            .optional()
+            .versioned("tolkienmobs")
+            .clientConfiguration(() -> ClientConfigurationPacketHandler::new)
+            .client(() -> ClientPacketHandler::new)
+            .server(() -> ServerPacketHandler::new);
+
     private PacketHandler() {
     }
 
@@ -14,8 +33,8 @@ public final class PacketHandler {
         modEventBus.addListener(RegisterPayloadHandlersEvent.class, event -> {
             var registrar = event.registrar(MODID).versioned("1");
             registerClientToServer(registrar);
-            registerServerToClient(registrar);
         });
+        CHANNEL.init(modEventBus);
     }
 
     private static void registerClientToServer(PayloadRegistrar registrar) {
@@ -52,9 +71,20 @@ public final class PacketHandler {
                 BackpackUpgradesUpdateManager.STREAM_CODEC, BackpackUpgradesUpdateManager::handle);
         registrar.playToServer(BackpackFluidUpgradesUpdateManager.TYPE,
                 BackpackFluidUpgradesUpdateManager.STREAM_CODEC, BackpackFluidUpgradesUpdateManager::handle);
+        registrar.playToServer(MilestoneSettingsUpdateManager.TYPE,
+                MilestoneSettingsUpdateManager.STREAM_CODEC, MilestoneSettingsUpdateManager::handle);
     }
 
-    private static void registerServerToClient(PayloadRegistrar registrar) {
+    public static void sendMilestonesToClients(MilestoneHandler saveData, ServerPlayer player) {
+        PacketCustom packet = new PacketCustom(NET_CHANNEL, C_SEND_MILESTONES, player.level().registryAccess());
+        saveData.serialize(packet);
+        if (player != null) {
+            packet.sendToPlayer(player);
+        } else {
+            packet.toClientPacket();
+        }
+    }
 
+    private static void registerServerToClient(IEventBus modBus) {
     }
 }

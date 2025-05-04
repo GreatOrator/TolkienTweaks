@@ -16,9 +16,10 @@ import com.greatorator.tolkienmobs.event.TolkienRegistration;
 import com.greatorator.tolkienmobs.event.client.TolkienClientEvents;
 import com.greatorator.tolkienmobs.fluid.TolkienFluidType;
 import com.greatorator.tolkienmobs.handler.ColorHandler;
+import com.greatorator.tolkienmobs.handler.MilestoneHandler;
 import com.greatorator.tolkienmobs.init.*;
 import com.greatorator.tolkienmobs.network.PacketHandler;
-import com.greatorator.tolkienmobs.network.SpawnFallenLeafFromPacket;
+import com.greatorator.tolkienmobs.network.manager.SpawnFallenLeafFromPacket;
 import com.greatorator.tolkienmobs.particle.FellBeastBreathParticle;
 import com.greatorator.tolkienmobs.particle.LeafParticle;
 import com.greatorator.tolkienmobs.particle.WindParticle;
@@ -57,7 +58,10 @@ import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import org.slf4j.Logger;
 
+import javax.annotation.Nullable;
 import java.util.Locale;
+
+import static java.util.Objects.requireNonNull;
 
 @Mod(TolkienMobsMain.MODID)
 public class TolkienMobsMain {
@@ -75,7 +79,7 @@ public class TolkienMobsMain {
     //    -Milestone
     //      -Needs implementation
     //    -Spawner
-    //      -Using the custom entity list for what to spawn
+    //      -Displaying the current mob in menu
 
     public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer, Dist dist) {
         modEventBus.addListener(this::commonSetup);
@@ -88,6 +92,7 @@ public class TolkienMobsMain {
             TolkienRegistration.initModBusEvents(modEventBus);
             TolkienClientEvents.initGameEvents();
         }
+        MilestoneHandler.init();
         PacketHandler.register(modEventBus);
 
         TolkienTabs.register(modEventBus);
@@ -332,6 +337,7 @@ public class TolkienMobsMain {
             event.register(TolkienContainers.KEY_STONE_CONTAINER.get(), CamoKeyStoneScreen::new);
             event.register(TolkienContainers.CAMO_SPAWNER_CONTAINER.get(), CamoSpawnerScreen::new);
             event.register(TolkienContainers.CAMO_FLUID_CONTAINER.get(), CamoFluidBlockScreen::new);
+            event.register(TolkienContainers.MILESTONE_CONTAINER.get(), MilestoneScreen::new);
         }
 
         @SubscribeEvent

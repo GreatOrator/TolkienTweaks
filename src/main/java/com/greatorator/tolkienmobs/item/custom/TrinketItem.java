@@ -1,6 +1,6 @@
 package com.greatorator.tolkienmobs.item.custom;
 
-import com.greatorator.tolkienmobs.handler.data.TrinketComponent;
+import com.greatorator.tolkienmobs.network.component.TrinketComponent;
 import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.core.Holder;

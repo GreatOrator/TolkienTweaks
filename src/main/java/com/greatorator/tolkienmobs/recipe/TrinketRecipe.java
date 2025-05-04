@@ -2,7 +2,7 @@ package com.greatorator.tolkienmobs.recipe;
 
 import com.google.common.base.Suppliers;
 import com.greatorator.tolkienmobs.datagen.helpers.TolkienRecipeHelper;
-import com.greatorator.tolkienmobs.handler.data.TrinketComponent;
+import com.greatorator.tolkienmobs.network.component.TrinketComponent;
 import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienRecipeSerializers;

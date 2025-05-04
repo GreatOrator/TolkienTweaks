@@ -17,9 +17,12 @@ public class LangTranslationUtils {
             BowSlowerPull = "bow_speed.slower",
             InfiniteAmmo = "ammo.infinite",
             RemainFuel = "fuel.remaining",
+            PaymentItem = "milestone.payment_method",
             ShootingPower = "ranged.power";
 
     public static Component infiniteAmmo() {return i18n(BLUE, InfiniteAmmo);}
+
+    public static Component paymentItem(Component name) {return i18n(GOLD, PaymentItem, name);}
 
     public static Component bowFasterPull(float speed) {return i18n(DARK_GREEN, BowFasterPull, speed);}
 
