@@ -14,6 +14,7 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import java.util.concurrent.CompletableFuture;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
@@ -181,5 +182,11 @@ public class TolkienItemTagProvider extends ItemTagsProvider {
                 .add(TolkienBlocks.FANGORNOAK_HANGING_SIGN.get().asItem())
                 .add(TolkienBlocks.DEADWOOD_HANGING_SIGN.get().asItem())
                 .add(TolkienBlocks.DWARVEN_MAPLE_HANGING_SIGN.get().asItem());
+    }
+
+    @Nonnull
+    @Override
+    public String getName() {
+        return "Tolkienmobs - Item Tags";
     }
 }

@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs;
 import com.google.common.collect.Maps;
 import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
 import com.greatorator.tolkienmobs.containers.screens.*;
+import com.greatorator.tolkienmobs.datagen.TolkienDataGenerator;
 import com.greatorator.tolkienmobs.entity.ambient.render.*;
 import com.greatorator.tolkienmobs.entity.boss.render.*;
 import com.greatorator.tolkienmobs.entity.item.render.*;
@@ -79,6 +80,7 @@ public class TolkienMobsMain {
     //  -Signs not placing on vertical surfaces
 
     public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer, Dist dist) {
+        modEventBus.addListener(TolkienDataGenerator::gatherData);
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::registerCapabilities);
         modEventBus.addListener(this::createNewRegistries);
@@ -123,6 +125,7 @@ public class TolkienMobsMain {
         TolkienDensityFunctions.DENSITY_FUNCTION_TYPES.register(modEventBus);
         TolkienFeatures.FEATURES.register(modEventBus);
         TolkienCaveCarvers.CARVER_TYPES.register(modEventBus);
+        TolkienStructures.STRUCTURE.register(modEventBus);
         TolkienDataComponents.register(modEventBus);
         TolkienRecipesTypes.register(modEventBus);
         TolkienRecipeSerializers.register(modEventBus);

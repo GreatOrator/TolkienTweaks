@@ -4,6 +4,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
@@ -42,27 +43,33 @@ public class TolkienTags {
         public static final TagKey<Item> CURIOS_HEAD = createTag("curios:head");
 
         private static TagKey<Item> createTag(String name) {
-            return net.minecraft.tags.TagKey.create(Registries.ITEM, ResourceLocation.parse(name));
+            return TagKey.create(Registries.ITEM, ResourceLocation.parse(name));
         }
     }
 
     public static class Biomes {
-        private Biomes() {}
-
         public static final TagKey<Biome> IS_ARDA = createTag("tolkienmobs:is_arda");
 
+        public static final TagKey<Biome> IS_MOUNTAIN = createTag("tolkienmobs:is_mountain");
+
         private static TagKey<Biome> createTag(String name) {
-            return net.minecraft.tags.TagKey.create(Registries.BIOME, ResourceLocation.parse(name));
+            return TagKey.create(Registries.BIOME, ResourceLocation.parse(name));
         }
     }
 
     public static class DamageTypes {
-        private DamageTypes() {}
 
         public static final TagKey<DamageType> ILLUVATAR_DAMAGE_GROUP = tag("tolkienmobs:illuvatar_damage_group");
 
         private static TagKey<DamageType> tag(String name) {
-            return net.minecraft.tags.TagKey.create(Registries.DAMAGE_TYPE, ResourceLocation.parse(name));
+            return TagKey.create(Registries.DAMAGE_TYPE, ResourceLocation.parse(name));
+        }
+    }
+
+    public static class Entities {
+
+        private static TagKey<EntityType<?>> createTag(String name) {
+            return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.parse(name));
         }
     }
 }

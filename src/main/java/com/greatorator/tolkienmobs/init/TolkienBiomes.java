@@ -49,18 +49,6 @@ public class TolkienBiomes {
         return ResourceKey.create(Registries.BIOME, TolkienMobsMain.prefix(name));
     }
 
-    public static final class Keys {
-        public static final String REGISTRY_NAMESPACE = "tolkienmobs";
-
-        public static final ResourceKey<Registry<BiomeLayerType>> BIOME_LAYER_TYPE = ResourceKey.createRegistryKey(namedRegistry("biome_layer_type"));
-
-        public static final ResourceKey<Registry<BiomeLayerFactory>> BIOME_STACK = ResourceKey.createRegistryKey(namedRegistry("biome_layer_stack"));
-        public static final ResourceKey<Registry<BiomeDensitySource>> BIOME_TERRAIN_DATA = ResourceKey.createRegistryKey(namedRegistry("biome_terrain_data"));
-
-        public static ResourceLocation namedRegistry(String name) {
-            return ResourceLocation.fromNamespaceAndPath(REGISTRY_NAMESPACE, name.toLowerCase(Locale.ROOT));
-        }}
-
     public static void bootstrap(BootstrapContext<Biome> context) {
         HolderGetter<PlacedFeature> featureGetter = context.lookup(Registries.PLACED_FEATURE);
         HolderGetter<ConfiguredWorldCarver<?>> carverGetter = context.lookup(Registries.CONFIGURED_CARVER);
@@ -85,5 +73,18 @@ public class TolkienBiomes {
         context.register(STREAM, biomeWithDefaults(defaultAmbientBuilder(), defaultMobSpawning(), streamsAndLakes(featureGetter, carverGetter, false)).temperature(0.5F).downfall(0.1F).build());
         context.register(LAKE, biomeWithDefaults(defaultAmbientBuilder(), defaultMobSpawning(), streamsAndLakes(featureGetter, carverGetter, true)).temperature(0.66F).downfall(1).build());
         context.register(UNDERGROUND, biomeWithDefaults(defaultAmbientBuilder(), undergroundMobSpawning(), undergroundGen(featureGetter, carverGetter)).temperature(0.7F).downfall(0.0F).build());
+    }
+
+    public static final class Keys {
+        public static final String REGISTRY_NAMESPACE = "tolkienmobs";
+
+        public static final ResourceKey<Registry<BiomeLayerType>> BIOME_LAYER_TYPE = ResourceKey.createRegistryKey(namedRegistry("biome_layer_type"));
+
+        public static final ResourceKey<Registry<BiomeLayerFactory>> BIOME_STACK = ResourceKey.createRegistryKey(namedRegistry("biome_layer_stack"));
+        public static final ResourceKey<Registry<BiomeDensitySource>> BIOME_TERRAIN_DATA = ResourceKey.createRegistryKey(namedRegistry("biome_terrain_data"));
+
+        public static ResourceLocation namedRegistry(String name) {
+            return ResourceLocation.fromNamespaceAndPath(REGISTRY_NAMESPACE, name.toLowerCase(Locale.ROOT));
+        }
     }
 }

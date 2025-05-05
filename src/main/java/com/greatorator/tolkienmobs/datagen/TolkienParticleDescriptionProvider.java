@@ -7,6 +7,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.ParticleDescriptionProvider;
 
+import javax.annotation.Nonnull;
+
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class TolkienParticleDescriptionProvider extends ParticleDescriptionProvider {
@@ -29,5 +31,11 @@ public class TolkienParticleDescriptionProvider extends ParticleDescriptionProvi
         this.sprite(TolkienParticleTypes.FELLBEAST_BREATH.get(), ResourceLocation.fromNamespaceAndPath(MODID, "fellbeast_breath"));
         this.sprite(TolkienParticleTypes.WIND_PARTICLE.get(), TolkienMobsMain.prefix("wind"));
         this.sprite(TolkienParticleTypes.WANDERING_LIGHTNINGBUG.get(), TolkienMobsMain.prefix("lightningbug"));
+    }
+
+    @Nonnull
+    @Override
+    public String getName() {
+        return "Tolkienmobs - Particle Types";
     }
 }

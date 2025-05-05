@@ -8,6 +8,7 @@ import net.minecraft.tags.FluidTags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import java.util.concurrent.CompletableFuture;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
@@ -24,5 +25,11 @@ public class TolkienFluidTagProvider extends FluidTagsProvider {
                 .add(TolkienFluids.MITHRIL_FLOWING.get())
                 .add(TolkienFluids.MORGULIRON_FLUID.get())
                 .add(TolkienFluids.MORGULIRON_FLOWING.get());
+    }
+
+    @Nonnull
+    @Override
+    public String getName() {
+        return "Tolkienmobs - Fluid Tags";
     }
 }

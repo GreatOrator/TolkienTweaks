@@ -10,6 +10,8 @@ import net.neoforged.neoforge.common.data.SoundDefinitionsProvider;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
+
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class TolkienSoundProvider extends SoundDefinitionsProvider {
@@ -201,5 +203,11 @@ public class TolkienSoundProvider extends SoundDefinitionsProvider {
         String subtitleKey = "subtitles.tolkienmobs." + splitSoundName[0] + "." + splitSoundName[2];
         definition.subtitle(subtitleKey);
         TolkienLangProvider.SUBTITLE_GENERATOR.put(subtitleKey, subtitle);
+    }
+
+    @Nonnull
+    @Override
+    public String getName() {
+        return "Tolkienmobs - Music of Ainor";
     }
 }

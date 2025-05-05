@@ -6,6 +6,7 @@ import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import net.minecraft.data.PackOutput;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -642,5 +643,11 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add("tolkienmobs.msg.payment.insufficient", "Not enough for teleport!");
             this.add("tolkienmobs.msg.destination", "Destination not found");
             this.add("tolkienmobs.msg.wrong_key", "You need the correct key!");
+    }
+
+    @Nonnull
+    @Override
+    public String getName() {
+        return "Tolkienmobs - English Language Generator";
     }
 }

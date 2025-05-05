@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
+import javax.annotation.Nonnull;
 import java.util.concurrent.CompletableFuture;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
@@ -410,5 +411,11 @@ public class TolkienBlockTagProvider extends BlockTagsProvider {
         tag(TolkienTags.Blocks.CARVER_REPLACEABLES)
                 .addTag(BlockTags.OVERWORLD_CARVER_REPLACEABLES)
                 .add(Blocks.SNOW_BLOCK);
+    }
+
+    @Nonnull
+    @Override
+    public String getName() {
+        return "Tolkienmobs - Block Tags";
     }
 }
