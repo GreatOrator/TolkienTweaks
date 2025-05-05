@@ -13,6 +13,8 @@ import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.client.model.generators.VariantBlockStateBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
+import javax.annotation.Nonnull;
+
 public class TolkienBlockStateProvider extends BlockModelBuilders {
     public TolkienBlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
         super(output, exFileHelper);
@@ -923,5 +925,11 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         blockItem(TolkienBlocks.WELL);
 
         fluid();
+    }
+
+    @Nonnull
+    @Override
+    public String getName() {
+        return "Tolkienmobs - Blocks";
     }
 }

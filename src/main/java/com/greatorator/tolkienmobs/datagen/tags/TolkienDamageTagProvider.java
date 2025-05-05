@@ -6,6 +6,7 @@ import net.minecraft.data.tags.DamageTypeTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import java.util.concurrent.CompletableFuture;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
@@ -18,5 +19,11 @@ public class TolkienDamageTagProvider extends DamageTypeTagsProvider {
     @Override
     protected void addTags(Provider provider) {
         //Custom Damage Source
+    }
+
+    @Nonnull
+    @Override
+    public String getName() {
+        return "Tolkienmobs - Damage Source Tags";
     }
 }

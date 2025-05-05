@@ -24,6 +24,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 
+import javax.annotation.Nonnull;
 import java.util.LinkedHashMap;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -617,5 +618,11 @@ public class TolkienItemModelProvider extends ItemModelProvider {
                                         "item/" + itemDeferredItem.getId().getPath()));
             });
         }
+    }
+
+    @Nonnull
+    @Override
+    public String getName() {
+        return "Tolkienmobs - Items";
     }
 }

@@ -9,6 +9,7 @@ import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import java.util.concurrent.CompletableFuture;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
@@ -23,6 +24,11 @@ public class TolkienPoiTypeTagProvider extends PoiTypeTagsProvider {
         TagAppender<PoiType> builder = tag(PoiTypeTags.ACQUIRABLE_JOB_SITE);
         for(var entry : TolkienVillagers.POI_TYPES.getEntries())
             builder.add(entry.getKey());
+    }
 
+    @Nonnull
+    @Override
+    public String getName() {
+        return "Tolkienmobs - POI Type Tags";
     }
 }
