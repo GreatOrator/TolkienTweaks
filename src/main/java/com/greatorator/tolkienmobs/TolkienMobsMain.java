@@ -76,8 +76,6 @@ public class TolkienMobsMain {
     //      -Data storage and access
     //    -Spawner
     //      -Displaying the current mob in menu
-    //    -Camo Spawner
-    //      -Rendering current entity in menu
     //  -Signs not placing on vertical surfaces
 
     public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer, Dist dist) {
