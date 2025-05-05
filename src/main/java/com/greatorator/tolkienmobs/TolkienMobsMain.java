@@ -67,7 +67,6 @@ public class TolkienMobsMain {
     private static final String BLOCK_DIR = "textures/block/custom/";
 
     // TODO
-    //  -Signs not placing on vertical surfaces
     //  -Biomes
     //    -Generate using new stone variants
     //    -Structures
@@ -77,6 +76,9 @@ public class TolkienMobsMain {
     //      -Data storage and access
     //    -Spawner
     //      -Displaying the current mob in menu
+    //    -Camo Spawner
+    //      -Rendering current entity in menu
+    //  -Signs not placing on vertical surfaces
 
     public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer, Dist dist) {
         modEventBus.addListener(this::commonSetup);
