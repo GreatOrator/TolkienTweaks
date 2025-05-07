@@ -1,5 +1,7 @@
 package com.greatorator.tolkienmobs.block.custom.entity;
 
+import com.greatorator.tolkienmobs.block.custom.LockableChestBlock;
+import com.greatorator.tolkienmobs.block.custom.LockableTreasureChestBlock;
 import com.greatorator.tolkienmobs.containers.KeyItemContainer;
 import com.greatorator.tolkienmobs.containers.LockableTreasureChestContainer;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
@@ -25,8 +27,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib.animatable.GeoBlockEntity;
+import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.PlayState;
+import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class LockableTreasureChestBlockEntity extends BlockEntity implements MenuProvider {
+public class LockableTreasureChestBlockEntity extends BlockEntity implements MenuProvider, GeoBlockEntity {
     private static String keyCode;
 
 
@@ -81,6 +90,7 @@ public class LockableTreasureChestBlockEntity extends BlockEntity implements Men
 
     public void onRightClick(BlockState state, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
+        updateBlockState(state, Boolean.FALSE);
 
         if (stack.getItem() instanceof KeyItem && (KeyItem.getKeyCode(stack).equals(getKeyCode()))) {
             int uses = KeyItem.getUses(stack);
@@ -98,6 +108,9 @@ public class LockableTreasureChestBlockEntity extends BlockEntity implements Men
                     KeyItem.setKeyData(stack, KeyItem.getKeyCode(stack), uses - 1, KeyItem.getMode(stack));
                 }
             }
+            markDirtyClient();
+            updateBlockState(state, Boolean.TRUE);
+
             level.playSound((Player) null, worldPosition, SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
             player.openMenu(new SimpleMenuProvider(
                     (windowId, playerInventory, playerEntity) -> new KeyItemContainer(windowId, playerInventory, player, stack), Component.translatable("screen.tolkienmobs." + stack.getDescriptionId())), (buf -> {
@@ -105,6 +118,45 @@ public class LockableTreasureChestBlockEntity extends BlockEntity implements Men
             }));
         } else {
             player.sendSystemMessage(Component.translatable("tolkienmobs.msg.wrong_key").withStyle(ChatFormatting.RED));
+        }
+    }
+
+    /** Animations */
+    private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>(this, "controller", 0, event ->{
+            BlockState state = level.getBlockState(worldPosition);
+            if (state.getBlock() instanceof LockableChestBlock && state.getValue(LockableChestBlock.OPEN)) {
+                event.getController().setAnimation(RawAnimation.begin().thenPlay("open"));
+
+                level.playSound((Player) null, worldPosition, SoundEvents.CHEST_CLOSE, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
+
+                updateBlockState(state, Boolean.FALSE);
+
+                markDirtyClient();
+
+                return PlayState.CONTINUE;
+            }
+            return PlayState.CONTINUE;
+        }));
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return geoCache;
+    }
+
+    void updateBlockState(BlockState state, boolean open) {
+        this.level.setBlock(this.getBlockPos(), (BlockState)state.setValue(LockableTreasureChestBlock.OPEN, open), 3);
+    }
+
+    public void markDirtyClient() {
+        setChanged();
+        if (level != null) {
+            BlockState state = level.getBlockState(getBlockPos());
+            level.sendBlockUpdated(getBlockPos(), state, state, 3);
         }
     }
 }
