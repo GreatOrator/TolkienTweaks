@@ -91,11 +91,6 @@ public class LockableChestBlock extends TolkienChestEntityBlock {
     }
 
     @Override
-    protected RenderShape getRenderShape(BlockState pState) {
-        return RenderShape.MODEL;
-    }
-
-    @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         BlockEntity tile = level.getBlockEntity(pos);
         LockableChestBlockEntity lockableChest = (LockableChestBlockEntity) tile;
@@ -112,5 +107,10 @@ public class LockableChestBlock extends TolkienChestEntityBlock {
             }
         }
         return ItemInteractionResult.SUCCESS;
+    }
+
+    @Override
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 }

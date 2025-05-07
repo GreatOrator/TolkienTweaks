@@ -21,7 +21,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:slowness"
+              "id": "minecraft:weaving"
             },
             {
               "add": false,

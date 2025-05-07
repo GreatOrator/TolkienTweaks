@@ -104,8 +104,8 @@ public class LockableDoubleChestBlock extends TolkienChestEntityBlock {
     }
 
     @Override
-    protected RenderShape getRenderShape(BlockState pState) {
-        return RenderShape.MODEL;
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
     @Override

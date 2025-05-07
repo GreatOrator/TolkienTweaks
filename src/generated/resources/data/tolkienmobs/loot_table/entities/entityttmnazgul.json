@@ -64,7 +64,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "tolkienmobs:dread_aura"
+              "id": "minecraft:poison"
             },
             {
               "add": false,
