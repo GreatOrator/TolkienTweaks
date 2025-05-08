@@ -33,9 +33,12 @@ import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.animation.keyframe.event.builtin.AutoPlayingSoundKeyframeHandler;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class LockableTreasureChestBlockEntity extends BlockEntity implements MenuProvider, GeoBlockEntity {
+    private static final RawAnimation CHEST_OPEN = RawAnimation.begin().thenPlay("open");
+    private AnimationController<LockableTreasureChestBlockEntity> animationController;
     private static String keyCode;
 
 
@@ -108,10 +111,8 @@ public class LockableTreasureChestBlockEntity extends BlockEntity implements Men
                     KeyItem.setKeyData(stack, KeyItem.getKeyCode(stack), uses - 1, KeyItem.getMode(stack));
                 }
             }
-            markDirtyClient();
-            updateBlockState(state, Boolean.TRUE);
+            triggerAnim("popup_controller", "box_open");
 
-            level.playSound((Player) null, worldPosition, SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
             player.openMenu(new SimpleMenuProvider(
                     (windowId, playerInventory, playerEntity) -> new KeyItemContainer(windowId, playerInventory, player, stack), Component.translatable("screen.tolkienmobs." + stack.getDescriptionId())), (buf -> {
                 ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, stack);
@@ -126,21 +127,13 @@ public class LockableTreasureChestBlockEntity extends BlockEntity implements Men
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "controller", 0, event ->{
-            BlockState state = level.getBlockState(worldPosition);
-            if (state.getBlock() instanceof LockableChestBlock && state.getValue(LockableChestBlock.OPEN)) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("open"));
+        animationController = getController();
+        controllers.add(animationController.setSoundKeyframeHandler(new AutoPlayingSoundKeyframeHandler<>()));
+    }
 
-                level.playSound((Player) null, worldPosition, SoundEvents.CHEST_CLOSE, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
-
-                updateBlockState(state, Boolean.FALSE);
-
-                markDirtyClient();
-
-                return PlayState.CONTINUE;
-            }
-            return PlayState.CONTINUE;
-        }));
+    private AnimationController<LockableTreasureChestBlockEntity> getController() {
+        return new AnimationController<>(this, "popup_controller", 0, state -> PlayState.STOP)
+                .triggerableAnim("box_open", CHEST_OPEN);
     }
 
     @Override

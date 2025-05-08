@@ -1,6 +1,9 @@
 package com.greatorator.tolkienmobs.block.custom;
 
 import com.greatorator.tolkienmobs.block.TolkienBlock;
+import com.greatorator.tolkienmobs.block.TolkienEntityBlock;
+import com.greatorator.tolkienmobs.block.custom.entity.LockableChestBlockEntity;
+import com.greatorator.tolkienmobs.block.custom.entity.WellBlockEntity;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -19,9 +22,8 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -32,8 +34,9 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
 
-public class WellBlock extends TolkienBlock {
+public class WellBlock extends TolkienEntityBlock {
     public static final MapCodec<WellBlock> CODEC = simpleCodec(WellBlock::new);
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -93,6 +96,8 @@ public class WellBlock extends TolkienBlock {
         ItemStack filledBottle = PotionContents.createItemStack(Items.POTION, Potions.WATER);
         ItemStack filledBucket = Items.WATER_BUCKET.getDefaultInstance();
         ItemStack resultStack = cleanItem(stack);
+        BlockEntity tile = level.getBlockEntity(pos);
+        WellBlockEntity wellBlockEntity = (WellBlockEntity) tile;
 
         if (stack.isEmpty()) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
@@ -111,6 +116,7 @@ public class WellBlock extends TolkienBlock {
                 }
             }
             spawnParticlesAndPlaySound(level, pos, state);
+            wellBlockEntity.onRightClick(state, player, hand);
             level.playSound(null, pos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1f, level.random.nextFloat() + 0.5f);
             return ItemInteractionResult.SUCCESS;
         }else if (heldItem.getItem() == Items.GLASS_BOTTLE) {
@@ -119,6 +125,7 @@ public class WellBlock extends TolkienBlock {
             } else if (player.addItem(filledBottle)) {
                 stack.shrink(1);
             }
+            wellBlockEntity.onRightClick(state, player, hand);
             level.playSound(null, pos, SoundEvents.BOTTLE_FILL, SoundSource.NEUTRAL, 1f, 1f);
         }else if (heldItem.getItem() == Items.BUCKET) {
             if (stack.getCount() == 1) {
@@ -170,5 +177,22 @@ public class WellBlock extends TolkienBlock {
             itemStack.remove(DataComponents.DYED_COLOR);
         }
         return ItemStack.EMPTY;
+    }
+
+    /** Entity Stuff */
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
+        return new WellBlockEntity(blockPos, blockState);
+    }
+
+    @Override
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 }
