@@ -127,7 +127,7 @@ public class ChameleonBlock<C> extends TolkienEntityBlock implements SimpleWater
                     facing.getStepY(),
                     facing.getStepZ());
             BlockState adjacentBS = world.getBlockState(adjacentPosition);
-            if (!adjacentBS.isAir()) {
+            if (!adjacentBS.isAir() || !adjacentBS.is(Blocks.GRASS_BLOCK)) {
                 adjacentSolidBlocks.put(facing, adjacentBS);
                 if (adjacentBlockCount.containsKey(adjacentBS)) {
                     adjacentBlockCount.put(adjacentBS, 1 + adjacentBlockCount.get(adjacentBS));
