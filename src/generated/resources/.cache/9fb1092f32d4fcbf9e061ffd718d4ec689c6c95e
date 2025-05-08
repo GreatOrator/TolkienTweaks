@@ -1,4 +1,4 @@
-// 1.21.1	2025-04-29T17:22:09.8810343	Recipes
+// 1.21.1	2025-05-08T12:58:37.279642	Recipes
 cfc2e620a63d4fab8403cff37c58a1ffc1c522b5 data/tolkienmobs/advancement/recipes/building_blocks/block.tolkienmobs.angainor_from_blasting.json
 4938d3ee1100d522b38c83b6b4b9fb5d1978cbdf data/tolkienmobs/advancement/recipes/building_blocks/block.tolkienmobs.angainor_from_smelting.json
 d19567913dbfd6ba6d00c4306abe737d82e289eb data/tolkienmobs/advancement/recipes/building_blocks/block.tolkienmobs.dark_stone_from_blasting.json
@@ -276,6 +276,7 @@ d6855e947f4f5343c8f311726e696f76dcd8922a data/tolkienmobs/advancement/recipes/de
 fc984978ca711695b0f7ea6b7782ac44dc948362 data/tolkienmobs/advancement/recipes/decorations/wall_decay_bloom.json
 393e602f73320b9d88550517ec1d02d9bb93a4c6 data/tolkienmobs/advancement/recipes/decorations/wall_mushroom_brown.json
 de99dcfeaa1d565d2877448e2d2fd29fa4f07003 data/tolkienmobs/advancement/recipes/decorations/wall_mushroom_red.json
+fcc797836582772bd84165a12771c08866897352 data/tolkienmobs/advancement/recipes/decorations/well_block.json
 f46a7085ffd86ddadeada7666f9567c28b9160f6 data/tolkienmobs/advancement/recipes/fireplace/baked_potato_from_fireplace.json
 25b7ed1c6a937a54f53327fade6e79a0196a4df1 data/tolkienmobs/advancement/recipes/fireplace/bread_from_fireplace.json
 b40abcfaaa0f72b731662ed427ff0188eb5620e1 data/tolkienmobs/advancement/recipes/fireplace/cooked_beef_from_fireplace.json
@@ -1189,6 +1190,7 @@ c71e410e9ff227b6b8f85910ca3d4fc0917fbedf data/tolkienmobs/recipe/wall_smooth_dar
 08a64cb787f7fe1c76b7623bf11d30ebb62fb2c9 data/tolkienmobs/recipe/wall_smooth_elven_marble.json
 8ca5a7a7043e2727c5777fbc78f1dd6e80e85f84 data/tolkienmobs/recipe/wall_smooth_iron_stone.json
 0c353531507f4b11a66af725c774d7a85170bcfe data/tolkienmobs/recipe/wall_smooth_mountain_stone.json
+918a791f2bc562f2b4e883747b39a869cfe95ff3 data/tolkienmobs/recipe/well_block.json
 197b4cdccf4fecf9f402efed5ae8addd15e2f42a data/tolkienmobs/recipe/white_dye_from_flower_niphredil.json
 6f3780c71d33796a66608a20791598e3cecbcf69 data/tolkienmobs/recipe/wood_culumalda.json
 2a9e8a3e11afd0413843442f2c7f4966a31c699a data/tolkienmobs/recipe/wood_deadwood.json

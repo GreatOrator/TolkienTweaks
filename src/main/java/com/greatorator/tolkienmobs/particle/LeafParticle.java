@@ -1,141 +1,67 @@
 package com.greatorator.tolkienmobs.particle;
 
-import com.greatorator.tolkienmobs.util.BreezeUtility;
-import com.greatorator.tolkienmobs.util.MathUtility;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.*;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.util.Mth;
-import org.joml.Quaternionf;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.TextureSheetParticle;
 
 public class LeafParticle extends TextureSheetParticle {
-    protected static final float TAU = (float) (2 * Math.PI); // 1 rotation
+    private static final float ACCELERATION_SCALE = 0.0025F;
+    private static final int INITIAL_LIFETIME = 300;
+    private static final int CURVE_ENDPOINT_TIME = 300;
+    private static final float FALL_ACC = 0.25F;
+    private static final float WIND_BIG = 2.0F;
+    private float rotSpeed;
+    private final float particleRandom;
+    private final float spinAcceleration;
 
-    protected static final int FADE_DURATION = 16; // ticks
-    protected static final double WATER_FRICTION = 0.05;
-
-    protected final float windCoefficient; // to emulate drag/lift
-    private float rot;
-
-    protected final float maxRotateSpeed; // rotations / tick
-    protected final int maxRotateTime;
-    protected int rotateTime = 0;
-
-    protected LeafParticle(ClientLevel clientWorld, double x, double y, double z, double r, double g, double b) {
-        super(clientWorld, x, y, z, 0, 0, 0);
-
-
-        this.gravity = 0.08f + random.nextFloat() * 0.04f;
-        this.windCoefficient = 0.6f + random.nextFloat() * 0.4f;
-
-        // the Particle constructor adds random noise to the velocity which we don't want
-        this.xd = 0.0;
-        this.yd = 0.0;
-        this.zd = 0.0;
-
-        this.hasPhysics = true;
-        this.lifetime = MathUtility.getRandomInteger(200, 100);
-
-        this.rCol = Mth.nextFloat(this.random, 0.1529411F, 0.7490196F);
-        this.gCol = Mth.nextFloat(this.random, 0.6431372F, 0.8627450F);
-        this.bCol = Mth.nextFloat(this.random, 0.2196078F, 0.2823529F);
-        // accelerate over 3-7 seconds to at most 2.5 rotations per second
-        this.maxRotateTime = (3 + random.nextInt(4 + 1)) * 20;
-        this.maxRotateSpeed = (random.nextBoolean() ? -1 : 1) * (0.1f + 2.4f * random.nextFloat()) * TAU / 20f;
-
-        this.roll = this.oRoll = random.nextFloat() * TAU;
-
-        this.quadSize = MathUtility.getRandomInteger(4, 1) / 50f;
+    public LeafParticle(ClientLevel p_277612_, double p_278010_, double p_277614_, double p_277673_, SpriteSet p_277465_) {
+        super(p_277612_, p_278010_, p_277614_, p_277673_);
+        this.setSprite(p_277465_.get(this.random.nextInt(12), 12));
+        this.rotSpeed = (float)Math.toRadians(this.random.nextBoolean() ? -30.0D : 30.0D);
+        this.particleRandom = this.random.nextFloat();
+        this.spinAcceleration = (float)Math.toRadians(this.random.nextBoolean() ? -5.0D : 5.0D);
+        this.lifetime = 300;
+        this.gravity = 7.5E-4F;
+        float f = this.random.nextBoolean() ? 0.05F : 0.075F;
+        this.quadSize = f;
+        this.setSize(f, f);
+        this.friction = 1.0F;
     }
 
-    @Override
+    public ParticleRenderType getRenderType() {
+        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
+    }
+
     public void tick() {
-        this.xo = x;
-        this.yo = y;
-        this.zo = z;
-        this.oRoll = this.roll;
-
-        age++;
-
-        // fade-out animation
-        if (age >= lifetime + 1 - FADE_DURATION) {
-            this.alpha -= 1F / FADE_DURATION;
-        }
-
-        if (age >= lifetime) {
+        this.xo = this.x;
+        this.yo = this.y;
+        this.zo = this.z;
+        if (this.lifetime-- <= 0) {
             this.remove();
-            return;
         }
 
-        if (this.level.getFluidState(new BlockPos((int) x, (int) y, (int) z)).is(FluidTags.WATER)) {
-            // float on water
-            yd = 0.0;
-            rotateTime = 0;
-
-            xd *= (1 - WATER_FRICTION);
-            zd *= (1 - WATER_FRICTION);
-        } else {
-            // apply gravity
-            yd -= 0.04 * gravity;
-
-            if (!onGround) {
-                // spin when in the air
-                rotateTime = Math.min(rotateTime + 1, maxRotateTime);
-                this.roll += (rotateTime / (float) maxRotateTime) * maxRotateSpeed;
-            } else {
-                rotateTime = 0;
+        if (!this.removed) {
+            float f = (float)(300 - this.lifetime);
+            float f1 = Math.min(f / 300.0F, 1.0F);
+            double d0 = Math.cos(Math.toRadians((double)(this.particleRandom * 60.0F))) * 2.0D * Math.pow((double)f1, 1.25D);
+            double d1 = Math.sin(Math.toRadians((double)(this.particleRandom * 60.0F))) * 2.0D * Math.pow((double)f1, 1.25D);
+            this.xd += d0 * (double)0.0025F;
+            this.zd += d1 * (double)0.0025F;
+            this.yd -= (double)this.gravity;
+            this.rotSpeed += this.spinAcceleration / 20.0F;
+            this.oRoll = this.roll;
+            this.roll += this.rotSpeed / 20.0F;
+            this.move(this.xd, this.yd, this.zd);
+            if (this.onGround || this.lifetime < 299 && (this.xd == 0.0D || this.zd == 0.0D)) {
+                this.remove();
             }
 
-            // approach the target wind velocity over time via vel += (target - vel) * f, where f is in (0, 1)
-            // after n ticks, the distance closes to a factor of 1 - (1 - f)^n.
-            // for f = 1 / 2, it would only take 4 ticks to close the distance by 90%
-            // for f = 1 / 60, it takes ~2 seconds to halve the distance, ~5 seconds to reach 80%
-            //
-            // the wind coefficient is just another factor in (0, 1) to add some variance between leaves.
-            // this implementation lags behind the actual wind speed and will never reach it fully,
-            // so wind speeds needs to be adjusted accordingly
-            xd += (BreezeUtility.windX - xd) * windCoefficient / 60.0f;
-            zd += (BreezeUtility.windZ - zd) * windCoefficient / 60.0f;
-        }
-
-        move(xd, yd, zd);
-    }
-
-    @Override
-    public void render(VertexConsumer buffer, Camera entity, float partialTicks) {
-        this.alpha = Math.min(Mth.clamp(this.age, 0, 20) / 20.0F, Mth.clamp(this.lifetime - this.age, 0, 20) / 20.0F);
-        Quaternionf quaternion = new Quaternionf();
-        if (this.roll != 0.0F) {
-            quaternion.rotateZ(Mth.lerp(partialTicks, this.oRoll, this.roll));
-        }
-        quaternion.rotateY(Mth.cos((float) Math.toRadians(this.rot % 360.0F)));
-        this.renderRotatedQuad(buffer, entity, quaternion, partialTicks);
-        quaternion.rotateY(-Mth.PI).rotateZ(Mth.HALF_PI);
-        this.renderRotatedQuad(buffer, entity, quaternion, partialTicks);
-    }
-
-    @Override
-    public int getLightColor(float partialTicks) {
-        return 240 | 240 << 16;
-    }
-
-    @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
-    }
-
-    public record Factory(SpriteSet sprite) implements ParticleProvider<SimpleParticleType> {
-
-        @Override
-        public Particle createParticle(SimpleParticleType data, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            LeafParticle particle = new LeafParticle(level, x, y, z, xSpeed, ySpeed, zSpeed);
-//            particle.setColor(data.r() / 255.0F, data.g() / 255.0F, data.b() / 255.0F);
-            particle.pickSprite(this.sprite);
-            return particle;
+            if (!this.removed) {
+                this.xd *= (double)this.friction;
+                this.yd *= (double)this.friction;
+                this.zd *= (double)this.friction;
+            }
         }
     }
 }

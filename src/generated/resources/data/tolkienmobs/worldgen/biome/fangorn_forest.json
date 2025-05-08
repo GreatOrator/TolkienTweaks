@@ -13,7 +13,7 @@
     },
     "particle": {
       "options": {
-        "type": "tolkienmobs:falling_leaves"
+        "type": "tolkienmobs:fangornoak_leaves"
       },
       "probability": 0.00625
     },

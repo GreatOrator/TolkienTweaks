@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.network;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.handler.MilestoneHandler;
 import com.greatorator.tolkienmobs.network.internal.ClientConfigurationPacketHandler;
 import com.greatorator.tolkienmobs.network.manager.*;
@@ -10,7 +9,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.network.registration.NetworkChannel;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;

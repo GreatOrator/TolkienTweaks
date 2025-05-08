@@ -1,8 +1,6 @@
 package com.greatorator.tolkienmobs.block.custom;
 
-import com.greatorator.tolkienmobs.block.TolkienBlock;
 import com.greatorator.tolkienmobs.block.TolkienEntityBlock;
-import com.greatorator.tolkienmobs.block.custom.entity.LockableChestBlockEntity;
 import com.greatorator.tolkienmobs.block.custom.entity.WellBlockEntity;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;

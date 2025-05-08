@@ -39,7 +39,6 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
-import net.minecraft.world.entity.monster.CaveSpider;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.entity.player.Player;
@@ -153,22 +152,22 @@ public class ShelobEntity extends TolkienMonsterEntity implements GeoEntity, Web
             if (livingentity == null) return true;
 
             if (this.isEyeInFluid(FluidTags.WATER) && !this.hasEffect(MobEffects.WATER_BREATHING)) {
-                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.nodrown").withStyle(ChatFormatting.DARK_BLUE));
+                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.nodrown.shelob").withStyle(ChatFormatting.DARK_BLUE));
                 this.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 2 * 20, 0));
             }
 
             if ((this.isOnFire() && !this.hasEffect(MobEffects.FIRE_RESISTANCE))) {
-                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.onfire").withStyle(ChatFormatting.DARK_RED));
+                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.onfire.shelob").withStyle(ChatFormatting.DARK_RED));
                 this.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 2 * 20, 0));
             }
 
             if (this.getHealth() < this.getMaxHealth()) {
-                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.healself").withStyle(ChatFormatting.LIGHT_PURPLE));
+                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.healself.shelob").withStyle(ChatFormatting.LIGHT_PURPLE));
                 this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 2 * 20, 0));
             }
 
             if (this.getTarget() != null && !this.hasEffect(MobEffects.MOVEMENT_SPEED) && this.getTarget().distanceToSqr(this) > 121.0D) {
-                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.speedup").withStyle(ChatFormatting.AQUA));
+                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.speedup.shelob").withStyle(ChatFormatting.AQUA));
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 2 * 20, 0));
             }
 
@@ -197,7 +196,7 @@ public class ShelobEntity extends TolkienMonsterEntity implements GeoEntity, Web
                                 && this.level().noCollision(spider)
                                 && !this.level().containsAnyLiquid(spider.getBoundingBox())) {
 
-                            livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.helpcomming").withStyle(ChatFormatting.DARK_GREEN));
+                            livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.helpcomming.shelob").withStyle(ChatFormatting.DARK_GREEN));
 
                             spider.setTarget(livingentity);
                             spider.finalizeSpawn(serverLevel, this.level().getCurrentDifficultyAt(spider.blockPosition()), MobSpawnType.REINFORCEMENT, null);

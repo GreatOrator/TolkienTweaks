@@ -29,6 +29,6 @@ public record LeafParticleData(int r, int g, int b) implements ParticleOptions {
 	@Nonnull
 	@Override
 	public ParticleType<?> getType() {
-		return TolkienParticleTypes.FALLING_LEAVES.get();
+		return TolkienParticleTypes.FANGORNOAK_LEAVES.get();
 	}
 }

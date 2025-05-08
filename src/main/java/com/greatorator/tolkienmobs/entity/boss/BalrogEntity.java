@@ -1,10 +1,8 @@
 package com.greatorator.tolkienmobs.entity.boss;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
 import com.greatorator.tolkienmobs.entity.ai.goal.BalrogAttackGoal;
 import com.greatorator.tolkienmobs.entity.ai.goal.SwitchCombatGoal;
-import com.greatorator.tolkienmobs.entity.monster.BrigandEntity;
 import com.greatorator.tolkienmobs.entity.projectiles.FellBeastFireballEntity;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
@@ -37,7 +35,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.monster.Blaze;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -155,22 +152,22 @@ public class BalrogEntity extends TolkienMonsterEntity implements GeoEntity {
             if (livingentity == null) return true;
 
             if (this.isEyeInFluid(FluidTags.WATER) && !this.hasEffect(MobEffects.WATER_BREATHING)) {
-                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.nodrown").withStyle(ChatFormatting.DARK_BLUE));
+                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.nodrown.balrog").withStyle(ChatFormatting.DARK_BLUE));
                 this.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 2 * 20, 0));
             }
 
             if ((this.isOnFire() && !this.hasEffect(MobEffects.FIRE_RESISTANCE))) {
-                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.onfire").withStyle(ChatFormatting.DARK_RED));
+                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.onfire.balrog").withStyle(ChatFormatting.DARK_RED));
                 this.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 2 * 20, 0));
             }
 
             if (this.getHealth() < this.getMaxHealth()) {
-                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.healself").withStyle(ChatFormatting.LIGHT_PURPLE));
+                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.healself.balrog").withStyle(ChatFormatting.LIGHT_PURPLE));
                 this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 2 * 20, 0));
             }
 
             if (this.getTarget() != null && !this.hasEffect(MobEffects.MOVEMENT_SPEED) && this.getTarget().distanceToSqr(this) > 121.0D) {
-                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.speedup").withStyle(ChatFormatting.AQUA));
+                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.speedup.balrog").withStyle(ChatFormatting.AQUA));
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 2 * 20, 0));
             }
             return true;

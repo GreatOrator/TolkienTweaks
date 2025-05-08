@@ -12,7 +12,6 @@ import com.greatorator.tolkienmobs.util.MathUtility;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -180,22 +179,22 @@ public class GwahirEntity extends TolkienAmbientEntity implements GeoEntity, Fly
             if (livingentity == null) return true;
 
             if (this.isEyeInFluid(FluidTags.WATER) && !this.hasEffect(MobEffects.WATER_BREATHING)) {
-                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.nodrown").withStyle(ChatFormatting.DARK_BLUE));
+                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.nodrown.gwahir").withStyle(ChatFormatting.DARK_BLUE));
                 this.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 2 * 20, 0));
             }
 
             if ((this.isOnFire() && !this.hasEffect(MobEffects.FIRE_RESISTANCE))) {
-                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.onfire").withStyle(ChatFormatting.DARK_RED));
+                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.onfire.gwahir").withStyle(ChatFormatting.DARK_RED));
                 this.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 2 * 20, 0));
             }
 
             if (this.getHealth() < this.getMaxHealth()) {
-                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.healself").withStyle(ChatFormatting.LIGHT_PURPLE));
+                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.healself.gwahir").withStyle(ChatFormatting.LIGHT_PURPLE));
                 this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 2 * 20, 0));
             }
 
             if (this.getTarget() != null && !this.hasEffect(MobEffects.MOVEMENT_SPEED) && this.getTarget().distanceToSqr(this) > 121.0D) {
-                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.speedup").withStyle(ChatFormatting.AQUA));
+                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.speedup.gwahir").withStyle(ChatFormatting.AQUA));
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 2 * 20, 0));
             }
             return true;

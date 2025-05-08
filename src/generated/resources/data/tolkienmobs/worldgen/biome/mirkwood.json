@@ -6,6 +6,12 @@
     "fog_color": 5988193,
     "foliage_color": 738353,
     "grass_color": 738353,
+    "particle": {
+      "options": {
+        "type": "tolkienmobs:mirkwood_leaves"
+      },
+      "probability": 0.00625
+    },
     "sky_color": 8037887,
     "water_color": 0,
     "water_fog_color": 5541815

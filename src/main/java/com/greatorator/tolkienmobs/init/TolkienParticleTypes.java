@@ -24,7 +24,12 @@ public class TolkienParticleTypes {
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> WANDERING_LIGHTNINGBUG = PARTICLES.register("wandering_lightningbug", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> FELLBEAST_BREATH = PARTICLES.register("fell_beast_breath", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> WIND_PARTICLE = PARTICLES.register("windparticle", () -> new SimpleParticleType(false));
-    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> FALLING_LEAVES = PARTICLES.register("falling_leaves", () -> new SimpleParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> MALLORN_LEAVES = PARTICLES.register("mallorn_leaves", () -> new SimpleParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> MIRKWOOD_LEAVES = PARTICLES.register("mirkwood_leaves", () -> new SimpleParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> CULUMALDA_LEAVES = PARTICLES.register("culumalda_leaves", () -> new SimpleParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> LEBETHRON_LEAVES = PARTICLES.register("lebethron_leaves", () -> new SimpleParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> FANGORNOAK_LEAVES = PARTICLES.register("fangornoak_leaves", () -> new SimpleParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> DWARVEN_MAPLE_LEAVES = PARTICLES.register("dwarven_maple_leaves", () -> new SimpleParticleType(false));
 
     public static void register(IEventBus eventBus) {
         PARTICLES.register(eventBus);

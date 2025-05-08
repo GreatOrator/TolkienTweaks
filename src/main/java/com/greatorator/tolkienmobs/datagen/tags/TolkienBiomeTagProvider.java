@@ -1,11 +1,8 @@
 package com.greatorator.tolkienmobs.datagen.tags;
 
-import com.greatorator.tolkienmobs.init.TolkienBiomes;
-import com.greatorator.tolkienmobs.init.TolkienTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.BiomeTagsProvider;
-import net.minecraft.tags.BiomeTags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nonnull;

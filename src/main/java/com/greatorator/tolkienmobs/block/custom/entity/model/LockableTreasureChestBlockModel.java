@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.block.custom.entity.model;
 
-import com.greatorator.tolkienmobs.block.custom.entity.LockableChestBlockEntity;
 import com.greatorator.tolkienmobs.block.custom.entity.LockableTreasureChestBlockEntity;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;

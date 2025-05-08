@@ -9,6 +9,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.neoforge.common.data.GlobalLootModifierProvider;
 import net.neoforged.neoforge.common.loot.LootTableIdCondition;
 
+import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -29,6 +30,15 @@ public class TolkienGlobalLootModifierProvider extends GlobalLootModifierProvide
                 },
                 Map.of(
                         TolkienItems.ITEM_COIN_BRONZE.getId().toString(), 0.25f
+                )
+        ));
+        add("shipwreck_supply", new TolkienItemsModifier(
+                new LootItemCondition[]{
+                        new LootTableIdCondition.Builder(ResourceLocation.fromNamespaceAndPath("minecraft", "chests/village/village_temple")).build()
+                },
+                Map.of(
+                        TolkienItems.ITEM_COIN_BRONZE.getId().toString(), 0.25f,
+                        TolkienItems.ITEM_COIN_SILVER.getId().toString(), 0.25f
                 )
         ));
 
@@ -145,5 +155,11 @@ public class TolkienGlobalLootModifierProvider extends GlobalLootModifierProvide
                         TolkienItems.ITEM_COIN_SILVER.getId().toString(), 0.25f
                 )
         ));
+    }
+
+    @Nonnull
+    @Override
+    public String getName() {
+        return "Tolkienmobs - Global Loot Modifiers";
     }
 }
