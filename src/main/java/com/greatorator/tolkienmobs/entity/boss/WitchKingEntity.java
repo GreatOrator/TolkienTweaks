@@ -3,7 +3,6 @@ package com.greatorator.tolkienmobs.entity.boss;
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienMobEffects;
-import com.greatorator.tolkienmobs.init.TolkienPotions;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;

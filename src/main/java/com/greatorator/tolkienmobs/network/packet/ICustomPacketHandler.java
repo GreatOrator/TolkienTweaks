@@ -3,7 +3,6 @@ package com.greatorator.tolkienmobs.network.packet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ConfigurationTask;
-import net.neoforged.neoforge.network.event.RegisterConfigurationTasksEvent;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.function.Consumer;

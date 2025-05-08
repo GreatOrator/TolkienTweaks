@@ -124,12 +124,12 @@ public class WatcherEntity extends WaterAnimal implements GeoEntity {
             if (livingentity == null) return true;
 
             if (this.getHealth() < this.getMaxHealth()) {
-                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.healself").withStyle(ChatFormatting.LIGHT_PURPLE));
+                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.healself.watcher").withStyle(ChatFormatting.LIGHT_PURPLE));
                 this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 2 * 20, 0));
             }
 
             if (this.getTarget() != null && !this.hasEffect(MobEffects.MOVEMENT_SPEED) && this.getTarget().distanceToSqr(this) > 121.0D) {
-                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.speedup").withStyle(ChatFormatting.AQUA));
+                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.speedup.watcher").withStyle(ChatFormatting.AQUA));
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 2 * 20, 0));
             }
             return true;

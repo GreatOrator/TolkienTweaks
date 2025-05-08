@@ -1,0 +1,120 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "bonus_rolls": {
+        "type": "minecraft:uniform",
+        "max": 2.0,
+        "min": 1.0
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "tolkienmobs:food_honey",
+          "weight": 18
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 3.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "tolkienmobs:food_honeycake",
+          "weight": 12
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 3.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "minecraft:music_disc_13",
+          "weight": 15
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 2.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "minecraft:music_disc_cat",
+          "weight": 15
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 3.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "minecraft:name_tag",
+          "weight": 20
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:golden_apple",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 3.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "minecraft:beetroot_seeds",
+          "weight": 10
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:melon_seeds",
+          "weight": 15
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:pumpkin_seeds",
+          "weight": 10
+        }
+      ],
+      "rolls": {
+        "type": "minecraft:uniform",
+        "max": 5.0,
+        "min": 3.0
+      }
+    }
+  ],
+  "random_sequence": "tolkienmobs:chests/hobbit_grocer"
+}

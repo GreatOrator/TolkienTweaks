@@ -8,7 +8,7 @@
     "grass_color": 2292007,
     "particle": {
       "options": {
-        "type": "tolkienmobs:falling_leaves"
+        "type": "tolkienmobs:lebethron_leaves"
       },
       "probability": 0.00625
     },

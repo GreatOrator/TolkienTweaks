@@ -30,6 +30,7 @@ public abstract class BiomeHelper {
 
 	public static BiomeSpecialEffects.Builder forestParticles(BiomeSpecialEffects.Builder builder) {
 		builder.ambientParticle(new AmbientParticleSettings(TolkienParticleTypes.WANDERING_LIGHTNINGBUG.get(), 0.001f));
+		builder.ambientParticle(new AmbientParticleSettings(TolkienParticleTypes.MALLORN_LEAVES.get(), 0.00625F));
 		return builder;
 	}
 
@@ -38,8 +39,28 @@ public abstract class BiomeHelper {
 		return builder;
 	}
 
-	public static BiomeSpecialEffects.Builder leavesParticles(BiomeSpecialEffects.Builder builder) {
-		builder.ambientParticle(new AmbientParticleSettings(TolkienParticleTypes.FALLING_LEAVES.get(), 0.00625F));
+	public static BiomeSpecialEffects.Builder mirkwoodLeavesParticles(BiomeSpecialEffects.Builder builder) {
+		builder.ambientParticle(new AmbientParticleSettings(TolkienParticleTypes.MIRKWOOD_LEAVES.get(), 0.00625F));
+		return builder;
+	}
+
+	public static BiomeSpecialEffects.Builder dwarvenLeavesParticles(BiomeSpecialEffects.Builder builder) {
+		builder.ambientParticle(new AmbientParticleSettings(TolkienParticleTypes.DWARVEN_MAPLE_LEAVES.get(), 0.00625F));
+		return builder;
+	}
+
+	public static BiomeSpecialEffects.Builder culumaldaLeavesParticles(BiomeSpecialEffects.Builder builder) {
+		builder.ambientParticle(new AmbientParticleSettings(TolkienParticleTypes.CULUMALDA_LEAVES.get(), 0.00625F));
+		return builder;
+	}
+
+	public static BiomeSpecialEffects.Builder lebethronLeavesParticles(BiomeSpecialEffects.Builder builder) {
+		builder.ambientParticle(new AmbientParticleSettings(TolkienParticleTypes.LEBETHRON_LEAVES.get(), 0.00625F));
+		return builder;
+	}
+
+	public static BiomeSpecialEffects.Builder fangornoakLeavesParticles(BiomeSpecialEffects.Builder builder) {
+		builder.ambientParticle(new AmbientParticleSettings(TolkienParticleTypes.FANGORNOAK_LEAVES.get(), 0.00625F));
 		return builder;
 	}
 

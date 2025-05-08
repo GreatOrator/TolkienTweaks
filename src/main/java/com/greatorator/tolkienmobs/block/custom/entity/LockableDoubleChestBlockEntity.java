@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.block.custom.entity;
 
-import com.greatorator.tolkienmobs.block.custom.LockableChestBlock;
 import com.greatorator.tolkienmobs.block.custom.LockableDoubleChestBlock;
 import com.greatorator.tolkienmobs.containers.KeyItemContainer;
 import com.greatorator.tolkienmobs.containers.LockableDoubleChestContainer;

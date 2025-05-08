@@ -1,7 +1,6 @@
 package com.greatorator.tolkienmobs.entity.ai.goal;
 
 import com.greatorator.tolkienmobs.entity.boss.WatcherEntity;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 

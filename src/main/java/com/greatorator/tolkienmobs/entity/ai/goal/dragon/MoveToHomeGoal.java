@@ -3,13 +3,11 @@ package com.greatorator.tolkienmobs.entity.ai.goal.dragon;
 import com.greatorator.tolkienmobs.TolkienMobsConfig;
 import com.greatorator.tolkienmobs.entity.DragonEntity;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.util.RandomPos;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
-import java.util.Random;
 
 public class MoveToHomeGoal extends Goal
 {

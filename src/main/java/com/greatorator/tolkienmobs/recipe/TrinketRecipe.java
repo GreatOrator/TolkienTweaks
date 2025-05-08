@@ -2,11 +2,11 @@ package com.greatorator.tolkienmobs.recipe;
 
 import com.google.common.base.Suppliers;
 import com.greatorator.tolkienmobs.datagen.helpers.TolkienRecipeHelper;
-import com.greatorator.tolkienmobs.network.component.TrinketComponent;
 import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienRecipeSerializers;
 import com.greatorator.tolkienmobs.item.custom.TrinketItem;
+import com.greatorator.tolkienmobs.network.component.TrinketComponent;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;

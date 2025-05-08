@@ -1,12 +1,12 @@
 package com.greatorator.tolkienmobs.init;
 
-import com.greatorator.tolkienmobs.network.component.TrinketComponent;
 import com.greatorator.tolkienmobs.item.*;
 import com.greatorator.tolkienmobs.item.custom.*;
 import com.greatorator.tolkienmobs.item.projectile.BoulderItem;
 import com.greatorator.tolkienmobs.item.projectile.FellBeastFireballItem;
 import com.greatorator.tolkienmobs.item.projectile.GaladhrimArrowItem;
 import com.greatorator.tolkienmobs.item.projectile.UtumnoArrowItem;
+import com.greatorator.tolkienmobs.network.component.TrinketComponent;
 import com.greatorator.tolkienmobs.util.ColorUtility;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;

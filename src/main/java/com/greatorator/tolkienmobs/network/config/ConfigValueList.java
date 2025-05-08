@@ -7,7 +7,6 @@ import it.unimi.dsi.fastutil.longs.LongList;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.Predicate;
 
 public interface ConfigValueList extends ConfigTag {
 

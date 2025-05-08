@@ -11,6 +11,7 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
@@ -359,6 +360,17 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
                 .define('B', Items.BRICK)
                 .define('I', TolkienTags.Items.COINS)
                 .unlockedBy("has_brick", has(Items.BRICK))
+                .save(pRecipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, TolkienBlocks.WELL, 1)
+                .pattern("FSF")
+                .pattern("FBF")
+                .pattern("XYX")
+                .define('F', ItemTags.FENCES)
+                .define('S', ItemTags.WOODEN_SLABS)
+                .define('B', Items.BUCKET)
+                .define('X', ItemTags.STONE_BRICKS)
+                .define('Y', ItemTags.SLABS)
+                .unlockedBy("has_bucket", has(Items.BUCKET))
                 .save(pRecipeOutput);
     }
 }

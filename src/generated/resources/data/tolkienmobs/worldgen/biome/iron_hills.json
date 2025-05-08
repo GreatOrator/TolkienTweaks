@@ -12,6 +12,12 @@
     "fog_color": 10518688,
     "foliage_color": 2292007,
     "grass_color": 2292007,
+    "particle": {
+      "options": {
+        "type": "tolkienmobs:dwarven_maple_leaves"
+      },
+      "probability": 0.00625
+    },
     "sky_color": 8233727,
     "water_color": 4159204,
     "water_fog_color": 329011

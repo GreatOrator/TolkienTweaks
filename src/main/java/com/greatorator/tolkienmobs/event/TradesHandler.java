@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.event;
 
-import com.greatorator.tolkienmobs.network.component.TrinketComponent;
 import com.greatorator.tolkienmobs.init.TolkienDataComponents;
+import com.greatorator.tolkienmobs.network.component.TrinketComponent;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;

@@ -1,12 +1,10 @@
 package com.greatorator.tolkienmobs.block.custom.entity;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.LockableChestBlock;
 import com.greatorator.tolkienmobs.containers.KeyItemContainer;
 import com.greatorator.tolkienmobs.containers.LockableChestContainer;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienDataComponents;
-import com.greatorator.tolkienmobs.init.TolkienSounds;
 import com.greatorator.tolkienmobs.item.custom.KeyItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -25,7 +23,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.BarrelBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
@@ -36,10 +33,7 @@ import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.animation.keyframe.event.builtin.AutoPlayingSoundKeyframeHandler;
-import software.bernie.geckolib.util.ClientUtil;
 import software.bernie.geckolib.util.GeckoLibUtil;
-
-import static com.greatorator.tolkienmobs.block.custom.LockableChestBlock.OPEN;
 
 public class LockableChestBlockEntity extends BlockEntity implements MenuProvider, GeoBlockEntity {
     private static final RawAnimation CHEST_OPEN = RawAnimation.begin().thenPlay("open");

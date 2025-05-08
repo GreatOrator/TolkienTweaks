@@ -142,7 +142,7 @@ public class ArdaPortalBlock extends TolkienBlock implements Portal {
                 zSpeed = rand.nextFloat() * 2.0F * (float)j;
             }
 
-            worldIn.addParticle(TolkienParticleTypes.FALLING_LEAVES.get(), x, y, z, xSpeed, ySpeed, zSpeed);
+            worldIn.addParticle(TolkienParticleTypes.MALLORN_LEAVES.get(), x, y, z, xSpeed, ySpeed, zSpeed);
         }
     }
 

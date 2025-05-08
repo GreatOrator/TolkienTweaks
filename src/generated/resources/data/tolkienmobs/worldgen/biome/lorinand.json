@@ -8,9 +8,9 @@
     "grass_color": 738353,
     "particle": {
       "options": {
-        "type": "tolkienmobs:wandering_lightningbug"
+        "type": "tolkienmobs:mallorn_leaves"
       },
-      "probability": 0.001
+      "probability": 0.00625
     },
     "sky_color": 8037887,
     "water_color": 0,

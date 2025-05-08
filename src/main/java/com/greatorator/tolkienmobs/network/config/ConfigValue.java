@@ -3,7 +3,6 @@ package com.greatorator.tolkienmobs.network.config;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.Predicate;
 
 public interface ConfigValue extends ConfigTag {
 

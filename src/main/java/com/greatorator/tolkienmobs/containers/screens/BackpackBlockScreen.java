@@ -10,7 +10,8 @@ import com.greatorator.tolkienmobs.network.manager.BackpackFluidUpgradesUpdateMa
 import com.greatorator.tolkienmobs.network.manager.BackpackPlacementUpdateManager;
 import com.greatorator.tolkienmobs.network.manager.BackpackSettingsUpdateManager;
 import com.greatorator.tolkienmobs.network.manager.BackpackUpgradesUpdateManager;
-import com.greatorator.tolkienmobs.util.*;
+import com.greatorator.tolkienmobs.util.GeneralUtility;
+import com.greatorator.tolkienmobs.util.MouseUtil;
 import com.greatorator.tolkienmobs.util.block.BackpackFluidUpgrades;
 import com.greatorator.tolkienmobs.util.block.BackpackPlacement;
 import com.greatorator.tolkienmobs.util.block.BackpackSettings;
