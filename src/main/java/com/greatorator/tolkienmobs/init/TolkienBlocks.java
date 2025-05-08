@@ -1562,6 +1562,9 @@ public class TolkienBlocks {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MilestoneBlockEntity>> MILESTONE_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("milestone_block", () ->
                     BlockEntityType.Builder.of(MilestoneBlockEntity::new, MILESTONE_BLOCK.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WellBlockEntity>> WELL_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("well_block", () ->
+                    BlockEntityType.Builder.of(WellBlockEntity::new, WELL.get()).build(null));
 
         // Attachment Types
     public static final Supplier<AttachmentType<ItemStackHandler>> BACKPACK_HANDLER = ATTACHMENT_TYPES.register(

@@ -21,7 +21,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:long_invisibility"
+              "id": "tolkienmobs:elemental_flight"
             },
             {
               "add": false,

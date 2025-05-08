@@ -52,6 +52,7 @@ public class TolkienRegistration {
         event.registerBlockEntityRenderer(TolkienBlocks.LOCKABLE_DOUBLE_CHEST_BLOCK_ENTITY.get(), LockableDoubleChestBlockRenderer::new);
         event.registerBlockEntityRenderer(TolkienBlocks.LOCKABLE_TREASURE_CHEST_BLOCK_ENTITY.get(), LockableTreasureChestBlockRenderer::new);
         event.registerBlockEntityRenderer(TolkienBlocks.LOCKABLE_DOUBLE_TREASURE_CHEST_BLOCK_ENTITY.get(), LockableDoubleTreasureChestBlockRenderer::new);
+        event.registerBlockEntityRenderer(TolkienBlocks.WELL_BLOCK_ENTITY.get(), WellBlockRenderer::new);
 
         event.registerEntityRenderer(TolkienEntities.MALLORN_BOAT.get(), (context) -> new MallornBoatRenderer(context, false));
         event.registerEntityRenderer(TolkienEntities.MALLORN_CHEST_BOAT.get(), (context) -> new MallornBoatRenderer(context, true));
