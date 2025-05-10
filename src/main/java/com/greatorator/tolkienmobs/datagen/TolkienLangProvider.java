@@ -578,13 +578,19 @@ public class TolkienLangProvider extends TolkienLangHelper {
 
         // Enchantments
             this.addEnchantment("balrog_mark_key", "Balrog's Mark");
+            this.addEnchantmentDesc("balrog_mark_key", "From shadow and flame, the ground turns to hot magma, then lava everywhere you walk.");
             this.addEnchantment("dwarven_endurance_key", "Dwarven Endurance");
+            this.addEnchantmentDesc("dwarven_endurance_key", "Feel like nothing can stop you (from going hungry that is), always keeps you fed.");
             this.addEnchantment("dwarven_mining_key", "Dwarven Mining");
+            this.addEnchantmentDesc("dwarven_mining_key", "Vein mines all matching blocks.");
             this.addEnchantment("elven_fleetfoot_key", "Elven FleetFoot");
+            this.addEnchantmentDesc("elven_fleetfoot_key", "Walk with the speed of the elves.");
             this.addEnchantment("elven_longevity_key", "Elven Longevity");
+            this.addEnchantmentDesc("elven_longevity_key", "Elves live forever, you might not, but you will definitely last longer.");
             this.addEnchantment("gondorian_resolve_key", "Gondorian's Resolve");
-            this.addEnchantment("hobbit_harvest_key", "[WIP] Hobbit's Harvest");
+            this.addEnchantmentDesc("gondorian_resolve_key", "Your resolve keeps things from knocking you back when hit.");
             this.addEnchantment("hobbit_plow_key", "Hobbit's Plow");
+            this.addEnchantmentDesc("hobbit_plow_key", "Automatically till a 9x9 area with required water source.");
             this.add("effect.tolkienmobs.elven_nimbleness.tooltip", " step height");
 
         // Biomes

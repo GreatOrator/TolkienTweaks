@@ -77,8 +77,6 @@ public class TolkienMobsMain {
     //      -Not placing on vertical surfaces
     //    -Milestone
     //      -Data storage and access
-    //    -Spawner
-    //      -Displaying the current mob in menu
 
     public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer, Dist dist) {
         modEventBus.addListener(TolkienDataGenerator::gatherData);
