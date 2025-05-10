@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.containers.screens;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
+import com.greatorator.tolkienmobs.block.TolkienBaseSpawner;
 import com.greatorator.tolkienmobs.block.custom.entity.CamoSpawnerBlockEntity;
 import com.greatorator.tolkienmobs.containers.CamoSpawnerContainer;
 import com.greatorator.tolkienmobs.containers.handlers.ToggleButtonFactory;
@@ -8,6 +9,7 @@ import com.greatorator.tolkienmobs.containers.widget.ButtonTexture;
 import com.greatorator.tolkienmobs.containers.widget.NumberButton;
 import com.greatorator.tolkienmobs.containers.widget.ToggleButton;
 import com.greatorator.tolkienmobs.containers.widget.TolkienButton;
+import com.greatorator.tolkienmobs.entity.monster.BrigandEntity;
 import com.greatorator.tolkienmobs.network.manager.SpawnerDelaysUpdateManager;
 import com.greatorator.tolkienmobs.network.manager.SpawnerRangesUpdateManager;
 import com.greatorator.tolkienmobs.network.manager.SpawnerSettingsUpdateManager;
@@ -15,6 +17,7 @@ import com.greatorator.tolkienmobs.util.GeneralUtility;
 import com.greatorator.tolkienmobs.util.block.SpawnerDelays;
 import com.greatorator.tolkienmobs.util.block.SpawnerRanges;
 import com.greatorator.tolkienmobs.util.block.SpawnerSettings;
+import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -24,19 +27,25 @@ import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import javax.annotation.Nullable;
+import java.util.*;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
+import static net.minecraft.client.gui.screens.inventory.InventoryScreen.renderEntityInInventoryFollowsMouse;
 
 public class CamoSpawnerScreen extends AbstractContainerScreen<CamoSpawnerContainer> {
     private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/spawner_gui.png");
@@ -53,7 +62,7 @@ public class CamoSpawnerScreen extends AbstractContainerScreen<CamoSpawnerContai
 
     public CamoSpawnerScreen(CamoSpawnerContainer menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
-        this.imageHeight = 256;
+        this.imageHeight = 206;
         this.imageWidth = 256;
         this.container = menu;
         tileEntity = container.tileEntity;
@@ -74,7 +83,7 @@ public class CamoSpawnerScreen extends AbstractContainerScreen<CamoSpawnerContai
                 }, ButtonTexture.LARGE_BUTTON)
                 .size(64, 20)
                 .build());
-        var layout = new LinearLayout((leftPos - 20) + 113, topPos + this.font.lineHeight + 219,
+        var layout = new LinearLayout((leftPos - 20) + 113, topPos + this.font.lineHeight + 158,
                 LinearLayout.Orientation.HORIZONTAL);
         layout.spacing(4);
         layout.addChild(saveCodeButton);
@@ -134,27 +143,27 @@ public class CamoSpawnerScreen extends AbstractContainerScreen<CamoSpawnerContai
         if (this.tileEntity.entityTags != null) {
             for (int i = 0; i < this.tileEntity.entityTags.size(); i++) {
                 CompoundTag compoundTag = this.tileEntity.entityTags.get(i);
+                String entityKey = compoundTag.getString("entityID");
+                Optional<EntityType<?>> optional = EntityType.byString(entityKey);
                 int relX = (this.width - this.imageWidth) / 2;
                 int relY = (this.height - this.imageHeight) / 2;
                 int y = 30 + (i * 14);
                 int il = i;
-                String entityKey = compoundTag.getString("entityID");
-                Optional<EntityType<?>> optional = EntityType.byString(entityKey);
+
                 this.entityButtons.add(
-                        this.addRenderableWidget(Button.builder(Component.literal(optional.get().getDescription().getString()),
-                                        button -> {
-                                            selectedModifier = String.valueOf(Component.literal(optional.get().getDescription().getString()));
-                                        })
-                                .pos(relX + 93, relY + y)
-                                .size(152, 16)
-                                .build()
-                        )
+                    this.addRenderableWidget(Button.builder(Component.literal(optional.get().getDescription().getString()),
+                            button -> {
+                                selectedModifier = String.valueOf(Component.literal(optional.get().getDescription().getString()));
+                            })
+                        .pos(relX + 182, relY + y)
+                        .size(64, 16)
+                        .build()
+                    )
                 );
             }
         }
         this.tileEntity.markDirtyClient();
         this.tileEntity.setChanged();
-        TolkienMobsMain.LOGGER.warn(String.valueOf(this.tileEntity.entityTags.size()));
     }
 
     @Override
@@ -170,25 +179,95 @@ public class CamoSpawnerScreen extends AbstractContainerScreen<CamoSpawnerContai
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         guiGraphics.drawString(font, title, 5, 5, 8552833);
         guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.camo_spawner.minSpawnDelay"), 5, 20, 8552833, false);
-        guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.camo_spawner.maxSpawnDelay"), 5, 50, 8552833, false);
-        guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.camo_spawner.activationRange"), 5, 80, 8552833, false);
-        guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.camo_spawner.spawnRange"), 5, 110, 8552833, false);
-        guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.camo_spawner.spawnCount"), 5, 140, 8552833, false);
-        guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.camo_spawner.maxCluster"), 5, 170, 8552833, false);
-        guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.camo_spawner.clusterRange"), 5, 200, 8552833, false);
-        guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.camo_spawner.entityTags"), 93, 20, 8552833);
+        guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.camo_spawner.maxSpawnDelay"), 100, 20, 8552833, false);
+        guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.camo_spawner.activationRange"), 5, 60, 8552833, false);
+        guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.camo_spawner.spawnRange"), 100, 60, 8552833, false);
+        guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.camo_spawner.spawnCount"), 5, 100, 8552833, false);
+        guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.camo_spawner.maxCluster"), 100, 100, 8552833, false);
+        guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.camo_spawner.clusterRange"), 179, 130, 8552833, false);
+        guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.camo_spawner.entityTags"), 179, 20, 8552833);
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float v, int i, int i1) {
+    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+        TolkienBaseSpawner basespawner = this.tileEntity.getSpawnerBase();
+        LivingEntity entityType = (LivingEntity) basespawner.getOrCreateDisplayEntity(this.tileEntity.getLevel(), this.tileEntity.getBlockPos());
+
         RenderSystem.setShaderTexture(0, GUI);
         int relX = (this.width - this.imageWidth) / 2;
         int relY = (this.height - this.imageHeight) / 2;
+
         guiGraphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
+
+        if (entityType instanceof LivingEntity) {
+            renderEntityInInventoryFollowsMouse(guiGraphics, relX + 26, relY + 8, relX + 403, relY + 160, 30, 0.0625F, mouseX, mouseY, entityType);
+        }
 
         if (renderablesChanged)
             updateRenderables();
     }
+
+    public static void renderEntityInInventoryFollowsMouse(GuiGraphics guiGraphics, int x1, int y1, int x2, int y2, int scale, float yOffset, float mouseX, float mouseY, LivingEntity entity) {
+        float f = (float)(x1 + x2) / 2.0F;
+        float f1 = (float)(y1 + y2) / 2.0F;
+        float f2 = (float)Math.atan((double)((f - mouseX) / 40.0F));
+        float f3 = (float)Math.atan((double)((f1 - mouseY) / 40.0F));
+        renderEntityInInventoryFollowsAngle(guiGraphics, x1, y1, x2, y2, scale, yOffset, f2, f3, entity);
+    }
+
+    public static void renderEntityInInventoryFollowsAngle(GuiGraphics p_282802_, int p_275688_, int p_275245_, int p_275535_, int p_294406_, int p_294663_, float p_275604_, float angleXComponent, float angleYComponent, LivingEntity p_275689_) {
+        float f = (float)(p_275688_ + p_275535_) / 2.0F;
+        float f1 = (float)(p_275245_ + p_294406_) / 2.0F;
+        p_282802_.enableScissor(p_275688_, p_275245_, p_275535_, p_294406_);
+        float f2 = angleXComponent;
+        float f3 = angleYComponent;
+        Quaternionf quaternionf = (new Quaternionf()).rotateZ(3.1415927F);
+        Quaternionf quaternionf1 = (new Quaternionf()).rotateX(f3 * 20.0F * 0.017453292F);
+        quaternionf.mul(quaternionf1);
+        float f4 = p_275689_.yBodyRot;
+        float f5 = p_275689_.getYRot();
+        float f6 = p_275689_.getXRot();
+        float f7 = p_275689_.yHeadRotO;
+        float f8 = p_275689_.yHeadRot;
+        p_275689_.yBodyRot = 180.0F + f2 * 20.0F;
+        p_275689_.setYRot(180.0F + f2 * 40.0F);
+        p_275689_.setXRot(-f3 * 20.0F);
+        p_275689_.yHeadRot = p_275689_.getYRot();
+        p_275689_.yHeadRotO = p_275689_.getYRot();
+        float f9 = p_275689_.getScale();
+        Vector3f vector3f = new Vector3f(0.0F, p_275689_.getBbHeight() / 2.0F + p_275604_ * f9, 0.0F);
+        float f10 = (float)p_294663_ / f9;
+        renderEntityInInventory(p_282802_, f, f1, f10, vector3f, quaternionf, quaternionf1, p_275689_);
+        p_275689_.yBodyRot = f4;
+        p_275689_.setYRot(f5);
+        p_275689_.setXRot(f6);
+        p_275689_.yHeadRotO = f7;
+        p_275689_.yHeadRot = f8;
+        p_282802_.disableScissor();
+    }
+
+    public static void renderEntityInInventory(GuiGraphics guiGraphics, float x, float y, float scale, Vector3f translate, Quaternionf pose, @Nullable Quaternionf cameraOrientation, LivingEntity entity) {
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate((double)x, (double)y, 50.0);
+        guiGraphics.pose().scale(scale, scale, -scale);
+        guiGraphics.pose().translate(translate.x, translate.y, translate.z);
+        guiGraphics.pose().mulPose(pose);
+        Lighting.setupForEntityInInventory();
+        EntityRenderDispatcher entityrenderdispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
+        if (cameraOrientation != null) {
+            entityrenderdispatcher.overrideCameraOrientation(cameraOrientation.conjugate(new Quaternionf()).rotateY(3.1415927F));
+        }
+
+        entityrenderdispatcher.setRenderShadow(false);
+        RenderSystem.runAsFancy(() -> {
+            entityrenderdispatcher.render(entity, 0.0, 0.0, 0.0, 0.0F, 1.0F, guiGraphics.pose(), guiGraphics.bufferSource(), 15728880);
+        });
+        guiGraphics.flush();
+        entityrenderdispatcher.setRenderShadow(true);
+        guiGraphics.pose().popPose();
+        Lighting.setupFor3DItems();
+    }
+
 
     public void updateRenderables() {
         if (!widgetsToRemove.isEmpty()) {
@@ -212,40 +291,33 @@ public class CamoSpawnerScreen extends AbstractContainerScreen<CamoSpawnerContai
         int offsetY = (this.height - this.imageHeight) / 2;
 
             // Delays
-        addRenderableWidget(ToggleButtonFactory.SPAWNER_MIN_DELAY(offsetX + 5, offsetY + 32, spawnerDelays.minSpawnDelay, b -> {
-            TolkienMobsMain.LOGGER.warn(String.valueOf(((NumberButton) b).getValue()));
+        addRenderableWidget(ToggleButtonFactory.SPAWNER_MIN_DELAY(offsetX + 15, offsetY + 32, spawnerDelays.minSpawnDelay, b -> {
             spawnerDelays.minSpawnDelay = ((NumberButton) b).getValue();
             PacketDistributor.sendToServer(new SpawnerDelaysUpdateManager(spawnerDelays.minSpawnDelay, spawnerDelays.maxSpawnDelay, spawnerDelays.spawnDelay));
         }));
-        addRenderableWidget(ToggleButtonFactory.SPAWNER_MAX_DELAY(offsetX + 5, offsetY + 62, spawnerDelays.maxSpawnDelay, b -> {
-            TolkienMobsMain.LOGGER.warn(String.valueOf(((NumberButton) b).getValue()));
+        addRenderableWidget(ToggleButtonFactory.SPAWNER_MAX_DELAY(offsetX + 110, offsetY + 32, spawnerDelays.maxSpawnDelay, b -> {
             spawnerDelays.maxSpawnDelay = ((NumberButton) b).getValue();
             PacketDistributor.sendToServer(new SpawnerDelaysUpdateManager(spawnerDelays.minSpawnDelay, spawnerDelays.maxSpawnDelay, spawnerDelays.spawnDelay));
         }));
 
             // Ranges
-        addRenderableWidget(ToggleButtonFactory.SPAWNER_ACTIVATION_RANGE(offsetX + 5, offsetY + 92, spawnerRanges.activationRange, b -> {
-            TolkienMobsMain.LOGGER.warn(String.valueOf(((NumberButton) b).getValue()));
+        addRenderableWidget(ToggleButtonFactory.SPAWNER_ACTIVATION_RANGE(offsetX + 15, offsetY + 72, spawnerRanges.activationRange, b -> {
             spawnerRanges.activationRange = ((NumberButton) b).getValue();
             PacketDistributor.sendToServer(new SpawnerRangesUpdateManager(spawnerRanges.activationRange, spawnerRanges.spawnRange, spawnerRanges.spawnCount, spawnerRanges.maxCluster, spawnerRanges.clusterRange));
         }));
-        addRenderableWidget(ToggleButtonFactory.SPAWNER_SPAWN_RANGE(offsetX + 5, offsetY + 122, spawnerRanges.spawnRange, b -> {
-            TolkienMobsMain.LOGGER.warn(String.valueOf(((NumberButton) b).getValue()));
+        addRenderableWidget(ToggleButtonFactory.SPAWNER_SPAWN_RANGE(offsetX + 110, offsetY + 72, spawnerRanges.spawnRange, b -> {
             spawnerRanges.spawnRange = ((NumberButton) b).getValue();
             PacketDistributor.sendToServer(new SpawnerRangesUpdateManager(spawnerRanges.activationRange, spawnerRanges.spawnRange, spawnerRanges.spawnCount, spawnerRanges.maxCluster, spawnerRanges.clusterRange));
         }));
-        addRenderableWidget(ToggleButtonFactory.SPAWNER_SPAWN_COUNT(offsetX + 5, offsetY + 152, spawnerRanges.spawnCount, b -> {
-            TolkienMobsMain.LOGGER.warn(String.valueOf(((NumberButton) b).getValue()));
+        addRenderableWidget(ToggleButtonFactory.SPAWNER_SPAWN_COUNT(offsetX + 15, offsetY + 112, spawnerRanges.spawnCount, b -> {
             spawnerRanges.spawnCount = ((NumberButton) b).getValue();
             PacketDistributor.sendToServer(new SpawnerRangesUpdateManager(spawnerRanges.activationRange, spawnerRanges.spawnRange, spawnerRanges.spawnCount, spawnerRanges.maxCluster, spawnerRanges.clusterRange));
         }));
-        addRenderableWidget(ToggleButtonFactory.SPAWNER_MAX_CLUSTER(offsetX + 5, offsetY + 182, spawnerRanges.maxCluster, b -> {
-            TolkienMobsMain.LOGGER.warn(String.valueOf(((NumberButton) b).getValue()));
+        addRenderableWidget(ToggleButtonFactory.SPAWNER_MAX_CLUSTER(offsetX + 110, offsetY + 112, spawnerRanges.maxCluster, b -> {
             spawnerRanges.maxCluster = ((NumberButton) b).getValue();
             PacketDistributor.sendToServer(new SpawnerRangesUpdateManager(spawnerRanges.activationRange, spawnerRanges.spawnRange, spawnerRanges.spawnCount, spawnerRanges.maxCluster, spawnerRanges.clusterRange));
         }));
-        addRenderableWidget(ToggleButtonFactory.SPAWNER_CLUSTER_RANGE(offsetX + 5, offsetY + 212, spawnerRanges.clusterRange, b -> {
-            TolkienMobsMain.LOGGER.warn(String.valueOf(((NumberButton) b).getValue()));
+        addRenderableWidget(ToggleButtonFactory.SPAWNER_CLUSTER_RANGE(offsetX + 199, offsetY + 142, spawnerRanges.clusterRange, b -> {
             spawnerRanges.clusterRange = ((NumberButton) b).getValue();
             PacketDistributor.sendToServer(new SpawnerRangesUpdateManager(spawnerRanges.activationRange, spawnerRanges.spawnRange, spawnerRanges.spawnCount, spawnerRanges.maxCluster, spawnerRanges.clusterRange));
         }));
@@ -254,22 +326,19 @@ public class CamoSpawnerScreen extends AbstractContainerScreen<CamoSpawnerContai
     private void addSpawnerButtons() {
         int offsetX = (this.width - this.imageWidth) / 2;
         int offsetY = (this.height - this.imageHeight) / 2;
-        addRenderableWidget(ToggleButtonFactory.IGNORE_PLAYER_BUTTON(offsetX + 185, offsetY + 230, spawnerSettings.requirePlayer, b -> {
+        addRenderableWidget(ToggleButtonFactory.IGNORE_PLAYER_BUTTON(offsetX + 60, offsetY + 142, spawnerSettings.requirePlayer, b -> {
             spawnerSettings.requirePlayer = !spawnerSettings.requirePlayer;
-            TolkienMobsMain.LOGGER.warn(String.valueOf(spawnerSettings.requirePlayer));
             PacketDistributor.sendToServer(new SpawnerSettingsUpdateManager(spawnerSettings.requirePlayer, spawnerSettings.ignoreSpawnReq, spawnerSettings.spawnerParticles));
         }));
-        addRenderableWidget(ToggleButtonFactory.IGNORE_REQUIREMENTS_BUTTON(offsetX + 206, offsetY + 230, spawnerSettings.ignoreSpawnReq, b -> {
+        addRenderableWidget(ToggleButtonFactory.IGNORE_REQUIREMENTS_BUTTON(offsetX + 81, offsetY + 142, spawnerSettings.ignoreSpawnReq, b -> {
             spawnerSettings.ignoreSpawnReq = !spawnerSettings.ignoreSpawnReq;
-            TolkienMobsMain.LOGGER.warn(String.valueOf(spawnerSettings.ignoreSpawnReq));
             PacketDistributor.sendToServer(new SpawnerSettingsUpdateManager(spawnerSettings.requirePlayer, spawnerSettings.ignoreSpawnReq, spawnerSettings.spawnerParticles));
         }));
-        addRenderableWidget(ToggleButtonFactory.IGNORE_PARTICLES_BUTTON(offsetX + 227, offsetY + 230, spawnerSettings.spawnerParticles, b -> {
+        addRenderableWidget(ToggleButtonFactory.IGNORE_PARTICLES_BUTTON(offsetX + 102, offsetY + 142, spawnerSettings.spawnerParticles, b -> {
             spawnerSettings.spawnerParticles = !spawnerSettings.spawnerParticles;
-            TolkienMobsMain.LOGGER.warn(String.valueOf(spawnerSettings.spawnerParticles));
             PacketDistributor.sendToServer(new SpawnerSettingsUpdateManager(spawnerSettings.requirePlayer, spawnerSettings.ignoreSpawnReq, spawnerSettings.spawnerParticles));
         }));
-        addRenderableWidget(ToggleButtonFactory.REMOVE_MOB_BUTTON(offsetX + 164, offsetY + 230, true, b -> {
+        addRenderableWidget(ToggleButtonFactory.REMOVE_MOB_BUTTON(offsetX + 39, offsetY + 142, true, b -> {
             this.tileEntity.entityTags.clear();
             this.tileEntity.markDirtyClient();
             this.tileEntity.setChanged();

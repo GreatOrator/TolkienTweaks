@@ -108,6 +108,10 @@ public abstract class TolkienLangHelper extends LanguageProvider {
         this.add("enchantment.tolkienmobs." + key, name);
     }
 
+    public void addEnchantmentDesc(String key, String desc) {
+        this.add("enchantment.tolkienmobs." + key + ".desc", desc);
+    }
+
     public void createTrinketSet(String trinketType, String descriptionType) {
         this.add("item.tolkienmobs.trinket_" + trinketType + ".empty", "Base " + descriptionType);
         this.add("item.tolkienmobs.trinket_" + trinketType + ".water", "Magical " + descriptionType + " of Nothingness");
