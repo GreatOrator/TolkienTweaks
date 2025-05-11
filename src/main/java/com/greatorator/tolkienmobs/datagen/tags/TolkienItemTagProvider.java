@@ -28,7 +28,60 @@ public class TolkienItemTagProvider extends ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider pProvider) {
-
+        tag(ItemTags.BOATS)
+                .add(TolkienItems.MALLORN_BOAT.get())
+                .add(TolkienItems.MIRKWOOD_BOAT.get())
+                .add(TolkienItems.CULUMALDA_BOAT.get())
+                .add(TolkienItems.LEBETHRON_BOAT.get())
+                .add(TolkienItems.FANGORNOAK_BOAT.get())
+                .add(TolkienItems.DEADWOOD_BOAT.get())
+                .add(TolkienItems.DWARVEN_MAPLE_BOAT.get());
+        tag(ItemTags.CHEST_BOATS)
+                .add(TolkienItems.MALLORN_CHEST_BOAT.get())
+                .add(TolkienItems.MIRKWOOD_CHEST_BOAT.get())
+                .add(TolkienItems.CULUMALDA_CHEST_BOAT.get())
+                .add(TolkienItems.LEBETHRON_CHEST_BOAT.get())
+                .add(TolkienItems.FANGORNOAK_CHEST_BOAT.get())
+                .add(TolkienItems.DEADWOOD_CHEST_BOAT.get())
+                .add(TolkienItems.DWARVEN_MAPLE_BOAT.get());
+        tag(ItemTags.CREEPER_DROP_MUSIC_DISCS)
+                .add(TolkienItems.RECORD_EREBOR.get())
+                .add(TolkienItems.RECORD_HOBBITS.get())
+                .add(TolkienItems.RECORD_MINASTIRITH.get())
+                .add(TolkienItems.RECORD_MURDERFROG.get())
+                .add(TolkienItems.RECORD_BOMBADIL.get())
+                .add(TolkienItems.RECORD_REDER.get())
+                .add(TolkienItems.RECORD_RIVENDELL.get())
+                .add(TolkienItems.RECORD_LOTHLORIEN.get())
+                .add(TolkienItems.RECORD_WILLOW.get())
+                .add(TolkienItems.RECORD_FUMBLE.get())
+                .add(TolkienItems.RECORD_EDORAS.get())
+                .add(TolkienItems.RECORD_WBATTLE.get());
+        tag(ItemTags.ARROWS)
+                .add(TolkienItems.GALADHRIM_ARROW.get())
+                .add(TolkienItems.UTUMNO_ARROW.get());
+        tag(ItemTags.SWORDS)
+                .add(TolkienItems.SWORD_MITHRIL.get())
+                .add(TolkienItems.SWORD_MORGULIRON.get())
+                .add(TolkienItems.SWORD_AMMOLITE.get())
+                .add(TolkienItems.SWORD_WITCHKING.get())
+                .add(TolkienItems.SWORD_URUK.get());
+        tag(ItemTags.AXES)
+                .add(TolkienItems.AXE_MITHRIL.get())
+                .add(TolkienItems.AXE_MORGULIRON.get())
+                .add(TolkienItems.AXE_AMMOLITE.get());
+        tag(ItemTags.PICKAXES)
+                .add(TolkienItems.PICKAXE_MITHRIL.get())
+                .add(TolkienItems.PICKAXE_MORGULIRON.get())
+                .add(TolkienItems.PICKAXE_AMMOLITE.get());
+        tag(ItemTags.SHOVELS)
+                .add(TolkienItems.SHOVEL_MITHRIL.get())
+                .add(TolkienItems.SHOVEL_MORGULIRON.get())
+                .add(TolkienItems.SHOVEL_AMMOLITE.get());
+        tag(ItemTags.HOES)
+                .add(TolkienItems.HOE_MITHRIL.get())
+                .add(TolkienItems.HOE_MORGULIRON.get())
+                .add(TolkienItems.HOE_AMMOLITE.get());
         tag(TolkienTags.Items.COINS)
                 .add(TolkienItems.ITEM_COIN_BRONZE.get())
                 .add(TolkienItems.ITEM_COIN_SILVER.get())
@@ -78,26 +131,6 @@ public class TolkienItemTagProvider extends ItemTagsProvider {
                 .add(TolkienItems.SLEEPING_BAG_RED.get())
                 .add(TolkienItems.SLEEPING_BAG_LIGHT_BLUE.get())
                 .add(TolkienItems.SLEEPING_BAG_LIGHT_GRAY.get());
-        tag(ItemTags.SHOVELS)
-                .add(TolkienItems.SHOVEL_MITHRIL.get())
-                .add(TolkienItems.SHOVEL_MORGULIRON.get())
-                .add(TolkienItems.SHEARS_AMMOLITE.get());
-        tag(ItemTags.PICKAXES)
-                .add(TolkienItems.PICKAXE_MITHRIL.get())
-                .add(TolkienItems.PICKAXE_MORGULIRON.get())
-                .add(TolkienItems.PICKAXE_AMMOLITE.get());
-        tag(ItemTags.AXES)
-                 .add(TolkienItems.AXE_MITHRIL.get())
-                .add(TolkienItems.AXE_MORGULIRON.get())
-                .add(TolkienItems.AXE_AMMOLITE.get());
-        tag(ItemTags.SWORDS)
-                 .add(TolkienItems.SWORD_MITHRIL.get())
-                .add(TolkienItems.SWORD_MORGULIRON.get())
-                .add(TolkienItems.SWORD_AMMOLITE.get());
-        tag(ItemTags.HOES)
-                .add(TolkienItems.HOE_MITHRIL.get())
-                .add(TolkienItems.HOE_MORGULIRON.get())
-                .add(TolkienItems.HOE_AMMOLITE.get());
         tag(ItemTags.TRIMMABLE_ARMOR)
                 .add(TolkienItems.HELMET_MITHRIL.get())
                 .add(TolkienItems.CHESTPLATE_MITHRIL.get())
@@ -163,9 +196,6 @@ public class TolkienItemTagProvider extends ItemTagsProvider {
                 .addOptionalTag(ResourceLocation.parse("farmersdelight:dog_food"))
                 .addOptionalTag(ResourceLocation.parse("farmersdelight:pie_crust"))
                 .addOptionalTag(ResourceLocation.parse("spelunkery:portal_fluid_bottle"));
-        tag(ItemTags.ARROWS)
-                .add(TolkienItems.GALADHRIM_ARROW.get())
-                .add(TolkienItems.UTUMNO_ARROW.get());
         tag(ItemTags.SIGNS)
                 .add(TolkienBlocks.MALLORN_SIGN.get().asItem())
                 .add(TolkienBlocks.MIRKWOOD_SIGN.get().asItem())

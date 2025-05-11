@@ -64,7 +64,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:infested"
+              "id": "tolkienmobs:personal_blacksmith"
             },
             {
               "add": false,

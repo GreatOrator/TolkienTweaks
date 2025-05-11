@@ -19,6 +19,16 @@ public class TolkienTags {
         public static final TagKey<Block> TICK_SPEED_DENY = blockTag("tolkienmobs:tick_speed_deny");
         public static final TagKey<Block> TILLABLES = blockTag("tolkienmobs:farming");
         public static final TagKey<Block> CARVER_REPLACEABLES = blockTag("tolkienmobs:carver_replaceables");
+        public static final TagKey<Block> MALLORN_LOGS = blockTag("tolkienmobs:mallorn_logs");
+        public static final TagKey<Block> MIRKWOOD_LOGS = blockTag("tolkienmobs:mirkwood_logs");
+        public static final TagKey<Block> CULUMALDA_LOGS = blockTag("tolkienmobs:culumalda_logs");
+        public static final TagKey<Block> LEBETHRON_LOGS = blockTag("tolkienmobs:lebethron_logs");
+        public static final TagKey<Block> FANGORNOAK_LOGS = blockTag("tolkienmobs:fangornoak_logs");
+        public static final TagKey<Block> DEADWOOD_LOGS = blockTag("tolkienmobs:deadwood_logs");
+        public static final TagKey<Block> DWARVEN_MAPLE_LOGS = blockTag("tolkienmobs:dwarven_maple_logs");
+        public static final TagKey<Block> MITHRIL_ORES = blockTag("tolkienmobs:mithril_ores");
+        public static final TagKey<Block> MORGULIRON_ORES = blockTag("tolkienmobs:morguliron_ores");
+        public static final TagKey<Block> AMMOLITE_ORES = blockTag("tolkienmobs:ammolite_ores");
 
         private static TagKey<Block> blockTag(String name) {
             return net.minecraft.tags.TagKey.create(Registries.BLOCK, ResourceLocation.parse(name));
@@ -59,7 +69,8 @@ public class TolkienTags {
 
     public static class DamageTypes {
 
-        public static final TagKey<DamageType> ILLUVATAR_DAMAGE_GROUP = tag("tolkienmobs:illuvatar_damage_group");
+        public static final TagKey<DamageType> FELL_BEAST_DAMAGE = tag("tolkienmobs:fell_beast_damage");
+        public static final TagKey<DamageType> HALLOWED_DAMAGE = tag("tolkienmobs:hallowed_damage");
 
         private static TagKey<DamageType> tag(String name) {
             return TagKey.create(Registries.DAMAGE_TYPE, ResourceLocation.parse(name));
@@ -67,6 +78,8 @@ public class TolkienTags {
     }
 
     public static class Entities {
+
+        public static final TagKey<EntityType<?>> BOSSES = createTag("tolkienmobs:bosses");
 
         private static TagKey<EntityType<?>> createTag(String name) {
             return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.parse(name));
