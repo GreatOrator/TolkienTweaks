@@ -21,7 +21,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:long_night_vision"
+              "id": "minecraft:water_breathing"
             },
             {
               "add": false,

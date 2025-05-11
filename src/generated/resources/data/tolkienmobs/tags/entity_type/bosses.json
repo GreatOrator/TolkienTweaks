@@ -1,0 +1,15 @@
+{
+  "values": [
+    "tolkienmobs:entityttmbalrog",
+    "tolkienmobs:entityttmfellspirit",
+    "tolkienmobs:entityttmgoblinking",
+    "tolkienmobs:entityttmgwahir",
+    "tolkienmobs:entityttmmithrilgolem",
+    "tolkienmobs:entityttmmorgulirongolem",
+    "tolkienmobs:entityttmshelob",
+    "tolkienmobs:entityttmwatcher",
+    "tolkienmobs:entityttmwitchking",
+    "minecraft:ender_dragon",
+    "minecraft:wither"
+  ]
+}
