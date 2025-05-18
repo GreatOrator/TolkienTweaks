@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.containers.screens;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.TolkienBaseSpawner;
 import com.greatorator.tolkienmobs.block.custom.entity.CamoSpawnerBlockEntity;
 import com.greatorator.tolkienmobs.containers.CamoSpawnerContainer;
@@ -9,7 +8,6 @@ import com.greatorator.tolkienmobs.containers.widget.ButtonTexture;
 import com.greatorator.tolkienmobs.containers.widget.NumberButton;
 import com.greatorator.tolkienmobs.containers.widget.ToggleButton;
 import com.greatorator.tolkienmobs.containers.widget.TolkienButton;
-import com.greatorator.tolkienmobs.entity.monster.BrigandEntity;
 import com.greatorator.tolkienmobs.network.manager.SpawnerDelaysUpdateManager;
 import com.greatorator.tolkienmobs.network.manager.SpawnerRangesUpdateManager;
 import com.greatorator.tolkienmobs.network.manager.SpawnerSettingsUpdateManager;
@@ -28,11 +26,9 @@ import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -42,10 +38,11 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
-import static net.minecraft.client.gui.screens.inventory.InventoryScreen.renderEntityInInventoryFollowsMouse;
 
 public class CamoSpawnerScreen extends AbstractContainerScreen<CamoSpawnerContainer> {
     private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/spawner_gui.png");

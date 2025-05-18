@@ -5,10 +5,9 @@ import com.greatorator.tolkienmobs.init.TolkienParticleTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class LightningBugBlockEntity extends BlockEntity {
+public class LightningBugBlockEntity extends TolkienBlockEntity {
 	public final float randRot = RandomSource.create().nextInt(4) * 90.0F;
 	public int currentYaw;
 	public float glowIntensity;

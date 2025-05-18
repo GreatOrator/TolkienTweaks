@@ -35,7 +35,7 @@ import org.jetbrains.annotations.Nullable;
 import static com.greatorator.tolkienmobs.block.custom.ChameleonBlock.ACTIVE;
 import static com.greatorator.tolkienmobs.block.custom.ChameleonBlock.POWERED;
 
-public class CamoKeyStoneBlockEntity extends BlockEntity implements MenuProvider, RedstoneControlledBlockEntity, KeystoneCodeBlockEntity, KeystoneSettingsBlockEntity {
+public class CamoKeyStoneBlockEntity extends TolkienBlockEntity implements MenuProvider, RedstoneControlledBlockEntity, KeystoneCodeBlockEntity, KeystoneSettingsBlockEntity {
     public RedstoneControlData redstoneControlData = new RedstoneControlData();
     public KeyStoneSettings keyStoneSettings = new KeyStoneSettings(true);
     public KeyStoneCode keyStoneCode = new KeyStoneCode("Enter Code");

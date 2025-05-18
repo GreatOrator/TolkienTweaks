@@ -28,7 +28,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
@@ -42,7 +41,7 @@ import java.util.Optional;
 
 import static com.greatorator.tolkienmobs.block.custom.FireplaceBlock.LIT;
 
-public class FireplaceBlockEntity extends BlockEntity implements MenuProvider {
+public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProvider {
     private final ItemStackHandler fuelHandler = new ItemStackHandler(1){
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {

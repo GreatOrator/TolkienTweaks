@@ -5,7 +5,6 @@ import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -16,7 +15,7 @@ import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.animation.keyframe.event.builtin.AutoPlayingSoundKeyframeHandler;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class WellBlockEntity extends BlockEntity implements GeoBlockEntity {
+public class WellBlockEntity extends TolkienBlockEntity implements GeoBlockEntity {
     protected static final RawAnimation WELL_BUCKET = RawAnimation.begin().thenPlay("fill");
     protected static final RawAnimation WELL_IDLE = RawAnimation.begin().thenLoop("idle");
     private AnimationController<WellBlockEntity> animationController;

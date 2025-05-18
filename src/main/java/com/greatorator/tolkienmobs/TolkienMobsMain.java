@@ -19,12 +19,15 @@ import com.greatorator.tolkienmobs.fluid.TolkienFluidType;
 import com.greatorator.tolkienmobs.handler.ColorHandler;
 import com.greatorator.tolkienmobs.handler.MilestoneHandler;
 import com.greatorator.tolkienmobs.init.*;
+import com.greatorator.tolkienmobs.network.ClientProxy;
+import com.greatorator.tolkienmobs.network.CommonProxy;
 import com.greatorator.tolkienmobs.network.PacketHandler;
 import com.greatorator.tolkienmobs.network.manager.SpawnFallenLeafFromPacket;
 import com.greatorator.tolkienmobs.particle.FellBeastBreathParticle;
 import com.greatorator.tolkienmobs.particle.LeafParticle;
 import com.greatorator.tolkienmobs.particle.WindParticle;
 import com.greatorator.tolkienmobs.particle.provider.TolkienParticleProvider;
+import com.greatorator.tolkienmobs.util.GeneralUtility;
 import com.greatorator.tolkienmobs.util.TolkienItemProperties;
 import com.greatorator.tolkienmobs.world.components.layer.BiomeDensitySource;
 import com.mojang.logging.LogUtils;
@@ -66,6 +69,7 @@ public class TolkienMobsMain {
     public static final String MODID = "tolkienmobs";
     public static final Logger LOGGER = LogUtils.getLogger();
     private static final String BLOCK_DIR = "textures/block/custom/";
+    public static CommonProxy proxy;
 
     // TODO
     //  -Biomes
@@ -76,9 +80,11 @@ public class TolkienMobsMain {
     //    -Signs
     //      -Not placing on vertical surfaces
     //    -Milestone
-    //      -Data storage and access
+    //      -Actually teleport player when pressed
 
     public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer, Dist dist) {
+        proxy = GeneralUtility.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
+
         modEventBus.addListener(TolkienDataGenerator::gatherData);
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::registerCapabilities);

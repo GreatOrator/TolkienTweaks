@@ -50,7 +50,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
 
-public class BackpackBlockEntity extends BlockEntity implements MenuProvider, BackpackFluidUpgradesBlockEntity, BackpackUpgradesBlockEntity, BackpackSettingsBlockEntity, BackpackPlacementBlockEntity, BackpackFluids {
+public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvider, BackpackFluidUpgradesBlockEntity, BackpackUpgradesBlockEntity, BackpackSettingsBlockEntity, BackpackPlacementBlockEntity, BackpackFluids {
     public final BackpackFluidData backpackFluidData;
     public int BUCKET_SLOTS = 2;
     public BackpackSettings backpackSettings = new BackpackSettings(true, true, true);

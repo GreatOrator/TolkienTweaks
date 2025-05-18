@@ -5,9 +5,13 @@ import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.MilestoneBlock;
 import com.greatorator.tolkienmobs.containers.MilestoneContainer;
 import com.greatorator.tolkienmobs.handler.MilestoneHandler;
+import com.greatorator.tolkienmobs.handler.data.MCDataInput;
 import com.greatorator.tolkienmobs.handler.interfaces.block.MilestoneSettingsBlockEntity;
+import com.greatorator.tolkienmobs.handler.vec.Vector3;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
+import com.greatorator.tolkienmobs.network.PacketHandler;
 import com.greatorator.tolkienmobs.util.block.MilestoneSettings;
+import com.greatorator.tolkienmobs.util.block.TeleportUtility;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -18,6 +22,9 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -32,11 +39,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public class MilestoneBlockEntity extends BlockEntity implements MenuProvider, MilestoneSettingsBlockEntity {
+public class MilestoneBlockEntity extends TolkienBlockEntity implements MenuProvider, MilestoneSettingsBlockEntity {
+    private BlockPos pos;
     public MilestoneSettings milestoneSettings = new MilestoneSettings(500, 1, "Enter Name", UUID.randomUUID().toString());
     public int travelDistance = 500;
     public int dimensionCost = 1;
-    private BlockPos pos;
 
     public MilestoneBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(TolkienBlocks.MILESTONE_BLOCK_ENTITY.get(), pPos, pBlockState);
@@ -44,20 +51,11 @@ public class MilestoneBlockEntity extends BlockEntity implements MenuProvider, M
     }
 
     public void onRightClick(BlockState blockState, BlockPos blockPos, Player player) {
-        TolkienMobsMain.LOGGER.warn(String.valueOf(pos));
         if (blockState.getBlock() == TolkienBlocks.MILESTONE_BLOCK.get() && !blockState.getValue(MilestoneBlock.LIT) && !player.isCreative()) {
             getUUID();
             MilestoneHandler.addPlayerToMilestone(this, player);
             markDirtyClient();
             level.setBlock(worldPosition, blockState.setValue(MilestoneBlock.LIT, true), 0);
-        }
-    }
-
-    public void markDirtyClient() {
-        setChanged();
-        if (level != null) {
-            BlockState state = level.getBlockState(getBlockPos());
-            level.sendBlockUpdated(getBlockPos(), state, state, 3);
         }
     }
 
@@ -86,7 +84,7 @@ public class MilestoneBlockEntity extends BlockEntity implements MenuProvider, M
         }
     }
 
-    public ItemStack getItemTravelCost(MilestoneHandler.MilestoneData dest) {
+    public int getItemTravelCost(MilestoneHandler.MilestoneData dest) {
         ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse(TolkienMobsConfig.PAYMENT_ITEM.get())).getDefaultInstance().getItem());
         double dist = Math.sqrt(dest.getPos().distSqr(getBlockPos()));
 
@@ -95,7 +93,7 @@ public class MilestoneBlockEntity extends BlockEntity implements MenuProvider, M
         }else {
             stack.setCount(Math.max(1, (int) (dist / dest.getDistanceCost())));
         }
-        return stack;
+        return stack.getCount();
     }
 
     public int getExperienceTravelCost(MilestoneHandler.MilestoneData dest) {
@@ -126,63 +124,6 @@ public class MilestoneBlockEntity extends BlockEntity implements MenuProvider, M
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
     }
-
-//    public void receivePacketFromClient(MCDataInput input, ServerPlayer client, int id) {
-//        super.receivePacketFromClient(input, client, id);
-//
-//        if (id <= 2 && !client.isCreative()) return;
-//
-//        switch (id) {
-//            case 0:
-//                ItemStack stack = client.getItemInHand(InteractionHand.MAIN_HAND).copy();
-//                stack.setCount(1);
-//                client.sendMessage(new TranslatableComponent("tolkienmobs.msg.payment").append(stack.getItem().getName(stack)), Util.NIL_UUID);
-//                paymentItem.set(stack);
-//                MilestoneHandler.updateMilestone(this);
-//                break;
-//            case 1:
-//                distanceCost.set(input.readVarInt());
-//                MilestoneHandler.updateMilestone(this);
-//                break;
-//            case 2:
-//                dimensionCost.set(input.readVarInt());
-//                MilestoneHandler.updateMilestone(this);
-//                break;
-//            case 3:
-//                MilestoneHandler.MilestoneData data = MilestoneHandler.getMilestoneData(level, input.readUUID());
-//                if (data == null) {
-//                    client.sendMessage(new TranslatableComponent("tolkienmobs.msg.destination"), Util.NIL_UUID);
-//                    break;
-//                }
-//
-//                ItemStack cost = getTravelCost(data);
-//                if (!cost.isEmpty()) {
-//                    int found = 0;
-//                    for (ItemStack item : client.getInventory().items) {
-//                        if (item.sameItem(cost)) found += item.getCount();
-//                    }
-//                    if (found < cost.getCount()) {
-//                        client.sendMessage(new TranslatableComponent("tolkienmobs.msg.payment.insufficient"), Util.NIL_UUID);
-//                        break;
-//                    }
-//                    int needed = cost.getCount();
-//                    for (ItemStack item : client.getInventory().items) {
-//                        if (item.sameItem(cost)) {
-//                            int count = item.getCount();
-//                            item.shrink(Math.min(count, needed));
-//                            needed -= count;
-//                            if (needed <= 0) break;
-//                        }
-//                    }
-//                }
-//
-//                BCoreNetwork.sendSound(client.level, client.blockPosition(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 0.3F, 0.5F, false);
-//                TeleportUtils.teleportEntity(client, data.getWorldKey(), Vector3.fromBlockPosCenter(data.getPos()).add(1, 1, 0));
-//                BCoreNetwork.sendSound(client.level, client.blockPosition(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 0.3F, 0.5F, false);
-//
-//                break;
-//        }
-//    }
 
     @Nullable
     @Override
@@ -242,6 +183,73 @@ public class MilestoneBlockEntity extends BlockEntity implements MenuProvider, M
         this.pos = BlockPos.of(tag.getLong("milestonePos"));
         this.loadMilestoneSettings(tag);
         super.loadAdditional(tag, provider);
+    }
+
+    @Override
+    public void receivePacketFromClient(MCDataInput input, ServerPlayer client, int id) {
+        TolkienMobsMain.LOGGER.warn(String.valueOf(id));
+        super.receivePacketFromClient(input, client, id);
+        ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse(TolkienMobsConfig.PAYMENT_ITEM.get())).getDefaultInstance().getItem());
+
+        if (id <= 5 && !client.isCreative()) return;
+
+        if (id == 3) {
+            MilestoneHandler.MilestoneData data = MilestoneHandler.getMilestoneData(level, input.readUUID());
+            if (data == null) {
+                client.sendSystemMessage(Component.translatable("tolkienmobs.msg.destination"));
+                return;
+            }
+
+            if (TolkienMobsConfig.PAYMENT_TYPE.get()) {
+                int cost = getItemTravelCost(data);
+
+                if (!stack.isEmpty()) {
+                    int found = 0;
+                    for (ItemStack item : client.getInventory().items) {
+                        if (ItemStack.matches(stack, item)) found += item.getCount();
+                    }
+                    if (found < cost) {
+                        client.sendSystemMessage(Component.translatable("tolkienmobs.msg.payment.insufficient"));
+                        return;
+                    }
+                    int needed = getItemTravelCost(data);
+                    for (ItemStack item : client.getInventory().items) {
+                        if (ItemStack.matches(stack, item)) {
+                            int count = item.getCount();
+                            item.shrink(Math.min(count, needed));
+                            needed -= count;
+                            if (needed <= 0) break;
+                        }
+                    }
+                }
+            } else {
+                int cost = getExperienceTravelCost(data);
+
+                if (!stack.isEmpty()) {
+                    int found = 0;
+                    for (ItemStack item : client.getInventory().items) {
+                        if (ItemStack.matches(stack, item)) found += item.getCount();
+                    }
+                    if (found < cost) {
+                        client.sendSystemMessage(Component.translatable("tolkienmobs.msg.payment.insufficient"));
+                        return;
+                    }
+                    int needed = getItemTravelCost(data);
+                    for (ItemStack item : client.getInventory().items) {
+                        if (ItemStack.matches(stack, item)) {
+                            int count = item.getCount();
+                            item.shrink(Math.min(count, needed));
+                            needed -= count;
+                            if (needed <= 0) break;
+                        }
+                    }
+                }
+            }
+
+            PacketHandler.sendSound(client.level, client.blockPosition(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 0.3F, 0.5F, false);
+            TeleportUtility.teleportEntity(client, data.getWorldKey(), Vector3.fromBlockPosCenter(data.getPos()).add(1, 1, 0));
+            PacketHandler.sendSound(client.level, client.blockPosition(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 0.3F, 0.5F, false);
+        }
     }
 
     /** Unused */
