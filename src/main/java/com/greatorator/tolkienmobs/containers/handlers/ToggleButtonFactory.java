@@ -163,9 +163,18 @@ public class ToggleButtonFactory {
     }
 
     public static NumberButton ITEM_PAYMENT_METHOD(int x, int y, int value, Button.OnPress onPress) {
+
         return new NumberButton(x, y, 16, 16, value, 1, 1, itemPaymentButtonLocalization, onPress);
     }
+
+    public static NumberButton ITEM_PAYMENT_METHOD_CLIENT(int x, int y, int value, Button.OnPress onPress) {
+
+        return new NumberButton(x, y, 16, 16, value, value, value, itemPaymentButtonLocalization, onPress);
+    }
     public static NumberButton EXPERIENCE_PAYMENT_METHOD(int x, int y, int value, Button.OnPress onPress) {
+        return new NumberButton(x, y, 16, 16, value, 1, 1, experiencePaymentButtonLocalization, onPress);
+    }
+    public static NumberButton EXPERIENCE_PAYMENT_METHOD_CLIENT(int x, int y, int value, Button.OnPress onPress) {
         return new NumberButton(x, y, 16, 16, value, 1, 1, experiencePaymentButtonLocalization, onPress);
     }
 

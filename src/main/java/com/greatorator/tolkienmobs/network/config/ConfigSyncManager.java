@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
-import static com.greatorator.tolkienmobs.network.PacketHandler.L_CONFIG_SYNC;
+import static com.greatorator.tolkienmobs.network.PacketHandler.C_CONFIG_SYNC;
 import static com.greatorator.tolkienmobs.network.PacketHandler.NET_CHANNEL;
 
 public class ConfigSyncManager {
@@ -85,7 +85,7 @@ public class ConfigSyncManager {
         @Override
         public void run(Consumer<CustomPacketPayload> sender) {
             if (!SYNC_MAP.isEmpty()) {
-                PacketCustom packet = new PacketCustom(NET_CHANNEL, L_CONFIG_SYNC, null);
+                PacketCustom packet = new PacketCustom(NET_CHANNEL, C_CONFIG_SYNC, null);
                 packet.writeVarInt(SYNC_MAP.size());
                 for (Map.Entry<ResourceLocation, ConfigTag> entry : SYNC_MAP.entrySet()) {
                     packet.writeResourceLocation(entry.getKey());

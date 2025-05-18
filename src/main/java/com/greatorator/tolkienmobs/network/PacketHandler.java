@@ -5,8 +5,17 @@ import com.greatorator.tolkienmobs.network.internal.ClientConfigurationPacketHan
 import com.greatorator.tolkienmobs.network.manager.*;
 import com.greatorator.tolkienmobs.network.packet.PacketCustom;
 import com.greatorator.tolkienmobs.network.packet.PacketCustomChannel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MessageSignature;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
@@ -15,8 +24,20 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public final class PacketHandler {
     public static final ResourceLocation NET_CHANNEL = ResourceLocation.fromNamespaceAndPath(MODID, "network");
+
+    /** Server to Client */
     public static final int C_SEND_MILESTONES = 1;
-    public static final int L_CONFIG_SYNC = 1;
+    public static final int C_INDEXED_MESSAGE = 2;
+    public static final int C_CONFIG_SYNC = 3;
+    public static final int C_TILE_DATA_MANAGER = 4;
+    public static final int C_TILE_MESSAGE = 5;
+    public static final int C_PLAY_SOUND = 6;
+
+    /** Client to Server */
+    public static final int S_CONTAINER_MESSAGE = 1;
+
+    public static final int S_DUMMY_PACKET = 99;
+
     public static final PacketCustomChannel CHANNEL = new PacketCustomChannel(NET_CHANNEL)
             .optional()
             .versioned("tolkienmobs")
@@ -73,6 +94,9 @@ public final class PacketHandler {
                 MilestoneSettingsUpdateManager.STREAM_CODEC, MilestoneSettingsUpdateManager::handle);
     }
 
+    private static void registerServerToClient(IEventBus modBus) {
+    }
+
     public static void sendMilestonesToClients(MilestoneHandler saveData, ServerPlayer player) {
         PacketCustom packet = new PacketCustom(NET_CHANNEL, C_SEND_MILESTONES, player.level().registryAccess());
         saveData.serialize(packet);
@@ -83,6 +107,31 @@ public final class PacketHandler {
         }
     }
 
-    private static void registerServerToClient(IEventBus modBus) {
+    public static void sendIndexedMessage(ServerPlayer player, Component message, MessageSignature signature) {
+        PacketCustom packet = new PacketCustom(NET_CHANNEL, C_INDEXED_MESSAGE, player.registryAccess());
+        packet.writeTextComponent(message);
+        packet.writeBytes(signature.bytes());
+        packet.sendToPlayer(player);
+    }
+
+    public static void sendSound(Level level, int x, int y, int z, SoundEvent sound, SoundSource category, float volume, float pitch, boolean distanceDelay) {
+        sendSound(level, new BlockPos(x, y, z), sound, category, volume, pitch, distanceDelay);
+    }
+
+    public static void sendSound(Level level, Entity entity, SoundEvent sound, SoundSource category, float volume, float pitch, boolean distanceDelay) {
+        sendSound(level, entity.blockPosition(), sound, category, volume, pitch, distanceDelay);
+    }
+
+    public static void sendSound(Level level, BlockPos pos, SoundEvent sound, SoundSource category, float volume, float pitch, boolean distanceDelay) {
+        if (level instanceof ServerLevel serverLevel) {
+            PacketCustom packet = new PacketCustom(NET_CHANNEL, C_PLAY_SOUND, level.registryAccess());
+            packet.writePos(pos);
+            packet.writeRegistryId(BuiltInRegistries.SOUND_EVENT, sound);
+            packet.writeVarInt(category.ordinal());
+            packet.writeFloat(volume);
+            packet.writeFloat(pitch);
+            packet.writeBoolean(distanceDelay);
+            packet.sendToChunk(serverLevel, pos);
+        }
     }
 }

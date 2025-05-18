@@ -12,6 +12,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MessageSignature;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
@@ -35,15 +36,20 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.loading.FMLEnvironment;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
+@SuppressWarnings ("ALL")
 public class GeneralUtility {
     public static final boolean DECK_THE_HALLS;
     public static final Direction[] HORIZONTAL_DIRECTIONS = new Direction[]{
@@ -72,6 +78,12 @@ public class GeneralUtility {
         }
     }
 
+    @Deprecated
+    public static void unsafeRunWhenOn(Dist dist, Supplier<Runnable> toRun) {
+        if (dist == FMLEnvironment.dist) {
+            toRun.get().run();
+        }
+    }
     public static boolean hasStoredEnchantment(ResourceKey<Enchantment> enchantment, ItemStack stack) {
         ItemEnchantments itemEnchantmentsComponent = stack.getOrDefault(DataComponents.STORED_ENCHANTMENTS, ItemEnchantments.EMPTY);
         for(Object2IntMap.Entry<Holder<Enchantment>> entry : itemEnchantmentsComponent.entrySet()) if(entry.getKey().is(enchantment)) return true;
@@ -378,5 +390,25 @@ public class GeneralUtility {
                 blockPosConsumer.accept(pos1);
             }
         }
+    }
+
+    @Deprecated
+    public static <T> T unsafeRunForDist(Supplier<Supplier<T>> clientTarget, Supplier<Supplier<T>> serverTarget) {
+        switch (FMLEnvironment.dist) {
+            case CLIENT:
+                return clientTarget.get().get();
+            case DEDICATED_SERVER:
+                return serverTarget.get().get();
+            default:
+                throw new IllegalArgumentException("UNSIDED?");
+        }
+    }
+
+    public static MessageSignature uuidToSig(UUID uuid) {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(256);
+        byteBuffer.position(32);
+        byteBuffer.putLong(uuid.getMostSignificantBits());
+        byteBuffer.putLong(uuid.getLeastSignificantBits());
+        return new MessageSignature(byteBuffer.array());
     }
 }

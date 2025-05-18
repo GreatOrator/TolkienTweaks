@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.block.custom.entity;
 import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.TolkienBaseSpawner;
 import com.greatorator.tolkienmobs.containers.CamoSpawnerContainer;
+import com.greatorator.tolkienmobs.handler.data.MCDataInput;
 import com.greatorator.tolkienmobs.handler.interfaces.TolkienSpawner;
 import com.greatorator.tolkienmobs.handler.interfaces.block.SpawnerSettingsBlockEntity;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
@@ -23,6 +24,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
@@ -44,7 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class CamoSpawnerBlockEntity extends BlockEntity implements MenuProvider, TolkienSpawner, SpawnerSettingsBlockEntity {
+public class CamoSpawnerBlockEntity extends TolkienBlockEntity implements MenuProvider, TolkienSpawner, SpawnerSettingsBlockEntity {
     public SpawnerSettings spawnerSettings = new SpawnerSettings(true, true, true);
     public SpawnerDelays spawnerDelays = new SpawnerDelays(200, 800, 20);
     public SpawnerRanges spawnerRanges = new SpawnerRanges(4, 4, 4, 6, 16);
@@ -159,6 +161,19 @@ public class CamoSpawnerBlockEntity extends BlockEntity implements MenuProvider,
         tag.put("entity_list", list);
 
         super.saveAdditional(tag, registries);
+    }
+
+    @Override
+    public void receivePacketFromClient(MCDataInput data, ServerPlayer client, int id) {
+        super.receivePacketFromClient(data, client, id);
+        if (id == 4) {
+            CompoundTag s = data.readCompoundNBT();
+            entityTags.remove(s);
+            sendPacketToClient(client, output -> {
+                output.writeVarInt(entityTags.size());
+                entityTags.forEach(output::writeCompoundNBT);
+            }, 0);
+        }
     }
 
     @Nullable

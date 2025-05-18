@@ -23,7 +23,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
@@ -35,7 +34,7 @@ import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.animation.keyframe.event.builtin.AutoPlayingSoundKeyframeHandler;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class LockableTreasureChestBlockEntity extends BlockEntity implements MenuProvider, GeoBlockEntity {
+public class LockableTreasureChestBlockEntity extends TolkienBlockEntity implements MenuProvider, GeoBlockEntity {
     private static final RawAnimation CHEST_OPEN = RawAnimation.begin().thenPlay("open");
     private AnimationController<LockableTreasureChestBlockEntity> animationController;
     private static String keyCode;

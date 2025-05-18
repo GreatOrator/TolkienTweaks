@@ -1,8 +1,12 @@
 package com.greatorator.tolkienmobs.containers;
 
+import com.greatorator.tolkienmobs.block.custom.entity.TolkienBlockEntity;
 import com.greatorator.tolkienmobs.containers.slots.SlotArmor;
+import com.greatorator.tolkienmobs.network.PacketHandler;
+import com.greatorator.tolkienmobs.network.packet.PacketCustom;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -17,11 +21,12 @@ import net.neoforged.neoforge.items.SlotItemHandler;
 
 import javax.annotation.Nullable;
 
-public abstract class TolkienContainer extends AbstractContainerMenu {
+public abstract class TolkienContainer<T extends TolkienBlockEntity> extends AbstractContainerMenu {
     public ItemStackHandler handler;
     private static final EquipmentSlot[] EQUIPMENT_SLOTS = new EquipmentSlot[] {
             EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
     protected static final int ITEMBOX = 18;
+    public T tile;
 
     public TolkienContainer(@Nullable MenuType<?> p_i50105_1_, int p_i50105_2_) {
         super(p_i50105_1_, p_i50105_2_);
@@ -139,5 +144,18 @@ public abstract class TolkienContainer extends AbstractContainerMenu {
         }
         sourceSlot.onTake(playerIn, sourceStack);
         return copyOfSourceStack;
+    }
+
+    public PacketCustom createServerBoundPacket(int packetType) {
+        PacketCustom packet = new PacketCustom(PacketHandler.NET_CHANNEL, packetType, tile.getLevel().registryAccess());
+        packet.writeInt(containerId);
+        return packet;
+    }
+
+    public void handleContainerMessage(PacketCustom packet, ServerPlayer player) {
+        int containerId = packet.readInt();
+        if (containerId != this.containerId) return;
+        int packetID = packet.readByte();
+        tile.receivePacketFromClient(packet, player, packetID);
     }
 }
