@@ -49,7 +49,6 @@ public record BackpackPlacementUpdateManager(
             AbstractContainerMenu container = sender.containerMenu;
 
             if (container instanceof BackpackBlockContainer backpackContainer && backpackContainer.tileEntity instanceof BackpackBlockEntity backpackBE) {
-                TolkienMobsMain.LOGGER.warn("Current state: Campfire: " + payload.campfire() + ", Sleeping Bag: " + payload.sleepingBag());
                 Direction direction = backpackBE.getBlockDirection();
                 BlockPos pos = backpackBE.getBlockPos();
                 Direction facing = level.getBlockState(pos).getValue(BackpackBlock.FACING);

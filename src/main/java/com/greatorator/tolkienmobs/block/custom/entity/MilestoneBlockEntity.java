@@ -187,8 +187,9 @@ public class MilestoneBlockEntity extends TolkienBlockEntity implements MenuProv
 
     @Override
     public void receivePacketFromClient(MCDataInput input, ServerPlayer client, int id) {
-        TolkienMobsMain.LOGGER.warn(String.valueOf(id));
         super.receivePacketFromClient(input, client, id);
+        TolkienMobsMain.LOGGER.warn(String.valueOf(id));
+        TolkienMobsMain.LOGGER.error("Current state: Milestone Teleporting: {}", client);
         ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse(TolkienMobsConfig.PAYMENT_ITEM.get())).getDefaultInstance().getItem());
 
         if (id <= 5 && !client.isCreative()) return;

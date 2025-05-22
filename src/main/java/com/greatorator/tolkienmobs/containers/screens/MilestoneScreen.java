@@ -11,7 +11,9 @@ import com.greatorator.tolkienmobs.containers.widget.ToggleButton;
 import com.greatorator.tolkienmobs.containers.widget.TolkienButton;
 import com.greatorator.tolkienmobs.handler.MilestoneHandler;
 import com.greatorator.tolkienmobs.handler.vec.Vector3;
+import com.greatorator.tolkienmobs.network.manager.BackpackPlacementUpdateManager;
 import com.greatorator.tolkienmobs.network.manager.MilestoneSettingsUpdateManager;
+import com.greatorator.tolkienmobs.network.manager.MilestoneTeleportUpdateManager;
 import com.greatorator.tolkienmobs.util.ColorUtility;
 import com.greatorator.tolkienmobs.util.GeneralUtility;
 import com.greatorator.tolkienmobs.util.block.MilestoneSettings;
@@ -145,8 +147,8 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
                                         TolkienMobsMain.LOGGER.warn(String.valueOf(data.getPos()));
                                         TolkienMobsMain.LOGGER.warn(String.valueOf(data.getWorldKey()));
                                         TolkienMobsMain.LOGGER.warn(data.getName());
-//                                        TeleportUtility.teleportEntity(getMinecraft().player, data.getWorldKey(), Vector3.fromBlockPosCenter(data.getPos()).add(1, 1, 0));
                                         this.tileEntity.sendPacketToServer(output -> output.writeUUID(data.getUuid()), 3);
+//                                        PacketDistributor.sendToServer(new MilestoneTeleportUpdateManager(true));
                                     })
                             .pos(relX + 5, relY + y)
                             .size(150, 16)

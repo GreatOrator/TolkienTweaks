@@ -92,6 +92,8 @@ public final class PacketHandler {
                 BackpackFluidUpgradesUpdateManager.STREAM_CODEC, BackpackFluidUpgradesUpdateManager::handle);
         registrar.playToServer(MilestoneSettingsUpdateManager.TYPE,
                 MilestoneSettingsUpdateManager.STREAM_CODEC, MilestoneSettingsUpdateManager::handle);
+        registrar.playToServer(MilestoneTeleportUpdateManager.TYPE,
+                MilestoneTeleportUpdateManager.STREAM_CODEC, MilestoneTeleportUpdateManager::handle);
     }
 
     private static void registerServerToClient(IEventBus modBus) {
