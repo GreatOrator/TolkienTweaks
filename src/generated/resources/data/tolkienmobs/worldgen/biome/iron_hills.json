@@ -6,7 +6,7 @@
       "minecraft:canyon"
     ]
   },
-  "downfall": 0.4,
+  "downfall": 0.3,
   "effects": {
     "ambient_sound": "tolkienmobs:music_disc.tolkienmobs.allthatglitterserebor",
     "fog_color": 10518688,
@@ -157,5 +157,5 @@
     "water_ambient": [],
     "water_creature": []
   },
-  "temperature": 0.8
+  "temperature": 0.2
 }

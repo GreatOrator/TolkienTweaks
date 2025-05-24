@@ -1,8 +1,8 @@
 {
   "carvers": {},
-  "downfall": 0.8,
+  "downfall": 0.3,
   "effects": {
-    "fog_color": 5988193,
+    "fog_color": 5541815,
     "foliage_color": 5156174,
     "grass_color": 5156174,
     "mood_sound": {
@@ -18,7 +18,7 @@
       "probability": 0.00625
     },
     "sky_color": 7907327,
-    "water_color": 54011,
+    "water_color": 4159204,
     "water_fog_color": 54011
   },
   "features": [
@@ -62,5 +62,5 @@
     "water_ambient": [],
     "water_creature": []
   },
-  "temperature": 0.7
+  "temperature": 0.8
 }

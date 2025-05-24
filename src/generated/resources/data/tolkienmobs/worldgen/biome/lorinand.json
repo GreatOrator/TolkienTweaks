@@ -2,10 +2,15 @@
   "carvers": {},
   "downfall": 0.8,
   "effects": {
-    "ambient_sound": "tolkienmobs:music_disc.tolkienmobs.thelightoflothlorien",
     "fog_color": 5988193,
     "foliage_color": 738353,
     "grass_color": 738353,
+    "music": {
+      "max_delay": 24000,
+      "min_delay": 12000,
+      "replace_current_music": false,
+      "sound": "tolkienmobs:music_disc.tolkienmobs.thelightoflothlorien"
+    },
     "particle": {
       "options": {
         "type": "tolkienmobs:mallorn_leaves"
@@ -13,7 +18,7 @@
       "probability": 0.00625
     },
     "sky_color": 8037887,
-    "water_color": 0,
+    "water_color": 54011,
     "water_fog_color": 5541815
   },
   "features": [
@@ -141,5 +146,5 @@
     "water_ambient": [],
     "water_creature": []
   },
-  "temperature": 0.25
+  "temperature": 0.6
 }

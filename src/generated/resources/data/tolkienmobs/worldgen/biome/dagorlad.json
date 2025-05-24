@@ -8,13 +8,13 @@
   },
   "downfall": 0.4,
   "effects": {
-    "ambient_sound": "minecraft:ambient.soul_sand_valley.mood",
+    "ambient_sound": "tolkienmobs:ambient.tolkienmobs.medievalcity",
     "fog_color": 12638463,
     "foliage_color": 14596231,
     "grass_color": 14596231,
-    "sky_color": 8168703,
-    "water_color": 14596231,
-    "water_fog_color": 2302743
+    "sky_color": 7907327,
+    "water_color": 329011,
+    "water_fog_color": 10518688
   },
   "features": [
     [],

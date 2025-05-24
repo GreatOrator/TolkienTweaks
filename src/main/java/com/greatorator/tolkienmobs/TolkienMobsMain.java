@@ -29,12 +29,15 @@ import com.greatorator.tolkienmobs.particle.WindParticle;
 import com.greatorator.tolkienmobs.particle.provider.TolkienParticleProvider;
 import com.greatorator.tolkienmobs.util.GeneralUtility;
 import com.greatorator.tolkienmobs.util.TolkienItemProperties;
-import com.greatorator.tolkienmobs.world.components.layer.BiomeDensitySource;
+import com.greatorator.tolkienmobs.world.components.util.TolkienSurfaceRuleManager;
+import com.greatorator.tolkienmobs.world.registration.TolkienSurfaceRules;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.level.block.Blocks;
@@ -58,7 +61,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
-import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import org.slf4j.Logger;
 
@@ -85,11 +87,10 @@ public class TolkienMobsMain {
     public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer, Dist dist) {
         proxy = GeneralUtility.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
 
-        modEventBus.addListener(TolkienDataGenerator::gatherData);
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::registerCapabilities);
         modEventBus.addListener(this::createNewRegistries);
-        modEventBus.addListener(this::setRegistriesForDatapack);
+
         modEventBus.addListener(this::setupPackets);
 
         if (dist.isClient()) {
@@ -99,13 +100,23 @@ public class TolkienMobsMain {
         MilestoneHandler.init();
         PacketHandler.register(modEventBus);
 
-        TolkienTabs.register(modEventBus);
-
         TolkienItems.register(modEventBus);
         TolkienBlocks.register(modEventBus);
         TolkienEntities.register(modEventBus);
 
+        TolkienTabs.register(modEventBus);
+
         TolkienSounds.SOUND_EVENTS.register(modEventBus);
+        modEventBus.addListener(TolkienDataGenerator::gatherData);
+
+        TolkienFeatureModifiers.TREE_DECORATORS.register(modEventBus);
+        TolkienFeatures.FEATURES.register(modEventBus);
+        TolkienFeatureModifiers.PLACEMENT_MODIFIERS.register(modEventBus);
+        TolkienFeatureModifiers.TRUNK_PLACERS.register(modEventBus);
+        TolkienFeatureModifiers.FOLIAGE_PLACERS.register(modEventBus);
+        TolkienCaveCarvers.CARVER_TYPES.register(modEventBus);
+        TolkienStructures.STRUCTURE.register(modEventBus);
+
         TolkienMobEffects.register(modEventBus);
         TolkienContainers.register(modEventBus);
 
@@ -122,15 +133,6 @@ public class TolkienMobsMain {
         TolkienEnchantmentEffects.register(modEventBus);
         TolkienLootFunctions.LOOT_FUNCTIONS.register(modEventBus);
 
-        TolkienFeatureModifiers.TRUNK_PLACERS.register(modEventBus);
-        TolkienLayerTypes.BIOME_LAYER_TYPES.register(modEventBus);
-        TolkienFeatureModifiers.FOLIAGE_PLACERS.register(modEventBus);
-        TolkienFeatureModifiers.TREE_DECORATORS.register(modEventBus);
-        TolkienFeatureModifiers.PLACEMENT_MODIFIERS.register(modEventBus);
-        TolkienDensityFunctions.DENSITY_FUNCTION_TYPES.register(modEventBus);
-        TolkienFeatures.FEATURES.register(modEventBus);
-        TolkienCaveCarvers.CARVER_TYPES.register(modEventBus);
-        TolkienStructures.STRUCTURE.register(modEventBus);
         TolkienDataComponents.register(modEventBus);
         TolkienRecipesTypes.register(modEventBus);
         TolkienRecipeSerializers.register(modEventBus);
@@ -183,6 +185,9 @@ public class TolkienMobsMain {
             pot.addPlant(TolkienBlocks.SAPLING_DWARVEN_MAPLE.getId(), TolkienBlocks.POTTED_SAPLING_DWARVEN_MAPLE);
             pot.addPlant(TolkienBlocks.MUSHROOM_BLOOM_DECAY.getId(), TolkienBlocks.POTTED_MUSHROOM_BLOOM_DECAY);
             pot.addPlant(TolkienBlocks.MUSHROOM_DECAY_BLOOM.getId(), TolkienBlocks.POTTED_MUSHROOM_DECAY_BLOOM);
+
+            TolkienSurfaceRuleManager.addSurfaceRules(TolkienSurfaceRuleManager.RuleCategory.OVERWORLD, MODID, TolkienSurfaceRules.tolkienSurface());
+
         });
     }
 
@@ -193,11 +198,6 @@ public class TolkienMobsMain {
 
     public void createNewRegistries(NewRegistryEvent event) {
         event.register(TolkienBiomes.BIOME_LAYER_TYPE);
-    }
-
-    public void setRegistriesForDatapack(DataPackRegistryEvent.NewRegistry event) {
-        event.dataPackRegistry(TolkienBiomes.Keys.BIOME_TERRAIN_DATA, BiomeDensitySource.CODEC);
-        event.dataPackRegistry(TolkienBiomes.Keys.BIOME_STACK, TolkienLayerStack.DISPATCH_CODEC);
     }
 
     private void registerCapabilities(RegisterCapabilitiesEvent event) {
@@ -411,8 +411,11 @@ public class TolkienMobsMain {
         return ResourceLocation.fromNamespaceAndPath(MODID, path);
     }
 
-    public static ResourceLocation createResourceLocation(String path)
-    {
+    public static ResourceLocation createResourceLocation(String path) {
         return ResourceLocation.tryBuild(MODID, path);
+    }
+
+    public static <T> ResourceKey<T> key(ResourceKey<? extends Registry<T>> registryKey, String name) {
+        return ResourceKey.create(registryKey, prefix(name));
     }
 }
