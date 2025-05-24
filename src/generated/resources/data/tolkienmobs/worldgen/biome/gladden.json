@@ -9,11 +9,12 @@
   "downfall": 0.4,
   "effects": {
     "ambient_sound": "tolkienmobs:ambient.tolkienmobs.medievalcity",
-    "fog_color": 10518688,
+    "fog_color": 12638463,
+    "foliage_color": 14596231,
     "grass_color": 14596231,
     "sky_color": 7907327,
-    "water_color": 4159204,
-    "water_fog_color": 329011
+    "water_color": 329011,
+    "water_fog_color": 10518688
   },
   "features": [
     [],

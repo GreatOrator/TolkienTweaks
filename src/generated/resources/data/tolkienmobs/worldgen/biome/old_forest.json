@@ -18,6 +18,12 @@
       "replace_current_music": false,
       "sound": "minecraft:ambient.soul_sand_valley.loop"
     },
+    "particle": {
+      "options": {
+        "type": "tolkienmobs:fangornoak_leaves"
+      },
+      "probability": 0.00625
+    },
     "sky_color": 7907327,
     "water_color": 54011,
     "water_fog_color": 5541815
@@ -126,5 +132,5 @@
     "water_ambient": [],
     "water_creature": []
   },
-  "temperature": 0.7
+  "temperature": 0.8
 }

@@ -1,78 +1,59 @@
 package com.greatorator.tolkienmobs.init;
 
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 import com.greatorator.tolkienmobs.TolkienMobsMain;
-import com.greatorator.tolkienmobs.world.components.layer.BiomeDensitySource;
 import com.greatorator.tolkienmobs.world.components.layer.BiomeLayerFactory;
 import com.greatorator.tolkienmobs.world.components.layer.BiomeLayerType;
+import com.greatorator.tolkienmobs.world.registration.BiomeMaker;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.BiomeSpecialEffects;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
-
-import static com.greatorator.tolkienmobs.world.registration.BiomeHelper.*;
-import static com.greatorator.tolkienmobs.world.registration.BiomeMaker.*;
+import java.util.Map;
 
 
 public class TolkienBiomes {
     public static final Registry<BiomeLayerType> BIOME_LAYER_TYPE = new RegistryBuilder<>(Keys.BIOME_LAYER_TYPE).create();
-    public static final ResourceKey<Biome> MIRKWOOD = makeKey("mirkwood");
-    public static final ResourceKey<Biome> MIRKWOOD_SPOOKY = makeKey("mirkwood_spooky");
-    public static final ResourceKey<Biome> FANGORN = makeKey("fangorn_forest");
-    public static final ResourceKey<Biome> MORDOR = makeKey("mordor");
-    public static final ResourceKey<Biome> ASH_MOUNTAINS = makeKey("ash_mountains");
-    public static final ResourceKey<Biome> MARSHES = makeKey("marshes");
-    public static final ResourceKey<Biome> LORINAND = makeKey("lorinand");
-    public static final ResourceKey<Biome> BARROW_DOWNS = makeKey("barrow_downs");
-    public static final ResourceKey<Biome> OLD_FOREST = makeKey("old_forest");
-    public static final ResourceKey<Biome> SHIRE = makeKey("shire");
-    public static final ResourceKey<Biome> FIRIEN = makeKey("firien");
-    public static final ResourceKey<Biome> HITHAEGLIR = makeKey("hithaeglir");
-    public static final ResourceKey<Biome> HARADWAITH = makeKey("haradwaith");
-    public static final ResourceKey<Biome> DAGORLAD = makeKey("dagorlad");
-    public static final ResourceKey<Biome> GLADDEN = makeKey("gladden");
-    public static final ResourceKey<Biome> IRON_HILLS = makeKey("iron_hills");
+    public static final Map<ResourceKey<Biome>, BiomeFactory> BIOME_FACTORIES = new Reference2ObjectOpenHashMap<>();
+    public static final Multimap<TagKey<Biome>, ResourceKey<Biome>> BIOMES_BY_TAG = Multimaps.newSetMultimap(new HashMap<>(), HashSet::new);
 
-    public static final ResourceKey<Biome> STREAM = makeKey("stream");
-    public static final ResourceKey<Biome> UNDERGROUND = makeKey("underground");
-    public static final ResourceKey<Biome> LAKE = makeKey("lake");
+    public static final ResourceKey<Biome> MIRKWOOD = createBiome("mirkwood", BiomeMaker::makeBiomeMirkwood, TolkienTags.Biomes.DARK_FOREST, TolkienTags.Biomes.TEMPERATE);
+    public static final ResourceKey<Biome> MIRKWOOD_SPOOKY = createBiome("mirkwood_spooky", BiomeMaker::makeBiomeMirkwoodSpooky, TolkienTags.Biomes.DARK_FOREST, TolkienTags.Biomes.TEMPERATE);
+    public static final ResourceKey<Biome> IRON_HILLS = createBiome("iron_hills", BiomeMaker::makeBiomeIronHills, TolkienTags.Biomes.MOUNTAIN, TolkienTags.Biomes.COLD);
+    public static final ResourceKey<Biome> HITHAEGLIR = createBiome("hithaeglir", BiomeMaker::makeBiomeHithaelgir, TolkienTags.Biomes.MOUNTAIN, TolkienTags.Biomes.ICY);
+    public static final ResourceKey<Biome> FANGORN = createBiome("fangorn_forest", BiomeMaker::makeBiomeFangorn, TolkienTags.Biomes.DARK_FOREST, TolkienTags.Biomes.TEMPERATE);
+    public static final ResourceKey<Biome> MORDOR = createBiome("mordor", BiomeMaker::makeBiomeMordor, TolkienTags.Biomes.WASTELAND, TolkienTags.Biomes.HOT);
+    public static final ResourceKey<Biome> ASH_MOUNTAINS = createBiome("ash_mountains", BiomeMaker::makeBiomeAshMountain, TolkienTags.Biomes.MOUNTAIN, TolkienTags.Biomes.DRY);
+    public static final ResourceKey<Biome> MARSHES = createBiome("marshes", BiomeMaker::makeBiomeMarshes, TolkienTags.Biomes.SWAMP, TolkienTags.Biomes.WET);
+    public static final ResourceKey<Biome> LORINAND = createBiome("lorinand", BiomeMaker::makeBiomeLorinad, TolkienTags.Biomes.CONIFEROUS, TolkienTags.Biomes.TEMPERATE);
+    public static final ResourceKey<Biome> BARROW_DOWNS = createBiome("barrow_downs", BiomeMaker::makeBiomeBarrowDowns, TolkienTags.Biomes.DEAD, TolkienTags.Biomes.COLD);
+    public static final ResourceKey<Biome> OLD_FOREST = createBiome("old_forest", BiomeMaker::makeBiomeOldForest, TolkienTags.Biomes.DARK_FOREST, TolkienTags.Biomes.TEMPERATE);
+    public static final ResourceKey<Biome> SHIRE = createBiome("shire", BiomeMaker::makeBiomeShire, TolkienTags.Biomes.PLAINS, TolkienTags.Biomes.TEMPERATE);
+    public static final ResourceKey<Biome> FIRIEN = createBiome("firien", BiomeMaker::makeBiomeFirien, TolkienTags.Biomes.FOREST, TolkienTags.Biomes.TEMPERATE);
+    public static final ResourceKey<Biome> HARADWAITH = createBiome("haradwaith", BiomeMaker::makeBiomeHaradwaith, TolkienTags.Biomes.DESERT, TolkienTags.Biomes.DRY);
+    public static final ResourceKey<Biome> DAGORLAD = createBiome("dagorlad", BiomeMaker::makeBiomeDagorland, TolkienTags.Biomes.PLAINS, TolkienTags.Biomes.TEMPERATE);
+    public static final ResourceKey<Biome> GLADDEN = createBiome("gladden", BiomeMaker::makeBiomeGladden, TolkienTags.Biomes.PLAINS, TolkienTags.Biomes.TEMPERATE);
 
-    private static ResourceKey<Biome> makeKey(String name) {
-        return ResourceKey.create(Registries.BIOME, TolkienMobsMain.prefix(name));
-    }
+//    public static final ResourceKey<Biome> STREAM = createBiome("stream", BiomeMaker::makeBiomeStream, TolkienTags.Biomes.RIVER, TolkienTags.Biomes.WET);
+//    public static final ResourceKey<Biome> UNDERGROUND = createBiome("underground", BiomeMaker::makeBiomeUnderground, TolkienTags.Biomes.CAVE, TolkienTags.Biomes.COLD);
+//    public static final ResourceKey<Biome> LAKE = createBiome("lake", BiomeMaker::makeBiomeLake, TolkienTags.Biomes.RIVER, TolkienTags.Biomes.WET);
 
     public static void bootstrap(BootstrapContext<Biome> context) {
         HolderGetter<PlacedFeature> featureGetter = context.lookup(Registries.PLACED_FEATURE);
         HolderGetter<ConfiguredWorldCarver<?>> carverGetter = context.lookup(Registries.CONFIGURED_CARVER);
-
-        context.register(MIRKWOOD, makeBiomeMirkwood(mirkwoodLeavesParticles(mirkwoodAmbientBuilder()).skyColor(getSkyColorWithTemperatureModifier(0.6F)).waterColor(0).fogColor(5988193).foliageColorOverride(738353).grassColorOverride(738353), mirkwoodSpawning(), mirkwoodGen(featureGetter, carverGetter)).hasPrecipitation(true).temperature(0.25F).downfall(0.8F).build());
-        context.register(MIRKWOOD_SPOOKY, makeBiomeMirkwood(mirkwoodLeavesParticles(mirkwoodAmbientBuilder()).skyColor(getSkyColorWithTemperatureModifier(0.6F)).waterColor(0).fogColor(5988193).foliageColorOverride(738353).grassColorOverride(738353), mirkwoodSpookySpawning(), mirkwoodSpookyGen(featureGetter, carverGetter)).hasPrecipitation(true).temperature(0.25F).downfall(0.8F).build());
-        context.register(FANGORN, makeBiomeFangorn(fangornoakLeavesParticles(fangornAmbientBuilder()).skyColor(getSkyColorWithTemperatureModifier(0.8F)).waterColor(0x00D2FB).fogColor(0x5B5F61).foliageColorOverride(0x4EAD4E).grassColorOverride(0x4EAD4E), fangornForestSpawning(), fangornForestGen(featureGetter, carverGetter)).hasPrecipitation(true).temperature(0.7F).downfall(0.8F).build());
-        context.register(MORDOR, makeBiomeMordor(desolateParticles(mordorAmbientBuilder()).skyColor(getSkyColorWithTemperatureModifier(2.0F)).waterColor(0).fogColor(12638463).foliageColorOverride(2329).grassColorOverride(2329), mordorSpawning(), mordorGen(featureGetter, carverGetter)).hasPrecipitation(false).temperature(2.0F).downfall(0.0F).build());
-        context.register(ASH_MOUNTAINS, makeBiomeMordor(desolateParticles(mordorAmbientBuilder()).skyColor(getSkyColorWithTemperatureModifier(2.0F)).waterColor(0).fogColor(12638463).foliageColorOverride(2329).grassColorOverride(2329), mordorSpawning(), mordorGen(featureGetter, carverGetter)).hasPrecipitation(false).temperature(2.0F).downfall(0.0F).build());
-        context.register(MARSHES, makeBiomeMarshes(marshesAmbientBuilder().skyColor(getSkyColorWithTemperatureModifier(0.8F)).waterColor(14745540).fogColor(5988193).foliageColorOverride(6316071).grassColorModifier(BiomeSpecialEffects.GrassColorModifier.SWAMP), marshesSpawning(), marshesGen(featureGetter, carverGetter)).hasPrecipitation(true).temperature(0.9F).downfall(0.8F).build());
-        context.register(LORINAND, makeBiomeLorinad(forestParticles(lorinadAmbientBuilder()).skyColor(getSkyColorWithTemperatureModifier(0.6F)).waterColor(0).fogColor(5988193).foliageColorOverride(738353).grassColorOverride(738353), lorinadSpawning(), lorinadGen(featureGetter, carverGetter)).hasPrecipitation(true).temperature(0.25F).downfall(0.8F).build());
-        context.register(BARROW_DOWNS, makeBiomeBarrowDowns(barrowAmbientBuilder().skyColor(getSkyColorWithTemperatureModifier(0.8F)).waterColor(808080).fogColor(11119017).foliageColorOverride(14481884).grassColorOverride(14481884), barrowSpawning(), barrowGen(featureGetter, carverGetter)).hasPrecipitation(true).temperature(0.25F).downfall(0.8F).build());
-        context.register(OLD_FOREST, makeBiomeOldForest(oldForestAmbientBuilder().skyColor(getSkyColorWithTemperatureModifier(0.8F)).waterColor(54011).fogColor(5988193).foliageColorOverride(5163086).grassColorOverride(5163086), oldForestForestSpawning(), oldForestForestGen(featureGetter, carverGetter)).hasPrecipitation(true).temperature(0.7F).downfall(0.8F).build());
-        context.register(SHIRE, makeBiomeShire(culumaldaLeavesParticles(shireAmbientBuilder()).skyColor(getSkyColorWithTemperatureModifier(0.8F)).waterColor(4159204).fogColor(10518688).foliageColorOverride(2292007).grassColorOverride(2292007), shireSpawning(), shireGen(featureGetter, carverGetter)).hasPrecipitation(true).temperature(0.9F).downfall(0.8F).build());
-        context.register(FIRIEN, makeBiomeFirien(lebethronLeavesParticles(firienAmbientBuilder()).skyColor(getSkyColorWithTemperatureModifier(0.7F)).waterColor(4159204).waterFogColor(329011).fogColor(10518688).foliageColorOverride(2292007).grassColorOverride(2292007), firienSpawning(), firienGen(featureGetter, carverGetter)).hasPrecipitation(true).temperature(0.7F).downfall(0.8F).build());
-        context.register(HITHAEGLIR, makeBiomeHithaelgir(dwarvenLeavesParticles(hithaeglirAmbientBuilder()).skyColor(getSkyColorWithTemperatureModifier(0.3F)).waterColor(4159204).waterFogColor(329011).fogColor(10518688).foliageColorOverride(2292007).grassColorOverride(2292007), hithaeglirSpawning(), hithaeglirGen(featureGetter, carverGetter)).hasPrecipitation(true).temperature(0.2F).downfall(0.3F).build());
-        context.register(HARADWAITH, makeBiomeHaradwaith(haradwaithAmbientBuilder().skyColor(getSkyColorWithTemperatureModifier(2.0F)).waterColor(4159204).waterFogColor(329011).fogColor(12638463), haradwaithSpawning(), haradwaithGen(featureGetter, carverGetter)).hasPrecipitation(true).temperature(2.0F).downfall(0).build());
-        context.register(DAGORLAD, makeBiomeDagorland(dagorladAmbientBuilder().skyColor(getSkyColorWithTemperatureModifier(0.4F)).waterColor(14596231).waterFogColor(2302743).fogColor(12638463).foliageColorOverride(14596231).grassColorOverride(14596231), dagorladSpawning(), dagorladGen(featureGetter, carverGetter)).hasPrecipitation(true).temperature(0.8F).downfall(0.4F).build());
-        context.register(GLADDEN, makeBiomeGladden(gladdenAmbientBuilder().skyColor(getSkyColorWithTemperatureModifier(0.8F)).waterColor(4159204).waterFogColor(329011).fogColor(10518688).grassColorOverride(14596231), gladdenSpawning(), gladdenGen(featureGetter, carverGetter)).hasPrecipitation(true).temperature(0.8F).downfall(0.4F).build());
-        context.register(IRON_HILLS, makeBiomeIronHills(dwarvenLeavesParticles(ironHillsAmbientBuilder()).skyColor(getSkyColorWithTemperatureModifier(0.2F)).waterColor(4159204).waterFogColor(329011).fogColor(10518688).foliageColorOverride(2292007).grassColorOverride(2292007), ironHillsSpawning(), ironHillsGen(featureGetter, carverGetter)).hasPrecipitation(true).temperature(0.8F).downfall(0.4F).build());
-
-        context.register(STREAM, biomeWithDefaults(defaultAmbientBuilder(), defaultMobSpawning(), streamsAndLakes(featureGetter, carverGetter, false)).temperature(0.5F).downfall(0.1F).build());
-        context.register(LAKE, biomeWithDefaults(defaultAmbientBuilder(), defaultMobSpawning(), streamsAndLakes(featureGetter, carverGetter, true)).temperature(0.66F).downfall(1).build());
-        context.register(UNDERGROUND, biomeWithDefaults(defaultAmbientBuilder(), undergroundMobSpawning(), undergroundGen(featureGetter, carverGetter)).temperature(0.7F).downfall(0.0F).build());
     }
 
     public static final class Keys {
@@ -80,11 +61,24 @@ public class TolkienBiomes {
 
         public static final ResourceKey<Registry<BiomeLayerType>> BIOME_LAYER_TYPE = ResourceKey.createRegistryKey(namedRegistry("biome_layer_type"));
 
-        public static final ResourceKey<Registry<BiomeLayerFactory>> BIOME_STACK = ResourceKey.createRegistryKey(namedRegistry("biome_layer_stack"));
-        public static final ResourceKey<Registry<BiomeDensitySource>> BIOME_TERRAIN_DATA = ResourceKey.createRegistryKey(namedRegistry("biome_terrain_data"));
-
         public static ResourceLocation namedRegistry(String name) {
             return ResourceLocation.fromNamespaceAndPath(REGISTRY_NAMESPACE, name.toLowerCase(Locale.ROOT));
         }
+    }
+
+    @SafeVarargs
+    private static ResourceKey<Biome> createBiome(String id, BiomeFactory biomeFactory, TagKey<Biome>... tags) {
+        ResourceKey<Biome> biomeResourceKey = TolkienMobsMain.key(Registries.BIOME, id);
+        BIOME_FACTORIES.put(biomeResourceKey, biomeFactory);
+
+        for (TagKey<Biome> tag : tags)
+            BIOMES_BY_TAG.put(tag, biomeResourceKey);
+
+        return biomeResourceKey;
+    }
+
+    @FunctionalInterface
+    public interface BiomeFactory {
+        Biome generate(HolderGetter<PlacedFeature> placedFeatureHolderGetter, HolderGetter<ConfiguredWorldCarver<?>> worldCarverHolderGetter);
     }
 }

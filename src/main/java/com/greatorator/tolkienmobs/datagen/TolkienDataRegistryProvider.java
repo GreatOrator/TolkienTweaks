@@ -20,15 +20,11 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 public class TolkienDataRegistryProvider extends DatapackBuiltinEntriesProvider {
     public static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
             .add(Registries.BIOME, TolkienBiomes::bootstrap)
-            .add(TolkienBiomes.Keys.BIOME_STACK, TolkienLayerStack::bootstrap)
-            .add(TolkienBiomes.Keys.BIOME_TERRAIN_DATA, TolkienLayerStack::bootstrapData)
             .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, TolkienBiomeModifiers::bootstrap)
             .add(Registries.CONFIGURED_FEATURE, TolkienConfiguredFeatures::bootstrap)
             .add(Registries.CONFIGURED_CARVER, TolkienCaveCarvers::bootstrap)
-            .add(Registries.DENSITY_FUNCTION, TolkienDensityFunctions::bootstrap)
 
 
-            .add(Registries.NOISE_SETTINGS, TolkienDimensionData::bootstrapNoise)
             .add(Registries.PLACED_FEATURE, TolkienPlacedFeatures::bootstrap)
 
             //structure

@@ -1,6 +1,6 @@
 {
   "carvers": {},
-  "downfall": 0.3,
+  "downfall": 0.2,
   "effects": {
     "ambient_sound": "minecraft:ambient.warped_forest.mood",
     "fog_color": 10518688,
@@ -117,5 +117,5 @@
     "water_ambient": [],
     "water_creature": []
   },
-  "temperature": 0.2
+  "temperature": 0.3
 }

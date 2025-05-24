@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.init;
 
+import com.greatorator.tolkienmobs.TolkienMobsMain;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -58,13 +59,46 @@ public class TolkienTags {
     }
 
     public static class Biomes {
-        public static final TagKey<Biome> IS_ARDA = createTag("tolkienmobs:is_arda");
+        public static final TagKey<Biome> IS_ARDA = createTag("is_arda");
 
-        public static final TagKey<Biome> IS_MOUNTAIN = createTag("tolkienmobs:is_mountain");
+        public static final TagKey<Biome> OVERWORLD = createTag("overworld");
+        public static final TagKey<Biome> HOT = createTag("climate/hot");
+        public static final TagKey<Biome> TEMPERATE = createTag("climate/temperate");
+        public static final TagKey<Biome> COLD = createTag("climate/cold");
+        public static final TagKey<Biome> WET = createTag("climate/wet");
+        public static final TagKey<Biome> DRY = createTag("climate/dry");
+        public static final TagKey<Biome> SPARSE = createTag("density/sparse");
+        public static final TagKey<Biome> DENSE = createTag("density/dense");
+        public static final TagKey<Biome> PLAINS = createTag("plains");
+        public static final TagKey<Biome> FOREST = createTag("forest");
+        public static final TagKey<Biome> TAIGA = createTag("taiga");
+        public static final TagKey<Biome> DESERT = createTag("desert");
+        public static final TagKey<Biome> SAVANNA = createTag("savanna");
+        public static final TagKey<Biome> JUNGLE = createTag("jungle");
+        public static final TagKey<Biome> BEACH = createTag("beach");
+        public static final TagKey<Biome> SWAMP = createTag("swamp");
+        public static final TagKey<Biome> SLOPE = createTag("slope");
+        public static final TagKey<Biome> PEAK = createTag("peak");
+        public static final TagKey<Biome> MOUNTAIN = createTag("mountain");
+        public static final TagKey<Biome> SNOWY = createTag("snowy");
+        public static final TagKey<Biome> ICY = createTag("icy");
+        public static final TagKey<Biome> BADLANDS = createTag("badlands");
+        public static final TagKey<Biome> SANDY = createTag("sandy");
+        public static final TagKey<Biome> FLORAL = createTag("floral");
+        public static final TagKey<Biome> CONIFEROUS = createTag("coniferous");
+        public static final TagKey<Biome> DEAD = createTag("dead");
+        public static final TagKey<Biome> WASTELAND = createTag("wasteland");
+        public static final TagKey<Biome> MAGICAL = createTag("magical");
+        public static final TagKey<Biome> WINDSWEPT = createTag("windswept");
+        public static final TagKey<Biome> OCEAN = createTag("ocean");
+        public static final TagKey<Biome> DARK_FOREST = createTag("dark_forest");
+        public static final TagKey<Biome> RIVER = createTag("river");
+        public static final TagKey<Biome> CAVE = createTag("cave");
 
         private static TagKey<Biome> createTag(String name) {
-            return TagKey.create(Registries.BIOME, ResourceLocation.parse(name));
+            return TagKey.create(Registries.BIOME, TolkienMobsMain.resLoc(name));
         }
+
     }
 
     public static class DamageTypes {

@@ -2,10 +2,16 @@
   "carvers": {},
   "downfall": 0.8,
   "effects": {
-    "ambient_sound": "tolkienmobs:music_disc.tolkienmobs.concerninghobbits",
+    "ambient_sound": "minecraft:ambient.crimson_forest.mood",
     "fog_color": 10518688,
     "foliage_color": 2292007,
     "grass_color": 2292007,
+    "music": {
+      "max_delay": 24000,
+      "min_delay": 12000,
+      "replace_current_music": false,
+      "sound": "tolkienmobs:music_disc.tolkienmobs.concerninghobbits"
+    },
     "particle": {
       "options": {
         "type": "tolkienmobs:culumalda_leaves"
@@ -172,5 +178,5 @@
     "water_ambient": [],
     "water_creature": []
   },
-  "temperature": 0.9
+  "temperature": 0.7
 }

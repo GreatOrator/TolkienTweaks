@@ -35,7 +35,7 @@
       "minecraft:patch_cactus_desert"
     ]
   ],
-  "has_precipitation": true,
+  "has_precipitation": false,
   "spawn_costs": {
     "tolkienmobs:entityttmcrebain": {
       "charge": 0.6,

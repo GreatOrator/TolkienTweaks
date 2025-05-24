@@ -2,21 +2,17 @@ package com.greatorator.tolkienmobs.world.registration;
 
 import com.greatorator.tolkienmobs.init.TolkienCaveCarvers;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
-import com.greatorator.tolkienmobs.init.TolkienParticleTypes;
-import com.greatorator.tolkienmobs.init.TolkienSounds;
 import com.greatorator.tolkienmobs.world.TolkienPlacedFeatures;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.data.worldgen.BiomeDefaultFeatures;
 import net.minecraft.data.worldgen.placement.AquaticPlacements;
 import net.minecraft.data.worldgen.placement.MiscOverworldPlacements;
 import net.minecraft.data.worldgen.placement.VegetationPlacements;
-import net.minecraft.sounds.Musics;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.level.biome.*;
+import net.minecraft.world.level.biome.BiomeGenerationSettings;
+import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
@@ -26,173 +22,6 @@ public abstract class BiomeHelper {
 		float lvt_1_1_ = temp / 3.0F;
 		lvt_1_1_ = Mth.clamp(lvt_1_1_, -1.0F, 1.0F);
 		return Mth.hsvToRgb(0.62222224F - lvt_1_1_ * 0.05F, 0.5F + lvt_1_1_ * 0.1F, 1.0F);
-	}
-
-	public static BiomeSpecialEffects.Builder forestParticles(BiomeSpecialEffects.Builder builder) {
-		builder.ambientParticle(new AmbientParticleSettings(TolkienParticleTypes.WANDERING_LIGHTNINGBUG.get(), 0.001f));
-		builder.ambientParticle(new AmbientParticleSettings(TolkienParticleTypes.MALLORN_LEAVES.get(), 0.00625F));
-		return builder;
-	}
-
-	public static BiomeSpecialEffects.Builder desolateParticles(BiomeSpecialEffects.Builder builder) {
-		builder.ambientParticle(new AmbientParticleSettings(ParticleTypes.ASH, 0.00625F));
-		return builder;
-	}
-
-	public static BiomeSpecialEffects.Builder mirkwoodLeavesParticles(BiomeSpecialEffects.Builder builder) {
-		builder.ambientParticle(new AmbientParticleSettings(TolkienParticleTypes.MIRKWOOD_LEAVES.get(), 0.00625F));
-		return builder;
-	}
-
-	public static BiomeSpecialEffects.Builder dwarvenLeavesParticles(BiomeSpecialEffects.Builder builder) {
-		builder.ambientParticle(new AmbientParticleSettings(TolkienParticleTypes.DWARVEN_MAPLE_LEAVES.get(), 0.00625F));
-		return builder;
-	}
-
-	public static BiomeSpecialEffects.Builder culumaldaLeavesParticles(BiomeSpecialEffects.Builder builder) {
-		builder.ambientParticle(new AmbientParticleSettings(TolkienParticleTypes.CULUMALDA_LEAVES.get(), 0.00625F));
-		return builder;
-	}
-
-	public static BiomeSpecialEffects.Builder lebethronLeavesParticles(BiomeSpecialEffects.Builder builder) {
-		builder.ambientParticle(new AmbientParticleSettings(TolkienParticleTypes.LEBETHRON_LEAVES.get(), 0.00625F));
-		return builder;
-	}
-
-	public static BiomeSpecialEffects.Builder fangornoakLeavesParticles(BiomeSpecialEffects.Builder builder) {
-		builder.ambientParticle(new AmbientParticleSettings(TolkienParticleTypes.FANGORNOAK_LEAVES.get(), 0.00625F));
-		return builder;
-	}
-
-		// Ambiance
-	public static BiomeSpecialEffects.Builder lorinadAmbientBuilder() {
-			return new BiomeSpecialEffects.Builder()
-					.fogColor(14412287)
-					.waterColor(54011)
-					.waterFogColor(5541815)
-					.skyColor(getSkyColorWithTemperatureModifier(0.6F))
-					.ambientLoopSound(TolkienSounds.MUSIC_DISC_LIGHTOFLOTHLORIEN);
-	}
-
-	public static BiomeSpecialEffects.Builder ironHillsAmbientBuilder() {
-		return new BiomeSpecialEffects.Builder()
-				.fogColor(10518688)
-				.waterColor(4159204)
-				.waterFogColor(329011)
-				.skyColor(getSkyColorWithTemperatureModifier(0.2F))
-				.ambientLoopSound(TolkienSounds.MUSIC_DISC_ALLTHATGLITTERS);
-	}
-
-	public static BiomeSpecialEffects.Builder gladdenAmbientBuilder() {
-		return new BiomeSpecialEffects.Builder()
-				.fogColor(12638463)
-				.waterColor(329011)
-				.waterFogColor(10518688)
-				.skyColor(getSkyColorWithTemperatureModifier(0.8F))
-				.ambientLoopSound(TolkienSounds.MEDIEVAL_CITY);
-	}
-
-	public static BiomeSpecialEffects.Builder dagorladAmbientBuilder() {
-		return new BiomeSpecialEffects.Builder()
-				.fogColor(12638463)
-				.waterColor(14596231)
-				.waterFogColor(2302743)
-				.skyColor(getSkyColorWithTemperatureModifier(0.4F))
-				.ambientLoopSound(SoundEvents.AMBIENT_SOUL_SAND_VALLEY_MOOD);
-	}
-
-	public static BiomeSpecialEffects.Builder haradwaithAmbientBuilder() {
-		return new BiomeSpecialEffects.Builder()
-				.fogColor(12638463)
-				.waterColor(4159204)
-				.waterFogColor(329011)
-				.skyColor(getSkyColorWithTemperatureModifier(2.0F))
-				.ambientLoopSound(SoundEvents.AMBIENT_BASALT_DELTAS_LOOP);
-	}
-
-	public static BiomeSpecialEffects.Builder hithaeglirAmbientBuilder() {
-		return new BiomeSpecialEffects.Builder()
-				.fogColor(10518688)
-				.waterColor(4159204)
-				.waterFogColor(329011)
-				.skyColor(getSkyColorWithTemperatureModifier(0.7F))
-				.ambientLoopSound(SoundEvents.AMBIENT_WARPED_FOREST_MOOD);
-	}
-
-	public static BiomeSpecialEffects.Builder firienAmbientBuilder() {
-		return new BiomeSpecialEffects.Builder()
-				.fogColor(10518688)
-				.waterColor(4159204)
-				.waterFogColor(329011)
-				.skyColor(getSkyColorWithTemperatureModifier(0.7F))
-				.ambientLoopSound(SoundEvents.AMBIENT_CRIMSON_FOREST_MOOD);
-	}
-
-	public static BiomeSpecialEffects.Builder shireAmbientBuilder() {
-		return new BiomeSpecialEffects.Builder()
-				.fogColor(10518688)
-				.waterColor(4159204)
-				.waterFogColor(329011)
-				.skyColor(getSkyColorWithTemperatureModifier(0.8F))
-				.ambientLoopSound(TolkienSounds.MUSIC_DISC_CONCERNINGHOBBITS);
-	}
-
-	public static BiomeSpecialEffects.Builder barrowAmbientBuilder() {
-		return new BiomeSpecialEffects.Builder()
-				.fogColor(11119017)
-				.waterColor(808080)
-				.waterFogColor(5541815)
-				.grassColorOverride(14481884)
-				.skyColor(getSkyColorWithTemperatureModifier(0.8F))
-				.ambientLoopSound(TolkienSounds.PATH_OF_UNDEAD);
-	}
-
-	public static BiomeSpecialEffects.Builder mirkwoodAmbientBuilder() {
-		return new BiomeSpecialEffects.Builder()
-				.fogColor(5988193)
-				.waterColor(0)
-				.waterFogColor(5541815)
-				.skyColor(getSkyColorWithTemperatureModifier(0.8F))
-				.ambientLoopSound(SoundEvents.AMBIENT_WARPED_FOREST_LOOP);
-	}
-
-	public static BiomeSpecialEffects.Builder fangornAmbientBuilder() {
-		return new BiomeSpecialEffects.Builder()
-				.fogColor(0x548FB7)
-				.waterColor(0x3F76E4)
-				.waterFogColor(0x00D2FB)
-				.skyColor(getSkyColorWithTemperatureModifier(0.8F))
-				.ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS);
-	}
-
-	public static BiomeSpecialEffects.Builder mordorAmbientBuilder() {
-		return new BiomeSpecialEffects.Builder()
-				.fogColor(12638463)
-				.waterColor(0)
-				.waterFogColor(329011)
-				.skyColor(getSkyColorWithTemperatureModifier(2.0F))
-				.ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS);
-	}
-
-	public static BiomeSpecialEffects.Builder marshesAmbientBuilder() {
-		return new BiomeSpecialEffects.Builder()
-				.fogColor(5988193)
-				.waterColor(14745540)
-				.waterFogColor(2302743)
-				.skyColor(getSkyColorWithTemperatureModifier(0.8F))
-				.backgroundMusic(Musics.createGameMusic(SoundEvents.AMBIENT_SOUL_SAND_VALLEY_LOOP))
-				.ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS);
-	}
-
-	public static BiomeSpecialEffects.Builder oldForestAmbientBuilder() {
-		return new BiomeSpecialEffects.Builder()
-				.fogColor(5988193)
-				.waterColor(54011)
-				.waterFogColor(5541815)
-				.skyColor(getSkyColorWithTemperatureModifier(0.8F))
-				.backgroundMusic(Musics.createGameMusic(SoundEvents.AMBIENT_SOUL_SAND_VALLEY_LOOP))
-				.ambientLoopSound(SoundEvents.AMBIENT_CRIMSON_FOREST_LOOP)
-				.ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS);
 	}
 
 		// Mob Spawning
@@ -698,17 +527,6 @@ public abstract class BiomeHelper {
 				.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, MiscOverworldPlacements.DISK_CLAY);
 	}
 
-	public static Biome.BiomeBuilder biomeWithDefaults(BiomeSpecialEffects.Builder biomeAmbience, MobSpawnSettings.Builder mobSpawnInfo, BiomeGenerationSettings.Builder biomeGenerationSettings) {
-		return new Biome.BiomeBuilder()
-				.hasPrecipitation(true)
-				.temperature(0.5F)
-				.downfall(0.5F)
-				.specialEffects(biomeAmbience.build())
-				.mobSpawnSettings(mobSpawnInfo.build())
-				.generationSettings(biomeGenerationSettings.build())
-				.temperatureAdjustment(Biome.TemperatureModifier.NONE);
-	}
-
 	public static MobSpawnSettings.Builder defaultMobSpawning() {
 		MobSpawnSettings.Builder spawnInfo = new MobSpawnSettings.Builder();
 
@@ -743,16 +561,6 @@ public abstract class BiomeHelper {
 				.addMobCharge(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 0.2D, 0.15D)
 				.addMobCharge(EntityType.ENDERMAN, 0.4D, 0.15D);
 				}
-
-	public static BiomeSpecialEffects.Builder defaultAmbientBuilder() {
-		return new BiomeSpecialEffects.Builder()
-				.fogColor(0xC0FFD8)
-				.waterColor(0x3F76E4)
-				.waterFogColor(0x050533)
-				.skyColor(0x20224A)
-				.ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS);
-
-	}
 
 	public static BiomeGenerationSettings.Builder undergroundGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
 		BiomeGenerationSettings.Builder biome = new BiomeGenerationSettings.Builder(featureGetter, carverGetter);

@@ -31,7 +31,7 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 public class TolkienCaveCarvers {
     public static final DeferredRegister<WorldCarver<?>> CARVER_TYPES = DeferredRegister.create(Registries.CARVER, MODID);
 
-    public static final DeferredHolder<WorldCarver<?>, TolkienCavesCarver> TOLKIEN_CAVES = CARVER_TYPES.register("tf_caves", () -> new TolkienCavesCarver(
+    public static final DeferredHolder<WorldCarver<?>, TolkienCavesCarver> TOLKIEN_CAVES = CARVER_TYPES.register("tolkien_caves", () -> new TolkienCavesCarver(
             CaveCarverConfiguration.CODEC,
             false,
             new NoiseProvider(
