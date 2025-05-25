@@ -1,0 +1,66 @@
+{
+  "type": "minecraft:tree",
+  "config": {
+    "decorators": [
+      {
+        "type": "tolkienmobs:trunkside_decorator",
+        "deco_provider": {
+          "type": "minecraft:simple_state_provider",
+          "state": {
+            "Name": "tolkienmobs:wall_mushroom_red",
+            "Properties": {
+              "facing": "north"
+            }
+          }
+        },
+        "placement_count": 2,
+        "probability_of_placement": 1.0
+      }
+    ],
+    "dirt_provider": {
+      "type": "minecraft:simple_state_provider",
+      "state": {
+        "Name": "minecraft:grass_block",
+        "Properties": {
+          "snowy": "false"
+        }
+      }
+    },
+    "foliage_placer": {
+      "type": "minecraft:fancy_foliage_placer",
+      "height": 3,
+      "offset": 0,
+      "radius": 2
+    },
+    "foliage_provider": {
+      "type": "minecraft:simple_state_provider",
+      "state": {
+        "Name": "tolkienmobs:hardened_leaves_culumalda"
+      }
+    },
+    "force_dirt": false,
+    "ignore_vines": false,
+    "minimum_size": {
+      "type": "minecraft:two_layers_feature_size",
+      "limit": 0,
+      "lower_size": 0,
+      "min_clipped_height": 4,
+      "upper_size": 0
+    },
+    "trunk_placer": {
+      "type": "minecraft:straight_trunk_placer",
+      "base_height": 5,
+      "height_rand_a": 2,
+      "height_rand_b": 0
+    },
+    "trunk_provider": {
+      "type": "minecraft:simple_state_provider",
+      "state": {
+        "Name": "tolkienmobs:wood_culumalda",
+        "Properties": {
+          "axis": "y"
+        }
+      }
+    }
+  }
+}

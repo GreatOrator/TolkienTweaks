@@ -64,7 +64,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:long_turtle_master"
+              "id": "minecraft:poison"
             },
             {
               "add": false,

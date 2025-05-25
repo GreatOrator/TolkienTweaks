@@ -768,12 +768,17 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.SAPLING_DEADWOOD);
                         output.accept(TolkienBlocks.SAPLING_DWARVEN_MAPLE);
                         output.accept(TolkienBlocks.LEAVES_MALLORN);
+                        output.accept(TolkienBlocks.HARDENED_LEAVES_MALLORN);
                         output.accept(TolkienBlocks.LEAVES_MIRKWOOD);
                         output.accept(TolkienBlocks.HARDENED_LEAVES_MIRKWOOD);
                         output.accept(TolkienBlocks.LEAVES_CULUMALDA);
+                        output.accept(TolkienBlocks.HARDENED_LEAVES_CULUMALDA);
                         output.accept(TolkienBlocks.LEAVES_LEBETHRON);
+                        output.accept(TolkienBlocks.HARDENED_LEAVES_LEBETHRON);
                         output.accept(TolkienBlocks.LEAVES_FANGORNOAK);
+                        output.accept(TolkienBlocks.HARDENED_LEAVES_FANGORNOAK);
                         output.accept(TolkienBlocks.LEAVES_DWARVEN_MAPLE);
+                        output.accept(TolkienBlocks.HARDENED_LEAVES_DWARVEN_MAPLE);
                         output.accept(TolkienBlocks.LEAFPILE_MALLORN);
                         output.accept(TolkienBlocks.LEAFPILE_MIRKWOOD);
                         output.accept(TolkienBlocks.LEAFPILE_CULUMALDA);

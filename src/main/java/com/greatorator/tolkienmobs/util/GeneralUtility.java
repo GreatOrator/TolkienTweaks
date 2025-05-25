@@ -78,7 +78,6 @@ public class GeneralUtility {
         }
     }
 
-    @Deprecated
     public static void unsafeRunWhenOn(Dist dist, Supplier<Runnable> toRun) {
         if (dist == FMLEnvironment.dist) {
             toRun.get().run();
@@ -392,7 +391,6 @@ public class GeneralUtility {
         }
     }
 
-    @Deprecated
     public static <T> T unsafeRunForDist(Supplier<Supplier<T>> clientTarget, Supplier<Supplier<T>> serverTarget) {
         switch (FMLEnvironment.dist) {
             case CLIENT:

@@ -21,7 +21,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "tolkienmobs:elemental_lightning"
+              "id": "minecraft:strong_strength"
             },
             {
               "add": false,
