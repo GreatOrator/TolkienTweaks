@@ -21,7 +21,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "tolkienmobs:crippling_terror"
+              "id": "minecraft:long_night_vision"
             },
             {
               "add": false,

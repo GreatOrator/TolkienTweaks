@@ -366,36 +366,12 @@ public class TolkienMobsMain {
             pEvent.registerSpriteSet(TolkienParticleTypes.FELLBEAST_BREATH.get(), FellBeastBreathParticle.Provider::new);
             pEvent.registerSpriteSet(TolkienParticleTypes.WIND_PARTICLE.get(), WindParticle.Provider::new);
             pEvent.registerSpriteSet(TolkienParticleTypes.WANDERING_LIGHTNINGBUG.get(), TolkienParticleProvider::new);
-            pEvent.registerSpriteSet(TolkienParticleTypes.MALLORN_LEAVES.get(), (p_277215_) -> {
-                return (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> {
-                    return new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_);
-                };
-            });
-            pEvent.registerSpriteSet(TolkienParticleTypes.MIRKWOOD_LEAVES.get(), (p_277215_) -> {
-                return (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> {
-                    return new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_);
-                };
-            });
-            pEvent.registerSpriteSet(TolkienParticleTypes.CULUMALDA_LEAVES.get(), (p_277215_) -> {
-                return (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> {
-                    return new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_);
-                };
-            });
-            pEvent.registerSpriteSet(TolkienParticleTypes.LEBETHRON_LEAVES.get(), (p_277215_) -> {
-                return (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> {
-                    return new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_);
-                };
-            });
-            pEvent.registerSpriteSet(TolkienParticleTypes.FANGORNOAK_LEAVES.get(), (p_277215_) -> {
-                return (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> {
-                    return new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_);
-                };
-            });
-            pEvent.registerSpriteSet(TolkienParticleTypes.DWARVEN_MAPLE_LEAVES.get(), (p_277215_) -> {
-                return (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> {
-                    return new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_);
-                };
-            });
+            pEvent.registerSpriteSet(TolkienParticleTypes.MALLORN_LEAVES.get(), (p_277215_) -> (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_));
+            pEvent.registerSpriteSet(TolkienParticleTypes.MIRKWOOD_LEAVES.get(), (p_277215_) -> (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_));
+            pEvent.registerSpriteSet(TolkienParticleTypes.CULUMALDA_LEAVES.get(), (p_277215_) -> (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_));
+            pEvent.registerSpriteSet(TolkienParticleTypes.LEBETHRON_LEAVES.get(), (p_277215_) -> (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_));
+            pEvent.registerSpriteSet(TolkienParticleTypes.FANGORNOAK_LEAVES.get(), (p_277215_) -> (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_));
+            pEvent.registerSpriteSet(TolkienParticleTypes.DWARVEN_MAPLE_LEAVES.get(), (p_277215_) -> (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_));
         }
     }
 

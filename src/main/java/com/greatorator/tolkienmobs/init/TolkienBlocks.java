@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.init;
 
 import com.greatorator.tolkienmobs.block.*;
 import com.greatorator.tolkienmobs.block.custom.*;
+import com.greatorator.tolkienmobs.block.TolkienHardenedLeavesBlock;
 import com.greatorator.tolkienmobs.block.custom.entity.*;
 import com.greatorator.tolkienmobs.handler.capability.TolkienFluidTank;
 import com.greatorator.tolkienmobs.handler.interfaces.TolkienRegistry;
@@ -953,6 +954,9 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> LEAVES_MALLORN = registerBlock("leaves_mallorn",
             () -> new LeavesBlock(BlockBehaviour.Properties.of()
                     .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));
+    public static final DeferredBlock<Block> HARDENED_LEAVES_MALLORN = registerBlock("hardened_leaves_mallorn",
+            () -> new TolkienHardenedLeavesBlock(BlockBehaviour.Properties.of()
+                    .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS), LEAVES_MALLORN.get()));
     public static final DeferredBlock<Block> LEAFPILE_MALLORN = registerBlock("leafpile_mallorn",
             () -> new LeafPileBlock(BlockBehaviour.Properties.of()
                     .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));
@@ -1020,8 +1024,8 @@ public class TolkienBlocks {
             () -> new LeavesBlock(BlockBehaviour.Properties.of()
                     .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));
     public static final DeferredBlock<Block> HARDENED_LEAVES_MIRKWOOD = registerBlock("hardened_leaves_mirkwood",
-            () -> new HardenedMirkwoodLeavesBlock(BlockBehaviour.Properties.of()
-                    .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));
+            () -> new TolkienHardenedLeavesBlock(BlockBehaviour.Properties.of()
+                    .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS), LEAVES_MIRKWOOD.get()));
     public static final DeferredBlock<Block> LEAFPILE_MIRKWOOD = registerBlock("leafpile_mirkwood",
             () -> new LeafPileBlock(BlockBehaviour.Properties.of()
                     .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));
@@ -1087,6 +1091,9 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> LEAVES_CULUMALDA = registerBlock("leaves_culumalda",
                 () -> new LeavesBlock(BlockBehaviour.Properties.of()
                         .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));
+    public static final DeferredBlock<Block> HARDENED_LEAVES_CULUMALDA = registerBlock("hardened_leaves_culumalda",
+            () -> new TolkienHardenedLeavesBlock(BlockBehaviour.Properties.of()
+                    .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS), LEAVES_CULUMALDA.get()));
     public static final DeferredBlock<Block> LEAFPILE_CULUMALDA = registerBlock("leafpile_culumalda",
             () -> new LeafPileBlock(BlockBehaviour.Properties.of()
                     .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));
@@ -1152,6 +1159,9 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> LEAVES_LEBETHRON = registerBlock("leaves_lebethron",
                 () -> new LeavesBlock(BlockBehaviour.Properties.of()
                         .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));
+    public static final DeferredBlock<Block> HARDENED_LEAVES_LEBETHRON = registerBlock("hardened_leaves_lebethron",
+            () -> new TolkienHardenedLeavesBlock(BlockBehaviour.Properties.of()
+                    .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS), LEAVES_LEBETHRON.get()));
     public static final DeferredBlock<Block> LEAFPILE_LEBETHRON = registerBlock("leafpile_lebethron",
             () -> new LeafPileBlock(BlockBehaviour.Properties.of()
                     .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));
@@ -1217,6 +1227,9 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> LEAVES_FANGORNOAK = registerBlock("leaves_fangornoak",
                 () -> new LeavesBlock(BlockBehaviour.Properties.of()
                         .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));
+    public static final DeferredBlock<Block> HARDENED_LEAVES_FANGORNOAK = registerBlock("hardened_leaves_fangornoak",
+            () -> new TolkienHardenedLeavesBlock(BlockBehaviour.Properties.of()
+                    .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS), LEAVES_FANGORNOAK.get()));
     public static final DeferredBlock<Block> LEAFPILE_FANGORNOAK = registerBlock("leafpile_fangornoak",
             () -> new LeafPileBlock(BlockBehaviour.Properties.of()
                     .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));
@@ -1341,6 +1354,9 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> LEAVES_DWARVEN_MAPLE = registerBlock("leaves_dwarven_maple",
             () -> new LeavesBlock(BlockBehaviour.Properties.of()
                     .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));
+    public static final DeferredBlock<Block> HARDENED_LEAVES_DWARVEN_MAPLE = registerBlock("hardened_leaves_dwarven_maple",
+            () -> new TolkienHardenedLeavesBlock(BlockBehaviour.Properties.of()
+                    .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS), LEAVES_DWARVEN_MAPLE.get()));
     public static final DeferredBlock<Block> LEAFPILE_DWARVEN_MAPLE = registerBlock("leafpile_dwarven_maple",
             () -> new LeafPileBlock(BlockBehaviour.Properties.of()
                     .strength(0.2F).randomTicks().noOcclusion().ignitedByLava().isSuffocating(TolkienBlocks::never).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS)));

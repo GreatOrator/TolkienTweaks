@@ -4,6 +4,6 @@
     "tolkienmobs:iron_hills",
     "tolkienmobs:hithaeglir"
   ],
-  "features": "tolkienmobs:dwarven_placed",
+  "features": "tolkienmobs:hardened_dwarven_placed",
   "step": "vegetal_decoration"
 }

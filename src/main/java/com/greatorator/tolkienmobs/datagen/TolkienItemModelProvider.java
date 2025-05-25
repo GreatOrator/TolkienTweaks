@@ -321,12 +321,12 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         wallItem(TolkienBlocks.WALL_CHISELED_ANGAINOR_BRICKS, TolkienBlocks.CHISELED_ANGAINOR_BRICKS);
         wallItem(TolkienBlocks.WALL_MOSSY_COBBLED_ANGAINOR, TolkienBlocks.MOSSY_COBBLED_ANGAINOR);
 
-        generated(TolkienBlocks.LEAFPILE_MALLORN.getId().getPath(), TolkienMobsMain.prefix("block/leaves_mallorn"));
-        generated(TolkienBlocks.LEAFPILE_MIRKWOOD.getId().getPath(), TolkienMobsMain.prefix("block/leaves_mirkwood"));
-        generated(TolkienBlocks.LEAFPILE_CULUMALDA.getId().getPath(), TolkienMobsMain.prefix("block/leaves_culumalda"));
-        generated(TolkienBlocks.LEAFPILE_LEBETHRON.getId().getPath(), TolkienMobsMain.prefix("block/leaves_lebethron"));
-        generated(TolkienBlocks.LEAFPILE_FANGORNOAK.getId().getPath(), TolkienMobsMain.prefix("block/leaves_fangornoak"));
-        generated(TolkienBlocks.LEAFPILE_DWARVEN_MAPLE.getId().getPath(), TolkienMobsMain.prefix("block/leaves_dwarven_maple"));
+        withExistingParent(TolkienBlocks.LEAFPILE_MALLORN.getId().getPath(), TolkienMobsMain.prefix("block/leafpile_mallorn2"));
+        withExistingParent(TolkienBlocks.LEAFPILE_MIRKWOOD.getId().getPath(), TolkienMobsMain.prefix("block/leafpile_mirkwood2"));
+        withExistingParent(TolkienBlocks.LEAFPILE_CULUMALDA.getId().getPath(), TolkienMobsMain.prefix("block/leafpile_culumalda2"));
+        withExistingParent(TolkienBlocks.LEAFPILE_LEBETHRON.getId().getPath(), TolkienMobsMain.prefix("block/leafpile_lebethron2"));
+        withExistingParent(TolkienBlocks.LEAFPILE_FANGORNOAK.getId().getPath(), TolkienMobsMain.prefix("block/leafpile_fangornoak2"));
+        withExistingParent(TolkienBlocks.LEAFPILE_DWARVEN_MAPLE.getId().getPath(), TolkienMobsMain.prefix("block/leafpile_dwarven_maple2"));
         generated(TolkienBlocks.MOSS_PATCH.getId().getPath(), TolkienMobsMain.prefix("block/patch/moss"));
         generated(TolkienBlocks.CLOVER_PATCH.getId().getPath(), TolkienMobsMain.prefix("block/patch/clover"));
 

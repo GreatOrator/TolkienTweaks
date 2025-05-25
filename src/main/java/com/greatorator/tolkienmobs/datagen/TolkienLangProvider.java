@@ -22,11 +22,11 @@ public class TolkienLangProvider extends TolkienLangHelper {
         this.add("itemgroup.tolkienmobs.deco", "TolkienTweaks: Building Blocks");
             this.addItem(TolkienItems.CREBAIN_FEATHER, "Crebain Feather");
             this.addItem(TolkienItems.BIRD_FEATHER, "Bird Feather");
-            this.addItem(TolkienItems.MUMAKIL_LEATHER, "Mumakil Leather");
-            this.addItem(TolkienItems.MONSTER_FUR, "Monster Fur");
+            this.addItem(TolkienItems.MUMAKIL_LEATHER, "Hardened Leather");
+            this.addItem(TolkienItems.MONSTER_FUR, "Tuft of Fur");
             this.addItem(TolkienItems.BOTTLE_FANCY, "Fancy Bottle");
-            this.addItem(TolkienItems.FOOD_HONEY, "Honey Bottle");
-            this.addItem(TolkienItems.MONSTER_FLESH, "Monster Flesh");
+            this.addItem(TolkienItems.FOOD_HONEY, "Honey Comb");
+            this.addItem(TolkienItems.MONSTER_FLESH, "Rancid Flesh");
             this.addItem(TolkienItems.INSECT, "Frog Bait");
             this.addItem(TolkienItems.GOLDEN_INSECT, "Fancy Frog Bait");
             this.addItem(TolkienItems.TREE_ACORN, "Acorn");
@@ -609,11 +609,12 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add("biome.tolkienmobs.gladden", "Gladden Fields");
             this.add("biome.tolkienmobs.hithaeglir", "Misty Mountains");
             this.add("biome.tolkienmobs.iron_hills", "Iron Hills");
+            this.add("block.tolkienmobs.hardened_leaves_mallorn", "Mallorn Leaves");
             this.add("block.tolkienmobs.hardened_leaves_mirkwood", "Mirkwood Leaves");
-
-            this.add("biome.tolkienmobs.stream", "Stream");
-            this.add("biome.tolkienmobs.underground", "Underground");
-            this.add("biome.tolkienmobs.lake", "Lake");
+            this.add("block.tolkienmobs.hardened_leaves_culumalda", "Culumalda Leaves");
+            this.add("block.tolkienmobs.hardened_leaves_lebethron", "Lebethron Leaves");
+            this.add("block.tolkienmobs.hardened_leaves_fangornoak", "Fangorn Oak Leaves");
+            this.add("block.tolkienmobs.hardened_leaves_dwarven_maple", "Dwarven Maple Leaves");
 
         // Chat Messages
             this.add("tolkienmobs.msg.helpcomming", "Goblin King is attempting to call for help...Reinforcements have arrived!");

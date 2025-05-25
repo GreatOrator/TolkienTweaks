@@ -47,13 +47,7 @@ public class TolkienBiomes {
     public static final ResourceKey<Biome> DAGORLAD = createBiome("dagorlad", BiomeMaker::makeBiomeDagorland, TolkienTags.Biomes.PLAINS, TolkienTags.Biomes.TEMPERATE);
     public static final ResourceKey<Biome> GLADDEN = createBiome("gladden", BiomeMaker::makeBiomeGladden, TolkienTags.Biomes.PLAINS, TolkienTags.Biomes.TEMPERATE);
 
-//    public static final ResourceKey<Biome> STREAM = createBiome("stream", BiomeMaker::makeBiomeStream, TolkienTags.Biomes.RIVER, TolkienTags.Biomes.WET);
-//    public static final ResourceKey<Biome> UNDERGROUND = createBiome("underground", BiomeMaker::makeBiomeUnderground, TolkienTags.Biomes.CAVE, TolkienTags.Biomes.COLD);
-//    public static final ResourceKey<Biome> LAKE = createBiome("lake", BiomeMaker::makeBiomeLake, TolkienTags.Biomes.RIVER, TolkienTags.Biomes.WET);
-
     public static void bootstrap(BootstrapContext<Biome> context) {
-        HolderGetter<PlacedFeature> featureGetter = context.lookup(Registries.PLACED_FEATURE);
-        HolderGetter<ConfiguredWorldCarver<?>> carverGetter = context.lookup(Registries.CONFIGURED_CARVER);
     }
 
     public static final class Keys {

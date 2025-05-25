@@ -4,6 +4,6 @@
     "tolkienmobs:shire",
     "tolkienmobs:firien"
   ],
-  "features": "tolkienmobs:culumalda_placed",
+  "features": "tolkienmobs:hardened_culumalda_placed",
   "step": "vegetal_decoration"
 }

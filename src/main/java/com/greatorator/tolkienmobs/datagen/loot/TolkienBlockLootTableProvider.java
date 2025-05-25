@@ -114,6 +114,7 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.STRIPPED_MALLORN_WOOD.get());
         dropSelf(TolkienBlocks.PLANKS_MALLORN.get());
         add(TolkienBlocks.LEAVES_MALLORN.get(), createExtraLeavesDrops(TolkienBlocks.LEAVES_MALLORN.get(), TolkienBlocks.SAPLING_MALLORN.get(), TolkienItems.TREE_ACORN.get(), DEFAULT_SAPLING_DROP_RATES));
+        add(TolkienBlocks.HARDENED_LEAVES_MALLORN.get(), silkAndStick(TolkienBlocks.LEAVES_MALLORN.get(), TolkienBlocks.SAPLING_MALLORN.get(), DEFAULT_SAPLING_DROP_RATES));
         dropSelf(TolkienBlocks.LEAFPILE_MALLORN.get());
         dropSelf(TolkienBlocks.STAIRS_MALLORN.get());
         this.add(TolkienBlocks.SLAB_MALLORN.get(),
@@ -179,6 +180,7 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.STRIPPED_CULUMALDA_WOOD.get());
         dropSelf(TolkienBlocks.PLANKS_CULUMALDA.get());
         add(TolkienBlocks.LEAVES_CULUMALDA.get(), silkAndStick(TolkienBlocks.LEAVES_CULUMALDA.get(), TolkienBlocks.SAPLING_CULUMALDA.get(), DEFAULT_SAPLING_DROP_RATES));
+        add(TolkienBlocks.HARDENED_LEAVES_CULUMALDA.get(), silkAndStick(TolkienBlocks.LEAVES_CULUMALDA.get(), TolkienBlocks.SAPLING_CULUMALDA.get(), DEFAULT_SAPLING_DROP_RATES));
         dropSelf(TolkienBlocks.LEAFPILE_CULUMALDA.get());
         dropSelf(TolkienBlocks.STAIRS_CULUMALDA.get());
         this.add(TolkienBlocks.SLAB_CULUMALDA.get(),
@@ -207,6 +209,7 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.STRIPPED_LEBETHRON_WOOD.get());
         dropSelf(TolkienBlocks.PLANKS_LEBETHRON.get());
         add(TolkienBlocks.LEAVES_LEBETHRON.get(), silkAndStick(TolkienBlocks.LEAVES_LEBETHRON.get(), TolkienBlocks.SAPLING_LEBETHRON.get(), DEFAULT_SAPLING_DROP_RATES));
+        add(TolkienBlocks.HARDENED_LEAVES_LEBETHRON.get(), silkAndStick(TolkienBlocks.LEAVES_LEBETHRON.get(), TolkienBlocks.SAPLING_LEBETHRON.get(), DEFAULT_SAPLING_DROP_RATES));
         dropSelf(TolkienBlocks.LEAFPILE_LEBETHRON.get());
         dropSelf(TolkienBlocks.STAIRS_LEBETHRON.get());
         this.add(TolkienBlocks.SLAB_LEBETHRON.get(),
@@ -235,6 +238,7 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.STRIPPED_FANGORNOAK_WOOD.get());
         dropSelf(TolkienBlocks.PLANKS_FANGORNOAK.get());
         add(TolkienBlocks.LEAVES_FANGORNOAK.get(), createExtraLeavesDrops(TolkienBlocks.LEAVES_FANGORNOAK.get(), TolkienBlocks.SAPLING_FANGORNOAK.get(), TolkienItems.INSECT.get(), DEFAULT_SAPLING_DROP_RATES));
+        add(TolkienBlocks.HARDENED_LEAVES_FANGORNOAK.get(), silkAndStick(TolkienBlocks.LEAVES_FANGORNOAK.get(), TolkienBlocks.SAPLING_FANGORNOAK.get(), DEFAULT_SAPLING_DROP_RATES));
         dropSelf(TolkienBlocks.LEAFPILE_FANGORNOAK.get());
         dropSelf(TolkienBlocks.STAIRS_FANGORNOAK.get());
         this.add(TolkienBlocks.SLAB_FANGORNOAK.get(),
@@ -289,6 +293,7 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.STRIPPED_DWARVEN_MAPLE_WOOD.get());
         dropSelf(TolkienBlocks.PLANKS_DWARVEN_MAPLE.get());
         add(TolkienBlocks.LEAVES_DWARVEN_MAPLE.get(), silkAndStick(TolkienBlocks.LEAVES_DWARVEN_MAPLE.get(), TolkienBlocks.SAPLING_DWARVEN_MAPLE.get(), DEFAULT_SAPLING_DROP_RATES));
+        add(TolkienBlocks.HARDENED_LEAVES_DWARVEN_MAPLE.get(), silkAndStick(TolkienBlocks.LEAVES_DWARVEN_MAPLE.get(), TolkienBlocks.SAPLING_DWARVEN_MAPLE.get(), DEFAULT_SAPLING_DROP_RATES));
         dropSelf(TolkienBlocks.LEAFPILE_DWARVEN_MAPLE.get());
         dropSelf(TolkienBlocks.STAIRS_DWARVEN_MAPLE.get());
         this.add(TolkienBlocks.SLAB_DWARVEN_MAPLE.get(),

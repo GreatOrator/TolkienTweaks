@@ -305,7 +305,7 @@ public abstract class BlockModelBuilders extends BlockModelHelper {
 	}
 
 	protected BlockModelBuilder buildFallenLeaves(String leafPile, int index) {
-		return models().getBuilder("leafpile_" + leafPile + index).renderType(CUTOUT).texture("particle", "tolkienmobs:block/leaves_" + leafPile).texture("all", "tolkienmobs:block/leaves_" + leafPile)
+		return models().getBuilder("leafpile_" + leafPile + index).parent(models().getExistingFile(ResourceLocation.parse("block/thin_block"))).renderType(CUTOUT).texture("particle", "tolkienmobs:block/leaves_" + leafPile).texture("all", "tolkienmobs:block/leaves_" + leafPile)
 			.element().from(0, 0, 0).to(16, index == 1 ? 0.2F : 2.0F * (index - 1), 16)
 			.face(Direction.UP).uvs(0, 0, 16, 16).tintindex(0).texture("#all").end()
 			.face(Direction.DOWN).uvs(0, 0, 16, 16).tintindex(0).texture("#all").end()
@@ -507,6 +507,11 @@ public abstract class BlockModelBuilders extends BlockModelHelper {
 				models().withExistingParent(potBlock.getId().getPath(),
 								mcLoc("block/flower_pot_cross")).renderType("cutout")
 						.texture("plant", blockTexture(flowerBlock.get())));
+	}
+
+	public void hardenedLeavesBlock(DeferredBlock<Block> blockRegistryObject) {
+		simpleBlockItem(blockRegistryObject.get(),
+				models().cubeAll(BuiltInRegistries.BLOCK.getKey(blockRegistryObject.get()).getPath(), blockTexture(blockRegistryObject.get())).renderType("cutout"));
 	}
 
 	public void leavesBlock(DeferredBlock<Block> blockRegistryObject) {
