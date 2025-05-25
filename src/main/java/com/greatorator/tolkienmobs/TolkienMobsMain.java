@@ -75,7 +75,7 @@ public class TolkienMobsMain {
 
     // TODO
     //  -Biomes
-    //    -Generate using new stone variants
+    //    -Proper overworld generation
     //    -Structures
     //    -Separate Dimension
     //  -Functional Blocks
