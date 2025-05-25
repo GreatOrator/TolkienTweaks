@@ -21,7 +21,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:regeneration"
+              "id": "tolkienmobs:elven_nimbleness"
             },
             {
               "add": false,
