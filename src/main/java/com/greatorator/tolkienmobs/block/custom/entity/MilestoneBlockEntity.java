@@ -192,7 +192,8 @@ public class MilestoneBlockEntity extends TolkienBlockEntity implements MenuProv
         TolkienMobsMain.LOGGER.error("Current state: Milestone Teleporting: {}", client);
         ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse(TolkienMobsConfig.PAYMENT_ITEM.get())).getDefaultInstance().getItem());
 
-        if (id <= 5 && !client.isCreative()) return;
+        //TODO, This seems wrong.
+//        if (id <= 5 && !client.isCreative()) return;
 
         if (id == 3) {
             MilestoneHandler.MilestoneData data = MilestoneHandler.getMilestoneData(level, input.readUUID());
@@ -229,7 +230,7 @@ public class MilestoneBlockEntity extends TolkienBlockEntity implements MenuProv
                 if (!stack.isEmpty()) {
                     int found = 0;
                     for (ItemStack item : client.getInventory().items) {
-                        if (ItemStack.matches(stack, item)) found += item.getCount();
+                        if (ItemStack.isSameItem(stack, item)) found += item.getCount();
                     }
                     if (found < cost) {
                         client.sendSystemMessage(Component.translatable("tolkienmobs.msg.payment.insufficient"));
@@ -237,7 +238,7 @@ public class MilestoneBlockEntity extends TolkienBlockEntity implements MenuProv
                     }
                     int needed = getItemTravelCost(data);
                     for (ItemStack item : client.getInventory().items) {
-                        if (ItemStack.matches(stack, item)) {
+                        if (ItemStack.isSameItem(stack, item)) {
                             int count = item.getCount();
                             item.shrink(Math.min(count, needed));
                             needed -= count;

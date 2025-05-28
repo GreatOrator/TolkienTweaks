@@ -146,9 +146,10 @@ public abstract class TolkienContainer<T extends TolkienBlockEntity> extends Abs
         return copyOfSourceStack;
     }
 
-    public PacketCustom createServerBoundPacket(int packetType) {
-        PacketCustom packet = new PacketCustom(PacketHandler.NET_CHANNEL, packetType, tile.getLevel().registryAccess());
+    public PacketCustom createServerBoundPacket(int packetId) {
+        PacketCustom packet = new PacketCustom(PacketHandler.NET_CHANNEL, PacketHandler.S_CONTAINER_MESSAGE, tile.getLevel().registryAccess());
         packet.writeInt(containerId);
+        packet.writeByte(packetId);
         return packet;
     }
 
