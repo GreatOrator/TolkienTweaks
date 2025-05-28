@@ -21,7 +21,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:wind_charged"
+              "id": "minecraft:long_invisibility"
             },
             {
               "add": false,

@@ -64,7 +64,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:luck"
+              "id": "tolkienmobs:elemental_drowning"
             },
             {
               "add": false,

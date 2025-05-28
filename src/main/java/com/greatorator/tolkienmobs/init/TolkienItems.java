@@ -11,6 +11,7 @@ import com.greatorator.tolkienmobs.util.ColorUtility;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.*;
+import net.minecraft.world.level.block.StandingSignBlock;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -46,7 +47,24 @@ public class TolkienItems {
     public static final DeferredItem<Item> GEM_AMMOLITE = ITEMS.register("gem_ammolite",
             () -> new TolkienItem(new Item.Properties().stacksTo(16)).setEffectOverride());
 
-        // Boats
+        // Signs
+    public static final DeferredItem<Item> MALLORN_HANGING_SIGN = ITEMS.register("hanging_sign_mallorn", () -> new HangingSignItem(TolkienBlocks.MALLORN_HANGING_SIGN.get(), TolkienBlocks.MALLORN_HANGING_WALL_SIGN.get(), new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<Item> MALLORN_SIGN = ITEMS.register("sign_mallorn", () -> new SignItem(new Item.Properties().stacksTo(16), TolkienBlocks.MALLORN_SIGN.get(), TolkienBlocks.MALLORN_WALL_SIGN.get()));
+    public static final DeferredItem<Item> MIRKWOOD_HANGING_SIGN = ITEMS.register("hanging_sign_mirkwood", () -> new HangingSignItem(TolkienBlocks.MIRKWOOD_HANGING_SIGN.get(), TolkienBlocks.MIRKWOOD_HANGING_WALL_SIGN.get(), new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<Item> MIRKWOOD_SIGN = ITEMS.register("sign_mirkwood", () -> new SignItem(new Item.Properties().stacksTo(16), TolkienBlocks.MIRKWOOD_SIGN.get(), TolkienBlocks.MIRKWOOD_WALL_SIGN.get()));
+    public static final DeferredItem<Item> CULUMALDA_HANGING_SIGN = ITEMS.register("hanging_sign_culumalda", () -> new HangingSignItem(TolkienBlocks.CULUMALDA_HANGING_SIGN.get(), TolkienBlocks.CULUMALDA_HANGING_WALL_SIGN.get(), new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<Item> CULUMALDA_SIGN = ITEMS.register("sign_culumalda", () -> new SignItem(new Item.Properties().stacksTo(16), TolkienBlocks.CULUMALDA_SIGN.get(), TolkienBlocks.CULUMALDA_WALL_SIGN.get()));
+    public static final DeferredItem<Item> LEBETHRON_HANGING_SIGN = ITEMS.register("hanging_sign_lebethron", () -> new HangingSignItem(TolkienBlocks.LEBETHRON_HANGING_SIGN.get(), TolkienBlocks.LEBETHRON_HANGING_WALL_SIGN.get(), new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<Item> LEBETHRON_SIGN = ITEMS.register("sign_lebethron", () -> new SignItem(new Item.Properties().stacksTo(16), TolkienBlocks.LEBETHRON_SIGN.get(), TolkienBlocks.LEBETHRON_WALL_SIGN.get()));
+    public static final DeferredItem<Item> FANGORNOAK_HANGING_SIGN = ITEMS.register("hanging_sign_fangornoak", () -> new HangingSignItem(TolkienBlocks.FANGORNOAK_HANGING_SIGN.get(), TolkienBlocks.FANGORNOAK_HANGING_WALL_SIGN.get(), new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<Item> FANGORNOAK_SIGN = ITEMS.register("sign_fangornoak", () -> new SignItem(new Item.Properties().stacksTo(16), TolkienBlocks.FANGORNOAK_SIGN.get(), TolkienBlocks.FANGORNOAK_WALL_SIGN.get()));
+    public static final DeferredItem<Item> DEADWOOD_HANGING_SIGN = ITEMS.register("hanging_sign_deadwood", () -> new HangingSignItem(TolkienBlocks.DEADWOOD_HANGING_SIGN.get(), TolkienBlocks.DEADWOOD_HANGING_WALL_SIGN.get(), new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<Item> DEADWOOD_SIGN = ITEMS.register("sign_deadwood", () -> new SignItem(new Item.Properties().stacksTo(16), TolkienBlocks.DEADWOOD_SIGN.get(), TolkienBlocks.DEADWOOD_WALL_SIGN.get()));
+    public static final DeferredItem<Item> DWARVEN_MAPLE_HANGING_SIGN = ITEMS.register("hanging_sign_dwarven_maple", () -> new HangingSignItem(TolkienBlocks.DWARVEN_MAPLE_HANGING_SIGN.get(), TolkienBlocks.DWARVEN_MAPLE_HANGING_WALL_SIGN.get(), new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<Item> DWARVEN_MAPLE_SIGN = ITEMS.register("sign_dwarven_maple", () -> new SignItem(new Item.Properties().stacksTo(16), TolkienBlocks.DWARVEN_MAPLE_SIGN.get(), TolkienBlocks.DWARVEN_MAPLE_WALL_SIGN.get()));
+
+
+    // Boats
     public static final DeferredItem<Item> MALLORN_BOAT = ITEMS.register("boat_mallorn", () -> new MallornBoatItem(false, new Item.Properties().stacksTo(1), TolkienWoodTypes.MALLORN));
     public static final DeferredItem<Item> MALLORN_CHEST_BOAT = ITEMS.register("chest_boat_mallorn", () -> new MallornBoatItem(true, new Item.Properties().stacksTo(1), TolkienWoodTypes.MALLORN));
     public static final DeferredItem<Item> MIRKWOOD_BOAT = ITEMS.register("boat_mirkwood", () -> new MirkwoodBoatItem(false, new Item.Properties().stacksTo(1), TolkienWoodTypes.MIRKWOOD));
