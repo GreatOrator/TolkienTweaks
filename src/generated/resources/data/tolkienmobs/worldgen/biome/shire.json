@@ -2,7 +2,6 @@
   "carvers": {},
   "downfall": 0.8,
   "effects": {
-    "ambient_sound": "minecraft:ambient.crimson_forest.mood",
     "fog_color": 10518688,
     "foliage_color": 2292007,
     "grass_color": 2292007,
@@ -49,7 +48,9 @@
       "minecraft:brown_mushroom_old_growth",
       "minecraft:red_mushroom_old_growth",
       "tolkienmobs:culumalda_fallen_leaves",
-      "tolkienmobs:lebethron_fallen_leaves"
+      "tolkienmobs:lebethron_fallen_leaves",
+      "tolkienmobs:culumalda_fallen_log",
+      "tolkienmobs:lebethron_fallen_log"
     ]
   ],
   "has_precipitation": true,

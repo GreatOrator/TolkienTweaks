@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.world;
 
 import com.greatorator.tolkienmobs.init.TolkienBiomes;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
+import com.greatorator.tolkienmobs.world.components.placements.TolkienPlacedFeatures;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -18,7 +19,7 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import java.util.List;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
-import static com.greatorator.tolkienmobs.world.TolkienPlacedFeatures.*;
+import static com.greatorator.tolkienmobs.world.components.placements.TolkienPlacedFeatures.*;
 
 public class TolkienBiomeModifiers {
     public static final ResourceKey<BiomeModifier> ADD_TREE_MALLORN = registerBiomeKey("tree/add_tree_mallorn");

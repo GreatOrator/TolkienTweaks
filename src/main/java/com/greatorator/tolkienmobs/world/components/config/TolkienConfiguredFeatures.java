@@ -1,12 +1,10 @@
-package com.greatorator.tolkienmobs.world;
+package com.greatorator.tolkienmobs.world.components.config;
 
 import com.google.common.collect.ImmutableList;
 import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.BramblesBushBlock;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienFeatures;
-import com.greatorator.tolkienmobs.world.components.config.RootConfig;
-import com.greatorator.tolkienmobs.world.components.feature.config.HollowLogConfig;
 import com.greatorator.tolkienmobs.world.components.feature.tree.TolkienDecorators;
 import com.greatorator.tolkienmobs.world.components.feature.tree.components.SpheroidFoliagePlacer;
 import com.greatorator.tolkienmobs.world.components.feature.tree.placers.BranchesConfig;
@@ -70,13 +68,13 @@ public class TolkienConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> DWARVEN_MAPLE_FALLEN_LEAVES = registerKey("ground/dwarven_maple_fallen_leaves");
     public static final ResourceKey<ConfiguredFeature<?, ?>> WEBS = registerKey("decoration/webs");
     public static final ResourceKey<ConfiguredFeature<?, ?>> STONE_SPIKE = registerKey("ground/stone_spike");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> MALLORN_SMALL_LOG = registerKey("ground/mallorn_small_log");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> MIRKWOOD_SMALL_LOG = registerKey("ground/mirkwood_small_log");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> CULUMALDA_SMALL_LOG = registerKey("ground/culumalda_small_log");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> LEBETHRON_SMALL_LOG = registerKey("ground/lebethron_small_log");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> FANGORNOAK_SMALL_LOG = registerKey("ground/fangornoak_small_log");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> DEADWOOD_SMALL_LOG = registerKey("ground/deadwood_small_log");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> DWARVEN_SMALL_LOG = registerKey("ground/dwarven_small_log");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> MALLORN_LOG = registerKey("ground/mallorn_log");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> MIRKWOOD_LOG = registerKey("ground/mirkwood_log");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> CULUMALDA_LOG = registerKey("ground/culumalda_log");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> LEBETHRON_LOG = registerKey("ground/lebethron_log");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> FANGORNOAK_LOG = registerKey("ground/fangornoak_log");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> DEADWOOD_LOG = registerKey("ground/deadwood_log");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> DWARVEN_LOG = registerKey("ground/dwarven_log");
     public static final ResourceKey<ConfiguredFeature<?, ?>> RANDOM_RUBBLE = registerKey("ground/random_rubble");
     public static final ResourceKey<ConfiguredFeature<?, ?>> ROCK_PILE = registerKey("decoration/rock_pile");
     public static final ResourceKey<ConfiguredFeature<?, ?>> STUMPS = registerKey("decoration/stumps");
@@ -86,6 +84,7 @@ public class TolkienConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> SMALL_DIORITE = registerKey("small_diorite");
     public static final ResourceKey<ConfiguredFeature<?, ?>> SMALL_ANDESITE = registerKey("small_andesite");
     public static final ResourceKey<ConfiguredFeature<?, ?>> PLANT_ROOTS = registerKey("plant_roots");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> MUD_SPLATTER = registerKey("mud_splatter");
 
     public static final ResourceKey<ConfiguredFeature<?, ?>> FLOWER_SIMBELMYNE_KEY = registerKey("plants/flower_simbelmyne");
     public static final ResourceKey<ConfiguredFeature<?, ?>> FLOWER_MIRKWOOD_KEY = registerKey("plants/flower_mirkwood");
@@ -289,7 +288,7 @@ public class TolkienConfiguredFeatures {
         context.register(LEBETHRON_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TolkienBlocks.WOOD_LEBETHRON.get()),
                 new FancyTrunkPlacer(5, 11, 0),
-                BlockStateProvider.simple(TolkienBlocks.LEAVES_MIRKWOOD.get()),
+                BlockStateProvider.simple(TolkienBlocks.LEAVES_LEBETHRON.get()),
                 new FancyFoliagePlacer(ConstantInt.of(2), ConstantInt.of(4), 4),
                 new TwoLayersFeatureSize(0, 0, 0, OptionalInt.of(4)))
                 .decorators(ImmutableList.of(TolkienDecorators.LOCUST))
@@ -297,7 +296,7 @@ public class TolkienConfiguredFeatures {
         context.register(HARDENED_LEBETHRON_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TolkienBlocks.WOOD_LEBETHRON.get()),
                 new FancyTrunkPlacer(5, 11, 0),
-                BlockStateProvider.simple(TolkienBlocks.HARDENED_LEAVES_MIRKWOOD.get()),
+                BlockStateProvider.simple(TolkienBlocks.HARDENED_LEAVES_LEBETHRON.get()),
                 new FancyFoliagePlacer(ConstantInt.of(2), ConstantInt.of(4), 4),
                 new TwoLayersFeatureSize(0, 0, 0, OptionalInt.of(4)))
                 .decorators(ImmutableList.of(TolkienDecorators.LOCUST))
@@ -394,21 +393,22 @@ public class TolkienConfiguredFeatures {
         context.register(DWARVEN_MAPLE_FALLEN_LEAVES, new ConfiguredFeature<>(TolkienFeatures.DWARVEN_MAPLE_FALLEN_LEAVES.get(), FeatureConfiguration.NONE));
         context.register(WEBS, new ConfiguredFeature<>(TolkienFeatures.WEBS.get(), FeatureConfiguration.NONE));
         context.register(STONE_SPIKE, new ConfiguredFeature<>(TolkienFeatures.STONE_SPIKE.get(), FeatureConfiguration.NONE));
-        context.register(MALLORN_SMALL_LOG, new ConfiguredFeature<>(TolkienFeatures.SMALL_LOG.get(), new HollowLogConfig(TolkienBlocks.LOG_MALLORN.get().defaultBlockState(), TolkienBlocks.LOG_MALLORN.get().defaultBlockState())));
-        context.register(MIRKWOOD_SMALL_LOG, new ConfiguredFeature<>(TolkienFeatures.SMALL_LOG.get(), new HollowLogConfig(TolkienBlocks.LOG_MIRKWOOD.get().defaultBlockState(), TolkienBlocks.LOG_MIRKWOOD.get().defaultBlockState())));
-        context.register(CULUMALDA_SMALL_LOG, new ConfiguredFeature<>(TolkienFeatures.SMALL_LOG.get(), new HollowLogConfig(TolkienBlocks.LOG_CULUMALDA.get().defaultBlockState(), TolkienBlocks.LOG_CULUMALDA.get().defaultBlockState())));
-        context.register(LEBETHRON_SMALL_LOG, new ConfiguredFeature<>(TolkienFeatures.SMALL_LOG.get(), new HollowLogConfig(TolkienBlocks.LOG_LEBETHRON.get().defaultBlockState(), TolkienBlocks.LOG_LEBETHRON.get().defaultBlockState())));
-        context.register(FANGORNOAK_SMALL_LOG, new ConfiguredFeature<>(TolkienFeatures.SMALL_LOG.get(), new HollowLogConfig(TolkienBlocks.LOG_FANGORNOAK.get().defaultBlockState(), TolkienBlocks.LOG_FANGORNOAK.get().defaultBlockState())));
-        context.register(DEADWOOD_SMALL_LOG, new ConfiguredFeature<>(TolkienFeatures.SMALL_LOG.get(), new HollowLogConfig(TolkienBlocks.LOG_DEADWOOD.get().defaultBlockState(), TolkienBlocks.LOG_DEADWOOD.get().defaultBlockState())));
-        context.register(DWARVEN_SMALL_LOG, new ConfiguredFeature<>(TolkienFeatures.SMALL_LOG.get(), new HollowLogConfig(TolkienBlocks.LOG_DWARVEN_MAPLE.get().defaultBlockState(), TolkienBlocks.LOG_DWARVEN_MAPLE.get().defaultBlockState())));
+        context.register(MALLORN_LOG, new ConfiguredFeature<>(TolkienFeatures.MALLORN_LOG.get(), NoneFeatureConfiguration.INSTANCE));
+        context.register(MIRKWOOD_LOG, new ConfiguredFeature<>(TolkienFeatures.MIRKWOOD_LOG.get(), NoneFeatureConfiguration.INSTANCE));
+        context.register(CULUMALDA_LOG, new ConfiguredFeature<>(TolkienFeatures.CULUMALDA_LOG.get(), NoneFeatureConfiguration.INSTANCE));
+        context.register(LEBETHRON_LOG, new ConfiguredFeature<>(TolkienFeatures.LEBETHRON_LOG.get(), NoneFeatureConfiguration.INSTANCE));
+        context.register(FANGORNOAK_LOG, new ConfiguredFeature<>(TolkienFeatures.FANGORNOAK_LOG.get(), NoneFeatureConfiguration.INSTANCE));
+        context.register(DEADWOOD_LOG, new ConfiguredFeature<>(TolkienFeatures.DEADWOOD_LOG.get(), NoneFeatureConfiguration.INSTANCE));
+        context.register(DWARVEN_LOG, new ConfiguredFeature<>(TolkienFeatures.DWARVEN_LOG.get(), NoneFeatureConfiguration.INSTANCE));
         context.register(RANDOM_RUBBLE, new ConfiguredFeature<>(TolkienFeatures.RANDOM_RUBBLE.get(), FeatureConfiguration.NONE));
-        context.register(ROCK_PILE, new ConfiguredFeature<>(TolkienFeatures.ROCK_PILE.get(), new BlockStateConfiguration(TolkienBlocks.ROCKPILE.get().defaultBlockState())));
+        context.register(ROCK_PILE, new ConfiguredFeature<>(TolkienFeatures.ROCK_PILE.get(), FeatureConfiguration.NONE));
         context.register(STUMPS, new ConfiguredFeature<>(TolkienFeatures.STUMPS.get(), FeatureConfiguration.NONE));
         context.register(WOOD_ROOTS_SPREAD, new ConfiguredFeature<>(TolkienFeatures.WOOD_ROOTS.get(), new RootConfig(TolkienDecorators.ROOT_BLEND_PROVIDER, BlockStateProvider.simple(TolkienBlocks.LIVING_ROOTS.get()))));
         context.register(SMALL_GRANITE, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), Blocks.GRANITE.defaultBlockState(), 16)));
         context.register(SMALL_DIORITE, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), Blocks.DIORITE.defaultBlockState(), 16)));
         context.register(SMALL_ANDESITE, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), Blocks.ANDESITE.defaultBlockState(), 16)));
         context.register(PLANT_ROOTS, new ConfiguredFeature<>(TolkienFeatures.UNDERGROUND_PLANTS.get(), new BlockStateConfiguration(TolkienBlocks.LIVING_ROOTS.get().defaultBlockState())));
+        context.register(MUD_SPLATTER, new ConfiguredFeature<>(TolkienFeatures.MUD_SPLATTER.get(), NoneFeatureConfiguration.INSTANCE));
         context.register(BLOOM_DECAY_MUSHROOMS, new ConfiguredFeature<>(TolkienFeatures.UNDERGROUND_PLANTS.get(), new BlockStateConfiguration(TolkienBlocks.MUSHROOM_BLOOM_DECAY.get().defaultBlockState())));
         context.register(DECAY_BLOOM_MUSHROOMS, new ConfiguredFeature<>(TolkienFeatures.UNDERGROUND_PLANTS.get(), new BlockStateConfiguration(TolkienBlocks.MUSHROOM_DECAY_BLOOM.get().defaultBlockState())));
     }
