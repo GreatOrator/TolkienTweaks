@@ -78,11 +78,6 @@ public class TolkienMobsMain {
     //    -Proper overworld generation
     //    -Structures
     //    -Separate Dimension
-    //  -Functional Blocks
-    //    -Signs
-    //      -Not placing on vertical surfaces
-    //    -Milestone
-    //      -Actually teleport player when pressed
 
     public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer, Dist dist) {
         proxy = GeneralUtility.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
