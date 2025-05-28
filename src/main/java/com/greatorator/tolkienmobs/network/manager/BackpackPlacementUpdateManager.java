@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.network.manager;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.BackpackBlock;
 import com.greatorator.tolkienmobs.block.custom.SleepingBagBlock;
 import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;

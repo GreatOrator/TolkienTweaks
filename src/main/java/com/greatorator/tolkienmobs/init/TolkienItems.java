@@ -11,7 +11,6 @@ import com.greatorator.tolkienmobs.util.ColorUtility;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.*;
-import net.minecraft.world.level.block.StandingSignBlock;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;

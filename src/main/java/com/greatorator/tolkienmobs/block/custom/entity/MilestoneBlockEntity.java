@@ -9,8 +9,6 @@ import com.greatorator.tolkienmobs.handler.data.MCDataInput;
 import com.greatorator.tolkienmobs.handler.interfaces.block.MilestoneSettingsBlockEntity;
 import com.greatorator.tolkienmobs.handler.vec.Vector3;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
-import com.greatorator.tolkienmobs.network.PacketHandler;
-import com.greatorator.tolkienmobs.util.ColorUtility;
 import com.greatorator.tolkienmobs.util.block.MilestoneSettings;
 import com.greatorator.tolkienmobs.util.block.TeleportUtility;
 import net.minecraft.ChatFormatting;
