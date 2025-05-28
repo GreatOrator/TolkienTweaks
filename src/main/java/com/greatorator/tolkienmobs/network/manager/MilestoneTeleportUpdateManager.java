@@ -57,7 +57,7 @@ public record MilestoneTeleportUpdateManager(
             Level level = sender.level();
             AbstractContainerMenu container = sender.containerMenu;
 
-            if (container instanceof MilestoneContainer milestoneContainer && milestoneContainer.tileEntity instanceof MilestoneBlockEntity milestoneBE) {
+            if (container instanceof MilestoneContainer milestoneContainer && milestoneContainer.tile instanceof MilestoneBlockEntity milestoneBE) {
                 TolkienMobsMain.LOGGER.warn("Milestone Teleporting: {}", payload.teleport());
                 if (payload.teleport()) {
                     milestoneBE.receivePacketFromClient((MCDataInput) context, (ServerPlayer) sender, 3);

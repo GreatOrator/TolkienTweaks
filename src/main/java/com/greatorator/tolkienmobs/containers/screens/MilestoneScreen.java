@@ -55,7 +55,7 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
     public MilestoneScreen(MilestoneContainer container, Inventory inv, Component title) {
         super(container, inv, title);
         this.container = container;
-        this.tileEntity = container.tileEntity;
+        this.tileEntity = container.tile;
         this.milestoneSettings = tileEntity.getMilestoneSettings();
         this.imageHeight = 196;
 
@@ -225,7 +225,7 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         guiGraphics.drawCenteredString(font, title, 83, 5, 8552833);
-        if (container.tileEntity.getBlockState().getValue(LIT)) {
+        if (container.tile.getBlockState().getValue(LIT)) {
             guiGraphics.drawCenteredString(font, " ", 83, 14, ColorUtility.DARKSLATEBLUE.getColor());
         }
         if (getMinecraft().player.isCreative()) {

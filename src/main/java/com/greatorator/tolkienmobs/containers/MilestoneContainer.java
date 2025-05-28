@@ -9,8 +9,7 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public class MilestoneContainer extends TolkienContainer {
-    public final MilestoneBlockEntity tileEntity;
+public class MilestoneContainer extends TolkienContainer<MilestoneBlockEntity> {
 
     public MilestoneContainer(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
         this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()));
@@ -18,7 +17,7 @@ public class MilestoneContainer extends TolkienContainer {
 
     public MilestoneContainer(int pContainerId, Inventory inv, BlockEntity blockEntity) {
         super(TolkienContainers.MILESTONE_CONTAINER.get(), pContainerId);
-        this.tileEntity = ((MilestoneBlockEntity) blockEntity);
+        this.tile = ((MilestoneBlockEntity) blockEntity);
     }
 
     @Override
