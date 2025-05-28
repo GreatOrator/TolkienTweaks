@@ -14,8 +14,8 @@ import net.minecraft.world.level.levelgen.VerticalAnchor;
 import org.jetbrains.annotations.NotNull;
 
 public class TolkienSurfaceRules {
-	private static final SurfaceRules.RuleSource STONE = makeifTrueRule(SurfaceRules.ON_FLOOR, makeStateRule(Blocks.STONE));
-	private static final SurfaceRules.RuleSource GRAVEL = SurfaceRules.sequence(makeifTrueRule(SurfaceRules.ON_FLOOR, makeStateRule(Blocks.GRAVEL)), makeifTrueRule(SurfaceRules.UNDER_FLOOR, makeStateRule(Blocks.GRAVEL)));
+	private static final SurfaceRules.RuleSource STONE = makeStateRule(Blocks.STONE);
+	private static final SurfaceRules.RuleSource GRAVEL = makeStateRule(Blocks.GRAVEL);
 	private static final SurfaceRules.RuleSource BEDROCK = makeStateRule(Blocks.BEDROCK);
 	private static final SurfaceRules.RuleSource GRASS_BLOCK = makeStateRule(Blocks.GRASS_BLOCK);
 	private static final SurfaceRules.RuleSource DIRT = makeStateRule(Blocks.DIRT);
@@ -27,20 +27,72 @@ public class TolkienSurfaceRules {
 	private static final SurfaceRules.RuleSource PACKED_ICE = makeStateRule(Blocks.PACKED_ICE);
 	private static final SurfaceRules.RuleSource ICE = makeStateRule(Blocks.ICE);
 	private static final SurfaceRules.RuleSource COBBLED_DARK_STONE = makeStateRule(TolkienBlocks.COBBLED_DARK_STONE.get());
-	private static final SurfaceRules.RuleSource CRACKED_DARK_STONE = makeStateRule(TolkienBlocks.CRACKED_DARK_STONE_BRICKS.get());
+	private static final SurfaceRules.RuleSource SMOOTH_DARK_STONE = makeStateRule(TolkienBlocks.SMOOTH_DARK_STONE.get());
 	private static final SurfaceRules.RuleSource DARK_STONE = makeStateRule(TolkienBlocks.DARK_STONE.get());
 
+	private static SurfaceRules.RuleSource makeStateRule(Block block) {
+		return SurfaceRules.state(block.defaultBlockState());
+	}
+
 	public static SurfaceRules.RuleSource tolkienSurface() {
-		SurfaceRules.RuleSource bedrockLayer = SurfaceRules.ifTrue(SurfaceRules.verticalGradient("bedrock_floor", VerticalAnchor.bottom(), VerticalAnchor.aboveBottom(5)), BEDROCK);
+		return SurfaceRules.sequence(
+				makeTolkienWorldRules());
+	}
+
+	private static SurfaceRules.RuleSource makeTolkienWorldRules() {
+		SurfaceRules.ConditionSource isAtOrAboveWaterLevel = SurfaceRules.waterBlockCheck(-1, 0);
+		SurfaceRules.ConditionSource sixBelowWater = SurfaceRules.waterStartCheck(-6, -1);
+		SurfaceRules.ConditionSource isAbove62 = SurfaceRules.yBlockCheck(VerticalAnchor.absolute(62), 0);
+		SurfaceRules.ConditionSource isAbove63 = SurfaceRules.yBlockCheck(VerticalAnchor.absolute(63), 0);
+		SurfaceRules.RuleSource mordorSurface = SurfaceRules.sequence(
+				SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, DARK_STONE),
+				COBBLED_DARK_STONE
+		);
+		SurfaceRules.RuleSource darkStoneLining = SurfaceRules.sequence(SurfaceRules.ifTrue(SurfaceRules.ON_CEILING, DARK_STONE), GRASS_BLOCK);
 
 		return SurfaceRules.sequence(
-			bedrockLayer,
-			MORDOR_SURFACE,
-			ASH_MOUNTAINS_SURFACE,
-			hithaeglirSurface(),
-			haradwaithSurface(),
-			ironHillsSurface(),
-			overworldLikeFloor()
+				SurfaceRules.ifTrue(
+						sixBelowWater,
+						SurfaceRules.sequence(
+								SurfaceRules.ifTrue(
+										SurfaceRules.UNDER_FLOOR,
+										SurfaceRules.sequence(
+												SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.MORDOR), darkStoneLining)
+										)
+								),
+								SurfaceRules.ifTrue(
+										SurfaceRules.DEEP_UNDER_FLOOR,
+										SurfaceRules.sequence(
+												SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.MORDOR), DARK_STONE)
+										)
+								)
+						)
+				),
+				SurfaceRules.ifTrue(
+						SurfaceRules.ON_FLOOR,
+						SurfaceRules.sequence(
+								SurfaceRules.ifTrue(
+										// Underwater lining
+										SurfaceRules.not(isAtOrAboveWaterLevel),
+										SurfaceRules.sequence(
+												SurfaceRules.ifTrue(
+														SurfaceRules.isBiome(TolkienBiomes.ASH_MOUNTAINS),
+														SurfaceRules.ifTrue(surfaceNoiseAbove(2.7D), SMOOTH_DARK_STONE)
+												)
+										)
+								)
+						)
+				),
+				SurfaceRules.ifTrue(
+						SurfaceRules.isBiome(TolkienBiomes.ASH_MOUNTAINS),
+						SurfaceRules.sequence(SurfaceRules.ifTrue(surfaceNoiseAbove(3.7D), GRASS_BLOCK),
+								SurfaceRules.sequence(SurfaceRules.ifTrue(surfaceNoiseAbove(2.6D), DARK_STONE),
+										SurfaceRules.sequence(SurfaceRules.ifTrue(surfaceNoiseAbove(1.5D), SMOOTH_DARK_STONE),
+												mordorSurface
+										)
+								)
+						)
+				)
 		);
 	}
 
@@ -83,26 +135,6 @@ public class TolkienSurfaceRules {
 				SurfaceRules.ifTrue(desertType, desertSoil)
 		);
 	}
-
-	private static final SurfaceRules.RuleSource MORDOR_SURFACE = biomeAbovePreliminarySurface(TolkienBiomes.MORDOR, SurfaceRules.sequence(
-			makeifTrueRule(SurfaceRuleData.surfaceNoiseAbove(1.75D),
-					SurfaceRules.sequence(
-							makeifTrueRule(SurfaceRules.ON_FLOOR, GRASS_BLOCK),
-							makeifTrueRule(SurfaceRules.UNDER_FLOOR, DARK_STONE)
-					)),
-			makeifTrueRule(SurfaceRuleData.surfaceNoiseAbove(-0.95D), DARK_STONE),
-			GRASS_BLOCK
-	));
-
-	private static final SurfaceRules.RuleSource ASH_MOUNTAINS_SURFACE = biomeAbovePreliminarySurface(TolkienBiomes.ASH_MOUNTAINS, SurfaceRules.sequence(
-			makeifTrueRule(SurfaceRuleData.surfaceNoiseAbove(1.75D),
-					SurfaceRules.sequence(
-							makeifTrueRule(SurfaceRules.ON_FLOOR, GRASS_BLOCK),
-							makeifTrueRule(SurfaceRules.UNDER_FLOOR, DARK_STONE)
-					)),
-			makeifTrueRule(SurfaceRuleData.surfaceNoiseAbove(-0.95D), DARK_STONE),
-			GRASS_BLOCK
-	));
 
 	@NotNull
 	private static SurfaceRules.RuleSource mordorSurface() {
@@ -178,29 +210,5 @@ public class TolkienSurfaceRules {
 
 	private static SurfaceRules.ConditionSource surfaceNoiseAbove(double p_194809_) {
 		return SurfaceRules.noiseCondition(Noises.SURFACE, p_194809_ / 8.25D, Double.MAX_VALUE);
-	}
-
-	private static SurfaceRules.RuleSource makeStateRule(Block block) {
-		return SurfaceRules.state(block.defaultBlockState());
-	}
-
-	private static SurfaceRules.RuleSource makeifTrueRule(ResourceKey<Biome> biome, SurfaceRules.RuleSource rule) {
-		return makeifTrueRule(SurfaceRules.isBiome(biome), rule);
-	}
-
-	private static <B extends Block> SurfaceRules.RuleSource makeifTrueRule(SurfaceRules.ConditionSource conditionSource, B block) {
-		return makeifTrueRule(conditionSource, makeStateRule(block));
-	}
-
-	private static SurfaceRules.RuleSource makeifTrueRule(SurfaceRules.ConditionSource ifTrue, SurfaceRules.RuleSource thenRun) {
-		return SurfaceRules.ifTrue(ifTrue, thenRun);
-	}
-
-	private static SurfaceRules.RuleSource abovePreliminarySurface(SurfaceRules.RuleSource rule) {
-		return makeifTrueRule(SurfaceRules.abovePreliminarySurface(), rule);
-	}
-
-	private static SurfaceRules.RuleSource biomeAbovePreliminarySurface(ResourceKey<Biome> biome, SurfaceRules.RuleSource rule) {
-		return makeifTrueRule(biome, abovePreliminarySurface(rule));
 	}
 }

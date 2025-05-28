@@ -5,10 +5,13 @@ import com.greatorator.tolkienmobs.block.custom.*;
 import com.greatorator.tolkienmobs.block.custom.entity.*;
 import com.greatorator.tolkienmobs.handler.capability.TolkienFluidTank;
 import com.greatorator.tolkienmobs.handler.interfaces.TolkienRegistry;
-import com.greatorator.tolkienmobs.world.TolkienConfiguredFeatures;
+import com.greatorator.tolkienmobs.world.components.config.TolkienConfiguredFeatures;
 import com.greatorator.tolkienmobs.world.components.feature.tree.TolkienTreeGrowers;
+import com.greatorator.tolkienmobs.world.components.util.TolkienSurfaceRuleManager;
+import com.greatorator.tolkienmobs.world.registration.TolkienSurfaceRules;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.BlockItem;
@@ -31,6 +34,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
@@ -1616,6 +1620,10 @@ public class TolkienBlocks {
 
     private static DeferredBlock<Block> registerNoItem(String name, Supplier<? extends Block> block) {
         return BLOCKS.register(name, block);
+    }
+
+    private static void registerSurfaceRules() {
+        TolkienSurfaceRuleManager.addSurfaceRules(TolkienSurfaceRuleManager.RuleCategory.OVERWORLD, MODID, TolkienSurfaceRules.tolkienSurface());
     }
 
     public static void register(IEventBus eventBus) {

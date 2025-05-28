@@ -1,6 +1,6 @@
 package com.greatorator.tolkienmobs.world.components.feature.tree;
 
-import com.greatorator.tolkienmobs.world.TolkienConfiguredFeatures;
+import com.greatorator.tolkienmobs.world.components.config.TolkienConfiguredFeatures;
 import net.minecraft.world.level.block.grower.TreeGrower;
 
 import java.util.Optional;

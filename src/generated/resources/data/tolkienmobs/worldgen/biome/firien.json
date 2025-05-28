@@ -44,7 +44,9 @@
       "minecraft:brown_mushroom_old_growth",
       "minecraft:red_mushroom_old_growth",
       "tolkienmobs:culumalda_fallen_leaves",
-      "tolkienmobs:lebethron_fallen_leaves"
+      "tolkienmobs:lebethron_fallen_leaves",
+      "tolkienmobs:culumalda_fallen_log",
+      "tolkienmobs:lebethron_fallen_log"
     ]
   ],
   "has_precipitation": true,

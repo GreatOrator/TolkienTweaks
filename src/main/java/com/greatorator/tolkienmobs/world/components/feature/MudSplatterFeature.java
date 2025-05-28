@@ -1,24 +1,23 @@
 package com.greatorator.tolkienmobs.world.components.feature;
 
-import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelSimulatedReader;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
-public class RockpileFeature extends Feature<NoneFeatureConfiguration> {
-    public RockpileFeature(Codec<NoneFeatureConfiguration> config) {
-        super(config);
+public class MudSplatterFeature extends Feature<NoneFeatureConfiguration>
+{
+    public MudSplatterFeature(Codec<NoneFeatureConfiguration> deserializer)
+    {
+        super(deserializer);
     }
 
     @Override
@@ -40,26 +39,32 @@ public class RockpileFeature extends Feature<NoneFeatureConfiguration> {
                 int j1 = l - pos.getZ();
                 if (i1 * i1 + j1 * j1 <= j * j)
                 {
-                    for (int k1 = pos.getY() - j; k1 <= pos.getY() + j; ++k1)
+                    for (int k1 = pos.getY() - 2; k1 <= pos.getY() + 2; ++k1)
                     {
                         BlockPos blockpos = new BlockPos(k, k1, l);
                         BlockState blockstate = worldIn.getBlockState(blockpos);
-                        BlockState webbingstate = TolkienBlocks.ROCKPILE.get().defaultBlockState();
+                        BlockState blockstate1 = worldIn.getBlockState(blockpos.above());
 
-                        int faces = 0;
-
-                        for (Direction direction : Direction.values())
+                        if (blockstate.getBlock() == Blocks.GRASS_BLOCK)
                         {
-                            BlockState blockstate1 = worldIn.getBlockState(blockpos.relative(direction));
-                            if (blockstate1 == Blocks.GRASS_BLOCK.defaultBlockState())
+                            if (rand.nextInt(3) == 0)
                             {
-                                faces++;
-                            }
-                        }
+                                worldIn.setBlock(blockpos, Blocks.MUD.defaultBlockState(), 2);
 
-                        if (blockstate.isAir() && faces > 0)
-                        {
-                            worldIn.setBlock(blockpos, webbingstate, 2);
+                                if (rand.nextInt(18) == 0)
+                                {
+                                    worldIn.setBlock(blockpos.above(), Blocks.DEAD_BUSH.defaultBlockState(), 2);
+                                }
+                            }
+                            else
+                            {
+                                worldIn.setBlock(blockpos, Blocks.PODZOL.defaultBlockState(), 2);
+
+                                if (rand.nextInt(9) == 0)
+                                {
+                                    worldIn.setBlock(blockpos.above(), Blocks.BROWN_MUSHROOM.defaultBlockState(), 2);
+                                }
+                            }
 
                             ++i;
                             break;
@@ -70,5 +75,10 @@ public class RockpileFeature extends Feature<NoneFeatureConfiguration> {
         }
 
         return i > 0;
+    }
+
+    public static boolean isAir(LevelSimulatedReader level, BlockPos pos)
+    {
+        return level.isStateAtPosition(pos, BlockBehaviour.BlockStateBase::isAir);
     }
 }

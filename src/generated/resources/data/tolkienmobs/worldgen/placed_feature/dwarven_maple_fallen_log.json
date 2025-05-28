@@ -1,22 +1,16 @@
 {
-  "feature": "tolkienmobs:ground/dwarven_small_log",
+  "feature": "tolkienmobs:ground/dwarven_log",
   "placement": [
     {
       "type": "minecraft:rarity_filter",
-      "chance": 40
+      "chance": 3
     },
     {
       "type": "minecraft:in_square"
     },
     {
       "type": "minecraft:heightmap",
-      "heightmap": "OCEAN_FLOOR"
-    },
-    {
-      "type": "tolkienmobs:no_structure",
-      "additional_clearance": 0,
-      "occupies_surface": true,
-      "occupies_underground": false
+      "heightmap": "MOTION_BLOCKING"
     },
     {
       "type": "minecraft:biome"

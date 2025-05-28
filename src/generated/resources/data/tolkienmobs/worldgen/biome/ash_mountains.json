@@ -34,10 +34,7 @@
     ],
     [],
     [],
-    [
-      "tolkienmobs:stone_spike",
-      "tolkienmobs:random_rubble"
-    ],
+    [],
     [],
     [
       "tolkienmobs:morguliron_ore_placed",
@@ -50,7 +47,10 @@
     [
       "minecraft:patch_grass_jungle",
       "tolkienmobs:deadwood_fallen_log",
-      "tolkienmobs:flower_brambles_placed"
+      "tolkienmobs:flower_brambles_placed",
+      "tolkienmobs:rockpile",
+      "tolkienmobs:stone_spike",
+      "tolkienmobs:random_rubble"
     ]
   ],
   "has_precipitation": false,

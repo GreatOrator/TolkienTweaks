@@ -48,13 +48,13 @@ public class StoneSpikeFeature extends Feature<NoneFeatureConfiguration> {
                         float f2 = (float)Mth.abs(j1) - 0.25F;
                         if ((i1 == 0 && j1 == 0 || !(f1 * f1 + f2 * f2 > f * f)) && (i1 != -l && i1 != l && j1 != -l && j1 != l || !(randomsource.nextFloat() > 0.75F))) {
                             BlockState blockstate = worldgenlevel.getBlockState(blockpos.offset(i1, k, j1));
-                            if (blockstate.isAir() || isDirt(blockstate) || blockstate.is(Blocks.GRASS_BLOCK) || blockstate.is(Blocks.STONE)) {
+                            if (isDirt(blockstate) || blockstate.is(Blocks.GRASS_BLOCK) || blockstate.is(Blocks.STONE)) {
                                 this.setBlock(worldgenlevel, blockpos.offset(i1, k, j1), TolkienBlocks.DARK_STONE.get().defaultBlockState());
                             }
 
                             if (k != 0 && l > 1) {
                                 blockstate = worldgenlevel.getBlockState(blockpos.offset(i1, -k, j1));
-                                if (blockstate.isAir() || isDirt(blockstate) || blockstate.is(Blocks.GRASS_BLOCK) || blockstate.is(Blocks.STONE)) {
+                                if (isDirt(blockstate) || blockstate.is(Blocks.GRASS_BLOCK) || blockstate.is(Blocks.STONE)) {
                                     this.setBlock(worldgenlevel, blockpos.offset(i1, -k, j1), TolkienBlocks.DARK_STONE.get().defaultBlockState());
                                 }
                             }

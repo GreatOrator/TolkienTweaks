@@ -33,7 +33,7 @@
     "foliage_provider": {
       "type": "minecraft:simple_state_provider",
       "state": {
-        "Name": "tolkienmobs:hardened_leaves_mirkwood"
+        "Name": "tolkienmobs:hardened_leaves_lebethron"
       }
     },
     "force_dirt": false,
