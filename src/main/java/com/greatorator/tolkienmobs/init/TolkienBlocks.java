@@ -2,7 +2,6 @@ package com.greatorator.tolkienmobs.init;
 
 import com.greatorator.tolkienmobs.block.*;
 import com.greatorator.tolkienmobs.block.custom.*;
-import com.greatorator.tolkienmobs.block.TolkienHardenedLeavesBlock;
 import com.greatorator.tolkienmobs.block.custom.entity.*;
 import com.greatorator.tolkienmobs.handler.capability.TolkienFluidTank;
 import com.greatorator.tolkienmobs.handler.interfaces.TolkienRegistry;

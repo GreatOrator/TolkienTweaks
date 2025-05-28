@@ -3,7 +3,6 @@ package com.greatorator.tolkienmobs.init;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.greatorator.tolkienmobs.TolkienMobsMain;
-import com.greatorator.tolkienmobs.world.components.layer.BiomeLayerFactory;
 import com.greatorator.tolkienmobs.world.components.layer.BiomeLayerType;
 import com.greatorator.tolkienmobs.world.registration.BiomeMaker;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
