@@ -75,9 +75,8 @@ public class TolkienMobsMain {
 
     // TODO
     //  -Biomes
-    //    -Proper overworld generation
+    //    -Proper overworld generation or, Separate Dimension
     //    -Structures
-    //    -Separate Dimension
 
     public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer, Dist dist) {
         proxy = GeneralUtility.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
