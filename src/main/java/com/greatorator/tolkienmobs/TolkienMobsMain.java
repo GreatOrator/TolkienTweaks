@@ -253,6 +253,7 @@ public class TolkienMobsMain {
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_BARROW.get(), BarrowWightRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_OATHBREAKER.get(), OathBreakerRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_FELLSPIRIT.get(), FellSpiritRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_ENRAGED_FELLSPIRIT.get(), EnragedFellSpiritRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_BRIGAND.get(), BrigandRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_HARADRIM.get(), HaradrimRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_ROMIEWALKER.get(), RomieWalkerRender::new);

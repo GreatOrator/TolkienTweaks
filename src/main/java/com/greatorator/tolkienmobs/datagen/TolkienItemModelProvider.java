@@ -386,6 +386,7 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         basicItem(TolkienItems.RECORD_WBATTLE.get());
         basicItem(TolkienItems.HYPE_HORN.get());
         basicItem(TolkienItems.HOBBIT_RING.get());
+        basicItem(TolkienItems.RING_OF_HOPE.get());
 
         trinketItem(TolkienItems.TRINKET_RING.get(), TolkienMobsMain.prefix("item/trinket_ring"), TolkienMobsMain.prefix("item/trinket_ring_gem"));
         trinketItem(TolkienItems.TRINKET_AMULET.get(), TolkienMobsMain.prefix("item/trinket_amulet"), TolkienMobsMain.prefix("item/trinket_amulet_gem"));
@@ -471,6 +472,7 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         withExistingParent(TolkienEntities.EGG_TTMBARROW.getId().getPath(), mcLoc("item/template_spawn_egg"));
         withExistingParent(TolkienEntities.EGG_TTMOATHBREAKER.getId().getPath(), mcLoc("item/template_spawn_egg"));
         withExistingParent(TolkienEntities.EGG_TTMFELLSPIRIT.getId().getPath(), mcLoc("item/template_spawn_egg"));
+        withExistingParent(TolkienEntities.EGG_TTMENRAGEDFELLSPIRIT.getId().getPath(), mcLoc("item/template_spawn_egg"));
         withExistingParent(TolkienEntities.EGG_TTMBRIGAND.getId().getPath(), mcLoc("item/template_spawn_egg"));
         withExistingParent(TolkienEntities.EGG_TTMHARADRIM.getId().getPath(), mcLoc("item/template_spawn_egg"));
         withExistingParent(TolkienEntities.EGG_TTMROMIEWALKER.getId().getPath(), mcLoc("item/template_spawn_egg"));

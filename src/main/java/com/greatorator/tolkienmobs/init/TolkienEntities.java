@@ -105,6 +105,9 @@ public class TolkienEntities {
     public static final Supplier<EntityType<FellSpiritEntity>> ENTITY_TTM_FELLSPIRIT =
             ENTITY_TYPES.register("entityttmfellspirit", () -> EntityType.Builder.of(FellSpiritEntity::new, MobCategory.MONSTER)
                     .sized(0.5f, 2.0f).build("entityttmfellspirit"));
+    public static final Supplier<EntityType<EnragedFellSpiritEntity>> ENTITY_TTM_ENRAGED_FELLSPIRIT =
+            ENTITY_TYPES.register("entityttmenragedfellspirit", () -> EntityType.Builder.of(EnragedFellSpiritEntity::new, MobCategory.MONSTER)
+                    .sized(0.5f, 2.0f).build("entityttmfellspirit"));
     public static final Supplier<EntityType<BrigandEntity>> ENTITY_TTM_BRIGAND =
             ENTITY_TYPES.register("entityttmbrigand", () -> EntityType.Builder.of(BrigandEntity::new, MobCategory.MONSTER)
                     .sized(0.5f, 2.0f).build("entityttmbrigand"));
@@ -343,6 +346,9 @@ public class TolkienEntities {
                     new Item.Properties()));
     public static final DeferredItem<Item> EGG_TTMFELLSPIRIT = SPAWN_EGGS.register("entityttmfellspirit_spawn_egg",
             () -> new DeferredSpawnEggItem(ENTITY_TTM_FELLSPIRIT, 585619, 7405383,
+                    new Item.Properties()));
+    public static final DeferredItem<Item> EGG_TTMENRAGEDFELLSPIRIT = SPAWN_EGGS.register("entityttmenragedfellspirit_spawn_egg",
+            () -> new DeferredSpawnEggItem(ENTITY_TTM_ENRAGED_FELLSPIRIT, 585619, 9649602,
                     new Item.Properties()));
     public static final DeferredItem<Item> EGG_TTMBRIGAND = SPAWN_EGGS.register("entityttmbrigand_spawn_egg",
             () -> new DeferredSpawnEggItem(ENTITY_TTM_BRIGAND, 585619, 14289362,

@@ -899,6 +899,7 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         horizontalBlock(TolkienBlocks.LOCKABLE_DOUBLE_TREASURE_CHEST_BLOCK.get(), models().getExistingFile(modLoc("block/lockable_double_treasure_chest_block")), 180);
         horizontalBlock(TolkienBlocks.BACKPACK.get(), models().getExistingFile(modLoc("block/container_backpack")), 0);
         horizontalBlock(TolkienBlocks.WELL.get(), models().getExistingFile(modLoc("block/well_block")), 0);
+        horizontalBlock(TolkienBlocks.ANCIENT_WATCHER.get(), models().getExistingFile(modLoc("block/ancient_watcher")), 0);
 
         ModelFile trinketActive = models().getExistingFile(modLoc("block/trinket_table_active"));
         ModelFile trinketInactive = models().getExistingFile(modLoc("block/trinket_table"));
