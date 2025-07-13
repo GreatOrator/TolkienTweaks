@@ -71,12 +71,9 @@ public class TrinketItem extends Item {
         Player player = (Player) entity;
         TrinketComponent potionContents = stack.getOrDefault(TolkienDataComponents.POTION_CONTENTS, TrinketComponent.EMPTY);
         Optional<Holder<Potion>> potionType = potionContents.potion();
-        Optional<ResourceKey<Potion>> key = potionType.flatMap(Holder::unwrapKey);
-        ResourceLocation effectType = key.get().location();
-        MobEffect mobEffect = BuiltInRegistries.MOB_EFFECT.get(effectType);
         MobEffectInstance mobEffectInstance = potionType.get().value().getEffects().getFirst();
-            if (getActive(stack)) {
-                MobEffectInstance active = player.getEffect((Holder<MobEffect>) mobEffect);
+            if (getActive(stack) && player != null) {
+                MobEffectInstance active = player.getEffect(mobEffectInstance.getEffect());
                 if (active == null || active.getDuration() < 30 * 20) {
                     player.addEffect(mobEffectInstance);
 

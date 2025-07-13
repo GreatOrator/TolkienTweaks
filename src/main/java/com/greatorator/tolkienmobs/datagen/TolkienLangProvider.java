@@ -176,6 +176,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addItemWithLore(TolkienItems.SWORD_URUK.get(), "Uruk Sword", "Forged in fire beneath Isengard");
             this.addItemWithLore(TolkienItems.WHIP_FIRE.get(), "§4Whip of Fire§r","Primary weapon of the fearsome Balrog");
             this.addItemWithLore(TolkienItems.CLUB_WOODEN.get(), "Troll Club", "Deadly weapon favoured by Trolls");
+            this.addItemWithLore(TolkienItems.RING_OF_HOPE.get(), "§5Ring of Aglaral§r", "§6Hope blazes within your heart.§r");
             this.addTools("mithril", "Mithril");
             this.addTools("morguliron", "Morgul Iron");
             this.addTools("ammolite", "Ammolite");
@@ -243,6 +244,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addBlock(TolkienBlocks.TORCH_FANGORNOAK, "Fangorn Oak Torch");
             this.addBlock(TolkienBlocks.TORCH_DEADWOOD, "Deadwood Torch");
             this.addBlock(TolkienBlocks.TORCH_DWARVEN_MAPLE, "Dwarven Maple Torch");
+            this.addBlock(TolkienBlocks.ANCIENT_WATCHER, "Ancient Watching-stone");
 
             this.createWoodSet("mallorn", "Mallorn");
             this.createWoodSet("mirkwood", "Mirkwood");
@@ -516,7 +518,9 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add(TolkienEntities.ENTITY_TTM_OATHBREAKER.get(), "Oath Breaker");
             this.add(TolkienEntities.EGG_TTMOATHBREAKER.get(), "Oath Breaker Spawn Egg");
             this.add(TolkienEntities.ENTITY_TTM_FELLSPIRIT.get(), "Fell Spirit");
+            this.add(TolkienEntities.ENTITY_TTM_ENRAGED_FELLSPIRIT.get(), "§4Enraged Fell Spirit§r");
             this.add(TolkienEntities.EGG_TTMFELLSPIRIT.get(), "Fell Spirit Spawn Egg");
+            this.add(TolkienEntities.EGG_TTMENRAGEDFELLSPIRIT.get(), "Enraged Fell Spirit Spawn Egg");
             this.add(TolkienEntities.ENTITY_TTM_BRIGAND.get(), "Brigand");
             this.add(TolkienEntities.EGG_TTMBRIGAND.get(), "Brigand Spawn Egg");
             this.add(TolkienEntities.ENTITY_TTM_HARADRIM.get(), "Haradrim");
@@ -650,6 +654,8 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.add("tolkienmobs.msg.payment.insufficient", "Not enough for teleport!");
             this.add("tolkienmobs.msg.destination", "Destination not found");
             this.add("tolkienmobs.msg.wrong_key", "You need the correct key!");
+        this.add("tolkienmobs.msg.ancient_watcher.warn", "The shadow of fear looms over you, causing you to cower.");
+        this.add("tolkienmobs.msg.ancient_watcher.safe", "Oppression has no hold over you.");
     }
 
     @Nonnull

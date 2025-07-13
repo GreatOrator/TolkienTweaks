@@ -9,6 +9,7 @@ import com.greatorator.tolkienmobs.world.components.config.TolkienConfiguredFeat
 import com.greatorator.tolkienmobs.world.components.feature.tree.TolkienTreeGrowers;
 import com.greatorator.tolkienmobs.world.components.util.TolkienSurfaceRuleManager;
 import com.greatorator.tolkienmobs.world.registration.TolkienSurfaceRules;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -1502,6 +1503,8 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> LOCKABLE_DOUBLE_TREASURE_CHEST_BLOCK = registerBlock("lockable_double_treasure_chest_block", () -> new LockableDoubleTreasureChestBlock(BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).noLootTable().noOcclusion()));
     public static final DeferredBlock<Block> WELL = registerBlock("well_block", () -> new WellBlock(BlockBehaviour.Properties.of().sound(SoundType.STONE).requiresCorrectToolForDrops().strength(3.5F, 3.5F).noOcclusion()));
     public static final DeferredBlock<Block> ARDA_PORTAL = registerBlockWithoutBlockItem("arda_portal", () -> new ArdaPortalBlock(BlockBehaviour.Properties.of().strength(-1F).noCollission().lightLevel((state) -> 10).noLootTable()));
+    public static final DeferredBlock<Block> ANCIENT_WATCHER = registerBlock("ancient_watcher",
+            () -> new AncientWatcherStatueBlock(BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).randomTicks().noLootTable().noOcclusion().sound(SoundType.STONE)));
 
         // Sleeping Bags
     public static final DeferredBlock<SleepingBagBlock> SLEEPING_BAG_WHITE = BLOCKS.register("sleeping_bag_white", () -> new SleepingBagBlock(DyeColor.WHITE, Block.Properties.of().mapColor(MapColor.SNOW).sound(SoundType.WOOL).strength(0.2F).noOcclusion().pushReaction(PushReaction.DESTROY)).setHasLore());
@@ -1584,6 +1587,9 @@ public class TolkienBlocks {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WellBlockEntity>> WELL_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("well_block", () ->
                     BlockEntityType.Builder.of(WellBlockEntity::new, WELL.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AncientWatcherStatueBlockEntity>> ANCIENT_WATCHER_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("ancient_watcher", () ->
+                    BlockEntityType.Builder.of(AncientWatcherStatueBlockEntity::new, ANCIENT_WATCHER.get()).build(null));
 
         // Attachment Types
     public static final Supplier<AttachmentType<ItemStackHandler>> BACKPACK_HANDLER = ATTACHMENT_TYPES.register(

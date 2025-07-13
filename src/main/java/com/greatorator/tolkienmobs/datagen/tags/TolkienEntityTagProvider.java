@@ -31,6 +31,7 @@ public class TolkienEntityTagProvider extends EntityTypeTagsProvider {
         this.tag(EntityTypeTags.UNDEAD)
                 .add(TolkienEntities.ENTITY_TTM_BARROW.get())
                 .add(TolkienEntities.ENTITY_TTM_FELLSPIRIT.get())
+                .add(TolkienEntities.ENTITY_TTM_ENRAGED_FELLSPIRIT.get())
                 .add(TolkienEntities.ENTITY_TTM_NAZGUL.get())
                 .add(TolkienEntities.ENTITY_TTM_WITCHKING.get())
                 .add(TolkienEntities.ENTITY_TTM_OATHBREAKER.get());
@@ -42,7 +43,7 @@ public class TolkienEntityTagProvider extends EntityTypeTagsProvider {
                 .add(TolkienEntities.ENTITY_TTM_SHELOB.get());
         this.tag(TolkienTags.Entities.BOSSES)
                 .add(TolkienEntities.ENTITY_TTM_BALROG.get())
-                .add(TolkienEntities.ENTITY_TTM_FELLSPIRIT.get())
+                .add(TolkienEntities.ENTITY_TTM_ENRAGED_FELLSPIRIT.get())
                 .add(TolkienEntities.ENTITY_TTM_GOBLINKING.get())
                 .add(TolkienEntities.ENTITY_TTM_GWAHIR.get())
                 .add(TolkienEntities.ENTITY_TTM_MITHRILGOLEM.get())

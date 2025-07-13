@@ -180,6 +180,7 @@ public class TolkienTabs {
                     .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_food"))
                     .title(Component.translatable("itemgroup.tolkienmobs.function"))
                     .displayItems((itemDisplayParameters, output) -> {
+                        output.accept(TolkienBlocks.ANCIENT_WATCHER);
                         output.accept(TolkienBlocks.TRINKET_TABLE);
                         output.accept(TolkienBlocks.FIREPLACE);
                         output.accept(TolkienBlocks.PIGGYBANK);
@@ -824,6 +825,7 @@ public class TolkienTabs {
                         output.accept(TolkienItems.COIN_POUCH);
                         output.accept(TolkienItems.KEY_RING);
                         output.accept(TolkienItems.HOBBIT_RING);
+                        output.accept(TolkienItems.RING_OF_HOPE);
                         output.accept(TolkienItems.SWORD_WITCHKING);
                         output.accept(TolkienItems.SWORD_URUK);
                         output.accept(TolkienItems.WHIP_FIRE);
@@ -1005,6 +1007,7 @@ public class TolkienTabs {
                         output.accept(TolkienEntities.EGG_TTMDUERGAR);
                         output.accept(TolkienEntities.EGG_TTMELEMENTALGOLEM);
                         output.accept(TolkienEntities.EGG_TTMFELLSPIRIT);
+                        output.accept(TolkienEntities.EGG_TTMENRAGEDFELLSPIRIT);
                         output.accept(TolkienEntities.EGG_TTMGOBLIN);
                         output.accept(TolkienEntities.EGG_TTMHARADRIM);
                         output.accept(TolkienEntities.EGG_TTMHURON);

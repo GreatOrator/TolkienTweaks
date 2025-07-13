@@ -39,7 +39,6 @@ public class WellBlockEntity extends TolkienBlockEntity implements GeoBlockEntit
     }
 
     private AnimationController<WellBlockEntity> getController() {
-        TolkienMobsMain.LOGGER.warn("Well right-clicked");
         return new AnimationController<>(this, "popup_controller", 0, state -> PlayState.STOP)
                 .triggerableAnim("fill", WELL_BUCKET);
     }
