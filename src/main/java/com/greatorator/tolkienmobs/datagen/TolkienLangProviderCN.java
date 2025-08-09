@@ -10,10 +10,10 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TolkienLangProvider extends TolkienLangHelper {
+public class TolkienLangProviderCN extends TolkienLangHelper {
     public static final Map<String, String> SUBTITLE_GENERATOR = new HashMap<>();
 
-    public TolkienLangProvider(PackOutput output) {
+    public TolkienLangProviderCN(PackOutput output) {
         super(output);
     }
 
@@ -220,7 +220,7 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addBlock(TolkienBlocks.TRINKET_TABLE, "Trinket Table");
             this.add(TolkienBlocks.FIREPLACE.get(), "Fireplace");
             this.add(TolkienBlocks.PIGGYBANK.get(), "Piggy Bank");
-            this.add(TolkienBlocks.BACKPACK.get(), "Adventurer's Backpack");
+            this.add(TolkienBlocks.BACKPACK.get(), "冒险者背包");
             this.add(TolkienBlocks.CHAMELEON_BLOCK.get(), "Chameleon Block");
             this.add(TolkienBlocks.KEY_STONE_BLOCK.get(), "Camouflage Key Stone Block");
             this.add(TolkienBlocks.CAMO_GLOWSTONE_BLOCK.get(), "Camouflage Glowstone");
