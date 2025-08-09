@@ -19,13 +19,13 @@ import java.util.Map;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public abstract class TolkienLangHelper extends LanguageProvider {
+public abstract class TolkienLangHelperUS extends LanguageProvider {
     private final Map<String, String> TF_TIPS = new HashMap<>();
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private final PackOutput output;
     public final Map<String, String> upsideDownEntries = new HashMap<>();
 
-    public TolkienLangHelper(PackOutput output) {
+    public TolkienLangHelperUS(PackOutput output) {
         super(output, MODID, "en_us");
         this.output = output;
     }
