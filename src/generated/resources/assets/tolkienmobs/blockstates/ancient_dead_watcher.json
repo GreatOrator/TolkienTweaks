@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=east,waterlogged=false": {
+      "model": "tolkienmobs:block/ancient_dead_watcher",
+      "y": 270
+    },
+    "facing=east,waterlogged=true": {
+      "model": "tolkienmobs:block/ancient_dead_watcher",
+      "y": 270
+    },
+    "facing=north,waterlogged=false": {
+      "model": "tolkienmobs:block/ancient_dead_watcher",
+      "y": 180
+    },
+    "facing=north,waterlogged=true": {
+      "model": "tolkienmobs:block/ancient_dead_watcher",
+      "y": 180
+    },
+    "facing=south,waterlogged=false": {
+      "model": "tolkienmobs:block/ancient_dead_watcher"
+    },
+    "facing=south,waterlogged=true": {
+      "model": "tolkienmobs:block/ancient_dead_watcher"
+    },
+    "facing=west,waterlogged=false": {
+      "model": "tolkienmobs:block/ancient_dead_watcher",
+      "y": 90
+    },
+    "facing=west,waterlogged=true": {
+      "model": "tolkienmobs:block/ancient_dead_watcher",
+      "y": 90
+    }
+  }
+}

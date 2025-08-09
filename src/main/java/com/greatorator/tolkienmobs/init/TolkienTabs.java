@@ -181,6 +181,7 @@ public class TolkienTabs {
                     .title(Component.translatable("itemgroup.tolkienmobs.function"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(TolkienBlocks.ANCIENT_WATCHER);
+                        output.accept(TolkienBlocks.ANCIENT_DEAD_WATCHER);
                         output.accept(TolkienBlocks.TRINKET_TABLE);
                         output.accept(TolkienBlocks.FIREPLACE);
                         output.accept(TolkienBlocks.PIGGYBANK);
