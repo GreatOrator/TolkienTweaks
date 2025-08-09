@@ -1,6 +1,6 @@
 package com.greatorator.tolkienmobs.datagen;
 
-import com.greatorator.tolkienmobs.datagen.helpers.TolkienLangHelper;
+import com.greatorator.tolkienmobs.datagen.helpers.TolkienLangHelperUS;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienItems;
@@ -10,7 +10,7 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TolkienLangProviderUS extends TolkienLangHelper {
+public class TolkienLangProviderUS extends TolkienLangHelperUS {
     public static final Map<String, String> SUBTITLE_GENERATOR = new HashMap<>();
 
     public TolkienLangProviderUS(PackOutput output) {
