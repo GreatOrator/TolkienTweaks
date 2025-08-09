@@ -1505,6 +1505,8 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> ARDA_PORTAL = registerBlockWithoutBlockItem("arda_portal", () -> new ArdaPortalBlock(BlockBehaviour.Properties.of().strength(-1F).noCollission().lightLevel((state) -> 10).noLootTable()));
     public static final DeferredBlock<Block> ANCIENT_WATCHER = registerBlock("ancient_watcher",
             () -> new AncientWatcherStatueBlock(BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).randomTicks().noLootTable().noOcclusion().sound(SoundType.STONE)));
+    public static final DeferredBlock<Block> ANCIENT_DEAD_WATCHER = registerBlock("ancient_dead_watcher",
+            () -> new AncientWatcherDeadStatueBlock(BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).randomTicks().noLootTable().noOcclusion().sound(SoundType.STONE)));
 
         // Sleeping Bags
     public static final DeferredBlock<SleepingBagBlock> SLEEPING_BAG_WHITE = BLOCKS.register("sleeping_bag_white", () -> new SleepingBagBlock(DyeColor.WHITE, Block.Properties.of().mapColor(MapColor.SNOW).sound(SoundType.WOOL).strength(0.2F).noOcclusion().pushReaction(PushReaction.DESTROY)).setHasLore());
@@ -1590,6 +1592,9 @@ public class TolkienBlocks {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AncientWatcherStatueBlockEntity>> ANCIENT_WATCHER_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("ancient_watcher", () ->
                     BlockEntityType.Builder.of(AncientWatcherStatueBlockEntity::new, ANCIENT_WATCHER.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AncientWatcherDeadStatueBlockEntity>> ANCIENT_WATCHER_DEAD_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("ancient_dead_watcher", () ->
+                    BlockEntityType.Builder.of(AncientWatcherDeadStatueBlockEntity::new, ANCIENT_DEAD_WATCHER.get()).build(null));
 
         // Attachment Types
     public static final Supplier<AttachmentType<ItemStackHandler>> BACKPACK_HANDLER = ATTACHMENT_TYPES.register(

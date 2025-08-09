@@ -245,8 +245,9 @@ public class TolkienLangProvider extends TolkienLangHelper {
             this.addBlock(TolkienBlocks.TORCH_DEADWOOD, "Deadwood Torch");
             this.addBlock(TolkienBlocks.TORCH_DWARVEN_MAPLE, "Dwarven Maple Torch");
             this.addBlock(TolkienBlocks.ANCIENT_WATCHER, "Ancient Watching-stone");
+            this.addBlock(TolkienBlocks.ANCIENT_DEAD_WATCHER, "Broken Ancient Watching-stone");
 
-            this.createWoodSet("mallorn", "Mallorn");
+        this.createWoodSet("mallorn", "Mallorn");
             this.createWoodSet("mirkwood", "Mirkwood");
             this.createWoodSet("culumalda", "Culumalda");
             this.createWoodSet("lebethron", "Lebethron");
