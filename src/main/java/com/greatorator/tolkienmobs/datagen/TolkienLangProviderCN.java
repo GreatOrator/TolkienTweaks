@@ -1,6 +1,6 @@
 package com.greatorator.tolkienmobs.datagen;
 
-import com.greatorator.tolkienmobs.datagen.helpers.TolkienLangHelperUS;
+import com.greatorator.tolkienmobs.datagen.helpers.TolkienLangHelperCN;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienItems;
@@ -10,10 +10,10 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TolkienLangProviderUS extends TolkienLangHelperUS {
+public class TolkienLangProviderCN extends TolkienLangHelperCN {
     public static final Map<String, String> SUBTITLE_GENERATOR = new HashMap<>();
 
-    public TolkienLangProviderUS(PackOutput output) {
+    public TolkienLangProviderCN(PackOutput output) {
         super(output);
     }
 
@@ -54,20 +54,20 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("itemgroup.tolkienmobs.natural", "托尔金工艺：自然方块");
             this.addItem(TolkienItems.PIPEWEED_SEEDS, "烟斗草种子");
             this.addItem(TolkienItems.PIPEWEED_ITEM, "烟斗草");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_SIMBELMYNE.get(), "辛贝穆奈", "辛贝穆奈");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_MIRKWOOD.get(), "色瑞刚", "黑森林");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_ALFIRIN.get(), "阿尔费琳", "阿尔费琳");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_ATHELAS.get(), "王叶草", "阿塞拉斯");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_NIPHREDIL.get(), "妮芙瑞迪尔", "妮芙瑞迪尔");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_SWAMPMILKWEED.get(), "绞架草", "沼泽马利筋");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_LILLYOFTHEVALLEY.get(), "铃兰", "山谷百合");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_ELANOR.get(), "埃拉诺", "埃拉诺");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_AEGLOS.get(), "雪棘", "艾格洛斯");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_LISSUIN.get(), "利斯苏因", "利斯苏因");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_MALLOS.get(), "瑁洛斯", "瑁洛斯");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_BRAMBLES.get(), "魔多荆棘", "荆棘");
-            this.addFlowerBlock(TolkienBlocks.MUSHROOM_BLOOM_DECAY.get(), "腐烂之花", "蘑菇开花腐烂");
-            this.addFlowerBlock(TolkienBlocks.MUSHROOM_DECAY_BLOOM.get(), "腐烂之花", "蘑菇腐烂开花");
+            this.addFlowerBlock(TolkienBlocks.FLOWER_SIMBELMYNE.get(), "辛贝穆奈", "simbelmyne");
+            this.addFlowerBlock(TolkienBlocks.FLOWER_MIRKWOOD.get(), "色瑞刚", "mirkwood");
+            this.addFlowerBlock(TolkienBlocks.FLOWER_ALFIRIN.get(), "阿尔费琳", "alfirin");
+            this.addFlowerBlock(TolkienBlocks.FLOWER_ATHELAS.get(), "王叶草", "athelas");
+            this.addFlowerBlock(TolkienBlocks.FLOWER_NIPHREDIL.get(), "妮芙瑞迪尔", "niphredil");
+            this.addFlowerBlock(TolkienBlocks.FLOWER_SWAMPMILKWEED.get(), "绞架草", "swamp_milkweed");
+            this.addFlowerBlock(TolkienBlocks.FLOWER_LILLYOFTHEVALLEY.get(), "铃兰", "valley_lilly");
+            this.addFlowerBlock(TolkienBlocks.FLOWER_ELANOR.get(), "埃拉诺", "elanor");
+            this.addFlowerBlock(TolkienBlocks.FLOWER_AEGLOS.get(), "雪棘", "aeglos");
+            this.addFlowerBlock(TolkienBlocks.FLOWER_LISSUIN.get(), "利斯苏因", "lissuin");
+            this.addFlowerBlock(TolkienBlocks.FLOWER_MALLOS.get(), "瑁洛斯", "mallos");
+            this.addFlowerBlock(TolkienBlocks.FLOWER_BRAMBLES.get(), "魔多荆棘", "brambles");
+            this.addFlowerBlock(TolkienBlocks.MUSHROOM_BLOOM_DECAY.get(), "腐烂之花", "mushroom_bloom_decay");
+            this.addFlowerBlock(TolkienBlocks.MUSHROOM_DECAY_BLOOM.get(), "腐烂之花", "mushroom_decay_bloom");
             this.addBlock(TolkienBlocks.BLOCK_DECAY_BLOOM, "腐烂花方块");
             this.addBlock(TolkienBlocks.LIGHTNINGBUG_BLOCK, "萤火虫");
             this.addBlock(TolkienBlocks.LOCUST_BLOCK, "蝗虫");
@@ -662,6 +662,6 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
     @Nonnull
     @Override
     public String getName() {
-        return "Tolkienmobs - English Language Generator";
+        return "Tolkienmobs - Chinese Language Generator";
     }
 }

@@ -39,13 +39,13 @@ public abstract class TolkienLangHelperCN extends LanguageProvider {
 
     public void addVillager(EntityType<?> key, String name) {
         this.add(key.getDescriptionId(), name);
-        this.add(key.getDescriptionId() + ".tolkienmobs.none", "Human");
-        this.add(key.getDescriptionId() + ".tolkienmobs.coin_trader", "Coin Trader");
-        this.add(key.getDescriptionId() + ".tolkienmobs.grocery_store", "Grocery Store");
-        this.add(key.getDescriptionId() + ".tolkienmobs.pet_merchant", "Junk Trader");
-        this.add(key.getDescriptionId() + ".tolkienmobs.junk_trader", "Pet Merchant");
-        this.add(key.getDescriptionId() + ".tolkienmobs.trinket_smith", "Magical Armourer");
-        this.add(key.getDescriptionId() + ".tolkienmobs.trinket_tailor", "Magical Tailor");
+        this.add(key.getDescriptionId() + ".tolkienmobs.none", "人类");
+        this.add(key.getDescriptionId() + ".tolkienmobs.coin_trader", "硬币兑换商");
+        this.add(key.getDescriptionId() + ".tolkienmobs.grocery_store", "杂货店");
+        this.add(key.getDescriptionId() + ".tolkienmobs.pet_merchant", "废品处理商");
+        this.add(key.getDescriptionId() + ".tolkienmobs.junk_trader", "宠物商人");
+        this.add(key.getDescriptionId() + ".tolkienmobs.trinket_smith", "魔法盔甲匠");
+        this.add(key.getDescriptionId() + ".tolkienmobs.trinket_tailor", "魔法裁缝");
         this.add(key.getDescriptionId() + ".armorer", "Armorer");
         this.add(key.getDescriptionId() + ".butcher", "Butcher");
         this.add(key.getDescriptionId() + ".cartographer", "Cartographer");
