@@ -60,20 +60,6 @@ public abstract class TolkienLangHelperCN extends LanguageProvider {
         this.add(key.getDescriptionId() + ".toolsmith", "工具铁匠");
         this.add(key.getDescriptionId() + ".weaponsmith", "武器铁匠");
         this.add(key.getDescriptionId() + ".fletcher", "制箭师");
-        this.add(key.getDescriptionId() + ".armorer", "Armorer");
-        this.add(key.getDescriptionId() + ".butcher", "Butcher");
-        this.add(key.getDescriptionId() + ".cartographer", "Cartographer");
-        this.add(key.getDescriptionId() + ".cleric", "Cleric");
-        this.add(key.getDescriptionId() + ".farmer", "Farmer");
-        this.add(key.getDescriptionId() + ".fisherman", "Fisherman");
-        this.add(key.getDescriptionId() + ".leatherworker", "Leather Worker");
-        this.add(key.getDescriptionId() + ".librarian", "Librarian");
-        this.add(key.getDescriptionId() + ".mason", "Mason");
-        this.add(key.getDescriptionId() + ".nitwit", "Nitwit");
-        this.add(key.getDescriptionId() + ".shepherd", "Shepherd");
-        this.add(key.getDescriptionId() + ".toolsmith", "Tool Smith");
-        this.add(key.getDescriptionId() + ".weaponsmith", "Weapon Smith");
-        this.add(key.getDescriptionId() + ".fletcher", "Fletcher");
     }
 
     public void addTrinket(Item key, String name) {
