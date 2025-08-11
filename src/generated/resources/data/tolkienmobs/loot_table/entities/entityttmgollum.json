@@ -64,7 +64,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "tolkienmobs:inventory_corrosion"
+              "id": "minecraft:long_poison"
             },
             {
               "add": false,
