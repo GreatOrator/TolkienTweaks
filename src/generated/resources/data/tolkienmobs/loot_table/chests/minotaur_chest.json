@@ -1,16 +1,5 @@
 {
   "type": "minecraft:chest",
-  "functions": [
-    {
-      "add": false,
-      "count": {
-        "type": "minecraft:uniform",
-        "max": 3.0,
-        "min": 1.0
-      },
-      "function": "minecraft:set_count"
-    }
-  ],
   "pools": [
     {
       "bonus_rolls": {
@@ -151,6 +140,28 @@
           "type": "minecraft:item",
           "name": "tolkienmobs:ingot_mithril",
           "weight": 10
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:enchant_randomly",
+              "options": "#minecraft:on_random_loot"
+            }
+          ],
+          "name": "minecraft:book",
+          "weight": 2
+        }
+      ],
+      "functions": [
+        {
+          "add": false,
+          "count": {
+            "type": "minecraft:uniform",
+            "max": 3.0,
+            "min": 1.0
+          },
+          "function": "minecraft:set_count"
         }
       ],
       "rolls": {

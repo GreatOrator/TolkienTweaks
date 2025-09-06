@@ -64,7 +64,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "tolkienmobs:sleepnesia"
+              "id": "minecraft:long_invisibility"
             },
             {
               "add": false,

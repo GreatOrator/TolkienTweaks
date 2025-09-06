@@ -21,7 +21,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "tolkienmobs:elven_nimbleness"
+              "id": "minecraft:wind_charged"
             },
             {
               "add": false,
