@@ -6,6 +6,8 @@ public enum ButtonTexture implements TexturePosition {
   SMALL_BUTTON(0, 168, 15, 200),
   UP_BUTTON(176, 0, 8, 16),
   DOWN_BUTTON(172, 8, 8, 16),
+  PREVIOUS_BUTTON(176, 16, 16, 8),
+  NEXT_BUTTON(184, 16, 16, 8),
   DEPLOY_BED_BUTTON(208, 0, 16, 16),
   PICKUP_BED_BUTTON(208, 16, 16, 16),
   DEPLOY_CAMPFIRE_BUTTON(224, 0, 16, 16),

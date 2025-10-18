@@ -1,7 +1,6 @@
 package com.greatorator.tolkienmobs.containers.screens;
 
 import com.greatorator.tolkienmobs.TolkienMobsConfig;
-import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.entity.MilestoneBlockEntity;
 import com.greatorator.tolkienmobs.containers.MilestoneContainer;
 import com.greatorator.tolkienmobs.containers.handlers.ToggleButtonFactory;
@@ -30,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -44,8 +44,11 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
     private EditBox milestoneName;
     protected List<AbstractWidget> widgetsToRemove = new ArrayList<>();
     protected List<AbstractWidget> widgetsToAdd = new ArrayList<>();
-    private final List<AbstractWidget> locationButtons = new ArrayList<>();
+    private final List<String> locationList = new ArrayList<>();
+    private static final List<AbstractWidget> locationButtons = new ArrayList<>();
     protected boolean renderablesChanged = false;
+    public static int maxItemsPerPage = 7;
+    public static int currentPage = 1;
 
     public MilestoneScreen(MilestoneContainer container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -79,6 +82,37 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
             addPaymentMethod();
         }
         addLocations();
+
+        int relX = (this.width - this.imageWidth) / 2;
+        int relY = (this.height - this.imageHeight) / 2;
+
+        Button prevButton = Button.builder(Component.literal("<"), button -> {
+            // Decrement page and rebuild the screen
+            if (currentPage > 0) {
+                currentPage--;
+                this.clearWidgets(); // Clear old widgets
+                this.init(); // Reinitialize with new page
+            }
+        })
+                .pos(relX + 7, relY + 173)
+                .size(8, 16)
+                .build();
+        prevButton.active = currentPage > 0;
+        this.addRenderableWidget(prevButton);
+
+        Button nextButton = Button.builder(Component.literal(">"), button -> {
+            // Increment page and rebuild the screen
+            if (currentPage <= getPageCount() - 1) {
+                currentPage++;
+                this.clearWidgets();
+                this.init();
+            }
+        })
+                .pos(relX + 161, relY + 173)
+                .size(8, 16)
+                .build();
+        nextButton.active = currentPage < getPageCount();
+        this.addRenderableWidget(nextButton);
         tileEntity.updateClientState();
     }
 
@@ -124,43 +158,31 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
     }
 
     public void addLocations() {
-        int i = -1;
+        List<String> locationOnPage = getItemsForPage();
+        int yOffset = 0;
 
-        for (MilestoneHandler.MilestoneData data : MilestoneHandler.getKnownByPlayer(Objects.requireNonNull(getMinecraft().player))) {
-            if (data.getUuid().equals(tileEntity.getUUID())) continue;
-            i++;
+        for(String locations : locationOnPage){
             int relX = (this.width - this.imageWidth) / 2;
             int relY = (this.height - this.imageHeight) / 2;
+            int y = 66 + (yOffset * 15);
 
-            int y = 66 + (i * 16);
-            this.locationButtons.add(
-                    this.addRenderableWidget(Button.builder(Component.literal(data.getName()),
-                                    button -> {
-                                        TolkienMobsMain.LOGGER.warn("You teleported!");
-                                        TolkienMobsMain.LOGGER.warn(String.valueOf(getMinecraft().player));
-                                        TolkienMobsMain.LOGGER.warn(String.valueOf(data.getUuid()));
-                                        TolkienMobsMain.LOGGER.warn(String.valueOf(data.getPos()));
-                                        TolkienMobsMain.LOGGER.warn(String.valueOf(data.getWorldKey()));
-                                        TolkienMobsMain.LOGGER.warn(data.getName());
-                                        this.tileEntity.sendPacketToServer(output -> output.writeUUID(data.getUuid()), 3);
-//                                        PacketDistributor.sendToServer(new MilestoneTeleportUpdateManager(true));
-                                    })
-                            .pos(relX + 5, relY + y)
-                            .size(150, 16)
-                            .build()
-                    )
-            );
+            Button itemButton = Button.builder(Component.literal(locations), button -> {
+//                        this.tileEntity.sendPacketToServer(output -> output.writeUUID(data.getUuid()), 3);
+            })
+                    .pos(relX + 5, relY + y)
+                    .size(150, 15)
+                    .build();
+            this.addRenderableWidget(itemButton);
             if (TolkienMobsConfig.PAYMENT_TYPE.get()) {
-                addRenderableWidget(ToggleButtonFactory.ITEM_PAYMENT_METHOD_CLIENT(relX + 155, relY + y, this.tileEntity.getItemTravelCost(data),
+                addRenderableWidget(ToggleButtonFactory.ITEM_PAYMENT_METHOD_CLIENT(relX + 155, relY + y, 1,
                         (button) -> {
-
                         }));
             } else {
-                addRenderableWidget(ToggleButtonFactory.EXPERIENCE_PAYMENT_METHOD_CLIENT(relX + 155, relY + y, this.tileEntity.getExperienceTravelCost(data),
+                addRenderableWidget(ToggleButtonFactory.EXPERIENCE_PAYMENT_METHOD_CLIENT(relX + 155, relY + y, 1,
                         (button) -> {
-
                         }));
             }
+            yOffset +=1; // Adjust for next button
         }
     }
 
@@ -191,6 +213,33 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
         return value;
     }
 
+    public int getPageCount(){
+        int i = -1;
+        for (MilestoneHandler.MilestoneData data : MilestoneHandler.getKnownByPlayer(Objects.requireNonNull(getMinecraft().player))) {
+            if (data.getUuid().equals(tileEntity.getUUID())) continue;
+            i++;
+        }
+            return Math.max((int) Math.ceil((double) i / maxItemsPerPage) - 1, 0);
+    }
+
+    private List<String> getItemsForPage() {
+        int start = currentPage * maxItemsPerPage;
+        int i = 0;
+
+        for (MilestoneHandler.MilestoneData data : MilestoneHandler.getKnownByPlayer(Objects.requireNonNull(getMinecraft().player))) {
+            if (data.getUuid().equals(tileEntity.getUUID())) continue;
+            i++;
+            locationList.add(String.valueOf(data.getName()));
+        }
+
+        int end = Math.min(start + maxItemsPerPage, i);
+
+        if (start >= end) {
+            return Collections.emptyList();
+        }
+        return locationList.subList(start, end);
+    }
+
     @Override
     protected void renderTooltip(GuiGraphics pGuiGraphics, int pX, int pY) {
         super.renderTooltip(pGuiGraphics, pX, pY);
@@ -203,9 +252,6 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
         if (getMinecraft().player.isCreative()) {
             this.milestoneName.setTooltip(Tooltip.create(tooltip));
         }
-//        if (){
-//            Component.literal("hello");
-//        }
     }
 
     @Override
@@ -214,6 +260,12 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
         if (getMinecraft().player.isCreative()) {
             this.milestoneName.render(guiGraphics, mouseX, mouseY, partialTicks);
         }
+        int relX = (this.width - this.imageWidth) / 2;
+        int relY = (this.height - this.imageHeight) / 2;
+
+        String pagesLabel = GeneralUtility.withSuffix(currentPage) + " / " + GeneralUtility.withSuffix(getPageCount());
+        guiGraphics.drawString(font, pagesLabel, (relX + 100 - font.width(pagesLabel)), relY + 179, ColorUtility.DARKGRAY.getColor(), false);
+
         this.renderTooltip(guiGraphics, mouseX, mouseY);
         }
 
