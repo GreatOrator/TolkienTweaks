@@ -1,7 +1,6 @@
 package com.greatorator.tolkienmobs.block.custom.entity;
 
 import com.greatorator.tolkienmobs.TolkienMobsConfig;
-import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.MilestoneBlock;
 import com.greatorator.tolkienmobs.containers.MilestoneContainer;
 import com.greatorator.tolkienmobs.handler.MilestoneHandler;
@@ -188,8 +187,6 @@ public class MilestoneBlockEntity extends TolkienBlockEntity implements MenuProv
     @Override
     public void receivePacketFromClient(MCDataInput input, ServerPlayer client, int id) {
         super.receivePacketFromClient(input, client, id);
-        TolkienMobsMain.LOGGER.warn(String.valueOf(id));
-        TolkienMobsMain.LOGGER.error("Current state: Milestone Teleporting: {}", client);
         ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse(TolkienMobsConfig.PAYMENT_ITEM.get())).getDefaultInstance().getItem());
 
         if (id == 3) {
