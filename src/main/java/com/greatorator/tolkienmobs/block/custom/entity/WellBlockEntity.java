@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.block.custom.entity;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;

@@ -3,7 +3,6 @@ package com.greatorator.tolkienmobs.entity.monster.render;
 import com.google.common.collect.Maps;
 import com.greatorator.tolkienmobs.entity.monster.EnragedFellSpiritEntity;
 import com.greatorator.tolkienmobs.entity.monster.model.EnragedFellSpiritModel;
-import com.greatorator.tolkienmobs.entity.monster.model.FellSpiritModel;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.mojang.blaze3d.vertex.PoseStack;

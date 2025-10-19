@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.block.custom.entity;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.TolkienBaseSpawner;
 import com.greatorator.tolkienmobs.containers.CamoSpawnerContainer;
 import com.greatorator.tolkienmobs.handler.data.MCDataInput;
@@ -93,7 +92,6 @@ public class CamoSpawnerBlockEntity extends TolkienBlockEntity implements MenuPr
             Optional<EntityType<?>> optional = EntityType.byString(BuiltInRegistries.ENTITY_TYPE.getKey(entityType).toString());
 
             if(!this.entityTags.contains(entityTag) && this.entityTags.size() == 1) {
-                TolkienMobsMain.LOGGER.warn(String.valueOf(this.entityTags.size()));
                 this.entityTags.add(entityTag);
                 this.markDirtyClient();
                 this.setChanged();

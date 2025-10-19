@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.network.manager;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.entity.MilestoneBlockEntity;
 import com.greatorator.tolkienmobs.containers.MilestoneContainer;
 import com.greatorator.tolkienmobs.handler.data.MCDataInput;
@@ -39,7 +38,6 @@ public record MilestoneTeleportUpdateManager(
             AbstractContainerMenu container = sender.containerMenu;
 
             if (container instanceof MilestoneContainer milestoneContainer && milestoneContainer.tile instanceof MilestoneBlockEntity milestoneBE) {
-                TolkienMobsMain.LOGGER.warn("Milestone Teleporting: {}", payload.teleport());
                 if (payload.teleport()) {
                     milestoneBE.receivePacketFromClient((MCDataInput) context, (ServerPlayer) sender, 3);
                 }

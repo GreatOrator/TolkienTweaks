@@ -9,10 +9,8 @@ import com.greatorator.tolkienmobs.world.components.config.TolkienConfiguredFeat
 import com.greatorator.tolkienmobs.world.components.feature.tree.TolkienTreeGrowers;
 import com.greatorator.tolkienmobs.world.components.util.TolkienSurfaceRuleManager;
 import com.greatorator.tolkienmobs.world.registration.TolkienSurfaceRules;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.BlockItem;
@@ -35,7 +33,6 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
-import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;

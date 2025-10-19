@@ -1,16 +1,13 @@
 package com.greatorator.tolkienmobs.datagen.loot;
 
 import com.greatorator.tolkienmobs.datagen.helpers.TolkienLootHelper;
-import com.greatorator.tolkienmobs.init.TolkienEnchantments;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;

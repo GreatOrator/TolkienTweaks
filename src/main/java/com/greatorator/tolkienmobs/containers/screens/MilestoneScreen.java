@@ -1,7 +1,6 @@
 package com.greatorator.tolkienmobs.containers.screens;
 
 import com.greatorator.tolkienmobs.TolkienMobsConfig;
-import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.entity.MilestoneBlockEntity;
 import com.greatorator.tolkienmobs.containers.MilestoneContainer;
 import com.greatorator.tolkienmobs.containers.handlers.ToggleButtonFactory;
@@ -30,7 +29,6 @@ import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -82,7 +80,7 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
             addPaymentMethod();
         }
 
-        addLocations();
+        getItemsForPage();
 
         int relX = (this.width - this.imageWidth) / 2;
         int relY = (this.height - this.imageHeight) / 2;
@@ -158,18 +156,6 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
         this.milestoneName.setVisible(true);
     }
 
-    public void addLocations() {
-//        int startIndex = currentPage * maxItemsPerPage;
-//        int endIndex = Math.min(startIndex + maxItemsPerPage, getItemsForPage().size());
-//            TolkienMobsMain.LOGGER.warn(String.valueOf(endIndex));
-//
-//        for (int i = startIndex; i < endIndex; i++) {
-//            TolkienMobsMain.LOGGER.warn(String.valueOf(i));
-//
-//            getItemsForPage().get(i);
-//        }
-    }
-
     public void updateRenderables() {
         if (!widgetsToRemove.isEmpty()) {
             for (AbstractWidget abstractWidget : widgetsToRemove) {
@@ -208,8 +194,13 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
 
     private List<AbstractWidget> getItemsForPage() {
         int yOffset = 0;
+        int startIndex = currentPage * maxItemsPerPage;
+        List<MilestoneHandler.MilestoneData> knownByPlayer = MilestoneHandler.getKnownByPlayer(Objects.requireNonNull(getMinecraft().player));
+        int endIndex = Math.min(startIndex + maxItemsPerPage, knownByPlayer.size());
 
-        for (MilestoneHandler.MilestoneData data : MilestoneHandler.getKnownByPlayer(Objects.requireNonNull(getMinecraft().player))) {
+        for (int i = 0; i < knownByPlayer.size(); i++) {
+            if (i <= startIndex || i > endIndex) continue;
+            MilestoneHandler.MilestoneData data = knownByPlayer.get(i);
             if (data.getUuid().equals(tileEntity.getUUID())) continue;
 
             int relX = (this.width - this.imageWidth) / 2;

@@ -1,18 +1,10 @@
 package com.greatorator.tolkienmobs.block.custom;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.TolkienEntityBlock;
 import com.greatorator.tolkienmobs.block.custom.entity.AncientWatcherStatueBlockEntity;
-import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
-import com.greatorator.tolkienmobs.block.custom.entity.WellBlockEntity;
-import com.greatorator.tolkienmobs.init.TolkienMobEffects;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;

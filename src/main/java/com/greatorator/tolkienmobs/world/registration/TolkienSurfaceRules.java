@@ -2,9 +2,6 @@ package com.greatorator.tolkienmobs.world.registration;
 
 import com.greatorator.tolkienmobs.init.TolkienBiomes;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
-import net.minecraft.data.worldgen.SurfaceRuleData;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
