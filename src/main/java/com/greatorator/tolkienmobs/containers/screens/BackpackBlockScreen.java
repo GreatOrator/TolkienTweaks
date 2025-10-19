@@ -88,6 +88,7 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
 
         assignFluidRenderer();
         addUpgradeButtons();
+        tileEntity.updateClientState();
     }
 
     @Override
