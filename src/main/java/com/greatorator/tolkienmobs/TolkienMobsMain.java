@@ -77,6 +77,13 @@ public class TolkienMobsMain {
     //  -Biomes
     //    -Proper overworld generation or, Separate Dimension
     //    -Structures
+    //    -Biome Tags
+    //  - KNOWN BUGS
+    //      - Backpack refreshing dynamically
+    //      - Camo blocks either ignoring grass or other dynamically colored blocks, or camo those too
+    //      - Recipes working inside the trinket table
+    //      - Mobs animations and AI
+    //  - Further config options
 
     public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer, Dist dist) {
         proxy = GeneralUtility.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
