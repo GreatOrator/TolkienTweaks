@@ -380,6 +380,8 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add("screen.tolkienmobs.camo_spawner.ignoreSpawnReq.ignored", "Spawn Requirements - Ignored");
             this.add("screen.tolkienmobs.camo_spawner.requirePlayer.enabled", "Player required - Enabled");
             this.add("screen.tolkienmobs.camo_spawner.requirePlayer.disabled", "Player required - Disabled");
+            this.add("screen.tolkienmobs.camo_spawner.redstone.enabled", "Redstone Control - Enabled");
+            this.add("screen.tolkienmobs.camo_spawner.redstone.disabled", "Redstone Control - Disabled");
             this.add("screen.tolkienmobs.camo_spawner.spawnerParticles.disabled", "Spawner Particles Disabled");
             this.add("screen.tolkienmobs.camo_spawner.spwnCountValue", "Maximum number of mobs to spawn");
             this.add("screen.tolkienmobs.camo_spawner.maxCluster", "Spawn-Max");

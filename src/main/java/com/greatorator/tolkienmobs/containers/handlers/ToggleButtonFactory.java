@@ -34,6 +34,10 @@ public class ToggleButtonFactory {
     }
 
     /** Spawner Button **/
+    private static final List<TextureLocalization> REDSTONE_SIGNAL = List.of(
+            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/redstone_always.png"), Component.translatable("screen.tolkienmobs.camo_spawner.redstone.enabled")),
+            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/redstone_always_inactive.png"), Component.translatable("screen.tolkienmobs.camo_spawner.redstone.disabled"))
+    );
     private static final List<TextureLocalization> IGNORE_PARTICLES = List.of(
             new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/particles.png"), Component.translatable("screen.tolkienmobs.camo_spawner.spawnerParticles.enabled")),
             new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/hide_particles.png"), Component.translatable("screen.tolkienmobs.camo_spawner.spawnerParticles.disabled"))
@@ -63,6 +67,9 @@ public class ToggleButtonFactory {
     }
     public static ToggleButton IGNORE_REQUIREMENTS_BUTTON(int x, int y, boolean startingValue, Button.OnPress onPress) {
         return new ToggleButton(x, y, STANDARD_WIDTH, STANDARD_HEIGHT, IGNORE_REQUIREMENTS, startingValue, onPress);
+    }
+    public static ToggleButton REDSTONE_CONTROL_BUTTON(int x, int y, boolean startingValue, Button.OnPress onPress) {
+        return new ToggleButton(x, y, STANDARD_WIDTH, STANDARD_HEIGHT, REDSTONE_SIGNAL, startingValue, onPress);
     }
 
     /** Spawner Numbers **/
