@@ -83,7 +83,6 @@ public class TolkienMobsMain {
     //  - KNOWN BUGS
     //      - Backpack refreshing dynamically
     //      - Camo blocks either ignoring grass or other dynamically colored blocks, or camo those too
-    //      - Refresh camo when holding DEV tool or correct key without block updates or force block update when holding
     //      - Recipes working inside the trinket table
     //      - Mobs animations and AI
     //      - Custom Spawner needs to have existing mobs be able to be removed in UI
