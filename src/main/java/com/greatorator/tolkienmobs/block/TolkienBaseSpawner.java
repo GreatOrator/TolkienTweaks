@@ -403,12 +403,10 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
     }
 
     private SpawnData getOrCreateNextSpawnData(@Nullable Level level, RandomSource random, BlockPos pos) {
-        if (this.nextSpawnData != null) {
-            return this.nextSpawnData;
-        } else {
-            this.setNextSpawnData(level, pos, (SpawnData)this.spawnPotentials.getRandom(random).map(WeightedEntry.Wrapper::data).orElseGet(SpawnData::new));
-            return this.nextSpawnData;
+        if (this.nextSpawnData == null) {
+            this.setNextSpawnData(level, pos, (SpawnData) this.spawnPotentials.getRandom(random).map(WeightedEntry.Wrapper::data).orElseGet(SpawnData::new));
         }
+        return this.nextSpawnData;
     }
 
     public abstract void broadcastEvent(Level var1, BlockPos var2, int var3);
