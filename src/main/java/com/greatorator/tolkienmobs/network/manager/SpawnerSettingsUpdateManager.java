@@ -17,6 +17,7 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 public record SpawnerSettingsUpdateManager(
         boolean requirePlayer,
         boolean ignoreSpawnReq,
+        boolean redstoneControl,
         boolean spawnerParticles
 ) implements CustomPacketPayload {
     public static final Type<SpawnerSettingsUpdateManager> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "spawner_setting_packet"));
@@ -30,6 +31,7 @@ public record SpawnerSettingsUpdateManager(
             StreamCodec.composite(
                     ByteBufCodecs.BOOL, SpawnerSettingsUpdateManager::requirePlayer,
                     ByteBufCodecs.BOOL, SpawnerSettingsUpdateManager::ignoreSpawnReq,
+                    ByteBufCodecs.BOOL, SpawnerSettingsUpdateManager::redstoneControl,
                     ByteBufCodecs.BOOL, SpawnerSettingsUpdateManager::spawnerParticles,
                     SpawnerSettingsUpdateManager::new);
 
@@ -39,7 +41,7 @@ public record SpawnerSettingsUpdateManager(
             AbstractContainerMenu container = sender.containerMenu;
 
             if (container instanceof CamoSpawnerContainer spawnerContainer && spawnerContainer.tileEntity instanceof CamoSpawnerBlockEntity spawnerBE) {
-                spawnerBE.setSpawnerSettings(new SpawnerSettings(payload.requirePlayer(), payload.ignoreSpawnReq(), payload.spawnerParticles()));
+                spawnerBE.setSpawnerSettings(new SpawnerSettings(payload.requirePlayer(), payload.ignoreSpawnReq(), payload.redstoneControl(), payload.spawnerParticles()));
             }
         });
     }

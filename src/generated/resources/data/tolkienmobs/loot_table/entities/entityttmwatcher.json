@@ -21,7 +21,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "tolkienmobs:elemental_burning"
+              "id": "minecraft:weaving"
             },
             {
               "add": false,

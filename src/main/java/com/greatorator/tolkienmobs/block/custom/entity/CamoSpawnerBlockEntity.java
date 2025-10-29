@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class CamoSpawnerBlockEntity extends TolkienBlockEntity implements MenuProvider, TolkienSpawner, SpawnerSettingsBlockEntity {
-    public SpawnerSettings spawnerSettings = new SpawnerSettings(true, true, true);
+    public SpawnerSettings spawnerSettings = new SpawnerSettings(true, true, true, true);
     public SpawnerDelays spawnerDelays = new SpawnerDelays(200, 800, 20);
     public SpawnerRanges spawnerRanges = new SpawnerRanges(4, 4, 4, 6, 16);
     public List<CompoundTag> entityTags = new ArrayList<>(1);

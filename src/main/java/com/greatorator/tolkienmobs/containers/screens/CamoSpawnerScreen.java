@@ -75,7 +75,7 @@ public class CamoSpawnerScreen extends AbstractContainerScreen<CamoSpawnerContai
                 .builder(Component.translatable("screen.tolkienmobs.camo_spawner.saveValue"), button -> {
                     PacketDistributor.sendToServer(new SpawnerDelaysUpdateManager(spawnerDelays.minSpawnDelay, spawnerDelays.maxSpawnDelay, spawnerDelays.spawnDelay));
                     PacketDistributor.sendToServer(new SpawnerRangesUpdateManager(spawnerRanges.activationRange, spawnerRanges.spawnRange, spawnerRanges.spawnCount, spawnerRanges.maxCluster, spawnerRanges.clusterRange));
-                    PacketDistributor.sendToServer(new SpawnerSettingsUpdateManager(spawnerSettings.requirePlayer, spawnerSettings.ignoreSpawnReq, spawnerSettings.spawnerParticles));
+                    PacketDistributor.sendToServer(new SpawnerSettingsUpdateManager(spawnerSettings.requirePlayer, spawnerSettings.ignoreSpawnReq, spawnerSettings.redstoneControl, spawnerSettings.spawnerParticles));
                     this.minecraft.setScreen(null);
                 }, ButtonTexture.LARGE_BUTTON)
                 .size(64, 20)
@@ -325,15 +325,19 @@ public class CamoSpawnerScreen extends AbstractContainerScreen<CamoSpawnerContai
         int offsetY = (this.height - this.imageHeight) / 2;
         addRenderableWidget(ToggleButtonFactory.IGNORE_PLAYER_BUTTON(offsetX + 60, offsetY + 142, spawnerSettings.requirePlayer, b -> {
             spawnerSettings.requirePlayer = !spawnerSettings.requirePlayer;
-            PacketDistributor.sendToServer(new SpawnerSettingsUpdateManager(spawnerSettings.requirePlayer, spawnerSettings.ignoreSpawnReq, spawnerSettings.spawnerParticles));
+            PacketDistributor.sendToServer(new SpawnerSettingsUpdateManager(spawnerSettings.requirePlayer, spawnerSettings.ignoreSpawnReq, spawnerSettings.redstoneControl, spawnerSettings.spawnerParticles));
         }));
         addRenderableWidget(ToggleButtonFactory.IGNORE_REQUIREMENTS_BUTTON(offsetX + 81, offsetY + 142, spawnerSettings.ignoreSpawnReq, b -> {
             spawnerSettings.ignoreSpawnReq = !spawnerSettings.ignoreSpawnReq;
-            PacketDistributor.sendToServer(new SpawnerSettingsUpdateManager(spawnerSettings.requirePlayer, spawnerSettings.ignoreSpawnReq, spawnerSettings.spawnerParticles));
+            PacketDistributor.sendToServer(new SpawnerSettingsUpdateManager(spawnerSettings.requirePlayer, spawnerSettings.ignoreSpawnReq, spawnerSettings.redstoneControl, spawnerSettings.spawnerParticles));
         }));
         addRenderableWidget(ToggleButtonFactory.IGNORE_PARTICLES_BUTTON(offsetX + 102, offsetY + 142, spawnerSettings.spawnerParticles, b -> {
             spawnerSettings.spawnerParticles = !spawnerSettings.spawnerParticles;
-            PacketDistributor.sendToServer(new SpawnerSettingsUpdateManager(spawnerSettings.requirePlayer, spawnerSettings.ignoreSpawnReq, spawnerSettings.spawnerParticles));
+            PacketDistributor.sendToServer(new SpawnerSettingsUpdateManager(spawnerSettings.requirePlayer, spawnerSettings.ignoreSpawnReq, spawnerSettings.redstoneControl, spawnerSettings.spawnerParticles));
+        }));
+        addRenderableWidget(ToggleButtonFactory.REDSTONE_CONTROL_BUTTON(offsetX + 123, offsetY + 142, spawnerSettings.redstoneControl, b -> {
+            spawnerSettings.redstoneControl = !spawnerSettings.redstoneControl;
+            PacketDistributor.sendToServer(new SpawnerSettingsUpdateManager(spawnerSettings.requirePlayer, spawnerSettings.ignoreSpawnReq, spawnerSettings.redstoneControl, spawnerSettings.spawnerParticles));
         }));
         addRenderableWidget(ToggleButtonFactory.REMOVE_MOB_BUTTON(offsetX + 39, offsetY + 142, true, b -> {
             this.tileEntity.entityTags.clear();

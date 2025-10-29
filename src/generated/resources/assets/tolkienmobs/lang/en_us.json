@@ -1526,6 +1526,8 @@
   "screen.tolkienmobs.camo_spawner.maxSpawnDelay": "Delay-Max",
   "screen.tolkienmobs.camo_spawner.minDelayValue": "Minimum start value for spawn countdown",
   "screen.tolkienmobs.camo_spawner.minSpawnDelay": "Delay-Min",
+  "screen.tolkienmobs.camo_spawner.redstone.disabled": "Redstone Control - Disabled",
+  "screen.tolkienmobs.camo_spawner.redstone.enabled": "Redstone Control - Enabled",
   "screen.tolkienmobs.camo_spawner.remove_mob": "Clear all Mobs",
   "screen.tolkienmobs.camo_spawner.requirePlayer.disabled": "Player required - Disabled",
   "screen.tolkienmobs.camo_spawner.requirePlayer.enabled": "Player required - Enabled",

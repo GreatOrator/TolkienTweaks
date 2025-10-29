@@ -64,7 +64,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "tolkienmobs:elemental_burning"
+              "id": "tolkienmobs:inventory_corrosion"
             },
             {
               "add": false,
