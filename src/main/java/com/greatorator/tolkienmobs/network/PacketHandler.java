@@ -86,10 +86,6 @@ public final class PacketHandler {
                 BackpackSettingsUpdateManager.STREAM_CODEC, BackpackSettingsUpdateManager::handle);
         registrar.playToServer(BackpackPlacementUpdateManager.TYPE,
                 BackpackPlacementUpdateManager.STREAM_CODEC, BackpackPlacementUpdateManager::handle);
-        registrar.playToServer(BackpackUpgradesUpdateManager.TYPE,
-                BackpackUpgradesUpdateManager.STREAM_CODEC, BackpackUpgradesUpdateManager::handle);
-        registrar.playToServer(BackpackFluidUpgradesUpdateManager.TYPE,
-                BackpackFluidUpgradesUpdateManager.STREAM_CODEC, BackpackFluidUpgradesUpdateManager::handle);
         registrar.playToServer(MilestoneSettingsUpdateManager.TYPE,
                 MilestoneSettingsUpdateManager.STREAM_CODEC, MilestoneSettingsUpdateManager::handle);
         registrar.playToServer(MilestoneTeleportUpdateManager.TYPE,
