@@ -1500,6 +1500,8 @@
   "screen.tolkienmobs.backpack.campfire.deployed": "Set up Campfire",
   "screen.tolkienmobs.backpack.campfire.remove": "Pick up Campfire",
   "screen.tolkienmobs.backpack.no_room": "There's no room to set that up here",
+  "key.tolkienmobs.open_backpack": "Open Backpack (Curios back slot)",
+  "key.categories.tolkienmobs": "Tolkien Tweaks",
   "tooltip.tolkienmobs.backpack.controls": "Right-click to open, Sneak + Right-click on a block to place",
   "screen.tolkienmobs.backpack.close.upgrade": "Close upgrade window",
   "screen.tolkienmobs.backpack.fluid": "Fluid:",

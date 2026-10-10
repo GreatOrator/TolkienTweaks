@@ -52,6 +52,7 @@ public class TolkienTags {
         public static final TagKey<Item> CURIOS_HANDS = createTag("curios:hands");
         public static final TagKey<Item> CURIOS_BODY = createTag("curios:body");
         public static final TagKey<Item> CURIOS_HEAD = createTag("curios:head");
+        public static final TagKey<Item> CURIOS_BACK = createTag("curios:back");
 
         private static TagKey<Item> createTag(String name) {
             return TagKey.create(Registries.ITEM, ResourceLocation.parse(name));

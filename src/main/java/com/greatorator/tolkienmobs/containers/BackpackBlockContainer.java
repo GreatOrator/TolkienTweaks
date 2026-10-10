@@ -6,7 +6,9 @@ import com.greatorator.tolkienmobs.containers.handlers.BucketItemHandler;
 import com.greatorator.tolkienmobs.containers.handlers.UpgradeItemHandler;
 import com.greatorator.tolkienmobs.init.TolkienContainers;
 import com.greatorator.tolkienmobs.init.TolkienTags;
+import com.greatorator.tolkienmobs.integration.CuriosBackpackHelper;
 import com.greatorator.tolkienmobs.item.custom.BackpackItem;
+import net.neoforged.fml.ModList;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
@@ -68,9 +70,19 @@ public class BackpackBlockContainer extends TolkienContainer{
         this(pContainerId, inv, readBackpack(inv, extraData));
     }
 
+    public static final byte SOURCE_BLOCK = 0;
+    public static final byte SOURCE_HAND = 1;
+    public static final byte SOURCE_CURIO = 2;
+
     private static BlockEntity readBackpack(Inventory inv, FriendlyByteBuf extraData) {
-        if (extraData.readBoolean()) {
-            return BackpackBlockEntity.createHeld(inv.player, extraData.readEnum(InteractionHand.class));
+        byte source = extraData.readByte();
+        if (source == SOURCE_HAND) {
+            InteractionHand hand = extraData.readEnum(InteractionHand.class);
+            return BackpackBlockEntity.createHeld(inv.player, inv.player.getItemInHand(hand), hand);
+        }
+        if (source == SOURCE_CURIO) {
+            // Contents arrive through the menu's slot and data sync
+            return BackpackBlockEntity.createHeld(inv.player, ItemStack.EMPTY, null);
         }
         return inv.player.level().getBlockEntity(extraData.readBlockPos());
     }
@@ -102,7 +114,8 @@ public class BackpackBlockContainer extends TolkienContainer{
         addDataSlots(fluidData);
 
         if (this.tileEntity.isHeld()) {
-            this.lockedInvIndex = this.tileEntity.getHeldHand() == InteractionHand.MAIN_HAND ? inv.selected : Inventory.SLOT_OFFHAND;
+            InteractionHand hand = this.tileEntity.getHeldHand();
+            this.lockedInvIndex = hand == null ? -1 : hand == InteractionHand.MAIN_HAND ? inv.selected : Inventory.SLOT_OFFHAND;
             for (Slot slot : this.slots) {
                 if (slot.container == inv && slot.getContainerSlot() == this.lockedInvIndex) {
                     this.lockedSlot = slot.index;
@@ -130,7 +143,7 @@ public class BackpackBlockContainer extends TolkienContainer{
 
     @Override
     public void clicked(int slotId, int button, ClickType clickType, Player player) {
-        if (this.tileEntity.isHeld() && (slotId == this.lockedSlot || (clickType == ClickType.SWAP && button == this.lockedInvIndex))) {
+        if (this.tileEntity.isHeld() && this.lockedSlot >= 0 && (slotId == this.lockedSlot || (clickType == ClickType.SWAP && button == this.lockedInvIndex))) {
             return;
         }
         super.clicked(slotId, button, clickType, player);
@@ -202,7 +215,11 @@ public class BackpackBlockContainer extends TolkienContainer{
     @Override
     public boolean stillValid(Player player) {
         if (this.tileEntity.isHeld()) {
-            return player.getItemInHand(this.tileEntity.getHeldHand()) == this.tileEntity.getHeldStack();
+            InteractionHand hand = this.tileEntity.getHeldHand();
+            if (hand == null) {
+                return ModList.get().isLoaded("curios") && CuriosBackpackHelper.isWearing(player, this.tileEntity.getHeldStack());
+            }
+            return player.getItemInHand(hand) == this.tileEntity.getHeldStack();
         }
         return true;
     }

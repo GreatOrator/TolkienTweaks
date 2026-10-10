@@ -17,6 +17,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /** Right-click opens the backpack from the hand; sneak + right-click on a block places it. */
@@ -32,7 +33,7 @@ public class BackpackItem extends BlockItem {
             return InteractionResultHolder.pass(stack);
         }
         if (player instanceof ServerPlayer serverPlayer) {
-            openHeld(serverPlayer, hand);
+            open(serverPlayer, stack, hand);
         }
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
     }
@@ -46,13 +47,17 @@ public class BackpackItem extends BlockItem {
         return super.useOn(context);
     }
 
-    public static void openHeld(ServerPlayer player, InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
+    /** Opens a backpack stack that isn't placed: from a hand, or from the Curios back slot when {@code hand} is null. */
+    public static void open(ServerPlayer player, ItemStack stack, @Nullable InteractionHand hand) {
         player.openMenu(new SimpleMenuProvider(
-                (id, inv, p) -> new BackpackBlockContainer(id, inv, BackpackBlockEntity.createHeld(p, hand)),
+                (id, inv, p) -> new BackpackBlockContainer(id, inv, BackpackBlockEntity.createHeld(p, stack, hand)),
                 stack.getHoverName()), buf -> {
-            buf.writeBoolean(true);
-            buf.writeEnum(hand);
+            if (hand != null) {
+                buf.writeByte(BackpackBlockContainer.SOURCE_HAND);
+                buf.writeEnum(hand);
+            } else {
+                buf.writeByte(BackpackBlockContainer.SOURCE_CURIO);
+            }
         });
     }
 
