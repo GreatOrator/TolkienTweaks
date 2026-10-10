@@ -11,6 +11,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
@@ -108,11 +109,27 @@ public class BackpackBlock extends TolkienEntityBlock {
         super.onRemove(state, worldIn, pPos, newState, isMoving);
     }
 
+    /** Creative mode skips loot tables, so drop a backpack carrying the contents ourselves (like shulker boxes). */
+    @Override
+    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        if (!level.isClientSide() && player.isCreative() && level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity && blockEntity.hasContents()) {
+            ItemStack stack = new ItemStack(this);
+            stack.applyComponents(blockEntity.collectComponents());
+            ItemEntity itemEntity = new ItemEntity(level, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, stack);
+            itemEntity.setDefaultPickUpDelay();
+            level.addFreshEntity(itemEntity);
+        }
+        return super.playerWillDestroy(level, pos, state, player);
+    }
+
     @Override
     public InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult hit) {
         if (!level.isClientSide()) {
             if (level.getBlockEntity(blockPos) instanceof BackpackBlockEntity blockEntity) {
-                player.openMenu(blockEntity, blockPos);
+                player.openMenu(blockEntity, buf -> {
+                    buf.writeBoolean(false);
+                    buf.writeBlockPos(blockPos);
+                });
             }
         }
         return InteractionResult.SUCCESS;

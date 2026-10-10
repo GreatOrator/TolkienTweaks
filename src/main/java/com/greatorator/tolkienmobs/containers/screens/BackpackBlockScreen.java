@@ -211,14 +211,14 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
     public void addUpgradeButtons() {
         int offsetX = (this.width - this.imageWidth) / 2;
         int offsetY = (this.height - this.imageHeight) / 2;
-        if (this.tileEntity.backpackUpgrades.sleepingBag) {
+        if (this.tileEntity.backpackUpgrades.sleepingBag && !this.tileEntity.isHeld()) {
             addRenderableWidget(ToggleButtonFactory.SLEEPING_BAG_TOGGLE_BUTTON(offsetX + 173, offsetY + 156, backpackSettings.sleepingBag, b -> {
                 ((ToggleButton) b).setTexturePosition(backpackSettings.sleepingBag);
                 PacketDistributor.sendToServer(new BackpackPlacementUpdateManager(true, false));
             }));
         }
 
-        if (this.tileEntity.backpackUpgrades.campfire) {
+        if (this.tileEntity.backpackUpgrades.campfire && !this.tileEntity.isHeld()) {
             addRenderableWidget(ToggleButtonFactory.CAMPFIRE_TOGGLE_BUTTON(offsetX + 191, offsetY + 156, backpackSettings.campfire, b -> {
                 ((ToggleButton) b).setTexturePosition(backpackSettings.campfire);
                 PacketDistributor.sendToServer(new BackpackPlacementUpdateManager(false, true));

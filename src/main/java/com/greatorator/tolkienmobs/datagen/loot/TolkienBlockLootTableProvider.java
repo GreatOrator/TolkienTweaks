@@ -4,6 +4,7 @@ import com.greatorator.tolkienmobs.block.custom.BramblesBushBlock;
 import com.greatorator.tolkienmobs.block.custom.PipeweedCropBlock;
 import com.greatorator.tolkienmobs.block.custom.SleepingBagBlock;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
+import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.core.Holder;
@@ -736,7 +737,11 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.TRINKET_TABLE.get());
         dropSelf(TolkienBlocks.FIREPLACE.get());
         dropSelf(TolkienBlocks.PIGGYBANK.get());
-        dropSelf(TolkienBlocks.BACKPACK.get());
+        add(TolkienBlocks.BACKPACK.get(), block -> LootTable.lootTable().withPool(applyExplosionCondition(block, LootPool.lootPool()
+                .setRolls(ConstantValue.exactly(1.0F))
+                .add(LootItem.lootTableItem(block)
+                        .apply(CopyComponentsFunction.copyComponents(CopyComponentsFunction.Source.BLOCK_ENTITY)
+                                .include(TolkienDataComponents.BACKPACK_CONTENTS.get()))))));
         dropSelf(TolkienBlocks.CHAMELEON_BLOCK.get());
         dropSelf(TolkienBlocks.WELL.get());
 
