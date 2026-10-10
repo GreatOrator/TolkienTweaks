@@ -26,8 +26,8 @@ repositories {
         }
     }
     maven {
-        name = "OctoStudios" //Curios
-        url = uri("https://maven.octo-studios.com/releases")
+        name = "TheIllusiveC4" //Curios
+        url = uri("https://maven.theillusivec4.top/")
     }
     maven {
         name = 'GeckoLib'
