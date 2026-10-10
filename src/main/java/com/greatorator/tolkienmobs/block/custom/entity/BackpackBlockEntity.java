@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.block.custom.entity;
 
 import com.greatorator.tolkienmobs.block.custom.BackpackBlock;
+import com.greatorator.tolkienmobs.block.custom.SleepingBagBlock;
 import com.greatorator.tolkienmobs.containers.BackpackBlockContainer;
 import com.greatorator.tolkienmobs.handler.capability.TolkienFluidTank;
 import com.greatorator.tolkienmobs.handler.data.BackpackFluidData;
@@ -9,8 +10,6 @@ import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienTags;
 import com.greatorator.tolkienmobs.item.custom.UpgradeItem;
-import com.greatorator.tolkienmobs.network.manager.BackpackPlacementUpdateManager;
-import com.greatorator.tolkienmobs.network.manager.BackpackSettingsUpdateManager;
 import com.greatorator.tolkienmobs.util.block.BackpackFluidUpgrades;
 import com.greatorator.tolkienmobs.util.block.BackpackPlacement;
 import com.greatorator.tolkienmobs.util.block.BackpackSettings;
@@ -34,8 +33,12 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BedPart;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidActionResult;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -247,30 +250,93 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
         return level.getBlockState(getBlockPos()).getValue(BackpackBlock.FACING);
     }
 
-    public void deploySleepingbag() {
-        if (!level.isClientSide()) {
-            getBackpackSettings().campfire = !getBackpackSettings().sleepingBag;
-            PacketDistributor.sendToServer(new BackpackSettingsUpdateManager(backpackSettings.sleepingBag, backpackSettings.campfire, backpackSettings.upgrade));
-
-            setChanged();
-        }
-        PacketDistributor.sendToServer(new BackpackPlacementUpdateManager(backpackPlacement.sleepingBag, backpackPlacement.campfire));
+    /** Sleeping bag (two blocks in front) and campfire (one block in front) share space, so only one is deployed at a time. */
+    public boolean isSleepingBagDeployed(Direction facing) {
+        BlockState state = level.getBlockState(getBlockPos().relative(facing));
+        return state.getBlock() instanceof SleepingBagBlock && !state.getValue(SleepingBagBlock.CAN_DROP);
     }
 
-    public void deployCampfire(Level level, BlockPos pos) {
-        Direction direction = this.getBlockDirection();
-
-        if (!level.isClientSide()) {
-            getBackpackSettings().sleepingBag = !getBackpackSettings().campfire;
-            PacketDistributor.sendToServer(new BackpackSettingsUpdateManager(backpackSettings.sleepingBag, backpackSettings.campfire, backpackSettings.upgrade));
-
-            setChanged();
-        }
-        PacketDistributor.sendToServer(new BackpackPlacementUpdateManager(backpackPlacement.sleepingBag, backpackPlacement.campfire));
+    public boolean isCampfireDeployed(Direction facing) {
+        return !backpackSettings.campfire && level.getBlockState(getBlockPos().relative(facing)).getBlock() instanceof CampfireBlock;
     }
 
-    public void updatePlacement() {
-        PacketDistributor.sendToServer(new BackpackPlacementUpdateManager(backpackPlacement.sleepingBag, backpackPlacement.campfire));
+    /** Called from the screen buttons: removes whatever is deployed, then deploys the requested item unless it was the one just removed. */
+    public void toggleDeployable(boolean sleepingBag, Player player) {
+        if (level == null || level.isClientSide()) {
+            return;
+        }
+        Direction facing = getBlockDirection();
+        boolean bagWasDeployed = isSleepingBagDeployed(facing);
+        boolean campfireWasDeployed = isCampfireDeployed(facing);
+
+        removeDeployables(facing);
+
+        if (sleepingBag && !bagWasDeployed && backpackUpgrades.sleepingBag) {
+            placeSleepingBag(facing, player);
+        } else if (!sleepingBag && !campfireWasDeployed && backpackUpgrades.campfire) {
+            placeCampfire(facing, player);
+        }
+    }
+
+    public void removeDeployables(Direction facing) {
+        if (level == null || level.isClientSide()) {
+            return;
+        }
+        BlockPos front = getBlockPos().relative(facing);
+        if (isSleepingBagDeployed(facing)) {
+            BlockPos head = front.relative(facing);
+            level.playSound(null, head, SoundEvents.WOOL_BREAK, SoundSource.BLOCKS, 0.5F, 1.0F);
+            if (level.getBlockState(head).getBlock() instanceof SleepingBagBlock) {
+                level.setBlock(head, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL | Block.UPDATE_SUPPRESS_DROPS);
+            }
+            level.setBlock(front, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL | Block.UPDATE_SUPPRESS_DROPS);
+        } else if (isCampfireDeployed(facing)) {
+            level.playSound(null, front, SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 0.5F, 1.0F);
+            level.setBlock(front, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL | Block.UPDATE_SUPPRESS_DROPS);
+        }
+        setDeployed(false, false);
+    }
+
+    private void placeSleepingBag(Direction facing, Player player) {
+        BlockPos foot = getBlockPos().relative(facing);
+        BlockPos head = foot.relative(facing);
+        if (!level.getBlockState(foot).canBeReplaced() || !level.getBlockState(head).canBeReplaced()) {
+            notEnoughRoom(player);
+            return;
+        }
+        BlockState bagState = TolkienBlocks.SLEEPING_BAG_BLUE.get().defaultBlockState()
+                .setValue(SleepingBagBlock.FACING, facing)
+                .setValue(SleepingBagBlock.CAN_DROP, false);
+        level.setBlock(foot, bagState.setValue(SleepingBagBlock.PART, BedPart.FOOT), Block.UPDATE_ALL);
+        level.setBlock(head, bagState.setValue(SleepingBagBlock.PART, BedPart.HEAD), Block.UPDATE_ALL);
+        level.playSound(null, head, SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 0.5F, 1.0F);
+        setDeployed(true, false);
+    }
+
+    private void placeCampfire(Direction facing, Player player) {
+        BlockPos front = getBlockPos().relative(facing);
+        if (!level.getBlockState(front).canBeReplaced()) {
+            notEnoughRoom(player);
+            return;
+        }
+        level.setBlock(front, Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.FACING, facing), Block.UPDATE_ALL);
+        level.playSound(null, front, SoundEvents.WOOD_PLACE, SoundSource.BLOCKS, 0.5F, 1.0F);
+        setDeployed(false, true);
+    }
+
+    private void notEnoughRoom(Player player) {
+        if (player != null) {
+            player.displayClientMessage(Component.translatable("screen.tolkienmobs.backpack.no_room"), true);
+        }
+    }
+
+    /** Settings hold the button state (true = packed away); placement holds what is actually deployed. */
+    private void setDeployed(boolean sleepingBag, boolean campfire) {
+        backpackSettings.sleepingBag = !sleepingBag;
+        backpackSettings.campfire = !campfire;
+        backpackPlacement.sleepingBag = sleepingBag;
+        backpackPlacement.campfire = campfire;
+        markDirtyClient();
     }
 
     @Override
