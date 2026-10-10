@@ -43,7 +43,6 @@ import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
-import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
@@ -84,6 +83,7 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
         protected void onContentsChanged(int slot) {
             setChanged();
             if(!level.isClientSide()) {
+                refreshUpgrades();
                 level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
             }
         }
@@ -127,6 +127,7 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
+        refreshUpgrades();
         return new BackpackBlockContainer(pContainerId, pPlayerInventory, this);
     }
 
@@ -182,53 +183,62 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
         return stack.is(TolkienTags.Items.UPGRADES);
     }
 
-    public void getUpgradeItems() {
-        getUpgradeItems(this.upgradeItemHandler, IS_UPGRADE_ITEM);
-    }
+    /** Re-reads the upgrade slots on the server and syncs the result to clients if anything changed. */
+    public boolean refreshUpgrades() {
+        BackpackUpgrades upgrades = new BackpackUpgrades();
+        BackpackFluidUpgrades fluidUpgrades = new BackpackFluidUpgrades();
 
-    private boolean getUpgradeItems(IItemHandler inv, Predicate<ItemStack> isUpgradeStack) {
-        boolean hasUpgrade = false;
-
-        this.backpackUpgrades.campfire = false;
-        this.backpackUpgrades.sleepingBag = false;
-        this.backpackUpgrades.crafting = false;
-        this.backpackUpgrades.size_upgrade = false;
-        this.backpackUpgrades.size_upgrade_2 = false;
-        this.backpackFluidUpgrades.fluid_tank = false;
-        this.backpackFluidUpgrades.fluid_tank_2 = false;
-        this.backpackFluidUpgrades.fluid_tank_3 = false;
-        this.backpackFluidUpgrades.fluid_tank_4 = false;
-        this.backpackFluidUpgrades.fluid_tank_5 = false;
-        this.markDirtyClient();
-        this.setChanged();
-        for (int i = 0; i < 9; i++) {
-            inv = this.upgradeItemHandler;
-            ItemStack invStack = inv.getStackInSlot(i);
-            if (isUpgradeStack.test(invStack) && invStack.getItem() instanceof UpgradeItem) {
-                if (invStack.getItem() == TolkienItems.ITEM_BACKPACK_UPGRADE_CAMPFIRE.get()) {
-                    this.backpackUpgrades.campfire = true;
-                } else if (invStack.getItem() == TolkienItems.ITEM_BACKPACK_UPGRADE_SLEEPING.get()) {
-                    this.backpackUpgrades.sleepingBag = true;
-                } else if (invStack.getItem() == TolkienItems.ITEM_BACKPACK_UPGRADE_CRAFTING.get()) {
-                    this.backpackUpgrades.crafting = true;
-                } else if (invStack.getItem() == TolkienItems.ITEM_BACKPACK_UPGRADE_SIZE.get()) {
-                    this.backpackUpgrades.size_upgrade = true;
-                } else if (invStack.getItem() == TolkienItems.ITEM_BACKPACK_UPGRADE_SIZE_2.get()) {
-                    this.backpackUpgrades.size_upgrade_2 = true;
-                } else if (invStack.getItem() == TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID.get()) {
-                    this.backpackFluidUpgrades.fluid_tank = true;
-                } else if (invStack.getItem() == TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_2.get()) {
-                    this.backpackFluidUpgrades.fluid_tank_2 = true;
-                } else if (invStack.getItem() == TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_3.get()) {
-                    this.backpackFluidUpgrades.fluid_tank_3 = true;
-                } else if (invStack.getItem() == TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_4.get()) {
-                    this.backpackFluidUpgrades.fluid_tank_4 = true;
-                } else if (invStack.getItem() == TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_5.get()) {
-                    this.backpackFluidUpgrades.fluid_tank_5 = true;
-                }
+        for (int i = 0; i < this.upgradeItemHandler.getSlots(); i++) {
+            ItemStack invStack = this.upgradeItemHandler.getStackInSlot(i);
+            if (!IS_UPGRADE_ITEM.test(invStack) || !(invStack.getItem() instanceof UpgradeItem)) {
+                continue;
+            }
+            if (invStack.is(TolkienItems.ITEM_BACKPACK_UPGRADE_CAMPFIRE.get())) {
+                upgrades.campfire = true;
+            } else if (invStack.is(TolkienItems.ITEM_BACKPACK_UPGRADE_SLEEPING.get())) {
+                upgrades.sleepingBag = true;
+            } else if (invStack.is(TolkienItems.ITEM_BACKPACK_UPGRADE_CRAFTING.get())) {
+                upgrades.crafting = true;
+            } else if (invStack.is(TolkienItems.ITEM_BACKPACK_UPGRADE_SIZE.get())) {
+                upgrades.size_upgrade = true;
+            } else if (invStack.is(TolkienItems.ITEM_BACKPACK_UPGRADE_SIZE_2.get())) {
+                upgrades.size_upgrade_2 = true;
+            } else if (invStack.is(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID.get())) {
+                fluidUpgrades.fluid_tank = true;
+            } else if (invStack.is(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_2.get())) {
+                fluidUpgrades.fluid_tank_2 = true;
+            } else if (invStack.is(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_3.get())) {
+                fluidUpgrades.fluid_tank_3 = true;
+            } else if (invStack.is(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_4.get())) {
+                fluidUpgrades.fluid_tank_4 = true;
+            } else if (invStack.is(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_5.get())) {
+                fluidUpgrades.fluid_tank_5 = true;
             }
         }
-        return hasUpgrade;
+
+        if (upgrades.equals(this.backpackUpgrades) && fluidUpgrades.equals(this.backpackFluidUpgrades)) {
+            return false;
+        }
+        setBackpackUpgrades(upgrades);
+        setBackpackFluidUpgrades(fluidUpgrades);
+        return true;
+    }
+
+    public int getStorageSize() {
+        if (this.backpackUpgrades.size_upgrade_2) {
+            return 72;
+        } else if (this.backpackUpgrades.size_upgrade) {
+            return 54;
+        }
+        return 27;
+    }
+
+    public boolean hasFluidTank() {
+        return this.backpackFluidUpgrades.fluid_tank
+                || this.backpackFluidUpgrades.fluid_tank_2
+                || this.backpackFluidUpgrades.fluid_tank_3
+                || this.backpackFluidUpgrades.fluid_tank_4
+                || this.backpackFluidUpgrades.fluid_tank_5;
     }
 
     public Direction getBlockDirection() {
