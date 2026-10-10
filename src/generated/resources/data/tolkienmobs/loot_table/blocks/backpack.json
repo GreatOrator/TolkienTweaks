@@ -11,7 +11,16 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "tolkienmobs:backpack"
+          "name": "tolkienmobs:backpack",
+          "functions": [
+            {
+              "function": "minecraft:copy_components",
+              "include": [
+                "tolkienmobs:backpack_contents"
+              ],
+              "source": "block_entity"
+            }
+          ]
         }
       ],
       "rolls": 1.0

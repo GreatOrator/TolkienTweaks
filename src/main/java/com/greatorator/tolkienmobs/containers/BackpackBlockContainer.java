@@ -6,6 +6,8 @@ import com.greatorator.tolkienmobs.containers.handlers.BucketItemHandler;
 import com.greatorator.tolkienmobs.containers.handlers.UpgradeItemHandler;
 import com.greatorator.tolkienmobs.init.TolkienContainers;
 import com.greatorator.tolkienmobs.init.TolkienTags;
+import com.greatorator.tolkienmobs.item.custom.BackpackItem;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -58,8 +60,19 @@ public class BackpackBlockContainer extends TolkienContainer{
     public static final int FLUID_START = CRAFT_GRID_START + 9;
     public static final int FLUID_SLOTS = 2;
 
+    /** Index of the menu slot holding the open held backpack; it is locked so the backpack can't be moved while open. */
+    private int lockedSlot = -1;
+    private int lockedInvIndex = -1;
+
     public BackpackBlockContainer(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
-        this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()));
+        this(pContainerId, inv, readBackpack(inv, extraData));
+    }
+
+    private static BlockEntity readBackpack(Inventory inv, FriendlyByteBuf extraData) {
+        if (extraData.readBoolean()) {
+            return BackpackBlockEntity.createHeld(inv.player, extraData.readEnum(InteractionHand.class));
+        }
+        return inv.player.level().getBlockEntity(extraData.readBlockPos());
     }
 
     public BackpackBlockContainer(int pContainerId, Inventory inv, BlockEntity blockEntity) {
@@ -87,6 +100,40 @@ public class BackpackBlockContainer extends TolkienContainer{
 
         addFluidSlots();
         addDataSlots(fluidData);
+
+        if (this.tileEntity.isHeld()) {
+            this.lockedInvIndex = this.tileEntity.getHeldHand() == InteractionHand.MAIN_HAND ? inv.selected : Inventory.SLOT_OFFHAND;
+            for (Slot slot : this.slots) {
+                if (slot.container == inv && slot.getContainerSlot() == this.lockedInvIndex) {
+                    this.lockedSlot = slot.index;
+                    break;
+                }
+            }
+            addDataSlots(new ContainerData() {
+                @Override
+                public int get(int index) {
+                    return tileEntity.getSyncedState(index);
+                }
+
+                @Override
+                public void set(int index, int value) {
+                    tileEntity.applySyncedState(index, value);
+                }
+
+                @Override
+                public int getCount() {
+                    return BackpackBlockEntity.SYNCED_STATE_COUNT;
+                }
+            });
+        }
+    }
+
+    @Override
+    public void clicked(int slotId, int button, ClickType clickType, Player player) {
+        if (this.tileEntity.isHeld() && (slotId == this.lockedSlot || (clickType == ClickType.SWAP && button == this.lockedInvIndex))) {
+            return;
+        }
+        super.clicked(slotId, button, clickType, player);
     }
 
     private boolean hasCrafting() {
@@ -154,11 +201,17 @@ public class BackpackBlockContainer extends TolkienContainer{
 
     @Override
     public boolean stillValid(Player player) {
+        if (this.tileEntity.isHeld()) {
+            return player.getItemInHand(this.tileEntity.getHeldHand()) == this.tileEntity.getHeldStack();
+        }
         return true;
     }
 
     @Override
     public void broadcastChanges() {
+        if (this.tileEntity.isHeld() && !this.level.isClientSide()) {
+            this.tileEntity.tickHeld();
+        }
         // Hand back anything left in the crafting grid if the crafting upgrade was removed
         if (!hasCrafting() && !this.craftSlots.isEmpty()) {
             this.access.execute((lvl, pos) -> this.clearContainer(this.player, this.craftSlots));
@@ -183,7 +236,7 @@ public class BackpackBlockContainer extends TolkienContainer{
 
                     @Override
                     public boolean mayPlace(ItemStack stack) {
-                        return isActive() && super.mayPlace(stack);
+                        return isActive() && !(stack.getItem() instanceof BackpackItem) && super.mayPlace(stack);
                     }
                 });
                 slot_index++;
@@ -243,6 +296,9 @@ public class BackpackBlockContainer extends TolkienContainer{
     @Override
     public void removed(Player player) {
         super.removed(player);
+        if (this.tileEntity.isHeld()) {
+            this.tileEntity.saveToStack();
+        }
         this.access.execute((level, blockPos) -> this.clearContainer(player, this.craftSlots));
     }
 

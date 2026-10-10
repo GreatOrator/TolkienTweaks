@@ -7,6 +7,7 @@ import com.greatorator.tolkienmobs.handler.capability.TolkienFluidTank;
 import com.greatorator.tolkienmobs.handler.data.BackpackFluidData;
 import com.greatorator.tolkienmobs.handler.interfaces.block.*;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
+import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienTags;
 import com.greatorator.tolkienmobs.item.custom.UpgradeItem;
@@ -17,6 +18,8 @@ import com.greatorator.tolkienmobs.util.block.BackpackUpgrades;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
@@ -25,6 +28,7 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -32,7 +36,10 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
@@ -69,10 +76,7 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
 
         @Override
         protected void onContentsChanged(int slot) {
-            setChanged();
-            if(!level.isClientSide()) {
-                level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
-            }
+            contentsChanged();
         }
     };
 
@@ -84,11 +88,10 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
 
         @Override
         protected void onContentsChanged(int slot) {
-            setChanged();
-            if(!level.isClientSide()) {
+            if(level != null && !level.isClientSide()) {
                 refreshUpgrades();
-                level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
             }
+            contentsChanged();
         }
     };
     private final FluidTank FLUID_TANK = createFluidTank();
@@ -96,10 +99,7 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
         return new FluidTank(getMaxMB()) {
             @Override
             protected void onContentsChanged() {
-                setChanged();
-                if(!level.isClientSide()) {
-                    level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
-                }
+                contentsChanged();
             }
 
             @Override
@@ -109,9 +109,211 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
         };
     }
 
+    /** Set when this backpack is opened from a player's hand instead of being placed; changes are saved onto this stack. */
+    @Nullable
+    private ItemStack heldStack;
+    private InteractionHand heldHand = InteractionHand.MAIN_HAND;
+    private final ItemStack[] lastHeldBuckets = {ItemStack.EMPTY, ItemStack.EMPTY};
+    @Nullable
+    private CompoundTag pendingContents;
+    private int syncedFluidId;
+    private int syncedFluidAmount;
+    public static final int SYNCED_STATE_COUNT = 5;
+
     public BackpackBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(TolkienBlocks.BACKPACK_BLOCK_ENTITY.get(), pPos, pBlockState);
         backpackFluidData = new BackpackFluidData(this);
+    }
+
+    /** A backpack that is not in the world, backed by the backpack item in the player's hand. */
+    public static BackpackBlockEntity createHeld(Player player, InteractionHand hand) {
+        BackpackBlockEntity backpack = new BackpackBlockEntity(player.blockPosition(), TolkienBlocks.BACKPACK.get().defaultBlockState());
+        backpack.setLevel(player.level());
+        backpack.heldStack = player.getItemInHand(hand);
+        backpack.heldHand = hand;
+        CustomData contents = backpack.heldStack.get(TolkienDataComponents.BACKPACK_CONTENTS.get());
+        if (contents != null) {
+            backpack.loadContents(contents.copyTag(), player.level().registryAccess());
+        }
+        if (!player.level().isClientSide()) {
+            backpack.refreshUpgrades();
+        }
+        return backpack;
+    }
+
+    public boolean isHeld() {
+        return heldStack != null;
+    }
+
+    @Nullable
+    public ItemStack getHeldStack() {
+        return heldStack;
+    }
+
+    public InteractionHand getHeldHand() {
+        return heldHand;
+    }
+
+    private void contentsChanged() {
+        if (level == null || level.isClientSide()) {
+            return;
+        }
+        if (isHeld()) {
+            saveToStack();
+            return;
+        }
+        setChanged();
+        level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+    }
+
+    public void saveToStack() {
+        if (heldStack != null && level != null && !level.isClientSide()) {
+            heldStack.set(TolkienDataComponents.BACKPACK_CONTENTS.get(), CustomData.of(saveContents(level.registryAccess())));
+        }
+    }
+
+    /** Called every server tick while a held backpack is open: runs the bucket slots and saves if they changed. */
+    public void tickHeld() {
+        tickServer();
+        ItemStackHandler buckets = getMachineHandler();
+        boolean changed = false;
+        for (int i = 0; i < lastHeldBuckets.length && i < buckets.getSlots(); i++) {
+            ItemStack stack = buckets.getStackInSlot(i);
+            if (!ItemStack.matches(stack, lastHeldBuckets[i])) {
+                lastHeldBuckets[i] = stack.copy();
+                changed = true;
+            }
+        }
+        if (changed) {
+            saveToStack();
+        }
+    }
+
+    /** Everything a backpack carries when it is picked up as an item. */
+    public CompoundTag saveContents(HolderLookup.Provider registries) {
+        CompoundTag tag = new CompoundTag();
+        tag.put("inventory", itemHandler.serializeNBT(registries));
+        tag.put("upgradeInventory", upgradeItemHandler.serializeNBT(registries));
+        tag.put("bucketInventory", getMachineHandler().serializeNBT(registries));
+        FLUID_TANK.writeToNBT(registries, tag);
+        this.saveBackpackSettings(tag);
+        this.saveBackpackUpgrades(tag);
+        this.saveBackpackFluidUpgrades(tag);
+        return tag;
+    }
+
+    public void loadContents(CompoundTag tag, HolderLookup.Provider registries) {
+        itemHandler.deserializeNBT(registries, tag.getCompound("inventory"));
+        upgradeItemHandler.deserializeNBT(registries, tag.getCompound("upgradeInventory"));
+        if (tag.contains("bucketInventory")) {
+            getMachineHandler().deserializeNBT(registries, tag.getCompound("bucketInventory"));
+        }
+        FLUID_TANK.readFromNBT(registries, tag);
+        this.loadBackpackSettings(tag);
+        this.loadBackpackUpgrades(tag);
+        this.loadBackpackFluidUpgrades(tag);
+        FLUID_TANK.setCapacity(getMaxMB());
+    }
+
+    public boolean hasContents() {
+        return !FLUID_TANK.isEmpty() || hasItems(itemHandler) || hasItems(upgradeItemHandler) || hasItems(getMachineHandler());
+    }
+
+    private static boolean hasItems(ItemStackHandler handler) {
+        for (int i = 0; i < handler.getSlots(); i++) {
+            if (!handler.getStackInSlot(i).isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    protected void applyImplicitComponents(BlockEntity.DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        CustomData contents = input.get(TolkienDataComponents.BACKPACK_CONTENTS.get());
+        if (contents != null) {
+            if (level != null) {
+                loadContents(contents.copyTag(), level.registryAccess());
+            } else {
+                pendingContents = contents.copyTag();
+            }
+        }
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (pendingContents != null && level != null) {
+            loadContents(pendingContents, level.registryAccess());
+            pendingContents = null;
+        }
+    }
+
+    @Override
+    protected void collectImplicitComponents(DataComponentMap.Builder components) {
+        super.collectImplicitComponents(components);
+        if (level != null && hasContents()) {
+            components.set(TolkienDataComponents.BACKPACK_CONTENTS.get(), CustomData.of(saveContents(level.registryAccess())));
+        }
+    }
+
+    /** Upgrades, settings and the tank, packed into menu data slots (16 bits each) for held backpacks, which get no block entity updates. */
+    public int getSyncedState(int index) {
+        return switch (index) {
+            case 0 -> upgradeBits();
+            case 1 -> (backpackSettings.sleepingBag ? 1 : 0) | (backpackSettings.campfire ? 2 : 0) | (backpackSettings.upgrade ? 4 : 0);
+            case 2 -> BuiltInRegistries.FLUID.getId(FLUID_TANK.getFluid().getFluid());
+            case 3 -> FLUID_TANK.getFluidAmount() & 0xFFFF;
+            case 4 -> FLUID_TANK.getFluidAmount() >>> 16;
+            default -> 0;
+        };
+    }
+
+    public void applySyncedState(int index, int value) {
+        value &= 0xFFFF;
+        switch (index) {
+            case 0 -> {
+                backpackUpgrades.crafting = (value & 1) != 0;
+                backpackUpgrades.sleepingBag = (value & 2) != 0;
+                backpackUpgrades.campfire = (value & 4) != 0;
+                backpackUpgrades.size_upgrade = (value & 8) != 0;
+                backpackUpgrades.size_upgrade_2 = (value & 16) != 0;
+                backpackFluidUpgrades.fluid_tank = (value & 32) != 0;
+                backpackFluidUpgrades.fluid_tank_2 = (value & 64) != 0;
+                backpackFluidUpgrades.fluid_tank_3 = (value & 128) != 0;
+                backpackFluidUpgrades.fluid_tank_4 = (value & 256) != 0;
+                backpackFluidUpgrades.fluid_tank_5 = (value & 512) != 0;
+                FLUID_TANK.setCapacity(getMaxMB());
+            }
+            case 1 -> {
+                backpackSettings.sleepingBag = (value & 1) != 0;
+                backpackSettings.campfire = (value & 2) != 0;
+                backpackSettings.upgrade = (value & 4) != 0;
+            }
+            case 2 -> syncedFluidId = value;
+            case 3 -> syncedFluidAmount = (syncedFluidAmount & 0xFFFF0000) | value;
+            case 4 -> syncedFluidAmount = (syncedFluidAmount & 0xFFFF) | (value << 16);
+            default -> {
+            }
+        }
+        if (index >= 2) {
+            Fluid fluid = BuiltInRegistries.FLUID.byId(syncedFluidId);
+            FLUID_TANK.setFluid(fluid == Fluids.EMPTY || syncedFluidAmount <= 0 ? FluidStack.EMPTY : new FluidStack(fluid, syncedFluidAmount));
+        }
+    }
+
+    private int upgradeBits() {
+        return (backpackUpgrades.crafting ? 1 : 0)
+                | (backpackUpgrades.sleepingBag ? 2 : 0)
+                | (backpackUpgrades.campfire ? 4 : 0)
+                | (backpackUpgrades.size_upgrade ? 8 : 0)
+                | (backpackUpgrades.size_upgrade_2 ? 16 : 0)
+                | (backpackFluidUpgrades.fluid_tank ? 32 : 0)
+                | (backpackFluidUpgrades.fluid_tank_2 ? 64 : 0)
+                | (backpackFluidUpgrades.fluid_tank_3 ? 128 : 0)
+                | (backpackFluidUpgrades.fluid_tank_4 ? 256 : 0)
+                | (backpackFluidUpgrades.fluid_tank_5 ? 512 : 0);
     }
 
     public FluidStack getFluid() {
@@ -168,6 +370,7 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
         this.loadBackpackSettings(pTag);
         this.loadBackpackUpgrades(pTag);
         this.loadBackpackFluidUpgrades(pTag);
+        FLUID_TANK.setCapacity(getMaxMB());
     }
 
     @Nullable
@@ -224,6 +427,7 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
         }
         setBackpackUpgrades(upgrades);
         setBackpackFluidUpgrades(fluidUpgrades);
+        FLUID_TANK.setCapacity(getMaxMB());
         return true;
     }
 
@@ -262,7 +466,7 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
 
     /** Called from the screen buttons: removes whatever is deployed, then deploys the requested item unless it was the one just removed. */
     public void toggleDeployable(boolean sleepingBag, Player player) {
-        if (level == null || level.isClientSide()) {
+        if (level == null || level.isClientSide() || isHeld()) {
             return;
         }
         Direction facing = getBlockDirection();
@@ -279,7 +483,7 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
     }
 
     public void removeDeployables(Direction facing) {
-        if (level == null || level.isClientSide()) {
+        if (level == null || level.isClientSide() || isHeld()) {
             return;
         }
         BlockPos front = getBlockPos().relative(facing);
@@ -375,7 +579,9 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
             transferFluidFromTankToHandler();
         }
 
-        pushFluidToAboveNeighbour();
+        if (!isHeld()) {
+            pushFluidToAboveNeighbour();
+        }
     }
 
     private void pushFluidToAboveNeighbour() {
@@ -445,6 +651,10 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
     }
 
     public void markDirtyClient() {
+        if (isHeld()) {
+            saveToStack();
+            return;
+        }
         setChanged();
         if (level != null) {
             BlockState state = level.getBlockState(getBlockPos());
