@@ -58,6 +58,8 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
     protected BackpackFluidUpgrades backpackFluidUpgrades;
     private BackpackUpgrades shownUpgrades;
     private BackpackFluidUpgrades shownFluidUpgrades;
+    private boolean shownSleepingBag;
+    private boolean shownCampfire;
     private final BackpackBlockEntity tileEntity;
     private Level level;
     private FluidTankRenderer fluidRenderer;
@@ -92,12 +94,14 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
     @Override
     protected void containerTick() {
         super.containerTick();
-        if (!upgradesMatchShown()) {
+        if (!upgradesMatchShown() || shownSleepingBag != backpackSettings.sleepingBag || shownCampfire != backpackSettings.campfire) {
             rebuildWidgets();
         }
     }
 
     private void rememberShownUpgrades() {
+        shownSleepingBag = backpackSettings.sleepingBag;
+        shownCampfire = backpackSettings.campfire;
         shownUpgrades = new BackpackUpgrades(backpackUpgrades.crafting, backpackUpgrades.sleepingBag, backpackUpgrades.campfire, backpackUpgrades.size_upgrade, backpackUpgrades.size_upgrade_2);
         shownFluidUpgrades = new BackpackFluidUpgrades(backpackFluidUpgrades.fluid_tank, backpackFluidUpgrades.fluid_tank_2, backpackFluidUpgrades.fluid_tank_3, backpackFluidUpgrades.fluid_tank_4, backpackFluidUpgrades.fluid_tank_5);
     }
@@ -209,19 +213,15 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
         int offsetY = (this.height - this.imageHeight) / 2;
         if (this.tileEntity.backpackUpgrades.sleepingBag) {
             addRenderableWidget(ToggleButtonFactory.SLEEPING_BAG_TOGGLE_BUTTON(offsetX + 173, offsetY + 156, backpackSettings.sleepingBag, b -> {
-                backpackSettings.sleepingBag = !backpackSettings.sleepingBag;
-                backpackPlacement.sleepingBag = backpackSettings.sleepingBag;
-                PacketDistributor.sendToServer(new BackpackSettingsUpdateManager(backpackSettings.sleepingBag, backpackSettings.campfire, backpackSettings.upgrade));
-                PacketDistributor.sendToServer(new BackpackPlacementUpdateManager(backpackPlacement.sleepingBag, !backpackPlacement.campfire));
+                ((ToggleButton) b).setTexturePosition(backpackSettings.sleepingBag);
+                PacketDistributor.sendToServer(new BackpackPlacementUpdateManager(true, false));
             }));
         }
 
         if (this.tileEntity.backpackUpgrades.campfire) {
             addRenderableWidget(ToggleButtonFactory.CAMPFIRE_TOGGLE_BUTTON(offsetX + 191, offsetY + 156, backpackSettings.campfire, b -> {
-                backpackSettings.campfire = !backpackSettings.campfire;
-                backpackPlacement.campfire = backpackSettings.campfire;
-                PacketDistributor.sendToServer(new BackpackSettingsUpdateManager(backpackSettings.sleepingBag, backpackSettings.campfire, backpackSettings.upgrade));
-                PacketDistributor.sendToServer(new BackpackPlacementUpdateManager(!backpackPlacement.sleepingBag, backpackPlacement.campfire));
+                ((ToggleButton) b).setTexturePosition(backpackSettings.campfire);
+                PacketDistributor.sendToServer(new BackpackPlacementUpdateManager(false, true));
             }));
         }
 

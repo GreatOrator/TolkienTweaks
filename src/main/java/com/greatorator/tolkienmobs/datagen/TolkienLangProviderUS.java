@@ -365,6 +365,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add("screen.tolkienmobs.backpack.bed.remove", "Pick up Sleepingbag");
             this.add("screen.tolkienmobs.backpack.campfire.deployed", "Set up Campfire");
             this.add("screen.tolkienmobs.backpack.campfire.remove", "Pick up Campfire");
+            this.add("screen.tolkienmobs.backpack.no_room", "There's no room to set that up here");
             this.add("screen.tolkienmobs.backpack.close.upgrade", "Close upgrade window");
             this.add("screen.tolkienmobs.backpack.open.upgrade", "Open upgrade window");
             this.add("screen.tolkienmobs.backpack.backpack_upgrade", "Upgrades");
