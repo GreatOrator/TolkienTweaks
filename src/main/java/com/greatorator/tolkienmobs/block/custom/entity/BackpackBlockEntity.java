@@ -112,7 +112,8 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
     /** Set when this backpack is opened from a player's hand instead of being placed; changes are saved onto this stack. */
     @Nullable
     private ItemStack heldStack;
-    private InteractionHand heldHand = InteractionHand.MAIN_HAND;
+    @Nullable
+    private InteractionHand heldHand;
     private final ItemStack[] lastHeldBuckets = {ItemStack.EMPTY, ItemStack.EMPTY};
     @Nullable
     private CompoundTag pendingContents;
@@ -126,10 +127,10 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
     }
 
     /** A backpack that is not in the world, backed by the backpack item in the player's hand. */
-    public static BackpackBlockEntity createHeld(Player player, InteractionHand hand) {
+    public static BackpackBlockEntity createHeld(Player player, ItemStack stack, @Nullable InteractionHand hand) {
         BackpackBlockEntity backpack = new BackpackBlockEntity(player.blockPosition(), TolkienBlocks.BACKPACK.get().defaultBlockState());
         backpack.setLevel(player.level());
-        backpack.heldStack = player.getItemInHand(hand);
+        backpack.heldStack = stack;
         backpack.heldHand = hand;
         CustomData contents = backpack.heldStack.get(TolkienDataComponents.BACKPACK_CONTENTS.get());
         if (contents != null) {
@@ -150,6 +151,8 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
         return heldStack;
     }
 
+    /** The hand holding this backpack, or null when it is worn in the Curios back slot. */
+    @Nullable
     public InteractionHand getHeldHand() {
         return heldHand;
     }

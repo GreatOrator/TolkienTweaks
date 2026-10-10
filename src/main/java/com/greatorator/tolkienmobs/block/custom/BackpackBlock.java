@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.block.custom;
 
 import com.greatorator.tolkienmobs.block.TolkienEntityBlock;
 import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
+import com.greatorator.tolkienmobs.containers.BackpackBlockContainer;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -127,7 +128,7 @@ public class BackpackBlock extends TolkienEntityBlock {
         if (!level.isClientSide()) {
             if (level.getBlockEntity(blockPos) instanceof BackpackBlockEntity blockEntity) {
                 player.openMenu(blockEntity, buf -> {
-                    buf.writeBoolean(false);
+                    buf.writeByte(BackpackBlockContainer.SOURCE_BLOCK);
                     buf.writeBlockPos(blockPos);
                 });
             }

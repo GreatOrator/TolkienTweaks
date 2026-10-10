@@ -1500,6 +1500,8 @@
   "screen.tolkienmobs.backpack.campfire.deployed": "架设营火",
   "screen.tolkienmobs.backpack.campfire.remove": "收拾营火",
   "screen.tolkienmobs.backpack.no_room": "这里没有足够的空间",
+  "key.tolkienmobs.open_backpack": "打开背包（饰品背部栏位）",
+  "key.categories.tolkienmobs": "Tolkien Tweaks",
   "tooltip.tolkienmobs.backpack.controls": "右键打开，潜行+右键方块放置",
   "screen.tolkienmobs.backpack.close.upgrade": "关闭升级窗口",
   "screen.tolkienmobs.backpack.fluid": "流体：",
