@@ -7,8 +7,6 @@ import com.greatorator.tolkienmobs.handler.capability.TolkienFluidTank;
 import com.greatorator.tolkienmobs.handler.interfaces.TolkienRegistry;
 import com.greatorator.tolkienmobs.world.components.config.TolkienConfiguredFeatures;
 import com.greatorator.tolkienmobs.world.components.feature.tree.TolkienTreeGrowers;
-import com.greatorator.tolkienmobs.world.components.util.TolkienSurfaceRuleManager;
-import com.greatorator.tolkienmobs.world.registration.TolkienSurfaceRules;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -1632,10 +1630,6 @@ public class TolkienBlocks {
 
     private static DeferredBlock<Block> registerNoItem(String name, Supplier<? extends Block> block) {
         return BLOCKS.register(name, block);
-    }
-
-    private static void registerSurfaceRules() {
-        TolkienSurfaceRuleManager.addSurfaceRules(TolkienSurfaceRuleManager.RuleCategory.OVERWORLD, MODID, TolkienSurfaceRules.tolkienSurface());
     }
 
     public static void register(IEventBus eventBus) {

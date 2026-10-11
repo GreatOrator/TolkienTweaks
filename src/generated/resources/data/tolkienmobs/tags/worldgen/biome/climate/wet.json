@@ -1,0 +1,17 @@
+{
+  "values": [
+    "tolkienmobs:marshes",
+    {
+      "id": "#tolkienmobs:swamp",
+      "required": false
+    },
+    {
+      "id": "#tolkienmobs:river",
+      "required": false
+    },
+    {
+      "id": "#tolkienmobs:beach",
+      "required": false
+    }
+  ]
+}

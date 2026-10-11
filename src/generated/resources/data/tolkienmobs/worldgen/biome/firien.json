@@ -27,25 +27,25 @@
     [],
     [
       "tolkienmobs:legacy_coal_ore",
-      "tolkienmobs:legacy_iron_ore",
-      "tolkienmobs:legacy_gold_ore",
-      "tolkienmobs:legacy_redstone_ore",
+      "tolkienmobs:legacy_copper_ore",
       "tolkienmobs:legacy_diamond_ore",
+      "tolkienmobs:legacy_gold_ore",
+      "tolkienmobs:legacy_iron_ore",
       "tolkienmobs:legacy_lapis_ore",
-      "tolkienmobs:legacy_copper_ore"
+      "tolkienmobs:legacy_redstone_ore"
     ],
     [],
     [],
     [
-      "minecraft:patch_grass_forest",
       "minecraft:patch_large_fern",
-      "minecraft:flower_plains",
       "minecraft:dark_forest_vegetation",
+      "minecraft:flower_plains",
       "minecraft:brown_mushroom_old_growth",
       "minecraft:red_mushroom_old_growth",
+      "minecraft:patch_grass_forest",
       "tolkienmobs:culumalda_fallen_leaves",
-      "tolkienmobs:lebethron_fallen_leaves",
       "tolkienmobs:culumalda_fallen_log",
+      "tolkienmobs:lebethron_fallen_leaves",
       "tolkienmobs:lebethron_fallen_log"
     ]
   ],
