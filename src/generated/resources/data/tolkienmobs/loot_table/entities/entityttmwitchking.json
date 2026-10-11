@@ -21,7 +21,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "tolkienmobs:elemental_lightning"
+              "id": "tolkienmobs:personal_blacksmith"
             },
             {
               "add": false,
