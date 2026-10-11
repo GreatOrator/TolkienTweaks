@@ -1517,7 +1517,7 @@
   "screen.tolkienmobs.block.tolkienmobs.trinket_table": "Trinket Crafting",
   "screen.tolkienmobs.camo_spawner": "Spawner Setup",
   "screen.tolkienmobs.camo_spawner.actRngeValue": "How far away player is before becoming active",
-  "screen.tolkienmobs.camo_spawner.activationRange": "Activate Range",
+  "screen.tolkienmobs.camo_spawner.activationRange": "Detection Range",
   "screen.tolkienmobs.camo_spawner.clusterRange": "Search Range",
   "screen.tolkienmobs.camo_spawner.clusterRangeValue": "Range to search for mobs to decide if anymore will spawn",
   "screen.tolkienmobs.camo_spawner.entityTags": "Current Entity",
