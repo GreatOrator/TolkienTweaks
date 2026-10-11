@@ -64,7 +64,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:long_slowness"
+              "id": "minecraft:poison"
             },
             {
               "add": false,

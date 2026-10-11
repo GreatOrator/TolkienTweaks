@@ -80,7 +80,6 @@ public class TolkienMobsMain {
     //      -Biome Tags
     //  - KNOWN BUGS
     //      - Recipes working inside the trinket table
-    //      - Mobs animations and AI
 
     public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer, Dist dist) {
         proxy = GeneralUtility.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
