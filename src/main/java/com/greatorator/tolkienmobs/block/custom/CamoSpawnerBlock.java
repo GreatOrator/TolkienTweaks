@@ -138,11 +138,13 @@ public class CamoSpawnerBlock extends ChameleonBlock<CamoSpawnerBlockEntity> {
         if (!level.isClientSide() && player.isCreative() && Screen.hasShiftDown()) {
             if (level.getBlockEntity(pos) instanceof CamoSpawnerBlockEntity blockEntity) {
                 player.openMenu(blockEntity, pos);
+                return ItemInteractionResult.SUCCESS;
             }
         }
         else if (player.isCreative()) {
             if (level.getBlockEntity(pos) instanceof CamoSpawnerBlockEntity blockEntity) {
                 blockEntity.onRightClick(stack, state, pos, player, hand);
+                return ItemInteractionResult.SUCCESS;
             }
         }
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);

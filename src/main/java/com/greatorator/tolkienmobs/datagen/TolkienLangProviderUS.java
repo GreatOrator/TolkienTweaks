@@ -376,7 +376,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add("screen.tolkienmobs.backpack.fluid_storage", "Fluid Storage");
             this.add("screen.tolkienmobs.camo_spawner", "Spawner Setup");
             this.add("screen.tolkienmobs.camo_spawner.actRngeValue", "How far away player is before becoming active");
-            this.add("screen.tolkienmobs.camo_spawner.activationRange", "Activate Range");
+            this.add("screen.tolkienmobs.camo_spawner.activationRange", "Detection Range");
             this.add("screen.tolkienmobs.camo_spawner.clusterRange", "Search Range");
             this.add("screen.tolkienmobs.camo_spawner.clusterRangeValue", "Range to search for mobs to decide if anymore will spawn");
             this.add("screen.tolkienmobs.camo_spawner.entityTags", "Current Entity");
@@ -384,6 +384,10 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add("screen.tolkienmobs.camo_spawner.ignoreSpawnReq.ignored", "Spawn Requirements - Ignored");
             this.add("screen.tolkienmobs.camo_spawner.requirePlayer.enabled", "Player required - Enabled");
             this.add("screen.tolkienmobs.camo_spawner.requirePlayer.disabled", "Player required - Disabled");
+        this.add("screen.tolkienmobs.camo_spawner.spawn_all.enabled", "Spawn as Group");
+        this.add("screen.tolkienmobs.camo_spawner.spawn_random.enabled", "Spawn as Random");
+        this.add("screen.tolkienmobs.camo_spawner.mob_spawn_count", "Mob Count to Spawn");
+        this.add("screen.tolkienmobs.camo_spawner.remove_single_mob", "Remove Mob");
             this.add("screen.tolkienmobs.camo_spawner.redstone.enabled", "Redstone Control - Enabled");
             this.add("screen.tolkienmobs.camo_spawner.redstone.disabled", "Redstone Control - Disabled");
             this.add("screen.tolkienmobs.camo_spawner.spawnerParticles.disabled", "Spawner Particles Disabled");

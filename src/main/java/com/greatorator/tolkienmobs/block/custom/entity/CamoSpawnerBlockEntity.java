@@ -6,6 +6,7 @@ import com.greatorator.tolkienmobs.handler.data.MCDataInput;
 import com.greatorator.tolkienmobs.handler.interfaces.TolkienSpawner;
 import com.greatorator.tolkienmobs.handler.interfaces.block.SpawnerSettingsBlockEntity;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
+import com.greatorator.tolkienmobs.util.block.MobSpawnData;
 import com.greatorator.tolkienmobs.util.block.SpawnerDelays;
 import com.greatorator.tolkienmobs.util.block.SpawnerRanges;
 import com.greatorator.tolkienmobs.util.block.SpawnerSettings;
@@ -49,7 +50,8 @@ public class CamoSpawnerBlockEntity extends TolkienBlockEntity implements MenuPr
     public SpawnerSettings spawnerSettings = new SpawnerSettings(true, true, true, true);
     public SpawnerDelays spawnerDelays = new SpawnerDelays(200, 800, 20);
     public SpawnerRanges spawnerRanges = new SpawnerRanges(4, 4, 4, 6, 16);
-    public List<CompoundTag> entityTags = new ArrayList<>(1);
+    public List<MobSpawnData> mobSpawnDataList = new ArrayList<>(6);
+    private static final int MAX_MOBS = 6;
     private final TolkienBaseSpawner spawnerBase = new TolkienBaseSpawner(this) {
         @Override
         public void broadcastEvent(Level level, BlockPos blockPos, int p_155769_) {
@@ -79,41 +81,53 @@ public class CamoSpawnerBlockEntity extends TolkienBlockEntity implements MenuPr
     public void onRightClick(ItemStack stack, BlockState state, BlockPos pos, Player player, InteractionHand hand) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
         TolkienSpawner spawner = (TolkienSpawner) blockEntity;
-        CompoundTag entityTag = new CompoundTag();
         assert spawner != null;
 
         if (stack.getItem() instanceof SpawnEggItem spawnEgg) {
             EntityType<?> entityType = spawnEgg.getType(stack);
-            spawner.setEntityId(entityType, level.getRandom());
-            level.sendBlockUpdated(pos, state, state, 3);
-            level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
-            stack.shrink(1);
-            entityTag.putString("entityID", BuiltInRegistries.ENTITY_TYPE.getKey(entityType).toString());
-            Optional<EntityType<?>> optional = EntityType.byString(BuiltInRegistries.ENTITY_TYPE.getKey(entityType).toString());
+            String entityId = BuiltInRegistries.ENTITY_TYPE.getKey(entityType).toString();
+            Optional<EntityType<?>> optional = EntityType.byString(entityId);
 
-            if(!this.entityTags.contains(entityTag) && this.entityTags.size() == 1) {
-                this.entityTags.add(entityTag);
+            // Check if mob already exists in list
+            MobSpawnData existingMob = null;
+            for (MobSpawnData mobData : this.mobSpawnDataList) {
+                if (mobData.getEntityId().equals(entityId)) {
+                    existingMob = mobData;
+                    break;
+                }
+            }
+
+            if (existingMob != null) {
+                // Just update the display entity, don't change count
+                spawner.setEntityId(entityType, level.getRandom());
+                level.sendBlockUpdated(pos, state, state, 3);
+                level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
+                stack.shrink(1);
+                this.markDirtyClient();
+                this.setChanged();
+                player.sendSystemMessage(Component.translatable("tolkienmobs.msg.selected.mob").append(" " + optional.get().getDescription().getString()).withStyle(ChatFormatting.DARK_GREEN));
+            } else if (this.mobSpawnDataList.size() < MAX_MOBS) {
+                // Add new mob with count 1
+                this.mobSpawnDataList.add(new MobSpawnData(entityId, 1));
+                spawner.setEntityId(entityType, level.getRandom());
+                level.sendBlockUpdated(pos, state, state, 3);
+                level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
+                stack.shrink(1);
                 this.markDirtyClient();
                 this.setChanged();
                 player.sendSystemMessage(Component.translatable("tolkienmobs.msg.added.entities").append(" " + optional.get().getDescription().getString()).withStyle(ChatFormatting.DARK_GREEN));
             } else {
-                this.entityTags.clear();
-                this.entityTags.add(entityTag);
+                // Replace first mob if list is full
+                this.mobSpawnDataList.set(0, new MobSpawnData(entityId, 1));
+                spawner.setEntityId(entityType, level.getRandom());
+                level.sendBlockUpdated(pos, state, state, 3);
+                level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
+                stack.shrink(1);
                 this.markDirtyClient();
                 this.setChanged();
-                player.sendSystemMessage(Component.translatable("tolkienmobs.msg.nomore.entities").withStyle(ChatFormatting.DARK_RED));
+                player.sendSystemMessage(Component.translatable("tolkienmobs.msg.replaced.mob").append(" " + optional.get().getDescription().getString()).withStyle(ChatFormatting.DARK_RED));
             }
         }
-
-        if (player.isCreative() && stack.isEmpty() && Screen.hasControlDown()) {
-            this.entityTags.clear();
-            this.markDirtyClient();
-            this.setChanged();
-        if (level.isClientSide) {
-                player.sendSystemMessage(Component.translatable("tolkienmobs.msg.cleared.entities").withStyle(ChatFormatting.DARK_RED));
-            }
-        }
-
     }
 
     @Override
@@ -146,8 +160,9 @@ public class CamoSpawnerBlockEntity extends TolkienBlockEntity implements MenuPr
 
         this.spawnerBase.load(this.level, this.worldPosition, tag);
         loadSpawnerSettings(tag);
-        ListTag list = tag.getList("entity_list", 10);
-        list.forEach(inbt -> entityTags.add((CompoundTag) inbt));
+        this.mobSpawnDataList.clear();
+        ListTag list = tag.getList("mob_spawn_data_list", 10);
+        list.forEach(inbt -> mobSpawnDataList.add(new MobSpawnData((CompoundTag) inbt)));
     }
 
     @Override
@@ -155,8 +170,10 @@ public class CamoSpawnerBlockEntity extends TolkienBlockEntity implements MenuPr
         this.spawnerBase.save(tag);
         saveSpawnerSettings(tag);
         ListTag list = new ListTag();
-        list.addAll(entityTags);
-        tag.put("entity_list", list);
+        for (MobSpawnData mobData : mobSpawnDataList) {
+            list.add(mobData.toNBT());
+        }
+        tag.put("mob_spawn_data_list", list);
 
         super.saveAdditional(tag, registries);
     }
@@ -165,12 +182,9 @@ public class CamoSpawnerBlockEntity extends TolkienBlockEntity implements MenuPr
     public void receivePacketFromClient(MCDataInput data, ServerPlayer client, int id) {
         super.receivePacketFromClient(data, client, id);
         if (id == 4) {
-            CompoundTag s = data.readCompoundNBT();
-            entityTags.remove(s);
-            sendPacketToClient(client, output -> {
-                output.writeVarInt(entityTags.size());
-                entityTags.forEach(output::writeCompoundNBT);
-            }, 0);
+            String entityId = data.readString();
+            mobSpawnDataList.removeIf(mob -> mob.getEntityId().equals(entityId));
+            this.setChanged();
         }
     }
 

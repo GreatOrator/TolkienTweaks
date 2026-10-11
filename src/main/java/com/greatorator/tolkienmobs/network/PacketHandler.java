@@ -81,6 +81,10 @@ public final class PacketHandler {
                 SpawnerDelaysUpdateManager.STREAM_CODEC, SpawnerDelaysUpdateManager::handle);
         registrar.playToServer(SpawnerRangesUpdateManager.TYPE,
                 SpawnerRangesUpdateManager.STREAM_CODEC, SpawnerRangesUpdateManager::handle);
+        registrar.playToServer(SpawnerClearUpdateManager.TYPE,
+                SpawnerClearUpdateManager.STREAM_CODEC, SpawnerClearUpdateManager::handle);
+        registrar.playToServer(SpawnerMobCountUpdateManager.TYPE,
+                SpawnerMobCountUpdateManager.STREAM_CODEC, SpawnerMobCountUpdateManager::handle);
 
         registrar.playToServer(KeyStoneDelayUpdateManager.TYPE,
                 KeyStoneDelayUpdateManager.STREAM_CODEC, KeyStoneDelayUpdateManager::handle);
