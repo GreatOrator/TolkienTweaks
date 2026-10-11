@@ -3,6 +3,9 @@ package com.greatorator.tolkienmobs.block.custom.entity;
 import com.greatorator.tolkienmobs.block.custom.TrinketTableBlock;
 import com.greatorator.tolkienmobs.containers.TrinketTableContainer;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
+import com.greatorator.tolkienmobs.init.TolkienRecipesTypes;
+import com.greatorator.tolkienmobs.recipe.TrinketRecipe;
+import com.greatorator.tolkienmobs.recipe.TrinketRecipeInput;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -24,6 +27,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Optional;
 
 public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuProvider {
@@ -167,10 +171,13 @@ public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuP
         return false;
     }
 
-    private Optional<RecipeHolder> getCurrentRecipe() {
-//        return this.level.getRecipeManager()
-//                .getRecipeFor(TolkienRecipesTypes.TRINKET_TABLE_TYPE.get(), new TrinketTableRecipeInput(itemHandler.getStackInSlot(TRINKET_SLOT)), level);
-        return Optional.empty();
+    private Optional<RecipeHolder<TrinketRecipe>> getCurrentRecipe() {
+        return this.level.getRecipeManager()
+                .getRecipeFor(TolkienRecipesTypes.TRINKET_TABLE_TYPE.get(), new TrinketRecipeInput(List.of(
+                        itemHandler.getStackInSlot(TRINKET_SLOT),
+                        itemHandler.getStackInSlot(POTION_SLOT),
+                        itemHandler.getStackInSlot(GEM_SLOT)
+                )), level);
     }
 
     private boolean canInsertItemIntoOutputSlot(ItemStack output) {

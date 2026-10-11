@@ -21,9 +21,9 @@ import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -78,7 +78,7 @@ public class TrinketRecipeBuilder implements RecipeBuilder {
         this.ensureValid(recipeId);
         Advancement.Builder builder = recipeOutput.advancement().addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeId)).rewards(AdvancementRewards.Builder.recipe(recipeId)).requirements(AdvancementRequirements.Strategy.OR);
         this.criteria.forEach(builder::addCriterion);
-        recipeOutput.accept(recipeId, new TrinketRecipe(CraftingBookCategory.EQUIPMENT), builder.build(recipeId.withPrefix("recipes/misc/")));
+        recipeOutput.accept(recipeId, new TrinketRecipe(this.category, this.group, this.result, new SizedIngredient(this.ingredient, 1), this.potionItem), builder.build(recipeId.withPrefix("recipes/misc/")));
     }
 
     private void ensureValid(ResourceLocation recipeId) {
