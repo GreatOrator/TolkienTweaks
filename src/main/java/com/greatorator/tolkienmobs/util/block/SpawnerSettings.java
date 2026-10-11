@@ -7,6 +7,7 @@ public class SpawnerSettings {
     public boolean ignoreSpawnReq = true;
     public boolean redstoneControl = true;
     public boolean spawnerParticles = true;
+    public boolean spawnAllTogether = false; // false = random, true = spawn all
 
     public SpawnerSettings() {
 
@@ -19,13 +20,18 @@ public class SpawnerSettings {
         this.spawnerParticles = spawnerParticles;
     }
 
-    public SpawnerSettings(boolean b, boolean b1, boolean b2, boolean b3, boolean b4) {
+    public SpawnerSettings(boolean requirePlayer, boolean ignoreSpawnReq, boolean redstoneControl, boolean spawnerParticles, boolean spawnAllTogether) {
+        this.requirePlayer = requirePlayer;
+        this.ignoreSpawnReq = ignoreSpawnReq;
+        this.redstoneControl = redstoneControl;
+        this.spawnerParticles = spawnerParticles;
+        this.spawnAllTogether = spawnAllTogether;
     }
 
 
     @Override
     public int hashCode() {
-        return Objects.hash(requirePlayer, ignoreSpawnReq, redstoneControl, spawnerParticles);
+        return Objects.hash(requirePlayer, ignoreSpawnReq, redstoneControl, spawnerParticles, spawnAllTogether);
     }
 
     @Override
@@ -36,6 +42,7 @@ public class SpawnerSettings {
         return requirePlayer == that.requirePlayer
                 && ignoreSpawnReq == that.ignoreSpawnReq
                 && redstoneControl == that.redstoneControl
-                && spawnerParticles == that.spawnerParticles;
+                && spawnerParticles == that.spawnerParticles
+                && spawnAllTogether == that.spawnAllTogether;
     }
 }

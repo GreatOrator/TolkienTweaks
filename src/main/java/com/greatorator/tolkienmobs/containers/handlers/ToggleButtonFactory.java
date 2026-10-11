@@ -54,9 +54,21 @@ public class ToggleButtonFactory {
             new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/delete.png"), Component.translatable("screen.tolkienmobs.camo_spawner.remove_mob")),
             new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/delete.png"), Component.translatable("screen.tolkienmobs.camo_spawner.remove_mob"))
     );
+    private static final List<TextureLocalization> INDIVIDUAL = List.of(
+            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/delete_single.png"), Component.translatable("screen.tolkienmobs.camo_spawner.remove_single_mob")),
+            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/delete_single.png"), Component.translatable("screen.tolkienmobs.camo_spawner.remove_single_mob"))
+    );
+    private static final List<TextureLocalization> SPAWN_ALL_TOGETHER = List.of(
+            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/spawn_all.png"), Component.translatable("screen.tolkienmobs.camo_spawner.spawn_all.enabled")),
+            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/spawn_random.png"), Component.translatable("screen.tolkienmobs.camo_spawner.spawn_random.enabled"))
+    );
 
     public static ToggleButton REMOVE_MOB_BUTTON(int x, int y, boolean startingValue, Button.OnPress onPress) {
         return new ToggleButton(x, y, STANDARD_WIDTH, STANDARD_HEIGHT, REMOVE, startingValue, onPress);
+    }
+
+    public static ToggleButton REMOVE_SINGLE_MOB_BUTTON(int x, int y, boolean startingValue, Button.OnPress onPress) {
+        return new ToggleButton(x, y, STANDARD_WIDTH, STANDARD_HEIGHT, INDIVIDUAL, startingValue, onPress);
     }
 
     public static ToggleButton IGNORE_PARTICLES_BUTTON(int x, int y, boolean startingValue, Button.OnPress onPress) {
@@ -71,17 +83,21 @@ public class ToggleButtonFactory {
     public static ToggleButton REDSTONE_CONTROL_BUTTON(int x, int y, boolean startingValue, Button.OnPress onPress) {
         return new ToggleButton(x, y, STANDARD_WIDTH, STANDARD_HEIGHT, REDSTONE_SIGNAL, startingValue, onPress);
     }
+    public static ToggleButton SPAWN_ALL_TOGETHER_BUTTON(int x, int y, boolean startingValue, Button.OnPress onPress) {
+        return new ToggleButton(x, y, STANDARD_WIDTH, STANDARD_HEIGHT, SPAWN_ALL_TOGETHER, startingValue, onPress);
+    }
 
     /** Spawner Numbers **/
     private static final Component spawnerDelayMinLocalization = Component.translatable("screen.tolkienmobs.camo_spawner.minDelayValue");
     private static final Component spawnerDelayMaxLocalization = Component.translatable("screen.tolkienmobs.camo_spawner.maxDelayValue");
 
 
-    private static final Component activationRangeLocalization = Component.translatable("screen.tolkienmobs.camo_spawner.activationRange");
-    private static final Component spawnRangeLocalization = Component.translatable("screen.tolkienmobs.camo_spawner.spawnRange");
-    private static final Component spawnCountLocalization = Component.translatable("screen.tolkienmobs.camo_spawner.spawnCount");
-    private static final Component maxClusterLocalization = Component.translatable("screen.tolkienmobs.camo_spawner.maxCluster");
-    private static final Component clusterRangeLocalization = Component.translatable("screen.tolkienmobs.camo_spawner.clusterRange");
+    private static final Component activationRangeLocalization = Component.translatable("screen.tolkienmobs.camo_spawner.actRngeValue");
+    private static final Component spawnRangeLocalization = Component.translatable("screen.tolkienmobs.camo_spawner.clusterRangeValue");
+    private static final Component spawnCountLocalization = Component.translatable("screen.tolkienmobs.camo_spawner.spwnCountValue");
+    private static final Component maxClusterLocalization = Component.translatable("screen.tolkienmobs.camo_spawner.maxClusterValue");
+    private static final Component clusterRangeLocalization = Component.translatable("screen.tolkienmobs.camo_spawner.clusterRangeValue");
+    private static final Component mobSpawnCountLocalization = Component.translatable("screen.tolkienmobs.camo_spawner.spwnCountValue");
 
     public static NumberButton SPAWNER_ACTIVATION_RANGE(int x, int y, int value, Button.OnPress onPress) {
         return new NumberButton(x, y, 24, 16, value, 1, 32, activationRangeLocalization, onPress);
@@ -109,6 +125,10 @@ public class ToggleButtonFactory {
 
     public static NumberButton SPAWNER_MAX_DELAY(int x, int y, int value, Button.OnPress onPress) {
         return new NumberButton(x, y, 24, 16, value, 40, 800, spawnerDelayMaxLocalization, onPress);
+    }
+
+    public static NumberButton SPAWNER_MOB_SPAWN_COUNT(int x, int y, int value, Button.OnPress onPress) {
+        return new NumberButton(x, y, 24, 16, value, 1, 10, mobSpawnCountLocalization, onPress);
     }
 
     /** Redstone Mode **/
