@@ -29,26 +29,26 @@
     [],
     [],
     [
-      "tolkienmobs:wood_roots",
       "tolkienmobs:ammolite_ore_placed",
       "tolkienmobs:legacy_coal_ore",
-      "tolkienmobs:legacy_iron_ore",
-      "tolkienmobs:legacy_gold_ore",
-      "tolkienmobs:legacy_redstone_ore",
+      "tolkienmobs:legacy_copper_ore",
       "tolkienmobs:legacy_diamond_ore",
+      "tolkienmobs:legacy_gold_ore",
+      "tolkienmobs:legacy_iron_ore",
       "tolkienmobs:legacy_lapis_ore",
-      "tolkienmobs:legacy_copper_ore"
+      "tolkienmobs:legacy_redstone_ore",
+      "tolkienmobs:wood_roots"
     ],
     [],
     [],
     [
-      "minecraft:patch_grass_forest",
       "minecraft:patch_large_fern",
+      "minecraft:patch_grass_forest",
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
       "tolkienmobs:flower_elanor_placed",
-      "tolkienmobs:mallorn_fallen_log",
-      "tolkienmobs:mallorn_fallen_leaves"
+      "tolkienmobs:mallorn_fallen_leaves",
+      "tolkienmobs:mallorn_fallen_log"
     ]
   ],
   "has_precipitation": true,

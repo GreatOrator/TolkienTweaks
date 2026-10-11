@@ -32,8 +32,18 @@ public class TolkienSurfaceRules {
 	}
 
 	public static SurfaceRules.RuleSource tolkienSurface() {
-		return SurfaceRules.sequence(
-				makeTolkienWorldRules());
+        // TerraBlender selects this rule for our namespace; keep it out of caves
+        // and leave bedrock/deepslate to the vanilla fallback rules.
+        return SurfaceRules.ifTrue(SurfaceRules.abovePreliminarySurface(), SurfaceRules.sequence(
+                SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, SurfaceRules.sequence(
+                        SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.MORDOR), DARK_STONE),
+                        SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HARADWAITH), SAND),
+                        ironHillsSurface(), hithaeglirSurface(), makeTolkienWorldRules())),
+                SurfaceRules.ifTrue(SurfaceRules.UNDER_FLOOR, SurfaceRules.sequence(
+                        SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.MORDOR, TolkienBiomes.ASH_MOUNTAINS), DARK_STONE),
+                        SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HARADWAITH), SANDSTONE),
+                        SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HITHAEGLIR), PACKED_ICE))),
+                overworldLikeFloor()));
 	}
 
 	private static SurfaceRules.RuleSource makeTolkienWorldRules() {

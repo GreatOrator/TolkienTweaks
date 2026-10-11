@@ -27,14 +27,14 @@
     [],
     [],
     [
-      "minecraft:patch_grass_forest",
       "minecraft:patch_large_fern",
       "minecraft:brown_mushroom_old_growth",
       "minecraft:red_mushroom_old_growth",
+      "minecraft:patch_grass_forest",
       "tolkienmobs:flower_mirkwood_placed",
+      "tolkienmobs:mirkwood_fallen_leaves",
       "tolkienmobs:mirkwood_fallen_log",
-      "tolkienmobs:stumps",
-      "tolkienmobs:mirkwood_fallen_leaves"
+      "tolkienmobs:stumps"
     ]
   ],
   "has_precipitation": true,
