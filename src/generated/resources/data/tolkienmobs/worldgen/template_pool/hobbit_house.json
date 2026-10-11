@@ -3,7 +3,7 @@
     {
       "element": {
         "element_type": "minecraft:single_pool_element",
-        "location": "tolkienmobs:ttmruin_small",
+        "location": "tolkienmobs:ttmhouse_hobbit",
         "processors": {
           "processors": []
         },
