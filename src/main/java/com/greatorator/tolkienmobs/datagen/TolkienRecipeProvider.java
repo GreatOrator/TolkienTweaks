@@ -229,7 +229,7 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
         conversionRecipe(pRecipeOutput, TolkienBlocks.BLOCK_HALLOWED, Blocks.GRASS_BLOCK, TolkienItems.GEM_AMMOLITE);
         conversionRecipe(pRecipeOutput, TolkienBlocks.STONE_PATH, Blocks.MOSSY_COBBLESTONE, Items.IRON_PICKAXE);
 
-        SpecialRecipeBuilder.special(TrinketRecipe::new).save(pRecipeOutput, getId("trinket_potion_crafting"));
+        trinketRecipe(pRecipeOutput, SizedIngredient.of(TolkienItems.TRINKET_RING.get(), 1), SizedIngredient.of(TolkienItems.GEM_AMMOLITE.get(), 1), Items.POTION, 1);
 
         smithingUpgrade(pRecipeOutput, "mithril", TolkienItems.SWORD_MITHRIL.get(), TolkienItems.TEMPLATE_MITHRIL.get(), Items.NETHERITE_SWORD, TolkienItems.INGOT_MITHRIL.get());
         smithingUpgrade(pRecipeOutput, "mithril", TolkienItems.PICKAXE_MITHRIL.get(), TolkienItems.TEMPLATE_MITHRIL.get(), Items.NETHERITE_PICKAXE, TolkienItems.INGOT_MITHRIL.get());
