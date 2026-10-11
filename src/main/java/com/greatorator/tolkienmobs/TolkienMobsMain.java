@@ -78,8 +78,6 @@ public class TolkienMobsMain {
     //      -Proper overworld generation or Separate Dimension
     //          -Structures
     //      -Biome Tags
-    //  - KNOWN BUGS
-    //      - Recipes working inside the trinket table
 
     public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer, Dist dist) {
         proxy = GeneralUtility.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);

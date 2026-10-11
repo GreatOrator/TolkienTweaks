@@ -63,13 +63,13 @@ public class TrinketTableScreen extends AbstractContainerScreen<TrinketTableCont
 
     private void renderProgressArrow(GuiGraphics guiGraphics, int x, int y) {
         if(menu.isCrafting()) {
-            guiGraphics.blit(ARROW_TEXTURE,x + 73, y + 35, 0, 0, menu.getScaledArrowProgress(), 16, 24, 16);
+            guiGraphics.blit(ARROW_TEXTURE,x + 65, y + 34, 0, 0, menu.getScaledArrowProgress(), 18, 18, 18);
         }
     }
 
     private void renderProgressTrinket(GuiGraphics guiGraphics, int x, int y) {
         if(menu.isCrafting()) {
-            guiGraphics.blit(TRINKET_TEXTURE, x + 104, y + 13 + 16 - menu.getScaledTrinketProgress(), 0, 16 - menu.getScaledTrinketProgress(), 16, menu.getScaledTrinketProgress(),16, 16);
+            guiGraphics.blit(TRINKET_TEXTURE, x + 33, y + 37 + 16 - menu.getScaledTrinketProgress(), 0, 18 - menu.getScaledTrinketProgress(), 18, menu.getScaledTrinketProgress(),18, 18);
         }
     }
 }
