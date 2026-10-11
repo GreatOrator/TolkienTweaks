@@ -57,7 +57,10 @@ public class CamoSpawnerScreen extends AbstractContainerScreen<CamoSpawnerContai
     protected List<AbstractWidget> widgetsToRemove = new ArrayList<>();
     protected List<AbstractWidget> widgetsToAdd = new ArrayList<>();
     private final List<AbstractWidget> entityButtons = new ArrayList<>();
+    private final List<AbstractWidget> numberButtons = new ArrayList<>();
+    private final List<AbstractWidget> spawnerButtons = new ArrayList<>();
     private String selectedModifier = "None";
+    private String selectedEntityId = null;
     protected boolean renderablesChanged = false;
 
     public CamoSpawnerScreen(CamoSpawnerContainer menu, Inventory playerInventory, Component title) {
@@ -83,15 +86,21 @@ public class CamoSpawnerScreen extends AbstractContainerScreen<CamoSpawnerContai
                 }, ButtonTexture.LARGE_BUTTON)
                 .size(64, 20)
                 .build());
-        var layout = new LinearLayout((leftPos - 20) + 113, topPos + this.font.lineHeight + 158,
+        var layout = new LinearLayout((leftPos - 20) + 113, topPos + this.font.lineHeight + 165,
                 LinearLayout.Orientation.HORIZONTAL);
         layout.spacing(4);
         layout.addChild(saveCodeButton);
         layout.arrangeElements();
 
+        // Initialize selectedEntityId to first mob if available
+        if (this.tileEntity.mobSpawnDataList != null && !this.tileEntity.mobSpawnDataList.isEmpty()) {
+            selectedEntityId = this.tileEntity.mobSpawnDataList.get(0).getEntityId();
+        }
+
         addSpawnerButtons();
         addNumberButtons();
         addEntitiesToList();
+        updateUIBasedOnMobCount();
     }
 
     public int adjustNumberButton(int value, int change, int min, int max) {
@@ -139,12 +148,79 @@ public class CamoSpawnerScreen extends AbstractContainerScreen<CamoSpawnerContai
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
+    private void updateDisplayEntity() {
+        if (selectedEntityId != null && this.tileEntity.mobSpawnDataList != null) {
+            for (MobSpawnData mobData : this.tileEntity.mobSpawnDataList) {
+                if (mobData.getEntityId().equals(selectedEntityId)) {
+                    // Create a CompoundTag for the entity
+                    CompoundTag entityTag = new CompoundTag();
+                    entityTag.putString("id", selectedEntityId);
+                    net.minecraft.world.level.SpawnData spawnData = new net.minecraft.world.level.SpawnData(entityTag, Optional.empty(), Optional.empty());
+                    this.tileEntity.getSpawnerBase().setDisplayEntity(spawnData);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void updateUIBasedOnMobCount() {
+        int mobCount = this.tileEntity.mobSpawnDataList != null ? this.tileEntity.mobSpawnDataList.size() : 0;
+        
+        // If only one mob, set spawn method to random (spawnAllTogether = false)
+        if (mobCount == 1) {
+            if (spawnerSettings.spawnAllTogether) {
+                spawnerSettings.spawnAllTogether = false;
+                PacketDistributor.sendToServer(new SpawnerSettingsUpdateManager(spawnerSettings.requirePlayer, spawnerSettings.ignoreSpawnReq, spawnerSettings.redstoneControl, spawnerSettings.spawnerParticles, spawnerSettings.spawnAllTogether));
+            }
+        }
+        
+        // Hide/disable global spawn count if more than one mob
+        if (mobCount > 1) {
+            for (AbstractWidget button : numberButtons) {
+                if (button instanceof NumberButton) {
+                    button.active = false;
+                    button.visible = false;
+                }
+            }
+        } else {
+            for (AbstractWidget button : numberButtons) {
+                if (button instanceof NumberButton) {
+                    button.active = true;
+                    button.visible = true;
+                }
+            }
+        }
+        
+        // Hide/disable individual mob spawn count if only one mob
+        for (AbstractWidget button : entityButtons) {
+            if (button instanceof NumberButton) {
+                button.active = mobCount > 1;
+                button.visible = mobCount > 1;
+            }
+        }
+        
+        // Hide/disable spawn all together button if only one mob
+        for (AbstractWidget button : spawnerButtons) {
+            if (button instanceof ToggleButton) {
+                button.active = mobCount > 1;
+                button.visible = mobCount > 1;
+            }
+        }
+    }
+
     public void addEntitiesToList() {
         // Remove existing entity buttons from the screen
         for (AbstractWidget button : this.entityButtons) {
             this.removeWidget(button);
         }
         this.entityButtons.clear();
+        
+        // Reset selectedEntityId if list is empty
+        if (this.tileEntity.mobSpawnDataList == null || this.tileEntity.mobSpawnDataList.isEmpty()) {
+            selectedEntityId = null;
+        } else if (selectedEntityId == null) {
+            selectedEntityId = this.tileEntity.mobSpawnDataList.get(0).getEntityId();
+        }
         
         if (this.tileEntity.mobSpawnDataList != null) {
             for (int i = 0; i < this.tileEntity.mobSpawnDataList.size(); i++) {
@@ -162,6 +238,8 @@ public class CamoSpawnerScreen extends AbstractContainerScreen<CamoSpawnerContai
                         this.addRenderableWidget(Button.builder(Component.literal(optional.get().getDescription().getString()),
                                 button -> {
                                     selectedModifier = String.valueOf(Component.literal(optional.get().getDescription().getString()));
+                                    selectedEntityId = entityKey;
+                                    updateDisplayEntity();
                                 })
                             .pos(relX + 117, relY + y)
                             .size(64, 16)
@@ -171,13 +249,13 @@ public class CamoSpawnerScreen extends AbstractContainerScreen<CamoSpawnerContai
 
                     // Spawn count button
                     final int index = i;
-                    this.entityButtons.add(
-                        this.addRenderableWidget(ToggleButtonFactory.SPAWNER_MOB_SPAWN_COUNT(relX + 90, relY + y, mobData.getSpawnCount(), b -> {
-                            int newCount = ((NumberButton) b).getValue();
-                            mobData.setSpawnCount(newCount);
-                            PacketDistributor.sendToServer(new SpawnerMobCountUpdateManager(entityKey, newCount));
-                        }))
-                    );
+                    NumberButton mobSpawnCountButton = ToggleButtonFactory.SPAWNER_MOB_SPAWN_COUNT(relX + 90, relY + y, mobData.getSpawnCount(), b -> {
+                        int newCount = ((NumberButton) b).getValue();
+                        mobData.setSpawnCount(newCount);
+                        PacketDistributor.sendToServer(new SpawnerMobCountUpdateManager(entityKey, newCount));
+                    });
+                    this.entityButtons.add(mobSpawnCountButton);
+                    this.addRenderableWidget(mobSpawnCountButton);
 
                     // Remove button
                     this.entityButtons.add(
@@ -187,12 +265,16 @@ public class CamoSpawnerScreen extends AbstractContainerScreen<CamoSpawnerContai
                                     this.tileEntity.mobSpawnDataList.remove(index);
                                     this.tileEntity.markDirtyClient();
                                     addEntitiesToList();
+                                    updateUIBasedOnMobCount();
                                 })
                         )
                     );
                 }
             }
         }
+        
+        // Update UI based on mob count
+        updateUIBasedOnMobCount();
     }
 
     @Override
@@ -210,6 +292,7 @@ public class CamoSpawnerScreen extends AbstractContainerScreen<CamoSpawnerContai
         guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.camo_spawner.minSpawnDelay"), 10, 20, 8552833, false);
         guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.camo_spawner.activationRange"), 10, 60, 8552833, false);
         guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.camo_spawner.spawnCount"), 10, 100, 8552833, false);
+        guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.camo_spawner.clusterRange"), 10, 136, 8552833, false);
     }
 
     @Override
@@ -333,15 +416,17 @@ public class CamoSpawnerScreen extends AbstractContainerScreen<CamoSpawnerContai
             spawnerRanges.spawnRange = ((NumberButton) b).getValue();
             PacketDistributor.sendToServer(new SpawnerRangesUpdateManager(spawnerRanges.activationRange, spawnerRanges.spawnRange, spawnerRanges.spawnCount, spawnerRanges.maxCluster, spawnerRanges.clusterRange));
         }));
-        addRenderableWidget(ToggleButtonFactory.SPAWNER_SPAWN_COUNT(offsetX + 15, offsetY + 112, spawnerRanges.spawnCount, b -> {
+        NumberButton spawnCountButton = ToggleButtonFactory.SPAWNER_SPAWN_COUNT(offsetX + 15, offsetY + 112, spawnerRanges.spawnCount, b -> {
             spawnerRanges.spawnCount = ((NumberButton) b).getValue();
             PacketDistributor.sendToServer(new SpawnerRangesUpdateManager(spawnerRanges.activationRange, spawnerRanges.spawnRange, spawnerRanges.spawnCount, spawnerRanges.maxCluster, spawnerRanges.clusterRange));
-        }));
+        });
+        this.numberButtons.add(spawnCountButton);
+        addRenderableWidget(spawnCountButton);
         addRenderableWidget(ToggleButtonFactory.SPAWNER_MAX_CLUSTER(offsetX + 44, offsetY + 112, spawnerRanges.maxCluster, b -> {
             spawnerRanges.maxCluster = ((NumberButton) b).getValue();
             PacketDistributor.sendToServer(new SpawnerRangesUpdateManager(spawnerRanges.activationRange, spawnerRanges.spawnRange, spawnerRanges.spawnCount, spawnerRanges.maxCluster, spawnerRanges.clusterRange));
         }));
-        addRenderableWidget(ToggleButtonFactory.SPAWNER_CLUSTER_RANGE(offsetX + 15, offsetY + 142, spawnerRanges.clusterRange, b -> {
+        addRenderableWidget(ToggleButtonFactory.SPAWNER_CLUSTER_RANGE(offsetX + 29, offsetY + 149, spawnerRanges.clusterRange, b -> {
             spawnerRanges.clusterRange = ((NumberButton) b).getValue();
             PacketDistributor.sendToServer(new SpawnerRangesUpdateManager(spawnerRanges.activationRange, spawnerRanges.spawnRange, spawnerRanges.spawnCount, spawnerRanges.maxCluster, spawnerRanges.clusterRange));
         }));
@@ -350,32 +435,34 @@ public class CamoSpawnerScreen extends AbstractContainerScreen<CamoSpawnerContai
     private void addSpawnerButtons() {
         int offsetX = (this.width - this.imageWidth) / 2;
         int offsetY = (this.height - this.imageHeight) / 2;
-        addRenderableWidget(ToggleButtonFactory.IGNORE_PLAYER_BUTTON(offsetX + 65, offsetY + 142, spawnerSettings.requirePlayer, b -> {
-            spawnerSettings.requirePlayer = !spawnerSettings.requirePlayer;
-            PacketDistributor.sendToServer(new SpawnerSettingsUpdateManager(spawnerSettings.requirePlayer, spawnerSettings.ignoreSpawnReq, spawnerSettings.redstoneControl, spawnerSettings.spawnerParticles, spawnerSettings.spawnAllTogether));
-        }));
-        addRenderableWidget(ToggleButtonFactory.IGNORE_REQUIREMENTS_BUTTON(offsetX + 86, offsetY + 142, spawnerSettings.ignoreSpawnReq, b -> {
-            spawnerSettings.ignoreSpawnReq = !spawnerSettings.ignoreSpawnReq;
-            PacketDistributor.sendToServer(new SpawnerSettingsUpdateManager(spawnerSettings.requirePlayer, spawnerSettings.ignoreSpawnReq, spawnerSettings.redstoneControl, spawnerSettings.spawnerParticles, spawnerSettings.spawnAllTogether));
-        }));
-        addRenderableWidget(ToggleButtonFactory.IGNORE_PARTICLES_BUTTON(offsetX + 107, offsetY + 142, spawnerSettings.spawnerParticles, b -> {
-            spawnerSettings.spawnerParticles = !spawnerSettings.spawnerParticles;
-            PacketDistributor.sendToServer(new SpawnerSettingsUpdateManager(spawnerSettings.requirePlayer, spawnerSettings.ignoreSpawnReq, spawnerSettings.redstoneControl, spawnerSettings.spawnerParticles, spawnerSettings.spawnAllTogether));
-        }));
-        addRenderableWidget(ToggleButtonFactory.REDSTONE_CONTROL_BUTTON(offsetX + 128, offsetY + 142, spawnerSettings.redstoneControl, b -> {
-            spawnerSettings.redstoneControl = !spawnerSettings.redstoneControl;
-            PacketDistributor.sendToServer(new SpawnerSettingsUpdateManager(spawnerSettings.requirePlayer, spawnerSettings.ignoreSpawnReq, spawnerSettings.redstoneControl, spawnerSettings.spawnerParticles, spawnerSettings.spawnAllTogether));
-        }));
-        addRenderableWidget(ToggleButtonFactory.SPAWN_ALL_TOGETHER_BUTTON(offsetX + 149, offsetY + 142, spawnerSettings.spawnAllTogether, b -> {
-            spawnerSettings.spawnAllTogether = !spawnerSettings.spawnAllTogether;
-            PacketDistributor.sendToServer(new SpawnerSettingsUpdateManager(spawnerSettings.requirePlayer, spawnerSettings.ignoreSpawnReq, spawnerSettings.redstoneControl, spawnerSettings.spawnerParticles, spawnerSettings.spawnAllTogether));
-        }));
-        addRenderableWidget(ToggleButtonFactory.REMOVE_MOB_BUTTON(offsetX + 44, offsetY + 142, true, b -> {
+        addRenderableWidget(ToggleButtonFactory.REMOVE_MOB_BUTTON(offsetX + 90, offsetY + 149, true, b -> {
             PacketDistributor.sendToServer(new SpawnerClearUpdateManager("", true));
             this.tileEntity.mobSpawnDataList.clear();
             this.tileEntity.getSpawnerBase().clearSpawnData();
             this.tileEntity.markDirtyClient();
             addEntitiesToList();
         }));
+        addRenderableWidget(ToggleButtonFactory.IGNORE_PLAYER_BUTTON(offsetX + 111, offsetY + 149, spawnerSettings.requirePlayer, b -> {
+            spawnerSettings.requirePlayer = !spawnerSettings.requirePlayer;
+            PacketDistributor.sendToServer(new SpawnerSettingsUpdateManager(spawnerSettings.requirePlayer, spawnerSettings.ignoreSpawnReq, spawnerSettings.redstoneControl, spawnerSettings.spawnerParticles, spawnerSettings.spawnAllTogether));
+        }));
+        addRenderableWidget(ToggleButtonFactory.IGNORE_REQUIREMENTS_BUTTON(offsetX + 132, offsetY + 149, spawnerSettings.ignoreSpawnReq, b -> {
+            spawnerSettings.ignoreSpawnReq = !spawnerSettings.ignoreSpawnReq;
+            PacketDistributor.sendToServer(new SpawnerSettingsUpdateManager(spawnerSettings.requirePlayer, spawnerSettings.ignoreSpawnReq, spawnerSettings.redstoneControl, spawnerSettings.spawnerParticles, spawnerSettings.spawnAllTogether));
+        }));
+        addRenderableWidget(ToggleButtonFactory.IGNORE_PARTICLES_BUTTON(offsetX + 153, offsetY + 149, spawnerSettings.spawnerParticles, b -> {
+            spawnerSettings.spawnerParticles = !spawnerSettings.spawnerParticles;
+            PacketDistributor.sendToServer(new SpawnerSettingsUpdateManager(spawnerSettings.requirePlayer, spawnerSettings.ignoreSpawnReq, spawnerSettings.redstoneControl, spawnerSettings.spawnerParticles, spawnerSettings.spawnAllTogether));
+        }));
+        addRenderableWidget(ToggleButtonFactory.REDSTONE_CONTROL_BUTTON(offsetX + 174, offsetY + 149, spawnerSettings.redstoneControl, b -> {
+            spawnerSettings.redstoneControl = !spawnerSettings.redstoneControl;
+            PacketDistributor.sendToServer(new SpawnerSettingsUpdateManager(spawnerSettings.requirePlayer, spawnerSettings.ignoreSpawnReq, spawnerSettings.redstoneControl, spawnerSettings.spawnerParticles, spawnerSettings.spawnAllTogether));
+        }));
+        ToggleButton spawnAllButton = ToggleButtonFactory.SPAWN_ALL_TOGETHER_BUTTON(offsetX + 195, offsetY + 149, spawnerSettings.spawnAllTogether, b -> {
+            spawnerSettings.spawnAllTogether = !spawnerSettings.spawnAllTogether;
+            PacketDistributor.sendToServer(new SpawnerSettingsUpdateManager(spawnerSettings.requirePlayer, spawnerSettings.ignoreSpawnReq, spawnerSettings.redstoneControl, spawnerSettings.spawnerParticles, spawnerSettings.spawnAllTogether));
+        });
+        this.spawnerButtons.add(spawnAllButton);
+        addRenderableWidget(spawnAllButton);
     }
 }
