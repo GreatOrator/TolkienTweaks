@@ -3,7 +3,6 @@ package com.greatorator.tolkienmobs.recipe;
 import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.TrinketTableBlock;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
-import com.greatorator.tolkienmobs.init.TolkienItems;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -15,7 +14,6 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
 import org.jetbrains.annotations.NotNull;
@@ -53,9 +51,9 @@ public class TrinketRecipeCategory implements IRecipeCategory<TrinketRecipe> {
 
     @Override @ParametersAreNonnullByDefault
     public void setRecipe(IRecipeLayoutBuilder builder, TrinketRecipe recipe, IFocusGroup focuses) {
-        builder.addSlot(RecipeIngredientRole.INPUT, 23, 15).addIngredient(VanillaTypes.ITEM_STACK, TolkienItems.TRINKET_RING.get().getDefaultInstance());
-        builder.addSlot(RecipeIngredientRole.INPUT, 45, 15).addIngredient(VanillaTypes.ITEM_STACK, PotionContents.createItemStack(Items.POTION, Potions.WATER));
-        builder.addSlot(RecipeIngredientRole.INPUT, 34, 55).addIngredient(VanillaTypes.ITEM_STACK, TolkienItems.GEM_AMMOLITE.get().getDefaultInstance());
+        builder.addSlot(RecipeIngredientRole.INPUT, 23, 15).addIngredient(VanillaTypes.ITEM_STACK, recipe.getTrinket().getDefaultInstance());
+        builder.addSlot(RecipeIngredientRole.INPUT, 45, 15).addIngredient(VanillaTypes.ITEM_STACK, PotionContents.createItemStack(recipe.getPotionItem(), Potions.WATER));
+        builder.addSlot(RecipeIngredientRole.INPUT, 34, 55).addItemStacks(java.util.Arrays.asList(recipe.getFuel().getItems()));
 
         builder.addSlot(RecipeIngredientRole.OUTPUT, 91, 35).addItemStack(recipe.getResultItem(null));
     }

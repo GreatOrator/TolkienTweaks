@@ -78,6 +78,7 @@ public class TrinketTableRenderer implements BlockEntityRenderer<TrinketTableBlo
         }
 
         if (!stack4.isEmpty()) {
+            mStack.pushPose();
             mStack.scale(1.5F, 1.5F, 1.5F);
             mStack.translate(0.00, 0.00, 0.00);
             itemRenderer.renderStatic(stack4, ItemDisplayContext.FIXED, getLightLevel(te.getLevel(), te.getBlockPos()), packedOverlay, mStack, getter, te.getLevel(), 0);

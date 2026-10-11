@@ -180,10 +180,10 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath(MODID, "fireplace/" + getItemName(result) + "_from_fireplace"));
     }
 
-    protected static void trinketRecipe(RecipeOutput recipeOutput, SizedIngredient trinketIngredient, SizedIngredient gemIngredient, ItemLike potionItem, int outputCount){
-        TrinketRecipeBuilder.recipe(RecipeCategory.TOOLS, "trinket", gemIngredient.ingredient().getItems()[0].getItem(), trinketIngredient.ingredient().getItems()[0].getItem(), potionItem)
-                .unlockedBy(getHasName(trinketIngredient.ingredient().getItems()[0].getItem()), has(trinketIngredient.ingredient().getItems()[0].getItem()))
-                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath(MODID, "trinket/" + getItemName(trinketIngredient.ingredient().getItems()[0].getItem()) + "_from_trinket"));
+    protected static void trinketRecipe(RecipeOutput recipeOutput, ItemLike trinket, SizedIngredient fuel, ItemLike potion) {
+        TrinketRecipeBuilder.recipe(trinket, fuel, potion)
+                .unlockedBy(getHasName(trinket), has(trinket))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath(MODID, "trinket/" + getItemName(trinket) + "_from_trinket"));
     }
 
     protected static void toolListRecipe(RecipeOutput pRecipeOutput, RecipeCategory pCategory, String group, Item pick, Item axe, Item shovel, Item hoe, Item sword, Item shears, Item ingot) {
