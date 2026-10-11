@@ -27,9 +27,9 @@ public class TolkienDataRegistryProvider extends DatapackBuiltinEntriesProvider 
 
             .add(Registries.PLACED_FEATURE, TolkienPlacedFeatures::bootstrap)
 
-            //structure
-            //structure set
-            //template pool
+            .add(Registries.STRUCTURE, TolkienStructureProvider::bootstrapStructures)
+            .add(Registries.STRUCTURE_SET, TolkienStructureProvider::bootstrapSets)
+            .add(Registries.TEMPLATE_POOL, TolkienStructureProvider::bootstrapPools)
 
             .add(Registries.TRIM_MATERIAL, TolkienTrimMaterials::bootstrap)
             .add(Registries.ENCHANTMENT, TolkienEnchantments::bootstrap)

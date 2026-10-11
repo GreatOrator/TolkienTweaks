@@ -2,6 +2,8 @@ package com.greatorator.tolkienmobs.gametest;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.init.TolkienBiomes;
+import com.greatorator.tolkienmobs.init.TolkienStructures;
+import com.greatorator.tolkienmobs.world.components.structure.SurfaceStructures;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
@@ -28,6 +30,8 @@ public class StructureGameTests {
         var level = helper.getLevel();
         var registries = level.registryAccess();
         var structure = registries.registryOrThrow(Registries.STRUCTURE).getOptional(EXAMPLE).orElseThrow();
+        helper.assertTrue(structure instanceof SurfaceStructures && structure.type() == TolkienStructures.SURFACE_STRUCTURES.get(),
+                "Generated example must use the registered Tolkien surface structure type");
         var set = registries.registryOrThrow(Registries.STRUCTURE_SET).getOptional(EXAMPLE).orElseThrow();
         helper.assertTrue(set.structures().stream().anyMatch(entry -> entry.structure().value() == structure),
                 "Example structure set must schedule the example structure");
