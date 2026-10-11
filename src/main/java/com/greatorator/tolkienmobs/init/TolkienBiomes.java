@@ -47,6 +47,8 @@ public class TolkienBiomes {
     public static final ResourceKey<Biome> GLADDEN = createBiome("gladden", BiomeMaker::makeBiomeGladden, TolkienTags.Biomes.PLAINS, TolkienTags.Biomes.TEMPERATE);
 
     public static void bootstrap(BootstrapContext<Biome> context) {
+        BIOME_FACTORIES.forEach((key, factory) -> context.register(key,
+                factory.generate(context.lookup(Registries.PLACED_FEATURE), context.lookup(Registries.CONFIGURED_CARVER))));
     }
 
     public static final class Keys {

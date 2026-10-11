@@ -18,6 +18,11 @@ group = mod_group_id
 
 repositories {
     mavenLocal()
+    maven {
+        name = 'TerraBlender'
+        url = 'https://maven.minecraftforge.net'
+        content { includeGroup 'com.github.glitchfiend' }
+    }
 
     maven { //Patchouli && JEI
         url = 'https://maven.blamejared.com'
@@ -130,6 +135,7 @@ configurations {
 }
 
 dependencies {
+    implementation "com.github.glitchfiend:TerraBlender-neoforge:${minecraft_version}-${terrablender_version}"
     // Example optional mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
     compileOnly "mezz.jei:jei-${jei_mc_version}-common-api:${jei_version}"
