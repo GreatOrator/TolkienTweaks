@@ -75,12 +75,6 @@ public class TolkienMobsMain {
     private static final String BLOCK_DIR = "textures/block/custom/";
     public static CommonProxy proxy;
 
-    // TODO
-    //  -Biomes
-    //      -Proper overworld generation or Separate Dimension
-    //          -Structures
-    //      -Biome Tags
-
     public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer, Dist dist) {
         proxy = GeneralUtility.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
 
