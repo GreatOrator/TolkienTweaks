@@ -208,13 +208,8 @@ public class CamoSpawnerScreen extends AbstractContainerScreen<CamoSpawnerContai
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         guiGraphics.drawString(font, title, 5, 5, 8552833);
         guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.camo_spawner.minSpawnDelay"), 10, 20, 8552833, false);
-//        guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.camo_spawner.maxSpawnDelay"), 85, 20, 8552833, false);
         guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.camo_spawner.activationRange"), 10, 60, 8552833, false);
-//        guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.camo_spawner.spawnRange"), 85, 60, 8552833, false);
         guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.camo_spawner.spawnCount"), 10, 100, 8552833, false);
-//        guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.camo_spawner.maxCluster"), 85, 100, 8552833, false);
-//        guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.camo_spawner.clusterRange"), 179, 158, 8552833, false);
-//        guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.camo_spawner.entityTags"), 179, 20, 8552833);
     }
 
     @Override
