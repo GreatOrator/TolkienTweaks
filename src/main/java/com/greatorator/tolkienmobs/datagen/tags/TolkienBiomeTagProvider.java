@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.datagen.tags;
 
 import com.greatorator.tolkienmobs.init.TolkienBiomes;
+import com.greatorator.tolkienmobs.datagen.TolkienStructureProvider;
 import com.greatorator.tolkienmobs.init.TolkienTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -25,6 +26,10 @@ public class TolkienBiomeTagProvider extends BiomeTagsProvider {
 
 	@Override
 	protected void addTags(HolderLookup.@NotNull Provider provider) {
+        TolkienStructureProvider.STRUCTURES.forEach(definition -> {
+            var builder = tag(definition.biomeTag());
+            definition.biomes().forEach(builder::add);
+        });
 		TolkienBiomes.BIOME_FACTORIES.keySet().stream().sorted(Comparator.comparing(key -> key.location().toString())).toList().forEach(biome -> {
 			tag(TolkienTags.Biomes.OVERWORLD).add(biome);
 			float temperature = provider.asGetterLookup().lookupOrThrow(Registries.BIOME).getOrThrow(biome).value().getBaseTemperature();
