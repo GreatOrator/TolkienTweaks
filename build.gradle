@@ -20,7 +20,7 @@ repositories {
     mavenLocal()
 
     maven { //Patchouli && JEI
-        url 'https://maven.blamejared.com'
+        url = 'https://maven.blamejared.com'
         content {
             includeGroup "mezz.jei"
         }
@@ -31,7 +31,7 @@ repositories {
     }
     maven {
         name = 'GeckoLib'
-        url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+        url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
         content {
             includeGroup("software.bernie.geckolib")
         }
@@ -192,7 +192,7 @@ publishing {
     }
     repositories {
         maven {
-            url "file://${project.projectDir}/repo"
+            url = "file://${project.projectDir}/repo"
         }
     }
 }
