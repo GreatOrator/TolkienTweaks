@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.concurrent.CompletableFuture;
+import java.util.Comparator;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -24,7 +25,7 @@ public class TolkienBiomeTagProvider extends BiomeTagsProvider {
 
 	@Override
 	protected void addTags(HolderLookup.@NotNull Provider provider) {
-		TolkienBiomes.BIOME_FACTORIES.keySet().stream().sorted().toList().forEach(biome -> {
+		TolkienBiomes.BIOME_FACTORIES.keySet().stream().sorted(Comparator.comparing(key -> key.location().toString())).toList().forEach(biome -> {
 			tag(TolkienTags.Biomes.OVERWORLD).add(biome);
 			float temperature = provider.asGetterLookup().lookupOrThrow(Registries.BIOME).getOrThrow(biome).value().getBaseTemperature();
 			if (temperature > 0.8F) tag(TolkienTags.Biomes.HOT).add(biome);
@@ -33,103 +34,104 @@ public class TolkienBiomeTagProvider extends BiomeTagsProvider {
 		});
 		TolkienBiomes.BIOMES_BY_TAG.forEach((tag, biome) -> tag(tag).add(biome));
 
+		// Empty classifications (for example river/beach) need not exist yet.
 		tag(BiomeTags.IS_OVERWORLD)
-				.addTag(TolkienTags.Biomes.OVERWORLD);
+				.addOptionalTag(TolkienTags.Biomes.OVERWORLD.location());
 
 		tag(Tags.Biomes.IS_HOT_OVERWORLD)
-				.addTag(TolkienTags.Biomes.HOT);
+				.addOptionalTag(TolkienTags.Biomes.HOT.location());
 		tag(Tags.Biomes.IS_COLD_OVERWORLD)
-				.addTag(TolkienTags.Biomes.COLD);
+				.addOptionalTag(TolkienTags.Biomes.COLD.location());
 		tag(Tags.Biomes.IS_TEMPERATE_OVERWORLD)
-				.addTag(TolkienTags.Biomes.TEMPERATE);
+				.addOptionalTag(TolkienTags.Biomes.TEMPERATE.location());
 		tag(Tags.Biomes.IS_WET_OVERWORLD)
-				.addTag(TolkienTags.Biomes.WET);
+				.addOptionalTag(TolkienTags.Biomes.WET.location());
 		tag(Tags.Biomes.IS_DRY_OVERWORLD)
-				.addTag(TolkienTags.Biomes.DRY);
+				.addOptionalTag(TolkienTags.Biomes.DRY.location());
 		tag(Tags.Biomes.IS_SPARSE_VEGETATION_OVERWORLD)
-				.addTag(TolkienTags.Biomes.SPARSE);
+				.addOptionalTag(TolkienTags.Biomes.SPARSE.location());
 		tag(Tags.Biomes.IS_DENSE_VEGETATION_OVERWORLD)
-				.addTag(TolkienTags.Biomes.DENSE);
+				.addOptionalTag(TolkienTags.Biomes.DENSE.location());
 
 		tag(Tags.Biomes.IS_PLAINS)
-				.addTag(TolkienTags.Biomes.PLAINS);
+				.addOptionalTag(TolkienTags.Biomes.PLAINS.location());
 		tag(BiomeTags.IS_FOREST)
-				.addTag(TolkienTags.Biomes.FOREST);
+				.addOptionalTag(TolkienTags.Biomes.FOREST.location());
 		tag(BiomeTags.IS_TAIGA)
-				.addTag(TolkienTags.Biomes.TAIGA);
+				.addOptionalTag(TolkienTags.Biomes.TAIGA.location());
 		tag(Tags.Biomes.IS_DESERT)
-				.addTag(TolkienTags.Biomes.DESERT);
+				.addOptionalTag(TolkienTags.Biomes.DESERT.location());
 		tag(BiomeTags.IS_SAVANNA)
-				.addTag(TolkienTags.Biomes.SAVANNA);
+				.addOptionalTag(TolkienTags.Biomes.SAVANNA.location());
 		tag(BiomeTags.IS_JUNGLE)
-				.addTag(TolkienTags.Biomes.JUNGLE);
+				.addOptionalTag(TolkienTags.Biomes.JUNGLE.location());
 		tag(BiomeTags.IS_MOUNTAIN)
-				.addTag(TolkienTags.Biomes.MOUNTAIN);
+				.addOptionalTag(TolkienTags.Biomes.MOUNTAIN.location());
 		tag(Tags.Biomes.IS_MOUNTAIN)
-				.addTag(TolkienTags.Biomes.MOUNTAIN);
+				.addOptionalTag(TolkienTags.Biomes.MOUNTAIN.location());
 		tag(BiomeTags.IS_BEACH)
-				.addTag(TolkienTags.Biomes.BEACH);
+				.addOptionalTag(TolkienTags.Biomes.BEACH.location());
 		tag(BiomeTags.IS_BADLANDS)
-				.addTag(TolkienTags.Biomes.BADLANDS);
+				.addOptionalTag(TolkienTags.Biomes.BADLANDS.location());
 		tag(Tags.Biomes.IS_MOUNTAIN_SLOPE)
-				.addTag(TolkienTags.Biomes.SLOPE);
+				.addOptionalTag(TolkienTags.Biomes.SLOPE.location());
 		tag(Tags.Biomes.IS_MOUNTAIN_PEAK)
-				.addTag(TolkienTags.Biomes.PEAK);
+				.addOptionalTag(TolkienTags.Biomes.PEAK.location());
 		tag(Tags.Biomes.IS_SWAMP)
-				.addTag(TolkienTags.Biomes.SWAMP);
+				.addOptionalTag(TolkienTags.Biomes.SWAMP.location());
 		tag(Tags.Biomes.IS_SANDY)
-				.addTag(TolkienTags.Biomes.SANDY);
+				.addOptionalTag(TolkienTags.Biomes.SANDY.location());
 		tag(Tags.Biomes.IS_WINDSWEPT)
-				.addTag(TolkienTags.Biomes.WINDSWEPT);
+				.addOptionalTag(TolkienTags.Biomes.WINDSWEPT.location());
 		tag(Tags.Biomes.IS_SNOWY)
-				.addTag(TolkienTags.Biomes.SNOWY);
+				.addOptionalTag(TolkienTags.Biomes.SNOWY.location());
 		tag(Tags.Biomes.IS_ICY)
-				.addTag(TolkienTags.Biomes.ICY);
+				.addOptionalTag(TolkienTags.Biomes.ICY.location());
 		tag(Tags.Biomes.IS_FLORAL)
-				.addTag(TolkienTags.Biomes.FLORAL);
+				.addOptionalTag(TolkienTags.Biomes.FLORAL.location());
 		tag(Tags.Biomes.IS_DEAD)
-				.addTag(TolkienTags.Biomes.DEAD);
+				.addOptionalTag(TolkienTags.Biomes.DEAD.location());
 		tag(BiomeTags.IS_OCEAN)
-				.addTag(TolkienTags.Biomes.OCEAN);
+				.addOptionalTag(TolkienTags.Biomes.OCEAN.location());
 		tag(Tags.Biomes.IS_CONIFEROUS_TREE)
-				.addTag(TolkienTags.Biomes.CONIFEROUS);
+				.addOptionalTag(TolkienTags.Biomes.CONIFEROUS.location());
 		tag(Tags.Biomes.IS_OLD_GROWTH)
-				.addTag(TolkienTags.Biomes.DARK_FOREST);
+				.addOptionalTag(TolkienTags.Biomes.DARK_FOREST.location());
 		tag(Tags.Biomes.IS_WASTELAND)
-				.addTag(TolkienTags.Biomes.WASTELAND);
+				.addOptionalTag(TolkienTags.Biomes.WASTELAND.location());
 		tag(Tags.Biomes.IS_MAGICAL)
-				.addTag(TolkienTags.Biomes.MAGICAL);
+				.addOptionalTag(TolkienTags.Biomes.MAGICAL.location());
 		tag(Tags.Biomes.IS_RIVER)
-				.addTag(TolkienTags.Biomes.RIVER);
+				.addOptionalTag(TolkienTags.Biomes.RIVER.location());
 		tag(Tags.Biomes.IS_CAVE)
-				.addTag(TolkienTags.Biomes.CAVE);
+				.addOptionalTag(TolkienTags.Biomes.CAVE.location());
 
 		tag(TolkienTags.Biomes.WET)
-				.addTag(TolkienTags.Biomes.SWAMP)
-				.addTag(TolkienTags.Biomes.RIVER)
-				.addTag(TolkienTags.Biomes.BEACH);
+				.addOptionalTag(TolkienTags.Biomes.SWAMP.location())
+				.addOptionalTag(TolkienTags.Biomes.RIVER.location())
+				.addOptionalTag(TolkienTags.Biomes.BEACH.location());
 		tag(TolkienTags.Biomes.DENSE)
-				.addTag(TolkienTags.Biomes.DARK_FOREST)
-				.addTag(TolkienTags.Biomes.FOREST)
-				.addTag(TolkienTags.Biomes.JUNGLE)
-				.addTag(TolkienTags.Biomes.SWAMP);
+				.addOptionalTag(TolkienTags.Biomes.DARK_FOREST.location())
+				.addOptionalTag(TolkienTags.Biomes.FOREST.location())
+				.addOptionalTag(TolkienTags.Biomes.JUNGLE.location())
+				.addOptionalTag(TolkienTags.Biomes.SWAMP.location());
 		tag(TolkienTags.Biomes.DRY)
-				.addTag(TolkienTags.Biomes.DESERT);
+				.addOptionalTag(TolkienTags.Biomes.DESERT.location());
 
 		tag(BiomeTags.HAS_SWAMP_HUT)
-				.addTag(TolkienTags.Biomes.SWAMP);
+				.addOptionalTag(TolkienTags.Biomes.SWAMP.location());
 		tag(BiomeTags.HAS_JUNGLE_TEMPLE)
-				.addTag(TolkienTags.Biomes.JUNGLE);
+				.addOptionalTag(TolkienTags.Biomes.JUNGLE.location());
 		tag(BiomeTags.HAS_RUINED_PORTAL_OCEAN)
-				.addTag(TolkienTags.Biomes.OCEAN);
+				.addOptionalTag(TolkienTags.Biomes.OCEAN.location());
 		tag(BiomeTags.HAS_SHIPWRECK)
-				.addTag(TolkienTags.Biomes.OCEAN);
+				.addOptionalTag(TolkienTags.Biomes.OCEAN.location());
 		tag(BiomeTags.HAS_OCEAN_RUIN_WARM)
-				.addTag(TolkienTags.Biomes.OCEAN);
+				.addOptionalTag(TolkienTags.Biomes.OCEAN.location());
 		tag(BiomeTags.HAS_VILLAGE_SAVANNA)
-				.addTag(TolkienTags.Biomes.SAVANNA);
+				.addOptionalTag(TolkienTags.Biomes.SAVANNA.location());
 		tag(BiomeTags.HAS_PILLAGER_OUTPOST)
-				.addTag(TolkienTags.Biomes.SAVANNA);
+				.addOptionalTag(TolkienTags.Biomes.SAVANNA.location());
 	}
 
 	@Nonnull

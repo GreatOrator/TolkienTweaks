@@ -29,7 +29,9 @@ import com.greatorator.tolkienmobs.particle.WindParticle;
 import com.greatorator.tolkienmobs.particle.provider.TolkienParticleProvider;
 import com.greatorator.tolkienmobs.util.GeneralUtility;
 import com.greatorator.tolkienmobs.util.TolkienItemProperties;
-import com.greatorator.tolkienmobs.world.components.util.TolkienSurfaceRuleManager;
+import com.greatorator.tolkienmobs.world.registration.TolkienOverworldRegion;
+import terrablender.api.Regions;
+import terrablender.api.SurfaceRuleManager;
 import com.greatorator.tolkienmobs.world.registration.TolkienSurfaceRules;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -183,7 +185,8 @@ public class TolkienMobsMain {
             pot.addPlant(TolkienBlocks.MUSHROOM_BLOOM_DECAY.getId(), TolkienBlocks.POTTED_MUSHROOM_BLOOM_DECAY);
             pot.addPlant(TolkienBlocks.MUSHROOM_DECAY_BLOOM.getId(), TolkienBlocks.POTTED_MUSHROOM_DECAY_BLOOM);
 
-            TolkienSurfaceRuleManager.addSurfaceRules(TolkienSurfaceRuleManager.RuleCategory.OVERWORLD, MODID, TolkienSurfaceRules.tolkienSurface());
+            Regions.register(new TolkienOverworldRegion());
+            SurfaceRuleManager.addSurfaceRules(SurfaceRuleManager.RuleCategory.OVERWORLD, MODID, TolkienSurfaceRules.tolkienSurface());
 
         });
     }
