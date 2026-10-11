@@ -3,6 +3,8 @@ package com.greatorator.tolkienmobs.block.custom.entity;
 import com.greatorator.tolkienmobs.block.custom.TrinketTableBlock;
 import com.greatorator.tolkienmobs.containers.TrinketTableContainer;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
+import com.greatorator.tolkienmobs.init.TolkienItems;
+import com.greatorator.tolkienmobs.item.custom.TrinketItem;
 import com.greatorator.tolkienmobs.init.TolkienRecipesTypes;
 import com.greatorator.tolkienmobs.recipe.TrinketRecipe;
 import com.greatorator.tolkienmobs.recipe.TrinketRecipeInput;
@@ -21,33 +23,53 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Optional;
 
 public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuProvider {
+    public static final int TRINKET_SLOT = 0;
+    public static final int POTION_SLOT = 1;
+    public static final int GEM_SLOT = 2;
+    public static final int OUTPUT_SLOT = 3;
+    private static final int DEFAULT_MAX_PROGRESS = 100;
+
     public final ItemStackHandler itemHandler = new ItemStackHandler(4) {
         @Override
+        public boolean isItemValid(int slot, ItemStack stack) {
+            return switch (slot) {
+                case TRINKET_SLOT -> stack.getItem() instanceof TrinketItem;
+                case POTION_SLOT -> stack.getItem() instanceof PotionItem;
+                case GEM_SLOT -> stack.is(TolkienItems.GEM_AMMOLITE.get());
+                default -> false;
+            };
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return slot == GEM_SLOT ? 64 : 1;
+        }
+
+        @Override
         protected void onContentsChanged(int slot) {
+            if (slot != OUTPUT_SLOT) {
+                progress = 0;
+            }
             setChanged();
-            if(!level.isClientSide()) {
+            if (level != null && !level.isClientSide()) {
                 level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
             }
         }
     };
-    private static final int TRINKET_SLOT = 0;
-    private static final int POTION_SLOT = 1;
-    private static final int OUTPUT_SLOT = 2;
-    private static final int GEM_SLOT = 3;
     private final ContainerData data;
     private int progress = 0;
-    private int maxProgress = 72;
-    private final int DEFAULT_MAX_PROGRESS = 100;
+    private int maxProgress = DEFAULT_MAX_PROGRESS;
     private float rotation;
 
     public TrinketTableBlockEntity(BlockPos pPos, BlockState pBlockState) {
@@ -65,8 +87,8 @@ public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuP
             @Override
             public void set(int pIndex, int pValue) {
                 switch (pIndex) {
-                    case 0: TrinketTableBlockEntity.this.progress = pValue;
-                    case 1: TrinketTableBlockEntity.this.maxProgress = pValue;
+                    case 0 -> TrinketTableBlockEntity.this.progress = pValue;
+                    case 1 -> TrinketTableBlockEntity.this.maxProgress = pValue;
                 }
             }
 
@@ -102,7 +124,7 @@ public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuP
         super.loadAdditional(pTag, pRegistries);
         itemHandler.deserializeNBT(pRegistries, pTag.getCompound("inventory"));
         progress = pTag.getInt("progress");
-        maxProgress = pTag.getInt("max_progress");
+        maxProgress = pTag.contains("max_progress") ? Math.max(1, pTag.getInt("max_progress")) : DEFAULT_MAX_PROGRESS;
     }
 
     public void drops() {
@@ -114,82 +136,61 @@ public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuP
         Containers.dropContents(this.level, this.worldPosition, inv);
     }
 
-    public void tick(Level level, BlockPos pPos, BlockState pState) {
-        if(hasRecipe() && isOutputSlotEmptyOrReceivable()) {
-            increaseCraftingProgress();
-            level.setBlockAndUpdate(pPos, pState.setValue(TrinketTableBlock.LIT, true));
-            setChanged(level, pPos, pState);
+    public void tick(Level level, BlockPos pos, BlockState state) {
+        if (level.isClientSide()) {
+            return;
+        }
+        TrinketRecipeInput input = getRecipeInput();
+        Optional<RecipeHolder<TrinketRecipe>> recipe = level.getRecipeManager()
+                .getRecipeFor(TolkienRecipesTypes.TRINKET_TABLE_TYPE.get(), input, level);
+        ItemStack result = recipe.map(holder -> holder.value().assemble(input, level.registryAccess()))
+                .orElse(ItemStack.EMPTY);
+        boolean crafting = !result.isEmpty() && canAcceptOutput(result);
+        int previousProgress = progress;
 
-            if (hasCraftingFinished()) {
-                craftItem();
-                resetProgress();
+        if (crafting) {
+            progress++;
+            if (progress >= maxProgress) {
+                craftItem(recipe.orElseThrow().value(), result);
+                progress = 0;
             }
-
         } else {
-            resetProgress();
-            level.setBlockAndUpdate(pPos, pState.setValue(TrinketTableBlock.LIT, false));
+            progress = 0;
+        }
+        if (previousProgress != progress) {
+            setChanged();
+        }
+        if (state.getValue(TrinketTableBlock.LIT) != crafting) {
+            level.setBlockAndUpdate(pos, state.setValue(TrinketTableBlock.LIT, crafting));
         }
     }
 
-    private void resetProgress() {
-        this.progress = 0;
-        this.maxProgress = DEFAULT_MAX_PROGRESS;
+    private TrinketRecipeInput getRecipeInput() {
+        return new TrinketRecipeInput(itemHandler.getStackInSlot(TRINKET_SLOT),
+                itemHandler.getStackInSlot(POTION_SLOT), itemHandler.getStackInSlot(GEM_SLOT));
     }
 
-    private void craftItem() {
-//        Optional<RecipeHolder<TrinketRecipe>> recipe = getCurrentRecipe();
-//        ItemStack output = recipe.get().value().output();
-//
-//        itemHandler.extractItem(TRINKET_SLOT, 1, false);
-//        itemHandler.extractItem(POTION_SLOT, 1, false);
-//        itemHandler.extractItem(GEM_SLOT, 1, false);
-//        itemHandler.setStackInSlot(OUTPUT_SLOT, new ItemStack(output.getItem(),
-//                itemHandler.getStackInSlot(OUTPUT_SLOT).getCount() + output.getCount()));
+    private boolean canAcceptOutput(ItemStack result) {
+        ItemStack existing = itemHandler.getStackInSlot(OUTPUT_SLOT);
+        return (existing.isEmpty() || ItemStack.isSameItemSameComponents(existing, result))
+                && existing.getCount() + result.getCount()
+                <= Math.min(itemHandler.getSlotLimit(OUTPUT_SLOT), result.getMaxStackSize());
     }
 
-    private boolean hasCraftingFinished() {
-        return this.progress >= this.maxProgress;
-    }
+    private void craftItem(TrinketRecipe recipe, ItemStack result) {
+        ItemStack potion = itemHandler.getStackInSlot(POTION_SLOT);
+        ItemStack remainder = potion.getCraftingRemainingItem();
+        // Vanilla potions do not declare a crafting remainder, but leave a bottle when used.
+        if (remainder.isEmpty() && potion.is(Items.POTION)) {
+            remainder = new ItemStack(Items.GLASS_BOTTLE);
+        }
+        itemHandler.extractItem(TRINKET_SLOT, 1, false);
+        itemHandler.extractItem(POTION_SLOT, 1, false);
+        itemHandler.extractItem(GEM_SLOT, recipe.getFuel().count(), false);
+        itemHandler.setStackInSlot(POTION_SLOT, remainder);
 
-    private void increaseCraftingProgress() {
-        progress++;
-    }
-
-    private boolean isOutputSlotEmptyOrReceivable() {
-        return this.itemHandler.getStackInSlot(OUTPUT_SLOT).isEmpty() ||
-                this.itemHandler.getStackInSlot(OUTPUT_SLOT).getCount() < this.itemHandler.getStackInSlot(OUTPUT_SLOT).getMaxStackSize();
-    }
-
-    private boolean hasRecipe() {
-//        Optional<RecipeHolder<TrinketRecipe>> recipe = getCurrentRecipe();
-//        if(recipe.isEmpty()) {
-//            return false;
-//        }
-
-//        ItemStack output = recipe.get().value().getResultItem(null);
-//        return canInsertAmountIntoOutputSlot(output.getCount()) && canInsertItemIntoOutputSlot(output);
-        return false;
-    }
-
-    private Optional<RecipeHolder<TrinketRecipe>> getCurrentRecipe() {
-        return this.level.getRecipeManager()
-                .getRecipeFor(TolkienRecipesTypes.TRINKET_TABLE_TYPE.get(), new TrinketRecipeInput(List.of(
-                        itemHandler.getStackInSlot(TRINKET_SLOT),
-                        itemHandler.getStackInSlot(POTION_SLOT),
-                        itemHandler.getStackInSlot(GEM_SLOT)
-                )), level);
-    }
-
-    private boolean canInsertItemIntoOutputSlot(ItemStack output) {
-        return itemHandler.getStackInSlot(OUTPUT_SLOT).isEmpty() ||
-                itemHandler.getStackInSlot(OUTPUT_SLOT).getItem() == output.getItem();
-    }
-
-    private boolean canInsertAmountIntoOutputSlot(int count) {
-        int maxCount = itemHandler.getStackInSlot(OUTPUT_SLOT).isEmpty() ? 64 : itemHandler.getStackInSlot(OUTPUT_SLOT).getMaxStackSize();
-        int currentCount = itemHandler.getStackInSlot(OUTPUT_SLOT).getCount();
-
-        return maxCount >= currentCount + count;
+        ItemStack output = result.copyWithCount(result.getCount() + itemHandler.getStackInSlot(OUTPUT_SLOT).getCount());
+        itemHandler.setStackInSlot(OUTPUT_SLOT, output);
     }
 
     @Nullable

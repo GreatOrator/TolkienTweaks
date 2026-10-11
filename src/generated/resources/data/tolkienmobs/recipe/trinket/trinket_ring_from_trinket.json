@@ -1,9 +1,9 @@
 {
   "type": "tolkienmobs:trinket",
-  "ingredient": {
+  "fuel": {
     "count": 1,
     "item": "tolkienmobs:gem_ammolite"
   },
   "potion": "minecraft:potion",
-  "result": "tolkienmobs:trinket_ring"
+  "trinket": "tolkienmobs:trinket_ring"
 }
