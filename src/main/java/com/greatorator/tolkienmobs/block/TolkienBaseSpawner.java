@@ -624,6 +624,11 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
         return this.displayEntity;
     }
 
+    public void setDisplayEntity(SpawnData spawnData) {
+        this.displayEntity = null; // Clear current display entity
+        this.nextSpawnData = spawnData; // Set new spawn data
+    }
+
     public boolean onEventTriggered(Level level, int id) {
         if (id == 1) {
             if (level.isClientSide) {

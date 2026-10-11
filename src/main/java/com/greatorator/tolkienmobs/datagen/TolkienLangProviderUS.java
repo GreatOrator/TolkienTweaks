@@ -376,7 +376,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add("screen.tolkienmobs.backpack.fluid_storage", "Fluid Storage");
             this.add("screen.tolkienmobs.camo_spawner", "Spawner Setup");
             this.add("screen.tolkienmobs.camo_spawner.actRngeValue", "How far away player is before becoming active");
-            this.add("screen.tolkienmobs.camo_spawner.activationRange", "Detection Range");
+            this.add("screen.tolkienmobs.camo_spawner.activationRange", "Detect Range");
             this.add("screen.tolkienmobs.camo_spawner.clusterRange", "Search Range");
             this.add("screen.tolkienmobs.camo_spawner.clusterRangeValue", "Range to search for mobs to decide if anymore will spawn");
             this.add("screen.tolkienmobs.camo_spawner.entityTags", "Current Entity");
@@ -397,7 +397,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add("screen.tolkienmobs.camo_spawner.maxDelayValue", "Maximum start value for spawn countdown");
             this.add("screen.tolkienmobs.camo_spawner.maxSpawnDelay", "Delay-Max");
             this.add("screen.tolkienmobs.camo_spawner.minDelayValue", "Minimum start value for spawn countdown");
-            this.add("screen.tolkienmobs.camo_spawner.minSpawnDelay", "Delay-Min");
+            this.add("screen.tolkienmobs.camo_spawner.minSpawnDelay", "Spawn Delay");
             this.add("screen.tolkienmobs.camo_spawner.saveValue", "Save Values");
             this.add("screen.tolkienmobs.camo_spawner.spawnCount", "Spawn Count");
             this.add("screen.tolkienmobs.camo_spawner.spawnRange", "Spawn Range");
