@@ -1,151 +1,158 @@
-# Adding NBT structures to biomes (Minecraft 1.21.1)
+# Biome structures (Minecraft 1.21.1)
 
-The example **`tolkienmobs:shire_ruin`** places the existing `ttmruin_small.nbt`
-in the **Shire**, with a random rotation. It uses the custom structure type
-`tolkienmobs:tolkien_surface_structures` registered by **TolkienStructures**.
-**SurfaceStructures** builds the pieces using Minecraft's jigsaw placement API.
-A standalone NBT does not need jigsaw blocks or its own Java class.
+`TolkienStructures` registers the structure types and configured keys.
+`TolkienStructureProvider.STRUCTURES` is the editable catalogue; `runData` generates
+structure definitions, template pools, placement sets and allowed-biome tags.
 
-## Where to edit
+## Current catalogue
 
-| File | Purpose |
-| --- | --- |
-| `init/TolkienStructures.java` | Registers the custom structure type and names the configured structures |
-| `world/components/structure/SurfaceStructures.java` | Codec, default placement settings and piece generation |
-| `datagen/TolkienStructureProvider.java` | One definition per building: NBT, biomes, spacing, separation, salt, height offset |
-| `datagen/TolkienDataRegistryProvider.java` | Runs the structure, pool and set bootstrap callbacks in the shared registry provider |
-| `datagen/tags/TolkienBiomeTagProvider.java` | Generates allowed-biome tags from the same structure definitions |
+All identifiers below are in the `tolkienmobs` namespace.
 
-Java paths above are relative to `src/main/java/com/greatorator/tolkienmobs/`.
-NBT files remain in `src/main/resources/data/tolkienmobs/structure/`.
+| Structure / NBT | Biome | Placement |
+| --- | --- | --- |
+| `ttmbarrow` | Barrow Downs | Ground level |
+| `ttmdark_tower` | Mordor | Ground level, with a nearby warg pit |
+| `ttmgollum_cave` | Hithaeglir | Roof 32 blocks below the local terrain surface |
+| `ttmhouse_desert` | Haradwaith | 3–5 houses, ground level |
+| `ttmhouse_dwarf` | Iron Hills | 3–5 houses, ground level |
+| `ttmhouse_elven` | Lorinand | 3–5 houses, ground level |
+| `ttmhouse_human` | Gladden Fields | 3–5 houses, ground level |
+| `ttminn_desert` | Haradwaith | Ground level, sparse |
+| `ttmruin_large`, `ttmruin_small` | Dagorlad | Ground level, shared placement grid |
+| `ttmspidertree` | Mirkwood Spooky | Ground level, sparse |
+| `ttmswamp_hag_hut` | Marshes | Ground level, sparse |
+| `ttmwargpit` | Mordor | Top two layers above local ground, paired with a dark tower |
+| `cave` | Mirkwood | Underground, one main piece plus random `cave_side` branches |
+| `maze` | Hithaeglir | Underground, one main piece plus random `maze_side` branches |
 
-## Add a building
+### House clusters and ground height
 
-1. Put your NBT at `src/main/resources/data/tolkienmobs/structure/my_tower.nbt`.
-   The folder is **structure**, singular. The identifier is
-   `tolkienmobs:my_tower`, without `.nbt`.
-2. Add a configured structure key in `TolkienStructures`:
+`TemplateLayoutStructure` samples 3–5 houses per cluster. Each house receives a
+random rotation, follows its own local terrain height and has a neighbor with
+5–10 empty blocks between their bounding-box edges. Additional houses are placed
+around existing houses; all pairs retain at least five blocks of horizontal
+clearance. The layout is bounded to 112 blocks from its starting chunk origin.
+A candidate that cannot fit all houses in the allowed biome is skipped.
+
+Ground level means NBT layer Y=0 replaces the top terrain block at the footprint
+center. Ground-level buildings use terrain blending; slopes can still affect how
+the edges meet the terrain. Biome checks use each building's footprint center.
+
+Gollum's cave uses `Layout.top(-32)`: its **roof**, rather than its foundation,
+is 32 blocks below that surface. Warg pits use `Layout.top(2)`: the highest two
+layers are above it. These offsets reference the footprint center; uneven ground
+can cover more or less of a building at its edges. Buried structures use no
+terrain blending, so the terrain is not pulled down to their foundations.
+
+Every valid dark-tower start includes one warg pit, 5–10 blocks from its edges.
+The pit has its own pool and configured structure for manual placement, but **no
+independent natural placement set**. This avoids unrelated pits overlapping tower
+complexes. Use `/locate structure tolkienmobs:ttmdark_tower` to find both.
+
+### Frequency and minimum spacing
+
+`spacing` and `separation` are measured in **chunks** (16 blocks). Each spacing
+region proposes one candidate; biome checks can reject it. These are candidate
+grids, not guaranteed counts in any particular biome.
+
+| Group | Spacing / separation | Result |
+| --- | --- | --- |
+| House clusters | 24 / 16 | Separate compact clusters, minimum 272 blocks between start chunks |
+| Barrow, dark tower, Gollum cave | 16 / 6 | Minimum 112 blocks between start chunks of the same kind |
+| Inn, spider tree, swamp hut | 12 / 6 | Minimum 112 blocks between starts; even the largest footprint leaves over 64 blocks between copies |
+| Dagorlad ruins | 4 / 3, shared set | At most one ruin of either size per 4×4-chunk region; minimum 64 blocks between starts and at least 47 blocks between footprint edges |
+| Cave, maze | 32 / 8 | Existing sparse underground complexes |
+
+The shared `dagorlad_ruins` set chooses one size with equal weight. Sharing a
+set also enforces spacing **between** the two sizes. Its density is below the
+requested maximum of one of each per four chunks. Frequency and spacing rules
+apply to newly generated terrain using this version, not manually placed builds
+or structures already saved under an earlier configuration.
+
+The old `shire_ruin` ID remains registered so previously generated chunks can
+load it. It has no natural placement set now. Small ruins generate in Dagorlad
+through `ttmruin_small`; no new Shire ruins are scheduled.
+
+## Editing or adding structures
+
+Java paths are relative to `src/main/java/com/greatorator/tolkienmobs/`:
+
+- `init/TolkienStructures.java`: keys and custom type registration.
+- `datagen/TolkienStructureProvider.java`: NBT identifiers, biomes, layout and frequency.
+- `world/components/structure/TemplateLayoutStructure.java`: local terrain alignment,
+  cluster layout and 5–10 block gap constants.
+- `world/components/structure/SurfaceStructures.java`: the jigsaw branching engine.
+- `datagen/TolkienDataRegistryProvider.java`: combined registry bootstrap callbacks.
+- `datagen/tags/TolkienBiomeTagProvider.java`: generates biome tags from definitions.
+
+For a new standalone building:
+
+1. Add `src/main/resources/data/tolkienmobs/structure/my_tower.nbt`.
+   The `structure` folder is singular; NBT identifiers omit the `.nbt` suffix.
+2. Add a key to `TolkienStructures`:
 
 ```java
 public static final ResourceKey<Structure> MY_TOWER = key("my_tower");
 ```
 
-3. Add an entry to `TolkienStructureProvider.STRUCTURES` (separate entries with
-   commas):
+3. Add an entry to `TolkienStructureProvider.STRUCTURES`:
 
 ```java
-new Definition(TolkienStructures.MY_TOWER, "tolkienmobs:my_tower",
-        List.of(TolkienBiomes.SHIRE, TolkienBiomes.BARROW_DOWNS),
-        24, 8, 193764822, 0)
+site(TolkienStructures.MY_TOWER, TolkienBiomes.SHIRE,
+        16, 6, 193764840, Layout.single())
 ```
 
-The last four arguments are **spacing in chunks**, **separation in chunks**,
-**salt** and **height offset in blocks**. Use a distinct salt per structure.
-Vanilla biome keys such as `Biomes.PLAINS` also work (import
-`net.minecraft.world.level.biome.Biomes`).
+`site` uses the key as the NBT identifier. Its numeric arguments are spacing,
+separation and salt. Use a distinct salt per independent placement set. Use
+`Layout.houses()` for 3–5 buildings, or `Layout.top(-32)` for burial. For multiple
+biomes or an NBT with a different identifier, use `Definition` directly as the
+existing cave/maze entries demonstrate.
 
-4. Run the existing data task, using Java 21:
+4. Generate resources with Java 21:
 
 ```shell
 ./gradlew runData
 ```
 
-On Windows use `gradlew.bat runData`. In this sandbox use
+Windows: `gradlew.bat runData`. This sandbox:
 `mise exec java@21 -- bash gradlew runData`.
 
-This generates the following under `src/generated/resources/data/tolkienmobs/`:
+Output goes under `src/generated/resources/data/tolkienmobs/`:
 
-- `worldgen/structure/my_tower.json`
-- `worldgen/template_pool/my_tower.json`
-- `worldgen/structure_set/my_tower.json`
-- `tags/worldgen/biome/has_structure/my_tower.json`
+- `worldgen/structure/`
+- `worldgen/template_pool/`
+- `worldgen/structure_set/`
+- `tags/worldgen/biome/has_structure/`
 
-The Shire example follows the same process. Edit Java definitions and regenerate;
-manual edits to generated JSON will be overwritten. Do not keep duplicates under
-`src/main/resources`. Commit the generated files along with the Java edits.
-The existing Gradle configuration includes generated resources in the mod JAR.
-NBT files are inputs and are not generated by this task.
+Commit the generated files with the Java edits. Edit the definitions and
+regenerate; direct edits to generated JSON are overwritten. Avoid duplicate JSON
+under `src/main/resources`. NBT files remain in `src/main/resources` as inputs.
+The existing Gradle configuration includes both resource directories in the JAR.
 
-The biome filter checks the structure's start biome; a large building can extend
-across a biome boundary. The previous sample Y=150 cap in `SurfaceStructures`
-was removed so definitions can also target high mountain biomes. For more advanced
-placement, adjust that class or use its full constructor in the bootstrap.
+## Testing in game and older NBTs
 
-## Frequency
-
-The example definition uses spacing `24`, separation `8` and a linear spread.
-Spacing and separation are measured in **chunks** (16 blocks), not blocks.
-Minecraft proposes one candidate per spacing region, then checks whether its
-biome is allowed. This does not guarantee one ruin per 24 chunks in the Shire.
-
-- Lower `spacing` for more candidates; raise it for fewer.
-- Keep `spacing` greater than `separation`, and `separation` at least zero.
-- Use a distinct `salt` per structure set to avoid matching candidate grids.
-- `weight` selects among structures sharing a set; it is not a spawn rate.
-
-## Placement and terrain
-
-- `projection: "rigid"` keeps the building's shape intact.
-- `project_start_to_heightmap: "WORLD_SURFACE_WG"` places it at the surface,
-  including water surfaces. Choose dry biomes for this starter template. It
-  does not independently reject slopes, lakes or rivers inside an allowed biome.
-- `heightOffset` in the definition becomes `start_height.absolute`, an offset relative to that surface. The example
-  uses `0`. A single pool element places its lowest layer one block below that
-  height, suitable for a foundation at NBT Y=0. Adjust after inspecting your NBT.
-- `terrain_adaptation: "beard_thin"` blends terrain around the building. Use
-  `"none"` to disable terrain blending. This is not a guarantee of flat ground.
-- Keep `size: 1` for standalone buildings. It permits the start piece to be
-  emitted in this version; with no jigsaw blocks, there are no extra pieces.
-- The generated pool uses `fallback: "minecraft:empty"` and an empty
-  processor list for the basic template. No extra processor file is required.
-- `minecraft:single_pool_element` places the NBT's saved air as well as blocks.
-  Use structure void in your NBT for cells where existing terrain should remain.
-- Multiple weighted pool elements can provide randomly chosen NBT variants.
-  The cave and maze below demonstrate connected pieces using jigsaw blocks
-  and additional pools.
-
-`spawn_overrides: {}` leaves normal biome spawning in place; it does not add mobs
-or loot to the building. Those come from the NBT or separate loot/spawn settings.
-
-## Older NBT files
-
-The example uses the original `ttmruin_small.nbt` (saved with DataVersion 2586),
-which has only vanilla block names. Minecraft applies its vanilla data upgrades
-when reading it. Other supplied NBTs contain old mod names such as
-`tolkienmobs:stairs_lebethron` or blocks from other mods. Vanilla data upgrades
-do not provide a general migration for renamed or removed mod blocks/entities.
-
-Before enabling each older building, load it with a structure block or
-`/place template tolkienmobs:your_nbt_name`, check blocks, entities, block entities
-and inventories, fix any missing content, then save it again in 1.21.1. Use a
-copy of your original NBT while doing this. Mod migration is specific to each
-building; the small ruin, cave and maze are enabled. The cave copper ore reference was
-updated from `tconstruct:copper_ore` to `minecraft:copper_ore`.
-
-## Try the example
-
-After generating resources and rebuilding the mod, use cheats/operator permissions in a normal Overworld:
+Rebuild the mod and restart the world after changing worldgen definitions.
+Structures generate in **new chunks**, not retroactively in explored terrain.
+With cheats/operator permissions, for example:
 
 ```mcfunction
-/locate biome tolkienmobs:shire
-/locate structure tolkienmobs:shire_ruin
+/locate structure tolkienmobs:ttmhouse_desert
+/locate structure tolkienmobs:ttmgollum_cave
+/place structure tolkienmobs:ttmdark_tower
+/place template tolkienmobs:ttmgollum_cave
 ```
 
-Travel near the Shire before locating the structure if it is far from spawn.
-The locate result may take time in a rare biome. For a quick placement preview:
+`/place structure` previews the generated layout; `/place template` places only
+the raw NBT. Manual placement does not demonstrate natural frequency or biome
+eligibility. Underground structures are easier to inspect in spectator mode.
 
-```mcfunction
-/place structure tolkienmobs:shire_ruin
-/place template tolkienmobs:ttmruin_small
-```
-
-`/place` is manual placement and does not demonstrate natural biome filtering.
-For natural generation, use a new world or unexplored chunks. Structures are
-not added retroactively to explored chunks. Run data generation and rebuild the mod after changing Java definitions, then
-restart the world/server. Restart after changing datapack worldgen JSON too.
-For a packaged mod, the same paths can be overridden through a world datapack
-(`pack_format: 48` in Minecraft 1.21/1.21.1).
-
+The supplied buildings retain their saved blocks, inventories and entities. The
+cave and Gollum cave's obsolete `tconstruct:copper_ore` reference was changed to
+`minecraft:copper_ore`. Minecraft applies its vanilla data upgrades to the old
+NBTs, but cannot generally migrate renamed/removed mod content. Preview and
+resave any additional legacy NBTs before enabling them. Structure void cells
+preserve existing terrain; saved air clears it. `spawn_overrides: {}` keeps normal
+biome spawning, while saved NBT entities are placed with the building.
 
 ## Cave and maze branches
 
@@ -178,7 +185,7 @@ so underground cave biomes do not exclude a structure below Mirkwood/Hithaeglir.
 Edit the biome list, height offset and branch settings in the definitions. The
 Y range itself is in `SurfaceStructures.underground`. The maximum distance remains
 80 blocks from the start center. A larger depth still respects collision and
-distance limits. The existing Shire ruin retains surface placement.
+distance limits. The catalogue buildings retain their configured ground-level or surface-relative placement.
 
 For each family, `runData` generates the structure, placement set, biome tag and
 three pools (six files total). The additional pools are:

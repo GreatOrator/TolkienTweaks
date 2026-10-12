@@ -1,0 +1,8 @@
+{
+  "type": "tolkienmobs:template_layout",
+  "biomes": "#tolkienmobs:has_structure/ttmspidertree",
+  "spawn_overrides": {},
+  "start_pool": "tolkienmobs:ttmspidertree",
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
+}

@@ -1,0 +1,8 @@
+{
+  "type": "tolkienmobs:template_layout",
+  "biomes": "#tolkienmobs:has_structure/ttmwargpit",
+  "spawn_overrides": {},
+  "start_pool": "tolkienmobs:ttmwargpit",
+  "step": "surface_structures",
+  "top_offset": 2
+}

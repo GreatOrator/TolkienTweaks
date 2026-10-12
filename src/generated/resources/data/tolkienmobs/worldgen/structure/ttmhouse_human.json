@@ -1,0 +1,10 @@
+{
+  "type": "tolkienmobs:template_layout",
+  "biomes": "#tolkienmobs:has_structure/ttmhouse_human",
+  "max_count": 5,
+  "min_count": 3,
+  "spawn_overrides": {},
+  "start_pool": "tolkienmobs:ttmhouse_human",
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
+}
