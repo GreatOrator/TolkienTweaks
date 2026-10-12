@@ -30,6 +30,8 @@ public final class TolkienStructureProvider {
     // Add one definition per structure. Optional branches contain only side NBTs. Distances are chunks; heightOffset is blocks.
     // The structure, pool, set and biome tag names are derived from the structure key.
     public static final List<Definition> STRUCTURES = List.of(
+            new Definition(TolkienStructures.HOBBIT_HOUSE, "tolkienmobs:ttmhouse_hobbit",
+                    List.of(TolkienBiomes.SHIRE), 24, 8, 193764821, 0),
             new Definition(TolkienStructures.SHIRE_RUIN, "tolkienmobs:ttmruin_small",
                     List.of(TolkienBiomes.DAGORLAD), 24, 8, 193764821, 0),
             new Definition(TolkienStructures.CAVE, "tolkienmobs:cave",
