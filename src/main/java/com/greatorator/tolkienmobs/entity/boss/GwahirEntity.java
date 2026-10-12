@@ -1,7 +1,10 @@
 package com.greatorator.tolkienmobs.entity.boss;
 
 import com.greatorator.tolkienmobs.entity.TolkienAmbientEntity;
+import com.greatorator.tolkienmobs.entity.ai.goal.EagleDiveAttackGoal;
 import com.greatorator.tolkienmobs.entity.ai.goal.LandBirdGoal;
+import com.greatorator.tolkienmobs.entity.ai.goal.RandomGlideGoal;
+import com.greatorator.tolkienmobs.entity.ai.goal.RestrictedFlyingGoal;
 import com.greatorator.tolkienmobs.entity.ai.goal.StartFlyingBirdGoal;
 import com.greatorator.tolkienmobs.entity.ambient.GreatEagleEntity;
 import com.greatorator.tolkienmobs.entity.passive.AurochEntity;
@@ -16,6 +19,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.network.syncher.SyncedDataHolder;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -27,10 +31,7 @@ import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.AgeableMob;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
@@ -63,7 +64,7 @@ import java.util.EnumSet;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class GwahirEntity extends TolkienAmbientEntity implements GeoEntity, FlyingAnimal, CommonTraits {
-    protected static final EntityDataAccessor<Boolean> PECKING = SynchedEntityData.defineId(GwahirEntity.class, EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Boolean> PECKING = SynchedEntityData.defineId((Class<? extends SyncedDataHolder>) GwahirEntity.class, EntityDataSerializers.BOOLEAN);
     protected BlockPos stonePos;
     public boolean scheduleWeaponGoalUpdate = true;
     private final MeleeAttackGoal meleeGoal = new MeleeAttackGoal(this, 1.2, false) {
@@ -80,7 +81,7 @@ public class GwahirEntity extends TolkienAmbientEntity implements GeoEntity, Fly
         }
     };
 
-    public GwahirEntity(EntityType<? extends Animal> entityType, Level level) {
+    public GwahirEntity(EntityType<? extends TamableAnimal> entityType, Level level) {
         super(entityType, level);
 
         moveControl = new FlyingMoveControl(this, 20, true);
@@ -92,7 +93,7 @@ public class GwahirEntity extends TolkienAmbientEntity implements GeoEntity, Fly
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return Animal.createMobAttributes()
+        return TamableAnimal.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 240.0D)
                 .add(Attributes.ARMOR, 30.0D)
                 .add(Attributes.ATTACK_DAMAGE, 21.0D)
@@ -112,11 +113,13 @@ public class GwahirEntity extends TolkienAmbientEntity implements GeoEntity, Fly
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(2, new StartFlyingBirdGoal(this, 120));
-        this.goalSelector.addGoal(3, new LandBirdGoal(this, 240));
-        this.goalSelector.addGoal(3, new GwahirEntity.WanderGoal(this, 1.0));
-        this.goalSelector.addGoal(5, new GwahirEntity.BirdPeckGoal(this));
-        this.goalSelector.addGoal(6, new GwahirEntity.BirdMoveToStoneGoal(this, 1.0D, 8, 4));
+        this.goalSelector.addGoal(2, new StartFlyingBirdGoal(this, 60));
+        this.goalSelector.addGoal(3, new LandBirdGoal(this, 480));
+        this.goalSelector.addGoal(4, new RandomGlideGoal(this));
+        this.goalSelector.addGoal(5, new EagleDiveAttackGoal(this));
+        this.goalSelector.addGoal(6, new GwahirEntity.WanderGoal(this, 1.0));
+        this.goalSelector.addGoal(7, new GwahirEntity.BirdPeckGoal(this));
+        this.goalSelector.addGoal(8, new GwahirEntity.BirdMoveToStoneGoal(this, 1.0D, 8, 4));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Chicken.class, true));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Sheep.class, true));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Cow.class, true));
@@ -159,7 +162,7 @@ public class GwahirEntity extends TolkienAmbientEntity implements GeoEntity, Fly
     }
 
     @Override
-    public GreatEagleEntity getBreedOffspring(ServerLevel world, AgeableMob mate) {
+    public GwahirEntity getBreedOffspring(ServerLevel world, AgeableMob mate) {
         return null;
     }
 
@@ -255,7 +258,7 @@ public class GwahirEntity extends TolkienAmbientEntity implements GeoEntity, Fly
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
-            double speed = getMovementSpeed(this);
+            double speed = this.getAttributeValue(Attributes.MOVEMENT_SPEED);
             if (event.isMoving() && this.onGround() && speed > (double)0.2F) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("run"));
                 return PlayState.CONTINUE;
@@ -266,14 +269,14 @@ public class GwahirEntity extends TolkienAmbientEntity implements GeoEntity, Fly
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Glide", 1, (event) -> {
-            if (!this.onGround() & isFlying()) {
+            if (!this.onGround() && isFlying() && isGliding()) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("glide"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Fly", 1, (event) -> {
-            if (event.isMoving() && isFlying()) {
+            if (event.isMoving() && isFlying() && !isGliding()) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("fly"));
                 return PlayState.CONTINUE;
             }
@@ -389,12 +392,12 @@ public class GwahirEntity extends TolkienAmbientEntity implements GeoEntity, Fly
         }
     }
 
-    public static class WanderGoal extends WaterAvoidingRandomFlyingGoal {
+    public static class WanderGoal extends RestrictedFlyingGoal {
         private static final int TREE_HORIZONTAL_RANGE = 3;
         private static final int TREE_VERTICAL_RANGE = 6;
 
         public WanderGoal(PathfinderMob mob, double speed) {
-            super(mob, speed);
+            super(mob, speed, 64.0);
         }
 
         @Override

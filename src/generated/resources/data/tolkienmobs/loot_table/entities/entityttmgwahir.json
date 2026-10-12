@@ -21,7 +21,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "tolkienmobs:inventory_corrosion"
+              "id": "minecraft:strong_turtle_master"
             },
             {
               "add": false,

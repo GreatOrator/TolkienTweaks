@@ -30,11 +30,12 @@ import javax.annotation.Nullable;
 public class TolkienMonsterEntity extends Monster implements RangedAttackMob {
     public static final EntityDataAccessor<ItemStack> HELD_ITEM = SynchedEntityData.defineId(TolkienMonsterEntity.class, EntityDataSerializers.ITEM_STACK);
     public static final EntityDataAccessor<Boolean> ATTACKING = SynchedEntityData.defineId(TolkienMonsterEntity.class, EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<Boolean> AGGRESSIVE = SynchedEntityData.defineId(TolkienMonsterEntity.class, EntityDataSerializers.BOOLEAN);
     public boolean scheduleWeaponGoalUpdate = true;
     protected boolean ranged;
 
-    private final RangedBowAttackGoal<TolkienMonsterEntity> bowGoal = new RangedBowAttackGoal<>(this, 1.0, 20, 15.0F);
-    private final MeleeAttackGoal meleeGoal = new MeleeAttackGoal(this, 1.2, false) {
+    protected final RangedBowAttackGoal<TolkienMonsterEntity> bowGoal = new RangedBowAttackGoal<>(this, 1.0, 20, 15.0F);
+    protected final MeleeAttackGoal meleeGoal = new MeleeAttackGoal(this, 1.2, false) {
         @Override
         public void stop() {
             super.stop();
@@ -57,7 +58,6 @@ public class TolkienMonsterEntity extends Monster implements RangedAttackMob {
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(1, new SwitchCombatGoal(this, 6.0D, 12.0D));
         this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.5D, false));
         this.goalSelector.addGoal(2, new RestrictSunGoal(this));
         this.goalSelector.addGoal(3, new FleeSunGoal(this, 1.0));
@@ -134,6 +134,7 @@ public class TolkienMonsterEntity extends Monster implements RangedAttackMob {
         super.defineSynchedData(builder);
         builder.define(ATTACKING, false);
         builder.define(HELD_ITEM, ItemStack.EMPTY);
+        builder.define(AGGRESSIVE, false);
     }
 
     @Override
@@ -173,5 +174,13 @@ public class TolkienMonsterEntity extends Monster implements RangedAttackMob {
 
     public boolean canFireProjectileWeapon(ProjectileWeaponItem projectileWeapon) {
         return projectileWeapon == Items.BOW;
+    }
+
+    public void setAggressive(boolean aggressive) {
+        this.entityData.set(AGGRESSIVE, aggressive);
+    }
+
+    public boolean isAggressive() {
+        return (boolean)this.entityData.get(AGGRESSIVE);
     }
 }
