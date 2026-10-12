@@ -2,7 +2,7 @@ package com.greatorator.tolkienmobs.entity.boss;
 
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
 import com.greatorator.tolkienmobs.entity.ai.goal.BalrogAttackGoal;
-import com.greatorator.tolkienmobs.entity.ai.goal.SwitchCombatGoal;
+import com.greatorator.tolkienmobs.entity.ai.goal.MeleeCombatGoal;
 import com.greatorator.tolkienmobs.entity.projectiles.FellBeastFireballEntity;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
@@ -84,7 +84,7 @@ public class BalrogEntity extends TolkienMonsterEntity implements GeoEntity {
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(1, new SwitchCombatGoal(this, 6.0D, 12.0D));
+        this.goalSelector.addGoal(1, new MeleeCombatGoal(this));
         this.goalSelector.addGoal(2, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.6D));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));

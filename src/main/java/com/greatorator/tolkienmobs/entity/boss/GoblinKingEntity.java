@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.entity.boss;
 
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
+import com.greatorator.tolkienmobs.entity.ai.goal.MeleeCombatGoal;
 import com.greatorator.tolkienmobs.entity.monster.GoblinEntity;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
@@ -74,6 +75,7 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
     @Override
     protected void registerGoals() {
         super.registerGoals();
+        this.goalSelector.addGoal(1, new MeleeCombatGoal(this));
         this.targetSelector.addGoal(1, (new HurtByTargetGoal(this)).setAlertOthers(GoblinEntity.class));
         this.goalSelector.addGoal(2, new RangedAttackGoal(this, 1.0D, 40, 20.0F));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
@@ -99,13 +101,22 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
         double d2 = d0 - snowballentity.getY();
         double d3 = entity.getZ() - this.getZ();
         float f = MathUtility.sqrt(d1 * d1 + d3 * d3) * 0.2F;
+        snowballentity.shoot(d1, d2 + (double)f, d3, 1.6F, 12.0F);
         this.playSound(SoundEvents.SNOW_GOLEM_SHOOT, 1.0F, 0.4F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
         this.level.addFreshEntity(snowballentity);
     }
 
-    /**
-     * Special Attack        snowballentity.shoot(d1, d2 + (double)f, d3, 1.6F, 12.0F);
-     */
+    @Override
+    protected void updateWeaponGoal() {
+        scheduleWeaponGoalUpdate = false;
+        this.goalSelector.removeGoal(this.meleeGoal);
+        this.goalSelector.removeGoal(this.bowGoal);
+        // GoblinKing uses snowballs for ranged attacks, doesn't need a bow
+        // Always use ranged attack goal regardless of held item
+        this.goalSelector.addGoal(2, new RangedAttackGoal(this, 1.0D, 40, 20.0F));
+        this.ranged = true;
+    }
+
     @Override
     public boolean hurt(DamageSource source, float amount) {
         if (!super.hurt(source, amount)) {

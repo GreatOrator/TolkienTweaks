@@ -39,11 +39,13 @@ public class StartFlyingBirdGoal extends Goal {
             return false;
         }
 
-        Vec3 end = this.bird.getEyePosition();
+        Vec3 start = this.bird.getEyePosition();
+        // Try to find a horizontal flight path instead of shooting straight up
         for (int i = 0; i <= 360; i += 45) {
             double yaw = i * 0.0174533;
-            end = new Vec3(end.x + Math.cos(yaw) * 15f , end.y + 8f,  end.z + Math.sin(yaw) * 15f);
-            BlockHitResult result = this.bird.level.clip(new ClipContext(this.bird.getEyePosition(), end, ClipContext.Block.OUTLINE, ClipContext.Fluid.ANY, this.bird));
+            // More horizontal flight path - only go up 2-3 blocks, not 8
+            Vec3 end = new Vec3(start.x + Math.cos(yaw) * 15f, start.y + 2.0 + this.bird.getRandom().nextFloat() * 2.0, start.z + Math.sin(yaw) * 15f);
+            BlockHitResult result = this.bird.level.clip(new ClipContext(start, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.ANY, this.bird));
             if (result.getType() != HitResult.Type.MISS) continue;
 
             target = end;

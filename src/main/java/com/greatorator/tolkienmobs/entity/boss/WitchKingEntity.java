@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.entity.boss;
 
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
+import com.greatorator.tolkienmobs.entity.ai.goal.MeleeCombatGoal;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienMobEffects;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
@@ -46,6 +47,12 @@ public class WitchKingEntity extends TolkienMonsterEntity implements GeoEntity {
                 .add(Attributes.MOVEMENT_SPEED, 0.23D)
                 .add(Attributes.ATTACK_DAMAGE, 20.0D)
                 .add(Attributes.ARMOR, 25.0D);
+    }
+
+    @Override
+    protected void registerGoals() {
+        super.registerGoals();
+        this.goalSelector.addGoal(1, new MeleeCombatGoal(this));
     }
 
     @Override

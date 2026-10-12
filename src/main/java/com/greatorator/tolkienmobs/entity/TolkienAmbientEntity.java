@@ -3,24 +3,28 @@ package com.greatorator.tolkienmobs.entity;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.network.syncher.SyncedDataHolder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.*;
-import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-public class TolkienAmbientEntity extends Animal {
-    protected static final EntityDataAccessor<Boolean> FLYING = SynchedEntityData.defineId(TolkienAmbientEntity.class, EntityDataSerializers.BOOLEAN);
+public class TolkienAmbientEntity extends TamableAnimal {
+    protected static final EntityDataAccessor<Boolean> FLYING = SynchedEntityData.defineId((Class<? extends SyncedDataHolder>) TolkienAmbientEntity.class, EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Boolean> GLIDING = SynchedEntityData.defineId((Class<? extends SyncedDataHolder>) TolkienAmbientEntity.class, EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Boolean> AGGRESSIVE = SynchedEntityData.defineId((Class<? extends SyncedDataHolder>) TolkienAmbientEntity.class, EntityDataSerializers.BOOLEAN);
     public MoveControl moveControl;
 
-    public TolkienAmbientEntity(EntityType<? extends Animal> entityType, Level level) {
+    public TolkienAmbientEntity(EntityType<? extends TamableAnimal> entityType, Level level) {
         super(entityType, level);
     }
 
@@ -64,6 +68,8 @@ public class TolkienAmbientEntity extends Animal {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(FLYING, false);
+        builder.define(GLIDING, false);
+        builder.define(AGGRESSIVE, false);
     }
 
     public void setFlying(boolean flying) {
@@ -72,5 +78,21 @@ public class TolkienAmbientEntity extends Animal {
 
     public boolean getFlying() {
         return (boolean)this.entityData.get(FLYING);
+    }
+
+    public void setGliding(boolean gliding) {
+        this.entityData.set(GLIDING, gliding);
+    }
+
+    public boolean isGliding() {
+        return (boolean)this.entityData.get(GLIDING);
+    }
+
+    public void setAggressive(boolean aggressive) {
+        this.entityData.set(AGGRESSIVE, aggressive);
+    }
+
+    public boolean isAggressive() {
+        return (boolean)this.entityData.get(AGGRESSIVE);
     }
 }

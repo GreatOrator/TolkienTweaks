@@ -34,20 +34,27 @@ public record DwarvenMinerEnchantmentEffect(int range) implements EnchantmentEnt
     );
 
     @Override
-    public void apply(ServerLevel level, int i, EnchantedItemInUse enchantedItemInUse, Entity entity, Vec3 vec3) {
+    public void apply(ServerLevel level, int levelEnchant, EnchantedItemInUse enchantedItemInUse, Entity entity, Vec3 vec3) {
         Player pPlayer = (Player) entity;
 
         pPlayer.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 20, range(), false, false, false));
 
         if (!level.getBlockState(BlockPos.containing(vec3)).is(BlockTags.MINEABLE_WITH_PICKAXE)) return;
         if (entity.isShiftKeyDown()) return;
-        int max = (i * TolkienMobsConfig.BLOCKS_PER_LEVEL.get()) + 1;
         if (!(entity instanceof Player player)) return;
+
+        // Calculate radius based on enchantment level (1=3x3, 2=5x5, 3=7x7, 4=9x9)
+        int radius = Math.min(levelEnchant, 4);
+        
+        // Calculate center block based on player position
+        BlockPos sourceBlock = BlockPos.containing(vec3);
+        BlockPos centerBlock = calculateCenterBlock(player, sourceBlock, radius);
+
         chainMine(
                 level,
                 player,
-                BlockPos.containing(vec3),
-                max,
+                centerBlock,
+                radius,
                 enchantedItemInUse.itemStack(),
                 enchantedItemInUse.onBreak()
         );
@@ -58,27 +65,34 @@ public record DwarvenMinerEnchantmentEffect(int range) implements EnchantmentEnt
         return CODEC;
     }
 
-    private static void chainMine(ServerLevel level, Player player, BlockPos sourceBlock, int max, ItemStack tool, Consumer<Item> onBreak) {
-        BlockPos.breadthFirstTraversal(
-                sourceBlock,
-                Integer.MAX_VALUE,
-                max,
-                GeneralUtility::acceptDirections,
-                blockPos -> {
-                    BlockState blockState = level.getBlockState(blockPos);
-                    if (blockState.is(BlockTags.MINEABLE_WITH_PICKAXE)) {
-                        BlockEntity blockEntity = level.getBlockEntity(blockPos);
-                        level.removeBlock(blockPos, false);
-                        if (!player.isCreative()) {
-                            blockState.getBlock().playerDestroy(level, player, blockPos, blockState, blockEntity, tool);
-                        }
-                        if (!sourceBlock.equals(blockPos)) {
-                            tool.hurtAndBreak(1, level, player, onBreak);
-                        }
-                        return true;
-                    }
-                    return sourceBlock.equals(blockPos);
+    private static BlockPos calculateCenterBlock(Player player, BlockPos sourceBlock, int radius) {
+        // If player is above the mining point (player Y > source Y), center is directly from mining point
+        if (player.getY() > sourceBlock.getY()) {
+            return sourceBlock;
+        }
+        
+        // For all levels, center is 1 block up from the mining point
+        return sourceBlock.above();
+    }
+
+    private static void chainMine(ServerLevel level, Player player, BlockPos centerBlock, int radius, ItemStack tool, Consumer<Item> onBreak) {
+        // Calculate the area bounds based on radius (radius 1 = 3x3, radius 2 = 5x5, radius 3 = 7x7)
+        int halfSize = radius;
+        BlockPos minPos = new BlockPos(centerBlock.getX() - halfSize, centerBlock.getY(), centerBlock.getZ() - halfSize);
+        BlockPos maxPos = new BlockPos(centerBlock.getX() + halfSize, centerBlock.getY(), centerBlock.getZ() + halfSize);
+
+        for (BlockPos pos : BlockPos.betweenClosed(minPos, maxPos)) {
+            BlockState blockState = level.getBlockState(pos);
+            if (blockState.is(BlockTags.MINEABLE_WITH_PICKAXE)) {
+                BlockEntity blockEntity = level.getBlockEntity(pos);
+                level.removeBlock(pos, false);
+                if (!player.isCreative()) {
+                    blockState.getBlock().playerDestroy(level, player, pos, blockState, blockEntity, tool);
                 }
-        );
+                if (!centerBlock.equals(pos)) {
+                    tool.hurtAndBreak(1, level, player, onBreak);
+                }
+            }
+        }
     }
 }

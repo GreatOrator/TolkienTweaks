@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.entity.monster;
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
 import com.greatorator.tolkienmobs.entity.ai.goal.GoblinFlockToSameKindGoal;
 import com.greatorator.tolkienmobs.entity.ai.goal.GoblinPanicOnFlockDeathGoal;
+import com.greatorator.tolkienmobs.entity.ai.goal.MeleeCombatGoal;
 import com.greatorator.tolkienmobs.entity.boss.GoblinKingEntity;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
@@ -61,10 +62,11 @@ public class GoblinEntity extends TolkienMonsterEntity implements GeoEntity {
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(1, new GoblinPanicOnFlockDeathGoal(this, 2.0F));
-        this.goalSelector.addGoal(2, new LeapAtTargetGoal(this, 0.3F));
-        this.goalSelector.addGoal(4, new GoblinEntity.AttackTurtleEggGoal(this, 1.0D, 3));
-        this.goalSelector.addGoal(4, new GoblinFlockToSameKindGoal(this, 1.0D));
+        this.goalSelector.addGoal(1, new MeleeCombatGoal(this));
+        this.goalSelector.addGoal(2, new GoblinPanicOnFlockDeathGoal(this, 2.0F));
+        this.goalSelector.addGoal(3, new LeapAtTargetGoal(this, 0.3F));
+        this.goalSelector.addGoal(5, new GoblinEntity.AttackTurtleEggGoal(this, 1.0D, 3));
+        this.goalSelector.addGoal(5, new GoblinFlockToSameKindGoal(this, 1.0D));
         this.targetSelector.addGoal(1, (new HurtByTargetGoal(this)).setAlertOthers(MathUtility.getRandomInteger(1, 10) > 10 ? GoblinEntity.class : GoblinKingEntity.class));
     }
 
