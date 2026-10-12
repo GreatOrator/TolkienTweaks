@@ -1,13 +1,13 @@
 {
   "placement": {
     "type": "minecraft:random_spread",
-    "salt": 193764821,
-    "separation": 8,
+    "salt": 193764827,
+    "separation": 16,
     "spacing": 24
   },
   "structures": [
     {
-      "structure": "tolkienmobs:shire_ruin",
+      "structure": "tolkienmobs:ttmhouse_desert",
       "weight": 1
     }
   ]

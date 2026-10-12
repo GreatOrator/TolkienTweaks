@@ -36,16 +36,16 @@ import java.util.List;
 @GameTestHolder(TolkienMobsMain.MODID)
 @PrefixGameTestTemplate(false)
 public class StructureGameTests {
-    private static final ResourceLocation EXAMPLE = ResourceLocation.fromNamespaceAndPath(TolkienMobsMain.MODID, "shire_ruin");
+    private static final ResourceLocation EXAMPLE = TolkienStructures.RUIN_SMALL.location();
 
     @GameTest(template = "trinket_table_empty")
     public static void exampleReferencesLoadAndLegacyNbtHasExpectedSize(GameTestHelper helper) {
         var level = helper.getLevel();
         var registries = level.registryAccess();
         var structure = registries.registryOrThrow(Registries.STRUCTURE).getOptional(EXAMPLE).orElseThrow();
-        helper.assertTrue(structure instanceof SurfaceStructures && structure.type() == TolkienStructures.SURFACE_STRUCTURES.get(),
-                "Generated example must use the registered Tolkien surface structure type");
-        var set = registries.registryOrThrow(Registries.STRUCTURE_SET).getOptional(EXAMPLE).orElseThrow();
+        helper.assertTrue(structure.type() == TolkienStructures.TEMPLATE_LAYOUT.get(),
+                "Generated ruin must use the registered template layout type");
+        var set = registries.registryOrThrow(Registries.STRUCTURE_SET).getOptional(ResourceLocation.fromNamespaceAndPath(TolkienMobsMain.MODID, "dagorlad_ruins")).orElseThrow();
         helper.assertTrue(set.structures().stream().anyMatch(entry -> entry.structure().value() == structure),
                 "Example structure set must schedule the example structure");
         helper.assertTrue(registries.registryOrThrow(Registries.TEMPLATE_POOL).getOptional(EXAMPLE).isPresent(),
@@ -65,7 +65,7 @@ public class StructureGameTests {
         var settings = ((NoiseBasedChunkGenerator) WorldPresets.getNormalOverworld(registries).generator()).generatorSettings();
         long seed = 12345L;
         var randomState = RandomState.create(settings.value(), registries.lookupOrThrow(Registries.NOISE), seed);
-        for (var biomeKey : List.of(TolkienBiomes.SHIRE, TolkienBiomes.MORDOR)) {
+        for (var biomeKey : List.of(TolkienBiomes.DAGORLAD, TolkienBiomes.MORDOR)) {
             // Keep normal terrain settings while controlling the biome, so the test
             // exercises Minecraft's real biome filter rather than a random search.
             var biome = biomes.getHolderOrThrow(biomeKey);
@@ -73,8 +73,8 @@ public class StructureGameTests {
             var generator = new NoiseBasedChunkGenerator(source, settings);
             var start = structure.generate(registries, generator, source, randomState, level.getStructureManager(),
                     seed, new ChunkPos(0, 0), 0, level, structure.biomes()::contains);
-            helper.assertTrue(start.isValid() == biome.is(TolkienBiomes.SHIRE),
-                    "Example must generate in Shire and be rejected in Mordor");
+            helper.assertTrue(start.isValid() == biome.is(TolkienBiomes.DAGORLAD),
+                    "Example must generate in Dagorlad and be rejected in Mordor");
             if (start.isValid()) {
                 helper.assertTrue(start.getPieces().size() == 1, "Standalone NBT must produce one structure piece");
             }

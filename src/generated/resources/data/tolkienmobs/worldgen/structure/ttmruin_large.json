@@ -1,0 +1,8 @@
+{
+  "type": "tolkienmobs:template_layout",
+  "biomes": "#tolkienmobs:has_structure/ttmruin_large",
+  "spawn_overrides": {},
+  "start_pool": "tolkienmobs:ttmruin_large",
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
+}

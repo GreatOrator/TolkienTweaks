@@ -1,0 +1,8 @@
+{
+  "type": "tolkienmobs:template_layout",
+  "biomes": "#tolkienmobs:has_structure/ttminn_desert",
+  "spawn_overrides": {},
+  "start_pool": "tolkienmobs:ttminn_desert",
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
+}
