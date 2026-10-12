@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 193764827,
+    "separation": 16,
+    "spacing": 24
+  },
+  "structures": [
+    {
+      "structure": "tolkienmobs:ttmhouse_desert",
+      "weight": 1
+    }
+  ]
+}
