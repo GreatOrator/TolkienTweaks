@@ -1,0 +1,8 @@
+{
+  "type": "tolkienmobs:template_layout",
+  "biomes": "#tolkienmobs:has_structure/ttmswamp_hag_hut",
+  "spawn_overrides": {},
+  "start_pool": "tolkienmobs:ttmswamp_hag_hut",
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
+}
