@@ -19,13 +19,13 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
 
     @Override
     protected void addTranslations() {
-        this.add("itemgroup.tolkienmobs.deco", "托尔金工艺：建筑方块");
+        this.add("itemgroup.tolkienmobs.deco", "托尔金微调：建筑方块");
             this.addItem(TolkienItems.CREBAIN_FEATHER, "克拉班的羽毛");
             this.addItem(TolkienItems.BIRD_FEATHER, "鸟羽");
             this.addItem(TolkienItems.MUMAKIL_LEATHER, "硬化皮革");
-            this.addItem(TolkienItems.MONSTER_FUR, "捆扎毛皮");
+            this.addItem(TolkienItems.MONSTER_FUR, "一簇毛皮");
             this.addItem(TolkienItems.BOTTLE_FANCY, "精美瓶子");
-            this.addItem(TolkienItems.FOOD_HONEY, "蜜蜂蜂窝");
+            this.addItem(TolkienItems.FOOD_HONEY, "蜜脾");
             this.addItem(TolkienItems.MONSTER_FLESH, "腐臭肉块");
             this.addItem(TolkienItems.INSECT, "青蛙饵料");
             this.addItem(TolkienItems.GOLDEN_INSECT, "精美青蛙饵料");
@@ -38,20 +38,20 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addItem(TolkienItems.GOLEM_STONE_WATER, "§9水§r之魔像石");
             this.addItemWithLore(TolkienItems.GOLEM_STONE_SUMMON.get(), "§b秘银§r魔像石", "用来召唤传奇魔像的远古神器");
             this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_BASE.get(), "背包升级 - 基础", "用于制造背包升级的基础配件");
-            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_SIZE.get(), "背包升级 - 尺寸 - 等级1", "增加背包的存储容量（+27格，可升级最大值-1）");
-            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_SIZE_2.get(), "背包升级 - 尺寸 - 等级2", "进一步增加背包的存储容量（+27格，可升级最大值-1）");
-            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID.get(), "背包升级 - 流体储存 - 等级1", "允许携带8桶流体（可升级最大值-1）");
-            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_2.get(), "背包升级 - 流体储存 - 等级2", "允许携带16桶流体（可升级最大值-1）");
-            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_3.get(), "背包升级 - 流体储存 - 等级3", "允许携带32桶流体（可升级最大值-1）");
-            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_4.get(), "背包升级 - 流体储存 - 等级4", "允许携带128桶流体（可升级最大值-1）");
-            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_5.get(), "背包升级 - 流体储存 - 等级5", "允许存储的流体为无限量（可升级最大值-1）");
-            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_CRAFTING.get(), "背包升级 - 合成", "允许随处合成（可升级最大值-1）");
-            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_SLEEPING.get(), "背包升级 - 睡袋", "随身携带睡袋（可升级最大值-1）");
-            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_CAMPFIRE.get(), "背包升级 - 营火", "快速使用营火（可升级最大值-1）");
+            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_SIZE.get(), "背包升级 - 尺寸 - 等级1", "增加背包的存储容量（+27 格，上限：1）");
+            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_SIZE_2.get(), "背包升级 - 尺寸 - 等级2", "进一步增加背包的存储容量（+27 格，上限：1）");
+            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID.get(), "背包升级 - 流体储存 - 等级1", "允许携带 8 桶流体（上限：1）");
+            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_2.get(), "背包升级 - 流体储存 - 等级2", "允许携带 16 桶流体（上限：1）");
+            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_3.get(), "背包升级 - 流体储存 - 等级3", "允许携带 32 桶流体（上限：1）");
+            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_4.get(), "背包升级 - 流体储存 - 等级4", "允许携带 128 桶流体（上限：1）");
+            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_5.get(), "背包升级 - 流体储存 - 等级5", "允许无限储存流体（上限：1）");
+            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_CRAFTING.get(), "背包升级 - 合成", "允许随时随地合成（上限：1）");
+            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_SLEEPING.get(), "背包升级 - 睡袋", "随身携带睡袋（上限：1）");
+            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_CAMPFIRE.get(), "背包升级 - 营火", "快速使用营火（上限：1）");
             this.addItem(TolkienItems.TEMPLATE_MITHRIL, "锻造模板：秘银");
             this.addItem(TolkienItems.TEMPLATE_MORGULIRON, "锻造模板：魔古尔铁");
             this.addItem(TolkienItems.TEMPLATE_AMMOLITE, "锻造模板：斑彩石");
-        this.add("itemgroup.tolkienmobs.natural", "托尔金工艺：自然方块");
+        this.add("itemgroup.tolkienmobs.natural", "托尔金微调：自然方块");
             this.addItem(TolkienItems.PIPEWEED_SEEDS, "烟斗草种子");
             this.addItem(TolkienItems.PIPEWEED_ITEM, "烟斗草");
             this.addFlowerBlock(TolkienBlocks.FLOWER_SIMBELMYNE.get(), "辛贝穆奈", "simbelmyne");
@@ -77,11 +77,11 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addBlock(TolkienBlocks.WALL_MUSHROOM_RED, "蘑菇墙 - 红色");
             this.addBlock(TolkienBlocks.WALL_MUSHROOM_BROWN, "蘑菇墙 - 棕色");
             this.addBlock(TolkienBlocks.LIVING_ROOTS, "活根");
-            this.addBlockWithLore(TolkienBlocks.PLACARD.get(), "国家标识", "按住Shift时右击告示牌以转换类型");
+            this.addBlockWithLore(TolkienBlocks.PLACARD.get(), "国家标识", "按住 Shift 并右键点击告示牌以切换类型");
             this.addBlock(TolkienBlocks.ROCKPILE, "石堆");
             this.addBlock(TolkienBlocks.MOSS_PATCH, "苔藓地");
-            this.addBlock(TolkienBlocks.CLOVER_PATCH, "幸运草地");
-        this.add("itemgroup.tolkienmobs.food", "托尔金工艺：食物与饮料");
+            this.addBlock(TolkienBlocks.CLOVER_PATCH, "三叶草丛");
+        this.add("itemgroup.tolkienmobs.food", "托尔金微调：食物与饮料");
             this.addItem(TolkienItems.LEMBAS, "兰巴斯");
             this.addItem(TolkienItems.CRAM, "克拉姆");
             this.addItem(TolkienItems.HONEY_CAKE, "蜂蜜蛋糕");
@@ -93,8 +93,8 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addItem(TolkienItems.DRINK_ERU_BLESSING, "一如·伊露维塔祝福饮料");
             this.addItem(TolkienItems.DRINK_ENT_DRAUGHT, "恩特饮料");
             this.addItem(TolkienItems.DRINK_PERSONAL_BLACKSMITH, "随身铁匠");
-        this.add("itemgroup.tolkienmobs.quest", "托尔金工艺：基础物品");
-            this.addItemWithLore(TolkienItems.ITEM_BERYL.get(), "§3格罗芬德尔的绿玉§r", "借给你的神奇宝石，帮助你搜寻敌人的踪迹。");
+        this.add("itemgroup.tolkienmobs.quest", "托尔金微调：基础物品");
+            this.addItemWithLore(TolkienItems.ITEM_BERYL.get(), "§3格罗芬德尔的绿玉§r", "借给你的一颗魔法宝石，用来协助你的搜寻");
             this.addItemWithLore(TolkienItems.ITEM_FORTRESSMAP.get(), "§3要塞图纸§r", "看似脆弱，却能完好保存如此之久，令人惊讶！");
             this.addItemWithLore(TolkienItems.ITEM_WATCHERHEART.get(), "§5石心§r", "这颗心脏具有令人恐惧与不安的能量");
             this.addItemWithLore(TolkienItems.ITEM_WATCHERHEART_CRACKED.get(), "§5监视者的心脏§r", "这颗心看起来破旧不堪");
@@ -106,7 +106,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addItemWithLore(TolkienItems.ITEM_FANCYCLOTH.get(), "§2精美布料§r", "用于装饰的精美布料");
             this.addItemWithLore(TolkienItems.ITEM_FANCYHAMMER.get(), "§9瑟罗尔之锤§r", "专门设计用于锻造秘银的锤子");
             this.addItemWithLore(TolkienItems.ITEM_FANCYHELM.get(), "精美头盔", "");
-            this.addItemWithLore(TolkienItems.ITEM_FANCYKEY.get(), "§3墨瑞亚矿坑的钥匙§r", "埃尔苏利用你收集的物品而制作出的钥匙。");
+            this.addItemWithLore(TolkienItems.ITEM_FANCYKEY.get(), "§3地牢钥匙§r", "埃尔苏利用你收集的物品而制作出的钥匙。");
             this.addItemWithLore(TolkienItems.ITEM_FANCYPICK.get(), "精美镐", "");
             this.addItemWithLore(TolkienItems.ITEM_FANCYSHIELD.get(), "精美盾牌", "");
             this.addItemWithLore(TolkienItems.ITEM_FANCYSHIELD2.get(), "§5克罗米斯的盾牌§r§2（已修复）§r", "这块盾牌虽然来历不明，但是属于克罗米斯。");
@@ -115,8 +115,8 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addItemWithLore(TolkienItems.ITEM_LETTER.get(), "§6瑟尔丹的信§r", "来自瑟尔丹的信，关于德鲁哈拉。");
             this.addItemWithLore(TolkienItems.ITEM_SCROLL.get(), "§5灰烬卷轴§r", "一个破旧的卷轴，上面写满了小符文。");
             this.addItemWithLore(TolkienItems.ITEM_SCROLL2.get(), "§5译文卷轴§r", "埃尔隆德翻译得到的一个卷轴，上面有如何进入墨瑞亚矿坑的说明。");
-            this.addItemWithLore(TolkienItems.ITEM_SPECIALFLOWER.get(), "§2女巫啤酒花§r", "酿酒师特别喜欢用的浓香原材料");
-            this.addItemWithLore(TolkienItems.ITEM_STORYBOOK.get(), "§3霍比特人的故事§r", "自从比尔博在生日那天失踪后，一个霍比特人讲述的故事。");
+            this.addItemWithLore(TolkienItems.ITEM_SPECIALFLOWER.get(), "§2女巫啤酒花§r", "酿酒师喜爱使用的强效花朵");
+            this.addItemWithLore(TolkienItems.ITEM_STORYBOOK.get(), "§3霍比特人的故事§r", "比尔博在生日当天失踪后，一位霍比特人讲述的故事");
             this.addItemWithLore(TolkienItems.ITEM_STORYBOOK2.get(), "§6比尔博的故事§r", "老头儿甘姆吉为比尔博的生日准备的礼物");
             this.addItemWithLore(TolkienItems.ITEM_STORYBOOK3.get(), "§3佩图尼亚的手稿§r", "一位年轻霍比特人的冒险日志");
             this.addItemWithLore(TolkienItems.ITEM_STORYBOOK4.get(), "§2古代巨著§r", "这本书看起来已经破旧不堪了");
@@ -133,9 +133,9 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addItemWithLore(TolkienItems.ITEM_LOCKPICK.get(), "开锁工具", "用于开门的物品");
             this.addItemWithLore(TolkienItems.ITEM_BROKENSWORD.get(), "§5剑柄§r", "矮人之剑仅存的残骸。");
             this.addItemWithLore(TolkienItems.ITEM_REFORGEDSWORD.get(), "重铸的剑", "杰出的矮人作品");
-            this.addItemWithLore(TolkienItems.ITEM_MAGIC_CLOTH.get(), "§5特殊魔法布袋§r", "精美精灵布料做成的袋子");
+            this.addItemWithLore(TolkienItems.ITEM_MAGIC_CLOTH.get(), "§5特殊魔法布料§r", "精美精灵布料做成的袋子");
             this.addItemWithLore(TolkienItems.ITEM_KEYFRAGMENT.get(), "钥匙碎片", "");
-            this.addItemWithLore(TolkienItems.ITEM_OILYKEY.get(), "油封钥匙", "");
+            this.addItemWithLore(TolkienItems.ITEM_OILYKEY.get(), "沾油的钥匙", "");
             this.addItemWithLore(TolkienItems.ITEM_MITHRILNUGGET.get(), "§5比尔博的秘银粒§r", "比尔博从孤山探险中获得的纪念物品");
             this.addItemWithLore(TolkienItems.ITEM_REMAINS.get(), "§2白骨堆§r", "一些可怜不幸者的遗体");
             this.addItemWithLore(TolkienItems.ITEM_RUNE_STONE.get(), "§2远古符文石§r", "这块石头蕴藏着非常强大的黑暗魔法");
@@ -151,13 +151,13 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addItemWithLore(TolkienItems.ITEM_TOKEN_EASTERN_ALLIANCE.get(), "§4东部联盟代币§r", "你决定与谁结盟的证明");
             this.addItemWithLore(TolkienItems.ITEM_TOKEN_WESTERN_ALLIANCE.get(), "§1西部联盟代币§r", "你决定与谁结盟的证明");
             this.addItem(TolkienItems.ITEM_EXPERIENCE_ORB, "§2经验§r");
-            this.addItemWithInstructions(TolkienItems.BRONZE_KEY.get(), "青铜钥匙", "左键使用: ", "在创造模式按住 Shift键", "鼠标右击以确认/改变钥匙编号");
-            this.addItemWithInstructions(TolkienItems.SILVER_KEY.get(), "银钥匙", "左键使用: ", "在创造模式按住 Shift键", "鼠标右击以确认/改变钥匙编号");
-            this.addItemWithInstructions(TolkienItems.GOLD_KEY.get(), "金钥匙", "左键使用: ", "在创造模式按住 Shift键", "鼠标右击以确认/改变钥匙编号");
-            this.addItemWithInstructions(TolkienItems.MITHRIL_KEY.get(), "秘银钥匙", "左键使用: ", "在创造模式按住 Shift键", "鼠标右击以确认/改变钥匙编号");
-            this.addItemWithInstructions(TolkienItems.MASTER_KEY.get(), "主宰钥匙", "左键使用: ", "在创造模式按住 Shift键", "鼠标右击以确认/改变钥匙编号");
-        this.add("itemgroup.tolkienmobs.spawn", "托尔金工艺：生物");
-        this.add("itemgroup.tolkienmobs.trinket", "托尔金工艺：饰品");
+            this.addItemWithInstructions(TolkienItems.BRONZE_KEY.get(), "青铜钥匙", "剩余使用次数： ", "在创造模式下按住 Shift 键", "右键点击以输入或修改钥匙编码");
+            this.addItemWithInstructions(TolkienItems.SILVER_KEY.get(), "银钥匙", "剩余使用次数： ", "在创造模式下按住 Shift 键", "右键点击以输入或修改钥匙编码");
+            this.addItemWithInstructions(TolkienItems.GOLD_KEY.get(), "金钥匙", "剩余使用次数： ", "在创造模式下按住 Shift 键", "右键点击以输入或修改钥匙编码");
+            this.addItemWithInstructions(TolkienItems.MITHRIL_KEY.get(), "秘银钥匙", "剩余使用次数： ", "在创造模式下按住 Shift 键", "右键点击以输入或修改钥匙编码");
+            this.addItemWithInstructions(TolkienItems.MASTER_KEY.get(), "万能钥匙", "剩余使用次数： ", "在创造模式下按住 Shift 键", "右键点击以输入或修改钥匙编码");
+        this.add("itemgroup.tolkienmobs.spawn", "托尔金微调：生物");
+        this.add("itemgroup.tolkienmobs.trinket", "托尔金微调：饰品");
             this.createTrinketSet("ring", "指环");
             this.createTrinketSet("amulet", "护身符");
             this.createTrinketSet("charm", "吊坠");
@@ -165,23 +165,23 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.createTrinketSet("glove", "手套");
             this.createTrinketSet("hat", "帽子");
             this.createTrinketSet("cloak", "斗篷");
-        this.add("itemgroup.tolkienmobs.tools", "托尔金工艺：工具");
+        this.add("itemgroup.tolkienmobs.tools", "托尔金微调：工具");
             this.addItem(TolkienItems.COIN_POUCH, "硬币袋");
             this.addItem(TolkienItems.KEY_RING, "钥匙扣");
             this.addItemWithLore(TolkienItems.ITEM_DEV_TOOL.get(), "开发工具", "用于将伪装方块临时重置为默认材质");
             this.addItemWithLore(TolkienItems.ITEM_DEV_DEBUG_TOOL.get(), "开发工具 - 调试", "用于重置某些方块");
-            this.addItemWithLore(TolkienItems.ARDA_STAFF.get(), "阿尔达手杖", "按住Shift同时右击传送门框架以激活");
+            this.addItemWithLore(TolkienItems.ARDA_STAFF.get(), "阿尔达手杖", "右键点击传送门框架以激活");
             this.addItemWithLore(TolkienItems.HOBBIT_RING.get(), "霍比特人的丰收戒指", "精灵的礼物，提升耕作能力。");
             this.addItemWithLore(TolkienItems.SWORD_WITCHKING.get(), "§4巫王之剑§r", "在恐惧中铸就，巫王的强大武器。");
             this.addItemWithLore(TolkienItems.SWORD_URUK.get(), "乌鲁克剑", "在艾森加德的地火中锻造而成");
-            this.addItemWithLore(TolkienItems.WHIP_FIRE.get(), "§4火焰长鞭§r", "可怕炎魔的主要武器");
+            this.addItemWithLore(TolkienItems.WHIP_FIRE.get(), "§4火焰长鞭§r","可怕炎魔的主要武器");
             this.addItemWithLore(TolkienItems.CLUB_WOODEN.get(), "食人妖狼牙棒", "深受食人妖喜爱的致命武器");
             this.addItemWithLore(TolkienItems.RING_OF_HOPE.get(), "§5阿格拉尔之环§r", "§6希望在你心中燃烧。§r");
             this.addTools("mithril", "秘银");
             this.addTools("morguliron", "魔古尔铁");
             this.addTools("ammolite", "斑彩石");
             this.addItem(TolkienItems.DWARVEN_HAMMER, "矮人矿锤");
-            this.addItem(TolkienItems.HYPE_HORN, "宣传号角");
+            this.addItem(TolkienItems.HYPE_HORN, "庆典号角");
             this.addItem(TolkienItems.HELMET_MITHRIL, "秘银头盔");
             this.addItem(TolkienItems.CHESTPLATE_MITHRIL, "秘银胸甲");
             this.addItem(TolkienItems.LEGGINGS_MITHRIL, "秘银护腿");
@@ -204,19 +204,19 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addItem(TolkienItems.GALADHRIM_ARROW, "加拉兹民之箭");
             this.addItem(TolkienItems.UTUMNO_ARROW, "乌图姆诺箭");
             this.addMusicDisc(TolkienItems.RECORD_EREBOR, "SnowShepherd - 在埃瑞博山中闪闪发光的一切");
-            this.addMusicDisc(TolkienItems.RECORD_HOBBITS, "Harry Murrell - 令人担忧的霍比特人");
+            this.addMusicDisc(TolkienItems.RECORD_HOBBITS, "Harry Murrell - 关于霍比特人");
             this.addMusicDisc(TolkienItems.RECORD_MINASTIRITH, "SnowShepherd - 米那斯提力斯的宏伟");
             this.addMusicDisc(TolkienItems.RECORD_MURDERFROG, "SnowShepherd - 杀人蛙的战争");
             this.addMusicDisc(TolkienItems.RECORD_BOMBADIL, "SnowShepherd - 邦巴迪尔的奇思妙想");
             this.addMusicDisc(TolkienItems.RECORD_REDER, "SnowShepherd - Reder的复仇");
             this.addMusicDisc(TolkienItems.RECORD_RIVENDELL, "SnowShepherd - 幽谷的骑手");
             this.addMusicDisc(TolkienItems.RECORD_LOTHLORIEN, "SnowShepherd - 洛丝罗瑞恩之光");
-            this.addMusicDisc(TolkienItems.RECORD_WILLOW, "SnowShepherd - 为了一点阴影");
+            this.addMusicDisc(TolkienItems.RECORD_WILLOW, "SnowShepherd - 为了一点荫凉");
             this.addMusicDisc(TolkienItems.RECORD_FUMBLE, "SnowShepherd - 笨拙的食人妖");
             this.addMusicDisc(TolkienItems.RECORD_EDORAS, "SnowShepherd - 驭马者的家");
             this.addMusicDisc(TolkienItems.RECORD_WBATTLE, "SnowShepherd - Ephalba的国度");
-        this.add("itemgroup.tolkienmobs.mats", "托尔金工艺：原材料");
-        this.add("itemgroup.tolkienmobs.function", "托尔金工艺：功能方块");
+        this.add("itemgroup.tolkienmobs.mats", "托尔金微调：原材料");
+        this.add("itemgroup.tolkienmobs.function", "托尔金微调：功能方块");
             this.addBlock(TolkienBlocks.TRINKET_TABLE, "饰品桌");
             this.add(TolkienBlocks.FIREPLACE.get(), "壁炉");
             this.add(TolkienBlocks.PIGGYBANK.get(), "猪猪存钱罐");
@@ -329,15 +329,15 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
 
                 // Screens
             this.addItemScreen(TolkienItems.BRONZE_KEY.get(), "青铜钥匙");
-            this.addCodeScreen(TolkienItems.BRONZE_KEY.get(), "青铜钥匙 - 编号");
+            this.addCodeScreen(TolkienItems.BRONZE_KEY.get(), "青铜钥匙 - 编码");
             this.addItemScreen(TolkienItems.SILVER_KEY.get(), "银钥匙");
-            this.addCodeScreen(TolkienItems.SILVER_KEY.get(), "银钥匙 - 编号");
+            this.addCodeScreen(TolkienItems.SILVER_KEY.get(), "银钥匙 - 编码");
             this.addItemScreen(TolkienItems.GOLD_KEY.get(), "金钥匙");
-            this.addCodeScreen(TolkienItems.GOLD_KEY.get(), "金钥匙 - 编号");
+            this.addCodeScreen(TolkienItems.GOLD_KEY.get(), "金钥匙 - 编码");
             this.addItemScreen(TolkienItems.MITHRIL_KEY.get(), "秘银钥匙");
-            this.addCodeScreen(TolkienItems.MITHRIL_KEY.get(), "秘银钥匙 - 编号");
+            this.addCodeScreen(TolkienItems.MITHRIL_KEY.get(), "秘银钥匙 - 编码");
             this.addItemScreen(TolkienItems.MASTER_KEY.get(), "万能钥匙");
-            this.addCodeScreen(TolkienItems.MASTER_KEY.get(), "万能钥匙 - 编号");
+            this.addCodeScreen(TolkienItems.MASTER_KEY.get(), "万能钥匙 - 编码");
             this.addItemScreen(TolkienItems.COIN_POUCH.get(), "硬币袋");
             this.addItemScreen(TolkienItems.KEY_RING.get(), "钥匙扣");
             this.addBlockScreen(TolkienBlocks.TRINKET_TABLE.get(), "饰品合成");
@@ -349,25 +349,25 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addBlockScreen(TolkienBlocks.LOCKABLE_DOUBLE_CHEST_BLOCK.get(), "可上锁的大箱子");
             this.addBlockScreen(TolkienBlocks.LOCKABLE_DOUBLE_TREASURE_CHEST_BLOCK.get(), "可上锁的大宝箱");
             this.addBlockScreen(TolkienBlocks.KEY_STONE_BLOCK.get(), "钥匙石方块");
-            this.add("screen.tolkienmobs.namefieldtext", "确认编号");
-            this.add("screen.tolkienmobs.keycodeplaceholder", "找不到编码");
+            this.add("screen.tolkienmobs.namefieldtext", "输入编码");
+            this.add("screen.tolkienmobs.keycodeplaceholder", "未找到编码");
             this.add("screen.tolkienmobs.keyuses", "启用后的可使用次数");
-            this.add("screen.tolkienmobs.keystone.always", "用按键切换红石 - 未激活");
-            this.add("screen.tolkienmobs.keystone.always.active", "用按键切换红石 - 激活");
-            this.add("screen.tolkienmobs.keystone.delay", "红石保持 x 刻 - 未激活");
-            this.add("screen.tolkienmobs.keystone.delay.active", "红石保持 x 刻 - 激活");
-            this.add("screen.tolkienmobs.keystone.pulse", "使用按键时，红石的作用类似于按钮 - 未激活");
-            this.add("screen.tolkienmobs.keystone.pulse.active", "使用按键时，红石的作用类似于按钮 - 激活");
-            this.add("screen.tolkienmobs.keystone.key.consume", "当使用或被使用时获取钥匙");
+            this.add("screen.tolkienmobs.keystone.always", "用钥匙切换红石 - 未激活");
+            this.add("screen.tolkienmobs.keystone.always.active", "用钥匙切换红石 - 已激活");
+            this.add("screen.tolkienmobs.keystone.delay", "红石持续开启 x 刻 - 未激活");
+            this.add("screen.tolkienmobs.keystone.delay.active", "红石持续开启 x 刻 - 已激活");
+            this.add("screen.tolkienmobs.keystone.pulse", "使用钥匙时红石像按钮一样触发 - 未激活");
+            this.add("screen.tolkienmobs.keystone.pulse.active", "使用钥匙时红石像按钮一样触发 - 已激活");
+            this.add("screen.tolkienmobs.keystone.key.consume", "使用后消耗钥匙或扣除使用次数");
             this.add("screen.tolkienmobs.keystone.key.keep", "玩家保留钥匙直至用完次数");
-            this.add("screen.tolkienmobs.keystone.tickdelay", "§l** 仅限时刻延迟模式***§r 设置红石的延迟量");
+            this.add("screen.tolkienmobs.keystone.tickdelay", "§l**仅限刻延迟模式**§r 设置红石延迟时间");
             this.add("screen.tolkienmobs.backpack.bed.deployed", "铺设睡袋");
             this.add("screen.tolkienmobs.backpack.bed.remove", "收拾睡袋");
             this.add("screen.tolkienmobs.backpack.campfire.deployed", "架设营火");
             this.add("screen.tolkienmobs.backpack.campfire.remove", "收拾营火");
             this.add("screen.tolkienmobs.backpack.no_room", "这里没有足够的空间");
             this.add("key.tolkienmobs.open_backpack", "打开背包（饰品背部栏位）");
-            this.add("key.categories.tolkienmobs", "Tolkien Tweaks");
+            this.add("key.categories.tolkienmobs", "托尔金微调");
             this.add("tooltip.tolkienmobs.backpack.controls", "右键打开，潜行+右键方块放置");
             this.add("screen.tolkienmobs.backpack.close.upgrade", "关闭升级窗口");
             this.add("screen.tolkienmobs.backpack.open.upgrade", "打开升级窗口");
@@ -384,14 +384,20 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.add("screen.tolkienmobs.camo_spawner.ignoreSpawnReq.ignored", "生成要求 - 忽略");
             this.add("screen.tolkienmobs.camo_spawner.requirePlayer.enabled", "需要玩家 - 已启用");
             this.add("screen.tolkienmobs.camo_spawner.requirePlayer.disabled", "需要玩家 - 已停用");
+        this.add("screen.tolkienmobs.camo_spawner.spawn_all.enabled", "成组生成");
+        this.add("screen.tolkienmobs.camo_spawner.spawn_random.enabled", "随机生成");
+        this.add("screen.tolkienmobs.camo_spawner.mob_spawn_count", "生物生成数量");
+        this.add("screen.tolkienmobs.camo_spawner.remove_single_mob", "移除生物");
+            this.add("screen.tolkienmobs.camo_spawner.redstone.enabled", "红石控制 - 已启用");
+            this.add("screen.tolkienmobs.camo_spawner.redstone.disabled", "红石控制 - 已禁用");
             this.add("screen.tolkienmobs.camo_spawner.spawnerParticles.disabled", "禁用刷怪笼粒子效果");
             this.add("screen.tolkienmobs.camo_spawner.spwnCountValue", "可生成的最大数量生物");
             this.add("screen.tolkienmobs.camo_spawner.maxCluster", "最大生成");
-            this.add("screen.tolkienmobs.camo_spawner.maxClusterValue", "在附近不再出现新生物之前允许出现的生物数量");
-            this.add("screen.tolkienmobs.camo_spawner.maxDelayValue", "刷怪倒计时的最大启动值");
+            this.add("screen.tolkienmobs.camo_spawner.maxClusterValue", "附近生物数量达到此上限后停止生成");
+            this.add("screen.tolkienmobs.camo_spawner.maxDelayValue", "生成倒计时的最大初始值");
             this.add("screen.tolkienmobs.camo_spawner.maxSpawnDelay", "最大延迟");
-            this.add("screen.tolkienmobs.camo_spawner.minDelayValue", "刷怪倒计时的最小启动值");
-            this.add("screen.tolkienmobs.camo_spawner.minSpawnDelay", "最小延迟");
+            this.add("screen.tolkienmobs.camo_spawner.minDelayValue", "生成倒计时的最小初始值");
+            this.add("screen.tolkienmobs.camo_spawner.minSpawnDelay", "生成延迟");
             this.add("screen.tolkienmobs.camo_spawner.saveValue", "保存值");
             this.add("screen.tolkienmobs.camo_spawner.spawnCount", "生成数量");
             this.add("screen.tolkienmobs.camo_spawner.spawnRange", "生成范围");
@@ -400,7 +406,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.add("screen.tolkienmobs.camo_spawner.title", "伪装的刷怪笼");
             this.add("screen.tolkienmobs.milestone", "选择你的目的地");
             this.add("screen.tolkienmobs.milestone.distance", "每 X 个方块的距离（成本为距离除以该数字）");
-            this.add("screen.tolkienmobs.milestone.dimension", "跨越维度的成本乘数");
+            this.add("screen.tolkienmobs.milestone.dimension", "跨维度费用倍率");
             this.add("screen.tolkienmobs.milestone.instructions", "设置该里程碑的名称");
 
                 // Buttons
@@ -408,18 +414,18 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.add("buttons.tolkienmobs.milestone.saveinfo", "保存");
 
                 // Fluid Tooltips
-            this.add("tolkienmobs.tooltip.liquid.amount.empty", "储罐空");
+            this.add("tolkienmobs.tooltip.liquid.amount.empty", "储罐为空");
             this.add("tolkienmobs.tooltip.liquid.amount.with.capacity", "%s / %s mB");
             this.add("tolkienmobs.tooltip.liquid.amount", "%s mB");
             this.add("tolkienmobs.camo_fluid.fluid.instructions", "将流体桶放入槽中");
 
                 // Miscellaneous Tooltips
-            this.add("tooltip.tolkienmobs.ranged.power", " %sx 击中威力");
-            this.add("tooltip.tolkienmobs.bow_speed.faster", " %sx 更快提升");
-            this.add("tooltip.tolkienmobs.bow_speed.slower", " %sx 更慢提升");
+            this.add("tooltip.tolkienmobs.ranged.power", " %sx 射击威力");
+            this.add("tooltip.tolkienmobs.bow_speed.faster", " %sx 更快拉弓");
+            this.add("tooltip.tolkienmobs.bow_speed.slower", " %sx 更慢拉弓");
             this.add("tooltip.tolkienmobs.ammo.infinite", "无限");
-            this.add("tooltip.tolkienmobs.damage.base", "%s 基础伤害");
-            this.add("tooltip.tolkienmobs.fuel.remaining", "%s 剩余燃料（最多 16000）");
+            this.add("tooltip.tolkienmobs.damage.base", " %s 基础伤害");
+            this.add("tooltip.tolkienmobs.fuel.remaining", " %s 剩余燃料（上限 16000）");
             this.add("tooltip.tolkienmobs.milestone.payment_method", "付款方式 - %s");
 
                 // Potions & Effects
@@ -441,22 +447,22 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.createPotionSet("crippling_terror", "致命恐惧");
 
                 // Sounds
-            this.addSound("block", "chest_open", "箱子：开启");
-            this.addSound("block", "chest_close", "箱子：关闭");
-            this.addSound("block", "cathedralbell", "钟声：敲响");
-            this.addSound("block", "locust_ambient", "蚱蜢：窸窸窣窣");
-            this.addSound("block", "lightningbug_ambient", "萤火虫：咕咕作响");
-            this.addSound("ambient", "medievalseaport", "大海：涛声鸟鸣");
-            this.addSound("ambient", "medievaltavern", "小酒馆的顾客：叽叽喳喳");
-            this.addSound("ambient", "medievalcitymarket", "市集：车水马龙");
-            this.addSound("ambient", "medievalcity", "城市：熙熙攘攘");
-            this.addSound("ambient", "waterworks", "古老的机械洞穴：噪声");
-            this.addSound("ambient", "underworld", "地下洞穴：毛骨悚然");
-            this.addSound("ambient", "khazaddum", "古老矮人城市：回响");
-            this.addSound("ambient", "pathsofthedead", "亡者之路：道路断绝 亡者守护");
-            this.addSound("ambient", "arda_portal", "通往阿尔达的传送门：呼唤");
-            this.addSound("item", "hype_horn", "喇叭：庆祝胜利");
-            this.addSound("mob", "coin_trader", "硬币兑换商：出现");
+            this.addSound("block", "chest_open", "Chest has opened");
+            this.addSound("block", "chest_close", "Chest has closed");
+            this.addSound("block", "cathedralbell", "A bell in ringing");
+            this.addSound("block", "locust_ambient", "Buzzing Locusts");
+            this.addSound("block", "lightningbug_ambient", "Lightning bugs chirping");
+            this.addSound("ambient", "medievalseaport", "Sounds of the sea");
+            this.addSound("ambient", "medievaltavern", "Tavern patrons chattering");
+            this.addSound("ambient", "medievalcitymarket", "People moving around buying in the market");
+            this.addSound("ambient", "medievalcity", "Bustling sounds of the city");
+            this.addSound("ambient", "waterworks", "Ancient cave of machinery");
+            this.addSound("ambient", "underworld", "Creepy cavern underground");
+            this.addSound("ambient", "khazaddum", "Sounds of an ancient Dwarven City");
+            this.addSound("ambient", "pathsofthedead", "The way is shut, and the dead keep it");
+            this.addSound("ambient", "arda_portal", "Portal to Arda beckons");
+            this.addSound("item", "hype_horn", "Celebrating victory");
+            this.addSound("mob", "coin_trader", "A Wild Coin Trader appears!");
 
                 // Entities
                     // Villager
@@ -597,10 +603,10 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addEnchantment("elven_longevity_key", "精灵的长寿");
             this.addEnchantmentDesc("elven_longevity_key", "精灵可以永生，你或许不能，但你一定能活得更久。");
             this.addEnchantment("gondorian_resolve_key", "刚铎人的决心");
-            this.addEnchantmentDesc("gondorian_resolve_key", "你的决心让你在受到打击时不会被击倒。");
+            this.addEnchantmentDesc("gondorian_resolve_key", "坚定的意志使你受到攻击时不会被击退。");
             this.addEnchantment("hobbit_plow_key", "霍比特人的犁");
-            this.addEnchantmentDesc("hobbit_plow_key", "利用配备的水源会自动耕种 9x9 的区域。");
-            this.add("effect.tolkienmobs.elven_nimbleness.tooltip", "步行辅助");
+            this.addEnchantmentDesc("hobbit_plow_key", "自动耕作一片 9x9 的区域，并设置所需的水源。");
+            this.add("effect.tolkienmobs.elven_nimbleness.tooltip", " 跨步高度");
 
         // Biomes
             this.add("biome.tolkienmobs.fangorn_forest", "范贡森林");
@@ -608,6 +614,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.add("biome.tolkienmobs.ash_mountains", "埃瑞德砾苏伊");
             this.add("biome.tolkienmobs.marshes", "宁达尔夫草沼");
             this.add("biome.tolkienmobs.mirkwood", "黑森林");
+            this.add("biome.tolkienmobs.old_forest", "老林");
             this.add("biome.tolkienmobs.mirkwood_spooky", "蜘蛛黑森林");
             this.add("biome.tolkienmobs.lorinand", "洛丝罗瑞恩");
             this.add("biome.tolkienmobs.barrow_downs", "提殒戈沙德");
@@ -637,7 +644,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.add("tolkienmobs.msg.healself.balrog", "炎魔受伤了，正在疗伤。");
             this.add("tolkienmobs.msg.speedup.balrog", "炎魔正试图赶上你的速度。");
             this.add("tolkienmobs.msg.nodrown.gwahir", "格怀希尔不想淹死。");
-            this.add("tolkienmobs.msg.onfire.gwahir", "格怀希尔正在保护自己免火焰的伤害。");
+            this.add("tolkienmobs.msg.onfire.gwahir", "格怀希尔正在保护自己免受火焰的伤害。");
             this.add("tolkienmobs.msg.healself.gwahir", "格怀希尔受伤了，正在疗伤。");
             this.add("tolkienmobs.msg.speedup.gwahir", "格怀希尔正试图赶上你的速度。");
             this.add("tolkienmobs.msg.helpcomming.shelob", "希洛布正试图寻求帮助……增援部队已经抵达！");
@@ -650,14 +657,14 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.add("tolkienmobs.msg.speedup.watcher", "监视者正试图赶上你的速度。");
             this.add("tolkienmobs.msg.deploy_sleeping_bag", "有东西挡住了睡袋。");
             this.add("tolkienmobs.msg.deploy_campfire", "有东西挡住了营火。");
-            this.add("tolkienmobs.msg.key_used", "钥匙没有其余的用途了。");
+            this.add("tolkienmobs.msg.key_used", "钥匙的使用次数已耗尽。");
             this.add("tolkienmobs.msg.cleared.entities", "所有现有实体都清除了……");
             this.add("tolkienmobs.msg.added.entities", "实体已添加……");
             this.add("tolkienmobs.msg.nomore.entities", "无法添加第二个实体，第一个实体已被替换……");
             this.add("screen.tolkienmobs.camo_spawner.remove_mob", "清除所有生物");
-            this.add("tolkienmobs.msg.payment", "付款项目设置为……");
-            this.add("tolkienmobs.msg.payment.insufficient", "条件不足以传送！");
-            this.add("tolkienmobs.msg.destination", "未发现目标");
+            this.add("tolkienmobs.msg.payment", "支付物品已设为……");
+            this.add("tolkienmobs.msg.payment.insufficient", "支付物品不足，无法传送！");
+            this.add("tolkienmobs.msg.destination", "未找到目的地");
             this.add("tolkienmobs.msg.wrong_key", "你需要正确的钥匙！");
         this.add("tolkienmobs.msg.ancient_watcher.warn", "恐惧的阴影笼罩着你，让你畏缩不前。");
         this.add("tolkienmobs.msg.ancient_watcher.safe", "压迫对你没有任何影响。");
