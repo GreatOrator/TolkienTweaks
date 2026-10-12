@@ -101,8 +101,8 @@ biome is allowed. This does not guarantee one ruin per 24 chunks in the Shire.
 - `minecraft:single_pool_element` places the NBT's saved air as well as blocks.
   Use structure void in your NBT for cells where existing terrain should remain.
 - Multiple weighted pool elements can provide randomly chosen NBT variants.
-  Connecting multiple buildings requires jigsaw blocks and additional pools;
-  this example is a single building.
+  The cave and maze below demonstrate connected pieces using jigsaw blocks
+  and additional pools.
 
 `spawn_overrides: {}` leaves normal biome spawning in place; it does not add mobs
 or loot to the building. Those come from the NBT or separate loot/spawn settings.
@@ -119,7 +119,8 @@ Before enabling each older building, load it with a structure block or
 `/place template tolkienmobs:your_nbt_name`, check blocks, entities, block entities
 and inventories, fix any missing content, then save it again in 1.21.1. Use a
 copy of your original NBT while doing this. Mod migration is specific to each
-building; only the small ruin is enabled by this example.
+building; the small ruin, cave and maze are enabled. The cave copper ore reference was
+updated from `tconstruct:copper_ore` to `minecraft:copper_ore`.
 
 ## Try the example
 
@@ -144,3 +145,61 @@ not added retroactively to explored chunks. Run data generation and rebuild the 
 restart the world/server. Restart after changing datapack worldgen JSON too.
 For a packaged mod, the same paths can be overridden through a world datapack
 (`pack_format: 48` in Minecraft 1.21/1.21.1).
+
+
+## Cave and maze branches
+
+`TolkienStructures.CAVE` and `TolkienStructures.MAZE` each have a starting pool
+containing only their main NBT (`cave.nbt` or `maze.nbt`). The main piece appears
+exactly once per structure. Side pieces never select the main template.
+
+The editable defaults in `TolkienStructureProvider.STRUCTURES` are:
+
+| Structure | Biome | Spacing / separation | Branch settings |
+| --- | --- | --- | --- |
+| `tolkienmobs:cave` | Mirkwood | 32 / 8 chunks | `new Branches("tolkienmobs:cave_side", 4, 3, 1)` |
+| `tolkienmobs:maze` | Hithaeglir | 32 / 8 chunks | `new Branches("tolkienmobs:maze_side", 4, 3, 1)` |
+
+The branch arguments are **side template**, **maximum depth**, **piece weight**,
+and **stop weight**. The defaults bound expansion to four jigsaw levels. For
+continuations, a side piece has weight 3 and stopping has weight 1. Minecraft
+also skips pieces that collide or exceed the placement bounds. Thus counts and
+rotations vary with the seed and location; 3:1 is not a guaranteed piece count.
+The root connectors try a side piece before random continuation begins.
+There is currently one side template per family, reused with random rotations.
+
+Both definitions set the final `underground` argument to `true`. The main piece
+starts at an absolute Y sampled from **-32 through 0**, shifted by `heightOffset`;
+side pieces stay at the same level. There is no projection onto the surface and
+no terrain blending. Their generation step is `underground_structures`.
+`use_surface_biome: true` checks the biome of the land above the starting piece,
+so underground cave biomes do not exclude a structure below Mirkwood/Hithaeglir.
+
+Edit the biome list, height offset and branch settings in the definitions. The
+Y range itself is in `SurfaceStructures.underground`. The maximum distance remains
+80 blocks from the start center. A larger depth still respects collision and
+distance limits. The existing Shire ruin retains surface placement.
+
+For each family, `runData` generates the structure, placement set, biome tag and
+three pools (six files total). The additional pools are:
+
+- `cave_pool/side_pool` and `maze_pool/side_pool`: side template only.
+- `cave_pool/branches` and `maze_pool/branches`: weighted side/empty choices.
+
+The supplied NBT connectors were updated to use these pools:
+
+| NBT | Jigsaw name | Jigsaw target | Target pool |
+| --- | --- | --- | --- |
+| `cave` | `tolkienmobs:cave` | `tolkienmobs:cave_side` | `tolkienmobs:cave_pool/side_pool` |
+| `cave_side` | `tolkienmobs:cave_side` | `tolkienmobs:cave_side` | `tolkienmobs:cave_pool/branches` |
+| `maze` | `tolkienmobs:maze` | `tolkienmobs:maze_side` | `tolkienmobs:maze_pool/side_pool` |
+| `maze_side` | `tolkienmobs:maze_side` | `tolkienmobs:maze_side` | `tolkienmobs:maze_pool/branches` |
+
+Keep these names and pools when resaving the NBTs. Their existing connector
+positions and orientations were preserved. Jigsaws still resolve to air; stopped
+branches therefore leave an open passage, rather than adding a closing wall.
+The original buildings, inventories and maze minotaur are preserved.
+
+Test in new chunks with `/locate structure tolkienmobs:cave` and
+`/locate structure tolkienmobs:maze`. For manual previews use `/place structure`
+with those same IDs. Run `runData` and rebuild after changing the definitions.

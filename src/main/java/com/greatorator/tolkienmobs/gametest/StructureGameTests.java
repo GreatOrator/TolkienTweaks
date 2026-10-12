@@ -1,6 +1,19 @@
 package com.greatorator.tolkienmobs.gametest;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
+import com.greatorator.tolkienmobs.datagen.TolkienStructureProvider;
+import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.core.Holder;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.biome.Climate;
+import java.util.stream.Stream;
+import net.minecraft.resources.RegistryOps;
+import net.minecraft.world.level.levelgen.structure.PoolElementStructurePiece;
+import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
+import java.util.HashSet;
 import com.greatorator.tolkienmobs.init.TolkienBiomes;
 import com.greatorator.tolkienmobs.init.TolkienStructures;
 import com.greatorator.tolkienmobs.world.components.structure.SurfaceStructures;
@@ -68,4 +81,75 @@ public class StructureGameTests {
         }
         helper.succeed();
     }
+    @GameTest(template = "trinket_table_empty", timeoutTicks = 1200)
+    public static void branchingStructuresHaveOneRootAndRandomSidePieces(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var registries = level.registryAccess();
+        var settings = ((NoiseBasedChunkGenerator) WorldPresets.getNormalOverworld(registries).generator()).generatorSettings();
+        var ops = RegistryOps.create(JsonOps.INSTANCE, registries);
+        for (var key : List.of(TolkienStructures.CAVE, TolkienStructures.MAZE)) {
+            var definition = TolkienStructureProvider.STRUCTURES.stream().filter(d -> d.key().equals(key)).findFirst().orElseThrow();
+            var structure = registries.registryOrThrow(Registries.STRUCTURE).getHolderOrThrow(key).value();
+            var biome = registries.registryOrThrow(Registries.BIOME).getHolderOrThrow(definition.biomes().getFirst());
+            var below = registries.registryOrThrow(Registries.BIOME).getHolderOrThrow(Biomes.LUSH_CAVES);
+            var source = layeredBiomes(biome, below);
+            var generator = new NoiseBasedChunkGenerator(source, settings);
+            var counts = new HashSet<Integer>();
+            for (long seed = 0; seed < 8; seed++) {
+                var randomState = RandomState.create(settings.value(), registries.lookupOrThrow(Registries.NOISE), seed);
+                var start = structure.generate(registries, generator, source, randomState, level.getStructureManager(),
+                        seed, new ChunkPos(0, 0), 0, level, structure.biomes()::contains);
+                helper.assertTrue(start.isValid(), "Branch structure failed to start: " + key.location());
+                var pieces = start.getPieces();
+                helper.assertTrue(start.getBoundingBox().maxY() < 16,
+                        "Underground structures must remain below Y=16 with default height settings");
+                int roots = 0;
+                for (int i = 0; i < pieces.size(); i++) {
+                    var piece = (PoolElementStructurePiece) pieces.get(i);
+                    String template = StructurePoolElement.CODEC.encodeStart(ops, piece.getElement()).getOrThrow()
+                            .getAsJsonObject().get("location").getAsString();
+                    if (template.equals(definition.template())) roots++;
+                    else helper.assertTrue(template.equals(definition.branches().orElseThrow().template()),
+                            "Unexpected descendant template: " + template);
+                    for (int j = 0; j < i; j++) {
+                        helper.assertTrue(!piece.getBoundingBox().intersects(pieces.get(j).getBoundingBox()),
+                                "Branch pieces must not overlap");
+                    }
+                }
+                helper.assertTrue(roots == 1, "Main NBT must appear exactly once: " + key.location());
+                helper.assertTrue(pieces.size() > 1, "No sides attached: " + key.location());
+                counts.add(pieces.size());
+            }
+            var wrongSource = layeredBiomes(registries.registryOrThrow(Registries.BIOME).getHolderOrThrow(TolkienBiomes.SHIRE), below);
+            var rejected = structure.generate(registries, new NoiseBasedChunkGenerator(wrongSource, settings), wrongSource,
+                    RandomState.create(settings.value(), registries.lookupOrThrow(Registries.NOISE), 0),
+                    level.getStructureManager(), 0, new ChunkPos(0, 0), 0, level, structure.biomes()::contains);
+            helper.assertTrue(!rejected.isValid(), "Underground structures must reject land in the wrong surface biome");
+            helper.assertTrue(counts.size() > 1, "Side counts must vary across seeds: " + key.location());
+            TolkienMobsMain.LOGGER.info("Branch test {} generated piece counts {} across eight seeds", key.location(), counts);
+        }
+        helper.succeed();
+    }
+
+    private static BiomeSource layeredBiomes(Holder<Biome> surface, Holder<Biome> below) {
+        return new BiomeSource() {
+            @Override
+            protected MapCodec<? extends BiomeSource> codec() {
+                return MapCodec.unit(this);
+            }
+
+            @Override
+            protected Stream<Holder<Biome>> collectPossibleBiomes() {
+                return Stream.of(surface, below);
+            }
+
+            @Override
+            public Holder<Biome> getNoiseBiome(int x, int y, int z, Climate.Sampler sampler) {
+                // Quart coordinates: underground pieces see lush caves, while
+                // the surface biome filter sees Mirkwood or Hithaeglir.
+                return y < 8 ? below : surface;
+            }
+        };
+    }
+
 }
