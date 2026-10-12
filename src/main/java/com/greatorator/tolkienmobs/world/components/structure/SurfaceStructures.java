@@ -11,6 +11,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.heightproviders.ConstantHeight;
+import net.minecraft.world.level.levelgen.heightproviders.UniformHeight;
 import net.minecraft.world.level.levelgen.WorldGenerationContext;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -36,7 +37,8 @@ public class SurfaceStructures extends Structure {
                     Heightmap.Types.CODEC.optionalFieldOf("project_start_to_heightmap").forGetter(structure -> structure.projectStartToHeightmap),
                     Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter),
                     DimensionPadding.CODEC.optionalFieldOf("dimension_padding", JigsawStructure.DEFAULT_DIMENSION_PADDING).forGetter(structure -> structure.dimensionPadding),
-                    LiquidSettings.CODEC.optionalFieldOf("liquid_settings", JigsawStructure.DEFAULT_LIQUID_SETTINGS).forGetter(structure -> structure.liquidSettings)
+                    LiquidSettings.CODEC.optionalFieldOf("liquid_settings", JigsawStructure.DEFAULT_LIQUID_SETTINGS).forGetter(structure -> structure.liquidSettings),
+                    Codec.BOOL.optionalFieldOf("use_surface_biome", false).forGetter(structure -> structure.useSurfaceBiome)
             ).apply(instance, SurfaceStructures::new));
 
     private final Holder<StructureTemplatePool> startPool;
@@ -47,6 +49,7 @@ public class SurfaceStructures extends Structure {
     private final int maxDistanceFromCenter;
     private final DimensionPadding dimensionPadding;
     private final LiquidSettings liquidSettings;
+    private final boolean useSurfaceBiome;
 
     public SurfaceStructures(Structure.StructureSettings config,
                              Holder<StructureTemplatePool> startPool,
@@ -56,7 +59,8 @@ public class SurfaceStructures extends Structure {
                              Optional<Heightmap.Types> projectStartToHeightmap,
                              int maxDistanceFromCenter,
                              DimensionPadding dimensionPadding,
-                             LiquidSettings liquidSettings)
+                             LiquidSettings liquidSettings,
+                             boolean useSurfaceBiome)
     {
         super(config);
         this.startPool = startPool;
@@ -67,14 +71,29 @@ public class SurfaceStructures extends Structure {
         this.maxDistanceFromCenter = maxDistanceFromCenter;
         this.dimensionPadding = dimensionPadding;
         this.liquidSettings = liquidSettings;
+        this.useSurfaceBiome = useSurfaceBiome;
     }
 
     /** Defaults for a standalone, rigid NBT projected onto the terrain surface. */
     public SurfaceStructures(StructureSettings settings, Holder<StructureTemplatePool> startPool, int heightOffset) {
-        this(settings, startPool, Optional.empty(), 1,
+        this(settings, startPool, heightOffset, 1);
+    }
+
+    public SurfaceStructures(StructureSettings settings, Holder<StructureTemplatePool> startPool,
+                             int heightOffset, int depth) {
+        this(settings, startPool, Optional.empty(), depth,
                 ConstantHeight.of(VerticalAnchor.absolute(heightOffset)),
                 Optional.of(Heightmap.Types.WORLD_SURFACE_WG), 80,
-                JigsawStructure.DEFAULT_DIMENSION_PADDING, JigsawStructure.DEFAULT_LIQUID_SETTINGS);
+                JigsawStructure.DEFAULT_DIMENSION_PADDING, JigsawStructure.DEFAULT_LIQUID_SETTINGS, false);
+    }
+
+    /** Underground pieces use absolute height; biome eligibility follows the land above them. */
+    public static SurfaceStructures underground(StructureSettings settings, Holder<StructureTemplatePool> pool,
+                                                int heightOffset, int depth) {
+        return new SurfaceStructures(settings, pool, Optional.empty(), depth,
+                UniformHeight.of(VerticalAnchor.absolute(-32 + heightOffset), VerticalAnchor.absolute(heightOffset)),
+                Optional.empty(), 80, JigsawStructure.DEFAULT_DIMENSION_PADDING,
+                JigsawStructure.DEFAULT_LIQUID_SETTINGS, true);
     }
 
     @Override
@@ -86,9 +105,18 @@ public class SurfaceStructures extends Structure {
 
         // Structure's normal biome filter controls where this may generate. There
         // is no arbitrary altitude cap, so mountain biomes work as well as plains.
-        return JigsawPlacement.addPieces(context, this.startPool, this.startJigsawName,
+        var stub = JigsawPlacement.addPieces(context, this.startPool, this.startJigsawName,
                 this.size, blockPos, false, this.projectStartToHeightmap,
                 this.maxDistanceFromCenter, PoolAliasLookup.EMPTY, this.dimensionPadding, this.liquidSettings);
+        if (!this.useSurfaceBiome) return stub;
+        // Only move the biome sampling point, never the generated pieces. This
+        // lets a cave biome below Hithaeglir/Mirkwood coexist with our structures.
+        return stub.map(start -> {
+            var pos = start.position();
+            int surfaceY = context.chunkGenerator().getFirstOccupiedHeight(pos.getX(), pos.getZ(),
+                    Heightmap.Types.WORLD_SURFACE_WG, context.heightAccessor(), context.randomState());
+            return new GenerationStub(new BlockPos(pos.getX(), surfaceY, pos.getZ()), start.generator());
+        });
     }
 
     @Override
