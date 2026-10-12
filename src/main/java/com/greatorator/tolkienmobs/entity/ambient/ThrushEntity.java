@@ -1,6 +1,6 @@
 package com.greatorator.tolkienmobs.entity.ambient;
 
-import com.greatorator.tolkienmobs.entity.TolkienAmbientEntity;
+import com.greatorator.tolkienmobs.entity.TolkienFlyingAmbientEntity;
 import com.greatorator.tolkienmobs.entity.ai.goal.LandBirdGoal;
 import com.greatorator.tolkienmobs.entity.ai.goal.RandomGlideGoal;
 import com.greatorator.tolkienmobs.entity.ai.goal.RestrictedFlyingGoal;
@@ -23,7 +23,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -44,7 +43,7 @@ import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class ThrushEntity extends TolkienAmbientEntity implements GeoEntity, FlyingAnimal {
+public class ThrushEntity extends TolkienFlyingAmbientEntity implements GeoEntity, FlyingAnimal {
     public float flap;
     public float flapSpeed;
     public float oFlapSpeed;
@@ -57,7 +56,6 @@ public class ThrushEntity extends TolkienAmbientEntity implements GeoEntity, Fly
         super(entityType, level);
 
        setTame(false, false);
-       moveControl = new FlyingMoveControl(this, 20, true);
 
         setPathfindingMalus(PathType.DANGER_FIRE, -1.0f);
         setPathfindingMalus(PathType.DAMAGE_FIRE, -1.0f);
@@ -145,7 +143,7 @@ public class ThrushEntity extends TolkienAmbientEntity implements GeoEntity, Fly
 
         this.flapping *= 0.9F;
         Vec3 vec3 = this.getDeltaMovement();
-        if(!this.onGround() && vec3.y < 0.0D) {
+        if(!this.onGround() && !this.getFlying() && vec3.y < 0.0D) {
             this.setDeltaMovement(vec3.multiply(1.0D, 0.6D, 1.0D));
         }
 

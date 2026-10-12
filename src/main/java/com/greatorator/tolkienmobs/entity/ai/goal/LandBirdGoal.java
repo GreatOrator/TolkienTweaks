@@ -1,8 +1,7 @@
 package com.greatorator.tolkienmobs.entity.ai.goal;
 
-import com.greatorator.tolkienmobs.entity.TolkienAmbientEntity;
+import com.greatorator.tolkienmobs.entity.TolkienFlyingAmbientEntity;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.state.BlockState;
@@ -13,13 +12,14 @@ import net.minecraft.world.phys.Vec3;
 import java.util.EnumSet;
 
 public class LandBirdGoal extends Goal {
-    private final TolkienAmbientEntity bird;
+    private final TolkienFlyingAmbientEntity bird;
     private final int chance;
 
     private BlockPos pos;
+    private int landingTicks;
 
 
-    public LandBirdGoal(TolkienAmbientEntity bird, int chance) {
+    public LandBirdGoal(TolkienFlyingAmbientEntity bird, int chance) {
         this.bird = bird;
         this.chance = chance;
         this.setFlags(EnumSet.of(Flag.MOVE));
@@ -36,7 +36,7 @@ public class LandBirdGoal extends Goal {
         }
 
         Vec3 end = this.bird.getEyePosition();
-        end = new Vec3(end.x, 0, end.z);
+        end = new Vec3(end.x, bird.level().getMinBuildHeight(), end.z);
         BlockHitResult result = this.bird.level.clip(new ClipContext(this.bird.getEyePosition(), end, ClipContext.Block.OUTLINE, ClipContext.Fluid.ANY, this.bird));
         if (result.getType() != HitResult.Type.BLOCK) {
             return false;
@@ -52,20 +52,27 @@ public class LandBirdGoal extends Goal {
 
     @Override
     public void start() {
-        this.bird.getMoveControl().setWantedPosition(pos.getX(), pos.getY() + 1, pos.getZ(), 1.0f);
+        bird.getNavigation().stop();
+        landingTicks = 0;
+    }
+
+    @Override
+    public boolean requiresUpdateEveryTick() { return true; }
+
+    @Override
+    public void tick() {
+        landingTicks++;
+        // Aim slightly into the solid surface so collision actually puts the bird on ground.
+        bird.getMoveControl().setWantedPosition(pos.getX() + 0.5, pos.getY() + 0.9, pos.getZ() + 0.5, 1.0);
     }
 
     @Override
     public boolean canContinueToUse() {
-        MoveControl control = this.bird.getMoveControl();
-        double d = Math.pow(control.getWantedX() - this.bird.getX(), 2) + Math.pow(control.getWantedY() - this.bird.getY(), 2) + Math.pow(control.getWantedZ() - this.bird.getZ(), 2);
-        return d > 16 && d < 36000;
+        return !bird.onGround() && !bird.isOrderedToSit() && landingTicks < 200;
     }
 
     @Override
     public void stop() {
-        this.bird.moveControl = new MoveControl(this.bird);
-        this.bird.setNoGravity(false);
-        this.bird.setFlying(false);
+        if (bird.onGround() || bird.isOrderedToSit()) bird.setFlying(false);
     }
 }

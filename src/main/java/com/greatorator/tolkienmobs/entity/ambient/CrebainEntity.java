@@ -1,6 +1,6 @@
 package com.greatorator.tolkienmobs.entity.ambient;
 
-import com.greatorator.tolkienmobs.entity.TolkienAmbientEntity;
+import com.greatorator.tolkienmobs.entity.TolkienFlyingAmbientEntity;
 import com.greatorator.tolkienmobs.entity.ai.goal.EagleDiveAttackGoal;
 import com.greatorator.tolkienmobs.entity.ai.goal.LandBirdGoal;
 import com.greatorator.tolkienmobs.entity.ai.goal.RandomGlideGoal;
@@ -21,7 +21,6 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -44,11 +43,9 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 
-public class CrebainEntity extends TolkienAmbientEntity implements GeoEntity,FlyingAnimal {
+public class CrebainEntity extends TolkienFlyingAmbientEntity implements GeoEntity,FlyingAnimal {
     public CrebainEntity(EntityType<? extends TamableAnimal> entityType, Level level) {
         super(entityType, level);
-
-        moveControl = new FlyingMoveControl(this, 20, true);
 
         setPathfindingMalus(PathType.DANGER_FIRE, -1.0f);
         setPathfindingMalus(PathType.DAMAGE_FIRE, -1.0f);
@@ -127,7 +124,7 @@ public class CrebainEntity extends TolkienAmbientEntity implements GeoEntity,Fly
                 target = findTreePos();
             }
 
-            return target == null ? super.getPosition() : target;
+            return target == null ? super.getPosition() : restrictPosition(target);
         }
 
         @Nullable
