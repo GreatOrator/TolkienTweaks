@@ -1,43 +1,40 @@
 package com.greatorator.tolkienmobs.entity.ai.control;
 
-import com.greatorator.tolkienmobs.entity.TolkienAmbientEntity;
-import net.minecraft.util.Mth;
+import com.greatorator.tolkienmobs.entity.TolkienFlyingAmbientEntity;
+import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.phys.Vec3;
 
-public class FreeFlightMoveControl extends MoveControl {
-    private final TolkienAmbientEntity bird;
-    private int collisionCheckCooldown;
+/** Uses vanilla flight steering, with the same limits for every navigation/attack goal. */
+public class FreeFlightMoveControl extends FlyingMoveControl {
+    private final TolkienFlyingAmbientEntity bird;
+    private final MoveControl groundControl;
 
-    public FreeFlightMoveControl(TolkienAmbientEntity bird) {
-        super(bird);
+    public FreeFlightMoveControl(TolkienFlyingAmbientEntity bird) {
+        super(bird, 20, true);
         this.bird = bird;
+        this.groundControl = new MoveControl(bird);
+    }
+
+    @Override
+    public void setWantedPosition(double x, double y, double z, double speed) {
+        Vec3 target = new Vec3(x, y, z);
+        if (bird.getFlying()) target = bird.restrictFlightTarget(target);
+        super.setWantedPosition(target.x, target.y, target.z, speed);
     }
 
     @Override
     public void tick() {
-        if (this.operation != Operation.MOVE_TO) {
-            this.bird.setNoGravity(false);
-            return;
-        }
-        this.bird.setNoGravity(true);
-        if (this.collisionCheckCooldown-- <= 0) {
-            this.collisionCheckCooldown += this.bird.getRandom().nextInt(5) + 2;
-            Vec3 vec3d = new Vec3(this.wantedX - this.bird.getX(), this.wantedY - this.bird.getY(), this.wantedZ - this.bird.getZ());
-            double d = vec3d.length();
-            if (this.willCollide(vec3d = vec3d.normalize(), Mth.ceil(d))) {
-                this.bird.setDeltaMovement(this.bird.getDeltaMovement().add(vec3d.multiply(0.1D, 0.1D, 0.1D)));
-            } else {
-                this.operation = Operation.WAIT;
+        if (!bird.getFlying()) {
+            if (operation == Operation.MOVE_TO) {
+                groundControl.setWantedPosition(wantedX, wantedY, wantedZ, speedModifier);
+                operation = Operation.WAIT;
             }
+            groundControl.tick();
+            bird.setNoGravity(false);
+        } else {
+            super.tick();
+            bird.setNoGravity(true);
         }
-    }
-
-    private boolean willCollide(Vec3 direction, int steps) {
-        for (int i = 1; i < steps; ++i) {
-            if (this.bird.level.isUnobstructed(this.bird)) continue;
-            return false;
-        }
-        return true;
     }
 }

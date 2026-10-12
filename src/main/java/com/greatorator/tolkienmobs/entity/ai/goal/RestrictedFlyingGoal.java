@@ -1,44 +1,41 @@
 package com.greatorator.tolkienmobs.entity.ai.goal;
 
+import com.greatorator.tolkienmobs.entity.TolkienFlyingAmbientEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomFlyingGoal;
-import net.minecraft.world.entity.ai.util.LandRandomPos;
 import net.minecraft.world.phys.Vec3;
-
 import javax.annotation.Nullable;
 
-/**
- * Restricted flying goal that keeps birds within 64 blocks of their spawn point
- */
+/** Chooses destinations relative to the persistent spawn position, including perches. */
 public class RestrictedFlyingGoal extends WaterAvoidingRandomFlyingGoal {
     protected final PathfinderMob mob;
-    private final double maxDistance;
 
     public RestrictedFlyingGoal(PathfinderMob mob, double speed, double maxDistance) {
         super(mob, speed);
         this.mob = mob;
-        this.maxDistance = maxDistance;
+        if (maxDistance != TolkienFlyingAmbientEntity.FLIGHT_RADIUS) {
+            throw new IllegalArgumentException("Bird flight radius must match the movement controller");
+        }
+    }
+
+    @Override
+    public boolean canUse() {
+        return ((TolkienFlyingAmbientEntity) mob).getFlying() && !((TolkienFlyingAmbientEntity) mob).isOrderedToSit() && super.canUse();
+    }
+
+    @Override
+    public boolean canContinueToUse() {
+        return ((TolkienFlyingAmbientEntity) mob).getFlying() && !((TolkienFlyingAmbientEntity) mob).isOrderedToSit() && super.canContinueToUse();
+    }
+
+    @Nullable
+    protected Vec3 restrictPosition(@Nullable Vec3 target) {
+        return target == null ? null : ((TolkienFlyingAmbientEntity) mob).restrictFlightTarget(target);
     }
 
     @Override
     @Nullable
     protected Vec3 getPosition() {
-        Vec3 target = super.getPosition();
-        
-        if (target == null) {
-            return null;
-        }
-
-        // Calculate distance from spawn point
-        double distFromSpawn = mob.distanceToSqr(mob.blockPosition().getCenter());
-        
-        // If too far from spawn, bias target back toward spawn
-        if (distFromSpawn > maxDistance * maxDistance) {
-            Vec3 spawnPos = Vec3.atCenterOf(mob.blockPosition());
-            Vec3 directionToSpawn = spawnPos.subtract(mob.position()).normalize();
-            target = mob.position().add(directionToSpawn.scale(10));
-        }
-
-        return target;
+        return restrictPosition(super.getPosition());
     }
 }
