@@ -1,20 +1,19 @@
 package com.greatorator.tolkienmobs.entity.ai.goal;
 
-import com.greatorator.tolkienmobs.entity.TolkienAmbientEntity;
+import com.greatorator.tolkienmobs.entity.TolkienFlyingAmbientEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 
-import java.util.EnumSet;
 
 /**
  * Goal that randomly switches between gliding and flapping while flying
  */
 public class RandomGlideGoal extends Goal {
-    private final TolkienAmbientEntity bird;
+    private final TolkienFlyingAmbientEntity bird;
     private int switchTimer;
 
-    public RandomGlideGoal(TolkienAmbientEntity bird) {
+    public RandomGlideGoal(TolkienFlyingAmbientEntity bird) {
         this.bird = bird;
-        this.setFlags(EnumSet.of(Flag.MOVE));
+        // Animation state must not prevent navigation goals from running.
     }
 
     @Override
@@ -37,6 +36,11 @@ public class RandomGlideGoal extends Goal {
             bird.setGliding(!bird.isGliding());
             switchTimer = 60 + bird.getRandom().nextInt(100);
         }
+    }
+
+    @Override
+    public void stop() {
+        bird.setGliding(false);
     }
 
     @Override

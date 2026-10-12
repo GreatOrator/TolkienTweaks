@@ -1,6 +1,6 @@
 package com.greatorator.tolkienmobs.entity.ai.goal;
 
-import com.greatorator.tolkienmobs.entity.TolkienAmbientEntity;
+import com.greatorator.tolkienmobs.entity.TolkienFlyingAmbientEntity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.phys.Vec3;
@@ -11,11 +11,11 @@ import java.util.EnumSet;
  * Goal for eagles to dive attack enemies from the air
  */
 public class EagleDiveAttackGoal extends Goal {
-    private final TolkienAmbientEntity eagle;
+    private final TolkienFlyingAmbientEntity eagle;
     private LivingEntity target;
     private int diveCooldown;
 
-    public EagleDiveAttackGoal(TolkienAmbientEntity eagle) {
+    public EagleDiveAttackGoal(TolkienFlyingAmbientEntity eagle) {
         this.eagle = eagle;
         this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
     }

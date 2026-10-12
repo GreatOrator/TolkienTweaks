@@ -11,7 +11,6 @@ import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -22,7 +21,6 @@ public class TolkienAmbientEntity extends TamableAnimal {
     protected static final EntityDataAccessor<Boolean> FLYING = SynchedEntityData.defineId((Class<? extends SyncedDataHolder>) TolkienAmbientEntity.class, EntityDataSerializers.BOOLEAN);
     protected static final EntityDataAccessor<Boolean> GLIDING = SynchedEntityData.defineId((Class<? extends SyncedDataHolder>) TolkienAmbientEntity.class, EntityDataSerializers.BOOLEAN);
     protected static final EntityDataAccessor<Boolean> AGGRESSIVE = SynchedEntityData.defineId((Class<? extends SyncedDataHolder>) TolkienAmbientEntity.class, EntityDataSerializers.BOOLEAN);
-    public MoveControl moveControl;
 
     public TolkienAmbientEntity(EntityType<? extends TamableAnimal> entityType, Level level) {
         super(entityType, level);
@@ -37,7 +35,17 @@ public class TolkienAmbientEntity extends TamableAnimal {
         this.goalSelector.addGoal(2, new BreedGoal(this, 1.0));
         this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.25));
 
-        this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0));
+        this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0) {
+            @Override
+            public boolean canUse() {
+                return !TolkienAmbientEntity.this.getFlying() && super.canUse();
+            }
+
+            @Override
+            public boolean canContinueToUse() {
+                return !TolkienAmbientEntity.this.getFlying() && super.canContinueToUse();
+            }
+        });
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
     }

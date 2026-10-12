@@ -1,6 +1,6 @@
 package com.greatorator.tolkienmobs.entity.boss;
 
-import com.greatorator.tolkienmobs.entity.TolkienAmbientEntity;
+import com.greatorator.tolkienmobs.entity.TolkienFlyingAmbientEntity;
 import com.greatorator.tolkienmobs.entity.ai.goal.EagleDiveAttackGoal;
 import com.greatorator.tolkienmobs.entity.ai.goal.LandBirdGoal;
 import com.greatorator.tolkienmobs.entity.ai.goal.RandomGlideGoal;
@@ -34,7 +34,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.MoveToBlockGoal;
@@ -63,7 +62,7 @@ import java.util.EnumSet;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class GwahirEntity extends TolkienAmbientEntity implements GeoEntity, FlyingAnimal, CommonTraits {
+public class GwahirEntity extends TolkienFlyingAmbientEntity implements GeoEntity, FlyingAnimal, CommonTraits {
     protected static final EntityDataAccessor<Boolean> PECKING = SynchedEntityData.defineId((Class<? extends SyncedDataHolder>) GwahirEntity.class, EntityDataSerializers.BOOLEAN);
     protected BlockPos stonePos;
     public boolean scheduleWeaponGoalUpdate = true;
@@ -83,8 +82,6 @@ public class GwahirEntity extends TolkienAmbientEntity implements GeoEntity, Fly
 
     public GwahirEntity(EntityType<? extends TamableAnimal> entityType, Level level) {
         super(entityType, level);
-
-        moveControl = new FlyingMoveControl(this, 20, true);
 
         setPathfindingMalus(PathType.DANGER_FIRE, -1.0f);
         setPathfindingMalus(PathType.DAMAGE_FIRE, -1.0f);
@@ -203,7 +200,6 @@ public class GwahirEntity extends TolkienAmbientEntity implements GeoEntity, Fly
             return true;
         }
     }
-
 
     /** Sounds */
     @Override
@@ -412,7 +408,7 @@ public class GwahirEntity extends TolkienAmbientEntity implements GeoEntity, Fly
                 target = findTreePos();
             }
 
-            return target == null ? super.getPosition() : target;
+            return target == null ? super.getPosition() : restrictPosition(target);
         }
 
         @Nullable
