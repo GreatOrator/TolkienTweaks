@@ -1,28 +1,29 @@
 package com.greatorator.tolkienmobs.enchantment;
 
-import com.greatorator.tolkienmobs.TolkienMobsConfig;
-import com.greatorator.tolkienmobs.util.GeneralUtility;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantedItemInUse;
 import net.minecraft.world.item.enchantment.effects.EnchantmentEntityEffect;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.function.Consumer;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -34,65 +35,65 @@ public record DwarvenMinerEnchantmentEffect(int range) implements EnchantmentEnt
     );
 
     @Override
-    public void apply(ServerLevel level, int levelEnchant, EnchantedItemInUse enchantedItemInUse, Entity entity, Vec3 vec3) {
-        Player pPlayer = (Player) entity;
+    public void apply(ServerLevel level, int levelEnchant, EnchantedItemInUse item, Entity entity, Vec3 hitPosition) {
+        if (!(entity instanceof ServerPlayer player)) return;
+        player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 20, range(), false, false, false));
+        if (player.isShiftKeyDown() || levelEnchant < 1) return;
 
-        pPlayer.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 20, range(), false, false, false));
+        BlockPos source = BlockPos.containing(hitPosition);
+        ItemStack tool = item.itemStack();
+        if (tool != player.getMainHandItem() || !canMine(level, player, source, tool)) return;
 
-        if (!level.getBlockState(BlockPos.containing(vec3)).is(BlockTags.MINEABLE_WITH_PICKAXE)) return;
-        if (entity.isShiftKeyDown()) return;
-        if (!(entity instanceof Player player)) return;
+        // Determine the face while the source block still exists; removing it changes the ray trace.
+        Direction face = getMiningFace(player, source);
+        if (!player.gameMode.destroyBlock(source)) return;
+        for (BlockPos pos : getMiningArea(source, face, levelEnchant)) {
+            if (pos.equals(source)) continue;
+            if (tool.isEmpty() || tool != player.getMainHandItem()) break;
+            if (canMine(level, player, pos, tool)) {
+                // Preserve normal drops, XP, tool durability and cancellable block-break events.
+                player.gameMode.destroyBlock(pos);
+            }
+        }
+    }
 
-        // Calculate radius based on enchantment level (1=3x3, 2=5x5, 3=7x7, 4=9x9)
-        int radius = Math.min(levelEnchant, 4);
-        
-        // Calculate center block based on player position
-        BlockPos sourceBlock = BlockPos.containing(vec3);
-        BlockPos centerBlock = calculateCenterBlock(player, sourceBlock, radius);
+    private static boolean canMine(ServerLevel level, ServerPlayer player, BlockPos pos, ItemStack tool) {
+        BlockState state = level.getBlockState(pos);
+        return state.is(BlockTags.MINEABLE_WITH_PICKAXE)
+                && state.getDestroySpeed(level, pos) >= 0
+                && (player.isCreative() || tool.isCorrectToolForDrops(state));
+    }
 
-        chainMine(
-                level,
-                player,
-                centerBlock,
-                radius,
-                enchantedItemInUse.itemStack(),
-                enchantedItemInUse.onBreak()
-        );
+    public static Direction getMiningFace(Player player, BlockPos source) {
+        Vec3 start = player.getEyePosition();
+        BlockHitResult hit = player.level().clip(new ClipContext(start,
+                start.add(player.getLookAngle().scale(player.blockInteractionRange())),
+                ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
+        if (hit.getType() == HitResult.Type.BLOCK && hit.getBlockPos().equals(source)) {
+            return hit.getDirection();
+        }
+        // A server-side hit can arrive after the player's aim has moved slightly.
+        Vec3 look = player.getLookAngle();
+        return Direction.getNearest(look.x, look.y, look.z).getOpposite();
+    }
+
+    /** A single plane: levels 1–4 produce 3×3, 5×5, 7×7 and 9×9. */
+    public static Iterable<BlockPos> getMiningArea(BlockPos source, Direction face, int enchantmentLevel) {
+        int radius = Mth.clamp(enchantmentLevel, 1, 4);
+        if (face.getAxis() == Direction.Axis.Y) {
+            // Floors and ceilings are centered on the block being hit.
+            return BlockPos.betweenClosed(source.offset(-radius, 0, -radius), source.offset(radius, 0, radius));
+        }
+        // Walls extend one block below the hit, with the remaining rows above it.
+        int top = 2 * radius - 1;
+        if (face.getAxis() == Direction.Axis.Z) {
+            return BlockPos.betweenClosed(source.offset(-radius, -1, 0), source.offset(radius, top, 0));
+        }
+        return BlockPos.betweenClosed(source.offset(0, -1, -radius), source.offset(0, top, radius));
     }
 
     @Override
     public MapCodec<? extends EnchantmentEntityEffect> codec() {
         return CODEC;
-    }
-
-    private static BlockPos calculateCenterBlock(Player player, BlockPos sourceBlock, int radius) {
-        // If player is above the mining point (player Y > source Y), center is directly from mining point
-        if (player.getY() > sourceBlock.getY()) {
-            return sourceBlock;
-        }
-        
-        // For all levels, center is 1 block up from the mining point
-        return sourceBlock.above();
-    }
-
-    private static void chainMine(ServerLevel level, Player player, BlockPos centerBlock, int radius, ItemStack tool, Consumer<Item> onBreak) {
-        // Calculate the area bounds based on radius (radius 1 = 3x3, radius 2 = 5x5, radius 3 = 7x7)
-        int halfSize = radius;
-        BlockPos minPos = new BlockPos(centerBlock.getX() - halfSize, centerBlock.getY(), centerBlock.getZ() - halfSize);
-        BlockPos maxPos = new BlockPos(centerBlock.getX() + halfSize, centerBlock.getY(), centerBlock.getZ() + halfSize);
-
-        for (BlockPos pos : BlockPos.betweenClosed(minPos, maxPos)) {
-            BlockState blockState = level.getBlockState(pos);
-            if (blockState.is(BlockTags.MINEABLE_WITH_PICKAXE)) {
-                BlockEntity blockEntity = level.getBlockEntity(pos);
-                level.removeBlock(pos, false);
-                if (!player.isCreative()) {
-                    blockState.getBlock().playerDestroy(level, player, pos, blockState, blockEntity, tool);
-                }
-                if (!centerBlock.equals(pos)) {
-                    tool.hurtAndBreak(1, level, player, onBreak);
-                }
-            }
-        }
     }
 }
