@@ -74,7 +74,7 @@ public class TolkienEnchantments {
                         Enchantment.definition(
                                 itemHolderGetter.getOrThrow(ItemTags.PICKAXES),
                                 5,
-                                5,
+                                4,
                                 Enchantment.dynamicCost(1, 10),
                                 Enchantment.dynamicCost(15, 10),
                                 2,
