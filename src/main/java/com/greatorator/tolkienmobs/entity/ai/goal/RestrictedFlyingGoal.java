@@ -4,6 +4,7 @@ import com.greatorator.tolkienmobs.entity.TolkienFlyingAmbientEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomFlyingGoal;
 import net.minecraft.world.phys.Vec3;
+
 import javax.annotation.Nullable;
 
 /** Chooses destinations relative to the persistent spawn position, including perches. */

@@ -2,7 +2,6 @@ package com.greatorator.tolkienmobs.gametest;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.datagen.TolkienStructureProvider;
-import com.greatorator.tolkienmobs.init.TolkienStructures;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;

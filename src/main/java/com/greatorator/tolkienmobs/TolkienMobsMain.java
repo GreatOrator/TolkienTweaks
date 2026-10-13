@@ -30,8 +30,6 @@ import com.greatorator.tolkienmobs.particle.provider.TolkienParticleProvider;
 import com.greatorator.tolkienmobs.util.GeneralUtility;
 import com.greatorator.tolkienmobs.util.TolkienItemProperties;
 import com.greatorator.tolkienmobs.world.registration.TolkienOverworldRegion;
-import terrablender.api.Regions;
-import terrablender.api.SurfaceRuleManager;
 import com.greatorator.tolkienmobs.world.registration.TolkienSurfaceRules;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -65,6 +63,8 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import org.slf4j.Logger;
+import terrablender.api.Regions;
+import terrablender.api.SurfaceRuleManager;
 
 import java.util.Locale;
 
