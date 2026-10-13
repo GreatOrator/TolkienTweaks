@@ -75,15 +75,15 @@ public final class TolkienStructureProvider {
         var pools = context.lookup(Registries.TEMPLATE_POOL);
         for (Definition definition : STRUCTURES) {
             boolean below = definition.underground() || definition.layout().flatMap(Layout::topOffset).orElse(0) < 0;
+            var village = TolkienVillageProvider.village(definition.key());
+            if (village.isPresent()) {
+                context.register(definition.key(), TolkienVillageProvider.create(village.get(), pools));
+                continue;
+            }
             var settings = new Structure.StructureSettings(biomes.getOrThrow(definition.biomeTag()), Map.of(),
                     below ? GenerationStep.Decoration.UNDERGROUND_STRUCTURES : GenerationStep.Decoration.SURFACE_STRUCTURES,
                     (below || definition.layout().flatMap(Layout::topOffset).isPresent()
                             || definition.layout().flatMap(Layout::companion).isPresent()) ? TerrainAdjustment.NONE : TerrainAdjustment.BEARD_THIN);
-            var village = TolkienVillageProvider.village(definition.key());
-            if (village.isPresent()) {
-                context.register(definition.key(), TolkienVillageProvider.create(settings, village.get(), pools));
-                continue;
-            }
             var pool = pools.getOrThrow(definition.poolKey());
             int depth = definition.branches().map(Branches::depth).orElse(1);
             if (definition.layout().isPresent()) {

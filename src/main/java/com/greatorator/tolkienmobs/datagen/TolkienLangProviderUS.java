@@ -521,7 +521,11 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.addVillager(TolkienEntities.ENTITY_TTM_SOUTHRON.get(), "Southron");
             this.add(TolkienEntities.EGG_TTMSOUTHRON.get(), "Southron Spawn Egg");
             this.addVillager(TolkienEntities.ENTITY_TTM_ORC_TRADER.get(), "Orc Trader");
-            this.add(TolkienEntities.EGG_TTMORC_TRADER.get(), "Orc Trader Spawn Egg");
+           this.add(TolkienEntities.EGG_TTMORC_TRADER.get(), "Orc Trader Spawn Egg");
+            this.addVillager(TolkienEntities.ENTITY_TTM_ORC.get(), "Orc");
+            this.add(TolkienEntities.EGG_TTMORC.get(), "Orc Spawn Egg");
+            this.addVillager(TolkienEntities.ENTITY_TTM_SOUTHRON_NPC.get(), "Southron");
+            this.add(TolkienEntities.EGG_TTMSOUTHRON_NPC.get(), "Southron Spawn Egg");
 
                     //Monster
             this.add(TolkienEntities.ENTITY_TTM_BARROW.get(), "Barrow Wight");
