@@ -1,5 +1,7 @@
 package com.greatorator.tolkienmobs.datagen;
 
+import com.greatorator.tolkienmobs.init.TolkienBiomes;
+import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienStructures;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
@@ -11,10 +13,17 @@ import net.minecraft.data.worldgen.Pools;
 import net.minecraft.data.worldgen.ProcessorLists;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
+import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
 import net.minecraft.world.level.levelgen.heightproviders.ConstantHeight;
 import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.StructureSpawnOverride;
+import net.minecraft.world.level.levelgen.structure.StructureSpawnOverride.BoundingBoxType;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadType;
@@ -23,7 +32,9 @@ import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.pools.alias.PoolAliasBinding;
 import net.minecraft.world.level.levelgen.structure.structures.JigsawStructure;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /** Vanilla village assembly, with Tolkien houses selected through per-structure pool aliases. */
@@ -33,12 +44,12 @@ public final class TolkienVillageProvider {
     public static final ResourceKey<StructureSet> VILLAGES = ResourceKey.create(Registries.STRUCTURE_SET,
             ResourceLocation.fromNamespaceAndPath("tolkienmobs", "villages"));
     public static final List<Village> VILLAGES_BY_STYLE = List.of(
-            new Village(TolkienStructures.HOUSE_DESERT, "desert", "desert", new BlockPos(14, 0, 7), "east_up", new BlockPos(11, 4, 4)),
-            new Village(TolkienStructures.HOUSE_DWARF, "dwarf", "plains", new BlockPos(0, 0, 5), "west_up", new BlockPos(6, 0, 5)),
-            new Village(TolkienStructures.HOUSE_ELVEN, "elven", "plains", new BlockPos(0, 0, 5), "west_up", new BlockPos(4, 8, 3)),
-            new Village(TolkienStructures.HOBBIT_HOUSE, "hobbit", "plains", new BlockPos(27, 0, 14), "east_up", new BlockPos(11, 0, 20)),
-            new Village(TolkienStructures.HOUSE_HUMAN, "human", "plains", new BlockPos(6, 0, 12), "south_up", new BlockPos(5, 5, 8)),
-            new Village(TolkienStructures.HOUSE_ORC, "orc", "desert", new BlockPos(7, 0, 14), "south_up", new BlockPos(7, 0, 2))
+            new Village(TolkienStructures.HOUSE_DESERT, "desert", "desert", TolkienBiomes.HARADWAITH, new BlockPos(14, 0, 7), "east_up", new BlockPos(11, 4, 4)),
+            new Village(TolkienStructures.HOUSE_DWARF, "dwarf", "plains", TolkienBiomes.IRON_HILLS, new BlockPos(0, 0, 5), "west_up", new BlockPos(6, 0, 5)),
+            new Village(TolkienStructures.HOUSE_ELVEN, "elven", "plains", TolkienBiomes.LORINAND, new BlockPos(0, 0, 5), "west_up", new BlockPos(4, 8, 3)),
+            new Village(TolkienStructures.HOBBIT_HOUSE, "hobbit", "plains", TolkienBiomes.SHIRE, new BlockPos(27, 0, 14), "east_up", new BlockPos(11, 0, 20)),
+            new Village(TolkienStructures.HOUSE_HUMAN, "human", "plains", TolkienBiomes.GLADDEN, new BlockPos(6, 0, 12), "south_up", new BlockPos(5, 5, 8)),
+            new Village(TolkienStructures.HOUSE_ORC, "orc", "desert", TolkienBiomes.MORDOR, new BlockPos(7, 0, 14), "south_up", new BlockPos(7, 0, 2))
     );
 
     private TolkienVillageProvider() {}
@@ -47,9 +58,19 @@ public final class TolkienVillageProvider {
         return VILLAGES_BY_STYLE.stream().filter(village -> village.structure().equals(key)).findFirst();
     }
 
-    public static JigsawStructure create(Structure.StructureSettings settings, Village village,
-                                        HolderGetter<StructureTemplatePool> pools) {
+    public static Structure.StructureSettings createSettings(Village village, HolderGetter<StructureTemplatePool> pools) {
+        // Create settings with spawn overrides for the custom villager types
+        return new Structure.StructureSettings(
+                village.biomeTag(),
+                village.spawnOverrides(),
+                GenerationStep.Decoration.SURFACE_STRUCTURES,
+                TerrainAdjustment.BEARD_THIN
+        );
+    }
+
+    public static JigsawStructure create(Village village, HolderGetter<StructureTemplatePool> pools) {
         // Alias resolution is local to this village; vanilla village pools stay intact.
+        Structure.StructureSettings settings = createSettings(village, pools);
         return new JigsawStructure(settings, pools.getOrThrow(village.startPool()), Optional.empty(), SIZE,
                 ConstantHeight.of(VerticalAnchor.absolute(0)), true, Optional.of(Heightmap.Types.WORLD_SURFACE_WG),
                 MAX_DISTANCE, List.of(PoolAliasBinding.direct(ResourceKey.create(Registries.TEMPLATE_POOL,
@@ -154,7 +175,7 @@ public final class TolkienVillageProvider {
 
     /** Entrance and resident coordinates are local to the original house NBT. */
     public record Village(ResourceKey<Structure> structure, String style, String vanillaStyle,
-                          BlockPos entrance, String orientation, BlockPos residentFloor) {
+                          ResourceKey<Biome> biome, BlockPos entrance, String orientation, BlockPos residentFloor) {
         public Direction front() { return Direction.byName(orientation.split("_")[0]); }
 
         public BlockPos templateShift() {
@@ -175,6 +196,27 @@ public final class TolkienVillageProvider {
         public ResourceKey<StructureTemplatePool> startPool() {
             // Keep the original structure/pool IDs so saved starts remain loadable.
             return ResourceKey.create(Registries.TEMPLATE_POOL, structure.location());
+        }
+
+        public TagKey<Biome> biomeTag() {
+            return TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(
+                    structure.location().getNamespace(), "has_structure/" + structure.location().getPath()));
+        }
+
+        public Map<EntityType<?>, StructureSpawnOverride> spawnOverrides() {
+            Map<EntityType<?>, StructureSpawnOverride> overrides = new HashMap<>();
+            EntityType<?> villagerType = switch (style) {
+                case "desert" -> TolkienEntities.ENTITY_TTM_SOUTHRON_NPC.get();
+                case "dwarf" -> TolkienEntities.ENTITY_TTM_DWARF.get();
+                case "elven" -> TolkienEntities.ENTITY_TTM_ELVES.get();
+                case "hobbit" -> TolkienEntities.ENTITY_TTM_HOBBIT.get();
+                case "human" -> TolkienEntities.ENTITY_TTM_HUMAN.get();
+                case "orc" -> TolkienEntities.ENTITY_TTM_ORC.get();
+                default -> EntityType.VILLAGER;
+            };
+            overrides.put(villagerType, new StructureSpawnOverride(0.1f, BoundingBoxType.STRUCTURE));
+            overrides.put(EntityType.VILLAGER, new StructureSpawnOverride(0.0f, BoundingBoxType.STRUCTURE));
+            return overrides;
         }
     }
 }

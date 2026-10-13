@@ -1001,6 +1001,8 @@ public class TolkienTabs {
                         output.accept(TolkienEntities.EGG_TTMHUMAN);
                         output.accept(TolkienEntities.EGG_TTMORC_TRADER);
                         output.accept(TolkienEntities.EGG_TTMSOUTHRON);
+                        output.accept(TolkienEntities.EGG_TTMORC);
+                        output.accept(TolkienEntities.EGG_TTMSOUTHRON_NPC);
 
                         output.accept(TolkienEntities.EGG_TTMBARROW);
                         output.accept(TolkienEntities.EGG_TTMBRIGAND);

@@ -94,6 +94,12 @@ public class TolkienEntities {
     public static final Supplier<EntityType<OrcTraderEntity>> ENTITY_TTM_ORC_TRADER =
             ENTITY_TYPES.register("entityttmorc_trader", () -> EntityType.Builder.of(OrcTraderEntity::new, MobCategory.MISC)
                     .sized(0.5F, 2.0F).build("entityttmorc_trader"));
+    public static final Supplier<EntityType<OrcEntity>> ENTITY_TTM_ORC =
+            ENTITY_TYPES.register("entityttmorc", () -> EntityType.Builder.of(OrcEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 2.0F).build("entityttmorc"));
+    public static final Supplier<EntityType<SouthronEntity>> ENTITY_TTM_SOUTHRON_NPC =
+            ENTITY_TYPES.register("entityttmsouthron_npc", () -> EntityType.Builder.of(SouthronEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 2.0F).build("entityttmsouthron_npc"));
 
         // Hostile
     public static final Supplier<EntityType<BarrowWightEntity>> ENTITY_TTM_BARROW =
@@ -335,6 +341,12 @@ public class TolkienEntities {
                     new Item.Properties()));
     public static final DeferredItem<Item> EGG_TTMORC_TRADER = SPAWN_EGGS.register("entityttmorc_trader_spawn_egg",
             () -> new DeferredSpawnEggItem(ENTITY_TTM_ORC_TRADER, 15186506, 16739362,
+                    new Item.Properties()));
+    public static final DeferredItem<Item> EGG_TTMORC = SPAWN_EGGS.register("entityttmorc_spawn_egg",
+            () -> new DeferredSpawnEggItem(ENTITY_TTM_ORC, 15186506, 9467561,
+                    new Item.Properties()));
+    public static final DeferredItem<Item> EGG_TTMSOUTHRON_NPC = SPAWN_EGGS.register("entityttmsouthron_npc_spawn_egg",
+            () -> new DeferredSpawnEggItem(ENTITY_TTM_SOUTHRON_NPC, 15186506, 12198412,
                     new Item.Properties()));
 
         // Hostile
