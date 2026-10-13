@@ -22,6 +22,8 @@ public class TolkienDataGenerator {
         TolkienDataRegistryProvider registryProvider = new TolkienDataRegistryProvider(packOutput, lookupProvider);
 
         generator.addProvider(event.includeServer(), registryProvider);
+        generator.addProvider(event.includeServer(), new TolkienVillageTemplateProvider(packOutput, existingFileHelper));
+        generator.addProvider(event.includeServer(), new TolkienStructureTagProvider(packOutput, registryProvider.getRegistryProvider()));
         generator.addProvider(event.includeClient(), new TolkienBlockStateProvider(packOutput, existingFileHelper));
         generator.addProvider(event.includeClient(), new TolkienItemModelProvider(packOutput, existingFileHelper));
         generator.addProvider(event.includeServer(), new TolkienLangProviderUS(packOutput));
