@@ -11,7 +11,7 @@
 
 - Converted desert, dwarf, elven, hobbit, and human houses into villages with connected paths and driveways, wells or fountains, bells, farms, decorations, animals, and villagers. Existing Tolkien inhabitants are retained.
 - Villages generate in Haradwaith, Iron Hills, Lorinand, Shire, and Gladden Fields respectively, using one shared placement grid instead of independent house clusters.
-- Added village pool, template, and structure-tag datagen, preserving original house templates and saved structure IDs. Added [village configuration and editing instructions](VILLAGES.md).
+- Added village pool, template, and structure-tag datagen, preserving original house templates and saved structure IDs.
 
 ### Flying mobs
 
