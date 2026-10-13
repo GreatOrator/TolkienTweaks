@@ -1,7 +1,7 @@
 {
   "values": [
-    "tolkienmobs:ash_mountains",
     "tolkienmobs:iron_hills",
-    "tolkienmobs:hithaeglir"
+    "tolkienmobs:hithaeglir",
+    "tolkienmobs:ash_mountains"
   ]
 }

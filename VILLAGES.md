@@ -1,6 +1,6 @@
 # Tolkien villages
 
-The five house structure IDs now start villages using Minecraft's jigsaw village generator. Each village has Tolkien houses, paths with short driveways, a well or fountain with a bell, farms, decorations, animals, and vanilla villagers. Existing Tolkien inhabitants saved in the houses are retained.
+The six house structure IDs now start villages using Minecraft's jigsaw village generator. Each village has Tolkien houses, paths with short driveways, a well or fountain with a bell, farms, decorations, animals, and vanilla villagers. Existing Tolkien inhabitants saved in the houses are retained.
 
 | House style | Biome | Paths, farms, and decorations |
 | --- | --- | --- |
@@ -9,6 +9,7 @@ The five house structure IDs now start villages using Minecraft's jigsaw village
 | Elven | Lorinand | Vanilla plains village |
 | Hobbit | Shire | Vanilla plains village |
 | Human | Gladden Fields | Vanilla plains village |
+| Orc | Mordor | Vanilla desert village |
 
 ## Generate the resources after merging
 
@@ -31,7 +32,7 @@ Villages appear in newly generated chunks. Existing buildings in explored chunks
 - `TolkienVillageProvider.SIZE` controls jigsaw expansion depth; `MAX_DISTANCE` limits expansion from the center. Increasing distance must also respect Minecraft's structure size limit, including terrain adjustment padding.
 - `bootstrapPools` controls the house/farm weights and town-center template. Plains styles use a fountain; desert uses a well.
 
-All five styles share a placement set, so only one style can start at a given candidate location. Their original independent house clusters no longer generate after datagen.
+All six styles share a placement set, so only one style can start at a given candidate location. Their original independent house clusters no longer generate after datagen.
 
 ## Edit the houses
 
@@ -42,6 +43,7 @@ Keep editing the original templates in `src/main/resources/data/tolkienmobs/stru
 - `ttmhouse_elven.nbt`
 - `ttmhouse_hobbit.nbt`
 - `ttmhouse_human.nbt`
+- `ttmhouse_orc.nbt`
 
 Then run datagen again. `TolkienVillageTemplateProvider` updates the older NBT format and creates village copies, adding an entrance porch and a resident connector. It also clears captured bed occupancy flags. Blocks and saved inhabitants inside the original house are retained.
 
