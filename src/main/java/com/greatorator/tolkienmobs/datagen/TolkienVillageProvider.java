@@ -38,7 +38,7 @@ public final class TolkienVillageProvider {
             new Village(TolkienStructures.HOUSE_ELVEN, "elven", "plains", new BlockPos(0, 0, 5), "west_up", new BlockPos(4, 8, 3)),
             new Village(TolkienStructures.HOBBIT_HOUSE, "hobbit", "plains", new BlockPos(27, 0, 14), "east_up", new BlockPos(11, 0, 20)),
             new Village(TolkienStructures.HOUSE_HUMAN, "human", "plains", new BlockPos(6, 0, 12), "south_up", new BlockPos(5, 5, 8)),
-            new Village(TolkienStructures.HOUSE_ORC, "orc", "desert", new BlockPos(7, 0, 0), "south_up", new BlockPos(7, 0, 2))
+            new Village(TolkienStructures.HOUSE_ORC, "orc", "desert", new BlockPos(7, 0, 14), "south_up", new BlockPos(7, 0, 2))
     );
 
     private TolkienVillageProvider() {}

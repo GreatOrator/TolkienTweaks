@@ -53,7 +53,7 @@ public class TolkienVillageGameTests {
         var normal = (NoiseBasedChunkGenerator) WorldPresets.getNormalOverworld(level.registryAccess()).generator();
         var settings = normal.generatorSettings();
         var villageSet = lookup.lookupOrThrow(Registries.STRUCTURE_SET).getOrThrow(TolkienVillageProvider.VILLAGES).value();
-        helper.assertTrue(villageSet.structures().size() == 5, "All village styles must share one placement grid");
+        helper.assertTrue(villageSet.structures().size() == 6, "All village styles must share one placement grid");
         helper.assertTrue(lookup.lookupOrThrow(Registries.STRUCTURE_SET).listElements().noneMatch(holder ->
                 TolkienVillageProvider.VILLAGES_BY_STYLE.stream().anyMatch(village -> village.structure().location().equals(holder.key().location()))),
                 "Old independent house placement sets must no longer be generated");
@@ -116,7 +116,7 @@ public class TolkienVillageGameTests {
         new TolkienVillageTemplateProvider(output, new ExistingFileHelper(java.util.List.of(), Set.of("tolkienmobs"), true, null, null)).run(CachedOutput.NO_CACHE).join();
         new TolkienStructureTagProvider(output, CompletableFuture.completedFuture(fixtures.lookup())).run(CachedOutput.NO_CACHE).join();
         var villageTag = com.google.gson.JsonParser.parseString(Files.readString(directory.resolve("data/minecraft/tags/worldgen/structure/village.json"))).getAsJsonObject();
-        helper.assertTrue(villageTag.getAsJsonArray("values").size() == 5, "Village recognition tag must contain five structures");
+        helper.assertTrue(villageTag.getAsJsonArray("values").size() == 6, "Village recognition tag must contain six structures");
         for (var village : TolkienVillageProvider.VILLAGES_BY_STYLE) {
             var path = directory.resolve("data/tolkienmobs/structure/" + village.houseTemplate().getPath() + ".nbt");
             var tag = NbtIo.readCompressed(path, NbtAccounter.unlimitedHeap());
@@ -134,7 +134,7 @@ public class TolkienVillageGameTests {
         try (var files = Files.walk(directory)) {
             templatesWritten = (int) files.filter(path -> path.toString().endsWith(".nbt")).count();
         }
-        helper.assertTrue(templatesWritten == 32, "Datagen must write five houses and all 27 roads");
+        helper.assertTrue(templatesWritten == 33, "Datagen must write six houses and all 27 roads");
         for (String style : java.util.List.of("plains", "desert")) for (var street : TolkienVillageProvider.streets(style)) {
             var path = directory.resolve("data/tolkienmobs/structure/" + street.template().getPath() + ".nbt");
             var road = NbtIo.readCompressed(path, NbtAccounter.unlimitedHeap());
