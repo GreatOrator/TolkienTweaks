@@ -1,0 +1,30 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 193764836,
+    "separation": 8,
+    "spacing": 32
+  },
+  "structures": [
+    {
+      "structure": "tolkienmobs:ttmhouse_desert",
+      "weight": 1
+    },
+    {
+      "structure": "tolkienmobs:ttmhouse_dwarf",
+      "weight": 1
+    },
+    {
+      "structure": "tolkienmobs:ttmhouse_elven",
+      "weight": 1
+    },
+    {
+      "structure": "tolkienmobs:hobbit_house",
+      "weight": 1
+    },
+    {
+      "structure": "tolkienmobs:ttmhouse_human",
+      "weight": 1
+    }
+  ]
+}
