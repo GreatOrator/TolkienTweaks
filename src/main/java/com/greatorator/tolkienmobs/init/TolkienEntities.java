@@ -88,8 +88,8 @@ public class TolkienEntities {
     public static final Supplier<EntityType<HobbitEntity>> ENTITY_TTM_HOBBIT =
             ENTITY_TYPES.register("entityttmhobbit", () -> EntityType.Builder.of(HobbitEntity::new, MobCategory.MISC)
                     .sized(0.35F, 1.4F).build("entityttmhobbit"));
-    public static final Supplier<EntityType<SouthronEntity>> ENTITY_TTM_SOUTHRON =
-            ENTITY_TYPES.register("entityttmsouthron", () -> EntityType.Builder.of(SouthronEntity::new, MobCategory.MISC)
+    public static final Supplier<EntityType<SouthronTraderEntity>> ENTITY_TTM_SOUTHRON =
+            ENTITY_TYPES.register("entityttmsouthron", () -> EntityType.Builder.of(SouthronTraderEntity::new, MobCategory.MISC)
                     .sized(0.5F, 2.0F).build("entityttmsouthron"));
     public static final Supplier<EntityType<OrcTraderEntity>> ENTITY_TTM_ORC_TRADER =
             ENTITY_TYPES.register("entityttmorc_trader", () -> EntityType.Builder.of(OrcTraderEntity::new, MobCategory.MISC)
