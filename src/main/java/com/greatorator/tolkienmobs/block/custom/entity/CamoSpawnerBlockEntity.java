@@ -12,7 +12,6 @@ import com.greatorator.tolkienmobs.util.block.SpawnerRanges;
 import com.greatorator.tolkienmobs.util.block.SpawnerSettings;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;

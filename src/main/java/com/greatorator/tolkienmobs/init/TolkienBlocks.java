@@ -5,6 +5,7 @@ import com.greatorator.tolkienmobs.block.custom.*;
 import com.greatorator.tolkienmobs.block.custom.entity.*;
 import com.greatorator.tolkienmobs.handler.capability.TolkienFluidTank;
 import com.greatorator.tolkienmobs.handler.interfaces.TolkienRegistry;
+import com.greatorator.tolkienmobs.item.custom.BackpackItem;
 import com.greatorator.tolkienmobs.world.components.config.TolkienConfiguredFeatures;
 import com.greatorator.tolkienmobs.world.components.feature.tree.TolkienTreeGrowers;
 import net.minecraft.core.BlockPos;
@@ -26,18 +27,12 @@ import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.registries.DeferredBlock;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.neoforged.neoforge.registries.*;
 
 import java.util.function.Supplier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 import static com.greatorator.tolkienmobs.block.custom.FancyLanternBlock.LIT;
-import net.neoforged.neoforge.registries.DeferredItem;
-import com.greatorator.tolkienmobs.item.custom.BackpackItem;
-
 import static com.greatorator.tolkienmobs.init.TolkienItems.ITEMS;
 
 public class TolkienBlocks {
