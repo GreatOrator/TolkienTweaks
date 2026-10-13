@@ -2,8 +2,8 @@
   "elements": [
     {
       "element": {
-        "element_type": "minecraft:single_pool_element",
-        "location": "tolkienmobs:ttmhouse_hobbit",
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "minecraft:village/plains/town_centers/plains_fountain_01",
         "processors": {
           "processors": []
         },
