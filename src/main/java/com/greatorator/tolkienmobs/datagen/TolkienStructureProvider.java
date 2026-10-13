@@ -31,7 +31,7 @@ public final class TolkienStructureProvider {
     // The structure, pool, set and biome tag names are derived from the structure key.
     public static final List<Definition> STRUCTURES = List.of(
             new Definition(TolkienStructures.HOBBIT_HOUSE, "tolkienmobs:ttmhouse_hobbit",
-                    List.of(TolkienBiomes.SHIRE), 24, 8, 193764821, 0),
+                    List.of(TolkienBiomes.SHIRE), 32, 8, 193764821, 0),
             new Definition(TolkienStructures.SHIRE_RUIN, "tolkienmobs:ttmruin_small",
                     List.of(TolkienBiomes.DAGORLAD), 24, 8, 193764821, 0),
             new Definition(TolkienStructures.CAVE, "tolkienmobs:cave",
@@ -44,10 +44,14 @@ public final class TolkienStructureProvider {
             site(TolkienStructures.DARK_TOWER, TolkienBiomes.MORDOR, 16, 6, 193764825,
                     new Layout(1, 1, Optional.empty(), Optional.of(TolkienStructures.WARGPIT))),
             site(TolkienStructures.GOLLUM_CAVE, TolkienBiomes.HITHAEGLIR, 16, 6, 193764826, Layout.top(-32)),
-            site(TolkienStructures.HOUSE_DESERT, TolkienBiomes.HARADWAITH, 24, 16, 193764827, Layout.houses()),
-            site(TolkienStructures.HOUSE_DWARF, TolkienBiomes.IRON_HILLS, 24, 16, 193764828, Layout.houses()),
-            site(TolkienStructures.HOUSE_ELVEN, TolkienBiomes.LORINAND, 24, 16, 193764829, Layout.houses()),
-            site(TolkienStructures.HOUSE_HUMAN, TolkienBiomes.GLADDEN, 24, 16, 193764830, Layout.houses()),
+            new Definition(TolkienStructures.HOUSE_DESERT, "tolkienmobs:ttmhouse_desert",
+                    List.of(TolkienBiomes.HARADWAITH), 32, 8, 193764827, 0),
+            new Definition(TolkienStructures.HOUSE_DWARF, "tolkienmobs:ttmhouse_dwarf",
+                    List.of(TolkienBiomes.IRON_HILLS), 32, 8, 193764828, 0),
+            new Definition(TolkienStructures.HOUSE_ELVEN, "tolkienmobs:ttmhouse_elven",
+                    List.of(TolkienBiomes.LORINAND), 32, 8, 193764829, 0),
+            new Definition(TolkienStructures.HOUSE_HUMAN, "tolkienmobs:ttmhouse_human",
+                    List.of(TolkienBiomes.GLADDEN), 32, 8, 193764830, 0),
             site(TolkienStructures.INN_DESERT, TolkienBiomes.HARADWAITH, 12, 6, 193764831, Layout.single()),
             site(TolkienStructures.RUIN_LARGE, TolkienBiomes.DAGORLAD, 4, 3, 193764832, Layout.single()),
             site(TolkienStructures.RUIN_SMALL, TolkienBiomes.DAGORLAD, 4, 3, 193764832, Layout.single()),
@@ -73,6 +77,11 @@ public final class TolkienStructureProvider {
                     below ? GenerationStep.Decoration.UNDERGROUND_STRUCTURES : GenerationStep.Decoration.SURFACE_STRUCTURES,
                     (below || definition.layout().flatMap(Layout::topOffset).isPresent()
                             || definition.layout().flatMap(Layout::companion).isPresent()) ? TerrainAdjustment.NONE : TerrainAdjustment.BEARD_THIN);
+            var village = TolkienVillageProvider.village(definition.key());
+            if (village.isPresent()) {
+                context.register(definition.key(), TolkienVillageProvider.create(settings, village.get(), pools));
+                continue;
+            }
             var pool = pools.getOrThrow(definition.poolKey());
             int depth = definition.branches().map(Branches::depth).orElse(1);
             if (definition.layout().isPresent()) {
@@ -89,8 +98,14 @@ public final class TolkienStructureProvider {
     }
 
     public static void bootstrapPools(BootstrapContext<StructureTemplatePool> context) {
+        TolkienVillageProvider.bootstrapRoadPools(context);
         var empty = context.lookup(Registries.TEMPLATE_POOL).getOrThrow(Pools.EMPTY);
         for (Definition definition : STRUCTURES) {
+            var village = TolkienVillageProvider.village(definition.key());
+            if (village.isPresent()) {
+                TolkienVillageProvider.bootstrapPools(context, village.get());
+                continue;
+            }
             context.register(definition.poolKey(), new StructureTemplatePool(empty,
                     List.of(Pair.of(StructurePoolElement.single(definition.template()), 1)),
                     StructureTemplatePool.Projection.RIGID));
@@ -111,6 +126,7 @@ public final class TolkienStructureProvider {
     public static void bootstrapSets(BootstrapContext<StructureSet> context) {
         var structures = context.lookup(Registries.STRUCTURE);
         for (Definition definition : STRUCTURES) {
+            if (TolkienVillageProvider.village(definition.key()).isPresent()) continue;
             // Old Shire ID stays loadable for saved chunks; warg pits are tower companions.
             // Ruins share one grid so the two sizes cannot generate too close together.
             if (List.of(TolkienStructures.SHIRE_RUIN, TolkienStructures.WARGPIT,
@@ -119,6 +135,7 @@ public final class TolkienStructureProvider {
                     new RandomSpreadStructurePlacement(definition.spacing(), definition.separation(),
                             RandomSpreadType.LINEAR, definition.salt())));
         }
+        TolkienVillageProvider.bootstrapSet(context);
         context.register(ResourceKey.create(Registries.STRUCTURE_SET,
                         ResourceLocation.fromNamespaceAndPath("tolkienmobs", "dagorlad_ruins")),
                 new StructureSet(List.of(StructureSet.entry(structures.getOrThrow(TolkienStructures.RUIN_LARGE)),
