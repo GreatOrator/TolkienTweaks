@@ -103,7 +103,7 @@ public class TolkienEventBusEvents {
         event.put(TolkienEntities.ENTITY_TTM_DWARF.get(), DwarfEntity.createAttributes().build());
         event.put(TolkienEntities.ENTITY_TTM_ELVES.get(), ElvesEntity.createAttributes().build());
         event.put(TolkienEntities.ENTITY_TTM_HOBBIT.get(), HobbitEntity.createAttributes().build());
-        event.put(TolkienEntities.ENTITY_TTM_SOUTHRON.get(), SouthronEntity.createAttributes().build());
+        event.put(TolkienEntities.ENTITY_TTM_SOUTHRON.get(), SouthronTraderEntity.createAttributes().build());
         event.put(TolkienEntities.ENTITY_TTM_ORC_TRADER.get(), OrcTraderEntity.createAttributes().build());
 
         // Hostile
