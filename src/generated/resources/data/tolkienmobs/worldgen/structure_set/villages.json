@@ -25,6 +25,10 @@
     {
       "structure": "tolkienmobs:ttmhouse_human",
       "weight": 1
+    },
+    {
+      "structure": "tolkienmobs:ttmhouse_orc",
+      "weight": 1
     }
   ]
 }
