@@ -25,14 +25,12 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 public class TrinketRecipeCategory implements IRecipeCategory<TrinketRecipe> {
     private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/trinkettable/trinket_gui.png");
     public static final ResourceLocation UID = TolkienMobsMain.resLoc("trinket");
-    private final IDrawable background;
     private final IDrawable icon;
 
     public static final RecipeType<TrinketRecipe> TRINKETTABLE_RECIPE_TYPE =
             new RecipeType<>(UID, TrinketRecipe.class);
 
     public TrinketRecipeCategory(IGuiHelper guiHelper) {
-        background = guiHelper.createDrawable(GUI, 0, 0, 176, 166);
         icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(TolkienBlocks.TRINKET_TABLE.get()));
     }
 
@@ -42,12 +40,20 @@ public class TrinketRecipeCategory implements IRecipeCategory<TrinketRecipe> {
     @Override
     public @NotNull Component getTitle() {return TrinketTableBlock.TextComponent;}
 
-    @SuppressWarnings("deprecation")
     @Override
-    public @NotNull IDrawable getBackground() {return background;}
+    public IDrawable getIcon() {
+        return this.icon;
+    }
 
     @Override
-    public @NotNull IDrawable getIcon() {return icon;}
+    public int getWidth() {
+        return 176;
+    }
+
+    @Override
+    public int getHeight() {
+        return 83;
+    }
 
     @Override @ParametersAreNonnullByDefault
     public void setRecipe(IRecipeLayoutBuilder builder, TrinketRecipe recipe, IFocusGroup focuses) {
