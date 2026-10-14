@@ -10,14 +10,14 @@
     "tolkienmobs:mirkwood_spooky",
     "tolkienmobs:old_forest",
     "tolkienmobs:shire",
-    "tolkienmobs:old_forest",
-    "tolkienmobs:firien",
     "tolkienmobs:mirkwood_spooky",
-    "tolkienmobs:gladden",
-    "tolkienmobs:lorinand",
-    "tolkienmobs:dagorlad",
+    "tolkienmobs:old_forest",
     "tolkienmobs:fangorn_forest",
     "tolkienmobs:shire",
-    "tolkienmobs:mirkwood"
+    "tolkienmobs:mirkwood",
+    "tolkienmobs:firien",
+    "tolkienmobs:gladden",
+    "tolkienmobs:lorinand",
+    "tolkienmobs:dagorlad"
   ]
 }
