@@ -49,7 +49,7 @@ public class FlyerMoveController extends MoveControl
 
                 if (!dragon.getLookControl().isLookingAtTarget())
                     dragon.getLookControl().setLookAt(wantedX, wantedY, wantedZ, dragon.getHeadRotSpeed(), 75);
-                if (y != 0) dragon.setYya(y > 0? speed : -speed);
+                dragon.setYya(Math.abs(y) < 0.1 ? 0 : y > 0 ? speed : -speed);
             }
             else
             {

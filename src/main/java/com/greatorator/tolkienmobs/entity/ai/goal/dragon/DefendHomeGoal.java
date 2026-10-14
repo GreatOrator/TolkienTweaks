@@ -41,6 +41,7 @@ public class DefendHomeGoal extends TargetGoal
     public void start()
     {
         super.start();
+        defender.setTarget(targetMob);
 
         // alert others!
         for (Mob mob : defender.level.getEntitiesOfClass(Mob.class, defender.getBoundingBox().inflate(TolkienMobsConfig.homeRadius), defender::isAlliedTo))
@@ -50,7 +51,7 @@ public class DefendHomeGoal extends TargetGoal
     @Override
     public boolean canContinueToUse()
     {
-        return defender.isWithinRestriction(targetMob.blockPosition()) && super.canContinueToUse();
+        return targetMob != null && defender.isWithinRestriction(targetMob.blockPosition()) && super.canContinueToUse();
     }
 
     @Override
