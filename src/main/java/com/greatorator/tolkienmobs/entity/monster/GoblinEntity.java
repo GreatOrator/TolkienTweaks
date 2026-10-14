@@ -93,7 +93,9 @@ public class GoblinEntity extends TolkienMonsterEntity implements GeoEntity {
     @Override
     public boolean doHurtTarget(Entity entity) {
         if (super.doHurtTarget(entity)) {
-            if (entity instanceof LivingEntity) {
+            long time = System.currentTimeMillis();
+            if (entity instanceof LivingEntity && time > nextAbilityUse) {
+                nextAbilityUse = time + coolDown;
                 int duration;
                 switch (level.getDifficulty()) {
                     case EASY:
