@@ -15,10 +15,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.ComponentItemHandler;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CoinPouchItem extends TolkienItem {
     public CoinPouchItem(Properties properties) {
@@ -50,42 +48,30 @@ public class CoinPouchItem extends TolkienItem {
 
     @Override
     public void inventoryTick(@NotNull ItemStack stack, @NotNull Level world, @NotNull Entity entity, int itemSlot, boolean isSelected) {
-        //if (world.getDayTime() % 20 == 0) return;
-        if (entity instanceof Player player && getActive(stack)) {
-            for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-                ItemStack coinStack = player.getInventory().getItem(i);
-                if (isValidItem(coinStack))
-                    addCoinToInventory(stack, coinStack);
-            }
+        if (world.isClientSide() || !(entity instanceof Player player) || !getActive(stack)) return;
+        boolean changed = getItemHandler(stack).convertCoins();
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            ItemStack coinStack = player.getInventory().getItem(i);
+            if (!isValidItem(coinStack)) continue;
+            int before = coinStack.getCount();
+            addCoinToInventory(stack, coinStack);
+            changed |= before != coinStack.getCount();
         }
+        if (changed) player.getInventory().setChanged();
     }
 
     public static ItemStack addCoinToInventory(ItemStack coinHolder, ItemStack coin) {
-        ComponentItemHandler handler = new ComponentItemHandler(coinHolder, TolkienDataComponents.ITEMSTACK_HANDLER.get(), CoinPouchContainer.SLOTS);
-        if (handler == null) return coin;
-        List<Integer> emptySlots = new ArrayList<>();
-        for (int i = 0; i < handler.getSlots(); i++) {
-            ItemStack stackInSlot = handler.getStackInSlot(i);
-            if (stackInSlot.isEmpty()) emptySlots.add(i);
-            if (!stackInSlot.isEmpty() && ItemStack.isSameItemSameComponents(stackInSlot, coin)) {
-                int j = stackInSlot.getCount() + coin.getCount();
-                int maxSize = 64;
-                if (j <= maxSize) {
-                    coin.setCount(0);
-                    stackInSlot.setCount(j);
-                    handler.setStackInSlot(i, stackInSlot);
-                } else if (stackInSlot.getCount() < maxSize) {
-                    coin.shrink(maxSize - stackInSlot.getCount());
-                    stackInSlot.setCount(maxSize);
-                    handler.setStackInSlot(i, stackInSlot);
-                }
-                if (coin.isEmpty()) {
-                    return coin;
-                }
-            }
+        if (!(coinHolder.getItem() instanceof CoinPouchItem pouch) || !isValidItem(coin)) return coin;
+        CoinPouchItemStackHandler handler = pouch.getItemHandler(coinHolder);
+        handler.convertCoins();
+        while (!coin.isEmpty()) {
+            int before = coin.getCount();
+            ItemStack remainder = ItemHandlerHelper.insertItemStacked(handler, coin, false);
+            coin.setCount(remainder.getCount());
+            boolean converted = handler.convertCoins();
+            // An exchange can free slots for the rest of a large pickup.
+            if (!converted || coin.getCount() == before) break;
         }
-        if (emptySlots.isEmpty()) return coin;
-        handler.insertItem(emptySlots.get(0), coin.split(coin.getCount()), false);
         return coin;
     }
 
