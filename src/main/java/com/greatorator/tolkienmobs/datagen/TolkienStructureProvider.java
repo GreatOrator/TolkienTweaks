@@ -52,6 +52,8 @@ public final class TolkienStructureProvider {
                     List.of(TolkienBiomes.LORINAND), 32, 8, 193764829, 0),
             new Definition(TolkienStructures.HOUSE_HUMAN, "tolkienmobs:ttmhouse_human",
                     List.of(TolkienBiomes.GLADDEN), 32, 8, 193764830, 0),
+            new Definition(TolkienStructures.HOUSE_ORC, "tolkienmobs:ttmhouse_orc",
+                    List.of(TolkienBiomes.MORDOR), 32, 8, 193764837, 0),
             site(TolkienStructures.INN_DESERT, TolkienBiomes.HARADWAITH, 12, 6, 193764831, Layout.single()),
             site(TolkienStructures.RUIN_LARGE, TolkienBiomes.DAGORLAD, 4, 3, 193764832, Layout.single()),
             site(TolkienStructures.RUIN_SMALL, TolkienBiomes.DAGORLAD, 4, 3, 193764832, Layout.single()),
@@ -73,15 +75,15 @@ public final class TolkienStructureProvider {
         var pools = context.lookup(Registries.TEMPLATE_POOL);
         for (Definition definition : STRUCTURES) {
             boolean below = definition.underground() || definition.layout().flatMap(Layout::topOffset).orElse(0) < 0;
+            var village = TolkienVillageProvider.village(definition.key());
+            if (village.isPresent()) {
+                context.register(definition.key(), TolkienVillageProvider.create(village.get(), biomes, pools));
+                continue;
+            }
             var settings = new Structure.StructureSettings(biomes.getOrThrow(definition.biomeTag()), Map.of(),
                     below ? GenerationStep.Decoration.UNDERGROUND_STRUCTURES : GenerationStep.Decoration.SURFACE_STRUCTURES,
                     (below || definition.layout().flatMap(Layout::topOffset).isPresent()
                             || definition.layout().flatMap(Layout::companion).isPresent()) ? TerrainAdjustment.NONE : TerrainAdjustment.BEARD_THIN);
-            var village = TolkienVillageProvider.village(definition.key());
-            if (village.isPresent()) {
-                context.register(definition.key(), TolkienVillageProvider.create(settings, village.get(), pools));
-                continue;
-            }
             var pool = pools.getOrThrow(definition.poolKey());
             int depth = definition.branches().map(Branches::depth).orElse(1);
             if (definition.layout().isPresent()) {

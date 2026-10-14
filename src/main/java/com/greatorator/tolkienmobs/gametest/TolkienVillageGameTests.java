@@ -1,18 +1,12 @@
 package com.greatorator.tolkienmobs.gametest;
 
 import com.greatorator.tolkienmobs.datagen.TolkienStructureProvider;
-import com.greatorator.tolkienmobs.datagen.TolkienVillageTemplateProvider;
 import com.greatorator.tolkienmobs.datagen.TolkienVillageProvider;
+import com.greatorator.tolkienmobs.datagen.TolkienVillageTemplateProvider;
 import com.greatorator.tolkienmobs.datagen.tags.TolkienStructureTagProvider;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.Lifecycle;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.MappedRegistry;
-import net.minecraft.core.RegistrationInfo;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.PackOutput;
@@ -22,7 +16,6 @@ import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.level.ChunkPos;
@@ -37,8 +30,8 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.structures.JigsawStructure;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 import java.nio.file.Files;
@@ -60,7 +53,7 @@ public class TolkienVillageGameTests {
         var normal = (NoiseBasedChunkGenerator) WorldPresets.getNormalOverworld(level.registryAccess()).generator();
         var settings = normal.generatorSettings();
         var villageSet = lookup.lookupOrThrow(Registries.STRUCTURE_SET).getOrThrow(TolkienVillageProvider.VILLAGES).value();
-        helper.assertTrue(villageSet.structures().size() == 5, "All village styles must share one placement grid");
+        helper.assertTrue(villageSet.structures().size() == 6, "All village styles must share one placement grid");
         helper.assertTrue(lookup.lookupOrThrow(Registries.STRUCTURE_SET).listElements().noneMatch(holder ->
                 TolkienVillageProvider.VILLAGES_BY_STYLE.stream().anyMatch(village -> village.structure().location().equals(holder.key().location()))),
                 "Old independent house placement sets must no longer be generated");
@@ -123,7 +116,7 @@ public class TolkienVillageGameTests {
         new TolkienVillageTemplateProvider(output, new ExistingFileHelper(java.util.List.of(), Set.of("tolkienmobs"), true, null, null)).run(CachedOutput.NO_CACHE).join();
         new TolkienStructureTagProvider(output, CompletableFuture.completedFuture(fixtures.lookup())).run(CachedOutput.NO_CACHE).join();
         var villageTag = com.google.gson.JsonParser.parseString(Files.readString(directory.resolve("data/minecraft/tags/worldgen/structure/village.json"))).getAsJsonObject();
-        helper.assertTrue(villageTag.getAsJsonArray("values").size() == 5, "Village recognition tag must contain five structures");
+        helper.assertTrue(villageTag.getAsJsonArray("values").size() == 6, "Village recognition tag must contain six structures");
         for (var village : TolkienVillageProvider.VILLAGES_BY_STYLE) {
             var path = directory.resolve("data/tolkienmobs/structure/" + village.houseTemplate().getPath() + ".nbt");
             var tag = NbtIo.readCompressed(path, NbtAccounter.unlimitedHeap());
@@ -141,7 +134,16 @@ public class TolkienVillageGameTests {
         try (var files = Files.walk(directory)) {
             templatesWritten = (int) files.filter(path -> path.toString().endsWith(".nbt")).count();
         }
-        helper.assertTrue(templatesWritten == 32, "Datagen must write five houses and all 27 roads");
+        helper.assertTrue(templatesWritten == 51, "Datagen must write six houses, 18 residents and all 27 roads");
+        for (var village : TolkienVillageProvider.VILLAGES_BY_STYLE) for (String name : TolkienVillageProvider.VILLAGERS) {
+            var path = directory.resolve("data/tolkienmobs/structure/" + TolkienVillageProvider.villagerTemplate(village, name).getPath() + ".nbt");
+            var resident = NbtIo.readCompressed(path, NbtAccounter.unlimitedHeap());
+            helper.assertTrue(resident.equals(TolkienVillageTemplateProvider.prepareVillager(village, name, templates(helper))), "Resident resource preparation mismatch");
+            for (var entity : resident.getList("entities", Tag.TAG_COMPOUND)) {
+                helper.assertTrue(((net.minecraft.nbt.CompoundTag) entity).getCompound("nbt").getString("id").equals(village.resident().toString()),
+                        "Resident template must hold " + village.resident());
+            }
+        }
         for (String style : java.util.List.of("plains", "desert")) for (var street : TolkienVillageProvider.streets(style)) {
             var path = directory.resolve("data/tolkienmobs/structure/" + street.template().getPath() + ".nbt");
             var road = NbtIo.readCompressed(path, NbtAccounter.unlimitedHeap());
@@ -207,7 +209,11 @@ public class TolkienVillageGameTests {
             }
             helper.assertTrue(paths > 20 && water > 0 && bells > 0 && beds > 0 && jigsaws == 0,
                     village.style() + " missing infrastructure: " + paths + "/" + water + "/" + bells + "/" + beds + "/" + jigsaws);
-            helper.assertTrue(!level.getEntitiesOfClass(Villager.class, AABB.of(box).inflate(5)).isEmpty(), "Vanilla residents must spawn");
+            var residents = level.getEntitiesOfClass(Villager.class, AABB.of(box).inflate(5));
+            helper.assertTrue(!residents.isEmpty(), village.style() + " residents must spawn");
+            helper.assertTrue(residents.stream().anyMatch(entity -> entity.getType()
+                            == net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.get(village.resident())),
+                    village.style() + " residents must be " + village.resident());
         }
         helper.succeed();
     }
@@ -237,6 +243,10 @@ public class TolkienVillageGameTests {
         for (var village : TolkienVillageProvider.VILLAGES_BY_STYLE) {
             helper.getLevel().getStructureManager().getOrCreate(village.houseTemplate()).load(
                     net.minecraft.core.registries.BuiltInRegistries.BLOCK.asLookup(), TolkienVillageTemplateProvider.prepareHouse(village, templates(helper)));
+        }
+        for (var village : TolkienVillageProvider.VILLAGES_BY_STYLE) for (String name : TolkienVillageProvider.VILLAGERS) {
+            helper.getLevel().getStructureManager().getOrCreate(TolkienVillageProvider.villagerTemplate(village, name)).load(
+                    net.minecraft.core.registries.BuiltInRegistries.BLOCK.asLookup(), TolkienVillageTemplateProvider.prepareVillager(village, name, templates(helper)));
         }
         for (String style : java.util.List.of("plains", "desert")) for (var street : TolkienVillageProvider.streets(style)) {
             helper.getLevel().getStructureManager().getOrCreate(street.template()).load(
