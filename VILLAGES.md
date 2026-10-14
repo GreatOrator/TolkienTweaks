@@ -1,6 +1,6 @@
 # Tolkien villages
 
-The six house structure IDs now start villages using Minecraft's jigsaw village generator. Each village has Tolkien houses, paths with short driveways, a well or fountain with a bell, farms, decorations, animals, and vanilla villagers. Existing Tolkien inhabitants saved in the houses are retained.
+The six house structure IDs now start villages using Minecraft's jigsaw village generator. Each village has Tolkien houses, paths with short driveways, a well or fountain with a bell, farms, decorations, animals, and the matching Tolkien NPC as its residents instead of vanilla villagers. Existing Tolkien inhabitants saved in the houses are retained.
 
 | House style | Biome | Paths, farms, and decorations |
 | --- | --- | --- |
@@ -10,6 +10,8 @@ The six house structure IDs now start villages using Minecraft's jigsaw village 
 | Hobbit | Shire | Vanilla plains village |
 | Human | Gladden Fields | Vanilla plains village |
 | Orc | Mordor | Vanilla desert village |
+
+Each style's residents are the mod's own villager-style NPC, chosen by the `resident` field of its `Village` entry: desert/Haradwaith uses Southron, dwarf uses Dwarf, elven uses Elves, hobbit uses Hobbit, human uses Human, and orc uses Orc. Wandering trader variants are never used. Datagen copies vanilla's three villager templates (`nitwit`, `baby`, `unemployed`, weights 1/1/10) once per style into `tolkienmobs:village/<style>/villagers/` and swaps the stored entity for that NPC. Every jigsaw socket that asks vanilla for a villager - your houses' resident connectors as well as vanilla town centers, farms and decorations - is redirected there through a pool alias.
 
 ## Generate the resources after merging
 
@@ -27,7 +29,8 @@ Villages appear in newly generated chunks. Existing buildings in explored chunks
 ## Change biomes and village frequency
 
 - `TolkienStructureProvider.STRUCTURES` lists the allowed biomes for each house/village ID. These also generate the biome tags.
-- `TolkienVillageProvider.VILLAGES_BY_STYLE` chooses each village's house and vanilla infrastructure style.
+- `TolkienVillageProvider.VILLAGES_BY_STYLE` chooses each village's house, vanilla infrastructure style, and the `resident` NPC that replaces vanilla villagers.
+- `TolkienVillageProvider.VILLAGERS` lists the vanilla villager templates copied for every style; keep the names and the weights in `bootstrapPools` in step with vanilla.
 - `TolkienVillageProvider.bootstrapSet` controls the shared village placement grid: spacing **32 chunks**, separation **8 chunks**. This matches vanilla village frequency settings. These settings describe candidate start chunks; biome suitability still controls whether a village generates.
 - `TolkienVillageProvider.SIZE` controls jigsaw expansion depth; `MAX_DISTANCE` limits expansion from the center. Increasing distance must also respect Minecraft's structure size limit, including terrain adjustment padding.
 - `bootstrapPools` controls the house/farm weights and town-center template. Plains styles use a fountain; desert uses a well.
@@ -45,7 +48,7 @@ Keep editing the original templates in `src/main/resources/data/tolkienmobs/stru
 - `ttmhouse_human.nbt`
 - `ttmhouse_orc.nbt`
 
-Then run datagen again. `TolkienVillageTemplateProvider` updates the older NBT format and creates village copies, adding an entrance porch and a resident connector. It also clears captured bed occupancy flags. Blocks and saved inhabitants inside the original house are retained.
+Then run datagen again. `TolkienVillageTemplateProvider` updates the older NBT format and creates village copies, adding an entrance porch and a resident connector, plus the three resident templates each style needs. It also clears captured bed occupancy flags. Blocks and saved inhabitants inside the original house are retained.
 
 If you move an entrance or resize a house, update its `Village` entry in `TolkienVillageProvider`:
 

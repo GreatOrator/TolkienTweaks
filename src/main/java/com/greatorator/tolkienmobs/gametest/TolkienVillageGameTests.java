@@ -134,7 +134,16 @@ public class TolkienVillageGameTests {
         try (var files = Files.walk(directory)) {
             templatesWritten = (int) files.filter(path -> path.toString().endsWith(".nbt")).count();
         }
-        helper.assertTrue(templatesWritten == 33, "Datagen must write six houses and all 27 roads");
+        helper.assertTrue(templatesWritten == 51, "Datagen must write six houses, 18 residents and all 27 roads");
+        for (var village : TolkienVillageProvider.VILLAGES_BY_STYLE) for (String name : TolkienVillageProvider.VILLAGERS) {
+            var path = directory.resolve("data/tolkienmobs/structure/" + TolkienVillageProvider.villagerTemplate(village, name).getPath() + ".nbt");
+            var resident = NbtIo.readCompressed(path, NbtAccounter.unlimitedHeap());
+            helper.assertTrue(resident.equals(TolkienVillageTemplateProvider.prepareVillager(village, name, templates(helper))), "Resident resource preparation mismatch");
+            for (var entity : resident.getList("entities", Tag.TAG_COMPOUND)) {
+                helper.assertTrue(((net.minecraft.nbt.CompoundTag) entity).getCompound("nbt").getString("id").equals(village.resident().toString()),
+                        "Resident template must hold " + village.resident());
+            }
+        }
         for (String style : java.util.List.of("plains", "desert")) for (var street : TolkienVillageProvider.streets(style)) {
             var path = directory.resolve("data/tolkienmobs/structure/" + street.template().getPath() + ".nbt");
             var road = NbtIo.readCompressed(path, NbtAccounter.unlimitedHeap());
@@ -200,7 +209,11 @@ public class TolkienVillageGameTests {
             }
             helper.assertTrue(paths > 20 && water > 0 && bells > 0 && beds > 0 && jigsaws == 0,
                     village.style() + " missing infrastructure: " + paths + "/" + water + "/" + bells + "/" + beds + "/" + jigsaws);
-            helper.assertTrue(!level.getEntitiesOfClass(Villager.class, AABB.of(box).inflate(5)).isEmpty(), "Vanilla residents must spawn");
+            var residents = level.getEntitiesOfClass(Villager.class, AABB.of(box).inflate(5));
+            helper.assertTrue(!residents.isEmpty(), village.style() + " residents must spawn");
+            helper.assertTrue(residents.stream().anyMatch(entity -> entity.getType()
+                            == net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.get(village.resident())),
+                    village.style() + " residents must be " + village.resident());
         }
         helper.succeed();
     }
@@ -230,6 +243,10 @@ public class TolkienVillageGameTests {
         for (var village : TolkienVillageProvider.VILLAGES_BY_STYLE) {
             helper.getLevel().getStructureManager().getOrCreate(village.houseTemplate()).load(
                     net.minecraft.core.registries.BuiltInRegistries.BLOCK.asLookup(), TolkienVillageTemplateProvider.prepareHouse(village, templates(helper)));
+        }
+        for (var village : TolkienVillageProvider.VILLAGES_BY_STYLE) for (String name : TolkienVillageProvider.VILLAGERS) {
+            helper.getLevel().getStructureManager().getOrCreate(TolkienVillageProvider.villagerTemplate(village, name)).load(
+                    net.minecraft.core.registries.BuiltInRegistries.BLOCK.asLookup(), TolkienVillageTemplateProvider.prepareVillager(village, name, templates(helper)));
         }
         for (String style : java.util.List.of("plains", "desert")) for (var street : TolkienVillageProvider.streets(style)) {
             helper.getLevel().getStructureManager().getOrCreate(street.template()).load(

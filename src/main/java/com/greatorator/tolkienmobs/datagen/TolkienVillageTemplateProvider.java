@@ -45,7 +45,12 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
     public CompletableFuture<?> run(CachedOutput cache) {
         return CompletableFuture.runAsync(() -> {
             try {
-                for (var village : TolkienVillageProvider.VILLAGES_BY_STYLE) write(cache, village.houseTemplate(), prepareHouse(village, templates));
+                for (var village : TolkienVillageProvider.VILLAGES_BY_STYLE) {
+                    write(cache, village.houseTemplate(), prepareHouse(village, templates));
+                    for (String name : TolkienVillageProvider.VILLAGERS) {
+                        write(cache, TolkienVillageProvider.villagerTemplate(village, name), prepareVillager(village, name, templates));
+                    }
+                }
                 for (String style : java.util.List.of("plains", "desert")) {
                     for (var street : TolkienVillageProvider.streets(style)) write(cache, street.template(), prepareRoad(street, templates));
                 }
@@ -78,6 +83,17 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
         addConnector(house, village.residentFloor().offset(shift), "up_north", "minecraft:bottom",
                 "minecraft:village/" + village.vanillaStyle() + "/villagers", null);
         return house;
+    }
+
+    /** Vanilla's villager template with the entity swapped for this village's own NPC. */
+    public static CompoundTag prepareVillager(TolkienVillageProvider.Village village, String name,
+                                              TemplateSource templates) throws IOException {
+        CompoundTag villager = read(ResourceLocation.withDefaultNamespace(
+                "village/" + village.vanillaStyle() + "/villagers/" + name), templates);
+        for (var tag : villager.getList("entities", Tag.TAG_COMPOUND)) {
+            ((CompoundTag) tag).getCompound("nbt").putString("id", village.resident().toString());
+        }
+        return villager;
     }
 
     private void write(CachedOutput cache, net.minecraft.resources.ResourceLocation name, CompoundTag tag) throws IOException {

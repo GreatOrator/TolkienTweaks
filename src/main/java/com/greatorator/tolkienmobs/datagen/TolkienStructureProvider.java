@@ -77,7 +77,7 @@ public final class TolkienStructureProvider {
             boolean below = definition.underground() || definition.layout().flatMap(Layout::topOffset).orElse(0) < 0;
             var village = TolkienVillageProvider.village(definition.key());
             if (village.isPresent()) {
-                context.register(definition.key(), TolkienVillageProvider.create(village.get(), pools));
+                context.register(definition.key(), TolkienVillageProvider.create(village.get(), biomes, pools));
                 continue;
             }
             var settings = new Structure.StructureSettings(biomes.getOrThrow(definition.biomeTag()), Map.of(),
