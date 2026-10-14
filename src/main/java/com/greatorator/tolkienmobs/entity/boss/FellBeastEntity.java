@@ -26,6 +26,7 @@ import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
@@ -65,6 +66,7 @@ public class FellBeastEntity extends DragonEntity {
 
     public final LerpedFloatUtility flightTimer = LerpedFloatUtility.unit();
     public final LerpedFloatUtility breathTimer = LerpedFloatUtility.unit();
+    private int fireballCooldown;
 
     public FellBeastEntity(EntityType<? extends Monster> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -100,6 +102,12 @@ public class FellBeastEntity extends DragonEntity {
     }
 
     @Override
+    protected void updateWeaponGoal() {
+        // This entity owns its animated melee/breath goal; the humanoid melee goal would override it.
+        scheduleWeaponGoalUpdate = false;
+    }
+
+    @Override
     public EntityHandler<DragonEntity> getSerializer() {
         return SERIALIZER;
     }
@@ -108,12 +116,6 @@ public class FellBeastEntity extends DragonEntity {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(BREATHING_FIRE, false);
-    }
-
-    @Override
-    public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
-        if (level.isClientSide && key.equals(BREATHING_FIRE) && getBreathingFire());
-        else super.onSyncedDataUpdated(key);
     }
 
     public void setBreathingFire(boolean breathingFire) {
@@ -139,7 +141,7 @@ public class FellBeastEntity extends DragonEntity {
 
     @Override
     public Attribute[] getScaledAttributes() {
-        return (Attribute[]) ArrayUtils.addAll(super.getScaledAttributes(), ATTACK_KNOCKBACK);
+        return (Attribute[]) ArrayUtils.addAll(super.getScaledAttributes(), ATTACK_KNOCKBACK.value());
     }
 
     @Override
@@ -151,15 +153,26 @@ public class FellBeastEntity extends DragonEntity {
     public void aiStep() {
         super.aiStep();
         flightTimer.add(isUsingFlyingNavigator() ? 0.1f : -0.085f);
+        if (!level.isClientSide && getBreathingFire()
+                && (getTarget() == null || !getTarget().isAlive() || !isWithinRestriction(getTarget().blockPosition()))) {
+            setBreathingFire(false);
+        }
         breathTimer.add(getBreathingFire() ? 0.15f : -0.2f);
-
         if (!level.isClientSide) {
-
-            if (getBreathingFire() && getControllingPlayer() == null && getTarget() == null)
-                setBreathingFire(false);
-
-            if (breathTimer.get() == 1) {
-                level.addFreshEntity(new FellBeastFireballEntity(this, this.level));
+            if (fireballCooldown > 0) fireballCooldown--;
+            if (getBreathingFire() && breathTimer.get() >= 1 && fireballCooldown == 0) {
+                LivingEntity target = getTarget();
+                if (target != null && hasLineOfSight(target)) {
+                    Vec3 mouth = getApproximateMouthPos();
+                    Vec3 aim = target.getEyePosition().subtract(mouth);
+                    FellBeastFireballEntity fireball = new FellBeastFireballEntity(this, level);
+                    fireball.setPos(mouth);
+                    fireball.shoot(aim.x, aim.y, aim.z, 1.5F, 1.0F);
+                    fireball.pickup = AbstractArrow.Pickup.DISALLOWED;
+                    level.addFreshEntity(fireball);
+                    // A charged breath must not create an unlaunched projectile every tick.
+                    fireballCooldown = 10;
+                }
             }
         }
     }
@@ -170,7 +183,8 @@ public class FellBeastEntity extends DragonEntity {
             double distFromTarget = distanceToSqr(target);
             double degrees = Math.atan2(target.getZ() - getZ(), target.getX() - getX()) * (180 / Math.PI) - 90;
             double headAngle = Math.abs(Mth.wrapDegrees(degrees - yHeadRot));
-            return (!isAtHome() && (distFromTarget > 100 || target.getY() - getY() > 3 || isUsingFlyingNavigator()) && headAngle < 30 && canBreatheFire());
+            return (distFromTarget > 100 || target.getY() - getY() > 3 || isUsingFlyingNavigator())
+                    && headAngle < 30 && hasLineOfSight(target) && canBreatheFire();
         }
         return false;
     }
@@ -257,7 +271,7 @@ public class FellBeastEntity extends DragonEntity {
 
     /** Goals */
     class DragonAttackGoal extends AnimatedGoal {
-        private FellBeastEntity entity;
+        private final FellBeastEntity entity;
 
         boolean animationPlaying;
         int ticksUntilNextAttack;
@@ -275,15 +289,18 @@ public class FellBeastEntity extends DragonEntity {
 
         @Override
         public void start() {
-            float test;
+            entity.setAggressive(true);
         }
+
+        @Override
+        public boolean requiresUpdateEveryTick() { return true; }
 
         @Override
         public boolean canUse() {
             LivingEntity target = getTarget();
             if (target != null && target.isAlive()) {
                 if (!isWithinRestriction(target.blockPosition())) return false;
-                return TargetingConditions.forCombat().test(null, target);
+                return TargetingConditions.forCombat().test(entity, target);
             }
             return false;
         }
@@ -295,7 +312,7 @@ public class FellBeastEntity extends DragonEntity {
                 if (!isWithinRestriction(target.blockPosition())) {
                     return false;
                 }
-                return TargetingConditions.forCombat().test(null, target);
+                return TargetingConditions.forCombat().test(entity, target);
             }
             return false;
         }
@@ -303,9 +320,20 @@ public class FellBeastEntity extends DragonEntity {
         @Override
         public void tick() {
             LivingEntity target = getTarget();
+            if (target == null || !target.isAlive() || !isWithinRestriction(target.blockPosition())) {
+                stop();
+                return;
+            }
             double distFromTarget = distanceToSqr(target);
             boolean isBreathingFire = getBreathingFire();
             boolean canSeeTarget = getSensing().hasLineOfSight(target);
+            if (animationPlaying) {
+                if (super.canContinueToUse()) super.tick();
+                else {
+                    super.stop();
+                    animationPlaying = false;
+                }
+            }
             if (attackIsQueued) {
                 if (this.attackQueueTimer == queuedAttackTimer) {
                     attackQueueTimer = 0;
@@ -315,15 +343,6 @@ public class FellBeastEntity extends DragonEntity {
                     attackQueueTimer++;
                 }
             } else {
-
-                if (animationPlaying) {
-                    if (super.canContinueToUse()) {
-                        super.tick();
-                    } else {
-                        super.stop();
-                        animationPlaying = false;
-                    }
-                }
 
                 this.ticksUntilNextAttack = Math.max(this.ticksUntilNextAttack - 1, 0);
 
@@ -347,7 +366,7 @@ public class FellBeastEntity extends DragonEntity {
 
             if (getNavigation().isDone()) {
                 boolean isFlyingTarget = target instanceof DragonEntity && ((DragonEntity) target).isUsingFlyingNavigator();
-                double y = target.getY() + (!isFlyingTarget && getRandom().nextDouble() > 0.1 ? 8 : 0);
+                double y = target.getY() + (isUsingFlyingNavigator() && !isFlyingTarget ? 8 : 0);
                 getNavigation().moveTo(target.getX(), y, target.getZ(), !isUsingFlyingNavigator() && isBreathingFire ? 0.8d : 1.3d);
             }
 
@@ -356,12 +375,16 @@ public class FellBeastEntity extends DragonEntity {
         @Override
         public void stop() {
             LivingEntity livingentity = this.entity.getTarget();
-            if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(livingentity)) {
+            if (livingentity == null || !livingentity.isAlive() || !isWithinRestriction(livingentity.blockPosition())
+                    || !EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(livingentity)) {
                 this.entity.setTarget((LivingEntity) null);
             }
             this.entity.setAggressive(false);
             this.entity.getNavigation().stop();
             this.entity.setBreathingFire(false);
+            attackIsQueued = false;
+            attackQueueTimer = 0;
+            animationPlaying = false;
             super.stop();
         }
 
