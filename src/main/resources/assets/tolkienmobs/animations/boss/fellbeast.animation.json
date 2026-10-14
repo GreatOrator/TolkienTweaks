@@ -2904,10 +2904,10 @@
 					},
 					"position": {
 						"0.0": {
-							"vector": [0, "math.cos((query.anim_time -1) * 432/3) *15", 0]
+							"vector": [0, "math.cos((query.anim_time -1) * 432/3) *3", 0]
 						},
 						"2.48": {
-							"vector": [0, "math.cos((query.anim_time -1) * 432/3) *15", 0]
+							"vector": [0, "math.cos((query.anim_time -1) * 432/3) *3", 0]
 						}
 					}
 				},

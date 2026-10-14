@@ -239,6 +239,20 @@ public class FellBeastEntity extends DragonEntity {
         return super.canAddPassenger(passenger);
     }
 
+    /**
+     * The seats are the model's own rider bones (assets/tolkienmobs/geo/boss/fellbeast.geo.json): rider1
+     * at model xyz (0, 52.5, -31) and rider2 at (0, 52.5, -10). The model is drawn at 16 units to the block
+     * and FellBeastRender scales it up 1.5x, so both bones are 52.5 / 16 * 1.5 = 4.921875 blocks above the
+     * beast's feet. The model's front is -Z while an entity's front is +Z at yaw 0, so rider1 sits 31 / 16
+     * * 1.5 = 2.90625 blocks ahead of the beast and rider2 0.9375 blocks ahead.
+     */
+    @Override
+    public Vec3 getRiderSeatOffset(int passengerIndex) {
+        return passengerIndex == 0
+                ? new Vec3(0.0D, 4.921875D, 2.90625D)
+                : new Vec3(0.0D, 4.921875D, 0.9375D);
+    }
+
     @Override
     public int getMaxPassengers() {
         return 1;
