@@ -1090,7 +1090,11 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
             if (this.getDeltaMovement().length() !=0 && event.getAnimatable().isAggressive()) {
                 switch (navigationType) {
                     case GROUND -> event.getController().setAnimation(RawAnimation.begin().thenPlay("walk_fast"));
-                    case FLYING -> event.getController().setAnimation(RawAnimation.begin().thenPlay("fly_fast"));
+                    // No fly_fast animation ships with the fellbeast's animation file. Asking for one anyway
+                    // made GeckoLib log "Unable to find animation" and leave the movement controller with
+                    // nothing to play, freezing the wings mid-flap for as long as the beast fought on the
+                    // wing, so an aggressive flyer keeps the normal flight animation.
+                    case FLYING -> event.getController().setAnimation(RawAnimation.begin().thenPlay("fly"));
                     case SWIMMING-> event.getController().setAnimation(RawAnimation.begin().thenPlay("swim_fast"));
                 }
                 return PlayState.CONTINUE;
