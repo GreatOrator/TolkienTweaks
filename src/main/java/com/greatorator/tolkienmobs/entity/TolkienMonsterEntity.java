@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.entity;
 
-import com.greatorator.tolkienmobs.entity.ai.goal.SwitchCombatGoal;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;

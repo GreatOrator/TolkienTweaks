@@ -30,8 +30,6 @@ import com.greatorator.tolkienmobs.particle.provider.TolkienParticleProvider;
 import com.greatorator.tolkienmobs.util.GeneralUtility;
 import com.greatorator.tolkienmobs.util.TolkienItemProperties;
 import com.greatorator.tolkienmobs.world.registration.TolkienOverworldRegion;
-import terrablender.api.Regions;
-import terrablender.api.SurfaceRuleManager;
 import com.greatorator.tolkienmobs.world.registration.TolkienSurfaceRules;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -65,6 +63,8 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import org.slf4j.Logger;
+import terrablender.api.Regions;
+import terrablender.api.SurfaceRuleManager;
 
 import java.util.Locale;
 
@@ -290,6 +290,8 @@ public class TolkienMobsMain {
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_HOBBIT.get(), HobbitRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_SOUTHRON.get(), SouthronRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_ORC_TRADER.get(), OrcTraderRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_ORC.get(), OrcRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_SOUTHRON_NPC.get(), SouthronNpcRender::new);
 
                 // Projectile
             EntityRenderers.register(TolkienEntities.AMMO_BOULDER.get(), BoulderRender::new);

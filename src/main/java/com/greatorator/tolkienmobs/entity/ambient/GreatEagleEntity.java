@@ -1,11 +1,7 @@
 package com.greatorator.tolkienmobs.entity.ambient;
 
 import com.greatorator.tolkienmobs.entity.TolkienFlyingAmbientEntity;
-import com.greatorator.tolkienmobs.entity.ai.goal.EagleDiveAttackGoal;
-import com.greatorator.tolkienmobs.entity.ai.goal.LandBirdGoal;
-import com.greatorator.tolkienmobs.entity.ai.goal.RandomGlideGoal;
-import com.greatorator.tolkienmobs.entity.ai.goal.RestrictedFlyingGoal;
-import com.greatorator.tolkienmobs.entity.ai.goal.StartFlyingBirdGoal;
+import com.greatorator.tolkienmobs.entity.ai.goal.*;
 import com.greatorator.tolkienmobs.entity.passive.AurochEntity;
 import com.greatorator.tolkienmobs.entity.passive.GoatEntity;
 import com.greatorator.tolkienmobs.handler.interfaces.CommonTraits;
@@ -30,7 +26,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.MoveToBlockGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomFlyingGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
