@@ -841,19 +841,31 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
         }
     }
 
+    /**
+     * Seat for a rider, in this beast's local space and in blocks: +X is its left, +Y is up from between
+     * its feet and +Z is the direction it faces. Defaults to the top of the hitbox, which is the seat
+     * vanilla gives a rider on an entity with no saddle data of its own (EntityAttachment.PASSENGER falls
+     * back to the dimensions' height). Subclasses whose model has a rider bone of its own override this
+     * with that bone's model space offset converted into entity space: front is -Z in a model, so X and Z
+     * are both negated, and any scale the renderer applies to the model has to be included because the
+     * rider is a separate entity sitting on the drawn model, not on the hitbox.
+     */
+    public Vec3 getRiderSeatOffset(int passengerIndex) {
+        return new Vec3(0.0D, getBbHeight(), 0.0D);
+    }
+
     @Override
     public void positionRider(Entity passenger, Entity.MoveFunction callback) {
-        // The seat offset must stay relative to this beast. getPassengerRidingPosition already returns an
-        // absolute world position, so rotating it and then adding getX()/getY()/getZ() again put every rider
-        // (the Witch King included) roughly twice the beast's coordinates away from it - far enough that a
-        // distant spawn looked like a beast with no rider at all.
-        Vec3 seat = this.getPassengerRidingPosition(passenger).subtract(this.position());
-        Vec3 rotated = MathUtility.getYawVec(this.yBodyRot, seat.x, seat.z).add(0.0D, seat.y, 0.0D);
+        // The seat has to be built relative to this beast. getPassengerRidingPosition is no use here: it
+        // returns an absolute world position, yaw rotated about the beast's yRot rather than the yBodyRot
+        // the model is drawn with, so the offset comes from getRiderSeatOffset and is rotated here.
+        Vec3 seat = this.getRiderSeatOffset(Math.max(0, this.getPassengers().indexOf(passenger)));
+        Vec3 offset = MathUtility.getYawVec(this.yBodyRot, seat.x, seat.z).add(0.0D, seat.y, 0.0D);
         Vec3 riderOffset = passenger.getVehicleAttachmentPoint(this);
         callback.accept(passenger,
-                this.getX() + rotated.x - riderOffset.x,
-                this.getY() + rotated.y - riderOffset.y,
-                this.getZ() + rotated.z - riderOffset.z);
+                this.getX() + offset.x - riderOffset.x,
+                this.getY() + offset.y - riderOffset.y,
+                this.getZ() + offset.z - riderOffset.z);
     }
 
     @Override
