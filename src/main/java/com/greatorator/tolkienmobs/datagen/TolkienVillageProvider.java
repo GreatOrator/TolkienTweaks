@@ -1,7 +1,6 @@
 package com.greatorator.tolkienmobs.datagen;
 
 import com.greatorator.tolkienmobs.init.TolkienBiomes;
-import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienStructures;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
@@ -14,7 +13,6 @@ import net.minecraft.data.worldgen.ProcessorLists;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -22,8 +20,6 @@ import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
 import net.minecraft.world.level.levelgen.heightproviders.ConstantHeight;
 import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraft.world.level.levelgen.structure.StructureSpawnOverride;
-import net.minecraft.world.level.levelgen.structure.StructureSpawnOverride.BoundingBoxType;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadType;
@@ -32,7 +28,6 @@ import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.pools.alias.PoolAliasBinding;
 import net.minecraft.world.level.levelgen.structure.structures.JigsawStructure;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -44,13 +39,15 @@ public final class TolkienVillageProvider {
     public static final ResourceKey<StructureSet> VILLAGES = ResourceKey.create(Registries.STRUCTURE_SET,
             ResourceLocation.fromNamespaceAndPath("tolkienmobs", "villages"));
     public static final List<Village> VILLAGES_BY_STYLE = List.of(
-            new Village(TolkienStructures.HOUSE_DESERT, "desert", "desert", TolkienBiomes.HARADWAITH, new BlockPos(14, 0, 7), "east_up", new BlockPos(11, 4, 4)),
-            new Village(TolkienStructures.HOUSE_DWARF, "dwarf", "plains", TolkienBiomes.IRON_HILLS, new BlockPos(0, 0, 5), "west_up", new BlockPos(6, 0, 5)),
-            new Village(TolkienStructures.HOUSE_ELVEN, "elven", "plains", TolkienBiomes.LORINAND, new BlockPos(0, 0, 5), "west_up", new BlockPos(4, 8, 3)),
-            new Village(TolkienStructures.HOBBIT_HOUSE, "hobbit", "plains", TolkienBiomes.SHIRE, new BlockPos(27, 0, 14), "east_up", new BlockPos(11, 0, 20)),
-            new Village(TolkienStructures.HOUSE_HUMAN, "human", "plains", TolkienBiomes.GLADDEN, new BlockPos(6, 0, 12), "south_up", new BlockPos(5, 5, 8)),
-            new Village(TolkienStructures.HOUSE_ORC, "orc", "desert", TolkienBiomes.MORDOR, new BlockPos(7, 0, 14), "south_up", new BlockPos(7, 0, 2))
+            new Village(TolkienStructures.HOUSE_DESERT, "desert", "desert", TolkienBiomes.HARADWAITH, "entityttmsouthron_npc", new BlockPos(14, 0, 7), "east_up", new BlockPos(11, 4, 4)),
+            new Village(TolkienStructures.HOUSE_DWARF, "dwarf", "plains", TolkienBiomes.IRON_HILLS, "entityttmdwarf", new BlockPos(0, 0, 5), "west_up", new BlockPos(6, 0, 5)),
+            new Village(TolkienStructures.HOUSE_ELVEN, "elven", "plains", TolkienBiomes.LORINAND, "entityttmelves", new BlockPos(0, 0, 5), "west_up", new BlockPos(4, 8, 3)),
+            new Village(TolkienStructures.HOBBIT_HOUSE, "hobbit", "plains", TolkienBiomes.SHIRE, "entityttmhobbit", new BlockPos(27, 0, 14), "east_up", new BlockPos(11, 0, 20)),
+            new Village(TolkienStructures.HOUSE_HUMAN, "human", "plains", TolkienBiomes.GLADDEN, "entityttmhuman", new BlockPos(6, 0, 12), "south_up", new BlockPos(5, 5, 8)),
+            new Village(TolkienStructures.HOUSE_ORC, "orc", "desert", TolkienBiomes.MORDOR, "entityttmorc", new BlockPos(7, 0, 14), "south_up", new BlockPos(7, 0, 2))
     );
+    /** The vanilla villager templates datagen copies for every village; weights match vanilla. */
+    public static final List<String> VILLAGERS = List.of("nitwit", "baby", "unemployed");
 
     private TolkienVillageProvider() {}
 
@@ -58,25 +55,26 @@ public final class TolkienVillageProvider {
         return VILLAGES_BY_STYLE.stream().filter(village -> village.structure().equals(key)).findFirst();
     }
 
-    public static Structure.StructureSettings createSettings(Village village, HolderGetter<StructureTemplatePool> pools) {
-        // Create settings with spawn overrides for the custom villager types
-        return new Structure.StructureSettings(
-                village.biomeTag(),
-                village.spawnOverrides(),
-                GenerationStep.Decoration.SURFACE_STRUCTURES,
-                TerrainAdjustment.BEARD_THIN
-        );
+    public static Structure.StructureSettings createSettings(Village village, HolderGetter<Biome> biomes) {
+        // Like vanilla villages, no spawn overrides: residents arrive through the villager pool.
+        return new Structure.StructureSettings(biomes.getOrThrow(village.biomeTag()), Map.of(),
+                GenerationStep.Decoration.SURFACE_STRUCTURES, TerrainAdjustment.BEARD_THIN);
     }
 
-    public static JigsawStructure create(Village village, HolderGetter<StructureTemplatePool> pools) {
+    public static JigsawStructure create(Village village, HolderGetter<Biome> biomes,
+                                         HolderGetter<StructureTemplatePool> pools) {
         // Alias resolution is local to this village; vanilla village pools stay intact.
-        Structure.StructureSettings settings = createSettings(village, pools);
+        Structure.StructureSettings settings = createSettings(village, biomes);
         return new JigsawStructure(settings, pools.getOrThrow(village.startPool()), Optional.empty(), SIZE,
                 ConstantHeight.of(VerticalAnchor.absolute(0)), true, Optional.of(Heightmap.Types.WORLD_SURFACE_WG),
                 MAX_DISTANCE, List.of(PoolAliasBinding.direct(ResourceKey.create(Registries.TEMPLATE_POOL,
                         ResourceLocation.withDefaultNamespace("village/" + village.vanillaStyle() + "/houses")), village.housePool()),
                         PoolAliasBinding.direct(ResourceKey.create(Registries.TEMPLATE_POOL,
-                                ResourceLocation.withDefaultNamespace("village/" + village.vanillaStyle() + "/streets")), roadPool(village.vanillaStyle()))),
+                                ResourceLocation.withDefaultNamespace("village/" + village.vanillaStyle() + "/streets")), roadPool(village.vanillaStyle())),
+                        // Houses, town centers, farms and decorations ask for vanilla villagers through this
+                        // pool; send every socket to this village's own NPC instead.
+                        PoolAliasBinding.direct(ResourceKey.create(Registries.TEMPLATE_POOL,
+                                ResourceLocation.withDefaultNamespace("village/" + village.vanillaStyle() + "/villagers")), village.villagerPool())),
                 JigsawStructure.DEFAULT_DIMENSION_PADDING, JigsawStructure.DEFAULT_LIQUID_SETTINGS);
     }
 
@@ -87,7 +85,7 @@ public final class TolkienVillageProvider {
         String center = village.vanillaStyle().equals("desert")
                 ? "village/desert/town_centers/desert_meeting_point_1"
                 : "village/plains/town_centers/plains_fountain_01";
-        // A water feature and bell in every start; streets, decorations and villagers are vanilla.
+        // A water feature and bell in every start; streets and decorations are vanilla.
         context.register(village.startPool(), new StructureTemplatePool(empty,
                 List.of(Pair.of(StructurePoolElement.legacy(center), 1)), StructureTemplatePool.Projection.RIGID));
         String farm = "village/" + village.vanillaStyle() + "/houses/" + village.vanillaStyle()
@@ -99,6 +97,17 @@ public final class TolkienVillageProvider {
                         Pair.of(StructurePoolElement.legacy(farm + "1", farmProcessors), 1),
                         Pair.of(StructurePoolElement.legacy(farm + "2", farmProcessors), 1)),
                 StructureTemplatePool.Projection.RIGID));
+        // The vanilla villager pool contents, same templates and weights (1/1/10), holding this NPC.
+        context.register(village.villagerPool(), new StructureTemplatePool(empty,
+                List.of(Pair.of(StructurePoolElement.legacy(villagerTemplate(village, "nitwit").toString()), 1),
+                        Pair.of(StructurePoolElement.legacy(villagerTemplate(village, "baby").toString()), 1),
+                        Pair.of(StructurePoolElement.legacy(villagerTemplate(village, "unemployed").toString()), 10)),
+                StructureTemplatePool.Projection.RIGID));
+    }
+
+    /** Where datagen writes the village's copy of a vanilla villager template. */
+    public static ResourceLocation villagerTemplate(Village village, String name) {
+        return ResourceLocation.fromNamespaceAndPath("tolkienmobs", "village/" + village.style() + "/villagers/" + name);
     }
 
     public static ResourceKey<StructureTemplatePool> roadPool(String style) {
@@ -174,8 +183,8 @@ public final class TolkienVillageProvider {
     }
 
     /** Entrance and resident coordinates are local to the original house NBT. */
-    public record Village(ResourceKey<Structure> structure, String style, String vanillaStyle,
-                          ResourceKey<Biome> biome, BlockPos entrance, String orientation, BlockPos residentFloor) {
+    public record Village(ResourceKey<Structure> structure, String style, String vanillaStyle, ResourceKey<Biome> biome,
+                          String residentEntity, BlockPos entrance, String orientation, BlockPos residentFloor) {
         public Direction front() { return Direction.byName(orientation.split("_")[0]); }
 
         public BlockPos templateShift() {
@@ -193,6 +202,16 @@ public final class TolkienVillageProvider {
                     ResourceLocation.fromNamespaceAndPath("tolkienmobs", "village/" + style + "/houses"));
         }
 
+        /** The villager-style NPC that replaces vanilla residents in this village. */
+        public ResourceLocation resident() {
+            return ResourceLocation.fromNamespaceAndPath("tolkienmobs", residentEntity);
+        }
+
+        public ResourceKey<StructureTemplatePool> villagerPool() {
+            return ResourceKey.create(Registries.TEMPLATE_POOL,
+                    ResourceLocation.fromNamespaceAndPath("tolkienmobs", "village/" + style + "/villagers"));
+        }
+
         public ResourceKey<StructureTemplatePool> startPool() {
             // Keep the original structure/pool IDs so saved starts remain loadable.
             return ResourceKey.create(Registries.TEMPLATE_POOL, structure.location());
@@ -201,22 +220,6 @@ public final class TolkienVillageProvider {
         public TagKey<Biome> biomeTag() {
             return TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(
                     structure.location().getNamespace(), "has_structure/" + structure.location().getPath()));
-        }
-
-        public Map<EntityType<?>, StructureSpawnOverride> spawnOverrides() {
-            Map<EntityType<?>, StructureSpawnOverride> overrides = new HashMap<>();
-            EntityType<?> villagerType = switch (style) {
-                case "desert" -> TolkienEntities.ENTITY_TTM_SOUTHRON_NPC.get();
-                case "dwarf" -> TolkienEntities.ENTITY_TTM_DWARF.get();
-                case "elven" -> TolkienEntities.ENTITY_TTM_ELVES.get();
-                case "hobbit" -> TolkienEntities.ENTITY_TTM_HOBBIT.get();
-                case "human" -> TolkienEntities.ENTITY_TTM_HUMAN.get();
-                case "orc" -> TolkienEntities.ENTITY_TTM_ORC.get();
-                default -> EntityType.VILLAGER;
-            };
-            overrides.put(villagerType, new StructureSpawnOverride(0.1f, BoundingBoxType.STRUCTURE));
-            overrides.put(EntityType.VILLAGER, new StructureSpawnOverride(0.0f, BoundingBoxType.STRUCTURE));
-            return overrides;
         }
     }
 }
