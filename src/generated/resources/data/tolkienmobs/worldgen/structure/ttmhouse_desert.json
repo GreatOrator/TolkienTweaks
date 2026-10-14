@@ -12,6 +12,11 @@
       "type": "minecraft:direct",
       "alias": "minecraft:village/desert/streets",
       "target": "tolkienmobs:village/roads/desert"
+    },
+    {
+      "type": "minecraft:direct",
+      "alias": "minecraft:village/desert/villagers",
+      "target": "tolkienmobs:village/desert/villagers"
     }
   ],
   "project_start_to_heightmap": "WORLD_SURFACE_WG",
