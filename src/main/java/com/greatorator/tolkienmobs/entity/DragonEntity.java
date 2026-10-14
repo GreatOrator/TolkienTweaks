@@ -843,9 +843,17 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
 
     @Override
     public void positionRider(Entity passenger, Entity.MoveFunction callback) {
-        Vec3 offset = this.getPassengerRidingPosition(passenger);
-        Vec3 pos = MathUtility.getYawVec(yBodyRot, offset.x, offset.z).add(getX(), getY() + offset.y + passenger.getVehicleAttachmentPoint(this).y, getZ());
-        passenger.setPos(pos.x, pos.y, pos.z);
+        // The seat offset must stay relative to this beast. getPassengerRidingPosition already returns an
+        // absolute world position, so rotating it and then adding getX()/getY()/getZ() again put every rider
+        // (the Witch King included) roughly twice the beast's coordinates away from it - far enough that a
+        // distant spawn looked like a beast with no rider at all.
+        Vec3 seat = this.getPassengerRidingPosition(passenger).subtract(this.position());
+        Vec3 rotated = MathUtility.getYawVec(this.yBodyRot, seat.x, seat.z).add(0.0D, seat.y, 0.0D);
+        Vec3 riderOffset = passenger.getVehicleAttachmentPoint(this);
+        callback.accept(passenger,
+                this.getX() + rotated.x - riderOffset.x,
+                this.getY() + rotated.y - riderOffset.y,
+                this.getZ() + rotated.z - riderOffset.z);
     }
 
     @Override
