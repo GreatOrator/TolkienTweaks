@@ -66,6 +66,8 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
     private static final AttributeModifier ZOMBIE_REINFORCEMENT_CALLEE_CHARGE = new AttributeModifier(
             ResourceLocation.fromNamespaceAndPath(MODID,"reinforcement_callee_charge"), -0.05F, AttributeModifier.Operation.ADD_VALUE
     );
+    private long nextDefensiveAbilityUse = 0L;
+    private final static long defensiveCoolDown = 10000L;
 
     public GoblinKingEntity(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
@@ -142,9 +144,17 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
                 this.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 2 * 20, 0));
             }
 
+            // The reactions below are rate limited, otherwise they fired - and messaged the attacker - on every single hit.
+            long reactionTime = System.currentTimeMillis();
+            if (reactionTime <= this.nextDefensiveAbilityUse) {
+                return true;
+            }
+            this.nextDefensiveAbilityUse = reactionTime + defensiveCoolDown;
+
             if (this.getHealth() < this.getMaxHealth()) {
                 livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.healself").withStyle(ChatFormatting.LIGHT_PURPLE));
-                this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 2 * 20, 0));
+                // Regeneration only heals on ticks divisible by (50 >> amplifier): 40 ticks at amplifier 0 never healed at all.
+                this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 10 * 20, 1));
             }
 
             if (this.getTarget() != null && !this.hasEffect(MobEffects.MOVEMENT_SPEED) && this.getTarget().distanceToSqr(this) > 121.0D) {
