@@ -36,8 +36,7 @@ public class RunWhenLosingGoal extends AvoidEntityGoal<LivingEntity> {
 
         this.toAvoid = dragon.getLastHurtByMob() != null? dragon.getLastHurtByMob() : this.dragon.level.getNearestEntity(this.dragon.level.getEntitiesOfClass(this.avoidClass, this.dragon.getBoundingBox().inflate(this.maxDist, 3.0D, this.maxDist), (p_148078_) -> {
             return true;
-        }), this.runAwayTargeting, this.dragon, this.dragon.getX(), this.dragon.getY(), this.dragon.getZ());;
-        System.out.println(toAvoid);
+        }), this.runAwayTargeting, this.dragon, this.dragon.getX(), this.dragon.getY(), this.dragon.getZ());
 
         if (this.toAvoid == null) return false;
 
@@ -48,7 +47,6 @@ public class RunWhenLosingGoal extends AvoidEntityGoal<LivingEntity> {
             return false;
         } else {
             this.path = dragon.getNavigation().createPath(vec3.x, vec3.y, vec3.z, 0);
-            System.out.println(this.path != null);
             return this.path != null;
         }
     }

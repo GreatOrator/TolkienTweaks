@@ -29,8 +29,7 @@ public class FlyerWanderGoal extends WaterAvoidingRandomStrollGoal
     @Override
     public boolean canUse()
     {
-        if (dragon.canBeControlledByRider()) return false;
-        if (!dragon.isUsingFlyingNavigator() && dragon.isSleeping() && !dragon.level.isDay()) return false;
+        if (dragon.canBeControlledByRider() || dragon.isPassenger() || dragon.isSleeping() || dragon.getTarget() != null) return false;
         Vec3 vec3d = getPosition();
         if (vec3d != null)
         {
@@ -62,8 +61,11 @@ public class FlyerWanderGoal extends WaterAvoidingRandomStrollGoal
                 int yOffset = dragon.getAltitude() > 40? 10 : 0;
                 position = HoverRandomPos.getPos(dragon, 30, 50, vec3d.x, vec3d.z, MathUtility.PI / 2, 10, yOffset);
             }
-            if (position != null && position.y > dragon.getY() + dragon.getBbHeight() && !dragon.isUsingFlyingNavigator()) dragon.setNavigator(DragonEntity.NavigationType.FLYING);
         }
-        return position == null? super.getPosition() : position;
+        if (position == null) position = super.getPosition();
+        if (position == null || !dragon.isWithinRestriction(net.minecraft.core.BlockPos.containing(position))) return null;
+        if (position.y > dragon.getY() + dragon.getBbHeight() && !dragon.isUsingFlyingNavigator())
+            dragon.setNavigator(DragonEntity.NavigationType.FLYING);
+        return position;
     }
 }
