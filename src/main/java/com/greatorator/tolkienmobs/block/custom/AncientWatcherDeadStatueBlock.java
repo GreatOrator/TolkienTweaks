@@ -38,8 +38,6 @@ public class AncientWatcherDeadStatueBlock extends TolkienEntityBlock implements
     public static final MapCodec<AncientWatcherDeadStatueBlock> CODEC = simpleCodec(AncientWatcherDeadStatueBlock::new);
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-    private long nextAbilityUse = 0L;
-    private final static long coolDown = 15000L;
 
     protected static final VoxelShape SHAPE = Block.box(0.0, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
 
@@ -86,11 +84,9 @@ public class AncientWatcherDeadStatueBlock extends TolkienEntityBlock implements
 
     @Override
     public InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult hit) {
-        long time = System.currentTimeMillis();
-
         if (!level.isClientSide()) {
             if (player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
-                if (level.getBlockEntity(blockPos) instanceof AncientWatcherDeadStatueBlockEntity) {
+                if (level.getBlockEntity(blockPos) instanceof AncientWatcherDeadStatueBlockEntity statue) {
                     int rand = MathUtility.getRandomInteger(100, 1);
                     Random random = new Random();
 
@@ -104,8 +100,7 @@ public class AncientWatcherDeadStatueBlock extends TolkienEntityBlock implements
                     ItemEntity dropActiveHeart = new ItemEntity(level, newX, newY, newZ, new ItemStack(TolkienItems.ITEM_WATCHERHEART.get(), 1));
                     ItemEntity dropCrackedHeart = new ItemEntity(level, newX, newY, newZ, new ItemStack(TolkienItems.ITEM_WATCHERHEART_CRACKED.get(), 1));
 
-                    if (time > nextAbilityUse) {
-                        nextAbilityUse = time + coolDown;
+                    if (statue.tryUseAbility()) {
                         if (rand <= 10) {
                             level.addFreshEntity(dropActiveHeart);
                         } else {
