@@ -269,15 +269,25 @@
 		"sitting": {
 			"loop": true,
 			"bones": {
-				"root": {
+				"body": {
+					"position": [0, -10, 0]
+				},
+				"head": {
+					"position": [0, -10, 0]
+				},
+				"rightArm": {
+					"position": [0, -10, 0]
+				},
+				"leftArm": {
 					"position": [0, -10, 0]
 				},
 				"rightLeg": {
-					"rotation": [-90, 15, 0]
+					"rotation": [-90, 15, 0],
+					"position": [0, -10, 0]
 				},
 				"leftLeg": {
 					"rotation": [-90, -15, 0],
-					"position": [0, 0, 0]
+					"position": [0, -10, 0]
 				}
 			}
 		}
