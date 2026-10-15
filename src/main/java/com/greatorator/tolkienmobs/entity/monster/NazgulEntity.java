@@ -116,6 +116,10 @@ public class NazgulEntity extends TolkienMonsterEntity implements GeoEntity {
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
+            // NazgulSteedEntity spawns a nazgul riding it; a carried rider must never walk-animate
+            if (this.isPassenger()) {
+                return PlayState.STOP;
+            }
             if (event.isMoving() && !event.getAnimatable().isAggressive()) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
                 return PlayState.CONTINUE;
@@ -123,6 +127,11 @@ public class NazgulEntity extends TolkienMonsterEntity implements GeoEntity {
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
+            // Sitting in the saddle instead of standing on it (same as WitchKingEntity)
+            if (this.isPassenger()) {
+                event.getController().setAnimation(RawAnimation.begin().thenPlay("sitting"));
+                return PlayState.CONTINUE;
+            }
             if (!event.isMoving() && !event.getAnimatable().isAggressive()) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
                 return PlayState.CONTINUE;
