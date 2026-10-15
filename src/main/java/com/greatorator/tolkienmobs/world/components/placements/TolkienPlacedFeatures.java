@@ -9,6 +9,7 @@ import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.data.worldgen.placement.VegetationPlacements;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -223,10 +224,10 @@ public class TolkienPlacedFeatures {
         context.register(PLACED_DWARVEN_MAPLE_FALLEN_LEAVES, new PlacedFeature(features.getOrThrow(DWARVEN_MAPLE_FALLEN_LEAVES), tolkienFeatureCheckArea(AvoidLandmarkModifier.checkSurface(), 1).build()));
 
         context.register(PLACED_ROCKPILE, new PlacedFeature(features.getOrThrow(ROCK_PILE), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(6), InSquarePlacement.spread(), BiomeFilter.biome()).build()));
-        context.register(PLACED_RANDOM_RUBBLE, new PlacedFeature(features.getOrThrow(RANDOM_RUBBLE), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(10), InSquarePlacement.spread(), BiomeFilter.biome()).build()));
-        context.register(PLACED_STONE_SPIKE, new PlacedFeature(features.getOrThrow(STONE_SPIKE), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(10), InSquarePlacement.spread(), BiomeFilter.biome()).build()));
+        context.register(PLACED_RANDOM_RUBBLE, new PlacedFeature(features.getOrThrow(RANDOM_RUBBLE), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(6), InSquarePlacement.spread(), BiomeFilter.biome()).build()));
+        context.register(PLACED_STONE_SPIKE, new PlacedFeature(features.getOrThrow(STONE_SPIKE), ImmutableList.<PlacementModifier>builder().add(RarityFilter.onAverageOnceEvery(6), CountPlacement.of(UniformInt.of(1, 2)), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome()).build()));
         context.register(PLACED_WEBS, new PlacedFeature(features.getOrThrow(WEBS), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.RANGE_BOTTOM_TO_MAX_TERRAIN_HEIGHT, CountPlacement.of(20), InSquarePlacement.spread(), BiomeFilter.biome()).build()));
-        context.register(PLACED_STUMPS, new PlacedFeature(features.getOrThrow(STUMPS), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(10), InSquarePlacement.spread(), BiomeFilter.biome()).build()));
+        context.register(PLACED_STUMPS, new PlacedFeature(features.getOrThrow(STUMPS), ImmutableList.<PlacementModifier>builder().add(RarityFilter.onAverageOnceEvery(6), CountPlacement.of(UniformInt.of(1, 2)), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome()).build()));
 
         context.register(PLACED_SMALL_GRANITE, new PlacedFeature(features.getOrThrow(SMALL_GRANITE), ImmutableList.<PlacementModifier>builder().add(HeightRangePlacement.triangle(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(64)), RarityFilter.onAverageOnceEvery(10), InSquarePlacement.spread(), CountPlacement.of(5), BiomeFilter.biome()).build()));
         context.register(PLACED_SMALL_DIORITE, new PlacedFeature(features.getOrThrow(SMALL_DIORITE), ImmutableList.<PlacementModifier>builder().add(HeightRangePlacement.triangle(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(64)), RarityFilter.onAverageOnceEvery(10), InSquarePlacement.spread(), CountPlacement.of(5), BiomeFilter.biome()).build()));
