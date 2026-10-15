@@ -1062,7 +1062,7 @@ public class TolkienEntityLootTables extends EntityLootSubProvider {
     private LootPool.Builder createTrinketPool(Item type) {
         return LootPool.lootPool().setRolls(ConstantValue.exactly(1))
                 .add(LootItem.lootTableItem(type)
-                        .apply(TrinketRandomlyFunction.setPotion(type.getDefaultInstance()))
+                        .apply(TrinketRandomlyFunction.randomPotion())
                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 1)))
                         .setWeight(10))
                 .add(LootItem.lootTableItem(type).when(LootItemKilledByPlayerCondition.killedByPlayer()))
