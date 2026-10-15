@@ -27,7 +27,9 @@ public class RockpileFeature extends Feature<NoneFeatureConfiguration> {
         BlockPos pos = featurePlaceContext.origin();
         NoneFeatureConfiguration config = featurePlaceContext.config();
         int i = 0;
-        int j = rand.nextInt(8 - 2) + 2;
+        // Patch radius (1..3). Radius drives density far more than the placement count does: every
+        // surface column inside the circle gets a block, so radius 2..7 carpeted the whole biome.
+        int j = rand.nextInt(3) + 1;
 
         for (int k = pos.getX() - j; k <= pos.getX() + j; ++k)
         {
