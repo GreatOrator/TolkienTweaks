@@ -6,6 +6,8 @@
 - Adjusted flying behavior for `GreatEagleEntity` and `GwahirEntity` to fly more frequently by:
   - Reducing `StartFlyingBirdGoal` chance from 120 to 60 (2x more frequent takeoff)
   - Increasing `LandBirdGoal` chance from 240 to 480 (2x less frequent landing)
+  - FellBeast behavior modified to save spawn location
+  - Fixed bug with Witch King spawning with Fell Beast
 
 ### Villages
 
