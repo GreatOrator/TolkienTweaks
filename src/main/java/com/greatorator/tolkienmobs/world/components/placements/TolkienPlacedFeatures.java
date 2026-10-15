@@ -226,7 +226,11 @@ public class TolkienPlacedFeatures {
         context.register(PLACED_ROCKPILE, new PlacedFeature(features.getOrThrow(ROCK_PILE), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(6), InSquarePlacement.spread(), BiomeFilter.biome()).build()));
         context.register(PLACED_RANDOM_RUBBLE, new PlacedFeature(features.getOrThrow(RANDOM_RUBBLE), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(6), InSquarePlacement.spread(), BiomeFilter.biome()).build()));
         context.register(PLACED_STONE_SPIKE, new PlacedFeature(features.getOrThrow(STONE_SPIKE), ImmutableList.<PlacementModifier>builder().add(RarityFilter.onAverageOnceEvery(6), CountPlacement.of(UniformInt.of(1, 2)), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome()).build()));
-        context.register(PLACED_WEBS, new PlacedFeature(features.getOrThrow(WEBS), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.RANGE_BOTTOM_TO_MAX_TERRAIN_HEIGHT, CountPlacement.of(20), InSquarePlacement.spread(), BiomeFilter.biome()).build()));
+        // HEIGHTMAP is MOTION_BLOCKING, which is primed at the start of feature placement and kept
+        // up to date as features place blocks, so under a canopy it reads the top of the tree.
+        // HEIGHTMAP_WORLD_SURFACE reads the worldgen heightmap instead, which is only ever the
+        // terrain and would leave every web trying to hang off bare ground.
+        context.register(PLACED_WEBS, new PlacedFeature(features.getOrThrow(WEBS), ImmutableList.<PlacementModifier>builder().add(CountPlacement.of(4), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP, BiomeFilter.biome()).build()));
         context.register(PLACED_STUMPS, new PlacedFeature(features.getOrThrow(STUMPS), ImmutableList.<PlacementModifier>builder().add(RarityFilter.onAverageOnceEvery(6), CountPlacement.of(UniformInt.of(1, 2)), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome()).build()));
 
         context.register(PLACED_SMALL_GRANITE, new PlacedFeature(features.getOrThrow(SMALL_GRANITE), ImmutableList.<PlacementModifier>builder().add(HeightRangePlacement.triangle(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(64)), RarityFilter.onAverageOnceEvery(10), InSquarePlacement.spread(), CountPlacement.of(5), BiomeFilter.biome()).build()));

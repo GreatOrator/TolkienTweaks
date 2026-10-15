@@ -15,6 +15,9 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 
 public class WebFeature extends Feature<NoneFeatureConfiguration> {
 
+	/** How far below a column's surface to look for branches: the mirkwood trunks run 10-20 tall. */
+	private static final int WEBS_DEPTH = 24;
+
 	public WebFeature(Codec<NoneFeatureConfiguration> config) {
 		super(config);
 	}
@@ -38,7 +41,14 @@ public class WebFeature extends Feature<NoneFeatureConfiguration> {
 				int j1 = l - pos.getZ();
 				if (i1 * i1 + j1 * j1 <= j * j)
 				{
-					for (int k1 = pos.getY() - j; k1 <= pos.getY() + j; ++k1)
+					// The origin is the top of the highest block in the column, which under a canopy is
+					// the top of the tree, so start at a random height inside the tree and walk down.
+					// Webs end up strung through the branches at varying heights instead of all
+					// collecting at one level, and since the scan begins below that top block it never
+					// picks the air block sitting directly on the grass.
+					int scanTop = pos.getY() - 1 - rand.nextInt(WEBS_DEPTH);
+
+					for (int k1 = scanTop; k1 >= pos.getY() - 1 - WEBS_DEPTH; --k1)
 					{
 						BlockPos blockpos = new BlockPos(k, k1, l);
 						BlockState blockstate = worldIn.getBlockState(blockpos);
@@ -49,7 +59,7 @@ public class WebFeature extends Feature<NoneFeatureConfiguration> {
 						for (Direction direction : Direction.values())
 						{
 							BlockState blockstate1 = worldIn.getBlockState(blockpos.relative(direction));
-							if (blockstate1 == Blocks.GRASS_BLOCK.defaultBlockState() || blockstate1 == TolkienBlocks.WOOD_MIRKWOOD.get().defaultBlockState() || blockstate1 == TolkienBlocks.HARDENED_LEAVES_MIRKWOOD.get().defaultBlockState() || blockstate1 == Blocks.GRANITE.defaultBlockState() || blockstate1 == Blocks.DRIPSTONE_BLOCK.defaultBlockState() || blockstate1 == Blocks.CALCITE.defaultBlockState() || blockstate1 == Blocks.TUFF.defaultBlockState() || blockstate1 == Blocks.DEEPSLATE.defaultBlockState())
+							if (blockstate1.is(Blocks.GRASS_BLOCK) || blockstate1.is(TolkienBlocks.WOOD_MIRKWOOD.get()) || blockstate1.is(TolkienBlocks.HARDENED_LEAVES_MIRKWOOD.get()) || blockstate1.is(Blocks.GRANITE) || blockstate1.is(Blocks.DRIPSTONE_BLOCK) || blockstate1.is(Blocks.CALCITE) || blockstate1.is(Blocks.TUFF) || blockstate1.is(Blocks.DEEPSLATE))
 							{
 								faces++;
 							}
