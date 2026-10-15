@@ -20,8 +20,7 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:long_invisibility"
+              "function": "tolkienmobs:random_trinket"
             },
             {
               "add": false,

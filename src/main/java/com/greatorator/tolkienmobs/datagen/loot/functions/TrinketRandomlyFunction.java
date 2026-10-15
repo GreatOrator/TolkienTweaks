@@ -17,15 +17,23 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Gives a trinket a potion. Left without an {@code id} the potion is rolled when the loot is
+ * dropped, so a single loot table yields a variety of trinkets instead of one fixed potion.
+ * An {@code id} can still be written by hand to pin a specific potion.
+ */
 public class TrinketRandomlyFunction extends LootItemConditionalFunction {
     public static final MapCodec<TrinketRandomlyFunction> CODEC = RecordCodecBuilder.mapCodec(
-        p_348460_ -> commonFields(p_348460_).and(Potion.CODEC.fieldOf("id").forGetter(p_298158_ -> p_298158_.potion)).apply(p_348460_, TrinketRandomlyFunction::new)
+        instance -> commonFields(instance)
+                .and(Potion.CODEC.optionalFieldOf("id").forGetter(function -> function.potion))
+                .apply(instance, TrinketRandomlyFunction::new)
     );
-    private final Holder<Potion> potion;
+    private final Optional<Holder<Potion>> potion;
 
-    private TrinketRandomlyFunction(List<LootItemCondition> conditions, Holder<Potion> potion) {
+    private TrinketRandomlyFunction(List<LootItemCondition> conditions, Optional<Holder<Potion>> potion) {
         super(conditions);
         this.potion = potion;
     }
@@ -37,18 +45,20 @@ public class TrinketRandomlyFunction extends LootItemConditionalFunction {
 
     @Override
     public ItemStack run(ItemStack stack, LootContext context) {
-
-        stack.set(TolkienDataComponents.POTION_CONTENTS, new TrinketComponent(this.potion));
+        Holder<Potion> potion = this.potion.orElseGet(() -> pickPotion(context.getRandom()));
+        stack.set(TolkienDataComponents.POTION_CONTENTS, new TrinketComponent(potion));
         return stack;
     }
 
-    public static Builder<?> setPotion(ItemStack stack) {
-        final RandomSource random = RandomSource.create();
-        List<Holder<Potion>> list = (List) BuiltInRegistries.POTION.holders().filter((p_340770_) -> {
-            return !((Potion) p_340770_.value()).getEffects().isEmpty();
-        }).collect(Collectors.toList());
-        Holder<Potion> holder = (Holder) Util.getRandom(list, random);
+    /** Any potion that does something, which leaves out water, mundane, thick and awkward. */
+    private static Holder<Potion> pickPotion(RandomSource random) {
+        List<Holder<Potion>> potions = BuiltInRegistries.POTION.holders()
+                .filter(potion -> !potion.value().getEffects().isEmpty())
+                .collect(Collectors.toList());
+        return Util.getRandom(potions, random);
+    }
 
-        return simpleBuilder(p_316108_ -> new TrinketRandomlyFunction(p_316108_, holder));
+    public static Builder<?> randomPotion() {
+        return simpleBuilder(conditions -> new TrinketRandomlyFunction(conditions, Optional.empty()));
     }
 }
