@@ -222,7 +222,7 @@ public class TolkienPlacedFeatures {
         context.register(PLACED_FANGORN_FALLEN_LEAVES, new PlacedFeature(features.getOrThrow(FANGORNOAK_FALLEN_LEAVES), tolkienFeatureCheckArea(AvoidLandmarkModifier.checkSurface(), 1).build()));
         context.register(PLACED_DWARVEN_MAPLE_FALLEN_LEAVES, new PlacedFeature(features.getOrThrow(DWARVEN_MAPLE_FALLEN_LEAVES), tolkienFeatureCheckArea(AvoidLandmarkModifier.checkSurface(), 1).build()));
 
-        context.register(PLACED_ROCKPILE, new PlacedFeature(features.getOrThrow(ROCK_PILE), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(10), InSquarePlacement.spread(), BiomeFilter.biome()).build()));
+        context.register(PLACED_ROCKPILE, new PlacedFeature(features.getOrThrow(ROCK_PILE), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(6), InSquarePlacement.spread(), BiomeFilter.biome()).build()));
         context.register(PLACED_RANDOM_RUBBLE, new PlacedFeature(features.getOrThrow(RANDOM_RUBBLE), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(10), InSquarePlacement.spread(), BiomeFilter.biome()).build()));
         context.register(PLACED_STONE_SPIKE, new PlacedFeature(features.getOrThrow(STONE_SPIKE), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(10), InSquarePlacement.spread(), BiomeFilter.biome()).build()));
         context.register(PLACED_WEBS, new PlacedFeature(features.getOrThrow(WEBS), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.RANGE_BOTTOM_TO_MAX_TERRAIN_HEIGHT, CountPlacement.of(20), InSquarePlacement.spread(), BiomeFilter.biome()).build()));
