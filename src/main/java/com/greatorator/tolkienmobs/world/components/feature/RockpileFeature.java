@@ -50,7 +50,7 @@ public class RockpileFeature extends Feature<NoneFeatureConfiguration> {
                         for (Direction direction : Direction.values())
                         {
                             BlockState blockstate1 = worldIn.getBlockState(blockpos.relative(direction));
-                            if (blockstate1 == Blocks.GRASS_BLOCK.defaultBlockState())
+                            if (blockstate1.is(Blocks.GRASS_BLOCK))
                             {
                                 faces++;
                             }
