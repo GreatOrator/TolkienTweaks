@@ -86,12 +86,21 @@ public class WitchKingEntity extends TolkienMonsterEntity implements GeoEntity {
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
+            // While riding the Fell Beast he is carried, so he must never walk-animate
+            if (this.isPassenger()) {
+                return PlayState.STOP;
+            }
             if (event.isMoving() && !event.getAnimatable().isAggressive()) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         })); controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
+            // Sitting in the saddle instead of standing on it (same pattern as TolkienVillagerEntity)
+            if (this.isPassenger()) {
+                event.getController().setAnimation(RawAnimation.begin().thenPlay("sitting"));
+                return PlayState.CONTINUE;
+            }
             if (!event.isMoving() && !event.getAnimatable().isAggressive()) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
                 return PlayState.CONTINUE;
