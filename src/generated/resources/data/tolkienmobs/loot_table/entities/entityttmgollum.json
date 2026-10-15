@@ -64,7 +64,7 @@
           "functions": [
             {
               "function": "tolkienmobs:random_trinket",
-              "id": "minecraft:wind_charged"
+              "id": "minecraft:luck"
             },
             {
               "add": false,

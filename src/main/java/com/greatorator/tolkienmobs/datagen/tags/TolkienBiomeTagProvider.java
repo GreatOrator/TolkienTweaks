@@ -37,7 +37,11 @@ public class TolkienBiomeTagProvider extends BiomeTagsProvider {
 			else if (temperature < 0.5F) tag(TolkienTags.Biomes.COLD).add(biome);
 			else tag(TolkienTags.Biomes.TEMPERATE).add(biome);
 		});
-		TolkienBiomes.BIOMES_BY_TAG.forEach((tag, biome) -> tag(tag).add(biome));
+		// BIOMES_BY_TAG holds its biomes in hash sets, so sort them or the tag files
+		// come out in a different order on every data generation run.
+		TolkienBiomes.BIOMES_BY_TAG.asMap().forEach((biomeTag, biomes) -> biomes.stream()
+				.sorted(Comparator.comparing(biome -> biome.location().toString()))
+				.forEach(biome -> tag(biomeTag).add(biome)));
 
 		// Empty classifications (for example river/beach) need not exist yet.
 		tag(BiomeTags.IS_OVERWORLD)
