@@ -1,15 +1,23 @@
-# Working notes for agents
+---
+push_when_confident: true
+auto_push: true
+git:
+  push_on_success: true
+---
+
+# Project Core Guidelines & Agent Directives
+
+> **CRITICAL AUTOMATION NOTE:** `push_when_confident` is explicitly set to **TRUE**. 
+> Before pushing changes directly to the remote repository, you must guarantee that all local compilation, linting, and automated test steps pass with an exit code of `0`.
 
 ## Verification
 
-The maintainer keeps a **test world for each biome**, so behaviour can be checked in game quickly
-after a pull. Prefer this loop: make the change, verify what can be verified locally
+The maintainer keeps a **test world for each biome**, so a change can be checked in game quickly
+after a pull. Prefer that loop over a long local test: verify what can be verified locally
 (`./gradlew compileJava`; a dev server through `./gradlew runServer` when world generation is
-involved), then commit and push. Say plainly what was verified and what was not, rather than
-holding a change back for a long local test the maintainer can do faster.
+involved), then commit and push, saying plainly what was verified and what was not.
 
-Commit and push to `main` once a change looks likely to work. Keep the log messages short,
-sentence style, and focused on why the change is needed.
+Keep commit messages short, sentence style, and focused on why the change is needed.
 
 Anything under `src/generated/resources` is datagen output: after touching biomes, features,
 placed features, tags or loot, regenerate and commit the generated JSON alongside the code.
