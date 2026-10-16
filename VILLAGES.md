@@ -10,6 +10,7 @@ The six house structure IDs now start villages using Minecraft's jigsaw village 
 | Hobbit | Shire | Vanilla plains village |
 | Human | Gladden Fields | Vanilla plains village |
 | Orc | Mordor | Vanilla desert village |
+| Nurn | Nurn | Vanilla desert village in dark stone, on grass only |
 
 Each style's residents are the mod's own villager-style NPC, chosen by the `resident` field of its `Village` entry: desert/Haradwaith uses Southron, dwarf uses Dwarf, elven uses Elves, hobbit uses Hobbit, human uses Human, and orc uses Orc. Wandering trader variants are never used. Datagen copies vanilla's three villager templates (`nitwit`, `baby`, `unemployed`, weights 1/1/10) once per style into `tolkienmobs:village/<style>/villagers/` and swaps the stored entity for that NPC. Every jigsaw socket that asks vanilla for a villager - your houses' resident connectors as well as vanilla town centers, farms and decorations - is redirected there through a pool alias.
 
@@ -25,6 +26,12 @@ Run with Java 21:
 On Windows, use `gradlew.bat`. The village code needs the resulting JSON and NBT resources before it can generate villages. Datagen replaces the old standalone house placement sets with one `tolkienmobs:villages` set and writes prepared house and road templates under `src/generated/resources/data/tolkienmobs/structure/village/`. Its normal stale-output cleanup removes the old house structure-set JSONs.
 
 Villages appear in newly generated chunks. Existing buildings in explored chunks stay where they are. Original structure IDs are retained so saved structure starts remain readable.
+
+## Nurn's dark stone village
+
+`ttmhouse_nurn` is the desert village recoloured rather than re-modelled. `NURN_DARK_STONE` rewrites sand, terracotta and every sandstone variant as the dark stone block of the same shape, `NURN_FARMS` adds the desert crops to that, and the road pool's own terminator pool replaces the vanilla desert terminators - those pieces are raw smooth sandstone and are not part of the street templates, so without their own pool they stayed sandstone while the rest of the village turned. The town centre, houses, farms, decorations and villagers all come from the same aliases as the other styles.
+
+It is the only style that starts through `VillageStructure` instead of the vanilla jigsaw structure. That structure refuses a site whose surface heightmap sits above its ocean floor heightmap (a column with water over it) and one where `TolkienSurfaceRules.isNurnGrassAt` says the biome's surface noise would leave dark stone, so a Nurn village stands on dry grass. All other styles start anywhere in their biome as before.
 
 ## Change biomes and village frequency
 

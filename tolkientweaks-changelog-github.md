@@ -42,6 +42,8 @@
 - Rock piles recognise a neighbour by block type instead of exact state, so grass carrying snow counts as grass.
 - Mirkwood webs hang from the tree canopy. They read a heightmap that never contains a placed tree and ran in the decoration step ahead of the mirkwood trees, so nearly every attempt found open air, rock or sky; they now read the live heightmap and run after the trees, and four placements do the work of twenty.
 - Mordor and the Ash Mountains no longer hold water. The dimension's aquifer fills those biomes under the sea level and in pockets high above it, which no biome setting can change, so chunks now turn that water into lava as they load. Terrain generated before this change is converted too.
+- Nurn is the watered half of that country: dark stone and sickly grass ground, tan water, a full 1.0 of rainfall, and no lava of its own anywhere in the biome. Its lakes are dug by a feature of their own, up to three chunks across - the vanilla lake is under one chunk - and every shore is laid in a sixteen block band of grass, because the biome's stone noise would otherwise leave bare stone at the water's edge.
+- Nurn's villages are the vanilla desert village rebuilt in dark stone. Every sandstone and terracotta shape is swapped for the dark stone block of the same kind, the farms keep the desert crops, and the roads get their own terminator pool, because the desert pieces that close a road off are raw smooth sandstone and do not pass through the street templates. A Nurn village only starts on a dry, grassy column.
 
 ## Trinkets and loot
 

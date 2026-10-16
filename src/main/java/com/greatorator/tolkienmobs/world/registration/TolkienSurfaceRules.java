@@ -6,6 +6,7 @@ import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Noises;
+import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import org.jetbrains.annotations.NotNull;
@@ -36,14 +37,41 @@ public class TolkienSurfaceRules {
         // and leave bedrock/deepslate to the vanilla fallback rules.
         return SurfaceRules.ifTrue(SurfaceRules.abovePreliminarySurface(), SurfaceRules.sequence(
                 SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, SurfaceRules.sequence(
+                        SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.NURN), nurnSurface()),
                         SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.MORDOR), DARK_STONE),
                         SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HARADWAITH), SAND),
                         ironHillsSurface(), hithaeglirSurface(), makeTolkienWorldRules())),
                 SurfaceRules.ifTrue(SurfaceRules.UNDER_FLOOR, SurfaceRules.sequence(
-                        SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.MORDOR, TolkienBiomes.ASH_MOUNTAINS), DARK_STONE),
+                        SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.NURN, TolkienBiomes.MORDOR, TolkienBiomes.ASH_MOUNTAINS), DARK_STONE),
                         SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HARADWAITH), SANDSTONE),
                         SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HITHAEGLIR), PACKED_ICE))),
                 overworldLikeFloor()));
+	}
+
+	/**
+	 * Nurn's floor is a mix of grass and dark stone, the dark stone following the same surface noise
+	 * that shapes the badlands it replaced. Only ground with no water over it is coloured, so a lake
+	 * or a spring never gets a stone lip placed over its own surface. The band of grass that runs
+	 * along a Nurn lake's edge is laid by the lake feature, which knows where its shore is.
+	 */
+	private static SurfaceRules.RuleSource nurnSurface() {
+		return SurfaceRules.ifTrue(SurfaceRules.waterBlockCheck(-1, 0), SurfaceRules.sequence(
+				SurfaceRules.ifTrue(surfaceNoiseAbove(NURN_DARK_STONE_NOISE), DARK_STONE),
+				GRASS_BLOCK));
+	}
+
+	/**
+	 * The surface noise value above which Nurn's floor is dark stone instead of grass.
+	 */
+	public static final double NURN_DARK_STONE_NOISE = 1.6D;
+
+	/**
+	 * Whether the Nurn floor rule leaves grass on a column. The noise condition inside a surface rule
+	 * reads the surface noise at y zero whatever the block's own height is, so a caller outside the
+	 * surface system can reproduce the answer exactly and pick a spot on the grass.
+	 */
+	public static boolean isNurnGrassAt(RandomState randomState, int x, int z) {
+		return randomState.getOrCreateNoise(Noises.SURFACE).getValue(x, 0.0D, z) < NURN_DARK_STONE_NOISE / 8.25D;
 	}
 
 	private static SurfaceRules.RuleSource makeTolkienWorldRules() {

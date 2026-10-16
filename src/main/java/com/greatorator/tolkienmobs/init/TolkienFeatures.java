@@ -35,4 +35,5 @@ public class TolkienFeatures {
     public static final DeferredHolder<Feature<?>, Feature<RootConfig>> WOOD_ROOTS = FEATURES.register("wood_roots", () -> new WoodRootFeature(RootConfig.CODEC));
     public static final DeferredHolder<Feature<?>, Feature<BlockStateConfiguration>> UNDERGROUND_PLANTS = FEATURES.register("underground_plants", () -> new UndergroundPlantFeature(BlockStateConfiguration.CODEC));
     public static final DeferredHolder<Feature<?>, Feature<NoneFeatureConfiguration>> MUD_SPLATTER = FEATURES.register("mud_splatter", () -> new MudSplatterFeature(NoneFeatureConfiguration.CODEC));
+    public static final DeferredHolder<Feature<?>, Feature<NoneFeatureConfiguration>> NURN_LAKE = FEATURES.register("nurn_lake", () -> new NurnLakeFeature(NoneFeatureConfiguration.CODEC));
 }

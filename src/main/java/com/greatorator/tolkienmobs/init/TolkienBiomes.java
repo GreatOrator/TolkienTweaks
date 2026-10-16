@@ -35,6 +35,7 @@ public class TolkienBiomes {
     public static final ResourceKey<Biome> HITHAEGLIR = createBiome("hithaeglir", BiomeMaker::makeBiomeHithaelgir, TolkienTags.Biomes.MOUNTAIN, TolkienTags.Biomes.ICY);
     public static final ResourceKey<Biome> FANGORN = createBiome("fangorn_forest", BiomeMaker::makeBiomeFangorn, TolkienTags.Biomes.DARK_FOREST, TolkienTags.Biomes.TEMPERATE);
     public static final ResourceKey<Biome> MORDOR = createBiome("mordor", BiomeMaker::makeBiomeMordor, TolkienTags.Biomes.WASTELAND, TolkienTags.Biomes.HOT);
+    public static final ResourceKey<Biome> NURN = createBiome("nurn", BiomeMaker::makeBiomeNurn, TolkienTags.Biomes.PLAINS);
     public static final ResourceKey<Biome> ASH_MOUNTAINS = createBiome("ash_mountains", BiomeMaker::makeBiomeAshMountain, TolkienTags.Biomes.MOUNTAIN, TolkienTags.Biomes.DRY);
     public static final ResourceKey<Biome> MARSHES = createBiome("marshes", BiomeMaker::makeBiomeMarshes, TolkienTags.Biomes.SWAMP, TolkienTags.Biomes.WET);
     public static final ResourceKey<Biome> LORINAND = createBiome("lorinand", BiomeMaker::makeBiomeLorinad, TolkienTags.Biomes.CONIFEROUS, TolkienTags.Biomes.TEMPERATE);

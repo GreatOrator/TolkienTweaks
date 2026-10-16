@@ -321,6 +321,30 @@ public class BiomeMaker extends BiomeHelper{
                 .build();
     }
 
+    public static Biome makeBiomeNurn(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        nurnGen(placedFeatureGetter, carverGetter);
+        nurnSpawning();
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(true)
+                .temperature(1.0F)
+                .downfall(1.0F)
+                .specialEffects((new BiomeSpecialEffects.Builder())
+                        // The sea of Nurnen is fed by the ash of Mordor, so the water is not blue.
+                        .waterColor(0x9A8455)
+                        .waterFogColor(0x5A4D33)
+                        .fogColor(12638463)
+                        .foliageColorOverride(0x8A9A4F)
+                        .grassColorOverride(0x9BAA5F)
+                        .skyColor(getSkyColorWithTemperatureModifier(1.0F))
+                        .backgroundMusic(Musics.createGameMusic(SoundEvents.AMBIENT_SOUL_SAND_VALLEY_LOOP))
+                        .ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS)
+                        .ambientParticle(new AmbientParticleSettings(ParticleTypes.ASH, 0.00625F))
+                        .build())
+                .mobSpawnSettings(nurnSpawning().build())
+                .generationSettings(nurnGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
+
     public static Biome makeBiomeAshMountain(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
         mordorGen(placedFeatureGetter, carverGetter);
         mordorSpawning();
