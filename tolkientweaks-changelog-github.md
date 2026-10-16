@@ -1,5 +1,11 @@
 # Tolkien Tweaks — Changelog
 
+## [Unreleased]
+
+### Changed
+
+- The dwarven, human and Nurn villages lay the mod's stone path block where a vanilla village lays a dirt path. Their streets, the stubs that close a road off and the fountain plaza still behave the way vanilla's do - a tenth of a street still grows over, and a street crossing water is still bridged - while the driveway and the porch at each house's door are the block outright. A Nurn village's roads and plaza stay dark stone, because the desert streets it is built from never carried a dirt path.
+
 ## Entity AI and behavior
 
 - Changed `meleeGoal` and `bowGoal` visibility from `private` to `protected` in `TolkienMonsterEntity` to allow subclass access.
@@ -13,7 +19,6 @@
 
 - Converted desert, dwarf, elven, hobbit, and human houses into villages with connected paths and driveways, wells or fountains, bells, farms, decorations, animals, and villagers. Existing Tolkien inhabitants are retained.
 - Villages generate in Haradwaith, Iron Hills, Lorinand, Shire, and Gladden Fields respectively, using one shared placement grid instead of independent house clusters.
-- Added village pool, template, and structure-tag datagen, preserving original house templates and saved structure IDs.
 
 ### Flying mobs
 

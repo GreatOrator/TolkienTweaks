@@ -21,7 +21,10 @@ import java.io.InputStream;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-/** Derives village-ready copies when datagen runs; users keep editing the original house NBTs. */
+/**
+ * Derives the village-ready copies - houses with their porch and residents, town centres, roads and
+ * villagers - when datagen runs; users keep editing the original house NBTs.
+ */
 public final class TolkienVillageTemplateProvider implements DataProvider {
     private final PackOutput output;
 
@@ -47,6 +50,11 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
             try {
                 for (var village : TolkienVillageProvider.VILLAGES_BY_STYLE) {
                     write(cache, village.houseTemplate(), prepareHouse(village, templates));
+                    // A village that lays this mod's path block starts from a copy of the town centre
+                    // with the paths in its plaza swapped too, the sockets included.
+                    if (village.rewiresStreets()) {
+                        write(cache, TolkienVillageProvider.townCentre(village), prepareTownCentre(village, templates));
+                    }
                     for (String name : TolkienVillageProvider.VILLAGERS) {
                         write(cache, TolkienVillageProvider.villagerTemplate(village, name), prepareVillager(village, name, templates));
                     }
@@ -77,7 +85,11 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
             var state = (CompoundTag) tag;
             if (state.getString("Name").endsWith("_bed")) state.getCompound("Properties").putString("occupied", "false");
         }
-        putState(house, village.preparedEntrance().below(), "minecraft:dirt_path");
+        // The house's own path blocks, and the porch in front of its door, are this mod's path
+        // block in a village that lays one; the source templates still carry vanilla's grass path.
+        if (village.laysStonePath()) layStonePath(house);
+        putState(house, village.preparedEntrance().below(),
+                village.laysStonePath() ? TolkienVillageProvider.stonePathBlock() : "minecraft:dirt_path");
         addConnector(house, village.preparedEntrance(), village.orientation(), "minecraft:building_entrance",
                 "minecraft:empty", "minecraft:air");
         addConnector(house, village.residentFloor().offset(shift), "up_north", "minecraft:bottom",
@@ -123,7 +135,36 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
         }
     }
 
+    /** The town centre as a village that lays its own path block builds it: its paths swapped. */
+    public static CompoundTag prepareTownCentre(TolkienVillageProvider.Village village,
+                                                TemplateSource templates) throws IOException {
+        CompoundTag centre = read(TolkienVillageProvider.vanillaTownCentre(village), templates);
+        layStonePath(centre);
+        return centre;
+    }
+
+    /**
+     * Swaps every path block in a template for this mod's own: the palette entries that the blocks
+     * list points at, and the jigsaw sockets that write a path block once their neighbour connects.
+     * A socket's final state is set straight into the world after the processors have run, so
+     * renaming the palette alone would leave a vanilla path behind at each of them.
+     */
+    private static void layStonePath(CompoundTag template) {
+        String stone = TolkienVillageProvider.stonePathBlock();
+        for (var tag : template.getList("palette", Tag.TAG_COMPOUND)) {
+            var state = (CompoundTag) tag;
+            if (state.getString("Name").equals("minecraft:dirt_path")) state.putString("Name", stone);
+        }
+        for (var tag : template.getList("blocks", Tag.TAG_COMPOUND)) {
+            var nbt = ((CompoundTag) tag).getCompound("nbt");
+            if (nbt.getString("final_state").equals("minecraft:dirt_path")) nbt.putString("final_state", stone);
+        }
+    }
+
     public static CompoundTag prepareRoad(TolkienVillageProvider.Street street, TemplateSource templates) throws IOException {
+        // The street surface is left as the vanilla template wrote it, because the road pool's own
+        // processor is what lays the village's path block there - keeping the grass patches a tenth
+        // of a plains street grows over and the plank bridge where one crosses water.
         CompoundTag road = read(street.source(), templates);
         var palette = road.getList("palette", Tag.TAG_COMPOUND);
         var blocks = road.getList("blocks", Tag.TAG_COMPOUND);
@@ -147,8 +188,13 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
             };
             removeBlock(road, old);
             for (BlockPos step = old; ; step = step.relative(facing)) {
-                // A short driveway connects the reserved road edge to the original path.
-                putState(road, step.below(), street.style().equals("desert") ? "minecraft:sandstone" : "minecraft:dirt_path");
+                // A short driveway connects the reserved road edge to the original path. The
+                // driveway is this mod's own block in a village that lays one, and the vanilla
+                // material otherwise: sandstone down from the desert streets, the dirt path the
+                // plains ones use. It is written in rather than put through the street rules so
+                // the strip at each house's door is solid, not mottled with grass.
+                putState(road, step.below(), street.laysStonePath() ? TolkienVillageProvider.stonePathBlock()
+                        : street.style().equals("desert") ? "minecraft:sandstone" : "minecraft:dirt_path");
                 if (step.equals(edge)) break;
             }
             coordinates.set(0, IntTag.valueOf(edge.getX())); coordinates.set(2, IntTag.valueOf(edge.getZ()));
