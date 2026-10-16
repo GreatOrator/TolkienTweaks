@@ -52,7 +52,7 @@ public class TrinketTableContainer extends TolkienContainer implements RecipeInp
         addPlayerHotbar(inv, -15, 56);
 
         this.addSlot(new TrinketSlot(this.tileEntity.itemHandler, TrinketTableBlockEntity.TRINKET_SLOT, 23, 15, TEXTURE_LOC_SLOT_TRINKET));
-        this.addSlot(new PotionSlot(this.tileEntity.itemHandler, TrinketTableBlockEntity.POTION_SLOT, 45, 15, TEXTURE_LOC_SLOT_POTION));
+        this.addSlot(new PotionSlot(this.level, this.tileEntity.itemHandler, TrinketTableBlockEntity.POTION_SLOT, 45, 15, TEXTURE_LOC_SLOT_POTION));
         this.addSlot(new GemSlot(this.tileEntity.itemHandler, TrinketTableBlockEntity.GEM_SLOT, 34, 55, TEXTURE_LOC_SLOT_GEM));
         this.addSlot(new OutputSlot(this.tileEntity.itemHandler, TrinketTableBlockEntity.OUTPUT_SLOT, 91, 35));
 
