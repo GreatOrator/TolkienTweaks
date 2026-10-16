@@ -8,6 +8,7 @@ import com.greatorator.tolkienmobs.init.TolkienRecipesTypes;
 import com.greatorator.tolkienmobs.item.custom.TrinketItem;
 import com.greatorator.tolkienmobs.recipe.TrinketRecipe;
 import com.greatorator.tolkienmobs.recipe.TrinketRecipeInput;
+import com.greatorator.tolkienmobs.util.GeneralUtility;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -39,13 +40,16 @@ public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuP
     public static final int GEM_SLOT = 2;
     public static final int OUTPUT_SLOT = 3;
     private static final int DEFAULT_MAX_PROGRESS = 100;
+    /** One gem and one repair material undo this much damage; anything past it needs another pair. */
+    private static final int REPAIR_PER_OPERATION = 1000;
 
     public final ItemStackHandler itemHandler = new ItemStackHandler(4) {
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
             return switch (slot) {
-                case TRINKET_SLOT -> stack.getItem() instanceof TrinketItem;
-                case POTION_SLOT -> stack.getItem() instanceof PotionItem;
+                case TRINKET_SLOT -> stack.getItem() instanceof TrinketItem || GeneralUtility.isRepairTarget(stack);
+                case POTION_SLOT -> stack.getItem() instanceof PotionItem
+                        || GeneralUtility.isRepairMaterialFor(getStackInSlot(TRINKET_SLOT), stack);
                 case GEM_SLOT -> stack.is(TolkienItems.GEM_AMMOLITE.get());
                 default -> false;
             };
@@ -145,13 +149,20 @@ public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuP
                 .getRecipeFor(TolkienRecipesTypes.TRINKET_TABLE_TYPE.get(), input, level);
         ItemStack result = recipe.map(holder -> holder.value().assemble(input, level.registryAccess()))
                 .orElse(ItemStack.EMPTY);
-        boolean crafting = !result.isEmpty() && canAcceptOutput(result);
+        // With no trinket recipe to run, a damaged tool, its repair material and a gem repair the
+        // tool where it lies; the trinket recipe hands its result over to the output slot instead.
+        boolean repairing = result.isEmpty() && !repairedTool().isEmpty();
+        boolean working = repairing || (!result.isEmpty() && canAcceptOutput(result));
         int previousProgress = progress;
 
-        if (crafting) {
+        if (working) {
             progress++;
             if (progress >= maxProgress) {
-                craftItem(recipe.orElseThrow().value(), result);
+                if (repairing) {
+                    repairTool();
+                } else {
+                    craftItem(recipe.orElseThrow().value(), result);
+                }
                 progress = 0;
             }
         } else {
@@ -160,8 +171,8 @@ public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuP
         if (previousProgress != progress) {
             setChanged();
         }
-        if (state.getValue(TrinketTableBlock.LIT) != crafting) {
-            level.setBlockAndUpdate(pos, state.setValue(TrinketTableBlock.LIT, crafting));
+        if (state.getValue(TrinketTableBlock.LIT) != working) {
+            level.setBlockAndUpdate(pos, state.setValue(TrinketTableBlock.LIT, working));
         }
     }
 
@@ -191,6 +202,31 @@ public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuP
 
         ItemStack output = result.copyWithCount(result.getCount() + itemHandler.getStackInSlot(OUTPUT_SLOT).getCount());
         itemHandler.setStackInSlot(OUTPUT_SLOT, output);
+    }
+
+    /** The tool in the trinket slot as the table would repair it, empty when it would not. */
+    private ItemStack repairedTool() {
+        ItemStack tool = itemHandler.getStackInSlot(TRINKET_SLOT);
+        if (!GeneralUtility.isRepairMaterialFor(tool, itemHandler.getStackInSlot(POTION_SLOT))) {
+            return ItemStack.EMPTY;
+        }
+        if (!itemHandler.getStackInSlot(GEM_SLOT).is(TolkienItems.GEM_AMMOLITE.get())) {
+            return ItemStack.EMPTY;
+        }
+        ItemStack repaired = tool.copyWithCount(1);
+        repaired.setDamageValue(tool.getDamageValue() - Math.min(tool.getDamageValue(), REPAIR_PER_OPERATION));
+        return repaired;
+    }
+
+    /** Spends one gem and one repair material on the tool in its slot. */
+    private void repairTool() {
+        ItemStack repaired = repairedTool();
+        if (repaired.isEmpty()) {
+            return;
+        }
+        itemHandler.extractItem(POTION_SLOT, 1, false);
+        itemHandler.extractItem(GEM_SLOT, 1, false);
+        itemHandler.setStackInSlot(TRINKET_SLOT, repaired);
     }
 
     @Nullable
