@@ -48,7 +48,7 @@ public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuP
             return switch (slot) {
                 case TRINKET_SLOT -> stack.getItem() instanceof TrinketItem || GeneralUtility.isRepairTarget(stack);
                 case POTION_SLOT -> stack.getItem() instanceof PotionItem
-                        || GeneralUtility.isRepairMaterialFor(getStackInSlot(TRINKET_SLOT), stack);
+                        || GeneralUtility.isRepairMaterialFor(level, getStackInSlot(TRINKET_SLOT), stack);
                 case GEM_SLOT -> stack.is(TolkienItems.GEM_AMMOLITE.get());
                 default -> false;
             };
@@ -206,7 +206,7 @@ public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuP
     /** The tool in the trinket slot as the table would repair it, empty when it would not. */
     private ItemStack repairedTool() {
         ItemStack tool = itemHandler.getStackInSlot(TRINKET_SLOT);
-        if (!GeneralUtility.isRepairMaterialFor(tool, itemHandler.getStackInSlot(POTION_SLOT))) {
+        if (!GeneralUtility.isRepairMaterialFor(level, tool, itemHandler.getStackInSlot(POTION_SLOT))) {
             return ItemStack.EMPTY;
         }
         if (!itemHandler.getStackInSlot(GEM_SLOT).is(TolkienItems.GEM_AMMOLITE.get())) {

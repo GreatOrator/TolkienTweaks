@@ -427,10 +427,11 @@ public class GeneralUtility {
     }
 
     /**
-     * Whether the material is one this stack is repaired with - the same test the anvil makes, so
-     * a diamond tool takes diamonds and a mithril tool takes mithril ingots.
+     * Whether the material is one this stack is repaired with - a data pack's repair material entry
+     * when one covers the tool, and otherwise the same test the anvil makes, so a diamond tool takes
+     * diamonds and a mithril tool takes mithril ingots.
      */
-    public static boolean isRepairMaterialFor(ItemStack stack, ItemStack material) {
-        return isRepairTarget(stack) && !material.isEmpty() && stack.getItem().isValidRepairItem(stack, material);
+    public static boolean isRepairMaterialFor(@Nullable LevelAccessor level, ItemStack stack, ItemStack material) {
+        return isRepairTarget(stack) && !material.isEmpty() && RepairMaterials.repairs(level, stack, material);
     }
 }
