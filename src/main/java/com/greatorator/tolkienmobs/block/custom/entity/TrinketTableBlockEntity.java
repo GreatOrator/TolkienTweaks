@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.block.custom.entity;
 
+import com.greatorator.tolkienmobs.TolkienMobsConfig;
 import com.greatorator.tolkienmobs.block.custom.TrinketTableBlock;
 import com.greatorator.tolkienmobs.containers.TrinketTableContainer;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
@@ -40,8 +41,6 @@ public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuP
     public static final int GEM_SLOT = 2;
     public static final int OUTPUT_SLOT = 3;
     private static final int DEFAULT_MAX_PROGRESS = 100;
-    /** One gem and one repair material undo this much damage; anything past it needs another pair. */
-    private static final int REPAIR_PER_OPERATION = 1000;
 
     public final ItemStackHandler itemHandler = new ItemStackHandler(4) {
         @Override
@@ -213,8 +212,10 @@ public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuP
         if (!itemHandler.getStackInSlot(GEM_SLOT).is(TolkienItems.GEM_AMMOLITE.get())) {
             return ItemStack.EMPTY;
         }
+        // One gem and one repair material undo this much damage; anything past it needs another pair.
+        int perOperation = Math.max(1, TolkienMobsConfig.trinketRepairAmount);
         ItemStack repaired = tool.copyWithCount(1);
-        repaired.setDamageValue(tool.getDamageValue() - Math.min(tool.getDamageValue(), REPAIR_PER_OPERATION));
+        repaired.setDamageValue(tool.getDamageValue() - Math.min(tool.getDamageValue(), perOperation));
         return repaired;
     }
 
