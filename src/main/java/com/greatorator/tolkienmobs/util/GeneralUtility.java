@@ -417,4 +417,20 @@ public class GeneralUtility {
         byteBuffer.putLong(uuid.getLeastSignificantBits());
         return new MessageSignature(byteBuffer.array());
     }
+
+    /**
+     * A tool, weapon or piece of gear the trinket table can work on: something with durability that
+     * has taken damage. Trinkets and anything else without durability are left for the recipes.
+     */
+    public static boolean isRepairTarget(ItemStack stack) {
+        return stack.isDamageableItem() && stack.getDamageValue() > 0;
+    }
+
+    /**
+     * Whether the material is one this stack is repaired with - the same test the anvil makes, so
+     * a diamond tool takes diamonds and a mithril tool takes mithril ingots.
+     */
+    public static boolean isRepairMaterialFor(ItemStack stack, ItemStack material) {
+        return isRepairTarget(stack) && !material.isEmpty() && stack.getItem().isValidRepairItem(stack, material);
+    }
 }
