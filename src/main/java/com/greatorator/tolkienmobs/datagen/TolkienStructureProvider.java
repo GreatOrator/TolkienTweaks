@@ -46,6 +46,9 @@ public final class TolkienStructureProvider {
             site(TolkienStructures.GOLLUM_CAVE, TolkienBiomes.HITHAEGLIR, 16, 6, 193764826, Layout.top(-32)),
             new Definition(TolkienStructures.HOUSE_DESERT, "tolkienmobs:ttmhouse_desert",
                     List.of(TolkienBiomes.HARADWAITH), 32, 8, 193764827, 0),
+            // Nurn's village is built from the desert house, in dark stone, by its own processors.
+            new Definition(TolkienStructures.HOUSE_NURN, "tolkienmobs:ttmhouse_nurn",
+                    List.of(TolkienBiomes.NURN), 32, 8, 193764838, 0),
             new Definition(TolkienStructures.HOUSE_DWARF, "tolkienmobs:ttmhouse_dwarf",
                     List.of(TolkienBiomes.IRON_HILLS), 32, 8, 193764828, 0),
             new Definition(TolkienStructures.HOUSE_ELVEN, "tolkienmobs:ttmhouse_elven",

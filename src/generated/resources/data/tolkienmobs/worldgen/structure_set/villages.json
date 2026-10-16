@@ -11,6 +11,10 @@
       "weight": 1
     },
     {
+      "structure": "tolkienmobs:ttmhouse_nurn",
+      "weight": 1
+    },
+    {
       "structure": "tolkienmobs:ttmhouse_dwarf",
       "weight": 1
     },

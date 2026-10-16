@@ -4,6 +4,7 @@ import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.world.components.placements.TolkienPlacedFeatures;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.data.worldgen.BiomeDefaultFeatures;
+import net.minecraft.data.worldgen.Carvers;
 import net.minecraft.data.worldgen.placement.MiscOverworldPlacements;
 import net.minecraft.data.worldgen.placement.VegetationPlacements;
 import net.minecraft.util.Mth;
@@ -259,9 +260,27 @@ public abstract class BiomeHelper {
 				.addMobCharge(TolkienEntities.ENTITY_TTM_MORDORORC.get(), 0.6, 0.15)
 				.addMobCharge(TolkienEntities.ENTITY_TTM_URUKHAI.get(), 0.6, 0.15)
 				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15);
-	}
+	}    /** Nurn is worked ground inside Mordor, so the same wardens patrol it. */
+    public static MobSpawnSettings.Builder nurnSpawning() {
 
-	public static MobSpawnSettings.Builder marshesSpawning() {
+        return new MobSpawnSettings.Builder()
+                .addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 20, 1, 4))
+                .addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_WARG.get(), 20, 1, 3))
+                .addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_MORDORORC.get(), 25, 1, 4))
+                .addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_URUKHAI.get(), 35, 1, 2))
+                .addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 10, 1, 4))
+                .addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.SHEEP, 8, 1, 3))
+                .addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.COW, 8, 1, 3))
+                .addMobCharge(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 0.6, 0.15)
+                .addMobCharge(TolkienEntities.ENTITY_TTM_WARG.get(), 0.6, 0.15)
+                .addMobCharge(TolkienEntities.ENTITY_TTM_MORDORORC.get(), 0.6, 0.15)
+                .addMobCharge(TolkienEntities.ENTITY_TTM_URUKHAI.get(), 0.6, 0.15)
+                .addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15)
+                .addMobCharge(EntityType.SHEEP, 0.6, 0.15)
+                .addMobCharge(EntityType.COW, 0.6, 0.15);
+    }
+
+    public static MobSpawnSettings.Builder marshesSpawning() {
 
         return new MobSpawnSettings.Builder()
 				.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_FELLSPIRIT.get(), 25, 1, 3))
@@ -518,9 +537,37 @@ public abstract class BiomeHelper {
 				.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.PLACED_SMALL_ANDESITE)
 				.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.PLACED_SMALL_DIORITE)
 				.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.PLACED_SMALL_GRANITE);
-	}
+	}    /**
+     * Nurn's land, without a trace of the vanilla lava. The vanilla springs and lava lakes are
+     * deliberately left out - the aquifer still puts lava in the deepest bedrock layers, which is
+     * the dimension's own floor rather than a biome feature - and water is the only fluid added.
+     */
+    public static BiomeGenerationSettings.Builder nurnGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
 
-	public static BiomeGenerationSettings.Builder marshesGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        biome.addFeature(GenerationStep.Decoration.LAKES, TolkienPlacedFeatures.PLACED_NURN_LAKE);
+        biome.addFeature(GenerationStep.Decoration.FLUID_SPRINGS, MiscOverworldPlacements.SPRING_WATER);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_PLAIN);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.FLOWER_PLAINS);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.BROWN_MUSHROOM_NORMAL);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.RED_MUSHROOM_NORMAL);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_RANDOM_RUBBLE);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_DEADWOOD_FALLEN_LOG);
+        biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.MORGULIRON_ORE_PLACED_KEY);
+
+        biome.addCarver(GenerationStep.Carving.AIR, Carvers.CAVE);
+        biome.addCarver(GenerationStep.Carving.AIR, Carvers.CAVE_EXTRA_UNDERGROUND);
+        biome.addCarver(GenerationStep.Carving.AIR, Carvers.CANYON);
+
+        BiomeDefaultFeatures.addDefaultMonsterRoom(biome);
+        BiomeDefaultFeatures.addDefaultMushrooms(biome);
+        BiomeDefaultFeatures.addDefaultUndergroundVariety(biome);
+        addLegacyOres(biome);
+
+        return biome;
+    }
+
+    public static BiomeGenerationSettings.Builder marshesGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
 
         return new TolkienBiomeGenerationSettings(featureGetter, carverGetter)
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.TREES_SWAMP)

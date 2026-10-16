@@ -1,0 +1,104 @@
+{
+  "elements": [
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "tolkienmobs:village/roads/nurn/corner_01",
+        "processors": "tolkienmobs:nurn_dark_stone",
+        "projection": "terrain_matching"
+      },
+      "weight": 3
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "tolkienmobs:village/roads/nurn/corner_02",
+        "processors": "tolkienmobs:nurn_dark_stone",
+        "projection": "terrain_matching"
+      },
+      "weight": 3
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "tolkienmobs:village/roads/nurn/straight_01",
+        "processors": "tolkienmobs:nurn_dark_stone",
+        "projection": "terrain_matching"
+      },
+      "weight": 4
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "tolkienmobs:village/roads/nurn/straight_02",
+        "processors": "tolkienmobs:nurn_dark_stone",
+        "projection": "terrain_matching"
+      },
+      "weight": 4
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "tolkienmobs:village/roads/nurn/straight_03",
+        "processors": "tolkienmobs:nurn_dark_stone",
+        "projection": "terrain_matching"
+      },
+      "weight": 3
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "tolkienmobs:village/roads/nurn/crossroad_01",
+        "processors": "tolkienmobs:nurn_dark_stone",
+        "projection": "terrain_matching"
+      },
+      "weight": 3
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "tolkienmobs:village/roads/nurn/crossroad_02",
+        "processors": "tolkienmobs:nurn_dark_stone",
+        "projection": "terrain_matching"
+      },
+      "weight": 3
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "tolkienmobs:village/roads/nurn/crossroad_03",
+        "processors": "tolkienmobs:nurn_dark_stone",
+        "projection": "terrain_matching"
+      },
+      "weight": 3
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "tolkienmobs:village/roads/nurn/square_01",
+        "processors": "tolkienmobs:nurn_dark_stone",
+        "projection": "terrain_matching"
+      },
+      "weight": 3
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "tolkienmobs:village/roads/nurn/square_02",
+        "processors": "tolkienmobs:nurn_dark_stone",
+        "projection": "terrain_matching"
+      },
+      "weight": 3
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "tolkienmobs:village/roads/nurn/turn_01",
+        "processors": "tolkienmobs:nurn_dark_stone",
+        "projection": "terrain_matching"
+      },
+      "weight": 3
+    }
+  ],
+  "fallback": "tolkienmobs:village/roads/nurn/terminators"
+}

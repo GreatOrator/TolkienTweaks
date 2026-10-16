@@ -117,6 +117,7 @@ public class TolkienConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> COPPER_ORE = registerKey("copper_ore");
     public static final ResourceKey<ConfiguredFeature<?, ?>> BLOOM_DECAY_MUSHROOMS = registerKey("bloom_decay_mushrooms");
     public static final ResourceKey<ConfiguredFeature<?, ?>> DECAY_BLOOM_MUSHROOMS = registerKey("decay_bloom_mushrooms");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> NURN_LAKE = registerKey("lake/nurn_lake");
 
     public static ResourceKey<ConfiguredFeature<?, ?>> registerKey(String name) {
         return ResourceKey.create(Registries.CONFIGURED_FEATURE, TolkienMobsMain.prefix(name));
@@ -411,5 +412,6 @@ public class TolkienConfiguredFeatures {
         context.register(MUD_SPLATTER, new ConfiguredFeature<>(TolkienFeatures.MUD_SPLATTER.get(), NoneFeatureConfiguration.INSTANCE));
         context.register(BLOOM_DECAY_MUSHROOMS, new ConfiguredFeature<>(TolkienFeatures.UNDERGROUND_PLANTS.get(), new BlockStateConfiguration(TolkienBlocks.MUSHROOM_BLOOM_DECAY.get().defaultBlockState())));
         context.register(DECAY_BLOOM_MUSHROOMS, new ConfiguredFeature<>(TolkienFeatures.UNDERGROUND_PLANTS.get(), new BlockStateConfiguration(TolkienBlocks.MUSHROOM_DECAY_BLOOM.get().defaultBlockState())));
+        context.register(NURN_LAKE, new ConfiguredFeature<>(TolkienFeatures.NURN_LAKE.get(), FeatureConfiguration.NONE));
     }
 }

@@ -51,7 +51,7 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
                         write(cache, TolkienVillageProvider.villagerTemplate(village, name), prepareVillager(village, name, templates));
                     }
                 }
-                for (String style : java.util.List.of("plains", "desert")) {
+                for (String style : TolkienVillageProvider.ROAD_STYLES.keySet()) {
                     for (var street : TolkienVillageProvider.streets(style)) write(cache, street.template(), prepareRoad(street, templates));
                 }
             } catch (IOException error) {
@@ -61,7 +61,7 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
     }
 
     public static CompoundTag prepareHouse(TolkienVillageProvider.Village village, TemplateSource templates) throws IOException {
-        CompoundTag house = read(ResourceLocation.fromNamespaceAndPath("tolkienmobs", "ttmhouse_" + village.style()), templates);
+        CompoundTag house = read(village.houseSource(), templates);
         // Add a one-block porch outside the original footprint, keeping the entire house intact.
         BlockPos shift = village.templateShift();
         for (var tag : house.getList("blocks", Tag.TAG_COMPOUND)) shiftList(((CompoundTag) tag).getList("pos", Tag.TAG_INT), shift, false);

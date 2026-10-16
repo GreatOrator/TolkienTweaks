@@ -44,3 +44,26 @@ placed features, tags or loot, regenerate and commit the generated JSON alongsid
 - Mordor, the Ash Mountains and most other Tolkien biomes have `"carvers": {}`, and the mod's own
   `tolkien_caves` and `highland_caves` carvers (which deliberately carve `CAVE_AIR`) are registered
   and datagenned but attached to no biome, so they never run.
+
+## Nurn, the watered half of that country
+
+- Nurn's water is the aquifer's water, not a biome feature. Sea level is 63 and the lowland sits at
+  or below it, so the aquifer floods it at y=62; measured over 289 chunks of the northern lowland,
+  3681 of 14208 Nurn columns are water topped and the dry ones beside them are grass or dark stone.
+  That standing water is what the biome's own lakes are cut into, and it is why a Nurn lake never
+  shows as a body "above sea level" in a heightmap audit.
+- Nurn places no lava of its own (`BiomeHelper.nurnGen` has no lava lake and no lava spring). The
+  lava that turns up under Nurn columns belongs to the vanilla cave biomes - lush caves hold lava
+  lakes down there in every biome of the world - and to the dimension floor below y=-54. Highest
+  lava block in a Nurn biome cell measured 88 blocks below the surface, none at or above it.
+- Do not give the Nurn lake feature a global flatness test. Nurn is eroded badlands country: over
+  24 chunks of untouched terrain there was no disc of radius 24 whose ground varied by 3 blocks or
+  less, and a feature that insisted on one never placed a single lake. `NurnLakeFeature` instead
+  takes its water line from the lowest ground in the disc, digs only the ground within `MAX_BANK` of
+  it, keeps the largest connected body, and lays grass `SHORE_WIDTH` blocks out from the water.
+- Vanilla badlands strata still colour a few Nurn columns at biome borders. The surface system and
+  `execute if biome` both read the fuzzed biome manager, so within a few blocks of a wooded badlands
+  or jungle cell the badlands terracotta banding runs even where the stored biome cell is Nurn
+  (355 such blocks across 2272 fresh Nurn columns). It is a boundary effect, and it is also why a
+  Nurn village can have a sandstone or terracotta block in its outskirts that the village did not
+  place.

@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.init;
 
 import com.greatorator.tolkienmobs.world.components.structure.SurfaceStructures;
 import com.greatorator.tolkienmobs.world.components.structure.TemplateLayoutStructure;
+import com.greatorator.tolkienmobs.world.components.structure.VillageStructure;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -24,6 +25,7 @@ public class TolkienStructures {
     public static final ResourceKey<Structure> DARK_TOWER = key("ttmdark_tower");
     public static final ResourceKey<Structure> GOLLUM_CAVE = key("ttmgollum_cave");
     public static final ResourceKey<Structure> HOUSE_DESERT = key("ttmhouse_desert");
+    public static final ResourceKey<Structure> HOUSE_NURN = key("ttmhouse_nurn");
     public static final ResourceKey<Structure> HOUSE_DWARF = key("ttmhouse_dwarf");
     public static final ResourceKey<Structure> HOUSE_ELVEN = key("ttmhouse_elven");
     public static final ResourceKey<Structure> HOUSE_HUMAN = key("ttmhouse_human");
@@ -46,6 +48,10 @@ public class TolkienStructures {
 
     public static final DeferredHolder<StructureType<?>, StructureType<TemplateLayoutStructure>> TEMPLATE_LAYOUT =
             STRUCTURE.register("template_layout", () -> structureCodec(TemplateLayoutStructure.CODEC));
+
+    /** Villages that may only start on grass instead of anywhere in their biome. */
+    public static final DeferredHolder<StructureType<?>, StructureType<VillageStructure>> VILLAGE =
+            STRUCTURE.register("village", () -> structureCodec(VillageStructure.CODEC));
 
     private static <T extends Structure> StructureType<T> structureCodec(MapCodec<T> structureCodec) {
         return () -> structureCodec;
