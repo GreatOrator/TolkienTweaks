@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.datagen;
 
 import com.greatorator.tolkienmobs.init.TolkienBiomes;
+import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienStructures;
 import com.greatorator.tolkienmobs.world.components.structure.VillageStructure;
 import com.mojang.datafixers.util.Pair;
@@ -8,6 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.data.worldgen.Pools;
@@ -36,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 /** Vanilla village assembly, with Tolkien houses selected through per-structure pool aliases. */
 public final class TolkienVillageProvider {
@@ -55,8 +58,33 @@ public final class TolkienVillageProvider {
     );
     /** The vanilla villager templates datagen copies for every village; weights match vanilla. */
     public static final List<String> VILLAGERS = List.of("nitwit", "baby", "unemployed");
+    /**
+     * The villages that lay this mod's own path block rather than a vanilla one. The desert style
+     * has no path block of its own - its streets are sandstone - so for Nurn this reaches only the
+     * path at each house's door and the driveway that meets it.
+     */
+    private static final Set<String> STONE_PATH_STYLES = Set.of("dwarf", "human", "nurn");
 
     private TolkienVillageProvider() {}
+
+    /** True when the village with this style lays this mod's path block. */
+    public static boolean laysStonePath(String style) {
+        return STONE_PATH_STYLES.contains(style);
+    }
+
+    /** That block, read from the registry so a rename can never leave a stale id in a template. */
+    public static String stonePathBlock() {
+        return BuiltInRegistries.BLOCK.getKey(TolkienBlocks.STONE_PATH.get()).toString();
+    }
+
+    /**
+     * True when the village with this road style has to rewire the vanilla street pieces it builds
+     * from. The plains streets, their terminator stubs and the fountain town centre all lay a dirt
+     * path; the desert style the other villages use lays sandstone and never a dirt path.
+     */
+    private static boolean rewiresStreets(String style) {
+        return VILLAGES_BY_STYLE.stream().anyMatch(village -> village.style().equals(style) && village.rewiresStreets());
+    }
 
     public static Optional<Village> village(ResourceKey<Structure> key) {
         return VILLAGES_BY_STYLE.stream().filter(village -> village.structure().equals(key)).findFirst();
@@ -103,9 +131,9 @@ public final class TolkienVillageProvider {
         var processors = context.lookup(Registries.PROCESSOR_LIST);
         var placed = context.lookup(Registries.PLACED_FEATURE);
         var empty = pools.getOrThrow(Pools.EMPTY);
-        String center = village.vanillaStyle().equals("desert")
-                ? "village/desert/town_centers/desert_meeting_point_1"
-                : "village/plains/town_centers/plains_fountain_01";
+        // A village that swaps the paths of its vanilla pieces starts from its own copy of the town
+        // centre, so the paths in the plaza are swapped along with the ones under the streets.
+        var center = (village.rewiresStreets() ? townCentre(village) : vanillaTownCentre(village)).toString();
         var stone = village.darkStone() ? processors.getOrThrow(TolkienProcessorLists.NURN_DARK_STONE) : null;
         // A water feature and bell in every start; streets and decorations are vanilla.
         context.register(village.startPool(), new StructureTemplatePool(empty,
@@ -139,19 +167,35 @@ public final class TolkienVillageProvider {
         return ResourceLocation.fromNamespaceAndPath("tolkienmobs", "village/" + village.style() + "/villagers/" + name);
     }
 
+    /** Where datagen writes the village's copy of the town centre it starts from. */
+    public static ResourceLocation townCentre(Village village) {
+        return ResourceLocation.fromNamespaceAndPath("tolkienmobs", "village/" + village.style() + "/town_center");
+    }
+
+    /** The vanilla start piece that copy is derived from: plains styles get a fountain, desert a well. */
+    public static ResourceLocation vanillaTownCentre(Village village) {
+        return ResourceLocation.withDefaultNamespace(village.vanillaStyle().equals("desert")
+                ? "village/desert/town_centers/desert_meeting_point_1"
+                : "village/plains/town_centers/plains_fountain_01");
+    }
+
     public static ResourceKey<StructureTemplatePool> roadPool(String style) {
         return ResourceKey.create(Registries.TEMPLATE_POOL, ResourceLocation.fromNamespaceAndPath("tolkienmobs", "village/roads/" + style));
     }
 
     /**
      * The road pools datagen builds, keyed by their own style: each one is filled with the vanilla
-     * style's street shapes. A village that recolours its blocks needs roads of its own, because a
-     * road pool is shared by every village that uses the style.
+     * style's street shapes. A village that recolours its blocks, or lays its own path block, needs
+     * roads of its own, because a road pool is shared by every village that uses the style. That is
+     * why the dwarven and human villages do not simply borrow the plains roads the elven and hobbit
+     * villages drive on.
      */
     public static final Map<String, String> ROAD_STYLES = Map.of(
             "desert", "desert",
             "plains", "plains",
-            "nurn", "desert");
+            "nurn", "desert",
+            "dwarf", "plains",
+            "human", "plains");
 
     /** Pool elements take processor holders; a village with no recolouring passes none. */
     private static java.util.function.Function<StructureTemplatePool.Projection, ? extends StructurePoolElement> legacy(
@@ -218,20 +262,27 @@ public final class TolkienVillageProvider {
         var processors = context.lookup(Registries.PROCESSOR_LIST);
         for (String style : ROAD_STYLES.keySet()) {
             String vanillaStyle = ROAD_STYLES.get(style);
-            // Plains streets are levelled, the vanilla desert streets need no processing, and Nurn's
-            // roads are the desert ones with their sandstone traded for dark stone.
+            // Vanilla's plains streets lay a dirt path, so a village that lays this mod's path block
+            // needs a copy of those street rules. The desert streets lay sandstone and need no
+            // processing, and Nurn's roads are the desert ones with their sandstone traded for stone.
+            var pathRules = rewiresStreets(style) ? processors.getOrThrow(TolkienProcessorLists.STONE_PATH_STREETS) : null;
             var recolour = style.equals("nurn") ? processors.getOrThrow(TolkienProcessorLists.NURN_DARK_STONE) : null;
-            var processor = style.equals("plains") ? processors.getOrThrow(ProcessorLists.STREET_PLAINS) : recolour;
+            var processor = pathRules != null ? pathRules
+                    : vanillaStyle.equals("plains") ? processors.getOrThrow(ProcessorLists.STREET_PLAINS)
+                    : recolour;
             ResourceKey<StructureTemplatePool> terminators = ResourceKey.create(Registries.TEMPLATE_POOL,
                     ResourceLocation.withDefaultNamespace("village/" + vanillaStyle + "/terminators"));
-            if (recolour != null) {
-                // A street that runs out into open ground is closed off by a terminator piece, and the
-                // vanilla pool holds those as raw smooth sandstone. They do not travel through the road
-                // templates, so a recoloured village needs a terminator pool of its own as well.
+            if (pathRules != null || recolour != null) {
+                // A street that runs out into open ground is closed off by a terminator piece. Those
+                // do not travel through the road templates - the vanilla pool holds them as raw
+                // street pieces under vanilla's own street rules - so a recoloured village, or one
+                // that lays its own path, needs a terminator pool of its own as well.
                 ResourceKey<StructureTemplatePool> own = terminatorPool(style);
                 context.register(own, new StructureTemplatePool(pools.getOrThrow(Pools.EMPTY),
-                        List.of(Pair.of(legacy(terminatorTemplate(vanillaStyle, "terminator_01"), recolour), 1),
-                                Pair.of(legacy(terminatorTemplate(vanillaStyle, "terminator_02"), recolour), 1)),
+                        terminatorNames(vanillaStyle).stream()
+                                .map(name -> Pair.<java.util.function.Function<StructureTemplatePool.Projection, ? extends StructurePoolElement>, Integer>of(
+                                        legacy(terminatorTemplate(vanillaStyle, name), processor), 1))
+                                .toList(),
                         StructureTemplatePool.Projection.TERRAIN_MATCHING));
                 terminators = own;
             }
@@ -252,11 +303,23 @@ public final class TolkienVillageProvider {
         return "village/" + vanillaStyle + "/terminators/" + name;
     }
 
+    /** The terminator pieces the vanilla style's own pool holds: four for the plains, two for the desert. */
+    private static List<String> terminatorNames(String vanillaStyle) {
+        return vanillaStyle.equals("plains")
+                ? List.of("terminator_01", "terminator_02", "terminator_03", "terminator_04")
+                : List.of("terminator_01", "terminator_02");
+    }
+
     /** {@code style} is the vanilla style the shape comes from, {@code output} the pool it fills. */
     public record Street(String style, String output, ResourceLocation source, int weight) {
         public ResourceLocation template() {
             return ResourceLocation.fromNamespaceAndPath("tolkienmobs", "village/roads/" + output + "/"
                     + source.getPath().substring(source.getPath().lastIndexOf('/') + 1));
+        }
+
+        /** True when the driveway this shape carries is laid in this mod's path block. */
+        public boolean laysStonePath() {
+            return TolkienVillageProvider.laysStonePath(output);
         }
     }
 
@@ -297,9 +360,23 @@ public final class TolkienVillageProvider {
             return ResourceLocation.fromNamespaceAndPath("tolkienmobs", "ttmhouse_" + (darkStone ? vanillaStyle : style));
         }
 
-        /** A village that recolours its blocks needs roads of its own, or it would redraw its neighbours'. */
+        /** True when this village lays this mod's path block where a vanilla one would lay a path. */
+        public boolean laysStonePath() {
+            return TolkienVillageProvider.laysStonePath(style);
+        }
+
+        /**
+         * True when the vanilla pieces this village builds from lay a dirt path that has to be
+         * swapped for ours. The plains streets, terminator stubs and fountain town centre all
+         * carry one; the desert style hands the other villages sandstone and no path at all.
+         */
+        public boolean rewiresStreets() {
+            return laysStonePath() && vanillaStyle.equals("plains");
+        }
+
+        /** A village that recolours its blocks, or lays its own path, needs roads of its own. */
         public String roadStyle() {
-            return darkStone ? style : vanillaStyle;
+            return darkStone || laysStonePath() ? style : vanillaStyle;
         }
 
         public ResourceKey<StructureTemplatePool> housePool() {

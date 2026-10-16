@@ -3,7 +3,7 @@
     {
       "element": {
         "element_type": "minecraft:legacy_single_pool_element",
-        "location": "minecraft:village/plains/town_centers/plains_fountain_01",
+        "location": "tolkienmobs:village/dwarf/town_center",
         "processors": {
           "processors": []
         },

@@ -5,12 +5,12 @@ The six house structure IDs now start villages using Minecraft's jigsaw village 
 | House style | Biome | Paths, farms, and decorations |
 | --- | --- | --- |
 | Desert | Haradwaith | Vanilla desert village |
-| Dwarf | Iron Hills | Vanilla plains village |
+| Dwarf | Iron Hills | Vanilla plains village, paths in the mod's stone path |
 | Elven | Lorinand | Vanilla plains village |
 | Hobbit | Shire | Vanilla plains village |
-| Human | Gladden Fields | Vanilla plains village |
+| Human | Gladden Fields | Vanilla plains village, paths in the mod's stone path |
 | Orc | Mordor | Vanilla desert village |
-| Nurn | Nurn | Vanilla desert village in dark stone, on grass only |
+| Nurn | Nurn | Vanilla desert village in dark stone, on grass only, house paths in the mod's stone path |
 
 Each style's residents are the mod's own villager-style NPC, chosen by the `resident` field of its `Village` entry: desert/Haradwaith uses Southron, dwarf uses Dwarf, elven uses Elves, hobbit uses Hobbit, human uses Human, and orc uses Orc. Wandering trader variants are never used. Datagen copies vanilla's three villager templates (`nitwit`, `baby`, `unemployed`, weights 1/1/10) once per style into `tolkienmobs:village/<style>/villagers/` and swaps the stored entity for that NPC. Every jigsaw socket that asks vanilla for a villager - your houses' resident connectors as well as vanilla town centers, farms and decorations - is redirected there through a pool alias.
 
@@ -26,6 +26,31 @@ Run with Java 21:
 On Windows, use `gradlew.bat`. The village code needs the resulting JSON and NBT resources before it can generate villages. Datagen replaces the old standalone house placement sets with one `tolkienmobs:villages` set and writes prepared house and road templates under `src/generated/resources/data/tolkienmobs/structure/village/`. Its normal stale-output cleanup removes the old house structure-set JSONs.
 
 Villages appear in newly generated chunks. Existing buildings in explored chunks stay where they are. Original structure IDs are retained so saved structure starts remain readable.
+
+## The stone path of the dwarven, human and Nurn villages
+
+Three villages lay `tolkienmobs:block_stone_path` where a vanilla village lays its dirt path. What
+that takes depends on where the dirt path comes from:
+
+- **Streets.** Vanilla's plains street templates are dirt path, and `minecraft:street_plains` is
+  what turns a tenth of that into grass and a street crossing water into a plank bridge. Rather
+  than losing that, the dwarven and human road pools carry `tolkienmobs:stone_path_streets`, a copy
+  of those same rules with one added at the end that lays the stone path. Nurn is unaffected: the
+  desert streets it is built from are sandstone and never a dirt path.
+- **Terminators.** The pieces that close a road off are not in the street templates and carry
+  vanilla's street rules in the vanilla pool, so a village that lays its own path gets a terminator
+  pool of its own. Vanilla holds four plains terminators and two desert ones; keep
+  `TolkienVillageProvider.terminatorNames` in step with that.
+- **Town centre.** The fountain plaza is a quarter dirt path, so datagen writes the village a copy
+  of it under `tolkienmobs:village/<style>/town_center` and swaps the paths in the palette *and* in
+  the jigsaw sockets, whose `final_state` is set straight into the world after the processors run.
+  A palette rename alone would leave six dirt paths around the fountain.
+- **Houses and driveways.** These are templates datagen writes itself, so the path block is written
+  in directly: each house's porch and the driveway that meets it. Nurn is in this group; its roads
+  and plaza stay dark stone.
+
+A village only earns its own road pool and town centre when its vanilla style actually lays a dirt
+path, which is why the elven and hobbit villages keep driving on the plains roads.
 
 ## Nurn's dark stone village
 
@@ -63,7 +88,7 @@ If you move an entrance or resize a house, update its `Village` entry in `Tolkie
 - `orientation`: the outward facing direction, for example `east_up` or `west_up`.
 - `residentFloor`: a solid floor block with space for a villager directly above it, in original local coordinates. The connector restores that floor after placing the resident.
 
-Derived roads move their house connections to the road template's outer edge and add driveways. This lets the larger Tolkien houses attach without overlapping the reserved road footprint. Vanilla road shapes, weights, terrain matching, and processors are retained. Pool aliases apply to these Tolkien village starts; vanilla villages continue using their own house and street pools.
+Derived roads move their house connections to the road template's outer edge and add driveways. This lets the larger Tolkien houses attach without overlapping the reserved road footprint. Vanilla road shapes, weights and terrain matching are retained, as are vanilla's street processors - except in the villages that lay the mod's stone path, whose pools carry the copy of those rules described above. Pool aliases apply to these Tolkien village starts; vanilla villages continue using their own house and street pools.
 
 ## Verify changes
 

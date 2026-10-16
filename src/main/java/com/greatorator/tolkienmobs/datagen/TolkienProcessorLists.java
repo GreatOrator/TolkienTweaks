@@ -22,16 +22,19 @@ import java.util.List;
  * The desert village is built out of sandstone, and Nurn's village is built out of it too - but out
  * of the dark stone equivalents. Attaching these processors to the village's pool elements leaves
  * the vanilla templates alone and rewrites their blocks as they are placed, which is how the town
- * centre, the farms and the streets are converted along with the houses.
+ * centre, the farms and the streets are converted along with the houses. A village that lays this
+ * mod's own path block uses the same trick to swap the vanilla dirt path under its streets.
  */
 public final class TolkienProcessorLists {
     public static final ResourceKey<StructureProcessorList> NURN_DARK_STONE = registerKey("nurn_dark_stone");
     public static final ResourceKey<StructureProcessorList> NURN_FARMS = registerKey("nurn_farms");
+    public static final ResourceKey<StructureProcessorList> STONE_PATH_STREETS = registerKey("stone_path_streets");
 
     private TolkienProcessorLists() {}
 
     public static void bootstrap(BootstrapContext<StructureProcessorList> context) {
         context.register(NURN_DARK_STONE, new StructureProcessorList(List.of(darkStoneRules())));
+        context.register(STONE_PATH_STREETS, new StructureProcessorList(List.of(stonePathStreets())));
         // The desert farms swap some of their wheat for beetroot and melon stalks. "minecraft:farm_desert"
         // cannot be read from inside this registry's own bootstrap, so those two rules are repeated
         // here: keep them in step with the vanilla list they mirror.
@@ -64,6 +67,26 @@ public final class TolkienProcessorLists {
                 rule(Blocks.CUT_SANDSTONE_SLAB, TolkienBlocks.SLAB_SMOOTH_DARK_STONE.get()),
                 rule(Blocks.SMOOTH_SANDSTONE_SLAB, TolkienBlocks.SLAB_SMOOTH_DARK_STONE.get()),
                 rule(Blocks.SANDSTONE_WALL, TolkienBlocks.WALL_SMOOTH_DARK_STONE.get())));
+    }
+
+    /**
+     * Vanilla's plains streets with the dirt path they lay swapped for this mod's stone path. A
+     * street crossing water becomes a plank bridge and a tenth of the rest grows over, exactly as
+     * the vanilla list does it; only the path block that is left over differs. "minecraft:street_plains"
+     * cannot be read from inside this registry's own bootstrap, so those rules are repeated here:
+     * keep them in step with the vanilla list they mirror.
+     */
+    private static RuleProcessor stonePathStreets() {
+        return new RuleProcessor(List.of(
+                new ProcessorRule(new BlockMatchTest(Blocks.DIRT_PATH), new BlockMatchTest(Blocks.WATER),
+                        Blocks.OAK_PLANKS.defaultBlockState()),
+                new ProcessorRule(new RandomBlockMatchTest(Blocks.DIRT_PATH, 0.1F), AlwaysTrueTest.INSTANCE,
+                        Blocks.GRASS_BLOCK.defaultBlockState()),
+                new ProcessorRule(new BlockMatchTest(Blocks.GRASS_BLOCK), new BlockMatchTest(Blocks.WATER),
+                        Blocks.WATER.defaultBlockState()),
+                new ProcessorRule(new BlockMatchTest(Blocks.DIRT), new BlockMatchTest(Blocks.WATER),
+                        Blocks.WATER.defaultBlockState()),
+                rule(Blocks.DIRT_PATH, TolkienBlocks.STONE_PATH.get())));
     }
 
     private static ProcessorRule rule(Block from, Block to) {

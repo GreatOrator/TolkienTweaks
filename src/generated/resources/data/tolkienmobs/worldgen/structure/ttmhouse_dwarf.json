@@ -11,7 +11,7 @@
     {
       "type": "minecraft:direct",
       "alias": "minecraft:village/plains/streets",
-      "target": "tolkienmobs:village/roads/plains"
+      "target": "tolkienmobs:village/roads/dwarf"
     },
     {
       "type": "minecraft:direct",
