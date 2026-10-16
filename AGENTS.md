@@ -5,6 +5,17 @@ git:
   push_on_success: true
 ---
 
+## Changelog Updates
+- **Requirement**: Whenever you complete a task, fix a bug, or add a feature, you must update `tolkientweaks-changelog-github.md` before finishing the session.
+- **Format**: Follow the [Keep a Changelog](https://keepachangelog.com) standard under an `[Unreleased]` section.
+- **Categories**: Group entries under:
+  - `Added` for new features.
+  - `Changed` for changes in existing functionality.
+  - `Deprecated` for soon-to-be removed features.
+  - `Removed` for now removed features.
+  - `Fixed` for any bug fixes.
+- **Tone**: Write concise, user-facing summary bullet points (do not just dump raw git commit logs).
+
 # Project Core Guidelines & Agent Directives
 
 > **CRITICAL AUTOMATION NOTE:** `push_when_confident` is explicitly set to **TRUE**. 
