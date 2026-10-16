@@ -23,10 +23,12 @@ import java.util.List;
  * of the dark stone equivalents. Attaching these processors to the village's pool elements leaves
  * the vanilla templates alone and rewrites their blocks as they are placed, which is how the town
  * centre, the farms and the streets are converted along with the houses. A village that lays this
- * mod's own path block uses the same trick to swap the vanilla dirt path under its streets.
+ * mod's own path block uses the same trick to swap the vanilla dirt path under its streets, and
+ * Nurn's roads put its path block down in place of the smooth sandstone they walked on.
  */
 public final class TolkienProcessorLists {
     public static final ResourceKey<StructureProcessorList> NURN_DARK_STONE = registerKey("nurn_dark_stone");
+    public static final ResourceKey<StructureProcessorList> NURN_ROADS = registerKey("nurn_roads");
     public static final ResourceKey<StructureProcessorList> NURN_FARMS = registerKey("nurn_farms");
     public static final ResourceKey<StructureProcessorList> STONE_PATH_STREETS = registerKey("stone_path_streets");
 
@@ -34,6 +36,10 @@ public final class TolkienProcessorLists {
 
     public static void bootstrap(BootstrapContext<StructureProcessorList> context) {
         context.register(NURN_DARK_STONE, new StructureProcessorList(List.of(darkStoneRules())));
+        context.register(NURN_ROADS, new StructureProcessorList(ImmutableList.<StructureProcessor>builder()
+                .add(pathSurface())
+                .add(darkStoneRules())
+                .build()));
         context.register(STONE_PATH_STREETS, new StructureProcessorList(List.of(stonePathStreets())));
         // The desert farms swap some of their wheat for beetroot and melon stalks. "minecraft:farm_desert"
         // cannot be read from inside this registry's own bootstrap, so those two rules are repeated
@@ -67,6 +73,17 @@ public final class TolkienProcessorLists {
                 rule(Blocks.CUT_SANDSTONE_SLAB, TolkienBlocks.SLAB_SMOOTH_DARK_STONE.get()),
                 rule(Blocks.SMOOTH_SANDSTONE_SLAB, TolkienBlocks.SLAB_SMOOTH_DARK_STONE.get()),
                 rule(Blocks.SANDSTONE_WALL, TolkienBlocks.WALL_SMOOTH_DARK_STONE.get())));
+    }
+
+    /**
+     * The block Nurn's streets walk on. The desert streets and the plaza around the well are laid in
+     * smooth sandstone and everything around them - the walls, the well, the lamp bases - is the
+     * sandstone that becomes dark stone, so this one rule turns the surface into this mod's path
+     * block without turning the village's buildings into paths. Its rules come first, so they win:
+     * a rule processor stops at the first rule that matches.
+     */
+    private static RuleProcessor pathSurface() {
+        return new RuleProcessor(List.of(rule(Blocks.SMOOTH_SANDSTONE, TolkienBlocks.STONE_PATH.get())));
     }
 
     /**

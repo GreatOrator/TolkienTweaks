@@ -4,7 +4,7 @@
       "element": {
         "element_type": "minecraft:legacy_single_pool_element",
         "location": "minecraft:village/desert/terminators/terminator_01",
-        "processors": "tolkienmobs:nurn_dark_stone",
+        "processors": "tolkienmobs:nurn_roads",
         "projection": "terrain_matching"
       },
       "weight": 1
@@ -13,7 +13,7 @@
       "element": {
         "element_type": "minecraft:legacy_single_pool_element",
         "location": "minecraft:village/desert/terminators/terminator_02",
-        "processors": "tolkienmobs:nurn_dark_stone",
+        "processors": "tolkienmobs:nurn_roads",
         "projection": "terrain_matching"
       },
       "weight": 1

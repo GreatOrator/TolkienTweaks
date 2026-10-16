@@ -135,9 +135,12 @@ public final class TolkienVillageProvider {
         // centre, so the paths in the plaza are swapped along with the ones under the streets.
         var center = (village.rewiresStreets() ? townCentre(village) : vanillaTownCentre(village)).toString();
         var stone = village.darkStone() ? processors.getOrThrow(TolkienProcessorLists.NURN_DARK_STONE) : null;
+        // Nurn's plaza walks on the same path block as its streets, so the centre takes the road
+        // rules; its houses, farms and lamps keep the plain recolour.
+        var plaza = village.darkStone() ? processors.getOrThrow(TolkienProcessorLists.NURN_ROADS) : stone;
         // A water feature and bell in every start; streets and decorations are vanilla.
         context.register(village.startPool(), new StructureTemplatePool(empty,
-                List.of(Pair.of(legacy(center, stone), 1)), StructureTemplatePool.Projection.RIGID));
+                List.of(Pair.of(legacy(center, plaza), 1)), StructureTemplatePool.Projection.RIGID));
         String farm = "village/" + village.vanillaStyle() + "/houses/" + village.vanillaStyle()
                 + (village.vanillaStyle().equals("desert") ? "_farm_" : "_small_farm_");
         var farmProcessors = processors.getOrThrow(village.darkStone() ? TolkienProcessorLists.NURN_FARMS
@@ -266,7 +269,9 @@ public final class TolkienVillageProvider {
             // needs a copy of those street rules. The desert streets lay sandstone and need no
             // processing, and Nurn's roads are the desert ones with their sandstone traded for stone.
             var pathRules = rewiresStreets(style) ? processors.getOrThrow(TolkienProcessorLists.STONE_PATH_STREETS) : null;
-            var recolour = style.equals("nurn") ? processors.getOrThrow(TolkienProcessorLists.NURN_DARK_STONE) : null;
+            // Nurn's roads are the desert ones in dark stone, walking on this mod's path block where
+            // the desert streets walk on smooth sandstone.
+            var recolour = style.equals("nurn") ? processors.getOrThrow(TolkienProcessorLists.NURN_ROADS) : null;
             var processor = pathRules != null ? pathRules
                     : vanillaStyle.equals("plains") ? processors.getOrThrow(ProcessorLists.STREET_PLAINS)
                     : recolour;

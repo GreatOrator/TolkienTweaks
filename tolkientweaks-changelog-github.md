@@ -4,7 +4,7 @@
 
 ### Changed
 
-- The dwarven, human and Nurn villages lay the mod's stone path block where a vanilla village lays a dirt path. Their streets, the stubs that close a road off and the fountain plaza still behave the way vanilla's do - a tenth of a street still grows over, and a street crossing water is still bridged - while the driveway and the porch at each house's door are the block outright. A Nurn village's roads and plaza stay dark stone, because the desert streets it is built from never carried a dirt path.
+- The dwarven, human and Nurn villages lay the mod's stone path block where a vanilla village lays a path. Dwarven and human streets, the stubs that close a road off and the fountain plaza still behave the way vanilla's do - a tenth of a street still grows over, and a street crossing water is still bridged - and the driveway and the porch at each house's door are the block outright. Nurn's roads, its road stubs and the plaza around its well walk on the block too, where the desert village they are built from walked on smooth sandstone; its walls, well and lamps stay dark stone.
 
 ## Entity AI and behavior
 
