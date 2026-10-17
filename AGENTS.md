@@ -6,7 +6,7 @@ git:
 ---
 
 ## Changelog Updates
-- **Requirement**: Whenever you complete a task, fix a bug, or add a feature, you must update `tolkientweaks-changelog-github.md` before finishing the session.
+- **Requirement**: Whenever you complete a task, fix a bug, or add a feature, you must update `CHANGELOG.md` before finishing the session.
 - **Format**: Follow the [Keep a Changelog](https://keepachangelog.com) standard under an `[Unreleased]` section.
 - **Categories**: Group entries under:
   - `Added` for new features.
