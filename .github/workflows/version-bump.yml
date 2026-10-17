@@ -34,26 +34,29 @@ jobs:
           FULL_VERSION="v4.3.${BUILD_NUM}"
           echo "version=$FULL_VERSION" >> $GITHUB_OUTPUT
 
-      # 📝 FIX: BULLETPROOF CHANGELOG INJECTION USING PURE BASH
+      # 📝 FIX: CRASH-PROOF LOGGING METHOD
       - name: Update Changelog File locally
         run: |
           TAG_NAME="${{ steps.get_version.outputs.version }}"
           CURRENT_DATE=$(date +'%Y-%m-%d')
           COMMIT_MSG="${{ github.event.head_commit.message }}"
           
-          # 1. Isolate the header of the changelog file safely
-          head -n 3 CHANGELOG.md > top_header.md
+          # 1. Create the changelog file if it doesn't exist
+          if [ ! -f CHANGELOG.md ]; then
+            echo -e "# Changelog\n\nAll notable changes will be documented here.\n" > CHANGELOG.md
+          fi
           
-          # 2. Capture all historical entries below the header
-          tail -n +4 CHANGELOG.md > historical_entries.md
-          
-          # 3. Format the new block
+          # 2. Build the temporary new release entry 
           echo -e "## [$TAG_NAME] - $CURRENT_DATE\n" > new_entry.md
           echo -e "* $COMMIT_MSG" >> new_entry.md
           echo -e "\n" >> new_entry.md
           
-          # 4. Stitch the segments back together cleanly into the final file
-          cat top_header.md new_entry.md historical_entries.md > CHANGELOG.md
+          # 3. Read everything after the first two placeholder lines of the old changelog
+          tail -n +3 CHANGELOG.md > historical_entries.md
+          
+          # 4. Safely reconstruct the file without relying on fragile slicing utilities
+          echo -e "# Changelog\n" > CHANGELOG.md
+          cat new_entry.md historical_entries.md >> CHANGELOG.md
 
       - name: Compile and Build Project
         run: |
@@ -67,7 +70,7 @@ jobs:
         run: |
           TAG_NAME="${{ steps.get_version.outputs.version }}"
           
-          # Create the release via Github CLI, generate automatic notes, and append the localized markdown file
+          # Deploy your build directly to GitHub Releases with your dynamic assets attached
           gh release create "$TAG_NAME" \
             --title "Release $TAG_NAME" \
             --generate-notes \
