@@ -2,18 +2,17 @@
 
 ## [Unreleased]
 
+## [4.2.054] - 2026-10-17
+
 ### Changed
 
-- Nurn's floor is dark stone, broken up by patches of cobbled dark stone, instead of grass. Grass now grows only near water: on the low ground a few blocks above the water table, where the flooded lowland's shores and islands are, and on the meadow a lake lays around its own water.
-- Nurn's lakes are three times rarer: one placement attempt every 18 chunks instead of every 6, so the lowland carries the occasional lake rather than a chain of them.
-- Nurn's farms keep their plots fenced with deadwood logs rather than the dark stone stairs the desert farm rim was recoloured into.
 - The dwarven, human and Nurn villages lay the mod's stone path block where a vanilla village lays a path. Dwarven and human streets, the stubs that close a road off and the fountain plaza still behave the way vanilla's do - a tenth of a street still grows over, and a street crossing water is still bridged - and the driveway and the porch at each house's door are the block outright. Nurn's roads, its road stubs and the plaza around its well walk on the block too, where the desert village they are built from walked on smooth sandstone; its walls, well and lamps stay dark stone.
 
 ### Fixed
 
 - A Nurn lake no longer writes outside the chunks it is allowed to write, which filled the log with `Detected setBlock in a far chunk` errors as the player moved and left the edge of the lake and its grass shore cut off. The whole lake, water and shore, now stays inside the feature's write window.
 
-## Entity AI and behavior
+### Entity AI and behavior
 
 - Changed `meleeGoal` and `bowGoal` visibility from `private` to `protected` in `TolkienMonsterEntity` to allow subclass access.
 - Adjusted flying behavior for `GreatEagleEntity` and `GwahirEntity` to fly more frequently by:
@@ -47,23 +46,24 @@
 - Updated potion assignments in ten generated entity trinket loot tables and reordered biome tag entries without changing their membership.
 - Fixed the Witch King, the nazgul and the Mordor orc being rendered standing on their mounts: all three now play a sitting pose while riding, and the animation moves the bones their rigs actually have.
 
-## World generation
+### World generation
 
 - Rockpiles dot a biome instead of carpeting it: one placement now fills a 1-3 block patch rather than every surface column, and each chunk gets six placements instead of ten.
 - Random rubble, stone spikes and stumps are sporadic decoration. Rubble makes half as many attempts per placement and drops to six placements per chunk; spikes and stumps pass a one-in-six chunk filter and place one or two, and are positioned from their own column's surface instead of the chunk corner's.
 - Rock piles recognise a neighbour by block type instead of exact state, so grass carrying snow counts as grass.
 - Mirkwood webs hang from the tree canopy. They read a heightmap that never contains a placed tree and ran in the decoration step ahead of the mirkwood trees, so nearly every attempt found open air, rock or sky; they now read the live heightmap and run after the trees, and four placements do the work of twenty.
 - Mordor and the Ash Mountains no longer hold water. The dimension's aquifer fills those biomes under the sea level and in pockets high above it, which no biome setting can change, so chunks now turn that water into lava as they load. Terrain generated before this change is converted too.
-- Nurn is the watered half of that country: dark stone and sickly grass ground, tan water, a full 1.0 of rainfall, and no lava of its own anywhere in the biome. Its lakes are dug by a feature of their own, up to three chunks across - the vanilla lake is under one chunk - and every shore is laid in a sixteen block band of grass, because the biome's stone noise would otherwise leave bare stone at the water's edge.
-- Nurn's villages are the vanilla desert village rebuilt in dark stone. Every sandstone and terracotta shape is swapped for the dark stone block of the same kind, the farms keep the desert crops, and the roads get their own terminator pool, because the desert pieces that close a road off are raw smooth sandstone and do not pass through the street templates. A Nurn village only starts on a dry, grassy column.
+- Nurn is the watered half of that country: dark stone ground broken up by cobbled patches, tan water, a full 1.0 of rainfall, and no lava of its own anywhere in the biome. Grass grows only near water - on the low shores and islands a few blocks above the water table, and on the meadow a lake lays around its own water - so the biome reads as dry ground with green at its edges.
+- Nurn's lakes are dug by a feature of their own, at most two chunks across, and asked for once every 18 chunks so the lowland carries the occasional lake rather than a chain of them. Each one lays the grass meadow around its water, up to sixteen blocks out, and the whole lake stays inside the chunks a feature is allowed to write to, so nothing is left with a missing edge.
+- Nurn's villages are the vanilla desert village rebuilt in dark stone. Every sandstone and terracotta shape is swapped for the dark stone block of the same kind, the farm rims that were sandstone stairs become deadwood log fences, the crops stay the desert crops, and the roads get their own terminator pool, because the desert pieces that close a road off are raw smooth sandstone and do not pass through the street templates. A Nurn village only starts on dry ground.
 
-## Trinkets and loot
+### Trinkets and loot
 
 - A trinket's potion is chosen when its loot is rolled instead of while the loot tables are being built, so the trinkets from one table no longer all carry the same potion. A potion id written into a table by hand still pins that potion.
 - Trinket loot only hands out benevolent potions: harming, poison, slowness, turtle master's slowness and the mod's own elemental, corrosion and terror potions no longer turn up on worn belts, rings and amulets.
 - Generated biome tag files are written in a stable order, so two data generation runs in a row no longer rewrite them.
 
-## Trinket table
+### Trinket table
 
 - The table mends damaged gear as well as crafting trinkets. A damaged tool in the trinket slot, its repair material in the potion slot and an ammolite gem in the gem slot undo up to 1000 damage per gem and material, repairing the tool where it sits rather than moving it to the output slot.
 - Which material repairs what follows the anvil's own rule, so mod tools take their own ingots, and the mod's shears - the one tool the anvil gives no material at all - now take their tier's repair item.
