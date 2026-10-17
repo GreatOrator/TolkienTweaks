@@ -40,7 +40,9 @@ public final class TolkienStructureProvider {
             new Definition(TolkienStructures.MAZE, "tolkienmobs:maze",
                     List.of(TolkienBiomes.HITHAEGLIR), 32, 8, 193764823, 0,
                     Optional.of(new Branches("tolkienmobs:maze_side", 4, 3, 1)), true),
-            site(TolkienStructures.BARROW, TolkienBiomes.BARROW_DOWNS, 16, 6, 193764824, Layout.single()),
+            // Barrows come as one ring of up to five mounds a few blocks apart, close enough to read
+            // as a graveyard field, and one cluster attempt every ten chunks.
+            site(TolkienStructures.BARROW, TolkienBiomes.BARROW_DOWNS, 10, 4, 193764824, Layout.barrows()),
             site(TolkienStructures.DARK_TOWER, TolkienBiomes.MORDOR, 16, 6, 193764825,
                     new Layout(1, 1, Optional.empty(), Optional.of(TolkienStructures.WARGPIT))),
             site(TolkienStructures.GOLLUM_CAVE, TolkienBiomes.HITHAEGLIR, 16, 6, 193764826, Layout.top(-32)),
@@ -93,7 +95,8 @@ public final class TolkienStructureProvider {
                 var layout = definition.layout().get();
                 context.register(definition.key(), new TemplateLayoutStructure(settings, pool, layout.minCount(),
                         layout.maxCount(), layout.topOffset(), layout.companion().map(key ->
-                        pools.getOrThrow(ResourceKey.create(Registries.TEMPLATE_POOL, key.location())))));
+                        pools.getOrThrow(ResourceKey.create(Registries.TEMPLATE_POOL, key.location()))),
+                        layout.gapMin(), layout.gapMax(), layout.circle()));
                 continue;
             }
             context.register(definition.key(), definition.underground()
@@ -149,10 +152,22 @@ public final class TolkienStructureProvider {
     }
 
     public record Layout(int minCount, int maxCount, Optional<Integer> topOffset,
-                         Optional<ResourceKey<Structure>> companion) {
+                         Optional<ResourceKey<Structure>> companion,
+                         int gapMin, int gapMax, boolean circle) {
+        public Layout(int minCount, int maxCount, Optional<Integer> topOffset,
+                      Optional<ResourceKey<Structure>> companion) {
+            this(minCount, maxCount, topOffset, companion,
+                    TemplateLayoutStructure.DEFAULT_GAP_MIN, TemplateLayoutStructure.DEFAULT_GAP_MAX, false);
+        }
+
         public static Layout single() { return new Layout(1, 1, Optional.empty(), Optional.empty()); }
         public static Layout houses() { return new Layout(3, 5, Optional.empty(), Optional.empty()); }
         public static Layout top(int offset) { return new Layout(1, 1, Optional.of(offset), Optional.empty()); }
+
+        /** Up to five pieces on one circle, each one to three blocks from its neighbours. */
+        public static Layout barrows() {
+            return new Layout(1, 5, Optional.empty(), Optional.empty(), 1, 3, true);
+        }
     }
 
     /** depth bounds expansion; weights choose between another side piece and stopping. */
