@@ -248,7 +248,13 @@ publishing {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
-    compileJava.dependsOn incrementBuildNumber
+}
+
+// The build number is bumped only when a distributable jar is produced, so that
+// loading the game for testing (runClient, runServer, runData) never rewrites
+// gradle.properties or CHANGELOG.md.
+tasks.named('jar').configure {
+    dependsOn incrementBuildNumber
 }
 
 // IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.
