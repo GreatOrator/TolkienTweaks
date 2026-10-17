@@ -10,7 +10,7 @@ The six house structure IDs now start villages using Minecraft's jigsaw village 
 | Hobbit | Shire | Vanilla plains village |
 | Human | Gladden Fields | Vanilla plains village, paths in the mod's stone path |
 | Orc | Mordor | Vanilla desert village |
-| Nurn | Nurn | Vanilla desert village in dark stone, on grass only, walking on the mod's stone path |
+| Nurn | Nurn | Vanilla desert village in dark stone, on dry land, walking on the mod's stone path |
 
 Each style's residents are the mod's own villager-style NPC, chosen by the `resident` field of its `Village` entry: desert/Haradwaith uses Southron, dwarf uses Dwarf, elven uses Elves, hobbit uses Hobbit, human uses Human, and orc uses Orc. Wandering trader variants are never used. Datagen copies vanilla's three villager templates (`nitwit`, `baby`, `unemployed`, weights 1/1/10) once per style into `tolkienmobs:village/<style>/villagers/` and swaps the stored entity for that NPC. Every jigsaw socket that asks vanilla for a villager - your houses' resident connectors as well as vanilla town centers, farms and decorations - is redirected there through a pool alias.
 
@@ -59,9 +59,11 @@ path, which is why the elven and hobbit villages keep driving on the plains road
 
 ## Nurn's dark stone village
 
-`ttmhouse_nurn` is the desert village recoloured rather than re-modelled. `NURN_DARK_STONE` rewrites sand, terracotta and every sandstone variant as the dark stone block of the same shape, `NURN_FARMS` adds the desert crops to that, `NURN_ROADS` is the same recolour with the mod's stone path laid where the streets and the plaza walked on smooth sandstone, and the road pool's own terminator pool replaces the vanilla desert terminators - those pieces are raw smooth sandstone and are not part of the street templates, so without their own pool they stayed sandstone while the rest of the village turned. The town centre, houses, farms, decorations and villagers all come from the same aliases as the other styles.
+`ttmhouse_nurn` is the desert village recoloured rather than re-modelled. `NURN_DARK_STONE` rewrites sand, terracotta and every sandstone variant as the dark stone block of the same shape, `NURN_ROADS` is the same recolour with the mod's stone path laid where the streets and the plaza walked on smooth sandstone, and the road pool's own terminator pool replaces the vanilla desert terminators - those pieces are raw smooth sandstone and are not part of the street templates, so without their own pool they stayed sandstone while the rest of the village turned. The town centre, houses, farms, decorations and villagers all come from the same aliases as the other styles.
 
-It is the only style that starts through `VillageStructure` instead of the vanilla jigsaw structure. That structure refuses a site whose surface heightmap sits above its ocean floor heightmap (a column with water over it) and one where `TolkienSurfaceRules.isNurnGrassAt` says the biome's surface noise would leave dark stone, so a Nurn village stands on dry grass. All other styles start anywhere in their biome as before.
+`NURN_FARMS` is that recolour plus the desert crops, and one rule in front of it: the rim a desert farm builds around its plots out of smooth sandstone stairs becomes `tolkienmobs:log_deadwood`. Recolouring the stairs kept their shape and read as stone stairs left standing in a field; the logs look like the fence the rim is standing in for. Because the farm rules run first, the recolour below never sees those blocks.
+
+It is the only style that starts through `VillageStructure` instead of the vanilla jigsaw structure. That structure refuses a site whose surface heightmap sits above its ocean floor heightmap, so a Nurn village never starts in a lake. All other styles start anywhere in their biome as before. Nurn's floor is dark stone rather than grass, so the village no longer asks for grass before it agrees to a site.
 
 ## Change biomes and village frequency
 
