@@ -88,6 +88,7 @@ public class TolkienMobsMain {
             TolkienRegistration.initModBusEvents(modEventBus);
             TolkienClientEvents.initGameEvents();
         }
+
         MilestoneHandler.init();
         PacketHandler.register(modEventBus);
 
@@ -98,6 +99,7 @@ public class TolkienMobsMain {
         TolkienTabs.register(modEventBus);
 
         TolkienSounds.SOUND_EVENTS.register(modEventBus);
+
         modEventBus.addListener(TolkienDataGenerator::gatherData);
 
         TolkienFeatureModifiers.TREE_DECORATORS.register(modEventBus);
