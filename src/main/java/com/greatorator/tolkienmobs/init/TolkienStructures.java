@@ -34,7 +34,7 @@ public class TolkienStructures {
     public static final ResourceKey<Structure> INN_DESERT = key("ttminn_desert");
     public static final ResourceKey<Structure> RUIN_LARGE = key("ttmruin_large");
     public static final ResourceKey<Structure> RUIN_SMALL = key("ttmruin_small");
-    public static final ResourceKey<Structure> SPIDERTREE = key("ttmspidertree");
+    public static final ResourceKey<Structure> SPIDERTREE = key("ttmtree_spider");
     public static final ResourceKey<Structure> SWAMP_HAG_HUT = key("ttmswamp_hag_hut");
     public static final ResourceKey<Structure> WARGPIT = key("ttmwargpit");
 

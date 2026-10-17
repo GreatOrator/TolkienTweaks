@@ -3,7 +3,7 @@
     {
       "element": {
         "element_type": "minecraft:single_pool_element",
-        "location": "tolkienmobs:ttmspidertree",
+        "location": "tolkienmobs:ttmtree_spider",
         "processors": {
           "processors": []
         },
