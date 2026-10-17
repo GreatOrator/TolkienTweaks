@@ -260,7 +260,9 @@ public abstract class BiomeHelper {
 				.addMobCharge(TolkienEntities.ENTITY_TTM_MORDORORC.get(), 0.6, 0.15)
 				.addMobCharge(TolkienEntities.ENTITY_TTM_URUKHAI.get(), 0.6, 0.15)
 				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15);
-	}    /** Nurn is worked ground inside Mordor, so the same wardens patrol it. */
+	}
+
+	/** Nurn is worked ground inside Mordor, so the same wardens patrol it. */
     public static MobSpawnSettings.Builder nurnSpawning() {
 
         return new MobSpawnSettings.Builder()
