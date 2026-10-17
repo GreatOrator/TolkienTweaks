@@ -13,13 +13,14 @@ tasks.named('wrapper', Wrapper).configure {
     distributionType = Wrapper.DistributionType.BIN
 }
 
-project.ext.mod_version = "4.3.${project.findProperty('currentBuildNumber') } ?: '1'"
+def buildNum = project.hasProperty('currentBuildNumber') ? project.property('currentBuildNumber') : '0'
+project.ext.mod_version = "4.3.${buildNum}"
 version = project.ext.mod_version
 group = mod_group_id
 
 tasks.register("incrementBuildNumber") {
     group = "versioning"
-    description = "Increments the app build number in gradle.properties"
+    description = "Increments the app build number and logs to changelog"
 
     doLast {
         def propsFile = file("gradle.properties")
@@ -27,12 +28,31 @@ tasks.register("incrementBuildNumber") {
             def props = new Properties()
             propsFile.withInputStream { props.load(it) }
 
-            // Extract, increment, and save back the integer string
-            int nextBuild = (props.getProperty("currentBuildNumber") ?: "0").toInteger() + 1
+            // 1. Calculate the new numbers
+            int oldBuild = (props.getProperty("currentBuildNumber") ?: "0").toInteger()
+            int nextBuild = oldBuild + 1
             props.setProperty("currentBuildNumber", nextBuild.toString())
             propsFile.withWriter { props.store(it, "Auto-incremented by Gradle build") }
 
-            println "🚀 App version incremented to: 4.3.${nextBuild}"
+            // 2. Automate Local CHANGELOG tracking
+            def changelogFile = file("CHANGELOG.md")
+            if (changelogFile.exists()) {
+                // Correct Java format pattern for YYYY-MM-DD (Note: Use uppercase MM and lowercase dd)
+                def date = new java.text.SimpleDateFormat("yyyy-MM-dd").format(new Date())
+                def oldContent = changelogFile.text
+
+                // 💡 Prepends the entry with the full version: ## [4.3.X] - YYYY-MM-DD
+                def newEntry = "## [4.3.${nextBuild}] - ${date}\n* Structural mod updates and compilation builds\n\n"
+
+                // Inject the entry right underneath the description banner header
+                def updatedContent = oldContent.replace(
+                        "All notable changes to this project will be documented in this file.\n",
+                        "All notable changes to this project will be documented in this file.\n\n${newEntry}"
+                )
+                changelogFile.text = updatedContent
+            }
+
+            println "🚀 App version rolled up to: 4.3.${nextBuild} (Local Changelog Tracked!)"
         } else {
             throw new GradleException("Could not read gradle.properties!")
         }
