@@ -18,12 +18,12 @@ jobs:
       - name: Checkout Repository with full history
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # 💡 Crucial: Pulls all commit history so GitHub can auto-build the changelog
+          fetch-depth: 0 # Pulls commit history so GitHub can auto-build the changelog
 
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '21' # 💡 Match your local Java version (e.g., '17', '21')
+          java-version: '21' # Match your local Java version (e.g., '17', '21')
           distribution: 'temurin'
 
       - name: Setup Gradle
@@ -49,21 +49,24 @@ jobs:
       # 📝 AUTOMATICALLY GENERATE CHANGELOG TEXT AND WRITE IT TO CHANGELOG.MD
       - name: Update Changelog File
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG_NAME="${{ steps.get_version.outputs.version }}"
           CURRENT_DATE=$(date +'%Y-%m-%d')
           
-          # 1. Ask GitHub's API to build a markdown string of all new commits/PRs
-          gh rpc POST /repos/{owner}/{repo}/releases/generate-notes -f tag_name="$TAG_NAME" > raw_notes.json
-          jq -r '.body' raw_notes.json > clean_notes.md
+          # 1. Official GitHub API command to build a markdown string of changes
+          gh api --method POST \
+            -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }}/releases/generate-notes \
+            -f tag_name="$TAG_NAME" \
+            --jq '.body' > clean_notes.md
           
-          # 2. Build the new entry text block
+          # 2. Build the new markdown entry block
           echo -e "## [$TAG_NAME] - $CURRENT_DATE\n" > new_entry.md
           cat clean_notes.md >> new_entry.md
           echo -e "\n" >> new_entry.md
           
-          # 3. Inject the entry smoothly underneath the main "# Changelog" heading block
+          # 3. Inject the entry smoothly underneath your main "# Changelog" heading block
           sed -i '/# Changelog/r new_entry.md' CHANGELOG.md
           
           # 4. Commit the newly updated CHANGELOG.md file back into your codebase
@@ -74,7 +77,7 @@ jobs:
       # 🚀 CREATE THE GITHUB TAG AND PUBLISH THE ENTIRE RELEASE WITH YOUR JAR ARTIFACT
       - name: Publish GitHub Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG_NAME="${{ steps.get_version.outputs.version }}"
           
