@@ -616,6 +616,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add("biome.tolkienmobs.fangorn_forest", "Fangorn Forest");
             this.add("biome.tolkienmobs.mordor", "Mordor");
             this.add("biome.tolkienmobs.ash_mountains", "Ered Lithui");
+            this.add("biome.tolkienmobs.nurn", "Nurn");
             this.add("biome.tolkienmobs.marshes", "Nindalf Marsh");
             this.add("biome.tolkienmobs.mirkwood", "Mirkwood Forest");
             this.add("biome.tolkienmobs.old_forest", "Old Forest");
