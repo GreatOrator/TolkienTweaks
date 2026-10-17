@@ -13,8 +13,31 @@ tasks.named('wrapper', Wrapper).configure {
     distributionType = Wrapper.DistributionType.BIN
 }
 
-version = mod_version
+project.ext.mod_version = "4.3.${project.findProperty('currentBuildNumber') } ?: '1'"
+version = project.ext.mod_version
 group = mod_group_id
+
+tasks.register("incrementBuildNumber") {
+    group = "versioning"
+    description = "Increments the app build number in gradle.properties"
+
+    doLast {
+        def propsFile = file("gradle.properties")
+        if (propsFile.canRead()) {
+            def props = new Properties()
+            propsFile.withInputStream { props.load(it) }
+
+            // Extract, increment, and save back the integer string
+            int nextBuild = (props.getProperty("currentBuildNumber") ?: "0").toInteger() + 1
+            props.setProperty("currentBuildNumber", nextBuild.toString())
+            propsFile.withWriter { props.store(it, "Auto-incremented by Gradle build") }
+
+            println "🚀 App version incremented to: 4.3.${nextBuild}"
+        } else {
+            throw new GradleException("Could not read gradle.properties!")
+        }
+    }
+}
 
 repositories {
     mavenLocal()
@@ -205,6 +228,7 @@ publishing {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+    compileJava.dependsOn incrementBuildNumber
 }
 
 // IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.
