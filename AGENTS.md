@@ -72,6 +72,19 @@ placed features, tags or loot, regenerate and commit the generated JSON alongsid
   less, and a feature that insisted on one never placed a single lake. `NurnLakeFeature` instead
   takes its water line from the lowest ground in the disc, digs only the ground within `MAX_BANK` of
   it, keeps the largest connected body, and lays grass `SHORE_WIDTH` blocks out from the water.
+- A feature may only write to the chunks one step from the one being decorated: `ChunkStatus.FEATURES`
+  has `blockStateWriteRadius(1)`, and every write beyond that is refused block by block with a
+  `Detected setBlock in a far chunk` line in the log. A lake that reached further than that left its
+  edge missing and flooded the log as the player walked, so `NurnLakeFeature` anchors itself at the
+  middle of its own chunk, where it has `WRITE_LIMIT` blocks of room, and keeps both its water and
+  its shore inside that. Keep any change to `MIN_RADIUS`, `MAX_RADIUS` or `SHORE_WIDTH` inside that
+  budget rather than growing the lake past it.
+- Nurn's floor is dark stone, not grass: `TolkienSurfaceRules.nurnSurface` lays grass only below
+  `NURN_SHORE_HEIGHT` (y=68), the low shores and islands of the flooded lowland, and a lake lays its
+  own meadow around water that sits higher. There is no way to ask a surface rule how far it is from
+  water - it only sees its own column - so the two heights of grass are what "near water" means.
+  A Nurn village therefore starts on dry ground, not on grass, and the lake shore can only reach one
+  chunk from the water because of the write radius above.
 - Vanilla badlands strata still colour a few Nurn columns at biome borders. The surface system and
   `execute if biome` both read the fuzzed biome manager, so within a few blocks of a wooded badlands
   or jungle cell the badlands terracotta banding runs even where the stored biome cell is Nurn
