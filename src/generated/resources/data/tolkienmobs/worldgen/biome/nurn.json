@@ -80,11 +80,11 @@
   ],
   "has_precipitation": true,
   "spawn_costs": {
-    "minecraft:cow": {
+    "minecraft:sheep": {
       "charge": 0.6,
       "energy_budget": 0.15
     },
-    "minecraft:sheep": {
+    "tolkienmobs:entityttmauroch": {
       "charge": 0.6,
       "energy_budget": 0.15
     },
@@ -127,7 +127,7 @@
         "weight": 8
       },
       {
-        "type": "minecraft:cow",
+        "type": "tolkienmobs:entityttmauroch",
         "maxCount": 3,
         "minCount": 1,
         "weight": 8

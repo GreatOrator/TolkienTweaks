@@ -272,14 +272,14 @@ public abstract class BiomeHelper {
                 .addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_URUKHAI.get(), 35, 1, 2))
                 .addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 10, 1, 4))
                 .addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.SHEEP, 8, 1, 3))
-                .addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.COW, 8, 1, 3))
+                .addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_AUROCH.get(), 8, 1, 3))
                 .addMobCharge(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 0.6, 0.15)
                 .addMobCharge(TolkienEntities.ENTITY_TTM_WARG.get(), 0.6, 0.15)
                 .addMobCharge(TolkienEntities.ENTITY_TTM_MORDORORC.get(), 0.6, 0.15)
                 .addMobCharge(TolkienEntities.ENTITY_TTM_URUKHAI.get(), 0.6, 0.15)
                 .addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15)
                 .addMobCharge(EntityType.SHEEP, 0.6, 0.15)
-                .addMobCharge(EntityType.COW, 0.6, 0.15);
+                .addMobCharge(TolkienEntities.ENTITY_TTM_AUROCH.get(), 0.6, 0.15);
     }
 
     public static MobSpawnSettings.Builder marshesSpawning() {
