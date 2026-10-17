@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - master # 💡 Added master to ensure it triggers on either branch name
 
 jobs:
   create-release:
@@ -11,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+
 
     steps:
       - name: Checkout Repository with full history
