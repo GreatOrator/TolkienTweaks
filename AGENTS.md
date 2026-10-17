@@ -7,6 +7,7 @@ git:
 
 ## Changelog Updates
 - **Requirement**: Whenever you complete a task, fix a bug, or add a feature, you must update `CHANGELOG.md` before finishing the session.
+- **Exception**: Tools that live outside the mod - the Amulet plugins such as `fill_modded_block.py`, and the audit scripts - are not part of the mod, so they get no changelog entry.
 - **Format**: Follow the [Keep a Changelog](https://keepachangelog.com) standard under an `[Unreleased]` section.
 - **Categories**: Group entries under:
   - `Added` for new features.

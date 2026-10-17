@@ -4,10 +4,6 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-### Added
-
-- The Amulet plugin now shows a block picker for the mod's blocks. `fill_modded_block.py` is a proper find-and-replace screen: both sides get the editor's own namespace dropdown, search box, block list, property panel and "pick block from the world" button, the dropdown offers `minecraft` and `tolkienmobs`, and the `tolkienmobs` list holds every block the mod registers (extended with any modded block already in the loaded world). The swap runs over chunk block arrays instead of one block at a time, so a large selection is a single pass.
-
 ### Removed
 
 - The spider tree's old `ttmspidertree` structure template is gone; nothing referenced it once the structure became `ttmtree_spider`.
