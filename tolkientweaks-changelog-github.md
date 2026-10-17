@@ -4,7 +4,13 @@
 
 ### Changed
 
+- Nurn's floor is dark stone, broken up by patches of cobbled dark stone, instead of grass. Grass now grows only near water: on the low ground a few blocks above the water table, where the flooded lowland's shores and islands are, and on the meadow a lake lays around its own water.
+- Nurn's farms keep their plots fenced with deadwood logs rather than the dark stone stairs the desert farm rim was recoloured into.
 - The dwarven, human and Nurn villages lay the mod's stone path block where a vanilla village lays a path. Dwarven and human streets, the stubs that close a road off and the fountain plaza still behave the way vanilla's do - a tenth of a street still grows over, and a street crossing water is still bridged - and the driveway and the porch at each house's door are the block outright. Nurn's roads, its road stubs and the plaza around its well walk on the block too, where the desert village they are built from walked on smooth sandstone; its walls, well and lamps stay dark stone.
+
+### Fixed
+
+- A Nurn lake no longer writes outside the chunks it is allowed to write, which filled the log with `Detected setBlock in a far chunk` errors as the player moved and left the edge of the lake and its grass shore cut off. The whole lake, water and shore, now stays inside the feature's write window.
 
 ## Entity AI and behavior
 
