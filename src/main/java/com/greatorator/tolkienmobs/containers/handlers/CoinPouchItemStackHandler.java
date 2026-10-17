@@ -1,12 +1,12 @@
 package com.greatorator.tolkienmobs.containers.handlers;
 
 import com.greatorator.tolkienmobs.init.TolkienDataComponents;
-import com.greatorator.tolkienmobs.init.TolkienTags;
 import com.greatorator.tolkienmobs.init.TolkienItems;
+import com.greatorator.tolkienmobs.init.TolkienTags;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.neoforged.neoforge.items.ComponentItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.items.ItemStackHandler;
