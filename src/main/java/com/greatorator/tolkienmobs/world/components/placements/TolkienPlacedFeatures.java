@@ -240,8 +240,9 @@ public class TolkienPlacedFeatures {
         context.register(PLACED_WOOD_ROOTS_SPREAD, new PlacedFeature(features.getOrThrow(WOOD_ROOTS_SPREAD), tolkienFeatureCheckArea(AvoidLandmarkModifier.checkUnderground(), 40, HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.absolute(0))).build()));
         context.register(PLACED_PLANT_ROOTS, new PlacedFeature(features.getOrThrow(PLANT_ROOTS), tolkienFeatureCheckArea(AvoidLandmarkModifier.checkUnderground(), 1, CountPlacement.of(4), HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.absolute(10))).build()));
         context.register(PLACED_MUD_SPLATTER, new PlacedFeature(features.getOrThrow(MUD_SPLATTER), List.of(CountPlacement.of(1), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_TOP_SOLID, BiomeFilter.biome())));
-        // A lake attempt fails often, because the site has to be level, so the rarity is low and
-        // the placement is generous: the feature itself is what decides whether a lake fits.
-        context.register(PLACED_NURN_LAKE, new PlacedFeature(features.getOrThrow(NURN_LAKE), List.of(RarityFilter.onAverageOnceEvery(6), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome())));
+        // A lake attempt fails often, because the site has to be level, so early attempts were
+        // generous and the biome came out crowded: one attempt every eighteen chunks leaves the
+        // lowland with the occasional lake rather than a chain of them.
+        context.register(PLACED_NURN_LAKE, new PlacedFeature(features.getOrThrow(NURN_LAKE), List.of(RarityFilter.onAverageOnceEvery(18), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome())));
     }
 }
