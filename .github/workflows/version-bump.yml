@@ -15,21 +15,20 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout Repository with full history
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 💡 Crucial: Pulls all commit history so GitHub can auto-build the changelog
 
-      # 1. Set up the Java environment needed to compile your code
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '21' # 💡 Change this to match your project's Java version (e.g., 17, 21)
+          java-version: '21' # 💡 Match your local Java version (e.g., '17', '21')
           distribution: 'temurin'
 
-      # 2. Setup Gradle (handles caching for faster builds)
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      # 3. Read the current build version string before compiling
       - name: Extract Dynamic Version String
         id: get_version
         run: |
@@ -37,36 +36,50 @@ jobs:
           FULL_VERSION="v4.3.${BUILD_NUM}"
           echo "version=$FULL_VERSION" >> $GITHUB_OUTPUT
 
-      # 4. Grant execute permission and run the Gradle build task
       - name: Compile and Build Project
         run: |
           chmod +x gradlew
           ./gradlew build
 
-      # 5. Configure Git Credentials for Tagging
       - name: Configure Git Credentials
         run: |
           git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@://github.com'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
-      # 6. Create and Push Git Tag
-      - name: Create and Push Git Tag
+      # 📝 AUTOMATICALLY GENERATE CHANGELOG TEXT AND WRITE IT TO CHANGELOG.MD
+      - name: Update Changelog File
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG_NAME="${{ steps.get_version.outputs.version }}"
-          git tag -a "$TAG_NAME" -m "Automated release $TAG_NAME"
-          git push origin --tags
+          CURRENT_DATE=$(date +'%Y-%m-%d')
+          
+          # 1. Ask GitHub's API to build a markdown string of all new commits/PRs
+          gh rpc POST /repos/{owner}/{repo}/releases/generate-notes -f tag_name="$TAG_NAME" > raw_notes.json
+          jq -r '.body' raw_notes.json > clean_notes.md
+          
+          # 2. Build the new entry text block
+          echo -e "## [$TAG_NAME] - $CURRENT_DATE\n" > new_entry.md
+          cat clean_notes.md >> new_entry.md
+          echo -e "\n" >> new_entry.md
+          
+          # 3. Inject the entry smoothly underneath the main "# Changelog" heading block
+          sed -i '/# Changelog/r new_entry.md' CHANGELOG.md
+          
+          # 4. Commit the newly updated CHANGELOG.md file back into your codebase
+          git add CHANGELOG.md
+          git commit -m "docs: automatic changelog update for $TAG_NAME [skip ci]"
+          git push origin main
 
-      # 7. Create the GitHub Release and attach the compiled binary automatically
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ steps.get_version.outputs.version }}
-          name: Release ${{ steps.get_version.outputs.version }}
-          draft: false
-          prerelease: false
-          generate_release_notes: true # Auto-builds your changelog
-
-          # 🚀 ATTACH COMPILED ARTIFACTS HERE:
-          # This scans your build folder and attaches any compiled jar files to the release page
-          files: |
+      # 🚀 CREATE THE GITHUB TAG AND PUBLISH THE ENTIRE RELEASE WITH YOUR JAR ARTIFACT
+      - name: Publish GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG_NAME="${{ steps.get_version.outputs.version }}"
+          
+          # Build the release directly via GitHub CLI and attach any built jar file
+          gh release create "$TAG_NAME" \
+            --title "Release $TAG_NAME" \
+            --generate-notes \
             build/libs/*.jar
