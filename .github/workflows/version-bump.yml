@@ -1,4 +1,4 @@
-name: Auto Increment Version and Release
+name: Auto Release on Push
 
 on:
   push:
@@ -6,55 +6,67 @@ on:
       - main
 
 jobs:
-  bump-and-release:
-    # ⚠️ THIS LINE SEPARATES PUSHES FROM RELEASES:
-    # It only runs if your last commit message contains the text "[release]"
+  create-release:
+    # This job only runs if your last commit message contains "[release]"
     if: contains(github.event.head_commit.message, '[release]')
-    
+
     runs-on: ubuntu-latest
     permissions:
       contents: write
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: Set up JDK
-      uses: actions/setup-java@v4
-      with:
-        java-version: '21'
-        distribution: 'temurin'
+      # 1. Set up the Java environment needed to compile your code
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21' # 💡 Change this to match your project's Java version (e.g., 17, 21)
+          distribution: 'temurin'
 
-    - name: Run Increment Task
-      run: ./gradlew incrementBuildNumber
+      # 2. Setup Gradle (handles caching for faster builds)
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
-    - name: Commit, Tag, and Push
-      id: git_meta
-      run: |
-        git config --global user.name 'github-actions[bot]'
-        git config --global user.email 'github-actions[bot]@://github.com'
-        
-        git add gradle.properties
-        git commit -m "chore: bump version for release [skip ci]"
-        
-        # Get the new number
-        BUILD_NUM=$(grep 'currentBuildNumber=' gradle.properties | cut -d'=' -f2)
-        FULL_VERSION="v4.3.${BUILD_NUM}"
-        
-        git tag -a "$FULL_VERSION" -m "Automated release $FULL_VERSION"
-        git push origin main --tags
-        
-        # Save the version string so the next step can read it
-        echo "version=$FULL_VERSION" >> $GITHUB_OUTPUT
+      # 3. Read the current build version string before compiling
+      - name: Extract Dynamic Version String
+        id: get_version
+        run: |
+          BUILD_NUM=$(grep 'currentBuildNumber=' gradle.properties | cut -d'=' -f2)
+          FULL_VERSION="v4.3.${BUILD_NUM}"
+          echo "version=$FULL_VERSION" >> $GITHUB_OUTPUT
 
-    # 🚀 AUTOMATICALLY GENERATE THE GITHUB RELEASE DRAFT
-    - name: Create GitHub Release
-      uses: softprops/action-gh-release@v2
-      with:
-        tag_name: ${{ steps.git_meta.outputs.version }}
-        name: Release ${{ steps.git_meta.outputs.version }}
-        draft: false
-        prerelease: false
-        generate_release_notes: true # Automatically builds a changelog of your commits!
+      # 4. Grant execute permission and run the Gradle build task
+      - name: Compile and Build Project
+        run: |
+          chmod +x gradlew
+          ./gradlew build
+
+      # 5. Configure Git Credentials for Tagging
+      - name: Configure Git Credentials
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@://github.com'
+
+      # 6. Create and Push Git Tag
+      - name: Create and Push Git Tag
+        run: |
+          TAG_NAME="${{ steps.get_version.outputs.version }}"
+          git tag -a "$TAG_NAME" -m "Automated release $TAG_NAME"
+          git push origin --tags
+
+      # 7. Create the GitHub Release and attach the compiled binary automatically
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.get_version.outputs.version }}
+          name: Release ${{ steps.get_version.outputs.version }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true # Auto-builds your changelog
+
+          # 🚀 ATTACH COMPILED ARTIFACTS HERE:
+          # This scans your build folder and attaches any compiled jar files to the release page
+          files: |
+            build/libs/*.jar
