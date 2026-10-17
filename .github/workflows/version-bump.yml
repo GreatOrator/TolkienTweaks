@@ -10,18 +10,18 @@ jobs:
     if: contains(github.event.head_commit.message, '[release]')
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Grants full permissions to publish the tag and release assets
+      contents: write
 
     steps:
       - name: Checkout Repository with full history
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Necessary for generating release notes from history
+          fetch-depth: 0
 
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '21' # Match your local Java version
+          java-version: '21'
           distribution: 'temurin'
 
       - name: Setup Gradle
@@ -34,35 +34,40 @@ jobs:
           FULL_VERSION="v4.3.${BUILD_NUM}"
           echo "version=$FULL_VERSION" >> $GITHUB_OUTPUT
 
-      # 📝 GENERATE CHANGELOG LOCALLY (WITHOUT PUSHING TO REPO BRANCH)
+      # 📝 FIX: BULLETPROOF CHANGELOG INJECTION USING PURE BASH
       - name: Update Changelog File locally
         run: |
           TAG_NAME="${{ steps.get_version.outputs.version }}"
           CURRENT_DATE=$(date +'%Y-%m-%d')
           COMMIT_MSG="${{ github.event.head_commit.message }}"
           
-          # Build a temporary markdown section 
+          # 1. Isolate the header of the changelog file safely
+          head -n 3 CHANGELOG.md > top_header.md
+          
+          # 2. Capture all historical entries below the header
+          tail -n +4 CHANGELOG.md > historical_entries.md
+          
+          # 3. Format the new block
           echo -e "## [$TAG_NAME] - $CURRENT_DATE\n" > new_entry.md
           echo -e "* $COMMIT_MSG" >> new_entry.md
           echo -e "\n" >> new_entry.md
           
-          # Inject it into your local workspace's CHANGELOG.md file
-          sed -i '/# Changelog/r new_entry.md' CHANGELOG.md
+          # 4. Stitch the segments back together cleanly into the final file
+          cat top_header.md new_entry.md historical_entries.md > CHANGELOG.md
 
-      # 🛠️ COMPILE THE PROJECT (Now includes the fresh CHANGELOG file automatically inside the build folder)
       - name: Compile and Build Project
         run: |
           chmod +x gradlew
           ./gradlew build
 
-      # 🚀 CREATE THE RELEASES AND ATTACH JAR ARTIFACTS
+      # 🚀 PUBLISH THE RELEASES AND ATTACH JAR ARTIFACTS
       - name: Publish GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG_NAME="${{ steps.get_version.outputs.version }}"
           
-          # Create the formal tag, compile release notes, and deploy built assets safely
+          # Create the release via Github CLI, generate automatic notes, and append the localized markdown file
           gh release create "$TAG_NAME" \
             --title "Release $TAG_NAME" \
             --generate-notes \
