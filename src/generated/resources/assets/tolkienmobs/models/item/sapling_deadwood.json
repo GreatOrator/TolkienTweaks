@@ -1,3 +1,6 @@
 {
-  "parent": "tolkienmobs:block/sapling_deadwood"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "tolkienmobs:block/sapling_deadwood"
+  }
 }
