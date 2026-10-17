@@ -1,7 +1,6 @@
 package com.greatorator.tolkienmobs.world.components.structure;
 
 import com.greatorator.tolkienmobs.init.TolkienStructures;
-import com.greatorator.tolkienmobs.world.registration.TolkienSurfaceRules;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -87,7 +86,7 @@ public class VillageStructure extends Structure {
         int startY = this.startHeight.sample(context.random(),
                 new WorldGenerationContext(context.chunkGenerator(), context.heightAccessor()));
         BlockPos start = new BlockPos(chunkPos.getMinBlockX(), startY, chunkPos.getMinBlockZ());
-        if (!startsOnGrass(context, start)) {
+        if (!startsOnDryGround(context, start)) {
             return Optional.empty();
         }
         return JigsawPlacement.addPieces(context, this.startPool, this.startJigsawName, this.maxDepth, start,
@@ -97,21 +96,18 @@ public class VillageStructure extends Structure {
     }
 
     /**
-     * Two questions, both answered without touching the chunk: is the column dry, and does the
-     * biome's own surface rule leave grass here? The world surface heightmap counts water and the
-     * ocean floor heightmap does not, so the two agree only where nothing is floating above the
-     * ground.
+     * Whether the column is dry, answered without touching the chunk. The world surface heightmap
+     * counts water and the ocean floor heightmap does not, so the two agree only where nothing is
+     * floating above the ground. Nurn's floor is dark stone, so a site no longer has to be grass;
+     * what it may not be is a lake.
      */
-    private static boolean startsOnGrass(Structure.GenerationContext context, BlockPos start) {
+    private static boolean startsOnDryGround(Structure.GenerationContext context, BlockPos start) {
         ChunkGenerator generator = context.chunkGenerator();
         int surface = generator.getBaseHeight(start.getX(), start.getZ(), Heightmap.Types.WORLD_SURFACE_WG,
                 context.heightAccessor(), context.randomState());
         int floor = generator.getBaseHeight(start.getX(), start.getZ(), Heightmap.Types.OCEAN_FLOOR_WG,
                 context.heightAccessor(), context.randomState());
-        if (surface > floor) {
-            return false;
-        }
-        return TolkienSurfaceRules.isNurnGrassAt(context.randomState(), start.getX(), start.getZ());
+        return surface <= floor;
     }
 
     @Override

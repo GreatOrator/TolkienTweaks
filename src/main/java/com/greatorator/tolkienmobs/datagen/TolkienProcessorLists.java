@@ -43,11 +43,13 @@ public final class TolkienProcessorLists {
         context.register(STONE_PATH_STREETS, new StructureProcessorList(List.of(stonePathStreets())));
         // The desert farms swap some of their wheat for beetroot and melon stalks. "minecraft:farm_desert"
         // cannot be read from inside this registry's own bootstrap, so those two rules are repeated
-        // here: keep them in step with the vanilla list they mirror.
+        // here: keep them in step with the vanilla list they mirror. The farm's own rules come before
+        // the recolour, so the fence keeps its deadwood and the rest of the plot turns dark stone.
         RuleProcessor crops = new RuleProcessor(List.of(
                 new ProcessorRule(new RandomBlockMatchTest(Blocks.WHEAT, 0.2F), AlwaysTrueTest.INSTANCE, Blocks.BEETROOTS.defaultBlockState()),
                 new ProcessorRule(new RandomBlockMatchTest(Blocks.WHEAT, 0.1F), AlwaysTrueTest.INSTANCE, Blocks.MELON_STEM.defaultBlockState())));
         context.register(NURN_FARMS, new StructureProcessorList(ImmutableList.<StructureProcessor>builder()
+                .add(farmFence())
                 .add(darkStoneRules())
                 .add(crops)
                 .build()));
@@ -84,6 +86,19 @@ public final class TolkienProcessorLists {
      */
     private static RuleProcessor pathSurface() {
         return new RuleProcessor(List.of(rule(Blocks.SMOOTH_SANDSTONE, TolkienBlocks.STONE_PATH.get())));
+    }
+
+    /**
+     * The rim vanilla's desert farms build around their plots is smooth sandstone stairs - the
+     * closest thing a sandstone farm has to a fence - and recolouring it kept the shape but read as
+     * stone stairs left in a field. It becomes deadwood logs instead, which both looks like the fence
+     * it is standing in for and matches the deadwood the rest of Nurn is built from. The rule runs
+     * first, so the recolour below never sees these blocks.
+     */
+    private static RuleProcessor farmFence() {
+        return new RuleProcessor(List.of(
+                rule(Blocks.SMOOTH_SANDSTONE_STAIRS, TolkienBlocks.LOG_DEADWOOD.get()),
+                rule(Blocks.SANDSTONE_STAIRS, TolkienBlocks.LOG_DEADWOOD.get())));
     }
 
     /**

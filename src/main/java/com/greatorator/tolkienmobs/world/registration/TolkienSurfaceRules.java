@@ -6,7 +6,6 @@ import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Noises;
-import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import org.jetbrains.annotations.NotNull;
@@ -49,30 +48,32 @@ public class TolkienSurfaceRules {
 	}
 
 	/**
-	 * Nurn's floor is a mix of grass and dark stone, the dark stone following the same surface noise
-	 * that shapes the badlands it replaced. Only ground with no water over it is coloured, so a lake
-	 * or a spring never gets a stone lip placed over its own surface. The band of grass that runs
-	 * along a Nurn lake's edge is laid by the lake feature, which knows where its shore is.
+	 * Nurn's floor is dark stone, with the surface noise that shapes the badlands breaking it up into
+	 * patches of cobbled dark stone. Grass only grows near water: along the low ground that sits a
+	 * few blocks above the water table, which is where the flooded lowland's shores and islands are,
+	 * and around a lake, which lays its own meadow out to a chunk from its water at whatever height
+	 * it sits. Only ground with no water over it is coloured, so a lake or a spring never gets a
+	 * stone lip placed over its own surface.
 	 */
 	private static SurfaceRules.RuleSource nurnSurface() {
 		return SurfaceRules.ifTrue(SurfaceRules.waterBlockCheck(-1, 0), SurfaceRules.sequence(
-				SurfaceRules.ifTrue(surfaceNoiseAbove(NURN_DARK_STONE_NOISE), DARK_STONE),
-				GRASS_BLOCK));
+				SurfaceRules.ifTrue(SurfaceRules.not(SurfaceRules.yStartCheck(VerticalAnchor.absolute(NURN_SHORE_HEIGHT), 0)), GRASS_BLOCK),
+				SurfaceRules.ifTrue(surfaceNoiseAbove(NURN_COBBLE_NOISE), COBBLED_DARK_STONE),
+				DARK_STONE));
 	}
 
 	/**
-	 * The surface noise value above which Nurn's floor is dark stone instead of grass.
+	 * Nurn's floor is grass below this height and dark stone above it. The water table is sea level,
+	 * so everything here stands at most a few blocks above water: the low shores and islands of the
+	 * flooded lowland. A lake above that height lays its own grassland around itself instead.
 	 */
-	public static final double NURN_DARK_STONE_NOISE = 1.6D;
+	private static final int NURN_SHORE_HEIGHT = 68;
 
 	/**
-	 * Whether the Nurn floor rule leaves grass on a column. The noise condition inside a surface rule
-	 * reads the surface noise at y zero whatever the block's own height is, so a caller outside the
-	 * surface system can reproduce the answer exactly and pick a spot on the grass.
+	 * The surface noise value above which Nurn's floor is cobbled dark stone instead of plain dark
+	 * stone. It is texture only; both are dry ground.
 	 */
-	public static boolean isNurnGrassAt(RandomState randomState, int x, int z) {
-		return randomState.getOrCreateNoise(Noises.SURFACE).getValue(x, 0.0D, z) < NURN_DARK_STONE_NOISE / 8.25D;
-	}
+	private static final double NURN_COBBLE_NOISE = 1.2D;
 
 	private static SurfaceRules.RuleSource makeTolkienWorldRules() {
 		SurfaceRules.ConditionSource isAtOrAboveWaterLevel = SurfaceRules.waterBlockCheck(-1, 0);
