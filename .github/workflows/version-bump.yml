@@ -1,15 +1,19 @@
-name: Auto Increment Version on Push
+name: Auto Increment Version and Release
 
 on:
   push:
     branches:
-      - main  # or master
+      - main
 
 jobs:
-  bump-version:
+  bump-and-release:
+    # ⚠️ THIS LINE SEPARATES PUSHES FROM RELEASES:
+    # It only runs if your last commit message contains the text "[release]"
+    if: contains(github.event.head_commit.message, '[release]')
+    
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Allows the runner to push changes back to your repo
+      contents: write
 
     steps:
     - name: Checkout Repository
@@ -20,16 +24,37 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v4
       with:
-        java-version: '21' # Match your project's Java version
+        java-version: '21'
         distribution: 'temurin'
 
     - name: Run Increment Task
       run: ./gradlew incrementBuildNumber
 
-    - name: Commit and Push Updated Version
+    - name: Commit, Tag, and Push
+      id: git_meta
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@://github.com'
+        
         git add gradle.properties
-        git commit -m "chore: auto-increment build counter [skip ci]"
-        git push
+        git commit -m "chore: bump version for release [skip ci]"
+        
+        # Get the new number
+        BUILD_NUM=$(grep 'currentBuildNumber=' gradle.properties | cut -d'=' -f2)
+        FULL_VERSION="v4.3.${BUILD_NUM}"
+        
+        git tag -a "$FULL_VERSION" -m "Automated release $FULL_VERSION"
+        git push origin main --tags
+        
+        # Save the version string so the next step can read it
+        echo "version=$FULL_VERSION" >> $GITHUB_OUTPUT
+
+    # 🚀 AUTOMATICALLY GENERATE THE GITHUB RELEASE DRAFT
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ steps.git_meta.outputs.version }}
+        name: Release ${{ steps.git_meta.outputs.version }}
+        draft: false
+        prerelease: false
+        generate_release_notes: true # Automatically builds a changelog of your commits!
