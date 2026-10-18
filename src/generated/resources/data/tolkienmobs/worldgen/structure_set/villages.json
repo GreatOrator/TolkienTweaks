@@ -33,6 +33,10 @@
     {
       "structure": "tolkienmobs:ttmhouse_orc",
       "weight": 1
+    },
+    {
+      "structure": "tolkienmobs:ttmhouse_frozen",
+      "weight": 1
     }
   ]
 }

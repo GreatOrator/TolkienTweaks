@@ -390,4 +390,40 @@ public class BiomeMaker extends BiomeHelper{
                 .generationSettings(marshesGen(placedFeatureGetter, carverGetter).build())
                 .build();
     }
+
+    public static Biome makeBiomeForochel(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        forochelGen(placedFeatureGetter, carverGetter);
+        forochelSpawning();
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(true)
+                .temperature(-0.5F)
+                .downfall(0.5F)
+                .specialEffects((new BiomeSpecialEffects.Builder())
+                        .waterColor(4020182)
+                        .waterFogColor(329011)
+                        .fogColor(12638463)
+                        .skyColor(getSkyColorWithTemperatureModifier(-0.5F))
+                        .build())
+                .mobSpawnSettings(forochelSpawning().build())
+                .generationSettings(forochelGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
+
+    public static Biome makeBiomeForochelSlopes(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        forochelSlopesGen(placedFeatureGetter, carverGetter);
+        forochelSlopesSpawning();
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(true)
+                .temperature(-0.7F)
+                .downfall(0.4F)
+                .specialEffects((new BiomeSpecialEffects.Builder())
+                        .waterColor(4020182)
+                        .waterFogColor(329011)
+                        .fogColor(12638463)
+                        .skyColor(getSkyColorWithTemperatureModifier(-0.7F))
+                        .build())
+                .mobSpawnSettings(forochelSlopesSpawning().build())
+                .generationSettings(forochelSlopesGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
 }
