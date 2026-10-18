@@ -401,6 +401,43 @@ def block_matches(
     return True
 
 
+def version_block_matcher(
+    translation_manager,
+    platform: str,
+    version_number: Tuple[int, int, int],
+    force_blockstate: bool,
+    namespace: str,
+    name: str,
+    properties: Mapping[str, str],
+):
+    """A test for whether a universal block is the one the find picker shows.
+
+    The level's palette holds universal blocks - ``universal_minecraft:stone``,
+    ``universal_minecraft:log`` with the wood in a property - while the picker
+    lists blocks of the version being edited, so a translated palette block has
+    to be turned back into that version before the two can be compared. A block
+    stored under its own namespace is one PyMCTranslate did not translate, which
+    is every modded block: its name is already the name the picker shows.
+    """
+    translator = translation_manager.get_version(platform, version_number).block
+
+    def matches(universal_block: Block) -> bool:
+        if universal_block.namespace.startswith("universal_"):
+            try:
+                version_block = translator.from_universal(
+                    universal_block, None, force_blockstate
+                )[0]
+            except Exception:
+                version_block = universal_block
+        else:
+            version_block = universal_block
+        if not isinstance(version_block, Block):
+            return False
+        return block_matches(version_block, namespace, name, properties)
+
+    return matches
+
+
 def drop_block_entities(chunk, slices, replaced: "numpy.ndarray") -> None:
     """Remove block entities sitting on blocks that were just replaced.
 
@@ -803,12 +840,14 @@ class TolkienMobsReplace(SimpleScrollablePanel, DefaultOperationUI):
         dimension: Dimension = self.canvas.dimension
         selection: SelectionGroup = self.canvas.selection.selection_group
 
-        find_namespace = self._find_block.namespace
-        find_name = self._find_block.block_name
+        find = self._find_block
+        find_platform = find.platform
+        find_version_number = find.version_number
+        find_blockstate = find.force_blockstate
+        find_namespace = find.namespace
+        find_name = find.block_name
         find_properties = (
-            dict(self._find_block.str_properties)
-            if self._match_properties.GetValue()
-            else {}
+            dict(find.str_properties) if self._match_properties.GetValue() else {}
         )
         replacement, _block_entity = self._replacement_block.universal_block
 
@@ -821,24 +860,37 @@ class TolkienMobsReplace(SimpleScrollablePanel, DefaultOperationUI):
             yield 1.0
             return
 
+        total = sum(1 for _ in world.get_coord_box(dimension, selection))
+        if not total:
+            print("Find & replace: nothing is selected - drag a selection first.")
+            yield 1.0
+            return
+
         replacement_id = world.block_palette.get_add_block(replacement)
         matches: List[int] = []
-        scanned_palette_size = -1
+        scanned_palette_size = 0
         replaced = 0
-        total = sum(1 for _ in world.get_coord_box(dimension, selection))
+        found = version_block_matcher(
+            world.translation_manager,
+            find_platform,
+            find_version_number,
+            find_blockstate,
+            find_namespace,
+            find_name,
+            find_properties,
+        )
 
         for index, (chunk, slices, _box) in enumerate(
             world.get_chunk_slice_box(dimension, selection), 1
         ):
             # Chunks load as the operation walks the selection and can bring new
-            # blocks into the palette, so rescan whenever it grew.
-            if len(world.block_palette) != scanned_palette_size:
-                scanned_palette_size = len(world.block_palette)
-                matches = [
-                    block_id
-                    for block_id, block in world.block_palette.items()
-                    if block_matches(block, find_namespace, find_name, find_properties)
-                ]
+            # blocks into the palette, so check whatever has been added since.
+            palette_size = len(world.block_palette)
+            if scanned_palette_size < palette_size:
+                for block_id in range(scanned_palette_size, palette_size):
+                    if found(world.block_palette[block_id]):
+                        matches.append(block_id)
+                scanned_palette_size = palette_size
 
             if matches:
                 blocks = numpy.array(chunk.blocks[slices])
@@ -850,9 +902,20 @@ class TolkienMobsReplace(SimpleScrollablePanel, DefaultOperationUI):
                     drop_block_entities(chunk, slices, mask)
                     chunk.changed = True
 
-            yield min(index / total, 1.0) if total else 1.0
+            yield min(index / total, 1.0)
 
-        print(f"Find & replace: swapped {replaced} block(s).")
+        print(
+            f"Find & replace: swapped {replaced} block(s) of {find_namespace}:"
+            f"{find_name} for {replacement.namespace}:{replacement.base_name}."
+        )
+        if not replaced:
+            # The difference between these two is the whole diagnosis: whether the
+            # block is in the selection or in the world at all.
+            print(
+                f"Find & replace: nothing replaced - {len(matches)} of the "
+                f"{len(world.block_palette)} blocks in this world's palette are "
+                f"{find_namespace}:{find_name}."
+            )
 
 
 export = {
