@@ -349,6 +349,25 @@ def collect_mod_blocks(
     }
 
 
+def as_game_version(translation_manager, platform: str, version_number):
+    """The game version tuple for a level wrapper's version number.
+
+    A Java world's wrapper reports its level's data version, an int such as 3465,
+    while a Bedrock world's reports a game version tuple. The editor's version
+    picker only lists game version tuples: handed an int it matches nothing and
+    silently falls back to the newest version instead of the world's own, so
+    resolve the data version through PyMCTranslate first.
+    """
+    if not isinstance(version_number, int):
+        return version_number
+    try:
+        return tuple(
+            translation_manager.get_version(platform, version_number).version_number
+        )
+    except Exception:  # a version the translations do not know
+        return version_number
+
+
 def _snbt(value) -> str:
     """A property value as SNBT text, whichever form it arrived in."""
     if hasattr(value, "to_snbt"):
@@ -486,7 +505,11 @@ class ModdedBlockDefine(wx.Panel):
         self.SetSizer(self._sizer)
 
         self._version_picker = VersionSelect(
-            self, translation_manager, platform, version_number, force_blockstate
+            self,
+            translation_manager,
+            platform,
+            as_game_version(translation_manager, platform, version_number),
+            force_blockstate,
         )
         self._sizer.Add(self._version_picker, 0, wx.EXPAND)
         self._version_picker.Bind(EVT_VERSION_CHANGE, self._on_version_change)
@@ -626,11 +649,14 @@ class TolkienMobsReplace(SimpleScrollablePanel, DefaultOperationUI):
         options = self._load_options({}) or {}
 
         if self._world_is_java_blockstates():
+            wrapper = world.level_wrapper
             self._mod_blocks = collect_mod_blocks(
                 world,
-                world.level_wrapper.translation_manager,
-                world.level_wrapper.platform,
-                world.level_wrapper.version,
+                wrapper.translation_manager,
+                wrapper.platform,
+                as_game_version(
+                    wrapper.translation_manager, wrapper.platform, wrapper.version
+                ),
             )
         else:
             # Universal block names only line up with version block names from
@@ -677,7 +703,12 @@ class TolkienMobsReplace(SimpleScrollablePanel, DefaultOperationUI):
 
     def _world_is_java_blockstates(self) -> bool:
         wrapper = self.world.level_wrapper
-        return wrapper.platform == "java" and tuple(wrapper.version)[:2] >= (1, 13)
+        if wrapper.platform != "java":
+            return False
+        version = as_game_version(
+            wrapper.translation_manager, wrapper.platform, wrapper.version
+        )
+        return isinstance(version, tuple) and version[:2] >= (1, 13)
 
     def _default_replacement(self) -> Tuple[str, str]:
         names = self._mod_blocks.get(MOD_NAMESPACE)
@@ -695,7 +726,9 @@ class TolkienMobsReplace(SimpleScrollablePanel, DefaultOperationUI):
         wrapper = self.world.level_wrapper
         translation_manager = wrapper.translation_manager
         platform = wrapper.platform
-        version_number = wrapper.version
+        version_number = as_game_version(
+            translation_manager, platform, wrapper.version
+        )
         box = wx.StaticBoxSizer(wx.VERTICAL, self, title)
         try:
             define = ModdedBlockDefine(
