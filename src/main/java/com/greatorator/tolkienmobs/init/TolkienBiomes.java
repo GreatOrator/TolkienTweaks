@@ -46,6 +46,8 @@ public class TolkienBiomes {
     public static final ResourceKey<Biome> HARADWAITH = createBiome("haradwaith", BiomeMaker::makeBiomeHaradwaith, TolkienTags.Biomes.DESERT, TolkienTags.Biomes.DRY);
     public static final ResourceKey<Biome> DAGORLAD = createBiome("dagorlad", BiomeMaker::makeBiomeDagorland, TolkienTags.Biomes.PLAINS, TolkienTags.Biomes.TEMPERATE);
     public static final ResourceKey<Biome> GLADDEN = createBiome("gladden", BiomeMaker::makeBiomeGladden, TolkienTags.Biomes.PLAINS, TolkienTags.Biomes.TEMPERATE);
+    public static final ResourceKey<Biome> FOROCHEL = createBiome("forochel", BiomeMaker::makeBiomeForochel, TolkienTags.Biomes.PLAINS, TolkienTags.Biomes.COLD);
+    public static final ResourceKey<Biome> FOROCHEL_SLOPES = createBiome("forochel_slopes", BiomeMaker::makeBiomeForochelSlopes, TolkienTags.Biomes.MOUNTAIN, TolkienTags.Biomes.COLD);
 
     public static void bootstrap(BootstrapContext<Biome> context) {
         BIOME_FACTORIES.forEach((key, factory) -> context.register(key,

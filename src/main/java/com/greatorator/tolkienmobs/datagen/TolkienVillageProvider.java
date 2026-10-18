@@ -50,7 +50,8 @@ public final class TolkienVillageProvider {
             new Village(TolkienStructures.HOUSE_ELVEN, "elven", "plains", TolkienBiomes.LORINAND, "entityttmelves", new BlockPos(0, 0, 5), "west_up", new BlockPos(4, 8, 3)),
             new Village(TolkienStructures.HOBBIT_HOUSE, "hobbit", "plains", TolkienBiomes.SHIRE, "entityttmhobbit", new BlockPos(27, 0, 14), "east_up", new BlockPos(11, 0, 20)),
             new Village(TolkienStructures.HOUSE_HUMAN, "human", "plains", TolkienBiomes.GLADDEN, "entityttmhuman", new BlockPos(6, 0, 12), "south_up", new BlockPos(5, 5, 8)),
-            new Village(TolkienStructures.HOUSE_ORC, "orc", "desert", TolkienBiomes.MORDOR, "entityttmorc", new BlockPos(7, 0, 14), "south_up", new BlockPos(7, 0, 2))
+            new Village(TolkienStructures.HOUSE_ORC, "orc", "desert", TolkienBiomes.MORDOR, "entityttmorc", new BlockPos(7, 0, 14), "south_up", new BlockPos(7, 0, 2)),
+            new Village(TolkienStructures.HOUSE_FROZEN, "frozen", "plains", TolkienBiomes.FOROCHEL, "entityttmhuman", new BlockPos(6, 0, 12), "south_up", new BlockPos(5, 5, 8), false, true)
     );
     /** The vanilla villager templates datagen copies for every village; weights match vanilla. */
     public static final List<String> VILLAGERS = List.of("nitwit", "baby", "unemployed");
@@ -59,7 +60,7 @@ public final class TolkienVillageProvider {
      * has no path block of its own - its streets are sandstone - so for Nurn this reaches only the
      * path at each house's door and the driveway that meets it.
      */
-    private static final Set<String> STONE_PATH_STYLES = Set.of("dwarf", "human", "nurn");
+    private static final Set<String> STONE_PATH_STYLES = Set.of("dwarf", "human", "nurn", "frozen");
 
     private TolkienVillageProvider() {}
 
@@ -194,7 +195,8 @@ public final class TolkienVillageProvider {
             "plains", "plains",
             "nurn", "desert",
             "dwarf", "plains",
-            "human", "plains");
+            "human", "plains",
+            "frozen", "plains");
 
     /** Pool elements take processor holders; a village with no recolouring passes none. */
     private static java.util.function.Function<StructureTemplatePool.Projection, ? extends StructurePoolElement> legacy(

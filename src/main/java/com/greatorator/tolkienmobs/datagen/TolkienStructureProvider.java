@@ -59,6 +59,8 @@ public final class TolkienStructureProvider {
                     List.of(TolkienBiomes.GLADDEN), 32, 8, 193764830, 0),
             new Definition(TolkienStructures.HOUSE_ORC, "tolkienmobs:ttmhouse_orc",
                     List.of(TolkienBiomes.MORDOR), 32, 8, 193764837, 0),
+            new Definition(TolkienStructures.HOUSE_FROZEN, "tolkienmobs:ttmhouse_frozen",
+                    List.of(TolkienBiomes.FOROCHEL), 32, 8, 193764839, 0),
             site(TolkienStructures.INN_DESERT, TolkienBiomes.HARADWAITH, 12, 6, 193764831, Layout.single()),
             site(TolkienStructures.RUIN_LARGE, TolkienBiomes.DAGORLAD, 4, 3, 193764832, Layout.single()),
             site(TolkienStructures.RUIN_SMALL, TolkienBiomes.DAGORLAD, 4, 3, 193764832, Layout.single()),

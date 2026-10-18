@@ -30,6 +30,7 @@ public class TolkienStructures {
     public static final ResourceKey<Structure> HOUSE_ELVEN = key("ttmhouse_elven");
     public static final ResourceKey<Structure> HOUSE_HUMAN = key("ttmhouse_human");
     public static final ResourceKey<Structure> HOUSE_ORC = key("ttmhouse_orc");
+    public static final ResourceKey<Structure> HOUSE_FROZEN = key("ttmhouse_frozen");
     // The six house keys above now generate complete villages; their IDs are retained for saves.
     public static final ResourceKey<Structure> INN_DESERT = key("ttminn_desert");
     public static final ResourceKey<Structure> RUIN_LARGE = key("ttmruin_large");

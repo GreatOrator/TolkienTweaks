@@ -297,6 +297,32 @@ public abstract class BiomeHelper {
 				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15);
 	}
 
+    public static MobSpawnSettings.Builder forochelSpawning() {
+
+        return new MobSpawnSettings.Builder()
+                .addSpawn(MobCategory.MISC, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_HUMAN.get(), 45, 1, 5))
+                .addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.POLAR_BEAR, 20, 1, 2))
+                .addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.RABBIT, 10, 2, 4))
+                .addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 10, 1, 2))
+                .addMobCharge(TolkienEntities.ENTITY_TTM_HUMAN.get(), 0.6, 0.15)
+                .addMobCharge(EntityType.POLAR_BEAR, 0.6, 0.15)
+                .addMobCharge(EntityType.RABBIT, 0.6, 0.15)
+                .addMobCharge(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 0.6, 0.15);
+    }
+
+    public static MobSpawnSettings.Builder forochelSlopesSpawning() {
+
+        return new MobSpawnSettings.Builder()
+                .addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_TROLL.get(), 35, 1, 2))
+                .addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 45, 1, 5))
+                .addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.POLAR_BEAR, 20, 1, 2))
+                .addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.GOAT, 15, 1, 3))
+                .addMobCharge(TolkienEntities.ENTITY_TTM_TROLL.get(), 0.6, 0.15)
+                .addMobCharge(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 0.6, 0.15)
+                .addMobCharge(EntityType.POLAR_BEAR, 0.6, 0.15)
+                .addMobCharge(EntityType.GOAT, 0.6, 0.15);
+    }
+
 		// Biome Settings
 	public static BiomeGenerationSettings.Builder lorinadGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
 		BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
@@ -585,6 +611,44 @@ public abstract class BiomeHelper {
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_WATERLILY)
 				.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, MiscOverworldPlacements.DISK_CLAY);
 	}
+
+    public static BiomeGenerationSettings.Builder forochelGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
+
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_NORMAL);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.BROWN_MUSHROOM_NORMAL);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.RED_MUSHROOM_NORMAL);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_PUMPKIN);
+
+        BiomeDefaultFeatures.addDefaultOres(biome);
+        BiomeDefaultFeatures.addDefaultMonsterRoom(biome);
+        BiomeDefaultFeatures.addDefaultMushrooms(biome);
+        BiomeDefaultFeatures.addDefaultUndergroundVariety(biome);
+        BiomeDefaultFeatures.addDefaultCarversAndLakes(biome);
+        BiomeDefaultFeatures.addSurfaceFreezing(biome);
+        addLegacyOres(biome);
+
+        return biome;
+    }
+
+    public static BiomeGenerationSettings.Builder forochelSlopesGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
+
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_NORMAL);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.BROWN_MUSHROOM_NORMAL);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.RED_MUSHROOM_NORMAL);
+
+        BiomeDefaultFeatures.addDefaultOres(biome);
+        BiomeDefaultFeatures.addDefaultMonsterRoom(biome);
+        BiomeDefaultFeatures.addDefaultMushrooms(biome);
+        BiomeDefaultFeatures.addDefaultUndergroundVariety(biome);
+        BiomeDefaultFeatures.addDefaultCarversAndLakes(biome);
+        BiomeDefaultFeatures.addSurfaceFreezing(biome);
+        BiomeDefaultFeatures.addMountainTrees(biome);
+        addLegacyOres(biome);
+
+        return biome;
+    }
 
 	public static void addLegacyOres(BiomeGenerationSettings.Builder biome) {
 		biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.PLACED_COAL_ORE);

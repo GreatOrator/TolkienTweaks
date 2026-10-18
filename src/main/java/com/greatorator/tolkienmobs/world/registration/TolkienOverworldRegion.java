@@ -28,11 +28,6 @@ public class TolkienOverworldRegion extends Region {
             builder.replaceBiome(Biomes.FROZEN_PEAKS, TolkienBiomes.HITHAEGLIR);
             builder.replaceBiome(Biomes.OLD_GROWTH_PINE_TAIGA, TolkienBiomes.FANGORN);
             builder.replaceBiome(Biomes.ERODED_BADLANDS, TolkienBiomes.MORDOR);
-            // The three badlands biomes share one climate box and are told apart by the peaks and
-            // valleys noise, so Nurn lands in the same hot, eroded country as Mordor and the two
-            // come out interleaved, Mordor on the ridged half and Nurn on the flat half. A ring of
-            // Mordor around Nurn is not something a climate box can express, so this is as close
-            // as the vanilla overworld's biome selection gets to a biome inside another biome.
             builder.replaceBiome(Biomes.BADLANDS, TolkienBiomes.NURN);
             builder.replaceBiome(Biomes.WOODED_BADLANDS, TolkienBiomes.NURN);
             builder.replaceBiome(Biomes.JAGGED_PEAKS, TolkienBiomes.ASH_MOUNTAINS);
@@ -45,6 +40,8 @@ public class TolkienOverworldRegion extends Region {
             builder.replaceBiome(Biomes.DESERT, TolkienBiomes.HARADWAITH);
             builder.replaceBiome(Biomes.SAVANNA_PLATEAU, TolkienBiomes.DAGORLAD);
             builder.replaceBiome(Biomes.SUNFLOWER_PLAINS, TolkienBiomes.GLADDEN);
+            builder.replaceBiome(Biomes.SNOWY_PLAINS, TolkienBiomes.FOROCHEL);
+            builder.replaceBiome(Biomes.SNOWY_SLOPES, TolkienBiomes.FOROCHEL_SLOPES);
         });
     }
 }
