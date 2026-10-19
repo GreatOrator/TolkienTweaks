@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - Mountain stone counts as stone for ore generation, so the Blue Mountains' underground carries the same ores as any other biome's.
 - The Blue Mountains grow dwarven maples, and dwarven villages now start there as well as in the Iron Hills.
 - Mountain stone also forms andesite-like veins through the Blue Mountains' stone, so the rock still shows in worlds that never apply the biome's surface rules, such as a single-biome world.
+- Human NPCs spawned in a cold climate, such as Forochel, wear the winter clothing textures; humans spawned anywhere warmer keep their normal clothes. The outfit is chosen once, from the biome they spawned in, so it does not change if they later travel.
 
 ### Fixed
 

@@ -17,45 +17,30 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class HumanRender extends GeoEntityRenderer<HumanEntity> {
     private static final ResourceLocation WINTER_HUMAN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/human_winter/winter");
-    private static final ResourceLocation HUMAN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/human/human.png");
+    private static final ResourceLocation HUMAN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/human/human");
 
-    public static final Map<TolkienVariant, ResourceLocation> LOCATION_BY_VARIANT =
-            Util.make(Maps.newEnumMap(TolkienVariant.class), map -> {
-                map.put(TolkienVariant.DEFAULT,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/human/human1.png"));
-                map.put(TolkienVariant.RED,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/human/human2.png"));
-                map.put(TolkienVariant.ORANGE,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/human/human3.png"));
-                map.put(TolkienVariant.YELLOW,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/human/human4.png"));
-                map.put(TolkienVariant.GREEN,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/human/human5.png"));
-                map.put(TolkienVariant.BLUE,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/human/human6.png"));
-                map.put(TolkienVariant.INDIGO,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/human/human7.png"));
-                map.put(TolkienVariant.VIOLET,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/human/human8.png"));
-                map.put(TolkienVariant.MAGENTA,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/human/human9.png"));
-                map.put(TolkienVariant.PINK,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/human/human10.png"));
-                map.put(TolkienVariant.GRAY,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/human/human11.png"));
-                map.put(TolkienVariant.AQUA,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/human/human12.png"));
-                map.put(TolkienVariant.BEIGE,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/human/human13.png"));
-                map.put(TolkienVariant.BROWN,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/human/human14.png"));
-                map.put(TolkienVariant.CORAL,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/human/human15.png"));
-                map.put(TolkienVariant.CYAN,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/human/human16.png"));
-                map.put(TolkienVariant.LAVENDER,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/human/human1.png"));
-            });
+    public static final Map<TolkienVariant, ResourceLocation> LOCATION_BY_VARIANT = textures(HUMAN);
+    public static final Map<TolkienVariant, ResourceLocation> WINTER_LOCATION_BY_VARIANT = textures(WINTER_HUMAN);
+
+    /**
+     * Builds the variant-to-texture list for one folder. Every variant uses the file matching its id
+     * plus one (human1.png for DEFAULT, human2.png for RED and so on); LAVENDER has no file of its
+     * own and shares DEFAULT's. Giving both folders the same numbering is what lets a human keep its
+     * face when it swaps to winter clothing.
+     */
+    private static Map<TolkienVariant, ResourceLocation> textures(ResourceLocation base) {
+        return Util.make(Maps.newEnumMap(TolkienVariant.class), map -> {
+            for (TolkienVariant variant : TolkienVariant.values()) {
+                int file = variant == TolkienVariant.LAVENDER ? 1 : variant.getId() + 1;
+                map.put(variant, base.withSuffix(file + ".png"));
+            }
+        });
+    }
+
+    public static ResourceLocation getTexture(HumanEntity entity) {
+        Map<TolkienVariant, ResourceLocation> byVariant = entity.isWinter() ? WINTER_LOCATION_BY_VARIANT : LOCATION_BY_VARIANT;
+        return byVariant.get(entity.getTolkienVariant());
+    }
 
     public HumanRender(EntityRendererProvider.Context context) {
         super(context, new HumanModel());
@@ -64,7 +49,7 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity> {
 
     @Override
     public ResourceLocation getTextureLocation(HumanEntity entity) {
-        return LOCATION_BY_VARIANT.get(entity.getTolkienVariant());
+        return getTexture(entity);
     }
 
     @Override
