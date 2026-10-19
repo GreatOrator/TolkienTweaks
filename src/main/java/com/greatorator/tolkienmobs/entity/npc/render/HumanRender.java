@@ -16,6 +16,9 @@ import java.util.Map;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class HumanRender extends GeoEntityRenderer<HumanEntity> {
+    private static final ResourceLocation WINTER_HUMAN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/human_winter/winter");
+    private static final ResourceLocation HUMAN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/human/human.png");
+
     public static final Map<TolkienVariant, ResourceLocation> LOCATION_BY_VARIANT =
             Util.make(Maps.newEnumMap(TolkienVariant.class), map -> {
                 map.put(TolkienVariant.DEFAULT,
