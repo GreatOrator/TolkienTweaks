@@ -1,7 +1,6 @@
 package com.greatorator.tolkienmobs.containers.screens;
 
 import com.greatorator.tolkienmobs.TolkienMobsConfig;
-import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.entity.MilestoneBlockEntity;
 import com.greatorator.tolkienmobs.containers.MilestoneContainer;
 import com.greatorator.tolkienmobs.containers.handlers.ToggleButtonFactory;
@@ -10,12 +9,10 @@ import com.greatorator.tolkienmobs.containers.widget.NumberButton;
 import com.greatorator.tolkienmobs.containers.widget.ToggleButton;
 import com.greatorator.tolkienmobs.containers.widget.TolkienButton;
 import com.greatorator.tolkienmobs.handler.MilestoneHandler;
-import com.greatorator.tolkienmobs.handler.vec.Vector3;
 import com.greatorator.tolkienmobs.network.manager.MilestoneSettingsUpdateManager;
 import com.greatorator.tolkienmobs.util.ColorUtility;
 import com.greatorator.tolkienmobs.util.GeneralUtility;
 import com.greatorator.tolkienmobs.util.block.MilestoneSettings;
-import com.greatorator.tolkienmobs.util.block.TeleportUtility;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -26,7 +23,6 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -47,13 +43,15 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
     private EditBox milestoneName;
     protected List<AbstractWidget> widgetsToRemove = new ArrayList<>();
     protected List<AbstractWidget> widgetsToAdd = new ArrayList<>();
-    private final List<AbstractWidget> locationButtons = new ArrayList<>();
+    private final List<AbstractWidget> locationList = new ArrayList<>();
     protected boolean renderablesChanged = false;
+    public static final int maxItemsPerPage = 7;
+    public static int currentPage = 0;
 
     public MilestoneScreen(MilestoneContainer container, Inventory inv, Component title) {
         super(container, inv, title);
         this.container = container;
-        this.tileEntity = container.tileEntity;
+        this.tileEntity = container.tile;
         this.milestoneSettings = tileEntity.getMilestoneSettings();
         this.imageHeight = 196;
 
@@ -81,7 +79,39 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
             addMilestoneMultiplierButton();
             addPaymentMethod();
         }
-        addLocations();
+
+        getItemsForPage();
+
+        int relX = (this.width - this.imageWidth) / 2;
+        int relY = (this.height - this.imageHeight) / 2;
+
+        Button prevButton = Button.builder(Component.literal("<"), button -> {
+            // Decrement page and rebuild the screen
+            if (currentPage > 0) {
+                currentPage--;
+                this.clearWidgets(); // Clear old widgets
+                this.init(); // Reinitialize with new page
+            }
+        })
+                .pos(relX + 7, relY + 173)
+                .size(8, 16)
+                .build();
+        prevButton.active = currentPage > 0;
+        this.addRenderableWidget(prevButton);
+
+        Button nextButton = Button.builder(Component.literal(">"), button -> {
+            // Increment page and rebuild the screen
+            if (currentPage <= getPageCount() - 1) {
+                currentPage++;
+                this.clearWidgets();
+                this.init();
+            }
+        })
+                .pos(relX + 161, relY + 173)
+                .size(8, 16)
+                .build();
+        nextButton.active = currentPage < getPageCount();
+        this.addRenderableWidget(nextButton);
         tileEntity.updateClientState();
     }
 
@@ -126,47 +156,6 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
         this.milestoneName.setVisible(true);
     }
 
-    public void addLocations() {
-        int i = -1;
-
-        for (MilestoneHandler.MilestoneData data : MilestoneHandler.getKnownByPlayer(Objects.requireNonNull(getMinecraft().player))) {
-            if (data.getUuid().equals(tileEntity.getUUID())) continue;
-            i++;
-            int relX = (this.width - this.imageWidth) / 2;
-            int relY = (this.height - this.imageHeight) / 2;
-
-            int y = 66 + (i * 16);
-            this.locationButtons.add(
-                    this.addRenderableWidget(Button.builder(Component.literal(data.getName()),
-                                    button -> {
-                                        TolkienMobsMain.LOGGER.warn("You teleported!");
-                                        TolkienMobsMain.LOGGER.warn(String.valueOf(getMinecraft().player));
-                                        TolkienMobsMain.LOGGER.warn(String.valueOf(data.getUuid()));
-                                        TolkienMobsMain.LOGGER.warn(String.valueOf(data.getPos()));
-                                        TolkienMobsMain.LOGGER.warn(String.valueOf(data.getWorldKey()));
-                                        TolkienMobsMain.LOGGER.warn(data.getName());
-//                                        TeleportUtility.teleportEntity(getMinecraft().player, data.getWorldKey(), Vector3.fromBlockPosCenter(data.getPos()).add(1, 1, 0));
-                                        this.tileEntity.sendPacketToServer(output -> output.writeUUID(data.getUuid()), 3);
-                                    })
-                            .pos(relX + 5, relY + y)
-                            .size(150, 16)
-                            .build()
-                    )
-            );
-            if (TolkienMobsConfig.PAYMENT_TYPE.get()) {
-                addRenderableWidget(ToggleButtonFactory.ITEM_PAYMENT_METHOD_CLIENT(relX + 155, relY + y, this.tileEntity.getItemTravelCost(data),
-                        (button) -> {
-
-                        }));
-            } else {
-                addRenderableWidget(ToggleButtonFactory.EXPERIENCE_PAYMENT_METHOD_CLIENT(relX + 155, relY + y, this.tileEntity.getExperienceTravelCost(data),
-                        (button) -> {
-
-                        }));
-            }
-        }
-    }
-
     public void updateRenderables() {
         if (!widgetsToRemove.isEmpty()) {
             for (AbstractWidget abstractWidget : widgetsToRemove) {
@@ -194,6 +183,55 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
         return value;
     }
 
+    public int getPageCount(){
+        int i = -1;
+        for (MilestoneHandler.MilestoneData data : MilestoneHandler.getKnownByPlayer(Objects.requireNonNull(getMinecraft().player))) {
+            if (data.getUuid().equals(tileEntity.getUUID())) continue;
+            i++;
+        }
+            return Math.max((int) Math.ceil((double) i / maxItemsPerPage) - 1, 0);
+    }
+
+    private List<AbstractWidget> getItemsForPage() {
+        int yOffset = 0;
+        int startIndex = currentPage * maxItemsPerPage;
+        List<MilestoneHandler.MilestoneData> knownByPlayer = MilestoneHandler.getKnownByPlayer(Objects.requireNonNull(getMinecraft().player));
+        int endIndex = Math.min(startIndex + maxItemsPerPage, knownByPlayer.size());
+
+        for (int i = 0; i < knownByPlayer.size(); i++) {
+            if (i <= startIndex || i > endIndex) continue;
+            MilestoneHandler.MilestoneData data = knownByPlayer.get(i);
+            if (data.getUuid().equals(tileEntity.getUUID())) continue;
+
+            int relX = (this.width - this.imageWidth) / 2;
+            int relY = (this.height - this.imageHeight) / 2;
+            int y = 66 + (yOffset * 15);
+            locationList.add(
+                    this.addRenderableWidget(Button.builder(Component.literal(data.getName()),
+                                    button -> {
+                                        this.tileEntity.sendPacketToServer(output -> output.writeUUID(data.getUuid()), 3);
+                                    })
+                            .pos(relX + 5, relY + y)
+                            .size(150, 15)
+                            .build()
+                    )
+            );
+            if (TolkienMobsConfig.PAYMENT_TYPE.get()) {
+                addRenderableWidget(ToggleButtonFactory.ITEM_PAYMENT_METHOD_CLIENT(relX + 155, relY + y, this.tileEntity.getItemTravelCost(data),
+                        (button) -> {
+
+                        }));
+            } else {
+                addRenderableWidget(ToggleButtonFactory.EXPERIENCE_PAYMENT_METHOD_CLIENT(relX + 155, relY + y, this.tileEntity.getExperienceTravelCost(data),
+                        (button) -> {
+
+                        }));
+            }
+            yOffset +=1; // Adjust for next button
+        }
+        return locationList;
+    }
+
     @Override
     protected void renderTooltip(GuiGraphics pGuiGraphics, int pX, int pY) {
         super.renderTooltip(pGuiGraphics, pX, pY);
@@ -206,9 +244,6 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
         if (getMinecraft().player.isCreative()) {
             this.milestoneName.setTooltip(Tooltip.create(tooltip));
         }
-//        if (){
-//            Component.literal("hello");
-//        }
     }
 
     @Override
@@ -217,13 +252,19 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
         if (getMinecraft().player.isCreative()) {
             this.milestoneName.render(guiGraphics, mouseX, mouseY, partialTicks);
         }
+        int relX = (this.width - this.imageWidth) / 2;
+        int relY = (this.height - this.imageHeight) / 2;
+
+        String pagesLabel = GeneralUtility.withSuffix(currentPage) + " / " + GeneralUtility.withSuffix(getPageCount());
+        guiGraphics.drawCenteredString(font, pagesLabel, (relX + 100 - font.width(pagesLabel)), relY + 179, ColorUtility.DARKGRAY.getColor());
+
         this.renderTooltip(guiGraphics, mouseX, mouseY);
         }
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         guiGraphics.drawCenteredString(font, title, 83, 5, 8552833);
-        if (container.tileEntity.getBlockState().getValue(LIT)) {
+        if (container.tile.getBlockState().getValue(LIT)) {
             guiGraphics.drawCenteredString(font, " ", 83, 14, ColorUtility.DARKSLATEBLUE.getColor());
         }
         if (getMinecraft().player.isCreative()) {
@@ -289,6 +330,22 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
             }
         }
         return ret;
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollDeltaX, double scrollDeltaY) {
+        if (scrollDeltaY > 0) {
+            // Scroll up, go to previous page
+            if (this.currentPage > 0) {
+                this.currentPage--;
+            }
+        } else {
+            // Scroll down, go to next page
+            if (this.currentPage < getPageCount() - 1) {
+                this.currentPage++;
+            }
+        }
+        return true;
     }
 
     @Override

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "tolkienmobs:trinket/trinket_ring_from_trinket"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_trinket_ring": {
+      "conditions": {
+        "items": [
+          {
+            "items": "tolkienmobs:trinket_ring"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_trinket_ring"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "tolkienmobs:trinket/trinket_ring_from_trinket"
+    ]
+  }
+}

@@ -57,6 +57,8 @@ public final class PacketHandler {
     }
 
     private static void registerClientToServer(PayloadRegistrar registrar) {
+        registrar.playToServer(OpenBackpackCurioManager.TYPE,
+                OpenBackpackCurioManager.STREAM_CODEC, OpenBackpackCurioManager::handle);
         registrar.playToServer(KeyCodeUpdateManager.TYPE,
                 KeyCodeUpdateManager.STREAM_CODEC, KeyCodeUpdateManager::handle);
         registrar.playToServer(LockedChestUpdateManager.TYPE,
@@ -79,6 +81,10 @@ public final class PacketHandler {
                 SpawnerDelaysUpdateManager.STREAM_CODEC, SpawnerDelaysUpdateManager::handle);
         registrar.playToServer(SpawnerRangesUpdateManager.TYPE,
                 SpawnerRangesUpdateManager.STREAM_CODEC, SpawnerRangesUpdateManager::handle);
+        registrar.playToServer(SpawnerClearUpdateManager.TYPE,
+                SpawnerClearUpdateManager.STREAM_CODEC, SpawnerClearUpdateManager::handle);
+        registrar.playToServer(SpawnerMobCountUpdateManager.TYPE,
+                SpawnerMobCountUpdateManager.STREAM_CODEC, SpawnerMobCountUpdateManager::handle);
 
         registrar.playToServer(KeyStoneDelayUpdateManager.TYPE,
                 KeyStoneDelayUpdateManager.STREAM_CODEC, KeyStoneDelayUpdateManager::handle);
@@ -86,12 +92,10 @@ public final class PacketHandler {
                 BackpackSettingsUpdateManager.STREAM_CODEC, BackpackSettingsUpdateManager::handle);
         registrar.playToServer(BackpackPlacementUpdateManager.TYPE,
                 BackpackPlacementUpdateManager.STREAM_CODEC, BackpackPlacementUpdateManager::handle);
-        registrar.playToServer(BackpackUpgradesUpdateManager.TYPE,
-                BackpackUpgradesUpdateManager.STREAM_CODEC, BackpackUpgradesUpdateManager::handle);
-        registrar.playToServer(BackpackFluidUpgradesUpdateManager.TYPE,
-                BackpackFluidUpgradesUpdateManager.STREAM_CODEC, BackpackFluidUpgradesUpdateManager::handle);
         registrar.playToServer(MilestoneSettingsUpdateManager.TYPE,
                 MilestoneSettingsUpdateManager.STREAM_CODEC, MilestoneSettingsUpdateManager::handle);
+        registrar.playToServer(MilestoneTeleportUpdateManager.TYPE,
+                MilestoneTeleportUpdateManager.STREAM_CODEC, MilestoneTeleportUpdateManager::handle);
     }
 
     private static void registerServerToClient(IEventBus modBus) {

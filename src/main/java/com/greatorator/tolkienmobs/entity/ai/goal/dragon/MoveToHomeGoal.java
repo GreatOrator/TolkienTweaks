@@ -1,58 +1,65 @@
 package com.greatorator.tolkienmobs.entity.ai.goal.dragon;
 
-import com.greatorator.tolkienmobs.TolkienMobsConfig;
 import com.greatorator.tolkienmobs.entity.DragonEntity;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.util.RandomPos;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
 
-public class MoveToHomeGoal extends Goal
-{
-    private int time;
+public class MoveToHomeGoal extends Goal {
+    private static final int RETURN_TIMEOUT = 600;
     private final DragonEntity dragon;
+    private int time;
+    private int repathTime;
 
-    public MoveToHomeGoal(DragonEntity creatureIn)
-    {
-        this.dragon = creatureIn;
+    public MoveToHomeGoal(DragonEntity dragon) {
+        this.dragon = dragon;
         setFlags(EnumSet.of(Flag.MOVE));
     }
 
-    @Override
-    public boolean canUse()
-    {
-        return !dragon.isWithinRestriction();
+    private boolean canReturn() {
+        return dragon.hasRestriction() && !dragon.canBeControlledByRider() && !dragon.isPassenger() && !dragon.isLeashed();
     }
 
     @Override
-    public void start()
-    {
+    public boolean canUse() { return canReturn() && !dragon.isWithinRestriction(); }
+
+    @Override
+    public boolean canContinueToUse() {
+        return canReturn() && dragon.distanceToSqr(Vec3.atBottomCenterOf(dragon.getRestrictCenter())) > 4;
+    }
+
+    @Override
+    public boolean requiresUpdateEveryTick() { return true; }
+
+    @Override
+    public void start() {
+        time = repathTime = 0;
         dragon.clearAI();
+        dragon.setSleeping(false);
+        if (dragon.dragonCanFly()) dragon.setNavigator(DragonEntity.NavigationType.FLYING);
     }
 
     @Override
-    public void stop()
-    {
-        this.time = 0;
+    public void stop() {
+        time = repathTime = 0;
+        dragon.getNavigation().stop();
     }
 
     @Override
-    public void tick()
-    {
-        int sq = TolkienMobsConfig.homeRadius * TolkienMobsConfig.homeRadius;
-        Vec3 home = Vec3.atLowerCornerOf(dragon.getRestrictCenter());
-        final int TIME_UNTIL_TELEPORT = 600; // 30 seconds
-
-        time++;
-        if (dragon.distanceToSqr(home) > sq + 35 || time >= TIME_UNTIL_TELEPORT)
-            dragon.trySafeTeleport(dragon.getRestrictCenter().above());
-        else
-        {
-            BlockPos movePos;
-            if (dragon.getNavigation().isDone() && (movePos = RandomPos.generateRandomPosTowardDirection(dragon, TolkienMobsConfig.homeRadius, dragon.getRandom(), new BlockPos(dragon.getRestrictCenter()))) != null)
-                dragon.getNavigation().moveTo(movePos.getX(), movePos.getY(), movePos.getY(), 1.1);
+    public void tick() {
+        if (!canReturn()) return;
+        Vec3 home = Vec3.atBottomCenterOf(dragon.getRestrictCenter());
+        if (++time >= RETURN_TIMEOUT) {
+            if (dragon.trySafeTeleport(dragon.getRestrictCenter())) time = 0;
+            return;
+        }
+        if (--repathTime <= 0) {
+            repathTime = 20;
+            // Short waypoints keep distant homes within the navigator's search range.
+            Vec3 offset = home.subtract(dragon.position());
+            Vec3 waypoint = dragon.position().add(offset.normalize().scale(Math.min(16, offset.length())));
+            dragon.getNavigation().moveTo(waypoint.x, waypoint.y, waypoint.z, 1.1);
         }
     }
 }

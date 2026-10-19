@@ -78,7 +78,14 @@ public class GeneralUtility {
         }
     }
 
-    @Deprecated
+    public static String withSuffix(int count) {
+        if (count < 1000) return "" + count;
+        int exp = (int) (Math.log(count) / Math.log(1000));
+        return String.format("%.1f%c",
+                count / Math.pow(1000, exp),
+                "kMGTPE".charAt(exp - 1));
+    }
+
     public static void unsafeRunWhenOn(Dist dist, Supplier<Runnable> toRun) {
         if (dist == FMLEnvironment.dist) {
             toRun.get().run();
@@ -392,7 +399,6 @@ public class GeneralUtility {
         }
     }
 
-    @Deprecated
     public static <T> T unsafeRunForDist(Supplier<Supplier<T>> clientTarget, Supplier<Supplier<T>> serverTarget) {
         switch (FMLEnvironment.dist) {
             case CLIENT:
@@ -410,5 +416,22 @@ public class GeneralUtility {
         byteBuffer.putLong(uuid.getMostSignificantBits());
         byteBuffer.putLong(uuid.getLeastSignificantBits());
         return new MessageSignature(byteBuffer.array());
+    }
+
+    /**
+     * A tool, weapon or piece of gear the trinket table can work on: something with durability that
+     * has taken damage. Trinkets and anything else without durability are left for the recipes.
+     */
+    public static boolean isRepairTarget(ItemStack stack) {
+        return stack.isDamageableItem() && stack.getDamageValue() > 0;
+    }
+
+    /**
+     * Whether the material is one this stack is repaired with - a data pack's repair material entry
+     * when one covers the tool, and otherwise the same test the anvil makes, so a diamond tool takes
+     * diamonds and a mithril tool takes mithril ingots.
+     */
+    public static boolean isRepairMaterialFor(@Nullable LevelAccessor level, ItemStack stack, ItemStack material) {
+        return isRepairTarget(stack) && !material.isEmpty() && RepairMaterials.repairs(level, stack, material);
     }
 }

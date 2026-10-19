@@ -1,5 +1,7 @@
 package com.greatorator.tolkienmobs.entity.ambient;
 
+import com.greatorator.tolkienmobs.entity.TolkienFlyingAmbientEntity;
+import com.greatorator.tolkienmobs.entity.ai.goal.*;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
 import com.greatorator.tolkienmobs.init.TolkienTags;
 import net.minecraft.core.BlockPos;
@@ -12,16 +14,15 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.FlyingMoveControl;
-import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.util.LandRandomPos;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.FlyingAnimal;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -37,11 +38,9 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 
-public class CrebainEntity extends Animal implements GeoEntity,FlyingAnimal {
-    public CrebainEntity(EntityType<? extends Animal> entityType, Level level) {
+public class CrebainEntity extends TolkienFlyingAmbientEntity implements GeoEntity,FlyingAnimal {
+    public CrebainEntity(EntityType<? extends TamableAnimal> entityType, Level level) {
         super(entityType, level);
-
-        moveControl = new FlyingMoveControl(this, 20, true);
 
         setPathfindingMalus(PathType.DANGER_FIRE, -1.0f);
         setPathfindingMalus(PathType.DAMAGE_FIRE, -1.0f);
@@ -68,17 +67,12 @@ public class CrebainEntity extends Animal implements GeoEntity,FlyingAnimal {
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(0, new FloatGoal(this));
-
-        this.goalSelector.addGoal(1, new PanicGoal(this, 2.0));
-        this.goalSelector.addGoal(2, new TemptGoal(this, 1.25, stack -> stack.is(TolkienTags.Items.INSECTS), false));
-        this.goalSelector.addGoal(2, new BreedGoal(this, 1.0));
-        this.goalSelector.addGoal(3, new CrebainEntity.WanderGoal(this, 1.0));
-        this.goalSelector.addGoal(4, new FollowParentGoal(this, 1.25));
-
-        this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0));
-        this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 6.0F));
-        this.goalSelector.addGoal(7, new RandomLookAroundGoal(this));
+        this.goalSelector.addGoal(1, new StartFlyingBirdGoal(this, 120));
+        this.goalSelector.addGoal(2, new LandBirdGoal(this, 240));
+        this.goalSelector.addGoal(3, new RandomGlideGoal(this));
+        this.goalSelector.addGoal(4, new EagleDiveAttackGoal(this));
+        this.goalSelector.addGoal(5, new CrebainEntity.WanderGoal(this, 1.0));
+        this.goalSelector.addGoal(6, new TemptGoal(this, 1.25, stack -> stack.is(TolkienTags.Items.INSECTS), false));
     }
 
     @Override
@@ -105,12 +99,12 @@ public class CrebainEntity extends Animal implements GeoEntity,FlyingAnimal {
         return null;
     }
 
-    public static class WanderGoal extends WaterAvoidingRandomFlyingGoal {
+    public static class WanderGoal extends RestrictedFlyingGoal {
         private static final int TREE_HORIZONTAL_RANGE = 3;
         private static final int TREE_VERTICAL_RANGE = 6;
 
         public WanderGoal(PathfinderMob mob, double speed) {
-            super(mob, speed);
+            super(mob, speed, 64.0);
         }
 
         @Override
@@ -125,7 +119,7 @@ public class CrebainEntity extends Animal implements GeoEntity,FlyingAnimal {
                 target = findTreePos();
             }
 
-            return target == null ? super.getPosition() : target;
+            return target == null ? super.getPosition() : restrictPosition(target);
         }
 
         @Nullable
@@ -194,14 +188,14 @@ public class CrebainEntity extends Animal implements GeoEntity,FlyingAnimal {
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Glide", 1, (event) -> {
-            if (!event.isMoving() & isFlying()) {
+            if (isFlying() && isGliding()) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("glide"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Fly", 1, (event) -> {
-            if (event.isMoving() & isFlying()) {
+            if (isFlying() && !isGliding()) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("fly"));
                 return PlayState.CONTINUE;
             }

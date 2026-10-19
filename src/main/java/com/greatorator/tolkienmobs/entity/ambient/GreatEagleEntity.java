@@ -1,8 +1,7 @@
 package com.greatorator.tolkienmobs.entity.ambient;
 
-import com.greatorator.tolkienmobs.entity.TolkienAmbientEntity;
-import com.greatorator.tolkienmobs.entity.ai.goal.LandBirdGoal;
-import com.greatorator.tolkienmobs.entity.ai.goal.StartFlyingBirdGoal;
+import com.greatorator.tolkienmobs.entity.TolkienFlyingAmbientEntity;
+import com.greatorator.tolkienmobs.entity.ai.goal.*;
 import com.greatorator.tolkienmobs.entity.passive.AurochEntity;
 import com.greatorator.tolkienmobs.entity.passive.GoatEntity;
 import com.greatorator.tolkienmobs.handler.interfaces.CommonTraits;
@@ -21,13 +20,12 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.MoveToBlockGoal;
-import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomFlyingGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
@@ -50,7 +48,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.EnumSet;
 
-public class GreatEagleEntity extends TolkienAmbientEntity implements GeoEntity, FlyingAnimal, CommonTraits {
+public class GreatEagleEntity extends TolkienFlyingAmbientEntity implements GeoEntity, FlyingAnimal, CommonTraits {
     protected static final EntityDataAccessor<Boolean> PECKING = SynchedEntityData.defineId(GreatEagleEntity.class, EntityDataSerializers.BOOLEAN);
     protected BlockPos stonePos;
     public boolean scheduleWeaponGoalUpdate = true;
@@ -68,10 +66,8 @@ public class GreatEagleEntity extends TolkienAmbientEntity implements GeoEntity,
         }
     };
 
-    public GreatEagleEntity(EntityType<? extends Animal> entityType, Level level) {
+    public GreatEagleEntity(EntityType<? extends TamableAnimal> entityType, Level level) {
         super(entityType, level);
-
-        moveControl = new FlyingMoveControl(this, 20, true);
 
         setPathfindingMalus(PathType.DANGER_FIRE, -1.0f);
         setPathfindingMalus(PathType.DAMAGE_FIRE, -1.0f);
@@ -100,11 +96,13 @@ public class GreatEagleEntity extends TolkienAmbientEntity implements GeoEntity,
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(2, new StartFlyingBirdGoal(this, 120));
-        this.goalSelector.addGoal(3, new LandBirdGoal(this, 240));
-        this.goalSelector.addGoal(3, new GreatEagleEntity.WanderGoal(this, 1.0));
-        this.goalSelector.addGoal(5, new GreatEagleEntity.BirdPeckGoal(this));
-        this.goalSelector.addGoal(6, new GreatEagleEntity.BirdMoveToStoneGoal(this, 1.0D, 8, 4));
+        this.goalSelector.addGoal(2, new StartFlyingBirdGoal(this, 60));
+        this.goalSelector.addGoal(3, new LandBirdGoal(this, 480));
+        this.goalSelector.addGoal(4, new RandomGlideGoal(this));
+        this.goalSelector.addGoal(5, new EagleDiveAttackGoal(this));
+        this.goalSelector.addGoal(6, new GreatEagleEntity.WanderGoal(this, 1.0));
+        this.goalSelector.addGoal(7, new GreatEagleEntity.BirdPeckGoal(this));
+        this.goalSelector.addGoal(8, new GreatEagleEntity.BirdMoveToStoneGoal(this, 1.0D, 8, 4));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Chicken.class, true));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Sheep.class, true));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Cow.class, true));
@@ -151,12 +149,12 @@ public class GreatEagleEntity extends TolkienAmbientEntity implements GeoEntity,
         return null;
     }
 
-    public static class WanderGoal extends WaterAvoidingRandomFlyingGoal {
+    public static class WanderGoal extends RestrictedFlyingGoal {
         private static final int TREE_HORIZONTAL_RANGE = 3;
         private static final int TREE_VERTICAL_RANGE = 6;
 
         public WanderGoal(PathfinderMob mob, double speed) {
-            super(mob, speed);
+            super(mob, speed, 64.0);
         }
 
         @Override
@@ -171,7 +169,7 @@ public class GreatEagleEntity extends TolkienAmbientEntity implements GeoEntity,
                 target = findTreePos();
             }
 
-            return target == null ? super.getPosition() : target;
+            return target == null ? super.getPosition() : restrictPosition(target);
         }
 
         @Nullable
@@ -264,14 +262,14 @@ public class GreatEagleEntity extends TolkienAmbientEntity implements GeoEntity,
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Glide", 1, (event) -> {
-            if (!this.onGround() & isFlying()) {
+            if (!this.onGround() && isFlying() && isGliding()) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("glide"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Fly", 1, (event) -> {
-            if (event.isMoving() && isFlying()) {
+            if (event.isMoving() && isFlying() && !isGliding()) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("fly"));
                 return PlayState.CONTINUE;
             }

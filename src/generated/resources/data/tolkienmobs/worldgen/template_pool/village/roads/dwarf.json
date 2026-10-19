@@ -1,0 +1,149 @@
+{
+  "elements": [
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "tolkienmobs:village/roads/dwarf/corner_01",
+        "processors": "tolkienmobs:stone_path_streets",
+        "projection": "terrain_matching"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "tolkienmobs:village/roads/dwarf/corner_02",
+        "processors": "tolkienmobs:stone_path_streets",
+        "projection": "terrain_matching"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "tolkienmobs:village/roads/dwarf/corner_03",
+        "processors": "tolkienmobs:stone_path_streets",
+        "projection": "terrain_matching"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "tolkienmobs:village/roads/dwarf/straight_01",
+        "processors": "tolkienmobs:stone_path_streets",
+        "projection": "terrain_matching"
+      },
+      "weight": 4
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "tolkienmobs:village/roads/dwarf/straight_02",
+        "processors": "tolkienmobs:stone_path_streets",
+        "projection": "terrain_matching"
+      },
+      "weight": 4
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "tolkienmobs:village/roads/dwarf/straight_03",
+        "processors": "tolkienmobs:stone_path_streets",
+        "projection": "terrain_matching"
+      },
+      "weight": 7
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "tolkienmobs:village/roads/dwarf/straight_04",
+        "processors": "tolkienmobs:stone_path_streets",
+        "projection": "terrain_matching"
+      },
+      "weight": 7
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "tolkienmobs:village/roads/dwarf/straight_05",
+        "processors": "tolkienmobs:stone_path_streets",
+        "projection": "terrain_matching"
+      },
+      "weight": 3
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "tolkienmobs:village/roads/dwarf/straight_06",
+        "processors": "tolkienmobs:stone_path_streets",
+        "projection": "terrain_matching"
+      },
+      "weight": 4
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "tolkienmobs:village/roads/dwarf/crossroad_01",
+        "processors": "tolkienmobs:stone_path_streets",
+        "projection": "terrain_matching"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "tolkienmobs:village/roads/dwarf/crossroad_02",
+        "processors": "tolkienmobs:stone_path_streets",
+        "projection": "terrain_matching"
+      },
+      "weight": 1
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "tolkienmobs:village/roads/dwarf/crossroad_03",
+        "processors": "tolkienmobs:stone_path_streets",
+        "projection": "terrain_matching"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "tolkienmobs:village/roads/dwarf/crossroad_04",
+        "processors": "tolkienmobs:stone_path_streets",
+        "projection": "terrain_matching"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "tolkienmobs:village/roads/dwarf/crossroad_05",
+        "processors": "tolkienmobs:stone_path_streets",
+        "projection": "terrain_matching"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "tolkienmobs:village/roads/dwarf/crossroad_06",
+        "processors": "tolkienmobs:stone_path_streets",
+        "projection": "terrain_matching"
+      },
+      "weight": 2
+    },
+    {
+      "element": {
+        "element_type": "minecraft:legacy_single_pool_element",
+        "location": "tolkienmobs:village/roads/dwarf/turn_01",
+        "processors": "tolkienmobs:stone_path_streets",
+        "projection": "terrain_matching"
+      },
+      "weight": 3
+    }
+  ],
+  "fallback": "tolkienmobs:village/roads/dwarf/terminators"
+}

@@ -15,6 +15,8 @@ public class SwitchCombatGoal extends Goal
     private LivingEntity target;
     private double minDistance;
     private double maxDistance;
+    private ItemStack storedMainHandItem;
+    private ItemStack storedOffHandItem;
 
     public SwitchCombatGoal(TolkienMonsterEntity mobEntity, double minDistance, double maxDistance) {
         this.hostMob = mobEntity;
@@ -69,12 +71,13 @@ public class SwitchCombatGoal extends Goal
     }
 
     /**
-     * Resets the task
+     * Resets the task - puts weapons away when no longer aggressive
      */
     @Override
     public void stop()
     {
         target = null;
+        putWeaponsAway();
     }
 
     /**
@@ -90,5 +93,18 @@ public class SwitchCombatGoal extends Goal
 
     private boolean shouldSwitch() {
         return this.hostMob.distanceTo(this.target) < minDistance != hasRangedItemInOffhand();
+    }
+
+    private void putWeaponsAway()
+    {
+        if (storedMainHandItem != null) {
+            // Clear hands (put weapons away)
+            this.hostMob.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
+            this.hostMob.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
+            
+            // Clear stored items
+            storedMainHandItem = null;
+            storedOffHandItem = null;
+        }
     }
 }

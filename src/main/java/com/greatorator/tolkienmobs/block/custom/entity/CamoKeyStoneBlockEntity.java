@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs.block.custom.entity;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.containers.CamoKeyStoneContainer;
 import com.greatorator.tolkienmobs.handler.interfaces.block.KeystoneCodeBlockEntity;
 import com.greatorator.tolkienmobs.handler.interfaces.block.KeystoneSettingsBlockEntity;
@@ -133,17 +132,14 @@ public class CamoKeyStoneBlockEntity extends TolkienBlockEntity implements MenuP
 
     public void getRedstoneMode(Level world, BlockPos blockPos) {
         if (getRedstoneControlData().redstoneMode.equals(GeneralUtility.RedstoneMode.TOGGLE)) {
-            TolkienMobsMain.LOGGER.warn("Toggled");
             world.setBlockAndUpdate(blockPos, world.getBlockState(blockPos).cycle(ACTIVE));
             world.playSound((Player)null, blockPos, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 0.3F, 0.6F);
             world.setBlock(blockPos, world.getBlockState(blockPos).cycle(POWERED), 3);
         } else if (getRedstoneControlData().redstoneMode.equals(GeneralUtility.RedstoneMode.PULSE)) {
-            TolkienMobsMain.LOGGER.warn("Pulse");
             world.setBlockAndUpdate(blockPos, world.getBlockState(blockPos).setValue(ACTIVE, true));
             world.setBlock(blockPos, world.getBlockState(blockPos).setValue(POWERED, true), 3);
             world.playSound((Player)null, blockPos, SoundEvents.STONE_BUTTON_CLICK_ON, SoundSource.BLOCKS, 0.3F, 0.6F);
         } else if (getRedstoneControlData().redstoneMode.equals(GeneralUtility.RedstoneMode.DELAY) && tickDelay >= 0) {
-            TolkienMobsMain.LOGGER.warn("Delay");
             world.setBlockAndUpdate(blockPos, world.getBlockState(blockPos).setValue(ACTIVE, true));
             world.setBlock(blockPos, world.getBlockState(blockPos).setValue(POWERED, true), 3);
               world.playSound((Player)null, blockPos, SoundEvents.METAL_PRESSURE_PLATE_CLICK_ON, SoundSource.BLOCKS, 0.3F, 0.6F);

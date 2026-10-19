@@ -5,22 +5,33 @@ import java.util.Objects;
 public class SpawnerSettings {
     public boolean requirePlayer = true;
     public boolean ignoreSpawnReq = true;
+    public boolean redstoneControl = true;
     public boolean spawnerParticles = true;
+    public boolean spawnAllTogether = false; // false = random, true = spawn all
 
     public SpawnerSettings() {
 
     }
 
-    public SpawnerSettings(boolean requirePlayer, boolean ignoreSpawnReq, boolean spawnerParticles) {
+    public SpawnerSettings(boolean requirePlayer, boolean ignoreSpawnReq, boolean redstoneControl, boolean spawnerParticles) {
         this.requirePlayer = requirePlayer;
         this.ignoreSpawnReq = ignoreSpawnReq;
+        this.redstoneControl = redstoneControl;
         this.spawnerParticles = spawnerParticles;
+    }
+
+    public SpawnerSettings(boolean requirePlayer, boolean ignoreSpawnReq, boolean redstoneControl, boolean spawnerParticles, boolean spawnAllTogether) {
+        this.requirePlayer = requirePlayer;
+        this.ignoreSpawnReq = ignoreSpawnReq;
+        this.redstoneControl = redstoneControl;
+        this.spawnerParticles = spawnerParticles;
+        this.spawnAllTogether = spawnAllTogether;
     }
 
 
     @Override
     public int hashCode() {
-        return Objects.hash(requirePlayer, ignoreSpawnReq, spawnerParticles);
+        return Objects.hash(requirePlayer, ignoreSpawnReq, redstoneControl, spawnerParticles, spawnAllTogether);
     }
 
     @Override
@@ -30,6 +41,8 @@ public class SpawnerSettings {
         SpawnerSettings that = (SpawnerSettings) object;
         return requirePlayer == that.requirePlayer
                 && ignoreSpawnReq == that.ignoreSpawnReq
-                && spawnerParticles == that.spawnerParticles;
+                && redstoneControl == that.redstoneControl
+                && spawnerParticles == that.spawnerParticles
+                && spawnAllTogether == that.spawnAllTogether;
     }
 }

@@ -1,0 +1,37 @@
+{
+  "type": "tolkienmobs:village",
+  "biomes": "#tolkienmobs:has_structure/ttmhouse_nurn",
+  "max_distance_from_center": 112,
+  "pool_aliases": [
+    {
+      "type": "minecraft:direct",
+      "alias": "minecraft:village/desert/houses",
+      "target": "tolkienmobs:village/nurn/houses"
+    },
+    {
+      "type": "minecraft:direct",
+      "alias": "minecraft:village/desert/streets",
+      "target": "tolkienmobs:village/roads/nurn"
+    },
+    {
+      "type": "minecraft:direct",
+      "alias": "minecraft:village/desert/villagers",
+      "target": "tolkienmobs:village/nurn/villagers"
+    },
+    {
+      "type": "minecraft:direct",
+      "alias": "minecraft:village/desert/decor",
+      "target": "tolkienmobs:village/nurn/decor"
+    }
+  ],
+  "project_start_to_heightmap": "WORLD_SURFACE_WG",
+  "size": 6,
+  "spawn_overrides": {},
+  "start_height": {
+    "absolute": 0
+  },
+  "start_pool": "tolkienmobs:ttmhouse_nurn",
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin",
+  "use_expansion_hack": true
+}

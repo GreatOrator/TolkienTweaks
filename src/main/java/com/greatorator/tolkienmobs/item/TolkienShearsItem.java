@@ -9,10 +9,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.ShearsItem;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -25,11 +22,19 @@ import java.util.List;
 import java.util.Random;
 
 public class TolkienShearsItem extends ShearsItem {
+    private final Tier tier;
     public boolean hasEffectOverride = false;
     private boolean hasLore = false;
 
-    public TolkienShearsItem(Properties properties) {
+    public TolkienShearsItem(Tier tier, Properties properties) {
         super(properties);
+        this.tier = tier;
+    }
+
+    /** Shears are not a tool the anvil knows a material for, so take the tier's own repair item. */
+    @Override
+    public boolean isValidRepairItem(ItemStack stack, ItemStack repairCandidate) {
+        return this.tier.getRepairIngredient().test(repairCandidate) || super.isValidRepairItem(stack, repairCandidate);
     }
 
     @Override

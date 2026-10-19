@@ -1,64 +1,73 @@
 package com.greatorator.tolkienmobs.world.components.feature;
 
+import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
-import net.minecraft.tags.BlockTags;
+import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.LevelSimulatedReader;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.levelgen.feature.configurations.BlockStateConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
-public class RockpileFeature extends Feature<BlockStateConfiguration> {
-    public RockpileFeature(Codec<BlockStateConfiguration> config) {
+public class RockpileFeature extends Feature<NoneFeatureConfiguration> {
+    public RockpileFeature(Codec<NoneFeatureConfiguration> config) {
         super(config);
     }
 
     @Override
-    public boolean place(FeaturePlaceContext<BlockStateConfiguration> config) {
-        BlockPos blockpos = config.origin();
-        WorldGenLevel worldgenlevel = config.level();
-        RandomSource randomsource = config.random();
-        BlockStateConfiguration blockstateconfiguration;
-        for (blockstateconfiguration = config.config(); blockpos.getY() > worldgenlevel.getMinBuildHeight() + 3; blockpos = blockpos.below()) {
-            if (!worldgenlevel.isEmptyBlock(blockpos.below())) {
-                BlockState blockstate = worldgenlevel.getBlockState(blockpos.below());
-                if (isGrassOrDirt(worldgenlevel, blockpos) || isStone(blockstate)) {
-                    break;
-                }
-            }
-        }
+    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> featurePlaceContext)
+    {
+        WorldGenLevel worldIn = featurePlaceContext.level();
+        ChunkGenerator chunkGenerator = featurePlaceContext.chunkGenerator();
+        RandomSource rand = featurePlaceContext.random();
+        BlockPos pos = featurePlaceContext.origin();
+        NoneFeatureConfiguration config = featurePlaceContext.config();
+        int i = 0;
+        // Patch radius (1..3). Radius drives density far more than the placement count does: every
+        // surface column inside the circle gets a block, so radius 2..7 carpeted the whole biome.
+        int j = rand.nextInt(3) + 1;
 
-        if (blockpos.getY() <= worldgenlevel.getMinBuildHeight() + 3) {
-            return false;
-        } else {
-            for (int l = 0; l < 3; l++) {
-                int i = randomsource.nextInt(2);
-                int j = randomsource.nextInt(2);
-                int k = randomsource.nextInt(2);
-                float f = (float)(i + j + k) * 0.333F + 0.5F;
+        for (int k = pos.getX() - j; k <= pos.getX() + j; ++k)
+        {
+            for (int l = pos.getZ() - j; l <= pos.getZ() + j; ++l)
+            {
+                int i1 = k - pos.getX();
+                int j1 = l - pos.getZ();
+                if (i1 * i1 + j1 * j1 <= j * j)
+                {
+                    for (int k1 = pos.getY() - j; k1 <= pos.getY() + j; ++k1)
+                    {
+                        BlockPos blockpos = new BlockPos(k, k1, l);
+                        BlockState blockstate = worldIn.getBlockState(blockpos);
+                        BlockState webbingstate = TolkienBlocks.ROCKPILE.get().defaultBlockState();
 
-                for (BlockPos blockpos1 : BlockPos.betweenClosed(blockpos.offset(-i, -j, -k), blockpos.offset(i, j, k))) {
-                    if (blockpos1.distSqr(blockpos) <= (double)(f * f)) {
-                        worldgenlevel.setBlock(blockpos1, blockstateconfiguration.state, 3);
+                        int faces = 0;
+
+                        for (Direction direction : Direction.values())
+                        {
+                            BlockState blockstate1 = worldIn.getBlockState(blockpos.relative(direction));
+                            if (blockstate1.is(Blocks.GRASS_BLOCK))
+                            {
+                                faces++;
+                            }
+                        }
+
+                        if (blockstate.isAir() && faces > 0)
+                        {
+                            worldIn.setBlock(blockpos, webbingstate, 2);
+
+                            ++i;
+                            break;
+                        }
                     }
                 }
-
-                blockpos = blockpos.offset(-1 + randomsource.nextInt(2), -randomsource.nextInt(2), -1 + randomsource.nextInt(2));
             }
-
-            return true;
         }
-    }
 
-
-    protected static boolean isStone(BlockState state) {
-        return state.is(BlockTags.BASE_STONE_OVERWORLD);
-    }
-
-    public static boolean isGrassOrDirt(LevelSimulatedReader level, BlockPos pos) {
-        return level.isStateAtPosition(pos, Feature::isDirt);
+        return i > 0;
     }
 }

@@ -104,6 +104,9 @@ public record TolkienChestLootTables(HolderLookup.Provider registries) implement
                                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3))))
                                 .add(LootItem.lootTableItem(Items.COOKED_SALMON)
                                         .setWeight(15))
+                                .add(LootItem.lootTableItem(Items.BOOK)
+                                        .setWeight(2)
+                                        .apply(EnchantRandomlyFunction.randomApplicableEnchantment(this.registries())))
                                 .add(LootItem.lootTableItem(Items.COOKED_PORKCHOP)
                                         .setWeight(10))));
         register.accept(TolkienLootHelper.DWARF_HOUSE,
@@ -132,6 +135,9 @@ public record TolkienChestLootTables(HolderLookup.Provider registries) implement
                                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3))))
                                 .add(LootItem.lootTableItem(Items.COOKED_SALMON)
                                         .setWeight(15))
+                                .add(LootItem.lootTableItem(Items.BOOK)
+                                        .setWeight(2)
+                                        .apply(EnchantRandomlyFunction.randomApplicableEnchantment(this.registries())))
                                 .add(LootItem.lootTableItem(Items.COOKED_PORKCHOP)
                                         .setWeight(10))));
         register.accept(TolkienLootHelper.HUMAN_HOUSE,
@@ -221,6 +227,9 @@ public record TolkienChestLootTables(HolderLookup.Provider registries) implement
                                         .setWeight(15))
                                 .add(LootItem.lootTableItem(Items.DIAMOND)
                                         .setWeight(10))
+                                .add(LootItem.lootTableItem(Items.BOOK)
+                                        .setWeight(2)
+                                        .apply(EnchantRandomlyFunction.randomApplicableEnchantment(this.registries())))
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3)))));
         register.accept(TolkienLootHelper.DESOLATE_RUINS,
                 LootTable.lootTable()
@@ -383,8 +392,11 @@ public record TolkienChestLootTables(HolderLookup.Provider registries) implement
                                         .setWeight(15)
                                         .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3))))
                                 .add(LootItem.lootTableItem(TolkienItems.INGOT_MITHRIL.get())
-                                        .setWeight(10)))
-                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3))));
+                                        .setWeight(10))
+                                .add(LootItem.lootTableItem(Items.BOOK)
+                                        .setWeight(2)
+                                        .apply(EnchantRandomlyFunction.randomApplicableEnchantment(this.registries())))
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3)))));
         register.accept(TolkienLootHelper.MAZE_CHEST,
                 LootTable.lootTable()
                         .withPool(LootPool.lootPool()

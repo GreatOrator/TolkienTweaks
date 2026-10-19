@@ -18,6 +18,12 @@
       "replace_current_music": false,
       "sound": "minecraft:ambient.soul_sand_valley.loop"
     },
+    "particle": {
+      "options": {
+        "type": "tolkienmobs:fangornoak_leaves"
+      },
+      "probability": 0.00625
+    },
     "sky_color": 7907327,
     "water_color": 54011,
     "water_fog_color": 5541815
@@ -31,22 +37,23 @@
     [],
     [
       "tolkienmobs:legacy_coal_ore",
-      "tolkienmobs:legacy_iron_ore",
-      "tolkienmobs:legacy_gold_ore",
-      "tolkienmobs:legacy_redstone_ore",
+      "tolkienmobs:legacy_copper_ore",
       "tolkienmobs:legacy_diamond_ore",
+      "tolkienmobs:legacy_gold_ore",
+      "tolkienmobs:legacy_iron_ore",
       "tolkienmobs:legacy_lapis_ore",
-      "tolkienmobs:legacy_copper_ore"
+      "tolkienmobs:legacy_redstone_ore"
     ],
     [],
     [],
     [
-      "minecraft:patch_grass_forest",
       "minecraft:patch_large_fern",
+      "minecraft:forest_flowers",
       "minecraft:brown_mushroom_old_growth",
       "minecraft:red_mushroom_old_growth",
-      "minecraft:forest_flowers",
+      "minecraft:patch_grass_forest",
       "tolkienmobs:fangorn_fallen_leaves",
+      "tolkienmobs:fangorn_fallen_log",
       "tolkienmobs:stumps"
     ]
   ],
@@ -126,5 +133,5 @@
     "water_ambient": [],
     "water_creature": []
   },
-  "temperature": 0.7
+  "temperature": 0.8
 }

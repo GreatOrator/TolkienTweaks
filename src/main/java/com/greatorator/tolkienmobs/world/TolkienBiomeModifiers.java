@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.world;
 
 import com.greatorator.tolkienmobs.init.TolkienBiomes;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
+import com.greatorator.tolkienmobs.world.components.placements.TolkienPlacedFeatures;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -18,7 +19,7 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import java.util.List;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
-import static com.greatorator.tolkienmobs.world.TolkienPlacedFeatures.*;
+import static com.greatorator.tolkienmobs.world.components.placements.TolkienPlacedFeatures.*;
 
 public class TolkienBiomeModifiers {
     public static final ResourceKey<BiomeModifier> ADD_TREE_MALLORN = registerBiomeKey("tree/add_tree_mallorn");
@@ -58,16 +59,13 @@ public class TolkienBiomeModifiers {
     public static final ResourceKey<BiomeModifier> SPAWN_SQUIRREL = registerBiomeKey("mobs/spawn_squirrel");
     public static final ResourceKey<BiomeModifier> SPAWN_FROG = registerBiomeKey("mobs/spawn_frog");
 
-    // Random Bunches
-    public static final ResourceKey<BiomeModifier> FIRIEN_WOODS = registerBiomeKey("tree/selector/firien_woods");
-
     public static void bootstrap(BootstrapContext<BiomeModifier> context) {
         var placedFeatures = context.lookup(Registries.PLACED_FEATURE);
         var biomes = context.lookup(Registries.BIOME);
 
         context.register(ADD_TREE_MALLORN, new BiomeModifiers.AddFeaturesBiomeModifier(
                 HolderSet.direct(biomes.getOrThrow(TolkienBiomes.LORINAND)),
-                HolderSet.direct(placedFeatures.getOrThrow(MALLORN_PLACED_KEY)),
+                HolderSet.direct(placedFeatures.getOrThrow(HARDENED_MALLORN_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
         context.register(ADD_TREE_MIRKWOOD, new BiomeModifiers.AddFeaturesBiomeModifier(
                 HolderSet.direct(biomes.getOrThrow(TolkienBiomes.MIRKWOOD), biomes.getOrThrow(TolkienBiomes.MIRKWOOD_SPOOKY)),
@@ -75,15 +73,15 @@ public class TolkienBiomeModifiers {
                 GenerationStep.Decoration.VEGETAL_DECORATION));
         context.register(ADD_TREE_CULUMALDA, new BiomeModifiers.AddFeaturesBiomeModifier(
                 HolderSet.direct(biomes.getOrThrow(TolkienBiomes.SHIRE), biomes.getOrThrow(TolkienBiomes.FIRIEN)),
-                HolderSet.direct(placedFeatures.getOrThrow(CULUMALDA_PLACED_KEY)),
+                HolderSet.direct(placedFeatures.getOrThrow(HARDENED_CULUMALDA_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
         context.register(ADD_TREE_LEBETHRON, new BiomeModifiers.AddFeaturesBiomeModifier(
                 HolderSet.direct(biomes.getOrThrow(TolkienBiomes.SHIRE), biomes.getOrThrow(TolkienBiomes.FIRIEN)),
-                HolderSet.direct(placedFeatures.getOrThrow(LEBETHRON_PLACED_KEY)),
+                HolderSet.direct(placedFeatures.getOrThrow(HARDENED_LEBETHRON_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
         context.register(ADD_TREE_FANGORNOAK, new BiomeModifiers.AddFeaturesBiomeModifier(
                 HolderSet.direct(biomes.getOrThrow(TolkienBiomes.FANGORN)),
-                HolderSet.direct(placedFeatures.getOrThrow(FANGORNOAK_PLACED_KEY)),
+                HolderSet.direct(placedFeatures.getOrThrow(HARDENED_FANGORNOAK_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
         context.register(ADD_TREE_DEADWOOD, new BiomeModifiers.AddFeaturesBiomeModifier(
                 HolderSet.direct(biomes.getOrThrow(TolkienBiomes.MORDOR), biomes.getOrThrow(TolkienBiomes.BARROW_DOWNS)),
@@ -94,8 +92,9 @@ public class TolkienBiomeModifiers {
                 HolderSet.direct(placedFeatures.getOrThrow(OLDFORESTOAK_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
         context.register(ADD_TREE_DWARVEN, new BiomeModifiers.AddFeaturesBiomeModifier(
-                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.IRON_HILLS), biomes.getOrThrow(TolkienBiomes.HITHAEGLIR)),
-                HolderSet.direct(placedFeatures.getOrThrow(DWARVEN_PLACED_KEY)),
+                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.IRON_HILLS), biomes.getOrThrow(TolkienBiomes.BLUE_MOUNTAINS),
+                        biomes.getOrThrow(TolkienBiomes.HITHAEGLIR)),
+                HolderSet.direct(placedFeatures.getOrThrow(HARDENED_DWARVEN_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
 
         context.register(ADD_MITHRIL_ORE, new BiomeModifiers.AddFeaturesBiomeModifier(

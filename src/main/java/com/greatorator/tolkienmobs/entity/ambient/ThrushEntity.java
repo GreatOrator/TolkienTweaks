@@ -1,5 +1,10 @@
 package com.greatorator.tolkienmobs.entity.ambient;
 
+import com.greatorator.tolkienmobs.entity.TolkienFlyingAmbientEntity;
+import com.greatorator.tolkienmobs.entity.ai.goal.LandBirdGoal;
+import com.greatorator.tolkienmobs.entity.ai.goal.RandomGlideGoal;
+import com.greatorator.tolkienmobs.entity.ai.goal.RestrictedFlyingGoal;
+import com.greatorator.tolkienmobs.entity.ai.goal.StartFlyingBirdGoal;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
 import com.greatorator.tolkienmobs.init.TolkienTags;
@@ -15,11 +20,16 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.FlyingMoveControl;
-import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.FollowMobGoal;
+import net.minecraft.world.entity.ai.goal.FollowOwnerGoal;
+import net.minecraft.world.entity.ai.goal.SitWhenOrderedToGoal;
+import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.Animal;
@@ -39,7 +49,7 @@ import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class ThrushEntity extends TamableAnimal implements GeoEntity, FlyingAnimal {
+public class ThrushEntity extends TolkienFlyingAmbientEntity implements GeoEntity, FlyingAnimal {
     public float flap;
     public float flapSpeed;
     public float oFlapSpeed;
@@ -52,7 +62,6 @@ public class ThrushEntity extends TamableAnimal implements GeoEntity, FlyingAnim
         super(entityType, level);
 
        setTame(false, false);
-       moveControl = new FlyingMoveControl(this, 20, true);
 
         setPathfindingMalus(PathType.DANGER_FIRE, -1.0f);
         setPathfindingMalus(PathType.DAMAGE_FIRE, -1.0f);
@@ -77,15 +86,14 @@ public class ThrushEntity extends TamableAnimal implements GeoEntity, FlyingAnim
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(0, new PanicGoal(this, 1.25D));
-        this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(1, new BreedGoal(this, 1.0D));
-        this.goalSelector.addGoal(1, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        this.goalSelector.addGoal(2, new TemptGoal(this, 1.25, stack -> stack.is(TolkienTags.Items.INSECTS), false));
-        this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
-        this.goalSelector.addGoal(2, new FollowOwnerGoal(this, 1.0D, 5.0F, 1.0F));
-        this.goalSelector.addGoal(2, new WaterAvoidingRandomFlyingGoal(this, 1.0D));
-        this.goalSelector.addGoal(3, new FollowMobGoal(this, 1.0D, 3.0F, 7.0F));
+        this.goalSelector.addGoal(1, new StartFlyingBirdGoal(this, 120));
+        this.goalSelector.addGoal(2, new LandBirdGoal(this, 240));
+        this.goalSelector.addGoal(3, new RandomGlideGoal(this));
+        this.goalSelector.addGoal(4, new RestrictedFlyingGoal(this, 1.0D, 64.0));
+        this.goalSelector.addGoal(5, new TemptGoal(this, 1.25, stack -> stack.is(TolkienTags.Items.INSECTS), false));
+        this.goalSelector.addGoal(5, new SitWhenOrderedToGoal(this));
+        this.goalSelector.addGoal(5, new FollowOwnerGoal(this, 1.0D, 5.0F, 1.0F));
+        this.goalSelector.addGoal(6, new FollowMobGoal(this, 1.0D, 3.0F, 7.0F));
     }
 
     public void resetLastPoseChangeTick(long pLastPoseChangeTick) {
@@ -141,7 +149,7 @@ public class ThrushEntity extends TamableAnimal implements GeoEntity, FlyingAnim
 
         this.flapping *= 0.9F;
         Vec3 vec3 = this.getDeltaMovement();
-        if(!this.onGround() && vec3.y < 0.0D) {
+        if(!this.onGround() && !this.getFlying() && vec3.y < 0.0D) {
             this.setDeltaMovement(vec3.multiply(1.0D, 0.6D, 1.0D));
         }
 
@@ -361,14 +369,14 @@ public class ThrushEntity extends TamableAnimal implements GeoEntity, FlyingAnim
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Glide", 1, (event) -> {
-            if (event.isMoving() & isFlying()) {
+            if (isFlying() && isGliding()) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("glide"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Fly", 1, (event) -> {
-            if (!event.isMoving() & isFlying()) {
+            if (isFlying() && !isGliding()) {
                 onFlap();
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("fly"));
                 return PlayState.CONTINUE;

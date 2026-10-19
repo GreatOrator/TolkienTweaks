@@ -29,12 +29,15 @@ import com.greatorator.tolkienmobs.particle.WindParticle;
 import com.greatorator.tolkienmobs.particle.provider.TolkienParticleProvider;
 import com.greatorator.tolkienmobs.util.GeneralUtility;
 import com.greatorator.tolkienmobs.util.TolkienItemProperties;
-import com.greatorator.tolkienmobs.world.components.layer.BiomeDensitySource;
+import com.greatorator.tolkienmobs.world.registration.TolkienOverworldRegion;
+import com.greatorator.tolkienmobs.world.registration.TolkienSurfaceRules;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.level.block.Blocks;
@@ -58,9 +61,10 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
-import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import org.slf4j.Logger;
+import terrablender.api.Regions;
+import terrablender.api.SurfaceRuleManager;
 
 import java.util.Locale;
 
@@ -71,41 +75,41 @@ public class TolkienMobsMain {
     private static final String BLOCK_DIR = "textures/block/custom/";
     public static CommonProxy proxy;
 
-    // TODO
-    //  -Biomes
-    //    -Generate using new stone variants
-    //    -Structures
-    //    -Separate Dimension
-    //  -Functional Blocks
-    //    -Signs
-    //      -Not placing on vertical surfaces
-    //    -Milestone
-    //      -Actually teleport player when pressed
-
     public TolkienMobsMain(IEventBus modEventBus, ModContainer modContainer, Dist dist) {
         proxy = GeneralUtility.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
 
-        modEventBus.addListener(TolkienDataGenerator::gatherData);
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::registerCapabilities);
         modEventBus.addListener(this::createNewRegistries);
-        modEventBus.addListener(this::setRegistriesForDatapack);
+
         modEventBus.addListener(this::setupPackets);
 
         if (dist.isClient()) {
             TolkienRegistration.initModBusEvents(modEventBus);
             TolkienClientEvents.initGameEvents();
         }
+
         MilestoneHandler.init();
         PacketHandler.register(modEventBus);
-
-        TolkienTabs.register(modEventBus);
 
         TolkienItems.register(modEventBus);
         TolkienBlocks.register(modEventBus);
         TolkienEntities.register(modEventBus);
 
+        TolkienTabs.register(modEventBus);
+
         TolkienSounds.SOUND_EVENTS.register(modEventBus);
+
+        modEventBus.addListener(TolkienDataGenerator::gatherData);
+
+        TolkienFeatureModifiers.TREE_DECORATORS.register(modEventBus);
+        TolkienFeatures.FEATURES.register(modEventBus);
+        TolkienFeatureModifiers.PLACEMENT_MODIFIERS.register(modEventBus);
+        TolkienFeatureModifiers.TRUNK_PLACERS.register(modEventBus);
+        TolkienFeatureModifiers.FOLIAGE_PLACERS.register(modEventBus);
+        TolkienCaveCarvers.CARVER_TYPES.register(modEventBus);
+        TolkienStructures.STRUCTURE.register(modEventBus);
+
         TolkienMobEffects.register(modEventBus);
         TolkienContainers.register(modEventBus);
 
@@ -122,15 +126,6 @@ public class TolkienMobsMain {
         TolkienEnchantmentEffects.register(modEventBus);
         TolkienLootFunctions.LOOT_FUNCTIONS.register(modEventBus);
 
-        TolkienFeatureModifiers.TRUNK_PLACERS.register(modEventBus);
-        TolkienLayerTypes.BIOME_LAYER_TYPES.register(modEventBus);
-        TolkienFeatureModifiers.FOLIAGE_PLACERS.register(modEventBus);
-        TolkienFeatureModifiers.TREE_DECORATORS.register(modEventBus);
-        TolkienFeatureModifiers.PLACEMENT_MODIFIERS.register(modEventBus);
-        TolkienDensityFunctions.DENSITY_FUNCTION_TYPES.register(modEventBus);
-        TolkienFeatures.FEATURES.register(modEventBus);
-        TolkienCaveCarvers.CARVER_TYPES.register(modEventBus);
-        TolkienStructures.STRUCTURE.register(modEventBus);
         TolkienDataComponents.register(modEventBus);
         TolkienRecipesTypes.register(modEventBus);
         TolkienRecipeSerializers.register(modEventBus);
@@ -183,6 +178,10 @@ public class TolkienMobsMain {
             pot.addPlant(TolkienBlocks.SAPLING_DWARVEN_MAPLE.getId(), TolkienBlocks.POTTED_SAPLING_DWARVEN_MAPLE);
             pot.addPlant(TolkienBlocks.MUSHROOM_BLOOM_DECAY.getId(), TolkienBlocks.POTTED_MUSHROOM_BLOOM_DECAY);
             pot.addPlant(TolkienBlocks.MUSHROOM_DECAY_BLOOM.getId(), TolkienBlocks.POTTED_MUSHROOM_DECAY_BLOOM);
+
+            Regions.register(new TolkienOverworldRegion());
+            SurfaceRuleManager.addSurfaceRules(SurfaceRuleManager.RuleCategory.OVERWORLD, MODID, TolkienSurfaceRules.tolkienSurface());
+
         });
     }
 
@@ -193,11 +192,6 @@ public class TolkienMobsMain {
 
     public void createNewRegistries(NewRegistryEvent event) {
         event.register(TolkienBiomes.BIOME_LAYER_TYPE);
-    }
-
-    public void setRegistriesForDatapack(DataPackRegistryEvent.NewRegistry event) {
-        event.dataPackRegistry(TolkienBiomes.Keys.BIOME_TERRAIN_DATA, BiomeDensitySource.CODEC);
-        event.dataPackRegistry(TolkienBiomes.Keys.BIOME_STACK, TolkienLayerStack.DISPATCH_CODEC);
     }
 
     private void registerCapabilities(RegisterCapabilitiesEvent event) {
@@ -259,6 +253,7 @@ public class TolkienMobsMain {
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_BARROW.get(), BarrowWightRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_OATHBREAKER.get(), OathBreakerRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_FELLSPIRIT.get(), FellSpiritRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_ENRAGED_FELLSPIRIT.get(), EnragedFellSpiritRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_BRIGAND.get(), BrigandRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_HARADRIM.get(), HaradrimRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_ROMIEWALKER.get(), RomieWalkerRender::new);
@@ -297,6 +292,8 @@ public class TolkienMobsMain {
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_HOBBIT.get(), HobbitRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_SOUTHRON.get(), SouthronRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_ORC_TRADER.get(), OrcTraderRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_ORC.get(), OrcRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_SOUTHRON_NPC.get(), SouthronNpcRender::new);
 
                 // Projectile
             EntityRenderers.register(TolkienEntities.AMMO_BOULDER.get(), BoulderRender::new);
@@ -366,36 +363,12 @@ public class TolkienMobsMain {
             pEvent.registerSpriteSet(TolkienParticleTypes.FELLBEAST_BREATH.get(), FellBeastBreathParticle.Provider::new);
             pEvent.registerSpriteSet(TolkienParticleTypes.WIND_PARTICLE.get(), WindParticle.Provider::new);
             pEvent.registerSpriteSet(TolkienParticleTypes.WANDERING_LIGHTNINGBUG.get(), TolkienParticleProvider::new);
-            pEvent.registerSpriteSet(TolkienParticleTypes.MALLORN_LEAVES.get(), (p_277215_) -> {
-                return (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> {
-                    return new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_);
-                };
-            });
-            pEvent.registerSpriteSet(TolkienParticleTypes.MIRKWOOD_LEAVES.get(), (p_277215_) -> {
-                return (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> {
-                    return new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_);
-                };
-            });
-            pEvent.registerSpriteSet(TolkienParticleTypes.CULUMALDA_LEAVES.get(), (p_277215_) -> {
-                return (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> {
-                    return new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_);
-                };
-            });
-            pEvent.registerSpriteSet(TolkienParticleTypes.LEBETHRON_LEAVES.get(), (p_277215_) -> {
-                return (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> {
-                    return new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_);
-                };
-            });
-            pEvent.registerSpriteSet(TolkienParticleTypes.FANGORNOAK_LEAVES.get(), (p_277215_) -> {
-                return (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> {
-                    return new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_);
-                };
-            });
-            pEvent.registerSpriteSet(TolkienParticleTypes.DWARVEN_MAPLE_LEAVES.get(), (p_277215_) -> {
-                return (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> {
-                    return new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_);
-                };
-            });
+            pEvent.registerSpriteSet(TolkienParticleTypes.MALLORN_LEAVES.get(), (p_277215_) -> (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_));
+            pEvent.registerSpriteSet(TolkienParticleTypes.MIRKWOOD_LEAVES.get(), (p_277215_) -> (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_));
+            pEvent.registerSpriteSet(TolkienParticleTypes.CULUMALDA_LEAVES.get(), (p_277215_) -> (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_));
+            pEvent.registerSpriteSet(TolkienParticleTypes.LEBETHRON_LEAVES.get(), (p_277215_) -> (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_));
+            pEvent.registerSpriteSet(TolkienParticleTypes.FANGORNOAK_LEAVES.get(), (p_277215_) -> (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_));
+            pEvent.registerSpriteSet(TolkienParticleTypes.DWARVEN_MAPLE_LEAVES.get(), (p_277215_) -> (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_));
         }
     }
 
@@ -411,8 +384,11 @@ public class TolkienMobsMain {
         return ResourceLocation.fromNamespaceAndPath(MODID, path);
     }
 
-    public static ResourceLocation createResourceLocation(String path)
-    {
+    public static ResourceLocation createResourceLocation(String path) {
         return ResourceLocation.tryBuild(MODID, path);
+    }
+
+    public static <T> ResourceKey<T> key(ResourceKey<? extends Registry<T>> registryKey, String name) {
+        return ResourceKey.create(registryKey, prefix(name));
     }
 }

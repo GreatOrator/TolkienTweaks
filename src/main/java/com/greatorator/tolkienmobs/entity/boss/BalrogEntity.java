@@ -2,7 +2,7 @@ package com.greatorator.tolkienmobs.entity.boss;
 
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
 import com.greatorator.tolkienmobs.entity.ai.goal.BalrogAttackGoal;
-import com.greatorator.tolkienmobs.entity.ai.goal.SwitchCombatGoal;
+import com.greatorator.tolkienmobs.entity.ai.goal.MeleeCombatGoal;
 import com.greatorator.tolkienmobs.entity.projectiles.FellBeastFireballEntity;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
@@ -64,6 +64,8 @@ public class BalrogEntity extends TolkienMonsterEntity implements GeoEntity {
     private static final int GROUND_DEPTH = 1;
     private final RangedBowAttackGoal<TolkienMonsterEntity> bowGoal = new RangedBowAttackGoal<>(this, 1.0, 20, 15.0F);
     private final MeleeAttackGoal meleeGoal = new BalrogAttackGoal(this, 1.0D, 20, 15.0F, false);
+    private long nextDefensiveAbilityUse = 0L;
+    private final static long defensiveCoolDown = 10000L;
 
     public BalrogEntity(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
@@ -84,7 +86,7 @@ public class BalrogEntity extends TolkienMonsterEntity implements GeoEntity {
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(1, new SwitchCombatGoal(this, 6.0D, 12.0D));
+        this.goalSelector.addGoal(1, new MeleeCombatGoal(this));
         this.goalSelector.addGoal(2, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 0.6D));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
@@ -161,9 +163,17 @@ public class BalrogEntity extends TolkienMonsterEntity implements GeoEntity {
                 this.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 2 * 20, 0));
             }
 
+            // The reactions below are rate limited, otherwise they fired - and messaged the attacker - on every single hit.
+            long reactionTime = System.currentTimeMillis();
+            if (reactionTime <= this.nextDefensiveAbilityUse) {
+                return true;
+            }
+            this.nextDefensiveAbilityUse = reactionTime + defensiveCoolDown;
+
             if (this.getHealth() < this.getMaxHealth()) {
                 livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.healself.balrog").withStyle(ChatFormatting.LIGHT_PURPLE));
-                this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 2 * 20, 0));
+                // Regeneration only heals on ticks divisible by (50 >> amplifier): 40 ticks at amplifier 0 never healed at all.
+                this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 10 * 20, 1));
             }
 
             if (this.getTarget() != null && !this.hasEffect(MobEffects.MOVEMENT_SPEED) && this.getTarget().distanceToSqr(this) > 121.0D) {

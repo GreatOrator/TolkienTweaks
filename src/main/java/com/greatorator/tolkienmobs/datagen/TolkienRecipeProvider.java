@@ -4,13 +4,11 @@ import com.greatorator.tolkienmobs.datagen.helpers.TolkienRecipeHelper;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienTags;
-import com.greatorator.tolkienmobs.recipe.TrinketRecipe;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
-import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -229,7 +227,10 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
         conversionRecipe(pRecipeOutput, TolkienBlocks.BLOCK_HALLOWED, Blocks.GRASS_BLOCK, TolkienItems.GEM_AMMOLITE);
         conversionRecipe(pRecipeOutput, TolkienBlocks.STONE_PATH, Blocks.MOSSY_COBBLESTONE, Items.IRON_PICKAXE);
 
-        SpecialRecipeBuilder.special(TrinketRecipe::new).save(pRecipeOutput, getId("trinket_potion_crafting"));
+        List.of(TolkienItems.TRINKET_RING, TolkienItems.TRINKET_AMULET, TolkienItems.TRINKET_CHARM,
+                TolkienItems.TRINKET_BELT, TolkienItems.TRINKET_GLOVE, TolkienItems.TRINKET_HAT,
+                TolkienItems.TRINKET_CLOAK).forEach(trinket ->
+                trinketRecipe(pRecipeOutput, trinket, SizedIngredient.of(TolkienItems.GEM_AMMOLITE.get(), 1), Items.POTION));
 
         smithingUpgrade(pRecipeOutput, "mithril", TolkienItems.SWORD_MITHRIL.get(), TolkienItems.TEMPLATE_MITHRIL.get(), Items.NETHERITE_SWORD, TolkienItems.INGOT_MITHRIL.get());
         smithingUpgrade(pRecipeOutput, "mithril", TolkienItems.PICKAXE_MITHRIL.get(), TolkienItems.TEMPLATE_MITHRIL.get(), Items.NETHERITE_PICKAXE, TolkienItems.INGOT_MITHRIL.get());

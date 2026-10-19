@@ -30,7 +30,7 @@ public class GeckoEntity extends TolkienAmbientEntity {
     private static final EntityDataAccessor<Integer> VARIANT =
             SynchedEntityData.defineId(GeckoEntity.class, EntityDataSerializers.INT);
 
-    public GeckoEntity(EntityType<? extends Animal> entityType, Level level) {
+    public GeckoEntity(EntityType<? extends TamableAnimal> entityType, Level level) {
         super(entityType, level);
     }
 

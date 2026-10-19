@@ -180,8 +180,14 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .save(recipeOutput, ResourceLocation.fromNamespaceAndPath(MODID, "fireplace/" + getItemName(result) + "_from_fireplace"));
     }
 
+    protected static void trinketRecipe(RecipeOutput recipeOutput, ItemLike trinket, SizedIngredient fuel, ItemLike potion) {
+        TrinketRecipeBuilder.recipe(trinket, fuel, potion)
+                .unlockedBy(getHasName(trinket), has(trinket))
+                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath(MODID, "trinket/" + getItemName(trinket) + "_from_trinket"));
+    }
+
     protected static void toolListRecipe(RecipeOutput pRecipeOutput, RecipeCategory pCategory, String group, Item pick, Item axe, Item shovel, Item hoe, Item sword, Item shears, Item ingot) {
-        ShapedRecipeBuilder.shaped(pCategory, pick)
+        ShapedRecipeBuilder.shaped(pCategory, pick, 1)
                 .pattern("III")
                 .pattern(" S ")
                 .pattern(" S ")
@@ -189,7 +195,7 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .define('S', Items.STICK)
                 .unlockedBy("has_"+group, InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
                 .save(pRecipeOutput);
-        ShapedRecipeBuilder.shaped(pCategory, axe)
+        ShapedRecipeBuilder.shaped(pCategory, axe, 1)
                 .pattern("II")
                 .pattern("IS")
                 .pattern(" S")
@@ -197,7 +203,7 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .define('S', Items.STICK)
                 .unlockedBy("has_"+group, InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
                 .save(pRecipeOutput);
-        ShapedRecipeBuilder.shaped(pCategory, shovel)
+        ShapedRecipeBuilder.shaped(pCategory, shovel, 1)
                 .pattern("I")
                 .pattern("S")
                 .pattern("S")
@@ -205,7 +211,7 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .define('S', Items.STICK)
                 .unlockedBy("has_"+group, InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
                 .save(pRecipeOutput);
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, sword)
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, sword, 1)
                 .pattern("I")
                 .pattern("I")
                 .pattern("S")
@@ -213,7 +219,7 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .define('S', Items.STICK)
                 .unlockedBy("has_"+group, InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
                 .save(pRecipeOutput);
-        ShapedRecipeBuilder.shaped(pCategory, hoe)
+        ShapedRecipeBuilder.shaped(pCategory, hoe, 1)
                 .pattern("II")
                 .pattern(" S")
                 .pattern(" S")
@@ -221,7 +227,7 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .define('S', Items.STICK)
                 .unlockedBy("has_"+group, InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
                 .save(pRecipeOutput);
-        ShapedRecipeBuilder.shaped(pCategory, shears)
+        ShapedRecipeBuilder.shaped(pCategory, shears, 1)
                 .pattern(" I")
                 .pattern("I ")
                 .define('I', ingot)
@@ -444,7 +450,7 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
     }
 
     private void helmetRecipe(RecipeOutput recipeOutput, Item output, Item ingot, Item ingot2) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, output)
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, output, 1)
                 .pattern("III")
                 .pattern("IAI")
                 .define('I', ingot)
@@ -454,7 +460,7 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
     }
 
     private void chestRecipe(RecipeOutput recipeOutput, Item output, Item ingot, Item ingot2) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, output)
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, output, 1)
                 .pattern("IAI")
                 .pattern("III")
                 .pattern("III")
@@ -465,7 +471,7 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
     }
 
     private void leggingRecipe(RecipeOutput recipeOutput, Item output, Item ingot, Item ingot2) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, output)
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, output, 1)
                 .pattern("III")
                 .pattern("IAI")
                 .pattern("I I")
@@ -476,7 +482,7 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
     }
 
     private void bootRecipe(RecipeOutput recipeOutput, Item output, Item ingot, Item ingot2) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, output)
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, output, 1)
                 .pattern("IAI")
                 .pattern("I I")
                 .define('I', ingot)

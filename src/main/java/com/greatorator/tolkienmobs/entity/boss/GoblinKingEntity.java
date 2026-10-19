@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.entity.boss;
 
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
+import com.greatorator.tolkienmobs.entity.ai.goal.MeleeCombatGoal;
 import com.greatorator.tolkienmobs.entity.monster.GoblinEntity;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
@@ -65,6 +66,8 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
     private static final AttributeModifier ZOMBIE_REINFORCEMENT_CALLEE_CHARGE = new AttributeModifier(
             ResourceLocation.fromNamespaceAndPath(MODID,"reinforcement_callee_charge"), -0.05F, AttributeModifier.Operation.ADD_VALUE
     );
+    private long nextDefensiveAbilityUse = 0L;
+    private final static long defensiveCoolDown = 10000L;
 
     public GoblinKingEntity(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
@@ -74,6 +77,7 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
     @Override
     protected void registerGoals() {
         super.registerGoals();
+        this.goalSelector.addGoal(1, new MeleeCombatGoal(this));
         this.targetSelector.addGoal(1, (new HurtByTargetGoal(this)).setAlertOthers(GoblinEntity.class));
         this.goalSelector.addGoal(2, new RangedAttackGoal(this, 1.0D, 40, 20.0F));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
@@ -99,13 +103,22 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
         double d2 = d0 - snowballentity.getY();
         double d3 = entity.getZ() - this.getZ();
         float f = MathUtility.sqrt(d1 * d1 + d3 * d3) * 0.2F;
+        snowballentity.shoot(d1, d2 + (double)f, d3, 1.6F, 12.0F);
         this.playSound(SoundEvents.SNOW_GOLEM_SHOOT, 1.0F, 0.4F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
         this.level.addFreshEntity(snowballentity);
     }
 
-    /**
-     * Special Attack        snowballentity.shoot(d1, d2 + (double)f, d3, 1.6F, 12.0F);
-     */
+    @Override
+    protected void updateWeaponGoal() {
+        scheduleWeaponGoalUpdate = false;
+        this.goalSelector.removeGoal(this.meleeGoal);
+        this.goalSelector.removeGoal(this.bowGoal);
+        // GoblinKing uses snowballs for ranged attacks, doesn't need a bow
+        // Always use ranged attack goal regardless of held item
+        this.goalSelector.addGoal(2, new RangedAttackGoal(this, 1.0D, 40, 20.0F));
+        this.ranged = true;
+    }
+
     @Override
     public boolean hurt(DamageSource source, float amount) {
         if (!super.hurt(source, amount)) {
@@ -131,9 +144,17 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
                 this.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 2 * 20, 0));
             }
 
+            // The reactions below are rate limited, otherwise they fired - and messaged the attacker - on every single hit.
+            long reactionTime = System.currentTimeMillis();
+            if (reactionTime <= this.nextDefensiveAbilityUse) {
+                return true;
+            }
+            this.nextDefensiveAbilityUse = reactionTime + defensiveCoolDown;
+
             if (this.getHealth() < this.getMaxHealth()) {
                 livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.healself").withStyle(ChatFormatting.LIGHT_PURPLE));
-                this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 2 * 20, 0));
+                // Regeneration only heals on ticks divisible by (50 >> amplifier): 40 ticks at amplifier 0 never healed at all.
+                this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 10 * 20, 1));
             }
 
             if (this.getTarget() != null && !this.hasEffect(MobEffects.MOVEMENT_SPEED) && this.getTarget().distanceToSqr(this) > 121.0D) {

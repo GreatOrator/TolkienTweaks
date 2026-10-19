@@ -4,7 +4,6 @@ import com.greatorator.tolkienmobs.recipe.FireplaceRecipe;
 import com.greatorator.tolkienmobs.recipe.TrinketRecipe;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -19,7 +18,7 @@ public class TolkienRecipeSerializers {
             .create(Registries.RECIPE_SERIALIZER, MODID);
 
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<TrinketRecipe>> TRINKET_TABLE_SERIALIZER =
-            RECIPE_SERIALIZER.register("trinket", () -> new SimpleCraftingRecipeSerializer<>(TrinketRecipe::new));
+            RECIPE_SERIALIZER.register("trinket", TrinketRecipe.Serializer::new);
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<FireplaceRecipe>> FIREPLACE_SERIALIZER =
             RECIPE_SERIALIZER.register("fireplace", FireplaceRecipe.Serializer::new);
 
