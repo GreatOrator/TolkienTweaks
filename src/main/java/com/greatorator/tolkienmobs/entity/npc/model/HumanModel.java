@@ -22,7 +22,7 @@ public class HumanModel extends GeoModel<HumanEntity> {
 
 	@Override
 	public ResourceLocation getTextureResource(HumanEntity object) {
-		return HumanRender.LOCATION_BY_VARIANT.get(object.getTolkienVariant());
+		return HumanRender.getTexture(object);
 	}
 
 	@Override

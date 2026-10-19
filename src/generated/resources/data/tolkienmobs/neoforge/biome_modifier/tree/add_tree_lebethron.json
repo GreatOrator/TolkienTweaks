@@ -4,6 +4,6 @@
     "tolkienmobs:shire",
     "tolkienmobs:firien"
   ],
-  "features": "tolkienmobs:lebethron_placed",
+  "features": "tolkienmobs:hardened_lebethron_placed",
   "step": "vegetal_decoration"
 }

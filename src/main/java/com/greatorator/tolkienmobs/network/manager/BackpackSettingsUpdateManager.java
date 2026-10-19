@@ -39,7 +39,8 @@ public record BackpackSettingsUpdateManager(
             AbstractContainerMenu container = sender.containerMenu;
 
             if (container instanceof BackpackBlockContainer backpackContainer && backpackContainer.tileEntity instanceof BackpackBlockEntity backpackBE) {
-                backpackBE.setBackpackSettings(new BackpackSettings(payload.sleepingBag(), payload.campfire(), payload.upgrade()));
+                BackpackSettings current = backpackBE.getBackpackSettings();
+                backpackBE.setBackpackSettings(new BackpackSettings(current.sleepingBag, current.campfire, payload.upgrade()));
             }
         });
     }

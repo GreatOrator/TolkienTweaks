@@ -1,89 +1,66 @@
 package com.greatorator.tolkienmobs.datagen.helpers;
 
-import com.greatorator.tolkienmobs.init.TolkienDataComponents;
-import com.greatorator.tolkienmobs.network.component.TrinketComponent;
 import com.greatorator.tolkienmobs.recipe.TrinketRecipe;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
-import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.recipes.RecipeBuilder;
-import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.item.alchemy.PotionContents;
-import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.item.crafting.AbstractCookingRecipe;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class TrinketRecipeBuilder implements RecipeBuilder {
-    private final RecipeCategory category;
-    private final Item result;
-    private final Ingredient ingredient;
+    private final Item trinket;
+    private final SizedIngredient fuel;
     private final Item potionItem;
-    private final Map<String, Criterion<?>> criteria = new LinkedHashMap();
-    private String group;
+    private final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
+    private String group = "trinket";
 
-    public TrinketRecipeBuilder(RecipeCategory trinketCategory, String group, ItemLike itemLike, Ingredient ingredient, ItemLike potion) {
-        this.category = trinketCategory;
-        this.group = group;
-        this.result = itemLike.asItem();
-        this.ingredient = ingredient;
+    private TrinketRecipeBuilder(ItemLike trinket, SizedIngredient fuel, ItemLike potion) {
+        this.trinket = trinket.asItem();
+        this.fuel = fuel;
         this.potionItem = potion.asItem();
     }
 
-    public static <T extends AbstractCookingRecipe> TrinketRecipeBuilder recipe(RecipeCategory trinketCategory, String group, Item ingredient, ItemLike itemLike, ItemLike potion) {
-        return new TrinketRecipeBuilder(trinketCategory, group, itemLike, Ingredient.of(ingredient), potion);
+    public static TrinketRecipeBuilder recipe(ItemLike trinket, SizedIngredient fuel, ItemLike potion) {
+        return new TrinketRecipeBuilder(trinket, fuel, potion);
     }
 
     @Override
-    public TrinketRecipeBuilder unlockedBy(String string, Criterion<?> criterion) {
-        this.criteria.put(string, criterion);
+    public TrinketRecipeBuilder unlockedBy(String name, Criterion<?> criterion) {
+        this.criteria.put(name, criterion);
         return this;
     }
 
     @Override
     public TrinketRecipeBuilder group(String group) {
-        this.group = group;
+        this.group = group == null ? "" : group;
         return this;
     }
 
     @Override
     public Item getResult() {
-        if (potionItem == Items.POTION) {
-            Holder<Potion> holder = potionItem.getDefaultInstance().getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).potion().orElse(Potions.WATER);
-
-            ItemStack itemstack = new ItemStack(result);
-            itemstack.set(TolkienDataComponents.POTION_CONTENTS, new TrinketComponent(holder));
-
-            return itemstack.getItem();
-        }
-        return null;
+        return trinket;
     }
 
     @Override
     public void save(RecipeOutput recipeOutput, ResourceLocation recipeId) {
-        this.ensureValid(recipeId);
-        Advancement.Builder builder = recipeOutput.advancement().addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeId)).rewards(AdvancementRewards.Builder.recipe(recipeId)).requirements(AdvancementRequirements.Strategy.OR);
-        this.criteria.forEach(builder::addCriterion);
-        recipeOutput.accept(recipeId, new TrinketRecipe(CraftingBookCategory.EQUIPMENT), builder.build(recipeId.withPrefix("recipes/misc/")));
-    }
-
-    private void ensureValid(ResourceLocation recipeId) {
-        if (this.criteria.isEmpty()) {
+        if (criteria.isEmpty()) {
             throw new IllegalStateException("No way of obtaining recipe " + recipeId);
         }
+        Advancement.Builder builder = recipeOutput.advancement()
+                .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeId))
+                .rewards(AdvancementRewards.Builder.recipe(recipeId))
+                .requirements(AdvancementRequirements.Strategy.OR);
+        criteria.forEach(builder::addCriterion);
+        recipeOutput.accept(recipeId, new TrinketRecipe(group, trinket, fuel, potionItem),
+                builder.build(recipeId.withPrefix("recipes/misc/")));
     }
 }

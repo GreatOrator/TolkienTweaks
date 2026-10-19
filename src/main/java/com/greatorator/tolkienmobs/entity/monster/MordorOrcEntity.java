@@ -130,6 +130,10 @@ public class MordorOrcEntity extends TolkienMonsterEntity implements GeoEntity {
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
+            // WargEntity spawns a mordor orc riding it; a carried rider must never walk-animate
+            if (this.isPassenger()) {
+                return PlayState.STOP;
+            }
             if (event.isMoving() && !event.getAnimatable().isAggressive()) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
                 return PlayState.CONTINUE;
@@ -137,6 +141,12 @@ public class MordorOrcEntity extends TolkienMonsterEntity implements GeoEntity {
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
+            // This rig's skeleton hangs off the root bone, so he sits with the root-based clip
+            // (the nazgul rig is flat and uses "sitting" instead)
+            if (this.isPassenger()) {
+                event.getController().setAnimation(RawAnimation.begin().thenPlay("sitting_root"));
+                return PlayState.CONTINUE;
+            }
             if (!event.isMoving() && !event.getAnimatable().isAggressive()) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
                 return PlayState.CONTINUE;

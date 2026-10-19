@@ -109,6 +109,6 @@ public class FellBeastFireballEntity extends AbstractArrow {
 
     @Override
     protected ItemStack getDefaultPickupItem() {
-        return null;
+        return new ItemStack(TolkienItems.FELLBEAST_FIREBALL.get());
     }
 }

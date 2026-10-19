@@ -1,22 +1,17 @@
 package com.greatorator.tolkienmobs.world.registration;
 
-import com.greatorator.tolkienmobs.init.TolkienCaveCarvers;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
-import com.greatorator.tolkienmobs.init.TolkienParticleTypes;
-import com.greatorator.tolkienmobs.init.TolkienSounds;
-import com.greatorator.tolkienmobs.world.TolkienPlacedFeatures;
+import com.greatorator.tolkienmobs.world.components.placements.TolkienPlacedFeatures;
 import net.minecraft.core.HolderGetter;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.data.worldgen.BiomeDefaultFeatures;
-import net.minecraft.data.worldgen.placement.AquaticPlacements;
+import net.minecraft.data.worldgen.Carvers;
 import net.minecraft.data.worldgen.placement.MiscOverworldPlacements;
 import net.minecraft.data.worldgen.placement.VegetationPlacements;
-import net.minecraft.sounds.Musics;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.level.biome.*;
+import net.minecraft.world.level.biome.BiomeGenerationSettings;
+import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
@@ -26,173 +21,6 @@ public abstract class BiomeHelper {
 		float lvt_1_1_ = temp / 3.0F;
 		lvt_1_1_ = Mth.clamp(lvt_1_1_, -1.0F, 1.0F);
 		return Mth.hsvToRgb(0.62222224F - lvt_1_1_ * 0.05F, 0.5F + lvt_1_1_ * 0.1F, 1.0F);
-	}
-
-	public static BiomeSpecialEffects.Builder forestParticles(BiomeSpecialEffects.Builder builder) {
-		builder.ambientParticle(new AmbientParticleSettings(TolkienParticleTypes.WANDERING_LIGHTNINGBUG.get(), 0.001f));
-		builder.ambientParticle(new AmbientParticleSettings(TolkienParticleTypes.MALLORN_LEAVES.get(), 0.00625F));
-		return builder;
-	}
-
-	public static BiomeSpecialEffects.Builder desolateParticles(BiomeSpecialEffects.Builder builder) {
-		builder.ambientParticle(new AmbientParticleSettings(ParticleTypes.ASH, 0.00625F));
-		return builder;
-	}
-
-	public static BiomeSpecialEffects.Builder mirkwoodLeavesParticles(BiomeSpecialEffects.Builder builder) {
-		builder.ambientParticle(new AmbientParticleSettings(TolkienParticleTypes.MIRKWOOD_LEAVES.get(), 0.00625F));
-		return builder;
-	}
-
-	public static BiomeSpecialEffects.Builder dwarvenLeavesParticles(BiomeSpecialEffects.Builder builder) {
-		builder.ambientParticle(new AmbientParticleSettings(TolkienParticleTypes.DWARVEN_MAPLE_LEAVES.get(), 0.00625F));
-		return builder;
-	}
-
-	public static BiomeSpecialEffects.Builder culumaldaLeavesParticles(BiomeSpecialEffects.Builder builder) {
-		builder.ambientParticle(new AmbientParticleSettings(TolkienParticleTypes.CULUMALDA_LEAVES.get(), 0.00625F));
-		return builder;
-	}
-
-	public static BiomeSpecialEffects.Builder lebethronLeavesParticles(BiomeSpecialEffects.Builder builder) {
-		builder.ambientParticle(new AmbientParticleSettings(TolkienParticleTypes.LEBETHRON_LEAVES.get(), 0.00625F));
-		return builder;
-	}
-
-	public static BiomeSpecialEffects.Builder fangornoakLeavesParticles(BiomeSpecialEffects.Builder builder) {
-		builder.ambientParticle(new AmbientParticleSettings(TolkienParticleTypes.FANGORNOAK_LEAVES.get(), 0.00625F));
-		return builder;
-	}
-
-		// Ambiance
-	public static BiomeSpecialEffects.Builder lorinadAmbientBuilder() {
-			return new BiomeSpecialEffects.Builder()
-					.fogColor(14412287)
-					.waterColor(54011)
-					.waterFogColor(5541815)
-					.skyColor(getSkyColorWithTemperatureModifier(0.6F))
-					.ambientLoopSound(TolkienSounds.MUSIC_DISC_LIGHTOFLOTHLORIEN);
-	}
-
-	public static BiomeSpecialEffects.Builder ironHillsAmbientBuilder() {
-		return new BiomeSpecialEffects.Builder()
-				.fogColor(10518688)
-				.waterColor(4159204)
-				.waterFogColor(329011)
-				.skyColor(getSkyColorWithTemperatureModifier(0.2F))
-				.ambientLoopSound(TolkienSounds.MUSIC_DISC_ALLTHATGLITTERS);
-	}
-
-	public static BiomeSpecialEffects.Builder gladdenAmbientBuilder() {
-		return new BiomeSpecialEffects.Builder()
-				.fogColor(12638463)
-				.waterColor(329011)
-				.waterFogColor(10518688)
-				.skyColor(getSkyColorWithTemperatureModifier(0.8F))
-				.ambientLoopSound(TolkienSounds.MEDIEVAL_CITY);
-	}
-
-	public static BiomeSpecialEffects.Builder dagorladAmbientBuilder() {
-		return new BiomeSpecialEffects.Builder()
-				.fogColor(12638463)
-				.waterColor(14596231)
-				.waterFogColor(2302743)
-				.skyColor(getSkyColorWithTemperatureModifier(0.4F))
-				.ambientLoopSound(SoundEvents.AMBIENT_SOUL_SAND_VALLEY_MOOD);
-	}
-
-	public static BiomeSpecialEffects.Builder haradwaithAmbientBuilder() {
-		return new BiomeSpecialEffects.Builder()
-				.fogColor(12638463)
-				.waterColor(4159204)
-				.waterFogColor(329011)
-				.skyColor(getSkyColorWithTemperatureModifier(2.0F))
-				.ambientLoopSound(SoundEvents.AMBIENT_BASALT_DELTAS_LOOP);
-	}
-
-	public static BiomeSpecialEffects.Builder hithaeglirAmbientBuilder() {
-		return new BiomeSpecialEffects.Builder()
-				.fogColor(10518688)
-				.waterColor(4159204)
-				.waterFogColor(329011)
-				.skyColor(getSkyColorWithTemperatureModifier(0.7F))
-				.ambientLoopSound(SoundEvents.AMBIENT_WARPED_FOREST_MOOD);
-	}
-
-	public static BiomeSpecialEffects.Builder firienAmbientBuilder() {
-		return new BiomeSpecialEffects.Builder()
-				.fogColor(10518688)
-				.waterColor(4159204)
-				.waterFogColor(329011)
-				.skyColor(getSkyColorWithTemperatureModifier(0.7F))
-				.ambientLoopSound(SoundEvents.AMBIENT_CRIMSON_FOREST_MOOD);
-	}
-
-	public static BiomeSpecialEffects.Builder shireAmbientBuilder() {
-		return new BiomeSpecialEffects.Builder()
-				.fogColor(10518688)
-				.waterColor(4159204)
-				.waterFogColor(329011)
-				.skyColor(getSkyColorWithTemperatureModifier(0.8F))
-				.ambientLoopSound(TolkienSounds.MUSIC_DISC_CONCERNINGHOBBITS);
-	}
-
-	public static BiomeSpecialEffects.Builder barrowAmbientBuilder() {
-		return new BiomeSpecialEffects.Builder()
-				.fogColor(11119017)
-				.waterColor(808080)
-				.waterFogColor(5541815)
-				.grassColorOverride(14481884)
-				.skyColor(getSkyColorWithTemperatureModifier(0.8F))
-				.ambientLoopSound(TolkienSounds.PATH_OF_UNDEAD);
-	}
-
-	public static BiomeSpecialEffects.Builder mirkwoodAmbientBuilder() {
-		return new BiomeSpecialEffects.Builder()
-				.fogColor(5988193)
-				.waterColor(0)
-				.waterFogColor(5541815)
-				.skyColor(getSkyColorWithTemperatureModifier(0.8F))
-				.ambientLoopSound(SoundEvents.AMBIENT_WARPED_FOREST_LOOP);
-	}
-
-	public static BiomeSpecialEffects.Builder fangornAmbientBuilder() {
-		return new BiomeSpecialEffects.Builder()
-				.fogColor(0x548FB7)
-				.waterColor(0x3F76E4)
-				.waterFogColor(0x00D2FB)
-				.skyColor(getSkyColorWithTemperatureModifier(0.8F))
-				.ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS);
-	}
-
-	public static BiomeSpecialEffects.Builder mordorAmbientBuilder() {
-		return new BiomeSpecialEffects.Builder()
-				.fogColor(12638463)
-				.waterColor(0)
-				.waterFogColor(329011)
-				.skyColor(getSkyColorWithTemperatureModifier(2.0F))
-				.ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS);
-	}
-
-	public static BiomeSpecialEffects.Builder marshesAmbientBuilder() {
-		return new BiomeSpecialEffects.Builder()
-				.fogColor(5988193)
-				.waterColor(14745540)
-				.waterFogColor(2302743)
-				.skyColor(getSkyColorWithTemperatureModifier(0.8F))
-				.backgroundMusic(Musics.createGameMusic(SoundEvents.AMBIENT_SOUL_SAND_VALLEY_LOOP))
-				.ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS);
-	}
-
-	public static BiomeSpecialEffects.Builder oldForestAmbientBuilder() {
-		return new BiomeSpecialEffects.Builder()
-				.fogColor(5988193)
-				.waterColor(54011)
-				.waterFogColor(5541815)
-				.skyColor(getSkyColorWithTemperatureModifier(0.8F))
-				.backgroundMusic(Musics.createGameMusic(SoundEvents.AMBIENT_SOUL_SAND_VALLEY_LOOP))
-				.ambientLoopSound(SoundEvents.AMBIENT_CRIMSON_FOREST_LOOP)
-				.ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS);
 	}
 
 		// Mob Spawning
@@ -225,6 +53,21 @@ public abstract class BiomeHelper {
 				.addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 15, 1, 1))
 				.addMobCharge(TolkienEntities.ENTITY_TTM_HARADRIM.get(), 0.6, 0.15)
 				.addMobCharge(TolkienEntities.ENTITY_TTM_MUMAKIL.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15);
+	}
+
+	/**
+	 * The Blue Mountains' own people arrive with the dwarven village, not as wanderers, so the wild
+	 * slopes carry only the creatures that live there: goats, crebain and the goblins of the deep.
+	 */
+	public static MobSpawnSettings.Builder blueMountainsSpawning() {
+
+		return new MobSpawnSettings.Builder()
+				.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 25, 1, 4))
+				.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.GOAT, 15, 1, 3))
+				.addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 15, 1, 2))
+				.addMobCharge(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 0.6, 0.15)
+				.addMobCharge(EntityType.GOAT, 0.6, 0.15)
 				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15);
 	}
 
@@ -434,7 +277,27 @@ public abstract class BiomeHelper {
 				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15);
 	}
 
-	public static MobSpawnSettings.Builder marshesSpawning() {
+	/** Nurn is worked ground inside Mordor, so the same wardens patrol it. */
+    public static MobSpawnSettings.Builder nurnSpawning() {
+
+        return new MobSpawnSettings.Builder()
+                .addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 20, 1, 4))
+                .addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_WARG.get(), 20, 1, 3))
+                .addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_MORDORORC.get(), 25, 1, 4))
+                .addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_URUKHAI.get(), 35, 1, 2))
+                .addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 10, 1, 4))
+                .addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.SHEEP, 8, 1, 3))
+                .addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_AUROCH.get(), 8, 1, 3))
+                .addMobCharge(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 0.6, 0.15)
+                .addMobCharge(TolkienEntities.ENTITY_TTM_WARG.get(), 0.6, 0.15)
+                .addMobCharge(TolkienEntities.ENTITY_TTM_MORDORORC.get(), 0.6, 0.15)
+                .addMobCharge(TolkienEntities.ENTITY_TTM_URUKHAI.get(), 0.6, 0.15)
+                .addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15)
+                .addMobCharge(EntityType.SHEEP, 0.6, 0.15)
+                .addMobCharge(TolkienEntities.ENTITY_TTM_AUROCH.get(), 0.6, 0.15);
+    }
+
+    public static MobSpawnSettings.Builder marshesSpawning() {
 
         return new MobSpawnSettings.Builder()
 				.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_FELLSPIRIT.get(), 25, 1, 3))
@@ -449,9 +312,35 @@ public abstract class BiomeHelper {
 				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15);
 	}
 
+    public static MobSpawnSettings.Builder forochelSpawning() {
+
+        return new MobSpawnSettings.Builder()
+                .addSpawn(MobCategory.MISC, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_HUMAN.get(), 45, 1, 5))
+                .addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.POLAR_BEAR, 20, 1, 2))
+                .addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.RABBIT, 10, 2, 4))
+                .addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 10, 1, 2))
+                .addMobCharge(TolkienEntities.ENTITY_TTM_HUMAN.get(), 0.6, 0.15)
+                .addMobCharge(EntityType.POLAR_BEAR, 0.6, 0.15)
+                .addMobCharge(EntityType.RABBIT, 0.6, 0.15)
+                .addMobCharge(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 0.6, 0.15);
+    }
+
+    public static MobSpawnSettings.Builder forochelSlopesSpawning() {
+
+        return new MobSpawnSettings.Builder()
+                .addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_TROLL.get(), 35, 1, 2))
+                .addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 45, 1, 5))
+                .addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.POLAR_BEAR, 20, 1, 2))
+                .addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.GOAT, 15, 1, 3))
+                .addMobCharge(TolkienEntities.ENTITY_TTM_TROLL.get(), 0.6, 0.15)
+                .addMobCharge(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 0.6, 0.15)
+                .addMobCharge(EntityType.POLAR_BEAR, 0.6, 0.15)
+                .addMobCharge(EntityType.GOAT, 0.6, 0.15);
+    }
+
 		// Biome Settings
 	public static BiomeGenerationSettings.Builder lorinadGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
-		BiomeGenerationSettings.Builder biome = new BiomeGenerationSettings.Builder(featureGetter, carverGetter);
+		BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
 
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_FOREST);
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_LARGE_FERN);
@@ -469,11 +358,45 @@ public abstract class BiomeHelper {
 	}
 
 	public static BiomeGenerationSettings.Builder ironHillsGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
-		BiomeGenerationSettings.Builder biome = new BiomeGenerationSettings.Builder(featureGetter, carverGetter);
+		BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.TREES_BADLANDS);
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_DWARVEN_MAPLE_FALLEN_LEAVES);
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_DWARVEN_MAPLE_FALLEN_LOG);
-		biome.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, TolkienPlacedFeatures.PLACED_RANDOM_RUBBLE);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_RANDOM_RUBBLE);
+		biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.MITHRIL_ORE_PLACED_KEY);
+
+		BiomeDefaultFeatures.addDefaultSprings(biome);
+		BiomeDefaultFeatures.addDefaultOres(biome);
+		BiomeDefaultFeatures.addMountainTrees(biome);
+		BiomeDefaultFeatures.addDefaultSoftDisks(biome);
+		BiomeDefaultFeatures.addDefaultMonsterRoom(biome);
+		BiomeDefaultFeatures.addDefaultUndergroundVariety(biome);
+		BiomeDefaultFeatures.addDefaultMushrooms(biome);
+		BiomeDefaultFeatures.addForestGrass(biome);
+		BiomeDefaultFeatures.addDefaultExtraVegetation(biome);
+		BiomeDefaultFeatures.addDefaultUndergroundVariety(biome);
+		BiomeDefaultFeatures.addDefaultCarversAndLakes(biome);
+		BiomeDefaultFeatures.addExtraEmeralds(biome);
+		BiomeDefaultFeatures.addFerns(biome);
+		BiomeDefaultFeatures.addDefaultFlowers(biome);
+		BiomeDefaultFeatures.addPlainVegetation(biome);
+		BiomeDefaultFeatures.addCommonBerryBushes(biome);
+		addLegacyOres(biome);
+
+		return biome;
+	}
+
+	/**
+	 * The Blue Mountains are the Iron Hills' generation with the mountain's own stone underfoot; the
+	 * block itself is laid by {@code TolkienSurfaceRules.blueMountainsSurface}.
+	 */
+	public static BiomeGenerationSettings.Builder blueMountainsGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+		BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.TREES_BADLANDS);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_DWARVEN_MAPLE_FALLEN_LEAVES);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_DWARVEN_MAPLE_FALLEN_LOG);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_RANDOM_RUBBLE);
+		biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.MOUNTAIN_STONE_PLACED_KEY);
 		biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.MITHRIL_ORE_PLACED_KEY);
 
 		BiomeDefaultFeatures.addDefaultSprings(biome);
@@ -498,7 +421,7 @@ public abstract class BiomeHelper {
 	}
 
 	public static BiomeGenerationSettings.Builder gladdenGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
-		BiomeGenerationSettings.Builder biome = new BiomeGenerationSettings.Builder(featureGetter, carverGetter);
+		BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.TREES_BADLANDS);
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_STUMPS);
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_RANDOM_RUBBLE);
@@ -522,9 +445,9 @@ public abstract class BiomeHelper {
 	}
 
 	public static BiomeGenerationSettings.Builder dagorladGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
-		BiomeGenerationSettings.Builder biome = new BiomeGenerationSettings.Builder(featureGetter, carverGetter);
+		BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.TREES_BADLANDS);
-		biome.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, TolkienPlacedFeatures.PLACED_RANDOM_RUBBLE);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_RANDOM_RUBBLE);
 
 		BiomeDefaultFeatures.addDefaultSprings(biome);
 		BiomeDefaultFeatures.addDefaultOres(biome);
@@ -540,7 +463,7 @@ public abstract class BiomeHelper {
 	}
 
 	public static BiomeGenerationSettings.Builder haradwaithGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
-		BiomeGenerationSettings.Builder biome = new BiomeGenerationSettings.Builder(featureGetter, carverGetter);
+		BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
 
 		BiomeDefaultFeatures.addDesertExtraDecoration(biome);
 		BiomeDefaultFeatures.addDesertVegetation(biome);
@@ -551,7 +474,7 @@ public abstract class BiomeHelper {
 	}
 
 	public static BiomeGenerationSettings.Builder hithaeglirGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
-		BiomeGenerationSettings.Builder biome = new BiomeGenerationSettings.Builder(featureGetter, carverGetter);
+		BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
 
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_FOREST);
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_DWARVEN_MAPLE_FALLEN_LEAVES);
@@ -567,7 +490,7 @@ public abstract class BiomeHelper {
 	}
 
 	public static BiomeGenerationSettings.Builder firienGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
-		BiomeGenerationSettings.Builder biome = new BiomeGenerationSettings.Builder(featureGetter, carverGetter);
+		BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
 
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_FOREST);
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_LARGE_FERN);
@@ -577,6 +500,8 @@ public abstract class BiomeHelper {
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.RED_MUSHROOM_OLD_GROWTH);
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_CULUMALDA_FALLEN_LEAVES);
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_LEBETHRON_FALLEN_LEAVES);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_CULUMALDA_FALLEN_LOG);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_LEBETHRON_FALLEN_LOG);
 		biome.addFeature(GenerationStep.Decoration.LAKES, MiscOverworldPlacements.SPRING_WATER);
 
 		addLegacyOres(biome);
@@ -585,7 +510,7 @@ public abstract class BiomeHelper {
 	}
 
 	public static BiomeGenerationSettings.Builder shireGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
-		BiomeGenerationSettings.Builder biome = new BiomeGenerationSettings.Builder(featureGetter, carverGetter);
+		BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
 
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_FOREST);
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_LARGE_FERN);
@@ -594,6 +519,8 @@ public abstract class BiomeHelper {
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.RED_MUSHROOM_OLD_GROWTH);
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_CULUMALDA_FALLEN_LEAVES);
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_LEBETHRON_FALLEN_LEAVES);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_CULUMALDA_FALLEN_LOG);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_LEBETHRON_FALLEN_LOG);
 		biome.addFeature(GenerationStep.Decoration.LAKES, MiscOverworldPlacements.SPRING_WATER);
 
 		addLegacyOres(biome);
@@ -602,7 +529,7 @@ public abstract class BiomeHelper {
 	}
 
 	public static BiomeGenerationSettings.Builder oldForestForestGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
-		BiomeGenerationSettings.Builder biome = new BiomeGenerationSettings.Builder(featureGetter, carverGetter);
+		BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
 
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_FOREST);
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_LARGE_FERN);
@@ -610,6 +537,7 @@ public abstract class BiomeHelper {
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.RED_MUSHROOM_OLD_GROWTH);
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.FOREST_FLOWERS);
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_FANGORN_FALLEN_LEAVES);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_FANGORN_FALLEN_LOG);
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_STUMPS);
 
 		addLegacyOres(biome);
@@ -618,10 +546,11 @@ public abstract class BiomeHelper {
 	}
 
 	public static BiomeGenerationSettings.Builder barrowGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
-		BiomeGenerationSettings.Builder biome = new BiomeGenerationSettings.Builder(featureGetter, carverGetter);
+		BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
 
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_FOREST);
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.BROWN_MUSHROOM_NORMAL);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_ROCKPILE);
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.RED_MUSHROOM_NORMAL);
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_DEADWOOD_FALLEN_LOG);
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_STUMPS);
@@ -633,7 +562,7 @@ public abstract class BiomeHelper {
 
 	public static BiomeGenerationSettings.Builder mirkwoodSpookyGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
 
-		return new BiomeGenerationSettings.Builder(featureGetter, carverGetter)
+		return new TolkienBiomeGenerationSettings(featureGetter, carverGetter)
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_FOREST)
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_LARGE_FERN)
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.BROWN_MUSHROOM_OLD_GROWTH)
@@ -641,13 +570,17 @@ public abstract class BiomeHelper {
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.FLOWER_MIRKWOOD_PLACED_KEY)
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_MIRKWOOD_FALLEN_LOG)
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_MIRKWOOD_FALLEN_LEAVES)
-				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_WEBS)
-				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_STUMPS);
+				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_STUMPS)
+				// Webs hang off the mirkwood canopy, and the trees reach this biome through the
+				// add_tree_mirkwood biome modifier, which appends them to the end of the vegetal
+				// decoration step. Running webs in the last step is what guarantees the canopy is
+				// standing before they go looking for it.
+				.addFeature(GenerationStep.Decoration.TOP_LAYER_MODIFICATION, TolkienPlacedFeatures.PLACED_WEBS);
 	}
 
 	public static BiomeGenerationSettings.Builder mirkwoodGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
 
-        return new BiomeGenerationSettings.Builder(featureGetter, carverGetter)
+        return new TolkienBiomeGenerationSettings(featureGetter, carverGetter)
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_FOREST)
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_LARGE_FERN)
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.BROWN_MUSHROOM_OLD_GROWTH)
@@ -660,7 +593,7 @@ public abstract class BiomeHelper {
 
 	public static BiomeGenerationSettings.Builder fangornForestGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
 
-        return new BiomeGenerationSettings.Builder(featureGetter, carverGetter)
+        return new TolkienBiomeGenerationSettings(featureGetter, carverGetter)
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_JUNGLE)
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_FANGORN_FALLEN_LOG)
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_STUMPS)
@@ -669,22 +602,51 @@ public abstract class BiomeHelper {
 
 	public static BiomeGenerationSettings.Builder mordorGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
 
-        return new BiomeGenerationSettings.Builder(featureGetter, carverGetter)
+        return new TolkienBiomeGenerationSettings(featureGetter, carverGetter)
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_JUNGLE)
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_DEADWOOD_FALLEN_LOG)
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.FLOWER_BRAMBLES_PLACED_KEY)
-				.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, TolkienPlacedFeatures.PLACED_STONE_SPIKE)
+				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_ROCKPILE)
+				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_STONE_SPIKE)
 				.addFeature(GenerationStep.Decoration.LAKES, MiscOverworldPlacements.LAKE_LAVA_SURFACE)
-				.addFeature(GenerationStep.Decoration.SURFACE_STRUCTURES, TolkienPlacedFeatures.PLACED_RANDOM_RUBBLE)
+				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_RANDOM_RUBBLE)
 				.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.MORGULIRON_ORE_PLACED_KEY)
 				.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.PLACED_SMALL_ANDESITE)
 				.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.PLACED_SMALL_DIORITE)
 				.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.PLACED_SMALL_GRANITE);
-	}
+	}    /**
+     * Nurn's land, without a trace of the vanilla lava. The vanilla springs and lava lakes are
+     * deliberately left out - the aquifer still puts lava in the deepest bedrock layers, which is
+     * the dimension's own floor rather than a biome feature - and water is the only fluid added.
+     */
+    public static BiomeGenerationSettings.Builder nurnGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
 
-	public static BiomeGenerationSettings.Builder marshesGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        biome.addFeature(GenerationStep.Decoration.LAKES, TolkienPlacedFeatures.PLACED_NURN_LAKE);
+        biome.addFeature(GenerationStep.Decoration.FLUID_SPRINGS, MiscOverworldPlacements.SPRING_WATER);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_PLAIN);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.FLOWER_PLAINS);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.BROWN_MUSHROOM_NORMAL);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.RED_MUSHROOM_NORMAL);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_RANDOM_RUBBLE);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_DEADWOOD_FALLEN_LOG);
+        biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.MORGULIRON_ORE_PLACED_KEY);
 
-        return new BiomeGenerationSettings.Builder(featureGetter, carverGetter)
+        biome.addCarver(GenerationStep.Carving.AIR, Carvers.CAVE);
+        biome.addCarver(GenerationStep.Carving.AIR, Carvers.CAVE_EXTRA_UNDERGROUND);
+        biome.addCarver(GenerationStep.Carving.AIR, Carvers.CANYON);
+
+        BiomeDefaultFeatures.addDefaultMonsterRoom(biome);
+        BiomeDefaultFeatures.addDefaultMushrooms(biome);
+        BiomeDefaultFeatures.addDefaultUndergroundVariety(biome);
+        addLegacyOres(biome);
+
+        return biome;
+    }
+
+    public static BiomeGenerationSettings.Builder marshesGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+
+        return new TolkienBiomeGenerationSettings(featureGetter, carverGetter)
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.TREES_SWAMP)
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_NORMAL)
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.FLOWER_SWAMPMILKWEED_PLACED_KEY)
@@ -692,108 +654,50 @@ public abstract class BiomeHelper {
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_DEAD_BUSH)
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.BROWN_MUSHROOM_SWAMP)
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.RED_MUSHROOM_SWAMP)
+				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_MUD_SPLATTER)
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_SUGAR_CANE_SWAMP)
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_PUMPKIN)
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_WATERLILY)
 				.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, MiscOverworldPlacements.DISK_CLAY);
 	}
 
-	public static Biome.BiomeBuilder biomeWithDefaults(BiomeSpecialEffects.Builder biomeAmbience, MobSpawnSettings.Builder mobSpawnInfo, BiomeGenerationSettings.Builder biomeGenerationSettings) {
-		return new Biome.BiomeBuilder()
-				.hasPrecipitation(true)
-				.temperature(0.5F)
-				.downfall(0.5F)
-				.specialEffects(biomeAmbience.build())
-				.mobSpawnSettings(mobSpawnInfo.build())
-				.generationSettings(biomeGenerationSettings.build())
-				.temperatureAdjustment(Biome.TemperatureModifier.NONE);
-	}
+    public static BiomeGenerationSettings.Builder forochelGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
 
-	public static MobSpawnSettings.Builder defaultMobSpawning() {
-		MobSpawnSettings.Builder spawnInfo = new MobSpawnSettings.Builder();
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_NORMAL);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.BROWN_MUSHROOM_NORMAL);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.RED_MUSHROOM_NORMAL);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_PUMPKIN);
 
-		spawnInfo.creatureGenerationProbability(0.15f);
+        BiomeDefaultFeatures.addDefaultOres(biome);
+        BiomeDefaultFeatures.addDefaultMonsterRoom(biome);
+        BiomeDefaultFeatures.addDefaultMushrooms(biome);
+        BiomeDefaultFeatures.addDefaultUndergroundVariety(biome);
+        BiomeDefaultFeatures.addDefaultCarversAndLakes(biome);
+        BiomeDefaultFeatures.addSurfaceFreezing(biome);
+        addLegacyOres(biome);
 
-		spawnInfo.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_AUROCH.get(), 12, 4, 4));
-		spawnInfo.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.CHICKEN, 10, 4, 4));
-		spawnInfo.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 5, 4, 4));
-		spawnInfo.addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_THRUSH.get(), 15, 4, 8));
-		spawnInfo.addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 10, 2, 4));
-		spawnInfo.addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 10, 1, 2));
+        return biome;
+    }
 
-		return spawnInfo;
-	}
+    public static BiomeGenerationSettings.Builder forochelSlopesGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
 
-	public static MobSpawnSettings.Builder undergroundMobSpawning() {
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_NORMAL);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.BROWN_MUSHROOM_NORMAL);
+        biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.RED_MUSHROOM_NORMAL);
 
-        return new MobSpawnSettings.Builder()
-				.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(EntityType.SPIDER, 10, 2, 3))
-				.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(EntityType.ZOMBIE, 10, 1, 2))
-				.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(EntityType.SKELETON, 10, 1, 1))
-				.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(EntityType.CREEPER, 1, 1, 1))
-				.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(EntityType.SLIME, 10, 2, 4))
-				.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(EntityType.ENDERMAN, 1, 1, 2))
-				.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 10, 1, 3))
-				.addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(EntityType.BAT, 10, 1, 1))
-				.addMobCharge(EntityType.SPIDER, 0.2D, 0.15D)
-				.addMobCharge(EntityType.ZOMBIE, 0.2D, 0.15D)
-				.addMobCharge(EntityType.SKELETON, 0.3D, 0.15D)
-				.addMobCharge(EntityType.CREEPER, 0.35D, 0.15D)
-				.addMobCharge(EntityType.SLIME, 0.2D, 0.15D)
-				.addMobCharge(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 0.2D, 0.15D)
-				.addMobCharge(EntityType.ENDERMAN, 0.4D, 0.15D);
-				}
+        BiomeDefaultFeatures.addDefaultOres(biome);
+        BiomeDefaultFeatures.addDefaultMonsterRoom(biome);
+        BiomeDefaultFeatures.addDefaultMushrooms(biome);
+        BiomeDefaultFeatures.addDefaultUndergroundVariety(biome);
+        BiomeDefaultFeatures.addDefaultCarversAndLakes(biome);
+        BiomeDefaultFeatures.addSurfaceFreezing(biome);
+        BiomeDefaultFeatures.addMountainTrees(biome);
+        addLegacyOres(biome);
 
-	public static BiomeSpecialEffects.Builder defaultAmbientBuilder() {
-		return new BiomeSpecialEffects.Builder()
-				.fogColor(0xC0FFD8)
-				.waterColor(0x3F76E4)
-				.waterFogColor(0x050533)
-				.skyColor(0x20224A)
-				.ambientMoodSound(AmbientMoodSettings.LEGACY_CAVE_SETTINGS);
-
-	}
-
-	public static BiomeGenerationSettings.Builder undergroundGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
-		BiomeGenerationSettings.Builder biome = new BiomeGenerationSettings.Builder(featureGetter, carverGetter);
-
-		BiomeDefaultFeatures.addDefaultSoftDisks(biome);
-		BiomeDefaultFeatures.addSurfaceFreezing(biome);
-		withWoodRoots(biome);
-		addCaves(biome);
-		addSmallStoneClusters(biome);
-		return biome;
-	}
-
-	public static BiomeGenerationSettings.Builder streamsAndLakes(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter, boolean isLake) {
-		BiomeGenerationSettings.Builder biome = new BiomeGenerationSettings.Builder(featureGetter, carverGetter);
-
-		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, isLake ? AquaticPlacements.SEAGRASS_DEEP : AquaticPlacements.SEAGRASS_NORMAL);
-
-		BiomeDefaultFeatures.addDefaultSeagrass(biome);
-		BiomeDefaultFeatures.addSurfaceFreezing(biome);
-
-		addLegacyOres(biome);
-		addSmallStoneClusters(biome);
-
-		return biome;
-	}
-
-	public static void withWoodRoots(BiomeGenerationSettings.Builder biome) {
-		biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.PLACED_WOOD_ROOTS_SPREAD);
-	}
-
-	public static void addSmallStoneClusters(BiomeGenerationSettings.Builder biome) {
-		biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.PLACED_SMALL_ANDESITE);
-		biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.PLACED_SMALL_DIORITE);
-		biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.PLACED_SMALL_GRANITE);
-	}
-
-	public static void addCaves(BiomeGenerationSettings.Builder biome) {
-		biome.addCarver(GenerationStep.Carving.AIR, TolkienCaveCarvers.CAVES_CONFIGURED);
-		biome.addFeature(GenerationStep.Decoration.UNDERGROUND_DECORATION, TolkienPlacedFeatures.PLACED_PLANT_ROOTS);
-		addLegacyOres(biome);
-	}
+        return biome;
+    }
 
 	public static void addLegacyOres(BiomeGenerationSettings.Builder biome) {
 		biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.PLACED_COAL_ORE);

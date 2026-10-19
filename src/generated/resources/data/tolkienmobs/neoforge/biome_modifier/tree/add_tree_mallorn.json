@@ -1,6 +1,6 @@
 {
   "type": "neoforge:add_features",
   "biomes": "tolkienmobs:lorinand",
-  "features": "tolkienmobs:mallorn_placed",
+  "features": "tolkienmobs:hardened_mallorn_placed",
   "step": "vegetal_decoration"
 }

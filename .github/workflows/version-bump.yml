@@ -1,0 +1,56 @@
+name: Auto Release on Push
+
+on:
+  push:
+    branches:
+      - main
+      - master # 💡 Added master to ensure it triggers on either branch name
+
+jobs:
+  create-release:
+    if: contains(github.event.head_commit.message, '[release]')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+
+    steps:
+      - name: Checkout Repository with full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Extract Dynamic Version String
+        id: get_version
+        run: |
+          BUILD_NUM=$(grep 'currentBuildNumber=' gradle.properties | cut -d'=' -f2)
+          FULL_VERSION="v4.3.${BUILD_NUM}"
+          echo "version=$FULL_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Compile and Build Project
+        run: |
+          chmod +x gradlew
+          ./gradlew build
+
+      # 🚀 AUTOMATICALLY GENERATE NOTES AND PUBLISH THE RELEASE
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.get_version.outputs.version }}
+          name: Release ${{ steps.get_version.outputs.version }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true # 📝 This natively generates your changelog directly on GitHub
+          files: |
+            build/libs/*.jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

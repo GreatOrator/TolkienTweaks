@@ -89,7 +89,6 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     public float setExtremityPitch;
     public float adjustExtremityPitch;
     public float adjustmentExtremityPitch;
-    public float flyingSpeed;
     public Vec3 debugTarget;
 
 
@@ -108,7 +107,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     public static final EntityDataAccessor<Float> BREACH_ATTACK_COOLDOWN = SynchedEntityData.defineId(DragonEntity.class, EntityDataSerializers.FLOAT);
     public static final EntityDataAccessor<Boolean> BREACHING = SynchedEntityData.defineId(DragonEntity.class, EntityDataSerializers.BOOLEAN);
 
-    public static final EntityDataAccessor<BlockPos> HOME_POS = SynchedEntityData.defineId(DragonEntity.class, EntityDataSerializers.BLOCK_POS);
+    public static final EntityDataAccessor<Optional<BlockPos>> HOME_POS = SynchedEntityData.defineId(DragonEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
     public static final EntityDataAccessor<Boolean> SLEEPING = SynchedEntityData.defineId(DragonEntity.class, EntityDataSerializers.BOOLEAN);
     protected static int IDLE_ANIMATION_VARIANTS;
     protected static int ATTACK_ANIMATION_VARIANTS;
@@ -122,6 +121,8 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     private static final EntityDataAccessor<Integer> MOVING_STATE = SynchedEntityData.defineId(DragonEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> MANUAL_ANIMATION_CALL = SynchedEntityData.defineId(DragonEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> IS_MOVING_ANIMATION = SynchedEntityData.defineId(DragonEntity.class, EntityDataSerializers.BOOLEAN);
+    private long nextDefensiveAbilityUse = 0L;
+    private final static long defensiveCoolDown = 10000L;
 
     protected DragonEntity(EntityType<? extends Monster> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -143,7 +144,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
         builder.define(ANIMATION_TIME, 0);
         builder.define(MANUAL_ANIMATION_CALL, false);
         builder.define(IS_MOVING_ANIMATION, false);
-        builder.define(HOME_POS, BlockPos.ZERO);
+        builder.define(HOME_POS, Optional.empty());
         builder.define(BREACHING, false);
         builder.define(BREACH_ATTACK_COOLDOWN, 600F);
         builder.define(SLEEPING, false);
@@ -151,8 +152,8 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
 
     @Override
     public void addAdditionalSaveData(CompoundTag nbt) {
+        ensureHome();
         super.addAdditionalSaveData(nbt);
-        //        tag.putInt("Invul", this.getInvulnerableTicks());
 
         ((EntityHandler<DragonEntity>) getSerializer()).serialize(this, nbt);
     }
@@ -170,17 +171,20 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
 
-        WitchKingEntity entitywitchking = TolkienEntities.ENTITY_TTM_WITCHKING.get().create(this.level);
-        entitywitchking.moveTo(this.getX(), this.getY(), this.getZ(), this.yRotO, 0.0F);
-        entitywitchking.finalizeSpawn(level, difficulty, spawnType, null);
-        entitywitchking.startRiding(this);
-
-        return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
+        ensureHome();
+        SpawnGroupData data = super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
+        WitchKingEntity rider = TolkienEntities.ENTITY_TTM_WITCHKING.get().create(this.level);
+        if (rider != null) {
+            rider.moveTo(getX(), getY(), getZ(), getYRot(), 0.0F);
+            rider.finalizeSpawn(level, difficulty, spawnType, null);
+            rider.startRiding(this);
+        }
+        return data;
     }
 
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
-        if (key.equals(SLEEPING) || isUsingFlyingNavigator()) {
+        if (key.equals(SLEEPING) || key.equals(MOVING_STATE)) {
             refreshDimensions();
             if (level.isClientSide  && isUsingFlyingNavigator() && canBeControlledByRider())
                 FlyingSound.play(this);
@@ -249,7 +253,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     }
 
     public Attribute[] getScaledAttributes() {
-        return new Attribute[]{(Attribute) MAX_HEALTH, (Attribute) ATTACK_DAMAGE};
+        return new Attribute[]{MAX_HEALTH.value(), ATTACK_DAMAGE.value()};
     }
 
     public float getTravelSpeed() {
@@ -263,12 +267,20 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     }
 
     public boolean trySafeTeleport(BlockPos pos) {
-        if (level.noCollision(this, getBoundingBox().move(pos.subtract(blockPosition()))))
-        {
-            moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, getYRot(), getXRot());
-            return true;
-        }
-        return false;
+        Vec3 destination = Vec3.atBottomCenterOf(pos);
+        AABB bounds = getBoundingBox().move(destination.subtract(position()));
+        if (!level.hasChunkAt(pos) || !level.getWorldBorder().isWithinBounds(pos)
+                || bounds.minY < level.getMinBuildHeight() || bounds.maxY > level.getMaxBuildHeight()
+                || !level.noCollision(this, bounds) || level.containsAnyLiquid(bounds)) return false;
+        moveTo(destination.x, destination.y, destination.z, getYRot(), getXRot());
+        getNavigation().stop();
+        setDeltaMovement(Vec3.ZERO);
+        return true;
+    }
+
+    private void ensureHome() {
+        // Captures command/structure spawns and legacy saves that skip finalizeSpawn too.
+        if (!level.isClientSide && !hasRestriction()) setHomePos(blockPosition());
     }
 
     @Override
@@ -279,12 +291,11 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
 
     @Nullable
     public BlockPos getHomePos() {
-        BlockPos pos = entityData.get(HOME_POS);
-        return pos == BlockPos.ZERO? null : pos;
+        return entityData.get(HOME_POS).orElse(null);
     }
 
     public void setHomePos(@Nullable BlockPos pos) {
-        entityData.set(HOME_POS, pos == null? BlockPos.ZERO : pos);
+        entityData.set(HOME_POS, Optional.ofNullable(pos == null ? null : pos.immutable()));
     }
 
     public void clearHome() {
@@ -298,7 +309,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
 
     @Override
     public float getRestrictRadius() {
-        return TolkienMobsConfig.homeRadius * TolkienMobsConfig.homeRadius;
+        return TolkienMobsConfig.homeRadius;
     }
 
     @Override
@@ -314,7 +325,8 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     @Override
     public boolean isWithinRestriction(BlockPos pos) {
         BlockPos home = getHomePos();
-        return home == null || home.distSqr(pos) <= getRestrictRadius();
+        double radius = getRestrictRadius();
+        return home == null || home.distSqr(pos) <= radius * radius;
     }
 
     /** Sleeping */
@@ -370,6 +382,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
 
     @Override
     public void tick() {
+        ensureHome();
         super.tick();
 
         NavigationType properNavigator = getProperNavigator();
@@ -502,7 +515,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
 
     @Override
     public boolean canAttack(LivingEntity target) {
-        return !canBeControlledByRider() && super.canAttack(target);
+        return !canBeControlledByRider() && isWithinRestriction(target.blockPosition()) && super.canAttack(target);
     }
 
     @Override
@@ -609,7 +622,6 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
                     groundZ *= 0.25F;
                 }
 
-                this.flyingSpeed = this.getSpeed() * 0.1F;
                 if (this.isControlledByLocalInstance()) {
                     float speed = getTravelSpeed();
                     if (isUsingFlyingNavigator())
@@ -631,10 +643,14 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
                 this.calculateEntityAnimation(isUsingFlyingNavigator());
                 this.tryCheckInsideBlocks();
             } else {
-                this.flyingSpeed = getTravelSpeed();
                 super.travel(vec3d);
             }
         }
+    }
+
+    @Override
+    protected float getFlyingSpeed() {
+        return isUsingFlyingNavigator() && !canBeControlledByRider() ? getSpeed() : super.getFlyingSpeed();
     }
 
     @Override
@@ -711,7 +727,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     public double getAltitude() {
         BlockPos.MutableBlockPos pos = blockPosition().mutable();
 
-        while (pos.getY() > 0 && !level.getBlockState(pos.move(Direction.DOWN)).isSolid());
+        while (pos.getY() > level.getMinBuildHeight() && !level.getBlockState(pos.move(Direction.DOWN)).isSolid());
         return getY() - pos.getY();
     }
 
@@ -825,11 +841,31 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
         }
     }
 
+    /**
+     * Seat for a rider, in this beast's local space and in blocks: +X is its left, +Y is up from between
+     * its feet and +Z is the direction it faces. Defaults to the top of the hitbox, which is the seat
+     * vanilla gives a rider on an entity with no saddle data of its own (EntityAttachment.PASSENGER falls
+     * back to the dimensions' height). Subclasses whose model has a rider bone of its own override this
+     * with that bone's model space offset converted into entity space: front is -Z in a model, so X and Z
+     * are both negated, and any scale the renderer applies to the model has to be included because the
+     * rider is a separate entity sitting on the drawn model, not on the hitbox.
+     */
+    public Vec3 getRiderSeatOffset(int passengerIndex) {
+        return new Vec3(0.0D, getBbHeight(), 0.0D);
+    }
+
     @Override
     public void positionRider(Entity passenger, Entity.MoveFunction callback) {
-        Vec3 offset = this.getPassengerRidingPosition(passenger);
-        Vec3 pos = MathUtility.getYawVec(yBodyRot, offset.x, offset.z).add(getX(), getY() + offset.y + passenger.getVehicleAttachmentPoint(this).y, getZ());
-        passenger.setPos(pos.x, pos.y, pos.z);
+        // The seat has to be built relative to this beast. getPassengerRidingPosition is no use here: it
+        // returns an absolute world position, yaw rotated about the beast's yRot rather than the yBodyRot
+        // the model is drawn with, so the offset comes from getRiderSeatOffset and is rotated here.
+        Vec3 seat = this.getRiderSeatOffset(Math.max(0, this.getPassengers().indexOf(passenger)));
+        Vec3 offset = MathUtility.getYawVec(this.yBodyRot, seat.x, seat.z).add(0.0D, seat.y, 0.0D);
+        Vec3 riderOffset = passenger.getVehicleAttachmentPoint(this);
+        callback.accept(passenger,
+                this.getX() + offset.x - riderOffset.x,
+                this.getY() + offset.y - riderOffset.y,
+                this.getZ() + offset.z - riderOffset.z);
     }
 
     @Override
@@ -837,15 +873,14 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
         super.addPassenger(passenger);
         if (getControllingPassenger() == passenger) {
             clearAI();
-            clearHome();
             if (isLeashed()) dropLeash(true, true);
         }
     }
 
     @Nullable
-    public WitchKingEntity getControllingPlayer() {
+    public Player getControllingPlayer() {
         Entity passenger = getControllingPassenger();
-        return passenger instanceof WitchKingEntity? (WitchKingEntity) passenger : null;
+        return passenger instanceof Player player ? player : null;
     }
 
 
@@ -860,19 +895,19 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
 
     public boolean canBeControlledByRider() {
         LivingEntity entity = getControllingPassenger();
-        return entity instanceof WitchKingEntity;
+        return entity instanceof Player;
     }
 
     @Nullable
     @Override
-    public LivingEntity getControllingPassenger() {
-        List<Entity> passengers = getPassengers();
-        return passengers.isEmpty()? null : (LivingEntity) passengers.getFirst();
+    public Player getControllingPassenger() {
+        // An NPC passenger must not redirect its navigation into the fellbeast.
+        return getFirstPassenger() instanceof Player player ? player : null;
     }
 
     @Override
     protected boolean canAddPassenger(Entity entityIn) {
-        return speciesCanBeRidden() && getPassengers().size() < getMaxPassengers();
+        return entityIn instanceof LivingEntity && speciesCanBeRidden() && getPassengers().size() < getMaxPassengers();
     }
 
     public boolean canBeLeashed(Player pPlayer) {
@@ -882,9 +917,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     @Override
     @SuppressWarnings("ConstantConditions")
     public boolean isAlliedTo(Entity entity) {
-        if (entity == this) return true;
-        if (entity instanceof LivingEntity) return true;
-        return entity.isAlliedTo(getTeam());
+        return entity == this || hasPassenger(entity) || entity.hasPassenger(this) || super.isAlliedTo(entity);
     }
 
     @Override
@@ -915,7 +948,6 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     @Override
     public void dropLeash(boolean sendPacket, boolean dropLead) {
         super.dropLeash(sendPacket, dropLead);
-        clearHome();
     }
 
     @Override
@@ -971,11 +1003,6 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     }
 
 
-    @Override
-    public void setYRot(float yRot){
-        this.yRotO = yRot;
-    }
-
     /** Goals */
     @Override
     protected void registerGoals() {
@@ -1007,9 +1034,17 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
                 this.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 2 * 20, 0));
             }
 
+            // The reactions below are rate limited, otherwise they fired - and messaged the attacker - on every single hit.
+            long reactionTime = System.currentTimeMillis();
+            if (reactionTime <= this.nextDefensiveAbilityUse) {
+                return true;
+            }
+            this.nextDefensiveAbilityUse = reactionTime + defensiveCoolDown;
+
             if (this.getHealth() < this.getMaxHealth()) {
                 livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.healself").withStyle(ChatFormatting.LIGHT_PURPLE));
-                this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 2 * 20, 0));
+                // Regeneration only heals on ticks divisible by (50 >> amplifier): 40 ticks at amplifier 0 never healed at all.
+                this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 10 * 20, 1));
             }
 
             if (this.getTarget() != null && !this.hasEffect(MobEffects.MOVEMENT_SPEED) && this.getTarget().distanceToSqr(this) > 121.0D) {
@@ -1055,7 +1090,11 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
             if (this.getDeltaMovement().length() !=0 && event.getAnimatable().isAggressive()) {
                 switch (navigationType) {
                     case GROUND -> event.getController().setAnimation(RawAnimation.begin().thenPlay("walk_fast"));
-                    case FLYING -> event.getController().setAnimation(RawAnimation.begin().thenPlay("fly_fast"));
+                    // No fly_fast animation ships with the fellbeast's animation file. Asking for one anyway
+                    // made GeckoLib log "Unable to find animation" and leave the movement controller with
+                    // nothing to play, freezing the wings mid-flap for as long as the beast fought on the
+                    // wing, so an aggressive flyer keeps the normal flight animation.
+                    case FLYING -> event.getController().setAnimation(RawAnimation.begin().thenPlay("fly"));
                     case SWIMMING-> event.getController().setAnimation(RawAnimation.begin().thenPlay("swim_fast"));
                 }
                 return PlayState.CONTINUE;

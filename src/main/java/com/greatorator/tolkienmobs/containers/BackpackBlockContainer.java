@@ -5,25 +5,35 @@ import com.greatorator.tolkienmobs.containers.handlers.BackpackItemStackHandler;
 import com.greatorator.tolkienmobs.containers.handlers.BucketItemHandler;
 import com.greatorator.tolkienmobs.containers.handlers.UpgradeItemHandler;
 import com.greatorator.tolkienmobs.init.TolkienContainers;
+import com.greatorator.tolkienmobs.init.TolkienTags;
+import com.greatorator.tolkienmobs.integration.CuriosBackpackHelper;
+import com.greatorator.tolkienmobs.item.custom.BackpackItem;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 import java.util.Optional;
 
+/**
+ * Every slot the backpack can ever show is added up front, in a fixed order, and each slot's
+ * {@link Slot#isActive()} follows the block entity's current upgrades. This lets the open screen
+ * grow/shrink as upgrades are added or removed without reopening the menu.
+ */
 public class BackpackBlockContainer extends TolkienContainer{
     public final BackpackBlockEntity tileEntity;
     private final Level level;
@@ -35,11 +45,46 @@ public class BackpackBlockContainer extends TolkienContainer{
     public ItemStackHandler fluidHandler;
     public ContainerData fluidData;
     public static final int COLUMNS = 9;
+    public static final int MAX_ROWS = 8;
     public static final int UPGRADE_COLUMNS = 3;
     public static final int UPGRADE_ROWS = 3;
 
+    public static final int STORAGE_START = 0;
+    public static final int STORAGE_SLOTS = COLUMNS * MAX_ROWS;
+    public static final int UPGRADE_START = STORAGE_START + STORAGE_SLOTS;
+    public static final int UPGRADE_SLOTS = UPGRADE_COLUMNS * UPGRADE_ROWS;
+    public static final int PLAYER_INV_START = UPGRADE_START + UPGRADE_SLOTS;
+    public static final int PLAYER_INV_END = PLAYER_INV_START + 36;
+    public static final int ARMOR_START = PLAYER_INV_END;
+    public static final int ARMOR_SLOTS = 5;
+    public static final int CRAFT_RESULT_SLOT = ARMOR_START + ARMOR_SLOTS;
+    public static final int CRAFT_GRID_START = CRAFT_RESULT_SLOT + 1;
+    public static final int FLUID_START = CRAFT_GRID_START + 9;
+    public static final int FLUID_SLOTS = 2;
+
+    /** Index of the menu slot holding the open held backpack; it is locked so the backpack can't be moved while open. */
+    private int lockedSlot = -1;
+    private int lockedInvIndex = -1;
+
     public BackpackBlockContainer(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
-        this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()));
+        this(pContainerId, inv, readBackpack(inv, extraData));
+    }
+
+    public static final byte SOURCE_BLOCK = 0;
+    public static final byte SOURCE_HAND = 1;
+    public static final byte SOURCE_CURIO = 2;
+
+    private static BlockEntity readBackpack(Inventory inv, FriendlyByteBuf extraData) {
+        byte source = extraData.readByte();
+        if (source == SOURCE_HAND) {
+            InteractionHand hand = extraData.readEnum(InteractionHand.class);
+            return BackpackBlockEntity.createHeld(inv.player, inv.player.getItemInHand(hand), hand);
+        }
+        if (source == SOURCE_CURIO) {
+            // Contents arrive through the menu's slot and data sync
+            return BackpackBlockEntity.createHeld(inv.player, ItemStack.EMPTY, null);
+        }
+        return inv.player.level().getBlockEntity(extraData.readBlockPos());
     }
 
     public BackpackBlockContainer(int pContainerId, Inventory inv, BlockEntity blockEntity) {
@@ -48,93 +93,147 @@ public class BackpackBlockContainer extends TolkienContainer{
         this.level = inv.player.level();
         this.player = inv.player;
         this.access = ContainerLevelAccess.create(this.level, this.tileEntity.getBlockPos());
-        this.resultSlot = new ResultSlot(this.player, this.craftSlots, this.resultSlots, 0, 19, 151);
+        this.resultSlot = new ResultSlot(this.player, this.craftSlots, this.resultSlots, 0, 19, 151) {
+            @Override
+            public boolean isActive() {
+                return hasCrafting();
+            }
+        };
+        this.fluidData = tileEntity.getFluidContainerData();
 
-        if(this.tileEntity.backpackFluidUpgrades.fluid_tank) {
-            this.fluidData = tileEntity.getFluidContainerData();
-        }
-
-        if (tileEntity.backpackUpgrades.size_upgrade_2) {
-            addContainerSlots(this.tileEntity.itemHandler, COLUMNS, 8);
-        } else if (tileEntity.backpackUpgrades.size_upgrade) {
-            addContainerSlots(this.tileEntity.itemHandler, COLUMNS, 6);
-        } else {
-            addContainerSlots(this.tileEntity.itemHandler, COLUMNS, 3);
-        }
-
-        if(tileEntity.backpackSettings.upgrade) {
-            addUpgradeSlots(this.tileEntity.upgradeItemHandler, UPGRADE_COLUMNS, UPGRADE_ROWS);
-        }
+        addContainerSlots(this.tileEntity.itemHandler, COLUMNS, MAX_ROWS);
+        addUpgradeSlots(this.tileEntity.upgradeItemHandler, UPGRADE_COLUMNS, UPGRADE_ROWS);
 
         addPlayerInventory(inv, 65, 146);
         addPlayerHotbar(inv, 65, 146);
         addPlayerArmorInventory(inv);
 
-        if(this.tileEntity.backpackUpgrades.crafting) {
-            addCraftingSlots();
-        }
+        addCraftingSlots();
 
-        if(this.tileEntity.backpackFluidUpgrades.fluid_tank) {
-            addFluidSlots();
-            addDataSlots(fluidData);
-        }
+        addFluidSlots();
+        addDataSlots(fluidData);
 
+        if (this.tileEntity.isHeld()) {
+            InteractionHand hand = this.tileEntity.getHeldHand();
+            this.lockedInvIndex = hand == null ? -1 : hand == InteractionHand.MAIN_HAND ? inv.selected : Inventory.SLOT_OFFHAND;
+            for (Slot slot : this.slots) {
+                if (slot.container == inv && slot.getContainerSlot() == this.lockedInvIndex) {
+                    this.lockedSlot = slot.index;
+                    break;
+                }
+            }
+            addDataSlots(new ContainerData() {
+                @Override
+                public int get(int index) {
+                    return tileEntity.getSyncedState(index);
+                }
+
+                @Override
+                public void set(int index, int value) {
+                    tileEntity.applySyncedState(index, value);
+                }
+
+                @Override
+                public int getCount() {
+                    return BackpackBlockEntity.SYNCED_STATE_COUNT;
+                }
+            });
+        }
     }
 
-    protected int getSlotStart(int originSlot, int slotStart, boolean reverse) {
-        return slotStart;
+    @Override
+    public void clicked(int slotId, int button, ClickType clickType, Player player) {
+        if (this.tileEntity.isHeld() && this.lockedSlot >= 0 && (slotId == this.lockedSlot || (clickType == ClickType.SWAP && button == this.lockedInvIndex))) {
+            return;
+        }
+        super.clicked(slotId, button, clickType, player);
     }
 
-    protected int getSlotRange(int originSlot, int slotRange, boolean reverse) {
-        return slotRange;
+    private boolean hasCrafting() {
+        return this.tileEntity.getBackpackUpgrades().crafting;
+    }
+
+    private boolean isUpgradePanelOpen() {
+        return this.tileEntity.getBackpackSettings().upgrade;
     }
 
     @Override
     public ItemStack quickMoveStack(Player playerIn, int pIndex) {
-        ItemStack stack = ItemStack.EMPTY;
-        Slot slot = slots.get(pIndex);
-        int slots = getStorageSize();
-
-        if(slot != null && slot.hasItem()) {
-            ItemStack stackInSlot = slot.getItem().copy();
-            stack = stackInSlot.copy();
-
-            if(pIndex < slots) { // Click in tile -> player inventory
-                if(!moveItemStackTo(stackInSlot, getSlotStart(pIndex, slots, true), getSlotRange(pIndex, this.slots.size(), true), true)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if(!moveItemStackTo(stackInSlot, getSlotStart(pIndex, 0, false), getSlotRange(pIndex, slots, false), false)) { // Click in player inventory -> tile
-                return ItemStack.EMPTY;
-            }
-
-            if(stackInSlot.getCount() == 0) {
-                slot.set(ItemStack.EMPTY);
-            } else {
-                slot.set(stackInSlot);
-            }
-
-            if(stackInSlot.getCount() == stack.getCount()) {
-                return ItemStack.EMPTY;
-            }
-
-            slot.onTake(player, stackInSlot);
+        Slot slot = this.slots.get(pIndex);
+        if (slot == null || !slot.hasItem() || !slot.isActive()) {
+            return ItemStack.EMPTY;
         }
 
-        return stack;
+        ItemStack stackInSlot = slot.getItem();
+        ItemStack original = stackInSlot.copy();
+        int storageEnd = STORAGE_START + getStorageSize();
+
+        if (pIndex == CRAFT_RESULT_SLOT) {
+            this.access.execute((lvl, pos) -> stackInSlot.getItem().onCraftedBy(stackInSlot, lvl, playerIn));
+            if (!moveItemStackTo(stackInSlot, PLAYER_INV_START, PLAYER_INV_END, true)
+                    && !moveItemStackTo(stackInSlot, STORAGE_START, storageEnd, false)) {
+                return ItemStack.EMPTY;
+            }
+            slot.onQuickCraft(stackInSlot, original);
+        } else if (pIndex >= PLAYER_INV_START && pIndex < PLAYER_INV_END) { // Player inventory -> backpack
+            boolean moved = false;
+            if (isUpgradePanelOpen() && stackInSlot.is(TolkienTags.Items.UPGRADES)) {
+                moved = moveItemStackTo(stackInSlot, UPGRADE_START, UPGRADE_START + UPGRADE_SLOTS, false);
+            }
+            if (!moved && this.tileEntity.hasFluidTank() && stackInSlot.getItem() instanceof BucketItem) {
+                moved = moveItemStackTo(stackInSlot, FLUID_START, FLUID_START + FLUID_SLOTS, false);
+            }
+            if (!moved && !moveItemStackTo(stackInSlot, STORAGE_START, storageEnd, false)) {
+                return ItemStack.EMPTY;
+            }
+        } else if (!moveItemStackTo(stackInSlot, PLAYER_INV_START, PLAYER_INV_END, true)) { // Backpack -> player inventory
+            return ItemStack.EMPTY;
+        }
+
+        if (stackInSlot.isEmpty()) {
+            slot.setByPlayer(ItemStack.EMPTY);
+        } else {
+            slot.setChanged();
+        }
+
+        if (stackInSlot.getCount() == original.getCount()) {
+            return ItemStack.EMPTY;
+        }
+
+        slot.onTake(playerIn, stackInSlot);
+        if (pIndex == CRAFT_RESULT_SLOT) {
+            playerIn.drop(stackInSlot, false);
+        }
+
+        return original;
     }
 
     public int getStorageSize() {
-        if (this.tileEntity.getBackpackUpgrades().size_upgrade_2) {
-            return 72;
-        } else if (this.tileEntity.getBackpackUpgrades().size_upgrade) {
-            return 54;
-        }
-        return 27;
+        return this.tileEntity.getStorageSize();
     }
 
     @Override
     public boolean stillValid(Player player) {
+        if (this.tileEntity.isHeld()) {
+            InteractionHand hand = this.tileEntity.getHeldHand();
+            if (hand == null) {
+                return ModList.get().isLoaded("curios") && CuriosBackpackHelper.isWearing(player, this.tileEntity.getHeldStack());
+            }
+            return player.getItemInHand(hand) == this.tileEntity.getHeldStack();
+        }
         return true;
+    }
+
+    @Override
+    public void broadcastChanges() {
+        if (this.tileEntity.isHeld() && !this.level.isClientSide()) {
+            this.tileEntity.tickHeld();
+        }
+        // Hand back anything left in the crafting grid if the crafting upgrade was removed
+        if (!hasCrafting() && !this.craftSlots.isEmpty()) {
+            this.access.execute((lvl, pos) -> this.clearContainer(this.player, this.craftSlots));
+        }
+        super.broadcastChanges();
     }
 
     @Override
@@ -146,7 +245,17 @@ public class BackpackBlockContainer extends TolkienContainer{
                 int x = 65 + col * 18;
                 int y = 13 + row * 18;
 
-                this.addSlot(new BackpackItemStackHandler(itemHandler, slot_index, x, y));
+                this.addSlot(new BackpackItemStackHandler(itemHandler, slot_index, x, y) {
+                    @Override
+                    public boolean isActive() {
+                        return getContainerSlot() < getStorageSize();
+                    }
+
+                    @Override
+                    public boolean mayPlace(ItemStack stack) {
+                        return isActive() && !(stack.getItem() instanceof BackpackItem) && super.mayPlace(stack);
+                    }
+                });
                 slot_index++;
             }
         }
@@ -161,7 +270,17 @@ public class BackpackBlockContainer extends TolkienContainer{
                 int x = 237 + col * 18;
                 int y = 53 + row * 18;
 
-                this.addSlot(new UpgradeItemHandler(itemHandler, slot_index, x, y));
+                this.addSlot(new UpgradeItemHandler(itemHandler, slot_index, x, y) {
+                    @Override
+                    public boolean isActive() {
+                        return isUpgradePanelOpen();
+                    }
+
+                    @Override
+                    public boolean mayPlace(ItemStack stack) {
+                        return isActive() && super.mayPlace(stack);
+                    }
+                });
                 slot_index++;
             }
         }
@@ -172,7 +291,17 @@ public class BackpackBlockContainer extends TolkienContainer{
         this.addSlot(this.resultSlot);
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
-                this.addSlot(new Slot(this.craftSlots, j + i * 3, 2 + j * 18, 94 + i * 18));
+                this.addSlot(new Slot(this.craftSlots, j + i * 3, 2 + j * 18, 94 + i * 18) {
+                    @Override
+                    public boolean isActive() {
+                        return hasCrafting();
+                    }
+
+                    @Override
+                    public boolean mayPlace(ItemStack stack) {
+                        return isActive() && super.mayPlace(stack);
+                    }
+                });
             }
         }
     }
@@ -184,12 +313,15 @@ public class BackpackBlockContainer extends TolkienContainer{
     @Override
     public void removed(Player player) {
         super.removed(player);
+        if (this.tileEntity.isHeld()) {
+            this.tileEntity.saveToStack();
+        }
         this.access.execute((level, blockPos) -> this.clearContainer(player, this.craftSlots));
     }
 
     @Override
     public boolean canTakeItemForPickAll(ItemStack stack, Slot slot) {
-        return slot.container != this.resultSlots && super.canTakeItemForPickAll(stack, slot);
+        return slot.isActive() && slot.container != this.resultSlots && super.canTakeItemForPickAll(stack, slot);
     }
 
     private void slotChangedCraftingGrid(AbstractContainerMenu menu, Level level, Player player, CraftingContainer container, ResultContainer result) {
@@ -200,7 +332,7 @@ public class BackpackBlockContainer extends TolkienContainer{
             if (optional.isPresent()) {
                 RecipeHolder<CraftingRecipe> recipe = optional.get();
                 if (result.setRecipeUsed(level, serverPlayer, recipe)) {
-                    ItemStack stack2 = recipe.value().assemble(CraftingInput.of(3, 3, this.getItems()), level.registryAccess());
+                    ItemStack stack2 = recipe.value().assemble(container.asCraftInput(), level.registryAccess());
                     if (stack2.isItemEnabled(level.enabledFeatures())) {
                         stack1 = stack2;
                     }
@@ -215,7 +347,18 @@ public class BackpackBlockContainer extends TolkienContainer{
     /** Fluid Tank */
     public void addFluidSlots() {
         fluidHandler = tileEntity.getMachineHandler();
-        this.addSlot(new BucketItemHandler(fluidHandler, 0, 38, 11));
-        this.addSlot(new BucketItemHandler(fluidHandler, 1, 38, 58));
+        for (int i = 0; i < FLUID_SLOTS; i++) {
+            this.addSlot(new BucketItemHandler(fluidHandler, i, 38, i == 0 ? 11 : 58) {
+                @Override
+                public boolean isActive() {
+                    return tileEntity.hasFluidTank();
+                }
+
+                @Override
+                public boolean mayPlace(ItemStack stack) {
+                    return isActive() && super.mayPlace(stack);
+                }
+            });
+        }
     }
 }

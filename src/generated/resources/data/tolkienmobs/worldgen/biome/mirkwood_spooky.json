@@ -27,15 +27,17 @@
     [],
     [],
     [
-      "minecraft:patch_grass_forest",
       "minecraft:patch_large_fern",
       "minecraft:brown_mushroom_old_growth",
       "minecraft:red_mushroom_old_growth",
+      "minecraft:patch_grass_forest",
       "tolkienmobs:flower_mirkwood_placed",
-      "tolkienmobs:mirkwood_fallen_log",
       "tolkienmobs:mirkwood_fallen_leaves",
-      "tolkienmobs:webs",
+      "tolkienmobs:mirkwood_fallen_log",
       "tolkienmobs:stumps"
+    ],
+    [
+      "tolkienmobs:webs"
     ]
   ],
   "has_precipitation": true,
@@ -93,5 +95,5 @@
     "water_ambient": [],
     "water_creature": []
   },
-  "temperature": 0.25
+  "temperature": 0.7
 }

@@ -10,8 +10,6 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.Set;
 
-// An example config class. This is not required, but it's a good idea to have one to keep your config organized.
-// Demonstrates how to use Neo's config APIs
 @EventBusSubscriber(modid = TolkienMobsMain.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class TolkienMobsConfig {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
@@ -49,6 +47,10 @@ public class TolkienMobsConfig {
             .comment("Range per level for Dwarven Mining Enchant.  Default is 1 (3x3)")
             .defineInRange("number_of_blocks", 9, 9, 81);
 
+    private static final ModConfigSpec.IntValue TRINKET_REPAIR_AMOUNT = BUILDER
+            .comment("Damage the trinket table undoes for one ammolite gem and one repair material (Default 1000)")
+            .defineInRange("trinket_repair_amount", 1000, 1, 1000000);
+
     private static final ModConfigSpec.IntValue PICKUP_RANGE = BUILDER
             .comment("Range of pickup for Hobbit Ring")
             .defineInRange("pickupRange", 7, 0, Integer.MAX_VALUE);
@@ -76,6 +78,7 @@ public class TolkienMobsConfig {
     public static int growthRange;
     public static int growthTimer;
     public static int homeRadius;
+    public static int trinketRepairAmount;
     public static Set<Item> item;
 
     private static boolean validateItemName(final Object obj)
@@ -93,6 +96,7 @@ public class TolkienMobsConfig {
         growthRange = GROWTH_RANGE.get();
         growthTimer = GROW_TIMER.get();
         homeRadius = HOME_RADIUS.get();
+        trinketRepairAmount = TRINKET_REPAIR_AMOUNT.get();
         distanceCost = DISTANCE_COST.get();
         dimensionCost = DIMENSION_COST.get();
         paymentType = PAYMENT_TYPE.get();

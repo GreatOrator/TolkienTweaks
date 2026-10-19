@@ -1,6 +1,6 @@
 {
   "type": "neoforge:add_features",
   "biomes": "tolkienmobs:fangorn_forest",
-  "features": "tolkienmobs:fangornoak_placed",
+  "features": "tolkienmobs:hardened_fangornoak_placed",
   "step": "vegetal_decoration"
 }

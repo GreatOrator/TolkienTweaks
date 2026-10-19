@@ -46,7 +46,24 @@ public class TolkienItems {
     public static final DeferredItem<Item> GEM_AMMOLITE = ITEMS.register("gem_ammolite",
             () -> new TolkienItem(new Item.Properties().stacksTo(16)).setEffectOverride());
 
-        // Boats
+        // Signs
+    public static final DeferredItem<Item> MALLORN_HANGING_SIGN = ITEMS.register("hanging_sign_mallorn", () -> new HangingSignItem(TolkienBlocks.MALLORN_HANGING_SIGN.get(), TolkienBlocks.MALLORN_HANGING_WALL_SIGN.get(), new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<Item> MALLORN_SIGN = ITEMS.register("sign_mallorn", () -> new SignItem(new Item.Properties().stacksTo(16), TolkienBlocks.MALLORN_SIGN.get(), TolkienBlocks.MALLORN_WALL_SIGN.get()));
+    public static final DeferredItem<Item> MIRKWOOD_HANGING_SIGN = ITEMS.register("hanging_sign_mirkwood", () -> new HangingSignItem(TolkienBlocks.MIRKWOOD_HANGING_SIGN.get(), TolkienBlocks.MIRKWOOD_HANGING_WALL_SIGN.get(), new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<Item> MIRKWOOD_SIGN = ITEMS.register("sign_mirkwood", () -> new SignItem(new Item.Properties().stacksTo(16), TolkienBlocks.MIRKWOOD_SIGN.get(), TolkienBlocks.MIRKWOOD_WALL_SIGN.get()));
+    public static final DeferredItem<Item> CULUMALDA_HANGING_SIGN = ITEMS.register("hanging_sign_culumalda", () -> new HangingSignItem(TolkienBlocks.CULUMALDA_HANGING_SIGN.get(), TolkienBlocks.CULUMALDA_HANGING_WALL_SIGN.get(), new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<Item> CULUMALDA_SIGN = ITEMS.register("sign_culumalda", () -> new SignItem(new Item.Properties().stacksTo(16), TolkienBlocks.CULUMALDA_SIGN.get(), TolkienBlocks.CULUMALDA_WALL_SIGN.get()));
+    public static final DeferredItem<Item> LEBETHRON_HANGING_SIGN = ITEMS.register("hanging_sign_lebethron", () -> new HangingSignItem(TolkienBlocks.LEBETHRON_HANGING_SIGN.get(), TolkienBlocks.LEBETHRON_HANGING_WALL_SIGN.get(), new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<Item> LEBETHRON_SIGN = ITEMS.register("sign_lebethron", () -> new SignItem(new Item.Properties().stacksTo(16), TolkienBlocks.LEBETHRON_SIGN.get(), TolkienBlocks.LEBETHRON_WALL_SIGN.get()));
+    public static final DeferredItem<Item> FANGORNOAK_HANGING_SIGN = ITEMS.register("hanging_sign_fangornoak", () -> new HangingSignItem(TolkienBlocks.FANGORNOAK_HANGING_SIGN.get(), TolkienBlocks.FANGORNOAK_HANGING_WALL_SIGN.get(), new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<Item> FANGORNOAK_SIGN = ITEMS.register("sign_fangornoak", () -> new SignItem(new Item.Properties().stacksTo(16), TolkienBlocks.FANGORNOAK_SIGN.get(), TolkienBlocks.FANGORNOAK_WALL_SIGN.get()));
+    public static final DeferredItem<Item> DEADWOOD_HANGING_SIGN = ITEMS.register("hanging_sign_deadwood", () -> new HangingSignItem(TolkienBlocks.DEADWOOD_HANGING_SIGN.get(), TolkienBlocks.DEADWOOD_HANGING_WALL_SIGN.get(), new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<Item> DEADWOOD_SIGN = ITEMS.register("sign_deadwood", () -> new SignItem(new Item.Properties().stacksTo(16), TolkienBlocks.DEADWOOD_SIGN.get(), TolkienBlocks.DEADWOOD_WALL_SIGN.get()));
+    public static final DeferredItem<Item> DWARVEN_MAPLE_HANGING_SIGN = ITEMS.register("hanging_sign_dwarven_maple", () -> new HangingSignItem(TolkienBlocks.DWARVEN_MAPLE_HANGING_SIGN.get(), TolkienBlocks.DWARVEN_MAPLE_HANGING_WALL_SIGN.get(), new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<Item> DWARVEN_MAPLE_SIGN = ITEMS.register("sign_dwarven_maple", () -> new SignItem(new Item.Properties().stacksTo(16), TolkienBlocks.DWARVEN_MAPLE_SIGN.get(), TolkienBlocks.DWARVEN_MAPLE_WALL_SIGN.get()));
+
+
+    // Boats
     public static final DeferredItem<Item> MALLORN_BOAT = ITEMS.register("boat_mallorn", () -> new MallornBoatItem(false, new Item.Properties().stacksTo(1), TolkienWoodTypes.MALLORN));
     public static final DeferredItem<Item> MALLORN_CHEST_BOAT = ITEMS.register("chest_boat_mallorn", () -> new MallornBoatItem(true, new Item.Properties().stacksTo(1), TolkienWoodTypes.MALLORN));
     public static final DeferredItem<Item> MIRKWOOD_BOAT = ITEMS.register("boat_mirkwood", () -> new MirkwoodBoatItem(false, new Item.Properties().stacksTo(1), TolkienWoodTypes.MIRKWOOD));
@@ -313,9 +330,9 @@ public class TolkienItems {
     public static final DeferredItem<HoeItem> HOE_MORGULIRON = ITEMS.register("hoe_morguliron", () -> new TolkienHoeItem(TolkienToolMaterials.MORGULIRON, new Item.Properties().attributes(TolkienHoeItem.createAttributes(TolkienToolMaterials.MORGULIRON, 8, -2.0F))));
     public static final DeferredItem<HoeItem> HOE_AMMOLITE = ITEMS.register("hoe_ammolite", () -> new TolkienHoeItem(TolkienToolMaterials.AMMOLITE, new Item.Properties().attributes(TolkienHoeItem.createAttributes(TolkienToolMaterials.AMMOLITE, 9, -0.5F))).setEffectOverride());
 
-    public static final DeferredItem<ShearsItem> SHEARS_MITHRIL = ITEMS.register("shears_mithril", () -> new TolkienShearsItem(new Item.Properties().durability(512).component(DataComponents.TOOL, TolkienShearsItem.createToolProperties())));
-    public static final DeferredItem<ShearsItem> SHEARS_MORGULIRON = ITEMS.register("shears_morguliron", () -> new TolkienShearsItem(new Item.Properties().durability(320).component(DataComponents.TOOL, TolkienShearsItem.createToolProperties())));
-    public static final DeferredItem<ShearsItem> SHEARS_AMMOLITE = ITEMS.register("shears_ammolite", () -> new TolkienShearsItem(new Item.Properties().durability(768).component(DataComponents.TOOL, TolkienShearsItem.createToolProperties())).setEffectOverride());
+    public static final DeferredItem<ShearsItem> SHEARS_MITHRIL = ITEMS.register("shears_mithril", () -> new TolkienShearsItem(TolkienToolMaterials.MITHRIL, new Item.Properties().durability(512).component(DataComponents.TOOL, TolkienShearsItem.createToolProperties())));
+    public static final DeferredItem<ShearsItem> SHEARS_MORGULIRON = ITEMS.register("shears_morguliron", () -> new TolkienShearsItem(TolkienToolMaterials.MORGULIRON, new Item.Properties().durability(320).component(DataComponents.TOOL, TolkienShearsItem.createToolProperties())));
+    public static final DeferredItem<ShearsItem> SHEARS_AMMOLITE = ITEMS.register("shears_ammolite", () -> new TolkienShearsItem(TolkienToolMaterials.AMMOLITE, new Item.Properties().durability(768).component(DataComponents.TOOL, TolkienShearsItem.createToolProperties())).setEffectOverride());
 
     public static final DeferredItem<SwordItem> SWORD_WITCHKING = ITEMS.register("sword_witchking", () -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, new Item.Properties().attributes(TolkienSwordItem.createAttributes(TolkienToolMaterials.MORGULIRON, 9, -0.5F))).setEffectOverride().setHasLore());
     public static final DeferredItem<SwordItem> SWORD_URUK = ITEMS.register("sword_uruk", () -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, new Item.Properties().attributes(TolkienSwordItem.createAttributes(TolkienToolMaterials.MORGULIRON, 11, -0.5F))).setEffectOverride().setHasLore());
@@ -330,6 +347,7 @@ public class TolkienItems {
     public static final DeferredItem<Item> ITEM_DEV_DEBUG_TOOL = ITEMS.register("item_dev_debug_tool", () -> new TolkienItem(new Item.Properties().stacksTo(1)).setEffectOverride().setHasLore());
     public static final DeferredItem<Item> ARDA_STAFF = ITEMS.register("arda_staff", () -> new CatalystItem(new Item.Properties().stacksTo(1).rarity(Rarity.RARE)).setHasLore());
     public static final DeferredItem<Item> MORGUL_CRYSTAL = ITEMS.register("morgul_crystal", () -> new MorgulCrystalItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> RING_OF_HOPE = ITEMS.register("ring_of_hope", () -> new TolkienItem(new Item.Properties().stacksTo(1)).setEffectOverride().setHasLore());
 
         // Projectiles
     public static final DeferredItem<Item> BOULDER = ITEMS.register("ammo_boulder", () -> new BoulderItem(new Item.Properties().stacksTo(16)));

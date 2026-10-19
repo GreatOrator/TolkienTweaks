@@ -13,25 +13,73 @@ tasks.named('wrapper', Wrapper).configure {
     distributionType = Wrapper.DistributionType.BIN
 }
 
-version = mod_version
+def buildNum = project.hasProperty('currentBuildNumber') ? project.property('currentBuildNumber') : '0'
+project.ext.mod_version = "4.3.${buildNum}"
+version = project.ext.mod_version
 group = mod_group_id
+
+tasks.register("incrementBuildNumber") {
+    group = "versioning"
+    description = "Increments the app build number and logs to changelog"
+
+    doLast {
+        def propsFile = file("gradle.properties")
+        if (propsFile.canRead()) {
+            def props = new Properties()
+            propsFile.withInputStream { props.load(it) }
+
+            // 1. Calculate the new numbers
+            int oldBuild = (props.getProperty("currentBuildNumber") ?: "0").toInteger()
+            int nextBuild = oldBuild + 1
+            props.setProperty("currentBuildNumber", nextBuild.toString())
+            propsFile.withWriter { props.store(it, "Auto-incremented by Gradle build") }
+
+            // 2. Automate Local CHANGELOG tracking
+            def changelogFile = file("CHANGELOG.md")
+            if (changelogFile.exists()) {
+                // Correct Java format pattern for YYYY-MM-DD (Note: Use uppercase MM and lowercase dd)
+                def date = new java.text.SimpleDateFormat("yyyy-MM-dd").format(new Date())
+                def oldContent = changelogFile.text
+
+                // 💡 Prepends the entry with the full version: ## [4.3.X] - YYYY-MM-DD
+                def newEntry = "## [4.3.${nextBuild}] - ${date}\n* Structural mod updates and compilation builds\n\n"
+
+                // Inject the entry right underneath the description banner header
+                def updatedContent = oldContent.replace(
+                        "All notable changes to this project will be documented in this file.\n",
+                        "All notable changes to this project will be documented in this file.\n\n${newEntry}"
+                )
+                changelogFile.text = updatedContent
+            }
+
+            println "🚀 App version rolled up to: 4.3.${nextBuild} (Local Changelog Tracked!)"
+        } else {
+            throw new GradleException("Could not read gradle.properties!")
+        }
+    }
+}
 
 repositories {
     mavenLocal()
+    maven {
+        name = 'TerraBlender'
+        url = 'https://maven.minecraftforge.net'
+        content { includeGroup 'com.github.glitchfiend' }
+    }
 
     maven { //Patchouli && JEI
-        url 'https://maven.blamejared.com'
+        url = 'https://maven.blamejared.com'
         content {
             includeGroup "mezz.jei"
         }
     }
     maven {
-        name = "OctoStudios" //Curios
-        url = uri("https://maven.octo-studios.com/releases")
+        name = "TheIllusiveC4" //Curios
+        url = uri("https://maven.theillusivec4.top/")
     }
     maven {
         name = 'GeckoLib'
-        url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+        url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
         content {
             includeGroup("software.bernie.geckolib")
         }
@@ -64,13 +112,13 @@ neoForge {
             client()
 
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            systemProperty 'neoforge.enabledGameTestNamespaces', providers.gradleProperty('gameTestNamespaces').getOrElse(project.mod_id + ',tolkienmobs_flight,tolkienmobs_mining,tolkienmobs_villages,tolkienmobs_coins,tolkienmobs_fellbeast')
         }
 
         server {
             server()
             programArgument '--nogui'
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            systemProperty 'neoforge.enabledGameTestNamespaces', providers.gradleProperty('gameTestNamespaces').getOrElse(project.mod_id + ',tolkienmobs_flight,tolkienmobs_mining,tolkienmobs_villages,tolkienmobs_coins,tolkienmobs_fellbeast')
         }
 
         // This run config launches GameTestServer and runs all registered gametests, then exits.
@@ -78,7 +126,7 @@ neoForge {
         // The gametest system is also enabled by default for other run configs under the /test command.
         gameTestServer {
             type = "gameTestServer"
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            systemProperty 'neoforge.enabledGameTestNamespaces', providers.gradleProperty('gameTestNamespaces').getOrElse(project.mod_id + ',tolkienmobs_flight,tolkienmobs_mining,tolkienmobs_villages,tolkienmobs_coins,tolkienmobs_fellbeast')
         }
 
         data {
@@ -130,6 +178,7 @@ configurations {
 }
 
 dependencies {
+    implementation "com.github.glitchfiend:TerraBlender-neoforge:${minecraft_version}-${terrablender_version}"
     // Example optional mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
     compileOnly "mezz.jei:jei-${jei_mc_version}-common-api:${jei_version}"
@@ -192,13 +241,20 @@ publishing {
     }
     repositories {
         maven {
-            url "file://${project.projectDir}/repo"
+            url = "file://${project.projectDir}/repo"
         }
     }
 }
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
+// The build number is bumped only when a distributable jar is produced, so that
+// loading the game for testing (runClient, runServer, runData) never rewrites
+// gradle.properties or CHANGELOG.md.
+tasks.named('jar').configure {
+    dependsOn incrementBuildNumber
 }
 
 // IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.

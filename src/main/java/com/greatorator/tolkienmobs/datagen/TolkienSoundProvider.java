@@ -202,7 +202,7 @@ public class TolkienSoundProvider extends SoundDefinitionsProvider {
         String[] splitSoundName = event.getId().getPath().split("\\.", 3);
         String subtitleKey = "subtitles.tolkienmobs." + splitSoundName[0] + "." + splitSoundName[2];
         definition.subtitle(subtitleKey);
-        TolkienLangProvider.SUBTITLE_GENERATOR.put(subtitleKey, subtitle);
+        TolkienLangProviderUS.SUBTITLE_GENERATOR.put(subtitleKey, subtitle);
     }
 
     @Nonnull

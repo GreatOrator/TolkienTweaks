@@ -88,12 +88,18 @@ public class TolkienEntities {
     public static final Supplier<EntityType<HobbitEntity>> ENTITY_TTM_HOBBIT =
             ENTITY_TYPES.register("entityttmhobbit", () -> EntityType.Builder.of(HobbitEntity::new, MobCategory.MISC)
                     .sized(0.35F, 1.4F).build("entityttmhobbit"));
-    public static final Supplier<EntityType<SouthronEntity>> ENTITY_TTM_SOUTHRON =
-            ENTITY_TYPES.register("entityttmsouthron", () -> EntityType.Builder.of(SouthronEntity::new, MobCategory.MISC)
+    public static final Supplier<EntityType<SouthronTraderEntity>> ENTITY_TTM_SOUTHRON =
+            ENTITY_TYPES.register("entityttmsouthron", () -> EntityType.Builder.of(SouthronTraderEntity::new, MobCategory.MISC)
                     .sized(0.5F, 2.0F).build("entityttmsouthron"));
     public static final Supplier<EntityType<OrcTraderEntity>> ENTITY_TTM_ORC_TRADER =
             ENTITY_TYPES.register("entityttmorc_trader", () -> EntityType.Builder.of(OrcTraderEntity::new, MobCategory.MISC)
                     .sized(0.5F, 2.0F).build("entityttmorc_trader"));
+    public static final Supplier<EntityType<OrcEntity>> ENTITY_TTM_ORC =
+            ENTITY_TYPES.register("entityttmorc", () -> EntityType.Builder.of(OrcEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 2.0F).build("entityttmorc"));
+    public static final Supplier<EntityType<SouthronEntity>> ENTITY_TTM_SOUTHRON_NPC =
+            ENTITY_TYPES.register("entityttmsouthron_npc", () -> EntityType.Builder.of(SouthronEntity::new, MobCategory.MISC)
+                    .sized(0.5F, 2.0F).build("entityttmsouthron_npc"));
 
         // Hostile
     public static final Supplier<EntityType<BarrowWightEntity>> ENTITY_TTM_BARROW =
@@ -104,6 +110,9 @@ public class TolkienEntities {
                     .sized(0.5f, 2.0f).build("entityttmoathbreaker"));
     public static final Supplier<EntityType<FellSpiritEntity>> ENTITY_TTM_FELLSPIRIT =
             ENTITY_TYPES.register("entityttmfellspirit", () -> EntityType.Builder.of(FellSpiritEntity::new, MobCategory.MONSTER)
+                    .sized(0.5f, 2.0f).build("entityttmfellspirit"));
+    public static final Supplier<EntityType<EnragedFellSpiritEntity>> ENTITY_TTM_ENRAGED_FELLSPIRIT =
+            ENTITY_TYPES.register("entityttmenragedfellspirit", () -> EntityType.Builder.of(EnragedFellSpiritEntity::new, MobCategory.MONSTER)
                     .sized(0.5f, 2.0f).build("entityttmfellspirit"));
     public static final Supplier<EntityType<BrigandEntity>> ENTITY_TTM_BRIGAND =
             ENTITY_TYPES.register("entityttmbrigand", () -> EntityType.Builder.of(BrigandEntity::new, MobCategory.MONSTER)
@@ -333,6 +342,12 @@ public class TolkienEntities {
     public static final DeferredItem<Item> EGG_TTMORC_TRADER = SPAWN_EGGS.register("entityttmorc_trader_spawn_egg",
             () -> new DeferredSpawnEggItem(ENTITY_TTM_ORC_TRADER, 15186506, 16739362,
                     new Item.Properties()));
+    public static final DeferredItem<Item> EGG_TTMORC = SPAWN_EGGS.register("entityttmorc_spawn_egg",
+            () -> new DeferredSpawnEggItem(ENTITY_TTM_ORC, 15186506, 9467561,
+                    new Item.Properties()));
+    public static final DeferredItem<Item> EGG_TTMSOUTHRON_NPC = SPAWN_EGGS.register("entityttmsouthron_npc_spawn_egg",
+            () -> new DeferredSpawnEggItem(ENTITY_TTM_SOUTHRON_NPC, 15186506, 12198412,
+                    new Item.Properties()));
 
         // Hostile
     public static final DeferredItem<Item> EGG_TTMBARROW = SPAWN_EGGS.register("entityttmbarrow_spawn_egg",
@@ -343,6 +358,9 @@ public class TolkienEntities {
                     new Item.Properties()));
     public static final DeferredItem<Item> EGG_TTMFELLSPIRIT = SPAWN_EGGS.register("entityttmfellspirit_spawn_egg",
             () -> new DeferredSpawnEggItem(ENTITY_TTM_FELLSPIRIT, 585619, 7405383,
+                    new Item.Properties()));
+    public static final DeferredItem<Item> EGG_TTMENRAGEDFELLSPIRIT = SPAWN_EGGS.register("entityttmenragedfellspirit_spawn_egg",
+            () -> new DeferredSpawnEggItem(ENTITY_TTM_ENRAGED_FELLSPIRIT, 585619, 9649602,
                     new Item.Properties()));
     public static final DeferredItem<Item> EGG_TTMBRIGAND = SPAWN_EGGS.register("entityttmbrigand_spawn_egg",
             () -> new DeferredSpawnEggItem(ENTITY_TTM_BRIGAND, 585619, 14289362,

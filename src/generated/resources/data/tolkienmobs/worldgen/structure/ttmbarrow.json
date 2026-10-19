@@ -1,0 +1,12 @@
+{
+  "type": "tolkienmobs:template_layout",
+  "biomes": "#tolkienmobs:has_structure/ttmbarrow",
+  "circle": true,
+  "gap_max": 3,
+  "gap_min": 1,
+  "max_count": 5,
+  "spawn_overrides": {},
+  "start_pool": "tolkienmobs:ttmbarrow",
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
+}

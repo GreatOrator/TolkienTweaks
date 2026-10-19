@@ -183,6 +183,8 @@ public class TolkienItemTagProvider extends ItemTagsProvider {
                 .add(TolkienItems.TRINKET_CLOAK.get());
         tag(TolkienTags.Items.CURIOS_HEAD)
                 .add(TolkienItems.TRINKET_HAT.get());
+        tag(TolkienTags.Items.CURIOS_BACK)
+                .add(TolkienBlocks.BACKPACK_ITEM.get());
         tag(TolkienTags.Items.CANNOT_AUTO_CONSUME)
                 .add(Items.CHORUS_FRUIT)
                 .add(Items.ENCHANTED_GOLDEN_APPLE)

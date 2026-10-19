@@ -39,7 +39,7 @@ public class RatEntity extends TolkienAmbientEntity implements GeoEntity {
     private static final EntityDataAccessor<Integer> VARIANT =
             SynchedEntityData.defineId(RatEntity.class, EntityDataSerializers.INT);
 
-    public RatEntity(EntityType<? extends Animal> entityType, Level level) {
+    public RatEntity(EntityType<? extends TamableAnimal> entityType, Level level) {
         super(entityType, level);
     }
 

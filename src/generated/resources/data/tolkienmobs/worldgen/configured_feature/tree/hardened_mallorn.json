@@ -1,0 +1,112 @@
+{
+  "type": "minecraft:tree",
+  "config": {
+    "decorators": [
+      {
+        "type": "tolkienmobs:tree_roots",
+        "additional_random_strands": 1,
+        "base_strand_count": 3,
+        "ground_roots_provider": {
+          "type": "minecraft:weighted_state_provider",
+          "entries": [
+            {
+              "data": {
+                "Name": "tolkienmobs:living_roots"
+              },
+              "weight": 6
+            },
+            {
+              "data": {
+                "Name": "tolkienmobs:living_roots"
+              },
+              "weight": 1
+            }
+          ]
+        },
+        "rootPenetrability": 1,
+        "root_length": 5,
+        "y_offset": 0
+      },
+      {
+        "type": "tolkienmobs:trunkside_decorator",
+        "deco_provider": {
+          "type": "minecraft:simple_state_provider",
+          "state": {
+            "Name": "tolkienmobs:lightningbug",
+            "Properties": {
+              "facing": "up",
+              "waterlogged": "false"
+            }
+          }
+        },
+        "placement_count": 2,
+        "probability_of_placement": 1.0
+      }
+    ],
+    "dirt_provider": {
+      "type": "minecraft:simple_state_provider",
+      "state": {
+        "Name": "minecraft:grass_block",
+        "Properties": {
+          "snowy": "false"
+        }
+      }
+    },
+    "foliage_placer": {
+      "type": "minecraft:fancy_foliage_placer",
+      "height": 4,
+      "offset": 4,
+      "radius": 4
+    },
+    "foliage_provider": {
+      "type": "minecraft:simple_state_provider",
+      "state": {
+        "Name": "tolkienmobs:hardened_leaves_mallorn"
+      }
+    },
+    "force_dirt": false,
+    "ignore_vines": false,
+    "minimum_size": {
+      "type": "minecraft:three_layers_feature_size",
+      "limit": 5,
+      "lower_size": 0,
+      "middle_size": 1,
+      "upper_limit": 1,
+      "upper_size": 2
+    },
+    "trunk_placer": {
+      "type": "tolkienmobs:branching_large_trunk_placer",
+      "base_height": 10,
+      "branch_config": {
+        "branch_provider": {
+          "type": "minecraft:simple_state_provider",
+          "state": {
+            "Name": "tolkienmobs:wood_mallorn",
+            "Properties": {
+              "axis": "y"
+            }
+          }
+        },
+        "count_minimum": 4,
+        "downwards_pitch": 0.23,
+        "length": 10.0,
+        "random_add_count": 1,
+        "random_add_length": 4.0,
+        "spacing_yaw": 0.23
+      },
+      "branch_start_offset_down": 5,
+      "height_rand_a": 3,
+      "height_rand_b": 3,
+      "perpendicular_branches": false
+    },
+    "trunk_provider": {
+      "type": "minecraft:simple_state_provider",
+      "state": {
+        "Name": "tolkienmobs:wood_mallorn",
+        "Properties": {
+          "axis": "y"
+        }
+      }
+    }
+  }
+}

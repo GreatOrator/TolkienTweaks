@@ -8,13 +8,13 @@
   },
   "downfall": 0.4,
   "effects": {
-    "ambient_sound": "minecraft:ambient.soul_sand_valley.mood",
+    "ambient_sound": "tolkienmobs:ambient.tolkienmobs.medievalcity",
     "fog_color": 12638463,
     "foliage_color": 14596231,
     "grass_color": 14596231,
-    "sky_color": 8168703,
-    "water_color": 14596231,
-    "water_fog_color": 2302743
+    "sky_color": 7907327,
+    "water_color": 329011,
+    "water_fog_color": 10518688
   },
   "features": [
     [],
@@ -27,11 +27,18 @@
       "minecraft:monster_room",
       "minecraft:monster_room_deep"
     ],
-    [
-      "tolkienmobs:random_rubble"
-    ],
+    [],
     [],
     [
+      "minecraft:ore_dirt",
+      "minecraft:ore_gravel",
+      "minecraft:ore_granite_upper",
+      "minecraft:ore_granite_lower",
+      "minecraft:ore_diorite_upper",
+      "minecraft:ore_diorite_lower",
+      "minecraft:ore_andesite_upper",
+      "minecraft:ore_andesite_lower",
+      "minecraft:ore_tuff",
       "minecraft:ore_coal_upper",
       "minecraft:ore_coal_lower",
       "minecraft:ore_iron_upper",
@@ -49,22 +56,13 @@
       "minecraft:ore_lapis_buried",
       "minecraft:ore_copper",
       "minecraft:underwater_magma",
-      "minecraft:ore_dirt",
-      "minecraft:ore_gravel",
-      "minecraft:ore_granite_upper",
-      "minecraft:ore_granite_lower",
-      "minecraft:ore_diorite_upper",
-      "minecraft:ore_diorite_lower",
-      "minecraft:ore_andesite_upper",
-      "minecraft:ore_andesite_lower",
-      "minecraft:ore_tuff",
       "tolkienmobs:legacy_coal_ore",
-      "tolkienmobs:legacy_iron_ore",
-      "tolkienmobs:legacy_gold_ore",
-      "tolkienmobs:legacy_redstone_ore",
+      "tolkienmobs:legacy_copper_ore",
       "tolkienmobs:legacy_diamond_ore",
+      "tolkienmobs:legacy_gold_ore",
+      "tolkienmobs:legacy_iron_ore",
       "tolkienmobs:legacy_lapis_ore",
-      "tolkienmobs:legacy_copper_ore"
+      "tolkienmobs:legacy_redstone_ore"
     ],
     [],
     [
@@ -72,14 +70,15 @@
       "minecraft:spring_lava"
     ],
     [
+      "minecraft:glow_lichen",
       "minecraft:trees_badlands",
+      "minecraft:patch_grass_badlands",
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
-      "minecraft:patch_grass_badlands",
       "minecraft:patch_sugar_cane_badlands",
       "minecraft:patch_pumpkin",
       "minecraft:patch_cactus_decorated",
-      "minecraft:glow_lichen"
+      "tolkienmobs:random_rubble"
     ]
   ],
   "has_precipitation": true,

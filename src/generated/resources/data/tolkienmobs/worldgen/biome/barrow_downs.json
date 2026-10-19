@@ -6,7 +6,7 @@
     "fog_color": 11119017,
     "foliage_color": 14481884,
     "grass_color": 14481884,
-    "sky_color": 7907327,
+    "sky_color": 8233983,
     "water_color": 808080,
     "water_fog_color": 5541815
   },
@@ -19,12 +19,12 @@
     [],
     [
       "tolkienmobs:legacy_coal_ore",
-      "tolkienmobs:legacy_iron_ore",
-      "tolkienmobs:legacy_gold_ore",
-      "tolkienmobs:legacy_redstone_ore",
+      "tolkienmobs:legacy_copper_ore",
       "tolkienmobs:legacy_diamond_ore",
+      "tolkienmobs:legacy_gold_ore",
+      "tolkienmobs:legacy_iron_ore",
       "tolkienmobs:legacy_lapis_ore",
-      "tolkienmobs:legacy_copper_ore"
+      "tolkienmobs:legacy_redstone_ore"
     ],
     [],
     [],
@@ -33,6 +33,7 @@
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
       "tolkienmobs:deadwood_fallen_log",
+      "tolkienmobs:rockpile",
       "tolkienmobs:stumps"
     ]
   ],

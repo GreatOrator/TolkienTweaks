@@ -73,7 +73,6 @@ public class MCDataInputStream implements MCDataInput {
         }
     }
 
-    @Override
     public long readLong() {
         try {
             return in.readLong();

@@ -180,6 +180,8 @@ public class TolkienTabs {
                     .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_food"))
                     .title(Component.translatable("itemgroup.tolkienmobs.function"))
                     .displayItems((itemDisplayParameters, output) -> {
+                        output.accept(TolkienBlocks.ANCIENT_WATCHER);
+                        output.accept(TolkienBlocks.ANCIENT_DEAD_WATCHER);
                         output.accept(TolkienBlocks.TRINKET_TABLE);
                         output.accept(TolkienBlocks.FIREPLACE);
                         output.accept(TolkienBlocks.PIGGYBANK);
@@ -768,12 +770,17 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.SAPLING_DEADWOOD);
                         output.accept(TolkienBlocks.SAPLING_DWARVEN_MAPLE);
                         output.accept(TolkienBlocks.LEAVES_MALLORN);
+                        output.accept(TolkienBlocks.HARDENED_LEAVES_MALLORN);
                         output.accept(TolkienBlocks.LEAVES_MIRKWOOD);
                         output.accept(TolkienBlocks.HARDENED_LEAVES_MIRKWOOD);
                         output.accept(TolkienBlocks.LEAVES_CULUMALDA);
+                        output.accept(TolkienBlocks.HARDENED_LEAVES_CULUMALDA);
                         output.accept(TolkienBlocks.LEAVES_LEBETHRON);
+                        output.accept(TolkienBlocks.HARDENED_LEAVES_LEBETHRON);
                         output.accept(TolkienBlocks.LEAVES_FANGORNOAK);
+                        output.accept(TolkienBlocks.HARDENED_LEAVES_FANGORNOAK);
                         output.accept(TolkienBlocks.LEAVES_DWARVEN_MAPLE);
+                        output.accept(TolkienBlocks.HARDENED_LEAVES_DWARVEN_MAPLE);
                         output.accept(TolkienBlocks.LEAFPILE_MALLORN);
                         output.accept(TolkienBlocks.LEAFPILE_MIRKWOOD);
                         output.accept(TolkienBlocks.LEAFPILE_CULUMALDA);
@@ -819,6 +826,7 @@ public class TolkienTabs {
                         output.accept(TolkienItems.COIN_POUCH);
                         output.accept(TolkienItems.KEY_RING);
                         output.accept(TolkienItems.HOBBIT_RING);
+                        output.accept(TolkienItems.RING_OF_HOPE);
                         output.accept(TolkienItems.SWORD_WITCHKING);
                         output.accept(TolkienItems.SWORD_URUK);
                         output.accept(TolkienItems.WHIP_FIRE);
@@ -993,6 +1001,8 @@ public class TolkienTabs {
                         output.accept(TolkienEntities.EGG_TTMHUMAN);
                         output.accept(TolkienEntities.EGG_TTMORC_TRADER);
                         output.accept(TolkienEntities.EGG_TTMSOUTHRON);
+                        output.accept(TolkienEntities.EGG_TTMORC);
+                        output.accept(TolkienEntities.EGG_TTMSOUTHRON_NPC);
 
                         output.accept(TolkienEntities.EGG_TTMBARROW);
                         output.accept(TolkienEntities.EGG_TTMBRIGAND);
@@ -1000,6 +1010,7 @@ public class TolkienTabs {
                         output.accept(TolkienEntities.EGG_TTMDUERGAR);
                         output.accept(TolkienEntities.EGG_TTMELEMENTALGOLEM);
                         output.accept(TolkienEntities.EGG_TTMFELLSPIRIT);
+                        output.accept(TolkienEntities.EGG_TTMENRAGEDFELLSPIRIT);
                         output.accept(TolkienEntities.EGG_TTMGOBLIN);
                         output.accept(TolkienEntities.EGG_TTMHARADRIM);
                         output.accept(TolkienEntities.EGG_TTMHURON);

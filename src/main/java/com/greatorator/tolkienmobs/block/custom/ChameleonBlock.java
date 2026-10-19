@@ -144,7 +144,8 @@ public class ChameleonBlock<C> extends TolkienEntityBlock implements SimpleWater
 
         if (adjacentSolidBlocks.size() == 1) {
             BlockState singleAdjacentBlock = adjacentSolidBlocks.firstEntry().getValue();
-            if (singleAdjacentBlock.getBlock() == TolkienBlocks.CHAMELEON_BLOCK.get()) {
+            if (singleAdjacentBlock.getBlock() == TolkienBlocks.CHAMELEON_BLOCK.get()
+                    || singleAdjacentBlock.getBlock() == Blocks.GRASS_BLOCK) {
                 return this.defaultBlockState();
             } else {
                 return singleAdjacentBlock;

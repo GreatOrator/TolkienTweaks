@@ -4,7 +4,7 @@
   "effects": {
     "fog_color": 5988193,
     "foliage_color": 6316071,
-    "grass_color_modifier": "swamp",
+    "grass_color": 6316071,
     "mood_sound": {
       "block_search_extent": 8,
       "offset": 2.0,
@@ -17,9 +17,15 @@
       "replace_current_music": false,
       "sound": "minecraft:ambient.soul_sand_valley.loop"
     },
+    "particle": {
+      "options": {
+        "type": "minecraft:ash"
+      },
+      "probability": 0.00625
+    },
     "sky_color": 7907327,
     "water_color": 14745540,
-    "water_fog_color": 2302743
+    "water_fog_color": 329011
   },
   "features": [
     [],
@@ -35,18 +41,19 @@
     [],
     [
       "minecraft:trees_swamp",
-      "minecraft:patch_grass_normal",
-      "tolkienmobs:flower_swamp_milkweed_placed",
       "minecraft:flower_swamp",
+      "minecraft:patch_grass_normal",
       "minecraft:patch_dead_bush",
+      "minecraft:patch_waterlily",
       "minecraft:brown_mushroom_swamp",
       "minecraft:red_mushroom_swamp",
       "minecraft:patch_sugar_cane_swamp",
       "minecraft:patch_pumpkin",
-      "minecraft:patch_waterlily"
+      "tolkienmobs:flower_swamp_milkweed_placed",
+      "tolkienmobs:mud_splatter"
     ]
   ],
-  "has_precipitation": true,
+  "has_precipitation": false,
   "spawn_costs": {
     "tolkienmobs:entityttmcrebain": {
       "charge": 0.6,
@@ -111,5 +118,5 @@
     "water_ambient": [],
     "water_creature": []
   },
-  "temperature": 0.9
+  "temperature": 0.8
 }

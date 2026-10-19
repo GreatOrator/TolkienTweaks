@@ -11,6 +11,12 @@
       "sound": "minecraft:ambient.cave",
       "tick_delay": 6000
     },
+    "music": {
+      "max_delay": 24000,
+      "min_delay": 12000,
+      "replace_current_music": false,
+      "sound": "minecraft:ambient.soul_sand_valley.loop"
+    },
     "particle": {
       "options": {
         "type": "minecraft:ash"
@@ -28,10 +34,7 @@
     ],
     [],
     [],
-    [
-      "tolkienmobs:stone_spike",
-      "tolkienmobs:random_rubble"
-    ],
+    [],
     [],
     [
       "tolkienmobs:morguliron_ore_placed",
@@ -44,7 +47,10 @@
     [
       "minecraft:patch_grass_jungle",
       "tolkienmobs:deadwood_fallen_log",
-      "tolkienmobs:flower_brambles_placed"
+      "tolkienmobs:flower_brambles_placed",
+      "tolkienmobs:random_rubble",
+      "tolkienmobs:rockpile",
+      "tolkienmobs:stone_spike"
     ]
   ],
   "has_precipitation": false,

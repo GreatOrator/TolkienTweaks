@@ -1,0 +1,8 @@
+{
+  "type": "tolkienmobs:template_layout",
+  "biomes": "#tolkienmobs:has_structure/ttmgollum_cave",
+  "spawn_overrides": {},
+  "start_pool": "tolkienmobs:ttmgollum_cave",
+  "step": "underground_structures",
+  "top_offset": -32
+}

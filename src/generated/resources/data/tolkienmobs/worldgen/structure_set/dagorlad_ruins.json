@@ -1,0 +1,18 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 193764832,
+    "separation": 3,
+    "spacing": 4
+  },
+  "structures": [
+    {
+      "structure": "tolkienmobs:ttmruin_large",
+      "weight": 1
+    },
+    {
+      "structure": "tolkienmobs:ttmruin_small",
+      "weight": 1
+    }
+  ]
+}

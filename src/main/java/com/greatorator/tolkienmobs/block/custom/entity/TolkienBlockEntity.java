@@ -51,8 +51,7 @@ public class TolkienBlockEntity extends BlockEntity {
         if (player != null) {
             AbstractContainerMenu container = player.containerMenu;
             if (container instanceof TolkienContainer && ((TolkienContainer)container).tile == this) {
-                PacketCustom packet = ((TolkienContainer)container).createServerBoundPacket(1);
-                packet.writeByte((byte)id);
+                PacketCustom packet = ((TolkienContainer)container).createServerBoundPacket(id);
                 return packet;
             }
         }

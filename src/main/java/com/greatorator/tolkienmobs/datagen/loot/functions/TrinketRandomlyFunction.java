@@ -9,6 +9,7 @@ import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -17,15 +18,23 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
+/**
+ * Gives a trinket a potion. Left without an {@code id} the potion is rolled when the loot is
+ * dropped, so a single loot table yields a variety of trinkets instead of one fixed potion.
+ * Only benevolent potions are drawn, since a trinket is worn. An {@code id} can still be
+ * written by hand to pin a specific potion.
+ */
 public class TrinketRandomlyFunction extends LootItemConditionalFunction {
     public static final MapCodec<TrinketRandomlyFunction> CODEC = RecordCodecBuilder.mapCodec(
-        p_348460_ -> commonFields(p_348460_).and(Potion.CODEC.fieldOf("id").forGetter(p_298158_ -> p_298158_.potion)).apply(p_348460_, TrinketRandomlyFunction::new)
+        instance -> commonFields(instance)
+                .and(Potion.CODEC.optionalFieldOf("id").forGetter(function -> function.potion))
+                .apply(instance, TrinketRandomlyFunction::new)
     );
-    private final Holder<Potion> potion;
+    private final Optional<Holder<Potion>> potion;
 
-    private TrinketRandomlyFunction(List<LootItemCondition> conditions, Holder<Potion> potion) {
+    private TrinketRandomlyFunction(List<LootItemCondition> conditions, Optional<Holder<Potion>> potion) {
         super(conditions);
         this.potion = potion;
     }
@@ -37,18 +46,29 @@ public class TrinketRandomlyFunction extends LootItemConditionalFunction {
 
     @Override
     public ItemStack run(ItemStack stack, LootContext context) {
-
-        stack.set(TolkienDataComponents.POTION_CONTENTS, new TrinketComponent(this.potion));
+        Optional<Holder<Potion>> potion = this.potion.isPresent() ? this.potion : pickPotion(context.getRandom());
+        potion.ifPresent(chosen -> stack.set(TolkienDataComponents.POTION_CONTENTS, new TrinketComponent(chosen)));
         return stack;
     }
 
-    public static Builder<?> setPotion(ItemStack stack) {
-        final RandomSource random = RandomSource.create();
-        List<Holder<Potion>> list = (List) BuiltInRegistries.POTION.holders().filter((p_340770_) -> {
-            return !((Potion) p_340770_.value()).getEffects().isEmpty();
-        }).collect(Collectors.toList());
-        Holder<Potion> holder = (Holder) Util.getRandom(list, random);
+    private static Optional<Holder<Potion>> pickPotion(RandomSource random) {
+        List<Holder.Reference<Potion>> potions = BuiltInRegistries.POTION.holders()
+                .filter(potion -> isBenevolent(potion.value()))
+                .toList();
+        return potions.isEmpty() ? Optional.empty() : Optional.of(Util.getRandom(potions, random));
+    }
 
-        return simpleBuilder(p_316108_ -> new TrinketRandomlyFunction(p_316108_, holder));
+    /**
+     * True when the potion does something and everything it does helps the wearer. Reading the
+     * effect categories rather than a list of names keeps vanilla's and this mod's potions on
+     * one rule, and rules out water, mundane, thick and awkward, which have no effects at all.
+     */
+    private static boolean isBenevolent(Potion potion) {
+        List<MobEffectInstance> effects = potion.getEffects();
+        return !effects.isEmpty() && effects.stream().allMatch(effect -> effect.getEffect().value().isBeneficial());
+    }
+
+    public static Builder<?> randomPotion() {
+        return simpleBuilder(conditions -> new TrinketRandomlyFunction(conditions, Optional.empty()));
     }
 }

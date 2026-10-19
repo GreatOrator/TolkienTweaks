@@ -11,36 +11,134 @@ import net.minecraft.world.level.levelgen.VerticalAnchor;
 import org.jetbrains.annotations.NotNull;
 
 public class TolkienSurfaceRules {
+	private static final SurfaceRules.RuleSource STONE = makeStateRule(Blocks.STONE);
+	private static final SurfaceRules.RuleSource GRAVEL = makeStateRule(Blocks.GRAVEL);
 	private static final SurfaceRules.RuleSource BEDROCK = makeStateRule(Blocks.BEDROCK);
 	private static final SurfaceRules.RuleSource GRASS_BLOCK = makeStateRule(Blocks.GRASS_BLOCK);
 	private static final SurfaceRules.RuleSource DIRT = makeStateRule(Blocks.DIRT);
 	private static final SurfaceRules.RuleSource PODZOL = makeStateRule(Blocks.PODZOL);
 	private static final SurfaceRules.RuleSource COARSE_DIRT = makeStateRule(Blocks.COARSE_DIRT);
-	private static final SurfaceRules.RuleSource GRAVEL = makeStateRule(Blocks.GRAVEL);
 	private static final SurfaceRules.RuleSource SAND = makeStateRule(Blocks.SAND);
-	private static final SurfaceRules.RuleSource STONE = makeStateRule(Blocks.STONE);
 	private static final SurfaceRules.RuleSource SANDSTONE = makeStateRule(Blocks.SANDSTONE);
 	private static final SurfaceRules.RuleSource SNOW_BLOCK = makeStateRule(Blocks.SNOW_BLOCK);
 	private static final SurfaceRules.RuleSource PACKED_ICE = makeStateRule(Blocks.PACKED_ICE);
 	private static final SurfaceRules.RuleSource ICE = makeStateRule(Blocks.ICE);
 	private static final SurfaceRules.RuleSource COBBLED_DARK_STONE = makeStateRule(TolkienBlocks.COBBLED_DARK_STONE.get());
-	private static final SurfaceRules.RuleSource CRACKED_DARK_STONE = makeStateRule(TolkienBlocks.CRACKED_DARK_STONE_BRICKS.get());
+	private static final SurfaceRules.RuleSource SMOOTH_DARK_STONE = makeStateRule(TolkienBlocks.SMOOTH_DARK_STONE.get());
 	private static final SurfaceRules.RuleSource DARK_STONE = makeStateRule(TolkienBlocks.DARK_STONE.get());
+	private static final SurfaceRules.RuleSource MOUNTAIN_STONE = makeStateRule(TolkienBlocks.MOUNTAIN_STONE.get());
 
 	private static SurfaceRules.RuleSource makeStateRule(Block block) {
 		return SurfaceRules.state(block.defaultBlockState());
 	}
 
 	public static SurfaceRules.RuleSource tolkienSurface() {
-		SurfaceRules.RuleSource bedrockLayer = SurfaceRules.ifTrue(SurfaceRules.verticalGradient("bedrock_floor", VerticalAnchor.bottom(), VerticalAnchor.aboveBottom(5)), BEDROCK);
+        // TerraBlender selects this rule for our namespace; keep it out of caves
+        // and leave bedrock/deepslate to the vanilla fallback rules.
+        return SurfaceRules.sequence(
+                SurfaceRules.ifTrue(SurfaceRules.abovePreliminarySurface(), SurfaceRules.sequence(
+                        SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, SurfaceRules.sequence(
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.NURN), nurnSurface()),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.MORDOR), DARK_STONE),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HARADWAITH), SAND),
+                                ironHillsSurface(), hithaeglirSurface(), makeTolkienWorldRules())),
+                        SurfaceRules.ifTrue(SurfaceRules.UNDER_FLOOR, SurfaceRules.sequence(
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.NURN, TolkienBiomes.MORDOR, TolkienBiomes.ASH_MOUNTAINS), DARK_STONE),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HARADWAITH), SANDSTONE),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HITHAEGLIR), PACKED_ICE))),
+                        blueMountainsFloor(),
+                        blueMountainsRock(),
+                        overworldLikeFloor())),
+                // The Blue Mountains' rock is the biome's stone, not a surface dressing, so its
+                // rules sit outside the guard above as well: a shaft sunk into the mountain stays
+                // in mountain stone all the way down to the deepslate, and a floor that the
+                // preliminary surface guessed too low still gets its grass.
+                blueMountainsFloor(),
+                blueMountainsRock());
+	}
+
+	/**
+	 * Nurn's floor is dark stone, with the surface noise that shapes the badlands breaking it up into
+	 * patches of cobbled dark stone. Grass only grows near water: along the low ground that sits a
+	 * few blocks above the water table, which is where the flooded lowland's shores and islands are,
+	 * and around a lake, which lays its own meadow out to a chunk from its water at whatever height
+	 * it sits. Only ground with no water over it is coloured, so a lake or a spring never gets a
+	 * stone lip placed over its own surface.
+	 */
+	private static SurfaceRules.RuleSource nurnSurface() {
+		return SurfaceRules.ifTrue(SurfaceRules.waterBlockCheck(-1, 0), SurfaceRules.sequence(
+				SurfaceRules.ifTrue(SurfaceRules.not(SurfaceRules.yStartCheck(VerticalAnchor.absolute(NURN_SHORE_HEIGHT), 0)), GRASS_BLOCK),
+				SurfaceRules.ifTrue(surfaceNoiseAbove(NURN_COBBLE_NOISE), COBBLED_DARK_STONE),
+				DARK_STONE));
+	}
+
+	/**
+	 * Nurn's floor is grass below this height and dark stone above it. The water table is sea level,
+	 * so everything here stands at most a few blocks above water: the low shores and islands of the
+	 * flooded lowland. A lake above that height lays its own grassland around itself instead.
+	 */
+	private static final int NURN_SHORE_HEIGHT = 68;
+
+	/**
+	 * The surface noise value above which Nurn's floor is cobbled dark stone instead of plain dark
+	 * stone. It is texture only; both are dry ground.
+	 */
+	private static final double NURN_COBBLE_NOISE = 1.2D;
+
+	private static SurfaceRules.RuleSource makeTolkienWorldRules() {
+		SurfaceRules.ConditionSource isAtOrAboveWaterLevel = SurfaceRules.waterBlockCheck(-1, 0);
+		SurfaceRules.ConditionSource sixBelowWater = SurfaceRules.waterStartCheck(-6, -1);
+		SurfaceRules.ConditionSource isAbove62 = SurfaceRules.yBlockCheck(VerticalAnchor.absolute(62), 0);
+		SurfaceRules.ConditionSource isAbove63 = SurfaceRules.yBlockCheck(VerticalAnchor.absolute(63), 0);
+		SurfaceRules.RuleSource mordorSurface = SurfaceRules.sequence(
+				SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, DARK_STONE),
+				COBBLED_DARK_STONE
+		);
+		SurfaceRules.RuleSource darkStoneLining = SurfaceRules.sequence(SurfaceRules.ifTrue(SurfaceRules.ON_CEILING, DARK_STONE), GRASS_BLOCK);
 
 		return SurfaceRules.sequence(
-			bedrockLayer,
-			mordorSurface(),
-			hithaeglirSurface(),
-			haradwaithSurface(),
-			ironHillsSurface(),
-			overworldLikeFloor()
+				SurfaceRules.ifTrue(
+						sixBelowWater,
+						SurfaceRules.sequence(
+								SurfaceRules.ifTrue(
+										SurfaceRules.UNDER_FLOOR,
+										SurfaceRules.sequence(
+												SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.MORDOR), darkStoneLining)
+										)
+								),
+								SurfaceRules.ifTrue(
+										SurfaceRules.DEEP_UNDER_FLOOR,
+										SurfaceRules.sequence(
+												SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.MORDOR), DARK_STONE)
+										)
+								)
+						)
+				),
+				SurfaceRules.ifTrue(
+						SurfaceRules.ON_FLOOR,
+						SurfaceRules.sequence(
+								SurfaceRules.ifTrue(
+										// Underwater lining
+										SurfaceRules.not(isAtOrAboveWaterLevel),
+										SurfaceRules.sequence(
+												SurfaceRules.ifTrue(
+														SurfaceRules.isBiome(TolkienBiomes.ASH_MOUNTAINS),
+														SurfaceRules.ifTrue(surfaceNoiseAbove(2.7D), SMOOTH_DARK_STONE)
+												)
+										)
+								)
+						)
+				),
+				SurfaceRules.ifTrue(
+						SurfaceRules.isBiome(TolkienBiomes.ASH_MOUNTAINS),
+						SurfaceRules.sequence(SurfaceRules.ifTrue(surfaceNoiseAbove(3.7D), GRASS_BLOCK),
+								SurfaceRules.sequence(SurfaceRules.ifTrue(surfaceNoiseAbove(2.6D), DARK_STONE),
+										SurfaceRules.sequence(SurfaceRules.ifTrue(surfaceNoiseAbove(1.5D), SMOOTH_DARK_STONE),
+												mordorSurface
+										)
+								)
+						)
+				)
 		);
 	}
 
@@ -73,6 +171,31 @@ public class TolkienSurfaceRules {
 						)
 				));
 		return SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.IRON_HILLS), snowySoil);
+	}
+
+	/**
+	 * The Blue Mountains stand on the mod's own mountain stone instead of vanilla stone: grass on the
+	 * floor, mountain stone in every block beneath it. The surface system only ever rewrites a block
+	 * that is still the generator's default - stone - so the rock rule can simply claim the whole
+	 * column between it and the deepslate layer, which the dimension still supplies.
+	 *
+	 * <p>The two rules are separate because the rock rule would otherwise claim the floor as well and
+	 * leave the biome bare stone, the way Mordor is. The floor rule comes first so the floor keeps its
+	 * grass; everything under it - including the dirt band the rest of the world gets - is rock.
+	 * Both are called inside and outside the preliminary-surface guard, so the colour of the floor
+	 * does not depend on how well that height estimate guessed the mountain's feet.
+	 */
+	private static SurfaceRules.RuleSource blueMountainsFloor() {
+		SurfaceRules.RuleSource grassGrows = SurfaceRules.ifTrue(
+				SurfaceRules.waterBlockCheck(-1, 0),
+				SurfaceRules.ifTrue(SurfaceRules.yStartCheck(VerticalAnchor.absolute(-4), 1), GRASS_BLOCK));
+		SurfaceRules.RuleSource floor = SurfaceRules.sequence(grassGrows, DIRT);
+		return SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.BLUE_MOUNTAINS),
+				SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, floor));
+	}
+
+	private static SurfaceRules.RuleSource blueMountainsRock() {
+		return SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.BLUE_MOUNTAINS), MOUNTAIN_STONE);
 	}
 
 	private static SurfaceRules.RuleSource haradwaithSurface() {
@@ -123,12 +246,6 @@ public class TolkienSurfaceRules {
 
 	@NotNull
 	private static SurfaceRules.RuleSource overworldLikeFloor() {
-		SurfaceRules.RuleSource riverLakeBeds = SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.LAKE, TolkienBiomes.STREAM), SurfaceRules.sequence(
-			SurfaceRules.ifTrue(SurfaceRules.ON_CEILING, SANDSTONE),
-			SurfaceRules.ifTrue(SurfaceRules.waterBlockCheck(-1, 0), GRASS_BLOCK),
-			SAND
-		));
-
 		SurfaceRules.RuleSource swampBeds = SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.MARSHES), SurfaceRules.sequence(
 			SurfaceRules.ifTrue(SurfaceRules.waterBlockCheck(-1, 0), GRASS_BLOCK),
 			DIRT
@@ -146,7 +263,6 @@ public class TolkienSurfaceRules {
 		);
 
 		SurfaceRules.RuleSource onFloor = SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, SurfaceRules.sequence(
-			riverLakeBeds,
 			swampBeds,
 			grassSurface,
 			underwaterSurface

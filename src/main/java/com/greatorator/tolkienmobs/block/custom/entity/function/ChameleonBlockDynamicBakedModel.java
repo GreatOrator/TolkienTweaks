@@ -81,9 +81,14 @@ public class ChameleonBlockDynamicBakedModel extends BakedModelWrapper<BakedMode
 		} else {
 			Optional<BlockState> copiedBlock = Optional.ofNullable(data.get(DISGUISED_STATE));
 			if (!copiedBlock.isPresent()) return retval;
+			BlockState disguisedState = copiedBlock.get();
+			// Prevent circular reference - if disguised state is a ChameleonBlock, use original model
+			if (disguisedState.getBlock() instanceof ChameleonBlock) {
+				return retval;
+			}
 			Minecraft mc = Minecraft.getInstance();
 			BlockRenderDispatcher blockRendererDispatcher = mc.getBlockRenderer();
-			retval = blockRendererDispatcher.getBlockModel(copiedBlock.get());
+			retval = blockRendererDispatcher.getBlockModel(disguisedState);
 		}
 		return retval;
 	}

@@ -63,8 +63,7 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "tolkienmobs:random_trinket",
-              "id": "tolkienmobs:elf_vitality"
+              "function": "tolkienmobs:random_trinket"
             },
             {
               "add": false,

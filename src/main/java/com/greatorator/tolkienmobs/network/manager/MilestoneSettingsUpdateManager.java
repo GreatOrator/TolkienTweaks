@@ -41,7 +41,7 @@ public record MilestoneSettingsUpdateManager(
             Player sender = context.player();
             AbstractContainerMenu container = sender.containerMenu;
 
-            if (container instanceof MilestoneContainer milestoneContainer && milestoneContainer.tileEntity instanceof MilestoneBlockEntity milestoneBE) {
+            if (container instanceof MilestoneContainer milestoneContainer && milestoneContainer.tile instanceof MilestoneBlockEntity milestoneBE) {
                 milestoneBE.setMilestoneSettings(new MilestoneSettings(payload.distance(), payload.dimension(),payload.name(), payload.UUID()));
             }
         });

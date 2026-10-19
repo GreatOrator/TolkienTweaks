@@ -20,7 +20,7 @@ public class ServerPacketHandler implements ICustomPacketHandler.IServerPacketHa
                 ((TolkienContainer<?>) sender.containerMenu).handleContainerMessage(packet, sender);
             }
         } catch (Throwable e) {
-            TolkienMobsMain.LOGGER.error("Something went wrong while attempting to read a packet sent from this client: " + sender);
+            TolkienMobsMain.LOGGER.error("Something went wrong while attempting to read a packet sent from this client: {}", sender);
             e.printStackTrace();
         }
     }

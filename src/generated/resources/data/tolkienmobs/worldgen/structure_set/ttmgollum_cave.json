@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 193764826,
+    "separation": 6,
+    "spacing": 16
+  },
+  "structures": [
+    {
+      "structure": "tolkienmobs:ttmgollum_cave",
+      "weight": 1
+    }
+  ]
+}

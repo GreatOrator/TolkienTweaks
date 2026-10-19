@@ -1,0 +1,10 @@
+{
+  "values": [
+    "tolkienmobs:ash_mountains",
+    "tolkienmobs:haradwaith",
+    {
+      "id": "#tolkienmobs:desert",
+      "required": false
+    }
+  ]
+}

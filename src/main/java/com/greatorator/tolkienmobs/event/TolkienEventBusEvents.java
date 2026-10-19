@@ -103,13 +103,16 @@ public class TolkienEventBusEvents {
         event.put(TolkienEntities.ENTITY_TTM_DWARF.get(), DwarfEntity.createAttributes().build());
         event.put(TolkienEntities.ENTITY_TTM_ELVES.get(), ElvesEntity.createAttributes().build());
         event.put(TolkienEntities.ENTITY_TTM_HOBBIT.get(), HobbitEntity.createAttributes().build());
-        event.put(TolkienEntities.ENTITY_TTM_SOUTHRON.get(), SouthronEntity.createAttributes().build());
+        event.put(TolkienEntities.ENTITY_TTM_SOUTHRON.get(), SouthronTraderEntity.createAttributes().build());
         event.put(TolkienEntities.ENTITY_TTM_ORC_TRADER.get(), OrcTraderEntity.createAttributes().build());
+        event.put(TolkienEntities.ENTITY_TTM_ORC.get(), OrcEntity.createAttributes().build());
+        event.put(TolkienEntities.ENTITY_TTM_SOUTHRON_NPC.get(), SouthronEntity.createAttributes().build());
 
         // Hostile
         event.put(TolkienEntities.ENTITY_TTM_BARROW.get(), BarrowWightEntity.createAttributes().build());
         event.put(TolkienEntities.ENTITY_TTM_OATHBREAKER.get(), OathBreakerEntity.createAttributes().build());
         event.put(TolkienEntities.ENTITY_TTM_FELLSPIRIT.get(), FellSpiritEntity.createAttributes().build());
+        event.put(TolkienEntities.ENTITY_TTM_ENRAGED_FELLSPIRIT.get(), EnragedFellSpiritEntity.createAttributes().build());
         event.put(TolkienEntities.ENTITY_TTM_BRIGAND.get(), BrigandEntity.createAttributes().build());
         event.put(TolkienEntities.ENTITY_TTM_HARADRIM.get(), HaradrimEntity.createAttributes().build());
         event.put(TolkienEntities.ENTITY_TTM_ROMIEWALKER.get(), RomieWalkerEntity.createAttributes().build());
@@ -184,6 +187,8 @@ public class TolkienEventBusEvents {
         event.register(TolkienEntities.ENTITY_TTM_OATHBREAKER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
         event.register(TolkienEntities.ENTITY_TTM_FELLSPIRIT.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(TolkienEntities.ENTITY_TTM_ENRAGED_FELLSPIRIT.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
         event.register(TolkienEntities.ENTITY_TTM_BRIGAND.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);

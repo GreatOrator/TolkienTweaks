@@ -6,10 +6,8 @@ import com.greatorator.tolkienmobs.containers.handlers.FluidTankRenderer;
 import com.greatorator.tolkienmobs.containers.handlers.ToggleButtonFactory;
 import com.greatorator.tolkienmobs.containers.widget.ToggleButton;
 import com.greatorator.tolkienmobs.containers.widget.TolkienButton;
-import com.greatorator.tolkienmobs.network.manager.BackpackFluidUpgradesUpdateManager;
 import com.greatorator.tolkienmobs.network.manager.BackpackPlacementUpdateManager;
 import com.greatorator.tolkienmobs.network.manager.BackpackSettingsUpdateManager;
-import com.greatorator.tolkienmobs.network.manager.BackpackUpgradesUpdateManager;
 import com.greatorator.tolkienmobs.util.GeneralUtility;
 import com.greatorator.tolkienmobs.util.MouseUtil;
 import com.greatorator.tolkienmobs.util.block.BackpackFluidUpgrades;
@@ -58,7 +56,10 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
     protected BackpackPlacement backpackPlacement;
     protected BackpackUpgrades backpackUpgrades;
     protected BackpackFluidUpgrades backpackFluidUpgrades;
-    private boolean upgradeContainer;
+    private BackpackUpgrades shownUpgrades;
+    private BackpackFluidUpgrades shownFluidUpgrades;
+    private boolean shownSleepingBag;
+    private boolean shownCampfire;
     private final BackpackBlockEntity tileEntity;
     private Level level;
     private FluidTankRenderer fluidRenderer;
@@ -76,7 +77,6 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
         this.backpackPlacement = tileEntity.getBackpackPlacement();
         this.backpackUpgrades = tileEntity.getBackpackUpgrades();
         this.backpackFluidUpgrades = tileEntity.getBackpackFluidUpgrades();
-        upgradeContainer = backpackSettings.upgrade;
     }
 
     @Override
@@ -86,13 +86,33 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
         this.inventoryLabelY = 10000;
         this.titleLabelY = 10000;
 
+        rememberShownUpgrades();
         assignFluidRenderer();
         addUpgradeButtons();
     }
 
     @Override
+    protected void containerTick() {
+        super.containerTick();
+        if (!upgradesMatchShown() || shownSleepingBag != backpackSettings.sleepingBag || shownCampfire != backpackSettings.campfire) {
+            rebuildWidgets();
+        }
+    }
+
+    private void rememberShownUpgrades() {
+        shownSleepingBag = backpackSettings.sleepingBag;
+        shownCampfire = backpackSettings.campfire;
+        shownUpgrades = new BackpackUpgrades(backpackUpgrades.crafting, backpackUpgrades.sleepingBag, backpackUpgrades.campfire, backpackUpgrades.size_upgrade, backpackUpgrades.size_upgrade_2);
+        shownFluidUpgrades = new BackpackFluidUpgrades(backpackFluidUpgrades.fluid_tank, backpackFluidUpgrades.fluid_tank_2, backpackFluidUpgrades.fluid_tank_3, backpackFluidUpgrades.fluid_tank_4, backpackFluidUpgrades.fluid_tank_5);
+    }
+
+    private boolean upgradesMatchShown() {
+        return backpackUpgrades.equals(shownUpgrades) && backpackFluidUpgrades.equals(shownFluidUpgrades);
+    }
+
+    @Override
     protected boolean hasClickedOutside(double mouseX, double mouseY, int guiLeftIn, int guiTopIn, int mouseButton) {
-        if (upgradeContainer)
+        if (backpackSettings.upgrade)
             return mouseX < (double) guiLeftIn - 100 || mouseY < (double) guiTopIn || mouseX >= (double) (guiLeftIn + this.imageWidth) || mouseY >= (double) (guiTopIn + this.imageHeight);
         return super.hasClickedOutside(mouseX, mouseY, guiLeftIn, guiTopIn, mouseButton);
     }
@@ -116,7 +136,6 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        validateUpgrade();
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
@@ -140,7 +159,7 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
         int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
-        if(this.tileEntity.backpackFluidUpgrades.fluid_tank) {
+        if(this.tileEntity.hasFluidTank()) {
             renderFluidTooltipArea(guiGraphics, mouseX, mouseY, x, y, menu.tileEntity.getFluid(), 0, 8, fluidRenderer);
         }
     }
@@ -163,13 +182,12 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
         int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
-        if(this.tileEntity.backpackFluidUpgrades.fluid_tank) {
+        if(this.tileEntity.hasFluidTank()) {
             guiGraphics.blit(FLUIDBAR, relX, relY + 5, 0, 0, 11, 75, 12, 75);
+            fluidRenderer.render(guiGraphics, x, y + 4, menu.tileEntity.getFluid());
         }
 
-        fluidRenderer.render(guiGraphics, x, y + 4, menu.tileEntity.getFluid());
-
-        if (upgradeContainer) {
+        if (backpackSettings.upgrade) {
             ResourceLocation upgradeGUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_upgrade.png");
             RenderSystem.setShaderTexture(0, upgradeGUI);
             guiGraphics.blit(upgradeGUI, getGuiLeft() + 220, getGuiTop() + 36, 0, 0, this.imageWidth, this.imageHeight);
@@ -190,90 +208,38 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
         return ret;
     }
 
-    public boolean validateUpgrade() {
-        if (backpackSettings.upgrade){
-            upgradeContainer = true;
-            tileEntity.getUpgradeItems();
-            return true;
-        }
-        upgradeContainer = false;
-        tileEntity.getUpgradeItems();
-        return false;
-    }
-
     public void addUpgradeButtons() {
         int offsetX = (this.width - this.imageWidth) / 2;
         int offsetY = (this.height - this.imageHeight) / 2;
-        if (this.tileEntity.backpackUpgrades.sleepingBag) {
+        if (this.tileEntity.backpackUpgrades.sleepingBag && !this.tileEntity.isHeld()) {
             addRenderableWidget(ToggleButtonFactory.SLEEPING_BAG_TOGGLE_BUTTON(offsetX + 173, offsetY + 156, backpackSettings.sleepingBag, b -> {
-                backpackSettings.sleepingBag = !backpackSettings.sleepingBag;
-                backpackPlacement.sleepingBag = backpackSettings.sleepingBag;
-                PacketDistributor.sendToServer(new BackpackSettingsUpdateManager(backpackSettings.sleepingBag, backpackSettings.campfire, backpackSettings.upgrade));
-                PacketDistributor.sendToServer(new BackpackPlacementUpdateManager(backpackPlacement.sleepingBag, !backpackPlacement.campfire));
+                ((ToggleButton) b).setTexturePosition(backpackSettings.sleepingBag);
+                PacketDistributor.sendToServer(new BackpackPlacementUpdateManager(true, false));
             }));
         }
 
-        if (this.tileEntity.backpackUpgrades.campfire) {
+        if (this.tileEntity.backpackUpgrades.campfire && !this.tileEntity.isHeld()) {
             addRenderableWidget(ToggleButtonFactory.CAMPFIRE_TOGGLE_BUTTON(offsetX + 191, offsetY + 156, backpackSettings.campfire, b -> {
-                backpackSettings.campfire = !backpackSettings.campfire;
-                backpackPlacement.campfire = backpackSettings.campfire;
-                PacketDistributor.sendToServer(new BackpackSettingsUpdateManager(backpackSettings.sleepingBag, backpackSettings.campfire, backpackSettings.upgrade));
-                PacketDistributor.sendToServer(new BackpackPlacementUpdateManager(!backpackPlacement.sleepingBag, backpackPlacement.campfire));
+                ((ToggleButton) b).setTexturePosition(backpackSettings.campfire);
+                PacketDistributor.sendToServer(new BackpackPlacementUpdateManager(false, true));
             }));
         }
 
         addRenderableWidget(ToggleButtonFactory.UPGRADE_TOGGLE_BUTTON(offsetX + 209, offsetY + 156, backpackSettings.upgrade, b -> {
             backpackSettings.upgrade = !backpackSettings.upgrade;
             PacketDistributor.sendToServer(new BackpackSettingsUpdateManager(backpackSettings.sleepingBag, backpackSettings.campfire, backpackSettings.upgrade));
-            PacketDistributor.sendToServer(new BackpackUpgradesUpdateManager(backpackUpgrades.crafting, backpackUpgrades.sleepingBag, backpackUpgrades.campfire, backpackUpgrades.size_upgrade, backpackUpgrades.size_upgrade_2));
-            PacketDistributor.sendToServer(new BackpackFluidUpgradesUpdateManager(backpackFluidUpgrades.fluid_tank, backpackFluidUpgrades.fluid_tank_2, backpackFluidUpgrades.fluid_tank_3, backpackFluidUpgrades.fluid_tank_4, backpackFluidUpgrades.fluid_tank_5));
-            Minecraft.getInstance().setScreen(null);
         }));
 
     }
 
     private ResourceLocation getGUIState() {
-        if (tileEntity.getBackpackUpgrades().size_upgrade && !tileEntity.getBackpackUpgrades().size_upgrade_2) {
-            if (tileEntity.getBackpackUpgrades().crafting) {
-                if (tileEntity.getBackpackFluidUpgrades().fluid_tank) {
-                    return GUI_FULL_UPGRADE_1;
-                }
-                return GUI_CRAFTING_STORAGE_UPGRADE_1;
-            }
-            if (tileEntity.getBackpackFluidUpgrades().fluid_tank) {
-                if (tileEntity.getBackpackUpgrades().crafting) {
-                    return GUI_FULL_UPGRADE_1;
-                }
-                return GUI_TANK_STORAGE_UPGRADE_1;
-            }
-            return GUI_STORAGE_UPGRADE_1;
-        } else if (tileEntity.getBackpackUpgrades().size_upgrade && tileEntity.getBackpackUpgrades().size_upgrade_2) {
-            if (tileEntity.getBackpackUpgrades().crafting) {
-                if (tileEntity.getBackpackFluidUpgrades().fluid_tank) {
-                    return GUI_FULL_UPGRADE_2;
-                }
-                return GUI_CRAFTING_STORAGE_UPGRADE_2;
-            }
-
-            if (tileEntity.getBackpackFluidUpgrades().fluid_tank) {
-                if (tileEntity.getBackpackUpgrades().crafting) {
-                    return GUI_FULL_UPGRADE_2;
-                }
-                return GUI_TANK_STORAGE_UPGRADE_2;
-            }
-            return GUI_STORAGE_UPGRADE_2;
-        }else if (tileEntity.getBackpackFluidUpgrades().fluid_tank) {
-            if (tileEntity.getBackpackUpgrades().crafting) {
-                return GUI_FULL_UPGRADE;
-            }
-            return GUI_TANK_UPGRADE;
-        } else if (tileEntity.getBackpackUpgrades().crafting) {
-            if (tileEntity.getBackpackFluidUpgrades().fluid_tank) {
-                return GUI_FULL_UPGRADE;
-            }
-            return GUI_CRAFTING_UPGRADE;
-        }
-        return GUI_BASE;
+        boolean crafting = tileEntity.getBackpackUpgrades().crafting;
+        boolean fluid = tileEntity.hasFluidTank();
+        return switch (tileEntity.getStorageSize()) {
+            case 72 -> crafting && fluid ? GUI_FULL_UPGRADE_2 : crafting ? GUI_CRAFTING_STORAGE_UPGRADE_2 : fluid ? GUI_TANK_STORAGE_UPGRADE_2 : GUI_STORAGE_UPGRADE_2;
+            case 54 -> crafting && fluid ? GUI_FULL_UPGRADE_1 : crafting ? GUI_CRAFTING_STORAGE_UPGRADE_1 : fluid ? GUI_TANK_STORAGE_UPGRADE_1 : GUI_STORAGE_UPGRADE_1;
+            default -> crafting && fluid ? GUI_FULL_UPGRADE : crafting ? GUI_CRAFTING_UPGRADE : fluid ? GUI_TANK_UPGRADE : GUI_BASE;
+        };
     }
 
     public void updateRenderables() {

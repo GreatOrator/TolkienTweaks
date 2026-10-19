@@ -4,14 +4,12 @@ import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.greatorator.tolkienmobs.network.component.TrinketComponent;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -71,12 +69,9 @@ public class TrinketItem extends Item {
         Player player = (Player) entity;
         TrinketComponent potionContents = stack.getOrDefault(TolkienDataComponents.POTION_CONTENTS, TrinketComponent.EMPTY);
         Optional<Holder<Potion>> potionType = potionContents.potion();
-        Optional<ResourceKey<Potion>> key = potionType.flatMap(Holder::unwrapKey);
-        ResourceLocation effectType = key.get().location();
-        MobEffect mobEffect = BuiltInRegistries.MOB_EFFECT.get(effectType);
         MobEffectInstance mobEffectInstance = potionType.get().value().getEffects().getFirst();
-            if (getActive(stack)) {
-                MobEffectInstance active = player.getEffect((Holder<MobEffect>) mobEffect);
+            if (getActive(stack) && player != null) {
+                MobEffectInstance active = player.getEffect(mobEffectInstance.getEffect());
                 if (active == null || active.getDuration() < 30 * 20) {
                     player.addEffect(mobEffectInstance);
 
