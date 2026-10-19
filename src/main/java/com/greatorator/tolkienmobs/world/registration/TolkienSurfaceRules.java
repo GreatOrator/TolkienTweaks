@@ -26,6 +26,7 @@ public class TolkienSurfaceRules {
 	private static final SurfaceRules.RuleSource COBBLED_DARK_STONE = makeStateRule(TolkienBlocks.COBBLED_DARK_STONE.get());
 	private static final SurfaceRules.RuleSource SMOOTH_DARK_STONE = makeStateRule(TolkienBlocks.SMOOTH_DARK_STONE.get());
 	private static final SurfaceRules.RuleSource DARK_STONE = makeStateRule(TolkienBlocks.DARK_STONE.get());
+	private static final SurfaceRules.RuleSource MOUNTAIN_STONE = makeStateRule(TolkienBlocks.MOUNTAIN_STONE.get());
 
 	private static SurfaceRules.RuleSource makeStateRule(Block block) {
 		return SurfaceRules.state(block.defaultBlockState());
@@ -34,17 +35,23 @@ public class TolkienSurfaceRules {
 	public static SurfaceRules.RuleSource tolkienSurface() {
         // TerraBlender selects this rule for our namespace; keep it out of caves
         // and leave bedrock/deepslate to the vanilla fallback rules.
-        return SurfaceRules.ifTrue(SurfaceRules.abovePreliminarySurface(), SurfaceRules.sequence(
-                SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, SurfaceRules.sequence(
-                        SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.NURN), nurnSurface()),
-                        SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.MORDOR), DARK_STONE),
-                        SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HARADWAITH), SAND),
-                        ironHillsSurface(), hithaeglirSurface(), makeTolkienWorldRules())),
-                SurfaceRules.ifTrue(SurfaceRules.UNDER_FLOOR, SurfaceRules.sequence(
-                        SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.NURN, TolkienBiomes.MORDOR, TolkienBiomes.ASH_MOUNTAINS), DARK_STONE),
-                        SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HARADWAITH), SANDSTONE),
-                        SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HITHAEGLIR), PACKED_ICE))),
-                overworldLikeFloor()));
+        return SurfaceRules.sequence(
+                SurfaceRules.ifTrue(SurfaceRules.abovePreliminarySurface(), SurfaceRules.sequence(
+                        SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, SurfaceRules.sequence(
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.NURN), nurnSurface()),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.MORDOR), DARK_STONE),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HARADWAITH), SAND),
+                                ironHillsSurface(), hithaeglirSurface(), makeTolkienWorldRules())),
+                        SurfaceRules.ifTrue(SurfaceRules.UNDER_FLOOR, SurfaceRules.sequence(
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.NURN, TolkienBiomes.MORDOR, TolkienBiomes.ASH_MOUNTAINS), DARK_STONE),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HARADWAITH), SANDSTONE),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HITHAEGLIR), PACKED_ICE))),
+                        blueMountainsSurface(),
+                        overworldLikeFloor())),
+                // The Blue Mountains' rock is the biome's stone, not a surface dressing, so its
+                // rule sits outside the guard above: a shaft sunk into the mountain stays in
+                // mountain stone all the way down to the deepslate.
+                blueMountainsSurface());
 	}
 
 	/**
@@ -161,6 +168,19 @@ public class TolkienSurfaceRules {
 						)
 				));
 		return SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.IRON_HILLS), snowySoil);
+	}
+
+	/**
+	 * The Blue Mountains stand on the mod's own mountain stone instead of vanilla stone. The surface
+	 * system only ever rewrites a block that is still the generator's default - stone - so this one
+	 * unconditional rule swaps the whole column, floor to deepslate, and leaves the deepslate layer
+	 * and every block that is not stone to the dimension. The floor conditions would only reach a
+	 * handful of blocks below the surface and the preliminary-surface guard stops above the
+	 * mountain's feet, so {@code tolkienSurface} calls the rule once inside the guard to keep the
+	 * floor off the grass rules and once outside it to carry the rock all the way down.
+	 */
+	private static SurfaceRules.RuleSource blueMountainsSurface() {
+		return SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.BLUE_MOUNTAINS), MOUNTAIN_STONE);
 	}
 
 	private static SurfaceRules.RuleSource haradwaithSurface() {

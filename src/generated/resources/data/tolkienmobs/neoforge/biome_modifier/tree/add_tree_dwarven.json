@@ -2,6 +2,7 @@
   "type": "neoforge:add_features",
   "biomes": [
     "tolkienmobs:iron_hills",
+    "tolkienmobs:blue_mountains",
     "tolkienmobs:hithaeglir"
   ],
   "features": "tolkienmobs:hardened_dwarven_placed",

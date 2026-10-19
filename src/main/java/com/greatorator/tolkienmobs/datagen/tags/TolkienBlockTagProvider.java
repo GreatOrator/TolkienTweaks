@@ -552,6 +552,10 @@ public class TolkienBlockTagProvider extends BlockTagsProvider {
                 .add(TolkienBlocks.MOUNTAIN_STONE.get())
                 .add(TolkienBlocks.IRON_STONE.get())
                 .add(TolkienBlocks.ELVEN_MARBLE.get());
+        // Every ore in the game replaces vanilla stone through this tag, so the Blue Mountains' own
+        // stone has to be in it or the biome would generate without ores in its stone.
+        tag(BlockTags.STONE_ORE_REPLACEABLES)
+                .add(TolkienBlocks.MOUNTAIN_STONE.get());
         tag(BlockTags.MINEABLE_WITH_AXE)
                 .add(TolkienBlocks.LIVING_ROOTS.get());
         tag(BlockTags.MINEABLE_WITH_HOE)

@@ -632,6 +632,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add("biome.tolkienmobs.gladden", "Gladden Fields");
             this.add("biome.tolkienmobs.hithaeglir", "Misty Mountains");
             this.add("biome.tolkienmobs.iron_hills", "Iron Hills");
+            this.add("biome.tolkienmobs.blue_mountains", "Blue Mountains");
             this.add("block.tolkienmobs.hardened_leaves_mallorn", "Mallorn Leaves");
             this.add("block.tolkienmobs.hardened_leaves_mirkwood", "Mirkwood Leaves");
             this.add("block.tolkienmobs.hardened_leaves_culumalda", "Culumalda Leaves");

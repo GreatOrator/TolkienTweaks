@@ -56,6 +56,21 @@ public abstract class BiomeHelper {
 				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15);
 	}
 
+	/**
+	 * The Blue Mountains' own people arrive with the dwarven village, not as wanderers, so the wild
+	 * slopes carry only the creatures that live there: goats, crebain and the goblins of the deep.
+	 */
+	public static MobSpawnSettings.Builder blueMountainsSpawning() {
+
+		return new MobSpawnSettings.Builder()
+				.addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 25, 1, 4))
+				.addSpawn(MobCategory.CREATURE, new MobSpawnSettings.SpawnerData(EntityType.GOAT, 15, 1, 3))
+				.addSpawn(MobCategory.AMBIENT, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 15, 1, 2))
+				.addMobCharge(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 0.6, 0.15)
+				.addMobCharge(EntityType.GOAT, 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15);
+	}
+
 	public static MobSpawnSettings.Builder gladdenSpawning() {
 
 		return new MobSpawnSettings.Builder()
@@ -343,6 +358,39 @@ public abstract class BiomeHelper {
 	}
 
 	public static BiomeGenerationSettings.Builder ironHillsGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+		BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.TREES_BADLANDS);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_DWARVEN_MAPLE_FALLEN_LEAVES);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_DWARVEN_MAPLE_FALLEN_LOG);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_RANDOM_RUBBLE);
+		biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.MITHRIL_ORE_PLACED_KEY);
+
+		BiomeDefaultFeatures.addDefaultSprings(biome);
+		BiomeDefaultFeatures.addDefaultOres(biome);
+		BiomeDefaultFeatures.addMountainTrees(biome);
+		BiomeDefaultFeatures.addDefaultSoftDisks(biome);
+		BiomeDefaultFeatures.addDefaultMonsterRoom(biome);
+		BiomeDefaultFeatures.addDefaultUndergroundVariety(biome);
+		BiomeDefaultFeatures.addDefaultMushrooms(biome);
+		BiomeDefaultFeatures.addForestGrass(biome);
+		BiomeDefaultFeatures.addDefaultExtraVegetation(biome);
+		BiomeDefaultFeatures.addDefaultUndergroundVariety(biome);
+		BiomeDefaultFeatures.addDefaultCarversAndLakes(biome);
+		BiomeDefaultFeatures.addExtraEmeralds(biome);
+		BiomeDefaultFeatures.addFerns(biome);
+		BiomeDefaultFeatures.addDefaultFlowers(biome);
+		BiomeDefaultFeatures.addPlainVegetation(biome);
+		BiomeDefaultFeatures.addCommonBerryBushes(biome);
+		addLegacyOres(biome);
+
+		return biome;
+	}
+
+	/**
+	 * The Blue Mountains are the Iron Hills' generation with the mountain's own stone underfoot; the
+	 * block itself is laid by {@code TolkienSurfaceRules.blueMountainsSurface}.
+	 */
+	public static BiomeGenerationSettings.Builder blueMountainsGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
 		BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.TREES_BADLANDS);
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_DWARVEN_MAPLE_FALLEN_LEAVES);

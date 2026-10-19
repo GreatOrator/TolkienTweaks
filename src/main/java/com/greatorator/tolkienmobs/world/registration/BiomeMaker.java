@@ -81,6 +81,32 @@ public class BiomeMaker extends BiomeHelper{
                 .build();
     }
 
+    /**
+     * The Blue Mountains follow the Iron Hills' shape without their northern cold: temperate, with
+     * the same teal (#59B6BD) for the grass and the water. The water fog is that same teal, darkened
+     * so it reads as depth rather than as the surface itself.
+     */
+    public static Biome makeBiomeBlueMountains(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        blueMountainsGen(placedFeatureGetter, carverGetter);
+        blueMountainsSpawning();
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(true)
+                .temperature(0.7F)
+                .downfall(0.6F)
+                .specialEffects((new BiomeSpecialEffects.Builder())
+                        .waterColor(0x59B6BD)
+                        .waterFogColor(0x3E8A90)
+                        .fogColor(12638463)
+                        .grassColorOverride(0x59B6BD)
+                        .skyColor(getSkyColorWithTemperatureModifier(0.7F))
+                        .ambientLoopSound(TolkienSounds.MUSIC_DISC_ALLTHATGLITTERS)
+                        .ambientParticle(new AmbientParticleSettings(TolkienParticleTypes.DWARVEN_MAPLE_LEAVES.get(), 0.00625F))
+                        .build())
+                .mobSpawnSettings(blueMountainsSpawning().build())
+                .generationSettings(blueMountainsGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
+
     public static Biome makeBiomeFangorn(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
         fangornForestGen(placedFeatureGetter, carverGetter);
         fangornForestSpawning();

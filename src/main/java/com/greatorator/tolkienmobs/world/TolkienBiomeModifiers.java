@@ -92,7 +92,8 @@ public class TolkienBiomeModifiers {
                 HolderSet.direct(placedFeatures.getOrThrow(OLDFORESTOAK_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
         context.register(ADD_TREE_DWARVEN, new BiomeModifiers.AddFeaturesBiomeModifier(
-                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.IRON_HILLS), biomes.getOrThrow(TolkienBiomes.HITHAEGLIR)),
+                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.IRON_HILLS), biomes.getOrThrow(TolkienBiomes.BLUE_MOUNTAINS),
+                        biomes.getOrThrow(TolkienBiomes.HITHAEGLIR)),
                 HolderSet.direct(placedFeatures.getOrThrow(HARDENED_DWARVEN_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
 

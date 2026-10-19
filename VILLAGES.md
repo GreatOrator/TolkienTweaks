@@ -5,7 +5,7 @@ The six house structure IDs now start villages using Minecraft's jigsaw village 
 | House style | Biome | Paths, farms, and decorations |
 | --- | --- | --- |
 | Desert | Haradwaith | Vanilla desert village |
-| Dwarf | Iron Hills | Vanilla plains village, paths in the mod's stone path |
+| Dwarf | Iron Hills, Blue Mountains | Vanilla plains village, paths in the mod's stone path |
 | Elven | Lorinand | Vanilla plains village |
 | Hobbit | Shire | Vanilla plains village |
 | Human | Gladden Fields | Vanilla plains village, paths in the mod's stone path |
