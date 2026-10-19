@@ -115,6 +115,7 @@ public class TolkienConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> DIAMOND_ORE = registerKey("diamond_ore");
     public static final ResourceKey<ConfiguredFeature<?, ?>> LAPIS_ORE = registerKey("lapis_ore");
     public static final ResourceKey<ConfiguredFeature<?, ?>> COPPER_ORE = registerKey("copper_ore");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> MOUNTAIN_STONE_BLOB = registerKey("ore/mountain_stone_blob");
     public static final ResourceKey<ConfiguredFeature<?, ?>> BLOOM_DECAY_MUSHROOMS = registerKey("bloom_decay_mushrooms");
     public static final ResourceKey<ConfiguredFeature<?, ?>> DECAY_BLOOM_MUSHROOMS = registerKey("decay_bloom_mushrooms");
     public static final ResourceKey<ConfiguredFeature<?, ?>> NURN_LAKE = registerKey("lake/nurn_lake");
@@ -146,6 +147,12 @@ public class TolkienConfiguredFeatures {
         context.register(DIAMOND_ORE, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), Blocks.DIAMOND_ORE.defaultBlockState(), 8)));
         context.register(LAPIS_ORE, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), Blocks.LAPIS_ORE.defaultBlockState(), 7)));
         context.register(COPPER_ORE, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), Blocks.COPPER_ORE.defaultBlockState(), 10)));
+        // The Blue Mountains' rock, laid down the way granite and andesite are: broad blobs through
+        // the stone rather than a uniform bed. Where the biome's surface rule has already turned the
+        // column to mountain stone this finds nothing to replace; it is what puts the rock in a
+        // world that never applies the biome's surface rules at all, such as a single-biome world.
+        context.register(MOUNTAIN_STONE_BLOB, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(
+                new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), TolkienBlocks.MOUNTAIN_STONE.get().defaultBlockState(), 33)));
 
 
         context.register(OVERWORLD_ORE_MITHRIL_KEY, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(overworldMithrilOres, 5)));
