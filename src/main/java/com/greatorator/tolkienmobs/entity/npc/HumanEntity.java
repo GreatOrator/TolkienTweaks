@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.entity.npc;
 import com.greatorator.tolkienmobs.entity.TolkienVillagerEntity;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
+import com.greatorator.tolkienmobs.init.TolkienTags;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -17,12 +18,6 @@ import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 
 public class HumanEntity extends TolkienVillagerEntity implements GeoEntity {
-    /**
-     * At or below this temperature a spawning human is dressed for winter; it is the same 0.15
-     * threshold vanilla uses to decide a biome is cold enough to snow. Forochel sits at -0.5, while
-     * the cool-but-grassy biomes (Barrow Downs at 0.25, Iron Hills at 0.2) stay in normal clothes.
-     */
-    private static final float WINTER_TEMPERATURE = 0.15F;
     private static final EntityDataAccessor<Boolean> WINTER = SynchedEntityData.defineId(HumanEntity.class, EntityDataSerializers.BOOLEAN);
 
     /** Server-side only: whether the spawn biome has been looked at yet. */
@@ -52,9 +47,11 @@ public class HumanEntity extends TolkienVillagerEntity implements GeoEntity {
         // Resolved once, in the biome the human was first seen in, so that it keeps the clothes it
         // spawned with even if it later walks somewhere warmer. Doing this on the first tick rather
         // than in finalizeSpawn also catches humans placed from structure NBT, which never run it.
+        // Which biomes count as cold is the tolkienmobs:cold tag's business, so a datapack can move
+        // the line without a rebuild.
         if (!this.level().isClientSide && !this.winterResolved) {
             this.winterResolved = true;
-            this.setWinter(this.level().getBiome(this.blockPosition()).value().getBaseTemperature() < WINTER_TEMPERATURE);
+            this.setWinter(this.level().getBiome(this.blockPosition()).is(TolkienTags.Biomes.COLD));
         }
     }
 
