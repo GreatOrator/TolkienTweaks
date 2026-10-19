@@ -25,6 +25,9 @@ public class TolkienOverworldRegion extends Region {
             builder.replaceBiome(Biomes.DARK_FOREST, TolkienBiomes.MIRKWOOD);
             builder.replaceBiome(Biomes.OLD_GROWTH_SPRUCE_TAIGA, TolkienBiomes.MIRKWOOD_SPOOKY);
             builder.replaceBiome(Biomes.WINDSWEPT_GRAVELLY_HILLS, TolkienBiomes.IRON_HILLS);
+            // The windswept forest point is the last free windswept climate, and its temperate
+            // hills give the dwarven range of the Blue Mountains somewhere to stand.
+            builder.replaceBiome(Biomes.WINDSWEPT_FOREST, TolkienBiomes.BLUE_MOUNTAINS);
             builder.replaceBiome(Biomes.FROZEN_PEAKS, TolkienBiomes.HITHAEGLIR);
             builder.replaceBiome(Biomes.OLD_GROWTH_PINE_TAIGA, TolkienBiomes.FANGORN);
             builder.replaceBiome(Biomes.ERODED_BADLANDS, TolkienBiomes.MORDOR);

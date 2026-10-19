@@ -51,8 +51,9 @@ public final class TolkienStructureProvider {
             // Nurn's village is built from the desert house, in dark stone, by its own processors.
             new Definition(TolkienStructures.HOUSE_NURN, "tolkienmobs:ttmhouse_nurn",
                     List.of(TolkienBiomes.NURN), 32, 8, 193764838, 0),
+            // Dwarves are as much the Blue Mountains' people as the Iron Hills'.
             new Definition(TolkienStructures.HOUSE_DWARF, "tolkienmobs:ttmhouse_dwarf",
-                    List.of(TolkienBiomes.IRON_HILLS), 32, 8, 193764828, 0),
+                    List.of(TolkienBiomes.IRON_HILLS, TolkienBiomes.BLUE_MOUNTAINS), 32, 8, 193764828, 0),
             new Definition(TolkienStructures.HOUSE_ELVEN, "tolkienmobs:ttmhouse_elven",
                     List.of(TolkienBiomes.LORINAND), 32, 8, 193764829, 0),
             new Definition(TolkienStructures.HOUSE_HUMAN, "tolkienmobs:ttmhouse_human",
