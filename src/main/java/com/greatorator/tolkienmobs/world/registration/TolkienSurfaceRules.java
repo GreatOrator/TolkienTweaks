@@ -46,12 +46,15 @@ public class TolkienSurfaceRules {
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.NURN, TolkienBiomes.MORDOR, TolkienBiomes.ASH_MOUNTAINS), DARK_STONE),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HARADWAITH), SANDSTONE),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HITHAEGLIR), PACKED_ICE))),
-                        blueMountainsSurface(),
+                        blueMountainsFloor(),
+                        blueMountainsRock(),
                         overworldLikeFloor())),
                 // The Blue Mountains' rock is the biome's stone, not a surface dressing, so its
-                // rule sits outside the guard above: a shaft sunk into the mountain stays in
-                // mountain stone all the way down to the deepslate.
-                blueMountainsSurface());
+                // rules sit outside the guard above as well: a shaft sunk into the mountain stays
+                // in mountain stone all the way down to the deepslate, and a floor that the
+                // preliminary surface guessed too low still gets its grass.
+                blueMountainsFloor(),
+                blueMountainsRock());
 	}
 
 	/**
@@ -171,15 +174,27 @@ public class TolkienSurfaceRules {
 	}
 
 	/**
-	 * The Blue Mountains stand on the mod's own mountain stone instead of vanilla stone. The surface
-	 * system only ever rewrites a block that is still the generator's default - stone - so this one
-	 * unconditional rule swaps the whole column, floor to deepslate, and leaves the deepslate layer
-	 * and every block that is not stone to the dimension. The floor conditions would only reach a
-	 * handful of blocks below the surface and the preliminary-surface guard stops above the
-	 * mountain's feet, so {@code tolkienSurface} calls the rule once inside the guard to keep the
-	 * floor off the grass rules and once outside it to carry the rock all the way down.
+	 * The Blue Mountains stand on the mod's own mountain stone instead of vanilla stone: grass on the
+	 * floor, mountain stone in every block beneath it. The surface system only ever rewrites a block
+	 * that is still the generator's default - stone - so the rock rule can simply claim the whole
+	 * column between it and the deepslate layer, which the dimension still supplies.
+	 *
+	 * <p>The two rules are separate because the rock rule would otherwise claim the floor as well and
+	 * leave the biome bare stone, the way Mordor is. The floor rule comes first so the floor keeps its
+	 * grass; everything under it - including the dirt band the rest of the world gets - is rock.
+	 * Both are called inside and outside the preliminary-surface guard, so the colour of the floor
+	 * does not depend on how well that height estimate guessed the mountain's feet.
 	 */
-	private static SurfaceRules.RuleSource blueMountainsSurface() {
+	private static SurfaceRules.RuleSource blueMountainsFloor() {
+		SurfaceRules.RuleSource grassGrows = SurfaceRules.ifTrue(
+				SurfaceRules.waterBlockCheck(-1, 0),
+				SurfaceRules.ifTrue(SurfaceRules.yStartCheck(VerticalAnchor.absolute(-4), 1), GRASS_BLOCK));
+		SurfaceRules.RuleSource floor = SurfaceRules.sequence(grassGrows, DIRT);
+		return SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.BLUE_MOUNTAINS),
+				SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, floor));
+	}
+
+	private static SurfaceRules.RuleSource blueMountainsRock() {
 		return SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.BLUE_MOUNTAINS), MOUNTAIN_STONE);
 	}
 

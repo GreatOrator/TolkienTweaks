@@ -9,6 +9,11 @@ All notable changes to this project will be documented in this file.
 - Added the Blue Mountains, a temperate mountain biome shaped like the Iron Hills but with the mod's mountain stone where vanilla stone would be, and with teal grass and water (#59B6BD).
 - Mountain stone counts as stone for ore generation, so the Blue Mountains' underground carries the same ores as any other biome's.
 - The Blue Mountains grow dwarven maples, and dwarven villages now start there as well as in the Iron Hills.
+- Mountain stone also forms andesite-like veins through the Blue Mountains' stone, so the rock still shows in worlds that never apply the biome's surface rules, such as a single-biome world.
+
+### Fixed
+
+- The Blue Mountains no longer come out as bare stone: their floor keeps its grass, and mountain stone starts in the block beneath it instead of a band of dirt.
 
 ## [4.3.81]  - 2026-10-18
 

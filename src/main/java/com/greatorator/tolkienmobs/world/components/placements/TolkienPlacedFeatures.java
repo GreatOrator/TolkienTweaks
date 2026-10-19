@@ -91,6 +91,7 @@ public class TolkienPlacedFeatures {
     public static final ResourceKey<PlacedFeature> PLACED_DIAMOND_ORE = registerKey("legacy_diamond_ore");
     public static final ResourceKey<PlacedFeature> PLACED_LAPIS_ORE = registerKey("legacy_lapis_ore");
     public static final ResourceKey<PlacedFeature> PLACED_COPPER_ORE = registerKey("legacy_copper_ore");
+    public static final ResourceKey<PlacedFeature> MOUNTAIN_STONE_PLACED_KEY = registerKey("mountain_stone_placed");
 
     public static final ResourceKey<PlacedFeature> PLACED_SMALL_GRANITE = registerKey("small_granite");
     public static final ResourceKey<PlacedFeature> PLACED_SMALL_DIORITE = registerKey("small_diorite");
@@ -180,6 +181,8 @@ public class TolkienPlacedFeatures {
         context.register(PLACED_DIAMOND_ORE, new PlacedFeature(features.getOrThrow(DIAMOND_ORE), ImmutableList.<PlacementModifier>builder().add(HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.absolute(15)), InSquarePlacement.spread(), BiomeFilter.biome()).build()));
         context.register(PLACED_LAPIS_ORE, new PlacedFeature(features.getOrThrow(LAPIS_ORE), ImmutableList.<PlacementModifier>builder().add(HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.absolute(30)), InSquarePlacement.spread(), CountPlacement.of(2), BiomeFilter.biome()).build()));
         context.register(PLACED_COPPER_ORE, new PlacedFeature(features.getOrThrow(COPPER_ORE), ImmutableList.<PlacementModifier>builder().add(HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.absolute(96)), InSquarePlacement.spread(), CountPlacement.of(6), BiomeFilter.biome()).build()));
+        context.register(MOUNTAIN_STONE_PLACED_KEY, new PlacedFeature(features.getOrThrow(MOUNTAIN_STONE_BLOB),
+                TolkienOrePlacement.commonOrePlacement(16, HeightRangePlacement.triangle(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(128)))));
 
         context.register(FLOWER_SIMBELMYNE_PLACED_KEY, new PlacedFeature(features.getOrThrow(FLOWER_SIMBELMYNE_KEY),
                 List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome())));
