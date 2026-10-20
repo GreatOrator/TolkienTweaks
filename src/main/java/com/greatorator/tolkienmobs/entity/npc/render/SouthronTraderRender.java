@@ -1,8 +1,8 @@
 package com.greatorator.tolkienmobs.entity.npc.render;
 
 import com.google.common.collect.Maps;
-import com.greatorator.tolkienmobs.entity.npc.SouthronEntity;
-import com.greatorator.tolkienmobs.entity.npc.model.SouthronNpcModel;
+import com.greatorator.tolkienmobs.entity.npc.SouthronTraderEntity;
+import com.greatorator.tolkienmobs.entity.npc.model.SouthronTraderModel;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.Util;
@@ -15,7 +15,7 @@ import java.util.Map;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class SouthronNpcRender extends GeoEntityRenderer<SouthronEntity> {
+public class SouthronTraderRender extends GeoEntityRenderer<SouthronTraderEntity> {
     public static final Map<TolkienVariant, ResourceLocation> LOCATION_BY_VARIANT =
             Util.make(Maps.newEnumMap(TolkienVariant.class), map -> {
                 map.put(TolkienVariant.DEFAULT,
@@ -54,18 +54,18 @@ public class SouthronNpcRender extends GeoEntityRenderer<SouthronEntity> {
                         ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/southron/southron1.png"));
             });
 
-    public SouthronNpcRender(EntityRendererProvider.Context context) {
-        super(context, new SouthronNpcModel());
+    public SouthronTraderRender(EntityRendererProvider.Context context) {
+        super(context, new SouthronTraderModel());
         this.shadowRadius = 0.3f;
     }
 
     @Override
-    public ResourceLocation getTextureLocation(SouthronEntity entity) {
+    public ResourceLocation getTextureLocation(SouthronTraderEntity entity) {
         return LOCATION_BY_VARIANT.get(entity.getTolkienVariant());
     }
 
     @Override
-    public void render(SouthronEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+    public void render(SouthronTraderEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         if(entity.isBaby()) {
             poseStack.scale(0.50f, 0.50f, 0.50f);
         }

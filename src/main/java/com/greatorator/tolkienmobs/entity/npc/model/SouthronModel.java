@@ -1,6 +1,6 @@
 package com.greatorator.tolkienmobs.entity.npc.model;
 
-import com.greatorator.tolkienmobs.entity.npc.SouthronTraderEntity;
+import com.greatorator.tolkienmobs.entity.npc.SouthronEntity;
 import com.greatorator.tolkienmobs.entity.npc.render.SouthronRender;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.animation.AnimationState;
@@ -11,27 +11,27 @@ import software.bernie.geckolib.model.data.EntityModelData;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class SouthronModel extends GeoModel<SouthronTraderEntity> {
+public class SouthronModel extends GeoModel<SouthronEntity> {
 	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "geo/merchant/southron.geo.json");
 	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/merchant/southron.animation.json");
 
 	@Override
-	public ResourceLocation getModelResource(SouthronTraderEntity object) {
+	public ResourceLocation getModelResource(SouthronEntity object) {
 		return this.model;
 	}
 
 	@Override
-	public ResourceLocation getTextureResource(SouthronTraderEntity object) {
+	public ResourceLocation getTextureResource(SouthronEntity object) {
 		return SouthronRender.LOCATION_BY_VARIANT.get(object.getTolkienVariant());
 	}
 
 	@Override
-	public ResourceLocation getAnimationResource(SouthronTraderEntity object) {
+	public ResourceLocation getAnimationResource(SouthronEntity object) {
 		return this.animations;
 	}
 
 	@Override
-	public void setCustomAnimations(SouthronTraderEntity entity, long uniqueID, AnimationState<SouthronTraderEntity> customPredicate) {
+	public void setCustomAnimations(SouthronEntity entity, long uniqueID, AnimationState<SouthronEntity> customPredicate) {
 		super.setCustomAnimations(entity, uniqueID, customPredicate);
 		GeoBone head = this.getAnimationProcessor().getBone("head");
 		assert customPredicate != null;

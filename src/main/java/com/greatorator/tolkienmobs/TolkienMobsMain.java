@@ -290,10 +290,10 @@ public class TolkienMobsMain {
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_DWARF.get(), DwarfRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_ELVES.get(), ElvesRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_HOBBIT.get(), HobbitRender::new);
-            EntityRenderers.register(TolkienEntities.ENTITY_TTM_SOUTHRON.get(), SouthronRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_SOUTHRON.get(), SouthronTraderRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_ORC_TRADER.get(), OrcTraderRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_ORC.get(), OrcRender::new);
-            EntityRenderers.register(TolkienEntities.ENTITY_TTM_SOUTHRON_NPC.get(), SouthronNpcRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_SOUTHRON_NPC.get(), SouthronRender::new);
 
                 // Projectile
             EntityRenderers.register(TolkienEntities.AMMO_BOULDER.get(), BoulderRender::new);
