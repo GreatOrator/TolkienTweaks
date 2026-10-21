@@ -8,10 +8,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.AttachFace;
-import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
-import net.neoforged.neoforge.client.model.generators.ModelFile;
-import net.neoforged.neoforge.client.model.generators.VariantBlockStateBuilder;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import com.greatorator.tolkienmobs.datagen.modelgen.ConfiguredModel;
+import com.greatorator.tolkienmobs.datagen.modelgen.ModelFile;
+import com.greatorator.tolkienmobs.datagen.modelgen.VariantBlockStateBuilder;
+import com.greatorator.tolkienmobs.datagen.modelgen.ExistingFileHelper;
 
 import javax.annotation.Nonnull;
 

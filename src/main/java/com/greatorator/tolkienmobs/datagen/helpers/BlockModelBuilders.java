@@ -11,11 +11,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
-import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
-import net.neoforged.neoforge.client.model.generators.ModelBuilder;
-import net.neoforged.neoforge.client.model.generators.ModelFile;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import com.greatorator.tolkienmobs.datagen.modelgen.BlockModelBuilder;
+import com.greatorator.tolkienmobs.datagen.modelgen.ConfiguredModel;
+import com.greatorator.tolkienmobs.datagen.modelgen.ModelBuilder;
+import com.greatorator.tolkienmobs.datagen.modelgen.ModelFile;
+import com.greatorator.tolkienmobs.datagen.modelgen.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
 import java.util.function.Function;

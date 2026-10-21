@@ -15,9 +15,8 @@ import net.minecraft.resources.ResourceLocation;
  * package, which was removed in 21.4. The method names and shapes deliberately match the
  * old API so the existing providers only needed their imports changed.</p>
  */
-public abstract class ModelBuilder<T extends ModelBuilder<T>> {
+public abstract class ModelBuilder<T extends ModelBuilder<T>> extends ModelFile {
     protected final JsonObject root = new JsonObject();
-    protected final ResourceLocation location;
     protected final String name;
 
     protected ModelFile parent;
@@ -26,19 +25,17 @@ public abstract class ModelBuilder<T extends ModelBuilder<T>> {
     protected final Map<String, String> textures = new LinkedHashMap<>();
     protected final JsonArray elements = new JsonArray();
     protected final JsonArray overrides = new JsonArray();
+    private ResourceLocation customLoaderId;
+    private JsonObject customLoaderData;
 
     protected ModelBuilder(ResourceLocation location, String name) {
-        this.location = location;
+        super(location);
         this.name = name;
     }
 
     @SuppressWarnings("unchecked")
     protected final T self() {
         return (T) this;
-    }
-
-    public ResourceLocation getLocation() {
-        return this.location;
     }
 
     public T parent(ModelFile parent) {
@@ -89,6 +86,15 @@ public abstract class ModelBuilder<T extends ModelBuilder<T>> {
         return new ElementBuilder();
     }
 
+    public <L extends CustomLoaderBuilder<T>> L customLoader(java.util.function.Function<T, L> factory) {
+        return factory.apply(self());
+    }
+
+    void setCustomLoader(ResourceLocation id, JsonObject data) {
+        this.customLoaderId = id;
+        this.customLoaderData = data;
+    }
+
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
         if (this.parent != null) {
@@ -99,6 +105,10 @@ public abstract class ModelBuilder<T extends ModelBuilder<T>> {
         }
         if (this.ambientOcclusion != null) {
             json.addProperty("ambientocclusion", this.ambientOcclusion);
+        }
+        if (this.customLoaderId != null) {
+            json.addProperty("loader", this.customLoaderId.toString());
+            this.customLoaderData.entrySet().forEach(entry -> json.add(entry.getKey(), entry.getValue()));
         }
         if (!this.textures.isEmpty()) {
             JsonObject tex = new JsonObject();
@@ -161,7 +171,8 @@ public abstract class ModelBuilder<T extends ModelBuilder<T>> {
             return allFaces(action);
         }
 
-        public ModelBuilder<T> end() {
+        /** Returns the owning builder with its concrete type intact, as NeoForge's did. */
+        public T end() {
             if (this.rotation.isSet()) {
                 this.element.add("rotation", this.rotation.toJson());
             }

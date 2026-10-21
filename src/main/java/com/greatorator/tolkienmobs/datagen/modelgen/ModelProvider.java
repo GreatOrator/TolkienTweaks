@@ -109,6 +109,10 @@ public abstract class ModelProvider<T extends ModelBuilder<T>> implements DataPr
         return this.withExistingParent(name, "block/cube_column").texture("side", side).texture("end", end);
     }
 
+    public T cubeColumnHorizontal(String name, ResourceLocation side, ResourceLocation end) {
+        return this.withExistingParent(name, "block/cube_column_horizontal").texture("side", side).texture("end", end);
+    }
+
     public T cross(String name, ResourceLocation cross) {
         return this.singleTexture(name, "block/cross", "cross", cross);
     }
@@ -169,14 +173,23 @@ public abstract class ModelProvider<T extends ModelBuilder<T>> implements DataPr
         return this.singleTexture(name, "block/template_torch_wall", "torch", torch);
     }
 
-    @Override
-    public CompletableFuture<?> run(CachedOutput cache) {
+    public void clear() {
         this.generatedModels.clear();
-        this.registerModels();
+    }
+
+    /** Writes every model collected so far, without registering anything new. */
+    public CompletableFuture<?> generateAll(CachedOutput cache) {
         PackOutput.PathProvider pathProvider = this.output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "models");
         return CompletableFuture.allOf(this.generatedModels.entrySet().stream()
                 .map(entry -> DataProvider.saveStable(cache, entry.getValue().toJson(), pathProvider.json(entry.getKey())))
                 .toArray(CompletableFuture[]::new));
+    }
+
+    @Override
+    public CompletableFuture<?> run(CachedOutput cache) {
+        this.clear();
+        this.registerModels();
+        return this.generateAll(cache);
     }
 
     @Override

@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 
 /** Writes the {@code variants} form of a blockstate JSON. */
-public class VariantBlockStateBuilder {
+public class VariantBlockStateBuilder implements IGeneratedBlockState {
     private final Block owner;
     private final Map<String, List<ConfiguredModel>> variants =
             new TreeMap<>(Comparator.naturalOrder());
@@ -45,10 +45,13 @@ public class VariantBlockStateBuilder {
     }
 
     public VariantBlockStateBuilder forAllStatesExcept(Function<BlockState, ConfiguredModel[]> mapper, Property<?>... ignored) {
+        // An ignored property is left out of the variant key, so every value of it collapses onto
+        // one key: the first state of each group supplies the model and the rest are skipped.
         List<Property<?>> skip = List.of(ignored);
         for (BlockState state : this.owner.getStateDefinition().getPossibleStates()) {
-            if (skip.stream().noneMatch(state::hasProperty)) {
-                this.variants.put(PartialBlockstate.toKey(state), new ArrayList<>(List.of(mapper.apply(state))));
+            String key = PartialBlockstate.toKey(state, skip);
+            if (!this.variants.containsKey(key)) {
+                this.variants.put(key, new ArrayList<>(List.of(mapper.apply(state))));
             }
         }
         return this;
@@ -88,9 +91,8 @@ public class VariantBlockStateBuilder {
             return new ConfiguredModel.Builder<>(models -> this.owner.setModels(this, models));
         }
 
-        public PartialBlockstate addModels(ConfiguredModel... models) {
-            this.owner.addModels(this, models);
-            return this;
+        public VariantBlockStateBuilder addModels(ConfiguredModel... models) {
+            return this.owner.addModels(this, models);
         }
 
         public VariantBlockStateBuilder setModels(ConfiguredModel... models) {
@@ -111,8 +113,13 @@ public class VariantBlockStateBuilder {
         }
 
         static String toKey(BlockState state) {
+            return toKey(state, List.of());
+        }
+
+        static String toKey(BlockState state, List<Property<?>> ignored) {
             List<String> parts = new ArrayList<>();
             state.getProperties().stream()
+                    .filter(property -> !ignored.contains(property))
                     .sorted(Comparator.comparing(Property::getName))
                     .forEach(property -> parts.add(property.getName() + "=" + name(property, state.getValue(property))));
             return String.join(",", parts);

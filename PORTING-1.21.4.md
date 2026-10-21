@@ -9,7 +9,7 @@ This file is the handoff: it records what is done, what is measured, and what to
 |---|---|
 | Target | Minecraft **1.21.4**, NeoForge **21.4.161** |
 | Compile errors at the start | **5,720** in 425 files |
-| Compile errors now | **5,184** in 382 files |
+| Compile errors now | **1,375** in ~150 files |
 | Runnable | no — the tree does not compile yet |
 
 Dependency versions, all verified to exist and resolve:
@@ -60,48 +60,61 @@ The script is idempotent and safe to re-run.
 
 ## Remaining work, in the order that unblocks the most
 
-### 1. Model datagen — 2,394 errors, 4 files
-
-`TolkienBlockStateProvider` (1,214), `TolkienItemModelProvider` (554),
-`BlockModelHelper` (346), `BlockModelBuilders` (280).
+### 1. Model datagen — DONE
 
 NeoForge 21.4 **removed** `net.neoforged.neoforge.client.model.generators`
 (`ModelFile`, `BlockModelBuilder`, `BlockStateProvider`, `ExistingFileHelper`,
 `ConfiguredModel`, `VariantBlockStateBuilder`). Only `loaders/` and `template/` remain.
 It also removed `ExistingFileHelper` outright, so NeoForge's source cannot be copied back in
-(it is LGPL-2.1 anyway). A replacement is being written in
-`src/main/java/com/greatorator/tolkienmobs/datagen/modelgen/`, keeping the old class and
-method names so the providers only need their imports changed.
+(it is LGPL-2.1 anyway). The replacement lives in
+`src/main/java/com/greatorator/tolkienmobs/datagen/modelgen/` and keeps the old class and
+method names, so the providers only needed their imports changed.
 
-Done so far in that package (compiles clean against 1.21.4): `ModelFile`, `ModelBuilder`
-(textures, `render_type`, the element/face/rotation DSL), `BlockModelBuilder`,
-`ItemModelBuilder` (overrides), `ConfiguredModel`, `VariantBlockStateBuilder`,
-`MultiPartBlockStateBuilder`, `ModelProvider` (the shapes and parents the mod uses, and the
+That package now holds: `ModelFile` (incl. `ExistingModelFile`/`UncheckedModelFile`),
+`ModelBuilder` (textures, `render_type`, the element/face/rotation DSL, `customLoader`),
+`BlockModelBuilder`, `ItemModelBuilder` (overrides), `ConfiguredModel`, `ItemLayerModelBuilder`,
+`VariantBlockStateBuilder`, `MultiPartBlockStateBuilder`, `ModelProvider` (shape helpers and the
 `models/` path rule: a name with a slash is used verbatim, a bare name gets the folder prefix),
-and an `ExistingFileHelper` stand-in.
+`BlockModelProvider`, `ItemModelProvider`, the full `BlockStateProvider` shape library, and an
+`ExistingFileHelper` stand-in (it only ever gated error messages, so it accepts everything).
+`ItemModelProvider` also emits the 1.21.4 item-model definitions under `assets/<ns>/items/`.
 
-Still to write: `BlockStateProvider` (the shape library — stairs, slab, wall, fence, gate,
-button, plate, door, trapdoor, pane, log, sign, directionals — plus `getVariantBuilder`
-and `getMultipartBuilder`), `BlockModelProvider`/`ItemModelProvider` subclasses,
-`ItemLayerModelBuilder` with `ModelBuilder#customLoader`, then swap the imports in
-`TolkienBlockStateProvider`, `TolkienItemModelProvider`, `BlockModelHelper` and
-`BlockModelBuilders` and delete the last `net.neoforged...generators` imports.
+Imports are swapped in `TolkienBlockStateProvider`, `TolkienItemModelProvider`,
+`BlockModelHelper` and `BlockModelBuilders`; none of the four has a remaining error.
 
-1.21.4 also needs item-model **definitions**: `assets/<ns>/items/<name>.json` containing
-`{"model":{"type":"minecraft:model","model":"tolkienmobs:item/<name>"}}`. Vanilla ships
-1,385 of these; the mod needs 885. `ItemModelProvider` should emit them alongside
-`models/item/*.json`.
+#### Two behavioural differences that were not obvious
 
-The call sites use a small vocabulary — `models().cubeAll/cubeBottomTop`,
-`blockWithItem`, `stairsBlock`, `slabBlock`, `wallBlock`, `doorBlockWithRenderType`,
-`trapdoorBlockWithRenderType`, `directionalBlock`, `paneBlockWithRenderType`,
-`blockItem`, `modLoc`, `mcLoc`, `blockTexture`, `basicItem`. Reimplementing those as a
-local JSON-emitting helper keeps all 1,579 lines of provider code intact.
+- `VariantBlockStateBuilder#forAllStatesExcept` collapses ignored properties into the variant key
+  (stairs ignore `waterlogged`). Treating a state that merely *has* the property as skippable
+  drops every state, which produced `"variants": {}` for stairs and fence gates. Fixed and now
+  covered by the harness below.
+- `GatherDataEvent` lost `includeServer()`/`includeClient()`: one event now covers a whole run,
+  so `TolkienDataGenerator` adds every provider through `event.addProvider(...)`. The `--all`
+  argument in `build.gradle`'s `data` run has not been re-checked against 21.4 yet — verify it on
+  the first `runData`.
+- Render types are passed as bare names (`"cutout"`) as the call sites always did, so they are
+  normalised to `minecraft:` before being written; a bare name parsed as a `ResourceLocation`
+  would otherwise become `tolkienmobs:cutout`.
 
-Verification plan: `src/generated/resources` already holds the 5,001 JSONs these providers
-produce, so once the mod compiles, `./gradlew runData` and a JSON-aware diff against the
-committed files is the acceptance test. Compare parsed JSON, not bytes: key order inside an
-object is not meaningful and Gson writes them in insertion order.
+#### Verification without a compiling mod
+
+`runData` needs the whole mod to compile, so the generator is checked independently instead:
+[tools/modelgen-verify/run.sh](tools/modelgen-verify/run.sh) compiles `datagen.modelgen` on its
+own, generates a spread of vanilla shapes, and compares every file it writes with the same file
+in the vanilla 1.21.4 client jar. It boots vanilla `Bootstrap` outside FML by installing an empty
+`LoadingModList` first.
+
+Last run: **62 files compared, 54 byte-identical, 3 identical apart from multipart ordering,
+5 expected differences.** The ordering differences are NeoForge's direction order
+(north/south/west/east), which is what the committed
+`assets/tolkienmobs/blockstates/fence_deadwood.json` already contains, so they are correct for this
+repo. The expected differences are: the furnace blockstate (vanilla switches model on `lit`, which
+the harness call does not), three `iron_trapdoor_*` models (they carry `render_type`, as the mod's
+committed door/trapdoor models do), and the block-item definition pointing at the generated
+`item/<name>` model instead of the block model — self-consistent, since that model is generated.
+
+Still to do: once the mod compiles, `./gradlew runData` and a JSON-aware diff of
+`src/generated/resources` against the committed 5,001 files. Compare parsed JSON, not bytes.
 
 ### 2. Entity renderers and models — the render-state rework
 
