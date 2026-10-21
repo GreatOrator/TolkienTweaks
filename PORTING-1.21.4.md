@@ -68,6 +68,29 @@ The script is idempotent and safe to re-run.
 NeoForge 21.4 **removed** `net.neoforged.neoforge.client.model.generators`
 (`ModelFile`, `BlockModelBuilder`, `BlockStateProvider`, `ExistingFileHelper`,
 `ConfiguredModel`, `VariantBlockStateBuilder`). Only `loaders/` and `template/` remain.
+It also removed `ExistingFileHelper` outright, so NeoForge's source cannot be copied back in
+(it is LGPL-2.1 anyway). A replacement is being written in
+`src/main/java/com/greatorator/tolkienmobs/datagen/modelgen/`, keeping the old class and
+method names so the providers only need their imports changed.
+
+Done so far in that package (compiles clean against 1.21.4): `ModelFile`, `ModelBuilder`
+(textures, `render_type`, the element/face/rotation DSL), `BlockModelBuilder`,
+`ItemModelBuilder` (overrides), `ConfiguredModel`, `VariantBlockStateBuilder`,
+`MultiPartBlockStateBuilder`, `ModelProvider` (the shapes and parents the mod uses, and the
+`models/` path rule: a name with a slash is used verbatim, a bare name gets the folder prefix),
+and an `ExistingFileHelper` stand-in.
+
+Still to write: `BlockStateProvider` (the shape library — stairs, slab, wall, fence, gate,
+button, plate, door, trapdoor, pane, log, sign, directionals — plus `getVariantBuilder`
+and `getMultipartBuilder`), `BlockModelProvider`/`ItemModelProvider` subclasses,
+`ItemLayerModelBuilder` with `ModelBuilder#customLoader`, then swap the imports in
+`TolkienBlockStateProvider`, `TolkienItemModelProvider`, `BlockModelHelper` and
+`BlockModelBuilders` and delete the last `net.neoforged...generators` imports.
+
+1.21.4 also needs item-model **definitions**: `assets/<ns>/items/<name>.json` containing
+`{"model":{"type":"minecraft:model","model":"tolkienmobs:item/<name>"}}`. Vanilla ships
+1,385 of these; the mod needs 885. `ItemModelProvider` should emit them alongside
+`models/item/*.json`.
 
 The call sites use a small vocabulary — `models().cubeAll/cubeBottomTop`,
 `blockWithItem`, `stairsBlock`, `slabBlock`, `wallBlock`, `doorBlockWithRenderType`,
@@ -75,10 +98,10 @@ The call sites use a small vocabulary — `models().cubeAll/cubeBottomTop`,
 `blockItem`, `modLoc`, `mcLoc`, `blockTexture`, `basicItem`. Reimplementing those as a
 local JSON-emitting helper keeps all 1,579 lines of provider code intact.
 
-Verification is unusually good here: `src/generated/resources` already holds the 5,001
-JSONs these providers produce, so regenerated output can be diffed against them.
-1.21.4 also needs the new `assets/<ns>/items/<name>.json` item-model definitions on top
-of the existing `models/item/<name>.json`.
+Verification plan: `src/generated/resources` already holds the 5,001 JSONs these providers
+produce, so once the mod compiles, `./gradlew runData` and a JSON-aware diff against the
+committed files is the acceptance test. Compare parsed JSON, not bytes: key order inside an
+object is not meaningful and Gson writes them in insertion order.
 
 ### 2. Entity renderers and models — the render-state rework
 
