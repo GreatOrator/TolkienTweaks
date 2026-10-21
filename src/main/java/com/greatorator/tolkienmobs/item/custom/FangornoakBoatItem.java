@@ -2,7 +2,6 @@ package com.greatorator.tolkienmobs.item.custom;
 
 import net.minecraft.world.InteractionResult;
 
-import net.minecraft.world.InteractionResult;
 
 import com.greatorator.tolkienmobs.entity.item.FangornoakBoatEntity;
 import com.greatorator.tolkienmobs.entity.item.FangornoakChestBoatEntity;
