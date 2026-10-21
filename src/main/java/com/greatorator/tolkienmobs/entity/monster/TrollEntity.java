@@ -1,5 +1,7 @@
 package com.greatorator.tolkienmobs.entity.monster;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.greatorator.tolkienmobs.init.TolkienItems;
@@ -85,7 +87,7 @@ public class TrollEntity extends TolkienMonsterEntity implements GeoEntity {
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnType, @Nullable SpawnGroupData spawnGroupData) {
         RandomSource randomsource = level.getRandom();
 
         this.populateDefaultEquipmentSlots(randomsource, difficulty);

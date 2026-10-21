@@ -1,5 +1,7 @@
 package com.greatorator.tolkienmobs.entity.passive;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+
 import com.greatorator.tolkienmobs.entity.npc.DwarfEntity;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
@@ -175,7 +177,7 @@ public class GoatEntity extends AbstractChestedHorse implements GeoEntity {
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnType, @Nullable SpawnGroupData spawnGroupData) {
         if (level.getRandom().nextInt(100) == 0) {
             DwarfEntity dwarfentity = TolkienEntities.ENTITY_TTM_DWARF.get().create(this.level);
             dwarfentity.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);

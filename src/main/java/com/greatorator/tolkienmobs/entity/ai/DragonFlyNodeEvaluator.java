@@ -11,7 +11,7 @@ public class DragonFlyNodeEvaluator extends FlyNodeEvaluator {
     public PathType getPathType(BlockGetter pLevel, int pX, int pY, int pZ) {
         BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
         PathType blockpathtypes = getPathTypeFromState(pLevel, blockpos$mutableblockpos.set(pX, pY, pZ));
-        if (blockpathtypes == PathType.OPEN && pY >= pLevel.getMinBuildHeight() + 1) {
+        if (blockpathtypes == PathType.OPEN && pY >= pLevel.getMinY() + 1) {
             PathType blockpathtypes1 = getPathTypeFromState(pLevel, blockpos$mutableblockpos.set(pX, pY - 1, pZ));
             if (blockpathtypes1 != PathType.DAMAGE_FIRE && blockpathtypes1 != PathType.LAVA) {
                 if (blockpathtypes1 == PathType.DAMAGE_OTHER) {

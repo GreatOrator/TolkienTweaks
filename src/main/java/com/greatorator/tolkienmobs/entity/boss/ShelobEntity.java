@@ -1,5 +1,7 @@
 package com.greatorator.tolkienmobs.entity.boss;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
 import com.greatorator.tolkienmobs.entity.ai.goal.RangedWebAttackGoal;
 import com.greatorator.tolkienmobs.entity.monster.MirkwoodSpiderEntity;
@@ -199,7 +201,7 @@ public class ShelobEntity extends TolkienMonsterEntity implements GeoEntity, Web
                     BlockPos blockpos = new BlockPos(i1, j1, k1);
                     EntityType<?> entitytype = spider.getType();
                     if (SpawnPlacements.isSpawnPositionOk(entitytype, this.level(), blockpos)
-                            && SpawnPlacements.checkSpawnRules(entitytype, serverLevel, MobSpawnType.REINFORCEMENT, blockpos, this.level().random)) {
+                            && SpawnPlacements.checkSpawnRules(entitytype, serverLevel, EntitySpawnReason.REINFORCEMENT, blockpos, this.level().random)) {
                         spider.setPos((double)i1, (double)j1, (double)k1);
                         if (!this.level().hasNearbyAlivePlayer((double)i1, (double)j1, (double)k1, 7.0)
                                 && this.level().isUnobstructed(spider)
@@ -209,7 +211,7 @@ public class ShelobEntity extends TolkienMonsterEntity implements GeoEntity, Web
                             livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.helpcomming.shelob").withStyle(ChatFormatting.DARK_GREEN));
 
                             spider.setTarget(livingentity);
-                            spider.finalizeSpawn(serverLevel, this.level().getCurrentDifficultyAt(spider.blockPosition()), MobSpawnType.REINFORCEMENT, null);
+                            spider.finalizeSpawn(serverLevel, this.level().getCurrentDifficultyAt(spider.blockPosition()), EntitySpawnReason.REINFORCEMENT, null);
                             serverLevel.addFreshEntityWithPassengers(spider);
                             AttributeInstance attributeinstance = this.getAttribute(Attributes.SPAWN_REINFORCEMENTS_CHANCE);
                             AttributeModifier attributemodifier = attributeinstance.getModifier(REINFORCEMENT_CALLER_CHARGE_ID);

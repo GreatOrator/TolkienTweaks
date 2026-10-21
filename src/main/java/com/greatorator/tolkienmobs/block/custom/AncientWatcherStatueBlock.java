@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class AncientWatcherStatueBlock extends TolkienEntityBlock implements SimpleWaterloggedBlock {
     public static final MapCodec<AncientWatcherStatueBlock> CODEC = simpleCodec(AncientWatcherStatueBlock::new);
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     protected static final VoxelShape SHAPE = Block.box(0.0, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);

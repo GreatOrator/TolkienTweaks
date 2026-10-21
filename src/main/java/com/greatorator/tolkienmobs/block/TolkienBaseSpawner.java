@@ -1,5 +1,7 @@
 package com.greatorator.tolkienmobs.block;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+
 import com.greatorator.tolkienmobs.block.custom.entity.CamoSpawnerBlockEntity;
 import com.greatorator.tolkienmobs.util.block.MobSpawnData;
 import com.mojang.datafixers.util.Either;
@@ -160,7 +162,7 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                                                 if (!spawndata$customspawnrules.isValidPosition(blockpos, serverLevel)) {
                                                     break label105;
                                                 }
-                                            } else if (!SpawnPlacements.checkSpawnRules((EntityType) optional.get(), serverLevel, MobSpawnType.SPAWNER, blockpos, serverLevel.getRandom())) {
+                                            } else if (!SpawnPlacements.checkSpawnRules((EntityType) optional.get(), serverLevel, EntitySpawnReason.SPAWNER, blockpos, serverLevel.getRandom())) {
                                                 break label105;
                                             }
 
@@ -180,12 +182,12 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                                             entity.moveTo(entity.getX(), entity.getY(), entity.getZ(), randomsource.nextFloat() * 360.0F, 0.0F);
                                             if (entity instanceof Mob) {
                                                 Mob mob = (Mob) entity;
-                                                if (!EventHooks.checkSpawnPositionSpawner(mob, serverLevel, MobSpawnType.SPAWNER, spawndata, this)) {
+                                                if (!EventHooks.checkSpawnPositionSpawner(mob, serverLevel, EntitySpawnReason.SPAWNER, spawndata, this)) {
                                                     break label105;
                                                 }
 
                                                 boolean flag1 = spawndata.getEntityToSpawn().size() == 1 && spawndata.getEntityToSpawn().contains("id", 8);
-                                                EventHooks.finalizeMobSpawnSpawner(mob, serverLevel, serverLevel.getCurrentDifficultyAt(entity.blockPosition()), MobSpawnType.SPAWNER, (SpawnGroupData) null, this, flag1);
+                                                EventHooks.finalizeMobSpawnSpawner(mob, serverLevel, serverLevel.getCurrentDifficultyAt(entity.blockPosition()), EntitySpawnReason.SPAWNER, (SpawnGroupData) null, this, flag1);
                                                 Optional var10000 = spawndata.getEquipment();
                                                 Objects.requireNonNull(mob);
 //                                var10000.ifPresent(mob::equip);
@@ -268,7 +270,7 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                                             if (!spawndata$customspawnrules.isValidPosition(blockpos, serverLevel)) {
                                                 break label105;
                                             }
-                                        } else if (!SpawnPlacements.checkSpawnRules((EntityType) optional.get(), serverLevel, MobSpawnType.SPAWNER, blockpos, serverLevel.getRandom())) {
+                                        } else if (!SpawnPlacements.checkSpawnRules((EntityType) optional.get(), serverLevel, EntitySpawnReason.SPAWNER, blockpos, serverLevel.getRandom())) {
                                             break label105;
                                         }
 
@@ -290,12 +292,12 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                                         entity.moveTo(entity.getX(), entity.getY(), entity.getZ(), randomsource.nextFloat() * 360.0F, 0.0F);
                                         if (entity instanceof Mob) {
                                             Mob mob = (Mob) entity;
-                                            if (!EventHooks.checkSpawnPositionSpawner(mob, serverLevel, MobSpawnType.SPAWNER, spawndata, this)) {
+                                            if (!EventHooks.checkSpawnPositionSpawner(mob, serverLevel, EntitySpawnReason.SPAWNER, spawndata, this)) {
                                                 break label105;
                                             }
 
                                             boolean flag1 = spawndata.getEntityToSpawn().size() == 1 && spawndata.getEntityToSpawn().contains("id", 8);
-                                            EventHooks.finalizeMobSpawnSpawner(mob, serverLevel, serverLevel.getCurrentDifficultyAt(entity.blockPosition()), MobSpawnType.SPAWNER, (SpawnGroupData) null, this, flag1);
+                                            EventHooks.finalizeMobSpawnSpawner(mob, serverLevel, serverLevel.getCurrentDifficultyAt(entity.blockPosition()), EntitySpawnReason.SPAWNER, (SpawnGroupData) null, this, flag1);
                                             Optional var10000 = spawndata.getEquipment();
                                             Objects.requireNonNull(mob);
 //                                var10000.ifPresent(mob::equip);
@@ -374,7 +376,7 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                                         if (!spawndata$customspawnrules.isValidPosition(blockpos, serverLevel)) {
                                             break label105;
                                         }
-                                    } else if (!SpawnPlacements.checkSpawnRules((EntityType) optional.get(), serverLevel, MobSpawnType.SPAWNER, blockpos, serverLevel.getRandom())) {
+                                    } else if (!SpawnPlacements.checkSpawnRules((EntityType) optional.get(), serverLevel, EntitySpawnReason.SPAWNER, blockpos, serverLevel.getRandom())) {
                                         break label105;
                                     }
 
@@ -394,12 +396,12 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                                     entity.moveTo(entity.getX(), entity.getY(), entity.getZ(), randomsource.nextFloat() * 360.0F, 0.0F);
                                     if (entity instanceof Mob) {
                                         Mob mob = (Mob) entity;
-                                        if (!EventHooks.checkSpawnPositionSpawner(mob, serverLevel, MobSpawnType.SPAWNER, spawndata, this)) {
+                                        if (!EventHooks.checkSpawnPositionSpawner(mob, serverLevel, EntitySpawnReason.SPAWNER, spawndata, this)) {
                                             break label105;
                                         }
 
                                         boolean flag1 = spawndata.getEntityToSpawn().size() == 1 && spawndata.getEntityToSpawn().contains("id", 8);
-                                        EventHooks.finalizeMobSpawnSpawner(mob, serverLevel, serverLevel.getCurrentDifficultyAt(entity.blockPosition()), MobSpawnType.SPAWNER, (SpawnGroupData) null, this, flag1);
+                                        EventHooks.finalizeMobSpawnSpawner(mob, serverLevel, serverLevel.getCurrentDifficultyAt(entity.blockPosition()), EntitySpawnReason.SPAWNER, (SpawnGroupData) null, this, flag1);
                                         Optional var10000 = spawndata.getEquipment();
                                         Objects.requireNonNull(mob);
 //                                var10000.ifPresent(mob::equip);
@@ -482,7 +484,7 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                                     if (!spawndata$customspawnrules.isValidPosition(blockpos, serverLevel)) {
                                         break label105;
                                     }
-                                } else if (!SpawnPlacements.checkSpawnRules((EntityType) optional.get(), serverLevel, MobSpawnType.SPAWNER, blockpos, serverLevel.getRandom())) {
+                                } else if (!SpawnPlacements.checkSpawnRules((EntityType) optional.get(), serverLevel, EntitySpawnReason.SPAWNER, blockpos, serverLevel.getRandom())) {
                                     break label105;
                                 }
 
@@ -504,12 +506,12 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                                 entity.moveTo(entity.getX(), entity.getY(), entity.getZ(), randomsource.nextFloat() * 360.0F, 0.0F);
                                 if (entity instanceof Mob) {
                                     Mob mob = (Mob) entity;
-                                    if (!EventHooks.checkSpawnPositionSpawner(mob, serverLevel, MobSpawnType.SPAWNER, spawndata, this)) {
+                                    if (!EventHooks.checkSpawnPositionSpawner(mob, serverLevel, EntitySpawnReason.SPAWNER, spawndata, this)) {
                                         break label105;
                                     }
 
                                     boolean flag1 = spawndata.getEntityToSpawn().size() == 1 && spawndata.getEntityToSpawn().contains("id", 8);
-                                    EventHooks.finalizeMobSpawnSpawner(mob, serverLevel, serverLevel.getCurrentDifficultyAt(entity.blockPosition()), MobSpawnType.SPAWNER, (SpawnGroupData) null, this, flag1);
+                                    EventHooks.finalizeMobSpawnSpawner(mob, serverLevel, serverLevel.getCurrentDifficultyAt(entity.blockPosition()), EntitySpawnReason.SPAWNER, (SpawnGroupData) null, this, flag1);
                                     Optional var10000 = spawndata.getEquipment();
                                     Objects.requireNonNull(mob);
 //                                var10000.ifPresent(mob::equip);

@@ -1,5 +1,7 @@
 package com.greatorator.tolkienmobs.item;
 
+import net.minecraft.world.InteractionResult;
+
 import com.greatorator.tolkienmobs.util.ColorUtility;
 import com.greatorator.tolkienmobs.util.GeneralUtility;
 import com.greatorator.tolkienmobs.util.LangTranslationUtils;
@@ -9,7 +11,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -45,15 +46,15 @@ public class TolkienBowItem extends BowItem {
         this.speedScale = speedScale;
     }
     @Override public int getUseDuration(ItemStack stack, LivingEntity entity) {return useDuration;}
-    @Override public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    @Override public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
         boolean flag = !player.getProjectile(itemstack).isEmpty();
-        InteractionResultHolder<ItemStack> ret = EventHooks.onArrowNock(itemstack, level, player, hand, flag);
+        InteractionResult ret = EventHooks.onArrowNock(itemstack, level, player, hand, flag);
         if(ret != null) return ret;
-        else if(infinityArrow == null && !player.hasInfiniteMaterials() && !flag) return InteractionResultHolder.fail(itemstack);
+        else if(infinityArrow == null && !player.hasInfiniteMaterials() && !flag) return InteractionResult.FAIL;
         else {
             player.startUsingItem(hand);
-            return InteractionResultHolder.consume(itemstack);
+            return InteractionResult.CONSUME;
         }
     }
     @Override public void releaseUsing(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {

@@ -60,6 +60,9 @@ tasks.register("incrementBuildNumber") {
 }
 
 repositories {
+    // Mojang's own library repo: the NeoForm runtime pulls a few artifacts
+    // (jtracy in particular) that the NeoForged mirror does not carry.
+    maven { name = 'MojangLibraries'; url = 'https://libraries.minecraft.net' }
     mavenLocal()
     maven {
         name = 'TerraBlender'
@@ -97,10 +100,8 @@ neoForge {
     // Specify the version of NeoForge to use.
     version = project.neo_version
 
-    parchment {
-        mappingsVersion = project.parchment_mappings_version
-        minecraftVersion = project.parchment_minecraft_version
-    }
+    // Parchment never published a 1.21.4 release (only bleeding snapshots), so the
+    // mod builds against NeoForge's own mappings, which keep the official names.
 
     // This line is optional. Access Transformers are automatically detected
     accessTransformers = project.files('src/main/resources/META-INF/accesstransformer.cfg')
@@ -263,4 +264,10 @@ idea {
         downloadSources = true
         downloadJavadoc = true
     }
+}
+
+// Temporary during the 1.21.4 port: javac stops at 100 errors by default, which
+// hides how much of the tree still needs work. Remove once the port lands.
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += ['-Xmaxerrs', '20000']
 }

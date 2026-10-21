@@ -1,5 +1,7 @@
 package com.greatorator.tolkienmobs.block.custom;
 
+import net.minecraft.world.InteractionResult;
+
 import com.greatorator.tolkienmobs.init.TolkienParticleTypes;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -11,7 +13,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
@@ -54,14 +55,14 @@ public class CamoSmokerBlock extends ChameleonBlock<Block> {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (!(stack.getItem() instanceof DyeItem dyeItem)) {
             return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
         }
 
         DyeColor color = dyeItem.getDyeColor();
         if (level.isClientSide) {
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
         // Clicking with the dye already on the block walks it up a stage, and past the third stage back to
@@ -76,7 +77,7 @@ public class CamoSmokerBlock extends ChameleonBlock<Block> {
         if (level instanceof ServerLevel serverLevel) {
             serverLevel.sendParticles(smokeParticle(dyed), pos.getX() + 0.5D, pos.getY() + 1.0D, pos.getZ() + 0.5D, 6, 0.2D, 0.1D, 0.2D, 0.01D);
         }
-        return ItemInteractionResult.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     /**

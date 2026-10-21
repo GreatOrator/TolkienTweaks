@@ -1,5 +1,7 @@
 package com.greatorator.tolkienmobs.entity.boss;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
 import com.greatorator.tolkienmobs.entity.ai.goal.MeleeCombatGoal;
 import com.greatorator.tolkienmobs.entity.monster.GoblinEntity;
@@ -178,7 +180,7 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
                     BlockPos blockpos = new BlockPos(i1, j1, k1);
                     EntityType<?> entitytype = goblin.getType();
                     if (SpawnPlacements.isSpawnPositionOk(entitytype, this.level(), blockpos)
-                            && SpawnPlacements.checkSpawnRules(entitytype, serverlevel, MobSpawnType.REINFORCEMENT, blockpos, this.level().random)) {
+                            && SpawnPlacements.checkSpawnRules(entitytype, serverlevel, EntitySpawnReason.REINFORCEMENT, blockpos, this.level().random)) {
                         goblin.setPos((double)i1, (double)j1, (double)k1);
                         if (!this.level().hasNearbyAlivePlayer((double)i1, (double)j1, (double)k1, 7.0)
                                 && this.level().isUnobstructed(goblin)
@@ -188,7 +190,7 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
                             livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.helpcomming").withStyle(ChatFormatting.DARK_GREEN));
 
                             goblin.setTarget(livingentity);
-                            goblin.finalizeSpawn(serverlevel, this.level().getCurrentDifficultyAt(goblin.blockPosition()), MobSpawnType.REINFORCEMENT, null);
+                            goblin.finalizeSpawn(serverlevel, this.level().getCurrentDifficultyAt(goblin.blockPosition()), EntitySpawnReason.REINFORCEMENT, null);
                             serverlevel.addFreshEntityWithPassengers(goblin);
                             AttributeInstance attributeinstance = this.getAttribute(Attributes.SPAWN_REINFORCEMENTS_CHANCE);
                             AttributeModifier attributemodifier = attributeinstance.getModifier(REINFORCEMENT_CALLER_CHARGE_ID);
@@ -252,7 +254,7 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnType, @Nullable SpawnGroupData spawnGroupData) {
         RandomSource randomsource = level.getRandom();
 
         this.populateDefaultEquipmentSlots(randomsource, difficulty);

@@ -1,5 +1,7 @@
 package com.greatorator.tolkienmobs.entity;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+
 import com.greatorator.tolkienmobs.TolkienMobsConfig;
 import com.greatorator.tolkienmobs.entity.ai.control.*;
 import com.greatorator.tolkienmobs.entity.ai.goal.dragon.AnimatedGoal;
@@ -169,7 +171,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnType, @Nullable SpawnGroupData spawnGroupData) {
 
         ensureHome();
         SpawnGroupData data = super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
@@ -270,7 +272,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
         Vec3 destination = Vec3.atBottomCenterOf(pos);
         AABB bounds = getBoundingBox().move(destination.subtract(position()));
         if (!level.hasChunkAt(pos) || !level.getWorldBorder().isWithinBounds(pos)
-                || bounds.minY < level.getMinBuildHeight() || bounds.maxY > level.getMaxBuildHeight()
+                || bounds.minY < level.getMinY() || bounds.maxY > level.getMaxY()
                 || !level.noCollision(this, bounds) || level.containsAnyLiquid(bounds)) return false;
         moveTo(destination.x, destination.y, destination.z, getYRot(), getXRot());
         getNavigation().stop();
@@ -727,7 +729,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     public double getAltitude() {
         BlockPos.MutableBlockPos pos = blockPosition().mutable();
 
-        while (pos.getY() > level.getMinBuildHeight() && !level.getBlockState(pos.move(Direction.DOWN)).isSolid());
+        while (pos.getY() > level.getMinY() && !level.getBlockState(pos.move(Direction.DOWN)).isSolid());
         return getY() - pos.getY();
     }
 

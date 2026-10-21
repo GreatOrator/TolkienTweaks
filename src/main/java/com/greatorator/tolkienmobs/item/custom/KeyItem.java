@@ -9,7 +9,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -27,23 +26,23 @@ public class KeyItem extends TolkienItem {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResult use(Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
-        if (level.isClientSide()) return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
+        if (level.isClientSide()) return InteractionResult.PASS;
 
         if (Screen.hasShiftDown() && player.isCreative()) {
             player.openMenu(new SimpleMenuProvider(
                     (windowId, playerInventory, playerEntity) -> new KeyCodeContainer(windowId, playerInventory, player, itemstack), Component.translatable("screen.tolkienmobs.code" + itemstack.getDescriptionId())), (buf -> {
                         ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, itemstack);
             }));
-            return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
+            return InteractionResult.PASS;
         }
         if (player.isCreative()) {
             player.openMenu(new SimpleMenuProvider(
                     (windowId, playerInventory, playerEntity) -> new KeyItemContainer(windowId, playerInventory, player, itemstack), Component.translatable("screen.tolkienmobs." + itemstack.getDescriptionId())), (buf -> {
                 ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, itemstack);
             }));
-            return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
+            return InteractionResult.PASS;
         }else if (!getKeyCode(itemstack).isEmpty()){
             player.openMenu(new SimpleMenuProvider(
                     (windowId, playerInventory, playerEntity) -> new KeyItemContainer(windowId, playerInventory, player, itemstack), Component.translatable("screen.tolkienmobs." + itemstack.getDescriptionId())), (buf -> {
@@ -51,7 +50,7 @@ public class KeyItem extends TolkienItem {
             }));
         }
 
-        return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
+        return InteractionResult.PASS;
     }
 
 //    @Override

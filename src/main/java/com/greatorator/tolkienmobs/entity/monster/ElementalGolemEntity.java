@@ -1,5 +1,7 @@
 package com.greatorator.tolkienmobs.entity.monster;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
 import com.greatorator.tolkienmobs.entity.projectiles.TornadoEntity;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
@@ -364,7 +366,7 @@ public class ElementalGolemEntity extends TolkienMonsterEntity implements GeoEnt
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnType, @Nullable SpawnGroupData spawnGroupData) {
         RandomSource randomsource = level.getRandom();
 
         this.populateDefaultEquipmentSlots(randomsource, difficulty);
