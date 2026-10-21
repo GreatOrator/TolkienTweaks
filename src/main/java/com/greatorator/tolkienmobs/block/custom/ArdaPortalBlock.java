@@ -9,7 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.*;
@@ -70,7 +70,7 @@ public class ArdaPortalBlock extends TolkienBlock implements Portal {
             }
 
             if (level.getBlockState(pos).isValidSpawn(level, pos, TolkienEntities.ENTITY_TTM_MORDORORC.get())) {
-                Entity entity = TolkienEntities.ENTITY_TTM_MORDORORC.get().spawn(level, pos.above(), MobSpawnType.STRUCTURE);
+                Entity entity = TolkienEntities.ENTITY_TTM_MORDORORC.get().spawn(level, pos.above(), EntitySpawnReason.STRUCTURE);
                 if (entity != null) {
                     entity.setPortalCooldown();
                 }

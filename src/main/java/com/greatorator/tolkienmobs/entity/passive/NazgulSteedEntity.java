@@ -1,5 +1,7 @@
 package com.greatorator.tolkienmobs.entity.passive;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+
 import com.greatorator.tolkienmobs.entity.monster.NazgulEntity;
 import com.greatorator.tolkienmobs.handler.interfaces.CommonTraits;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
@@ -131,7 +133,7 @@ public class NazgulSteedEntity extends AbstractChestedHorse implements GeoEntity
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnType, @Nullable SpawnGroupData spawnGroupData) {
         if (MathUtility.getRandomInteger(15, 1) == 2) {
             NazgulEntity entityNazgul = TolkienEntities.ENTITY_TTM_NAZGUL.get().create(this.level);
             entityNazgul.moveTo(this.getX(), this.getY(), this.getZ(), this.yRotO, 0.0F);

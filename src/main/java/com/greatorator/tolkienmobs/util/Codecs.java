@@ -1,5 +1,7 @@
 package com.greatorator.tolkienmobs.util;
 
+import net.minecraft.core.Direction;
+
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;

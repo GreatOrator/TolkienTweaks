@@ -1,5 +1,7 @@
 package com.greatorator.tolkienmobs.block.custom;
 
+import net.minecraft.core.Direction;
+
 import com.greatorator.tolkienmobs.init.TolkienTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;

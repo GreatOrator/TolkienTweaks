@@ -260,8 +260,8 @@ public class TemplateLayoutStructure extends Structure {
         int ground = surface(context, x, z);
         if (!validBiome(context, x, ground, z)) return false;
         int bottom = topOffset.map(offset -> ground + offset - box.getYSpan() + 1).orElse(ground);
-        if (bottom < context.heightAccessor().getMinBuildHeight()
-                || bottom + box.getYSpan() > context.heightAccessor().getMaxBuildHeight()) return false;
+        if (bottom < context.heightAccessor().getMinY()
+                || bottom + box.getYSpan() > context.heightAccessor().getMaxY()) return false;
         piece.move(0, bottom - box.minY(), 0);
         return true;
     }
