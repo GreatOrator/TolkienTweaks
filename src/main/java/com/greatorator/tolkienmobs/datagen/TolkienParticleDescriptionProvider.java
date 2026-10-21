@@ -36,6 +36,9 @@ public class TolkienParticleDescriptionProvider extends ParticleDescriptionProvi
         this.sprite(TolkienParticleTypes.LEBETHRON_LEAVES.get(), TolkienMobsMain.prefix("lebethron_leaves"));
         this.sprite(TolkienParticleTypes.FANGORNOAK_LEAVES.get(), TolkienMobsMain.prefix("fangornoak_leaves"));
         this.sprite(TolkienParticleTypes.DWARVEN_MAPLE_LEAVES.get(), TolkienMobsMain.prefix("dwarven_maple_leaves"));
+        // Tinted smoke only adds a colour to vanilla campfire smoke, so it reuses those twelve sprites
+        // rather than shipping a second copy of them.
+        this.spriteSet(TolkienParticleTypes.TINTED_SMOKE.get(), ResourceLocation.withDefaultNamespace("big_smoke"), 12, false);
     }
 
     @Nonnull
