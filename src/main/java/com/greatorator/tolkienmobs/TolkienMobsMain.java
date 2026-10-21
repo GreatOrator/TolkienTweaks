@@ -60,6 +60,7 @@ import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
@@ -205,6 +206,7 @@ public class TolkienMobsMain {
                 TolkienBlocks.BACKPACK.get()
         );
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, TolkienBlocks.BACKPACK_BLOCK_ENTITY.get(), BackpackBlockEntity::getTank);
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, TolkienBlocks.CAMO_CHEST_BLOCK_ENTITY.get(), (blockEntity, side) -> new InvWrapper(blockEntity));
     }
 
     public void setupPackets(RegisterPayloadHandlersEvent event) {
@@ -339,6 +341,7 @@ public class TolkienMobsMain {
             event.register(TolkienContainers.LOCKABLE_DOUBLE_TREASURE_CHEST_CONTAINER.get(), LockableDoubleTreasureChestScreen::new);
             event.register(TolkienContainers.KEY_STONE_CONTAINER.get(), CamoKeyStoneScreen::new);
             event.register(TolkienContainers.CAMO_SPAWNER_CONTAINER.get(), CamoSpawnerScreen::new);
+            event.register(TolkienContainers.CAMO_CHEST_CONTAINER.get(), CamoChestScreen::new);
             event.register(TolkienContainers.CAMO_FLUID_CONTAINER.get(), CamoFluidBlockScreen::new);
             event.register(TolkienContainers.MILESTONE_CONTAINER.get(), MilestoneScreen::new);
         }
