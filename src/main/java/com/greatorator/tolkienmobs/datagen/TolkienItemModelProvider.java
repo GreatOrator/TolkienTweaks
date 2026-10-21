@@ -5,6 +5,7 @@ import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienFluids;
 import com.greatorator.tolkienmobs.init.TolkienItems;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
@@ -12,15 +13,16 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.armortrim.TrimMaterial;
-import net.minecraft.world.item.armortrim.TrimMaterials;
+import net.minecraft.world.item.equipment.Equippable;
+import net.minecraft.world.item.equipment.trim.TrimMaterial;
+import net.minecraft.world.item.equipment.trim.TrimMaterials;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SignBlock;
-import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
-import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
-import net.neoforged.neoforge.client.model.generators.ModelFile;
-import net.neoforged.neoforge.client.model.generators.loaders.ItemLayerModelBuilder;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import com.greatorator.tolkienmobs.datagen.modelgen.ItemModelBuilder;
+import com.greatorator.tolkienmobs.datagen.modelgen.ItemModelProvider;
+import com.greatorator.tolkienmobs.datagen.modelgen.ModelFile;
+import com.greatorator.tolkienmobs.datagen.modelgen.ItemLayerModelBuilder;
+import com.greatorator.tolkienmobs.datagen.modelgen.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 
@@ -583,16 +585,23 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         final String MOD_ID = MODID; // Change this to your mod id
 
         if(itemDeferredItem.get() instanceof ArmorItem armorItem) {
+            // 1.21.4 dropped ArmorItem#getEquipmentSlot: the slot lives in the equipable data
+            // component now, so read it back from there.
+            Equippable equippable = armorItem.components().get(DataComponents.EQUIPPABLE);
+            if (equippable == null) {
+                return;
+            }
+
+            String armorType = switch (equippable.slot()) {
+                case HEAD -> "helmet";
+                case CHEST -> "chestplate";
+                case LEGS -> "leggings";
+                case FEET -> "boots";
+                default -> "";
+            };
+
             trimMaterials.forEach((trimMaterial, value) -> {
                 float trimValue = value;
-
-                String armorType = switch (armorItem.getEquipmentSlot()) {
-                    case HEAD -> "helmet";
-                    case CHEST -> "chestplate";
-                    case LEGS -> "leggings";
-                    case FEET -> "boots";
-                    default -> "";
-                };
 
                 String armorItemPath = armorItem.toString();
                 String trimPath = "trims/items/" + armorType + "_trim_" + trimMaterial.location().getPath();

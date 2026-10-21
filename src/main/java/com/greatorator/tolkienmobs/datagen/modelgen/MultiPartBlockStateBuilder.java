@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.Property;
 
 /** Writes the {@code multipart} form of a blockstate JSON, as walls, fences and panes use. */
-public class MultiPartBlockStateBuilder {
+public class MultiPartBlockStateBuilder implements IGeneratedBlockState {
     private final Block owner;
     private final List<PartBuilder> parts = new ArrayList<>();
 

@@ -33,6 +33,10 @@ public class ItemModelBuilder extends ModelBuilder<ItemModelBuilder> {
             return this;
         }
 
+        public OverrideBuilder predicate(ResourceLocation key, float value) {
+            return this.predicate(key.toString(), value);
+        }
+
         public ItemModelBuilder end() {
             if (!this.predicates.isEmpty()) {
                 this.override.add("predicate", this.predicates);

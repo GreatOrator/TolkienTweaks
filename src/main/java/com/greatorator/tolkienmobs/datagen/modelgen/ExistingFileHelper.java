@@ -24,6 +24,10 @@ public class ExistingFileHelper {
     public void trackGenerated(ResourceLocation location, PackType type) {
     }
 
+    /** Matches NeoForge's old four-argument form, which callers still use. */
+    public void trackGenerated(ResourceLocation location, PackType type, String suffix, String prefix) {
+    }
+
     public <T extends Collection<ResourceLocation>> T trackGenerated(T locations, PackType type) {
         return locations;
     }
