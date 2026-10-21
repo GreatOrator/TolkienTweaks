@@ -77,6 +77,10 @@ for my $f (@files) {
         $c =~ s/^(package [^\n]*\n)/$1\nimport $fqcn;\n/m;
     }
 
+    # Adding the imports above can duplicate one that was already there.
+    my %seen;
+    $c =~ s{^(import [^\r\n]*;)\r?\n}{ $seen{$1}++ ? "" : "$1\n" }gme;
+
     if ( $c ne $orig ) {
         open my $out, '>:raw', $f or die "write $f: $!";
         print $out $c;
