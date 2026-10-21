@@ -25,6 +25,7 @@ import com.greatorator.tolkienmobs.network.PacketHandler;
 import com.greatorator.tolkienmobs.network.manager.SpawnFallenLeafFromPacket;
 import com.greatorator.tolkienmobs.particle.FellBeastBreathParticle;
 import com.greatorator.tolkienmobs.particle.LeafParticle;
+import com.greatorator.tolkienmobs.particle.TintedSmokeParticle;
 import com.greatorator.tolkienmobs.particle.WindParticle;
 import com.greatorator.tolkienmobs.particle.provider.TolkienParticleProvider;
 import com.greatorator.tolkienmobs.util.GeneralUtility;
@@ -59,6 +60,7 @@ import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
@@ -204,6 +206,7 @@ public class TolkienMobsMain {
                 TolkienBlocks.BACKPACK.get()
         );
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, TolkienBlocks.BACKPACK_BLOCK_ENTITY.get(), BackpackBlockEntity::getTank);
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, TolkienBlocks.CAMO_CHEST_BLOCK_ENTITY.get(), (blockEntity, side) -> new InvWrapper(blockEntity));
     }
 
     public void setupPackets(RegisterPayloadHandlersEvent event) {
@@ -290,10 +293,10 @@ public class TolkienMobsMain {
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_DWARF.get(), DwarfRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_ELVES.get(), ElvesRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_HOBBIT.get(), HobbitRender::new);
-            EntityRenderers.register(TolkienEntities.ENTITY_TTM_SOUTHRON.get(), SouthronRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_SOUTHRON.get(), SouthronTraderRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_ORC_TRADER.get(), OrcTraderRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_ORC.get(), OrcRender::new);
-            EntityRenderers.register(TolkienEntities.ENTITY_TTM_SOUTHRON_NPC.get(), SouthronNpcRender::new);
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_SOUTHRON_NPC.get(), SouthronRender::new);
 
                 // Projectile
             EntityRenderers.register(TolkienEntities.AMMO_BOULDER.get(), BoulderRender::new);
@@ -338,6 +341,7 @@ public class TolkienMobsMain {
             event.register(TolkienContainers.LOCKABLE_DOUBLE_TREASURE_CHEST_CONTAINER.get(), LockableDoubleTreasureChestScreen::new);
             event.register(TolkienContainers.KEY_STONE_CONTAINER.get(), CamoKeyStoneScreen::new);
             event.register(TolkienContainers.CAMO_SPAWNER_CONTAINER.get(), CamoSpawnerScreen::new);
+            event.register(TolkienContainers.CAMO_CHEST_CONTAINER.get(), CamoChestScreen::new);
             event.register(TolkienContainers.CAMO_FLUID_CONTAINER.get(), CamoFluidBlockScreen::new);
             event.register(TolkienContainers.MILESTONE_CONTAINER.get(), MilestoneScreen::new);
         }
@@ -369,6 +373,7 @@ public class TolkienMobsMain {
             pEvent.registerSpriteSet(TolkienParticleTypes.LEBETHRON_LEAVES.get(), (p_277215_) -> (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_));
             pEvent.registerSpriteSet(TolkienParticleTypes.FANGORNOAK_LEAVES.get(), (p_277215_) -> (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_));
             pEvent.registerSpriteSet(TolkienParticleTypes.DWARVEN_MAPLE_LEAVES.get(), (p_277215_) -> (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_));
+            pEvent.registerSpriteSet(TolkienParticleTypes.TINTED_SMOKE.get(), TintedSmokeParticle.Provider::new);
         }
     }
 
