@@ -1,8 +1,12 @@
 package com.greatorator.tolkienmobs.init;
 
+import com.mojang.serialization.MapCodec;
+import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -30,6 +34,17 @@ public class TolkienParticleTypes {
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> LEBETHRON_LEAVES = PARTICLES.register("lebethron_leaves", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> FANGORNOAK_LEAVES = PARTICLES.register("fangornoak_leaves", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> DWARVEN_MAPLE_LEAVES = PARTICLES.register("dwarven_maple_leaves", () -> new SimpleParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, ParticleType<ColorParticleOption>> TINTED_SMOKE = PARTICLES.register("tinted_smoke", () -> new ParticleType<ColorParticleOption>(false) {
+        @Override
+        public MapCodec<ColorParticleOption> codec() {
+            return ColorParticleOption.codec(this);
+        }
+
+        @Override
+        public StreamCodec<? super RegistryFriendlyByteBuf, ColorParticleOption> streamCodec() {
+            return ColorParticleOption.streamCodec(this);
+        }
+    });
 
     public static void register(IEventBus eventBus) {
         PARTICLES.register(eventBus);

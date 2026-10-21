@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.entity.npc.render;
 
 import com.google.common.collect.Maps;
-import com.greatorator.tolkienmobs.entity.npc.SouthronTraderEntity;
+import com.greatorator.tolkienmobs.entity.npc.SouthronEntity;
 import com.greatorator.tolkienmobs.entity.npc.model.SouthronModel;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -15,7 +15,7 @@ import java.util.Map;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class SouthronRender extends GeoEntityRenderer<SouthronTraderEntity> {
+public class SouthronRender extends GeoEntityRenderer<SouthronEntity> {
     public static final Map<TolkienVariant, ResourceLocation> LOCATION_BY_VARIANT =
             Util.make(Maps.newEnumMap(TolkienVariant.class), map -> {
                 map.put(TolkienVariant.DEFAULT,
@@ -60,12 +60,12 @@ public class SouthronRender extends GeoEntityRenderer<SouthronTraderEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(SouthronTraderEntity entity) {
+    public ResourceLocation getTextureLocation(SouthronEntity entity) {
         return LOCATION_BY_VARIANT.get(entity.getTolkienVariant());
     }
 
     @Override
-    public void render(SouthronTraderEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+    public void render(SouthronEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         if(entity.isBaby()) {
             poseStack.scale(0.50f, 0.50f, 0.50f);
         }
