@@ -9,7 +9,7 @@ This file is the handoff: it records what is done, what is measured, and what to
 |---|---|
 | Target | Minecraft **1.21.4**, NeoForge **21.4.161** |
 | Compile errors at the start | **5,720** in 425 files |
-| Compile errors now | **632** distinct sites in 214 files |
+| Compile errors now | **530** distinct sites |
 | Runnable | no — the tree does not compile yet |
 
 Dependency versions, all verified to exist and resolve:
@@ -193,11 +193,23 @@ Done in this pass:
 
 Still open in this area:
 
-- `TolkienRecipeHelper` (226) — the `RecipeProvider` shape helpers (`shaped`, `slab`, `stairs`, `woodFromLogs`, …)
-  are instance methods now, `buildRecipes()` replaced the static entry point, and NeoForge's
-  `IConditionBuilder` is gone. This is the one place that needs a rethink rather than a rename: the helper is
-  built around being called statically from `TolkienRecipeProvider`, so it likely becomes an instance of the
-  provider or takes one.
+- **Recipe datagen** — done. `TolkienRecipeHelper` is now an abstract `RecipeProvider` with instance helpers,
+  `TolkienRecipeProvider` extends it and implements `buildRecipes()`, and a nested `Runner` (a
+  `RecipeProvider.Runner` that also answers `getName()`) is what datagen registers. The facts that were not
+  guessable from the call sites:
+  - `RecipeProvider(HolderLookup.Provider, RecipeOutput)` keeps the output on the provider, so the shape helpers
+    lost their `RecipeOutput` parameter but gained nothing else (`slab(category, slab, base)`,
+    `pressurePlate(plate, base)`, `wall(category, wall, base)`, `woodFromLogs`, `woodenBoat`, `chestBoat`).
+    The mod's own helpers keep theirs, which is why the provider body still passes `pRecipeOutput`.
+  - `ShapedRecipeBuilder.shaped` and `ShapelessRecipeBuilder.shapeless` now take a `HolderGetter<Item>` first;
+    `RecipeProvider` exposes protected `shaped(...)`, `shapeless(...)` and `tag(...)` wrappers around its own
+    `items` lookup, so the mod calls those instead of the static builders.
+  - `RecipeBuilder#save(RecipeOutput, ResourceLocation)` is gone: it takes a `ResourceKey<Recipe<?>>`, and the
+    `String` overload throws when the id equals the recipe's default id, so the explicit-id sites use
+    `recipeKey(...)`.
+  - `Ingredient#getItems()` became `items()`, a `Stream<Holder<Item>>`; the criteria that only wanted a name use
+    `firstItem(...)`.
+  - NeoForge's `IConditionBuilder` is gone; nothing in the mod used it beyond declaring the interface.
 - `Item.Properties`/`BlockBehaviour.Properties` need registry ids (283 + 575 sites).
 - `TolkienBlocks` (58), `TolkienPotions` (26), the block-model and baked-model classes
   (`ChameleonBlockDynamicBakedModel`, `PatchModel`/`UnbakedPatchModel`, `ModelEvent.RegisterGeometryLoaders`,
