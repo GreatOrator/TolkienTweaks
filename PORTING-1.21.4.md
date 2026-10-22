@@ -458,6 +458,24 @@ recipe-book check), `ArmorItem#getEquipmentSlot(ItemStack)`, and
 - `ChestBoat` no longer extends `Boat`; both extend `AbstractBoat`, which is what the boat items' spawn helper returns.
 - GeckoLib's `GeoRenderProvider#getGeoItemRenderer` returns a `GeoItemRenderer<?>`; vanilla's `BlockEntityWithoutLevelRenderer` no longer exists.
 
+### 3i. Loot — DONE
+
+The loot context parameter sets, the loot function and the global loot modifier compile.
+
+- Loot parameter sets are plain objects now, not registry entries with a codec of their own:
+  `LootContextParamSet` is gone and `ContextKeySet` (`net.minecraft.util.context`) takes its place, so
+  `TolkienLootContextParamSets` builds a `ContextKeySet.Builder` and keeps publishing the result into
+  `LootContextParamSets.REGISTRY`. The two sets (`use_on_item`, `post_break_block`) still name the same required
+  keys, which is what the enchantment effect component codecs read back.
+- `Registry#holders()` is gone; the streamable view of a registry is `listElements()`, which returns
+  `Stream<Holder.Reference<T>>`. `TrinketRandomlyFunction` draws its benevolent potions from that, so a rolled
+  trinket still picks among the same potions.
+- `Registry#get(ResourceLocation)` returns `Optional<Holder.Reference<T>>`, so `TolkienItemsModifier` resolves each
+  configured id with `getValue(...)` and skips it when it is unknown or unparsable, instead of handing null to
+  `ItemStack`. A typo in a loot modifier now costs that one item rather than throwing during loot generation.
+- `BlockLootSubProvider.HAS_SHEARS` is gone; the leaf-like tables build their stick pool off the inherited
+  `hasShears()` condition builder, which is what vanilla's own tables do.
+
 ### 4. Datagen output
 
 Regenerate everything under `src/generated/resources` once the providers build, and commit
