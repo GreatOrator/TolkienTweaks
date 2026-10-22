@@ -6,6 +6,7 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 public class TolkienModelLayers {
     public static final ModelLayerLocation LIGHTNINGBUG = register("cicada");
     public static final ModelLayerLocation LOCUST = register("locust");
+    public static final ModelLayerLocation MORGUL_CRYSTAL = register("morgul_crystal");
 
     public static final ModelLayerLocation MALLORN_BOAT = register("mallorn_boat");
     public static final ModelLayerLocation MALLORN_CHEST_BOAT = register("mallorn_chest_boat");

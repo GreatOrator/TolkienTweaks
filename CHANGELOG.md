@@ -43,6 +43,8 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+- The client gets past its loading screen again. The morgul crystal's renderer asked the vanilla end crystal model for glass, cube and base parts, which this version renamed and moved, so building the renderer threw and the game sat on its splash forever; the crystal now bakes its own copy of the layer it draws.
+- Mobs that follow food no longer crash the game the moment one of them ticks. The game added a tempt range attribute that their follow goal reads, and the squirrel, rat, frog, gecko, thrush, crebain, goat, the two horses, the Istari and every heard animal now declare it.
 - The molten mithril and morguliron blocks no longer name themselves as their own model parent. The model loader reads that as a loading loop and reported it sixty-four times while the game started; both models now carry nothing but the break particle, the way vanilla's water and lava do, since the fluid renderer draws the liquid itself.
 - The Arda Staff draws its GeckoLib model again. Its item model still named the retired `builtin/entity` parent, so the staff could not be drawn at all; it now uses the game's special item model, which hands the staff to the GeckoLib renderer that was already registered for it, with the display transforms and break particles kept on the model underneath.
 - The lightning bug and locust blocks no longer ask for a model parent the game dropped. Their block models named `builtin/entity`, which 1.21.4 no longer has, so the model could not be loaded and the block fell back to the missing model; the models are now bare like vanilla's chest - they draw nothing of their own and keep the block's break particles - while the block entity still draws the bug.

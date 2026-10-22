@@ -66,7 +66,8 @@ public class IstariEntity extends TolkienHeardEntity implements GeoEntity, Neutr
                 .add(Attributes.MAX_HEALTH, 35.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.23D)
                 .add(Attributes.ATTACK_DAMAGE, 12.0D)
-                .add(Attributes.ARMOR, 9.0D);
+                .add(Attributes.ARMOR, 9.0D)
+                .add(Attributes.TEMPT_RANGE, 10.0D);
     }
 
     @Override
