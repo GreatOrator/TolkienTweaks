@@ -64,9 +64,4 @@ public class RomieWalkerRender extends GeoEntityRenderer<RomieWalkerEntity> {
         return LOCATION_BY_VARIANT.get(romiewalkerEntity.getVariant());
     }
 
-    @Override
-    public void render(RomieWalkerEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
-    }
 }

@@ -1,5 +1,9 @@
 package com.greatorator.tolkienmobs.entity.npc.render;
 
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import com.google.common.collect.Maps;
 import com.greatorator.tolkienmobs.entity.npc.ElvesEntity;
 import com.greatorator.tolkienmobs.entity.npc.model.ElvesModel;
@@ -65,13 +69,16 @@ public class ElvesRender extends GeoEntityRenderer<ElvesEntity> {
     }
 
     @Override
-    public void render(ElvesEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        if(entity.isBaby()) {
-            poseStack.scale(0.50f, 0.50f, 0.50f);
-        } else {
-            poseStack.scale(1.15f, 1.15f, 1.15f);
+    public void preRender(PoseStack poseStack, ElvesEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
+        if (!isReRender) {
+            if(animatable.isBaby()) {
+                poseStack.scale(0.50f, 0.50f, 0.50f);
+            } else {
+                poseStack.scale(1.15f, 1.15f, 1.15f);
+            }
         }
 
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
     }
 }

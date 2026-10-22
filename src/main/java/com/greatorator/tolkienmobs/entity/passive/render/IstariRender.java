@@ -64,9 +64,4 @@ public class IstariRender extends GeoEntityRenderer<IstariEntity> {
         return LOCATION_BY_VARIANT.get(istariEntity.getVariant());
     }
 
-    @Override
-    public void render(IstariEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
-    }
 }

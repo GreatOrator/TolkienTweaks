@@ -7,6 +7,7 @@ import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.model.data.EntityModelData;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
@@ -17,12 +18,12 @@ public class BalrogModel extends GeoModel<BalrogEntity> {
 	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/boss/balrog.animation.json");
 
 	@Override
-	public ResourceLocation getModelResource(BalrogEntity object) {
+	public ResourceLocation getModelResource(BalrogEntity object, GeoRenderer<BalrogEntity> renderer) {
 		return this.model;
 	}
 
 	@Override
-	public ResourceLocation getTextureResource(BalrogEntity object) {
+	public ResourceLocation getTextureResource(BalrogEntity object, GeoRenderer<BalrogEntity> renderer) {
 		return this.texture;
 	}
 

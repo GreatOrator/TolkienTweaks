@@ -1,5 +1,9 @@
 package com.greatorator.tolkienmobs.entity.ambient.render;
 
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import com.greatorator.tolkienmobs.entity.ambient.ThrushEntity;
 import com.greatorator.tolkienmobs.entity.ambient.model.ThrushModel;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -22,13 +26,16 @@ public class ThrushRender extends GeoEntityRenderer<ThrushEntity> {
     }
 
     @Override
-    public void render(ThrushEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        if(entity.isBaby()) {
-            poseStack.scale(0.45f, 0.45f, 0.45f);
-        } else {
-            poseStack.scale(1f, 1f, 1f);
+    public void preRender(PoseStack poseStack, ThrushEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
+        if (!isReRender) {
+            if(animatable.isBaby()) {
+                poseStack.scale(0.45f, 0.45f, 0.45f);
+            } else {
+                poseStack.scale(1f, 1f, 1f);
+            }
         }
 
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
     }
 }

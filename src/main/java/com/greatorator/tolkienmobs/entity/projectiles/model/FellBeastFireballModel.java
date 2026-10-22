@@ -1,9 +1,7 @@
 package com.greatorator.tolkienmobs.entity.projectiles.model;
 
 
-import com.greatorator.tolkienmobs.entity.projectiles.BoulderEntity;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.greatorator.tolkienmobs.entity.projectiles.render.ThrownProjectileRenderState;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -13,12 +11,13 @@ import net.minecraft.resources.ResourceLocation;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class FellBeastFireballModel extends EntityModel<BoulderEntity> {
+public class FellBeastFireballModel extends EntityModel<ThrownProjectileRenderState> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MODID, "fellbeastfireball"), "main");
 	private final ModelPart cube;
 
 	public FellBeastFireballModel(ModelPart root) {
+		super(root);
 		this.cube = root.getChild("cube");
 	}
 
@@ -38,13 +37,5 @@ public class FellBeastFireballModel extends EntityModel<BoulderEntity> {
 		return LayerDefinition.create(meshdefinition, 32, 32);
 	}
 
-	@Override
-	public void setupAnim(BoulderEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 
-	}
-
-	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-		cube.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-	}
 }

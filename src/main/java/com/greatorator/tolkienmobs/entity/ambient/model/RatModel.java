@@ -6,6 +6,7 @@ import com.greatorator.tolkienmobs.entity.ambient.RatEntity;
 import com.greatorator.tolkienmobs.entity.ambient.render.RatRender;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.GeoRenderer;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -14,12 +15,12 @@ public class RatModel extends GeoModel<RatEntity> {
 	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/ambient/rat.animation.json");
 
 	@Override
-	public ResourceLocation getModelResource(RatEntity object) {
+	public ResourceLocation getModelResource(RatEntity object, GeoRenderer<RatEntity> renderer) {
 		return this.model;
 	}
 
 	@Override
-	public ResourceLocation getTextureResource(RatEntity object) {
+	public ResourceLocation getTextureResource(RatEntity object, GeoRenderer<RatEntity> renderer) {
 		return RatRender.LOCATION_BY_VARIANT.get(object.getVariant());
 	}
 

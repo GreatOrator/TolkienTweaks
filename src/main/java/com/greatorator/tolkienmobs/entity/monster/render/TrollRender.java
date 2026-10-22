@@ -1,5 +1,9 @@
 package com.greatorator.tolkienmobs.entity.monster.render;
 
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import com.google.common.collect.Maps;
 import com.greatorator.tolkienmobs.entity.monster.TrollEntity;
 import com.greatorator.tolkienmobs.entity.monster.model.TrollModel;
@@ -94,9 +98,11 @@ public class TrollRender extends GeoEntityRenderer<TrollEntity> {
     }
 
     @Override
-    public void render(TrollEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        poseStack.scale(1.6F, 1.6F, 1.6F);
+    public void preRender(PoseStack poseStack, TrollEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
+        if (!isReRender) {
+            poseStack.scale(1.6F, 1.6F, 1.6F);        }
 
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
     }
 }

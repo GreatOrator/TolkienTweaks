@@ -1,5 +1,9 @@
 package com.greatorator.tolkienmobs.entity.npc.render;
 
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import com.google.common.collect.Maps;
 import com.greatorator.tolkienmobs.entity.npc.DwarfEntity;
 import com.greatorator.tolkienmobs.entity.npc.model.DwarfModel;
@@ -65,13 +69,16 @@ public class DwarfRender extends GeoEntityRenderer<DwarfEntity> {
     }
 
     @Override
-    public void render(DwarfEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        if(entity.isBaby()) {
-            poseStack.scale(0.50f, 0.50f, 0.50f);
-        } else {
-            poseStack.scale(0.85f, 0.85f, 0.85f);
+    public void preRender(PoseStack poseStack, DwarfEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
+        if (!isReRender) {
+            if(animatable.isBaby()) {
+                poseStack.scale(0.50f, 0.50f, 0.50f);
+            } else {
+                poseStack.scale(0.85f, 0.85f, 0.85f);
+            }
         }
 
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
     }
 }

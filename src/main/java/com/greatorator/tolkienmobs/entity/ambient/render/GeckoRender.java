@@ -6,7 +6,6 @@ import com.greatorator.tolkienmobs.entity.ambient.model.GeckoModel;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.Util;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -15,7 +14,7 @@ import java.util.Map;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class GeckoRender extends MobRenderer<GeckoEntity, GeckoModel<GeckoEntity>> {
+public class GeckoRender extends MobRenderer<GeckoEntity, GeckoRenderState, GeckoModel> {
     private static final Map<TolkienVariant, ResourceLocation> LOCATION_BY_VARIANT =
             Util.make(Maps.newEnumMap(TolkienVariant.class), map -> {
                 map.put(TolkienVariant.DEFAULT,
@@ -55,22 +54,32 @@ public class GeckoRender extends MobRenderer<GeckoEntity, GeckoModel<GeckoEntity
             });
 
     public GeckoRender(EntityRendererProvider.Context context) {
-        super(context, new GeckoModel<>(context.bakeLayer(GeckoModel.LAYER_LOCATION)), 0.25f);
+        super(context, new GeckoModel(context.bakeLayer(GeckoModel.LAYER_LOCATION)), 0.25f);
     }
 
     @Override
-    public ResourceLocation getTextureLocation(GeckoEntity entity) {
-        return LOCATION_BY_VARIANT.get(entity.getVariant());
+    public GeckoRenderState createRenderState() {
+        return new GeckoRenderState();
     }
 
     @Override
-    public void render(GeckoEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        if(entity.isBaby()) {
+    public void extractRenderState(GeckoEntity entity, GeckoRenderState state, float partialTick) {
+        super.extractRenderState(entity, state, partialTick);
+        state.idleAnimationState.copyFrom(entity.idleAnimationState);
+        state.variant = entity.getVariant();
+    }
+
+    @Override
+    public ResourceLocation getTextureLocation(GeckoRenderState state) {
+        return LOCATION_BY_VARIANT.get(state.variant);
+    }
+
+    @Override
+    protected void scale(GeckoRenderState state, PoseStack poseStack) {
+        if (state.isBaby) {
             poseStack.scale(0.45f, 0.45f, 0.45f);
         } else {
             poseStack.scale(1f, 1f, 1f);
         }
-
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
     }
 }

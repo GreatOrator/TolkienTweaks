@@ -64,9 +64,4 @@ public class MimicChestRender extends GeoEntityRenderer<MimicChestEntity> {
         return LOCATION_BY_VARIANT.get(mimicchestEntity.getVariant());
     }
 
-    @Override
-    public void render(MimicChestEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
-    }
 }

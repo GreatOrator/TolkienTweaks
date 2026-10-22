@@ -1,10 +1,8 @@
 package com.greatorator.tolkienmobs.entity.ambient.model;
 
-import com.greatorator.tolkienmobs.entity.ambient.GeckoEntity;
 import com.greatorator.tolkienmobs.entity.ambient.animations.GeckoAnimations;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.model.HierarchicalModel;
+import com.greatorator.tolkienmobs.entity.ambient.render.GeckoRenderState;
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -14,7 +12,7 @@ import net.minecraft.util.Mth;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class GeckoModel<T extends GeckoEntity> extends HierarchicalModel<T> {
+public class GeckoModel extends EntityModel<GeckoRenderState> {
     public static final ModelLayerLocation LAYER_LOCATION =
             new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MODID, "entityttmgecko"), "main");
 
@@ -22,6 +20,7 @@ public class GeckoModel<T extends GeckoEntity> extends HierarchicalModel<T> {
     private final ModelPart head;
 
     public GeckoModel(ModelPart root) {
+		super(root);
         this.body = root.getChild("Body");
         this.head = this.body.getChild("Head");
     }
@@ -63,12 +62,12 @@ public class GeckoModel<T extends GeckoEntity> extends HierarchicalModel<T> {
     }
 
     @Override
-    public void setupAnim(GeckoEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        this.root().getAllParts().forEach(ModelPart::resetPose);
-        this.applyHeadRotation(netHeadYaw, headPitch);
+    public void setupAnim(GeckoRenderState state) {
+        super.setupAnim(state);
+        this.applyHeadRotation(state.yRot, state.xRot);
 
-        this.animateWalk(GeckoAnimations.ANIM_GECKO_WALK, limbSwing, limbSwingAmount, 2f, 2.5f);
-        this.animate(entity.idleAnimationState, GeckoAnimations.ANIM_GECKO_IDLE, ageInTicks, 1f);
+        this.animateWalk(GeckoAnimations.ANIM_GECKO_WALK, state.walkAnimationPos, state.walkAnimationSpeed, 2f, 2.5f);
+        this.animate(state.idleAnimationState, GeckoAnimations.ANIM_GECKO_IDLE, state.ageInTicks, 1f);
     }
 
     private void applyHeadRotation(float headYaw, float headPitch) {
@@ -77,15 +76,5 @@ public class GeckoModel<T extends GeckoEntity> extends HierarchicalModel<T> {
 
         this.head.yRot = headYaw * ((float)Math.PI / 180f);
         this.head.xRot = headPitch *  ((float)Math.PI / 180f);
-    }
-
-    @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-        body.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-    }
-
-    @Override
-    public ModelPart root() {
-        return body;
     }
 }

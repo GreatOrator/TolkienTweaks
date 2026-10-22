@@ -11,7 +11,6 @@ import com.greatorator.tolkienmobs.event.client.TolkienRenderInfo;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import net.minecraft.client.model.BoatModel;
-import net.minecraft.client.model.ChestBoatModel;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
 import net.minecraft.client.renderer.blockentity.SignRenderer;
@@ -99,19 +98,19 @@ public class TolkienRegistration {
         event.registerLayerDefinition(TolkienModelLayers.LOCUST, LocustModel::create);
 
         // Boats
-        event.registerLayerDefinition(TolkienModelLayers.MALLORN_BOAT, BoatModel::createBodyModel);
-        event.registerLayerDefinition(TolkienModelLayers.MALLORN_CHEST_BOAT, ChestBoatModel::createBodyModel);
-        event.registerLayerDefinition(TolkienModelLayers.MIRKWOOD_BOAT, BoatModel::createBodyModel);
-        event.registerLayerDefinition(TolkienModelLayers.MIRKWOOD_CHEST_BOAT, ChestBoatModel::createBodyModel);
-        event.registerLayerDefinition(TolkienModelLayers.CULUMALDA_BOAT, BoatModel::createBodyModel);
-        event.registerLayerDefinition(TolkienModelLayers.CULUMALDA_CHEST_BOAT, ChestBoatModel::createBodyModel);
-        event.registerLayerDefinition(TolkienModelLayers.LEBETHRON_BOAT, BoatModel::createBodyModel);
-        event.registerLayerDefinition(TolkienModelLayers.LEBETHRON_CHEST_BOAT, ChestBoatModel::createBodyModel);
-        event.registerLayerDefinition(TolkienModelLayers.FANGORNOAK_BOAT, BoatModel::createBodyModel);
-        event.registerLayerDefinition(TolkienModelLayers.FANGORNOAK_CHEST_BOAT, ChestBoatModel::createBodyModel);
-        event.registerLayerDefinition(TolkienModelLayers.DEADWOOD_BOAT, BoatModel::createBodyModel);
-        event.registerLayerDefinition(TolkienModelLayers.DEADWOOD_CHEST_BOAT, ChestBoatModel::createBodyModel);
-        event.registerLayerDefinition(TolkienModelLayers.DWARVEN_MAPLE_BOAT, BoatModel::createBodyModel);
-        event.registerLayerDefinition(TolkienModelLayers.DWARVEN_MAPLE_CHEST_BOAT, ChestBoatModel::createBodyModel);
+        event.registerLayerDefinition(TolkienModelLayers.MALLORN_BOAT, BoatModel::createBoatModel);
+        event.registerLayerDefinition(TolkienModelLayers.MALLORN_CHEST_BOAT, BoatModel::createChestBoatModel);
+        event.registerLayerDefinition(TolkienModelLayers.MIRKWOOD_BOAT, BoatModel::createBoatModel);
+        event.registerLayerDefinition(TolkienModelLayers.MIRKWOOD_CHEST_BOAT, BoatModel::createChestBoatModel);
+        event.registerLayerDefinition(TolkienModelLayers.CULUMALDA_BOAT, BoatModel::createBoatModel);
+        event.registerLayerDefinition(TolkienModelLayers.CULUMALDA_CHEST_BOAT, BoatModel::createChestBoatModel);
+        event.registerLayerDefinition(TolkienModelLayers.LEBETHRON_BOAT, BoatModel::createBoatModel);
+        event.registerLayerDefinition(TolkienModelLayers.LEBETHRON_CHEST_BOAT, BoatModel::createChestBoatModel);
+        event.registerLayerDefinition(TolkienModelLayers.FANGORNOAK_BOAT, BoatModel::createBoatModel);
+        event.registerLayerDefinition(TolkienModelLayers.FANGORNOAK_CHEST_BOAT, BoatModel::createChestBoatModel);
+        event.registerLayerDefinition(TolkienModelLayers.DEADWOOD_BOAT, BoatModel::createBoatModel);
+        event.registerLayerDefinition(TolkienModelLayers.DEADWOOD_CHEST_BOAT, BoatModel::createChestBoatModel);
+        event.registerLayerDefinition(TolkienModelLayers.DWARVEN_MAPLE_BOAT, BoatModel::createBoatModel);
+        event.registerLayerDefinition(TolkienModelLayers.DWARVEN_MAPLE_CHEST_BOAT, BoatModel::createChestBoatModel);
     }
 }
