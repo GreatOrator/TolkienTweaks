@@ -463,6 +463,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addSound("ambient", "arda_portal", "Portal to Arda beckons");
             this.addSound("item", "hype_horn", "Celebrating victory");
             this.addSound("mob", "coin_trader", "A Wild Coin Trader appears!");
+            this.addSound("mob", "fellbeast_wind", "The beast dives.");
 
                 // Entities
                     // Villager

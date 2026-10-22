@@ -139,6 +139,15 @@ public class TolkienSoundProvider extends SoundDefinitionsProvider {
         this.generateNewSound(TolkienSounds.DEATH_WATCHER, "mob/watcher/watcher_death", 1, "The end of things deeper and darker.");
         this.generateNewSound(TolkienSounds.IDLE_FELLBEAST, "mob/fellbeast/fellbeast_say", 2, "A mighty Dragon roar");
         this.generateNewSound(TolkienSounds.FLAP_FELLBEAST, "mob/fellbeast/fellbeast_flap", 1, "The beast takes flight.");
+        // The dive wind is built by hand rather than through generateNewSound, so that its subtitle
+        // is never routed through SUBTITLE_GENERATOR: those entries are filled by this provider while
+        // the lang providers are already running, which is why most of them never reach the lang
+        // file. Its caption is added in TolkienLangProviderUS and -CN instead.
+        this.add(TolkienSounds.WIND_FELLBEAST, SoundDefinition.definition()
+                .subtitle("subtitles.tolkienmobs.mob.fellbeast_wind")
+                .with(SoundDefinition.Sound.sound(TolkienMobsMain.prefix("mob/ammo/lift_wind1"), SoundDefinition.SoundType.SOUND),
+                        SoundDefinition.Sound.sound(TolkienMobsMain.prefix("mob/ammo/lift_wind2"), SoundDefinition.SoundType.SOUND),
+                        SoundDefinition.Sound.sound(TolkienMobsMain.prefix("mob/ammo/lift_wind3"), SoundDefinition.SoundType.SOUND)));
 
         // Projectile
         this.generateNewSound(TolkienSounds.SHOOT_BOULDER, "mob/ammo/ammo_boulder_shoot", 1, " ");
