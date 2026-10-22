@@ -461,7 +461,7 @@ public abstract class BlockModelBuilders extends BlockModelHelper {
 	}
 
 	protected void ladder(DeferredBlock<Block> ladder, DeferredBlock<Block> fullBlock) {
-		ModelFile ladderModel = models().withExistingParent(ladder.getId().getPath(), "ladder")
+		ModelFile ladderModel = models().withExistingParent(ladder.getId().getPath(), "block/ladder")
 				.texture("particle", texture(name(fullBlock)))
 				.texture("texture", texture(name(ladder))).renderType("cutout")
 				.ao(false);
