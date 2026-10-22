@@ -8,6 +8,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
@@ -20,10 +21,14 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class TolkienRecipeProvider extends TolkienRecipeHelper {
-    public TolkienRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, registries);
+    public TolkienRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
+        super(registries, output);
     }
-    protected void buildRecipes(RecipeOutput pRecipeOutput) {
+
+    @Override
+    protected void buildRecipes() {
+        // 1.21.4 keeps the output on the provider; the local alias keeps the body's call sites as they were.
+        RecipeOutput pRecipeOutput = this.output;
             //Smelting & Blasting
         List<ItemLike> MITHRIL_SMELTABLES = List.of(TolkienItems.RAW_MITHRIL,
                 TolkienBlocks.ORE_MITHRIL, TolkienBlocks.ORE_END_MITHRIL, TolkienBlocks.ORE_NETHER_MITHRIL, TolkienBlocks.ORE_DEEPSLATE_MITHRIL);
@@ -261,7 +266,7 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
         smithingUpgrade(pRecipeOutput, "ammolite", TolkienItems.BOOTS_AMMOLITE.get(), TolkienItems.TEMPLATE_AMMOLITE.get(), Items.NETHERITE_BOOTS, TolkienItems.GEM_AMMOLITE.get());
 
         // Special Tools
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, TolkienItems.HOBBIT_RING, 1)
+        shaped(RecipeCategory.TOOLS, TolkienItems.HOBBIT_RING, 1)
                 .define('A', Blocks.BONE_BLOCK)
                 .define('G', TolkienItems.GEM_AMMOLITE)
                 .define('R', TolkienItems.TRINKET_RING)
@@ -270,7 +275,7 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
                 .pattern("AGA")
                 .unlockedBy("has_ammolite", has(TolkienItems.GEM_AMMOLITE))
                 .save(pRecipeOutput);
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, TolkienItems.TRINKET_AMULET, 1)
+        shaped(RecipeCategory.TOOLS, TolkienItems.TRINKET_AMULET, 1)
                 .pattern("GMG")
                 .pattern("G G")
                 .pattern("MAM")
@@ -279,7 +284,7 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
                 .define('G', TolkienItems.MUMAKIL_LEATHER.get())
                 .unlockedBy("has_mithril", has(TolkienItems.INGOT_MITHRIL.get()))
                 .save(pRecipeOutput);
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, TolkienItems.TRINKET_BELT, 1)
+        shaped(RecipeCategory.TOOLS, TolkienItems.TRINKET_BELT, 1)
                 .pattern("GGG")
                 .pattern("M G")
                 .pattern("AMG")
@@ -288,7 +293,7 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
                 .define('G', TolkienItems.MUMAKIL_LEATHER.get())
                 .unlockedBy("has_mithril", has(TolkienItems.INGOT_MITHRIL))
                 .save(pRecipeOutput);
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, TolkienItems.TRINKET_CHARM, 1)
+        shaped(RecipeCategory.TOOLS, TolkienItems.TRINKET_CHARM, 1)
                 .pattern("MMG")
                 .pattern("CAC")
                 .pattern("MMM")
@@ -298,7 +303,7 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
                 .define('C', Blocks.TERRACOTTA)
                 .unlockedBy("has_mithril", has(TolkienItems.INGOT_MITHRIL))
                 .save(pRecipeOutput);
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, TolkienItems.TRINKET_RING, 1)
+        shaped(RecipeCategory.TOOLS, TolkienItems.TRINKET_RING, 1)
                 .pattern("GM ")
                 .pattern("M M")
                 .pattern(" M ")
@@ -306,7 +311,7 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
                 .define('M', TolkienItems.INGOT_MITHRIL.get())
                 .unlockedBy("has_mithril", has(TolkienItems.INGOT_MITHRIL))
                 .save(pRecipeOutput);
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, TolkienItems.TRINKET_GLOVE, 1)
+        shaped(RecipeCategory.TOOLS, TolkienItems.TRINKET_GLOVE, 1)
                 .pattern(" MM")
                 .pattern("AGA")
                 .pattern("MMM")
@@ -315,7 +320,7 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
                 .define('M', TolkienItems.MUMAKIL_LEATHER.get())
                 .unlockedBy("has_mithril", has(TolkienItems.INGOT_MITHRIL))
                 .save(pRecipeOutput);
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, TolkienItems.TRINKET_HAT, 1)
+        shaped(RecipeCategory.TOOLS, TolkienItems.TRINKET_HAT, 1)
                 .pattern("AAA")
                 .pattern("MGM")
                 .pattern("   ")
@@ -324,7 +329,7 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
                 .define('M', TolkienItems.MUMAKIL_LEATHER.get())
                 .unlockedBy("has_mithril", has(TolkienItems.INGOT_MITHRIL))
                 .save(pRecipeOutput);
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, TolkienItems.TRINKET_CLOAK, 1)
+        shaped(RecipeCategory.TOOLS, TolkienItems.TRINKET_CLOAK, 1)
                 .pattern("M M")
                 .pattern("AGA")
                 .pattern("MMM")
@@ -333,7 +338,7 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
                 .define('M', TolkienItems.MUMAKIL_LEATHER.get())
                 .unlockedBy("has_mithril", has(TolkienItems.INGOT_MITHRIL))
                 .save(pRecipeOutput);
-        ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, TolkienItems.DWARVEN_HAMMER, 1)
+        shaped(RecipeCategory.TOOLS, TolkienItems.DWARVEN_HAMMER, 1)
                 .define('A', TolkienBlocks.DWARVEN_STONE)
                 .define('G', Items.STICK)
                 .define('R', TolkienItems.GEM_AMMOLITE)
@@ -344,7 +349,7 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
                 .save(pRecipeOutput);
 
         // Special Blocks
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, TolkienBlocks.FIREPLACE, 1)
+        shaped(RecipeCategory.DECORATIONS, TolkienBlocks.FIREPLACE, 1)
                 .pattern("SSS")
                 .pattern("BIB")
                 .pattern("SSS")
@@ -353,7 +358,7 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
                 .define('I', Items.IRON_BARS)
                 .unlockedBy("has_brick", has(Items.BRICK))
                 .save(pRecipeOutput);
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, TolkienBlocks.PIGGYBANK, 1)
+        shaped(RecipeCategory.DECORATIONS, TolkienBlocks.PIGGYBANK, 1)
                 .pattern("SSS")
                 .pattern("BIB")
                 .pattern("SSS")
@@ -362,7 +367,7 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
                 .define('I', TolkienTags.Items.COINS)
                 .unlockedBy("has_brick", has(Items.BRICK))
                 .save(pRecipeOutput);
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, TolkienBlocks.WELL, 1)
+        shaped(RecipeCategory.DECORATIONS, TolkienBlocks.WELL, 1)
                 .pattern("FSF")
                 .pattern("FBF")
                 .pattern("XYX")
@@ -373,5 +378,25 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
                 .define('Y', ItemTags.SLABS)
                 .unlockedBy("has_bucket", has(Items.BUCKET))
                 .save(pRecipeOutput);
+    }
+
+    /**
+     * 1.21.4 splits the data provider from the recipe provider: the runner is the {@code DataProvider} that opens
+     * the output and hands it to a fresh {@link TolkienRecipeProvider}.
+     */
+    public static class Runner extends RecipeProvider.Runner {
+        public Runner(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {
+            super(packOutput, registries);
+        }
+
+        @Override
+        protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
+            return new TolkienRecipeProvider(registries, output);
+        }
+
+        @Override
+        public String getName() {
+            return "Tolkien Tweaks recipes";
+        }
     }
 }

@@ -35,7 +35,7 @@ public class TolkienDataGenerator {
         event.addProvider(new TolkienLangProviderCN(packOutput));
         event.addProvider(new TolkienSoundProvider(packOutput));
 
-        event.addProvider(new TolkienRecipeProvider(packOutput, lookupProvider));
+        event.addProvider(new TolkienRecipeProvider.Runner(packOutput, lookupProvider));
         event.addProvider(new TolkienLootTableProvider(packOutput, lookupProvider));
         event.addProvider(new TolkienGlobalLootModifierProvider(packOutput, lookupProvider));
 
