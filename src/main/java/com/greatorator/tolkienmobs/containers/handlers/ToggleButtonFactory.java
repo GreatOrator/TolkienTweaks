@@ -178,8 +178,8 @@ public class ToggleButtonFactory {
     /** Milestone Settings **/
     private static final Component distanceButtonLocalization = Component.translatable("screen.tolkienmobs.milestone.distance");
     private static final Component dimensionButtonLocalization = Component.translatable("screen.tolkienmobs.milestone.dimension");
-    private static final Component itemPaymentButtonLocalization = LangTranslationUtils.paymentItem(BuiltInRegistries.ITEM.get(ResourceLocation.parse(TolkienMobsConfig.PAYMENT_ITEM.get())).getDefaultInstance().getDisplayName());
-    private static final Component experiencePaymentButtonLocalization = LangTranslationUtils.paymentItem(BuiltInRegistries.ITEM.get(ResourceLocation.parse("tolkienmobs:experience_orb")).getDefaultInstance().getDisplayName());
+    private static final Component itemPaymentButtonLocalization = LangTranslationUtils.paymentItem(BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(TolkienMobsConfig.PAYMENT_ITEM.get())).getDefaultInstance().getDisplayName());
+    private static final Component experiencePaymentButtonLocalization = LangTranslationUtils.paymentItem(BuiltInRegistries.ITEM.getValue(ResourceLocation.parse("tolkienmobs:experience_orb")).getDefaultInstance().getDisplayName());
 
     public static NumberButton DISTANCE_BUTTON(int x, int y, int value, Button.OnPress onPress) {
         return new NumberButton(x, y, 24, 16, value, TolkienMobsConfig.DISTANCE_COST.get(), 5000, distanceButtonLocalization, onPress);

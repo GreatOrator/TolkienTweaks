@@ -4,7 +4,6 @@ import com.greatorator.tolkienmobs.block.custom.entity.TolkienBlockEntity;
 import com.greatorator.tolkienmobs.containers.slots.SlotArmor;
 import com.greatorator.tolkienmobs.network.PacketHandler;
 import com.greatorator.tolkienmobs.network.packet.PacketCustom;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -93,8 +92,8 @@ public abstract class TolkienContainer<T extends TolkienBlockEntity> extends Abs
                 super.setByPlayer(stack, type);
             }
 
-            public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-                return Pair.of(InventoryMenu.BLOCK_ATLAS, InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD);
+            public ResourceLocation getNoItemIcon() {
+                return InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD;
             }
         });
     }
