@@ -2,7 +2,6 @@ package com.greatorator.tolkienmobs.item.custom;
 
 import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.greatorator.tolkienmobs.network.component.TrinketComponent;
-import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -26,7 +25,6 @@ import java.util.Random;
 public class TrinketItem extends Item {
     private static int trinket_effect = 0;
     private static final Random random_effect = new Random();
-    private final java.util.Map<Item, ItemColor> itemColors = new java.util.IdentityHashMap<>();
 
     public TrinketItem(Properties properties) {
         super(properties);
@@ -103,9 +101,15 @@ public class TrinketItem extends Item {
         }
     }
 
+    /**
+     * The potion names the trinket, the way {@code PotionContents#getName} names a potion item: the item's own
+     * description id plus the potion's name, or {@code empty} when it holds no potion.
+     */
     @Override
-    public String getDescriptionId(ItemStack stack) {
-        return Potion.getName(stack.getOrDefault(TolkienDataComponents.POTION_CONTENTS, TrinketComponent.EMPTY).potion(), this.getDescriptionId() + ".");
+    public Component getName(ItemStack stack) {
+        TrinketComponent contents = stack.getOrDefault(TolkienDataComponents.POTION_CONTENTS, TrinketComponent.EMPTY);
+        String potion = contents.potion().map(holder -> holder.value().name()).orElse("empty");
+        return Component.translatable(this.getDescriptionId() + "." + potion);
     }
 
     @Override

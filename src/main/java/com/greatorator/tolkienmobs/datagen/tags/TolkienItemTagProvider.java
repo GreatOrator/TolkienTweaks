@@ -104,6 +104,13 @@ public class TolkienItemTagProvider extends ItemTagsProvider {
         tag(TolkienTags.Items.ACORNS)
                 .add(TolkienItems.TREE_ACORN.get())
                 .add(TolkienItems.GOLDEN_TREE_ACORN.get());
+        // The tool materials name these as their repair items.
+        tag(TolkienTags.Items.MITHRIL_INGOTS)
+                .add(TolkienItems.INGOT_MITHRIL.get());
+        tag(TolkienTags.Items.MORGULIRON_INGOTS)
+                .add(TolkienItems.INGOT_MORGULIRON.get());
+        tag(TolkienTags.Items.AMMOLITE_GEMS)
+                .add(TolkienItems.GEM_AMMOLITE.get());
         tag(TolkienTags.Items.TRINKET)
                 .add(TolkienItems.TRINKET_RING.get())
                 .add(TolkienItems.TRINKET_AMULET.get())

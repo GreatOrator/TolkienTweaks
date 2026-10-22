@@ -61,7 +61,7 @@ public final class RepairMaterials {
      */
     public static boolean repairs(@Nullable LevelAccessor level, ItemStack tool, ItemStack material) {
         Boolean pack = packDecision(level, tool, material);
-        return pack != null ? pack : tool.getItem().isValidRepairItem(tool, material);
+        return pack != null ? pack : tool.isValidRepairItem(material);
     }
 
     /**
@@ -73,7 +73,7 @@ public final class RepairMaterials {
         if (level == null) {
             return null;
         }
-        Registry<RepairMaterial> registry = level.registryAccess().registry(REGISTRY_KEY).orElse(null);
+        Registry<RepairMaterial> registry = level.registryAccess().lookup(REGISTRY_KEY).orElse(null);
         if (registry == null) {
             return null;
         }

@@ -4,7 +4,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PickaxeItem;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.TooltipFlag;
 
 import java.util.List;
@@ -13,8 +13,8 @@ public class TolkienPickaxeItem extends PickaxeItem {
     public boolean hasEffectOverride = false;
     private boolean hasLore = false;
 
-    public TolkienPickaxeItem(Tier tier, Properties properties) {
-        super(tier, properties);
+    public TolkienPickaxeItem(ToolMaterial material, float attackDamage, float attackSpeed, Properties properties) {
+        super(material, attackDamage, attackSpeed, properties);
     }
 
     public TolkienPickaxeItem setEffectOverride() {

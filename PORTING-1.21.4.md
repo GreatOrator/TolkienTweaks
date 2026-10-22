@@ -9,7 +9,7 @@ This file is the handoff: it records what is done, what is measured, and what to
 |---|---|
 | Target | Minecraft **1.21.4**, NeoForge **21.4.161** |
 | Compile errors at the start | **5,720** in 425 files |
-| Compile errors now | **91** distinct sites |
+| Compile errors now | **46** distinct sites |
 | Runnable | no — the tree does not compile yet |
 
 Dependency versions, all verified to exist and resolve:
@@ -443,6 +443,20 @@ recipe-book check), `ArmorItem#getEquipmentSlot(ItemStack)`, and
   and is an immutable record of seven key flags, while `MovementInputUpdateEvent#getInput()` returns a `ClientInput`
   holding that record in `keyPresses` plus the `forwardImpulse`/`leftImpulse` the player actually moves by. The
   terror effect replaces the record with `Input.EMPTY` and zeroes both impulses.
+
+### 3h. Items and tools — DONE
+
+`item/`, `item/custom/` and the tool-material definitions compile.
+
+- `Tier` is `ToolMaterial`, a record `(incorrectBlocksForDrops, durability, speed, attackDamageBonus, enchantmentValue, repairItems)`, and `repairItems` is an item **tag**, not an `Ingredient`. `TolkienToolMaterials` now names `tolkienmobs:mithril_ingots`, `morguliron_ingots` and `ammolite_gems` — tags the mod had declared but never filled — and the item tag provider fills them with the ingot or gem.
+- Tool items build their own properties, so the wrapper classes take the numbers the registrations used to pass to `createAttributes`: `SwordItem(ToolMaterial, attackDamage, attackSpeed, Properties)` and `AxeItem`/`PickaxeItem`/`ShovelItem`/`HoeItem` likewise, `DiggerItem` also taking the block tag it mines. The constructor writes the same `ATTACK_DAMAGE`/`ATTACK_SPEED` modifiers the old `attributes(...)` call did (its damage argument is the same base the old helper took, added to the material's bonus), so every tool keeps its numbers, and durability, enchantability and the repair tag come from the material.
+- Shears take only properties. The material the mod's shears held existed only to answer "what repairs this", which is the `Repairable` component now, so they declare `Properties#repairable(TagKey<Item>)` instead.
+- `Item#isValidRepairItem(ItemStack, ItemStack)` is `ItemStack#isValidRepairItem(ItemStack)`, and `RegistryAccess#registry` is `lookup`.
+- `ItemStack#getDescriptionId()` is `Item#getDescriptionId()` on the item, and the per-stack description id override is gone: `Item#getName(ItemStack)` is the hook, which is where the trinket appends its potion's name (`PotionContents#getName` does the same for potions).
+- `BowItem#releaseUsing` now answers whether the bow actually fired, and `isEnchantable(ItemStack)` is gone in favour of the `Enchantable` component (`Properties#enchantable(int)`), which the two bows set to 1 like vanilla's bow.
+- `InteractionResult.sidedSuccess(boolean)` is `SUCCESS` / `SUCCESS_SERVER`, and the result holder's `getResult()` is gone — `use()` returns the result itself.
+- `ChestBoat` no longer extends `Boat`; both extend `AbstractBoat`, which is what the boat items' spawn helper returns.
+- GeckoLib's `GeoRenderProvider#getGeoItemRenderer` returns a `GeoItemRenderer<?>`; vanilla's `BlockEntityWithoutLevelRenderer` no longer exists.
 
 ### 4. Datagen output
 

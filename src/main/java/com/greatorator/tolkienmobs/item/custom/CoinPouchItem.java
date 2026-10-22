@@ -34,7 +34,7 @@ public class CoinPouchItem extends TolkienItem {
         }
 
         player.openMenu(new SimpleMenuProvider(
-                (windowId, playerInventory, playerEntity) -> new CoinPouchContainer(windowId, playerInventory, player, itemstack), Component.translatable("screen.tolkienmobs." + itemstack.getDescriptionId())), (buf -> {
+                (windowId, playerInventory, playerEntity) -> new CoinPouchContainer(windowId, playerInventory, player, itemstack), Component.translatable("screen.tolkienmobs." + itemstack.getItem().getDescriptionId())), (buf -> {
             ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, itemstack);
         }));
 

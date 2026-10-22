@@ -57,26 +57,24 @@ public class TolkienBowItem extends BowItem {
             return InteractionResult.CONSUME;
         }
     }
-    @Override public void releaseUsing(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
-        if(entityLiving instanceof Player player) {
-            ItemStack itemstack = player.getProjectile(stack);
-            if(infinityArrow != null && (itemstack.isEmpty() || itemstack.is(infinityArrow.get()))) itemstack = new ItemStack(infinityArrow.get());
-            if(itemstack.isEmpty()) return;
-            int i = EventHooks.onArrowLoose(stack, level, player, (getUseDuration(stack, entityLiving) - timeLeft) * 72000 / useDuration, true);
-            if(i < 0) return;
-            float f = getPowerForTime(i);
-            if(f >= .1F) {
-                List<ItemStack> list = draw(stack, itemstack, player);
-                if(level instanceof ServerLevel serverlevel && !list.isEmpty()) shoot(serverlevel, player, player.getUsedItemHand(), stack, list, f * 3F * speedScale, 1, f == 1, null);
-                level.playSound(null, player.getX(), player.getY(), player.getZ(), ARROW_SHOOT, PLAYERS, 1, 1 / (level.getRandom().nextFloat() * .4F + 1.2F) + f * .5F);
-                player.awardStat(ITEM_USED.get(this));
-            }
-        }
+    @Override public boolean releaseUsing(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
+        if(!(entityLiving instanceof Player player)) return false;
+        ItemStack itemstack = player.getProjectile(stack);
+        if(infinityArrow != null && (itemstack.isEmpty() || itemstack.is(infinityArrow.get()))) itemstack = new ItemStack(infinityArrow.get());
+        if(itemstack.isEmpty()) return false;
+        int i = EventHooks.onArrowLoose(stack, level, player, (getUseDuration(stack, entityLiving) - timeLeft) * 72000 / useDuration, true);
+        if(i < 0) return false;
+        float f = getPowerForTime(i);
+        if(f < .1F) return false;
+        List<ItemStack> list = draw(stack, itemstack, player);
+        if(level instanceof ServerLevel serverlevel && !list.isEmpty()) shoot(serverlevel, player, player.getUsedItemHand(), stack, list, f * 3F * speedScale, 1, f == 1, null);
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), ARROW_SHOOT, PLAYERS, 1, 1 / (level.getRandom().nextFloat() * .4F + 1.2F) + f * .5F);
+        player.awardStat(ITEM_USED.get(this));
+        return true;
     }
     @Override public ItemStack getDefaultCreativeAmmo(@Nullable Player player, ItemStack projectileWeaponItem) {
         return new ItemStack(infinityArrow == null ? Items.ARROW : infinityArrow.get());
     }
-    @Override public boolean isEnchantable(ItemStack stack) {return true;}
     @Override public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {
         return super.supportsEnchantment(stack, enchantment) && (stack.has(DataComponents.MAX_DAMAGE) || !(enchantment.is(Enchantments.MENDING) || enchantment.is(Enchantments.UNBREAKING)));
     }

@@ -10,7 +10,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.entity.vehicle.AbstractBoat;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
@@ -54,7 +54,7 @@ public class DeadwoodBoatItem extends Item {
                 }
             }
             if (hitResult.getType() == HitResult.Type.BLOCK) {
-                Boat boat = this.getBoat(level, hitResult);
+                AbstractBoat boat = this.getBoat(level, hitResult);
                 boat.setYRot(player.getYRot());
                 if (!level.noCollision(boat, boat.getBoundingBox())) {
                     return InteractionResult.FAIL;
@@ -75,7 +75,7 @@ public class DeadwoodBoatItem extends Item {
         }
     }
 
-    private Boat getBoat(Level level, HitResult hitResult) {
+    private AbstractBoat getBoat(Level level, HitResult hitResult) {
         return this.hasChest ? new DeadwoodChestBoatEntity(level, hitResult.getLocation().x, hitResult.getLocation().y, hitResult.getLocation().z, WOOD_TYPE) : new DeadwoodBoatEntity(level, hitResult.getLocation().x, hitResult.getLocation().y, hitResult.getLocation().z, WOOD_TYPE);
     }
 }

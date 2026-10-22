@@ -41,7 +41,7 @@ public class BackpackItem extends BlockItem {
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
         if (player != null && !player.isSecondaryUseActive()) {
-            return use(context.getLevel(), player, context.getHand()).getResult();
+            return use(context.getLevel(), player, context.getHand());
         }
         return super.useOn(context);
     }
