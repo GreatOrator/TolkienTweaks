@@ -3,11 +3,15 @@
   "ingredients": [
     {
       "count": 2,
-      "item": "minecraft:wheat"
+      "ingredient": {
+        "item": "minecraft:wheat"
+      }
     },
     {
       "count": 1,
-      "item": "minecraft:cocoa_beans"
+      "ingredient": {
+        "item": "minecraft:cocoa_beans"
+      }
     }
   ],
   "output": [

@@ -3,7 +3,9 @@
   "ingredients": [
     {
       "count": 3,
-      "item": "minecraft:wheat"
+      "ingredient": {
+        "item": "minecraft:wheat"
+      }
     }
   ],
   "output": [

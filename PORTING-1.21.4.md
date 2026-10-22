@@ -9,7 +9,7 @@ This file is the handoff: it records what is done, what is measured, and what to
 |---|---|
 | Target | Minecraft **1.21.4**, NeoForge **21.4.161** |
 | Compile errors at the start | **5,720** in 425 files |
-| Compile errors now | **133** distinct sites |
+| Compile errors now | **112** distinct sites |
 | Runnable | no — the tree does not compile yet |
 
 Dependency versions, all verified to exist and resolve:
@@ -397,6 +397,27 @@ also lost its yaw argument, so the spawner preview passes `render(entity, 0, 0, 
 - Smaller ones: `RecipeCraftingHolder#setRecipeUsed(ServerPlayer, RecipeHolder)` (the level dropped out of the
 recipe-book check), `ArmorItem#getEquipmentSlot(ItemStack)`, and
 `BuiltInRegistries.ITEM.get(id)` → `getValue(id)` where the result is used directly rather than as a holder.
+
+### 3f. Recipes — DONE
+
+`recipe/` compiles, with no errors left in either recipe class, its serializer, its JEI category or the two datagen builders.
+
+- `Recipe` lost `canCraftInDimensions` and `getResultItem` and gained two abstract members: `placementInfo()`, built
+  with `PlacementInfo.create(List<Ingredient>)`, and `recipeBookCategory()`, which both recipes answer with
+  `RecipeBookCategories.CRAFTING_MISC` (the recipe book only lists recipes that also return a `display()`, so the
+  empty default keeps them out of the vanilla book while still satisfying the interface). `getGroup()` is `group()`.
+- `Ingredient#getItems()` became `items()`, a `Stream<Holder<Item>>`. Both JEI categories now build their displays
+  from it: the fireplace copies `new ItemStack(holder)` and stamps `SizedIngredient#count()` on it, the trinket table
+  maps the holders straight to item stacks.
+- `SizedIngredient.FLAT_CODEC` is gone; 1.21.4 only has `NESTED_CODEC` and `STREAM_CODEC`. That changes the JSON:
+  an ingredient is `{"ingredient": {"item": ...}, "count": n}` instead of `{"item": ..., "count": n}`. The 20
+  shipped fireplace and trinket-table recipe files were rewritten to that shape by hand, because datagen cannot run
+  until the rest of the tree compiles; regenerating them later should reproduce the same files.
+- `RecipeBuilder#save` takes a `ResourceKey<Recipe<?>>`, and the unlock advancement is keyed off `recipeKey.location()`.
+
+Still open in this area: `integration/TolkienJEIPlugin` reads `level.getRecipeManager()`, which the client level no
+longer has — 1.21.4 syncs recipe *displays* to the client, not recipes, so that plugin needs its own source of the
+fireplace recipes.
 
 ### 4. Datagen output
 

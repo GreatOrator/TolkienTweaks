@@ -3,11 +3,15 @@
   "ingredients": [
     {
       "count": 1,
-      "item": "minecraft:cake"
+      "ingredient": {
+        "item": "minecraft:cake"
+      }
     },
     {
       "count": 1,
-      "item": "tolkienmobs:food_honey"
+      "ingredient": {
+        "item": "tolkienmobs:food_honey"
+      }
     }
   ],
   "output": [

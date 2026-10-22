@@ -3,7 +3,9 @@
   "ingredients": [
     {
       "count": 1,
-      "item": "tolkienmobs:monster_flesh"
+      "ingredient": {
+        "item": "tolkienmobs:monster_flesh"
+      }
     }
   ],
   "output": [
