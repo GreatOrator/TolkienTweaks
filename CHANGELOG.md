@@ -30,6 +30,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+- The fell beast's fireball and the boulder no longer crash the game when they are drawn in flight. Each kept the angles it sits at once it lands in a field that started empty, and its renderer read that field on every frame, grounded or not, so the first frame either one was on screen threw a NullPointerException and took the client down; the field starts at zero now.
 - The milestone's dimension cost is a setting of its own again. It and the minimum tick speed were both saved under `minimum_tick_speed`, so the two could not be set apart and the dimension button's lowest allowed cost was whatever the tick speed was set to; the option is `dimension_cost` now.
 - Milestones charge levels when the payment method is experience. That branch checked for and spent the configured payment item instead, so a jump priced in levels was refused for lack of coins, or paid with coins while the levels went untouched; it checks and spends levels now.
 - The milestone list shows every milestone. It skipped whichever milestone came first in the list, its page count was one short whenever the total was just past a multiple of seven, and scrolling moved the page number without redrawing the list.
