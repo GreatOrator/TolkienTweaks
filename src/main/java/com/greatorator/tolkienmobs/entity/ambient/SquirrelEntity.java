@@ -85,7 +85,7 @@ public class SquirrelEntity extends TolkienAmbientEntity implements GeoEntity {
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
         TolkienVariant variant = Util.getRandom(TolkienVariant.values(), this.random);
-        SquirrelEntity baby = TolkienEntities.ENTITY_TTM_SQUIRREL.get().create(serverLevel);
+        SquirrelEntity baby = TolkienEntities.ENTITY_TTM_SQUIRREL.get().create(serverLevel, EntitySpawnReason.BREEDING);
         baby.setVariant(variant);
 
         return baby;

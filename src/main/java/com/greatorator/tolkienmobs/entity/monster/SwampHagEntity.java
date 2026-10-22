@@ -30,6 +30,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownPotion;
@@ -48,8 +49,6 @@ import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.*;
 import software.bernie.geckolib.util.GeckoLibUtil;
-
-import java.util.function.Predicate;
 
 public class SwampHagEntity extends TolkienMonsterEntity implements GeoEntity {
     private static final EntityDataAccessor<Integer> VARIANT =
@@ -78,9 +77,9 @@ public class SwampHagEntity extends TolkienMonsterEntity implements GeoEntity {
 
     @Override
     protected void registerGoals() {
-        this.attackPlayersGoal = new SwampHagNearestAttackableTargetGoal<>(this, Player.class, 10, true, false, (Predicate<LivingEntity>)null);
-        this.healRaidersGoal = new SwampHagNearestHealableRaiderTargetGoal<>(this, TolkienMonsterEntity.class, true, (entity) -> {
-            return entity != null  && entity.getType() != TolkienEntities.ENTITY_TTM_SWAMPHAG.get();
+        this.attackPlayersGoal = new SwampHagNearestAttackableTargetGoal<>(this, Player.class, 10, true, false, (TargetingConditions.Selector)null);
+        this.healRaidersGoal = new SwampHagNearestHealableRaiderTargetGoal<>(this, TolkienMonsterEntity.class, true, (entity, level) -> {
+            return entity != null && entity.getType() != TolkienEntities.ENTITY_TTM_SWAMPHAG.get();
         });
         this.goalSelector.addGoal(1, new FloatGoal(this));
         this.goalSelector.addGoal(2, new RangedAttackGoal(this, 1.0, 60, 10.0F));
@@ -172,7 +171,7 @@ public class SwampHagEntity extends TolkienMonsterEntity implements GeoEntity {
                 holder = Potions.WEAKNESS;
             }
 
-            ThrownPotion thrownpotion = new ThrownPotion(this.level(), this);
+            ThrownPotion thrownpotion = new ThrownPotion(this.level(), this, ItemStack.EMPTY);
             thrownpotion.setItem(PotionContents.createItemStack(Items.SPLASH_POTION, holder));
             thrownpotion.setXRot(thrownpotion.getXRot() - -20.0F);
             thrownpotion.shoot(d0, d1 + d3 * 0.2, d2, 0.75F, 8.0F);

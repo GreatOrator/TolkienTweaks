@@ -3,15 +3,15 @@ package com.greatorator.tolkienmobs.entity.ai.target;
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 
 import javax.annotation.Nullable;
-import java.util.function.Predicate;
 
 public class SwampHagNearestHealableRaiderTargetGoal<T extends LivingEntity> extends NearestAttackableTargetGoal<T> {
    private static final int DEFAULT_COOLDOWN = 200;
    private int cooldown = 0;
 
-   public SwampHagNearestHealableRaiderTargetGoal(TolkienMonsterEntity raider, Class<T> entity, boolean heal, @Nullable Predicate<LivingEntity> predicate) {
+   public SwampHagNearestHealableRaiderTargetGoal(TolkienMonsterEntity raider, Class<T> entity, boolean heal, @Nullable TargetingConditions.Selector predicate) {
       super(raider, entity, 500, heal, false, predicate);
    }
 

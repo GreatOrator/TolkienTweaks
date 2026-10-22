@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.entity.ambient;
 
 import com.greatorator.tolkienmobs.init.TolkienSounds;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -58,8 +59,8 @@ public class SwarmEntity extends Monster {
 	}
 
 	@Override
-	public boolean doHurtTarget(Entity entity) {
-		if (super.doHurtTarget(entity)) {
+	public boolean doHurtTarget(ServerLevel serverLevel, Entity entity) {
+		if (super.doHurtTarget(serverLevel, entity)) {
 			if (entity instanceof LivingEntity living) {
 				int duration = switch (this.level().getDifficulty()) {
 					case EASY -> 7;

@@ -68,7 +68,7 @@ public class RatEntity extends TolkienAmbientEntity implements GeoEntity {
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
         TolkienVariant variant = Util.getRandom(TolkienVariant.values(), this.random);
-        RatEntity baby = TolkienEntities.ENTITY_TTM_RAT.get().create(serverLevel);
+        RatEntity baby = TolkienEntities.ENTITY_TTM_RAT.get().create(serverLevel, EntitySpawnReason.BREEDING);
         baby.setVariant(variant);
 
         return baby;

@@ -264,11 +264,45 @@ Still open in this area:
     `Properties.ofFullCopy(MALLORN_SIGN.get())`; they spell out the same chain the standing sign passes instead.
   - Hand-written: the spawn eggs in `TolkienEntities` and the two liquid blocks in `TolkienFluids`.
 
-  The remaining 499 errors are all outside registration.
-- The block-model and baked-model classes
-  (`ChameleonBlockDynamicBakedModel`, `PatchModel`/`UnbakedPatchModel`, `ModelEvent.RegisterGeometryLoaders`,
-  `FastColor` → `ARGB`), the block entity renderers, and the remaining entity classes (38 in `DragonEntity`,
-  28 in `ShelobEntity`, and a long tail).
+  The remaining 287 errors are all outside registration and outside `entity`: block entities, items, recipes,
+  network components, the client event handlers and a few datagen helpers.
+
+### 3b. Entities — DONE
+
+The ~180 errors in `com.greatorator.tolkienmobs.entity` were almost all one API move: damage is server-only now.
+
+- `Entity#hurt(DamageSource, float)` is `final void`; the override point is
+  `hurtServer(ServerLevel, DamageSource, float)`. Every boss and monster reaction moved there and lost its
+  `if (!(this.level() instanceof ServerLevel)) return false;` guard, because the server level is an argument now.
+  A plain (non-living) entity has to implement `hurtServer` at all: `BaseTrapEntity` and `TornadoEntity` answer
+  `false` to keep their old "not damageable" behaviour, and `MorgulCrystalEntity` moved its explosion there.
+- `LivingEntity#isInvulnerableTo(ServerLevel, DamageSource)`; for a plain entity the equivalent is
+  `isInvulnerableToBase(DamageSource)`.
+- `doHurtTarget(ServerLevel, Entity)` on both `Mob` and `LivingEntity`, and `customServerAiStep(ServerLevel)`.
+  A caller outside a goal takes the level from `Goal#getServerLevel(Entity)`; `EntityType#create(Level, EntitySpawnReason)`
+  now needs the reason, so babies pass `BREEDING`, riders pass `JOCKEY` and spawned projectiles/traps `MOB_SUMMONED`.
+- `Entity#isAlliedTo(Entity)` is final. A subclass widens it by overriding `considersEntityAsAlly(Entity)`, which
+  is where the dragon's rider-and-mount rule went.
+- `Leashable#dropLeash()` lost its arguments, `Entity#kill(ServerLevel)` takes the level, and
+  `getPickedResult(HitResult)` is `getPickResult()` — `Mob` already returns the spawn egg, so the dragon's override
+  was redundant and went away.
+- `tryCheckInsideBlocks()` / `checkInsideBlocks()` are private internals. `LivingEntity.aiStep` calls
+  `applyEffectsFromBlocks()` right after travel and `move()` does it for plain entities, so the dragon's manual call
+  in `travel` and the crystal's call in `tick` were deleted rather than ported.
+- `InteractionResult` is a sealed interface of records; `sidedSuccess(boolean)` became `SUCCESS` on the client and
+  `SUCCESS_SERVER` on the server.
+- `TargetingConditions.Selector` is `boolean test(LivingEntity, ServerLevel)`, so every targeting predicate takes two
+  parameters. `Level#getNearbyEntities` is gone in favour of `ServerLevel#getNearestEntity(list, …)` and
+  `getEntitiesOfClass`, and `Level#getGameRules()` is `ServerLevel`-only.
+- Smaller moves: `ItemCooldowns#addCooldown` takes an `ItemStack`; `Boat`/`ChestBoat` take a `Supplier<Item>` for the
+  item they drop; `Snowball`/`ThrownPotion` take an `ItemStack`; `BlockParticleOption` carries its block position in
+  the constructor instead of a `setPos` call; `AbstractArrow.inGround` is the protected `isInGround()`; and
+  `FlyingPathNavigation#setCanPassDoors` no longer exists (the setting was a no-op for flight).
+- The bosses' reaction messages: `LivingEntity` has no `displayClientMessage` any more, so
+  `GeneralUtility.sendMessage(target, component)` sends them to a player and quietly ignores a mob attacker.
+- Behaviour recovered while porting: the goat's charge telegraph (`checkAndPerformAttack` lost its distance
+  parameter, so the override had stopped being called) and the block-dust particles of the ent and the elemental
+  golem, which now carry the position the particle texture is picked from.
 
 ### 4. Datagen output
 

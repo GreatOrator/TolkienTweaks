@@ -82,19 +82,18 @@ public class MumakilEntity extends TolkienHeardEntity implements GeoEntity {
         this.didAttack = didAttack;
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        if (!this.level().isClientSide) {
-            this.setDidAttack(false);
-        }
+    @Override
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource source, float amount) {
+        this.setDidAttack(false);
 
-        return super.hurt(source, amount);
+        return super.hurtServer(serverLevel, source, amount);
     }
 
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
         TolkienVariant variant = Util.getRandom(TolkienVariant.values(), this.random);
-        MumakilEntity baby = TolkienEntities.ENTITY_TTM_MUMAKIL.get().create(serverLevel);
+        MumakilEntity baby = TolkienEntities.ENTITY_TTM_MUMAKIL.get().create(serverLevel, EntitySpawnReason.BREEDING);
         baby.setVariant(variant);
 
         return baby;
