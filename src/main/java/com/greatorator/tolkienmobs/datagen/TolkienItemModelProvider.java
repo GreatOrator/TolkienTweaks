@@ -525,6 +525,13 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         definition(TolkienItems.TRINKET_GLOVE.get(), trinketDefinition(TolkienItems.TRINKET_GLOVE.get()));
         definition(TolkienItems.TRINKET_HAT.get(), trinketDefinition(TolkienItems.TRINKET_HAT.get()));
         definition(TolkienItems.TRINKET_CLOAK.get(), trinketDefinition(TolkienItems.TRINKET_CLOAK.get()));
+
+        // The Arda Staff is a GeckoLib model. 1.21.4 has no builtin/entity parent to hang it
+        // on, so its definition names the GeckoLib special renderer and keeps item/arda_staff
+        // as the base model that carries the display transforms and the particle sprite.
+        definition(TolkienItems.ARDA_STAFF.get(), ItemModelDefinition.special(
+                modelOf(BuiltInRegistries.ITEM.getKey(TolkienItems.ARDA_STAFF.get())),
+                ResourceLocation.fromNamespaceAndPath("geckolib", "geckolib")));
     }
 
     /** An un-drawn bow, swapping to the three draw frames while it is being used. */
