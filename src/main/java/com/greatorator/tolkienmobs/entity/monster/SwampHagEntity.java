@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.entity.monster;
 import net.minecraft.world.entity.EntitySpawnReason;
 
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
+import com.greatorator.tolkienmobs.entity.ai.goal.AggressiveRangedAttackGoal;
 import com.greatorator.tolkienmobs.entity.ai.target.SwampHagNearestAttackableTargetGoal;
 import com.greatorator.tolkienmobs.entity.ai.target.SwampHagNearestHealableRaiderTargetGoal;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
@@ -82,7 +83,7 @@ public class SwampHagEntity extends TolkienMonsterEntity implements GeoEntity {
             return entity != null && entity.getType() != TolkienEntities.ENTITY_TTM_SWAMPHAG.get();
         });
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(2, new RangedAttackGoal(this, 1.0, 60, 10.0F));
+        this.goalSelector.addGoal(2, new AggressiveRangedAttackGoal(this, 1.0, 60, 10.0F));
         this.goalSelector.addGoal(2, new WaterAvoidingRandomStrollGoal(this, 1.0));
         this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(3, new RandomLookAroundGoal(this));
@@ -300,7 +301,7 @@ public class SwampHagEntity extends TolkienMonsterEntity implements GeoEntity {
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
-            if (event.isMoving() && !event.getAnimatable().isAggressive()) {
+            if (event.isMoving()) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
                 return PlayState.CONTINUE;
             }
@@ -314,14 +315,18 @@ public class SwampHagEntity extends TolkienMonsterEntity implements GeoEntity {
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
-            if (this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
+            // Each branch continues the controller so the attack it just started can run; an
+            // unconditional STOP below dropped the animation the moment it was set. The throw is
+            // keyed on the shooting flag the ranged goal syncs, not the unsynced weapon flag.
+            if (this.isShooting() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
                 event.getController().forceAnimationReset();
                 event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
-                this.ranged =false;
+                return PlayState.CONTINUE;
             }else if (this.isHealing() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
                 event.getController().forceAnimationReset();
                 event.getController().setAnimation(RawAnimation.begin().then("attack_heal", Animation.LoopType.PLAY_ONCE));
                 this.setHealing(false);
+                return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));

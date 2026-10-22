@@ -139,6 +139,21 @@ public class TolkienSoundProvider extends SoundDefinitionsProvider {
         this.generateNewSound(TolkienSounds.DEATH_WATCHER, "mob/watcher/watcher_death", 1, "The end of things deeper and darker.");
         this.generateNewSound(TolkienSounds.IDLE_FELLBEAST, "mob/fellbeast/fellbeast_say", 2, "A mighty Dragon roar");
         this.generateNewSound(TolkienSounds.FLAP_FELLBEAST, "mob/fellbeast/fellbeast_flap", 1, "The beast takes flight.");
+        // The dive wind is built by hand rather than through generateNewSound, so that its subtitle
+        // is never routed through SUBTITLE_GENERATOR: those entries are filled by this provider while
+        // the lang providers are already running, which is why most of them never reach the lang
+        // file. Its caption is added in TolkienLangProviderUS and -CN instead.
+        //
+        // Its sound is one purpose-made file rather than the tornado's gusts, because those are
+        // swells that fade to silence at both ends: looped, they pulse to nothing every three
+        // seconds, and cut short, they are what used to seam. dive_wind.ogg is a 7.25 second loop
+        // assembled from the loud middles of all three gusts, at three speeds, joined end to start
+        // inside a crossfade so the loop point falls in the middle of a blend rather than at an edge.
+        // It is recorded 20% slow, so it already carries the depth the dive used to reach by playing
+        // a faster loop at pitch 0.8; the pitch setting is 1.0 for that reason.
+        this.add(TolkienSounds.WIND_FELLBEAST, SoundDefinition.definition()
+                .subtitle("subtitles.tolkienmobs.mob.fellbeast_wind")
+                .with(SoundDefinition.Sound.sound(TolkienMobsMain.prefix("mob/fellbeast/dive_wind"), SoundDefinition.SoundType.SOUND)));
 
         // Projectile
         this.generateNewSound(TolkienSounds.SHOOT_BOULDER, "mob/ammo/ammo_boulder_shoot", 1, " ");
