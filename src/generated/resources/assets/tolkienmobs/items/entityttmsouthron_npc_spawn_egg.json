@@ -1,6 +1,16 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "tolkienmobs:item/entityttmsouthron_npc_spawn_egg"
+    "model": "minecraft:item/template_spawn_egg",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -1590710
+      },
+      {
+        "type": "minecraft:constant",
+        "value": -4578804
+      }
+    ]
   }
 }

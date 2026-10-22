@@ -1,6 +1,16 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "tolkienmobs:item/entityttmfellspirit_spawn_egg"
+    "model": "minecraft:item/template_spawn_egg",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -16191597
+      },
+      {
+        "type": "minecraft:constant",
+        "value": -9371833
+      }
+    ]
   }
 }

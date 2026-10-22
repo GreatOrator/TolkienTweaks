@@ -449,65 +449,11 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         basicItem(TolkienItems.MITHRIL_KEY.get());
         basicItem(TolkienItems.MASTER_KEY.get());
 
-        withExistingParent(TolkienEntities.EGG_TTMGECKO.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMRAT.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMSQUIRREL.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMFROG.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMTHRUSH.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMCREBAIN.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMSWARM.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMGREATEAGLE.getId().getPath(), mcLoc("item/template_spawn_egg"));
-
-        withExistingParent(TolkienEntities.EGG_TTMAUROCH.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMMUMAKIL.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMGOAT.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMSHADOWFAX.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMNAZGULSTEED.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMGOLLUM.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMISTARI.getId().getPath(), mcLoc("item/template_spawn_egg"));
-
-        withExistingParent(TolkienEntities.EGG_TTMHUMAN.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMDWARF.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMELVES.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMHOBBIT.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMSOUTHRON.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMORC_TRADER.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMORC.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMSOUTHRON_NPC.getId().getPath(), mcLoc("item/template_spawn_egg"));
-
-        withExistingParent(TolkienEntities.EGG_TTMBARROW.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMOATHBREAKER.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMFELLSPIRIT.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMENRAGEDFELLSPIRIT.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMBRIGAND.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMHARADRIM.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMROMIEWALKER.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMMIMICCHEST.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMMORDORORC.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMURUKHAI.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMDUERGAR.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMGOBLIN.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMMIRKWOODSPIDER.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMROCKGOLEM.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMHURON.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMMINOTAUR.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMDEEPCLAW.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMTROLL.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMTREEENT.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMSWAMPHAG.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMWARG.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMELEMENTALGOLEM.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMNAZGUL.getId().getPath(), mcLoc("item/template_spawn_egg"));
-
-        withExistingParent(TolkienEntities.EGG_TTMGOBLINKING.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMBALROG.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMSHELOB.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMWITCHKING.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMWATCHER.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMMITHRILGOLEM.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMMORGULIRONGOLEM.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMGWAHIR.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMFELLBEAST.getId().getPath(), mcLoc("item/template_spawn_egg"));
+        // A spawn egg is vanilla's single egg model drawn through two tints, so every egg needs a
+        // definition of its own carrying its two colours; without them the template draws the
+        // untinted egg. The colours are the ones the egg was registered with.
+        TolkienEntities.SPAWN_EGG_COLORS.forEach((egg, colors) ->
+                definition(egg.get(), spawnEggDefinition(colors)));
 
         // Item model definitions. The game reads dispatch trees and tints from
         // assets/<ns>/items/, so the items below declare them here rather than as overrides
@@ -554,6 +500,17 @@ public class TolkienItemModelProvider extends ItemModelProvider {
                 ItemModelDefinition.entry(0.33F, ItemModelDefinition.model(withSuffix(model, "_fullness_1"))),
                 ItemModelDefinition.entry(0.66F, ItemModelDefinition.model(withSuffix(model, "_fullness_2"))),
                 ItemModelDefinition.entry(0.99F, ItemModelDefinition.model(withSuffix(model, "_fullness_3"))));
+    }
+
+    /**
+     * A spawn egg: vanilla's two-layer egg template, with its base and its spots painted by the
+     * two colours the egg registered. The colours are plain RGB, so they are given full alpha
+     * here - a tint without one draws nothing.
+     */
+    private JsonObject spawnEggDefinition(TolkienEntities.SpawnEggColors colors) {
+        return ItemModelDefinition.model(mcLoc("item/template_spawn_egg"),
+                ItemModelDefinition.constantTint(0xFF000000 | colors.background()),
+                ItemModelDefinition.constantTint(0xFF000000 | colors.highlight()));
     }
 
     /** A trinket: the metal layer untinted, the gem layer tinted by its potion. */
