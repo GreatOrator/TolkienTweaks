@@ -3,15 +3,9 @@
   "category": "misc",
   "group": "mithril",
   "ingredients": [
-    {
-      "item": "tolkienmobs:template_mithril"
-    },
-    {
-      "item": "tolkienmobs:ingot_mithril"
-    },
-    {
-      "item": "tolkienmobs:ingot_mithril"
-    }
+    "tolkienmobs:template_mithril",
+    "tolkienmobs:ingot_mithril",
+    "tolkienmobs:ingot_mithril"
   ],
   "result": {
     "count": 2,

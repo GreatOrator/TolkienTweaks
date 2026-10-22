@@ -3,9 +3,7 @@
   "category": "building",
   "group": "cobbled_dwarven_stone",
   "key": {
-    "#": {
-      "item": "tolkienmobs:cobbled_dwarven_stone"
-    }
+    "#": "tolkienmobs:cobbled_dwarven_stone"
   },
   "pattern": [
     "#  ",

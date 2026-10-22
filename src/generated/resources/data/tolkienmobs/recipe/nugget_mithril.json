@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "tolkienmobs:ingot_mithril"
-    }
+    "tolkienmobs:ingot_mithril"
   ],
   "result": {
     "count": 9,

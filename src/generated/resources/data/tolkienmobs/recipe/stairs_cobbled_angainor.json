@@ -3,9 +3,7 @@
   "category": "building",
   "group": "cobbled_angainor",
   "key": {
-    "#": {
-      "item": "tolkienmobs:cobbled_angainor"
-    }
+    "#": "tolkienmobs:cobbled_angainor"
   },
   "pattern": [
     "#  ",

@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "morguliron",
   "ingredients": [
-    {
-      "item": "tolkienmobs:block_morguliron"
-    }
+    "tolkienmobs:block_morguliron"
   ],
   "result": {
     "count": 1,

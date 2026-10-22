@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "tolkienmobs:item_backpack_upgrade_fluid"
-    },
-    "M": {
-      "item": "minecraft:iron_ingot"
-    }
+    "A": "tolkienmobs:item_backpack_upgrade_fluid",
+    "M": "minecraft:iron_ingot"
   },
   "pattern": [
     "AAA",

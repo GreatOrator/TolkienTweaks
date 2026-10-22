@@ -3,9 +3,7 @@
   "category": "building",
   "group": "deadwood",
   "key": {
-    "#": {
-      "item": "tolkienmobs:planks_deadwood"
-    }
+    "#": "tolkienmobs:planks_deadwood"
   },
   "pattern": [
     "#  ",

@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "tolkienmobs:block_morguliron"
-    },
-    "M": {
-      "item": "tolkienmobs:slab_morguliron"
-    }
+    "A": "tolkienmobs:block_morguliron",
+    "M": "tolkienmobs:slab_morguliron"
   },
   "pattern": [
     "AMA",

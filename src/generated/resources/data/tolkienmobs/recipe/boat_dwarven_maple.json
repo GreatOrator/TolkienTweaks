@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "boat",
   "key": {
-    "#": {
-      "item": "tolkienmobs:planks_dwarven_maple"
-    }
+    "#": "tolkienmobs:planks_dwarven_maple"
   },
   "pattern": [
     "# #",

@@ -3,9 +3,7 @@
   "ingredients": [
     {
       "count": 1,
-      "ingredient": {
-        "item": "minecraft:rabbit"
-      }
+      "ingredient": "minecraft:rabbit"
     }
   ],
   "output": [

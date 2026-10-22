@@ -3,9 +3,7 @@
   "category": "building",
   "group": "mossy_cobbled_dark_stone",
   "key": {
-    "#": {
-      "item": "tolkienmobs:mossy_cobbled_dark_stone"
-    }
+    "#": "tolkienmobs:mossy_cobbled_dark_stone"
   },
   "pattern": [
     "#  ",

@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- The generated resources are written in the forms the game now uses, so a data run no longer rewrites the same eight hundred files: recipe ingredients carry the short `"item"` or `"#tag"` entry, biomes list their carvers flat and their music as weighted entries with a music volume, trim materials drop the retired item model index, village templates are saved at the current data version with the current block entity and attribute names, and leaf pile models state the UVs the game fills in anyway.
 - Data generation runs as the client data run, the run NeoForge 21.4 provides for writing both assets and data; its classpath carries the client library the generator needs to boot. The generator now produces the 800 item model definitions, the fourteen boats included, instead of them being mirrored by hand.
 - Blockstates and item models are written by the mod's own generator, since the NeoForge model generators this datagen relied on no longer exist; the generated JSON keeps the same shape.
 - Armour sets are now described the way the game expects: each of Mithril, Morguliron and Ammolite has an equipment asset that names its worn texture, so the sets render on players and horses from one definition and the full-set effects are still recognised.

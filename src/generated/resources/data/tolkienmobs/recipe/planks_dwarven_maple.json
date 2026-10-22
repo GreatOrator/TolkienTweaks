@@ -3,9 +3,7 @@
   "category": "building",
   "group": "planks",
   "ingredients": [
-    {
-      "item": "tolkienmobs:log_dwarven_maple"
-    }
+    "tolkienmobs:log_dwarven_maple"
   ],
   "result": {
     "count": 4,

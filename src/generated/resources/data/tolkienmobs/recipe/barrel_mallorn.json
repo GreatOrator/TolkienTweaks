@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "tolkienmobs:planks_mallorn"
-    },
-    "M": {
-      "item": "tolkienmobs:slab_mallorn"
-    }
+    "A": "tolkienmobs:planks_mallorn",
+    "M": "tolkienmobs:slab_mallorn"
   },
   "pattern": [
     "AMA",

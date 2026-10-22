@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "P": {
-      "item": "minecraft:crafting_table"
-    },
-    "W": {
-      "item": "tolkienmobs:upgrade_item_backpack_upgrade_base"
-    }
+    "P": "minecraft:crafting_table",
+    "W": "tolkienmobs:upgrade_item_backpack_upgrade_base"
   },
   "pattern": [
     "W",

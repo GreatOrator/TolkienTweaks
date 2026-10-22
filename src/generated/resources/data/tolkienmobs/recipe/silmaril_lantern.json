@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "P": {
-      "item": "tolkienmobs:torch_lebethron"
-    },
-    "W": {
-      "item": "tolkienmobs:gem_ammolite"
-    }
+    "P": "tolkienmobs:torch_lebethron",
+    "W": "tolkienmobs:gem_ammolite"
   },
   "pattern": [
     "WWW",

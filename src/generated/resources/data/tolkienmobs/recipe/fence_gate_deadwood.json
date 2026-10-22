@@ -3,12 +3,8 @@
   "category": "redstone",
   "group": "deadwood",
   "key": {
-    "#": {
-      "item": "minecraft:stick"
-    },
-    "W": {
-      "item": "tolkienmobs:planks_deadwood"
-    }
+    "#": "minecraft:stick",
+    "W": "tolkienmobs:planks_deadwood"
   },
   "pattern": [
     "#W#",

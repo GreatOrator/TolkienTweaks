@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "deadwood",
   "ingredients": [
-    {
-      "item": "tolkienmobs:planks_deadwood"
-    }
+    "tolkienmobs:planks_deadwood"
   ],
   "result": {
     "count": 1,

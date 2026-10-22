@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "tolkienmobs:smooth_elven_marble"
-    }
+    "#": "tolkienmobs:smooth_elven_marble"
   },
   "pattern": [
     "###"

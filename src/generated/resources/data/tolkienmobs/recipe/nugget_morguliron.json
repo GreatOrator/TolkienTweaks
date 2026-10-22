@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "tolkienmobs:ingot_morguliron"
-    }
+    "tolkienmobs:ingot_morguliron"
   ],
   "result": {
     "count": 9,

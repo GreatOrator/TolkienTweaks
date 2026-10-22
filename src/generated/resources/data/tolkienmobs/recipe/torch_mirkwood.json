@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "P": {
-      "item": "tolkienmobs:planks_mirkwood"
-    },
-    "W": {
-      "item": "minecraft:stick"
-    }
+    "P": "tolkienmobs:planks_mirkwood",
+    "W": "minecraft:stick"
   },
   "pattern": [
     "P",

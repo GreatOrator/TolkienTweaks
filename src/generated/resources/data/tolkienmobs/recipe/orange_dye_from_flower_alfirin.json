@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "orange_dye",
   "ingredients": [
-    {
-      "item": "tolkienmobs:flower_alfirin"
-    }
+    "tolkienmobs:flower_alfirin"
   ],
   "result": {
     "count": 2,

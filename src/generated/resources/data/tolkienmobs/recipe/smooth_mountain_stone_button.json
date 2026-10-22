@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "smooth_mountain_stone",
   "ingredients": [
-    {
-      "item": "tolkienmobs:smooth_mountain_stone"
-    }
+    "tolkienmobs:smooth_mountain_stone"
   ],
   "result": {
     "count": 1,

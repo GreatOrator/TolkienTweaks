@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "mallorn",
   "key": {
-    "#": {
-      "item": "tolkienmobs:planks_mallorn"
-    }
+    "#": "tolkienmobs:planks_mallorn"
   },
   "pattern": [
     "##",

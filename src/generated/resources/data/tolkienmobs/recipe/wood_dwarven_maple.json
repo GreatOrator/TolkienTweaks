@@ -3,9 +3,7 @@
   "category": "building",
   "group": "bark",
   "key": {
-    "#": {
-      "item": "tolkienmobs:log_dwarven_maple"
-    }
+    "#": "tolkienmobs:log_dwarven_maple"
   },
   "pattern": [
     "##",

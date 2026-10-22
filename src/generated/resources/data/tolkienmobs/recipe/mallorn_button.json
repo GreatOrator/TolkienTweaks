@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "mallorn",
   "ingredients": [
-    {
-      "item": "tolkienmobs:planks_mallorn"
-    }
+    "tolkienmobs:planks_mallorn"
   ],
   "result": {
     "count": 1,

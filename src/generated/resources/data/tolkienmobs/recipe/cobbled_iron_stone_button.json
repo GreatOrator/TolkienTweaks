@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "cobbled_iron_stone",
   "ingredients": [
-    {
-      "item": "tolkienmobs:cobbled_iron_stone"
-    }
+    "tolkienmobs:cobbled_iron_stone"
   ],
   "result": {
     "count": 1,

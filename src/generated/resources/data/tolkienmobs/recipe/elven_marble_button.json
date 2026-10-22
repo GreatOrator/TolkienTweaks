@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "elven_marble",
   "ingredients": [
-    {
-      "item": "tolkienmobs:elven_marble"
-    }
+    "tolkienmobs:elven_marble"
   ],
   "result": {
     "count": 1,

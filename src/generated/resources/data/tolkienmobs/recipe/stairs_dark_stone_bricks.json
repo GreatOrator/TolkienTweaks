@@ -3,9 +3,7 @@
   "category": "building",
   "group": "dark_stone_bricks",
   "key": {
-    "#": {
-      "item": "tolkienmobs:dark_stone_bricks"
-    }
+    "#": "tolkienmobs:dark_stone_bricks"
   },
   "pattern": [
     "#  ",

@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "blue_dye",
   "ingredients": [
-    {
-      "item": "tolkienmobs:flower_lissuin"
-    }
+    "tolkienmobs:flower_lissuin"
   ],
   "result": {
     "count": 2,
