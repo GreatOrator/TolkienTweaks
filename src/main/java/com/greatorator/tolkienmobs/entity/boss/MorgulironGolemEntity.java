@@ -202,7 +202,8 @@ public class MorgulironGolemEntity extends TolkienMonsterEntity implements GeoEn
                 event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
                 return PlayState.CONTINUE;
             }else if (this.isAggressive() && this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)){
-                event.getController().setAnimation(RawAnimation.begin().then("ranged", Animation.LoopType.PLAY_ONCE));
+                // The golem's file has no ranged animation, so its ranged attack plays the swing it has.
+                event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;

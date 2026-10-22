@@ -1077,7 +1077,9 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
                 switch (navigationType) {
                     case GROUND -> event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
                     case FLYING -> event.getController().setAnimation(RawAnimation.begin().thenPlay("fly"));
-                    case SWIMMING-> event.getController().setAnimation(RawAnimation.begin().thenPlay("swim"));
+                    // The fellbeast's file carries no swim animation either, so a beast that ends up in
+                    // water keeps beating its wings instead of asking for an animation it cannot play.
+                    case SWIMMING-> event.getController().setAnimation(RawAnimation.begin().thenPlay("fly"));
                 }
                 return PlayState.CONTINUE;
             }
@@ -1089,7 +1091,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
                     // nothing to play, freezing the wings mid-flap for as long as the beast fought on the
                     // wing, so an aggressive flyer keeps the normal flight animation.
                     case FLYING -> event.getController().setAnimation(RawAnimation.begin().thenPlay("fly"));
-                    case SWIMMING-> event.getController().setAnimation(RawAnimation.begin().thenPlay("swim_fast"));
+                    case SWIMMING-> event.getController().setAnimation(RawAnimation.begin().thenPlay("fly"));
                 }
                 return PlayState.CONTINUE;
             }
@@ -1108,18 +1110,14 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
                 event.getController().setAnimation(RawAnimation.begin().then("attack"+attackVariant, Animation.LoopType.PLAY_ONCE));
                 return PlayState.CONTINUE;
             }else if (this.isAggressive() && this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)){
-                event.getController().setAnimation(RawAnimation.begin().then("ranged", Animation.LoopType.PLAY_ONCE));
+                // The ranged attack is the beast's fire: its file names that animation "fire", not "ranged".
+                event.getController().setAnimation(RawAnimation.begin().then("fire", Animation.LoopType.PLAY_ONCE));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Swim", 1, (event) -> {
-            if (this.isUsingSwimmingNavigator()) {
-                event.getController().setAnimation(RawAnimation.begin().then("swim", Animation.LoopType.PLAY_ONCE));
-                return PlayState.CONTINUE;
-            }
-            return PlayState.STOP;
-        }));
+        // There is no separate Swim controller: the fellbeast's file has no swim animation, and the
+        // movement controller above already keeps the wings beating with "fly" while it swims.
     }
 
     @Override
