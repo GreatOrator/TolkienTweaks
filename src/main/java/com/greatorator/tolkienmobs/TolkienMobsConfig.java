@@ -75,8 +75,8 @@ public class TolkienMobsConfig {
             .comment("Volume of the wind over a diving FellBeast. It is air rather than a voice, so unlike the wingbeat it is not scaled by the beast's own sound scale (Default 1.6)")
             .defineInRange("fellbeastDiveWindVolume", 1.6, 0.0, 10.0);
     private static final ModConfigSpec.DoubleValue FELLBEAST_DIVE_WIND_PITCH = BUILDER
-            .comment("Pitch of the wind over a diving FellBeast. 1.0 is the loop as recorded; below it the wind is deeper and slower, above it sharper and quicker (Default 0.8)")
-            .defineInRange("fellbeastDiveWindPitch", 0.8, 0.5, 2.0);
+            .comment("Pitch of the wind over a diving FellBeast. The loop is recorded at the depth the dive is meant to play at, so 1.0 is the wind as intended; below it the wind is deeper and slower, above it sharper and quicker (Default 1.0)")
+            .defineInRange("fellbeastDiveWindPitch", 1.0, 0.5, 2.0);
     private static final ModConfigSpec.IntValue FELLBEAST_DIVE_ANGLE = BUILDER
             .comment("How steeply a ridden FellBeast must dive, in degrees below horizontal, before its wingbeat goes quiet (Default 45)")
             .defineInRange("fellbeastDiveAngle", 45, 15, 90);
