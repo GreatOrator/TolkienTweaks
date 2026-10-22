@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.event;
 import com.greatorator.tolkienmobs.block.custom.SleepingBagBlock;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienPotions;
+import com.greatorator.tolkienmobs.init.TolkienRecipesTypes;
 import com.greatorator.tolkienmobs.init.TolkienVillagers;
 import com.greatorator.tolkienmobs.item.custom.DwarvenHammerItem;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -19,6 +20,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.brewing.RegisterBrewingRecipesEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerSetSpawnEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
@@ -33,6 +35,11 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 @EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.GAME)
 public class TolkienServerEvents {
     private static final Set<BlockPos> HARVESTED_BLOCKS = new HashSet<>();
+
+    @SubscribeEvent
+    public static void onDatapackSync(OnDatapackSyncEvent event) {
+        event.sendRecipes(TolkienRecipesTypes.FIREPLACE_TYPE.get());
+    }
 
     @SubscribeEvent
     public static void onBrewingRecipeRegister(RegisterBrewingRecipesEvent event) {
