@@ -115,8 +115,9 @@ public class TolkienMonsterEntity extends Monster implements RangedAttackMob {
         scheduleWeaponGoalUpdate = false;
         this.goalSelector.removeGoal(this.meleeGoal);
         this.goalSelector.removeGoal(this.bowGoal);
-        ItemStack itemstack = this.getMainHandItem();
-        if (itemstack.getItem() == Items.BOW) {
+        // Either hand counts: the uruk-hai and mordor orcs carry their uruk bow in the off hand, and
+        // the mod's own bows are not the vanilla one.
+        if (this.getMainHandItem().getItem() instanceof BowItem || this.getOffhandItem().getItem() instanceof BowItem) {
             int i = 20;
             if (this.level.getDifficulty() != Difficulty.HARD) {
                 i = 40;
