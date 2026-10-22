@@ -20,6 +20,10 @@ All notable changes to this project will be documented in this file.
 - The dive wind's volume can be tuned in the mod config. It was fixed at 1.6 in code; it is now `fellbeastDiveWindVolume` (default 1.6), read while the wind plays, so unlike the wingbeat it can be changed without a new dive. Its pitch is `fellbeastDiveWindPitch` (default 1.0, since the loop is recorded at the depth the dive should sound) alongside it, so the wind can be made deeper or sharper by ear. The wind is heard on each client, so both are the listener's own settings rather than the server's.
 - A rider's dive is quiet. The wings beat for as long as a player flew the beast, even with its nose down; the beat now stops once the beast is dropping more than a block a second and steeper than `fellbeastDiveAngle` (default 45 degrees below horizontal), and comes back as soon as it levels out.
 
+### Removed
+
+- The `number_of_blocks` option is gone from the mod config. It set a range for the Dwarven Mining enchant, which takes its area from the enchantment's own level now - 3x3 at level 1 through 9x9 at level 4 - so nothing had read it since that change.
+
 ### Fixed
 
 - The milestone's dimension cost is a setting of its own again. It and the minimum tick speed were both saved under `minimum_tick_speed`, so the two could not be set apart and the dimension button's lowest allowed cost was whatever the tick speed was set to; the option is `dimension_cost` now.
