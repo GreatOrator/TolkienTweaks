@@ -535,6 +535,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
         // the first tick after it lands or takes to water, which have their own vertical handling.
         this.wingVelocity = 0;
         this.wingBeatTicks = 0;
+        this.wingSoundTicks = 0;
         switch (navigator) {
             case GROUND -> {
                 this.moveControl = new MoveControl(this);
@@ -632,6 +633,10 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     private static final double CLIMB_MARGIN = 0.6D;
     /** How far below its path's height a beast stops gliding and stoops, in blocks. */
     private static final double STOOP_MARGIN = 2.0D;
+    /** Ticks until a wingbeat may be heard again, so a long climb does not roar with flapping. */
+    private int wingSoundTicks;
+    /** The shortest gap between two audible wingbeats, in ticks. */
+    private static final int WINGBEAT_SOUND_INTERVAL = 15;
 
     @Override
     public void travel(Vec3 vec3d){
@@ -704,6 +709,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
      * height with a stroke about every second and a quarter, overshooting the path by nothing.
      */
     private void tickWingbeat() {
+        if (this.wingSoundTicks > 0) this.wingSoundTicks--;
         double climb = this.getFlightTargetY() - this.getY();
 
         if (this.wingBeatTicks > 0) {
@@ -715,6 +721,13 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
             this.wingBeatTicks = WINGBEAT_TICKS;
             this.wingVelocity = Math.min(WINGBEAT_CLIMB, this.wingVelocity + WINGBEAT_THRUST);
             this.wingBeatTicks--;
+            // A climbing beast chains downstrokes every eight ticks, which at the ride's volume
+            // would be a siren rather than a wingbeat, so a beat is heard at most once a second
+            // or so and quieter than the one that lifts a rider.
+            if (this.wingSoundTicks <= 0) {
+                this.wingSoundTicks = WINGBEAT_SOUND_INTERVAL;
+                this.playWingbeatSound(2.0F);
+            }
             return;
         }
 
@@ -830,8 +843,13 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     }
 
     public void flapWings() {
-        playSound(TolkienSounds.FLAP_FELLBEAST.get(), 3, 1, false);
+        this.playWingbeatSound(3.0F);
         setDeltaMovement(getDeltaMovement().add(0, 1.285, 0));
+    }
+
+    /** The beast's wings, as heard from outside: the flight model's beats use a quieter one. */
+    private void playWingbeatSound(float volume) {
+        playSound(TolkienSounds.FLAP_FELLBEAST.get(), volume, 1, false);
     }
 
     @Override
