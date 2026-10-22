@@ -1068,6 +1068,10 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
 
     /** Animations */
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
+    /** Breath sequence step: 0 idle, 1 while the breath runs, 2 while its tail plays out. */
+    private int breathPhase;
+    /** Ticks left in the fireEnd clip, which is one second long. */
+    private int breathTailTicks;
 
     /**
      * Whether this dragon is currently breathing fire. Only the fell beast does, and it overrides
@@ -1076,6 +1080,9 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     protected boolean getBreathingFire() {
         return false;
     }
+
+    /** The fellbeast's fireEnd clip runs for one second. */
+    private static final int FIRE_END_TICKS = 20;
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
@@ -1117,12 +1124,36 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
                 int attackVariant = this.random.nextInt(ATTACK_ANIMATION_VARIANTS)+1;
                 event.getController().setAnimation(RawAnimation.begin().then("attack"+attackVariant, Animation.LoopType.PLAY_ONCE));
                 return PlayState.CONTINUE;
-            }else if (this.getBreathingFire() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)){
-                // The ranged attack is the beast's fire: its file names that animation "fire", not
-                // "ranged". It is keyed on the synced breathing flag, since the weapon flag this used
-                // to require is only set on the server and no dragon ever holds a bow anyway.
-                event.getController().setAnimation(RawAnimation.begin().then("fire", Animation.LoopType.PLAY_ONCE));
+            }
+            return PlayState.STOP;
+        }));
+        // The breath is its own controller because it is a sequence, not one clip: the beast winds
+        // up with fireStart, holds fireLoop for as long as it breathes, and plays fireEnd once when
+        // it stops. It runs off the synced breathing flag, which the attack goal sets and clears.
+        controllers.add(new AnimationController<>(this, "Breath", 1, (event) -> {
+            if (this.getBreathingFire()) {
+                if (this.breathPhase != 1) {
+                    event.getController().forceAnimationReset();
+                    event.getController().setAnimation(RawAnimation.begin().thenPlay("fireStart").thenLoop("fireLoop"));
+                    this.breathPhase = 1;
+                }
                 return PlayState.CONTINUE;
+            }
+            if (this.breathPhase == 1) {
+                event.getController().forceAnimationReset();
+                event.getController().setAnimation(RawAnimation.begin().then("fireEnd", Animation.LoopType.PLAY_ONCE));
+                this.breathPhase = 2;
+                this.breathTailTicks = FIRE_END_TICKS;
+                return PlayState.CONTINUE;
+            }
+            if (this.breathPhase == 2) {
+                // Hold the controller for the length of the tail clip; stopping it straight away
+                // would make GeckoLib drop the animation before it plays.
+                if (--this.breathTailTicks > 0) {
+                    return PlayState.CONTINUE;
+                }
+                this.breathPhase = 0;
+                return PlayState.STOP;
             }
             return PlayState.STOP;
         }));
