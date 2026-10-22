@@ -34,7 +34,7 @@ public class TolkienMobsConfig {
             .comment("Minimum Default cost for fast-travel (Default 500")
             .defineInRange("distance_cost", 500, 500, 5000);
     public static ModConfigSpec.IntValue DIMENSION_COST = BUILDER
-            .comment("How much one press of the milestone's dimension button adds to the fast-travel cost across dimensions (Default 1)")
+            .comment("Lowest cost the milestone's dimension button allows for fast-travel across dimensions (Default 1)")
             .defineInRange("dimension_cost", 1, 1, 10);
     public static final ModConfigSpec.BooleanValue PAYMENT_TYPE = BUILDER
             .comment("You want to use an item or experience for teleporting? (Default true to use Items")
