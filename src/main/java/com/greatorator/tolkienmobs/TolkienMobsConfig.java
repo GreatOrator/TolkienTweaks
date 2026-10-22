@@ -71,6 +71,9 @@ public class TolkienMobsConfig {
     private static final ModConfigSpec.IntValue FELLBEAST_WINGBEAT_INTERVAL = BUILDER
             .comment("Shortest gap between two heard wingbeats as the FellBeast flies, in ticks. 20 ticks is one second (Default 15)")
             .defineInRange("fellbeastWingbeatInterval", 15, 1, 200);
+    private static final ModConfigSpec.IntValue FELLBEAST_DIVE_ANGLE = BUILDER
+            .comment("How steeply a ridden FellBeast must dive, in degrees below horizontal, before its wingbeat goes quiet (Default 45)")
+            .defineInRange("fellbeastDiveAngle", 45, 15, 90);
 
     static final ModConfigSpec SPEC = BUILDER.build();
 
@@ -87,6 +90,7 @@ public class TolkienMobsConfig {
     public static int homeRadius;
     public static double fellbeastWingbeatVolume;
     public static int fellbeastWingbeatInterval;
+    public static int fellbeastDiveAngle;
     public static int trinketRepairAmount;
     public static Set<Item> item;
 
@@ -107,6 +111,7 @@ public class TolkienMobsConfig {
         homeRadius = HOME_RADIUS.get();
         fellbeastWingbeatVolume = FELLBEAST_WINGBEAT_VOLUME.get();
         fellbeastWingbeatInterval = FELLBEAST_WINGBEAT_INTERVAL.get();
+        fellbeastDiveAngle = FELLBEAST_DIVE_ANGLE.get();
         trinketRepairAmount = TRINKET_REPAIR_AMOUNT.get();
         distanceCost = DISTANCE_COST.get();
         dimensionCost = DIMENSION_COST.get();
