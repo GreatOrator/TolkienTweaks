@@ -88,7 +88,7 @@ public class TolkienRegistration {
                 TolkienBlocks.DEADWOOD_HANGING_SIGN.get(), TolkienBlocks.DEADWOOD_HANGING_WALL_SIGN.get(),
                 TolkienBlocks.DWARVEN_MAPLE_HANGING_SIGN.get(), TolkienBlocks.DWARVEN_MAPLE_HANGING_WALL_SIGN.get());    }
 
-    private static void registerModelLoaders(ModelEvent.RegisterGeometryLoaders event) {
+    private static void registerModelLoaders(ModelEvent.RegisterLoaders event) {
         event.register(TolkienMobsMain.prefix("patch"), PatchModelLoader.INSTANCE);
     }
 

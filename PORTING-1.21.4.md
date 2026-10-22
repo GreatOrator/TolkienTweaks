@@ -9,7 +9,7 @@ This file is the handoff: it records what is done, what is measured, and what to
 |---|---|
 | Target | Minecraft **1.21.4**, NeoForge **21.4.161** |
 | Compile errors at the start | **5,720** in 425 files |
-| Compile errors now | **499** distinct sites |
+| Compile errors now | **463** distinct sites |
 | Runnable | no — the tree does not compile yet |
 
 Dependency versions, all verified to exist and resolve:
@@ -154,9 +154,32 @@ fell beast fireball share `ThrownProjectileRenderState`. `MorgulCrystalRenderSta
 crystal's spin time, and `DimensionSpecialEffects#getSunriseColor` no longer exists (the override
 was deleted; vanilla has no sunrise colour to begin with).
 
-Still open in this area, and separate work: the block models and baked models
-(`ChameleonBlockDynamicBakedModel`, `PatchModel`/`UnbakedPatchModel`, `ModelEvent.RegisterGeometryLoaders`
-which 21.4 replaced, `FastColor` → `ARGB`) and the block entity renderers.
+#### Baked block models — DONE
+
+`ChameleonBlockDynamicBakedModel`, `PatchModel`, `UnbakedPatchModel` and `PatchModelLoader` compile again.
+1.21.4 rebuilt this whole corner of the client, and none of it is guessable from the old call sites:
+
+- `BakedModel` moved to `net.minecraft.client.resources.model`. `ItemOverrides` is **gone** (item rendering has
+  its own `ItemModel`s now), `isCustomRenderer()` is gone, and `getTransforms()` is abstract, so a hand-written
+  model returns `ItemTransforms.NO_TRANSFORMS`. `getParticleIcon()` and `getQuads(state, side, random)` survive as
+  deprecated abstracts.
+- NeoForge's `BakedModelWrapper` is gone too; vanilla's `DelegateBakedModel` is the wrapper base now, and it
+  already forwards quads, model data, particle icon, render types and transforms, so the camouflage model only
+  overrides the three methods that matter.
+- NeoForge's geometry API (`IGeometryLoader`, `IUnbakedGeometry`, `IGeometryBakingContext`) is replaced by
+  vanilla's model pipeline. A custom loader implements `UnbakedModelLoader<T extends UnbakedModel>`, the model
+  implements `UnbakedModel` (or `ExtendedUnbakedModel`, which is the non-deprecated `bake` with a trailing
+  `ContextMap`), and baking reads sprites from `ModelBaker#sprites()`. Loaders register on `ModelEvent.RegisterLoaders`
+  and `UnbakedModelParser` dispatches a model's `"loader"` id to them, so `tolkienmobs:patch` keeps working
+  unchanged from the JSON side.
+- `InventoryMenu.BLOCK_ATLAS` became `TextureAtlas.LOCATION_BLOCKS`.
+- `FaceBakery#bakeQuad` is static and takes a trailing per-face light emission (0 for the patch).
+- `ModelEvent.ModifyBakingResult` no longer has `getModels()`. It carries the `ModelBakery.BakingResult`, whose
+  `blockStateModels()` map is still a plain `HashMap` at that point (`BakingCompleted` is what wraps it
+  unmodifiable), so replacing a block state's model means mutating that map.
+
+Still open in this area, and separate work: `FastColor` → `ARGB` in `TrinketComponent`, and the block entity
+renderers.
 
 ### 3. Registration and data — partly done
 
