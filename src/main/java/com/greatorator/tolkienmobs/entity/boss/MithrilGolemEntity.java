@@ -165,7 +165,7 @@ public class MithrilGolemEntity extends TolkienMonsterEntity implements GeoEntit
             }
             return PlayState.STOP;
         }));    controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
-            if (!event.isMoving() && !event.getAnimatable().isAggressive()) {
+            if (!event.isMoving()) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
                 return PlayState.CONTINUE;
             }

@@ -135,7 +135,7 @@ public class NazgulEntity extends TolkienMonsterEntity implements GeoEntity {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("sitting"));
                 return PlayState.CONTINUE;
             }
-            if (!event.isMoving() && !event.getAnimatable().isAggressive()) {
+            if (!event.isMoving()) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
                 return PlayState.CONTINUE;
             }
