@@ -39,8 +39,8 @@ public class MushroomsBlock extends MushroomBlock {
 
     public boolean growMushroom(ServerLevel level, BlockPos pos, BlockState state, RandomSource random) {
         Optional<? extends Holder<ConfiguredFeature<?, ?>>> optional = level.registryAccess()
-                .registryOrThrow(Registries.CONFIGURED_FEATURE)
-                .getHolder(this.featureSupplier);
+                .lookupOrThrow(Registries.CONFIGURED_FEATURE)
+                .get(this.featureSupplier);
 
         // Neo: Fire the BlockGrowFeatureEvent and update the result of the Optional local with the new feature.
         var event = net.neoforged.neoforge.event.EventHooks.fireBlockGrowFeature(level, random, pos, optional.orElse(null));

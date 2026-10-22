@@ -51,6 +51,6 @@ public class LightningBugBlock extends TolkienBugBlock {
 	public void destroy(LevelAccessor accessor, BlockPos pos, BlockState state) {
 		super.destroy(accessor, pos, state);
 		if (accessor.isClientSide())
-			Minecraft.getInstance().getSoundManager().stop(TolkienSounds.LIGHTNINGBUG_AMBIENT.get().getLocation(), SoundSource.NEUTRAL);
+			Minecraft.getInstance().getSoundManager().stop(TolkienSounds.LIGHTNINGBUG_AMBIENT.get().location(), SoundSource.NEUTRAL);
 	}
 }

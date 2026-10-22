@@ -20,6 +20,8 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.Spawner;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RedstoneTorchBlock;
@@ -34,6 +36,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -87,9 +90,11 @@ public class CamoSpawnerBlock extends ChameleonBlock<CamoSpawnerBlockEntity> {
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction facing, BlockState neighbor, LevelAccessor world, BlockPos pos, BlockPos offset) {
+    protected BlockState updateShape(
+            BlockState state, LevelReader reader, ScheduledTickAccess ticks, BlockPos pos,
+            Direction facing, BlockPos neighborPos, BlockState neighbor, RandomSource random) {
         if (state.getValue(WATERLOGGED)) {
-            world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+            ticks.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(reader));
         }
         return state;
     }
@@ -160,7 +165,7 @@ public class CamoSpawnerBlock extends ChameleonBlock<CamoSpawnerBlockEntity> {
     }
 
     @Override
-    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean isMoving) {
         if (!level.isClientSide) {
             boolean flag = state.getValue(LIT);
             if (flag != level.hasNeighborSignal(pos)) {

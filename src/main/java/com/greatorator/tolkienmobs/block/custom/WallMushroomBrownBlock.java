@@ -6,10 +6,12 @@ import com.greatorator.tolkienmobs.util.TolkienBlocksHelper;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -90,7 +92,7 @@ public class WallMushroomBrownBlock extends BushBlock  {
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
-        Vec3 vec3 = state.getOffset(worldIn, pos);
+        Vec3 vec3 = state.getOffset(pos);
         return BOUNDING_SHAPES.get(state.getValue(FACING)).move(vec3.x, vec3.y, vec3.z);
     }
 
@@ -103,8 +105,10 @@ public class WallMushroomBrownBlock extends BushBlock  {
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction facing, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
-        if (canSurvive(state, world, pos))
+    protected BlockState updateShape(
+            BlockState state, LevelReader reader, ScheduledTickAccess ticks, BlockPos pos,
+            Direction facing, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
+        if (canSurvive(state, reader, pos))
             return state;
         else
             return Blocks.AIR.defaultBlockState();

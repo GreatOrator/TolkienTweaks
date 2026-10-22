@@ -9,13 +9,15 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.CommonHooks;
 
 import java.util.LinkedList;
+import java.util.Set;
 
 public class TeleportUtility {
     public static Entity teleportEntity(Entity entity, Entity destination) {
@@ -96,14 +98,14 @@ public class TeleportUtility {
             return null;
         }
 
-        Entity movedEntity = entity.changeDimension(new DimensionTransition(targetWorld, new Vec3(xCoord, yCoord, zCoord), entity.getDeltaMovement(), yaw, pitch, DimensionTransition.DO_NOTHING));
+        Entity movedEntity = entity.teleport(new TeleportTransition(targetWorld, new Vec3(xCoord, yCoord, zCoord), entity.getDeltaMovement(), yaw, pitch, TeleportTransition.DO_NOTHING));
         if (movedEntity != null) {
 //            movedEntity.moveTo(xCoord, yCoord, zCoord, yaw, pitch);
             return movedEntity;
         }
 
         entity.unRide();
-        movedEntity = entity.getType().create(targetWorld);
+        movedEntity = entity.getType().create(targetWorld, EntitySpawnReason.DIMENSION_TRAVEL);
         if (movedEntity != null) {
             movedEntity.restoreFrom(entity);
             movedEntity.moveTo(xCoord, yCoord, zCoord, yaw, pitch);
@@ -122,7 +124,7 @@ public class TeleportUtility {
             return player;
         }
         player.isChangingDimension = true;
-        player.teleportTo(targetWorld, xCoord, yCoord, zCoord, yaw, pitch);
+        player.teleportTo(targetWorld, xCoord, yCoord, zCoord, Set.of(), yaw, pitch, false);
 
         player.lastSentExp = -1;
         player.lastSentHealth = -1.0F;

@@ -10,6 +10,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -61,8 +62,10 @@ public class TolkienWallTorchBlock  extends WallTorchBlock {
     }
 
     @Override
-    protected BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
-        return facing.getOpposite() == state.getValue(FACING) && !state.canSurvive(level, currentPos) ? Blocks.AIR.defaultBlockState() : state;
+    protected BlockState updateShape(
+            BlockState state, LevelReader reader, ScheduledTickAccess ticks, BlockPos currentPos,
+            Direction facing, BlockPos facingPos, BlockState facingState, RandomSource random) {
+        return facing.getOpposite() == state.getValue(FACING) && !state.canSurvive(reader, currentPos) ? Blocks.AIR.defaultBlockState() : state;
     }
 
     @Override
