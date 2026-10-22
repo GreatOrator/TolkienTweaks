@@ -316,11 +316,11 @@ public class SwampHagEntity extends TolkienMonsterEntity implements GeoEntity {
         }));
         controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
             // Each branch continues the controller so the attack it just started can run; an
-            // unconditional STOP below dropped the animation the moment it was set.
-            if (this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
+            // unconditional STOP below dropped the animation the moment it was set. The throw is
+            // keyed on the shooting flag the ranged goal syncs, not the unsynced weapon flag.
+            if (this.isShooting() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
                 event.getController().forceAnimationReset();
                 event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
-                this.ranged =false;
                 return PlayState.CONTINUE;
             }else if (this.isHealing() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
                 event.getController().forceAnimationReset();

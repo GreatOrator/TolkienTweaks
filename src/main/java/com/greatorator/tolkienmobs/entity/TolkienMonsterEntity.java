@@ -31,6 +31,8 @@ public class TolkienMonsterEntity extends Monster implements RangedAttackMob {
     public static final EntityDataAccessor<ItemStack> HELD_ITEM = SynchedEntityData.defineId(TolkienMonsterEntity.class, EntityDataSerializers.ITEM_STACK);
     public static final EntityDataAccessor<Boolean> ATTACKING = SynchedEntityData.defineId(TolkienMonsterEntity.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Boolean> AGGRESSIVE = SynchedEntityData.defineId(TolkienMonsterEntity.class, EntityDataSerializers.BOOLEAN);
+    /** Synced because the animation controllers that read it run on the client. */
+    public static final EntityDataAccessor<Boolean> SHOOTING = SynchedEntityData.defineId(TolkienMonsterEntity.class, EntityDataSerializers.BOOLEAN);
     public boolean scheduleWeaponGoalUpdate = true;
     protected boolean ranged;
 
@@ -135,6 +137,7 @@ public class TolkienMonsterEntity extends Monster implements RangedAttackMob {
         builder.define(ATTACKING, false);
         builder.define(HELD_ITEM, ItemStack.EMPTY);
         builder.define(AGGRESSIVE, false);
+        builder.define(SHOOTING, false);
     }
 
     @Override
@@ -182,5 +185,14 @@ public class TolkienMonsterEntity extends Monster implements RangedAttackMob {
 
     public boolean isAggressive() {
         return (boolean)this.entityData.get(AGGRESSIVE);
+    }
+
+    /** True while a ranged attack goal is running, which is the ranged animations' cue. */
+    public boolean isShooting() {
+        return (boolean)this.entityData.get(SHOOTING);
+    }
+
+    public void setShooting(boolean shooting) {
+        this.entityData.set(SHOOTING, shooting);
     }
 }

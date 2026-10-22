@@ -20,11 +20,13 @@ public class AggressiveBowAttackGoal extends RangedBowAttackGoal<TolkienMonsterE
     public void start() {
         super.start();
         this.mob.setAggressive(true);
+        this.mob.setShooting(true);
     }
 
     @Override
     public void stop() {
         super.stop();
         this.mob.setAggressive(false);
+        this.mob.setShooting(false);
     }
 }
