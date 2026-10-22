@@ -223,10 +223,25 @@ Still open in this area:
     names are built from (`item.minecraft.potion.effect.<name>`, and the splash/lingering variants). The mod's
     lang datagen already keyed those names on the registry ids, so `TolkienPotions.potion(name, effects...)`
     passes one string to both the registration and the potion.
-- `Item.Properties`/`BlockBehaviour.Properties` still need registry ids (283 + 575 sites). This is not cosmetic:
-  `BlockBehaviour`'s constructor resolves `effectiveDrops()` and `effectiveDescriptionId()`, both of which throw
-  `Block id not set` on a properties object without one, and `Item`'s description id and model do the same. Until
-  this is done every block in `TolkienBlocks` throws while it is constructed, i.e. at registration.
+- **Registry ids on properties** — done. 1.21.4 reads the id out of `BlockBehaviour.Properties`/`Item.Properties`
+  *inside the block/item constructor* (`effectiveDrops()`/`effectiveDescriptionId()` for blocks, the description id
+  and model for items), and throws `Block id not set` when it is missing, so this was a startup crash rather than
+  cosmetics. Every registration now goes through the `DeferredRegister` helper that stamps the id before the factory
+  runs:
+  - [tools/port-registry-ids.pl](tools/port-registry-ids.pl) moved the properties out of the factory argument in
+    586 block registrations and 203 item registrations — `() -> new X(args, Properties.of()…)` became
+    `properties -> new X(args, properties)` plus a trailing properties argument. It rewrites the three mod helpers
+    (`registerBlock`, `registerNoItem`, `registerBlockWithoutBlockItem`) and the 66 sign blocks that were registered
+    directly on `BLOCKS`. Plain `new Item(props)` registrations became `ITEMS.registerSimpleItem`.
+  - `registerBlock` now registers its item with `ITEMS.registerSimpleBlockItem`. That is not only the id: `BlockItem`
+    no longer answers its block's description id, so the block description prefix is what keeps the `block.<modid>.*`
+    lang keys (which is all the lang datagen writes) matching the item names.
+  - Properties are now built in the static initialiser rather than lazily at registration, so anything they copied
+    from another mod block had to go. The 14 wood wall and hanging wall signs used
+    `Properties.ofFullCopy(MALLORN_SIGN.get())`; they spell out the same chain the standing sign passes instead.
+  - Hand-written: the spawn eggs in `TolkienEntities` and the two liquid blocks in `TolkienFluids`.
+
+  The remaining 499 errors are all outside registration.
 - The block-model and baked-model classes
   (`ChameleonBlockDynamicBakedModel`, `PatchModel`/`UnbakedPatchModel`, `ModelEvent.RegisterGeometryLoaders`,
   `FastColor` → `ARGB`), the block entity renderers, and the remaining entity classes (38 in `DragonEntity`,

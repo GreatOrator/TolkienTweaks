@@ -357,7 +357,7 @@ public class TolkienEntities {
 
     /** A spawn egg whose entity type and tint colours are resolved lazily, as DeferredSpawnEggItem did. */
     private static DeferredItem<Item> spawnEgg(String name, Supplier<? extends EntityType<? extends Mob>> type, int background, int highlight) {
-        DeferredItem<Item> egg = SPAWN_EGGS.register(name, () -> new SpawnEggItem(type.get(), new Item.Properties()));
+        DeferredItem<Item> egg = SPAWN_EGGS.registerItem(name, properties -> new SpawnEggItem(type.get(), properties), new Item.Properties());
         SPAWN_EGG_COLORS.put(egg, new SpawnEggColors(background, highlight));
 
         return egg;
