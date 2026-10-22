@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.datagen;
 import com.greatorator.tolkienmobs.datagen.helpers.TolkienLangHelperUS;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
+import com.greatorator.tolkienmobs.init.TolkienFluids;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import net.minecraft.data.PackOutput;
 
@@ -79,6 +80,8 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.addBlock(TolkienBlocks.WALL_MUSHROOM_BROWN, "Wall Mushroom - Brown");
             this.addBlock(TolkienBlocks.LIVING_ROOTS, "Living Roots");
             this.addBlock(TolkienBlocks.PIPEWEED, "Pipeweed Crops");
+            this.addBlock(TolkienFluids.MITHRIL_BLOCK, "Molten Mithril");
+            this.addBlock(TolkienFluids.MORGULIRON_BLOCK, "Molten Morgul Iron");
             this.addBlock(TolkienBlocks.ARDA_PORTAL, "Arda Portal");
             this.addBlockWithLore(TolkienBlocks.PLACARD.get(), "Country Signs", "Shift right-click on sign to cycle types");
             this.addBlock(TolkienBlocks.ROCKPILE, "Rockpile");

@@ -29,26 +29,32 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class TolkienItemModelProvider extends ItemModelProvider {
-    private static LinkedHashMap<ResourceKey<TrimMaterial>, Float> trimMaterials = new LinkedHashMap<>();
-    static {
-        trimMaterials.put(TrimMaterials.QUARTZ, 0.1F);
-        trimMaterials.put(TrimMaterials.IRON, 0.2F);
-        trimMaterials.put(TrimMaterials.NETHERITE, 0.3F);
-        trimMaterials.put(TrimMaterials.REDSTONE, 0.4F);
-        trimMaterials.put(TrimMaterials.COPPER, 0.5F);
-        trimMaterials.put(TrimMaterials.GOLD, 0.6F);
-        trimMaterials.put(TrimMaterials.EMERALD, 0.7F);
-        trimMaterials.put(TrimMaterials.DIAMOND, 0.8F);
-        trimMaterials.put(TrimMaterials.LAPIS, 0.9F);
-        trimMaterials.put(TrimMaterials.AMETHYST, 1.0F);
-    }
+    /**
+     * Every trim material 1.21.4 ships, in the order vanilla lists them. The old 1.20 codes gave
+     * each one a float for the model's {@code trim_type} predicate; 1.21.4 selects on the trim
+     * material itself, so only the list is needed now.
+     */
+    private static final List<ResourceKey<TrimMaterial>> TRIM_MATERIALS = List.of(
+            TrimMaterials.QUARTZ,
+            TrimMaterials.IRON,
+            TrimMaterials.NETHERITE,
+            TrimMaterials.REDSTONE,
+            TrimMaterials.COPPER,
+            TrimMaterials.GOLD,
+            TrimMaterials.EMERALD,
+            TrimMaterials.DIAMOND,
+            TrimMaterials.LAPIS,
+            TrimMaterials.AMETHYST,
+            TrimMaterials.RESIN);
 
     public TolkienItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
         super(output, MODID, existingFileHelper);
@@ -596,57 +602,58 @@ public class TolkienItemModelProvider extends ItemModelProvider {
                 .texture("layer0", ResourceLocation.fromNamespaceAndPath(item.getNamespace(), "item/" + item.getPath()));
     }
 
-    // Shoutout to El_Redstoniano for making this
+    /**
+     * A trimmed piece of armour: one model per trim material, plus an item model definition that
+     * picks between them by the stack's trim material. 1.21.4 selects on the material itself - the
+     * old {@code trim_type} predicate lived in the model's {@code overrides} array, which the game
+     * no longer reads, so trimmed armour kept its untrimmed icon whatever was applied to it.
+     */
     private void trimmedArmorItem(DeferredItem<ArmorItem> itemDeferredItem) {
-        final String MOD_ID = MODID; // Change this to your mod id
-
-        if(itemDeferredItem.get() instanceof ArmorItem armorItem) {
-            // 1.21.4 dropped ArmorItem#getEquipmentSlot: the slot lives in the equipable data
-            // component now, so read it back from there.
-            Equippable equippable = armorItem.components().get(DataComponents.EQUIPPABLE);
-            if (equippable == null) {
-                return;
-            }
-
-            String armorType = switch (equippable.slot()) {
-                case HEAD -> "helmet";
-                case CHEST -> "chestplate";
-                case LEGS -> "leggings";
-                case FEET -> "boots";
-                default -> "";
-            };
-
-            trimMaterials.forEach((trimMaterial, value) -> {
-                float trimValue = value;
-
-                String armorItemPath = armorItem.toString();
-                String trimPath = "trims/items/" + armorType + "_trim_" + trimMaterial.location().getPath();
-                String currentTrimName = armorItemPath + "_" + trimMaterial.location().getPath() + "_trim";
-                ResourceLocation armorItemResLoc = ResourceLocation.parse(armorItemPath);
-                ResourceLocation trimResLoc = ResourceLocation.parse(trimPath); // minecraft namespace
-                ResourceLocation trimNameResLoc = ResourceLocation.parse(currentTrimName);
-
-                // This is used for making the ExistingFileHelper acknowledge that this texture exist, so this will
-                // avoid an IllegalArgumentException
-                existingFileHelper.trackGenerated(trimResLoc, PackType.CLIENT_RESOURCES, ".png", "textures");
-
-                // Trimmed armorItem files
-                getBuilder(currentTrimName)
-                        .parent(new ModelFile.UncheckedModelFile("item/generated"))
-                        .texture("layer0", armorItemResLoc.getNamespace() + ":item/" + armorItemResLoc.getPath())
-                        .texture("layer1", trimResLoc);
-
-                // Non-trimmed armorItem file (normal variant)
-                this.withExistingParent(itemDeferredItem.getId().getPath(),
-                                mcLoc("item/generated"))
-                        .override()
-                        .model(new ModelFile.UncheckedModelFile(trimNameResLoc.getNamespace()  + ":item/" + trimNameResLoc.getPath()))
-                        .predicate(mcLoc("trim_type"), trimValue).end()
-                        .texture("layer0",
-                                ResourceLocation.fromNamespaceAndPath(MOD_ID,
-                                        "item/" + itemDeferredItem.getId().getPath()));
-            });
+        if (!(itemDeferredItem.get() instanceof ArmorItem armorItem)) {
+            return;
         }
+
+        // 1.21.4 dropped ArmorItem#getEquipmentSlot: the slot lives in the equipable data
+        // component now, so read it back from there.
+        Equippable equippable = armorItem.components().get(DataComponents.EQUIPPABLE);
+        if (equippable == null) {
+            return;
+        }
+
+        String armorType = switch (equippable.slot()) {
+            case HEAD -> "helmet";
+            case CHEST -> "chestplate";
+            case LEGS -> "leggings";
+            case FEET -> "boots";
+            default -> "";
+        };
+
+        String armorItemPath = itemDeferredItem.getId().getPath();
+        ResourceLocation armorTexture = ResourceLocation.fromNamespaceAndPath(MODID, "item/" + armorItemPath);
+        List<ItemModelDefinition.Case> cases = new ArrayList<>();
+
+        for (ResourceKey<TrimMaterial> trimMaterial : TRIM_MATERIALS) {
+            String material = trimMaterial.location().getPath();
+            String trimModelPath = armorItemPath + "_" + material + "_trim";
+            // The trim sprite is cut at load time by vanilla's paletted permutation atlas rather
+            // than shipped as a png, so the file helper is told it exists instead of asked.
+            ResourceLocation trimTexture = ResourceLocation.withDefaultNamespace("trims/items/" + armorType + "_trim_" + material);
+            existingFileHelper.trackGenerated(trimTexture, PackType.CLIENT_RESOURCES, ".png", "textures");
+
+            getBuilder(trimModelPath)
+                    .parent(new ModelFile.UncheckedModelFile("item/generated"))
+                    .texture("layer0", armorTexture)
+                    .texture("layer1", trimTexture);
+
+            cases.add(ItemModelDefinition.when(trimMaterial.location().toString(),
+                    ItemModelDefinition.model(ResourceLocation.fromNamespaceAndPath(MODID, "item/" + trimModelPath))));
+        }
+
+        // The untrimmed icon, drawn unless one of the materials above is applied.
+        withExistingParent(armorItemPath, mcLoc("item/generated")).texture("layer0", armorTexture);
+
+        definition(itemDeferredItem.get(), ItemModelDefinition.select(mcLoc("trim_material"),
+                ItemModelDefinition.model(armorTexture), cases.toArray(new ItemModelDefinition.Case[0])));
     }
 
     @Nonnull
