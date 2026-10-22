@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.particle;
 
+import com.greatorator.tolkienmobs.TolkienMobsConfig;
 import com.greatorator.tolkienmobs.entity.DragonEntity;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
 import net.minecraft.client.Minecraft;
@@ -16,8 +17,11 @@ import net.minecraft.util.RandomSource;
  */
 public class DiveWindSound extends AbstractTickableSoundInstance
 {
-    /** The dive's volume and pitch, which belong to the air rather than to the beast's voice. */
-    private static final float DIVE_WIND_VOLUME = 1.6F;
+    /**
+     * The dive's pitch, which belongs to the air rather than to the beast's voice. Its volume is
+     * the mod config's instead, read as the loop runs so a change is heard without a new dive; this
+     * sound runs on each client, so that is the listener's own setting rather than the server's.
+     */
     private static final float DIVE_WIND_PITCH = 0.8F;
 
     private final DragonEntity entity;
@@ -28,7 +32,7 @@ public class DiveWindSound extends AbstractTickableSoundInstance
         this.entity = entity;
         this.looping = true;
         this.delay = 0;
-        this.volume = DIVE_WIND_VOLUME;
+        this.volume = (float) TolkienMobsConfig.fellbeastDiveWindVolume;
         this.pitch = DIVE_WIND_PITCH;
         this.x = entity.getX();
         this.y = entity.getY();
@@ -49,6 +53,7 @@ public class DiveWindSound extends AbstractTickableSoundInstance
         this.x = entity.getX();
         this.y = entity.getY();
         this.z = entity.getZ();
+        this.volume = (float) TolkienMobsConfig.fellbeastDiveWindVolume;
     }
 
     /** Starts the wind on this client. The caller only does so when the beast begins a dive. */

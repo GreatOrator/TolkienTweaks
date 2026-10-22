@@ -71,6 +71,9 @@ public class TolkienMobsConfig {
     private static final ModConfigSpec.IntValue FELLBEAST_WINGBEAT_INTERVAL = BUILDER
             .comment("Shortest gap between two heard wingbeats as the FellBeast flies, in ticks. 20 ticks is one second. The flap clip is half a second, so anything under 10 runs two beats into each other, and a beast holding its path beats about every 26 ticks (Default 15)")
             .defineInRange("fellbeastWingbeatInterval", 15, 1, 200);
+    private static final ModConfigSpec.DoubleValue FELLBEAST_DIVE_WIND_VOLUME = BUILDER
+            .comment("Volume of the wind over a diving FellBeast. It is air rather than a voice, so unlike the wingbeat it is not scaled by the beast's own sound scale (Default 1.6)")
+            .defineInRange("fellbeastDiveWindVolume", 1.6, 0.0, 10.0);
     private static final ModConfigSpec.IntValue FELLBEAST_DIVE_ANGLE = BUILDER
             .comment("How steeply a ridden FellBeast must dive, in degrees below horizontal, before its wingbeat goes quiet (Default 45)")
             .defineInRange("fellbeastDiveAngle", 45, 15, 90);
@@ -89,6 +92,7 @@ public class TolkienMobsConfig {
     public static int growthTimer;
     public static int homeRadius;
     public static double fellbeastWingbeatVolume;
+    public static double fellbeastDiveWindVolume;
     public static int fellbeastWingbeatInterval;
     public static int fellbeastDiveAngle;
     public static int trinketRepairAmount;
@@ -110,6 +114,7 @@ public class TolkienMobsConfig {
         growthTimer = GROW_TIMER.get();
         homeRadius = HOME_RADIUS.get();
         fellbeastWingbeatVolume = FELLBEAST_WINGBEAT_VOLUME.get();
+        fellbeastDiveWindVolume = FELLBEAST_DIVE_WIND_VOLUME.get();
         fellbeastWingbeatInterval = FELLBEAST_WINGBEAT_INTERVAL.get();
         fellbeastDiveAngle = FELLBEAST_DIVE_ANGLE.get();
         trinketRepairAmount = TRINKET_REPAIR_AMOUNT.get();
