@@ -723,6 +723,10 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
      * through, because a wingbeat cannot be called back; stopping at the margin instead made the
      * beast stutter through clipped one-tick beats as it hovered. At the margins below it holds its
      * height with a stroke about every second and a quarter, overshooting the path by nothing.
+     * A stoop is silent by the same rule rather than by a check of its own: a beast whose path lies
+     * below it never starts a downstroke, and the wingbeat is only ever heard on a downstroke, so
+     * nothing beats while it dives. If the sound is ever moved out of the stroke branch, a dive has
+     * to be excluded there explicitly.
      */
     private void tickWingbeat() {
         double climb = this.getFlightTargetY() - this.getY();
