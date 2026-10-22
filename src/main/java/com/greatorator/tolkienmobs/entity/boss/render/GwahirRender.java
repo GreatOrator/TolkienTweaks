@@ -1,5 +1,9 @@
 package com.greatorator.tolkienmobs.entity.boss.render;
 
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import com.greatorator.tolkienmobs.entity.boss.GwahirEntity;
 import com.greatorator.tolkienmobs.entity.boss.model.GwahirModel;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -22,9 +26,11 @@ public class GwahirRender extends GeoEntityRenderer<GwahirEntity> {
     }
 
     @Override
-    public void render(GwahirEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        poseStack.scale(1.4F, 1.4F, 1.4F);
+    public void preRender(PoseStack poseStack, GwahirEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
+        if (!isReRender) {
+            poseStack.scale(1.4F, 1.4F, 1.4F);        }
 
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
     }
 }

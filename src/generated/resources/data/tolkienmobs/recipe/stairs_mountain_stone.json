@@ -3,9 +3,7 @@
   "category": "building",
   "group": "mountain_stone",
   "key": {
-    "#": {
-      "item": "tolkienmobs:mountain_stone"
-    }
+    "#": "tolkienmobs:mountain_stone"
   },
   "pattern": [
     "#  ",

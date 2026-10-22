@@ -112,6 +112,11 @@ public class FilterHolderSet<T> implements HolderSet<T> {
     }
 
     @Override
+    public boolean isBound() {
+        return this.base.isBound() && this.filter.isBound();
+    }
+
+    @Override
     public boolean canSerializeIn(HolderOwner<T> holderOwner) {
         return this.base.canSerializeIn(holderOwner) && this.filter.canSerializeIn(holderOwner);
     }

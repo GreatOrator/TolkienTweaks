@@ -4,7 +4,6 @@ import com.greatorator.tolkienmobs.block.custom.ArdaPortalBlock;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.item.TolkienItem;
 import com.greatorator.tolkienmobs.item.custom.render.CatalystRender;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
@@ -20,6 +19,7 @@ import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.renderer.GeoItemRenderer;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.function.Consumer;
@@ -60,7 +60,7 @@ public class CatalystItem extends TolkienItem implements GeoItem {
             private CatalystRender renderer;
 
             @Override
-            public BlockEntityWithoutLevelRenderer getGeoItemRenderer() {
+            public GeoItemRenderer<?> getGeoItemRenderer() {
                 if (this.renderer == null)
                     this.renderer = new CatalystRender();
 

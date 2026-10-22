@@ -83,7 +83,7 @@ public class CamoSpawnerBlockEntity extends TolkienBlockEntity implements MenuPr
         assert spawner != null;
 
         if (stack.getItem() instanceof SpawnEggItem spawnEgg) {
-            EntityType<?> entityType = spawnEgg.getType(stack);
+            EntityType<?> entityType = spawnEgg.getType(level.registryAccess(), stack);
             String entityId = BuiltInRegistries.ENTITY_TYPE.getKey(entityType).toString();
             Optional<EntityType<?>> optional = EntityType.byString(entityId);
 
@@ -104,7 +104,7 @@ public class CamoSpawnerBlockEntity extends TolkienBlockEntity implements MenuPr
                 stack.shrink(1);
                 this.markDirtyClient();
                 this.setChanged();
-                player.sendSystemMessage(Component.translatable("tolkienmobs.msg.selected.mob").append(" " + optional.get().getDescription().getString()).withStyle(ChatFormatting.DARK_GREEN));
+                player.displayClientMessage(Component.translatable("tolkienmobs.msg.selected.mob").append(" " + optional.get().getDescription().getString()).withStyle(ChatFormatting.DARK_GREEN), false);
             } else if (this.mobSpawnDataList.size() < MAX_MOBS) {
                 // Add new mob with count 1
                 this.mobSpawnDataList.add(new MobSpawnData(entityId, 1));
@@ -114,7 +114,7 @@ public class CamoSpawnerBlockEntity extends TolkienBlockEntity implements MenuPr
                 stack.shrink(1);
                 this.markDirtyClient();
                 this.setChanged();
-                player.sendSystemMessage(Component.translatable("tolkienmobs.msg.added.entities").append(" " + optional.get().getDescription().getString()).withStyle(ChatFormatting.DARK_GREEN));
+                player.displayClientMessage(Component.translatable("tolkienmobs.msg.added.entities").append(" " + optional.get().getDescription().getString()).withStyle(ChatFormatting.DARK_GREEN), false);
             } else {
                 // Replace first mob if list is full
                 this.mobSpawnDataList.set(0, new MobSpawnData(entityId, 1));
@@ -124,7 +124,7 @@ public class CamoSpawnerBlockEntity extends TolkienBlockEntity implements MenuPr
                 stack.shrink(1);
                 this.markDirtyClient();
                 this.setChanged();
-                player.sendSystemMessage(Component.translatable("tolkienmobs.msg.replaced.mob").append(" " + optional.get().getDescription().getString()).withStyle(ChatFormatting.DARK_RED));
+                player.displayClientMessage(Component.translatable("tolkienmobs.msg.replaced.mob").append(" " + optional.get().getDescription().getString()).withStyle(ChatFormatting.DARK_RED), false);
             }
         }
     }
@@ -213,11 +213,6 @@ public class CamoSpawnerBlockEntity extends TolkienBlockEntity implements MenuPr
     @Override
     public boolean triggerEvent(int id, int type) {
         return this.spawnerBase.onEventTriggered(this.level, id) ? true : super.triggerEvent(id, type);
-    }
-
-    @Override
-    public boolean onlyOpCanSetNbt() {
-        return true;
     }
 
     @Override

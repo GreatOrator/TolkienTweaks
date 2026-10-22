@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "tolkienmobs:block_morguliron"
-    }
+    "#": "tolkienmobs:block_morguliron"
   },
   "pattern": [
     "###"

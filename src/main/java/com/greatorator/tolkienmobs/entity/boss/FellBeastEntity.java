@@ -9,6 +9,7 @@ import com.greatorator.tolkienmobs.util.LerpedFloatUtility;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
@@ -98,7 +99,7 @@ public class FellBeastEntity extends DragonEntity {
         targetSelector.addGoal(3, new DefendHomeGoal(this));
         targetSelector.addGoal(4, new HurtByTargetGoal(this));
         targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, LivingEntity.class, false,
-                e -> e.getType() == EntityType.PLAYER || e instanceof Animal || e instanceof AbstractVillager));
+                (entity, level) -> entity.getType() == EntityType.PLAYER || entity instanceof Animal || entity instanceof AbstractVillager));
     }
 
     @Override
@@ -194,8 +195,8 @@ public class FellBeastEntity extends DragonEntity {
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
-        return source.is(DamageTypeTags.WITHER_IMMUNE_TO) || super.isInvulnerableTo(source);
+    public boolean isInvulnerableTo(ServerLevel serverLevel, DamageSource source) {
+        return source.is(DamageTypeTags.WITHER_IMMUNE_TO) || super.isInvulnerableTo(serverLevel, source);
     }
 
     @Override
@@ -314,7 +315,7 @@ public class FellBeastEntity extends DragonEntity {
             LivingEntity target = getTarget();
             if (target != null && target.isAlive()) {
                 if (!isWithinRestriction(target.blockPosition())) return false;
-                return TargetingConditions.forCombat().test(entity, target);
+                return TargetingConditions.forCombat().test(getServerLevel(entity), entity, target);
             }
             return false;
         }
@@ -326,7 +327,7 @@ public class FellBeastEntity extends DragonEntity {
                 if (!isWithinRestriction(target.blockPosition())) {
                     return false;
                 }
-                return TargetingConditions.forCombat().test(entity, target);
+                return TargetingConditions.forCombat().test(getServerLevel(entity), entity, target);
             }
             return false;
         }

@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "cyan_dye",
   "ingredients": [
-    {
-      "item": "tolkienmobs:flower_swamp_milkweed"
-    }
+    "tolkienmobs:flower_swamp_milkweed"
   ],
   "result": {
     "count": 2,

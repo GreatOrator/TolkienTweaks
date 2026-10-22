@@ -2,33 +2,5 @@
   "parent": "minecraft:item/generated",
   "textures": {
     "layer0": "tolkienmobs:item/key_ring_0"
-  },
-  "__comment": "we use the fullness property override to choose which ring icon to render",
-  "overrides": [
-    { "model": "tolkienmobs:item/key_ring",
-      "predicate": {
-        "fullness": 0
-      }
-    },
-    { "model": "tolkienmobs:item/key_ring_fullness_0",
-      "predicate": {
-        "fullness": 0.01
-      }
-    },
-    { "model": "tolkienmobs:item/key_ring_fullness_1",
-      "predicate": {
-        "fullness": 0.33
-      }
-    },
-    { "model": "tolkienmobs:item/key_ring_fullness_2",
-      "predicate": {
-        "fullness": 0.66
-      }
-    },
-    { "model": "tolkienmobs:item/key_ring_fullness_3",
-      "predicate": {
-        "fullness": 0.99
-      }
-    }
-  ]
+  }
 }

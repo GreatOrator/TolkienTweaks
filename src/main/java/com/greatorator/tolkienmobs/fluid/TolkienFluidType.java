@@ -1,9 +1,8 @@
 package com.greatorator.tolkienmobs.fluid;
 
-import com.mojang.blaze3d.shaders.FogShape;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.FogParameters;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -11,6 +10,7 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 public class TolkienFluidType extends FluidType {
     private final ResourceLocation stillTexture;
@@ -52,16 +52,16 @@ public class TolkienFluidType extends FluidType {
             }
 
             @Override
-            public @NotNull Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level,
-                                                    int renderDistance, float darkenWorldAmount, Vector3f fluidFogColor) {
-                return fogColor;
+            public @NotNull Vector4f modifyFogColor(Camera camera, float partialTick, ClientLevel level,
+                                                    int renderDistance, float darkenWorldAmount, Vector4f fluidFogColor) {
+                return new Vector4f(fogColor, 1f);
             }
 
             @Override
-            public void modifyFogRender(Camera camera, FogRenderer.FogMode mode, float renderDistance, float partialTick,
-                                        float nearDistance, float farDistance, FogShape shape) {
-                RenderSystem.setShaderFogStart(1f);
-                RenderSystem.setShaderFogEnd(6f); // distance when the fog starts
+            public @NotNull FogParameters modifyFogRender(Camera camera, FogRenderer.FogMode mode, float renderDistance, float partialTick,
+                                                          FogParameters fogParameters) {
+                return new FogParameters(1f, 6f, fogParameters.shape(), fogParameters.red(), fogParameters.green(),
+                        fogParameters.blue(), fogParameters.alpha());
             }
         };
     }

@@ -7,7 +7,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nonnull;
 import java.util.concurrent.CompletableFuture;
@@ -15,8 +14,8 @@ import java.util.concurrent.CompletableFuture;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class TolkienBlockTagProvider extends BlockTagsProvider {
-    public TolkienBlockTagProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper existingFileHelper) {
-        super(packOutput, lookupProvider, MODID, existingFileHelper);
+    public TolkienBlockTagProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(packOutput, lookupProvider, MODID);
     }
 
     @Override

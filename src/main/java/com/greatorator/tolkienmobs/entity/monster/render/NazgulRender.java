@@ -51,9 +51,4 @@ public class NazgulRender extends GeoEntityRenderer<NazgulEntity> {
         return ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/nazgul.png");
     }
 
-    @Override
-    public void render(NazgulEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
-    }
 }

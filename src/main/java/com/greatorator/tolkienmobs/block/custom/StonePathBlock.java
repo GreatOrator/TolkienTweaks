@@ -9,6 +9,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DirtPathBlock;
@@ -32,12 +33,14 @@ public class StonePathBlock extends DirtPathBlock {
     }
 
     @Override
-    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
-        if (facing == Direction.UP && !stateIn.canSurvive(worldIn, currentPos)) {
-            worldIn.scheduleTick(currentPos, this, 1);
+    protected BlockState updateShape(
+            BlockState stateIn, LevelReader reader, ScheduledTickAccess ticks, BlockPos currentPos,
+            Direction facing, BlockPos facingPos, BlockState facingState, RandomSource random) {
+        if (facing == Direction.UP && !stateIn.canSurvive(reader, currentPos)) {
+            ticks.scheduleTick(currentPos, this, 1);
         }
 
-        return super.updateShape(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+        return super.updateShape(stateIn, reader, ticks, currentPos, facing, facingPos, facingState, random);
     }
 
     @Override

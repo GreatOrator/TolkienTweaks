@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "mirkwood",
   "key": {
-    "#": {
-      "item": "minecraft:stick"
-    },
-    "W": {
-      "item": "tolkienmobs:planks_mirkwood"
-    }
+    "#": "minecraft:stick",
+    "W": "tolkienmobs:planks_mirkwood"
   },
   "pattern": [
     "W#W",

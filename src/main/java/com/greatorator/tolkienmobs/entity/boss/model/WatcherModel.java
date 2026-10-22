@@ -4,6 +4,7 @@ package com.greatorator.tolkienmobs.entity.boss.model;
 import com.greatorator.tolkienmobs.entity.boss.WatcherEntity;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.GeoRenderer;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -13,12 +14,12 @@ public class WatcherModel extends GeoModel<WatcherEntity> {
 	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/boss/tmwatcher.animation.json");
 
 	@Override
-	public ResourceLocation getModelResource(WatcherEntity object) {
+	public ResourceLocation getModelResource(WatcherEntity object, GeoRenderer<WatcherEntity> renderer) {
 		return this.model;
 	}
 
 	@Override
-	public ResourceLocation getTextureResource(WatcherEntity object) {
+	public ResourceLocation getTextureResource(WatcherEntity object, GeoRenderer<WatcherEntity> renderer) {
 		return this.texture;
 	}
 

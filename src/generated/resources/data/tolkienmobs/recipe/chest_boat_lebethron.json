@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "chest_boat",
   "ingredients": [
-    {
-      "item": "minecraft:chest"
-    },
-    {
-      "item": "tolkienmobs:planks_lebethron"
-    }
+    "minecraft:chest",
+    "tolkienmobs:planks_lebethron"
   ],
   "result": {
     "count": 1,

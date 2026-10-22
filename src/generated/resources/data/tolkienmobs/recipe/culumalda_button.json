@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "culumalda",
   "ingredients": [
-    {
-      "item": "tolkienmobs:planks_culumalda"
-    }
+    "tolkienmobs:planks_culumalda"
   ],
   "result": {
     "count": 1,

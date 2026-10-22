@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "tolkienmobs:cobbled_dwarven_stone"
-    }
+    "#": "tolkienmobs:cobbled_dwarven_stone"
   },
   "pattern": [
     "###",

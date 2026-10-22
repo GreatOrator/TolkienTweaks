@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "I": {
-      "item": "tolkienmobs:ingot_mithril"
-    },
-    "S": {
-      "item": "minecraft:stick"
-    }
+    "I": "tolkienmobs:ingot_mithril",
+    "S": "minecraft:stick"
   },
   "pattern": [
     "I",

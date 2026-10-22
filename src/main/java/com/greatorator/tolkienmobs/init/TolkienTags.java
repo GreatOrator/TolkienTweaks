@@ -44,6 +44,9 @@ public class TolkienTags {
         public static final TagKey<Item> INSECTS = createTag("tolkienmobs:insects");
         public static final TagKey<Item> ACORNS = createTag("tolkienmobs:acorns");
         public static final TagKey<Item> UPGRADES = createTag("tolkienmobs:upgrades");
+        public static final TagKey<Item> MITHRIL_INGOTS = createTag("tolkienmobs:mithril_ingots");
+        public static final TagKey<Item> MORGULIRON_INGOTS = createTag("tolkienmobs:morguliron_ingots");
+        public static final TagKey<Item> AMMOLITE_GEMS = createTag("tolkienmobs:ammolite_gems");
         public static final TagKey<Item> CANNOT_AUTO_CONSUME = createTag("tolkienmobs:eating");
         public static final TagKey<Item> CURIOS_RING = createTag("curios:ring");
         public static final TagKey<Item> CURIOS_CHARM = createTag("curios:charm");

@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "sign",
   "key": {
-    "#": {
-      "item": "tolkienmobs:planks_deadwood"
-    },
-    "X": {
-      "item": "minecraft:stick"
-    }
+    "#": "tolkienmobs:planks_deadwood",
+    "X": "minecraft:stick"
   },
   "pattern": [
     "###",

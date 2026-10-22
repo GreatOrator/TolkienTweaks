@@ -56,7 +56,7 @@ public class CamoSpawnerRenderer implements BlockEntityRenderer<CamoSpawnerBlock
         poseStack.translate(0.0F, -0.2F, 0.0F);
         poseStack.mulPose(Axis.XP.rotationDegrees(-30.0F));
         poseStack.scale(f, f, f);
-        entityRenderer.render(entity, 0.0, 0.0, 0.0, 0.0F, partialTick, poseStack, buffer, packedLight);
+        entityRenderer.render(entity, 0.0, 0.0, 0.0, partialTick, poseStack, buffer, packedLight);
         poseStack.popPose();
     }
 

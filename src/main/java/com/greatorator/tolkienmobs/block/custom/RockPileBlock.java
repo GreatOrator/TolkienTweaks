@@ -27,7 +27,7 @@ public class RockPileBlock extends BushBlock {
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
-        Vec3 vec3 = state.getOffset(worldIn, pos);
+        Vec3 vec3 = state.getOffset(pos);
         return SHAPE.move(vec3.x, vec3.y, vec3.z);
     }
 

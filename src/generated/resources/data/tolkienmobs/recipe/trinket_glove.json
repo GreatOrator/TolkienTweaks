@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "A": {
-      "item": "tolkienmobs:ingot_mithril"
-    },
-    "G": {
-      "item": "tolkienmobs:gem_ammolite"
-    },
-    "M": {
-      "item": "tolkienmobs:leather_mumakil"
-    }
+    "A": "tolkienmobs:ingot_mithril",
+    "G": "tolkienmobs:gem_ammolite",
+    "M": "tolkienmobs:leather_mumakil"
   },
   "pattern": [
     " MM",

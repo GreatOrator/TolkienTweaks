@@ -1,11 +1,12 @@
 {
-  "carvers": {},
+  "carvers": [],
   "downfall": 0.8,
   "effects": {
     "ambient_sound": "tolkienmobs:ambient.tolkienmobs.pathsofthedead",
     "fog_color": 11119017,
     "foliage_color": 14481884,
     "grass_color": 14481884,
+    "music_volume": 1.0,
     "sky_color": 8233983,
     "water_color": 808080,
     "water_fog_color": 5541815

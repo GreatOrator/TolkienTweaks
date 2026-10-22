@@ -434,4 +434,12 @@ public class GeneralUtility {
     public static boolean isRepairMaterialFor(@Nullable LevelAccessor level, ItemStack stack, ItemStack material) {
         return isRepairTarget(stack) && !material.isEmpty() && RepairMaterials.repairs(level, stack, material);
     }
+
+    /**
+     * The reaction messages a boss sends at whoever hit it. Only a player has a chat box to read
+     * them - a mobile attacker, an arrow or another mob has none - so anything else is ignored.
+     */
+    public static void sendMessage(Entity target, Component message) {
+        if (target instanceof Player player) player.displayClientMessage(message, false);
+    }
 }

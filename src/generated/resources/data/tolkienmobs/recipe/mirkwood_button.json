@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "mirkwood",
   "ingredients": [
-    {
-      "item": "tolkienmobs:planks_mirkwood"
-    }
+    "tolkienmobs:planks_mirkwood"
   ],
   "result": {
     "count": 1,

@@ -22,7 +22,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -36,7 +35,7 @@ import static net.minecraft.world.level.block.state.properties.AttachFace.*;
 public class PlacardBlock extends Block implements EntityBlock {
     public static final EnumProperty<AttachFace> ATTACH_FACE = EnumProperty.create("attach_face", AttachFace.class);
     public static final EnumProperty<PlacardType> PLACARD_TYPE = EnumProperty.create("placard_type", PlacardType.class);
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     private boolean hasLore = false;
 
     public static final VoxelShape SHAPE_STANDING_NS = Shapes.or(

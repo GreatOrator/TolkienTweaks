@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "tolkienmobs:planks_deadwood"
-    },
-    "M": {
-      "item": "tolkienmobs:slab_deadwood"
-    }
+    "A": "tolkienmobs:planks_deadwood",
+    "M": "tolkienmobs:slab_deadwood"
   },
   "pattern": [
     "AMA",

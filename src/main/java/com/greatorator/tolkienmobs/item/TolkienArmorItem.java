@@ -1,29 +1,30 @@
 package com.greatorator.tolkienmobs.item;
 
-import com.google.common.collect.ImmutableMap;
 import com.greatorator.tolkienmobs.init.TolkienArmorMaterials;
-import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.item.equipment.EquipmentAsset;
+import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
 import java.util.Map;
 
 public class TolkienArmorItem extends ArmorItem {
-    private static final Map<Holder<ArmorMaterial>, List<MobEffectInstance>> MATERIAL_TO_EFFECT_MAP =
-            (new ImmutableMap.Builder<Holder<ArmorMaterial>, List<MobEffectInstance>>())
-                    .put(TolkienArmorMaterials.MITHRIL_ARMOR_MATERIAL, List.of(new MobEffectInstance(MobEffects.REGENERATION, 200, 2, false, false), new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 200, 1, false, false)))
-                    .put(TolkienArmorMaterials.MORGULIRON_ARMOR_MATERIAL, List.of(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 200, 4, false, false), new MobEffectInstance(MobEffects.ABSORPTION, 200, 1, false, false)))
-                    .put(TolkienArmorMaterials.AMMOLITE_ARMOR_MATERIAL, List.of(new MobEffectInstance(MobEffects.DIG_SPEED, 200, 4, false, false), new MobEffectInstance(MobEffects.ABSORPTION, 200, 1, false, false), new MobEffectInstance(MobEffects.DAMAGE_BOOST, 200, 2, false, false)))
-                    .build();
+    private static final Map<ResourceKey<EquipmentAsset>, List<MobEffectInstance>> MATERIAL_TO_EFFECT_MAP = Map.of(
+            TolkienArmorMaterials.MITHRIL_ASSET, List.of(new MobEffectInstance(MobEffects.REGENERATION, 200, 2, false, false), new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 200, 1, false, false)),
+            TolkienArmorMaterials.MORGULIRON_ASSET, List.of(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 200, 4, false, false), new MobEffectInstance(MobEffects.ABSORPTION, 200, 1, false, false)),
+            TolkienArmorMaterials.AMMOLITE_ASSET, List.of(new MobEffectInstance(MobEffects.DIG_SPEED, 200, 4, false, false), new MobEffectInstance(MobEffects.ABSORPTION, 200, 1, false, false), new MobEffectInstance(MobEffects.DAMAGE_BOOST, 200, 2, false, false)));
 
-    public TolkienArmorItem(Holder<ArmorMaterial> material, Type type, Properties properties) {
+    public TolkienArmorItem(ArmorMaterial material, ArmorType type, Properties properties) {
         super(material, type, properties);
     }
 
@@ -35,12 +36,9 @@ public class TolkienArmorItem extends ArmorItem {
     }
 
     private void evaluateArmorEffects(Player player) {
-        for(Map.Entry<Holder<ArmorMaterial>, List<MobEffectInstance>> entry : MATERIAL_TO_EFFECT_MAP.entrySet()) {
-            Holder<ArmorMaterial> mapArmorMaterial = entry.getKey();
-            List<MobEffectInstance> mapEffect = entry.getValue();
-
-            if(hasPlayerCorrectArmorOn(mapArmorMaterial, player)) {
-                addEffectToPlayer(player, mapEffect);
+        for(Map.Entry<ResourceKey<EquipmentAsset>, List<MobEffectInstance>> entry : MATERIAL_TO_EFFECT_MAP.entrySet()) {
+            if(hasPlayerCorrectArmorOn(entry.getKey(), player)) {
+                addEffectToPlayer(player, entry.getValue());
             }
         }
     }
@@ -56,20 +54,19 @@ public class TolkienArmorItem extends ArmorItem {
         }
     }
 
-    private boolean hasPlayerCorrectArmorOn(Holder<ArmorMaterial> mapArmorMaterial, Player player) {
+    /**
+     * 1.21.4 dropped ArmorItem#getMaterial; the worn set is identified by the equipment asset each piece renders with.
+     */
+    private boolean hasPlayerCorrectArmorOn(ResourceKey<EquipmentAsset> mapArmorMaterial, Player player) {
         for(ItemStack armorStack : player.getArmorSlots()) {
-            if(!(armorStack.getItem() instanceof ArmorItem)) {
+            Equippable equippable = armorStack.get(DataComponents.EQUIPPABLE);
+
+            if (equippable == null || equippable.assetId().isEmpty() || !equippable.assetId().get().equals(mapArmorMaterial)) {
                 return false;
             }
         }
 
-        ArmorItem boots = ((ArmorItem) player.getInventory().getArmor(0).getItem());
-        ArmorItem leggings = ((ArmorItem) player.getInventory().getArmor(1).getItem());
-        ArmorItem chestplate = ((ArmorItem) player.getInventory().getArmor(2).getItem());
-        ArmorItem helmet = ((ArmorItem) player.getInventory().getArmor(3).getItem());
-
-        return boots.getMaterial() == mapArmorMaterial && leggings.getMaterial() == mapArmorMaterial
-                && chestplate.getMaterial() == mapArmorMaterial && helmet.getMaterial() == mapArmorMaterial;
+        return true;
     }
 
     private boolean hasFullSuitOfArmorOn(Player player) {

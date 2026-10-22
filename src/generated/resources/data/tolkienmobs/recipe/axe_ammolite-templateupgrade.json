@@ -1,16 +1,10 @@
 {
   "type": "minecraft:smithing_transform",
-  "addition": {
-    "item": "tolkienmobs:gem_ammolite"
-  },
-  "base": {
-    "item": "minecraft:netherite_axe"
-  },
+  "addition": "tolkienmobs:gem_ammolite",
+  "base": "minecraft:netherite_axe",
   "result": {
     "count": 1,
     "id": "tolkienmobs:axe_ammolite"
   },
-  "template": {
-    "item": "tolkienmobs:template_ammolite"
-  }
+  "template": "tolkienmobs:template_ammolite"
 }

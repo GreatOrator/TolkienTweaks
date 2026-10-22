@@ -3,12 +3,8 @@
   "category": "redstone",
   "group": "culumalda",
   "key": {
-    "#": {
-      "item": "minecraft:stick"
-    },
-    "W": {
-      "item": "tolkienmobs:planks_culumalda"
-    }
+    "#": "minecraft:stick",
+    "W": "tolkienmobs:planks_culumalda"
   },
   "pattern": [
     "#W#",

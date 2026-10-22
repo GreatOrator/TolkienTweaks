@@ -3,12 +3,8 @@
   "category": "redstone",
   "group": "lebethron",
   "key": {
-    "#": {
-      "item": "minecraft:stick"
-    },
-    "W": {
-      "item": "tolkienmobs:planks_lebethron"
-    }
+    "#": "minecraft:stick",
+    "W": "tolkienmobs:planks_lebethron"
   },
   "pattern": [
     "#W#",

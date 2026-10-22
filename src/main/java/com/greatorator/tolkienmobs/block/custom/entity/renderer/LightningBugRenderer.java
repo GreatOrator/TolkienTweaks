@@ -45,7 +45,7 @@ public class LightningBugRenderer implements BlockEntityRenderer<LightningBugBlo
 		stack.pushPose();
 
 		VertexConsumer consumer = buffer.getBuffer(RenderType.entityCutout(TEXTURE));
-		this.lightningBugModel.renderToBuffer(stack, consumer, light, OverlayTexture.NO_OVERLAY);
+		this.lightningBugModel.renderBody(stack, consumer, light, OverlayTexture.NO_OVERLAY, -1);
 
 		consumer = buffer.getBuffer(RenderType.entityTranslucent(TEXTURE));
 		this.lightningBugModel.renderGlow(stack, consumer, glow);

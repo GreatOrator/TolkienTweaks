@@ -27,6 +27,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.client.renderer.RenderType;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -174,7 +175,7 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
         int relX = (this.width - this.imageWidth) / 2;
         int relY = (this.height - this.imageHeight) / 2;
 
-        guiGraphics.blit(getGUIState(), relX - 23, relY, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(RenderType::guiTextured, getGUIState(), relX - 23, relY, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
 
         if (renderablesChanged)
             updateRenderables();
@@ -183,14 +184,14 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
         int y = (height - imageHeight) / 2;
 
         if(this.tileEntity.hasFluidTank()) {
-            guiGraphics.blit(FLUIDBAR, relX, relY + 5, 0, 0, 11, 75, 12, 75);
+            guiGraphics.blit(RenderType::guiTextured, FLUIDBAR, relX, relY + 5, 0, 0, 11, 75, 12, 75);
             fluidRenderer.render(guiGraphics, x, y + 4, menu.tileEntity.getFluid());
         }
 
         if (backpackSettings.upgrade) {
             ResourceLocation upgradeGUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_upgrade.png");
             RenderSystem.setShaderTexture(0, upgradeGUI);
-            guiGraphics.blit(upgradeGUI, getGuiLeft() + 220, getGuiTop() + 36, 0, 0, this.imageWidth, this.imageHeight);
+            guiGraphics.blit(RenderType::guiTextured, upgradeGUI, getGuiLeft() + 220, getGuiTop() + 36, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
         }
     }
 

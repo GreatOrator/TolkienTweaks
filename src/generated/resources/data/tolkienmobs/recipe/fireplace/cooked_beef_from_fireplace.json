@@ -3,7 +3,7 @@
   "ingredients": [
     {
       "count": 1,
-      "item": "minecraft:beef"
+      "ingredient": "minecraft:beef"
     }
   ],
   "output": [

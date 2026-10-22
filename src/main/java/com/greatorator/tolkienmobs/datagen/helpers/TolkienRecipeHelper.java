@@ -4,7 +4,8 @@ import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -15,74 +16,86 @@ import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.resLoc;
 
-public class TolkienRecipeHelper extends RecipeProvider implements IConditionBuilder  {
-    public TolkienRecipeHelper(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, registries);
+/**
+ * The mod's recipe shapes. 1.21.4 made {@link RecipeProvider} an instance: the output lives on the provider and the
+ * helpers are protected instance methods, so subclasses call them instead of the old static form.
+ */
+public abstract class TolkienRecipeHelper extends RecipeProvider {
+    protected TolkienRecipeHelper(HolderLookup.Provider registries, RecipeOutput output) {
+        super(registries, output);
     }
 
-    protected static void woodListRecipe(RecipeOutput pRecipeOutput, RecipeCategory pCategory, String group, ItemLike planks, ItemLike log, ItemLike wood, ItemLike stairs, ItemLike slab, ItemLike plate, ItemLike button, ItemLike door, ItemLike trapdoor, ItemLike fence, ItemLike fenceGate, ItemLike sign, ItemLike hangingSign, ItemLike ladder, ItemLike boat, ItemLike chestBoat, Supplier<? extends Block> torch, Supplier<? extends Block> barrel, Supplier<? extends Block> leaves, ItemLike leafpile) {
+    /** 1.21.4 turned Ingredient#getItems into a stream of holders; criteria only need the first item's name. */
+    protected static Item firstItem(Ingredient ingredient) {
+        return ingredient.items().findFirst().orElseThrow().value();
+    }
+
+    /** Recipe builders save against a recipe key now, not a bare id. */
+    protected static ResourceKey<Recipe<?>> recipeKey(ResourceLocation id) {
+        return ResourceKey.create(Registries.RECIPE, id);
+    }
+
+    protected void woodListRecipe(RecipeOutput pRecipeOutput, RecipeCategory pCategory, String group, ItemLike planks, ItemLike log, ItemLike wood, ItemLike stairs, ItemLike slab, ItemLike plate, ItemLike button, ItemLike door, ItemLike trapdoor, ItemLike fence, ItemLike fenceGate, ItemLike sign, ItemLike hangingSign, ItemLike ladder, ItemLike boat, ItemLike chestBoat, Supplier<? extends Block> torch, Supplier<? extends Block> barrel, Supplier<? extends Block> leaves, ItemLike leafpile) {
         leafPileRecipe(pRecipeOutput, leaves, leafpile);
         stairBuilder(stairs, Ingredient.of(planks)).group(group).unlockedBy("has_"+group, has(planks)).save(pRecipeOutput);
-        slab(pRecipeOutput, pCategory, slab, planks);
-        pressurePlate(pRecipeOutput, plate, planks);
+        slab(pCategory, slab, planks);
+        pressurePlate(plate, planks);
         buttonBuilder(button, Ingredient.of(planks)).group(group).unlockedBy("has_"+group, has(planks)).save(pRecipeOutput);
         doorBuilder(door, Ingredient.of(planks)).group(group).unlockedBy("has_"+group, has(planks)).save(pRecipeOutput);
         trapdoorBuilder(trapdoor, Ingredient.of(planks)).group(group).unlockedBy("has_"+group, has(planks)).save(pRecipeOutput);
         fenceBuilder(fence, Ingredient.of(planks)).group(group).unlockedBy("has_"+group, has(planks)).save(pRecipeOutput);
         fenceGateBuilder(fenceGate, Ingredient.of(planks)).group(group).unlockedBy("has_"+group, has(planks)).save(pRecipeOutput);
         planksFromLogs(pRecipeOutput, planks, log, 4);
-        woodFromLogs(pRecipeOutput, wood, log);
+        woodFromLogs(wood, log);
         addTorchRecipe(pRecipeOutput, torch, planks);
         barrelRecipe(pRecipeOutput, barrel, planks, slab);
         signRecipe(pRecipeOutput, sign, planks);
         hangingSignRecipe(pRecipeOutput, hangingSign, planks);
         ladderRecipe(pRecipeOutput, ladder, planks);
-        woodenBoat(pRecipeOutput, boat, planks);
-        chestBoat(pRecipeOutput, chestBoat, planks);
+        woodenBoat(boat, planks);
+        chestBoat(chestBoat, planks);
     }
 
-    protected static void woodListRecipeNoLeaves(RecipeOutput pRecipeOutput, RecipeCategory pCategory, String group, ItemLike planks, ItemLike log, ItemLike wood, ItemLike stairs, ItemLike slab, ItemLike plate, ItemLike button, ItemLike door, ItemLike trapdoor, ItemLike fence, ItemLike fenceGate, ItemLike sign, ItemLike hangingSign, ItemLike ladder, ItemLike boat, ItemLike chestBoat, Supplier<? extends Block> torch, Supplier<? extends Block> barrel) {
+    protected void woodListRecipeNoLeaves(RecipeOutput pRecipeOutput, RecipeCategory pCategory, String group, ItemLike planks, ItemLike log, ItemLike wood, ItemLike stairs, ItemLike slab, ItemLike plate, ItemLike button, ItemLike door, ItemLike trapdoor, ItemLike fence, ItemLike fenceGate, ItemLike sign, ItemLike hangingSign, ItemLike ladder, ItemLike boat, ItemLike chestBoat, Supplier<? extends Block> torch, Supplier<? extends Block> barrel) {
         stairBuilder(stairs, Ingredient.of(planks)).group(group).unlockedBy("has_"+group, has(planks)).save(pRecipeOutput);
-        slab(pRecipeOutput, pCategory, slab, planks);
-        pressurePlate(pRecipeOutput, plate, planks);
+        slab(pCategory, slab, planks);
+        pressurePlate(plate, planks);
         buttonBuilder(button, Ingredient.of(planks)).group(group).unlockedBy("has_"+group, has(planks)).save(pRecipeOutput);
         doorBuilder(door, Ingredient.of(planks)).group(group).unlockedBy("has_"+group, has(planks)).save(pRecipeOutput);
         trapdoorBuilder(trapdoor, Ingredient.of(planks)).group(group).unlockedBy("has_"+group, has(planks)).save(pRecipeOutput);
         fenceBuilder(fence, Ingredient.of(planks)).group(group).unlockedBy("has_"+group, has(planks)).save(pRecipeOutput);
         fenceGateBuilder(fenceGate, Ingredient.of(planks)).group(group).unlockedBy("has_"+group, has(planks)).save(pRecipeOutput);
         planksFromLogs(pRecipeOutput, planks, log, 4);
-        woodFromLogs(pRecipeOutput, wood, log);
+        woodFromLogs(wood, log);
         addTorchRecipe(pRecipeOutput, torch, planks);
         barrelRecipe(pRecipeOutput, barrel, planks, slab);
         signRecipe(pRecipeOutput, sign, planks);
         hangingSignRecipe(pRecipeOutput, hangingSign, planks);
         ladderRecipe(pRecipeOutput, ladder, planks);
-        woodenBoat(pRecipeOutput, boat, planks);
-        chestBoat(pRecipeOutput, chestBoat, planks);
+        woodenBoat(boat, planks);
+        chestBoat(chestBoat, planks);
     }
 
-    protected static void mossyRecipe(RecipeOutput pRecipeOutput, ItemLike wall, ItemLike base) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, wall)
+    protected void mossyRecipe(RecipeOutput pRecipeOutput, ItemLike wall, ItemLike base) {
+        shaped(RecipeCategory.MISC, wall)
                 .pattern("IV ")
                 .define('I', base)
                 .define('V', Blocks.VINE)
                 .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(Blocks.VINE))
                 .save(pRecipeOutput, MODID + ":" + getConversionRecipeName(wall, Blocks.VINE));
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, wall)
+        shaped(RecipeCategory.MISC, wall)
                 .pattern("IV ")
                 .define('I', base)
                 .define('V', Blocks.MOSS_BLOCK)
@@ -90,26 +103,26 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .save(pRecipeOutput, MODID + ":" + getConversionRecipeName(wall, Blocks.MOSS_BLOCK));
     }
 
-    protected static void stoneListRecipe(RecipeOutput pRecipeOutput, RecipeCategory pCategory, String group, ItemLike wall, ItemLike button, ItemLike stair, ItemLike block, ItemLike slab, ItemLike plate) {
+    protected void stoneListRecipe(RecipeOutput pRecipeOutput, RecipeCategory pCategory, String group, ItemLike wall, ItemLike button, ItemLike stair, ItemLike block, ItemLike slab, ItemLike plate) {
         stairBuilder(stair, Ingredient.of(block)).group(group).unlockedBy("has_"+group, has(block)).save(pRecipeOutput);
-        slab(pRecipeOutput, pCategory, slab, block);
-        pressurePlate(pRecipeOutput, plate, block);
+        slab(pCategory, slab, block);
+        pressurePlate(plate, block);
         buttonBuilder(button, Ingredient.of(block)).group(group).unlockedBy("has_"+group, has(block)).save(pRecipeOutput);
-        wall(pRecipeOutput, pCategory, wall, block);
+        wall(pCategory, wall, block);
     }
 
     protected void gemListRecipe(RecipeOutput recipeOutput, Item gem, Block block, ItemLike pane) {
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, gem, 4)
+        shapeless(RecipeCategory.MISC, gem, 4)
                 .requires(block.asItem())
                 .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(block.asItem()))
                 .save(recipeOutput);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, block)
+        shaped(RecipeCategory.MISC, block)
                 .pattern("II ")
                 .pattern("II ")
                 .define('I', gem)
                 .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(block.asItem()))
                 .save(recipeOutput);
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, pane, 16)
+        shaped(RecipeCategory.DECORATIONS, pane, 16)
                 .define('#', block)
                 .pattern("###")
                 .pattern("###")
@@ -117,45 +130,45 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .save(recipeOutput);
     }
 
-    protected static void metalListRecipe(RecipeOutput pRecipeOutput, RecipeCategory pCategory, String group, ItemLike wall, ItemLike door, ItemLike trapdoor, Supplier<? extends Block> barrel, ItemLike button, ItemLike stair, ItemLike block, ItemLike slab, ItemLike plate, ItemLike bars, Supplier<? extends Block> lantern, ItemLike torch, Item ingot, Item nugget, Item arrow) {
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ingot, 9)
+    protected void metalListRecipe(RecipeOutput pRecipeOutput, RecipeCategory pCategory, String group, ItemLike wall, ItemLike door, ItemLike trapdoor, Supplier<? extends Block> barrel, ItemLike button, ItemLike stair, ItemLike block, ItemLike slab, ItemLike plate, ItemLike bars, Supplier<? extends Block> lantern, ItemLike torch, Item ingot, Item nugget, Item arrow) {
+        shapeless(RecipeCategory.MISC, ingot, 9)
                 .requires(block.asItem())
                 .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(block.asItem()))
                 .save(pRecipeOutput);
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, nugget, 9)
+        shapeless(RecipeCategory.MISC, nugget, 9)
                 .requires(ingot)
                 .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
                 .save(pRecipeOutput);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, block)
+        shaped(RecipeCategory.MISC, block)
                 .pattern("III")
                 .pattern("III")
                 .pattern("III")
                 .define('I', ingot)
                 .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(block.asItem()))
                 .save(pRecipeOutput);
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ingot)
+        shaped(RecipeCategory.MISC, ingot)
                 .pattern("NNN")
                 .pattern("NNN")
                 .pattern("NNN")
                 .define('N', nugget)
                 .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
-                .save(pRecipeOutput, TolkienMobsMain.prefix(nugget.getDescriptionId() + "_to_ingot"));
+                .save(pRecipeOutput, recipeKey(TolkienMobsMain.prefix(nugget.getDescriptionId() + "_to_ingot")));
         addLampRecipe(pRecipeOutput,lantern ,torch ,ingot);
         stairBuilder(stair, Ingredient.of(block)).group(group).unlockedBy("has_"+group, has(block)).save(pRecipeOutput);
-        slab(pRecipeOutput, pCategory, slab, block);
-        pressurePlate(pRecipeOutput, plate, block);
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, bars, 16)
+        slab(pCategory, slab, block);
+        pressurePlate(plate, block);
+        shaped(RecipeCategory.DECORATIONS, bars, 16)
                 .define('#', ingot)
                 .pattern("###")
                 .pattern("###")
                 .unlockedBy(getHasName(ingot), has(ingot))
                 .save(pRecipeOutput);
         buttonBuilder(button, Ingredient.of(block)).group(group).unlockedBy("has_"+group, has(block)).save(pRecipeOutput);
-        wall(pRecipeOutput, pCategory, wall, block);
+        wall(pCategory, wall, block);
         barrelRecipe(pRecipeOutput, barrel, block, slab);
         doorBuilder(door, Ingredient.of(block)).group(group).unlockedBy("has_"+group, has(ingot)).save(pRecipeOutput);
         trapdoorBuilder(trapdoor, Ingredient.of(block)).group(group).unlockedBy("has_"+group, has(ingot)).save(pRecipeOutput);
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, arrow)
+        shapeless(RecipeCategory.MISC, arrow)
                 .requires(Items.STICK)
                 .requires(TolkienItems.BIRD_FEATHER)
                 .requires(ingot)
@@ -163,31 +176,31 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .save(pRecipeOutput);
     }
 
-    protected static void fireplaceRecipe(RecipeOutput recipeOutput, SizedIngredient ingredients1, SizedIngredient ingredients2, ItemLike result, int outputCount){
+    protected void fireplaceRecipe(RecipeOutput recipeOutput, SizedIngredient ingredients1, SizedIngredient ingredients2, ItemLike result, int outputCount){
         FireplaceRecipeBuilder.fireplaceRecipe()
                 .addIngredient(ingredients1)
                 .addIngredient(ingredients2)
                 .addOutput(new ItemStack(result, outputCount))
-                .unlockedBy(getHasName(ingredients1.ingredient().getItems()[0].getItem()), has(ingredients1.ingredient().getItems()[0].getItem()))
-                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath(MODID, "fireplace/" + getItemName(result) + "_from_fireplace"));
+                .unlockedBy(getHasName(firstItem(ingredients1.ingredient())), has(firstItem(ingredients1.ingredient())))
+                .save(recipeOutput, recipeKey(ResourceLocation.fromNamespaceAndPath(MODID, "fireplace/" + getItemName(result) + "_from_fireplace")));
     }
 
-    protected static void fireplaceFoodRecipe(RecipeOutput recipeOutput, SizedIngredient ingredients1, ItemLike result, int outputCount){
+    protected void fireplaceFoodRecipe(RecipeOutput recipeOutput, SizedIngredient ingredients1, ItemLike result, int outputCount){
         FireplaceRecipeBuilder.fireplaceRecipe()
                 .addIngredient(ingredients1)
                 .addOutput(new ItemStack(result, outputCount))
-                .unlockedBy(getHasName(ingredients1.ingredient().getItems()[0].getItem()), has(ingredients1.ingredient().getItems()[0].getItem()))
-                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath(MODID, "fireplace/" + getItemName(result) + "_from_fireplace"));
+                .unlockedBy(getHasName(firstItem(ingredients1.ingredient())), has(firstItem(ingredients1.ingredient())))
+                .save(recipeOutput, recipeKey(ResourceLocation.fromNamespaceAndPath(MODID, "fireplace/" + getItemName(result) + "_from_fireplace")));
     }
 
-    protected static void trinketRecipe(RecipeOutput recipeOutput, ItemLike trinket, SizedIngredient fuel, ItemLike potion) {
+    protected void trinketRecipe(RecipeOutput recipeOutput, ItemLike trinket, SizedIngredient fuel, ItemLike potion) {
         TrinketRecipeBuilder.recipe(trinket, fuel, potion)
                 .unlockedBy(getHasName(trinket), has(trinket))
-                .save(recipeOutput, ResourceLocation.fromNamespaceAndPath(MODID, "trinket/" + getItemName(trinket) + "_from_trinket"));
+                .save(recipeOutput, recipeKey(ResourceLocation.fromNamespaceAndPath(MODID, "trinket/" + getItemName(trinket) + "_from_trinket")));
     }
 
-    protected static void toolListRecipe(RecipeOutput pRecipeOutput, RecipeCategory pCategory, String group, Item pick, Item axe, Item shovel, Item hoe, Item sword, Item shears, Item ingot) {
-        ShapedRecipeBuilder.shaped(pCategory, pick, 1)
+    protected void toolListRecipe(RecipeOutput pRecipeOutput, RecipeCategory pCategory, String group, Item pick, Item axe, Item shovel, Item hoe, Item sword, Item shears, Item ingot) {
+        shaped(pCategory, pick, 1)
                 .pattern("III")
                 .pattern(" S ")
                 .pattern(" S ")
@@ -195,7 +208,7 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .define('S', Items.STICK)
                 .unlockedBy("has_"+group, InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
                 .save(pRecipeOutput);
-        ShapedRecipeBuilder.shaped(pCategory, axe, 1)
+        shaped(pCategory, axe, 1)
                 .pattern("II")
                 .pattern("IS")
                 .pattern(" S")
@@ -203,7 +216,7 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .define('S', Items.STICK)
                 .unlockedBy("has_"+group, InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
                 .save(pRecipeOutput);
-        ShapedRecipeBuilder.shaped(pCategory, shovel, 1)
+        shaped(pCategory, shovel, 1)
                 .pattern("I")
                 .pattern("S")
                 .pattern("S")
@@ -211,7 +224,7 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .define('S', Items.STICK)
                 .unlockedBy("has_"+group, InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
                 .save(pRecipeOutput);
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, sword, 1)
+        shaped(RecipeCategory.COMBAT, sword, 1)
                 .pattern("I")
                 .pattern("I")
                 .pattern("S")
@@ -219,7 +232,7 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .define('S', Items.STICK)
                 .unlockedBy("has_"+group, InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
                 .save(pRecipeOutput);
-        ShapedRecipeBuilder.shaped(pCategory, hoe, 1)
+        shaped(pCategory, hoe, 1)
                 .pattern("II")
                 .pattern(" S")
                 .pattern(" S")
@@ -227,7 +240,7 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .define('S', Items.STICK)
                 .unlockedBy("has_"+group, InventoryChangeTrigger.TriggerInstance.hasItems(ingot))
                 .save(pRecipeOutput);
-        ShapedRecipeBuilder.shaped(pCategory, shears, 1)
+        shaped(pCategory, shears, 1)
                 .pattern(" I")
                 .pattern("I ")
                 .define('I', ingot)
@@ -235,7 +248,7 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .save(pRecipeOutput);
     }
 
-    protected static void smithingUpgrade(RecipeOutput consumer, String type, Item output, ItemLike template, ItemLike input1, ItemLike input2) {
+    protected void smithingUpgrade(RecipeOutput consumer, String type, Item output, ItemLike template, ItemLike input1, ItemLike input2) {
         SmithingTransformRecipeBuilder.smithing(Ingredient.of(template), Ingredient.of(input1),
                         Ingredient.of(input2), RecipeCategory.MISC, output)
                 .unlocks("has_template_" + type, InventoryChangeTrigger.TriggerInstance.hasItems(template))
@@ -245,23 +258,23 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
 //    protected static void trinket(RecipeOutput recipeOutput, ItemLike trinket, ItemLike output, ItemLike potion) {
 //        new TrinketRecipeBuilder(RecipeCategory.TOOLS, "ammolite", output, Ingredient.of(trinket), potion)
 //                .unlockedBy("has_", InventoryChangeTrigger.TriggerInstance.hasItems(trinket))
-//                .save(recipeOutput, TolkienMobsMain.prefix(output.asItem().getDescriptionId() + "_from_trinket_table"));
+//                .save(recipeOutput, recipeKey(TolkienMobsMain.prefix(output.asItem().getDescriptionId() + "_from_trinket_table")));
 //    }
 
-    protected static void smeltingList(ItemLike input, RecipeOutput recipeOutput, RecipeCategory category, ItemLike output, float experience, int cookingTime) {
+    protected void smeltingList(ItemLike input, RecipeOutput recipeOutput, RecipeCategory category, ItemLike output, float experience, int cookingTime) {
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(input), category, output, experience, cookingTime)
                 .unlockedBy("has_"+input, InventoryChangeTrigger.TriggerInstance.hasItems(input))
-                .save(recipeOutput, TolkienMobsMain.prefix(output.asItem().getDescriptionId() + "_from_smelting"));
+                .save(recipeOutput, recipeKey(TolkienMobsMain.prefix(output.asItem().getDescriptionId() + "_from_smelting")));
     }
 
-    protected static void blastingList(ItemLike input, RecipeOutput recipeOutput, RecipeCategory category, ItemLike output, float experience, int cookingTime) {
+    protected void blastingList(ItemLike input, RecipeOutput recipeOutput, RecipeCategory category, ItemLike output, float experience, int cookingTime) {
         SimpleCookingRecipeBuilder.blasting(Ingredient.of(input), category, output, experience, cookingTime)
                 .unlockedBy("has_"+input, InventoryChangeTrigger.TriggerInstance.hasItems(input))
-                .save(recipeOutput, TolkienMobsMain.prefix(output.asItem().getDescriptionId() + "_from_blasting"));
+                .save(recipeOutput, recipeKey(TolkienMobsMain.prefix(output.asItem().getDescriptionId() + "_from_blasting")));
     }
 
-    protected static void paneRecipe(RecipeOutput recipeOutput, ItemLike pSign, ItemLike material) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, pSign, 16)
+    protected void paneRecipe(RecipeOutput recipeOutput, ItemLike pSign, ItemLike material) {
+        shaped(RecipeCategory.DECORATIONS, pSign, 16)
                 .define('#', material)
                 .pattern("###")
                 .pattern("###")
@@ -269,25 +282,24 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .save(recipeOutput);
     }
 
-    protected static void oreSmelting(RecipeOutput pRecipeOutput, List<ItemLike> pIngredients, RecipeCategory pCategory, ItemLike pResult,
+    protected void oreSmelting(RecipeOutput pRecipeOutput, List<ItemLike> pIngredients, RecipeCategory pCategory, ItemLike pResult,
                                       float pExperience, int pCookingTIme, String pGroup) {
         oreCooking(pRecipeOutput, RecipeSerializer.SMELTING_RECIPE, SmeltingRecipe::new, pIngredients, pCategory, pResult,
                 pExperience, pCookingTIme, pGroup, "_from_smelting");
     }
 
-    protected static void oreBlasting(RecipeOutput pRecipeOutput, List<ItemLike> pIngredients, RecipeCategory pCategory, ItemLike pResult,
+    protected void oreBlasting(RecipeOutput pRecipeOutput, List<ItemLike> pIngredients, RecipeCategory pCategory, ItemLike pResult,
                                       float pExperience, int pCookingTime, String pGroup) {
         oreCooking(pRecipeOutput, RecipeSerializer.BLASTING_RECIPE, BlastingRecipe::new, pIngredients, pCategory, pResult,
                 pExperience, pCookingTime, pGroup, "_from_blasting");
     }
 
-    protected static void planksFromLogs(RecipeOutput output, ItemLike planks, ItemLike log, int count) {
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, planks, count).requires(log).group("planks").unlockedBy("has_logs", has(log)).save(output);
+    protected void planksFromLogs(RecipeOutput output, ItemLike planks, ItemLike log, int count) {
+        shapeless(RecipeCategory.BUILDING_BLOCKS, planks, count).requires(log).group("planks").unlockedBy("has_logs", has(log)).save(output);
     }
 
     protected void conversionRecipe(RecipeOutput recipeOutput, Supplier<? extends Block> result, ItemLike item1, ItemLike item2) {
-        ShapedRecipeBuilder
-                .shaped(RecipeCategory.BUILDING_BLOCKS, result.get().asItem(), 8)
+        shaped(RecipeCategory.BUILDING_BLOCKS, result.get().asItem(), 8)
                 .define('A', item1)
                 .define('M', item2)
                 .pattern("AAA")
@@ -297,8 +309,8 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .save(recipeOutput);
     }
 
-    protected static void ladderRecipe(RecipeOutput recipeOutput, ItemLike ladder, ItemLike material) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, ladder, 4)
+    protected void ladderRecipe(RecipeOutput recipeOutput, ItemLike ladder, ItemLike material) {
+        shaped(RecipeCategory.DECORATIONS, ladder, 4)
                 .group("sign")
                 .define('#', material)
                 .define('X', Items.STICK)
@@ -309,9 +321,8 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .save(recipeOutput);
     }
 
-    private static void barrelRecipe(RecipeOutput recipeOutput, Supplier<? extends Block> result, ItemLike plank, ItemLike slab) {
-        ShapedRecipeBuilder
-                .shaped(RecipeCategory.MISC, result.get().asItem())
+    private void barrelRecipe(RecipeOutput recipeOutput, Supplier<? extends Block> result, ItemLike plank, ItemLike slab) {
+        shaped(RecipeCategory.MISC, result.get().asItem())
                 .define('A', plank)
                 .define('M', slab)
                 .pattern("AMA")
@@ -321,9 +332,8 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .save(recipeOutput);
     }
 
-    protected static void addLampRecipe(RecipeOutput recipeOutput, Supplier<? extends Block> result, ItemLike block, ItemLike ingot) {
-        ShapedRecipeBuilder
-                .shaped(RecipeCategory.BUILDING_BLOCKS, result.get().asItem())
+    protected void addLampRecipe(RecipeOutput recipeOutput, Supplier<? extends Block> result, ItemLike block, ItemLike ingot) {
+        shaped(RecipeCategory.BUILDING_BLOCKS, result.get().asItem())
                 .define('W', ingot)
                 .define('P', block)
                 .pattern("WWW")
@@ -333,8 +343,8 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .save(recipeOutput);
     }
 
-    protected static void containerRecipe(RecipeOutput recipeOutput, RecipeCategory pCategory, String group, ItemLike container, ItemLike material1, ItemLike material2, ItemLike ingot) {
-        ShapedRecipeBuilder.shaped(pCategory, container, 1)
+    protected void containerRecipe(RecipeOutput recipeOutput, RecipeCategory pCategory, String group, ItemLike container, ItemLike material1, ItemLike material2, ItemLike ingot) {
+        shaped(pCategory, container, 1)
                 .group(group)
                 .define('L', material1)
                 .define('C', material2)
@@ -346,8 +356,8 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .save(recipeOutput);
     }
 
-    protected static void placardRecipe(RecipeOutput recipeOutput, ItemLike pSign, ItemLike planks, ItemLike ingot) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, pSign, 3)
+    protected void placardRecipe(RecipeOutput recipeOutput, ItemLike pSign, ItemLike planks, ItemLike ingot) {
+        shaped(RecipeCategory.DECORATIONS, pSign, 3)
                 .group("sign")
                 .define('#', planks)
                 .define('M', ingot)
@@ -359,8 +369,8 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .save(recipeOutput);
     }
 
-    protected static void signRecipe(RecipeOutput recipeOutput, ItemLike pSign, ItemLike material) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, pSign, 3)
+    protected void signRecipe(RecipeOutput recipeOutput, ItemLike pSign, ItemLike material) {
+        shaped(RecipeCategory.DECORATIONS, pSign, 3)
                 .group("sign")
                 .define('#', material)
                 .define('X', Items.STICK)
@@ -371,8 +381,8 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .save(recipeOutput);
     }
 
-    protected static void hangingSignRecipe(RecipeOutput recipeOutput, ItemLike sign, ItemLike material) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, sign, 6)
+    protected void hangingSignRecipe(RecipeOutput recipeOutput, ItemLike sign, ItemLike material) {
+        shaped(RecipeCategory.DECORATIONS, sign, 6)
                 .group("hanging_sign")
                 .define('#', material)
                 .define('X', Items.CHAIN)
@@ -384,8 +394,7 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
     }
 
     protected void upgradeRecipe(RecipeOutput recipeOutput, Supplier<? extends Item> result, ItemLike input1, ItemLike input2) {
-        ShapedRecipeBuilder
-                .shaped(RecipeCategory.MISC, result.get().asItem())
+        shaped(RecipeCategory.MISC, result.get().asItem())
                 .define('W', input1)
                 .define('P', input2)
                 .pattern("W")
@@ -395,8 +404,7 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
     }
 
     protected void upgradeRecipe2(RecipeOutput recipeOutput, Supplier<? extends Item> result, ItemLike input1, TagKey<Item> input2) {
-        ShapedRecipeBuilder
-                .shaped(RecipeCategory.MISC, result.get().asItem())
+        shaped(RecipeCategory.MISC, result.get().asItem())
                 .define('W', input1)
                 .define('P', input2)
                 .pattern("W")
@@ -406,8 +414,7 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
     }
 
     protected void upgradeRecipe3(RecipeOutput recipeOutput, Supplier<? extends Item> result, ItemLike item1, ItemLike item2) {
-        ShapedRecipeBuilder
-                .shaped(RecipeCategory.MISC, result.get().asItem(), 1)
+        shaped(RecipeCategory.MISC, result.get().asItem(), 1)
                 .define('A', item1)
                 .define('M', item2)
                 .pattern("AAA")
@@ -417,9 +424,8 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .save(recipeOutput);
     }
 
-    private static void addTorchRecipe(RecipeOutput recipeOutput, Supplier<? extends Block> result, ItemLike block) {
-        ShapedRecipeBuilder
-                .shaped(RecipeCategory.BUILDING_BLOCKS, result.get().asItem(),  4)
+    private void addTorchRecipe(RecipeOutput recipeOutput, Supplier<? extends Block> result, ItemLike block) {
+        shaped(RecipeCategory.BUILDING_BLOCKS, result.get().asItem(),  4)
                 .define('W', Items.STICK)
                 .define('P', block)
                 .pattern("P")
@@ -429,8 +435,7 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
     }
 
     protected void sleepingRecipe(RecipeOutput recipeOutput, Supplier<? extends Block> result, ItemLike block) {
-        ShapedRecipeBuilder
-                .shaped(RecipeCategory.BUILDING_BLOCKS, result.get().asItem())
+        shaped(RecipeCategory.BUILDING_BLOCKS, result.get().asItem())
                 .define('W', Items.LEATHER)
                 .define('P', block)
                 .define('S', Blocks.WHITE_CARPET)
@@ -440,9 +445,8 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .save(recipeOutput);
     }
 
-    private static void leafPileRecipe(RecipeOutput recipeOutput, Supplier<? extends Block> result, ItemLike block) {
-        ShapedRecipeBuilder
-                .shaped(RecipeCategory.BUILDING_BLOCKS, result.get().asItem(), 6)
+    private void leafPileRecipe(RecipeOutput recipeOutput, Supplier<? extends Block> result, ItemLike block) {
+        shaped(RecipeCategory.BUILDING_BLOCKS, result.get().asItem(), 6)
                 .define('P', block)
                 .pattern("PPP")
                 .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(block))
@@ -450,7 +454,7 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
     }
 
     private void helmetRecipe(RecipeOutput recipeOutput, Item output, Item ingot, Item ingot2) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, output, 1)
+        shaped(RecipeCategory.COMBAT, output, 1)
                 .pattern("III")
                 .pattern("IAI")
                 .define('I', ingot)
@@ -460,7 +464,7 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
     }
 
     private void chestRecipe(RecipeOutput recipeOutput, Item output, Item ingot, Item ingot2) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, output, 1)
+        shaped(RecipeCategory.COMBAT, output, 1)
                 .pattern("IAI")
                 .pattern("III")
                 .pattern("III")
@@ -471,7 +475,7 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
     }
 
     private void leggingRecipe(RecipeOutput recipeOutput, Item output, Item ingot, Item ingot2) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, output, 1)
+        shaped(RecipeCategory.COMBAT, output, 1)
                 .pattern("III")
                 .pattern("IAI")
                 .pattern("I I")
@@ -482,7 +486,7 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
     }
 
     private void bootRecipe(RecipeOutput recipeOutput, Item output, Item ingot, Item ingot2) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, output, 1)
+        shaped(RecipeCategory.COMBAT, output, 1)
                 .pattern("IAI")
                 .pattern("I I")
                 .define('I', ingot)
@@ -491,15 +495,15 @@ public class TolkienRecipeHelper extends RecipeProvider implements IConditionBui
                 .save(recipeOutput);
     }
 
-    protected static void oneToOneConversionRecipe(RecipeOutput recipeOutput, ItemLike output, ItemLike ingredient, @Nullable String group, int resultCount) {
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, output, resultCount).requires(ingredient).group(group).unlockedBy(getHasName(ingredient), has(ingredient)).save(recipeOutput, MODID + ":" + getConversionRecipeName(output, ingredient));
+    protected void oneToOneConversionRecipe(RecipeOutput recipeOutput, ItemLike output, ItemLike ingredient, @Nullable String group, int resultCount) {
+        shapeless(RecipeCategory.MISC, output, resultCount).requires(ingredient).group(group).unlockedBy(getHasName(ingredient), has(ingredient)).save(recipeOutput, MODID + ":" + getConversionRecipeName(output, ingredient));
     }
 
-    protected static void twoToTwoConversionRecipe(RecipeOutput recipeOutput, ItemLike output, ItemLike ingredient, @Nullable String group) {
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, output, 2).requires(output).requires(ingredient, 2).group(group).unlockedBy(getHasName(output), has(output)).save(recipeOutput, MODID + ":" + getConversionRecipeName(output, ingredient));
+    protected void twoToTwoConversionRecipe(RecipeOutput recipeOutput, ItemLike output, ItemLike ingredient, @Nullable String group) {
+        shapeless(RecipeCategory.MISC, output, 2).requires(output).requires(ingredient, 2).group(group).unlockedBy(getHasName(output), has(output)).save(recipeOutput, MODID + ":" + getConversionRecipeName(output, ingredient));
     }
 
-    protected static <T extends AbstractCookingRecipe> void oreCooking(RecipeOutput pRecipeOutput, RecipeSerializer<T> pCookingSerializer, AbstractCookingRecipe.Factory<T> factory,
+    protected <T extends AbstractCookingRecipe> void oreCooking(RecipeOutput pRecipeOutput, RecipeSerializer<T> pCookingSerializer, AbstractCookingRecipe.Factory<T> factory,
                                                                        List<ItemLike> pIngredients, RecipeCategory pCategory, ItemLike pResult, float pExperience, int pCookingTime, String pGroup, String pRecipeName) {
         for(ItemLike itemlike : pIngredients) {
             SimpleCookingRecipeBuilder.generic(Ingredient.of(itemlike), pCategory, pResult, pExperience, pCookingTime, pCookingSerializer, factory).group(pGroup).unlockedBy(getHasName(itemlike), has(itemlike))

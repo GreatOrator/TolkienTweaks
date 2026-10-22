@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "cobbled_dwarven_stone",
   "ingredients": [
-    {
-      "item": "tolkienmobs:cobbled_dwarven_stone"
-    }
+    "tolkienmobs:cobbled_dwarven_stone"
   ],
   "result": {
     "count": 1,

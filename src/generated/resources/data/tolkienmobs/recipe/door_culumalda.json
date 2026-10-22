@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "culumalda",
   "key": {
-    "#": {
-      "item": "tolkienmobs:planks_culumalda"
-    }
+    "#": "tolkienmobs:planks_culumalda"
   },
   "pattern": [
     "##",

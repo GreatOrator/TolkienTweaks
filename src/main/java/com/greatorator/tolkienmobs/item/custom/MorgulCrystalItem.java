@@ -52,7 +52,7 @@ public class MorgulCrystalItem extends Item {
                }
 
                context.getItemInHand().shrink(1);
-               return InteractionResult.sidedSuccess(level.isClientSide);
+               return InteractionResult.SUCCESS;
             }
          }
       }

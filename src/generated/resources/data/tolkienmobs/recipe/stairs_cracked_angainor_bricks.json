@@ -3,9 +3,7 @@
   "category": "building",
   "group": "cracked_angainor_bricks",
   "key": {
-    "#": {
-      "item": "tolkienmobs:cracked_angainor_bricks"
-    }
+    "#": "tolkienmobs:cracked_angainor_bricks"
   },
   "pattern": [
     "#  ",

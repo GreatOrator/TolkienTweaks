@@ -3,9 +3,7 @@
   "category": "building",
   "group": "fangornoak",
   "key": {
-    "#": {
-      "item": "tolkienmobs:planks_fangornoak"
-    }
+    "#": "tolkienmobs:planks_fangornoak"
   },
   "pattern": [
     "#  ",

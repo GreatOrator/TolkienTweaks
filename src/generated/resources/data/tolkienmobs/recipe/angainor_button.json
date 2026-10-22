@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "angainor",
   "ingredients": [
-    {
-      "item": "tolkienmobs:angainor"
-    }
+    "tolkienmobs:angainor"
   ],
   "result": {
     "count": 1,

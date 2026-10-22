@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.entity.item;
 
 import com.greatorator.tolkienmobs.init.TolkienEntities;
+import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienWoodTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -14,7 +15,7 @@ public class DwarvenMapleBoatEntity extends Boat {
     private static final EntityDataAccessor<String> WOOD_TYPE = SynchedEntityData.defineId(DwarvenMapleBoatEntity.class, EntityDataSerializers.STRING);
 
     public DwarvenMapleBoatEntity(EntityType<? extends DwarvenMapleBoatEntity> type, Level level) {
-        super(type, level);
+        super(type, level, TolkienItems.DWARVEN_MAPLE_BOAT);
     }
 
     public DwarvenMapleBoatEntity(Level level, double x, double y, double z, String woodType) {

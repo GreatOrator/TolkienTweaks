@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "sign",
   "key": {
-    "#": {
-      "item": "tolkienmobs:planks_fangornoak"
-    },
-    "X": {
-      "item": "minecraft:stick"
-    }
+    "#": "tolkienmobs:planks_fangornoak",
+    "X": "minecraft:stick"
   },
   "pattern": [
     "###",

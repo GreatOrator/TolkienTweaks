@@ -49,7 +49,6 @@ public class MorgulCrystalEntity extends Entity{
 
     public void tick() {
         ++this.time;
-        this.checkInsideBlocks();
         this.handlePortal();
         if (this.level() instanceof ServerLevel) {
             BlockPos blockpos = this.blockPosition();
@@ -80,17 +79,22 @@ public class MorgulCrystalEntity extends Entity{
         return true;
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        if (this.isInvulnerableTo(source)) {
+    /**
+     * Damage is only taken on the server now, so the server level arrives as an argument instead of
+     * being tested for, and the invulnerability check is the base one this non-living entity has.
+     */
+    @Override
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource source, float amount) {
+        if (this.isInvulnerableToBase(source)) {
             return false;
         } else if (source.getEntity() instanceof EnderDragon) {
             return false;
         } else {
-            if (!this.isRemoved() && !this.level().isClientSide) {
+            if (!this.isRemoved()) {
                 this.remove(Entity.RemovalReason.KILLED);
                 if (!source.is(DamageTypeTags.IS_EXPLOSION)) {
                     DamageSource damagesource = source.getEntity() != null ? this.damageSources().explosion(this, source.getEntity()) : null;
-                    this.level().explode(this, damagesource, (ExplosionDamageCalculator)null, this.getX(), this.getY(), this.getZ(), 6.0F, false, Level.ExplosionInteraction.BLOCK);
+                    serverLevel.explode(this, damagesource, (ExplosionDamageCalculator)null, this.getX(), this.getY(), this.getZ(), 6.0F, false, Level.ExplosionInteraction.BLOCK);
                 }
 
                 this.onDestroyedBy(source);
@@ -100,9 +104,10 @@ public class MorgulCrystalEntity extends Entity{
         }
     }
 
-    public void kill() {
+    @Override
+    public void kill(ServerLevel serverLevel) {
         this.onDestroyedBy(this.damageSources().generic());
-        super.kill();
+        super.kill(serverLevel);
     }
 
     private void onDestroyedBy(DamageSource source) {

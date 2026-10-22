@@ -5,12 +5,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 
 public class TolkienFood extends Item {
     public boolean hasEffectOverride = false;
-    public boolean hasDrinkAction = false;
 
     public TolkienFood(Properties properties) {
         super(properties);
@@ -24,16 +22,6 @@ public class TolkienFood extends Item {
     @Override
     public boolean isFoil(ItemStack stack) {
         return hasEffectOverride || super.isFoil(stack);
-    }
-
-    public TolkienFood setItemUseAction(boolean getUseAction) {
-        this.hasDrinkAction = getUseAction;
-        return this;
-    }
-
-    @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
-        return hasDrinkAction ? UseAnim.DRINK : UseAnim.EAT;
     }
 
     @Override

@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "chiseled_elven_marble_bricks",
   "ingredients": [
-    {
-      "item": "tolkienmobs:chiseled_elven_marble_bricks"
-    }
+    "tolkienmobs:chiseled_elven_marble_bricks"
   ],
   "result": {
     "count": 1,

@@ -1,5 +1,7 @@
 package com.greatorator.tolkienmobs.entity.passive;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+
 import com.greatorator.tolkienmobs.entity.npc.DwarfEntity;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
@@ -175,9 +177,9 @@ public class GoatEntity extends AbstractChestedHorse implements GeoEntity {
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnType, @Nullable SpawnGroupData spawnGroupData) {
         if (level.getRandom().nextInt(100) == 0) {
-            DwarfEntity dwarfentity = TolkienEntities.ENTITY_TTM_DWARF.get().create(this.level);
+            DwarfEntity dwarfentity = TolkienEntities.ENTITY_TTM_DWARF.get().create(this.level, EntitySpawnReason.JOCKEY);
             dwarfentity.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
             dwarfentity.finalizeSpawn(level, difficulty, spawnType, null);
             this.setTamed(true);
@@ -267,11 +269,17 @@ public class GoatEntity extends AbstractChestedHorse implements GeoEntity {
             super(GoatEntity.this, 1.25D, true);
         }
 
-        protected void checkAndPerformAttack(LivingEntity p_29589_, double p_29590_) {
+        /**
+         * MeleeAttackGoal dropped the distance parameter from this hook, so the distance is taken from
+         * the goat here. Without it the override never ran and the goat lost its head-down warning.
+         */
+        @Override
+        protected void checkAndPerformAttack(LivingEntity p_29589_) {
+            double p_29590_ = this.mob.distanceToSqr(p_29589_);
             double d0 = this.getAttackReachSqr(p_29589_);
             if (p_29590_ <= d0 && this.isTimeToAttack()) {
                 this.resetAttackCooldown();
-                this.mob.doHurtTarget(p_29589_);
+                this.mob.doHurtTarget(getServerLevel(this.mob), p_29589_);
                 GoatEntity.this.setStanding(false);
             } else if (p_29590_ <= d0 * 2.0D) {
                 if (this.isTimeToAttack()) {

@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "item": "minecraft:brick"
-    },
-    "I": {
-      "tag": "tolkienmobs:coins"
-    },
-    "S": {
-      "item": "minecraft:stone_slab"
-    }
+    "B": "minecraft:brick",
+    "I": "#tolkienmobs:coins",
+    "S": "minecraft:stone_slab"
   },
   "pattern": [
     "SSS",

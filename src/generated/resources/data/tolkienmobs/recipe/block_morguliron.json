@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": {
-      "item": "tolkienmobs:ingot_morguliron"
-    }
+    "I": "tolkienmobs:ingot_morguliron"
   },
   "pattern": [
     "III",

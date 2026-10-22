@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "tolkienmobs:block_ammolite"
-    }
+    "tolkienmobs:block_ammolite"
   ],
   "result": {
     "count": 4,

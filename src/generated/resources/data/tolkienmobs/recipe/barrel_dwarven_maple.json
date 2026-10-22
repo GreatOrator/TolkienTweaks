@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "tolkienmobs:planks_dwarven_maple"
-    },
-    "M": {
-      "item": "tolkienmobs:slab_dwarven_maple"
-    }
+    "A": "tolkienmobs:planks_dwarven_maple",
+    "M": "tolkienmobs:slab_dwarven_maple"
   },
   "pattern": [
     "AMA",

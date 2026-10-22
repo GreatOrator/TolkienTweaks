@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "sign",
   "key": {
-    "#": {
-      "item": "tolkienmobs:planks_culumalda"
-    },
-    "X": {
-      "item": "minecraft:stick"
-    }
+    "#": "tolkienmobs:planks_culumalda",
+    "X": "minecraft:stick"
   },
   "pattern": [
     "X X",

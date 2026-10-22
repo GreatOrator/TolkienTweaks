@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "sign",
   "key": {
-    "#": {
-      "item": "tolkienmobs:planks_lebethron"
-    },
-    "X": {
-      "item": "minecraft:stick"
-    }
+    "#": "tolkienmobs:planks_lebethron",
+    "X": "minecraft:stick"
   },
   "pattern": [
     "###",

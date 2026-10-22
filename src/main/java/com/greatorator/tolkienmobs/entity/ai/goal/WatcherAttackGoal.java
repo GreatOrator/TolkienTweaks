@@ -70,7 +70,7 @@ public class WatcherAttackGoal extends Goal {
                     if (this.attackTime == 8) {
                         this.attackTime = -5;
                         this.entity.setAttackingState(0);
-                        livingentity.doHurtTarget(this.entity);
+                        livingentity.doHurtTarget(getServerLevel(this.entity), this.entity);
                     }
                 }
             }

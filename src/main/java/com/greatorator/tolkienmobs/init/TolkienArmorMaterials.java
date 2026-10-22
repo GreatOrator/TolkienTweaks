@@ -1,62 +1,58 @@
 package com.greatorator.tolkienmobs.init;
 
-import net.minecraft.Util;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.item.equipment.EquipmentAsset;
 
 import java.util.EnumMap;
-import java.util.List;
-import java.util.function.Supplier;
+import java.util.Map;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class TolkienArmorMaterials {
-	public static final Holder<ArmorMaterial> MITHRIL_ARMOR_MATERIAL = register("mithril",
-			Util.make(new EnumMap<>(ArmorItem.Type.class), attribute -> {
-				attribute.put(ArmorItem.Type.BOOTS, 5);
-				attribute.put(ArmorItem.Type.LEGGINGS, 8);
-				attribute.put(ArmorItem.Type.CHESTPLATE, 10);
-				attribute.put(ArmorItem.Type.HELMET, 5);
-				attribute.put(ArmorItem.Type.BODY, 13);
-			}), 30, 4f, 0.6f, () -> TolkienItems.INGOT_MITHRIL.get());
-	public static final Holder<ArmorMaterial> MORGULIRON_ARMOR_MATERIAL = register("morguliron",
-			Util.make(new EnumMap<>(ArmorItem.Type.class), attribute -> {
-				attribute.put(ArmorItem.Type.BOOTS, 4);
-				attribute.put(ArmorItem.Type.LEGGINGS, 7);
-				attribute.put(ArmorItem.Type.CHESTPLATE, 9);
-				attribute.put(ArmorItem.Type.HELMET, 4);
-				attribute.put(ArmorItem.Type.BODY, 12);
-			}), 15, 3.5f, 0.3f, () -> TolkienItems.INGOT_MORGULIRON.get());
-	public static final Holder<ArmorMaterial> AMMOLITE_ARMOR_MATERIAL = register("ammolite",
-			Util.make(new EnumMap<>(ArmorItem.Type.class), attribute -> {
-				attribute.put(ArmorItem.Type.BOOTS, 6);
-				attribute.put(ArmorItem.Type.LEGGINGS, 9);
-				attribute.put(ArmorItem.Type.CHESTPLATE, 11);
-				attribute.put(ArmorItem.Type.HELMET, 6);
-				attribute.put(ArmorItem.Type.BODY, 14);
-			}), 35, 5f, 0.6f, () -> TolkienItems.GEM_AMMOLITE.get());
+	/**
+	 * 1.21.4 made armour materials plain records instead of registry entries, so the set is created here and the
+	 * client-side look (the equipment asset under {@code assets/tolkienmobs/equipment/}) is named separately.
+	 */
+	public static final ResourceKey<EquipmentAsset> MITHRIL_ASSET = asset("mithril");
+	public static final ResourceKey<EquipmentAsset> MORGULIRON_ASSET = asset("morguliron");
+	public static final ResourceKey<EquipmentAsset> AMMOLITE_ASSET = asset("ammolite");
 
+	public static final ArmorMaterial MITHRIL_ARMOR_MATERIAL = create(MITHRIL_ASSET, 41,
+			defense(5, 10, 8, 5, 13), 30, 4f, 0.6f, TolkienTags.Items.MITHRIL_INGOTS);
+	public static final ArmorMaterial MORGULIRON_ARMOR_MATERIAL = create(MORGULIRON_ASSET, 39,
+			defense(4, 9, 7, 4, 12), 15, 3.5f, 0.3f, TolkienTags.Items.MORGULIRON_INGOTS);
+	public static final ArmorMaterial AMMOLITE_ARMOR_MATERIAL = create(AMMOLITE_ASSET, 35,
+			defense(6, 11, 9, 6, 14), 35, 5f, 0.6f, TolkienTags.Items.AMMOLITE_GEMS);
 
-	private static Holder<ArmorMaterial> register(String name, EnumMap<ArmorItem.Type, Integer> typeProtection, int enchantability, float toughness, float knockbackResistance, Supplier<Item> ingredientItem) {
-		ResourceLocation location = ResourceLocation.fromNamespaceAndPath(MODID, name);
+	private static ArmorMaterial create(ResourceKey<EquipmentAsset> asset, int durability, Map<ArmorType, Integer> defense,
+			int enchantability, float toughness, float knockbackResistance, TagKey<Item> repairIngredient) {
 		Holder<SoundEvent> equipSound = SoundEvents.ARMOR_EQUIP_NETHERITE;
-		Supplier<Ingredient> ingredient = () -> Ingredient.of(ingredientItem.get());
-		List<ArmorMaterial.Layer> layers = List.of(new ArmorMaterial.Layer(location));
 
-		EnumMap<ArmorItem.Type, Integer> typeMap = new EnumMap<>(ArmorItem.Type.class);
-		for (ArmorItem.Type type : ArmorItem.Type.values()) {
-			typeMap.put(type, typeProtection.get(type));
-		}
+		return new ArmorMaterial(durability, defense, enchantability, equipSound, toughness, knockbackResistance,
+				repairIngredient, asset);
+	}
 
-		return Registry.registerForHolder(BuiltInRegistries.ARMOR_MATERIAL, location,
-				new ArmorMaterial(typeProtection, enchantability, equipSound, ingredient, layers, toughness, knockbackResistance));
+	private static Map<ArmorType, Integer> defense(int helmet, int chestplate, int leggings, int boots, int body) {
+		Map<ArmorType, Integer> defense = new EnumMap<>(ArmorType.class);
+		defense.put(ArmorType.HELMET, helmet);
+		defense.put(ArmorType.CHESTPLATE, chestplate);
+		defense.put(ArmorType.LEGGINGS, leggings);
+		defense.put(ArmorType.BOOTS, boots);
+		defense.put(ArmorType.BODY, body);
+
+		return defense;
+	}
+
+	private static ResourceKey<EquipmentAsset> asset(String name) {
+		return ResourceKey.create(net.minecraft.world.item.equipment.EquipmentAssets.ROOT_ID,
+				ResourceLocation.fromNamespaceAndPath(MODID, name));
 	}
 }

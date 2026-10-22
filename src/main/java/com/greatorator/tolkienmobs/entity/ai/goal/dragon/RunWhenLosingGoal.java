@@ -21,7 +21,10 @@ public class RunWhenLosingGoal extends AvoidEntityGoal<LivingEntity> {
         this.chanceToRun = chanceToRun;
         this.dragon = pDragon;
         this.walkSpeedModifier = pWalkSpeedModifier;
-        this.runAwayTargeting = TargetingConditions.forCombat().range(pMaxDistance).selector(this.predicateOnAvoidEntity.and(avoidPredicate));
+        // A selector now takes the level as well, and AvoidEntityGoal keeps its two filters separate,
+        // so the pair is combined here instead of with Predicate#and.
+        this.runAwayTargeting = TargetingConditions.forCombat().range(pMaxDistance)
+                .selector((entity, level) -> this.predicateOnAvoidEntity.test(entity) && this.avoidPredicate.test(entity));
     }
 
     @Override
@@ -34,7 +37,7 @@ public class RunWhenLosingGoal extends AvoidEntityGoal<LivingEntity> {
         if (this.dragon.getHealth()/this.dragon.getMaxHealth() > healthPercent) return false;
         if (dragon.getRandom().nextFloat() > chanceToRun) return false;
 
-        this.toAvoid = dragon.getLastHurtByMob() != null? dragon.getLastHurtByMob() : this.dragon.level.getNearestEntity(this.dragon.level.getEntitiesOfClass(this.avoidClass, this.dragon.getBoundingBox().inflate(this.maxDist, 3.0D, this.maxDist), (p_148078_) -> {
+        this.toAvoid = dragon.getLastHurtByMob() != null? dragon.getLastHurtByMob() : getServerLevel(this.dragon).getNearestEntity(this.dragon.level.getEntitiesOfClass(this.avoidClass, this.dragon.getBoundingBox().inflate(this.maxDist, 3.0D, this.maxDist), (p_148078_) -> {
             return true;
         }), this.runAwayTargeting, this.dragon, this.dragon.getX(), this.dragon.getY(), this.dragon.getZ());
 

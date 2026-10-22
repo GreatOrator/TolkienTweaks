@@ -8,10 +8,11 @@ import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.Nullable;
 
@@ -63,10 +64,10 @@ public class FireplaceRecipeBuilder implements RecipeBuilder {
     }
 
     @Override
-    public void save(RecipeOutput recipeOutput, ResourceLocation resourceLocation) {
+    public void save(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> recipeKey) {
         Advancement.Builder advancement = recipeOutput.advancement()
-                .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(resourceLocation))
-                .rewards(AdvancementRewards.Builder.recipe(resourceLocation))
+                .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeKey))
+                .rewards(AdvancementRewards.Builder.recipe(recipeKey))
                 .requirements(AdvancementRequirements.Strategy.OR);
         this.criteria.forEach(advancement::addCriterion);
 
@@ -77,6 +78,6 @@ public class FireplaceRecipeBuilder implements RecipeBuilder {
         );
 
         // Pass the recipe and advancement to the output
-        recipeOutput.accept(resourceLocation, recipe, advancement.build(resourceLocation.withPrefix("recipes/")));
+        recipeOutput.accept(recipeKey, recipe, advancement.build(recipeKey.location().withPrefix("recipes/")));
     }
 }

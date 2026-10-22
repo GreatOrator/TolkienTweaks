@@ -89,7 +89,6 @@ public class GreatEagleEntity extends TolkienFlyingAmbientEntity implements GeoE
         FlyingPathNavigation navigator = new FlyingPathNavigation(this, world);
         navigator.setCanOpenDoors(false);
         navigator.setCanFloat(true);
-        navigator.setCanPassDoors(true);
         return navigator;
     }
 

@@ -3,9 +3,7 @@
   "category": "building",
   "group": "mirkwood",
   "key": {
-    "#": {
-      "item": "tolkienmobs:planks_mirkwood"
-    }
+    "#": "tolkienmobs:planks_mirkwood"
   },
   "pattern": [
     "#  ",

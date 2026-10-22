@@ -74,7 +74,7 @@ public record DwarvenMinerEnchantmentEffect(int range) implements EnchantmentEnt
         }
         // A server-side hit can arrive after the player's aim has moved slightly.
         Vec3 look = player.getLookAngle();
-        return Direction.getNearest(look.x, look.y, look.z).getOpposite();
+        return Direction.getNearest(Mth.floor(look.x), Mth.floor(look.y), Mth.floor(look.z), null).getOpposite();
     }
 
     /** A single plane: levels 1–4 produce 3×3, 5×5, 7×7 and 9×9. */

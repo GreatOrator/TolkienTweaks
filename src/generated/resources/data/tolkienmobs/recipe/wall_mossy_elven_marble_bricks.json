@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "tolkienmobs:mossy_elven_marble_bricks"
-    }
+    "#": "tolkienmobs:mossy_elven_marble_bricks"
   },
   "pattern": [
     "###",

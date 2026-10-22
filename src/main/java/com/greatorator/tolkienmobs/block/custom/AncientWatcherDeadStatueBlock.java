@@ -7,6 +7,7 @@ import com.greatorator.tolkienmobs.util.MathUtility;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -16,6 +17,8 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -24,7 +27,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
@@ -36,7 +39,7 @@ import java.util.Random;
 
 public class AncientWatcherDeadStatueBlock extends TolkienEntityBlock implements SimpleWaterloggedBlock {
     public static final MapCodec<AncientWatcherDeadStatueBlock> CODEC = simpleCodec(AncientWatcherDeadStatueBlock::new);
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     protected static final VoxelShape SHAPE = Block.box(0.0, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
@@ -62,9 +65,11 @@ public class AncientWatcherDeadStatueBlock extends TolkienEntityBlock implements
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction facing, BlockState neighbor, LevelAccessor world, BlockPos pos, BlockPos offset) {
+    protected BlockState updateShape(
+            BlockState state, LevelReader reader, ScheduledTickAccess ticks, BlockPos pos,
+            Direction facing, BlockPos neighborPos, BlockState neighbor, RandomSource random) {
         if (state.getValue(WATERLOGGED)) {
-            world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+            ticks.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(reader));
         }
         return state;
     }

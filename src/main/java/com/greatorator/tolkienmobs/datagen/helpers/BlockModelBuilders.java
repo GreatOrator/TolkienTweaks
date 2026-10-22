@@ -11,11 +11,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
-import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
-import net.neoforged.neoforge.client.model.generators.ModelBuilder;
-import net.neoforged.neoforge.client.model.generators.ModelFile;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import com.greatorator.tolkienmobs.datagen.modelgen.BlockModelBuilder;
+import com.greatorator.tolkienmobs.datagen.modelgen.ConfiguredModel;
+import com.greatorator.tolkienmobs.datagen.modelgen.ModelBuilder;
+import com.greatorator.tolkienmobs.datagen.modelgen.ModelFile;
+import com.greatorator.tolkienmobs.datagen.modelgen.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
 import java.util.function.Function;
@@ -267,29 +267,21 @@ public abstract class BlockModelBuilders extends BlockModelHelper {
 	}
 
 	public void fluid() {
-		String mithrilName = "mithril";
-		String nameMithril = mithrilName.substring(mithrilName.lastIndexOf('.') + 1);
+		fluidBlock(TolkienFluids.MITHRIL_BLOCK.get(), "mithril");
+		fluidBlock(TolkienFluids.MORGULIRON_BLOCK.get(), "morguliron");
+	}
 
-		ModelFile mithrilFile = models()
-				.withExistingParent(nameMithril, modLoc("block/mithril"));
-		BlockModelBuilder mithrilFluid = models()
-				.withExistingParent(nameMithril, modLoc("block/mithril"))
-				.texture("particle", modLoc("block/mithril_still"));
-		getVariantBuilder(TolkienFluids.MITHRIL_BLOCK.get())
-				.forAllStates(state -> ConfiguredModel.builder().modelFile(mithrilFile).build());
-
-		String morgulironName = "morguliron";
-		String nameMorguliron = morgulironName.substring(morgulironName.lastIndexOf('.') + 1);
-
-		ModelFile morgulironFile = models()
-				.withExistingParent(nameMorguliron, modLoc("block/morguliron"));
-		BlockModelBuilder morgulironFluid = models()
-				.withExistingParent(nameMorguliron, modLoc("block/morguliron"))
-				.texture("particle", modLoc("block/morguliron_still"));
-
-		getVariantBuilder(TolkienFluids.MORGULIRON_BLOCK.get())
-				.forAllStates(state -> ConfiguredModel.builder().modelFile(morgulironFile).build());
-
+	/**
+	 * A fluid block is drawn by the game's fluid renderer rather than by its model, so the model
+	 * holds nothing but the break particle, the way vanilla's water and lava do. Both of these
+	 * used to name themselves as their own parent, which the model loader reports as a loading
+	 * loop and then drops.
+	 */
+	private void fluidBlock(Block block, String name) {
+		ModelFile model = models().getBuilder(name)
+				.texture("particle", modLoc("block/" + name + "_still"));
+		getVariantBuilder(block)
+				.forAllStates(state -> ConfiguredModel.builder().modelFile(model).build());
 	}
 
 	protected void leafpileBuilder(Block block, String leafPile) {
@@ -454,14 +446,17 @@ public abstract class BlockModelBuilders extends BlockModelHelper {
 		return models;
 	}
 
+	/**
+	 * A block whose block entity draws it. The game dropped {@code builtin/entity}, so the model is
+	 * left empty like vanilla's chest model: it draws nothing and only supplies break particles.
+	 */
 	protected void builtinEntity(Block b, String particle) {
 		simpleBlock(b, models().getBuilder(nameB(b))
-				.parent(new ModelFile.UncheckedModelFile("builtin/entity"))
 				.texture("particle", particle));
 	}
 
 	protected void ladder(DeferredBlock<Block> ladder, DeferredBlock<Block> fullBlock) {
-		ModelFile ladderModel = models().withExistingParent(ladder.getId().getPath(), "ladder")
+		ModelFile ladderModel = models().withExistingParent(ladder.getId().getPath(), "block/ladder")
 				.texture("particle", texture(name(fullBlock)))
 				.texture("texture", texture(name(ladder))).renderType("cutout")
 				.ao(false);

@@ -1,5 +1,7 @@
 package com.greatorator.tolkienmobs.util;
 
+import net.minecraft.core.Direction;
+
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -99,7 +101,7 @@ public final class Codecs {
 	}
 
 	public static <T> Codec<T> fromRegistry(Registry<T> registry) {
-		return ResourceLocation.CODEC.xmap(registry::get, registry::getKey);
+		return ResourceLocation.CODEC.xmap(registry::getValue, registry::getKey);
 	}
 
 	public static <E> DataResult<Pair<E, E>> arrayToPair(List<E> list) {

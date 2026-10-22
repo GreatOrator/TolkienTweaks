@@ -62,8 +62,8 @@ public class FireplaceRecipeCategory implements IRecipeCategory<FireplaceRecipe>
         for (int i = 0; i < recipe.getInputItems().size(); i++) {
             var input = recipe.getInputItems().get(i);
             var slot = builder.addSlot(RecipeIngredientRole.INPUT, 2 + (i + recipe.getInputItems().size()) * 22, 15);
-            for (var stack : input.ingredient().getItems()) {
-                slot.addIngredient(VanillaTypes.ITEM_STACK, Util.make(stack.copy(), s -> s.setCount(input.count())));
+            for (var item : input.ingredient().items().toList()) {
+                slot.addIngredient(VanillaTypes.ITEM_STACK, Util.make(new ItemStack(item), s -> s.setCount(input.count())));
             }
         }
 

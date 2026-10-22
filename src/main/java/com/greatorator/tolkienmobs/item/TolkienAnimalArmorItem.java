@@ -1,11 +1,10 @@
 package com.greatorator.tolkienmobs.item;
 
-import net.minecraft.core.Holder;
 import net.minecraft.world.item.AnimalArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorMaterial;
 
 public class TolkienAnimalArmorItem extends AnimalArmorItem {
-    public TolkienAnimalArmorItem(Holder<ArmorMaterial> armorMaterial, BodyType bodyType, boolean hasOverlay, Properties properties) {
-        super(armorMaterial, bodyType, hasOverlay, properties);
+    public TolkienAnimalArmorItem(ArmorMaterial armorMaterial, BodyType bodyType, Properties properties) {
+        super(armorMaterial, bodyType, properties);
     }
 }

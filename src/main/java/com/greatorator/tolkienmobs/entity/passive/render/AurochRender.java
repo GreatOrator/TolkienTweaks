@@ -1,5 +1,9 @@
 package com.greatorator.tolkienmobs.entity.passive.render;
 
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import com.google.common.collect.Maps;
 import com.greatorator.tolkienmobs.entity.passive.AurochEntity;
 import com.greatorator.tolkienmobs.entity.passive.model.AurochModel;
@@ -65,11 +69,14 @@ public class AurochRender extends GeoEntityRenderer<AurochEntity> {
     }
 
     @Override
-    public void render(AurochEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        if(entity.isBaby()) {
-            poseStack.scale(0.5F, 0.5F, 0.5F);
+    public void preRender(PoseStack poseStack, AurochEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
+        if (!isReRender) {
+            if(animatable.isBaby()) {
+                poseStack.scale(0.5F, 0.5F, 0.5F);
+            }
         }
 
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
     }
 }

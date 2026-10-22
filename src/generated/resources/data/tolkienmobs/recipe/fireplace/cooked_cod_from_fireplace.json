@@ -3,7 +3,7 @@
   "ingredients": [
     {
       "count": 1,
-      "item": "minecraft:cod"
+      "ingredient": "minecraft:cod"
     }
   ],
   "output": [

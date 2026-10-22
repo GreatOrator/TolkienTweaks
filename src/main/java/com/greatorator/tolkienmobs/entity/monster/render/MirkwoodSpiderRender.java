@@ -64,9 +64,4 @@ public class MirkwoodSpiderRender extends GeoEntityRenderer<MirkwoodSpiderEntity
         return LOCATION_BY_VARIANT.get(entity.getVariant());
     }
 
-    @Override
-    public void render(MirkwoodSpiderEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
-    }
 }

@@ -32,7 +32,7 @@ public class TolkienFlyingAmbientEntity extends TolkienAmbientEntity {
         double distance = Math.sqrt(dx * dx + dz * dz);
         double scale = distance > FLIGHT_RADIUS ? FLIGHT_RADIUS / distance : 1.0;
         return new Vec3(origin.x + dx * scale,
-                Math.min(target.y, Math.min(origin.y + FLIGHT_HEIGHT, level().getMaxBuildHeight() - getBbHeight())),
+                Math.min(target.y, Math.min(origin.y + FLIGHT_HEIGHT, level().getMaxY() - getBbHeight())),
                 origin.z + dz * scale);
     }
 

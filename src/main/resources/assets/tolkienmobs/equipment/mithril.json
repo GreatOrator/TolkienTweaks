@@ -1,0 +1,7 @@
+{
+  "layers": {
+    "humanoid": [{"texture": "tolkienmobs:mithril"}],
+    "humanoid_leggings": [{"texture": "tolkienmobs:mithril"}],
+    "horse_body": [{"texture": "tolkienmobs:mithril"}]
+  }
+}

@@ -3,15 +3,9 @@
   "category": "equipment",
   "group": "ammolite",
   "key": {
-    "C": {
-      "item": "minecraft:chest"
-    },
-    "I": {
-      "item": "tolkienmobs:gem_ammolite"
-    },
-    "L": {
-      "item": "tolkienmobs:ingot_mithril"
-    }
+    "C": "minecraft:chest",
+    "I": "tolkienmobs:gem_ammolite",
+    "L": "tolkienmobs:ingot_mithril"
   },
   "pattern": [
     "LIL",

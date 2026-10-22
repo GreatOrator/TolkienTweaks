@@ -1,5 +1,9 @@
 package com.greatorator.tolkienmobs.entity.ambient.render;
 
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import com.google.common.collect.Maps;
 import com.greatorator.tolkienmobs.entity.ambient.SquirrelEntity;
 import com.greatorator.tolkienmobs.entity.ambient.model.SquirrelModel;
@@ -65,15 +69,18 @@ public class SquirrelRender extends GeoEntityRenderer<SquirrelEntity> {
     }
 
     @Override
-    public void render(SquirrelEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        if(entity.isBaby()) {
-            poseStack.scale(0.05f, 0.05f, 0.05f);
-        } else if(entity.getVariant().getId() == 16){
-            poseStack.scale(0.75F, 0.75F, 0.75F);
-        } else {
-            poseStack.scale(0.1f, 0.1f, 0.1f);
+    public void preRender(PoseStack poseStack, SquirrelEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
+        if (!isReRender) {
+            if(animatable.isBaby()) {
+                poseStack.scale(0.05f, 0.05f, 0.05f);
+            } else if(animatable.getVariant().getId() == 16){
+                poseStack.scale(0.75F, 0.75F, 0.75F);
+            } else {
+                poseStack.scale(0.1f, 0.1f, 0.1f);
+            }
         }
 
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
     }
 }

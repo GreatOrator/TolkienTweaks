@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "lebethron",
   "ingredients": [
-    {
-      "item": "tolkienmobs:planks_lebethron"
-    }
+    "tolkienmobs:planks_lebethron"
   ],
   "result": {
     "count": 1,

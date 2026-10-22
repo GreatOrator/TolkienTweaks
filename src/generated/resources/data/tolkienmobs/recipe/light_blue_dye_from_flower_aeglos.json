@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "light_blue_dye",
   "ingredients": [
-    {
-      "item": "tolkienmobs:flower_aeglos"
-    }
+    "tolkienmobs:flower_aeglos"
   ],
   "result": {
     "count": 2,

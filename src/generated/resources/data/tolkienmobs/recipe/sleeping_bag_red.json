@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "P": {
-      "item": "minecraft:red_carpet"
-    },
-    "S": {
-      "item": "minecraft:white_carpet"
-    },
-    "W": {
-      "item": "minecraft:leather"
-    }
+    "P": "minecraft:red_carpet",
+    "S": "minecraft:white_carpet",
+    "W": "minecraft:leather"
   },
   "pattern": [
     "SPP",

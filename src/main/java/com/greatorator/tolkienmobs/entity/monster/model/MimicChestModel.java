@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.GeoRenderer;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -15,12 +16,12 @@ public class MimicChestModel extends GeoModel<MimicChestEntity> {
 	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/monster/mimic.animation.json");
 
 	@Override
-	public ResourceLocation getModelResource(MimicChestEntity object) {
+	public ResourceLocation getModelResource(MimicChestEntity object, GeoRenderer<MimicChestEntity> renderer) {
 		return this.model;
 	}
 
 	@Override
-	public ResourceLocation getTextureResource(MimicChestEntity object) {
+	public ResourceLocation getTextureResource(MimicChestEntity object, GeoRenderer<MimicChestEntity> renderer) {
 		return MimicChestRender.LOCATION_BY_VARIANT.get(object.getVariant());
 	}
 

@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
   "key": {
-    "#": {
-      "item": "tolkienmobs:cobbled_angainor"
-    }
+    "#": "tolkienmobs:cobbled_angainor"
   },
   "pattern": [
     "##"

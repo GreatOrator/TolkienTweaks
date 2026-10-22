@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "black_dye",
   "ingredients": [
-    {
-      "item": "tolkienmobs:flower_brambles"
-    }
+    "tolkienmobs:flower_brambles"
   ],
   "result": {
     "count": 2,

@@ -1,5 +1,9 @@
 package com.greatorator.tolkienmobs.entity.monster.render;
 
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import com.google.common.collect.Maps;
 import com.greatorator.tolkienmobs.entity.monster.WargEntity;
 import com.greatorator.tolkienmobs.entity.monster.model.WargModel;
@@ -65,9 +69,11 @@ public class WargRender extends GeoEntityRenderer<WargEntity> {
     }
 
     @Override
-    public void render(WargEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        poseStack.scale(1.5F, 1.5F, 1.5F);
+    public void preRender(PoseStack poseStack, WargEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
+        if (!isReRender) {
+            poseStack.scale(1.5F, 1.5F, 1.5F);        }
 
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
     }
 }

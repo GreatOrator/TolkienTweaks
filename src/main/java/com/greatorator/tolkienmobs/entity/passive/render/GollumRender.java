@@ -21,9 +21,4 @@ public class GollumRender extends GeoEntityRenderer<GollumEntity> {
         return ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/gollum.png");
     }
 
-    @Override
-    public void render(GollumEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
-    }
 }

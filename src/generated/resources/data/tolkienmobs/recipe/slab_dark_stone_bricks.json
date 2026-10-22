@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "tolkienmobs:dark_stone_bricks"
-    }
+    "#": "tolkienmobs:dark_stone_bricks"
   },
   "pattern": [
     "###"

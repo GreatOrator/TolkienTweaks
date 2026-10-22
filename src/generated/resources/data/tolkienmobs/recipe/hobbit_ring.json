@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "A": {
-      "item": "minecraft:bone_block"
-    },
-    "G": {
-      "item": "tolkienmobs:gem_ammolite"
-    },
-    "R": {
-      "item": "tolkienmobs:trinket_ring"
-    }
+    "A": "minecraft:bone_block",
+    "G": "tolkienmobs:gem_ammolite",
+    "R": "tolkienmobs:trinket_ring"
   },
   "pattern": [
     "AGA",

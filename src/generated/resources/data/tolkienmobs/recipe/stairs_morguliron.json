@@ -3,9 +3,7 @@
   "category": "building",
   "group": "morguliron",
   "key": {
-    "#": {
-      "item": "tolkienmobs:block_morguliron"
-    }
+    "#": "tolkienmobs:block_morguliron"
   },
   "pattern": [
     "#  ",

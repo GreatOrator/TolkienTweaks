@@ -1,5 +1,7 @@
 package com.greatorator.tolkienmobs.entity.ambient;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+
 import com.greatorator.tolkienmobs.entity.TolkienAmbientEntity;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
@@ -57,7 +59,7 @@ public class GeckoEntity extends TolkienAmbientEntity {
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
         TolkienVariant variant = Util.getRandom(TolkienVariant.values(), this.random);
-        GeckoEntity baby = TolkienEntities.ENTITY_TTM_GECKO.get().create(serverLevel);
+        GeckoEntity baby = TolkienEntities.ENTITY_TTM_GECKO.get().create(serverLevel, EntitySpawnReason.BREEDING);
         baby.setVariant(variant);
 
         return baby;
@@ -98,7 +100,7 @@ public class GeckoEntity extends TolkienAmbientEntity {
 
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty,
-                                        MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+                                        EntitySpawnReason spawnType, @Nullable SpawnGroupData spawnGroupData) {
         TolkienVariant variant = Util.getRandom(TolkienVariant.values(), this.random);
         this.setVariant(variant);
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);

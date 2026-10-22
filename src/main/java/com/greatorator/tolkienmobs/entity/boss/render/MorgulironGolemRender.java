@@ -21,8 +21,4 @@ public class MorgulironGolemRender extends GeoEntityRenderer<MorgulironGolemEnti
         return ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/elementalgolem/elemental_golem_morgul.png");
     }
 
-    @Override
-    public void render(MorgulironGolemEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
-    }
 }

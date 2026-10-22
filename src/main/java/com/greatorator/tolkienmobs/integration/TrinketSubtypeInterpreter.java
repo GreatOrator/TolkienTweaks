@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 public class TrinketSubtypeInterpreter implements ISubtypeInterpreter<ItemStack> {
-	public String apply(ItemStack stack, UidContext context) {
+	private static String describe(ItemStack stack, UidContext context) {
 		TrinketComponent potionContents = stack.getOrDefault(TolkienDataComponents.POTION_CONTENTS, TrinketComponent.EMPTY);
 		Optional<Holder<Potion>> potionType = potionContents.potion();
 
@@ -29,12 +29,7 @@ public class TrinketSubtypeInterpreter implements ISubtypeInterpreter<ItemStack>
 
 	@Override
 	public @Nullable Object getSubtypeData(ItemStack ingredient, UidContext context) {
-		String data = apply(ingredient, context);
+		String data = describe(ingredient, context);
 		return data.isEmpty() ? null : data;
-	}
-
-	@Override
-	public String getLegacyStringSubtypeInfo(ItemStack ingredient, UidContext context) {
-		return apply(ingredient, context);
 	}
 }

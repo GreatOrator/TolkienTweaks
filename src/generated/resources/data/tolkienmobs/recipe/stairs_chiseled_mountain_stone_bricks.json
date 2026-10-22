@@ -3,9 +3,7 @@
   "category": "building",
   "group": "chiseled_mountain_stone_bricks",
   "key": {
-    "#": {
-      "item": "tolkienmobs:chiseled_mountain_stone_bricks"
-    }
+    "#": "tolkienmobs:chiseled_mountain_stone_bricks"
   },
   "pattern": [
     "#  ",

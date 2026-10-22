@@ -1,5 +1,8 @@
 package com.greatorator.tolkienmobs.entity.monster;
 
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntitySpawnReason;
+
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.greatorator.tolkienmobs.init.TolkienMobEffects;
@@ -72,9 +75,9 @@ public class MimicChestEntity extends TolkienMonsterEntity implements GeoEntity 
     private final static long coolDown = 15000L;
 
     @Override
-    public boolean doHurtTarget(@Nonnull Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel serverLevel, @Nonnull Entity entityIn) {
         long time = System.currentTimeMillis();
-        if (super.doHurtTarget(entityIn)) {
+        if (super.doHurtTarget(serverLevel, entityIn)) {
             if (entityIn instanceof Player) {
                 if (time > nextAbilityUse) {
                     nextAbilityUse = time + coolDown;
@@ -123,7 +126,7 @@ public class MimicChestEntity extends TolkienMonsterEntity implements GeoEntity 
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnType, @Nullable SpawnGroupData spawnGroupData) {
         this.setActive(false);
         this.setNoAi(true);
 

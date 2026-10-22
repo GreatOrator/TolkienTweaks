@@ -4,7 +4,6 @@ import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
 import net.minecraft.data.PackOutput;
 import net.minecraft.sounds.SoundEvent;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.SoundDefinition;
 import net.neoforged.neoforge.common.data.SoundDefinitionsProvider;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -15,8 +14,8 @@ import javax.annotation.Nonnull;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class TolkienSoundProvider extends SoundDefinitionsProvider {
-    protected TolkienSoundProvider(PackOutput output, ExistingFileHelper helper) {
-        super(output, MODID, helper);
+    protected TolkienSoundProvider(PackOutput output) {
+        super(output, MODID);
     }
 
     @Override

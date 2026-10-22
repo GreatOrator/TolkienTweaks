@@ -2,6 +2,8 @@ package com.greatorator.tolkienmobs.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.tags.TagKey;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
@@ -22,19 +24,18 @@ import java.util.List;
 import java.util.Random;
 
 public class TolkienShearsItem extends ShearsItem {
-    private final Tier tier;
     public boolean hasEffectOverride = false;
     private boolean hasLore = false;
 
-    public TolkienShearsItem(Tier tier, Properties properties) {
-        super(properties);
-        this.tier = tier;
-    }
-
-    /** Shears are not a tool the anvil knows a material for, so take the tier's own repair item. */
-    @Override
-    public boolean isValidRepairItem(ItemStack stack, ItemStack repairCandidate) {
-        return this.tier.getRepairIngredient().test(repairCandidate) || super.isValidRepairItem(stack, repairCandidate);
+    /**
+     * Shears take no material, so their repair tag and tool rules are attached here rather than
+     * in the item's static properties. Both need a registration lookup on the item and block
+     * registries, and that is only writable while item registration runs; building them in a
+     * static initializer would fail in datagen, where the built-in registries are frozen before
+     * mods are constructed.
+     */
+    public TolkienShearsItem(Properties properties, TagKey<Item> repairTag) {
+        super(properties.repairable(repairTag).component(DataComponents.TOOL, createToolProperties()));
     }
 
     @Override

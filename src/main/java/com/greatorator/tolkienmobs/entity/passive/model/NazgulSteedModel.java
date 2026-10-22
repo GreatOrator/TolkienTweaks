@@ -7,6 +7,7 @@ import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.model.data.EntityModelData;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
@@ -16,12 +17,12 @@ public class NazgulSteedModel extends GeoModel<NazgulSteedEntity> {
 	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/special/horse.animation.json");
 
 	@Override
-	public ResourceLocation getModelResource(NazgulSteedEntity object) {
+	public ResourceLocation getModelResource(NazgulSteedEntity object, GeoRenderer<NazgulSteedEntity> renderer) {
 		return this.model;
 	}
 
 	@Override
-	public ResourceLocation getTextureResource(NazgulSteedEntity object) {
+	public ResourceLocation getTextureResource(NazgulSteedEntity object, GeoRenderer<NazgulSteedEntity> renderer) {
 		return ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/horse/nazgulsteed.png");
 	}
 

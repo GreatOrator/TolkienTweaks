@@ -3,12 +3,8 @@
   "category": "redstone",
   "group": "fangornoak",
   "key": {
-    "#": {
-      "item": "minecraft:stick"
-    },
-    "W": {
-      "item": "tolkienmobs:planks_fangornoak"
-    }
+    "#": "minecraft:stick",
+    "W": "tolkienmobs:planks_fangornoak"
   },
   "pattern": [
     "#W#",

@@ -8,15 +8,16 @@ import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class BoulderRender extends EntityRenderer<BoulderEntity> {
-    private BoulderModel model;
+public class BoulderRender extends EntityRenderer<BoulderEntity, ThrownProjectileRenderState> {
+    private static final ResourceLocation TEXTURE_LOCATION = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/ammo_boulder.png");
+
+    private final BoulderModel model;
 
     public BoulderRender(EntityRendererProvider.Context context) {
         super(context);
@@ -24,28 +25,41 @@ public class BoulderRender extends EntityRenderer<BoulderEntity> {
     }
 
     @Override
-    public void render(BoulderEntity pEntity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        poseStack.pushPose();
-
-        if(!pEntity.isGrounded()) {
-            poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, pEntity.yRotO, pEntity.getYRot())));
-            poseStack.mulPose(Axis.XP.rotationDegrees(pEntity.getRenderingRotation() * 5f));
-            poseStack.translate(0, -1.0f, 0);
-        } else {
-            poseStack.mulPose(Axis.YP.rotationDegrees(pEntity.groundedOffset.y));
-            poseStack.mulPose(Axis.XP.rotationDegrees(pEntity.groundedOffset.x));
-            poseStack.translate(0, -1.0f, 0);
-        }
-
-        VertexConsumer vertexconsumer = ItemRenderer.getFoilBufferDirect(
-                buffer, this.model.renderType(this.getTextureLocation(pEntity)),false, false);
-        this.model.renderToBuffer(poseStack, vertexconsumer, packedLight, OverlayTexture.NO_OVERLAY);
-        poseStack.popPose();
-        super.render(pEntity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+    public ThrownProjectileRenderState createRenderState() {
+        return new ThrownProjectileRenderState();
     }
 
     @Override
-    public ResourceLocation getTextureLocation(BoulderEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/ammo_boulder.png");
+    public void extractRenderState(BoulderEntity entity, ThrownProjectileRenderState state, float partialTick) {
+        super.extractRenderState(entity, state, partialTick);
+        state.grounded = entity.isGrounded();
+        state.renderingRotation = entity.getRenderingRotation();
+        state.yRot = Mth.lerp(partialTick, entity.yRotO, entity.getYRot());
+        state.groundedPitch = entity.groundedOffset.x;
+        state.groundedYaw = entity.groundedOffset.y;
+    }
+
+    @Override
+    public void render(ThrownProjectileRenderState state, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+        poseStack.pushPose();
+
+        if (!state.grounded) {
+            poseStack.mulPose(Axis.YP.rotationDegrees(state.yRot));
+            poseStack.mulPose(Axis.XP.rotationDegrees(state.renderingRotation * 5f));
+            poseStack.translate(0, -1.0f, 0);
+        } else {
+            poseStack.mulPose(Axis.YP.rotationDegrees(state.groundedYaw));
+            poseStack.mulPose(Axis.XP.rotationDegrees(state.groundedPitch));
+            poseStack.translate(0, -1.0f, 0);
+        }
+
+        VertexConsumer vertexConsumer = buffer.getBuffer(this.model.renderType(TEXTURE_LOCATION));
+        this.model.renderToBuffer(poseStack, vertexConsumer, packedLight, OverlayTexture.NO_OVERLAY);
+        poseStack.popPose();
+        super.render(state, poseStack, buffer, packedLight);
+    }
+
+    public ResourceLocation getTextureLocation(ThrownProjectileRenderState state) {
+        return TEXTURE_LOCATION;
     }
 }

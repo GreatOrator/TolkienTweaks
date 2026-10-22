@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "pink_dye",
   "ingredients": [
-    {
-      "item": "tolkienmobs:flower_valley_lilly"
-    }
+    "tolkienmobs:flower_valley_lilly"
   ],
   "result": {
     "count": 2,

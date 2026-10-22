@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "I": {
-      "item": "tolkienmobs:gem_ammolite"
-    },
-    "S": {
-      "item": "minecraft:stick"
-    }
+    "I": "tolkienmobs:gem_ammolite",
+    "S": "minecraft:stick"
   },
   "pattern": [
     "III",

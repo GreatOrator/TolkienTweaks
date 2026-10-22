@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "tolkienmobs:planks_dwarven_maple"
-    }
+    "#": "tolkienmobs:planks_dwarven_maple"
   },
   "pattern": [
     "###"
