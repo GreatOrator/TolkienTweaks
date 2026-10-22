@@ -17,7 +17,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - The fell beast's wingbeat can be tuned in the mod config. Its volume and the shortest gap between two beats were fixed in code; they are now `fellbeastWingbeatVolume` (default 2.0) and `fellbeastWingbeatInterval` in ticks (default 15, and 20 ticks is one second), read on every beat, so the loudness and cadence can be adjusted by ear without a new build.
-- The dive wind's volume can be tuned in the mod config. It was fixed at 1.6 in code; it is now `fellbeastDiveWindVolume` (default 1.6), read while the wind plays, so unlike the wingbeat it can be changed without a new dive. The wind is heard on each client, so the setting is the listener's own rather than the server's.
+- The dive wind's volume can be tuned in the mod config. It was fixed at 1.6 in code; it is now `fellbeastDiveWindVolume` (default 1.6), read while the wind plays, so unlike the wingbeat it can be changed without a new dive. Its pitch is `fellbeastDiveWindPitch` (default 0.8) alongside it, so the wind can be made deeper or sharper by ear. The wind is heard on each client, so both are the listener's own settings rather than the server's.
 - A rider's dive is quiet. The wings beat for as long as a player flew the beast, even with its nose down; the beat now stops once the beast is dropping more than a block a second and steeper than `fellbeastDiveAngle` (default 45 degrees below horizontal), and comes back as soon as it levels out.
 
 ### Fixed
