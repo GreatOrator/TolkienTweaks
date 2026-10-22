@@ -105,14 +105,18 @@ public class RockGolemEntity extends TolkienMonsterEntity implements GeoEntity {
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
+            // The controller stops once its swing is done: a permanent CONTINUE kept the last frame of
+            // punch or rage applied, so the golem stood with its arm out through idle and walk.
             if (this.swinging && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
                 event.getController().setAnimation(RawAnimation.begin().then("punch", Animation.LoopType.PLAY_ONCE));
                 this.swinging =false;
+                return PlayState.CONTINUE;
             }else if (this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)){
                 event.getController().setAnimation(RawAnimation.begin().then("rage", Animation.LoopType.PLAY_ONCE));
                 this.ranged =false;
+                return PlayState.CONTINUE;
             }
-            return PlayState.CONTINUE;
+            return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Death", 1, (event) -> {
             if (this.isDeadOrDying()) {

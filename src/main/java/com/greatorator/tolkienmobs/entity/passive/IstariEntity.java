@@ -38,6 +38,7 @@ import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.Animation;
 import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
@@ -228,18 +229,22 @@ public class IstariEntity extends TolkienHeardEntity implements GeoEntity, Neutr
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Combat", 1, (event) -> {
+            // Each attack runs once and then hands the controller back, so it no longer continues
+            // forever on the last frame of a looping attack; the swing is cleared either way.
             if (event.getAnimatable().isAggressive() && this.swinging && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
                 event.getController().forceAnimationReset();
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("attack"));
+                event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
                 this.swinging =false;
+                return PlayState.CONTINUE;
             } else if (event.getAnimatable().isAggressive() && this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
                 setHidden(false);
                 event.getController().forceAnimationReset();
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("heal"));
+                event.getController().setAnimation(RawAnimation.begin().then("heal", Animation.LoopType.PLAY_ONCE));
                 this.ranged = false;
                 setHidden(true);
+                return PlayState.CONTINUE;
             }
-            return PlayState.CONTINUE;
+            return PlayState.STOP;
         }));
     }
 
