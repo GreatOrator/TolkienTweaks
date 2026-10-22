@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "tolkienmobs:item/leggings_mithril",
+    "layer1": "tolkienmobs:item/trim/leggings_trim_ammolite"
+  }
+}
