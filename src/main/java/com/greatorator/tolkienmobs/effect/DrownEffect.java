@@ -38,16 +38,14 @@ public class DrownEffect extends TolkienEffect {
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
+    public boolean applyEffectTick(ServerLevel level, LivingEntity livingEntity, int amplifier) {
         livingEntity.hurt(livingEntity.damageSources().drown(), 1F + amplifier);
 
-        if (livingEntity.level() instanceof ServerLevel level) {
-            level.sendParticles(ParticleTypes.BUBBLE,
-                    livingEntity.getX() + (level.getRandom().nextGaussian() / 5.0),
-                    livingEntity.getY() + (level.getRandom().nextGaussian() / 3.0),
-                    livingEntity.getZ() + (level.getRandom().nextGaussian() / 5.0),
-                    5, 0.5, 0.5, 0.5, 0.5F);
-        }
+        level.sendParticles(ParticleTypes.BUBBLE,
+                livingEntity.getX() + (level.getRandom().nextGaussian() / 5.0),
+                livingEntity.getY() + (level.getRandom().nextGaussian() / 3.0),
+                livingEntity.getZ() + (level.getRandom().nextGaussian() / 5.0),
+                5, 0.5, 0.5, 0.5, 0.5F);
         return true;
     }
 }

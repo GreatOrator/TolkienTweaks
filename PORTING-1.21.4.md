@@ -9,7 +9,7 @@ This file is the handoff: it records what is done, what is measured, and what to
 |---|---|
 | Target | Minecraft **1.21.4**, NeoForge **21.4.161** |
 | Compile errors at the start | **5,720** in 425 files |
-| Compile errors now | **110** distinct sites |
+| Compile errors now | **91** distinct sites |
 | Runnable | no — the tree does not compile yet |
 
 Dependency versions, all verified to exist and resolve:
@@ -423,6 +423,26 @@ recipe-book check), `ArmorItem#getEquipmentSlot(ItemStack)`, and
   it on `ClientPlayerNetworkEvent.LoggingOut`), and the JEI plugin registers whatever is there. JEI fills its own
   map from the same event and calls plugin recipe registration after it, so the category is populated on world join
   and after `/reload`. A vanilla server sends no recipes, so the category stays empty there.
+
+### 3g. Mob effects — DONE
+
+`effect/` compiles. The whole package moved onto one changed signature and five smaller renames:
+
+- `MobEffect#applyEffectTick` now takes the `ServerLevel` first and is only called from the server tick
+  (`MobEffectInstance#tick` guards the call with `instanceof ServerLevel`), so every `applyEffectTick(LivingEntity, int)`
+  override became `applyEffectTick(ServerLevel, LivingEntity, int)` and the `if (!level.isClientSide())` guards and
+  `if (level instanceof ServerLevel …)` wrappers inside them were deleted. The return value still matters: returning
+  `false` takes the effect off the mob, which is how the Eru and lightning effects stay instant.
+- `applyInstantenousEffect` takes the `ServerLevel` first as well; the sleep effect was the only override.
+- `ItemStack#isRepairable()` is gone, and `Item#isRepairable(ItemStack)` with it. A damageable item that can be
+  mended by combining two of itself answers `isCombineRepairable()` (NeoForge's name for the old
+  `canCombineRepair && isDamageable` test), which is what the blacksmith and corrosion effects now ask.
+- `EntityType#create(Level)` is `create(Level, EntitySpawnReason)` and can return null. The lightning effect passes
+  `TRIGGERED` — the reason vanilla uses when a trident calls a bolt down — and skips the spawn if it comes back null.
+- The feared player's input is a different shape now: `Input` moved to `net.minecraft.world.entity.player.Input`
+  and is an immutable record of seven key flags, while `MovementInputUpdateEvent#getInput()` returns a `ClientInput`
+  holding that record in `keyPresses` plus the `forwardImpulse`/`leftImpulse` the player actually moves by. The
+  terror effect replaces the record with `Input.EMPTY` and zeroes both impulses.
 
 ### 4. Datagen output
 

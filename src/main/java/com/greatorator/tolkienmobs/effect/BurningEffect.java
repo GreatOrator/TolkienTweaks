@@ -14,26 +14,22 @@ public class BurningEffect extends TolkienEffect {
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
-        if(!livingEntity.level().isClientSide()) {
-            if (livingEntity instanceof WitherSkeleton)
-                livingEntity.hurt(livingEntity.damageSources().magic(), 1.5f);
-            else
-                livingEntity.hurt(livingEntity.damageSources().onFire(), 1.5f);
-        }
+    public boolean applyEffectTick(ServerLevel level, LivingEntity livingEntity, int amplifier) {
+        if (livingEntity instanceof WitherSkeleton)
+            livingEntity.hurt(livingEntity.damageSources().magic(), 1.5f);
+        else
+            livingEntity.hurt(livingEntity.damageSources().onFire(), 1.5f);
 
-        if (livingEntity.level() instanceof ServerLevel level) {
-            level.sendParticles(ParticleTypes.FLAME,
-                    livingEntity.getX() + (level.getRandom().nextGaussian() / 5.0),
-                    livingEntity.getY() + (level.getRandom().nextGaussian() / 3.0),
-                    livingEntity.getZ() + (level.getRandom().nextGaussian() / 5.0),
-                    2, 0.0, 0.0, 0.0, 0.0F);
-            level.sendParticles(ParticleTypes.SMOKE,
-                    livingEntity.getX() + (level.getRandom().nextGaussian() / 5.0),
-                    livingEntity.getY() + (level.getRandom().nextGaussian() / 3.0),
-                    livingEntity.getZ() + (level.getRandom().nextGaussian() / 5.0),
-                    2, 0.0, 0.0, 0.0, 0.0F);
-        }
+        level.sendParticles(ParticleTypes.FLAME,
+                livingEntity.getX() + (level.getRandom().nextGaussian() / 5.0),
+                livingEntity.getY() + (level.getRandom().nextGaussian() / 3.0),
+                livingEntity.getZ() + (level.getRandom().nextGaussian() / 5.0),
+                2, 0.0, 0.0, 0.0, 0.0F);
+        level.sendParticles(ParticleTypes.SMOKE,
+                livingEntity.getX() + (level.getRandom().nextGaussian() / 5.0),
+                livingEntity.getY() + (level.getRandom().nextGaussian() / 3.0),
+                livingEntity.getZ() + (level.getRandom().nextGaussian() / 5.0),
+                2, 0.0, 0.0, 0.0, 0.0F);
         return true;
     }
 

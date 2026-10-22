@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.effect;
 
 import com.greatorator.tolkienmobs.init.TolkienMobEffects;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -25,7 +26,7 @@ public class SleepEffect extends TolkienEffect {
     }
 
     @Override
-    public void applyInstantenousEffect(@Nullable Entity source, @Nullable Entity indirectSource, LivingEntity livingEntity, int amplifier, double health) {
+    public void applyInstantenousEffect(ServerLevel level, @Nullable Entity source, @Nullable Entity indirectSource, LivingEntity livingEntity, int amplifier, double health) {
         AttributeInstance nightTime = livingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
 
         if (livingEntity instanceof Player && livingEntity.hasEffect(TolkienMobEffects.SLEEPNESIA) && nightTime !=null) {
@@ -34,7 +35,7 @@ public class SleepEffect extends TolkienEffect {
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
+    public boolean applyEffectTick(ServerLevel level, LivingEntity pLivingEntity, int pAmplifier) {
         AttributeInstance nightTime = pLivingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
 
         if (shouldSleep){

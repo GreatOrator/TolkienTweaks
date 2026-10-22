@@ -16,26 +16,24 @@ public class FearEffect extends TolkienEffect{
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity entity, int amplifier) {
+    public boolean applyEffectTick(ServerLevel serverLevel, LivingEntity entity, int amplifier) {
         entity.addEffect((new MobEffectInstance(MobEffects.WITHER, 40, amplifier, true, false, false, null)));
         entity.addEffect((new MobEffectInstance(MobEffects.BLINDNESS, 40, amplifier, true, false, false, null)));
         entity.addEffect((new MobEffectInstance(MobEffects.WEAKNESS, 40, amplifier, true, false, false, null)));
         entity.addEffect((new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, amplifier, true, false, false, null)));
 
-        if (entity.level() instanceof ServerLevel serverLevel) {
-            RandomSource random = entity.getRandom();
+        RandomSource random = entity.getRandom();
 
-            serverLevel.sendParticles(
-                    ParticleTypes.DRIPPING_WATER,
-                    entity.position().x,
-                    entity.position().y + (random.nextFloat() * entity.getEyeHeight()),
-                    entity.position().z,
-                    3,
-                    entity.getBbWidth() * 0.5f,
-                    entity.getBbHeight() * 0.5f,
-                    entity.getBbWidth() * 0.5f,
-                    0.8d);
-        }
+        serverLevel.sendParticles(
+                ParticleTypes.DRIPPING_WATER,
+                entity.position().x,
+                entity.position().y + (random.nextFloat() * entity.getEyeHeight()),
+                entity.position().z,
+                3,
+                entity.getBbWidth() * 0.5f,
+                entity.getBbHeight() * 0.5f,
+                entity.getBbWidth() * 0.5f,
+                0.8d);
         return true;
     }
 

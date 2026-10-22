@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.effect;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -19,7 +20,7 @@ public class BlacksmithEffect extends TolkienEffect {
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity entity, int amplifier) {
+    public boolean applyEffectTick(ServerLevel level, LivingEntity entity, int amplifier) {
         boolean hasAction = false;
 
         if (entity instanceof Player) {
@@ -32,7 +33,9 @@ public class BlacksmithEffect extends TolkienEffect {
     }
 
     public static boolean isRepairableDamagedItem(ItemStack stack) {
-        return stack.isDamageableItem() && stack.isRepairable() && stack.getDamageValue() > 0;
+        // isRepairable() is gone: an item that can be repaired by combining two of itself answers
+        // isCombineRepairable(), which already covers being damageable.
+        return stack.isCombineRepairable() && stack.getDamageValue() > 0;
     }
 
     private static void repairAllItems(Player player, int amplifier) {
