@@ -15,11 +15,35 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 public class FlyerMoveController extends MoveControl
 {
     private final DragonEntity dragon;
+    /** Whether the navigator has given this controller a target at least once. */
+    private boolean hasTarget;
 
     public FlyerMoveController(DragonEntity dragon)
     {
         super(dragon);
         this.dragon = dragon;
+    }
+
+    @Override
+    public void setWantedPosition(double x, double y, double z, double speed)
+    {
+        super.setWantedPosition(x, y, z, speed);
+        this.hasTarget = true;
+    }
+
+    /**
+     * The height the dragon should be flying at. The wing model reads it to decide whether to beat
+     * or glide, and it outlives the move itself: wantedY keeps the last waypoint's height while the
+     * path is between legs, so a beast that has reached a waypoint bobs there instead of falling.
+     */
+    public double getWantedY()
+    {
+        return wantedY;
+    }
+
+    public boolean hasTarget()
+    {
+        return hasTarget;
     }
 
     public void tick()
@@ -49,7 +73,9 @@ public class FlyerMoveController extends MoveControl
 
                 if (!dragon.getLookControl().isLookingAtTarget())
                     dragon.getLookControl().setLookAt(wantedX, wantedY, wantedZ, dragon.getHeadRotSpeed(), 75);
-                dragon.setYya(Math.abs(y) < 0.1 ? 0 : y > 0 ? speed : -speed);
+                // No yya here: the wings own the vertical. DragonEntity#flyOnWings climbs by beating
+                // toward this controller's wantedY and sinks between beats, so setting a climb here
+                // would only add a second, instantaneous one on top of it.
             }
             else
             {

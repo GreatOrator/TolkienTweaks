@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - The fell beast glides. While it was on the wing its animation file's `glide` clip was never asked for, so a beast soaring with nothing to chase beat its wings exactly like one in a fight; it now holds `glide` whenever it is flying without climbing, keeps `fly` for the climb, and still stoops with `dive` when it drops on prey.
+- The fell beast really flies. Its own AI was holding it at exactly the height its navigator asked for, so it could never sink or climb on its own; it now beats its wings to climb at about two blocks a second, coasts between beats, and sinks slowly while it glides, holding its path with a wingbeat roughly every second. When its path leads well below it, it commits to a fast stoop instead of easing down. A player riding the beast still steers its height with their pitch.
 
 ### Fixed
 
