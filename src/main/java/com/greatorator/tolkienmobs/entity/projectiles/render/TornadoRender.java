@@ -42,7 +42,7 @@ public class TornadoRender extends GeoEntityRenderer<TornadoEntity> {
 
     @Override
     public RenderType getRenderType(TornadoEntity livingEntity, ResourceLocation texture, MultiBufferSource bufferSource, float partialTick) {
-        ResourceLocation resourcelocation = this.getTextureLocation(animatable);
+        ResourceLocation resourcelocation = this.getTextureLocation(livingEntity);
 
         return RenderType.itemEntityTranslucentCull(resourcelocation);    }
 
