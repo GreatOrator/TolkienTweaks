@@ -22,6 +22,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+- The milestone's dimension cost is a setting of its own again. It and the minimum tick speed were both saved under `minimum_tick_speed`, so the two could not be set apart and the dimension-cost button on a milestone stepped by whatever the tick speed was; the option is `dimension_cost` now.
 - The fell beast roars, stoops and swings as it moves. Its animation file carries `roar`, `dive` and three `walk_attack` swings that no controller ever asked for, so the beast opened fights in silence and swung the same standing animation at a run; a bout of aggression now opens with `roar`, losing height on the wing plays `dive`, and a swing made on the move plays one of the `walk_attack` clips.
 - The elemental golem's tornado, the web trap and the thrown cobweb are drawn again. None of the three had a client renderer registered, so the tornado and the cobweb ball were invisible and a web that hit the ground left nothing behind; each now registers its GeckoLib renderer, the cobweb draws from the model and texture that were already in the jar, and its idle animation is the one the animation file actually contains.
 - The mallorn hanging wall sign is listed with the hanging signs. Its registration named the plain mallorn wall sign where the hanging wall sign was meant, so the game's hanging sign block entity claimed a block that is not one and never listed the one that is; the mod's own sign block entity already covered every hanging sign, so a placed sign was never affected.
