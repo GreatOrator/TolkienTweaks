@@ -52,7 +52,7 @@ public class TrinketRandomlyFunction extends LootItemConditionalFunction {
     }
 
     private static Optional<Holder<Potion>> pickPotion(RandomSource random) {
-        List<Holder.Reference<Potion>> potions = BuiltInRegistries.POTION.holders()
+        List<Holder.Reference<Potion>> potions = BuiltInRegistries.POTION.listElements()
                 .filter(potion -> isBenevolent(potion.value()))
                 .toList();
         return potions.isEmpty() ? Optional.empty() : Optional.of(Util.getRandom(potions, random));
