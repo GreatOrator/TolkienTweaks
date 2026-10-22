@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "lebethron",
   "key": {
-    "#": {
-      "item": "tolkienmobs:planks_lebethron"
-    }
+    "#": "tolkienmobs:planks_lebethron"
   },
   "pattern": [
     "##",

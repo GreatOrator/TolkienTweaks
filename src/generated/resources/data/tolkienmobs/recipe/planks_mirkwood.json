@@ -3,9 +3,7 @@
   "category": "building",
   "group": "planks",
   "ingredients": [
-    {
-      "item": "tolkienmobs:log_mirkwood"
-    }
+    "tolkienmobs:log_mirkwood"
   ],
   "result": {
     "count": 4,

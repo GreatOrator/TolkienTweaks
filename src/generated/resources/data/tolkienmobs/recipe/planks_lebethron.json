@@ -3,9 +3,7 @@
   "category": "building",
   "group": "planks",
   "ingredients": [
-    {
-      "item": "tolkienmobs:log_lebethron"
-    }
+    "tolkienmobs:log_lebethron"
   ],
   "result": {
     "count": 4,

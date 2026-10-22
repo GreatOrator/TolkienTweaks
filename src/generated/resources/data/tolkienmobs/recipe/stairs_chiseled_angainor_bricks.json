@@ -3,9 +3,7 @@
   "category": "building",
   "group": "chiseled_angainor_bricks",
   "key": {
-    "#": {
-      "item": "tolkienmobs:chiseled_angainor_bricks"
-    }
+    "#": "tolkienmobs:chiseled_angainor_bricks"
   },
   "pattern": [
     "#  ",

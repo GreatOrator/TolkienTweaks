@@ -3,15 +3,9 @@
   "category": "misc",
   "group": "sign",
   "key": {
-    "#": {
-      "item": "tolkienmobs:planks_mallorn"
-    },
-    "M": {
-      "item": "tolkienmobs:ingot_mithril"
-    },
-    "X": {
-      "item": "minecraft:stick"
-    }
+    "#": "tolkienmobs:planks_mallorn",
+    "M": "tolkienmobs:ingot_mithril",
+    "X": "minecraft:stick"
   },
   "pattern": [
     "#M#",

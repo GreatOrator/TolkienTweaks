@@ -3,9 +3,7 @@
   "category": "building",
   "group": "planks",
   "ingredients": [
-    {
-      "item": "tolkienmobs:log_fangornoak"
-    }
+    "tolkienmobs:log_fangornoak"
   ],
   "result": {
     "count": 4,

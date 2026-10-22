@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "tolkienmobs:planks_culumalda"
-    },
-    "M": {
-      "item": "tolkienmobs:slab_culumalda"
-    }
+    "A": "tolkienmobs:planks_culumalda",
+    "M": "tolkienmobs:slab_culumalda"
   },
   "pattern": [
     "AMA",

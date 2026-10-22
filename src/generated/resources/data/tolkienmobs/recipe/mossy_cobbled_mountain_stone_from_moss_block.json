@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": {
-      "item": "tolkienmobs:cobbled_mountain_stone"
-    },
-    "V": {
-      "item": "minecraft:moss_block"
-    }
+    "I": "tolkienmobs:cobbled_mountain_stone",
+    "V": "minecraft:moss_block"
   },
   "pattern": [
     "IV "

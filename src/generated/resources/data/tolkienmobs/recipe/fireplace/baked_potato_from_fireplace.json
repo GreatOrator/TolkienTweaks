@@ -3,9 +3,7 @@
   "ingredients": [
     {
       "count": 1,
-      "ingredient": {
-        "item": "minecraft:potato"
-      }
+      "ingredient": "minecraft:potato"
     }
   ],
   "output": [

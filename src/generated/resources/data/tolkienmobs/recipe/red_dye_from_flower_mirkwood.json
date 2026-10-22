@@ -3,9 +3,7 @@
   "category": "misc",
   "group": "red_dye",
   "ingredients": [
-    {
-      "item": "tolkienmobs:flower_mirkwood"
-    }
+    "tolkienmobs:flower_mirkwood"
   ],
   "result": {
     "count": 2,

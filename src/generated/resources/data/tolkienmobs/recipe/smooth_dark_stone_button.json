@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "smooth_dark_stone",
   "ingredients": [
-    {
-      "item": "tolkienmobs:smooth_dark_stone"
-    }
+    "tolkienmobs:smooth_dark_stone"
   ],
   "result": {
     "count": 1,

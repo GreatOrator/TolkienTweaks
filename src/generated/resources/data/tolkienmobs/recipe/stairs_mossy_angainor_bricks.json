@@ -3,9 +3,7 @@
   "category": "building",
   "group": "mossy_angainor_bricks",
   "key": {
-    "#": {
-      "item": "tolkienmobs:mossy_angainor_bricks"
-    }
+    "#": "tolkienmobs:mossy_angainor_bricks"
   },
   "pattern": [
     "#  ",

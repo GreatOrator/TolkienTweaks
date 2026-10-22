@@ -3,9 +3,7 @@
   "category": "blocks",
   "cookingtime": 200,
   "experience": 0.25,
-  "ingredient": {
-    "item": "tolkienmobs:mountain_stone"
-  },
+  "ingredient": "tolkienmobs:mountain_stone",
   "result": {
     "count": 1,
     "id": "tolkienmobs:smooth_mountain_stone"

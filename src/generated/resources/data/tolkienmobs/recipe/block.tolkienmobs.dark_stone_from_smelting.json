@@ -3,9 +3,7 @@
   "category": "blocks",
   "cookingtime": 200,
   "experience": 0.25,
-  "ingredient": {
-    "item": "tolkienmobs:cobbled_dark_stone"
-  },
+  "ingredient": "tolkienmobs:cobbled_dark_stone",
   "result": {
     "count": 1,
     "id": "tolkienmobs:dark_stone"

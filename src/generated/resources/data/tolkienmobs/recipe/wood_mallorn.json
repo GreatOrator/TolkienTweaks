@@ -3,9 +3,7 @@
   "category": "building",
   "group": "bark",
   "key": {
-    "#": {
-      "item": "tolkienmobs:log_mallorn"
-    }
+    "#": "tolkienmobs:log_mallorn"
   },
   "pattern": [
     "##",

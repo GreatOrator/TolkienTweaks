@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": {
-      "item": "tolkienmobs:cobbled_elven_marble"
-    },
-    "V": {
-      "item": "minecraft:vine"
-    }
+    "I": "tolkienmobs:cobbled_elven_marble",
+    "V": "minecraft:vine"
   },
   "pattern": [
     "IV "

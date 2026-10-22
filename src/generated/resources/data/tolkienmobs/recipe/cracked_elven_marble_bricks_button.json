@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "cracked_elven_marble_bricks",
   "ingredients": [
-    {
-      "item": "tolkienmobs:cracked_elven_marble_bricks"
-    }
+    "tolkienmobs:cracked_elven_marble_bricks"
   ],
   "result": {
     "count": 1,

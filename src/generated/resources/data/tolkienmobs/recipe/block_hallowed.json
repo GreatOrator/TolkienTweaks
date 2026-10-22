@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "A": {
-      "item": "minecraft:grass_block"
-    },
-    "M": {
-      "item": "tolkienmobs:gem_ammolite"
-    }
+    "A": "minecraft:grass_block",
+    "M": "tolkienmobs:gem_ammolite"
   },
   "pattern": [
     "AAA",

@@ -1,16 +1,22 @@
 {
-  "carvers": {},
+  "carvers": [],
   "downfall": 0.8,
   "effects": {
     "fog_color": 5988193,
     "foliage_color": 738353,
     "grass_color": 738353,
-    "music": {
-      "max_delay": 24000,
-      "min_delay": 12000,
-      "replace_current_music": false,
-      "sound": "tolkienmobs:music_disc.tolkienmobs.thelightoflothlorien"
-    },
+    "music": [
+      {
+        "data": {
+          "max_delay": 24000,
+          "min_delay": 12000,
+          "replace_current_music": false,
+          "sound": "tolkienmobs:music_disc.tolkienmobs.thelightoflothlorien"
+        },
+        "weight": 1
+      }
+    ],
+    "music_volume": 1.0,
     "particle": {
       "options": {
         "type": "tolkienmobs:mallorn_leaves"

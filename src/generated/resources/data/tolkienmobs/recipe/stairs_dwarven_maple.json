@@ -3,9 +3,7 @@
   "category": "building",
   "group": "dwarven_maple",
   "key": {
-    "#": {
-      "item": "tolkienmobs:planks_dwarven_maple"
-    }
+    "#": "tolkienmobs:planks_dwarven_maple"
   },
   "pattern": [
     "#  ",

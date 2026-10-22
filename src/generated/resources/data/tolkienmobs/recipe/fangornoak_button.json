@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "fangornoak",
   "ingredients": [
-    {
-      "item": "tolkienmobs:planks_fangornoak"
-    }
+    "tolkienmobs:planks_fangornoak"
   ],
   "result": {
     "count": 1,

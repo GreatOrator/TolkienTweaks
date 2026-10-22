@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "P": {
-      "item": "tolkienmobs:planks_mallorn"
-    },
-    "W": {
-      "item": "minecraft:stick"
-    }
+    "P": "tolkienmobs:planks_mallorn",
+    "W": "minecraft:stick"
   },
   "pattern": [
     "P",

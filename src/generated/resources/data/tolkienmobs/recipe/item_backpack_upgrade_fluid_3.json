@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "tolkienmobs:item_backpack_upgrade_fluid_2"
-    },
-    "M": {
-      "item": "minecraft:gold_ingot"
-    }
+    "A": "tolkienmobs:item_backpack_upgrade_fluid_2",
+    "M": "minecraft:gold_ingot"
   },
   "pattern": [
     "AAA",

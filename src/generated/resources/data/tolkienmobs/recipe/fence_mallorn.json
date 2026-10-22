@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "mallorn",
   "key": {
-    "#": {
-      "item": "minecraft:stick"
-    },
-    "W": {
-      "item": "tolkienmobs:planks_mallorn"
-    }
+    "#": "minecraft:stick",
+    "W": "tolkienmobs:planks_mallorn"
   },
   "pattern": [
     "W#W",

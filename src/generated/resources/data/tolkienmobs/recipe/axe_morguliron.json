@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "I": {
-      "item": "tolkienmobs:ingot_morguliron"
-    },
-    "S": {
-      "item": "minecraft:stick"
-    }
+    "I": "tolkienmobs:ingot_morguliron",
+    "S": "minecraft:stick"
   },
   "pattern": [
     "II",

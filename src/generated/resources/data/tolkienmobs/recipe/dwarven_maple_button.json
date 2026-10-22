@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "dwarven_maple",
   "ingredients": [
-    {
-      "item": "tolkienmobs:planks_dwarven_maple"
-    }
+    "tolkienmobs:planks_dwarven_maple"
   ],
   "result": {
     "count": 1,

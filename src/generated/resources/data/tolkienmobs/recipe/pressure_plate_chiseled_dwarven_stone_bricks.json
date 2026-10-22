@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
   "key": {
-    "#": {
-      "item": "tolkienmobs:chiseled_dwarven_stone_bricks"
-    }
+    "#": "tolkienmobs:chiseled_dwarven_stone_bricks"
   },
   "pattern": [
     "##"

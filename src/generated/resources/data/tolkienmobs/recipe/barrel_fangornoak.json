@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "tolkienmobs:planks_fangornoak"
-    },
-    "M": {
-      "item": "tolkienmobs:slab_fangornoak"
-    }
+    "A": "tolkienmobs:planks_fangornoak",
+    "M": "tolkienmobs:slab_fangornoak"
   },
   "pattern": [
     "AMA",

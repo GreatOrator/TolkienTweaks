@@ -3,9 +3,7 @@
   "category": "building",
   "group": "smooth_dark_stone",
   "key": {
-    "#": {
-      "item": "tolkienmobs:smooth_dark_stone"
-    }
+    "#": "tolkienmobs:smooth_dark_stone"
   },
   "pattern": [
     "#  ",

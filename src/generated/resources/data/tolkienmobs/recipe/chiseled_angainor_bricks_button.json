@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "chiseled_angainor_bricks",
   "ingredients": [
-    {
-      "item": "tolkienmobs:chiseled_angainor_bricks"
-    }
+    "tolkienmobs:chiseled_angainor_bricks"
   ],
   "result": {
     "count": 1,

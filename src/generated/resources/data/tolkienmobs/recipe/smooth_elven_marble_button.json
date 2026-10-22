@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "smooth_elven_marble",
   "ingredients": [
-    {
-      "item": "tolkienmobs:smooth_elven_marble"
-    }
+    "tolkienmobs:smooth_elven_marble"
   ],
   "result": {
     "count": 1,

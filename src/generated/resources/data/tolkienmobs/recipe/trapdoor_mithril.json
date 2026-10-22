@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "mithril",
   "key": {
-    "#": {
-      "item": "tolkienmobs:block_mithril"
-    }
+    "#": "tolkienmobs:block_mithril"
   },
   "pattern": [
     "###",

@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
   "key": {
-    "#": {
-      "item": "tolkienmobs:cobbled_dark_stone"
-    }
+    "#": "tolkienmobs:cobbled_dark_stone"
   },
   "pattern": [
     "##"

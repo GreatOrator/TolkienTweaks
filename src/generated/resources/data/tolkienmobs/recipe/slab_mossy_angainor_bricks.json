@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "tolkienmobs:mossy_angainor_bricks"
-    }
+    "#": "tolkienmobs:mossy_angainor_bricks"
   },
   "pattern": [
     "###"
