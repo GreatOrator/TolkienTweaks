@@ -1,6 +1,9 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "tolkienmobs:item/arda_staff"
+    "type": "minecraft:special",
+    "base": "tolkienmobs:item/arda_staff",
+    "model": {
+      "type": "geckolib:geckolib"
+    }
   }
 }

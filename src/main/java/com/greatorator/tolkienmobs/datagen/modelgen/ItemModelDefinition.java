@@ -14,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
  */
 public final class ItemModelDefinition {
     private static final String MODEL = "minecraft:model";
+    private static final String SPECIAL = "minecraft:special";
     private static final String RANGE_DISPATCH = "minecraft:range_dispatch";
     private static final String CONDITION = "minecraft:condition";
     private static final String CONSTANT_TINT = "minecraft:constant";
@@ -36,6 +37,19 @@ public final class ItemModelDefinition {
             array.add(tint);
         }
         node.add("tints", array);
+        return node;
+    }
+
+    /**
+     * A model drawn by a registered special renderer instead of by quads, which is how 1.21.4
+     * renders a GeckoLib item now that {@code builtin/entity} is gone. {@code base} is still an
+     * ordinary model: it supplies the display transforms and the particle sprite, so it needs no
+     * elements of its own.
+     */
+    public static JsonObject special(ResourceLocation base, ResourceLocation renderer) {
+        JsonObject node = typed(SPECIAL);
+        node.addProperty("base", base.toString());
+        node.add("model", typed(renderer.toString()));
         return node;
     }
 
