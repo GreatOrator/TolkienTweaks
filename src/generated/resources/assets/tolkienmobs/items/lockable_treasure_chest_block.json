@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "tolkienmobs:item/lockable_treasure_chest_block"
+  }
+}
