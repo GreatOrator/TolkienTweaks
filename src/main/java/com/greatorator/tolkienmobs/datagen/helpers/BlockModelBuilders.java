@@ -267,29 +267,21 @@ public abstract class BlockModelBuilders extends BlockModelHelper {
 	}
 
 	public void fluid() {
-		String mithrilName = "mithril";
-		String nameMithril = mithrilName.substring(mithrilName.lastIndexOf('.') + 1);
+		fluidBlock(TolkienFluids.MITHRIL_BLOCK.get(), "mithril");
+		fluidBlock(TolkienFluids.MORGULIRON_BLOCK.get(), "morguliron");
+	}
 
-		ModelFile mithrilFile = models()
-				.withExistingParent(nameMithril, modLoc("block/mithril"));
-		BlockModelBuilder mithrilFluid = models()
-				.withExistingParent(nameMithril, modLoc("block/mithril"))
-				.texture("particle", modLoc("block/mithril_still"));
-		getVariantBuilder(TolkienFluids.MITHRIL_BLOCK.get())
-				.forAllStates(state -> ConfiguredModel.builder().modelFile(mithrilFile).build());
-
-		String morgulironName = "morguliron";
-		String nameMorguliron = morgulironName.substring(morgulironName.lastIndexOf('.') + 1);
-
-		ModelFile morgulironFile = models()
-				.withExistingParent(nameMorguliron, modLoc("block/morguliron"));
-		BlockModelBuilder morgulironFluid = models()
-				.withExistingParent(nameMorguliron, modLoc("block/morguliron"))
-				.texture("particle", modLoc("block/morguliron_still"));
-
-		getVariantBuilder(TolkienFluids.MORGULIRON_BLOCK.get())
-				.forAllStates(state -> ConfiguredModel.builder().modelFile(morgulironFile).build());
-
+	/**
+	 * A fluid block is drawn by the game's fluid renderer rather than by its model, so the model
+	 * holds nothing but the break particle, the way vanilla's water and lava do. Both of these
+	 * used to name themselves as their own parent, which the model loader reports as a loading
+	 * loop and then drops.
+	 */
+	private void fluidBlock(Block block, String name) {
+		ModelFile model = models().getBuilder(name)
+				.texture("particle", modLoc("block/" + name + "_still"));
+		getVariantBuilder(block)
+				.forAllStates(state -> ConfiguredModel.builder().modelFile(model).build());
 	}
 
 	protected void leafpileBuilder(Block block, String leafPile) {
