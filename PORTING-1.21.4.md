@@ -9,7 +9,7 @@ This file is the handoff: it records what is done, what is measured, and what to
 |---|---|
 | Target | Minecraft **1.21.4**, NeoForge **21.4.161** |
 | Compile errors at the start | **5,720** in 425 files |
-| Compile errors now | **112** distinct sites |
+| Compile errors now | **110** distinct sites |
 | Runnable | no — the tree does not compile yet |
 
 Dependency versions, all verified to exist and resolve:
@@ -415,9 +415,14 @@ recipe-book check), `ArmorItem#getEquipmentSlot(ItemStack)`, and
   until the rest of the tree compiles; regenerating them later should reproduce the same files.
 - `RecipeBuilder#save` takes a `ResourceKey<Recipe<?>>`, and the unlock advancement is keyed off `recipeKey.location()`.
 
-Still open in this area: `integration/TolkienJEIPlugin` reads `level.getRecipeManager()`, which the client level no
-longer has — 1.21.4 syncs recipe *displays* to the client, not recipes, so that plugin needs its own source of the
-fireplace recipes.
+- `integration/TolkienJEIPlugin` used to read `level.getRecipeManager()`, which the client level no longer has:
+  1.21.4 sends a client the recipe *displays* the player has unlocked, not the recipes themselves. NeoForge fills
+  that gap: the server sends whole recipe types for whoever asks in `OnDatapackSyncEvent#sendRecipes`, and the
+  client gets them in `RecipesReceivedEvent#getRecipeMap()`. `TolkienServerEvents` asks for the fireplace type on
+  every datapack sync, `TolkienClientEvents` stores the arriving `RecipeMap` in `TolkienSyncedRecipes` (and drops
+  it on `ClientPlayerNetworkEvent.LoggingOut`), and the JEI plugin registers whatever is there. JEI fills its own
+  map from the same event and calls plugin recipe registration after it, so the category is populated on world join
+  and after `/reload`. A vanilla server sends no recipes, so the category stays empty there.
 
 ### 4. Datagen output
 

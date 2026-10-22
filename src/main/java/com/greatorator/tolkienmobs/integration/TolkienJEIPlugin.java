@@ -3,21 +3,16 @@ package com.greatorator.tolkienmobs.integration;
 import com.greatorator.tolkienmobs.containers.screens.FireplaceScreen;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienItems;
-import com.greatorator.tolkienmobs.init.TolkienRecipesTypes;
 import com.greatorator.tolkienmobs.recipe.FireplaceRecipe;
 import com.greatorator.tolkienmobs.recipe.FireplaceRecipeCategory;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.*;
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Objects;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -43,14 +38,9 @@ public class TolkienJEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipes(@NotNull IRecipeRegistration registration) {
-        RecipeManager manager = Objects.requireNonNull(Minecraft.getInstance().level).getRecipeManager();
-
-//        var recipes = manager.getAllRecipesFor(TolkienRecipesTypes.TRINKET_TABLE_TYPE.get()).stream().map(RecipeHolder::value).toList();
-
-        List<FireplaceRecipe> fireplaceRecipes = manager
-                .getAllRecipesFor(TolkienRecipesTypes.FIREPLACE_TYPE.get()).stream().map(RecipeHolder::value).toList();
-
-//        registration.addRecipes(new RecipeType<>(TrinketRecipeCategory.UID, TrinketRecipe.class), recipes);
+        // Recipe contents only exist on the server in 1.21.4, so the mod asks for the fireplace type to be
+        // sent on datapack sync and reads the copies that arrived here (see TolkienSyncedRecipes).
+        List<FireplaceRecipe> fireplaceRecipes = TolkienSyncedRecipes.fireplace();
 
         registration.addRecipes(FireplaceRecipeCategory.FIREPLACE_RECIPE_TYPE, fireplaceRecipes);
     }
