@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Fixed
+
+- The elemental golem's tornado, the web trap and the thrown cobweb are drawn again. None of the three had a client renderer registered, so the tornado and the cobweb ball were invisible and a web that hit the ground left nothing behind; each now registers its GeckoLib renderer, the cobweb draws from the model and texture that were already in the jar, and its idle animation is the one the animation file actually contains.
+- The mallorn hanging wall sign is listed with the hanging signs. Its registration named the plain mallorn wall sign where the hanging wall sign was meant, so the game's hanging sign block entity claimed a block that is not one and never listed the one that is; the mod's own sign block entity already covered every hanging sign, so a placed sign was never affected.
+- The tornado's funnel animates while it is on the field. Its animation clock was pinned to zero, so the rings never turned and the pillar stayed hidden below the spawn point; the entity reports its own age now, so the funnel rises and its rings spin through the strike.
+- The thrown cobweb breathes as it flies. Its animation controller stopped itself right after asking for the idle animation, which makes GeckoLib drop the animation and draw the web on its rest pose; the controller keeps running now, so the web pulses the way its file describes.
+
 ## [4.3.81 - Final] - 2026-10-21
 
 ### Added

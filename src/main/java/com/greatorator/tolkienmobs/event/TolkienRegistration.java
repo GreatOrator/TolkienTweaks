@@ -80,7 +80,7 @@ public class TolkienRegistration {
                 TolkienBlocks.DWARVEN_MAPLE_SIGN.get(), TolkienBlocks.DWARVEN_MAPLE_WALL_SIGN.get());
 
         event.modify(BlockEntityType.HANGING_SIGN,
-                TolkienBlocks.MALLORN_HANGING_SIGN.get(), TolkienBlocks.MALLORN_WALL_SIGN.get(),
+                TolkienBlocks.MALLORN_HANGING_SIGN.get(), TolkienBlocks.MALLORN_HANGING_WALL_SIGN.get(),
                 TolkienBlocks.MIRKWOOD_HANGING_SIGN.get(), TolkienBlocks.MIRKWOOD_HANGING_WALL_SIGN.get(),
                 TolkienBlocks.CULUMALDA_HANGING_SIGN.get(), TolkienBlocks.CULUMALDA_HANGING_WALL_SIGN.get(),
                 TolkienBlocks.LEBETHRON_HANGING_SIGN.get(), TolkienBlocks.LEBETHRON_HANGING_WALL_SIGN.get(),

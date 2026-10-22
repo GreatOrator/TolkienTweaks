@@ -11,8 +11,11 @@ import com.greatorator.tolkienmobs.entity.monster.render.*;
 import com.greatorator.tolkienmobs.entity.npc.render.*;
 import com.greatorator.tolkienmobs.entity.passive.render.*;
 import com.greatorator.tolkienmobs.entity.projectiles.render.BoulderRender;
+import com.greatorator.tolkienmobs.entity.projectiles.render.CobwebRender;
 import com.greatorator.tolkienmobs.entity.projectiles.render.FellBeastFireballRender;
+import com.greatorator.tolkienmobs.entity.projectiles.render.SimpleTrapRender;
 import com.greatorator.tolkienmobs.entity.projectiles.render.TolkienArrowRenderer;
+import com.greatorator.tolkienmobs.entity.projectiles.render.TornadoRender;
 import com.greatorator.tolkienmobs.event.TolkienRegistration;
 import com.greatorator.tolkienmobs.event.client.TolkienClientEvents;
 import com.greatorator.tolkienmobs.fluid.TolkienFluidType;
@@ -295,6 +298,9 @@ public class TolkienMobsMain {
             EntityRenderers.register(TolkienEntities.AMMO_FELLBEAST_FIREBALL.get(), FellBeastFireballRender::new);
             EntityRenderers.register(TolkienEntities.AMMO_ARROW_GALADHRIM.get(), (context) -> new TolkienArrowRenderer(context, "ammo_galadhrim_arrow"));
             EntityRenderers.register(TolkienEntities.AMMO_ARROW_UTUMNO.get(), (context) -> new TolkienArrowRenderer(context, "ammo_utumno_arrow"));
+            EntityRenderers.register(TolkienEntities.AMMO_COBWEB.get(), CobwebRender::new);
+            EntityRenderers.register(TolkienEntities.AMMO_TORNADO.get(), TornadoRender::new);
+            EntityRenderers.register(TolkienEntities.TRAP_SIMPLE.get(), SimpleTrapRender::new);
 
                 // Boats
             EntityRenderers.register(TolkienEntities.MALLORN_BOAT.get(), (context) -> new MallornBoatRenderer(context, false));
