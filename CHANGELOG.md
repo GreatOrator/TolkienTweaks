@@ -10,6 +10,10 @@ All notable changes to this project will be documented in this file.
 - The fell beast really flies. Its own AI was holding it at exactly the height its navigator asked for, so it could never sink or climb on its own; it now beats its wings to climb at about two blocks a second, coasts between beats, and sinks slowly while it glides, holding its path with a wingbeat roughly every second. When its path leads well below it, it commits to a fast stoop instead of easing down. A player riding the beast still steers its height with their pitch.
 - The fell beast's wingbeats are heard. Its flap sound was only ever played by a wingbeat routine nothing called, so a beast flying under its own AI moved in silence; each downstroke of its flight now sounds, quieter than the one that lifts a rider and at most about once a second, so a long climb does not turn into a siren.
 
+### Changed
+
+- The fell beast's wingbeat can be tuned in the mod config. Its volume and the shortest gap between two beats were fixed in code; they are now `fellbeastWingbeatVolume` (default 2.0) and `fellbeastWingbeatInterval` in ticks (default 15, and 20 ticks is one second), read on every beat, so the loudness and cadence can be adjusted by ear without a new build.
+
 ### Fixed
 
 - The fell beast roars, stoops and swings as it moves. Its animation file carries `roar`, `dive` and three `walk_attack` swings that no controller ever asked for, so the beast opened fights in silence and swung the same standing animation at a run; a bout of aggression now opens with `roar`, losing height on the wing plays `dive`, and a swing made on the move plays one of the `walk_attack` clips.
