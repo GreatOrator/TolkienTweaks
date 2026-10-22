@@ -24,6 +24,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.client.renderer.RenderType;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
@@ -281,14 +282,14 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
         RenderSystem.setShaderTexture(0, GUI);
         int relX = (this.width - this.imageWidth) / 2;
         int relY = (this.height - this.imageHeight) / 2;
-        guiGraphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(RenderType::guiTextured, GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
         if (TolkienMobsConfig.PAYMENT_TYPE.get()) {
             if (getMinecraft().player.isCreative()) {
-                guiGraphics.renderFakeItem(BuiltInRegistries.ITEM.get(ResourceLocation.parse(TolkienMobsConfig.PAYMENT_ITEM.get())).getDefaultInstance(), relX + 74, relY + 48);
+                guiGraphics.renderFakeItem(BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(TolkienMobsConfig.PAYMENT_ITEM.get())).getDefaultInstance(), relX + 74, relY + 48);
             }
         } else {
             if (getMinecraft().player.isCreative()) {
-                guiGraphics.renderFakeItem(BuiltInRegistries.ITEM.get(ResourceLocation.parse("tolkienmobs:experience_orb")).getDefaultInstance(), relX + 74, relY + 48);
+                guiGraphics.renderFakeItem(BuiltInRegistries.ITEM.getValue(ResourceLocation.parse("tolkienmobs:experience_orb")).getDefaultInstance(), relX + 74, relY + 48);
             }
         }
 

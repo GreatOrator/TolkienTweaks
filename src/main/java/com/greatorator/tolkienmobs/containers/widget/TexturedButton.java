@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.containers.widget;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -37,6 +38,6 @@ public class TexturedButton extends Button {
         if (this.isHovered) {
             pVOffset = yDiffTex;
         }
-        gg.blit(texture, this.getX(), this.getY(), 0, pVOffset, width, height, textureWidth, textureHeight);
+        gg.blit(RenderType::guiTextured, texture, this.getX(), this.getY(), 0, pVOffset, width, height, textureWidth, textureHeight);
     }
 }

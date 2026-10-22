@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.client.renderer.RenderType;
 
 import javax.annotation.Nullable;
 
@@ -53,7 +54,7 @@ public class TrinketTableScreen extends AbstractContainerScreen<TrinketTableCont
     protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
         int relX = (this.width - this.imageWidth) / 2;
         int relY = (this.height - this.imageHeight) / 2;
-        guiGraphics.blit(GUI, relX - 23, relY, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(RenderType::guiTextured, GUI, relX - 23, relY, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
         int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
@@ -63,13 +64,13 @@ public class TrinketTableScreen extends AbstractContainerScreen<TrinketTableCont
 
     private void renderProgressArrow(GuiGraphics guiGraphics, int x, int y) {
         if(menu.isCrafting()) {
-            guiGraphics.blit(ARROW_TEXTURE,x + 65, y + 34, 0, 0, menu.getScaledArrowProgress(), 18, 18, 18);
+            guiGraphics.blit(RenderType::guiTextured, ARROW_TEXTURE, x + 65, y + 34, 0, 0, menu.getScaledArrowProgress(), 18, 18, 18);
         }
     }
 
     private void renderProgressTrinket(GuiGraphics guiGraphics, int x, int y) {
         if(menu.isCrafting()) {
-            guiGraphics.blit(TRINKET_TEXTURE, x + 33, y + 37 + 16 - menu.getScaledTrinketProgress(), 0, 18 - menu.getScaledTrinketProgress(), 18, menu.getScaledTrinketProgress(),18, 18);
+            guiGraphics.blit(RenderType::guiTextured, TRINKET_TEXTURE, x + 33, y + 37 + 16 - menu.getScaledTrinketProgress(), 0, 18 - menu.getScaledTrinketProgress(), 18, menu.getScaledTrinketProgress(), 18, 18);
         }
     }
 }

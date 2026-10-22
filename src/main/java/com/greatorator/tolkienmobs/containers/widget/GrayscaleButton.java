@@ -1,9 +1,8 @@
 package com.greatorator.tolkienmobs.containers.widget;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceLocation;
@@ -57,14 +56,8 @@ public class GrayscaleButton extends TolkienButton {
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        if (buttonActive)
-            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        else
-            RenderSystem.setShaderColor(0.33f, 0.33f, 0.33f, 1.0f);
-        RenderSystem.setShaderTexture(0, texture);
-        guiGraphics.blit(texture, this.getX(), this.getY(), 0, 0, width, height, width, height);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        int tint = buttonActive ? 0xFFFFFFFF : 0xFF545454;
+        guiGraphics.blit(RenderType::guiTextured, texture, this.getX(), this.getY(), 0, 0, width, height, width, height, width, height, tint);
     }
 
     @Override

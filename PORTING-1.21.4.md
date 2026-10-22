@@ -9,7 +9,7 @@ This file is the handoff: it records what is done, what is measured, and what to
 |---|---|
 | Target | Minecraft **1.21.4**, NeoForge **21.4.161** |
 | Compile errors at the start | **5,720** in 425 files |
-| Compile errors now | **198** distinct sites |
+| Compile errors now | **133** distinct sites |
 | Runnable | no — the tree does not compile yet |
 
 Dependency versions, all verified to exist and resolve:
@@ -370,6 +370,33 @@ Known wart, carried over rather than introduced: `TeleportUtility` calls `Common
 and `Entity#teleport` calls it again (with the target dimension, where the mod passes the source), so the travel
 hook fires twice for a cross-dimension jump. That was already true of `changeDimension` in 1.21.1; removing the
 mod's own call is a behaviour change and is left for later.
+
+### 3e. Menus, slots and screens — DONE
+
+`containers/` compiles (65 error sites, none added elsewhere): every container, slot, widget, screen and the fluid tank renderer.
+
+- `GuiGraphics#blit` lost its bare-texture overloads; the first argument is now a `RenderType` factory, so every GUI
+draw is `blit(RenderType::guiTextured, texture, x, y, u, v, w, h, texW, texH)`. The old seven-argument form
+assumed a 256×256 texture, which is where the trailing `256, 256` on the panel draws comes from. A thirteenth
+`int color` argument is the only way to tilt a draw's colour without setting the shader colour.
+- `RenderSystem.setShader(...)` no longer takes a `Supplier<ShaderInstance>` and `GameRenderer#getPositionTexShader`
+is gone — with `RenderType::guiTextured` doing the setup, the `setShader`/`setShaderTexture`/`setShaderColor`
+preambles in the widgets and the fluid tank were simply deleted. `RenderSystem.setShaderColor` still exists for
+code that really wants a uniform.
+- Tinting moved into the draw call: the grayscale button passes `0xFF545454` instead of `setShaderColor(0.33F, …)`,
+which is the same 84/255 per channel.
+- GUI sprites are addressed by id now, not by atlas pair: `Slot#getNoItemIcon()` returns a single `ResourceLocation`
+(a sprite under `textures/gui/sprites/`) and `Slot#setBackground` takes one argument. `InventoryMenu.BLOCK_ATLAS`
+is `TextureAtlas.LOCATION_BLOCKS`. The mod's own slots never actually set a background (`backgroundLoc` was always
+`null`), so their two-argument overrides were deleted; the armour slots pass
+`InventoryMenu.TEXTURE_EMPTY_SLOTS.get(equipmentSlot)` straight through.
+- `GuiGraphics#bufferSource()` is private now and `RenderSystem.runAsFancy` is gone: vanilla's inventory entity
+preview does `guiGraphics.flush()`, `Lighting.setupForEntityInInventory()`, then
+`guiGraphics.drawSpecial(bufferSource -> dispatcher.render(...))` and flushes again. `EntityRenderDispatcher#render`
+also lost its yaw argument, so the spawner preview passes `render(entity, 0, 0, 0, 1.0F, pose, buffer, light)`.
+- Smaller ones: `RecipeCraftingHolder#setRecipeUsed(ServerPlayer, RecipeHolder)` (the level dropped out of the
+recipe-book check), `ArmorItem#getEquipmentSlot(ItemStack)`, and
+`BuiltInRegistries.ITEM.get(id)` → `getValue(id)` where the result is used directly rather than as a holder.
 
 ### 4. Datagen output
 
