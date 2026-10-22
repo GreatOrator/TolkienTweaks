@@ -1,5 +1,9 @@
 package com.greatorator.tolkienmobs.entity.npc.render;
 
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import com.google.common.collect.Maps;
 import com.greatorator.tolkienmobs.entity.npc.OrcEntity;
 import com.greatorator.tolkienmobs.entity.npc.model.OrcModel;
@@ -65,11 +69,14 @@ public class OrcRender extends GeoEntityRenderer<OrcEntity> {
     }
 
     @Override
-    public void render(OrcEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        if(entity.isBaby()) {
-            poseStack.scale(0.50f, 0.50f, 0.50f);
+    public void preRender(PoseStack poseStack, OrcEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
+        if (!isReRender) {
+            if(animatable.isBaby()) {
+                poseStack.scale(0.50f, 0.50f, 0.50f);
+            }
         }
 
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
     }
 }

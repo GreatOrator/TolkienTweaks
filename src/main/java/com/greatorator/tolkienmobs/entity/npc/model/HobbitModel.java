@@ -7,6 +7,7 @@ import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.model.data.EntityModelData;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
@@ -16,12 +17,12 @@ public class HobbitModel extends GeoModel<HobbitEntity> {
 	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/merchant/hobbit.animation.json");
 
 	@Override
-	public ResourceLocation getModelResource(HobbitEntity object) {
+	public ResourceLocation getModelResource(HobbitEntity object, GeoRenderer<HobbitEntity> renderer) {
 		return this.model;
 	}
 
 	@Override
-	public ResourceLocation getTextureResource(HobbitEntity object) {
+	public ResourceLocation getTextureResource(HobbitEntity object, GeoRenderer<HobbitEntity> renderer) {
 		return HobbitRender.LOCATION_BY_VARIANT.get(object.getTolkienVariant());
 	}
 

@@ -8,6 +8,7 @@ import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.model.data.EntityModelData;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
@@ -17,12 +18,12 @@ public class MirkwoodSpiderModel extends GeoModel<MirkwoodSpiderEntity> {
 	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/monster/mirkwoodspider.animation.json");
 
 	@Override
-	public ResourceLocation getModelResource(MirkwoodSpiderEntity object) {
+	public ResourceLocation getModelResource(MirkwoodSpiderEntity object, GeoRenderer<MirkwoodSpiderEntity> renderer) {
 		return this.model;
 	}
 
 	@Override
-	public ResourceLocation getTextureResource(MirkwoodSpiderEntity object) {
+	public ResourceLocation getTextureResource(MirkwoodSpiderEntity object, GeoRenderer<MirkwoodSpiderEntity> renderer) {
 		return MirkwoodSpiderRender.LOCATION_BY_VARIANT.get(object.getVariant());
 	}
 

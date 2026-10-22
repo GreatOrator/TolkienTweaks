@@ -7,6 +7,7 @@ import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.model.data.EntityModelData;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
@@ -16,12 +17,12 @@ public class ElvesModel extends GeoModel<ElvesEntity> {
 	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/merchant/elf.animation.json");
 
 	@Override
-	public ResourceLocation getModelResource(ElvesEntity object) {
+	public ResourceLocation getModelResource(ElvesEntity object, GeoRenderer<ElvesEntity> renderer) {
 		return this.model;
 	}
 
 	@Override
-	public ResourceLocation getTextureResource(ElvesEntity object) {
+	public ResourceLocation getTextureResource(ElvesEntity object, GeoRenderer<ElvesEntity> renderer) {
 		return ElvesRender.LOCATION_BY_VARIANT.get(object.getTolkienVariant());
 	}
 

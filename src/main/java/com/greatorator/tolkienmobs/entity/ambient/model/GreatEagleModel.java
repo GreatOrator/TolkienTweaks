@@ -6,6 +6,7 @@ import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.model.data.EntityModelData;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
@@ -16,12 +17,12 @@ public class GreatEagleModel extends GeoModel<GreatEagleEntity> {
 	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/special/eagle.animation.json");
 
 	@Override
-	public ResourceLocation getModelResource(GreatEagleEntity object) {
+	public ResourceLocation getModelResource(GreatEagleEntity object, GeoRenderer<GreatEagleEntity> renderer) {
 		return this.model;
 	}
 
 	@Override
-	public ResourceLocation getTextureResource(GreatEagleEntity object) {
+	public ResourceLocation getTextureResource(GreatEagleEntity object, GeoRenderer<GreatEagleEntity> renderer) {
 		return this.texture;
 	}
 

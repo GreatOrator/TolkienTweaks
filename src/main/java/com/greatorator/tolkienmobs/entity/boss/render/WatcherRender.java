@@ -21,8 +21,4 @@ public class WatcherRender extends GeoEntityRenderer<WatcherEntity> {
         return ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/tmwatcher.png");
     }
 
-    @Override
-    public void render(WatcherEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
-    }
 }

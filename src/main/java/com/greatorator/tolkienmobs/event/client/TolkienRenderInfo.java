@@ -8,19 +8,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
 import java.util.Optional;
 
 public class TolkienRenderInfo extends DimensionSpecialEffects {
 
 	public TolkienRenderInfo(float cloudHeight, boolean placebo, SkyType fogType, boolean brightenLightMap, boolean entityLightingBottomsLit) {
 		super(cloudHeight, placebo, fogType, brightenLightMap, entityLightingBottomsLit);
-	}
-
-	@Nullable
-	@Override
-	public float[] getSunriseColor(float daycycle, float partialTicks) { // Fog color
-		return null;
 	}
 
 	@Override

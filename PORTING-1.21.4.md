@@ -9,7 +9,7 @@ This file is the handoff: it records what is done, what is measured, and what to
 |---|---|
 | Target | Minecraft **1.21.4**, NeoForge **21.4.161** |
 | Compile errors at the start | **5,720** in 425 files |
-| Compile errors now | **1,375** in ~150 files |
+| Compile errors now | **957** in ~130 files |
 | Runnable | no — the tree does not compile yet |
 
 Dependency versions, all verified to exist and resolve:
@@ -116,16 +116,47 @@ committed door/trapdoor models do), and the block-item definition pointing at th
 Still to do: once the mod compiles, `./gradlew runData` and a JSON-aware diff of
 `src/generated/resources` against the committed 5,001 files. Compare parsed JSON, not bytes.
 
-### 2. Entity renderers and models — the render-state rework
+### 2. Entity renderers and models — DONE
 
-1.21.2 split every renderer into renderer + render state. In 1.21.4:
+1.21.2 split every renderer into renderer + render state, and GeckoLib 4.8 followed. All of it
+now compiles: **no errors remain under `entity/**/render` or `entity/**/model`**.
 
-- `MobRenderer<T extends Mob, S extends LivingEntityRenderState, M extends EntityModel<? super S>>`
-- `HierarchicalModel` and `ListModel` **no longer exist**; models extend `EntityModel<S>` or `Model`
-- `GuiGraphics.blit` takes a `RenderType::guiTextured`-style function first (60 call sites)
-- GeckoLib 4.8.5's `GeoEntityRenderer.render` has a different signature (108 call sites)
+The API facts worth keeping, because they are not obvious from the docs:
 
-55 renderers, 61 GeoModels and 56 animation controllers are affected.
+- `EntityRenderer<T, S extends EntityRenderState>`; `MobRenderer<T, S extends LivingEntityRenderState, M>`;
+  `LivingEntityRenderer#getTextureLocation(S)` is abstract, and `extractRenderState(T, S, float)`
+  is where per-frame data is copied. `LivingEntityRenderer#scale(S, PoseStack)` replaces the old
+  `poseStack.scale(...)` inside a `render` override.
+- `Model#renderToBuffer` is `final`, and `EntityModel` has no no-argument constructor:
+  models pass `root` to `super(...)` and drop their `renderToBuffer`/`root()` overrides
+  (`Model#root()` is final too).
+- `HierarchicalModel` is gone, but the helpers moved onto `Model`: `animateWalk(AnimationDefinition, pos, speed, speedFactor, amplifier)` and `animate(AnimationState, AnimationDefinition, ageInTicks[, speed])`.
+  Animation states travel to the renderer as fields on a custom render state and are filled with
+  `state.<name>.copyFrom(entity.<name>)`.
+- `ArrowRenderer<T, S extends ArrowRenderState>` and `BoatRenderer` both gained a state parameter.
+  `BoatRenderer` no longer exposes a model/texture pair: custom boats extend `AbstractBoatRenderer`
+  and answer `model()` and `renderType()`, with `BoatModel.createBoatModel()` /
+  `BoatModel.createChestBoatModel()` as the layer definitions (`ChestBoatModel` is gone).
+- GeckoLib 4.8: `GeoModel#getModelResource` and `#getTextureResource` take the asking
+  `GeoRenderer<T>` as a second argument; `GeoEntityRenderer` renders from `EntityRenderState` and
+  no longer has `render(T, yaw, partial, ...)` — pose work belongs in
+  `preRender(PoseStack, T, BakedGeoModel, MultiBufferSource, VertexConsumer, boolean isReRender, float, int, int, int)`.
+  `GeoRenderLayer#render` gained a trailing `int colour`, and `getDefaultBakedModel` now wants the renderer.
+- **`preRender` runs again for every render layer**, with `isReRender == true`, so one-time pose
+  scale has to be guarded or layers double it. All the converted renderers do that.
+
+The 55 GeckoLib renderers were converted by [tools/port-renderers.pl](tools/port-renderers.pl)
+(render overrides that only called `super` are deleted; scale-only ones become guarded `preRender`),
+the 61 GeoModels by [tools/port-geomodels.pl](tools/port-geomodels.pl), and the seven boat renderers
+by [tools/port-boats.pl](tools/port-boats.pl). The gecko and swarm were the only two vanilla models:
+both moved to `EntityModel` with `GeckoRenderState`/`LivingEntityRenderState`, and the boulder and
+fell beast fireball share `ThrownProjectileRenderState`. `MorgulCrystalRenderState` carries the
+crystal's spin time, and `DimensionSpecialEffects#getSunriseColor` no longer exists (the override
+was deleted; vanilla has no sunrise colour to begin with).
+
+Still open in this area, and separate work: the block models and baked models
+(`ChameleonBlockDynamicBakedModel`, `PatchModel`/`UnbakedPatchModel`, `ModelEvent.RegisterGeometryLoaders`
+which 21.4 replaced, `FastColor` → `ARGB`) and the block entity renderers.
 
 ### 3. Registration and data
 

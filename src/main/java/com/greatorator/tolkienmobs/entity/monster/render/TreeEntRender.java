@@ -64,9 +64,4 @@ public class TreeEntRender extends GeoEntityRenderer<TreeEntEntity> {
         return LOCATION_BY_VARIANT.get(treeentEntity.getVariant());
     }
 
-    @Override
-    public void render(TreeEntEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
-    }
 }

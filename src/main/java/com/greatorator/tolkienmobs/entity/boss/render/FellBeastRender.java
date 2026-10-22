@@ -1,5 +1,9 @@
 package com.greatorator.tolkienmobs.entity.boss.render;
 
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+
+import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import com.greatorator.tolkienmobs.entity.boss.FellBeastEntity;
 import com.greatorator.tolkienmobs.entity.boss.model.FellBeastModel;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -22,9 +26,11 @@ public class FellBeastRender extends GeoEntityRenderer<FellBeastEntity> {
     }
 
     @Override
-    public void render(FellBeastEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        poseStack.scale(1.5F, 1.5F, 1.5F);
+    public void preRender(PoseStack poseStack, FellBeastEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
+        if (!isReRender) {
+            poseStack.scale(1.5F, 1.5F, 1.5F);        }
 
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
+
+        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
     }
 }

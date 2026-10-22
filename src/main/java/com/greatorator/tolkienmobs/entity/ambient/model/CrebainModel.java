@@ -6,6 +6,7 @@ package com.greatorator.tolkienmobs.entity.ambient.model;// Made with Blockbench
 import com.greatorator.tolkienmobs.entity.ambient.CrebainEntity;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.GeoRenderer;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -15,12 +16,12 @@ public class CrebainModel extends GeoModel<CrebainEntity> {
 	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/ambient/crebain.animation.json");
 
 	@Override
-	public ResourceLocation getModelResource(CrebainEntity object) {
+	public ResourceLocation getModelResource(CrebainEntity object, GeoRenderer<CrebainEntity> renderer) {
 		return this.model;
 	}
 
 	@Override
-	public ResourceLocation getTextureResource(CrebainEntity object) {
+	public ResourceLocation getTextureResource(CrebainEntity object, GeoRenderer<CrebainEntity> renderer) {
 		return this.texture;
 	}
 

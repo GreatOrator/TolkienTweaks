@@ -64,9 +64,4 @@ public class DeepClawRender extends GeoEntityRenderer<DeepClawEntity> {
         return LOCATION_BY_VARIANT.get(tmdeepclawEntity.getVariant());
     }
 
-    @Override
-    public void render(DeepClawEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
-    }
 }

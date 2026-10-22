@@ -64,9 +64,4 @@ public class SwampHagRender extends GeoEntityRenderer<SwampHagEntity> {
         return LOCATION_BY_VARIANT.get(entity.getVariant());
     }
 
-    @Override
-    public void render(SwampHagEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
-    }
 }
