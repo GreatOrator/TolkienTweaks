@@ -384,11 +384,14 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
         if (!level.isClientSide) {
             // One place owns the wingbeat timer, so a beast flown by its AI and one flown by a rider
             // beat at the same rate. A rider's flight is simulated on their own client, so the wings
-            // have to be heard from the server or only the rider would hear them.
+            // have to be heard from the server or only the rider would hear them. A rider holding a
+            // dive is not beating to stay up, so a stooping beast goes quiet until it levels out.
             if (this.wingSoundTicks > 0) this.wingSoundTicks--;
-            if (this.isVehicle() && this.canBeControlledByRider() && this.isUsingFlyingNavigator()) {
+            boolean ridden = this.isVehicle() && this.canBeControlledByRider();
+            if (ridden && this.isUsingFlyingNavigator() && !this.isStooping()) {
                 this.beatWingsAudibly();
             }
+            this.riddenPos = ridden ? this.position() : null;
         }
 
         NavigationType properNavigator = getProperNavigator();
@@ -645,6 +648,11 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     private static final double STOOP_MARGIN = 2.0D;
     /** Ticks until a wingbeat may be heard again, so a long climb does not roar with flapping. */
     private int wingSoundTicks;
+    /** How far a ridden beast has to drop in a tick, and how much steeper than its headway, to be diving. */
+    private static final double RIDER_DIVE_SINK = 0.05D;
+    /** Where a ridden beast was at the end of the last tick, for measuring that dive. */
+    @Nullable
+    private Vec3 riddenPos;
 
     @Override
     public void travel(Vec3 vec3d){
@@ -850,6 +858,21 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     public void flapWings() {
         this.playWingbeatSound(3.0F);
         setDeltaMovement(getDeltaMovement().add(0, 1.285, 0));
+    }
+
+    /**
+     * Whether a ridden beast is diving: dropping faster than a block a second and steeper than its
+     * own headway. Neither its pitch nor its velocity is any guide here - the server's look control
+     * steers the pitch toward whatever the beast is watching, and a ridden beast is moved by its
+     * rider's client, so the server only ever sees it teleported between ticks. This compares where
+     * it is with where the last tick left it.
+     */
+    private boolean isStooping() {
+        if (this.riddenPos == null) return false;
+        double drop = this.riddenPos.y - this.getY();
+        double headway = Math.sqrt((this.getX() - this.riddenPos.x) * (this.getX() - this.riddenPos.x)
+                + (this.getZ() - this.riddenPos.z) * (this.getZ() - this.riddenPos.z));
+        return drop > RIDER_DIVE_SINK && drop > headway;
     }
 
     /** One wingbeat, as long as the last one is far enough behind, at the configured volume. */
