@@ -2,7 +2,9 @@
   "type": "tolkienmobs:trinket",
   "fuel": {
     "count": 1,
-    "item": "tolkienmobs:gem_ammolite"
+    "ingredient": {
+      "item": "tolkienmobs:gem_ammolite"
+    }
   },
   "potion": "minecraft:potion",
   "trinket": "tolkienmobs:trinket_glove"

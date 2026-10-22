@@ -3,7 +3,9 @@
   "ingredients": [
     {
       "count": 1,
-      "item": "minecraft:chicken"
+      "ingredient": {
+        "item": "minecraft:chicken"
+      }
     }
   ],
   "output": [

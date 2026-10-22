@@ -3,7 +3,9 @@
   "ingredients": [
     {
       "count": 1,
-      "item": "minecraft:mutton"
+      "ingredient": {
+        "item": "minecraft:mutton"
+      }
     }
   ],
   "output": [

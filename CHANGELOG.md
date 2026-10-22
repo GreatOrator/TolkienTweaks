@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 - Food and drink effects are carried by the consumable component, so drinks still tip the bottle back and foods still keep their bonuses.
 - Tag, sound, particle and village-template datagen no longer asks for the file helper the modding API dropped.
 - Recipe datagen builds its recipes through the game's recipe-provider instance, so crafted, smelted and stonecut items keep the recipe ids and unlock conditions they had before.
+- Fireplace and trinket table recipes are built on the game's current recipe definitions: each ingredient now carries its own nested entry with its count, so the fireplace still smelts bread from three wheat, the trinket table still shows its fuel in JEI, and both still unlock on the same conditions.
 - Potions are registered with the name the game now requires on them, so potions, splash potions and lingering potions keep the names they are shown with.
 - Blocks and items are registered with the ids the game now reads while it builds them, so every block keeps its loot table and its name, block items show the name of their block, and items keep their inventory model.
 - The clover and moss patches are drawn through the game's own model loader again, and camouflage blocks still take on the look of the block next to them.

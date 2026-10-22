@@ -18,11 +18,17 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
+
+import java.util.List;
 
 public class TrinketRecipe implements Recipe<TrinketRecipeInput> {
     private final String group;
@@ -64,18 +70,12 @@ public class TrinketRecipe implements Recipe<TrinketRecipeInput> {
         return result;
     }
 
-    @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return width * height >= 3;
-    }
-
-    @Override
     public ItemStack getResultItem(HolderLookup.Provider registries) {
         return trinket.getDefaultInstance();
     }
 
     @Override
-    public String getGroup() {
+    public String group() {
         return group;
     }
 
@@ -101,12 +101,22 @@ public class TrinketRecipe implements Recipe<TrinketRecipeInput> {
         return TolkienRecipesTypes.TRINKET_TABLE_TYPE.get();
     }
 
+    @Override
+    public PlacementInfo placementInfo() {
+        return PlacementInfo.create(List.of(Ingredient.of(trinket), fuel.ingredient(), Ingredient.of(potionItem)));
+    }
+
+    @Override
+    public RecipeBookCategory recipeBookCategory() {
+        return RecipeBookCategories.CRAFTING_MISC;
+    }
+
     public static class Serializer implements RecipeSerializer<TrinketRecipe> {
         private static final MapCodec<TrinketRecipe> CODEC = RecordCodecBuilder.mapCodec(
                 instance -> instance.group(
-                        Codec.STRING.optionalFieldOf("group", "trinket").forGetter(TrinketRecipe::getGroup),
+                        Codec.STRING.optionalFieldOf("group", "trinket").forGetter(TrinketRecipe::group),
                         BuiltInRegistries.ITEM.byNameCodec().fieldOf("trinket").forGetter(TrinketRecipe::getTrinket),
-                        SizedIngredient.FLAT_CODEC.fieldOf("fuel").forGetter(TrinketRecipe::getFuel),
+                        SizedIngredient.NESTED_CODEC.fieldOf("fuel").forGetter(TrinketRecipe::getFuel),
                         BuiltInRegistries.ITEM.byNameCodec().fieldOf("potion").forGetter(TrinketRecipe::getPotionItem)
                 ).apply(instance, TrinketRecipe::new)
         );
