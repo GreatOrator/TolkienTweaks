@@ -1084,6 +1084,17 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     /** The fellbeast's fireEnd clip runs for one second. */
     private static final int FIRE_END_TICKS = 20;
 
+    /** The fellbeast's animation file carries three melee swings with footwork, walk_attack0-2. */
+    private static final int WALK_ATTACK_ANIMATION_VARIANTS = 3;
+
+    /** Whether the current bout of aggression has already opened with a roar. */
+    private boolean hasRoared;
+    /** Ticks left in the roar clip, which is four seconds long. */
+    private int roarTicks;
+
+    /** The fellbeast's roar clip runs for four seconds. */
+    private static final int ROAR_ANIMATION_TICKS = 80;
+
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "Movement", 1, (event) -> {
@@ -1104,8 +1115,10 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
                     // No fly_fast animation ships with the fellbeast's animation file. Asking for one anyway
                     // made GeckoLib log "Unable to find animation" and leave the movement controller with
                     // nothing to play, freezing the wings mid-flap for as long as the beast fought on the
-                    // wing, so an aggressive flyer keeps the normal flight animation.
-                    case FLYING -> event.getController().setAnimation(RawAnimation.begin().thenPlay("fly"));
+                    // wing, so an aggressive flyer keeps the normal flight animation. A beast that is
+                    // losing height on the wing is stooping, and the file's dive clip is that stoop.
+                    case FLYING -> event.getController().setAnimation(RawAnimation.begin().thenPlay(
+                            this.getDeltaMovement().y < -0.05 ? "dive" : "fly"));
                     case SWIMMING-> event.getController().setAnimation(RawAnimation.begin().thenPlay("fly"));
                 }
                 return PlayState.CONTINUE;
@@ -1119,10 +1132,43 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
             }
             return PlayState.STOP;
         }));
+        // The beast bellows when it engages: its synced aggressive flag turns on with the attack goal,
+        // so one transition plays the roar once per fight. The attack controller below is registered
+        // after this one, so a swing interrupts the bellow instead of being hidden by it. The roar is
+        // held for its own length and then released, or the controller would keep the beast's last
+        // roaring pose for the rest of the fight.
+        controllers.add(new AnimationController<>(this, "Roar", 1, (event) -> {
+            if (this.swinging) {
+                // A swing takes the body over for its length; the bellow does not resume afterwards.
+                this.roarTicks = 0;
+                return PlayState.STOP;
+            }
+            if (!this.isAggressive()) {
+                this.hasRoared = false;
+                this.roarTicks = 0;
+                return PlayState.STOP;
+            }
+            if (!this.hasRoared) {
+                this.hasRoared = true;
+                this.roarTicks = ROAR_ANIMATION_TICKS;
+                event.getController().forceAnimationReset();
+                event.getController().setAnimation(RawAnimation.begin().then("roar", Animation.LoopType.PLAY_ONCE));
+                return PlayState.CONTINUE;
+            }
+            if (this.roarTicks-- > 0) {
+                return PlayState.CONTINUE;
+            }
+            return PlayState.STOP;
+        }));
         controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
             if (this.swinging && !this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
-                int attackVariant = this.random.nextInt(ATTACK_ANIMATION_VARIANTS)+1;
-                event.getController().setAnimation(RawAnimation.begin().then("attack"+attackVariant, Animation.LoopType.PLAY_ONCE));
+                // A swing made on the move uses the file's walk attacks, which carry the footwork; a
+                // standing or airborne swing uses the stationary ones.
+                boolean walking = event.isMoving() && this.onGround() && !this.isUsingFlyingNavigator();
+                String attackAnimation = walking
+                        ? "walk_attack" + this.random.nextInt(WALK_ATTACK_ANIMATION_VARIANTS)
+                        : "attack" + (this.random.nextInt(ATTACK_ANIMATION_VARIANTS) + 1);
+                event.getController().setAnimation(RawAnimation.begin().then(attackAnimation, Animation.LoopType.PLAY_ONCE));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
