@@ -454,9 +454,12 @@ public abstract class BlockModelBuilders extends BlockModelHelper {
 		return models;
 	}
 
+	/**
+	 * A block whose block entity draws it. The game dropped {@code builtin/entity}, so the model is
+	 * left empty like vanilla's chest model: it draws nothing and only supplies break particles.
+	 */
 	protected void builtinEntity(Block b, String particle) {
 		simpleBlock(b, models().getBuilder(nameB(b))
-				.parent(new ModelFile.UncheckedModelFile("builtin/entity"))
 				.texture("particle", particle));
 	}
 
