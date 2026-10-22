@@ -1069,6 +1069,14 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     /** Animations */
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
+    /**
+     * Whether this dragon is currently breathing fire. Only the fell beast does, and it overrides
+     * this with the synced flag its attack goal sets, so the client-side controller can read it.
+     */
+    protected boolean getBreathingFire() {
+        return false;
+    }
+
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "Movement", 1, (event) -> {
@@ -1109,8 +1117,10 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
                 int attackVariant = this.random.nextInt(ATTACK_ANIMATION_VARIANTS)+1;
                 event.getController().setAnimation(RawAnimation.begin().then("attack"+attackVariant, Animation.LoopType.PLAY_ONCE));
                 return PlayState.CONTINUE;
-            }else if (this.isAggressive() && this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)){
-                // The ranged attack is the beast's fire: its file names that animation "fire", not "ranged".
+            }else if (this.getBreathingFire() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)){
+                // The ranged attack is the beast's fire: its file names that animation "fire", not
+                // "ranged". It is keyed on the synced breathing flag, since the weapon flag this used
+                // to require is only set on the server and no dragon ever holds a bow anyway.
                 event.getController().setAnimation(RawAnimation.begin().then("fire", Animation.LoopType.PLAY_ONCE));
                 return PlayState.CONTINUE;
             }
