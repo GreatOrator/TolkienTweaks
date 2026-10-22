@@ -2,13 +2,11 @@ package com.greatorator.tolkienmobs;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-import java.util.Set;
 
 @EventBusSubscriber(modid = TolkienMobsMain.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class TolkienMobsConfig {
@@ -17,7 +15,7 @@ public class TolkienMobsConfig {
     /* Client */
     /* Server */
     private static final ModConfigSpec.BooleanValue FAKE_PLAYER = BUILDER
-            .comment("Disable fake player for Hallowed Earth (Default false)")
+            .comment("Skip fake players, such as deployers, when Hallowed Earth damages the undead, so a farm built on it is not eaten by its own machine (Default true)")
             .define("disableFakePlayer", true);
     private static final ModConfigSpec.BooleanValue AUTO_USE = BUILDER
             .comment("If enabled, players automatically attempt to use sleeping bags when placed.")
@@ -37,7 +35,7 @@ public class TolkienMobsConfig {
             .comment("Lowest cost the milestone's dimension button allows for fast-travel across dimensions (Default 1)")
             .defineInRange("dimension_cost", 1, 1, 10);
     public static final ModConfigSpec.BooleanValue PAYMENT_TYPE = BUILDER
-            .comment("You want to use an item or experience for teleporting? (Default true to use Items")
+            .comment("How milestones charge for fast-travel: true costs the item below, false costs experience levels (Default false, experience)")
             .define("paymentType", false);
     public static final ModConfigSpec.ConfigValue<String> PAYMENT_ITEM = BUILDER
             .comment("Item to use for payment to teleport")
@@ -58,8 +56,8 @@ public class TolkienMobsConfig {
             .defineInRange("growthTimer", 20, 0, Integer.MAX_VALUE);
 
     private static final ModConfigSpec.IntValue HOME_RADIUS = BUILDER
-            .comment("How far the FellBeast will roam from home (Default 32)")
-            .defineInRange("homeRadius", 32, 32, 128);
+            .comment("How far the FellBeast will roam from home (Default 32, no less than 8)")
+            .defineInRange("homeRadius", 32, 8, 128);
 
     private static final ModConfigSpec.DoubleValue FELLBEAST_WINGBEAT_VOLUME = BUILDER
             .comment("Volume of the FellBeast's wingbeat, before the beast's own sound scale. The default 2.0 is 3.0 in game, where the beast's idle voice plays at 1.5 (Default 2.0)")
@@ -96,7 +94,6 @@ public class TolkienMobsConfig {
     public static int fellbeastWingbeatInterval;
     public static int fellbeastDiveAngle;
     public static int trinketRepairAmount;
-    public static Set<Item> item;
 
     private static boolean validateItemName(final Object obj)
     {
