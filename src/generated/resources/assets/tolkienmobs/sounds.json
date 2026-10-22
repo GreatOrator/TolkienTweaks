@@ -369,9 +369,7 @@
   },
   "mob.fellbeast.wind": {
     "sounds": [
-      "tolkienmobs:mob/ammo/lift_wind1",
-      "tolkienmobs:mob/ammo/lift_wind2",
-      "tolkienmobs:mob/ammo/lift_wind3"
+      "tolkienmobs:mob/fellbeast/dive_wind"
     ],
     "subtitle": "subtitles.tolkienmobs.mob.fellbeast_wind"
   },
