@@ -167,7 +167,7 @@ public class CobwebProjectileEntity extends Projectile implements GeoEntity {
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
-            event.getController().setAnimation(RawAnimation.begin().thenPlay("web_projectile_idle"));
+            event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
             return PlayState.STOP;
         }));
     }
