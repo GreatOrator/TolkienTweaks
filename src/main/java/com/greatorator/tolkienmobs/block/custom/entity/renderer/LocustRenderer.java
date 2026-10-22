@@ -40,7 +40,7 @@ public class LocustRenderer implements BlockEntityRenderer<LocustBlockEntity> {
 		stack.mulPose(Axis.YN.rotationDegrees(yaw));
 
 		VertexConsumer consumer = buffer.getBuffer(this.locustModel.renderType(TEXTURE));
-		this.locustModel.renderToBuffer(stack, consumer, light, overlay);
+		this.locustModel.renderBody(stack, consumer, light, overlay, -1);
 		stack.popPose();
 	}
 }

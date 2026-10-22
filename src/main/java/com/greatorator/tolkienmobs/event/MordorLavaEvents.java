@@ -56,7 +56,7 @@ public final class MordorLavaEvents {
             return;
         }
         if (replaceWaterWithLava(level, chunk, fire)) {
-            chunk.setUnsaved(true);
+            chunk.markUnsaved();
             chunk.setLightCorrect(false);
         }
     }
@@ -81,7 +81,7 @@ public final class MordorLavaEvents {
      * cave biomes even though the column standing over them is Mordor.
      */
     private static boolean isFireBiome(LevelChunk chunk, int x, int z) {
-        int y = Math.min(chunk.getHeight(Heightmap.Types.WORLD_SURFACE, x, z) + 1, chunk.getMaxBuildHeight() - 1);
+        int y = Math.min(chunk.getHeight(Heightmap.Types.WORLD_SURFACE, x, z) + 1, chunk.getMaxY() - 1);
         Holder<Biome> biome = chunk.getNoiseBiome(chunk.getPos().getMinBlockX() + x, y, chunk.getPos().getMinBlockZ() + z);
         return biome.is(TolkienBiomes.MORDOR) || biome.is(TolkienBiomes.ASH_MOUNTAINS);
     }
@@ -96,7 +96,7 @@ public final class MordorLavaEvents {
             if (!section.maybeHas(IS_WATER)) {
                 continue;
             }
-            int bottom = chunk.getMinBuildHeight() + index * 16;
+            int bottom = chunk.getMinY() + index * 16;
             for (int y = 0; y < 16; y++) {
                 for (int z = 0; z < 16; z++) {
                     for (int x = 0; x < 16; x++) {

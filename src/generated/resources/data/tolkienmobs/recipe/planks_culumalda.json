@@ -3,9 +3,7 @@
   "category": "building",
   "group": "planks",
   "ingredients": [
-    {
-      "item": "tolkienmobs:log_culumalda"
-    }
+    "tolkienmobs:log_culumalda"
   ],
   "result": {
     "count": 4,

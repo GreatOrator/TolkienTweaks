@@ -15,7 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffectUtil;
@@ -117,14 +117,14 @@ public record TrinketComponent(Optional<Holder<Potion>> potion, Optional<Integer
             if (mobeffectinstance.isVisible()) {
                 int i1 = mobeffectinstance.getEffect().value().getColor();
                 int j1 = mobeffectinstance.getAmplifier() + 1;
-                i += j1 * FastColor.ARGB32.red(i1);
-                j += j1 * FastColor.ARGB32.green(i1);
-                k += j1 * FastColor.ARGB32.blue(i1);
+                i += j1 * ARGB.red(i1);
+                j += j1 * ARGB.green(i1);
+                k += j1 * ARGB.blue(i1);
                 l += j1;
             }
         }
 
-        return l == 0 ? OptionalInt.empty() : OptionalInt.of(FastColor.ARGB32.color(i / l, j / l, k / l));
+        return l == 0 ? OptionalInt.empty() : OptionalInt.of(ARGB.color(i / l, j / l, k / l));
     }
 
     public boolean hasEffects() {

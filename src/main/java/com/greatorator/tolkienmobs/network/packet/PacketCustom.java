@@ -1,5 +1,7 @@
 package com.greatorator.tolkienmobs.network.packet;
 
+import net.minecraft.core.Direction;
+
 import com.greatorator.tolkienmobs.handler.data.MCDataByteBuf;
 import com.greatorator.tolkienmobs.handler.vec.Cuboid6;
 import com.greatorator.tolkienmobs.handler.vec.Vector3;

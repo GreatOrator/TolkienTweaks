@@ -49,19 +49,20 @@ public class TolkienEventBusEvents {
 
     @SubscribeEvent
     public static void onModelBakeEvent(ModelEvent.ModifyBakingResult event) {
-        Map<ModelResourceLocation, BakedModel> modelRegistry = event.getModels();
+        // 1.21.4 hands the baking result over instead of a bare map; its block state models are still mutable here.
+        Map<ModelResourceLocation, BakedModel> modelRegistry = event.getBakingResult().blockStateModels();
 
         for (Block block : chameleonBlocks.get()) {
             for (BlockState blockState : block.getStateDefinition().getPossibleStates()) {
                 ModelResourceLocation variantMRL = BlockModelShaper.stateToModelLocation(blockState);
-                BakedModel existingModel = event.getModels().get(variantMRL);
+                BakedModel existingModel = modelRegistry.get(variantMRL);
                 if (existingModel == null) {
                     LOGGER.warn("Did not find the expected vanilla baked model(s) for blockCamouflage in registry");
                 } else if (existingModel instanceof ChameleonBlockDynamicBakedModel) {
                     LOGGER.warn("Tried to replace CamouflagedBakedModel twice");
                 } else {
                     ChameleonBlockDynamicBakedModel customModel = new ChameleonBlockDynamicBakedModel(existingModel);
-                    event.getModels().put(variantMRL, customModel);
+                    modelRegistry.put(variantMRL, customModel);
                 }
             }
         }

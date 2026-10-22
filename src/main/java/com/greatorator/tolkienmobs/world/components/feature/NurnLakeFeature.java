@@ -78,7 +78,7 @@ public class NurnLakeFeature extends Feature<NoneFeatureConfiguration> {
         WorldGenLevel level = context.level();
         BlockPos origin = context.origin();
         RandomSource random = context.random();
-        if (origin.getY() <= level.getMinBuildHeight() + 4) {
+        if (origin.getY() <= level.getMinY() + 4) {
             return false;
         }
         // Anchored inside the decorated chunk rather than wherever the placement modifier put the
@@ -103,7 +103,7 @@ public class NurnLakeFeature extends Feature<NoneFeatureConfiguration> {
         }
         // One block under the lowest ground, so no shore column ends up hanging over the water.
         int waterLevel = lowest - 1;
-        if (waterLevel <= level.getMinBuildHeight() + 1) {
+        if (waterLevel <= level.getMinY() + 1) {
             return false;
         }
 
@@ -151,7 +151,7 @@ public class NurnLakeFeature extends Feature<NoneFeatureConfiguration> {
     private static boolean canCarve(WorldGenLevel level, BlockPos column, int waterLevel, int radius, int dx, int dz) {
         int groundTop = level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, column.getX(), column.getZ()) - 1;
         int bottom = waterLevel - depthAt(radius, dx, dz);
-        if (groundTop < waterLevel || bottom <= level.getMinBuildHeight()) {
+        if (groundTop < waterLevel || bottom <= level.getMinY()) {
             return false;
         }
         for (int y = bottom; y <= groundTop; y++) {

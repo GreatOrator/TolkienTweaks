@@ -45,7 +45,7 @@ public class FellBeastFireballEntity extends AbstractArrow {
     }
 
     public boolean isGrounded() {
-        return inGround;
+        return this.isInGround();
     }
 
     @Override

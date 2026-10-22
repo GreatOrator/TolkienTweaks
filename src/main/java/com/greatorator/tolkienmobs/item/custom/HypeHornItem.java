@@ -1,9 +1,10 @@
 package com.greatorator.tolkienmobs.item.custom;
 
+import net.minecraft.world.InteractionResult;
+
 import com.greatorator.tolkienmobs.init.TolkienSounds;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -17,7 +18,7 @@ public class HypeHornItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level worldIn, Player player, @Nonnull InteractionHand hand) {
+    public InteractionResult use(Level worldIn, Player player, @Nonnull InteractionHand hand) {
         if (!worldIn.isClientSide){
             worldIn.playSound(null, player.getX(), player.getY(), player.getZ(), TolkienSounds.HYPE_HORN.get(), SoundSource.PLAYERS, 5F, 0.95F + worldIn.random.nextFloat() * 0.1F);
         }

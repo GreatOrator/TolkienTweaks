@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "hanging_sign",
   "key": {
-    "#": {
-      "item": "tolkienmobs:planks_culumalda"
-    },
-    "X": {
-      "item": "minecraft:chain"
-    }
+    "#": "tolkienmobs:planks_culumalda",
+    "X": "minecraft:chain"
   },
   "pattern": [
     "X X",

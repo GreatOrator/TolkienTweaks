@@ -15,7 +15,6 @@ import com.greatorator.tolkienmobs.util.block.SpawnerDelays;
 import com.greatorator.tolkienmobs.util.block.SpawnerRanges;
 import com.greatorator.tolkienmobs.util.block.SpawnerSettings;
 import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -31,6 +30,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.client.renderer.RenderType;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
@@ -296,11 +296,10 @@ public class CamoSpawnerScreen extends AbstractContainerScreen<CamoSpawnerContai
         TolkienBaseSpawner basespawner = this.tileEntity.getSpawnerBase();
         LivingEntity entityType = (LivingEntity) basespawner.getOrCreateDisplayEntity(this.tileEntity.getLevel(), this.tileEntity.getBlockPos());
 
-        RenderSystem.setShaderTexture(0, GUI);
         int relX = (this.width - this.imageWidth) / 2;
         int relY = (this.height - this.imageHeight) / 2;
 
-        guiGraphics.blit(GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(RenderType::guiTextured, GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
 
         if (entityType instanceof LivingEntity) {
             renderEntityInInventoryFollowsMouse(guiGraphics, relX + 26, relY + 8, relX + 403, relY + 160, 30, 0.0625F, mouseX, mouseY, entityType);
@@ -355,6 +354,7 @@ public class CamoSpawnerScreen extends AbstractContainerScreen<CamoSpawnerContai
         guiGraphics.pose().scale(scale, scale, -scale);
         guiGraphics.pose().translate(translate.x, translate.y, translate.z);
         guiGraphics.pose().mulPose(pose);
+        guiGraphics.flush();
         Lighting.setupForEntityInInventory();
         EntityRenderDispatcher entityrenderdispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
         if (cameraOrientation != null) {
@@ -362,9 +362,7 @@ public class CamoSpawnerScreen extends AbstractContainerScreen<CamoSpawnerContai
         }
 
         entityrenderdispatcher.setRenderShadow(false);
-        RenderSystem.runAsFancy(() -> {
-            entityrenderdispatcher.render(entity, 0.0, 0.0, 0.0, 0.0F, 1.0F, guiGraphics.pose(), guiGraphics.bufferSource(), 15728880);
-        });
+        guiGraphics.drawSpecial(bufferSource -> entityrenderdispatcher.render(entity, 0.0, 0.0, 0.0, 1.0F, guiGraphics.pose(), bufferSource, 15728880));
         guiGraphics.flush();
         entityrenderdispatcher.setRenderShadow(true);
         guiGraphics.pose().popPose();

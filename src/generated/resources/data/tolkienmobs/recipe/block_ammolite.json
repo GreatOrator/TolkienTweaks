@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": {
-      "item": "tolkienmobs:gem_ammolite"
-    }
+    "I": "tolkienmobs:gem_ammolite"
   },
   "pattern": [
     "II ",

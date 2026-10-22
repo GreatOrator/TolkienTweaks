@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "item": "minecraft:bucket"
-    },
-    "F": {
-      "tag": "minecraft:fences"
-    },
-    "S": {
-      "tag": "minecraft:wooden_slabs"
-    },
-    "X": {
-      "tag": "minecraft:stone_bricks"
-    },
-    "Y": {
-      "tag": "minecraft:slabs"
-    }
+    "B": "minecraft:bucket",
+    "F": "#minecraft:fences",
+    "S": "#minecraft:wooden_slabs",
+    "X": "#minecraft:stone_bricks",
+    "Y": "#minecraft:slabs"
   },
   "pattern": [
     "FSF",

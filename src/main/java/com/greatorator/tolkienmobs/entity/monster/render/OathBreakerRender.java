@@ -101,9 +101,4 @@ public class OathBreakerRender extends GeoEntityRenderer<OathBreakerEntity> {
         return RenderType.itemEntityTranslucentCull(resourcelocation);
     }
 
-    @Override
-    public void render(OathBreakerEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
-    }
 }

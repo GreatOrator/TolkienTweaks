@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.entity.item;
 
 import com.greatorator.tolkienmobs.init.TolkienEntities;
+import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienWoodTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -14,7 +15,7 @@ public class DeadwoodChestBoatEntity extends ChestBoat {
     private static final EntityDataAccessor<String> WOOD_TYPE = SynchedEntityData.defineId(DeadwoodChestBoatEntity.class, EntityDataSerializers.STRING);
 
     public DeadwoodChestBoatEntity(EntityType<? extends DeadwoodChestBoatEntity> entityType, Level level) {
-        super(entityType, level);
+        super(entityType, level, TolkienItems.DEADWOOD_CHEST_BOAT);
     }
 
     public DeadwoodChestBoatEntity(Level level, double x, double y, double z, String woodType) {

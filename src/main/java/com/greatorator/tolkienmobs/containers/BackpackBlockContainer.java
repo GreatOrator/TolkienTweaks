@@ -331,7 +331,7 @@ public class BackpackBlockContainer extends TolkienContainer{
             Optional<RecipeHolder<CraftingRecipe>> optional = level.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, container.asCraftInput(), level);
             if (optional.isPresent()) {
                 RecipeHolder<CraftingRecipe> recipe = optional.get();
-                if (result.setRecipeUsed(level, serverPlayer, recipe)) {
+                if (result.setRecipeUsed(serverPlayer, recipe)) {
                     ItemStack stack2 = recipe.value().assemble(container.asCraftInput(), level.registryAccess());
                     if (stack2.isItemEnabled(level.enabledFeatures())) {
                         stack1 = stack2;

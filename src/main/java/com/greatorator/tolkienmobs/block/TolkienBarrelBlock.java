@@ -23,7 +23,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -39,7 +39,7 @@ public class TolkienBarrelBlock extends TolkienEntityBlock {
             Block.box(2, 0, 2, 14, 16, 14)
     ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
     public static final MapCodec<TolkienBarrelBlock> CODEC = simpleCodec(TolkienBarrelBlock::new);
-    public static final DirectionProperty FACING = DirectionalBlock.FACING;
+    public static final EnumProperty<Direction> FACING = DirectionalBlock.FACING;
     public static final BooleanProperty OPEN = BlockStateProperties.OPEN;
 
     public MapCodec<TolkienBarrelBlock> codec() {
@@ -57,10 +57,10 @@ public class TolkienBarrelBlock extends TolkienEntityBlock {
             return InteractionResult.SUCCESS;
         } else {
             BlockEntity blockentity = level.getBlockEntity(pos);
-            if (blockentity instanceof TolkienBarrelBlockEntity) {
+            if (blockentity instanceof TolkienBarrelBlockEntity && level instanceof ServerLevel serverLevel) {
                 player.openMenu((TolkienBarrelBlockEntity)blockentity);
                 player.awardStat(Stats.OPEN_BARREL);
-                PiglinAi.angerNearbyPiglins(player, true);
+                PiglinAi.angerNearbyPiglins(serverLevel, player, true);
             }
 
             return InteractionResult.CONSUME;

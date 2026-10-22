@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.block.custom.entity.model;
 import com.greatorator.tolkienmobs.block.custom.entity.LockableChestBlockEntity;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.GeoRenderer;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -12,12 +13,12 @@ public class LockableChestBlockModel extends GeoModel<LockableChestBlockEntity> 
     private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/chest.animation.json");
 
     @Override
-    public ResourceLocation getModelResource(LockableChestBlockEntity animatable) {
+    public ResourceLocation getModelResource(LockableChestBlockEntity animatable, GeoRenderer<LockableChestBlockEntity> renderer) {
         return this.model;
     }
 
     @Override
-    public ResourceLocation getTextureResource(LockableChestBlockEntity animatable) {
+    public ResourceLocation getTextureResource(LockableChestBlockEntity animatable, GeoRenderer<LockableChestBlockEntity> renderer) {
         return this.texture;
     }
 

@@ -3,9 +3,7 @@
   "category": "building",
   "group": "angainor",
   "key": {
-    "#": {
-      "item": "tolkienmobs:angainor"
-    }
+    "#": "tolkienmobs:angainor"
   },
   "pattern": [
     "#  ",

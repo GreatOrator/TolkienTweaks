@@ -3,9 +3,7 @@
   "category": "building",
   "group": "iron_stone",
   "key": {
-    "#": {
-      "item": "tolkienmobs:iron_stone"
-    }
+    "#": "tolkienmobs:iron_stone"
   },
   "pattern": [
     "#  ",

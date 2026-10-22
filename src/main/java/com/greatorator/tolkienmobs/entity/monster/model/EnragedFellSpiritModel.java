@@ -8,6 +8,7 @@ import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.model.data.EntityModelData;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
@@ -17,12 +18,12 @@ public class EnragedFellSpiritModel extends GeoModel<EnragedFellSpiritEntity> {
 	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/monster/base.animation.json");
 
 	@Override
-	public ResourceLocation getModelResource(EnragedFellSpiritEntity object) {
+	public ResourceLocation getModelResource(EnragedFellSpiritEntity object, GeoRenderer<EnragedFellSpiritEntity> renderer) {
 		return this.model;
 	}
 
 	@Override
-	public ResourceLocation getTextureResource(EnragedFellSpiritEntity object) {
+	public ResourceLocation getTextureResource(EnragedFellSpiritEntity object, GeoRenderer<EnragedFellSpiritEntity> renderer) {
 		return EnragedFellSpiritRender.LOCATION_BY_VARIANT.get(object.getVariant());
 	}
 

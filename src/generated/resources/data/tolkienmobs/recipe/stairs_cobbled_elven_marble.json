@@ -3,9 +3,7 @@
   "category": "building",
   "group": "cobbled_elven_marble",
   "key": {
-    "#": {
-      "item": "tolkienmobs:cobbled_elven_marble"
-    }
+    "#": "tolkienmobs:cobbled_elven_marble"
   },
   "pattern": [
     "#  ",

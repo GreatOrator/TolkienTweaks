@@ -9,7 +9,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -27,31 +26,31 @@ public class KeyItem extends TolkienItem {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResult use(Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
-        if (level.isClientSide()) return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
+        if (level.isClientSide()) return InteractionResult.PASS;
 
         if (Screen.hasShiftDown() && player.isCreative()) {
             player.openMenu(new SimpleMenuProvider(
-                    (windowId, playerInventory, playerEntity) -> new KeyCodeContainer(windowId, playerInventory, player, itemstack), Component.translatable("screen.tolkienmobs.code" + itemstack.getDescriptionId())), (buf -> {
+                    (windowId, playerInventory, playerEntity) -> new KeyCodeContainer(windowId, playerInventory, player, itemstack), Component.translatable("screen.tolkienmobs.code" + itemstack.getItem().getDescriptionId())), (buf -> {
                         ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, itemstack);
             }));
-            return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
+            return InteractionResult.PASS;
         }
         if (player.isCreative()) {
             player.openMenu(new SimpleMenuProvider(
-                    (windowId, playerInventory, playerEntity) -> new KeyItemContainer(windowId, playerInventory, player, itemstack), Component.translatable("screen.tolkienmobs." + itemstack.getDescriptionId())), (buf -> {
+                    (windowId, playerInventory, playerEntity) -> new KeyItemContainer(windowId, playerInventory, player, itemstack), Component.translatable("screen.tolkienmobs." + itemstack.getItem().getDescriptionId())), (buf -> {
                 ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, itemstack);
             }));
-            return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
+            return InteractionResult.PASS;
         }else if (!getKeyCode(itemstack).isEmpty()){
             player.openMenu(new SimpleMenuProvider(
-                    (windowId, playerInventory, playerEntity) -> new KeyItemContainer(windowId, playerInventory, player, itemstack), Component.translatable("screen.tolkienmobs." + itemstack.getDescriptionId())), (buf -> {
+                    (windowId, playerInventory, playerEntity) -> new KeyItemContainer(windowId, playerInventory, player, itemstack), Component.translatable("screen.tolkienmobs." + itemstack.getItem().getDescriptionId())), (buf -> {
                 ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, itemstack);
             }));
         }
 
-        return new InteractionResultHolder<>(InteractionResult.PASS, itemstack);
+        return InteractionResult.PASS;
     }
 
 //    @Override
@@ -72,7 +71,7 @@ public class KeyItem extends TolkienItem {
 //                        if (uses == 0) {
 //                            level.playSound(context.getPlayer(), context.getClickedPos(), SoundEvents.ITEM_BREAK, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
 //                            itemstack.shrink(1);
-//                            player.sendSystemMessage(Component.translatable("tolkienmobs.msg.key_used").withStyle(ChatFormatting.RED));
+//                            player.displayClientMessage(Component.translatable("tolkienmobs.msg.key_used").withStyle(ChatFormatting.RED), false);
 //                            return InteractionResult.CONSUME;
 //                        }
 //
@@ -81,16 +80,16 @@ public class KeyItem extends TolkienItem {
 //                }
 //                level.playSound(context.getPlayer(), context.getClickedPos(), SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
 //                player.openMenu(new SimpleMenuProvider(
-//                        (windowId, playerInventory, playerEntity) -> new KeyItemContainer(windowId, playerInventory, player, itemstack), Component.translatable("screen.tolkienmobs." + itemstack.getDescriptionId())), (buf -> {
+//                        (windowId, playerInventory, playerEntity) -> new KeyItemContainer(windowId, playerInventory, player, itemstack), Component.translatable("screen.tolkienmobs." + itemstack.getItem().getDescriptionId())), (buf -> {
 //                    ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, itemstack);
 //                }));
 //            }
 //        } else if (entity instanceof CamoKeyStoneBlockEntity) {
-//            player.sendSystemMessage(Component.translatable("tolkienmobs.msg.key_used").withStyle(ChatFormatting.RED));
+//            player.displayClientMessage(Component.translatable("tolkienmobs.msg.key_used").withStyle(ChatFormatting.RED), false);
 //            return InteractionResult.SUCCESS;
 //    }
 //        level.playSound(context.getPlayer(), context.getClickedPos(), SoundEvents.CHEST_LOCKED, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
-//          player.sendSystemMessage(Component.translatable("tolkienmobs.msg.wrong_key").withStyle(ChatFormatting.RED));
+//          player.displayClientMessage(Component.translatable("tolkienmobs.msg.wrong_key").withStyle(ChatFormatting.RED), false);
 //        return InteractionResult.SUCCESS;
 //    }
 

@@ -22,6 +22,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -79,7 +80,6 @@ public class ThrushEntity extends TolkienFlyingAmbientEntity implements GeoEntit
         FlyingPathNavigation navigator = new FlyingPathNavigation(this, world);
         navigator.setCanOpenDoors(false);
         navigator.setCanFloat(true);
-        navigator.setCanPassDoors(true);
         return navigator;
     }
 
@@ -185,7 +185,7 @@ public class ThrushEntity extends TolkienFlyingAmbientEntity implements GeoEntit
                 }
             }
 
-            return InteractionResult.sidedSuccess(this.level().isClientSide);
+            return this.level().isClientSide ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
         }
         else if(this.isTame() && this.isOwnedBy(pPlayer)) {
             if(isFood(itemstack)) {
@@ -195,7 +195,7 @@ public class ThrushEntity extends TolkienFlyingAmbientEntity implements GeoEntit
                 this.setOrderedToSit(!this.isOrderedToSit());
             }
 
-            return InteractionResult.sidedSuccess(this.level().isClientSide);
+            return this.level().isClientSide ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
         }
         else {
             return super.mobInteract(pPlayer, pHand);
@@ -237,7 +237,7 @@ public class ThrushEntity extends TolkienFlyingAmbientEntity implements GeoEntit
 
     @Override
     public AgeableMob getBreedOffspring(ServerLevel level, AgeableMob otherParent) {
-        var child = TolkienEntities.ENTITY_TTM_THRUSH.get().create(level);
+        var child = TolkienEntities.ENTITY_TTM_THRUSH.get().create(level, EntitySpawnReason.BREEDING);
         if(child != null /*&& otherParent instanceof BaldEagle eagle*/) {
             if(this.isTame()) {
                 child.setOwnerUUID(this.getOwnerUUID());
@@ -248,8 +248,8 @@ public class ThrushEntity extends TolkienFlyingAmbientEntity implements GeoEntit
     }
 
     @Override
-    public boolean doHurtTarget(Entity pEntity) {
-        return pEntity.hurt(pEntity.damageSources().mobAttack(this), 3.0F);
+    public boolean doHurtTarget(ServerLevel serverLevel, Entity pEntity) {
+        return pEntity.hurtServer(serverLevel, pEntity.damageSources().mobAttack(this), 3.0F);
     }
 
     @Override
@@ -314,17 +314,15 @@ public class ThrushEntity extends TolkienFlyingAmbientEntity implements GeoEntit
 
     @SuppressWarnings("resource")
     @Override
-    public boolean hurt(DamageSource pSource, float pAmount) {
-        if(this.isInvulnerableTo(pSource)) {
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource pSource, float pAmount) {
+        if(this.isInvulnerableTo(serverLevel, pSource)) {
             return false;
         }
         else {
-            if(!this.level().isClientSide) {
-                this.setOnGround(true);
-                this.setOrderedToSit(false);
-            }
+            this.setOnGround(true);
+            this.setOrderedToSit(false);
 
-            return super.hurt(pSource, pAmount);
+            return super.hurtServer(serverLevel, pSource, pAmount);
         }
     }
 

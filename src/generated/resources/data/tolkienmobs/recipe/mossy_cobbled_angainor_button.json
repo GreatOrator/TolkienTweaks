@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "mossy_cobbled_angainor",
   "ingredients": [
-    {
-      "item": "tolkienmobs:mossy_cobbled_angainor"
-    }
+    "tolkienmobs:mossy_cobbled_angainor"
   ],
   "result": {
     "count": 1,

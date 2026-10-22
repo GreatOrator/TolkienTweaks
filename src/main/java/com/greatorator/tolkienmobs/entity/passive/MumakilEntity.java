@@ -19,7 +19,7 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.MoveToBlockGoal;
@@ -82,19 +82,18 @@ public class MumakilEntity extends TolkienHeardEntity implements GeoEntity {
         this.didAttack = didAttack;
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        if (!this.level().isClientSide) {
-            this.setDidAttack(false);
-        }
+    @Override
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource source, float amount) {
+        this.setDidAttack(false);
 
-        return super.hurt(source, amount);
+        return super.hurtServer(serverLevel, source, amount);
     }
 
     @Nullable
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
         TolkienVariant variant = Util.getRandom(TolkienVariant.values(), this.random);
-        MumakilEntity baby = TolkienEntities.ENTITY_TTM_MUMAKIL.get().create(serverLevel);
+        MumakilEntity baby = TolkienEntities.ENTITY_TTM_MUMAKIL.get().create(serverLevel, EntitySpawnReason.BREEDING);
         baby.setVariant(variant);
 
         return baby;
@@ -147,7 +146,7 @@ public class MumakilEntity extends TolkienHeardEntity implements GeoEntity {
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnType, @Nullable SpawnGroupData spawnGroupData) {
         TolkienVariant variant = Util.getRandom(TolkienVariant.values(), this.random);
         RandomSource randomsource = level.getRandom();
 

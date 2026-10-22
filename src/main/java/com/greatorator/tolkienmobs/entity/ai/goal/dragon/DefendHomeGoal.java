@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.entity.ai.goal.dragon;
 
 import com.greatorator.tolkienmobs.TolkienMobsConfig;
 import com.greatorator.tolkienmobs.entity.DragonEntity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
@@ -11,14 +12,14 @@ import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.phys.AABB;
 
 import java.util.EnumSet;
-import java.util.function.Predicate;
 
 /**
  * Basically another target goal that targets things within the home
  */
 public class DefendHomeGoal extends TargetGoal
 {
-    private static final Predicate<LivingEntity> FILTER = e -> e instanceof Enemy && !(e instanceof Creeper) && !e.getName().getString().equalsIgnoreCase("Ignore Me");
+    private static final TargetingConditions.Selector FILTER =
+            (entity, level) -> entity instanceof Enemy && !(entity instanceof Creeper) && !entity.getName().getString().equalsIgnoreCase("Ignore Me");
     private static final TargetingConditions CONDITIONS = TargetingConditions.forCombat().selector(FILTER);
     private final DragonEntity defender;
     public DefendHomeGoal(DragonEntity defender)
@@ -62,12 +63,13 @@ public class DefendHomeGoal extends TargetGoal
 
     public LivingEntity findPotentialTarget()
     {
-        return defender.level.getNearestEntity(LivingEntity.class,
+        // Level#getNearestEntity moved onto the server getter and now takes the candidate list instead
+        // of a class and a box, so the scan is done here the way NearestAttackableTargetGoal does it.
+        if (!(defender.level() instanceof ServerLevel serverLevel)) return null;
+        return serverLevel.getNearestEntity(
+                serverLevel.getEntitiesOfClass(LivingEntity.class, new AABB(defender.getRestrictCenter()).inflate(TolkienMobsConfig.homeRadius)),
                 CONDITIONS,
                 defender,
-                defender.getX(),
-                defender.getEyeY(),
-                defender.getZ(),
-                new AABB(defender.getRestrictCenter()).inflate(TolkienMobsConfig.homeRadius));
+                defender.getX(), defender.getEyeY(), defender.getZ());
     }
 }

@@ -1,5 +1,8 @@
 package com.greatorator.tolkienmobs.entity.monster;
 
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntitySpawnReason;
+
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
 import com.greatorator.tolkienmobs.entity.ai.goal.GoblinFlockToSameKindGoal;
 import com.greatorator.tolkienmobs.entity.ai.goal.GoblinPanicOnFlockDeathGoal;
@@ -91,8 +94,8 @@ public class GoblinEntity extends TolkienMonsterEntity implements GeoEntity {
     private final static long coolDown = 15000L;
 
     @Override
-    public boolean doHurtTarget(Entity entity) {
-        if (super.doHurtTarget(entity)) {
+    public boolean doHurtTarget(ServerLevel serverLevel, Entity entity) {
+        if (super.doHurtTarget(serverLevel, entity)) {
             long time = System.currentTimeMillis();
             if (entity instanceof LivingEntity && time > nextAbilityUse) {
                 nextAbilityUse = time + coolDown;
@@ -164,7 +167,7 @@ public class GoblinEntity extends TolkienMonsterEntity implements GeoEntity {
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnType, @Nullable SpawnGroupData spawnGroupData) {
         RandomSource randomsource = level.getRandom();
 
         this.populateDefaultEquipmentSlots(randomsource, difficulty);

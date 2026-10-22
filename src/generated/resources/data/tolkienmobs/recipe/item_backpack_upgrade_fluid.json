@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "P": {
-      "item": "tolkienmobs:bottle_fancy"
-    },
-    "W": {
-      "item": "tolkienmobs:upgrade_item_backpack_upgrade_base"
-    }
+    "P": "tolkienmobs:bottle_fancy",
+    "W": "tolkienmobs:upgrade_item_backpack_upgrade_base"
   },
   "pattern": [
     "W",

@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "iron_stone",
   "ingredients": [
-    {
-      "item": "tolkienmobs:iron_stone"
-    }
+    "tolkienmobs:iron_stone"
   ],
   "result": {
     "count": 1,

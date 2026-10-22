@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "tolkienmobs:item_backpack_upgrade_fluid_3"
-    },
-    "M": {
-      "item": "tolkienmobs:ingot_mithril"
-    }
+    "A": "tolkienmobs:item_backpack_upgrade_fluid_3",
+    "M": "tolkienmobs:ingot_mithril"
   },
   "pattern": [
     "AAA",

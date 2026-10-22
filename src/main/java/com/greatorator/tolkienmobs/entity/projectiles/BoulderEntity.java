@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.entity.projectiles;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -39,19 +40,18 @@ public class BoulderEntity extends AbstractArrow {
     }
 
     public boolean isGrounded() {
-        return inGround;
+        return this.isInGround();
     }
 
     @Override
     protected void onHitEntity(EntityHitResult result) {
         super.onHitEntity(result);
-        Entity entity = result.getEntity();
-        entity.hurt(this.damageSources().thrown(this, this.getOwner()), 4);
+        if (!(this.level() instanceof ServerLevel serverLevel)) return;
 
-        if (!this.level().isClientSide) {
-            this.level().broadcastEntityEvent(this, (byte)3);
-            this.discard();
-        }
+        Entity entity = result.getEntity();
+        entity.hurtServer(serverLevel, this.damageSources().thrown(this, this.getOwner()), 4);
+        this.level().broadcastEntityEvent(this, (byte)3);
+        this.discard();
     }
 
     @Override

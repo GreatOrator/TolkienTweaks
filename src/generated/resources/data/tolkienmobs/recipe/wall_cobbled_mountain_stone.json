@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "tolkienmobs:cobbled_mountain_stone"
-    }
+    "#": "tolkienmobs:cobbled_mountain_stone"
   },
   "pattern": [
     "###",

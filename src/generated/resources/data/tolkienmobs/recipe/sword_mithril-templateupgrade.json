@@ -1,16 +1,10 @@
 {
   "type": "minecraft:smithing_transform",
-  "addition": {
-    "item": "tolkienmobs:ingot_mithril"
-  },
-  "base": {
-    "item": "minecraft:netherite_sword"
-  },
+  "addition": "tolkienmobs:ingot_mithril",
+  "base": "minecraft:netherite_sword",
   "result": {
     "count": 1,
     "id": "tolkienmobs:sword_mithril"
   },
-  "template": {
-    "item": "tolkienmobs:template_mithril"
-  }
+  "template": "tolkienmobs:template_mithril"
 }

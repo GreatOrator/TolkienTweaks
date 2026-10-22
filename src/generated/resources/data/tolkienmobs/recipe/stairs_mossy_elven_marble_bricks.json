@@ -3,9 +3,7 @@
   "category": "building",
   "group": "mossy_elven_marble_bricks",
   "key": {
-    "#": {
-      "item": "tolkienmobs:mossy_elven_marble_bricks"
-    }
+    "#": "tolkienmobs:mossy_elven_marble_bricks"
   },
   "pattern": [
     "#  ",

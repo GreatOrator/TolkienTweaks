@@ -3,15 +3,9 @@
   "category": "misc",
   "group": "morguliron",
   "ingredients": [
-    {
-      "item": "tolkienmobs:template_morguliron"
-    },
-    {
-      "item": "tolkienmobs:ingot_morguliron"
-    },
-    {
-      "item": "tolkienmobs:ingot_morguliron"
-    }
+    "tolkienmobs:template_morguliron",
+    "tolkienmobs:ingot_morguliron",
+    "tolkienmobs:ingot_morguliron"
   ],
   "result": {
     "count": 2,

@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.effect;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -13,7 +14,7 @@ public class ElvenLifeEffect extends TolkienEffect{
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity entity, int amplifier) {
+    public boolean applyEffectTick(ServerLevel level, LivingEntity entity, int amplifier) {
         entity.addEffect((new MobEffectInstance(MobEffects.ABSORPTION, 160, 6 + amplifier, false, false, false)));
         entity.addEffect((new MobEffectInstance(MobEffects.REGENERATION, 900, 6 + amplifier, false, false, false)));
 

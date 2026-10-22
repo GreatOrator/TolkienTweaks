@@ -93,9 +93,4 @@ public class DuergarRender extends GeoEntityRenderer<DuergarEntity> {
         return LOCATION_BY_VARIANT.get(duergarEntity.getVariant());
     }
 
-    @Override
-    public void render(DuergarEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
-    }
 }

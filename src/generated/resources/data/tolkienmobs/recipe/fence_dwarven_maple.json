@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "dwarven_maple",
   "key": {
-    "#": {
-      "item": "minecraft:stick"
-    },
-    "W": {
-      "item": "tolkienmobs:planks_dwarven_maple"
-    }
+    "#": "minecraft:stick",
+    "W": "tolkienmobs:planks_dwarven_maple"
   },
   "pattern": [
     "W#W",

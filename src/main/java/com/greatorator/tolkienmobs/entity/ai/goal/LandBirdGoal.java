@@ -36,7 +36,7 @@ public class LandBirdGoal extends Goal {
         }
 
         Vec3 end = this.bird.getEyePosition();
-        end = new Vec3(end.x, bird.level().getMinBuildHeight(), end.z);
+        end = new Vec3(end.x, bird.level().getMinY(), end.z);
         BlockHitResult result = this.bird.level.clip(new ClipContext(this.bird.getEyePosition(), end, ClipContext.Block.OUTLINE, ClipContext.Fluid.ANY, this.bird));
         if (result.getType() != HitResult.Type.BLOCK) {
             return false;

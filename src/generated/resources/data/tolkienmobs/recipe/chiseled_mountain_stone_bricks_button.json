@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "chiseled_mountain_stone_bricks",
   "ingredients": [
-    {
-      "item": "tolkienmobs:chiseled_mountain_stone_bricks"
-    }
+    "tolkienmobs:chiseled_mountain_stone_bricks"
   ],
   "result": {
     "count": 1,

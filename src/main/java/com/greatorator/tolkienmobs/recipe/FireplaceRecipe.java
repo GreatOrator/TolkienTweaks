@@ -9,7 +9,10 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -64,16 +67,6 @@ public record FireplaceRecipe(List<SizedIngredient> inputItems, List<ItemStack> 
     }
 
     @Override
-    public boolean canCraftInDimensions(int i, int i1) {
-        return true;
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider provider) {
-        return output.isEmpty() ? ItemStack.EMPTY : output.get(0).copy();
-    }
-
-    @Override
     public RecipeSerializer<? extends Recipe<FireplaceRecipeInput>> getSerializer() {
         return (RecipeSerializer<? extends Recipe<FireplaceRecipeInput>>) TolkienRecipeSerializers.FIREPLACE_SERIALIZER.get();
     }
@@ -81,6 +74,16 @@ public record FireplaceRecipe(List<SizedIngredient> inputItems, List<ItemStack> 
     @Override
     public RecipeType<? extends Recipe<FireplaceRecipeInput>> getType() {
         return TolkienRecipesTypes.FIREPLACE_TYPE.get();
+    }
+
+    @Override
+    public PlacementInfo placementInfo() {
+        return PlacementInfo.create(inputItems.stream().map(SizedIngredient::ingredient).toList());
+    }
+
+    @Override
+    public RecipeBookCategory recipeBookCategory() {
+        return RecipeBookCategories.CRAFTING_MISC;
     }
 
     public List<SizedIngredient> getInputItems() {
@@ -96,7 +99,7 @@ public record FireplaceRecipe(List<SizedIngredient> inputItems, List<ItemStack> 
         public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(MODID, "fireplace");
 
         private final MapCodec<FireplaceRecipe> CODEC = RecordCodecBuilder.mapCodec(alloySmeltingRecipeInstance -> alloySmeltingRecipeInstance.group(
-                SizedIngredient.FLAT_CODEC.listOf().fieldOf("ingredients").forGetter(FireplaceRecipe::getInputItems),
+                SizedIngredient.NESTED_CODEC.listOf().fieldOf("ingredients").forGetter(FireplaceRecipe::getInputItems),
                 ItemStack.CODEC.listOf().fieldOf("output").forGetter(FireplaceRecipe::getOutput)
         ).apply(alloySmeltingRecipeInstance, FireplaceRecipe::new));
 

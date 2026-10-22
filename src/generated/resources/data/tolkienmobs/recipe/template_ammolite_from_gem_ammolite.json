@@ -3,15 +3,9 @@
   "category": "misc",
   "group": "ammolite",
   "ingredients": [
-    {
-      "item": "tolkienmobs:template_ammolite"
-    },
-    {
-      "item": "tolkienmobs:gem_ammolite"
-    },
-    {
-      "item": "tolkienmobs:gem_ammolite"
-    }
+    "tolkienmobs:template_ammolite",
+    "tolkienmobs:gem_ammolite",
+    "tolkienmobs:gem_ammolite"
   ],
   "result": {
     "count": 2,

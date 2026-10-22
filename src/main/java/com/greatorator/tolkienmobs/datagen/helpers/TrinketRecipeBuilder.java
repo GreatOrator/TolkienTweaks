@@ -8,8 +8,9 @@ import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
@@ -51,16 +52,16 @@ public class TrinketRecipeBuilder implements RecipeBuilder {
     }
 
     @Override
-    public void save(RecipeOutput recipeOutput, ResourceLocation recipeId) {
+    public void save(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> recipeKey) {
         if (criteria.isEmpty()) {
-            throw new IllegalStateException("No way of obtaining recipe " + recipeId);
+            throw new IllegalStateException("No way of obtaining recipe " + recipeKey.location());
         }
         Advancement.Builder builder = recipeOutput.advancement()
-                .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeId))
-                .rewards(AdvancementRewards.Builder.recipe(recipeId))
+                .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeKey))
+                .rewards(AdvancementRewards.Builder.recipe(recipeKey))
                 .requirements(AdvancementRequirements.Strategy.OR);
         criteria.forEach(builder::addCriterion);
-        recipeOutput.accept(recipeId, new TrinketRecipe(group, trinket, fuel, potionItem),
-                builder.build(recipeId.withPrefix("recipes/misc/")));
+        recipeOutput.accept(recipeKey, new TrinketRecipe(group, trinket, fuel, potionItem),
+                builder.build(recipeKey.location().withPrefix("recipes/misc/")));
     }
 }

@@ -9,7 +9,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.BiomeTagsProvider;
 import net.minecraft.tags.BiomeTags;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -20,8 +19,8 @@ import java.util.concurrent.CompletableFuture;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class TolkienBiomeTagProvider extends BiomeTagsProvider {
-	public TolkienBiomeTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, @Nullable ExistingFileHelper helper) {
-		super(output, provider, MODID, helper);
+	public TolkienBiomeTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
+		super(output, provider, MODID);
 	}
 
 	@Override
@@ -32,7 +31,7 @@ public class TolkienBiomeTagProvider extends BiomeTagsProvider {
         });
 		TolkienBiomes.BIOME_FACTORIES.keySet().stream().sorted(Comparator.comparing(key -> key.location().toString())).toList().forEach(biome -> {
 			tag(TolkienTags.Biomes.OVERWORLD).add(biome);
-			float temperature = provider.asGetterLookup().lookupOrThrow(Registries.BIOME).getOrThrow(biome).value().getBaseTemperature();
+			float temperature = provider.lookupOrThrow(Registries.BIOME).getOrThrow(biome).value().getBaseTemperature();
 			if (temperature > 0.8F) tag(TolkienTags.Biomes.HOT).add(biome);
 			else if (temperature < 0.5F) tag(TolkienTags.Biomes.COLD).add(biome);
 			else tag(TolkienTags.Biomes.TEMPERATE).add(biome);

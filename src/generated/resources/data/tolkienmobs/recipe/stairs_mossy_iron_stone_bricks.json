@@ -3,9 +3,7 @@
   "category": "building",
   "group": "mossy_iron_stone_bricks",
   "key": {
-    "#": {
-      "item": "tolkienmobs:mossy_iron_stone_bricks"
-    }
+    "#": "tolkienmobs:mossy_iron_stone_bricks"
   },
   "pattern": [
     "#  ",

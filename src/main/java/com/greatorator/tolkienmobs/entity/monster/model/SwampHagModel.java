@@ -8,6 +8,7 @@ import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.model.data.EntityModelData;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
@@ -17,12 +18,12 @@ public class SwampHagModel extends GeoModel<SwampHagEntity> {
 	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/monster/swamphag.animation.json");
 
 	@Override
-	public ResourceLocation getModelResource(SwampHagEntity object) {
+	public ResourceLocation getModelResource(SwampHagEntity object, GeoRenderer<SwampHagEntity> renderer) {
 		return this.model;
 	}
 
 	@Override
-	public ResourceLocation getTextureResource(SwampHagEntity object) {
+	public ResourceLocation getTextureResource(SwampHagEntity object, GeoRenderer<SwampHagEntity> renderer) {
 		return SwampHagRender.LOCATION_BY_VARIANT.get(object.getVariant());
 	}
 

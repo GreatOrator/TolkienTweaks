@@ -16,7 +16,6 @@ import com.greatorator.tolkienmobs.entity.projectiles.render.TolkienArrowRendere
 import com.greatorator.tolkienmobs.event.TolkienRegistration;
 import com.greatorator.tolkienmobs.event.client.TolkienClientEvents;
 import com.greatorator.tolkienmobs.fluid.TolkienFluidType;
-import com.greatorator.tolkienmobs.handler.ColorHandler;
 import com.greatorator.tolkienmobs.handler.MilestoneHandler;
 import com.greatorator.tolkienmobs.init.*;
 import com.greatorator.tolkienmobs.network.ClientProxy;
@@ -29,7 +28,6 @@ import com.greatorator.tolkienmobs.particle.TintedSmokeParticle;
 import com.greatorator.tolkienmobs.particle.WindParticle;
 import com.greatorator.tolkienmobs.particle.provider.TolkienParticleProvider;
 import com.greatorator.tolkienmobs.util.GeneralUtility;
-import com.greatorator.tolkienmobs.util.TolkienItemProperties;
 import com.greatorator.tolkienmobs.world.registration.TolkienOverworldRegion;
 import com.greatorator.tolkienmobs.world.registration.TolkienSurfaceRules;
 import com.mojang.logging.LogUtils;
@@ -52,7 +50,6 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
@@ -135,9 +132,6 @@ public class TolkienMobsMain {
         NeoForge.EVENT_BUS.register(this);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, TolkienMobsConfig.SPEC);
-        if (FMLLoader.getDist().isClient()) {
-            modEventBus.addListener(ColorHandler::itemColourEvent);
-        }
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -229,8 +223,6 @@ public class TolkienMobsMain {
                 ItemBlockRenderTypes.setRenderLayer(TolkienFluids.MITHRIL_FLOWING.get(), RenderType.translucent());
                 ItemBlockRenderTypes.setRenderLayer(TolkienFluids.MORGULIRON_FLOWING.get(), RenderType.translucent());
             });
-
-            TolkienItemProperties.addCustomItemProperties();
 
             //Entity Renders
                 // Ambient

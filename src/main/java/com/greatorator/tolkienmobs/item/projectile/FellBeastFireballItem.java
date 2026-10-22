@@ -1,11 +1,12 @@
 package com.greatorator.tolkienmobs.item.projectile;
 
+import net.minecraft.world.InteractionResult;
+
 import com.greatorator.tolkienmobs.entity.projectiles.FellBeastFireballEntity;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -23,7 +24,7 @@ public class FellBeastFireballItem extends Item {
    }
 
    @Override
-   public InteractionResultHolder<ItemStack> use(Level worldIn, Player player, @Nonnull InteractionHand hand) {
+   public InteractionResult use(Level worldIn, Player player, @Nonnull InteractionHand hand) {
       ItemStack itemstack = player.getItemInHand(hand);
       Vec3 pos = player.getLookAngle();
       worldIn.playSound((Player)null, player.getX(), player.getY(), player.getZ(), SoundEvents.FIREWORK_ROCKET_SHOOT, SoundSource.NEUTRAL, 0.5F, 0.4F / (random.nextFloat() * 0.4F + 0.8F));
@@ -38,6 +39,6 @@ public class FellBeastFireballItem extends Item {
          itemstack.shrink(1);
       }
 
-      return InteractionResultHolder.sidedSuccess(itemstack, worldIn.isClientSide());
+      return InteractionResult.SUCCESS;
    }
 }

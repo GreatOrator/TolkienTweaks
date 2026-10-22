@@ -3,10 +3,9 @@ package com.greatorator.tolkienmobs.containers.screens;
 import com.greatorator.tolkienmobs.containers.FireplaceContainer;
 import com.greatorator.tolkienmobs.containers.slots.FuelSlot;
 import com.greatorator.tolkienmobs.util.LangTranslationUtils;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -59,14 +58,10 @@ public class FireplaceScreen extends AbstractContainerScreen<FireplaceContainer>
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, GUI);
-
         int relX = (this.width - this.imageWidth) / 2;
         int relY = (this.height - this.imageHeight) / 2;
 
-        guiGraphics.blit(GUI, relX - 23, relY, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(RenderType::guiTextured, GUI, relX - 23, relY, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
 
         int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
@@ -77,13 +72,13 @@ public class FireplaceScreen extends AbstractContainerScreen<FireplaceContainer>
 
     private void renderProgressArrow(GuiGraphics guiGraphics, int x, int y) {
         if(menu.isCrafting()) {
-            guiGraphics.blit(ARROW_TEXTURE,x + 67, y + 34, 0, 0, menu.getScaledArrowProgress(), 16, 18, 18);
+            guiGraphics.blit(RenderType::guiTextured, ARROW_TEXTURE, x + 67, y + 34, 0, 0, menu.getScaledArrowProgress(), 16, 18, 18);
         }
     }
 
     private void renderProgressFireplace(GuiGraphics guiGraphics, int x, int y) {
         if(menu.isCrafting()) {
-            guiGraphics.blit(FIRE_TEXTURE, x + 33, y + 35 + 16 - menu.getScaledFireplaceProgress(), 0, 16 - menu.getScaledFireplaceProgress(), 16, menu.getScaledFireplaceProgress(),18, 18);
+            guiGraphics.blit(RenderType::guiTextured, FIRE_TEXTURE, x + 33, y + 35 + 16 - menu.getScaledFireplaceProgress(), 0, 16 - menu.getScaledFireplaceProgress(), 16, menu.getScaledFireplaceProgress(), 18, 18);
         }
     }
 

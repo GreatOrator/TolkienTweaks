@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.entity;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -63,13 +64,15 @@ public class TolkienArrowEntity extends AbstractArrow {
     }
     protected void doPostHurtEffects(LivingEntity living) {
         super.doPostHurtEffects(living);
+        // Instant effects are applied by the server level, which is where this hook runs anyway.
+        if (!(this.level() instanceof ServerLevel serverLevel)) return;
         Entity entity = getEffectSource();
         PotionContents potioncontents = getPotionContents();
         if(potioncontents.potion().isPresent()) for(MobEffectInstance mobeffectinstance : potioncontents.potion().get().value().getEffects()){
-            if(mobeffectinstance.getEffect().value().isInstantenous()) mobeffectinstance.getEffect().value().applyInstantenousEffect(getOwner(), this, living, mobeffectinstance.getAmplifier(), 1D);
+            if(mobeffectinstance.getEffect().value().isInstantenous()) mobeffectinstance.getEffect().value().applyInstantenousEffect(serverLevel, getOwner(), this, living, mobeffectinstance.getAmplifier(), 1D);
             else living.addEffect(new MobEffectInstance(mobeffectinstance.getEffect(), Math.max(mobeffectinstance.mapDuration((p_268168_) -> p_268168_ / 8), 1), mobeffectinstance.getAmplifier(), mobeffectinstance.isAmbient(), mobeffectinstance.isVisible()), entity);
         } for(MobEffectInstance mobeffectinstance1 : potioncontents.customEffects()) {
-            if(mobeffectinstance1.getEffect().value().isInstantenous()) mobeffectinstance1.getEffect().value().applyInstantenousEffect(getOwner(), this, living, mobeffectinstance1.getAmplifier(), 1D);
+            if(mobeffectinstance1.getEffect().value().isInstantenous()) mobeffectinstance1.getEffect().value().applyInstantenousEffect(serverLevel, getOwner(), this, living, mobeffectinstance1.getAmplifier(), 1D);
             else living.addEffect(mobeffectinstance1, entity);
         }
     }

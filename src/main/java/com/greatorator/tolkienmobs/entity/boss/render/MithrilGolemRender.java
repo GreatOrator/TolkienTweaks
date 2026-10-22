@@ -21,8 +21,4 @@ public class MithrilGolemRender extends GeoEntityRenderer<MithrilGolemEntity> {
         return ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/elementalgolem/elemental_golem_mithril.png");
     }
 
-    @Override
-    public void render(MithrilGolemEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
-    }
 }

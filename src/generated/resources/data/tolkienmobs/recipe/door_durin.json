@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "ammolite",
   "key": {
-    "#": {
-      "item": "tolkienmobs:block_ammolite"
-    }
+    "#": "tolkienmobs:block_ammolite"
   },
   "pattern": [
     "##",

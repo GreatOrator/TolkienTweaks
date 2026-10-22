@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.entity.ambient.model;
 
-import com.greatorator.tolkienmobs.entity.ambient.SwarmEntity;
-import net.minecraft.client.model.HierarchicalModel;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -17,7 +17,7 @@ import org.joml.Vector3f;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class SwarmModel extends HierarchicalModel<SwarmEntity> {
+public class SwarmModel extends EntityModel<LivingEntityRenderState> {
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MODID, "entityttmswarm"), "main");
 	private final ModelPart root;
 	private final ModelPart core;
@@ -31,6 +31,7 @@ public class SwarmModel extends HierarchicalModel<SwarmEntity> {
 	private static final RandomSource rand = RandomSource.create();
 
 	public SwarmModel(ModelPart root) {
+		super(root);
 		this.root = root;
 
 		this.core = this.root.getChild("core");
@@ -87,44 +88,40 @@ public class SwarmModel extends HierarchicalModel<SwarmEntity> {
 	}
 
 	@Override
-	public ModelPart root() {
-		return this.root;
-	}
+	public void setupAnim(LivingEntityRenderState state) {
+		super.setupAnim(state);
 
-	@Override
-	public void setupAnim(SwarmEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		float age = state.ageInTicks;
 
-	}
 
-	@Override
-	public void prepareMobModel(SwarmEntity entity, float limbSwing, float limbSwingAmount, float partialTicks) {
-		this.core.yRot = (entity.tickCount + partialTicks) / 5.0F;
-		this.core.xRot = Mth.sin((entity.tickCount + partialTicks) / 5.0F) / 4.0F;
-		this.core.zRot = Mth.cos((entity.tickCount + partialTicks) / 5.0F) / 4.0F;
+	
+		this.core.yRot = age / 5.0F;
+		this.core.xRot = Mth.sin(age / 5.0F) / 4.0F;
+		this.core.zRot = Mth.cos(age / 5.0F) / 4.0F;
 
-		this.group1.yRot = (entity.tickCount + partialTicks) / 2.0F;
-		this.group1.xRot = Mth.sin((entity.tickCount + partialTicks) / 6.0F) / 2.0F;
-		this.group1.zRot = Mth.cos((entity.tickCount + partialTicks) / 5.0F) / 4.0F;
+		this.group1.yRot = age / 2.0F;
+		this.group1.xRot = Mth.sin(age / 6.0F) / 2.0F;
+		this.group1.zRot = Mth.cos(age / 5.0F) / 4.0F;
 
-		this.group2.yRot = Mth.sin((entity.tickCount + partialTicks) / 2.0F) / 3.0F;
-		this.group2.xRot = (entity.tickCount + partialTicks) / 5.0F;
-		this.group2.zRot = Mth.cos((entity.tickCount + partialTicks) / 5.0F) / 4.0F;
+		this.group2.yRot = Mth.sin(age / 2.0F) / 3.0F;
+		this.group2.xRot = age / 5.0F;
+		this.group2.zRot = Mth.cos(age / 5.0F) / 4.0F;
 
-		this.group3.yRot = Mth.sin((entity.tickCount + partialTicks) / 7.0F) / 3.0F;
-		this.group3.xRot = Mth.cos((entity.tickCount + partialTicks) / 4.0F) / 2.0F;
-		this.group3.zRot = (entity.tickCount + partialTicks) / 5.0F;
+		this.group3.yRot = Mth.sin(age / 7.0F) / 3.0F;
+		this.group3.xRot = Mth.cos(age / 4.0F) / 2.0F;
+		this.group3.zRot = age / 5.0F;
 
-		this.group4.xRot = (entity.tickCount + partialTicks) / 2.0F;
-		this.group4.zRot = Mth.sin((entity.tickCount + partialTicks) / 6.0F) / 2.0F;
-		this.group4.yRot = Mth.sin((entity.tickCount + partialTicks) / 5.0F) / 4.0F;
+		this.group4.xRot = age / 2.0F;
+		this.group4.zRot = Mth.sin(age / 6.0F) / 2.0F;
+		this.group4.yRot = Mth.sin(age / 5.0F) / 4.0F;
 
-		this.group5.zRot = (entity.tickCount + partialTicks) / 2.0F;
-		this.group5.yRot = Mth.cos((entity.tickCount + partialTicks) / 5.0F) / 4.0F;
-		this.group5.xRot = Mth.cos((entity.tickCount + partialTicks) / 5.0F) / 4.0F;
+		this.group5.zRot = age / 2.0F;
+		this.group5.yRot = Mth.cos(age / 5.0F) / 4.0F;
+		this.group5.xRot = Mth.cos(age / 5.0F) / 4.0F;
 
-		this.group6.zRot = Mth.cos((entity.tickCount + partialTicks) / 7.0F) / 3.0F;
-		this.group6.xRot = Mth.cos((entity.tickCount + partialTicks) / 4.0F) / 2.0F;
-		this.group6.yRot = (entity.tickCount + partialTicks) / 5.0F;
+		this.group6.zRot = Mth.cos(age / 7.0F) / 3.0F;
+		this.group6.xRot = Mth.cos(age / 4.0F) / 2.0F;
+		this.group6.yRot = age / 5.0F;
 	}
 
 }

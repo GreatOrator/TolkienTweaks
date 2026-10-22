@@ -9,8 +9,8 @@ import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.block.state.properties.StairsShape;
-import net.neoforged.neoforge.client.model.generators.*;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import com.greatorator.tolkienmobs.datagen.modelgen.*;
+import com.greatorator.tolkienmobs.datagen.modelgen.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.function.Consumer;
@@ -27,12 +27,13 @@ public abstract class BlockModelHelper extends BlockStateProvider {
 
 	public BlockModelHelper(PackOutput output, ExistingFileHelper exFileHelper) {
 		super(output, MODID, exFileHelper);
-	}
-
+	}	/**
+	 * A block whose block entity draws it. The game dropped {@code builtin/entity}, so the model is
+	 * left empty like vanilla's chest model: it draws nothing and only supplies break particles.
+	 */
 	protected void builtinEntity(Block b, String particle) {
 		simpleBlock(b, models().getBuilder(name(b))
-			.parent(new ModelFile.UncheckedModelFile("builtin/entity"))
-			.texture("particle", particle));
+				.texture("particle", particle));
 	}
 
 	protected void simpleBlockExisting(Block b) {

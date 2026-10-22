@@ -11,7 +11,7 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 
 public class LightningBugModel extends Model {
 
@@ -21,7 +21,7 @@ public class LightningBugModel extends Model {
 	private final ModelPart glow;
 
 	public LightningBugModel(ModelPart root) {
-		super(RenderType::entityCutoutNoCull);
+		super(root, RenderType::entityCutoutNoCull);
 
 		this.legs = root.getChild("legs");
 		this.fatbody = root.getChild("fat_body");
@@ -56,14 +56,13 @@ public class LightningBugModel extends Model {
 		return LayerDefinition.create(meshdefinition, 64, 32);
 	}
 
-	@Override
-	public void renderToBuffer(PoseStack stack, VertexConsumer consumer, int light, int overlay, int color) {
+	public void renderBody(PoseStack stack, VertexConsumer consumer, int light, int overlay, int color) {
 		this.legs.render(stack, consumer, light, overlay, color);
 		this.fatbody.render(stack, consumer, light, overlay, color);
 		this.skinnybody.render(stack, consumer, light, overlay, color);
 	}
 
 	public void renderGlow(PoseStack stack, VertexConsumer consumer, float alpha) {
-		this.glow.render(stack, consumer, 0xF000F0, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.colorFromFloat(alpha, 1.0F, 1.0F, 1.0F));
+		this.glow.render(stack, consumer, 0xF000F0, OverlayTexture.NO_OVERLAY, ARGB.white(alpha));
 	}
 }

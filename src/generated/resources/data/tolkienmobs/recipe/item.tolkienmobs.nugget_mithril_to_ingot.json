@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "N": {
-      "item": "tolkienmobs:nugget_mithril"
-    }
+    "N": "tolkienmobs:nugget_mithril"
   },
   "pattern": [
     "NNN",

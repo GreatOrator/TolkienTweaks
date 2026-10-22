@@ -60,7 +60,6 @@ public class CrebainEntity extends TolkienFlyingAmbientEntity implements GeoEnti
         FlyingPathNavigation navigator = new FlyingPathNavigation(this, world);
         navigator.setCanOpenDoors(false);
         navigator.setCanFloat(true);
-        navigator.setCanPassDoors(true);
         return navigator;
     }
 

@@ -1,10 +1,9 @@
 package com.greatorator.tolkienmobs.containers.widget;
 
 import com.greatorator.tolkienmobs.containers.handlers.ToggleButtonFactory.TextureLocalization;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 
 import java.util.List;
@@ -38,10 +37,7 @@ public class ToggleButton extends TolkienButton {
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.setShaderTexture(0, textureLocalizations.get(getTexturePosition()).texture());
-        guiGraphics.blit(textureLocalizations.get(getTexturePosition()).texture(), this.getX(), this.getY(), 0, 0, width, height, width, height);
+        guiGraphics.blit(RenderType::guiTextured, textureLocalizations.get(getTexturePosition()).texture(), this.getX(), this.getY(), 0, 0, width, height, width, height);
     }
 
     @Override

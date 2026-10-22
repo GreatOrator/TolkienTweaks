@@ -3,9 +3,7 @@
   "category": "building",
   "group": "smooth_mountain_stone",
   "key": {
-    "#": {
-      "item": "tolkienmobs:smooth_mountain_stone"
-    }
+    "#": "tolkienmobs:smooth_mountain_stone"
   },
   "pattern": [
     "#  ",

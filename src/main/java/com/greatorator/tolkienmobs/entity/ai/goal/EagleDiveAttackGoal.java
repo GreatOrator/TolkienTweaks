@@ -80,7 +80,7 @@ public class EagleDiveAttackGoal extends Goal {
 
         // Attack when close enough
         if (eagle.distanceToSqr(target) < 4.0) {
-            eagle.doHurtTarget(target);
+            eagle.doHurtTarget(getServerLevel(eagle), target);
             diveCooldown = 100; // Cooldown after attack
         }
     }

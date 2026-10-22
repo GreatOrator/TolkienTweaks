@@ -1,9 +1,8 @@
 package com.greatorator.tolkienmobs.containers.widget;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -18,10 +17,7 @@ public class IconButton extends Button {
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.setShaderTexture(0, texture);
-        guiGraphics.blit(texture, this.getX(), this.getY(), 0, 0, width, height, width, height);
+        guiGraphics.blit(RenderType::guiTextured, texture, this.getX(), this.getY(), 0, 0, width, height, width, height);
     }
 
     @Override

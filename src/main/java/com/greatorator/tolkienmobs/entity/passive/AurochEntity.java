@@ -18,7 +18,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
@@ -58,7 +58,7 @@ public class AurochEntity extends TolkienHeardEntity implements GeoEntity {
             player.playSound(SoundEvents.COW_MILK, 1.0F, 1.0F);
             ItemStack itemstack1 = ItemUtils.createFilledResult(itemstack, player, Items.MILK_BUCKET.getDefaultInstance());
             player.setItemInHand(hand, itemstack1);
-            return InteractionResult.sidedSuccess(this.level.isClientSide);
+            return this.level().isClientSide ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
         } else {
             return super.mobInteract(player, hand);
         }
@@ -68,7 +68,7 @@ public class AurochEntity extends TolkienHeardEntity implements GeoEntity {
     @Override
     public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
         TolkienVariant variant = Util.getRandom(TolkienVariant.values(), this.random);
-        AurochEntity baby = TolkienEntities.ENTITY_TTM_AUROCH.get().create(serverLevel);
+        AurochEntity baby = TolkienEntities.ENTITY_TTM_AUROCH.get().create(serverLevel, EntitySpawnReason.BREEDING);
         baby.setVariant(variant);
 
         return baby;
@@ -108,7 +108,7 @@ public class AurochEntity extends TolkienHeardEntity implements GeoEntity {
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnType, @Nullable SpawnGroupData spawnGroupData) {
         TolkienVariant variant = Util.getRandom(TolkienVariant.values(), this.random);
 
         this.setVariant(variant);

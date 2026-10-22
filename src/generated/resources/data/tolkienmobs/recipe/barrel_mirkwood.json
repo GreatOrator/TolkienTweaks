@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "tolkienmobs:planks_mirkwood"
-    },
-    "M": {
-      "item": "tolkienmobs:slab_mirkwood"
-    }
+    "A": "tolkienmobs:planks_mirkwood",
+    "M": "tolkienmobs:slab_mirkwood"
   },
   "pattern": [
     "AMA",

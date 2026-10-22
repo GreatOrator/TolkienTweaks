@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "tolkienmobs:cracked_angainor_bricks"
-    }
+    "#": "tolkienmobs:cracked_angainor_bricks"
   },
   "pattern": [
     "###"

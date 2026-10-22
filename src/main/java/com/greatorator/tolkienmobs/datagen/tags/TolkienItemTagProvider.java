@@ -11,8 +11,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.util.concurrent.CompletableFuture;
@@ -21,8 +19,8 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class TolkienItemTagProvider extends ItemTagsProvider {
     public TolkienItemTagProvider(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> pLookupProvider,
-                                  CompletableFuture<TagLookup<Block>> pBlockTags, @Nullable ExistingFileHelper existingFileHelper) {
-        super(pOutput, pLookupProvider, pBlockTags, MODID, existingFileHelper);
+                                  CompletableFuture<TagLookup<Block>> pBlockTags) {
+        super(pOutput, pLookupProvider, pBlockTags, MODID);
     }
 
 
@@ -106,6 +104,13 @@ public class TolkienItemTagProvider extends ItemTagsProvider {
         tag(TolkienTags.Items.ACORNS)
                 .add(TolkienItems.TREE_ACORN.get())
                 .add(TolkienItems.GOLDEN_TREE_ACORN.get());
+        // The tool materials name these as their repair items.
+        tag(TolkienTags.Items.MITHRIL_INGOTS)
+                .add(TolkienItems.INGOT_MITHRIL.get());
+        tag(TolkienTags.Items.MORGULIRON_INGOTS)
+                .add(TolkienItems.INGOT_MORGULIRON.get());
+        tag(TolkienTags.Items.AMMOLITE_GEMS)
+                .add(TolkienItems.GEM_AMMOLITE.get());
         tag(TolkienTags.Items.TRINKET)
                 .add(TolkienItems.TRINKET_RING.get())
                 .add(TolkienItems.TRINKET_AMULET.get())

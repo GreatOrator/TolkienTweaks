@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "tolkienmobs:block_mithril"
-    },
-    "M": {
-      "item": "tolkienmobs:slab_mithril"
-    }
+    "A": "tolkienmobs:block_mithril",
+    "M": "tolkienmobs:slab_mithril"
   },
   "pattern": [
     "AMA",

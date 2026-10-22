@@ -7,6 +7,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
@@ -44,7 +45,13 @@ public class TolkienItemsModifier extends LootModifier {
                 (resourceKey, weight) -> {
                     if(context.getRandom().nextFloat() < weight) {
                         ResourceLocation location = ResourceLocation.tryParse(resourceKey);
-                        generatedLoot.add(new ItemStack(BuiltInRegistries.ITEM.get(location)));
+                        if (location == null) {
+                            return;
+                        }
+                        Item item = BuiltInRegistries.ITEM.getValue(location);
+                        if (item != null) {
+                            generatedLoot.add(new ItemStack(item));
+                        }
                     }
                 }
         );

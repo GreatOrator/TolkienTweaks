@@ -60,13 +60,13 @@ public class CamoKeyStoneBlockEntity extends TolkienBlockEntity implements MenuP
                     if (uses == 0) {
                         stack.shrink(1);
                         this.level.playSound((Player) null, worldPosition, SoundEvents.ITEM_BREAK, SoundSource.BLOCKS, 0.3F, 0.6F);
-                        player.sendSystemMessage(Component.translatable("tolkienmobs.msg.key_used").withStyle(ChatFormatting.RED));
+                        player.displayClientMessage(Component.translatable("tolkienmobs.msg.key_used").withStyle(ChatFormatting.RED), false);
                     }
                     KeyItem.setKeyData(stack, KeyItem.getKeyCode(stack), uses - 1, KeyItem.getMode(stack));
                 }
             }
         } else {
-            player.sendSystemMessage(Component.translatable("tolkienmobs.msg.wrong_key").withStyle(ChatFormatting.RED));
+            player.displayClientMessage(Component.translatable("tolkienmobs.msg.wrong_key").withStyle(ChatFormatting.RED), false);
         }
     }
 

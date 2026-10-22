@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "mossy_cobbled_mountain_stone",
   "ingredients": [
-    {
-      "item": "tolkienmobs:mossy_cobbled_mountain_stone"
-    }
+    "tolkienmobs:mossy_cobbled_mountain_stone"
   ],
   "result": {
     "count": 1,

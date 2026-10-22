@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "mossy_cobbled_elven_marble",
   "ingredients": [
-    {
-      "item": "tolkienmobs:mossy_cobbled_elven_marble"
-    }
+    "tolkienmobs:mossy_cobbled_elven_marble"
   ],
   "result": {
     "count": 1,

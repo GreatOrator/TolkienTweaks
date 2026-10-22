@@ -1,5 +1,7 @@
 package com.greatorator.tolkienmobs.entity.monster;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
 import com.greatorator.tolkienmobs.entity.projectiles.TornadoEntity;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
@@ -90,7 +92,7 @@ public class ElementalGolemEntity extends TolkienMonsterEntity implements GeoEnt
         super.registerGoals();
         this.goalSelector.addGoal(2, new MoveBackToVillageGoal(this, 0.6D, false));
         this.goalSelector.addGoal(4, new GolemRandomStrollInVillageGoal(this, 0.6D));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, TolkienMonsterEntity.class, 5, false, false, (entity) -> entity instanceof Enemy && !(entity instanceof Creeper)));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, TolkienMonsterEntity.class, 5, false, false, (entity, level) -> entity instanceof Enemy && !(entity instanceof Creeper)));
         this.targetSelector.addGoal(4, new ResetUniversalAngerTargetGoal<>(this, false));
     }
 
@@ -122,7 +124,7 @@ public class ElementalGolemEntity extends TolkienMonsterEntity implements GeoEnt
             BlockPos pos = new BlockPos(i, j, k);
             BlockState blockstate = this.level.getBlockState(pos);
             if (!blockstate.isAir()) {
-                this.level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockstate).setPos(pos), this.getX() + ((double)this.random.nextFloat() - 0.5D) * (double)this.getBbWidth(), this.getY() + 0.1D, this.getZ() + ((double)this.random.nextFloat() - 0.5D) * (double)this.getBbWidth(), 4.0D * ((double)this.random.nextFloat() - 0.5D), 0.5D, ((double)this.random.nextFloat() - 0.5D) * 4.0D);
+                this.level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockstate, pos), this.getX() + ((double)this.random.nextFloat() - 0.5D) * (double)this.getBbWidth(), this.getY() + 0.1D, this.getZ() + ((double)this.random.nextFloat() - 0.5D) * (double)this.getBbWidth(), 4.0D * ((double)this.random.nextFloat() - 0.5D), 0.5D, ((double)this.random.nextFloat() - 0.5D) * 4.0D);
             }
         }
 
@@ -176,19 +178,19 @@ public class ElementalGolemEntity extends TolkienMonsterEntity implements GeoEnt
     }
 
     @Override
-    public boolean doHurtTarget(Entity entity) {
+    public boolean doHurtTarget(ServerLevel serverLevel, Entity entity) {
         this.attackAnimationTick = 10;
         this.level.broadcastEntityEvent(this, (byte)4);
         float f = this.getAttackDamage();
         float f1 = (int)f > 0 ? f / 2.0F + (float)this.random.nextInt((int)f) : f;
         DamageSource source = damageSources().mobAttack(this);
-        boolean flag = entity.hurt(source, f1);
+        boolean flag = entity.hurtServer(serverLevel, source, f1);
         if (flag) {
             entity.setDeltaMovement(entity.getDeltaMovement().add(0.0D, 0.4F, 0.0D));
             if(entity.level() instanceof ServerLevel level) EnchantmentHelper.doPostAttackEffects(level, entity, source);
             if (this.getGolemType() == 1 ||this.getGolemType() == 6 || this.getGolemType() == 11 || this.getGolemType() == 16) { /* Stone */
                 long time = System.currentTimeMillis();
-                if (super.doHurtTarget(entity)) {
+                if (super.doHurtTarget(serverLevel, entity)) {
                     if (entity instanceof Player) {
                         if (time > nextAbilityUse) {
                             nextAbilityUse = time + coolDown;
@@ -200,7 +202,7 @@ public class ElementalGolemEntity extends TolkienMonsterEntity implements GeoEnt
                 }
             } else if (this.getGolemType() == 2 ||this.getGolemType() == 7 || this.getGolemType() == 12) { /* Earth */
                 long time = System.currentTimeMillis();
-                if (super.doHurtTarget(entity)) {
+                if (super.doHurtTarget(serverLevel, entity)) {
                     if (entity instanceof Player) {
                         if (time > nextAbilityUse) {
                             nextAbilityUse = time + coolDown;
@@ -216,7 +218,7 @@ public class ElementalGolemEntity extends TolkienMonsterEntity implements GeoEnt
                 }
             } else if (this.getGolemType() == 4 || this.getGolemType() == 9 || this.getGolemType() == 14) { /* Air */
                 long time = System.currentTimeMillis();
-                if (super.doHurtTarget(entity)) {
+                if (super.doHurtTarget(serverLevel, entity)) {
                     if (entity instanceof Player) {
                         if (time > nextAbilityUse) {
                             nextAbilityUse = time + coolDown;
@@ -233,7 +235,7 @@ public class ElementalGolemEntity extends TolkienMonsterEntity implements GeoEnt
                 }
             } else if (this.getGolemType() == 3 || this.getGolemType() == 8 || this.getGolemType() == 13) { /* Fire */
                 long time = System.currentTimeMillis();
-                if (super.doHurtTarget(entity)) {
+                if (super.doHurtTarget(serverLevel, entity)) {
                     if (entity instanceof Player) {
                         if (time > nextAbilityUse) {
                             nextAbilityUse = time + coolDown;
@@ -249,7 +251,7 @@ public class ElementalGolemEntity extends TolkienMonsterEntity implements GeoEnt
                 }
             } else if (this.getGolemType() == 5 || this.getGolemType() == 10 || this.getGolemType() == 15) { /* Water */
                 long time = System.currentTimeMillis();
-                if (super.doHurtTarget(entity)) {
+                if (super.doHurtTarget(serverLevel, entity)) {
                     if (entity instanceof Player) {
                         if (time > nextAbilityUse) {
                             nextAbilityUse = time + coolDown;
@@ -364,7 +366,7 @@ public class ElementalGolemEntity extends TolkienMonsterEntity implements GeoEnt
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnType, @Nullable SpawnGroupData spawnGroupData) {
         RandomSource randomsource = level.getRandom();
 
         this.populateDefaultEquipmentSlots(randomsource, difficulty);
@@ -488,7 +490,7 @@ public class ElementalGolemEntity extends TolkienMonsterEntity implements GeoEnt
             }
 
             if (target != null && mob.liftAttackAnimationTick == mob.liftAttackAnimationActionPoint) {
-                TornadoEntity tornado = TolkienEntities.AMMO_TORNADO.get().create(mob.level);
+                TornadoEntity tornado = TolkienEntities.AMMO_TORNADO.get().create(mob.level, EntitySpawnReason.MOB_SUMMONED);
                 tornado.moveTo(target.blockPosition(), 0, 0);
                 tornado.playSound(TolkienSounds.SHOOT_TORNADO.get(), 1.5F, 1.0F);
                 ((ServerLevel)mob.level).addFreshEntityWithPassengers(tornado);

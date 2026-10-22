@@ -3,9 +3,7 @@
   "category": "redstone",
   "group": "mithril",
   "ingredients": [
-    {
-      "item": "tolkienmobs:block_mithril"
-    }
+    "tolkienmobs:block_mithril"
   ],
   "result": {
     "count": 1,

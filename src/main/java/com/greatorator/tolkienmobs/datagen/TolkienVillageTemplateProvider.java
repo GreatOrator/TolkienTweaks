@@ -10,10 +10,9 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.nbt.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.util.datafix.DataFixers;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,8 +29,14 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
 
     private final TemplateSource templates;
 
-    public TolkienVillageTemplateProvider(PackOutput output, ExistingFileHelper existingFiles) {
-        this(output, location -> existingFiles.getResource(location, PackType.SERVER_DATA).open());
+    /**
+     * NeoForge 21.4 removed ExistingFileHelper; the templates are read straight out of the resource manager the
+     * gather event exposes for the data pack.
+     */
+    public TolkienVillageTemplateProvider(PackOutput output, ResourceManager resources) {
+        this(output, location -> resources.getResource(location)
+                .orElseThrow(() -> new IOException("missing village template " + location))
+                .open());
     }
 
     public TolkienVillageTemplateProvider(PackOutput output, TemplateSource templates) {

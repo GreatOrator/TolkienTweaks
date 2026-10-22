@@ -11,6 +11,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.level.Level;
@@ -74,7 +75,7 @@ public class HumanEntity extends TolkienVillagerEntity implements GeoEntity {
     public Villager getBreedOffspring(ServerLevel level, AgeableMob otherParent) {
         super.getBreedOffspring(level, otherParent);
         TolkienVariant variant = Util.getRandom(TolkienVariant.values(), this.random);
-        HumanEntity baby = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level);
+        HumanEntity baby = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.BREEDING);
         baby.setVariant(variant);
         baby.setWinter(this.isWinter());
         baby.winterResolved = true;

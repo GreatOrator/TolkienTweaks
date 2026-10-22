@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "minecraft:stick"
-    },
-    {
-      "item": "tolkienmobs:feather_bird"
-    },
-    {
-      "item": "tolkienmobs:ingot_mithril"
-    }
+    "minecraft:stick",
+    "tolkienmobs:feather_bird",
+    "tolkienmobs:ingot_mithril"
   ],
   "result": {
     "count": 1,

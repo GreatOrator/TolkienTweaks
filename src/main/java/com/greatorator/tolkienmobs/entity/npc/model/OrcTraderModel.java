@@ -7,6 +7,7 @@ import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.model.data.EntityModelData;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
@@ -16,12 +17,12 @@ public class OrcTraderModel extends GeoModel<OrcTraderEntity> {
 	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/merchant/southron.animation.json");
 
 	@Override
-	public ResourceLocation getModelResource(OrcTraderEntity object) {
+	public ResourceLocation getModelResource(OrcTraderEntity object, GeoRenderer<OrcTraderEntity> renderer) {
 		return this.model;
 	}
 
 	@Override
-	public ResourceLocation getTextureResource(OrcTraderEntity object) {
+	public ResourceLocation getTextureResource(OrcTraderEntity object, GeoRenderer<OrcTraderEntity> renderer) {
 		return OrcTraderRender.LOCATION_BY_VARIANT.get(object.getTolkienVariant());
 	}
 

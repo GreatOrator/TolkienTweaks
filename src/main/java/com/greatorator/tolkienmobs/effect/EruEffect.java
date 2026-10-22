@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.effect;
 
 import com.google.common.collect.ImmutableList;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
@@ -18,7 +19,7 @@ public class EruEffect extends TolkienEffect{
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity entity, int amplifier) {
+    public boolean applyEffectTick(ServerLevel level, LivingEntity entity, int amplifier) {
         for (MobEffectInstance effect : ImmutableList.copyOf(entity.getActiveEffects())) {
             if (!effect.equals(MobEffectCategory.BENEFICIAL)) {
                 entity.removeEffect(effect.getEffect());
