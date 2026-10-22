@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.entity;
 
+import com.greatorator.tolkienmobs.entity.ai.goal.AggressiveBowAttackGoal;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -33,7 +34,7 @@ public class TolkienMonsterEntity extends Monster implements RangedAttackMob {
     public boolean scheduleWeaponGoalUpdate = true;
     protected boolean ranged;
 
-    protected final RangedBowAttackGoal<TolkienMonsterEntity> bowGoal = new RangedBowAttackGoal<>(this, 1.0, 20, 15.0F);
+    protected final RangedBowAttackGoal<TolkienMonsterEntity> bowGoal = new AggressiveBowAttackGoal(this, 1.0, 20, 15.0F);
     protected final MeleeAttackGoal meleeGoal = new MeleeAttackGoal(this, 1.2, false) {
         @Override
         public void stop() {

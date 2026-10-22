@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.entity.boss;
 
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
+import com.greatorator.tolkienmobs.entity.ai.goal.AggressiveBowAttackGoal;
 import com.greatorator.tolkienmobs.entity.ai.goal.BalrogAttackGoal;
 import com.greatorator.tolkienmobs.entity.ai.goal.MeleeCombatGoal;
 import com.greatorator.tolkienmobs.entity.projectiles.FellBeastFireballEntity;
@@ -63,7 +64,7 @@ public class BalrogEntity extends TolkienMonsterEntity implements GeoEntity {
     private static final Map<Entity, Boolean> balrogOnGroundMap = new HashMap<>();
     private static final int DURATION_TICKS = 100;
     private static final int GROUND_DEPTH = 1;
-    private final RangedBowAttackGoal<TolkienMonsterEntity> bowGoal = new RangedBowAttackGoal<>(this, 1.0, 20, 15.0F);
+    private final RangedBowAttackGoal<TolkienMonsterEntity> bowGoal = new AggressiveBowAttackGoal(this, 1.0, 20, 15.0F);
     private final MeleeAttackGoal meleeGoal = new BalrogAttackGoal(this, 1.0D, 20, 15.0F, false);
     private long nextDefensiveAbilityUse = 0L;
     private final static long defensiveCoolDown = 10000L;

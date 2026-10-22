@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.entity.monster;
 import net.minecraft.world.entity.EntitySpawnReason;
 
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
+import com.greatorator.tolkienmobs.entity.ai.goal.AggressiveRangedAttackGoal;
 import com.greatorator.tolkienmobs.entity.ai.target.SwampHagNearestAttackableTargetGoal;
 import com.greatorator.tolkienmobs.entity.ai.target.SwampHagNearestHealableRaiderTargetGoal;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
@@ -82,7 +83,7 @@ public class SwampHagEntity extends TolkienMonsterEntity implements GeoEntity {
             return entity != null && entity.getType() != TolkienEntities.ENTITY_TTM_SWAMPHAG.get();
         });
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(2, new RangedAttackGoal(this, 1.0, 60, 10.0F));
+        this.goalSelector.addGoal(2, new AggressiveRangedAttackGoal(this, 1.0, 60, 10.0F));
         this.goalSelector.addGoal(2, new WaterAvoidingRandomStrollGoal(this, 1.0));
         this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(3, new RandomLookAroundGoal(this));
