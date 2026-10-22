@@ -56,9 +56,14 @@ public class TornadoEntity extends Entity implements GeoAnimatable {
         this.setPos(d0, d1, d2);
     }
 
+    /**
+     * GeckoLib times the funnel's animation from this value, so a constant here leaves the tornado
+     * frozen on the first frame of its lift: the rings never turn and the pillar never rises. A
+     * plain entity has to hand over its own age, which is what a GeoEntity would have done.
+     */
     @Override
     public double getTick(Object object) {
-        return 0;
+        return this.tickCount;
     }
 
     @Override
