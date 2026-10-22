@@ -215,9 +215,9 @@ public abstract class TolkienLangHelperCN extends LanguageProvider {
         this.add("block.tolkienmobs.trapdoor_" + woodPrefix, woodName + "活板门");
         this.add("block.tolkienmobs.door_" + woodPrefix, woodName + "门");
         this.add("block.tolkienmobs.sign_" + woodPrefix, woodName + "告示牌");
-        this.add("block.tolkienmobs.wall_sign_" + woodPrefix, "墙上" + woodName + "告示牌");
+        this.add("block.tolkienmobs.sign_wall_" + woodPrefix, "墙上" + woodName + "告示牌");
         this.add("block.tolkienmobs.hanging_sign_" + woodPrefix, "悬挂式" + woodName + "告示牌");
-        this.add("block.tolkienmobs.wall_hanging_sign_" + woodPrefix, "墙上的悬挂式" + woodName + "告示牌");
+        this.add("block.tolkienmobs.hanging_sign_wall_" + woodPrefix, "墙上的悬挂式" + woodName + "告示牌");
         this.add("block.tolkienmobs.barrel_" + woodPrefix, woodName + "木桶");
         this.add("block.tolkienmobs.log_" + woodPrefix, woodName + "原木");
         this.add("block.tolkienmobs.wood_" + woodPrefix, woodName + "木头");
@@ -227,8 +227,10 @@ public abstract class TolkienLangHelperCN extends LanguageProvider {
         this.add("block.tolkienmobs.potted_sapling_" + woodPrefix, "盆栽" + woodName + "树苗");
         this.add("block.tolkienmobs.leaves_" + woodPrefix, woodName + "树叶");
         this.add("block.tolkienmobs.leafpile_" + woodPrefix, woodName + "落叶堆");
-        this.add("item.tolkienmobs." + woodPrefix + "_boat", woodName + "船");
-        this.add("item.tolkienmobs." + woodPrefix + "_chest_boat", woodName + "运输船");
+        this.add("item.tolkienmobs.boat_" + woodPrefix, woodName + "船");
+        this.add("item.tolkienmobs.chest_boat_" + woodPrefix, woodName + "运输船");
+        this.add("entity.tolkienmobs.boat_" + woodPrefix, woodName + "船");
+        this.add("entity.tolkienmobs.chest_boat_" + woodPrefix, woodName + "运输船");
     }
 
     public void addTools(String itemKey, String item) {
@@ -240,8 +242,8 @@ public abstract class TolkienLangHelperCN extends LanguageProvider {
         this.add("item.tolkienmobs.shears_" + itemKey, item + "剪刀");
     }
 
-    protected void addFlowerBlock(Block key, String name, String flower) {
+    protected void addFlowerBlock(Block key, String name, Block potted) {
         this.add(key.getDescriptionId(), name);
-        this.add("block.tolkienmobs.potted_" + flower, "盆栽" + name);
+        this.add(potted.getDescriptionId(), "盆栽" + name);
     }
 }

@@ -54,21 +54,22 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("itemgroup.tolkienmobs.natural", "托尔金微调：自然方块");
             this.addItem(TolkienItems.PIPEWEED_SEEDS, "烟斗草种子");
             this.addItem(TolkienItems.PIPEWEED_ITEM, "烟斗草");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_SIMBELMYNE.get(), "辛贝穆奈", "simbelmyne");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_MIRKWOOD.get(), "色瑞刚", "mirkwood");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_ALFIRIN.get(), "阿尔费琳", "alfirin");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_ATHELAS.get(), "王叶草", "athelas");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_NIPHREDIL.get(), "妮芙瑞迪尔", "niphredil");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_SWAMPMILKWEED.get(), "绞架草", "swamp_milkweed");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_LILLYOFTHEVALLEY.get(), "铃兰", "valley_lilly");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_ELANOR.get(), "埃拉诺", "elanor");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_AEGLOS.get(), "雪棘", "aeglos");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_LISSUIN.get(), "利斯苏因", "lissuin");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_MALLOS.get(), "瑁洛斯", "mallos");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_BRAMBLES.get(), "魔多荆棘", "brambles");
-            this.addFlowerBlock(TolkienBlocks.MUSHROOM_BLOOM_DECAY.get(), "腐烂之花", "mushroom_bloom_decay");
-            this.addFlowerBlock(TolkienBlocks.MUSHROOM_DECAY_BLOOM.get(), "腐烂之花", "mushroom_decay_bloom");
+            this.addFlowerBlock(TolkienBlocks.FLOWER_SIMBELMYNE.get(), "辛贝穆奈", TolkienBlocks.POTTED_FLOWER_SIMBELMYNE.get());
+            this.addFlowerBlock(TolkienBlocks.FLOWER_MIRKWOOD.get(), "色瑞刚", TolkienBlocks.POTTED_FLOWER_MIRKWOOD.get());
+            this.addFlowerBlock(TolkienBlocks.FLOWER_ALFIRIN.get(), "阿尔费琳", TolkienBlocks.POTTED_FLOWER_ALFIRIN.get());
+            this.addFlowerBlock(TolkienBlocks.FLOWER_ATHELAS.get(), "王叶草", TolkienBlocks.POTTED_FLOWER_ATHELAS.get());
+            this.addFlowerBlock(TolkienBlocks.FLOWER_NIPHREDIL.get(), "妮芙瑞迪尔", TolkienBlocks.POTTED_FLOWER_NIPHREDIL.get());
+            this.addFlowerBlock(TolkienBlocks.FLOWER_SWAMPMILKWEED.get(), "绞架草", TolkienBlocks.POTTED_FLOWER_SWAMPMILKWEED.get());
+            this.addFlowerBlock(TolkienBlocks.FLOWER_LILLYOFTHEVALLEY.get(), "铃兰", TolkienBlocks.POTTED_FLOWER_LILLYOFTHEVALLEY.get());
+            this.addFlowerBlock(TolkienBlocks.FLOWER_ELANOR.get(), "埃拉诺", TolkienBlocks.POTTED_FLOWER_ELANOR.get());
+            this.addFlowerBlock(TolkienBlocks.FLOWER_AEGLOS.get(), "雪棘", TolkienBlocks.POTTED_FLOWER_AEGLOS.get());
+            this.addFlowerBlock(TolkienBlocks.FLOWER_LISSUIN.get(), "利斯苏因", TolkienBlocks.POTTED_FLOWER_LISSUIN.get());
+            this.addFlowerBlock(TolkienBlocks.FLOWER_MALLOS.get(), "瑁洛斯", TolkienBlocks.POTTED_FLOWER_MALLOS.get());
+            this.addFlowerBlock(TolkienBlocks.FLOWER_BRAMBLES.get(), "魔多荆棘", TolkienBlocks.POTTED_FLOWER_BRAMBLES.get());
+            this.addFlowerBlock(TolkienBlocks.MUSHROOM_BLOOM_DECAY.get(), "腐烂之花", TolkienBlocks.POTTED_MUSHROOM_BLOOM_DECAY.get());
+            this.addFlowerBlock(TolkienBlocks.MUSHROOM_DECAY_BLOOM.get(), "腐烂之花", TolkienBlocks.POTTED_MUSHROOM_DECAY_BLOOM.get());
             this.addBlock(TolkienBlocks.BLOCK_DECAY_BLOOM, "腐烂花方块");
+            this.addBlock(TolkienBlocks.BLOCK_BLOOM_DECAY, "腐烂之花方块");
             this.addBlock(TolkienBlocks.LIGHTNINGBUG_BLOCK, "萤火虫");
             this.addBlock(TolkienBlocks.LOCUST_BLOCK, "蝗虫");
             this.addBlock(TolkienBlocks.BLOCK_HALLOWED, "神圣土地");
@@ -77,6 +78,8 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addBlock(TolkienBlocks.WALL_MUSHROOM_RED, "蘑菇墙 - 红色");
             this.addBlock(TolkienBlocks.WALL_MUSHROOM_BROWN, "蘑菇墙 - 棕色");
             this.addBlock(TolkienBlocks.LIVING_ROOTS, "活根");
+            this.addBlock(TolkienBlocks.PIPEWEED, "烟斗草作物");
+            this.addBlock(TolkienBlocks.ARDA_PORTAL, "阿尔达传送门");
             this.addBlockWithLore(TolkienBlocks.PLACARD.get(), "国家标识", "按住 Shift 并右键点击告示牌以切换类型");
             this.addBlock(TolkienBlocks.ROCKPILE, "石堆");
             this.addBlock(TolkienBlocks.MOSS_PATCH, "苔藓地");
@@ -203,6 +206,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addItem(TolkienItems.URUK_BOW, "乌鲁克弓");
             this.addItem(TolkienItems.GALADHRIM_ARROW, "加拉兹民之箭");
             this.addItem(TolkienItems.UTUMNO_ARROW, "乌图姆诺箭");
+            this.addItem(TolkienItems.MORGUL_CRYSTAL, "魔古尔水晶");
             this.addMusicDisc(TolkienItems.RECORD_EREBOR, "SnowShepherd - 在埃瑞博山中闪闪发光的一切");
             this.addMusicDisc(TolkienItems.RECORD_HOBBITS, "Harry Murrell - 关于霍比特人");
             this.addMusicDisc(TolkienItems.RECORD_MINASTIRITH, "SnowShepherd - 米那斯提力斯的宏伟");
@@ -523,6 +527,10 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.add(TolkienEntities.EGG_TTMSOUTHRON.get(), "南蛮子刷怪蛋");
             this.addVillager(TolkienEntities.ENTITY_TTM_ORC_TRADER.get(), "奥克商人");
             this.add(TolkienEntities.EGG_TTMORC_TRADER.get(), "奥克商人刷怪蛋");
+            this.addVillager(TolkienEntities.ENTITY_TTM_ORC.get(), "奥克");
+            this.add(TolkienEntities.EGG_TTMORC.get(), "奥克刷怪蛋");
+            this.addVillager(TolkienEntities.ENTITY_TTM_SOUTHRON_NPC.get(), "南蛮子");
+            this.add(TolkienEntities.EGG_TTMSOUTHRON_NPC.get(), "南蛮子刷怪蛋");
 
                     //Monster
             this.add(TolkienEntities.ENTITY_TTM_BARROW.get(), "古冢尸妖");
@@ -613,6 +621,9 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.add("biome.tolkienmobs.fangorn_forest", "范贡森林");
             this.add("biome.tolkienmobs.mordor", "魔多");
             this.add("biome.tolkienmobs.ash_mountains", "埃瑞德砾苏伊");
+            this.add("biome.tolkienmobs.nurn", "努恩");
+            this.add("biome.tolkienmobs.forochel", "福罗切尔");
+            this.add("biome.tolkienmobs.forochel_slopes", "福罗切尔坡地");
             this.add("biome.tolkienmobs.marshes", "宁达尔夫草沼");
             this.add("biome.tolkienmobs.mirkwood", "黑森林");
             this.add("biome.tolkienmobs.old_forest", "老林");
@@ -626,6 +637,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.add("biome.tolkienmobs.gladden", "金鸢尾沼地");
             this.add("biome.tolkienmobs.hithaeglir", "迷雾山脉");
             this.add("biome.tolkienmobs.iron_hills", "铁丘陵");
+            this.add("biome.tolkienmobs.blue_mountains", "蓝色山脉");
             this.add("block.tolkienmobs.hardened_leaves_mallorn", "瑁珑树叶");
             this.add("block.tolkienmobs.hardened_leaves_mirkwood", "阴郁树叶");
             this.add("block.tolkienmobs.hardened_leaves_culumalda", "库露瑁勒达树叶");
@@ -633,7 +645,21 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.add("block.tolkienmobs.hardened_leaves_fangornoak", "范贡橡树树叶");
             this.add("block.tolkienmobs.hardened_leaves_dwarven_maple", "矮人枫树树叶");
 
+        // Projectiles, traps, fluid types
+            this.add("entity.tolkienmobs.ammo_boulder", "巨石");
+            this.add("entity.tolkienmobs.ammo_cobweb", "蛛网");
+            this.add("entity.tolkienmobs.ammo_fellbeast_fireball", "凶恶巨兽火球");
+            this.add("entity.tolkienmobs.ammo_galadhrim_arrow", "加拉德林之箭");
+            this.add("entity.tolkienmobs.ammo_tornado", "龙卷风");
+            this.add("entity.tolkienmobs.ammo_utumno_arrow", "乌图姆诺之箭");
+            this.add("entity.tolkienmobs.trap_simple", "简易陷阱");
+            this.add("entity.tolkienmobs.morgul_crystal", "魔古尔水晶");
+            this.add("fluid_type.tolkienmobs.molten_mithril_lava_fluid", "熔融秘银");
+            this.add("fluid_type.tolkienmobs.molten_morguliron_lava_fluid", "熔融魔古尔铁");
+
         // Chat Messages
+            this.add("tolkienmobs.msg.selected.mob", "已选择的生物：");
+            this.add("tolkienmobs.msg.replaced.mob", "已替换的生物：");
             this.add("tolkienmobs.msg.helpcomming", "半兽人之王正试图寻求帮助……增援部队已经抵达！");
             this.add("tolkienmobs.msg.nohelp", "半兽人之王正试图寻求帮助，但是没有增援抵达。");
             this.add("tolkienmobs.msg.nodrown", "半兽人之王不想淹死。");
