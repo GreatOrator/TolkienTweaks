@@ -23,8 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public record PatchModel(TextureAtlasSprite texture, boolean shaggify) implements BakedModel {
-	private static final FaceBakery BAKERY = new FaceBakery();
-
 	@Override
 	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource random) {
 		if (state == null)
@@ -152,7 +150,8 @@ public record PatchModel(TextureAtlasSprite texture, boolean shaggify) implement
 			default -> new BlockFaceUV(new float[]{minX, minZ, maxX, maxZ}, 0);
 		});
 
-		return BAKERY.bakeQuad(new Vector3f(minX, minY, minZ), new Vector3f(maxX, maxY, maxZ), face, this.texture, direction, new SimpleModelState(Transformation.identity()), null, true);
+		// 1.21.4 made bakeQuad static and added a per-face light emission, which the patch does not use.
+		return FaceBakery.bakeQuad(new Vector3f(minX, minY, minZ), new Vector3f(maxX, maxY, maxZ), face, this.texture, direction, new SimpleModelState(Transformation.identity()), null, true, 0);
 	}
 
 	// --- Boilerplating ---------------------------------------------------
@@ -173,18 +172,14 @@ public record PatchModel(TextureAtlasSprite texture, boolean shaggify) implement
 	}
 
 	@Override
-	public boolean isCustomRenderer() {
-		return false;
-	}
-
-	@Override
 	public TextureAtlasSprite getParticleIcon() {
 		return this.texture;
 	}
 
+	/** The patch is a block model; items never render through it, so it carries no item transforms. */
 	@Override
-	public ItemOverrides getOverrides() {
-		return ItemOverrides.EMPTY; //I doubt we need to do anything here
+	public ItemTransforms getTransforms() {
+		return ItemTransforms.NO_TRANSFORMS;
 	}
 
 	@Override
