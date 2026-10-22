@@ -7,7 +7,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.EntityTypeTagsProvider;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nonnull;
 import java.util.concurrent.CompletableFuture;
@@ -15,8 +14,8 @@ import java.util.concurrent.CompletableFuture;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class TolkienEntityTagProvider extends EntityTypeTagsProvider {
-    public TolkienEntityTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper helper) {
-        super(output, provider, MODID, helper);
+    public TolkienEntityTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
+        super(output, provider, MODID);
     }
 
     @Override

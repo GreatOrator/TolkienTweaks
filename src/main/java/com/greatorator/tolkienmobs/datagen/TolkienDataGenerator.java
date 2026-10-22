@@ -6,6 +6,7 @@ import com.greatorator.tolkienmobs.datagen.tags.*;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.minecraft.server.packs.PackType;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import com.greatorator.tolkienmobs.datagen.modelgen.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
@@ -26,29 +27,29 @@ public class TolkienDataGenerator {
         TolkienDataRegistryProvider registryProvider = new TolkienDataRegistryProvider(packOutput, lookupProvider);
 
         event.addProvider(registryProvider);
-        event.addProvider(new TolkienVillageTemplateProvider(packOutput, existingFileHelper));
+        event.addProvider(new TolkienVillageTemplateProvider(packOutput, event.getResourceManager(PackType.SERVER_DATA)));
         event.addProvider(new TolkienStructureTagProvider(packOutput, registryProvider.getRegistryProvider()));
         event.addProvider(new TolkienBlockStateProvider(packOutput, existingFileHelper));
         event.addProvider(new TolkienItemModelProvider(packOutput, existingFileHelper));
         event.addProvider(new TolkienLangProviderUS(packOutput));
         event.addProvider(new TolkienLangProviderCN(packOutput));
-        event.addProvider(new TolkienSoundProvider(packOutput, existingFileHelper));
+        event.addProvider(new TolkienSoundProvider(packOutput));
 
         event.addProvider(new TolkienRecipeProvider(packOutput, lookupProvider));
         event.addProvider(new TolkienLootTableProvider(packOutput, lookupProvider));
         event.addProvider(new TolkienGlobalLootModifierProvider(packOutput, lookupProvider));
 
-        BlockTagsProvider blockTagsProvider = new TolkienBlockTagProvider(packOutput, lookupProvider, existingFileHelper);
+        BlockTagsProvider blockTagsProvider = new TolkienBlockTagProvider(packOutput, lookupProvider);
 
         event.addProvider(blockTagsProvider);
-        event.addProvider(new TolkienItemTagProvider(packOutput, lookupProvider, blockTagsProvider.contentsGetter(), existingFileHelper));
-        event.addProvider(new TolkienEntityTagProvider(packOutput, lookupProvider, existingFileHelper));
-        event.addProvider(new TolkienFluidTagProvider(packOutput, lookupProvider, existingFileHelper));
-        event.addProvider(new TolkienBiomeTagProvider(packOutput, registryProvider.getRegistryProvider(), existingFileHelper));
-        event.addProvider(new TolkienDamageTagProvider(packOutput, lookupProvider, existingFileHelper));
+        event.addProvider(new TolkienItemTagProvider(packOutput, lookupProvider, blockTagsProvider.contentsGetter()));
+        event.addProvider(new TolkienEntityTagProvider(packOutput, lookupProvider));
+        event.addProvider(new TolkienFluidTagProvider(packOutput, lookupProvider));
+        event.addProvider(new TolkienBiomeTagProvider(packOutput, registryProvider.getRegistryProvider()));
+        event.addProvider(new TolkienDamageTagProvider(packOutput, lookupProvider));
 
-        event.addProvider(new TolkienPoiTypeTagProvider(packOutput, lookupProvider, existingFileHelper));
-        event.addProvider(new TolkienParticleDescriptionProvider(packOutput, existingFileHelper));
+        event.addProvider(new TolkienPoiTypeTagProvider(packOutput, lookupProvider));
+        event.addProvider(new TolkienParticleDescriptionProvider(packOutput));
     }
 
 }

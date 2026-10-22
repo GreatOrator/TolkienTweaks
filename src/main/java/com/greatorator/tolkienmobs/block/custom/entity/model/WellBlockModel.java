@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.block.custom.entity.model;
 import com.greatorator.tolkienmobs.block.custom.entity.WellBlockEntity;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.renderer.GeoRenderer;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -12,12 +13,12 @@ public class WellBlockModel extends GeoModel<WellBlockEntity> {
     private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/well.animation.json");
 
     @Override
-    public ResourceLocation getModelResource(WellBlockEntity animatable) {
+    public ResourceLocation getModelResource(WellBlockEntity animatable, GeoRenderer<WellBlockEntity> renderer) {
         return this.model;
     }
 
     @Override
-    public ResourceLocation getTextureResource(WellBlockEntity animatable) {
+    public ResourceLocation getTextureResource(WellBlockEntity animatable, GeoRenderer<WellBlockEntity> renderer) {
         return this.texture;
     }
 

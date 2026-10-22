@@ -104,7 +104,7 @@ public class LockableTreasureChestBlockEntity extends TolkienBlockEntity impleme
                     if (uses == 0) {
                         stack.shrink(1);
                         this.level.playSound((Player) null, worldPosition, SoundEvents.ITEM_BREAK, SoundSource.BLOCKS, 0.3F, 0.6F);
-                        player.sendSystemMessage(Component.translatable("tolkienmobs.msg.key_used").withStyle(ChatFormatting.RED));
+                        player.displayClientMessage(Component.translatable("tolkienmobs.msg.key_used").withStyle(ChatFormatting.RED), false);
                     }
                     KeyItem.setKeyData(stack, KeyItem.getKeyCode(stack), uses - 1, KeyItem.getMode(stack));
                 }
@@ -116,7 +116,7 @@ public class LockableTreasureChestBlockEntity extends TolkienBlockEntity impleme
                 ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, stack);
             }));
         } else {
-            player.sendSystemMessage(Component.translatable("tolkienmobs.msg.wrong_key").withStyle(ChatFormatting.RED));
+            player.displayClientMessage(Component.translatable("tolkienmobs.msg.wrong_key").withStyle(ChatFormatting.RED), false);
         }
     }
 

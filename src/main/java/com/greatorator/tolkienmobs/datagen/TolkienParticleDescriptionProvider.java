@@ -4,7 +4,6 @@ import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.init.TolkienParticleTypes;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.ParticleDescriptionProvider;
 
 import javax.annotation.Nonnull;
@@ -13,8 +12,8 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class TolkienParticleDescriptionProvider extends ParticleDescriptionProvider {
 
-    protected TolkienParticleDescriptionProvider(PackOutput output, ExistingFileHelper fileHelper) {
-        super(output, fileHelper);
+    protected TolkienParticleDescriptionProvider(PackOutput output) {
+        super(output);
     }
 
     @Override

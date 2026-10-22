@@ -133,13 +133,13 @@ public class WatcherEntity extends WaterAnimal implements GeoEntity {
             this.nextDefensiveAbilityUse = reactionTime + defensiveCoolDown;
 
             if (this.getHealth() < this.getMaxHealth()) {
-                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.healself.watcher").withStyle(ChatFormatting.LIGHT_PURPLE));
+                livingentity.displayClientMessage(Component.translatable(MODID + ".msg.healself.watcher").withStyle(ChatFormatting.LIGHT_PURPLE), false);
                 // Regeneration only heals on ticks divisible by (50 >> amplifier): 40 ticks at amplifier 0 never healed at all.
                 this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 10 * 20, 1));
             }
 
             if (this.getTarget() != null && !this.hasEffect(MobEffects.MOVEMENT_SPEED) && this.getTarget().distanceToSqr(this) > 121.0D) {
-                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.speedup.watcher").withStyle(ChatFormatting.AQUA));
+                livingentity.displayClientMessage(Component.translatable(MODID + ".msg.speedup.watcher").withStyle(ChatFormatting.AQUA), false);
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 2 * 20, 0));
             }
             return true;
