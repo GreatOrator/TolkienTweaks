@@ -463,6 +463,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addSound("ambient", "arda_portal", "Portal to Arda beckons");
             this.addSound("item", "hype_horn", "Celebrating victory");
             this.addSound("mob", "coin_trader", "A Wild Coin Trader appears!");
+            this.addSound("mob", "fellbeast_wind", "The beast dives.");
 
                 // Entities
                     // Villager
@@ -596,8 +597,8 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addEnchantmentDesc("balrog_mark_key", "从阴影与火焰中，大地化作滚烫的岩浆，所到之处皆是熔岩。");
             this.addEnchantment("dwarven_endurance_key", "矮人的耐力");
             this.addEnchantmentDesc("dwarven_endurance_key", "感觉没有什么能阻挡你（当然，这里指的是饥饿），总是让你饱腹。");
-            this.addEnchantment("dwarven_mining_key", "矮人的采矿");
-            this.addEnchantmentDesc("dwarven_mining_key", "开采矿脉中所有的匹配方块。");
+            this.addEnchantment("dwarven_mining_key", "矮人的开采");
+            this.addEnchantmentDesc("dwarven_mining_key", "破坏击中方块所在平面上的一整片方块：I 级为 3x3，IV 级扩大到 9x9。潜行时只破坏击中的那一个。");
             this.addEnchantment("elven_fleetfoot_key", "精灵的疾步");
             this.addEnchantmentDesc("elven_fleetfoot_key", "以精灵的速度行走。");
             this.addEnchantment("elven_longevity_key", "精灵的长寿");

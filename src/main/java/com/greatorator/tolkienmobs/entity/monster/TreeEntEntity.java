@@ -29,7 +29,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.RangedAttackGoal;
+import com.greatorator.tolkienmobs.entity.ai.goal.AggressiveRangedAttackGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -65,7 +65,7 @@ public class TreeEntEntity extends TolkienMonsterEntity implements GeoEntity, Ne
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(2, new RangedAttackGoal(this, 1.0D, 40, 20.0F));
+        this.goalSelector.addGoal(2, new AggressiveRangedAttackGoal(this, 1.0D, 40, 20.0F));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, HaradrimEntity.class, true));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, GoblinEntity.class, true));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, MordorOrcEntity.class, true));
@@ -159,21 +159,24 @@ public class TreeEntEntity extends TolkienMonsterEntity implements GeoEntity, Ne
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
-            if (event.isMoving() && !event.getAnimatable().isAggressive()) {
+            if (event.isMoving()) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
-            if (!event.isMoving() && !event.getAnimatable().isAggressive()) {
+            if (!event.isMoving()) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
-            if (this.swinging && !this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
+            // The boulder throw is driven by the shooting flag, which the ranged goal sets on the
+            // server and syncs; the weapon flag this used to read was never sync'd, so the client
+            // never saw it and the throw animation could not play.
+            if (this.swinging && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
                 event.getController().forceAnimationReset();
                 if (MathUtility.getRandomInteger(6, 1) <= 3){
                     event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
@@ -181,10 +184,9 @@ public class TreeEntEntity extends TolkienMonsterEntity implements GeoEntity, Ne
                     event.getController().setAnimation(RawAnimation.begin().then("stomp", Animation.LoopType.PLAY_ONCE));
                 }
                 this.swinging =false;
-            }else if (this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
+            }else if (this.isShooting() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
                 event.getController().forceAnimationReset();
                 event.getController().setAnimation(RawAnimation.begin().then("ranged", Animation.LoopType.PLAY_ONCE));
-                this.ranged = false;
             }
             return PlayState.CONTINUE;
         }));

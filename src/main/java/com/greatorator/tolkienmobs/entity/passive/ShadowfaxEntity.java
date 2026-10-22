@@ -190,7 +190,10 @@ public class ShadowfaxEntity extends AbstractChestedHorse implements GeoEntity, 
         controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
             double speed = getMovementSpeed(this);
             if (this.isJumping()) {
+                // Without its own return this branch fell through to the STOP below, which dropped the
+                // jump the tick it was set and left the horse standing in its walk pose mid-air.
                 event.getController().setAnimation(RawAnimation.begin().then("jump", Animation.LoopType.PLAY_ONCE));
+                return PlayState.CONTINUE;
             }else if (event.isMoving() && speed > (double)1.0F) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("run"));
                 return PlayState.CONTINUE;
