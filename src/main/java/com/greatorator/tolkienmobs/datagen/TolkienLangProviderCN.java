@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.datagen;
 import com.greatorator.tolkienmobs.datagen.helpers.TolkienLangHelperCN;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
+import com.greatorator.tolkienmobs.init.TolkienFluids;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import net.minecraft.data.PackOutput;
 
@@ -79,6 +80,8 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addBlock(TolkienBlocks.WALL_MUSHROOM_BROWN, "蘑菇墙 - 棕色");
             this.addBlock(TolkienBlocks.LIVING_ROOTS, "活根");
             this.addBlock(TolkienBlocks.PIPEWEED, "烟斗草作物");
+            this.addBlock(TolkienFluids.MITHRIL_BLOCK, "熔融秘银");
+            this.addBlock(TolkienFluids.MORGULIRON_BLOCK, "熔融魔古尔铁");
             this.addBlock(TolkienBlocks.ARDA_PORTAL, "阿尔达传送门");
             this.addBlockWithLore(TolkienBlocks.PLACARD.get(), "国家标识", "按住 Shift 并右键点击告示牌以切换类型");
             this.addBlock(TolkienBlocks.ROCKPILE, "石堆");
