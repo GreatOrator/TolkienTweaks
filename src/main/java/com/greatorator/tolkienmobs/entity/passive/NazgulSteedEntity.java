@@ -56,7 +56,8 @@ public class NazgulSteedEntity extends AbstractChestedHorse implements GeoEntity
                 .add(Attributes.JUMP_STRENGTH, 2.5D)
                 .add(Attributes.ATTACK_DAMAGE, 16.0D)
                 .add(Attributes.ARMOR, 8.0D)
-                .add(Attributes.FOLLOW_RANGE, 8.0D);
+                .add(Attributes.FOLLOW_RANGE, 8.0D)
+                .add(Attributes.TEMPT_RANGE, 10.0D);
     }
 
     @Override

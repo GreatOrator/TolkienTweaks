@@ -97,6 +97,9 @@ public class TolkienRegistration {
         event.registerLayerDefinition(TolkienModelLayers.LIGHTNINGBUG, LightningBugModel::create);
         event.registerLayerDefinition(TolkienModelLayers.LOCUST, LocustModel::create);
 
+        // Projectiles
+        event.registerLayerDefinition(TolkienModelLayers.MORGUL_CRYSTAL, MorgulCrystalRenderer::createBodyLayer);
+
         // Boats
         event.registerLayerDefinition(TolkienModelLayers.MALLORN_BOAT, BoatModel::createBoatModel);
         event.registerLayerDefinition(TolkienModelLayers.MALLORN_CHEST_BOAT, BoatModel::createChestBoatModel);
