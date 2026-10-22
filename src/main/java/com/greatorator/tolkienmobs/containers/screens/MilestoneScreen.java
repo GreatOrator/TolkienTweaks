@@ -184,13 +184,16 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
         return value;
     }
 
+    /** The index of the last page, which is what the next button and the page label count against. */
     public int getPageCount(){
-        int i = -1;
+        int others = 0;
         for (MilestoneHandler.MilestoneData data : MilestoneHandler.getKnownByPlayer(Objects.requireNonNull(getMinecraft().player))) {
             if (data.getUuid().equals(tileEntity.getUUID())) continue;
-            i++;
+            others++;
         }
-            return Math.max((int) Math.ceil((double) i / maxItemsPerPage) - 1, 0);
+        // Ceiling division: the old count was one page short whenever the total was just past a
+        // multiple of seven, which hid the last page of a long list.
+        return Math.max((others + maxItemsPerPage - 1) / maxItemsPerPage - 1, 0);
     }
 
     private List<AbstractWidget> getItemsForPage() {
@@ -200,7 +203,9 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
         int endIndex = Math.min(startIndex + maxItemsPerPage, knownByPlayer.size());
 
         for (int i = 0; i < knownByPlayer.size(); i++) {
-            if (i <= startIndex || i > endIndex) continue;
+            // The page holds [startIndex, endIndex); the bounds used to skip the item at
+            // startIndex itself, so the first known milestone never appeared on any page.
+            if (i < startIndex || i >= endIndex) continue;
             MilestoneHandler.MilestoneData data = knownByPlayer.get(i);
             if (data.getUuid().equals(tileEntity.getUUID())) continue;
 
@@ -335,15 +340,19 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollDeltaX, double scrollDeltaY) {
+        // The page buttons rebuild the screen after moving a page; scrolling only changed the
+        // counter, so the label moved and the list stayed where it was.
         if (scrollDeltaY > 0) {
-            // Scroll up, go to previous page
             if (this.currentPage > 0) {
                 this.currentPage--;
+                this.clearWidgets();
+                this.init();
             }
         } else {
-            // Scroll down, go to next page
-            if (this.currentPage < getPageCount() - 1) {
+            if (this.currentPage < getPageCount()) {
                 this.currentPage++;
+                this.clearWidgets();
+                this.init();
             }
         }
         return true;

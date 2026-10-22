@@ -219,27 +219,15 @@ public class MilestoneBlockEntity extends TolkienBlockEntity implements MenuProv
                     }
                 }
             } else {
+                // Experience is paid in levels, which is what the cost button shows. This branch used
+                // to check for and spend the payment item instead, so a server set to charge
+                // experience charged nothing at all.
                 int cost = getExperienceTravelCost(data);
-
-                if (!stack.isEmpty()) {
-                    int found = 0;
-                    for (ItemStack item : client.getInventory().items) {
-                        if (ItemStack.isSameItem(stack, item)) found += item.getCount();
-                    }
-                    if (found < cost) {
-                        client.displayClientMessage(Component.translatable("tolkienmobs.msg.payment.insufficient").withStyle(ChatFormatting.DARK_RED), false);
-                        return;
-                    }
-                    int needed = getItemTravelCost(data);
-                    for (ItemStack item : client.getInventory().items) {
-                        if (ItemStack.isSameItem(stack, item)) {
-                            int count = item.getCount();
-                            item.shrink(Math.min(count, needed));
-                            needed -= count;
-                            if (needed <= 0) break;
-                        }
-                    }
+                if (client.experienceLevel < cost) {
+                    client.displayClientMessage(Component.translatable("tolkienmobs.msg.payment.insufficient").withStyle(ChatFormatting.DARK_RED), false);
+                    return;
                 }
+                client.giveExperienceLevels(-cost);
             }
 
             level.playSound(null, client.blockPosition(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 0.5F, 1.0F);
