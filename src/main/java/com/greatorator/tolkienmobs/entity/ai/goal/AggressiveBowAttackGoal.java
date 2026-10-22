@@ -4,9 +4,10 @@ import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
 import net.minecraft.world.entity.ai.goal.RangedBowAttackGoal;
 
 /**
- * A bow goal that also marks its mob engaged for as long as it runs. The vanilla goal never touches
- * the mod's aggressive flag, so a mob that only ever shoots stayed "calm" and every animation gated
- * on that flag - including its own ranged attack - was never played.
+ * A bow goal that publishes the mod's shooting flag while it runs, so the client-side animation
+ * controllers know the mob is firing. Vanilla's goal already marks the mob aggressive (its start
+ * and stop call setAggressive), and it already accepts a bow in either hand, so nothing else here
+ * needs overriding - the uruk-hai and mordor orcs carry their uruk bow in the off hand.
  */
 public class AggressiveBowAttackGoal extends RangedBowAttackGoal<TolkienMonsterEntity> {
     private final TolkienMonsterEntity mob;
@@ -19,14 +20,12 @@ public class AggressiveBowAttackGoal extends RangedBowAttackGoal<TolkienMonsterE
     @Override
     public void start() {
         super.start();
-        this.mob.setAggressive(true);
         this.mob.setShooting(true);
     }
 
     @Override
     public void stop() {
         super.stop();
-        this.mob.setAggressive(false);
         this.mob.setShooting(false);
     }
 }
