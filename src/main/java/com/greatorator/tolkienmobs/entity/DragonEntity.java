@@ -381,6 +381,16 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
         ensureHome();
         super.tick();
 
+        if (!level.isClientSide) {
+            // One place owns the wingbeat timer, so a beast flown by its AI and one flown by a rider
+            // beat at the same rate. A rider's flight is simulated on their own client, so the wings
+            // have to be heard from the server or only the rider would hear them.
+            if (this.wingSoundTicks > 0) this.wingSoundTicks--;
+            if (this.isVehicle() && this.canBeControlledByRider() && this.isUsingFlyingNavigator()) {
+                this.beatWingsAudibly();
+            }
+        }
+
         NavigationType properNavigator = getProperNavigator();
         if (properNavigator != this.getNavigationType()) {
             setNavigator(properNavigator);
@@ -707,7 +717,6 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
      * height with a stroke about every second and a quarter, overshooting the path by nothing.
      */
     private void tickWingbeat() {
-        if (this.wingSoundTicks > 0) this.wingSoundTicks--;
         double climb = this.getFlightTargetY() - this.getY();
 
         if (this.wingBeatTicks > 0) {
@@ -720,13 +729,10 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
             this.wingVelocity = Math.min(WINGBEAT_CLIMB, this.wingVelocity + WINGBEAT_THRUST);
             this.wingBeatTicks--;
             // A climbing beast chains downstrokes every eight ticks, which at the ride's volume
-            // would be a siren rather than a wingbeat. The gap and the volume are mod config
-            // options so the cadence can be tuned by ear; the beat is always quieter than the one
-            // that lifts a rider.
-            if (this.wingSoundTicks <= 0) {
-                this.wingSoundTicks = TolkienMobsConfig.fellbeastWingbeatInterval;
-                this.playWingbeatSound((float) TolkienMobsConfig.fellbeastWingbeatVolume);
-            }
+            // would be a siren rather than a wingbeat; beatWingsAudibly() keeps the gap between
+            // the ones that are heard, and the gap and volume are mod config options so the
+            // cadence can be tuned by ear.
+            this.beatWingsAudibly();
             return;
         }
 
@@ -846,7 +852,13 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
         setDeltaMovement(getDeltaMovement().add(0, 1.285, 0));
     }
 
-    /** The beast's wings, as heard from outside: the flight model's beats use a quieter one. */
+    /** One wingbeat, as long as the last one is far enough behind, at the configured volume. */
+    private void beatWingsAudibly() {
+        if (this.wingSoundTicks > 0) return;
+        this.wingSoundTicks = TolkienMobsConfig.fellbeastWingbeatInterval;
+        this.playWingbeatSound((float) TolkienMobsConfig.fellbeastWingbeatVolume);
+    }
+
     private void playWingbeatSound(float volume) {
         playSound(TolkienSounds.FLAP_FELLBEAST.get(), volume, 1, false);
     }
