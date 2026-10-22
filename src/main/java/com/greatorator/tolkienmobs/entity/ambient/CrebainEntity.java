@@ -52,7 +52,8 @@ public class CrebainEntity extends TolkienFlyingAmbientEntity implements GeoEnti
         return Animal.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 6.0)
                 .add(Attributes.FLYING_SPEED, 0.4)
-                .add(Attributes.MOVEMENT_SPEED, 0.2);
+                .add(Attributes.MOVEMENT_SPEED, 0.2)
+                .add(Attributes.TEMPT_RANGE, 10.0D);
     }
 
     @Override

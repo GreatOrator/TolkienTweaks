@@ -73,7 +73,8 @@ public class SquirrelEntity extends TolkienAmbientEntity implements GeoEntity {
                 .add(Attributes.ATTACK_DAMAGE, 3.0)
                 .add(Attributes.MAX_HEALTH, 6.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.3D)
-                .add(Attributes.FOLLOW_RANGE, 24D);
+                .add(Attributes.FOLLOW_RANGE, 24D)
+                .add(Attributes.TEMPT_RANGE, 10.0D);
     }
 
     @Override

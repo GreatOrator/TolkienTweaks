@@ -1,10 +1,10 @@
 package com.greatorator.tolkienmobs.entity.item.render;
 
+import com.greatorator.tolkienmobs.block.custom.entity.layers.TolkienModelLayers;
 import com.greatorator.tolkienmobs.entity.item.MorgulCrystalEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
@@ -37,7 +37,10 @@ public class MorgulCrystalRenderer extends EntityRenderer<MorgulCrystalEntity, M
    public MorgulCrystalRenderer(EntityRendererProvider.Context context) {
       super(context);
       this.shadowRadius = 0.5F;
-      ModelPart modelpart = context.bakeLayer(ModelLayers.END_CRYSTAL);
+      // The crystal keeps its own copy of the old end crystal layer: vanilla renamed the parts
+      // to outer_glass/inner_glass/cube and moved the spin into its model, so the vanilla layer
+      // no longer has the glass, cube and base parts this renderer draws.
+      ModelPart modelpart = context.bakeLayer(TolkienModelLayers.MORGUL_CRYSTAL);
       this.glass = modelpart.getChild("glass");
       this.cube = modelpart.getChild("cube");
       this.base = modelpart.getChild("base");
