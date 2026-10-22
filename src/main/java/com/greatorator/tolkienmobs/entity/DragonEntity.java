@@ -635,8 +635,6 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     private static final double STOOP_MARGIN = 2.0D;
     /** Ticks until a wingbeat may be heard again, so a long climb does not roar with flapping. */
     private int wingSoundTicks;
-    /** The shortest gap between two audible wingbeats, in ticks. */
-    private static final int WINGBEAT_SOUND_INTERVAL = 15;
 
     @Override
     public void travel(Vec3 vec3d){
@@ -722,11 +720,12 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
             this.wingVelocity = Math.min(WINGBEAT_CLIMB, this.wingVelocity + WINGBEAT_THRUST);
             this.wingBeatTicks--;
             // A climbing beast chains downstrokes every eight ticks, which at the ride's volume
-            // would be a siren rather than a wingbeat, so a beat is heard at most once a second
-            // or so and quieter than the one that lifts a rider.
+            // would be a siren rather than a wingbeat. The gap and the volume are mod config
+            // options so the cadence can be tuned by ear; the beat is always quieter than the one
+            // that lifts a rider.
             if (this.wingSoundTicks <= 0) {
-                this.wingSoundTicks = WINGBEAT_SOUND_INTERVAL;
-                this.playWingbeatSound(2.0F);
+                this.wingSoundTicks = TolkienMobsConfig.fellbeastWingbeatInterval;
+                this.playWingbeatSound((float) TolkienMobsConfig.fellbeastWingbeatVolume);
             }
             return;
         }
