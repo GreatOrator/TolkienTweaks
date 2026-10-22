@@ -57,10 +57,10 @@ public class TolkienBarrelBlock extends TolkienEntityBlock {
             return InteractionResult.SUCCESS;
         } else {
             BlockEntity blockentity = level.getBlockEntity(pos);
-            if (blockentity instanceof TolkienBarrelBlockEntity) {
+            if (blockentity instanceof TolkienBarrelBlockEntity && level instanceof ServerLevel serverLevel) {
                 player.openMenu((TolkienBarrelBlockEntity)blockentity);
                 player.awardStat(Stats.OPEN_BARREL);
-                PiglinAi.angerNearbyPiglins(player, true);
+                PiglinAi.angerNearbyPiglins(serverLevel, player, true);
             }
 
             return InteractionResult.CONSUME;

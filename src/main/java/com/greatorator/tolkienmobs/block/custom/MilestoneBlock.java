@@ -17,7 +17,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -105,9 +106,11 @@ public class MilestoneBlock extends TolkienEntityBlock {
     }
 
     @Override
-    public BlockState updateShape(BlockState blockState, Direction direction, BlockState blockState1, LevelAccessor accessor, BlockPos pos, BlockPos pos1) {
+    protected BlockState updateShape(
+            BlockState blockState, LevelReader reader, ScheduledTickAccess ticks, BlockPos pos,
+            Direction direction, BlockPos pos1, BlockState blockState1, RandomSource random) {
         if (blockState.getValue(WATERLOGGED)) {
-            accessor.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(accessor));
+            ticks.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(reader));
         }
         return blockState;
     }

@@ -50,7 +50,7 @@ public class BramblesBushBlock extends BushBlock implements BonemealableBlock {
     }
 
     @Override
-    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
         return new ItemStack(TolkienItems.BRAMBLES_BERRY.get());
     }
 
@@ -124,7 +124,7 @@ public class BramblesBushBlock extends BushBlock implements BonemealableBlock {
             BlockState blockstate = state.setValue(AGE, Integer.valueOf(1));
             level.setBlock(pos, blockstate, 2);
             level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, blockstate));
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.SUCCESS;
         } else {
             return super.useWithoutItem(state, level, pos, player, hitResult);
         }

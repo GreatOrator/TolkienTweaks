@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,6 +16,8 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -148,9 +151,9 @@ public class SleepingBagBlock extends BedBlock
     }
 
     @Override
-    public void updateEntityAfterFallOn(BlockGetter getter, Entity entity) {
+    public void updateEntityMovementAfterFallOn(BlockGetter getter, Entity entity) {
         if (entity.isSuppressingBounce()) {
-            super.updateEntityAfterFallOn(getter, entity);
+            super.updateEntityMovementAfterFallOn(getter, entity);
         } else {
             this.bounceUp(entity);
         }
@@ -168,7 +171,9 @@ public class SleepingBagBlock extends BedBlock
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState newState, LevelAccessor accessor, BlockPos pos, BlockPos newPos)
+    protected BlockState updateShape(
+            BlockState state, LevelReader reader, ScheduledTickAccess ticks, BlockPos pos,
+            Direction direction, BlockPos newPos, BlockState newState, RandomSource random)
     {
         if(direction == getNeighbourDirection(state.getValue(PART), state.getValue(FACING)))
         {
@@ -176,7 +181,7 @@ public class SleepingBagBlock extends BedBlock
         }
         else
         {
-            return super.updateShape(state, direction, newState, accessor, pos, newPos);
+            return super.updateShape(state, reader, ticks, pos, direction, newPos, newState, random);
         }
     }
 

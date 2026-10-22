@@ -9,7 +9,7 @@ This file is the handoff: it records what is done, what is measured, and what to
 |---|---|
 | Target | Minecraft **1.21.4**, NeoForge **21.4.161** |
 | Compile errors at the start | **5,720** in 425 files |
-| Compile errors now | **255** distinct sites |
+| Compile errors now | **198** distinct sites |
 | Runnable | no — the tree does not compile yet |
 
 Dependency versions, all verified to exist and resolve:
@@ -328,6 +328,48 @@ The block entity package (`block/custom/entity`, its models and renderers, plus 
   `FastColor.ARGB32.colorFromFloat(a, 1, 1, 1)` is `ARGB.white(a)`, the same packed value.
 - `EntityRenderDispatcher#render` lost the x-rotation argument: `render(entity, x, y, z, partialTick, pose, buffer,
   light)`, which is exactly how vanilla's `SpawnerRenderer` calls it.
+
+### 3d. Blocks — DONE
+
+The block package (`block/`, `block/custom/`, and the teleport helper in `util/block`) compiles; 58 error
+sites went away and none were added elsewhere.
+
+- `updateShape` is now eight arguments, and the order matters:
+  `updateShape(state, LevelReader reader, ScheduledTickAccess ticks, BlockPos pos, Direction direction,
+  BlockPos neighborPos, BlockState neighborState, RandomSource random)`. `scheduleTick` moved off
+  `LevelAccessor` onto `ScheduledTickAccess` (`LevelAccessor` extends it, so level-typed callers still compile),
+  and `Fluid#getTickDelay` wants the `LevelReader`, not the old `LevelAccessor`. Every waterlogged, wall-mounted
+  and portal block was rewritten to the new order; the bodies are unchanged.
+- `BlockStateBase#getOffset` dropped the level: `state.getOffset(pos)`.
+- `RenderShape` is only `INVISIBLE` and `MODEL` now — the animated shape is gone and block entity renderers run
+  regardless of it. So the lockable chests, the treasure chests and the well return `INVISIBLE`, which is the old
+  "the renderer draws me" behaviour.
+- `InteractionResult` is a sealed record family; `sidedSuccess(isClientSide)` is gone and vanilla's replacement in
+  a block's own use path is plain `SUCCESS` (`Success` carries a swing source, so a server-side `SUCCESS` does not
+  make the client swing twice).
+- `SoundEvent` is a record: `location()` instead of `getLocation()`. `Level#addParticle` takes two booleans
+  (`force`, `overrideLimiter`) before the position, so the old `force` argument becomes `true, false`.
+- `Block#updateEntityAfterFallOn` is `updateEntityMovementAfterFallOn`, which is what a sleeping bag still bounces
+  on. `PiglinAi.angerNearbyPiglins` takes the `ServerLevel` first. `RegistryAccess#lookupOrThrow` replaces
+  `registryOrThrow`, and `Registry#get(key)` returns `Optional<Holder.Reference<T>>` (`getHolder` is gone).
+- `neighborChanged` passes `@Nullable Orientation` (`net.minecraft.world.level.redstone`) where the old signature
+  had the neighbour's `BlockPos`.
+- `getCloneItemStack` gained `boolean includeData`; NeoForge's player-sensitive version is
+  `(LevelReader, BlockPos, BlockState, boolean, Player)`.
+- The Arda portal could not keep `Size extends PortalShape`: `PortalShape`'s constructor is private in 1.21.4 and
+  vanilla drives it through static `findPortalShape`/`findAnyShape`. `Size` is now standalone, reads through a
+  `LevelReader` (so `updateShape` can build one) and takes the `LevelAccessor` as an argument to
+  `placePortalBlocks`. `Portal#getPortalDestination` returns `TeleportTransition`, and the unused
+  `onTrySpawnPortal` helper had to go — `BlockEvent.PortalSpawnEvent` requires a real `PortalShape`, which cannot
+  be constructed for a custom frame any more.
+- `Entity#changeDimension` is `Entity#teleport(TeleportTransition)`; `EntityType#create(Level, EntitySpawnReason)`
+  takes a reason (`DIMENSION_TRAVEL`); `ServerPlayer#teleportTo` wants
+  `(ServerLevel, x, y, z, Set<Relative>, yRot, xRot, boolean setCamera)`.
+
+Known wart, carried over rather than introduced: `TeleportUtility` calls `CommonHooks.onTravelToDimension` itself
+and `Entity#teleport` calls it again (with the target dimension, where the mod passes the source), so the travel
+hook fires twice for a cross-dimension jump. That was already true of `changeDimension` in 1.21.1; removing the
+mod's own call is a behaviour change and is left for later.
 
 ### 4. Datagen output
 

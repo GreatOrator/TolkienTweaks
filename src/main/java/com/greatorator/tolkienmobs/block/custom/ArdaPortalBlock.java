@@ -21,14 +21,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.portal.DimensionTransition;
-import net.minecraft.world.level.portal.PortalShape;
+import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.level.BlockEvent;
 
 import javax.annotation.Nullable;
 
@@ -79,13 +76,15 @@ public class ArdaPortalBlock extends TolkienBlock implements Portal {
     }
 
     @Override
-    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
+    protected BlockState updateShape(
+            BlockState stateIn, LevelReader reader, ScheduledTickAccess ticks, BlockPos currentPos,
+            Direction facing, BlockPos facingPos, BlockState facingState, RandomSource random) {
         Direction.Axis direction$axis = facing.getAxis();
         Direction.Axis direction$axis1 = stateIn.getValue(AXIS);
         boolean flag = direction$axis1 != direction$axis && direction$axis.isHorizontal();
-        return !flag && facingState.getBlock() != this && !(new Size(worldIn, currentPos, direction$axis1)).validatePortal()
+        return !flag && facingState.getBlock() != this && !(new Size(reader, currentPos, direction$axis1)).validatePortal()
                 ? Blocks.AIR.defaultBlockState()
-                : super.updateShape(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+                : super.updateShape(stateIn, reader, ticks, currentPos, facing, facingPos, facingState, random);
     }
 
     @Override
@@ -147,7 +146,7 @@ public class ArdaPortalBlock extends TolkienBlock implements Portal {
     }
 
     @Override
-    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
         return ItemStack.EMPTY;
     }
 
@@ -177,15 +176,11 @@ public class ArdaPortalBlock extends TolkienBlock implements Portal {
     public boolean trySpawnPortal(LevelAccessor worldIn, BlockPos pos) {
         ArdaPortalBlock.Size ArdaPortalBlock$size = this.isPortal(worldIn, pos);
         if (ArdaPortalBlock$size != null) {
-            ArdaPortalBlock$size.placePortalBlocks();
+            ArdaPortalBlock$size.placePortalBlocks(worldIn);
             return true;
         } else {
             return false;
         }
-    }
-
-    public static BlockEvent.PortalSpawnEvent onTrySpawnPortal(LevelAccessor world, BlockPos pos, Size size) {
-        return NeoForge.EVENT_BUS.post(new BlockEvent.PortalSpawnEvent(world, pos, world.getBlockState(pos), size));
     }
 
     @Nullable
@@ -199,8 +194,8 @@ public class ArdaPortalBlock extends TolkienBlock implements Portal {
         }
     }
 
-    public static class Size extends PortalShape {
-        private final LevelAccessor level;
+    public static class Size {
+        private final LevelReader level;
         private final Direction.Axis axis;
         private final Direction rightDir;
         private final Direction leftDir;
@@ -210,8 +205,7 @@ public class ArdaPortalBlock extends TolkienBlock implements Portal {
         private int height;
         private int width;
 
-        public Size(LevelAccessor level, BlockPos pos, Direction.Axis axis) {
-            super(level, pos, axis);
+        public Size(LevelReader level, BlockPos pos, Direction.Axis axis) {
             this.level = level;
             this.axis = axis;
             if (axis == Direction.Axis.X) {
@@ -319,12 +313,12 @@ public class ArdaPortalBlock extends TolkienBlock implements Portal {
             return this.bottomLeft != null && this.width >= 2 && this.width <= 21 && this.height >= 3 && this.height <= 21;
         }
 
-        public void placePortalBlocks() {
+        public void placePortalBlocks(LevelAccessor world) {
             for(int i = 0; i < this.width; ++i) {
                 BlockPos blockpos = this.bottomLeft.relative(this.rightDir, i);
 
                 for(int j = 0; j < this.height; ++j) {
-                    this.level.setBlock(blockpos.above(j), TolkienBlocks.ARDA_PORTAL.get().defaultBlockState().setValue(ArdaPortalBlock.AXIS, this.axis), 18);
+                    world.setBlock(blockpos.above(j), TolkienBlocks.ARDA_PORTAL.get().defaultBlockState().setValue(ArdaPortalBlock.AXIS, this.axis), 18);
                 }
             }
 
@@ -343,7 +337,7 @@ public class ArdaPortalBlock extends TolkienBlock implements Portal {
 
     @Nullable
     @Override
-    public DimensionTransition getPortalDestination(ServerLevel serverLevel, Entity entity, BlockPos blockPos) {
+    public TeleportTransition getPortalDestination(ServerLevel serverLevel, Entity entity, BlockPos blockPos) {
         return null;
     }
 
