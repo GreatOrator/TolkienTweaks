@@ -199,23 +199,29 @@ public class MilestoneBlockEntity extends TolkienBlockEntity implements MenuProv
             if (TolkienMobsConfig.PAYMENT_TYPE.get()) {
                 int cost = getItemTravelCost(data);
 
-                if (!stack.isEmpty()) {
-                    int found = 0;
-                    for (ItemStack item : client.getInventory().items) {
-                        if (ItemStack.isSameItem(stack, item)) found += item.getCount();
-                    }
-                    if (found < cost) {
-                        client.displayClientMessage(Component.translatable("tolkienmobs.msg.payment.insufficient").withStyle(ChatFormatting.DARK_RED), false);
-                        return;
-                    }
-                    int needed = getItemTravelCost(data);
-                    for (ItemStack item : client.getInventory().items) {
-                        if (ItemStack.isSameItem(stack, item)) {
-                            int count = item.getCount();
-                            item.shrink(Math.min(count, needed));
-                            needed -= count;
-                            if (needed <= 0) break;
-                        }
+                // A payment item that does not resolve to an item - a config naming something that
+                // has since gone, say - used to skip the charge altogether, which handed out free
+                // teleports. Nothing to charge with means nothing to pay, so the jump is refused.
+                if (stack.isEmpty()) {
+                    client.displayClientMessage(Component.translatable("tolkienmobs.msg.payment.insufficient").withStyle(ChatFormatting.DARK_RED), false);
+                    return;
+                }
+
+                int found = 0;
+                for (ItemStack item : client.getInventory().items) {
+                    if (ItemStack.isSameItem(stack, item)) found += item.getCount();
+                }
+                if (found < cost) {
+                    client.displayClientMessage(Component.translatable("tolkienmobs.msg.payment.insufficient").withStyle(ChatFormatting.DARK_RED), false);
+                    return;
+                }
+                int needed = cost;
+                for (ItemStack item : client.getInventory().items) {
+                    if (ItemStack.isSameItem(stack, item)) {
+                        int taken = Math.min(item.getCount(), needed);
+                        item.shrink(taken);
+                        needed -= taken;
+                        if (needed <= 0) break;
                     }
                 }
             } else {
