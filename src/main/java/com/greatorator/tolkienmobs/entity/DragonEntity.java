@@ -28,7 +28,6 @@ import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
@@ -773,7 +772,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
      * rider whose own client is flying it.
      */
     private void playDiveWind() {
-        level.playSound(null, getX(), getY(), getZ(), SoundEvents.ELYTRA_FLYING, getSoundSource(), 1.6F, 0.8F);
+        level.playSound(null, getX(), getY(), getZ(), TolkienSounds.WIND_FELLBEAST.get(), getSoundSource(), 1.6F, 0.8F);
     }
 
     /**
