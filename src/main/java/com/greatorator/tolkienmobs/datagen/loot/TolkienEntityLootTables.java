@@ -1045,6 +1045,17 @@ public class TolkienEntityLootTables extends EntityLootSubProvider {
                                         .apply(EnchantedCountIncreaseFunction.lootingMultiplier(this.registries, UniformGenerator.between(0.0F, 1.0F)))
                                         .when(LootItemKilledByPlayerCondition.killedByPlayer()))));
         add(TolkienEntities.ENTITY_FELL_BEAST.get(), emptyLootTable());
+
+        // NPCs drop nothing, but every entity type that is not a projectile or a vehicle names a
+        // loot table, so they get the same empty one vanilla gives villagers and wandering traders.
+        add(TolkienEntities.ENTITY_TTM_HUMAN.get(), emptyLootTable());
+        add(TolkienEntities.ENTITY_TTM_DWARF.get(), emptyLootTable());
+        add(TolkienEntities.ENTITY_TTM_ELVES.get(), emptyLootTable());
+        add(TolkienEntities.ENTITY_TTM_HOBBIT.get(), emptyLootTable());
+        add(TolkienEntities.ENTITY_TTM_SOUTHRON.get(), emptyLootTable());
+        add(TolkienEntities.ENTITY_TTM_SOUTHRON_NPC.get(), emptyLootTable());
+        add(TolkienEntities.ENTITY_TTM_ORC.get(), emptyLootTable());
+        add(TolkienEntities.ENTITY_TTM_ORC_TRADER.get(), emptyLootTable());
     }
 
     public LootTable.Builder emptyLootTable() {

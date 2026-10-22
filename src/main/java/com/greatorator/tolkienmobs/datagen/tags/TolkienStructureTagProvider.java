@@ -12,7 +12,7 @@ import java.util.concurrent.CompletableFuture;
 
 public final class TolkienStructureTagProvider extends TagsProvider<Structure> {
     public TolkienStructureTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, Registries.STRUCTURE, registries, "tolkienmobs", null);
+        super(output, Registries.STRUCTURE, registries);
     }
 
     @Override

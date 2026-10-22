@@ -15,7 +15,7 @@ import java.util.concurrent.CompletableFuture;
 
 
 public class TolkienDataGenerator {
-    public static void gatherData(GatherDataEvent event) {
+    public static void gatherData(GatherDataEvent.Client event) {
         DataGenerator generator = event.getGenerator();
         PackOutput packOutput = generator.getPackOutput();
         // NeoForge 21.4 removed GatherDataEvent#getExistingFileHelper along with the

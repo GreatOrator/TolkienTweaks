@@ -138,7 +138,7 @@ public class HarvestUtility {
     }
 
     private static boolean isGrassLikeBlock(Block crop) {
-        return crop instanceof GrassBlock || crop instanceof NyliumBlock || crop instanceof NetherrackBlock || crop instanceof MossBlock;
+        return crop instanceof GrassBlock || crop instanceof NyliumBlock || crop instanceof NetherrackBlock || crop == Blocks.MOSS_BLOCK;
     }
 
     public static boolean growWaterPlant(ServerLevel level, BlockPos pos, BlockState state, @Nullable Direction side) {

@@ -101,7 +101,7 @@ public final class Codecs {
 	}
 
 	public static <T> Codec<T> fromRegistry(Registry<T> registry) {
-		return ResourceLocation.CODEC.xmap(registry::get, registry::getKey);
+		return ResourceLocation.CODEC.xmap(registry::getValue, registry::getKey);
 	}
 
 	public static <E> DataResult<Pair<E, E>> arrayToPair(List<E> list) {

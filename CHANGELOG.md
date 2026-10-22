@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- Data generation runs as the client data run, the run NeoForge 21.4 provides for writing both assets and data; its classpath carries the client library the generator needs to boot. The generator now produces the 800 item model definitions, the fourteen boats included, instead of them being mirrored by hand.
 - Blockstates and item models are written by the mod's own generator, since the NeoForge model generators this datagen relied on no longer exist; the generated JSON keeps the same shape.
 - Armour sets are now described the way the game expects: each of Mithril, Morguliron and Ammolite has an equipment asset that names its worn texture, so the sets render on players and horses from one definition and the full-set effects are still recognised.
 - Spawn eggs are rebuilt on the vanilla item with their two colours moved into the item model, and every mob still registers under its own entity id (the chest boats no longer share the plain boat's id).
@@ -41,6 +42,9 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+- Data generation runs again. The port's last compile errors are gone: enchanted books are built through the game's enchantment helper, tag lookups, registry lookups, carver steps, the solid-render check, the fluid fog parameters and the JEI subtype interpreter all use the shapes the game now has, so the model, loot, tag and recipe providers can be regenerated from the build.
+- Entity loot generation completes. The eight NPCs (humans, dwarves, elves, hobbits, Southrons, orcs and their traders) get the empty loot table vanilla gives villagers, and thrown ammo, the trap and the boats stop claiming a loot table they never had.
+- The three shears attach their repair tag and tool rules while the item registers rather than in the item's static properties, so a data generation run, where the item registry is already frozen, no longer fails on them. The trinkets' default potion component is attached the same way.
 - JEI shows the fireplace's recipes again. The game stopped sending recipes to the client, so the server now hands the fireplace recipe type to the client when it syncs a datapack, and the recipe category shows the recipes that arrive.
 - The Blue Mountains no longer come out as bare stone: their floor keeps its grass, and mountain stone starts in the block beneath it instead of a band of dirt.
 - The Camouflage Chest now works as a chest instead of being a plain block: it holds 27 slots, opens on right-click with the player's inventory below them, reads on a comparator, works with hoppers and pipes, and drops its contents when broken.

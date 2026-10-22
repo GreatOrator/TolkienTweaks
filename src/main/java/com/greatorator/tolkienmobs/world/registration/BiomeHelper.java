@@ -632,9 +632,9 @@ public abstract class BiomeHelper {
         biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_DEADWOOD_FALLEN_LOG);
         biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.MORGULIRON_ORE_PLACED_KEY);
 
-        biome.addCarver(GenerationStep.Carving.AIR, Carvers.CAVE);
-        biome.addCarver(GenerationStep.Carving.AIR, Carvers.CAVE_EXTRA_UNDERGROUND);
-        biome.addCarver(GenerationStep.Carving.AIR, Carvers.CANYON);
+        biome.addCarver(Carvers.CAVE);
+        biome.addCarver(Carvers.CAVE_EXTRA_UNDERGROUND);
+        biome.addCarver(Carvers.CANYON);
 
         BiomeDefaultFeatures.addDefaultMonsterRoom(biome);
         BiomeDefaultFeatures.addDefaultMushrooms(biome);
