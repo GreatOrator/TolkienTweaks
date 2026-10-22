@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.entity.monster;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntitySpawnReason;
 
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
@@ -95,9 +96,9 @@ public class MirkwoodSpiderEntity extends TolkienMonsterEntity implements GeoEnt
     private final static long coolDown = 15000L;
 
     @Override
-    public boolean doHurtTarget(Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel serverLevel, Entity entityIn) {
         long time = System.currentTimeMillis();
-        if (super.doHurtTarget(entityIn)) {
+        if (super.doHurtTarget(serverLevel, entityIn)) {
             if (entityIn instanceof Player) {
                 if (time > nextAbilityUse) {
                     nextAbilityUse = time + coolDown;
@@ -154,7 +155,7 @@ public class MirkwoodSpiderEntity extends TolkienMonsterEntity implements GeoEnt
 
         RandomSource randomsource = level.getRandom();
         if (randomsource.nextInt(100) == 0) {
-            Skeleton skeleton = EntityType.SKELETON.create(this.level());
+            Skeleton skeleton = EntityType.SKELETON.create(this.level(), EntitySpawnReason.JOCKEY);
             if (skeleton != null) {
                 skeleton.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
                 skeleton.finalizeSpawn(level, difficulty, spawnType, null);
@@ -243,8 +244,8 @@ public class MirkwoodSpiderEntity extends TolkienMonsterEntity implements GeoEnt
     }
 
     @Override
-    protected void customServerAiStep() {
-        super.customServerAiStep();
+    protected void customServerAiStep(ServerLevel serverLevel) {
+        super.customServerAiStep(serverLevel);
         this.reassessAttackGoals();
     }
 
@@ -289,8 +290,11 @@ public class MirkwoodSpiderEntity extends TolkienMonsterEntity implements GeoEnt
     public void setTargetTrapped(boolean trapped, boolean notifyOthers) {
         TargetingConditions spiderTargeting = TargetingConditions.forCombat().range(10.0D).ignoreInvisibilityTesting();
 
-        if (notifyOthers) {
-            List<Spider> spiders = this.level.getNearbyEntities(Spider.class, spiderTargeting, this, this.getBoundingBox().inflate(10.0D));
+        // Level#getNearbyEntities is gone; the scan is a plain class-and-box one with the conditions
+        // applied by hand, and those need a server level.
+        if (notifyOthers && this.level() instanceof ServerLevel serverLevel) {
+            List<Spider> spiders = serverLevel.getEntitiesOfClass(Spider.class, this.getBoundingBox().inflate(10.0D),
+                    spider -> spiderTargeting.test(serverLevel, this, spider));
 
             for(Spider spider : spiders) {
                 if (spider instanceof TrapsTarget && this.getTarget() != null && spider.getTarget() != null && spider.getTarget() == this.getTarget()) {

@@ -8,6 +8,7 @@ import com.greatorator.tolkienmobs.init.TolkienSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -63,9 +64,9 @@ public class WitchKingEntity extends TolkienMonsterEntity implements GeoEntity {
 
     /** Special Attack */
     @Override
-    public boolean doHurtTarget(Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel serverLevel, Entity entityIn) {
         long time = System.currentTimeMillis();
-        if (super.doHurtTarget(entityIn)) {
+        if (super.doHurtTarget(serverLevel, entityIn)) {
             if (entityIn instanceof Player) {
                 if (time > nextAbilityUse) {
                     nextAbilityUse = time + coolDown;

@@ -3,7 +3,9 @@ package com.greatorator.tolkienmobs.entity.projectiles;
 import com.google.common.collect.Lists;
 import com.greatorator.tolkienmobs.handler.interfaces.TrapsTarget;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,6 +31,16 @@ public abstract class BaseTrapEntity extends Entity implements GeoEntity {
 
     public BaseTrapEntity(EntityType<? extends BaseTrapEntity> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
+    }
+
+    /**
+     * Damage is only delivered on the server now, and a plain entity has to answer it. A trap has
+     * never been something a player can hit away - it lives out its own decay timer - so this
+     * keeps the old "not damageable" answer that Entity used to provide.
+     */
+    @Override
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource source, float amount) {
+        return false;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.entity.monster;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntitySpawnReason;
 
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
@@ -65,9 +66,9 @@ public class HaradrimEntity extends TolkienMonsterEntity implements GeoEntity {
     private final static long coolDown = 15000L;
 
     @Override
-    public boolean doHurtTarget(Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel serverLevel, Entity entityIn) {
         long time = System.currentTimeMillis();
-        if (super.doHurtTarget(entityIn)) {
+        if (super.doHurtTarget(serverLevel, entityIn)) {
             if (entityIn instanceof Player) {
                 if (time > nextAbilityUse) {
                     nextAbilityUse = time + coolDown;

@@ -72,8 +72,8 @@ public class MorgulironGolemEntity extends TolkienMonsterEntity implements GeoEn
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(2, new HurtByTargetGoal(this));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Monster.class, 5, false, false, (entity) -> {
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, (entity, level) -> this.isAngryAt(entity, level)));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Monster.class, 5, false, false, (entity, level) -> {
             return entity instanceof Enemy && !(entity instanceof Creeper);
         }));
         this.targetSelector.addGoal(4, new ResetUniversalAngerTargetGoal<>(this, false));
@@ -96,7 +96,7 @@ public class MorgulironGolemEntity extends TolkienMonsterEntity implements GeoEn
             BlockPos pos = new BlockPos(i, j, k);
             BlockState blockstate = this.level.getBlockState(pos);
             if (!blockstate.isAir()) {
-                this.level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockstate).setPos(pos), this.getX() + ((double)this.random.nextFloat() - 0.5D) * (double)this.getBbWidth(), this.getY() + 0.1D, this.getZ() + ((double)this.random.nextFloat() - 0.5D) * (double)this.getBbWidth(), 4.0D * ((double)this.random.nextFloat() - 0.5D), 0.5D, ((double)this.random.nextFloat() - 0.5D) * 4.0D);
+                this.level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockstate, pos), this.getX() + ((double)this.random.nextFloat() - 0.5D) * (double)this.getBbWidth(), this.getY() + 0.1D, this.getZ() + ((double)this.random.nextFloat() - 0.5D) * (double)this.getBbWidth(), 4.0D * ((double)this.random.nextFloat() - 0.5D), 0.5D, ((double)this.random.nextFloat() - 0.5D) * 4.0D);
             }
         }
 
@@ -132,14 +132,14 @@ public class MorgulironGolemEntity extends TolkienMonsterEntity implements GeoEn
     }
 
     @Override
-    public boolean doHurtTarget(Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel serverLevel, Entity entityIn) {
         this.attackAnimationTick = 10;
         this.level.broadcastEntityEvent(this, (byte) 4);
         float f = 30.0F;
         float f1 = f / 2.0F + (float) this.random.nextInt((int) f);
         entityIn.setDeltaMovement(entityIn.getDeltaMovement().add(0.0D, 0.4F, 0.0D));
         long time = System.currentTimeMillis();
-        if (super.doHurtTarget(entityIn)) {
+        if (super.doHurtTarget(serverLevel, entityIn)) {
             if (entityIn instanceof Player) {
                 if (time > nextAbilityUse) {
                     nextAbilityUse = time + coolDown;

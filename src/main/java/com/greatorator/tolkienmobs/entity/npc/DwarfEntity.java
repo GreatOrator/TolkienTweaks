@@ -10,6 +10,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.level.Level;
@@ -46,7 +47,7 @@ public class DwarfEntity extends TolkienVillagerEntity implements GeoEntity {
     public Villager getBreedOffspring(ServerLevel level, AgeableMob otherParent) {
         super.getBreedOffspring(level, otherParent);
         TolkienVariant variant = Util.getRandom(TolkienVariant.values(), this.random);
-        DwarfEntity baby = TolkienEntities.ENTITY_TTM_DWARF.get().create(level);
+        DwarfEntity baby = TolkienEntities.ENTITY_TTM_DWARF.get().create(level, EntitySpawnReason.BREEDING);
         baby.setVariant(variant);
 
         return baby;

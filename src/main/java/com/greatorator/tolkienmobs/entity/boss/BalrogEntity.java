@@ -6,6 +6,7 @@ import com.greatorator.tolkienmobs.entity.ai.goal.MeleeCombatGoal;
 import com.greatorator.tolkienmobs.entity.projectiles.FellBeastFireballEntity;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
+import com.greatorator.tolkienmobs.util.GeneralUtility;
 import com.greatorator.tolkienmobs.util.MathUtility;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -138,10 +139,8 @@ public class BalrogEntity extends TolkienMonsterEntity implements GeoEntity {
 
     /** Special Attack */
     @Override
-    public boolean hurt(DamageSource source, float amount) {
-        if (!super.hurt(source, amount)) {
-            return false;
-        } else if (!(this.level() instanceof ServerLevel)) {
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource source, float amount) {
+        if (!super.hurtServer(serverLevel, source, amount)) {
             return false;
         } else {
             LivingEntity livingentity = this.getTarget();
@@ -154,12 +153,12 @@ public class BalrogEntity extends TolkienMonsterEntity implements GeoEntity {
             if (livingentity == null) return true;
 
             if (this.isEyeInFluid(FluidTags.WATER) && !this.hasEffect(MobEffects.WATER_BREATHING)) {
-                livingentity.displayClientMessage(Component.translatable(MODID + ".msg.nodrown.balrog").withStyle(ChatFormatting.DARK_BLUE), false);
+                GeneralUtility.sendMessage(livingentity, Component.translatable(MODID + ".msg.nodrown.balrog").withStyle(ChatFormatting.DARK_BLUE));
                 this.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 2 * 20, 0));
             }
 
             if ((this.isOnFire() && !this.hasEffect(MobEffects.FIRE_RESISTANCE))) {
-                livingentity.displayClientMessage(Component.translatable(MODID + ".msg.onfire.balrog").withStyle(ChatFormatting.DARK_RED), false);
+                GeneralUtility.sendMessage(livingentity, Component.translatable(MODID + ".msg.onfire.balrog").withStyle(ChatFormatting.DARK_RED));
                 this.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 2 * 20, 0));
             }
 
@@ -171,13 +170,13 @@ public class BalrogEntity extends TolkienMonsterEntity implements GeoEntity {
             this.nextDefensiveAbilityUse = reactionTime + defensiveCoolDown;
 
             if (this.getHealth() < this.getMaxHealth()) {
-                livingentity.displayClientMessage(Component.translatable(MODID + ".msg.healself.balrog").withStyle(ChatFormatting.LIGHT_PURPLE), false);
+                GeneralUtility.sendMessage(livingentity, Component.translatable(MODID + ".msg.healself.balrog").withStyle(ChatFormatting.LIGHT_PURPLE));
                 // Regeneration only heals on ticks divisible by (50 >> amplifier): 40 ticks at amplifier 0 never healed at all.
                 this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 10 * 20, 1));
             }
 
             if (this.getTarget() != null && !this.hasEffect(MobEffects.MOVEMENT_SPEED) && this.getTarget().distanceToSqr(this) > 121.0D) {
-                livingentity.displayClientMessage(Component.translatable(MODID + ".msg.speedup.balrog").withStyle(ChatFormatting.AQUA), false);
+                GeneralUtility.sendMessage(livingentity, Component.translatable(MODID + ".msg.speedup.balrog").withStyle(ChatFormatting.AQUA));
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 2 * 20, 0));
             }
             return true;

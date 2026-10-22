@@ -7,6 +7,7 @@ import com.greatorator.tolkienmobs.entity.ai.goal.MeleeCombatGoal;
 import com.greatorator.tolkienmobs.entity.monster.GoblinEntity;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
+import com.greatorator.tolkienmobs.util.GeneralUtility;
 import com.greatorator.tolkienmobs.util.MathUtility;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -47,6 +48,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Snowball;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -99,7 +101,7 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
 
     @Override
     public void performRangedAttack(LivingEntity entity, float distanceFactor) {
-        Snowball snowballentity = new Snowball(this.level, this);
+        Snowball snowballentity = new Snowball(this.level(), this, ItemStack.EMPTY);
         double d0 = entity.getEyeY() - (double)1.1F;
         double d1 = entity.getX() - this.getX();
         double d2 = d0 - snowballentity.getY();
@@ -122,13 +124,10 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
-        if (!super.hurt(source, amount)) {
-            return false;
-        } else if (!(this.level instanceof ServerLevel serverworld)) {
+    public boolean hurtServer(ServerLevel serverlevel, DamageSource source, float amount) {
+        if (!super.hurtServer(serverlevel, source, amount)) {
             return false;
         } else {
-            ServerLevel serverlevel = (ServerLevel)this.level();
             LivingEntity livingentity = this.getTarget();
             if (livingentity == null && source.getEntity() instanceof LivingEntity) {
                 livingentity = (LivingEntity) source.getEntity();
@@ -137,12 +136,12 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
             if (livingentity == null) return true;
 
             if (this.isEyeInFluid(FluidTags.WATER) && !this.hasEffect(MobEffects.WATER_BREATHING)) {
-                livingentity.displayClientMessage(Component.translatable(MODID + ".msg.nodrown").withStyle(ChatFormatting.DARK_BLUE), false);
+                GeneralUtility.sendMessage(livingentity, Component.translatable(MODID + ".msg.nodrown").withStyle(ChatFormatting.DARK_BLUE));
                 this.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 2 * 20, 0));
             }
 
             if ((this.isOnFire() && !this.hasEffect(MobEffects.FIRE_RESISTANCE))) {
-                livingentity.displayClientMessage(Component.translatable(MODID + ".msg.onfire").withStyle(ChatFormatting.DARK_RED), false);
+                GeneralUtility.sendMessage(livingentity, Component.translatable(MODID + ".msg.onfire").withStyle(ChatFormatting.DARK_RED));
                 this.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 2 * 20, 0));
             }
 
@@ -154,20 +153,20 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
             this.nextDefensiveAbilityUse = reactionTime + defensiveCoolDown;
 
             if (this.getHealth() < this.getMaxHealth()) {
-                livingentity.displayClientMessage(Component.translatable(MODID + ".msg.healself").withStyle(ChatFormatting.LIGHT_PURPLE), false);
+                GeneralUtility.sendMessage(livingentity, Component.translatable(MODID + ".msg.healself").withStyle(ChatFormatting.LIGHT_PURPLE));
                 // Regeneration only heals on ticks divisible by (50 >> amplifier): 40 ticks at amplifier 0 never healed at all.
                 this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 10 * 20, 1));
             }
 
             if (this.getTarget() != null && !this.hasEffect(MobEffects.MOVEMENT_SPEED) && this.getTarget().distanceToSqr(this) > 121.0D) {
-                livingentity.displayClientMessage(Component.translatable(MODID + ".msg.speedup").withStyle(ChatFormatting.AQUA), false);
+                GeneralUtility.sendMessage(livingentity, Component.translatable(MODID + ".msg.speedup").withStyle(ChatFormatting.AQUA));
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 2 * 20, 0));
             }
 
             if (livingentity != null
                     && this.level().getDifficulty() == Difficulty.HARD
                     && (double)this.random.nextFloat() < this.getAttributeValue(Attributes.SPAWN_REINFORCEMENTS_CHANCE)
-                    && this.level().getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
+                    && serverlevel.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
                 int i = Mth.floor(this.getX());
                 int j = Mth.floor(this.getY());
                 int k = Mth.floor(this.getZ());
@@ -187,7 +186,7 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
                                 && this.level().noCollision(goblin)
                                 && !this.level().containsAnyLiquid(goblin.getBoundingBox())) {
 
-                            livingentity.displayClientMessage(Component.translatable(MODID + ".msg.helpcomming").withStyle(ChatFormatting.DARK_GREEN), false);
+                            GeneralUtility.sendMessage(livingentity, Component.translatable(MODID + ".msg.helpcomming").withStyle(ChatFormatting.DARK_GREEN));
 
                             goblin.setTarget(livingentity);
                             goblin.finalizeSpawn(serverlevel, this.level().getCurrentDifficultyAt(goblin.blockPosition()), EntitySpawnReason.REINFORCEMENT, null);

@@ -4,9 +4,11 @@ import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Spider;
@@ -98,8 +100,9 @@ public class CobwebProjectileEntity extends Projectile implements GeoEntity {
         } else {
             DamageSource damagesource = this.damageSources().indirectMagic(this, (LivingEntity)entity);
 
-            if (entity instanceof LivingEntity) {
-                result.getEntity().hurt(damagesource, 1.0F);
+            // The hit is dealt on the server, which is also the side that removes the projectile below.
+            if (entity instanceof LivingEntity && this.level instanceof ServerLevel serverLevel) {
+                result.getEntity().hurtServer(serverLevel, damagesource, 1.0F);
             }
 
             if (!this.level.isClientSide) {
@@ -142,7 +145,7 @@ public class CobwebProjectileEntity extends Projectile implements GeoEntity {
     }
 
     public void spawnTrap(double x, double y, double z) {
-        SimpleTrapEntity trap = TolkienEntities.TRAP_SIMPLE.get().create(this.level);
+        SimpleTrapEntity trap = TolkienEntities.TRAP_SIMPLE.get().create(this.level, EntitySpawnReason.MOB_SUMMONED);
         trap.moveTo(x, y, z);
         trap.owner = this.getOwner();
 

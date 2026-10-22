@@ -13,6 +13,7 @@ import com.greatorator.tolkienmobs.handler.EntityHandler;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
 import com.greatorator.tolkienmobs.particle.FlyingSound;
+import com.greatorator.tolkienmobs.util.GeneralUtility;
 import com.greatorator.tolkienmobs.util.MathUtility;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -49,14 +50,12 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -175,7 +174,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
 
         ensureHome();
         SpawnGroupData data = super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
-        WitchKingEntity rider = TolkienEntities.ENTITY_TTM_WITCHKING.get().create(this.level);
+        WitchKingEntity rider = TolkienEntities.ENTITY_TTM_WITCHKING.get().create(level.getLevel(), spawnType);
         if (rider != null) {
             rider.moveTo(getX(), getY(), getZ(), getYRot(), 0.0F);
             rider.finalizeSpawn(level, difficulty, spawnType, null);
@@ -378,11 +377,6 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     }
 
     @Override
-    public ItemStack getPickedResult(HitResult target) {
-        return new ItemStack(SpawnEggItem.byId(getType()));
-    }
-
-    @Override
     public void tick() {
         ensureHome();
         super.tick();
@@ -483,13 +477,16 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     }
 
     public void attackInBox(AABB box, int disabledShieldTime) {
-        List<LivingEntity> attackables = level.getEntitiesOfClass(LivingEntity.class, box, entity -> entity != this && !hasPassenger(entity));
+        // Hits have to be dealt from a server level now, and only the AI ever swings this box.
+        if (!(level instanceof ServerLevel serverLevel)) return;
+
+        List<LivingEntity> attackables = serverLevel.getEntitiesOfClass(LivingEntity.class, box, entity -> entity != this && !hasPassenger(entity));
         for (LivingEntity attacking : attackables) {
-            doHurtTarget(attacking);
+            doHurtTarget(serverLevel, attacking);
             if (disabledShieldTime > 0 && attacking instanceof Player) {
                 Player player = ((Player) attacking);
                 if (player.isUsingItem() && player.getUseItem().is(Items.SHIELD)) {
-                    player.getCooldowns().addCooldown(Items.SHIELD, disabledShieldTime);
+                    player.getCooldowns().addCooldown(Items.SHIELD.getDefaultInstance(), disabledShieldTime);
                     player.stopUsingItem();
                     level.broadcastEntityEvent(player, (byte) 9);
                 }
@@ -507,8 +504,8 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     }
 
     @Override
-    public boolean doHurtTarget(Entity entity) {
-        return !isAlliedTo(entity) && super.doHurtTarget(entity);
+    public boolean doHurtTarget(ServerLevel level, Entity entity) {
+        return !isAlliedTo(entity) && super.doHurtTarget(level, entity);
     }
 
     public boolean wantsToAttack(LivingEntity target, @Nullable LivingEntity owner) {
@@ -521,10 +518,10 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
         if (isRiding() && source.is(DamageTypeTags.WITHER_IMMUNE_TO)) return true;
         if (isImmuneToArrows()) return true;
-        return super.isInvulnerableTo(source);
+        return super.isInvulnerableTo(level, source);
     }
 
     @Override
@@ -643,7 +640,6 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
                     }
                 }
                 this.calculateEntityAnimation(isUsingFlyingNavigator());
-                this.tryCheckInsideBlocks();
             } else {
                 super.travel(vec3d);
             }
@@ -875,7 +871,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
         super.addPassenger(passenger);
         if (getControllingPassenger() == passenger) {
             clearAI();
-            if (isLeashed()) dropLeash(true, true);
+            if (isLeashed()) dropLeash();
         }
     }
 
@@ -916,10 +912,13 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
         return false;
     }
 
+    /**
+     * Entity#isAlliedTo is final now; what a subclass may still widen is who it considers an ally,
+     * which is where the rider and the mount have always belonged.
+     */
     @Override
-    @SuppressWarnings("ConstantConditions")
-    public boolean isAlliedTo(Entity entity) {
-        return entity == this || hasPassenger(entity) || entity.hasPassenger(this) || super.isAlliedTo(entity);
+    protected boolean considersEntityAsAlly(Entity entity) {
+        return hasPassenger(entity) || entity.hasPassenger(this) || super.considersEntityAsAlly(entity);
     }
 
     @Override
@@ -928,7 +927,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     }
 
     public InteractionResult playerInteraction(Player player, InteractionHand hand, ItemStack stack) {
-        final InteractionResult SUCCESS = InteractionResult.sidedSuccess(level.isClientSide);
+        final InteractionResult SUCCESS = level.isClientSide ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
 
         if (canAddPassenger(player) && !player.isShiftKeyDown()) {
             if (!level.isClientSide) player.startRiding(this);
@@ -945,11 +944,6 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
         if (!result.consumesAction()) result = playerInteraction(player, hand, stack);
         if (result.consumesAction()) setSleeping(false);
         return result;
-    }
-
-    @Override
-    public void dropLeash(boolean sendPacket, boolean dropLead) {
-        super.dropLeash(sendPacket, dropLead);
     }
 
     @Override
@@ -1013,10 +1007,8 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
 
     /** Special Attack */
     @Override
-    public boolean hurt(DamageSource source, float amount) {
-        if (!super.hurt(source, amount)) {
-            return false;
-        } else if (!(this.level() instanceof ServerLevel)) {
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource source, float amount) {
+        if (!super.hurtServer(serverLevel, source, amount)) {
             return false;
         } else {
             LivingEntity livingentity = this.getTarget();
@@ -1027,12 +1019,12 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
             if (livingentity == null) return true;
 
             if (this.isEyeInFluid(FluidTags.WATER) && !this.hasEffect(MobEffects.WATER_BREATHING)) {
-                livingentity.displayClientMessage(Component.translatable(MODID + ".msg.nodrown").withStyle(ChatFormatting.DARK_BLUE), false);
+                GeneralUtility.sendMessage(livingentity, Component.translatable(MODID + ".msg.nodrown").withStyle(ChatFormatting.DARK_BLUE));
                 this.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 2 * 20, 0));
             }
 
             if ((this.isOnFire() && !this.hasEffect(MobEffects.FIRE_RESISTANCE))) {
-                livingentity.displayClientMessage(Component.translatable(MODID + ".msg.onfire").withStyle(ChatFormatting.DARK_RED), false);
+                GeneralUtility.sendMessage(livingentity, Component.translatable(MODID + ".msg.onfire").withStyle(ChatFormatting.DARK_RED));
                 this.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 2 * 20, 0));
             }
 
@@ -1044,13 +1036,13 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
             this.nextDefensiveAbilityUse = reactionTime + defensiveCoolDown;
 
             if (this.getHealth() < this.getMaxHealth()) {
-                livingentity.displayClientMessage(Component.translatable(MODID + ".msg.healself").withStyle(ChatFormatting.LIGHT_PURPLE), false);
+                GeneralUtility.sendMessage(livingentity, Component.translatable(MODID + ".msg.healself").withStyle(ChatFormatting.LIGHT_PURPLE));
                 // Regeneration only heals on ticks divisible by (50 >> amplifier): 40 ticks at amplifier 0 never healed at all.
                 this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 10 * 20, 1));
             }
 
             if (this.getTarget() != null && !this.hasEffect(MobEffects.MOVEMENT_SPEED) && this.getTarget().distanceToSqr(this) > 121.0D) {
-                livingentity.displayClientMessage(Component.translatable(MODID + ".msg.speedup").withStyle(ChatFormatting.AQUA), false);
+                GeneralUtility.sendMessage(livingentity, Component.translatable(MODID + ".msg.speedup").withStyle(ChatFormatting.AQUA));
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 2 * 20, 0));
             }
             setSleeping(false);

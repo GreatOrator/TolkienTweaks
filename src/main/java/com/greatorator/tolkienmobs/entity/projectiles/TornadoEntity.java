@@ -4,6 +4,8 @@ import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.*;
@@ -30,6 +32,15 @@ public class TornadoEntity extends Entity implements GeoAnimatable {
 
     public TornadoEntity(Level worldIn) {
         super(TolkienEntities.AMMO_TORNADO.get(), worldIn);
+    }
+
+    /**
+     * A tornado is weather, not a mob: nothing can damage it, and it expires on its own timer. Plain
+     * entities have to answer damage now that it is only delivered on the server.
+     */
+    @Override
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource source, float amount) {
+        return false;
     }
 
     @Override

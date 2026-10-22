@@ -9,6 +9,7 @@ import com.greatorator.tolkienmobs.handler.interfaces.TrapsTarget;
 import com.greatorator.tolkienmobs.handler.interfaces.WebShooter;
 import com.greatorator.tolkienmobs.init.TolkienMobEffects;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
+import com.greatorator.tolkienmobs.util.GeneralUtility;
 import com.greatorator.tolkienmobs.util.MathUtility;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -142,10 +143,8 @@ public class ShelobEntity extends TolkienMonsterEntity implements GeoEntity, Web
 
     /** Special Attack */
     @Override
-    public boolean hurt(DamageSource source, float amount) {
-        if (!super.hurt(source, amount)) {
-            return false;
-        } else if (!(this.level() instanceof ServerLevel)) {
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource source, float amount) {
+        if (!super.hurtServer(serverLevel, source, amount)) {
             return false;
         } else {
             LivingEntity livingentity = this.getTarget();
@@ -156,12 +155,12 @@ public class ShelobEntity extends TolkienMonsterEntity implements GeoEntity, Web
             if (livingentity == null) return true;
 
             if (this.isEyeInFluid(FluidTags.WATER) && !this.hasEffect(MobEffects.WATER_BREATHING)) {
-                livingentity.displayClientMessage(Component.translatable(MODID + ".msg.nodrown.shelob").withStyle(ChatFormatting.DARK_BLUE), false);
+                GeneralUtility.sendMessage(livingentity, Component.translatable(MODID + ".msg.nodrown.shelob").withStyle(ChatFormatting.DARK_BLUE));
                 this.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 2 * 20, 0));
             }
 
             if ((this.isOnFire() && !this.hasEffect(MobEffects.FIRE_RESISTANCE))) {
-                livingentity.displayClientMessage(Component.translatable(MODID + ".msg.onfire.shelob").withStyle(ChatFormatting.DARK_RED), false);
+                GeneralUtility.sendMessage(livingentity, Component.translatable(MODID + ".msg.onfire.shelob").withStyle(ChatFormatting.DARK_RED));
                 this.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 2 * 20, 0));
             }
 
@@ -173,21 +172,20 @@ public class ShelobEntity extends TolkienMonsterEntity implements GeoEntity, Web
             this.nextDefensiveAbilityUse = reactionTime + defensiveCoolDown;
 
             if (this.getHealth() < this.getMaxHealth()) {
-                livingentity.displayClientMessage(Component.translatable(MODID + ".msg.healself.shelob").withStyle(ChatFormatting.LIGHT_PURPLE), false);
+                GeneralUtility.sendMessage(livingentity, Component.translatable(MODID + ".msg.healself.shelob").withStyle(ChatFormatting.LIGHT_PURPLE));
                 // Regeneration only heals on ticks divisible by (50 >> amplifier): 40 ticks at amplifier 0 never healed at all.
                 this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 10 * 20, 1));
             }
 
             if (this.getTarget() != null && !this.hasEffect(MobEffects.MOVEMENT_SPEED) && this.getTarget().distanceToSqr(this) > 121.0D) {
-                livingentity.displayClientMessage(Component.translatable(MODID + ".msg.speedup.shelob").withStyle(ChatFormatting.AQUA), false);
+                GeneralUtility.sendMessage(livingentity, Component.translatable(MODID + ".msg.speedup.shelob").withStyle(ChatFormatting.AQUA));
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 2 * 20, 0));
             }
 
             if (livingentity != null
                     && this.level().getDifficulty() == Difficulty.HARD
                     && (double)this.random.nextFloat() < this.getAttributeValue(Attributes.SPAWN_REINFORCEMENTS_CHANCE)
-                    && this.level().getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)
-                    && this.level() instanceof ServerLevel serverLevel) {
+                    && serverLevel.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
 
                 int i = Mth.floor(this.getX());
                 int j = Mth.floor(this.getY());
@@ -208,7 +206,7 @@ public class ShelobEntity extends TolkienMonsterEntity implements GeoEntity, Web
                                 && this.level().noCollision(spider)
                                 && !this.level().containsAnyLiquid(spider.getBoundingBox())) {
 
-                            livingentity.displayClientMessage(Component.translatable(MODID + ".msg.helpcomming.shelob").withStyle(ChatFormatting.DARK_GREEN), false);
+                            GeneralUtility.sendMessage(livingentity, Component.translatable(MODID + ".msg.helpcomming.shelob").withStyle(ChatFormatting.DARK_GREEN));
 
                             spider.setTarget(livingentity);
                             spider.finalizeSpawn(serverLevel, this.level().getCurrentDifficultyAt(spider.blockPosition()), EntitySpawnReason.REINFORCEMENT, null);
@@ -231,10 +229,10 @@ public class ShelobEntity extends TolkienMonsterEntity implements GeoEntity, Web
     }
 
     @Override
-    public boolean doHurtTarget(Entity entityIn) {
+    public boolean doHurtTarget(ServerLevel serverLevel, Entity entityIn) {
         entityIn.setDeltaMovement(entityIn.getDeltaMovement().add(0.0D, 0.4F, 0.0D));
         long time = System.currentTimeMillis();
-        if (super.doHurtTarget(entityIn)) {
+        if (super.doHurtTarget(serverLevel, entityIn)) {
             if (entityIn instanceof Player) {
                 if (time > nextAbilityUse) {
                     nextAbilityUse = time + coolDown;
@@ -370,8 +368,8 @@ public class ShelobEntity extends TolkienMonsterEntity implements GeoEntity, Web
     }
 
     @Override
-    protected void customServerAiStep() {
-        super.customServerAiStep();
+    protected void customServerAiStep(ServerLevel serverLevel) {
+        super.customServerAiStep(serverLevel);
         this.reassessAttackGoals();
     }
 
@@ -416,8 +414,11 @@ public class ShelobEntity extends TolkienMonsterEntity implements GeoEntity, Web
     public void setTargetTrapped(boolean trapped, boolean notifyOthers) {
         TargetingConditions spiderTargeting = TargetingConditions.forCombat().range(10.0D).ignoreInvisibilityTesting();
 
-        if (notifyOthers) {
-            List<Spider> spiders = this.level.getNearbyEntities(Spider.class, spiderTargeting, this, this.getBoundingBox().inflate(10.0D));
+        // Level#getNearbyEntities is gone: what is left is a plain class-and-box scan, so the conditions
+        // are applied by hand. They need a server level, and only the server runs this goal anyway.
+        if (notifyOthers && this.level() instanceof ServerLevel serverLevel) {
+            List<Spider> spiders = serverLevel.getEntitiesOfClass(Spider.class, this.getBoundingBox().inflate(10.0D),
+                    spider -> spiderTargeting.test(serverLevel, this, spider));
 
             for(Spider spider : spiders) {
                 if (spider instanceof TrapsTarget && this.getTarget() != null && spider.getTarget() != null && spider.getTarget() == this.getTarget()) {

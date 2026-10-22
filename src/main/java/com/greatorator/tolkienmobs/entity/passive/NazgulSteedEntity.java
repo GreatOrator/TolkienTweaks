@@ -135,7 +135,7 @@ public class NazgulSteedEntity extends AbstractChestedHorse implements GeoEntity
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnType, @Nullable SpawnGroupData spawnGroupData) {
         if (MathUtility.getRandomInteger(15, 1) == 2) {
-            NazgulEntity entityNazgul = TolkienEntities.ENTITY_TTM_NAZGUL.get().create(this.level);
+            NazgulEntity entityNazgul = TolkienEntities.ENTITY_TTM_NAZGUL.get().create(this.level, EntitySpawnReason.JOCKEY);
             entityNazgul.moveTo(this.getX(), this.getY(), this.getZ(), this.yRotO, 0.0F);
             entityNazgul.finalizeSpawn(level, difficulty, spawnType, null);
             this.setTamed(true);

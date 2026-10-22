@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.entity.monster;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntitySpawnReason;
 
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
@@ -93,8 +94,8 @@ public class GoblinEntity extends TolkienMonsterEntity implements GeoEntity {
     private final static long coolDown = 15000L;
 
     @Override
-    public boolean doHurtTarget(Entity entity) {
-        if (super.doHurtTarget(entity)) {
+    public boolean doHurtTarget(ServerLevel serverLevel, Entity entity) {
+        if (super.doHurtTarget(serverLevel, entity)) {
             long time = System.currentTimeMillis();
             if (entity instanceof LivingEntity && time > nextAbilityUse) {
                 nextAbilityUse = time + coolDown;
