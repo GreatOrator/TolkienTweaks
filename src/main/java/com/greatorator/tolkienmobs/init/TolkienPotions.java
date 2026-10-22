@@ -13,34 +13,42 @@ public class TolkienPotions {
     public static final DeferredRegister<Potion> POTIONS = DeferredRegister.create(BuiltInRegistries.POTION, MODID);
 
         // Beneficial
-    public static final Holder<Potion> ENT_DRAUGHT = POTIONS.register("ent_draught",
-            () -> new Potion(new MobEffectInstance(TolkienMobEffects.ENT_STANCE, 2400, 0)));
-    public static final Holder<Potion> PORTABLE_REPAIR = POTIONS.register("personal_blacksmith",
-            () -> new Potion(new MobEffectInstance(TolkienMobEffects.PERSONAL_BLACKSMITH, 600, 0)));
-    public static final Holder<Potion> ERU_BLESSING = POTIONS.register("blessing_of_eru",
-            () -> new Potion(new MobEffectInstance(TolkienMobEffects.BLESSING_OF_ERU, 600, 0)));
-    public static final Holder<Potion> ELF_VITALITY = POTIONS.register("elf_vitality",
-            () -> new Potion(new MobEffectInstance(TolkienMobEffects.ELF_VITALITY, 600, 0)));
-    public static final Holder<Potion> ELF_NIMBLENESS = POTIONS.register("elven_nimbleness",
-            () -> new Potion(new MobEffectInstance(TolkienMobEffects.ELF_NIMBLENESS, 600, 0)));
+    public static final Holder<Potion> ENT_DRAUGHT = potion("ent_draught",
+            new MobEffectInstance(TolkienMobEffects.ENT_STANCE, 2400, 0));
+    public static final Holder<Potion> PORTABLE_REPAIR = potion("personal_blacksmith",
+            new MobEffectInstance(TolkienMobEffects.PERSONAL_BLACKSMITH, 600, 0));
+    public static final Holder<Potion> ERU_BLESSING = potion("blessing_of_eru",
+            new MobEffectInstance(TolkienMobEffects.BLESSING_OF_ERU, 600, 0));
+    public static final Holder<Potion> ELF_VITALITY = potion("elf_vitality",
+            new MobEffectInstance(TolkienMobEffects.ELF_VITALITY, 600, 0));
+    public static final Holder<Potion> ELF_NIMBLENESS = potion("elven_nimbleness",
+            new MobEffectInstance(TolkienMobEffects.ELF_NIMBLENESS, 600, 0));
 
         // Harmful
-    public static final Holder<Potion> INVENTORY_CORROSION = POTIONS.register("inventory_corrosion",
-                () -> new Potion(new MobEffectInstance(TolkienMobEffects.INVENTORY_CORROSION, 600, 0)));
-    public static final Holder<Potion> GOLEM_FLYING = POTIONS.register("elemental_flight",
-            () -> new Potion(new MobEffectInstance(TolkienMobEffects.ELEMENTAL_FLYING, 600, 0)));
-    public static final Holder<Potion> PARALYSING_FEAR = POTIONS.register("crippling_terror",
-            () -> new Potion(new MobEffectInstance(TolkienMobEffects.PARALYSING_FEAR, 600, 0)));
-    public static final Holder<Potion> WATCHER_FEAR = POTIONS.register("dread_aura",
-            () -> new Potion(new MobEffectInstance(TolkienMobEffects.WATCHER_FEAR, 600, 0)));
-    public static final Holder<Potion> SLEEPNESIA = POTIONS.register("sleepnesia",
-            () -> new Potion(new MobEffectInstance(TolkienMobEffects.SLEEPNESIA, 600, 0)));
-    public static final Holder<Potion> ELEMENTAL_BURNING = POTIONS.register("elemental_burning",
-            () -> new Potion(new MobEffectInstance(TolkienMobEffects.ELEMENTAL_BURNING, 600, 0)));
-    public static final Holder<Potion> ELEMENTAL_LIGHTNING = POTIONS.register("elemental_lightning",
-            () -> new Potion(new MobEffectInstance(TolkienMobEffects.ELEMENTAL_LIGHTNING, 600, 0)));
-    public static final Holder<Potion> ELEMENTAL_DROWNING = POTIONS.register("elemental_drowning",
-            () -> new Potion(new MobEffectInstance(TolkienMobEffects.ELEMENTAL_DROWNING, 600, 0)));
+    public static final Holder<Potion> INVENTORY_CORROSION = potion("inventory_corrosion",
+            new MobEffectInstance(TolkienMobEffects.INVENTORY_CORROSION, 600, 0));
+    public static final Holder<Potion> GOLEM_FLYING = potion("elemental_flight",
+            new MobEffectInstance(TolkienMobEffects.ELEMENTAL_FLYING, 600, 0));
+    public static final Holder<Potion> PARALYSING_FEAR = potion("crippling_terror",
+            new MobEffectInstance(TolkienMobEffects.PARALYSING_FEAR, 600, 0));
+    public static final Holder<Potion> WATCHER_FEAR = potion("dread_aura",
+            new MobEffectInstance(TolkienMobEffects.WATCHER_FEAR, 600, 0));
+    public static final Holder<Potion> SLEEPNESIA = potion("sleepnesia",
+            new MobEffectInstance(TolkienMobEffects.SLEEPNESIA, 600, 0));
+    public static final Holder<Potion> ELEMENTAL_BURNING = potion("elemental_burning",
+            new MobEffectInstance(TolkienMobEffects.ELEMENTAL_BURNING, 600, 0));
+    public static final Holder<Potion> ELEMENTAL_LIGHTNING = potion("elemental_lightning",
+            new MobEffectInstance(TolkienMobEffects.ELEMENTAL_LIGHTNING, 600, 0));
+    public static final Holder<Potion> ELEMENTAL_DROWNING = potion("elemental_drowning",
+            new MobEffectInstance(TolkienMobEffects.ELEMENTAL_DROWNING, 600, 0));
+
+    /**
+     * 1.21.4 gave {@link Potion} a name: it is not the registry id but the suffix the potion lang keys are built
+     * from ("item.minecraft.potion.effect.&lt;name&gt;"), so both are taken from the same argument to keep them in step.
+     */
+    private static Holder<Potion> potion(String name, MobEffectInstance... effects) {
+        return POTIONS.register(name, () -> new Potion(name, effects));
+    }
 
     public static void register(IEventBus eventBus) {
         POTIONS.register(eventBus);
