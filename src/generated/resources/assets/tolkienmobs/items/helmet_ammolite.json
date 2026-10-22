@@ -78,6 +78,27 @@
           "model": "tolkienmobs:item/helmet_ammolite_resin_trim"
         },
         "when": "minecraft:resin"
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "tolkienmobs:item/helmet_ammolite_mithril_trim"
+        },
+        "when": "tolkienmobs:mithril"
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "tolkienmobs:item/helmet_ammolite_morguliron_trim"
+        },
+        "when": "tolkienmobs:morguliron"
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "tolkienmobs:item/helmet_ammolite_ammolite_trim"
+        },
+        "when": "tolkienmobs:ammolite"
       }
     ],
     "fallback": {

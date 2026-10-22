@@ -6,6 +6,7 @@ import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienFluids;
 import com.greatorator.tolkienmobs.init.TolkienItems;
+import com.greatorator.tolkienmobs.init.TolkienTrimMaterials;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
@@ -55,6 +56,12 @@ public class TolkienItemModelProvider extends ItemModelProvider {
             TrimMaterials.LAPIS,
             TrimMaterials.AMETHYST,
             TrimMaterials.RESIN);
+
+    /** The mod's own trim materials; their sprites are baked by the trim sprite provider. */
+    private static final List<ResourceKey<TrimMaterial>> MOD_TRIM_MATERIALS = List.of(
+            TolkienTrimMaterials.MITHRIL,
+            TolkienTrimMaterials.MORGULIRON,
+            TolkienTrimMaterials.AMMOLITE);
 
     public TolkienItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
         super(output, MODID, existingFileHelper);
@@ -508,6 +515,20 @@ public class TolkienItemModelProvider extends ItemModelProvider {
                 ItemModelDefinition.entry(0.99F, ItemModelDefinition.model(withSuffix(model, "_fullness_3"))));
     }
 
+    /** One trim model for one material, and the select case that picks it. */
+    private ItemModelDefinition.Case trimCase(String armorItemPath, ResourceLocation armorTexture,
+                                              ResourceLocation trimTexture, ResourceLocation material) {
+        String trimModelPath = armorItemPath + "_" + material.getPath() + "_trim";
+
+        getBuilder(trimModelPath)
+                .parent(new ModelFile.UncheckedModelFile("item/generated"))
+                .texture("layer0", armorTexture)
+                .texture("layer1", trimTexture);
+
+        return ItemModelDefinition.when(material.toString(),
+                ItemModelDefinition.model(ResourceLocation.fromNamespaceAndPath(MODID, "item/" + trimModelPath)));
+    }
+
     /**
      * A spawn egg: vanilla's two-layer egg template, with its base and its spots painted by the
      * two colours the egg registered. The colours are plain RGB, so they are given full alpha
@@ -633,20 +654,20 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         List<ItemModelDefinition.Case> cases = new ArrayList<>();
 
         for (ResourceKey<TrimMaterial> trimMaterial : TRIM_MATERIALS) {
-            String material = trimMaterial.location().getPath();
-            String trimModelPath = armorItemPath + "_" + material + "_trim";
-            // The trim sprite is cut at load time by vanilla's paletted permutation atlas rather
-            // than shipped as a png, so the file helper is told it exists instead of asked.
-            ResourceLocation trimTexture = ResourceLocation.withDefaultNamespace("trims/items/" + armorType + "_trim_" + material);
+            // Vanilla's materials are cut at load time by the paletted permutation atlas, so no png
+            // ships for them and the file helper is told they exist rather than asked.
+            ResourceLocation trimTexture = ResourceLocation.withDefaultNamespace("trims/items/" + armorType + "_trim_" + trimMaterial.location().getPath());
             existingFileHelper.trackGenerated(trimTexture, PackType.CLIENT_RESOURCES, ".png", "textures");
+            cases.add(trimCase(armorItemPath, armorTexture, trimTexture, trimMaterial.location()));
+        }
 
-            getBuilder(trimModelPath)
-                    .parent(new ModelFile.UncheckedModelFile("item/generated"))
-                    .texture("layer0", armorTexture)
-                    .texture("layer1", trimTexture);
-
-            cases.add(ItemModelDefinition.when(trimMaterial.location().toString(),
-                    ItemModelDefinition.model(ResourceLocation.fromNamespaceAndPath(MODID, "item/" + trimModelPath))));
+        for (ResourceKey<TrimMaterial> trimMaterial : MOD_TRIM_MATERIALS) {
+            // Our own materials have no permutation in vanilla's atlas, so TolkienTrimSpriteProvider
+            // bakes the sprite into textures/item/trim, which the block atlas already stitches.
+            ResourceLocation trimTexture = ResourceLocation.fromNamespaceAndPath(MODID,
+                    "item/trim/" + armorType + "_trim_" + trimMaterial.location().getPath());
+            existingFileHelper.trackGenerated(trimTexture, PackType.CLIENT_RESOURCES, ".png", "textures");
+            cases.add(trimCase(armorItemPath, armorTexture, trimTexture, trimMaterial.location()));
         }
 
         // The untrimmed icon, drawn unless one of the materials above is applied.
