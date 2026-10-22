@@ -6,6 +6,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
@@ -33,7 +34,7 @@ public class NimbleEffect extends TolkienEffect implements IEffectTooltipDetails
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity entity, int amplifier) {
+    public boolean applyEffectTick(ServerLevel level, LivingEntity entity, int amplifier) {
         AttributeInstance attributeInstance = entity.getAttribute(Attributes.STEP_HEIGHT);
         if (attributeInstance != null) {
             final AttributeModifier STEP_HEIGHT_MODIFIER = new AttributeModifier(nimbleStep, getStepHeight(amplifier), AttributeModifier.Operation.ADD_VALUE);
