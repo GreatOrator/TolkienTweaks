@@ -136,7 +136,7 @@ public class MordorOrcEntity extends TolkienMonsterEntity implements GeoEntity {
             if (this.isPassenger()) {
                 return PlayState.STOP;
             }
-            if (event.isMoving() && !event.getAnimatable().isAggressive()) {
+            if (event.isMoving()) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
                 return PlayState.CONTINUE;
             }

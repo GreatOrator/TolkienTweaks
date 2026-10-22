@@ -60,7 +60,7 @@ public class MinotaurEntity extends TolkienMonsterEntity implements GeoEntity {
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
-            if (event.isMoving() && !event.getAnimatable().isAggressive()) {
+            if (event.isMoving()) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
                 return PlayState.CONTINUE;
             }
