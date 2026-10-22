@@ -28,6 +28,7 @@ import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
@@ -638,6 +639,8 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     private static final double WINGBEAT_THRUST = 0.03D;
     /** The sink a gliding beast settles at, in blocks a tick. */
     private static final double GLIDE_SINK = -0.045D;
+    /** The sink at which the wings stop holding the beast up and it is diving, in blocks a tick. */
+    private static final double DIVE_SINK = -0.1D;
     /** The sink a beast commits to when its path lies well below it, in blocks a tick. */
     private static final double STOOP_SINK = -0.22D;
     /** How quickly a coasting beast loses its climb, in blocks a tick per tick. */
@@ -648,6 +651,9 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     private static final double STOOP_MARGIN = 2.0D;
     /** Ticks until a wingbeat may be heard again, so a long climb does not roar with flapping. */
     private int wingSoundTicks;
+    /** Ticks until the next stretch of dive wind, and how long a stretch lasts. */
+    private int diveWindTicks;
+    private static final int DIVE_WIND_INTERVAL = 20;
     /** How far a ridden beast has to drop in a tick before it is worth asking how steeply, in blocks. */
     private static final double RIDER_DIVE_SINK = 0.05D;
     /** Where a ridden beast was at the end of the last tick, for measuring that dive. */
@@ -750,6 +756,24 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
 
         double sink = climb < -STOOP_MARGIN ? STOOP_SINK : GLIDE_SINK;
         this.wingVelocity = Math.max(sink, this.wingVelocity - GLIDE_GRAVITY);
+
+        // A dive is air over the wings, not wings beating, so the silent beat leaves the beast
+        // dropping out of the sky unheard. The wind says it is coming down, played every second of
+        // the stoop and starting as soon as the sink passes the point where the pose turns to dive.
+        if (this.diveWindTicks > 0) this.diveWindTicks--;
+        if (this.wingVelocity < DIVE_SINK && this.diveWindTicks <= 0) {
+            this.diveWindTicks = DIVE_WIND_INTERVAL;
+            this.playDiveWind();
+        }
+    }
+
+    /**
+     * The air over a stooping beast. It is wind rather than a voice, so it does not take the beast's
+     * voice pitch, and it is played from the server so everyone nearby hears the dive, not just a
+     * rider whose own client is flying it.
+     */
+    private void playDiveWind() {
+        level.playSound(null, getX(), getY(), getZ(), SoundEvents.ELYTRA_FLYING, getSoundSource(), 1.6F, 0.8F);
     }
 
     /**
@@ -1254,7 +1278,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
      */
     private String getWingAnimation(boolean mayStoop) {
         double verticalSpeed = this.getDeltaMovement().y;
-        if (mayStoop && verticalSpeed < -0.1D) {
+        if (mayStoop && verticalSpeed < DIVE_SINK) {
             return "dive";
         }
         if (verticalSpeed > 0.02D || this.onGround()) {
