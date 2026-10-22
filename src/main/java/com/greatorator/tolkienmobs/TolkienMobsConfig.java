@@ -74,6 +74,9 @@ public class TolkienMobsConfig {
     private static final ModConfigSpec.DoubleValue FELLBEAST_DIVE_WIND_VOLUME = BUILDER
             .comment("Volume of the wind over a diving FellBeast. It is air rather than a voice, so unlike the wingbeat it is not scaled by the beast's own sound scale (Default 1.6)")
             .defineInRange("fellbeastDiveWindVolume", 1.6, 0.0, 10.0);
+    private static final ModConfigSpec.DoubleValue FELLBEAST_DIVE_WIND_PITCH = BUILDER
+            .comment("Pitch of the wind over a diving FellBeast. 1.0 is the loop as recorded; below it the wind is deeper and slower, above it sharper and quicker (Default 0.8)")
+            .defineInRange("fellbeastDiveWindPitch", 0.8, 0.5, 2.0);
     private static final ModConfigSpec.IntValue FELLBEAST_DIVE_ANGLE = BUILDER
             .comment("How steeply a ridden FellBeast must dive, in degrees below horizontal, before its wingbeat goes quiet (Default 45)")
             .defineInRange("fellbeastDiveAngle", 45, 15, 90);
@@ -93,6 +96,7 @@ public class TolkienMobsConfig {
     public static int homeRadius;
     public static double fellbeastWingbeatVolume;
     public static double fellbeastDiveWindVolume;
+    public static double fellbeastDiveWindPitch;
     public static int fellbeastWingbeatInterval;
     public static int fellbeastDiveAngle;
     public static int trinketRepairAmount;
@@ -115,6 +119,7 @@ public class TolkienMobsConfig {
         homeRadius = HOME_RADIUS.get();
         fellbeastWingbeatVolume = FELLBEAST_WINGBEAT_VOLUME.get();
         fellbeastDiveWindVolume = FELLBEAST_DIVE_WIND_VOLUME.get();
+        fellbeastDiveWindPitch = FELLBEAST_DIVE_WIND_PITCH.get();
         fellbeastWingbeatInterval = FELLBEAST_WINGBEAT_INTERVAL.get();
         fellbeastDiveAngle = FELLBEAST_DIVE_ANGLE.get();
         trinketRepairAmount = TRINKET_REPAIR_AMOUNT.get();
