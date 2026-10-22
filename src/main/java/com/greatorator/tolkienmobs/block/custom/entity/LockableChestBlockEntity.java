@@ -111,7 +111,7 @@ public class LockableChestBlockEntity extends TolkienBlockEntity implements Menu
             triggerAnim("popup_controller", "box_open");
 
             player.openMenu(new SimpleMenuProvider(
-                    (windowId, playerInventory, playerEntity) -> new KeyItemContainer(windowId, playerInventory, player, stack), Component.translatable("screen.tolkienmobs." + stack.getDescriptionId())), (buf -> {
+                    (windowId, playerInventory, playerEntity) -> new KeyItemContainer(windowId, playerInventory, player, stack), Component.translatable("screen.tolkienmobs." + stack.getItem().getDescriptionId())), (buf -> {
                 ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, stack);
             }));
         } else {

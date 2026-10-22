@@ -45,7 +45,7 @@ public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProv
     private final ItemStackHandler fuelHandler = new ItemStackHandler(1){
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
-            return stack.getBurnTime(RecipeType.SMELTING) > 0;
+            return stack.getBurnTime(RecipeType.SMELTING, level.fuelValues()) > 0;
         }
 
         @Override
@@ -191,7 +191,7 @@ public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProv
     private void tryConsumeFuel() {
         ItemStack stack = fuelHandler.getStackInSlot(0);
         final int factor = 1;
-        int burnTimeTicks = factor * stack.getBurnTime(RecipeType.SMELTING);
+        int burnTimeTicks = factor * stack.getBurnTime(RecipeType.SMELTING, level.fuelValues());
 
         if (this.getBlockState().getValue(LIT)) {
             fuelTime--;
@@ -393,7 +393,7 @@ public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProv
             inputs.add(this.itemHandler.getStackInSlot(i));
         }
 
-        return this.level.getRecipeManager().getRecipeFor(TolkienRecipesTypes.FIREPLACE_TYPE.get(), new FireplaceRecipeInput(inputs), level);
+        return this.level.getServer().getRecipeManager().getRecipeFor(TolkienRecipesTypes.FIREPLACE_TYPE.get(), new FireplaceRecipeInput(inputs), level);
     }
 
     private boolean canInsertItemIntoOutputSlot(Item item) {

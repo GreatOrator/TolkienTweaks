@@ -83,7 +83,7 @@ public class CamoSpawnerBlockEntity extends TolkienBlockEntity implements MenuPr
         assert spawner != null;
 
         if (stack.getItem() instanceof SpawnEggItem spawnEgg) {
-            EntityType<?> entityType = spawnEgg.getType(stack);
+            EntityType<?> entityType = spawnEgg.getType(level.registryAccess(), stack);
             String entityId = BuiltInRegistries.ENTITY_TYPE.getKey(entityType).toString();
             Optional<EntityType<?>> optional = EntityType.byString(entityId);
 
@@ -213,11 +213,6 @@ public class CamoSpawnerBlockEntity extends TolkienBlockEntity implements MenuPr
     @Override
     public boolean triggerEvent(int id, int type) {
         return this.spawnerBase.onEventTriggered(this.level, id) ? true : super.triggerEvent(id, type);
-    }
-
-    @Override
-    public boolean onlyOpCanSetNbt() {
-        return true;
     }
 
     @Override

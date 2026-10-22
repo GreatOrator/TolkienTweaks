@@ -9,7 +9,7 @@ This file is the handoff: it records what is done, what is measured, and what to
 |---|---|
 | Target | Minecraft **1.21.4**, NeoForge **21.4.161** |
 | Compile errors at the start | **5,720** in 425 files |
-| Compile errors now | **463** distinct sites |
+| Compile errors now | **255** distinct sites |
 | Runnable | no — the tree does not compile yet |
 
 Dependency versions, all verified to exist and resolve:
@@ -264,8 +264,9 @@ Still open in this area:
     `Properties.ofFullCopy(MALLORN_SIGN.get())`; they spell out the same chain the standing sign passes instead.
   - Hand-written: the spawn eggs in `TolkienEntities` and the two liquid blocks in `TolkienFluids`.
 
-  The remaining 287 errors are all outside registration and outside `entity`: block entities, items, recipes,
-  network components, the client event handlers and a few datagen helpers.
+  The remaining 255 errors are outside registration, `entity` and `block/custom/entity`: block behaviour, items,
+  containers and their screens, recipes, network components, effects, the client event handlers and a few datagen
+  helpers.
 
 ### 3b. Entities — DONE
 
@@ -303,6 +304,30 @@ The ~180 errors in `com.greatorator.tolkienmobs.entity` were almost all one API 
 - Behaviour recovered while porting: the goat's charge telegraph (`checkAndPerformAttack` lost its distance
   parameter, so the override had stopped being called) and the block-dust particles of the ent and the elemental
   golem, which now carry the position the particle texture is picked from.
+
+### 3c. Block entities — DONE
+
+The block entity package (`block/custom/entity`, its models and renderers, plus `block/TolkienBaseSpawner`) compiles.
+
+- `Registry#get(...)` returns `Optional<Holder.Reference<T>>` in 1.21.4; the plain lookup is `getValue(...)`. The
+  milestone's configured payment item uses it, so an unknown id still falls back to air instead of throwing.
+- `EntityType#loadEntityRecursive` takes an `EntitySpawnReason`. Both the spawn attempt and the display entity pass
+  `SPAWNER`, matching vanilla `BaseSpawner`.
+- Recipe lookup moved off `Level`: `level.getServer().getRecipeManager()`. `ServerLevel#recipeAccess()` returns the
+  same manager, and `getRecipeFor(type, input, level)` still takes the level. Fuel likewise:
+  `ItemStack#getBurnTime(RecipeType, FuelValues)` with `level.fuelValues()`.
+- `SpawnEggItem#getType` takes the registry provider: `getType(level.registryAccess(), stack)`.
+- `BlockEntity#onlyOpCanSetNbt()` was removed from the game, so the camouflage spawner's override was deleted. Its
+  old effect came from the hook itself; `/data` is still gated by the command's own permission level.
+- `ItemStack#getCraftingRemainingItem()` is NeoForge's `getCraftingRemainder()`, and `ItemStack#getDescriptionId()`
+  is `getItem().getDescriptionId()` — the lockable chests key their open-menu title off the key's item.
+- `Model` takes `(ModelPart, Function<ResourceLocation, RenderType>)` and its `renderToBuffer` is **final**, drawing
+  `root()`. The lightning bug and locust displays deliberately draw a subset of their parts (the lightning bug keeps
+  its glow for a second, translucent pass), so their override became `renderBody(...)` and the renderers call it;
+  `super(root, RenderType::entityCutoutNoCull)` keeps `renderType(TEXTURE)` working. The glow colour's
+  `FastColor.ARGB32.colorFromFloat(a, 1, 1, 1)` is `ARGB.white(a)`, the same packed value.
+- `EntityRenderDispatcher#render` lost the x-rotation argument: `render(entity, x, y, z, partialTick, pose, buffer,
+  light)`, which is exactly how vanilla's `SpawnerRenderer` calls it.
 
 ### 4. Datagen output
 

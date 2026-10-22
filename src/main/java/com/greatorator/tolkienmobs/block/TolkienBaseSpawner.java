@@ -166,7 +166,7 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                                                 break label105;
                                             }
 
-                                            Entity entity = EntityType.loadEntityRecursive(compoundtag, serverLevel, (p_151310_) -> {
+                                            Entity entity = EntityType.loadEntityRecursive(compoundtag, serverLevel, EntitySpawnReason.SPAWNER, (p_151310_) -> {
                                                 p_151310_.moveTo(d0, d1, d2, p_151310_.getYRot(), p_151310_.getXRot());
                                                 return p_151310_;
                                             });
@@ -274,7 +274,7 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                                             break label105;
                                         }
 
-                                        Entity entity = EntityType.loadEntityRecursive(compoundtag, serverLevel, (p_151310_) -> {
+                                        Entity entity = EntityType.loadEntityRecursive(compoundtag, serverLevel, EntitySpawnReason.SPAWNER, (p_151310_) -> {
                                             p_151310_.moveTo(d0, d1, d2, p_151310_.getYRot(), p_151310_.getXRot());
                                             return p_151310_;
                                         });
@@ -380,7 +380,7 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                                         break label105;
                                     }
 
-                                    Entity entity = EntityType.loadEntityRecursive(compoundtag, serverLevel, (p_151310_) -> {
+                                    Entity entity = EntityType.loadEntityRecursive(compoundtag, serverLevel, EntitySpawnReason.SPAWNER, (p_151310_) -> {
                                         p_151310_.moveTo(d0, d1, d2, p_151310_.getYRot(), p_151310_.getXRot());
                                         return p_151310_;
                                     });
@@ -488,7 +488,7 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                                     break label105;
                                 }
 
-                                Entity entity = EntityType.loadEntityRecursive(compoundtag, serverLevel, (p_151310_) -> {
+                                Entity entity = EntityType.loadEntityRecursive(compoundtag, serverLevel, EntitySpawnReason.SPAWNER, (p_151310_) -> {
                                     p_151310_.moveTo(d0, d1, d2, p_151310_.getYRot(), p_151310_.getXRot());
                                     return p_151310_;
                                 });
@@ -617,7 +617,7 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                 return null;
             }
 
-            this.displayEntity = EntityType.loadEntityRecursive(compoundtag, level, Function.identity());
+            this.displayEntity = EntityType.loadEntityRecursive(compoundtag, level, EntitySpawnReason.SPAWNER, Function.identity());
             if (compoundtag.size() == 1 && this.displayEntity instanceof Mob) {
             }
         }

@@ -21,7 +21,7 @@ public class LocustModel extends Model {
 	private final ModelPart wings;
 
 	public LocustModel(ModelPart root) {
-		super(RenderType::entityCutoutNoCull);
+		super(root, RenderType::entityCutoutNoCull);
 
 		this.legs = root.getChild("legs");
 		this.fatbody = root.getChild("fat_body");
@@ -68,8 +68,7 @@ public class LocustModel extends Model {
 		return LayerDefinition.create(meshdefinition, 64, 32);
 	}
 
-	@Override
-	public void renderToBuffer(PoseStack ms, VertexConsumer buffer, int light, int overlay, int color) {
+	public void renderBody(PoseStack ms, VertexConsumer buffer, int light, int overlay, int color) {
 		this.legs.render(ms, buffer, light, overlay, color);
 		this.fatbody.render(ms, buffer, light, overlay, color);
 		this.skinnybody.render(ms, buffer, light, overlay, color);
