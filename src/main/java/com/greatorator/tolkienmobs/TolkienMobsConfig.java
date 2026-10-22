@@ -43,10 +43,6 @@ public class TolkienMobsConfig {
             .comment("Item to use for payment to teleport")
             .define("item", "tolkienmobs:item_coin_bronze", TolkienMobsConfig::validateItemName);
 
-    public static ModConfigSpec.IntValue BLOCKS_PER_LEVEL = BUILDER
-            .comment("Range per level for Dwarven Mining Enchant.  Default is 1 (3x3)")
-            .defineInRange("number_of_blocks", 9, 9, 81);
-
     private static final ModConfigSpec.IntValue TRINKET_REPAIR_AMOUNT = BUILDER
             .comment("Damage the trinket table undoes for one ammolite gem and one repair material (Default 1000)")
             .defineInRange("trinket_repair_amount", 1000, 1, 1000000);
