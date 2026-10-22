@@ -146,9 +146,11 @@ public class TolkienSoundProvider extends SoundDefinitionsProvider {
         //
         // Its sound is one purpose-made file rather than the tornado's gusts, because those are
         // swells that fade to silence at both ends: looped, they pulse to nothing every three
-        // seconds, and cut short, they are what used to seam. dive_wind.ogg is a 5.8 second loop
+        // seconds, and cut short, they are what used to seam. dive_wind.ogg is a 7.25 second loop
         // assembled from the loud middles of all three gusts, at three speeds, joined end to start
         // inside a crossfade so the loop point falls in the middle of a blend rather than at an edge.
+        // It is recorded 20% slow, so it already carries the depth the dive used to reach by playing
+        // a faster loop at pitch 0.8; the pitch setting is 1.0 for that reason.
         this.add(TolkienSounds.WIND_FELLBEAST, SoundDefinition.definition()
                 .subtitle("subtitles.tolkienmobs.mob.fellbeast_wind")
                 .with(SoundDefinition.Sound.sound(TolkienMobsMain.prefix("mob/fellbeast/dive_wind"), SoundDefinition.SoundType.SOUND)));
