@@ -601,8 +601,8 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.addEnchantmentDesc("balrog_mark_key", "From shadow and flame, the ground turns to hot magma, then lava everywhere you walk.");
             this.addEnchantment("dwarven_endurance_key", "Dwarven Endurance");
             this.addEnchantmentDesc("dwarven_endurance_key", "Feel like nothing can stop you (from going hungry that is), always keeps you fed.");
-            this.addEnchantment("dwarven_mining_key", "Dwarven Mining");
-            this.addEnchantmentDesc("dwarven_mining_key", "Vein mines all matching blocks.");
+            this.addEnchantment("dwarven_mining_key", "Dwarven Excavation");
+            this.addEnchantmentDesc("dwarven_mining_key", "Breaks the blocks around the one you hit, in the face you struck: 3x3 at level I, widening to 9x9 at level IV. Sneak to break only the one.");
             this.addEnchantment("elven_fleetfoot_key", "Elven FleetFoot");
             this.addEnchantmentDesc("elven_fleetfoot_key", "Walk with the speed of the elves.");
             this.addEnchantment("elven_longevity_key", "Elven Longevity");
