@@ -648,7 +648,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     private static final double STOOP_MARGIN = 2.0D;
     /** Ticks until a wingbeat may be heard again, so a long climb does not roar with flapping. */
     private int wingSoundTicks;
-    /** How far a ridden beast has to drop in a tick, and how much steeper than its headway, to be diving. */
+    /** How far a ridden beast has to drop in a tick before it is worth asking how steeply, in blocks. */
     private static final double RIDER_DIVE_SINK = 0.05D;
     /** Where a ridden beast was at the end of the last tick, for measuring that dive. */
     @Nullable
@@ -861,18 +861,20 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     }
 
     /**
-     * Whether a ridden beast is diving: dropping faster than a block a second and steeper than its
-     * own headway. Neither its pitch nor its velocity is any guide here - the server's look control
-     * steers the pitch toward whatever the beast is watching, and a ridden beast is moved by its
-     * rider's client, so the server only ever sees it teleported between ticks. This compares where
-     * it is with where the last tick left it.
+     * Whether a ridden beast is diving: dropping steeper than the configured angle below horizontal,
+     * and by more than a block a second so a hovering beast's drift is not a dive. Neither its pitch
+     * nor its velocity is any guide here - the server's look control steers the pitch toward whatever
+     * the beast is watching, and a ridden beast is moved by its rider's client, so the server only
+     * ever sees it teleported between ticks. This compares where it is with where the last tick left
+     * it. The angle is a mod config option because it is the dial that decides where the beat cuts.
      */
     private boolean isStooping() {
         if (this.riddenPos == null) return false;
         double drop = this.riddenPos.y - this.getY();
+        if (drop <= RIDER_DIVE_SINK) return false;
         double headway = Math.sqrt((this.getX() - this.riddenPos.x) * (this.getX() - this.riddenPos.x)
                 + (this.getZ() - this.riddenPos.z) * (this.getZ() - this.riddenPos.z));
-        return drop > RIDER_DIVE_SINK && drop > headway;
+        return drop > headway * Math.tan(Math.toRadians(TolkienMobsConfig.fellbeastDiveAngle));
     }
 
     /** One wingbeat, as long as the last one is far enough behind, at the configured volume. */
