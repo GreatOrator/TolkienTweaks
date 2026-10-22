@@ -9,7 +9,9 @@ import com.greatorator.tolkienmobs.item.custom.BackpackItem;
 import com.greatorator.tolkienmobs.world.components.config.TolkienConfiguredFeatures;
 import com.greatorator.tolkienmobs.world.components.feature.tree.TolkienTreeGrowers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.BlockItem;
@@ -24,14 +26,17 @@ import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.registries.*;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
+import static com.greatorator.tolkienmobs.TolkienMobsMain.resLoc;
 import static com.greatorator.tolkienmobs.block.custom.FancyLanternBlock.LIT;
 import static com.greatorator.tolkienmobs.init.TolkienItems.ITEMS;
 
@@ -994,7 +999,7 @@ public class TolkienBlocks {
             () -> new TolkienWallTorchBlock(
                     () -> TolkienParticleTypes.MALLORN_FLAME.get(),
                     BlockBehaviour.Properties.of()
-                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).lootFrom(TORCH_MALLORN)));
+                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).overrideLootTable(blockLoot("torch_mallorn"))));
     public static final DeferredBlock<Block> BARREL_MALLORN = registerBlock("barrel_mallorn",
             () -> new TolkienBarrelBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL)
                     .mapColor(MapColor.TERRACOTTA_WHITE)));
@@ -1062,7 +1067,7 @@ public class TolkienBlocks {
             () -> new TolkienWallTorchBlock(
                     () -> TolkienParticleTypes.MIRKWOOD_FLAME.get(),
                     BlockBehaviour.Properties.of()
-                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).lootFrom(TORCH_MIRKWOOD)));
+                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).overrideLootTable(blockLoot("torch_mirkwood"))));
     public static final DeferredBlock<Block> BARREL_MIRKWOOD = registerBlock("barrel_mirkwood",
             () -> new TolkienBarrelBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL)
                     .mapColor(MapColor.TERRACOTTA_BLACK)));
@@ -1130,7 +1135,7 @@ public class TolkienBlocks {
             () -> new TolkienWallTorchBlock(
                     () -> TolkienParticleTypes.CULUMALDA_FLAME.get(),
                     BlockBehaviour.Properties.of()
-                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).lootFrom(TORCH_CULUMALDA)));
+                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).overrideLootTable(blockLoot("torch_culumalda"))));
     public static final DeferredBlock<Block> BARREL_CULUMALDA = registerBlock("barrel_culumalda",
             () -> new TolkienBarrelBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL)
                     .mapColor(MapColor.TERRACOTTA_GRAY)));
@@ -1198,7 +1203,7 @@ public class TolkienBlocks {
             () -> new TolkienWallTorchBlock(
                     () -> TolkienParticleTypes.LEBETHRON_FLAME.get(),
                     BlockBehaviour.Properties.of()
-                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).lootFrom(TORCH_LEBETHRON)));
+                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).overrideLootTable(blockLoot("torch_lebethron"))));
     public static final DeferredBlock<Block> BARREL_LEBETHRON = registerBlock("barrel_lebethron",
             () -> new TolkienBarrelBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL)
                     .mapColor(MapColor.TERRACOTTA_LIGHT_GRAY)));
@@ -1266,7 +1271,7 @@ public class TolkienBlocks {
             () -> new TolkienWallTorchBlock(
                     () -> TolkienParticleTypes.FANGORNOAK_FLAME.get(),
                     BlockBehaviour.Properties.of()
-                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).lootFrom(TORCH_FANGORNOAK)));
+                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).overrideLootTable(blockLoot("torch_fangornoak"))));
     public static final DeferredBlock<Block> BARREL_FANGORNOAK = registerBlock("barrel_fangornoak",
             () -> new TolkienBarrelBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL)
                     .mapColor(MapColor.TERRACOTTA_LIGHT_GREEN)));
@@ -1325,7 +1330,7 @@ public class TolkienBlocks {
             () -> new TolkienWallTorchBlock(
                     () -> TolkienParticleTypes.DEADWOOD_FLAME.get(),
                     BlockBehaviour.Properties.of()
-                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).lootFrom(TORCH_DEADWOOD)));
+                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).overrideLootTable(blockLoot("torch_deadwood"))));
     public static final DeferredBlock<Block> BARREL_DEADWOOD = registerBlock("barrel_deadwood",
             () -> new TolkienBarrelBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL)
                     .mapColor(MapColor.TERRACOTTA_ORANGE)));
@@ -1394,7 +1399,7 @@ public class TolkienBlocks {
             () -> new TolkienWallTorchBlock(
                     () -> TolkienParticleTypes.DWARVEN_FLAME.get(),
                     BlockBehaviour.Properties.of()
-                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).lootFrom(TORCH_DWARVEN_MAPLE)));
+                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).overrideLootTable(blockLoot("torch_dwarven_maple"))));
     public static final DeferredBlock<Block> BARREL_DWARVEN_MAPLE = registerBlock("barrel_dwarven_maple",
             () -> new TolkienBarrelBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL)
                     .mapColor(MapColor.TERRACOTTA_WHITE)));
@@ -1528,70 +1533,70 @@ public class TolkienBlocks {
         // Block Entities
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LightningBugBlockEntity>> LIGHTNINGBUG_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("lightningbug", () ->
-                    BlockEntityType.Builder.of(LightningBugBlockEntity::new, LIGHTNINGBUG_BLOCK.get()).build(null));
+                    new BlockEntityType<>(LightningBugBlockEntity::new, LIGHTNINGBUG_BLOCK.get()));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LocustBlockEntity>> LOCUST_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("locust", () ->
-                    BlockEntityType.Builder.of(LocustBlockEntity::new, LOCUST_BLOCK.get()).build(null));
+                    new BlockEntityType<>(LocustBlockEntity::new, LOCUST_BLOCK.get()));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PlacardBlockEntity>> PLACARD_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("placard_tile", () ->
-                    BlockEntityType.Builder.of(PlacardBlockEntity::new, PLACARD.get()).build(null));
+                    new BlockEntityType<>(PlacardBlockEntity::new, PLACARD.get()));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TolkienSignBlockEntity>> TOLKIEN_SIGN_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("tolkien_sign_entity", () ->
-                    BlockEntityType.Builder.of(TolkienSignBlockEntity::new, MALLORN_SIGN.get(), MALLORN_WALL_SIGN.get(), MIRKWOOD_SIGN.get(), MIRKWOOD_WALL_SIGN.get(), CULUMALDA_SIGN.get(), CULUMALDA_WALL_SIGN.get(), LEBETHRON_SIGN.get(), LEBETHRON_WALL_SIGN.get(), FANGORNOAK_SIGN.get(), FANGORNOAK_WALL_SIGN.get(), DEADWOOD_SIGN.get(), DEADWOOD_WALL_SIGN.get(), DWARVEN_MAPLE_SIGN.get(), DWARVEN_MAPLE_WALL_SIGN.get()).build(null));
+                    new BlockEntityType<>(TolkienSignBlockEntity::new, MALLORN_SIGN.get(), MALLORN_WALL_SIGN.get(), MIRKWOOD_SIGN.get(), MIRKWOOD_WALL_SIGN.get(), CULUMALDA_SIGN.get(), CULUMALDA_WALL_SIGN.get(), LEBETHRON_SIGN.get(), LEBETHRON_WALL_SIGN.get(), FANGORNOAK_SIGN.get(), FANGORNOAK_WALL_SIGN.get(), DEADWOOD_SIGN.get(), DEADWOOD_WALL_SIGN.get(), DWARVEN_MAPLE_SIGN.get(), DWARVEN_MAPLE_WALL_SIGN.get()));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TolkienHangingSignBlockEntity>> TOLKIEN_HANGING_SIGN_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("tolkien_hanging_sign_entity", () ->
-                    BlockEntityType.Builder.of(TolkienHangingSignBlockEntity::new, MALLORN_HANGING_SIGN.get(), MALLORN_HANGING_WALL_SIGN.get(), MIRKWOOD_HANGING_SIGN.get(), MIRKWOOD_HANGING_WALL_SIGN.get(), CULUMALDA_HANGING_SIGN.get(), CULUMALDA_HANGING_WALL_SIGN.get(), LEBETHRON_HANGING_SIGN.get(), LEBETHRON_HANGING_WALL_SIGN.get(), FANGORNOAK_HANGING_SIGN.get(), FANGORNOAK_HANGING_WALL_SIGN.get(), DEADWOOD_HANGING_SIGN.get(), DEADWOOD_HANGING_WALL_SIGN.get(), DWARVEN_MAPLE_HANGING_SIGN.get(), DWARVEN_MAPLE_HANGING_WALL_SIGN.get()).build(null));
+                    new BlockEntityType<>(TolkienHangingSignBlockEntity::new, MALLORN_HANGING_SIGN.get(), MALLORN_HANGING_WALL_SIGN.get(), MIRKWOOD_HANGING_SIGN.get(), MIRKWOOD_HANGING_WALL_SIGN.get(), CULUMALDA_HANGING_SIGN.get(), CULUMALDA_HANGING_WALL_SIGN.get(), LEBETHRON_HANGING_SIGN.get(), LEBETHRON_HANGING_WALL_SIGN.get(), FANGORNOAK_HANGING_SIGN.get(), FANGORNOAK_HANGING_WALL_SIGN.get(), DEADWOOD_HANGING_SIGN.get(), DEADWOOD_HANGING_WALL_SIGN.get(), DWARVEN_MAPLE_HANGING_SIGN.get(), DWARVEN_MAPLE_HANGING_WALL_SIGN.get()));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TrinketTableBlockEntity>> TRINKET_TABLE_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("trinket_table", () ->
-                    BlockEntityType.Builder.of(TrinketTableBlockEntity::new, TRINKET_TABLE.get()).build(null));
+                    new BlockEntityType<>(TrinketTableBlockEntity::new, TRINKET_TABLE.get()));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FireplaceBlockEntity>> FIREPLACE_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("fireplace", () ->
-                    BlockEntityType.Builder.of(FireplaceBlockEntity::new, FIREPLACE.get()).build(null));
+                    new BlockEntityType<>(FireplaceBlockEntity::new, FIREPLACE.get()));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PiggyBankBlockEntity>> PIGGY_BANK_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("block_piggybank", () ->
-                    BlockEntityType.Builder.of(PiggyBankBlockEntity::new, PIGGYBANK.get()).build(null));
+                    new BlockEntityType<>(PiggyBankBlockEntity::new, PIGGYBANK.get()));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LockableChestBlockEntity>> LOCKABLE_CHEST_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("lockable_chest_block", () ->
-                    BlockEntityType.Builder.of(LockableChestBlockEntity::new, LOCKABLE_CHEST_BLOCK.get()).build(null));
+                    new BlockEntityType<>(LockableChestBlockEntity::new, LOCKABLE_CHEST_BLOCK.get()));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LockableTreasureChestBlockEntity>> LOCKABLE_TREASURE_CHEST_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("lockable_treasure_chest_block", () ->
-                    BlockEntityType.Builder.of(LockableTreasureChestBlockEntity::new, LOCKABLE_TREASURE_CHEST_BLOCK.get()).build(null));
+                    new BlockEntityType<>(LockableTreasureChestBlockEntity::new, LOCKABLE_TREASURE_CHEST_BLOCK.get()));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LockableDoubleChestBlockEntity>> LOCKABLE_DOUBLE_CHEST_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("lockable_double_chest_block", () ->
-                    BlockEntityType.Builder.of(LockableDoubleChestBlockEntity::new, LOCKABLE_DOUBLE_CHEST_BLOCK.get()).build(null));
+                    new BlockEntityType<>(LockableDoubleChestBlockEntity::new, LOCKABLE_DOUBLE_CHEST_BLOCK.get()));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LockableDoubleTreasureChestBlockEntity>> LOCKABLE_DOUBLE_TREASURE_CHEST_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("lockable_double_treasure_chest_block", () ->
-                    BlockEntityType.Builder.of(LockableDoubleTreasureChestBlockEntity::new, LOCKABLE_DOUBLE_TREASURE_CHEST_BLOCK.get()).build(null));
+                    new BlockEntityType<>(LockableDoubleTreasureChestBlockEntity::new, LOCKABLE_DOUBLE_TREASURE_CHEST_BLOCK.get()));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BackpackBlockEntity>> BACKPACK_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("backpack", () ->
-                    BlockEntityType.Builder.of(BackpackBlockEntity::new, BACKPACK.get()).build(null));
+                    new BlockEntityType<>(BackpackBlockEntity::new, BACKPACK.get()));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CamoSpawnerBlockEntity>> CAMO_SPAWNER_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("camo_spawner", () ->
-                    BlockEntityType.Builder.of(CamoSpawnerBlockEntity::new, CAMO_SPAWNER_BLOCK.get()).build(null));
+                    new BlockEntityType<>(CamoSpawnerBlockEntity::new, CAMO_SPAWNER_BLOCK.get()));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CamoKeyStoneBlockEntity>> KEY_STONE_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("block_key_stone", () ->
-                    BlockEntityType.Builder.of(CamoKeyStoneBlockEntity::new, KEY_STONE_BLOCK.get()).build(null));
+                    new BlockEntityType<>(CamoKeyStoneBlockEntity::new, KEY_STONE_BLOCK.get()));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CamoChestBlockEntity>> CAMO_CHEST_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("block_camo_chest", () ->
-                    BlockEntityType.Builder.of(CamoChestBlockEntity::new, CAMO_CHEST_BLOCK.get()).build(null));
+                    new BlockEntityType<>(CamoChestBlockEntity::new, CAMO_CHEST_BLOCK.get()));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CamoFluidBlockEntity>> CAMO_FLUID_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("block_camo_fluid", () ->
-                    BlockEntityType.Builder.of(CamoFluidBlockEntity::new, CAMO_FLUID_BLOCK.get()).build(null));
+                    new BlockEntityType<>(CamoFluidBlockEntity::new, CAMO_FLUID_BLOCK.get()));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TolkienBarrelBlockEntity>> TOLKIEN_BARREL_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("tolkien_barrel_block_entity", () ->
-                    BlockEntityType.Builder.of(TolkienBarrelBlockEntity::new, BARREL_MALLORN.get(), BARREL_MIRKWOOD.get(), BARREL_CULUMALDA.get(), BARREL_DEADWOOD.get(), BARREL_MITHRIL.get(), BARREL_FANGORNOAK.get(), BARREL_MORGULIRON.get(), BARREL_DWARVEN_MAPLE.get(), BARREL_LEBETHRON.get()).build(null));
+                    new BlockEntityType<>(TolkienBarrelBlockEntity::new, BARREL_MALLORN.get(), BARREL_MIRKWOOD.get(), BARREL_CULUMALDA.get(), BARREL_DEADWOOD.get(), BARREL_MITHRIL.get(), BARREL_FANGORNOAK.get(), BARREL_MORGULIRON.get(), BARREL_DWARVEN_MAPLE.get(), BARREL_LEBETHRON.get()));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MilestoneBlockEntity>> MILESTONE_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("milestone_block", () ->
-                    BlockEntityType.Builder.of(MilestoneBlockEntity::new, MILESTONE_BLOCK.get()).build(null));
+                    new BlockEntityType<>(MilestoneBlockEntity::new, MILESTONE_BLOCK.get()));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WellBlockEntity>> WELL_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("well_block", () ->
-                    BlockEntityType.Builder.of(WellBlockEntity::new, WELL.get()).build(null));
+                    new BlockEntityType<>(WellBlockEntity::new, WELL.get()));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AncientWatcherStatueBlockEntity>> ANCIENT_WATCHER_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("ancient_watcher", () ->
-                    BlockEntityType.Builder.of(AncientWatcherStatueBlockEntity::new, ANCIENT_WATCHER.get()).build(null));
+                    new BlockEntityType<>(AncientWatcherStatueBlockEntity::new, ANCIENT_WATCHER.get()));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AncientWatcherDeadStatueBlockEntity>> ANCIENT_WATCHER_DEAD_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("ancient_dead_watcher", () ->
-                    BlockEntityType.Builder.of(AncientWatcherDeadStatueBlockEntity::new, ANCIENT_DEAD_WATCHER.get()).build(null));
+                    new BlockEntityType<>(AncientWatcherDeadStatueBlockEntity::new, ANCIENT_DEAD_WATCHER.get()));
 
         // Attachment Types
     public static final Supplier<AttachmentType<ItemStackHandler>> BACKPACK_HANDLER = ATTACHMENT_TYPES.register(
@@ -1610,6 +1615,11 @@ public class TolkienBlocks {
 
     private static boolean never(BlockState state, BlockGetter blockGetter, BlockPos pos) {
         return false;
+    }
+
+    /** 1.21.4 dropped Properties#lootFrom, so a block that drops like another one names that block's loot table. */
+    private static Optional<ResourceKey<LootTable>> blockLoot(String blockName) {
+        return Optional.of(ResourceKey.create(Registries.LOOT_TABLE, resLoc("blocks/" + blockName)));
     }
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {

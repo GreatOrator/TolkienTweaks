@@ -21,6 +21,8 @@ All notable changes to this project will be documented in this file.
 - Food and drink effects are carried by the consumable component, so drinks still tip the bottle back and foods still keep their bonuses.
 - Tag, sound, particle and village-template datagen no longer asks for the file helper the modding API dropped.
 - Recipe datagen builds its recipes through the game's recipe-provider instance, so crafted, smelted and stonecut items keep the recipe ids and unlock conditions they had before.
+- Potions are registered with the name the game now requires on them, so potions, splash potions and lingering potions keep the names they are shown with.
+- Block entity types are built directly, and the wood wall torches name the floor torch's loot table themselves, so torches still drop the way they did before.
 - Creature renderers and models now use the per-frame render state the game switched to, so mobs, boats and thrown projectiles draw the same way they did before.
 - Human NPC winter clothing now follows the `tolkienmobs:climate/cold` biome tag instead of a hard-coded temperature, so a datapack can decide which biomes dress humans for the cold. Iron Hills, Barrow Downs and Hithaeglir count as cold alongside Forochel.
 

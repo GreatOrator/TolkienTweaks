@@ -9,7 +9,7 @@ This file is the handoff: it records what is done, what is measured, and what to
 |---|---|
 | Target | Minecraft **1.21.4**, NeoForge **21.4.161** |
 | Compile errors at the start | **5,720** in 425 files |
-| Compile errors now | **530** distinct sites |
+| Compile errors now | **499** distinct sites |
 | Runnable | no — the tree does not compile yet |
 
 Dependency versions, all verified to exist and resolve:
@@ -210,8 +210,24 @@ Still open in this area:
   - `Ingredient#getItems()` became `items()`, a `Stream<Holder<Item>>`; the criteria that only wanted a name use
     `firstItem(...)`.
   - NeoForge's `IConditionBuilder` is gone; nothing in the mod used it beyond declaring the interface.
-- `Item.Properties`/`BlockBehaviour.Properties` need registry ids (283 + 575 sites).
-- `TolkienBlocks` (58), `TolkienPotions` (26), the block-model and baked-model classes
+- **Blocks and potions** — done. `TolkienBlocks` and `TolkienPotions` compile; three API facts were not
+  visible from the call sites:
+  - `BlockEntityType.Builder` is gone. Each block entity type is now `new BlockEntityType<>(factory, blocks...)`,
+    so `BLOCK_ENTITIES.register(name, () -> new BlockEntityType<>(...))` replaces the old `.of(...).build(null)`.
+    The NeoForge constructor still refuses an empty block list, which is what the old builder warned about.
+  - `BlockBehaviour.Properties#lootFrom` is gone too; a block that drops like another one now names that
+    block's loot table with `overrideLootTable(Optional<ResourceKey<LootTable>>)`. The seven wood wall torches
+    go through a `blockLoot(name)` helper producing `<modid>:blocks/<name>`, which is the key the floor torch
+    already has by default, so the wall torches keep dropping like it.
+  - `Potion` gained a constructor argument, and it is **not** the registry id: it is the suffix the potion
+    names are built from (`item.minecraft.potion.effect.<name>`, and the splash/lingering variants). The mod's
+    lang datagen already keyed those names on the registry ids, so `TolkienPotions.potion(name, effects...)`
+    passes one string to both the registration and the potion.
+- `Item.Properties`/`BlockBehaviour.Properties` still need registry ids (283 + 575 sites). This is not cosmetic:
+  `BlockBehaviour`'s constructor resolves `effectiveDrops()` and `effectiveDescriptionId()`, both of which throw
+  `Block id not set` on a properties object without one, and `Item`'s description id and model do the same. Until
+  this is done every block in `TolkienBlocks` throws while it is constructed, i.e. at registration.
+- The block-model and baked-model classes
   (`ChameleonBlockDynamicBakedModel`, `PatchModel`/`UnbakedPatchModel`, `ModelEvent.RegisterGeometryLoaders`,
   `FastColor` → `ARGB`), the block entity renderers, and the remaining entity classes (38 in `DragonEntity`,
   28 in `ShelobEntity`, and a long tail).
