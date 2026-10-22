@@ -262,6 +262,12 @@ public abstract class BlockStateProvider implements DataProvider {
         this.directionalBlock(block, state -> model, angleOffset);
     }
 
+    /**
+     * Variants for a block that points in one of the six directions. The x rotation already turns
+     * a model drawn with its front on the top face towards the north, but the y rotation below is
+     * measured from a model drawn facing south, so such a block (a barrel, whose lid is on top)
+     * needs {@code angleOffset} 180 to line up with vanilla's variants.
+     */
     public void directionalBlock(Block block, Function<BlockState, ModelFile> modelFunc, int angleOffset) {
         this.getVariantBuilder(block).forAllStates(state -> {
             Direction direction = state.getValue(BlockStateProperties.FACING);
@@ -566,23 +572,24 @@ public abstract class BlockStateProvider implements DataProvider {
         this.wallSidePart(builder, sideTall, WallSide.TALL);
     }
 
-    private static final Map<Direction, net.minecraft.world.level.block.state.properties.EnumProperty<WallSide>> WALL_SIDES = Map.of(
-            Direction.NORTH, WallBlock.NORTH_WALL,
-            Direction.EAST, WallBlock.EAST_WALL,
-            Direction.SOUTH, WallBlock.SOUTH_WALL,
-            Direction.WEST, WallBlock.WEST_WALL);
+    private static final List<Map.Entry<Direction, net.minecraft.world.level.block.state.properties.EnumProperty<WallSide>>> WALL_SIDES = List.of(
+            Map.entry(Direction.NORTH, WallBlock.NORTH_WALL),
+            Map.entry(Direction.EAST, WallBlock.EAST_WALL),
+            Map.entry(Direction.SOUTH, WallBlock.SOUTH_WALL),
+            Map.entry(Direction.WEST, WallBlock.WEST_WALL));
 
     private void wallSidePart(MultiPartBlockStateBuilder builder, ModelFile model, WallSide height) {
-        WALL_SIDES.forEach((direction, property) -> {
+        for (Map.Entry<Direction, net.minecraft.world.level.block.state.properties.EnumProperty<WallSide>> wallSide : WALL_SIDES) {
+            Direction direction = wallSide.getKey();
             if (direction.getAxis().isHorizontal()) {
                 builder.part()
                         .modelFile(model)
                         .rotationY((((int) direction.toYRot()) + 180) % 360)
                         .uvLock(true)
                         .addModel()
-                        .condition(property, height);
+                        .condition(wallSide.getValue(), height);
             }
-        });
+        }
     }
 
     // ------------------------------------------------------------------ panes
