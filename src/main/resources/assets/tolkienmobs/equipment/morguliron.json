@@ -1,0 +1,7 @@
+{
+  "layers": {
+    "humanoid": [{"texture": "tolkienmobs:morguliron"}],
+    "humanoid_leggings": [{"texture": "tolkienmobs:morguliron"}],
+    "horse_body": [{"texture": "tolkienmobs:morguliron"}]
+  }
+}

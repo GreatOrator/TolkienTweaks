@@ -11,6 +11,7 @@ import com.greatorator.tolkienmobs.util.ColorUtility;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -48,19 +49,19 @@ public class TolkienItems {
 
         // Signs
     public static final DeferredItem<Item> MALLORN_HANGING_SIGN = ITEMS.register("hanging_sign_mallorn", () -> new HangingSignItem(TolkienBlocks.MALLORN_HANGING_SIGN.get(), TolkienBlocks.MALLORN_HANGING_WALL_SIGN.get(), new Item.Properties().stacksTo(16)));
-    public static final DeferredItem<Item> MALLORN_SIGN = ITEMS.register("sign_mallorn", () -> new SignItem(new Item.Properties().stacksTo(16), TolkienBlocks.MALLORN_SIGN.get(), TolkienBlocks.MALLORN_WALL_SIGN.get()));
+    public static final DeferredItem<Item> MALLORN_SIGN = ITEMS.register("sign_mallorn", () -> new SignItem(TolkienBlocks.MALLORN_SIGN.get(), TolkienBlocks.MALLORN_WALL_SIGN.get(), new Item.Properties().stacksTo(16)));
     public static final DeferredItem<Item> MIRKWOOD_HANGING_SIGN = ITEMS.register("hanging_sign_mirkwood", () -> new HangingSignItem(TolkienBlocks.MIRKWOOD_HANGING_SIGN.get(), TolkienBlocks.MIRKWOOD_HANGING_WALL_SIGN.get(), new Item.Properties().stacksTo(16)));
-    public static final DeferredItem<Item> MIRKWOOD_SIGN = ITEMS.register("sign_mirkwood", () -> new SignItem(new Item.Properties().stacksTo(16), TolkienBlocks.MIRKWOOD_SIGN.get(), TolkienBlocks.MIRKWOOD_WALL_SIGN.get()));
+    public static final DeferredItem<Item> MIRKWOOD_SIGN = ITEMS.register("sign_mirkwood", () -> new SignItem(TolkienBlocks.MIRKWOOD_SIGN.get(), TolkienBlocks.MIRKWOOD_WALL_SIGN.get(), new Item.Properties().stacksTo(16)));
     public static final DeferredItem<Item> CULUMALDA_HANGING_SIGN = ITEMS.register("hanging_sign_culumalda", () -> new HangingSignItem(TolkienBlocks.CULUMALDA_HANGING_SIGN.get(), TolkienBlocks.CULUMALDA_HANGING_WALL_SIGN.get(), new Item.Properties().stacksTo(16)));
-    public static final DeferredItem<Item> CULUMALDA_SIGN = ITEMS.register("sign_culumalda", () -> new SignItem(new Item.Properties().stacksTo(16), TolkienBlocks.CULUMALDA_SIGN.get(), TolkienBlocks.CULUMALDA_WALL_SIGN.get()));
+    public static final DeferredItem<Item> CULUMALDA_SIGN = ITEMS.register("sign_culumalda", () -> new SignItem(TolkienBlocks.CULUMALDA_SIGN.get(), TolkienBlocks.CULUMALDA_WALL_SIGN.get(), new Item.Properties().stacksTo(16)));
     public static final DeferredItem<Item> LEBETHRON_HANGING_SIGN = ITEMS.register("hanging_sign_lebethron", () -> new HangingSignItem(TolkienBlocks.LEBETHRON_HANGING_SIGN.get(), TolkienBlocks.LEBETHRON_HANGING_WALL_SIGN.get(), new Item.Properties().stacksTo(16)));
-    public static final DeferredItem<Item> LEBETHRON_SIGN = ITEMS.register("sign_lebethron", () -> new SignItem(new Item.Properties().stacksTo(16), TolkienBlocks.LEBETHRON_SIGN.get(), TolkienBlocks.LEBETHRON_WALL_SIGN.get()));
+    public static final DeferredItem<Item> LEBETHRON_SIGN = ITEMS.register("sign_lebethron", () -> new SignItem(TolkienBlocks.LEBETHRON_SIGN.get(), TolkienBlocks.LEBETHRON_WALL_SIGN.get(), new Item.Properties().stacksTo(16)));
     public static final DeferredItem<Item> FANGORNOAK_HANGING_SIGN = ITEMS.register("hanging_sign_fangornoak", () -> new HangingSignItem(TolkienBlocks.FANGORNOAK_HANGING_SIGN.get(), TolkienBlocks.FANGORNOAK_HANGING_WALL_SIGN.get(), new Item.Properties().stacksTo(16)));
-    public static final DeferredItem<Item> FANGORNOAK_SIGN = ITEMS.register("sign_fangornoak", () -> new SignItem(new Item.Properties().stacksTo(16), TolkienBlocks.FANGORNOAK_SIGN.get(), TolkienBlocks.FANGORNOAK_WALL_SIGN.get()));
+    public static final DeferredItem<Item> FANGORNOAK_SIGN = ITEMS.register("sign_fangornoak", () -> new SignItem(TolkienBlocks.FANGORNOAK_SIGN.get(), TolkienBlocks.FANGORNOAK_WALL_SIGN.get(), new Item.Properties().stacksTo(16)));
     public static final DeferredItem<Item> DEADWOOD_HANGING_SIGN = ITEMS.register("hanging_sign_deadwood", () -> new HangingSignItem(TolkienBlocks.DEADWOOD_HANGING_SIGN.get(), TolkienBlocks.DEADWOOD_HANGING_WALL_SIGN.get(), new Item.Properties().stacksTo(16)));
-    public static final DeferredItem<Item> DEADWOOD_SIGN = ITEMS.register("sign_deadwood", () -> new SignItem(new Item.Properties().stacksTo(16), TolkienBlocks.DEADWOOD_SIGN.get(), TolkienBlocks.DEADWOOD_WALL_SIGN.get()));
+    public static final DeferredItem<Item> DEADWOOD_SIGN = ITEMS.register("sign_deadwood", () -> new SignItem(TolkienBlocks.DEADWOOD_SIGN.get(), TolkienBlocks.DEADWOOD_WALL_SIGN.get(), new Item.Properties().stacksTo(16)));
     public static final DeferredItem<Item> DWARVEN_MAPLE_HANGING_SIGN = ITEMS.register("hanging_sign_dwarven_maple", () -> new HangingSignItem(TolkienBlocks.DWARVEN_MAPLE_HANGING_SIGN.get(), TolkienBlocks.DWARVEN_MAPLE_HANGING_WALL_SIGN.get(), new Item.Properties().stacksTo(16)));
-    public static final DeferredItem<Item> DWARVEN_MAPLE_SIGN = ITEMS.register("sign_dwarven_maple", () -> new SignItem(new Item.Properties().stacksTo(16), TolkienBlocks.DWARVEN_MAPLE_SIGN.get(), TolkienBlocks.DWARVEN_MAPLE_WALL_SIGN.get()));
+    public static final DeferredItem<Item> DWARVEN_MAPLE_SIGN = ITEMS.register("sign_dwarven_maple", () -> new SignItem(TolkienBlocks.DWARVEN_MAPLE_SIGN.get(), TolkienBlocks.DWARVEN_MAPLE_WALL_SIGN.get(), new Item.Properties().stacksTo(16)));
 
 
     // Boats
@@ -250,29 +251,29 @@ public class TolkienItems {
     public static final DeferredItem<Item> TEMPLATE_AMMOLITE = ITEMS.register("template_ammolite", () -> new TolkienItem(new Item.Properties()));
 
         // Foods
-    public static final DeferredItem<Item> LEMBAS = ITEMS.registerItem("food_lembas", properties -> new TolkienFood(properties).setEffectOverride(), new Item.Properties().food(TolkienFoods.LEMBAS).stacksTo(64));
-    public static final DeferredItem<Item> HONEY_CAKE = ITEMS.registerItem("food_honeycake", TolkienFood::new,new Item.Properties().stacksTo(64).food(TolkienFoods.HONEY_CAKE));
-    public static final DeferredItem<Item> CRAM = ITEMS.registerItem("food_cram", TolkienFood::new, new Item.Properties().stacksTo(64).food(TolkienFoods.CRAM));
-    public static final DeferredItem<Item> MONSTER_FLESH = ITEMS.registerItem("monster_flesh", TolkienFood::new, new Item.Properties().stacksTo(64).food(TolkienFoods.MONSTER_FLESH));
-    public static final DeferredItem<Item> INSECT = ITEMS.registerItem("food_insect", TolkienFood::new, new Item.Properties().stacksTo(64).food(TolkienFoods.INSECT));
-    public static final DeferredItem<Item> GOLDEN_INSECT = ITEMS.registerItem("food_golden_insect", properties -> new TolkienFood(properties).setEffectOverride(), new Item.Properties().stacksTo(64).food(TolkienFoods.GOLDEN_INSECT));
-    public static final DeferredItem<Item> TREE_ACORN = ITEMS.registerItem("food_tree_acorn", TolkienFood::new, new Item.Properties().stacksTo(64).food(TolkienFoods.TREE_ACORN));
-    public static final DeferredItem<Item> GOLDEN_TREE_ACORN = ITEMS.registerItem("food_golden_tree_acorn", properties -> new TolkienFood(properties).setEffectOverride(), new Item.Properties().stacksTo(64).food(TolkienFoods.GOLDEN_TREE_ACORN));
-    public static final DeferredItem<Item> FOOD_HONEY = ITEMS.registerItem("food_honey", TolkienFood::new, new Item.Properties().stacksTo(64).food(TolkienFoods.FOOD_HONEY));
+    public static final DeferredItem<Item> LEMBAS = ITEMS.registerItem("food_lembas", properties -> new TolkienFood(properties).setEffectOverride(), new Item.Properties().food(TolkienFoods.LEMBAS, TolkienFoods.LEMBAS_CONSUMABLE).stacksTo(64));
+    public static final DeferredItem<Item> HONEY_CAKE = ITEMS.registerItem("food_honeycake", TolkienFood::new,new Item.Properties().stacksTo(64).food(TolkienFoods.HONEY_CAKE, TolkienFoods.HONEY_CAKE_CONSUMABLE));
+    public static final DeferredItem<Item> CRAM = ITEMS.registerItem("food_cram", TolkienFood::new, new Item.Properties().stacksTo(64).food(TolkienFoods.CRAM, TolkienFoods.CRAM_CONSUMABLE));
+    public static final DeferredItem<Item> MONSTER_FLESH = ITEMS.registerItem("monster_flesh", TolkienFood::new, new Item.Properties().stacksTo(64).food(TolkienFoods.MONSTER_FLESH, TolkienFoods.MONSTER_FLESH_CONSUMABLE));
+    public static final DeferredItem<Item> INSECT = ITEMS.registerItem("food_insect", TolkienFood::new, new Item.Properties().stacksTo(64).food(TolkienFoods.INSECT, TolkienFoods.INSECT_CONSUMABLE));
+    public static final DeferredItem<Item> GOLDEN_INSECT = ITEMS.registerItem("food_golden_insect", properties -> new TolkienFood(properties).setEffectOverride(), new Item.Properties().stacksTo(64).food(TolkienFoods.GOLDEN_INSECT, TolkienFoods.GOLDEN_INSECT_CONSUMABLE));
+    public static final DeferredItem<Item> TREE_ACORN = ITEMS.registerItem("food_tree_acorn", TolkienFood::new, new Item.Properties().stacksTo(64).food(TolkienFoods.TREE_ACORN, TolkienFoods.TREE_ACORN_CONSUMABLE));
+    public static final DeferredItem<Item> GOLDEN_TREE_ACORN = ITEMS.registerItem("food_golden_tree_acorn", properties -> new TolkienFood(properties).setEffectOverride(), new Item.Properties().stacksTo(64).food(TolkienFoods.GOLDEN_TREE_ACORN, TolkienFoods.GOLDEN_TREE_ACORN_CONSUMABLE));
+    public static final DeferredItem<Item> FOOD_HONEY = ITEMS.registerItem("food_honey", TolkienFood::new, new Item.Properties().stacksTo(64).food(TolkienFoods.FOOD_HONEY, TolkienFoods.FOOD_HONEY_CONSUMABLE));
 
         // Drinks
-    public static final DeferredItem<Item> MIRUVOR = ITEMS.registerItem("drink_miruvor", properties -> new TolkienFood(properties).setEffectOverride().setItemUseAction(true), new Item.Properties().stacksTo(64).food(TolkienFoods.MIRUVOR));
-    public static final DeferredItem<Item> GROG = ITEMS.registerItem("drink_grog", properties -> new TolkienFood(properties).setEffectOverride().setItemUseAction(true), new Item.Properties().stacksTo(64).food(TolkienFoods.GROG));
-    public static final DeferredItem<Item> DRINK_ENT_DRAUGHT = ITEMS.registerItem("drink_ent_draught", properties -> new TolkienFood(properties).setEffectOverride().setItemUseAction(true), new Item.Properties().stacksTo(16).food(TolkienFoods.DRINK_ENT_DRAUGHT));
-    public static final DeferredItem<Item> DRINK_PERSONAL_BLACKSMITH = ITEMS.registerItem("drink_personal_blacksmith", properties -> new TolkienFood(properties).setEffectOverride().setItemUseAction(true), new Item.Properties().stacksTo(16).food(TolkienFoods.DRINK_PERSONAL_BLACKSMITH));
-    public static final DeferredItem<Item> DRINK_ELF_FLEETFOOT = ITEMS.registerItem("drink_elf_blessing", properties -> new TolkienFood(properties).setEffectOverride().setItemUseAction(true), new Item.Properties().stacksTo(16).food(TolkienFoods.DRINK_ELF_FLEETFOOT));
-    public static final DeferredItem<Item> DRINK_ELF_VITALITY = ITEMS.registerItem("drink_elf_vitality", properties -> new TolkienFood(properties).setEffectOverride().setItemUseAction(true), new Item.Properties().stacksTo(16).food(TolkienFoods.DRINK_ELF_VITALITY));
-    public static final DeferredItem<Item> DRINK_ERU_BLESSING = ITEMS.registerItem("drink_eru_blessing", properties -> new TolkienFood(properties).setEffectOverride().setItemUseAction(true), new Item.Properties().stacksTo(16).food(TolkienFoods.DRINK_ERU_BLESSING));
+    public static final DeferredItem<Item> MIRUVOR = ITEMS.registerItem("drink_miruvor", properties -> new TolkienFood(properties).setEffectOverride(), new Item.Properties().stacksTo(64).food(TolkienFoods.MIRUVOR, TolkienFoods.MIRUVOR_CONSUMABLE));
+    public static final DeferredItem<Item> GROG = ITEMS.registerItem("drink_grog", properties -> new TolkienFood(properties).setEffectOverride(), new Item.Properties().stacksTo(64).food(TolkienFoods.GROG, TolkienFoods.GROG_CONSUMABLE));
+    public static final DeferredItem<Item> DRINK_ENT_DRAUGHT = ITEMS.registerItem("drink_ent_draught", properties -> new TolkienFood(properties).setEffectOverride(), new Item.Properties().stacksTo(16).food(TolkienFoods.DRINK_ENT_DRAUGHT, TolkienFoods.DRINK_ENT_DRAUGHT_CONSUMABLE));
+    public static final DeferredItem<Item> DRINK_PERSONAL_BLACKSMITH = ITEMS.registerItem("drink_personal_blacksmith", properties -> new TolkienFood(properties).setEffectOverride(), new Item.Properties().stacksTo(16).food(TolkienFoods.DRINK_PERSONAL_BLACKSMITH, TolkienFoods.DRINK_PERSONAL_BLACKSMITH_CONSUMABLE));
+    public static final DeferredItem<Item> DRINK_ELF_FLEETFOOT = ITEMS.registerItem("drink_elf_blessing", properties -> new TolkienFood(properties).setEffectOverride(), new Item.Properties().stacksTo(16).food(TolkienFoods.DRINK_ELF_FLEETFOOT, TolkienFoods.DRINK_ELF_FLEETFOOT_CONSUMABLE));
+    public static final DeferredItem<Item> DRINK_ELF_VITALITY = ITEMS.registerItem("drink_elf_vitality", properties -> new TolkienFood(properties).setEffectOverride(), new Item.Properties().stacksTo(16).food(TolkienFoods.DRINK_ELF_VITALITY, TolkienFoods.DRINK_ELF_VITALITY_CONSUMABLE));
+    public static final DeferredItem<Item> DRINK_ERU_BLESSING = ITEMS.registerItem("drink_eru_blessing", properties -> new TolkienFood(properties).setEffectOverride(), new Item.Properties().stacksTo(16).food(TolkienFoods.DRINK_ERU_BLESSING, TolkienFoods.DRINK_ERU_BLESSING_CONSUMABLE));
 
         // Crops & Foliage
     public static final DeferredItem<Item> PIPEWEED_ITEM = ITEMS.register("pipeweed", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<Item> PIPEWEED_SEEDS = ITEMS.register("pipeweed_seeds", () -> new ItemNameBlockItem(TolkienBlocks.PIPEWEED.get(), new Item.Properties()));
-    public static final DeferredItem<Item> BRAMBLES_BERRY = ITEMS.register("brambles_berry", () -> new ItemNameBlockItem(TolkienBlocks.FLOWER_BRAMBLES.get(), new Item.Properties().food(TolkienFoods.FOOD_BRAMBLES_BERRY)));
+    public static final DeferredItem<Item> PIPEWEED_SEEDS = ITEMS.register("pipeweed_seeds", () -> new BlockItem(TolkienBlocks.PIPEWEED.get(), new Item.Properties()));
+    public static final DeferredItem<Item> BRAMBLES_BERRY = ITEMS.register("brambles_berry", () -> new BlockItem(TolkienBlocks.FLOWER_BRAMBLES.get(), new Item.Properties().food(TolkienFoods.FOOD_BRAMBLES_BERRY, TolkienFoods.FOOD_BRAMBLES_BERRY_CONSUMABLE)));
 
         // Music Discs
     public static final DeferredItem<Item> RECORD_EREBOR = ITEMS.registerItem("record_erebor", properties -> new Item(properties.jukeboxPlayable(TolkienJukebox.EREBOR).stacksTo(1)));
@@ -357,45 +358,33 @@ public class TolkienItems {
 
         // Armor
     public static final DeferredItem<ArmorItem> HELMET_MITHRIL = ITEMS.register("helmet_mithril",
-                () -> new TolkienArmorItem(TolkienArmorMaterials.MITHRIL_ARMOR_MATERIAL, ArmorItem.Type.HELMET,
-                        new Item.Properties().durability(ArmorItem.Type.HELMET.getDurability(41))));
+                () -> new TolkienArmorItem(TolkienArmorMaterials.MITHRIL_ARMOR_MATERIAL, ArmorType.HELMET, new Item.Properties()));
     public static final DeferredItem<ArmorItem> CHESTPLATE_MITHRIL = ITEMS.register("chestplate_mithril",
-            () -> new TolkienArmorItem(TolkienArmorMaterials.MITHRIL_ARMOR_MATERIAL, ArmorItem.Type.CHESTPLATE,
-                    new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(41))));
+            () -> new TolkienArmorItem(TolkienArmorMaterials.MITHRIL_ARMOR_MATERIAL, ArmorType.CHESTPLATE, new Item.Properties()));
     public static final DeferredItem<ArmorItem> LEGGINGS_MITHRIL = ITEMS.register("leggings_mithril",
-            () -> new TolkienArmorItem(TolkienArmorMaterials.MITHRIL_ARMOR_MATERIAL, ArmorItem.Type.LEGGINGS,
-                    new Item.Properties().durability(ArmorItem.Type.LEGGINGS.getDurability(41))));
+            () -> new TolkienArmorItem(TolkienArmorMaterials.MITHRIL_ARMOR_MATERIAL, ArmorType.LEGGINGS, new Item.Properties()));
     public static final DeferredItem<ArmorItem> BOOTS_MITHRIL = ITEMS.register("boots_mithril",
-            () -> new TolkienArmorItem(TolkienArmorMaterials.MITHRIL_ARMOR_MATERIAL, ArmorItem.Type.BOOTS,
-                    new Item.Properties().durability(ArmorItem.Type.BOOTS.getDurability(41))));
+            () -> new TolkienArmorItem(TolkienArmorMaterials.MITHRIL_ARMOR_MATERIAL, ArmorType.BOOTS, new Item.Properties()));
     public static final DeferredItem<ArmorItem> HELMET_MORGULIRON = ITEMS.register("helmet_morguliron",
-            () -> new TolkienArmorItem(TolkienArmorMaterials.MORGULIRON_ARMOR_MATERIAL, ArmorItem.Type.HELMET,
-                    new Item.Properties().durability(ArmorItem.Type.HELMET.getDurability(39))));
+            () -> new TolkienArmorItem(TolkienArmorMaterials.MORGULIRON_ARMOR_MATERIAL, ArmorType.HELMET, new Item.Properties()));
     public static final DeferredItem<ArmorItem> CHESTPLATE_MORGULIRON = ITEMS.register("chestplate_morguliron",
-            () -> new TolkienArmorItem(TolkienArmorMaterials.MORGULIRON_ARMOR_MATERIAL, ArmorItem.Type.CHESTPLATE,
-                    new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(39))));
+            () -> new TolkienArmorItem(TolkienArmorMaterials.MORGULIRON_ARMOR_MATERIAL, ArmorType.CHESTPLATE, new Item.Properties()));
     public static final DeferredItem<ArmorItem> LEGGINGS_MORGULIRON = ITEMS.register("leggings_morguliron",
-            () -> new TolkienArmorItem(TolkienArmorMaterials.MORGULIRON_ARMOR_MATERIAL, ArmorItem.Type.LEGGINGS,
-                    new Item.Properties().durability(ArmorItem.Type.LEGGINGS.getDurability(39))));
+            () -> new TolkienArmorItem(TolkienArmorMaterials.MORGULIRON_ARMOR_MATERIAL, ArmorType.LEGGINGS, new Item.Properties()));
     public static final DeferredItem<ArmorItem> BOOTS_MORGULIRON = ITEMS.register("boots_morguliron",
-            () -> new TolkienArmorItem(TolkienArmorMaterials.MORGULIRON_ARMOR_MATERIAL, ArmorItem.Type.BOOTS,
-                    new Item.Properties().durability(ArmorItem.Type.BOOTS.getDurability(39))));
+            () -> new TolkienArmorItem(TolkienArmorMaterials.MORGULIRON_ARMOR_MATERIAL, ArmorType.BOOTS, new Item.Properties()));
     public static final DeferredItem<ArmorItem> HELMET_AMMOLITE = ITEMS.register("helmet_ammolite",
-            () -> new TolkienArmorItem(TolkienArmorMaterials.AMMOLITE_ARMOR_MATERIAL, ArmorItem.Type.HELMET,
-                    new Item.Properties().durability(ArmorItem.Type.HELMET.getDurability(35))));
+            () -> new TolkienArmorItem(TolkienArmorMaterials.AMMOLITE_ARMOR_MATERIAL, ArmorType.HELMET, new Item.Properties()));
     public static final DeferredItem<ArmorItem> CHESTPLATE_AMMOLITE = ITEMS.register("chestplate_ammolite",
-            () -> new TolkienArmorItem(TolkienArmorMaterials.AMMOLITE_ARMOR_MATERIAL, ArmorItem.Type.CHESTPLATE,
-                    new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(35))));
+            () -> new TolkienArmorItem(TolkienArmorMaterials.AMMOLITE_ARMOR_MATERIAL, ArmorType.CHESTPLATE, new Item.Properties()));
     public static final DeferredItem<ArmorItem> LEGGINGS_AMMOLITE = ITEMS.register("leggings_ammolite",
-            () -> new TolkienArmorItem(TolkienArmorMaterials.AMMOLITE_ARMOR_MATERIAL, ArmorItem.Type.LEGGINGS,
-                    new Item.Properties().durability(ArmorItem.Type.LEGGINGS.getDurability(35))));
+            () -> new TolkienArmorItem(TolkienArmorMaterials.AMMOLITE_ARMOR_MATERIAL, ArmorType.LEGGINGS, new Item.Properties()));
     public static final DeferredItem<ArmorItem> BOOTS_AMMOLITE = ITEMS.register("boots_ammolite",
-            () -> new TolkienArmorItem(TolkienArmorMaterials.AMMOLITE_ARMOR_MATERIAL, ArmorItem.Type.BOOTS,
-                    new Item.Properties().durability(ArmorItem.Type.BOOTS.getDurability(35))));
+            () -> new TolkienArmorItem(TolkienArmorMaterials.AMMOLITE_ARMOR_MATERIAL, ArmorType.BOOTS, new Item.Properties()));
 
-    public static final DeferredItem<Item> MITHRIL_HORSE_ARMOR = ITEMS.register("mithril_horse_armor", () -> new TolkienAnimalArmorItem(TolkienArmorMaterials.MITHRIL_ARMOR_MATERIAL, AnimalArmorItem.BodyType.EQUESTRIAN, false, (new Item.Properties()).stacksTo(1)));
-    public static final DeferredItem<Item> MORGULIRON_HORSE_ARMOR = ITEMS.register("morguliron_horse_armor", () -> new TolkienAnimalArmorItem(TolkienArmorMaterials.MORGULIRON_ARMOR_MATERIAL, AnimalArmorItem.BodyType.EQUESTRIAN, false, (new Item.Properties()).stacksTo(1)));
-    public static final DeferredItem<Item> AMMOLITE_HORSE_ARMOR = ITEMS.register("ammolite_horse_armor", () -> new TolkienAnimalArmorItem(TolkienArmorMaterials.AMMOLITE_ARMOR_MATERIAL, AnimalArmorItem.BodyType.EQUESTRIAN, false, (new Item.Properties()).stacksTo(1)));
+    public static final DeferredItem<Item> MITHRIL_HORSE_ARMOR = ITEMS.register("mithril_horse_armor", () -> new TolkienAnimalArmorItem(TolkienArmorMaterials.MITHRIL_ARMOR_MATERIAL, AnimalArmorItem.BodyType.EQUESTRIAN, (new Item.Properties()).stacksTo(1)));
+    public static final DeferredItem<Item> MORGULIRON_HORSE_ARMOR = ITEMS.register("morguliron_horse_armor", () -> new TolkienAnimalArmorItem(TolkienArmorMaterials.MORGULIRON_ARMOR_MATERIAL, AnimalArmorItem.BodyType.EQUESTRIAN, (new Item.Properties()).stacksTo(1)));
+    public static final DeferredItem<Item> AMMOLITE_HORSE_ARMOR = ITEMS.register("ammolite_horse_armor", () -> new TolkienAnimalArmorItem(TolkienArmorMaterials.AMMOLITE_ARMOR_MATERIAL, AnimalArmorItem.BodyType.EQUESTRIAN, (new Item.Properties()).stacksTo(1)));
 
         // Keys
     public static DeferredItem<Item> BRONZE_KEY = ITEMS.register("bronze_key", () -> new KeyItem(new Item.Properties().stacksTo(1)));
@@ -418,13 +407,13 @@ public class TolkienItems {
     public static final DeferredItem<Item> TRINKET_CLOAK = ITEMS.register("trinket_cloak", () -> new TrinketItem(new Item.Properties().component(TolkienDataComponents.POTION_CONTENTS, TrinketComponent.EMPTY).stacksTo(1)));
 
         // Torches
-    public static final DeferredItem<Item> MALLORN_TORCH_ITEM = registerBlockItem("torch_mallorn", () -> new StandingAndWallBlockItem(TolkienBlocks.TORCH_MALLORN.get(), TolkienBlocks.WALL_TORCH_MALLORN.get(), new Item.Properties(), Direction.DOWN));
-    public static final DeferredItem<Item> MIRKWOOD_TORCH_ITEM = registerBlockItem("torch_mirkwood", () -> new StandingAndWallBlockItem(TolkienBlocks.TORCH_MIRKWOOD.get(), TolkienBlocks.WALL_TORCH_MIRKWOOD.get(), new Item.Properties(), Direction.DOWN));
-    public static final DeferredItem<Item> CULUMALDA_TORCH_ITEM = registerBlockItem("torch_culumalda", () -> new StandingAndWallBlockItem(TolkienBlocks.TORCH_CULUMALDA.get(), TolkienBlocks.WALL_TORCH_CULUMALDA.get(), new Item.Properties(), Direction.DOWN));
-    public static final DeferredItem<Item> LEBETHRON_TORCH_ITEM = registerBlockItem("torch_lebethron", () -> new StandingAndWallBlockItem(TolkienBlocks.TORCH_LEBETHRON.get(), TolkienBlocks.WALL_TORCH_LEBETHRON.get(), new Item.Properties(), Direction.DOWN));
-    public static final DeferredItem<Item> FANGORNOAK_TORCH_ITEM = registerBlockItem("torch_fangornoak", () -> new StandingAndWallBlockItem(TolkienBlocks.TORCH_FANGORNOAK.get(), TolkienBlocks.WALL_TORCH_FANGORNOAK.get(), new Item.Properties(), Direction.DOWN));
-    public static final DeferredItem<Item> DEADWOOD_TORCH_ITEM = registerBlockItem("torch_deadwood", () -> new StandingAndWallBlockItem(TolkienBlocks.TORCH_DEADWOOD.get(), TolkienBlocks.WALL_TORCH_DEADWOOD.get(), new Item.Properties(), Direction.DOWN));
-    public static final DeferredItem<Item> DWARVEN_MAPLE_TORCH_ITEM = registerBlockItem("torch_dwarven_maple", () -> new StandingAndWallBlockItem(TolkienBlocks.TORCH_DWARVEN_MAPLE.get(), TolkienBlocks.WALL_TORCH_DWARVEN_MAPLE.get(), new Item.Properties(), Direction.DOWN));
+    public static final DeferredItem<Item> MALLORN_TORCH_ITEM = registerBlockItem("torch_mallorn", () -> new StandingAndWallBlockItem(TolkienBlocks.TORCH_MALLORN.get(), TolkienBlocks.WALL_TORCH_MALLORN.get(), Direction.DOWN, new Item.Properties()));
+    public static final DeferredItem<Item> MIRKWOOD_TORCH_ITEM = registerBlockItem("torch_mirkwood", () -> new StandingAndWallBlockItem(TolkienBlocks.TORCH_MIRKWOOD.get(), TolkienBlocks.WALL_TORCH_MIRKWOOD.get(), Direction.DOWN, new Item.Properties()));
+    public static final DeferredItem<Item> CULUMALDA_TORCH_ITEM = registerBlockItem("torch_culumalda", () -> new StandingAndWallBlockItem(TolkienBlocks.TORCH_CULUMALDA.get(), TolkienBlocks.WALL_TORCH_CULUMALDA.get(), Direction.DOWN, new Item.Properties()));
+    public static final DeferredItem<Item> LEBETHRON_TORCH_ITEM = registerBlockItem("torch_lebethron", () -> new StandingAndWallBlockItem(TolkienBlocks.TORCH_LEBETHRON.get(), TolkienBlocks.WALL_TORCH_LEBETHRON.get(), Direction.DOWN, new Item.Properties()));
+    public static final DeferredItem<Item> FANGORNOAK_TORCH_ITEM = registerBlockItem("torch_fangornoak", () -> new StandingAndWallBlockItem(TolkienBlocks.TORCH_FANGORNOAK.get(), TolkienBlocks.WALL_TORCH_FANGORNOAK.get(), Direction.DOWN, new Item.Properties()));
+    public static final DeferredItem<Item> DEADWOOD_TORCH_ITEM = registerBlockItem("torch_deadwood", () -> new StandingAndWallBlockItem(TolkienBlocks.TORCH_DEADWOOD.get(), TolkienBlocks.WALL_TORCH_DEADWOOD.get(), Direction.DOWN, new Item.Properties()));
+    public static final DeferredItem<Item> DWARVEN_MAPLE_TORCH_ITEM = registerBlockItem("torch_dwarven_maple", () -> new StandingAndWallBlockItem(TolkienBlocks.TORCH_DWARVEN_MAPLE.get(), TolkienBlocks.WALL_TORCH_DWARVEN_MAPLE.get(), Direction.DOWN, new Item.Properties()));
 
     private static <T extends Item> DeferredItem<T> registerBlockItem(String registryId, Supplier<T> item) {
         DeferredItem<T> i = ITEMS.register(registryId, item);

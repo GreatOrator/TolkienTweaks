@@ -9,7 +9,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.BiomeTagsProvider;
 import net.minecraft.tags.BiomeTags;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -20,8 +19,8 @@ import java.util.concurrent.CompletableFuture;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class TolkienBiomeTagProvider extends BiomeTagsProvider {
-	public TolkienBiomeTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, @Nullable ExistingFileHelper helper) {
-		super(output, provider, MODID, helper);
+	public TolkienBiomeTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
+		super(output, provider, MODID);
 	}
 
 	@Override

@@ -71,7 +71,7 @@ public class KeyItem extends TolkienItem {
 //                        if (uses == 0) {
 //                            level.playSound(context.getPlayer(), context.getClickedPos(), SoundEvents.ITEM_BREAK, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
 //                            itemstack.shrink(1);
-//                            player.sendSystemMessage(Component.translatable("tolkienmobs.msg.key_used").withStyle(ChatFormatting.RED));
+//                            player.displayClientMessage(Component.translatable("tolkienmobs.msg.key_used").withStyle(ChatFormatting.RED), false);
 //                            return InteractionResult.CONSUME;
 //                        }
 //
@@ -85,11 +85,11 @@ public class KeyItem extends TolkienItem {
 //                }));
 //            }
 //        } else if (entity instanceof CamoKeyStoneBlockEntity) {
-//            player.sendSystemMessage(Component.translatable("tolkienmobs.msg.key_used").withStyle(ChatFormatting.RED));
+//            player.displayClientMessage(Component.translatable("tolkienmobs.msg.key_used").withStyle(ChatFormatting.RED), false);
 //            return InteractionResult.SUCCESS;
 //    }
 //        level.playSound(context.getPlayer(), context.getClickedPos(), SoundEvents.CHEST_LOCKED, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
-//          player.sendSystemMessage(Component.translatable("tolkienmobs.msg.wrong_key").withStyle(ChatFormatting.RED));
+//          player.displayClientMessage(Component.translatable("tolkienmobs.msg.wrong_key").withStyle(ChatFormatting.RED), false);
 //        return InteractionResult.SUCCESS;
 //    }
 

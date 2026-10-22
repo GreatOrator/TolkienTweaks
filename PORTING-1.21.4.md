@@ -9,7 +9,7 @@ This file is the handoff: it records what is done, what is measured, and what to
 |---|---|
 | Target | Minecraft **1.21.4**, NeoForge **21.4.161** |
 | Compile errors at the start | **5,720** in 425 files |
-| Compile errors now | **957** in ~130 files |
+| Compile errors now | **632** distinct sites in 214 files |
 | Runnable | no — the tree does not compile yet |
 
 Dependency versions, all verified to exist and resolve:
@@ -158,18 +158,51 @@ Still open in this area, and separate work: the block models and baked models
 (`ChameleonBlockDynamicBakedModel`, `PatchModel`/`UnbakedPatchModel`, `ModelEvent.RegisterGeometryLoaders`
 which 21.4 replaced, `FastColor` → `ARGB`) and the block entity renderers.
 
-### 3. Registration and data
+### 3. Registration and data — partly done
 
-- `DeferredSpawnEggItem` is gone (112 hits) — spawn eggs are now a data component on
-  `SpawnEggItem`; see `TolkienEntities` (266 errors).
+Done in this pass:
+
+- **Entity types and spawn eggs** (`TolkienEntities`, was 133 errors, now 0). `EntityType.Builder#build`
+  takes a `ResourceKey<EntityType<?>>`, so every type is registered through a
+  `registerEntity(name, builder)` helper that makes the key from the registry name. That also fixed the
+  chest boats, which used to build against the plain boat's id and so shared its key. `DeferredSpawnEggItem`
+  is gone: spawn eggs are plain `SpawnEggItem(EntityType, Properties)` and the two colours live in the item
+  model definition (`minecraft:model` with two `minecraft:constant` tints), which vanilla's
+  `ItemModelGenerators#generateSpawnEgg` writes. `TolkienEntities.SPAWN_EGG_COLORS` keeps the colours for that
+  datagen step. `ENTITY_TYPE` is registered before `ITEM` in `BuiltInRegistries`, and the register events fire
+  in that order, so the egg's `type.get()` is safe.
+- **Armour**: `ArmorMaterial` is a plain record in `net.minecraft.world.item.equipment`, not a registry entry,
+  and it carries a `ResourceKey<EquipmentAsset>` instead of model layers. Each set now renders from
+  `assets/tolkienmobs/equipment/<set>.json` with layer textures at
+  `textures/entity/equipment/{humanoid,humanoid_leggings,horse_body}/<set>.png`. The old art was a 2x
+  nearest-neighbour blow-up (128x64) of the 64x32 layout, so [tools/port-equipment-assets.pl](tools/port-equipment-assets.pl)
+  halves it exactly and copies the 64x64 horse armour art across.
+  `ArmorItem#getMaterial` is gone, so `TolkienArmorItem` identifies its set through
+  `DataComponents#EQUIPPABLE`'s asset id, and the durability now comes from the material record.
+  Trim materials dropped `item_model_index` and take the equipment-asset map instead.
+- **Food**: effects moved off `FoodProperties` onto the `Consumable` component, and the eat/drink animation
+  with them (`ItemUseAnimation`; `UseAnim` is the old name), so `TolkienFood` no longer overrides
+  `getUseAnimation`. Each food is now a `FoodProperties` plus a `Consumable` in `TolkienFoods`.
+- **Chat**: `sendSystemMessage` only exists on `ServerPlayer`; the 45 `Player` calls became
+  `displayClientMessage(component, false)` ([tools/port-chat-messages.pl](tools/port-chat-messages.pl) matches the
+  argument with balanced parentheses because it is usually a `Component.translatable(...).withStyle(...)` chain).
+- **Datagen plumbing**: NeoForge 21.4 removed `ExistingFileHelper` and `GatherDataEvent#getExistingFileHelper`.
+  Tag providers no longer take it, `SoundDefinitionsProvider` is `(PackOutput, modId)`,
+  `ParticleDescriptionProvider` is `(PackOutput)`, and the village template provider reads through
+  `GatherDataEvent#getResourceManager(PackType.SERVER_DATA)`.
+
+Still open in this area:
+
+- `TolkienRecipeHelper` (226) — the `RecipeProvider` shape helpers (`shaped`, `slab`, `stairs`, `woodFromLogs`, …)
+  are instance methods now, `buildRecipes()` replaced the static entry point, and NeoForge's
+  `IConditionBuilder` is gone. This is the one place that needs a rethink rather than a rename: the helper is
+  built around being called statically from `TolkienRecipeProvider`, so it likely becomes an instance of the
+  provider or takes one.
 - `Item.Properties`/`BlockBehaviour.Properties` need registry ids (283 + 575 sites).
-- `TolkienArmorMaterials` (64) — `ArmorMaterial` is no longer a registry entry; equipment
-  moved to `DataComponents#EQUIPPABLE` plus `models/equipment` JSON.
-- `TolkienFoods` (34) — `FoodProperties` and the new `Consumable` component are now separate;
-  `Item.Properties#food(FoodProperties, Consumable)`.
-- `TolkienRecipeHelper` (226) — `shaped(...)` helper signatures and the new `RecipeDisplay`s;
-  ingredient JSON moved to the holder-set form (`"minecraft:diamond"`, `"#c:ingots/copper"`).
-- `sendSystemMessage`, `logBlock`, `MobEffectInstance` → `Holder<MobEffect>`.
+- `TolkienBlocks` (58), `TolkienPotions` (26), the block-model and baked-model classes
+  (`ChameleonBlockDynamicBakedModel`, `PatchModel`/`UnbakedPatchModel`, `ModelEvent.RegisterGeometryLoaders`,
+  `FastColor` → `ARGB`), the block entity renderers, and the remaining entity classes (38 in `DragonEntity`,
+  28 in `ShelobEntity`, and a long tail).
 
 ### 4. Datagen output
 

@@ -104,7 +104,7 @@ public class CamoSpawnerBlockEntity extends TolkienBlockEntity implements MenuPr
                 stack.shrink(1);
                 this.markDirtyClient();
                 this.setChanged();
-                player.sendSystemMessage(Component.translatable("tolkienmobs.msg.selected.mob").append(" " + optional.get().getDescription().getString()).withStyle(ChatFormatting.DARK_GREEN));
+                player.displayClientMessage(Component.translatable("tolkienmobs.msg.selected.mob").append(" " + optional.get().getDescription().getString()).withStyle(ChatFormatting.DARK_GREEN), false);
             } else if (this.mobSpawnDataList.size() < MAX_MOBS) {
                 // Add new mob with count 1
                 this.mobSpawnDataList.add(new MobSpawnData(entityId, 1));
@@ -114,7 +114,7 @@ public class CamoSpawnerBlockEntity extends TolkienBlockEntity implements MenuPr
                 stack.shrink(1);
                 this.markDirtyClient();
                 this.setChanged();
-                player.sendSystemMessage(Component.translatable("tolkienmobs.msg.added.entities").append(" " + optional.get().getDescription().getString()).withStyle(ChatFormatting.DARK_GREEN));
+                player.displayClientMessage(Component.translatable("tolkienmobs.msg.added.entities").append(" " + optional.get().getDescription().getString()).withStyle(ChatFormatting.DARK_GREEN), false);
             } else {
                 // Replace first mob if list is full
                 this.mobSpawnDataList.set(0, new MobSpawnData(entityId, 1));
@@ -124,7 +124,7 @@ public class CamoSpawnerBlockEntity extends TolkienBlockEntity implements MenuPr
                 stack.shrink(1);
                 this.markDirtyClient();
                 this.setChanged();
-                player.sendSystemMessage(Component.translatable("tolkienmobs.msg.replaced.mob").append(" " + optional.get().getDescription().getString()).withStyle(ChatFormatting.DARK_RED));
+                player.displayClientMessage(Component.translatable("tolkienmobs.msg.replaced.mob").append(" " + optional.get().getDescription().getString()).withStyle(ChatFormatting.DARK_RED), false);
             }
         }
     }

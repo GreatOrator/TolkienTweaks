@@ -178,12 +178,12 @@ public class GwahirEntity extends TolkienFlyingAmbientEntity implements GeoEntit
             if (livingentity == null) return true;
 
             if (this.isEyeInFluid(FluidTags.WATER) && !this.hasEffect(MobEffects.WATER_BREATHING)) {
-                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.nodrown.gwahir").withStyle(ChatFormatting.DARK_BLUE));
+                livingentity.displayClientMessage(Component.translatable(MODID + ".msg.nodrown.gwahir").withStyle(ChatFormatting.DARK_BLUE), false);
                 this.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 2 * 20, 0));
             }
 
             if ((this.isOnFire() && !this.hasEffect(MobEffects.FIRE_RESISTANCE))) {
-                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.onfire.gwahir").withStyle(ChatFormatting.DARK_RED));
+                livingentity.displayClientMessage(Component.translatable(MODID + ".msg.onfire.gwahir").withStyle(ChatFormatting.DARK_RED), false);
                 this.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 2 * 20, 0));
             }
 
@@ -195,13 +195,13 @@ public class GwahirEntity extends TolkienFlyingAmbientEntity implements GeoEntit
             this.nextDefensiveAbilityUse = reactionTime + defensiveCoolDown;
 
             if (this.getHealth() < this.getMaxHealth()) {
-                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.healself.gwahir").withStyle(ChatFormatting.LIGHT_PURPLE));
+                livingentity.displayClientMessage(Component.translatable(MODID + ".msg.healself.gwahir").withStyle(ChatFormatting.LIGHT_PURPLE), false);
                 // Regeneration only heals on ticks divisible by (50 >> amplifier): 40 ticks at amplifier 0 never healed at all.
                 this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 10 * 20, 1));
             }
 
             if (this.getTarget() != null && !this.hasEffect(MobEffects.MOVEMENT_SPEED) && this.getTarget().distanceToSqr(this) > 121.0D) {
-                livingentity.sendSystemMessage(Component.translatable(MODID + ".msg.speedup.gwahir").withStyle(ChatFormatting.AQUA));
+                livingentity.displayClientMessage(Component.translatable(MODID + ".msg.speedup.gwahir").withStyle(ChatFormatting.AQUA), false);
                 this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 2 * 20, 0));
             }
             return true;

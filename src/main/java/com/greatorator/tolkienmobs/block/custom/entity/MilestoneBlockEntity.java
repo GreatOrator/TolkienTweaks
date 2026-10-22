@@ -192,7 +192,7 @@ public class MilestoneBlockEntity extends TolkienBlockEntity implements MenuProv
         if (id == 3) {
             MilestoneHandler.MilestoneData data = MilestoneHandler.getMilestoneData(level, input.readUUID());
             if (data == null) {
-                client.sendSystemMessage(Component.translatable("tolkienmobs.msg.destination").withStyle(ChatFormatting.DARK_RED));
+                client.displayClientMessage(Component.translatable("tolkienmobs.msg.destination").withStyle(ChatFormatting.DARK_RED), false);
                 return;
             }
 
@@ -205,7 +205,7 @@ public class MilestoneBlockEntity extends TolkienBlockEntity implements MenuProv
                         if (ItemStack.isSameItem(stack, item)) found += item.getCount();
                     }
                     if (found < cost) {
-                        client.sendSystemMessage(Component.translatable("tolkienmobs.msg.payment.insufficient").withStyle(ChatFormatting.DARK_RED));
+                        client.displayClientMessage(Component.translatable("tolkienmobs.msg.payment.insufficient").withStyle(ChatFormatting.DARK_RED), false);
                         return;
                     }
                     int needed = getItemTravelCost(data);
@@ -227,7 +227,7 @@ public class MilestoneBlockEntity extends TolkienBlockEntity implements MenuProv
                         if (ItemStack.isSameItem(stack, item)) found += item.getCount();
                     }
                     if (found < cost) {
-                        client.sendSystemMessage(Component.translatable("tolkienmobs.msg.payment.insufficient").withStyle(ChatFormatting.DARK_RED));
+                        client.displayClientMessage(Component.translatable("tolkienmobs.msg.payment.insufficient").withStyle(ChatFormatting.DARK_RED), false);
                         return;
                     }
                     int needed = getItemTravelCost(data);
