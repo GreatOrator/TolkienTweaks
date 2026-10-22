@@ -1095,6 +1095,25 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     /** The fellbeast's roar clip runs for four seconds. */
     private static final int ROAR_ANIMATION_TICKS = 80;
 
+    /**
+     * The wing pose for this tick of flight. A beast that is climbing beats its wings with fly, one
+     * that holds its height or eases down soars with the file's glide, and a beast on the hunt that is
+     * dropping hard is stooping with dive. The flyer climbs and drops at about a tenth of a block a
+     * tick, so the thresholds sit outside a wobbling flightpath rather than inside it.
+     * The beast has no separate flap physics to hold back: it flies without gravity and hovers at the
+     * height its navigator asks for, so gliding is its pose, not a change in how it moves.
+     */
+    private String getWingAnimation(boolean mayStoop) {
+        double verticalSpeed = this.getDeltaMovement().y;
+        if (mayStoop && verticalSpeed < -0.1) {
+            return "dive";
+        }
+        if (verticalSpeed > 0.06 || this.onGround()) {
+            return "fly";
+        }
+        return "glide";
+    }
+
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "Movement", 1, (event) -> {
@@ -1102,7 +1121,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
             if (event.isMoving() && !event.getAnimatable().isAggressive()) {
                 switch (navigationType) {
                     case GROUND -> event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
-                    case FLYING -> event.getController().setAnimation(RawAnimation.begin().thenPlay("fly"));
+                    case FLYING -> event.getController().setAnimation(RawAnimation.begin().thenPlay(this.getWingAnimation(false)));
                     // The fellbeast's file carries no swim animation either, so a beast that ends up in
                     // water keeps beating its wings instead of asking for an animation it cannot play.
                     case SWIMMING-> event.getController().setAnimation(RawAnimation.begin().thenPlay("fly"));
@@ -1115,10 +1134,9 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
                     // No fly_fast animation ships with the fellbeast's animation file. Asking for one anyway
                     // made GeckoLib log "Unable to find animation" and leave the movement controller with
                     // nothing to play, freezing the wings mid-flap for as long as the beast fought on the
-                    // wing, so an aggressive flyer keeps the normal flight animation. A beast that is
-                    // losing height on the wing is stooping, and the file's dive clip is that stoop.
-                    case FLYING -> event.getController().setAnimation(RawAnimation.begin().thenPlay(
-                            this.getDeltaMovement().y < -0.05 ? "dive" : "fly"));
+                    // wing, so an aggressive flyer keeps the same three wing poses as a calm one, with the
+                    // file's dive added for the stoop.
+                    case FLYING -> event.getController().setAnimation(RawAnimation.begin().thenPlay(this.getWingAnimation(true)));
                     case SWIMMING-> event.getController().setAnimation(RawAnimation.begin().thenPlay("fly"));
                 }
                 return PlayState.CONTINUE;
