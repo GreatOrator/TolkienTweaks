@@ -173,7 +173,10 @@ public class TreeEntEntity extends TolkienMonsterEntity implements GeoEntity, Ne
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
-            if (this.swinging && !this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
+            // The boulder throw is driven by the shooting flag, which the ranged goal sets on the
+            // server and syncs; the weapon flag this used to read was never sync'd, so the client
+            // never saw it and the throw animation could not play.
+            if (this.swinging && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
                 event.getController().forceAnimationReset();
                 if (MathUtility.getRandomInteger(6, 1) <= 3){
                     event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
@@ -181,10 +184,9 @@ public class TreeEntEntity extends TolkienMonsterEntity implements GeoEntity, Ne
                     event.getController().setAnimation(RawAnimation.begin().then("stomp", Animation.LoopType.PLAY_ONCE));
                 }
                 this.swinging =false;
-            }else if (this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
+            }else if (this.isShooting() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
                 event.getController().forceAnimationReset();
                 event.getController().setAnimation(RawAnimation.begin().then("ranged", Animation.LoopType.PLAY_ONCE));
-                this.ranged = false;
             }
             return PlayState.CONTINUE;
         }));

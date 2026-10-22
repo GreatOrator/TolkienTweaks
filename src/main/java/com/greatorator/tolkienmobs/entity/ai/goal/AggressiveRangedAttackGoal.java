@@ -20,11 +20,13 @@ public class AggressiveRangedAttackGoal extends RangedAttackGoal {
     public void start() {
         super.start();
         this.mob.setAggressive(true);
+        this.mob.setShooting(true);
     }
 
     @Override
     public void stop() {
         super.stop();
         this.mob.setAggressive(false);
+        this.mob.setShooting(false);
     }
 }
