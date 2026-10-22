@@ -497,13 +497,16 @@ model definitions again.
   method called from `FMLClientSetupEvent` — registering any later would be after the item models bootstrap.
 - A property now needs an item model definition to be read from. `assets/<ns>/items/<id>.json` is a new file per
   item (`{"model": ...}`); a model under `models/item` alone is no longer applied to an item at all. The bow,
-  pouch, ring and trinket definitions were written by hand because the mod's model generator only emits
-  `models/item` files; the bows dispatch `tolkienmobs:pulling` then `tolkienmobs:pull`, the pouch and ring
-  dispatch `tolkienmobs:fullness`, and the trinkets list a plain white first tint followed by `tolkienmobs:trinket`
-  for the gem layer. The `overrides` blocks left in those four `models/item` files were removed since the game no
-  longer reads them.
-- Not covered here: every other item still has no `items/*.json` definition, so the rest of the mod's items have
-  no model until the generator learns to write them.
+  pouch, ring and trinket definitions are written by the model generator; the bows dispatch `tolkienmobs:pulling`
+  then `tolkienmobs:pull`, the pouch and ring dispatch `tolkienmobs:fullness`, and the trinkets list a plain white
+  first tint followed by `tolkienmobs:trinket` for the gem layer. The `overrides` blocks left in those four
+  `models/item` files were removed since the game no longer reads them.
+- The generator writes a definition for every item. `ItemModelProvider.generateAll` walks the item registry and
+  writes `items/<id>.json` for each entry in the mod's namespace, defaulting to `{"model": {"type":
+  "minecraft:model", "model": "<ns>:item/<id>"}}`; `definition(item, model)` overrides that default, and
+  `modelgen/ItemModelDefinition` builds the `minecraft:model`, `minecraft:range_dispatch`, `minecraft:condition`
+  and `minecraft:constant` tint nodes. The old loop over every generated `item/` model also produced definitions
+  for draw frames and trim variants, which are models rather than items; the registry walk drops them.
 
 ### 4. Datagen output
 
