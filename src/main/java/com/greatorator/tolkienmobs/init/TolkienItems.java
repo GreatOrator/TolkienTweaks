@@ -447,12 +447,12 @@ public class TolkienItems {
     public static final DeferredItem<HoeItem> HOE_AMMOLITE = ITEMS.registerItem("hoe_ammolite", properties -> new TolkienHoeItem(TolkienToolMaterials.AMMOLITE, 9F, -0.5F, properties).setEffectOverride(),
             new Item.Properties());
 
-    public static final DeferredItem<ShearsItem> SHEARS_MITHRIL = ITEMS.registerItem("shears_mithril", properties -> new TolkienShearsItem(properties),
-            new Item.Properties().durability(512).repairable(TolkienTags.Items.MITHRIL_INGOTS).component(DataComponents.TOOL, TolkienShearsItem.createToolProperties()));
-    public static final DeferredItem<ShearsItem> SHEARS_MORGULIRON = ITEMS.registerItem("shears_morguliron", properties -> new TolkienShearsItem(properties),
-            new Item.Properties().durability(320).repairable(TolkienTags.Items.MORGULIRON_INGOTS).component(DataComponents.TOOL, TolkienShearsItem.createToolProperties()));
-    public static final DeferredItem<ShearsItem> SHEARS_AMMOLITE = ITEMS.registerItem("shears_ammolite", properties -> new TolkienShearsItem(properties).setEffectOverride(),
-            new Item.Properties().durability(768).repairable(TolkienTags.Items.AMMOLITE_GEMS).component(DataComponents.TOOL, TolkienShearsItem.createToolProperties()));
+    public static final DeferredItem<ShearsItem> SHEARS_MITHRIL = ITEMS.registerItem("shears_mithril", properties -> new TolkienShearsItem(properties, TolkienTags.Items.MITHRIL_INGOTS),
+            new Item.Properties().durability(512));
+    public static final DeferredItem<ShearsItem> SHEARS_MORGULIRON = ITEMS.registerItem("shears_morguliron", properties -> new TolkienShearsItem(properties, TolkienTags.Items.MORGULIRON_INGOTS),
+            new Item.Properties().durability(320));
+    public static final DeferredItem<ShearsItem> SHEARS_AMMOLITE = ITEMS.registerItem("shears_ammolite", properties -> new TolkienShearsItem(properties, TolkienTags.Items.AMMOLITE_GEMS).setEffectOverride(),
+            new Item.Properties().durability(768));
 
     public static final DeferredItem<SwordItem> SWORD_WITCHKING = ITEMS.registerItem("sword_witchking", properties -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, 9F, -0.5F, properties).setEffectOverride().setHasLore(),
             new Item.Properties());
@@ -555,20 +555,24 @@ public class TolkienItems {
             new Item.Properties().stacksTo(1));
 
         // Trinkets
-    public static final DeferredItem<Item> TRINKET_RING = ITEMS.registerItem("trinket_ring", properties -> new TrinketItem(properties),
-            new Item.Properties().component(TolkienDataComponents.POTION_CONTENTS, TrinketComponent.EMPTY).stacksTo(1));
-    public static final DeferredItem<Item> TRINKET_AMULET = ITEMS.registerItem("trinket_amulet", properties -> new TrinketItem(properties),
-            new Item.Properties().component(TolkienDataComponents.POTION_CONTENTS, TrinketComponent.EMPTY).stacksTo(1));
-    public static final DeferredItem<Item> TRINKET_CHARM = ITEMS.registerItem("trinket_charm", properties -> new TrinketItem(properties),
-            new Item.Properties().component(TolkienDataComponents.POTION_CONTENTS, TrinketComponent.EMPTY).stacksTo(1));
-    public static final DeferredItem<Item> TRINKET_BELT = ITEMS.registerItem("trinket_belt", properties -> new TrinketItem(properties),
-            new Item.Properties().component(TolkienDataComponents.POTION_CONTENTS, TrinketComponent.EMPTY).stacksTo(1));
-    public static final DeferredItem<Item> TRINKET_GLOVE = ITEMS.registerItem("trinket_glove", properties -> new TrinketItem(properties),
-            new Item.Properties().component(TolkienDataComponents.POTION_CONTENTS, TrinketComponent.EMPTY).stacksTo(1));
-    public static final DeferredItem<Item> TRINKET_HAT = ITEMS.registerItem("trinket_hat", properties -> new TrinketItem(properties),
-            new Item.Properties().component(TolkienDataComponents.POTION_CONTENTS, TrinketComponent.EMPTY).stacksTo(1));
-    public static final DeferredItem<Item> TRINKET_CLOAK = ITEMS.registerItem("trinket_cloak", properties -> new TrinketItem(properties),
-            new Item.Properties().component(TolkienDataComponents.POTION_CONTENTS, TrinketComponent.EMPTY).stacksTo(1));
+    public static final DeferredItem<Item> TRINKET_RING = trinket("trinket_ring");
+    public static final DeferredItem<Item> TRINKET_AMULET = trinket("trinket_amulet");
+    public static final DeferredItem<Item> TRINKET_CHARM = trinket("trinket_charm");
+    public static final DeferredItem<Item> TRINKET_BELT = trinket("trinket_belt");
+    public static final DeferredItem<Item> TRINKET_GLOVE = trinket("trinket_glove");
+    public static final DeferredItem<Item> TRINKET_HAT = trinket("trinket_hat");
+    public static final DeferredItem<Item> TRINKET_CLOAK = trinket("trinket_cloak");
+
+    /**
+     * Trinkets carry an empty potion component by default. It is attached while the item is
+     * registered, not in the static properties: the component type is itself a deferred registry
+     * entry, so reading it during class initialisation would find it unbound.
+     */
+    private static DeferredItem<Item> trinket(String name) {
+        return ITEMS.registerItem(name,
+                properties -> new TrinketItem(properties.component(TolkienDataComponents.POTION_CONTENTS, TrinketComponent.EMPTY)),
+                new Item.Properties().stacksTo(1));
+    }
 
         // Torches
     public static final DeferredItem<Item> MALLORN_TORCH_ITEM = ITEMS.registerItem("torch_mallorn", properties -> new StandingAndWallBlockItem(TolkienBlocks.TORCH_MALLORN.get(), TolkienBlocks.WALL_TORCH_MALLORN.get(), Direction.DOWN, properties), new Item.Properties());

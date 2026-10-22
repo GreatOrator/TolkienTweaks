@@ -213,74 +213,74 @@ public class TolkienEntities {
 
         // Projectiles
     public static final Supplier<EntityType<BoulderEntity>> AMMO_BOULDER =
-            registerEntity("ammo_boulder", () -> EntityType.Builder.<BoulderEntity>of(BoulderEntity::new, MobCategory.MISC)
+            registerEntity("ammo_boulder", () -> EntityType.Builder.<BoulderEntity>of(BoulderEntity::new, MobCategory.MISC).noLootTable()
                     .sized(0.5f, 0.5f));
     public static final Supplier<EntityType<FellBeastFireballEntity>> AMMO_FELLBEAST_FIREBALL =
-            registerEntity("ammo_fellbeast_fireball", () -> EntityType.Builder.<FellBeastFireballEntity>of(FellBeastFireballEntity::new, MobCategory.MISC)
+            registerEntity("ammo_fellbeast_fireball", () -> EntityType.Builder.<FellBeastFireballEntity>of(FellBeastFireballEntity::new, MobCategory.MISC).noLootTable()
                     .sized(0.5f, 0.5f));
     public static final Supplier<EntityType<CobwebProjectileEntity>> AMMO_COBWEB =
-            registerEntity("ammo_cobweb", () -> EntityType.Builder.<CobwebProjectileEntity>of(CobwebProjectileEntity::new, MobCategory.MISC)
+            registerEntity("ammo_cobweb", () -> EntityType.Builder.<CobwebProjectileEntity>of(CobwebProjectileEntity::new, MobCategory.MISC).noLootTable()
                     .sized(0.75F, 0.75F));
     public static final Supplier<EntityType<TornadoEntity>> AMMO_TORNADO =
-            registerEntity("ammo_tornado", () -> EntityType.Builder.<TornadoEntity>of(TornadoEntity::new, MobCategory.MISC)
+            registerEntity("ammo_tornado", () -> EntityType.Builder.<TornadoEntity>of(TornadoEntity::new, MobCategory.MISC).noLootTable()
                     .sized(0.75F, 0.75F));
     public static final Supplier<EntityType<GaladhrimArrowEntity>> AMMO_ARROW_GALADHRIM =
-            registerEntity("ammo_galadhrim_arrow", () -> EntityType.Builder.<GaladhrimArrowEntity>of(GaladhrimArrowEntity::new, MobCategory.MISC)
+            registerEntity("ammo_galadhrim_arrow", () -> EntityType.Builder.<GaladhrimArrowEntity>of(GaladhrimArrowEntity::new, MobCategory.MISC).noLootTable()
                     .sized(0.75F, 0.75F));
     public static final Supplier<EntityType<UtumnoArrowEntity>> AMMO_ARROW_UTUMNO =
-            registerEntity("ammo_utumno_arrow", () -> EntityType.Builder.<UtumnoArrowEntity>of(UtumnoArrowEntity::new, MobCategory.MISC)
+            registerEntity("ammo_utumno_arrow", () -> EntityType.Builder.<UtumnoArrowEntity>of(UtumnoArrowEntity::new, MobCategory.MISC).noLootTable()
                     .sized(0.75F, 0.75F));
     public static final Supplier<EntityType<SimpleTrapEntity>> TRAP_SIMPLE =
-            registerEntity("trap_simple", () -> EntityType.Builder.of(SimpleTrapEntity::new, MobCategory.MISC)
+            registerEntity("trap_simple", () -> EntityType.Builder.of(SimpleTrapEntity::new, MobCategory.MISC).noLootTable()
                     .sized(0.75F, 0.75F));
 
         // Boats
     public static final DeferredHolder<EntityType<?>, EntityType<MallornBoatEntity>> MALLORN_BOAT =
-            registerEntity("boat_mallorn", () -> EntityType.Builder.<MallornBoatEntity>of(MallornBoatEntity::new, MobCategory.MISC)
+            registerEntity("boat_mallorn", () -> EntityType.Builder.<MallornBoatEntity>of(MallornBoatEntity::new, MobCategory.MISC).noLootTable()
                     .sized(1.375F, 0.5625F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<MallornChestBoatEntity>> MALLORN_CHEST_BOAT =
-            registerEntity("chest_boat_mallorn", () -> EntityType.Builder.<MallornChestBoatEntity>of(MallornChestBoatEntity::new, MobCategory.MISC)
+            registerEntity("chest_boat_mallorn", () -> EntityType.Builder.<MallornChestBoatEntity>of(MallornChestBoatEntity::new, MobCategory.MISC).noLootTable()
                     .sized(1.375F, 0.5625F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<MirkwoodBoatEntity>> MIRKWOOD_BOAT =
-            registerEntity("boat_mirkwood", () -> EntityType.Builder.<MirkwoodBoatEntity>of(MirkwoodBoatEntity::new, MobCategory.MISC)
+            registerEntity("boat_mirkwood", () -> EntityType.Builder.<MirkwoodBoatEntity>of(MirkwoodBoatEntity::new, MobCategory.MISC).noLootTable()
                     .sized(1.375F, 0.5625F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<MirkwoodChestBoatEntity>> MIRKWOOD_CHEST_BOAT =
-            registerEntity("chest_boat_mirkwood", () -> EntityType.Builder.<MirkwoodChestBoatEntity>of(MirkwoodChestBoatEntity::new, MobCategory.MISC)
+            registerEntity("chest_boat_mirkwood", () -> EntityType.Builder.<MirkwoodChestBoatEntity>of(MirkwoodChestBoatEntity::new, MobCategory.MISC).noLootTable()
                     .sized(1.375F, 0.5625F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<CulumaldaBoatEntity>> CULUMALDA_BOAT =
-            registerEntity("boat_culumalda", () -> EntityType.Builder.<CulumaldaBoatEntity>of(CulumaldaBoatEntity::new, MobCategory.MISC)
+            registerEntity("boat_culumalda", () -> EntityType.Builder.<CulumaldaBoatEntity>of(CulumaldaBoatEntity::new, MobCategory.MISC).noLootTable()
                     .sized(1.375F, 0.5625F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<CulumaldaChestBoatEntity>> CULUMALDA_CHEST_BOAT =
-            registerEntity("chest_boat_culumalda", () -> EntityType.Builder.<CulumaldaChestBoatEntity>of(CulumaldaChestBoatEntity::new, MobCategory.MISC)
+            registerEntity("chest_boat_culumalda", () -> EntityType.Builder.<CulumaldaChestBoatEntity>of(CulumaldaChestBoatEntity::new, MobCategory.MISC).noLootTable()
                     .sized(1.375F, 0.5625F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<LebethronBoatEntity>> LEBETHRON_BOAT =
-            registerEntity("boat_lebethron", () -> EntityType.Builder.<LebethronBoatEntity>of(LebethronBoatEntity::new, MobCategory.MISC)
+            registerEntity("boat_lebethron", () -> EntityType.Builder.<LebethronBoatEntity>of(LebethronBoatEntity::new, MobCategory.MISC).noLootTable()
                     .sized(1.375F, 0.5625F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<LebethronChestBoatEntity>> LEBETHRON_CHEST_BOAT =
-            registerEntity("chest_boat_lebethron", () -> EntityType.Builder.<LebethronChestBoatEntity>of(LebethronChestBoatEntity::new, MobCategory.MISC)
+            registerEntity("chest_boat_lebethron", () -> EntityType.Builder.<LebethronChestBoatEntity>of(LebethronChestBoatEntity::new, MobCategory.MISC).noLootTable()
                     .sized(1.375F, 0.5625F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<FangornoakBoatEntity>> FANGORNOAK_BOAT =
-            registerEntity("boat_fangornoak", () -> EntityType.Builder.<FangornoakBoatEntity>of(FangornoakBoatEntity::new, MobCategory.MISC)
+            registerEntity("boat_fangornoak", () -> EntityType.Builder.<FangornoakBoatEntity>of(FangornoakBoatEntity::new, MobCategory.MISC).noLootTable()
                     .sized(1.375F, 0.5625F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<FangornoakChestBoatEntity>> FANGORNOAK_CHEST_BOAT =
-            registerEntity("chest_boat_fangornoak", () -> EntityType.Builder.<FangornoakChestBoatEntity>of(FangornoakChestBoatEntity::new, MobCategory.MISC)
+            registerEntity("chest_boat_fangornoak", () -> EntityType.Builder.<FangornoakChestBoatEntity>of(FangornoakChestBoatEntity::new, MobCategory.MISC).noLootTable()
                     .sized(1.375F, 0.5625F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<DeadwoodBoatEntity>> DEADWOOD_BOAT =
-            registerEntity("boat_deadwood", () -> EntityType.Builder.<DeadwoodBoatEntity>of(DeadwoodBoatEntity::new, MobCategory.MISC)
+            registerEntity("boat_deadwood", () -> EntityType.Builder.<DeadwoodBoatEntity>of(DeadwoodBoatEntity::new, MobCategory.MISC).noLootTable()
                     .sized(1.375F, 0.5625F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<DeadwoodChestBoatEntity>> DEADWOOD_CHEST_BOAT =
-            registerEntity("chest_boat_deadwood", () -> EntityType.Builder.<DeadwoodChestBoatEntity>of(DeadwoodChestBoatEntity::new, MobCategory.MISC)
+            registerEntity("chest_boat_deadwood", () -> EntityType.Builder.<DeadwoodChestBoatEntity>of(DeadwoodChestBoatEntity::new, MobCategory.MISC).noLootTable()
                     .sized(1.375F, 0.5625F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<DwarvenMapleBoatEntity>> DWARVEN_MAPLE_BOAT =
-            registerEntity("boat_dwarven_maple", () -> EntityType.Builder.<DwarvenMapleBoatEntity>of(DwarvenMapleBoatEntity::new, MobCategory.MISC)
+            registerEntity("boat_dwarven_maple", () -> EntityType.Builder.<DwarvenMapleBoatEntity>of(DwarvenMapleBoatEntity::new, MobCategory.MISC).noLootTable()
                     .sized(1.375F, 0.5625F).clientTrackingRange(10));
     public static final DeferredHolder<EntityType<?>, EntityType<DwarvenMapleChestBoatEntity>> DWARVEN_MAPLE_CHEST_BOAT =
-            registerEntity("chest_boat_dwarven_maple", () -> EntityType.Builder.<DwarvenMapleChestBoatEntity>of(DwarvenMapleChestBoatEntity::new, MobCategory.MISC)
+            registerEntity("chest_boat_dwarven_maple", () -> EntityType.Builder.<DwarvenMapleChestBoatEntity>of(DwarvenMapleChestBoatEntity::new, MobCategory.MISC).noLootTable()
                     .sized(1.375F, 0.5625F).clientTrackingRange(10));
 
     /** Items */
     public static final DeferredHolder<EntityType<?>, EntityType<MorgulCrystalEntity>> MORGUL_CRYSTAL =
-            registerEntity("morgul_crystal", () -> EntityType.Builder.<MorgulCrystalEntity>of(MorgulCrystalEntity::new, MobCategory.MISC)
+            registerEntity("morgul_crystal", () -> EntityType.Builder.<MorgulCrystalEntity>of(MorgulCrystalEntity::new, MobCategory.MISC).noLootTable()
                     .sized(2.0F, 2.0F).clientTrackingRange(16).updateInterval(Integer.MAX_VALUE));
 
     /** Spawn Eggs */

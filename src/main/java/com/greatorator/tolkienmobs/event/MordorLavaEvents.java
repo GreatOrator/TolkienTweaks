@@ -56,7 +56,7 @@ public final class MordorLavaEvents {
             return;
         }
         if (replaceWaterWithLava(level, chunk, fire)) {
-            chunk.setUnsaved(true);
+            chunk.markUnsaved();
             chunk.setLightCorrect(false);
         }
     }

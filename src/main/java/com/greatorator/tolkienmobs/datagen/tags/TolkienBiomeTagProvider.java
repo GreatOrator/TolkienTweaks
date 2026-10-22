@@ -31,7 +31,7 @@ public class TolkienBiomeTagProvider extends BiomeTagsProvider {
         });
 		TolkienBiomes.BIOME_FACTORIES.keySet().stream().sorted(Comparator.comparing(key -> key.location().toString())).toList().forEach(biome -> {
 			tag(TolkienTags.Biomes.OVERWORLD).add(biome);
-			float temperature = provider.asGetterLookup().lookupOrThrow(Registries.BIOME).getOrThrow(biome).value().getBaseTemperature();
+			float temperature = provider.lookupOrThrow(Registries.BIOME).getOrThrow(biome).value().getBaseTemperature();
 			if (temperature > 0.8F) tag(TolkienTags.Biomes.HOT).add(biome);
 			else if (temperature < 0.5F) tag(TolkienTags.Biomes.COLD).add(biome);
 			else tag(TolkienTags.Biomes.TEMPERATE).add(biome);
