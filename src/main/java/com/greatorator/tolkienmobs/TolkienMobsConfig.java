@@ -66,10 +66,10 @@ public class TolkienMobsConfig {
             .defineInRange("homeRadius", 32, 32, 128);
 
     private static final ModConfigSpec.DoubleValue FELLBEAST_WINGBEAT_VOLUME = BUILDER
-            .comment("Volume of the FellBeast's wingbeat while it flies on its own (Default 2.0)")
+            .comment("Volume of the FellBeast's wingbeat, before the beast's own sound scale. The default 2.0 is 3.0 in game, where the beast's idle voice plays at 1.5 (Default 2.0)")
             .defineInRange("fellbeastWingbeatVolume", 2.0, 0.0, 10.0);
     private static final ModConfigSpec.IntValue FELLBEAST_WINGBEAT_INTERVAL = BUILDER
-            .comment("Shortest gap between two heard wingbeats as the FellBeast flies, in ticks. 20 ticks is one second (Default 15)")
+            .comment("Shortest gap between two heard wingbeats as the FellBeast flies, in ticks. 20 ticks is one second. The flap clip is half a second, so anything under 10 runs two beats into each other, and a beast holding its path beats about every 26 ticks (Default 15)")
             .defineInRange("fellbeastWingbeatInterval", 15, 1, 200);
     private static final ModConfigSpec.IntValue FELLBEAST_DIVE_ANGLE = BUILDER
             .comment("How steeply a ridden FellBeast must dive, in degrees below horizontal, before its wingbeat goes quiet (Default 45)")
