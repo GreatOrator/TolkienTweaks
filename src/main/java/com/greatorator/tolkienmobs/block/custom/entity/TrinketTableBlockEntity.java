@@ -144,7 +144,7 @@ public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuP
             return;
         }
         TrinketRecipeInput input = getRecipeInput();
-        Optional<RecipeHolder<TrinketRecipe>> recipe = level.getRecipeManager()
+        Optional<RecipeHolder<TrinketRecipe>> recipe = level.getServer().getRecipeManager()
                 .getRecipeFor(TolkienRecipesTypes.TRINKET_TABLE_TYPE.get(), input, level);
         ItemStack result = recipe.map(holder -> holder.value().assemble(input, level.registryAccess()))
                 .orElse(ItemStack.EMPTY);
@@ -189,7 +189,7 @@ public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuP
 
     private void craftItem(TrinketRecipe recipe, ItemStack result) {
         ItemStack potion = itemHandler.getStackInSlot(POTION_SLOT);
-        ItemStack remainder = potion.getCraftingRemainingItem();
+        ItemStack remainder = potion.getCraftingRemainder();
         // Vanilla potions do not declare a crafting remainder, but leave a bottle when used.
         if (remainder.isEmpty() && potion.is(Items.POTION)) {
             remainder = new ItemStack(Items.GLASS_BOTTLE);

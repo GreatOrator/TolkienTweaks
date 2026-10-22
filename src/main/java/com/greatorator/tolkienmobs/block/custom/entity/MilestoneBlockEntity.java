@@ -84,7 +84,7 @@ public class MilestoneBlockEntity extends TolkienBlockEntity implements MenuProv
     }
 
     public int getItemTravelCost(MilestoneHandler.MilestoneData dest) {
-        ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse(TolkienMobsConfig.PAYMENT_ITEM.get())).getDefaultInstance().getItem());
+        ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(TolkienMobsConfig.PAYMENT_ITEM.get())));
         double dist = Math.sqrt(dest.getPos().distSqr(getBlockPos()));
 
         if (!dest.getWorldKey().registryKey().equals(level.dimension().registryKey())) {
@@ -187,7 +187,7 @@ public class MilestoneBlockEntity extends TolkienBlockEntity implements MenuProv
     @Override
     public void receivePacketFromClient(MCDataInput input, ServerPlayer client, int id) {
         super.receivePacketFromClient(input, client, id);
-        ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse(TolkienMobsConfig.PAYMENT_ITEM.get())).getDefaultInstance().getItem());
+        ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(TolkienMobsConfig.PAYMENT_ITEM.get())));
 
         if (id == 3) {
             MilestoneHandler.MilestoneData data = MilestoneHandler.getMilestoneData(level, input.readUUID());
