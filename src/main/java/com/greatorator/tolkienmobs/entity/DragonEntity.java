@@ -531,6 +531,10 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
 
     public void setNavigator(NavigationType navigator) {
         if (navigator == getNavigationType()) return;
+        // Wing speed belongs to flight alone. Left over, it would shove the beast down (or up) on
+        // the first tick after it lands or takes to water, which have their own vertical handling.
+        this.wingVelocity = 0;
+        this.wingBeatTicks = 0;
         switch (navigator) {
             case GROUND -> {
                 this.moveControl = new MoveControl(this);
@@ -604,6 +608,31 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
         return new DragonBodyController(this);
     }
 
+    /**
+     * The flight model's vertical speed, in blocks a tick, and the ticks left in the downstroke
+     * that is driving it. Only a beast flying by its own AI uses these: a ridden one is steered by
+     * its rider's pitch, and a walking or swimming one has the navigator's own vertical handling.
+     */
+    private double wingVelocity;
+    private int wingBeatTicks;
+
+    /** How long one downstroke keeps pushing, in ticks. */
+    private static final int WINGBEAT_TICKS = 8;
+    /** The climb a downstroke builds up to, in blocks a tick. */
+    private static final double WINGBEAT_CLIMB = 0.09D;
+    /** How much each tick of a downstroke adds to the climb, in blocks a tick per tick. */
+    private static final double WINGBEAT_THRUST = 0.03D;
+    /** The sink a gliding beast settles at, in blocks a tick. */
+    private static final double GLIDE_SINK = -0.045D;
+    /** The sink a beast commits to when its path lies well below it, in blocks a tick. */
+    private static final double STOOP_SINK = -0.22D;
+    /** How quickly a coasting beast loses its climb, in blocks a tick per tick. */
+    private static final double GLIDE_GRAVITY = 0.02D;
+    /** How far above its path's height a beast climbs, in blocks. */
+    private static final double CLIMB_MARGIN = 0.6D;
+    /** How far below its path's height a beast stops gliding and stoops, in blocks. */
+    private static final double STOOP_MARGIN = 2.0D;
+
     @Override
     public void travel(Vec3 vec3d){
         if (this.isAlive()) {
@@ -640,10 +669,69 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
                     }
                 }
                 this.calculateEntityAnimation(isUsingFlyingNavigator());
+            } else if (isUsingFlyingNavigator() && !level.isClientSide) {
+                this.flyOnWings(vec3d);
             } else {
                 super.travel(vec3d);
             }
         }
+    }
+
+    /**
+     * One tick of wing-driven flight, for a beast its own AI is flying. Horizontal steering stays
+     * vanilla: the move control turns the beast and sets its speed, and travel carries it forward.
+     * The vertical is the flight model's. A downstroke climbs while the path lies above the beast;
+     * between beats it coasts, its climb bleeding away, and then it settles into a slow sink. That
+     * sink is the point: the beast used to be held at exactly the height its navigator asked for by
+     * isNoGravity, so there was no glide to look at, only a pose.
+     */
+    private void flyOnWings(Vec3 input) {
+        this.tickWingbeat();
+
+        // The wings' speed replaces the input's y: vanilla would have turned that into another
+        // instantaneous climb. travel() moves the beast and then damps what it moved by, so the
+        // speed is put back afterwards - it is a speed this model owns, not one travel left behind.
+        this.setDeltaMovement(this.getDeltaMovement().x, this.wingVelocity, this.getDeltaMovement().z);
+        super.travel(new Vec3(input.x, 0.0D, input.z));
+        this.setDeltaMovement(this.getDeltaMovement().x, this.wingVelocity, this.getDeltaMovement().z);
+    }
+
+    /**
+     * Advances the wings one tick: a downstroke while the path is above, a coast and sink otherwise.
+     * A stroke that has started runs to its end even if the beast reaches the path's height partway
+     * through, because a wingbeat cannot be called back; stopping at the margin instead made the
+     * beast stutter through clipped one-tick beats as it hovered. At the margins below it holds its
+     * height with a stroke about every second and a quarter, overshooting the path by nothing.
+     */
+    private void tickWingbeat() {
+        double climb = this.getFlightTargetY() - this.getY();
+
+        if (this.wingBeatTicks > 0) {
+            this.wingVelocity = Math.min(WINGBEAT_CLIMB, this.wingVelocity + WINGBEAT_THRUST);
+            this.wingBeatTicks--;
+            return;
+        }
+        if (climb > CLIMB_MARGIN) {
+            this.wingBeatTicks = WINGBEAT_TICKS;
+            this.wingVelocity = Math.min(WINGBEAT_CLIMB, this.wingVelocity + WINGBEAT_THRUST);
+            this.wingBeatTicks--;
+            return;
+        }
+
+        double sink = climb < -STOOP_MARGIN ? STOOP_SINK : GLIDE_SINK;
+        this.wingVelocity = Math.max(sink, this.wingVelocity - GLIDE_GRAVITY);
+    }
+
+    /**
+     * The height the current flight path is flying to. When the navigator has not asked for one yet
+     * that is the beast's own height, so a beast summoned in mid-air glides instead of diving at
+     * the world floor, and the last waypoint stays its height while the path is between legs.
+     */
+    private double getFlightTargetY() {
+        if (this.moveControl instanceof FlyerMoveController flyer && flyer.hasTarget()) {
+            return flyer.getWantedY();
+        }
+        return this.getY();
     }
 
     @Override
@@ -651,6 +739,10 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
         return isUsingFlyingNavigator() && !canBeControlledByRider() ? getSpeed() : super.getFlyingSpeed();
     }
 
+    /**
+     * The flight model applies its own sink (see {@link #flyOnWings}), so vanilla gravity stays off
+     * on the wing. Left on it would add a second fall on top of the glide, ten times as fast.
+     */
     @Override
     public boolean isNoGravity() {
         return isUsingFlyingNavigator();
@@ -1096,19 +1188,18 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     private static final int ROAR_ANIMATION_TICKS = 80;
 
     /**
-     * The wing pose for this tick of flight. A beast that is climbing beats its wings with fly, one
-     * that holds its height or eases down soars with the file's glide, and a beast on the hunt that is
-     * dropping hard is stooping with dive. The flyer climbs and drops at about a tenth of a block a
-     * tick, so the thresholds sit outside a wobbling flightpath rather than inside it.
-     * The beast has no separate flap physics to hold back: it flies without gravity and hovers at the
-     * height its navigator asks for, so gliding is its pose, not a change in how it moves.
+     * The wing pose for this tick of flight, read off the vertical speed the flight model gives the
+     * beast. A downstroke climbs at 0.09 blocks a tick and speeds up through zero as it starts, so
+     * anything above 0.02 is the beat itself and plays fly; between beats it coasts at a glide sink
+     * of 0.045 and plays glide; and a beast on the hunt that has committed to a stoop, 0.22 down, is
+     * diving. A ridden beast's speed is its rider's pitch instead, which the same thresholds read.
      */
     private String getWingAnimation(boolean mayStoop) {
         double verticalSpeed = this.getDeltaMovement().y;
-        if (mayStoop && verticalSpeed < -0.1) {
+        if (mayStoop && verticalSpeed < -0.1D) {
             return "dive";
         }
-        if (verticalSpeed > 0.06 || this.onGround()) {
+        if (verticalSpeed > 0.02D || this.onGround()) {
             return "fly";
         }
         return "glide";
