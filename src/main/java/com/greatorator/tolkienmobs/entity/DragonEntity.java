@@ -12,6 +12,7 @@ import com.greatorator.tolkienmobs.entity.boss.WitchKingEntity;
 import com.greatorator.tolkienmobs.handler.EntityHandler;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
+import com.greatorator.tolkienmobs.particle.DiveWindSound;
 import com.greatorator.tolkienmobs.particle.FlyingSound;
 import com.greatorator.tolkienmobs.util.GeneralUtility;
 import com.greatorator.tolkienmobs.util.MathUtility;
@@ -107,6 +108,8 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
 
     public static final EntityDataAccessor<Float> BREACH_ATTACK_COOLDOWN = SynchedEntityData.defineId(DragonEntity.class, EntityDataSerializers.FLOAT);
     public static final EntityDataAccessor<Boolean> BREACHING = SynchedEntityData.defineId(DragonEntity.class, EntityDataSerializers.BOOLEAN);
+    /** Whether the beast is stooping, so each client can run the dive wind as one continuous sound. */
+    public static final EntityDataAccessor<Boolean> DIVING = SynchedEntityData.defineId(DragonEntity.class, EntityDataSerializers.BOOLEAN);
 
     public static final EntityDataAccessor<Optional<BlockPos>> HOME_POS = SynchedEntityData.defineId(DragonEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
     public static final EntityDataAccessor<Boolean> SLEEPING = SynchedEntityData.defineId(DragonEntity.class, EntityDataSerializers.BOOLEAN);
@@ -147,6 +150,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
         builder.define(IS_MOVING_ANIMATION, false);
         builder.define(HOME_POS, Optional.empty());
         builder.define(BREACHING, false);
+        builder.define(DIVING, false);
         builder.define(BREACH_ATTACK_COOLDOWN, 600F);
         builder.define(SLEEPING, false);
     }
@@ -185,7 +189,15 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
 
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
-        if (key.equals(SLEEPING) || key.equals(MOVING_STATE)) {
+        if (key.equals(DIVING)) {
+            // The wind runs here rather than being played from the server: the gusts are three
+            // seconds long, so playing them again on a one-second timer cut every one of them off
+            // mid-gust, which is exactly the seam that was audible. A client that only starts
+            // tracking the beast partway through a dive still hears it, because the flag is part of
+            // the entity data it is sent when tracking begins, and so arrives as a change from false.
+            if (level.isClientSide && isDiving())
+                DiveWindSound.play(this);
+        } else if (key.equals(SLEEPING) || key.equals(MOVING_STATE)) {
             refreshDimensions();
             if (level.isClientSide  && isUsingFlyingNavigator() && canBeControlledByRider())
                 FlyingSound.play(this);
@@ -392,6 +404,10 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
                 this.beatWingsAudibly();
             }
             this.riddenPos = ridden ? this.position() : null;
+            // The dive is synced so each nearby client can run one continuous wind from it rather
+            // than having the server play a gust it has to cut short. Only a beast its own AI is
+            // flying can stoop this way; a ridden one takes its pitch from its rider.
+            this.entityData.set(DIVING, !ridden && this.isUsingFlyingNavigator() && this.wingVelocity < DIVE_SINK);
         }
 
         NavigationType properNavigator = getProperNavigator();
@@ -650,9 +666,6 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     private static final double STOOP_MARGIN = 2.0D;
     /** Ticks until a wingbeat may be heard again, so a long climb does not roar with flapping. */
     private int wingSoundTicks;
-    /** Ticks until the next stretch of dive wind, and how long a stretch lasts. */
-    private int diveWindTicks;
-    private static final int DIVE_WIND_INTERVAL = 20;
     /** How far a ridden beast has to drop in a tick before it is worth asking how steeply, in blocks. */
     private static final double RIDER_DIVE_SINK = 0.05D;
     /** Where a ridden beast was at the end of the last tick, for measuring that dive. */
@@ -755,24 +768,17 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
 
         double sink = climb < -STOOP_MARGIN ? STOOP_SINK : GLIDE_SINK;
         this.wingVelocity = Math.max(sink, this.wingVelocity - GLIDE_GRAVITY);
-
-        // A dive is air over the wings, not wings beating, so the silent beat leaves the beast
-        // dropping out of the sky unheard. The wind says it is coming down, played every second of
-        // the stoop and starting as soon as the sink passes the point where the pose turns to dive.
-        if (this.diveWindTicks > 0) this.diveWindTicks--;
-        if (this.wingVelocity < DIVE_SINK && this.diveWindTicks <= 0) {
-            this.diveWindTicks = DIVE_WIND_INTERVAL;
-            this.playDiveWind();
-        }
     }
 
     /**
-     * The air over a stooping beast. It is wind rather than a voice, so it does not take the beast's
-     * voice pitch, and it is played from the server so everyone nearby hears the dive, not just a
-     * rider whose own client is flying it.
+     * Whether the beast is stooping hard enough for the air over its wings to be heard. A dive is
+     * wind rather than wings beating, so nothing else marks it: the pose turns to dive at the same
+     * sink, and both read {@link #DIVE_SINK}. A ridden beast's wings are still, but its flight is
+     * its rider's pitch, and this is false there so a rider's own flight wind is not doubled by a
+     * second one underneath it.
      */
-    private void playDiveWind() {
-        level.playSound(null, getX(), getY(), getZ(), TolkienSounds.WIND_FELLBEAST.get(), getSoundSource(), 1.6F, 0.8F);
+    public boolean isDiving() {
+        return this.entityData.get(DIVING);
     }
 
     /**
