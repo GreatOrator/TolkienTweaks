@@ -32,20 +32,20 @@ public class KeyItem extends TolkienItem {
 
         if (Screen.hasShiftDown() && player.isCreative()) {
             player.openMenu(new SimpleMenuProvider(
-                    (windowId, playerInventory, playerEntity) -> new KeyCodeContainer(windowId, playerInventory, player, itemstack), Component.translatable("screen.tolkienmobs.code" + itemstack.getDescriptionId())), (buf -> {
+                    (windowId, playerInventory, playerEntity) -> new KeyCodeContainer(windowId, playerInventory, player, itemstack), Component.translatable("screen.tolkienmobs.code" + itemstack.getItem().getDescriptionId())), (buf -> {
                         ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, itemstack);
             }));
             return InteractionResult.PASS;
         }
         if (player.isCreative()) {
             player.openMenu(new SimpleMenuProvider(
-                    (windowId, playerInventory, playerEntity) -> new KeyItemContainer(windowId, playerInventory, player, itemstack), Component.translatable("screen.tolkienmobs." + itemstack.getDescriptionId())), (buf -> {
+                    (windowId, playerInventory, playerEntity) -> new KeyItemContainer(windowId, playerInventory, player, itemstack), Component.translatable("screen.tolkienmobs." + itemstack.getItem().getDescriptionId())), (buf -> {
                 ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, itemstack);
             }));
             return InteractionResult.PASS;
         }else if (!getKeyCode(itemstack).isEmpty()){
             player.openMenu(new SimpleMenuProvider(
-                    (windowId, playerInventory, playerEntity) -> new KeyItemContainer(windowId, playerInventory, player, itemstack), Component.translatable("screen.tolkienmobs." + itemstack.getDescriptionId())), (buf -> {
+                    (windowId, playerInventory, playerEntity) -> new KeyItemContainer(windowId, playerInventory, player, itemstack), Component.translatable("screen.tolkienmobs." + itemstack.getItem().getDescriptionId())), (buf -> {
                 ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, itemstack);
             }));
         }
@@ -80,7 +80,7 @@ public class KeyItem extends TolkienItem {
 //                }
 //                level.playSound(context.getPlayer(), context.getClickedPos(), SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.1F + 0.9F);
 //                player.openMenu(new SimpleMenuProvider(
-//                        (windowId, playerInventory, playerEntity) -> new KeyItemContainer(windowId, playerInventory, player, itemstack), Component.translatable("screen.tolkienmobs." + itemstack.getDescriptionId())), (buf -> {
+//                        (windowId, playerInventory, playerEntity) -> new KeyItemContainer(windowId, playerInventory, player, itemstack), Component.translatable("screen.tolkienmobs." + itemstack.getItem().getDescriptionId())), (buf -> {
 //                    ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, itemstack);
 //                }));
 //            }
