@@ -476,6 +476,35 @@ The loot context parameter sets, the loot function and the global loot modifier 
 - `BlockLootSubProvider.HAS_SHEARS` is gone; the leaf-like tables build their stick pool off the inherited
   `hasShears()` condition builder, which is what vanilla's own tables do.
 
+### 3j. Item colours and model properties — DONE
+
+`handler/ColorHandler` and `util/TolkienItemProperties` compile, and the four items that used them have item
+model definitions again.
+
+- Item colours are tint sources. `ItemColors` and `RegisterColorHandlersEvent.Item` are gone; a
+  `net.minecraft.client.color.item.ItemTintSource` is registered by id through
+  `RegisterColorHandlersEvent.ItemTintSources`, which now receives a `LateBoundIdMapper` rather than a colour
+  registry. `ColorHandler` registers `tolkienmobs:trinket`, and `ARGB` replaces `FastColor.ARGB32` in
+  `TrinketComponent` (the colour it averages is unchanged). The source wraps the result in `ARGB.opaque`, as
+  vanilla's potion tint does, so an empty trinket now shows its base gem colour instead of a fully transparent
+  layer.
+- Item properties are item model properties. `ItemProperties.register(...)` and the `overrides` blocks are gone:
+  `RangeSelectItemModelProperty` (a float, used by `minecraft:range_dispatch`) and `ConditionalItemModelProperty`
+  (a boolean, used by `minecraft:condition`) are registered by id through
+  `RegisterRangeSelectItemModelPropertyEvent` / `RegisterConditionalItemModelPropertyEvent`. The old lambdas'
+  fourth argument was the use duration; the new one is an opaque seed, and neither property used it. Both events
+  are mod-bus, so `TolkienItemProperties` is now an `@EventBusSubscriber(Dist.CLIENT, Bus.MOD)` instead of a
+  method called from `FMLClientSetupEvent` — registering any later would be after the item models bootstrap.
+- A property now needs an item model definition to be read from. `assets/<ns>/items/<id>.json` is a new file per
+  item (`{"model": ...}`); a model under `models/item` alone is no longer applied to an item at all. The bow,
+  pouch, ring and trinket definitions were written by hand because the mod's model generator only emits
+  `models/item` files; the bows dispatch `tolkienmobs:pulling` then `tolkienmobs:pull`, the pouch and ring
+  dispatch `tolkienmobs:fullness`, and the trinkets list a plain white first tint followed by `tolkienmobs:trinket`
+  for the gem layer. The `overrides` blocks left in those four `models/item` files were removed since the game no
+  longer reads them.
+- Not covered here: every other item still has no `items/*.json` definition, so the rest of the mod's items have
+  no model until the generator learns to write them.
+
 ### 4. Datagen output
 
 Regenerate everything under `src/generated/resources` once the providers build, and commit
