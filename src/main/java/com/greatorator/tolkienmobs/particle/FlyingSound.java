@@ -35,8 +35,11 @@ public class FlyingSound extends AbstractTickableSoundInstance
             y = (float) entity.getY();
             z = (float) entity.getZ();
             double x = entity.getX() - entity.xOld;
+            double y = entity.getY() - entity.yOld;
             double z = entity.getZ() - entity.zOld;
-            double length = x * x + z * z;
+            // Height counts too: a rider's dive is almost all of the beast's speed, so leaving it
+            // out made the wind fade exactly when the beast stooped.
+            double length = x * x + y * y + z * z;
             volume = Math.min((float) length * 2f, 0.75f);
             if (volume > 0.4f) pitch = 1f + (volume - 0.6f);
             else pitch = 1f;
