@@ -234,7 +234,7 @@ public class GwahirEntity extends TolkienFlyingAmbientEntity implements GeoEntit
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         int rand = MathUtility.getRandomInteger(100, 1);
         controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
-            if (!event.isMoving() && !event.getAnimatable().isAggressive() && this.onGround()) {
+            if (!event.isMoving() && this.onGround()) {
                 if (rand <= 10 && this.isPecking()) {
                     event.getController().setAnimation(RawAnimation.begin().thenPlay("idle3"));
                     return PlayState.CONTINUE;

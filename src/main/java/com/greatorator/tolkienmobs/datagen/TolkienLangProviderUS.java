@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.datagen;
 import com.greatorator.tolkienmobs.datagen.helpers.TolkienLangHelperUS;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
+import com.greatorator.tolkienmobs.init.TolkienFluids;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import net.minecraft.data.PackOutput;
 
@@ -54,21 +55,22 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("itemgroup.tolkienmobs.natural", "TolkienTweaks: Natural Blocks");
             this.addItem(TolkienItems.PIPEWEED_SEEDS, "Pipeweed Seeds");
             this.addItem(TolkienItems.PIPEWEED_ITEM, "Pipeweed");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_SIMBELMYNE.get(), "Simbelmyne", "simbelmyne");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_MIRKWOOD.get(), "Seregon", "mirkwood");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_ALFIRIN.get(), "Alfirin", "alfirin");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_ATHELAS.get(), "Kingsfoil", "athelas");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_NIPHREDIL.get(), "Niphredil", "niphredil");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_SWAMPMILKWEED.get(), "Gallows-weed", "swamp_milkweed");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_LILLYOFTHEVALLEY.get(), "Lilly of the Valley", "valley_lilly");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_ELANOR.get(), "Elanor", "elanor");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_AEGLOS.get(), "Snowthorn", "aeglos");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_LISSUIN.get(), "Lissuin", "lissuin");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_MALLOS.get(), "Mallos", "mallos");
-            this.addFlowerBlock(TolkienBlocks.FLOWER_BRAMBLES.get(), "Brambles of Mordor", "brambles");
-            this.addFlowerBlock(TolkienBlocks.MUSHROOM_BLOOM_DECAY.get(), "Bloom of Decay", "mushroom_bloom_decay");
-            this.addFlowerBlock(TolkienBlocks.MUSHROOM_DECAY_BLOOM.get(), "Bloom of Decay", "mushroom_decay_bloom");
+            this.addFlowerBlock(TolkienBlocks.FLOWER_SIMBELMYNE.get(), "Simbelmyne", TolkienBlocks.POTTED_FLOWER_SIMBELMYNE.get());
+            this.addFlowerBlock(TolkienBlocks.FLOWER_MIRKWOOD.get(), "Seregon", TolkienBlocks.POTTED_FLOWER_MIRKWOOD.get());
+            this.addFlowerBlock(TolkienBlocks.FLOWER_ALFIRIN.get(), "Alfirin", TolkienBlocks.POTTED_FLOWER_ALFIRIN.get());
+            this.addFlowerBlock(TolkienBlocks.FLOWER_ATHELAS.get(), "Kingsfoil", TolkienBlocks.POTTED_FLOWER_ATHELAS.get());
+            this.addFlowerBlock(TolkienBlocks.FLOWER_NIPHREDIL.get(), "Niphredil", TolkienBlocks.POTTED_FLOWER_NIPHREDIL.get());
+            this.addFlowerBlock(TolkienBlocks.FLOWER_SWAMPMILKWEED.get(), "Gallows-weed", TolkienBlocks.POTTED_FLOWER_SWAMPMILKWEED.get());
+            this.addFlowerBlock(TolkienBlocks.FLOWER_LILLYOFTHEVALLEY.get(), "Lilly of the Valley", TolkienBlocks.POTTED_FLOWER_LILLYOFTHEVALLEY.get());
+            this.addFlowerBlock(TolkienBlocks.FLOWER_ELANOR.get(), "Elanor", TolkienBlocks.POTTED_FLOWER_ELANOR.get());
+            this.addFlowerBlock(TolkienBlocks.FLOWER_AEGLOS.get(), "Snowthorn", TolkienBlocks.POTTED_FLOWER_AEGLOS.get());
+            this.addFlowerBlock(TolkienBlocks.FLOWER_LISSUIN.get(), "Lissuin", TolkienBlocks.POTTED_FLOWER_LISSUIN.get());
+            this.addFlowerBlock(TolkienBlocks.FLOWER_MALLOS.get(), "Mallos", TolkienBlocks.POTTED_FLOWER_MALLOS.get());
+            this.addFlowerBlock(TolkienBlocks.FLOWER_BRAMBLES.get(), "Brambles of Mordor", TolkienBlocks.POTTED_FLOWER_BRAMBLES.get());
+            this.addFlowerBlock(TolkienBlocks.MUSHROOM_BLOOM_DECAY.get(), "Bloom of Decay", TolkienBlocks.POTTED_MUSHROOM_BLOOM_DECAY.get());
+            this.addFlowerBlock(TolkienBlocks.MUSHROOM_DECAY_BLOOM.get(), "Bloom of Decay", TolkienBlocks.POTTED_MUSHROOM_DECAY_BLOOM.get());
             this.addBlock(TolkienBlocks.BLOCK_DECAY_BLOOM, "Decay Bloom Block");
+            this.addBlock(TolkienBlocks.BLOCK_BLOOM_DECAY, "Bloom of Decay Block");
             this.addBlock(TolkienBlocks.LIGHTNINGBUG_BLOCK, "Lightning Bug");
             this.addBlock(TolkienBlocks.LOCUST_BLOCK, "Locust");
             this.addBlock(TolkienBlocks.BLOCK_HALLOWED, "Hallowed Earth");
@@ -77,6 +79,10 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.addBlock(TolkienBlocks.WALL_MUSHROOM_RED, "Wall Mushroom - Red");
             this.addBlock(TolkienBlocks.WALL_MUSHROOM_BROWN, "Wall Mushroom - Brown");
             this.addBlock(TolkienBlocks.LIVING_ROOTS, "Living Roots");
+            this.addBlock(TolkienBlocks.PIPEWEED, "Pipeweed Crops");
+            this.addBlock(TolkienFluids.MITHRIL_BLOCK, "Molten Mithril");
+            this.addBlock(TolkienFluids.MORGULIRON_BLOCK, "Molten Morgul Iron");
+            this.addBlock(TolkienBlocks.ARDA_PORTAL, "Arda Portal");
             this.addBlockWithLore(TolkienBlocks.PLACARD.get(), "Country Signs", "Shift right-click on sign to cycle types");
             this.addBlock(TolkienBlocks.ROCKPILE, "Rockpile");
             this.addBlock(TolkienBlocks.MOSS_PATCH, "Moss Patch");
@@ -203,6 +209,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.addItem(TolkienItems.URUK_BOW, "Uruk Bow");
             this.addItem(TolkienItems.GALADHRIM_ARROW, "Galadhrim Arrows");
             this.addItem(TolkienItems.UTUMNO_ARROW, "Utumno Arrows");
+            this.addItem(TolkienItems.MORGUL_CRYSTAL, "Morgul Crystal");
             this.addMusicDisc(TolkienItems.RECORD_EREBOR, "SnowShepherd - All That Glitters in Erebor");
             this.addMusicDisc(TolkienItems.RECORD_HOBBITS, "Harry Murrell - Concerning Hobbits");
             this.addMusicDisc(TolkienItems.RECORD_MINASTIRITH, "SnowShepherd - Grandeur of Minas Tirith");
@@ -463,6 +470,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.addSound("ambient", "arda_portal", "Portal to Arda beckons");
             this.addSound("item", "hype_horn", "Celebrating victory");
             this.addSound("mob", "coin_trader", "A Wild Coin Trader appears!");
+            this.addSound("mob", "fellbeast_wind", "The beast dives.");
 
                 // Entities
                     // Villager
@@ -600,8 +608,8 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.addEnchantmentDesc("balrog_mark_key", "From shadow and flame, the ground turns to hot magma, then lava everywhere you walk.");
             this.addEnchantment("dwarven_endurance_key", "Dwarven Endurance");
             this.addEnchantmentDesc("dwarven_endurance_key", "Feel like nothing can stop you (from going hungry that is), always keeps you fed.");
-            this.addEnchantment("dwarven_mining_key", "Dwarven Mining");
-            this.addEnchantmentDesc("dwarven_mining_key", "Vein mines all matching blocks.");
+            this.addEnchantment("dwarven_mining_key", "Dwarven Excavation");
+            this.addEnchantmentDesc("dwarven_mining_key", "Breaks the blocks around the one you hit, in the face you struck: 3x3 at level I, widening to 9x9 at level IV. Sneak to break only the one.");
             this.addEnchantment("elven_fleetfoot_key", "Elven FleetFoot");
             this.addEnchantmentDesc("elven_fleetfoot_key", "Walk with the speed of the elves.");
             this.addEnchantment("elven_longevity_key", "Elven Longevity");
@@ -640,7 +648,21 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add("block.tolkienmobs.hardened_leaves_fangornoak", "Fangorn Oak Leaves");
             this.add("block.tolkienmobs.hardened_leaves_dwarven_maple", "Dwarven Maple Leaves");
 
+        // Projectiles, traps, fluid types
+            this.add("entity.tolkienmobs.ammo_boulder", "Boulder");
+            this.add("entity.tolkienmobs.ammo_cobweb", "Cobweb");
+            this.add("entity.tolkienmobs.ammo_fellbeast_fireball", "Fell Beast Fireball");
+            this.add("entity.tolkienmobs.ammo_galadhrim_arrow", "Galadhrim Arrow");
+            this.add("entity.tolkienmobs.ammo_tornado", "Tornado");
+            this.add("entity.tolkienmobs.ammo_utumno_arrow", "Utumno Arrow");
+            this.add("entity.tolkienmobs.trap_simple", "Simple Trap");
+            this.add("entity.tolkienmobs.morgul_crystal", "Morgul Crystal");
+            this.add("fluid_type.tolkienmobs.molten_mithril_lava_fluid", "Molten Mithril");
+            this.add("fluid_type.tolkienmobs.molten_morguliron_lava_fluid", "Molten Morgul Iron");
+
         // Chat Messages
+            this.add("tolkienmobs.msg.selected.mob", "Selected mob:");
+            this.add("tolkienmobs.msg.replaced.mob", "Replaced mob:");
             this.add("tolkienmobs.msg.helpcomming", "Goblin King is attempting to call for help...Reinforcements have arrived!");
             this.add("tolkienmobs.msg.nohelp", "Goblin King is attempting to call for help, but no help came.");
             this.add("tolkienmobs.msg.nodrown", "Goblin King doesn't want to drown.");

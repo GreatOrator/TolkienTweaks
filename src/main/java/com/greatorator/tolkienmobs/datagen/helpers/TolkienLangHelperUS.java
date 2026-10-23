@@ -215,9 +215,9 @@ public abstract class TolkienLangHelperUS extends LanguageProvider {
         this.add("block.tolkienmobs.trapdoor_" + woodPrefix, woodName + " Trapdoor");
         this.add("block.tolkienmobs.door_" + woodPrefix, woodName + " Door");
         this.add("block.tolkienmobs.sign_" + woodPrefix, woodName + " Sign");
-        this.add("block.tolkienmobs.wall_sign_" + woodPrefix, woodName + " Wall Sign");
+        this.add("block.tolkienmobs.sign_wall_" + woodPrefix, woodName + " Wall Sign");
         this.add("block.tolkienmobs.hanging_sign_" + woodPrefix, woodName + " Hanging Sign");
-        this.add("block.tolkienmobs.wall_hanging_sign_" + woodPrefix, woodName + " Wall Hanging Sign");
+        this.add("block.tolkienmobs.hanging_sign_wall_" + woodPrefix, woodName + " Wall Hanging Sign");
         this.add("block.tolkienmobs.barrel_" + woodPrefix, woodName + " Barrel");
         this.add("block.tolkienmobs.log_" + woodPrefix, woodName + " Log");
         this.add("block.tolkienmobs.wood_" + woodPrefix, woodName + " Wood");
@@ -227,8 +227,10 @@ public abstract class TolkienLangHelperUS extends LanguageProvider {
         this.add("block.tolkienmobs.potted_sapling_" + woodPrefix, "Potted " + woodName + " Sapling");
         this.add("block.tolkienmobs.leaves_" + woodPrefix, woodName + " Leaves");
         this.add("block.tolkienmobs.leafpile_" + woodPrefix, woodName + " Leaf Pile");
-        this.add("item.tolkienmobs." + woodPrefix + "_boat", woodName + " Boat");
-        this.add("item.tolkienmobs." + woodPrefix + "_chest_boat", woodName + " Chest Boat");
+        this.add("item.tolkienmobs.boat_" + woodPrefix, woodName + " Boat");
+        this.add("item.tolkienmobs.chest_boat_" + woodPrefix, woodName + " Chest Boat");
+        this.add("entity.tolkienmobs.boat_" + woodPrefix, woodName + " Boat");
+        this.add("entity.tolkienmobs.chest_boat_" + woodPrefix, woodName + " Chest Boat");
     }
 
     public void addTools(String itemKey, String item) {
@@ -240,8 +242,8 @@ public abstract class TolkienLangHelperUS extends LanguageProvider {
         this.add("item.tolkienmobs.shears_" + itemKey, item + " Shears");
     }
 
-    protected void addFlowerBlock(Block key, String name, String flower) {
+    protected void addFlowerBlock(Block key, String name, Block potted) {
         this.add(key.getDescriptionId(), name);
-        this.add("block.tolkienmobs.potted_" + flower, "Potted " + name);
+        this.add(potted.getDescriptionId(), "Potted " + name);
     }
 }

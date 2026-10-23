@@ -16,7 +16,8 @@ import net.minecraft.world.phys.Vec2;
 
 public class BoulderEntity extends AbstractArrow {
     private float rotation;
-    public Vec2 groundedOffset;
+    /** Set only when the boulder lands, but read by the renderer every frame, so it starts non-null. */
+    public Vec2 groundedOffset = new Vec2(0f, 0f);
 
     public BoulderEntity(EntityType<? extends AbstractArrow> entityType, Level level) {
         super(entityType, level);

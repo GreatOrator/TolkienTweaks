@@ -24,7 +24,12 @@ import java.util.List;
 
 public class FellBeastFireballEntity extends AbstractArrow {
     private float rotation;
-    public Vec2 groundedOffset;
+    /**
+     * The angles the fireball sits at once it has landed. Only set by {@link #onHitBlock}, but the
+     * renderer reads it on every frame, grounded or not, so it must never be null: a freshly fired
+     * fireball used to throw a NullPointerException the first frame anything looked at it.
+     */
+    public Vec2 groundedOffset = new Vec2(0f, 0f);
     private SoundEvent soundEvent;
 
     public FellBeastFireballEntity(EntityType<? extends AbstractArrow> entityType, Level level) {

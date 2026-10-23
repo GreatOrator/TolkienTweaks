@@ -305,6 +305,9 @@ public class FellBeastEntity extends DragonEntity {
         @Override
         public void start() {
             entity.setAggressive(true);
+            // The roar controller plays the beast's roar clip as the aggressive flag turns on; give it
+            // the beast's own voice at the same moment rather than a silent bellow.
+            entity.playAmbientSound();
         }
 
         @Override

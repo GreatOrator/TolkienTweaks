@@ -367,6 +367,12 @@
     ],
     "subtitle": "subtitles.tolkienmobs.mob.idle"
   },
+  "mob.fellbeast.wind": {
+    "sounds": [
+      "tolkienmobs:mob/fellbeast/dive_wind"
+    ],
+    "subtitle": "subtitles.tolkienmobs.mob.fellbeast_wind"
+  },
   "mob.goblin.angry": {
     "sounds": [
       "tolkienmobs:mob/goblin/goblin_angry"

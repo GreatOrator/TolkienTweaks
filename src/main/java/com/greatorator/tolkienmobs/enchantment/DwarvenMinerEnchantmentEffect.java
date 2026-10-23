@@ -27,17 +27,24 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public record DwarvenMinerEnchantmentEffect(int range) implements EnchantmentEntityEffect {
+/**
+ * Breaks the blocks around the one that was hit, in the plane of the face that was hit.
+ *
+ * @param haste the amplifier of the mining speed buff the effect also grants. It is not a range:
+ *              how far the effect reaches comes from the enchantment's own level, so a pack cannot
+ *              widen a pickaxe's bite by giving it this effect with a bigger number.
+ */
+public record DwarvenMinerEnchantmentEffect(int haste) implements EnchantmentEntityEffect {
     public static final MapCodec<DwarvenMinerEnchantmentEffect> CODEC = RecordCodecBuilder.mapCodec(it ->
             it.group(
-                    Codec.INT.optionalFieldOf("range", 3).forGetter(DwarvenMinerEnchantmentEffect::range)
+                    Codec.INT.optionalFieldOf("haste", 3).forGetter(DwarvenMinerEnchantmentEffect::haste)
             ).apply(it, DwarvenMinerEnchantmentEffect::new)
     );
 
     @Override
     public void apply(ServerLevel level, int levelEnchant, EnchantedItemInUse item, Entity entity, Vec3 hitPosition) {
         if (!(entity instanceof ServerPlayer player)) return;
-        player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 20, range(), false, false, false));
+        player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 20, haste(), false, false, false));
         if (player.isShiftKeyDown() || levelEnchant < 1) return;
 
         BlockPos source = BlockPos.containing(hitPosition);
