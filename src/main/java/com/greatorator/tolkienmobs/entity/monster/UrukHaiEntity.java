@@ -132,14 +132,14 @@ public class UrukHaiEntity extends TolkienMonsterEntity implements GeoEntity {
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
-            if (event.isMoving() && !event.getAnimatable().isAggressive()) {
+            if (event.isMoving()) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
-            if (!event.isMoving() && !event.getAnimatable().isAggressive()) {
+            if (!event.isMoving()) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
                 return PlayState.CONTINUE;
             }
@@ -151,10 +151,11 @@ public class UrukHaiEntity extends TolkienMonsterEntity implements GeoEntity {
                 event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
                 this.swinging =false;
                 return PlayState.CONTINUE;
-            }else if(this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
+            }else if(this.isShooting() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
+                // Keyed on the synced shooting flag: the weapon flag is set on the server only, so
+                // the client never saw it and this branch could not run.
                 event.getController().forceAnimationReset();
                 event.getController().setAnimation(RawAnimation.begin().then("ranged", Animation.LoopType.PLAY_ONCE));
-                this.ranged =false;
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;

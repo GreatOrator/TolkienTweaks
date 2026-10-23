@@ -199,6 +199,7 @@ public class TolkienSounds {
         // Fell Beast
     public static final DeferredHolder<SoundEvent, SoundEvent> IDLE_FELLBEAST = createEvent("mob.fellbeast.idle");
     public static final DeferredHolder<SoundEvent, SoundEvent> FLAP_FELLBEAST = createEvent("mob.fellbeast.flap");
+    public static final DeferredHolder<SoundEvent, SoundEvent> WIND_FELLBEAST = createEvent("mob.fellbeast.wind");
 
 
 

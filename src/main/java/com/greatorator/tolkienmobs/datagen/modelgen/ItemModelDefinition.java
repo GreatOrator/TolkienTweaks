@@ -17,6 +17,7 @@ public final class ItemModelDefinition {
     private static final String SPECIAL = "minecraft:special";
     private static final String RANGE_DISPATCH = "minecraft:range_dispatch";
     private static final String CONDITION = "minecraft:condition";
+    private static final String SELECT = "minecraft:select";
     private static final String CONSTANT_TINT = "minecraft:constant";
 
     private ItemModelDefinition() {
@@ -88,6 +89,29 @@ public final class ItemModelDefinition {
         return new Entry(threshold, model);
     }
 
+    /**
+     * Picks a model by matching a registry-backed select property, such as the trim material on
+     * a piece of armour, falling back to {@code fallback} when nothing matches.
+     */
+    public static JsonObject select(ResourceLocation property, JsonObject fallback, Case... cases) {
+        JsonObject node = typed(SELECT);
+        node.addProperty("property", property.toString());
+        JsonArray array = new JsonArray();
+        for (Case entry : cases) {
+            JsonObject json = new JsonObject();
+            json.addProperty("when", entry.when());
+            json.add("model", entry.model());
+            array.add(json);
+        }
+        node.add("cases", array);
+        node.add("fallback", fallback);
+        return node;
+    }
+
+    public static Case when(String when, JsonObject model) {
+        return new Case(when, model);
+    }
+
     /** Picks {@code onTrue} or {@code onFalse} from a boolean property. */
     public static JsonObject condition(ResourceLocation property, JsonObject onTrue, JsonObject onFalse) {
         JsonObject node = typed(CONDITION);
@@ -104,5 +128,8 @@ public final class ItemModelDefinition {
     }
 
     public record Entry(float threshold, JsonObject model) {
+    }
+
+    public record Case(String when, JsonObject model) {
     }
 }

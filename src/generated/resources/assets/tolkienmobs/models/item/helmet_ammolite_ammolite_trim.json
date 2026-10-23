@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "tolkienmobs:item/helmet_ammolite",
+    "layer1": "tolkienmobs:item/trim/helmet_trim_ammolite"
+  }
+}

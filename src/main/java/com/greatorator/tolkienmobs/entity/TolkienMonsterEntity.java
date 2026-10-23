@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.entity;
 
+import com.greatorator.tolkienmobs.entity.ai.goal.AggressiveBowAttackGoal;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -30,10 +31,12 @@ public class TolkienMonsterEntity extends Monster implements RangedAttackMob {
     public static final EntityDataAccessor<ItemStack> HELD_ITEM = SynchedEntityData.defineId(TolkienMonsterEntity.class, EntityDataSerializers.ITEM_STACK);
     public static final EntityDataAccessor<Boolean> ATTACKING = SynchedEntityData.defineId(TolkienMonsterEntity.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Boolean> AGGRESSIVE = SynchedEntityData.defineId(TolkienMonsterEntity.class, EntityDataSerializers.BOOLEAN);
+    /** Synced because the animation controllers that read it run on the client. */
+    public static final EntityDataAccessor<Boolean> SHOOTING = SynchedEntityData.defineId(TolkienMonsterEntity.class, EntityDataSerializers.BOOLEAN);
     public boolean scheduleWeaponGoalUpdate = true;
     protected boolean ranged;
 
-    protected final RangedBowAttackGoal<TolkienMonsterEntity> bowGoal = new RangedBowAttackGoal<>(this, 1.0, 20, 15.0F);
+    protected final RangedBowAttackGoal<TolkienMonsterEntity> bowGoal = new AggressiveBowAttackGoal(this, 1.0, 20, 15.0F);
     protected final MeleeAttackGoal meleeGoal = new MeleeAttackGoal(this, 1.2, false) {
         @Override
         public void stop() {
@@ -112,8 +115,9 @@ public class TolkienMonsterEntity extends Monster implements RangedAttackMob {
         scheduleWeaponGoalUpdate = false;
         this.goalSelector.removeGoal(this.meleeGoal);
         this.goalSelector.removeGoal(this.bowGoal);
-        ItemStack itemstack = this.getMainHandItem();
-        if (itemstack.getItem() == Items.BOW) {
+        // Either hand counts: the uruk-hai and mordor orcs carry their uruk bow in the off hand, and
+        // the mod's own bows are not the vanilla one.
+        if (this.getMainHandItem().getItem() instanceof BowItem || this.getOffhandItem().getItem() instanceof BowItem) {
             int i = 20;
             if (this.level.getDifficulty() != Difficulty.HARD) {
                 i = 40;
@@ -134,6 +138,7 @@ public class TolkienMonsterEntity extends Monster implements RangedAttackMob {
         builder.define(ATTACKING, false);
         builder.define(HELD_ITEM, ItemStack.EMPTY);
         builder.define(AGGRESSIVE, false);
+        builder.define(SHOOTING, false);
     }
 
     @Override
@@ -181,5 +186,14 @@ public class TolkienMonsterEntity extends Monster implements RangedAttackMob {
 
     public boolean isAggressive() {
         return (boolean)this.entityData.get(AGGRESSIVE);
+    }
+
+    /** True while a ranged attack goal is running, which is the ranged animations' cue. */
+    public boolean isShooting() {
+        return (boolean)this.entityData.get(SHOOTING);
+    }
+
+    public void setShooting(boolean shooting) {
+        this.entityData.set(SHOOTING, shooting);
     }
 }

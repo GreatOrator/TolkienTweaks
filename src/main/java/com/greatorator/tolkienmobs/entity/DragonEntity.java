@@ -12,6 +12,7 @@ import com.greatorator.tolkienmobs.entity.boss.WitchKingEntity;
 import com.greatorator.tolkienmobs.handler.EntityHandler;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
+import com.greatorator.tolkienmobs.particle.DiveWindSound;
 import com.greatorator.tolkienmobs.particle.FlyingSound;
 import com.greatorator.tolkienmobs.util.GeneralUtility;
 import com.greatorator.tolkienmobs.util.MathUtility;
@@ -107,6 +108,8 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
 
     public static final EntityDataAccessor<Float> BREACH_ATTACK_COOLDOWN = SynchedEntityData.defineId(DragonEntity.class, EntityDataSerializers.FLOAT);
     public static final EntityDataAccessor<Boolean> BREACHING = SynchedEntityData.defineId(DragonEntity.class, EntityDataSerializers.BOOLEAN);
+    /** Whether the beast is stooping, so each client can run the dive wind as one continuous sound. */
+    public static final EntityDataAccessor<Boolean> DIVING = SynchedEntityData.defineId(DragonEntity.class, EntityDataSerializers.BOOLEAN);
 
     public static final EntityDataAccessor<Optional<BlockPos>> HOME_POS = SynchedEntityData.defineId(DragonEntity.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
     public static final EntityDataAccessor<Boolean> SLEEPING = SynchedEntityData.defineId(DragonEntity.class, EntityDataSerializers.BOOLEAN);
@@ -147,6 +150,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
         builder.define(IS_MOVING_ANIMATION, false);
         builder.define(HOME_POS, Optional.empty());
         builder.define(BREACHING, false);
+        builder.define(DIVING, false);
         builder.define(BREACH_ATTACK_COOLDOWN, 600F);
         builder.define(SLEEPING, false);
     }
@@ -185,7 +189,15 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
 
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
-        if (key.equals(SLEEPING) || key.equals(MOVING_STATE)) {
+        if (key.equals(DIVING)) {
+            // The wind runs here rather than being played from the server: the gusts are three
+            // seconds long, so playing them again on a one-second timer cut every one of them off
+            // mid-gust, which is exactly the seam that was audible. A client that only starts
+            // tracking the beast partway through a dive still hears it, because the flag is part of
+            // the entity data it is sent when tracking begins, and so arrives as a change from false.
+            if (level.isClientSide && isDiving())
+                DiveWindSound.play(this);
+        } else if (key.equals(SLEEPING) || key.equals(MOVING_STATE)) {
             refreshDimensions();
             if (level.isClientSide  && isUsingFlyingNavigator() && canBeControlledByRider())
                 FlyingSound.play(this);
@@ -381,6 +393,23 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
         ensureHome();
         super.tick();
 
+        if (!level.isClientSide) {
+            // One place owns the wingbeat timer, so a beast flown by its AI and one flown by a rider
+            // beat at the same rate. A rider's flight is simulated on their own client, so the wings
+            // have to be heard from the server or only the rider would hear them. A rider holding a
+            // dive is not beating to stay up, so a stooping beast goes quiet until it levels out.
+            if (this.wingSoundTicks > 0) this.wingSoundTicks--;
+            boolean ridden = this.isVehicle() && this.canBeControlledByRider();
+            if (ridden && this.isUsingFlyingNavigator() && !this.isStooping()) {
+                this.beatWingsAudibly();
+            }
+            this.riddenPos = ridden ? this.position() : null;
+            // The dive is synced so each nearby client can run one continuous wind from it rather
+            // than having the server play a gust it has to cut short. Only a beast its own AI is
+            // flying can stoop this way; a ridden one takes its pitch from its rider.
+            this.entityData.set(DIVING, !ridden && this.isUsingFlyingNavigator() && this.wingVelocity < DIVE_SINK);
+        }
+
         NavigationType properNavigator = getProperNavigator();
         if (properNavigator != this.getNavigationType()) {
             setNavigator(properNavigator);
@@ -531,6 +560,11 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
 
     public void setNavigator(NavigationType navigator) {
         if (navigator == getNavigationType()) return;
+        // Wing speed belongs to flight alone. Left over, it would shove the beast down (or up) on
+        // the first tick after it lands or takes to water, which have their own vertical handling.
+        this.wingVelocity = 0;
+        this.wingBeatTicks = 0;
+        this.wingSoundTicks = 0;
         switch (navigator) {
             case GROUND -> {
                 this.moveControl = new MoveControl(this);
@@ -604,6 +638,40 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
         return new DragonBodyController(this);
     }
 
+    /**
+     * The flight model's vertical speed, in blocks a tick, and the ticks left in the downstroke
+     * that is driving it. Only a beast flying by its own AI uses these: a ridden one is steered by
+     * its rider's pitch, and a walking or swimming one has the navigator's own vertical handling.
+     */
+    private double wingVelocity;
+    private int wingBeatTicks;
+
+    /** How long one downstroke keeps pushing, in ticks. */
+    private static final int WINGBEAT_TICKS = 8;
+    /** The climb a downstroke builds up to, in blocks a tick. */
+    private static final double WINGBEAT_CLIMB = 0.09D;
+    /** How much each tick of a downstroke adds to the climb, in blocks a tick per tick. */
+    private static final double WINGBEAT_THRUST = 0.03D;
+    /** The sink a gliding beast settles at, in blocks a tick. */
+    private static final double GLIDE_SINK = -0.045D;
+    /** The sink at which the wings stop holding the beast up and it is diving, in blocks a tick. */
+    private static final double DIVE_SINK = -0.1D;
+    /** The sink a beast commits to when its path lies well below it, in blocks a tick. */
+    private static final double STOOP_SINK = -0.22D;
+    /** How quickly a coasting beast loses its climb, in blocks a tick per tick. */
+    private static final double GLIDE_GRAVITY = 0.02D;
+    /** How far above its path's height a beast climbs, in blocks. */
+    private static final double CLIMB_MARGIN = 0.6D;
+    /** How far below its path's height a beast stops gliding and stoops, in blocks. */
+    private static final double STOOP_MARGIN = 2.0D;
+    /** Ticks until a wingbeat may be heard again, so a long climb does not roar with flapping. */
+    private int wingSoundTicks;
+    /** How far a ridden beast has to drop in a tick before it is worth asking how steeply, in blocks. */
+    private static final double RIDER_DIVE_SINK = 0.05D;
+    /** Where a ridden beast was at the end of the last tick, for measuring that dive. */
+    @Nullable
+    private Vec3 riddenPos;
+
     @Override
     public void travel(Vec3 vec3d){
         if (this.isAlive()) {
@@ -640,10 +708,89 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
                     }
                 }
                 this.calculateEntityAnimation(isUsingFlyingNavigator());
+            } else if (isUsingFlyingNavigator() && !level.isClientSide) {
+                this.flyOnWings(vec3d);
             } else {
                 super.travel(vec3d);
             }
         }
+    }
+
+    /**
+     * One tick of wing-driven flight, for a beast its own AI is flying. Horizontal steering stays
+     * vanilla: the move control turns the beast and sets its speed, and travel carries it forward.
+     * The vertical is the flight model's. A downstroke climbs while the path lies above the beast;
+     * between beats it coasts, its climb bleeding away, and then it settles into a slow sink. That
+     * sink is the point: the beast used to be held at exactly the height its navigator asked for by
+     * isNoGravity, so there was no glide to look at, only a pose.
+     */
+    private void flyOnWings(Vec3 input) {
+        this.tickWingbeat();
+
+        // The wings' speed replaces the input's y: vanilla would have turned that into another
+        // instantaneous climb. travel() moves the beast and then damps what it moved by, so the
+        // speed is put back afterwards - it is a speed this model owns, not one travel left behind.
+        this.setDeltaMovement(this.getDeltaMovement().x, this.wingVelocity, this.getDeltaMovement().z);
+        super.travel(new Vec3(input.x, 0.0D, input.z));
+        this.setDeltaMovement(this.getDeltaMovement().x, this.wingVelocity, this.getDeltaMovement().z);
+    }
+
+    /**
+     * Advances the wings one tick: a downstroke while the path is above, a coast and sink otherwise.
+     * A stroke that has started runs to its end even if the beast reaches the path's height partway
+     * through, because a wingbeat cannot be called back; stopping at the margin instead made the
+     * beast stutter through clipped one-tick beats as it hovered. At the margins below it holds its
+     * height with a stroke about every second and a quarter, overshooting the path by nothing.
+     * A stoop is silent by the same rule rather than by a check of its own: a beast whose path lies
+     * below it never starts a downstroke, and the wingbeat is only ever heard on a downstroke, so
+     * nothing beats while it dives. If the sound is ever moved out of the stroke branch, a dive has
+     * to be excluded there explicitly.
+     */
+    private void tickWingbeat() {
+        double climb = this.getFlightTargetY() - this.getY();
+
+        if (this.wingBeatTicks > 0) {
+            this.wingVelocity = Math.min(WINGBEAT_CLIMB, this.wingVelocity + WINGBEAT_THRUST);
+            this.wingBeatTicks--;
+            return;
+        }
+        if (climb > CLIMB_MARGIN) {
+            this.wingBeatTicks = WINGBEAT_TICKS;
+            this.wingVelocity = Math.min(WINGBEAT_CLIMB, this.wingVelocity + WINGBEAT_THRUST);
+            this.wingBeatTicks--;
+            // A climbing beast chains downstrokes every eight ticks, which at the ride's volume
+            // would be a siren rather than a wingbeat; beatWingsAudibly() keeps the gap between
+            // the ones that are heard, and the gap and volume are mod config options so the
+            // cadence can be tuned by ear.
+            this.beatWingsAudibly();
+            return;
+        }
+
+        double sink = climb < -STOOP_MARGIN ? STOOP_SINK : GLIDE_SINK;
+        this.wingVelocity = Math.max(sink, this.wingVelocity - GLIDE_GRAVITY);
+    }
+
+    /**
+     * Whether the beast is stooping hard enough for the air over its wings to be heard. A dive is
+     * wind rather than wings beating, so nothing else marks it: the pose turns to dive at the same
+     * sink, and both read {@link #DIVE_SINK}. A ridden beast's wings are still, but its flight is
+     * its rider's pitch, and this is false there so a rider's own flight wind is not doubled by a
+     * second one underneath it.
+     */
+    public boolean isDiving() {
+        return this.entityData.get(DIVING);
+    }
+
+    /**
+     * The height the current flight path is flying to. When the navigator has not asked for one yet
+     * that is the beast's own height, so a beast summoned in mid-air glides instead of diving at
+     * the world floor, and the last waypoint stays its height while the path is between legs.
+     */
+    private double getFlightTargetY() {
+        if (this.moveControl instanceof FlyerMoveController flyer && flyer.hasTarget()) {
+            return flyer.getWantedY();
+        }
+        return this.getY();
     }
 
     @Override
@@ -651,6 +798,10 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
         return isUsingFlyingNavigator() && !canBeControlledByRider() ? getSpeed() : super.getFlyingSpeed();
     }
 
+    /**
+     * The flight model applies its own sink (see {@link #flyOnWings}), so vanilla gravity stays off
+     * on the wing. Left on it would add a second fall on top of the glide, ten times as fast.
+     */
     @Override
     public boolean isNoGravity() {
         return isUsingFlyingNavigator();
@@ -738,8 +889,36 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     }
 
     public void flapWings() {
-        playSound(TolkienSounds.FLAP_FELLBEAST.get(), 3, 1, false);
+        this.playWingbeatSound(3.0F);
         setDeltaMovement(getDeltaMovement().add(0, 1.285, 0));
+    }
+
+    /**
+     * Whether a ridden beast is diving: dropping steeper than the configured angle below horizontal,
+     * and by more than a block a second so a hovering beast's drift is not a dive. Neither its pitch
+     * nor its velocity is any guide here - the server's look control steers the pitch toward whatever
+     * the beast is watching, and a ridden beast is moved by its rider's client, so the server only
+     * ever sees it teleported between ticks. This compares where it is with where the last tick left
+     * it. The angle is a mod config option because it is the dial that decides where the beat cuts.
+     */
+    private boolean isStooping() {
+        if (this.riddenPos == null) return false;
+        double drop = this.riddenPos.y - this.getY();
+        if (drop <= RIDER_DIVE_SINK) return false;
+        double headway = Math.sqrt((this.getX() - this.riddenPos.x) * (this.getX() - this.riddenPos.x)
+                + (this.getZ() - this.riddenPos.z) * (this.getZ() - this.riddenPos.z));
+        return drop > headway * Math.tan(Math.toRadians(TolkienMobsConfig.fellbeastDiveAngle));
+    }
+
+    /** One wingbeat, as long as the last one is far enough behind, at the configured volume. */
+    private void beatWingsAudibly() {
+        if (this.wingSoundTicks > 0) return;
+        this.wingSoundTicks = TolkienMobsConfig.fellbeastWingbeatInterval;
+        this.playWingbeatSound((float) TolkienMobsConfig.fellbeastWingbeatVolume);
+    }
+
+    private void playWingbeatSound(float volume) {
+        playSound(TolkienSounds.FLAP_FELLBEAST.get(), volume, 1, false);
     }
 
     @Override
@@ -1068,6 +1247,50 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
 
     /** Animations */
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
+    /** Breath sequence step: 0 idle, 1 while the breath runs, 2 while its tail plays out. */
+    private int breathPhase;
+    /** Ticks left in the fireEnd clip, which is one second long. */
+    private int breathTailTicks;
+
+    /**
+     * Whether this dragon is currently breathing fire. Only the fell beast does, and it overrides
+     * this with the synced flag its attack goal sets, so the client-side controller can read it.
+     */
+    protected boolean getBreathingFire() {
+        return false;
+    }
+
+    /** The fellbeast's fireEnd clip runs for one second. */
+    private static final int FIRE_END_TICKS = 20;
+
+    /** The fellbeast's animation file carries three melee swings with footwork, walk_attack0-2. */
+    private static final int WALK_ATTACK_ANIMATION_VARIANTS = 3;
+
+    /** Whether the current bout of aggression has already opened with a roar. */
+    private boolean hasRoared;
+    /** Ticks left in the roar clip, which is four seconds long. */
+    private int roarTicks;
+
+    /** The fellbeast's roar clip runs for four seconds. */
+    private static final int ROAR_ANIMATION_TICKS = 80;
+
+    /**
+     * The wing pose for this tick of flight, read off the vertical speed the flight model gives the
+     * beast. A downstroke climbs at 0.09 blocks a tick and speeds up through zero as it starts, so
+     * anything above 0.02 is the beat itself and plays fly; between beats it coasts at a glide sink
+     * of 0.045 and plays glide; and a beast on the hunt that has committed to a stoop, 0.22 down, is
+     * diving. A ridden beast's speed is its rider's pitch instead, which the same thresholds read.
+     */
+    private String getWingAnimation(boolean mayStoop) {
+        double verticalSpeed = this.getDeltaMovement().y;
+        if (mayStoop && verticalSpeed < DIVE_SINK) {
+            return "dive";
+        }
+        if (verticalSpeed > 0.02D || this.onGround()) {
+            return "fly";
+        }
+        return "glide";
+    }
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
@@ -1076,8 +1299,10 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
             if (event.isMoving() && !event.getAnimatable().isAggressive()) {
                 switch (navigationType) {
                     case GROUND -> event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
-                    case FLYING -> event.getController().setAnimation(RawAnimation.begin().thenPlay("fly"));
-                    case SWIMMING-> event.getController().setAnimation(RawAnimation.begin().thenPlay("swim"));
+                    case FLYING -> event.getController().setAnimation(RawAnimation.begin().thenPlay(this.getWingAnimation(false)));
+                    // The fellbeast's file carries no swim animation either, so a beast that ends up in
+                    // water keeps beating its wings instead of asking for an animation it cannot play.
+                    case SWIMMING-> event.getController().setAnimation(RawAnimation.begin().thenPlay("fly"));
                 }
                 return PlayState.CONTINUE;
             }
@@ -1087,39 +1312,95 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
                     // No fly_fast animation ships with the fellbeast's animation file. Asking for one anyway
                     // made GeckoLib log "Unable to find animation" and leave the movement controller with
                     // nothing to play, freezing the wings mid-flap for as long as the beast fought on the
-                    // wing, so an aggressive flyer keeps the normal flight animation.
-                    case FLYING -> event.getController().setAnimation(RawAnimation.begin().thenPlay("fly"));
-                    case SWIMMING-> event.getController().setAnimation(RawAnimation.begin().thenPlay("swim_fast"));
+                    // wing, so an aggressive flyer keeps the same three wing poses as a calm one, with the
+                    // file's dive added for the stoop.
+                    case FLYING -> event.getController().setAnimation(RawAnimation.begin().thenPlay(this.getWingAnimation(true)));
+                    case SWIMMING-> event.getController().setAnimation(RawAnimation.begin().thenPlay("fly"));
                 }
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
-            if (!event.isMoving() && !event.getAnimatable().isAggressive()) {
+            if (!event.isMoving()) {
                 event.getController().setAnimation(RawAnimation.begin().thenPlay("idle0"));
+                return PlayState.CONTINUE;
+            }
+            return PlayState.STOP;
+        }));
+        // The beast bellows when it engages: its synced aggressive flag turns on with the attack goal,
+        // so one transition plays the roar once per fight. The attack controller below is registered
+        // after this one, so a swing interrupts the bellow instead of being hidden by it. The roar is
+        // held for its own length and then released, or the controller would keep the beast's last
+        // roaring pose for the rest of the fight.
+        controllers.add(new AnimationController<>(this, "Roar", 1, (event) -> {
+            if (this.swinging) {
+                // A swing takes the body over for its length; the bellow does not resume afterwards.
+                this.roarTicks = 0;
+                return PlayState.STOP;
+            }
+            if (!this.isAggressive()) {
+                this.hasRoared = false;
+                this.roarTicks = 0;
+                return PlayState.STOP;
+            }
+            if (!this.hasRoared) {
+                this.hasRoared = true;
+                this.roarTicks = ROAR_ANIMATION_TICKS;
+                event.getController().forceAnimationReset();
+                event.getController().setAnimation(RawAnimation.begin().then("roar", Animation.LoopType.PLAY_ONCE));
+                return PlayState.CONTINUE;
+            }
+            if (this.roarTicks-- > 0) {
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
         controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
             if (this.swinging && !this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
-                int attackVariant = this.random.nextInt(ATTACK_ANIMATION_VARIANTS)+1;
-                event.getController().setAnimation(RawAnimation.begin().then("attack"+attackVariant, Animation.LoopType.PLAY_ONCE));
-                return PlayState.CONTINUE;
-            }else if (this.isAggressive() && this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)){
-                event.getController().setAnimation(RawAnimation.begin().then("ranged", Animation.LoopType.PLAY_ONCE));
-                return PlayState.CONTINUE;
-            }
-            return PlayState.STOP;
-        }));
-        controllers.add(new AnimationController<>(this, "Swim", 1, (event) -> {
-            if (this.isUsingSwimmingNavigator()) {
-                event.getController().setAnimation(RawAnimation.begin().then("swim", Animation.LoopType.PLAY_ONCE));
+                // A swing made on the move uses the file's walk attacks, which carry the footwork; a
+                // standing or airborne swing uses the stationary ones.
+                boolean walking = event.isMoving() && this.onGround() && !this.isUsingFlyingNavigator();
+                String attackAnimation = walking
+                        ? "walk_attack" + this.random.nextInt(WALK_ATTACK_ANIMATION_VARIANTS)
+                        : "attack" + (this.random.nextInt(ATTACK_ANIMATION_VARIANTS) + 1);
+                event.getController().setAnimation(RawAnimation.begin().then(attackAnimation, Animation.LoopType.PLAY_ONCE));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
+        // The breath is its own controller because it is a sequence, not one clip: the beast winds
+        // up with fireStart, holds fireLoop for as long as it breathes, and plays fireEnd once when
+        // it stops. It runs off the synced breathing flag, which the attack goal sets and clears.
+        controllers.add(new AnimationController<>(this, "Breath", 1, (event) -> {
+            if (this.getBreathingFire()) {
+                if (this.breathPhase != 1) {
+                    event.getController().forceAnimationReset();
+                    event.getController().setAnimation(RawAnimation.begin().thenPlay("fireStart").thenLoop("fireLoop"));
+                    this.breathPhase = 1;
+                }
+                return PlayState.CONTINUE;
+            }
+            if (this.breathPhase == 1) {
+                event.getController().forceAnimationReset();
+                event.getController().setAnimation(RawAnimation.begin().then("fireEnd", Animation.LoopType.PLAY_ONCE));
+                this.breathPhase = 2;
+                this.breathTailTicks = FIRE_END_TICKS;
+                return PlayState.CONTINUE;
+            }
+            if (this.breathPhase == 2) {
+                // Hold the controller for the length of the tail clip; stopping it straight away
+                // would make GeckoLib drop the animation before it plays.
+                if (--this.breathTailTicks > 0) {
+                    return PlayState.CONTINUE;
+                }
+                this.breathPhase = 0;
+                return PlayState.STOP;
+            }
+            return PlayState.STOP;
+        }));
+        // There is no separate Swim controller: the fellbeast's file has no swim animation, and the
+        // movement controller above already keeps the wings beating with "fly" while it swims.
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienFluids;
 import com.greatorator.tolkienmobs.init.TolkienItems;
+import com.greatorator.tolkienmobs.init.TolkienTrimMaterials;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
@@ -29,26 +30,38 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class TolkienItemModelProvider extends ItemModelProvider {
-    private static LinkedHashMap<ResourceKey<TrimMaterial>, Float> trimMaterials = new LinkedHashMap<>();
-    static {
-        trimMaterials.put(TrimMaterials.QUARTZ, 0.1F);
-        trimMaterials.put(TrimMaterials.IRON, 0.2F);
-        trimMaterials.put(TrimMaterials.NETHERITE, 0.3F);
-        trimMaterials.put(TrimMaterials.REDSTONE, 0.4F);
-        trimMaterials.put(TrimMaterials.COPPER, 0.5F);
-        trimMaterials.put(TrimMaterials.GOLD, 0.6F);
-        trimMaterials.put(TrimMaterials.EMERALD, 0.7F);
-        trimMaterials.put(TrimMaterials.DIAMOND, 0.8F);
-        trimMaterials.put(TrimMaterials.LAPIS, 0.9F);
-        trimMaterials.put(TrimMaterials.AMETHYST, 1.0F);
-    }
+    /**
+     * Every trim material 1.21.4 ships, in the order vanilla lists them. The old 1.20 codes gave
+     * each one a float for the model's {@code trim_type} predicate; 1.21.4 selects on the trim
+     * material itself, so only the list is needed now.
+     */
+    private static final List<ResourceKey<TrimMaterial>> TRIM_MATERIALS = List.of(
+            TrimMaterials.QUARTZ,
+            TrimMaterials.IRON,
+            TrimMaterials.NETHERITE,
+            TrimMaterials.REDSTONE,
+            TrimMaterials.COPPER,
+            TrimMaterials.GOLD,
+            TrimMaterials.EMERALD,
+            TrimMaterials.DIAMOND,
+            TrimMaterials.LAPIS,
+            TrimMaterials.AMETHYST,
+            TrimMaterials.RESIN);
+
+    /** The mod's own trim materials; their sprites are baked by the trim sprite provider. */
+    private static final List<ResourceKey<TrimMaterial>> MOD_TRIM_MATERIALS = List.of(
+            TolkienTrimMaterials.MITHRIL,
+            TolkienTrimMaterials.MORGULIRON,
+            TolkienTrimMaterials.AMMOLITE);
 
     public TolkienItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
         super(output, MODID, existingFileHelper);
@@ -449,65 +462,11 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         basicItem(TolkienItems.MITHRIL_KEY.get());
         basicItem(TolkienItems.MASTER_KEY.get());
 
-        withExistingParent(TolkienEntities.EGG_TTMGECKO.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMRAT.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMSQUIRREL.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMFROG.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMTHRUSH.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMCREBAIN.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMSWARM.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMGREATEAGLE.getId().getPath(), mcLoc("item/template_spawn_egg"));
-
-        withExistingParent(TolkienEntities.EGG_TTMAUROCH.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMMUMAKIL.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMGOAT.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMSHADOWFAX.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMNAZGULSTEED.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMGOLLUM.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMISTARI.getId().getPath(), mcLoc("item/template_spawn_egg"));
-
-        withExistingParent(TolkienEntities.EGG_TTMHUMAN.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMDWARF.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMELVES.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMHOBBIT.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMSOUTHRON.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMORC_TRADER.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMORC.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMSOUTHRON_NPC.getId().getPath(), mcLoc("item/template_spawn_egg"));
-
-        withExistingParent(TolkienEntities.EGG_TTMBARROW.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMOATHBREAKER.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMFELLSPIRIT.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMENRAGEDFELLSPIRIT.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMBRIGAND.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMHARADRIM.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMROMIEWALKER.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMMIMICCHEST.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMMORDORORC.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMURUKHAI.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMDUERGAR.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMGOBLIN.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMMIRKWOODSPIDER.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMROCKGOLEM.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMHURON.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMMINOTAUR.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMDEEPCLAW.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMTROLL.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMTREEENT.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMSWAMPHAG.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMWARG.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMELEMENTALGOLEM.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMNAZGUL.getId().getPath(), mcLoc("item/template_spawn_egg"));
-
-        withExistingParent(TolkienEntities.EGG_TTMGOBLINKING.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMBALROG.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMSHELOB.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMWITCHKING.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMWATCHER.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMMITHRILGOLEM.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMMORGULIRONGOLEM.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMGWAHIR.getId().getPath(), mcLoc("item/template_spawn_egg"));
-        withExistingParent(TolkienEntities.EGG_TTMFELLBEAST.getId().getPath(), mcLoc("item/template_spawn_egg"));
+        // A spawn egg is vanilla's single egg model drawn through two tints, so every egg needs a
+        // definition of its own carrying its two colours; without them the template draws the
+        // untinted egg. The colours are the ones the egg was registered with.
+        TolkienEntities.SPAWN_EGG_COLORS.forEach((egg, colors) ->
+                definition(egg.get(), spawnEggDefinition(colors)));
 
         // Item model definitions. The game reads dispatch trees and tints from
         // assets/<ns>/items/, so the items below declare them here rather than as overrides
@@ -554,6 +513,31 @@ public class TolkienItemModelProvider extends ItemModelProvider {
                 ItemModelDefinition.entry(0.33F, ItemModelDefinition.model(withSuffix(model, "_fullness_1"))),
                 ItemModelDefinition.entry(0.66F, ItemModelDefinition.model(withSuffix(model, "_fullness_2"))),
                 ItemModelDefinition.entry(0.99F, ItemModelDefinition.model(withSuffix(model, "_fullness_3"))));
+    }
+
+    /** One trim model for one material, and the select case that picks it. */
+    private ItemModelDefinition.Case trimCase(String armorItemPath, ResourceLocation armorTexture,
+                                              ResourceLocation trimTexture, ResourceLocation material) {
+        String trimModelPath = armorItemPath + "_" + material.getPath() + "_trim";
+
+        getBuilder(trimModelPath)
+                .parent(new ModelFile.UncheckedModelFile("item/generated"))
+                .texture("layer0", armorTexture)
+                .texture("layer1", trimTexture);
+
+        return ItemModelDefinition.when(material.toString(),
+                ItemModelDefinition.model(ResourceLocation.fromNamespaceAndPath(MODID, "item/" + trimModelPath)));
+    }
+
+    /**
+     * A spawn egg: vanilla's two-layer egg template, with its base and its spots painted by the
+     * two colours the egg registered. The colours are plain RGB, so they are given full alpha
+     * here - a tint without one draws nothing.
+     */
+    private JsonObject spawnEggDefinition(TolkienEntities.SpawnEggColors colors) {
+        return ItemModelDefinition.model(mcLoc("item/template_spawn_egg"),
+                ItemModelDefinition.constantTint(0xFF000000 | colors.background()),
+                ItemModelDefinition.constantTint(0xFF000000 | colors.highlight()));
     }
 
     /** A trinket: the metal layer untinted, the gem layer tinted by its potion. */
@@ -639,57 +623,58 @@ public class TolkienItemModelProvider extends ItemModelProvider {
                 .texture("layer0", ResourceLocation.fromNamespaceAndPath(item.getNamespace(), "item/" + item.getPath()));
     }
 
-    // Shoutout to El_Redstoniano for making this
+    /**
+     * A trimmed piece of armour: one model per trim material, plus an item model definition that
+     * picks between them by the stack's trim material. 1.21.4 selects on the material itself - the
+     * old {@code trim_type} predicate lived in the model's {@code overrides} array, which the game
+     * no longer reads, so trimmed armour kept its untrimmed icon whatever was applied to it.
+     */
     private void trimmedArmorItem(DeferredItem<ArmorItem> itemDeferredItem) {
-        final String MOD_ID = MODID; // Change this to your mod id
-
-        if(itemDeferredItem.get() instanceof ArmorItem armorItem) {
-            // 1.21.4 dropped ArmorItem#getEquipmentSlot: the slot lives in the equipable data
-            // component now, so read it back from there.
-            Equippable equippable = armorItem.components().get(DataComponents.EQUIPPABLE);
-            if (equippable == null) {
-                return;
-            }
-
-            String armorType = switch (equippable.slot()) {
-                case HEAD -> "helmet";
-                case CHEST -> "chestplate";
-                case LEGS -> "leggings";
-                case FEET -> "boots";
-                default -> "";
-            };
-
-            trimMaterials.forEach((trimMaterial, value) -> {
-                float trimValue = value;
-
-                String armorItemPath = armorItem.toString();
-                String trimPath = "trims/items/" + armorType + "_trim_" + trimMaterial.location().getPath();
-                String currentTrimName = armorItemPath + "_" + trimMaterial.location().getPath() + "_trim";
-                ResourceLocation armorItemResLoc = ResourceLocation.parse(armorItemPath);
-                ResourceLocation trimResLoc = ResourceLocation.parse(trimPath); // minecraft namespace
-                ResourceLocation trimNameResLoc = ResourceLocation.parse(currentTrimName);
-
-                // This is used for making the ExistingFileHelper acknowledge that this texture exist, so this will
-                // avoid an IllegalArgumentException
-                existingFileHelper.trackGenerated(trimResLoc, PackType.CLIENT_RESOURCES, ".png", "textures");
-
-                // Trimmed armorItem files
-                getBuilder(currentTrimName)
-                        .parent(new ModelFile.UncheckedModelFile("item/generated"))
-                        .texture("layer0", armorItemResLoc.getNamespace() + ":item/" + armorItemResLoc.getPath())
-                        .texture("layer1", trimResLoc);
-
-                // Non-trimmed armorItem file (normal variant)
-                this.withExistingParent(itemDeferredItem.getId().getPath(),
-                                mcLoc("item/generated"))
-                        .override()
-                        .model(new ModelFile.UncheckedModelFile(trimNameResLoc.getNamespace()  + ":item/" + trimNameResLoc.getPath()))
-                        .predicate(mcLoc("trim_type"), trimValue).end()
-                        .texture("layer0",
-                                ResourceLocation.fromNamespaceAndPath(MOD_ID,
-                                        "item/" + itemDeferredItem.getId().getPath()));
-            });
+        if (!(itemDeferredItem.get() instanceof ArmorItem armorItem)) {
+            return;
         }
+
+        // 1.21.4 dropped ArmorItem#getEquipmentSlot: the slot lives in the equipable data
+        // component now, so read it back from there.
+        Equippable equippable = armorItem.components().get(DataComponents.EQUIPPABLE);
+        if (equippable == null) {
+            return;
+        }
+
+        String armorType = switch (equippable.slot()) {
+            case HEAD -> "helmet";
+            case CHEST -> "chestplate";
+            case LEGS -> "leggings";
+            case FEET -> "boots";
+            default -> "";
+        };
+
+        String armorItemPath = itemDeferredItem.getId().getPath();
+        ResourceLocation armorTexture = ResourceLocation.fromNamespaceAndPath(MODID, "item/" + armorItemPath);
+        List<ItemModelDefinition.Case> cases = new ArrayList<>();
+
+        for (ResourceKey<TrimMaterial> trimMaterial : TRIM_MATERIALS) {
+            // Vanilla's materials are cut at load time by the paletted permutation atlas, so no png
+            // ships for them and the file helper is told they exist rather than asked.
+            ResourceLocation trimTexture = ResourceLocation.withDefaultNamespace("trims/items/" + armorType + "_trim_" + trimMaterial.location().getPath());
+            existingFileHelper.trackGenerated(trimTexture, PackType.CLIENT_RESOURCES, ".png", "textures");
+            cases.add(trimCase(armorItemPath, armorTexture, trimTexture, trimMaterial.location()));
+        }
+
+        for (ResourceKey<TrimMaterial> trimMaterial : MOD_TRIM_MATERIALS) {
+            // Our own materials have no permutation in vanilla's atlas, so TolkienTrimSpriteProvider
+            // bakes the sprite into textures/item/trim, which the block atlas already stitches.
+            ResourceLocation trimTexture = ResourceLocation.fromNamespaceAndPath(MODID,
+                    "item/trim/" + armorType + "_trim_" + trimMaterial.location().getPath());
+            existingFileHelper.trackGenerated(trimTexture, PackType.CLIENT_RESOURCES, ".png", "textures");
+            cases.add(trimCase(armorItemPath, armorTexture, trimTexture, trimMaterial.location()));
+        }
+
+        // The untrimmed icon, drawn unless one of the materials above is applied.
+        withExistingParent(armorItemPath, mcLoc("item/generated")).texture("layer0", armorTexture);
+
+        definition(itemDeferredItem.get(), ItemModelDefinition.select(mcLoc("trim_material"),
+                ItemModelDefinition.model(armorTexture), cases.toArray(new ItemModelDefinition.Case[0])));
     }
 
     @Nonnull
