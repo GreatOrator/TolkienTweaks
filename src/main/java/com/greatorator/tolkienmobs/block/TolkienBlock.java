@@ -1,19 +1,16 @@
 package com.greatorator.tolkienmobs.block;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.block.Block;
 
-import java.util.List;
-
+/**
+ * The base for the mod's plain blocks. Its lore flag and tooltip override are gone: 26.1 removed
+ * {@code Block#appendHoverText}, so a tooltip is the item's business now - {@code TolkienItem} carries
+ * the lore flag for the items, and the few block items that need one extend {@code BlockItem}.
+ */
 public abstract class TolkienBlock extends Block {
     public boolean hasEffectOverride = false;
     private boolean canSpawnEntity = false;
     private boolean itemHasUse = false;
-    private boolean hasLore = false;
 
     public TolkienBlock(Properties properties) {
         super(properties);
@@ -21,11 +18,6 @@ public abstract class TolkienBlock extends Block {
 
     public TolkienBlock setEffectOverride() {
         this.hasEffectOverride = true;
-        return this;
-    }
-
-    public TolkienBlock setHasLore() {
-        this.hasLore = true;
         return this;
     }
 
@@ -37,13 +29,5 @@ public abstract class TolkienBlock extends Block {
     public TolkienBlock setSpawnInfo() {
         this.canSpawnEntity = true;
         return this;
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        if (hasLore) {
-            tooltipComponents.add(Component.translatable(getDescriptionId() + ".lore").withStyle(ChatFormatting.GOLD));
-            super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-        }
     }
 }

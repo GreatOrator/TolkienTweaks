@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- The shared block base no longer carries a lore flag it could not draw: 26.1 removed the block-side tooltip hook, so the blocks that show a lore line - the sleeping bags and placards - get it from their own items, which is where the text already came from. Nothing a player sees changes.
 - Placards still explain themselves in the inventory, and the camouflage fluid block reads the bucket it holds again: 26.1 moved a block's tooltip onto its item, so the placard's gold lore line comes from its own item now, and the fluid block asks for the container's fluid through the item access 26.1 expects.
 - The fireplace, piggy bank and trinket table still drop what is inside them when broken, and a milestone still forgets its record when it is taken down: 26.1 removed the block hook that did all four, so each block entity now cleans up after itself as it is removed. A milestone in creative also opens its settings when shift-clicked, which the old server-side check could never see, and the trinket table's potion bottle and particle follow 26.1's item template.
 - The camouflage chest keeps its contents on the way out: 26.1 drops a container's contents itself when the block goes, so the chest's old removal hook is gone and a broken chest still spills what was in it. Its comparator output, opening and closing sounds and the count of players looking inside work as before, so the chest compiles again.
