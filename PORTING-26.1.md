@@ -644,7 +644,7 @@ from **3,470 errors in 337 files to 2,801 in 320**.
 - The calls' wording, colour and trigger are unchanged, so everything the player reads is exactly
   as it was; only the method that carries it moved.
 
-### Sleeping bag — the sleep result (DONE)
+### Sleeping bag — DONE
 
 - The failure message is back. `Player.BedSleepingProblem` is a record wrapping a `Component` in
   26.1 rather than a class with `getMessage()`, so the accessor is `message()` - the same shape
@@ -667,8 +667,15 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   `explodes: true`, the overworld sets `can_set_spawn: always`. A custom dimension that only clears
   `bedWorks` without giving a `bed_rule` now gets the default rule, which does not explode -
   exactly what a vanilla bed does there since 26.1, so the bag and the bed still behave alike.
-- Still open in the same file, untouched here: `Villager` moved to `npc.villager`, `fallOn` takes a
-  `double` distance, and `Level#blockUpdated` is gone.
+- The rest of the block is ported as well, so `SleepingBagBlock` compiles. `Villager` is under
+  `npc.villager` now, beside the other villager types. `fallOn`'s distance is a `double`, and the
+  bag still softens the drop by the same three quarters - the number is the only thing that
+  changed type. `Level#blockUpdated` is `updateNeighborsAt`, which is what vanilla's own
+  `BedBlock#setPlacedBy` calls after writing the head half.
+- One deprecation is deliberate: the `getSeed` override still calls `Mth.getSeed(int, int, int)`.
+  26.1 deprecated both `Mth.getSeed` overloads and named no replacement, and vanilla's `BedBlock`
+  seeds a bed the same way, so the only alternative is reimplementing vanilla's hash by hand for a
+  decorative seed.
 
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
