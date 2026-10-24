@@ -1768,6 +1768,25 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   the checks are breaking each of the four blocks with items in it, and shift-right-clicking a
   milestone in creative.
 
+### The placard's tooltip and the camo fluid block — DONE
+
+- **A block can no longer add a tooltip.** `Block#appendHoverText` is gone in 26.1; the hook is
+  `Item#appendHoverText(ItemStack, Item.TooltipContext, TooltipDisplay, Consumer<Component>,
+  TooltipFlag)` and it is called from `ItemStack#appendHoverText`. The sleeping bags had already moved
+  their lore line onto `SleepingBagItem`, so the placard follows that shape: a `PlacardItem extends
+  BlockItem` adds the gold `.lore` line, and the `hasLore` flag stays on `PlacardBlock` with a getter
+  the item reads. The placard is registered without a block item and with `PLACARD_ITEM` in its
+  place, the same split the backpack already uses.
+- **The camo fluid block queries its bucket through an `ItemAccess`.** `ItemStack#getCapability` takes
+  the capability's context now, and `Capabilities.Fluid.ITEM` is declared over
+  `ItemAccess`, so the one-argument call does not resolve; `ItemAccess.forStack(stack)` supplies it.
+  Nothing else about the block changed - it still reads the held container's first fluid and pours
+  it into the air blocks around it.
+- **Verified:** whole-tree `javac` at **197** errors, down from 200 - `PlacardBlock`'s two and
+  `CamoFluidBlockEntity`'s one are gone, with nothing new anywhere (`TolkienBlocks` did not grow an
+  error over the new item registration). Nothing was run in game: hover a placard in the inventory to
+  see its gold line, and put a filled bucket in the camouflage fluid block to watch it pour.
+
 ## Ordered work list
 
 1. **Build stack — DONE.** MDG 2, JDK 25, NeoForge 26.1.2, the four dependency bumps. The
@@ -1796,8 +1815,9 @@ from **3,470 errors in 337 files to 2,801 in 320**.
    with 26.1's container API (see *The camo chest's block entity - DONE* below). The camo chest's
    block and block entity are clean, as are the backpack pair, the lockable chests, and the
    fireplace, piggy bank, trinket table and milestone, whose `onRemove` overrides all moved to
-   `preRemoveSideEffects` (see *The other container blocks' removal hooks - DONE* below). What still
-   fails in that corner is `CamoFluidBlockEntity`'s capability query.
+   `preRemoveSideEffects` (see *The other container blocks' removal hooks - DONE* below), and the
+   camouflage fluid block's bucket query with it (see *The placard's tooltip and the camo fluid block
+   - DONE* below).
 6. **Worldgen - done except the datagen.** The carvers, trees, configured and placed features,
    surface rules and the biome registration layer all compile (see *The worldgen registration layer
    - DONE* above), and the TerraBlender calls in `TolkienMobsMain` were checked against

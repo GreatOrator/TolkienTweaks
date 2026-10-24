@@ -25,6 +25,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
@@ -130,7 +131,8 @@ public class CamoFluidBlockEntity extends TolkienBlockEntity implements MenuProv
         if (stack.isEmpty()) {
             return;
         }
-        ResourceHandler<FluidResource> fluidHandlerItem = stack.getCapability(Capabilities.Fluid.ITEM);
+        // 26.1 asks the capability through an ItemAccess, which is the context it now wants.
+        ResourceHandler<FluidResource> fluidHandlerItem = ItemAccess.forStack(stack).getCapability(Capabilities.Fluid.ITEM);
         if (fluidHandlerItem == null || fluidHandlerItem.size() == 0 || fluidHandlerItem.getResource(0).isEmpty()) {
             return;
         }

@@ -7,6 +7,7 @@ import com.greatorator.tolkienmobs.handler.capability.TolkienFluidTank;
 import com.greatorator.tolkienmobs.handler.capability.TolkienItemStackHandler;
 import com.greatorator.tolkienmobs.handler.interfaces.TolkienRegistry;
 import com.greatorator.tolkienmobs.item.custom.BackpackItem;
+import com.greatorator.tolkienmobs.item.custom.PlacardItem;
 import com.greatorator.tolkienmobs.world.components.config.TolkienConfiguredFeatures;
 import com.greatorator.tolkienmobs.world.components.feature.tree.TolkienTreeGrowers;
 import net.minecraft.core.BlockPos;
@@ -2085,8 +2086,10 @@ public class TolkienBlocks {
             Block.Properties.of().mapColor(MapColor.COLOR_BLACK).sound(SoundType.WOOL).strength(0.2F).noOcclusion().pushReaction(PushReaction.DESTROY));
 
         //Placards
-    public static final DeferredBlock<Block> PLACARD = registerBlock("placard", properties -> new PlacardBlock(properties).setHasLore(),
+    // 26.1 dropped Block#appendHoverText, so the lore line rides on the item and the block is registered without one.
+    public static final DeferredBlock<Block> PLACARD = registerBlockWithoutBlockItem("placard", properties -> new PlacardBlock(properties).setHasLore(),
             BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().strength(1f, 1f));
+    public static final DeferredItem<PlacardItem> PLACARD_ITEM = ITEMS.registerItem("placard", properties -> new PlacardItem(PLACARD.get(), properties), () -> new Item.Properties());
 
     //Boats
 
