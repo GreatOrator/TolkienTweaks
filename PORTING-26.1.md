@@ -1787,6 +1787,17 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   error over the new item registration). Nothing was run in game: hover a placard in the inventory to
   see its gold line, and put a filled bucket in the camouflage fluid block to watch it pour.
 
+### `TolkienBlock`'s dead tooltip hook — DONE
+
+- **The base block class had the same override the placard did**, and its `setHasLore()` had stopped
+  doing anything the moment 26.1 moved tooltips onto items. It was also never called: every block
+  registration that asks for a lore line is a sleeping bag or the placard, none of which extend
+  `TolkienBlock`, and each of those has its own flag and block item. So the flag and the override are
+  deleted rather than reimplemented, with a note on the class pointing at `TolkienItem` for the item
+  side. Nothing a player sees changes - the blocks that show a line get it from their item.
+- **Verified:** whole-tree `javac` at **195** errors, down from 197, with `TolkienBlock`'s two gone and
+  nothing new anywhere.
+
 ## Ordered work list
 
 1. **Build stack — DONE.** MDG 2, JDK 25, NeoForge 26.1.2, the four dependency bumps. The
