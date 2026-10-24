@@ -110,7 +110,7 @@ public class PacketSender {
         PlayerList playerList = getCurrentServer().getPlayerList();
         ServerOpList opList = playerList.getOps();
         for (ServerPlayer player : playerList.getPlayers()) {
-            if (opList.get(player.getGameProfile()) != null) {
+            if (opList.get(player.nameAndId()) != null) {
                 sendToPlayer(packet, player);
             }
         }
