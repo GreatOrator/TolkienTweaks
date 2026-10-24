@@ -6,8 +6,6 @@ import com.greatorator.tolkienmobs.entity.monster.NazgulEntity;
 import com.greatorator.tolkienmobs.handler.interfaces.CommonTraits;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.util.MathUtility;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -22,7 +20,7 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.animal.horse.AbstractChestedHorse;
+import net.minecraft.world.entity.animal.equine.AbstractChestedHorse;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -79,7 +77,7 @@ public class NazgulSteedEntity extends AbstractChestedHorse implements GeoEntity
     }
 
     @Override
-    public boolean causeFallDamage(float pFallDistance, float pMultiplier, DamageSource pSource) {
+    public boolean causeFallDamage(double pFallDistance, float pMultiplier, DamageSource pSource) {
         return false;
     }
 
@@ -138,7 +136,7 @@ public class NazgulSteedEntity extends AbstractChestedHorse implements GeoEntity
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnType, @Nullable SpawnGroupData spawnGroupData) {
         if (MathUtility.getRandomInteger(15, 1) == 2) {
             NazgulEntity entityNazgul = TolkienEntities.ENTITY_TTM_NAZGUL.get().create(this.level, EntitySpawnReason.JOCKEY);
-            entityNazgul.moveTo(this.getX(), this.getY(), this.getZ(), this.yRotO, 0.0F);
+            entityNazgul.snapTo(this.getX(), this.getY(), this.getZ(), this.yRotO, 0.0F);
             entityNazgul.finalizeSpawn(level, difficulty, spawnType, null);
             this.setTamed(true);
             this.isSaddled();

@@ -40,6 +40,11 @@ All notable changes to this project will be documented in this file.
   four lockable chests' key codes, the keystone and milestone settings, and the dragon's home
   position. Keys and nesting are unchanged, so worlds save and load the way they did; this build
   still produces no jar, because the rest of the source is mid-port.
+- The three chested mobs - the goat, Shadowfax and the Nazgul steed - are back on their supertype.
+  26.1 moved the chested horses to `animal.equine`, and with the import fixed their saddlebag
+  inventories, chest state and sounds are the ones vanilla's own chested mobs use. One behaviour
+  note: the goat's head-up warning now lasts its 40-tick scream rather than however long its attack
+  goal happened to keep the pose up, so it reads as one clear warning before a charge.
 
 ## [4.4.83-Final] - 10.22.2026
 
