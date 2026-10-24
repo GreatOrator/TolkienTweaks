@@ -204,7 +204,7 @@ public class MilestoneBlockEntity extends TolkienBlockEntity implements MenuProv
                 }
 
                 int found = 0;
-                for (ItemStack item : client.getInventory().items) {
+                for (ItemStack item : client.getInventory().getNonEquipmentItems()) {
                     if (ItemStack.isSameItem(stack, item)) found += item.getCount();
                 }
                 if (found < cost) {
@@ -212,7 +212,7 @@ public class MilestoneBlockEntity extends TolkienBlockEntity implements MenuProv
                     return;
                 }
                 int needed = cost;
-                for (ItemStack item : client.getInventory().items) {
+                for (ItemStack item : client.getInventory().getNonEquipmentItems()) {
                     if (ItemStack.isSameItem(stack, item)) {
                         int taken = Math.min(item.getCount(), needed);
                         item.shrink(taken);

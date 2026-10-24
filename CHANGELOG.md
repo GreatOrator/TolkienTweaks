@@ -58,6 +58,9 @@ All notable changes to this project will be documented in this file.
   is turned in them. The break sound they play is one of the few sound events 26.1 still holds by
   reference rather than as a finished event, so it is unwrapped at the call; the noise itself is
   the same one at the same volume and pitch.
+- A milestone still charges travel out of your inventory and only your inventory: the item payment
+  reads the same 36 slots it always did, so what is in an armour or offhand slot is still not
+  spent on a jump. Nothing about the cost, the counting or the order items leave the pack changed.
 - Every message the mod sends a player now uses 26.1's own call for it: the chat lines go through
   the system-message call, and the three that flash above the hotbar - the backpack's "no room",
   the occupied sleeping bag and a refused sleep - through the overlay one. Nothing the player reads
