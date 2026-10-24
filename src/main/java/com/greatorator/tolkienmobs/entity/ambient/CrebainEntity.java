@@ -42,8 +42,8 @@ public class CrebainEntity extends TolkienFlyingAmbientEntity implements GeoEnti
     public CrebainEntity(EntityType<? extends TamableAnimal> entityType, Level level) {
         super(entityType, level);
 
-        setPathfindingMalus(PathType.DANGER_FIRE, -1.0f);
-        setPathfindingMalus(PathType.DAMAGE_FIRE, -1.0f);
+        setPathfindingMalus(PathType.FIRE_IN_NEIGHBOR, -1.0f);
+        setPathfindingMalus(PathType.FIRE, -1.0f);
         setPathfindingMalus(PathType.WATER, -1.0f);
         setPathfindingMalus(PathType.FENCE, -1.0f);
     }
@@ -81,7 +81,7 @@ public class CrebainEntity extends TolkienFlyingAmbientEntity implements GeoEnti
     }
 
     @Override
-    public boolean causeFallDamage(float pFallDistance, float pMultiplier, DamageSource pSource) {
+    public boolean causeFallDamage(double pFallDistance, float pMultiplier, DamageSource pSource) {
         return false;
     }
 
