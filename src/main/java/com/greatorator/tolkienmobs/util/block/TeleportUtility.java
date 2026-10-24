@@ -29,7 +29,7 @@ public class TeleportUtility {
             return entity;
         }
 
-        MinecraftServer server = entity.getServer();
+        MinecraftServer server = entity.level().getServer();
         ResourceKey<Level> sourceDim = entity.level().dimension();
 
         if (!entity.isVehicle() && !entity.isPassenger()) {
@@ -85,7 +85,7 @@ public class TeleportUtility {
                 player.connection.teleport(xCoord, yCoord, zCoord, yaw, pitch);
                 player.setYHeadRot(yaw);
             } else {
-                entity.moveTo(xCoord, yCoord, zCoord, yaw, pitch);
+                entity.snapTo(xCoord, yCoord, zCoord, yaw, pitch);
                 entity.setYHeadRot(yaw);
             }
         }
@@ -108,7 +108,7 @@ public class TeleportUtility {
         movedEntity = entity.getType().create(targetWorld, EntitySpawnReason.DIMENSION_TRAVEL);
         if (movedEntity != null) {
             movedEntity.restoreFrom(entity);
-            movedEntity.moveTo(xCoord, yCoord, zCoord, yaw, pitch);
+            movedEntity.snapTo(xCoord, yCoord, zCoord, yaw, pitch);
             targetWorld.addDuringTeleport(movedEntity);
             entity.remove(Entity.RemovalReason.CHANGED_DIMENSION);
             ((ServerLevel) entity.level()).resetEmptyTime();
@@ -171,10 +171,10 @@ public class TeleportUtility {
                 return;
             }
             if (entity.isPassenger()) {
-                entity.moveTo(entity.getX() + offsetX, entity.getY() + offsetY, entity.getZ() + offsetZ, entity.getYRot(), entity.getXRot());
+                entity.snapTo(entity.getX() + offsetX, entity.getY() + offsetY, entity.getZ() + offsetZ, entity.getYRot(), entity.getXRot());
             }
             for (PassengerHelper passenger : passengers) {
-                DelayedTask.run(1, () -> passenger.entity.startRiding(entity, true));
+                DelayedTask.run(1, () -> passenger.entity.startRiding(entity, true, true));
                 passenger.remountRiders();
             }
         }

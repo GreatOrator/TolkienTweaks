@@ -87,7 +87,7 @@ public class GeneralUtility {
     }
 
     public static void unsafeRunWhenOn(Dist dist, Supplier<Runnable> toRun) {
-        if (dist == FMLEnvironment.dist) {
+        if (dist == FMLEnvironment.getDist()) {
             toRun.get().run();
         }
     }
@@ -364,8 +364,8 @@ public class GeneralUtility {
     public static List<String> NBTToStringList(ListTag nbtList) {
         List<String> list = new ArrayList<>();
         for (int i = 0; i < nbtList.size(); i++) {
-            CompoundTag tag = nbtList.getCompound(i);
-            list.add(tag.getString("list"));
+            CompoundTag tag = nbtList.getCompoundOrEmpty(i);
+            list.add(tag.getStringOr("list", ""));
         }
         return list;
     }
@@ -400,7 +400,7 @@ public class GeneralUtility {
     }
 
     public static <T> T unsafeRunForDist(Supplier<Supplier<T>> clientTarget, Supplier<Supplier<T>> serverTarget) {
-        switch (FMLEnvironment.dist) {
+        switch (FMLEnvironment.getDist()) {
             case CLIENT:
                 return clientTarget.get().get();
             case DEDICATED_SERVER:
