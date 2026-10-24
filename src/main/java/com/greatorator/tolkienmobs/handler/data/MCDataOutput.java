@@ -4,6 +4,7 @@ import net.minecraft.core.Direction;
 
 import com.greatorator.tolkienmobs.handler.vec.Cuboid6;
 import com.greatorator.tolkienmobs.handler.vec.Vector3;
+import com.mojang.serialization.JsonOps;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.EncoderException;
 import net.minecraft.core.*;
@@ -12,6 +13,7 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.StreamEncoder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -411,7 +413,9 @@ public interface MCDataOutput {
     }
 
     default MCDataOutput writeTextComponent(Component component) {
-        return writeString(Component.Serializer.toJson(component, RegistryAccess.EMPTY), 262144);//32kb
+        // 26.1 removed Component.Serializer, so the component is written through its own codec.
+        String json = ComponentSerialization.CODEC.encodeStart(JsonOps.INSTANCE, component).getOrThrow().toString();
+        return writeString(json, 262144);//32kb
     }
 
     default <T> MCDataOutput writeRegistryIdDirect(Registry<T> registry, T entry) {

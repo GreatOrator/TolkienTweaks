@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- The dwarven hammer still breaks the blocks around the one you mine, and text carried between the mod's screens and the server still arrives as the same JSON - 26.1 moved the block-break event into its own class and dropped the old component-to-JSON helper, so both go through their new equivalents.
 - Every spawn egg still hatches the mob it names, and the eggs from a dispenser still work: 26.1 carries the egg's creature on the item's own properties instead of handing it to the item's constructor.
 - The mithril, morgul-iron and ammolite armour trims keep the same palettes and the same hover colours - 26.1 builds a trim material from its palette name and its description alone, and the registry paths still point at the mod's own palettes. Their generated JSON loses the `ingredient` field the old format carried, which nothing reads.
 - A lockable chest's code still persists, with one caveat: the way an entity attachment is saved changed, and a bare string cannot be written the new way, so a chest locked by an earlier version starts at the default "Enter Code" and needs its code set once. After that it saves and reloads as before.
