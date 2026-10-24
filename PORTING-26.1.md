@@ -1036,6 +1036,17 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   `Cuboid6` reads `getCompoundOrEmpty`. Missing keys read as 0 and as an empty compound, the same
   values the old calls produced.
 
+### `@EventBusSubscriber` - DONE
+
+- 26.1's `EventBusSubscriber` has only `modid` and `value`: the `bus` member and its `Bus` enum are
+  gone, so the annotation cannot say which bus a class listens on. `AutomaticEventSubscriber.inject`
+  picks it per method instead - a `@SubscribeEvent` method whose event is an `IModBusEvent` is
+  registered on `ModContainer.getEventBus()`, everything else on `IBindingsProvider.getGameBus()`.
+- The port is therefore deleting the member: 14 files carried `bus = EventBusSubscriber.Bus.MOD` or
+  `.GAME`, and each now reads `@EventBusSubscriber(modid = MODID)` or with `value = Dist.CLIENT`.
+  `value` still defaults to `{CLIENT, DEDICATED_SERVER}`, so the sides each class loads on are
+  unchanged; only the bus choice moved from the annotation to the event type.
+
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
   26.1.2 MDK's version; NeoForge requires 9.1.0 or newer), foojay resolver 0.8.0 → 1.0.0.

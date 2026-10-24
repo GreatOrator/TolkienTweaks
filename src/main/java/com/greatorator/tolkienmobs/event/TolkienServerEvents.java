@@ -32,7 +32,7 @@ import java.util.Set;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-@EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid = MODID)
 public class TolkienServerEvents {
     private static final Set<BlockPos> HARVESTED_BLOCKS = new HashSet<>();
 

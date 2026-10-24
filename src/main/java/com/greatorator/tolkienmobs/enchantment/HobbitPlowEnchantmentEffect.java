@@ -27,7 +27,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-@EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid = MODID)
 public record HobbitPlowEnchantmentEffect(int level) implements EnchantmentEntityEffect {
     public static final MapCodec<HobbitPlowEnchantmentEffect> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(Codec.INT.fieldOf("level").forGetter(HobbitPlowEnchantmentEffect::level))

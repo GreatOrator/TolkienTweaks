@@ -130,6 +130,11 @@ All notable changes to this project will be documented in this file.
   noted because it is the end of the rendering port. One helper went with it: a fluid's colour was
   read from its fluid type, and 26.1 keeps that on the fluid's baked model instead, so the unused
   fluid-colour helper had nothing left to read.
+- The mod's event listeners register themselves on 26.1's terms: the annotation no longer names a
+  bus, so the fourteen classes that declared one - the client key handler, the trinket tint, the
+  config, the server and client event sets, the balrog and player events and the rest - declare only
+  their mod id and sides, and the loader decides the bus from each event the method listens to. No
+  listener was dropped and none changed sides; the mod's hooks fire in the same places as before.
 - Every message the mod sends a player now uses 26.1's own call for it: the chat lines go through
   the system-message call, and the three that flash above the hotbar - the backpack's "no room",
   the occupied sleeping bag and a refused sleep - through the overlay one. Nothing the player reads

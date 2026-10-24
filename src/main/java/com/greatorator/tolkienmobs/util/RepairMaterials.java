@@ -35,7 +35,7 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.resLoc;
  * <p>The mod ships no entries of its own, so an unmodified game repairs exactly as it did before
  * this registry existed and only a pack changes what the table takes.</p>
  */
-@EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = MODID)
 public final class RepairMaterials {
     public static final ResourceKey<Registry<RepairMaterial>> REGISTRY_KEY = ResourceKey.createRegistryKey(resLoc("repair_material"));
 

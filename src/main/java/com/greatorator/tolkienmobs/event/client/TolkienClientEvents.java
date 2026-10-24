@@ -12,7 +12,7 @@ import net.neoforged.neoforge.common.NeoForge;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-@EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
+@EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class TolkienClientEvents {
 
     @SubscribeEvent
