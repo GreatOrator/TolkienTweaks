@@ -3,18 +3,16 @@ package com.greatorator.tolkienmobs.entity.npc.model;
 import com.greatorator.tolkienmobs.entity.npc.OrcEntity;
 import com.greatorator.tolkienmobs.entity.npc.render.OrcRender;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.renderer.GeoRenderer;
-import software.bernie.geckolib.model.data.EntityModelData;
+import com.geckolib.cache.model.GeoBone;
+import com.geckolib.constant.DataTickets;
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.base.GeoRenderer;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class OrcModel extends GeoModel<OrcEntity> {
-	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "geo/merchant/orc.geo.json");
-	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/merchant/orc.animation.json");
+	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "merchant/orc");
+	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "merchant/orc");
 
 	@Override
 	public ResourceLocation getModelResource(OrcEntity object, GeoRenderer<OrcEntity> renderer) {

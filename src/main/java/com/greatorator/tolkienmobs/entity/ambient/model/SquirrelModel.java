@@ -6,14 +6,14 @@ package com.greatorator.tolkienmobs.entity.ambient.model;// Made with Blockbench
 import com.greatorator.tolkienmobs.entity.ambient.SquirrelEntity;
 import com.greatorator.tolkienmobs.entity.ambient.render.FrogRender;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.renderer.GeoRenderer;
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.base.GeoRenderer;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class SquirrelModel extends GeoModel<SquirrelEntity> {
-	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "geo/ambient/squirrel.geo.json");
-	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/ambient/squirrel.animation.json");
+	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "ambient/squirrel");
+	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "ambient/squirrel");
 
 	@Override
 	public ResourceLocation getModelResource(SquirrelEntity object, GeoRenderer<SquirrelEntity> renderer) {

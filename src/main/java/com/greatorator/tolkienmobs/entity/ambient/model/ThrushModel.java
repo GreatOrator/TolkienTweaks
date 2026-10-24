@@ -2,19 +2,17 @@ package com.greatorator.tolkienmobs.entity.ambient.model;
 
 import com.greatorator.tolkienmobs.entity.ambient.ThrushEntity;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.renderer.GeoRenderer;
-import software.bernie.geckolib.model.data.EntityModelData;
+import com.geckolib.cache.model.GeoBone;
+import com.geckolib.constant.DataTickets;
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.base.GeoRenderer;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class ThrushModel extends GeoModel<ThrushEntity> {
-	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "geo/ambient/thrush.geo.json");
+	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "ambient/thrush");
 	private final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/birds/thrush.png");
-	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/ambient/thrush.animation.json");
+	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "ambient/thrush");
 
 	@Override
 	public ResourceLocation getModelResource(ThrushEntity object, GeoRenderer<ThrushEntity> renderer) {

@@ -3,15 +3,15 @@ package com.greatorator.tolkienmobs.entity.projectiles.model;
 
 import com.greatorator.tolkienmobs.entity.projectiles.TornadoEntity;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.renderer.GeoRenderer;
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.base.GeoRenderer;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class TornadoModel extends GeoModel<TornadoEntity> {
-	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "geo/item/ammo_tornado.geo.json");
+	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "item/ammo_tornado");
 	private final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/ammo_tornado.png");
-	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/ammo_tornado.animation.json");
+	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "ammo_tornado");
 
 	@Override
 	public ResourceLocation getModelResource(TornadoEntity object, GeoRenderer<TornadoEntity> renderer) {

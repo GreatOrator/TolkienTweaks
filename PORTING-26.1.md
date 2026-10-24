@@ -16,7 +16,7 @@ measurement's other half.
 | Source | Minecraft **1.21.4**, NeoForge **21.4.161**, mod **4.4.83-Final** |
 | Target | Minecraft **26.1.2**, NeoForge **26.1.2.116**, mod **5.0.0** |
 | Java | 21 → **25** |
-| Status | build stack in place; source not yet ported |
+| Status | build stack in place; GeckoLib 5 renamed, assets moved, one entity converted |
 
 What the source tree contains, counted:
 
@@ -254,6 +254,59 @@ There is **no GeckoLib 4 → 5 migration guide**. The changelogs are the record
 settled 5.5 line, so read its changelog before starting and let the first converted entity set
 the pattern for the other 191 files.
 
+#### Done so far
+
+- **The rename is scripted.** [tools/port-geckolib5.pl](tools/port-geckolib5.pl) rewrites the 192
+  importing files and is idempotent: the group move, the package moves that are not where 5's
+  name suggests (`PlayState` → `animation.object`, `AnimatableManager` → `animatable.manager`,
+  `GeoRenderer` → `renderer.base`, `GeoBone`/`BakedGeoModel` → `cache.model`,
+  `BlockAndItemGeoLayer` → `renderer.layer.builtin`, `AutoPlayingSoundKeyframeHandler` →
+  `animation.keyframehandler`), the 38 `animation.*` wildcard imports expanded to what survives,
+  the `AnimationState` and `EntityModelData` imports dropped (no 5 equivalent), and every model
+  and animation id rebased.
+- **The assets moved**, with `git mv` so their history follows: `assets/tolkienmobs/geo/` →
+  `assets/tolkienmobs/geckolib/models/`, `assets/tolkienmobs/animations/` →
+  `.../geckolib/animations/` (56 + 45 files). The id a model asks for is now the bare path,
+  `monster/rockgolem`: GeckoLib strips the `geckolib/models/` root and the `.geo.json` suffix
+  itself. All 55 GeckoLib ids the code asks for resolve to a moved file.
+- **One entity is converted**: the rock golem, in
+  [RockGolemEntity](src/main/java/com/greatorator/tolkienmobs/entity/monster/RockGolemEntity.java),
+  [RockGolemModel](src/main/java/com/greatorator/tolkienmobs/entity/monster/model/RockGolemModel.java)
+  and [RockGolemRender](src/main/java/com/greatorator/tolkienmobs/entity/monster/render/RockGolemRender.java).
+  Four controllers, a variant texture, a per-frame head turn and a `RawAnimation` set: between
+  them they touch every part of the API the other 55 entities use.
+
+#### The 5 shape, as the jar actually has it
+
+- `GeoEntityRenderer<T extends Entity & GeoAnimatable, R extends EntityRenderState>` still takes
+  `(context, model)`, but `R` must be a type that **implements `GeoRenderState`**:
+  `RenderPassInfo<R>` is bounded by it, and the `EntityRenderState` that GeckoLib's mixin makes
+  into one is invisible to javac. A renderer therefore needs a state class of its own;
+  [TolkienGeoRenderState](src/main/java/com/greatorator/tolkienmobs/entity/util/TolkienGeoRenderState.java)
+  is the shared one — `extends LivingEntityRenderState implements GeoRenderState`, its own data
+  map, and a `TolkienVariant variant` field, because the variant is what every model used to read
+  off the entity. It has to re-declare `addGeckolibData`/`hasGeckolibData`/`getDataMap` over its
+  own map, or the mixin's map and the class's would disagree at runtime.
+- Renderer hooks: `createRenderState(T, Void)`, `addRenderData(T, Void, R, float)` (the last place
+  the entity itself is still visible), `getTextureLocation(R)`, and
+  `adjustModelBonesForRender(RenderPassInfo<R>, BoneSnapshots)`. That last one replaces the model's
+  `setCustomAnimations` + `getAnimationProcessor().getBone(...)` head turn: the pitch and yaw come
+  from `DataTickets.ENTITY_PITCH`/`ENTITY_YAW` on the state, and the bone is turned with
+  `snapshots.ifPresent("h_head", bone -> bone.setRotation(...))` in radians.
+- Model hooks: `getModelResource(GeoRenderState)`, `getTextureResource(GeoRenderState)`,
+  `getAnimationResource(T)`, all returning `Identifier`.
+- Controllers: `new AnimationController<T>(name, transitionTicks, test -> ...)`, driven by
+  `test.isMoving()`, `test.setAndContinue(raw)` and `test.controller()`. `AnimationController.State`
+  and `getAnimationState()` are gone — ask `controller().isAnimatingBones()` — and `PlayState.STOP`
+  resets the controller, so a one-shot attack has to keep returning CONTINUE while it plays.
+- 26.1 arrives with it: `Identifier` replaces `ResourceLocation`, `Util` moved to
+  `net.minecraft.util.Util`, and entity save data is `ValueInput`/`ValueOutput`
+  (`input.getIntOr("Variant", 0)`) instead of `CompoundTag`.
+- **Where that leaves the tree**: 7,671 errors in 553 files, down from 9,658. The GeckoLib-shaped
+  remainder is 154 `cannot infer type arguments for AnimationController` plus the
+  `AnimationState`/`EntityModelData` uses in the 55 entities still to convert; the rest is the
+  26.1 source work further down this list.
+
 ### Build stack — DONE
 
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
@@ -298,8 +351,10 @@ the pattern for the other 191 files.
    project configures and `compileJava` fails only on source, not on the build: 9,658 errors
    in the tree, reported 1,000 at a time. See *Build stack — DONE* above for what was
    verified and the one workaround that had to change.
-2. **GeckoLib 5.** Package rename and asset moves first (scripted), then the renderers and
-   controllers. *Done when* the 192 importing files compile against `com.geckolib`.
+2. **GeckoLib 5 — STARTED.** The rename, the asset moves and one entity are done (see above).
+   Remaining: 55 entities on the rock golem pattern, 5 block entities, 2 item renderers,
+   15 `BlockAndItemGeoLayer` sites and 3 `GeoRenderLayer`s. *Done when* the 192 importing
+   files compile against `com.geckolib`.
 3. **Rename pass.** One idempotent script for `ResourceLocation` → `Identifier`, the `util`
    moves and the model/entity subpackages — the same shape as `tools/port-1214-pass1.pl`.
 4. **Items and equipment.** The three removed base classes, the five `inventoryTick`
@@ -318,7 +373,15 @@ the pattern for the other 191 files.
 
 ## Verification
 
-- `./gradlew compileJava` throughout, with `-Xmaxerrs` still set so one run reports everything.
+- `./gradlew compileJava` throughout. It reports 1,000 errors at a time by default
+  (`-PmaxCompileErrors=5000` for a wider sweep) because Gradle dies carrying the whole list.
+- The **total** error count needs `javac` on its own: write the classpath out with an init script
+  (`tasks.register('printCompileCp') { doLast { file.text = sourceSets.main.compileClasspath.asPath } }`),
+  then run `javac -J-Xmx4g -proc:none -Xmaxerrs 100000 -implicit:none -cp <classpath>
+  @<every source file>`. That is how 7,671-after-the-GeckoLib-pass was measured without Gradle in
+  the way. A single file can be checked the same way with `-sourcepath src/main/java`, which
+  reports errors for that file while leaving its unported neighbours alone — that is how the rock
+  golem was checked before the tree could build.
 - `./gradlew runData`, then a **parsed-JSON** diff of `src/generated/resources` against the
   6,084 committed files (not a byte diff). A second run must write 0 files.
 - `tools/modelgen-verify/run.sh` compares the vendored generator's output against the vanilla

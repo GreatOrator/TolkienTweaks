@@ -7,7 +7,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.animatable.GeoEntity;
+import com.geckolib.animatable.GeoEntity;
 
 public class OrcTraderEntity extends TolkienWanderingEntity implements GeoEntity {
     public OrcTraderEntity(EntityType<? extends TolkienWanderingEntity> entityType, Level level) {

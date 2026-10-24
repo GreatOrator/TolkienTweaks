@@ -1,6 +1,6 @@
 package com.greatorator.tolkienmobs.entity.monster.render;
 
-import software.bernie.geckolib.cache.object.BakedGeoModel;
+import com.geckolib.cache.model.BakedGeoModel;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -17,9 +17,9 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
-import software.bernie.geckolib.renderer.layer.BlockAndItemGeoLayer;
+import com.geckolib.cache.model.GeoBone;
+import com.geckolib.renderer.GeoEntityRenderer;
+import com.geckolib.renderer.layer.builtin.BlockAndItemGeoLayer;
 
 import javax.annotation.Nullable;
 import java.util.Map;
