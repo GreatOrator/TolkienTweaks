@@ -1,9 +1,10 @@
 package com.greatorator.tolkienmobs.containers.widget;
 
 import com.greatorator.tolkienmobs.containers.handlers.ToggleButtonFactory.TextureLocalization;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 
 import java.util.List;
@@ -36,18 +37,8 @@ public class ToggleButton extends TolkienButton {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        guiGraphics.blit(RenderType::guiTextured, textureLocalizations.get(getTexturePosition()).texture(), this.getX(), this.getY(), 0, 0, width, height, width, height);
-    }
-
-    @Override
-    public void onClick(double p_onClick_1_, double p_onClick_3_) {
-        super.onClick(p_onClick_1_, p_onClick_3_);
-    }
-
-    @Override
-    public boolean mouseClicked(double x, double y, int button) {
-        return super.mouseClicked(x, y, button);
+    protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+        graphics.blit(RenderPipelines.GUI_TEXTURED, textureLocalizations.get(getTexturePosition()).texture(), this.getX(), this.getY(), 0, 0, width, height, width, height);
     }
 
     public int getTexturePosition() {
@@ -58,13 +49,16 @@ public class ToggleButton extends TolkienButton {
         setTexturePosition(texturePosition ? 1 : 0);
     }
 
-    @Override
-    public void onClick(double mouseX, double mouseY, int button) {
-        if (button == 1)
+    /**
+     * A right click steps the toggle backwards and anything else forwards, which is why the screen
+     * calls this by hand for button 1 - vanilla only dispatches left clicks to a widget.
+     */
+    public void onClick(MouseButtonEvent event) {
+        if (event.button() == 1)
             previousTexturePosition();
         else
             nextTexturePosition();
-        onPress();
+        onPress(event);
     }
 
     public void setTexturePosition(int texturePosition) {

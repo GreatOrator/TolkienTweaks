@@ -321,7 +321,7 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
                 }
                 if (renderable instanceof ToggleButton toggleButton && GeneralUtility.inBounds(toggleButton.getX(), toggleButton.getY(), toggleButton.getWidth(), toggleButton.getHeight(), event.x(), event.y())) {
                     if (event.button() == 1) {
-                        toggleButton.onClick(event, doubleClick);
+                        toggleButton.onClick(event);
                         toggleButton.playDownSound(Minecraft.getInstance().getSoundManager());
                     }
                 }

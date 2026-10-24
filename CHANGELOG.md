@@ -71,7 +71,9 @@ All notable changes to this project will be documented in this file.
   GUI, the same page buttons and counter, the same click-to-adjust numbers, and the same cost
   buttons beside each known milestone. Two small tidies come with it - the name field was being
   drawn twice over itself and now draws once, and holding shift or control still steps a number ten
-  or sixty-four at a time.
+  or sixty-four at a time. The buttons underneath it are ported with it - the mod's own button, the
+  number stepper, the toggle and the greyscale button - and they draw and press as before, including
+  a right click stepping a toggle backwards.
 - Every message the mod sends a player now uses 26.1's own call for it: the chat lines go through
   the system-message call, and the three that flash above the hotbar - the backpack's "no room",
   the occupied sleeping bag and a refused sleep - through the overlay one. Nothing the player reads
