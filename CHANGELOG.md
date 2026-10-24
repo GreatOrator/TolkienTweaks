@@ -242,6 +242,11 @@ All notable changes to this project will be documented in this file.
   difference is in the recipe book: 26.1 asks each cooking recipe which tab it belongs to instead of
   working it out from the result, so the helpers say so explicitly - stone goes to the blocks tab and
   ores to the misc tab, which is where the committed recipes already put them.
+- The fireplace's alloy smelting and the trinket table's potion recipe are ported, which finishes the
+  recipe family: both still read the same files and craft the same results. A fireplace still
+  consumes its ingredients in any order and hands back the first output, and a trinket table still
+  keeps the trinket's own name and state while it stamps the potion onto it. Their recipe files are
+  unchanged, and the trinket table's recipe preview in JEI still shows the trinket as its output.
 - The particle description data provider is ported, so the datagen side of the particles compiles.
   Every flame, the lightning bugs, the fell beast's breath, the wind and the leaf particles still
   declare the same single sprite they did, and the tinted smoke still borrows vanilla's twelve

@@ -61,6 +61,6 @@ public class TrinketRecipeCategory implements IRecipeCategory<TrinketRecipe> {
         builder.addSlot(RecipeIngredientRole.INPUT, 45, 15).addIngredient(VanillaTypes.ITEM_STACK, PotionContents.createItemStack(recipe.getPotionItem(), Potions.WATER));
         builder.addSlot(RecipeIngredientRole.INPUT, 34, 55).addItemStacks(recipe.getFuel().ingredient().items().map(ItemStack::new).toList());
 
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 91, 35).addItemStack(recipe.getResultItem(null));
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 91, 35).addItemStack(recipe.getResultItem());
     }
 }
