@@ -15,7 +15,7 @@ import net.neoforged.neoforge.event.level.LevelEvent;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-@EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid = MODID)
 public class BalrogMarkEvents {
     @SubscribeEvent
     public static void onBlockBreak(BlockEvent.BreakEvent event) {

@@ -27,7 +27,7 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
  * Doing it on chunk load rather than during generation also converts terrain that was generated
  * before this existed. A converted chunk saves without water, so later loads have nothing to do.
  */
-@EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid = MODID)
 public final class MordorLavaEvents {
     private static final BlockState LAVA = Blocks.LAVA.defaultBlockState();
     private static final Predicate<BlockState> IS_WATER = state -> state.is(Blocks.WATER);

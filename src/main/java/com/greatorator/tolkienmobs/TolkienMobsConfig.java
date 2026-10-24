@@ -8,7 +8,7 @@ import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 
-@EventBusSubscriber(modid = TolkienMobsMain.MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = TolkienMobsMain.MODID)
 public class TolkienMobsConfig {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 

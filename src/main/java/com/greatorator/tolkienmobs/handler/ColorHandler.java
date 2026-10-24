@@ -22,7 +22,7 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
  * the item colour handler into a tint source, which an item model names in its {@code tints} list:
  * the trinkets list a plain white first layer and this source for the gem.
  */
-@EventBusSubscriber(modid = MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class ColorHandler {
 
     @SubscribeEvent

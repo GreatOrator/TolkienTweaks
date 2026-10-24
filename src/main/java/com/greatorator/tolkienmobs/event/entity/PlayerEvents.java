@@ -11,7 +11,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-@EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid = MODID)
 public class PlayerEvents {
     @SubscribeEvent
     public static void onPlayerUpdate(PlayerTickEvent.Pre event){

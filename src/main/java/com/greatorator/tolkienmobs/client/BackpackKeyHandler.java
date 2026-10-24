@@ -17,7 +17,7 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 public class BackpackKeyHandler {
     public static final KeyMapping OPEN_BACKPACK = new KeyMapping("key.tolkienmobs.open_backpack", InputConstants.KEY_B, "key.categories.tolkienmobs");
 
-    @EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+    @EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
     public static class Registration {
         @SubscribeEvent
         public static void registerKeys(RegisterKeyMappingsEvent event) {

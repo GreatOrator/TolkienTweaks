@@ -35,7 +35,7 @@ import java.util.function.Supplier;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.LOGGER;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-@EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = MODID)
 public class TolkienEventBusEvents {
     private static final Supplier<Block[]> chameleonBlocks = Suppliers.memoize(() -> new Block[] {
             TolkienBlocks.CHAMELEON_BLOCK.get(),

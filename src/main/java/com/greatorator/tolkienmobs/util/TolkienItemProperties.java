@@ -25,7 +25,7 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
  * predicates on the item; the game now reads them from the item model definition, where
  * {@code minecraft:range_dispatch} and {@code minecraft:condition} name them by id.
  */
-@EventBusSubscriber(modid = MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class TolkienItemProperties {
     @SubscribeEvent
     public static void registerRangeProperties(RegisterRangeSelectItemModelPropertyEvent event) {
