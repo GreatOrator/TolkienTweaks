@@ -811,6 +811,9 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   swallows keys while focused except escape - and the GLFW key constant is `event.isEscape()`.
 - Payloads go through `ClientPacketDistributor`, and `RenderSystem.setShaderTexture` is gone with the
   pipeline-bound blit.
+
+### Key and keystone menus — DONE
+
 - Both containers are ported with them. 26.1 replaced `ClickType` with `ContainerInput`
   (`PICKUP`, `QUICK_MOVE`, `SWAP`, `CLONE`, `THROW`, `QUICK_CRAFT`, `PICKUP_ALL`) and the hook is
   `clicked(int slotIndex, int buttonNum, ContainerInput containerInput, Player player)`. Neither
@@ -822,6 +825,18 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   "this stack does not stack" guards, which only throw the click away early and keep the enum's
   name out of their logic - so those four keep their override with the new parameter type. No
   `ClickType` is left anywhere in the tree.
+
+### Backpack menu — DONE
+
+- The held backpack locks the slot it is carried in, which is the hotbar slot the player has
+  selected (`Inventory#selected` is private now; `getSelectedSlot()` reads it) or the offhand.
+- `Item#onCraftedBy` lost its `Level` argument: it is `onCraftedBy(ItemStack, Player)` and reads
+  `player.level()` itself. The call is still inside the container-level access, so it fires under
+  exactly the conditions it did before, and the crafting result's "was this crafted by a player"
+  bookkeeping is unchanged.
+- One error is left in the file and is a different change: `Recipe#assemble` takes `CraftingInput`
+  alone now, so `assemble(container.asCraftInput(), level.registryAccess())` has one argument too
+  many.
 
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official

@@ -115,7 +115,8 @@ public class BackpackBlockContainer extends TolkienContainer{
 
         if (this.tileEntity.isHeld()) {
             InteractionHand hand = this.tileEntity.getHeldHand();
-            this.lockedInvIndex = hand == null ? -1 : hand == InteractionHand.MAIN_HAND ? inv.selected : Inventory.SLOT_OFFHAND;
+            // 26.1 made the selected hotbar slot private; the accessor is the only way to read it.
+            this.lockedInvIndex = hand == null ? -1 : hand == InteractionHand.MAIN_HAND ? inv.getSelectedSlot() : Inventory.SLOT_OFFHAND;
             for (Slot slot : this.slots) {
                 if (slot.container == inv && slot.getContainerSlot() == this.lockedInvIndex) {
                     this.lockedSlot = slot.index;
@@ -169,7 +170,9 @@ public class BackpackBlockContainer extends TolkienContainer{
         int storageEnd = STORAGE_START + getStorageSize();
 
         if (pIndex == CRAFT_RESULT_SLOT) {
-            this.access.execute((lvl, pos) -> stackInSlot.getItem().onCraftedBy(stackInSlot, lvl, playerIn));
+            // 26.1's onCraftedBy takes the player alone: the level it used to be handed is read off
+            // the player inside it, so the container-level access still gates the call as before.
+            this.access.execute((lvl, pos) -> stackInSlot.getItem().onCraftedBy(stackInSlot, playerIn));
             if (!moveItemStackTo(stackInSlot, PLAYER_INV_START, PLAYER_INV_END, true)
                     && !moveItemStackTo(stackInSlot, STORAGE_START, storageEnd, false)) {
                 return ItemStack.EMPTY;
