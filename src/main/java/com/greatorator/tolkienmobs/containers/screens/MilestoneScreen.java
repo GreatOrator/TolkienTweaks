@@ -13,21 +13,19 @@ import com.greatorator.tolkienmobs.network.manager.MilestoneSettingsUpdateManage
 import com.greatorator.tolkienmobs.util.ColorUtility;
 import com.greatorator.tolkienmobs.util.GeneralUtility;
 import com.greatorator.tolkienmobs.util.block.MilestoneSettings;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.layouts.LinearLayout;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.client.renderer.RenderType;
-import net.neoforged.neoforge.network.PacketDistributor;
-import org.jetbrains.annotations.NotNull;
-import org.lwjgl.glfw.GLFW;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,11 +48,12 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
     public static int currentPage = 0;
 
     public MilestoneScreen(MilestoneContainer container, Inventory inv, Component title) {
-        super(container, inv, title);
+        // The height is fixed by the texture and set before anything else reads it; 26.1 makes the
+        // two sizes final, so they go through the constructor instead of being assigned after.
+        super(container, inv, title, 176, 196);
         this.container = container;
         this.tileEntity = container.tile;
         this.milestoneSettings = tileEntity.getMilestoneSettings();
-        this.imageHeight = 196;
 
     }
 
@@ -121,7 +120,7 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
         int offsetY = (this.height - this.imageHeight) / 2;
         addRenderableWidget(ToggleButtonFactory.DISTANCE_BUTTON(offsetX + 16, offsetY + 48, milestoneSettings.distance, b -> {
             milestoneSettings.distance = ((NumberButton) b).getValue();
-            PacketDistributor.sendToServer(new MilestoneSettingsUpdateManager(milestoneSettings.distance, milestoneSettings.dimension, milestoneSettings.name, milestoneSettings.uuid));
+            ClientPacketDistributor.sendToServer(new MilestoneSettingsUpdateManager(milestoneSettings.distance, milestoneSettings.dimension, milestoneSettings.name, milestoneSettings.uuid));
         }));
     }
 
@@ -130,7 +129,7 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
         int offsetY = (this.height - this.imageHeight) / 2;
         addRenderableWidget(ToggleButtonFactory.DIMENSION_BUTTON(offsetX + 45, offsetY + 48, milestoneSettings.dimension, b -> {
             milestoneSettings.dimension = ((NumberButton) b).getValue();
-            PacketDistributor.sendToServer(new MilestoneSettingsUpdateManager(milestoneSettings.distance, milestoneSettings.dimension, milestoneSettings.name, milestoneSettings.uuid));
+            ClientPacketDistributor.sendToServer(new MilestoneSettingsUpdateManager(milestoneSettings.distance, milestoneSettings.dimension, milestoneSettings.name, milestoneSettings.uuid));
         }));
     }
 
@@ -173,9 +172,14 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
         renderablesChanged = false;
     }
 
-    public int adjustNumberButton(int value, int change, int min, int max) {
-        if (Screen.hasShiftDown()) change *= 10;
-        if (Screen.hasControlDown()) change *= 64;
+    /**
+     * Shift and control step further through the number buttons, which is the one place the old
+     * screen read the keyboard modifiers directly. 26.1 keeps them on the input event that caused
+     * the click, so the event is what this needs.
+     */
+    public int adjustNumberButton(int value, int change, int min, int max, MouseButtonEvent event) {
+        if (event.hasShiftDown()) change *= 10;
+        if (event.hasControlDown()) change *= 64;
         if (change < 0) {
             value = (Math.max(value + change, min));
         } else {
@@ -239,11 +243,11 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
     }
 
     @Override
-    protected void renderTooltip(GuiGraphics pGuiGraphics, int pX, int pY) {
-        super.renderTooltip(pGuiGraphics, pX, pY);
+    protected void extractTooltip(GuiGraphicsExtractor graphics, int pX, int pY) {
+        super.extractTooltip(graphics, pX, pY);
         for (Renderable renderable : this.renderables) {
             if (renderable instanceof TolkienButton button && !button.getLocalization(pX, pY).equals(Component.empty()))
-                pGuiGraphics.renderTooltip(font, button.getLocalization(pX, pY), pX, pY);
+                graphics.setTooltipForNextFrame(font, button.getLocalization(pX, pY), pX, pY);
         }
         Component tooltip = Component.literal("");
         tooltip = Component.translatable("screen.tolkienmobs.milestone.instructions");
@@ -253,64 +257,52 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        if (getMinecraft().player.isCreative()) {
-            this.milestoneName.render(guiGraphics, mouseX, mouseY, partialTicks);
-        }
-        int relX = (this.width - this.imageWidth) / 2;
-        int relY = (this.height - this.imageHeight) / 2;
-
-        String pagesLabel = GeneralUtility.withSuffix(currentPage) + " / " + GeneralUtility.withSuffix(getPageCount());
-        guiGraphics.drawCenteredString(font, pagesLabel, (relX + 100 - font.width(pagesLabel)), relY + 179, ColorUtility.DARKGRAY.getColor());
-
-        this.renderTooltip(guiGraphics, mouseX, mouseY);
-        }
-
-    @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawCenteredString(font, title, 83, 5, 8552833);
+    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        graphics.centeredText(font, title, 83, 5, 8552833);
         if (container.tile.getBlockState().getValue(LIT)) {
-            guiGraphics.drawCenteredString(font, " ", 83, 14, ColorUtility.DARKSLATEBLUE.getColor());
+            graphics.centeredText(font, " ", 83, 14, ColorUtility.DARKSLATEBLUE.getColor());
         }
         if (getMinecraft().player.isCreative()) {
             if (!milestoneName.isFocused() && milestoneName.getValue().isEmpty()) {
-                guiGraphics.drawString(font, tileEntity.getMilestoneSettings().name, milestoneName.getX() - leftPos + 4, (milestoneName.getY() + 2) - topPos, -10197916);
+                graphics.text(font, tileEntity.getMilestoneSettings().name, milestoneName.getX() - leftPos + 4, (milestoneName.getY() + 2) - topPos, -10197916);
             }
         } else {
-            guiGraphics.drawCenteredString(font, tileEntity.getMilestoneSettings().name, 83, 54, ColorUtility.CORNFLOWERBLUE.getColor());
+            graphics.centeredText(font, tileEntity.getMilestoneSettings().name, 83, 54, ColorUtility.CORNFLOWERBLUE.getColor());
         }
+
+        // The page counter used to be drawn after the whole screen, in absolute coordinates; the
+        // label pass already has the GUI origin applied, so it only needs the offset inside it.
+        String pagesLabel = GeneralUtility.withSuffix(currentPage) + " / " + GeneralUtility.withSuffix(getPageCount());
+        graphics.centeredText(font, pagesLabel, 100 - font.width(pagesLabel), 179, ColorUtility.DARKGRAY.getColor());
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-        RenderSystem.setShaderTexture(0, GUI);
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractBackground(graphics, mouseX, mouseY, partialTicks);
         int relX = (this.width - this.imageWidth) / 2;
         int relY = (this.height - this.imageHeight) / 2;
-        guiGraphics.blit(RenderType::guiTextured, GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
         if (TolkienMobsConfig.PAYMENT_TYPE.get()) {
             if (getMinecraft().player.isCreative()) {
-                guiGraphics.renderFakeItem(BuiltInRegistries.ITEM.getValue(Identifier.parse(TolkienMobsConfig.PAYMENT_ITEM.get())).getDefaultInstance(), relX + 74, relY + 48);
+                graphics.fakeItem(BuiltInRegistries.ITEM.getValue(Identifier.parse(TolkienMobsConfig.PAYMENT_ITEM.get())).getDefaultInstance(), relX + 74, relY + 48);
             }
         } else {
             if (getMinecraft().player.isCreative()) {
-                guiGraphics.renderFakeItem(BuiltInRegistries.ITEM.getValue(Identifier.parse("tolkienmobs:experience_orb")).getDefaultInstance(), relX + 74, relY + 48);
+                graphics.fakeItem(BuiltInRegistries.ITEM.getValue(Identifier.parse("tolkienmobs:experience_orb")).getDefaultInstance(), relX + 74, relY + 48);
             }
         }
 
-        if (getMinecraft().player.isCreative()) {
-            this.milestoneName.render(guiGraphics, mouseX, mouseY, partialTicks);
-        }
-
+        // The name field is a widget, so it is drawn with the rest of them; it used to be rendered
+        // here as well, which drew it over itself.
         if (renderablesChanged)
             updateRenderables();
     }
 
     @Override
-    public boolean mouseClicked(double x, double y, int btn) {
-        boolean ret = super.mouseClicked(x, y, btn);
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        boolean ret = super.mouseClicked(event, doubleClick);
         if (getMinecraft().player.isCreative()) {
-            if (this.milestoneName.mouseClicked(x, y, btn)) {
+            if (this.milestoneName.mouseClicked(event, doubleClick)) {
                 this.milestoneName.setFocused(true);
                 ret = true;
             } else if (this.milestoneName.isFocused()) {
@@ -318,18 +310,18 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
                 ret = true;
             }
             for (Renderable renderable : this.renderables) {
-                if (renderable instanceof NumberButton numberButton && GeneralUtility.inBounds(numberButton.getX(), numberButton.getY(), numberButton.getWidth(), numberButton.getHeight(), x, y)) {
-                    if (btn == 0)
-                        numberButton.setValue(adjustNumberButton(numberButton.getValue(), 1, numberButton.min, numberButton.max));
-                    else if (btn == 1)
-                        numberButton.setValue(adjustNumberButton(numberButton.getValue(), -1, numberButton.min, numberButton.max));
-                    numberButton.onPress();
+                if (renderable instanceof NumberButton numberButton && GeneralUtility.inBounds(numberButton.getX(), numberButton.getY(), numberButton.getWidth(), numberButton.getHeight(), event.x(), event.y())) {
+                    if (event.button() == 0)
+                        numberButton.setValue(adjustNumberButton(numberButton.getValue(), 1, numberButton.min, numberButton.max, event));
+                    else if (event.button() == 1)
+                        numberButton.setValue(adjustNumberButton(numberButton.getValue(), -1, numberButton.min, numberButton.max, event));
+                    numberButton.onPress(event);
                     numberButton.playDownSound(Minecraft.getInstance().getSoundManager());
                     return true;
                 }
-                if (renderable instanceof ToggleButton toggleButton && GeneralUtility.inBounds(toggleButton.getX(), toggleButton.getY(), toggleButton.getWidth(), toggleButton.getHeight(), x, y)) {
-                    if (btn == 1) {
-                        toggleButton.onClick(x, y, btn);
+                if (renderable instanceof ToggleButton toggleButton && GeneralUtility.inBounds(toggleButton.getX(), toggleButton.getY(), toggleButton.getWidth(), toggleButton.getHeight(), event.x(), event.y())) {
+                    if (event.button() == 1) {
+                        toggleButton.onClick(event, doubleClick);
                         toggleButton.playDownSound(Minecraft.getInstance().getSoundManager());
                     }
                 }
@@ -359,18 +351,18 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
     }
 
     @Override
-    public boolean keyPressed(int key, int scancode, int p_keyPressed_3_) {
+    public boolean keyPressed(KeyEvent event) {
         if (getMinecraft().player.isCreative()) {
-            if(this.milestoneName.isFocused()&&key!=GLFW.GLFW_KEY_ESCAPE)
-                if(this.milestoneName.keyPressed(key, scancode, p_keyPressed_3_)||this.milestoneName.canConsumeInput())
+            if (this.milestoneName.isFocused() && !event.isEscape())
+                if (this.milestoneName.keyPressed(event) || this.milestoneName.canConsumeInput())
                     return true;
-            }
-        return super.keyPressed(key, scancode, p_keyPressed_3_);
+        }
+        return super.keyPressed(event);
     }
 
     private void sendMessageToServer() {
         milestoneSettings.name = this.milestoneName.getValue();
 
-        PacketDistributor.sendToServer(new MilestoneSettingsUpdateManager(milestoneSettings.distance, milestoneSettings.dimension, milestoneSettings.name, milestoneSettings.uuid));
+        ClientPacketDistributor.sendToServer(new MilestoneSettingsUpdateManager(milestoneSettings.distance, milestoneSettings.dimension, milestoneSettings.name, milestoneSettings.uuid));
     }
 }
