@@ -1,7 +1,6 @@
 package com.greatorator.tolkienmobs.block.custom.entity.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -9,9 +8,11 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 
-public class LocustModel extends Model {
+public class LocustModel extends Model.Simple {
 
 	private final ModelPart legs;
 	private final ModelPart fatbody;
@@ -21,7 +22,7 @@ public class LocustModel extends Model {
 	private final ModelPart wings;
 
 	public LocustModel(ModelPart root) {
-		super(root, RenderType::entityCutoutNoCull);
+		super(root, RenderTypes::entityCutout);
 
 		this.legs = root.getChild("legs");
 		this.fatbody = root.getChild("fat_body");
@@ -68,12 +69,12 @@ public class LocustModel extends Model {
 		return LayerDefinition.create(meshdefinition, 64, 32);
 	}
 
-	public void renderBody(PoseStack ms, VertexConsumer buffer, int light, int overlay, int color) {
-		this.legs.render(ms, buffer, light, overlay, color);
-		this.fatbody.render(ms, buffer, light, overlay, color);
-		this.skinnybody.render(ms, buffer, light, overlay, color);
-		this.eye1.render(ms, buffer, light, overlay, color);
-		this.eye2.render(ms, buffer, light, overlay, color);
-		this.wings.render(ms, buffer, light, overlay, color);
+	public void submitBody(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, RenderType renderType, int light, int overlay, int color) {
+		submitNodeCollector.submitModelPart(this.legs, poseStack, renderType, light, overlay, null, color, null);
+		submitNodeCollector.submitModelPart(this.fatbody, poseStack, renderType, light, overlay, null, color, null);
+		submitNodeCollector.submitModelPart(this.skinnybody, poseStack, renderType, light, overlay, null, color, null);
+		submitNodeCollector.submitModelPart(this.eye1, poseStack, renderType, light, overlay, null, color, null);
+		submitNodeCollector.submitModelPart(this.eye2, poseStack, renderType, light, overlay, null, color, null);
+		submitNodeCollector.submitModelPart(this.wings, poseStack, renderType, light, overlay, null, color, null);
 	}
 }

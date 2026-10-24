@@ -975,6 +975,40 @@ from **3,470 errors in 337 files to 2,801 in 320**.
 - Left alone: `block/custom/entity/renderer/*` (block entities, a separate family) and
   `handler/render` (the model system).
 
+### Block-entity renderers — DONE
+
+- `BlockEntityRenderer<T>` is `BlockEntityRenderer<T, S extends BlockEntityRenderState>`: a renderer
+  declares `createRenderState()`, fills that state in `extractRenderState(blockEntity, state,
+  partialTicks, cameraPosition, breakProgress)` and draws in `submit(state, poseStack,
+  submitNodeCollector, camera)`. The seven that draw something each get a small state class under
+  `block/custom/entity/renderer/state/`.
+- Items go through the provider's `ItemModelResolver`: `updateForTopItem(itemState, stack,
+  displayContext, level, null, seed)` while extracting, `itemState.submit(poseStack, collector,
+  state.lightCoords, OverlayTexture.NO_OVERLAY, 0)` while submitting. `state.lightCoords` is what
+  `extractBase` already computes, so the trinket table and the fireplace no longer pack block and
+  sky light themselves.
+- `BlockEntityRenderState.blockState` is private with no getter, so a state keeps its own `facing`,
+  read from `blockEntity.getBlockState()` in extraction.
+- Text is `submitNodeCollector.submitText(poseStack, x, y, charSequence, dropShadow,
+  Font.DisplayMode, light, color, backgroundColor, outlineColor)`; the milestone's see-through pass
+  and its shadowed front pass are two submits over one pose, and the camera-facing rotation is
+  `camera.orientation`. `RenderSystem.setShaderColor`/`enableBlend` are gone - the collector owns
+  that state.
+- A model's parts are `submitModelPart(part, poseStack, renderType, light, overlay, sprite,
+  tintedColor, crumbling)`; the lightning bug's body and its additive glow are two batches over the
+  same parts. `RenderType` is the moved `client.renderer.rendertype` one, so the bug's body is
+  `RenderTypes.entityCutoutCull` - old `entityCutout` was the culled pipeline - and the glow stays
+  `entityTranslucent`.
+- A vanilla `Model` subclass that only ever draws parts extends **`Model.Simple`**. Extending raw
+  `Model` makes the inherited `Function<Identifier, RenderType>` constructor parameter raw, whose
+  single argument is `Object`, so `RenderTypes::entityCutout` cannot bind to it.
+- The spawner's preview mob cannot reuse vanilla's `TrialSpawnerRenderer.extractSpawnerData` (it is
+  package-private), so it repeats it: `entityRenderer.extractEntity(entity, partialTicks)`, copy the
+  state's light onto the entity state, and spin and scale from `getoSpin`/`getSpin`. It draws with
+  `entityRenderer.submit(displayEntity, camera, 0, 0, 0, poseStack, collector)`.
+- The placard drew nothing before the port and draws nothing now; it keeps its registration with a
+  plain `BlockEntityRenderState`.
+
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
   26.1.2 MDK's version; NeoForge requires 9.1.0 or newer), foojay resolver 0.8.0 → 1.0.0.

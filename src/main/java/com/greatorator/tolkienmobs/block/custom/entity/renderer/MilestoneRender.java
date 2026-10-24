@@ -2,96 +2,96 @@ package com.greatorator.tolkienmobs.block.custom.entity.renderer;
 
 import com.greatorator.tolkienmobs.block.custom.MilestoneBlock;
 import com.greatorator.tolkienmobs.block.custom.entity.MilestoneBlockEntity;
+import com.greatorator.tolkienmobs.block.custom.entity.renderer.state.MilestoneRenderState;
 import com.greatorator.tolkienmobs.handler.MilestoneHandler;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.core.Direction;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.block.state.BlockState;
-import org.joml.Quaternionf;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 
 import static com.greatorator.tolkienmobs.block.custom.MilestoneBlock.LIT;
 
-public class MilestoneRender implements BlockEntityRenderer<MilestoneBlockEntity> {
-    public MilestoneRender(BlockEntityRendererProvider.Context context) {
+public class MilestoneRender implements BlockEntityRenderer<MilestoneBlockEntity, MilestoneRenderState> {
+    private static final float SCALE = 0.015F;
+    private static final int SEE_THROUGH_COLOR = 553648127;
+    private static final int SEE_THROUGH_BACKGROUND = 0x20000000;
+    private static final int NAME_COLOR = 65535;
 
+    private final Font font;
+
+    public MilestoneRender(BlockEntityRendererProvider.Context context) {
+        this.font = context.font();
     }
 
     @Override
-    public void render(MilestoneBlockEntity te, float partialTicks, PoseStack mStack, MultiBufferSource getter, int packedLight, int packedOverlay) {
-        BlockState state = te.getBlockState();
-        Direction facing = state.getValue(MilestoneBlock.FACING);
-        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-        RenderSystem.disableBlend();
-
-        mStack.pushPose();
-        mStack.translate(0.5, 0.5, 0.5);
-        mStack.mulPose(new Quaternionf().rotationXYZ(90, 0, 0));
-
-        switch (facing) {
-            case NORTH, WEST:
-                mStack.mulPose(new Quaternionf().rotationXYZ(0, 0, 90));
-                break;
-            case SOUTH:
-                mStack.mulPose(new Quaternionf().rotationXYZ(0, 0, -90));
-                break;
-            case EAST:
-                mStack.mulPose(new Quaternionf().rotationXYZ(0, 0, 180));
-                break;
-        }
-        RenderSystem.enableBlend();
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-
-        mStack.popPose();
-
-        if (MilestoneHandler.isKnownByClient(te.getUUID(), Minecraft.getInstance().player.getUUID())) {
-        Component.nullToEmpty(te.milestoneSettings.name);
-            if (te.getBlockState().getValue(LIT)) {
-                drawNameString(mStack, getter, Component.nullToEmpty(te.getMilestoneSettings().name), packedLight);
-            }
-        }
+    public MilestoneRenderState createRenderState() {
+        return new MilestoneRenderState();
     }
 
-    private void drawNameString(PoseStack poseStack, MultiBufferSource buffer, Component message, int light) {
-        Minecraft mc = Minecraft.getInstance();
-        Font font = mc.font;
-        float scale = 0.015F;
-        int alpha = (int) (0.4F * 255.0F) << 24;
-        float width = ((float) -font.width(message) / 2);
+    @Override
+    public void extractRenderState(
+            MilestoneBlockEntity blockEntity,
+            MilestoneRenderState state,
+            float partialTicks,
+            Vec3 cameraPosition,
+            ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress
+    ) {
+        BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTicks, cameraPosition, breakProgress);
+        state.facing = blockEntity.getBlockState().getValue(MilestoneBlock.FACING);
+        state.name = null;
 
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player == null || !blockEntity.getBlockState().getValue(LIT)) return;
+        if (!MilestoneHandler.isKnownByClient(blockEntity.getUUID(), player.getUUID())) return;
+
+        state.name = Component.nullToEmpty(blockEntity.getMilestoneSettings().name);
+    }
+
+    @Override
+    public void submit(MilestoneRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
+        if (state.name == null) return;
+
+        FormattedCharSequence name = state.name.getVisualOrderText();
+        float width = (float) -this.font.width(name) / 2.0F;
 
         poseStack.pushPose();
         poseStack.translate(0.5D, 2.0D, 0.5D);
-        poseStack.mulPose(mc.getEntityRenderDispatcher().cameraOrientation());
-        poseStack.scale(scale, -scale, scale);
+        poseStack.mulPose(camera.orientation);
+        poseStack.scale(SCALE, -SCALE, SCALE);
 
-        font.drawInBatch(
-                message,
+        submitNodeCollector.submitText(
+                poseStack,
                 width,
                 0.0F,
-                553648127,
+                name,
                 false,
-                poseStack.last().pose(),
-                buffer,
                 Font.DisplayMode.SEE_THROUGH,
-                alpha,
-                light
+                state.lightCoords,
+                SEE_THROUGH_COLOR,
+                SEE_THROUGH_BACKGROUND,
+                0
         );
-        font.drawInBatch(message,
+        submitNodeCollector.submitText(
+                poseStack,
                 width,
                 0.0F,
-                65535,
+                name,
                 true,
-                poseStack.last().pose(),
-                buffer,
                 Font.DisplayMode.NORMAL,
+                state.lightCoords,
+                NAME_COLOR,
                 0,
-                light);
+                0
+        );
 
         poseStack.popPose();
     }
