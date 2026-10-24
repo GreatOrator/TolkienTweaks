@@ -10,7 +10,7 @@ import net.minecraft.world.attribute.BedRule;
 import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -150,8 +150,8 @@ public class SleepingBagBlock extends BedBlock
     }
 
     @Override
-    public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float factor) {
-        super.fallOn(level, state, pos, entity, factor * 0.75F);
+    public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, double factor) {
+        super.fallOn(level, state, pos, entity, factor * 0.75);
     }
 
     @Override
@@ -234,7 +234,7 @@ public class SleepingBagBlock extends BedBlock
         {
             BlockPos var6 = pos.relative(state.getValue(FACING));
             level.setBlock(var6, state.setValue(PART, BedPart.HEAD), 3);
-            level.blockUpdated(pos, Blocks.AIR);
+            level.updateNeighborsAt(pos, Blocks.AIR);
             state.updateNeighbourShapes(level, pos, 3);
         }
     }

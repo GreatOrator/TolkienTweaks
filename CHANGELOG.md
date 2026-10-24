@@ -64,7 +64,8 @@ All notable changes to this project will be documented in this file.
   dimension's own bed rule now, so it explodes in the Nether and the End exactly as before and
   stays intact in the Overworld. Nothing changes in a vanilla world; a datapack dimension that
   forbids beds now gets the default bed rule rather than the old flag, which is what a vanilla bed
-  follows too.
+  follows too. The rest of the block is ported with it and behaves as it always did: the same
+  softer bounce on landing and the same placement of the second half.
 
 ## [4.4.83-Final] - 10.22.2026
 
