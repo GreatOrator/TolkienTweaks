@@ -16,7 +16,7 @@ measurement's other half.
 | Source | Minecraft **1.21.4**, NeoForge **21.4.161**, mod **4.4.83-Final** |
 | Target | Minecraft **26.1.2**, NeoForge **26.1.2.116**, mod **5.0.0** |
 | Java | 21 → **25** |
-| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API and the fluid/leaf/proxy batch are done; **101** errors left |
+| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API, the fluid/leaf/proxy batch and the food table are done; **94** errors left |
 
 What the source tree contains, counted:
 
@@ -1873,6 +1873,22 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   anywhere. Nothing was run in game: the checks are a bucket of each molten metal poured out to see
   the tinted water sprites, the falling-leaf particle under each of the six leaf blocks, and the five
   flowers still giving their effect when eaten.
+
+### The food table — DONE
+
+- **Only two effect names were wrong.** `TolkienFoods` held the same seven errors the flowers did:
+  `MobEffects.MOVEMENT_SPEED` is `SPEED` in 26.1 and `MobEffects.CONFUSION` is `NAUSEA`. Everything
+  else it uses - `FoodProperties.Builder`, `Consumable.builder()`, `ItemUseAnimation.DRINK`,
+  `ApplyStatusEffectsConsumeEffect` with `MobEffectInstance(Holder<MobEffect>, …)` - was already the
+  26.1 shape, so every food and drink keeps its nutrition, its saturation, its always-edible flag,
+  its eat or drink animation, and every effect with its chance, duration and amplifier.
+- **The food items themselves needed nothing.** `TolkienFood` and the registrations in
+  `TolkienItems` compile as they stand. One other file still names an old effect field -
+  `ElvenFleetfootEnchantmentEffect` uses `MobEffects.MOVEMENT_SPEED` - and it is left with its own
+  error, since it belongs to the enchantment family rather than the food table.
+- **Verified:** whole-tree `javac` at **94** errors, down from 101 - `TolkienFoods`' seven are gone and
+  nothing new appeared. Nothing was run in game: the check is eating one of each (lemas, honey cake,
+  cram, miruvor, grog) and reading the effect it grants.
 
 ## Ordered work list
 
