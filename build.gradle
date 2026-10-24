@@ -1,7 +1,8 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
-    id 'net.neoforged.moddev' version '1.0.14'
+    id 'net.neoforged.moddev' version '2.0.148'
+    id 'idea'
 }
 
 tasks.named('wrapper', Wrapper).configure {
@@ -84,7 +85,8 @@ repositories {
         name = 'GeckoLib'
         url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
         content {
-            includeGroup("software.bernie.geckolib")
+            // GeckoLib 5 moved off software.bernie onto its own group.
+            includeGroup("com.geckolib")
         }
     }
 }
@@ -93,15 +95,15 @@ base {
     archivesName = mod_id
 }
 
-// Mojang ships Java 21 to end users starting in 1.20.5, so mods should target Java 21.
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+// Mojang ships Java 25 to end users in 26.1.2, so mods should target Java 25.
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 neoForge {
     // Specify the version of NeoForge to use.
     version = project.neo_version
 
-    // Parchment never published a 1.21.4 release (only bleeding snapshots), so the
-    // mod builds against NeoForge's own mappings, which keep the official names.
+    // As of 26.1 vanilla is deobfuscated again and NeoForge's mappings carry the
+    // official names, so no third-party mapping set is layered on top.
 
     // This line is optional. Access Transformers are automatically detected
     accessTransformers = project.files('src/main/resources/META-INF/accesstransformer.cfg')
@@ -130,8 +132,8 @@ neoForge {
             systemProperty 'neoforge.enabledGameTestNamespaces', providers.gradleProperty('gameTestNamespaces').getOrElse(project.mod_id + ',tolkienmobs_flight,tolkienmobs_mining,tolkienmobs_villages,tolkienmobs_coins,tolkienmobs_fellbeast')
         }
 
-        clientData {
-            type = "clientData"
+        data {
+            clientData()
 
             // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
             // gameDirectory = project.file('run-data')
@@ -188,13 +190,7 @@ dependencies {
 
     implementation "top.theillusivec4.curios:curios-neoforge:${project.curios_version}+${project.minecraft_version}"
 
-    implementation "software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
-
-    // ModDevGradle 1.0.14 puts the client distribution on the classpath only for runs of type
-    // "client" or "data", and NeoForge 21.4 names its data runs clientData/serverData. The client
-    // data generator boots Minecraft's client side, which uses libraries the server distribution
-    // leaves out, so they are named for that run here.
-    clientDataAdditionalRuntimeClasspath "com.ibm.icu:icu4j:76.1"
+    implementation "com.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
 
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
     // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
@@ -272,8 +268,13 @@ idea {
     }
 }
 
-// Temporary during the 1.21.4 port: javac stops at 100 errors by default, which
-// hides how much of the tree still needs work. Remove once the port lands.
+// Temporary during the port: javac stops at 100 errors by default, which hides how
+// much of the tree still needs work. The cap is a property because Gradle cannot
+// carry more than a few thousand diagnostics back to the console - at 9,658 the
+// daemon died with an OutOfMemoryError while serialising the report - so a run that
+// goes further trades a clean summary for an unreadable one. Raise it with
+// -PmaxCompileErrors=5000 if a wide sweep is ever worth the noise. Remove once the
+// port lands.
 tasks.withType(JavaCompile).configureEach {
-    options.compilerArgs += ['-Xmaxerrs', '20000']
+    options.compilerArgs += ['-Xmaxerrs', providers.gradleProperty('maxCompileErrors').getOrElse('1000')]
 }
