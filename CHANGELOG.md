@@ -6,6 +6,9 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- Every spawn egg still hatches the mob it names, and the eggs from a dispenser still work: 26.1 carries the egg's creature on the item's own properties instead of handing it to the item's constructor.
+- The mithril, morgul-iron and ammolite armour trims keep the same palettes and the same hover colours - 26.1 builds a trim material from its palette name and its description alone, and the registry paths still point at the mod's own palettes. Their generated JSON loses the `ingredient` field the old format carried, which nothing reads.
+- A lockable chest's code still persists, with one caveat: the way an entity attachment is saved changed, and a bare string cannot be written the new way, so a chest locked by an earlier version starts at the default "Enter Code" and needs its code set once. After that it saves and reloads as before.
 - The camo keystone opens its key settings for a creative player who sneaks and uses it - the same fix as the lockable chests, since it asked the client's screen for the shift key from inside the server's own branch. Using it without sneaking still runs the ordinary key flow.
 - The camo smoker still takes a dye's colour: three clicks with one dye deepen the smoke towards it, a fourth clears it, and a different dye starts again at one. 26.1 stores a dye's colour on the item itself rather than in its class, so the smoker now reads it from the stack, which means a dye from another mod that registers its colour the same way tints the smoke too.
 - The mod's mushrooms still take root on its own decay-grow soil, and still on ordinary ground only in dim light. Nothing a player sees changes - 26.1 moved the three-way soil answer those mushrooms ask for into the game's own utility package.
