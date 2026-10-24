@@ -16,7 +16,7 @@ measurement's other half.
 | Source | Minecraft **1.21.4**, NeoForge **21.4.161**, mod **4.4.83-Final** |
 | Target | Minecraft **26.1.2**, NeoForge **26.1.2.116**, mod **5.0.0** |
 | Java | 21 → **25** |
-| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API, the fluid/leaf/proxy batch, the food table and the forest fog are done; **82** errors left |
+| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API, the fluid/leaf/proxy batch, the food table, the forest fog and the `util` pair are done; **73** errors left |
 
 What the source tree contains, counted:
 
@@ -1923,6 +1923,31 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   `TolkienRenderInfo`'s five are gone and nothing new appeared. Nothing was run in game: the check is
   walking into Mirkwood and watching the fog close in by half, standing in the barrow downs at floor
   level for the near fog, and watching the fog colour dim towards dusk in any overworld biome.
+
+### The `util` package — DONE
+
+- **`Entity` lost two methods.** `getServer()` is `level().getServer()` (the same null off a server
+  level), and `moveTo(x, y, z, yaw, pitch)` is `snapTo(...)`: it sets the raw position, both
+  rotations, the old position and the bounding box in one go, which is what `moveTo` did. All four
+  call sites in `TeleportUtility` follow it, including the one that re-seats a rider on its mount by
+  the offset it was dismounted at.
+- **`startRiding` gained a third flag.** 26.1's signature is
+  `(Entity vehicle, boolean force, boolean sendEventAndTriggers)`; the old two-argument call always
+  passed `true` for the last one, so the remount keeps `startRiding(entity, true, true)` and a
+  remounted rider still tells the client and fires the mount events.
+- **`FMLEnvironment.dist` is a getter.** The field is `getDist()` now; both the
+  `unsafeRunWhenOn` comparison and the `unsafeRunForDist` switch use it.
+- **`CompoundTag` reads hand back optionals.** `getCompound(index)` is `getCompoundOrEmpty(index)`
+  and `getString(name)` is `getStringOr(name, "")`, so `NBTToStringList` reads a malformed entry as
+  an empty string exactly where it used to read one as `""` as well.
+- **Verified:** whole-tree `javac` at **73** errors, down from 82 - `TeleportUtility`'s five and
+  `GeneralUtility`'s four are gone and nothing new appeared. Nothing was run in game: the check is
+  riding a horse through an Arda portal and confirming the rider arrives still mounted, and taking
+  the same trip on foot.
+- **Still failing in `util/`, outside this pair:** `BoundingBoxUtils` (one `getInt`),
+  `BreezeUtility` (one `LevelData#isRaining`), `WorldUtility` (one `worldGenOptions`) and
+  `TolkienProfiler` (two `RenderLevelStageEvent`). The same `FMLEnvironment.dist` rename also still
+  fails once each in `ConfigSyncManager` and `PacketCustomChannel`.
 
 ## Ordered work list
 
