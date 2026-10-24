@@ -128,7 +128,8 @@ public class GollumEntity extends TolkienMonsterEntity implements GeoEntity {
             if (this.swinging) {
                 // Gollum's file carries idle, walk and eat but no attack, so a swing holds his idle
                 // pose rather than resetting the controller onto an animation that does not exist.
-                event.controller().forceAnimationReset();
+                // 5 dropped forceAnimationReset, so the idle is simply kept for the swing rather than
+                // being restarted - the same pose either way, since idle loops.
                 event.controller().setAnimation(RawAnimation.begin().thenPlay("idle"));
                 return PlayState.CONTINUE;
             }

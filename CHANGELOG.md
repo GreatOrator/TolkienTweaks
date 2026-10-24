@@ -175,6 +175,11 @@ All notable changes to this project will be documented in this file.
   differences a player could meet are the golem's slow, which is the same effect under its current
   name, and an angry mob that was saved before the update coming back calm, because the anger is
   stored in the shape the new game expects. The Istari's attack and heal still play once per turn.
+- The swamp hag and Gollum finish the controller port: neither needs the old animation reset any
+  more, because the animation they ask for is started on its own. The hag still picks the same
+  potion - healing, then slowness, poison or weakness on the same conditions - and still throws a
+  splash potion, only made with the class 26.1 splits splash potions onto. Gollum's swing still
+  holds his idle pose, which is all it ever did.
 
 ## [4.4.83-Final] - 10.22.2026
 

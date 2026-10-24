@@ -34,7 +34,7 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ThrownPotion;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrownSplashPotion;
 import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -114,7 +114,7 @@ public class SwampHagEntity extends TolkienMonsterEntity implements GeoEntity {
                     this.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
                     PotionContents potioncontents = itemstack.get(DataComponents.POTION_CONTENTS);
                     if (itemstack.is(Items.POTION) && potioncontents != null) {
-                        potioncontents.forEachEffect(this::addEffect);
+                        potioncontents.forEachEffect(this::addEffect, 1.0F);
                     }
                     this.gameEvent(GameEvent.DRINK);
                     this.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(SPEED_MODIFIER_DRINKING.id());
@@ -131,7 +131,7 @@ public class SwampHagEntity extends TolkienMonsterEntity implements GeoEntity {
                     holder = Potions.HEALING;
                 } else if (this.random.nextFloat() < 0.5F
                         && this.getTarget() != null
-                        && !this.hasEffect(MobEffects.MOVEMENT_SPEED)
+                        && !this.hasEffect(MobEffects.SPEED)
                         && this.getTarget().distanceToSqr(this) > 121.0) {
                     holder = Potions.SWIFTNESS;
                 }
@@ -169,7 +169,7 @@ public class SwampHagEntity extends TolkienMonsterEntity implements GeoEntity {
                 }
 
                 this.setTarget(null);
-            } else if (d3 >= 8.0 && !target.hasEffect(MobEffects.MOVEMENT_SLOWDOWN)) {
+            } else if (d3 >= 8.0 && !target.hasEffect(MobEffects.SLOWNESS)) {
                 holder = Potions.SLOWNESS;
             } else if (target.getHealth() >= 8.0F && !target.hasEffect(MobEffects.POISON)) {
                 holder = Potions.POISON;
@@ -177,7 +177,7 @@ public class SwampHagEntity extends TolkienMonsterEntity implements GeoEntity {
                 holder = Potions.WEAKNESS;
             }
 
-            ThrownPotion thrownpotion = new ThrownPotion(this.level(), this, ItemStack.EMPTY);
+            ThrownSplashPotion thrownpotion = new ThrownSplashPotion(this.level(), this, ItemStack.EMPTY);
             thrownpotion.setItem(PotionContents.createItemStack(Items.SPLASH_POTION, holder));
             thrownpotion.setXRot(thrownpotion.getXRot() - -20.0F);
             thrownpotion.shoot(d0, d1 + d3 * 0.2, d2, 0.75F, 8.0F);
@@ -324,11 +324,9 @@ public class SwampHagEntity extends TolkienMonsterEntity implements GeoEntity {
             // unconditional STOP below dropped the animation the moment it was set. The throw is
             // keyed on the shooting flag the ranged goal syncs, not the unsynced weapon flag.
             if (this.isShooting() && !event.controller().isAnimatingBones()) {
-                event.controller().forceAnimationReset();
                 event.controller().setAnimation(RawAnimation.begin().thenPlay("attack"));
                 return PlayState.CONTINUE;
             }else if (this.isHealing() && !event.controller().isAnimatingBones()) {
-                event.controller().forceAnimationReset();
                 event.controller().setAnimation(RawAnimation.begin().thenPlay("attack_heal"));
                 this.setHealing(false);
                 return PlayState.CONTINUE;
