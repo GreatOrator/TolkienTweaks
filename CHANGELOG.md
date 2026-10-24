@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- The seven wood barrels still spill everything inside them when broken: 26.1 drops a container's contents itself when the block goes, so the barrel's own removal hook is gone and a broken barrel behaves as it did. Its lid, its opening stat, the piglins' annoyance at an opened barrel and its comparator output are untouched.
 - A full-grown bramble bush still hurts whoever walks through it, a rock pile and a patch still keep their shape and their offsets, and both wall mushrooms still sit on a wall as before - the plant blocks needed the shape 26.1 gives a bush's codec, and the bramble bush's collision hook the same two new arguments every block now receives.
 - The camouflage spawner explains itself again: its item still names the creature it will spawn, and its two hint lines still follow when the item carries no spawn data. 26.1 moved a block's tooltip onto its item, so the camo spawner gets its own item for that line - the id, model and name are unchanged. A creative player who shift-clicks one now also gets its settings menu, which the old shift check could never see on the server.
 - An Arda portal still drops an orc out now and then when it stands in a dark place, and still takes a player through it in the same time; it now asks the world whether monsters may spawn, which is the check vanilla's nether portal uses. Leaf piles still tint their fallen leaves with the oak leaves overhead and still slow you down when you walk through a deep one.

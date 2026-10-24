@@ -16,7 +16,7 @@ measurement's other half.
 | Source | Minecraft **1.21.4**, NeoForge **21.4.161**, mod **4.4.83-Final** |
 | Target | Minecraft **26.1.2**, NeoForge **26.1.2.116**, mod **5.0.0** |
 | Java | 21 → **25** |
-| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API, the fluid/leaf/proxy batch, the food table, the forest fog, the whole `util` package, the three biggest block classes and the `BushBlock` plants are done; **42** errors left |
+| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API, the fluid/leaf/proxy batch, the food table, the forest fog, the whole `util` package, the three biggest block classes and the `BushBlock` plants and the barrels are done; **39** errors left |
 
 What the source tree contains, counted:
 
@@ -2027,6 +2027,19 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   bush's `entityInside` are gone and nothing new appeared. Nothing was run in game: the check is
   walking through a full-grown bramble bush and taking the damage, and placing a rock pile and a
   patch to see them keep their shapes.
+
+### The barrels — DONE
+
+- **The barrel's `onRemove` was only dropping its contents, and 26.1 does that itself.**
+  `BlockEntity#preRemoveSideEffects` drops the contents of any block entity that is a `Container`,
+  and vanilla's `BarrelBlockEntity` is a `RandomizableContainerBlockEntity`, so the mod's
+  `TolkienBarrelBlockEntity` inherits the drop and needed nothing. The override and its
+  `Containers.dropContentsOnDestroy` call - which no longer exists - are deleted, the same shape the
+  camo chest took. A broken barrel still spills everything inside it.
+- **Verified:** whole-tree `javac` at **39** errors, down from 42 - `TolkienBarrelBlock`'s three are
+  gone and nothing new appeared. Nothing was run in game: the check is filling all seven wood
+  barrels, breaking them, and confirming each spills its contents; opening one, listening for the
+  lid and watching the comparator still work the same way.
 
 ## Ordered work list
 
