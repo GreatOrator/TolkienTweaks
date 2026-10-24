@@ -26,8 +26,8 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.npc.AbstractVillager;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.Vec3;
@@ -71,8 +71,8 @@ public class FellBeastEntity extends DragonEntity {
 
     public FellBeastEntity(EntityType<? extends Monster> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-        setPathfindingMalus(PathType.DANGER_FIRE, 0);
-        setPathfindingMalus(PathType.DAMAGE_FIRE, 0);
+        setPathfindingMalus(PathType.FIRE_IN_NEIGHBOR, 0);
+        setPathfindingMalus(PathType.FIRE, 0);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -155,7 +155,7 @@ public class FellBeastEntity extends DragonEntity {
         super.aiStep();
         flightTimer.add(isUsingFlyingNavigator() ? 0.1f : -0.085f);
         if (!level.isClientSide() && getBreathingFire()
-                && (getTarget() == null || !getTarget().isAlive() || !isWithinRestriction(getTarget().blockPosition()))) {
+                && (getTarget() == null || !getTarget().isAlive() || !isWithinHome(getTarget().blockPosition()))) {
             setBreathingFire(false);
         }
         breathTimer.add(getBreathingFire() ? 0.15f : -0.2f);
@@ -216,7 +216,7 @@ public class FellBeastEntity extends DragonEntity {
 
 
     @Override
-    public boolean causeFallDamage(float distance, float damageMultiplier, DamageSource source) {
+    public boolean causeFallDamage(double distance, float damageMultiplier, DamageSource source) {
         return super.causeFallDamage(distance, damageMultiplier, source);
     }
 
@@ -317,7 +317,7 @@ public class FellBeastEntity extends DragonEntity {
         public boolean canUse() {
             LivingEntity target = getTarget();
             if (target != null && target.isAlive()) {
-                if (!isWithinRestriction(target.blockPosition())) return false;
+                if (!isWithinHome(target.blockPosition())) return false;
                 return TargetingConditions.forCombat().test(getServerLevel(entity), entity, target);
             }
             return false;
@@ -327,7 +327,7 @@ public class FellBeastEntity extends DragonEntity {
         public boolean canContinueToUse() {
             LivingEntity target = getTarget();
             if (target != null && target.isAlive()) {
-                if (!isWithinRestriction(target.blockPosition())) {
+                if (!isWithinHome(target.blockPosition())) {
                     return false;
                 }
                 return TargetingConditions.forCombat().test(getServerLevel(entity), entity, target);
@@ -338,7 +338,7 @@ public class FellBeastEntity extends DragonEntity {
         @Override
         public void tick() {
             LivingEntity target = getTarget();
-            if (target == null || !target.isAlive() || !isWithinRestriction(target.blockPosition())) {
+            if (target == null || !target.isAlive() || !isWithinHome(target.blockPosition())) {
                 stop();
                 return;
             }
@@ -393,7 +393,7 @@ public class FellBeastEntity extends DragonEntity {
         @Override
         public void stop() {
             LivingEntity livingentity = this.entity.getTarget();
-            if (livingentity == null || !livingentity.isAlive() || !isWithinRestriction(livingentity.blockPosition())
+            if (livingentity == null || !livingentity.isAlive() || !isWithinHome(livingentity.blockPosition())
                     || !EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(livingentity)) {
                 this.entity.setTarget((LivingEntity) null);
             }

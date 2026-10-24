@@ -21,6 +21,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
@@ -180,9 +181,9 @@ public class BalrogEntity extends TolkienMonsterEntity implements GeoEntity {
                 this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 10 * 20, 1));
             }
 
-            if (this.getTarget() != null && !this.hasEffect(MobEffects.MOVEMENT_SPEED) && this.getTarget().distanceToSqr(this) > 121.0D) {
+            if (this.getTarget() != null && !this.hasEffect(MobEffects.SPEED) && this.getTarget().distanceToSqr(this) > 121.0D) {
                 GeneralUtility.sendMessage(livingentity, Component.translatable(MODID + ".msg.speedup.balrog").withStyle(ChatFormatting.AQUA));
-                this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 2 * 20, 0));
+                this.addEffect(new MobEffectInstance(MobEffects.SPEED, 2 * 20, 0));
             }
             return true;
         }
@@ -258,7 +259,7 @@ public class BalrogEntity extends TolkienMonsterEntity implements GeoEntity {
 
     /** BOSS BAR */
     private final ServerBossEvent bossEvent =
-            new ServerBossEvent(Component.translatable("entity.tolkienmobs.entityttmbalrog"), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.NOTCHED_10);
+            new ServerBossEvent(Mth.createInsecureUUID(this.random), Component.translatable("entity.tolkienmobs.entityttmbalrog"), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.NOTCHED_10);
 
     @Override
     public void startSeenByPlayer(ServerPlayer serverPlayer) {

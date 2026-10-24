@@ -1087,6 +1087,54 @@ from **3,470 errors in 337 files to 2,801 in 320**.
 - `ServerBossEvent` takes a `UUID` first. The Watcher names its bar with
   `Mth.createInsecureUUID(this.random)`, which is how vanilla's wither builds its own.
 
+### The boss family - DONE
+
+- The other ten bars now name themselves the same way, `Mth.createInsecureUUID(this.random)`:
+  the balrog, fell beast, goblin king, Gwaihir, both golems, Shelob, the witch king, the murder frog
+  and the killer squirrel. That one argument was ten errors each time and ten files' worth of them
+  here; the colours, overlays and names are untouched.
+- Being a `UUID` was only the first thing the family needed. Behind it sat the same package moves
+  as everywhere else: `IronGolem` under `animal.golem`, `Turtle` under `animal.turtle`, `Chicken`,
+  `Cow` and `Sheep` under their own animal packages, `AbstractVillager` under `npc.villager`,
+  `Spider` under `monster.spider`, `Snowball` under `projectile.throwableitemprojectile`,
+  `AbstractArrow` under `projectile.arrow` (which is also where `AbstractArrow.Pickup` lives now,
+  so the fell beast's fireball still sets `DISALLOWED`), and `GameRules` under
+  `world.level.gamerules`.
+- `GameRules` is not just a move: the booleans became `GameRule<Boolean>` keys, so the goblin king's
+  and Shelob's reinforcement check reads `getGameRules().get(GameRules.SPAWN_MOBS)` - the rule
+  `doMobSpawning` was renamed to - rather than `getBoolean`.
+- `MobEffects.MOVEMENT_SPEED` is `MobEffects.SPEED`, and `MobEffects.HARM` is
+  `INSTANT_DAMAGE`; both are the same effects under their current names, so the two-second speed
+  buff after a hit and the fireball's breath cloud are unchanged. `AreaEffectCloud#setParticle` is
+  `setCustomParticle` now.
+- `PathType.DANGER_FIRE` and `DAMAGE_FIRE` are `FIRE_IN_NEIGHBOR` and `FIRE`, which is what
+  `Animal` itself sets: the same two maluses at the same values.
+- `Level#getCurrentDifficultyAt` is a `ServerLevel` method, so the reinforcement spawns ask the
+  server they are already holding. `Entity#causeFallDamage` takes a `double` fall distance.
+- **The dragon** needed four renames of its own. `moveTo(x, y, z, yRot, xRot)` is `snapTo`, `isDay`
+  is `isBrightOutside` - the same "not night and not a fixed-time dimension" answer -,
+  `isControlledByLocalInstance` is `isLocalInstanceAuthoritative`, and `isInWaterOrBubble` is gone
+  in favour of `isInWater`, which is the same `wasTouchingWater` flag.
+- The home restriction moved and changed name with it: `hasRestriction` is `hasHome`,
+  `getRestrictCenter` is `getHomePosition`, `getRestrictRadius` is `getHomeRadius` (an `int` now,
+  where the dragon still answers with its config radius), `restrictTo` is `setHomeTo`, and both
+  `isWithinRestriction` overloads are `isWithinHome`. The dragon keeps storing its own home in
+  entity data, so `MoveToHomeGoal`, `DefendHomeGoal` and `FlyerWanderGoal` only needed the new
+  names and a homing dragon still returns to the place it was spawned.
+- **`NeutralMob`** now remembers when the anger ends instead of counting it down. The two golems
+  store a `persistentAngerEndTime` and implement `getPersistentAngerEndTime` /
+  `setPersistentAngerEndTime`, and `startPersistentAngerTimer` calls the interface's
+  `setTimeToRemainAngry`, so the twenty-to-forty-second window is the same window seen from  the other end. The target it is angry at is an `EntityReference<LivingEntity>` rather than a `UUID`.
+  The stored pair is the interface's own now, so a golem loaded from a pre-26.1 save comes back
+  calm rather than mid-grudge - the only visible cost of the change.
+- NeoForge's `BlockEvent.BreakEvent` is a class of its own now,
+  `net.neoforged.neoforge.event.level.block.BreakBlockEvent`, so both balrog event classes take that
+  instead. Nothing about the magma-block guard changes - it still cancels the break.
+- **Verified:** whole-tree `javac` (JDK 25, 859 sources) at **1,179** errors, down 86 from the
+  1,265 the tree stood at, with a per-file diff showing only removals: the ten bars' constructor
+  errors, and then the 76 errors the rest of the family carried. Every file under `entity/boss`,
+  the dragon, both ambient bosses and their goals now compile clean. Nothing was opened in game.
+
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
   26.1.2 MDK's version; NeoForge requires 9.1.0 or newer), foojay resolver 0.8.0 → 1.0.0.

@@ -65,11 +65,11 @@ public class FellBeastFireballEntity extends AbstractArrow {
                     areaeffectcloud.setOwner((LivingEntity)entity);
                 }
 
-                areaeffectcloud.setParticle(TolkienParticleTypes.FELLBEAST_BREATH.get());
+                areaeffectcloud.setCustomParticle(TolkienParticleTypes.FELLBEAST_BREATH.get());
                 areaeffectcloud.setRadius(3.0F);
                 areaeffectcloud.setDuration(600);
                 areaeffectcloud.setRadiusPerTick((7.0F - areaeffectcloud.getRadius()) / (float)areaeffectcloud.getDuration());
-                areaeffectcloud.addEffect(new MobEffectInstance(MobEffects.HARM, 1, 1));
+                areaeffectcloud.addEffect(new MobEffectInstance(MobEffects.INSTANT_DAMAGE, 1, 1));
                 if (!list.isEmpty()) {
                     for (LivingEntity livingentity : list) {
                         double d0 = this.distanceToSqr(livingentity);

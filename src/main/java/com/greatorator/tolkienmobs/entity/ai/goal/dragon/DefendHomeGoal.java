@@ -34,7 +34,7 @@ public class DefendHomeGoal extends TargetGoal
     public boolean canUse()
     {
         if (defender.getHealth() <= defender.getMaxHealth() * 0.25) return false;
-        if (!defender.hasRestriction()) return false;
+        if (!defender.hasHome()) return false;
         return defender.getRandom().nextDouble() < 0.2 && (targetMob = findPotentialTarget()) != null;
     }
 
@@ -52,13 +52,13 @@ public class DefendHomeGoal extends TargetGoal
     @Override
     public boolean canContinueToUse()
     {
-        return targetMob != null && defender.isWithinRestriction(targetMob.blockPosition()) && super.canContinueToUse();
+        return targetMob != null && defender.isWithinHome(targetMob.blockPosition()) && super.canContinueToUse();
     }
 
     @Override
     protected double getFollowDistance()
     {
-        return defender.getRestrictRadius();
+        return defender.getHomeRadius();
     }
 
     public LivingEntity findPotentialTarget()
@@ -67,7 +67,7 @@ public class DefendHomeGoal extends TargetGoal
         // of a class and a box, so the scan is done here the way NearestAttackableTargetGoal does it.
         if (!(defender.level() instanceof ServerLevel serverLevel)) return null;
         return serverLevel.getNearestEntity(
-                serverLevel.getEntitiesOfClass(LivingEntity.class, new AABB(defender.getRestrictCenter()).inflate(TolkienMobsConfig.homeRadius)),
+                serverLevel.getEntitiesOfClass(LivingEntity.class, new AABB(defender.getHomePosition()).inflate(TolkienMobsConfig.homeRadius)),
                 CONDITIONS,
                 defender,
                 defender.getX(), defender.getEyeY(), defender.getZ());

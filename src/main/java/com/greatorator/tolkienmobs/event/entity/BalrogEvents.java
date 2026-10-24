@@ -10,7 +10,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
@@ -18,7 +18,7 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 @EventBusSubscriber(modid = MODID)
 public class BalrogEvents {
     @SubscribeEvent
-    public static void onBlockBreak(BlockEvent.BreakEvent event) {
+    public static void onBlockBreak(BreakBlockEvent event) {
         // Check if the block being broken is temporary obsidian
         if (BalrogMarkEnchantmentEffect.isTemporaryMagmaBlock((Level) event.getLevel(), event.getPos())) {
             event.setCanceled(true); // Cancel the event to prevent breaking

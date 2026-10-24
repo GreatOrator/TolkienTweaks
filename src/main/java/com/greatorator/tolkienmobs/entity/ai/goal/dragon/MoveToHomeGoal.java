@@ -18,15 +18,15 @@ public class MoveToHomeGoal extends Goal {
     }
 
     private boolean canReturn() {
-        return dragon.hasRestriction() && !dragon.canBeControlledByRider() && !dragon.isPassenger() && !dragon.isLeashed();
+        return dragon.hasHome() && !dragon.canBeControlledByRider() && !dragon.isPassenger() && !dragon.isLeashed();
     }
 
     @Override
-    public boolean canUse() { return canReturn() && !dragon.isWithinRestriction(); }
+    public boolean canUse() { return canReturn() && !dragon.isWithinHome(); }
 
     @Override
     public boolean canContinueToUse() {
-        return canReturn() && dragon.distanceToSqr(Vec3.atBottomCenterOf(dragon.getRestrictCenter())) > 4;
+        return canReturn() && dragon.distanceToSqr(Vec3.atBottomCenterOf(dragon.getHomePosition())) > 4;
     }
 
     @Override
@@ -49,9 +49,9 @@ public class MoveToHomeGoal extends Goal {
     @Override
     public void tick() {
         if (!canReturn()) return;
-        Vec3 home = Vec3.atBottomCenterOf(dragon.getRestrictCenter());
+        Vec3 home = Vec3.atBottomCenterOf(dragon.getHomePosition());
         if (++time >= RETURN_TIMEOUT) {
-            if (dragon.trySafeTeleport(dragon.getRestrictCenter())) time = 0;
+            if (dragon.trySafeTeleport(dragon.getHomePosition())) time = 0;
             return;
         }
         if (--repathTime <= 0) {

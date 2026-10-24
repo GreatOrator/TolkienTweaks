@@ -18,7 +18,9 @@ import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -42,16 +44,15 @@ import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
 public class MorgulironGolemEntity extends TolkienMonsterEntity implements GeoEntity, NeutralMob {
     private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
     private int attackAnimationTick;
-    private int remainingPersistentAngerTime;
+    private long persistentAngerEndTime = -1L;
     @Nullable
-    private UUID persistentAngerTarget;
+    private EntityReference<LivingEntity> persistentAngerTarget;
     private long nextAbilityUse = 0L;
     private final static long coolDown = 15000L;
 
@@ -111,29 +112,29 @@ public class MorgulironGolemEntity extends TolkienMonsterEntity implements GeoEn
     }
 
     @Override
-    public int getRemainingPersistentAngerTime() {
-        return this.remainingPersistentAngerTime;
+    public long getPersistentAngerEndTime() {
+        return this.persistentAngerEndTime;
     }
 
     @Override
-    public void setRemainingPersistentAngerTime(int angryTime) {
-        this.remainingPersistentAngerTime = angryTime;
+    public void setPersistentAngerEndTime(long endTime) {
+        this.persistentAngerEndTime = endTime;
     }
 
     @Nullable
     @Override
-    public UUID getPersistentAngerTarget() {
+    public EntityReference<LivingEntity> getPersistentAngerTarget() {
         return this.persistentAngerTarget;
     }
 
     @Override
-    public void setPersistentAngerTarget(@Nullable UUID uuid) {
-        this.persistentAngerTarget = uuid;
+    public void setPersistentAngerTarget(@Nullable EntityReference<LivingEntity> target) {
+        this.persistentAngerTarget = target;
     }
 
     @Override
     public void startPersistentAngerTimer() {
-        this.setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.sample(this.random));
+        this.setTimeToRemainAngry(PERSISTENT_ANGER_TIME.sample(this.random));
     }
 
     @Override
@@ -222,7 +223,7 @@ public class MorgulironGolemEntity extends TolkienMonsterEntity implements GeoEn
 
     /** BOSS BAR */
     private final ServerBossEvent bossEvent =
-            new ServerBossEvent(Component.translatable("entity.tolkienmobs.entityttmmorgulirongolem"), BossEvent.BossBarColor.GREEN, BossEvent.BossBarOverlay.NOTCHED_10);
+            new ServerBossEvent(Mth.createInsecureUUID(this.random), Component.translatable("entity.tolkienmobs.entityttmmorgulirongolem"), BossEvent.BossBarColor.GREEN, BossEvent.BossBarOverlay.NOTCHED_10);
 
     @Override
     public void startSeenByPlayer(ServerPlayer serverPlayer) {

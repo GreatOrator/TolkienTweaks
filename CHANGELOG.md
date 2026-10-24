@@ -160,6 +160,15 @@ All notable changes to this project will be documented in this file.
   forbids beds now gets the default bed rule rather than the old flag, which is what a vanilla bed
   follows too. The rest of the block is ported with it and behaves as it always did: the same
   softer bounce on landing and the same placement of the second half.
+- The whole boss family is ported, so every boss in the mod compiles on 26.1. Each boss bar is now
+  named with an id, which is the one thing 26.1's bar asks for that the mod had no answer to; the
+  colours, the notched overlay, the names and the health they track are untouched, and a boss still
+  shows its bar to a player the moment it is seen. Their anger, speed buffs and reinforcements work
+  as they did: the golems keep the same twenty-to-forty-second grudge, and a goblin king or Shelob
+  still call for help under hard difficulty. What players can notice: the fell beast now snaps its
+  rider to its back and returns home by the renamed home calls, and a fireball's breath cloud still
+  deals its damage - the effect it uses is spelled `instant_damage` now, same effect, same id. The
+  balrog's magma blocks still refuse to be broken.
 
 ## [4.4.83-Final] - 10.22.2026
 

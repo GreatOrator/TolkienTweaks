@@ -186,7 +186,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
         SpawnGroupData data = super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
         WitchKingEntity rider = TolkienEntities.ENTITY_TTM_WITCHKING.get().create(level.getLevel(), spawnType);
         if (rider != null) {
-            rider.moveTo(getX(), getY(), getZ(), getYRot(), 0.0F);
+            rider.snapTo(getX(), getY(), getZ(), getYRot(), 0.0F);
             rider.finalizeSpawn(level, difficulty, spawnType, null);
             rider.startRiding(this);
         }
@@ -282,7 +282,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
 
     /** Home location */
     public boolean isAtHome() {
-        return hasRestriction() && isWithinRestriction();
+        return hasHome() && isWithinHome();
     }
 
     public boolean trySafeTeleport(BlockPos pos) {
@@ -291,7 +291,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
         if (!level.hasChunkAt(pos) || !level.getWorldBorder().isWithinBounds(pos)
                 || bounds.minY < level.getMinY() || bounds.maxY > level.getMaxY()
                 || !level.noCollision(this, bounds) || level.containsAnyLiquid(bounds)) return false;
-        moveTo(destination.x, destination.y, destination.z, getYRot(), getXRot());
+        snapTo(destination.x, destination.y, destination.z, getYRot(), getXRot());
         getNavigation().stop();
         setDeltaMovement(Vec3.ZERO);
         return true;
@@ -299,11 +299,11 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
 
     private void ensureHome() {
         // Captures command/structure spawns and legacy saves that skip finalizeSpawn too.
-        if (!level.isClientSide() && !hasRestriction()) setHomePos(blockPosition());
+        if (!level.isClientSide() && !hasHome()) setHomePos(blockPosition());
     }
 
     @Override
-    public BlockPos getRestrictCenter() {
+    public BlockPos getHomePosition() {
         BlockPos pos = getHomePos();
         return pos == null? BlockPos.ZERO : pos;
     }
@@ -322,29 +322,29 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     }
 
     @Override
-    public boolean hasRestriction() {
+    public boolean hasHome() {
         return getHomePos() != null;
     }
 
     @Override
-    public float getRestrictRadius() {
+    public int getHomeRadius() {
         return TolkienMobsConfig.homeRadius;
     }
 
     @Override
-    public void restrictTo(BlockPos pos, int distance) {
+    public void setHomeTo(BlockPos pos, int distance) {
         setHomePos(pos);
     }
 
     @Override
-    public boolean isWithinRestriction() {
-        return isWithinRestriction(blockPosition());
+    public boolean isWithinHome() {
+        return isWithinHome(blockPosition());
     }
 
     @Override
-    public boolean isWithinRestriction(BlockPos pos) {
+    public boolean isWithinHome(BlockPos pos) {
         BlockPos home = getHomePos();
-        double radius = getRestrictRadius();
+        double radius = getHomeRadius();
         return home == null || home.distSqr(pos) <= radius * radius;
     }
 
@@ -376,7 +376,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
 
     public boolean shouldSleep() {
         if (sleepCooldown > 0) return false;
-        if (level.isDay()) return false;
+        if (level.isBrightOutside()) return false;
         if (!isIdling()) return false;
 
         return getRandom().nextDouble() < 0.0065;
@@ -384,7 +384,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
 
 
     public boolean shouldWakeUp() {
-        return level.isDay() && getRandom().nextDouble() < 0.0065;
+        return level.isBrightOutside() && getRandom().nextDouble() < 0.0065;
     }
 
     /** Miscellaneous */
@@ -549,7 +549,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
 
     @Override
     public boolean canAttack(LivingEntity target) {
-        return !canBeControlledByRider() && isWithinRestriction(target.blockPosition()) && super.canAttack(target);
+        return !canBeControlledByRider() && isWithinHome(target.blockPosition()) && super.canAttack(target);
     }
 
     @Override
@@ -695,7 +695,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
                     groundZ *= 0.25F;
                 }
 
-                if (this.isControlledByLocalInstance()) {
+                if (this.isLocalInstanceAuthoritative()) {
                     float speed = getTravelSpeed();
                     if (isUsingFlyingNavigator())
                     {
@@ -814,7 +814,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     }
 
     public boolean isIdling() {
-        return getNavigation().isDone() && getTarget() == null && !isVehicle() && !isInWaterOrBubble() && !isUsingFlyingNavigator();
+        return getNavigation().isDone() && getTarget() == null && !isVehicle() && !isInWater() && !isUsingFlyingNavigator();
     }
 
     public AABB getOffsetBox(float offset) {
@@ -933,7 +933,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     }
 
     @Override
-    public boolean causeFallDamage(float distance, float damageMultiplier, DamageSource source) {
+    public boolean causeFallDamage(double distance, float damageMultiplier, DamageSource source) {
         return !dragonCanFly() && super.causeFallDamage(distance - (int) (getBbHeight() * 0.8), damageMultiplier, source);
     }
 
@@ -1226,9 +1226,9 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
                 this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 10 * 20, 1));
             }
 
-            if (this.getTarget() != null && !this.hasEffect(MobEffects.MOVEMENT_SPEED) && this.getTarget().distanceToSqr(this) > 121.0D) {
+            if (this.getTarget() != null && !this.hasEffect(MobEffects.SPEED) && this.getTarget().distanceToSqr(this) > 121.0D) {
                 GeneralUtility.sendMessage(livingentity, Component.translatable(MODID + ".msg.speedup").withStyle(ChatFormatting.AQUA));
-                this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 2 * 20, 0));
+                this.addEffect(new MobEffectInstance(MobEffects.SPEED, 2 * 20, 0));
             }
             setSleeping(false);
             return true;
@@ -1237,7 +1237,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
 
     /** BOSS BAR */
     private final ServerBossEvent bossEvent =
-            new ServerBossEvent(Component.translatable("entity.tolkienmobs.entityttmfellbeast"), BossEvent.BossBarColor.BLUE, BossEvent.BossBarOverlay.NOTCHED_10);
+            new ServerBossEvent(Mth.createInsecureUUID(this.random), Component.translatable("entity.tolkienmobs.entityttmfellbeast"), BossEvent.BossBarColor.BLUE, BossEvent.BossBarOverlay.NOTCHED_10);
 
     @Override
     public void startSeenByPlayer(ServerPlayer serverPlayer) {
