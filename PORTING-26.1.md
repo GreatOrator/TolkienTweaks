@@ -16,7 +16,7 @@ measurement's other half.
 | Source | Minecraft **1.21.4**, NeoForge **21.4.161**, mod **4.4.83-Final** |
 | Target | Minecraft **26.1.2**, NeoForge **26.1.2.116**, mod **5.0.0** |
 | Java | 21 → **25** |
-| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API, the fluid/leaf/proxy batch, the food table, the forest fog, the whole `util` package, the three biggest block classes and the `BushBlock` plants, the barrels, the effect/enchantment families, the network packages and the lockable chest blocks are done; **19** errors left |
+| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API, the fluid/leaf/proxy batch, the food table, the forest fog, the whole `util` package, the three biggest block classes and the `BushBlock` plants, the barrels, the effect/enchantment families, the network packages, the lockable chest blocks and the last three loose blocks are done; **16** errors left |
 
 What the source tree contains, counted:
 
@@ -2001,6 +2001,28 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   `block/custom/Lockable*` named. Nothing was run in game: the check is a creative player sneaking
   and using each of the four chests - single and double, treasure and plain - to see the lock
   settings open, and using them without sneaking to see the ordinary lock and key flow.
+
+### The camo keystone, camo smoker and mushrooms — DONE
+
+- **The keystone asked the screen for the shift key**, exactly as the four lockable chests did: inside a
+  `!level.isClientSide()` branch, where the client helper could never answer. It reads
+  `player.isShiftKeyDown()` now, so a creative player who sneaks and uses the keystone really does get
+  its key settings, and using it without sneaking still runs the ordinary key flow.
+- **`DyeItem` no longer carries its colour.** 26.1 registers every dye with `DataComponents.DYE` and
+  leaves the item class to `SignApplicator`, so `DyeItem#getDyeColor()` is gone. The camo smoker asks
+  `DyeColor.getColor(stack)` instead, which reads that component and then falls back to the
+  `c:dyes/<colour>` item tag; a null answer means "not a dye" and hands the click to `super`. Every
+  vanilla dye does exactly what it did - three clicks deepen the tint, a fourth clears it, a different
+  dye starts again at one - and a modded dye that carries the component or the tag now tints it too.
+- **`TriState` moved to `net.minecraft.util`.** `IBlockExtension#canSustainPlant` still returns it with
+  the same five arguments, so the mushrooms keep their three-way soil answer: the mod's decay-grow tag
+  always lets them take root, a default answer falls back to the vanilla light check, and a soil that
+  says yes is obeyed without one.
+- **Verified:** whole-tree `javac` at **16** errors, down from 19, with nothing named in these three
+  files or anywhere under `block/custom/` except `TolkienBugBlock`. Nothing was run in game: the checks
+  are dyeing the camo smoker once per stage and clearing it, sneaking on the keystone with a key in
+  hand as a creative player, and planting each mushroom on the decay-grow soil and on ordinary ground
+  in the dark.
 
 ### The three biggest block classes — DONE
 
