@@ -2,7 +2,6 @@ package com.greatorator.tolkienmobs.datagen;
 
 import com.google.common.hash.Hashing;
 import net.minecraft.SharedConstants;
-import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.data.CachedOutput;
@@ -11,6 +10,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.nbt.*;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.Util;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.util.datafix.DataFixers;
 
@@ -77,18 +77,20 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
         CompoundTag house = read(village.houseSource(), templates);
         // Add a one-block porch outside the original footprint, keeping the entire house intact.
         BlockPos shift = village.templateShift();
-        for (var tag : house.getList("blocks", Tag.TAG_COMPOUND)) shiftList(((CompoundTag) tag).getList("pos", Tag.TAG_INT), shift, false);
-        for (var tag : house.getList("entities", Tag.TAG_COMPOUND)) {
-            shiftList(((CompoundTag) tag).getList("blockPos", Tag.TAG_INT), shift, false);
-            shiftList(((CompoundTag) tag).getList("pos", Tag.TAG_DOUBLE), shift, true);
+        for (Tag tag : list(house, "blocks")) shiftList(list((CompoundTag) tag, "pos"), shift, false);
+        for (Tag tag : list(house, "entities")) {
+            shiftList(list((CompoundTag) tag, "blockPos"), shift, false);
+            shiftList(list((CompoundTag) tag, "pos"), shift, true);
         }
-        var size = house.getList("size", Tag.TAG_INT);
+        ListTag size = list(house, "size");
         int dimension = village.front().getAxis() == Direction.Axis.X ? 0 : 2;
-        size.set(dimension, IntTag.valueOf(size.getInt(dimension) + 1));
+        size.set(dimension, IntTag.valueOf(size.getIntOr(dimension, 0) + 1));
         // Clear occupied flags captured while building the templates, so generated beds can be used.
-        for (var tag : house.getList("palette", Tag.TAG_COMPOUND)) {
-            var state = (CompoundTag) tag;
-            if (state.getString("Name").endsWith("_bed")) state.getCompound("Properties").putString("occupied", "false");
+        for (Tag tag : list(house, "palette")) {
+            CompoundTag state = (CompoundTag) tag;
+            if (string(state, "Name").endsWith("_bed")) {
+                compound(state, "Properties").putString("occupied", "false");
+            }
         }
         // The house's own path blocks, and the porch in front of its door, are this mod's path
         // block in a village that lays one; the source templates still carry vanilla's grass path.
@@ -107,13 +109,30 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
                                               TemplateSource templates) throws IOException {
         CompoundTag villager = read(Identifier.withDefaultNamespace(
                 "village/" + village.vanillaStyle() + "/villagers/" + name), templates);
-        for (var tag : villager.getList("entities", Tag.TAG_COMPOUND)) {
-            ((CompoundTag) tag).getCompound("nbt").putString("id", village.resident().toString());
+        for (Tag tag : list(villager, "entities")) {
+            compound((CompoundTag) tag, "nbt").putString("id", village.resident().toString());
         }
         return villager;
     }
 
-    private void write(CachedOutput cache, net.minecraft.resources.Identifier name, CompoundTag tag) throws IOException {
+    /**
+     * 26.1's {@code CompoundTag} reads hand back {@link java.util.Optional}s instead of a fallback value.
+     * These keep the template editing below readable, and the one that must not be detached throws rather
+     * than handing back a list whose edits would go nowhere: structure NBT always carries these.
+     */
+    private static ListTag list(CompoundTag tag, String name) {
+        return tag.getList(name).orElseThrow(() -> new IllegalArgumentException("Template has no " + name + " list"));
+    }
+
+    private static String string(CompoundTag tag, String name) {
+        return tag.getStringOr(name, "");
+    }
+
+    private static CompoundTag compound(CompoundTag tag, String name) {
+        return tag.getCompoundOrEmpty(name);
+    }
+
+    private void write(CachedOutput cache, Identifier name, CompoundTag tag) throws IOException {
         var bytes = new ByteArrayOutputStream();
         NbtIo.writeCompressed(tag, bytes);
         byte[] content = bytes.toByteArray();
@@ -127,16 +146,16 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
             if (input == null) throw new IOException("Missing template " + source);
             tag = NbtIo.readCompressed(input, NbtAccounter.unlimitedHeap());
         }
-        tag = DataFixTypes.STRUCTURE.updateToCurrentVersion(DataFixers.getDataFixer(), tag, tag.getInt("DataVersion"));
-        tag.putInt("DataVersion", SharedConstants.getCurrentVersion().getDataVersion().getVersion());
+        tag = DataFixTypes.STRUCTURE.updateToCurrentVersion(DataFixers.getDataFixer(), tag, tag.getIntOr("DataVersion", 0));
+        tag.putInt("DataVersion", SharedConstants.getCurrentVersion().dataVersion().version());
         return tag;
     }
 
     private static void shiftList(ListTag coordinates, BlockPos shift, boolean floating) {
         for (int i = 0; i < 3; i++) {
             int offset = i == 0 ? shift.getX() : i == 2 ? shift.getZ() : 0;
-            if (floating) coordinates.set(i, DoubleTag.valueOf(coordinates.getDouble(i) + offset));
-            else coordinates.set(i, IntTag.valueOf(coordinates.getInt(i) + offset));
+            if (floating) coordinates.set(i, DoubleTag.valueOf(coordinates.getDoubleOr(i, 0) + offset));
+            else coordinates.set(i, IntTag.valueOf(coordinates.getIntOr(i, 0) + offset));
         }
     }
 
@@ -156,13 +175,13 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
      */
     private static void layStonePath(CompoundTag template) {
         String stone = TolkienVillageProvider.stonePathBlock();
-        for (var tag : template.getList("palette", Tag.TAG_COMPOUND)) {
-            var state = (CompoundTag) tag;
-            if (state.getString("Name").equals("minecraft:dirt_path")) state.putString("Name", stone);
+        for (Tag tag : list(template, "palette")) {
+            CompoundTag state = (CompoundTag) tag;
+            if (string(state, "Name").equals("minecraft:dirt_path")) state.putString("Name", stone);
         }
-        for (var tag : template.getList("blocks", Tag.TAG_COMPOUND)) {
-            var nbt = ((CompoundTag) tag).getCompound("nbt");
-            if (nbt.getString("final_state").equals("minecraft:dirt_path")) nbt.putString("final_state", stone);
+        for (Tag tag : list(template, "blocks")) {
+            CompoundTag nbt = compound((CompoundTag) tag, "nbt");
+            if (string(nbt, "final_state").equals("minecraft:dirt_path")) nbt.putString("final_state", stone);
         }
     }
 
@@ -171,24 +190,24 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
         // processor is what lays the village's path block there - keeping the grass patches a tenth
         // of a plains street grows over and the plank bridge where one crosses water.
         CompoundTag road = read(street.source(), templates);
-        var palette = road.getList("palette", Tag.TAG_COMPOUND);
-        var blocks = road.getList("blocks", Tag.TAG_COMPOUND);
-        var size = road.getList("size", Tag.TAG_INT);
+        ListTag palette = list(road, "palette");
+        ListTag blocks = list(road, "blocks");
+        ListTag size = list(road, "size");
         var entrances = new java.util.ArrayList<CompoundTag>();
-        for (var tag : blocks) {
-            var block = (CompoundTag) tag;
-            if (block.getCompound("nbt").getString("name").equals("minecraft:building_entrance")) entrances.add(block.copy());
+        for (Tag tag : blocks) {
+            CompoundTag block = (CompoundTag) tag;
+            if (string(compound(block, "nbt"), "name").equals("minecraft:building_entrance")) entrances.add(block.copy());
         }
-        for (var entrance : entrances) {
-            var coordinates = entrance.getList("pos", Tag.TAG_INT);
-            BlockPos old = new BlockPos(coordinates.getInt(0), coordinates.getInt(1), coordinates.getInt(2));
-            Direction facing = Direction.byName(palette.getCompound(entrance.getInt("state"))
-                    .getCompound("Properties").getString("orientation").split("_")[0]);
+        for (CompoundTag entrance : entrances) {
+            ListTag coordinates = list(entrance, "pos");
+            BlockPos old = new BlockPos(coordinates.getIntOr(0, 0), coordinates.getIntOr(1, 0), coordinates.getIntOr(2, 0));
+            Direction facing = Direction.byName(palette.getCompoundOrEmpty(entrance.getIntOr("state", 0))
+                    .getCompoundOrEmpty("Properties").getStringOr("orientation", "").split("_")[0]);
             BlockPos edge = switch (facing) {
                 case NORTH -> new BlockPos(old.getX(), old.getY(), 0);
-                case SOUTH -> new BlockPos(old.getX(), old.getY(), size.getInt(2) - 1);
+                case SOUTH -> new BlockPos(old.getX(), old.getY(), size.getIntOr(2, 0) - 1);
                 case WEST -> new BlockPos(0, old.getY(), old.getZ());
-                case EAST -> new BlockPos(size.getInt(0) - 1, old.getY(), old.getZ());
+                case EAST -> new BlockPos(size.getIntOr(0, 0) - 1, old.getY(), old.getZ());
                 default -> throw new IllegalArgumentException("Street entrance must face horizontally");
             };
             removeBlock(road, old);
@@ -210,17 +229,19 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
     }
 
     private static void removeBlock(CompoundTag template, BlockPos position) {
-        var blocks = template.getList("blocks", Tag.TAG_COMPOUND);
+        ListTag blocks = list(template, "blocks");
         blocks.removeIf(tag -> {
-            var pos = ((CompoundTag) tag).getList("pos", Tag.TAG_INT);
-            return pos.getInt(0) == position.getX() && pos.getInt(1) == position.getY() && pos.getInt(2) == position.getZ();
+            ListTag pos = list((CompoundTag) tag, "pos");
+            return pos.getIntOr(0, 0) == position.getX() && pos.getIntOr(1, 0) == position.getY() && pos.getIntOr(2, 0) == position.getZ();
         });
     }
 
     private static void putState(CompoundTag template, BlockPos position, String name) {
-        var palette = template.getList("palette", Tag.TAG_COMPOUND);
+        ListTag palette = list(template, "palette");
         int index = -1;
-        for (int i = 0; i < palette.size(); i++) if (palette.getCompound(i).getString("Name").equals(name)) { index = i; break; }
+        for (int i = 0; i < palette.size(); i++) {
+            if (string(palette.getCompoundOrEmpty(i), "Name").equals(name)) { index = i; break; }
+        }
         if (index == -1) {
             index = palette.size();
             CompoundTag state = new CompoundTag(); state.putString("Name", name); palette.add(state);
@@ -229,33 +250,33 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
         CompoundTag block = new CompoundTag();
         ListTag pos = new ListTag(); pos.add(IntTag.valueOf(position.getX())); pos.add(IntTag.valueOf(position.getY())); pos.add(IntTag.valueOf(position.getZ()));
         block.put("pos", pos); block.putInt("state", index);
-        template.getList("blocks", Tag.TAG_COMPOUND).add(block);
+        list(template, "blocks").add(block);
     }
 
     private static void addConnector(CompoundTag house, BlockPos position, String orientation,
                                      String name, String pool, String finalState) {
-        var size = house.getList("size", Tag.TAG_INT);
-        if (position.getX() < 0 || position.getX() >= size.getInt(0) || position.getY() < 0
-                || position.getY() >= size.getInt(1) || position.getZ() < 0 || position.getZ() >= size.getInt(2)) {
+        ListTag size = list(house, "size");
+        if (position.getX() < 0 || position.getX() >= size.getIntOr(0, 0) || position.getY() < 0
+                || position.getY() >= size.getIntOr(1, 0) || position.getZ() < 0 || position.getZ() >= size.getIntOr(2, 0)) {
             throw new IllegalArgumentException("Connector outside house: " + position);
         }
-        var palette = house.getList("palette", Tag.TAG_COMPOUND);
-        var blocks = house.getList("blocks", Tag.TAG_COMPOUND);
+        ListTag palette = list(house, "palette");
+        ListTag blocks = list(house, "blocks");
         CompoundTag replaced = null;
-        for (var tag : blocks) {
-            var block = (CompoundTag) tag;
-            var pos = block.getList("pos", Tag.TAG_INT);
-            if (pos.getInt(0) == position.getX() && pos.getInt(1) == position.getY() && pos.getInt(2) == position.getZ()) {
+        for (Tag tag : blocks) {
+            CompoundTag block = (CompoundTag) tag;
+            ListTag pos = list(block, "pos");
+            if (pos.getIntOr(0, 0) == position.getX() && pos.getIntOr(1, 0) == position.getY() && pos.getIntOr(2, 0) == position.getZ()) {
                 replaced = block;
                 break;
             }
         }
         if (finalState == null) {
             if (replaced == null) throw new IllegalArgumentException("Resident connector needs an existing floor");
-            var state = palette.getCompound(replaced.getInt("state"));
-            var properties = state.getCompound("Properties");
-            finalState = state.getString("Name") + (properties.isEmpty() ? "" : properties.getAllKeys().stream().sorted()
-                    .map(key -> key + "=" + properties.getString(key)).collect(Collectors.joining(",", "[", "]")));
+            CompoundTag state = palette.getCompoundOrEmpty(replaced.getIntOr("state", 0));
+            CompoundTag properties = compound(state, "Properties");
+            finalState = string(state, "Name") + (properties.isEmpty() ? "" : properties.keySet().stream().sorted()
+                    .map(key -> key + "=" + string(properties, key)).collect(Collectors.joining(",", "[", "]")));
         }
         CompoundTag state = new CompoundTag();
         state.putString("Name", "minecraft:jigsaw");

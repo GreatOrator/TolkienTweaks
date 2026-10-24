@@ -1787,6 +1787,41 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   error over the new item registration). Nothing was run in game: hover a placard in the inventory to
   see its gold line, and put a filled bucket in the camouflage fluid block to watch it pour.
 
+### The villager professions and their trades — DONE (JSON pending a runData)
+
+- **26.1 turned a profession into a record.** `VillagerProfession` moved to
+  `net.minecraft.world.entity.npc.villager` and is now a seven-part record - display name, two POI
+  predicates, requested items, secondary POIs, work sound and a level-to-trade-set table - so the six
+  professions in `TolkienVillagers` build that record directly. The display name keeps the key the
+  lang files already carry (`entity.minecraft.villager.tolkienmobs.<name>`), and each profession lists
+  one trade set per level it has offers for.
+- **NeoForge's `VillagerTradesEvent` is gone**, because offers are no longer built in code: they are
+  `villager_trade` registry entries, drawn from by `trade_set` entries, and both registries load from
+  datapack JSON. The fifty-eight listings that used to be added in `TolkienServerEvents` therefore
+  live in `TolkienVillagerTrades` now - every offer keeps its cost, result, 16 uses, its xp and its
+  price multiplier, and each level draws two of its entries like vanilla's sets do. The old event
+  handler and the `TradesHandler` helper it used are deleted.
+- **The trinket offers keep their random potion through a loot function.** A trade's `gives` is a
+  fixed item, but it also takes `given_item_modifiers`, and the mod already has
+  `tolkienmobs:random_trinket` - so the smith and tailor trades attach it and a sold trinket still
+  arrives with a random benevolent potion bound to it.
+- **Where the JSON comes from.** The trade and trade-set definitions are handed to the datapack
+  generator in `TolkienDataRegistryProvider`, so the next `runData` writes
+  `data/tolkienmobs/villager_trade/...` and `data/tolkienmobs/trade_set/...` and those files must be
+  committed with it. Until then the professions point at sets the datapack does not have, which is the
+  same state the biome JSON is in - the tree does not build, so no pack is generated either way.
+- **`TolkienVillageTemplateProvider` needed the new NBT reads.** 26.1's `CompoundTag` returns
+  `Optional`s and offers `getStringOr`/`getIntOr`/`getDoubleOr`/`getListOrEmpty`/`getCompoundOrEmpty`
+  instead of the old `getList(name, type)` accessors, and `getAllKeys` is `keySet`. The provider edits
+  structure NBT in place, so its three reads that must not hand back a detached copy (the `blocks`,
+  `entities` and `palette` lists) throw if the key is missing rather than silently editing a
+  temporary; the rest read with a fallback. `DataFixTypes.updateToCurrentVersion` takes the version as
+  an `int`, and the current version is `SharedConstants.getCurrentVersion().dataVersion().version()`.
+- **Verified:** whole-tree `javac` at **134** errors, down from 195 - the template provider's 32,
+  `TolkienVillagers`' 20 and the nine `TolkienServerEvents` held for the trade handler are gone, with
+  nothing new anywhere; that file still has one unrelated error of its own (`BlockEvent.BreakEvent`).
+  Nothing was run in game, and no datagen ran.
+
 ### `TolkienBlock`'s dead tooltip hook — DONE
 
 - **The base block class had the same override the placard did**, and its `setHasLore()` had stopped
