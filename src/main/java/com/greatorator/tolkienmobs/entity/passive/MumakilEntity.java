@@ -25,6 +25,8 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.MoveToBlockGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.cow.CowSoundVariant;
+import net.minecraft.world.entity.animal.cow.CowSoundVariants;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -47,6 +49,9 @@ import javax.annotation.Nonnull;
 import java.util.EnumSet;
 
 public class MumakilEntity extends TolkienHeardEntity implements GeoEntity {
+    // 26.1 keeps the cow's sounds in a variant set; the mumakil only borrows the step, and the
+    // classic set's event ids are the ones it played before.
+    private static final CowSoundVariant COW_SOUNDS = SoundEvents.COW_SOUNDS.get(CowSoundVariants.SoundSet.CLASSIC);
     private static final int MAX_STRENGTH = 5;
     private static final EntityDataAccessor<Integer> DATA_STRENGTH_ID = SynchedEntityData.defineId(MumakilEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(MumakilEntity.class, EntityDataSerializers.INT);
@@ -177,7 +182,7 @@ public class MumakilEntity extends TolkienHeardEntity implements GeoEntity {
 
     @Override
     protected void playStepSound(BlockPos pos, BlockState block) {
-        this.playSound(SoundEvents.COW_STEP, 0.15F, 1.0F);
+        this.playSound(COW_SOUNDS.stepSound().value(), 0.15F, 1.0F);
     }
 
     /**

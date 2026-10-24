@@ -195,6 +195,10 @@ All notable changes to this project will be documented in this file.
   still flocks and is still tempted by insects, and a bred thrush chick is still owned by whoever
   tamed its parent, even if that player is offline. The gecko still walks and idles with the same
   gait, because the model's two animations are baked once and then played as they were.
+- The passive family is ported, so the auroch and the mumakil compile along with the base class
+  they share. You hear no difference: an auroch still moos, hurts and dies with the cow's sounds
+  and still clops on the same step, it can still be milked with the same sound, and the mumakil
+  still borrows that step. Both still shy away from bees.
 
 ## [4.4.83-Final] - 10.22.2026
 
