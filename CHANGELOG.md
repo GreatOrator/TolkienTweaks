@@ -253,6 +253,11 @@ All notable changes to this project will be documented in this file.
   lost for now: 26.1 removed the per-dimension effects hook that gave the overworld shorter clouds
   and the mod's own fog colour, so vanilla's sky settings apply until the dark-forest fog is rebuilt
   on the fog events that replaced it.
+- The mod's tree shapes are ported, so the branching trunks, the spheroid leaf blobs and the root
+  features compile again. Every tree still looks the way it did: same branch counts and angles, same
+  leaf radius and shag factor, same roots, and the same generated tree features. The only change is
+  underneath - 26.1 hands these placers the world they are generating into, so a block placed from
+  one can now be chosen with the terrain in view.
 - The particle description data provider is ported, so the datagen side of the particles compiles.
   Every flame, the lightning bugs, the fell beast's breath, the wind and the leaf particles still
   declare the same single sprite they did, and the tinted smoke still borrows vanilla's twelve

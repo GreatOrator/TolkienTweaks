@@ -10,7 +10,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.LevelSimulatedReader;
+import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.TreeFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
@@ -46,14 +46,14 @@ public class BranchingLargeTrunkPlacer extends TrunkPlacer {
 	}
 
 	@Override
-	public List<FoliagePlacer.FoliageAttachment> placeTrunk(LevelSimulatedReader worldReader, BiConsumer<BlockPos, BlockState> worldPlacer, RandomSource random, int height, BlockPos startPos, TreeConfiguration treeConfig) {
+	public List<FoliagePlacer.FoliageAttachment> placeTrunk(WorldGenLevel worldReader, BiConsumer<BlockPos, BlockState> worldPlacer, RandomSource random, int height, BlockPos startPos, TreeConfiguration treeConfig) {
 		List<FoliagePlacer.FoliageAttachment> leafAttachments = Lists.newArrayList();
 		List<BlockPos> rootBlocks = Lists.newArrayList();
 
-		setDirtAt(worldReader, worldPlacer, random, startPos.below(), treeConfig);
-		setDirtAt(worldReader, worldPlacer, random, startPos.below().east(), treeConfig);
-		setDirtAt(worldReader, worldPlacer, random, startPos.below().south(), treeConfig);
-		setDirtAt(worldReader, worldPlacer, random, startPos.below().south().east(), treeConfig);
+		placeBelowTrunkBlock(worldReader, worldPlacer, random, startPos.below(), treeConfig);
+		placeBelowTrunkBlock(worldReader, worldPlacer, random, startPos.below().east(), treeConfig);
+		placeBelowTrunkBlock(worldReader, worldPlacer, random, startPos.below().south(), treeConfig);
+		placeBelowTrunkBlock(worldReader, worldPlacer, random, startPos.below().south().east(), treeConfig);
 		BlockPos.MutableBlockPos mutableBoundingBox = new BlockPos.MutableBlockPos();
 		Direction direction = Direction.Plane.HORIZONTAL.getRandomDirection(random);
 		int lvt_11_1_ = height - random.nextInt(4);
@@ -94,7 +94,7 @@ public class BranchingLargeTrunkPlacer extends TrunkPlacer {
 
 		return leafAttachments;	}
 
-	private void buildBranch(LevelSimulatedReader worldReader, BiConsumer<BlockPos, BlockState> worldPlacer, BlockPos pos, List<FoliagePlacer.FoliageAttachment> leafBlocks, int height, double length, double angle, double tilt, RandomSource treeRNG, BlockPos.MutableBlockPos mbb, TreeConfiguration config, boolean perpendicularBranches) {
+	private void buildBranch(WorldGenLevel worldReader, BiConsumer<BlockPos, BlockState> worldPlacer, BlockPos pos, List<FoliagePlacer.FoliageAttachment> leafBlocks, int height, double length, double angle, double tilt, RandomSource treeRNG, BlockPos.MutableBlockPos mbb, TreeConfiguration config, boolean perpendicularBranches) {
 		BlockPos src = pos.above(height);
 		BlockPos dest = FeatureLogic.translate(src, length, angle, tilt);
 
@@ -122,18 +122,18 @@ public class BranchingLargeTrunkPlacer extends TrunkPlacer {
 	 * Draws a line from {x1, y1, z1} to {x2, y2, z2}
 	 * This takes all variables for setting Branch
 	 */
-	private void drawBresenhamBranch(LevelSimulatedReader worldReader, BiConsumer<BlockPos, BlockState> worldPlacer, RandomSource random, BlockPos from, BlockPos to) {
+	private void drawBresenhamBranch(WorldGenLevel worldReader, BiConsumer<BlockPos, BlockState> worldPlacer, RandomSource random, BlockPos from, BlockPos to) {
 		for (BlockPos pixel : new VoxelBresenhamIterator(from, to)) placeWood(worldReader, worldPlacer, random, pixel);
 	}
 
 	@SuppressWarnings("UnusedReturnValue")
-	protected boolean placeWood(LevelSimulatedReader level, BiConsumer<BlockPos, BlockState> blockSetter, RandomSource random, BlockPos pos) {
+	protected boolean placeWood(WorldGenLevel level, BiConsumer<BlockPos, BlockState> blockSetter, RandomSource random, BlockPos pos) {
 		return this.placeWood(level, blockSetter, random, pos, Function.identity());
 	}
 
-	protected boolean placeWood(LevelSimulatedReader level, BiConsumer<BlockPos, BlockState> blockSetter, RandomSource random, BlockPos pos, Function<BlockState, BlockState> propertySetter) {
+	protected boolean placeWood(WorldGenLevel level, BiConsumer<BlockPos, BlockState> blockSetter, RandomSource random, BlockPos pos, Function<BlockState, BlockState> propertySetter) {
 		if (this.validTreePos(level, pos)) {
-			blockSetter.accept(pos, propertySetter.apply(this.branchesConfig.branchProvider().getState(random, pos)));
+			blockSetter.accept(pos, propertySetter.apply(this.branchesConfig.branchProvider().getState(level, random, pos)));
 			return true;
 		} else return false;
 	}
