@@ -14,14 +14,15 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class RockPileBlock extends BushBlock {
     public static VoxelShape SHAPE = Shapes.or(Block.box(6.0D, 0.0D, 6.0D, 12.0D, 2.0D, 12.0D));
-    protected static final MapCodec<RockPileBlock> CODEC = simpleCodec(RockPileBlock::new);
+    // 26.1 narrows BushBlock's codec to MapCodec<BushBlock>, so a subclass's codec is typed to it too.
+    protected static final MapCodec<BushBlock> CODEC = simpleCodec(RockPileBlock::new);
 
     public RockPileBlock(Properties properties) {
         super(properties);
     }
 
     @Override
-    protected MapCodec<? extends BushBlock> codec() {
+    public MapCodec<BushBlock> codec() {
         return CODEC;
     }
 

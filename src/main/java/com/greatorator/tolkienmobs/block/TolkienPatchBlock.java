@@ -28,7 +28,8 @@ public class TolkienPatchBlock extends TolkienPlantBlock {
     public static final BooleanProperty EAST = BlockStateProperties.EAST;
     public static final BooleanProperty SOUTH = BlockStateProperties.SOUTH;
     public static final BooleanProperty WEST = BlockStateProperties.WEST;
-    public static final MapCodec<TolkienPatchBlock> CODEC = simpleCodec(TolkienPatchBlock::new);
+    // 26.1 narrows BushBlock's codec to MapCodec<BushBlock>, so a subclass's codec is typed to it too.
+    public static final MapCodec<BushBlock> CODEC = simpleCodec(TolkienPatchBlock::new);
     private static final Map<Direction, BooleanProperty> PROPERTY_BY_DIRECTION = PipeBlock.PROPERTY_BY_DIRECTION.entrySet().stream().filter(directionPropertyPair -> directionPropertyPair.getKey().getAxis().isHorizontal()).collect(Util.toMap());
 
     public TolkienPatchBlock(Properties properties) {
@@ -84,7 +85,7 @@ public class TolkienPatchBlock extends TolkienPlantBlock {
     }
 
     @Override
-    protected MapCodec<? extends BushBlock> codec() {
+    public MapCodec<BushBlock> codec() {
         return CODEC;
     }
 
