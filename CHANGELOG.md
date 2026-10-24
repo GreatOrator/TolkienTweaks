@@ -96,6 +96,9 @@ All notable changes to this project will be documented in this file.
   cluster controls, the player, requirement, particle and redstone switches and the spawn-all toggle
   all read and send what they did, and its mob preview still turns to follow the cursor - it now
   uses the game's own inventory entity drawing instead of the mod's copy of it.
+- The fireplace and trinket table screens are ported with them, and both still show their crafting
+  progress the way they did: the arrow fills across and the fire or trinket rises from the bottom of
+  its frame. The fireplace still names the fuel left in a burning slot when you hover it.
 - Every message the mod sends a player now uses 26.1's own call for it: the chat lines go through
   the system-message call, and the three that flash above the hotbar - the backpack's "no room",
   the occupied sleeping bag and a refused sleep - through the overlay one. Nothing the player reads

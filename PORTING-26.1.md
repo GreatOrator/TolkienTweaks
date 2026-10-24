@@ -882,6 +882,23 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   right-click on a toggle is `toggleButton.onClick(event)`, and every payload goes through
   `ClientPacketDistributor`.
 
+### Fireplace and trinket table screens — DONE
+
+- Both are the simplest screens in the mod: a panel, two captions and a two-part progress display
+  (an arrow that fills and a fire or trinket sprite that rises from the bottom). They need nothing
+  but the four hooks - `extractLabels`, `extractBackground` and, for the fireplace, `extractTooltip`
+  for the "remaining fuel" line.
+- The progress blits keep their exact offsets and their clipped `u`/`v`, so the arrow still grows
+  left to right and the flame still rises into the frame rather than being drawn whole and masked.
+  Each blit is `RenderPipelines.GUI_TEXTURED` now, with the int `u`/`v` widening to the new float
+  parameters.
+- Both had a `render` override that called `renderBackground` itself; there is no such call in 26.1,
+  and the base class already draws background, contents and tooltip in that order, so the overrides
+  are deleted rather than translated. The `renderSlotContents` overrides were super-only and went
+  the same way.
+- Neither uses `FluidTankRenderer` after all - the tank work earlier was needed by the backpack, not
+  by these two - so no call site moved with that change.
+
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
   26.1.2 MDK's version; NeoForge requires 9.1.0 or newer), foojay resolver 0.8.0 → 1.0.0.
