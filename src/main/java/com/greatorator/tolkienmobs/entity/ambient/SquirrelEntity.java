@@ -7,6 +7,7 @@ import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
 import com.greatorator.tolkienmobs.init.TolkienTags;
+import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -236,7 +237,7 @@ public class SquirrelEntity extends TolkienAmbientEntity implements GeoEntity {
      *BOSS BAR
      */
     private final ServerBossEvent bossEvent =
-            new ServerBossEvent(Component.literal("Killer Squirrel"), BossEvent.BossBarColor.YELLOW, BossEvent.BossBarOverlay.NOTCHED_10);
+            new ServerBossEvent(Mth.createInsecureUUID(this.random), Component.literal("Killer Squirrel"), BossEvent.BossBarColor.YELLOW, BossEvent.BossBarOverlay.NOTCHED_10);
 
     @Override
     public void startSeenByPlayer(ServerPlayer serverPlayer) {

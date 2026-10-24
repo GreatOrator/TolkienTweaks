@@ -43,9 +43,9 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.monster.Spider;
+import net.minecraft.world.entity.monster.spider.Spider;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import com.geckolib.animatable.GeoEntity;
@@ -180,15 +180,15 @@ public class ShelobEntity extends TolkienMonsterEntity implements GeoEntity, Web
                 this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 10 * 20, 1));
             }
 
-            if (this.getTarget() != null && !this.hasEffect(MobEffects.MOVEMENT_SPEED) && this.getTarget().distanceToSqr(this) > 121.0D) {
+            if (this.getTarget() != null && !this.hasEffect(MobEffects.SPEED) && this.getTarget().distanceToSqr(this) > 121.0D) {
                 GeneralUtility.sendMessage(livingentity, Component.translatable(MODID + ".msg.speedup.shelob").withStyle(ChatFormatting.AQUA));
-                this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 2 * 20, 0));
+                this.addEffect(new MobEffectInstance(MobEffects.SPEED, 2 * 20, 0));
             }
 
             if (livingentity != null
                     && this.level().getDifficulty() == Difficulty.HARD
                     && (double)this.random.nextFloat() < this.getAttributeValue(Attributes.SPAWN_REINFORCEMENTS_CHANCE)
-                    && serverLevel.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
+                    && serverLevel.getGameRules().get(GameRules.SPAWN_MOBS)) {
 
                 int i = Mth.floor(this.getX());
                 int j = Mth.floor(this.getY());
@@ -212,7 +212,7 @@ public class ShelobEntity extends TolkienMonsterEntity implements GeoEntity, Web
                             GeneralUtility.sendMessage(livingentity, Component.translatable(MODID + ".msg.helpcomming.shelob").withStyle(ChatFormatting.DARK_GREEN));
 
                             spider.setTarget(livingentity);
-                            spider.finalizeSpawn(serverLevel, this.level().getCurrentDifficultyAt(spider.blockPosition()), EntitySpawnReason.REINFORCEMENT, null);
+                            spider.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(spider.blockPosition()), EntitySpawnReason.REINFORCEMENT, null);
                             serverLevel.addFreshEntityWithPassengers(spider);
                             AttributeInstance attributeinstance = this.getAttribute(Attributes.SPAWN_REINFORCEMENTS_CHANCE);
                             AttributeModifier attributemodifier = attributeinstance.getModifier(REINFORCEMENT_CALLER_CHARGE_ID);
@@ -312,7 +312,7 @@ public class ShelobEntity extends TolkienMonsterEntity implements GeoEntity, Web
 
     /** BOSS BAR */
     private final ServerBossEvent bossEvent =
-            new ServerBossEvent(Component.translatable("entity.tolkienmobs.entityttmshelob"), BossEvent.BossBarColor.WHITE, BossEvent.BossBarOverlay.NOTCHED_10);
+            new ServerBossEvent(Mth.createInsecureUUID(this.random), Component.translatable("entity.tolkienmobs.entityttmshelob"), BossEvent.BossBarColor.WHITE, BossEvent.BossBarOverlay.NOTCHED_10);
 
     @Override
     public void startSeenByPlayer(ServerPlayer serverPlayer) {

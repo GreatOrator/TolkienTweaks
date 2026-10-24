@@ -43,14 +43,14 @@ import net.minecraft.world.entity.ai.goal.RangedAttackGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import com.greatorator.tolkienmobs.entity.ai.goal.AggressiveRangedAttackGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.animal.Turtle;
+import net.minecraft.world.entity.animal.golem.IronGolem;
+import net.minecraft.world.entity.animal.turtle.Turtle;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Snowball;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.Snowball;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.storage.ValueInput;
@@ -167,15 +167,15 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
                 this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 10 * 20, 1));
             }
 
-            if (this.getTarget() != null && !this.hasEffect(MobEffects.MOVEMENT_SPEED) && this.getTarget().distanceToSqr(this) > 121.0D) {
+            if (this.getTarget() != null && !this.hasEffect(MobEffects.SPEED) && this.getTarget().distanceToSqr(this) > 121.0D) {
                 GeneralUtility.sendMessage(livingentity, Component.translatable(MODID + ".msg.speedup").withStyle(ChatFormatting.AQUA));
-                this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 2 * 20, 0));
+                this.addEffect(new MobEffectInstance(MobEffects.SPEED, 2 * 20, 0));
             }
 
             if (livingentity != null
                     && this.level().getDifficulty() == Difficulty.HARD
                     && (double)this.random.nextFloat() < this.getAttributeValue(Attributes.SPAWN_REINFORCEMENTS_CHANCE)
-                    && serverlevel.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)) {
+                    && serverlevel.getGameRules().get(GameRules.SPAWN_MOBS)) {
                 int i = Mth.floor(this.getX());
                 int j = Mth.floor(this.getY());
                 int k = Mth.floor(this.getZ());
@@ -198,7 +198,7 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
                             GeneralUtility.sendMessage(livingentity, Component.translatable(MODID + ".msg.helpcomming").withStyle(ChatFormatting.DARK_GREEN));
 
                             goblin.setTarget(livingentity);
-                            goblin.finalizeSpawn(serverlevel, this.level().getCurrentDifficultyAt(goblin.blockPosition()), EntitySpawnReason.REINFORCEMENT, null);
+                            goblin.finalizeSpawn(serverlevel, serverlevel.getCurrentDifficultyAt(goblin.blockPosition()), EntitySpawnReason.REINFORCEMENT, null);
                             serverlevel.addFreshEntityWithPassengers(goblin);
                             AttributeInstance attributeinstance = this.getAttribute(Attributes.SPAWN_REINFORCEMENTS_CHANCE);
                             AttributeModifier attributemodifier = attributeinstance.getModifier(REINFORCEMENT_CALLER_CHARGE_ID);
@@ -334,7 +334,7 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
      *BOSS BAR
      */
     private final ServerBossEvent bossEvent =
-            new ServerBossEvent(Component.literal("Goblin King"), BossEvent.BossBarColor.PINK, BossEvent.BossBarOverlay.NOTCHED_10);
+            new ServerBossEvent(Mth.createInsecureUUID(this.random), Component.literal("Goblin King"), BossEvent.BossBarColor.PINK, BossEvent.BossBarOverlay.NOTCHED_10);
 
     @Override
     public void startSeenByPlayer(ServerPlayer serverPlayer) {

@@ -38,10 +38,10 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.util.LandRandomPos;
-import net.minecraft.world.entity.animal.Chicken;
-import net.minecraft.world.entity.animal.Cow;
+import net.minecraft.world.entity.animal.chicken.Chicken;
+import net.minecraft.world.entity.animal.cow.Cow;
 import net.minecraft.world.entity.animal.FlyingAnimal;
-import net.minecraft.world.entity.animal.Sheep;
+import net.minecraft.world.entity.animal.sheep.Sheep;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -86,8 +86,8 @@ public class GwahirEntity extends TolkienFlyingAmbientEntity implements GeoEntit
     public GwahirEntity(EntityType<? extends TamableAnimal> entityType, Level level) {
         super(entityType, level);
 
-        setPathfindingMalus(PathType.DANGER_FIRE, -1.0f);
-        setPathfindingMalus(PathType.DAMAGE_FIRE, -1.0f);
+        setPathfindingMalus(PathType.FIRE_IN_NEIGHBOR, -1.0f);
+        setPathfindingMalus(PathType.FIRE, -1.0f);
         setPathfindingMalus(PathType.WATER, -1.0f);
         setPathfindingMalus(PathType.FENCE, -1.0f);
     }
@@ -147,7 +147,7 @@ public class GwahirEntity extends TolkienFlyingAmbientEntity implements GeoEntit
     }
 
     @Override
-    public boolean causeFallDamage(float pFallDistance, float pMultiplier, DamageSource pSource) {
+    public boolean causeFallDamage(double pFallDistance, float pMultiplier, DamageSource pSource) {
         return false;
     }
 
@@ -201,9 +201,9 @@ public class GwahirEntity extends TolkienFlyingAmbientEntity implements GeoEntit
                 this.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 10 * 20, 1));
             }
 
-            if (this.getTarget() != null && !this.hasEffect(MobEffects.MOVEMENT_SPEED) && this.getTarget().distanceToSqr(this) > 121.0D) {
+            if (this.getTarget() != null && !this.hasEffect(MobEffects.SPEED) && this.getTarget().distanceToSqr(this) > 121.0D) {
                 GeneralUtility.sendMessage(livingentity, Component.translatable(MODID + ".msg.speedup.gwahir").withStyle(ChatFormatting.AQUA));
-                this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 2 * 20, 0));
+                this.addEffect(new MobEffectInstance(MobEffects.SPEED, 2 * 20, 0));
             }
             return true;
         }
@@ -447,7 +447,7 @@ public class GwahirEntity extends TolkienFlyingAmbientEntity implements GeoEntit
 
     /** BOSS BAR */
     private final ServerBossEvent bossEvent =
-            new ServerBossEvent(Component.translatable("entity.tolkienmobs.entityttmgwahir"), BossEvent.BossBarColor.YELLOW, BossEvent.BossBarOverlay.NOTCHED_10);
+            new ServerBossEvent(Mth.createInsecureUUID(this.random), Component.translatable("entity.tolkienmobs.entityttmgwahir"), BossEvent.BossBarColor.YELLOW, BossEvent.BossBarOverlay.NOTCHED_10);
 
     @Override
     public void startSeenByPlayer(ServerPlayer serverPlayer) {

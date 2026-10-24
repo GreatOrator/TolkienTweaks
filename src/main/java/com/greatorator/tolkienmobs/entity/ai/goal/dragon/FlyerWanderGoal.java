@@ -50,20 +50,20 @@ public class FlyerWanderGoal extends WaterAvoidingRandomStrollGoal
 
         if (dragon.isUsingFlyingNavigator() || (!dragon.isLeashed() && dragon.getRandom().nextFloat() <= probability + 0.02))
         {
-            if ((dragon.isSleeping() && !dragon.level.isDay()) || dragon.getRandom().nextFloat() <= probability)
+            if ((dragon.isSleeping() && !dragon.level.isBrightOutside()) || dragon.getRandom().nextFloat() <= probability)
                 position = LandRandomPos.getPos(dragon, 20, 25);
             else
             {
                 Vec3 vec3d = dragon.getLookAngle();
-                if (!dragon.isWithinRestriction())
-                    vec3d = Vec3.atLowerCornerOf(dragon.getRestrictCenter()).subtract(dragon.position()).normalize();
+                if (!dragon.isWithinHome())
+                    vec3d = Vec3.atLowerCornerOf(dragon.getHomePosition()).subtract(dragon.position()).normalize();
 
                 int yOffset = dragon.getAltitude() > 40? 10 : 0;
                 position = HoverRandomPos.getPos(dragon, 30, 50, vec3d.x, vec3d.z, MathUtility.PI / 2, 10, yOffset);
             }
         }
         if (position == null) position = super.getPosition();
-        if (position == null || !dragon.isWithinRestriction(net.minecraft.core.BlockPos.containing(position))) return null;
+        if (position == null || !dragon.isWithinHome(net.minecraft.core.BlockPos.containing(position))) return null;
         if (position.y > dragon.getY() + dragon.getBbHeight() && !dragon.isUsingFlyingNavigator())
             dragon.setNavigator(DragonEntity.NavigationType.FLYING);
         return position;
