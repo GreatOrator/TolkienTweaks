@@ -1073,6 +1073,20 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   `DwarvenMinerEnchantmentEffect` carries the same annotation and still needs it removed, along with
   its own `MobEffects` change.
 
+### The Watcher and its goal - DONE
+
+- `WaterAnimal` moved to `world.entity.animal.fish`, and that one import was the whole of the
+  Watcher's 79 errors: with the supertype unresolved, every inherited member read as a missing
+  symbol - `moveControl`, `goalSelector`, `entityData`, `level()`, `getHealth()`, `canAttack`, the
+  lot - and the 11 errors in `WatcherAttackGoal` were the same line by proxy.
+- `MobEffects.MOVEMENT_SPEED` is `MobEffects.SPEED`. The effect itself is unchanged, so the speed
+  buff the Watcher hands itself after a hit is still the same two-second amplifier-0 instance.
+- `LivingEntity.lastHurtByPlayer` is an `EntityReference<Player>`, so the counterattack reads
+  `getLastHurtByPlayer()` and returns early when it is null - which covers both a cleared reference
+  and a remembered player who has since left - rather than asserting on the field.
+- `ServerBossEvent` takes a `UUID` first. The Watcher names its bar with
+  `Mth.createInsecureUUID(this.random)`, which is how vanilla's wither builds its own.
+
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
   26.1.2 MDK's version; NeoForge requires 9.1.0 or newer), foojay resolver 0.8.0 → 1.0.0.
