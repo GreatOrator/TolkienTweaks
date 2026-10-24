@@ -690,6 +690,17 @@ from **3,470 errors in 337 files to 2,801 in 320**.
 - The `(Player) null` first argument still compiles against the `@Nullable Entity` parameter. It is
   now redundant rather than wrong, and was left alone so the diff is the one thing that had to move.
 
+### Milestone — inventory access (DONE)
+
+- `Inventory.items` is private now, and `getNonEquipmentItems()` is the accessor: it returns that
+  same `NonNullList` (main inventory, no armour or offhand), not a copy, which is what both of the
+  milestone's payment loops need - the first counts matching stacks, the second shrinks them, so
+  they must see the live stacks rather than a snapshot.
+- `Inventory#clearOrCountMatchingItems(predicate, amount, craftSlots)` would replace both loops
+  with one call, but it also draws from the crafting grid and the carried stack. That is a nicer
+  rule and a different one, so it is noted here rather than taken: the payment still comes from the
+  inventory alone.
+
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
   26.1.2 MDK's version; NeoForge requires 9.1.0 or newer), foojay resolver 0.8.0 → 1.0.0.
