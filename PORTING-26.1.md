@@ -780,11 +780,11 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   callback runs. Its two other overrides (`onClick(double, double)` and
   `mouseClicked(double, double, int)`) only called `super`, and the methods they overrode no longer
   exist, so they are gone rather than translated.
-- Four screens that are not ported yet still call the old three-argument form - `BackpackBlockScreen`,
-  `CamoKeyStoneScreen`, `CamoSpawnerScreen` and `KeyCodeScreen` - so those calls now show as errors
-  where they used to resolve. They sit inside each screen's own `mouseClicked(double, double, int)`,
-  which has to be rewritten anyway; `MilestoneScreen` shows the replacement,
-  `toggleButton.onClick(event)`.
+- Four screens still called the old three-argument form - `BackpackBlockScreen`,
+  `CamoKeyStoneScreen`, `CamoSpawnerScreen` and `KeyCodeScreen` - which briefly showed as errors
+  where they used to resolve. They sat inside each screen's own `mouseClicked(double, double, int)`,
+  which had to be rewritten anyway; `CamoKeyStoneScreen` and `KeyCodeScreen` are ported now and use
+  `toggleButton.onClick(event)`, and the other two keep the error until their own pass.
 - `IconButton` and `TexturedButton` are `Button` subclasses rather than `TolkienButton` ones and
   are ported too, which closes the widget set. Neither has a super-only override left, and neither
   is constructed anywhere in the tree yet, so no call site moved with them.
@@ -793,6 +793,26 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   code - the button only ever drew its idle frame. On the extract pass it overrides
   `extractContents`, which the base class calls *after* setting `isHovered`, so the hovered frame
   shows for the first time. That is a deliberate behaviour change, not a translation slip.
+
+### Key screen and keystone screen — DONE
+
+- Both are the milestone shape exactly: `extractBackground` blits the GUI, `extractLabels` draws the
+  title and the greyed key code, `extractTooltip` keeps the button localisations and the name field's
+  one-line hint, and `render` / `renderBg` / `renderLabels` / `renderTooltip` are gone. The GUI sizes
+  are 176x62 and 176x115, passed to the four-argument constructor because `imageHeight` is final.
+- Both drew the name field by hand in `render` and again in `renderBg` on top of the widget pass, so
+  it was drawn twice over itself; it is only a widget now. That is the same tidy the milestone
+  screen got.
+- `mouseClicked(double, double, int)` is `mouseClicked(MouseButtonEvent, boolean)`, which fixed the
+  two `toggleButton.onClick(x, y, btn)` calls the widget port left behind - they are
+  `toggleButton.onClick(event)` now, and the number buttons take the event through
+  `onPress(event)` with the shift/control steps read from it instead of `Screen.hasShiftDown()`.
+- `keyPressed(int, int, int)` is `keyPressed(KeyEvent)`; the key field keeps the same rule - it
+  swallows keys while focused except escape - and the GLFW key constant is `event.isEscape()`.
+- Payloads go through `ClientPacketDistributor`, and `RenderSystem.setShaderTexture` is gone with the
+  pipeline-bound blit.
+- Neither screen's container has been ported yet (`ClickType` moved), so the two screens still show
+  errors from their container rather than from their own drawing.
 
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official

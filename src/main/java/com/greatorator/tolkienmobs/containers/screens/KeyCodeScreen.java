@@ -9,24 +9,22 @@ import com.greatorator.tolkienmobs.containers.widget.TolkienButton;
 import com.greatorator.tolkienmobs.item.custom.KeyItem;
 import com.greatorator.tolkienmobs.network.manager.KeyCodeUpdateManager;
 import com.greatorator.tolkienmobs.util.GeneralUtility;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.layouts.LinearLayout;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.client.renderer.RenderType;
-import net.neoforged.neoforge.network.PacketDistributor;
-import org.jetbrains.annotations.NotNull;
-import org.lwjgl.glfw.GLFW;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -41,11 +39,12 @@ public class KeyCodeScreen extends AbstractContainerScreen<KeyCodeContainer> {
     private boolean keyMode;
 
     public KeyCodeScreen(KeyCodeContainer container, Inventory inv, Component title) {
-        super(container, inv, title);
+        // 26.1 makes the two sizes final, so the fixed height goes through the constructor rather
+        // than being assigned after the fact.
+        super(container, inv, title, 176, 62);
         keyStack = inv.player.getItemInHand(InteractionHand.MAIN_HAND);
         this.hand = inv.player.swingingArm;
         this.container = container;
-        this.imageHeight = 62;
         this.keyCode = KeyItem.getKeyCode(this.keyStack);
         this.keyUses = KeyItem.getUses(this.keyStack);
         this.keyMode = KeyItem.getMode(this.keyStack);
@@ -78,7 +77,7 @@ public class KeyCodeScreen extends AbstractContainerScreen<KeyCodeContainer> {
         int offsetY = (this.height - this.imageHeight) / 2;
         addRenderableWidget(ToggleButtonFactory.KEYUSESBUTTON(offsetX + 36, offsetY + 36, KeyItem.getUses(this.keyStack), b -> {
             keyUses = ((NumberButton) b).getValue();
-            PacketDistributor.sendToServer(new KeyCodeUpdateManager(InteractionHand.MAIN_HAND, this.nameField.getValue(), this.keyUses, this.keyMode));
+            ClientPacketDistributor.sendToServer(new KeyCodeUpdateManager(InteractionHand.MAIN_HAND, this.nameField.getValue(), this.keyUses, this.keyMode));
         }));
     }
 
@@ -97,13 +96,17 @@ public class KeyCodeScreen extends AbstractContainerScreen<KeyCodeContainer> {
         int offsetY = (this.height - this.imageHeight) / 2;
         addRenderableWidget(ToggleButtonFactory.KEEPKEYBUTTON(offsetX + 16, offsetY + 36, KeyItem.getMode(this.keyStack), b -> {
             this.keyMode = !this.keyMode;
-            PacketDistributor.sendToServer(new KeyCodeUpdateManager(InteractionHand.MAIN_HAND, this.nameField.getValue(), this.keyUses, this.keyMode));
+            ClientPacketDistributor.sendToServer(new KeyCodeUpdateManager(InteractionHand.MAIN_HAND, this.nameField.getValue(), this.keyUses, this.keyMode));
         }));
     }
 
-    public int adjustNumberButton(int value, int change, int min, int max) {
-        if (Screen.hasShiftDown()) change *= 10;
-        if (Screen.hasControlDown()) change *= 64;
+    /**
+     * Shift and control step further through the number buttons. 26.1 keeps the modifiers on the
+     * input event that caused the click, so the event is what this needs.
+     */
+    public int adjustNumberButton(int value, int change, int min, int max, MouseButtonEvent event) {
+        if (event.hasShiftDown()) change *= 10;
+        if (event.hasControlDown()) change *= 64;
         if (change < 0) {
             value = (Math.max(value + change, min));
         } else {
@@ -113,11 +116,11 @@ public class KeyCodeScreen extends AbstractContainerScreen<KeyCodeContainer> {
     }
 
     @Override
-    protected void renderTooltip(GuiGraphics pGuiGraphics, int pX, int pY) {
-        super.renderTooltip(pGuiGraphics, pX, pY);
+    protected void extractTooltip(GuiGraphicsExtractor graphics, int pX, int pY) {
+        super.extractTooltip(graphics, pX, pY);
         for (Renderable renderable : this.renderables) {
             if (renderable instanceof TolkienButton button && !button.getLocalization(pX, pY).equals(Component.empty()))
-                pGuiGraphics.renderTooltip(font, button.getLocalization(pX, pY), pX, pY);
+                graphics.setTooltipForNextFrame(font, button.getLocalization(pX, pY), pX, pY);
         }
         Component tooltip = Component.literal("");
         tooltip = Component.translatable("screen.tolkienmobs.namefieldtext");
@@ -125,54 +128,47 @@ public class KeyCodeScreen extends AbstractContainerScreen<KeyCodeContainer> {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        this.nameField.render(guiGraphics, mouseX, mouseY, partialTicks);
-        this.renderTooltip(guiGraphics, mouseX, mouseY);
-        }
-
-    @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawString(font, title, 5, 5, 8552833);
+    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        graphics.text(font, title, 5, 5, 8552833);
 
         if (!nameField.isFocused() && nameField.getValue().isEmpty())
-            guiGraphics.drawString(font, KeyItem.getKeyCode(this.keyStack), nameField.getX() - leftPos + 4, (nameField.getY() + 2) - topPos, -10197916);
+            graphics.text(font, KeyItem.getKeyCode(this.keyStack), nameField.getX() - leftPos + 4, (nameField.getY() + 2) - topPos, -10197916);
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-        RenderSystem.setShaderTexture(0, GUI);
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractBackground(graphics, mouseX, mouseY, partialTicks);
         int relX = (this.width - this.imageWidth) / 2;
         int relY = (this.height - this.imageHeight) / 2;
-        guiGraphics.blit(RenderType::guiTextured, GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
 
-        this.nameField.render(guiGraphics, mouseX, mouseY, partialTicks);
+        // The name field is a widget, so it is drawn with the rest of them; it used to be rendered
+        // here as well, which drew it over itself.
     }
 
     @Override
-    public boolean mouseClicked(double x, double y, int btn) {
-        boolean ret = super.mouseClicked(x, y, btn);
-        if(this.nameField.mouseClicked(x, y, btn)) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        boolean ret = super.mouseClicked(event, doubleClick);
+        if (this.nameField.mouseClicked(event, doubleClick)) {
             this.nameField.setFocused(true);
             ret = true;
-        }
-        else if(this.nameField.isFocused()) {
+        } else if (this.nameField.isFocused()) {
             this.nameField.setFocused(false);
             ret = true;
         }
         for (Renderable renderable : this.renderables) {
-            if (renderable instanceof NumberButton numberButton && GeneralUtility.inBounds(numberButton.getX(), numberButton.getY(), numberButton.getWidth(), numberButton.getHeight(), x, y)) {
-                if (btn == 0)
-                    numberButton.setValue(adjustNumberButton(numberButton.getValue(), 1, numberButton.min, numberButton.max));
-                else if (btn == 1)
-                    numberButton.setValue(adjustNumberButton(numberButton.getValue(), -1, numberButton.min, numberButton.max));
-                numberButton.onPress();
+            if (renderable instanceof NumberButton numberButton && GeneralUtility.inBounds(numberButton.getX(), numberButton.getY(), numberButton.getWidth(), numberButton.getHeight(), event.x(), event.y())) {
+                if (event.button() == 0)
+                    numberButton.setValue(adjustNumberButton(numberButton.getValue(), 1, numberButton.min, numberButton.max, event));
+                else if (event.button() == 1)
+                    numberButton.setValue(adjustNumberButton(numberButton.getValue(), -1, numberButton.min, numberButton.max, event));
+                numberButton.onPress(event);
                 numberButton.playDownSound(Minecraft.getInstance().getSoundManager());
                 return true;
             }
-            if (renderable instanceof ToggleButton toggleButton && GeneralUtility.inBounds(toggleButton.getX(), toggleButton.getY(), toggleButton.getWidth(), toggleButton.getHeight(), x, y)) {
-                if (btn == 1) {
-                    toggleButton.onClick(x, y, btn);
+            if (renderable instanceof ToggleButton toggleButton && GeneralUtility.inBounds(toggleButton.getX(), toggleButton.getY(), toggleButton.getWidth(), toggleButton.getHeight(), event.x(), event.y())) {
+                if (event.button() == 1) {
+                    toggleButton.onClick(event);
                     toggleButton.playDownSound(Minecraft.getInstance().getSoundManager());
                 }
             }
@@ -181,11 +177,11 @@ public class KeyCodeScreen extends AbstractContainerScreen<KeyCodeContainer> {
     }
 
     @Override
-    public boolean keyPressed(int key, int scancode, int p_keyPressed_3_) {
-        if(this.nameField.isFocused()&&key!=GLFW.GLFW_KEY_ESCAPE)
-            if(this.nameField.keyPressed(key, scancode, p_keyPressed_3_)||this.nameField.canConsumeInput())
+    public boolean keyPressed(KeyEvent event) {
+        if (this.nameField.isFocused() && !event.isEscape())
+            if (this.nameField.keyPressed(event) || this.nameField.canConsumeInput())
                 return true;
-        return super.keyPressed(key, scancode, p_keyPressed_3_);
+        return super.keyPressed(event);
     }
 
     private void sendMessageToServer() {
@@ -194,7 +190,7 @@ public class KeyCodeScreen extends AbstractContainerScreen<KeyCodeContainer> {
         var success = KeyItem.setKeyData(this.keyStack, this.keyCode, this.keyUses, this.keyMode);
 
         if (success) {
-            PacketDistributor.sendToServer(new KeyCodeUpdateManager(InteractionHand.MAIN_HAND, this.keyCode, this.keyUses, this.keyMode));
+            ClientPacketDistributor.sendToServer(new KeyCodeUpdateManager(InteractionHand.MAIN_HAND, this.keyCode, this.keyUses, this.keyMode));
         }
     }
 }
