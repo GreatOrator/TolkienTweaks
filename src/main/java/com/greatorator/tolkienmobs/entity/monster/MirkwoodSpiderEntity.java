@@ -33,8 +33,8 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.monster.Skeleton;
-import net.minecraft.world.entity.monster.Spider;
+import net.minecraft.world.entity.monster.skeleton.Skeleton;
+import net.minecraft.world.entity.monster.spider.Spider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -109,7 +109,7 @@ public class MirkwoodSpiderEntity extends TolkienMonsterEntity implements GeoEnt
                     nextAbilityUse = time + coolDown;
                     Player player = (Player) entityIn;
                     BlockPos blockpos = player.blockPosition();
-                    ItemEntity dropItem = player.drop(player.getInventory().removeItem(player.getInventory().selected, 1), false);
+                    ItemEntity dropItem = player.drop(player.getInventory().removeItem(player.getInventory().getSelectedSlot(), 1), false);
                     if (dropItem != null) {
                         dropItem.setPickUpDelay(50);
                         level.playSound(null, blockpos, SoundEvents.SLIME_ATTACK, SoundSource.HOSTILE, 1.0F + level.getRandom().nextFloat(), level.getRandom().nextFloat() * 0.7F + 0.3F);
@@ -162,7 +162,7 @@ public class MirkwoodSpiderEntity extends TolkienMonsterEntity implements GeoEnt
         if (randomsource.nextInt(100) == 0) {
             Skeleton skeleton = EntityType.SKELETON.create(this.level(), EntitySpawnReason.JOCKEY);
             if (skeleton != null) {
-                skeleton.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
+                skeleton.snapTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
                 skeleton.finalizeSpawn(level, difficulty, spawnType, null);
                 skeleton.startRiding(this);
             }

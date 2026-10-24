@@ -62,7 +62,7 @@ public class WargEntity extends TolkienMonsterEntity implements GeoEntity {
     @Override
     public void tick(){
         super.tick();
-        if (this.isInWaterRainOrBubble()) {
+        if (this.isInWaterOrRain()) {
             this.isWet = true;
         }
     }
@@ -115,7 +115,7 @@ public class WargEntity extends TolkienMonsterEntity implements GeoEntity {
         RandomSource randomsource = level.getRandom();
         if (MathUtility.getRandomInteger(15, 1) == 2) {
             MordorOrcEntity entitymordororc = TolkienEntities.ENTITY_TTM_MORDORORC.get().create(this.level, EntitySpawnReason.JOCKEY);
-            entitymordororc.moveTo(this.getX(), this.getY(), this.getZ(), this.yRotO, 0.0F);
+            entitymordororc.snapTo(this.getX(), this.getY(), this.getZ(), this.yRotO, 0.0F);
             entitymordororc.finalizeSpawn(level, difficulty, spawnType, null);
             entitymordororc.startRiding(this);
         }

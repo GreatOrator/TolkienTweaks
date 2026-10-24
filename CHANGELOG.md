@@ -180,6 +180,12 @@ All notable changes to this project will be documented in this file.
   potion - healing, then slowness, poison or weakness on the same conditions - and still throws a
   splash potion, only made with the class 26.1 splits splash potions onto. Gollum's swing still
   holds his idle pose, which is all it ever did.
+- The monster family is ported, so every hostile mob compiles: the Mirkwood spider, the warg, the
+  Romie walker and the shared monster base. Nothing about how they fight has changed - a spider
+  still snatches one item out of your hand on the same cooldown and drops it at your feet with the
+  same pickup delay, and it can still spawn with a skeleton rider in the same one-in-a-hundred case.
+  A warg still occasionally turns up carrying an orc and still gets wet in rain or water, and the
+  walker's halloween pumpkin still never drops when it dies.
 
 ## [4.4.83-Final] - 10.22.2026
 
