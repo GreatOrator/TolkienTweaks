@@ -247,6 +247,12 @@ All notable changes to this project will be documented in this file.
   consumes its ingredients in any order and hands back the first output, and a trinket table still
   keeps the trinket's own name and state while it stamps the potion onto it. Their recipe files are
   unchanged, and the trinket table's recipe preview in JEI still shows the trinket as its output.
+- The client registration class is ported, so the mod's renderers, model layers, block entity types
+  and custom block-model loader register against 26.1 again. Signs still draw with vanilla's sign
+  renderer and boats still bake their own models; nothing about how they look changes. One look is
+  lost for now: 26.1 removed the per-dimension effects hook that gave the overworld shorter clouds
+  and the mod's own fog colour, so vanilla's sky settings apply until the dark-forest fog is rebuilt
+  on the fog events that replaced it.
 - The particle description data provider is ported, so the datagen side of the particles compiles.
   Every flame, the lightning bugs, the fell beast's breath, the wind and the leaf particles still
   declare the same single sprite they did, and the tinted smoke still borrows vanilla's twelve

@@ -1476,6 +1476,24 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   recipes and `TrinketRecipeCategory` compile, and no error is left anywhere under `recipe/`.
   Nothing was opened in game.
 
+### The registration class - DONE
+
+- **Two renderer moves.** `BoatModel` is under `client.model.object.boat` now, and `SignRenderer`
+  became `StandingSignRenderer` - the class vanilla registers for `BlockEntityType.SIGN` - in the
+  same `client.renderer.blockentity` package. `HangingSignRenderer` did not move, and nothing else
+  in the file's registration lists changed.
+- **The per-dimension effects hook is gone.** 26.1 removed `DimensionSpecialEffects` and
+  NeoForge's `RegisterDimensionSpecialEffectsEvent`; a dimension's sky is now its
+  `DimensionType.Skybox` plus the dimension's `EnvironmentAttributeMap`, both data. So the overworld
+  override the mod installed - 128-block clouds, no fog type, neither lighting flag, a slightly
+  darker brightness-dependent fog colour and an `isFoggyAt` biome test - has nowhere to go, and the
+  listener, its `OVERWORLD_EFFECTS` id and the `Identifier` import went with it. `TolkienRenderInfo`
+  and `FogHandler` are still red and are the pending fog slice: the fog distances still belong in
+  `ViewportEvent.RenderFog` and the colour in `ViewportEvent.ComputeFogColor`, both of which 26.1
+  NeoForge keeps, so the dark-forest fog can be rebuilt there rather than lost.
+- **Verified:** whole-tree `javac` at **384** errors, down from 405 - exactly this file's 21 - with
+  nothing new anywhere. Nothing was opened in game.
+
 ## Ordered work list
 
 1. **Build stack — DONE.** MDG 2, JDK 25, NeoForge 26.1.2, the four dependency bumps. The
@@ -1504,6 +1522,8 @@ from **3,470 errors in 337 files to 2,801 in 320**.
    done, see *Camo spawner — DONE* below); then TerraBlender (`TolkienMobsMain` lines 181–182)
    and the surface rules.
 7. **Renderers.** `handler/render/` and the non-GeckoLib renderers, against the submission API.
+   `FogHandler` and the now-unused `TolkienRenderInfo` belong here too: 26.1's dimension effects
+   removal means the forest fog has to move onto `ViewportEvent.RenderFog`/`ComputeFogColor`.
 8. **Screens.** 18 screens and the widget set against the prepare/render split.
 9. **Datagen.** `TolkienDataGenerator` and the vendored `datagen/modelgen` package (NeoForge
    removed the model generators in 21.4, so it was written here — it needs a pass of its own). The
