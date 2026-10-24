@@ -121,9 +121,9 @@ public class SleepingBagBlock extends BedBlock
 
                 return InteractionResult.SUCCESS;
             } else {
-                pPlayer.startSleepInBed(pPos).ifLeft(p_49477_ -> {
-                    if (p_49477_.getMessage() != null) {
-                        pPlayer.sendOverlayMessage(p_49477_.getMessage());
+                pPlayer.startSleepInBed(pPos).ifLeft(problem -> {
+                    if (problem.message() != null) {
+                        pPlayer.sendOverlayMessage(problem.message());
                     }
                 });
                 return InteractionResult.SUCCESS;

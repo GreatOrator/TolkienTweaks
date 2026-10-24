@@ -644,6 +644,20 @@ from **3,470 errors in 337 files to 2,801 in 320**.
 - The calls' wording, colour and trigger are unchanged, so everything the player reads is exactly
   as it was; only the method that carries it moved.
 
+### Sleeping bag — the sleep result (DONE)
+
+- The failure message is back. `Player.BedSleepingProblem` is a record wrapping a `Component` in
+  26.1 rather than a class with `getMessage()`, so the accessor is `message()` - the same shape
+  vanilla's own `BedBlock#useWithoutItem` uses when it reports why a player could not lie down. Nothing else about the branch moved: a refused sleep
+  still shows the reason above the hotbar rather than in chat, which is where that text belongs.
+- `Player#startSleepInBed` keeps its `Either<BedSleepingProblem, Unit>` return, and the base
+  `Player` version is now a stub that starts sleeping and reports success; the checks that can fail
+  - too far away, obstructed, a bed rule that forbids sleeping - live in `ServerPlayer`'s override,
+  which the call still reaches because the instance is a server player.
+- Still open in the same file, untouched here: `canSetSpawn(Level)` (the check that turns an
+  unusable bed into an explosion) is the `BED_RULE` environment attribute now, `Villager` moved to
+  `npc.villager`, `fallOn` takes a `double` distance, and `Level#blockUpdated` is gone.
+
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
   26.1.2 MDK's version; NeoForge requires 9.1.0 or newer), foojay resolver 0.8.0 → 1.0.0.
