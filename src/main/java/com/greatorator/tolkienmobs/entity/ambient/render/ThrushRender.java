@@ -1,41 +1,66 @@
 package com.greatorator.tolkienmobs.entity.ambient.render;
 
-import com.geckolib.cache.model.BakedGeoModel;
-
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
+import com.geckolib.constant.DataTickets;
+import com.geckolib.renderer.GeoEntityRenderer;
+import com.geckolib.renderer.base.BoneSnapshots;
+import com.geckolib.renderer.base.RenderPassInfo;
 import com.greatorator.tolkienmobs.entity.ambient.ThrushEntity;
 import com.greatorator.tolkienmobs.entity.ambient.model.ThrushModel;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.MultiBufferSource;
+import com.greatorator.tolkienmobs.entity.util.TolkienGeoRenderState;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
-import com.geckolib.renderer.GeoEntityRenderer;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class ThrushRender extends GeoEntityRenderer<ThrushEntity> {
+public class ThrushRender extends GeoEntityRenderer<ThrushEntity, TolkienGeoRenderState> {
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(MODID, "textures/entity/birds/thrush.png");
+
     public ThrushRender(EntityRendererProvider.Context context) {
         super(context, new ThrushModel());
         this.shadowRadius = 0.25f;
     }
 
     @Override
-    public ResourceLocation getTextureLocation(ThrushEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/birds/thrush.png");
+    public TolkienGeoRenderState createRenderState(ThrushEntity animatable, Void relatedObject) {
+        return new TolkienGeoRenderState();
     }
 
     @Override
-    public void preRender(PoseStack poseStack, ThrushEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
-        if (!isReRender) {
-            if(animatable.isBaby()) {
-                poseStack.scale(0.45f, 0.45f, 0.45f);
-            } else {
-                poseStack.scale(1f, 1f, 1f);
-            }
+    public Identifier getTextureLocation(TolkienGeoRenderState renderState) {
+        return TEXTURE;
+    }
+
+    @Override
+    public void addRenderData(ThrushEntity animatable, Void relatedObject, TolkienGeoRenderState renderState, float partialTick) {
+        Set<String> hidden = new HashSet<>();
+        if (!animatable.isPecking()) hidden.add("snail");
+        if (!animatable.isTame()) hidden.add("legband");
+        renderState.hiddenBones = Set.copyOf(hidden);
+    }
+
+    /** The model's own scaling, which 5 applies here rather than in preRender. */
+    @Override
+    public void scaleModelForRender(RenderPassInfo<TolkienGeoRenderState> renderPassInfo, float widthScale, float heightScale) {
+        float scale = renderPassInfo.renderState().isBaby ? 0.45F : 1F;
+        super.scaleModelForRender(renderPassInfo, scale, scale);
+    }
+
+    /** The bone work the model used to do in setCustomAnimations, done per render pass. */
+    @Override
+    public void adjustModelBonesForRender(RenderPassInfo<TolkienGeoRenderState> renderPassInfo, BoneSnapshots snapshots) {
+        TolkienGeoRenderState renderState = renderPassInfo.renderState();
+
+        for (String bone : renderState.hiddenBones) {
+            snapshots.ifPresent(bone, snapshot -> snapshot.skipRender(true).skipChildrenRender(true));
         }
 
+        float pitch = renderState.getOrDefaultGeckolibData(DataTickets.ENTITY_PITCH, 0f);
+        float yaw = renderState.getOrDefaultGeckolibData(DataTickets.ENTITY_YAW, 0f);
 
-        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
+        snapshots.ifPresent("head", bone -> bone.setRotation(pitch * Mth.DEG_TO_RAD, yaw * 0.5f * Mth.DEG_TO_RAD, 0f));
     }
 }

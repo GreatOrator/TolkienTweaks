@@ -7,16 +7,16 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.AbstractBoatRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.BoatRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class CulumaldaBoatRenderer extends AbstractBoatRenderer {
-    private static final ResourceLocation CULUMALDA_BOAT = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/boat/culumalda.png");
-    private static final ResourceLocation CULUMALDA_CHEST_BOAT = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/chest_boat/culumalda.png");
+    private static final Identifier CULUMALDA_BOAT = Identifier.fromNamespaceAndPath(MODID, "textures/entity/boat/culumalda.png");
+    private static final Identifier CULUMALDA_CHEST_BOAT = Identifier.fromNamespaceAndPath(MODID, "textures/entity/chest_boat/culumalda.png");
 
     private final EntityModel<BoatRenderState> model;
-    private final ResourceLocation texture;
+    private final Identifier texture;
 
     public CulumaldaBoatRenderer(EntityRendererProvider.Context context, boolean chest) {
         super(context);

@@ -216,8 +216,8 @@ public class GeneralUtility {
                     ticker.tick(serverLevel, blockPos, blockEntity.getBlockState(), blockEntity);
                 }
             } else if (blockState.isRandomlyTicking()) {
-                if (serverLevel.random.nextInt(1365) == 0) { //Average Random Tick Rate
-                    blockState.randomTick(serverLevel, blockPos, serverLevel.random);
+                if (serverLevel.getRandom().nextInt(1365) == 0) { //Average Random Tick Rate
+                    blockState.randomTick(serverLevel, blockPos, serverLevel.getRandom());
                 }
             }
         }

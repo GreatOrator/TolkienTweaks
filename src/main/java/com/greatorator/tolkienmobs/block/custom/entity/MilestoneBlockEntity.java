@@ -20,7 +20,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -84,7 +84,7 @@ public class MilestoneBlockEntity extends TolkienBlockEntity implements MenuProv
     }
 
     public int getItemTravelCost(MilestoneHandler.MilestoneData dest) {
-        ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(TolkienMobsConfig.PAYMENT_ITEM.get())));
+        ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.parse(TolkienMobsConfig.PAYMENT_ITEM.get())));
         double dist = Math.sqrt(dest.getPos().distSqr(getBlockPos()));
 
         if (!dest.getWorldKey().registryKey().equals(level.dimension().registryKey())) {
@@ -187,7 +187,7 @@ public class MilestoneBlockEntity extends TolkienBlockEntity implements MenuProv
     @Override
     public void receivePacketFromClient(MCDataInput input, ServerPlayer client, int id) {
         super.receivePacketFromClient(input, client, id);
-        ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(TolkienMobsConfig.PAYMENT_ITEM.get())));
+        ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.parse(TolkienMobsConfig.PAYMENT_ITEM.get())));
 
         if (id == 3) {
             MilestoneHandler.MilestoneData data = MilestoneHandler.getMilestoneData(level, input.readUUID());

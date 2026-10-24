@@ -1,30 +1,36 @@
 package com.greatorator.tolkienmobs.entity.npc.render;
 
-import com.geckolib.cache.model.BakedGeoModel;
-
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
+import com.geckolib.constant.DataTickets;
+import com.geckolib.renderer.GeoEntityRenderer;
+import com.geckolib.renderer.base.BoneSnapshots;
+import com.geckolib.renderer.base.RenderPassInfo;
 import com.google.common.collect.Maps;
 import com.greatorator.tolkienmobs.entity.npc.HumanEntity;
 import com.greatorator.tolkienmobs.entity.npc.model.HumanModel;
+import com.greatorator.tolkienmobs.entity.util.TolkienGeoRenderState;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.Util;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
-import com.geckolib.renderer.GeoEntityRenderer;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
+
+
 
 import java.util.Map;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class HumanRender extends GeoEntityRenderer<HumanEntity> {
-    private static final ResourceLocation WINTER_HUMAN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/human_winter/winter");
-    private static final ResourceLocation HUMAN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/human/human");
+/**
+ * The human's variant and its winter clothing both ride on the render state: the model only ever sees the
+ * state, so the two choices it used to read off the entity are captured during extraction and looked up
+ * again when the texture is asked for.
+ */
+public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRenderState> {
+    private static final Identifier WINTER_HUMAN = Identifier.fromNamespaceAndPath(MODID, "textures/entity/human_winter/winter");
+    private static final Identifier HUMAN = Identifier.fromNamespaceAndPath(MODID, "textures/entity/human/human");
 
-    public static final Map<TolkienVariant, ResourceLocation> LOCATION_BY_VARIANT = textures(HUMAN);
-    public static final Map<TolkienVariant, ResourceLocation> WINTER_LOCATION_BY_VARIANT = textures(WINTER_HUMAN);
+    public static final Map<TolkienVariant, Identifier> LOCATION_BY_VARIANT = textures(HUMAN);
+    public static final Map<TolkienVariant, Identifier> WINTER_LOCATION_BY_VARIANT = textures(WINTER_HUMAN);
 
     /**
      * Builds the variant-to-texture list for one folder. Every variant uses the file matching its id
@@ -32,7 +38,7 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity> {
      * own and shares DEFAULT's. Giving both folders the same numbering is what lets a human keep its
      * face when it swaps to winter clothing.
      */
-    private static Map<TolkienVariant, ResourceLocation> textures(ResourceLocation base) {
+    private static Map<TolkienVariant, Identifier> textures(Identifier base) {
         return Util.make(Maps.newEnumMap(TolkienVariant.class), map -> {
             for (TolkienVariant variant : TolkienVariant.values()) {
                 int file = variant == TolkienVariant.LAVENDER ? 1 : variant.getId() + 1;
@@ -41,9 +47,10 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity> {
         });
     }
 
-    public static ResourceLocation getTexture(HumanEntity entity) {
-        Map<TolkienVariant, ResourceLocation> byVariant = entity.isWinter() ? WINTER_LOCATION_BY_VARIANT : LOCATION_BY_VARIANT;
-        return byVariant.get(entity.getTolkienVariant());
+    /** The variant's texture, for the model and for the base class's texture lookup. */
+    public static Identifier textureFor(TolkienGeoRenderState renderState) {
+        Map<TolkienVariant, Identifier> byVariant = renderState.winter ? WINTER_LOCATION_BY_VARIANT : LOCATION_BY_VARIANT;
+        return byVariant.get(renderState.variant);
     }
 
     public HumanRender(EntityRendererProvider.Context context) {
@@ -52,19 +59,35 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(HumanEntity entity) {
-        return getTexture(entity);
+    public TolkienGeoRenderState createRenderState(HumanEntity animatable, Void relatedObject) {
+        return new TolkienGeoRenderState();
     }
 
     @Override
-    public void preRender(PoseStack poseStack, HumanEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
-        if (!isReRender) {
-            if(animatable.isBaby()) {
-                poseStack.scale(0.50f, 0.50f, 0.50f);
-            }
-        }
+    public Identifier getTextureLocation(TolkienGeoRenderState renderState) {
+        return textureFor(renderState);
+    }
 
+    @Override
+    public void addRenderData(HumanEntity animatable, Void relatedObject, TolkienGeoRenderState renderState, float partialTick) {
+        renderState.variant = animatable.getTolkienVariant();
+        renderState.winter = animatable.isWinter();
+    }
 
-        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
+    /** A human child is drawn at half size; 5 applies that here rather than in preRender. */
+    @Override
+    public void scaleModelForRender(RenderPassInfo<TolkienGeoRenderState> renderPassInfo, float widthScale, float heightScale) {
+        float scale = renderPassInfo.renderState().isBaby ? 0.50F : 1F;
+        super.scaleModelForRender(renderPassInfo, scale, scale);
+    }
+
+    /** The head turn, which the model used to make in setCustomAnimations. */
+    @Override
+    public void adjustModelBonesForRender(RenderPassInfo<TolkienGeoRenderState> renderPassInfo, BoneSnapshots snapshots) {
+        TolkienGeoRenderState renderState = renderPassInfo.renderState();
+        float pitch = renderState.getOrDefaultGeckolibData(DataTickets.ENTITY_PITCH, 0f);
+        float yaw = renderState.getOrDefaultGeckolibData(DataTickets.ENTITY_YAW, 0f);
+
+        snapshots.ifPresent("head", bone -> bone.setRotation(pitch * Mth.DEG_TO_RAD, yaw * 0.5f * Mth.DEG_TO_RAD, 0f));
     }
 }

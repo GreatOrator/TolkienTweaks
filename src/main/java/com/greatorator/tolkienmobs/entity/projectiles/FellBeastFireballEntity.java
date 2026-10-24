@@ -57,7 +57,7 @@ public class FellBeastFireballEntity extends AbstractArrow {
     protected void onHit(HitResult result) {
         super.onHit(result);
         if (result.getType() != HitResult.Type.ENTITY || !this.ownedBy(((EntityHitResult)result).getEntity())) {
-            if (!this.level().isClientSide) {
+            if (!this.level().isClientSide()) {
                 List<LivingEntity> list = this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(4.0, 2.0, 4.0));
                 AreaEffectCloud areaeffectcloud = new AreaEffectCloud(this.level(), this.getX(), this.getY(), this.getZ());
                 Entity entity = this.getOwner();

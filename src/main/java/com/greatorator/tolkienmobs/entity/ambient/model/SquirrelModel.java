@@ -1,32 +1,31 @@
-package com.greatorator.tolkienmobs.entity.ambient.model;// Made with Blockbench 4.11.1
-// Exported for Minecraft version 1.17 or later with Mojang mappings
-// Paste this class into your mod and generate all required imports
+package com.greatorator.tolkienmobs.entity.ambient.model;
 
-
-import com.greatorator.tolkienmobs.entity.ambient.SquirrelEntity;
-import com.greatorator.tolkienmobs.entity.ambient.render.FrogRender;
-import net.minecraft.resources.ResourceLocation;
 import com.geckolib.model.GeoModel;
-import com.geckolib.renderer.base.GeoRenderer;
+import com.geckolib.renderer.base.GeoRenderState;
+import com.greatorator.tolkienmobs.entity.ambient.SquirrelEntity;
+import com.greatorator.tolkienmobs.entity.ambient.render.SquirrelRender;
+import com.greatorator.tolkienmobs.entity.util.TolkienGeoRenderState;
+import net.minecraft.resources.Identifier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
+/** Rendered from the render state, which is the only thing a GeckoLib 5 model or renderer sees during a pass. */
 public class SquirrelModel extends GeoModel<SquirrelEntity> {
-	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "ambient/squirrel");
-	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "ambient/squirrel");
+    private static final Identifier MODEL = Identifier.fromNamespaceAndPath(MODID, "ambient/squirrel");
+    private static final Identifier ANIMATIONS = Identifier.fromNamespaceAndPath(MODID, "ambient/squirrel");
 
-	@Override
-	public ResourceLocation getModelResource(SquirrelEntity object, GeoRenderer<SquirrelEntity> renderer) {
-		return this.model;
-	}
+    @Override
+    public Identifier getModelResource(GeoRenderState renderState) {
+        return MODEL;
+    }
 
-	@Override
-	public ResourceLocation getTextureResource(SquirrelEntity object, GeoRenderer<SquirrelEntity> renderer) {
-		return FrogRender.LOCATION_BY_VARIANT.get(object.getVariant());
-	}
+    @Override
+    public Identifier getTextureResource(GeoRenderState renderState) {
+        return SquirrelRender.textureFor((TolkienGeoRenderState) renderState);
+    }
 
-	@Override
-	public ResourceLocation getAnimationResource(SquirrelEntity object) {
-		return this.animations;
-	}
+    @Override
+    public Identifier getAnimationResource(SquirrelEntity animatable) {
+        return ANIMATIONS;
+    }
 }

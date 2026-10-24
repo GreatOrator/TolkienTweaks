@@ -7,7 +7,7 @@ import com.greatorator.tolkienmobs.init.TolkienFluids;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -29,7 +29,7 @@ public abstract class BlockModelBuilders extends BlockModelHelper {
 		super(output, helper);
 	}
 
-	protected BlockModelBuilder makeTintedBlockAll(String name, ResourceLocation renderType) {
+	protected BlockModelBuilder makeTintedBlockAll(String name, Identifier renderType) {
 		return this.makeTintedBlock(name, renderType)
 			.texture("north", "#all").texture("south", "#all").texture("east", "#all")
 			.texture("west", "#all").texture("up", "#all").texture("down", "#all");
@@ -47,7 +47,7 @@ public abstract class BlockModelBuilders extends BlockModelHelper {
 			.texture("west", "#side").texture("up", "#top").texture("down", "#bottom");
 	}
 
-	protected BlockModelBuilder makeTintedBlock(String name, ResourceLocation renderType) {
+	protected BlockModelBuilder makeTintedBlock(String name, Identifier renderType) {
 		return models().withExistingParent(name, "minecraft:block/block").renderType(renderType).texture("particle", "#north")
 			.element().from(0.0F, 0.0F, 0.0F).to(16.0F, 16.0F, 16.0F)
 			.face(Direction.NORTH).texture("#north").cullface(Direction.NORTH).tintindex(0).end()
@@ -58,13 +58,13 @@ public abstract class BlockModelBuilders extends BlockModelHelper {
 			.face(Direction.DOWN).texture("#down").cullface(Direction.DOWN).tintindex(0).end().end();
 	}
 
-	protected BlockModelBuilder makeEmissiveBlockAll(String name, ResourceLocation renderType, int emissivity) {
+	protected BlockModelBuilder makeEmissiveBlockAll(String name, Identifier renderType, int emissivity) {
 		return this.makeEmissiveBlock(name, renderType, emissivity)
 			.texture("north", "#all").texture("south", "#all").texture("east", "#all")
 			.texture("west", "#all").texture("up", "#all").texture("down", "#all");
 	}
 
-	protected BlockModelBuilder makeEmissiveBlock(String name, ResourceLocation renderType, int emissivity) {
+	protected BlockModelBuilder makeEmissiveBlock(String name, Identifier renderType, int emissivity) {
 		return models().withExistingParent(name, "minecraft:block/block").renderType(renderType).texture("particle", "#north")
 			.element().from(0.0F, 0.0F, 0.0F).to(16.0F, 16.0F, 16.0F)
 			.face(Direction.NORTH).texture("#north").cullface(Direction.NORTH).emissivity(emissivity, emissivity).tintindex(0).end()
@@ -108,7 +108,7 @@ public abstract class BlockModelBuilders extends BlockModelHelper {
 			.face(Direction.DOWN).texture("#all").cullface(Direction.DOWN).emissivity(15, 15).end().end();
 	}
 
-	protected BlockModelBuilder makeCubeWithTopLayer(String name, ResourceLocation renderType, int layer1em, int layer2em) {
+	protected BlockModelBuilder makeCubeWithTopLayer(String name, Identifier renderType, int layer1em, int layer2em) {
 		return models().withExistingParent(name, "minecraft:block/block").renderType(renderType).texture("particle", "#bottom")
 			.element().from(0.0F, 0.0F, 0.0F).to(16.0F, 16.0F, 16.0F)
 			.face(Direction.NORTH).texture("#north").cullface(Direction.NORTH).emissivity(layer1em, layer1em).end()
@@ -121,7 +121,7 @@ public abstract class BlockModelBuilders extends BlockModelHelper {
 			.face(Direction.UP).texture("#top2").cullface(Direction.UP).emissivity(layer2em, layer2em).end().end();
 	}
 
-	protected BlockModelBuilder make2LayerCubeAllSidesSame(String name, ResourceLocation renderType, int layer1em, int layer2em, boolean shade) {
+	protected BlockModelBuilder make2LayerCubeAllSidesSame(String name, Identifier renderType, int layer1em, int layer2em, boolean shade) {
 		return this.make2LayerCube(name, renderType,
 				layer1em, layer1em, layer1em, layer1em, layer1em, layer1em,
 				layer2em, layer2em, layer2em, layer2em, layer2em, layer2em, shade)
@@ -131,7 +131,7 @@ public abstract class BlockModelBuilders extends BlockModelHelper {
 			.texture("west2", "#all2").texture("top2", "#all2").texture("bottom2", "#all2");
 	}
 
-	protected BlockModelBuilder make2LayerCube(String name, ResourceLocation renderType,
+	protected BlockModelBuilder make2LayerCube(String name, Identifier renderType,
 											   int layer1emN, int layer1emS, int layer1emW, int layer1emE, int layer1emU, int layer1emD,
 											   int layer2emN, int layer2emS, int layer2emW, int layer2emE, int layer2emU, int layer2emD, boolean shade) {
 		return models().withExistingParent(name, "minecraft:block/block").renderType(renderType).texture("particle", "#bottom")
@@ -151,7 +151,7 @@ public abstract class BlockModelBuilders extends BlockModelHelper {
 			.face(Direction.DOWN).texture("#bottom2").cullface(Direction.DOWN).emissivity(layer2emD, layer2emD).tintindex(0).end().end();
 	}
 
-	protected BlockModelBuilder make2LayerCubeNoBottom(String name, ResourceLocation renderType, int layer1em, int layer2em, boolean shade) {
+	protected BlockModelBuilder make2LayerCubeNoBottom(String name, Identifier renderType, int layer1em, int layer2em, boolean shade) {
 		return models().withExistingParent(name, "minecraft:block/block").renderType(renderType).texture("particle", "#bottom")
 			.element().from(0.0F, 0.0F, 0.0F).to(16.0F, 16.0F, 16.0F).shade(shade)
 			.face(Direction.NORTH).texture("#north").cullface(Direction.NORTH).emissivity(layer1em, layer1em).end()
@@ -168,7 +168,7 @@ public abstract class BlockModelBuilders extends BlockModelHelper {
 			.face(Direction.UP).texture("#top2").cullface(Direction.UP).emissivity(layer2em, layer2em).end().end();
 	}
 
-	protected BlockModelBuilder make3LayerCubeAllSidesSame(String name, ResourceLocation renderType, int layer1em, int layer2em, int layer3em) {
+	protected BlockModelBuilder make3LayerCubeAllSidesSame(String name, Identifier renderType, int layer1em, int layer2em, int layer3em) {
 		return this.make3LayerCube(name, renderType,
 				layer1em, layer1em, layer1em, layer1em, layer1em, layer1em,
 				layer2em, layer2em, layer2em, layer2em, layer2em, layer2em,
@@ -181,7 +181,7 @@ public abstract class BlockModelBuilders extends BlockModelHelper {
 			.texture("west3", "#all3").texture("top3", "#all3").texture("bottom3", "#all3");
 	}
 
-	protected BlockModelBuilder make3LayerCube(String name, ResourceLocation renderType,
+	protected BlockModelBuilder make3LayerCube(String name, Identifier renderType,
 											   int layer1emN, int layer1emS, int layer1emW, int layer1emE, int layer1emU, int layer1emD,
 											   int layer2emN, int layer2emS, int layer2emW, int layer2emE, int layer2emU, int layer2emD,
 											   int layer3emN, int layer3emS, int layer3emW, int layer3emE, int layer3emU, int layer3emD) {
@@ -242,7 +242,7 @@ public abstract class BlockModelBuilders extends BlockModelHelper {
 			.face(Direction.UP).texture("#top3").cullface(Direction.UP).emissivity(layer3emU, layer3emU).end().end();
 	}
 
-	protected BlockModelBuilder make2layerCross(String name, ResourceLocation renderType, int layer1em, int layer2em) {
+	protected BlockModelBuilder make2layerCross(String name, Identifier renderType, int layer1em, int layer2em) {
 		return models().getBuilder(name).ao(false).texture("particle", "#cross").renderType(renderType)
 			.element().from(0.8F, 0.0F, 8.0F).to(15.2F, 16.0F, 8.0F)
 			.rotation().origin(8.0F, 8.0F, 8.0F).axis(Direction.Axis.Y).angle(45.0F).rescale(true).end()
@@ -297,7 +297,7 @@ public abstract class BlockModelBuilders extends BlockModelHelper {
 	}
 
 	protected BlockModelBuilder buildFallenLeaves(String leafPile, int index) {
-		return models().getBuilder("leafpile_" + leafPile + index).parent(models().getExistingFile(ResourceLocation.parse("block/thin_block"))).renderType(CUTOUT).texture("particle", "tolkienmobs:block/leaves_" + leafPile).texture("all", "tolkienmobs:block/leaves_" + leafPile)
+		return models().getBuilder("leafpile_" + leafPile + index).parent(models().getExistingFile(Identifier.parse("block/thin_block"))).renderType(CUTOUT).texture("particle", "tolkienmobs:block/leaves_" + leafPile).texture("all", "tolkienmobs:block/leaves_" + leafPile)
 			.element().from(0, 0, 0).to(16, index == 1 ? 0.2F : 2.0F * (index - 1), 16)
 			.face(Direction.UP).uvs(0, 0, 16, 16).tintindex(0).texture("#all").end()
 			.face(Direction.DOWN).uvs(0, 0, 16, 16).tintindex(0).texture("#all").end()
@@ -395,11 +395,11 @@ public abstract class BlockModelBuilders extends BlockModelHelper {
 		);
 	}
 
-	protected ResourceLocation texture(String name) {
+	protected Identifier texture(String name) {
 		return modLoc("block/" + name);
 	}
 
-	protected ResourceLocation key(Block block) {
+	protected Identifier key(Block block) {
 		return BuiltInRegistries.BLOCK.getKey(block);
 	}
 
@@ -431,7 +431,7 @@ public abstract class BlockModelBuilders extends BlockModelHelper {
 	private ConfiguredModel[] bushStates(BlockState state, BushBlock block, String modelName, String textureName) {
 		ConfiguredModel[] models = new ConfiguredModel[1];
 		models[0] = new ConfiguredModel(models().cross(modelName + state.getValue(((BramblesBushBlock) block).getAgeProperty()),
-				ResourceLocation.fromNamespaceAndPath(MODID, "block/" + textureName +
+				Identifier.fromNamespaceAndPath(MODID, "block/" + textureName +
 						state.getValue(((BramblesBushBlock) block).getAgeProperty()))).renderType("cutout"));
 
 		return models;
@@ -440,7 +440,7 @@ public abstract class BlockModelBuilders extends BlockModelHelper {
 	private ConfiguredModel[] cropStates(BlockState state, CropBlock block, String modelName, String textureName) {
 		ConfiguredModel[] models = new ConfiguredModel[1];
 		models[0] = new ConfiguredModel(models().crop(modelName + state.getValue(((PipeweedCropBlock) block).getAgeProperty()),
-				ResourceLocation.fromNamespaceAndPath(MODID, "block/" + textureName +
+				Identifier.fromNamespaceAndPath(MODID, "block/" + textureName +
 						state.getValue(((PipeweedCropBlock) block).getAgeProperty()))).renderType("cutout"));
 
 		return models;

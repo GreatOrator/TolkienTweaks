@@ -5,7 +5,7 @@ import com.greatorator.tolkienmobs.util.GeneralUtility;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -21,7 +21,7 @@ import java.util.List;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class NimbleEffect extends TolkienEffect implements IEffectTooltipDetails {
-    static ResourceLocation nimbleStep = ResourceLocation.fromNamespaceAndPath(MODID, "nimbleness");
+    static Identifier nimbleStep = Identifier.fromNamespaceAndPath(MODID, "nimbleness");
 
     public NimbleEffect(MobEffectCategory category, int color) {
         super(category, color);

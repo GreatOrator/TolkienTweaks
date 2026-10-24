@@ -11,7 +11,7 @@ import com.greatorator.tolkienmobs.handler.interfaces.WebShooter;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -110,7 +110,7 @@ public class MirkwoodSpiderEntity extends TolkienMonsterEntity implements GeoEnt
                     ItemEntity dropItem = player.drop(player.getInventory().removeItem(player.getInventory().selected, 1), false);
                     if (dropItem != null) {
                         dropItem.setPickUpDelay(50);
-                        level.playSound(null, blockpos, SoundEvents.SLIME_ATTACK, SoundSource.HOSTILE, 1.0F + level.random.nextFloat(), level.random.nextFloat() * 0.7F + 0.3F);
+                        level.playSound(null, blockpos, SoundEvents.SLIME_ATTACK, SoundSource.HOSTILE, 1.0F + level.getRandom().nextFloat(), level.getRandom().nextFloat() * 0.7F + 0.3F);
                     }
                 }
             }
@@ -178,26 +178,26 @@ public class MirkwoodSpiderEntity extends TolkienMonsterEntity implements GeoEnt
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
+        controllers.add(new AnimationController<MirkwoodSpiderEntity>("Idle", 1, (event) -> {
             if (!event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("idle"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
-            if (this.swinging && !this.isWebShooting() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
-                event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
+        controllers.add(new AnimationController<MirkwoodSpiderEntity>("Attack", 1, (event) -> {
+            if (this.swinging && !this.isWebShooting() && !event.controller().isAnimatingBones()) {
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("attack"));
                 return PlayState.CONTINUE;
-            } else if (this.isWebShooting() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)){
-                event.getController().setAnimation(RawAnimation.begin().then("attack_web", Animation.LoopType.PLAY_ONCE));
+            } else if (this.isWebShooting() && !event.controller().isAnimatingBones()){
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("attack_web"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
+        controllers.add(new AnimationController<MirkwoodSpiderEntity>("Walk", 1, (event) -> {
             if (event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("walk"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;

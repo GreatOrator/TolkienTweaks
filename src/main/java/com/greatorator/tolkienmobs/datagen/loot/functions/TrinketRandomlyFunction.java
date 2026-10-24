@@ -5,7 +5,7 @@ import com.greatorator.tolkienmobs.init.TolkienLootFunctions;
 import com.greatorator.tolkienmobs.network.component.TrinketComponent;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.RandomSource;

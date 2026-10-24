@@ -1,24 +1,24 @@
 package com.greatorator.tolkienmobs.datagen.modelgen;
 
 import javax.annotation.Nullable;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * A reference to a model file. Only the location matters when writing JSON.
  */
 public class ModelFile {
     @Nullable
-    protected final ResourceLocation location;
+    protected final Identifier location;
 
-    protected ModelFile(@Nullable ResourceLocation location) {
+    protected ModelFile(@Nullable Identifier location) {
         this.location = location;
     }
 
     public ModelFile(String location) {
-        this(ResourceLocation.parse(location));
+        this(Identifier.parse(location));
     }
 
-    public ResourceLocation getLocation() {
+    public Identifier getLocation() {
         return this.location;
     }
 
@@ -29,7 +29,7 @@ public class ModelFile {
 
     /** A model that is assumed to exist; nothing is validated or generated for it. */
     public static class ExistingModelFile extends ModelFile {
-        public ExistingModelFile(ResourceLocation location) {
+        public ExistingModelFile(Identifier location) {
             super(location);
         }
     }
@@ -40,10 +40,10 @@ public class ModelFile {
      */
     public static class UncheckedModelFile extends ModelFile {
         public UncheckedModelFile(String location) {
-            super(ResourceLocation.parse(location));
+            super(Identifier.parse(location));
         }
 
-        public UncheckedModelFile(ResourceLocation location) {
+        public UncheckedModelFile(Identifier location) {
             super(location);
         }
     }

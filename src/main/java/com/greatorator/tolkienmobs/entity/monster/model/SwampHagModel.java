@@ -1,42 +1,31 @@
 package com.greatorator.tolkienmobs.entity.monster.model;
 
-
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.base.GeoRenderState;
 import com.greatorator.tolkienmobs.entity.monster.SwampHagEntity;
 import com.greatorator.tolkienmobs.entity.monster.render.SwampHagRender;
-import net.minecraft.resources.ResourceLocation;
-import com.geckolib.cache.model.GeoBone;
-import com.geckolib.constant.DataTickets;
-import com.geckolib.model.GeoModel;
-import com.geckolib.renderer.base.GeoRenderer;
+import com.greatorator.tolkienmobs.entity.util.TolkienGeoRenderState;
+import net.minecraft.resources.Identifier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
+/** Rendered from the render state, which is the only thing a GeckoLib 5 model or renderer sees during a pass. */
 public class SwampHagModel extends GeoModel<SwampHagEntity> {
-	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "monster/swamphag");
-	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "monster/swamphag");
+    private static final Identifier MODEL = Identifier.fromNamespaceAndPath(MODID, "monster/swamphag");
+    private static final Identifier ANIMATIONS = Identifier.fromNamespaceAndPath(MODID, "monster/swamphag");
 
-	@Override
-	public ResourceLocation getModelResource(SwampHagEntity object, GeoRenderer<SwampHagEntity> renderer) {
-		return this.model;
-	}
+    @Override
+    public Identifier getModelResource(GeoRenderState renderState) {
+        return MODEL;
+    }
 
-	@Override
-	public ResourceLocation getTextureResource(SwampHagEntity object, GeoRenderer<SwampHagEntity> renderer) {
-		return SwampHagRender.LOCATION_BY_VARIANT.get(object.getVariant());
-	}
+    @Override
+    public Identifier getTextureResource(GeoRenderState renderState) {
+        return SwampHagRender.textureFor((TolkienGeoRenderState) renderState);
+    }
 
-	@Override
-	public ResourceLocation getAnimationResource(SwampHagEntity object) {
-		return this.animations;
-	}
-
-	@Override
-	public void setCustomAnimations(SwampHagEntity entity, long uniqueID, AnimationState<SwampHagEntity> customPredicate) {
-		super.setCustomAnimations(entity, uniqueID, customPredicate);
-		GeoBone head = this.getAnimationProcessor().getBone("Head");
-		assert customPredicate != null;
-		EntityModelData extraData = (EntityModelData) customPredicate.getData(DataTickets.ENTITY_MODEL_DATA);
-		head.setRotX(extraData.headPitch() * ((float) Math.PI / 180F));
-		head.setRotY(extraData.netHeadYaw() *0.5f* ((float) Math.PI / 180F));
-	}
+    @Override
+    public Identifier getAnimationResource(SwampHagEntity animatable) {
+        return ANIMATIONS;
+    }
 }

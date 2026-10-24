@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.greatorator.tolkienmobs.util.LangConversionHelper;
 import com.greatorator.tolkienmobs.util.LangFormatSplitter;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.entity.EntityType;

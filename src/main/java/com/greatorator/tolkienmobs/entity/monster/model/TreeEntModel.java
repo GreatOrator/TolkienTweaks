@@ -1,44 +1,35 @@
 package com.greatorator.tolkienmobs.entity.monster.model;
 
-
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.base.GeoRenderState;
 import com.greatorator.tolkienmobs.entity.monster.TreeEntEntity;
 import com.greatorator.tolkienmobs.entity.monster.render.TreeEntRender;
-import net.minecraft.resources.ResourceLocation;
-import com.geckolib.cache.model.GeoBone;
-import com.geckolib.constant.DataTickets;
-import com.geckolib.model.GeoModel;
-import com.geckolib.renderer.base.GeoRenderer;
+import com.greatorator.tolkienmobs.entity.util.TolkienGeoRenderState;
+import net.minecraft.resources.Identifier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
+/**
+ * The variant texture comes off the render state, which the renderer fills during extraction; the held boulder
+ * and the head turn both moved to the renderer's {@code adjustModelBonesForRender}, where GeckoLib 5 wants
+ * bone work done.
+ */
 public class TreeEntModel extends GeoModel<TreeEntEntity> {
-	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "monster/treeent");
-	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "monster/treeent");
+    private static final Identifier MODEL = Identifier.fromNamespaceAndPath(MODID, "monster/treeent");
+    private static final Identifier ANIMATIONS = Identifier.fromNamespaceAndPath(MODID, "monster/treeent");
 
-	@Override
-	public ResourceLocation getModelResource(TreeEntEntity object, GeoRenderer<TreeEntEntity> renderer) {
-		return this.model;
-	}
+    @Override
+    public Identifier getModelResource(GeoRenderState renderState) {
+        return MODEL;
+    }
 
-	@Override
-	public ResourceLocation getTextureResource(TreeEntEntity object, GeoRenderer<TreeEntEntity> renderer) {
-		return TreeEntRender.LOCATION_BY_VARIANT.get(object.getVariant());
-	}
+    @Override
+    public Identifier getTextureResource(GeoRenderState renderState) {
+        return TreeEntRender.textureFor((TolkienGeoRenderState) renderState);
+    }
 
-	@Override
-	public ResourceLocation getAnimationResource(TreeEntEntity object) {
-		return this.animations;
-	}
-
-	@Override
-	public void setCustomAnimations(TreeEntEntity entity, long uniqueID, AnimationState<TreeEntEntity> customPredicate) {
-		super.setCustomAnimations(entity, uniqueID, customPredicate);
-		GeoBone head = this.getAnimationProcessor().getBone("head");
-		GeoBone ranged = this.getAnimationProcessor().getBone("boulder");
-		assert customPredicate != null;
-		ranged.setHidden(!entity.getRanged());
-		EntityModelData extraData = (EntityModelData) customPredicate.getData(DataTickets.ENTITY_MODEL_DATA);
-		head.setRotX(extraData.headPitch() * ((float) Math.PI / 180F));
-		head.setRotY(extraData.netHeadYaw() *0.5f* ((float) Math.PI / 180F));
-	}
+    @Override
+    public Identifier getAnimationResource(TreeEntEntity animatable) {
+        return ANIMATIONS;
+    }
 }

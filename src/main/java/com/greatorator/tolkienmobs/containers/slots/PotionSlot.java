@@ -2,7 +2,7 @@ package com.greatorator.tolkienmobs.containers.slots;
 
 import com.greatorator.tolkienmobs.block.custom.entity.TrinketTableBlockEntity;
 import com.greatorator.tolkienmobs.util.GeneralUtility;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.level.Level;
@@ -10,10 +10,10 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
 public class PotionSlot extends SlotItemHandler {
-    public static final ResourceLocation backgroundLoc = null;
+    public static final Identifier backgroundLoc = null;
     private final Level level;
 
-    public PotionSlot(Level level, IItemHandler itemHandler, int index, int xPosition, int yPosition, ResourceLocation backgroundLoc) {
+    public PotionSlot(Level level, IItemHandler itemHandler, int index, int xPosition, int yPosition, Identifier backgroundLoc) {
         super(itemHandler, index, xPosition, yPosition);
         this.level = level;
     }

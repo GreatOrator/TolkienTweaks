@@ -1,79 +1,97 @@
 package com.greatorator.tolkienmobs.entity.monster.render;
 
-import com.geckolib.cache.model.BakedGeoModel;
-
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
+import com.geckolib.constant.DataTickets;
+import com.geckolib.renderer.GeoEntityRenderer;
+import com.geckolib.renderer.base.BoneSnapshots;
+import com.geckolib.renderer.base.RenderPassInfo;
 import com.google.common.collect.Maps;
 import com.greatorator.tolkienmobs.entity.monster.WargEntity;
 import com.greatorator.tolkienmobs.entity.monster.model.WargModel;
+import com.greatorator.tolkienmobs.entity.util.TolkienGeoRenderState;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.Util;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
-import com.geckolib.renderer.GeoEntityRenderer;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
+
+
 
 import java.util.Map;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class WargRender extends GeoEntityRenderer<WargEntity> {
-    public static final Map<TolkienVariant, ResourceLocation> LOCATION_BY_VARIANT =
+/** The variant rides on the render state, because the model only ever sees that. */
+public class WargRender extends GeoEntityRenderer<WargEntity, TolkienGeoRenderState> {
+    public static final Map<TolkienVariant, Identifier> LOCATION_BY_VARIANT =
             Util.make(Maps.newEnumMap(TolkienVariant.class), map -> {
                 map.put(TolkienVariant.DEFAULT,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/warg/warg1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/warg/warg1.png"));
                 map.put(TolkienVariant.RED,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/warg/warg1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/warg/warg1.png"));
                 map.put(TolkienVariant.ORANGE,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/warg/warg2.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/warg/warg2.png"));
                 map.put(TolkienVariant.YELLOW,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/warg/warg3.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/warg/warg3.png"));
                 map.put(TolkienVariant.GREEN,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/warg/warg4.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/warg/warg4.png"));
                 map.put(TolkienVariant.BLUE,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/warg/warg1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/warg/warg1.png"));
                 map.put(TolkienVariant.INDIGO,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/warg/warg2.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/warg/warg2.png"));
                 map.put(TolkienVariant.VIOLET,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/warg/warg3.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/warg/warg3.png"));
                 map.put(TolkienVariant.MAGENTA,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/warg/warg4.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/warg/warg4.png"));
                 map.put(TolkienVariant.PINK,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/warg/warg1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/warg/warg1.png"));
                 map.put(TolkienVariant.GRAY,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/warg/warg2.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/warg/warg2.png"));
                 map.put(TolkienVariant.AQUA,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/warg/warg3.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/warg/warg3.png"));
                 map.put(TolkienVariant.BEIGE,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/warg/warg4.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/warg/warg4.png"));
                 map.put(TolkienVariant.BROWN,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/warg/warg1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/warg/warg1.png"));
                 map.put(TolkienVariant.CORAL,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/warg/warg2.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/warg/warg2.png"));
                 map.put(TolkienVariant.CYAN,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/warg/warg3.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/warg/warg3.png"));
                 map.put(TolkienVariant.LAVENDER,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/warg/warg4.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/warg/warg4.png"));
             });
-    
+
     public WargRender(EntityRendererProvider.Context context) {
         super(context, new WargModel());
         this.shadowRadius = 0.6f;
     }
 
-    @Override
-    public ResourceLocation getTextureLocation(WargEntity entity) {
-        return LOCATION_BY_VARIANT.get(entity.getVariant());
+    /** The variant's texture, for the model and for the base class's texture lookup. */
+    public static Identifier textureFor(TolkienGeoRenderState renderState) {
+        return LOCATION_BY_VARIANT.get(renderState.variant);
     }
 
     @Override
-    public void preRender(PoseStack poseStack, WargEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
-        if (!isReRender) {
-            poseStack.scale(1.5F, 1.5F, 1.5F);        }
+    public TolkienGeoRenderState createRenderState(WargEntity animatable, Void relatedObject) {
+        return new TolkienGeoRenderState();
+    }
 
+    @Override
+    public void addRenderData(WargEntity animatable, Void relatedObject, TolkienGeoRenderState renderState, float partialTick) {
+        renderState.variant = animatable.getVariant();
+    }
 
-        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
+    /** The warg's model is drawn half again as large; 5 applies that here rather than in preRender. */
+    @Override
+    public void scaleModelForRender(RenderPassInfo<TolkienGeoRenderState> renderPassInfo, float widthScale, float heightScale) {
+        super.scaleModelForRender(renderPassInfo, 1.5F, 1.5F);
+    }
+
+    @Override
+    public void adjustModelBonesForRender(RenderPassInfo<TolkienGeoRenderState> renderPassInfo, BoneSnapshots snapshots) {
+        TolkienGeoRenderState renderState = renderPassInfo.renderState();
+        float pitch = renderState.getOrDefaultGeckolibData(DataTickets.ENTITY_PITCH, 0f);
+        float yaw = renderState.getOrDefaultGeckolibData(DataTickets.ENTITY_YAW, 0f);
+
+        snapshots.ifPresent("head", bone -> bone.setRotation(pitch * Mth.DEG_TO_RAD, yaw * 0.5f * Mth.DEG_TO_RAD, 0f));
     }
 }

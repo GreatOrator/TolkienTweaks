@@ -176,7 +176,7 @@ public class ThrushEntity extends TolkienFlyingAmbientEntity implements GeoEntit
                         1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.2F);
             }
 
-            if(!this.level().isClientSide) {
+            if(!this.level().isClientSide()) {
                 if(this.random.nextInt(6) == 0 && !net.neoforged.neoforge.event.EventHooks.onAnimalTame(this, pPlayer)) {
                     this.tame(pPlayer);
                     this.level().broadcastEntityEvent(this, (byte) 7);
@@ -186,17 +186,17 @@ public class ThrushEntity extends TolkienFlyingAmbientEntity implements GeoEntit
                 }
             }
 
-            return this.level().isClientSide ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+            return this.level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
         }
         else if(this.isTame() && this.isOwnedBy(pPlayer)) {
             if(isFood(itemstack)) {
                 return super.mobInteract(pPlayer, pHand);
             }
-            else if(!this.level().isClientSide) {
+            else if(!this.level().isClientSide()) {
                 this.setOrderedToSit(!this.isOrderedToSit());
             }
 
-            return this.level().isClientSide ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+            return this.level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
         }
         else {
             return super.mobInteract(pPlayer, pHand);
@@ -335,49 +335,49 @@ public class ThrushEntity extends TolkienFlyingAmbientEntity implements GeoEntit
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         int rand = MathUtility.getRandomInteger(100, 1);
-        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
+        controllers.add(new AnimationController<ThrushEntity>("Idle", 1, (event) -> {
             if (!event.isMoving() && !isFlying() ) {
                 if (rand < 50) {
-                    event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
+                    event.controller().setAnimation(RawAnimation.begin().thenPlay("idle"));
                 return PlayState.CONTINUE;
                 }else if (rand > 50 && rand < 80) {
                     setPecking(true);
-                    event.getController().setAnimation(RawAnimation.begin().thenPlay("idle3"));
+                    event.controller().setAnimation(RawAnimation.begin().thenPlay("idle3"));
                     setPecking(false);
                     return PlayState.CONTINUE;
                 }else {
-                    event.getController().setAnimation(RawAnimation.begin().thenPlay("idle2"));
+                    event.controller().setAnimation(RawAnimation.begin().thenPlay("idle2"));
                     return PlayState.CONTINUE;
                 }
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
+        controllers.add(new AnimationController<ThrushEntity>("Walk", 1, (event) -> {
             if (event.isMoving() && !isFlying()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("walk"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Sit", 1, (event) -> {
+        controllers.add(new AnimationController<ThrushEntity>("Sit", 1, (event) -> {
             if (isOrderedToSit()) {
                 setOnGround(true);
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("sit"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("sit"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Glide", 1, (event) -> {
+        controllers.add(new AnimationController<ThrushEntity>("Glide", 1, (event) -> {
             if (isFlying() && isGliding()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("glide"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("glide"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Fly", 1, (event) -> {
+        controllers.add(new AnimationController<ThrushEntity>("Fly", 1, (event) -> {
             if (isFlying() && !isGliding()) {
                 onFlap();
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("fly"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("fly"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;

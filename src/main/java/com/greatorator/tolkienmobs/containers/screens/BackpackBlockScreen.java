@@ -21,7 +21,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -39,19 +39,19 @@ import java.util.Optional;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockContainer> {
-    private static final ResourceLocation GUI_BASE = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack.png");
-    private static final ResourceLocation GUI_STORAGE_UPGRADE_1 = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_1.png");
-    private static final ResourceLocation GUI_STORAGE_UPGRADE_2 = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_2.png");
-    private static final ResourceLocation GUI_CRAFTING_UPGRADE = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_crafting.png");
-    private static final ResourceLocation GUI_CRAFTING_STORAGE_UPGRADE_1 = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_crafting_upgrade_1.png");
-    private static final ResourceLocation GUI_CRAFTING_STORAGE_UPGRADE_2 = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_crafting_upgrade_2.png");
-    private static final ResourceLocation GUI_TANK_UPGRADE = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_fluid.png");
-    private static final ResourceLocation GUI_TANK_STORAGE_UPGRADE_1 = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_fluid_upgrade_1.png");
-    private static final ResourceLocation GUI_TANK_STORAGE_UPGRADE_2 = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_fluid_upgrade_2.png");
-    private static final ResourceLocation GUI_FULL_UPGRADE = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_full_basic.png");
-    private static final ResourceLocation GUI_FULL_UPGRADE_1 = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_full_upgrade_1.png");
-    private static final ResourceLocation GUI_FULL_UPGRADE_2 = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_full_upgrade_2.png");
-    protected final ResourceLocation FLUIDBAR = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/tank_overlay.png");
+    private static final Identifier GUI_BASE = Identifier.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack.png");
+    private static final Identifier GUI_STORAGE_UPGRADE_1 = Identifier.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_1.png");
+    private static final Identifier GUI_STORAGE_UPGRADE_2 = Identifier.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_2.png");
+    private static final Identifier GUI_CRAFTING_UPGRADE = Identifier.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_crafting.png");
+    private static final Identifier GUI_CRAFTING_STORAGE_UPGRADE_1 = Identifier.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_crafting_upgrade_1.png");
+    private static final Identifier GUI_CRAFTING_STORAGE_UPGRADE_2 = Identifier.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_crafting_upgrade_2.png");
+    private static final Identifier GUI_TANK_UPGRADE = Identifier.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_fluid.png");
+    private static final Identifier GUI_TANK_STORAGE_UPGRADE_1 = Identifier.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_fluid_upgrade_1.png");
+    private static final Identifier GUI_TANK_STORAGE_UPGRADE_2 = Identifier.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_fluid_upgrade_2.png");
+    private static final Identifier GUI_FULL_UPGRADE = Identifier.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_full_basic.png");
+    private static final Identifier GUI_FULL_UPGRADE_1 = Identifier.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_full_upgrade_1.png");
+    private static final Identifier GUI_FULL_UPGRADE_2 = Identifier.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_full_upgrade_2.png");
+    protected final Identifier FLUIDBAR = Identifier.fromNamespaceAndPath(MODID, "textures/gui/backpack/tank_overlay.png");
     protected BackpackBlockContainer container;
     protected BackpackSettings backpackSettings;
     protected BackpackPlacement backpackPlacement;
@@ -189,7 +189,7 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
         }
 
         if (backpackSettings.upgrade) {
-            ResourceLocation upgradeGUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_upgrade.png");
+            Identifier upgradeGUI = Identifier.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_upgrade.png");
             RenderSystem.setShaderTexture(0, upgradeGUI);
             guiGraphics.blit(RenderType::guiTextured, upgradeGUI, getGuiLeft() + 220, getGuiTop() + 36, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
         }
@@ -233,7 +233,7 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
 
     }
 
-    private ResourceLocation getGUIState() {
+    private Identifier getGUIState() {
         boolean crafting = tileEntity.getBackpackUpgrades().crafting;
         boolean fluid = tileEntity.hasFluidTank();
         return switch (tileEntity.getStorageSize()) {

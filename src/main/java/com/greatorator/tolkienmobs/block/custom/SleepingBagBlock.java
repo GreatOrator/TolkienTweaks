@@ -93,7 +93,7 @@ public class SleepingBagBlock extends BedBlock
     @Override
     protected InteractionResult useWithoutItem(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, BlockHitResult pHitResult)
     {
-        if (pLevel.isClientSide) {
+        if (pLevel.isClientSide()) {
             return InteractionResult.CONSUME;
         } else {
             if (pState.getValue(PART) != BedPart.HEAD) {
@@ -226,7 +226,7 @@ public class SleepingBagBlock extends BedBlock
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack itemstack)
     {
         super.setPlacedBy(level, pos, state, livingEntity, itemstack);
-        if(!level.isClientSide)
+        if(!level.isClientSide())
         {
             BlockPos var6 = pos.relative(state.getValue(FACING));
             level.setBlock(var6, state.setValue(PART, BedPart.HEAD), 3);

@@ -2,7 +2,7 @@ package com.greatorator.tolkienmobs.datagen.helpers;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 import java.util.Collections;
@@ -32,7 +32,7 @@ public class TolkienLootHelper {
     public static final ResourceKey<LootTable> TOWER_RUINS = register("chests/tower_chest");
 
     private static ResourceKey<LootTable> register(String id) {
-        return register(ResourceKey.create(Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath(MODID, id)));
+        return register(ResourceKey.create(Registries.LOOT_TABLE, Identifier.fromNamespaceAndPath(MODID, id)));
     }
 
     private static ResourceKey<LootTable> register(ResourceKey<LootTable> id) {

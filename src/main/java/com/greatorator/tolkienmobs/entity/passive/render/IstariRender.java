@@ -1,57 +1,62 @@
 package com.greatorator.tolkienmobs.entity.passive.render;
 
+import com.geckolib.constant.DataTickets;
+import com.geckolib.renderer.GeoEntityRenderer;
+import com.geckolib.renderer.base.BoneSnapshots;
+import com.geckolib.renderer.base.RenderPassInfo;
 import com.google.common.collect.Maps;
 import com.greatorator.tolkienmobs.entity.passive.IstariEntity;
 import com.greatorator.tolkienmobs.entity.passive.model.IstariModel;
+import com.greatorator.tolkienmobs.entity.util.TolkienGeoRenderState;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.Util;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
-import com.geckolib.renderer.GeoEntityRenderer;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class IstariRender extends GeoEntityRenderer<IstariEntity> {
-    public static final Map<TolkienVariant, ResourceLocation> LOCATION_BY_VARIANT =
+public class IstariRender extends GeoEntityRenderer<IstariEntity, TolkienGeoRenderState> {
+    public static final Map<TolkienVariant, Identifier> LOCATION_BY_VARIANT =
             Util.make(Maps.newEnumMap(TolkienVariant.class), map -> {
                 map.put(TolkienVariant.DEFAULT,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/istari/istari1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/istari/istari1.png"));
                 map.put(TolkienVariant.RED,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/istari/istari1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/istari/istari1.png"));
                 map.put(TolkienVariant.ORANGE,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/istari/istari2.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/istari/istari2.png"));
                 map.put(TolkienVariant.YELLOW,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/istari/istari3.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/istari/istari3.png"));
                 map.put(TolkienVariant.GREEN,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/istari/istari4.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/istari/istari4.png"));
                 map.put(TolkienVariant.BLUE,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/istari/istari2.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/istari/istari2.png"));
                 map.put(TolkienVariant.INDIGO,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/istari/istari1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/istari/istari1.png"));
                 map.put(TolkienVariant.VIOLET,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/istari/istari2.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/istari/istari2.png"));
                 map.put(TolkienVariant.MAGENTA,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/istari/istari3.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/istari/istari3.png"));
                 map.put(TolkienVariant.PINK,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/istari/istari4.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/istari/istari4.png"));
                 map.put(TolkienVariant.GRAY,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/istari/istari3.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/istari/istari3.png"));
                 map.put(TolkienVariant.AQUA,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/istari/istari1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/istari/istari1.png"));
                 map.put(TolkienVariant.BEIGE,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/istari/istari2.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/istari/istari2.png"));
                 map.put(TolkienVariant.BROWN,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/istari/istari3.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/istari/istari3.png"));
                 map.put(TolkienVariant.CORAL,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/istari/istari4.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/istari/istari4.png"));
                 map.put(TolkienVariant.CYAN,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/istari/istari4.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/istari/istari4.png"));
                 map.put(TolkienVariant.LAVENDER,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/istari/istari1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/istari/istari1.png"));
             });
 
     public IstariRender(EntityRendererProvider.Context context) {
@@ -60,8 +65,40 @@ public class IstariRender extends GeoEntityRenderer<IstariEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(IstariEntity istariEntity) {
-        return LOCATION_BY_VARIANT.get(istariEntity.getVariant());
+    public TolkienGeoRenderState createRenderState(IstariEntity animatable, Void relatedObject) {
+        return new TolkienGeoRenderState();
     }
 
+    /** The variant's texture, for the model and for the base class's texture lookup. */
+    public static Identifier textureFor(TolkienGeoRenderState renderState) {
+        return LOCATION_BY_VARIANT.get(renderState.variant);
+    }
+
+    @Override
+    public Identifier getTextureLocation(TolkienGeoRenderState renderState) {
+        return textureFor(renderState);
+    }
+
+    @Override
+    public void addRenderData(IstariEntity animatable, Void relatedObject, TolkienGeoRenderState renderState, float partialTick) {
+        renderState.variant = animatable.getVariant();
+        Set<String> hidden = new HashSet<>();
+        if (!animatable.getHidden()) hidden.add("book");
+        renderState.hiddenBones = Set.copyOf(hidden);
+    }
+
+    /** The bone work the model used to do in setCustomAnimations, done per render pass. */
+    @Override
+    public void adjustModelBonesForRender(RenderPassInfo<TolkienGeoRenderState> renderPassInfo, BoneSnapshots snapshots) {
+        TolkienGeoRenderState renderState = renderPassInfo.renderState();
+
+        for (String bone : renderState.hiddenBones) {
+            snapshots.ifPresent(bone, snapshot -> snapshot.skipRender(true).skipChildrenRender(true));
+        }
+
+        float pitch = renderState.getOrDefaultGeckolibData(DataTickets.ENTITY_PITCH, 0f);
+        float yaw = renderState.getOrDefaultGeckolibData(DataTickets.ENTITY_YAW, 0f);
+
+        snapshots.ifPresent("head", bone -> bone.setRotation(pitch * Mth.DEG_TO_RAD, yaw * 0.5f * Mth.DEG_TO_RAD, 0f));
+    }
 }

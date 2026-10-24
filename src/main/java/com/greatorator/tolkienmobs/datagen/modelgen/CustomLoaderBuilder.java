@@ -1,15 +1,15 @@
 package com.greatorator.tolkienmobs.datagen.modelgen;
 
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /** Adds a {@code loader} block to a model, used by the layered item models. */
 public abstract class CustomLoaderBuilder<T extends ModelBuilder<T>> {
-    protected final ResourceLocation loaderId;
+    protected final Identifier loaderId;
     protected final T parent;
     protected final JsonObject json = new JsonObject();
 
-    protected CustomLoaderBuilder(ResourceLocation loaderId, T parent) {
+    protected CustomLoaderBuilder(Identifier loaderId, T parent) {
         this.loaderId = loaderId;
         this.parent = parent;
     }
@@ -19,7 +19,7 @@ public abstract class CustomLoaderBuilder<T extends ModelBuilder<T>> {
         return this;
     }
 
-    public CustomLoaderBuilder<T> renderType(ResourceLocation renderType) {
+    public CustomLoaderBuilder<T> renderType(Identifier renderType) {
         this.json.addProperty("render_type", renderType.toString());
         return this;
     }

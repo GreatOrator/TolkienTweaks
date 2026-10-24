@@ -64,7 +64,7 @@ public class FancyLanternBlock extends Block implements SimpleWaterloggedBlock  
 
     @Override
     public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return InteractionResult.SUCCESS;
         }
         boolean currentState = state.getValue(LIT);

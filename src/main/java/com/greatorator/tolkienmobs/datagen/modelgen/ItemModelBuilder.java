@@ -1,11 +1,11 @@
 package com.greatorator.tolkienmobs.datagen.modelgen;
 
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /** A model written under {@code assets/<ns>/models/item/}. */
 public class ItemModelBuilder extends ModelBuilder<ItemModelBuilder> {
-    public ItemModelBuilder(ResourceLocation location, String name) {
+    public ItemModelBuilder(Identifier location, String name) {
         super(location, name);
     }
 
@@ -33,7 +33,7 @@ public class ItemModelBuilder extends ModelBuilder<ItemModelBuilder> {
             return this;
         }
 
-        public OverrideBuilder predicate(ResourceLocation key, float value) {
+        public OverrideBuilder predicate(Identifier key, float value) {
             return this.predicate(key.toString(), value);
         }
 

@@ -12,7 +12,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
@@ -23,8 +23,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class TrinketRecipeCategory implements IRecipeCategory<TrinketRecipe> {
-    private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/trinkettable/trinket_gui.png");
-    public static final ResourceLocation UID = TolkienMobsMain.resLoc("trinket");
+    private static final Identifier GUI = Identifier.fromNamespaceAndPath(MODID, "textures/gui/trinkettable/trinket_gui.png");
+    public static final Identifier UID = TolkienMobsMain.resLoc("trinket");
     private final IDrawable icon;
 
     public static final RecipeType<TrinketRecipe> TRINKETTABLE_RECIPE_TYPE =

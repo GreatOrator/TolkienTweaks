@@ -50,15 +50,15 @@ public class HarvestUtility {
                         harvestBlock(serverLevel, currentPos, state);
                     }
                 } else if (!isGrassLikeBlock(crop)) {
-                    if (serverLevel.random.nextInt(chance) == 0) {
-                        growable.performBonemeal(serverLevel, serverLevel.random, currentPos, state);
+                    if (serverLevel.getRandom().nextInt(chance) == 0) {
+                        growable.performBonemeal(serverLevel, serverLevel.getRandom(), currentPos, state);
                         level.levelEvent(LevelEvent.PARTICLES_AND_SOUND_PLANT_GROWTH, currentPos, 0);
                     }
                 }
             } else if (crop instanceof SpecialPlantable) {
-                if (serverLevel.random.nextInt(chance / 4) == 0) {
+                if (serverLevel.getRandom().nextInt(chance / 4) == 0) {
                     for (int i = 0; i < (harvest ? 8 : 4); i++) {
-                        state.randomTick(serverLevel, currentPos, serverLevel.random);
+                        state.randomTick(serverLevel, currentPos, serverLevel.getRandom());
                     }
                 }
                 if (harvest) {
@@ -76,7 +76,7 @@ public class HarvestUtility {
                 }
             }
 
-            else if (!grewWater && serverLevel.random.nextInt(512) == 0 && growWaterPlant(serverLevel, currentPos, state, null)) {
+            else if (!grewWater && serverLevel.getRandom().nextInt(512) == 0 && growWaterPlant(serverLevel, currentPos, state, null)) {
                 level.levelEvent(LevelEvent.PARTICLES_AND_SOUND_PLANT_GROWTH, currentPos, 0);
                 grewWater = true;
             }

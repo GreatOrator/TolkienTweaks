@@ -14,7 +14,7 @@ import net.minecraft.client.model.BoatModel;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
 import net.minecraft.client.renderer.blockentity.SignRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
@@ -23,7 +23,7 @@ import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.neoforged.neoforge.event.BlockEntityTypeAddBlocksEvent;
 
 public class TolkienRegistration {
-    public static final ResourceLocation OVERWORLD_EFFECTS = ResourceLocation.withDefaultNamespace("overworld");
+    public static final Identifier OVERWORLD_EFFECTS = Identifier.withDefaultNamespace("overworld");
     public static void initModBusEvents(IEventBus bus) {
         bus.addListener(TolkienRegistration::registerEntityRenderers);
         bus.addListener(TolkienRegistration::registerLayerDefinitions);

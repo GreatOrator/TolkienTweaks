@@ -7,7 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
@@ -96,7 +96,7 @@ public record FireplaceRecipe(List<SizedIngredient> inputItems, List<ItemStack> 
 
     public static class Serializer implements RecipeSerializer<FireplaceRecipe>{
         public static final FireplaceRecipe.Serializer INSTANCE = new FireplaceRecipe.Serializer();
-        public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(MODID, "fireplace");
+        public static final Identifier ID = Identifier.fromNamespaceAndPath(MODID, "fireplace");
 
         private final MapCodec<FireplaceRecipe> CODEC = RecordCodecBuilder.mapCodec(alloySmeltingRecipeInstance -> alloySmeltingRecipeInstance.group(
                 SizedIngredient.NESTED_CODEC.listOf().fieldOf("ingredients").forGetter(FireplaceRecipe::getInputItems),

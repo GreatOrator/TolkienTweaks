@@ -1,8 +1,7 @@
 package com.greatorator.tolkienmobs.entity;
 
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
-import net.minecraft.Util;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Util;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -13,12 +12,11 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.npc.Villager;
-import net.minecraft.world.entity.npc.VillagerData;
-import net.minecraft.world.entity.npc.VillagerProfession;
-import net.minecraft.world.entity.npc.VillagerType;
+import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -32,7 +30,6 @@ import javax.annotation.Nonnull;
 
 public class TolkienVillagerEntity extends Villager implements GeoEntity {
     private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(TolkienVillagerEntity.class, EntityDataSerializers.INT);
-    public static final EntityDataAccessor<VillagerData> MERCHANT_VARIANT = SynchedEntityData.defineId(TolkienVillagerEntity.class, EntityDataSerializers.VILLAGER_DATA);
 
     public TolkienVillagerEntity(EntityType<? extends TolkienVillagerEntity> entityType, Level level) {
         super(entityType, level);
@@ -58,7 +55,6 @@ public class TolkienVillagerEntity extends Villager implements GeoEntity {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(VARIANT, 0);
-        builder.define(MERCHANT_VARIANT, new VillagerData(VillagerType.PLAINS, VillagerProfession.NONE, 1));
     }
 
     private int getTypeVariant() {
@@ -74,15 +70,15 @@ public class TolkienVillagerEntity extends Villager implements GeoEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
-        compound.putInt("Variant", this.getTypeVariant());
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putInt("Variant", this.getTypeVariant());
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
-        this.entityData.set(VARIANT, compound.getInt("Variant"));
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        this.entityData.set(VARIANT, input.getIntOr("Variant", 0));
     }
 
     @Override
@@ -95,28 +91,29 @@ public class TolkienVillagerEntity extends Villager implements GeoEntity {
 
     /**
      * Animations
+     *
+     * GeckoLib 5 builds the controllers without the animatable and hands their handlers an
+     * AnimationTest, so the three clips are built once here instead of once per tick.
      */
+    private static final RawAnimation SITTING = RawAnimation.begin().thenPlay("sitting");
+    private static final RawAnimation IDLE = RawAnimation.begin().thenPlay("idle");
+    private static final RawAnimation WALK = RawAnimation.begin().thenPlay("walk");
+
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
+        controllers.add(new AnimationController<TolkienVillagerEntity>("Idle", 1, test -> {
             if (this.isPassenger()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("sitting"));
-                return PlayState.CONTINUE;
-            }else if (!event.isMoving() && !event.getAnimatable().isAggressive()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
-                return PlayState.CONTINUE;
+                return test.setAndContinue(SITTING);
+            }
+            if (!test.isMoving() && !this.isAggressive()) {
+                return test.setAndContinue(IDLE);
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
-            if (event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
-                return PlayState.CONTINUE;
-            }
-            return PlayState.STOP;
-        }));
+        controllers.add(new AnimationController<TolkienVillagerEntity>("Walk", 1, test ->
+                test.isMoving() ? test.setAndContinue(WALK) : PlayState.STOP));
     }
 
     @Override

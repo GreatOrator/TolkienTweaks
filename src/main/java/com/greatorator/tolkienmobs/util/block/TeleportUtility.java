@@ -25,7 +25,7 @@ public class TeleportUtility {
     }
 
     public static Entity teleportEntity(Entity entity, ResourceKey<Level> dimension, double xCoord, double yCoord, double zCoord, float yaw, float pitch) {
-        if (entity == null || entity.level().isClientSide) {
+        if (entity == null || entity.level().isClientSide()) {
             return entity;
         }
 
@@ -63,7 +63,7 @@ public class TeleportUtility {
     }
 
     private static Entity handleEntityTeleport(Entity entity, MinecraftServer server, ResourceKey<Level> sourceDim, ResourceKey<Level> targetDim, double xCoord, double yCoord, double zCoord, float yaw, float pitch) {
-        if (entity == null || entity.level().isClientSide || targetDim == null) {
+        if (entity == null || entity.level().isClientSide() || targetDim == null) {
             return entity;
         }
 

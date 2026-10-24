@@ -9,7 +9,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.data.worldgen.Pools;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
@@ -74,7 +74,7 @@ public final class TolkienStructureProvider {
 
     private static Definition site(ResourceKey<Structure> key, ResourceKey<Biome> biome,
                                    int spacing, int separation, int salt, Layout layout) {
-        return new Definition(key, key.location().toString(), List.of(biome), spacing, separation, salt,
+        return new Definition(key, key.identifier().toString(), List.of(biome), spacing, separation, salt,
                 0, Optional.empty(), false, Optional.of(layout));
     }
 
@@ -98,7 +98,7 @@ public final class TolkienStructureProvider {
                 var layout = definition.layout().get();
                 context.register(definition.key(), new TemplateLayoutStructure(settings, pool, layout.minCount(),
                         layout.maxCount(), layout.topOffset(), layout.companion().map(key ->
-                        pools.getOrThrow(ResourceKey.create(Registries.TEMPLATE_POOL, key.location()))),
+                        pools.getOrThrow(ResourceKey.create(Registries.TEMPLATE_POOL, key.identifier()))),
                         layout.gapMin(), layout.gapMax(), layout.circle()));
                 continue;
             }
@@ -148,7 +148,7 @@ public final class TolkienStructureProvider {
         }
         TolkienVillageProvider.bootstrapSet(context);
         context.register(ResourceKey.create(Registries.STRUCTURE_SET,
-                        ResourceLocation.fromNamespaceAndPath("tolkienmobs", "dagorlad_ruins")),
+                        Identifier.fromNamespaceAndPath("tolkienmobs", "dagorlad_ruins")),
                 new StructureSet(List.of(StructureSet.entry(structures.getOrThrow(TolkienStructures.RUIN_LARGE)),
                         StructureSet.entry(structures.getOrThrow(TolkienStructures.RUIN_SMALL))),
                         new RandomSpreadStructurePlacement(4, 3, RandomSpreadType.LINEAR, 193764832)));
@@ -176,7 +176,7 @@ public final class TolkienStructureProvider {
     /** depth bounds expansion; weights choose between another side piece and stopping. */
     public record Branches(String template, int depth, int pieceWeight, int stopWeight) {
         public Branches {
-            ResourceLocation.parse(template);
+            Identifier.parse(template);
             if (depth < 1 || depth > 30) throw new IllegalArgumentException("Branch depth must be 1..30");
             if (pieceWeight < 1 || pieceWeight > 150 || stopWeight < 1 || stopWeight > 150) {
                 throw new IllegalArgumentException("Pool weights must be 1..150");
@@ -197,7 +197,7 @@ public final class TolkienStructureProvider {
         }
 
         public Definition {
-            ResourceLocation.parse(template);
+            Identifier.parse(template);
             biomes = List.copyOf(biomes);
             if (biomes.isEmpty()) throw new IllegalArgumentException("A structure needs at least one biome");
             if (spacing <= separation || separation < 0 || spacing > 4096) {
@@ -207,24 +207,24 @@ public final class TolkienStructureProvider {
         }
 
         public ResourceKey<StructureTemplatePool> poolKey() {
-            return ResourceKey.create(Registries.TEMPLATE_POOL, key.location());
+            return ResourceKey.create(Registries.TEMPLATE_POOL, key.identifier());
         }
 
         public ResourceKey<StructureTemplatePool> sidePoolKey() {
-            return ResourceKey.create(Registries.TEMPLATE_POOL, key.location().withSuffix("_pool/side_pool"));
+            return ResourceKey.create(Registries.TEMPLATE_POOL, key.identifier().withSuffix("_pool/side_pool"));
         }
 
         public ResourceKey<StructureTemplatePool> branchPoolKey() {
-            return ResourceKey.create(Registries.TEMPLATE_POOL, key.location().withSuffix("_pool/branches"));
+            return ResourceKey.create(Registries.TEMPLATE_POOL, key.identifier().withSuffix("_pool/branches"));
         }
 
         public ResourceKey<StructureSet> setKey() {
-            return ResourceKey.create(Registries.STRUCTURE_SET, key.location());
+            return ResourceKey.create(Registries.STRUCTURE_SET, key.identifier());
         }
 
         public TagKey<Biome> biomeTag() {
-            return TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(
-                    key.location().getNamespace(), "has_structure/" + key.location().getPath()));
+            return TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(
+                    key.identifier().getNamespace(), "has_structure/" + key.identifier().getPath()));
         }
     }
 }

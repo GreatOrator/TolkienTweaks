@@ -8,7 +8,7 @@ import com.greatorator.tolkienmobs.recipe.FireplaceRecipeCategory;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,8 +19,8 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 @JeiPlugin
 public class TolkienJEIPlugin implements IModPlugin {
     @Override
-    public ResourceLocation getPluginUid() {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "jei_plugin");
+    public Identifier getPluginUid() {
+        return Identifier.fromNamespaceAndPath(MODID, "jei_plugin");
     }
 
     @Override

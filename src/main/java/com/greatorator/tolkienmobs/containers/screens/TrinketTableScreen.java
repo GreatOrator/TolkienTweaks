@@ -4,7 +4,7 @@ import com.greatorator.tolkienmobs.containers.TrinketTableContainer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -15,9 +15,9 @@ import javax.annotation.Nullable;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class TrinketTableScreen extends AbstractContainerScreen<TrinketTableContainer> {
-    private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/trinkettable/trinket_gui.png");
-    private static final ResourceLocation ARROW_TEXTURE = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/trinkettable/craft_full.png");
-    private static final ResourceLocation TRINKET_TEXTURE = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/trinkettable/trinket_full.png");
+    private static final Identifier GUI = Identifier.fromNamespaceAndPath(MODID, "textures/gui/trinkettable/trinket_gui.png");
+    private static final Identifier ARROW_TEXTURE = Identifier.fromNamespaceAndPath(MODID, "textures/gui/trinkettable/craft_full.png");
+    private static final Identifier TRINKET_TEXTURE = Identifier.fromNamespaceAndPath(MODID, "textures/gui/trinkettable/trinket_full.png");
 
     public TrinketTableScreen(TrinketTableContainer container, Inventory inv, Component name) {
         super(container, inv, Component.literal(""));

@@ -173,30 +173,30 @@ public class CrebainEntity extends TolkienFlyingAmbientEntity implements GeoEnti
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
-            if (!event.isMoving() && !event.getAnimatable().isAggressive()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("idle2"));
+        controllers.add(new AnimationController<CrebainEntity>("Idle", 1, (event) -> {
+            if (!event.isMoving() && !event.animatable().isAggressive()) {
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("idle2"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
+        controllers.add(new AnimationController<CrebainEntity>("Walk", 1, (event) -> {
             if (event.isMoving() && !isFlying()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("walk"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Glide", 1, (event) -> {
+        controllers.add(new AnimationController<CrebainEntity>("Glide", 1, (event) -> {
             if (isFlying() && isGliding()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("glide"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("glide"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Fly", 1, (event) -> {
+        controllers.add(new AnimationController<CrebainEntity>("Fly", 1, (event) -> {
             if (isFlying() && !isGliding()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("fly"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("fly"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;

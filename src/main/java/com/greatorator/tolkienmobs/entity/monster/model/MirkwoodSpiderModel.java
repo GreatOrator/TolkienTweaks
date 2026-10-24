@@ -1,46 +1,31 @@
 package com.greatorator.tolkienmobs.entity.monster.model;
 
-
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.base.GeoRenderState;
 import com.greatorator.tolkienmobs.entity.monster.MirkwoodSpiderEntity;
 import com.greatorator.tolkienmobs.entity.monster.render.MirkwoodSpiderRender;
-import net.minecraft.resources.ResourceLocation;
-import com.geckolib.cache.model.GeoBone;
-import com.geckolib.constant.DataTickets;
-import com.geckolib.model.GeoModel;
-import com.geckolib.renderer.base.GeoRenderer;
+import com.greatorator.tolkienmobs.entity.util.TolkienGeoRenderState;
+import net.minecraft.resources.Identifier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
+/** Rendered from the render state, which is the only thing a GeckoLib 5 model or renderer sees during a pass. */
 public class MirkwoodSpiderModel extends GeoModel<MirkwoodSpiderEntity> {
-	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "monster/mirkwoodspider");
-	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "monster/mirkwoodspider");
+    private static final Identifier MODEL = Identifier.fromNamespaceAndPath(MODID, "monster/mirkwoodspider");
+    private static final Identifier ANIMATIONS = Identifier.fromNamespaceAndPath(MODID, "monster/mirkwoodspider");
 
-	@Override
-	public ResourceLocation getModelResource(MirkwoodSpiderEntity object, GeoRenderer<MirkwoodSpiderEntity> renderer) {
-		return this.model;
-	}
+    @Override
+    public Identifier getModelResource(GeoRenderState renderState) {
+        return MODEL;
+    }
 
-	@Override
-	public ResourceLocation getTextureResource(MirkwoodSpiderEntity object, GeoRenderer<MirkwoodSpiderEntity> renderer) {
-		return MirkwoodSpiderRender.LOCATION_BY_VARIANT.get(object.getVariant());
-	}
+    @Override
+    public Identifier getTextureResource(GeoRenderState renderState) {
+        return MirkwoodSpiderRender.textureFor((TolkienGeoRenderState) renderState);
+    }
 
-	@Override
-	public ResourceLocation getAnimationResource(MirkwoodSpiderEntity object) {
-		return this.animations;
-	}
-
-	@Override
-	public void setCustomAnimations(MirkwoodSpiderEntity entity, long uniqueID, AnimationState<MirkwoodSpiderEntity> customPredicate) {
-		super.setCustomAnimations(entity, uniqueID, customPredicate);
-		GeoBone head = this.getAnimationProcessor().getBone("head");
-		GeoBone webbing = this.getAnimationProcessor().getBone("webbing");
-
-		webbing.setHidden(!entity.isWebShooting());
-
-		assert customPredicate != null;
-		EntityModelData extraData = (EntityModelData) customPredicate.getData(DataTickets.ENTITY_MODEL_DATA);
-		head.setRotX(extraData.headPitch() * ((float) Math.PI / 180F));
-		head.setRotY(extraData.netHeadYaw() *0.5f* ((float) Math.PI / 180F));
-	}
+    @Override
+    public Identifier getAnimationResource(MirkwoodSpiderEntity animatable) {
+        return ANIMATIONS;
+    }
 }

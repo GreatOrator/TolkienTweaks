@@ -5,12 +5,11 @@ import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.ItemTagsProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.data.ItemTagsProvider;
 
 import javax.annotation.Nonnull;
 import java.util.concurrent.CompletableFuture;
@@ -18,9 +17,8 @@ import java.util.concurrent.CompletableFuture;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class TolkienItemTagProvider extends ItemTagsProvider {
-    public TolkienItemTagProvider(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> pLookupProvider,
-                                  CompletableFuture<TagLookup<Block>> pBlockTags) {
-        super(pOutput, pLookupProvider, pBlockTags, MODID);
+    public TolkienItemTagProvider(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> pLookupProvider) {
+        super(pOutput, pLookupProvider, MODID);
     }
 
 
@@ -198,11 +196,11 @@ public class TolkienItemTagProvider extends ItemTagsProvider {
                 .addOptionalTag(Tags.Items.FOODS_RAW_MEAT)
                 .addOptionalTag(Tags.Items.FOODS_RAW_FISH)
                 .addOptionalTag(Tags.Items.FOODS_FOOD_POISONING)
-                .addOptionalTag(ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "foods/doughs")))
-                .addOptionalTag(ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "foods/pastas")))
-                .addOptionalTag(ResourceLocation.parse("farmersdelight:dog_food"))
-                .addOptionalTag(ResourceLocation.parse("farmersdelight:pie_crust"))
-                .addOptionalTag(ResourceLocation.parse("spelunkery:portal_fluid_bottle"));
+                .addOptionalTag(ItemTags.create(Identifier.fromNamespaceAndPath("c", "foods/doughs")))
+                .addOptionalTag(ItemTags.create(Identifier.fromNamespaceAndPath("c", "foods/pastas")))
+                .addOptionalTag(ItemTags.create(Identifier.parse("farmersdelight:dog_food")))
+                .addOptionalTag(ItemTags.create(Identifier.parse("farmersdelight:pie_crust")))
+                .addOptionalTag(ItemTags.create(Identifier.parse("spelunkery:portal_fluid_bottle")));
         tag(ItemTags.SIGNS)
                 .add(TolkienBlocks.MALLORN_SIGN.get().asItem())
                 .add(TolkienBlocks.MIRKWOOD_SIGN.get().asItem())

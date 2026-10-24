@@ -1,15 +1,15 @@
 package com.greatorator.tolkienmobs.containers.slots;
 
 import com.greatorator.tolkienmobs.init.TolkienItems;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
 public class GemSlot extends SlotItemHandler {
-    public static final ResourceLocation backgroundLoc = null;
+    public static final Identifier backgroundLoc = null;
 
-    public GemSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition, ResourceLocation backgroundLoc) {
+    public GemSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition, Identifier backgroundLoc) {
         super(itemHandler, index, xPosition, yPosition);
     }
 

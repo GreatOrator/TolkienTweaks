@@ -7,16 +7,16 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.AbstractBoatRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.BoatRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class DwarvenMapleBoatRenderer extends AbstractBoatRenderer {
-    private static final ResourceLocation DWARVEN_MAPLE_BOAT = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/boat/dwarven_maple.png");
-    private static final ResourceLocation DWARVEN_MAPLE_CHEST_BOAT = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/chest_boat/dwarven_maple.png");
+    private static final Identifier DWARVEN_MAPLE_BOAT = Identifier.fromNamespaceAndPath(MODID, "textures/entity/boat/dwarven_maple.png");
+    private static final Identifier DWARVEN_MAPLE_CHEST_BOAT = Identifier.fromNamespaceAndPath(MODID, "textures/entity/chest_boat/dwarven_maple.png");
 
     private final EntityModel<BoatRenderState> model;
-    private final ResourceLocation texture;
+    private final Identifier texture;
 
     public DwarvenMapleBoatRenderer(EntityRendererProvider.Context context, boolean chest) {
         super(context);

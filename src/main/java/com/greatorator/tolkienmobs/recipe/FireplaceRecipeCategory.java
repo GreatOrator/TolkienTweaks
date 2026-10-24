@@ -10,9 +10,9 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,8 +21,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class FireplaceRecipeCategory implements IRecipeCategory<FireplaceRecipe> {
-    private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/fireplace/fireplace_gui.png");
-    public static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(MODID, "fireplace");
+    private static final Identifier GUI = Identifier.fromNamespaceAndPath(MODID, "textures/gui/fireplace/fireplace_gui.png");
+    public static final Identifier UID = Identifier.fromNamespaceAndPath(MODID, "fireplace");
     private final Component localizedName;
     private final IDrawable icon;
 

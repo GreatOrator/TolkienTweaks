@@ -38,7 +38,7 @@ public class TolkienFlyingAmbientEntity extends TolkienAmbientEntity {
 
     @Override
     public void aiStep() {
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             getFlightOrigin();
             if (isOrderedToSit()) {
                 getNavigation().stop();

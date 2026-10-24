@@ -5,6 +5,8 @@
 
 package com.greatorator.tolkienmobs.containers.handlers;
 
+import net.minecraft.resources.Identifier;
+
 import com.greatorator.tolkienmobs.init.TolkienTags;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;

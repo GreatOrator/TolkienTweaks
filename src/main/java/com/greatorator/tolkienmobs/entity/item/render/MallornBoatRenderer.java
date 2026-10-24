@@ -7,16 +7,16 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.AbstractBoatRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.BoatRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class MallornBoatRenderer extends AbstractBoatRenderer {
-    private static final ResourceLocation MALLORN_BOAT = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/boat/mallorn.png");
-    private static final ResourceLocation MALLORN_CHEST_BOAT = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/chest_boat/mallorn.png");
+    private static final Identifier MALLORN_BOAT = Identifier.fromNamespaceAndPath(MODID, "textures/entity/boat/mallorn.png");
+    private static final Identifier MALLORN_CHEST_BOAT = Identifier.fromNamespaceAndPath(MODID, "textures/entity/chest_boat/mallorn.png");
 
     private final EntityModel<BoatRenderState> model;
-    private final ResourceLocation texture;
+    private final Identifier texture;
 
     public MallornBoatRenderer(EntityRendererProvider.Context context, boolean chest) {
         super(context);

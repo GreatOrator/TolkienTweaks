@@ -151,7 +151,7 @@ public class CamoKeyStoneBlock extends ChameleonBlock<CamoKeyStoneBlockEntity> {
             }
         }
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             if (tile != null) {
                 keyStone.onRightClick(state, player, hand);
                 return InteractionResult.SUCCESS;

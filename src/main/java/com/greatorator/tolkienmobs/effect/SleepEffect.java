@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.effect;
 
 import com.greatorator.tolkienmobs.init.TolkienMobEffects;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class SleepEffect extends TolkienEffect {
-    static ResourceLocation sleepTight = ResourceLocation.fromNamespaceAndPath(MODID, "sleeping");
+    static Identifier sleepTight = Identifier.fromNamespaceAndPath(MODID, "sleeping");
     static boolean shouldSleep = true;
 
     public SleepEffect(MobEffectCategory category, int color) {

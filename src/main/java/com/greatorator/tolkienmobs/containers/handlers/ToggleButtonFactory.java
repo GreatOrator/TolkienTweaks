@@ -9,7 +9,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class ToggleButtonFactory {
-    public record TextureLocalization(ResourceLocation texture, MutableComponent localization) {
+    public record TextureLocalization(Identifier texture, MutableComponent localization) {
     }
 
     private static final int STANDARD_WIDTH = 16; // Example width
@@ -25,8 +25,8 @@ public class ToggleButtonFactory {
 
     /** Key Stone Button **/
     private static final List<TextureLocalization> KEEP_KEY_TEXTURES = List.of(
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/keystone/key_keep.png"), Component.translatable("screen.tolkienmobs.keystone.key.keep")),
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/keystone/key_consume.png"), Component.translatable("screen.tolkienmobs.keystone.key.consume"))
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/keystone/key_keep.png"), Component.translatable("screen.tolkienmobs.keystone.key.keep")),
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/keystone/key_consume.png"), Component.translatable("screen.tolkienmobs.keystone.key.consume"))
     );
 
     public static ToggleButton KEEPKEYBUTTON(int x, int y, boolean startingValue, Button.OnPress onPress) {
@@ -35,32 +35,32 @@ public class ToggleButtonFactory {
 
     /** Spawner Button **/
     private static final List<TextureLocalization> REDSTONE_SIGNAL = List.of(
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/redstone_always.png"), Component.translatable("screen.tolkienmobs.camo_spawner.redstone.enabled")),
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/redstone_always_inactive.png"), Component.translatable("screen.tolkienmobs.camo_spawner.redstone.disabled"))
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/redstone_always.png"), Component.translatable("screen.tolkienmobs.camo_spawner.redstone.enabled")),
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/redstone_always_inactive.png"), Component.translatable("screen.tolkienmobs.camo_spawner.redstone.disabled"))
     );
     private static final List<TextureLocalization> IGNORE_PARTICLES = List.of(
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/particles.png"), Component.translatable("screen.tolkienmobs.camo_spawner.spawnerParticles.enabled")),
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/hide_particles.png"), Component.translatable("screen.tolkienmobs.camo_spawner.spawnerParticles.disabled"))
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/particles.png"), Component.translatable("screen.tolkienmobs.camo_spawner.spawnerParticles.enabled")),
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/hide_particles.png"), Component.translatable("screen.tolkienmobs.camo_spawner.spawnerParticles.disabled"))
     );
     private static final List<TextureLocalization> IGNORE_PLAYER = List.of(
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/player.png"), Component.translatable("screen.tolkienmobs.camo_spawner.requirePlayer.enabled")),
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/ignore_player.png"), Component.translatable("screen.tolkienmobs.camo_spawner.requirePlayer.disabled"))
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/player.png"), Component.translatable("screen.tolkienmobs.camo_spawner.requirePlayer.enabled")),
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/ignore_player.png"), Component.translatable("screen.tolkienmobs.camo_spawner.requirePlayer.disabled"))
     );
     private static final List<TextureLocalization> IGNORE_REQUIREMENTS = List.of(
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/spawn_requirements.png"), Component.translatable("screen.tolkienmobs.camo_spawner.ignoreSpawnReq.enabled")),
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/ignore_spawn_requirements.png"), Component.translatable("screen.tolkienmobs.camo_spawner.ignoreSpawnReq.ignored"))
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/spawn_requirements.png"), Component.translatable("screen.tolkienmobs.camo_spawner.ignoreSpawnReq.enabled")),
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/ignore_spawn_requirements.png"), Component.translatable("screen.tolkienmobs.camo_spawner.ignoreSpawnReq.ignored"))
     );
     private static final List<TextureLocalization> REMOVE = List.of(
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/delete.png"), Component.translatable("screen.tolkienmobs.camo_spawner.remove_mob")),
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/delete.png"), Component.translatable("screen.tolkienmobs.camo_spawner.remove_mob"))
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/delete.png"), Component.translatable("screen.tolkienmobs.camo_spawner.remove_mob")),
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/delete.png"), Component.translatable("screen.tolkienmobs.camo_spawner.remove_mob"))
     );
     private static final List<TextureLocalization> INDIVIDUAL = List.of(
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/delete_single.png"), Component.translatable("screen.tolkienmobs.camo_spawner.remove_single_mob")),
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/delete_single.png"), Component.translatable("screen.tolkienmobs.camo_spawner.remove_single_mob"))
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/delete_single.png"), Component.translatable("screen.tolkienmobs.camo_spawner.remove_single_mob")),
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/delete_single.png"), Component.translatable("screen.tolkienmobs.camo_spawner.remove_single_mob"))
     );
     private static final List<TextureLocalization> SPAWN_ALL_TOGETHER = List.of(
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/spawn_all.png"), Component.translatable("screen.tolkienmobs.camo_spawner.spawn_all.enabled")),
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/spawn_random.png"), Component.translatable("screen.tolkienmobs.camo_spawner.spawn_random.enabled"))
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/spawn_all.png"), Component.translatable("screen.tolkienmobs.camo_spawner.spawn_all.enabled")),
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/spawn_random.png"), Component.translatable("screen.tolkienmobs.camo_spawner.spawn_random.enabled"))
     );
 
     public static ToggleButton REMOVE_MOB_BUTTON(int x, int y, boolean startingValue, Button.OnPress onPress) {
@@ -133,9 +133,9 @@ public class ToggleButtonFactory {
 
     /** Redstone Mode **/
     private static final List<TextureLocalization> REDSTONE_TOGGLE_TEXTURES = List.of(
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/keystone/redstone_always.png"), Component.translatable("screen.tolkienmobs.keystone.always.active")),
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/keystone/redstone_delay.png"), Component.translatable("screen.tolkienmobs.keystone.delay.active")),
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/keystone/redstone_pulse.png"), Component.translatable("screen.tolkienmobs.keystone.pulse.active"))
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/keystone/redstone_always.png"), Component.translatable("screen.tolkienmobs.keystone.always.active")),
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/keystone/redstone_delay.png"), Component.translatable("screen.tolkienmobs.keystone.delay.active")),
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/keystone/redstone_pulse.png"), Component.translatable("screen.tolkienmobs.keystone.pulse.active"))
     );
     public static ToggleButton REDSTONE_TOGGLE_BUTTON(int x, int y, int startingValue, Button.OnPress onPress) {
         return new ToggleButton(x, y, STANDARD_WIDTH, STANDARD_HEIGHT, REDSTONE_TOGGLE_TEXTURES, startingValue, onPress);
@@ -143,8 +143,8 @@ public class ToggleButtonFactory {
 
     /** Sleeping Bag **/
     private static final List<TextureLocalization> SLEEPING_BAG_TOGGLE_TEXTURES = List.of(
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/bed_deployed.png"), Component.translatable("screen.tolkienmobs.backpack.bed.remove")),
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/bed.png"), Component.translatable("screen.tolkienmobs.backpack.bed.deployed"))
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/backpack/bed_deployed.png"), Component.translatable("screen.tolkienmobs.backpack.bed.remove")),
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/backpack/bed.png"), Component.translatable("screen.tolkienmobs.backpack.bed.deployed"))
     );
     public static ToggleButton SLEEPING_BAG_TOGGLE_BUTTON(int x, int y, boolean startingValue, Button.OnPress onPress) {
         return new ToggleButton(x, y, STANDARD_WIDTH, STANDARD_HEIGHT, SLEEPING_BAG_TOGGLE_TEXTURES, startingValue, onPress);
@@ -152,8 +152,8 @@ public class ToggleButtonFactory {
 
     /** Campfire **/
     private static final List<TextureLocalization> CAMPFIRE_TOGGLE_TEXTURES = List.of(
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/campfire_deployed.png"), Component.translatable("screen.tolkienmobs.backpack.campfire.remove")),
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/campfire.png"), Component.translatable("screen.tolkienmobs.backpack.campfire.deployed"))
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/backpack/campfire_deployed.png"), Component.translatable("screen.tolkienmobs.backpack.campfire.remove")),
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/backpack/campfire.png"), Component.translatable("screen.tolkienmobs.backpack.campfire.deployed"))
     );
     public static ToggleButton CAMPFIRE_TOGGLE_BUTTON(int x, int y, boolean startingValue, Button.OnPress onPress) {
         return new ToggleButton(x, y, STANDARD_WIDTH, STANDARD_HEIGHT, CAMPFIRE_TOGGLE_TEXTURES, startingValue, onPress);
@@ -161,8 +161,8 @@ public class ToggleButtonFactory {
 
     /** Upgrade Menu **/
     private static final List<TextureLocalization> UPGRADE_TOGGLE_TEXTURES = List.of(
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/upgrade.png"), Component.translatable("screen.tolkienmobs.backpack.open.upgrade")),
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/close_upgrade.png"), Component.translatable("screen.tolkienmobs.backpack.close.upgrade"))
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/backpack/upgrade.png"), Component.translatable("screen.tolkienmobs.backpack.open.upgrade")),
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/backpack/close_upgrade.png"), Component.translatable("screen.tolkienmobs.backpack.close.upgrade"))
     );
     public static ToggleButton UPGRADE_TOGGLE_BUTTON(int x, int y, boolean startingValue, Button.OnPress onPress) {
         return new ToggleButton(x, y, STANDARD_WIDTH, STANDARD_HEIGHT, UPGRADE_TOGGLE_TEXTURES, startingValue, onPress);
@@ -178,8 +178,8 @@ public class ToggleButtonFactory {
     /** Milestone Settings **/
     private static final Component distanceButtonLocalization = Component.translatable("screen.tolkienmobs.milestone.distance");
     private static final Component dimensionButtonLocalization = Component.translatable("screen.tolkienmobs.milestone.dimension");
-    private static final Component itemPaymentButtonLocalization = LangTranslationUtils.paymentItem(BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(TolkienMobsConfig.PAYMENT_ITEM.get())).getDefaultInstance().getDisplayName());
-    private static final Component experiencePaymentButtonLocalization = LangTranslationUtils.paymentItem(BuiltInRegistries.ITEM.getValue(ResourceLocation.parse("tolkienmobs:experience_orb")).getDefaultInstance().getDisplayName());
+    private static final Component itemPaymentButtonLocalization = LangTranslationUtils.paymentItem(BuiltInRegistries.ITEM.getValue(Identifier.parse(TolkienMobsConfig.PAYMENT_ITEM.get())).getDefaultInstance().getDisplayName());
+    private static final Component experiencePaymentButtonLocalization = LangTranslationUtils.paymentItem(BuiltInRegistries.ITEM.getValue(Identifier.parse("tolkienmobs:experience_orb")).getDefaultInstance().getDisplayName());
 
     public static NumberButton DISTANCE_BUTTON(int x, int y, int value, Button.OnPress onPress) {
         return new NumberButton(x, y, 24, 16, value, TolkienMobsConfig.DISTANCE_COST.get(), 5000, distanceButtonLocalization, onPress);
@@ -216,7 +216,7 @@ public class ToggleButtonFactory {
     }
 
     /** Other Button Examples **/
-    private static final ResourceLocation EXTRACT_EXP_BUTTON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/mob_label_base.png");
+    private static final Identifier EXTRACT_EXP_BUTTON = Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/mob_label_base.png");
     private static final Component EXTRACT_EXP_BUTTON_LOCALIZATION = Component.translatable("justdirethings.screen.retrieveexp");
 
     public static GrayscaleButton EXTRACTEXPBUTTON(int x, int y, boolean startingValue, Button.OnPress onPress) {
@@ -224,9 +224,9 @@ public class ToggleButtonFactory {
     }
 
     private static final List<TextureLocalization> INVENTORY_CONNECTION_TEXTURES = List.of(
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/buttons/inv-normal.png"), Component.translatable("justdirethings.screen.inv-normal")),
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/buttons/inv-armor.png"), Component.translatable("justdirethings.screen.inv-armor")),
-            new TextureLocalization(ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/buttons/inv-offhand.png"), Component.translatable("justdirethings.screen.inv-offhand"))
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/buttons/inv-normal.png"), Component.translatable("justdirethings.screen.inv-normal")),
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/buttons/inv-armor.png"), Component.translatable("justdirethings.screen.inv-armor")),
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/buttons/inv-offhand.png"), Component.translatable("justdirethings.screen.inv-offhand"))
     );
 
     public static ToggleButton INVENTORYCONNECTIONBUTTON(int x, int y, MutableComponent component, int startingValue, Button.OnPress onPress) {

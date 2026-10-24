@@ -45,7 +45,7 @@ public class CamoChestBlockEntity extends RandomizableContainerBlockEntity {
 
         @Override
         protected void openerCountChanged(Level level, BlockPos pos, BlockState state, int count, int previousCount) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 level.updateNeighbourForOutputSignal(pos, state.getBlock());
             }
         }
@@ -87,23 +87,23 @@ public class CamoChestBlockEntity extends RandomizableContainerBlockEntity {
 
     @Override
     public void startOpen(Player player) {
-        if (!this.remove && !player.isSpectator() && this.level != null && !this.level.isClientSide) {
+        if (!this.remove && !player.isSpectator() && this.level != null && !this.level.isClientSide()) {
             this.openers.incrementOpeners(player, this.level, this.getBlockPos(), this.getBlockState());
         }
     }
 
     @Override
     public void stopOpen(Player player) {
-        if (!this.remove && !player.isSpectator() && this.level != null && !this.level.isClientSide) {
+        if (!this.remove && !player.isSpectator() && this.level != null && !this.level.isClientSide()) {
             this.openers.decrementOpeners(player, this.level, this.getBlockPos(), this.getBlockState());
         }
     }
 
     private void playSound(BlockState state, SoundEvent sound) {
-        if (this.level == null || this.level.isClientSide) {
+        if (this.level == null || this.level.isClientSide()) {
             return;
         }
-        this.level.playSound(null, this.getBlockPos(), sound, SoundSource.BLOCKS, 0.5F, this.level.random.nextFloat() * 0.1F + 0.9F);
+        this.level.playSound(null, this.getBlockPos(), sound, SoundSource.BLOCKS, 0.5F, this.level.getRandom().nextFloat() * 0.1F + 0.9F);
     }
 
     @Override

@@ -1,61 +1,57 @@
 package com.greatorator.tolkienmobs.entity.ambient.render;
 
-import com.geckolib.cache.model.BakedGeoModel;
-
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
+import com.geckolib.renderer.GeoEntityRenderer;
+import com.geckolib.renderer.base.RenderPassInfo;
 import com.google.common.collect.Maps;
 import com.greatorator.tolkienmobs.entity.ambient.RatEntity;
 import com.greatorator.tolkienmobs.entity.ambient.model.RatModel;
+import com.greatorator.tolkienmobs.entity.util.TolkienGeoRenderState;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.Util;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
-import com.geckolib.renderer.GeoEntityRenderer;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 
 import java.util.Map;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class RatRender extends GeoEntityRenderer<RatEntity> {
-    public static final Map<TolkienVariant, ResourceLocation> LOCATION_BY_VARIANT =
+public class RatRender extends GeoEntityRenderer<RatEntity, TolkienGeoRenderState> {
+    public static final Map<TolkienVariant, Identifier> LOCATION_BY_VARIANT =
             Util.make(Maps.newEnumMap(TolkienVariant.class), map -> {
                 map.put(TolkienVariant.DEFAULT,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat1.png"));
                 map.put(TolkienVariant.RED,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat1.png"));
                 map.put(TolkienVariant.ORANGE,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat2.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat2.png"));
                 map.put(TolkienVariant.YELLOW,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat3.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat3.png"));
                 map.put(TolkienVariant.GREEN,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat4.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat4.png"));
                 map.put(TolkienVariant.BLUE,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat1.png"));
                 map.put(TolkienVariant.INDIGO,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat2.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat2.png"));
                 map.put(TolkienVariant.VIOLET,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat3.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat3.png"));
                 map.put(TolkienVariant.MAGENTA,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat4.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat4.png"));
                 map.put(TolkienVariant.PINK,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat1.png"));
                 map.put(TolkienVariant.GRAY,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat2.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat2.png"));
                 map.put(TolkienVariant.AQUA,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat3.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat3.png"));
                 map.put(TolkienVariant.BEIGE,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat4.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat4.png"));
                 map.put(TolkienVariant.BROWN,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat1.png"));
                 map.put(TolkienVariant.CORAL,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat2.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat2.png"));
                 map.put(TolkienVariant.CYAN,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat3.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat3.png"));
                 map.put(TolkienVariant.LAVENDER,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat4.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/entityttmrat/entityttmrat4.png"));
             });
 
     public RatRender(EntityRendererProvider.Context context) {
@@ -64,21 +60,29 @@ public class RatRender extends GeoEntityRenderer<RatEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(RatEntity entity) {
-        return LOCATION_BY_VARIANT.get(entity.getVariant());
+    public TolkienGeoRenderState createRenderState(RatEntity animatable, Void relatedObject) {
+        return new TolkienGeoRenderState();
+    }
+
+    /** The variant's texture, for the model and for the base class's texture lookup. */
+    public static Identifier textureFor(TolkienGeoRenderState renderState) {
+        return LOCATION_BY_VARIANT.get(renderState.variant);
     }
 
     @Override
-    public void preRender(PoseStack poseStack, RatEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
-        if (!isReRender) {
-            if(animatable.isBaby()) {
-                poseStack.scale(0.20f, 0.20f, 0.20f);
-            } else {
-                poseStack.scale(0.50f, 0.50f, 0.50f);
-            }
-        }
+    public Identifier getTextureLocation(TolkienGeoRenderState renderState) {
+        return textureFor(renderState);
+    }
 
+    @Override
+    public void addRenderData(RatEntity animatable, Void relatedObject, TolkienGeoRenderState renderState, float partialTick) {
+        renderState.variant = animatable.getVariant();
+    }
 
-        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
+    /** The model's own scaling, which 5 applies here rather than in preRender. */
+    @Override
+    public void scaleModelForRender(RenderPassInfo<TolkienGeoRenderState> renderPassInfo, float widthScale, float heightScale) {
+        float scale = renderPassInfo.renderState().isBaby ? 0.20F : 0.50F;
+        super.scaleModelForRender(renderPassInfo, scale, scale);
     }
 }

@@ -9,7 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MessageSignature;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -23,7 +23,7 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public final class PacketHandler {
-    public static final ResourceLocation NET_CHANNEL = ResourceLocation.fromNamespaceAndPath(MODID, "network");
+    public static final Identifier NET_CHANNEL = Identifier.fromNamespaceAndPath(MODID, "network");
 
     /** Server to Client */
     public static final int C_SEND_MILESTONES = 1;

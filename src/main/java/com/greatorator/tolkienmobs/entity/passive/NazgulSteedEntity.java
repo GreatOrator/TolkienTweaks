@@ -190,23 +190,23 @@ public class NazgulSteedEntity extends AbstractChestedHorse implements GeoEntity
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
+        controllers.add(new AnimationController<NazgulSteedEntity>("Idle", 1, (event) -> {
             if (!event.isMoving() && this.isEating()) {
-                event.getController().setAnimation(RawAnimation.begin().then("eat", Animation.LoopType.PLAY_ONCE).thenLoop("chewing"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("eat").thenLoop("chewing"));
                 return PlayState.CONTINUE;
             }else if (!event.isMoving()){
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("idle"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
+        controllers.add(new AnimationController<NazgulSteedEntity>("Walk", 1, (event) -> {
             double speed = getMovementSpeed(this);
             if (event.isMoving() && speed > (double)1.0F) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("run"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("run"));
                 return PlayState.CONTINUE;
             } else if (event.isMoving()){
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("walk"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;

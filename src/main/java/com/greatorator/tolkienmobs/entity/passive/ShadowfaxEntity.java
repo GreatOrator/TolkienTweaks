@@ -180,28 +180,28 @@ public class ShadowfaxEntity extends AbstractChestedHorse implements GeoEntity, 
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
+        controllers.add(new AnimationController<ShadowfaxEntity>("Idle", 1, (event) -> {
             if (!event.isMoving() && this.isEating()) {
-                event.getController().setAnimation(RawAnimation.begin().then("eat", Animation.LoopType.PLAY_ONCE).thenLoop("chewing"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("eat").thenLoop("chewing"));
                 return PlayState.CONTINUE;
             }else if (!event.isMoving()){
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("idle"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
+        controllers.add(new AnimationController<ShadowfaxEntity>("Walk", 1, (event) -> {
             double speed = getMovementSpeed(this);
             if (this.isJumping()) {
                 // Without its own return this branch fell through to the STOP below, which dropped the
                 // jump the tick it was set and left the horse standing in its walk pose mid-air.
-                event.getController().setAnimation(RawAnimation.begin().then("jump", Animation.LoopType.PLAY_ONCE));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("jump"));
                 return PlayState.CONTINUE;
             }else if (event.isMoving() && speed > (double)1.0F) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("run"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("run"));
                 return PlayState.CONTINUE;
             } else if (event.isMoving()){
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("walk"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;

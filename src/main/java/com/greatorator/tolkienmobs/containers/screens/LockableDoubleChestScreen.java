@@ -13,7 +13,7 @@ import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -25,7 +25,7 @@ import org.lwjgl.glfw.GLFW;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class LockableDoubleChestScreen extends AbstractContainerScreen<LockableDoubleChestContainer> {
-    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/chests/chest_text.png");
+    private final Identifier GUI = Identifier.fromNamespaceAndPath(MODID, "textures/gui/chests/chest_text.png");
     protected final LockableDoubleChestContainer container;
     public static ItemStack keyStack;
     private final InteractionHand hand;

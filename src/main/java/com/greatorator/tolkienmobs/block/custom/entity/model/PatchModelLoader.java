@@ -3,7 +3,7 @@ package com.greatorator.tolkienmobs.block.custom.entity.model;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.neoforged.neoforge.client.model.UnbakedModelLoader;
 
@@ -19,6 +19,6 @@ public final class PatchModelLoader implements UnbakedModelLoader<UnbakedPatchMo
 		if (!object.has("texture"))
 			throw new JsonParseException("Patch model missing value for 'texture'.");
 
-		return new UnbakedPatchModel(ResourceLocation.parse(object.get("texture").getAsString()), GsonHelper.getAsBoolean(object, "shaggify", false));
+		return new UnbakedPatchModel(Identifier.parse(object.get("texture").getAsString()), GsonHelper.getAsBoolean(object, "shaggify", false));
 	}
 }

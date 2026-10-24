@@ -8,7 +8,7 @@ import com.greatorator.tolkienmobs.entity.ai.target.SwampHagNearestAttackableTar
 import com.greatorator.tolkienmobs.entity.ai.target.SwampHagNearestHealableRaiderTargetGoal;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
@@ -16,7 +16,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
@@ -58,7 +58,7 @@ public class SwampHagEntity extends TolkienMonsterEntity implements GeoEntity {
     private static final EntityDataAccessor<Integer> VARIANT =
             SynchedEntityData.defineId(SwampHagEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> DATA_HEALING = SynchedEntityData.defineId(SwampHagEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final ResourceLocation SPEED_MODIFIER_DRINKING_ID = ResourceLocation.withDefaultNamespace("drinking");
+    private static final Identifier SPEED_MODIFIER_DRINKING_ID = Identifier.withDefaultNamespace("drinking");
     private static final AttributeModifier SPEED_MODIFIER_DRINKING = new AttributeModifier(
             SPEED_MODIFIER_DRINKING_ID, -0.25, AttributeModifier.Operation.ADD_VALUE
     );
@@ -97,7 +97,7 @@ public class SwampHagEntity extends TolkienMonsterEntity implements GeoEntity {
 
     @Override
     public void aiStep() {
-        if (!this.level.isClientSide && this.isAlive()) {
+        if (!this.level.isClientSide() && this.isAlive()) {
             this.healRaidersGoal.decrementCooldown();
             if (this.healRaidersGoal.getCooldown() <= 0) {
                 this.attackPlayersGoal.setCanAttack(true);
@@ -303,31 +303,31 @@ public class SwampHagEntity extends TolkienMonsterEntity implements GeoEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
+        controllers.add(new AnimationController<SwampHagEntity>("Walk", 1, (event) -> {
             if (event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("walk"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
+        controllers.add(new AnimationController<SwampHagEntity>("Idle", 1, (event) -> {
             if (!event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("idle"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
+        controllers.add(new AnimationController<SwampHagEntity>("Attack", 1, (event) -> {
             // Each branch continues the controller so the attack it just started can run; an
             // unconditional STOP below dropped the animation the moment it was set. The throw is
             // keyed on the shooting flag the ranged goal syncs, not the unsynced weapon flag.
-            if (this.isShooting() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
-                event.getController().forceAnimationReset();
-                event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
+            if (this.isShooting() && !event.controller().isAnimatingBones()) {
+                event.controller().forceAnimationReset();
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("attack"));
                 return PlayState.CONTINUE;
-            }else if (this.isHealing() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
-                event.getController().forceAnimationReset();
-                event.getController().setAnimation(RawAnimation.begin().then("attack_heal", Animation.LoopType.PLAY_ONCE));
+            }else if (this.isHealing() && !event.controller().isAnimatingBones()) {
+                event.controller().forceAnimationReset();
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("attack_heal"));
                 this.setHealing(false);
                 return PlayState.CONTINUE;
             }

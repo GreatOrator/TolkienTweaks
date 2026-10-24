@@ -6,7 +6,7 @@ import com.greatorator.tolkienmobs.world.components.structure.VillageStructure;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -40,7 +40,7 @@ public class TolkienStructures {
     public static final ResourceKey<Structure> WARGPIT = key("ttmwargpit");
 
     public static ResourceKey<Structure> key(String name) {
-        return ResourceKey.create(Registries.STRUCTURE, ResourceLocation.fromNamespaceAndPath(MODID, name));
+        return ResourceKey.create(Registries.STRUCTURE, Identifier.fromNamespaceAndPath(MODID, name));
     }
 
     public static final DeferredRegister<StructureType<?>> STRUCTURE = DeferredRegister.create(Registries.STRUCTURE_TYPE, MODID);

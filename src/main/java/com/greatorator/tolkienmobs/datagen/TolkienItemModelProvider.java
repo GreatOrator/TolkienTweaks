@@ -11,7 +11,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
@@ -490,12 +490,12 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         // as the base model that carries the display transforms and the particle sprite.
         definition(TolkienItems.ARDA_STAFF.get(), ItemModelDefinition.special(
                 modelOf(BuiltInRegistries.ITEM.getKey(TolkienItems.ARDA_STAFF.get())),
-                ResourceLocation.fromNamespaceAndPath("geckolib", "geckolib")));
+                Identifier.fromNamespaceAndPath("geckolib", "geckolib")));
     }
 
     /** An un-drawn bow, swapping to the three draw frames while it is being used. */
     private JsonObject bowDefinition(Item item) {
-        ResourceLocation model = modelOf(BuiltInRegistries.ITEM.getKey(item));
+        Identifier model = modelOf(BuiltInRegistries.ITEM.getKey(item));
         return ItemModelDefinition.condition(TolkienMobsMain.resLoc("pulling"),
                 ItemModelDefinition.rangeDispatch(TolkienMobsMain.resLoc("pull"),
                         ItemModelDefinition.model(withSuffix(model, "_pulling_0")),
@@ -506,7 +506,7 @@ public class TolkienItemModelProvider extends ItemModelProvider {
 
     /** A coin pouch or key ring, switching to a fuller sprite at four thresholds. */
     private JsonObject fullnessDefinition(Item item) {
-        ResourceLocation model = modelOf(BuiltInRegistries.ITEM.getKey(item));
+        Identifier model = modelOf(BuiltInRegistries.ITEM.getKey(item));
         return ItemModelDefinition.rangeDispatch(TolkienMobsMain.resLoc("fullness"),
                 ItemModelDefinition.model(model),
                 ItemModelDefinition.entry(0.01F, ItemModelDefinition.model(withSuffix(model, "_fullness_0"))),
@@ -516,8 +516,8 @@ public class TolkienItemModelProvider extends ItemModelProvider {
     }
 
     /** One trim model for one material, and the select case that picks it. */
-    private ItemModelDefinition.Case trimCase(String armorItemPath, ResourceLocation armorTexture,
-                                              ResourceLocation trimTexture, ResourceLocation material) {
+    private ItemModelDefinition.Case trimCase(String armorItemPath, Identifier armorTexture,
+                                              Identifier trimTexture, Identifier material) {
         String trimModelPath = armorItemPath + "_" + material.getPath() + "_trim";
 
         getBuilder(trimModelPath)
@@ -526,7 +526,7 @@ public class TolkienItemModelProvider extends ItemModelProvider {
                 .texture("layer1", trimTexture);
 
         return ItemModelDefinition.when(material.toString(),
-                ItemModelDefinition.model(ResourceLocation.fromNamespaceAndPath(MODID, "item/" + trimModelPath)));
+                ItemModelDefinition.model(Identifier.fromNamespaceAndPath(MODID, "item/" + trimModelPath)));
     }
 
     /**
@@ -547,11 +547,11 @@ public class TolkienItemModelProvider extends ItemModelProvider {
                 ItemModelDefinition.tintSource(TolkienMobsMain.resLoc("trinket")));
     }
 
-    private static ResourceLocation withSuffix(ResourceLocation location, String suffix) {
-        return ResourceLocation.fromNamespaceAndPath(location.getNamespace(), location.getPath() + suffix);
+    private static Identifier withSuffix(Identifier location, String suffix) {
+        return Identifier.fromNamespaceAndPath(location.getNamespace(), location.getPath() + suffix);
     }
 
-    private ItemModelBuilder generated(String name, ResourceLocation... layers) {
+    private ItemModelBuilder generated(String name, Identifier... layers) {
         return buildItem(name, "item/generated", 0, layers);
     }
 
@@ -564,14 +564,14 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         return BuiltInRegistries.BLOCK.getKey(block.get()).getPath();
     }
 
-    private ItemModelBuilder trinketItem(Item item, ResourceLocation texture, ResourceLocation overlay) {
+    private ItemModelBuilder trinketItem(Item item, Identifier texture, Identifier overlay) {
         return getBuilder(item.toString())
                 .parent(new ModelFile.UncheckedModelFile("item/generated"))
                 .texture("layer0", texture)
                 .texture("layer1", overlay);
     }
 
-    private ItemModelBuilder buildItem(String name, String parent, int emissivity, ResourceLocation... layers) {
+    private ItemModelBuilder buildItem(String name, String parent, int emissivity, Identifier... layers) {
         ItemModelBuilder builder = withExistingParent(name, parent);
         for (int i = 0; i < layers.length; i++) {
             builder = builder.texture("layer" + i, layers[i]);
@@ -582,25 +582,25 @@ public class TolkienItemModelProvider extends ItemModelProvider {
 
     private ItemModelBuilder saplingItem(DeferredBlock<Block> item) {
         return withExistingParent(item.getId().getPath(),
-                ResourceLocation.parse("item/generated")).texture("layer0",
-                ResourceLocation.fromNamespaceAndPath(MODID,"block/" + item.getId().getPath()));
+                Identifier.parse("item/generated")).texture("layer0",
+                Identifier.fromNamespaceAndPath(MODID,"block/" + item.getId().getPath()));
     }
 
     public void buttonItem(DeferredBlock<Block> block, DeferredBlock<Block> baseBlock) {
         this.withExistingParent(block.getId().getPath(), mcLoc("block/button_inventory"))
-                .texture("texture",  ResourceLocation.fromNamespaceAndPath(MODID,
+                .texture("texture",  Identifier.fromNamespaceAndPath(MODID,
                         "block/" + baseBlock.getId().getPath()));
     }
 
     public void fenceItem(DeferredBlock<Block> block, DeferredBlock<Block> baseBlock) {
         this.withExistingParent(block.getId().getPath(), mcLoc("block/fence_inventory"))
-                .texture("texture",  ResourceLocation.fromNamespaceAndPath(MODID,
+                .texture("texture",  Identifier.fromNamespaceAndPath(MODID,
                         "block/" + baseBlock.getId().getPath()));
     }
 
     public void wallItem(DeferredBlock<Block> block, DeferredBlock<Block> baseBlock) {
         this.withExistingParent(block.getId().getPath(), mcLoc("block/wall_inventory"))
-                .texture("wall",  ResourceLocation.fromNamespaceAndPath(MODID,
+                .texture("wall",  Identifier.fromNamespaceAndPath(MODID,
                         "block/" + baseBlock.getId().getPath()));
     }
 
@@ -609,18 +609,18 @@ public class TolkienItemModelProvider extends ItemModelProvider {
                 .texture("layer0", blockTexture(block));
     }
 
-    private ResourceLocation blockTexture(DeferredBlock<Block> block) {
-        return ResourceLocation.fromNamespaceAndPath(MODID,"block/" + block.getId().getPath());
+    private Identifier blockTexture(DeferredBlock<Block> block) {
+        return Identifier.fromNamespaceAndPath(MODID,"block/" + block.getId().getPath());
     }
 
     public ItemModelBuilder handheldItem(Item item) {
         return basicItem(Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(item)));
     }
 
-    public ItemModelBuilder handheldItem(ResourceLocation item) {
+    public ItemModelBuilder handheldItem(Identifier item) {
         return getBuilder(item.toString())
                 .parent(new ModelFile.UncheckedModelFile("item/handheld"))
-                .texture("layer0", ResourceLocation.fromNamespaceAndPath(item.getNamespace(), "item/" + item.getPath()));
+                .texture("layer0", Identifier.fromNamespaceAndPath(item.getNamespace(), "item/" + item.getPath()));
     }
 
     /**
@@ -650,24 +650,24 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         };
 
         String armorItemPath = itemDeferredItem.getId().getPath();
-        ResourceLocation armorTexture = ResourceLocation.fromNamespaceAndPath(MODID, "item/" + armorItemPath);
+        Identifier armorTexture = Identifier.fromNamespaceAndPath(MODID, "item/" + armorItemPath);
         List<ItemModelDefinition.Case> cases = new ArrayList<>();
 
         for (ResourceKey<TrimMaterial> trimMaterial : TRIM_MATERIALS) {
             // Vanilla's materials are cut at load time by the paletted permutation atlas, so no png
             // ships for them and the file helper is told they exist rather than asked.
-            ResourceLocation trimTexture = ResourceLocation.withDefaultNamespace("trims/items/" + armorType + "_trim_" + trimMaterial.location().getPath());
+            Identifier trimTexture = Identifier.withDefaultNamespace("trims/items/" + armorType + "_trim_" + trimMaterial.identifier().getPath());
             existingFileHelper.trackGenerated(trimTexture, PackType.CLIENT_RESOURCES, ".png", "textures");
-            cases.add(trimCase(armorItemPath, armorTexture, trimTexture, trimMaterial.location()));
+            cases.add(trimCase(armorItemPath, armorTexture, trimTexture, trimMaterial.identifier()));
         }
 
         for (ResourceKey<TrimMaterial> trimMaterial : MOD_TRIM_MATERIALS) {
             // Our own materials have no permutation in vanilla's atlas, so TolkienTrimSpriteProvider
             // bakes the sprite into textures/item/trim, which the block atlas already stitches.
-            ResourceLocation trimTexture = ResourceLocation.fromNamespaceAndPath(MODID,
-                    "item/trim/" + armorType + "_trim_" + trimMaterial.location().getPath());
+            Identifier trimTexture = Identifier.fromNamespaceAndPath(MODID,
+                    "item/trim/" + armorType + "_trim_" + trimMaterial.identifier().getPath());
             existingFileHelper.trackGenerated(trimTexture, PackType.CLIENT_RESOURCES, ".png", "textures");
-            cases.add(trimCase(armorItemPath, armorTexture, trimTexture, trimMaterial.location()));
+            cases.add(trimCase(armorItemPath, armorTexture, trimTexture, trimMaterial.identifier()));
         }
 
         // The untrimmed icon, drawn unless one of the materials above is applied.

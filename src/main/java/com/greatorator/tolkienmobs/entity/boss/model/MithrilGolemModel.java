@@ -1,42 +1,34 @@
 package com.greatorator.tolkienmobs.entity.boss.model;
 
-
-import com.greatorator.tolkienmobs.entity.boss.MithrilGolemEntity;
-import net.minecraft.resources.ResourceLocation;
-import com.geckolib.cache.model.GeoBone;
-import com.geckolib.constant.DataTickets;
 import com.geckolib.model.GeoModel;
-import com.geckolib.renderer.base.GeoRenderer;
+import com.geckolib.renderer.base.GeoRenderState;
+import com.greatorator.tolkienmobs.entity.boss.MithrilGolemEntity;
+import net.minecraft.resources.Identifier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
+/**
+ * The mithril golem wears one texture, so the model needs nothing from the entity; the head turn moved to
+ * the renderer's {@code adjustModelBonesForRender}, which is where GeckoLib 5 wants bone work done.
+ */
 public class MithrilGolemModel extends GeoModel<MithrilGolemEntity> {
-	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "monster/golem");
-	private final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/elementalgolem/elemental_golem_mithril.png");
-	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "monster/golem");
+    private static final Identifier MODEL = Identifier.fromNamespaceAndPath(MODID, "monster/golem");
+    private static final Identifier TEXTURE =
+            Identifier.fromNamespaceAndPath(MODID, "textures/entity/elementalgolem/elemental_golem_mithril.png");
+    private static final Identifier ANIMATIONS = Identifier.fromNamespaceAndPath(MODID, "monster/golem");
 
-	@Override
-	public ResourceLocation getModelResource(MithrilGolemEntity object, GeoRenderer<MithrilGolemEntity> renderer) {
-		return this.model;
-	}
+    @Override
+    public Identifier getModelResource(GeoRenderState renderState) {
+        return MODEL;
+    }
 
-	@Override
-	public ResourceLocation getTextureResource(MithrilGolemEntity object, GeoRenderer<MithrilGolemEntity> renderer) {
-		return this.texture;
-	}
+    @Override
+    public Identifier getTextureResource(GeoRenderState renderState) {
+        return TEXTURE;
+    }
 
-	@Override
-	public ResourceLocation getAnimationResource(MithrilGolemEntity object) {
-		return this.animations;
-	}
-
-	@Override
-	public void setCustomAnimations(MithrilGolemEntity entity, long uniqueID, AnimationState<MithrilGolemEntity> customPredicate) {
-		super.setCustomAnimations(entity, uniqueID, customPredicate);
-		GeoBone head = this.getAnimationProcessor().getBone("head");
-		assert customPredicate != null;
-		EntityModelData extraData = (EntityModelData) customPredicate.getData(DataTickets.ENTITY_MODEL_DATA);
-		head.setRotX(extraData.headPitch() * ((float) Math.PI / 180F));
-		head.setRotY(extraData.netHeadYaw() * ((float) Math.PI / 180F));
-	}
+    @Override
+    public Identifier getAnimationResource(MithrilGolemEntity animatable) {
+        return ANIMATIONS;
+    }
 }

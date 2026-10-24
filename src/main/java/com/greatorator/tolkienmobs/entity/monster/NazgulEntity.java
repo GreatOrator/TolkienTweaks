@@ -9,7 +9,8 @@ import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienMobEffects;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -33,6 +34,7 @@ import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.RawAnimation;
+import com.geckolib.animation.object.LoopType;
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.util.GeckoLibUtil;
@@ -75,7 +77,7 @@ public class NazgulEntity extends TolkienMonsterEntity implements GeoEntity {
                     Player player = (Player) entityIn;
                     BlockPos blockpos = player.blockPosition();
                     int strength = 2;
-                    level.playSound(null, blockpos, TolkienSounds.IDLE_NAZGUL.get(), SoundSource.HOSTILE, 1.0F + level.random.nextFloat(), level.random.nextFloat() * 0.7F + 0.3F);
+                    level.playSound(null, blockpos, TolkienSounds.IDLE_NAZGUL.get(), SoundSource.HOSTILE, 1.0F + level.getRandom().nextFloat(), level.getRandom().nextFloat() * 0.7F + 0.3F);
                     player.addEffect(new MobEffectInstance(TolkienMobEffects.PARALYSING_FEAR, strength * 20, 0));
                 }
             }
@@ -93,13 +95,13 @@ public class NazgulEntity extends TolkienMonsterEntity implements GeoEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
         this.reassessWeaponGoal();
     }
 
@@ -116,39 +118,46 @@ public class NazgulEntity extends TolkienMonsterEntity implements GeoEntity {
 
     /**
      * Animations
+     *
+     * GeckoLib 5 builds a controller without the animatable and hands its handler an AnimationTest, so the
+     * controller no longer holds `this`. The RawAnimations are built once, here, instead of once per frame.
      */
+    private static final RawAnimation WALK = RawAnimation.begin().thenPlay("walk");
+    private static final RawAnimation IDLE = RawAnimation.begin().thenPlay("idle");
+    private static final RawAnimation SITTING = RawAnimation.begin().thenPlay("sitting");
+    private static final RawAnimation ATTACK = RawAnimation.begin().then("attack", LoopType.PLAY_ONCE);
+
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
+        controllers.add(new AnimationController<NazgulEntity>("Walk", 1, test -> {
             // NazgulSteedEntity spawns a nazgul riding it; a carried rider must never walk-animate
             if (this.isPassenger()) {
                 return PlayState.STOP;
             }
-            if (event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
-                return PlayState.CONTINUE;
-            }
-            return PlayState.STOP;
+
+            return test.isMoving() ? test.setAndContinue(WALK) : PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
+        controllers.add(new AnimationController<NazgulEntity>("Idle", 1, test -> {
             // Sitting in the saddle instead of standing on it (same as WitchKingEntity)
             if (this.isPassenger()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("sitting"));
-                return PlayState.CONTINUE;
+                return test.setAndContinue(SITTING);
             }
-            if (!event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
-                return PlayState.CONTINUE;
-            }
-            return PlayState.STOP;
+
+            return test.isMoving() ? PlayState.STOP : test.setAndContinue(IDLE);
         }));
-        controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
-            if (this.swinging && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
-                event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
+        controllers.add(new AnimationController<NazgulEntity>("Attack", 1, test -> {
+            // A swing has to play out: 5 resets the controller when the handler returns STOP, so dropping
+            // to STOP mid-swing would end the attack on its first frame.
+            if (test.controller().isAnimatingBones()) {
                 return PlayState.CONTINUE;
             }
+
+            if (this.swinging) {
+                return test.setAndContinue(ATTACK);
+            }
+
             return PlayState.STOP;
         }));
     }

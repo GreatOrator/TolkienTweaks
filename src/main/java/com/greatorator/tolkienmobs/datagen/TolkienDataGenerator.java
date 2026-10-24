@@ -40,10 +40,8 @@ public class TolkienDataGenerator {
         event.addProvider(new TolkienLootTableProvider(packOutput, lookupProvider));
         event.addProvider(new TolkienGlobalLootModifierProvider(packOutput, lookupProvider));
 
-        BlockTagsProvider blockTagsProvider = new TolkienBlockTagProvider(packOutput, lookupProvider);
-
-        event.addProvider(blockTagsProvider);
-        event.addProvider(new TolkienItemTagProvider(packOutput, lookupProvider, blockTagsProvider.contentsGetter()));
+        event.addProvider(new TolkienBlockTagProvider(packOutput, lookupProvider));
+        event.addProvider(new TolkienItemTagProvider(packOutput, lookupProvider));
         event.addProvider(new TolkienEntityTagProvider(packOutput, lookupProvider));
         event.addProvider(new TolkienFluidTagProvider(packOutput, lookupProvider));
         event.addProvider(new TolkienBiomeTagProvider(packOutput, registryProvider.getRegistryProvider()));

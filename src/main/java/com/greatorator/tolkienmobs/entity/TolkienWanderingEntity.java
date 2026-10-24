@@ -1,8 +1,7 @@
 package com.greatorator.tolkienmobs.entity;
 
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
-import net.minecraft.Util;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Util;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -13,9 +12,11 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.npc.WanderingTrader;
+import net.minecraft.world.entity.npc.wanderingtrader.WanderingTrader;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -61,15 +62,15 @@ public class TolkienWanderingEntity extends WanderingTrader implements GeoEntity
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
-        compound.putInt("Variant", this.getTypeVariant());
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putInt("Variant", this.getTypeVariant());
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
-        this.entityData.set(VARIANT, compound.getInt("Variant"));
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        this.entityData.set(VARIANT, input.getIntOr("Variant", 0));
     }
 
     @Override
@@ -83,25 +84,21 @@ public class TolkienWanderingEntity extends WanderingTrader implements GeoEntity
 
     /**
      * Animations
+     *
+     * GeckoLib 5 builds the controllers without the animatable and hands their handlers an
+     * AnimationTest, so the two clips are built once here instead of once per tick.
      */
+    private static final RawAnimation IDLE = RawAnimation.begin().thenPlay("idle");
+    private static final RawAnimation WALK = RawAnimation.begin().thenPlay("walk");
+
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
-            if (!event.isMoving() && !event.getAnimatable().isAggressive()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
-                return PlayState.CONTINUE;
-            }
-            return PlayState.STOP;
-        }));
-        controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
-            if (event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
-                return PlayState.CONTINUE;
-            }
-            return PlayState.STOP;
-        }));
+        controllers.add(new AnimationController<TolkienWanderingEntity>("Idle", 1, test ->
+                !test.isMoving() && !this.isAggressive() ? test.setAndContinue(IDLE) : PlayState.STOP));
+        controllers.add(new AnimationController<TolkienWanderingEntity>("Walk", 1, test ->
+                test.isMoving() ? test.setAndContinue(WALK) : PlayState.STOP));
     }
 
     @Override

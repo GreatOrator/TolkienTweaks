@@ -62,6 +62,7 @@ import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.RawAnimation;
+import com.geckolib.animation.object.LoopType;
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.util.GeckoLibUtil;
@@ -198,11 +199,11 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
             // mid-gust, which is exactly the seam that was audible. A client that only starts
             // tracking the beast partway through a dive still hears it, because the flag is part of
             // the entity data it is sent when tracking begins, and so arrives as a change from false.
-            if (level.isClientSide && isDiving())
+            if (level.isClientSide() && isDiving())
                 DiveWindSound.play(this);
         } else if (key.equals(SLEEPING) || key.equals(MOVING_STATE)) {
             refreshDimensions();
-            if (level.isClientSide  && isUsingFlyingNavigator() && canBeControlledByRider())
+            if (level.isClientSide()  && isUsingFlyingNavigator() && canBeControlledByRider())
                 FlyingSound.play(this);
         } else super.onSyncedDataUpdated(key);
     }
@@ -296,7 +297,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
 
     private void ensureHome() {
         // Captures command/structure spawns and legacy saves that skip finalizeSpawn too.
-        if (!level.isClientSide && !hasRestriction()) setHomePos(blockPosition());
+        if (!level.isClientSide() && !hasRestriction()) setHomePos(blockPosition());
     }
 
     @Override
@@ -355,7 +356,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
         if (isSleeping() == sleep) return;
 
         entityData.set(SLEEPING, sleep);
-        if (!level.isClientSide)
+        if (!level.isClientSide())
         {
             if (sleep)
             {
@@ -396,7 +397,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
         ensureHome();
         super.tick();
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             // One place owns the wingbeat timer, so a beast flown by its AI and one flown by a rider
             // beat at the same rate. A rider's flight is simulated on their own client, so the wings
             // have to be heard from the server or only the rider would hear them. A rider holding a
@@ -442,7 +443,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
             setIsMovingAnimation(false);
         }
 
-        if (isUsingSwimmingNavigator() && level.isClientSide){
+        if (isUsingSwimmingNavigator() && level.isClientSide()){
             deltaYRot = this.yRotO - prevYRot;
             prevYRot = this.yRotO;
 
@@ -711,7 +712,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
                     }
                 }
                 this.calculateEntityAnimation(isUsingFlyingNavigator());
-            } else if (isUsingFlyingNavigator() && !level.isClientSide) {
+            } else if (isUsingFlyingNavigator() && !level.isClientSide()) {
                 this.flyOnWings(vec3d);
             } else {
                 super.travel(vec3d);
@@ -1109,10 +1110,10 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     }
 
     public InteractionResult playerInteraction(Player player, InteractionHand hand, ItemStack stack) {
-        final InteractionResult SUCCESS = level.isClientSide ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+        final InteractionResult SUCCESS = level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
 
         if (canAddPassenger(player) && !player.isShiftKeyDown()) {
-            if (!level.isClientSide) player.startRiding(this);
+            if (!level.isClientSide()) player.startRiding(this);
             return SUCCESS;
         }
 
@@ -1284,59 +1285,72 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
      * of 0.045 and plays glide; and a beast on the hunt that has committed to a stoop, 0.22 down, is
      * diving. A ridden beast's speed is its rider's pitch instead, which the same thresholds read.
      */
-    private String getWingAnimation(boolean mayStoop) {
+    private RawAnimation getWingAnimation(boolean mayStoop) {
         double verticalSpeed = this.getDeltaMovement().y;
         if (mayStoop && verticalSpeed < DIVE_SINK) {
-            return "dive";
+            return DIVE;
         }
         if (verticalSpeed > 0.02D || this.onGround()) {
-            return "fly";
+            return FLY;
         }
-        return "glide";
+        return GLIDE;
     }
+
+    /**
+     * Animations
+     *
+     * GeckoLib 5 builds a controller without the animatable and hands its handler an AnimationTest, so
+     * the clips are built once here rather than once per tick. 5 also dropped forceAnimationReset: a
+     * controller that stopped cleared its animation, so setting one again starts it from the top, which
+     * is what the roar and the breath already did by guarding on their own phase flags.
+     */
+    private static final RawAnimation WALK = RawAnimation.begin().thenPlay("walk");
+    private static final RawAnimation WALK_FAST = RawAnimation.begin().thenPlay("walk_fast");
+    private static final RawAnimation FLY = RawAnimation.begin().thenPlay("fly");
+    private static final RawAnimation GLIDE = RawAnimation.begin().thenPlay("glide");
+    private static final RawAnimation DIVE = RawAnimation.begin().thenPlay("dive");
+    private static final RawAnimation IDLE = RawAnimation.begin().thenPlay("idle0");
+    private static final RawAnimation ROAR = RawAnimation.begin().then("roar", LoopType.PLAY_ONCE);
+    private static final RawAnimation FIRE_BREATH = RawAnimation.begin().thenPlay("fireStart").thenLoop("fireLoop");
+    private static final RawAnimation FIRE_END = RawAnimation.begin().then("fireEnd", LoopType.PLAY_ONCE);
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "Movement", 1, (event) -> {
+        controllers.add(new AnimationController<DragonEntity>("Movement", 1, test -> {
             NavigationType navigationType = this.getNavigationType();
-            if (event.isMoving() && !event.getAnimatable().isAggressive()) {
+            if (test.isMoving() && !this.isAggressive()) {
                 switch (navigationType) {
-                    case GROUND -> event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
-                    case FLYING -> event.getController().setAnimation(RawAnimation.begin().thenPlay(this.getWingAnimation(false)));
+                    case GROUND -> test.setAnimation(WALK);
+                    case FLYING -> test.setAnimation(this.getWingAnimation(false));
                     // The fellbeast's file carries no swim animation either, so a beast that ends up in
                     // water keeps beating its wings instead of asking for an animation it cannot play.
-                    case SWIMMING-> event.getController().setAnimation(RawAnimation.begin().thenPlay("fly"));
+                    case SWIMMING -> test.setAnimation(FLY);
                 }
                 return PlayState.CONTINUE;
             }
-            if (this.getDeltaMovement().length() !=0 && event.getAnimatable().isAggressive()) {
+            if (this.getDeltaMovement().length() != 0 && this.isAggressive()) {
                 switch (navigationType) {
-                    case GROUND -> event.getController().setAnimation(RawAnimation.begin().thenPlay("walk_fast"));
+                    case GROUND -> test.setAnimation(WALK_FAST);
                     // No fly_fast animation ships with the fellbeast's animation file. Asking for one anyway
                     // made GeckoLib log "Unable to find animation" and leave the movement controller with
                     // nothing to play, freezing the wings mid-flap for as long as the beast fought on the
                     // wing, so an aggressive flyer keeps the same three wing poses as a calm one, with the
                     // file's dive added for the stoop.
-                    case FLYING -> event.getController().setAnimation(RawAnimation.begin().thenPlay(this.getWingAnimation(true)));
-                    case SWIMMING-> event.getController().setAnimation(RawAnimation.begin().thenPlay("fly"));
+                    case FLYING -> test.setAnimation(this.getWingAnimation(true));
+                    case SWIMMING -> test.setAnimation(FLY);
                 }
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
-            if (!event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("idle0"));
-                return PlayState.CONTINUE;
-            }
-            return PlayState.STOP;
-        }));
+        controllers.add(new AnimationController<DragonEntity>("Idle", 1, test ->
+                test.isMoving() ? PlayState.STOP : test.setAndContinue(IDLE)));
         // The beast bellows when it engages: its synced aggressive flag turns on with the attack goal,
         // so one transition plays the roar once per fight. The attack controller below is registered
         // after this one, so a swing interrupts the bellow instead of being hidden by it. The roar is
         // held for its own length and then released, or the controller would keep the beast's last
         // roaring pose for the rest of the fight.
-        controllers.add(new AnimationController<>(this, "Roar", 1, (event) -> {
+        controllers.add(new AnimationController<DragonEntity>("Roar", 1, test -> {
             if (this.swinging) {
                 // A swing takes the body over for its length; the bellow does not resume afterwards.
                 this.roarTicks = 0;
@@ -1350,8 +1364,7 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
             if (!this.hasRoared) {
                 this.hasRoared = true;
                 this.roarTicks = ROAR_ANIMATION_TICKS;
-                event.getController().forceAnimationReset();
-                event.getController().setAnimation(RawAnimation.begin().then("roar", Animation.LoopType.PLAY_ONCE));
+                test.setAnimation(ROAR);
                 return PlayState.CONTINUE;
             }
             if (this.roarTicks-- > 0) {
@@ -1359,34 +1372,37 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
-            if (this.swinging && !this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
-                // A swing made on the move uses the file's walk attacks, which carry the footwork; a
-                // standing or airborne swing uses the stationary ones.
-                boolean walking = event.isMoving() && this.onGround() && !this.isUsingFlyingNavigator();
-                String attackAnimation = walking
-                        ? "walk_attack" + this.random.nextInt(WALK_ATTACK_ANIMATION_VARIANTS)
-                        : "attack" + (this.random.nextInt(ATTACK_ANIMATION_VARIANTS) + 1);
-                event.getController().setAnimation(RawAnimation.begin().then(attackAnimation, Animation.LoopType.PLAY_ONCE));
+        controllers.add(new AnimationController<DragonEntity>("Attack", 1, test -> {
+            if (!this.swinging || this.getRanged()) {
+                return PlayState.STOP;
+            }
+            // 5 resets the controller when the handler returns STOP, so a swing in progress has to be
+            // held until it finishes rather than dropped the moment the swing flag clears.
+            if (test.controller().isAnimatingBones()) {
                 return PlayState.CONTINUE;
             }
-            return PlayState.STOP;
+            // A swing made on the move uses the file's walk attacks, which carry the footwork; a
+            // standing or airborne swing uses the stationary ones.
+            boolean walking = test.isMoving() && this.onGround() && !this.isUsingFlyingNavigator();
+            String attackAnimation = walking
+                    ? "walk_attack" + this.random.nextInt(WALK_ATTACK_ANIMATION_VARIANTS)
+                    : "attack" + (this.random.nextInt(ATTACK_ANIMATION_VARIANTS) + 1);
+            test.setAnimation(RawAnimation.begin().then(attackAnimation, LoopType.PLAY_ONCE));
+            return PlayState.CONTINUE;
         }));
         // The breath is its own controller because it is a sequence, not one clip: the beast winds
         // up with fireStart, holds fireLoop for as long as it breathes, and plays fireEnd once when
         // it stops. It runs off the synced breathing flag, which the attack goal sets and clears.
-        controllers.add(new AnimationController<>(this, "Breath", 1, (event) -> {
+        controllers.add(new AnimationController<DragonEntity>("Breath", 1, test -> {
             if (this.getBreathingFire()) {
                 if (this.breathPhase != 1) {
-                    event.getController().forceAnimationReset();
-                    event.getController().setAnimation(RawAnimation.begin().thenPlay("fireStart").thenLoop("fireLoop"));
+                    test.setAnimation(FIRE_BREATH);
                     this.breathPhase = 1;
                 }
                 return PlayState.CONTINUE;
             }
             if (this.breathPhase == 1) {
-                event.getController().forceAnimationReset();
-                event.getController().setAnimation(RawAnimation.begin().then("fireEnd", Animation.LoopType.PLAY_ONCE));
+                test.setAnimation(FIRE_END);
                 this.breathPhase = 2;
                 this.breathTailTicks = FIRE_END_TICKS;
                 return PlayState.CONTINUE;

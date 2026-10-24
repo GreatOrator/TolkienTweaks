@@ -1,42 +1,34 @@
 package com.greatorator.tolkienmobs.entity.monster.model;
 
-
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.base.GeoRenderState;
 import com.greatorator.tolkienmobs.entity.monster.WargEntity;
 import com.greatorator.tolkienmobs.entity.monster.render.WargRender;
-import net.minecraft.resources.ResourceLocation;
-import com.geckolib.cache.model.GeoBone;
-import com.geckolib.constant.DataTickets;
-import com.geckolib.model.GeoModel;
-import com.geckolib.renderer.base.GeoRenderer;
+import com.greatorator.tolkienmobs.entity.util.TolkienGeoRenderState;
+import net.minecraft.resources.Identifier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
+/**
+ * The variant texture comes off the render state, which the renderer fills during extraction; the head turn
+ * moved to the renderer's {@code adjustModelBonesForRender}, where GeckoLib 5 wants bone work done.
+ */
 public class WargModel extends GeoModel<WargEntity> {
-	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "monster/warg");
-	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "monster/warg");
+    private static final Identifier MODEL = Identifier.fromNamespaceAndPath(MODID, "monster/warg");
+    private static final Identifier ANIMATIONS = Identifier.fromNamespaceAndPath(MODID, "monster/warg");
 
-	@Override
-	public ResourceLocation getModelResource(WargEntity object, GeoRenderer<WargEntity> renderer) {
-		return this.model;
-	}
+    @Override
+    public Identifier getModelResource(GeoRenderState renderState) {
+        return MODEL;
+    }
 
-	@Override
-	public ResourceLocation getTextureResource(WargEntity object, GeoRenderer<WargEntity> renderer) {
-		return WargRender.LOCATION_BY_VARIANT.get(object.getVariant());
-	}
+    @Override
+    public Identifier getTextureResource(GeoRenderState renderState) {
+        return WargRender.textureFor((TolkienGeoRenderState) renderState);
+    }
 
-	@Override
-	public ResourceLocation getAnimationResource(WargEntity object) {
-		return this.animations;
-	}
-
-	@Override
-	public void setCustomAnimations(WargEntity entity, long uniqueID, AnimationState<WargEntity> customPredicate) {
-		super.setCustomAnimations(entity, uniqueID, customPredicate);
-		GeoBone head = this.getAnimationProcessor().getBone("head");
-		assert customPredicate != null;
-		EntityModelData extraData = (EntityModelData) customPredicate.getData(DataTickets.ENTITY_MODEL_DATA);
-		head.setRotX(extraData.headPitch() * ((float) Math.PI / 180F));
-		head.setRotY(extraData.netHeadYaw() *0.5f* ((float) Math.PI / 180F));
-	}
+    @Override
+    public Identifier getAnimationResource(WargEntity animatable) {
+        return ANIMATIONS;
+    }
 }

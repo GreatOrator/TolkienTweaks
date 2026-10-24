@@ -6,7 +6,7 @@ import com.greatorator.tolkienmobs.entity.TolkienAmbientEntity;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienTags;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;

@@ -32,6 +32,7 @@ import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.RawAnimation;
+import com.geckolib.animation.object.LoopType;
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.util.GeckoLibUtil;
@@ -76,7 +77,7 @@ public class WitchKingEntity extends TolkienMonsterEntity implements GeoEntity {
                     Player player = (Player) entityIn;
                     BlockPos blockpos = player.blockPosition();
                     int strength = 2;
-                    level.playSound(null, blockpos, TolkienSounds.ANGRY_WITCHKING.get(), SoundSource.HOSTILE, 1.0F + level.random.nextFloat(), level.random.nextFloat() * 0.7F + 0.3F);
+                    level.playSound(null, blockpos, TolkienSounds.ANGRY_WITCHKING.get(), SoundSource.HOSTILE, 1.0F + level.getRandom().nextFloat(), level.getRandom().nextFloat() * 0.7F + 0.3F);
                     player.addEffect(new MobEffectInstance(TolkienMobEffects.PARALYSING_FEAR, strength * 20, 0));
                 }
             }
@@ -84,38 +85,48 @@ public class WitchKingEntity extends TolkienMonsterEntity implements GeoEntity {
         return true;
     }
 
-    /** Animations */
+    /**
+     * Animations
+     *
+     * GeckoLib 5 builds a controller without the animatable and hands its handler an AnimationTest, so the
+     * controller no longer holds `this`. The RawAnimations are built once, here, instead of once per frame.
+     */
+    private static final RawAnimation WALK = RawAnimation.begin().thenPlay("walk");
+    private static final RawAnimation IDLE = RawAnimation.begin().thenPlay("idle");
+    private static final RawAnimation SITTING = RawAnimation.begin().thenPlay("sitting");
+    private static final RawAnimation ATTACK = RawAnimation.begin().then("attack", LoopType.PLAY_ONCE);
+
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
+        controllers.add(new AnimationController<WitchKingEntity>("Walk", 1, test -> {
             // While riding the Fell Beast he is carried, so he must never walk-animate
             if (this.isPassenger()) {
                 return PlayState.STOP;
             }
-            if (event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
-                return PlayState.CONTINUE;
-            }
-            return PlayState.STOP;
-        })); controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
+
+            return test.isMoving() ? test.setAndContinue(WALK) : PlayState.STOP;
+        }));
+        controllers.add(new AnimationController<WitchKingEntity>("Idle", 1, test -> {
             // Sitting in the saddle instead of standing on it (same pattern as TolkienVillagerEntity)
             if (this.isPassenger()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("sitting"));
-                return PlayState.CONTINUE;
+                return test.setAndContinue(SITTING);
             }
-            if (!event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
-                return PlayState.CONTINUE;
-            }
-            return PlayState.STOP;
+
+            return test.isMoving() ? PlayState.STOP : test.setAndContinue(IDLE);
         }));
-        controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
-            if (this.swinging && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
-                event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
+        controllers.add(new AnimationController<WitchKingEntity>("Attack", 1, test -> {
+            // A swing has to play out: 5 resets the controller when the handler returns STOP, so dropping
+            // to STOP mid-swing would end the attack on its first frame.
+            if (test.controller().isAnimatingBones()) {
                 return PlayState.CONTINUE;
             }
+
+            if (this.swinging) {
+                return test.setAndContinue(ATTACK);
+            }
+
             return PlayState.STOP;
         }));
     }

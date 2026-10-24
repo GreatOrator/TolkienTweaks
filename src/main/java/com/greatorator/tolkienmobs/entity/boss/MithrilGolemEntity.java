@@ -161,26 +161,26 @@ public class MithrilGolemEntity extends TolkienMonsterEntity implements GeoEntit
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
+        controllers.add(new AnimationController<MithrilGolemEntity>("Walk", 1, (event) -> {
             if (event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("walk"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
-        }));    controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
+        }));    controllers.add(new AnimationController<MithrilGolemEntity>("Idle", 1, (event) -> {
             if (!event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("idle"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
-            if (this.swinging && !this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
-                event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
+        controllers.add(new AnimationController<MithrilGolemEntity>("Attack", 1, (event) -> {
+            if (this.swinging && !this.getRanged() && !event.controller().isAnimatingBones()) {
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("attack"));
                 return PlayState.CONTINUE;
-            }else if (this.isAggressive() && this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)){
+            }else if (this.isAggressive() && this.getRanged() && !event.controller().isAnimatingBones()){
                 // The golem's file has no ranged animation, so its ranged attack plays the swing it has.
-                event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("attack"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
@@ -229,7 +229,7 @@ public class MithrilGolemEntity extends TolkienMonsterEntity implements GeoEntit
             }
         }
 
-        if (!this.level.isClientSide) {
+        if (!this.level.isClientSide()) {
             this.updatePersistentAnger((ServerLevel)this.level, true);
         }
     }

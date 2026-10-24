@@ -159,7 +159,7 @@ public class MilestoneBlock extends TolkienEntityBlock {
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
         return createTickerHelper(
-                blockEntityType, TolkienBlocks.MILESTONE_BLOCK_ENTITY.get(), level.isClientSide ? MilestoneBlockEntity::clientTick : MilestoneBlockEntity::serverTick
+                blockEntityType, TolkienBlocks.MILESTONE_BLOCK_ENTITY.get(), level.isClientSide() ? MilestoneBlockEntity::clientTick : MilestoneBlockEntity::serverTick
         );
     }
 

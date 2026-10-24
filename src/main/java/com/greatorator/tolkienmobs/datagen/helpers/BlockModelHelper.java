@@ -3,7 +3,7 @@ package com.greatorator.tolkienmobs.datagen.helpers;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.Half;
@@ -20,10 +20,10 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.prefix;
 
 public abstract class BlockModelHelper extends BlockStateProvider {
 
-	protected static final ResourceLocation SOLID = ResourceLocation.withDefaultNamespace("solid");
-	protected static final ResourceLocation CUTOUT = ResourceLocation.withDefaultNamespace("cutout");
-	protected static final ResourceLocation CUTOUT_MIPPED = ResourceLocation.withDefaultNamespace("cutout_mipped");
-	protected static final ResourceLocation TRANSLUCENT = ResourceLocation.withDefaultNamespace("translucent");
+	protected static final Identifier SOLID = Identifier.withDefaultNamespace("solid");
+	protected static final Identifier CUTOUT = Identifier.withDefaultNamespace("cutout");
+	protected static final Identifier CUTOUT_MIPPED = Identifier.withDefaultNamespace("cutout_mipped");
+	protected static final Identifier TRANSLUCENT = Identifier.withDefaultNamespace("translucent");
 
 	public BlockModelHelper(PackOutput output, ExistingFileHelper exFileHelper) {
 		super(output, MODID, exFileHelper);
@@ -40,7 +40,7 @@ public abstract class BlockModelHelper extends BlockStateProvider {
 		simpleBlock(b, new ConfiguredModel(models().getExistingFile(prefix(name(b)))));
 	}
 
-	public void simpleBlockWithRenderType(Block block, ResourceLocation type) {
+	public void simpleBlockWithRenderType(Block block, Identifier type) {
 		simpleBlock(block, models().cubeAll(name(block), blockTexture(block)).renderType(type));
 	}
 
@@ -57,12 +57,12 @@ public abstract class BlockModelHelper extends BlockStateProvider {
 	protected void logWoodSapling(RotatedPillarBlock log, RotatedPillarBlock slog, RotatedPillarBlock wood, RotatedPillarBlock swood, Block sapling) {
 		logBlock(log);
 		logBlock(slog);
-		ResourceLocation sideTex = blockTexture(log);
+		Identifier sideTex = blockTexture(log);
 		axisBlock(wood, sideTex, sideTex);
-		ResourceLocation sSideTex = blockTexture(slog);
+		Identifier sSideTex = blockTexture(slog);
 		axisBlock(swood, sSideTex, sSideTex);
 
-		ResourceLocation saplingTex = prefix("block/" + name(sapling));
+		Identifier saplingTex = prefix("block/" + name(sapling));
 		simpleBlock(sapling, models().cross(name(sapling), saplingTex).renderType(CUTOUT));
 	}
 
@@ -73,10 +73,10 @@ public abstract class BlockModelHelper extends BlockStateProvider {
 	protected void plankBlocks(String variant, Block plank, Block slab, StairBlock stair, Block button, Block fence, Block gate, Block plate, DoorBlock door, TrapDoorBlock trapdoor, boolean cutoutDoors, boolean correctDoors) {
 		String plankTexName = "planks_" + variant;
 		String plankDir = "block/wood/planks/" + variant + "/";
-		ResourceLocation tex0 = prefix("block/wood/" + plankTexName + "_0");
-		ResourceLocation tex1 = prefix("block/wood/" + plankTexName + "_1");
-		ResourceLocation tex2 = prefix("block/wood/" + plankTexName + "_2");
-		ResourceLocation tex3 = prefix("block/wood/" + plankTexName + "_3");
+		Identifier tex0 = prefix("block/wood/" + plankTexName + "_0");
+		Identifier tex1 = prefix("block/wood/" + plankTexName + "_1");
+		Identifier tex2 = prefix("block/wood/" + plankTexName + "_2");
+		Identifier tex3 = prefix("block/wood/" + plankTexName + "_3");
 		ConfiguredModel[] plankModels = ConfiguredModel.builder()
 			.weight(10).modelFile(models().cubeAll(plankDir + name(plank), tex0)).nextModel()
 			.weight(10).modelFile(models().cubeAll(plankDir + name(plank) + "_1", tex1)).nextModel()
@@ -115,7 +115,7 @@ public abstract class BlockModelHelper extends BlockStateProvider {
 		trapdoorBlockWithRenderType(trapdoor, trapdoorDir + variant, prefix("block/wood/trapdoor/" + variant + "_trapdoor"), true, cutoutDoors ? CUTOUT : SOLID);
 	}
 
-	private void correctedDoorBlock(DoorBlock block, String baseName, ResourceLocation bottom, ResourceLocation top, ResourceLocation side, ResourceLocation renderType) {
+	private void correctedDoorBlock(DoorBlock block, String baseName, Identifier bottom, Identifier top, Identifier side, Identifier renderType) {
 		ModelFile bottomLeft = door(baseName + "_bottom_left", "corrected_door_bottom_left", bottom, top, side).renderType(renderType);
 		ModelFile bottomLeftOpen = door(baseName + "_bottom_left_open", "corrected_door_bottom_left_open", bottom, top, side).renderType(renderType);
 		ModelFile bottomRight = door(baseName + "_bottom_right", "corrected_door_bottom_right", bottom, top, side).renderType(renderType);
@@ -127,7 +127,7 @@ public abstract class BlockModelHelper extends BlockStateProvider {
 		doorBlock(block, bottomLeft, bottomLeftOpen, bottomRight, bottomRightOpen, topLeft, topLeftOpen, topRight, topRightOpen);
 	}
 
-	private BlockModelBuilder door(String name, String model, ResourceLocation bottom, ResourceLocation top, ResourceLocation side) {
+	private BlockModelBuilder door(String name, String model, Identifier bottom, Identifier top, Identifier side) {
 		return models().withExistingParent(name, prefix("block/util/" + model))
 			.texture("bottom", bottom)
 			.texture("top", top)
@@ -137,10 +137,10 @@ public abstract class BlockModelHelper extends BlockStateProvider {
 	protected void woodGate(Block gate, String texName, String variant) {
 		String gateDir = "block/wood/fence_gate/" + variant + "/";
 
-		ResourceLocation tex0 = prefix("block/wood/" + texName + "_0");
-		ResourceLocation tex1 = prefix("block/wood/" + texName + "_1");
-		ResourceLocation tex2 = prefix("block/wood/" + texName + "_2");
-		ResourceLocation tex3 = prefix("block/wood/" + texName + "_3");
+		Identifier tex0 = prefix("block/wood/" + texName + "_0");
+		Identifier tex1 = prefix("block/wood/" + texName + "_1");
+		Identifier tex2 = prefix("block/wood/" + texName + "_2");
+		Identifier tex3 = prefix("block/wood/" + texName + "_3");
 
 		ModelFile gate0 = models().fenceGate(gateDir + name(gate), tex0);
 		ModelFile gate1 = models().fenceGate(gateDir + name(gate) + "_1", tex1);
@@ -200,10 +200,10 @@ public abstract class BlockModelHelper extends BlockStateProvider {
 	protected void woodFence(Block fence, String texName, String variant) {
 		String fenceDir = "block/wood/fence/" + variant + "/";
 
-		ResourceLocation tex0 = prefix("block/wood/" + texName + "_0");
-		ResourceLocation tex1 = prefix("block/wood/" + texName + "_1");
-		ResourceLocation tex2 = prefix("block/wood/" + texName + "_2");
-		ResourceLocation tex3 = prefix("block/wood/" + texName + "_3");
+		Identifier tex0 = prefix("block/wood/" + texName + "_0");
+		Identifier tex1 = prefix("block/wood/" + texName + "_1");
+		Identifier tex2 = prefix("block/wood/" + texName + "_2");
+		Identifier tex3 = prefix("block/wood/" + texName + "_3");
 
 		ModelFile post0 = models().fencePost(fenceDir + name(fence) + "_post", tex0);
 		ModelFile post1 = models().fencePost(fenceDir + name(fence) + "_post_1", tex1);
@@ -236,10 +236,10 @@ public abstract class BlockModelHelper extends BlockStateProvider {
 	protected void woodPlate(Block plate, String texName, String variant) {
 		String plateDir = "block/wood/pressure_plate/" + variant + "/";
 
-		ResourceLocation tex0 = prefix("block/wood/" + texName + "_0");
-		ResourceLocation tex1 = prefix("block/wood/" + texName + "_1");
-		ResourceLocation tex2 = prefix("block/wood/" + texName + "_2");
-		ResourceLocation tex3 = prefix("block/wood/" + texName + "_3");
+		Identifier tex0 = prefix("block/wood/" + texName + "_0");
+		Identifier tex1 = prefix("block/wood/" + texName + "_1");
+		Identifier tex2 = prefix("block/wood/" + texName + "_2");
+		Identifier tex3 = prefix("block/wood/" + texName + "_3");
 		ConfiguredModel[] unpressed = ConfiguredModel.builder()
 			.weight(10).modelFile(models().withExistingParent(plateDir + name(plate), "pressure_plate_up").texture("texture", tex0)).nextModel()
 			.weight(10).modelFile(models().withExistingParent(plateDir + name(plate) + "_1", "pressure_plate_up").texture("texture", tex1)).nextModel()
@@ -258,10 +258,10 @@ public abstract class BlockModelHelper extends BlockStateProvider {
 	protected void woodButton(Block button, String texName, String variant) {
 		String buttonDir = "block/wood/button/" + variant + "/";
 
-		ResourceLocation tex0 = prefix("block/wood/" + texName + "_0");
-		ResourceLocation tex1 = prefix("block/wood/" + texName + "_1");
-		ResourceLocation tex2 = prefix("block/wood/" + texName + "_2");
-		ResourceLocation tex3 = prefix("block/wood/" + texName + "_3");
+		Identifier tex0 = prefix("block/wood/" + texName + "_0");
+		Identifier tex1 = prefix("block/wood/" + texName + "_1");
+		Identifier tex2 = prefix("block/wood/" + texName + "_2");
+		Identifier tex3 = prefix("block/wood/" + texName + "_3");
 		ModelFile unpressed0 = models().withExistingParent(buttonDir + name(button), "button").texture("texture", tex0);
 		ModelFile pressed0 = models().withExistingParent(buttonDir + name(button) + "_pressed", "button_pressed").texture("texture", tex0);
 		ModelFile unpressed1 = models().withExistingParent(buttonDir + name(button) + "_1", "button").texture("texture", tex1);
@@ -309,10 +309,10 @@ public abstract class BlockModelHelper extends BlockStateProvider {
 	protected void woodStairs(StairBlock block, String texName, String variant) {
 		String stairsDir = "block/wood/stairs/" + variant + "/";
 
-		ResourceLocation tex0 = prefix("block/wood/" + texName + "_0");
-		ResourceLocation tex1 = prefix("block/wood/" + texName + "_1");
-		ResourceLocation tex2 = prefix("block/wood/" + texName + "_2");
-		ResourceLocation tex3 = prefix("block/wood/" + texName + "_3");
+		Identifier tex0 = prefix("block/wood/" + texName + "_0");
+		Identifier tex1 = prefix("block/wood/" + texName + "_1");
+		Identifier tex2 = prefix("block/wood/" + texName + "_2");
+		Identifier tex3 = prefix("block/wood/" + texName + "_3");
 		ModelFile main0 = models().stairs(stairsDir + name(block), tex0, tex0, tex0);
 		ModelFile main1 = models().stairs(stairsDir + name(block) + "_1", tex1, tex1, tex1);
 		ModelFile main2 = models().stairs(stairsDir + name(block) + "_2", tex2, tex2, tex2);
@@ -363,11 +363,11 @@ public abstract class BlockModelHelper extends BlockStateProvider {
 			}, StairBlock.WATERLOGGED);
 	}
 
-	protected void bisectedStairsBlock(DeferredHolder<Block, StairBlock> block, ResourceLocation side, ResourceLocation end, ResourceLocation middle) {
+	protected void bisectedStairsBlock(DeferredHolder<Block, StairBlock> block, Identifier side, Identifier end, Identifier middle) {
 		this.bisectedStairsBlock(block, block.getId().getPath(), side, end, middle);
 	}
 
-	protected void bisectedStairsBlock(DeferredHolder<Block, StairBlock> block, String name, ResourceLocation side, ResourceLocation end, ResourceLocation middle) {
+	protected void bisectedStairsBlock(DeferredHolder<Block, StairBlock> block, String name, Identifier side, Identifier end, Identifier middle) {
 		ModelFile stairs = this.models().withExistingParent(name, prefix("block/util/bisected_stairs")).texture("side", side).texture("end", end).texture("middle", middle);
 		ModelFile stairsInner = this.models().withExistingParent(name + "_inner", prefix("block/util/bisected_inner_stairs")).texture("side", side).texture("end", end).texture("middle", middle);
 		ModelFile stairsOuter = this.models().withExistingParent(name + "_outer", prefix("block/util/bisected_outer_stairs")).texture("side", side).texture("end", end).texture("middle", middle);
@@ -375,7 +375,7 @@ public abstract class BlockModelHelper extends BlockStateProvider {
 		this.stairsBlock(block.get(), stairs, stairsInner, stairsOuter);
 	}
 
-	protected ResourceLocation key(Block block) {
+	protected Identifier key(Block block) {
 		return BuiltInRegistries.BLOCK.getKey(block);
 	}
 

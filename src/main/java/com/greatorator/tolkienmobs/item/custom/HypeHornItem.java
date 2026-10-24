@@ -19,8 +19,8 @@ public class HypeHornItem extends Item {
 
     @Override
     public InteractionResult use(Level worldIn, Player player, @Nonnull InteractionHand hand) {
-        if (!worldIn.isClientSide){
-            worldIn.playSound(null, player.getX(), player.getY(), player.getZ(), TolkienSounds.HYPE_HORN.get(), SoundSource.PLAYERS, 5F, 0.95F + worldIn.random.nextFloat() * 0.1F);
+        if (!worldIn.isClientSide()){
+            worldIn.playSound(null, player.getX(), player.getY(), player.getZ(), TolkienSounds.HYPE_HORN.get(), SoundSource.PLAYERS, 5F, 0.95F + worldIn.getRandom().nextFloat() * 0.1F);
         }
         return super.use(worldIn, player, hand);
     }

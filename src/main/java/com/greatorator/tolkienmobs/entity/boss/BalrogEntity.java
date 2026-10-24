@@ -49,6 +49,7 @@ import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.RawAnimation;
+import com.geckolib.animation.object.LoopType;
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.util.GeckoLibUtil;
@@ -194,34 +195,38 @@ public class BalrogEntity extends TolkienMonsterEntity implements GeoEntity {
         builder.define(DATA_FLAGS_ID, (byte)0);
     }
 
-    /** Animations */
+    /**
+     * Animations
+     *
+     * GeckoLib 5 builds a controller without the animatable and hands its handler an AnimationTest, so the
+     * controller no longer holds `this`. The RawAnimations are built once, here, instead of once per frame.
+     */
+    private static final RawAnimation WALK = RawAnimation.begin().thenPlay("walk");
+    private static final RawAnimation IDLE = RawAnimation.begin().thenPlay("idle");
+    private static final RawAnimation ATTACK = RawAnimation.begin().then("attack", LoopType.PLAY_ONCE);
+    private static final RawAnimation RANGED = RawAnimation.begin().then("ranged", LoopType.PLAY_ONCE);
+
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
-            if (event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
+        controllers.add(new AnimationController<BalrogEntity>("Walk", 1, test ->
+                test.isMoving() ? test.setAndContinue(WALK) : PlayState.STOP));
+        controllers.add(new AnimationController<BalrogEntity>("Idle", 1, test ->
+                test.isMoving() ? PlayState.STOP : test.setAndContinue(IDLE)));
+        controllers.add(new AnimationController<BalrogEntity>("Attack", 1, test -> {
+            // A swing or a whip-crack has to play out: 5 resets the controller when the handler returns STOP,
+            // so dropping to STOP mid-animation would end the attack on its first frame.
+            if (test.controller().isAnimatingBones()) {
                 return PlayState.CONTINUE;
             }
-            return PlayState.STOP;
-        }));
-        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
-            if (!event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
-                return PlayState.CONTINUE;
+
+            // The whip takes over from the sword once a ranged goal has armed the balrog.
+            if (this.getRanged()) {
+                return this.isAggressive() ? test.setAndContinue(RANGED) : PlayState.STOP;
             }
-            return PlayState.STOP;
-        }));
-        controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
-            if (this.swinging && !this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
-                event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
-                return PlayState.CONTINUE;
-            }else if (this.isAggressive() && this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)){
-                event.getController().setAnimation(RawAnimation.begin().then("ranged", Animation.LoopType.PLAY_ONCE));
-                return PlayState.CONTINUE;
-            }
-            return PlayState.STOP;
+
+            return this.swinging ? test.setAndContinue(ATTACK) : PlayState.STOP;
         }));
     }
 
@@ -271,7 +276,7 @@ public class BalrogEntity extends TolkienMonsterEntity implements GeoEntity {
     @Override
     public void aiStep() {
         super.aiStep();
-        if (!this.level.isClientSide) {
+        if (!this.level.isClientSide()) {
             Vec3 playerPosition = this.position();
             Vec3 movementVector = this.getDeltaMovement().scale(2);
 
@@ -314,7 +319,7 @@ public class BalrogEntity extends TolkienMonsterEntity implements GeoEntity {
             }
         }
 
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             if (this.random.nextInt(24) == 0 && !this.isSilent()) {
                 this.level()
                         .playLocalSound(

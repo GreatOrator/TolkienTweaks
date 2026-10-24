@@ -8,7 +8,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,7 +16,7 @@ import java.util.function.Function;
 
 public class TolkienButton extends Button {
   protected Component localization = Component.empty();
-  private static final ResourceLocation WIDGETS_LOCATION =
+  private static final Identifier WIDGETS_LOCATION =
       TolkienMobsMain.resLoc("textures/gui/widgets.png");
 
   private TexturePosition texturePosition;

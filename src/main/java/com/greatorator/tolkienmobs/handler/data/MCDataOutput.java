@@ -13,7 +13,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamEncoder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -350,7 +350,7 @@ public interface MCDataOutput {
         return this;
     }
 
-    default MCDataOutput writeResourceLocation(ResourceLocation loc) {
+    default MCDataOutput writeResourceLocation(Identifier loc) {
         return writeString(loc.toString());
     }
 
@@ -419,13 +419,13 @@ public interface MCDataOutput {
         return this;
     }
 
-    default <T> MCDataOutput writeRegistryIdDirect(Registry<T> registry, ResourceLocation entry) {
+    default <T> MCDataOutput writeRegistryIdDirect(Registry<T> registry, Identifier entry) {
         writeVarInt(registry.getId(entry));
         return this;
     }
 
     default <T> MCDataOutput writeRegistryId(Registry<T> registry, T entry) {
-        ResourceLocation rName = registry.key().location();
+        Identifier rName = registry.key().identifier();
         if (!registry.containsValue(entry)) {
             throw new IllegalArgumentException(String.format("Registry '%s' does not contain entry '%s'", rName, entry));
         }
@@ -434,8 +434,8 @@ public interface MCDataOutput {
         return this;
     }
 
-    default <T> MCDataOutput writeRegistryId(Registry<T> registry, ResourceLocation entry) {
-        ResourceLocation rName = registry.key().location();
+    default <T> MCDataOutput writeRegistryId(Registry<T> registry, Identifier entry) {
+        Identifier rName = registry.key().identifier();
         if (!registry.containsKey(entry)) {
             throw new IllegalArgumentException(String.format("Registry '%s' does not contain entry '%s'", rName, entry));
         }

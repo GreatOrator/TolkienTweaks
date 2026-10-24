@@ -5,7 +5,7 @@ import com.greatorator.tolkienmobs.item.custom.BackpackItem;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -14,7 +14,7 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 /** Sent by the open-backpack key: opens the backpack worn in the player's Curios back slot. */
 public record OpenBackpackCurioManager() implements CustomPacketPayload {
-    public static final Type<OpenBackpackCurioManager> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "open_backpack_curio_packet"));
+    public static final Type<OpenBackpackCurioManager> TYPE = new Type<>(Identifier.fromNamespaceAndPath(MODID, "open_backpack_curio_packet"));
     public static final StreamCodec<ByteBuf, OpenBackpackCurioManager> STREAM_CODEC = StreamCodec.unit(new OpenBackpackCurioManager());
 
     @Override

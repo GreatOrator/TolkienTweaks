@@ -98,7 +98,7 @@ public class TolkienMonsterEntity extends Monster implements RangedAttackMob {
     }
 
     public void reassessWeaponGoal() {
-        if (!this.level.isClientSide) {
+        if (!this.level.isClientSide()) {
             scheduleWeaponGoalUpdate = true;
         }
     }

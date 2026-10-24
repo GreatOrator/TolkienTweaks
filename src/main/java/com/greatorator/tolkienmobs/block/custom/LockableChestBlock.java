@@ -106,7 +106,7 @@ public class LockableChestBlock extends TolkienChestEntityBlock {
             }
         }
 
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             if (tile != null) {
                 lockableChest.onRightClick(state, player, hand);
                 return InteractionResult.SUCCESS;

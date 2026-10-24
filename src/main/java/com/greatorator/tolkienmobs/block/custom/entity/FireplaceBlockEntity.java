@@ -14,7 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
@@ -75,7 +75,7 @@ public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProv
             setChanged();
         }
     };
-    public final Object2IntOpenHashMap<ResourceLocation> recipes = new Object2IntOpenHashMap<>();
+    public final Object2IntOpenHashMap<Identifier> recipes = new Object2IntOpenHashMap<>();
     private static final int OUTPUT_SLOT = 0;
     protected final ContainerData data;
     private int progress = 0;
@@ -132,7 +132,7 @@ public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProv
     }
 
     public static void particleTick(Level level, BlockPos pos, BlockState state, FireplaceBlockEntity blockEntity) {
-        RandomSource randomsource = level.random;
+        RandomSource randomsource = level.getRandom();
         int l;
         if (randomsource.nextFloat() < 0.11F) {
             for(l = 0; l < randomsource.nextInt(2) + 2; ++l) {

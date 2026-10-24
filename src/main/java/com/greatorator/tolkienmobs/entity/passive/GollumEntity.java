@@ -116,27 +116,27 @@ public class GollumEntity extends TolkienMonsterEntity implements GeoEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
+        controllers.add(new AnimationController<GollumEntity>("Idle", 1, (event) -> {
             if (!event.isMoving() && this.isEating()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("eat"));
-            } else if(!event.isMoving() && !event.getAnimatable().isAggressive()) {
-                    event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("eat"));
+            } else if(!event.isMoving() && !event.animatable().isAggressive()) {
+                    event.controller().setAnimation(RawAnimation.begin().thenPlay("idle"));
             }
             return PlayState.CONTINUE;
         }));
-        controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
+        controllers.add(new AnimationController<GollumEntity>("Attack", 1, (event) -> {
             if (this.swinging) {
                 // Gollum's file carries idle, walk and eat but no attack, so a swing holds his idle
                 // pose rather than resetting the controller onto an animation that does not exist.
-                event.getController().forceAnimationReset();
-                event.getController().setAnimation(RawAnimation.begin().then("idle", Animation.LoopType.PLAY_ONCE));
+                event.controller().forceAnimationReset();
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("idle"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
+        controllers.add(new AnimationController<GollumEntity>("Walk", 1, (event) -> {
             if (event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("walk"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;

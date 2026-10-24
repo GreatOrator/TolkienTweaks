@@ -1,29 +1,30 @@
 package com.greatorator.tolkienmobs.entity.projectiles.model;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
-import com.greatorator.tolkienmobs.entity.projectiles.SimpleTrapEntity;
-import net.minecraft.resources.ResourceLocation;
 import com.geckolib.model.GeoModel;
-import com.geckolib.renderer.base.GeoRenderer;
+import com.geckolib.renderer.base.GeoRenderState;
+import com.greatorator.tolkienmobs.entity.projectiles.SimpleTrapEntity;
+import net.minecraft.resources.Identifier;
 
+import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class SimpleTrapModel<T extends SimpleTrapEntity> extends GeoModel<T> {
-    private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(TolkienMobsMain.MODID, "item/trap");
-    private final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(TolkienMobsMain.MODID, "textures/entity/web_trap.png");
-    private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(TolkienMobsMain.MODID, "trap");
+/** Both trap types share one model and one texture, so the model needs nothing from the render state. */
+public class SimpleTrapModel extends GeoModel<SimpleTrapEntity> {
+    private static final Identifier MODEL = Identifier.fromNamespaceAndPath(MODID, "item/trap");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(MODID, "textures/entity/web_trap.png");
+    private static final Identifier ANIMATIONS = Identifier.fromNamespaceAndPath(MODID, "trap");
 
     @Override
-    public ResourceLocation getModelResource(T object, GeoRenderer<T> renderer) {
-        return this.model;
+    public Identifier getModelResource(GeoRenderState renderState) {
+        return MODEL;
     }
 
     @Override
-    public ResourceLocation getTextureResource(T object, GeoRenderer<T> renderer) {
-        return this.texture;
+    public Identifier getTextureResource(GeoRenderState renderState) {
+        return TEXTURE;
     }
 
     @Override
-    public ResourceLocation getAnimationResource(T object) {
-        return this.animations;
+    public Identifier getAnimationResource(SimpleTrapEntity animatable) {
+        return ANIMATIONS;
     }
 }

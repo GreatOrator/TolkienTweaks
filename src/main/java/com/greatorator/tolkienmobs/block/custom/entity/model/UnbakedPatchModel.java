@@ -7,7 +7,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.context.ContextMap;
 import net.neoforged.neoforge.client.model.ExtendedUnbakedModel;
 
@@ -21,7 +21,7 @@ import net.neoforged.neoforge.client.model.ExtendedUnbakedModel;
  * every face it generates.
  */
 public record UnbakedPatchModel(Material material, boolean shaggify) implements ExtendedUnbakedModel {
-    public UnbakedPatchModel(ResourceLocation texture, boolean shaggify) {
+    public UnbakedPatchModel(Identifier texture, boolean shaggify) {
         this(new Material(TextureAtlas.LOCATION_BLOCKS, texture), shaggify);
     }
 

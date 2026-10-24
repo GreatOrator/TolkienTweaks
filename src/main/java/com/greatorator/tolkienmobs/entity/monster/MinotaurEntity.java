@@ -23,6 +23,7 @@ import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.RawAnimation;
+import com.geckolib.animation.object.LoopType;
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.util.GeckoLibUtil;
@@ -57,37 +58,41 @@ public class MinotaurEntity extends TolkienMonsterEntity implements GeoEntity {
 
     /**
      * Animations
+     *
+     * GeckoLib 5 builds a controller without the animatable and hands its handler an AnimationTest, so the
+     * controller no longer holds `this`. The RawAnimations are built once, here, instead of once per frame.
      */
+    private static final RawAnimation WALK = RawAnimation.begin().thenPlay("walk");
+    private static final RawAnimation IDLE = RawAnimation.begin().thenPlay("idle");
+    private static final RawAnimation ATTACK = RawAnimation.begin().then("attack", LoopType.PLAY_ONCE);
+    private static final RawAnimation RANGED = RawAnimation.begin().then("ranged", LoopType.PLAY_ONCE);
+
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
-            if (event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
+        controllers.add(new AnimationController<MinotaurEntity>("Walk", 1, test ->
+                test.isMoving() ? test.setAndContinue(WALK) : PlayState.STOP));
+        controllers.add(new AnimationController<MinotaurEntity>("Idle", 1, test ->
+                test.isMoving() ? PlayState.STOP : test.setAndContinue(IDLE)));
+        controllers.add(new AnimationController<MinotaurEntity>("Attack", 1, test -> {
+            // A swing or a charge has to play out: 5 resets the controller when the handler returns STOP, so
+            // dropping to STOP mid-animation would end the attack on its first frame.
+            if (test.controller().isAnimatingBones()) {
                 return PlayState.CONTINUE;
             }
-            return PlayState.STOP;
-        }));
-        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
-            if (!event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
-                return PlayState.CONTINUE;
+
+            if (this.swinging) {
+                this.swinging = false;
+                return test.setAndContinue(ATTACK);
             }
-            return PlayState.STOP;
-        }));
-        controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
-            if (this.swinging && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
-                event.getController().forceAnimationReset();
-                event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
-                this.swinging =false;
-                return PlayState.CONTINUE;
-            }else if(this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
-                event.getController().forceAnimationReset();
-                event.getController().setAnimation(RawAnimation.begin().then("ranged", Animation.LoopType.PLAY_ONCE));
-                this.ranged =false;
-                return PlayState.CONTINUE;
+
+            // The ranged flag is a one-shot latch here, cleared as the charge animation starts.
+            if (this.getRanged()) {
+                this.ranged = false;
+                return test.setAndContinue(RANGED);
             }
+
             return PlayState.STOP;
         }));
     }
