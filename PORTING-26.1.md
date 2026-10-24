@@ -601,9 +601,18 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   `SimpleWeightedRandomList.empty()`.
 - The block entity's spawn-egg read is a spawn-data call too:
   `SpawnEggItem#getType(ItemStack)` is static now and takes no registry access, so adding an egg to
-  the camo spawner reads the entity type the same way it did. `CamoSpawnerBlockEntity` still has
-  two unrelated errors - the four `Player#displayClientMessage` calls and the
-  `onDataPacket` override - so it does not compile yet.
+  the camo spawner reads the entity type the same way it did.
+- The block entity's own chat and packet hooks are on 26.1 as well, so `CamoSpawnerBlockEntity`
+  compiles. `Player#displayClientMessage(Component, boolean)` is gone: the message goes through
+  `Player#sendSystemMessage(Component)`, the one-argument call that replaced it, and the `boolean`
+  that used to choose chat over the action bar is a separate method now (`sendOverlayMessage`) -
+  these three messages were already chat, so the flag simply has no counterpart left to pass.
+- The `onDataPacket` override is deleted rather than re-signed. Vanilla's `BlockEntity` has no
+  such method in 26.1; the hook lives on NeoForge's `IBlockEntityExtension` as
+  `onDataPacket(Connection, ValueInput)`, whose default is `self().loadWithComponents(input)`.
+  The override here only called `super`, so the default does exactly what the class used to do by
+  hand, and keeping it would have been a no-op with a new signature. `getUpdatePacket` and
+  `getUpdateTag` are unchanged and carry the sync as before.
 
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official

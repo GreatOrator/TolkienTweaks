@@ -48,8 +48,9 @@ All notable changes to this project will be documented in this file.
 - The camo spawner's spawn loop follows 26.1: it reads a candidate position and entity id with the
   one-argument tag calls, places a spawned mob with `snapTo`, keeps its weighted spawn table in a
   `WeightedList`, and reads a spawn egg's entity type the way vanilla does now. How it picks, places
-  and delays a spawn is unchanged. Its block entity still has two unrelated 26.1 calls
-  (`displayClientMessage` and `onDataPacket`) to move before the screen side compiles.
+  and delays a spawn is unchanged. The spawner's block entity is ported too, so its egg-selection
+  messages and its client sync no longer stand in the way of the rest of the tree compiling; what
+  it prints when an egg is added, counted or replaced reads exactly as before.
 
 ## [4.4.83-Final] - 10.22.2026
 
