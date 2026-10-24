@@ -613,6 +613,21 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   The override here only called `super`, so the default does exactly what the class used to do by
   hand, and keeping it would have been a no-op with a new signature. `getUpdatePacket` and
   `getUpdateTag` are unchanged and carry the sync as before.
+- [TolkienSpawner](src/main/java/com/greatorator/tolkienmobs/handler/interfaces/TolkienSpawner.java)
+  compiles too, and its tooltip read needed care rather than a rename. `DataComponents.BLOCK_ENTITY_DATA`
+  is a `TypedEntityData<BlockEntityType<?>>` in 26.1, not a `CustomData`, so the old
+  `(CustomData) stack.getOrDefault(BLOCK_ENTITY_DATA, CustomData.EMPTY)` is a trap:
+  `DataComponentGetter#getOrDefault(DataComponentType<? extends T>, T)` infers `T` from *both*
+  arguments, so with a `CustomData` default it infers `Object` and the cast compiles unchecked -
+  and throws `ClassCastException` on the first hover of a configured spawner, because the value it
+  is handed is the entity data. `stack.get(DataComponents.BLOCK_ENTITY_DATA)` with a null check is
+  what vanilla's own `Spawner#getSpawnEntityDisplayName` does; it reads through
+  `TypedEntityData#copyTagWithoutId()` (`getUnsafe()` is deprecated) and needs no cast.
+- The tag reads under it lost their shapes: `CompoundTag#contains(String, int)` is
+  `contains(String)`, `getCompound` returns an `Optional`, and `getString` does too, so the nested
+  read into the spawn entry is `getCompoundOrEmpty(key).getCompoundOrEmpty("entity").getStringOr("id", "")`.
+  A key of the wrong type now reads as an empty id, which resolves to nothing and draws the same
+  "Interact with Spawn Egg" hint lines as a missing key did.
 
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official

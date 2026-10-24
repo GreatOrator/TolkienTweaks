@@ -50,7 +50,10 @@ All notable changes to this project will be documented in this file.
   `WeightedList`, and reads a spawn egg's entity type the way vanilla does now. How it picks, places
   and delays a spawn is unchanged. The spawner's block entity is ported too, so its egg-selection
   messages and its client sync no longer stand in the way of the rest of the tree compiling; what
-  it prints when an egg is added, counted or replaced reads exactly as before.
+  it prints when an egg is added, counted or replaced reads exactly as before. One fix comes with
+  it: a spawner's stored entity data is a different kind of component in 26.1, and the old read had
+  turned into an unchecked cast that still compiled but would have thrown as soon as it ran on a
+  configured spawner. The tooltip read now goes the way vanilla's own spawner tooltip does.
 
 ## [4.4.83-Final] - 10.22.2026
 
