@@ -186,6 +186,10 @@ All notable changes to this project will be documented in this file.
   same pickup delay, and it can still spawn with a skeleton rider in the same one-in-a-hundred case.
   A warg still occasionally turns up carrying an orc and still gets wet in rain or water, and the
   walker's halloween pumpkin still never drops when it dies.
+- The boats are ported - all seven woods, each with a plain and a chest boat, and their items. The
+  game moved the boat classes into a package of their own, which is the whole of the change; a boat
+  still places and floats as it did, a chest boat still carries a chest, and each boat still
+  remembers which wood it is made of when the world is saved and loaded.
 
 ## [4.4.83-Final] - 10.22.2026
 
