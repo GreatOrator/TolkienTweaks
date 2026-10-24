@@ -314,14 +314,14 @@ public class TolkienSpawnEggTextureProvider implements DataProvider {
     private static Map<String, Face> mobs() {
         Map<String, Face> mobs = new LinkedHashMap<>();
 
-        add(mobs, Face.ORC, "orc mordororc orc_trader urukhai brigand haradrim");
-        add(mobs, Face.MAN, "human elves dwarf duergar hobbit southron southron_npc istari romiewalker huron");
+        add(mobs, Face.ORC, "orc mordororc orc_trader urukhai");
+        add(mobs, Face.MAN, "human elves dwarf duergar hobbit southron southron_npc istari romiewalker huron brigand haradrim");
         add(mobs, Face.GOBLIN, "goblin goblinking gollum");
         add(mobs, Face.WRAITH, "nazgul barrow fellspirit enragedfellspirit oathbreaker witchking");
         add(mobs, Face.SPIDER, "mirkwoodspider shelob watcher deepclaw");
-        add(mobs, Face.BEAST, "warg auroch goat mumakil shadowfax nazgulsteed");
+        add(mobs, Face.BEAST, "warg auroch goat mumakil shadowfax nazgulsteed minotaur");
         add(mobs, Face.BIRD, "greateagle gwahir crebain thrush fellbeast");
-        add(mobs, Face.TROLL, "troll treeent rockgolem mithrilgolem morgulirongolem elementalgolem mimicchest minotaur");
+        add(mobs, Face.TROLL, "troll treeent rockgolem mithrilgolem morgulirongolem elementalgolem mimicchest");
         add(mobs, Face.HAG, "swamphag");
         add(mobs, Face.FLAME, "balrog");
         add(mobs, Face.CRITTER, "rat squirrel gecko frog swarm");
