@@ -1588,6 +1588,42 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   `JigsawStructure.MaxDistance(horizontal, vertical)` now. `new MaxDistance(n)` sets both to `n`,
   which is exactly what the single old int meant and what vanilla's own constructors pass, so the
   mod's `maxDistanceFromCenter` fields and their integer codec stay and only the call site wraps.
+- **The TerraBlender hookup needed no source change.** `26.1.2-26.1.2.0.3` kept
+  `Regions.register(Region)`, `Region(Identifier, RegionType, weight)`,
+  `addModifiedVanillaOverworldBiomes` and
+  `SurfaceRuleManager.addSurfaceRules(RuleCategory, String, RuleSource)` with the shapes the mod
+  already calls, so `TolkienMobsMain`'s two calls and `TolkienOverworldRegion` compile against the
+  jar as they stand. Nor did the mechanism change: TerraBlender's own `MixinParameterList` still
+  reads `Regions.get(RegionType)`, so a programmatically registered region still rebuilds the
+  overworld parameter list rather than only the data-driven `terrablender:region` registry being
+  consulted. Registration stays in `FMLCommonSetupEvent`, early enough for both the biome source and
+  the surface rules.
+- **Every `replaceBiome` still lands.** All twenty-one keys the region replaces are still emitted
+  by 26.1's `OverworldBiomeBuilder`: `DARK_FOREST`, `OLD_GROWTH_SPRUCE_TAIGA`,
+  `OLD_GROWTH_PINE_TAIGA`, `WINDSWEPT_GRAVELLY_HILLS`, `WINDSWEPT_FOREST`, `WINDSWEPT_HILLS`,
+  `FROZEN_PEAKS`, `JAGGED_PEAKS`, `SNOWY_SLOPES`, `SNOWY_PLAINS`, `BADLANDS`, `WOODED_BADLANDS`,
+  `ERODED_BADLANDS`, `SWAMP`, `BIRCH_FOREST`, `FOREST`, `PLAINS`, `SUNFLOWER_PLAINS`,
+  `FLOWER_FOREST`, `DESERT` and `SAVANNA_PLATEAU` - twenty-one entries onto the twenty biomes, since
+  `NURN` claims both badlands points and `MIRKWOOD` both taigas. The newest vanilla biome,
+  `PALE_GARDEN`, is left alone along with every climate point the mod never claimed. The variant
+  table matters here: `SUNFLOWER_PLAINS` sits on its own high-weirdness point beside `PLAINS`, so
+  `GLADDEN` and `SHIRE` do not compete for one climate cell.
+- **But the file it lives in does not build yet.** `TolkienMobsMain` still fails on seven lines that
+  belong to other steps. `Capabilities.ItemHandler` and `Capabilities.FluidHandler` are
+  `Capabilities.Item.BLOCK` / `Capabilities.Fluid.BLOCK` now, and they are typed
+  `ResourceHandler<ItemResource>` / `ResourceHandler<FluidResource>` rather than the handler
+  interfaces the backpack and camo chest expose - that is the NeoForge transfer-API migration, not
+  a rename, and `BackpackBlock`/`BackpackBlockEntity` need it too. `ItemBlockRenderTypes` and
+  `RenderType` (as a block layer) are gone: 26.1 derives a `ChunkSectionLayer` from the model's own
+  texture transparency, and `FluidModel` does the same from the still and flowing sprites, so the
+  two fluid `setRenderLayer` calls have nothing left to call. Until those land the region compiles
+  but cannot register.
+- **How the TerraBlender side was checked.** `javap` against
+  `TerraBlender-neoforge-26.1.2-26.1.2.0.3.jar` for `Regions`, `Region`,
+  `ModifiedVanillaOverworldBuilder`, `SurfaceRuleManager` and `RegionType`; `javap -c` on the jar's
+  `MixinParameterList` to confirm it still calls `Regions.get`; and every `replaceBiome` key grepped
+  against 26.1's `OverworldBiomeBuilder`. Nothing was run in game, and no jar or source line
+  changed here, so the error count below stands.
 - **Datagen still has to run.** Biome JSON changes shape: `effects` loses the fog, sky, music and
   particle entries and the biome gains an `attributes` object holding them. That cannot be
   regenerated until the tree compiles; it comes with the next `runData`, and the biome JSON must be
@@ -1622,10 +1658,13 @@ from **3,470 errors in 337 files to 2,801 in 320**.
    `TolkienItemProperties`.
 5. **Block entities.** `preRemoveSideEffects` / `affectNeighborsAfterRemoval`, and
    `dropContentsOnDestroy` in `CamoChestBlock`.
-6. **Worldgen - mostly done.** The carvers, trees, configured and placed features, surface rules
-   and the biome registration layer all compile (see *The worldgen registration layer - DONE*
-   above); the biome JSON still needs a `runData` once the tree builds. What is left of this step is
-   TerraBlender (`TolkienMobsMain` lines 181–182).
+6. **Worldgen - done except the datagen.** The carvers, trees, configured and placed features,
+   surface rules and the biome registration layer all compile (see *The worldgen registration layer
+   - DONE* above), and the TerraBlender calls in `TolkienMobsMain` were checked against
+   `26.1.2-26.1.2.0.3` and needed no change - as did the region's twenty-one `replaceBiome` targets,
+   which 26.1's overworld climate table still produces. The biome JSON still needs a `runData` once
+   the tree builds; `TolkienMobsMain` itself still fails on the capability and render-layer lines
+   that belong to steps 5 and 7.
 7. **Renderers.** `handler/render/` and the non-GeckoLib renderers, against the submission API.
    `FogHandler` and the now-unused `TolkienRenderInfo` belong here too: 26.1's dimension effects
    removal means the forest fog has to move onto `ViewportEvent.RenderFog`/`ComputeFogColor`.
@@ -1664,9 +1703,9 @@ from **3,470 errors in 337 files to 2,801 in 320**.
 
 ## Open questions
 
-- **TerraBlender's region API across 26.1.** Only two files call it, but they call it directly.
-  Every branch after 1.21.4 ships it marked Beta; read the changelog before bumping rather
-  than assuming `Region`/`Regions`/`SurfaceRuleManager` are unchanged.
+- **TerraBlender's region API across 26.1 - answered for 26.1.2.0.3.** Unchanged, and the two call
+  sites compile as they stand (see *The worldgen registration layer - DONE*). Every branch after
+  1.21.4 ships it marked Beta, so read the changelog before bumping rather than assuming it again.
 - **JEI on 26.1.2 is beta only.** Four files use it, so the exposure is small, but the plugin
   may need re-writing against a moving API.
 - **The Neo-side 26.1 changes** are summarised here from the primer's own overview, not read
