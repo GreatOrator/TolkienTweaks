@@ -72,7 +72,7 @@ public abstract class TolkienLangHelperCN extends LanguageProvider {
 
     public void addMusicDisc(DeferredItem<Item> disc, String description) {
         this.addItem(disc, "音乐唱片");
-        this.add(Util.makeDescriptionId("jukebox_song", disc.get().components().get(DataComponents.JUKEBOX_PLAYABLE).song().key().location()), description);
+        this.add(Util.makeDescriptionId("jukebox_song", disc.get().components().get(DataComponents.JUKEBOX_PLAYABLE).song().unwrapKey().orElseThrow().identifier()), description);
     }
 
     public void addItemScreen(Item key, String name) {
