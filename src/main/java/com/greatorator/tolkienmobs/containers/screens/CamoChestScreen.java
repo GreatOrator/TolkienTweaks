@@ -1,12 +1,12 @@
 package com.greatorator.tolkienmobs.containers.screens;
 
 import com.greatorator.tolkienmobs.containers.CamoChestContainer;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.client.renderer.RenderType;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -14,9 +14,7 @@ public class CamoChestScreen extends AbstractContainerScreen<CamoChestContainer>
     private static final Identifier GUI = Identifier.fromNamespaceAndPath(MODID, "textures/gui/inventory_medium.png");
 
     public CamoChestScreen(CamoChestContainer container, Inventory inventory, Component title) {
-        super(container, inventory, title);
-        this.imageWidth = 176;
-        this.imageHeight = 166;
+        super(container, inventory, title, 176, 166);
     }
 
     @Override
@@ -28,7 +26,8 @@ public class CamoChestScreen extends AbstractContainerScreen<CamoChestContainer>
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        guiGraphics.blit(RenderType::guiTextured, GUI, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(graphics, mouseX, mouseY, partialTick);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, GUI, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
     }
 }

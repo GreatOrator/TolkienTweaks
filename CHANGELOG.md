@@ -105,7 +105,9 @@ All notable changes to this project will be documented in this file.
   over itself.
 - The piggy bank and the three item screens - coin pouch, key item and key ring - are ported too.
   They look and behave as before, and a right click over a pouch, ring or key item slot is still
-  ignored, so a stack in one of them cannot be split or picked up.
+  ignored, so a stack in one of them cannot be split or picked up. The camouflage chest and
+  camouflage fluid screens are ported with them, and hovering the fluid screen's bucket slot still
+  explains how the tank is filled.
 - Every message the mod sends a player now uses 26.1's own call for it: the chat lines go through
   the system-message call, and the three that flash above the hotbar - the backpack's "no room",
   the occupied sleeping bag and a refused sleep - through the overlay one. Nothing the player reads

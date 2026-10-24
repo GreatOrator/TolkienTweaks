@@ -927,6 +927,19 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   it. Their dead `int slot = hoveredSlot.getSlotIndex();` line - assigned and never read - went with
   the rewrite.
 
+### Camouflage chest and fluid screens — DONE
+
+- The chest is a panel and nothing else - it never overrode its labels, so the base class's title and
+  inventory line are what it shows - with both label offsets moved up for its texture. Its height
+  goes through the constructor and its draw is `extractBackground`; it still calls `super` first so
+  the screen dim is drawn under the panel.
+- The fluid screen adds a caption pair and one tooltip: hovering the bucket slot explains the tank
+  in aqua. That is `setTooltipForNextFrame(font, component, x, y)`, which already took the cursor
+  position, so the line lands where it did.
+- Both had super-only overrides - the fluid screen's `mouseClicked`, `containerTick` and `render` - so
+  they are deleted rather than re-signed. `RenderSystem.setShaderTexture` went with the pipeline
+  blit.
+
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
   26.1.2 MDK's version; NeoForge requires 9.1.0 or newer), foojay resolver 0.8.0 → 1.0.0.
