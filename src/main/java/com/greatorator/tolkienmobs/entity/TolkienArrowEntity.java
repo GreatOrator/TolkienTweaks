@@ -11,6 +11,8 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 
@@ -42,14 +44,14 @@ public class TolkienArrowEntity extends AbstractArrow {
         super.onHitEntity(result);
     }
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
-        compound.putFloat("power_m", powerMultiplier);
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putFloat("power_m", powerMultiplier);
     }
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
-        powerMultiplier = compound.getFloat("power_m");
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        powerMultiplier = input.getFloatOr("power_m", 0.0F);
     }
     public void addEffect(MobEffectInstance effectInstance) {
         Iterable<MobEffectInstance> contents = getPotionContents().getAllEffects();

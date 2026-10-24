@@ -20,6 +20,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.items.ItemStackHandler;
@@ -70,17 +72,17 @@ public class CamoFluidBlockEntity extends TolkienBlockEntity implements MenuProv
     }
 
     @Override
-    protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        pTag.put("inventory", mainInventory.serializeNBT(pRegistries));
+    protected void saveAdditional(ValueOutput output) {
+        mainInventory.serialize(output.child("inventory"));
 
-        super.saveAdditional(pTag, pRegistries);
+        super.saveAdditional(output);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        super.loadAdditional(pTag, pRegistries);
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
 
-        mainInventory.deserializeNBT(pRegistries, pTag.getCompound("inventory"));
+        mainInventory.deserialize(input.childOrEmpty("inventory"));
     }
 
     @Nullable

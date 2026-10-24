@@ -24,6 +24,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 import com.geckolib.animatable.GeoBlockEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -78,15 +80,15 @@ public class LockableTreasureChestBlockEntity extends TolkienBlockEntity impleme
     }
 
     @Override
-    protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        pTag.putString("chest_code", keyCode);
-        super.saveAdditional(pTag, pRegistries);
+    protected void saveAdditional(ValueOutput output) {
+        output.putString("chest_code", keyCode);
+        super.saveAdditional(output);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        super.loadAdditional(pTag, pRegistries);
-        keyCode = String.valueOf(pTag.get("chest_code"));
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        keyCode = input.getStringOr("chest_code", "");
     }
 
     public void onRightClick(BlockState state, Player player, InteractionHand hand) {

@@ -18,6 +18,8 @@ import com.geckolib.animation.RawAnimation;
 import com.geckolib.util.GeckoLibUtil;
 
 import java.util.List;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class TornadoEntity extends Entity implements GeoAnimatable {
     private static final EntityDataAccessor<Boolean> BLAST = SynchedEntityData.defineId(TornadoEntity.class,
@@ -99,12 +101,12 @@ public class TornadoEntity extends Entity implements GeoAnimatable {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compoundTag) {
+    protected void readAdditionalSaveData(ValueInput input) {
 
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compoundTag) {
+    protected void addAdditionalSaveData(ValueOutput output) {
 
     }
 

@@ -17,6 +17,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,17 +54,17 @@ public class PiggyBankBlockEntity extends TolkienBlockEntity implements MenuProv
     }
 
     @Override
-    protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        pTag.put("inventory", itemHandler.serializeNBT(pRegistries));
+    protected void saveAdditional(ValueOutput output) {
+        itemHandler.serialize(output.child("inventory"));
 
-        super.saveAdditional(pTag, pRegistries);
+        super.saveAdditional(output);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        super.loadAdditional(pTag, pRegistries);
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
 
-        itemHandler.deserializeNBT(pRegistries, pTag.getCompound("inventory"));
+        itemHandler.deserialize(input.childOrEmpty("inventory"));
     }
 
     @Nullable

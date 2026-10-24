@@ -1,11 +1,14 @@
 package com.greatorator.tolkienmobs.entity;
 
 import com.greatorator.tolkienmobs.entity.ai.control.FreeFlightMoveControl;
+import com.mojang.serialization.Codec;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 /** Shared flight state and a persistent home for the four birds. */
@@ -77,21 +80,21 @@ public class TolkienFlyingAmbientEntity extends TolkienAmbientEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
         Vec3 origin = getFlightOrigin();
-        tag.putDouble("FlightOriginX", origin.x);
-        tag.putDouble("FlightOriginY", origin.y);
-        tag.putDouble("FlightOriginZ", origin.z);
-        tag.putBoolean("BirdFlying", getFlying());
+        output.putDouble("FlightOriginX", origin.x);
+        output.putDouble("FlightOriginY", origin.y);
+        output.putDouble("FlightOriginZ", origin.z);
+        output.putBoolean("BirdFlying", getFlying());
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
-        if (tag.contains("FlightOriginX") && tag.contains("FlightOriginY") && tag.contains("FlightOriginZ")) {
-            flightOrigin = new Vec3(tag.getDouble("FlightOriginX"), tag.getDouble("FlightOriginY"), tag.getDouble("FlightOriginZ"));
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        if (input.read("FlightOriginX", Codec.DOUBLE).isPresent() && input.read("FlightOriginY", Codec.DOUBLE).isPresent() && input.read("FlightOriginZ", Codec.DOUBLE).isPresent()) {
+            flightOrigin = new Vec3(input.getDoubleOr("FlightOriginX", 0.0), input.getDoubleOr("FlightOriginY", 0.0), input.getDoubleOr("FlightOriginZ", 0.0));
         }
-        setFlying(tag.getBoolean("BirdFlying"));
+        setFlying(input.getBooleanOr("BirdFlying", false));
     }
 }

@@ -1,7 +1,8 @@
 package com.greatorator.tolkienmobs.util.block;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class MobSpawnData {
     private final String entityId;
@@ -14,17 +15,15 @@ public class MobSpawnData {
         this.resourceLocation = Identifier.parse(entityId);
     }
 
-    public MobSpawnData(CompoundTag tag) {
-        this.entityId = tag.getString("entityID");
-        this.spawnCount = tag.getInt("spawnCount");
+    public MobSpawnData(ValueInput input) {
+        this.entityId = input.getStringOr("entityID", "");
+        this.spawnCount = input.getIntOr("spawnCount", 0);
         this.resourceLocation = Identifier.parse(entityId);
     }
 
-    public CompoundTag toNBT() {
-        CompoundTag tag = new CompoundTag();
-        tag.putString("entityID", entityId);
-        tag.putInt("spawnCount", spawnCount);
-        return tag;
+    public void save(ValueOutput output) {
+        output.putString("entityID", entityId);
+        output.putInt("spawnCount", spawnCount);
     }
 
     public String getEntityId() {

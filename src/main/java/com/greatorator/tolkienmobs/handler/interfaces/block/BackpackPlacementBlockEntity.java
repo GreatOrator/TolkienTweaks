@@ -4,19 +4,21 @@ import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
 import com.greatorator.tolkienmobs.util.block.BackpackPlacement;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public interface BackpackPlacementBlockEntity {
     BackpackPlacement getBackpackPlacement();
     BlockEntity getBlockEntity();
 
-    default void saveBackpackPlacement(CompoundTag tag) {
-        tag.putBoolean("sleepingBag", getBackpackPlacement().sleepingBag);
-        tag.putBoolean("campfire", getBackpackPlacement().campfire);
+    default void saveBackpackPlacement(ValueOutput output) {
+        output.putBoolean("sleepingBag", getBackpackPlacement().sleepingBag);
+        output.putBoolean("campfire", getBackpackPlacement().campfire);
     }
 
-    default void loadBackpackPlacement(CompoundTag tag) {
-        getBackpackPlacement().sleepingBag = tag.getBoolean("sleepingBag");
-        getBackpackPlacement().campfire = tag.getBoolean("campfire");
+    default void loadBackpackPlacement(ValueInput input) {
+        getBackpackPlacement().sleepingBag = input.getBooleanOr("sleepingBag", false);
+        getBackpackPlacement().campfire = input.getBooleanOr("campfire", false);
     }
 
     default void setBackpackPlacement(BackpackPlacement backpackData) {

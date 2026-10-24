@@ -4,17 +4,19 @@ import com.greatorator.tolkienmobs.block.custom.entity.CamoKeyStoneBlockEntity;
 import com.greatorator.tolkienmobs.util.block.KeyStoneCode;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public interface KeystoneCodeBlockEntity {
     KeyStoneCode getKeyStoneData();
     BlockEntity getBlockEntity();
 
-    default void saveKeyStoneData(CompoundTag tag) {
-        tag.putString("keyCode", getKeyStoneData().keyCode);
+    default void saveKeyStoneData(ValueOutput output) {
+        output.putString("keyCode", getKeyStoneData().keyCode);
     }
 
-    default void loadKeyStoneData(CompoundTag tag) {
-        getKeyStoneData().keyCode = tag.getString("keyCode");
+    default void loadKeyStoneData(ValueInput input) {
+        getKeyStoneData().keyCode = input.getStringOr("keyCode", "");
     }
 
     default void setKeyStoneData(KeyStoneCode keyStoneCode) {

@@ -16,7 +16,7 @@ measurement's other half.
 | Source | Minecraft **1.21.4**, NeoForge **21.4.161**, mod **4.4.83-Final** |
 | Target | Minecraft **26.1.2**, NeoForge **26.1.2.116**, mod **5.0.0** |
 | Java | 21 → **25** |
-| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers) is done; 2,801 errors left |
+| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers) and the save-data move (`ValueOutput`/`ValueInput`) are done; 2,512 errors left |
 
 What the source tree contains, counted:
 
@@ -514,6 +514,58 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   That also lets other vegetation place on those blocks, which the old tag did not; it is the one
   entry in this batch that changes what the world does rather than only how it is spelled, so it
   wants the in-game mushroom check before it is called done.
+
+### Save data — DONE
+
+- **Every entity and block entity writes through `ValueOutput` and read through `ValueInput` now.**
+  26.1 passes one of those two instead of a `CompoundTag`, and it no longer passes the
+  `HolderLookup.Provider` alongside it: `saveAdditional(ValueOutput)`, `loadAdditional(ValueInput)`,
+  `addAdditionalSaveData(ValueOutput)`, `readAdditionalSaveData(ValueInput)`. 115 methods in 57
+  files (`tools/port-261-save-data.pl`), with the parameter renamed through each body so no stale
+  `tag.` is left behind. The `Provider` is still reachable where a codec needs it, as
+  `input.lookup()`.
+- **Scalar readers became the Or-with-default calls.** `ValueInput#getInt`/`getString` return
+  `Optional` in 26.1, so `tag.getInt("Variant")` is `input.getIntOr("Variant", 0)`,
+  `getBooleanOr`, `getStringOr`, `getShortOr`, `getLongOr`, `getFloatOr`, `getDoubleOr`, `getByteOr`
+  alike. Writes needed nothing: `ValueOutput#putInt`, `putString`, `putBoolean` and the rest match
+  what `CompoundTag` had.
+- **There is no `contains`.** A reader that used one asks the typed accessor instead:
+  `input.getInt("redstoneMode").isPresent()` for a number, `input.child("bucketInventory").isPresent()`
+  for a nested compound, and `input.read("FlightOriginX", Codec.DOUBLE).isPresent()` where the value
+  is a double.
+- **Nested handlers write themselves.** `ItemStackHandler` and `FluidTank` are
+  `ValueIOSerializable`, so `output.put("inventory", handler.serializeNBT(regs))` is
+  `handler.serialize(output.child("inventory"))` and the read side is
+  `handler.deserialize(input.childOrEmpty("inventory"))` - same keys, same layout. The mod's
+  `TolkienFluidTank` loses its `INBTSerializable<CompoundTag>` wrapper entirely, because
+  `FluidTank` carries the ValueIO pair now (`tools/port-261-value-fixes.pl`).
+- **Loose item lists** - the chested goat, Shadowfax, the Nazgul steed's saddlebags and the
+  spawner's mob list - use `output.childrenList(name)` with `addChild()` per entry and
+  `input.childrenListOrEmpty(name)` to read them back; a stack inside an entry is
+  `entry.store("item", ItemStack.CODEC, stack)` and `entry.read("item", ItemStack.CODEC)`.
+  `MobSpawnData` gained the matching `(ValueInput)` constructor and `save(ValueOutput)` and lost
+  `toNBT()`.
+- **The spawner's own payload** (`TolkienBaseSpawner`) takes ValueIO as well, and its weighted
+  table moved from `SimpleWeightedRandomList` to `WeightedList`. Spawn data is read with
+  `input.read("SpawnData", SpawnData.CODEC)` and would be written with
+  `output.store(...)`, so the `NbtOps` round trip and the two hand-written `resultOrPartial`
+  warnings are gone; an invalid spawn entry now just leaves the previous one in place.
+- **`EntityHandler`**, the helper that tracks the dragon's home position and sleeping flag, sits on
+  ValueIO too. Each bridge now carries three things: how to store its type, how to read it, and how
+  to tell whether the key was present - which is what `optional()` needed to replace `contains`.
+- **`TagValueOutput` / `TagValueInput` bridge the places that must stay tags:** the backpack's item
+  component (`saveContents` builds a `TagValueOutput` and returns `buildResult()`, and the three
+  `loadContents(CompoundTag, Provider)` call sites wrap the component `CompoundTag` in a
+  `TagValueInput`), the update tags built from `saveWithoutMetadata`, and `EntityType.by`, which
+  reads a spawned entity out of a `ValueInput` in 26.1.
+- **The four `handleUpdateTag` overrides are deleted.** 26.1 removed the hook from `BlockEntity`;
+  the client gets its copy through the value pipeline now, so nothing had to replace them.
+- **What is left in these files is not save data:** the goat, Shadowfax and the Nazgul steed still
+  fail on their supertype (`inventory` and `createInventory` are not on it yet, so `@Override` fails
+  with them), the spawner's spawn loop still calls `CompoundTag.getList("Pos", 6)` and
+  `contains("id", 8)` (a one-argument API now), the block entities still override
+  `IBlockEntityExtension.onDataPacket`, and `MilestoneHandler` still builds a `SavedData.Factory`
+  the old way. 2,512 errors remain tree-wide, down from 2,801.
 
 ### Build stack — DONE
 

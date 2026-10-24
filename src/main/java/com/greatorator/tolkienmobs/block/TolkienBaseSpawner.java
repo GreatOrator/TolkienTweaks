@@ -5,17 +5,15 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import com.greatorator.tolkienmobs.block.custom.entity.CamoSpawnerBlockEntity;
 import com.greatorator.tolkienmobs.util.block.MobSpawnData;
 import com.mojang.datafixers.util.Either;
-import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.random.SimpleWeightedRandomList;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.level.BaseSpawner;
@@ -24,10 +22,12 @@ import net.minecraft.world.level.SpawnData;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.extensions.IOwnedSpawner;
 import net.neoforged.neoforge.event.EventHooks;
-import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -39,10 +39,9 @@ import static com.greatorator.tolkienmobs.block.custom.CamoSpawnerBlock.LIT;
 public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSpawner {
     private final CamoSpawnerBlockEntity spawnerBlockEntity;
     public static final String SPAWN_DATA_TAG = "SpawnData";
-    private static final Logger LOGGER = LogUtils.getLogger();
     private static final int EVENT_SPAWN = 1;
 //    private int spawnDelay = 20;
-    private SimpleWeightedRandomList<SpawnData> spawnPotentials = SimpleWeightedRandomList.empty();
+    private WeightedList<SpawnData> spawnPotentials = WeightedList.of();
     @Nullable
     private SpawnData nextSpawnData;
     private double spin;
@@ -139,7 +138,7 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                                     }
 
                                     CompoundTag compoundtag = spawndata.getEntityToSpawn();
-                                    Optional<EntityType<?>> optional = EntityType.by(compoundtag);
+                                    Optional<EntityType<?>> optional = entityTypeOf(serverLevel, compoundtag);
                                     if (optional.isEmpty()) {
                                         break;
                                     }
@@ -246,7 +245,7 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                                 }
 
                                 CompoundTag compoundtag = spawndata.getEntityToSpawn();
-                                Optional<EntityType<?>> optional = EntityType.by(compoundtag);
+                                Optional<EntityType<?>> optional = entityTypeOf(serverLevel, compoundtag);
                                 if (optional.isEmpty()) {
                                     this.delay(serverLevel, pos);
                                     return;
@@ -353,7 +352,7 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                             }
 
                             CompoundTag compoundtag = spawndata.getEntityToSpawn();
-                            Optional<EntityType<?>> optional = EntityType.by(compoundtag);
+                            Optional<EntityType<?>> optional = entityTypeOf(serverLevel, compoundtag);
                             if (optional.isEmpty()) {
                                 break;
                             }
@@ -460,7 +459,7 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                         }
 
                         CompoundTag compoundtag = spawndata.getEntityToSpawn();
-                        Optional<EntityType<?>> optional = EntityType.by(compoundtag);
+                        Optional<EntityType<?>> optional = entityTypeOf(serverLevel, compoundtag);
                         if (optional.isEmpty()) {
                             this.delay(serverLevel, pos);
                             return;
@@ -547,66 +546,55 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
             spawnerBlockEntity.getSpawnerDelays().spawnDelay = spawnerBlockEntity.getSpawnerDelays().minSpawnDelay + randomsource.nextInt(spawnerBlockEntity.getSpawnerDelays().maxSpawnDelay - spawnerBlockEntity.getSpawnerDelays().minSpawnDelay);
         }
 
-        this.spawnPotentials.getRandom(randomsource).ifPresent((p_337965_) -> {
-            this.setNextSpawnData(level, pos, (SpawnData)p_337965_.data());
+        this.spawnPotentials.getRandom(randomsource).ifPresent((spawnData) -> {
+            this.setNextSpawnData(level, pos, spawnData);
         });
         this.broadcastEvent(level, pos, 1);
     }
 
-    public void load(@Nullable Level level, BlockPos pos, CompoundTag tag) {
-        spawnerBlockEntity.getSpawnerDelays().spawnDelay = tag.getShort("spawnDelay");
-        boolean flag = tag.contains("SpawnData", 10);
-        if (flag) {
-            SpawnData spawndata = (SpawnData)SpawnData.CODEC.parse(NbtOps.INSTANCE, tag.getCompound("SpawnData")).resultOrPartial((p_186391_) -> {
-                LOGGER.warn("Invalid SpawnData: {}", p_186391_);
-            }).orElseGet(SpawnData::new);
-            this.setNextSpawnData(level, pos, spawndata);
+    /** EntityType reads a spawned entity out of a ValueInput, and spawn data still holds a plain tag. */
+    private static Optional<EntityType<?>> entityTypeOf(Level level, CompoundTag tag) {
+        return EntityType.by(TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), tag));
+    }
+
+    public void load(@Nullable Level level, BlockPos pos, ValueInput input) {
+        spawnerBlockEntity.getSpawnerDelays().spawnDelay = input.getShortOr("spawnDelay", (short) 0);
+        input.read("SpawnData", SpawnData.CODEC).ifPresent((spawndata) -> this.setNextSpawnData(level, pos, spawndata));
+
+        this.spawnPotentials = input.read("SpawnPotentials", SpawnData.LIST_CODEC).orElseGet(
+                () -> WeightedList.of(this.nextSpawnData != null ? this.nextSpawnData : new SpawnData()));
+
+        if (input.getInt("minSpawnDelay").isPresent()) {
+            spawnerBlockEntity.getSpawnerDelays().minSpawnDelay = input.getShortOr("minSpawnDelay", (short) 0);
+            spawnerBlockEntity.getSpawnerDelays().maxSpawnDelay = input.getShortOr("maxSpawnDelay", (short) 0);
+            spawnerBlockEntity.getSpawnerRanges().spawnCount = input.getShortOr("spawnCount", (short) 0);
         }
 
-        boolean flag1 = tag.contains("SpawnPotentials", 9);
-        if (flag1) {
-            ListTag listtag = tag.getList("SpawnPotentials", 10);
-            this.spawnPotentials = (SimpleWeightedRandomList)SpawnData.LIST_CODEC.parse(NbtOps.INSTANCE, listtag).resultOrPartial((p_186388_) -> {
-                LOGGER.warn("Invalid SpawnPotentials list: {}", p_186388_);
-            }).orElseGet(SimpleWeightedRandomList::empty);
-        } else {
-            this.spawnPotentials = SimpleWeightedRandomList.single(this.nextSpawnData != null ? this.nextSpawnData : new SpawnData());
+        if (input.getInt("maxCluster").isPresent()) {
+            spawnerBlockEntity.getSpawnerRanges().maxCluster = input.getShortOr("maxCluster", (short) 0);
+            spawnerBlockEntity.getSpawnerRanges().activationRange = input.getShortOr("activationRange", (short) 0);
         }
 
-        if (tag.contains("MinSpawnDelay", 99)) {
-            spawnerBlockEntity.getSpawnerDelays().minSpawnDelay = tag.getShort("minSpawnDelay");
-            spawnerBlockEntity.getSpawnerDelays().maxSpawnDelay = tag.getShort("maxSpawnDelay");
-            spawnerBlockEntity.getSpawnerRanges().spawnCount = tag.getShort("spawnCount");
-        }
-
-        if (tag.contains("MaxNearbyEntities", 99)) {
-            spawnerBlockEntity.getSpawnerRanges().maxCluster = tag.getShort("maxCluster");
-            spawnerBlockEntity.getSpawnerRanges().activationRange = tag.getShort("activationRange");
-        }
-
-        if (tag.contains("clusterRange", 99)) {
-            spawnerBlockEntity.getSpawnerRanges().clusterRange = tag.getShort("clusterRange");
+        if (input.getInt("clusterRange").isPresent()) {
+            spawnerBlockEntity.getSpawnerRanges().clusterRange = input.getShortOr("clusterRange", (short) 0);
         }
 
         this.displayEntity = null;
     }
 
-    public CompoundTag save(CompoundTag tag) {
-        tag.putShort("spawnDelay", (short)spawnerBlockEntity.getSpawnerDelays().spawnDelay);
-        tag.putShort("minSpawnDelay", (short)spawnerBlockEntity.getSpawnerDelays().minSpawnDelay);
-        tag.putShort("maxSpawnDelay", (short)spawnerBlockEntity.getSpawnerDelays().maxSpawnDelay);
-        tag.putShort("spawnCount", (short)spawnerBlockEntity.getSpawnerRanges().spawnCount);
-        tag.putShort("maxCluster", (short)spawnerBlockEntity.getSpawnerRanges().maxCluster);
-        tag.putShort("activationRange", (short)spawnerBlockEntity.getSpawnerRanges().activationRange);
-        tag.putShort("clusterRange", (short)spawnerBlockEntity.getSpawnerRanges().clusterRange);
+    public void save(ValueOutput output) {
+        output.putShort("spawnDelay", (short)spawnerBlockEntity.getSpawnerDelays().spawnDelay);
+        output.putShort("minSpawnDelay", (short)spawnerBlockEntity.getSpawnerDelays().minSpawnDelay);
+        output.putShort("maxSpawnDelay", (short)spawnerBlockEntity.getSpawnerDelays().maxSpawnDelay);
+        output.putShort("spawnCount", (short)spawnerBlockEntity.getSpawnerRanges().spawnCount);
+        output.putShort("maxCluster", (short)spawnerBlockEntity.getSpawnerRanges().maxCluster);
+        output.putShort("activationRange", (short)spawnerBlockEntity.getSpawnerRanges().activationRange);
+        output.putShort("clusterRange", (short)spawnerBlockEntity.getSpawnerRanges().clusterRange);
         if (this.nextSpawnData != null) {
-            tag.put("SpawnData", (Tag)SpawnData.CODEC.encodeStart(NbtOps.INSTANCE, this.nextSpawnData).getOrThrow((p_337966_) -> {
-                return new IllegalStateException("Invalid SpawnData: " + p_337966_);
-            }));
+            output.store("SpawnData", SpawnData.CODEC, this.nextSpawnData);
         }
 
-        tag.put("SpawnPotentials", (Tag)SpawnData.LIST_CODEC.encodeStart(NbtOps.INSTANCE, this.spawnPotentials).getOrThrow());
-        return tag;
+        output.store("SpawnPotentials", SpawnData.LIST_CODEC, this.spawnPotentials);
     }
 
     @Nullable

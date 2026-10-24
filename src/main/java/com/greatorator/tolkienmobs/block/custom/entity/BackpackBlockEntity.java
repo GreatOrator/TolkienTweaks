@@ -45,6 +45,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.core.component.DataComponentGetter;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidActionResult;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -192,27 +198,32 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
 
     /** Everything a backpack carries when it is picked up as an item. */
     public CompoundTag saveContents(HolderLookup.Provider registries) {
-        CompoundTag tag = new CompoundTag();
-        tag.put("inventory", itemHandler.serializeNBT(registries));
-        tag.put("upgradeInventory", upgradeItemHandler.serializeNBT(registries));
-        tag.put("bucketInventory", getMachineHandler().serializeNBT(registries));
-        FLUID_TANK.writeToNBT(registries, tag);
-        this.saveBackpackSettings(tag);
-        this.saveBackpackUpgrades(tag);
-        this.saveBackpackFluidUpgrades(tag);
-        return tag;
+        TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, registries);
+        itemHandler.serialize(output.child("inventory"));
+        upgradeItemHandler.serialize(output.child("upgradeInventory"));
+        getMachineHandler().serialize(output.child("bucketInventory"));
+        FLUID_TANK.serialize(output);
+        this.saveBackpackSettings(output);
+        this.saveBackpackUpgrades(output);
+        this.saveBackpackFluidUpgrades(output);
+        return output.buildResult();
     }
 
-    public void loadContents(CompoundTag tag, HolderLookup.Provider registries) {
-        itemHandler.deserializeNBT(registries, tag.getCompound("inventory"));
-        upgradeItemHandler.deserializeNBT(registries, tag.getCompound("upgradeInventory"));
-        if (tag.contains("bucketInventory")) {
-            getMachineHandler().deserializeNBT(registries, tag.getCompound("bucketInventory"));
+    /** The same contents read back out of the stack's component, which is still a plain tag. */
+    private void loadContents(CompoundTag contents, HolderLookup.Provider registries) {
+        this.loadContents(TagValueInput.create(ProblemReporter.DISCARDING, registries, contents));
+    }
+
+    public void loadContents(ValueInput input) {
+        itemHandler.deserialize(input.childOrEmpty("inventory"));
+        upgradeItemHandler.deserialize(input.childOrEmpty("upgradeInventory"));
+        if (input.child("bucketInventory").isPresent()) {
+            getMachineHandler().deserialize(input.childOrEmpty("bucketInventory"));
         }
-        FLUID_TANK.readFromNBT(registries, tag);
-        this.loadBackpackSettings(tag);
-        this.loadBackpackUpgrades(tag);
-        this.loadBackpackFluidUpgrades(tag);
+        FLUID_TANK.deserialize(input);
+        this.loadBackpackSettings(input);
+        this.loadBackpackUpgrades(input);
+        this.loadBackpackFluidUpgrades(input);
         FLUID_TANK.setCapacity(getMaxMB());
     }
 
@@ -230,7 +241,7 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
     }
 
     @Override
-    protected void applyImplicitComponents(BlockEntity.DataComponentInput input) {
+    protected void applyImplicitComponents(DataComponentGetter input) {
         super.applyImplicitComponents(input);
         CustomData contents = input.get(TolkienDataComponents.BACKPACK_CONTENTS.get());
         if (contents != null) {
@@ -338,39 +349,34 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider lookupProvider) {
-        this.loadAdditional(tag, lookupProvider);
-    }
-
-    @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
-        CompoundTag tag = new CompoundTag();
-        saveAdditional(tag, pRegistries);
-        return tag;
+        TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, pRegistries);
+        saveAdditional(output);
+        return output.buildResult();
     }
 
     @Override
-    protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        pTag.put("inventory", itemHandler.serializeNBT(pRegistries));
-        pTag.put("upgradeInventory", upgradeItemHandler.serializeNBT(pRegistries));
-        pTag = FLUID_TANK.writeToNBT(pRegistries, pTag);
-        this.saveBackpackSettings(pTag);
-        this.saveBackpackUpgrades(pTag);
-        this.saveBackpackFluidUpgrades(pTag);
+    protected void saveAdditional(ValueOutput output) {
+        itemHandler.serialize(output.child("inventory"));
+        upgradeItemHandler.serialize(output.child("upgradeInventory"));
+        FLUID_TANK.serialize(output);
+        this.saveBackpackSettings(output);
+        this.saveBackpackUpgrades(output);
+        this.saveBackpackFluidUpgrades(output);
 
-        super.saveAdditional(pTag, pRegistries);
+        super.saveAdditional(output);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        super.loadAdditional(pTag, pRegistries);
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
 
-        itemHandler.deserializeNBT(pRegistries, pTag.getCompound("inventory"));
-        upgradeItemHandler.deserializeNBT(pRegistries, pTag.getCompound("upgradeInventory"));
-        FLUID_TANK.readFromNBT(pRegistries, pTag);
-        this.loadBackpackSettings(pTag);
-        this.loadBackpackUpgrades(pTag);
-        this.loadBackpackFluidUpgrades(pTag);
+        itemHandler.deserialize(input.childOrEmpty("inventory"));
+        upgradeItemHandler.deserialize(input.childOrEmpty("upgradeInventory"));
+        FLUID_TANK.deserialize(input);
+        this.loadBackpackSettings(input);
+        this.loadBackpackUpgrades(input);
+        this.loadBackpackFluidUpgrades(input);
         FLUID_TANK.setCapacity(getMaxMB());
     }
 

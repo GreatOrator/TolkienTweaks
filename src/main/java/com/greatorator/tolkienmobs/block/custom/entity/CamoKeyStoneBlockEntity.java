@@ -29,6 +29,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 
 import static com.greatorator.tolkienmobs.block.custom.ChameleonBlock.ACTIVE;
@@ -171,35 +173,29 @@ public class CamoKeyStoneBlockEntity extends TolkienBlockEntity implements MenuP
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider lookupProvider) {
-        this.loadAdditional(tag, lookupProvider);
-    }
-
-    @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
         CompoundTag nbt = this.saveWithoutMetadata(pRegistries);
         nbt.putString("keyCode", getKeyStoneData().keyCode);
         nbt.putInt("tickDelay", getTickDelay());
-        saveAdditional(nbt, pRegistries);
         return nbt;
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
-        tag.putInt("tickDelay", getTickDelay());
-        tag.putInt("activeTime", this.activeTime);
-        this.saveKeyStoneSettings(tag);
-        this.saveKeyStoneData(tag);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        output.putInt("tickDelay", getTickDelay());
+        output.putInt("activeTime", this.activeTime);
+        this.saveKeyStoneSettings(output);
+        this.saveKeyStoneData(output);
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        setTickDelay(tag.getInt("tickDelay"));
-        this.activeTime = tag.getInt("activeTime");
-        this.loadKeyStoneSettings(tag);
-        this.loadKeyStoneData(tag);
-        super.loadAdditional(tag, provider);
+    public void loadAdditional(ValueInput input) {
+        setTickDelay(input.getIntOr("tickDelay", 0));
+        this.activeTime = input.getIntOr("activeTime", 0);
+        this.loadKeyStoneSettings(input);
+        this.loadKeyStoneData(input);
+        super.loadAdditional(input);
     }
 
     public void tickClient() {
