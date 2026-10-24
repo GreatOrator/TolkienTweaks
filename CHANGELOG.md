@@ -60,6 +60,11 @@ All notable changes to this project will be documented in this file.
   changes; it is the same text, in the same colour, in the same place on screen. The sleeping bag
   itself keeps its reason for a refused sleep: 26.1 hands that reason back as a record, so the
   "too far away" / "obstructed" line still shows above the hotbar when lying down is not allowed.
+- A sleeping bag still blows up where a bed would: the "does a bed work here" test reads the
+  dimension's own bed rule now, so it explodes in the Nether and the End exactly as before and
+  stays intact in the Overworld. Nothing changes in a vanilla world; a datapack dimension that
+  forbids beds now gets the default bed rule rather than the old flag, which is what a vanilla bed
+  follows too.
 
 ## [4.4.83-Final] - 10.22.2026
 

@@ -654,9 +654,21 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   `Player` version is now a stub that starts sleeping and reports success; the checks that can fail
   - too far away, obstructed, a bed rule that forbids sleeping - live in `ServerPlayer`'s override,
   which the call still reaches because the instance is a server player.
-- Still open in the same file, untouched here: `canSetSpawn(Level)` (the check that turns an
-  unusable bed into an explosion) is the `BED_RULE` environment attribute now, `Villager` moved to
-  `npc.villager`, `fallOn` takes a `double` distance, and `Level#blockUpdated` is gone.
+- The bed-explosion check is on `BED_RULE` now, so this one was a behaviour question and not a
+  rename. `BedBlock#canSetSpawn(Level)` read the dimension type's `bedWorks` flag; 26.1 replaced
+  that flag with the `gameplay/bed_rule` environment attribute, and vanilla's own bed explodes on
+  `bedRule.explodes()` rather than on a spawn-point check. The bag does the same:
+  `level.environmentAttributes().getValue(EnvironmentAttributes.BED_RULE, pos)`, then the same
+  remove-both-halves-and-explode it always did.
+- The rule can also carry an error message, which vanilla shows above the hotbar just before the
+  blast; that line is here too. It is empty for the nether and the end, so a vanilla world sees no
+  new text - it only appears in a datapack that sets `error_message` on a rule that explodes.
+- For the vanilla dimensions the two ways of asking agree: the nether and the end both set
+  `explodes: true`, the overworld sets `can_set_spawn: always`. A custom dimension that only clears
+  `bedWorks` without giving a `bed_rule` now gets the default rule, which does not explode -
+  exactly what a vanilla bed does there since 26.1, so the bag and the bed still behave alike.
+- Still open in the same file, untouched here: `Villager` moved to `npc.villager`, `fallOn` takes a
+  `double` distance, and `Level#blockUpdated` is gone.
 
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
