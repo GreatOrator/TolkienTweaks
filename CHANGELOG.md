@@ -322,6 +322,10 @@ All notable changes to this project will be documented in this file.
   themselves - 26.1 picks it from the fluid's own textures - so make sure mithril and morgul iron
   still look right in a world.
 
+### Fixed
+
+- The mod's network channel works again. 26.1 split a bidirectional payload into two handlers, so the channel registered only its server side and the client stopped at launch with "Some clientbound payloads are missing client-side handlers: [tolkienmobs:network]". The client handler is now passed alongside the server one; no packet's contents changed, so milestones, sounds, indexed chat lines and block-data updates travel as before.
+
 ## [4.4.83-Final] - 10.22.2026
 
 ### Added

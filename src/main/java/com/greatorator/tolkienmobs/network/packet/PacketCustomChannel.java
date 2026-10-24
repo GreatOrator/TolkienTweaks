@@ -86,27 +86,26 @@ public class PacketCustomChannel {
                     return new PacketCustom.Pkt(type, access, buf.readBytes(buf.readableBytes()));
                 }
         );
+        // 26.1 split the two directions of a bidirectional payload: the handler given here is the server one,
+        // and a clientbound payload with no client handler of its own aborts the client's network setup at
+        // launch. The client handler therefore has to be passed explicitly rather than branched on inside one
+        // handler, which is what the old single-argument form assumed.
         registrar.playBidirectional(
                 type,
                 codec,
                 (payload, context) -> {
-                    switch (context.flow()) {
-                        case CLIENTBOUND -> {
-                            if (client != null) {
-                                enqueue(context, payload, () -> {
-                                    client.handlePacket(new PacketCustom(payload), Minecraft.getInstance());
-                                });
-                            }
-                        }
-                        case SERVERBOUND -> {
-                            if (server != null) {
-                                enqueue(context, payload, () -> {
-                                    server.handlePacket(new PacketCustom(payload), (ServerPlayer) context.player());
-                                });
-                            }
-                        }
+                    if (server != null) {
+                        enqueue(context, payload, () -> {
+                            server.handlePacket(new PacketCustom(payload), (ServerPlayer) context.player());
+                        });
                     }
-
+                },
+                (payload, context) -> {
+                    if (client != null) {
+                        enqueue(context, payload, () -> {
+                            client.handlePacket(new PacketCustom(payload), Minecraft.getInstance());
+                        });
+                    }
                 }
         );
         registrar.configurationToClient(
