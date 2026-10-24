@@ -838,6 +838,33 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   result is `assemble(container.asCraftInput())`. The rest of the grid update - `getRecipeFor`,
   `setRecipeUsed`, `isItemEnabled` and the three result-slot writes - is unchanged.
 
+### Backpack screen — DONE
+
+- The usual four hooks: `extractBackground` (the nine upgrade-variant panels, the tank overlay and
+  the fluid), `extractLabels` (the three captions), `extractTooltip` (the button localisations and
+  the tank), and no `render` override at all. The 256x256 size is a constructor argument now, and
+  the upgrade panel's texture is a constant instead of an `Identifier` built every frame.
+- `hasClickedOutside` lost its `mouseButton` argument: it is
+  `(mouseX, mouseY, guiLeft, guiTop)` and the click event keeps the button. The screen's five-pixel
+  wider-than-the-GUI test for the upgrade panel is otherwise the same.
+- `renderSlotContents` was overridden only to call `super`, so it is gone rather than re-signed.
+- The right-click on a toggle is `toggleButton.onClick(event)` again, and the three payloads go
+  through `ClientPacketDistributor`.
+- **`FluidTankRenderer` had to be ported with it**, because the tank draws through it and it was on
+  `GuiGraphics` too. Its draw is `GuiGraphicsExtractor` plus a `Matrix3x2fStack` for the translate;
+  the blend switches and `RenderSystem.setShaderColor` are gone - the GUI pipeline blends already and
+  the tint rides on each blit's colour argument.
+- Its sprite and tint are the bigger change: 26.1 replaced the per-draw
+  `IClientFluidTypeExtensions#getStillTexture`/`getTintColor` calls with a baked `FluidModel` per
+  fluid state. The still sprite is `getModelManager().getFluidStateModelSet().get(state)` ->
+  `stillMaterial().sprite()`, already baked against the block atlas, so the old atlas lookup is
+  gone; the tint is the model's `FluidTintSource#colorAsStack`, or white when the fluid declares no
+  tint. The masked-UV tiling maths is unchanged.
+- The tank's tooltip is requested at the cursor. The old code passed `mouseX - guiLeft`,
+  `mouseY - guiTop` to a call that wanted absolute coordinates, so the line sat up and left of the
+  pointer by the GUI's own offset; `setTooltipForNextFrame` takes the cursor position like every
+  other tooltip does now.
+
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
   26.1.2 MDK's version; NeoForge requires 9.1.0 or newer), foojay resolver 0.8.0 → 1.0.0.

@@ -2,12 +2,11 @@ package com.greatorator.tolkienmobs.containers.handlers;
 
 import com.google.common.base.Preconditions;
 import com.greatorator.tolkienmobs.TolkienMobsMain;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -15,7 +14,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.client.fluid.FluidTintSource;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 
@@ -55,19 +54,19 @@ public class FluidTankRenderer {
         this.height = height;
     }
 
-    public void render(GuiGraphics guiGraphics, int x, int y, FluidStack fluidStack) {
-        RenderSystem.enableBlend();
-        guiGraphics.pose().pushPose();
-        {
-            guiGraphics.pose().translate(x, y, 0);
-            drawFluid(guiGraphics, width, height, fluidStack);
-        }
-        guiGraphics.pose().popPose();
-        RenderSystem.setShaderColor(1, 1, 1, 1);
-        RenderSystem.disableBlend();
+    /**
+     * 26.1 draws a GUI through the extractor, whose pose is an {@code org.joml.Matrix3x2fStack} and
+     * has no blend or shader-colour state to switch: the GUI pipeline blends already, and the tint
+     * rides on each blit's colour argument.
+     */
+    public void render(GuiGraphicsExtractor graphics, int x, int y, FluidStack fluidStack) {
+        graphics.pose().pushMatrix();
+        graphics.pose().translate(x, y);
+        drawFluid(graphics, width, height, fluidStack);
+        graphics.pose().popMatrix();
     }
 
-    private void drawFluid(GuiGraphics guiGraphics, final int width, final int height, FluidStack fluidStack) {
+    private void drawFluid(GuiGraphicsExtractor graphics, final int width, final int height, FluidStack fluidStack) {
         Fluid fluid = fluidStack.getFluid();
         if (fluid.isSame(Fluids.EMPTY)) {
             return;
@@ -86,25 +85,29 @@ public class FluidTankRenderer {
             scaledAmount = height;
         }
 
-        drawTiledSprite(guiGraphics, width, height, fluidColor, scaledAmount, fluidStillSprite);
+        drawTiledSprite(graphics, width, height, fluidColor, scaledAmount, fluidStillSprite);
+    }
+
+    /**
+     * 26.1 bakes a fluid's still and flowing sprites and its tint into a {@link FluidModel}, keyed by
+     * the fluid state, instead of asking {@code IClientFluidTypeExtensions} for them per draw. The
+     * sprite comes pre-baked against the block atlas, so there is no atlas lookup left to do here.
+     */
+    private static FluidModel getFluidModel(FluidStack fluidStack) {
+        return Minecraft.getInstance().getModelManager().getFluidStateModelSet()
+                .get(fluidStack.getFluid().defaultFluidState());
     }
 
     private TextureAtlasSprite getStillFluidSprite(FluidStack fluidStack) {
-        Fluid fluid = fluidStack.getFluid();
-        IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluid);
-        Identifier fluidStill = renderProperties.getStillTexture(fluidStack);
-
-        Minecraft minecraft = Minecraft.getInstance();
-        return minecraft.getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(fluidStill);
+        return getFluidModel(fluidStack).stillMaterial().sprite();
     }
 
-    private int getColorTint(FluidStack ingredient) {
-        Fluid fluid = ingredient.getFluid();
-        IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluid);
-        return renderProperties.getTintColor(ingredient);
+    private int getColorTint(FluidStack fluidStack) {
+        FluidTintSource tintSource = getFluidModel(fluidStack).fluidTintSource();
+        return tintSource == null ? 0xFFFFFFFF : tintSource.colorAsStack(fluidStack);
     }
 
-    private static void drawTiledSprite(GuiGraphics guiGraphics, final int tiledWidth, final int tiledHeight, int color, long scaledAmount, TextureAtlasSprite sprite) {
+    private static void drawTiledSprite(GuiGraphicsExtractor graphics, final int tiledWidth, final int tiledHeight, int color, long scaledAmount, TextureAtlasSprite sprite) {
         final int xTileCount = tiledWidth / TEXTURE_SIZE;
         final int xRemainder = tiledWidth - (xTileCount * TEXTURE_SIZE);
         final long yTileCount = scaledAmount / TEXTURE_SIZE;
@@ -122,13 +125,13 @@ public class FluidTankRenderer {
                     long maskTop = TEXTURE_SIZE - height;
                     int maskRight = TEXTURE_SIZE - width;
 
-                    drawTextureWithMasking(guiGraphics, x, y, sprite, maskTop, maskRight, color);
+                    drawTextureWithMasking(graphics, x, y, sprite, maskTop, maskRight, color);
                 }
             }
         }
     }
 
-    private static void drawTextureWithMasking(GuiGraphics guiGraphics, int xCoord, int yCoord, TextureAtlasSprite textureSprite, long maskTop, long maskRight, int color) {
+    private static void drawTextureWithMasking(GuiGraphicsExtractor graphics, int xCoord, int yCoord, TextureAtlasSprite textureSprite, long maskTop, long maskRight, int color) {
         float uMin = textureSprite.getU0();
         float uMax = textureSprite.getU1();
         float vMin = textureSprite.getV0();
@@ -141,8 +144,8 @@ public class FluidTankRenderer {
         int uWidth = Math.max(1, Math.round((uMax - uMin) * ATLAS_TEXTURE_SIZE));
         int vHeight = Math.max(1, Math.round((vMax - vMin) * ATLAS_TEXTURE_SIZE));
 
-        guiGraphics.blit(
-                RenderType::guiTextured,
+        graphics.blit(
+                RenderPipelines.GUI_TEXTURED,
                 textureSprite.atlasLocation(),
                 xCoord,
                 yCoord,

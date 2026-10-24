@@ -88,7 +88,10 @@ All notable changes to this project will be documented in this file.
 - A held backpack still locks the slot it is carried in, so it cannot be stashed inside itself, and
   it is still the same slot whether you carry it in your selected hotbar slot or in your offhand.
   Its crafting pane still marks results as player-crafted the way it did, and still fills its result
-  slot from the first matching recipe.
+  slot from the first matching recipe. The backpack screen is ported with it: the same nine upgrade
+  panels, the same fluid tank, and the same sleeping-bag, campfire and upgrade toggles, with a right
+  click still stepping a toggle backwards. The tank's fluid level reads its colour and texture from
+  the game's own fluid models now, and its tooltip appears at the pointer rather than offset from it.
 - Every message the mod sends a player now uses 26.1's own call for it: the chat lines go through
   the system-message call, and the three that flash above the hotbar - the backpack's "no room",
   the occupied sleeping bag and a refused sleep - through the overlay one. Nothing the player reads
