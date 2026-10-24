@@ -374,7 +374,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.add("screen.tolkienmobs.backpack.campfire.remove", "收拾营火");
             this.add("screen.tolkienmobs.backpack.no_room", "这里没有足够的空间");
             this.add("key.tolkienmobs.open_backpack", "打开背包（饰品背部栏位）");
-            this.add("key.categories.tolkienmobs", "托尔金微调");
+            this.add("key.category.tolkienmobs.general", "托尔金微调");
             this.add("tooltip.tolkienmobs.backpack.controls", "右键打开，潜行+右键方块放置");
             this.add("screen.tolkienmobs.backpack.close.upgrade", "关闭升级窗口");
             this.add("screen.tolkienmobs.backpack.open.upgrade", "打开升级窗口");

@@ -1682,6 +1682,37 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   machine, the camo fluid block's neighbour fill and the two effects are compile-checked only, and
   the bucket-in/out paths are what to watch in the test world.
 
+### The backpack's removal, sync and keybind — DONE
+
+- **`Block#onRemove` no longer exists**, so the pack's cleanup moved to
+  `BlockEntity#preRemoveSideEffects(BlockPos, BlockState)`, which 26.1 calls on the block entity
+  before it is discarded. `BackpackBlock` lost its override outright, and `BackpackBlockEntity`
+  takes the sleeping bag and campfire it put in front of itself back out there - the same call the
+  old `onRemove` made after `dropContentsOnDestroy`. The `drops()` call the old override also made
+  went with it because that method is an empty stub; the pack's contents travel in the item's
+  components, which `playerWillDestroy` already copies in creative and the loot table does otherwise.
+- **The `onDataPacket` override is deleted, not re-signed.** It only called `super`; NeoForge's
+  `IBlockEntityExtension#onDataPacket(Connection, ValueInput)` default is
+  `self().loadWithComponents(input)`, which is what the pack did by hand. `getUpdatePacket` and
+  `getUpdateTag` are untouched, so a client still gets the pack's settings and tank as before.
+- **The backpack's Curios key follows a new key category API.** 26.1's `KeyMapping` takes a
+  `KeyMapping.Category` record, not a free-form category string: the label is derived from the
+  category's id as `key.category.<namespace>.<path>`, and `Category.register(Identifier)` is
+  deprecated in favour of `RegisterKeyMappingsEvent#registerCategory`. The key now belongs to
+  `tolkienmobs:general`, which is registered in the same `RegisterKeyMappingsEvent` handler before
+  the key itself. Both lang providers and the generated `en_us`/`zh_cn` move the old
+  `key.categories.tolkienmobs` label to `key.category.tolkienmobs.general`, with the same text.
+- **A client packet goes through `ClientPacketDistributor`.** `PacketDistributor.sendToServer` is
+  gone in 26.1; the client-side class keeps the same single-payload-plus-varargs shape, so the
+  curio key's `OpenBackpackCurioManager` send is a change of import and receiver only.
+- **Verified:** whole-tree `javac` at **221** errors, down from 227, with **no error left naming a
+  backpack class, `KeyMapping` or `BackpackKeyHandler`** - `BackpackBlock` 2 → 0,
+  `BackpackBlockEntity` 2 → 0 and `BackpackKeyHandler` 1 → 0, and nothing new anywhere. The pack's
+  family is compile-clean apart from deprecation warnings on the `IItemHandler` slot views, which
+  stay until the menus move to `ResourceHandlerSlot`. Nothing was opened in game: the key is a
+  client-side path, so it needs a client run with Curios installed to check the category shows up in
+  Controls and that B still opens the pack.
+
 ## Ordered work list
 
 1. **Build stack — DONE.** MDG 2, JDK 25, NeoForge 26.1.2, the four dependency bumps. The
@@ -1704,10 +1735,11 @@ from **3,470 errors in 337 files to 2,801 in 320**.
    modifier's priority and the two numeric item model properties. No error is left under `item/`,
    in `TolkienItems`, `TolkienLootFunctions`, `TrinketRandomlyFunction`, `TolkienItemsModifier` or
    `TolkienItemProperties`.
-5. **Block entities.** `preRemoveSideEffects` / `affectNeighborsAfterRemoval`, and
-   `dropContentsOnDestroy` in `CamoChestBlock`; `onRemove`'s new shape and `onDataPacket`'s
-   two-argument form in the backpack pair. The capability side of the backpack and camo chest is
-   done (see *The capability API - DONE* above).
+5. **Block entities.** The backpack pair is done - `onRemove`'s replacement and the `onDataPacket`
+   override (see *The backpack's removal, sync and keybind - DONE* above) - and so is the capability
+   side of the backpack and camo chest (see *The capability API - DONE* above). Still open is the
+   camo chest's own removal path, which is where the errors left in `CamoChestBlock` and
+   `CamoChestBlockEntity` are.
 6. **Worldgen - done except the datagen.** The carvers, trees, configured and placed features,
    surface rules and the biome registration layer all compile (see *The worldgen registration layer
    - DONE* above), and the TerraBlender calls in `TolkienMobsMain` were checked against
@@ -1724,7 +1756,9 @@ from **3,470 errors in 337 files to 2,801 in 320**.
    loot side and the whole recipe family are done: the three loot providers, the global loot
    modifier, the trinket's loot function, `TolkienRecipeHelper`, both custom recipe builders, both
    recipe classes and their serializers all compile.
-10. **Long tail.** JEI plugin (4 files), Curios (1), network payloads, the two sound instances.
+10. **Long tail.** JEI plugin (4 files), network payloads, the two sound instances. The Curios side
+    compiles now that the backpack key uses 26.1's `KeyMapping` category and
+    `ClientPacketDistributor` (see *The backpack's removal, sync and keybind - DONE* above).
 
 ## Verification
 

@@ -97,18 +97,6 @@ public class BackpackBlock extends TolkienEntityBlock {
         return RenderShape.MODEL;
     }
 
-    @Override
-    public void onRemove(BlockState state, Level worldIn, BlockPos pPos, BlockState newState, boolean isMoving) {
-        if (state.getBlock() != newState.getBlock()) {
-            if (worldIn.getBlockEntity(pPos) instanceof BackpackBlockEntity blockEntity) {
-                blockEntity.drops();
-                blockEntity.removeDeployables(state.getValue(FACING));
-            }
-        }
-
-        super.onRemove(state, worldIn, pPos, newState, isMoving);
-    }
-
     /** Creative mode skips loot tables, so drop a backpack carrying the contents ourselves (like shulker boxes). */
     @Override
     public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {

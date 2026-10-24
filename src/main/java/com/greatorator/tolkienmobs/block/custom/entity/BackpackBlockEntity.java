@@ -22,7 +22,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -372,9 +371,15 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
+    /**
+     * 26.1 calls this before the block entity goes, which is where the sleeping bag and campfire the
+     * pack put in front of itself are taken back out. The old {@code Block#onRemove} did the same
+     * thing; the hook it used no longer exists.
+     */
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider pRegistries) {
-        super.onDataPacket(net, pkt, pRegistries);
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        this.removeDeployables(state.getValue(BackpackBlock.FACING));
+        super.preRemoveSideEffects(pos, state);
     }
 
     /** Upgrade Handling */
