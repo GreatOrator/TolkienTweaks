@@ -4,23 +4,25 @@ import com.greatorator.tolkienmobs.block.custom.entity.MilestoneBlockEntity;
 import com.greatorator.tolkienmobs.util.block.MilestoneSettings;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public interface MilestoneSettingsBlockEntity {
     MilestoneSettings getMilestoneSettings();
     BlockEntity getBlockEntity();
 
-    default void saveMilestoneSettings(CompoundTag tag) {
-        tag.putInt("milestoneCost", getMilestoneSettings().distance);
-        tag.putInt("milestoneDimension", getMilestoneSettings().dimension);
-        tag.putString("milestoneTitle", getMilestoneSettings().name);
-        tag.putString("milestoneUUID", getMilestoneSettings().uuid);
+    default void saveMilestoneSettings(ValueOutput output) {
+        output.putInt("milestoneCost", getMilestoneSettings().distance);
+        output.putInt("milestoneDimension", getMilestoneSettings().dimension);
+        output.putString("milestoneTitle", getMilestoneSettings().name);
+        output.putString("milestoneUUID", getMilestoneSettings().uuid);
     }
 
-    default void loadMilestoneSettings(CompoundTag tag) {
-        getMilestoneSettings().distance = tag.getInt("milestoneCost");
-        getMilestoneSettings().dimension = tag.getInt("milestoneDimension");
-        getMilestoneSettings().name = tag.getString("milestoneTitle");
-        getMilestoneSettings().uuid = tag.getString("milestoneUUID");
+    default void loadMilestoneSettings(ValueInput input) {
+        getMilestoneSettings().distance = input.getIntOr("milestoneCost", 0);
+        getMilestoneSettings().dimension = input.getIntOr("milestoneDimension", 0);
+        getMilestoneSettings().name = input.getStringOr("milestoneTitle", "");
+        getMilestoneSettings().uuid = input.getStringOr("milestoneUUID", "");
     }
 
     default void setMilestoneSettings(MilestoneSettings milestoneData) {

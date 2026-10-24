@@ -32,6 +32,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
@@ -149,39 +151,33 @@ public class MilestoneBlockEntity extends TolkienBlockEntity implements MenuProv
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider lookupProvider) {
-        this.loadAdditional(tag, lookupProvider);
-    }
-
-    @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
         CompoundTag nbt = this.saveWithoutMetadata(pRegistries);
         nbt.putString("milestoneTitle", getMilestoneSettings().name);
         nbt.putString("milestoneUUID", getMilestoneSettings().uuid);
         nbt.putInt("milestoneCost", getMilestoneDistance());
         nbt.putInt("milestoneDimension", getMilestoneDimension());
-        saveAdditional(nbt, pRegistries);
         return nbt;
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.saveAdditional(tag, provider);
-        tag.putInt("milestoneCost", getMilestoneDistance());
-        tag.putInt("milestoneDimension", getMilestoneDimension());
-        tag.putString("milestoneTitle", getMilestoneSettings().name);
-        tag.putString("milestoneUUID", getMilestoneSettings().uuid);
-        tag.putLong("milestonePos", this.pos.asLong());
-        this.saveMilestoneSettings(tag);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        output.putInt("milestoneCost", getMilestoneDistance());
+        output.putInt("milestoneDimension", getMilestoneDimension());
+        output.putString("milestoneTitle", getMilestoneSettings().name);
+        output.putString("milestoneUUID", getMilestoneSettings().uuid);
+        output.putLong("milestonePos", this.pos.asLong());
+        this.saveMilestoneSettings(output);
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        setMilestoneDistance(tag.getInt("milestoneCost"));
-        setMilestoneDimension(tag.getInt("milestoneDimension"));
-        this.pos = BlockPos.of(tag.getLong("milestonePos"));
-        this.loadMilestoneSettings(tag);
-        super.loadAdditional(tag, provider);
+    public void loadAdditional(ValueInput input) {
+        setMilestoneDistance(input.getIntOr("milestoneCost", 0));
+        setMilestoneDimension(input.getIntOr("milestoneDimension", 0));
+        this.pos = BlockPos.of(input.getLongOr("milestonePos", 0L));
+        this.loadMilestoneSettings(input);
+        super.loadAdditional(input);
     }
 
     @Override

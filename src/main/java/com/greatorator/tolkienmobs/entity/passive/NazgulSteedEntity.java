@@ -29,6 +29,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -100,37 +102,33 @@ public class NazgulSteedEntity extends AbstractChestedHorse implements GeoEntity
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
-        compound.putBoolean("ChestedGoat", this.hasChest());
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putBoolean("ChestedGoat", this.hasChest());
         if (this.hasChest()) {
-            ListTag listtag = new ListTag();
+            ValueOutput.ValueOutputList list = output.childrenList("Items");
 
             for(int i = 1; i < this.inventory.getContainerSize(); ++i) {
                 ItemStack itemstack = this.inventory.getItem(i);
                 if (!itemstack.isEmpty()) {
-                    CompoundTag compoundtag = new CompoundTag();
-                    compoundtag.putByte("Slot", (byte)(i - 1));
-                    listtag.add(itemstack.save(this.registryAccess(), compoundtag));
+                    ValueOutput entry = list.addChild();
+                    entry.putByte("Slot", (byte)(i - 1));
+                    entry.store("item", ItemStack.CODEC, itemstack);
                 }
             }
-            compound.put("Items", listtag);
         }
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
-        this.setChest(compound.getBoolean("ChestedGoat"));
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        this.setChest(input.getBooleanOr("ChestedGoat", false));
         this.createInventory();
         if (this.hasChest()) {
-            ListTag listtag = compound.getList("Items", 10);
-
-            for(int i = 0; i < listtag.size(); ++i) {
-                CompoundTag compoundtag = listtag.getCompound(i);
-                int j = compoundtag.getByte("Slot") & 255;
+            for (ValueInput entry : input.childrenListOrEmpty("Items")) {
+                int j = entry.getByteOr("Slot", (byte) 0) & 255;
                 if (j < this.inventory.getContainerSize() - 1) {
-                    this.inventory.setItem(j + 1, (ItemStack)ItemStack.parse(this.registryAccess(), compoundtag).orElse(ItemStack.EMPTY));
+                    this.inventory.setItem(j + 1, entry.read("item", ItemStack.CODEC).orElse(ItemStack.EMPTY));
                 }
             }
         }

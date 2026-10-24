@@ -4,25 +4,27 @@ import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
 import com.greatorator.tolkienmobs.util.block.BackpackFluidUpgrades;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public interface BackpackFluidUpgradesBlockEntity {
     BackpackFluidUpgrades getBackpackFluidUpgrades();
     BlockEntity getBlockEntity();
 
-    default void saveBackpackFluidUpgrades(CompoundTag tag) {
-        tag.putBoolean("fluid_tank", getBackpackFluidUpgrades().fluid_tank);
-        tag.putBoolean("fluid_tank_2", getBackpackFluidUpgrades().fluid_tank_2);
-        tag.putBoolean("fluid_tank_3", getBackpackFluidUpgrades().fluid_tank_3);
-        tag.putBoolean("fluid_tank_4", getBackpackFluidUpgrades().fluid_tank_4);
-        tag.putBoolean("fluid_tank_5", getBackpackFluidUpgrades().fluid_tank_5);
+    default void saveBackpackFluidUpgrades(ValueOutput output) {
+        output.putBoolean("fluid_tank", getBackpackFluidUpgrades().fluid_tank);
+        output.putBoolean("fluid_tank_2", getBackpackFluidUpgrades().fluid_tank_2);
+        output.putBoolean("fluid_tank_3", getBackpackFluidUpgrades().fluid_tank_3);
+        output.putBoolean("fluid_tank_4", getBackpackFluidUpgrades().fluid_tank_4);
+        output.putBoolean("fluid_tank_5", getBackpackFluidUpgrades().fluid_tank_5);
     }
 
-    default void loadBackpackFluidUpgrades(CompoundTag tag) {
-        getBackpackFluidUpgrades().fluid_tank = tag.getBoolean("fluid_tank");
-        getBackpackFluidUpgrades().fluid_tank_2 = tag.getBoolean("fluid_tank_2");
-        getBackpackFluidUpgrades().fluid_tank_3 = tag.getBoolean("fluid_tank_3");
-        getBackpackFluidUpgrades().fluid_tank_4 = tag.getBoolean("fluid_tank_4");
-        getBackpackFluidUpgrades().fluid_tank_5 = tag.getBoolean("fluid_tank_5");
+    default void loadBackpackFluidUpgrades(ValueInput input) {
+        getBackpackFluidUpgrades().fluid_tank = input.getBooleanOr("fluid_tank", false);
+        getBackpackFluidUpgrades().fluid_tank_2 = input.getBooleanOr("fluid_tank_2", false);
+        getBackpackFluidUpgrades().fluid_tank_3 = input.getBooleanOr("fluid_tank_3", false);
+        getBackpackFluidUpgrades().fluid_tank_4 = input.getBooleanOr("fluid_tank_4", false);
+        getBackpackFluidUpgrades().fluid_tank_5 = input.getBooleanOr("fluid_tank_5", false);
     }
 
     default void setBackpackFluidUpgrades(BackpackFluidUpgrades backpackData) {

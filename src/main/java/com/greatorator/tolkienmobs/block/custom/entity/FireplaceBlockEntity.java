@@ -29,6 +29,8 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.items.ItemStackHandler;
@@ -142,34 +144,34 @@ public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProv
     }
 
     @Override
-    protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        pTag.put("fuel", fuelHandler.serializeNBT(pRegistries));
-        pTag.put("input", itemHandler.serializeNBT(pRegistries));
-        pTag.put("output", outputHandler.serializeNBT(pRegistries));
+    protected void saveAdditional(ValueOutput output) {
+        fuelHandler.serialize(output.child("fuel"));
+        itemHandler.serialize(output.child("input"));
+        outputHandler.serialize(output.child("output"));
 
-        pTag.putInt("progress", progress);
-        pTag.putInt("burnProgress", burnProgress);
-        pTag.putInt("fuelTime", fuelTime);
-        pTag.putInt("maxFuelTime", maxFuelTime);
-        pTag.putInt("maxBurnProgress", maxBurnProgress);
-        pTag.putBoolean("isBurning", isBurning);
+        output.putInt("progress", progress);
+        output.putInt("burnProgress", burnProgress);
+        output.putInt("fuelTime", fuelTime);
+        output.putInt("maxFuelTime", maxFuelTime);
+        output.putInt("maxBurnProgress", maxBurnProgress);
+        output.putBoolean("isBurning", isBurning);
 
-        super.saveAdditional(pTag, pRegistries);
+        super.saveAdditional(output);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        super.loadAdditional(pTag, pRegistries);
-        fuelHandler.deserializeNBT(pRegistries, pTag.getCompound("fuel"));
-        itemHandler.deserializeNBT(pRegistries, pTag.getCompound("input"));
-        outputHandler.deserializeNBT(pRegistries, pTag.getCompound("output"));
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        fuelHandler.deserialize(input.childOrEmpty("fuel"));
+        itemHandler.deserialize(input.childOrEmpty("input"));
+        outputHandler.deserialize(input.childOrEmpty("output"));
 
-        progress = pTag.getInt("progress");
-        burnProgress = pTag.getInt("burnProgress");
-        fuelTime = pTag.getInt("fuelTime");
-        maxFuelTime = pTag.getInt("maxFuelTime");
-        maxBurnProgress = pTag.getInt("maxBurnProgress");
-        isBurning = pTag.getBoolean("isBurning");
+        progress = input.getIntOr("progress", 0);
+        burnProgress = input.getIntOr("burnProgress", 0);
+        fuelTime = input.getIntOr("fuelTime", 0);
+        maxFuelTime = input.getIntOr("maxFuelTime", 0);
+        maxBurnProgress = input.getIntOr("maxBurnProgress", 0);
+        isBurning = input.getBooleanOr("isBurning", false);
     }
 
     public ItemStackHandler getFuelHandler() {

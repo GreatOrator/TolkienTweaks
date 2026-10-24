@@ -1,8 +1,11 @@
 package com.greatorator.tolkienmobs.handler;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.util.BiConsumer;
 import org.apache.logging.log4j.util.TriConsumer;
@@ -11,15 +14,36 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+/**
+ * Tracks a handful of fields on one entity so they are written and read together. It sits on
+ * top of the entity's own ValueOutput / ValueInput now, so each bridge knows how to store its
+ * type and how to tell whether the key was present at all.
+ */
 public class EntityHandler<E extends Entity> {
-    public static final NBTBridge<Boolean> BOOL = bridge((key, nbt, value) -> nbt.putBoolean(key, value), (key, nbt) -> nbt.getBoolean(key));
-    public static final NBTBridge<Integer> INT = bridge((key, nbt, value) -> nbt.putInt(key, value), (key, nbt) -> nbt.getInt(key));
-    public static final NBTBridge<String > STRING = bridge((key, nbt, value) -> nbt.putString(key, value), (key, nbt) -> nbt.getString(key));
-    public static final NBTBridge<CompoundTag> NBT = bridge((key, nbt, value) -> nbt.put(key, value), (key, nbt) -> nbt.getCompound(key));
-    public static final NBTBridge<BlockPos> POS = bridge((key, nbt, value) -> nbt.putLong(key, value.asLong()), (key, nbt) -> BlockPos.of(nbt.getLong(key)));
+    public static final NBTBridge<Boolean> BOOL = bridge(
+            (key, output, value) -> output.putBoolean(key, value),
+            (key, input) -> input.getBooleanOr(key, false),
+            (key, input) -> input.read(key, Codec.BOOL).isPresent());
+    public static final NBTBridge<Integer> INT = bridge(
+            (key, output, value) -> output.putInt(key, value),
+            (key, input) -> input.getIntOr(key, 0),
+            (key, input) -> input.getInt(key).isPresent());
+    public static final NBTBridge<String> STRING = bridge(
+            (key, output, value) -> output.putString(key, value),
+            (key, input) -> input.getStringOr(key, ""),
+            (key, input) -> input.getString(key).isPresent());
+    public static final NBTBridge<CompoundTag> NBT = bridge(
+            (key, output, value) -> output.store(key, CompoundTag.CODEC, value),
+            (key, input) -> input.read(key, CompoundTag.CODEC).orElseGet(CompoundTag::new),
+            (key, input) -> input.child(key).isPresent());
+    public static final NBTBridge<BlockPos> POS = bridge(
+            (key, output, value) -> output.putLong(key, value.asLong()),
+            (key, input) -> BlockPos.of(input.getLongOr(key, 0L)),
+            (key, input) -> input.getLong(key).isPresent());
 
     final Entry<?, E>[] entries;
 
@@ -28,14 +52,14 @@ public class EntityHandler<E extends Entity> {
         this.entries = entries;
     }
 
-    public void serialize(E entity, CompoundTag nbt)
+    public void serialize(E entity, ValueOutput output)
     {
-        for (Entry<?, E> entry : entries) entry.serialize(entity, nbt);
+        for (Entry<?, E> entry : entries) entry.serialize(entity, output);
     }
 
-    public void deserialize(E entity, CompoundTag tag)
+    public void deserialize(E entity, ValueInput input)
     {
-        for (Entry<?, E> entry : entries) entry.deserialize(entity, tag);
+        for (Entry<?, E> entry : entries) entry.deserialize(entity, input);
     }
 
     @SuppressWarnings("unchecked")
@@ -53,9 +77,11 @@ public class EntityHandler<E extends Entity> {
         return new EntityHandler<>(builder.build());
     }
 
-    private static <T> NBTBridge<T> bridge(TriConsumer<String, CompoundTag, T> setter, BiFunction<String, CompoundTag, T> getter)
+    private static <T> NBTBridge<T> bridge(TriConsumer<String, ValueOutput, T> setter,
+                                           BiFunction<String, ValueInput, T> getter,
+                                           BiPredicate<String, ValueInput> exists)
     {
-        return new NBTBridge<>(setter, getter);
+        return new NBTBridge<>(setter, getter, exists);
     }
 
     public static class Entry<T, E extends Entity>
@@ -73,35 +99,40 @@ public class EntityHandler<E extends Entity> {
             this.read = read;
         }
 
-        private void serialize(E entity, CompoundTag nbt)
+        private void serialize(E entity, ValueOutput output)
         {
-            bridge.setter.accept(key, nbt, write.apply(entity));
+            bridge.setter.accept(key, output, write.apply(entity));
         }
 
-        private void deserialize(E entity, CompoundTag nbt)
+        private void deserialize(E entity, ValueInput input)
         {
-            read.accept(entity, bridge.getter.apply(key, nbt));
+            read.accept(entity, bridge.getter.apply(key, input));
         }
     }
 
     public static class NBTBridge<T>
     {
-        private final TriConsumer<String, CompoundTag, T> setter;
-        private final BiFunction<String, CompoundTag, T> getter;
+        private final TriConsumer<String, ValueOutput, T> setter;
+        private final BiFunction<String, ValueInput, T> getter;
+        private final BiPredicate<String, ValueInput> exists;
         private NBTBridge<Optional<T>> optional;
 
-        private NBTBridge(TriConsumer<String, CompoundTag, T> setter, BiFunction<String, CompoundTag, T> getter)
+        private NBTBridge(TriConsumer<String, ValueOutput, T> setter, BiFunction<String, ValueInput, T> getter,
+                          BiPredicate<String, ValueInput> exists)
         {
             this.setter = setter;
             this.getter = getter;
+            this.exists = exists;
         }
 
         public NBTBridge<Optional<T>> optional()
         {
             if (optional == null) // may not always be needed, so initalize lazily.
             {
-                return optional = new NBTBridge<>((key, nbt, value) -> value.ifPresent(j -> setter.accept(key, nbt, j)),
-                        (key, nbt) -> nbt.contains(key)? Optional.of(getter.apply(key, nbt)) : Optional.empty());
+                return optional = new NBTBridge<>(
+                        (key, output, value) -> value.ifPresent(v -> setter.accept(key, output, v)),
+                        (key, input) -> exists.test(key, input) ? Optional.of(getter.apply(key, input)) : Optional.empty(),
+                        (key, input) -> exists.test(key, input));
             }
             return optional;
         }

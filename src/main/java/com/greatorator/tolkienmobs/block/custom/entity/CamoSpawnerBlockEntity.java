@@ -16,7 +16,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -44,6 +43,10 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class CamoSpawnerBlockEntity extends TolkienBlockEntity implements MenuProvider, TolkienSpawner, SpawnerSettingsBlockEntity {
     public SpawnerSettings spawnerSettings = new SpawnerSettings(true, true, true, true);
@@ -141,40 +144,35 @@ public class CamoSpawnerBlockEntity extends TolkienBlockEntity implements MenuPr
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider lookupProvider) {
-        this.loadAdditional(tag, lookupProvider);
-    }
-
-    @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        CompoundTag tag = new CompoundTag();
-        tag.remove("SpawnPotentials");
-        saveAdditional(tag, registries);
-        return tag;
+        TagValueOutput tag = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, registries);
+        saveAdditional(tag);
+        tag.discard("SpawnPotentials");
+        return tag.buildResult();
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
 
-        this.spawnerBase.load(this.level, this.worldPosition, tag);
-        loadSpawnerSettings(tag);
+        this.spawnerBase.load(this.level, this.worldPosition, input);
+        loadSpawnerSettings(input);
         this.mobSpawnDataList.clear();
-        ListTag list = tag.getList("mob_spawn_data_list", 10);
-        list.forEach(inbt -> mobSpawnDataList.add(new MobSpawnData((CompoundTag) inbt)));
+        for (ValueInput mobData : input.childrenListOrEmpty("mob_spawn_data_list")) {
+            this.mobSpawnDataList.add(new MobSpawnData(mobData));
+        }
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        this.spawnerBase.save(tag);
-        saveSpawnerSettings(tag);
-        ListTag list = new ListTag();
+    protected void saveAdditional(ValueOutput output) {
+        this.spawnerBase.save(output);
+        saveSpawnerSettings(output);
+        ValueOutput.ValueOutputList list = output.childrenList("mob_spawn_data_list");
         for (MobSpawnData mobData : mobSpawnDataList) {
-            list.add(mobData.toNBT());
+            mobData.save(list.addChild());
         }
-        tag.put("mob_spawn_data_list", list);
 
-        super.saveAdditional(tag, registries);
+        super.saveAdditional(output);
     }
 
     @Override

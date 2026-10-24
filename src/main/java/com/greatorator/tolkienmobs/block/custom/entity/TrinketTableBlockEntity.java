@@ -30,6 +30,8 @@ import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
@@ -114,20 +116,20 @@ public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuP
     }
 
     @Override
-    protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        pTag.put("inventory", itemHandler.serializeNBT(pRegistries));
-        pTag.putInt("progress", progress);
-        pTag.putInt("max_progress", maxProgress);
+    protected void saveAdditional(ValueOutput output) {
+        itemHandler.serialize(output.child("inventory"));
+        output.putInt("progress", progress);
+        output.putInt("max_progress", maxProgress);
 
-        super.saveAdditional(pTag, pRegistries);
+        super.saveAdditional(output);
     }
 
     @Override
-    protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        super.loadAdditional(pTag, pRegistries);
-        itemHandler.deserializeNBT(pRegistries, pTag.getCompound("inventory"));
-        progress = pTag.getInt("progress");
-        maxProgress = pTag.contains("max_progress") ? Math.max(1, pTag.getInt("max_progress")) : DEFAULT_MAX_PROGRESS;
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        itemHandler.deserialize(input.childOrEmpty("inventory"));
+        progress = input.getIntOr("progress", 0);
+        maxProgress = input.getInt("max_progress").isPresent() ? Math.max(1, input.getIntOr("max_progress", 0)) : DEFAULT_MAX_PROGRESS;
     }
 
     public void drops() {

@@ -31,6 +31,8 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import com.geckolib.animatable.GeoEntity;
@@ -123,17 +125,17 @@ public class MumakilEntity extends TolkienHeardEntity implements GeoEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
-        compound.putInt("Variant", this.getTypeVariant());
-        compound.putInt("Strength", this.getStrength());
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putInt("Variant", this.getTypeVariant());
+        output.putInt("Strength", this.getStrength());
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        this.setStrength(compound.getInt("Strength"));
-        super.readAdditionalSaveData(compound);
-        this.entityData.set(VARIANT, compound.getInt("Variant"));
+    public void readAdditionalSaveData(ValueInput input) {
+        this.setStrength(input.getIntOr("Strength", 0));
+        super.readAdditionalSaveData(input);
+        this.entityData.set(VARIANT, input.getIntOr("Variant", 0));
         this.entityData.set(DRINKING, false);
     }
 

@@ -56,6 +56,8 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import com.geckolib.animatable.GeoEntity;
@@ -160,21 +162,21 @@ public abstract class DragonEntity extends TolkienMonsterEntity implements GeoEn
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag nbt) {
+    public void addAdditionalSaveData(ValueOutput output) {
         ensureHome();
-        super.addAdditionalSaveData(nbt);
+        super.addAdditionalSaveData(output);
 
-        ((EntityHandler<DragonEntity>) getSerializer()).serialize(this, nbt);
+        ((EntityHandler<DragonEntity>) getSerializer()).serialize(this, output);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag nbt) {
-        super.readAdditionalSaveData(nbt);
-        //        this.setInvulnerableTicks(tag.getInt("Invul"));
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        //        this.setInvulnerableTicks(tag.getIntOr("Invul", 0));
         if (this.hasCustomName()) {
             this.bossEvent.setName(this.getDisplayName());
         }
-        ((EntityHandler<DragonEntity>) getSerializer()).deserialize(this, nbt);
+        ((EntityHandler<DragonEntity>) getSerializer()).deserialize(this, input);
     }
 
     @Override

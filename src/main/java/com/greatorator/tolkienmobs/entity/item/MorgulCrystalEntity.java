@@ -21,6 +21,8 @@ import net.minecraft.world.level.block.BaseFireBlock;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class MorgulCrystalEntity extends Entity{
     private static final EntityDataAccessor<Optional<BlockPos>> DATA_BEAM_TARGET;
@@ -59,18 +61,18 @@ public class MorgulCrystalEntity extends Entity{
 
     }
 
-    protected void addAdditionalSaveData(CompoundTag compound) {
+    protected void addAdditionalSaveData(ValueOutput output) {
         if (this.getBeamTarget() != null) {
-            compound.put("beam_target", NbtUtils.writeBlockPos(this.getBeamTarget()));
+            output.store("beam_target", BlockPos.CODEC, this.getBeamTarget());
         }
 
-        compound.putBoolean("ShowBottom", this.showsBottom());
+        output.putBoolean("ShowBottom", this.showsBottom());
     }
 
-    protected void readAdditionalSaveData(CompoundTag compound) {
-        NbtUtils.readBlockPos(compound, "beam_target").ifPresent(this::setBeamTarget);
-        if (compound.contains("ShowBottom", 1)) {
-            this.setShowBottom(compound.getBoolean("ShowBottom"));
+    protected void readAdditionalSaveData(ValueInput input) {
+        input.read("beam_target", BlockPos.CODEC).ifPresent(this::setBeamTarget);
+        if (input.getInt("ShowBottom").isPresent()) {
+            this.setShowBottom(input.getBooleanOr("ShowBottom", false));
         }
 
     }

@@ -15,6 +15,8 @@ import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.animation.RawAnimation;
 import com.geckolib.util.GeckoLibUtil;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class SimpleTrapEntity extends BaseTrapEntity{
     private static final EntityDataAccessor<Integer> TRAP_TYPE = SynchedEntityData.defineId(SimpleTrapEntity.class,
@@ -31,13 +33,13 @@ public class SimpleTrapEntity extends BaseTrapEntity{
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag p_70037_1_) {
-        this.setTrapType(p_70037_1_.getInt("TrapType"));
+    protected void readAdditionalSaveData(ValueInput input) {
+        this.setTrapType(input.getIntOr("TrapType", 0));
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag p_213281_1_) {
-        p_213281_1_.putInt("TrapType", this.getTrapType());
+    protected void addAdditionalSaveData(ValueOutput output) {
+        output.putInt("TrapType", this.getTrapType());
     }
 
     public int getTrapType() {

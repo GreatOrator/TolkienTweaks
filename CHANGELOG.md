@@ -32,6 +32,14 @@ All notable changes to this project will be documented in this file.
   reads the same numbers as before. One behaviour note: 26.1 dropped vanilla's `mushroom_grow_block`
   tag, and the mod's decay blocks now join `SUPPORTS_VEGETATION` - the tag a small mushroom reads -
   which is worth checking in game.
+- Saved data is on 26.1's value pipeline: every entity and block entity now writes through
+  `ValueOutput` and reads through `ValueInput` instead of being handed a `CompoundTag`. That covers
+  the hosted mobs and their variant ids, the chested goat, Shadowfax and the Nazgul steed with the
+  saddlebags they carry, the backpack (including the same contents it keeps on the item), the
+  fireplace, piggy bank and trinket table inventories, the camo spawner's mob list and delays, the
+  four lockable chests' key codes, the keystone and milestone settings, and the dragon's home
+  position. Keys and nesting are unchanged, so worlds save and load the way they did; this build
+  still produces no jar, because the rest of the source is mid-port.
 
 ## [4.4.83-Final] - 10.22.2026
 
