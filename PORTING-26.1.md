@@ -16,7 +16,7 @@ measurement's other half.
 | Source | Minecraft **1.21.4**, NeoForge **21.4.161**, mod **4.4.83-Final** |
 | Target | Minecraft **26.1.2**, NeoForge **26.1.2.116**, mod **5.0.0** |
 | Java | 21 → **25** |
-| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer and the capability API are done; **227** errors left |
+| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API and the fluid/leaf/proxy batch are done; **101** errors left |
 
 What the source tree contains, counted:
 
@@ -1832,6 +1832,47 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   side. Nothing a player sees changes - the blocks that show a line get it from their item.
 - **Verified:** whole-tree `javac` at **195** errors, down from 197, with `TolkienBlock`'s two gone and
   nothing new anywhere.
+
+### The fluids, the leaves and the client proxy — DONE
+
+- **A fluid's sprites are its model now, not a client extension.** `IClientFluidTypeExtensions` lost
+  `getStillTexture`/`getFlowingTexture`/`getOverlayTexture`/`getTintColor`; the sprites and the tint
+  live on `FluidModel`, registered per fluid on `RegisterFluidModelsEvent`, which fires on a worker
+  thread while models bake. `TolkienFluidType` therefore keeps its three sprite ids and its colour as
+  fields and gained `registerFluidModel(event, still, flowing)`, which bakes one
+  `FluidModel.Unbaked(new Material(...), …, FluidTintSources.constant(tintColor))` and registers it
+  for both the source and the flowing fluid. `TolkienMobsMain.ClientModEvents` calls it for molten
+  mithril and molten morgul-iron, next to the extension registration that remains for the fog. The
+  extension's two fog hooks changed shape as well: `modifyFogColor` now fills the `Vector4f` it is
+  given instead of returning one, and `modifyFogRender` takes a `FogData` to fill rather than a
+  `FogParameters` to build, with `FogRenderer.FogMode` replaced by a nullable `FogEnvironment`.
+- **`LeavesBlock` is abstract in 26.1.** It split into `TintedParticleLeavesBlock` and
+  `UntintedParticleLeavesBlock`, each taking a leaf-particle chance and either a biome leaf tint or a
+  `ParticleOptions`; the mod's six leaf blocks are not tinted, so each is now an
+  `UntintedParticleLeavesBlock(0.01F, TolkienParticleTypes.<wood>_LEAVES.get(), properties)` - the
+  same chance vanilla uses, with the per-wood particle the mod already registered and the client
+  already provides a sprite set for.
+- **`MobEffects` renamed its fields and holds holders.** `MOVEMENT_SPEED`, `MOVEMENT_SLOWDOWN`,
+  `DIG_SPEED`, `DAMAGE_RESISTANCE` and `HEAL` are `SPEED`, `SLOWNESS`, `HASTE`, `RESISTANCE` and
+  `INSTANT_HEALTH`, and each is a `Holder<MobEffect>`, which is what `TolkienFlowerBlock` already
+  takes. The five flowers keep the effect and the seven-second duration they had.
+- **`DeferredRegister.Blocks#registerBlock` takes its properties from a supplier.** The two
+  `LiquidBlock` registrations in `TolkienFluids` pass `() -> Properties.ofFullCopy(Blocks.LAVA)…`,
+  which is the same property set built one step later.
+- **The client proxy lost its hand-rolled chat rebuild.** `GuiMessage` and `GuiMessageTag` moved to
+  `net.minecraft.client.multiplayer.chat`, `GuiMessage` is a record holding its `GuiMessageSource`,
+  and `GuiMessage.Line` wraps its parent message rather than copying the added time and the tag - so
+  the old loop that cleared `trimmedMessages` and re-added every line by hand could not be written
+  any more. 26.1's `ChatComponent` keeps that display queue itself and exposes
+  `addPlayerMessage(Component, MessageSignature, GuiMessageTag)` and `deleteMessage(MessageSignature)`, so
+  the proxy now calls those. `Screen.hasControlDown()` is gone with the rest of the screen-side
+  modifier helpers, and the window-level check is `Minecraft#hasControlDown`. The method has no
+  caller in the tree, so nothing visible changes.
+- **Verified:** whole-tree `javac` at **101** errors, down from 123 - `TolkienBlocks`' eleven,
+  `ClientProxy`'s nine, `TolkienFluidType`'s and `TolkienFluids`' two each are gone, with nothing new
+  anywhere. Nothing was run in game: the checks are a bucket of each molten metal poured out to see
+  the tinted water sprites, the falling-leaf particle under each of the six leaf blocks, and the five
+  flowers still giving their effect when eaten.
 
 ## Ordered work list
 

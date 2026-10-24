@@ -28,7 +28,7 @@ public class TolkienFluids {
             () -> new BaseFlowingFluid.Flowing(TolkienFluids.MOLTEN_MITHRIL_WATER_PROPERTIES));
     public static final DeferredBlock<LiquidBlock> MITHRIL_BLOCK = TolkienBlocks.BLOCKS.registerBlock("mithril",
             properties -> new LiquidBlock(TolkienFluids.MITHRIL_FLUID.get(), properties),
-            BlockBehaviour.Properties.ofFullCopy(Blocks.LAVA).noLootTable());
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.LAVA).noLootTable());
     public static final DeferredItem<Item> MITHRIL_FLUID_BUCKET = TolkienItems.ITEMS.registerItem("mithril_fluid_bucket",
             properties -> new BucketItem(TolkienFluids.MITHRIL_FLUID.get(), properties.craftRemainder(Items.BUCKET).stacksTo(1)));
 
@@ -38,7 +38,7 @@ public class TolkienFluids {
             () -> new BaseFlowingFluid.Flowing(TolkienFluids.MOLTEN_MORGULIRON_WATER_PROPERTIES));
     public static final DeferredBlock<LiquidBlock> MORGULIRON_BLOCK = TolkienBlocks.BLOCKS.registerBlock("morguliron",
             properties -> new LiquidBlock(TolkienFluids.MORGULIRON_FLUID.get(), properties),
-            BlockBehaviour.Properties.ofFullCopy(Blocks.LAVA).noLootTable());
+            () -> BlockBehaviour.Properties.ofFullCopy(Blocks.LAVA).noLootTable());
     public static final DeferredItem<Item> MORGULIRON_FLUID_BUCKET = TolkienItems.ITEMS.registerItem("morguliron_fluid_bucket",
             properties -> new BucketItem(TolkienFluids.MORGULIRON_FLUID.get(), properties.craftRemainder(Items.BUCKET).stacksTo(1)));
 
