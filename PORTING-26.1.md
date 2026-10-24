@@ -16,7 +16,7 @@ measurement's other half.
 | Source | Minecraft **1.21.4**, NeoForge **21.4.161**, mod **4.4.83-Final** |
 | Target | Minecraft **26.1.2**, NeoForge **26.1.2.116**, mod **5.0.0** |
 | Java | 21 → **25** |
-| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API, the fluid/leaf/proxy batch, the food table, the forest fog, the whole `util` package, the three biggest block classes and the `BushBlock` plants, the barrels and the effect/enchantment families are done; **25** errors left |
+| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API, the fluid/leaf/proxy batch, the food table, the forest fog, the whole `util` package, the three biggest block classes and the `BushBlock` plants, the barrels, the effect/enchantment families and the network packages are done; **23** errors left |
 
 What the source tree contains, counted:
 
@@ -1968,8 +1968,23 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   `util/` any more. Nothing was run in game: the checks are standing in rain to see the breeze turn
   windy, opening a world and reading back its seed, and a `/reload` to see the config sync still
   reach a client.
-- **Two `network/` errors are left, neither of them config:** `PacketSender` needs
-  `GameProfile` → `NameAndId` and `SpawnFallenLeafFromPacket` still names a removed symbol.
+
+### The network packages — DONE
+
+- **`ServerOpList` is keyed by `NameAndId`.** `StoredUserList#get` takes `K`, and 26.1 keys the op
+  list by `NameAndId` rather than `GameProfile`, so `sendToOps` asks
+  `opList.get(player.nameAndId())`; `Player#nameAndId()` is the new accessor and wraps the same
+  profile. Who receives an op-only packet is unchanged. Nothing in the tree calls `sendToOps` today
+  (`PacketCustom#sendToOps` is the only entry point), so this is compile-only work.
+- **`BlockColors#getColor` is a tint source here too.** The fallen-leaf packet asks
+  `getTintSource(leaves, 0)` and then `colorInWorld(leaves, clientLevel, pos)`, the same shape
+  `LeafPileBlock` already uses; only a `ClientLevel` is a `BlockAndTintGetter` in 26.1, and the tint
+  source lookup returns null rather than -1, which is mapped back to -1 so the fuzzing below it
+  behaves as before.
+- **Verified:** whole-tree `javac` at **23** errors, down from 25, and nothing under `network/` or
+  `network/manager/` is mentioned any more. Nothing was run in game: the check is standing under a
+  mod leaf-topped tree until a leaf drifts down, and confirming its colour still matches the leaves
+  above.
 
 ### The three biggest block classes — DONE
 
