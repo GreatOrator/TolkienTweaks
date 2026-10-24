@@ -77,6 +77,11 @@ All notable changes to this project will be documented in this file.
   hover-textured one, are ported as well, which finishes the button set; neither is placed by a
   screen yet, so the only visible effect is that a hover-textured button would now actually show its
   hovered frame, which it never did before.
+- The key and keystone screens are ported to 26.1's rendering too. Both look and behave as they did -
+  the same panel, the same key-code field and the same keep-key, redstone and delay controls - and
+  both now draw the code field once instead of twice over itself. Holding shift or control still
+  steps the delay ten or sixty-four at a time, typing in the field still swallows the keyboard until
+  you click away or press escape, and a right click still flips a toggle backwards.
 - Every message the mod sends a player now uses 26.1's own call for it: the chat lines go through
   the system-message call, and the three that flash above the hotbar - the backpack's "no room",
   the occupied sleeping bag and a refused sleep - through the overlay one. Nothing the player reads
