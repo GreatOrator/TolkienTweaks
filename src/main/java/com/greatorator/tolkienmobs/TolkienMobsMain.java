@@ -53,6 +53,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.client.event.RegisterFluidModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
@@ -347,6 +348,18 @@ public class TolkienMobsMain {
                     TolkienFluidTypes.MOLTEN_MITHRIL_LAVA_FLUID_TYPE.get());
             event.registerFluidType(((TolkienFluidType) TolkienFluidTypes.MOLTEN_MORGULIRON_LAVA_FLUID_TYPE.get()).getClientFluidTypeExtensions(),
                     TolkienFluidTypes.MOLTEN_MORGULIRON_LAVA_FLUID_TYPE.get());
+        }
+
+        /**
+         * The sprites and tint of a modded fluid are its model now, not a client extension, so each
+         * molten metal registers its model here for both the source and the flowing fluid.
+         */
+        @SubscribeEvent
+        public static void registerFluidModels(RegisterFluidModelsEvent event) {
+            ((TolkienFluidType) TolkienFluidTypes.MOLTEN_MITHRIL_LAVA_FLUID_TYPE.get())
+                    .registerFluidModel(event, TolkienFluids.MITHRIL_FLUID.get(), TolkienFluids.MITHRIL_FLOWING.get());
+            ((TolkienFluidType) TolkienFluidTypes.MOLTEN_MORGULIRON_LAVA_FLUID_TYPE.get())
+                    .registerFluidModel(event, TolkienFluids.MORGULIRON_FLUID.get(), TolkienFluids.MORGULIRON_FLOWING.get());
         }
 
         @SubscribeEvent
