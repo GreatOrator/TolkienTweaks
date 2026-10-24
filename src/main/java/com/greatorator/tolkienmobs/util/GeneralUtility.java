@@ -440,6 +440,6 @@ public class GeneralUtility {
      * them - a mobile attacker, an arrow or another mob has none - so anything else is ignored.
      */
     public static void sendMessage(Entity target, Component message) {
-        if (target instanceof Player player) player.displayClientMessage(message, false);
+        if (target instanceof Player player) player.sendSystemMessage(message);
     }
 }

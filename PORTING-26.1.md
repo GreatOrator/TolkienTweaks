@@ -629,6 +629,21 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   A key of the wrong type now reads as an empty id, which resolves to nothing and draws the same
   "Interact with Spawn Egg" hint lines as a missing key did.
 
+### Chat messages — DONE
+
+- `Player#displayClientMessage(Component, boolean)` is gone from the tree - 20 live calls in 10
+  files - and the two messages it could send are two methods now. The flag was the difference, not
+  a detail of one call, so the split is: `false` (chat) is `Player#sendSystemMessage(Component)`,
+  `true` (the action bar) is `Player#sendOverlayMessage(Component)`. Three of those are overlay
+  messages and moved across unchanged otherwise: the backpack's "no room", and the sleeping bag's
+  "bed occupied" and its `startSleepInBed` failure.
+- [tools/port-261-chat-messages.pl](tools/port-261-chat-messages.pl) does the rewrite, reading the
+  flag rather than assuming it: the message is matched with balanced parentheses and the flag is
+  whatever follows the last top-level comma. Three calls in `KeyItem` are commented out and were
+  left alone, which is the one thing the script checks for by line.
+- The calls' wording, colour and trigger are unchanged, so everything the player reads is exactly
+  as it was; only the method that carries it moved.
+
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
   26.1.2 MDK's version; NeoForge requires 9.1.0 or newer), foojay resolver 0.8.0 → 1.0.0.

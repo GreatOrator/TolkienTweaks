@@ -116,14 +116,14 @@ public class SleepingBagBlock extends BedBlock
                 return InteractionResult.SUCCESS;
             } else if (pState.getValue(OCCUPIED)) {
                 if (!this.kickVillagerOutOfBed(pLevel, pPos)) {
-                    pPlayer.displayClientMessage(Component.translatable("block.minecraft.bed.occupied"), true);
+                    pPlayer.sendOverlayMessage(Component.translatable("block.minecraft.bed.occupied"));
                 }
 
                 return InteractionResult.SUCCESS;
             } else {
                 pPlayer.startSleepInBed(pPos).ifLeft(p_49477_ -> {
                     if (p_49477_.getMessage() != null) {
-                        pPlayer.displayClientMessage(p_49477_.getMessage(), true);
+                        pPlayer.sendOverlayMessage(p_49477_.getMessage());
                     }
                 });
                 return InteractionResult.SUCCESS;

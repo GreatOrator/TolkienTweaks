@@ -188,7 +188,7 @@ public class MilestoneBlockEntity extends TolkienBlockEntity implements MenuProv
         if (id == 3) {
             MilestoneHandler.MilestoneData data = MilestoneHandler.getMilestoneData(level, input.readUUID());
             if (data == null) {
-                client.displayClientMessage(Component.translatable("tolkienmobs.msg.destination").withStyle(ChatFormatting.DARK_RED), false);
+                client.sendSystemMessage(Component.translatable("tolkienmobs.msg.destination").withStyle(ChatFormatting.DARK_RED));
                 return;
             }
 
@@ -199,7 +199,7 @@ public class MilestoneBlockEntity extends TolkienBlockEntity implements MenuProv
                 // has since gone, say - used to skip the charge altogether, which handed out free
                 // teleports. Nothing to charge with means nothing to pay, so the jump is refused.
                 if (stack.isEmpty()) {
-                    client.displayClientMessage(Component.translatable("tolkienmobs.msg.payment.insufficient").withStyle(ChatFormatting.DARK_RED), false);
+                    client.sendSystemMessage(Component.translatable("tolkienmobs.msg.payment.insufficient").withStyle(ChatFormatting.DARK_RED));
                     return;
                 }
 
@@ -208,7 +208,7 @@ public class MilestoneBlockEntity extends TolkienBlockEntity implements MenuProv
                     if (ItemStack.isSameItem(stack, item)) found += item.getCount();
                 }
                 if (found < cost) {
-                    client.displayClientMessage(Component.translatable("tolkienmobs.msg.payment.insufficient").withStyle(ChatFormatting.DARK_RED), false);
+                    client.sendSystemMessage(Component.translatable("tolkienmobs.msg.payment.insufficient").withStyle(ChatFormatting.DARK_RED));
                     return;
                 }
                 int needed = cost;
@@ -226,7 +226,7 @@ public class MilestoneBlockEntity extends TolkienBlockEntity implements MenuProv
                 // experience charged nothing at all.
                 int cost = getExperienceTravelCost(data);
                 if (client.experienceLevel < cost) {
-                    client.displayClientMessage(Component.translatable("tolkienmobs.msg.payment.insufficient").withStyle(ChatFormatting.DARK_RED), false);
+                    client.sendSystemMessage(Component.translatable("tolkienmobs.msg.payment.insufficient").withStyle(ChatFormatting.DARK_RED));
                     return;
                 }
                 client.giveExperienceLevels(-cost);
