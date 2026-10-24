@@ -15,7 +15,10 @@ tasks.named('wrapper', Wrapper).configure {
 }
 
 def buildNum = project.hasProperty('currentBuildNumber') ? project.property('currentBuildNumber') : '0'
-project.ext.mod_version = "4.4.${buildNum}"
+// The major.minor the whole build rides on: the jar's own version and the changelog headings the
+// increment task writes both come from here, so the two can no longer drift apart.
+def versionPrefix = "5.0"
+project.ext.mod_version = "${versionPrefix}.${buildNum}"
 version = project.ext.mod_version
 group = mod_group_id
 
@@ -40,20 +43,29 @@ tasks.register("incrementBuildNumber") {
             if (changelogFile.exists()) {
                 // Correct Java format pattern for YYYY-MM-DD (Note: Use uppercase MM and lowercase dd)
                 def date = new java.text.SimpleDateFormat("yyyy-MM-dd").format(new Date())
-                def oldContent = changelogFile.text
+                // The changelog is UTF-8 and holds an em dash: read and write it as UTF-8 so a
+                // roll-up never re-encodes it into the platform charset.
+                def oldContent = changelogFile.getText('UTF-8')
 
-                // 💡 Prepends the entry with the full version: ## [4.3.X] - YYYY-MM-DD
-                def newEntry = "## [4.3.${nextBuild}] - ${date}\n* Structural mod updates and compilation builds\n\n"
+                // 💡 Prepends the entry with the full version: ## [5.0.X] - YYYY-MM-DD
+                def newEntry = "## [${versionPrefix}.${nextBuild}] - ${date}\n* Structural mod updates and compilation builds\n\n"
 
-                // Inject the entry right underneath the description banner header
+                // Inject the entry right underneath the description banner header. The changelog is
+                // stored with CRLF endings, so the insert follows whichever the file already uses -
+                // a bare \n never matched and the entry was silently dropped.
+                def banner = "All notable changes to this project will be documented in this file."
+                if (!oldContent.contains(banner)) {
+                    throw new GradleException("CHANGELOG.md is missing its banner header, so the entry was not written.")
+                }
+                def newline = oldContent.contains("\r\n") ? "\r\n" : "\n"
                 def updatedContent = oldContent.replace(
-                        "All notable changes to this project will be documented in this file.\n",
-                        "All notable changes to this project will be documented in this file.\n\n${newEntry}"
+                        banner + newline,
+                        banner + newline + newline + newEntry.replace("\n", newline)
                 )
-                changelogFile.text = updatedContent
+                changelogFile.setText(updatedContent, 'UTF-8')
             }
 
-            println "🚀 App version rolled up to: 4.3.${nextBuild} (Local Changelog Tracked!)"
+            println "🚀 App version rolled up to: ${versionPrefix}.${nextBuild} (Local Changelog Tracked!)"
         } else {
             throw new GradleException("Could not read gradle.properties!")
         }
