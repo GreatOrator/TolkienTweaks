@@ -1177,6 +1177,25 @@ from **3,470 errors in 337 files to 2,801 in 320**.
 - **Verified:** whole-tree `javac` at **1,147** errors, 9 down from 1,156 - the hag's eight and
   Gollum's one - with the per-file diff showing only those two files and nothing new anywhere.
 
+### The monster family - DONE
+
+- Three entity classes were left, and every one of them was a package move plus one call. The
+  Mirkwood spider's `Skeleton` and `Spider` are under `monster.skeleton` and `monster.spider` now;
+  the warg's `isInWaterRainOrBubble` is `isInWaterOrRain` (a bubble column is water, so the wet flag
+  it sets behaves the same); and both of their `moveTo(x, y, z, yRot, xRot)` calls - the warg putting
+  an orc on its back, the spider putting a skeleton jockey on its own - are `snapTo`.
+- The spider's pickpocket reads `Inventory#getSelectedSlot()` because `selected` is private now. It
+  still takes one item from the player's held stack and drops it with the same pickup delay.
+- `armorDropChances[]` is a `DropChances` record on `Mob`, so the Romie walker's Halloween pumpkin
+  uses `setDropChance(EquipmentSlot.HEAD, 0.0F)` - a helmet it puts on still never drops, which is
+  what the array index said before.
+- The base class, `TolkienMonsterEntity`, was five of the errors: the same two moved imports
+  (`AbstractVillager` under `npc.villager`, `AbstractArrow` under `projectile.arrow`) that the boss
+  family had. With those in, everything under `entity/monster` - entities, models and renderers -
+  and the base compile clean.
+- **Verified:** whole-tree `javac` at **1,131** errors, 16 down from 1,147, with the per-file diff
+  showing only the four touched files' errors removed.
+
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
   26.1.2 MDK's version; NeoForge requires 9.1.0 or newer), foojay resolver 0.8.0 → 1.0.0.
