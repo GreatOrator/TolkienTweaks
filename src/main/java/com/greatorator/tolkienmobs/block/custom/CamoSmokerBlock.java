@@ -23,8 +23,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 // ChameleonBlock's type parameter goes unused; naming it keeps createBlockStateDefinition overridable
 // instead of clashing with the raw signature that extending ChameleonBlock bare would produce.
@@ -107,7 +105,6 @@ public class CamoSmokerBlock extends ChameleonBlock<Block> {
         return Math.round(from + (to - from) * amount);
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void animateTick(BlockState blockState, Level worldIn, BlockPos pos, RandomSource random) {
         double d0 = (double)pos.getX() + 0.5D;

@@ -20,8 +20,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animatable.manager.AnimatableManager;
@@ -44,7 +42,6 @@ public class CobwebProjectileEntity extends Projectile implements GeoEntity {
         this.setPos(livingEntity.getX() - (double)(livingEntity.getBbWidth() + 1.0F) * 0.5D * (double) Mth.sin(livingEntity.yBodyRot * ((float)Math.PI / 180F)), livingEntity.getEyeY() - (double)0.1F, livingEntity.getZ() + (double)(livingEntity.getBbWidth() + 1.0F) * 0.5D * (double)Mth.cos(livingEntity.yBodyRot * ((float)Math.PI / 180F)));
     }
 
-    @OnlyIn(Dist.CLIENT)
     public CobwebProjectileEntity(Level level, double x, double y, double z, double p_i47274_8_, double p_i47274_10_, double p_i47274_12_) {
         this(TolkienEntities.AMMO_COBWEB.get(), level);
         this.setPos(x, y, z);

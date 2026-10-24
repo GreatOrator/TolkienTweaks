@@ -5,12 +5,9 @@ import net.minecraft.client.renderer.entity.ArrowRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.ArrowRenderState;
 import net.minecraft.resources.Identifier;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-@OnlyIn(Dist.CLIENT)
 public class TolkienArrowRenderer extends ArrowRenderer<TolkienArrowEntity, ArrowRenderState> {
     protected final Identifier TEXTURE;
 

@@ -34,8 +34,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -85,7 +83,6 @@ public class MilestoneBlockEntity extends TolkienBlockEntity implements MenuProv
     }
 
     //This is a terrible hack, but it's the simplest way to set the block to active for specific players
-    @OnlyIn(Dist.CLIENT)
     public void updateClientState() {
         if (MilestoneHandler.isKnownByClient(getUUID(), Minecraft.getInstance().player.getUUID())) {
             BlockState state = level.getBlockState(worldPosition);

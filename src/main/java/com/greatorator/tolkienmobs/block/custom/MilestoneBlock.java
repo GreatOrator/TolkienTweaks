@@ -31,8 +31,6 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 public class MilestoneBlock extends TolkienEntityBlock {
@@ -137,7 +135,6 @@ public class MilestoneBlock extends TolkienEntityBlock {
         return InteractionResult.SUCCESS;
     }
 
-    @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState state, Level worldIn, BlockPos pos, RandomSource random) {
         if (worldIn.getBlockState(pos).getValue(LIT)) {
             double d0 = (double)pos.getX() + 0.5D;

@@ -29,8 +29,6 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 public class CamoKeyStoneBlock extends ChameleonBlock<CamoKeyStoneBlockEntity> {
@@ -104,7 +102,6 @@ public class CamoKeyStoneBlock extends ChameleonBlock<CamoKeyStoneBlockEntity> {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void animateTick(BlockState blockState, Level worldIn, BlockPos pos, RandomSource random) {
         if (blockState.getValue(POWERED) && random.nextFloat() < 0.25F) {
             blockState.setValue(ACTIVE, true);
