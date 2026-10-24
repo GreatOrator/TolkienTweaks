@@ -1196,6 +1196,23 @@ from **3,470 errors in 337 files to 2,801 in 320**.
 - **Verified:** whole-tree `javac` at **1,131** errors, 16 down from 1,147, with the per-file diff
   showing only the four touched files' errors removed.
 
+### The boat family - DONE
+
+- `Boat`, `ChestBoat` and `AbstractBoat` all moved one package down, to
+  `world.entity.vehicle.boat`. That single import was the whole of each of the fourteen entities' 17
+  errors: with the supertype unresolved, `entityData`, `xo`/`yo`/`zo`, `setPos`, every `super.…`
+  call and even the `EntityType<? extends X>` bound read as missing.
+- The seven boat items (`item/custom/*BoatItem`) hold an `AbstractBoat` and import it from the same
+  new package, so they took the same move.
+- Clearing the entities also cleared far more than their own 238 errors: `TolkienEntities` went
+  43 -> 1, `TolkienRegistration` 35 -> 21 and `TolkienMobsMain` 23 -> 9. A registry entry building an
+  `EntityType` over an invalid boat type cannot check its own arguments, so one broken supertype was
+  failing the registry around it.
+- Nothing about the boats changed: the same wood type is saved and read back through the same
+  `ValueOutput`/`ValueInput` keys, and a chest boat still carries its chest.
+- **Verified:** whole-tree `javac` at **802** errors, 329 down from 1,131, with the per-file diff
+  showing only removals - the fourteen entities, the seven items and the three registry files.
+
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
   26.1.2 MDK's version; NeoForge requires 9.1.0 or newer), foojay resolver 0.8.0 → 1.0.0.
