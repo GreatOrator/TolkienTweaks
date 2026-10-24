@@ -7,10 +7,8 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.item.equipment.trim.MaterialAssetGroup;
 import net.minecraft.world.item.equipment.trim.TrimMaterial;
-
-import java.util.Map;
 
 public class TolkienTrimMaterials {
     public static final ResourceKey<TrimMaterial> MITHRIL = registerKey("mithril");
@@ -22,18 +20,20 @@ public class TolkienTrimMaterials {
     }
 
     public static void bootstrap(BootstrapContext<TrimMaterial> context) {
-        register(context, MITHRIL, TolkienItems.INGOT_MITHRIL.get(), Style.EMPTY.withColor(217225241));
-        register(context, MORGULIRON, TolkienItems.INGOT_MORGULIRON.get(), Style.EMPTY.withColor(405147));
-        register(context, AMMOLITE, TolkienItems.GEM_AMMOLITE.get(), Style.EMPTY.withColor(126176105));
+        register(context, MITHRIL, Style.EMPTY.withColor(217225241));
+        register(context, MORGULIRON, Style.EMPTY.withColor(405147));
+        register(context, AMMOLITE, Style.EMPTY.withColor(126176105));
     }
 
     /**
-     * 1.21.4 dropped the item model index (the trim model is now keyed by the material's registry order) and keys
-     * the armour look through the equipment asset instead, so each material just names its own palette.
+     * 26.1 builds a trim material from a palette name and a description; the material item the old factory took only
+     * ever reached an unused parameter. The palette name stays the registry path - "mithril" and its neighbours -
+     * which is what resolves to the mod's own {@code textures/trims/color_palettes/<name>.png}.
      */
-    private static void register(BootstrapContext<TrimMaterial> context, ResourceKey<TrimMaterial> trimKey, Item trimItem, Style color) {
-        TrimMaterial material = TrimMaterial.create(trimKey.identifier().getPath(), trimItem,
-                Component.translatable(Util.makeDescriptionId("trim_material", trimKey.identifier())).withStyle(color), Map.of());
+    private static void register(BootstrapContext<TrimMaterial> context, ResourceKey<TrimMaterial> trimKey, Style color) {
+        TrimMaterial material = new TrimMaterial(
+                MaterialAssetGroup.create(trimKey.identifier().getPath()),
+                Component.translatable(Util.makeDescriptionId("trim_material", trimKey.identifier())).withStyle(color));
 
         context.register(trimKey, material);
     }

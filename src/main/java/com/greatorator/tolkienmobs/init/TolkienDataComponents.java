@@ -36,8 +36,13 @@ public class TolkienDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> KEY_RING_ACTIVE = COMPONENTS.register("key_ring_active", () -> DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<KeyCodeComponent>> KEY_CODE = register("key_code", builder -> builder.persistent(KeyCodeComponent.CODEC).networkSynchronized(KeyCodeComponent.STREAM_CODEC));
 
+    /**
+     * The code a lockable chest is set to. 26.1 serializes an attachment through a map codec rather than a plain
+     * one, so the string goes under a {@code code} key; the old shape was a bare string, which 26.1's
+     * {@code ValueOutput} can no longer write, so a chest in an upgraded world starts at the default again.
+     */
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<String>> CHEST_CODE = ATTACHMENT_TYPES.register(
-            "chest_code", () -> AttachmentType.builder(() -> "Enter Code").serialize(Codec.STRING).build()
+            "chest_code", () -> AttachmentType.builder(() -> "Enter Code").serialize(Codec.STRING.fieldOf("code")).build()
     );
 
 

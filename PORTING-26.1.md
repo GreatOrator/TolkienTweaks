@@ -16,7 +16,7 @@ measurement's other half.
 | Source | Minecraft **1.21.4**, NeoForge **21.4.161**, mod **4.4.83-Final** |
 | Target | Minecraft **26.1.2**, NeoForge **26.1.2.116**, mod **5.0.0** |
 | Java | 21 → **25** |
-| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API, the fluid/leaf/proxy batch, the food table, the forest fog, the whole `util` package, the three biggest block classes and the `BushBlock` plants, the barrels, the effect/enchantment families, the network packages, the lockable chest blocks and the last three loose blocks are done; **16** errors left |
+| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API, the fluid/leaf/proxy batch, the food table, the forest fog, the whole `util` package, the three biggest block classes and the `BushBlock` plants, the barrels, the effect/enchantment families, the network packages, the lockable chest blocks, the last three loose blocks and the three init classes are done; **13** errors left |
 
 What the source tree contains, counted:
 
@@ -2001,6 +2001,35 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   `block/custom/Lockable*` named. Nothing was run in game: the check is a creative player sneaking
   and using each of the four chests - single and double, treasure and plain - to see the lock
   settings open, and using them without sneaking to see the ordinary lock and key flow.
+
+### The three init classes — DONE
+
+- **`SpawnEggItem` takes only properties.** The entity type is no longer a constructor argument - 26.1
+  puts it on the item's properties with `Item.Properties#spawnEgg(type)`, which is how vanilla
+  registers its own, and the egg reads it back in `use`/`useOn`. The mod's `spawnEgg` helper keeps its
+  lazy `type.get()`: `new SpawnEggItem(properties.spawnEgg(type.get()))`. The tint colours still ride
+  in `SPAWN_EGG_COLORS` and the item colour handler is untouched.
+- **`AttachmentType.Builder#serialize` takes a `MapCodec`, not a `Codec`.** The chest code was
+  `Codec.STRING`; it is `Codec.STRING.fieldOf("code")` now, so the value is stored under a `code`
+  key. A bare string cannot be written by 26.1's `ValueOutput` at all - the `IAttachmentSerializer`
+  overload also writes through named keys - so a chest whose code was saved by the old shape reads
+  the default "Enter Code" once and needs setting again. Everything after that persists as it did.
+- **`TrimMaterial` is a record of a palette and a description.** `TrimMaterial.create(name, item,
+  description, overrides)` is gone, and the item it took only ever fed an unused parameter; the
+  bootstrap builds `new TrimMaterial(MaterialAssetGroup.create(path), description)` directly.
+  The palette name stays the registry path - `mithril`, `morguliron`, `ammolite` - because that is
+  what resolves to the mod's own `textures/trims/color_palettes/<name>.png`; `MaterialAssetGroup`'s
+  note recommends a modid-prefixed suffix for modded palettes, which would mean renaming those three
+  files, so the recommendation is deliberately not taken. The override map the old call passed was
+  empty and stays empty.
+- **The trim material JSON will change shape on the next `runData`.** 26.1's codec is
+  `MaterialAssetGroup.MAP_CODEC` plus `description`, so `ingredient` - a field the old codec wrote and
+  this one does not - disappears; the three files under `data/tolkienmobs/trim_material/` still load
+  meanwhile because unknown fields are ignored. Datagen cannot run until the tree compiles.
+- **Verified:** whole-tree `javac` at **13** errors, down from 16, with nothing in these three files
+  named. Nothing was run in game: the checks are spawning a mob from each of its eggs and from a
+  dispenser, setting a chest code and reopening the chest after a relog, and applying each of the
+  three trims at a smithing table in creative.
 
 ### The camo keystone, camo smoker and mushrooms — DONE
 
