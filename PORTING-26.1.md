@@ -1159,6 +1159,24 @@ from **3,470 errors in 337 files to 2,801 in 320**.
 - **Verified:** whole-tree `javac` at **1,156** errors, 23 down from 1,179, with the per-file diff
   showing only the three files' errors removed and nothing new anywhere.
 
+### The last two `forceAnimationReset` callers - DONE
+
+- The swamp hag and Gollum were the only remaining callers, and neither needs a replacement. The
+  hag's two branches already guard on `!isAnimatingBones()`, so the controller starts the attack or
+  the heal from the top without being reset first. Gollum's swing branch does not guard at all: it
+  sets the idle and returns `CONTINUE`, so the swing now simply holds the idle loop it was already
+  on rather than restarting it - the same pose, since idle loops. No `forceAnimationReset` call is
+  left in the source; the only mentions are the two comments explaining why.
+- **The swamp hag's other errors** were its own port. `ThrownPotion` is split into
+  `AbstractThrownPotion` and its two kinds now, and the hag throws a splash potion - it builds the
+  stack with `Items.SPLASH_POTION` - so it constructs `ThrownSplashPotion`, which takes the same
+  `(Level, LivingEntity, ItemStack)` arguments. `PotionContents#forEachEffect` takes a duration
+  scale, so the drunken potion's effects apply at `1.0F`, which is the default it used before.
+  `MOVEMENT_SPEED` and `MOVEMENT_SLOWDOWN` are `SPEED` and `SLOWNESS`, so the same four potion
+  choices are picked on the same conditions.
+- **Verified:** whole-tree `javac` at **1,147** errors, 9 down from 1,156 - the hag's eight and
+  Gollum's one - with the per-file diff showing only those two files and nothing new anywhere.
+
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
   26.1.2 MDK's version; NeoForge requires 9.1.0 or newer), foojay resolver 0.8.0 → 1.0.0.
