@@ -203,6 +203,14 @@ All notable changes to this project will be documented in this file.
   pathfinder are ported, so every mob, boss, projectile, boat, model and renderer in the mod now
   compiles on 26.1. They behave as before - a web only catches spiders, it still floats up out of
   water, and the fell beast still refuses to fly through fire.
+- The block model system is ported, so the moss and clover patches and the seven camouflage blocks
+  compile. 26.1 no longer bakes a block model: a block collects its parts from a model that is
+  handed its state, position and a random source, which is exactly what a patch needs to know how
+  far to grow towards its neighbours, so both patches look as they did - the moss still has its
+  shaggy edges and the clover still draws in the cutout pass. One thing moves: a patch's shape now
+  comes from its blockstate file rather than a model file, so `moss_patch` and `clover_patch` name
+  the patch model by type there instead. A camouflage block still wears whatever block it is
+  sitting next to, and still shows itself while you hold the dev tool or a key.
 
 ## [4.4.83-Final] - 10.22.2026
 

@@ -1,11 +1,12 @@
 package com.greatorator.tolkienmobs.datagen;
 
-import com.greatorator.tolkienmobs.TolkienMobsMain;
+import com.google.gson.JsonObject;
 import com.greatorator.tolkienmobs.block.custom.*;
 import com.greatorator.tolkienmobs.datagen.helpers.BlockModelBuilders;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.AttachFace;
 import com.greatorator.tolkienmobs.datagen.modelgen.ConfiguredModel;
@@ -835,8 +836,8 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         blockWithItem(TolkienBlocks.BLOCK_DECAY_BLOOM);
         blockWithItem(TolkienBlocks.BLOCK_BLOOM_DECAY);
         blockWithItem(TolkienBlocks.LIVING_ROOTS);
-        simpleBlock(TolkienBlocks.MOSS_PATCH.get(), new ConfiguredModel(new ModelFile.UncheckedModelFile(TolkienMobsMain.prefix("block/moss_patch"))));
-        simpleBlock(TolkienBlocks.CLOVER_PATCH.get(), new ConfiguredModel(new ModelFile.UncheckedModelFile(TolkienMobsMain.prefix("block/clover_patch"))));
+        patch(TolkienBlocks.MOSS_PATCH.get(), modLoc("block/moss_patch"), true);
+        patch(TolkienBlocks.CLOVER_PATCH.get(), modLoc("block/cloverpatch"), false);
 
         makeCrop(((PipeweedCropBlock) TolkienBlocks.PIPEWEED.get()), "pipeweed_crop_stage", "pipeweed_stage");
 
@@ -937,6 +938,26 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         blockItem(TolkienBlocks.WELL);
 
         fluid();
+    }
+
+    /**
+     * Writes a patch blockstate: one variant naming the custom patch model by type, since the
+     * patch decides its own shape from the block's state and position and so has no model file.
+     */
+    private void patch(Block block, Identifier texture, boolean shaggify) {
+        JsonObject variant = new JsonObject();
+        variant.addProperty("type", "tolkienmobs:patch");
+        variant.addProperty("texture", texture.toString());
+        if (shaggify) {
+            variant.addProperty("shaggify", true);
+        }
+
+        JsonObject variants = new JsonObject();
+        variants.add("", variant);
+
+        JsonObject json = new JsonObject();
+        json.add("variants", variants);
+        blockState(block, () -> json);
     }
 
     @Nonnull
