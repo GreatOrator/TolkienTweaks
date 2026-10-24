@@ -949,6 +949,32 @@ from **3,470 errors in 337 files to 2,801 in 320**.
 - With it, **no file under `containers/screens` or `containers/widget` reports an error** - eighteen
   screens and eight widgets, all on the extract pass. What the tree still fails on is elsewhere.
 
+### Non-GeckoLib entity renderers — DONE
+
+- 26.1 replaced a renderer's `render(state, PoseStack, MultiBufferSource, packedLight)` with
+  `submit(state, PoseStack, SubmitNodeCollector, CameraRenderState)`: a renderer no longer writes
+  vertices, it hands the collector the model, pose, texture, light, overlay and outline colour, and
+  the collector draws them in its own pass. A model is
+  `submitModel(model, state, poseStack, texture, state.lightCoords, OverlayTexture.NO_OVERLAY,
+  state.outlineColor, null)`; a single part, which is what the morgul crystal needs for its three
+  separately transformed pieces, is `submitModelPart(part, poseStack, renderType, light, overlay,
+  sprite)`. Both end with `super.submit(...)` so the name tag and leashes still go in.
+- `RenderType` moved to `net.minecraft.client.renderer.rendertype`, and its factories live in
+  `RenderTypes`. The old `entityCutoutNoCull` is now plain **`entityCutout`** - the unculled pipeline
+  is the default and `entityCutoutCull` is the culled one - which matters for the crystal, whose
+  faces are drawn from both sides.
+- The seven boat renderers were the easiest: `BoatModel` moved to `client.model.object.boat`, and
+  `AbstractBoatRenderer` now takes the texture in its constructor and does the drawing itself, so a
+  boat renderer supplies only `model()`. The `renderType()` override has no replacement and is gone;
+  the seven differ only in their wood name and texture path.
+- `AbstractArrow` moved to `world.entity.projectile.arrow`, which was what kept the boulder, the
+  fell beast fireball and the Tolkien arrow from being valid `EntityRenderer` type arguments at all -
+  three one-line imports cleared most of this batch's errors.
+- `getTextureLocation` on the three projectile-ish renderers was never an override and never called;
+  the texture now rides on the submit call, so those methods are deleted.
+- Left alone: `block/custom/entity/renderer/*` (block entities, a separate family) and
+  `handler/render` (the model system).
+
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
   26.1.2 MDK's version; NeoForge requires 9.1.0 or newer), foojay resolver 0.8.0 → 1.0.0.
