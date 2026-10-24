@@ -3,7 +3,6 @@
   "addition": "tolkienmobs:gem_ammolite",
   "base": "minecraft:netherite_axe",
   "result": {
-    "count": 1,
     "id": "tolkienmobs:axe_ammolite"
   },
   "template": "tolkienmobs:template_ammolite"

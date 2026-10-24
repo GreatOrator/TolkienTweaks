@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeBookCategories;
@@ -25,10 +26,12 @@ import java.util.List;
  * implements, so the codecs live on the recipe as constants and the registry holds a
  * {@code RecipeSerializer} built from them.
  */
-public record FireplaceRecipe(List<SizedIngredient> inputItems, List<ItemStack> output) implements Recipe<FireplaceRecipeInput> {
+public record FireplaceRecipe(List<SizedIngredient> inputItems, List<ItemStackTemplate> output) implements Recipe<FireplaceRecipeInput> {
     public static final MapCodec<FireplaceRecipe> MAP_CODEC = RecordCodecBuilder.mapCodec(alloySmeltingRecipeInstance -> alloySmeltingRecipeInstance.group(
             SizedIngredient.NESTED_CODEC.listOf().fieldOf("ingredients").forGetter(FireplaceRecipe::getInputItems),
-            ItemStack.CODEC.listOf().fieldOf("output").forGetter(FireplaceRecipe::getOutput)
+            // 26.1 writes a recipe's result as a template: an item, a count and a component patch, which
+            // can be built before any registry has bound the item's components. Datagen has no stacks.
+            ItemStackTemplate.CODEC.listOf().fieldOf("output").forGetter(FireplaceRecipe::getOutput)
     ).apply(alloySmeltingRecipeInstance, FireplaceRecipe::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, FireplaceRecipe> STREAM_CODEC = StreamCodec.of(
@@ -73,7 +76,7 @@ public record FireplaceRecipe(List<SizedIngredient> inputItems, List<ItemStack> 
 
     @Override
     public ItemStack assemble(FireplaceRecipeInput fireplaceRecipeInput) {
-        return output.isEmpty() ? ItemStack.EMPTY : output.get(0).copy();
+        return output.isEmpty() ? ItemStack.EMPTY : output.get(0).create();
     }
 
     @Override
@@ -111,8 +114,13 @@ public record FireplaceRecipe(List<SizedIngredient> inputItems, List<ItemStack> 
         return inputItems;
     }
 
-    public List<ItemStack> getOutput() {
+    public List<ItemStackTemplate> getOutput() {
         return output;
+    }
+
+    /** The results as real stacks, for the block entity and JEI. */
+    public List<ItemStack> createOutputs() {
+        return output.stream().map(ItemStackTemplate::create).toList();
     }
 
     private static FireplaceRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
@@ -123,9 +131,9 @@ public record FireplaceRecipe(List<SizedIngredient> inputItems, List<ItemStack> 
         }
 
         int outputCount = buffer.readVarInt();
-        List<ItemStack> result = new ArrayList<>(outputCount);
+        List<ItemStackTemplate> result = new ArrayList<>(outputCount);
         for (int i = 0; i < outputCount; i++) {
-            result.add(ItemStack.STREAM_CODEC.decode(buffer));
+            result.add(ItemStackTemplate.STREAM_CODEC.decode(buffer));
         }
 
         return new FireplaceRecipe(inputItems, result);
@@ -138,8 +146,8 @@ public record FireplaceRecipe(List<SizedIngredient> inputItems, List<ItemStack> 
         }
 
         buffer.writeVarInt(recipe.output.size());
-        for (ItemStack itemStack : recipe.output) {
-            ItemStack.STREAM_CODEC.encode(buffer, itemStack);
+        for (ItemStackTemplate itemStack : recipe.output) {
+            ItemStackTemplate.STREAM_CODEC.encode(buffer, itemStack);
         }
     }
 }

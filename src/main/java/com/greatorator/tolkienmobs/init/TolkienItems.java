@@ -10,16 +10,37 @@ import com.greatorator.tolkienmobs.network.component.TrinketComponent;
 import com.greatorator.tolkienmobs.util.ColorUtility;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class TolkienItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
+
+    /**
+     * Which song each disc plays. It is recorded here, where both are named, because datagen cannot read
+     * it back: an item's components are only bound once a registry is loaded, and datagen never loads one.
+     */
+    private static final Map<DeferredItem<Item>, ResourceKey<JukeboxSong>> DISC_SONGS = new LinkedHashMap<>();
+
+    private static DeferredItem<Item> musicDisc(String name, ResourceKey<JukeboxSong> song) {
+        DeferredItem<Item> disc = ITEMS.registerItem(name, properties -> new Item(properties.jukeboxPlayable(song).stacksTo(1)));
+        DISC_SONGS.put(disc, song);
+        return disc;
+    }
+
+    /** The song a disc plays, or null if the item is not one of the mod's discs. */
+    public static ResourceKey<JukeboxSong> songOf(DeferredItem<Item> disc) {
+        return DISC_SONGS.get(disc);
+    }
 
         // Mithril
     public static final DeferredItem<Item> RAW_MITHRIL = ITEMS.registerSimpleItem("raw_mithril");
@@ -256,18 +277,18 @@ public class TolkienItems {
     public static final DeferredItem<Item> BRAMBLES_BERRY = ITEMS.registerItem("brambles_berry", properties -> new BlockItem(TolkienBlocks.FLOWER_BRAMBLES.get(), properties), () -> new Item.Properties().food(TolkienFoods.FOOD_BRAMBLES_BERRY, TolkienFoods.FOOD_BRAMBLES_BERRY_CONSUMABLE));
 
         // Music Discs
-    public static final DeferredItem<Item> RECORD_EREBOR = ITEMS.registerItem("record_erebor", properties -> new Item(properties.jukeboxPlayable(TolkienJukebox.EREBOR).stacksTo(1)));
-    public static final DeferredItem<Item> RECORD_HOBBITS = ITEMS.registerItem("record_hobbits", properties -> new Item(properties.jukeboxPlayable(TolkienJukebox.HOBBITS).stacksTo(1)));
-    public static final DeferredItem<Item> RECORD_MINASTIRITH = ITEMS.registerItem("record_minastirith", properties -> new Item(properties.jukeboxPlayable(TolkienJukebox.MINASTIRITH).stacksTo(1)));
-    public static final DeferredItem<Item> RECORD_MURDERFROG = ITEMS.registerItem("record_murderfrog", properties -> new Item(properties.jukeboxPlayable(TolkienJukebox.MURDERFROG).stacksTo(1)));
-    public static final DeferredItem<Item> RECORD_BOMBADIL = ITEMS.registerItem("record_bombadil", properties -> new Item(properties.jukeboxPlayable(TolkienJukebox.BOMBADIL).stacksTo(1)));
-    public static final DeferredItem<Item> RECORD_REDER = ITEMS.registerItem("record_reder", properties -> new Item(properties.jukeboxPlayable(TolkienJukebox.REDER).stacksTo(1)));
-    public static final DeferredItem<Item> RECORD_RIVENDELL = ITEMS.registerItem("record_rivendell", properties -> new Item(properties.jukeboxPlayable(TolkienJukebox.RIVENDELL).stacksTo(1)));
-    public static final DeferredItem<Item> RECORD_LOTHLORIEN = ITEMS.registerItem("record_lothlorien", properties -> new Item(properties.jukeboxPlayable(TolkienJukebox.LOTHLORIEN).stacksTo(1)));
-    public static final DeferredItem<Item> RECORD_WILLOW = ITEMS.registerItem("record_willow", properties -> new Item(properties.jukeboxPlayable(TolkienJukebox.SHADE).stacksTo(1)));
-    public static final DeferredItem<Item> RECORD_FUMBLE = ITEMS.registerItem("record_fumble", properties -> new Item(properties.jukeboxPlayable(TolkienJukebox.FUMBLE).stacksTo(1)));
-    public static final DeferredItem<Item> RECORD_EDORAS = ITEMS.registerItem("record_edoras", properties -> new Item(properties.jukeboxPlayable(TolkienJukebox.EDORAS).stacksTo(1)));
-    public static final DeferredItem<Item> RECORD_WBATTLE = ITEMS.registerItem("record_wbattle", properties -> new Item(properties.jukeboxPlayable(TolkienJukebox.WITCHBATTLE).stacksTo(1)));
+    public static final DeferredItem<Item> RECORD_EREBOR = musicDisc("record_erebor", TolkienJukebox.EREBOR);
+    public static final DeferredItem<Item> RECORD_HOBBITS = musicDisc("record_hobbits", TolkienJukebox.HOBBITS);
+    public static final DeferredItem<Item> RECORD_MINASTIRITH = musicDisc("record_minastirith", TolkienJukebox.MINASTIRITH);
+    public static final DeferredItem<Item> RECORD_MURDERFROG = musicDisc("record_murderfrog", TolkienJukebox.MURDERFROG);
+    public static final DeferredItem<Item> RECORD_BOMBADIL = musicDisc("record_bombadil", TolkienJukebox.BOMBADIL);
+    public static final DeferredItem<Item> RECORD_REDER = musicDisc("record_reder", TolkienJukebox.REDER);
+    public static final DeferredItem<Item> RECORD_RIVENDELL = musicDisc("record_rivendell", TolkienJukebox.RIVENDELL);
+    public static final DeferredItem<Item> RECORD_LOTHLORIEN = musicDisc("record_lothlorien", TolkienJukebox.LOTHLORIEN);
+    public static final DeferredItem<Item> RECORD_WILLOW = musicDisc("record_willow", TolkienJukebox.SHADE);
+    public static final DeferredItem<Item> RECORD_FUMBLE = musicDisc("record_fumble", TolkienJukebox.FUMBLE);
+    public static final DeferredItem<Item> RECORD_EDORAS = musicDisc("record_edoras", TolkienJukebox.EDORAS);
+    public static final DeferredItem<Item> RECORD_WBATTLE = musicDisc("record_wbattle", TolkienJukebox.WITCHBATTLE);
 
         // Sleeping Bags
     public static final DeferredItem<SleepingBagItem> SLEEPING_BAG_WHITE = ITEMS.registerItem("sleeping_bag_white", properties -> new SleepingBagItem(TolkienBlocks.SLEEPING_BAG_WHITE.get(), properties).setHasLore());

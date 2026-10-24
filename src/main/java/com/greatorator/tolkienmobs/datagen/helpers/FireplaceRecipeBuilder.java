@@ -9,7 +9,7 @@ import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class FireplaceRecipeBuilder implements RecipeBuilder {
     private final List<SizedIngredient> ingredients = new ArrayList<>();
-    private final List<ItemStack> outputs = new ArrayList<>();
+    private final List<ItemStackTemplate> outputs = new ArrayList<>();
     private final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
     @Nullable
     private String group;
@@ -40,7 +40,7 @@ public class FireplaceRecipeBuilder implements RecipeBuilder {
         return this;
     }
 
-    public FireplaceRecipeBuilder addOutput(ItemStack output) {
+    public FireplaceRecipeBuilder addOutput(ItemStackTemplate output) {
         this.outputs.add(output);
         return this;
     }
@@ -60,7 +60,7 @@ public class FireplaceRecipeBuilder implements RecipeBuilder {
     /** 26.1 made a builder name its own recipe id: the result's registry id, as vanilla's helpers do. */
     @Override
     public ResourceKey<Recipe<?>> defaultId() {
-        return RecipeBuilder.getDefaultRecipeId(this.outputs.isEmpty() ? new ItemStack(Items.AIR) : this.outputs.get(0));
+        return RecipeBuilder.getDefaultRecipeId(this.outputs.isEmpty() ? new ItemStackTemplate(Items.AIR) : this.outputs.get(0));
     }
 
     @Override

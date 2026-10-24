@@ -3,7 +3,6 @@
   "addition": "tolkienmobs:ingot_mithril",
   "base": "minecraft:netherite_leggings",
   "result": {
-    "count": 1,
     "id": "tolkienmobs:leggings_mithril"
   },
   "template": "tolkienmobs:template_mithril"

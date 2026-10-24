@@ -1,0 +1,8 @@
+{
+  "amount": 2.0,
+  "random_sequence": "tolkienmobs:trade_set/coin_trader/level_2",
+  "trades": [
+    "tolkienmobs:coin_trader/2/silver_gold",
+    "tolkienmobs:coin_trader/2/gold_silver"
+  ]
+}

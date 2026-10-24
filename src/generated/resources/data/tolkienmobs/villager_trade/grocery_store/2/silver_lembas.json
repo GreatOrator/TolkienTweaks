@@ -1,0 +1,13 @@
+{
+  "gives": {
+    "count": 2,
+    "id": "tolkienmobs:food_lembas"
+  },
+  "max_uses": 16.0,
+  "reputation_discount": 0.5,
+  "wants": {
+    "count": 8.0,
+    "id": "tolkienmobs:item_coin_silver"
+  },
+  "xp": 50.0
+}

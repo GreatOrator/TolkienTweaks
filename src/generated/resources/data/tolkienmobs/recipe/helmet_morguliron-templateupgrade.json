@@ -3,7 +3,6 @@
   "addition": "tolkienmobs:ingot_morguliron",
   "base": "minecraft:netherite_helmet",
   "result": {
-    "count": 1,
     "id": "tolkienmobs:helmet_morguliron"
   },
   "template": "tolkienmobs:template_morguliron"

@@ -75,6 +75,9 @@ repositories {
         url = 'https://maven.blamejared.com'
         content {
             includeGroup "mezz.jei"
+            // JEI 29's runtime pulls mezz's own config library from the same repo; the API jars the
+            // compile classpath needs do not, which is why only running the game hit this.
+            includeGroup "net.mezzdev.config"
         }
     }
     maven {

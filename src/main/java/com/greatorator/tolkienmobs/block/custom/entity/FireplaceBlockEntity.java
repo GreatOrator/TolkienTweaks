@@ -254,7 +254,7 @@ public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProv
     private void craftItem() {
         Optional<RecipeHolder<FireplaceRecipe>> recipe = getCurrentRecipe();
         if (recipe.isPresent()) {
-            List<ItemStack> results = recipe.get().value().getOutput();
+            List<ItemStack> results = recipe.get().value().createOutputs();
 
             int extractFromSlot0 = 0;
             int extractFromSlot1 = 0;
@@ -331,7 +331,7 @@ public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProv
         // Retrieve recipe inputs and outputs
         FireplaceRecipe currentRecipe = recipe.get().value();
         List<SizedIngredient> recipeIngredients = currentRecipe.getInputItems();
-        List<ItemStack> outputResults = currentRecipe.getOutput();
+        List<ItemStack> outputResults = currentRecipe.createOutputs();
 
         // Create a mutable copy of the user inputs
         List<ItemStack> userInputs = new ArrayList<>();

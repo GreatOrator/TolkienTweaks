@@ -3,6 +3,5 @@
   "description": {
     "color": "#F29819",
     "translate": "trim_material.tolkienmobs.mithril"
-  },
-  "ingredient": "tolkienmobs:ingot_mithril"
+  }
 }

@@ -3,7 +3,6 @@
   "addition": "tolkienmobs:ingot_mithril",
   "base": "minecraft:netherite_shovel",
   "result": {
-    "count": 1,
     "id": "tolkienmobs:shovel_mithril"
   },
   "template": "tolkienmobs:template_mithril"

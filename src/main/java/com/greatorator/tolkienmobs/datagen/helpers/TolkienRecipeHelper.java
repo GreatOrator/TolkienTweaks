@@ -11,6 +11,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
@@ -180,7 +181,7 @@ public abstract class TolkienRecipeHelper extends RecipeProvider {
         FireplaceRecipeBuilder.fireplaceRecipe()
                 .addIngredient(ingredients1)
                 .addIngredient(ingredients2)
-                .addOutput(new ItemStack(result, outputCount))
+                .addOutput(new ItemStackTemplate(result.asItem(), outputCount))
                 .unlockedBy(getHasName(firstItem(ingredients1.ingredient())), has(firstItem(ingredients1.ingredient())))
                 .save(recipeOutput, recipeKey(Identifier.fromNamespaceAndPath(MODID, "fireplace/" + getItemName(result) + "_from_fireplace")));
     }
@@ -188,7 +189,7 @@ public abstract class TolkienRecipeHelper extends RecipeProvider {
     protected void fireplaceFoodRecipe(RecipeOutput recipeOutput, SizedIngredient ingredients1, ItemLike result, int outputCount){
         FireplaceRecipeBuilder.fireplaceRecipe()
                 .addIngredient(ingredients1)
-                .addOutput(new ItemStack(result, outputCount))
+                .addOutput(new ItemStackTemplate(result.asItem(), outputCount))
                 .unlockedBy(getHasName(firstItem(ingredients1.ingredient())), has(firstItem(ingredients1.ingredient())))
                 .save(recipeOutput, recipeKey(Identifier.fromNamespaceAndPath(MODID, "fireplace/" + getItemName(result) + "_from_fireplace")));
     }

@@ -1,0 +1,11 @@
+{
+  "gives": {
+    "id": "tolkienmobs:item_coin_gold"
+  },
+  "max_uses": 16.0,
+  "wants": {
+    "count": 64.0,
+    "id": "tolkienmobs:item_coin_silver"
+  },
+  "xp": 25.0
+}

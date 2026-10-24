@@ -3,7 +3,6 @@
   "addition": "tolkienmobs:ingot_morguliron",
   "base": "minecraft:netherite_chestplate",
   "result": {
-    "count": 1,
     "id": "tolkienmobs:chestplate_morguliron"
   },
   "template": "tolkienmobs:template_morguliron"

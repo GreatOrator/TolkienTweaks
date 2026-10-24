@@ -5,7 +5,6 @@
   "experience": 0.25,
   "ingredient": "tolkienmobs:iron_stone",
   "result": {
-    "count": 1,
     "id": "tolkienmobs:smooth_iron_stone"
   }
 }

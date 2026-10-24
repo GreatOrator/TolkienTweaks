@@ -1,0 +1,9 @@
+{
+  "amount": 2.0,
+  "random_sequence": "tolkienmobs:trade_set/junk_trader/level_1",
+  "trades": [
+    "tolkienmobs:junk_trader/1/bottle",
+    "tolkienmobs:junk_trader/1/fur",
+    "tolkienmobs:junk_trader/1/flesh"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "gives": {
+    "count": 4,
+    "id": "tolkienmobs:food_tree_acorn"
+  },
+  "max_uses": 16.0,
+  "reputation_discount": 0.5,
+  "wants": {
+    "count": 24.0,
+    "id": "tolkienmobs:item_coin_bronze"
+  },
+  "xp": 25.0
+}

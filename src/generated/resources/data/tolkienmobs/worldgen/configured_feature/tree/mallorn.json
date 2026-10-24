@@ -1,6 +1,15 @@
 {
   "type": "minecraft:tree",
   "config": {
+    "below_trunk_provider": {
+      "type": "minecraft:simple_state_provider",
+      "state": {
+        "Name": "minecraft:grass_block",
+        "Properties": {
+          "snowy": "false"
+        }
+      }
+    },
     "decorators": [
       {
         "type": "tolkienmobs:tree_roots",
@@ -43,15 +52,6 @@
         "probability_of_placement": 1.0
       }
     ],
-    "dirt_provider": {
-      "type": "minecraft:simple_state_provider",
-      "state": {
-        "Name": "minecraft:grass_block",
-        "Properties": {
-          "snowy": "false"
-        }
-      }
-    },
     "foliage_placer": {
       "type": "minecraft:fancy_foliage_placer",
       "height": 4,
@@ -69,7 +69,6 @@
         }
       }
     },
-    "force_dirt": false,
     "ignore_vines": false,
     "minimum_size": {
       "type": "minecraft:three_layers_feature_size",

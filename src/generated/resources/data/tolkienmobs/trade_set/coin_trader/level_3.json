@@ -1,0 +1,8 @@
+{
+  "amount": 2.0,
+  "random_sequence": "tolkienmobs:trade_set/coin_trader/level_3",
+  "trades": [
+    "tolkienmobs:coin_trader/3/gold_mithril",
+    "tolkienmobs:coin_trader/3/mithril_gold"
+  ]
+}

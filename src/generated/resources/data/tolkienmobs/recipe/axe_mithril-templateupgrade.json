@@ -3,7 +3,6 @@
   "addition": "tolkienmobs:ingot_mithril",
   "base": "minecraft:netherite_axe",
   "result": {
-    "count": 1,
     "id": "tolkienmobs:axe_mithril"
   },
   "template": "tolkienmobs:template_mithril"

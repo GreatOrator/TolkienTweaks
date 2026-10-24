@@ -7,14 +7,13 @@ import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienFluids;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienTrimMaterials;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.item.equipment.trim.TrimMaterial;
 import net.minecraft.world.item.equipment.trim.TrimMaterials;
 import net.minecraft.world.level.block.Block;
@@ -434,20 +433,20 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         handheldItem(TolkienItems.SHEARS_AMMOLITE.get());
         handheldItem(TolkienItems.DWARVEN_HAMMER.get());
 
-        trimmedArmorItem(TolkienItems.HELMET_MITHRIL);
-        trimmedArmorItem(TolkienItems.CHESTPLATE_MITHRIL);
-        trimmedArmorItem(TolkienItems.LEGGINGS_MITHRIL);
-        trimmedArmorItem(TolkienItems.BOOTS_MITHRIL);
+        trimmedArmorItem(TolkienItems.HELMET_MITHRIL, EquipmentSlot.HEAD);
+        trimmedArmorItem(TolkienItems.CHESTPLATE_MITHRIL, EquipmentSlot.CHEST);
+        trimmedArmorItem(TolkienItems.LEGGINGS_MITHRIL, EquipmentSlot.LEGS);
+        trimmedArmorItem(TolkienItems.BOOTS_MITHRIL, EquipmentSlot.FEET);
         basicItem(TolkienItems.MITHRIL_HORSE_ARMOR.get());
-        trimmedArmorItem(TolkienItems.HELMET_MORGULIRON);
-        trimmedArmorItem(TolkienItems.CHESTPLATE_MORGULIRON);
-        trimmedArmorItem(TolkienItems.LEGGINGS_MORGULIRON);
-        trimmedArmorItem(TolkienItems.BOOTS_MORGULIRON);
+        trimmedArmorItem(TolkienItems.HELMET_MORGULIRON, EquipmentSlot.HEAD);
+        trimmedArmorItem(TolkienItems.CHESTPLATE_MORGULIRON, EquipmentSlot.CHEST);
+        trimmedArmorItem(TolkienItems.LEGGINGS_MORGULIRON, EquipmentSlot.LEGS);
+        trimmedArmorItem(TolkienItems.BOOTS_MORGULIRON, EquipmentSlot.FEET);
         basicItem(TolkienItems.MORGULIRON_HORSE_ARMOR.get());
-        trimmedArmorItem(TolkienItems.HELMET_AMMOLITE);
-        trimmedArmorItem(TolkienItems.CHESTPLATE_AMMOLITE);
-        trimmedArmorItem(TolkienItems.LEGGINGS_AMMOLITE);
-        trimmedArmorItem(TolkienItems.BOOTS_AMMOLITE);
+        trimmedArmorItem(TolkienItems.HELMET_AMMOLITE, EquipmentSlot.HEAD);
+        trimmedArmorItem(TolkienItems.CHESTPLATE_AMMOLITE, EquipmentSlot.CHEST);
+        trimmedArmorItem(TolkienItems.LEGGINGS_AMMOLITE, EquipmentSlot.LEGS);
+        trimmedArmorItem(TolkienItems.BOOTS_AMMOLITE, EquipmentSlot.FEET);
         basicItem(TolkienItems.AMMOLITE_HORSE_ARMOR.get());
 
         basicItem(TolkienItems.ITEM_DEV_TOOL.get());
@@ -628,15 +627,11 @@ public class TolkienItemModelProvider extends ItemModelProvider {
      * old {@code trim_type} predicate lived in the model's {@code overrides} array, which the game
      * no longer reads, so trimmed armour kept its untrimmed icon whatever was applied to it.
      */
-    private void trimmedArmorItem(DeferredItem<? extends Item> itemDeferredItem) {
-        // 26.1 has no armour class to test for: which slots a piece fits lives in its equipable
-        // data component, so that is what names the trim sprites.
-        Equippable equippable = itemDeferredItem.get().components().get(DataComponents.EQUIPPABLE);
-        if (equippable == null) {
-            return;
-        }
-
-        String armorType = switch (equippable.slot()) {
+    private void trimmedArmorItem(DeferredItem<? extends Item> itemDeferredItem, EquipmentSlot slot) {
+        // 26.1 has no armour class to test for, and an item's components are only bound once the
+        // registry is loaded, which datagen never does - so the slot comes from the caller, the way
+        // vanilla's own generateTrimmableItem takes its slot prefix as an argument.
+        String armorType = switch (slot) {
             case HEAD -> "helmet";
             case CHEST -> "chestplate";
             case LEGS -> "leggings";

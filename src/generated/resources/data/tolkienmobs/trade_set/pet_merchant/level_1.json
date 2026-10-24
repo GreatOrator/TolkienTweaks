@@ -1,0 +1,8 @@
+{
+  "amount": 2.0,
+  "random_sequence": "tolkienmobs:trade_set/pet_merchant/level_1",
+  "trades": [
+    "tolkienmobs:pet_merchant/1/bronze_insect",
+    "tolkienmobs:pet_merchant/1/bronze_acorn"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "amount": 2.0,
+  "random_sequence": "tolkienmobs:trade_set/junk_trader/level_2",
+  "trades": [
+    "tolkienmobs:junk_trader/2/mumakil_leather",
+    "tolkienmobs:junk_trader/2/crebain_feather",
+    "tolkienmobs:junk_trader/2/bird_feather"
+  ]
+}

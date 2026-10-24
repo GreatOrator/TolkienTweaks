@@ -3,7 +3,6 @@
   "addition": "tolkienmobs:ingot_mithril",
   "base": "minecraft:netherite_chestplate",
   "result": {
-    "count": 1,
     "id": "tolkienmobs:chestplate_mithril"
   },
   "template": "tolkienmobs:template_mithril"

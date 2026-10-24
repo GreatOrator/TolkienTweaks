@@ -5,7 +5,6 @@
   "experience": 0.25,
   "ingredient": "tolkienmobs:angainor",
   "result": {
-    "count": 1,
     "id": "tolkienmobs:smooth_angainor"
   }
 }

@@ -1,0 +1,13 @@
+{
+  "gives": {
+    "count": 2,
+    "id": "tolkienmobs:drink_personal_blacksmith"
+  },
+  "max_uses": 16.0,
+  "reputation_discount": 0.5,
+  "wants": {
+    "count": 2.0,
+    "id": "tolkienmobs:item_coin_mithril"
+  },
+  "xp": 100.0
+}

@@ -1,4 +1,20 @@
 {
+  "attributes": {
+    "minecraft:audio/ambient_sounds": {
+      "loop": "tolkienmobs:music_disc.tolkienmobs.allthatglitterserebor"
+    },
+    "minecraft:visual/ambient_particles": [
+      {
+        "particle": {
+          "type": "tolkienmobs:dwarven_maple_leaves"
+        },
+        "probability": 0.00625
+      }
+    ],
+    "minecraft:visual/fog_color": "#a080a0",
+    "minecraft:visual/sky_color": "#7da2ff",
+    "minecraft:visual/water_fog_color": "#050533"
+  },
   "carvers": [
     "minecraft:cave",
     "minecraft:cave_extra_underground",
@@ -6,20 +22,9 @@
   ],
   "downfall": 0.3,
   "effects": {
-    "ambient_sound": "tolkienmobs:music_disc.tolkienmobs.allthatglitterserebor",
-    "fog_color": 10518688,
-    "foliage_color": 2292007,
-    "grass_color": 2292007,
-    "music_volume": 1.0,
-    "particle": {
-      "options": {
-        "type": "tolkienmobs:dwarven_maple_leaves"
-      },
-      "probability": 0.00625
-    },
-    "sky_color": 8233727,
-    "water_color": 4159204,
-    "water_fog_color": 329011
+    "foliage_color": "#22f927",
+    "grass_color": "#22f927",
+    "water_color": "#3f76e4"
   },
   "features": [
     [],
@@ -91,8 +96,9 @@
       "minecraft:patch_grass_forest",
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
-      "minecraft:patch_sugar_cane",
       "minecraft:patch_pumpkin",
+      "minecraft:patch_sugar_cane",
+      "minecraft:patch_firefly_bush_near_water",
       "minecraft:patch_berry_common",
       "tolkienmobs:dwarven_maple_fallen_leaves",
       "tolkienmobs:dwarven_maple_fallen_log",
