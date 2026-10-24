@@ -2,7 +2,7 @@ package com.greatorator.tolkienmobs.datagen.helpers;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.init.TolkienItems;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.advancements.criterion.InventoryChangeTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -262,13 +262,13 @@ public abstract class TolkienRecipeHelper extends RecipeProvider {
 //    }
 
     protected void smeltingList(ItemLike input, RecipeOutput recipeOutput, RecipeCategory category, ItemLike output, float experience, int cookingTime) {
-        SimpleCookingRecipeBuilder.smelting(Ingredient.of(input), category, output, experience, cookingTime)
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(input), category, CookingBookCategory.BLOCKS, output, experience, cookingTime)
                 .unlockedBy("has_"+input, InventoryChangeTrigger.TriggerInstance.hasItems(input))
                 .save(recipeOutput, recipeKey(TolkienMobsMain.prefix(output.asItem().getDescriptionId() + "_from_smelting")));
     }
 
     protected void blastingList(ItemLike input, RecipeOutput recipeOutput, RecipeCategory category, ItemLike output, float experience, int cookingTime) {
-        SimpleCookingRecipeBuilder.blasting(Ingredient.of(input), category, output, experience, cookingTime)
+        SimpleCookingRecipeBuilder.blasting(Ingredient.of(input), category, CookingBookCategory.BLOCKS, output, experience, cookingTime)
                 .unlockedBy("has_"+input, InventoryChangeTrigger.TriggerInstance.hasItems(input))
                 .save(recipeOutput, recipeKey(TolkienMobsMain.prefix(output.asItem().getDescriptionId() + "_from_blasting")));
     }
@@ -284,13 +284,13 @@ public abstract class TolkienRecipeHelper extends RecipeProvider {
 
     protected void oreSmelting(RecipeOutput pRecipeOutput, List<ItemLike> pIngredients, RecipeCategory pCategory, ItemLike pResult,
                                       float pExperience, int pCookingTIme, String pGroup) {
-        oreCooking(pRecipeOutput, RecipeSerializer.SMELTING_RECIPE, SmeltingRecipe::new, pIngredients, pCategory, pResult,
+        oreCooking(pRecipeOutput, SmeltingRecipe::new, pIngredients, pCategory, pResult,
                 pExperience, pCookingTIme, pGroup, "_from_smelting");
     }
 
     protected void oreBlasting(RecipeOutput pRecipeOutput, List<ItemLike> pIngredients, RecipeCategory pCategory, ItemLike pResult,
                                       float pExperience, int pCookingTime, String pGroup) {
-        oreCooking(pRecipeOutput, RecipeSerializer.BLASTING_RECIPE, BlastingRecipe::new, pIngredients, pCategory, pResult,
+        oreCooking(pRecipeOutput, BlastingRecipe::new, pIngredients, pCategory, pResult,
                 pExperience, pCookingTime, pGroup, "_from_blasting");
     }
 
@@ -385,7 +385,7 @@ public abstract class TolkienRecipeHelper extends RecipeProvider {
         shaped(RecipeCategory.DECORATIONS, sign, 6)
                 .group("hanging_sign")
                 .define('#', material)
-                .define('X', Items.CHAIN)
+                .define('X', Items.IRON_CHAIN)
                 .pattern("X X")
                 .pattern("###")
                 .pattern("###")
@@ -503,10 +503,10 @@ public abstract class TolkienRecipeHelper extends RecipeProvider {
         shapeless(RecipeCategory.MISC, output, 2).requires(output).requires(ingredient, 2).group(group).unlockedBy(getHasName(output), has(output)).save(recipeOutput, MODID + ":" + getConversionRecipeName(output, ingredient));
     }
 
-    protected <T extends AbstractCookingRecipe> void oreCooking(RecipeOutput pRecipeOutput, RecipeSerializer<T> pCookingSerializer, AbstractCookingRecipe.Factory<T> factory,
+    protected <T extends AbstractCookingRecipe> void oreCooking(RecipeOutput pRecipeOutput, AbstractCookingRecipe.Factory<T> factory,
                                                                        List<ItemLike> pIngredients, RecipeCategory pCategory, ItemLike pResult, float pExperience, int pCookingTime, String pGroup, String pRecipeName) {
         for(ItemLike itemlike : pIngredients) {
-            SimpleCookingRecipeBuilder.generic(Ingredient.of(itemlike), pCategory, pResult, pExperience, pCookingTime, pCookingSerializer, factory).group(pGroup).unlockedBy(getHasName(itemlike), has(itemlike))
+            SimpleCookingRecipeBuilder.generic(Ingredient.of(itemlike), pCategory, CookingBookCategory.MISC, pResult, pExperience, pCookingTime, factory).group(pGroup).unlockedBy(getHasName(itemlike), has(itemlike))
                     .save(pRecipeOutput, MODID + ":" + getItemName(pResult) + pRecipeName + "_" + getItemName(itemlike));
         }
     }
