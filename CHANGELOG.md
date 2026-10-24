@@ -190,6 +190,11 @@ All notable changes to this project will be documented in this file.
   game moved the boat classes into a package of their own, which is the whole of the change; a boat
   still places and floats as it did, a chest boat still carries a chest, and each boat still
   remembers which wood it is made of when the world is saved and loaded.
+- The three birds are ported - the thrush, the crebain and the great eagle - and the gecko's model
+  with them. They behave as before: the eagle still hunts chickens, sheep and cows, the crebain
+  still flocks and is still tempted by insects, and a bred thrush chick is still owned by whoever
+  tamed its parent, even if that player is offline. The gecko still walks and idles with the same
+  gait, because the model's two animations are baked once and then played as they were.
 
 ## [4.4.83-Final] - 10.22.2026
 

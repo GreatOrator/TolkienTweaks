@@ -1213,6 +1213,26 @@ from **3,470 errors in 337 files to 2,801 in 320**.
 - **Verified:** whole-tree `javac` at **802** errors, 329 down from 1,131, with the per-file diff
   showing only removals - the fourteen entities, the seven items and the three registry files.
 
+### The ambient birds and the gecko model - DONE
+
+- All three birds - the thrush, the crebain and the great eagle - took `PathType.FIRE_IN_NEIGHBOR`
+  and `PathType.FIRE` for the old `DANGER_FIRE`/`DAMAGE_FIRE` pair, at the same `-1` maluses, and a
+  `double` fall distance on their `causeFallDamage`, which they override to return `false` anyway
+  because they fly. The eagle also needed `Chicken`, `Cow` and `Sheep` by their own packages, which
+  its `animal.*` import no longer covers.
+- The thrush's breeding needed the most care: an owner is an `EntityReference<LivingEntity>` now, so
+  the chick copies the parent's reference with `setOwnerReference(getOwnerReference())` rather than a
+  UUID. That keeps a tamed thrush's chick owned by the same player even when that player is offline,
+  which resolving the entity and setting it back would not.
+- **The gecko model** needed the real change. 26.1 removed `Model#animate` and `#animateWalk`: a
+  model bakes its `AnimationDefinition` against its own root once, `definition.bake(root)`, and then
+  calls `applyWalk(animationPos, animationSpeed, speedFactor, scaleFactor)` or
+  `apply(state, ageInTicks, speedFactor)`. The gecko bakes its walk and idle definitions in the
+  constructor and applies them with the same numbers as before - a `2.0` walk speed factor and `2.5`
+  scale, idle at `1.0` - so the lizard walks and breathes exactly as it did.
+- **Verified:** whole-tree `javac` at **787** errors, 15 down from 802 - the birds' thirteen and the
+  model's two - with the per-file diff showing only those four files and nothing new anywhere.
+
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
   26.1.2 MDK's version; NeoForge requires 9.1.0 or newer), foojay resolver 0.8.0 → 1.0.0.

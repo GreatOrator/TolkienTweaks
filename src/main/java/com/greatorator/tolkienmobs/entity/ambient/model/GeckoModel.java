@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.entity.ambient.model;
 
 import com.greatorator.tolkienmobs.entity.ambient.animations.GeckoAnimations;
 import com.greatorator.tolkienmobs.entity.ambient.render.GeckoRenderState;
+import net.minecraft.client.animation.KeyframeAnimation;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -18,11 +19,16 @@ public class GeckoModel extends EntityModel<GeckoRenderState> {
 
     private final ModelPart body;
     private final ModelPart head;
+    private final KeyframeAnimation walkAnimation;
+    private final KeyframeAnimation idleAnimation;
 
     public GeckoModel(ModelPart root) {
 		super(root);
         this.body = root.getChild("Body");
         this.head = this.body.getChild("Head");
+        // 26.1 bakes a keyframe definition against the model once instead of applying it per frame.
+        this.walkAnimation = GeckoAnimations.ANIM_GECKO_WALK.bake(root);
+        this.idleAnimation = GeckoAnimations.ANIM_GECKO_IDLE.bake(root);
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -66,8 +72,8 @@ public class GeckoModel extends EntityModel<GeckoRenderState> {
         super.setupAnim(state);
         this.applyHeadRotation(state.yRot, state.xRot);
 
-        this.animateWalk(GeckoAnimations.ANIM_GECKO_WALK, state.walkAnimationPos, state.walkAnimationSpeed, 2f, 2.5f);
-        this.animate(state.idleAnimationState, GeckoAnimations.ANIM_GECKO_IDLE, state.ageInTicks, 1f);
+        this.walkAnimation.applyWalk(state.walkAnimationPos, state.walkAnimationSpeed, 2f, 2.5f);
+        this.idleAnimation.apply(state.idleAnimationState, state.ageInTicks, 1f);
     }
 
     private void applyHeadRotation(float headYaw, float headPitch) {

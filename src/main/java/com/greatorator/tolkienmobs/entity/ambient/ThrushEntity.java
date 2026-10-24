@@ -64,8 +64,8 @@ public class ThrushEntity extends TolkienFlyingAmbientEntity implements GeoEntit
 
        setTame(false, false);
 
-        setPathfindingMalus(PathType.DANGER_FIRE, -1.0f);
-        setPathfindingMalus(PathType.DAMAGE_FIRE, -1.0f);
+        setPathfindingMalus(PathType.FIRE_IN_NEIGHBOR, -1.0f);
+        setPathfindingMalus(PathType.FIRE, -1.0f);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -209,7 +209,7 @@ public class ThrushEntity extends TolkienFlyingAmbientEntity implements GeoEntit
     }
 
     @Override
-    public boolean causeFallDamage(float pFallDistance, float pMultiplier, DamageSource pSource) {
+    public boolean causeFallDamage(double pFallDistance, float pMultiplier, DamageSource pSource) {
         return false;
     }
 
@@ -241,7 +241,7 @@ public class ThrushEntity extends TolkienFlyingAmbientEntity implements GeoEntit
         var child = TolkienEntities.ENTITY_TTM_THRUSH.get().create(level, EntitySpawnReason.BREEDING);
         if(child != null /*&& otherParent instanceof BaldEagle eagle*/) {
             if(this.isTame()) {
-                child.setOwnerUUID(this.getOwnerUUID());
+                child.setOwnerReference(this.getOwnerReference());
                 child.setTame(true, true);
             }
         }
