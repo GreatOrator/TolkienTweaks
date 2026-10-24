@@ -61,7 +61,7 @@ public class BreezeUtility {
             originalState = null;
         }
 
-        boolean isRaining = world.getLevelData().isRaining();
+        boolean isRaining = world.isRaining();
         boolean isThundering = world.isThundering();
         boolean weatherChanged = wasRaining != isRaining || wasThundering != isThundering;
 
