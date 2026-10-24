@@ -13,9 +13,7 @@ import com.greatorator.tolkienmobs.entity.projectiles.model.BoulderModel;
 import com.greatorator.tolkienmobs.entity.projectiles.model.FellBeastFireballModel;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
-import net.minecraft.client.renderer.block.BlockModelShaper;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.monster.Monster;
@@ -49,20 +47,19 @@ public class TolkienEventBusEvents {
 
     @SubscribeEvent
     public static void onModelBakeEvent(ModelEvent.ModifyBakingResult event) {
-        // 1.21.4 hands the baking result over instead of a bare map; its block state models are still mutable here.
-        Map<ModelResourceLocation, BakedModel> modelRegistry = event.getBakingResult().blockStateModels();
+        // 1.21.5 keys the baking result by block state and holds block state models, which are still mutable here.
+        Map<BlockState, BlockStateModel> modelRegistry = event.getBakingResult().blockStateModels();
 
         for (Block block : chameleonBlocks.get()) {
             for (BlockState blockState : block.getStateDefinition().getPossibleStates()) {
-                ModelResourceLocation variantMRL = BlockModelShaper.stateToModelLocation(blockState);
-                BakedModel existingModel = modelRegistry.get(variantMRL);
+                BlockStateModel existingModel = modelRegistry.get(blockState);
                 if (existingModel == null) {
                     LOGGER.warn("Did not find the expected vanilla baked model(s) for blockCamouflage in registry");
                 } else if (existingModel instanceof ChameleonBlockDynamicBakedModel) {
                     LOGGER.warn("Tried to replace CamouflagedBakedModel twice");
                 } else {
                     ChameleonBlockDynamicBakedModel customModel = new ChameleonBlockDynamicBakedModel(existingModel);
-                    modelRegistry.put(variantMRL, customModel);
+                    modelRegistry.put(blockState, customModel);
                 }
             }
         }

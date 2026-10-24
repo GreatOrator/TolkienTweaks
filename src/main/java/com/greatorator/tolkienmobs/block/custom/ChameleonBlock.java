@@ -7,7 +7,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
@@ -123,7 +122,7 @@ public class ChameleonBlock<C> extends TolkienEntityBlock implements SimpleWater
         return RenderShape.MODEL;
     }
 
-    public BlockState selectBestAdjacentBlock(@Nonnull BlockAndTintGetter world, @Nonnull BlockPos blockPos) {
+    public BlockState selectBestAdjacentBlock(@Nonnull BlockGetter world, @Nonnull BlockPos blockPos) {
         TreeMap<Direction, BlockState> adjacentSolidBlocks = new TreeMap<Direction, BlockState>();
 
         HashMap<BlockState, Integer> adjacentBlockCount = new HashMap<BlockState, Integer>();

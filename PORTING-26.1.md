@@ -16,7 +16,7 @@ measurement's other half.
 | Source | Minecraft **1.21.4**, NeoForge **21.4.161**, mod **4.4.83-Final** |
 | Target | Minecraft **26.1.2**, NeoForge **26.1.2.116**, mod **5.0.0** |
 | Java | 21 → **25** |
-| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family and the camo spawner are done; 2,275 errors left |
+| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree and the block model system are done; **671** errors left |
 
 What the source tree contains, counted:
 
@@ -1261,6 +1261,39 @@ from **3,470 errors in 337 files to 2,801 in 320**.
 - **Verified:** whole-tree `javac` at **770** errors, 10 down from 780, with the per-file diff showing
   only those three files removed. No error is left anywhere under `entity/`: every mob, boss,
   projectile, boat, renderer and model in the mod compiles.
+
+### The block model system - DONE
+
+- **`BakedModel` is gone from the block pipeline.** A block now renders whatever parts a
+  `BlockStateModel` collects, and the model is asked for them with the level, position, state and a
+  random source. That is what the patch needed anyway - it grows towards its edges from the four
+  connection properties and scatters its blobs from the position's random source - so `PatchModel` is
+  a `BlockStateModel` that builds a `BlockStateModelPart` on demand instead of a `BakedModel` that
+  answered `getQuads`.
+- **A quad carries its own atlas layer and lighting.** `getRenderTypes` is gone; the cutout the clover
+  patch has always drawn in is now chosen as the `ChunkSectionLayer` stamped on each quad, and the
+  particle icon, AO and the opaque/translucent flag moved with it.
+- **The loader moved from the model file to the blockstate file.** A variant may name a
+  `CustomUnbakedBlockStateModel` by `"type"`, and only a block-state model is handed the state and
+  position random at collection time. So `UnbakedPatchModel` is a record with a `MapCodec` registered
+  in `RegisterBlockStateModels`, `PatchModelLoader` is gone, the two `models/block/*patch.json` files
+  are gone, and `clover_patch`/`moss_patch` blockstates name `"type": "tolkienmobs:patch"` with their
+  texture - which the blockstate provider now writes through a new `blockState(Block, IGeneratedBlockState)`
+  hook, since a variant builder can only name model files.
+- **The chameleon model is a `DelegateBlockStateModel`.** 1.21.5 deleted `BakedModelWrapper` and
+  `ModelData` properties from the model path, so the disguise is no longer baked into model data by the
+  block: `collectParts` reads the neighbours off the level it is handed, keeps the dev tool and key
+  check, and forwards to that block's own model. The baking-result map is keyed by `BlockState` now,
+  which is how the seven chameleon blocks still swap their models during `ModifyBakingResult`.
+- **`ChameleonBlock` lost its second `BlockAndTintGetter`.** 26.1 kept only the client-side
+  `net.minecraft.client.renderer.block.BlockAndTintGetter`, which a block class cannot import, so
+  `selectBestAdjacentBlock` takes the `BlockGetter` both sides already share.
+- One behaviour note: the old model returned every quad for whichever direction the renderer asked
+  about, so each face was submitted once per un-culled direction and once unculled. The patch now
+  collects its quads as unculled faces only, which draws each face once; the shape is unchanged.
+- **Verified:** whole-tree `javac` at **671** errors, 99 down from 770, with the per-file diff showing
+  only the files above removed and nothing new. Nothing was opened in game; the blockstate move is
+  checked against the codecs, not against a client.
 
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official

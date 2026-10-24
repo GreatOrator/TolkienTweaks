@@ -88,6 +88,16 @@ public abstract class BlockStateProvider implements DataProvider {
         return builder;
     }
 
+    /**
+     * Registers a blockstate file built by hand, for the shapes a variant builder cannot express.
+     *
+     * <p>A variant may name a custom block state model by its {@code type} instead of a model file,
+     * which is how the patches are drawn now.</p>
+     */
+    public void blockState(Block block, IGeneratedBlockState state) {
+        this.registeredBlocks.put(block, state);
+    }
+
     public BlockModelProvider models() {
         return this.blockModels;
     }

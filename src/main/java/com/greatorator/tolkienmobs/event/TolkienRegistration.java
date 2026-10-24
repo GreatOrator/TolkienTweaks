@@ -4,7 +4,7 @@ import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.entity.layers.TolkienModelLayers;
 import com.greatorator.tolkienmobs.block.custom.entity.model.LightningBugModel;
 import com.greatorator.tolkienmobs.block.custom.entity.model.LocustModel;
-import com.greatorator.tolkienmobs.block.custom.entity.model.PatchModelLoader;
+import com.greatorator.tolkienmobs.block.custom.entity.model.UnbakedPatchModel;
 import com.greatorator.tolkienmobs.block.custom.entity.renderer.*;
 import com.greatorator.tolkienmobs.entity.item.render.*;
 import com.greatorator.tolkienmobs.event.client.TolkienRenderInfo;
@@ -18,7 +18,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
 import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.neoforged.neoforge.event.BlockEntityTypeAddBlocksEvent;
 
@@ -27,7 +27,7 @@ public class TolkienRegistration {
     public static void initModBusEvents(IEventBus bus) {
         bus.addListener(TolkienRegistration::registerEntityRenderers);
         bus.addListener(TolkienRegistration::registerLayerDefinitions);
-        bus.addListener(TolkienRegistration::registerModelLoaders);
+        bus.addListener(TolkienRegistration::registerBlockStateModels);
         bus.addListener(TolkienRegistration::registerBETypes);
         bus.addListener(TolkienRegistration::registerDimEffects);
     }
@@ -88,8 +88,8 @@ public class TolkienRegistration {
                 TolkienBlocks.DEADWOOD_HANGING_SIGN.get(), TolkienBlocks.DEADWOOD_HANGING_WALL_SIGN.get(),
                 TolkienBlocks.DWARVEN_MAPLE_HANGING_SIGN.get(), TolkienBlocks.DWARVEN_MAPLE_HANGING_WALL_SIGN.get());    }
 
-    private static void registerModelLoaders(ModelEvent.RegisterLoaders event) {
-        event.register(TolkienMobsMain.prefix("patch"), PatchModelLoader.INSTANCE);
+    private static void registerBlockStateModels(RegisterBlockStateModels event) {
+        event.registerModel(TolkienMobsMain.prefix("patch"), UnbakedPatchModel.CODEC);
     }
 
     private static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
