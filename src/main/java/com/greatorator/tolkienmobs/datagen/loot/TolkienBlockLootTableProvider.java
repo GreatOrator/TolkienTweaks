@@ -6,7 +6,7 @@ import com.greatorator.tolkienmobs.block.custom.SleepingBagBlock;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.greatorator.tolkienmobs.init.TolkienItems;
-import net.minecraft.advancements.critereon.StatePropertiesPredicate;
+import net.minecraft.advancements.criterion.StatePropertiesPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
@@ -31,6 +31,7 @@ import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.BonusLevelTableCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
@@ -740,7 +741,7 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         add(TolkienBlocks.BACKPACK.get(), block -> LootTable.lootTable().withPool(applyExplosionCondition(block, LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1.0F))
                 .add(LootItem.lootTableItem(block)
-                        .apply(CopyComponentsFunction.copyComponents(CopyComponentsFunction.Source.BLOCK_ENTITY)
+                        .apply(CopyComponentsFunction.copyComponentsFromBlockEntity(LootContextParams.BLOCK_ENTITY)
                                 .include(TolkienDataComponents.BACKPACK_CONTENTS.get()))))));
         dropSelf(TolkienBlocks.CHAMELEON_BLOCK.get());
         dropSelf(TolkienBlocks.WELL.get());
@@ -817,8 +818,8 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
                                         .setRolls(ConstantValue.exactly(1.0F))
                                         .add(
                                                 LootItem.lootTableItem(block)
-                                                        .apply(CopyComponentsFunction.copyComponents(
-                                                                CopyComponentsFunction.Source.BLOCK_ENTITY).include(
+                                                        .apply(CopyComponentsFunction.copyComponentsFromBlockEntity(
+                                                                LootContextParams.BLOCK_ENTITY).include(
                                                                 DataComponents.CUSTOM_NAME))
                                                         .when(
                                                                 LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
