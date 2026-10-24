@@ -940,6 +940,15 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   they are deleted rather than re-signed. `RenderSystem.setShaderTexture` went with the pipeline
   blit.
 
+### Backpack upgrade screen — DONE, and the screen set with it
+
+- The last screen, and the smallest: an 86x86 panel, one caption at `-15` and no widgets of its own.
+  Size to the constructor, `renderBg` to `extractBackground` (still calling `super` for the dim),
+  `renderLabels` to `extractLabels`, and the super-only `renderSlotContents` and `render` overrides
+  deleted.
+- With it, **no file under `containers/screens` or `containers/widget` reports an error** - eighteen
+  screens and eight widgets, all on the extract pass. What the tree still fails on is elsewhere.
+
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
   26.1.2 MDK's version; NeoForge requires 9.1.0 or newer), foojay resolver 0.8.0 → 1.0.0.
