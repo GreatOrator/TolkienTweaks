@@ -3,23 +3,23 @@ package com.greatorator.tolkienmobs.item;
 import net.minecraft.world.InteractionResult;
 
 import com.greatorator.tolkienmobs.util.ColorUtility;
-import com.greatorator.tolkienmobs.util.GeneralUtility;
 import com.greatorator.tolkienmobs.util.LangTranslationUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Unit;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.entity.projectile.arrow.Arrow;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.PotionContents;
-import net.minecraft.world.item.component.Unbreakable;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -28,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.function.Consumer;
 
 import static net.minecraft.sounds.SoundEvents.ARROW_SHOOT;
 import static net.minecraft.sounds.SoundSource.PLAYERS;
@@ -39,7 +40,8 @@ public class TolkienBowItem extends BowItem {
     public final Supplier<Item> infinityArrow;
     public final float speedScale;
     public TolkienBowItem(Properties properties, int uses, int useDuration, float speedScale, Supplier<Item> infinityArrow, ColorUtility nameColor) {
-        super((uses == 0 ? properties.stacksTo(1).component(DataComponents.UNBREAKABLE, new Unbreakable(true)) : properties.durability(uses)));
+        // 26.1 keeps an unbreakable item as a marker component with no value to read.
+        super((uses == 0 ? properties.stacksTo(1).component(DataComponents.UNBREAKABLE, Unit.INSTANCE) : properties.durability(uses)));
         this.useDuration = useDuration;
         this.nameColor = nameColor;
         this.infinityArrow = infinityArrow;
@@ -78,9 +80,6 @@ public class TolkienBowItem extends BowItem {
     @Override public boolean supportsEnchantment(ItemStack stack, Holder<Enchantment> enchantment) {
         return super.supportsEnchantment(stack, enchantment) && (stack.has(DataComponents.MAX_DAMAGE) || !(enchantment.is(Enchantments.MENDING) || enchantment.is(Enchantments.UNBREAKING)));
     }
-    @Override public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
-        return stack.has(DataComponents.MAX_DAMAGE) || !(GeneralUtility.hasStoredEnchantment(Enchantments.MENDING, book) || GeneralUtility.hasStoredEnchantment(Enchantments.UNBREAKING, book));
-    }
     public static void addEffect(Arrow arrow, MobEffectInstance instance) {
         ItemStack stack = arrow.getPickupItemStackOrigin();
         PotionContents contents = stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
@@ -89,13 +88,13 @@ public class TolkienBowItem extends BowItem {
         stack.set(DataComponents.POTION_CONTENTS, contents.withEffectAdded(instance));
     }
     @OnlyIn(Dist.CLIENT)
-    @Override public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
+    @Override public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flagIn) {
         float speed = 72000F / useDuration;
-        tooltip.add(LangTranslationUtils.shootingPower(speedScale));
-        if(speed > 1) tooltip.add(LangTranslationUtils.bowFasterPull(speed));
-        if(speed < 1) tooltip.add(LangTranslationUtils.bowSlowerPull(1 / speed));
-        if(infinityArrow != null) tooltip.add(LangTranslationUtils.infiniteAmmo());
-        super.appendHoverText(stack, context, tooltip, flagIn);
+        tooltip.accept(LangTranslationUtils.shootingPower(speedScale));
+        if(speed > 1) tooltip.accept(LangTranslationUtils.bowFasterPull(speed));
+        if(speed < 1) tooltip.accept(LangTranslationUtils.bowSlowerPull(1 / speed));
+        if(infinityArrow != null) tooltip.accept(LangTranslationUtils.infiniteAmmo());
+        super.appendHoverText(stack, context, display, tooltip, flagIn);
     }
     @Override public Component getName(ItemStack pStack) {
         return nameColor != null ? ((MutableComponent) super.getName(pStack)).withColor(nameColor.getColor()) : super.getName(pStack);

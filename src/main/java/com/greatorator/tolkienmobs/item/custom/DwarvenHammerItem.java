@@ -1,10 +1,9 @@
 package com.greatorator.tolkienmobs.item.custom;
 
+import com.greatorator.tolkienmobs.item.TolkienPickaxeItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.BlockHitResult;
@@ -13,9 +12,13 @@ import net.minecraft.world.phys.HitResult;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DwarvenHammerItem extends DiggerItem {
+/**
+ * The hammer is a pickaxe that breaks a plane of blocks, so it keeps the pickaxe's properties: 26.1 has
+ * no digger base class left to extend, and {@code pickaxe} applies the same mining tag and damage.
+ */
+public class DwarvenHammerItem extends TolkienPickaxeItem {
     public DwarvenHammerItem(ToolMaterial material, float attackDamage, float attackSpeed, Properties properties) {
-        super(material, BlockTags.MINEABLE_WITH_PICKAXE, attackDamage, attackSpeed, properties);
+        super(material, attackDamage, attackSpeed, properties);
     }
 
     public static List<BlockPos> getBlocksToBeDestroyed(int range, BlockPos initalBlockPos, ServerPlayer player) {

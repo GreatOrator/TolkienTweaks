@@ -16,7 +16,7 @@ measurement's other half.
 | Source | Minecraft **1.21.4**, NeoForge **21.4.161**, mod **4.4.83-Final** |
 | Target | Minecraft **26.1.2**, NeoForge **26.1.2.116**, mod **5.0.0** |
 | Java | 21 → **25** |
-| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system and the particle data provider are done; **648** errors left |
+| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider and the item family are done; **514** errors left |
 
 What the source tree contains, counted:
 
@@ -1341,6 +1341,43 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   would have refused to load.
 - **Not done:** `mod_version` is still `4.4.${currentBuildNumber}`. It becomes `5.0.x` when
   the port is released, not before, so that a test jar cannot be mistaken for a release.
+
+### The item family - DONE
+
+- **26.1 has no sword, pickaxe, armour or animal-armour class.** They were folded into
+  `Item.Properties` factories - `sword`, `pickaxe`, `humanoidArmor`, `horseArmor` - which set the
+  same components the old constructors did: the tool component with its mining tag, the weapon
+  component with the material's damage, and an armour piece's durability, attributes, equip sound,
+  enchantability and repair ingredient. `SwordItem`, `PickaxeItem`, `DiggerItem` and `ArmorItem`
+  therefore have no counterpart, and `AxeItem`/`ShovelItem`/`HoeItem` are still there and untouched.
+- **So the four item classes are plain `Item`s that apply their own factory.** `TolkienSwordItem`
+  and `TolkienPickaxeItem` call `super(properties.sword(...))` / `.pickaxe(...)`, `TolkienArmorItem`
+  calls `.humanoidArmor(material, type)` and `TolkienAnimalArmorItem` calls `.horseArmor(material)`.
+  Their behaviour - the enchantment glint override, the gold lore line, and the armour's worn-set
+  effects - is unchanged, and the horse armour still stacks to one.
+- **The dwarven hammer extends the pickaxe now.** It used to extend `DiggerItem` with an explicit
+  `MINEABLE_WITH_PICKAXE` tag; the pickaxe factory applies that same tag, so it is a
+  `TolkienPickaxeItem` and keeps its plane-breaking helper.
+- **`appendHoverText` takes a `TooltipDisplay` and a `Consumer<Component>` instead of a list**, so
+  every item tooltip (the tool and armour classes, the backpack, sleeping bag, key, trinket and
+  arrow item, and both bows) adds through the consumer. The text and the `super` call are the same.
+- **`inventoryTick` only runs on the server now** - it is handed a `ServerLevel` and the occupied
+  `EquipmentSlot` rather than a `Level`, an index and an `isSelected` flag. The coin pouch, key
+  ring, hobbit ring, trinket and armour effects all tick there; the two that used to run on both
+  sides (the trinket's potion effect and the hobbit ring's growth timer) now tick once, which is
+  what their code already assumed.
+- **Class moves and renames:** `Arrow` and `AbstractArrow` are under `entity.projectile.arrow`,
+  `Unbreakable` is no longer a class (the component holds `Unit`), three effects are named
+  `SPEED`/`HASTE`/`STRENGTH`, the key's shift check is `Minecraft#hasShiftDown`, and the worn armour
+  set is read from `EquipmentSlotGroup.ARMOR` with `getItemBySlot`. `isBookEnchantable` is gone, so
+  the bow's "no Mending or Unbreaking on an unbreakable bow" rule lives only in
+  `supportsEnchantment` - the same predicate 26.1 asks.
+- **The item models' trim pass reads the equipable component off any item**, since there is no
+  armour class left to test for; every caller is already an armour piece, and the generated models
+  are unchanged.
+- **Verified:** whole-tree `javac` at **514** errors, 134 down from 648, the per-file diff showing
+  only item files and the four others whose errors were cascades of them, with nothing new. No error
+  is left anywhere under `item/` or in `TolkienItems`. Nothing was opened in game.
 
 ## Ordered work list
 

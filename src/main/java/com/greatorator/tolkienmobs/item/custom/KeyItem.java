@@ -5,7 +5,7 @@ import com.greatorator.tolkienmobs.containers.KeyItemContainer;
 import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.greatorator.tolkienmobs.item.TolkienItem;
 import com.greatorator.tolkienmobs.network.component.KeyCodeComponent;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -14,10 +14,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
+import java.util.function.Consumer;
 
 public class KeyItem extends TolkienItem {
 
@@ -30,7 +30,7 @@ public class KeyItem extends TolkienItem {
         ItemStack itemstack = player.getItemInHand(hand);
         if (level.isClientSide()) return InteractionResult.PASS;
 
-        if (Screen.hasShiftDown() && player.isCreative()) {
+        if (Minecraft.getInstance().hasShiftDown() && player.isCreative()) {
             player.openMenu(new SimpleMenuProvider(
                     (windowId, playerInventory, playerEntity) -> new KeyCodeContainer(windowId, playerInventory, player, itemstack), Component.translatable("screen.tolkienmobs.code" + itemstack.getItem().getDescriptionId())), (buf -> {
                         ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, itemstack);
@@ -94,15 +94,15 @@ public class KeyItem extends TolkienItem {
 //    }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        tooltipComponents.add(Component.translatable(getDescriptionId() + ".lore2"));
-            if (Screen.hasShiftDown()) {
-                tooltipComponents.add(Component.translatable(getDescriptionId() + ".shift_down"));
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        tooltipComponents.accept(Component.translatable(getDescriptionId() + ".lore2"));
+            if (Minecraft.getInstance().hasShiftDown()) {
+                tooltipComponents.accept(Component.translatable(getDescriptionId() + ".shift_down"));
             }
             if (getUses(stack) > 0) {
-                tooltipComponents.add(Component.translatable("Number of uses left: " + getUses(stack)));
+                tooltipComponents.accept(Component.translatable("Number of uses left: " + getUses(stack)));
             }
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+        super.appendHoverText(stack, context, display, tooltipComponents, tooltipFlag);
     }
 
     public static void setKeyCode(ItemStack keyItem, String keyCode, int keyUses, boolean mode) {

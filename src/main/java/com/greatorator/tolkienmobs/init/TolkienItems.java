@@ -291,13 +291,13 @@ public class TolkienItems {
     public static final DeferredItem<Item> HYPE_HORN = ITEMS.registerItem("hype_horn", properties -> new HypeHornItem(properties), () -> new Item.Properties().stacksTo(1));
     public static final DeferredItem<DwarvenHammerItem> DWARVEN_HAMMER = ITEMS.registerItem("dwarven_hammer", properties -> new DwarvenHammerItem(TolkienToolMaterials.MITHRIL, 8F, -3.0F, properties));
 
-    public static final DeferredItem<SwordItem> SWORD_MITHRIL = ITEMS.registerItem("sword_mithril", properties -> new TolkienSwordItem(TolkienToolMaterials.MITHRIL, 8F, -1.0F, properties));
-    public static final DeferredItem<SwordItem> SWORD_MORGULIRON = ITEMS.registerItem("sword_morguliron", properties -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, 8F, -2.0F, properties));
-    public static final DeferredItem<SwordItem> SWORD_AMMOLITE = ITEMS.registerItem("sword_ammolite", properties -> new TolkienSwordItem(TolkienToolMaterials.AMMOLITE, 9F, -0.5F, properties).setEffectOverride());
+    public static final DeferredItem<TolkienSwordItem> SWORD_MITHRIL = ITEMS.registerItem("sword_mithril", properties -> new TolkienSwordItem(TolkienToolMaterials.MITHRIL, 8F, -1.0F, properties));
+    public static final DeferredItem<TolkienSwordItem> SWORD_MORGULIRON = ITEMS.registerItem("sword_morguliron", properties -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, 8F, -2.0F, properties));
+    public static final DeferredItem<TolkienSwordItem> SWORD_AMMOLITE = ITEMS.registerItem("sword_ammolite", properties -> new TolkienSwordItem(TolkienToolMaterials.AMMOLITE, 9F, -0.5F, properties).setEffectOverride());
 
-    public static final DeferredItem<PickaxeItem> PICKAXE_MITHRIL = ITEMS.registerItem("pickaxe_mithril", properties -> new TolkienPickaxeItem(TolkienToolMaterials.MITHRIL, 8F, -1.0F, properties));
-    public static final DeferredItem<PickaxeItem> PICKAXE_MORGULIRON = ITEMS.registerItem("pickaxe_morguliron", properties -> new TolkienPickaxeItem(TolkienToolMaterials.MORGULIRON, 8F, -2.0F, properties));
-    public static final DeferredItem<PickaxeItem> PICKAXE_AMMOLITE = ITEMS.registerItem("pickaxe_ammolite", properties -> new TolkienPickaxeItem(TolkienToolMaterials.AMMOLITE, 9F, -0.5F, properties).setEffectOverride());
+    public static final DeferredItem<TolkienPickaxeItem> PICKAXE_MITHRIL = ITEMS.registerItem("pickaxe_mithril", properties -> new TolkienPickaxeItem(TolkienToolMaterials.MITHRIL, 8F, -1.0F, properties));
+    public static final DeferredItem<TolkienPickaxeItem> PICKAXE_MORGULIRON = ITEMS.registerItem("pickaxe_morguliron", properties -> new TolkienPickaxeItem(TolkienToolMaterials.MORGULIRON, 8F, -2.0F, properties));
+    public static final DeferredItem<TolkienPickaxeItem> PICKAXE_AMMOLITE = ITEMS.registerItem("pickaxe_ammolite", properties -> new TolkienPickaxeItem(TolkienToolMaterials.AMMOLITE, 9F, -0.5F, properties).setEffectOverride());
 
     public static final DeferredItem<AxeItem> AXE_MITHRIL = ITEMS.registerItem("axe_mithril", properties -> new TolkienAxeItem(TolkienToolMaterials.MITHRIL, 8F, -1.0F, properties));
     public static final DeferredItem<AxeItem> AXE_MORGULIRON = ITEMS.registerItem("axe_morguliron", properties -> new TolkienAxeItem(TolkienToolMaterials.MORGULIRON, 8F, -2.0F, properties));
@@ -315,10 +315,10 @@ public class TolkienItems {
     public static final DeferredItem<ShearsItem> SHEARS_MORGULIRON = ITEMS.registerItem("shears_morguliron", properties -> new TolkienShearsItem(properties, TolkienTags.Items.MORGULIRON_INGOTS), () -> new Item.Properties().durability(320));
     public static final DeferredItem<ShearsItem> SHEARS_AMMOLITE = ITEMS.registerItem("shears_ammolite", properties -> new TolkienShearsItem(properties, TolkienTags.Items.AMMOLITE_GEMS).setEffectOverride(), () -> new Item.Properties().durability(768));
 
-    public static final DeferredItem<SwordItem> SWORD_WITCHKING = ITEMS.registerItem("sword_witchking", properties -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, 9F, -0.5F, properties).setEffectOverride().setHasLore());
-    public static final DeferredItem<SwordItem> SWORD_URUK = ITEMS.registerItem("sword_uruk", properties -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, 11F, -0.5F, properties).setEffectOverride().setHasLore());
-    public static final DeferredItem<SwordItem> WHIP_FIRE = ITEMS.registerItem("whip_fire", properties -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, 15F, -0.5F, properties).setEffectOverride().setHasLore());
-    public static final DeferredItem<SwordItem> CLUB_WOODEN = ITEMS.registerItem("club_wooden", properties -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, 9F, -0.5F, properties).setEffectOverride().setHasLore());
+    public static final DeferredItem<TolkienSwordItem> SWORD_WITCHKING = ITEMS.registerItem("sword_witchking", properties -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, 9F, -0.5F, properties).setEffectOverride().setHasLore());
+    public static final DeferredItem<TolkienSwordItem> SWORD_URUK = ITEMS.registerItem("sword_uruk", properties -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, 11F, -0.5F, properties).setEffectOverride().setHasLore());
+    public static final DeferredItem<TolkienSwordItem> WHIP_FIRE = ITEMS.registerItem("whip_fire", properties -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, 15F, -0.5F, properties).setEffectOverride().setHasLore());
+    public static final DeferredItem<TolkienSwordItem> CLUB_WOODEN = ITEMS.registerItem("club_wooden", properties -> new TolkienSwordItem(TolkienToolMaterials.MORGULIRON, 9F, -0.5F, properties).setEffectOverride().setHasLore());
 
     public static final DeferredItem<Item> HOBBIT_RING = ITEMS.registerItem("hobbit_ring", properties -> new HobbitRingItem(properties).setHasLore(), () -> new Item.Properties().stacksTo(1).rarity(Rarity.RARE));
     public static final DeferredItem<Item> ELVEN_BOW = ITEMS.registerItem("elven_bow", properties -> new TolkienBowItem(properties, 0, 14400, 1.7F, null, ColorUtility.SILVER), () -> new Item.Properties().enchantable(1));
@@ -337,34 +337,34 @@ public class TolkienItems {
     public static final DeferredItem<Item> UTUMNO_ARROW = ITEMS.registerItem("ammo_utumno_arrow", properties -> new UtumnoArrowItem(properties));
 
         // Armor
-    public static final DeferredItem<ArmorItem> HELMET_MITHRIL = ITEMS.registerItem("helmet_mithril",
+    public static final DeferredItem<TolkienArmorItem> HELMET_MITHRIL = ITEMS.registerItem("helmet_mithril",
                 properties -> new TolkienArmorItem(TolkienArmorMaterials.MITHRIL_ARMOR_MATERIAL, ArmorType.HELMET, properties));
-    public static final DeferredItem<ArmorItem> CHESTPLATE_MITHRIL = ITEMS.registerItem("chestplate_mithril",
+    public static final DeferredItem<TolkienArmorItem> CHESTPLATE_MITHRIL = ITEMS.registerItem("chestplate_mithril",
             properties -> new TolkienArmorItem(TolkienArmorMaterials.MITHRIL_ARMOR_MATERIAL, ArmorType.CHESTPLATE, properties));
-    public static final DeferredItem<ArmorItem> LEGGINGS_MITHRIL = ITEMS.registerItem("leggings_mithril",
+    public static final DeferredItem<TolkienArmorItem> LEGGINGS_MITHRIL = ITEMS.registerItem("leggings_mithril",
             properties -> new TolkienArmorItem(TolkienArmorMaterials.MITHRIL_ARMOR_MATERIAL, ArmorType.LEGGINGS, properties));
-    public static final DeferredItem<ArmorItem> BOOTS_MITHRIL = ITEMS.registerItem("boots_mithril",
+    public static final DeferredItem<TolkienArmorItem> BOOTS_MITHRIL = ITEMS.registerItem("boots_mithril",
             properties -> new TolkienArmorItem(TolkienArmorMaterials.MITHRIL_ARMOR_MATERIAL, ArmorType.BOOTS, properties));
-    public static final DeferredItem<ArmorItem> HELMET_MORGULIRON = ITEMS.registerItem("helmet_morguliron",
+    public static final DeferredItem<TolkienArmorItem> HELMET_MORGULIRON = ITEMS.registerItem("helmet_morguliron",
             properties -> new TolkienArmorItem(TolkienArmorMaterials.MORGULIRON_ARMOR_MATERIAL, ArmorType.HELMET, properties));
-    public static final DeferredItem<ArmorItem> CHESTPLATE_MORGULIRON = ITEMS.registerItem("chestplate_morguliron",
+    public static final DeferredItem<TolkienArmorItem> CHESTPLATE_MORGULIRON = ITEMS.registerItem("chestplate_morguliron",
             properties -> new TolkienArmorItem(TolkienArmorMaterials.MORGULIRON_ARMOR_MATERIAL, ArmorType.CHESTPLATE, properties));
-    public static final DeferredItem<ArmorItem> LEGGINGS_MORGULIRON = ITEMS.registerItem("leggings_morguliron",
+    public static final DeferredItem<TolkienArmorItem> LEGGINGS_MORGULIRON = ITEMS.registerItem("leggings_morguliron",
             properties -> new TolkienArmorItem(TolkienArmorMaterials.MORGULIRON_ARMOR_MATERIAL, ArmorType.LEGGINGS, properties));
-    public static final DeferredItem<ArmorItem> BOOTS_MORGULIRON = ITEMS.registerItem("boots_morguliron",
+    public static final DeferredItem<TolkienArmorItem> BOOTS_MORGULIRON = ITEMS.registerItem("boots_morguliron",
             properties -> new TolkienArmorItem(TolkienArmorMaterials.MORGULIRON_ARMOR_MATERIAL, ArmorType.BOOTS, properties));
-    public static final DeferredItem<ArmorItem> HELMET_AMMOLITE = ITEMS.registerItem("helmet_ammolite",
+    public static final DeferredItem<TolkienArmorItem> HELMET_AMMOLITE = ITEMS.registerItem("helmet_ammolite",
             properties -> new TolkienArmorItem(TolkienArmorMaterials.AMMOLITE_ARMOR_MATERIAL, ArmorType.HELMET, properties));
-    public static final DeferredItem<ArmorItem> CHESTPLATE_AMMOLITE = ITEMS.registerItem("chestplate_ammolite",
+    public static final DeferredItem<TolkienArmorItem> CHESTPLATE_AMMOLITE = ITEMS.registerItem("chestplate_ammolite",
             properties -> new TolkienArmorItem(TolkienArmorMaterials.AMMOLITE_ARMOR_MATERIAL, ArmorType.CHESTPLATE, properties));
-    public static final DeferredItem<ArmorItem> LEGGINGS_AMMOLITE = ITEMS.registerItem("leggings_ammolite",
+    public static final DeferredItem<TolkienArmorItem> LEGGINGS_AMMOLITE = ITEMS.registerItem("leggings_ammolite",
             properties -> new TolkienArmorItem(TolkienArmorMaterials.AMMOLITE_ARMOR_MATERIAL, ArmorType.LEGGINGS, properties));
-    public static final DeferredItem<ArmorItem> BOOTS_AMMOLITE = ITEMS.registerItem("boots_ammolite",
+    public static final DeferredItem<TolkienArmorItem> BOOTS_AMMOLITE = ITEMS.registerItem("boots_ammolite",
             properties -> new TolkienArmorItem(TolkienArmorMaterials.AMMOLITE_ARMOR_MATERIAL, ArmorType.BOOTS, properties));
 
-    public static final DeferredItem<Item> MITHRIL_HORSE_ARMOR = ITEMS.registerItem("mithril_horse_armor", properties -> new TolkienAnimalArmorItem(TolkienArmorMaterials.MITHRIL_ARMOR_MATERIAL, AnimalArmorItem.BodyType.EQUESTRIAN, properties), () -> new Item.Properties().stacksTo(1));
-    public static final DeferredItem<Item> MORGULIRON_HORSE_ARMOR = ITEMS.registerItem("morguliron_horse_armor", properties -> new TolkienAnimalArmorItem(TolkienArmorMaterials.MORGULIRON_ARMOR_MATERIAL, AnimalArmorItem.BodyType.EQUESTRIAN, properties), () -> new Item.Properties().stacksTo(1));
-    public static final DeferredItem<Item> AMMOLITE_HORSE_ARMOR = ITEMS.registerItem("ammolite_horse_armor", properties -> new TolkienAnimalArmorItem(TolkienArmorMaterials.AMMOLITE_ARMOR_MATERIAL, AnimalArmorItem.BodyType.EQUESTRIAN, properties), () -> new Item.Properties().stacksTo(1));
+    public static final DeferredItem<Item> MITHRIL_HORSE_ARMOR = ITEMS.registerItem("mithril_horse_armor", properties -> new TolkienAnimalArmorItem(TolkienArmorMaterials.MITHRIL_ARMOR_MATERIAL, properties), () -> new Item.Properties().stacksTo(1));
+    public static final DeferredItem<Item> MORGULIRON_HORSE_ARMOR = ITEMS.registerItem("morguliron_horse_armor", properties -> new TolkienAnimalArmorItem(TolkienArmorMaterials.MORGULIRON_ARMOR_MATERIAL, properties), () -> new Item.Properties().stacksTo(1));
+    public static final DeferredItem<Item> AMMOLITE_HORSE_ARMOR = ITEMS.registerItem("ammolite_horse_armor", properties -> new TolkienAnimalArmorItem(TolkienArmorMaterials.AMMOLITE_ARMOR_MATERIAL, properties), () -> new Item.Properties().stacksTo(1));
 
         // Keys
     public static DeferredItem<Item> BRONZE_KEY = ITEMS.registerItem("bronze_key", properties -> new KeyItem(properties), () -> new Item.Properties().stacksTo(1));

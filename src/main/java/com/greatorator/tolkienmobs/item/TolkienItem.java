@@ -4,8 +4,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class TolkienItem extends Item {
     public boolean hasEffectOverride = false;
@@ -49,10 +50,10 @@ public class TolkienItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         if (hasLore) {
-            tooltipComponents.add(Component.translatable(getDescriptionId() + ".lore"));
-            super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+            tooltipComponents.accept(Component.translatable(getDescriptionId() + ".lore"));
+            super.appendHoverText(stack, context, display, tooltipComponents, tooltipFlag);
         }
     }
 }

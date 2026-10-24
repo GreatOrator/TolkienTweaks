@@ -13,13 +13,16 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
+import java.util.function.Consumer;
+
 import javax.annotation.Nullable;
-import java.util.List;
 
 /** Right-click opens the backpack from the hand; sneak + right-click on a block places it. */
+
 public class BackpackItem extends BlockItem {
     public BackpackItem(Block block, Properties properties) {
         super(block, properties);
@@ -61,8 +64,8 @@ public class BackpackItem extends BlockItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltip, flag);
-        tooltip.add(Component.translatable("tooltip.tolkienmobs.backpack.controls").withStyle(ChatFormatting.GRAY));
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+        super.appendHoverText(stack, context, display, tooltip, flag);
+        tooltip.accept(Component.translatable("tooltip.tolkienmobs.backpack.controls").withStyle(ChatFormatting.GRAY));
     }
 }
