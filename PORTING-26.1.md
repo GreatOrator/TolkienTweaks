@@ -701,6 +701,35 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   rule and a different one, so it is noted here rather than taken: the payment still comes from the
   inventory alone.
 
+### Milestone saved data — DONE
+
+- 26.1 removed `SavedData.Factory` and the `save`/`load` overrides with it: `SavedData` is a bare
+  class with the dirty flag, and a subclass registers itself as a `SavedDataType` (id, factory,
+  `Codec`). `SavedDataStorage` encodes that codec under the file's `data` key and parses the same
+  key back, so nothing hand-rolls a `CompoundTag` any more.
+- `MilestoneHandler` is a `SavedDataType` now - id `tolkienmobs:milestone_data`, `MilestoneHandler::new`
+  and a codec that is a `listOf` the entries - and `getInstance` is
+  `level.getDataStorage().computeIfAbsent(TYPE)`. The class keeps its static map, so the codec's
+  `xmap` fills that map on decode and reads it on encode; the handler instance itself still carries
+  no state.
+- The entry codec keeps the old keys and their representations, so the file still reads like a
+  hand-written one: `milestonePos` as the packed long, `milestoneUUID` as the int-array UUID,
+  `milestoneWorld` and `players` as strings, and the two costs as ints. The name and costs are
+  optional, and a missing name reads back as an empty string - which is what the old
+  `CompoundTag#getString` did too.
+- **The file moves.** A `SavedDataType`'s id resolves against the data folder by namespace
+  (`Identifier#resolveAgainst` is `root/namespace/path`), so the world keeps this in
+  `data/tolkienmobs/milestone_data.dat`, not the old `data/milestone_data.dat`. A world carried
+  forward from 4.4.83 therefore starts with an empty milestone list; the old file is left where it
+  is, untouched.
+- Verified with a scratch NbtOps harness (not committed, since the mod cannot load a modded world
+  yet) holding a copy of the codecs: a full entry round-tripped with its position, uuid, dimension,
+  name, costs and player list intact; an entry with only the required keys loaded with an empty name
+  and zero costs; an empty compound was rejected as a parse error rather than throwing. The encoded
+  payload came out as `{data: [{milestoneCost:40, milestoneDimension:200, milestonePos:<long>,
+  milestoneTitle:"Bag End", milestoneUUID:[I;...], milestoneWorld:"minecraft:overworld",
+  players:[...]}]}`, which is the shape the old file had.
+
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
   26.1.2 MDK's version; NeoForge requires 9.1.0 or newer), foojay resolver 0.8.0 → 1.0.0.
