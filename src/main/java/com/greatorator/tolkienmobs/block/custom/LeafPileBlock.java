@@ -6,6 +6,8 @@ import com.greatorator.tolkienmobs.network.manager.SpawnFallenLeafFromPacket;
 import com.greatorator.tolkienmobs.particle.data.LeafParticleData;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.color.block.BlockTintSource;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -13,6 +15,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -37,7 +40,9 @@ public class LeafPileBlock extends TolkienPlantBlock {
     public static final int MAX_HEIGHT = 8;
     public static final IntegerProperty LAYERS = BlockStateProperties.LAYERS;
     protected static final VoxelShape[] SHAPE_BY_LAYER = new VoxelShape[]{Block.box(0.0D, 0.0D, 0.0D, 16.0D, 0.2D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 4.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 6.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 10.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 12.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 14.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)};
-    protected static final MapCodec<LeafPileBlock> CODEC = simpleCodec(LeafPileBlock::new);
+    // 26.1 narrows BushBlock's codec to MapCodec<BushBlock>, so the pile's codec is typed to it too;
+    // the factory still builds a LeafPileBlock when the codec decodes.
+    protected static final MapCodec<BushBlock> CODEC = simpleCodec(LeafPileBlock::new);
 
     public LeafPileBlock(Properties properties) {
         super(properties);
@@ -45,7 +50,7 @@ public class LeafPileBlock extends TolkienPlantBlock {
     }
 
     @Override
-    protected MapCodec<? extends BushBlock> codec() {
+    public MapCodec<BushBlock> codec() {
         return CODEC;
     }
 
@@ -110,6 +115,18 @@ public class LeafPileBlock extends TolkienPlantBlock {
         builder.add(LAYERS);
     }
 
+    /**
+     * The particle takes the colour of oak leaves where it falls, which {@code BlockColors} answers
+     * through the leaves' tint source now that its per-layer {@code getColor} is gone. Only a client
+     * level can be asked, and both callers only reach here on the client; anywhere else the old
+     * "no tint" answer of -1 stands.
+     */
+    private static int oakLeafColour(Level level, BlockPos pos) {
+        BlockState oak = Blocks.OAK_LEAVES.defaultBlockState();
+        BlockTintSource tint = Minecraft.getInstance().getBlockColors().getTintSource(oak, 0);
+        return tint != null && level instanceof ClientLevel clientLevel ? tint.colorInWorld(oak, clientLevel, pos) : -1;
+    }
+
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         super.animateTick(state, level, pos, random);
@@ -125,7 +142,7 @@ public class LeafPileBlock extends TolkienPlantBlock {
                     return;
             }
 
-            int color = Minecraft.getInstance().getBlockColors().getColor(Blocks.OAK_LEAVES.defaultBlockState(), level, pos, 0);
+            int color = oakLeafColour(level, pos);
             int r = Mth.clamp(((color >> 16) & 0xFF) + random.nextInt(0x22) - 0x11, 0x00, 0xFF);
             int g = Mth.clamp(((color >> 8) & 0xFF) + random.nextInt(0x22) - 0x11, 0x00, 0xFF);
             int b = Mth.clamp((color & 0xFF) + random.nextInt(0x22) - 0x11, 0x00, 0xFF);
@@ -134,14 +151,14 @@ public class LeafPileBlock extends TolkienPlantBlock {
     }
 
     @Override
-    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-        super.entityInside(state, level, pos, entity);
+    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
+        super.entityInside(state, level, pos, entity, effectApplier, isPrecise);
         if (state.getValue(LAYERS) > 2) {
             entity.makeStuckInBlock(state, new Vec3(1.0D - (0.05D * (state.getValue(LAYERS) - 2)), 1.0D, 1.0D - (0.05D * (state.getValue(LAYERS) - 2))));
         }
         if (entity instanceof LivingEntity && (entity.getDeltaMovement().x() != 0 || entity.getDeltaMovement().z() != 0) && level.getRandom().nextBoolean()) {
             if (level.isClientSide()) {
-                int color = Minecraft.getInstance().getBlockColors().getColor(Blocks.OAK_LEAVES.defaultBlockState(), level, pos, 0);
+                int color = oakLeafColour(level, pos);
                 int r = Mth.clamp(((color >> 16) & 0xFF) + level.getRandom().nextInt(0x22) - 0x11, 0x00, 0xFF);
                 int g = Mth.clamp(((color >> 8) & 0xFF) + level.getRandom().nextInt(0x22) - 0x11, 0x00, 0xFF);
                 int b = Mth.clamp((color & 0xFF) + level.getRandom().nextInt(0x22) - 0x11, 0x00, 0xFF);

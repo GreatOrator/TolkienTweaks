@@ -132,14 +132,8 @@ public class CamoSpawnerBlock extends ChameleonBlock<CamoSpawnerBlockEntity> {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-        Spawner.appendHoverText(stack, tooltipComponents, "SpawnData");
-    }
-
-    @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        if (!level.isClientSide() && player.isCreative() && Screen.hasShiftDown()) {
+        if (!level.isClientSide() && player.isCreative() && player.isShiftKeyDown()) {
             if (level.getBlockEntity(pos) instanceof CamoSpawnerBlockEntity blockEntity) {
                 player.openMenu(blockEntity, pos);
                 return InteractionResult.SUCCESS;
@@ -156,7 +150,7 @@ public class CamoSpawnerBlock extends ChameleonBlock<CamoSpawnerBlockEntity> {
 
     @Override
     public InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult hit) {
-        if (!level.isClientSide() && player.isCreative() && Screen.hasShiftDown()) {
+        if (!level.isClientSide() && player.isCreative() && player.isShiftKeyDown()) {
             if (level.getBlockEntity(blockPos) instanceof CamoSpawnerBlockEntity blockEntity) {
                 player.openMenu(blockEntity, blockPos);
             }

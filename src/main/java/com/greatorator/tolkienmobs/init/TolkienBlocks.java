@@ -7,6 +7,7 @@ import com.greatorator.tolkienmobs.handler.capability.TolkienFluidTank;
 import com.greatorator.tolkienmobs.handler.capability.TolkienItemStackHandler;
 import com.greatorator.tolkienmobs.handler.interfaces.TolkienRegistry;
 import com.greatorator.tolkienmobs.item.custom.BackpackItem;
+import com.greatorator.tolkienmobs.item.custom.CamoSpawnerItem;
 import com.greatorator.tolkienmobs.item.custom.PlacardItem;
 import com.greatorator.tolkienmobs.world.components.config.TolkienConfiguredFeatures;
 import com.greatorator.tolkienmobs.world.components.feature.tree.TolkienTreeGrowers;
@@ -2028,8 +2029,10 @@ public class TolkienBlocks {
             BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).noLootTable().noOcclusion());
     public static final DeferredBlock<Block> CAMO_CHEST_BLOCK = registerBlock("block_camo_chest", properties -> new CamoChestBlock(properties),
             BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).noLootTable().noOcclusion());
-    public static final DeferredBlock<Block> CAMO_SPAWNER_BLOCK = registerBlock("block_camo_spawner", properties -> new CamoSpawnerBlock(properties),
+    public static final DeferredBlock<Block> CAMO_SPAWNER_BLOCK = registerBlockWithoutBlockItem("block_camo_spawner", properties -> new CamoSpawnerBlock(properties),
             BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).noLootTable().noOcclusion());
+    public static final DeferredItem<CamoSpawnerItem> CAMO_SPAWNER_ITEM = ITEMS.registerItem("block_camo_spawner",
+            properties -> new CamoSpawnerItem(CAMO_SPAWNER_BLOCK.get(), properties), () -> new Item.Properties());
     public static final DeferredBlock<Block> MILESTONE_BLOCK = registerBlock("milestone_block", properties -> new MilestoneBlock(properties),
             BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).noLootTable().noOcclusion().lightLevel((state) -> 4));
     public static final DeferredBlock<Block> LOCKABLE_CHEST_BLOCK = registerBlock("lockable_chest_block", properties -> new LockableChestBlock(properties),
