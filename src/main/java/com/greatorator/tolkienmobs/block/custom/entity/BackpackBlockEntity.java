@@ -537,7 +537,7 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
 
     private void notEnoughRoom(Player player) {
         if (player != null) {
-            player.displayClientMessage(Component.translatable("screen.tolkienmobs.backpack.no_room"), true);
+            player.sendOverlayMessage(Component.translatable("screen.tolkienmobs.backpack.no_room"));
         }
     }
 

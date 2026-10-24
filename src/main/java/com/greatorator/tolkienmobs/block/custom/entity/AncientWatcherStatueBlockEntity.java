@@ -32,13 +32,13 @@ public class AncientWatcherStatueBlockEntity extends TolkienBlockEntity {
             if (!player.getInventory().contains(TolkienItems.RING_OF_HOPE.toStack())) {
                 if (time > nextAbilityUse) {
                     nextAbilityUse = time + coolDown;
-                    player.displayClientMessage(Component.translatable("tolkienmobs.msg.ancient_watcher.warn").withStyle(ChatFormatting.RED), false);
+                    player.sendSystemMessage(Component.translatable("tolkienmobs.msg.ancient_watcher.warn").withStyle(ChatFormatting.RED));
                 }
                 player.addEffect(new MobEffectInstance(TolkienMobEffects.WATCHER_FEAR, 10, 0));
             }
             if (time > nextAbilityUse) {
                 nextAbilityUse = time + coolDown;
-                player.displayClientMessage(Component.translatable("tolkienmobs.msg.ancient_watcher.safe").withStyle(ChatFormatting.GOLD), false);
+                player.sendSystemMessage(Component.translatable("tolkienmobs.msg.ancient_watcher.safe").withStyle(ChatFormatting.GOLD));
             }
         }
     }
