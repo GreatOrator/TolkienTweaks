@@ -28,7 +28,8 @@ public class MushroomsBlock extends MushroomBlock {
     protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
         BlockPos blockpos = pos.below();
         BlockState blockstate = level.getBlockState(blockpos);
-        net.neoforged.neoforge.common.util.TriState soilDecision = blockstate.canSustainPlant(level, blockpos, net.minecraft.core.Direction.UP, state);
+        // TriState lives under net.minecraft.util in 26.1; the soil override is still a three-way answer.
+        net.minecraft.util.TriState soilDecision = blockstate.canSustainPlant(level, blockpos, net.minecraft.core.Direction.UP, state);
         return blockstate.is(TolkienTags.Blocks.DECAY_GROW_BLOCK) || (soilDecision.isDefault() ? (level.getRawBrightness(pos, 0) < 13 && this.mayPlaceOn(blockstate, level, blockpos)) : soilDecision.isTrue());
     }
 

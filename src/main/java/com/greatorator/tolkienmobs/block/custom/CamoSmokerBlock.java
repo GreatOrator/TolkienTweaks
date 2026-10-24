@@ -15,7 +15,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -56,11 +55,13 @@ public class CamoSmokerBlock extends ChameleonBlock<Block> {
 
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        if (!(stack.getItem() instanceof DyeItem dyeItem)) {
+        // 26.1 keeps a dye's colour on the stack as a component instead of on the item class, so any
+        // item that carries one - or that sits in that colour's dye tag - tints the smoke.
+        DyeColor color = DyeColor.getColor(stack);
+        if (color == null) {
             return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
         }
 
-        DyeColor color = dyeItem.getDyeColor();
         if (level.isClientSide()) {
             return InteractionResult.SUCCESS;
         }
