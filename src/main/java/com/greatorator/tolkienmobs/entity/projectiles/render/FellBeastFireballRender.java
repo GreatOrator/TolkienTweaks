@@ -3,11 +3,11 @@ package com.greatorator.tolkienmobs.entity.projectiles.render;
 import com.greatorator.tolkienmobs.entity.projectiles.FellBeastFireballEntity;
 import com.greatorator.tolkienmobs.entity.projectiles.model.FellBeastFireballModel;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -39,8 +39,12 @@ public class FellBeastFireballRender extends EntityRenderer<FellBeastFireballEnt
         state.groundedYaw = entity.groundedOffset.y;
     }
 
+    /**
+     * 26.1 collects draws instead of writing them: the pose and the model go to the collector, which
+     * submits them in its own pass with the texture, light and overlay it is handed here.
+     */
     @Override
-    public void render(ThrownProjectileRenderState state, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+    public void submit(ThrownProjectileRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
         poseStack.pushPose();
 
         if (!state.grounded) {
@@ -53,13 +57,8 @@ public class FellBeastFireballRender extends EntityRenderer<FellBeastFireballEnt
             poseStack.translate(0, -1.0f, 0);
         }
 
-        VertexConsumer vertexConsumer = buffer.getBuffer(this.model.renderType(TEXTURE_LOCATION));
-        this.model.renderToBuffer(poseStack, vertexConsumer, packedLight, OverlayTexture.NO_OVERLAY);
+        submitNodeCollector.submitModel(this.model, state, poseStack, TEXTURE_LOCATION, state.lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor, null);
         poseStack.popPose();
-        super.render(state, poseStack, buffer, packedLight);
-    }
-
-    public Identifier getTextureLocation(ThrownProjectileRenderState state) {
-        return TEXTURE_LOCATION;
+        super.submit(state, poseStack, submitNodeCollector, camera);
     }
 }

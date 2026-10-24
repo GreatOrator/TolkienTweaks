@@ -110,6 +110,11 @@ All notable changes to this project will be documented in this file.
   explains how the tank is filled. The backpack's upgrade panel finishes the set: every container
   screen in the mod is ported now, and each keeps its panels, slots, buttons and tooltips where they
   were.
+- The entity renderers that do not go through GeckoLib are on 26.1's render pipeline: the seven wood
+  boats and their chest versions, the boulder, the fell beast fireball, the Tolkien arrow and the
+  Morgul crystal. Nothing about how they look changes - a boat still rocks and rows, a thrown boulder
+  still spins in flight and settles at a fixed angle on landing, and the crystal still bobs, turns
+  and shows its base only while it stands on one.
 - Every message the mod sends a player now uses 26.1's own call for it: the chat lines go through
   the system-message call, and the three that flash above the hotbar - the backpack's "no room",
   the occupied sleeping bag and a refused sleep - through the overlay one. Nothing the player reads

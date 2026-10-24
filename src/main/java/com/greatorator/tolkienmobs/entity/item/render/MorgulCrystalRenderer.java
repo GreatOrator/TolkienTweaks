@@ -3,7 +3,6 @@ package com.greatorator.tolkienmobs.entity.item.render;
 import com.greatorator.tolkienmobs.block.custom.entity.layers.TolkienModelLayers;
 import com.greatorator.tolkienmobs.entity.item.MorgulCrystalEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -11,11 +10,13 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -28,7 +29,8 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 @OnlyIn(Dist.CLIENT)
 public class MorgulCrystalRenderer extends EntityRenderer<MorgulCrystalEntity, MorgulCrystalRenderState> {
    private static final Identifier MORGUL_CRYSTAL_LOCATION = Identifier.fromNamespaceAndPath(MODID, "textures/entity/morgul_crystal/morgul_crystal.png");
-   private static final RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(MORGUL_CRYSTAL_LOCATION);
+   // 26.1 calls the unculled cutout pipeline entityCutout; entityCutoutCull is the culled one.
+   private static final RenderType RENDER_TYPE = RenderTypes.entityCutout(MORGUL_CRYSTAL_LOCATION);
    private static final float SIN_45 = (float)Math.sin((Math.PI / 4D));
    private final ModelPart cube;
    private final ModelPart glass;
@@ -67,46 +69,45 @@ public class MorgulCrystalRenderer extends EntityRenderer<MorgulCrystalEntity, M
       state.showsBottom = entity.showsBottom();
    }
 
+   /**
+    * 26.1 collects draws rather than writing them, so each of the three parts is submitted with the
+    * pose it sits at - the collector applies the same render type, light and overlay to each.
+    */
    @Override
-   public void render(MorgulCrystalRenderState state, PoseStack stack, MultiBufferSource bufferSource, int packedLight) {
+   public void submit(MorgulCrystalRenderState state, PoseStack stack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
       stack.pushPose();
       float bob = getY(state.ticks);
       float spin = state.ticks * 3.0F;
-      VertexConsumer vertexConsumer = bufferSource.getBuffer(RENDER_TYPE);
       stack.pushPose();
       stack.scale(2.0F, 2.0F, 2.0F);
       stack.translate(0.0D, -0.5D, 0.0D);
       int overlay = OverlayTexture.NO_OVERLAY;
       if (state.showsBottom) {
-         this.base.render(stack, vertexConsumer, packedLight, overlay);
+         submitNodeCollector.submitModelPart(this.base, stack, RENDER_TYPE, state.lightCoords, overlay, null);
       }
 
       stack.mulPose(Axis.YP.rotationDegrees(spin));
       stack.translate(0.0D, (double)(1.5F + bob / 2.0F), 0.0D);
       stack.mulPose(new Quaternionf().setAngleAxis((float) (Math.PI / 3), SIN_45, 0.0F, SIN_45));
-      this.glass.render(stack, vertexConsumer, packedLight, overlay);
+      submitNodeCollector.submitModelPart(this.glass, stack, RENDER_TYPE, state.lightCoords, overlay, null);
       stack.scale(0.875F, 0.875F, 0.875F);
       stack.mulPose(new Quaternionf().setAngleAxis((float) (Math.PI / 3), SIN_45, 0.0F, SIN_45));
       stack.mulPose(Axis.YP.rotationDegrees(spin));
-      this.glass.render(stack, vertexConsumer, packedLight, overlay);
+      submitNodeCollector.submitModelPart(this.glass, stack, RENDER_TYPE, state.lightCoords, overlay, null);
       stack.scale(0.875F, 0.875F, 0.875F);
       stack.mulPose(new Quaternionf().setAngleAxis((float) (Math.PI / 3), SIN_45, 0.0F, SIN_45));
       stack.mulPose(Axis.YP.rotationDegrees(spin));
-      this.cube.render(stack, vertexConsumer, packedLight, overlay);
+      submitNodeCollector.submitModelPart(this.cube, stack, RENDER_TYPE, state.lightCoords, overlay, null);
       stack.popPose();
       stack.popPose();
 
-      super.render(state, stack, bufferSource, packedLight);
+      super.submit(state, stack, submitNodeCollector, camera);
    }
 
    public static float getY(float ticks) {
       float f1 = Mth.sin(ticks * 0.2F) / 2.0F + 0.5F;
       f1 = (f1 * f1 + f1) * 0.4F;
       return f1 - 1.4F;
-   }
-
-   public Identifier getTextureLocation(MorgulCrystalRenderState state) {
-      return MORGUL_CRYSTAL_LOCATION;
    }
 
    @Override
