@@ -1,11 +1,13 @@
 package com.greatorator.tolkienmobs.event.client;
 
+import com.greatorator.tolkienmobs.block.custom.entity.function.ChameleonBlockDynamicBakedModel;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.integration.TolkienSyncedRecipes;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.ComputeFovModifierEvent;
 import net.neoforged.neoforge.client.event.RecipesReceivedEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -41,6 +43,15 @@ public class TolkienClientEvents {
             fovModifier *= 1f - deltaTicks * 0.15f;
             event.setNewFovModifier(fovModifier);
         }
+    }
+
+    /**
+     * Camo blocks only rebuild when their section is dirtied, so the hands are watched here and a change of item
+     * rebuilds the sections that hold one. See {@link ChameleonBlockDynamicBakedModel#refreshRevealedBlocks()}.
+     */
+    @SubscribeEvent
+    public static void onClientTick(ClientTickEvent.Post event) {
+        ChameleonBlockDynamicBakedModel.refreshRevealedBlocks();
     }
 
     @SubscribeEvent
