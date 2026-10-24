@@ -5,7 +5,6 @@ import com.greatorator.tolkienmobs.init.TolkienContainers;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -23,11 +22,6 @@ public class MilestoneContainer extends TolkienContainer<MilestoneBlockEntity> {
     @Override
     public ItemStack quickMoveStack(Player player, int i) {
         return null;
-    }
-
-    @Override
-    public void clicked(int slotId, int dragType, ClickType clickTypeIn, Player player) {
-        super.clicked(slotId, dragType, clickTypeIn, player);
     }
 
     @Override

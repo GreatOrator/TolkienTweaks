@@ -83,6 +83,8 @@ All notable changes to this project will be documented in this file.
   steps the delay ten or sixty-four at a time, typing in the field still swallows the keyboard until
   you click away or press escape, and a right click still flips a toggle backwards. The key and
   keystone menus behind them are ported with them; nothing a player does in either screen changes.
+  Every other menu in the mod is ported with them, so the backpack's locked slot, the coin pouch's
+  and key ring's no-stacking guard and the chests all keep exactly the clicks they accepted before.
 - Every message the mod sends a player now uses 26.1's own call for it: the chat lines go through
   the system-message call, and the three that flash above the hotbar - the backpack's "no room",
   the occupied sleeping bag and a refused sleep - through the overlay one. Nothing the player reads

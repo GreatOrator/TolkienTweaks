@@ -816,7 +816,12 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   `clicked(int slotIndex, int buttonNum, ContainerInput containerInput, Player player)`. Neither
   container's override did anything but call `super` with the same four arguments, so both overrides
   and their imports are gone rather than re-signed - the inherited method is the one they were
-  forwarding to. Eleven other containers still use `ClickType` and need the same two-line treatment.
+  forwarding to. The other eleven containers are done too: seven of them were the same empty
+  forward and lost the override and import, and four had a real body - the backpack's locked-slot
+  guard (`ClickType.SWAP` is `ContainerInput.SWAP`), and the coin pouch, key item and key ring's
+  "this stack does not stack" guards, which only throw the click away early and keep the enum's
+  name out of their logic - so those four keep their override with the new parameter type. No
+  `ClickType` is left anywhere in the tree.
 
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
