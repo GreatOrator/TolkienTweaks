@@ -37,8 +37,8 @@ public class TolkienProfiler {
     }
 
     @SubscribeEvent
-    public void renderWorldLast(RenderLevelStageEvent event) {
-        if (!enableProfiler || event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) return;
+    public void renderWorldLast(RenderLevelStageEvent.AfterTranslucentParticles event) {
+        if (!enableProfiler) return;
         renderDebug.clear();
         RENDER.dumpDebug(renderDebug);
         RENDER.update();

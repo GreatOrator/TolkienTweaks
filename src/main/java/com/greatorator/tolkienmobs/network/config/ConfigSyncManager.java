@@ -42,7 +42,7 @@ public class ConfigSyncManager {
     public static void init(IEventBus modBus) {
         LOCK.lock();
 
-        if (FMLEnvironment.dist.isClient()) {
+        if (FMLEnvironment.getDist().isClient()) {
             NeoForge.EVENT_BUS.addListener(ConfigSyncManager::onClientDisconnected);
         }
 

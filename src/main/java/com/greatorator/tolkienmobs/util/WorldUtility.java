@@ -22,7 +22,7 @@ public final class WorldUtility {
 	}
 
 	public static long getOverworldSeed() {
-		return Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer()).getWorldData().worldGenOptions().seed();
+		return Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer()).getWorldGenSettings().options().seed();
 	}
 
 	public static RegistryAccess getRegistryAccess() {

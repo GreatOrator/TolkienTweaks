@@ -16,7 +16,7 @@ measurement's other half.
 | Source | Minecraft **1.21.4**, NeoForge **21.4.161**, mod **4.4.83-Final** |
 | Target | Minecraft **26.1.2**, NeoForge **26.1.2.116**, mod **5.0.0** |
 | Java | 21 → **25** |
-| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API, the fluid/leaf/proxy batch, the food table, the forest fog and the `util` pair are done; **73** errors left |
+| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API, the fluid/leaf/proxy batch, the food table, the forest fog and the whole `util` package are done; **65** errors left |
 
 What the source tree contains, counted:
 
@@ -1944,10 +1944,32 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   `GeneralUtility`'s four are gone and nothing new appeared. Nothing was run in game: the check is
   riding a horse through an Arda portal and confirming the rider arrives still mounted, and taking
   the same trip on foot.
-- **Still failing in `util/`, outside this pair:** `BoundingBoxUtils` (one `getInt`),
-  `BreezeUtility` (one `LevelData#isRaining`), `WorldUtility` (one `worldGenOptions`) and
-  `TolkienProfiler` (two `RenderLevelStageEvent`). The same `FMLEnvironment.dist` rename also still
-  fails once each in `ConfigSyncManager` and `PacketCustomChannel`.
+- **The rest of `util/` followed in the next batch** - the bounding-box reads, the breeze's weather
+  check, the world seed and the profiler's render stage - along with the last two
+  `FMLEnvironment.dist` call sites in the network config (see *The rest of `util`, and the
+  environment dist - DONE* below).
+
+### The rest of `util`, and the environment dist — DONE
+
+- **`util/` compiles.** Four small moves finished it: `CompoundTag#getInt` is `getIntOr(name, 0)`
+  in `BoundingBoxUtils`; `LevelData#isRaining` is gone and `BreezeUtility` asks the level
+  (`Level#isRaining()`), which is the same rain level; `WorldData#worldGenOptions()` is
+  `MinecraftServer#getWorldGenSettings().options()` in `WorldUtility`, so the overworld seed still
+  comes from the world's own settings rather than a level's NeoForge override.
+- **`RenderLevelStageEvent.Stage` is a set of subclasses.** 26.1 replaced the enum and `getStage()`
+  with one event class per stage, so `TolkienProfiler`'s subscriber is
+  `RenderLevelStageEvent.AfterTranslucentParticles` - the stage that took `AFTER_PARTICLES` - and the
+  stage comparison inside it is gone. The class is deprecated and only collects debug strings, so
+  nothing else changes.
+- **`FMLEnvironment.dist` is `getDist()` in the network config too.** `ConfigSyncManager` and
+  `PacketCustomChannel` each swap `.dist.isClient()` for `.getDist().isClient()`; the client-side
+  listeners and handlers are still only built on a client.
+- **Verified:** whole-tree `javac` at **65** errors, down from 73, and no error names a file under
+  `util/` any more. Nothing was run in game: the checks are standing in rain to see the breeze turn
+  windy, opening a world and reading back its seed, and a `/reload` to see the config sync still
+  reach a client.
+- **Two `network/` errors are left, neither of them config:** `PacketSender` needs
+  `GameProfile` → `NameAndId` and `SpawnFallenLeafFromPacket` still names a removed symbol.
 
 ## Ordered work list
 

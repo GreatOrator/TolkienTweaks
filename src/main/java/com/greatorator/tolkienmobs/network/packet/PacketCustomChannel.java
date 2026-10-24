@@ -49,14 +49,14 @@ public class PacketCustomChannel {
     }
 
     public PacketCustomChannel clientConfiguration(Supplier<Supplier<ICustomPacketHandler.IClientConfigurationPacketHandler>> supplier) {
-        if (FMLEnvironment.dist.isClient()) {
+        if (FMLEnvironment.getDist().isClient()) {
             clientConfiguration = supplier.get().get();
         }
         return this;
     }
 
     public PacketCustomChannel client(Supplier<Supplier<ICustomPacketHandler.IClientPacketHandler>> supplier) {
-        if (FMLEnvironment.dist.isClient()) {
+        if (FMLEnvironment.getDist().isClient()) {
             client = supplier.get().get();
         }
         return this;
