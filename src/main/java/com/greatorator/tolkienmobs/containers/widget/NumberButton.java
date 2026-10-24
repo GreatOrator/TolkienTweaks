@@ -1,11 +1,11 @@
 package com.greatorator.tolkienmobs.containers.widget;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
+import org.joml.Matrix3x2fStack;
 
 import java.awt.*;
 
@@ -23,19 +23,21 @@ public class NumberButton extends TolkienButton {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        guiGraphics.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, 0xFF353535);
-        guiGraphics.fill(this.getX() + 1, this.getY() + 1, this.getX() + this.width - 1, this.getY() + this.height - 1, 0xFFD8D8D8);
+    protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+        graphics.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, 0xFF353535);
+        graphics.fill(this.getX() + 1, this.getY() + 1, this.getX() + this.width - 1, this.getY() + this.height - 1, 0xFFD8D8D8);
         Font font = Minecraft.getInstance().font;
-        PoseStack stack = guiGraphics.pose();
-        stack.pushPose();
+        // The pose is a 2D matrix now, so scaling is pushMatrix/scale/popMatrix rather than a
+        // PoseStack, and text is placed on integer pixels.
+        Matrix3x2fStack stack = graphics.pose();
+        stack.pushMatrix();
         float scale = 0.75f;//value > 99 || value < -99 ? 0.75f : 0.75f;
-        stack.scale(scale, scale, scale);
+        stack.scale(scale, scale);
         String msg = String.format("%,d", value);
         float x = (this.getX() + this.width / 2f) / scale - font.width(msg) / 2f;
         float y = (this.getY() + (this.height - font.lineHeight) / 2f / scale) / scale + 1;
-        guiGraphics.drawString(font, msg, x, y, Color.DARK_GRAY.getRGB(), false);
-        stack.popPose();
+        graphics.text(font, msg, Math.round(x), Math.round(y), Color.DARK_GRAY.getRGB(), false);
+        stack.popMatrix();
     }
 
     public int getValue() {

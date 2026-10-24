@@ -3,10 +3,10 @@ package com.greatorator.tolkienmobs.containers.widget;
 import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.util.GeneralUtility;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -52,8 +52,13 @@ public class TolkienButton extends Button {
     return hovered ? 2 : 1;
   }
 
+  /**
+   * 26.1 draws a widget in an extract pass: `renderWidget` is `extractContents`, which takes the
+   * {@link GuiGraphicsExtractor} everything is drawn through, and the tooltip and cursor are handled
+   * by the base class around it.
+   */
   @Override
-  public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+  protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
     var font = Minecraft.getInstance().font;
     int i = this.getYImage(this.isHoveredOrFocused());
 
@@ -62,12 +67,12 @@ public class TolkienButton extends Button {
     int h = this.texturePosition.height();
     int w = this.texturePosition.width();
 
-    guiGraphics.blit(RenderType::guiTextured, WIDGETS_LOCATION, this.getX(), this.getY(), xOffset, yOffset + i * h, this.width / 2, h, 256, 256);
-    guiGraphics.blit(RenderType::guiTextured, WIDGETS_LOCATION, this.getX() + this.width / 2, this.getY(),
+    graphics.blit(RenderPipelines.GUI_TEXTURED, WIDGETS_LOCATION, this.getX(), this.getY(), xOffset, yOffset + i * h, this.width / 2, h, 256, 256);
+    graphics.blit(RenderPipelines.GUI_TEXTURED, WIDGETS_LOCATION, this.getX() + this.width / 2, this.getY(),
         xOffset + w - this.width / 2,
         yOffset + i * h, this.width / 2, h, 256, 256);
     int j = getFGColor();
-    guiGraphics.drawCenteredString(font, this.getMessage(), this.getX() + this.width / 2,
+    graphics.centeredText(font, this.getMessage(), this.getX() + this.width / 2,
         this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
   }
 

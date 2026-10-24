@@ -760,6 +760,34 @@ from **3,470 errors in 337 files to 2,801 in 320**.
 - The widgets themselves (`TolkienButton`, `NumberButton`, `ToggleButton`) are still on the old API
   and are the rest of the screens job; this screen only had to call the methods that survived.
 
+### Button widgets — DONE
+
+- `TolkienButton` and its three subclasses - `NumberButton`, `ToggleButton` and `GrayscaleButton` -
+  are ported. A widget is drawn by an extract pass too, but through a different hook than a screen:
+  `renderWidget(GuiGraphics, ...)` is `extractContents(GuiGraphicsExtractor, mouseX, mouseY, a)`.
+  `Renderable#extractRenderState` is `final` on `AbstractWidget`, and it wraps the subclass's
+  `extractContents` in the hover test, the tooltip refresh and the cursor request, so a widget only
+  draws its own body.
+- A blit needs a `RenderPipeline` (`RenderPipelines.GUI_TEXTURED`); `drawCenteredString` is
+  `centeredText`; `fill` is unchanged. `GuiGraphics#pose()` is an `org.joml.Matrix3x2fStack` now, so
+  the `NumberButton`'s 0.75 scale is `pushMatrix()` / `scale(x, y)` / `popMatrix()` instead of a
+  `PoseStack`, and text lands on integer pixels (`text(font, str, int, int, color, dropShadow)`),
+  which is why its two float coordinates are rounded at the call.
+- `ToggleButton` carried a mod-only three-argument `onClick(double mouseX, double mouseY, int button)`
+  that cycled the texture and is what a right click in a screen calls by hand, because vanilla only
+  dispatches left clicks to a widget. That method is `onClick(MouseButtonEvent event)` now; the
+  button behaviour is unchanged - button 1 steps back, anything else steps forward, then the press
+  callback runs. Its two other overrides (`onClick(double, double)` and
+  `mouseClicked(double, double, int)`) only called `super`, and the methods they overrode no longer
+  exist, so they are gone rather than translated.
+- Four screens that are not ported yet still call the old three-argument form - `BackpackBlockScreen`,
+  `CamoKeyStoneScreen`, `CamoSpawnerScreen` and `KeyCodeScreen` - so those calls now show as errors
+  where they used to resolve. They sit inside each screen's own `mouseClicked(double, double, int)`,
+  which has to be rewritten anyway; `MilestoneScreen` shows the replacement,
+  `toggleButton.onClick(event)`.
+- `IconButton` and `TexturedButton` are `Button` subclasses rather than `TolkienButton` ones and are
+  still on the old API, along with the rest of the screens' widget use.
+
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
   26.1.2 MDK's version; NeoForge requires 9.1.0 or newer), foojay resolver 0.8.0 → 1.0.0.
