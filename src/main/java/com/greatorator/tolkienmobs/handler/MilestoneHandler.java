@@ -4,13 +4,11 @@ import com.greatorator.tolkienmobs.block.custom.entity.MilestoneBlockEntity;
 import com.greatorator.tolkienmobs.handler.data.MCDataInput;
 import com.greatorator.tolkienmobs.handler.data.MCDataOutput;
 import com.greatorator.tolkienmobs.network.PacketHandler;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
@@ -18,11 +16,14 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
 import javax.annotation.Nullable;
 import java.util.*;
+
+import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class MilestoneHandler extends SavedData {
     private static final String SAVE_DATA_NAME = "milestone_data";
@@ -30,12 +31,19 @@ public class MilestoneHandler extends SavedData {
 
     private static final Map<UUID, MilestoneData> dataMap = new HashMap<>();
 
+    /**
+     * The entries are the whole of this saved data, so the codec is a list of them and nothing else.
+     * 26.1 writes a data type's codec output under the file's {@code data} key, which is the key and
+     * the list shape a world's milestone file already used.
+     */
+    public static final Codec<MilestoneHandler> CODEC = MilestoneData.CODEC.listOf()
+            .xmap(MilestoneHandler::fromMilestones, MilestoneHandler::toMilestones);
+
+    public static final SavedDataType<MilestoneHandler> TYPE = new SavedDataType<>(
+            Identifier.fromNamespaceAndPath(MODID, SAVE_DATA_NAME), MilestoneHandler::new, CODEC);
+
     public MilestoneHandler() {
         super();
-    }
-
-    public static SavedData.Factory<MilestoneHandler> factory() {
-        return new SavedData.Factory<>(MilestoneHandler::new, (nbt, provider) -> MilestoneHandler.load(nbt));
     }
 
     public static void init() {
@@ -132,31 +140,27 @@ public class MilestoneHandler extends SavedData {
         if (world instanceof ServerLevel && world.getServer() != null) {
             ServerLevel level = world.getServer().getLevel(Level.OVERWORLD);
             if (level != null) {
-                return level.getDataStorage().computeIfAbsent(MilestoneHandler.factory(), SAVE_DATA_NAME);
+                return level.getDataStorage().computeIfAbsent(TYPE);
             }
         }
         return null;
     }
 
-    public static MilestoneHandler load(CompoundTag nbt) {
+    /**
+     * The map is static, so decoding fills it and encoding reads it; the handler instance itself
+     * carries no state. Anything already in the map is dropped first, which is what loading a world
+     * should do.
+     */
+    private static MilestoneHandler fromMilestones(List<MilestoneData> milestones) {
         dataMap.clear();
-        MilestoneHandler saveData = new MilestoneHandler();
-        ListTag list = nbt.getList("data", 10);
-        for (Tag inbt : list) {
-            MilestoneData data = MilestoneData.read((CompoundTag) inbt);
+        for (MilestoneData data : milestones) {
             dataMap.put(data.uuid, data);
         }
-        return saveData;
+        return new MilestoneHandler();
     }
 
-    @Override
-    public CompoundTag save(CompoundTag compoundTag, HolderLookup.Provider provider) {
-        ListTag list = new ListTag();
-        for (MilestoneData value : dataMap.values()) {
-            list.add(value.write());
-        }
-        compoundTag.put("data", list);
-        return compoundTag;
+    private static List<MilestoneData> toMilestones(MilestoneHandler handler) {
+        return new ArrayList<>(dataMap.values());
     }
 
     public void serialize(MCDataOutput output) {
@@ -191,6 +195,14 @@ public class MilestoneHandler extends SavedData {
             this.worldKey = worldKey;
         }
 
+        private MilestoneData(BlockPos pos, UUID uuid, ResourceKey<Level> worldKey, String name, int distanceCost, int dimensionCost, List<UUID> players) {
+            this(worldKey, pos, uuid);
+            this.name = name;
+            this.distanceCost = distanceCost;
+            this.dimensionCost = dimensionCost;
+            this.players.addAll(players);
+        }
+
         public BlockPos getPos() {
             return pos;
         }
@@ -219,33 +231,20 @@ public class MilestoneHandler extends SavedData {
             return dimensionCost;
         }
 
-        private CompoundTag write() {
-            CompoundTag nbt = new CompoundTag();
-            nbt.putLong("milestonePos", pos.asLong());
-            nbt.putUUID("milestoneUUID", uuid);
-            nbt.putString("milestoneWorld", worldKey.identifier().toString());
-            nbt.putString("milestoneTitle", name);
-            nbt.putInt("milestoneCost", distanceCost);
-            nbt.putInt("milestoneDimension", dimensionCost);
-            ListTag list = new ListTag();
-            players.forEach(e -> list.add(StringTag.valueOf(e.toString())));
-            nbt.put("players", list);
-            return nbt;
-        }
-
-        private static MilestoneData read(CompoundTag nbt) {
-            BlockPos pos = BlockPos.of(nbt.getLong("milestonePos"));
-            UUID uuid = nbt.getUUID("milestoneUUID");
-            ResourceKey<Level> key = ResourceKey.create(Registries.DIMENSION, Identifier.parse(nbt.getString("milestoneWorld")));
-            MilestoneData data = new MilestoneData(key, pos, uuid);
-            data.name = nbt.getString("milestoneTitle");
-            data.distanceCost = nbt.getInt("milestoneCost");
-            data.dimensionCost = nbt.getInt("milestoneDimension");
-
-            ListTag list = nbt.getList("players", 8);
-            list.forEach(e -> data.players.add(UUID.fromString(e.getAsString())));
-            return data;
-        }
+        /**
+         * The keys and their shapes are the ones the hand-written NBT used: the position as a packed
+         * long, the milestone's own id as the int-array UUID, the dimension and the player list as
+         * strings. The name and the two costs are optional so a partial file still loads.
+         */
+        public static final Codec<MilestoneData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.LONG.xmap(BlockPos::of, BlockPos::asLong).fieldOf("milestonePos").forGetter(data -> data.pos),
+                UUIDUtil.CODEC.fieldOf("milestoneUUID").forGetter(data -> data.uuid),
+                ResourceKey.codec(Registries.DIMENSION).fieldOf("milestoneWorld").forGetter(data -> data.worldKey),
+                Codec.STRING.optionalFieldOf("milestoneTitle", "").forGetter(data -> data.name == null ? "" : data.name),
+                Codec.INT.optionalFieldOf("milestoneCost", 0).forGetter(data -> data.distanceCost),
+                Codec.INT.optionalFieldOf("milestoneDimension", 0).forGetter(data -> data.dimensionCost),
+                UUIDUtil.STRING_CODEC.listOf().optionalFieldOf("players", List.of()).forGetter(data -> data.players)
+        ).apply(instance, MilestoneData::new));
 
         private void serialize(MCDataOutput output) {
             output.writePos(pos);

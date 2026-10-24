@@ -61,6 +61,12 @@ All notable changes to this project will be documented in this file.
 - A milestone still charges travel out of your inventory and only your inventory: the item payment
   reads the same 36 slots it always did, so what is in an armour or offhand slot is still not
   spent on a jump. Nothing about the cost, the counting or the order items leave the pack changed.
+- Milestones are still remembered in the world, with the same entries in the same shape: position,
+  the milestone's id, its dimension, its name, the two costs and which players know it. One thing
+  moves - 26.1 names a world's saved data after the mod that owns it, so the list lives in
+  `data/tolkienmobs/milestone_data.dat` instead of `data/milestone_data.dat`. A world carried over
+  from 4.4.83 therefore starts with an empty milestone list; the old file is left on disk, not
+  deleted or rewritten.
 - Every message the mod sends a player now uses 26.1's own call for it: the chat lines go through
   the system-message call, and the three that flash above the hotbar - the backpack's "no room",
   the occupied sleeping bag and a refused sleep - through the overlay one. Nothing the player reads
