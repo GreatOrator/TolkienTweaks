@@ -230,6 +230,12 @@ All notable changes to this project will be documented in this file.
   to. The bow's draw progress and the coin pouch's and key ring's fullness, which pick the item
   model's frame, are read through the new owner-aware property signature and measure exactly what
   they measured before, so the sprites and frames are unchanged.
+- The three loot table providers are ported, so the whole loot side of the source compiles. What
+  drops and how much is unchanged: the same blocks drop themselves and their ores roll the same
+  ranges, the same cooked food replaces a mob's meat when it dies on fire, and the backpack and
+  sleeping bag still keep the contents and the name they had when they are broken. The generated
+  loot tables do not move - the pieces that were renamed or reshaped in 26.1 write the same JSON
+  they wrote before.
 - The particle description data provider is ported, so the datagen side of the particles compiles.
   Every flame, the lightning bugs, the fell beast's breath, the wind and the leaf particles still
   declare the same single sprite they did, and the tinted smoke still borrows vanilla's twelve

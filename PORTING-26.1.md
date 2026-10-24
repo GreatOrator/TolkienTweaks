@@ -1409,6 +1409,27 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   nothing new appearing. No error is left in the four files, nor in the item model, lang or tag
   providers. Nothing was opened in game.
 
+### Loot table providers - DONE
+
+- **The predicate package is spelled `criterion` now.** `net.minecraft.advancements.critereon` is
+  `net.minecraft.advancements.criterion` in 26.1, so `StatePropertiesPredicate` - the pipeweed and
+  brambles age checks and the sleeping bag's head half - and `EntityPredicate` with
+  `EntityFlagsPredicate`, which the on-fire smelting condition on twelve food drops builds, are the
+  same classes under the new name. Their builders (`Builder.properties().hasProperty(...)`,
+  `Builder.entity().flags(...)`, `Builder.flags().setOnFire(true)`) are unchanged, so every written
+  condition is what it was.
+- **`CopyComponentsFunction` no longer takes a `Source` enum.** It has two factories instead,
+  `copyComponentsFromEntity(ContextKey<? extends Entity>)` and
+  `copyComponentsFromBlockEntity(ContextKey<? extends BlockEntity>)`, and the latter is handed
+  `LootContextParams.BLOCK_ENTITY`. That covers both call sites: the backpack copying its
+  `BACKPACK_CONTENTS` and the sleeping bag copying its `CUSTOM_NAME`. The serialised source is still
+  `block_entity`, so the generated block loot JSON does not change either.
+- **`LootTableProvider#validate` takes a `ValidationContextSource`**, not a `ValidationContext`,
+  which is why the mod's empty override stopped overriding anything; only the parameter type moved.
+- **Verified:** whole-tree `javac` at **463** errors, down from 497, with the per-file diff between
+  the two runs showing exactly the three loot files losing their 26, 7 and 1 errors and nothing new
+  appearing. No error is left anywhere under `datagen/loot/`. Nothing was opened in game.
+
 ## Ordered work list
 
 1. **Build stack — DONE.** MDG 2, JDK 25, NeoForge 26.1.2, the four dependency bumps. The
@@ -1438,10 +1459,10 @@ from **3,470 errors in 337 files to 2,801 in 320**.
    and the surface rules.
 7. **Renderers.** `handler/render/` and the non-GeckoLib renderers, against the submission API.
 8. **Screens.** 18 screens and the widget set against the prepare/render split.
-9. **Datagen.** `TolkienDataGenerator`, the vendored `datagen/modelgen` package (NeoForge
-   removed the model generators in 21.4, so it was written here — it needs a pass of its own),
-   and the block and entity loot tables, which are the only loot-side files still failing now that
-   the functions and the modifier compile.
+9. **Datagen.** `TolkienDataGenerator` and the vendored `datagen/modelgen` package (NeoForge
+   removed the model generators in 21.4, so it was written here — it needs a pass of its own). The
+   loot side is done: the three providers, the global loot modifier and the trinket's loot function
+   all compile, with the generated loot tables unchanged.
 10. **Long tail.** JEI plugin (4 files), Curios (1), network payloads, the two sound instances.
 
 ## Verification
