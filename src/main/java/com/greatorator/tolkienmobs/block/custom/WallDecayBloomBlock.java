@@ -78,7 +78,8 @@ public class WallDecayBloomBlock extends BushBlock  {
             Block.box(0, 3, 7, 1, 6, 8),
             Block.box(1, 4, 7, 2, 5, 8)
     ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get()));
-    protected static final MapCodec<WallDecayBloomBlock> CODEC = simpleCodec(WallDecayBloomBlock::new);
+    // 26.1 narrows BushBlock's codec to MapCodec<BushBlock>, so a subclass's codec is typed to it too.
+    protected static final MapCodec<BushBlock> CODEC = simpleCodec(WallDecayBloomBlock::new);
 
     public WallDecayBloomBlock(Properties properties) {
         super(properties);
@@ -86,7 +87,7 @@ public class WallDecayBloomBlock extends BushBlock  {
     }
 
     @Override
-    protected MapCodec<? extends BushBlock> codec() {
+    public MapCodec<BushBlock> codec() {
         return CODEC;
     }
 

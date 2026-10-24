@@ -78,7 +78,8 @@ public class WallMushroomRedBlock extends BushBlock  {
                     Block.box(15, 12, 7, 16, 15, 8),
                     Block.box(14, 13, 7, 15, 14, 8)
             ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get()));
-    protected static final MapCodec<WallMushroomRedBlock> CODEC = simpleCodec(WallMushroomRedBlock::new);
+    // 26.1 narrows BushBlock's codec to MapCodec<BushBlock>, so a subclass's codec is typed to it too.
+    protected static final MapCodec<BushBlock> CODEC = simpleCodec(WallMushroomRedBlock::new);
 
     public WallMushroomRedBlock(Properties properties) {
         super(properties);
@@ -86,7 +87,7 @@ public class WallMushroomRedBlock extends BushBlock  {
     }
 
     @Override
-    protected MapCodec<? extends BushBlock> codec() {
+    public MapCodec<BushBlock> codec() {
         return CODEC;
     }
 

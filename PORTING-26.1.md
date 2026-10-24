@@ -16,7 +16,7 @@ measurement's other half.
 | Source | Minecraft **1.21.4**, NeoForge **21.4.161**, mod **4.4.83-Final** |
 | Target | Minecraft **26.1.2**, NeoForge **26.1.2.116**, mod **5.0.0** |
 | Java | 21 → **25** |
-| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API, the fluid/leaf/proxy batch, the food table, the forest fog, the whole `util` package and the three biggest block classes are done; **49** errors left |
+| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API, the fluid/leaf/proxy batch, the food table, the forest fog, the whole `util` package, the three biggest block classes and the `BushBlock` plants are done; **42** errors left |
 
 What the source tree contains, counted:
 
@@ -2010,6 +2010,23 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   Nothing was run in game: the checks are walking through an Arda portal (still an ordinary portal
   trip), letting one stand in the dark for a while to see an orc come out, running over a leaf pile
   to see the tinted particles and the slowdown, and hovering a camo spawner in the inventory.
+
+### The rest of the `BushBlock` plants — DONE
+
+- **The same codec shape, five more times.** `BramblesBushBlock`, `RockPileBlock`, `TolkienPatchBlock`,
+  `WallDecayBloomBlock` and both wall mushrooms declared `MapCodec<? extends BushBlock>`, which 26.1's
+  narrowed `BushBlock#codec()` rejects. Each now declares its `CODEC` and the override as
+  `MapCodec<BushBlock>` while `simpleCodec(<class>::new)` still builds that class, so a block decoded
+  from JSON is still a bramble bush, a rock pile, a patch or the right wall mushroom.
+- **The bramble bush's `entityInside` moved with the rest.** It takes the
+  `InsideBlockEffectApplier` and `isPrecise` arguments now and ignores both, as vanilla's sweet berry
+  bush does; the growth tick, the hurt on a grown bush and the bone meal are unchanged.
+- **No `codec()` override error is left in the tree.** `MushroomsBlock` is not a `BushBlock` - its one
+  error is `net.neoforged.neoforge.common.util.TriState`, which moved.
+- **Verified:** whole-tree `javac` at **42** errors, down from 49 - the six codec errors and the bramble
+  bush's `entityInside` are gone and nothing new appeared. Nothing was run in game: the check is
+  walking through a full-grown bramble bush and taking the damage, and placing a rock pile and a
+  patch to see them keep their shapes.
 
 ## Ordered work list
 
