@@ -972,8 +972,8 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   three one-line imports cleared most of this batch's errors.
 - `getTextureLocation` on the three projectile-ish renderers was never an override and never called;
   the texture now rides on the submit call, so those methods are deleted.
-- Left alone: `block/custom/entity/renderer/*` (block entities, a separate family) and
-  `handler/render` (the model system).
+- Left alone at the time: `block/custom/entity/renderer/*` (block entities) and `handler/render`
+  (the vertex pipeline); both are ported further down.
 
 ### Block-entity renderers — DONE
 
@@ -1008,6 +1008,33 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   `entityRenderer.submit(displayEntity, camera, 0, 0, 0, poseStack, collector)`.
 - The placard drew nothing before the port and draws nothing now; it keeps its registration with a
   plain `BlockEntityRenderState`.
+
+### The `handler/render` vertex pipeline — DONE
+
+- `net.minecraft.client.renderer.RenderType` is `client.renderer.rendertype.RenderType`. `format()`
+  survived the move, so `bind(RenderType, MultiBufferSource)` still learns the vertex format from
+  the type it is handed.
+- `BlockAndTintGetter` is a client interface now - `net.minecraft.client.renderer.block` - and
+  `LevelRenderer.getLightColor` is `getLightCoords(level, pos)`. `CCRenderState` and `LightMatrix`
+  both follow that.
+- `VertexFormatElement` is a record of `(id, index, type, normalized, count)` and has no `usage()`.
+  The elements are the named constants `POSITION`, `COLOR`, `UV0`, `UV1`, `UV2`, `NORMAL` and
+  `LINE_WIDTH`, so `CCRenderState.writeVert` and `CachedFormat` now compare the element to those
+  instead of switching on a usage enum. `UV1` is the overlay and `UV2` the lightmap, which is the
+  same split the old `index()` cases made, and an element that is none of them is still an
+  unsupported format.
+- `VertexConsumer` gained `setLineWidth(float)`, and `DelegatingVertexConsumer` forwards it and the
+  single-argument `setColor(int)`. Without those two, `TransformingVertexConsumer` was left with
+  abstract methods and did not compile.
+- `Minecraft.useAmbientOcclusion()` is `Minecraft.getInstance().options.ambientOcclusion().get()`.
+- 26.1 has no per-stack fluid tint. `IClientFluidTypeExtensions` no longer carries
+  `getTintColor(FluidStack)` - a fluid's tint is declared on its baked
+  `FluidModel#fluidTintSource` and read through a `FluidTintSource` - so
+  `CCRenderState.setFluidColour(FluidStack[, int])` is gone. Nothing in the mod called it.
+- `handler/vec` needed two accessor fixes to compile underneath this: 26.1 returns `Optional` from
+  `CompoundTag#getDouble` and `#getCompound`, so `Vector3.fromNBT` reads `getDoubleOr(name, 0)` and
+  `Cuboid6` reads `getCompoundOrEmpty`. Missing keys read as 0 and as an empty compound, the same
+  values the old calls produced.
 
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official

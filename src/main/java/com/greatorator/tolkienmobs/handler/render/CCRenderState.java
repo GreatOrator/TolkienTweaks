@@ -19,13 +19,11 @@ import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -175,39 +173,33 @@ public class CCRenderState {
         if (sprite != null && r instanceof ISpriteAwareVertexConsumer cons) {
             cons.sprite(sprite);
         }
+        //26.1 describes an element by its id rather than its usage, so the constants themselves are the cases.
         List<VertexFormatElement> elements = fmt.getElements();
         for (VertexFormatElement fmte : elements) {
-            switch (fmte.usage()) {
-                case POSITION -> r.addVertex((float) vert.vec.x, (float) vert.vec.y, (float) vert.vec.z);
-                case UV -> {
-                    switch (fmte.index()) {
-                        case 0 -> r.setUv((float) vert.uv.u, (float) vert.uv.v);
-                        case 1 -> r.setOverlay(overlay);
-                        case 2 -> r.setLight(brightness);
-                        default -> throw new UnsupportedOperationException("Unknown UV index. " + fmte.index());
-                    }
-                }
-                case COLOR -> r.setColor(colour >>> 24, colour >> 16 & 0xFF, colour >> 8 & 0xFF, alphaOverride >= 0 ? alphaOverride : colour & 0xFF);
-                case NORMAL -> r.setNormal((float) normal.x, (float) normal.y, (float) normal.z);
-                default -> throw new UnsupportedOperationException("Generic vertex format element");
+            if (fmte.equals(VertexFormatElement.POSITION)) {
+                r.addVertex((float) vert.vec.x, (float) vert.vec.y, (float) vert.vec.z);
+            } else if (fmte.equals(VertexFormatElement.UV0)) {
+                r.setUv((float) vert.uv.u, (float) vert.uv.v);
+            } else if (fmte.equals(VertexFormatElement.UV1)) {
+                r.setOverlay(overlay);
+            } else if (fmte.equals(VertexFormatElement.UV2)) {
+                r.setLight(brightness);
+            } else if (fmte.equals(VertexFormatElement.COLOR)) {
+                r.setColor(colour >>> 24, colour >> 16 & 0xFF, colour >> 8 & 0xFF, alphaOverride >= 0 ? alphaOverride : colour & 0xFF);
+            } else if (fmte.equals(VertexFormatElement.NORMAL)) {
+                r.setNormal((float) normal.x, (float) normal.y, (float) normal.z);
+            } else if (!fmte.equals(VertexFormatElement.LINE_WIDTH)) {
+                throw new UnsupportedOperationException("Generic vertex format element " + fmte);
             }
         }
     }
 
     public void setBrightness(BlockAndTintGetter world, BlockPos pos) {
-        brightness = LevelRenderer.getLightColor(world, world.getBlockState(pos), pos);
+        brightness = LevelRenderer.getLightCoords(world, pos);
     }
 
     public void setBrightness(Entity entity, float frameDelta) {
         brightness = Minecraft.getInstance().getEntityRenderDispatcher().getPackedLightCoords(entity, frameDelta);
-    }
-
-    public void setFluidColour(FluidStack fluidStack) {
-        setFluidColour(fluidStack, 0xFF);
-    }
-
-    public void setFluidColour(FluidStack fluidStack, int alpha) {
-        this.baseColour = IClientFluidTypeExtensions.of(fluidStack.getFluid()).getTintColor(fluidStack) << 8 | alpha;
     }
 
     public void setColour(Colour colour) {

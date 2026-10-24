@@ -58,55 +58,45 @@ public class CachedFormat {
         int overlayIndex = -1;
         int lightMapIndex = -1;
 
+        //26.1 describes an element by its id rather than its usage, so the constants themselves are the cases.
         for (int i = 0; i < elementCount; i++) {
             VertexFormatElement element = elements.get(i);
-            switch (element.usage()) {
-                case POSITION:
-                    if (hasPosition) {
-                        throw new IllegalStateException("Found 2 position elements..");
-                    }
-                    hasPosition = true;
-                    positionIndex = i;
-                    break;
-                case NORMAL:
-                    if (hasNormal) {
-                        throw new IllegalStateException("Found 2 normal elements..");
-                    }
-                    hasNormal = true;
-                    normalIndex = i;
-                    break;
-                case COLOR:
-                    if (hasColor) {
-                        throw new IllegalStateException("Found 2 color elements..");
-                    }
-                    hasColor = true;
-                    colorIndex = i;
-                    break;
-                case UV:
-                    switch (element.index()) {
-                        case 0 -> {
-                            if (hasUV) {
-                                throw new IllegalStateException("Found 2 UV elements..");
-                            }
-                            hasUV = true;
-                            uvIndex = i;
-                        }
-                        case 1 -> {
-                            if (hasOverlay) {
-                                throw new IllegalStateException("Found 2 Overlay elements..");
-                            }
-                            hasOverlay = true;
-                            overlayIndex = i;
-                        }
-                        case 2 -> {
-                            if (hasLightMap) {
-                                throw new IllegalStateException("Found 2 LightMap elements..");
-                            }
-                            hasLightMap = true;
-                            lightMapIndex = i;
-                        }
-                    }
-                    break;
+            if (element.equals(VertexFormatElement.POSITION)) {
+                if (hasPosition) {
+                    throw new IllegalStateException("Found 2 position elements..");
+                }
+                hasPosition = true;
+                positionIndex = i;
+            } else if (element.equals(VertexFormatElement.NORMAL)) {
+                if (hasNormal) {
+                    throw new IllegalStateException("Found 2 normal elements..");
+                }
+                hasNormal = true;
+                normalIndex = i;
+            } else if (element.equals(VertexFormatElement.COLOR)) {
+                if (hasColor) {
+                    throw new IllegalStateException("Found 2 color elements..");
+                }
+                hasColor = true;
+                colorIndex = i;
+            } else if (element.equals(VertexFormatElement.UV0)) {
+                if (hasUV) {
+                    throw new IllegalStateException("Found 2 UV elements..");
+                }
+                hasUV = true;
+                uvIndex = i;
+            } else if (element.equals(VertexFormatElement.UV1)) {
+                if (hasOverlay) {
+                    throw new IllegalStateException("Found 2 Overlay elements..");
+                }
+                hasOverlay = true;
+                overlayIndex = i;
+            } else if (element.equals(VertexFormatElement.UV2)) {
+                if (hasLightMap) {
+                    throw new IllegalStateException("Found 2 LightMap elements..");
+                }
+                hasLightMap = true;
+                lightMapIndex = i;
             }
         }
 

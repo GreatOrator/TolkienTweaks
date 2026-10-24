@@ -41,7 +41,7 @@ public class Cuboid6 implements Copyable<Cuboid6> {
     }
 
     public Cuboid6(CompoundTag tag) {
-        this(Vector3.fromNBT(tag.getCompound("min")), Vector3.fromNBT(tag.getCompound("max")));
+        this(Vector3.fromNBT(tag.getCompoundOrEmpty("min")), Vector3.fromNBT(tag.getCompoundOrEmpty("max")));
     }
 
     public Cuboid6(Cuboid6 cuboid) {
