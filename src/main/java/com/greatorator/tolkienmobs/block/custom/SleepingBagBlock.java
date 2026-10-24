@@ -6,6 +6,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.attribute.BedRule;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.npc.Villager;
@@ -104,7 +106,9 @@ public class SleepingBagBlock extends BedBlock
                 }
             }
 
-            if (!canSetSpawn(pLevel)) {
+            BedRule bedRule = pLevel.environmentAttributes().getValue(EnvironmentAttributes.BED_RULE, pPos);
+            if (bedRule.explodes()) {
+                bedRule.errorMessage().ifPresent(pPlayer::sendOverlayMessage);
                 pLevel.removeBlock(pPos, false);
                 BlockPos blockpos = pPos.relative(pState.getValue(FACING).getOpposite());
                 if (pLevel.getBlockState(blockpos).is(this)) {
