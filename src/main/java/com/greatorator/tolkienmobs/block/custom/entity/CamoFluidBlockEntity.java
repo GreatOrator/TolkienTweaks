@@ -23,8 +23,9 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -126,11 +127,11 @@ public class CamoFluidBlockEntity extends TolkienBlockEntity implements MenuProv
 
     public void onNeighborChange(Level level) {
         ItemStack stack = mainInventory.getStackInSlot(0);
-        IFluidHandlerItem fluidHandlerItem = stack.getCapability(Capabilities.FluidHandler.ITEM);
-
-        assert fluidHandlerItem != null;
-
-        if (stack.isEmpty() || fluidHandlerItem.getContainer().isEmpty()) {
+        if (stack.isEmpty()) {
+            return;
+        }
+        ResourceHandler<FluidResource> fluidHandlerItem = stack.getCapability(Capabilities.Fluid.ITEM);
+        if (fluidHandlerItem == null || fluidHandlerItem.size() == 0 || fluidHandlerItem.getResource(0).isEmpty()) {
             return;
         }
 
@@ -138,7 +139,7 @@ public class CamoFluidBlockEntity extends TolkienBlockEntity implements MenuProv
             BlockPos blockPos = worldPosition.relative(facing);
             List<BlockPos> fluidToPlace = findAirBlocks(level, blockPos, facing);
 
-            Fluid fluid = fluidHandlerItem.getFluidInTank(0).getFluid();
+            Fluid fluid = fluidHandlerItem.getResource(0).value();
             if (fluid == Fluids.EMPTY) {
                 return;
             }

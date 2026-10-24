@@ -16,7 +16,7 @@ measurement's other half.
 | Source | Minecraft **1.21.4**, NeoForge **21.4.161**, mod **4.4.83-Final** |
 | Target | Minecraft **26.1.2**, NeoForge **26.1.2.116**, mod **5.0.0** |
 | Java | 21 → **25** |
-| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider and the item family are done; **305** errors left |
+| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer and the capability API are done; **227** errors left |
 
 What the source tree contains, counted:
 
@@ -1634,6 +1634,54 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   `TolkienCaveCarvers` and the one each in `LazyArea`, `SurfaceStructures` and `VillageStructure` are
   all gone, with nothing new anywhere. Nothing was opened in game.
 
+### The capability API — DONE
+
+- **26.1 replaced the item and fluid capabilities with the transfer API.** `Capabilities.ItemHandler`
+  and `Capabilities.FluidHandler` are gone; `Capabilities.Item.BLOCK` / `.ITEM` / `.ENTITY` are
+  typed `ResourceHandler<ItemResource>` and the fluid ones `ResourceHandler<FluidResource>`. Only
+  six call sites asked for one or registered one, so this was a smaller job than the interface
+  count suggests: two registrations in `TolkienMobsMain`, three container-item queries in
+  `BackpackBlock` and `BackpackBlockEntity`, one in `CamoFluidBlockEntity`, and the two effects that
+  repaired a player's gear.
+- **The two storages that back a capability moved onto it.** `TolkienItemStackHandler` extends
+  `ItemStacksResourceHandler` (so the chest's attachment and the backpack's own slots are the same
+  slot lists, under the same 64-item limit), and `TolkienFluidTank` extends
+  `FluidStacksResourceHandler` (one slot whose `capacity` field the pack grows with its fluid
+  upgrades). Both still implement the older `IItemHandler` / `IFluidHandler` as a *view over
+  themselves* - `IItemHandler.of(this)`, `IFluidHandler.of(this)` - because the menus' slots are
+  `SlotItemHandler`s that take the old interface, and NeoForge keeps both as deprecated views over a
+  resource handler. Moving the menus to `ResourceHandlerSlot` is a separate pass; this keeps the
+  compile honest without a slot rewrite.
+- **Save keys changed, so both handlers read the old ones.** `ItemStackHandler` wrote its slots under
+  `Items` and the new handler writes `stacks`; `FluidTank` wrote `Fluid` and the tank now writes
+  `stacks` too. Each handler falls back to the old key when the new one is absent, so a backpack
+  saved by the 1.21.4 build keeps its contents and its fluid.
+- **Container items go through `ItemAccess`, not `IFluidHandlerItem`.** There is no replacement for
+  `getContainer()` plus `player.setItemSlot(...)` - the item's handler now reports the new resource
+  and the access writes it back. `BackpackBlock.useItemOn` uses `forPlayerInteraction(player, hand)`,
+  the pack's bucket machine uses `forHandlerIndex(bucketHandler, slot)`, and the validity check uses
+  `forStack(stack)`. Every move is `ResourceHandlerUtil.move(source, sink, filter, amount,
+  transaction)` inside `Transaction.openRoot()`, committed only when something moved, which is what
+  `FluidUtil.tryFillContainer` / `tryEmptyContainer` / `tryFluidTransfer` and their
+  `FluidActionResult` used to do. `InvWrapper` is gone too: the camo chest is a vanilla `Container`,
+  so it registers `VanillaContainerWrapper.of(chest)`.
+- **The fluid render layers went with the API that held them.** `ItemBlockRenderTypes` does not exist
+  in 26.1 and neither does `RenderType` as a block layer: `FluidModel` now picks its
+  `ChunkSectionLayer` from the still and flowing sprites' transparency, so `TolkienFluidType`'s
+  mithril and morgul-iron fluids are translucent exactly when their textures are. That is the part
+  of this change worth looking at in a world.
+- **The effects repair the player's own inventory.** `Capabilities.Item.ENTITY` on a player is that
+  inventory wrapped as a handler, so `BlacksmithEffect` and `CorrosionEffect` iterate
+  `player.getInventory()` and mutate the live stacks, which is what the handler's
+  `getStackInSlot` did.
+- **Verified:** whole-tree `javac` at **227** errors, down from 246 - `TolkienMobsMain` 9 → **0**,
+  `BackpackBlock` 4 → 2, `BackpackBlockEntity` 8 → 2, and the two effects 1 → 0 each, with nothing
+  new anywhere. `TolkienMobsMain` now compiles outright, capability registrations and all. The four
+  errors left in the backpack pair belong to the block and block-entity step (`onRemove`'s
+  five-argument form and the three-argument `onDataPacket`). Nothing was opened in game: the bucket
+  machine, the camo fluid block's neighbour fill and the two effects are compile-checked only, and
+  the bucket-in/out paths are what to watch in the test world.
+
 ## Ordered work list
 
 1. **Build stack — DONE.** MDG 2, JDK 25, NeoForge 26.1.2, the four dependency bumps. The
@@ -1657,7 +1705,9 @@ from **3,470 errors in 337 files to 2,801 in 320**.
    in `TolkienItems`, `TolkienLootFunctions`, `TrinketRandomlyFunction`, `TolkienItemsModifier` or
    `TolkienItemProperties`.
 5. **Block entities.** `preRemoveSideEffects` / `affectNeighborsAfterRemoval`, and
-   `dropContentsOnDestroy` in `CamoChestBlock`.
+   `dropContentsOnDestroy` in `CamoChestBlock`; `onRemove`'s new shape and `onDataPacket`'s
+   two-argument form in the backpack pair. The capability side of the backpack and camo chest is
+   done (see *The capability API - DONE* above).
 6. **Worldgen - done except the datagen.** The carvers, trees, configured and placed features,
    surface rules and the biome registration layer all compile (see *The worldgen registration layer
    - DONE* above), and the TerraBlender calls in `TolkienMobsMain` were checked against

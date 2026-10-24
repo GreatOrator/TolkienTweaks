@@ -1,9 +1,9 @@
 package com.greatorator.tolkienmobs.handler.interfaces.block;
 
+import com.greatorator.tolkienmobs.handler.capability.TolkienFluidTank;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 public interface BackpackFluids {
     default int getMaxMB() {
@@ -12,7 +12,7 @@ public interface BackpackFluids {
 
     ContainerData getFluidContainerData();
 
-    FluidTank getFluidTank();
+    TolkienFluidTank getFluidTank();
 
     default FluidStack getFluidStack() {
         return getFluidTank().getFluid();
@@ -28,9 +28,9 @@ public interface BackpackFluids {
 
     default void setAmountStored(int value) {
         if (getAmountStored() > 128000) {
-            getFluidTank().getFluid().setAmount(Integer.MAX_VALUE);
+            getFluidTank().setAmount(Integer.MAX_VALUE);
         } else {
-            getFluidTank().getFluid().setAmount(value);
+            getFluidTank().setAmount(value);
         }
     }
 

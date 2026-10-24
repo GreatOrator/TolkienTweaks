@@ -278,6 +278,16 @@ All notable changes to this project will be documented in this file.
   jigsaw structures still stop building at the same distance from where they start. The generated
   biome files do not match this yet: they are rewritten by the next data run, which has to wait for
   the rest of the source to compile.
+- The backpack and the camouflage chest hand their inventories out through 26.1's transfer API, so
+  hoppers, pipes and other mods see the same slots they did. The pack's storage and tank and the camo
+  chest's twenty-seven slots are still the containers they were, and they still answer the older item
+  and fluid interfaces the menus are built on. Buckets - of water, lava or any mod's fluid - and the
+  pack's own two bucket slots now fill and empty through 26.1's item access, which is what replaces
+  the old container-item calls: a bucket still swaps for an empty one, in your hand or in the slot it
+  sits in. A backpack saved by the 1.21.4 build keeps its contents, because both storages still read
+  the tag keys they used to write. The two fluids no longer declare a translucent render layer
+  themselves - 26.1 picks it from the fluid's own textures - so make sure mithril and morgul iron
+  still look right in a world.
 
 ## [4.4.83-Final] - 10.22.2026
 

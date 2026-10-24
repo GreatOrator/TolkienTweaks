@@ -4,6 +4,7 @@ import com.greatorator.tolkienmobs.block.*;
 import com.greatorator.tolkienmobs.block.custom.*;
 import com.greatorator.tolkienmobs.block.custom.entity.*;
 import com.greatorator.tolkienmobs.handler.capability.TolkienFluidTank;
+import com.greatorator.tolkienmobs.handler.capability.TolkienItemStackHandler;
 import com.greatorator.tolkienmobs.handler.interfaces.TolkienRegistry;
 import com.greatorator.tolkienmobs.item.custom.BackpackItem;
 import com.greatorator.tolkienmobs.world.components.config.TolkienConfiguredFeatures;
@@ -28,7 +29,6 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.registries.*;
 
 import java.util.Optional;
@@ -2159,11 +2159,11 @@ public class TolkienBlocks {
                     new BlockEntityType<>(AncientWatcherDeadStatueBlockEntity::new, ANCIENT_DEAD_WATCHER.get()));
 
         // Attachment Types
-    public static final Supplier<AttachmentType<ItemStackHandler>> BACKPACK_HANDLER = ATTACHMENT_TYPES.register(
+    public static final Supplier<AttachmentType<TolkienItemStackHandler>> BACKPACK_HANDLER = ATTACHMENT_TYPES.register(
             "backpack_handler", () -> AttachmentType.serializable(holder -> {
                 if (holder instanceof BackpackBlockEntity backpackBlockEntity)
-                    return new ItemStackHandler(backpackBlockEntity.BUCKET_SLOTS);
-                return new ItemStackHandler(2);
+                    return new TolkienItemStackHandler(backpackBlockEntity.BUCKET_SLOTS);
+                return new TolkienItemStackHandler(2);
             }).build());
     public static final Supplier<AttachmentType<TolkienFluidTank>> BACKPACK_FLUID_HANDLER = ATTACHMENT_TYPES.register(
             "backpack_fluid_handler", () -> AttachmentType.serializable(holder -> {

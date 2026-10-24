@@ -4,6 +4,7 @@ import com.greatorator.tolkienmobs.block.custom.BackpackBlock;
 import com.greatorator.tolkienmobs.block.custom.SleepingBagBlock;
 import com.greatorator.tolkienmobs.containers.BackpackBlockContainer;
 import com.greatorator.tolkienmobs.handler.capability.TolkienFluidTank;
+import com.greatorator.tolkienmobs.handler.capability.TolkienItemStackHandler;
 import com.greatorator.tolkienmobs.handler.data.BackpackFluidData;
 import com.greatorator.tolkienmobs.handler.interfaces.block.*;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
@@ -52,13 +53,13 @@ import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.fluids.FluidActionResult;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
@@ -71,44 +72,29 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
     public BackpackUpgrades backpackUpgrades = new BackpackUpgrades(false, false, false, false, false);
     public BackpackFluidUpgrades backpackFluidUpgrades = new BackpackFluidUpgrades(false, false, false, false, false);
     private static final Predicate<ItemStack> IS_UPGRADE_ITEM = stack -> !stack.isEmpty() && isUpgradeItem(stack);
-    public ItemStackHandler fluidHandler;
-    public final ItemStackHandler itemHandler = new ItemStackHandler(72) {
+    public TolkienItemStackHandler fluidHandler;
+    public final TolkienItemStackHandler itemHandler = new TolkienItemStackHandler(72) {
         @Override
-        protected int getStackLimit(int slot, ItemStack stack) {
-            return 64;
-        }
-
-        @Override
-        protected void onContentsChanged(int slot) {
+        protected void onContentsChanged(int slot, ItemStack stack) {
             contentsChanged();
         }
     };
 
-    public final ItemStackHandler upgradeItemHandler = new ItemStackHandler(9) {
+    public final TolkienItemStackHandler upgradeItemHandler = new TolkienItemStackHandler(9) {
         @Override
-        protected int getStackLimit(int slot, ItemStack stack) {
-            return 64;
-        }
-
-        @Override
-        protected void onContentsChanged(int slot) {
+        protected void onContentsChanged(int slot, ItemStack stack) {
             if(level != null && !level.isClientSide()) {
                 refreshUpgrades();
             }
             contentsChanged();
         }
     };
-    private final FluidTank FLUID_TANK = createFluidTank();
-    private FluidTank createFluidTank() {
-        return new FluidTank(getMaxMB()) {
+    private final TolkienFluidTank FLUID_TANK = createFluidTank();
+    private TolkienFluidTank createFluidTank() {
+        return new TolkienFluidTank(getMaxMB()) {
             @Override
-            protected void onContentsChanged() {
+            protected void onContentsChanged(int slot, FluidStack stack) {
                 contentsChanged();
-            }
-
-            @Override
-            public boolean isFluidValid(FluidStack stack) {
-                return true;
             }
         };
     }
@@ -182,7 +168,7 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
     /** Called every server tick while a held backpack is open: runs the bucket slots and saves if they changed. */
     public void tickHeld() {
         tickServer();
-        ItemStackHandler buckets = getMachineHandler();
+        TolkienItemStackHandler buckets = getMachineHandler();
         boolean changed = false;
         for (int i = 0; i < lastHeldBuckets.length && i < buckets.getSlots(); i++) {
             ItemStack stack = buckets.getStackInSlot(i);
@@ -231,9 +217,9 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
         return !FLUID_TANK.isEmpty() || hasItems(itemHandler) || hasItems(upgradeItemHandler) || hasItems(getMachineHandler());
     }
 
-    private static boolean hasItems(ItemStackHandler handler) {
-        for (int i = 0; i < handler.getSlots(); i++) {
-            if (!handler.getStackInSlot(i).isEmpty()) {
+    private static boolean hasItems(ResourceHandler<ItemResource> handler) {
+        for (int i = 0; i < handler.size(); i++) {
+            if (!handler.getResource(i).isEmpty()) {
                 return true;
             }
         }
@@ -332,7 +318,7 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
         return FLUID_TANK.getFluid();
     }
 
-    public IFluidHandler getTank(@Nullable Direction direction) {
+    public TolkienFluidTank getTank(@Nullable Direction direction) {
         return FLUID_TANK;
     }
 
@@ -592,41 +578,51 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
     }
 
     private void pushFluidToAboveNeighbour() {
-        FluidUtil.getFluidHandler(level, worldPosition.above(), null).ifPresent(iFluidHandler -> {
-            FluidUtil.tryFluidTransfer(iFluidHandler, this.FLUID_TANK, Integer.MAX_VALUE, true);
-        });
+        ResourceHandler<FluidResource> above = level.getCapability(Capabilities.Fluid.BLOCK, worldPosition.above(), Direction.DOWN);
+        if (above != null) {
+            moveFluid(FLUID_TANK, above, Integer.MAX_VALUE);
+        }
     }
 
     private void transferFluidFromTankToHandler() {
-        fluidHandler = this.getMachineHandler();
-        FluidActionResult result = FluidUtil.tryFillContainer(fluidHandler.getStackInSlot(1), this.FLUID_TANK, Integer.MAX_VALUE, null, true);
-        if(result.result != ItemStack.EMPTY) {
-            fluidHandler.setStackInSlot(1, result.result);
+        ResourceHandler<FluidResource> itemTank = slotFluidHandler(1);
+        if (itemTank != null && moveFluid(FLUID_TANK, itemTank, Integer.MAX_VALUE) > 0) {
             this.level.playSound(null, this.getBlockPos(), SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1F, 1.0F);
         }
     }
 
     private boolean hasFluidHandlerInSecondSlot() {
-        fluidHandler = this.getMachineHandler();
-        return !fluidHandler.getStackInSlot(1).isEmpty()
-                && fluidHandler.getStackInSlot(1).getCapability(Capabilities.FluidHandler.ITEM, null) != null
-                && fluidHandler.getStackInSlot(1).getCapability(Capabilities.FluidHandler.ITEM, null).getFluidInTank(0).isEmpty();
+        ResourceHandler<FluidResource> itemTank = slotFluidHandler(1);
+        return itemTank != null && ResourceHandlerUtil.isEmpty(itemTank);
     }
 
     private void transferFluidToTank() {
-        fluidHandler = this.getMachineHandler();
-        FluidActionResult result = FluidUtil.tryEmptyContainer(fluidHandler.getStackInSlot(0), this.FLUID_TANK, Integer.MAX_VALUE, null, true);
-        if(result.result != ItemStack.EMPTY) {
-            fluidHandler.setStackInSlot(0, result.result);
+        ResourceHandler<FluidResource> itemTank = slotFluidHandler(0);
+        if (itemTank != null && moveFluid(itemTank, FLUID_TANK, Integer.MAX_VALUE) > 0) {
             this.level.playSound(null, this.getBlockPos(), SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1F, 1.0F);
         }
     }
 
     private boolean hasFluidStackInFirstSlot() {
-        fluidHandler = this.getMachineHandler();
-        return !fluidHandler.getStackInSlot(0).isEmpty()
-                && fluidHandler.getStackInSlot(0).getCapability(Capabilities.FluidHandler.ITEM, null) != null
-                && !fluidHandler.getStackInSlot(0).getCapability(Capabilities.FluidHandler.ITEM, null).getFluidInTank(0).isEmpty();
+        ResourceHandler<FluidResource> itemTank = slotFluidHandler(0);
+        return itemTank != null && !ResourceHandlerUtil.isEmpty(itemTank);
+    }
+
+    /** The fluid handler of the container item in a machine slot, bound to that slot so it writes back. */
+    @Nullable
+    private ResourceHandler<FluidResource> slotFluidHandler(int slot) {
+        return ItemAccess.forHandlerIndex(getMachineHandler(), slot).getCapability(Capabilities.Fluid.ITEM);
+    }
+
+    /** Moves fluid between two handlers in one transaction, committing only if something moved. */
+    private static int moveFluid(ResourceHandler<FluidResource> source, ResourceHandler<FluidResource> sink, int amount) {
+        try (Transaction transaction = Transaction.openRoot()) {
+            int moved = ResourceHandlerUtil.move(source, sink, resource -> true, amount, transaction);
+            if (moved > 0) {
+                transaction.commit();
+            }
+            return moved;
+        }
     }
 
     public TolkienFluidTank getFluidTank() {
@@ -634,26 +630,16 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
     }
 
     public void handleItemStack() {
-        FluidStack fluidStack = getFluidStack();
-        if (fluidStack.isEmpty()) return;
-        ItemStack itemStack = getItemStack();
-        if (!isStackValid(itemStack, fluidStack)) return;
-        IFluidHandlerItem fluidHandlerItem = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
-        int insertAmt = fluidHandlerItem.fill(fluidStack, IFluidHandler.FluidAction.SIMULATE);
-        if (insertAmt > 0) {
-            FluidStack extractedStack = getFluidTank().drain(Math.min(insertAmt, 1000), IFluidHandler.FluidAction.EXECUTE);
-            fluidHandlerItem.fill(extractedStack, IFluidHandler.FluidAction.EXECUTE);
-            if (itemStack.getItem() instanceof BucketItem)
-                getMachineHandler().setStackInSlot(0, fluidHandlerItem.getContainer());
-
-        }
+        ResourceHandler<FluidResource> itemTank = slotFluidHandler(0);
+        if (itemTank == null) return;
+        moveFluid(getFluidTank(), itemTank, 1000);
     }
 
     public ItemStack getItemStack() {
         return getMachineHandler().getStackInSlot(0);
     }
 
-    public ItemStackHandler getMachineHandler() {
+    public TolkienItemStackHandler getMachineHandler() {
         return getData(TolkienBlocks.BACKPACK_HANDLER);
     }
 
@@ -674,12 +660,14 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
             return false;
         if (fluidStack.isEmpty())
             return false;
-        IFluidHandlerItem fluidHandlerItem = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
-        if (fluidHandlerItem == null)
+        ResourceHandler<FluidResource> itemTank = ItemAccess.forStack(itemStack).getCapability(Capabilities.Fluid.ITEM);
+        if (itemTank == null)
             return false;
-        int amtFilled = fluidHandlerItem.fill(fluidStack, IFluidHandler.FluidAction.SIMULATE);
-        if (amtFilled == 0)
-            return false;
+        try (Transaction transaction = Transaction.openRoot()) {
+            int amtFilled = itemTank.insert(FluidResource.of(fluidStack), fluidStack.getAmount(), transaction);
+            if (amtFilled == 0)
+                return false;
+        }
         return true;
     }
 
