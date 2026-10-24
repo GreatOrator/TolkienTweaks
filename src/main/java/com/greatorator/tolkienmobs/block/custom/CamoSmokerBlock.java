@@ -61,7 +61,7 @@ public class CamoSmokerBlock extends ChameleonBlock<Block> {
         }
 
         DyeColor color = dyeItem.getDyeColor();
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return InteractionResult.SUCCESS;
         }
 

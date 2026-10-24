@@ -16,7 +16,7 @@ measurement's other half.
 | Source | Minecraft **1.21.4**, NeoForge **21.4.161**, mod **4.4.83-Final** |
 | Target | Minecraft **26.1.2**, NeoForge **26.1.2.116**, mod **5.0.0** |
 | Java | 21 → **25** |
-| Status | build stack in place; GeckoLib 5 renamed, assets moved, one entity converted |
+| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers) is done; 2,801 errors left |
 
 What the source tree contains, counted:
 
@@ -35,7 +35,7 @@ What the source tree contains, counted:
 | `*Screen` subclasses / `AbstractContainerScreen` | 18 / 18 |
 | Block entities | 14 |
 | `DeferredRegister` holders | 23 files |
-| `ResourceLocation` occurrences / files | **1,910** / **259** |
+| `ResourceLocation` occurrences / files | **1,910** / **259** — now **0** / **0** |
 | Blockstate JSON / JSON totals (main + generated) | 588 / 6,084 |
 | Mixins | **none** |
 | TerraBlender / Curios / JEI call sites | 2 files / 1 file / 4 files |
@@ -185,12 +185,13 @@ drawing immediately. `EntityRenderer` and its layers use `submit`; `BlockEntityR
 a render-state type, `extractRenderState` and `submit`; particles get extracted and submitted
 too; model setup consumes render state rather than the entity.
 
-In this tree: 69 files touch `MultiBufferSource`, and the renderers that are not GeckoLib's are
-the ones this actually lands on — the projectiles (`BoulderRender`, `FellBeastFireballRender`,
-`TolkienArrowRenderer`, `SimpleTrapRender`, `TornadoRender`), `MorgulCrystalRenderer`, the three
-boat renderers, the camo spawner/locust/lightning bug renderers, `WatcherRender` and
-`HumanRender`. `handler/render/` (`CCRenderState`, `CCRenderPipeline`, `CachedFormat`) is a
-hand-rolled pipeline layer and will not port by rename; treat it as a small rewrite.
+In this tree, after the GeckoLib conversion, 14 files still touch `MultiBufferSource` — the ones
+that are not GeckoLib's: the boulder and the fell beast fireball (`BoulderRender`,
+`FellBeastFireballRender`, plain `EntityRenderer`s with a hand-built cube),
+`MorgulCrystalRenderer`, the seven non-GeckoLib block entity renderers, the three NPC profession
+layers and `handler/render/CCRenderState`. `handler/render/` (`CCRenderState`, `CCRenderPipeline`,
+`CachedFormat`) is a hand-rolled pipeline layer and will not port by rename; treat it as a small
+rewrite.
 
 The 62 GeckoLib renderers are expected to move *with* GeckoLib 5 rather than individually,
 which is why the GeckoLib job comes first.
@@ -269,12 +270,133 @@ the pattern for the other 191 files.
   `.../geckolib/animations/` (56 + 45 files). The id a model asks for is now the bare path,
   `monster/rockgolem`: GeckoLib strips the `geckolib/models/` root and the `.geo.json` suffix
   itself. All 55 GeckoLib ids the code asks for resolve to a moved file.
-- **One entity is converted**: the rock golem, in
+- **Fifty-three entities are converted**: the rock golem, in
   [RockGolemEntity](src/main/java/com/greatorator/tolkienmobs/entity/monster/RockGolemEntity.java),
   [RockGolemModel](src/main/java/com/greatorator/tolkienmobs/entity/monster/model/RockGolemModel.java)
-  and [RockGolemRender](src/main/java/com/greatorator/tolkienmobs/entity/monster/render/RockGolemRender.java).
-  Four controllers, a variant texture, a per-frame head turn and a `RawAnimation` set: between
-  them they touch every part of the API the other 55 entities use.
+  and [RockGolemRender](src/main/java/com/greatorator/tolkienmobs/entity/monster/render/RockGolemRender.java),
+  then the huron, deep claw, romie walker and warg, then the elemental golem, mimic chest and
+  tree ent, then the six weapon-carrying orcs: brigand, goblin, duergar, haradrim, mordor orc
+  and uruk hai, and then the last nine holders: the balrog, witch king, barrow wight, both fell
+  spirits, minotaur, nazgul, oath breaker and troll. All fifteen `BlockAndItemGeoLayer` sites are
+  therefore done. The mimic's idle controller never stops: a dormant chest breathes with a
+  different animation than an awake one. The tree ent picks between a punch and a stomp for its
+  swing. The golem has a fourth controller and a one-shot rage; the warg adds a wet-shake latch
+  and a 1.5x model scale; the troll is 1.6x and scales its club with it; the minotaur's charge and
+  the balrog's whip are the two remaining ranged branches (the balrog's is gated on its aggressive
+  flag, as before); the nazgul and witch king sit while riding; five of them keep a translucent
+  render type. Between those twenty-three they cover the API the other entities use.
+- **The thirty mobs that carry no props are converted** on top of them: the seven bosses (fell
+  beast, goblin king, Gwaihir, the mithril and morgul-iron golems, Shelob, the Watcher), the swamp
+  hag, the Mirkwood spider, the eight trading villagers (dwarf, elf, hobbit, human, orc, orc
+  trader, southron, southron trader), the six ambient animals (crebain, frog, great eagle, rat,
+  squirrel, thrush) and the seven passive ones (auroch, goat, Gollum, Istari, mumakil, nazgul
+  steed, Shadowfax). None of them held an item, so no layer changed; what they needed instead was
+  the rest of the state. Every constant scale became `scaleModelForRender`, including the ones the
+  old `preRender` applied only to babies - the frog and squirrel also singled out variant 16, and
+  the fell beast, Gwaihir, Shelob, both golems and the great eagle are simply drawn at their own
+  size. The head turns follow each model's own bone: `head` almost everywhere, but `neck` on the
+  eagles, `Head` on the hag, `Mumakil`'s `MumuNeck`, Gollum's `GollumHead`, and the two horses
+  turn only in yaw. The props those models hid are now `hiddenBones`: the frog's insect and
+  tongue, the thrush's snail and leg band, the giant spider's webbing, the goat's chest and
+  saddle, Gollum's fish, Istari's book, and the steeds' chests, saddles and headpieces - the last
+  two only while saddled, except Shadowfax, which never shows them. The human is the one that
+  keeps two texture sets: `variant` says which face and a `winter` flag on the state says which
+  folder, so a human keeps its face when it changes clothes. Their controllers are built the 5
+  way as well: the animatable is no longer a constructor argument, the event hands out
+  `controller()` and `animatable()`, `Animation.LoopType` gave way to `thenPlay`/`thenLoop`, and
+  the `getAnimationState().equals(State.STOPPED)` guard is `!isAnimatingBones()`.
+- **The villager and wandering-trader bases are ported.** Between them they had four kinds of
+  blocker: `net.minecraft.Util` is `net.minecraft.util.Util`; `Villager` and its `VillagerData`,
+  `VillagerProfession` and `VillagerType` moved to `net.minecraft.world.entity.npc.villager`, and
+  `WanderingTrader` to `npc.wanderingtrader`; save data is `ValueOutput`/`ValueInput`
+  (`getIntOr("Variant", 0)`); and `TolkienVillagerEntity`'s unused `MERCHANT_VARIANT` accessor had to
+  go, because `VillagerData` is built from registry holders in 26.1 and the old code handed it the
+  static profession constants. Nothing read it, so no behaviour is lost. Everything else in the two
+  classes - `isPassenger`, `isAggressive`, `createMobAttributes`, `finalizeSpawn` - was failing only
+  because the supertype itself did not resolve; the idle controllers keep their `!isAggressive()`
+  guard. Both classes are error-free now, and so are the six subclasses that extend them - dwarf,
+  elf, hobbit, human, orc and southron - which needed the same two imports, plus the human's winter
+  flag moving to `ValueOutput`/`ValueInput` and `isClientSide()`. The whole `entity/npc` package
+  compiles.
+- **The last three controller sets are converted**, which finishes the API migration: `DragonEntity`
+  (five controllers), `TolkienVillagerEntity` (idle and walk) and `TolkienWanderingEntity` (the same
+  two). `Animation.LoopType.PLAY_ONCE` is `com.geckolib.animation.object.LoopType.PLAY_ONCE` now, and
+  `forceAnimationReset()` is gone. That call needed a
+  replacement only where a controller had to restart the *same* animation, and none of these did - the
+  roar and the breath already guarded on `hasRoared` and `breathPhase`, and a controller that returned
+  `STOP` has cleared its animation, so the next `setAnimation` starts from the top. The one real change
+  is in the dragon's attack: 4 left a playing swing alone when its handler fell through to `STOP`, but
+  5 resets the controller on `STOP`, so the handler now returns `CONTINUE` while
+  `controller().isAnimatingBones()` and starts a swing only from a stopped controller.
+  `getWingAnimation` returns a `RawAnimation` now rather than a clip name, so the three wing poses are
+  built once.
+- **The three NPC profession layers are converted, and none of them is attached to anything.** 4's
+  layer override was one `render(...)` that called `getRenderer().reRender(...)` with another texture;
+  5 splits the hook into `addRenderData` and `submitRenderTask`, and for a whole-model second pass
+  with a different texture it ships exactly that as `TextureLayerGeoLayer`. Each layer is now
+  `TextureLayerGeoLayer<T, Void, TolkienGeoRenderState>` constructed with the texture and
+  `RenderTypes::armorCutoutNoCull`, which is the render type the old `RenderType.armorCutoutNoCull`
+  call used, so the hand-written re-render is gone. Their type arguments follow their renderers, which
+  are `GeoEntityRenderer<T, TolkienGeoRenderState>`. Nothing constructs any of the three - there is no
+  `withRenderLayer`/`addRenderLayer` call for them in this tree or in the 1.21 source - so they are
+  converted dead code rather than a working feature.
+- **The item renderer is converted, and there is only one** - the Arda staff, across `CatalystRender`,
+  `CatalystModel` and `CatalystItem`. `GeoItemRenderer<T>` is already `GeoRenderer<T, RenderData,
+  GeoRenderState>` in 5: its state is GeckoLib's own `GeoRenderState.Impl`, so the renderer needed no
+  state class and no hook of its own, and `getGeoItemRenderer()` and
+  `createGeoRenderer(Consumer<GeoRenderProvider>)` are unchanged. What did change is the model's two
+  resource getters and the idle controller. The mod has no second GeckoLib item renderer - the Morgul
+  crystal and the boats are vanilla renderers - so the earlier note's "2 item renderers" was one too
+  many.
+- **The five block entities are converted** - the well and the four lockable chests. `GeoBlockRenderer`
+  is a plain `BlockEntityRenderer<T, R>` in 5, its constructor takes the provider's context before
+  the model (the renderer keeps the block model resolver for the crumbling overlay), and its `R`
+  only has to be a `BlockEntityRenderState`. Because none of these renderers overrides a hook that
+  names `RenderPassInfo<R>` - the models draw from constants - they use vanilla's
+  `BlockEntityRenderState` rather than a state class of their own. Their controllers are the 5
+  shape too, including the triggerable ones: `new AnimationController<T>(name, 0, test ->
+  PlayState.STOP)` still backs a `triggerableAnim`, which is what 4's wiki pattern did as well.
+- **The three projectiles are converted** - the thrown cobweb, the web trap and the tornado. They
+  cannot share `TolkienGeoRenderState`: that one is a `LivingEntityRenderState`, and 5 fills the
+  living half by casting the entity to a living one, which a projectile is not;
+  [TolkienProjectileRenderState](src/main/java/com/greatorator/tolkienmobs/entity/util/TolkienProjectileRenderState.java)
+  puts the same data map on the plain `EntityRenderState` and adds `lifeTime`, `blast` and `yRot`,
+  captured in `addRenderData` because the entity is gone by draw time. What `preRender` did splits
+  in two: the trap's 2x scale and the tornado's 1.25x are `scaleModelForRender`, both 0 on the
+  projectile's first two ticks, and the blast's turn is `adjustRenderPose`. `TornadoEntity#getTick`
+  is deleted rather than ported - 5 has no such hook, because it times animations from the tick it
+  stamps on each render state itself.
+- **Two bosses still carry errors that predate this pass**, and they are not GeckoLib's: the
+  `ServerBossEvent` three-argument constructor is gone in 26.1 (it wants a `UUID` first, and every
+  boss bar in the mod uses the old one), `MobEffects.MOVEMENT_SPEED` no longer resolves from the
+  class, and `FellBeastFireballEntity`'s `getY()` is not attributed. Those belong to the effects
+  and boss-bar work, not to the render conversion.
+- **Held items moved from `renderStackForBone` to the render state.** `BlockAndItemGeoLayer` is
+  now built with `(context, this)` - it needs the item model resolver - and a layer implements
+  `getRelevantBones(T, O, R, float)` returning `List<RenderData>` and `addRenderData`, which stores
+  that list under `BlockAndItemGeoLayer.CONTENTS`. Each entry is
+  `RenderData.item(boneName, ItemDisplayContext, ItemStackRenderState)`, and the stack state comes
+  from `RenderUtil.createRenderStateForItem(stack, this.itemModelResolver, displayContext,
+  animatable)`, resolved during extraction because the entity is gone by render time. The pose work
+  that used to be in `renderStackForBone` is `submitItemStackRender`, which has to push and pop its
+  own pose around `super` - 5 does not do it for you, unlike 4's layer. Items a mob only shows
+  while swinging or shooting are decided in `getRelevantBones` from the entity's flags, which is
+  the last place those flags can still be read.
+- **A model that hid a prop bone now hides it through the render state.** The mimic chest's tongue
+  and legs, the tree ent's held boulder, the frog's insect and tongue, the thrush's snail and leg
+  band, the spider's webbing, the goat's chest and saddle, Gollum's fish, Istari's book and the
+  steeds' tack used to be `GeoBone#setHidden` calls in `setCustomAnimations`, which 5 no longer
+  has. The model only ever sees the state, so the
+  renderer puts the names on it — `renderState.hiddenBones` — while it still has the entity, and
+  `adjustModelBonesForRender` calls `skipRender(true).skipChildrenRender(true)` on each, which is
+  what 4's `setHidden` did to the whole subtree. The set is replaced on every pass, so a part that
+  comes back is not still hidden.
+- The renderer details the converted mobs settled:
+  `getTextureLocation` needs no override at all when the model's texture getter is the answer,
+  `getRenderType(R, Identifier)` replaces the old four-argument one (`RenderTypes.entityTranslucent`
+  is 26.1's spelling of `itemEntityTranslucentCull`), model scaling is `scaleModelForRender`
+  rather than `preRender`, and `forceAnimationReset()` is gone — the `isAnimatingBones()` guard
+  covers what it was doing.
 
 #### The 5 shape, as the jar actually has it
 
@@ -284,8 +406,8 @@ the pattern for the other 191 files.
   into one is invisible to javac. A renderer therefore needs a state class of its own;
   [TolkienGeoRenderState](src/main/java/com/greatorator/tolkienmobs/entity/util/TolkienGeoRenderState.java)
   is the shared one — `extends LivingEntityRenderState implements GeoRenderState`, its own data
-  map, and a `TolkienVariant variant` field, because the variant is what every model used to read
-  off the entity. It has to re-declare `addGeckolibData`/`hasGeckolibData`/`getDataMap` over its
+  map, a `TolkienVariant variant` field, because the variant is what every model used to read off
+  the entity, and a `Set<String> hiddenBones` for the models that used to hide a prop bone. It has to re-declare `addGeckolibData`/`hasGeckolibData`/`getDataMap` over its
   own map, or the mixin's map and the class's would disagree at runtime.
 - Renderer hooks: `createRenderState(T, Void)`, `addRenderData(T, Void, R, float)` (the last place
   the entity itself is still visible), `getTextureLocation(R)`, and
@@ -301,11 +423,97 @@ the pattern for the other 191 files.
   resets the controller, so a one-shot attack has to keep returning CONTINUE while it plays.
 - 26.1 arrives with it: `Identifier` replaces `ResourceLocation`, `Util` moved to
   `net.minecraft.util.Util`, and entity save data is `ValueInput`/`ValueOutput`
-  (`input.getIntOr("Variant", 0)`) instead of `CompoundTag`.
-- **Where that leaves the tree**: 7,671 errors in 553 files, down from 9,658. The GeckoLib-shaped
-  remainder is 154 `cannot infer type arguments for AnimationController` plus the
-  `AnimationState`/`EntityModelData` uses in the 55 entities still to convert; the rest is the
-  26.1 source work further down this list.
+  (`input.getIntOr("Variant", 0)`) instead of `CompoundTag`. The `npc` package is split too -
+  `Villager`, `VillagerData`, `VillagerProfession` and `VillagerType` are under `npc.villager`, and
+  `WanderingTrader` under `npc.wanderingtrader` - and `VillagerData` is a record of registry
+  holders now, so the static `VillagerType`/`VillagerProfession` constants no longer build one.
+- **Where that leaves the tree**: 4,667 errors in 407 files, down from 9,658, measured by handing
+  every source file to javac at once (852 files). The rename pass below took that to 3,470 in 337. No model still uses `EntityModelData`,
+  `AnimationState` or `setCustomAnimations`, and the `AnimationController` inference failures are
+  **0**, down from 88: nothing in the tree builds a controller the 4 way. Not one remaining error
+  names a GeckoLib symbol - what is left is plain 26.1 source work. What the
+  converted mobs still carry is the ordinary 26.1 source work: `CompoundTag` save data that has to
+  become `ValueInput`/`ValueOutput`, `Level.isClientSide` and `Level.random` which are now
+  `isClientSide()` and `getRandom()`, `ServerBossEvent`'s new first argument, `ResourceLocation`
+  and `net.minecraft.Util`, and the superclasses 26.1 moved (`WaterAnimal`,
+  `AbstractChestedHorse`, `Villager`) - the same list the twenty-three already had.
+
+### Rename pass — DONE
+
+- `tools/port-261-pass1.pl` is one idempotent pass over `src/main/java`, in the shape of
+  `tools/port-1214-pass1.pl`: it renames `ResourceLocation` → `Identifier` (the class kept its
+  `net.minecraft.resources` package) and moves `net.minecraft.Util` → `net.minecraft.util.Util`.
+  **892 renames in 164 files**, and 86 files had their `Util` import moved. A second run finds
+  nothing and changes nothing.
+- Both are whole-word renames, so `Identifier.fromNamespaceAndPath`, `Identifier.parse`,
+  `ResourceKey::location` and the mod's own data helpers `readResourceLocation` /
+  `writeResourceLocation` / `createResourceLocation` kept working untouched — those method names
+  are the mod's API, not vanilla's class, so they were deliberately left alone.
+- Nothing inside a string literal moved: the diff was read for it, and every resource path
+  (`"block/lockable_chest"`, `"textures/block/chests/..."`, `"chest"`) is byte-for-byte the same.
+  Only `.java` files were touched, so no JSON or asset was rewritten.
+- Imports: the old `net.minecraft.resources.ResourceLocation` line is rewritten in place, a file
+  that already imported `Identifier` does not get the line twice, and the import block is deduped
+  after the pass.
+- `net.minecraft.resources.ResourceLocation` now appears in **no file**. `net.minecraft.**Util`
+  does not either — the class is at `net.minecraft.util.Util`, and `makeDescriptionId`,
+  `getRandom` and `make` all still exist on it, so nothing had to change beyond the import.
+- **`ModelResourceLocation` is not part of this and is not a rename.** 26.1 has no such class and
+  no `BlockModelShaper` next to it: the baked-model registry now runs through `ModelManager`,
+  `ModelBakery.BakingResult` and `ResolvedModel`, which is the model/render pass's job, not a
+  script's. [TolkienEventBusEvents](src/main/java/com/greatorator/tolkienmobs/event/TolkienEventBusEvents.java)
+  is the one file waiting on it.
+- **Where that leaves the tree** (after the rename pass): **3,470 errors in 337 files**, down from 4,667 in 407. Not one
+  remaining error names `Identifier` or `Util`. The drop is the whole difference — 1,197 errors
+  and 70 files — and what is left is the rest of the 26.1 pass: 1,835 `cannot find symbol`, 399
+  lost overrides, the `registerItem` signature, `CompoundTag.getList`, `Level.isClientSide` and
+  `Level.random`, `Optional` save-data accessors, and the tag provider's `addOptionalTag`, which
+  takes a `TagKey` in 26.1 rather than the `Identifier` it was being handed.
+
+### The rest of the mechanical pass — DONE
+
+Five more batches after the rename, each verified with the same whole-tree javac. The tree went
+from **3,470 errors in 337 files to 2,801 in 320**.
+
+- **Level accessors** (`tools/port-261-level-accessors.pl`). 26.1 made `Level.isClientSide` private
+  and `Level.random` protected; `isClientSide()` and `getRandom()` replace them. 69 field reads and
+  41 files. The `isClientSide` rewrite is tree-wide and safe (`.isClientSide` has no other meaning
+  and the lookahead leaves `isClientSide()` alone); the `random` rewrite is driven by the javac
+  lines, because plenty of other objects have a public `random` field that must stay.
+- **`noCollission()` → `noCollision()`**, 147 sites. The 1.21.x spelling was the typo; 26.1 fixed it.
+- **Registry properties** (`tools/port-261-register-props.pl`). The item and block helpers now take
+  a `Supplier<Properties>` (or a `UnaryOperator<Properties>`), not a built object: 222 calls, of
+  which 83 plain `new Item.Properties()` became the two-argument overload and 139 were wrapped in
+  `() -> `. The three block helpers in [TolkienBlocks](src/main/java/com/greatorator/tolkienmobs/init/TolkienBlocks.java)
+  keep their `Properties` parameter and pass `() -> properties`, so nothing about when the
+  properties are built changed.
+- **`ResourceKey.location()` → `identifier()`**, 34 sites, and the biome tag provider's 44
+  `addOptionalTag(x.location())` calls now pass the `TagKey` itself, which is what the appender
+  wants. `TagKey.location()` still exists and was left alone.
+- **Tag providers.** The vanilla `ItemTagsProvider` is gone; the mod's extends NeoForge's
+  `net.neoforged.neoforge.common.data.ItemTagsProvider` now, which takes no block-tag lookup, so
+  `TolkienDataGenerator` no longer wires one in. `TagAppender` grew a second type parameter
+  (`<E, T>`), which the POI provider's local variable needed. Structure tags extend
+  `KeyTagProvider<Structure>` - `TagsProvider` has no `tag()` in 26.1 - and the provider appends
+  `ResourceKey`s, which is what `village.structure()` already was.
+- **Spawn weights** (`tools/port-261-spawner-data.pl`). `MobSpawnSettings.SpawnerData` is
+  `(type, minCount, maxCount)` now; the weight is the second argument of `addSpawn`. 107 calls
+  rewritten, and the four `AddSpawnsBiomeModifier` sites became `AddSpawnsBiomeModifier.singleSpawn`
+  with a `Weighted<>`, because that modifier takes a `WeightedList<SpawnerData>`.
+- **What is left** at 2,801: 1,614 `cannot find symbol` and 397 lost overrides, which are mostly
+  the same handful of moved signatures repeating - entity save data (`ValueInput`/`ValueOutput`
+  instead of `CompoundTag`, and `getIntOr`/`getBooleanOr` instead of `getInt`/`getBoolean`),
+  `CompoundTag.getList` (33), the `InventoryChangeTrigger` package (31), `Optional`-returning save
+  accessors (27 + 21), and `SpawnerData`-style container changes of the same kind this batch did.
+  Behind those: the screen pass (`GuiGraphics`, `RenderType`, `ClickType`, 111 + 90 sites) and the
+  model/render pipeline, which is where `ModelResourceLocation` and the hand-rolled `handler/render`
+  code go.
+- **One downward rename to check in game.** Vanilla's `BlockTags.MUSHROOM_GROW_BLOCK` is gone. The
+  nearest thing is `SUPPORTS_VEGETATION`, which is what `VegetationBlock` - the supertype a small
+  mushroom has in 26.1 - reads for placement, so the mod's `DECAY_GROW_BLOCK` is tagged there.
+  That also lets other vegetation place on those blocks, which the old tag did not; it is the one
+  entry in this batch that changes what the world does rather than only how it is spelled, so it
+  wants the in-game mushroom check before it is called done.
 
 ### Build stack — DONE
 
@@ -351,12 +559,16 @@ the pattern for the other 191 files.
    project configures and `compileJava` fails only on source, not on the build: 9,658 errors
    in the tree, reported 1,000 at a time. See *Build stack — DONE* above for what was
    verified and the one workaround that had to change.
-2. **GeckoLib 5 — STARTED.** The rename, the asset moves and one entity are done (see above).
-   Remaining: 55 entities on the rock golem pattern, 5 block entities, 2 item renderers,
-   15 `BlockAndItemGeoLayer` sites and 3 `GeoRenderLayer`s. *Done when* the 192 importing
-   files compile against `com.geckolib`.
-3. **Rename pass.** One idempotent script for `ResourceLocation` → `Identifier`, the `util`
-   moves and the model/entity subpackages — the same shape as `tools/port-1214-pass1.pl`.
+2. **GeckoLib 5 — DONE.** The rename, the asset moves and fifty-three entities are done (see above),
+   which includes every `BlockAndItemGeoLayer` site, every mob renderer, the three projectile
+   renderers, the five block entities, the one item renderer, the three profession layers and every
+   controller in the tree. No error left in the build names a GeckoLib symbol and no
+   `AnimationController` inference failure remains, so the 192 importing files all resolve against
+   `com.geckolib`; what still fails is ordinary 26.1 source work.
+3. **Rename pass — DONE** for `ResourceLocation` → `Identifier` and the `Util` move, in one
+   idempotent script (see above). The *subpackage* moves that belong to the same family —
+   `Villager` under `npc.villager`, `WaterAnimal`, `AbstractChestedHorse` — are done family by
+   family as each one is touched, so they stay with the steps below rather than a script.
 4. **Items and equipment.** The three removed base classes, the five `inventoryTick`
    signatures, and `TolkienArmorItem`'s armour lookups.
 5. **Block entities.** `preRemoveSideEffects` / `affectNeighborsAfterRemoval`, and

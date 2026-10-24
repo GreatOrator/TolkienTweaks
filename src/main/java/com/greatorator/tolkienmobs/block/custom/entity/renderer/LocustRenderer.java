@@ -12,14 +12,14 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.DirectionalBlock;
 import org.jetbrains.annotations.Nullable;
 
 public class LocustRenderer implements BlockEntityRenderer<LocustBlockEntity> {
 
 	private final LocustModel locustModel;
-	private static final ResourceLocation TEXTURE = TolkienMobsMain.getBlockModelTexture("locust.png");
+	private static final Identifier TEXTURE = TolkienMobsMain.getBlockModelTexture("locust.png");
 
 	public LocustRenderer(BlockEntityRendererProvider.Context context) {
 		this.locustModel = new LocustModel(context.bakeLayer(TolkienModelLayers.LOCUST));

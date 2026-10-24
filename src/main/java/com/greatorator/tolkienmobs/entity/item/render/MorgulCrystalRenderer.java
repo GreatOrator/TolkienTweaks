@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -27,7 +27,7 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 @OnlyIn(Dist.CLIENT)
 public class MorgulCrystalRenderer extends EntityRenderer<MorgulCrystalEntity, MorgulCrystalRenderState> {
-   private static final ResourceLocation MORGUL_CRYSTAL_LOCATION = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/morgul_crystal/morgul_crystal.png");
+   private static final Identifier MORGUL_CRYSTAL_LOCATION = Identifier.fromNamespaceAndPath(MODID, "textures/entity/morgul_crystal/morgul_crystal.png");
    private static final RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(MORGUL_CRYSTAL_LOCATION);
    private static final float SIN_45 = (float)Math.sin((Math.PI / 4D));
    private final ModelPart cube;
@@ -105,7 +105,7 @@ public class MorgulCrystalRenderer extends EntityRenderer<MorgulCrystalEntity, M
       return f1 - 1.4F;
    }
 
-   public ResourceLocation getTextureLocation(MorgulCrystalRenderState state) {
+   public Identifier getTextureLocation(MorgulCrystalRenderState state) {
       return MORGUL_CRYSTAL_LOCATION;
    }
 

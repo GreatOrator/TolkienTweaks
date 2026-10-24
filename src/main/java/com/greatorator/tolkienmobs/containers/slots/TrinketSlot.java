@@ -2,15 +2,15 @@ package com.greatorator.tolkienmobs.containers.slots;
 
 import com.greatorator.tolkienmobs.item.custom.TrinketItem;
 import com.greatorator.tolkienmobs.util.GeneralUtility;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
 public class TrinketSlot extends SlotItemHandler {
-    public static final ResourceLocation backgroundLoc = null;
+    public static final Identifier backgroundLoc = null;
 
-    public TrinketSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition, ResourceLocation backgroundLoc) {
+    public TrinketSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition, Identifier backgroundLoc) {
         super(itemHandler, index, xPosition, yPosition);
     }
 

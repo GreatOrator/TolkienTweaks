@@ -25,7 +25,7 @@ import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.client.renderer.RenderType;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -38,7 +38,7 @@ import java.util.List;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class CamoKeyStoneScreen extends AbstractContainerScreen<CamoKeyStoneContainer> {
-    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/keystone/keystone_gui.png");
+    private final Identifier GUI = Identifier.fromNamespaceAndPath(MODID, "textures/gui/keystone/keystone_gui.png");
     protected final CamoKeyStoneContainer container;
     protected final CamoKeyStoneBlockEntity tileEntity;
     private EditBox nameField;

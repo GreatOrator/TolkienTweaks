@@ -16,7 +16,7 @@ import net.minecraft.data.worldgen.Pools;
 import net.minecraft.data.worldgen.ProcessorLists;
 import net.minecraft.data.worldgen.placement.VillagePlacements;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
@@ -41,7 +41,7 @@ public final class TolkienVillageProvider {
     public static final int SIZE = 6;
     public static final int MAX_DISTANCE = 112;
     public static final ResourceKey<StructureSet> VILLAGES = ResourceKey.create(Registries.STRUCTURE_SET,
-            ResourceLocation.fromNamespaceAndPath("tolkienmobs", "villages"));
+            Identifier.fromNamespaceAndPath("tolkienmobs", "villages"));
     public static final List<Village> VILLAGES_BY_STYLE = List.of(
             new Village(TolkienStructures.HOUSE_DESERT, "desert", "desert", TolkienBiomes.HARADWAITH, "entityttmsouthron_npc", new BlockPos(14, 0, 7), "east_up", new BlockPos(11, 4, 4)),
             // Nurn is farmed by the same Southrons, in the same desert houses, rebuilt in dark stone.
@@ -99,18 +99,18 @@ public final class TolkienVillageProvider {
         Structure.StructureSettings settings = createSettings(village, biomes);
         Holder<StructureTemplatePool> startPool = pools.getOrThrow(village.startPool());
         List<PoolAliasBinding> aliases = new ArrayList<>(List.of(PoolAliasBinding.direct(ResourceKey.create(Registries.TEMPLATE_POOL,
-                        ResourceLocation.withDefaultNamespace("village/" + village.vanillaStyle() + "/houses")), village.housePool()),
+                        Identifier.withDefaultNamespace("village/" + village.vanillaStyle() + "/houses")), village.housePool()),
                 PoolAliasBinding.direct(ResourceKey.create(Registries.TEMPLATE_POOL,
-                        ResourceLocation.withDefaultNamespace("village/" + village.vanillaStyle() + "/streets")), roadPool(village.roadStyle())),
+                        Identifier.withDefaultNamespace("village/" + village.vanillaStyle() + "/streets")), roadPool(village.roadStyle())),
                 // Houses, town centers, farms and decorations ask for vanilla villagers through this
                 // pool; send every socket to this village's own NPC instead.
                 PoolAliasBinding.direct(ResourceKey.create(Registries.TEMPLATE_POOL,
-                        ResourceLocation.withDefaultNamespace("village/" + village.vanillaStyle() + "/villagers")), village.villagerPool())));
+                        Identifier.withDefaultNamespace("village/" + village.vanillaStyle() + "/villagers")), village.villagerPool())));
         if (village.darkStone()) {
             // The vanilla decorations are sandstone lamps and cacti. Ours are the same lamps in dark
             // stone, because a cactus garden is not what a farmed lowland looks like.
             aliases.add(PoolAliasBinding.direct(ResourceKey.create(Registries.TEMPLATE_POOL,
-                    ResourceLocation.withDefaultNamespace("village/" + village.vanillaStyle() + "/decor")), village.decorPool()));
+                    Identifier.withDefaultNamespace("village/" + village.vanillaStyle() + "/decor")), village.decorPool()));
         }
         // A village that must stand on grass is placed by our own structure, which reads the height
         // maps and the surface noise before it agrees to a site.
@@ -163,24 +163,24 @@ public final class TolkienVillageProvider {
     }
 
     /** Where datagen writes the village's copy of a vanilla villager template. */
-    public static ResourceLocation villagerTemplate(Village village, String name) {
-        return ResourceLocation.fromNamespaceAndPath("tolkienmobs", "village/" + village.style() + "/villagers/" + name);
+    public static Identifier villagerTemplate(Village village, String name) {
+        return Identifier.fromNamespaceAndPath("tolkienmobs", "village/" + village.style() + "/villagers/" + name);
     }
 
     /** Where datagen writes the village's copy of the town centre it starts from. */
-    public static ResourceLocation townCentre(Village village) {
-        return ResourceLocation.fromNamespaceAndPath("tolkienmobs", "village/" + village.style() + "/town_center");
+    public static Identifier townCentre(Village village) {
+        return Identifier.fromNamespaceAndPath("tolkienmobs", "village/" + village.style() + "/town_center");
     }
 
     /** The vanilla start piece that copy is derived from: plains styles get a fountain, desert a well. */
-    public static ResourceLocation vanillaTownCentre(Village village) {
-        return ResourceLocation.withDefaultNamespace(village.vanillaStyle().equals("desert")
+    public static Identifier vanillaTownCentre(Village village) {
+        return Identifier.withDefaultNamespace(village.vanillaStyle().equals("desert")
                 ? "village/desert/town_centers/desert_meeting_point_1"
                 : "village/plains/town_centers/plains_fountain_01");
     }
 
     public static ResourceKey<StructureTemplatePool> roadPool(String style) {
-        return ResourceKey.create(Registries.TEMPLATE_POOL, ResourceLocation.fromNamespaceAndPath("tolkienmobs", "village/roads/" + style));
+        return ResourceKey.create(Registries.TEMPLATE_POOL, Identifier.fromNamespaceAndPath("tolkienmobs", "village/roads/" + style));
     }
 
     /**
@@ -255,7 +255,7 @@ public final class TolkienVillageProvider {
     }
 
     private static Street street(String style, String name, int weight) {
-        return new Street(style, style, ResourceLocation.withDefaultNamespace("village/" + style + "/streets/" + name), weight);
+        return new Street(style, style, Identifier.withDefaultNamespace("village/" + style + "/streets/" + name), weight);
     }
 
     public static void bootstrapRoadPools(BootstrapContext<StructureTemplatePool> context) {
@@ -274,7 +274,7 @@ public final class TolkienVillageProvider {
                     : vanillaStyle.equals("plains") ? processors.getOrThrow(ProcessorLists.STREET_PLAINS)
                     : recolour;
             ResourceKey<StructureTemplatePool> terminators = ResourceKey.create(Registries.TEMPLATE_POOL,
-                    ResourceLocation.withDefaultNamespace("village/" + vanillaStyle + "/terminators"));
+                    Identifier.withDefaultNamespace("village/" + vanillaStyle + "/terminators"));
             if (pathRules != null || recolour != null) {
                 // A street that runs out into open ground is closed off by a terminator piece. Those
                 // do not travel through the road templates - the vanilla pool holds them as raw
@@ -299,7 +299,7 @@ public final class TolkienVillageProvider {
     /** Where datagen writes the terminator pool of a recoloured village's roads. */
     public static ResourceKey<StructureTemplatePool> terminatorPool(String style) {
         return ResourceKey.create(Registries.TEMPLATE_POOL,
-                ResourceLocation.fromNamespaceAndPath("tolkienmobs", "village/roads/" + style + "/terminators"));
+                Identifier.fromNamespaceAndPath("tolkienmobs", "village/roads/" + style + "/terminators"));
     }
 
     private static String terminatorTemplate(String vanillaStyle, String name) {
@@ -314,9 +314,9 @@ public final class TolkienVillageProvider {
     }
 
     /** {@code style} is the vanilla style the shape comes from, {@code output} the pool it fills. */
-    public record Street(String style, String output, ResourceLocation source, int weight) {
-        public ResourceLocation template() {
-            return ResourceLocation.fromNamespaceAndPath("tolkienmobs", "village/roads/" + output + "/"
+    public record Street(String style, String output, Identifier source, int weight) {
+        public Identifier template() {
+            return Identifier.fromNamespaceAndPath("tolkienmobs", "village/roads/" + output + "/"
                     + source.getPath().substring(source.getPath().lastIndexOf('/') + 1));
         }
 
@@ -354,13 +354,13 @@ public final class TolkienVillageProvider {
 
         public BlockPos preparedEntrance() { return entrance.relative(front()).above().offset(templateShift()); }
 
-        public ResourceLocation houseTemplate() {
-            return ResourceLocation.fromNamespaceAndPath("tolkienmobs", "village/" + style + "/house");
+        public Identifier houseTemplate() {
+            return Identifier.fromNamespaceAndPath("tolkienmobs", "village/" + style + "/house");
         }
 
         /** A recoloured village builds from its vanilla style's house; only the blocks differ. */
-        public ResourceLocation houseSource() {
-            return ResourceLocation.fromNamespaceAndPath("tolkienmobs", "ttmhouse_" + (darkStone ? vanillaStyle : style));
+        public Identifier houseSource() {
+            return Identifier.fromNamespaceAndPath("tolkienmobs", "ttmhouse_" + (darkStone ? vanillaStyle : style));
         }
 
         /** True when this village lays this mod's path block where a vanilla one would lay a path. */
@@ -384,33 +384,33 @@ public final class TolkienVillageProvider {
 
         public ResourceKey<StructureTemplatePool> housePool() {
             return ResourceKey.create(Registries.TEMPLATE_POOL,
-                    ResourceLocation.fromNamespaceAndPath("tolkienmobs", "village/" + style + "/houses"));
+                    Identifier.fromNamespaceAndPath("tolkienmobs", "village/" + style + "/houses"));
         }
 
         /** The villager-style NPC that replaces vanilla residents in this village. */
-        public ResourceLocation resident() {
-            return ResourceLocation.fromNamespaceAndPath("tolkienmobs", residentEntity);
+        public Identifier resident() {
+            return Identifier.fromNamespaceAndPath("tolkienmobs", residentEntity);
         }
 
         /** Decorations drawn by this village's streets and farms. */
         public ResourceKey<StructureTemplatePool> decorPool() {
             return ResourceKey.create(Registries.TEMPLATE_POOL,
-                    ResourceLocation.fromNamespaceAndPath("tolkienmobs", "village/" + style + "/decor"));
+                    Identifier.fromNamespaceAndPath("tolkienmobs", "village/" + style + "/decor"));
         }
 
         public ResourceKey<StructureTemplatePool> villagerPool() {
             return ResourceKey.create(Registries.TEMPLATE_POOL,
-                    ResourceLocation.fromNamespaceAndPath("tolkienmobs", "village/" + style + "/villagers"));
+                    Identifier.fromNamespaceAndPath("tolkienmobs", "village/" + style + "/villagers"));
         }
 
         public ResourceKey<StructureTemplatePool> startPool() {
             // Keep the original structure/pool IDs so saved starts remain loadable.
-            return ResourceKey.create(Registries.TEMPLATE_POOL, structure.location());
+            return ResourceKey.create(Registries.TEMPLATE_POOL, structure.identifier());
         }
 
         public TagKey<Biome> biomeTag() {
-            return TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath(
-                    structure.location().getNamespace(), "has_structure/" + structure.location().getPath()));
+            return TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(
+                    structure.identifier().getNamespace(), "has_structure/" + structure.identifier().getPath()));
         }
     }
 }

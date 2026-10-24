@@ -6,8 +6,9 @@ import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
-import net.minecraft.Util;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Util;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -29,6 +30,7 @@ import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.RawAnimation;
+import com.geckolib.animation.object.LoopType;
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.util.GeckoLibUtil;
@@ -91,16 +93,16 @@ public class MordorOrcEntity extends TolkienMonsterEntity implements GeoEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
-        compound.putInt("Variant", this.getTypeVariant());
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putInt("Variant", this.getTypeVariant());
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
         this.reassessWeaponGoal();
-        this.entityData.set(VARIANT, compound.getInt("Variant"));
+        this.entityData.set(VARIANT, input.getIntOr("Variant", 0));
     }
 
     @Override
@@ -118,7 +120,7 @@ public class MordorOrcEntity extends TolkienMonsterEntity implements GeoEntity {
             int j = localdate.get(ChronoField.MONTH_OF_YEAR);
             if (j == 10 && i == 31 && randomsource.nextFloat() < 0.25F) {
                 this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(randomsource.nextFloat() < 0.1F ? Blocks.JACK_O_LANTERN : Blocks.CARVED_PUMPKIN));
-                this.armorDropChances[EquipmentSlot.HEAD.getIndex()] = 0.0F;
+                this.setDropChance(EquipmentSlot.HEAD, 0.0F);
             }
         }
 
@@ -129,48 +131,55 @@ public class MordorOrcEntity extends TolkienMonsterEntity implements GeoEntity {
 
     /**
      * Animations
+     *
+     * GeckoLib 5 builds a controller without the animatable and hands its handler an AnimationTest, so the
+     * controller no longer holds `this`. The RawAnimations are built once, here, instead of once per frame.
      */
+    private static final RawAnimation WALK = RawAnimation.begin().thenPlay("walk");
+    private static final RawAnimation IDLE = RawAnimation.begin().thenPlay("idle");
+    private static final RawAnimation SITTING = RawAnimation.begin().thenPlay("sitting_root");
+    private static final RawAnimation ATTACK = RawAnimation.begin().then("attack", LoopType.PLAY_ONCE);
+    private static final RawAnimation RANGED = RawAnimation.begin().then("ranged", LoopType.PLAY_ONCE);
+
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
+        controllers.add(new AnimationController<MordorOrcEntity>("Walk", 1, test -> {
             // WargEntity spawns a mordor orc riding it; a carried rider must never walk-animate
             if (this.isPassenger()) {
                 return PlayState.STOP;
             }
-            if (event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
-                return PlayState.CONTINUE;
-            }
-            return PlayState.STOP;
+
+            return test.isMoving() ? test.setAndContinue(WALK) : PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
+        controllers.add(new AnimationController<MordorOrcEntity>("Idle", 1, test -> {
             // This rig's skeleton hangs off the root bone, so he sits with the root-based clip
             // (the nazgul rig is flat and uses "sitting" instead)
             if (this.isPassenger()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("sitting_root"));
-                return PlayState.CONTINUE;
+                return test.setAndContinue(SITTING);
             }
-            if (!event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
-                return PlayState.CONTINUE;
-            }
-            return PlayState.STOP;
+
+            return test.isMoving() ? PlayState.STOP : test.setAndContinue(IDLE);
         }));
-        controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
-            if (this.swinging && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
-                event.getController().forceAnimationReset();
-                event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
-                this.swinging =false;
-                return PlayState.CONTINUE;
-            }else if(this.isShooting() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
-                // Keyed on the synced shooting flag: the weapon flag is set on the server only, so
-                // the client never saw it and this branch could not run.
-                event.getController().forceAnimationReset();
-                event.getController().setAnimation(RawAnimation.begin().then("ranged", Animation.LoopType.PLAY_ONCE));
+        controllers.add(new AnimationController<MordorOrcEntity>("Attack", 1, test -> {
+            // A swing or a shot has to play out: 5 resets the controller when the handler returns STOP, so
+            // dropping to STOP mid-animation would end the attack on its first frame.
+            if (test.controller().isAnimatingBones()) {
                 return PlayState.CONTINUE;
             }
+
+            if (this.swinging) {
+                this.swinging = false;
+                return test.setAndContinue(ATTACK);
+            }
+
+            // Keyed on the synced shooting flag: the weapon flag is set on the server only, so
+            // the client never saw it and this branch could not run.
+            if (this.isShooting()) {
+                return test.setAndContinue(RANGED);
+            }
+
             return PlayState.STOP;
         }));
     }

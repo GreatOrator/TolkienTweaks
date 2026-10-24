@@ -2,7 +2,7 @@ package com.greatorator.tolkienmobs.datagen.modelgen;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * Builds the {@code model} node of an item model definition.
@@ -24,14 +24,14 @@ public final class ItemModelDefinition {
     }
 
     /** A plain model, drawn with no tints. */
-    public static JsonObject model(ResourceLocation model) {
+    public static JsonObject model(Identifier model) {
         JsonObject node = typed(MODEL);
         node.addProperty("model", model.toString());
         return node;
     }
 
     /** A model drawn through one tint source per texture layer, in layer order. */
-    public static JsonObject model(ResourceLocation model, JsonObject... tints) {
+    public static JsonObject model(Identifier model, JsonObject... tints) {
         JsonObject node = model(model);
         JsonArray array = new JsonArray();
         for (JsonObject tint : tints) {
@@ -47,7 +47,7 @@ public final class ItemModelDefinition {
      * ordinary model: it supplies the display transforms and the particle sprite, so it needs no
      * elements of its own.
      */
-    public static JsonObject special(ResourceLocation base, ResourceLocation renderer) {
+    public static JsonObject special(Identifier base, Identifier renderer) {
         JsonObject node = typed(SPECIAL);
         node.addProperty("base", base.toString());
         node.add("model", typed(renderer.toString()));
@@ -62,7 +62,7 @@ public final class ItemModelDefinition {
     }
 
     /** A tint source registered on the client, such as {@code tolkienmobs:trinket}. */
-    public static JsonObject tintSource(ResourceLocation id) {
+    public static JsonObject tintSource(Identifier id) {
         return typed(id.toString());
     }
 
@@ -70,7 +70,7 @@ public final class ItemModelDefinition {
      * Picks a model by comparing a float property against the entries in ascending threshold
      * order, falling back to {@code fallback} below the first threshold.
      */
-    public static JsonObject rangeDispatch(ResourceLocation property, JsonObject fallback, Entry... entries) {
+    public static JsonObject rangeDispatch(Identifier property, JsonObject fallback, Entry... entries) {
         JsonObject node = typed(RANGE_DISPATCH);
         node.addProperty("property", property.toString());
         JsonArray array = new JsonArray();
@@ -93,7 +93,7 @@ public final class ItemModelDefinition {
      * Picks a model by matching a registry-backed select property, such as the trim material on
      * a piece of armour, falling back to {@code fallback} when nothing matches.
      */
-    public static JsonObject select(ResourceLocation property, JsonObject fallback, Case... cases) {
+    public static JsonObject select(Identifier property, JsonObject fallback, Case... cases) {
         JsonObject node = typed(SELECT);
         node.addProperty("property", property.toString());
         JsonArray array = new JsonArray();
@@ -113,7 +113,7 @@ public final class ItemModelDefinition {
     }
 
     /** Picks {@code onTrue} or {@code onFalse} from a boolean property. */
-    public static JsonObject condition(ResourceLocation property, JsonObject onTrue, JsonObject onFalse) {
+    public static JsonObject condition(Identifier property, JsonObject onTrue, JsonObject onFalse) {
         JsonObject node = typed(CONDITION);
         node.addProperty("property", property.toString());
         node.add("on_true", onTrue);

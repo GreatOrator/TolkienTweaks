@@ -7,7 +7,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.client.renderer.RenderType;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class CamoFluidBlockScreen extends AbstractContainerScreen<CamoFluidBlockContainer> {
-    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory_tiny.png");
+    private final Identifier GUI = Identifier.fromNamespaceAndPath(MODID, "textures/gui/inventory_tiny.png");
 
     public CamoFluidBlockScreen(CamoFluidBlockContainer menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);

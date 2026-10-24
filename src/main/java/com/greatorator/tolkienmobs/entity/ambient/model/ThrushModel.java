@@ -1,49 +1,30 @@
 package com.greatorator.tolkienmobs.entity.ambient.model;
 
-import com.greatorator.tolkienmobs.entity.ambient.ThrushEntity;
-import net.minecraft.resources.ResourceLocation;
-import com.geckolib.cache.model.GeoBone;
-import com.geckolib.constant.DataTickets;
 import com.geckolib.model.GeoModel;
-import com.geckolib.renderer.base.GeoRenderer;
+import com.geckolib.renderer.base.GeoRenderState;
+import com.greatorator.tolkienmobs.entity.ambient.ThrushEntity;
+import net.minecraft.resources.Identifier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
+/** Rendered from the render state, which is the only thing a GeckoLib 5 model or renderer sees during a pass. */
 public class ThrushModel extends GeoModel<ThrushEntity> {
-	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "ambient/thrush");
-	private final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/birds/thrush.png");
-	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "ambient/thrush");
+    private static final Identifier MODEL = Identifier.fromNamespaceAndPath(MODID, "ambient/thrush");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(MODID, "textures/entity/birds/thrush.png");
+    private static final Identifier ANIMATIONS = Identifier.fromNamespaceAndPath(MODID, "ambient/thrush");
 
-	@Override
-	public ResourceLocation getModelResource(ThrushEntity object, GeoRenderer<ThrushEntity> renderer) {
-		return this.model;
-	}
+    @Override
+    public Identifier getModelResource(GeoRenderState renderState) {
+        return MODEL;
+    }
 
-	@Override
-	public ResourceLocation getTextureResource(ThrushEntity object, GeoRenderer<ThrushEntity> renderer) {
-		return this.texture;
-	}
+    @Override
+    public Identifier getTextureResource(GeoRenderState renderState) {
+        return TEXTURE;
+    }
 
-	@Override
-	public ResourceLocation getAnimationResource(ThrushEntity object) {
-		return this.animations;
-	}
-
-	@Override
-	public void setCustomAnimations(ThrushEntity entity, long uniqueID, AnimationState<ThrushEntity> customPredicate) {
-		super.setCustomAnimations(entity, uniqueID, customPredicate);
-
-		if (customPredicate == null) return;
-
-		EntityModelData extraData = (EntityModelData) customPredicate.getData(DataTickets.ENTITY_MODEL_DATA);
-		GeoBone head = this.getAnimationProcessor().getBone("head");
-		GeoBone pecking = this.getAnimationProcessor().getBone("snail");
-		GeoBone tamed = this.getAnimationProcessor().getBone("legband");
-
-		pecking.setHidden(!entity.isPecking());
-		tamed.setHidden(!entity.isTame());
-
-		head.setRotX(extraData.headPitch() * ((float) Math.PI / 180F));
-		head.setRotY(extraData.netHeadYaw() *0.5f* ((float) Math.PI / 180F));
-	}
+    @Override
+    public Identifier getAnimationResource(ThrushEntity animatable) {
+        return ANIMATIONS;
+    }
 }

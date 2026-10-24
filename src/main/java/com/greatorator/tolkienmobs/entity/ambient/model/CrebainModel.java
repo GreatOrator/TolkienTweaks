@@ -1,32 +1,30 @@
-package com.greatorator.tolkienmobs.entity.ambient.model;// Made with Blockbench 4.11.2
-// Exported for Minecraft version 1.17 or later with Mojang mappings
-// Paste this class into your mod and generate all required imports
+package com.greatorator.tolkienmobs.entity.ambient.model;
 
-
-import com.greatorator.tolkienmobs.entity.ambient.CrebainEntity;
-import net.minecraft.resources.ResourceLocation;
 import com.geckolib.model.GeoModel;
-import com.geckolib.renderer.base.GeoRenderer;
+import com.geckolib.renderer.base.GeoRenderState;
+import com.greatorator.tolkienmobs.entity.ambient.CrebainEntity;
+import net.minecraft.resources.Identifier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
+/** Rendered from the render state, which is the only thing a GeckoLib 5 model or renderer sees during a pass. */
 public class CrebainModel extends GeoModel<CrebainEntity> {
-	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "ambient/crebain");
-	private final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/birds/crebain.png");
-	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "ambient/crebain");
+    private static final Identifier MODEL = Identifier.fromNamespaceAndPath(MODID, "ambient/crebain");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(MODID, "textures/entity/birds/crebain.png");
+    private static final Identifier ANIMATIONS = Identifier.fromNamespaceAndPath(MODID, "ambient/crebain");
 
-	@Override
-	public ResourceLocation getModelResource(CrebainEntity object, GeoRenderer<CrebainEntity> renderer) {
-		return this.model;
-	}
+    @Override
+    public Identifier getModelResource(GeoRenderState renderState) {
+        return MODEL;
+    }
 
-	@Override
-	public ResourceLocation getTextureResource(CrebainEntity object, GeoRenderer<CrebainEntity> renderer) {
-		return this.texture;
-	}
+    @Override
+    public Identifier getTextureResource(GeoRenderState renderState) {
+        return TEXTURE;
+    }
 
-	@Override
-	public ResourceLocation getAnimationResource(CrebainEntity object) {
-		return this.animations;
-	}
+    @Override
+    public Identifier getAnimationResource(CrebainEntity animatable) {
+        return ANIMATIONS;
+    }
 }

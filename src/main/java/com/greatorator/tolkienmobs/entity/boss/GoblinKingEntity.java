@@ -10,7 +10,7 @@ import com.greatorator.tolkienmobs.init.TolkienSounds;
 import com.greatorator.tolkienmobs.util.GeneralUtility;
 import com.greatorator.tolkienmobs.util.MathUtility;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -18,7 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -70,9 +70,9 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
     private static final EntityDataAccessor<Integer> VARIANT =
             SynchedEntityData.defineId(GoblinKingEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> PANICKED = SynchedEntityData.defineId(GoblinKingEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final ResourceLocation REINFORCEMENT_CALLER_CHARGE_ID = ResourceLocation.fromNamespaceAndPath(MODID,"reinforcement_caller_charge");
+    private static final Identifier REINFORCEMENT_CALLER_CHARGE_ID = Identifier.fromNamespaceAndPath(MODID,"reinforcement_caller_charge");
     private static final AttributeModifier ZOMBIE_REINFORCEMENT_CALLEE_CHARGE = new AttributeModifier(
-            ResourceLocation.fromNamespaceAndPath(MODID,"reinforcement_callee_charge"), -0.05F, AttributeModifier.Operation.ADD_VALUE
+            Identifier.fromNamespaceAndPath(MODID,"reinforcement_callee_charge"), -0.05F, AttributeModifier.Operation.ADD_VALUE
     );
     private long nextDefensiveAbilityUse = 0L;
     private final static long defensiveCoolDown = 10000L;
@@ -186,7 +186,7 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
                     BlockPos blockpos = new BlockPos(i1, j1, k1);
                     EntityType<?> entitytype = goblin.getType();
                     if (SpawnPlacements.isSpawnPositionOk(entitytype, this.level(), blockpos)
-                            && SpawnPlacements.checkSpawnRules(entitytype, serverlevel, EntitySpawnReason.REINFORCEMENT, blockpos, this.level().random)) {
+                            && SpawnPlacements.checkSpawnRules(entitytype, serverlevel, EntitySpawnReason.REINFORCEMENT, blockpos, this.level().getRandom())) {
                         goblin.setPos((double)i1, (double)j1, (double)k1);
                         if (!this.level().hasNearbyAlivePlayer((double)i1, (double)j1, (double)k1, 7.0)
                                 && this.level().isUnobstructed(goblin)
@@ -279,26 +279,26 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
+        controllers.add(new AnimationController<GoblinKingEntity>("Idle", 1, (event) -> {
             if (!event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("idle"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
-            if (this.swinging && !this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
-                event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
+        controllers.add(new AnimationController<GoblinKingEntity>("Attack", 1, (event) -> {
+            if (this.swinging && !this.getRanged() && !event.controller().isAnimatingBones()) {
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("attack"));
                 return PlayState.CONTINUE;
-            }else if (this.isAggressive() && this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)){
-                event.getController().setAnimation(RawAnimation.begin().then("ranged", Animation.LoopType.PLAY_ONCE));
+            }else if (this.isAggressive() && this.getRanged() && !event.controller().isAnimatingBones()){
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("ranged"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
+        controllers.add(new AnimationController<GoblinKingEntity>("Walk", 1, (event) -> {
             if (event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("walk"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
@@ -351,7 +351,7 @@ public class GoblinKingEntity extends TolkienMonsterEntity implements GeoEntity 
         super.aiStep();
         this.bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
 
-        if (level.isClientSide && isPanicked()) {
+        if (level.isClientSide() && isPanicked()) {
             for (int i = 0; i < 2; i++) {
                 this.level.addParticle(ParticleTypes.SPLASH, this.getX() + (this.random.nextDouble() - 0.5D) * this.getBbWidth() * 0.5, this.getY() + this.getEyeHeight(), this.getZ() + (this.random.nextDouble() - 0.5D) * this.getBbWidth() * 0.5, 0, 0, 0);
             }

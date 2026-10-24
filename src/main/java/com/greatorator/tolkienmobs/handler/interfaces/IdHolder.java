@@ -1,6 +1,6 @@
 package com.greatorator.tolkienmobs.handler.interfaces;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.function.Supplier;
@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 public interface IdHolder<T> extends Supplier<T> {
     DeferredHolder<? super T, T> holder();
 
-    default ResourceLocation getId()
+    default Identifier getId()
     {
         return holder().getId();
     }

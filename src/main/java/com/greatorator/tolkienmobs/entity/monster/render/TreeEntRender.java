@@ -1,57 +1,69 @@
 package com.greatorator.tolkienmobs.entity.monster.render;
 
+import com.geckolib.constant.DataTickets;
+import com.geckolib.renderer.GeoEntityRenderer;
+import com.geckolib.renderer.base.BoneSnapshots;
+import com.geckolib.renderer.base.RenderPassInfo;
 import com.google.common.collect.Maps;
 import com.greatorator.tolkienmobs.entity.monster.TreeEntEntity;
 import com.greatorator.tolkienmobs.entity.monster.model.TreeEntModel;
+import com.greatorator.tolkienmobs.entity.util.TolkienGeoRenderState;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.Util;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
-import com.geckolib.renderer.GeoEntityRenderer;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
+
+
 
 import java.util.Map;
+import java.util.Set;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class TreeEntRender extends GeoEntityRenderer<TreeEntEntity> {
-    public static final Map<TolkienVariant, ResourceLocation> LOCATION_BY_VARIANT =
+/**
+ * The variant and the boulder flag ride on the render state, because the model only ever sees that: the ent
+ * carries the rock in its hand only while it is winding up a throw.
+ */
+public class TreeEntRender extends GeoEntityRenderer<TreeEntEntity, TolkienGeoRenderState> {
+    private static final Set<String> HELD_BOULDER = Set.of("boulder");
+
+    public static final Map<TolkienVariant, Identifier> LOCATION_BY_VARIANT =
             Util.make(Maps.newEnumMap(TolkienVariant.class), map -> {
                 map.put(TolkienVariant.DEFAULT,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent1.png"));
                 map.put(TolkienVariant.RED,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent1.png"));
                 map.put(TolkienVariant.ORANGE,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent2.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent2.png"));
                 map.put(TolkienVariant.YELLOW,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent3.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent3.png"));
                 map.put(TolkienVariant.GREEN,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent4.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent4.png"));
                 map.put(TolkienVariant.BLUE,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent5.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent5.png"));
                 map.put(TolkienVariant.INDIGO,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent6.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent6.png"));
                 map.put(TolkienVariant.VIOLET,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent7.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent7.png"));
                 map.put(TolkienVariant.MAGENTA,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent5.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent5.png"));
                 map.put(TolkienVariant.PINK,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent1.png"));
                 map.put(TolkienVariant.GRAY,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent2.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent2.png"));
                 map.put(TolkienVariant.AQUA,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent3.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent3.png"));
                 map.put(TolkienVariant.BEIGE,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent4.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent4.png"));
                 map.put(TolkienVariant.BROWN,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent6.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent6.png"));
                 map.put(TolkienVariant.CORAL,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent7.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent7.png"));
                 map.put(TolkienVariant.CYAN,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent3.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent3.png"));
                 map.put(TolkienVariant.LAVENDER,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent4.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/treeent/treeent4.png"));
             });
 
     public TreeEntRender(EntityRendererProvider.Context context) {
@@ -59,9 +71,34 @@ public class TreeEntRender extends GeoEntityRenderer<TreeEntEntity> {
         this.shadowRadius = 0.8f;
     }
 
-    @Override
-    public ResourceLocation getTextureLocation(TreeEntEntity treeentEntity) {
-        return LOCATION_BY_VARIANT.get(treeentEntity.getVariant());
+    /** The variant's texture, for the model and for the base class's texture lookup. */
+    public static Identifier textureFor(TolkienGeoRenderState renderState) {
+        return LOCATION_BY_VARIANT.get(renderState.variant);
     }
 
+    @Override
+    public TolkienGeoRenderState createRenderState(TreeEntEntity animatable, Void relatedObject) {
+        return new TolkienGeoRenderState();
+    }
+
+    @Override
+    public void addRenderData(TreeEntEntity animatable, Void relatedObject, TolkienGeoRenderState renderState, float partialTick) {
+        renderState.variant = animatable.getVariant();
+        renderState.hiddenBones = animatable.getRanged() ? Set.of() : HELD_BOULDER;
+    }
+
+    /** The boulder the model used to hide in setCustomAnimations, and the head turn it made beside it. */
+    @Override
+    public void adjustModelBonesForRender(RenderPassInfo<TolkienGeoRenderState> renderPassInfo, BoneSnapshots snapshots) {
+        TolkienGeoRenderState renderState = renderPassInfo.renderState();
+
+        for (String bone : renderState.hiddenBones) {
+            snapshots.ifPresent(bone, snapshot -> snapshot.skipRender(true).skipChildrenRender(true));
+        }
+
+        float pitch = renderState.getOrDefaultGeckolibData(DataTickets.ENTITY_PITCH, 0f);
+        float yaw = renderState.getOrDefaultGeckolibData(DataTickets.ENTITY_YAW, 0f);
+
+        snapshots.ifPresent("head", bone -> bone.setRotation(pitch * Mth.DEG_TO_RAD, yaw * 0.5f * Mth.DEG_TO_RAD, 0f));
+    }
 }

@@ -540,7 +540,7 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
     }
 
     private void delay(Level level, BlockPos pos) {
-        RandomSource randomsource = level.random;
+        RandomSource randomsource = level.getRandom();
         if (spawnerBlockEntity.getSpawnerDelays().maxSpawnDelay <= spawnerBlockEntity.getSpawnerDelays().minSpawnDelay) {
             spawnerBlockEntity.getSpawnerDelays().spawnDelay = spawnerBlockEntity.getSpawnerDelays().minSpawnDelay;
         } else {
@@ -632,7 +632,7 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
 
     public boolean onEventTriggered(Level level, int id) {
         if (id == 1) {
-            if (level.isClientSide) {
+            if (level.isClientSide()) {
                 spawnerBlockEntity.getSpawnerDelays().spawnDelay = spawnerBlockEntity.getSpawnerDelays().minSpawnDelay;
             }
 

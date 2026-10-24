@@ -5,7 +5,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -85,7 +85,7 @@ public class TolkienTabs {
                     }).build());
     public static final Supplier<CreativeModeTab> TOLKIEN_QUEST = CREATIVE_MODE_TAB.register("tolkienmobs_tab_quest",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienItems.ITEM_FORTRESSMAP.get()))
-                    .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_mats"))
+                    .withTabsBefore(Identifier.fromNamespaceAndPath(MODID, "tolkienmobs_tab_mats"))
                     .title(Component.translatable("itemgroup.tolkienmobs.quest"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(TolkienItems.ITEM_BERYL);
@@ -153,7 +153,7 @@ public class TolkienTabs {
 
     public static final Supplier<CreativeModeTab> TOLKIEN_FOODS = CREATIVE_MODE_TAB.register("tolkienmobs_tab_food",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienItems.LEMBAS.get()))
-                    .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_quest"))
+                    .withTabsBefore(Identifier.fromNamespaceAndPath(MODID, "tolkienmobs_tab_quest"))
                     .title(Component.translatable("itemgroup.tolkienmobs.food"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(TolkienItems.LEMBAS);
@@ -177,7 +177,7 @@ public class TolkienTabs {
 
     public static final Supplier<CreativeModeTab> TOLKIEN_FUNCTION = CREATIVE_MODE_TAB.register("tolkienmobs_tab_function",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienBlocks.MALLORN_SIGN.get()))
-                    .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_food"))
+                    .withTabsBefore(Identifier.fromNamespaceAndPath(MODID, "tolkienmobs_tab_food"))
                     .title(Component.translatable("itemgroup.tolkienmobs.function"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(TolkienBlocks.ANCIENT_WATCHER);
@@ -264,7 +264,7 @@ public class TolkienTabs {
 
     public static final Supplier<CreativeModeTab> TOLKIEN_BLOCKS = CREATIVE_MODE_TAB.register("tolkienmobs_tab_deco",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienBlocks.BLOCK_AMMOLITE))
-                    .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_function"))
+                    .withTabsBefore(Identifier.fromNamespaceAndPath(MODID, "tolkienmobs_tab_function"))
                     .title(Component.translatable("itemgroup.tolkienmobs.deco"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(TolkienBlocks.LOG_MALLORN);
@@ -685,7 +685,7 @@ public class TolkienTabs {
 
     public static final Supplier<CreativeModeTab> TOLKIEN_NATURE = CREATIVE_MODE_TAB.register("tolkienmobs_tab_natural",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienBlocks.BLOCK_HALLOWED))
-                    .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_deco"))
+                    .withTabsBefore(Identifier.fromNamespaceAndPath(MODID, "tolkienmobs_tab_deco"))
                     .title(Component.translatable("itemgroup.tolkienmobs.natural"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(TolkienBlocks.ORE_MITHRIL);
@@ -820,7 +820,7 @@ public class TolkienTabs {
 
     public static final Supplier<CreativeModeTab> TOLKIEN_TOOLS = CREATIVE_MODE_TAB.register("tolkienmobs_tab_tool",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienItems.SWORD_MITHRIL.get()))
-                    .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_natural"))
+                    .withTabsBefore(Identifier.fromNamespaceAndPath(MODID, "tolkienmobs_tab_natural"))
                     .title(Component.translatable("itemgroup.tolkienmobs.tools"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(TolkienItems.COIN_POUCH);
@@ -891,7 +891,7 @@ public class TolkienTabs {
 
     public static final Supplier<CreativeModeTab> TOLKIEN_TRINKET = CREATIVE_MODE_TAB.register("tolkienmobs_tab_trinket",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienItems.TRINKET_RING.get()))
-                    .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_tool"))
+                    .withTabsBefore(Identifier.fromNamespaceAndPath(MODID, "tolkienmobs_tab_tool"))
                     .title(Component.translatable("itemgroup.tolkienmobs.trinket"))
                     .displayItems((itemDisplayParameters, output) -> {
                         itemDisplayParameters.holders()
@@ -975,7 +975,7 @@ public class TolkienTabs {
 
     public static final Supplier<CreativeModeTab> TOLKIEN_SPAWN = CREATIVE_MODE_TAB.register("tolkienmobs_tab_spawn",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(TolkienItems.GOLEM_STONE_SUMMON.get()))
-                    .withTabsBefore(ResourceLocation.fromNamespaceAndPath(MODID, "tolkienmobs_tab_trinket"))
+                    .withTabsBefore(Identifier.fromNamespaceAndPath(MODID, "tolkienmobs_tab_trinket"))
                     .title(Component.translatable("itemgroup.tolkienmobs.spawn"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(TolkienEntities.EGG_TTMCREBAIN);

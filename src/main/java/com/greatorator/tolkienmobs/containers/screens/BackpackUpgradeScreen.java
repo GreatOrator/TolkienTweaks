@@ -4,7 +4,7 @@ import com.greatorator.tolkienmobs.containers.BackpackUpgradeContainer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class BackpackUpgradeScreen extends AbstractContainerScreen<BackpackUpgradeContainer> {
-    private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_upgrade.png");
+    private static final Identifier GUI = Identifier.fromNamespaceAndPath(MODID, "textures/gui/backpack/inventory_backpack_upgrade.png");
     private static final Component NAME = Component.translatable("screen.tolkienmobs.backpack.backpack_upgrade");
 
     public BackpackUpgradeScreen(BackpackUpgradeContainer menu, Inventory playerInventory, Component name) {

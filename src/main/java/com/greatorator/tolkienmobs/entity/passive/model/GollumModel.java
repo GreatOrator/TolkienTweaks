@@ -1,45 +1,30 @@
 package com.greatorator.tolkienmobs.entity.passive.model;
 
-import com.greatorator.tolkienmobs.entity.passive.GollumEntity;
-import net.minecraft.resources.ResourceLocation;
-import com.geckolib.cache.model.GeoBone;
-import com.geckolib.constant.DataTickets;
 import com.geckolib.model.GeoModel;
-import com.geckolib.renderer.base.GeoRenderer;
+import com.geckolib.renderer.base.GeoRenderState;
+import com.greatorator.tolkienmobs.entity.passive.GollumEntity;
+import net.minecraft.resources.Identifier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
+/** Rendered from the render state, which is the only thing a GeckoLib 5 model or renderer sees during a pass. */
 public class GollumModel extends GeoModel<GollumEntity> {
-	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "special/gollum");
-	private final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/gollum.png");
-	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "special/gollum");
+    private static final Identifier MODEL = Identifier.fromNamespaceAndPath(MODID, "special/gollum");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(MODID, "textures/entity/gollum.png");
+    private static final Identifier ANIMATIONS = Identifier.fromNamespaceAndPath(MODID, "special/gollum");
 
-	@Override
-	public ResourceLocation getModelResource(GollumEntity object, GeoRenderer<GollumEntity> renderer) {
-		return this.model;
-	}
+    @Override
+    public Identifier getModelResource(GeoRenderState renderState) {
+        return MODEL;
+    }
 
-	@Override
-	public ResourceLocation getTextureResource(GollumEntity object, GeoRenderer<GollumEntity> renderer) {
-		return this.texture;
-	}
+    @Override
+    public Identifier getTextureResource(GeoRenderState renderState) {
+        return TEXTURE;
+    }
 
-	@Override
-	public ResourceLocation getAnimationResource(GollumEntity object) {
-		return this.animations;
-	}
-
-	@Override
-	public void setCustomAnimations(GollumEntity entity, long uniqueID, AnimationState<GollumEntity> customPredicate) {
-		super.setCustomAnimations(entity, uniqueID, customPredicate);
-		GeoBone head = this.getAnimationProcessor().getBone("GollumHead");
-		GeoBone eating = this.getAnimationProcessor().getBone("fish");
-
-		eating.setHidden(!entity.isEating());
-
-		assert customPredicate != null;
-		EntityModelData extraData = (EntityModelData) customPredicate.getData(DataTickets.ENTITY_MODEL_DATA);
-		head.setRotX(extraData.headPitch() * ((float) Math.PI / 180F));
-		head.setRotY(extraData.netHeadYaw() *0.5f* ((float) Math.PI / 180F));
-	}
+    @Override
+    public Identifier getAnimationResource(GollumEntity animatable) {
+        return ANIMATIONS;
+    }
 }

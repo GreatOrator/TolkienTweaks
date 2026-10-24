@@ -1,61 +1,60 @@
 package com.greatorator.tolkienmobs.entity.passive.render;
 
-import com.geckolib.cache.model.BakedGeoModel;
-
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
+import com.geckolib.constant.DataTickets;
+import com.geckolib.renderer.GeoEntityRenderer;
+import com.geckolib.renderer.base.BoneSnapshots;
+import com.geckolib.renderer.base.RenderPassInfo;
 import com.google.common.collect.Maps;
 import com.greatorator.tolkienmobs.entity.passive.MumakilEntity;
 import com.greatorator.tolkienmobs.entity.passive.model.MumakilModel;
+import com.greatorator.tolkienmobs.entity.util.TolkienGeoRenderState;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.Util;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
-import com.geckolib.renderer.GeoEntityRenderer;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
 
 import java.util.Map;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class MumakilRender extends GeoEntityRenderer<MumakilEntity> {
-    public static final Map<TolkienVariant, ResourceLocation> LOCATION_BY_VARIANT =
+public class MumakilRender extends GeoEntityRenderer<MumakilEntity, TolkienGeoRenderState> {
+    public static final Map<TolkienVariant, Identifier> LOCATION_BY_VARIANT =
             Util.make(Maps.newEnumMap(TolkienVariant.class), map -> {
                 map.put(TolkienVariant.DEFAULT,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil1.png"));
                 map.put(TolkienVariant.RED,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil1.png"));
                 map.put(TolkienVariant.ORANGE,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil2.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil2.png"));
                 map.put(TolkienVariant.YELLOW,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil3.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil3.png"));
                 map.put(TolkienVariant.GREEN,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil4.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil4.png"));
                 map.put(TolkienVariant.BLUE,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil1.png"));
                 map.put(TolkienVariant.INDIGO,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil2.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil2.png"));
                 map.put(TolkienVariant.VIOLET,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil3.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil3.png"));
                 map.put(TolkienVariant.MAGENTA,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil1.png"));
                 map.put(TolkienVariant.PINK,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil2.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil2.png"));
                 map.put(TolkienVariant.GRAY,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil3.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil3.png"));
                 map.put(TolkienVariant.AQUA,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil4.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil4.png"));
                 map.put(TolkienVariant.BEIGE,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil1.png"));
                 map.put(TolkienVariant.BROWN,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil2.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil2.png"));
                 map.put(TolkienVariant.CORAL,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil3.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil3.png"));
                 map.put(TolkienVariant.CYAN,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil4.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil4.png"));
                 map.put(TolkienVariant.LAVENDER,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mumakil/mumakil1.png"));
             });
 
     public MumakilRender(EntityRendererProvider.Context context) {
@@ -64,19 +63,40 @@ public class MumakilRender extends GeoEntityRenderer<MumakilEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(MumakilEntity entity) {
-        return LOCATION_BY_VARIANT.get(entity.getVariant());
+    public TolkienGeoRenderState createRenderState(MumakilEntity animatable, Void relatedObject) {
+        return new TolkienGeoRenderState();
+    }
+
+    /** The variant's texture, for the model and for the base class's texture lookup. */
+    public static Identifier textureFor(TolkienGeoRenderState renderState) {
+        return LOCATION_BY_VARIANT.get(renderState.variant);
     }
 
     @Override
-    public void preRender(PoseStack poseStack, MumakilEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
-        if (!isReRender) {
-            if(animatable.isBaby()) {
-                poseStack.scale(0.5F, 0.5F, 0.5F);
-            }
-        }
- 
+    public Identifier getTextureLocation(TolkienGeoRenderState renderState) {
+        return textureFor(renderState);
+    }
 
-        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
+    @Override
+    public void addRenderData(MumakilEntity animatable, Void relatedObject, TolkienGeoRenderState renderState, float partialTick) {
+        renderState.variant = animatable.getVariant();
+    }
+
+    /** The model's own scaling, which 5 applies here rather than in preRender. */
+    @Override
+    public void scaleModelForRender(RenderPassInfo<TolkienGeoRenderState> renderPassInfo, float widthScale, float heightScale) {
+        float scale = renderPassInfo.renderState().isBaby ? 0.5F : 1F;
+        super.scaleModelForRender(renderPassInfo, scale, scale);
+    }
+
+    /** The bone work the model used to do in setCustomAnimations, done per render pass. */
+    @Override
+    public void adjustModelBonesForRender(RenderPassInfo<TolkienGeoRenderState> renderPassInfo, BoneSnapshots snapshots) {
+        TolkienGeoRenderState renderState = renderPassInfo.renderState();
+
+        float pitch = renderState.getOrDefaultGeckolibData(DataTickets.ENTITY_PITCH, 0f);
+        float yaw = renderState.getOrDefaultGeckolibData(DataTickets.ENTITY_YAW, 0f);
+
+        snapshots.ifPresent("MumuNeck", bone -> bone.setRotation(pitch * Mth.DEG_TO_RAD, yaw * 0.5f * Mth.DEG_TO_RAD, 0f));
     }
 }

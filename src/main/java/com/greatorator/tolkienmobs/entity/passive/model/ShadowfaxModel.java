@@ -1,48 +1,30 @@
 package com.greatorator.tolkienmobs.entity.passive.model;
 
-
-import com.greatorator.tolkienmobs.entity.passive.ShadowfaxEntity;
-import net.minecraft.resources.ResourceLocation;
-import com.geckolib.cache.model.GeoBone;
-import com.geckolib.constant.DataTickets;
 import com.geckolib.model.GeoModel;
-import com.geckolib.renderer.base.GeoRenderer;
+import com.geckolib.renderer.base.GeoRenderState;
+import com.greatorator.tolkienmobs.entity.passive.ShadowfaxEntity;
+import net.minecraft.resources.Identifier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
+/** Rendered from the render state, which is the only thing a GeckoLib 5 model or renderer sees during a pass. */
 public class ShadowfaxModel extends GeoModel<ShadowfaxEntity> {
-	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "special/shadowfax");
-	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "special/horse");
+    private static final Identifier MODEL = Identifier.fromNamespaceAndPath(MODID, "special/shadowfax");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(MODID, "textures/entity/horse/shadowfax.png");
+    private static final Identifier ANIMATIONS = Identifier.fromNamespaceAndPath(MODID, "special/horse");
 
-	@Override
-	public ResourceLocation getModelResource(ShadowfaxEntity object, GeoRenderer<ShadowfaxEntity> renderer) {
-		return this.model;
-	}
+    @Override
+    public Identifier getModelResource(GeoRenderState renderState) {
+        return MODEL;
+    }
 
-	@Override
-	public ResourceLocation getTextureResource(ShadowfaxEntity object, GeoRenderer<ShadowfaxEntity> renderer) {
-		return ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/horse/shadowfax.png");
-	}
+    @Override
+    public Identifier getTextureResource(GeoRenderState renderState) {
+        return TEXTURE;
+    }
 
-	@Override
-	public ResourceLocation getAnimationResource(ShadowfaxEntity object) {
-		return this.animations;
-	}
-
-	@Override
-	public void setCustomAnimations(ShadowfaxEntity entity, long uniqueID, AnimationState<ShadowfaxEntity> customPredicate) {
-		super.setCustomAnimations(entity, uniqueID, customPredicate);
-		GeoBone head = this.getAnimationProcessor().getBone("head");
-		GeoBone chested = this.getAnimationProcessor().getBone("chest");
-		GeoBone saddled2 = this.getAnimationProcessor().getBone("saddle");
-		GeoBone saddled = this.getAnimationProcessor().getBone("headpiece");
-		assert customPredicate != null;
-
-		saddled.setHidden(true);
-		saddled2.setHidden(true);
-		chested.setHidden(true);
-
-		EntityModelData extraData = (EntityModelData) customPredicate.getData(DataTickets.ENTITY_MODEL_DATA);
-		head.setRotY(extraData.netHeadYaw() *0.5f* ((float) Math.PI / 180F));
-	}
+    @Override
+    public Identifier getAnimationResource(ShadowfaxEntity animatable) {
+        return ANIMATIONS;
+    }
 }

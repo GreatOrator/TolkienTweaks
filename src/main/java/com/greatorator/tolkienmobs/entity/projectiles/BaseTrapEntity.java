@@ -54,7 +54,7 @@ public abstract class BaseTrapEntity extends Entity implements GeoEntity {
     public void increaseLifeTime() {
         this.lifeTime++;
 
-        if (!this.level.isClientSide) {
+        if (!this.level.isClientSide()) {
             if (this.lifeTime == this.timeToDecay()) {
                 this.decayAnimationTick = this.getDecayAnimationLength();
                 this.level.broadcastEntityEvent(this, (byte) 2);
@@ -67,7 +67,7 @@ public abstract class BaseTrapEntity extends Entity implements GeoEntity {
     }
 
     public void performBasicTrapFunctions() {
-        if (!this.level.isClientSide) {
+        if (!this.level.isClientSide()) {
             boolean isTrapping = false;
             if (this.canTrap()) {
                 List<Entity> list = this.level.getEntities(this, this.getBoundingBox(), Entity::isAlive);

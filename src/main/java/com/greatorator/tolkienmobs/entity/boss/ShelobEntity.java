@@ -17,7 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -68,9 +68,9 @@ public class ShelobEntity extends TolkienMonsterEntity implements GeoEntity, Web
     private RangedWebAttackGoal<?> rangedWebAttackGoal;
     private ShelobEntity.ShelobEntityAttackGoal meleeAttackGoal;
     private LeapAtTargetGoal leapAtTargetGoal;
-    private static final ResourceLocation REINFORCEMENT_CALLER_CHARGE_ID = ResourceLocation.fromNamespaceAndPath(MODID,"reinforcement_caller_charge");
+    private static final Identifier REINFORCEMENT_CALLER_CHARGE_ID = Identifier.fromNamespaceAndPath(MODID,"reinforcement_caller_charge");
     private static final AttributeModifier ZOMBIE_REINFORCEMENT_CALLEE_CHARGE = new AttributeModifier(
-            ResourceLocation.fromNamespaceAndPath(MODID,"reinforcement_callee_charge"), -0.05F, AttributeModifier.Operation.ADD_VALUE
+            Identifier.fromNamespaceAndPath(MODID,"reinforcement_callee_charge"), -0.05F, AttributeModifier.Operation.ADD_VALUE
     );
     public int targetTrappedCounter = 0;
     private long nextAbilityUse = 0L;
@@ -113,7 +113,7 @@ public class ShelobEntity extends TolkienMonsterEntity implements GeoEntity, Web
     @Override
     public void tick() {
         super.tick();
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.setClimbing(this.horizontalCollision);
         }
     }
@@ -202,7 +202,7 @@ public class ShelobEntity extends TolkienMonsterEntity implements GeoEntity, Web
                     BlockPos blockpos = new BlockPos(i1, j1, k1);
                     EntityType<?> entitytype = spider.getType();
                     if (SpawnPlacements.isSpawnPositionOk(entitytype, this.level(), blockpos)
-                            && SpawnPlacements.checkSpawnRules(entitytype, serverLevel, EntitySpawnReason.REINFORCEMENT, blockpos, this.level().random)) {
+                            && SpawnPlacements.checkSpawnRules(entitytype, serverLevel, EntitySpawnReason.REINFORCEMENT, blockpos, this.level().getRandom())) {
                         spider.setPos((double)i1, (double)j1, (double)k1);
                         if (!this.level().hasNearbyAlivePlayer((double)i1, (double)j1, (double)k1, 7.0)
                                 && this.level().isUnobstructed(spider)
@@ -279,26 +279,26 @@ public class ShelobEntity extends TolkienMonsterEntity implements GeoEntity, Web
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
+        controllers.add(new AnimationController<ShelobEntity>("Walk", 1, (event) -> {
             if (event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("move"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("move"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
+        controllers.add(new AnimationController<ShelobEntity>("Idle", 1, (event) -> {
             if (!event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("idle"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
-            if (this.swinging && !this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
-                event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
+        controllers.add(new AnimationController<ShelobEntity>("Attack", 1, (event) -> {
+            if (this.swinging && !this.getRanged() && !event.controller().isAnimatingBones()) {
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("attack"));
                 return PlayState.CONTINUE;
-            }else if (this.isAggressive() && this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)){
-                event.getController().setAnimation(RawAnimation.begin().then("shooting", Animation.LoopType.PLAY_ONCE));
+            }else if (this.isAggressive() && this.getRanged() && !event.controller().isAnimatingBones()){
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("shooting"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;

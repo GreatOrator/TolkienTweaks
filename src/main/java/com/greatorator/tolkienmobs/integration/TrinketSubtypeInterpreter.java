@@ -22,7 +22,7 @@ public class TrinketSubtypeInterpreter implements ISubtypeInterpreter<ItemStack>
 				return "";
 			}
 			MobEffectInstance mobEffectInstance = potionType.get().value().getEffects().getFirst();
-			return mobEffectInstance.getEffect().getKey().location() + "@" + mobEffectInstance.getAmplifier() + "@" + mobEffectInstance.getDuration();
+			return mobEffectInstance.getEffect().getKey().identifier() + "@" + mobEffectInstance.getAmplifier() + "@" + mobEffectInstance.getDuration();
 		}
 		return "";
 	}

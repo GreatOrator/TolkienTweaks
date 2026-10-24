@@ -22,7 +22,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.client.renderer.RenderType;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -37,7 +37,7 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 import static com.greatorator.tolkienmobs.block.custom.MilestoneBlock.LIT;
 
 public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer> {
-    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/milestone/milestone_gui.png");
+    private final Identifier GUI = Identifier.fromNamespaceAndPath(MODID, "textures/gui/milestone/milestone_gui.png");
     protected final MilestoneContainer container;
     protected final MilestoneBlockEntity tileEntity;
     protected MilestoneSettings milestoneSettings;
@@ -290,11 +290,11 @@ public class MilestoneScreen extends AbstractContainerScreen<MilestoneContainer>
         guiGraphics.blit(RenderType::guiTextured, GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
         if (TolkienMobsConfig.PAYMENT_TYPE.get()) {
             if (getMinecraft().player.isCreative()) {
-                guiGraphics.renderFakeItem(BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(TolkienMobsConfig.PAYMENT_ITEM.get())).getDefaultInstance(), relX + 74, relY + 48);
+                guiGraphics.renderFakeItem(BuiltInRegistries.ITEM.getValue(Identifier.parse(TolkienMobsConfig.PAYMENT_ITEM.get())).getDefaultInstance(), relX + 74, relY + 48);
             }
         } else {
             if (getMinecraft().player.isCreative()) {
-                guiGraphics.renderFakeItem(BuiltInRegistries.ITEM.getValue(ResourceLocation.parse("tolkienmobs:experience_orb")).getDefaultInstance(), relX + 74, relY + 48);
+                guiGraphics.renderFakeItem(BuiltInRegistries.ITEM.getValue(Identifier.parse("tolkienmobs:experience_orb")).getDefaultInstance(), relX + 74, relY + 48);
             }
         }
 

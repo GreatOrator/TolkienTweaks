@@ -5,7 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -44,7 +44,7 @@ public class TolkienItemsModifier extends LootModifier {
         addItems.forEach(
                 (resourceKey, weight) -> {
                     if(context.getRandom().nextFloat() < weight) {
-                        ResourceLocation location = ResourceLocation.tryParse(resourceKey);
+                        Identifier location = Identifier.tryParse(resourceKey);
                         if (location == null) {
                             return;
                         }

@@ -130,7 +130,7 @@ public class LockableTreasureChestBlockEntity extends TolkienBlockEntity impleme
     }
 
     private AnimationController<LockableTreasureChestBlockEntity> getController() {
-        return new AnimationController<>(this, "popup_controller", 0, state -> PlayState.STOP)
+        return new AnimationController<LockableTreasureChestBlockEntity>("popup_controller", 0, test -> PlayState.STOP)
                 .triggerableAnim("box_open", CHEST_OPEN);
     }
 

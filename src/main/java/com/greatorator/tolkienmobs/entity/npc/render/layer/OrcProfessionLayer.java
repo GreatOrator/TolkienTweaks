@@ -1,32 +1,22 @@
 package com.greatorator.tolkienmobs.entity.npc.render.layer;
 
-import com.greatorator.tolkienmobs.entity.npc.OrcEntity;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
-import com.geckolib.cache.model.BakedGeoModel;
 import com.geckolib.renderer.base.GeoRenderer;
-import com.geckolib.renderer.layer.GeoRenderLayer;
+import com.geckolib.renderer.layer.builtin.TextureLayerGeoLayer;
+import com.greatorator.tolkienmobs.entity.npc.OrcEntity;
+import com.greatorator.tolkienmobs.entity.util.TolkienGeoRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.resources.Identifier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class OrcProfessionLayer extends GeoRenderLayer<OrcEntity> {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/villager/profession/cleric.png");
+/**
+ * Draws the profession's texture over the orc's own model, which 5's texture layer does by
+ * re-submitting the model with a second render type. Nothing attaches it to a renderer.
+ */
+public class OrcProfessionLayer extends TextureLayerGeoLayer<OrcEntity, Void, TolkienGeoRenderState> {
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(MODID, "textures/entity/villager/profession/cleric.png");
 
-	public OrcProfessionLayer(GeoRenderer<OrcEntity> entityRenderer) {
-        super(entityRenderer);
-    }
-
-    // Apply the glasses texture layer to the existing geo model, and render it over the top of the existing model
-    @Override
-    public void render(PoseStack poseStack, OrcEntity animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay, int colour) {
-        RenderType armorRenderType = RenderType.armorCutoutNoCull(TEXTURE);
-
-        getRenderer().reRender(getDefaultBakedModel(animatable, getRenderer()), poseStack, bufferSource, animatable, armorRenderType,
-                bufferSource.getBuffer(armorRenderType), partialTick, packedLight, OverlayTexture.NO_OVERLAY,
-                colour);
+    public OrcProfessionLayer(GeoRenderer<OrcEntity, Void, TolkienGeoRenderState> renderer) {
+        super(renderer, TEXTURE, RenderTypes::armorCutoutNoCull);
     }
 }

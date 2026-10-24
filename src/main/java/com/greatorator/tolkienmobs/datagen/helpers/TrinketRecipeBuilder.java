@@ -54,7 +54,7 @@ public class TrinketRecipeBuilder implements RecipeBuilder {
     @Override
     public void save(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> recipeKey) {
         if (criteria.isEmpty()) {
-            throw new IllegalStateException("No way of obtaining recipe " + recipeKey.location());
+            throw new IllegalStateException("No way of obtaining recipe " + recipeKey.identifier());
         }
         Advancement.Builder builder = recipeOutput.advancement()
                 .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeKey))
@@ -62,6 +62,6 @@ public class TrinketRecipeBuilder implements RecipeBuilder {
                 .requirements(AdvancementRequirements.Strategy.OR);
         criteria.forEach(builder::addCriterion);
         recipeOutput.accept(recipeKey, new TrinketRecipe(group, trinket, fuel, potionItem),
-                builder.build(recipeKey.location().withPrefix("recipes/misc/")));
+                builder.build(recipeKey.identifier().withPrefix("recipes/misc/")));
     }
 }

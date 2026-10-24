@@ -103,7 +103,7 @@ public class CamoSpawnerBlock extends ChameleonBlock<CamoSpawnerBlockEntity> {
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
         return createTickerHelper(
-                blockEntityType, TolkienBlocks.CAMO_SPAWNER_BLOCK_ENTITY.get(), level.isClientSide ? CamoSpawnerBlockEntity::clientTick : CamoSpawnerBlockEntity::serverTick
+                blockEntityType, TolkienBlocks.CAMO_SPAWNER_BLOCK_ENTITY.get(), level.isClientSide() ? CamoSpawnerBlockEntity::clientTick : CamoSpawnerBlockEntity::serverTick
         );
     }
 
@@ -166,7 +166,7 @@ public class CamoSpawnerBlock extends ChameleonBlock<CamoSpawnerBlockEntity> {
 
     @Override
     protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, @Nullable Orientation orientation, boolean isMoving) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             boolean flag = state.getValue(LIT);
             if (flag != level.hasNeighborSignal(pos)) {
                 if (flag) {

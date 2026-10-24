@@ -2,7 +2,7 @@ package com.greatorator.tolkienmobs.init;
 
 import com.greatorator.tolkienmobs.effect.*;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -18,7 +18,7 @@ public class TolkienMobEffects {
 
         // Beneficial
     public static final DeferredHolder<MobEffect, MobEffect> ENT_STANCE = MOB_EFFECTS.register("ent_draught",
-            () -> new TolkienEffect(MobEffectCategory.BENEFICIAL, 3135135).addAttributeModifier(Attributes.KNOCKBACK_RESISTANCE, ResourceLocation.fromNamespaceAndPath(MODID, "ent_draught"), 1.0f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL).addAttributeModifier(Attributes.ATTACK_DAMAGE, ResourceLocation.fromNamespaceAndPath(MODID, "ent_draught"), 1.0f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+            () -> new TolkienEffect(MobEffectCategory.BENEFICIAL, 3135135).addAttributeModifier(Attributes.KNOCKBACK_RESISTANCE, Identifier.fromNamespaceAndPath(MODID, "ent_draught"), 1.0f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL).addAttributeModifier(Attributes.ATTACK_DAMAGE, Identifier.fromNamespaceAndPath(MODID, "ent_draught"), 1.0f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
     public static final DeferredHolder<MobEffect, MobEffect> PERSONAL_BLACKSMITH = MOB_EFFECTS.register("personal_blacksmith",
             () -> new BlacksmithEffect(MobEffectCategory.BENEFICIAL, 14370245));
     public static final DeferredHolder<MobEffect, MobEffect> BLESSING_OF_ERU = MOB_EFFECTS.register("blessing_of_eru",

@@ -216,46 +216,46 @@ public class WatcherEntity extends WaterAnimal implements GeoEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
+        controllers.add(new AnimationController<WatcherEntity>("Walk", 1, (event) -> {
             if (event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().then("walk", Animation.LoopType.LOOP));
+                event.controller().setAnimation(RawAnimation.begin().thenLoop("walk"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
+        controllers.add(new AnimationController<WatcherEntity>("Idle", 1, (event) -> {
             if (!event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().then("idle", Animation.LoopType.LOOP));
+                event.controller().setAnimation(RawAnimation.begin().thenLoop("idle"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Whirlpool", 1, (event) -> {
+        controllers.add(new AnimationController<WatcherEntity>("Whirlpool", 1, (event) -> {
             if (this.isAggressive() && this.getDrowning()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("whirlpool"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("whirlpool"));
                 this.drowning = false;
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Bite", 1, (event) -> {
+        controllers.add(new AnimationController<WatcherEntity>("Bite", 1, (event) -> {
             if (this.isAggressive() && this.getSleeping()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("bite"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("bite"));
                 this.sleeping = false;
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Swing", 1, (event) -> {
+        controllers.add(new AnimationController<WatcherEntity>("Swing", 1, (event) -> {
             if (this.isAggressive()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("swing"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("swing"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Death", 1, (event) -> {
+        controllers.add(new AnimationController<WatcherEntity>("Death", 1, (event) -> {
             if (this.isDeadOrDying()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("death"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("death"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;

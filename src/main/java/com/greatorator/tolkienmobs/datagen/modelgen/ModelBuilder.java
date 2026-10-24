@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * Builds a block or item model as JSON.
@@ -20,15 +20,15 @@ public abstract class ModelBuilder<T extends ModelBuilder<T>> extends ModelFile 
     protected final String name;
 
     protected ModelFile parent;
-    protected ResourceLocation renderType;
+    protected Identifier renderType;
     protected Boolean ambientOcclusion;
     protected final Map<String, String> textures = new LinkedHashMap<>();
     protected final JsonArray elements = new JsonArray();
     protected final JsonArray overrides = new JsonArray();
-    private ResourceLocation customLoaderId;
+    private Identifier customLoaderId;
     private JsonObject customLoaderData;
 
-    protected ModelBuilder(ResourceLocation location, String name) {
+    protected ModelBuilder(Identifier location, String name) {
         super(location);
         this.name = name;
     }
@@ -43,7 +43,7 @@ public abstract class ModelBuilder<T extends ModelBuilder<T>> extends ModelFile 
         return self();
     }
 
-    public T parent(ResourceLocation parent) {
+    public T parent(Identifier parent) {
         return this.parent(new ModelFile.UncheckedModelFile(parent));
     }
 
@@ -51,13 +51,13 @@ public abstract class ModelBuilder<T extends ModelBuilder<T>> extends ModelFile 
         return this.parent(new ModelFile.UncheckedModelFile(parent));
     }
 
-    public T renderType(ResourceLocation renderType) {
+    public T renderType(Identifier renderType) {
         this.renderType = renderType;
         return self();
     }
 
     public T renderType(String renderType) {
-        return this.renderType(ResourceLocation.parse(renderType));
+        return this.renderType(Identifier.parse(renderType));
     }
 
     public T ao(boolean ambientOcclusion) {
@@ -65,7 +65,7 @@ public abstract class ModelBuilder<T extends ModelBuilder<T>> extends ModelFile 
         return self();
     }
 
-    public T texture(String key, ResourceLocation texture) {
+    public T texture(String key, Identifier texture) {
         this.textures.put(key, texture.toString());
         return self();
     }
@@ -76,9 +76,9 @@ public abstract class ModelBuilder<T extends ModelBuilder<T>> extends ModelFile 
             this.textures.put(key, texture);
             return self();
         }
-        ResourceLocation asLoc = texture.contains(":")
-                ? ResourceLocation.parse(texture)
-                : ResourceLocation.fromNamespaceAndPath(this.location.getNamespace(), texture);
+        Identifier asLoc = texture.contains(":")
+                ? Identifier.parse(texture)
+                : Identifier.fromNamespaceAndPath(this.location.getNamespace(), texture);
         return this.texture(key, asLoc);
     }
 
@@ -90,7 +90,7 @@ public abstract class ModelBuilder<T extends ModelBuilder<T>> extends ModelFile 
         return factory.apply(self());
     }
 
-    void setCustomLoader(ResourceLocation id, JsonObject data) {
+    void setCustomLoader(Identifier id, JsonObject data) {
         this.customLoaderId = id;
         this.customLoaderData = data;
     }

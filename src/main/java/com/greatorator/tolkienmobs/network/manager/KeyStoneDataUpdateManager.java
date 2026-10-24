@@ -7,7 +7,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -17,7 +17,7 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 public record KeyStoneDataUpdateManager(
         String keyCode
 ) implements CustomPacketPayload {
-    public static final Type<KeyStoneDataUpdateManager> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "key_stone_data_packet"));
+    public static final Type<KeyStoneDataUpdateManager> TYPE = new Type<>(Identifier.fromNamespaceAndPath(MODID, "key_stone_data_packet"));
 
     @Override
     public Type<KeyStoneDataUpdateManager> type() {

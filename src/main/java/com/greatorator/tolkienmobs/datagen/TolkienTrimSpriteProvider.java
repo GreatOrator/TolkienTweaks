@@ -5,7 +5,7 @@ import com.google.common.hash.Hashing;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 
@@ -37,7 +37,7 @@ import java.util.concurrent.CompletableFuture;
 public class TolkienTrimSpriteProvider implements DataProvider {
     private static final List<String> SLOTS = List.of("helmet", "chestplate", "leggings", "boots");
     private static final List<String> MATERIALS = List.of("mithril", "morguliron", "ammolite");
-    private static final ResourceLocation PALETTE_KEY = ResourceLocation.withDefaultNamespace("textures/trims/color_palettes/trim_palette.png");
+    private static final Identifier PALETTE_KEY = Identifier.withDefaultNamespace("textures/trims/color_palettes/trim_palette.png");
 
     private final ResourceManager resources;
     private final PackOutput.PathProvider pathProvider;
@@ -57,14 +57,14 @@ public class TolkienTrimSpriteProvider implements DataProvider {
                 BufferedImage palette = read(TolkienMobsMain.resLoc("textures/trims/color_palettes/" + material + ".png"));
 
                 for (String slot : SLOTS) {
-                    BufferedImage shape = read(ResourceLocation.withDefaultNamespace("textures/trims/items/" + slot + "_trim.png"));
+                    BufferedImage shape = read(Identifier.withDefaultNamespace("textures/trims/items/" + slot + "_trim.png"));
                     BufferedImage tinted = tint(shape, key, palette);
 
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                     ImageIO.write(tinted, "png", bytes);
                     byte[] data = bytes.toByteArray();
 
-                    ResourceLocation id = TolkienMobsMain.resLoc(slot + "_trim_" + material);
+                    Identifier id = TolkienMobsMain.resLoc(slot + "_trim_" + material);
                     cache.writeIfNeeded(this.pathProvider.file(id, "png"), data, Hashing.sha1().hashBytes(data));
                 }
             }
@@ -111,7 +111,7 @@ public class TolkienTrimSpriteProvider implements DataProvider {
         return result;
     }
 
-    private BufferedImage read(ResourceLocation location) throws IOException {
+    private BufferedImage read(Identifier location) throws IOException {
         Optional<Resource> resource = this.resources.getResource(location);
         if (resource.isEmpty()) {
             throw new IOException("Missing " + location + ", which the trim sprites are built from");

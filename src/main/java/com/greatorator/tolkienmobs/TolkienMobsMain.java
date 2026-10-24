@@ -40,7 +40,7 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FlowerPotBlock;
@@ -375,20 +375,20 @@ public class TolkienMobsMain {
         }
     }
 
-    public static ResourceLocation getBlockModelTexture(String name) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, BLOCK_DIR + name);
+    public static Identifier getBlockModelTexture(String name) {
+        return Identifier.fromNamespaceAndPath(MODID, BLOCK_DIR + name);
     }
 
-    public static ResourceLocation prefix(String name) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, name.toLowerCase(Locale.ROOT));
+    public static Identifier prefix(String name) {
+        return Identifier.fromNamespaceAndPath(MODID, name.toLowerCase(Locale.ROOT));
     }
 
-    public static ResourceLocation resLoc(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, path);
+    public static Identifier resLoc(String path) {
+        return Identifier.fromNamespaceAndPath(MODID, path);
     }
 
-    public static ResourceLocation createResourceLocation(String path) {
-        return ResourceLocation.tryBuild(MODID, path);
+    public static Identifier createResourceLocation(String path) {
+        return Identifier.tryBuild(MODID, path);
     }
 
     public static <T> ResourceKey<T> key(ResourceKey<? extends Registry<T>> registryKey, String name) {

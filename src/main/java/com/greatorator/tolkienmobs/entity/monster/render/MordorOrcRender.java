@@ -1,113 +1,159 @@
 package com.greatorator.tolkienmobs.entity.monster.render;
 
+import com.geckolib.cache.model.GeoBone;
+import com.geckolib.constant.DataTickets;
+import com.geckolib.renderer.GeoEntityRenderer;
+import com.geckolib.renderer.base.BoneSnapshots;
+import com.geckolib.renderer.base.RenderPassInfo;
+import com.geckolib.renderer.layer.builtin.BlockAndItemGeoLayer;
+import com.geckolib.util.RenderUtil;
 import com.google.common.collect.Maps;
 import com.greatorator.tolkienmobs.entity.monster.MordorOrcEntity;
 import com.greatorator.tolkienmobs.entity.monster.model.MordorOrcModel;
+import com.greatorator.tolkienmobs.entity.util.TolkienGeoRenderState;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.Util;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import com.geckolib.cache.model.GeoBone;
-import com.geckolib.renderer.GeoEntityRenderer;
-import com.geckolib.renderer.layer.builtin.BlockAndItemGeoLayer;
+import org.jspecify.annotations.Nullable;
 
-import javax.annotation.Nullable;
+
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class MordorOrcRender extends GeoEntityRenderer<MordorOrcEntity> {
-    public static final Map<TolkienVariant, ResourceLocation> LOCATION_BY_VARIANT =
+/**
+ * The mordor orc carries a sword and a bow, and the variant, like the two props, rides on the render state
+ * now: 5 lets the renderer fill the state during extraction, and the item layer reads the posed bones from
+ * that state instead of the entity.
+ */
+public class MordorOrcRender extends GeoEntityRenderer<MordorOrcEntity, TolkienGeoRenderState> {
+    public static final Map<TolkienVariant, Identifier> LOCATION_BY_VARIANT =
             Util.make(Maps.newEnumMap(TolkienVariant.class), map -> {
                 map.put(TolkienVariant.DEFAULT,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc1.png"));
                 map.put(TolkienVariant.RED,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc1.png"));
                 map.put(TolkienVariant.ORANGE,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc2.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc2.png"));
                 map.put(TolkienVariant.YELLOW,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc3.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc3.png"));
                 map.put(TolkienVariant.GREEN,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc4.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc4.png"));
                 map.put(TolkienVariant.BLUE,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc1.png"));
                 map.put(TolkienVariant.INDIGO,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc2.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc2.png"));
                 map.put(TolkienVariant.VIOLET,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc3.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc3.png"));
                 map.put(TolkienVariant.MAGENTA,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc4.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc4.png"));
                 map.put(TolkienVariant.PINK,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc1.png"));
                 map.put(TolkienVariant.GRAY,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc2.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc2.png"));
                 map.put(TolkienVariant.AQUA,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc3.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc3.png"));
                 map.put(TolkienVariant.BEIGE,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc4.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc4.png"));
                 map.put(TolkienVariant.BROWN,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc1.png"));
                 map.put(TolkienVariant.CORAL,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc2.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc2.png"));
                 map.put(TolkienVariant.CYAN,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc3.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc3.png"));
                 map.put(TolkienVariant.LAVENDER,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc4.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/mordororc/mordororc4.png"));
             });
 
     public MordorOrcRender(EntityRendererProvider.Context context) {
         super(context, new MordorOrcModel());
         this.shadowRadius = 0.30f;
-        addRenderLayer(new BlockAndItemGeoLayer<>(this) {
-            @Nullable
+        withRenderLayer(new BlockAndItemGeoLayer<MordorOrcEntity, Void, TolkienGeoRenderState>(context, this) {
+            /**
+             * The sword only showed while he was swinging and the bow only while a ranged goal was running,
+             * and those two flags are still the cue: the list is built during extraction, where 5 wants it.
+             */
             @Override
-            protected ItemStack getStackForBone(GeoBone bone, MordorOrcEntity animatable) {
-                return switch (bone.getName()) {
-                    case "rightArm" -> new ItemStack(TolkienItems.SWORD_MORGULIRON.get());
-                    case "leftArm" -> new ItemStack(TolkienItems.URUK_BOW.get());
-                    default -> null;
-                };
+            protected List<RenderData> getRelevantBones(MordorOrcEntity animatable, @Nullable Void relatedObject, TolkienGeoRenderState renderState, float partialTick) {
+                List<RenderData> contents = new ArrayList<>(2);
+
+                if (animatable.swinging) {
+                    ItemDisplayContext hand = ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
+                    ItemStack sword = new ItemStack(TolkienItems.SWORD_MORGULIRON.get());
+                    contents.add(RenderData.item("rightArm", hand,
+                            RenderUtil.createRenderStateForItem(sword, this.itemModelResolver, hand, animatable)));
+                }
+
+                if (animatable.getRanged()) {
+                    ItemDisplayContext hand = ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
+                    ItemStack bow = new ItemStack(TolkienItems.URUK_BOW.get());
+                    contents.add(RenderData.item("leftArm", hand,
+                            RenderUtil.createRenderStateForItem(bow, this.itemModelResolver, hand, animatable)));
+                }
+
+                return contents;
             }
 
             @Override
-            protected ItemDisplayContext getTransformTypeForStack(GeoBone bone, ItemStack stack, MordorOrcEntity animatable) {
-                return switch (bone.getName()) {
-                    case "leftArm" -> ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
-                    default -> ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
-                };
+            public void addRenderData(MordorOrcEntity animatable, @Nullable Void relatedObject, TolkienGeoRenderState renderState, float partialTick) {
+                renderState.addGeckolibData(CONTENTS, getRelevantBones(animatable, relatedObject, renderState, partialTick));
             }
 
+            /** What used to be renderStackForBone, with the pose pushed around the submission. */
             @Override
-            protected void renderStackForBone(PoseStack poseStack, GeoBone bone, ItemStack stack, MordorOrcEntity animatable, MultiBufferSource bufferSource, float partialTick, int packedLight, int packedOverlay) {
-                if (animatable.swinging && Objects.equals(bone.getName(), "rightArm")) {
-                    poseStack.mulPose(Axis.XP.rotationDegrees(-30));
-                    poseStack.mulPose(Axis.YP.rotationDegrees(90));
-                    poseStack.mulPose(Axis.ZP.rotationDegrees(0));
-                    poseStack.translate(0.45D, -0.4D, 0.0D);
-                    poseStack.scale(1.0F, 1.0F, 1.0F);
-                    super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight, packedOverlay);
-                }else if (animatable.getRanged() && Objects.equals(bone.getName(), "leftArm")){
-                    poseStack.mulPose(Axis.XP.rotationDegrees(0));
-                    poseStack.mulPose(Axis.YP.rotationDegrees(0));
+            protected void submitItemStackRender(PoseStack poseStack, GeoBone bone, ItemStackRenderState stackState, ItemDisplayContext displayContext, TolkienGeoRenderState renderState, SubmitNodeCollector renderTasks, int packedLight) {
+                poseStack.pushPose();
+
+                if (displayContext == ItemDisplayContext.THIRD_PERSON_LEFT_HAND) {
                     poseStack.mulPose(Axis.ZP.rotationDegrees(-180));
                     poseStack.translate(0.23D, 0.5D, -0.2D);
-                    poseStack.scale(1.0F, 1.0F, 1.0F);
-                    super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight, packedOverlay);
                 }
+                else {
+                    poseStack.mulPose(Axis.XP.rotationDegrees(-30));
+                    poseStack.mulPose(Axis.YP.rotationDegrees(90));
+                    poseStack.translate(0.45D, -0.4D, 0.0D);
+                }
+
+                super.submitItemStackRender(poseStack, bone, stackState, displayContext, renderState, renderTasks, packedLight);
+                poseStack.popPose();
             }
         });
     }
 
-    @Override
-    public ResourceLocation getTextureLocation(MordorOrcEntity mordororcEntity) {
-        return LOCATION_BY_VARIANT.get(mordororcEntity.getVariant());
+    /** The variant's texture, for the model and for the base class's texture lookup. */
+    public static Identifier textureFor(TolkienGeoRenderState renderState) {
+        return LOCATION_BY_VARIANT.get(renderState.variant);
     }
 
+    @Override
+    public TolkienGeoRenderState createRenderState(MordorOrcEntity animatable, Void relatedObject) {
+        return new TolkienGeoRenderState();
+    }
+
+    @Override
+    public void addRenderData(MordorOrcEntity animatable, Void relatedObject, TolkienGeoRenderState renderState, float partialTick) {
+        renderState.variant = animatable.getVariant();
+    }
+
+    /** The head turn, which the model used to make in setCustomAnimations. */
+    @Override
+    public void adjustModelBonesForRender(RenderPassInfo<TolkienGeoRenderState> renderPassInfo, BoneSnapshots snapshots) {
+        TolkienGeoRenderState renderState = renderPassInfo.renderState();
+        float pitch = renderState.getOrDefaultGeckolibData(DataTickets.ENTITY_PITCH, 0f);
+        float yaw = renderState.getOrDefaultGeckolibData(DataTickets.ENTITY_YAW, 0f);
+
+        snapshots.ifPresent("head", bone -> bone.setRotation(pitch * Mth.DEG_TO_RAD, yaw * 0.5f * Mth.DEG_TO_RAD, 0f));
+    }
 }

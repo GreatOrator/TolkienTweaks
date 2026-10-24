@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.init;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.network.chat.Component;
@@ -32,8 +32,8 @@ public class TolkienTrimMaterials {
      * the armour look through the equipment asset instead, so each material just names its own palette.
      */
     private static void register(BootstrapContext<TrimMaterial> context, ResourceKey<TrimMaterial> trimKey, Item trimItem, Style color) {
-        TrimMaterial material = TrimMaterial.create(trimKey.location().getPath(), trimItem,
-                Component.translatable(Util.makeDescriptionId("trim_material", trimKey.location())).withStyle(color), Map.of());
+        TrimMaterial material = TrimMaterial.create(trimKey.identifier().getPath(), trimItem,
+                Component.translatable(Util.makeDescriptionId("trim_material", trimKey.identifier())).withStyle(color), Map.of());
 
         context.register(trimKey, material);
     }

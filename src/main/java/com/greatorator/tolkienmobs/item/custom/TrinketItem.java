@@ -5,7 +5,7 @@ import com.greatorator.tolkienmobs.network.component.TrinketComponent;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -50,7 +50,7 @@ public class TrinketItem extends Item {
             TrinketComponent potionContents = stack.getOrDefault(TolkienDataComponents.POTION_CONTENTS, TrinketComponent.EMPTY);
             Optional<Holder<Potion>> potionType = potionContents.potion();
             Optional<ResourceKey<Potion>> key = potionType.flatMap(Holder::unwrapKey);
-            ResourceLocation effectType = key.get().location();
+            Identifier effectType = key.get().identifier();
             if (potionContents.hasEffects()) {
                 if (key.isPresent()) {
                     updateTrinket(stack, entity);

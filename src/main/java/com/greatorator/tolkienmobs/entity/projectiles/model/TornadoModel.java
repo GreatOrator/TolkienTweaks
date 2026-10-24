@@ -1,30 +1,30 @@
 package com.greatorator.tolkienmobs.entity.projectiles.model;
 
-
-import com.greatorator.tolkienmobs.entity.projectiles.TornadoEntity;
-import net.minecraft.resources.ResourceLocation;
 import com.geckolib.model.GeoModel;
-import com.geckolib.renderer.base.GeoRenderer;
+import com.geckolib.renderer.base.GeoRenderState;
+import com.greatorator.tolkienmobs.entity.projectiles.TornadoEntity;
+import net.minecraft.resources.Identifier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
+/** The funnel shows one texture, so the model needs nothing from the render state. */
 public class TornadoModel extends GeoModel<TornadoEntity> {
-	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "item/ammo_tornado");
-	private final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/ammo_tornado.png");
-	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "ammo_tornado");
+	private static final Identifier MODEL = Identifier.fromNamespaceAndPath(MODID, "item/ammo_tornado");
+	private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(MODID, "textures/entity/ammo_tornado.png");
+	private static final Identifier ANIMATIONS = Identifier.fromNamespaceAndPath(MODID, "ammo_tornado");
 
 	@Override
-	public ResourceLocation getModelResource(TornadoEntity object, GeoRenderer<TornadoEntity> renderer) {
-		return this.model;
+	public Identifier getModelResource(GeoRenderState renderState) {
+		return MODEL;
 	}
 
 	@Override
-	public ResourceLocation getTextureResource(TornadoEntity object, GeoRenderer<TornadoEntity> renderer) {
-		return this.texture;
+	public Identifier getTextureResource(GeoRenderState renderState) {
+		return TEXTURE;
 	}
 
 	@Override
-	public ResourceLocation getAnimationResource(TornadoEntity object) {
-		return this.animations;
+	public Identifier getAnimationResource(TornadoEntity animatable) {
+		return ANIMATIONS;
 	}
 }

@@ -79,11 +79,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_MITHRIL = registerBlock("pressure_plate_mithril",
             properties -> new PressurePlateBlock(BlockSetType.GOLD, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> MITHRIL_BUTTON = registerBlock("mithril_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<IronBarsBlock> MITHRIL_BARS = registerBlock("mithril_bars", properties ->
             new IronBarsBlock(properties),
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS));
@@ -136,11 +136,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_MORGULIRON = registerBlock("pressure_plate_morguliron",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> MORGULIRON_BUTTON = registerBlock("morguliron_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<IronBarsBlock> MORGULIRON_BARS = registerBlock("morguliron_bars", properties ->
             new IronBarsBlock(properties),
             BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS));
@@ -199,11 +199,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_DARK_STONE = registerBlock("pressure_plate_dark_stone",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> DARK_STONE_BUTTON = registerBlock("dark_stone_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_DARK_STONE = registerBlock("wall_dark_stone",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -221,11 +221,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_CHISELED_DARK_STONE_BRICKS = registerBlock("pressure_plate_chiseled_dark_stone_bricks",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> CHISELED_DARK_STONE_BRICKS_BUTTON = registerBlock("chiseled_dark_stone_bricks_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_CHISELED_DARK_STONE_BRICKS = registerBlock("wall_chiseled_dark_stone_bricks",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -243,11 +243,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_COBBLED_DARK_STONE = registerBlock("pressure_plate_cobbled_dark_stone",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> COBBLED_DARK_STONE_BUTTON = registerBlock("cobbled_dark_stone_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_COBBLED_DARK_STONE = registerBlock("wall_cobbled_dark_stone",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -265,11 +265,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_MOSSY_COBBLED_DARK_STONE = registerBlock("pressure_plate_mossy_cobbled_dark_stone",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> MOSSY_COBBLED_DARK_STONE_BUTTON = registerBlock("mossy_cobbled_dark_stone_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_MOSSY_COBBLED_DARK_STONE = registerBlock("wall_mossy_cobbled_dark_stone",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -287,11 +287,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_MOSSY_DARK_STONE_BRICKS = registerBlock("pressure_plate_mossy_dark_stone_bricks",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> MOSSY_DARK_STONE_BRICKS_BUTTON = registerBlock("mossy_dark_stone_bricks_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_MOSSY_DARK_STONE_BRICKS = registerBlock("wall_mossy_dark_stone_bricks",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -309,11 +309,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_CRACKED_DARK_STONE_BRICKS = registerBlock("pressure_plate_cracked_dark_stone_bricks",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> CRACKED_DARK_STONE_BRICKS_BUTTON = registerBlock("cracked_dark_stone_bricks_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_CRACKED_DARK_STONE_BRICKS = registerBlock("wall_cracked_dark_stone_bricks",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -331,11 +331,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_DARK_STONE_BRICKS = registerBlock("pressure_plate_dark_stone_bricks",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> DARK_STONE_BRICKS_BUTTON = registerBlock("dark_stone_bricks_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_DARK_STONE_BRICKS = registerBlock("wall_dark_stone_bricks",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -353,11 +353,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_SMOOTH_DARK_STONE = registerBlock("pressure_plate_smooth_dark_stone",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> SMOOTH_DARK_STONE_BUTTON = registerBlock("smooth_dark_stone_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_SMOOTH_DARK_STONE = registerBlock("wall_smooth_dark_stone",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -377,11 +377,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_DWARVEN_STONE = registerBlock("pressure_plate_dwarven_stone",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> DWARVEN_STONE_BUTTON = registerBlock("dwarven_stone_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_DWARVEN_STONE = registerBlock("wall_dwarven_stone",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -399,11 +399,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_MOSSY_DWARVEN_STONE_BRICKS = registerBlock("pressure_plate_mossy_dwarven_stone_bricks",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> MOSSY_DWARVEN_STONE_BRICKS_BUTTON = registerBlock("mossy_dwarven_stone_bricks_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_MOSSY_DWARVEN_STONE_BRICKS = registerBlock("wall_mossy_dwarven_stone_bricks",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -421,11 +421,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_MOSSY_COBBLED_DWARVEN_STONE = registerBlock("pressure_plate_mossy_cobbled_dwarven_stone",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> MOSSY_COBBLED_DWARVEN_STONE_BUTTON = registerBlock("mossy_cobbled_dwarven_stone_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_MOSSY_COBBLED_DWARVEN_STONE = registerBlock("wall_mossy_cobbled_dwarven_stone",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -443,11 +443,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_CHISELED_DWARVEN_STONE_BRICKS = registerBlock("pressure_plate_chiseled_dwarven_stone_bricks",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> CHISELED_DWARVEN_STONE_BRICKS_BUTTON = registerBlock("chiseled_dwarven_stone_bricks_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_CHISELED_DWARVEN_STONE_BRICKS = registerBlock("wall_chiseled_dwarven_stone_bricks",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -465,11 +465,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_COBBLED_DWARVEN_STONE = registerBlock("pressure_plate_cobbled_dwarven_stone",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> COBBLED_DWARVEN_STONE_BUTTON = registerBlock("cobbled_dwarven_stone_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_COBBLED_DWARVEN_STONE = registerBlock("wall_cobbled_dwarven_stone",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -487,11 +487,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_CRACKED_DWARVEN_STONE_BRICKS = registerBlock("pressure_plate_cracked_dwarven_stone_bricks",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> CRACKED_DWARVEN_STONE_BRICKS_BUTTON = registerBlock("cracked_dwarven_stone_bricks_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_CRACKED_DWARVEN_STONE_BRICKS = registerBlock("wall_cracked_dwarven_stone_bricks",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -509,11 +509,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_DWARVEN_STONE_BRICKS = registerBlock("pressure_plate_dwarven_stone_bricks",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> DWARVEN_STONE_BRICKS_BUTTON = registerBlock("dwarven_stone_bricks_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_DWARVEN_STONE_BRICKS = registerBlock("wall_dwarven_stone_bricks",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -531,11 +531,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_SMOOTH_DWARVEN_STONE = registerBlock("pressure_plate_smooth_dwarven_stone",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> SMOOTH_DWARVEN_STONE_BUTTON = registerBlock("smooth_dwarven_stone_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_SMOOTH_DWARVEN_STONE = registerBlock("wall_smooth_dwarven_stone",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -555,11 +555,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_ELVEN_MARBLE = registerBlock("pressure_plate_elven_marble",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> ELVEN_MARBLE_BUTTON = registerBlock("elven_marble_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_ELVEN_MARBLE = registerBlock("wall_elven_marble",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -577,11 +577,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_CHISELED_ELVEN_MARBLE_BRICKS = registerBlock("pressure_plate_chiseled_elven_marble_bricks",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> CHISELED_ELVEN_MARBLE_BRICKS_BUTTON = registerBlock("chiseled_elven_marble_bricks_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_CHISELED_ELVEN_MARBLE_BRICKS = registerBlock("wall_chiseled_elven_marble_bricks",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -599,11 +599,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_COBBLED_ELVEN_MARBLE = registerBlock("pressure_plate_cobbled_elven_marble",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> COBBLED_ELVEN_MARBLE_BUTTON = registerBlock("cobbled_elven_marble_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_COBBLED_ELVEN_MARBLE = registerBlock("wall_cobbled_elven_marble",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -621,11 +621,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_CRACKED_ELVEN_MARBLE_BRICKS = registerBlock("pressure_plate_cracked_elven_marble_bricks",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> CRACKED_ELVEN_MARBLE_BRICKS_BUTTON = registerBlock("cracked_elven_marble_bricks_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_CRACKED_ELVEN_MARBLE_BRICKS = registerBlock("wall_cracked_elven_marble_bricks",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -643,11 +643,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_ELVEN_MARBLE_BRICKS = registerBlock("pressure_plate_elven_marble_bricks",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> ELVEN_MARBLE_BRICKS_BUTTON = registerBlock("elven_marble_bricks_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_ELVEN_MARBLE_BRICKS = registerBlock("wall_elven_marble_bricks",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -665,11 +665,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_SMOOTH_ELVEN_MARBLE = registerBlock("pressure_plate_smooth_elven_marble",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> SMOOTH_ELVEN_MARBLE_BUTTON = registerBlock("smooth_elven_marble_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_SMOOTH_ELVEN_MARBLE = registerBlock("wall_smooth_elven_marble",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -687,11 +687,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_MOSSY_ELVEN_MARBLE_BRICKS = registerBlock("pressure_plate_mossy_elven_marble_bricks",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> MOSSY_ELVEN_MARBLE_BRICKS_BUTTON = registerBlock("mossy_elven_marble_bricks_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_MOSSY_ELVEN_MARBLE_BRICKS = registerBlock("wall_mossy_elven_marble_bricks",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -709,11 +709,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_MOSSY_COBBLED_ELVEN_MARBLE = registerBlock("pressure_plate_mossy_cobbled_elven_marble",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> MOSSY_COBBLED_ELVEN_MARBLE_BUTTON = registerBlock("mossy_cobbled_elven_marble_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_MOSSY_COBBLED_ELVEN_MARBLE = registerBlock("wall_mossy_cobbled_elven_marble",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -733,11 +733,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_MOUNTAIN_STONE = registerBlock("pressure_plate_mountain_stone",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> MOUNTAIN_STONE_BUTTON = registerBlock("mountain_stone_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_MOUNTAIN_STONE = registerBlock("wall_mountain_stone",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -755,11 +755,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_MOSSY_COBBLED_MOUNTAIN_STONE = registerBlock("pressure_plate_mossy_cobbled_mountain_stone",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> MOSSY_COBBLED_MOUNTAIN_STONE_BUTTON = registerBlock("mossy_cobbled_mountain_stone_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_MOSSY_COBBLED_MOUNTAIN_STONE = registerBlock("wall_mossy_cobbled_mountain_stone",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -777,11 +777,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_MOSSY_MOUNTAIN_STONE_BRICKS = registerBlock("pressure_plate_mossy_mountain_stone_bricks",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> MOSSY_MOUNTAIN_STONE_BRICKS_BUTTON = registerBlock("mossy_mountain_stone_bricks_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_MOSSY_MOUNTAIN_STONE_BRICKS = registerBlock("wall_mossy_mountain_stone_bricks",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -799,11 +799,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_CHISELED_MOUNTAIN_STONE_BRICKS = registerBlock("pressure_plate_chiseled_mountain_stone_bricks",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> CHISELED_MOUNTAIN_STONE_BRICKS_BUTTON = registerBlock("chiseled_mountain_stone_bricks_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_CHISELED_MOUNTAIN_STONE_BRICKS = registerBlock("wall_chiseled_mountain_stone_bricks",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -821,11 +821,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_COBBLED_MOUNTAIN_STONE = registerBlock("pressure_plate_cobbled_mountain_stone",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> COBBLED_MOUNTAIN_STONE_BUTTON = registerBlock("cobbled_mountain_stone_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_COBBLED_MOUNTAIN_STONE = registerBlock("wall_cobbled_mountain_stone",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -843,11 +843,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_CRACKED_MOUNTAIN_STONE_BRICKS = registerBlock("pressure_plate_cracked_mountain_stone_bricks",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> CRACKED_MOUNTAIN_STONE_BRICKS_BUTTON = registerBlock("cracked_mountain_stone_bricks_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_CRACKED_MOUNTAIN_STONE_BRICKS = registerBlock("wall_cracked_mountain_stone_bricks",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -865,11 +865,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_MOUNTAIN_STONE_BRICKS = registerBlock("pressure_plate_mountain_stone_bricks",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> MOUNTAIN_STONE_BRICKS_BUTTON = registerBlock("mountain_stone_bricks_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_MOUNTAIN_STONE_BRICKS = registerBlock("wall_mountain_stone_bricks",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -887,11 +887,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_SMOOTH_MOUNTAIN_STONE = registerBlock("pressure_plate_smooth_mountain_stone",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> SMOOTH_MOUNTAIN_STONE_BUTTON = registerBlock("smooth_mountain_stone_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_SMOOTH_MOUNTAIN_STONE = registerBlock("wall_smooth_mountain_stone",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -911,11 +911,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_IRON_STONE = registerBlock("pressure_plate_iron_stone",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> IRON_STONE_BUTTON = registerBlock("iron_stone_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_IRON_STONE = registerBlock("wall_iron_stone",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -933,11 +933,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_MOSSY_COBBLED_IRON_STONE = registerBlock("pressure_plate_mossy_cobbled_iron_stone",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> MOSSY_COBBLED_IRON_STONE_BUTTON = registerBlock("mossy_cobbled_iron_stone_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_MOSSY_COBBLED_IRON_STONE = registerBlock("wall_mossy_cobbled_iron_stone",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -955,11 +955,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_MOSSY_IRON_STONE_BRICKS = registerBlock("pressure_plate_mossy_iron_stone_bricks",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> MOSSY_IRON_STONE_BRICKS_BUTTON = registerBlock("mossy_iron_stone_bricks_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_MOSSY_IRON_STONE_BRICKS = registerBlock("wall_mossy_iron_stone_bricks",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -977,11 +977,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_CHISELED_IRON_STONE_BRICKS = registerBlock("pressure_plate_chiseled_iron_stone_bricks",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> CHISELED_IRON_STONE_BRICKS_BUTTON = registerBlock("chiseled_iron_stone_bricks_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_CHISELED_IRON_STONE_BRICKS = registerBlock("wall_chiseled_iron_stone_bricks",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -999,11 +999,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_COBBLED_IRON_STONE = registerBlock("pressure_plate_cobbled_iron_stone",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> COBBLED_IRON_STONE_BUTTON = registerBlock("cobbled_iron_stone_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_COBBLED_IRON_STONE = registerBlock("wall_cobbled_iron_stone",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -1021,11 +1021,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_CRACKED_IRON_STONE_BRICKS = registerBlock("pressure_plate_cracked_iron_stone_bricks",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> CRACKED_IRON_STONE_BRICKS_BUTTON = registerBlock("cracked_iron_stone_bricks_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_CRACKED_IRON_STONE_BRICKS = registerBlock("wall_cracked_iron_stone_bricks",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -1043,11 +1043,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_IRON_STONE_BRICKS = registerBlock("pressure_plate_iron_stone_bricks",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> IRON_STONE_BRICKS_BUTTON = registerBlock("iron_stone_bricks_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_IRON_STONE_BRICKS = registerBlock("wall_iron_stone_bricks",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -1065,11 +1065,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_SMOOTH_IRON_STONE = registerBlock("pressure_plate_smooth_iron_stone",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> SMOOTH_IRON_STONE_BUTTON = registerBlock("smooth_iron_stone_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_SMOOTH_IRON_STONE = registerBlock("wall_smooth_iron_stone",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -1089,11 +1089,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_ANGAINOR = registerBlock("pressure_plate_angainor",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> ANGAINOR_BUTTON = registerBlock("angainor_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_ANGAINOR = registerBlock("wall_angainor",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -1111,11 +1111,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_MOSSY_COBBLED_ANGAINOR = registerBlock("pressure_plate_mossy_cobbled_angainor",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> MOSSY_COBBLED_ANGAINOR_BUTTON = registerBlock("mossy_cobbled_angainor_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_MOSSY_COBBLED_ANGAINOR = registerBlock("wall_mossy_cobbled_angainor",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -1133,11 +1133,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_MOSSY_ANGAINOR_BRICKS = registerBlock("pressure_plate_mossy_angainor_bricks",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> MOSSY_ANGAINOR_BRICKS_BUTTON = registerBlock("mossy_angainor_bricks_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_MOSSY_ANGAINOR_BRICKS = registerBlock("wall_mossy_angainor_bricks",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -1155,11 +1155,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_CHISELED_ANGAINOR_BRICKS = registerBlock("pressure_plate_chiseled_angainor_bricks",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> CHISELED_ANGAINOR_BRICKS_BUTTON = registerBlock("chiseled_angainor_bricks_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_CHISELED_ANGAINOR_BRICKS = registerBlock("wall_chiseled_angainor_bricks",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -1177,11 +1177,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_COBBLED_ANGAINOR = registerBlock("pressure_plate_cobbled_angainor",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> COBBLED_ANGAINOR_BUTTON = registerBlock("cobbled_angainor_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_COBBLED_ANGAINOR = registerBlock("wall_cobbled_angainor",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -1199,11 +1199,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_CRACKED_ANGAINOR_BRICKS = registerBlock("pressure_plate_cracked_angainor_bricks",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> CRACKED_ANGAINOR_BRICKS_BUTTON = registerBlock("cracked_angainor_bricks_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_CRACKED_ANGAINOR_BRICKS = registerBlock("wall_cracked_angainor_bricks",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -1221,11 +1221,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_ANGAINOR_BRICKS = registerBlock("pressure_plate_angainor_bricks",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> ANGAINOR_BRICKS_BUTTON = registerBlock("angainor_bricks_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_ANGAINOR_BRICKS = registerBlock("wall_angainor_bricks",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -1243,11 +1243,11 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> PRESSURE_PLATE_SMOOTH_ANGAINOR = registerBlock("pressure_plate_smooth_angainor",
             properties -> new PressurePlateBlock(BlockSetType.IRON, properties),
             BlockBehaviour.Properties.of()
-                    .noCollission().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
+                    .noCollision().strength(0.5F).forceSolidOn().requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> SMOOTH_ANGAINOR_BUTTON = registerBlock("smooth_angainor_button",
             properties -> new ButtonBlock(BlockSetType.IRON, 10, properties),
             BlockBehaviour.Properties.of()
-                    .strength(4F).requiresCorrectToolForDrops().noCollission());
+                    .strength(4F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> WALL_SMOOTH_ANGAINOR = registerBlock("wall_smooth_angainor",
             properties -> new WallBlock(properties),
             BlockBehaviour.Properties.of().strength(4f).requiresCorrectToolForDrops());
@@ -1301,7 +1301,7 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> MALLORN_BUTTON = registerBlock("mallorn_button",
             properties -> new ButtonBlock(BlockSetType.OAK, 30, properties),
             BlockBehaviour.Properties.of()
-                    .strength(0.5F).requiresCorrectToolForDrops().noCollission());
+                    .strength(0.5F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> FENCE_MALLORN = registerBlock("fence_mallorn",
             properties -> new FenceBlock(properties),
             BlockBehaviour.Properties.of()
@@ -1322,13 +1322,13 @@ public class TolkienBlocks {
             properties -> new TolkienTorchBlock(
                     () -> TolkienParticleTypes.MALLORN_FLAME.get(), properties),
             BlockBehaviour.Properties.of()
-                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD));
+                            .noCollision().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD));
 
     public static final DeferredBlock<Block> WALL_TORCH_MALLORN = registerNoItem("wall_torch_mallorn",
             properties -> new TolkienWallTorchBlock(
                     () -> TolkienParticleTypes.MALLORN_FLAME.get(), properties),
             BlockBehaviour.Properties.of()
-                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).overrideLootTable(blockLoot("torch_mallorn")));
+                            .noCollision().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).overrideLootTable(blockLoot("torch_mallorn")));
     public static final DeferredBlock<Block> BARREL_MALLORN = registerBlock("barrel_mallorn",
             properties -> new TolkienBarrelBlock(properties),
             BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL)
@@ -1392,7 +1392,7 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> MIRKWOOD_BUTTON = registerBlock("mirkwood_button",
             properties -> new ButtonBlock(BlockSetType.OAK, 30, properties),
             BlockBehaviour.Properties.of()
-                    .strength(0.5F).requiresCorrectToolForDrops().noCollission());
+                    .strength(0.5F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> FENCE_MIRKWOOD = registerBlock("fence_mirkwood",
             properties -> new FenceBlock(properties),
             BlockBehaviour.Properties.of()
@@ -1413,12 +1413,12 @@ public class TolkienBlocks {
             properties -> new TolkienTorchBlock(
                     () -> TolkienParticleTypes.MIRKWOOD_FLAME.get(), properties),
             BlockBehaviour.Properties.of()
-                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD));
+                            .noCollision().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD));
     public static final DeferredBlock<Block> WALL_TORCH_MIRKWOOD = registerNoItem("wall_torch_mirkwood",
             properties -> new TolkienWallTorchBlock(
                     () -> TolkienParticleTypes.MIRKWOOD_FLAME.get(), properties),
             BlockBehaviour.Properties.of()
-                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).overrideLootTable(blockLoot("torch_mirkwood")));
+                            .noCollision().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).overrideLootTable(blockLoot("torch_mirkwood")));
     public static final DeferredBlock<Block> BARREL_MIRKWOOD = registerBlock("barrel_mirkwood",
             properties -> new TolkienBarrelBlock(properties),
             BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL)
@@ -1482,7 +1482,7 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> CULUMALDA_BUTTON = registerBlock("culumalda_button",
             properties -> new ButtonBlock(BlockSetType.OAK, 30, properties),
             BlockBehaviour.Properties.of()
-                    .strength(0.5F).requiresCorrectToolForDrops().noCollission());
+                    .strength(0.5F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> FENCE_CULUMALDA = registerBlock("fence_culumalda",
             properties -> new FenceBlock(properties),
             BlockBehaviour.Properties.of()
@@ -1503,12 +1503,12 @@ public class TolkienBlocks {
             properties -> new TolkienTorchBlock(
                     () -> TolkienParticleTypes.CULUMALDA_FLAME.get(), properties),
             BlockBehaviour.Properties.of()
-                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD));
+                            .noCollision().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD));
     public static final DeferredBlock<Block> WALL_TORCH_CULUMALDA = registerNoItem("wall_torch_culumalda",
             properties -> new TolkienWallTorchBlock(
                     () -> TolkienParticleTypes.CULUMALDA_FLAME.get(), properties),
             BlockBehaviour.Properties.of()
-                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).overrideLootTable(blockLoot("torch_culumalda")));
+                            .noCollision().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).overrideLootTable(blockLoot("torch_culumalda")));
     public static final DeferredBlock<Block> BARREL_CULUMALDA = registerBlock("barrel_culumalda",
             properties -> new TolkienBarrelBlock(properties),
             BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL)
@@ -1572,7 +1572,7 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> LEBETHRON_BUTTON = registerBlock("lebethron_button",
             properties -> new ButtonBlock(BlockSetType.OAK, 30, properties),
             BlockBehaviour.Properties.of()
-                    .strength(0.5F).requiresCorrectToolForDrops().noCollission());
+                    .strength(0.5F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> FENCE_LEBETHRON = registerBlock("fence_lebethron",
             properties -> new FenceBlock(properties),
             BlockBehaviour.Properties.of()
@@ -1593,12 +1593,12 @@ public class TolkienBlocks {
             properties -> new TolkienTorchBlock(
                     () -> TolkienParticleTypes.LEBETHRON_FLAME.get(), properties),
             BlockBehaviour.Properties.of()
-                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD));
+                            .noCollision().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD));
     public static final DeferredBlock<Block> WALL_TORCH_LEBETHRON = registerNoItem("wall_torch_lebethron",
             properties -> new TolkienWallTorchBlock(
                     () -> TolkienParticleTypes.LEBETHRON_FLAME.get(), properties),
             BlockBehaviour.Properties.of()
-                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).overrideLootTable(blockLoot("torch_lebethron")));
+                            .noCollision().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).overrideLootTable(blockLoot("torch_lebethron")));
     public static final DeferredBlock<Block> BARREL_LEBETHRON = registerBlock("barrel_lebethron",
             properties -> new TolkienBarrelBlock(properties),
             BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL)
@@ -1662,7 +1662,7 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> FANGORNOAK_BUTTON = registerBlock("fangornoak_button",
             properties -> new ButtonBlock(BlockSetType.OAK, 30, properties),
             BlockBehaviour.Properties.of()
-                    .strength(0.5F).requiresCorrectToolForDrops().noCollission());
+                    .strength(0.5F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> FENCE_FANGORNOAK = registerBlock("fence_fangornoak",
             properties -> new FenceBlock(properties),
             BlockBehaviour.Properties.of()
@@ -1683,12 +1683,12 @@ public class TolkienBlocks {
             properties -> new TolkienTorchBlock(
                     () -> TolkienParticleTypes.FANGORNOAK_FLAME.get(), properties),
             BlockBehaviour.Properties.of()
-                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD));
+                            .noCollision().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD));
     public static final DeferredBlock<Block> WALL_TORCH_FANGORNOAK = registerNoItem("wall_torch_fangornoak",
             properties -> new TolkienWallTorchBlock(
                     () -> TolkienParticleTypes.FANGORNOAK_FLAME.get(), properties),
             BlockBehaviour.Properties.of()
-                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).overrideLootTable(blockLoot("torch_fangornoak")));
+                            .noCollision().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).overrideLootTable(blockLoot("torch_fangornoak")));
     public static final DeferredBlock<Block> BARREL_FANGORNOAK = registerBlock("barrel_fangornoak",
             properties -> new TolkienBarrelBlock(properties),
             BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL)
@@ -1740,7 +1740,7 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> DEADWOOD_BUTTON = registerBlock("deadwood_button",
             properties -> new ButtonBlock(BlockSetType.OAK, 30, properties),
             BlockBehaviour.Properties.of()
-                    .strength(0.5F).requiresCorrectToolForDrops().noCollission());
+                    .strength(0.5F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> FENCE_DEADWOOD = registerBlock("fence_deadwood",
             properties -> new FenceBlock(properties),
             BlockBehaviour.Properties.of()
@@ -1761,12 +1761,12 @@ public class TolkienBlocks {
             properties -> new TolkienTorchBlock(
                     () -> TolkienParticleTypes.DEADWOOD_FLAME.get(), properties),
             BlockBehaviour.Properties.of()
-                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD));
+                            .noCollision().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD));
     public static final DeferredBlock<Block> WALL_TORCH_DEADWOOD = registerNoItem("wall_torch_deadwood",
             properties -> new TolkienWallTorchBlock(
                     () -> TolkienParticleTypes.DEADWOOD_FLAME.get(), properties),
             BlockBehaviour.Properties.of()
-                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).overrideLootTable(blockLoot("torch_deadwood")));
+                            .noCollision().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).overrideLootTable(blockLoot("torch_deadwood")));
     public static final DeferredBlock<Block> BARREL_DEADWOOD = registerBlock("barrel_deadwood",
             properties -> new TolkienBarrelBlock(properties),
             BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL)
@@ -1830,7 +1830,7 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> DWARVEN_MAPLE_BUTTON = registerBlock("dwarven_maple_button",
             properties -> new ButtonBlock(BlockSetType.OAK, 30, properties),
             BlockBehaviour.Properties.of()
-                    .strength(0.5F).requiresCorrectToolForDrops().noCollission());
+                    .strength(0.5F).requiresCorrectToolForDrops().noCollision());
     public static final DeferredBlock<Block> FENCE_DWARVEN_MAPLE = registerBlock("fence_dwarven_maple",
             properties -> new FenceBlock(properties),
             BlockBehaviour.Properties.of()
@@ -1851,13 +1851,13 @@ public class TolkienBlocks {
             properties -> new TolkienTorchBlock(
                     () -> TolkienParticleTypes.DWARVEN_FLAME.get(), properties),
             BlockBehaviour.Properties.of()
-                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD));
+                            .noCollision().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD));
 
     public static final DeferredBlock<Block> WALL_TORCH_DWARVEN_MAPLE = registerNoItem("wall_torch_dwarven_maple",
             properties -> new TolkienWallTorchBlock(
                     () -> TolkienParticleTypes.DWARVEN_FLAME.get(), properties),
             BlockBehaviour.Properties.of()
-                            .noCollission().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).overrideLootTable(blockLoot("torch_dwarven_maple")));
+                            .noCollision().instabreak().lightLevel((state) -> 10).sound(SoundType.WOOD).overrideLootTable(blockLoot("torch_dwarven_maple")));
     public static final DeferredBlock<Block> BARREL_DWARVEN_MAPLE = registerBlock("barrel_dwarven_maple",
             properties -> new TolkienBarrelBlock(properties),
             BlockBehaviour.Properties.ofFullCopy(Blocks.BARREL)
@@ -1875,11 +1875,11 @@ public class TolkienBlocks {
 
     // Flowers & Plants
     public static final DeferredBlock<Block> PIPEWEED = registerBlockWithoutBlockItem("pipeweed", properties -> new PipeweedCropBlock(properties),
-            BlockBehaviour.Properties.of().noCollission().randomTicks().instabreak().sound(SoundType.CROP).pushReaction(PushReaction.DESTROY));
+            BlockBehaviour.Properties.of().noCollision().randomTicks().instabreak().sound(SoundType.CROP).pushReaction(PushReaction.DESTROY));
     public static final DeferredBlock<Block> MOSS_PATCH = registerBlock("moss_patch", properties -> new MossPatchBlock(properties),
-            BlockBehaviour.Properties.of().ignitedByLava().instabreak().mapColor(MapColor.PLANT).noCollission().noOcclusion().pushReaction(PushReaction.DESTROY).sound(SoundType.MOSS));
+            BlockBehaviour.Properties.of().ignitedByLava().instabreak().mapColor(MapColor.PLANT).noCollision().noOcclusion().pushReaction(PushReaction.DESTROY).sound(SoundType.MOSS));
     public static final DeferredBlock<Block> CLOVER_PATCH = registerBlock("clover_patch", properties -> new TolkienPatchBlock(properties),
-            BlockBehaviour.Properties.of().ignitedByLava().noCollission().noOcclusion().instabreak().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS));
+            BlockBehaviour.Properties.of().ignitedByLava().noCollision().noOcclusion().instabreak().mapColor(MapColor.PLANT).pushReaction(PushReaction.DESTROY).sound(SoundType.GRASS));
     public static final DeferredBlock<Block> SAPLING_MALLORN = registerBlock("sapling_mallorn",
             properties -> new TolkienSaplingBlock(TolkienTreeGrowers.MALLORN, properties, Blocks.GRASS_BLOCK),
             BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_SAPLING));
@@ -1908,35 +1908,35 @@ public class TolkienBlocks {
             properties -> new MushroomsBlock(TolkienConfiguredFeatures.MUSHROOM_BLOOM_DECAY_KEY, properties),
             BlockBehaviour.Properties.ofFullCopy(Blocks.RED_MUSHROOM));
     public static final DeferredBlock<Block> BLOCK_DECAY_BLOOM = registerBlock("block_decay_bloom", properties -> new HugeMushroomBlock(properties),
-            BlockBehaviour.Properties.of().noCollission().instabreak().sound(SoundType.WOOD).strength(0.2F));
+            BlockBehaviour.Properties.of().noCollision().instabreak().sound(SoundType.WOOD).strength(0.2F));
     public static final DeferredBlock<Block> BLOCK_BLOOM_DECAY = registerBlock("block_bloom_decay", properties -> new HugeMushroomBlock(properties),
-            BlockBehaviour.Properties.of().noCollission().instabreak().sound(SoundType.WOOD).strength(0.2F));
+            BlockBehaviour.Properties.of().noCollision().instabreak().sound(SoundType.WOOD).strength(0.2F));
     public static final DeferredBlock<Block> LIVING_ROOTS = registerBlock("living_roots", properties -> new Block(properties),
-            BlockBehaviour.Properties.of().noCollission().ignitedByLava().instabreak().sound(SoundType.GRASS).strength(2.0F, 3.0F));
+            BlockBehaviour.Properties.of().noCollision().ignitedByLava().instabreak().sound(SoundType.GRASS).strength(2.0F, 3.0F));
     public static final DeferredBlock<Block> FLOWER_SIMBELMYNE = registerBlock("flower_simbelmyne", properties -> new TolkienFlowerBlock(MobEffects.HERO_OF_THE_VILLAGE, 7, properties),
-            BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY));
+            BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollision().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY));
     public static final DeferredBlock<Block> FLOWER_MIRKWOOD = registerBlock("flower_mirkwood", properties -> new TolkienFlowerBlock(MobEffects.BAD_OMEN, 7, properties),
-            BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY));
+            BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollision().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY));
     public static final DeferredBlock<Block> FLOWER_ALFIRIN = registerBlock("flower_alfirin", properties -> new TolkienFlowerBlock(MobEffects.SATURATION, 7, properties),
-            BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY));
+            BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollision().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY));
     public static final DeferredBlock<Block> FLOWER_ATHELAS = registerBlock("flower_athelas", properties -> new TolkienFlowerBlock(MobEffects.REGENERATION, 7, properties),
-            BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY));
+            BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollision().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY));
     public static final DeferredBlock<Block> FLOWER_NIPHREDIL = registerBlock("flower_niphredil", properties -> new TolkienFlowerBlock(MobEffects.SATURATION, 7, properties),
-            BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY));
+            BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollision().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY));
     public static final DeferredBlock<Block> FLOWER_SWAMPMILKWEED = registerBlock("flower_swamp_milkweed", properties -> new TolkienFlowerBlock(MobEffects.MOVEMENT_SLOWDOWN, 7, properties),
-            BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY));
+            BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollision().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY));
     public static final DeferredBlock<Block> FLOWER_LILLYOFTHEVALLEY = registerBlock("flower_valley_lilly", properties -> new TolkienFlowerBlock(MobEffects.HEAL, 7, properties),
-            BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY));
+            BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollision().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY));
     public static final DeferredBlock<Block> FLOWER_ELANOR = registerBlock("flower_elanor", properties -> new TolkienFlowerBlock(MobEffects.MOVEMENT_SPEED, 7, properties),
-            BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY));
+            BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollision().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY));
     public static final DeferredBlock<Block> FLOWER_AEGLOS = registerBlock("flower_aeglos", properties -> new TolkienFlowerBlock(MobEffects.BAD_OMEN, 7, properties),
-            BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).randomTicks().noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY));
+            BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).randomTicks().noCollision().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY));
     public static final DeferredBlock<Block> FLOWER_LISSUIN = registerBlock("flower_lissuin", properties -> new TolkienFlowerBlock(MobEffects.DAMAGE_RESISTANCE, 7, properties),
-            BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).randomTicks().noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY));
+            BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).randomTicks().noCollision().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY));
     public static final DeferredBlock<Block> FLOWER_MALLOS = registerBlock("flower_mallos", properties -> new TolkienFlowerBlock(MobEffects.DIG_SPEED, 7, properties),
-            BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).randomTicks().noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY));
+            BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).randomTicks().noCollision().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY));
     public static final DeferredBlock<Block> FLOWER_BRAMBLES = registerBlock("flower_brambles", properties -> new BramblesBushBlock(properties),
-            BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).randomTicks().noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY));
+            BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).randomTicks().noCollision().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY));
     public static final DeferredBlock<FlowerPotBlock> POTTED_FLOWER_SIMBELMYNE = registerBlockWithoutBlockItem("potted_flower_simbelmyne", properties -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, FLOWER_SIMBELMYNE, properties),
             BlockBehaviour.Properties.ofFullCopy(Blocks.FLOWER_POT));
     public static final DeferredBlock<FlowerPotBlock> POTTED_FLOWER_MIRKWOOD = registerBlockWithoutBlockItem("potted_flower_mirkwood", properties -> new FlowerPotBlock(() -> (FlowerPotBlock) Blocks.FLOWER_POT, FLOWER_MIRKWOOD, properties),
@@ -1982,9 +1982,9 @@ public class TolkienBlocks {
 
         // Custom
     public static final DeferredBlock<Block> LIGHTNINGBUG_BLOCK = registerBlock("lightningbug", properties -> new LightningBugBlock(properties),
-            BlockBehaviour.Properties.of().lightLevel((state) -> 15).instabreak().noCollission().noTerrainParticles().pushReaction(PushReaction.DESTROY).sound(SoundType.SLIME_BLOCK));
+            BlockBehaviour.Properties.of().lightLevel((state) -> 15).instabreak().noCollision().noTerrainParticles().pushReaction(PushReaction.DESTROY).sound(SoundType.SLIME_BLOCK));
     public static final DeferredBlock<Block> LOCUST_BLOCK = registerBlock("locust", properties -> new LocustBlock(properties),
-            BlockBehaviour.Properties.of().lightLevel((state) -> 15).instabreak().noCollission().noTerrainParticles().pushReaction(PushReaction.DESTROY).sound(SoundType.SLIME_BLOCK));
+            BlockBehaviour.Properties.of().lightLevel((state) -> 15).instabreak().noCollision().noTerrainParticles().pushReaction(PushReaction.DESTROY).sound(SoundType.SLIME_BLOCK));
     public static final DeferredBlock<Block> SILMARIL_LANTERN = registerBlock("silmaril_lantern",
             properties -> new FancyLanternBlock(properties),
             BlockBehaviour.Properties.of().strength(4.5F, 5.5F).requiresCorrectToolForDrops().noOcclusion().lightLevel((state) -> state.getValue(LIT) ? 15:0).sound(SoundType.LANTERN));
@@ -1999,13 +1999,13 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> STONE_PATH = registerBlock("block_stone_path", properties -> new StonePathBlock(properties),
             BlockBehaviour.Properties.of().isViewBlocking(TolkienBlocks::never).sound(SoundType.STONE));
     public static final DeferredBlock<Block> ROCKPILE = registerBlock("rockpile", properties -> new RockPileBlock(properties),
-            BlockBehaviour.Properties.of().offsetType(BlockBehaviour.OffsetType.XZ).noCollission().instabreak().sound(SoundType.STONE).strength(0.2F).dynamicShape());
+            BlockBehaviour.Properties.of().offsetType(BlockBehaviour.OffsetType.XZ).noCollision().instabreak().sound(SoundType.STONE).strength(0.2F).dynamicShape());
     public static final DeferredBlock<Block> WALL_DECAY_BLOOM = registerBlock("wall_decay_bloom", properties -> new WallDecayBloomBlock(properties),
-            BlockBehaviour.Properties.of().noCollission().instabreak().sound(SoundType.GRASS).strength(0.2F).dynamicShape());
+            BlockBehaviour.Properties.of().noCollision().instabreak().sound(SoundType.GRASS).strength(0.2F).dynamicShape());
     public static final DeferredBlock<Block> WALL_MUSHROOM_RED = registerBlock("wall_mushroom_red", properties -> new WallMushroomRedBlock(properties),
-            BlockBehaviour.Properties.of().noCollission().instabreak().sound(SoundType.GRASS).strength(0.2F).dynamicShape());
+            BlockBehaviour.Properties.of().noCollision().instabreak().sound(SoundType.GRASS).strength(0.2F).dynamicShape());
     public static final DeferredBlock<Block> WALL_MUSHROOM_BROWN = registerBlock("wall_mushroom_brown", properties -> new WallMushroomBrownBlock(properties),
-            BlockBehaviour.Properties.of().noCollission().instabreak().sound(SoundType.GRASS).strength(0.2F).dynamicShape());
+            BlockBehaviour.Properties.of().noCollision().instabreak().sound(SoundType.GRASS).strength(0.2F).dynamicShape());
     public static final DeferredBlock<Block> TRINKET_TABLE = registerBlock("trinket_table", properties -> new TrinketTableBlock(properties),
             BlockBehaviour.Properties.of().strength(3.5F, 3.5F).requiresCorrectToolForDrops().noOcclusion().sound(SoundType.STONE));
     public static final DeferredBlock<Block> FIREPLACE = registerBlock("fireplace", properties -> new FireplaceBlock(true, properties),
@@ -2014,9 +2014,9 @@ public class TolkienBlocks {
             BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().strength(5f, 6f));
     public static final DeferredBlock<Block> BACKPACK = registerBlockWithoutBlockItem("backpack", properties -> new BackpackBlock(properties),
             BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().strength(1f, 1f));
-    public static final DeferredItem<BackpackItem> BACKPACK_ITEM = ITEMS.registerItem("backpack", properties -> new BackpackItem(BACKPACK.get(), properties), new Item.Properties().stacksTo(1));
+    public static final DeferredItem<BackpackItem> BACKPACK_ITEM = ITEMS.registerItem("backpack", properties -> new BackpackItem(BACKPACK.get(), properties), () -> new Item.Properties().stacksTo(1));
     public static final DeferredBlock<Block> CHAMELEON_BLOCK = registerBlock("chameleon_block", properties -> new ChameleonBlock(properties),
-            BlockBehaviour.Properties.of().noCollission().noOcclusion());
+            BlockBehaviour.Properties.of().noCollision().noOcclusion());
     public static final DeferredBlock<Block> KEY_STONE_BLOCK = registerBlock("block_key_stone", properties -> new CamoKeyStoneBlock(properties),
             BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).noLootTable().noOcclusion());
     public static final DeferredBlock<Block> CAMO_GLOWSTONE_BLOCK = registerBlock("block_camo_glowstone", properties -> new CamoGlowstoneBlock(properties),
@@ -2042,7 +2042,7 @@ public class TolkienBlocks {
     public static final DeferredBlock<Block> WELL = registerBlock("well_block", properties -> new WellBlock(properties),
             BlockBehaviour.Properties.of().sound(SoundType.STONE).requiresCorrectToolForDrops().strength(3.5F, 3.5F).noOcclusion());
     public static final DeferredBlock<Block> ARDA_PORTAL = registerBlockWithoutBlockItem("arda_portal", properties -> new ArdaPortalBlock(properties),
-            BlockBehaviour.Properties.of().strength(-1F).noCollission().lightLevel((state) -> 10).noLootTable());
+            BlockBehaviour.Properties.of().strength(-1F).noCollision().lightLevel((state) -> 10).noLootTable());
     public static final DeferredBlock<Block> ANCIENT_WATCHER = registerBlock("ancient_watcher",
             properties -> new AncientWatcherStatueBlock(properties),
             BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).randomTicks().noLootTable().noOcclusion().sound(SoundType.STONE));
@@ -2188,17 +2188,17 @@ public class TolkienBlocks {
      * factory runs, and its item is registered the same way with the id {@code registerSimpleBlockItem} derives.
      */
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Function<BlockBehaviour.Properties, T> block, BlockBehaviour.Properties properties) {
-        DeferredBlock<T> toReturn = BLOCKS.registerBlock(name, block, properties);
+        DeferredBlock<T> toReturn = BLOCKS.registerBlock(name, block, () -> properties);
         ITEMS.registerSimpleBlockItem(name, toReturn);
         return toReturn;
     }
 
     private static <T extends Block> DeferredBlock<T> registerBlockWithoutBlockItem(String name, Function<BlockBehaviour.Properties, T> block, BlockBehaviour.Properties properties) {
-        return BLOCKS.registerBlock(name, block, properties);
+        return BLOCKS.registerBlock(name, block, () -> properties);
     }
 
     private static DeferredBlock<Block> registerNoItem(String name, Function<BlockBehaviour.Properties, Block> block, BlockBehaviour.Properties properties) {
-        return BLOCKS.registerBlock(name, block, properties);
+        return BLOCKS.registerBlock(name, block, () -> properties);
     }
 
     public static void register(IEventBus eventBus) {

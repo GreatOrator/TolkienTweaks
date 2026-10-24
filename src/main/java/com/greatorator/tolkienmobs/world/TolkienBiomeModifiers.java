@@ -7,9 +7,10 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.util.random.Weighted;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.neoforged.neoforge.common.world.BiomeModifier;
@@ -183,21 +184,21 @@ public class TolkienBiomeModifiers {
                 HolderSet.direct(placedFeatures.getOrThrow(FLOWER_BRAMBLES_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
 
-        context.register(SPAWN_GECKO, new BiomeModifiers.AddSpawnsBiomeModifier(
+        context.register(SPAWN_GECKO, BiomeModifiers.AddSpawnsBiomeModifier.singleSpawn(
                 HolderSet.direct(biomes.getOrThrow(Biomes.PLAINS)),
-                List.of(new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_GECKO.get(), 20, 2, 4))));
-        context.register(SPAWN_RAT, new BiomeModifiers.AddSpawnsBiomeModifier(
+                new Weighted<>(new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_GECKO.get(), 2, 4), 20)));
+        context.register(SPAWN_RAT, BiomeModifiers.AddSpawnsBiomeModifier.singleSpawn(
                 HolderSet.direct(biomes.getOrThrow(Biomes.PLAINS)),
-                List.of(new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_RAT.get(), 20, 2, 4))));
-        context.register(SPAWN_SQUIRREL, new BiomeModifiers.AddSpawnsBiomeModifier(
+                new Weighted<>(new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_RAT.get(), 2, 4), 20)));
+        context.register(SPAWN_SQUIRREL, BiomeModifiers.AddSpawnsBiomeModifier.singleSpawn(
                 HolderSet.direct(biomes.getOrThrow(Biomes.PLAINS)),
-                List.of(new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 20, 2, 4))));
-        context.register(SPAWN_FROG, new BiomeModifiers.AddSpawnsBiomeModifier(
+                new Weighted<>(new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 2, 4), 20)));
+        context.register(SPAWN_FROG, BiomeModifiers.AddSpawnsBiomeModifier.singleSpawn(
                 HolderSet.direct(biomes.getOrThrow(Biomes.PLAINS)),
-                List.of(new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_FROG.get(), 20, 2, 4))));
+                new Weighted<>(new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_FROG.get(), 2, 4), 20)));
     }
 
     private static ResourceKey<BiomeModifier> registerBiomeKey(String name) {
-        return ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, ResourceLocation.fromNamespaceAndPath(MODID, name));
+        return ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, Identifier.fromNamespaceAndPath(MODID, name));
     }
 }

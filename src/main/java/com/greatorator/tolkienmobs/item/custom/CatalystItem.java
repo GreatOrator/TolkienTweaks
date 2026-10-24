@@ -17,7 +17,6 @@ import com.geckolib.animatable.client.GeoRenderProvider;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.animation.AnimationController;
-import com.geckolib.animation.object.PlayState;
 import com.geckolib.animation.RawAnimation;
 import com.geckolib.renderer.GeoItemRenderer;
 import com.geckolib.util.GeckoLibUtil;
@@ -51,7 +50,12 @@ public class CatalystItem extends TolkienItem implements GeoItem {
 
     /**
      * Animations
+     *
+     * GeckoLib 5 builds the controller without the animatable and hands its handler an AnimationTest,
+     * and the raw animation is built once here instead of once per frame.
      */
+    private static final RawAnimation IDLE = RawAnimation.begin().thenPlay("animation.arda_staff.idle");
+
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
     @Override
@@ -71,10 +75,7 @@ public class CatalystItem extends TolkienItem implements GeoItem {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
-            event.getController().setAnimation(RawAnimation.begin().thenPlay("animation.arda_staff.idle"));
-            return PlayState.CONTINUE;
-        }));
+        controllers.add(new AnimationController<CatalystItem>("Idle", 1, test -> test.setAndContinue(IDLE)));
     }
 
     @Override

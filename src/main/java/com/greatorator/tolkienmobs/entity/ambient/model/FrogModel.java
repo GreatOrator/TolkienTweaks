@@ -1,50 +1,31 @@
 package com.greatorator.tolkienmobs.entity.ambient.model;
 
-
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.base.GeoRenderState;
 import com.greatorator.tolkienmobs.entity.ambient.FrogEntity;
 import com.greatorator.tolkienmobs.entity.ambient.render.FrogRender;
-import net.minecraft.resources.ResourceLocation;
-import com.geckolib.cache.model.GeoBone;
-import com.geckolib.constant.DataTickets;
-import com.geckolib.model.GeoModel;
-import com.geckolib.renderer.base.GeoRenderer;
+import com.greatorator.tolkienmobs.entity.util.TolkienGeoRenderState;
+import net.minecraft.resources.Identifier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
+/** Rendered from the render state, which is the only thing a GeckoLib 5 model or renderer sees during a pass. */
 public class FrogModel extends GeoModel<FrogEntity> {
-	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "ambient/frog");
-	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "ambient/frog");
+    private static final Identifier MODEL = Identifier.fromNamespaceAndPath(MODID, "ambient/frog");
+    private static final Identifier ANIMATIONS = Identifier.fromNamespaceAndPath(MODID, "ambient/frog");
 
-	@Override
-	public ResourceLocation getModelResource(FrogEntity object, GeoRenderer<FrogEntity> renderer) {
-		return this.model;
-	}
+    @Override
+    public Identifier getModelResource(GeoRenderState renderState) {
+        return MODEL;
+    }
 
-	@Override
-	public ResourceLocation getTextureResource(FrogEntity object, GeoRenderer<FrogEntity> renderer) {
-		return FrogRender.LOCATION_BY_VARIANT.get(object.getVariant());
-	}
+    @Override
+    public Identifier getTextureResource(GeoRenderState renderState) {
+        return FrogRender.textureFor((TolkienGeoRenderState) renderState);
+    }
 
-	@Override
-	public ResourceLocation getAnimationResource(FrogEntity object) {
-		return this.animations;
-	}
-
-	@Override
-	public void setCustomAnimations(FrogEntity entity, long uniqueID, AnimationState<FrogEntity> customPredicate) {
-		super.setCustomAnimations(entity, uniqueID, customPredicate);
-
-		if (customPredicate == null) return;
-
-		EntityModelData extraData = (EntityModelData) customPredicate.getData(DataTickets.ENTITY_MODEL_DATA);
-		GeoBone head = this.getAnimationProcessor().getBone("head");
-		GeoBone catchBug = this.getAnimationProcessor().getBone("insect");
-		GeoBone tongue = this.getAnimationProcessor().getBone("tongue");
-
-		catchBug.setHidden(!entity.isCatching());
-		tongue.setHidden(!entity.isCatching());
-
-		head.setRotX(extraData.headPitch() * ((float) Math.PI / 180F));
-		head.setRotY(extraData.netHeadYaw() *0.5f* ((float) Math.PI / 180F));
-	}
+    @Override
+    public Identifier getAnimationResource(FrogEntity animatable) {
+        return ANIMATIONS;
+    }
 }

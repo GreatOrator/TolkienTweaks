@@ -711,7 +711,9 @@ public class TolkienBlockTagProvider extends BlockTagsProvider {
                 .add(Blocks.WARPED_NYLIUM)
                 .add(Blocks.COBBLESTONE)
                 .add(Blocks.STONE);
-        tag(BlockTags.MUSHROOM_GROW_BLOCK)
+        // 26.1 replaced the per-plant "may be placed on" tags with SUPPORTS_*, and a small mushroom
+        // is a VegetationBlock, which reads SUPPORTS_VEGETATION. Vanilla's mushroom_grow_block is gone.
+        tag(BlockTags.SUPPORTS_VEGETATION)
                 .addTag(TolkienTags.Blocks.DECAY_GROW_BLOCK);
         tag(TolkienTags.Blocks.BLACKLIST_HARVEST);
         tag(TolkienTags.Blocks.PORTAL_FRAME_BLOCKS)

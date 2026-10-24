@@ -120,7 +120,7 @@ public class FellBeastEntity extends DragonEntity {
     }
 
     public void setBreathingFire(boolean breathingFire) {
-        if (!level.isClientSide) entityData.set(BREATHING_FIRE, breathingFire);
+        if (!level.isClientSide()) entityData.set(BREATHING_FIRE, breathingFire);
     }
 
     public boolean getBreathingFire() {
@@ -154,12 +154,12 @@ public class FellBeastEntity extends DragonEntity {
     public void aiStep() {
         super.aiStep();
         flightTimer.add(isUsingFlyingNavigator() ? 0.1f : -0.085f);
-        if (!level.isClientSide && getBreathingFire()
+        if (!level.isClientSide() && getBreathingFire()
                 && (getTarget() == null || !getTarget().isAlive() || !isWithinRestriction(getTarget().blockPosition()))) {
             setBreathingFire(false);
         }
         breathTimer.add(getBreathingFire() ? 0.15f : -0.2f);
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             if (fireballCooldown > 0) fireballCooldown--;
             if (getBreathingFire() && breathTimer.get() >= 1 && fireballCooldown == 0) {
                 LivingEntity target = getTarget();

@@ -29,7 +29,7 @@ public class TolkienBiomeGenerationSettings extends BiomeGenerationSettings.Buil
             // follow them in a stable order shared by every Tolkien biome.
             Comparator<Holder<PlacedFeature>> comparator = Comparator
                     .comparingInt((Holder<PlacedFeature> feature) -> order.getOrDefault(feature.unwrapKey().orElseThrow(), Integer.MAX_VALUE))
-                    .thenComparing(feature -> feature.unwrapKey().orElseThrow().location().toString());
+                    .thenComparing(feature -> feature.unwrapKey().orElseThrow().identifier().toString());
             features.set(step, new ArrayList<>(features.get(step).stream().distinct().sorted(comparator).toList()));
         }
         return super.build();
@@ -41,7 +41,7 @@ public class TolkienBiomeGenerationSettings extends BiomeGenerationSettings.Buil
         var vanilla = VanillaRegistries.createLookup();
         var biomes = vanilla.lookupOrThrow(Registries.BIOME);
         var overworld = MultiNoiseBiomeSourceParameterList.Preset.OVERWORLD.usedBiomes()
-                .sorted(Comparator.comparing(key -> key.location().toString()))
+                .sorted(Comparator.comparing(key -> key.identifier().toString()))
                 .map(biomes::getOrThrow).toList();
         var steps = FeatureSorter.buildFeaturesPerStep(overworld, biome -> biome.value().getGenerationSettings().features(), true);
         Map<PlacedFeature, ResourceKey<PlacedFeature>> keys = new IdentityHashMap<>();

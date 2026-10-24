@@ -10,7 +10,7 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import org.joml.Vector3f;
@@ -18,7 +18,7 @@ import org.joml.Vector3f;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class SwarmModel extends EntityModel<LivingEntityRenderState> {
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MODID, "entityttmswarm"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(MODID, "entityttmswarm"), "main");
 	private final ModelPart root;
 	private final ModelPart core;
 	private final ModelPart group1;

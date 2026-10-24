@@ -34,11 +34,11 @@ public class WellBlockEntity extends TolkienBlockEntity implements GeoBlockEntit
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         animationController = getController();
         controllers.add(animationController.setSoundKeyframeHandler(new AutoPlayingSoundKeyframeHandler<>()));
-        controllers.add(new AnimationController<>(this, "controller", 0, event -> event.setAndContinue(WELL_IDLE)));
+        controllers.add(new AnimationController<WellBlockEntity>("controller", 0, test -> test.setAndContinue(WELL_IDLE)));
     }
 
     private AnimationController<WellBlockEntity> getController() {
-        return new AnimationController<>(this, "popup_controller", 0, state -> PlayState.STOP)
+        return new AnimationController<WellBlockEntity>("popup_controller", 0, test -> PlayState.STOP)
                 .triggerableAnim("fill", WELL_BUCKET);
     }
 

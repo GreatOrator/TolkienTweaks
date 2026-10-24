@@ -236,52 +236,52 @@ public class GwahirEntity extends TolkienFlyingAmbientEntity implements GeoEntit
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         int rand = MathUtility.getRandomInteger(100, 1);
-        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
+        controllers.add(new AnimationController<GwahirEntity>("Idle", 1, (event) -> {
             if (!event.isMoving() && this.onGround()) {
                 if (rand <= 10 && this.isPecking()) {
-                    event.getController().setAnimation(RawAnimation.begin().thenPlay("idle3"));
+                    event.controller().setAnimation(RawAnimation.begin().thenPlay("idle3"));
                     return PlayState.CONTINUE;
                 }else if (rand <=30) {
-                    event.getController().setAnimation(RawAnimation.begin().thenPlay("idle2"));
+                    event.controller().setAnimation(RawAnimation.begin().thenPlay("idle2"));
                     return PlayState.CONTINUE;
                 }else {
-                    event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
+                    event.controller().setAnimation(RawAnimation.begin().thenPlay("idle"));
                     return PlayState.CONTINUE;
                 }
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
-            if (event.getAnimatable().isAggressive() && this.onGround() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
-                event.getController().setAnimation(RawAnimation.begin().then("attack_ground", Animation.LoopType.PLAY_ONCE));
+        controllers.add(new AnimationController<GwahirEntity>("Attack", 1, (event) -> {
+            if (event.animatable().isAggressive() && this.onGround() && !event.controller().isAnimatingBones()) {
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("attack_ground"));
                 return PlayState.CONTINUE;
-            }else if (event.getAnimatable().isAggressive() && !this.onGround() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("attack_flight"));
+            }else if (event.animatable().isAggressive() && !this.onGround() && !event.controller().isAnimatingBones()) {
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("attack_flight"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
+        controllers.add(new AnimationController<GwahirEntity>("Walk", 1, (event) -> {
             double speed = this.getAttributeValue(Attributes.MOVEMENT_SPEED);
             if (event.isMoving() && this.onGround() && speed > (double)0.2F) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("run"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("run"));
                 return PlayState.CONTINUE;
             }else if (event.isMoving() && this.onGround()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("walk"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Glide", 1, (event) -> {
+        controllers.add(new AnimationController<GwahirEntity>("Glide", 1, (event) -> {
             if (!this.onGround() && isFlying() && isGliding()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("glide"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("glide"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Fly", 1, (event) -> {
+        controllers.add(new AnimationController<GwahirEntity>("Fly", 1, (event) -> {
             if (event.isMoving() && isFlying() && !isGliding()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("fly"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("fly"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;

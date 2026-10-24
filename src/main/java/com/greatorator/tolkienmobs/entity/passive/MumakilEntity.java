@@ -4,7 +4,7 @@ import com.greatorator.tolkienmobs.entity.TolkienHeardEntity;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -185,31 +185,31 @@ public class MumakilEntity extends TolkienHeardEntity implements GeoEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
-            if (!event.isMoving() && !event.getAnimatable().isAggressive()) {
+        controllers.add(new AnimationController<MumakilEntity>("Idle", 1, (event) -> {
+            if (!event.isMoving() && !event.animatable().isAggressive()) {
                 if (this.isInWater()) {
-                    event.getController().setAnimation(RawAnimation.begin().thenPlay("idle_water"));
+                    event.controller().setAnimation(RawAnimation.begin().thenPlay("idle_water"));
                 }else {
-                    event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
+                    event.controller().setAnimation(RawAnimation.begin().thenPlay("idle"));
                 }
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
+        controllers.add(new AnimationController<MumakilEntity>("Walk", 1, (event) -> {
             if (event.isMoving()) {
                 if (this.isInWater()) {
-                    event.getController().setAnimation(RawAnimation.begin().thenPlay("walking_water"));
+                    event.controller().setAnimation(RawAnimation.begin().thenPlay("walking_water"));
                 }else {
-                    event.getController().setAnimation(RawAnimation.begin().thenPlay("walking"));
+                    event.controller().setAnimation(RawAnimation.begin().thenPlay("walking"));
                 }
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Drink", 1, (event) -> {
+        controllers.add(new AnimationController<MumakilEntity>("Drink", 1, (event) -> {
             if (this.isDrinking()) {
-                    event.getController().setAnimation(RawAnimation.begin().thenPlay("drink"));
+                    event.controller().setAnimation(RawAnimation.begin().thenPlay("drink"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;

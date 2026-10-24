@@ -26,7 +26,6 @@ import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.animation.AnimationController;
-import com.geckolib.animation.object.PlayState;
 import com.geckolib.animation.RawAnimation;
 import com.geckolib.util.GeckoLibUtil;
 
@@ -105,7 +104,7 @@ public class CobwebProjectileEntity extends Projectile implements GeoEntity {
                 result.getEntity().hurtServer(serverLevel, damagesource, 1.0F);
             }
 
-            if (!this.level.isClientSide) {
+            if (!this.level.isClientSide()) {
                 this.spawnTrap(result.getEntity().getX(), result.getEntity().getY(), result.getEntity().getZ());
 
                 this.remove(RemovalReason.DISCARDED);
@@ -114,7 +113,7 @@ public class CobwebProjectileEntity extends Projectile implements GeoEntity {
     }
 
     public void createSpawnParticles() {
-        if (!this.level.isClientSide) {
+        if (!this.level.isClientSide()) {
             this.level.broadcastEntityEvent(this, (byte) 1);
         } else {
             for (int i = 0; i < 5; i++) {
@@ -136,7 +135,7 @@ public class CobwebProjectileEntity extends Projectile implements GeoEntity {
 
     protected void onHitBlock(BlockHitResult p_230299_1_) {
         super.onHitBlock(p_230299_1_);
-        if (!this.level.isClientSide) {
+        if (!this.level.isClientSide()) {
             this.spawnTrap(this.getX(), this.getY(), this.getZ());
 
             this.remove(RemovalReason.DISCARDED);
@@ -162,15 +161,13 @@ public class CobwebProjectileEntity extends Projectile implements GeoEntity {
     /**
      * Animations
      */
+    private static final RawAnimation IDLE = RawAnimation.begin().thenPlay("idle");
+
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
-            event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
-            // A stopped controller drops its animation, which left the web sitting on its rest pose.
-            return PlayState.CONTINUE;
-        }));
+        controllers.add(new AnimationController<CobwebProjectileEntity>("Idle", 1, test -> test.setAndContinue(IDLE)));
     }
 
     @Override

@@ -26,7 +26,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -44,7 +44,7 @@ import java.util.Optional;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class CamoSpawnerScreen extends AbstractContainerScreen<CamoSpawnerContainer> {
-    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spawner/spawner_gui.png");
+    private final Identifier GUI = Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/spawner_gui.png");
     protected final CamoSpawnerContainer container;
     protected final CamoSpawnerBlockEntity tileEntity;
     protected SpawnerSettings spawnerSettings;

@@ -5,7 +5,7 @@ import com.greatorator.tolkienmobs.entity.ambient.model.SwarmModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -20,8 +20,8 @@ public class SwarmRender extends MobRenderer<SwarmEntity, LivingEntityRenderStat
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(LivingEntityRenderState state) {
-		return ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/midgeflies.png");
+	public Identifier getTextureLocation(LivingEntityRenderState state) {
+		return Identifier.fromNamespaceAndPath(MODID, "textures/entity/midgeflies.png");
 	}
 
 	@Override

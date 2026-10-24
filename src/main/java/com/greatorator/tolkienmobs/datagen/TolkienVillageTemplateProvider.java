@@ -2,14 +2,14 @@ package com.greatorator.tolkienmobs.datagen;
 
 import com.google.common.hash.Hashing;
 import net.minecraft.SharedConstants;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.nbt.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.util.datafix.DataFixers;
@@ -46,7 +46,7 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
 
     @FunctionalInterface
     public interface TemplateSource {
-        InputStream open(ResourceLocation location) throws IOException;
+        InputStream open(Identifier location) throws IOException;
     }
 
     @Override
@@ -105,7 +105,7 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
     /** Vanilla's villager template with the entity swapped for this village's own NPC. */
     public static CompoundTag prepareVillager(TolkienVillageProvider.Village village, String name,
                                               TemplateSource templates) throws IOException {
-        CompoundTag villager = read(ResourceLocation.withDefaultNamespace(
+        CompoundTag villager = read(Identifier.withDefaultNamespace(
                 "village/" + village.vanillaStyle() + "/villagers/" + name), templates);
         for (var tag : villager.getList("entities", Tag.TAG_COMPOUND)) {
             ((CompoundTag) tag).getCompound("nbt").putString("id", village.resident().toString());
@@ -113,7 +113,7 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
         return villager;
     }
 
-    private void write(CachedOutput cache, net.minecraft.resources.ResourceLocation name, CompoundTag tag) throws IOException {
+    private void write(CachedOutput cache, net.minecraft.resources.Identifier name, CompoundTag tag) throws IOException {
         var bytes = new ByteArrayOutputStream();
         NbtIo.writeCompressed(tag, bytes);
         byte[] content = bytes.toByteArray();
@@ -121,7 +121,7 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
                 .resolve(name.getNamespace() + "/structure/" + name.getPath() + ".nbt"), content, Hashing.sha1().hashBytes(content));
     }
 
-    private static CompoundTag read(ResourceLocation source, TemplateSource templates) throws IOException {
+    private static CompoundTag read(Identifier source, TemplateSource templates) throws IOException {
         CompoundTag tag;
         try (var input = templates.open(source.withPrefix("structure/").withSuffix(".nbt"))) {
             if (input == null) throw new IOException("Missing template " + source);

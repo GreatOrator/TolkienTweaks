@@ -4,21 +4,21 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public class TexturedButton extends Button {
     private final int yDiffTex;
     private final int textureWidth;
     private final int textureHeight;
-    private final ResourceLocation texture;
+    private final Identifier texture;
 
     public TexturedButton(
             int pX,
             int pY,
             int pWidth,
             int pHeight,
-            ResourceLocation texture,
+            Identifier texture,
             int yDiffTex,
             int textureWidth,
             int textureHeight,

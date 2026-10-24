@@ -5,6 +5,8 @@
 
 package com.greatorator.tolkienmobs.containers.handlers;
 
+import net.minecraft.resources.Identifier;
+
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;

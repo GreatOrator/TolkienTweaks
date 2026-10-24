@@ -1,41 +1,37 @@
 package com.greatorator.tolkienmobs.entity.ambient.render;
 
-import com.geckolib.cache.model.BakedGeoModel;
-
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
+import com.geckolib.renderer.GeoEntityRenderer;
+import com.geckolib.renderer.base.RenderPassInfo;
 import com.greatorator.tolkienmobs.entity.ambient.CrebainEntity;
 import com.greatorator.tolkienmobs.entity.ambient.model.CrebainModel;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.MultiBufferSource;
+import com.greatorator.tolkienmobs.entity.util.TolkienGeoRenderState;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
-import com.geckolib.renderer.GeoEntityRenderer;
+import net.minecraft.resources.Identifier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class CrebainRender extends GeoEntityRenderer<CrebainEntity> {
+public class CrebainRender extends GeoEntityRenderer<CrebainEntity, TolkienGeoRenderState> {
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(MODID, "textures/entity/birds/crebain.png");
+
     public CrebainRender(EntityRendererProvider.Context context) {
         super(context, new CrebainModel());
         this.shadowRadius = 0.25f;
     }
 
     @Override
-    public ResourceLocation getTextureLocation(CrebainEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/birds/crebain.png");
+    public TolkienGeoRenderState createRenderState(CrebainEntity animatable, Void relatedObject) {
+        return new TolkienGeoRenderState();
     }
 
     @Override
-    public void preRender(PoseStack poseStack, CrebainEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
-        if (!isReRender) {
-            if(animatable.isBaby()) {
-                poseStack.scale(0.45f, 0.45f, 0.45f);
-            } else {
-                poseStack.scale(1f, 1f, 1f);
-            }
-        }
+    public Identifier getTextureLocation(TolkienGeoRenderState renderState) {
+        return TEXTURE;
+    }
 
-
-        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
+    /** The model's own scaling, which 5 applies here rather than in preRender. */
+    @Override
+    public void scaleModelForRender(RenderPassInfo<TolkienGeoRenderState> renderPassInfo, float widthScale, float heightScale) {
+        float scale = renderPassInfo.renderState().isBaby ? 0.45F : 1F;
+        super.scaleModelForRender(renderPassInfo, scale, scale);
     }
 }

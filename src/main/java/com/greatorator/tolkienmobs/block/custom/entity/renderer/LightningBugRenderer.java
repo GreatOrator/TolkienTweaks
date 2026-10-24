@@ -14,14 +14,14 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.DirectionalBlock;
 import org.jetbrains.annotations.Nullable;
 
 public class LightningBugRenderer implements BlockEntityRenderer<LightningBugBlockEntity> {
 
 	private final LightningBugModel lightningBugModel;
-	private static final ResourceLocation TEXTURE = TolkienMobsMain.getBlockModelTexture("lightningbug.png");
+	private static final Identifier TEXTURE = TolkienMobsMain.getBlockModelTexture("lightningbug.png");
 
 	public LightningBugRenderer(BlockEntityRendererProvider.Context context) {
 		this.lightningBugModel = new LightningBugModel(context.bakeLayer(TolkienModelLayers.LIGHTNINGBUG));

@@ -8,7 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
@@ -36,17 +36,17 @@ public interface TolkienSpawner {
     @Nullable
     static Component getSpawnEntityDisplayName(ItemStack stack, String spawnDataKey) {
         CompoundTag compoundtag = ((CustomData)stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY)).getUnsafe();
-        ResourceLocation resourcelocation = getEntityKey(compoundtag, spawnDataKey);
+        Identifier resourcelocation = getEntityKey(compoundtag, spawnDataKey);
         return resourcelocation != null ? (Component) BuiltInRegistries.ENTITY_TYPE.getOptional(resourcelocation).map((p_312609_) -> {
             return Component.translatable(p_312609_.getDescriptionId()).withStyle(ChatFormatting.GRAY);
         }).orElse((MutableComponent) null) : null;
     }
 
     @Nullable
-    private static ResourceLocation getEntityKey(CompoundTag tag, String spawnDataKey) {
+    private static Identifier getEntityKey(CompoundTag tag, String spawnDataKey) {
         if (tag.contains(spawnDataKey, 10)) {
             String s = tag.getCompound(spawnDataKey).getCompound("entity").getString("id");
-            return ResourceLocation.tryParse(s);
+            return Identifier.tryParse(s);
         } else {
             return null;
         }

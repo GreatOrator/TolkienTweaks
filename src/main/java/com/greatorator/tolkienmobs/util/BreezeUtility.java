@@ -1,5 +1,7 @@
 package com.greatorator.tolkienmobs.util;
 
+import net.minecraft.resources.Identifier;
+
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
@@ -45,7 +47,7 @@ public class BreezeUtility {
     protected static void tickState(Level world) {
         --stateDuration;
 
-//        ResourceLocation dimension = world.dimension().location();
+//        Identifier dimension = world.dimension().location();
 //        if (dimension.toString() == TTMConfig.dimensionArray) {
 //            // override state to calm when there is no wind
 //            originalState = state;

@@ -6,7 +6,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.loading.FMLEnvironment;
@@ -24,7 +24,7 @@ public class PacketCustomChannel {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PacketCustomChannel.class);
 
-    public final ResourceLocation channel;
+    public final Identifier channel;
 
     private @Nullable String version;
     private boolean optional;
@@ -34,7 +34,7 @@ public class PacketCustomChannel {
     private @Nullable ICustomPacketHandler.IClientPacketHandler client;
     private @Nullable ICustomPacketHandler.IServerPacketHandler server;
 
-    public PacketCustomChannel(ResourceLocation channel) {
+    public PacketCustomChannel(Identifier channel) {
         this.channel = channel;
     }
 

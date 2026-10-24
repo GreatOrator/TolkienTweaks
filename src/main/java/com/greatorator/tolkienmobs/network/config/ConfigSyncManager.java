@@ -5,7 +5,7 @@ import com.greatorator.tolkienmobs.network.packet.PacketCustom;
 import com.greatorator.tolkienmobs.util.CrashLock;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.configuration.ServerConfigurationPacketListener;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
@@ -29,9 +29,9 @@ public class ConfigSyncManager {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final CrashLock LOCK = new CrashLock("Already Initialized.");
 
-    private static final Map<ResourceLocation, ConfigTag> SYNC_MAP = new HashMap<>();
+    private static final Map<Identifier, ConfigTag> SYNC_MAP = new HashMap<>();
 
-    public static void registerSync(ResourceLocation key, ConfigTag tag) {
+    public static void registerSync(Identifier key, ConfigTag tag) {
         ConfigTag prev = SYNC_MAP.put(key, tag);
         if (prev != null) {
             throw new IllegalArgumentException("Key '" + key + "' already registered.");
@@ -53,7 +53,7 @@ public class ConfigSyncManager {
     public static void readSyncPacket(PacketCustom packet) {
         int numPackets = packet.readVarInt();
         for (int i = 0; i < numPackets; i++) {
-            ResourceLocation ident = packet.readResourceLocation();
+            Identifier ident = packet.readResourceLocation();
             LOGGER.info("Applying config sync for {}.", ident);
             ConfigTag config = SYNC_MAP.get(ident);
             if (config == null) {
@@ -66,7 +66,7 @@ public class ConfigSyncManager {
     }
 
     private static void onClientDisconnected(ClientPlayerNetworkEvent.LoggingOut event) {
-        for (Map.Entry<ResourceLocation, ConfigTag> entry : SYNC_MAP.entrySet()) {
+        for (Map.Entry<Identifier, ConfigTag> entry : SYNC_MAP.entrySet()) {
             LOGGER.info("Client disconnected, rolling back config for {}.", entry.getKey());
             ConfigTag config = entry.getValue();
             config.resetFromNetwork();
@@ -80,14 +80,14 @@ public class ConfigSyncManager {
 
     private record ConfigSyncConfigurationTask(ServerConfigurationPacketListener listener) implements ICustomConfigurationTask {
 
-        private static final Type TYPE = new Type(ResourceLocation.fromNamespaceAndPath(MODID, "config_sync"));
+        private static final Type TYPE = new Type(Identifier.fromNamespaceAndPath(MODID, "config_sync"));
 
         @Override
         public void run(Consumer<CustomPacketPayload> sender) {
             if (!SYNC_MAP.isEmpty()) {
                 PacketCustom packet = new PacketCustom(NET_CHANNEL, C_CONFIG_SYNC, null);
                 packet.writeVarInt(SYNC_MAP.size());
-                for (Map.Entry<ResourceLocation, ConfigTag> entry : SYNC_MAP.entrySet()) {
+                for (Map.Entry<Identifier, ConfigTag> entry : SYNC_MAP.entrySet()) {
                     packet.writeResourceLocation(entry.getKey());
                     entry.getValue().write(packet);
                 }

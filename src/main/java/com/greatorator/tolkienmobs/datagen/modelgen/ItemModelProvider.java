@@ -10,7 +10,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 
 /**
@@ -23,14 +23,14 @@ import net.minecraft.world.item.Item;
  * what the old, unconditional {@code models/item} lookup did.</p>
  */
 public class ItemModelProvider extends ModelProvider<ItemModelBuilder> {
-    private final Map<ResourceLocation, JsonObject> definitions = new LinkedHashMap<>();
+    private final Map<Identifier, JsonObject> definitions = new LinkedHashMap<>();
 
     public ItemModelProvider(PackOutput output, String modid, ExistingFileHelper existingFileHelper) {
         super(output, modid, "item", existingFileHelper);
     }
 
     @Override
-    protected ItemModelBuilder createBuilder(ResourceLocation location) {
+    protected ItemModelBuilder createBuilder(Identifier location) {
         return new ItemModelBuilder(location, location.getPath());
     }
 
@@ -43,7 +43,7 @@ public class ItemModelProvider extends ModelProvider<ItemModelBuilder> {
      * model with tints, built with {@link ItemModelDefinition}.
      */
     public void definition(Item item, JsonObject model) {
-        ResourceLocation name = BuiltInRegistries.ITEM.getKey(item);
+        Identifier name = BuiltInRegistries.ITEM.getKey(item);
         JsonObject root = new JsonObject();
         root.add("model", model);
         this.definitions.put(name, root);
@@ -53,17 +53,17 @@ public class ItemModelProvider extends ModelProvider<ItemModelBuilder> {
         return this.basicItem(item, "item/generated");
     }
 
-    public ItemModelBuilder basicItem(ResourceLocation item) {
+    public ItemModelBuilder basicItem(Identifier item) {
         return this.getBuilder(item.getPath())
                 .parent(this.getExistingFile(this.mcLoc("item/generated")))
-                .texture("layer0", ResourceLocation.fromNamespaceAndPath(item.getNamespace(), "item/" + item.getPath()));
+                .texture("layer0", Identifier.fromNamespaceAndPath(item.getNamespace(), "item/" + item.getPath()));
     }
 
     public ItemModelBuilder basicItem(Item item, String parent) {
-        ResourceLocation name = BuiltInRegistries.ITEM.getKey(item);
+        Identifier name = BuiltInRegistries.ITEM.getKey(item);
         return this.getBuilder(name.getPath())
                 .parent(this.getExistingFile(this.mcLoc(parent)))
-                .texture("layer0", ResourceLocation.fromNamespaceAndPath(name.getNamespace(), "item/" + name.getPath()));
+                .texture("layer0", Identifier.fromNamespaceAndPath(name.getNamespace(), "item/" + name.getPath()));
     }
 
     @Override
@@ -72,7 +72,7 @@ public class ItemModelProvider extends ModelProvider<ItemModelBuilder> {
         futures.add(super.generateAll(cache));
 
         PackOutput.PathProvider items = this.output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "items");
-        for (Map.Entry<ResourceLocation, JsonObject> entry : this.itemDefinitions().entrySet()) {
+        for (Map.Entry<Identifier, JsonObject> entry : this.itemDefinitions().entrySet()) {
             futures.add(DataProvider.saveStable(cache, entry.getValue(), items.json(entry.getKey())));
         }
 
@@ -90,9 +90,9 @@ public class ItemModelProvider extends ModelProvider<ItemModelBuilder> {
      * one get the plain pointer at {@code <ns>:item/<name>} that the model generator writes for
      * them by default.
      */
-    protected Map<ResourceLocation, JsonObject> itemDefinitions() {
-        Map<ResourceLocation, JsonObject> result = new LinkedHashMap<>();
-        for (ResourceLocation item : BuiltInRegistries.ITEM.keySet()) {
+    protected Map<Identifier, JsonObject> itemDefinitions() {
+        Map<Identifier, JsonObject> result = new LinkedHashMap<>();
+        for (Identifier item : BuiltInRegistries.ITEM.keySet()) {
             if (!item.getNamespace().equals(this.modid)) {
                 continue;
             }
@@ -103,11 +103,11 @@ public class ItemModelProvider extends ModelProvider<ItemModelBuilder> {
     }
 
     /** The model an item draws with when nothing else is specified. */
-    public ResourceLocation modelOf(ResourceLocation item) {
-        return ResourceLocation.fromNamespaceAndPath(item.getNamespace(), "item/" + item.getPath());
+    public Identifier modelOf(Identifier item) {
+        return Identifier.fromNamespaceAndPath(item.getNamespace(), "item/" + item.getPath());
     }
 
-    private static JsonObject plainDefinition(ResourceLocation model) {
+    private static JsonObject plainDefinition(Identifier model) {
         JsonObject root = new JsonObject();
         root.add("model", ItemModelDefinition.model(model));
         return root;

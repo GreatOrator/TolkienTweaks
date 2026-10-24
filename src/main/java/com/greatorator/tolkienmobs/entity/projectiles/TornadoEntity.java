@@ -14,7 +14,6 @@ import com.geckolib.animatable.GeoAnimatable;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.animation.AnimationController;
-import com.geckolib.animation.object.PlayState;
 import com.geckolib.animation.RawAnimation;
 import com.geckolib.util.GeckoLibUtil;
 
@@ -56,16 +55,6 @@ public class TornadoEntity extends Entity implements GeoAnimatable {
         this.setPos(d0, d1, d2);
     }
 
-    /**
-     * GeckoLib times the funnel's animation from this value, so a constant here leaves the tornado
-     * frozen on the first frame of its lift: the rings never turn and the pillar never rises. A
-     * plain entity has to hand over its own age, which is what a GeoEntity would have done.
-     */
-    @Override
-    public double getTick(Object object) {
-        return this.tickCount;
-    }
-
     @Override
     public void baseTick() {
         super.baseTick();
@@ -87,7 +76,7 @@ public class TornadoEntity extends Entity implements GeoAnimatable {
             }
 
             if (this.lifeTime >= 15 && this.lifeTime < 30) {
-                if (this.level.isClientSide) {
+                if (this.level.isClientSide()) {
                     for (int i = 0; i < 3; i++) {
                         this.level.addParticle(TolkienParticleTypes.WIND_PARTICLE.get(), this.getRandomX(0.5D), this.getRandomY() - 2, this.getRandomZ(0.5D), (this.random.nextDouble() - 0.5D) * 1.0D, 5, (this.random.nextDouble() - 0.5D) * 1.0D);
                     }
@@ -99,7 +88,7 @@ public class TornadoEntity extends Entity implements GeoAnimatable {
 
         int removeTime = this.isBlast() ? 14 : 36;
 
-        if (this.lifeTime >= removeTime && !this.level.isClientSide) {
+        if (this.lifeTime >= removeTime && !this.level.isClientSide()) {
             this.remove(RemovalReason.DISCARDED);
         }
     }
@@ -129,15 +118,17 @@ public class TornadoEntity extends Entity implements GeoAnimatable {
 
     /**
      * Animations
+     *
+     * 5 times animations itself, from the tick it stamps on each render state, so the plain entity no
+     * longer has to hand its age over the way getTick asked for.
      */
+    private static final RawAnimation LIFT = RawAnimation.begin().thenPlay("lift");
+
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
-            event.getController().setAnimation(RawAnimation.begin().thenPlay("lift"));
-                return PlayState.CONTINUE;
-        }));
+        controllers.add(new AnimationController<TornadoEntity>("Walk", 1, test -> test.setAndContinue(LIFT)));
     }
 
     @Override

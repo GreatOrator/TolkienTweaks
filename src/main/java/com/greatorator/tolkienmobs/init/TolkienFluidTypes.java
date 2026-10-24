@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.init;
 
 import com.greatorator.tolkienmobs.fluid.TolkienFluidType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -13,9 +13,9 @@ import java.util.function.Supplier;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class TolkienFluidTypes {
-    public static final ResourceLocation WATER_STILL_RL = ResourceLocation.parse("block/water_still");
-    public static final ResourceLocation WATER_FLOWING_RL = ResourceLocation.parse("block/water_flow");
-    public static final ResourceLocation WATER_OVERLAY_RL = ResourceLocation.parse("block/water_overlay");
+    public static final Identifier WATER_STILL_RL = Identifier.parse("block/water_still");
+    public static final Identifier WATER_FLOWING_RL = Identifier.parse("block/water_flow");
+    public static final Identifier WATER_OVERLAY_RL = Identifier.parse("block/water_overlay");
 
     public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(NeoForgeRegistries.Keys.FLUID_TYPES, MODID);
 

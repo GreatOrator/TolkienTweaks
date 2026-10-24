@@ -12,7 +12,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.AttachFace;
@@ -96,17 +96,17 @@ public abstract class BlockStateProvider implements DataProvider {
         return this.itemModels;
     }
 
-    public ResourceLocation modLoc(String name) {
-        return ResourceLocation.fromNamespaceAndPath(this.modid, name);
+    public Identifier modLoc(String name) {
+        return Identifier.fromNamespaceAndPath(this.modid, name);
     }
 
-    public ResourceLocation mcLoc(String name) {
-        return ResourceLocation.parse(name);
+    public Identifier mcLoc(String name) {
+        return Identifier.parse(name);
     }
 
     // Private like NeoForge's original, so subclasses (BlockModelHelper, BlockModelBuilders)
     // can declare their own protected key/name without fighting an override.
-    private ResourceLocation key(Block block) {
+    private Identifier key(Block block) {
         return BuiltInRegistries.BLOCK.getKey(block);
     }
 
@@ -114,9 +114,9 @@ public abstract class BlockStateProvider implements DataProvider {
         return this.key(block).getPath();
     }
 
-    public ResourceLocation blockTexture(Block block) {
-        ResourceLocation key = this.key(block);
-        return ResourceLocation.fromNamespaceAndPath(key.getNamespace(), "block/" + key.getPath());
+    public Identifier blockTexture(Block block) {
+        Identifier key = this.key(block);
+        return Identifier.fromNamespaceAndPath(key.getNamespace(), "block/" + key.getPath());
     }
 
     public ModelFile cubeAll(Block block) {
@@ -156,12 +156,12 @@ public abstract class BlockStateProvider implements DataProvider {
         this.axisBlock(block);
     }
 
-    public void axisBlock(RotatedPillarBlock block, ResourceLocation side, ResourceLocation end) {
+    public void axisBlock(RotatedPillarBlock block, Identifier side, Identifier end) {
         this.axisBlock(block, this.models().cubeColumn(this.name(block), side, end),
                 this.models().cubeColumnHorizontal(this.name(block) + "_horizontal", side, end));
     }
 
-    public void axisBlockWithRenderType(RotatedPillarBlock block, ResourceLocation renderType) {
+    public void axisBlockWithRenderType(RotatedPillarBlock block, Identifier renderType) {
         this.axisBlockWithRenderType(block, this.blockTexture(block), this.blockTexture(block).withSuffix("_top"), renderType);
     }
 
@@ -169,15 +169,15 @@ public abstract class BlockStateProvider implements DataProvider {
         this.axisBlockWithRenderType(block, renderTypeLoc(renderType));
     }
 
-    public void axisBlockWithRenderType(RotatedPillarBlock block, ResourceLocation baseName, String renderType) {
+    public void axisBlockWithRenderType(RotatedPillarBlock block, Identifier baseName, String renderType) {
         this.axisBlockWithRenderType(block, baseName, baseName.withSuffix("_top"), renderTypeLoc(renderType));
     }
 
-    public void axisBlockWithRenderType(RotatedPillarBlock block, ResourceLocation side, ResourceLocation end, String renderType) {
+    public void axisBlockWithRenderType(RotatedPillarBlock block, Identifier side, Identifier end, String renderType) {
         this.axisBlockWithRenderType(block, side, end, renderTypeLoc(renderType));
     }
 
-    public void logBlockWithRenderType(RotatedPillarBlock block, ResourceLocation renderType) {
+    public void logBlockWithRenderType(RotatedPillarBlock block, Identifier renderType) {
         this.axisBlockWithRenderType(block, renderType);
     }
 
@@ -187,16 +187,16 @@ public abstract class BlockStateProvider implements DataProvider {
 
     /**
      * Render types are written as bare names in the JSON ("cutout"), but the vanilla ones all live in
-     * {@code minecraft:}. A bare name passed as a {@link ResourceLocation} would resolve against the
+     * {@code minecraft:}. A bare name passed as a {@link Identifier} would resolve against the
      * mod namespace and produce an unknown render type, so normalise here.
      */
-    protected static ResourceLocation renderTypeLoc(String renderType) {
+    protected static Identifier renderTypeLoc(String renderType) {
         return renderType.indexOf(':') >= 0
                 ? renderTypeLoc(renderType)
-                : ResourceLocation.withDefaultNamespace(renderType);
+                : Identifier.withDefaultNamespace(renderType);
     }
 
-    public void axisBlockWithRenderType(RotatedPillarBlock block, ResourceLocation side, ResourceLocation end, ResourceLocation renderType) {
+    public void axisBlockWithRenderType(RotatedPillarBlock block, Identifier side, Identifier end, Identifier renderType) {
         this.axisBlock(block,
                 this.models().cubeColumn(this.name(block), side, end).renderType(renderType),
                 this.models().cubeColumnHorizontal(this.name(block) + "_horizontal", side, end).renderType(renderType));
@@ -281,54 +281,54 @@ public abstract class BlockStateProvider implements DataProvider {
 
     // ----------------------------------------------------------------- stairs
 
-    public void stairsBlock(StairBlock block, ResourceLocation texture) {
+    public void stairsBlock(StairBlock block, Identifier texture) {
         this.stairsBlock(block, texture, texture, texture);
     }
 
-    public void stairsBlock(StairBlock block, String name, ResourceLocation texture) {
+    public void stairsBlock(StairBlock block, String name, Identifier texture) {
         this.stairsBlock(block, name, texture, texture, texture);
     }
 
-    public void stairsBlock(StairBlock block, ResourceLocation side, ResourceLocation bottom, ResourceLocation top) {
+    public void stairsBlock(StairBlock block, Identifier side, Identifier bottom, Identifier top) {
         this.stairsBlock(block, this.name(block), side, bottom, top);
     }
 
-    public void stairsBlock(StairBlock block, String name, ResourceLocation side, ResourceLocation bottom, ResourceLocation top) {
+    public void stairsBlock(StairBlock block, String name, Identifier side, Identifier bottom, Identifier top) {
         this.stairsBlock(block,
                 this.models().stairs(name, side, bottom, top),
                 this.models().stairsInner(name + "_inner", side, bottom, top),
                 this.models().stairsOuter(name + "_outer", side, bottom, top));
     }
 
-    public void stairsBlockWithRenderType(StairBlock block, ResourceLocation texture, String renderType) {
+    public void stairsBlockWithRenderType(StairBlock block, Identifier texture, String renderType) {
         this.stairsBlockWithRenderType(block, texture, renderTypeLoc(renderType));
     }
 
-    public void stairsBlockWithRenderType(StairBlock block, String name, ResourceLocation texture, String renderType) {
+    public void stairsBlockWithRenderType(StairBlock block, String name, Identifier texture, String renderType) {
         this.stairsBlockWithRenderType(block, name, texture, renderTypeLoc(renderType));
     }
 
-    public void stairsBlockWithRenderType(StairBlock block, ResourceLocation side, ResourceLocation bottom, ResourceLocation top, String renderType) {
+    public void stairsBlockWithRenderType(StairBlock block, Identifier side, Identifier bottom, Identifier top, String renderType) {
         this.stairsBlockWithRenderType(block, side, bottom, top, renderTypeLoc(renderType));
     }
 
-    public void stairsBlockWithRenderType(StairBlock block, String name, ResourceLocation side, ResourceLocation bottom, ResourceLocation top, String renderType) {
+    public void stairsBlockWithRenderType(StairBlock block, String name, Identifier side, Identifier bottom, Identifier top, String renderType) {
         this.stairsBlockWithRenderType(block, name, side, bottom, top, renderTypeLoc(renderType));
     }
 
-    public void stairsBlockWithRenderType(StairBlock block, ResourceLocation texture, ResourceLocation renderType) {
+    public void stairsBlockWithRenderType(StairBlock block, Identifier texture, Identifier renderType) {
         this.stairsBlockWithRenderType(block, this.name(block), texture, texture, texture, renderType);
     }
 
-    public void stairsBlockWithRenderType(StairBlock block, ResourceLocation side, ResourceLocation bottom, ResourceLocation top, ResourceLocation renderType) {
+    public void stairsBlockWithRenderType(StairBlock block, Identifier side, Identifier bottom, Identifier top, Identifier renderType) {
         this.stairsBlockWithRenderType(block, this.name(block), side, bottom, top, renderType);
     }
 
-    public void stairsBlockWithRenderType(StairBlock block, String name, ResourceLocation texture, ResourceLocation renderType) {
+    public void stairsBlockWithRenderType(StairBlock block, String name, Identifier texture, Identifier renderType) {
         this.stairsBlockWithRenderType(block, name, texture, texture, texture, renderType);
     }
 
-    public void stairsBlockWithRenderType(StairBlock block, String name, ResourceLocation side, ResourceLocation bottom, ResourceLocation top, ResourceLocation renderType) {
+    public void stairsBlockWithRenderType(StairBlock block, String name, Identifier side, Identifier bottom, Identifier top, Identifier renderType) {
         this.stairsBlock(block,
                 this.models().stairs(name, side, bottom, top).renderType(renderType),
                 this.models().stairsInner(name + "_inner", side, bottom, top).renderType(renderType),
@@ -361,11 +361,11 @@ public abstract class BlockStateProvider implements DataProvider {
 
     // ------------------------------------------------------------------- slab
 
-    public void slabBlock(SlabBlock block, ResourceLocation doubleslab, ResourceLocation texture) {
+    public void slabBlock(SlabBlock block, Identifier doubleslab, Identifier texture) {
         this.slabBlock(block, doubleslab, texture, texture, texture);
     }
 
-    public void slabBlock(SlabBlock block, ResourceLocation doubleslab, ResourceLocation side, ResourceLocation bottom, ResourceLocation top) {
+    public void slabBlock(SlabBlock block, Identifier doubleslab, Identifier side, Identifier bottom, Identifier top) {
         this.slabBlock(block,
                 this.models().slab(this.name(block), side, bottom, top),
                 this.models().slabTop(this.name(block) + "_top", side, bottom, top),
@@ -381,7 +381,7 @@ public abstract class BlockStateProvider implements DataProvider {
 
     // ----------------------------------------------------------------- button
 
-    public void buttonBlock(ButtonBlock block, ResourceLocation texture) {
+    public void buttonBlock(ButtonBlock block, Identifier texture) {
         this.buttonBlock(block,
                 this.models().withExistingParent(this.name(block), "block/button").texture("texture", texture),
                 this.models().withExistingParent(this.name(block) + "_pressed", "block/button_pressed").texture("texture", texture));
@@ -403,7 +403,7 @@ public abstract class BlockStateProvider implements DataProvider {
 
     // --------------------------------------------------------- pressure plate
 
-    public void pressurePlateBlock(PressurePlateBlock block, ResourceLocation texture) {
+    public void pressurePlateBlock(PressurePlateBlock block, Identifier texture) {
         this.pressurePlateBlock(block,
                 this.models().withExistingParent(this.name(block), "block/pressure_plate_up").texture("texture", texture),
                 this.models().withExistingParent(this.name(block) + "_down", "block/pressure_plate_down").texture("texture", texture));
@@ -417,7 +417,7 @@ public abstract class BlockStateProvider implements DataProvider {
 
     // ------------------------------------------------------------------- sign
 
-    public void signBlock(StandingSignBlock signBlock, WallSignBlock wallSignBlock, ResourceLocation texture) {
+    public void signBlock(StandingSignBlock signBlock, WallSignBlock wallSignBlock, Identifier texture) {
         ModelFile sign = this.models().getBuilder(this.name(signBlock)).texture("particle", texture);
         this.signBlock(signBlock, wallSignBlock, sign);
     }
@@ -427,7 +427,7 @@ public abstract class BlockStateProvider implements DataProvider {
         this.simpleBlock(wallSignBlock, sign);
     }
 
-    public void hangingSignBlock(CeilingHangingSignBlock hangingSignBlock, WallHangingSignBlock wallHangingSignBlock, ResourceLocation texture) {
+    public void hangingSignBlock(CeilingHangingSignBlock hangingSignBlock, WallHangingSignBlock wallHangingSignBlock, Identifier texture) {
         ModelFile sign = this.models().getBuilder(this.name(hangingSignBlock)).texture("particle", texture);
         this.hangingSignBlock(hangingSignBlock, wallHangingSignBlock, sign);
     }
@@ -458,39 +458,39 @@ public abstract class BlockStateProvider implements DataProvider {
         });
     }
 
-    public void fenceBlock(FenceBlock block, ResourceLocation texture) {
+    public void fenceBlock(FenceBlock block, Identifier texture) {
         this.fenceBlock(block, this.name(block), texture);
     }
 
-    public void fenceBlock(FenceBlock block, String name, ResourceLocation texture) {
+    public void fenceBlock(FenceBlock block, String name, Identifier texture) {
         this.fourWayBlock(block,
                 this.models().fencePost(name + "_post", texture),
                 this.models().fenceSide(name + "_side", texture));
     }
 
-    public void fenceBlockWithRenderType(FenceBlock block, ResourceLocation texture, String renderType) {
+    public void fenceBlockWithRenderType(FenceBlock block, Identifier texture, String renderType) {
         this.fenceBlockWithRenderType(block, texture, renderTypeLoc(renderType));
     }
 
-    public void fenceBlockWithRenderType(FenceBlock block, String name, ResourceLocation texture, String renderType) {
+    public void fenceBlockWithRenderType(FenceBlock block, String name, Identifier texture, String renderType) {
         this.fenceBlockWithRenderType(block, name, texture, renderTypeLoc(renderType));
     }
 
-    public void fenceBlockWithRenderType(FenceBlock block, ResourceLocation texture, ResourceLocation renderType) {
+    public void fenceBlockWithRenderType(FenceBlock block, Identifier texture, Identifier renderType) {
         this.fenceBlockWithRenderType(block, this.name(block), texture, renderType);
     }
 
-    public void fenceBlockWithRenderType(FenceBlock block, String name, ResourceLocation texture, ResourceLocation renderType) {
+    public void fenceBlockWithRenderType(FenceBlock block, String name, Identifier texture, Identifier renderType) {
         this.fourWayBlock(block,
                 this.models().fencePost(name + "_post", texture).renderType(renderType),
                 this.models().fenceSide(name + "_side", texture).renderType(renderType));
     }
 
-    public void fenceGateBlock(FenceGateBlock block, ResourceLocation texture) {
+    public void fenceGateBlock(FenceGateBlock block, Identifier texture) {
         this.fenceGateBlock(block, this.name(block), texture);
     }
 
-    public void fenceGateBlock(FenceGateBlock block, String name, ResourceLocation texture) {
+    public void fenceGateBlock(FenceGateBlock block, String name, Identifier texture) {
         this.fenceGateBlock(block,
                 this.models().fenceGate(name, texture),
                 this.models().fenceGateOpen(name + "_open", texture),
@@ -498,19 +498,19 @@ public abstract class BlockStateProvider implements DataProvider {
                 this.models().fenceGateWallOpen(name + "_wall_open", texture));
     }
 
-    public void fenceGateBlockWithRenderType(FenceGateBlock block, ResourceLocation texture, String renderType) {
+    public void fenceGateBlockWithRenderType(FenceGateBlock block, Identifier texture, String renderType) {
         this.fenceGateBlockWithRenderType(block, this.name(block), texture, renderTypeLoc(renderType));
     }
 
-    public void fenceGateBlockWithRenderType(FenceGateBlock block, String name, ResourceLocation texture, String renderType) {
+    public void fenceGateBlockWithRenderType(FenceGateBlock block, String name, Identifier texture, String renderType) {
         this.fenceGateBlockWithRenderType(block, name, texture, renderTypeLoc(renderType));
     }
 
-    public void fenceGateBlockWithRenderType(FenceGateBlock block, ResourceLocation texture, ResourceLocation renderType) {
+    public void fenceGateBlockWithRenderType(FenceGateBlock block, Identifier texture, Identifier renderType) {
         this.fenceGateBlockWithRenderType(block, this.name(block), texture, renderType);
     }
 
-    public void fenceGateBlockWithRenderType(FenceGateBlock block, String name, ResourceLocation texture, ResourceLocation renderType) {
+    public void fenceGateBlockWithRenderType(FenceGateBlock block, String name, Identifier texture, Identifier renderType) {
         this.fenceGateBlock(block,
                 this.models().fenceGate(name, texture).renderType(renderType),
                 this.models().fenceGateOpen(name + "_open", texture).renderType(renderType),
@@ -535,30 +535,30 @@ public abstract class BlockStateProvider implements DataProvider {
         }, FenceGateBlock.POWERED);
     }
 
-    public void wallBlock(WallBlock block, ResourceLocation texture) {
+    public void wallBlock(WallBlock block, Identifier texture) {
         this.wallBlock(block, this.name(block), texture);
     }
 
-    public void wallBlock(WallBlock block, String name, ResourceLocation texture) {
+    public void wallBlock(WallBlock block, String name, Identifier texture) {
         this.wallBlock(block,
                 this.models().withExistingParent(name + "_post", "block/template_wall_post").texture("wall", texture),
                 this.models().withExistingParent(name + "_side", "block/template_wall_side").texture("wall", texture),
                 this.models().withExistingParent(name + "_side_tall", "block/template_wall_side_tall").texture("wall", texture));
     }
 
-    public void wallBlockWithRenderType(WallBlock block, ResourceLocation texture, String renderType) {
+    public void wallBlockWithRenderType(WallBlock block, Identifier texture, String renderType) {
         this.wallBlockWithRenderType(block, this.name(block), texture, renderTypeLoc(renderType));
     }
 
-    public void wallBlockWithRenderType(WallBlock block, String name, ResourceLocation texture, String renderType) {
+    public void wallBlockWithRenderType(WallBlock block, String name, Identifier texture, String renderType) {
         this.wallBlockWithRenderType(block, name, texture, renderTypeLoc(renderType));
     }
 
-    public void wallBlockWithRenderType(WallBlock block, ResourceLocation texture, ResourceLocation renderType) {
+    public void wallBlockWithRenderType(WallBlock block, Identifier texture, Identifier renderType) {
         this.wallBlockWithRenderType(block, this.name(block), texture, renderType);
     }
 
-    public void wallBlockWithRenderType(WallBlock block, String name, ResourceLocation texture, ResourceLocation renderType) {
+    public void wallBlockWithRenderType(WallBlock block, String name, Identifier texture, Identifier renderType) {
         this.wallBlock(block,
                 this.models().withExistingParent(name + "_post", "block/template_wall_post").texture("wall", texture).renderType(renderType),
                 this.models().withExistingParent(name + "_side", "block/template_wall_side").texture("wall", texture).renderType(renderType),
@@ -594,11 +594,11 @@ public abstract class BlockStateProvider implements DataProvider {
 
     // ------------------------------------------------------------------ panes
 
-    public void paneBlock(IronBarsBlock block, ResourceLocation pane, ResourceLocation edge) {
+    public void paneBlock(IronBarsBlock block, Identifier pane, Identifier edge) {
         this.paneBlock(block, this.name(block), pane, edge);
     }
 
-    public void paneBlock(IronBarsBlock block, String name, ResourceLocation pane, ResourceLocation edge) {
+    public void paneBlock(IronBarsBlock block, String name, Identifier pane, Identifier edge) {
         this.paneBlock(block,
                 this.models().withExistingParent(name + "_post", "block/template_glass_pane_post")
                         .texture("pane", pane).texture("edge", edge),
@@ -612,19 +612,19 @@ public abstract class BlockStateProvider implements DataProvider {
                         .texture("pane", pane));
     }
 
-    public void paneBlockWithRenderType(IronBarsBlock block, ResourceLocation pane, ResourceLocation edge, String renderType) {
+    public void paneBlockWithRenderType(IronBarsBlock block, Identifier pane, Identifier edge, String renderType) {
         this.paneBlockWithRenderType(block, this.name(block), pane, edge, renderTypeLoc(renderType));
     }
 
-    public void paneBlockWithRenderType(IronBarsBlock block, ResourceLocation pane, ResourceLocation edge, ResourceLocation renderType) {
+    public void paneBlockWithRenderType(IronBarsBlock block, Identifier pane, Identifier edge, Identifier renderType) {
         this.paneBlockWithRenderType(block, this.name(block), pane, edge, renderType);
     }
 
-    public void paneBlockWithRenderType(IronBarsBlock block, String name, ResourceLocation pane, ResourceLocation edge, String renderType) {
+    public void paneBlockWithRenderType(IronBarsBlock block, String name, Identifier pane, Identifier edge, String renderType) {
         this.paneBlockWithRenderType(block, name, pane, edge, renderTypeLoc(renderType));
     }
 
-    public void paneBlockWithRenderType(IronBarsBlock block, String name, ResourceLocation pane, ResourceLocation edge, ResourceLocation renderType) {
+    public void paneBlockWithRenderType(IronBarsBlock block, String name, Identifier pane, Identifier edge, Identifier renderType) {
         this.paneBlock(block,
                 this.models().withExistingParent(name + "_post", "block/template_glass_pane_post")
                         .texture("pane", pane).texture("edge", edge).renderType(renderType),
@@ -661,11 +661,11 @@ public abstract class BlockStateProvider implements DataProvider {
 
     // ------------------------------------------------------------------ doors
 
-    public void doorBlock(DoorBlock block, ResourceLocation bottom, ResourceLocation top) {
+    public void doorBlock(DoorBlock block, Identifier bottom, Identifier top) {
         this.doorBlock(block, this.name(block), bottom, top);
     }
 
-    public void doorBlock(DoorBlock block, String name, ResourceLocation bottom, ResourceLocation top) {
+    public void doorBlock(DoorBlock block, String name, Identifier bottom, Identifier top) {
         this.doorBlock(block,
                 this.models().withExistingParent(name + "_bottom_left", "block/door_bottom_left")
                         .texture("top", top).texture("bottom", bottom),
@@ -685,19 +685,19 @@ public abstract class BlockStateProvider implements DataProvider {
                         .texture("top", top).texture("bottom", bottom));
     }
 
-    public void doorBlockWithRenderType(DoorBlock block, ResourceLocation bottom, ResourceLocation top, String renderType) {
+    public void doorBlockWithRenderType(DoorBlock block, Identifier bottom, Identifier top, String renderType) {
         this.doorBlockWithRenderType(block, this.name(block), bottom, top, renderTypeLoc(renderType));
     }
 
-    public void doorBlockWithRenderType(DoorBlock block, ResourceLocation bottom, ResourceLocation top, ResourceLocation renderType) {
+    public void doorBlockWithRenderType(DoorBlock block, Identifier bottom, Identifier top, Identifier renderType) {
         this.doorBlockWithRenderType(block, this.name(block), bottom, top, renderType);
     }
 
-    public void doorBlockWithRenderType(DoorBlock block, String name, ResourceLocation bottom, ResourceLocation top, String renderType) {
+    public void doorBlockWithRenderType(DoorBlock block, String name, Identifier bottom, Identifier top, String renderType) {
         this.doorBlockWithRenderType(block, name, bottom, top, renderTypeLoc(renderType));
     }
 
-    public void doorBlockWithRenderType(DoorBlock block, String name, ResourceLocation bottom, ResourceLocation top, ResourceLocation renderType) {
+    public void doorBlockWithRenderType(DoorBlock block, String name, Identifier bottom, Identifier top, Identifier renderType) {
         this.doorBlock(block,
                 this.models().withExistingParent(name + "_bottom_left", "block/door_bottom_left")
                         .texture("top", top).texture("bottom", bottom).renderType(renderType),
@@ -746,11 +746,11 @@ public abstract class BlockStateProvider implements DataProvider {
 
     // -------------------------------------------------------------- trapdoors
 
-    public void trapdoorBlock(TrapDoorBlock block, ResourceLocation texture, boolean orientable) {
+    public void trapdoorBlock(TrapDoorBlock block, Identifier texture, boolean orientable) {
         this.trapdoorBlock(block, this.name(block), texture, orientable);
     }
 
-    public void trapdoorBlock(TrapDoorBlock block, String name, ResourceLocation texture, boolean orientable) {
+    public void trapdoorBlock(TrapDoorBlock block, String name, Identifier texture, boolean orientable) {
         String base = orientable ? "block/template_orientable_trapdoor" : "block/template_trapdoor";
         this.trapdoorBlock(block,
                 this.models().withExistingParent(name + "_bottom", base + "_bottom").texture("texture", texture),
@@ -759,19 +759,19 @@ public abstract class BlockStateProvider implements DataProvider {
                 orientable);
     }
 
-    public void trapdoorBlockWithRenderType(TrapDoorBlock block, ResourceLocation texture, boolean orientable, String renderType) {
+    public void trapdoorBlockWithRenderType(TrapDoorBlock block, Identifier texture, boolean orientable, String renderType) {
         this.trapdoorBlockWithRenderType(block, texture, orientable, renderTypeLoc(renderType));
     }
 
-    public void trapdoorBlockWithRenderType(TrapDoorBlock block, ResourceLocation texture, boolean orientable, ResourceLocation renderType) {
+    public void trapdoorBlockWithRenderType(TrapDoorBlock block, Identifier texture, boolean orientable, Identifier renderType) {
         this.trapdoorBlockWithRenderType(block, this.name(block), texture, orientable, renderType);
     }
 
-    public void trapdoorBlockWithRenderType(TrapDoorBlock block, String name, ResourceLocation texture, boolean orientable, String renderType) {
+    public void trapdoorBlockWithRenderType(TrapDoorBlock block, String name, Identifier texture, boolean orientable, String renderType) {
         this.trapdoorBlockWithRenderType(block, name, texture, orientable, renderTypeLoc(renderType));
     }
 
-    public void trapdoorBlockWithRenderType(TrapDoorBlock block, String name, ResourceLocation texture, boolean orientable, ResourceLocation renderType) {
+    public void trapdoorBlockWithRenderType(TrapDoorBlock block, String name, Identifier texture, boolean orientable, Identifier renderType) {
         String base = orientable ? "block/template_orientable_trapdoor" : "block/template_trapdoor";
         this.trapdoorBlock(block,
                 this.models().withExistingParent(name + "_bottom", base + "_bottom").texture("texture", texture).renderType(renderType),

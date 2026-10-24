@@ -78,6 +78,6 @@ public class FireplaceRecipeBuilder implements RecipeBuilder {
         );
 
         // Pass the recipe and advancement to the output
-        recipeOutput.accept(recipeKey, recipe, advancement.build(recipeKey.location().withPrefix("recipes/")));
+        recipeOutput.accept(recipeKey, recipe, advancement.build(recipeKey.identifier().withPrefix("recipes/")));
     }
 }

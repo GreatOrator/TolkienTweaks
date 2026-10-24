@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.datagen.modelgen;
 
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /** Writes models under {@code assets/<ns>/models/block/}. */
 public class BlockModelProvider extends ModelProvider<BlockModelBuilder> {
@@ -10,7 +10,7 @@ public class BlockModelProvider extends ModelProvider<BlockModelBuilder> {
     }
 
     @Override
-    protected BlockModelBuilder createBuilder(ResourceLocation location) {
+    protected BlockModelBuilder createBuilder(Identifier location) {
         return new BlockModelBuilder(location, location.getPath());
     }
 

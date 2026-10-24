@@ -1,61 +1,62 @@
 package com.greatorator.tolkienmobs.entity.passive.render;
 
-import com.geckolib.cache.model.BakedGeoModel;
-
-import com.mojang.blaze3d.vertex.VertexConsumer;
-
+import com.geckolib.constant.DataTickets;
+import com.geckolib.renderer.GeoEntityRenderer;
+import com.geckolib.renderer.base.BoneSnapshots;
+import com.geckolib.renderer.base.RenderPassInfo;
 import com.google.common.collect.Maps;
 import com.greatorator.tolkienmobs.entity.passive.GoatEntity;
 import com.greatorator.tolkienmobs.entity.passive.model.GoatModel;
+import com.greatorator.tolkienmobs.entity.util.TolkienGeoRenderState;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.Util;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
-import com.geckolib.renderer.GeoEntityRenderer;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-public class GoatRender extends GeoEntityRenderer<GoatEntity> {
-    public static final Map<TolkienVariant, ResourceLocation> LOCATION_BY_VARIANT =
+public class GoatRender extends GeoEntityRenderer<GoatEntity, TolkienGeoRenderState> {
+    public static final Map<TolkienVariant, Identifier> LOCATION_BY_VARIANT =
             Util.make(Maps.newEnumMap(TolkienVariant.class), map -> {
                 map.put(TolkienVariant.DEFAULT,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/goat/goat1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/goat/goat1.png"));
                 map.put(TolkienVariant.RED,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/goat/goat1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/goat/goat1.png"));
                 map.put(TolkienVariant.ORANGE,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/goat/goat2.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/goat/goat2.png"));
                 map.put(TolkienVariant.YELLOW,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/goat/goat3.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/goat/goat3.png"));
                 map.put(TolkienVariant.GREEN,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/goat/goat4.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/goat/goat4.png"));
                 map.put(TolkienVariant.BLUE,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/goat/goat1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/goat/goat1.png"));
                 map.put(TolkienVariant.INDIGO,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/goat/goat2.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/goat/goat2.png"));
                 map.put(TolkienVariant.VIOLET,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/goat/goat3.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/goat/goat3.png"));
                 map.put(TolkienVariant.MAGENTA,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/goat/goat1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/goat/goat1.png"));
                 map.put(TolkienVariant.PINK,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/goat/goat2.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/goat/goat2.png"));
                 map.put(TolkienVariant.GRAY,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/goat/goat3.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/goat/goat3.png"));
                 map.put(TolkienVariant.AQUA,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/goat/goat4.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/goat/goat4.png"));
                 map.put(TolkienVariant.BEIGE,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/goat/goat1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/goat/goat1.png"));
                 map.put(TolkienVariant.BROWN,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/goat/goat2.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/goat/goat2.png"));
                 map.put(TolkienVariant.CORAL,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/goat/goat3.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/goat/goat3.png"));
                 map.put(TolkienVariant.CYAN,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/goat/goat4.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/goat/goat4.png"));
                 map.put(TolkienVariant.LAVENDER,
-                        ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/goat/goat1.png"));
+                        Identifier.fromNamespaceAndPath(MODID, "textures/entity/goat/goat1.png"));
             });
 
     public GoatRender(EntityRendererProvider.Context context) {
@@ -64,19 +65,48 @@ public class GoatRender extends GeoEntityRenderer<GoatEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(GoatEntity entity) {
-        return LOCATION_BY_VARIANT.get(entity.getVariant());
+    public TolkienGeoRenderState createRenderState(GoatEntity animatable, Void relatedObject) {
+        return new TolkienGeoRenderState();
+    }
+
+    /** The variant's texture, for the model and for the base class's texture lookup. */
+    public static Identifier textureFor(TolkienGeoRenderState renderState) {
+        return LOCATION_BY_VARIANT.get(renderState.variant);
     }
 
     @Override
-    public void preRender(PoseStack poseStack, GoatEntity animatable, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
-        if (!isReRender) {
-            if(animatable.isBaby()) {
-                poseStack.scale(0.5F, 0.5F, 0.5F);
-            }
+    public Identifier getTextureLocation(TolkienGeoRenderState renderState) {
+        return textureFor(renderState);
+    }
+
+    @Override
+    public void addRenderData(GoatEntity animatable, Void relatedObject, TolkienGeoRenderState renderState, float partialTick) {
+        renderState.variant = animatable.getVariant();
+        Set<String> hidden = new HashSet<>();
+        if (!animatable.isSaddled()) hidden.add("Saddle");
+        if (!animatable.hasChest()) hidden.add("chest");
+        renderState.hiddenBones = Set.copyOf(hidden);
+    }
+
+    /** The model's own scaling, which 5 applies here rather than in preRender. */
+    @Override
+    public void scaleModelForRender(RenderPassInfo<TolkienGeoRenderState> renderPassInfo, float widthScale, float heightScale) {
+        float scale = renderPassInfo.renderState().isBaby ? 0.5F : 1F;
+        super.scaleModelForRender(renderPassInfo, scale, scale);
+    }
+
+    /** The bone work the model used to do in setCustomAnimations, done per render pass. */
+    @Override
+    public void adjustModelBonesForRender(RenderPassInfo<TolkienGeoRenderState> renderPassInfo, BoneSnapshots snapshots) {
+        TolkienGeoRenderState renderState = renderPassInfo.renderState();
+
+        for (String bone : renderState.hiddenBones) {
+            snapshots.ifPresent(bone, snapshot -> snapshot.skipRender(true).skipChildrenRender(true));
         }
 
+        float pitch = renderState.getOrDefaultGeckolibData(DataTickets.ENTITY_PITCH, 0f);
+        float yaw = renderState.getOrDefaultGeckolibData(DataTickets.ENTITY_YAW, 0f);
 
-        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
+        snapshots.ifPresent("head", bone -> bone.setRotation(pitch * Mth.DEG_TO_RAD, yaw * 0.5f * Mth.DEG_TO_RAD, 0f));
     }
 }

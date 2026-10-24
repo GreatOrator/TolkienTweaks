@@ -61,7 +61,7 @@ public class TolkienServerEvents {
         {
             Block block = level.getBlockState(event.getNewSpawn()).getBlock();
 
-            if(!level.isClientSide && block instanceof SleepingBagBlock && !event.isForced())
+            if(!level.isClientSide() && block instanceof SleepingBagBlock && !event.isForced())
             {
                 event.setCanceled(true);
             }

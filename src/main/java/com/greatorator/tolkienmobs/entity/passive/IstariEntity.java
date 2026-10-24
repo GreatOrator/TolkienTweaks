@@ -10,7 +10,7 @@ import com.greatorator.tolkienmobs.entity.monster.MordorOrcEntity;
 import com.greatorator.tolkienmobs.entity.monster.UrukHaiEntity;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.greatorator.tolkienmobs.util.MathUtility;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -207,39 +207,39 @@ public class IstariEntity extends TolkienHeardEntity implements GeoEntity, Neutr
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
+        controllers.add(new AnimationController<IstariEntity>("Walk", 1, (event) -> {
             if (event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("walk"));
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
+        controllers.add(new AnimationController<IstariEntity>("Idle", 1, (event) -> {
             int rand = MathUtility.getRandomInteger(100, 1);
-            if (!event.isMoving() && !event.getAnimatable().isAggressive()) {
+            if (!event.isMoving() && !event.animatable().isAggressive()) {
                 if (rand <= 80) {
-                    event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
+                    event.controller().setAnimation(RawAnimation.begin().thenPlay("idle"));
                 } else {
                     setHidden(false);
-                    event.getController().setAnimation(RawAnimation.begin().thenPlay("idle2"));
+                    event.controller().setAnimation(RawAnimation.begin().thenPlay("idle2"));
                     setHidden(true);
                 }
                 return PlayState.CONTINUE;
             }
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Combat", 1, (event) -> {
+        controllers.add(new AnimationController<IstariEntity>("Combat", 1, (event) -> {
             // Each attack runs once and then hands the controller back, so it no longer continues
             // forever on the last frame of a looping attack; the swing is cleared either way.
-            if (event.getAnimatable().isAggressive() && this.swinging && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
-                event.getController().forceAnimationReset();
-                event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
+            if (event.animatable().isAggressive() && this.swinging && !event.controller().isAnimatingBones()) {
+                event.controller().forceAnimationReset();
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("attack"));
                 this.swinging =false;
                 return PlayState.CONTINUE;
-            } else if (event.getAnimatable().isAggressive() && this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
+            } else if (event.animatable().isAggressive() && this.getRanged() && !event.controller().isAnimatingBones()) {
                 setHidden(false);
-                event.getController().forceAnimationReset();
-                event.getController().setAnimation(RawAnimation.begin().then("heal", Animation.LoopType.PLAY_ONCE));
+                event.controller().forceAnimationReset();
+                event.controller().setAnimation(RawAnimation.begin().thenPlay("heal"));
                 this.ranged = false;
                 setHidden(true);
                 return PlayState.CONTINUE;

@@ -4,8 +4,7 @@ import com.greatorator.tolkienmobs.entity.TolkienVillagerEntity;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienTags;
-import net.minecraft.Util;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Util;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -13,8 +12,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 import com.geckolib.animatable.GeoEntity;
 
@@ -50,24 +51,24 @@ public class HumanEntity extends TolkienVillagerEntity implements GeoEntity {
         // than in finalizeSpawn also catches humans placed from structure NBT, which never run it.
         // Which biomes count as cold is the tolkienmobs:cold tag's business, so a datapack can move
         // the line without a rebuild.
-        if (!this.level().isClientSide && !this.winterResolved) {
+        if (!this.level().isClientSide() && !this.winterResolved) {
             this.winterResolved = true;
             this.setWinter(this.level().getBiome(this.blockPosition()).is(TolkienTags.Biomes.COLD));
         }
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
-        compound.putBoolean("Winter", this.isWinter());
-        compound.putBoolean("WinterResolved", this.winterResolved);
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putBoolean("Winter", this.isWinter());
+        output.putBoolean("WinterResolved", this.winterResolved);
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
-        this.setWinter(compound.getBoolean("Winter"));
-        this.winterResolved = compound.getBoolean("WinterResolved");
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        this.setWinter(input.getBooleanOr("Winter", false));
+        this.winterResolved = input.getBooleanOr("WinterResolved", false);
     }
 
     @Nullable

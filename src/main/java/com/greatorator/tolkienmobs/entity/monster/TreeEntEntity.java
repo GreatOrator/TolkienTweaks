@@ -8,12 +8,13 @@ import com.greatorator.tolkienmobs.entity.projectiles.BoulderEntity;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
 import com.greatorator.tolkienmobs.util.MathUtility;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -45,6 +46,7 @@ import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.RawAnimation;
+import com.geckolib.animation.object.LoopType;
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.util.GeckoLibUtil;
@@ -135,16 +137,16 @@ public class TreeEntEntity extends TolkienMonsterEntity implements GeoEntity, Ne
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
-        compound.putInt("Variant", this.getTypeVariant());
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putInt("Variant", this.getTypeVariant());
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
         this.reassessWeaponGoal();
-        this.entityData.set(VARIANT, compound.getInt("Variant"));
+        this.entityData.set(VARIANT, input.getIntOr("Variant", 0));
     }
 
     @Override
@@ -156,42 +158,44 @@ public class TreeEntEntity extends TolkienMonsterEntity implements GeoEntity, Ne
 
     /**
      * Animations
+     *
+     * GeckoLib 5 builds a controller without the animatable and hands its handler an AnimationTest, so the
+     * controller no longer holds `this`. The RawAnimations are built once, here, instead of once per frame.
      */
+    private static final RawAnimation WALK = RawAnimation.begin().thenPlay("walk");
+    private static final RawAnimation IDLE = RawAnimation.begin().thenPlay("idle");
+    private static final RawAnimation ATTACK = RawAnimation.begin().then("attack", LoopType.PLAY_ONCE);
+    private static final RawAnimation STOMP = RawAnimation.begin().then("stomp", LoopType.PLAY_ONCE);
+    private static final RawAnimation RANGED = RawAnimation.begin().then("ranged", LoopType.PLAY_ONCE);
+
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
-            if (event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
+        controllers.add(new AnimationController<TreeEntEntity>("Walk", 1, test ->
+                test.isMoving() ? test.setAndContinue(WALK) : PlayState.STOP));
+        controllers.add(new AnimationController<TreeEntEntity>("Idle", 1, test ->
+                test.isMoving() ? PlayState.STOP : test.setAndContinue(IDLE)));
+        controllers.add(new AnimationController<TreeEntEntity>("Attack", 1, test -> {
+            // A swing has to play out: 5 resets the controller when the handler returns STOP, so dropping
+            // to STOP mid-swing would end the attack on its first frame.
+            if (test.controller().isAnimatingBones()) {
                 return PlayState.CONTINUE;
             }
-            return PlayState.STOP;
-        }));
-        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
-            if (!event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
-                return PlayState.CONTINUE;
-            }
-            return PlayState.STOP;
-        }));
-        controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
+
             // The boulder throw is driven by the shooting flag, which the ranged goal sets on the
             // server and syncs; the weapon flag this used to read was never sync'd, so the client
             // never saw it and the throw animation could not play.
-            if (this.swinging && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
-                event.getController().forceAnimationReset();
-                if (MathUtility.getRandomInteger(6, 1) <= 3){
-                    event.getController().setAnimation(RawAnimation.begin().then("attack", Animation.LoopType.PLAY_ONCE));
-                }else {
-                    event.getController().setAnimation(RawAnimation.begin().then("stomp", Animation.LoopType.PLAY_ONCE));
-                }
-                this.swinging =false;
-            }else if (this.isShooting() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
-                event.getController().forceAnimationReset();
-                event.getController().setAnimation(RawAnimation.begin().then("ranged", Animation.LoopType.PLAY_ONCE));
+            if (this.swinging) {
+                this.swinging = false;
+                return test.setAndContinue(MathUtility.getRandomInteger(6, 1) <= 3 ? ATTACK : STOMP);
             }
-            return PlayState.CONTINUE;
+
+            if (this.isShooting()) {
+                return test.setAndContinue(RANGED);
+            }
+
+            return PlayState.STOP;
         }));
     }
 
@@ -247,7 +251,7 @@ public class TreeEntEntity extends TolkienMonsterEntity implements GeoEntity, Ne
             }
         }
 
-        if (!this.level.isClientSide) {
+        if (!this.level.isClientSide()) {
             this.updatePersistentAnger((ServerLevel)this.level, true);
         }
     }
@@ -284,10 +288,10 @@ public class TreeEntEntity extends TolkienMonsterEntity implements GeoEntity, Ne
     /** Let's ride an Ent! */
     @Override
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
-        if (!this.level.isClientSide) {
+        if (!this.level.isClientSide()) {
             player.startRiding(this);
         }
-        return this.level().isClientSide ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
+        return this.level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
     }
 
     @Override

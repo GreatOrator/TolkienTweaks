@@ -2,7 +2,7 @@ package com.greatorator.tolkienmobs.init;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EntityType;
@@ -32,7 +32,7 @@ public class TolkienTags {
         public static final TagKey<Block> AMMOLITE_ORES = blockTag("tolkienmobs:ammolite_ores");
 
         private static TagKey<Block> blockTag(String name) {
-            return net.minecraft.tags.TagKey.create(Registries.BLOCK, ResourceLocation.parse(name));
+            return net.minecraft.tags.TagKey.create(Registries.BLOCK, Identifier.parse(name));
         }
     }
 
@@ -58,7 +58,7 @@ public class TolkienTags {
         public static final TagKey<Item> CURIOS_BACK = createTag("curios:back");
 
         private static TagKey<Item> createTag(String name) {
-            return TagKey.create(Registries.ITEM, ResourceLocation.parse(name));
+            return TagKey.create(Registries.ITEM, Identifier.parse(name));
         }
     }
 
@@ -111,7 +111,7 @@ public class TolkienTags {
         public static final TagKey<DamageType> HALLOWED_DAMAGE = tag("tolkienmobs:hallowed_damage");
 
         private static TagKey<DamageType> tag(String name) {
-            return TagKey.create(Registries.DAMAGE_TYPE, ResourceLocation.parse(name));
+            return TagKey.create(Registries.DAMAGE_TYPE, Identifier.parse(name));
         }
     }
 
@@ -120,7 +120,7 @@ public class TolkienTags {
         public static final TagKey<EntityType<?>> BOSSES = createTag("tolkienmobs:bosses");
 
         private static TagKey<EntityType<?>> createTag(String name) {
-            return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.parse(name));
+            return TagKey.create(Registries.ENTITY_TYPE, Identifier.parse(name));
         }
     }
 }

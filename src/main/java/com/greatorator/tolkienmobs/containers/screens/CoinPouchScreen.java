@@ -6,14 +6,14 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.client.renderer.RenderType;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class CoinPouchScreen extends AbstractContainerScreen<CoinPouchContainer> {
-    private final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory_small.png");
+    private final Identifier GUI = Identifier.fromNamespaceAndPath(MODID, "textures/gui/inventory_small.png");
     protected final CoinPouchContainer container;
 
     public CoinPouchScreen(CoinPouchContainer container, Inventory inv, Component name) {

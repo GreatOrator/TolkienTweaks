@@ -90,7 +90,7 @@ public class BramblesBushBlock extends BushBlock implements BonemealableBlock {
     protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         if (entity instanceof LivingEntity && entity.getType() != EntityType.FOX && entity.getType() != EntityType.BEE) {
             entity.makeStuckInBlock(state, new Vec3(0.8F, 0.75, 0.8F));
-            if (!level.isClientSide && state.getValue(AGE) > 0 && (entity.xOld != entity.getX() || entity.zOld != entity.getZ())) {
+            if (!level.isClientSide() && state.getValue(AGE) > 0 && (entity.xOld != entity.getX() || entity.zOld != entity.getZ())) {
                 double d0 = Math.abs(entity.getX() - entity.xOld);
                 double d1 = Math.abs(entity.getZ() - entity.zOld);
                 if (d0 >= 0.003F || d1 >= 0.003F) {
@@ -116,10 +116,10 @@ public class BramblesBushBlock extends BushBlock implements BonemealableBlock {
         int i = state.getValue(AGE);
         boolean flag = i == 3;
         if (i > 1) {
-            int j = 1 + level.random.nextInt(2);
+            int j = 1 + level.getRandom().nextInt(2);
             popResource(level, pos, new ItemStack(TolkienItems.BRAMBLES_BERRY.get(), j + (flag ? 1 : 0)));
             level.playSound(
-                null, pos, SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES, SoundSource.BLOCKS, 1.0F, 0.8F + level.random.nextFloat() * 0.4F
+                null, pos, SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES, SoundSource.BLOCKS, 1.0F, 0.8F + level.getRandom().nextFloat() * 0.4F
             );
             BlockState blockstate = state.setValue(AGE, Integer.valueOf(1));
             level.setBlock(pos, blockstate, 2);

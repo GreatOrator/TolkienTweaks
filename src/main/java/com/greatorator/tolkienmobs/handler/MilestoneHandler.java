@@ -12,7 +12,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -55,7 +55,7 @@ public class MilestoneHandler extends SavedData {
     // These are the methods you will use
 
     public static void addPlayerToMilestone(MilestoneBlockEntity tile, Player player) {
-        if (player.level.isClientSide) return;
+        if (player.level.isClientSide()) return;
         MilestoneHandler saveData = getInstance(tile.getLevel());
         if (saveData != null) {
             updateMilestone(tile, player);
@@ -75,7 +75,7 @@ public class MilestoneHandler extends SavedData {
     }
 
     public static void updateMilestone(MilestoneBlockEntity tile, Player player) {
-        if (tile.getLevel().isClientSide) return;
+        if (tile.getLevel().isClientSide()) return;
         MilestoneHandler saveData = getInstance(tile.getLevel());
         if (saveData != null) {
             UUID uuid = tile.getUUID();
@@ -91,7 +91,7 @@ public class MilestoneHandler extends SavedData {
     }
 
     public static List<MilestoneData> getKnownByPlayer(Player player) {
-        MilestoneHandler saveData = player.level.isClientSide ? CLIENT_INSTANCE : getInstance(player.level);
+        MilestoneHandler saveData = player.level.isClientSide() ? CLIENT_INSTANCE : getInstance(player.level);
         List<MilestoneData> known = new ArrayList<>();
         if (saveData != null) {
             for (MilestoneData data : dataMap.values()) {
@@ -223,7 +223,7 @@ public class MilestoneHandler extends SavedData {
             CompoundTag nbt = new CompoundTag();
             nbt.putLong("milestonePos", pos.asLong());
             nbt.putUUID("milestoneUUID", uuid);
-            nbt.putString("milestoneWorld", worldKey.location().toString());
+            nbt.putString("milestoneWorld", worldKey.identifier().toString());
             nbt.putString("milestoneTitle", name);
             nbt.putInt("milestoneCost", distanceCost);
             nbt.putInt("milestoneDimension", dimensionCost);
@@ -236,7 +236,7 @@ public class MilestoneHandler extends SavedData {
         private static MilestoneData read(CompoundTag nbt) {
             BlockPos pos = BlockPos.of(nbt.getLong("milestonePos"));
             UUID uuid = nbt.getUUID("milestoneUUID");
-            ResourceKey<Level> key = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(nbt.getString("milestoneWorld")));
+            ResourceKey<Level> key = ResourceKey.create(Registries.DIMENSION, Identifier.parse(nbt.getString("milestoneWorld")));
             MilestoneData data = new MilestoneData(key, pos, uuid);
             data.name = nbt.getString("milestoneTitle");
             data.distanceCost = nbt.getInt("milestoneCost");
@@ -250,7 +250,7 @@ public class MilestoneHandler extends SavedData {
         private void serialize(MCDataOutput output) {
             output.writePos(pos);
             output.writeUUID(uuid);
-            output.writeResourceLocation(worldKey.location());
+            output.writeResourceLocation(worldKey.identifier());
             output.writeString(name);
             output.writeVarInt(distanceCost);
             output.writeVarInt(dimensionCost);

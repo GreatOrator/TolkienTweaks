@@ -1,6 +1,6 @@
 package com.greatorator.tolkienmobs.datagen.modelgen;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * The NeoForge {@code neoforge:item_layers} loader, used for items that draw more than one
@@ -12,7 +12,7 @@ public class ItemLayerModelBuilder extends CustomLoaderBuilder<ItemModelBuilder>
     }
 
     protected ItemLayerModelBuilder(ItemModelBuilder parent) {
-        super(ResourceLocation.fromNamespaceAndPath("neoforge", "item_layers"), parent);
+        super(Identifier.fromNamespaceAndPath("neoforge", "item_layers"), parent);
     }
 
     public ItemLayerModelBuilder emissive(int block, int sky, int index) {

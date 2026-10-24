@@ -4,7 +4,7 @@ import com.greatorator.tolkienmobs.containers.PiggyBankContainer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class PiggyBankScreen extends AbstractContainerScreen<PiggyBankContainer> {
-    private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory_large.png");
+    private static final Identifier GUI = Identifier.fromNamespaceAndPath(MODID, "textures/gui/inventory_large.png");
 
     public PiggyBankScreen(PiggyBankContainer container, Inventory inv, Component name) {
         super(container, inv, Component.literal(""));

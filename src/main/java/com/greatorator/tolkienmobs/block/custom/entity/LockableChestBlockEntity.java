@@ -129,7 +129,7 @@ public class LockableChestBlockEntity extends TolkienBlockEntity implements Menu
     }
 
     private AnimationController<LockableChestBlockEntity> getController() {
-        return new AnimationController<>(this, "popup_controller", 0, state -> PlayState.STOP)
+        return new AnimationController<LockableChestBlockEntity>("popup_controller", 0, test -> PlayState.STOP)
                 .triggerableAnim("box_open", CHEST_OPEN);
     }
 

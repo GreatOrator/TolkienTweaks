@@ -120,7 +120,7 @@ public class WellBlock extends TolkienEntityBlock {
             }
             spawnParticlesAndPlaySound(level, pos, state);
             wellBlockEntity.onRightClick(state, player, hand);
-            level.playSound(null, pos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1f, level.random.nextFloat() + 0.5f);
+            level.playSound(null, pos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1f, level.getRandom().nextFloat() + 0.5f);
             return InteractionResult.SUCCESS;
         }else if (heldItem.getItem() == Items.GLASS_BOTTLE) {
             if (stack.getCount() == 1) {
@@ -137,7 +137,7 @@ public class WellBlock extends TolkienEntityBlock {
                 stack.shrink(1);
             }
             spawnParticlesAndPlaySound(level, pos, state);
-            level.playSound(null, pos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1f, level.random.nextFloat() + 0.5f);
+            level.playSound(null, pos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1f, level.getRandom().nextFloat() + 0.5f);
         } else {
             spawnParticlesAndPlaySound(level, pos, state);
         }
@@ -172,7 +172,7 @@ public class WellBlock extends TolkienEntityBlock {
                     0,
                     0);
         }
-        level.playSound(null, pos, SoundEvents.WATER_AMBIENT, SoundSource.BLOCKS, 0.1f, level.random.nextFloat() + 0.5f);
+        level.playSound(null, pos, SoundEvents.WATER_AMBIENT, SoundSource.BLOCKS, 0.1f, level.getRandom().nextFloat() + 0.5f);
     }
 
     public ItemStack cleanItem(ItemStack itemStack) {

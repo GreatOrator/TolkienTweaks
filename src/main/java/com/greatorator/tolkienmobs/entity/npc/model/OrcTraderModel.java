@@ -1,41 +1,31 @@
 package com.greatorator.tolkienmobs.entity.npc.model;
 
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.base.GeoRenderState;
 import com.greatorator.tolkienmobs.entity.npc.OrcTraderEntity;
 import com.greatorator.tolkienmobs.entity.npc.render.OrcTraderRender;
-import net.minecraft.resources.ResourceLocation;
-import com.geckolib.cache.model.GeoBone;
-import com.geckolib.constant.DataTickets;
-import com.geckolib.model.GeoModel;
-import com.geckolib.renderer.base.GeoRenderer;
+import com.greatorator.tolkienmobs.entity.util.TolkienGeoRenderState;
+import net.minecraft.resources.Identifier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
+/** Rendered from the render state, which is the only thing a GeckoLib 5 model or renderer sees during a pass. */
 public class OrcTraderModel extends GeoModel<OrcTraderEntity> {
-	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "merchant/southron");
-	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "merchant/southron");
+    private static final Identifier MODEL = Identifier.fromNamespaceAndPath(MODID, "merchant/southron");
+    private static final Identifier ANIMATIONS = Identifier.fromNamespaceAndPath(MODID, "merchant/southron");
 
-	@Override
-	public ResourceLocation getModelResource(OrcTraderEntity object, GeoRenderer<OrcTraderEntity> renderer) {
-		return this.model;
-	}
+    @Override
+    public Identifier getModelResource(GeoRenderState renderState) {
+        return MODEL;
+    }
 
-	@Override
-	public ResourceLocation getTextureResource(OrcTraderEntity object, GeoRenderer<OrcTraderEntity> renderer) {
-		return OrcTraderRender.LOCATION_BY_VARIANT.get(object.getTolkienVariant());
-	}
+    @Override
+    public Identifier getTextureResource(GeoRenderState renderState) {
+        return OrcTraderRender.textureFor((TolkienGeoRenderState) renderState);
+    }
 
-	@Override
-	public ResourceLocation getAnimationResource(OrcTraderEntity object) {
-		return this.animations;
-	}
-
-	@Override
-	public void setCustomAnimations(OrcTraderEntity entity, long uniqueID, AnimationState<OrcTraderEntity> customPredicate) {
-		super.setCustomAnimations(entity, uniqueID, customPredicate);
-		GeoBone head = this.getAnimationProcessor().getBone("head");
-		assert customPredicate != null;
-		EntityModelData extraData = (EntityModelData) customPredicate.getData(DataTickets.ENTITY_MODEL_DATA);
-		head.setRotX(extraData.headPitch() * ((float) Math.PI / 180F));
-		head.setRotY(extraData.netHeadYaw() *0.5f* ((float) Math.PI / 180F));
-	}
+    @Override
+    public Identifier getAnimationResource(OrcTraderEntity animatable) {
+        return ANIMATIONS;
+    }
 }

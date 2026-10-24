@@ -7,7 +7,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.data.recipes.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -43,7 +43,7 @@ public abstract class TolkienRecipeHelper extends RecipeProvider {
     }
 
     /** Recipe builders save against a recipe key now, not a bare id. */
-    protected static ResourceKey<Recipe<?>> recipeKey(ResourceLocation id) {
+    protected static ResourceKey<Recipe<?>> recipeKey(Identifier id) {
         return ResourceKey.create(Registries.RECIPE, id);
     }
 
@@ -182,7 +182,7 @@ public abstract class TolkienRecipeHelper extends RecipeProvider {
                 .addIngredient(ingredients2)
                 .addOutput(new ItemStack(result, outputCount))
                 .unlockedBy(getHasName(firstItem(ingredients1.ingredient())), has(firstItem(ingredients1.ingredient())))
-                .save(recipeOutput, recipeKey(ResourceLocation.fromNamespaceAndPath(MODID, "fireplace/" + getItemName(result) + "_from_fireplace")));
+                .save(recipeOutput, recipeKey(Identifier.fromNamespaceAndPath(MODID, "fireplace/" + getItemName(result) + "_from_fireplace")));
     }
 
     protected void fireplaceFoodRecipe(RecipeOutput recipeOutput, SizedIngredient ingredients1, ItemLike result, int outputCount){
@@ -190,13 +190,13 @@ public abstract class TolkienRecipeHelper extends RecipeProvider {
                 .addIngredient(ingredients1)
                 .addOutput(new ItemStack(result, outputCount))
                 .unlockedBy(getHasName(firstItem(ingredients1.ingredient())), has(firstItem(ingredients1.ingredient())))
-                .save(recipeOutput, recipeKey(ResourceLocation.fromNamespaceAndPath(MODID, "fireplace/" + getItemName(result) + "_from_fireplace")));
+                .save(recipeOutput, recipeKey(Identifier.fromNamespaceAndPath(MODID, "fireplace/" + getItemName(result) + "_from_fireplace")));
     }
 
     protected void trinketRecipe(RecipeOutput recipeOutput, ItemLike trinket, SizedIngredient fuel, ItemLike potion) {
         TrinketRecipeBuilder.recipe(trinket, fuel, potion)
                 .unlockedBy(getHasName(trinket), has(trinket))
-                .save(recipeOutput, recipeKey(ResourceLocation.fromNamespaceAndPath(MODID, "trinket/" + getItemName(trinket) + "_from_trinket")));
+                .save(recipeOutput, recipeKey(Identifier.fromNamespaceAndPath(MODID, "trinket/" + getItemName(trinket) + "_from_trinket")));
     }
 
     protected void toolListRecipe(RecipeOutput pRecipeOutput, RecipeCategory pCategory, String group, Item pick, Item axe, Item shovel, Item hoe, Item sword, Item shears, Item ingot) {

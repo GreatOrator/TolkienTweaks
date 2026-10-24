@@ -17,7 +17,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.codec.StreamDecoder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -261,8 +261,8 @@ public interface MCDataInput {
         return new Cuboid6(readVector(), readVector());
     }
 
-    default ResourceLocation readResourceLocation() {
-        return ResourceLocation.parse(readString());
+    default Identifier readResourceLocation() {
+        return Identifier.parse(readString());
     }
 
     default Direction readDirection() {
@@ -316,7 +316,7 @@ public interface MCDataInput {
     }
 
     default <T> T readRegistryId() {
-        ResourceLocation rName = readResourceLocation();
+        Identifier rName = readResourceLocation();
         return readRegistryIdDirect(unsafeCast(requireNonNull(BuiltInRegistries.REGISTRY.get(rName), "Registry " + rName + " not found.")));
     }
 

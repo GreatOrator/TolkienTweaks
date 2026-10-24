@@ -14,7 +14,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.core.registries.Registries;
 import net.neoforged.bus.api.IEventBus;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.SpawnEggItem;
@@ -351,13 +351,13 @@ public class TolkienEntities {
 
     /** Builds an entity type against the key it is registered under, which 1.21.4 requires. */
     private static <T extends Entity> DeferredHolder<EntityType<?>, EntityType<T>> registerEntity(String name, Supplier<EntityType.Builder<T>> builder) {
-        ResourceKey<EntityType<?>> key = ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(MODID, name));
+        ResourceKey<EntityType<?>> key = ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MODID, name));
         return ENTITY_TYPES.register(name, () -> builder.get().build(key));
     }
 
     /** A spawn egg whose entity type and tint colours are resolved lazily, as DeferredSpawnEggItem did. */
     private static DeferredItem<Item> spawnEgg(String name, Supplier<? extends EntityType<? extends Mob>> type, int background, int highlight) {
-        DeferredItem<Item> egg = SPAWN_EGGS.registerItem(name, properties -> new SpawnEggItem(type.get(), properties), new Item.Properties());
+        DeferredItem<Item> egg = SPAWN_EGGS.registerItem(name, properties -> new SpawnEggItem(type.get(), properties));
         SPAWN_EGG_COLORS.put(egg, new SpawnEggColors(background, highlight));
 
         return egg;

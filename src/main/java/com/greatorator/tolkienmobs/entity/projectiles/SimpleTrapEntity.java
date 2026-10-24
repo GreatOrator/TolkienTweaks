@@ -61,19 +61,22 @@ public class SimpleTrapEntity extends BaseTrapEntity{
 
     /**
      * Animations
+     *
+     * GeckoLib 5 builds the controller without the animatable and hands its handler an AnimationTest, and
+     * the raw animation is built once here instead of once per tick.
      */
+    private static final RawAnimation WEB_TRAP_SPAWN = RawAnimation.begin().thenPlay("web_trap_spawn");
+
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
-            if (this.getTrapType() == 0) {
-                if (this.spawnAnimationTick > 0) {
-                    event.getController().setAnimation(RawAnimation.begin().thenPlay("web_trap_spawn"));
-                }
-            } else {
-
+        controllers.add(new AnimationController<SimpleTrapEntity>("Idle", 1, test -> {
+            // Only the web has a spawn animation; the snare stays on its rest pose.
+            if (this.getTrapType() == 0 && this.spawnAnimationTick > 0) {
+                return test.setAndContinue(WEB_TRAP_SPAWN);
             }
+
             return PlayState.CONTINUE;
         }));
     }

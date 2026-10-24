@@ -1,7 +1,7 @@
 package com.greatorator.tolkienmobs.datagen.modelgen;
 
 import java.util.Collection;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 
 /**
@@ -13,22 +13,22 @@ import net.minecraft.server.packs.PackType;
  * which catches a genuinely missing texture far more directly.</p>
  */
 public class ExistingFileHelper {
-    public boolean exists(ResourceLocation location, PackType type) {
+    public boolean exists(Identifier location, PackType type) {
         return true;
     }
 
-    public boolean exists(ResourceLocation location, PackType type, String path) {
+    public boolean exists(Identifier location, PackType type, String path) {
         return true;
     }
 
-    public void trackGenerated(ResourceLocation location, PackType type) {
+    public void trackGenerated(Identifier location, PackType type) {
     }
 
     /** Matches NeoForge's old four-argument form, which callers still use. */
-    public void trackGenerated(ResourceLocation location, PackType type, String suffix, String prefix) {
+    public void trackGenerated(Identifier location, PackType type, String suffix, String prefix) {
     }
 
-    public <T extends Collection<ResourceLocation>> T trackGenerated(T locations, PackType type) {
+    public <T extends Collection<Identifier>> T trackGenerated(T locations, PackType type) {
         return locations;
     }
 }

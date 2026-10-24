@@ -4,6 +4,8 @@ import com.greatorator.tolkienmobs.init.TolkienVillagers;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.PoiTypeTagsProvider;
+import net.minecraft.data.tags.TagAppender;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.PoiTypeTags;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import org.jetbrains.annotations.Nullable;
@@ -20,7 +22,8 @@ public class TolkienPoiTypeTagProvider extends PoiTypeTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider registries) {
-        TagAppender<PoiType> builder = tag(PoiTypeTags.ACQUIRABLE_JOB_SITE);
+        // 26.1 keys a POI tag by ResourceKey: TagAppender changed from one type parameter to two.
+        TagAppender<ResourceKey<PoiType>, PoiType> builder = tag(PoiTypeTags.ACQUIRABLE_JOB_SITE);
         for(var entry : TolkienVillagers.POI_TYPES.getEntries())
             builder.add(entry.getKey());
     }

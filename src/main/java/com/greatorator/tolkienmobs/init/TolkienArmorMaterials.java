@@ -2,7 +2,7 @@ package com.greatorator.tolkienmobs.init;
 
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
@@ -53,6 +53,6 @@ public class TolkienArmorMaterials {
 
 	private static ResourceKey<EquipmentAsset> asset(String name) {
 		return ResourceKey.create(net.minecraft.world.item.equipment.EquipmentAssets.ROOT_ID,
-				ResourceLocation.fromNamespaceAndPath(MODID, name));
+				Identifier.fromNamespaceAndPath(MODID, name));
 	}
 }
