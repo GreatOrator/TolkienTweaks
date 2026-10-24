@@ -834,9 +834,9 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   `player.level()` itself. The call is still inside the container-level access, so it fires under
   exactly the conditions it did before, and the crafting result's "was this crafted by a player"
   bookkeeping is unchanged.
-- One error is left in the file and is a different change: `Recipe#assemble` takes `CraftingInput`
-  alone now, so `assemble(container.asCraftInput(), level.registryAccess())` has one argument too
-  many.
+- `Recipe#assemble` lost its `RegistryAccess`: it is `assemble(T input)` now, so the crafting
+  result is `assemble(container.asCraftInput())`. The rest of the grid update - `getRecipeFor`,
+  `setRecipeUsed`, `isItemEnabled` and the three result-slot writes - is unchanged.
 
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
