@@ -4,18 +4,16 @@ package com.greatorator.tolkienmobs.entity.monster.model;
 import com.greatorator.tolkienmobs.entity.monster.ElementalGolemEntity;
 import com.greatorator.tolkienmobs.entity.monster.render.ElementalGolemRender;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.renderer.GeoRenderer;
-import software.bernie.geckolib.model.data.EntityModelData;
+import com.geckolib.cache.model.GeoBone;
+import com.geckolib.constant.DataTickets;
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.base.GeoRenderer;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class ElementalGolemModel extends GeoModel<ElementalGolemEntity> {
-	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "geo/monster/golem.geo.json");
-	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/monster/golem.animation.json");
+	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "monster/golem");
+	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "monster/golem");
 
 	@Override
 	public ResourceLocation getModelResource(ElementalGolemEntity object, GeoRenderer<ElementalGolemEntity> renderer) {

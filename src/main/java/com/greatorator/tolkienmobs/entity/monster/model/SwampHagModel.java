@@ -4,18 +4,16 @@ package com.greatorator.tolkienmobs.entity.monster.model;
 import com.greatorator.tolkienmobs.entity.monster.SwampHagEntity;
 import com.greatorator.tolkienmobs.entity.monster.render.SwampHagRender;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.renderer.GeoRenderer;
-import software.bernie.geckolib.model.data.EntityModelData;
+import com.geckolib.cache.model.GeoBone;
+import com.geckolib.constant.DataTickets;
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.base.GeoRenderer;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class SwampHagModel extends GeoModel<SwampHagEntity> {
-	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "geo/monster/swamphag.geo.json");
-	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/monster/swamphag.animation.json");
+	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "monster/swamphag");
+	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "monster/swamphag");
 
 	@Override
 	public ResourceLocation getModelResource(SwampHagEntity object, GeoRenderer<SwampHagEntity> renderer) {

@@ -2,19 +2,17 @@ package com.greatorator.tolkienmobs.entity.passive.model;
 
 import com.greatorator.tolkienmobs.entity.passive.GollumEntity;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.renderer.GeoRenderer;
-import software.bernie.geckolib.model.data.EntityModelData;
+import com.geckolib.cache.model.GeoBone;
+import com.geckolib.constant.DataTickets;
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.base.GeoRenderer;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class GollumModel extends GeoModel<GollumEntity> {
-	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "geo/special/gollum.geo.json");
+	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "special/gollum");
 	private final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/gollum.png");
-	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/special/gollum.animation.json");
+	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "special/gollum");
 
 	@Override
 	public ResourceLocation getModelResource(GollumEntity object, GeoRenderer<GollumEntity> renderer) {

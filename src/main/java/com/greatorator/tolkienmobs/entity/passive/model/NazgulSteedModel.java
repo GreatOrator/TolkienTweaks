@@ -3,18 +3,16 @@ package com.greatorator.tolkienmobs.entity.passive.model;
 
 import com.greatorator.tolkienmobs.entity.passive.NazgulSteedEntity;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.renderer.GeoRenderer;
-import software.bernie.geckolib.model.data.EntityModelData;
+import com.geckolib.cache.model.GeoBone;
+import com.geckolib.constant.DataTickets;
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.base.GeoRenderer;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class NazgulSteedModel extends GeoModel<NazgulSteedEntity> {
-	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "geo/special/nazgulsteed.geo.json");
-	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/special/horse.animation.json");
+	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "special/nazgulsteed");
+	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "special/horse");
 
 	@Override
 	public ResourceLocation getModelResource(NazgulSteedEntity object, GeoRenderer<NazgulSteedEntity> renderer) {

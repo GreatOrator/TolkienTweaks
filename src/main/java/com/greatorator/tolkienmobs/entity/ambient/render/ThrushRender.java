@@ -1,6 +1,6 @@
 package com.greatorator.tolkienmobs.entity.ambient.render;
 
-import software.bernie.geckolib.cache.object.BakedGeoModel;
+import com.geckolib.cache.model.BakedGeoModel;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -10,7 +10,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import com.geckolib.renderer.GeoEntityRenderer;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 

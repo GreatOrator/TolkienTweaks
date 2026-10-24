@@ -4,18 +4,16 @@ package com.greatorator.tolkienmobs.entity.monster.model;
 import com.greatorator.tolkienmobs.entity.monster.MordorOrcEntity;
 import com.greatorator.tolkienmobs.entity.monster.render.MordorOrcRender;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.renderer.GeoRenderer;
-import software.bernie.geckolib.model.data.EntityModelData;
+import com.geckolib.cache.model.GeoBone;
+import com.geckolib.constant.DataTickets;
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.base.GeoRenderer;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class MordorOrcModel extends GeoModel<MordorOrcEntity> {
-	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "geo/monster/mordororc.geo.json");
-	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/monster/base.animation.json");
+	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "monster/mordororc");
+	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "monster/base");
 
 	@Override
 	public ResourceLocation getModelResource(MordorOrcEntity object, GeoRenderer<MordorOrcEntity> renderer) {

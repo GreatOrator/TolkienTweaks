@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - The build is ready for Minecraft 26.1.2. Building from source now needs Java 25 and Gradle 9.2.1, and the project compiles against NeoForge 26.1.2.116, GeckoLib 5.5.2, TerraBlender 26.1.2-26.1.2.0.3, Curios 15.0.0 and JEI 29.47.0.111. The source itself has not been ported yet, so this produces no runnable jar; it is noted because anyone building from source now needs the new toolchain.
+- The rendering library is GeckoLib 5. Its package is `com.geckolib` now, and every geo model and animation has moved to `assets/tolkienmobs/geckolib/models` and `assets/tolkienmobs/geckolib/animations`, which is where 5 loads them from. The rock golem has been converted to 5's render-state API and is the pattern for the other 55 GeckoLib entities; the port does not build until they follow.
 
 ## [4.4.83-Final] - 10.22.2026
 

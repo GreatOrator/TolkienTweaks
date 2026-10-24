@@ -4,18 +4,16 @@ package com.greatorator.tolkienmobs.entity.passive.model;
 import com.greatorator.tolkienmobs.entity.passive.AurochEntity;
 import com.greatorator.tolkienmobs.entity.passive.render.AurochRender;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.renderer.GeoRenderer;
-import software.bernie.geckolib.model.data.EntityModelData;
+import com.geckolib.cache.model.GeoBone;
+import com.geckolib.constant.DataTickets;
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.base.GeoRenderer;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class AurochModel extends GeoModel<AurochEntity> {
-	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "geo/passive/auroch.geo.json");
-	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/passive/auroch.animation.json");
+	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "passive/auroch");
+	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "passive/auroch");
 
 	@Override
 	public ResourceLocation getModelResource(AurochEntity object, GeoRenderer<AurochEntity> renderer) {

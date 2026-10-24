@@ -11,7 +11,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.animatable.GeoEntity;
+import com.geckolib.animatable.GeoEntity;
 
 public class OrcEntity extends TolkienVillagerEntity implements GeoEntity {
     public OrcEntity(EntityType<? extends TolkienVillagerEntity> entityType, Level level) {

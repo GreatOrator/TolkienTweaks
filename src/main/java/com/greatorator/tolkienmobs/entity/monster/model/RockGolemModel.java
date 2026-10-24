@@ -1,44 +1,36 @@
 package com.greatorator.tolkienmobs.entity.monster.model;
 
-
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.base.GeoRenderState;
 import com.greatorator.tolkienmobs.entity.monster.RockGolemEntity;
 import com.greatorator.tolkienmobs.entity.monster.render.RockGolemRender;
-import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.renderer.GeoRenderer;
-import software.bernie.geckolib.model.data.EntityModelData;
+import com.greatorator.tolkienmobs.entity.util.TolkienGeoRenderState;
+import net.minecraft.resources.Identifier;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
+/**
+ * GeckoLib 5 hands the model a render state rather than the entity, so neither resource getter can ask the
+ * golem anything. What it needs for its texture - the variant - is put on the state by the renderer's
+ * {@code addRenderData}; the head bone is turned by the renderer's {@code adjustModelBonesForRender}, which
+ * is where 5 wants that done.
+ */
 public class RockGolemModel extends GeoModel<RockGolemEntity> {
-	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "geo/monster/rockgolem.geo.json");
-	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/monster/rockgolem.animation.json");
+    private static final Identifier MODEL = Identifier.fromNamespaceAndPath(MODID, "monster/rockgolem");
+    private static final Identifier ANIMATIONS = Identifier.fromNamespaceAndPath(MODID, "monster/rockgolem");
 
-	@Override
-	public ResourceLocation getModelResource(RockGolemEntity object, GeoRenderer<RockGolemEntity> renderer) {
-		return this.model;
-	}
+    @Override
+    public Identifier getModelResource(GeoRenderState renderState) {
+        return MODEL;
+    }
 
-	@Override
-	public ResourceLocation getTextureResource(RockGolemEntity object, GeoRenderer<RockGolemEntity> renderer) {
-		return RockGolemRender.LOCATION_BY_VARIANT.get(object.getVariant());
-	}
+    @Override
+    public Identifier getTextureResource(GeoRenderState renderState) {
+        return RockGolemRender.textureFor((TolkienGeoRenderState) renderState);
+    }
 
-	@Override
-	public ResourceLocation getAnimationResource(RockGolemEntity object) {
-		return this.animations;
-	}
-
-	@Override
-	public void setCustomAnimations(RockGolemEntity entity, long uniqueID, AnimationState<RockGolemEntity> customPredicate) {
-		super.setCustomAnimations(entity, uniqueID, customPredicate);
-		GeoBone head = this.getAnimationProcessor().getBone("h_head");
-		assert customPredicate != null;
-		EntityModelData extraData = (EntityModelData) customPredicate.getData(DataTickets.ENTITY_MODEL_DATA);
-		head.setRotX(extraData.headPitch() * ((float) Math.PI / 180F));
-		head.setRotY(extraData.netHeadYaw() *0.5f* ((float) Math.PI / 180F));
-	}
+    @Override
+    public Identifier getAnimationResource(RockGolemEntity animatable) {
+        return ANIMATIONS;
+    }
 }

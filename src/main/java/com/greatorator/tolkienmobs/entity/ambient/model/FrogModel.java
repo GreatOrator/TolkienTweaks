@@ -4,18 +4,16 @@ package com.greatorator.tolkienmobs.entity.ambient.model;
 import com.greatorator.tolkienmobs.entity.ambient.FrogEntity;
 import com.greatorator.tolkienmobs.entity.ambient.render.FrogRender;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.renderer.GeoRenderer;
-import software.bernie.geckolib.model.data.EntityModelData;
+import com.geckolib.cache.model.GeoBone;
+import com.geckolib.constant.DataTickets;
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.base.GeoRenderer;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 public class FrogModel extends GeoModel<FrogEntity> {
-	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "geo/ambient/frog.geo.json");
-	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "animations/ambient/frog.animation.json");
+	private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "ambient/frog");
+	private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(MODID, "ambient/frog");
 
 	@Override
 	public ResourceLocation getModelResource(FrogEntity object, GeoRenderer<FrogEntity> renderer) {

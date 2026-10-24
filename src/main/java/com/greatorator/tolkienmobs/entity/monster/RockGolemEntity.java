@@ -2,8 +2,7 @@ package com.greatorator.tolkienmobs.entity.monster;
 
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
-import net.minecraft.Util;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Util;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -17,11 +16,17 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.*;
-import software.bernie.geckolib.util.GeckoLibUtil;
+import com.geckolib.animatable.GeoEntity;
+import com.geckolib.animatable.instance.AnimatableInstanceCache;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.animation.AnimationController;
+import com.geckolib.animation.RawAnimation;
+import com.geckolib.animation.object.LoopType;
+import com.geckolib.animation.object.PlayState;
+import com.geckolib.util.GeckoLibUtil;
 
 public class RockGolemEntity extends TolkienMonsterEntity implements GeoEntity {
     private static final EntityDataAccessor<Boolean> ATTACKING =
@@ -64,16 +69,16 @@ public class RockGolemEntity extends TolkienMonsterEntity implements GeoEntity {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
-        compound.putInt("Variant", this.getTypeVariant());
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putInt("Variant", this.getTypeVariant());
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
         this.reassessWeaponGoal();
-        this.entityData.set(VARIANT, compound.getInt("Variant"));
+        this.entityData.set(VARIANT, input.getIntOr("Variant", 0));
     }
 
     @Override
@@ -85,46 +90,47 @@ public class RockGolemEntity extends TolkienMonsterEntity implements GeoEntity {
 
     /**
      * Animations
+     *
+     * GeckoLib 5 builds a controller without the animatable and hands its handler an AnimationTest, so the
+     * controller no longer holds `this`; the test carries the controller and whatever the render state has
+     * to say. The RawAnimations are built once here instead of once per frame, which is what the 5 docs ask
+     * for and what the old per-frame RawAnimation.begin() calls were costing.
      */
+    private static final RawAnimation WALK = RawAnimation.begin().thenPlay("walk");
+    private static final RawAnimation IDLE = RawAnimation.begin().thenPlay("idle");
+    private static final RawAnimation PUNCH = RawAnimation.begin().then("punch", LoopType.PLAY_ONCE);
+    private static final RawAnimation RAGE = RawAnimation.begin().then("rage", LoopType.PLAY_ONCE);
+    private static final RawAnimation DEATH = RawAnimation.begin().thenPlay("death");
+
     private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "Walk", 1, (event) -> {
-            if (event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("walk"));
+        controllers.add(new AnimationController<RockGolemEntity>("Walk", 1, test ->
+                test.isMoving() ? test.setAndContinue(WALK) : PlayState.STOP));
+        controllers.add(new AnimationController<RockGolemEntity>("Idle", 1, test ->
+                test.isMoving() ? PlayState.STOP : test.setAndContinue(IDLE)));
+        controllers.add(new AnimationController<RockGolemEntity>("Attack", 1, test -> {
+            // A swing has to play out: 5 resets the controller when the handler returns STOP, so dropping
+            // to STOP while punch or rage is still running would end it on its first frame.
+            if (test.controller().isAnimatingBones()) {
                 return PlayState.CONTINUE;
             }
-            return PlayState.STOP;
-        }));
-        controllers.add(new AnimationController<>(this, "Idle", 1, (event) -> {
-            if (!event.isMoving()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("idle"));
-                return PlayState.CONTINUE;
+
+            if (this.swinging) {
+                this.swinging = false;
+                return test.setAndContinue(PUNCH);
             }
-            return PlayState.STOP;
-        }));
-        controllers.add(new AnimationController<>(this, "Attack", 1, (event) -> {
-            // The controller stops once its swing is done: a permanent CONTINUE kept the last frame of
-            // punch or rage applied, so the golem stood with its arm out through idle and walk.
-            if (this.swinging && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)) {
-                event.getController().setAnimation(RawAnimation.begin().then("punch", Animation.LoopType.PLAY_ONCE));
-                this.swinging =false;
-                return PlayState.CONTINUE;
-            }else if (this.getRanged() && event.getController().getAnimationState().equals(AnimationController.State.STOPPED)){
-                event.getController().setAnimation(RawAnimation.begin().then("rage", Animation.LoopType.PLAY_ONCE));
-                this.ranged =false;
-                return PlayState.CONTINUE;
+
+            if (this.getRanged()) {
+                this.ranged = false;
+                return test.setAndContinue(RAGE);
             }
+
             return PlayState.STOP;
         }));
-        controllers.add(new AnimationController<>(this, "Death", 1, (event) -> {
-            if (this.isDeadOrDying()) {
-                event.getController().setAnimation(RawAnimation.begin().thenPlay("death"));
-                return PlayState.CONTINUE;
-            }
-            return PlayState.STOP;
-        }));
+        controllers.add(new AnimationController<RockGolemEntity>("Death", 1, test ->
+                this.isDeadOrDying() ? test.setAndContinue(DEATH) : PlayState.STOP));
     }
 
     @Override
