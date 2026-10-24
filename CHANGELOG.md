@@ -81,7 +81,8 @@ All notable changes to this project will be documented in this file.
   the same panel, the same key-code field and the same keep-key, redstone and delay controls - and
   both now draw the code field once instead of twice over itself. Holding shift or control still
   steps the delay ten or sixty-four at a time, typing in the field still swallows the keyboard until
-  you click away or press escape, and a right click still flips a toggle backwards.
+  you click away or press escape, and a right click still flips a toggle backwards. The key and
+  keystone menus behind them are ported with them; nothing a player does in either screen changes.
 - Every message the mod sends a player now uses 26.1's own call for it: the chat lines go through
   the system-message call, and the three that flash above the hotbar - the backpack's "no room",
   the occupied sleeping bag and a refused sleep - through the overlay one. Nothing the player reads
