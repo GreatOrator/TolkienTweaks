@@ -54,6 +54,10 @@ All notable changes to this project will be documented in this file.
   it: a spawner's stored entity data is a different kind of component in 26.1, and the old read had
   turned into an unchecked cast that still compiled but would have thrown as soon as it ran on a
   configured spawner. The tooltip read now goes the way vanilla's own spawner tooltip does.
+- The keystone and the four keyed chests still click, buzz and crack the same way when a wrong key
+  is turned in them. The break sound they play is one of the few sound events 26.1 still holds by
+  reference rather than as a finished event, so it is unwrapped at the call; the noise itself is
+  the same one at the same volume and pitch.
 - Every message the mod sends a player now uses 26.1's own call for it: the chat lines go through
   the system-message call, and the three that flash above the hotbar - the backpack's "no room",
   the occupied sleeping bag and a refused sleep - through the overlay one. Nothing the player reads

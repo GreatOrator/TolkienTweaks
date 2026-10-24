@@ -105,7 +105,7 @@ public class LockableDoubleTreasureChestBlockEntity extends TolkienBlockEntity i
 
                     if (uses == 0) {
                         stack.shrink(1);
-                        this.level.playSound((Player) null, worldPosition, SoundEvents.ITEM_BREAK, SoundSource.BLOCKS, 0.3F, 0.6F);
+                        this.level.playSound((Player) null, worldPosition, SoundEvents.ITEM_BREAK.value(), SoundSource.BLOCKS, 0.3F, 0.6F);
                         player.sendSystemMessage(Component.translatable("tolkienmobs.msg.key_used").withStyle(ChatFormatting.RED));
                     }
                     KeyItem.setKeyData(stack, KeyItem.getKeyCode(stack), uses - 1, KeyItem.getMode(stack));

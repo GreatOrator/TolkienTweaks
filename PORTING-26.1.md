@@ -648,8 +648,9 @@ from **3,470 errors in 337 files to 2,801 in 320**.
 
 - The failure message is back. `Player.BedSleepingProblem` is a record wrapping a `Component` in
   26.1 rather than a class with `getMessage()`, so the accessor is `message()` - the same shape
-  vanilla's own `BedBlock#useWithoutItem` uses when it reports why a player could not lie down. Nothing else about the branch moved: a refused sleep
-  still shows the reason above the hotbar rather than in chat, which is where that text belongs.
+  vanilla's own `BedBlock#useWithoutItem` uses when it reports why a player could not lie down.
+  Nothing else about the branch moved: a refused sleep still shows the reason above the hotbar
+  rather than in chat, which is where that text belongs.
 - `Player#startSleepInBed` keeps its `Either<BedSleepingProblem, Unit>` return, and the base
   `Player` version is now a stub that starts sleeping and reports success; the checks that can fail
   - too far away, obstructed, a bed rule that forbids sleeping - live in `ServerPlayer`'s override,
@@ -676,6 +677,18 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   26.1 deprecated both `Mth.getSeed` overloads and named no replacement, and vanilla's `BedBlock`
   seeds a bed the same way, so the only alternative is reimplementing vanilla's hash by hand for a
   decorative seed.
+
+### Keyed chests and the keystone — DONE
+
+- `Level#playSound(Entity, BlockPos, SoundEvent, SoundSource, float, float)` takes the event itself
+  now, not a `Holder`, and `SoundEvents` is split: most of its fields are plain `SoundEvent`s, but
+  `ITEM_BREAK` is still a `Holder.Reference<SoundEvent>` because `DataComponents.BREAK_SOUND` holds
+  it that way. The four keyed chests and the keystone play exactly that event when a wrong key is
+  turned, so their five calls unwrap it - `SoundEvents.ITEM_BREAK.value()` - rather than being
+  rewritten to a different sound. Everything else they pass (`LEVER_CLICK`, the button and pressure
+  plate clicks) is already a `SoundEvent` and needed no change.
+- The `(Player) null` first argument still compiles against the `@Nullable Entity` parameter. It is
+  now redundant rather than wrong, and was left alone so the diff is the one thing that had to move.
 
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
