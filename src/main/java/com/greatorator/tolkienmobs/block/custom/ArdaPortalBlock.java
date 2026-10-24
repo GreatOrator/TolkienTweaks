@@ -10,6 +10,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.*;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -59,8 +61,8 @@ public class ArdaPortalBlock extends TolkienBlock implements Portal {
 
     @Override
     protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if (level.dimensionType().natural()
-                && level.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING)
+        // 26.1 folded dimensionType().natural() and the doMobSpawning rule into one server-side check.
+        if (level.isSpawningMonsters()
                 && random.nextInt(2000) < level.getDifficulty().getId()) {
             while (level.getBlockState(pos).is(this)) {
                 pos = pos.below();
@@ -88,7 +90,7 @@ public class ArdaPortalBlock extends TolkienBlock implements Portal {
     }
 
     @Override
-    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean isPrecise) {
         if (entity.canUsePortal(false)) {
             entity.setAsInsidePortal(this, pos);
         }
@@ -100,10 +102,10 @@ public class ArdaPortalBlock extends TolkienBlock implements Portal {
                 ? Math.max(
                 1,
                 level.getGameRules()
-                        .getInt(
+                        .get(
                                 player.getAbilities().invulnerable
-                                        ? GameRules.RULE_PLAYERS_NETHER_PORTAL_CREATIVE_DELAY
-                                        : GameRules.RULE_PLAYERS_NETHER_PORTAL_DEFAULT_DELAY
+                                        ? GameRules.PLAYERS_NETHER_PORTAL_CREATIVE_DELAY
+                                        : GameRules.PLAYERS_NETHER_PORTAL_DEFAULT_DELAY
                         )
         )
                 : 0;

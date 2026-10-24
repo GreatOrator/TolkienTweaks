@@ -16,7 +16,7 @@ measurement's other half.
 | Source | Minecraft **1.21.4**, NeoForge **21.4.161**, mod **4.4.83-Final** |
 | Target | Minecraft **26.1.2**, NeoForge **26.1.2.116**, mod **5.0.0** |
 | Java | 21 → **25** |
-| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API, the fluid/leaf/proxy batch, the food table, the forest fog and the whole `util` package are done; **65** errors left |
+| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API, the fluid/leaf/proxy batch, the food table, the forest fog, the whole `util` package and the three biggest block classes are done; **49** errors left |
 
 What the source tree contains, counted:
 
@@ -1970,6 +1970,46 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   reach a client.
 - **Two `network/` errors are left, neither of them config:** `PacketSender` needs
   `GameProfile` → `NameAndId` and `SpawnFallenLeafFromPacket` still names a removed symbol.
+
+### The three biggest block classes — DONE
+
+- **The Arda portal spawns orcs through one check now.** 26.1 folded
+  `dimensionType().natural()` and the `doMobSpawning` rule into `ServerLevel#isSpawningMonsters()`,
+  which also honours a world's monster-spawning rule; vanilla's nether portal uses it too, so the
+  portal's random tick asks that and keeps the 2000-in-one roll against the difficulty. One
+  behaviour note: with mob spawning on but monster spawning off, no orc comes through.
+- **The game rules moved.** `GameRules` lives in `net.minecraft.world.level.gamerules`, its keys lost
+  the `RULE_` prefix (`PLAYERS_NETHER_PORTAL_CREATIVE_DELAY`), and `getBoolean`/`getInt` became the
+  one generic `get(GameRule<T>)`. The portal's transition time still takes the creative delay for an
+  invulnerable player and the default otherwise, still with the mod's floor of one tick.
+- **`entityInside` gained two arguments.** 26.1 passes an `InsideBlockEffectApplier` and an
+  `isPrecise` flag alongside the entity; the portal ignores both, as vanilla's does, and
+  `LeafPileBlock` hands them straight to `super`.
+- **`BlockColors#getColor` is a tint source.** The leaf pile still takes oak leaves' colour where the
+  particle falls, now through `getTintSource(state, 0).colorInWorld(...)`; only a `ClientLevel` is a
+  `BlockAndTintGetter` in 26.1, and both call sites are already client-only, with -1 kept as the
+  no-tint answer.
+- **`BushBlock#codec()` is `MapCodec<BushBlock>`.** A subclass can no longer return
+  `MapCodec<? extends BushBlock>` - the wildcard is not covariant with the concrete type - so the
+  leaf pile's codec is declared against `BushBlock` while `simpleCodec(LeafPileBlock::new)` still
+  builds a leaf pile. Five more `BushBlock` subclasses have the old shape and still fail on it:
+  `BramblesBushBlock`, `RockPileBlock`, `TolkienPatchBlock`, `WallDecayBloomBlock` and the two wall
+  mushrooms.
+- **The camo spawner's tooltip is its item's.** `Block#appendHoverText` is gone, and 26.1's
+  `Spawner.appendHoverText` takes the `TypedEntityData<BlockEntityType<?>>` off the stack rather than
+  the stack itself, so the block is registered without a block item and `CamoSpawnerItem extends
+  BlockItem` adds the same line - the entity it spawns when the item carries spawn data, the two
+  hint lines when it does not. The registration follows the placard's split, and the item id, model
+  and lang key are unchanged.
+- **The spawner's shift-click check now works on the server.** It asked
+  `Screen.hasShiftDown()`, a client class that on the server always answered false, so a creative
+  player shift-clicking never got the menu; it asks `player.isShiftKeyDown()` now and the menu
+  opens. This is the same fix the milestone got.
+- **Verified:** whole-tree `javac` at **49** errors, down from 65 - `ArdaPortalBlock`'s six,
+  `LeafPileBlock`'s five and `CamoSpawnerBlock`'s five are gone and nothing new appeared.
+  Nothing was run in game: the checks are walking through an Arda portal (still an ordinary portal
+  trip), letting one stand in the dark for a while to see an orc come out, running over a leaf pile
+  to see the tinted particles and the slowdown, and hovering a camo spawner in the inventory.
 
 ## Ordered work list
 
