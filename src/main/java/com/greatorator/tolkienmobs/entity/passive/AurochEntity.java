@@ -21,6 +21,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.cow.CowSoundVariant;
+import net.minecraft.world.entity.animal.cow.CowSoundVariants;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
@@ -42,6 +44,9 @@ import com.geckolib.util.GeckoLibUtil;
 import javax.annotation.Nonnull;
 
 public class AurochEntity extends TolkienHeardEntity implements GeoEntity {
+    // 26.1 keeps the cow's four sounds in a variant set rather than as loose events; this is the
+    // classic set, whose event ids (entity.cow.ambient and friends) are the ones the auroch used.
+    private static final CowSoundVariant COW_SOUNDS = SoundEvents.COW_SOUNDS.get(CowSoundVariants.SoundSet.CLASSIC);
     private static final EntityDataAccessor<Integer> VARIANT =
             SynchedEntityData.defineId(AurochEntity.class, EntityDataSerializers.INT);
 
@@ -122,22 +127,22 @@ public class AurochEntity extends TolkienHeardEntity implements GeoEntity {
      */
     @Override
     protected SoundEvent getAmbientSound() {
-        return SoundEvents.COW_AMBIENT;
+        return COW_SOUNDS.ambientSound().value();
     }
 
     @Override
     protected SoundEvent getHurtSound(@Nonnull DamageSource damageSourceIn) {
-        return SoundEvents.COW_HURT;
+        return COW_SOUNDS.hurtSound().value();
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return SoundEvents.COW_DEATH;
+        return COW_SOUNDS.deathSound().value();
     }
 
     @Override
     protected void playStepSound(BlockPos pos, BlockState block) {
-        this.playSound(SoundEvents.COW_STEP, 0.15F, 1.0F);
+        this.playSound(COW_SOUNDS.stepSound().value(), 0.15F, 1.0F);
     }
 
     /**

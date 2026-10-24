@@ -1233,6 +1233,21 @@ from **3,470 errors in 337 files to 2,801 in 320**.
 - **Verified:** whole-tree `javac` at **787** errors, 15 down from 802 - the birds' thirteen and the
   model's two - with the per-file diff showing only those four files and nothing new anywhere.
 
+### The passive family - DONE
+
+- `TolkienHeardEntity` - the base of the auroch, the mumakil and the Istari - needed one move: `Bee`
+  is under `world.entity.animal.bee` now. Those two errors were the import and the `AvoidEntityGoal`
+  that names `Bee.class`, so a dumb beast still runs from bees with the same 8-block radius.
+- The cow's four sounds are no longer loose events. `COW_AMBIENT`, `COW_HURT`, `COW_DEATH` and
+  `COW_STEP` are gone: 26.1 keeps a `CowSoundVariant` record per sound set in a registry, and
+  `SoundEvents.COW_SOUNDS` maps a `CowSoundVariants.SoundSet` to one. The auroch and the mumakil
+  take `SoundSet.CLASSIC`, whose event ids are exactly `entity.cow.ambient`, `.hurt`, `.death` and
+  `.step` - the four the old constants pointed at - and read them through `ambientSound().value()`
+  and friends. `COW_MILK` is still a plain event, so the auroch's milking sound is untouched.
+- **Verified:** whole-tree `javac` at **780** errors, 7 down from 787, with the per-file diff showing
+  only those three files and nothing new anywhere. Every file under `entity/passive` and all four
+  `entity` base classes compile clean.
+
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
   26.1.2 MDK's version; NeoForge requires 9.1.0 or newer), foojay resolver 0.8.0 → 1.0.0.
