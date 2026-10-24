@@ -1,11 +1,10 @@
 package com.greatorator.tolkienmobs.containers.widget;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
 
 public class TexturedButton extends Button {
     private final int yDiffTex;
@@ -32,12 +31,17 @@ public class TexturedButton extends Button {
         this.texture = texture;
     }
 
+    /**
+     * The hovered variant sits {@code yDiffTex} pixels below the idle one in the sheet. The base
+     * class sets {@link #isHovered} before calling this, so the offset follows the mouse again: the
+     * old override of {@code render} skipped that bookkeeping, so this button never showed it.
+     */
     @Override
-    public void render(@NotNull GuiGraphics gg, int pMouseX, int pMouseY, float pPartialTick) {
+    protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         int pVOffset = 0;
         if (this.isHovered) {
             pVOffset = yDiffTex;
         }
-        gg.blit(RenderType::guiTextured, texture, this.getX(), this.getY(), 0, pVOffset, width, height, textureWidth, textureHeight);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, texture, this.getX(), this.getY(), 0, pVOffset, width, height, textureWidth, textureHeight);
     }
 }
