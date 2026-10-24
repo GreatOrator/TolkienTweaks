@@ -222,6 +222,14 @@ All notable changes to this project will be documented in this file.
   are all unchanged, as is every tooltip's text. One rule now travels by a different road: a bow
   that never breaks still refuses Mending and Unbreaking, which 26.1 checks through the enchantment
   support check rather than a separate anvil-only method.
+- The loot modifier, the loot function behind a trinket's potion and the two item model properties are
+  ported, which closes out the item side of the source. The coin drops that ride along with a chest or
+  a mob kill behave as before - same tables, same 25% weights - and the trinket still rolls its
+  beneficial potion when the loot is dropped; the loot modifier simply gained the sort priority 26.1
+  now asks every modifier for, left at the default so the drops arrive in the same order as they used
+  to. The bow's draw progress and the coin pouch's and key ring's fullness, which pick the item
+  model's frame, are read through the new owner-aware property signature and measure exactly what
+  they measured before, so the sprites and frames are unchanged.
 - The particle description data provider is ported, so the datagen side of the particles compiles.
   Every flame, the lightning bugs, the fell beast's breath, the wind and the leaf particles still
   declare the same single sprite they did, and the tinted smoke still borrows vanilla's twelve
