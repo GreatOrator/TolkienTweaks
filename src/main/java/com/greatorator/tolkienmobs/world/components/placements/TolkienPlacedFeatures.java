@@ -185,29 +185,29 @@ public class TolkienPlacedFeatures {
                 TolkienOrePlacement.commonOrePlacement(16, HeightRangePlacement.triangle(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(128)))));
 
         context.register(FLOWER_SIMBELMYNE_PLACED_KEY, new PlacedFeature(features.getOrThrow(FLOWER_SIMBELMYNE_KEY),
-                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome())));
+                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(96), RandomOffsetPlacement.ofTriangle(7, 3), BiomeFilter.biome())));
         context.register(FLOWER_MIRKWOOD_PLACED_KEY, new PlacedFeature(features.getOrThrow(FLOWER_MIRKWOOD_KEY),
-                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome())));
+                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(96), RandomOffsetPlacement.ofTriangle(7, 3), BiomeFilter.biome())));
         context.register(FLOWER_ALFIRIN_PLACED_KEY, new PlacedFeature(features.getOrThrow(FLOWER_ALFIRIN_KEY),
-                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome())));
+                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(96), RandomOffsetPlacement.ofTriangle(7, 3), BiomeFilter.biome())));
         context.register(FLOWER_ATHELAS_PLACED_KEY, new PlacedFeature(features.getOrThrow(FLOWER_ATHELAS_KEY),
-                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome())));
+                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(96), RandomOffsetPlacement.ofTriangle(7, 3), BiomeFilter.biome())));
         context.register(FLOWER_NIPHREDIL_PLACED_KEY, new PlacedFeature(features.getOrThrow(FLOWER_NIPHREDIL_KEY),
-                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome())));
+                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(96), RandomOffsetPlacement.ofTriangle(7, 3), BiomeFilter.biome())));
         context.register(FLOWER_SWAMPMILKWEED_PLACED_KEY, new PlacedFeature(features.getOrThrow(FLOWER_SWAMPMILKWEED_KEY),
-                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome())));
+                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(96), RandomOffsetPlacement.ofTriangle(7, 3), BiomeFilter.biome())));
         context.register(FLOWER_LILLYOFTHEVALLEY_PLACED_KEY, new PlacedFeature(features.getOrThrow(FLOWER_LILLYOFTHEVALLEY_KEY),
-                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome())));
+                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(96), RandomOffsetPlacement.ofTriangle(7, 3), BiomeFilter.biome())));
         context.register(FLOWER_ELANOR_PLACED_KEY, new PlacedFeature(features.getOrThrow(FLOWER_ELANOR_KEY),
-                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome())));
+                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(96), RandomOffsetPlacement.ofTriangle(7, 3), BiomeFilter.biome())));
         context.register(FLOWER_AEGLOS_PLACED_KEY, new PlacedFeature(features.getOrThrow(FLOWER_AEGLOS_KEY),
-                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome())));
+                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(96), RandomOffsetPlacement.ofTriangle(7, 3), BiomeFilter.biome())));
         context.register(FLOWER_LISSUIN_PLACED_KEY, new PlacedFeature(features.getOrThrow(FLOWER_LISSUIN_KEY),
-                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome())));
+                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(96), RandomOffsetPlacement.ofTriangle(7, 3), BiomeFilter.biome())));
         context.register(FLOWER_MALLOS_PLACED_KEY, new PlacedFeature(features.getOrThrow(FLOWER_MALLOS_KEY),
-                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome())));
+                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(96), RandomOffsetPlacement.ofTriangle(7, 3), BiomeFilter.biome())));
         context.register(FLOWER_BRAMBLES_PLACED_KEY, new PlacedFeature(features.getOrThrow(FLOWER_BRAMBLES_KEY),
-                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome())));
+                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(96), RandomOffsetPlacement.ofTriangle(7, 3), BiomeFilter.biome())));
 
         context.register(PLACED_DECAY_BLOOM_MUSHROOMS, new PlacedFeature(features.getOrThrow(DECAY_BLOOM_MUSHROOMS), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.absolute(15)), CountPlacement.of(3), AvoidLandmarkModifier.checkUnderground(), BiomeFilter.biome()).build()));
         context.register(PLACED_BLOOM_DECAY_MUSHROOMS, new PlacedFeature(features.getOrThrow(BLOOM_DECAY_MUSHROOMS), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.absolute(15)), CountPlacement.of(3), AvoidLandmarkModifier.checkUnderground(), BiomeFilter.biome()).build()));

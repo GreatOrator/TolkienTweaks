@@ -12,7 +12,6 @@ import com.greatorator.tolkienmobs.world.components.feature.tree.placers.Branchi
 import com.greatorator.tolkienmobs.world.components.feature.tree.placers.BranchingTrunkPlacer;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
-import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.ConstantInt;
@@ -171,55 +170,31 @@ public class TolkienConfiguredFeatures {
         context.register(END_ORE_AMMOLITE_KEY, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(endReplaceables,
                 TolkienBlocks.ORE_END_AMMOLITE.get().defaultBlockState(), 6)));
 
-        context.register(FLOWER_SIMBELMYNE_KEY, new ConfiguredFeature<>(Feature.RANDOM_PATCH,
-                FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK,
-                        new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_SIMBELMYNE.get())
-                        ), List.of(Blocks.GRASS_BLOCK))));
-        context.register(FLOWER_MIRKWOOD_KEY, new ConfiguredFeature<>(Feature.RANDOM_PATCH,
-                FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK,
-                        new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_MIRKWOOD.get())
-                        ), List.of(Blocks.GRASS_BLOCK))));
-        context.register(FLOWER_ALFIRIN_KEY, new ConfiguredFeature<>(Feature.RANDOM_PATCH,
-                FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK,
-                        new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_ALFIRIN.get())
-                        ), List.of(Blocks.GRASS_BLOCK))));
-        context.register(FLOWER_ATHELAS_KEY, new ConfiguredFeature<>(Feature.RANDOM_PATCH,
-                FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK,
-                        new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_ATHELAS.get())
-                        ), List.of(Blocks.GRASS_BLOCK))));
-        context.register(FLOWER_NIPHREDIL_KEY, new ConfiguredFeature<>(Feature.RANDOM_PATCH,
-                FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK,
-                        new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_NIPHREDIL.get())
-                        ), List.of(Blocks.GRASS_BLOCK))));
-        context.register(FLOWER_SWAMPMILKWEED_KEY, new ConfiguredFeature<>(Feature.RANDOM_PATCH,
-                FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK,
-                        new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_SWAMPMILKWEED.get())
-                        ), List.of(Blocks.GRASS_BLOCK))));
-        context.register(FLOWER_LILLYOFTHEVALLEY_KEY, new ConfiguredFeature<>(Feature.RANDOM_PATCH,
-                FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK,
-                        new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_LILLYOFTHEVALLEY.get())
-                        ), List.of(Blocks.GRASS_BLOCK))));
-        context.register(FLOWER_ELANOR_KEY, new ConfiguredFeature<>(Feature.RANDOM_PATCH,
-                FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK,
-                        new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_ELANOR.get())
-                        ), List.of(Blocks.GRASS_BLOCK))));
-        context.register(FLOWER_AEGLOS_KEY, new ConfiguredFeature<>(Feature.RANDOM_PATCH,
-                FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK,
-                        new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_AEGLOS.get())
-                        ), List.of(Blocks.GRASS_BLOCK))));
-        context.register(FLOWER_LISSUIN_KEY, new ConfiguredFeature<>(Feature.RANDOM_PATCH,
-                FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK,
-                        new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_LISSUIN.get())
-                        ), List.of(Blocks.GRASS_BLOCK))));
-        context.register(FLOWER_MALLOS_KEY, new ConfiguredFeature<>(Feature.RANDOM_PATCH,
-                FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK,
-                        new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_MALLOS.get())
-                        ), List.of(Blocks.GRASS_BLOCK))));
-        context.register(FLOWER_BRAMBLES_KEY, new ConfiguredFeature<>(Feature.RANDOM_PATCH,
-                FeatureUtils.simplePatchConfiguration(Feature.SIMPLE_BLOCK,
-                        new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_BRAMBLES.get()
-                                .defaultBlockState().setValue(BramblesBushBlock.AGE, 3))
-                        ), List.of(Blocks.GRASS_BLOCK))));
+        context.register(FLOWER_SIMBELMYNE_KEY, new ConfiguredFeature<>(Feature.SIMPLE_BLOCK,
+                new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_SIMBELMYNE.get()))));
+        context.register(FLOWER_MIRKWOOD_KEY, new ConfiguredFeature<>(Feature.SIMPLE_BLOCK,
+                new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_MIRKWOOD.get()))));
+        context.register(FLOWER_ALFIRIN_KEY, new ConfiguredFeature<>(Feature.SIMPLE_BLOCK,
+                new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_ALFIRIN.get()))));
+        context.register(FLOWER_ATHELAS_KEY, new ConfiguredFeature<>(Feature.SIMPLE_BLOCK,
+                new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_ATHELAS.get()))));
+        context.register(FLOWER_NIPHREDIL_KEY, new ConfiguredFeature<>(Feature.SIMPLE_BLOCK,
+                new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_NIPHREDIL.get()))));
+        context.register(FLOWER_SWAMPMILKWEED_KEY, new ConfiguredFeature<>(Feature.SIMPLE_BLOCK,
+                new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_SWAMPMILKWEED.get()))));
+        context.register(FLOWER_LILLYOFTHEVALLEY_KEY, new ConfiguredFeature<>(Feature.SIMPLE_BLOCK,
+                new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_LILLYOFTHEVALLEY.get()))));
+        context.register(FLOWER_ELANOR_KEY, new ConfiguredFeature<>(Feature.SIMPLE_BLOCK,
+                new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_ELANOR.get()))));
+        context.register(FLOWER_AEGLOS_KEY, new ConfiguredFeature<>(Feature.SIMPLE_BLOCK,
+                new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_AEGLOS.get()))));
+        context.register(FLOWER_LISSUIN_KEY, new ConfiguredFeature<>(Feature.SIMPLE_BLOCK,
+                new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_LISSUIN.get()))));
+        context.register(FLOWER_MALLOS_KEY, new ConfiguredFeature<>(Feature.SIMPLE_BLOCK,
+                new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_MALLOS.get()))));
+        context.register(FLOWER_BRAMBLES_KEY, new ConfiguredFeature<>(Feature.SIMPLE_BLOCK,
+                new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_BRAMBLES.get()
+                                .defaultBlockState().setValue(BramblesBushBlock.AGE, 3)))));
 
         context.register(MALLORN_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TolkienBlocks.WOOD_MALLORN.get()),
@@ -227,7 +202,7 @@ public class TolkienConfiguredFeatures {
                 BlockStateProvider.simple(TolkienBlocks.LEAVES_MALLORN.get()),
                 new FancyFoliagePlacer(ConstantInt.of(4), ConstantInt.of(4), 4),
                 new ThreeLayersFeatureSize(5, 1, 0, 1, 2, OptionalInt.empty()))
-                .dirt(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
+                .belowTrunkProvider(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
                 .decorators(ImmutableList.of(TolkienDecorators.LIVING_ROOTS, TolkienDecorators.LIGHTNINGBUG))
                 .build()));
         context.register(HARDENED_MALLORN_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
@@ -236,7 +211,7 @@ public class TolkienConfiguredFeatures {
                 BlockStateProvider.simple(TolkienBlocks.HARDENED_LEAVES_MALLORN.get()),
                 new FancyFoliagePlacer(ConstantInt.of(4), ConstantInt.of(4), 4),
                 new ThreeLayersFeatureSize(5, 1, 0, 1, 2, OptionalInt.empty()))
-                .dirt(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
+                .belowTrunkProvider(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
                 .decorators(ImmutableList.of(TolkienDecorators.LIVING_ROOTS, TolkienDecorators.LIGHTNINGBUG))
                 .build()));
         context.register(MIRKWOOD_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
@@ -245,7 +220,7 @@ public class TolkienConfiguredFeatures {
                 BlockStateProvider.simple(TolkienBlocks.LEAVES_MIRKWOOD.get()),
                 new SpheroidFoliagePlacer(4.5f, 2.25f, ConstantInt.of(0), 1, 0, 0.45f, (int) (LEAF_SHAG_FACTOR * 1.5f)),
                 new TwoLayersFeatureSize(4, 1, 1))
-                .dirt(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
+                .belowTrunkProvider(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
                 .decorators(ImmutableList.of(TolkienDecorators.WALL_BLOOM, TolkienDecorators.LIVING_ROOTS))
                 .build()));
         context.register(HARDENED_MIRKWOOD_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
@@ -254,7 +229,7 @@ public class TolkienConfiguredFeatures {
                 BlockStateProvider.simple(TolkienBlocks.HARDENED_LEAVES_MIRKWOOD.get()),
                 new SpheroidFoliagePlacer(4.5f, 2.25f, ConstantInt.of(0), 1, 0, 0.45f, (int) (LEAF_SHAG_FACTOR * 1.5f)),
                 new TwoLayersFeatureSize(4, 1, 1))
-                .dirt(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
+                .belowTrunkProvider(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
                 .decorators(ImmutableList.of(TolkienDecorators.WALL_BLOOM, TolkienDecorators.LIVING_ROOTS))
                 .build()));
         context.register(FANGORNOAK_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
@@ -264,7 +239,7 @@ public class TolkienConfiguredFeatures {
                 new FancyFoliagePlacer(ConstantInt.of(4), ConstantInt.of(4), 4),
                 new TwoLayersFeatureSize(1, 0, 1))
                 .decorators(ImmutableList.of(TrunkVineDecorator.INSTANCE, new LeaveVineDecorator(0.25F), new AlterGroundDecorator(BlockStateProvider.simple(Blocks.PODZOL)), TolkienDecorators.WALL_BROWN))
-                .dirt(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
+                .belowTrunkProvider(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
                 .build()));
         context.register(HARDENED_FANGORNOAK_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TolkienBlocks.WOOD_FANGORNOAK.get()),
@@ -273,7 +248,7 @@ public class TolkienConfiguredFeatures {
                 new FancyFoliagePlacer(ConstantInt.of(4), ConstantInt.of(4), 4),
                 new TwoLayersFeatureSize(1, 0, 1))
                 .decorators(ImmutableList.of(TrunkVineDecorator.INSTANCE, new LeaveVineDecorator(0.25F), new AlterGroundDecorator(BlockStateProvider.simple(Blocks.PODZOL)), TolkienDecorators.WALL_BROWN))
-                .dirt(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
+                .belowTrunkProvider(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
                 .build()));
         context.register(CULUMALDA_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TolkienBlocks.WOOD_CULUMALDA.get()),
@@ -281,7 +256,7 @@ public class TolkienConfiguredFeatures {
                 BlockStateProvider.simple(TolkienBlocks.LEAVES_CULUMALDA.get()),
                 new FancyFoliagePlacer(ConstantInt.of(2), ConstantInt.of(0), 3),
                 new TwoLayersFeatureSize(0, 0, 0, OptionalInt.of(4)))
-                .dirt(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
+                .belowTrunkProvider(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
                 .decorators(ImmutableList.of(TolkienDecorators.WALL_RED))
                 .build()));
         context.register(HARDENED_CULUMALDA_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
@@ -290,7 +265,7 @@ public class TolkienConfiguredFeatures {
                 BlockStateProvider.simple(TolkienBlocks.HARDENED_LEAVES_CULUMALDA.get()),
                 new FancyFoliagePlacer(ConstantInt.of(2), ConstantInt.of(0), 3),
                 new TwoLayersFeatureSize(0, 0, 0, OptionalInt.of(4)))
-                .dirt(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
+                .belowTrunkProvider(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
                 .decorators(ImmutableList.of(TolkienDecorators.WALL_RED))
                 .build()));
         context.register(LEBETHRON_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
@@ -315,7 +290,7 @@ public class TolkienConfiguredFeatures {
                 BlockStateProvider.simple(Blocks.AIR),
                 new FancyFoliagePlacer(ConstantInt.of(2), ConstantInt.of(4), 4),
                 new TwoLayersFeatureSize(0, 0, 0, OptionalInt.of(4)))
-                .dirt(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
+                .belowTrunkProvider(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
                 .build()));
         context.register(DWARVEN_MAPLE_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TolkienBlocks.WOOD_DWARVEN_MAPLE.get()),
@@ -323,7 +298,7 @@ public class TolkienConfiguredFeatures {
                 BlockStateProvider.simple(TolkienBlocks.LEAVES_DWARVEN_MAPLE.get()),
                 new SpheroidFoliagePlacer(4.5F, 1.5F, ConstantInt.of(0), 1, 0, -0.25F, 0),
                 new TwoLayersFeatureSize(4, 1, canopyDistancing))
-                .dirt(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
+                .belowTrunkProvider(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
                 .build()));
         context.register(HARDENED_DWARVEN_MAPLE_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TolkienBlocks.WOOD_DWARVEN_MAPLE.get()),
@@ -331,7 +306,7 @@ public class TolkienConfiguredFeatures {
                 BlockStateProvider.simple(TolkienBlocks.HARDENED_LEAVES_DWARVEN_MAPLE.get()),
                 new SpheroidFoliagePlacer(4.5F, 1.5F, ConstantInt.of(0), 1, 0, -0.25F, 0),
                 new TwoLayersFeatureSize(4, 1, canopyDistancing))
-                .dirt(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
+                .belowTrunkProvider(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
                 .build()));
         context.register(OLDFORESTOAK_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(Blocks.DARK_OAK_WOOD),
@@ -340,7 +315,7 @@ public class TolkienConfiguredFeatures {
                 new FancyFoliagePlacer(ConstantInt.of(4), ConstantInt.of(4), 4),
                 new TwoLayersFeatureSize(1, 0, 1))
                 .decorators(ImmutableList.of(new LeaveVineDecorator(0.25F), new AlterGroundDecorator(BlockStateProvider.simple(Blocks.PODZOL)), TolkienDecorators.LIGHTNINGBUG, TolkienDecorators.LIVING_ROOTS))
-                .dirt(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
+                .belowTrunkProvider(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
                 .ignoreVines()
                 .build()));
         context.register(CULUMALDA_FIRIEN_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
@@ -349,7 +324,7 @@ public class TolkienConfiguredFeatures {
                 BlockStateProvider.simple(TolkienBlocks.LEAVES_CULUMALDA.get()),
                 new FancyFoliagePlacer(ConstantInt.of(4), ConstantInt.of(4), 4),
                 new ThreeLayersFeatureSize(5, 1, 0, 1, 2, OptionalInt.empty()))
-                .dirt(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
+                .belowTrunkProvider(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
                 .build()));
         context.register(HARDENED_CULUMALDA_FIRIEN_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TolkienBlocks.WOOD_CULUMALDA.get()),
@@ -357,7 +332,7 @@ public class TolkienConfiguredFeatures {
                 BlockStateProvider.simple(TolkienBlocks.HARDENED_LEAVES_CULUMALDA.get()),
                 new FancyFoliagePlacer(ConstantInt.of(4), ConstantInt.of(4), 4),
                 new ThreeLayersFeatureSize(5, 1, 0, 1, 2, OptionalInt.empty()))
-                .dirt(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
+                .belowTrunkProvider(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
                 .build()));
         context.register(LEBETHRON_FIRIEN_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TolkienBlocks.WOOD_LEBETHRON.get()),
@@ -365,7 +340,7 @@ public class TolkienConfiguredFeatures {
                 BlockStateProvider.simple(TolkienBlocks.LEAVES_LEBETHRON.get()),
                 new FancyFoliagePlacer(ConstantInt.of(4), ConstantInt.of(4), 4),
                 new ThreeLayersFeatureSize(5, 1, 0, 1, 2, OptionalInt.empty()))
-                .dirt(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
+                .belowTrunkProvider(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
                 .build()));
         context.register(HARDENED_LEBETHRON_FIRIEN_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TolkienBlocks.WOOD_LEBETHRON.get()),
@@ -373,7 +348,7 @@ public class TolkienConfiguredFeatures {
                 BlockStateProvider.simple(TolkienBlocks.HARDENED_LEAVES_LEBETHRON.get()),
                 new FancyFoliagePlacer(ConstantInt.of(4), ConstantInt.of(4), 4),
                 new ThreeLayersFeatureSize(5, 1, 0, 1, 2, OptionalInt.empty()))
-                .dirt(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
+                .belowTrunkProvider(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
                 .build()));
         context.register(MUSHROOM_BLOOM_DECAY_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(Blocks.MUSHROOM_STEM),
@@ -381,7 +356,7 @@ public class TolkienConfiguredFeatures {
                 BlockStateProvider.simple(TolkienBlocks.BLOCK_BLOOM_DECAY.get()),
                 new SpheroidFoliagePlacer(4.25f, 0F, ConstantInt.of(1), 1, 0, 0F, 0),
                 new TwoLayersFeatureSize(11, 0, canopyDistancing))
-                .dirt(BlockStateProvider.simple(Blocks.STONE))
+                .belowTrunkProvider(BlockStateProvider.simple(Blocks.STONE))
                 .build()));
         context.register(MUSHROOM_DECAY_BLOOM_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(Blocks.MUSHROOM_STEM),
@@ -389,7 +364,7 @@ public class TolkienConfiguredFeatures {
                 BlockStateProvider.simple(TolkienBlocks.BLOCK_DECAY_BLOOM.get()),
                 new SpheroidFoliagePlacer(4.25f, 0F, ConstantInt.of(1), 1, 0, 0F, 0),
                 new TwoLayersFeatureSize(11, 0, canopyDistancing))
-                .dirt(BlockStateProvider.simple(Blocks.STONE))
+                .belowTrunkProvider(BlockStateProvider.simple(Blocks.STONE))
                 .build()));
 
         // Biome Features
