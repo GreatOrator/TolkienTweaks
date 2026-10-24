@@ -78,6 +78,16 @@ public class PiggyBankBlockEntity extends TolkienBlockEntity implements MenuProv
         return saveWithoutMetadata(pRegistries);
     }
 
+    /**
+     * 26.1 calls this instead of the block's removed {@code onRemove}, which is where the bank's
+     * fifty-four slots are dropped.
+     */
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        this.drops();
+        super.preRemoveSideEffects(pos, state);
+    }
+
     public void drops() {
         SimpleContainer inv = new SimpleContainer(itemHandler.getSlots());
         for(int i = 0; i < itemHandler.getSlots(); i++) {

@@ -1740,6 +1740,34 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   look at is a chest in a test world - open and close it and confirm the vanilla sounds and the
   comparator still move, then break a full one and confirm the twenty-seven slots spill as before.
 
+### The other container blocks' removal hooks — DONE
+
+- **Four more `onRemove` overrides went the same way as the camo chest's.** The fireplace, piggy bank
+  and trinket table each dropped their handler contents from `Block#onRemove`, and the milestone
+  forgot its saved record there. The block side of all four is now empty and the work moved into
+  each block entity's `BlockEntity#preRemoveSideEffects(BlockPos, BlockState)`: the three inventories
+  call their existing `drops()` helper (which is a `Containers.dropContents` over a `SimpleContainer`
+  built from the handlers, since none of them is a vanilla `Container`), and the milestone calls
+  `MilestoneHandler.removeMilestone(this)` before `super`.
+- **Ordering matters for the milestone.** `preRemoveSideEffects` runs while the block entity is still
+  attached and its `getLevel()` still answers, which is what `removeMilestone` needs to reach the
+  saved data; doing it from the block would have had no entity to ask.
+- **The trinket table needed two more 26.1 moves to compile.** `ItemStack#getCraftingRemainder()` is
+  `ItemInstanceExtension#getCraftingRemainder()` now and hands back an `ItemStackTemplate` (or null),
+  so the potion's bottle is built with `ItemStackTemplate#create()` and the glass-bottle fallback for
+  vanilla potions stays as it was. And `ItemParticleOption` takes an `ItemStackTemplate` rather than
+  an `ItemStack`, so the table's smoking potion particle wraps the stack with
+  `ItemStackTemplate.fromNonEmptyStack`.
+- **The milestone's shift check was reading a client class on the server.** `Screen.hasShiftDown()` is
+  gone in 26.1, and the check was always false on the server anyway; it now asks
+  `Player#isShiftKeyDown`, which a server player does know, so a creative player holding shift gets
+  the settings menu the code always meant to offer.
+- **Verified:** whole-tree `javac` at **200** errors, down from 211 - `FireplaceBlock`'s two,
+  `MilestoneBlock`'s three, `PiggyBankBlock`'s two, `TrinketTableBlock`'s four and
+  `TrinketTableBlockEntity`'s one are all gone, with nothing new anywhere. Nothing was run in game:
+  the checks are breaking each of the four blocks with items in it, and shift-right-clicking a
+  milestone in creative.
+
 ## Ordered work list
 
 1. **Build stack — DONE.** MDG 2, JDK 25, NeoForge 26.1.2, the four dependency bumps. The
@@ -1766,9 +1794,10 @@ from **3,470 errors in 337 files to 2,801 in 320**.
    DONE* above), the capability side of the backpack and camo chest (see *The capability API - DONE*
    above), and the camo chest itself, whose removal hook, comparator call and opener counter moved
    with 26.1's container API (see *The camo chest's block entity - DONE* below). The camo chest's
-   block and block entity are clean, as are the backpack pair and the lockable chests; what still
-   fails in that corner is `CamoFluidBlockEntity`'s capability query and the `onRemove` overrides in
-   `FireplaceBlock` and `MilestoneBlock`, which are ordinary block work rather than container work.
+   block and block entity are clean, as are the backpack pair, the lockable chests, and the
+   fireplace, piggy bank, trinket table and milestone, whose `onRemove` overrides all moved to
+   `preRemoveSideEffects` (see *The other container blocks' removal hooks - DONE* below). What still
+   fails in that corner is `CamoFluidBlockEntity`'s capability query.
 6. **Worldgen - done except the datagen.** The carvers, trees, configured and placed features,
    surface rules and the biome registration layer all compile (see *The worldgen registration layer
    - DONE* above), and the TerraBlender calls in `TolkienMobsMain` were checked against

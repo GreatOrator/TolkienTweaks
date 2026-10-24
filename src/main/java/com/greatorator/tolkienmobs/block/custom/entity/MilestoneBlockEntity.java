@@ -51,6 +51,16 @@ public class MilestoneBlockEntity extends TolkienBlockEntity implements MenuProv
         this.pos = pPos;
     }
 
+    /**
+     * 26.1 calls this instead of the block's removed {@code onRemove}; the milestone's saved record
+     * is the one thing the block used to clean up there.
+     */
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        MilestoneHandler.removeMilestone(this);
+        super.preRemoveSideEffects(pos, state);
+    }
+
     public void onRightClick(BlockState blockState, BlockPos blockPos, Player player) {
         if (blockState.getBlock() == TolkienBlocks.MILESTONE_BLOCK.get() && !blockState.getValue(MilestoneBlock.LIT) && !player.isCreative()) {
             getUUID();

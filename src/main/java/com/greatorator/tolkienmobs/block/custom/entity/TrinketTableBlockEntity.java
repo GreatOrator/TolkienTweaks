@@ -25,6 +25,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -132,6 +133,16 @@ public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuP
         maxProgress = input.getInt("max_progress").isPresent() ? Math.max(1, input.getIntOr("max_progress", 0)) : DEFAULT_MAX_PROGRESS;
     }
 
+    /**
+     * 26.1 calls this instead of the block's removed {@code onRemove}, which is where the table's
+     * four slots are dropped.
+     */
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        this.drops();
+        super.preRemoveSideEffects(pos, state);
+    }
+
     public void drops() {
         SimpleContainer inv = new SimpleContainer(itemHandler.getSlots());
         for(int i = 0; i < itemHandler.getSlots(); i++) {
@@ -191,7 +202,9 @@ public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuP
 
     private void craftItem(TrinketRecipe recipe, ItemStack result) {
         ItemStack potion = itemHandler.getStackInSlot(POTION_SLOT);
-        ItemStack remainder = potion.getCraftingRemainder();
+        // 26.1 hands the remainder out as a template; the stack is only built when there is one.
+        ItemStackTemplate remainderTemplate = potion.getCraftingRemainder();
+        ItemStack remainder = remainderTemplate == null ? ItemStack.EMPTY : remainderTemplate.create();
         // Vanilla potions do not declare a crafting remainder, but leave a bottle when used.
         if (remainder.isEmpty() && potion.is(Items.POTION)) {
             remainder = new ItemStack(Items.GLASS_BOTTLE);
