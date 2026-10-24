@@ -103,6 +103,9 @@ All notable changes to this project will be documented in this file.
   are ported as well. Each still takes a key code in its field, shows the hint when the field is
   empty, and saves the code when you press the button; the field is drawn once now instead of twice
   over itself.
+- The piggy bank and the three item screens - coin pouch, key item and key ring - are ported too.
+  They look and behave as before, and a right click over a pouch, ring or key item slot is still
+  ignored, so a stack in one of them cannot be split or picked up.
 - Every message the mod sends a player now uses 26.1's own call for it: the chat lines go through
   the system-message call, and the three that flash above the hotbar - the backpack's "no room",
   the occupied sleeping bag and a refused sleep - through the overlay one. Nothing the player reads
