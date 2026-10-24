@@ -148,7 +148,7 @@ public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuP
         TrinketRecipeInput input = getRecipeInput();
         Optional<RecipeHolder<TrinketRecipe>> recipe = level.getServer().getRecipeManager()
                 .getRecipeFor(TolkienRecipesTypes.TRINKET_TABLE_TYPE.get(), input, level);
-        ItemStack result = recipe.map(holder -> holder.value().assemble(input, level.registryAccess()))
+        ItemStack result = recipe.map(holder -> holder.value().assemble(input))
                 .orElse(ItemStack.EMPTY);
         // With no trinket recipe to run, a damaged tool, its repair material and a gem repair the
         // tool where it lies; the trinket recipe hands its result over to the output slot instead.

@@ -1453,9 +1453,28 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   `TriggerInstance.hasItems(...)` and `unlocked(ResourceKey)` calls are unchanged.
 - **One vanilla rename:** the chain item is `Items.IRON_CHAIN`, which the hanging-sign recipe uses.
 - **Verified:** whole-tree `javac` at **417** errors, down from 463, the per-file diff showing only
-  the three files losing their 38, 4 and 4 errors and nothing new. The recipe classes themselves -
-  `FireplaceRecipe`, `TrinketRecipe` and their serializers - are still failing and are a separate
-  job. Nothing was opened in game.
+  the three files losing their 38, 4 and 4 errors and nothing new. Nothing was opened in game.
+
+### The recipe classes - DONE
+
+- **A recipe serializer is a record of its codecs now.** `RecipeSerializer` stopped being an
+  interface: it is `record RecipeSerializer<T extends Recipe<?>>(MapCodec<T> codec,
+  StreamCodec<RegistryFriendlyByteBuf, T> streamCodec)`. The nested `Serializer` classes in
+  `FireplaceRecipe` and `TrinketRecipe` therefore had nothing to implement, so each recipe declares
+  `MAP_CODEC`, `STREAM_CODEC` and a `SERIALIZER` constant and `TolkienRecipeSerializers` registers
+  `() -> FireplaceRecipe.SERIALIZER` / `() -> TrinketRecipe.SERIALIZER`. The codecs themselves were
+  moved across unchanged, so the committed fireplace and trinket recipe JSON - which has no
+  `show_notification` and leaves `group` at its `trinket` default - is still what datagen writes.
+- **`Recipe#assemble` takes only the input.** The `HolderLookup.Provider` argument is gone, so both
+  recipes drop it and `TrinketTableBlockEntity#tick` calls `assemble(input)`.
+- **`Recipe` asks two questions it did not before.** `showNotification()` is required and both
+  recipes return true; `group()` is required too, and `FireplaceRecipe` never had a group, so it
+  answers the empty string.
+- **`TrinketRecipe#getResultItem` loses its unused provider argument**, and `TrinketRecipeCategory`
+  calls it with no arguments - the one new error this pass introduced, fixed with it.
+- **Verified:** whole-tree `javac` at **405** errors, down from 417. The two serializers, both
+  recipes and `TrinketRecipeCategory` compile, and no error is left anywhere under `recipe/`.
+  Nothing was opened in game.
 
 ## Ordered work list
 
@@ -1488,10 +1507,9 @@ from **3,470 errors in 337 files to 2,801 in 320**.
 8. **Screens.** 18 screens and the widget set against the prepare/render split.
 9. **Datagen.** `TolkienDataGenerator` and the vendored `datagen/modelgen` package (NeoForge
    removed the model generators in 21.4, so it was written here — it needs a pass of its own). The
-   loot side and the recipe helpers are done: the three loot providers, the global loot modifier,
-   the trinket's loot function, `TolkienRecipeHelper` and both custom recipe builders compile. What
-   is left of recipes is the runtime side - `FireplaceRecipe`, `TrinketRecipe` and
-   `TolkienRecipeSerializers`.
+   loot side and the whole recipe family are done: the three loot providers, the global loot
+   modifier, the trinket's loot function, `TolkienRecipeHelper`, both custom recipe builders, both
+   recipe classes and their serializers all compile.
 10. **Long tail.** JEI plugin (4 files), Curios (1), network payloads, the two sound instances.
 
 ## Verification

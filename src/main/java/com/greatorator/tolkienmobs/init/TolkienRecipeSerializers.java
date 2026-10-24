@@ -17,10 +17,11 @@ public class TolkienRecipeSerializers {
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZER = DeferredRegister
             .create(Registries.RECIPE_SERIALIZER, MODID);
 
+    // 26.1 holds a recipe serializer as a record of its codecs, so each recipe builds its own instance.
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<TrinketRecipe>> TRINKET_TABLE_SERIALIZER =
-            RECIPE_SERIALIZER.register("trinket", TrinketRecipe.Serializer::new);
+            RECIPE_SERIALIZER.register("trinket", () -> TrinketRecipe.SERIALIZER);
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<FireplaceRecipe>> FIREPLACE_SERIALIZER =
-            RECIPE_SERIALIZER.register("fireplace", FireplaceRecipe.Serializer::new);
+            RECIPE_SERIALIZER.register("fireplace", () -> FireplaceRecipe.SERIALIZER);
 
     public static void register(IEventBus eventBus) {
         RECIPE_SERIALIZER.register(eventBus);
