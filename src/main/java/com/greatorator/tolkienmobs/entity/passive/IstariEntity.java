@@ -46,16 +46,14 @@ import com.geckolib.animation.object.PlayState;
 import com.geckolib.animation.RawAnimation;
 import com.geckolib.util.GeckoLibUtil;
 
-import java.util.UUID;
-
 public class IstariEntity extends TolkienHeardEntity implements GeoEntity, NeutralMob, RangedAttackMob {
     private static final EntityDataAccessor<Integer> VARIANT =
             SynchedEntityData.defineId(IstariEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(IstariEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> DATA_HEALING = SynchedEntityData.defineId(IstariEntity.class, EntityDataSerializers.BOOLEAN);
     private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
+    private long persistentAngerEndTime = -1L;
     @Nullable
-    private UUID persistentAngerTarget;
+    private EntityReference<LivingEntity> persistentAngerTarget;
     protected boolean ranged;
     protected boolean hidden;
 
@@ -87,29 +85,29 @@ public class IstariEntity extends TolkienHeardEntity implements GeoEntity, Neutr
     }
 
     @Override
-    public int getRemainingPersistentAngerTime() {
-        return this.entityData.get(DATA_REMAINING_ANGER_TIME);
+    public long getPersistentAngerEndTime() {
+        return this.persistentAngerEndTime;
     }
 
     @Override
-    public void setRemainingPersistentAngerTime(int time) {
-        this.entityData.set(DATA_REMAINING_ANGER_TIME, time);
+    public void setPersistentAngerEndTime(long endTime) {
+        this.persistentAngerEndTime = endTime;
     }
 
     @Nullable
     @Override
-    public UUID getPersistentAngerTarget() {
+    public EntityReference<LivingEntity> getPersistentAngerTarget() {
         return this.persistentAngerTarget;
     }
 
     @Override
-    public void setPersistentAngerTarget(@Nullable UUID target) {
+    public void setPersistentAngerTarget(@Nullable EntityReference<LivingEntity> target) {
         this.persistentAngerTarget = target;
     }
 
     @Override
     public void startPersistentAngerTimer() {
-        this.setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.sample(this.random));
+        this.setTimeToRemainAngry(PERSISTENT_ANGER_TIME.sample(this.random));
     }
 
     @Nullable
@@ -166,7 +164,6 @@ public class IstariEntity extends TolkienHeardEntity implements GeoEntity, Neutr
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(VARIANT, 0);
-        builder.define(DATA_REMAINING_ANGER_TIME, 0);
         builder.define(DATA_HEALING, false);
     }
 
@@ -234,13 +231,11 @@ public class IstariEntity extends TolkienHeardEntity implements GeoEntity, Neutr
             // Each attack runs once and then hands the controller back, so it no longer continues
             // forever on the last frame of a looping attack; the swing is cleared either way.
             if (event.animatable().isAggressive() && this.swinging && !event.controller().isAnimatingBones()) {
-                event.controller().forceAnimationReset();
                 event.controller().setAnimation(RawAnimation.begin().thenPlay("attack"));
                 this.swinging =false;
                 return PlayState.CONTINUE;
             } else if (event.animatable().isAggressive() && this.getRanged() && !event.controller().isAnimatingBones()) {
                 setHidden(false);
-                event.controller().forceAnimationReset();
                 event.controller().setAnimation(RawAnimation.begin().thenPlay("heal"));
                 this.ranged = false;
                 setHidden(true);

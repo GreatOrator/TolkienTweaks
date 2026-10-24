@@ -61,7 +61,6 @@ import com.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nonnull;
 import java.util.EnumSet;
-import java.util.UUID;
 import java.util.function.Predicate;
 
 public class ElementalGolemEntity extends TolkienMonsterEntity implements GeoEntity, NeutralMob {
@@ -70,9 +69,9 @@ public class ElementalGolemEntity extends TolkienMonsterEntity implements GeoEnt
     public static final EntityDataAccessor<Integer> ELEMENT_TYPE = SynchedEntityData.defineId(ElementalGolemEntity.class, EntityDataSerializers.INT);
     private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
     private int attackAnimationTick;
-    private int remainingPersistentAngerTime;
+    private long persistentAngerEndTime = -1L;
     @javax.annotation.Nullable
-    private UUID persistentAngerTarget;
+    private EntityReference<LivingEntity> persistentAngerTarget;
     private long nextAbilityUse = 0L;
     private final static long coolDown = 15000L;
     public int liftAttackAnimationTick;
@@ -145,29 +144,29 @@ public class ElementalGolemEntity extends TolkienMonsterEntity implements GeoEnt
     }
 
     @Override
-    public int getRemainingPersistentAngerTime() {
-        return this.remainingPersistentAngerTime;
+    public long getPersistentAngerEndTime() {
+        return this.persistentAngerEndTime;
     }
 
     @Override
-    public void setRemainingPersistentAngerTime(int angryTime) {
-        this.remainingPersistentAngerTime = angryTime;
+    public void setPersistentAngerEndTime(long endTime) {
+        this.persistentAngerEndTime = endTime;
     }
 
     @javax.annotation.Nullable
     @Override
-    public UUID getPersistentAngerTarget() {
+    public EntityReference<LivingEntity> getPersistentAngerTarget() {
         return this.persistentAngerTarget;
     }
 
     @Override
-    public void setPersistentAngerTarget(@javax.annotation.Nullable UUID uuid) {
-        this.persistentAngerTarget = uuid;
+    public void setPersistentAngerTarget(@javax.annotation.Nullable EntityReference<LivingEntity> target) {
+        this.persistentAngerTarget = target;
     }
 
     @Override
     public void startPersistentAngerTimer() {
-        this.setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.sample(this.random));
+        this.setTimeToRemainAngry(PERSISTENT_ANGER_TIME.sample(this.random));
     }
 
     private float getAttackDamage() {
@@ -216,7 +215,7 @@ public class ElementalGolemEntity extends TolkienMonsterEntity implements GeoEnt
                             if (MathUtility.getRandom(10) <= 3) {
                                 player.addEffect(new MobEffectInstance(TolkienMobEffects.ELEMENTAL_FLYING, strength * 20, 0));
                             } else {
-                                player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, strength * 20, 0));
+                                player.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, strength * 20, 0));
                             }
                         }
                     }
@@ -300,7 +299,7 @@ public class ElementalGolemEntity extends TolkienMonsterEntity implements GeoEnt
     }
 
     @Override
-    public boolean causeFallDamage(float fallDistance, float damageMultiplier, @Nonnull DamageSource damageSource) {
+    public boolean causeFallDamage(double fallDistance, float damageMultiplier, @Nonnull DamageSource damageSource) {
         return false;
     }
 
@@ -501,7 +500,7 @@ public class ElementalGolemEntity extends TolkienMonsterEntity implements GeoEnt
 
             if (target != null && mob.liftAttackAnimationTick == mob.liftAttackAnimationActionPoint) {
                 TornadoEntity tornado = TolkienEntities.AMMO_TORNADO.get().create(mob.level, EntitySpawnReason.MOB_SUMMONED);
-                tornado.moveTo(target.blockPosition(), 0, 0);
+                tornado.snapTo(target.blockPosition(), 0, 0);
                 tornado.playSound(TolkienSounds.SHOOT_TORNADO.get(), 1.5F, 1.0F);
                 ((ServerLevel)mob.level).addFreshEntityWithPassengers(tornado);
             }

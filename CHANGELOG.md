@@ -169,6 +169,12 @@ All notable changes to this project will be documented in this file.
   rider to its back and returns home by the renamed home calls, and a fireball's breath cloud still
   deals its damage - the effect it uses is spelled `instant_damage` now, same effect, same id. The
   balrog's magma blocks still refuse to be broken.
+- The elemental golem, the tree ent and the Istari are ported with them. Their anger is kept the
+  same way the golems' is - the same twenty-to-forty-second window, the same target, the same
+  "who hit me" rule - and the tree ent still does not take kindly to being disturbed. The only
+  differences a player could meet are the golem's slow, which is the same effect under its current
+  name, and an angry mob that was saved before the update coming back calm, because the anger is
+  stored in the shape the new game expects. The Istari's attack and heal still play once per turn.
 
 ## [4.4.83-Final] - 10.22.2026
 
