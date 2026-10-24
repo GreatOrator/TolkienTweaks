@@ -1713,6 +1713,33 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   client-side path, so it needs a client run with Curios installed to check the category shows up in
   Controls and that B still opens the pack.
 
+### The camo chest's block entity — DONE
+
+- **The chest no longer drops its own contents.** `BlockEntity#preRemoveSideEffects` now does it for
+  every container block entity by default (`this instanceof Container` →
+  `Containers.dropContents`), so `CamoChestBlock`'s `onRemove` override and the
+  `Containers.dropContentsOnDestroy` call inside it could both go. That is the same shape the
+  backpack took; the difference is that the chest had nothing else to clean up.
+- **Comparator output gained a direction.** `BlockBehaviour#getAnalogOutputSignal` is
+  `(BlockState, Level, BlockPos, Direction)` in 26.1, so the chest's override takes the (unused)
+  direction and still asks `AbstractContainerMenu.getRedstoneSignalFromBlockEntity`.
+- **Opening and closing go through `ContainerUser`, not `Player`.** `Container#startOpen`/`#stopOpen`
+  now take a `ContainerUser` - the interface a living entity implements so anything that holds a
+  container can count as an opener - and `ContainerOpenersCounter` follows: `isOwnContainer` is a
+  `public abstract` member now, and `incrementOpeners` takes the `LivingEntity` plus the
+  `maxInteractionRange` the opener reports. The chest's counter therefore passes
+  `containerUser.getLivingEntity()` and `containerUser.getContainerInteractionRange()`, which is
+  exactly what vanilla's `ChestBlockEntity` does; the sounds, the block-state signal update and the
+  menu check in `isOwnContainer` are unchanged.
+- **`ContainerHelper` lost its registry arguments.** `saveAllItems`/`loadAllItems` take the
+  `ValueOutput`/`ValueInput` and the stack list, so the `registries` the chest used to pass are gone;
+  the item stack codecs are registry-free now, and the loot table path (`trySaveLootTable` /
+  `tryLoadLootTable`) is untouched.
+- **Verified:** whole-tree `javac` at **211** errors, down from 221 - `CamoChestBlockEntity`'s six
+  and `CamoChestBlock`'s four are gone and nothing new appeared. Nothing was run in game: what to
+  look at is a chest in a test world - open and close it and confirm the vanilla sounds and the
+  comparator still move, then break a full one and confirm the twenty-seven slots spill as before.
+
 ## Ordered work list
 
 1. **Build stack — DONE.** MDG 2, JDK 25, NeoForge 26.1.2, the four dependency bumps. The
@@ -1735,11 +1762,13 @@ from **3,470 errors in 337 files to 2,801 in 320**.
    modifier's priority and the two numeric item model properties. No error is left under `item/`,
    in `TolkienItems`, `TolkienLootFunctions`, `TrinketRandomlyFunction`, `TolkienItemsModifier` or
    `TolkienItemProperties`.
-5. **Block entities.** The backpack pair is done - `onRemove`'s replacement and the `onDataPacket`
-   override (see *The backpack's removal, sync and keybind - DONE* above) - and so is the capability
-   side of the backpack and camo chest (see *The capability API - DONE* above). Still open is the
-   camo chest's own removal path, which is where the errors left in `CamoChestBlock` and
-   `CamoChestBlockEntity` are.
+5. **Block entities - DONE.** The backpack pair (see *The backpack's removal, sync and keybind -
+   DONE* above), the capability side of the backpack and camo chest (see *The capability API - DONE*
+   above), and the camo chest itself, whose removal hook, comparator call and opener counter moved
+   with 26.1's container API (see *The camo chest's block entity - DONE* below). The camo chest's
+   block and block entity are clean, as are the backpack pair and the lockable chests; what still
+   fails in that corner is `CamoFluidBlockEntity`'s capability query and the `onRemove` overrides in
+   `FireplaceBlock` and `MilestoneBlock`, which are ordinary block work rather than container work.
 6. **Worldgen - done except the datagen.** The carvers, trees, configured and placed features,
    surface rules and the biome registration layer all compile (see *The worldgen registration layer
    - DONE* above), and the TerraBlender calls in `TolkienMobsMain` were checked against

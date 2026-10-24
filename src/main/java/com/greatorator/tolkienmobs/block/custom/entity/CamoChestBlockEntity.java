@@ -11,6 +11,8 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.ContainerUser;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -53,7 +55,7 @@ public class CamoChestBlockEntity extends RandomizableContainerBlockEntity {
         }
 
         @Override
-        protected boolean isOwnContainer(Player player) {
+        public boolean isOwnContainer(Player player) {
             return player.containerMenu instanceof CamoChestContainer menu && menu.isFor(CamoChestBlockEntity.this);
         }
     };
@@ -87,17 +89,23 @@ public class CamoChestBlockEntity extends RandomizableContainerBlockEntity {
         return new CamoChestContainer(containerId, playerInventory, this, ContainerLevelAccess.create(this.getLevel(), this.getBlockPos()));
     }
 
+    /**
+     * 26.1 opens and closes a container through a {@link ContainerUser} rather than a player, which is
+     * what lets anything living that holds a container be counted as an opener.
+     */
     @Override
-    public void startOpen(Player player) {
-        if (!this.remove && !player.isSpectator() && this.level != null && !this.level.isClientSide()) {
-            this.openers.incrementOpeners(player, this.level, this.getBlockPos(), this.getBlockState());
+    public void startOpen(ContainerUser containerUser) {
+        LivingEntity user = containerUser.getLivingEntity();
+        if (!this.remove && !user.isSpectator() && this.level != null && !this.level.isClientSide()) {
+            this.openers.incrementOpeners(user, this.level, this.getBlockPos(), this.getBlockState(), containerUser.getContainerInteractionRange());
         }
     }
 
     @Override
-    public void stopOpen(Player player) {
-        if (!this.remove && !player.isSpectator() && this.level != null && !this.level.isClientSide()) {
-            this.openers.decrementOpeners(player, this.level, this.getBlockPos(), this.getBlockState());
+    public void stopOpen(ContainerUser containerUser) {
+        LivingEntity user = containerUser.getLivingEntity();
+        if (!this.remove && !user.isSpectator() && this.level != null && !this.level.isClientSide()) {
+            this.openers.decrementOpeners(user, this.level, this.getBlockPos(), this.getBlockState());
         }
     }
 
@@ -112,7 +120,7 @@ public class CamoChestBlockEntity extends RandomizableContainerBlockEntity {
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         if (!this.trySaveLootTable(output)) {
-            ContainerHelper.saveAllItems(output, this.items, registries);
+            ContainerHelper.saveAllItems(output, this.items);
         }
     }
 
@@ -121,7 +129,7 @@ public class CamoChestBlockEntity extends RandomizableContainerBlockEntity {
         super.loadAdditional(input);
         this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         if (!this.tryLoadLootTable(input)) {
-            ContainerHelper.loadAllItems(input, this.items, registries);
+            ContainerHelper.loadAllItems(input, this.items);
         }
     }
 }
