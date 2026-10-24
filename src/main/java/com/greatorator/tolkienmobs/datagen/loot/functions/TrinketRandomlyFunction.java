@@ -1,7 +1,6 @@
 package com.greatorator.tolkienmobs.datagen.loot.functions;
 
 import com.greatorator.tolkienmobs.init.TolkienDataComponents;
-import com.greatorator.tolkienmobs.init.TolkienLootFunctions;
 import com.greatorator.tolkienmobs.network.component.TrinketComponent;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -14,7 +13,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import java.util.List;
@@ -40,8 +38,8 @@ public class TrinketRandomlyFunction extends LootItemConditionalFunction {
     }
 
     @Override
-    public LootItemFunctionType<TrinketRandomlyFunction> getType() {
-        return TolkienLootFunctions.TRINKET_RANDOMLY.get();
+    public MapCodec<? extends LootItemConditionalFunction> codec() {
+        return CODEC;
     }
 
     @Override

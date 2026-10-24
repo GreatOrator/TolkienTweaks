@@ -28,8 +28,8 @@ public class TolkienItemsModifier extends LootModifier {
     Map<String, Float> addItems;
 
 
-    public TolkienItemsModifier(LootItemCondition[] conditionsIn, Map<String, Float> addItems) {
-        super(conditionsIn);
+    public TolkienItemsModifier(LootItemCondition[] conditionsIn, int priority, Map<String, Float> addItems) {
+        super(conditionsIn, priority);
         this.addItems = addItems;
     }
 

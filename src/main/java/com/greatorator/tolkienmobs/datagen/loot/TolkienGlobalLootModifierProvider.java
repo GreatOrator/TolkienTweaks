@@ -7,6 +7,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.neoforge.common.data.GlobalLootModifierProvider;
+import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.common.loot.LootTableIdCondition;
 
 import javax.annotation.Nonnull;
@@ -28,6 +29,7 @@ public class TolkienGlobalLootModifierProvider extends GlobalLootModifierProvide
                 new LootItemCondition[]{
                         new LootTableIdCondition.Builder(Identifier.fromNamespaceAndPath("minecraft", "chests/village/village_temple")).build()
                 },
+                IGlobalLootModifier.DEFAULT_PRIORITY,
                 Map.of(
                         TolkienItems.ITEM_COIN_BRONZE.getId().toString(), 0.25f
                 )
@@ -36,6 +38,7 @@ public class TolkienGlobalLootModifierProvider extends GlobalLootModifierProvide
                 new LootItemCondition[]{
                         new LootTableIdCondition.Builder(Identifier.fromNamespaceAndPath("minecraft", "chests/village/village_temple")).build()
                 },
+                IGlobalLootModifier.DEFAULT_PRIORITY,
                 Map.of(
                         TolkienItems.ITEM_COIN_BRONZE.getId().toString(), 0.25f,
                         TolkienItems.ITEM_COIN_SILVER.getId().toString(), 0.25f
@@ -47,6 +50,7 @@ public class TolkienGlobalLootModifierProvider extends GlobalLootModifierProvide
                 new LootItemCondition[]{
                         new LootTableIdCondition.Builder(Identifier.fromNamespaceAndPath("minecraft", "entities/zombie")).build()
                 },
+                IGlobalLootModifier.DEFAULT_PRIORITY,
                 Map.of(
                         TolkienItems.ITEM_COIN_BRONZE.getId().toString(), 0.25f
                 )
@@ -55,6 +59,7 @@ public class TolkienGlobalLootModifierProvider extends GlobalLootModifierProvide
                 new LootItemCondition[]{
                         new LootTableIdCondition.Builder(Identifier.fromNamespaceAndPath("minecraft", "entities/zombie_villager")).build()
                 },
+                IGlobalLootModifier.DEFAULT_PRIORITY,
                 Map.of(
                         TolkienItems.ITEM_COIN_BRONZE.getId().toString(), 0.25f
                 )
@@ -63,6 +68,7 @@ public class TolkienGlobalLootModifierProvider extends GlobalLootModifierProvide
                 new LootItemCondition[]{
                         new LootTableIdCondition.Builder(Identifier.fromNamespaceAndPath("minecraft", "entities/skeleton")).build()
                 },
+                IGlobalLootModifier.DEFAULT_PRIORITY,
                 Map.of(
                         TolkienItems.ITEM_COIN_SILVER.getId().toString(), 0.25f
                 )
@@ -71,6 +77,7 @@ public class TolkienGlobalLootModifierProvider extends GlobalLootModifierProvide
                 new LootItemCondition[]{
                         new LootTableIdCondition.Builder(Identifier.fromNamespaceAndPath("minecraft", "entities/wither_skeleton")).build()
                 },
+                IGlobalLootModifier.DEFAULT_PRIORITY,
                 Map.of(
                         TolkienItems.ITEM_COIN_SILVER.getId().toString(), 0.25f
                 )
@@ -79,6 +86,7 @@ public class TolkienGlobalLootModifierProvider extends GlobalLootModifierProvide
                 new LootItemCondition[]{
                         new LootTableIdCondition.Builder(Identifier.fromNamespaceAndPath("minecraft", "entities/creeper")).build()
                 },
+                IGlobalLootModifier.DEFAULT_PRIORITY,
                 Map.of(
                         TolkienItems.ITEM_COIN_BRONZE.getId().toString(), 0.25f
                 )
@@ -87,6 +95,7 @@ public class TolkienGlobalLootModifierProvider extends GlobalLootModifierProvide
                 new LootItemCondition[]{
                         new LootTableIdCondition.Builder(Identifier.fromNamespaceAndPath("minecraft", "entities/ghast")).build()
                 },
+                IGlobalLootModifier.DEFAULT_PRIORITY,
                 Map.of(
                         TolkienItems.ITEM_COIN_GOLD.getId().toString(), 0.25f
                 )
@@ -95,6 +104,7 @@ public class TolkienGlobalLootModifierProvider extends GlobalLootModifierProvide
                 new LootItemCondition[]{
                         new LootTableIdCondition.Builder(Identifier.fromNamespaceAndPath("minecraft", "entities/blaze")).build()
                 },
+                IGlobalLootModifier.DEFAULT_PRIORITY,
                 Map.of(
                         TolkienItems.ITEM_COIN_GOLD.getId().toString(), 0.25f
                 )
@@ -103,6 +113,7 @@ public class TolkienGlobalLootModifierProvider extends GlobalLootModifierProvide
                 new LootItemCondition[]{
                         new LootTableIdCondition.Builder(Identifier.fromNamespaceAndPath("minecraft", "entities/husk")).build()
                 },
+                IGlobalLootModifier.DEFAULT_PRIORITY,
                 Map.of(
                         TolkienItems.ITEM_COIN_SILVER.getId().toString(), 0.25f
                 )
@@ -111,6 +122,7 @@ public class TolkienGlobalLootModifierProvider extends GlobalLootModifierProvide
                 new LootItemCondition[]{
                         new LootTableIdCondition.Builder(Identifier.fromNamespaceAndPath("minecraft", "entities/magma_cube")).build()
                 },
+                IGlobalLootModifier.DEFAULT_PRIORITY,
                 Map.of(
                         TolkienItems.ITEM_COIN_BRONZE.getId().toString(), 0.25f
                 )
@@ -119,6 +131,7 @@ public class TolkienGlobalLootModifierProvider extends GlobalLootModifierProvide
                 new LootItemCondition[]{
                         new LootTableIdCondition.Builder(Identifier.fromNamespaceAndPath("minecraft", "entities/drowned")).build()
                 },
+                IGlobalLootModifier.DEFAULT_PRIORITY,
                 Map.of(
                         TolkienItems.ITEM_COIN_SILVER.getId().toString(), 0.25f
                 )
@@ -127,6 +140,7 @@ public class TolkienGlobalLootModifierProvider extends GlobalLootModifierProvide
                 new LootItemCondition[]{
                         new LootTableIdCondition.Builder(Identifier.fromNamespaceAndPath("minecraft", "entities/elder_guardian")).build()
                 },
+                IGlobalLootModifier.DEFAULT_PRIORITY,
                 Map.of(
                         TolkienItems.ITEM_COIN_GOLD.getId().toString(), 0.25f
                 )
@@ -135,6 +149,7 @@ public class TolkienGlobalLootModifierProvider extends GlobalLootModifierProvide
                 new LootItemCondition[]{
                         new LootTableIdCondition.Builder(Identifier.fromNamespaceAndPath("minecraft", "entities/guardian")).build()
                 },
+                IGlobalLootModifier.DEFAULT_PRIORITY,
                 Map.of(
                         TolkienItems.ITEM_COIN_SILVER.getId().toString(), 0.25f
                 )
@@ -143,6 +158,7 @@ public class TolkienGlobalLootModifierProvider extends GlobalLootModifierProvide
                 new LootItemCondition[]{
                         new LootTableIdCondition.Builder(Identifier.fromNamespaceAndPath("minecraft", "entities/stray")).build()
                 },
+                IGlobalLootModifier.DEFAULT_PRIORITY,
                 Map.of(
                         TolkienItems.ITEM_COIN_BRONZE.getId().toString(), 0.25f
                 )
@@ -151,6 +167,7 @@ public class TolkienGlobalLootModifierProvider extends GlobalLootModifierProvide
                 new LootItemCondition[]{
                         new LootTableIdCondition.Builder(Identifier.fromNamespaceAndPath("minecraft", "entities/enderman")).build()
                 },
+                IGlobalLootModifier.DEFAULT_PRIORITY,
                 Map.of(
                         TolkienItems.ITEM_COIN_SILVER.getId().toString(), 0.25f
                 )

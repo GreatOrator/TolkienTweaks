@@ -7,6 +7,8 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.properties.conditional.ConditionalItemModelProperty;
 import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperty;
+import net.minecraft.client.renderer.item.properties.numeric.UseDuration;
+import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -46,11 +48,13 @@ public class TolkienItemProperties {
         public static final MapCodec<Pull> MAP_CODEC = MapCodec.unit(new Pull());
 
         @Override
-        public float get(ItemStack stack, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
+        public float get(ItemStack stack, @Nullable ClientLevel level, @Nullable ItemOwner owner, int seed) {
+            LivingEntity entity = owner == null ? null : owner.asLivingEntity();
             if (entity == null || entity.getUseItem() != stack) {
                 return 0.0F;
             }
-            return (float) (stack.getUseDuration(entity) - entity.getUseItemRemainingTicks()) / 20.0F;
+            // 26.1 only hands the range-select property the generic item owner, so the user has to be unwrapped.
+            return (float) UseDuration.useDuration(stack, entity) / 20.0F;
         }
 
         @Override
@@ -80,7 +84,7 @@ public class TolkienItemProperties {
         public static final MapCodec<Fullness> MAP_CODEC = MapCodec.unit(new Fullness());
 
         @Override
-        public float get(ItemStack stack, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
+        public float get(ItemStack stack, @Nullable ClientLevel level, @Nullable ItemOwner owner, int seed) {
             if (stack.getItem() instanceof CoinPouchItem) {
                 return CoinPouchItem.getCoinCount(stack);
             }

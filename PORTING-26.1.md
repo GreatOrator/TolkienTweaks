@@ -1379,6 +1379,36 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   only item files and the four others whose errors were cascades of them, with nothing new. No error
   is left anywhere under `item/` or in `TolkienItems`. Nothing was opened in game.
 
+### Loot functions and item model properties - DONE
+
+- **The loot function registry holds bare codecs now.** 26.1 unrolled the `*Type` wrapper for loot
+  functions: `Registries.LOOT_FUNCTION_TYPE` is a `Registry<MapCodec<? extends LootItemFunction>>`,
+  `LootItemFunctionType` no longer exists, and a function's `getType()` became `codec()`. So
+  `TolkienLootFunctions` declares its `DeferredRegister` over the codec type, registers
+  `TrinketRandomlyFunction.CODEC` directly, and its `LootFunctionId` holder is a
+  `DeferredHolder<MapCodec<? extends LootItemFunction>, MapCodec<T>>`;
+  `TrinketRandomlyFunction#codec()` returns its own `CODEC`. Nothing else about the trinket's potion
+  roll changed.
+- **The global loot modifier takes a priority.** `LootModifier`'s constructor and `codecStart` now
+  carry an `int priority` after the conditions, so `TolkienItemsModifier` passes
+  `IGlobalLootModifier.DEFAULT_PRIORITY` (1000) from all sixteen registrations in
+  `TolkienGlobalLootModifierProvider`. The provider's `add` is unchanged, and the modifier's coin
+  weights and its condition re-check are as they were. The written JSON gains `"priority": 1000`
+  the next time `runData` runs; the field is optional with that default, so the committed files
+  still load untouched.
+- **A range-select property is handed an `ItemOwner`, not a `LivingEntity`.** 26.1's
+  `RangeSelectItemModelProperty#get` takes `@Nullable ItemOwner owner`; the conditional side
+  (`ItemModelPropertyTest`) still takes the `LivingEntity`, so only the numeric properties moved.
+  `TolkienItemProperties.Pull` unwraps `owner.asLivingEntity()` and measures the draw with vanilla's
+  `UseDuration.useDuration`, the same `getUseDuration - remainingTicks` the property computed by
+  hand; `Fullness` needed only the parameter type and `Pulling` nothing at all. The item models that
+  name `tolkienmobs:pull` and `tolkienmobs:fullness` are unchanged.
+- **Verified:** whole-tree `javac` at **497** errors, down from 514 - 508 once the modifier and the
+  property compiled, then 11 more for the loot function family - with the per-file diff between the
+  last two runs showing only `TolkienLootFunctions` and `TrinketRandomlyFunction` losing errors and
+  nothing new appearing. No error is left in the four files, nor in the item model, lang or tag
+  providers. Nothing was opened in game.
+
 ## Ordered work list
 
 1. **Build stack — DONE.** MDG 2, JDK 25, NeoForge 26.1.2, the four dependency bumps. The
@@ -1396,8 +1426,11 @@ from **3,470 errors in 337 files to 2,801 in 320**.
    `Villager` under `npc.villager`, `WaterAnimal`, `AbstractChestedHorse` under
    `animal.equine` — are done family by family as each one is touched, so they stay with the steps
    below rather than a script. The equine family is done (see *Equine family — DONE* above).
-4. **Items and equipment.** The three removed base classes, the five `inventoryTick`
-   signatures, and `TolkienArmorItem`'s armour lookups.
+4. **Items and equipment - DONE.** The three removed base classes, the five `inventoryTick`
+   signatures, `TolkienArmorItem`'s armour lookups, the unrolled loot function registry, the loot
+   modifier's priority and the two numeric item model properties. No error is left under `item/`,
+   in `TolkienItems`, `TolkienLootFunctions`, `TrinketRandomlyFunction`, `TolkienItemsModifier` or
+   `TolkienItemProperties`.
 5. **Block entities.** `preRemoveSideEffects` / `affectNeighborsAfterRemoval`, and
    `dropContentsOnDestroy` in `CamoChestBlock`.
 6. **Worldgen.** Weighted lists in `TolkienCaveCarvers` and `TolkienDecorators` (the spawner's is
@@ -1407,7 +1440,8 @@ from **3,470 errors in 337 files to 2,801 in 320**.
 8. **Screens.** 18 screens and the widget set against the prepare/render split.
 9. **Datagen.** `TolkienDataGenerator`, the vendored `datagen/modelgen` package (NeoForge
    removed the model generators in 21.4, so it was written here — it needs a pass of its own),
-   and the loot providers for the unrolled registry.
+   and the block and entity loot tables, which are the only loot-side files still failing now that
+   the functions and the modifier compile.
 10. **Long tail.** JEI plugin (4 files), Curios (1), network payloads, the two sound instances.
 
 ## Verification
