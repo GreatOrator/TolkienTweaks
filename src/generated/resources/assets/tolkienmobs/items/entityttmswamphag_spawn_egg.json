@@ -1,16 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "minecraft:item/template_spawn_egg",
-    "tints": [
-      {
-        "type": "minecraft:constant",
-        "value": -16191597
-      },
-      {
-        "type": "minecraft:constant",
-        "value": -16078318
-      }
-    ]
+    "model": "tolkienmobs:item/entityttmswamphag_spawn_egg"
   }
 }

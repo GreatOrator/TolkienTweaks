@@ -1,16 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "minecraft:item/template_spawn_egg",
-    "tints": [
-      {
-        "type": "minecraft:constant",
-        "value": -9108238
-      },
-      {
-        "type": "minecraft:constant",
-        "value": -11176819
-      }
-    ]
+    "model": "tolkienmobs:item/entityttmmumakil_spawn_egg"
   }
 }
