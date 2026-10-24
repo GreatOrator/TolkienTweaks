@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Changed
+
+- The build is ready for Minecraft 26.1.2. Building from source now needs Java 25 and Gradle 9.2.1, and the project compiles against NeoForge 26.1.2.116, GeckoLib 5.5.2, TerraBlender 26.1.2-26.1.2.0.3, Curios 15.0.0 and JEI 29.47.0.111. The source itself has not been ported yet, so this produces no runnable jar; it is noted because anyone building from source now needs the new toolchain.
+
 ## [4.4.83-Final] - 10.22.2026
 
 ### Added

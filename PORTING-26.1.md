@@ -4,9 +4,10 @@ Working branch: `port/26.1.2`. The finished 1.21.4 tree is on `main` and is the 
 port starts from; [PORTING-1.21.4.md](PORTING-1.21.4.md) is this file's parent and records how
 1.21.4 was reached.
 
-This is a plan, not a handoff: nothing below has been done yet, and the site counts are
+This is a plan, not a handoff: only the build stack has been done, and the site counts are
 measurements of the 1.21.4 tree taken at the time of writing, so they are what the work will
-actually meet.
+actually meet. The first compile against 26.1.2 stops at 9,658 errors, which is that
+measurement's other half.
 
 ## Where the tree is now
 
@@ -15,7 +16,7 @@ actually meet.
 | Source | Minecraft **1.21.4**, NeoForge **21.4.161**, mod **4.4.83-Final** |
 | Target | Minecraft **26.1.2**, NeoForge **26.1.2.116**, mod **5.0.0** |
 | Java | 21 → **25** |
-| Status | not started |
+| Status | build stack in place; source not yet ported |
 
 What the source tree contains, counted:
 
@@ -253,21 +254,50 @@ There is **no GeckoLib 4 → 5 migration guide**. The changelogs are the record
 settled 5.5 line, so read its changelog before starting and let the first converted entity set
 the pattern for the other 191 files.
 
-### Build stack
+### Build stack — DONE
 
-- `net.neoforged.moddev` **1.0.14 → 2.0.148**. MDG 2 is the stable plugin line and carries its
-  own breaking changes; read the list before editing `build.gradle`.
-- `java.toolchain.languageVersion = 25`, and the build must run on a JDK 25 toolchain.
-- Three 1.21.4 workarounds in [build.gradle](build.gradle) need re-checking rather than
-  deleting on sight: the `libraries.minecraft.net` repository (added for `com.mojang:jtracy`),
-  the `clientDataAdditionalRuntimeClasspath "com.ibm.icu:icu4j:76.1"` line (a ModDevGradle
-  1.0.14 classpath quirk), and `-Xmaxerrs 20000`. Keep the last one for the port itself; it
-  is what makes one compile run report the whole tree.
+- `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
+  only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
+  26.1.2 MDK's version; NeoForge requires 9.1.0 or newer), foojay resolver 0.8.0 → 1.0.0.
+- `java.toolchain.languageVersion = 25`. Gradle still launches on the JVM's JDK 17; the
+  toolchain resolver downloaded Temurin 25.0.4.1 on the first build and it is what compiled
+  the tree, so no JDK has to be installed by hand.
+- The dependency bumps all resolve at the plan's versions (verified against the repositories,
+  not just announced): `com.geckolib:geckolib-neoforge-26.1.2:5.5.2`,
+  `com.github.glitchfiend:TerraBlender-neoforge:26.1.2-26.1.2.0.3`,
+  `top.theillusivec4.curios:curios-neoforge:15.0.0+26.1.2`,
+  `mezz.jei:jei-26.1.2-common-api` / `-neoforge-api` / `-neoforge:29.47.0.111`. GeckoLib 5 is
+  still published from the same Cloudsmith repository, under the new `com.geckolib` group, so
+  only the `includeGroup` changed.
+- The data run is now `data { clientData() }` rather than a run named `clientData` with
+  `type = "clientData"`, which is the MDK's shape and gives the task back the name `runData`
+  that this file and [VILLAGES.md](VILLAGES.md) already use. `runClient`, `runServer`,
+  `runGameTestServer` and `runData` all register.
+- `clientDataAdditionalRuntimeClasspath "com.ibm.icu:icu4j:76.1"` is **gone**: it existed for a
+  ModDevGradle 1.0.14 classpath quirk that the plugin's own docs say ended with Minecraft
+  1.21.9. First `runData` will show whether anything still needs the client distribution's
+  libraries; if it does, the line comes back as `dataAdditionalRuntimeClasspath`.
+- `libraries.minecraft.net` stays (NeoForm still pulls `jtracy` from it).
+- `-Xmaxerrs` is now `-PmaxCompileErrors`, default **1000**, not 20000. Gradle 9.2.1 cannot
+  carry a report the size of this port's first compile: at 9,658 errors the daemon died with
+  `OutOfMemoryError: Java heap space` while delivering the diagnostics, with the default heap
+  and again at `-Xmx4G`, and the only thing lost was the summary. At 1,000 the build fails
+  cleanly and prints `BUILD FAILED` with the error list. Raise the cap per run if a wider
+  sweep is ever worth it.
+- `org.gradle.jvmargs` went from `-Xmx1G` to `-Xmx4G -XX:MaxMetaspaceSize=1G` while chasing
+  that, and to give the port's compile room. It is not what fixed the report.
+- `[[dependencies]]` for `terrablender` in `neoforge.mods.toml` now asks for
+  `[26.1.2.0.3,)`; the jar's own `version` is `26.1.2.0.3`, so the old `[4.3.0.2,4.4)` range
+  would have refused to load.
+- **Not done:** `mod_version` is still `4.4.${currentBuildNumber}`. It becomes `5.0.x` when
+  the port is released, not before, so that a test jar cannot be mistaken for a release.
 
 ## Ordered work list
 
-1. **Build stack.** MDG 2, JDK 25, NeoForge 26.1.2, the four dependency bumps. *Done when*
-   the project configures and `compileJava` fails only on source, not on the build.
+1. **Build stack — DONE.** MDG 2, JDK 25, NeoForge 26.1.2, the four dependency bumps. The
+   project configures and `compileJava` fails only on source, not on the build: 9,658 errors
+   in the tree, reported 1,000 at a time. See *Build stack — DONE* above for what was
+   verified and the one workaround that had to change.
 2. **GeckoLib 5.** Package rename and asset moves first (scripted), then the renderers and
    controllers. *Done when* the 192 importing files compile against `com.geckolib`.
 3. **Rename pass.** One idempotent script for `ResourceLocation` → `Identifier`, the `util`
