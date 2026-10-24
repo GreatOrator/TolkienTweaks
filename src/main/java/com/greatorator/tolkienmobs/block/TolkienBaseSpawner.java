@@ -32,7 +32,6 @@ import net.neoforged.neoforge.event.EventHooks;
 import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 
 import static com.greatorator.tolkienmobs.block.custom.CamoSpawnerBlock.LIT;
 
@@ -143,11 +142,11 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                                         break;
                                     }
 
-                                    ListTag listtag = compoundtag.getList("Pos", 6);
+                                    ListTag listtag = compoundtag.getListOrEmpty("Pos");
                                     int j = listtag.size();
-                                    double d0 = j >= 1 ? listtag.getDouble(0) : (double) pos.getX() + (randomsource.nextDouble() - randomsource.nextDouble()) * (double) spawnerBlockEntity.getSpawnerRanges().clusterRange + 0.5;
-                                    double d1 = j >= 2 ? listtag.getDouble(1) : (double) (pos.getY() + randomsource.nextInt(3) - 1);
-                                    double d2 = j >= 3 ? listtag.getDouble(2) : (double) pos.getZ() + (randomsource.nextDouble() - randomsource.nextDouble()) * (double) spawnerBlockEntity.getSpawnerRanges().clusterRange + 0.5;
+                                    double d0 = j >= 1 ? listtag.getDoubleOr(0, 0.0) : (double) pos.getX() + (randomsource.nextDouble() - randomsource.nextDouble()) * (double) spawnerBlockEntity.getSpawnerRanges().clusterRange + 0.5;
+                                    double d1 = j >= 2 ? listtag.getDoubleOr(1, 0.0) : (double) (pos.getY() + randomsource.nextInt(3) - 1);
+                                    double d2 = j >= 3 ? listtag.getDoubleOr(2, 0.0) : (double) pos.getZ() + (randomsource.nextDouble() - randomsource.nextDouble()) * (double) spawnerBlockEntity.getSpawnerRanges().clusterRange + 0.5;
                                     if (serverLevel.noCollision(((EntityType) optional.get()).getSpawnAABB(d0, d1, d2))) {
                                         label105:
                                         {
@@ -166,7 +165,7 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                                             }
 
                                             Entity entity = EntityType.loadEntityRecursive(compoundtag, serverLevel, EntitySpawnReason.SPAWNER, (p_151310_) -> {
-                                                p_151310_.moveTo(d0, d1, d2, p_151310_.getYRot(), p_151310_.getXRot());
+                                                p_151310_.snapTo(d0, d1, d2, p_151310_.getYRot(), p_151310_.getXRot());
                                                 return p_151310_;
                                             });
                                             if (entity == null) {
@@ -178,14 +177,14 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                                                 break;
                                             }
 
-                                            entity.moveTo(entity.getX(), entity.getY(), entity.getZ(), randomsource.nextFloat() * 360.0F, 0.0F);
+                                            entity.snapTo(entity.getX(), entity.getY(), entity.getZ(), randomsource.nextFloat() * 360.0F, 0.0F);
                                             if (entity instanceof Mob) {
                                                 Mob mob = (Mob) entity;
                                                 if (!EventHooks.checkSpawnPositionSpawner(mob, serverLevel, EntitySpawnReason.SPAWNER, spawndata, this)) {
                                                     break label105;
                                                 }
 
-                                                boolean flag1 = spawndata.getEntityToSpawn().size() == 1 && spawndata.getEntityToSpawn().contains("id", 8);
+                                                boolean flag1 = spawndata.getEntityToSpawn().size() == 1 && spawndata.getEntityToSpawn().contains("id");
                                                 EventHooks.finalizeMobSpawnSpawner(mob, serverLevel, serverLevel.getCurrentDifficultyAt(entity.blockPosition()), EntitySpawnReason.SPAWNER, (SpawnGroupData) null, this, flag1);
                                                 Optional var10000 = spawndata.getEquipment();
                                                 Objects.requireNonNull(mob);
@@ -251,11 +250,11 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                                     return;
                                 }
 
-                                ListTag listtag = compoundtag.getList("Pos", 6);
+                                ListTag listtag = compoundtag.getListOrEmpty("Pos");
                                 int j = listtag.size();
-                                double d0 = j >= 1 ? listtag.getDouble(0) : (double) pos.getX() + (randomsource.nextDouble() - randomsource.nextDouble()) * (double) spawnerBlockEntity.getSpawnerRanges().clusterRange + 0.5;
-                                double d1 = j >= 2 ? listtag.getDouble(1) : (double) (pos.getY() + randomsource.nextInt(3) - 1);
-                                double d2 = j >= 3 ? listtag.getDouble(2) : (double) pos.getZ() + (randomsource.nextDouble() - randomsource.nextDouble()) * (double) spawnerBlockEntity.getSpawnerRanges().clusterRange + 0.5;
+                                double d0 = j >= 1 ? listtag.getDoubleOr(0, 0.0) : (double) pos.getX() + (randomsource.nextDouble() - randomsource.nextDouble()) * (double) spawnerBlockEntity.getSpawnerRanges().clusterRange + 0.5;
+                                double d1 = j >= 2 ? listtag.getDoubleOr(1, 0.0) : (double) (pos.getY() + randomsource.nextInt(3) - 1);
+                                double d2 = j >= 3 ? listtag.getDoubleOr(2, 0.0) : (double) pos.getZ() + (randomsource.nextDouble() - randomsource.nextDouble()) * (double) spawnerBlockEntity.getSpawnerRanges().clusterRange + 0.5;
                                 if (serverLevel.noCollision(((EntityType) optional.get()).getSpawnAABB(d0, d1, d2))) {
                                     label105:
                                     {
@@ -274,7 +273,7 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                                         }
 
                                         Entity entity = EntityType.loadEntityRecursive(compoundtag, serverLevel, EntitySpawnReason.SPAWNER, (p_151310_) -> {
-                                            p_151310_.moveTo(d0, d1, d2, p_151310_.getYRot(), p_151310_.getXRot());
+                                            p_151310_.snapTo(d0, d1, d2, p_151310_.getYRot(), p_151310_.getXRot());
                                             return p_151310_;
                                         });
                                         if (entity == null) {
@@ -288,14 +287,14 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                                             return;
                                         }
 
-                                        entity.moveTo(entity.getX(), entity.getY(), entity.getZ(), randomsource.nextFloat() * 360.0F, 0.0F);
+                                        entity.snapTo(entity.getX(), entity.getY(), entity.getZ(), randomsource.nextFloat() * 360.0F, 0.0F);
                                         if (entity instanceof Mob) {
                                             Mob mob = (Mob) entity;
                                             if (!EventHooks.checkSpawnPositionSpawner(mob, serverLevel, EntitySpawnReason.SPAWNER, spawndata, this)) {
                                                 break label105;
                                             }
 
-                                            boolean flag1 = spawndata.getEntityToSpawn().size() == 1 && spawndata.getEntityToSpawn().contains("id", 8);
+                                            boolean flag1 = spawndata.getEntityToSpawn().size() == 1 && spawndata.getEntityToSpawn().contains("id");
                                             EventHooks.finalizeMobSpawnSpawner(mob, serverLevel, serverLevel.getCurrentDifficultyAt(entity.blockPosition()), EntitySpawnReason.SPAWNER, (SpawnGroupData) null, this, flag1);
                                             Optional var10000 = spawndata.getEquipment();
                                             Objects.requireNonNull(mob);
@@ -357,11 +356,11 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                                 break;
                             }
 
-                            ListTag listtag = compoundtag.getList("Pos", 6);
+                            ListTag listtag = compoundtag.getListOrEmpty("Pos");
                             int j = listtag.size();
-                            double d0 = j >= 1 ? listtag.getDouble(0) : (double) pos.getX() + (randomsource.nextDouble() - randomsource.nextDouble()) * (double) spawnerBlockEntity.getSpawnerRanges().clusterRange + 0.5;
-                            double d1 = j >= 2 ? listtag.getDouble(1) : (double) (pos.getY() + randomsource.nextInt(3) - 1);
-                            double d2 = j >= 3 ? listtag.getDouble(2) : (double) pos.getZ() + (randomsource.nextDouble() - randomsource.nextDouble()) * (double) spawnerBlockEntity.getSpawnerRanges().clusterRange + 0.5;
+                            double d0 = j >= 1 ? listtag.getDoubleOr(0, 0.0) : (double) pos.getX() + (randomsource.nextDouble() - randomsource.nextDouble()) * (double) spawnerBlockEntity.getSpawnerRanges().clusterRange + 0.5;
+                            double d1 = j >= 2 ? listtag.getDoubleOr(1, 0.0) : (double) (pos.getY() + randomsource.nextInt(3) - 1);
+                            double d2 = j >= 3 ? listtag.getDoubleOr(2, 0.0) : (double) pos.getZ() + (randomsource.nextDouble() - randomsource.nextDouble()) * (double) spawnerBlockEntity.getSpawnerRanges().clusterRange + 0.5;
                             if (serverLevel.noCollision(((EntityType) optional.get()).getSpawnAABB(d0, d1, d2))) {
                                 label105:
                                 {
@@ -380,7 +379,7 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                                     }
 
                                     Entity entity = EntityType.loadEntityRecursive(compoundtag, serverLevel, EntitySpawnReason.SPAWNER, (p_151310_) -> {
-                                        p_151310_.moveTo(d0, d1, d2, p_151310_.getYRot(), p_151310_.getXRot());
+                                        p_151310_.snapTo(d0, d1, d2, p_151310_.getYRot(), p_151310_.getXRot());
                                         return p_151310_;
                                     });
                                     if (entity == null) {
@@ -392,14 +391,14 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                                         break;
                                     }
 
-                                    entity.moveTo(entity.getX(), entity.getY(), entity.getZ(), randomsource.nextFloat() * 360.0F, 0.0F);
+                                    entity.snapTo(entity.getX(), entity.getY(), entity.getZ(), randomsource.nextFloat() * 360.0F, 0.0F);
                                     if (entity instanceof Mob) {
                                         Mob mob = (Mob) entity;
                                         if (!EventHooks.checkSpawnPositionSpawner(mob, serverLevel, EntitySpawnReason.SPAWNER, spawndata, this)) {
                                             break label105;
                                         }
 
-                                        boolean flag1 = spawndata.getEntityToSpawn().size() == 1 && spawndata.getEntityToSpawn().contains("id", 8);
+                                        boolean flag1 = spawndata.getEntityToSpawn().size() == 1 && spawndata.getEntityToSpawn().contains("id");
                                         EventHooks.finalizeMobSpawnSpawner(mob, serverLevel, serverLevel.getCurrentDifficultyAt(entity.blockPosition()), EntitySpawnReason.SPAWNER, (SpawnGroupData) null, this, flag1);
                                         Optional var10000 = spawndata.getEquipment();
                                         Objects.requireNonNull(mob);
@@ -465,11 +464,11 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                             return;
                         }
 
-                        ListTag listtag = compoundtag.getList("Pos", 6);
+                        ListTag listtag = compoundtag.getListOrEmpty("Pos");
                         int j = listtag.size();
-                        double d0 = j >= 1 ? listtag.getDouble(0) : (double) pos.getX() + (randomsource.nextDouble() - randomsource.nextDouble()) * (double) spawnerBlockEntity.getSpawnerRanges().clusterRange + 0.5;
-                        double d1 = j >= 2 ? listtag.getDouble(1) : (double) (pos.getY() + randomsource.nextInt(3) - 1);
-                        double d2 = j >= 3 ? listtag.getDouble(2) : (double) pos.getZ() + (randomsource.nextDouble() - randomsource.nextDouble()) * (double) spawnerBlockEntity.getSpawnerRanges().clusterRange + 0.5;
+                        double d0 = j >= 1 ? listtag.getDoubleOr(0, 0.0) : (double) pos.getX() + (randomsource.nextDouble() - randomsource.nextDouble()) * (double) spawnerBlockEntity.getSpawnerRanges().clusterRange + 0.5;
+                        double d1 = j >= 2 ? listtag.getDoubleOr(1, 0.0) : (double) (pos.getY() + randomsource.nextInt(3) - 1);
+                        double d2 = j >= 3 ? listtag.getDoubleOr(2, 0.0) : (double) pos.getZ() + (randomsource.nextDouble() - randomsource.nextDouble()) * (double) spawnerBlockEntity.getSpawnerRanges().clusterRange + 0.5;
                         if (serverLevel.noCollision(((EntityType) optional.get()).getSpawnAABB(d0, d1, d2))) {
                             label105:
                             {
@@ -488,7 +487,7 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                                 }
 
                                 Entity entity = EntityType.loadEntityRecursive(compoundtag, serverLevel, EntitySpawnReason.SPAWNER, (p_151310_) -> {
-                                    p_151310_.moveTo(d0, d1, d2, p_151310_.getYRot(), p_151310_.getXRot());
+                                    p_151310_.snapTo(d0, d1, d2, p_151310_.getYRot(), p_151310_.getXRot());
                                     return p_151310_;
                                 });
                                 if (entity == null) {
@@ -502,14 +501,14 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
                                     return;
                                 }
 
-                                entity.moveTo(entity.getX(), entity.getY(), entity.getZ(), randomsource.nextFloat() * 360.0F, 0.0F);
+                                entity.snapTo(entity.getX(), entity.getY(), entity.getZ(), randomsource.nextFloat() * 360.0F, 0.0F);
                                 if (entity instanceof Mob) {
                                     Mob mob = (Mob) entity;
                                     if (!EventHooks.checkSpawnPositionSpawner(mob, serverLevel, EntitySpawnReason.SPAWNER, spawndata, this)) {
                                         break label105;
                                     }
 
-                                    boolean flag1 = spawndata.getEntityToSpawn().size() == 1 && spawndata.getEntityToSpawn().contains("id", 8);
+                                    boolean flag1 = spawndata.getEntityToSpawn().size() == 1 && spawndata.getEntityToSpawn().contains("id");
                                     EventHooks.finalizeMobSpawnSpawner(mob, serverLevel, serverLevel.getCurrentDifficultyAt(entity.blockPosition()), EntitySpawnReason.SPAWNER, (SpawnGroupData) null, this, flag1);
                                     Optional var10000 = spawndata.getEquipment();
                                     Objects.requireNonNull(mob);
@@ -601,11 +600,11 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
     public Entity getOrCreateDisplayEntity(Level level, BlockPos pos) {
         if (this.displayEntity == null) {
             CompoundTag compoundtag = this.getOrCreateNextSpawnData(level, level.getRandom(), pos).getEntityToSpawn();
-            if (!compoundtag.contains("id", 8)) {
+            if (!compoundtag.contains("id")) {
                 return null;
             }
 
-            this.displayEntity = EntityType.loadEntityRecursive(compoundtag, level, EntitySpawnReason.SPAWNER, Function.identity());
+            this.displayEntity = EntityType.loadEntityRecursive(compoundtag, level, EntitySpawnReason.SPAWNER, EntityProcessor.NOP);
             if (compoundtag.size() == 1 && this.displayEntity instanceof Mob) {
             }
         }
@@ -650,7 +649,7 @@ public abstract class TolkienBaseSpawner extends BaseSpawner implements IOwnedSp
 
     public void clearSpawnData() {
         this.nextSpawnData = null;
-        this.spawnPotentials = SimpleWeightedRandomList.empty();
+        this.spawnPotentials = WeightedList.of();
         this.displayEntity = null;
     }
 }

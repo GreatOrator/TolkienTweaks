@@ -45,6 +45,11 @@ All notable changes to this project will be documented in this file.
   inventories, chest state and sounds are the ones vanilla's own chested mobs use. One behaviour
   note: the goat's head-up warning now lasts its 40-tick scream rather than however long its attack
   goal happened to keep the pose up, so it reads as one clear warning before a charge.
+- The camo spawner's spawn loop follows 26.1: it reads a candidate position and entity id with the
+  one-argument tag calls, places a spawned mob with `snapTo`, keeps its weighted spawn table in a
+  `WeightedList`, and reads a spawn egg's entity type the way vanilla does now. How it picks, places
+  and delays a spawn is unchanged. Its block entity still has two unrelated 26.1 calls
+  (`displayClientMessage` and `onDataPacket`) to move before the screen side compiles.
 
 ## [4.4.83-Final] - 10.22.2026
 
