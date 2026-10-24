@@ -7,33 +7,28 @@ import com.greatorator.tolkienmobs.block.custom.entity.model.LocustModel;
 import com.greatorator.tolkienmobs.block.custom.entity.model.UnbakedPatchModel;
 import com.greatorator.tolkienmobs.block.custom.entity.renderer.*;
 import com.greatorator.tolkienmobs.entity.item.render.*;
-import com.greatorator.tolkienmobs.event.client.TolkienRenderInfo;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
-import net.minecraft.client.model.BoatModel;
-import net.minecraft.client.renderer.DimensionSpecialEffects;
+import net.minecraft.client.model.object.boat.BoatModel;
 import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
-import net.minecraft.client.renderer.blockentity.SignRenderer;
-import net.minecraft.resources.Identifier;
+import net.minecraft.client.renderer.blockentity.StandingSignRenderer;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
-import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.neoforged.neoforge.event.BlockEntityTypeAddBlocksEvent;
 
+/**
+ * 26.1 removed {@code DimensionSpecialEffects} and the event that registered a dimension's own, so
+ * the overworld fog and cloud overrides it used to install have no home here; the biome fog lives in
+ * {@code FogHandler} instead.
+ */
 public class TolkienRegistration {
-    public static final Identifier OVERWORLD_EFFECTS = Identifier.withDefaultNamespace("overworld");
     public static void initModBusEvents(IEventBus bus) {
         bus.addListener(TolkienRegistration::registerEntityRenderers);
         bus.addListener(TolkienRegistration::registerLayerDefinitions);
         bus.addListener(TolkienRegistration::registerBlockStateModels);
         bus.addListener(TolkienRegistration::registerBETypes);
-        bus.addListener(TolkienRegistration::registerDimEffects);
-    }
-
-    private static void registerDimEffects(RegisterDimensionSpecialEffectsEvent event) {
-        event.register(OVERWORLD_EFFECTS, new TolkienRenderInfo(128.0F, false, DimensionSpecialEffects.SkyType.NONE, false, false));
     }
 
     private static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
@@ -43,7 +38,7 @@ public class TolkienRegistration {
         event.registerBlockEntityRenderer(TolkienBlocks.PLACARD_BLOCK_ENTITY.get(), PlacardRenderer::new);
         event.registerBlockEntityRenderer(TolkienBlocks.TRINKET_TABLE_BLOCK_ENTITY.get(), TrinketTableRenderer::new);
         event.registerBlockEntityRenderer(TolkienBlocks.FIREPLACE_BLOCK_ENTITY.get(), FireplaceRenderer::new);
-        event.registerBlockEntityRenderer(TolkienBlocks.TOLKIEN_SIGN_BLOCK_ENTITY.get(), SignRenderer::new);
+        event.registerBlockEntityRenderer(TolkienBlocks.TOLKIEN_SIGN_BLOCK_ENTITY.get(), StandingSignRenderer::new);
         event.registerBlockEntityRenderer(TolkienBlocks.TOLKIEN_HANGING_SIGN_BLOCK_ENTITY.get(), HangingSignRenderer::new);
         event.registerBlockEntityRenderer(TolkienBlocks.CAMO_SPAWNER_BLOCK_ENTITY.get(), CamoSpawnerRenderer::new);
         event.registerBlockEntityRenderer(TolkienBlocks.MILESTONE_BLOCK_ENTITY.get(), MilestoneRender::new);
