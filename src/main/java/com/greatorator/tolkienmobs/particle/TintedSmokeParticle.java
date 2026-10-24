@@ -3,10 +3,11 @@ package com.greatorator.tolkienmobs.particle;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.ColorParticleOption;
+import net.minecraft.util.RandomSource;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -16,9 +17,11 @@ import net.neoforged.api.distmarker.OnlyIn;
  * undyed one, leaving the tint as the only difference.
  */
 @OnlyIn(Dist.CLIENT)
-public class TintedSmokeParticle extends TextureSheetParticle {
-    private TintedSmokeParticle(ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-        super(level, x, y, z);
+public class TintedSmokeParticle extends SingleQuadParticle {
+    private TintedSmokeParticle(
+            ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, TextureAtlasSprite sprite
+    ) {
+        super(level, x, y, z, sprite);
         this.scale(3.0F);
         this.setSize(0.25F, 0.25F);
         this.lifetime = this.random.nextInt(50) + 80;
@@ -48,8 +51,8 @@ public class TintedSmokeParticle extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    public SingleQuadParticle.Layer getLayer() {
+        return SingleQuadParticle.Layer.TRANSLUCENT;
     }
 
     public static class Provider implements ParticleProvider<ColorParticleOption> {
@@ -60,10 +63,19 @@ public class TintedSmokeParticle extends TextureSheetParticle {
         }
 
         @Override
-        public Particle createParticle(ColorParticleOption option, ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            TintedSmokeParticle particle = new TintedSmokeParticle(level, x, y, z, xSpeed, ySpeed, zSpeed);
+        public Particle createParticle(
+                ColorParticleOption option,
+                ClientLevel level,
+                double x,
+                double y,
+                double z,
+                double xSpeed,
+                double ySpeed,
+                double zSpeed,
+                RandomSource random
+        ) {
+            TintedSmokeParticle particle = new TintedSmokeParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, this.sprites.get(random));
             particle.setColor(option.getRed(), option.getGreen(), option.getBlue());
-            particle.pickSprite(this.sprites);
             return particle;
         }
     }
