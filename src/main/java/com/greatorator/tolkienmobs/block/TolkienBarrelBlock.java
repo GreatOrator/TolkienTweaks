@@ -7,7 +7,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.monster.piglin.PiglinAi;
 import net.minecraft.world.entity.player.Player;
@@ -65,12 +64,6 @@ public class TolkienBarrelBlock extends TolkienEntityBlock {
 
             return InteractionResult.CONSUME;
         }
-    }
-
-    @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        Containers.dropContentsOnDestroy(state, newState, level, pos);
-        super.onRemove(state, level, pos, newState, isMoving);
     }
 
     @Override
