@@ -16,7 +16,7 @@ measurement's other half.
 | Source | Minecraft **1.21.4**, NeoForge **21.4.161**, mod **4.4.83-Final** |
 | Target | Minecraft **26.1.2**, NeoForge **26.1.2.116**, mod **5.0.0** |
 | Java | 21 → **25** |
-| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API, the fluid/leaf/proxy batch, the food table, the forest fog, the whole `util` package, the three biggest block classes and the `BushBlock` plants, the barrels, the effect/enchantment families and the network packages are done; **23** errors left |
+| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API, the fluid/leaf/proxy batch, the food table, the forest fog, the whole `util` package, the three biggest block classes and the `BushBlock` plants, the barrels, the effect/enchantment families, the network packages and the lockable chest blocks are done; **19** errors left |
 
 What the source tree contains, counted:
 
@@ -1985,6 +1985,22 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   `network/manager/` is mentioned any more. Nothing was run in game: the check is standing under a
   mod leaf-topped tree until a leaf drifts down, and confirming its colour still matches the leaves
   above.
+
+### The lockable chest blocks — DONE
+
+- **`Screen.hasShiftDown()` is gone, and it was never right where it stood.** All four blocks -
+  `LockableChestBlock`, `LockableTreasureChestBlock` and their double variants - asked for the shift
+  key through the client's screen helper from inside a `!level.isClientSide()` branch. 26.1 removed
+  that call; the check is `player.isShiftKeyDown()` now, which reads the sneaking flag the server
+  already has, and is the same substitution the camo spawner and the milestone made. So a creative
+  player who sneaks and uses any of the four chests now really does get its lock settings, which the
+  old server-side call could never see.
+- **Nothing else in the family moved.** The four block entities, four screens and containers were
+  already ported and are untouched.
+- **Verified:** whole-tree `javac` at **19** errors, down from 23, with nothing under
+  `block/custom/Lockable*` named. Nothing was run in game: the check is a creative player sneaking
+  and using each of the four chests - single and double, treasure and plain - to see the lock
+  settings open, and using them without sneaking to see the ordinary lock and key flow.
 
 ### The three biggest block classes — DONE
 
