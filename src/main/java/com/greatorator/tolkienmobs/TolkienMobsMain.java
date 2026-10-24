@@ -34,8 +34,6 @@ import com.greatorator.tolkienmobs.util.GeneralUtility;
 import com.greatorator.tolkienmobs.world.registration.TolkienOverworldRegion;
 import com.greatorator.tolkienmobs.world.registration.TolkienSurfaceRules;
 import com.mojang.logging.LogUtils;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.core.Registry;
@@ -63,8 +61,8 @@ import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
-import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.transfer.item.VanillaContainerWrapper;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import org.slf4j.Logger;
@@ -197,7 +195,7 @@ public class TolkienMobsMain {
     }
 
     private void registerCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerBlock(Capabilities.ItemHandler.BLOCK,
+        event.registerBlock(Capabilities.Item.BLOCK,
                 (level, pos, state, be, side) -> {
                     if (be instanceof BackpackBlockEntity)
                         return be.getData(TolkienBlocks.BACKPACK_HANDLER);
@@ -205,8 +203,8 @@ public class TolkienMobsMain {
                 },
                 TolkienBlocks.BACKPACK.get()
         );
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, TolkienBlocks.BACKPACK_BLOCK_ENTITY.get(), BackpackBlockEntity::getTank);
-        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, TolkienBlocks.CAMO_CHEST_BLOCK_ENTITY.get(), (blockEntity, side) -> new InvWrapper(blockEntity));
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, TolkienBlocks.BACKPACK_BLOCK_ENTITY.get(), BackpackBlockEntity::getTank);
+        event.registerBlockEntity(Capabilities.Item.BLOCK, TolkienBlocks.CAMO_CHEST_BLOCK_ENTITY.get(), (blockEntity, side) -> VanillaContainerWrapper.of(blockEntity));
     }
 
     public void setupPackets(RegisterPayloadHandlersEvent event) {
@@ -225,10 +223,6 @@ public class TolkienMobsMain {
             Sheets.addWoodType(TolkienWoodTypes.FANGORNOAK);
             Sheets.addWoodType(TolkienWoodTypes.DEADWOOD);
             Sheets.addWoodType(TolkienWoodTypes.DWARVEN_MAPLE);
-            event.enqueueWork(() -> {
-                ItemBlockRenderTypes.setRenderLayer(TolkienFluids.MITHRIL_FLOWING.get(), RenderType.translucent());
-                ItemBlockRenderTypes.setRenderLayer(TolkienFluids.MORGULIRON_FLOWING.get(), RenderType.translucent());
-            });
 
             //Entity Renders
                 // Ambient

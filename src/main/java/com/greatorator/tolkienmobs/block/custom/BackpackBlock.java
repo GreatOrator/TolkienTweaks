@@ -10,10 +10,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -29,9 +27,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 public class BackpackBlock extends TolkienEntityBlock {
@@ -139,39 +139,30 @@ public class BackpackBlock extends TolkienEntityBlock {
     @Override
     protected InteractionResult useItemOn(ItemStack itemStack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
         if (level.isClientSide()) return InteractionResult.TRY_WITH_EMPTY_HAND;
-        IFluidHandlerItem fluidHandlerItem = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
-        if (fluidHandlerItem != null) {
-            IFluidHandler cap = level.getCapability(Capabilities.FluidHandler.BLOCK, blockPos, blockHitResult.getDirection());
-            if (cap == null) return InteractionResult.TRY_WITH_EMPTY_HAND;
-            if (fluidHandlerItem.getFluidInTank(0).getAmount() < fluidHandlerItem.getTankCapacity(0) && !cap.getFluidInTank(0).isEmpty()) {
-                FluidStack testStack = cap.drain(fluidHandlerItem.getTankCapacity(0), IFluidHandler.FluidAction.SIMULATE);
-                if (testStack.getAmount() > 0) {
-                    int amtFit = fluidHandlerItem.fill(testStack, IFluidHandler.FluidAction.SIMULATE);
-                    if (amtFit > 0) {
-                        FluidStack extractedStack = cap.drain(amtFit, IFluidHandler.FluidAction.EXECUTE);
-                        fluidHandlerItem.fill(extractedStack, IFluidHandler.FluidAction.EXECUTE);
-                        if (itemStack.getItem() instanceof BucketItem)
-                            player.setItemSlot(hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND, fluidHandlerItem.getContainer());
-                        level.playSound(null, blockPos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1F, 1.0F);
-                        return InteractionResult.SUCCESS;
-                    }
-                }
-            } else {
-                FluidStack fluidStack = fluidHandlerItem.getFluidInTank(0);
-                int insertAmt = cap.fill(fluidStack, IFluidHandler.FluidAction.SIMULATE);
-                if (insertAmt > 0) {
-                    FluidStack extractedStack = fluidHandlerItem.drain(insertAmt, IFluidHandler.FluidAction.EXECUTE);
-                    if (!extractedStack.isEmpty()) {
-                        cap.fill(extractedStack, IFluidHandler.FluidAction.EXECUTE);
-                        if (itemStack.getItem() instanceof BucketItem)
-                            player.setItemSlot(hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND, fluidHandlerItem.getContainer());
-                        level.playSound(null, blockPos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1F, 1.0F);
-                        return InteractionResult.SUCCESS;
-                    }
-                }
-            }
+        ResourceHandler<FluidResource> itemTank = ItemAccess.forPlayerInteraction(player, hand).getCapability(Capabilities.Fluid.ITEM);
+        if (itemTank == null) return InteractionResult.TRY_WITH_EMPTY_HAND;
+        ResourceHandler<FluidResource> blockTank = level.getCapability(Capabilities.Fluid.BLOCK, blockPos, blockHitResult.getDirection());
+        if (blockTank == null) return InteractionResult.TRY_WITH_EMPTY_HAND;
+        if (transfer(blockTank, itemTank) > 0) {
+            level.playSound(null, blockPos, SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1F, 1.0F);
+            return InteractionResult.SUCCESS;
+        }
+        if (transfer(itemTank, blockTank) > 0) {
+            level.playSound(null, blockPos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1F, 1.0F);
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.TRY_WITH_EMPTY_HAND;
+    }
+
+    /** Moves fluid between the held container and the pack's tank, committing only if something moved. */
+    private static int transfer(ResourceHandler<FluidResource> source, ResourceHandler<FluidResource> sink) {
+        try (Transaction transaction = Transaction.openRoot()) {
+            int moved = ResourceHandlerUtil.move(source, sink, resource -> true, Integer.MAX_VALUE, transaction);
+            if (moved > 0) {
+                transaction.commit();
+            }
+            return moved;
+        }
     }
 
     @Nullable

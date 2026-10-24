@@ -4,6 +4,7 @@ import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
 import com.greatorator.tolkienmobs.containers.handlers.BackpackItemStackHandler;
 import com.greatorator.tolkienmobs.containers.handlers.BucketItemHandler;
 import com.greatorator.tolkienmobs.containers.handlers.UpgradeItemHandler;
+import com.greatorator.tolkienmobs.handler.capability.TolkienItemStackHandler;
 import com.greatorator.tolkienmobs.init.TolkienContainers;
 import com.greatorator.tolkienmobs.init.TolkienTags;
 import com.greatorator.tolkienmobs.integration.CuriosBackpackHelper;
@@ -25,7 +26,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemStackHandler;
 
 import java.util.Optional;
 
@@ -42,7 +42,7 @@ public class BackpackBlockContainer extends TolkienContainer{
     private final ResultContainer resultSlots = new ResultContainer();
     private final ResultSlot resultSlot;
     private final Player player;
-    public ItemStackHandler fluidHandler;
+    public TolkienItemStackHandler fluidHandler;
     public ContainerData fluidData;
     public static final int COLUMNS = 9;
     public static final int MAX_ROWS = 8;

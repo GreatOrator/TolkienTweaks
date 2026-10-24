@@ -3,10 +3,9 @@ package com.greatorator.tolkienmobs.effect;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.items.IItemHandler;
 
 import java.util.function.Predicate;
 
@@ -40,15 +39,14 @@ public class CorrosionEffect extends TolkienEffect {
     }
 
     private static void repairAllItems(Player player, int amplifier) {
-        IItemHandler itemHandler = player.getCapability(Capabilities.ItemHandler.ENTITY);
         Predicate<ItemStack> canRepairPlayerItem = CAN_REPAIR_ITEM.and(stack -> stack != player.getMainHandItem() || !player.swinging);
-        repairAllItems(itemHandler, canRepairPlayerItem, amplifier);
+        repairAllItems(player.getInventory(), canRepairPlayerItem, amplifier);
     }
 
-    private static boolean repairAllItems(IItemHandler inv, Predicate<ItemStack> canRepairStack, int amplifier) {
+    private static boolean repairAllItems(Inventory inv, Predicate<ItemStack> canRepairStack, int amplifier) {
         boolean hasAction = false;
-        for (int i = 0; i < inv.getSlots(); i++) {
-            ItemStack invStack = inv.getStackInSlot(i);
+        for (int i = 0; i < inv.getContainerSize(); i++) {
+            ItemStack invStack = inv.getItem(i);
             if (canRepairStack.test(invStack) && invStack.isCombineRepairable()) {
                 invStack.setDamageValue(invStack.getDamageValue() + (amplifier + 1));
                 if (!hasAction) {
