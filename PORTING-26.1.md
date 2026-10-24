@@ -1494,6 +1494,30 @@ from **3,470 errors in 337 files to 2,801 in 320**.
 - **Verified:** whole-tree `javac` at **384** errors, down from 405 - exactly this file's 21 - with
   nothing new anywhere. Nothing was opened in game.
 
+### The tree placers and the foliage placer - DONE
+
+- **The whole tree-placement API takes the generation level now.** 26.1 moved
+  `TrunkPlacer#placeTrunk`, `FoliagePlacer#createFoliage` and `BlockStateProvider#getState` from
+  `LevelSimulatedReader` to `WorldGenLevel`, and `getState` takes that level as its first argument
+  (`getState(level, random, pos)`). So `BranchingTrunkPlacer`, `BranchingLargeTrunkPlacer`,
+  `SpheroidFoliagePlacer`, `FeaturePlacers` and `WoodRootFeature` all thread the level through -
+  every one of their private helpers with it - rather than the reader they used to carry.
+- **`TreeDecorator.Context` exposes its level.** `TrunkSideDecorator` reads
+  `context.level()` for its `BlockStateProvider`, which is the level the decorator is placing into.
+- **`setDirtAt` is `placeBelowTrunkBlock`.** Same body: let the block ask the tree to grow, and
+  otherwise set the configuration's below-trunk provider. The large placer's four calls moved with
+  it.
+- **`IntProvider.codec(min, max)` is `IntProviders.codec(min, max)`.** `IntProvider` itself now has a
+  no-argument instance `codec()`, so the old static call on the interface no longer resolves;
+  `SpheroidFoliagePlacer`'s offset was the only site in the mod.
+- **Nothing about the shapes changed.** Codecs, radii, branch counts, tilts, the shag factor and the
+  root algorithms are untouched, and the generated tree features stay as they are; the level is only
+  passed along so a state provider that reads the world can.
+- **Verified:** whole-tree `javac` at **349** errors, down from 384. The two trunk placers (17), the
+  decorator (6), the foliage placer (3), `FeaturePlacers` (8) and `WoodRootFeature` (1) lost exactly
+  their errors; `WoodRootFeature` picked up one more from the signature change and was finished in
+  the same pass. Nothing new is left anywhere. Nothing was opened in game.
+
 ## Ordered work list
 
 1. **Build stack — DONE.** MDG 2, JDK 25, NeoForge 26.1.2, the four dependency bumps. The
