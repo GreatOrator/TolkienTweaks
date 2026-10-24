@@ -2,8 +2,10 @@ package com.greatorator.tolkienmobs.handler.data;
 
 import net.minecraft.core.Direction;
 
+import com.google.gson.JsonParser;
 import com.greatorator.tolkienmobs.handler.vec.Cuboid6;
 import com.greatorator.tolkienmobs.handler.vec.Vector3;
+import com.mojang.serialization.JsonOps;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.EncoderException;
@@ -15,6 +17,7 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.codec.StreamDecoder;
 import net.minecraft.resources.Identifier;
@@ -308,7 +311,12 @@ public interface MCDataInput {
     }
 
     default MutableComponent readTextComponent() {
-        return requireNonNull(Component.Serializer.fromJson(readString(), RegistryAccess.EMPTY));
+        // 26.1 removed Component.Serializer, so a component arrives through its own codec; JSON is the
+        // shape this text format has always held.
+        Component parsed = ComponentSerialization.CODEC
+                .parse(JsonOps.INSTANCE, JsonParser.parseString(readString()))
+                .getOrThrow();
+        return parsed.copy();
     }
 
     default <T> T readRegistryIdDirect(Registry<T> registry) {

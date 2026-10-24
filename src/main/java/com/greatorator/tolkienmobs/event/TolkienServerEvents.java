@@ -18,7 +18,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.brewing.RegisterBrewingRecipesEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerSetSpawnEvent;
-import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -62,7 +62,7 @@ public class TolkienServerEvents {
     }
 
     @SubscribeEvent
-    public static void onHammerUsage(BlockEvent.BreakEvent event) {
+    public static void onHammerUsage(BreakBlockEvent event) {
         Player player = event.getPlayer();
         ItemStack mainHandItem = player.getMainHandItem();
 

@@ -16,7 +16,7 @@ measurement's other half.
 | Source | Minecraft **1.21.4**, NeoForge **21.4.161**, mod **4.4.83-Final** |
 | Target | Minecraft **26.1.2**, NeoForge **26.1.2.116**, mod **5.0.0** |
 | Java | 21 → **25** |
-| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API, the fluid/leaf/proxy batch, the food table, the forest fog, the whole `util` package, the three biggest block classes and the `BushBlock` plants, the barrels, the effect/enchantment families, the network packages, the lockable chest blocks, the last three loose blocks and the three init classes are done; **13** errors left |
+| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API, the fluid/leaf/proxy batch, the food table, the forest fog, the whole `util` package, the three biggest block classes and the `BushBlock` plants, the barrels, the effect/enchantment families, the network packages, the lockable chest blocks, the last three loose blocks, the three init classes and the data helpers are done; **10** errors left |
 
 What the source tree contains, counted:
 
@@ -2001,6 +2001,23 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   `block/custom/Lockable*` named. Nothing was run in game: the check is a creative player sneaking
   and using each of the four chests - single and double, treasure and plain - to see the lock
   settings open, and using them without sneaking to see the ordinary lock and key flow.
+
+### The data helpers and the server events — DONE
+
+- **`Component.Serializer` is gone.** Both sides of `MCDataInput`/`MCDataOutput` now go through
+  `ComponentSerialization.CODEC` with `JsonOps`: the reader parses the stored string with
+  `JsonParser` and takes `parse(...).getOrThrow()`, the writer encodes with
+  `encodeStart(...).getOrThrow().toString()`. That is the same JSON text and the same 32 KB cap as
+  before, and the reader copies the result so the `MutableComponent` return type is unchanged. The
+  old calls also passed `RegistryAccess.EMPTY`, so nothing depended on registries being available.
+- **`BlockEvent.BreakEvent` is its own class.** It is
+  `net.neoforged.neoforge.event.level.block.BreakBlockEvent` now, and it carries `getPlayer()`
+  itself; `getLevel()`, `getPos()` and `getState()` stay on the `BlockEvent` base. Only the
+  parameter type changed - the dwarven hammer still breaks the same extra blocks around the one the
+  player mined.
+- **Verified:** whole-tree `javac` at **10** errors, down from 13, with nothing in these three files
+  named. Nothing was run in game: the checks are mining with the dwarven hammer to see the extra
+  blocks fall, and opening a screen that carries component text over the mod's own packet format.
 
 ### The three init classes — DONE
 
