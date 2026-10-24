@@ -27,7 +27,7 @@ public class LightningEffect extends TolkienEffect {
 
         LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(level, EntitySpawnReason.TRIGGERED);
         if (lightningBolt != null) {
-            lightningBolt.moveTo(Vec3.atBottomCenterOf(blockpos));
+            lightningBolt.snapTo(Vec3.atBottomCenterOf(blockpos));
             lightningBolt.setCause(null);
             level.addFreshEntity(lightningBolt);
         }

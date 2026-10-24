@@ -20,20 +20,16 @@ public class TolkienEnchantmentEffectComponents {
     public static final DataComponentType<List<ConditionalEffect<EnchantmentEntityEffect>>> USE_ON_BLOCK = register(
         "use_on_block",
         (it) -> it.persistent(
-            ConditionalEffect.codec(
-                EnchantmentEntityEffect.CODEC,
-                    TolkienLootContextParamSets.USE_ON_ITEM
-            ).listOf()
+            // 26.1's ConditionalEffect codec takes only the effect codec; the loot context key set the
+            // old signature carried is gone.
+            ConditionalEffect.codec(EnchantmentEntityEffect.CODEC).listOf()
         )
     );
 
     public static final DataComponentType<List<ConditionalEffect<EnchantmentEntityEffect>>> POST_BREAK_BLOCK = register(
         "post_break_block",
         (it) -> it.persistent(
-            ConditionalEffect.codec(
-                EnchantmentEntityEffect.CODEC,
-                    TolkienLootContextParamSets.POST_BREAK_BLOCK
-            ).listOf()
+            ConditionalEffect.codec(EnchantmentEntityEffect.CODEC).listOf()
         )
     );
 

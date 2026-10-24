@@ -20,7 +20,7 @@ public class FearEffect extends TolkienEffect{
         entity.addEffect((new MobEffectInstance(MobEffects.WITHER, 40, amplifier, true, false, false, null)));
         entity.addEffect((new MobEffectInstance(MobEffects.BLINDNESS, 40, amplifier, true, false, false, null)));
         entity.addEffect((new MobEffectInstance(MobEffects.WEAKNESS, 40, amplifier, true, false, false, null)));
-        entity.addEffect((new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, amplifier, true, false, false, null)));
+        entity.addEffect((new MobEffectInstance(MobEffects.SLOWNESS, 40, amplifier, true, false, false, null)));
 
         RandomSource random = entity.getRandom();
 
