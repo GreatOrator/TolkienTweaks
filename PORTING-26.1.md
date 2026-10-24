@@ -865,6 +865,23 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   pointer by the GUI's own offset; `setTooltipForNextFrame` takes the cursor position like every
   other tooltip does now.
 
+### Camo spawner screen — DONE
+
+- The same four hooks, with the 256x206 GUI as a constructor argument. `renderLabels` was four
+  captions and is `extractLabels` with `text`; `renderTooltip` is `extractTooltip`; `renderBg` is
+  `extractBackground`, which still blits the panel and then draws the chosen mob.
+- **The mob preview is vanilla's again.** The screen carried a copy of 1.21's three-method
+  `renderEntityInInventory*` chain - `Lighting.setupForEntityInInventory`, an
+  `EntityRenderDispatcher#render` inside `drawSpecial`, a hand-rolled `PoseStack` - and none of that
+  exists on the extract pass. 26.1 rebuilt the same feature around render states and still exposes
+  it as `InventoryScreen.extractEntityInInventoryFollowsMouse(graphics, x0, y0, x1, y1, size,
+  offsetY, mouseX, mouseY, entity)`, which is what the inventory screen itself calls, so the copy
+  is deleted and that call replaces it. The preview keeps its odd 403-wide box (the scissor clips it
+  to the GUI) so it faces the cursor the way it did.
+- The number buttons take `onPress(event)` with the shift/control steps read from the event, the
+  right-click on a toggle is `toggleButton.onClick(event)`, and every payload goes through
+  `ClientPacketDistributor`.
+
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
   26.1.2 MDK's version; NeoForge requires 9.1.0 or newer), foojay resolver 0.8.0 → 1.0.0.

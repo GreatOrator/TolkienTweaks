@@ -92,6 +92,10 @@ All notable changes to this project will be documented in this file.
   panels, the same fluid tank, and the same sleeping-bag, campfire and upgrade toggles, with a right
   click still stepping a toggle backwards. The tank's fluid level reads its colour and texture from
   the game's own fluid models now, and its tooltip appears at the pointer rather than offset from it.
+- The camouflage spawner screen is ported too. Its delay and range steppers, the spawn-count and
+  cluster controls, the player, requirement, particle and redstone switches and the spawn-all toggle
+  all read and send what they did, and its mob preview still turns to follow the cursor - it now
+  uses the game's own inventory entity drawing instead of the mod's copy of it.
 - Every message the mod sends a player now uses 26.1's own call for it: the chat lines go through
   the system-message call, and the three that flash above the hotbar - the backpack's "no room",
   the occupied sleeping bag and a refused sleep - through the overlay one. Nothing the player reads
