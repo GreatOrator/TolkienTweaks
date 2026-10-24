@@ -8,15 +8,12 @@ import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.util.RandomSource;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * Vanilla's cosy campfire smoke with a colour of its own. The movement is copied from
  * {@link net.minecraft.client.particle.CampfireSmokeParticle} so that a dyed plume behaves exactly like an
  * undyed one, leaving the tint as the only difference.
  */
-@OnlyIn(Dist.CLIENT)
 public class TintedSmokeParticle extends SingleQuadParticle {
     private TintedSmokeParticle(
             ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, TextureAtlasSprite sprite

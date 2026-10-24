@@ -21,8 +21,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.Nullable;
 
@@ -87,7 +85,6 @@ public class TolkienBowItem extends BowItem {
         for(MobEffectInstance c : contentsit) if(c.is(instance.getEffect())) return;
         stack.set(DataComponents.POTION_CONTENTS, contents.withEffectAdded(instance));
     }
-    @OnlyIn(Dist.CLIENT)
     @Override public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flagIn) {
         float speed = 72000F / useDuration;
         tooltip.accept(LangTranslationUtils.shootingPower(speedScale));

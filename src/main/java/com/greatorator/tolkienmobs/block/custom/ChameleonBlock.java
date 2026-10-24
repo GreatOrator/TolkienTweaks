@@ -23,8 +23,6 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
@@ -217,7 +215,6 @@ public class ChameleonBlock<C> extends TolkienEntityBlock implements SimpleWater
         return Shapes.empty();
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public float getShadeBrightness(BlockState p_220080_1_, BlockGetter p_220080_2_, BlockPos p_220080_3_) {
         return 1.0F;

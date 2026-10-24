@@ -8,8 +8,6 @@ import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.RandomSource;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 public class WindParticle extends SingleQuadParticle {
     protected WindParticle(ClientLevel level, double xCoord, double yCoord, double zCoord,
@@ -39,7 +37,6 @@ public class WindParticle extends SingleQuadParticle {
         this.alpha = (-(1/(float)lifetime) * age + 1);
     }
 
-    @OnlyIn(Dist.CLIENT)
     public static class Provider implements ParticleProvider<SimpleParticleType> {
         private final SpriteSet sprites;
 

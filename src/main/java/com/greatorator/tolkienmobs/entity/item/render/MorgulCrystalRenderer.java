@@ -20,13 +20,10 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Quaternionf;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
-@OnlyIn(Dist.CLIENT)
 public class MorgulCrystalRenderer extends EntityRenderer<MorgulCrystalEntity, MorgulCrystalRenderState> {
    private static final Identifier MORGUL_CRYSTAL_LOCATION = Identifier.fromNamespaceAndPath(MODID, "textures/entity/morgul_crystal/morgul_crystal.png");
    // 26.1 calls the unculled cutout pipeline entityCutout; entityCutoutCull is the culled one.

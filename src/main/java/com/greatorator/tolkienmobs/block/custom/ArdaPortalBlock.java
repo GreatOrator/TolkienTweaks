@@ -26,8 +26,6 @@ import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
@@ -111,7 +109,6 @@ public class ArdaPortalBlock extends TolkienBlock implements Portal {
                 : 0;
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void animateTick(BlockState state, Level worldIn, BlockPos pos, RandomSource rand) {
         if (rand.nextInt(100) == 0) {

@@ -8,8 +8,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.component.TooltipDisplay;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.function.Consumer;
 
@@ -24,7 +22,6 @@ public class TolkienArrowItem extends ArrowItem {
     }
 
     public int getBaseDamage() {return 2;}
-    @OnlyIn(Dist.CLIENT)
     @Override public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flagIn) {
         tooltip.accept(LangTranslationUtils.baseDamage(getBaseDamage()));
         super.appendHoverText(stack, context, display, tooltip, flagIn);
