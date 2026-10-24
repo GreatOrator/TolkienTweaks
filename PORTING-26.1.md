@@ -811,8 +811,12 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   swallows keys while focused except escape - and the GLFW key constant is `event.isEscape()`.
 - Payloads go through `ClientPacketDistributor`, and `RenderSystem.setShaderTexture` is gone with the
   pipeline-bound blit.
-- Neither screen's container has been ported yet (`ClickType` moved), so the two screens still show
-  errors from their container rather than from their own drawing.
+- Both containers are ported with them. 26.1 replaced `ClickType` with `ContainerInput`
+  (`PICKUP`, `QUICK_MOVE`, `SWAP`, `CLONE`, `THROW`, `QUICK_CRAFT`, `PICKUP_ALL`) and the hook is
+  `clicked(int slotIndex, int buttonNum, ContainerInput containerInput, Player player)`. Neither
+  container's override did anything but call `super` with the same four arguments, so both overrides
+  and their imports are gone rather than re-signed - the inherited method is the one they were
+  forwarding to. Eleven other containers still use `ClickType` and need the same two-line treatment.
 
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
