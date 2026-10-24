@@ -2,13 +2,13 @@ package com.greatorator.tolkienmobs.containers.screens;
 
 import com.greatorator.tolkienmobs.containers.KeyItemContainer;
 import com.greatorator.tolkienmobs.containers.slots.KeyItemSlot;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.client.renderer.RenderType;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -17,37 +17,30 @@ public class KeyItemScreen extends AbstractContainerScreen<KeyItemContainer> {
     protected final KeyItemContainer container;
 
     public KeyItemScreen(KeyItemContainer container, Inventory inv, Component name) {
-        super(container, inv, name);
+        // 26.1 makes the two sizes final, so the 181-high GUI goes through the constructor.
+        super(container, inv, name, 176, 181);
         this.container = container;
-        this.imageHeight = 181;
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        //this.renderBackground(guiGraphics);
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        this.renderTooltip(guiGraphics, mouseX, mouseY);
+    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        graphics.text(font, title, 5, 5, 8552833);
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawString(font, title, 5, 5, 8552833);
-    }
-
-    @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-        RenderSystem.setShaderTexture(0, GUI);
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractBackground(graphics, mouseX, mouseY, partialTicks);
         int relX = (this.width - this.imageWidth) / 2;
         int relY = (this.height - this.imageHeight) / 2;
-        guiGraphics.blit(RenderType::guiTextured, GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, GUI, relX, relY, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
     }
 
+    /** A right click on one of the key item's own slots is swallowed, so nothing inspects that stack. */
     @Override
-    public boolean mouseClicked(double x, double y, int btn) {
-        if (btn == 1 && hoveredSlot instanceof KeyItemSlot) { //Right click
-            int slot = hoveredSlot.getSlotIndex();
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        if (event.button() == 1 && hoveredSlot instanceof KeyItemSlot) { //Right click
             return true;
         }
-        return super.mouseClicked(x, y, btn);
+        return super.mouseClicked(event, doubleClick);
     }
 }

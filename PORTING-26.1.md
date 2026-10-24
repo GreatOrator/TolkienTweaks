@@ -912,6 +912,21 @@ from **3,470 errors in 337 files to 2,801 in 320**.
 - None of the four had a tooltip of its own beyond the name field's hint, which stays on the field
   and is refreshed in `extractTooltip`.
 
+### Piggy bank and the three item screens — DONE
+
+- The piggy bank (176x221) and the coin pouch, key item and key ring (all 176x181, sharing
+  `inventory_small.png`) are the plainest screens left: a panel and a title. Their heights are
+  constructor arguments, `renderBg`/`renderLabels` are `extractBackground`/`extractLabels`, and their
+  `render` overrides only re-drew the background and tooltip the base class already draws, so they
+  are gone.
+- The piggy bank's two captions sit at `-15`, left of the GUI's own origin, and still do - the label
+  pass has the GUI origin applied and negative offsets are relative to it the same way they were.
+- The three item screens swallow a right click over one of their own slots, which is what stops a
+  stack in a pouch or ring from being split or picked up. That is `event.button() == 1` on
+  `mouseClicked(MouseButtonEvent, boolean)` now, still returning `true` before the base class sees
+  it. Their dead `int slot = hoveredSlot.getSlotIndex();` line - assigned and never read - went with
+  the rewrite.
+
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
   26.1.2 MDK's version; NeoForge requires 9.1.0 or newer), foojay resolver 0.8.0 → 1.0.0.

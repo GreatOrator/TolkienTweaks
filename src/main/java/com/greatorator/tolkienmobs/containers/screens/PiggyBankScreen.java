@@ -1,16 +1,12 @@
 package com.greatorator.tolkienmobs.containers.screens;
 
 import com.greatorator.tolkienmobs.containers.PiggyBankContainer;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.client.renderer.RenderType;
-
-import javax.annotation.Nullable;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -18,8 +14,8 @@ public class PiggyBankScreen extends AbstractContainerScreen<PiggyBankContainer>
     private static final Identifier GUI = Identifier.fromNamespaceAndPath(MODID, "textures/gui/inventory_large.png");
 
     public PiggyBankScreen(PiggyBankContainer container, Inventory inv, Component name) {
-        super(container, inv, Component.literal(""));
-        this.imageHeight = 221;
+        // 26.1 makes the two sizes final, so the 221-high GUI goes through the constructor.
+        super(container, inv, Component.literal(""), 176, 221);
     }
 
     @Override
@@ -31,29 +27,16 @@ public class PiggyBankScreen extends AbstractContainerScreen<PiggyBankContainer>
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        this.renderTooltip(guiGraphics, mouseX, mouseY);
+    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        graphics.text(this.font, Component.translatable("screen.tolkienmobs.block.tolkienmobs.block_piggybank"), -15, 3, 8552833, false);
+        graphics.text(this.font, this.playerInventoryTitle, -15, 128, 8552833, false);
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawString(this.font, Component.translatable("screen.tolkienmobs.block.tolkienmobs.block_piggybank"), -15, 3, 8552833, false);
-        guiGraphics.drawString(this.font, this.playerInventoryTitle, -15, 128, 8552833, false);
-    }
-
-    @Override
-    protected void renderSlotContents(GuiGraphics guiGraphics, ItemStack itemstack, Slot slot, @Nullable String countString) {
-        super.renderSlotContents(guiGraphics, itemstack, slot, countString);
-    }
-
-    @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractBackground(graphics, mouseX, mouseY, partialTicks);
         int relX = (this.width - this.imageWidth) / 2;
         int relY = (this.height - this.imageHeight) / 2;
-        guiGraphics.blit(RenderType::guiTextured, GUI, relX - 23, relY, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
-        int x = (width - imageWidth) / 2;
-        int y = (height - imageHeight) / 2;
+        graphics.blit(RenderPipelines.GUI_TEXTURED, GUI, relX - 23, relY, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
     }
 }
