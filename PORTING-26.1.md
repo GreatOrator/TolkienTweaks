@@ -899,6 +899,19 @@ from **3,470 errors in 337 files to 2,801 in 320**.
 - Neither uses `FluidTankRenderer` after all - the tank work earlier was needed by the backpack, not
   by these two - so no call site moved with that change.
 
+### Lockable chest screens — DONE
+
+- All four - chest, double chest, treasure chest, double treasure chest - are the key screen's shape
+  with a different payload: a 176x62 panel, one name field, one save button and a title. They are
+  otherwise identical, and now byte-identical apart from their container type, payload class and
+  class name, so a fix to one applies to all four.
+- Each drew the name field by hand in `render` and again in `renderBg` on top of the widget pass; it
+  is only a widget now, and `extractBackground` does nothing but blit the panel.
+- `mouseClicked(MouseButtonEvent, boolean)` and `keyPressed(KeyEvent)` replace the integer-event
+  forms, and the save payload goes through `ClientPacketDistributor`.
+- None of the four had a tooltip of its own beyond the name field's hint, which stays on the field
+  and is refreshed in `extractTooltip`.
+
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
   26.1.2 MDK's version; NeoForge requires 9.1.0 or newer), foojay resolver 0.8.0 → 1.0.0.

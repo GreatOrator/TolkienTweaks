@@ -99,6 +99,10 @@ All notable changes to this project will be documented in this file.
 - The fireplace and trinket table screens are ported with them, and both still show their crafting
   progress the way they did: the arrow fills across and the fire or trinket rises from the bottom of
   its frame. The fireplace still names the fuel left in a burning slot when you hover it.
+- The four lockable chest screens - chest, double chest, treasure chest and double treasure chest -
+  are ported as well. Each still takes a key code in its field, shows the hint when the field is
+  empty, and saves the code when you press the button; the field is drawn once now instead of twice
+  over itself.
 - Every message the mod sends a player now uses 26.1's own call for it: the chat lines go through
   the system-message call, and the three that flash above the hotbar - the backpack's "no room",
   the occupied sleeping bag and a refused sleep - through the overlay one. Nothing the player reads
