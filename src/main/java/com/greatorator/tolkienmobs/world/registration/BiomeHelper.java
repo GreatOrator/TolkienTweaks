@@ -373,7 +373,7 @@ public abstract class BiomeHelper {
 		BiomeDefaultFeatures.addDefaultUndergroundVariety(biome);
 		BiomeDefaultFeatures.addDefaultMushrooms(biome);
 		BiomeDefaultFeatures.addForestGrass(biome);
-		BiomeDefaultFeatures.addDefaultExtraVegetation(biome);
+		BiomeDefaultFeatures.addDefaultExtraVegetation(biome, true);
 		BiomeDefaultFeatures.addDefaultUndergroundVariety(biome);
 		BiomeDefaultFeatures.addDefaultCarversAndLakes(biome);
 		BiomeDefaultFeatures.addExtraEmeralds(biome);
@@ -407,7 +407,7 @@ public abstract class BiomeHelper {
 		BiomeDefaultFeatures.addDefaultUndergroundVariety(biome);
 		BiomeDefaultFeatures.addDefaultMushrooms(biome);
 		BiomeDefaultFeatures.addForestGrass(biome);
-		BiomeDefaultFeatures.addDefaultExtraVegetation(biome);
+		BiomeDefaultFeatures.addDefaultExtraVegetation(biome, true);
 		BiomeDefaultFeatures.addDefaultUndergroundVariety(biome);
 		BiomeDefaultFeatures.addDefaultCarversAndLakes(biome);
 		BiomeDefaultFeatures.addExtraEmeralds(biome);

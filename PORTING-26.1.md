@@ -1549,6 +1549,55 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   `TolkienDecorators.ROOT_BLEND_PROVIDER` only changed its type: the roots a trunk blends into its
   base are still six parts living root to one part dirt.
 
+### The worldgen registration layer - DONE
+
+- **26.1 split the biome's ambience out of `BiomeSpecialEffects`.** The record now holds only the
+  water colour and the foliage, dry-foliage and grass overrides plus the grass colour modifier, so
+  `waterFogColor`, `fogColor`, `skyColor`, `ambientParticle`, `ambientLoopSound`, `ambientMoodSound`
+  and `backgroundMusic` are all gone from its builder. They are environment attributes instead, set
+  on `Biome.BiomeBuilder#setAttribute`: `WATER_FOG_COLOR`, `FOG_COLOR`, `SKY_COLOR`,
+  `AMBIENT_PARTICLES`, `AMBIENT_SOUNDS` and `BACKGROUND_MUSIC`. The twenty biomes in `BiomeMaker`
+  now build that way, with every colour and sound value kept as it was.
+- **Two moved records and one new shape.** `AmbientMoodSettings` is in `net.minecraft.world.attribute`
+  now (`AmbientParticleSettings` is the same move, as `AmbientParticle`). Particles are a
+  `List<AmbientParticle>` built with `AmbientParticle.of(particle, probability)`, and a biome's loop
+  and mood sound are one `AmbientSounds(loop, mood, additions)` record - `AmbientSounds.LEGACY_CAVE_SETTINGS`
+  is exactly the mood-only settings the mod used. Background music is `new BackgroundMusic(music)`.
+- **Colours are wrapped in `ARGB.opaque`.** The `RGB_COLOR` attributes are stored opaque, the way
+  vanilla's own `calculateSkyColor` does it, and `ExtraCodecs.STRING_RGB_COLOR` writes an opaque
+  value back out as a six-digit hex, so the colours in the generated JSON stay the shape they were.
+- **Lothlórien keeps one ambient particle.** The old builder held a single optional particle, so of
+  its two `ambientParticle` calls only the mallorn leaves survived; the list could now hold both, but
+  the port keeps what the game actually showed rather than adding falling lightning bug particles.
+- **`addDefaultExtraVegetation` grew a flag.** Its `boolean shouldGenerateNearWaterVegetation` is
+  what used to be unconditional sugar cane and firefly bush alongside the pumpkin patch, so the two
+  mountain biomes in `BiomeHelper` pass `true` and generate what they generated before.
+- **Carvers write with the two-argument `setBlockState`.** `ChunkAccess#setBlockState` takes
+  `@Block.UpdateFlags int` where it took a boolean, and the overload without it defaults to
+  `UPDATE_ALL` - which is what vanilla's own carvers call. `BlockStateProvider#getState` now takes a
+  `WorldGenLevel`, which a carver never has: it carves a bare `ChunkAccess`, so `TolkienCavesCarver`
+  passes `null` through one helper, and both providers it accepts (weighted and noise) pick from
+  their list without touching the level.
+- **`SimpleWeightedRandomList` is `WeightedList` here too.** `TolkienCaveCarvers` was the last file
+  still naming the old weighted list, for the dark stone and stone blend its highland carver lines
+  its walls with; the same `Builder#add(value, weight)` builds it.
+- **Small renames around them.** `ChunkPos.asLong(x, z)` is `ChunkPos.pack(x, z)` (`LazyArea`),
+  `ResourceKey#location` is `identifier` (`TerrainColumn`'s debug listing), and `Feature.isDirt` is
+  gone, so `StoneSpikeFeature` asks `state.is(BlockTags.DIRT)` - the body the old helper had.
+- **Jigsaw placement takes a `MaxDistance`.** `JigsawPlacement.addPieces`' max-distance argument is
+  `JigsawStructure.MaxDistance(horizontal, vertical)` now. `new MaxDistance(n)` sets both to `n`,
+  which is exactly what the single old int meant and what vanilla's own constructors pass, so the
+  mod's `maxDistanceFromCenter` fields and their integer codec stay and only the call site wraps.
+- **Datagen still has to run.** Biome JSON changes shape: `effects` loses the fog, sky, music and
+  particle entries and the biome gains an `attributes` object holding them. That cannot be
+  regenerated until the tree compiles; it comes with the next `runData`, and the biome JSON must be
+  committed with it.
+- **Verified:** whole-tree `javac` at **246** errors, down from 305, and **no error is left anywhere
+  under `world/` or in `TolkienCaveCarvers`** - `BiomeMaker`'s 43, the carver's four,
+  `StoneSpikeFeature`'s three, the two in `BiomeHelper`, the two in `TerrainColumn`, the two in
+  `TolkienCaveCarvers` and the one each in `LazyArea`, `SurfaceStructures` and `VillageStructure` are
+  all gone, with nothing new anywhere. Nothing was opened in game.
+
 ## Ordered work list
 
 1. **Build stack — DONE.** MDG 2, JDK 25, NeoForge 26.1.2, the four dependency bumps. The
@@ -1573,9 +1622,10 @@ from **3,470 errors in 337 files to 2,801 in 320**.
    `TolkienItemProperties`.
 5. **Block entities.** `preRemoveSideEffects` / `affectNeighborsAfterRemoval`, and
    `dropContentsOnDestroy` in `CamoChestBlock`.
-6. **Worldgen.** Weighted lists in `TolkienCaveCarvers` and `TolkienDecorators` (the spawner's is
-   done, see *Camo spawner — DONE* below); then TerraBlender (`TolkienMobsMain` lines 181–182)
-   and the surface rules.
+6. **Worldgen - mostly done.** The carvers, trees, configured and placed features, surface rules
+   and the biome registration layer all compile (see *The worldgen registration layer - DONE*
+   above); the biome JSON still needs a `runData` once the tree builds. What is left of this step is
+   TerraBlender (`TolkienMobsMain` lines 181–182).
 7. **Renderers.** `handler/render/` and the non-GeckoLib renderers, against the submission API.
    `FogHandler` and the now-unused `TolkienRenderInfo` belong here too: 26.1's dimension effects
    removal means the forest fog has to move onto `ViewportEvent.RenderFog`/`ComputeFogColor`.
