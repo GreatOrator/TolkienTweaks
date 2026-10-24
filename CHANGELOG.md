@@ -258,6 +258,13 @@ All notable changes to this project will be documented in this file.
   leaf radius and shag factor, same roots, and the same generated tree features. The only change is
   underneath - 26.1 hands these placers the world they are generating into, so a block placed from
   one can now be chosen with the terrain in view.
+- The configured features are ported, so the world's declared features compile again. Trees, ores,
+  blobs, roots and flowers are built from the same numbers as before. Flowers needed a new shape
+  rather than a rename: 26.1 removed the random-patch feature the mod used, and moves that scatter to
+  the placement instead, so each flower patch now counts its 96 tries and spreads them 7 by 3 blocks
+  there. A patch still comes up as the same clump of flowers on grass, and still refuses stone, sand
+  and water. The weighted list behind the roots a tree blends into its base is 26.1's `WeightedList`
+  now, so those roots still come up six parts living root to one part dirt.
 - The particle description data provider is ported, so the datagen side of the particles compiles.
   Every flame, the lightning bugs, the fell beast's breath, the wind and the leaf particles still
   declare the same single sprite they did, and the tinted smoke still borrows vanilla's twelve

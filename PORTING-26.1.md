@@ -16,7 +16,7 @@ measurement's other half.
 | Source | Minecraft **1.21.4**, NeoForge **21.4.161**, mod **4.4.83-Final** |
 | Target | Minecraft **26.1.2**, NeoForge **26.1.2.116**, mod **5.0.0** |
 | Java | 21 → **25** |
-| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider and the item family are done; **514** errors left |
+| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider and the item family are done; **305** errors left |
 
 What the source tree contains, counted:
 
@@ -1517,6 +1517,37 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   decorator (6), the foliage placer (3), `FeaturePlacers` (8) and `WoodRootFeature` (1) lost exactly
   their errors; `WoodRootFeature` picked up one more from the signature change and was finished in
   the same pass. Nothing new is left anywhere. Nothing was opened in game.
+
+### The configured features - DONE
+
+- **26.1 deleted the random patch.** `Feature.RANDOM_PATCH`, `RandomPatchFeature` and
+  `RandomPatchConfiguration` are all gone, and vanilla now expresses a patch as a single-block
+  feature with the scatter on the placed feature: its own `flower_default` is
+  `Feature.SIMPLE_BLOCK` with `RarityFilter` + `InSquarePlacement` + heightmap, and its grass patches
+  add `CountPlacement` and `RandomOffsetPlacement.ofTriangle(7, 3)` after them. So the twelve flower
+  configured features are `Feature.SIMPLE_BLOCK` with `new SimpleBlockConfiguration(provider)`, and
+  their twelve placed features gained `CountPlacement.of(96)` and
+  `RandomOffsetPlacement.ofTriangle(7, 3)` - the old patch's 96 tries at the same 7/3 spread - so a
+  patch still comes up as the same clump of flowers rather than one lone flower.
+- **The grass-block whitelist went with the config.** The old patch listed `Blocks.GRASS_BLOCK` as
+  the ground it would try, which `SimpleBlockConfiguration` has no field for;
+  `SimpleBlockFeature` places only where the block `canSurvive`s, which is the same rule a flower
+  applies to itself, so a flower still refuses stone, sand and water.
+- **`FeatureUtils` moved and lost its helper.** It is `net.minecraft.data.worldgen.features.FeatureUtils`
+  now, and `simplePatchConfiguration` is gone, which is why both the import and the twelve calls
+  went.
+- **`TreeConfiguration.Builder#dirt` is `belowTrunkProvider`**, an eighteen-tree rename with the same
+  meaning: the provider that puts a block under the trunk.
+- **Datagen will rewrite the flowers.** Their configured JSON changes type from
+  `minecraft:random_patch` to `minecraft:simple_block` (it has to - the type no longer exists), and
+  their placed JSON gains `count` and `random_offset`. That has to be regenerated with `runData`
+  once the tree compiles, and the committed worldgen JSON committed along with it.
+- **Verified:** whole-tree `javac` at **305** errors, down from 349 - this file's 42 and `TolkienDecorators`' two - with
+  nothing new anywhere. `TolkienPlacedFeatures` still compiles. Nothing was opened in game.
+- **`SimpleWeightedRandomList` is `WeightedList`.** 26.1 keeps only the latter in
+  `net.minecraft.util.random`, with the same `Builder#add(value, weight)` and `build()`, so
+  `TolkienDecorators.ROOT_BLEND_PROVIDER` only changed its type: the roots a trunk blends into its
+  base are still six parts living root to one part dirt.
 
 ## Ordered work list
 
