@@ -3,7 +3,6 @@ package com.greatorator.tolkienmobs.enchantment;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -26,7 +25,6 @@ import net.minecraft.world.phys.Vec3;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 /**
  * Breaks the blocks around the one that was hit, in the plane of the face that was hit.
  *
@@ -44,7 +42,7 @@ public record DwarvenMinerEnchantmentEffect(int haste) implements EnchantmentEnt
     @Override
     public void apply(ServerLevel level, int levelEnchant, EnchantedItemInUse item, Entity entity, Vec3 hitPosition) {
         if (!(entity instanceof ServerPlayer player)) return;
-        player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 20, haste(), false, false, false));
+        player.addEffect(new MobEffectInstance(MobEffects.HASTE, 20, haste(), false, false, false));
         if (player.isShiftKeyDown() || levelEnchant < 1) return;
 
         BlockPos source = BlockPos.containing(hitPosition);

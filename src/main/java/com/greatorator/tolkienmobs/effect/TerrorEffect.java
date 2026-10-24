@@ -51,10 +51,10 @@ public class TerrorEffect extends TolkienEffect{
     public static void onInputUpdate(MovementInputUpdateEvent event) {
         if (event.getEntity().hasEffect(TolkienMobEffects.PARALYSING_FEAR)) {
             ClientInput input = event.getInput();
-            // The key states are one immutable record now, and the impulses are what actually moves the player.
+            // The key states are one immutable record now, so they are cleared as a whole. 26.1 turns
+            // them into the movement vector inside the input's own tick, before this event, and keeps
+            // that vector private; the effect's own server-side tick is what pins the entity.
             input.keyPresses = Input.EMPTY;
-            input.forwardImpulse = 0;
-            input.leftImpulse = 0;
         }
     }
 

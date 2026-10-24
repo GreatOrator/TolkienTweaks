@@ -16,7 +16,7 @@ measurement's other half.
 | Source | Minecraft **1.21.4**, NeoForge **21.4.161**, mod **4.4.83-Final** |
 | Target | Minecraft **26.1.2**, NeoForge **26.1.2.116**, mod **5.0.0** |
 | Java | 21 → **25** |
-| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API, the fluid/leaf/proxy batch, the food table, the forest fog, the whole `util` package, the three biggest block classes and the `BushBlock` plants and the barrels are done; **39** errors left |
+| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API, the fluid/leaf/proxy batch, the food table, the forest fog, the whole `util` package, the three biggest block classes and the `BushBlock` plants, the barrels and the effect/enchantment families are done; **25** errors left |
 
 What the source tree contains, counted:
 
@@ -2040,6 +2040,35 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   gone and nothing new appeared. Nothing was run in game: the check is filling all seven wood
   barrels, breaking them, and confirming each spills its contents; opening one, listening for the
   lid and watching the comparator still work the same way.
+
+### The effects and enchantments — DONE
+
+- **Effect names did the same two renames as the food table.** `MOVEMENT_SLOWDOWN` is `SLOWNESS`
+  (`FearEffect`, `SleepEffect`), `DIG_SPEED` is `HASTE` (`DwarvenMinerEnchantmentEffect`) and
+  `MOVEMENT_SPEED` is `SPEED` (`ElvenFleetfootEnchantmentEffect`); every duration, amplifier and
+  chance is unchanged.
+- **`WitherSkeleton` moved under `monster.skeleton`**, which `BurningEffect` imports now; its
+  extra damage to a wither skeleton and its fire damage to everything else are the same.
+- **`LightningBolt` uses `snapTo` like every other entity.** `moveTo(Vec3)` is gone, so the bolt is
+  snapped to the bottom centre of the block before it is added to the level.
+- **`ConditionalEffect.codec` lost its context key set.** The two component types in
+  `TolkienEnchantmentEffectComponents` now pass only `EnchantmentEntityEffect.CODEC`; the key sets
+  the old signature took (`USE_ON_ITEM`, `POST_BREAK_BLOCK`) are no longer part of the codec.
+- **`net.minecraft.MethodsReturnNonnullByDefault` is gone**, so the dwarven miner's effect keeps
+  `@ParametersAreNonnullByDefault` and drops the other annotation.
+- **The paralysing fear can no longer zero the impulses.** 26.1's `ClientInput` keeps one immutable
+  `Input` record and a private movement vector that `KeyboardInput#tick` fills in *before*
+  `MovementInputUpdateEvent` fires; `forwardImpulse`/`leftImpulse` no longer exist and there is no
+  setter for the vector. The handler clears `keyPresses` to `Input.EMPTY` as a whole, which is what
+  the event can still reach, and the effect's own server-side tick - which now takes a `ServerLevel`,
+  so it only runs there - is what pins the entity. Worth a look in game: whether a player under
+  paralysing fear still slides a little on their own screen.
+- **Verified:** whole-tree `javac` at **25** errors, down from 39 - the six effect errors and the
+  seven enchantment ones are gone and nothing new appeared. Two of the old source files are gone:
+  `event/client/TolkienRenderInfo.java` is now part of `FogHandler`, so regenerate `build/tmp/srcs.txt`
+  with a `find` before the next `javac` or it stops at *file not found*. Nothing was run in game: the checks are a
+  wither skeleton and an ordinary mob under the burning effect, a trident-thunder strike from the
+  lightning effect, the dwarven miner's 3×3 through 9×9 dig, and the elven fleetfoot's speed buff.
 
 ## Ordered work list
 

@@ -41,7 +41,7 @@ public class SleepEffect extends TolkienEffect {
         if (shouldSleep){
             ((Player) pLivingEntity).setForcedPose(Pose.SLEEPING);
             pLivingEntity.addEffect((new MobEffectInstance(MobEffects.BLINDNESS, 40, pAmplifier, true, false, false, null)));
-            pLivingEntity.addEffect((new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, pAmplifier+100, true, false, false, null)));
+            pLivingEntity.addEffect((new MobEffectInstance(MobEffects.SLOWNESS, 40, pAmplifier+100, true, false, false, null)));
         }else {
             ((Player) pLivingEntity).setForcedPose(null);
             nightTime.removeModifier(sleepTight);
