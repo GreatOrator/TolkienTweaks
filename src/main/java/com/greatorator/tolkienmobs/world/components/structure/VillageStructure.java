@@ -90,7 +90,8 @@ public class VillageStructure extends Structure {
             return Optional.empty();
         }
         return JigsawPlacement.addPieces(context, this.startPool, this.startJigsawName, this.maxDepth, start,
-                this.useExpansionHack, this.projectStartToHeightmap, this.maxDistanceFromCenter,
+                this.useExpansionHack, this.projectStartToHeightmap,
+                new JigsawStructure.MaxDistance(this.maxDistanceFromCenter),
                 PoolAliasLookup.create(this.poolAliases, start, context.seed()),
                 this.dimensionPadding, this.liquidSettings);
     }

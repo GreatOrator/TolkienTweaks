@@ -114,7 +114,7 @@ public class TolkienCavesCarver extends WorldCarver<CaveCarverConfiguration> {
 				if (!access.getFluidState(pos.above(2)).isEmpty()) // Sand doesn't quite generate until after the carvers, so we must look for liquid above possible sand instead
 					blockStateToPlace = randomFromPos.nextBoolean() ? Blocks.ROOTED_DIRT.defaultBlockState() : Blocks.COARSE_DIRT.defaultBlockState(); // normal dirt will get replaced with sand, special ones are required
 
-				boolean blockPlaced = access.setBlockState(pos, blockStateToPlace, false) != null;
+				boolean blockPlaced = access.setBlockState(pos, blockStateToPlace) != null;
 
 				if (aquifer.shouldScheduleFluidUpdate() && !blockStateToPlace.getFluidState().isEmpty()) {
 					access.markPosForPostprocessing(pos);
@@ -124,7 +124,7 @@ public class TolkienCavesCarver extends WorldCarver<CaveCarverConfiguration> {
 					BlockPos posDown = pos.relative(Direction.DOWN);
 					if (access.getBlockState(posDown).is(Blocks.DIRT)) {
 						ctx.topMaterial(biomePos, access, posDown, !blockStateToPlace.getFluidState().isEmpty()).ifPresent(state -> {
-							access.setBlockState(posDown, state, false);
+							access.setBlockState(posDown, state);
 							if (!state.getFluidState().isEmpty()) {
 								access.markPosForPostprocessing(posDown);
 							}
@@ -142,6 +142,16 @@ public class TolkienCavesCarver extends WorldCarver<CaveCarverConfiguration> {
 		}
 	}
 
+	/**
+	 * 26.1 asks a state provider for the level it is placing into, so that a provider which looks
+	 * around can do so. Carving only ever sees the chunk being carved, and both providers this carver
+	 * accepts - the weighted and the noise one - choose from their list without touching the level,
+	 * so the argument stays null here.
+	 */
+	private BlockState wallState(RandomSource rand, BlockPos pos) {
+		return this.wallBlocks.getState(null, rand, pos);
+	}
+
 	private static boolean isInsideChunk(BlockPos relative, BlockPos chunkOrigin) {
 		int deltaX = relative.getX() - chunkOrigin.getX();
 		int deltaZ = relative.getZ() - chunkOrigin.getZ();
@@ -155,7 +165,7 @@ public class TolkienCavesCarver extends WorldCarver<CaveCarverConfiguration> {
 
 			if (this.isHighlands) {
 				if (rand.nextInt(4) == 0 && this.canReplaceBlock(config, access.getBlockState(directionalRelative))) {
-					access.setBlockState(directionalRelative, this.wallBlocks.getState(rand, directionalRelative), false);
+					access.setBlockState(directionalRelative, this.wallState(rand, directionalRelative));
 				}
 			} else if (facing != Direction.DOWN && (facing == Direction.UP || access.getBlockState(directionalRelative.above()).isAir() || this.checkNoiseThreshold(directionalRelative, 0.25f, 0.5f))) { //here's the code for making dirt roofs. Enjoy :)
 				// Dirt is never placed below, always on roof, and typically to the sides
@@ -163,7 +173,7 @@ public class TolkienCavesCarver extends WorldCarver<CaveCarverConfiguration> {
 				BlockState neighboringBlock = access.getBlockState(directionalRelative);
 
 				if (neighboringBlock.is(BlockTags.BASE_STONE_OVERWORLD) || neighboringBlock.getFluidState().is(FluidTags.WATER)) {
-					access.setBlockState(directionalRelative, this.wallBlocks.getState(rand, directionalRelative), false);
+					access.setBlockState(directionalRelative, this.wallState(rand, directionalRelative));
 				}
 			}
 		}

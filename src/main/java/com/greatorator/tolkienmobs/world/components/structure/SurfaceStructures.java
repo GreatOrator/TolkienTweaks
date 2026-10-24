@@ -107,7 +107,8 @@ public class SurfaceStructures extends Structure {
         // is no arbitrary altitude cap, so mountain biomes work as well as plains.
         var stub = JigsawPlacement.addPieces(context, this.startPool, this.startJigsawName,
                 this.size, blockPos, false, this.projectStartToHeightmap,
-                this.maxDistanceFromCenter, PoolAliasLookup.EMPTY, this.dimensionPadding, this.liquidSettings);
+                new JigsawStructure.MaxDistance(this.maxDistanceFromCenter), PoolAliasLookup.EMPTY,
+                this.dimensionPadding, this.liquidSettings);
         if (!this.useSurfaceBiome) return stub;
         // Only move the biome sampling point, never the generated pieces. This
         // lets a cave biome below Hithaeglir/Mirkwood coexist with our structures.

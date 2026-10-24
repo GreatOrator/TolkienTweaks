@@ -6,7 +6,7 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.random.SimpleWeightedRandomList;
+import net.minecraft.util.random.WeightedList;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.util.valueproviders.UniformFloat;
 import net.minecraft.world.level.block.Block;
@@ -54,7 +54,7 @@ public class TolkienCaveCarvers {
             CaveCarverConfiguration.CODEC,
             true,
             new WeightedStateProvider(
-                    new SimpleWeightedRandomList.Builder<BlockState>()
+                    new WeightedList.Builder<BlockState>()
                             .add(TolkienBlocks.DARK_STONE.value().defaultBlockState(), 1)
                             .add(Blocks.STONE.defaultBlockState(), 3)
             )

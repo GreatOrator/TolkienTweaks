@@ -269,6 +269,15 @@ All notable changes to this project will be documented in this file.
   Every flame, the lightning bugs, the fell beast's breath, the wind and the leaf particles still
   declare the same single sprite they did, and the tinted smoke still borrows vanilla's twelve
   campfire smoke frames, so the generated particle descriptions are byte for byte what they were.
+- The biome layer is ported, so all twenty biomes register against 26.1 again and every biome keeps
+  the colours, particles, ambience and music it had. 26.1 moved a biome's fog and sky colours, its
+  ambient particles and sounds and its background music out of the biome's effects and onto the
+  biome's environment attributes, so they are declared there now - the same values, in the same
+  biomes, including the ash falling over Mordor and the mallorn leaves of Lothlórien. The cave
+  carvers are ported with them and still line their walls with dirt or dark stone, and the two
+  jigsaw structures still stop building at the same distance from where they start. The generated
+  biome files do not match this yet: they are rewritten by the next data run, which has to wait for
+  the rest of the source to compile.
 
 ## [4.4.83-Final] - 10.22.2026
 
