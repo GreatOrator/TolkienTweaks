@@ -8,8 +8,6 @@ import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
 import net.minecraft.util.Util;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -26,7 +24,7 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.animal.horse.AbstractChestedHorse;
+import net.minecraft.world.entity.animal.equine.AbstractChestedHorse;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
@@ -46,6 +44,9 @@ import com.geckolib.util.GeckoLibUtil;
 public class GoatEntity extends AbstractChestedHorse implements GeoEntity {
     private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(GoatEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> DATA_ID_CHEST = SynchedEntityData.defineId(GoatEntity.class, EntityDataSerializers.BOOLEAN);
+
+    /** How long a warning holds the goat's head up, the same 40 ticks the scream lasts. */
+    private static final int WARNING_TICKS = 40;
 
     private int warningSoundTicks;
 
@@ -105,7 +106,7 @@ public class GoatEntity extends AbstractChestedHorse implements GeoEntity {
     }
 
     @Override
-    public boolean causeFallDamage(float pFallDistance, float pMultiplier, DamageSource pSource) {
+    public boolean causeFallDamage(double pFallDistance, float pMultiplier, DamageSource pSource) {
         return false;
     }
 
@@ -179,7 +180,7 @@ public class GoatEntity extends AbstractChestedHorse implements GeoEntity {
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnType, @Nullable SpawnGroupData spawnGroupData) {
         if (level.getRandom().nextInt(100) == 0) {
             DwarfEntity dwarfentity = TolkienEntities.ENTITY_TTM_DWARF.get().create(this.level, EntitySpawnReason.JOCKEY);
-            dwarfentity.moveTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
+            dwarfentity.snapTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
             dwarfentity.finalizeSpawn(level, difficulty, spawnType, null);
             this.setTamed(true);
             this.isSaddled();
@@ -229,7 +230,7 @@ public class GoatEntity extends AbstractChestedHorse implements GeoEntity {
     protected void playWarningSound() {
         if (this.warningSoundTicks <= 0) {
             this.playSound(TolkienSounds.SCREAM_GOAT.get(), 1.0F, this.getVoicePitch());
-            this.warningSoundTicks = 40;
+            this.warningSoundTicks = WARNING_TICKS;
         }
 
     }
@@ -279,26 +280,26 @@ public class GoatEntity extends AbstractChestedHorse implements GeoEntity {
             if (p_29590_ <= d0 && this.isTimeToAttack()) {
                 this.resetAttackCooldown();
                 this.mob.doHurtTarget(getServerLevel(this.mob), p_29589_);
-                GoatEntity.this.setStanding(false);
+                GoatEntity.this.clearStanding();
             } else if (p_29590_ <= d0 * 2.0D) {
                 if (this.isTimeToAttack()) {
-                    GoatEntity.this.setStanding(false);
+                    GoatEntity.this.clearStanding();
                     this.resetAttackCooldown();
                 }
 
                 if (this.getTicksUntilNextAttack() <= 10) {
-                    GoatEntity.this.setStanding(true);
+                    GoatEntity.this.setStanding(WARNING_TICKS);
                     GoatEntity.this.playWarningSound();
                 }
             } else {
                 this.resetAttackCooldown();
-                GoatEntity.this.setStanding(false);
+                GoatEntity.this.clearStanding();
             }
 
         }
 
         public void stop() {
-            GoatEntity.this.setStanding(false);
+            GoatEntity.this.clearStanding();
             super.stop();
         }
 

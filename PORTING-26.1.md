@@ -16,7 +16,7 @@ measurement's other half.
 | Source | Minecraft **1.21.4**, NeoForge **21.4.161**, mod **4.4.83-Final** |
 | Target | Minecraft **26.1.2**, NeoForge **26.1.2.116**, mod **5.0.0** |
 | Java | 21 → **25** |
-| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers) and the save-data move (`ValueOutput`/`ValueInput`) are done; 2,512 errors left |
+| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`) and the equine family are done; 2,307 errors left |
 
 What the source tree contains, counted:
 
@@ -560,12 +560,30 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   reads a spawned entity out of a `ValueInput` in 26.1.
 - **The four `handleUpdateTag` overrides are deleted.** 26.1 removed the hook from `BlockEntity`;
   the client gets its copy through the value pipeline now, so nothing had to replace them.
-- **What is left in these files is not save data:** the goat, Shadowfax and the Nazgul steed still
-  fail on their supertype (`inventory` and `createInventory` are not on it yet, so `@Override` fails
-  with them), the spawner's spawn loop still calls `CompoundTag.getList("Pos", 6)` and
-  `contains("id", 8)` (a one-argument API now), the block entities still override
-  `IBlockEntityExtension.onDataPacket`, and `MilestoneHandler` still builds a `SavedData.Factory`
-  the old way. 2,512 errors remain tree-wide, down from 2,801.
+- **What is left in these files is not save data:** the spawner's spawn loop still calls
+  `CompoundTag.getList("Pos", 6)` and `contains("id", 8)` (a one-argument API now), the block
+  entities still override `IBlockEntityExtension.onDataPacket`, and `MilestoneHandler` still builds
+  a `SavedData.Factory` the old way. 2,307 errors remain tree-wide, down from 2,801.
+
+### Equine family — DONE
+
+- `net.minecraft.world.entity.animal.horse` is `net.minecraft.world.entity.animal.equine` in 26.1,
+  and the three chested mobs that extend `AbstractChestedHorse` - the goat, Shadowfax and the
+  Nazgul steed - were the only files importing the old package. With the import moved they compile:
+  the supertype resolves, so the `inventory` container, `createInventory()` and the
+  `hasChest`/`setChest` pair the three of them use come back with it, and 195 errors went with the
+  package.
+- Three signatures under them changed and needed no design work: `causeFallDamage` takes a `double`
+  distance now, so each override's first parameter is `double`; `Entity#moveTo(x, y, z, yRot,
+  xRot)` is `snapTo`, which is what the rider spawns in the goat's and the Nazgul steed's
+  `finalizeSpawn` use; and `AbstractHorse#setStanding` takes the tick count it stands for rather
+  than a flag, with `clearStanding()` beside it for the false case.
+- **The goat's head-down warning** is the one place that needed a number. `setStanding(true)` became
+  `setStanding(WARNING_TICKS)`, a 40-tick constant that is also how long its scream lasts, so the
+  goat holds the pose for the warning instead of for as long as its attack goal happens to keep
+  asking; every `setStanding(false)` became `clearStanding()`, which is the same pose dropped at
+  once. Nothing else about the three mobs changed - their saddling, chests, sounds, variants and
+  controllers read as before.
 
 ### Build stack — DONE
 
@@ -619,8 +637,9 @@ from **3,470 errors in 337 files to 2,801 in 320**.
    `com.geckolib`; what still fails is ordinary 26.1 source work.
 3. **Rename pass — DONE** for `ResourceLocation` → `Identifier` and the `Util` move, in one
    idempotent script (see above). The *subpackage* moves that belong to the same family —
-   `Villager` under `npc.villager`, `WaterAnimal`, `AbstractChestedHorse` — are done family by
-   family as each one is touched, so they stay with the steps below rather than a script.
+   `Villager` under `npc.villager`, `WaterAnimal`, `AbstractChestedHorse` under
+   `animal.equine` — are done family by family as each one is touched, so they stay with the steps
+   below rather than a script. The equine family is done (see *Equine family — DONE* above).
 4. **Items and equipment.** The three removed base classes, the five `inventoryTick`
    signatures, and `TolkienArmorItem`'s armour lookups.
 5. **Block entities.** `preRemoveSideEffects` / `affectNeighborsAfterRemoval`, and
