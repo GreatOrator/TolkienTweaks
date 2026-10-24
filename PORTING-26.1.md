@@ -16,7 +16,7 @@ measurement's other half.
 | Source | Minecraft **1.21.4**, NeoForge **21.4.161**, mod **4.4.83-Final** |
 | Target | Minecraft **26.1.2**, NeoForge **26.1.2.116**, mod **5.0.0** |
 | Java | 21 → **25** |
-| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API, the fluid/leaf/proxy batch and the food table are done; **94** errors left |
+| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API, the fluid/leaf/proxy batch, the food table and the forest fog are done; **82** errors left |
 
 What the source tree contains, counted:
 
@@ -1889,6 +1889,40 @@ from **3,470 errors in 337 files to 2,801 in 320**.
 - **Verified:** whole-tree `javac` at **94** errors, down from 101 - `TolkienFoods`' seven are gone and
   nothing new appeared. Nothing was run in game: the check is eating one of each (lemas, honey cake,
   cram, miruvor, grog) and reading the effect it grants.
+
+### The forest fog — DONE
+
+- **`DimensionSpecialEffects` is gone, and with it the event that installed one.** The mod's
+  overworld effect - `TolkienRenderInfo`, registered over `minecraft:overworld` - could not survive
+  as a class. Its two behaviours moved into `FogHandler`: the colour dimming is
+  `ViewportEvent.ComputeFogColor` and the fog distances are `ViewportEvent.RenderFog`. The class is
+  deleted, since there is nothing left for it to extend.
+- **The distances are one `FogData` now, not two passes.** 26.1 hands `RenderFog` a single mutable
+  `FogData` with `environmentalStart`/`environmentalEnd` (the biome fog), `skyEnd` and `cloudEnd`,
+  and no longer has `FogMode` or a cancellable event. The old handler set a sky pair and a terrain
+  pair; the port smooths `skyEnd` and the terrain pair side by side with the same 0.003 lerp, halves
+  all three in Mirkwood, moves the near plane to 75% of the end in the near-fog biomes, and lets the
+  cloud end follow the terrain end, which is what the single fog UBO gave clouds before.
+- **`FogType.NONE` is `FogType.ATMOSPHERIC`.** 26.1's `FogRenderer#getFogType` maps open air to
+  `ATMOSPHERIC`, so that is the guard; the fluid fog types still pass straight through untouched.
+- **The old effect's two answers are in `FogHandler` as `isSpooky`/`isFoggy`.** The spooky half -
+  the fog being halved - was always Mirkwood only, as it is here. `getBrightnessDependentFogColor`
+  dimmed red and green by `0.94 * daylight + 0.06` and blue by `0.91 * daylight + 0.09` across the
+  whole overworld; 26.1's daylight is `EnvironmentAttributes.SKY_LIGHT_FACTOR` off the camera's
+  attribute probe (1 at noon, 0.24 at midnight, the same range the old value had). `isFoggyAt`
+  asked for near fog in the three spooky woods at any height and in the barrow downs and old forest
+  under y=20, which is what `isFoggy` returns.
+- **Two things went with the effect and are not replaced.** Its cloud height of 128 and its
+  `SkyType.NONE` have no equivalent now that dimensions do not carry their own sky; clouds are
+  vanilla's. Nothing in the mod read either, so the only visible difference is that the overworld's
+  clouds sit where vanilla puts them.
+- **`Minecraft#cameraEntity` is a getter.** The field is private in 26.1 (`getCameraEntity()`), and
+  `Level#dimension()` plus `Level.OVERWORLD` replace the old `clientLevel.effects() instanceof
+  TolkienRenderInfo` test for "is this the dimension the effects were installed for".
+- **Verified:** whole-tree `javac` at **82** errors, down from 94 - `FogHandler`'s seven and
+  `TolkienRenderInfo`'s five are gone and nothing new appeared. Nothing was run in game: the check is
+  walking into Mirkwood and watching the fog close in by half, standing in the barrow downs at floor
+  level for the near fog, and watching the fog colour dim towards dusk in any overworld biome.
 
 ## Ordered work list
 
