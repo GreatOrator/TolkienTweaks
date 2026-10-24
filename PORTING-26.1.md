@@ -1248,6 +1248,20 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   only those three files and nothing new anywhere. Every file under `entity/passive` and all four
   `entity` base classes compile clean.
 
+### The last three entity files - DONE, and the entity tree with them
+
+- `Spider` is under `monster.spider` for both the cobweb projectile and the web trap - the same move
+  Shelob and the Mirkwood spider had - which is also what their "only spiders are not trapped" check
+  reads.
+- The cobweb's float check is `isInWater()` now (a bubble column is water), and the trap it spawns
+  is placed with `snapTo(x, y, z)` rather than `moveTo`.
+- The dragon's fly node evaluator mirrors vanilla's own port of `FlyNodeEvaluator`: `DAMAGE_FIRE` is
+  `FIRE` and `DAMAGE_OTHER` is `DAMAGING`, in the comparisons and in the values it hands back. The
+  dragon still refuses to path through fire and still treats a damaging neighbour as one.
+- **Verified:** whole-tree `javac` at **770** errors, 10 down from 780, with the per-file diff showing
+  only those three files removed. No error is left anywhere under `entity/`: every mob, boss,
+  projectile, boat, renderer and model in the mod compiles.
+
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
   26.1.2 MDK's version; NeoForge requires 9.1.0 or newer), foojay resolver 0.8.0 → 1.0.0.

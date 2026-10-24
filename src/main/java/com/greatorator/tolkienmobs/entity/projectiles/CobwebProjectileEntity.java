@@ -11,7 +11,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.monster.Spider;
+import net.minecraft.world.entity.monster.spider.Spider;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
@@ -79,7 +79,7 @@ public class CobwebProjectileEntity extends Projectile implements GeoEntity {
         float f1 = 0.06F;
         if (this.level.getBlockStates(this.getBoundingBox()).noneMatch(BlockBehaviour.BlockStateBase::isAir)) {
             this.remove(RemovalReason.DISCARDED);
-        } else if (this.isInWaterOrBubble()) {
+        } else if (this.isInWater()) {
             this.remove(RemovalReason.DISCARDED);
         } else {
             this.setDeltaMovement(vector3d.scale((double)f));
@@ -145,7 +145,7 @@ public class CobwebProjectileEntity extends Projectile implements GeoEntity {
 
     public void spawnTrap(double x, double y, double z) {
         SimpleTrapEntity trap = TolkienEntities.TRAP_SIMPLE.get().create(this.level, EntitySpawnReason.MOB_SUMMONED);
-        trap.moveTo(x, y, z);
+        trap.snapTo(x, y, z);
         trap.owner = this.getOwner();
 
         this.level.addFreshEntity(trap);
