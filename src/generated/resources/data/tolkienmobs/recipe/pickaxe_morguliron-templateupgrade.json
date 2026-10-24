@@ -3,7 +3,6 @@
   "addition": "tolkienmobs:ingot_morguliron",
   "base": "minecraft:netherite_pickaxe",
   "result": {
-    "count": 1,
     "id": "tolkienmobs:pickaxe_morguliron"
   },
   "template": "tolkienmobs:template_morguliron"

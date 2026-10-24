@@ -3,7 +3,6 @@
   "addition": "tolkienmobs:ingot_mithril",
   "base": "minecraft:netherite_hoe",
   "result": {
-    "count": 1,
     "id": "tolkienmobs:hoe_mithril"
   },
   "template": "tolkienmobs:template_mithril"

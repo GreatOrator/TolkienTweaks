@@ -1,0 +1,13 @@
+{
+  "gives": {
+    "count": 6,
+    "id": "tolkienmobs:item_coin_silver"
+  },
+  "max_uses": 16.0,
+  "reputation_discount": 0.5,
+  "wants": {
+    "count": 16.0,
+    "id": "tolkienmobs:feather_bird"
+  },
+  "xp": 50.0
+}

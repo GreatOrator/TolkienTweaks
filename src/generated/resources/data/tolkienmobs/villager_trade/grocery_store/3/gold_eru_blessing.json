@@ -1,0 +1,12 @@
+{
+  "gives": {
+    "id": "tolkienmobs:drink_eru_blessing"
+  },
+  "max_uses": 16.0,
+  "reputation_discount": 0.5,
+  "wants": {
+    "count": 3.0,
+    "id": "tolkienmobs:item_coin_gold"
+  },
+  "xp": 75.0
+}

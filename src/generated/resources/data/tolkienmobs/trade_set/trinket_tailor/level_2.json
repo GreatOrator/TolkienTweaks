@@ -1,0 +1,10 @@
+{
+  "amount": 2.0,
+  "random_sequence": "tolkienmobs:trade_set/trinket_tailor/level_2",
+  "trades": [
+    "tolkienmobs:trinket_tailor/2/belt",
+    "tolkienmobs:trinket_tailor/2/glove",
+    "tolkienmobs:trinket_tailor/2/cloak",
+    "tolkienmobs:trinket_tailor/2/hat"
+  ]
+}

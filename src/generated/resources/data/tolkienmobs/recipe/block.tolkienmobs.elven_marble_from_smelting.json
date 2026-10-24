@@ -5,7 +5,6 @@
   "experience": 0.25,
   "ingredient": "tolkienmobs:cobbled_elven_marble",
   "result": {
-    "count": 1,
     "id": "tolkienmobs:elven_marble"
   }
 }

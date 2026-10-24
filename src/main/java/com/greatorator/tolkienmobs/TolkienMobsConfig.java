@@ -1,6 +1,5 @@
 package com.greatorator.tolkienmobs;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -97,7 +96,11 @@ public class TolkienMobsConfig {
 
     private static boolean validateItemName(final Object obj)
     {
-        return obj instanceof String itemName && BuiltInRegistries.ITEM.containsKey(Identifier.parse(itemName));
+        // 26.1 validates a spec's default as the spec is built, which happens while the mod is still
+        // being constructed - the mod's own coins are not in the item registry yet, so looking the name
+        // up rejected the default. The check is that the name is a well-formed item id; a name no item
+        // answers to leaves the milestone unable to charge, because the item registry hands back air.
+        return obj instanceof String itemName && Identifier.tryParse(itemName) != null;
     }
 
     @SubscribeEvent

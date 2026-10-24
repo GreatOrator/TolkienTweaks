@@ -5,10 +5,12 @@ import com.google.gson.GsonBuilder;
 import com.greatorator.tolkienmobs.util.LangConversionHelper;
 import com.greatorator.tolkienmobs.util.LangFormatSplitter;
 import net.minecraft.util.Util;
-import net.minecraft.core.component.DataComponents;
+import com.greatorator.tolkienmobs.init.TolkienItems;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.JukeboxSong;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -72,7 +74,12 @@ public abstract class TolkienLangHelperUS extends LanguageProvider {
 
     public void addMusicDisc(DeferredItem<Item> disc, String description) {
         this.addItem(disc, "Music Disc");
-        this.add(Util.makeDescriptionId("jukebox_song", disc.get().components().get(DataComponents.JUKEBOX_PLAYABLE).song().unwrapKey().orElseThrow().identifier()), description);
+        // The song comes from the item registry's own table: datagen cannot read the item's components,
+        // which are only bound when a registry loads.
+        ResourceKey<JukeboxSong> song = TolkienItems.songOf(disc);
+        if (song != null) {
+            this.add(Util.makeDescriptionId("jukebox_song", song.identifier()), description);
+        }
     }
 
     public void addItemScreen(Item key, String name) {

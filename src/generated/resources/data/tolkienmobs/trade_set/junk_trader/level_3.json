@@ -1,0 +1,11 @@
+{
+  "amount": 2.0,
+  "random_sequence": "tolkienmobs:trade_set/junk_trader/level_3",
+  "trades": [
+    "tolkienmobs:junk_trader/3/golem_stone",
+    "tolkienmobs:junk_trader/3/golem_stone_earth",
+    "tolkienmobs:junk_trader/3/golem_stone_air",
+    "tolkienmobs:junk_trader/3/golem_stone_fire",
+    "tolkienmobs:junk_trader/3/golem_stone_water"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "amount": 2.0,
+  "random_sequence": "tolkienmobs:trade_set/grocery_store/level_3",
+  "trades": [
+    "tolkienmobs:grocery_store/3/gold_eru_blessing",
+    "tolkienmobs:grocery_store/3/gold_elf_vitality"
+  ]
+}

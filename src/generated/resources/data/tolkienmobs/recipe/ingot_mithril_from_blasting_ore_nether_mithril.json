@@ -6,7 +6,6 @@
   "group": "ingot_mithril",
   "ingredient": "tolkienmobs:ore_nether_mithril",
   "result": {
-    "count": 1,
     "id": "tolkienmobs:ingot_mithril"
   }
 }

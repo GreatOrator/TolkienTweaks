@@ -1,0 +1,8 @@
+{
+  "amount": 2.0,
+  "random_sequence": "tolkienmobs:trade_set/grocery_store/level_2",
+  "trades": [
+    "tolkienmobs:grocery_store/2/silver_lembas",
+    "tolkienmobs:grocery_store/2/silver_miruvor"
+  ]
+}

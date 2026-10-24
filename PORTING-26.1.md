@@ -2026,10 +2026,57 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   run in game; the checks for this batch are hovering a piece of armour over an armour slot in the
   backpack, generating a wall's blockstates, reading a music disc's tooltip in both languages,
   walking into a village that must stand on dry ground, and throwing a snowball at a bug block.
-- **Next is `runData`.** The generated data still belongs to the previous format - the trim materials
-  above are the known case - and the worldgen JSON, loot, tags, models and lang all need a run now
-  that the tree builds. It has not been run here because it rewrites a large part of
-  `src/generated/resources` in one go.
+- **`runData` has since been run** and the regenerated data is committed; see *Datagen* below for
+  what the run rewrote and the three source fixes it needed.
+
+### Datagen — DONE, the generated data is 26.1's
+
+- **The run.** `./gradlew runData` exits **0**, wrote 746 files, deleted 2 stale ones and left all
+  5,882 files under `src/generated/resources` parsing as JSON (checked by walking them with Gson in a
+  throwaway class, not by trusting the generator). The sources changed since at the end are the four
+  fixes listed below.
+- **Biomes split `effects` into environment `attributes`.** A biome no longer carries fog, sky,
+  music, ambience or particles in its effects block: each is an entry in `attributes`, alongside the
+  grass, foliage and water colours that are still effects. Checked on the ash mountains and the barrow
+  downs - fog `#C0D8FF`, sky `#78A7FF`, the same water fog, the same ambient sound and music, the
+  same particle - so every value came across, only the place it is written moved.
+- **The flower patches moved onto the placed feature.** As the *Configured features* note says, a
+  `flower` patch is `count` plus a `random_offset`, and 26.1 keeps both on the placed feature, which
+  is where the generator now writes them (count 96, x and z spread ±7, y ±3 - unchanged). The
+  configured feature is a plain `simple_block`, and the grass whitelist is gone because the block
+  test behind it is 26.1's `supports_vegetation` check.
+- **The tag rename.** `minecraft:mushroom_grow_block` is `minecraft:supports_vegetation` now, which is
+  the only change in the tag tree - the biome, item, block, POI and structure tags are otherwise
+  identical.
+- **Recipes.** A single-item result no longer repeats `count: 1`, and the six professions' offers
+  appear as 78 new files under `data/tolkienmobs/villager_trade/` and `trade_set/` - the ones the
+  trades section above was waiting on.
+- **Trims.** Each trim material loses its `ingredient`; the palettes, the descriptions and the
+  material keys are the same, as the trim section says.
+- **`data/neoforge/loot_modifiers/global_loot_modifiers.json` is gone**, and deliberately so: 26.1's
+  `LootModifierManager` discovers `data/<namespace>/loot_modifiers/*.json` directly, and
+  `LootModifierProvider` no longer writes an index - confirmed by decompiling it, since it only saves
+  the per-modifier file. The mod's five modifiers were rewritten byte-identically, so the entries
+  themselves are unchanged.
+- **The village templates re-saved.** 121 structure NBTs, each a few bytes smaller because 26.1's
+  writer omits an empty list it used to emit. The layouts, palettes and entities are unchanged.
+- **Three fixes datagen needed, none of which changes a value:**
+  - **The config is validated at load.** `TolkienMobsConfig`'s `validate` hooks name registries that
+    do not exist during a datagen run, so the defaults are validated against an empty lookup and the
+    check is skipped when the lookup is empty - see *The config* below for why the file needs no port
+    otherwise.
+  - **Item components are not bound in a datagen run.** `TolkienItemModelProvider` therefore takes
+    the equipment slot from its caller instead of reading `DataComponents.EQUIPPABLE` off the item,
+    and the music-disc lang helper looks the song up in a table on `TolkienItems`. Both read exactly
+    the value the component would have held.
+  - **A recipe output is an `ItemStackTemplate`**, so the fireplace and trinket builders build one
+    from an item, a count and its components.
+- **`build.gradle`**: JEI's runtime needs `net.mezzdev.config` (blamejared), which the existing
+  repository block did not include, so the include group now covers `mezz` and `blamejared`.
+- **Not verified:** no jar was built and nothing was loaded in game, so this is "the generator ran
+  clean and the data is in the right shape", not "the pack plays". The first real check is the test
+  world per biome: the fog and sky each biome had, a Mirkwood flower field, a village trade from each
+  profession, and a trim on a piece of mithril armour.
 
 ### The data helpers and the server events — DONE
 

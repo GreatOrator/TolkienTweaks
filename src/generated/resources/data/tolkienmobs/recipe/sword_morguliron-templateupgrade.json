@@ -3,7 +3,6 @@
   "addition": "tolkienmobs:ingot_morguliron",
   "base": "minecraft:netherite_sword",
   "result": {
-    "count": 1,
     "id": "tolkienmobs:sword_morguliron"
   },
   "template": "tolkienmobs:template_morguliron"

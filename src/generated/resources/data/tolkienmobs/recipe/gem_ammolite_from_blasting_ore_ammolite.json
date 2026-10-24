@@ -6,7 +6,6 @@
   "group": "gem_ammolite",
   "ingredient": "tolkienmobs:ore_ammolite",
   "result": {
-    "count": 1,
     "id": "tolkienmobs:gem_ammolite"
   }
 }

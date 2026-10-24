@@ -3,7 +3,6 @@
   "addition": "tolkienmobs:gem_ammolite",
   "base": "minecraft:netherite_hoe",
   "result": {
-    "count": 1,
     "id": "tolkienmobs:hoe_ammolite"
   },
   "template": "tolkienmobs:template_ammolite"

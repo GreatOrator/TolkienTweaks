@@ -1,0 +1,9 @@
+{
+  "amount": 2.0,
+  "random_sequence": "tolkienmobs:trade_set/grocery_store/level_1",
+  "trades": [
+    "tolkienmobs:grocery_store/1/bronze_honey_cake",
+    "tolkienmobs:grocery_store/1/bronze_cram",
+    "tolkienmobs:grocery_store/1/bronze_honey"
+  ]
+}

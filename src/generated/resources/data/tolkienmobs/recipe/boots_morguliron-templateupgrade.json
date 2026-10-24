@@ -3,7 +3,6 @@
   "addition": "tolkienmobs:ingot_morguliron",
   "base": "minecraft:netherite_boots",
   "result": {
-    "count": 1,
     "id": "tolkienmobs:boots_morguliron"
   },
   "template": "tolkienmobs:template_morguliron"

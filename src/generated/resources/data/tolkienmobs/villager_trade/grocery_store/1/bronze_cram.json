@@ -1,0 +1,13 @@
+{
+  "gives": {
+    "count": 3,
+    "id": "tolkienmobs:food_cram"
+  },
+  "max_uses": 16.0,
+  "reputation_discount": 0.5,
+  "wants": {
+    "count": 8.0,
+    "id": "tolkienmobs:item_coin_bronze"
+  },
+  "xp": 25.0
+}

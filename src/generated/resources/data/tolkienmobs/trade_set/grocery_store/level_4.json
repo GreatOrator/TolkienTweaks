@@ -1,0 +1,8 @@
+{
+  "amount": 2.0,
+  "random_sequence": "tolkienmobs:trade_set/grocery_store/level_4",
+  "trades": [
+    "tolkienmobs:grocery_store/4/mithril_blacksmith",
+    "tolkienmobs:grocery_store/4/mithril_ent_draught"
+  ]
+}

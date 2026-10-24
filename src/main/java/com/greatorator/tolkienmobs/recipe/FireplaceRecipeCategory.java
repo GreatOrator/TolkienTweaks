@@ -70,7 +70,7 @@ public class FireplaceRecipeCategory implements IRecipeCategory<FireplaceRecipe>
         for (int i = 0; i < recipe.getOutput().size(); i++) {
             var output = recipe.getOutput().get(i);
             builder.addSlot(RecipeIngredientRole.OUTPUT, 114, 35)
-                    .addItemStack(output.getItem().getDefaultInstance());
+                    .addItemStack(output.create());
         }
     }
 }

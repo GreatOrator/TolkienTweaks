@@ -1,4 +1,12 @@
 {
+  "attributes": {
+    "minecraft:audio/ambient_sounds": {
+      "loop": "tolkienmobs:ambient.tolkienmobs.medievalcity"
+    },
+    "minecraft:visual/fog_color": "#c0d8ff",
+    "minecraft:visual/sky_color": "#78a7ff",
+    "minecraft:visual/water_fog_color": "#a080a0"
+  },
   "carvers": [
     "minecraft:cave",
     "minecraft:cave_extra_underground",
@@ -6,14 +14,9 @@
   ],
   "downfall": 0.4,
   "effects": {
-    "ambient_sound": "tolkienmobs:ambient.tolkienmobs.medievalcity",
-    "fog_color": 12638463,
-    "foliage_color": 14596231,
-    "grass_color": 14596231,
-    "music_volume": 1.0,
-    "sky_color": 7907327,
-    "water_color": 329011,
-    "water_fog_color": 10518688
+    "foliage_color": "#deb887",
+    "grass_color": "#deb887",
+    "water_color": "#050533"
   },
   "features": [
     [],
@@ -77,6 +80,7 @@
       "minecraft:patch_sugar_cane_badlands",
       "minecraft:patch_pumpkin",
       "minecraft:patch_cactus_decorated",
+      "minecraft:patch_firefly_bush_near_water",
       "tolkienmobs:random_rubble"
     ]
   ],

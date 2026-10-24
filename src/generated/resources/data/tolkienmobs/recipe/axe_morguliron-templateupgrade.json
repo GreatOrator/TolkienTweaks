@@ -3,7 +3,6 @@
   "addition": "tolkienmobs:ingot_morguliron",
   "base": "minecraft:netherite_axe",
   "result": {
-    "count": 1,
     "id": "tolkienmobs:axe_morguliron"
   },
   "template": "tolkienmobs:template_morguliron"

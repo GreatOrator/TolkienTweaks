@@ -1,0 +1,9 @@
+{
+  "amount": 2.0,
+  "random_sequence": "tolkienmobs:trade_set/trinket_smith/level_3",
+  "trades": [
+    "tolkienmobs:trinket_smith/3/charm",
+    "tolkienmobs:trinket_smith/3/amulet",
+    "tolkienmobs:trinket_smith/3/ring"
+  ]
+}

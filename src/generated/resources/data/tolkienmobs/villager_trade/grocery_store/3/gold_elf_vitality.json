@@ -1,0 +1,12 @@
+{
+  "gives": {
+    "id": "tolkienmobs:drink_elf_vitality"
+  },
+  "max_uses": 16.0,
+  "reputation_discount": 0.5,
+  "wants": {
+    "count": 4.0,
+    "id": "tolkienmobs:item_coin_gold"
+  },
+  "xp": 75.0
+}

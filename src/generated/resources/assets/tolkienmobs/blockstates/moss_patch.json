@@ -2,8 +2,8 @@
   "variants": {
     "": {
       "type": "tolkienmobs:patch",
-      "texture": "tolkienmobs:block/moss_patch",
-      "shaggify": true
+      "shaggify": true,
+      "texture": "tolkienmobs:block/moss_patch"
     }
   }
 }

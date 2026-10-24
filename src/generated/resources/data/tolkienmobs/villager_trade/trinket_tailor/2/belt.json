@@ -1,0 +1,17 @@
+{
+  "given_item_modifiers": [
+    {
+      "function": "tolkienmobs:random_trinket"
+    }
+  ],
+  "gives": {
+    "id": "tolkienmobs:trinket_belt"
+  },
+  "max_uses": 16.0,
+  "reputation_discount": 0.5,
+  "wants": {
+    "count": 5.0,
+    "id": "tolkienmobs:item_coin_silver"
+  },
+  "xp": 50.0
+}
