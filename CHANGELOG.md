@@ -199,6 +199,10 @@ All notable changes to this project will be documented in this file.
   they share. You hear no difference: an auroch still moos, hurts and dies with the cow's sounds
   and still clops on the same step, it can still be milked with the same sound, and the mumakil
   still borrows that step. Both still shy away from bees.
+- The entity tree is complete: the cobweb projectile, the web trap and the dragon's flight
+  pathfinder are ported, so every mob, boss, projectile, boat, model and renderer in the mod now
+  compiles on 26.1. They behave as before - a web only catches spiders, it still floats up out of
+  water, and the fell beast still refuses to fly through fire.
 
 ## [4.4.83-Final] - 10.22.2026
 

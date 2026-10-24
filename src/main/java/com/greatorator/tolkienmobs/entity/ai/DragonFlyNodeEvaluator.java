@@ -13,9 +13,9 @@ public class DragonFlyNodeEvaluator extends FlyNodeEvaluator {
         PathType blockpathtypes = getPathTypeFromState(pLevel, blockpos$mutableblockpos.set(pX, pY, pZ));
         if (blockpathtypes == PathType.OPEN && pY >= pLevel.getMinY() + 1) {
             PathType blockpathtypes1 = getPathTypeFromState(pLevel, blockpos$mutableblockpos.set(pX, pY - 1, pZ));
-            if (blockpathtypes1 != PathType.DAMAGE_FIRE && blockpathtypes1 != PathType.LAVA) {
-                if (blockpathtypes1 == PathType.DAMAGE_OTHER) {
-                    blockpathtypes = PathType.DAMAGE_OTHER;
+            if (blockpathtypes1 != PathType.FIRE && blockpathtypes1 != PathType.LAVA) {
+                if (blockpathtypes1 == PathType.DAMAGING) {
+                    blockpathtypes = PathType.DAMAGING;
                 } else if (blockpathtypes1 == PathType.COCOA) {
                     blockpathtypes = PathType.COCOA;
                 } else if (blockpathtypes1 == PathType.FENCE) {
@@ -24,7 +24,7 @@ public class DragonFlyNodeEvaluator extends FlyNodeEvaluator {
                     blockpathtypes = blockpathtypes1 != PathType.WALKABLE && blockpathtypes1 != PathType.OPEN && blockpathtypes1 != PathType.WATER ? PathType.WALKABLE : PathType.OPEN;
                 }
             } else {
-                blockpathtypes = PathType.DAMAGE_FIRE;
+                blockpathtypes = PathType.FIRE;
             }
         }
         return blockpathtypes;
