@@ -757,8 +757,8 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   twice; and the page counter moved from the absolute-coordinate tail of `render` into
   `extractLabels`, whose pose already has the GUI origin applied, so it only needed its old offset
   inside the GUI.
-- The widgets themselves (`TolkienButton`, `NumberButton`, `ToggleButton`) are still on the old API
-  and are the rest of the screens job; this screen only had to call the methods that survived.
+- The widgets themselves were still on the old API at this point and were the rest of the screens
+  job; this screen only had to call the methods that survived. They are ported now — see below.
 
 ### Button widgets — DONE
 
@@ -785,8 +785,14 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   where they used to resolve. They sit inside each screen's own `mouseClicked(double, double, int)`,
   which has to be rewritten anyway; `MilestoneScreen` shows the replacement,
   `toggleButton.onClick(event)`.
-- `IconButton` and `TexturedButton` are `Button` subclasses rather than `TolkienButton` ones and are
-  still on the old API, along with the rest of the screens' widget use.
+- `IconButton` and `TexturedButton` are `Button` subclasses rather than `TolkienButton` ones and
+  are ported too, which closes the widget set. Neither has a super-only override left, and neither
+  is constructed anywhere in the tree yet, so no call site moved with them.
+- `TexturedButton` used to override `render(GuiGraphics, ...)` rather than `renderWidget`, and never
+  called `super`, so `AbstractWidget` never set `isHovered` and its `yDiffTex` hover offset was dead
+  code - the button only ever drew its idle frame. On the extract pass it overrides
+  `extractContents`, which the base class calls *after* setting `isHovered`, so the hovered frame
+  shows for the first time. That is a deliberate behaviour change, not a translation slip.
 
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
