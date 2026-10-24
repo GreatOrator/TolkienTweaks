@@ -123,6 +123,13 @@ All notable changes to this project will be documented in this file.
   drift and glow, and the spawner still turns the mob it will spawn. The preview mob is drawn
   through the same call the game uses for a mob in the world, so it appears exactly as that mob
   does; the placard, which draws nothing, is unchanged.
+- The mod's own vertex pipeline is on 26.1 as well - the render state, the light matrix, the
+  delegating and transforming vertex consumers and the vertex format cache under `handler/render`,
+  together with the small vector helpers they read. This is the last of the rendering code written
+  against the old API. None of it is called by the game, so nothing a player sees changes; it is
+  noted because it is the end of the rendering port. One helper went with it: a fluid's colour was
+  read from its fluid type, and 26.1 keeps that on the fluid's baked model instead, so the unused
+  fluid-colour helper had nothing left to read.
 - Every message the mod sends a player now uses 26.1's own call for it: the chat lines go through
   the system-message call, and the three that flash above the hotbar - the backpack's "no room",
   the occupied sleeping bag and a refused sleep - through the overlay one. Nothing the player reads
