@@ -67,6 +67,11 @@ All notable changes to this project will be documented in this file.
   `data/tolkienmobs/milestone_data.dat` instead of `data/milestone_data.dat`. A world carried over
   from 4.4.83 therefore starts with an empty milestone list; the old file is left on disk, not
   deleted or rewritten.
+- The milestone screen is ported to 26.1's rendering, and it looks and behaves as it did: the same
+  GUI, the same page buttons and counter, the same click-to-adjust numbers, and the same cost
+  buttons beside each known milestone. Two small tidies come with it - the name field was being
+  drawn twice over itself and now draws once, and holding shift or control still steps a number ten
+  or sixty-four at a time.
 - Every message the mod sends a player now uses 26.1's own call for it: the chat lines go through
   the system-message call, and the three that flash above the hotbar - the backpack's "no room",
   the occupied sleeping bag and a refused sleep - through the overlay one. Nothing the player reads

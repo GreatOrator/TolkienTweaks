@@ -730,6 +730,36 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   milestoneTitle:"Bag End", milestoneUUID:[I;...], milestoneWorld:"minecraft:overworld",
   players:[...]}]}`, which is the shape the old file had.
 
+### Milestone screen — DONE
+
+- The first screen through the prepare/render split, and the shape the other seventeen need.
+  There is no `GuiGraphics` and no `render` to override: a screen's drawing is an extract pass that
+  fills a render state, so `renderBg`, `renderLabels`, `renderTooltip` and the custom tail of
+  `render` become `extractBackground`, `extractLabels`, `extractTooltip` and `extractRenderState`,
+  each taking a `GuiGraphicsExtractor`. The pass order is fixed by `Screen`:
+  `extractBackground` -> `extractRenderState` (which is where the renderables are drawn) ->
+  deferred tooltips, so the background hook is where the GUI texture is blitted now.
+- The drawing calls moved with it: `drawString` is `text`, `drawCenteredString` is `centeredText`,
+  `renderFakeItem` is `fakeItem`, and `blit` takes a `RenderPipeline` instead of a `RenderType`
+  supplier - `RenderPipelines.GUI_TEXTURED` for a plain GUI texture. `RenderSystem.setShaderTexture`
+  is gone because the pipeline carries the texture state.
+- `imageWidth` and `imageHeight` are final, so a screen that wants a taller GUI passes both to
+  `AbstractContainerScreen`'s four-argument constructor. The milestone GUI is 176x196.
+- Input arrives as events: `mouseClicked(MouseButtonEvent, boolean)` and `keyPressed(KeyEvent)`,
+  with `x()`, `y()`, `button()`, `key()` and `isEscape()` on them. `Screen.hasShiftDown` and
+  `hasControlDown` are gone - the modifiers ride on the event that caused the click, which is why
+  `adjustNumberButton` takes the event now. `Button#onPress` takes that same event
+  (`InputWithModifiers`), and `AbstractWidget#onClick` is `(MouseButtonEvent, boolean)`.
+- A payload from the client goes through `ClientPacketDistributor.sendToServer`; the server-facing
+  `PacketDistributor` kept only its send-to-players methods.
+- Two things were dropped rather than translated: the name field is a renderable widget, and the
+  screen drew it by hand in both `render` and `renderBg` on top of the widget pass, so it was drawn
+  twice; and the page counter moved from the absolute-coordinate tail of `render` into
+  `extractLabels`, whose pose already has the GUI origin applied, so it only needed its old offset
+  inside the GUI.
+- The widgets themselves (`TolkienButton`, `NumberButton`, `ToggleButton`) are still on the old API
+  and are the rest of the screens job; this screen only had to call the methods that survived.
+
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
   26.1.2 MDK's version; NeoForge requires 9.1.0 or newer), foojay resolver 0.8.0 → 1.0.0.
