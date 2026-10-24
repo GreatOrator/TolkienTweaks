@@ -115,6 +115,14 @@ All notable changes to this project will be documented in this file.
   Morgul crystal. Nothing about how they look changes - a boat still rocks and rows, a thrown boulder
   still spins in flight and settles at a fixed angle on landing, and the crystal still bobs, turns
   and shows its base only while it stands on one.
+- The block entities that draw something of their own are on 26.1's pipeline as well: the trinket
+  table's four floating items, the fireplace's two inputs and its output, the milestone's floating
+  name, the lightning bug and the locust, and the camouflage spawner's spinning preview mob. They
+  look and move as they did - the trinket items still turn where they sit, the fireplace still shows
+  what it is burning, the milestone still shows its name to the players who know it, the bugs still
+  drift and glow, and the spawner still turns the mob it will spawn. The preview mob is drawn
+  through the same call the game uses for a mob in the world, so it appears exactly as that mob
+  does; the placard, which draws nothing, is unchanged.
 - Every message the mod sends a player now uses 26.1's own call for it: the chat lines go through
   the system-message call, and the three that flash above the hotbar - the backpack's "no room",
   the occupied sleeping bag and a refused sleep - through the overlay one. Nothing the player reads

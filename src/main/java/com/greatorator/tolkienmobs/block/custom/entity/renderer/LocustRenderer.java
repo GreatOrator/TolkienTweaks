@@ -4,19 +4,21 @@ import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.entity.LocustBlockEntity;
 import com.greatorator.tolkienmobs.block.custom.entity.layers.TolkienModelLayers;
 import com.greatorator.tolkienmobs.block.custom.entity.model.LocustModel;
-import com.greatorator.tolkienmobs.util.TolkienAnimationHelper;
+import com.greatorator.tolkienmobs.block.custom.entity.renderer.state.LocustRenderState;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.core.Direction;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.DirectionalBlock;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 
-public class LocustRenderer implements BlockEntityRenderer<LocustBlockEntity> {
+public class LocustRenderer implements BlockEntityRenderer<LocustBlockEntity, LocustRenderState> {
 
 	private final LocustModel locustModel;
 	private static final Identifier TEXTURE = TolkienMobsMain.getBlockModelTexture("locust.png");
@@ -26,21 +28,37 @@ public class LocustRenderer implements BlockEntityRenderer<LocustBlockEntity> {
 	}
 
 	@Override
-	public void render(@Nullable LocustBlockEntity entity, float partialTicks, PoseStack stack, MultiBufferSource buffer, int light, int overlay) {
-		int yaw = entity != null ? entity.currentYaw : TolkienAnimationHelper.currentYaw;
+	public LocustRenderState createRenderState() {
+		return new LocustRenderState();
+	}
 
-		stack.pushPose();
-		Direction facing = entity != null ? entity.getBlockState().getValue(DirectionalBlock.FACING) : Direction.NORTH;
-		float randRot = entity != null ? entity.randRot : 0.0F;
+	@Override
+	public void extractRenderState(
+			LocustBlockEntity blockEntity,
+			LocustRenderState state,
+			float partialTicks,
+			Vec3 cameraPosition,
+			ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress
+	) {
+		BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTicks, cameraPosition, breakProgress);
+		state.facing = blockEntity.getBlockState().getValue(DirectionalBlock.FACING);
+		state.yaw = blockEntity.currentYaw;
+		state.randRot = blockEntity.randRot;
+	}
 
-		stack.translate(0.5F, 0.5F, 0.5F);
-		stack.mulPose(facing.getRotation());
-		stack.mulPose(Axis.ZP.rotationDegrees(180.0F));
-		stack.mulPose(Axis.YP.rotationDegrees(180.0F + randRot));
-		stack.mulPose(Axis.YN.rotationDegrees(yaw));
+	@Override
+	public void submit(LocustRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
+		poseStack.pushPose();
+		poseStack.translate(0.5F, 0.5F, 0.5F);
+		poseStack.mulPose(state.facing.getRotation());
+		poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
+		poseStack.mulPose(Axis.YP.rotationDegrees(180.0F + state.randRot));
+		poseStack.mulPose(Axis.YN.rotationDegrees(state.yaw));
 
-		VertexConsumer consumer = buffer.getBuffer(this.locustModel.renderType(TEXTURE));
-		this.locustModel.renderBody(stack, consumer, light, overlay, -1);
-		stack.popPose();
+		this.locustModel.submitBody(
+				poseStack, submitNodeCollector, this.locustModel.renderType(TEXTURE), state.lightCoords, OverlayTexture.NO_OVERLAY, -1
+		);
+
+		poseStack.popPose();
 	}
 }
