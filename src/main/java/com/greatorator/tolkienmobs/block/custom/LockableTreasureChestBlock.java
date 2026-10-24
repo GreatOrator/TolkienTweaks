@@ -5,7 +5,6 @@ import net.minecraft.world.InteractionResult;
 import com.greatorator.tolkienmobs.block.custom.entity.LockableTreasureChestBlockEntity;
 import com.greatorator.tolkienmobs.block.custom.entity.TolkienChestEntityBlock;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -104,7 +103,7 @@ public class LockableTreasureChestBlock extends TolkienChestEntityBlock {
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         BlockEntity tile = level.getBlockEntity(pos);
         LockableTreasureChestBlockEntity lockableChest = (LockableTreasureChestBlockEntity) tile;
-        if (!level.isClientSide() && Screen.hasShiftDown() && player.isCreative()) {
+        if (!level.isClientSide() && player.isShiftKeyDown() && player.isCreative()) {
             if (level.getBlockEntity(pos) instanceof LockableTreasureChestBlockEntity blockEntity) {
                 player.openMenu(blockEntity, pos);
             }
