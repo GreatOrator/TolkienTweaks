@@ -107,16 +107,8 @@ public class FireplaceBlock extends TolkienEntityBlock {
         return RenderShape.MODEL;
     }
 
-    @Override
-    public void onRemove(BlockState state, Level worldIn, BlockPos pPos, BlockState newState, boolean isMoving) {
-        if (state.getBlock() != newState.getBlock()) {
-            if (worldIn.getBlockEntity(pPos) instanceof FireplaceBlockEntity blockEntity) {
-                blockEntity.drops();
-            }
-        }
-
-        super.onRemove(state, worldIn, pPos, newState, isMoving);
-    }
+    // 26.1 removed Block#onRemove; the block entity drops the fireplace's four slots itself in
+    // BlockEntity#preRemoveSideEffects.
 
     @Override
     public InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult hit) {

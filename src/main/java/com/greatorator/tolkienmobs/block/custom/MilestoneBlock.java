@@ -2,10 +2,8 @@ package com.greatorator.tolkienmobs.block.custom;
 
 import com.greatorator.tolkienmobs.block.TolkienEntityBlock;
 import com.greatorator.tolkienmobs.block.custom.entity.MilestoneBlockEntity;
-import com.greatorator.tolkienmobs.handler.MilestoneHandler;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -122,7 +120,7 @@ public class MilestoneBlock extends TolkienEntityBlock {
 
     @Override
     public InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult hit) {
-        if (!level.isClientSide() && Screen.hasShiftDown() && player.isCreative()) {
+        if (!level.isClientSide() && player.isShiftKeyDown() && player.isCreative()) {
             if (level.getBlockEntity(blockPos) instanceof MilestoneBlockEntity blockEntity) {
                 blockEntity.getUUID();
                 player.openMenu(blockEntity, blockPos);
@@ -163,13 +161,6 @@ public class MilestoneBlock extends TolkienEntityBlock {
         );
     }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState state1, boolean b) {
-        BlockEntity tile = world.getBlockEntity(pos);
-        if (tile instanceof MilestoneBlockEntity) {
-            MilestoneHandler.removeMilestone((MilestoneBlockEntity) tile);
-        }
-        super.onRemove(state, world, pos, state1, b);
-    }
+    // 26.1 removed Block#onRemove; the block entity forgets its milestone in
+    // BlockEntity#preRemoveSideEffects.
 }

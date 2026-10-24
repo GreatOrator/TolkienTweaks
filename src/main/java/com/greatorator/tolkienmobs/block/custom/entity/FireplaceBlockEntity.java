@@ -210,6 +210,16 @@ public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProv
         super.onLoad();
     }
 
+    /**
+     * 26.1 calls this instead of the block's removed {@code onRemove}, which is where the fireplace's
+     * four slots - the two inputs, the result and the fuel - are dropped.
+     */
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        this.drops();
+        super.preRemoveSideEffects(pos, state);
+    }
+
     public void drops() {
         SimpleContainer inv = new SimpleContainer(4);
         inv.setItem(0, itemHandler.getStackInSlot(0));
