@@ -44,17 +44,17 @@ public class TolkienFoods {
 
     public static final FoodProperties TREE_ACORN = new FoodProperties.Builder().nutrition(1).saturationModifier(1.0F).build();
     public static final Consumable TREE_ACORN_CONSUMABLE = food()
-            .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 10, 1), 0.3F))
+            .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.SPEED, 10, 1), 0.3F))
             .build();
 
     public static final FoodProperties GOLDEN_TREE_ACORN = new FoodProperties.Builder().nutrition(2).saturationModifier(3.0F).build();
     public static final Consumable GOLDEN_TREE_ACORN_CONSUMABLE = food()
-            .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 40, 2), 0.3F))
+            .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.SPEED, 40, 2), 0.3F))
             .build();
 
     public static final FoodProperties FOOD_HONEY = new FoodProperties.Builder().nutrition(2).saturationModifier(3.0F).build();
     public static final Consumable FOOD_HONEY_CONSUMABLE = food()
-            .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 100, 1), 0.3F))
+            .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.SPEED, 100, 1), 0.3F))
             .build();
 
     public static final FoodProperties FOOD_BRAMBLES_BERRY = new FoodProperties.Builder().nutrition(4).saturationModifier(0.1F).build();
@@ -65,16 +65,16 @@ public class TolkienFoods {
     // Drinks
     public static final FoodProperties MIRUVOR = new FoodProperties.Builder().nutrition(1).saturationModifier(1.0F).alwaysEdible().build();
     public static final Consumable MIRUVOR_CONSUMABLE = drink()
-            .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 3000, 3), 0.3F))
+            .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.SPEED, 3000, 3), 0.3F))
             .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.REGENERATION, 600, 3), 0.3F))
-            .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.CONFUSION, 40, 3), 0.3F))
+            .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.NAUSEA, 40, 3), 0.3F))
             .build();
 
     public static final FoodProperties GROG = new FoodProperties.Builder().nutrition(10).saturationModifier(8.0F).alwaysEdible().build();
     public static final Consumable GROG_CONSUMABLE = drink()
-            .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 1500, 1), 0.3F))
+            .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.SPEED, 1500, 1), 0.3F))
             .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.REGENERATION, 300, 3), 0.3F))
-            .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.CONFUSION, 100, 3), 0.3F))
+            .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.NAUSEA, 100, 3), 0.3F))
             .build();
 
     public static final FoodProperties DRINK_ENT_DRAUGHT = new FoodProperties.Builder().nutrition(1).saturationModifier(1.0F).alwaysEdible().build();
