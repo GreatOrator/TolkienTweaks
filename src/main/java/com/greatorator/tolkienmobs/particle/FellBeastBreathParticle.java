@@ -1,21 +1,25 @@
 package com.greatorator.tolkienmobs.particle;
 
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.*;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class FellBeastBreathParticle extends TextureSheetParticle {
+public class FellBeastBreathParticle extends SingleQuadParticle {
     private boolean hasHitGround;
     private final SpriteSet sprites;
 
     public FellBeastBreathParticle(
             ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, SpriteSet sprites
     ) {
-        super(level, x, y, z);
+        super(level, x, y, z, sprites.first());
         this.friction = 0.96F;
         this.xd = xSpeed;
         this.yd = ySpeed;
@@ -64,8 +68,8 @@ public class FellBeastBreathParticle extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
+    public SingleQuadParticle.Layer getLayer() {
+        return SingleQuadParticle.Layer.OPAQUE;
     }
 
     @Override
@@ -89,7 +93,8 @@ public class FellBeastBreathParticle extends TextureSheetParticle {
             double z,
             double xSpeed,
             double ySpeed,
-            double zSpeed
+            double zSpeed,
+            RandomSource random
         ) {
             return new FellBeastBreathParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, this.sprites);
         }

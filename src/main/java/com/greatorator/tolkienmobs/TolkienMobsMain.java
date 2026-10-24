@@ -56,6 +56,9 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -365,13 +368,20 @@ public class TolkienMobsMain {
             pEvent.registerSpriteSet(TolkienParticleTypes.FELLBEAST_BREATH.get(), FellBeastBreathParticle.Provider::new);
             pEvent.registerSpriteSet(TolkienParticleTypes.WIND_PARTICLE.get(), WindParticle.Provider::new);
             pEvent.registerSpriteSet(TolkienParticleTypes.WANDERING_LIGHTNINGBUG.get(), TolkienParticleProvider::new);
-            pEvent.registerSpriteSet(TolkienParticleTypes.MALLORN_LEAVES.get(), (p_277215_) -> (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_));
-            pEvent.registerSpriteSet(TolkienParticleTypes.MIRKWOOD_LEAVES.get(), (p_277215_) -> (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_));
-            pEvent.registerSpriteSet(TolkienParticleTypes.CULUMALDA_LEAVES.get(), (p_277215_) -> (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_));
-            pEvent.registerSpriteSet(TolkienParticleTypes.LEBETHRON_LEAVES.get(), (p_277215_) -> (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_));
-            pEvent.registerSpriteSet(TolkienParticleTypes.FANGORNOAK_LEAVES.get(), (p_277215_) -> (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_));
-            pEvent.registerSpriteSet(TolkienParticleTypes.DWARVEN_MAPLE_LEAVES.get(), (p_277215_) -> (p_277217_, p_277218_, p_277219_, p_277220_, p_277221_, p_277222_, p_277223_, p_277224_) -> new LeafParticle(p_277218_, p_277219_, p_277220_, p_277221_, p_277215_));
+            pEvent.registerSpriteSet(TolkienParticleTypes.MALLORN_LEAVES.get(), ClientModEvents::leafParticle);
+            pEvent.registerSpriteSet(TolkienParticleTypes.MIRKWOOD_LEAVES.get(), ClientModEvents::leafParticle);
+            pEvent.registerSpriteSet(TolkienParticleTypes.CULUMALDA_LEAVES.get(), ClientModEvents::leafParticle);
+            pEvent.registerSpriteSet(TolkienParticleTypes.LEBETHRON_LEAVES.get(), ClientModEvents::leafParticle);
+            pEvent.registerSpriteSet(TolkienParticleTypes.FANGORNOAK_LEAVES.get(), ClientModEvents::leafParticle);
+            pEvent.registerSpriteSet(TolkienParticleTypes.DWARVEN_MAPLE_LEAVES.get(), ClientModEvents::leafParticle);
             pEvent.registerSpriteSet(TolkienParticleTypes.TINTED_SMOKE.get(), TintedSmokeParticle.Provider::new);
+        }
+
+        /**
+         * A leaf takes its sprite at construction now, so the frame is picked here rather than by the particle.
+         */
+        private static ParticleProvider<SimpleParticleType> leafParticle(SpriteSet sprites) {
+            return (type, level, x, y, z, xSpeed, ySpeed, zSpeed, random) -> new LeafParticle(level, x, y, z, sprites.get(random));
         }
     }
 

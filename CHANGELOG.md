@@ -135,6 +135,12 @@ All notable changes to this project will be documented in this file.
   config, the server and client event sets, the balrog and player events and the rest - declare only
   their mod id and sides, and the loader decides the bus from each event the method listens to. No
   listener was dropped and none changed sides; the mod's hooks fire in the same places as before.
+- The mod's particles are on 26.1's particle classes: the seven wood flames, the lightning bugs, the
+  leaf falls, the fell beast's breath, the wind and the tinted smoke. Nothing they do changes - a
+  flame still steps through its frames as it ages, a leaf still tumbles, drifts and settles, the
+  breath still brightens once it lands, and the dyed smoke still takes the colour it was spawned
+  with. A leaf's frame is picked from the frames that exist now rather than by mapping twelve
+  invented indices onto them, so a leaf can show any of its sprites.
 - Every message the mod sends a player now uses 26.1's own call for it: the chat lines go through
   the system-message call, and the three that flash above the hotbar - the backpack's "no room",
   the occupied sleeping bag and a refused sleep - through the overlay one. Nothing the player reads

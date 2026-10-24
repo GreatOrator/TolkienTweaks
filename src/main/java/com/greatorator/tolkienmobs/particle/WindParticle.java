@@ -1,25 +1,29 @@
 package com.greatorator.tolkienmobs.particle;
 
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.*;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.RandomSource;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-public class WindParticle extends TextureSheetParticle {
+public class WindParticle extends SingleQuadParticle {
     protected WindParticle(ClientLevel level, double xCoord, double yCoord, double zCoord,
-                           SpriteSet spriteSet, double xd, double yd, double zd) {
-        super(level, xCoord, yCoord, zCoord, xd, yd, zd);
+                           double xd, double yd, double zd, TextureAtlasSprite sprite) {
+        super(level, xCoord, yCoord, zCoord, xd, yd, zd, sprite);
 
         this.quadSize *= 1.75F;
         this.lifetime = 15 + this.random.nextInt(15);
         this.hasPhysics = false;
-
-        this.pickSprite(spriteSet);
     }
 
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    @Override
+    public SingleQuadParticle.Layer getLayer() {
+        return SingleQuadParticle.Layer.TRANSLUCENT;
     }
 
     @Override
@@ -45,8 +49,8 @@ public class WindParticle extends TextureSheetParticle {
 
         public Particle createParticle(SimpleParticleType particleType, ClientLevel level,
                                        double x, double y, double z,
-                                       double dx, double dy, double dz) {
-            return new WindParticle(level, x, y, z, this.sprites, dx, dy, dz);
+                                       double dx, double dy, double dz, RandomSource random) {
+            return new WindParticle(level, x, y, z, dx, dy, dz, this.sprites.get(random));
         }
     }
 }

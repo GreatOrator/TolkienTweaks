@@ -1047,6 +1047,32 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   `value` still defaults to `{CLIENT, DEDICATED_SERVER}`, so the sides each class loads on are
   unchanged; only the bus choice moved from the annotation to the event type.
 
+### Particles - DONE
+
+- `TextureSheetParticle` is gone. `SingleQuadParticle` is the sprite-sheet base now, it takes a
+  `TextureAtlasSprite` in every constructor, and a subclass answers
+  `getLayer(): SingleQuadParticle.Layer` instead of `getRenderType()`. The layers are `OPAQUE` and
+  `TRANSLUCENT` on the particle atlas plus the terrain and item variants.
+- `ParticleRenderType` is a record with only `SINGLE_QUADS`, `ITEM_PICKUP`, `ELDER_GUARDIANS` and
+  `NO_RENDER`: the sheet types were folded into `Layer`, and the group comes from `getGroup()`, which
+  `SingleQuadParticle` answers with `SINGLE_QUADS` for every sprite particle.
+- Because the sprite is fixed at construction, `pickSprite` is gone and a particle no longer chooses
+  its frame in `tick()`. `setSpriteFromAge(SpriteSet)` survives on `SingleQuadParticle`, so the two
+  that step through frames as they age - the flames and the fell beast's breath - keep their
+  `SpriteSet` field and call it exactly as before.
+- `ParticleProvider#createParticle` takes a ninth `RandomSource` and may now return null, so all
+  three providers grew that argument. `SpriteSet` offers `get(index, max)`, `get(RandomSource)` and
+  `first()`, and the `RandomSource` the provider is handed is the one to pass to `get`.
+- The six leaf registrations were eight-argument lambdas in `TolkienMobsMain`; a leaf takes its
+  sprite now, so they share one `leafParticle(SpriteSet)` provider that passes
+  `sprites.get(random)`. That also changes which frame shows: the old code mapped twelve invented
+  indices onto the real frames, so sprites past the twelfth never appeared, while `get(random)`
+  picks uniformly from the set.
+- `net.minecraft.MethodsReturnNonnullByDefault` no longer exists - vanilla annotates with jspecify
+  now - so it is off `TolkienParticleProvider`; `@ParametersAreNonnullByDefault` is still there.
+  `DwarvenMinerEnchantmentEffect` carries the same annotation and still needs it removed, along with
+  its own `MobEffects` change.
+
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
   26.1.2 MDK's version; NeoForge requires 9.1.0 or newer), foojay resolver 0.8.0 → 1.0.0.
