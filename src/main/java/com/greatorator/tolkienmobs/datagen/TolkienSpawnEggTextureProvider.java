@@ -16,6 +16,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -31,11 +32,15 @@ import java.util.concurrent.CompletableFuture;
  * {@link TolkienEntities#SPAWN_EGG_COLORS} - adding an egg still means one line in
  * {@code TolkienEntities}, not a new asset.</p>
  *
- * <p>Each egg takes its silhouette from its family ({@link Silhouette}), so an orc, a spider and
- * an eagle do not all get the same oval, and the egg's second colour is spent on the pattern that
- * belongs to that family: a tunic, a saddle, a belt, wings, eyes. The shading is not drawn by
- * hand either - the rim is darkened from the silhouette's own edge and the body runs from a lit
- * top to a shaded bottom, which is what stops a flat two-colour sprite from looking like a bug.</p>
+ * <p>Every egg keeps the shape a spawn egg is known for. What tells them apart is the face, the way
+ * vanilla's differ: an orc's jaw and tusks, a goblin's grin, a spider's four eyes, a beast's muzzle,
+ * a bird's beak, a wraith's glow under its hood, a troll's brow and teeth, a tiny creature's snout,
+ * a balrog's flame. The two colours stay the ones the egg registered with, so the eggs still fall
+ * into the groups the old tinted eggs did: the horde, the rings, the beasts, the little things,
+ * the free peoples and the bosses each share a base tone and vary in their spots.</p>
+ *
+ * <p>Shading is worked out rather than drawn: the rim of the egg is darkened from its own edge, the
+ * crown is lit and the base sinks, and a face's eyes and gaps are painted near-black.</p>
  */
 public class TolkienSpawnEggTextureProvider implements DataProvider {
     private static final int SIZE = 16;
@@ -43,7 +48,32 @@ public class TolkienSpawnEggTextureProvider implements DataProvider {
     private static final String NAME_SUFFIX = "_spawn_egg";
 
     private static final char EMPTY = '.';
+    private static final char BODY = 'X';
     private static final char ACCENT = 'O';
+    private static final char DARK = 'D';
+
+    /** The egg itself: one shape, the one every spawn egg has. The dark rim is added when painting. */
+    private static final String[] EGG = {
+            "................",
+            "......XXXX......",
+            "....XXXXXXXX....",
+            "...XXXXXXXXXX...",
+            "...XXXXXXXXXX...",
+            "..XXXXXXXXXXXX..",
+            "..XXXXXXXXXXXX..",
+            "..XXXXXXXXXXXX..",
+            ".XXXXXXXXXXXXXX.",
+            ".XXXXXXXXXXXXXX.",
+            ".XXXXXXXXXXXXXX.",
+            "..XXXXXXXXXXXX..",
+            "..XXXXXXXXXXXX..",
+            "...XXXXXXXXXX...",
+            "....XXXXXXXX....",
+            "................"};
+
+    /** The first and last row the egg is drawn on, which its shading runs between. */
+    private static final int TOP = firstRow();
+    private static final int BOTTOM = lastRow();
 
     private final PackOutput.PathProvider pathProvider;
 
@@ -51,39 +81,47 @@ public class TolkienSpawnEggTextureProvider implements DataProvider {
         this.pathProvider = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "textures/item");
     }
 
-    /** The shapes an egg can take. A family that looks like nothing else gets its own. */
-    enum Silhouette {
-        /** A plain standing egg, with a tunic across it: orcs, men, elves, dwarves. */
-        BIPED,
-        /** Broad-shouldered and flat-topped, belted: trolls, ent, golems, the goblin king. */
-        HULK,
-        /** A hood tapering to a point, hem torn away, and two eyes under it: the dead. */
+    /** What a mob's face is drawn as. */
+    enum Face {
+        /** Angry eyes over a wide jaw: the orcs, the uruks, the men who march with them. */
+        ORC,
+        /** Two calm eyes and a nose: elves, dwarves, hobbits, men. */
+        MAN,
+        /** Squinting eyes over a row of teeth: goblins and Gollum. */
+        GOBLIN,
+        /** Two points of glow under a hood: the wraiths and the dead. */
         WRAITH,
-        /** Round body on legs, marked on the abdomen: spiders. */
+        /** Four eyes above a pair of fangs: spiders. */
         SPIDER,
-        /** Ears, four feet and a saddle across the back: wargs, goats, the great beasts. */
+        /** A broad muzzle with two nostrils: wargs, goats, horses, the great beasts. */
         BEAST,
-        /** Wings held out from the body: eagles, crebain, the fell beast. */
-        WINGED,
-        /** A small egg sitting low: rats, squirrels, frogs, the swarm. */
-        SMALL
+        /** A beak under one eye: eagles, crebain, the fell beast. */
+        BIRD,
+        /** A heavy brow over a row of teeth: trolls, ent, golems, the goblin king. */
+        TROLL,
+        /** A hooked nose and a heavy eye: the swamp hag. */
+        HAG,
+        /** A crown of flame: the balrog. */
+        FLAME,
+        /** Two small eyes and a snout: rats, squirrels, frogs, the swarm. */
+        CRITTER
     }
 
-    /** The silhouettes, one row per line of the sprite. */
-    private static final Map<Silhouette, String[]> MASKS = masks();
+    /** Which face each egg's mob takes; anything not named gets a man's. */
+    private static final Map<String, Face> MOBS = mobs();
 
-    /** Which silhouette each egg's family takes; anything not named here gets a plain egg. */
-    private static final Map<String, Silhouette> FAMILIES = families();
+    /** The faces, laid over the egg; a '.' leaves the egg's own colour showing. */
+    private static final Map<Face, String[]> FACES = faces();
 
     @Override
     public CompletableFuture<?> run(CachedOutput cache) {
         try {
             for (Map.Entry<DeferredItem<Item>, TolkienEntities.SpawnEggColors> entry : TolkienEntities.SPAWN_EGG_COLORS.entrySet()) {
                 Identifier item = BuiltInRegistries.ITEM.getKey(entry.getKey().get());
-                Silhouette silhouette = FAMILIES.getOrDefault(familyOf(item.getPath()), Silhouette.BIPED);
+                Face face = MOBS.getOrDefault(mobOf(item.getPath()), Face.MAN);
 
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                ImageIO.write(paint(silhouette, entry.getValue()), "png", bytes);
+                ImageIO.write(paint(face, entry.getValue()), "png", bytes);
                 byte[] data = bytes.toByteArray();
 
                 Identifier sprite = TolkienMobsMain.resLoc(item.getPath());
@@ -95,66 +133,65 @@ public class TolkienSpawnEggTextureProvider implements DataProvider {
         }
     }
 
-    /** Strips {@code entityttm} and {@code _spawn_egg}, leaving the name a shape is chosen by. */
-    private static String familyOf(String itemPath) {
+    /** Strips {@code entityttm} and {@code _spawn_egg}, leaving the mob's name. */
+    private static String mobOf(String itemPath) {
         String name = itemPath.startsWith(NAME_PREFIX) ? itemPath.substring(NAME_PREFIX.length()) : itemPath;
         return name.endsWith(NAME_SUFFIX) ? name.substring(0, name.length() - NAME_SUFFIX.length()) : name;
     }
 
     /**
-     * Draws the silhouette in the egg's two colours: the body takes the base colour and the
-     * pattern the highlight, which is the pairing the old two-layer egg used.
+     * Draws the egg in the colours it registered, then the face over it: the body takes the base
+     * colour, the face's pattern the highlight, and its eyes the dark that makes a face read.
      */
-    private static BufferedImage paint(Silhouette silhouette, TolkienEntities.SpawnEggColors colors) {
-        String[] mask = MASKS.get(silhouette);
-        int top = top(mask);
-        int bottom = bottom(mask);
+    private static BufferedImage paint(Face face, TolkienEntities.SpawnEggColors colors) {
+        String[] features = FACES.get(face);
         BufferedImage image = new BufferedImage(SIZE, SIZE, BufferedImage.TYPE_INT_ARGB);
 
         for (int y = 0; y < SIZE; y++) {
             for (int x = 0; x < SIZE; x++) {
-                char cell = mask[y].charAt(x);
-                if (cell == EMPTY) {
+                if (EGG[y].charAt(x) != BODY) {
                     continue;
                 }
-                int rgb = cell == ACCENT ? colors.highlight() : colors.background();
-                image.setRGB(x, y, 0xFF000000 | shade(rgb, lighting(mask, x, y, top, bottom)));
+                char cell = features[y].charAt(x) == EMPTY ? BODY : features[y].charAt(x);
+                int rgb = switch (cell) {
+                    case ACCENT -> colors.highlight();
+                    case DARK -> shade(colors.background(), 0.22F);
+                    default -> colors.background();
+                };
+                float light = cell == DARK ? 1.0F : lighting(x, y);
+                image.setRGB(x, y, 0xFF000000 | shade(rgb, light));
             }
         }
         return image;
     }
 
     /**
-     * How much light a cell gets. The rim of the silhouette is darkened into an outline, and the
-     * body runs from a lit crown to a shaded base, a little brighter towards the top left, so the
-     * egg reads as round however simple its two colours are.
+     * How much light a cell gets: the rim of the egg is darkened into an outline, and the body runs
+     * from a lit crown to a shaded base, a little brighter towards the top left, so the egg reads
+     * as round from two colours.
      */
-    private static float lighting(String[] mask, int x, int y, int top, int bottom) {
-        float lit = 1.10F - 0.28F * ((y - top) / (float) Math.max(1, bottom - top));
+    private static float lighting(int x, int y) {
+        float lit = 1.10F - 0.28F * ((y - TOP) / (float) Math.max(1, BOTTOM - TOP));
         lit += 0.05F * (1.0F - (x + y) / 30.0F);
-
-        boolean rim = !isSolid(mask, x - 1, y) || !isSolid(mask, x + 1, y)
-                || !isSolid(mask, x, y - 1) || !isSolid(mask, x, y + 1);
-        return rim ? lit * 0.68F : lit;
+        return isSolid(x - 1, y) && isSolid(x + 1, y) && isSolid(x, y - 1) && isSolid(x, y + 1) ? lit : lit * 0.68F;
     }
 
-    private static boolean isSolid(String[] mask, int x, int y) {
-        return x >= 0 && x < SIZE && y >= 0 && y < SIZE && mask[y].charAt(x) != EMPTY;
+    private static boolean isSolid(int x, int y) {
+        return x >= 0 && x < SIZE && y >= 0 && y < SIZE && EGG[y].charAt(x) == BODY;
     }
 
-    /** The first and last row of the sprite that are drawn, which the shading runs between. */
-    private static int top(String[] mask) {
+    private static int firstRow() {
         for (int y = 0; y < SIZE; y++) {
-            if (!mask[y].equals("................")) {
+            if (EGG[y].indexOf(BODY) >= 0) {
                 return y;
             }
         }
         return 0;
     }
 
-    private static int bottom(String[] mask) {
+    private static int lastRow() {
         for (int y = SIZE - 1; y >= 0; y--) {
-            if (!mask[y].equals("................")) {
+            if (EGG[y].indexOf(BODY) >= 0) {
                 return y;
             }
         }
@@ -173,136 +210,75 @@ public class TolkienSpawnEggTextureProvider implements DataProvider {
         return Math.max(0, Math.min(255, channel));
     }
 
-    private static Map<Silhouette, String[]> masks() {
-        Map<Silhouette, String[]> masks = new LinkedHashMap<>();
+    private static Map<Face, String[]> faces() {
+        Map<Face, String[]> faces = new LinkedHashMap<>();
 
-        masks.put(Silhouette.BIPED, new String[]{
-                "................",
-                "......XXXX......",
-                ".....XXXXXX.....",
-                ".....XXXXXX.....",
-                "....XXXXXXXX....",
-                "....XXXXXXXX....",
-                "...XXOOXXXXXX...",   // markings
-                "...XXOOXXXXXX...",
-                "..XXXXXXXXXXXX..",
-                "..XXXXXXXXXXXX..",
-                "..XXXXXXXXOOXX..",
-                "..XXXXXXXXOOXX..",
-                "..XXXXXXXXXXXX..",
-                "...XXXXXXXXXX...",
-                "....XXXXXXXX....",
-                "................"});
+        faces.put(Face.ORC, new FaceBuilder()
+                .row(6, ".....DD..DD.....")    // narrow eyes
+                .row(8, "......O..O......")    // tusks, rising past the jaw
+                .row(9, "......ODDO......")    // mouth between them
+                .rows());
 
-        masks.put(Silhouette.HULK, new String[]{
-                "................",
-                "....XXXXXXXX....",
-                "...XXXXXXXXXX...",
-                "..XXXXXXXXXXXX..",
-                ".XXXXXXXXXXXXXX.",
-                ".OOXXXXXXXXXXOO.",   // pauldrons
-                ".OOXXXXXXXXXXOO.",
-                ".OOXXXXXXXXXXOO.",
-                ".XXXXXXXXXXXXXX.",
-                ".XXXXXXXXXXXXXX.",
-                "..XXXXXXXXXXXX..",
-                "..XXXXXXXXXXXX..",
-                "...XXXXXXXXXX...",
-                "...XXX....XXX...",
-                "...XXX....XXX...",
-                "................"});
+        faces.put(Face.MAN, new FaceBuilder()
+                .row(6, ".....D....D.....")    // eyes
+                .row(8, ".......OO.......")    // nose
+                .rows());
 
-        masks.put(Silhouette.WRAITH, new String[]{
-                "................",
-                ".......XX.......",
-                "......XXXX......",
-                "......XXXX......",
-                ".....XXXXXX.....",
-                ".....OXXXXO.....",   // eyes under the hood
-                "....XXXXXXXX....",
-                "...XXXXXXXXXX...",
-                "...XXXXXXXXXX...",
-                "..XXXXXXXXXXXX..",
-                "..XXXXXXXXXXXX..",
-                "..XXXXXXXXXXXX..",
-                "..XXXXXXXXXXXX..",
-                ".XXXXXXXXXXXXXX.",
-                ".XXX..XXXX..XXX.",   // torn hem
-                "................"});
+        faces.put(Face.GOBLIN, new FaceBuilder()
+                .row(6, ".....DD..DD.....")    // eyes
+                .row(9, ".....DDDDDD.....")    // wide grin
+                .row(10, "......O..O......")    // two teeth hanging from it
+                .rows());
 
-        masks.put(Silhouette.SPIDER, new String[]{
-                "................",
-                "................",
-                "................",
-                ".....XXXXXX.....",
-                "...XXXXXXXXXX...",
-                "..XXXXXXXXXXXX..",
-                "XX.XXXXXXXXXX.XX",
-                "X.XXXXXXXXXXXX.X",
-                "..XXXXXXXXXXXX..",
-                "X.XXXXXOOXXXXX.X",   // abdomen marking
-                "X.XXXXOOOOXXXX.X",
-                "XX.XXXXOOXXXX.XX",
-                "..XXXXXXXXXXXX..",
-                "...XXXXXXXXXX...",
-                "....XXXXXXXX....",
-                "................"});
+        faces.put(Face.WRAITH, new FaceBuilder()
+                .row(5, ".....DDDDDD.....")    // the shadow of a hood
+                .row(7, "......O..O......")    // two points of glow beneath it
+                .rows());
 
-        masks.put(Silhouette.BEAST, new String[]{
-                "................",
-                "...XX......XX...",
-                "...XXXX..XXXX...",
-                "....XXXXXXXX....",
-                "....XXXXXXXX....",
-                "...XXXXXXXXXX...",
-                "..XXXXXXXXXXXX..",
-                "..XXOOXXXXOOXX..",   // saddle
-                "..XXOOXXXXOOXX..",
-                "..XXXXXXXXXXXX..",
-                "..XXXXXXXXXXXX..",
-                "..XXXXXXXXXXXX..",
-                "...XXXXXXXXXX...",
-                "...XXXXXXXXXX...",
-                "...XX......XX...",
-                "................"});
+        faces.put(Face.SPIDER, new FaceBuilder()
+                .row(6, ".....DD..DD.....")    // the big pair of eyes
+                .row(7, "......D..D......")    // and the small pair beneath
+                .row(9, ".......DD.......")    // fangs
+                .rows());
 
-        masks.put(Silhouette.WINGED, new String[]{
-                "................",
-                "......XXXX......",
-                ".....XXXXXX.....",
-                "....XXXXXXXX....",
-                "...XXXXXXXXXX...",
-                "XX..XXXXXXXX..XX",
-                "OOO.XXXXXXXX.OOO",   // wing tips
-                "OOO.XXXXXXXX.OOO",
-                "OOOXXXXXXXXXXOOO",
-                "..XXXXXXXXXXXX..",
-                "..XXXXXXXXXXXX..",
-                "...XXXXXXXXXX...",
-                "...XXXXXXXXXX...",
-                "....XXXXXXXX....",
-                "................",
-                "................"});
+        faces.put(Face.BEAST, new FaceBuilder()
+                .row(6, ".....D....D.....")    // eyes
+                .row(8, ".......OO.......")    // muzzle
+                .row(9, ".......DD.......")    // mouth under it
+                .rows());
 
-        masks.put(Silhouette.SMALL, new String[]{
-                "................",
-                "................",
-                "................",
-                "................",
-                "................",
-                "......XXXX......",
-                ".....XXXXXX.....",
-                "....XXXXXXXX....",
-                "....XXOOOOXX....",   // spot
-                "...XXXOOOOXXX...",
-                "...XXXOOOOXXX...",
-                "...XXXXXXXXXX...",
-                "....XXXXXXXX....",
-                ".....XXXXXX.....",
-                "................",
-                "................"});
+        faces.put(Face.BIRD, new FaceBuilder()
+                .row(6, ".....D..........")    // eye
+                .row(7, "......OOOO......")    // beak
+                .row(8, ".......OO.......")
+                .rows());
 
-        for (Map.Entry<Silhouette, String[]> entry : masks.entrySet()) {
+        faces.put(Face.TROLL, new FaceBuilder()
+                .row(5, "....DDDDDDDD....")    // one heavy brow
+                .row(7, ".....D....D.....")    // eyes under it
+                .row(9, ".......DD.......")    // mouth
+                .row(10, "......OOOO......")    // and an underbite of teeth
+                .rows());
+
+        faces.put(Face.HAG, new FaceBuilder()
+                .row(6, ".....D..........")    // one eye; the other sits in shadow
+                .row(7, ".......O........")    // hooked nose
+                .row(8, "......O.........")
+                .rows());
+
+        faces.put(Face.FLAME, new FaceBuilder()
+                .row(2, "......O.O.......")    // a crown of fire
+                .row(3, ".....OOOOOO.....")
+                .row(4, "....OOOOOOOO....")
+                .row(6, ".....D....D.....")    // eyes below it
+                .rows());
+
+        faces.put(Face.CRITTER, new FaceBuilder()
+                .row(7, ".....D....D.....")    // eyes
+                .row(8, "......DD........")    // snout
+                .rows());
+
+        for (Map.Entry<Face, String[]> entry : faces.entrySet()) {
             String[] rows = entry.getValue();
             if (rows.length != SIZE) {
                 throw new IllegalStateException(entry.getKey() + " has " + rows.length + " rows; an egg is " + SIZE);
@@ -314,34 +290,49 @@ public class TolkienSpawnEggTextureProvider implements DataProvider {
                 }
             }
         }
-        return masks;
+        return faces;
     }
 
-    private static Map<String, Silhouette> families() {
-        Map<String, Silhouette> families = new LinkedHashMap<>();
+    /** Collects the rows of one face; every row it is not given stays transparent. */
+    private static final class FaceBuilder {
+        private final String[] rows = new String[SIZE];
 
-        for (String name : "rat squirrel gecko frog swarm hobbit".split(" ")) {
-            families.put(name, Silhouette.SMALL);
+        FaceBuilder() {
+            Arrays.fill(this.rows, "................");
         }
-        for (String name : "auroch goat warg mumakil shadowfax nazgulsteed".split(" ")) {
-            families.put(name, Silhouette.BEAST);
+
+        FaceBuilder row(int y, String row) {
+            this.rows[y] = row;
+            return this;
         }
-        for (String name : "mirkwoodspider shelob watcher deepclaw".split(" ")) {
-            families.put(name, Silhouette.SPIDER);
+
+        String[] rows() {
+            return this.rows;
         }
-        for (String name : "nazgul barrow fellspirit enragedfellspirit oathbreaker witchking".split(" ")) {
-            families.put(name, Silhouette.WRAITH);
+    }
+
+    private static Map<String, Face> mobs() {
+        Map<String, Face> mobs = new LinkedHashMap<>();
+
+        add(mobs, Face.ORC, "orc mordororc orc_trader urukhai brigand haradrim");
+        add(mobs, Face.MAN, "human elves dwarf duergar hobbit southron southron_npc istari romiewalker huron");
+        add(mobs, Face.GOBLIN, "goblin goblinking gollum");
+        add(mobs, Face.WRAITH, "nazgul barrow fellspirit enragedfellspirit oathbreaker witchking");
+        add(mobs, Face.SPIDER, "mirkwoodspider shelob watcher deepclaw");
+        add(mobs, Face.BEAST, "warg auroch goat mumakil shadowfax nazgulsteed");
+        add(mobs, Face.BIRD, "greateagle gwahir crebain thrush fellbeast");
+        add(mobs, Face.TROLL, "troll treeent rockgolem mithrilgolem morgulirongolem elementalgolem mimicchest minotaur");
+        add(mobs, Face.HAG, "swamphag");
+        add(mobs, Face.FLAME, "balrog");
+        add(mobs, Face.CRITTER, "rat squirrel gecko frog swarm");
+
+        return mobs;
+    }
+
+    private static void add(Map<String, Face> mobs, Face face, String names) {
+        for (String name : names.split(" ")) {
+            mobs.put(name, face);
         }
-        for (String name : "crebain greateagle gwahir thrush fellbeast balrog".split(" ")) {
-            families.put(name, Silhouette.WINGED);
-        }
-        for (String name : "troll treeent elementalgolem mithrilgolem morgulirongolem rockgolem minotaur goblinking mimicchest".split(" ")) {
-            families.put(name, Silhouette.HULK);
-        }
-        for (String name : "brigand duergar dwarf elves goblin gollum haradrim human huron istari mordororc orc orc_trader romiewalker southron southron_npc swamphag urukhai".split(" ")) {
-            families.put(name, Silhouette.BIPED);
-        }
-        return families;
     }
 
     @Override
