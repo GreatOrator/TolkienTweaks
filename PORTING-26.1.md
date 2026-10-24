@@ -2070,6 +2070,19 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   wither skeleton and an ordinary mob under the burning effect, a trident-thunder strike from the
   lightning effect, the dwarven miner's 3×3 through 9×9 dig, and the elven fleetfoot's speed buff.
 
+### The config — nothing to port
+
+`TolkienMobsConfig` already compiles: the rename pass gave it `Identifier` and `Identifier#parse`, and
+26.1's `@EventBusSubscriber` carries only `modid()` and its `Dist[]`, with one bus behind it, so the
+`ModConfigEvent` subscriber still fires without a `bus` argument. Its `SPEC` is registered
+`ModConfig.Type.COMMON` in `TolkienMobsMain`. Every option, default, range and comment is unchanged.
+
+- **Beware the earlier "27 errors in the config" reading.** That came from a javac run with two
+  mistakes in it - JDK 21 against 26.1's class version 69 (`bad class file: ... wrong version 69.0,
+  should be 65.0`), which makes every import in a file fail, and a `srcs.txt` listing a file that has
+  since been merged away - not from the source. Use the JDK 25 under `~/.gradle/jdks` and regenerate
+  the source list; the same run also misreported 52 errors in `TolkienMobsMain`, which compiles.
+
 ## Ordered work list
 
 1. **Build stack — DONE.** MDG 2, JDK 25, NeoForge 26.1.2, the four dependency bumps. The
