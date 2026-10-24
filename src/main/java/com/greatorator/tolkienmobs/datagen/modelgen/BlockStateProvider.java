@@ -583,10 +583,10 @@ public abstract class BlockStateProvider implements DataProvider {
     }
 
     private static final List<Map.Entry<Direction, net.minecraft.world.level.block.state.properties.EnumProperty<WallSide>>> WALL_SIDES = List.of(
-            Map.entry(Direction.NORTH, WallBlock.NORTH_WALL),
-            Map.entry(Direction.EAST, WallBlock.EAST_WALL),
-            Map.entry(Direction.SOUTH, WallBlock.SOUTH_WALL),
-            Map.entry(Direction.WEST, WallBlock.WEST_WALL));
+            Map.entry(Direction.NORTH, WallBlock.NORTH),
+            Map.entry(Direction.EAST, WallBlock.EAST),
+            Map.entry(Direction.SOUTH, WallBlock.SOUTH),
+            Map.entry(Direction.WEST, WallBlock.WEST));
 
     private void wallSidePart(MultiPartBlockStateBuilder builder, ModelFile model, WallSide height) {
         for (Map.Entry<Direction, net.minecraft.world.level.block.state.properties.EnumProperty<WallSide>> wallSide : WALL_SIDES) {

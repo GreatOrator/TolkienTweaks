@@ -120,7 +120,8 @@ public final class TolkienVillageProvider {
                         MAX_DISTANCE, aliases, JigsawStructure.DEFAULT_DIMENSION_PADDING, JigsawStructure.DEFAULT_LIQUID_SETTINGS)
                 : new JigsawStructure(settings, startPool, Optional.empty(), SIZE,
                         ConstantHeight.of(VerticalAnchor.absolute(0)), true, Optional.of(Heightmap.Types.WORLD_SURFACE_WG),
-                        MAX_DISTANCE, aliases, JigsawStructure.DEFAULT_DIMENSION_PADDING, JigsawStructure.DEFAULT_LIQUID_SETTINGS);
+                        new JigsawStructure.MaxDistance(MAX_DISTANCE), aliases,
+                        JigsawStructure.DEFAULT_DIMENSION_PADDING, JigsawStructure.DEFAULT_LIQUID_SETTINGS);
     }
 
     public static void bootstrapPools(BootstrapContext<StructureTemplatePool> context, Village village) {

@@ -5,7 +5,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -42,8 +41,9 @@ public class SlotArmor extends Slot {
 
     @Override
     public boolean mayPlace(ItemStack itemStack) {
-        return itemStack.getEquipmentSlot() == armorType
-                || (itemStack.getItem() instanceof ArmorItem armor && armor.getEquipmentSlot(itemStack) == armorType);
+        // There is no ArmorItem to test for any more: 26.1 marks a piece with the equippable
+        // component, and the stack already reports the slot that component names.
+        return itemStack.getEquipmentSlot() == armorType;
     }
 
 }

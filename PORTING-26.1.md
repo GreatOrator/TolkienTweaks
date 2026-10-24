@@ -16,7 +16,7 @@ measurement's other half.
 | Source | Minecraft **1.21.4**, NeoForge **21.4.161**, mod **4.4.83-Final** |
 | Target | Minecraft **26.1.2**, NeoForge **26.1.2.116**, mod **5.0.0** |
 | Java | 21 → **25** |
-| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API, the fluid/leaf/proxy batch, the food table, the forest fog, the whole `util` package, the three biggest block classes and the `BushBlock` plants, the barrels, the effect/enchantment families, the network packages, the lockable chest blocks, the last three loose blocks, the three init classes and the data helpers are done; **10** errors left |
+| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system, the particle data provider, the item family, the worldgen registration layer, the capability API, the fluid/leaf/proxy batch, the food table, the forest fog, the whole `util` package, the three biggest block classes and the `BushBlock` plants, the barrels, the effect/enchantment families, the network packages, the lockable chest blocks, the last three loose blocks, the three init classes and the data helpers are done; **the source compiles**, `./gradlew compileJava` exits 0 |
 
 What the source tree contains, counted:
 
@@ -2001,6 +2001,35 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   `block/custom/Lockable*` named. Nothing was run in game: the check is a creative player sneaking
   and using each of the four chests - single and double, treasure and plain - to see the lock
   settings open, and using them without sneaking to see the ordinary lock and key flow.
+
+### The last ten — DONE, the tree compiles
+
+- **`SlotArmor` has no `ArmorItem` to test for.** 26.1 marks an armour piece with the equippable
+  component, and `ItemStack#getEquipmentSlot()` - NeoForge's default on the stack - already reads
+  it, so the second half of the check was the same answer twice. A slot still only takes a piece
+  for its own equipment slot.
+- **`WallBlock`'s four side properties lost the `_WALL` suffix.** They are `NORTH`, `EAST`, `SOUTH`
+  and `WEST` now, still `EnumProperty<WallSide>`, so the multipart generator's `LOW`/`TALL`
+  conditions are untouched.
+- **`Holder#key()` is `unwrapKey()`.** The music disc lang helper builds its key from
+  `song().unwrapKey().orElseThrow().identifier()`; these holders always come from the registry, so
+  the id is the same one the old call returned.
+- **`JigsawStructure`'s centre distance is a `MaxDistance` record.** The plain jigsaw village passes
+  `new JigsawStructure.MaxDistance(MAX_DISTANCE)`, whose one-int form sets horizontal and vertical
+  to the same number - exactly what the int meant before. `VillageStructure` keeps its own int field
+  and codec, and its constructor is unchanged.
+- **`entityInside` gained its two arguments in `TolkienBugBlock` too.** The block has no effects of
+  its own and never called `super`, so the `InsideBlockEffectApplier` and the `isPrecise` flag are
+  ignored; the projectile break, the sound, the squish loot and the fifty particles are as they were.
+- **Verified:** whole-tree `javac` at **0 errors**, down from 10, and `./gradlew compileJava` exits
+  **0** - 100 warnings, all deprecation notices of NeoForge's removed item-handler API. Nothing was
+  run in game; the checks for this batch are hovering a piece of armour over an armour slot in the
+  backpack, generating a wall's blockstates, reading a music disc's tooltip in both languages,
+  walking into a village that must stand on dry ground, and throwing a snowball at a bug block.
+- **Next is `runData`.** The generated data still belongs to the previous format - the trim materials
+  above are the known case - and the worldgen JSON, loot, tags, models and lang all need a run now
+  that the tree builds. It has not been run here because it rewrites a large part of
+  `src/generated/resources` in one go.
 
 ### The data helpers and the server events — DONE
 
