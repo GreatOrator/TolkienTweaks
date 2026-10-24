@@ -16,7 +16,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -107,7 +106,7 @@ public class CamoSpawnerBlockEntity extends TolkienBlockEntity implements MenuPr
                 stack.shrink(1);
                 this.markDirtyClient();
                 this.setChanged();
-                player.displayClientMessage(Component.translatable("tolkienmobs.msg.selected.mob").append(" " + optional.get().getDescription().getString()).withStyle(ChatFormatting.DARK_GREEN), false);
+                player.sendSystemMessage(Component.translatable("tolkienmobs.msg.selected.mob").append(" " + optional.get().getDescription().getString()).withStyle(ChatFormatting.DARK_GREEN));
             } else if (this.mobSpawnDataList.size() < MAX_MOBS) {
                 // Add new mob with count 1
                 this.mobSpawnDataList.add(new MobSpawnData(entityId, 1));
@@ -117,7 +116,7 @@ public class CamoSpawnerBlockEntity extends TolkienBlockEntity implements MenuPr
                 stack.shrink(1);
                 this.markDirtyClient();
                 this.setChanged();
-                player.displayClientMessage(Component.translatable("tolkienmobs.msg.added.entities").append(" " + optional.get().getDescription().getString()).withStyle(ChatFormatting.DARK_GREEN), false);
+                player.sendSystemMessage(Component.translatable("tolkienmobs.msg.added.entities").append(" " + optional.get().getDescription().getString()).withStyle(ChatFormatting.DARK_GREEN));
             } else {
                 // Replace first mob if list is full
                 this.mobSpawnDataList.set(0, new MobSpawnData(entityId, 1));
@@ -127,7 +126,7 @@ public class CamoSpawnerBlockEntity extends TolkienBlockEntity implements MenuPr
                 stack.shrink(1);
                 this.markDirtyClient();
                 this.setChanged();
-                player.displayClientMessage(Component.translatable("tolkienmobs.msg.replaced.mob").append(" " + optional.get().getDescription().getString()).withStyle(ChatFormatting.DARK_RED), false);
+                player.sendSystemMessage(Component.translatable("tolkienmobs.msg.replaced.mob").append(" " + optional.get().getDescription().getString()).withStyle(ChatFormatting.DARK_RED));
             }
         }
     }
@@ -189,11 +188,6 @@ public class CamoSpawnerBlockEntity extends TolkienBlockEntity implements MenuPr
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider pRegistries) {
-        super.onDataPacket(net, pkt, pRegistries);
     }
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, CamoSpawnerBlockEntity blockEntity) {
