@@ -16,7 +16,7 @@ measurement's other half.
 | Source | Minecraft **1.21.4**, NeoForge **21.4.161**, mod **4.4.83-Final** |
 | Target | Minecraft **26.1.2**, NeoForge **26.1.2.116**, mod **5.0.0** |
 | Java | 21 → **25** |
-| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`) and the equine family are done; 2,307 errors left |
+| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family and the camo spawner are done; 2,275 errors left |
 
 What the source tree contains, counted:
 
@@ -560,10 +560,9 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   reads a spawned entity out of a `ValueInput` in 26.1.
 - **The four `handleUpdateTag` overrides are deleted.** 26.1 removed the hook from `BlockEntity`;
   the client gets its copy through the value pipeline now, so nothing had to replace them.
-- **What is left in these files is not save data:** the spawner's spawn loop still calls
-  `CompoundTag.getList("Pos", 6)` and `contains("id", 8)` (a one-argument API now), the block
-  entities still override `IBlockEntityExtension.onDataPacket`, and `MilestoneHandler` still builds
-  a `SavedData.Factory` the old way. 2,307 errors remain tree-wide, down from 2,801.
+- **What is left in these files is not save data:** the block entities still override
+  `IBlockEntityExtension.onDataPacket`, and `MilestoneHandler` still builds a `SavedData.Factory`
+  the old way. 2,275 errors remain tree-wide, down from 2,801.
 
 ### Equine family — DONE
 
@@ -585,7 +584,26 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   once. Nothing else about the three mobs changed - their saddling, chests, sounds, variants and
   controllers read as before.
 
-### Build stack — DONE
+### Camo spawner — DONE
+
+- [TolkienBaseSpawner](src/main/java/com/greatorator/tolkienmobs/block/TolkienBaseSpawner.java)
+  compiles. Its spawn loop read the candidate position out of the spawn tag with
+  `CompoundTag.getList("Pos", 6)` and picked the entity id out with `contains("id", 8)`; both lost
+  their type argument in 26.1, so they are `getListOrEmpty("Pos")` and `contains("id")`, and the
+  three element reads are the `getDoubleOr(index, 0.0)` calls beside them (the loop already
+  guarded on the list's size, so the default is never the value used).
+- The two places a spawned entity was placed with `Entity#moveTo(x, y, z, yRot, xRot)` - once
+  inside the load processor, once after the cluster and collision checks - use `snapTo`, the 26.1
+  name for the same call.
+- `EntityType.loadEntityRecursive(tag, level, reason, Function.identity())` takes an
+  `EntityProcessor` instead of a `Function`, and `EntityProcessor.NOP` is the same identity
+  transform. `clearSpawnData()` builds `WeightedList.of()` rather than
+  `SimpleWeightedRandomList.empty()`.
+- The block entity's spawn-egg read is a spawn-data call too:
+  `SpawnEggItem#getType(ItemStack)` is static now and takes no registry access, so adding an egg to
+  the camo spawner reads the entity type the same way it did. `CamoSpawnerBlockEntity` still has
+  two unrelated errors - the four `Player#displayClientMessage` calls and the
+  `onDataPacket` override - so it does not compile yet.
 
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
@@ -644,9 +662,9 @@ from **3,470 errors in 337 files to 2,801 in 320**.
    signatures, and `TolkienArmorItem`'s armour lookups.
 5. **Block entities.** `preRemoveSideEffects` / `affectNeighborsAfterRemoval`, and
    `dropContentsOnDestroy` in `CamoChestBlock`.
-6. **Worldgen.** Weighted lists in `TolkienBaseSpawner`, `TolkienCaveCarvers`,
-   `TolkienDecorators`; then TerraBlender (`TolkienMobsMain` lines 181–182) and the surface
-   rules.
+6. **Worldgen.** Weighted lists in `TolkienCaveCarvers` and `TolkienDecorators` (the spawner's is
+   done, see *Camo spawner — DONE* below); then TerraBlender (`TolkienMobsMain` lines 181–182)
+   and the surface rules.
 7. **Renderers.** `handler/render/` and the non-GeckoLib renderers, against the submission API.
 8. **Screens.** 18 screens and the widget set against the prepare/render split.
 9. **Datagen.** `TolkienDataGenerator`, the vendored `datagen/modelgen` package (NeoForge

@@ -85,8 +85,8 @@ public class CamoSpawnerBlockEntity extends TolkienBlockEntity implements MenuPr
         TolkienSpawner spawner = (TolkienSpawner) blockEntity;
         assert spawner != null;
 
-        if (stack.getItem() instanceof SpawnEggItem spawnEgg) {
-            EntityType<?> entityType = spawnEgg.getType(level.registryAccess(), stack);
+        if (stack.getItem() instanceof SpawnEggItem) {
+            EntityType<?> entityType = SpawnEggItem.getType(stack);
             String entityId = BuiltInRegistries.ENTITY_TYPE.getKey(entityType).toString();
             Optional<EntityType<?>> optional = EntityType.byString(entityId);
 
