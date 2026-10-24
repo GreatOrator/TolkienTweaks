@@ -55,6 +55,7 @@ public class TolkienClientEvents {
 
     public static void initGameEvents() {
         NeoForge.EVENT_BUS.addListener(FogHandler::renderFog);
+        NeoForge.EVENT_BUS.addListener(FogHandler::computeFogColor);
         NeoForge.EVENT_BUS.addListener(FogHandler::unloadFog);
     }
 }
