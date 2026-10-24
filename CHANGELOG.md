@@ -211,6 +211,17 @@ All notable changes to this project will be documented in this file.
   comes from its blockstate file rather than a model file, so `moss_patch` and `clover_patch` name
   the patch model by type there instead. A camouflage block still wears whatever block it is
   sitting next to, and still shows itself while you hold the dev tool or a key.
+- The item family is ported, so the item registry and every item class compile. 26.1 has no sword,
+  pickaxe or armour class any more - the components an old `SwordItem` or `ArmorItem` used to add are
+  now set by the item properties - so the mod's tools and armour are plain items that apply the same
+  properties themselves. Nothing you hold or wear changes: the swords and pickaxes keep their damage
+  and mining tags, the armour keeps its durability, toughness, equip sound and repair ingot, the
+  dwarven hammer still breaks a plane and still mines like a pickaxe, and the horse armour still
+  fits only horses and stacks to one. The enchantment glint on the Ammolite and named weapons, the
+  gold lore line, and the regeneration, fire resistance and haste sets a full suit of armour grants
+  are all unchanged, as is every tooltip's text. One rule now travels by a different road: a bow
+  that never breaks still refuses Mending and Unbreaking, which 26.1 checks through the enchantment
+  support check rather than a separate anvil-only method.
 - The particle description data provider is ported, so the datagen side of the particles compiles.
   Every flame, the lightning bugs, the fell beast's breath, the wind and the leaf particles still
   declare the same single sprite they did, and the tinted smoke still borrows vanilla's twelve

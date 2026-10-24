@@ -6,8 +6,9 @@ import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class TolkienHoeItem extends HoeItem {
     public boolean hasEffectOverride = false;
@@ -33,10 +34,10 @@ public class TolkienHoeItem extends HoeItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         if (hasLore) {
-            tooltipComponents.add(Component.translatable(getDescriptionId() + ".lore").withStyle(ChatFormatting.GOLD));
-            super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+            tooltipComponents.accept(Component.translatable(getDescriptionId() + ".lore").withStyle(ChatFormatting.GOLD));
+            super.appendHoverText(stack, context, display, tooltipComponents, tooltipFlag);
         }
     }
 }

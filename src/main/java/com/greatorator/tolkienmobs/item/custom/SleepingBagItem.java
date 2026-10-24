@@ -6,9 +6,10 @@ import net.minecraft.world.item.BedItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.block.Block;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class SleepingBagItem extends BedItem {   private boolean hasLore = false;
 
@@ -23,10 +24,10 @@ public class SleepingBagItem extends BedItem {   private boolean hasLore = false
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         if (hasLore) {
-            tooltipComponents.add(Component.translatable(getDescriptionId() + ".lore").withStyle(ChatFormatting.GOLD));
-            super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+            tooltipComponents.accept(Component.translatable(getDescriptionId() + ".lore").withStyle(ChatFormatting.GOLD));
+            super.appendHoverText(stack, context, display, tooltipComponents, tooltipFlag);
         }
     }
 }

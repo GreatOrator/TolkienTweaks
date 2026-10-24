@@ -13,7 +13,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.item.equipment.trim.TrimMaterial;
@@ -629,14 +628,10 @@ public class TolkienItemModelProvider extends ItemModelProvider {
      * old {@code trim_type} predicate lived in the model's {@code overrides} array, which the game
      * no longer reads, so trimmed armour kept its untrimmed icon whatever was applied to it.
      */
-    private void trimmedArmorItem(DeferredItem<ArmorItem> itemDeferredItem) {
-        if (!(itemDeferredItem.get() instanceof ArmorItem armorItem)) {
-            return;
-        }
-
-        // 1.21.4 dropped ArmorItem#getEquipmentSlot: the slot lives in the equipable data
-        // component now, so read it back from there.
-        Equippable equippable = armorItem.components().get(DataComponents.EQUIPPABLE);
+    private void trimmedArmorItem(DeferredItem<? extends Item> itemDeferredItem) {
+        // 26.1 has no armour class to test for: which slots a piece fits lives in its equipable
+        // data component, so that is what names the trim sprites.
+        Equippable equippable = itemDeferredItem.get().components().get(DataComponents.EQUIPPABLE);
         if (equippable == null) {
             return;
         }
