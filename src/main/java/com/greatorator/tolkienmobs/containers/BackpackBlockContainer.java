@@ -142,11 +142,11 @@ public class BackpackBlockContainer extends TolkienContainer{
     }
 
     @Override
-    public void clicked(int slotId, int button, ClickType clickType, Player player) {
-        if (this.tileEntity.isHeld() && this.lockedSlot >= 0 && (slotId == this.lockedSlot || (clickType == ClickType.SWAP && button == this.lockedInvIndex))) {
+    public void clicked(int slotId, int button, ContainerInput containerInput, Player player) {
+        if (this.tileEntity.isHeld() && this.lockedSlot >= 0 && (slotId == this.lockedSlot || (containerInput == ContainerInput.SWAP && button == this.lockedInvIndex))) {
             return;
         }
-        super.clicked(slotId, button, clickType, player);
+        super.clicked(slotId, button, containerInput, player);
     }
 
     private boolean hasCrafting() {

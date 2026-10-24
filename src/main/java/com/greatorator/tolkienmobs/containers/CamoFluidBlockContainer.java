@@ -6,7 +6,6 @@ import com.greatorator.tolkienmobs.init.TolkienContainers;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.level.Level;
@@ -35,11 +34,6 @@ public class CamoFluidBlockContainer extends TolkienContainer {
         addPlayerHotbar(inv, 8, 20);
 
         addFluidSlots();
-    }
-
-    @Override
-    public void clicked(int slotId, int dragType, ClickType clickTypeIn, Player player) {
-        super.clicked(slotId, dragType, clickTypeIn, player);
     }
 
     @Override

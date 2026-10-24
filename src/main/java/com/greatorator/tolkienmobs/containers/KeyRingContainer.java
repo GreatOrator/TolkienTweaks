@@ -8,7 +8,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ComponentItemHandler;
@@ -42,7 +42,7 @@ public class KeyRingContainer extends AbstractContainerMenu {
     }
 
     @Override
-    public void clicked(int slotId, int dragType, ClickType clickTypeIn, Player player) {
+    public void clicked(int slotId, int dragType, ContainerInput containerInput, Player player) {
         if (slotId >= 0 && slotId < SLOTS && slots.get(slotId) instanceof KeyRingSlot) {
             ItemStack carriedItem = getCarried();
             ItemStack stackInSlot = slots.get(slotId).getItem();
@@ -51,7 +51,7 @@ public class KeyRingContainer extends AbstractContainerMenu {
                     return;
             }
         }
-        super.clicked(slotId, dragType, clickTypeIn, player);
+        super.clicked(slotId, dragType, containerInput, player);
     }
 
     @Override
