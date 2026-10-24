@@ -1430,6 +1430,33 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   the two runs showing exactly the three loot files losing their 26, 7 and 1 errors and nothing new
   appearing. No error is left anywhere under `datagen/loot/`. Nothing was opened in game.
 
+### Recipe helpers - DONE
+
+- **`RecipeBuilder` names its own recipe now.** The interface gained
+  `ResourceKey<Recipe<?>> defaultId()` and lost `Item getResult()`, so both custom builders -
+  `FireplaceRecipeBuilder` and `TrinketRecipeBuilder` - return
+  `RecipeBuilder.getDefaultRecipeId(...)` of their result and drop the `getResult` override. Both are
+  always saved with an explicit key in `TolkienRecipeHelper`, so nothing writes to the default id
+  today; it exists because the interface asks.
+- **Cooking recipes state their book category.** `SimpleCookingRecipeBuilder.smelting`, `blasting`
+  and `generic` all take a `CookingBookCategory` between the crafting category and the result, and
+  `generic` no longer takes a `RecipeSerializer` - only the `AbstractCookingRecipe.Factory` that
+  builds the recipe. The helper's `smeltingList`/`blastingList` pass `BLOCKS` (all twenty-four of
+  their call sites smelt stone) and `oreCooking` passes `MISC` (ores to ingots and gems), which are
+  the values the old five-argument overload inferred from the result, so the generated JSON keeps
+  `"category": "blocks"` and `"category": "misc"` exactly as before. `RecipeSerializer.SMELTING_RECIPE`
+  and `BLASTING_RECIPE` are gone with it, so `oreSmelting`/`oreBlasting` now hand over just
+  `SmeltingRecipe::new`/`BlastingRecipe::new`.
+- **The predicate package rename reaches the criteria.** `InventoryChangeTrigger` (the
+  `has_ingredient` unlocks used throughout the helper) and `RecipeUnlockedTrigger` (the
+  `has_the_recipe` criterion in both builders) are under `advancements.criterion`; their
+  `TriggerInstance.hasItems(...)` and `unlocked(ResourceKey)` calls are unchanged.
+- **One vanilla rename:** the chain item is `Items.IRON_CHAIN`, which the hanging-sign recipe uses.
+- **Verified:** whole-tree `javac` at **417** errors, down from 463, the per-file diff showing only
+  the three files losing their 38, 4 and 4 errors and nothing new. The recipe classes themselves -
+  `FireplaceRecipe`, `TrinketRecipe` and their serializers - are still failing and are a separate
+  job. Nothing was opened in game.
+
 ## Ordered work list
 
 1. **Build stack — DONE.** MDG 2, JDK 25, NeoForge 26.1.2, the four dependency bumps. The
@@ -1461,8 +1488,10 @@ from **3,470 errors in 337 files to 2,801 in 320**.
 8. **Screens.** 18 screens and the widget set against the prepare/render split.
 9. **Datagen.** `TolkienDataGenerator` and the vendored `datagen/modelgen` package (NeoForge
    removed the model generators in 21.4, so it was written here — it needs a pass of its own). The
-   loot side is done: the three providers, the global loot modifier and the trinket's loot function
-   all compile, with the generated loot tables unchanged.
+   loot side and the recipe helpers are done: the three loot providers, the global loot modifier,
+   the trinket's loot function, `TolkienRecipeHelper` and both custom recipe builders compile. What
+   is left of recipes is the runtime side - `FireplaceRecipe`, `TrinketRecipe` and
+   `TolkienRecipeSerializers`.
 10. **Long tail.** JEI plugin (4 files), Curios (1), network payloads, the two sound instances.
 
 ## Verification

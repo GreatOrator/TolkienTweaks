@@ -5,11 +5,10 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Recipe;
@@ -58,9 +57,10 @@ public class FireplaceRecipeBuilder implements RecipeBuilder {
         return this;
     }
 
+    /** 26.1 made a builder name its own recipe id: the result's registry id, as vanilla's helpers do. */
     @Override
-    public Item getResult() {
-        return this.outputs.isEmpty() ? Items.AIR : this.outputs.get(0).getItem();
+    public ResourceKey<Recipe<?>> defaultId() {
+        return RecipeBuilder.getDefaultRecipeId(this.outputs.isEmpty() ? new ItemStack(Items.AIR) : this.outputs.get(0));
     }
 
     @Override

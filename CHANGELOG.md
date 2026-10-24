@@ -236,6 +236,12 @@ All notable changes to this project will be documented in this file.
   sleeping bag still keep the contents and the name they had when they are broken. The generated
   loot tables do not move - the pieces that were renamed or reshaped in 26.1 write the same JSON
   they wrote before.
+- The recipe datagen is ported, so every shape the mod's recipes are built from compiles again. What
+  is made and how is unchanged: the same planks, stairs, walls, panes, dyes, ingots and cooking
+  recipes are generated from the same ingredients and unlocked by the same items. The one visible
+  difference is in the recipe book: 26.1 asks each cooking recipe which tab it belongs to instead of
+  working it out from the result, so the helpers say so explicitly - stone goes to the blocks tab and
+  ores to the misc tab, which is where the committed recipes already put them.
 - The particle description data provider is ported, so the datagen side of the particles compiles.
   Every flame, the lightning bugs, the fell beast's breath, the wind and the leaf particles still
   declare the same single sprite they did, and the tinted smoke still borrows vanilla's twelve
