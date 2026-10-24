@@ -141,6 +141,13 @@ All notable changes to this project will be documented in this file.
   breath still brightens once it lands, and the dyed smoke still takes the colour it was spawned
   with. A leaf's frame is picked from the frames that exist now rather than by mapping twelve
   invented indices onto them, so a leaf can show any of its sprites.
+- The Watcher and its attack goal are ported, so the lake boss compiles with the rest of the boss
+  family on its way. It fights exactly as it did: the same 300 health, 17 damage and armour, the
+  same drowning or sleeping effect it inflicts on whoever it bites, the same regeneration and speed
+  lines it says while you fight it, and the same blue notched health bar. It follows its swimming
+  supertype into the fish package, its speed buff uses the effect's current name, its last attacker
+  is read through a reference that may have been cleared, and its bar is named with an id - none of
+  which the player can see or feel.
 - Every message the mod sends a player now uses 26.1's own call for it: the chat lines go through
   the system-message call, and the three that flash above the hotbar - the backpack's "no room",
   the occupied sleeping bag and a refused sleep - through the overlay one. Nothing the player reads
