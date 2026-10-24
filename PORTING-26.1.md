@@ -16,7 +16,7 @@ measurement's other half.
 | Source | Minecraft **1.21.4**, NeoForge **21.4.161**, mod **4.4.83-Final** |
 | Target | Minecraft **26.1.2**, NeoForge **26.1.2.116**, mod **5.0.0** |
 | Java | 21 → **25** |
-| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree and the block model system are done; **671** errors left |
+| Status | build stack in place; GeckoLib 5 renamed, assets moved, fifty-three entities converted; the mechanical 26.1 pass (renames, properties, spawn weights, tag providers), the save-data move (`ValueOutput`/`ValueInput`), the equine family, the camo spawner, the whole `entity/` tree, the block model system and the particle data provider are done; **648** errors left |
 
 What the source tree contains, counted:
 
@@ -1072,6 +1072,17 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   now - so it is off `TolkienParticleProvider`; `@ParametersAreNonnullByDefault` is still there.
   `DwarvenMinerEnchantmentEffect` carries the same annotation and still needs it removed, along with
   its own `MobEffects` change.
+- **The description provider moved and lost its single-sprite helper.** `ParticleDescriptionProvider`
+  is under `net.neoforged.neoforge.client.data` now, not `...common.data`, and 26.1 only kept the
+  three `spriteSet` overloads. A one-texture sprite set writes the same
+  `{"textures": ["..."]}` file the old `sprite` call did, so the fourteen single-texture
+  descriptions read `spriteSet(type, id)` and the generated `particles/*.json` output is unchanged.
+  The provider registration in `TolkienDataGenerator` needed no change; its one error was only the
+  provider's own broken supertype.
+- **Verified:** whole-tree `javac` at **648** errors, 23 down from 671, the per-file diff showing only
+  `TolkienParticleDescriptionProvider` and the one `TolkienDataGenerator` line that depended on it,
+  and nothing new. Datagen was not run; the two touched outputs were compared against what the
+  provider writes instead.
 
 ### The Watcher and its goal - DONE
 

@@ -211,6 +211,10 @@ All notable changes to this project will be documented in this file.
   comes from its blockstate file rather than a model file, so `moss_patch` and `clover_patch` name
   the patch model by type there instead. A camouflage block still wears whatever block it is
   sitting next to, and still shows itself while you hold the dev tool or a key.
+- The particle description data provider is ported, so the datagen side of the particles compiles.
+  Every flame, the lightning bugs, the fell beast's breath, the wind and the leaf particles still
+  declare the same single sprite they did, and the tinted smoke still borrows vanilla's twelve
+  campfire smoke frames, so the generated particle descriptions are byte for byte what they were.
 
 ## [4.4.83-Final] - 10.22.2026
 
