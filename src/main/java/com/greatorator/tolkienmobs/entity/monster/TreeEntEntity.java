@@ -51,16 +51,14 @@ import com.geckolib.animation.object.PlayState;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.util.GeckoLibUtil;
 
-import java.util.UUID;
-
 public class TreeEntEntity extends TolkienMonsterEntity implements GeoEntity, NeutralMob {
     private static final EntityDataAccessor<Integer> VARIANT =
             SynchedEntityData.defineId(TreeEntEntity.class, EntityDataSerializers.INT);
     private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
 
     @Nullable
-    private UUID persistentAngerTarget;
-    private int remainingPersistentAngerTime;
+    private EntityReference<LivingEntity> persistentAngerTarget;
+    private long persistentAngerEndTime = -1L;
     private int attackAnimationTick;
 
     public TreeEntEntity(EntityType<? extends Monster> entityType, Level level) {
@@ -208,29 +206,29 @@ public class TreeEntEntity extends TolkienMonsterEntity implements GeoEntity, Ne
      * Don't make him angry
      */
     @Override
-    public int getRemainingPersistentAngerTime() {
-        return this.remainingPersistentAngerTime;
+    public long getPersistentAngerEndTime() {
+        return this.persistentAngerEndTime;
     }
 
     @Override
-    public void setRemainingPersistentAngerTime(int i) {
-        this.remainingPersistentAngerTime = i;
+    public void setPersistentAngerEndTime(long endTime) {
+        this.persistentAngerEndTime = endTime;
     }
 
     @Nullable
     @Override
-    public UUID getPersistentAngerTarget() {
+    public EntityReference<LivingEntity> getPersistentAngerTarget() {
         return this.persistentAngerTarget;
     }
 
     @Override
-    public void setPersistentAngerTarget(@Nullable UUID uuid) {
-        this.persistentAngerTarget = uuid;
+    public void setPersistentAngerTarget(@Nullable EntityReference<LivingEntity> target) {
+        this.persistentAngerTarget = target;
     }
 
     @Override
     public void startPersistentAngerTimer() {
-        this.setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.sample(this.random));
+        this.setTimeToRemainAngry(PERSISTENT_ANGER_TIME.sample(this.random));
     }
 
     @Override

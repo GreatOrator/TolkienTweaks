@@ -1135,6 +1135,30 @@ from **3,470 errors in 337 files to 2,801 in 320**.
   errors, and then the 76 errors the rest of the family carried. Every file under `entity/boss`,
   the dragon, both ambient bosses and their goals now compile clean. Nothing was opened in game.
 
+### The other `NeutralMob` users - DONE
+
+- The elemental golem and the tree ent are the same shape as the two boss golems, so they took the
+  same conversion: `remainingPersistentAngerTime` became a `persistentAngerEndTime` long, the two
+  interface methods are `getPersistentAngerEndTime` / `setPersistentAngerEndTime`, the target is an
+  `EntityReference<LivingEntity>`, and `startPersistentAngerTimer` calls `setTimeToRemainAngry`. The
+  tree ent still refuses to be made angry the same way, and both still keep the 20-39 second window.
+- The Istari carried an extra piece: it synced its countdown as an int (`DATA_REMAINING_ANGER_TIME`)
+  and nothing on the client ever read it. The end time is server state now, so that accessor and its
+  `define` entry are gone and the value is a plain long. One fewer synced int per Istari, and anger
+  behaves exactly as before.
+- The Istari also called `forceAnimationReset()` twice, in its attack and heal branches. 5 dropped
+  the method - and the branch already guards on `!isAnimatingBones()`, so the controller is stopped
+  by the time `setAnimation` runs and starts the clip either way. The swing and the heal still play
+  once and hand the controller back. `SwampHagEntity` and `GollumEntity` make the same call and are
+  still to port.
+- The elemental golem had three more of its own: `MobEffects.MOVEMENT_SLOWDOWN` is `SLOWNESS` (the
+  same effect, same id, so the slow it puts on whatever it hits is unchanged), its tornado placement
+  is `snapTo(BlockPos, float, float)` rather than `moveTo(BlockPos, int, int)`, and its
+  `causeFallDamage` takes a `double` fall distance - which it ignores anyway, since the golem never
+  takes fall damage.
+- **Verified:** whole-tree `javac` at **1,156** errors, 23 down from 1,179, with the per-file diff
+  showing only the three files' errors removed and nothing new anywhere.
+
 - `net.neoforged.moddev` **1.0.14 → 2.0.148**, `id 'idea'` applied explicitly (MDG 2 applies it
   only during sync, and the `idea { }` block needs it), wrapper **8.13 → 9.2.1** (the official
   26.1.2 MDK's version; NeoForge requires 9.1.0 or newer), foojay resolver 0.8.0 → 1.0.0.
