@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- A key held in either hand now shows a camouflage block as itself when the key carries that block's code, so a camo keystone can be found among the stone it is imitating; the dev tool shows every camo block as itself while it is held in either hand. Both take effect as soon as the item is in hand: a chunk's mesh is built once and kept, so the sections holding a camo block are rebuilt when the hands change.
+
 ### Changed
 
 - The mod's own version restarts at 5.0 for this line. The jar is 5.0.0 and the build-number task rolls it up to 5.0.1, 5.0.2 and so on, so a 5.0 build can never be mistaken for one of the 4.3 releases.
