@@ -13,7 +13,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.TypedEntityData;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -35,8 +36,12 @@ public interface TolkienSpawner {
 
     @Nullable
     static Component getSpawnEntityDisplayName(ItemStack stack, String spawnDataKey) {
-        CompoundTag compoundtag = ((CustomData)stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY)).getUnsafe();
-        Identifier resourcelocation = getEntityKey(compoundtag, spawnDataKey);
+        TypedEntityData<BlockEntityType<?>> data = stack.get(DataComponents.BLOCK_ENTITY_DATA);
+        if (data == null) {
+            return null;
+        }
+
+        Identifier resourcelocation = getEntityKey(data.copyTagWithoutId(), spawnDataKey);
         return resourcelocation != null ? (Component) BuiltInRegistries.ENTITY_TYPE.getOptional(resourcelocation).map((p_312609_) -> {
             return Component.translatable(p_312609_.getDescriptionId()).withStyle(ChatFormatting.GRAY);
         }).orElse((MutableComponent) null) : null;
@@ -44,8 +49,8 @@ public interface TolkienSpawner {
 
     @Nullable
     private static Identifier getEntityKey(CompoundTag tag, String spawnDataKey) {
-        if (tag.contains(spawnDataKey, 10)) {
-            String s = tag.getCompound(spawnDataKey).getCompound("entity").getString("id");
+        if (tag.contains(spawnDataKey)) {
+            String s = tag.getCompoundOrEmpty(spawnDataKey).getCompoundOrEmpty("entity").getStringOr("id", "");
             return Identifier.tryParse(s);
         } else {
             return null;
