@@ -1,16 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "minecraft:item/template_spawn_egg",
-    "tints": [
-      {
-        "type": "minecraft:constant",
-        "value": -16191597
-      },
-      {
-        "type": "minecraft:constant",
-        "value": -14475555
-      }
-    ]
+    "model": "tolkienmobs:item/entityttmmirkwoodspider_spawn_egg"
   }
 }

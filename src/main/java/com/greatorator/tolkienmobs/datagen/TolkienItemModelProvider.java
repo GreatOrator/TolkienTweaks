@@ -460,11 +460,10 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         basicItem(TolkienItems.MITHRIL_KEY.get());
         basicItem(TolkienItems.MASTER_KEY.get());
 
-        // A spawn egg is vanilla's single egg model drawn through two tints, so every egg needs a
-        // definition of its own carrying its two colours; without them the template draws the
-        // untinted egg. The colours are the ones the egg was registered with.
-        TolkienEntities.SPAWN_EGG_COLORS.forEach((egg, colors) ->
-                definition(egg.get(), spawnEggDefinition(colors)));
+        // 26.1 has no shared spawn egg template left: every egg is its own flat sprite, painted
+        // from the two colours it registered with by TolkienSpawnEggTextureProvider. So each egg is
+        // an ordinary generated item, and its definition falls out of the default.
+        TolkienEntities.SPAWN_EGG_COLORS.forEach((egg, colors) -> basicItem(egg.get()));
 
         // Item model definitions. The game reads dispatch trees and tints from
         // assets/<ns>/items/, so the items below declare them here rather than as overrides
@@ -525,17 +524,6 @@ public class TolkienItemModelProvider extends ItemModelProvider {
 
         return ItemModelDefinition.when(material.toString(),
                 ItemModelDefinition.model(Identifier.fromNamespaceAndPath(MODID, "item/" + trimModelPath)));
-    }
-
-    /**
-     * A spawn egg: vanilla's two-layer egg template, with its base and its spots painted by the
-     * two colours the egg registered. The colours are plain RGB, so they are given full alpha
-     * here - a tint without one draws nothing.
-     */
-    private JsonObject spawnEggDefinition(TolkienEntities.SpawnEggColors colors) {
-        return ItemModelDefinition.model(mcLoc("item/template_spawn_egg"),
-                ItemModelDefinition.constantTint(0xFF000000 | colors.background()),
-                ItemModelDefinition.constantTint(0xFF000000 | colors.highlight()));
     }
 
     /** A trinket: the metal layer untinted, the gem layer tinted by its potion. */

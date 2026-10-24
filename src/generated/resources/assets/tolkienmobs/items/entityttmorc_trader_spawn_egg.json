@@ -1,16 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "minecraft:item/template_spawn_egg",
-    "tints": [
-      {
-        "type": "minecraft:constant",
-        "value": -1590710
-      },
-      {
-        "type": "minecraft:constant",
-        "value": -37854
-      }
-    ]
+    "model": "tolkienmobs:item/entityttmorc_trader_spawn_egg"
   }
 }
