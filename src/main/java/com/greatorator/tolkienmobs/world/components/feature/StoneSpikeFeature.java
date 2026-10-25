@@ -38,6 +38,13 @@ public class StoneSpikeFeature extends Feature<NoneFeatureConfiguration> {
             return false;
         }
 
+        // Mordor's lakes sit in its floor, and ground under one is still bare rock. A spike there
+        // cannot be built through the fluid - only air is - so every submerged cell was skipped and
+        // only the cells above the lake got stone, leaving a fragment in the air over the lava.
+        if (!level.getFluidState(ground.above()).isEmpty()) {
+            return false;
+        }
+
         // One attempt in sixty raises a needle instead of a lump: tall enough to be seen from the far
         // side of a plain, and narrow, because a cone of that height would be a mountain.
         boolean needle = random.nextInt(60) == 0;
