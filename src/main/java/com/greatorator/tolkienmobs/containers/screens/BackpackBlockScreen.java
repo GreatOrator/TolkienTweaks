@@ -6,6 +6,7 @@ import com.greatorator.tolkienmobs.containers.handlers.FluidTankRenderer;
 import com.greatorator.tolkienmobs.containers.handlers.ToggleButtonFactory;
 import com.greatorator.tolkienmobs.containers.widget.ToggleButton;
 import com.greatorator.tolkienmobs.containers.widget.TolkienButton;
+import com.greatorator.tolkienmobs.network.manager.BackpackMagnetToggleManager;
 import com.greatorator.tolkienmobs.network.manager.BackpackPlacementUpdateManager;
 import com.greatorator.tolkienmobs.network.manager.BackpackSettingsUpdateManager;
 import com.greatorator.tolkienmobs.util.GeneralUtility;
@@ -59,6 +60,7 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
     private BackpackFluidUpgrades shownFluidUpgrades;
     private boolean shownSleepingBag;
     private boolean shownCampfire;
+    private boolean shownMagnet;
     private final BackpackBlockEntity tileEntity;
     private Level level;
     private FluidTankRenderer fluidRenderer;
@@ -92,7 +94,8 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
     @Override
     protected void containerTick() {
         super.containerTick();
-        if (!upgradesMatchShown() || shownSleepingBag != backpackSettings.sleepingBag || shownCampfire != backpackSettings.campfire) {
+        if (!upgradesMatchShown() || shownSleepingBag != backpackSettings.sleepingBag
+                || shownCampfire != backpackSettings.campfire || shownMagnet != backpackSettings.magnet) {
             rebuildWidgets();
         }
     }
@@ -100,7 +103,10 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
     private void rememberShownUpgrades() {
         shownSleepingBag = backpackSettings.sleepingBag;
         shownCampfire = backpackSettings.campfire;
-        shownUpgrades = new BackpackUpgrades(backpackUpgrades.crafting, backpackUpgrades.sleepingBag, backpackUpgrades.campfire, backpackUpgrades.size_upgrade, backpackUpgrades.size_upgrade_2);
+        // The magnet key flips the setting without the screen, so the button has to follow it here.
+        shownMagnet = backpackSettings.magnet;
+        shownUpgrades = new BackpackUpgrades(backpackUpgrades.crafting, backpackUpgrades.sleepingBag, backpackUpgrades.campfire, backpackUpgrades.size_upgrade, backpackUpgrades.size_upgrade_2,
+                backpackUpgrades.magnet_1, backpackUpgrades.magnet_2, backpackUpgrades.magnet_3);
         shownFluidUpgrades = new BackpackFluidUpgrades(backpackFluidUpgrades.fluid_tank, backpackFluidUpgrades.fluid_tank_2, backpackFluidUpgrades.fluid_tank_3, backpackFluidUpgrades.fluid_tank_4, backpackFluidUpgrades.fluid_tank_5);
     }
 
@@ -218,6 +224,14 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
             addRenderableWidget(ToggleButtonFactory.CAMPFIRE_TOGGLE_BUTTON(offsetX + 191, offsetY + 156, backpackSettings.campfire, b -> {
                 ((ToggleButton) b).setTexturePosition(backpackSettings.campfire);
                 ClientPacketDistributor.sendToServer(new BackpackPlacementUpdateManager(false, true));
+            }));
+        }
+
+        if (this.tileEntity.backpackUpgrades.magnetRange() > 0) {
+            addRenderableWidget(ToggleButtonFactory.MAGNET_TOGGLE_BUTTON(offsetX + 227, offsetY + 156, backpackSettings.magnet, b -> {
+                // The face has already flipped; the server flips its own copy and sends the result back.
+                backpackSettings.magnet = !backpackSettings.magnet;
+                ClientPacketDistributor.sendToServer(new BackpackMagnetToggleManager());
             }));
         }
 

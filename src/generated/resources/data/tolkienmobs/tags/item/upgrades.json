@@ -9,6 +9,9 @@
     "tolkienmobs:item_backpack_upgrade_fluid_5",
     "tolkienmobs:item_backpack_upgrade_crafting",
     "tolkienmobs:item_backpack_upgrade_sleeping",
-    "tolkienmobs:item_backpack_upgrade_campfire"
+    "tolkienmobs:item_backpack_upgrade_campfire",
+    "tolkienmobs:item_backpack_upgrade_magnet_1",
+    "tolkienmobs:item_backpack_upgrade_magnet_2",
+    "tolkienmobs:item_backpack_upgrade_magnet_3"
   ]
 }

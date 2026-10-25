@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.client;
 
+import com.greatorator.tolkienmobs.network.manager.BackpackMagnetToggleManager;
 import com.greatorator.tolkienmobs.network.manager.OpenBackpackCurioManager;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
@@ -19,6 +20,8 @@ public class BackpackKeyHandler {
     /** 26.1 keys belong to a category object rather than a free-form category string. */
     public static final KeyMapping.Category CATEGORY = new KeyMapping.Category(Identifier.fromNamespaceAndPath(MODID, "general"));
     public static final KeyMapping OPEN_BACKPACK = new KeyMapping("key.tolkienmobs.open_backpack", InputConstants.KEY_B, CATEGORY);
+    /** Flips the magnet of the worn or carried backpack without opening it. */
+    public static final KeyMapping TOGGLE_MAGNET = new KeyMapping("key.tolkienmobs.toggle_magnet", InputConstants.KEY_M, CATEGORY);
 
     @EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
     public static class Registration {
@@ -26,6 +29,7 @@ public class BackpackKeyHandler {
         public static void registerKeys(RegisterKeyMappingsEvent event) {
             event.registerCategory(CATEGORY);
             event.register(OPEN_BACKPACK);
+            event.register(TOGGLE_MAGNET);
         }
     }
 
@@ -37,6 +41,14 @@ public class BackpackKeyHandler {
                 Minecraft minecraft = Minecraft.getInstance();
                 if (minecraft.player != null && minecraft.screen == null && ModList.get().isLoaded("curios")) {
                     ClientPacketDistributor.sendToServer(new OpenBackpackCurioManager());
+                }
+            }
+            // The magnet key works with nothing open, and also while the backpack's own screen is up,
+            // which is where the button that follows it lives.
+            while (TOGGLE_MAGNET.consumeClick()) {
+                Minecraft minecraft = Minecraft.getInstance();
+                if (minecraft.player != null) {
+                    ClientPacketDistributor.sendToServer(new BackpackMagnetToggleManager());
                 }
             }
         }

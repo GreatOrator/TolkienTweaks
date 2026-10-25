@@ -6,21 +6,24 @@ public class BackpackSettings {
     public boolean sleepingBag = false;
     public boolean campfire = false;
     public boolean upgrade = false;
+    /** Whether an installed magnet pulls drops in. On by default, so a newly fitted magnet works. */
+    public boolean magnet = true;
 
     public BackpackSettings() {
 
     }
 
-    public BackpackSettings(boolean sleepingBag, boolean campfire, boolean upgrade) {
+    public BackpackSettings(boolean sleepingBag, boolean campfire, boolean upgrade, boolean magnet) {
         this.sleepingBag = sleepingBag;
         this.campfire = campfire;
         this.upgrade = upgrade;
+        this.magnet = magnet;
     }
 
 
     @Override
     public int hashCode() {
-        return Objects.hash(sleepingBag, campfire, upgrade);
+        return Objects.hash(sleepingBag, campfire, upgrade, magnet);
     }
 
     @Override
@@ -30,6 +33,7 @@ public class BackpackSettings {
         BackpackSettings that = (BackpackSettings) object;
         return sleepingBag == that.sleepingBag
                 && campfire == that.campfire
-                && upgrade == that.upgrade;
+                && upgrade == that.upgrade
+                && magnet == that.magnet;
     }
 }

@@ -228,6 +228,9 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
         upgradeRecipe3(pRecipeOutput, TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_3, TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_2, Items.GOLD_INGOT);
         upgradeRecipe3(pRecipeOutput, TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_4, TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_3, TolkienItems.INGOT_MITHRIL);
         upgradeRecipe3(pRecipeOutput, TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_5, TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_4, TolkienItems.GEM_AMMOLITE);
+        magnetRecipe(pRecipeOutput, TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_1, TolkienItems.ITEM_BACKPACK_UPGRADE_BASE, Items.IRON_INGOT, TolkienItems.GEM_AMMOLITE);
+        magnetRecipe(pRecipeOutput, TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_2, TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_1, Items.GOLD_INGOT, TolkienItems.GEM_AMMOLITE);
+        magnetRecipe(pRecipeOutput, TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_3, TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_2, TolkienItems.INGOT_MITHRIL, TolkienItems.GEM_AMMOLITE);
 
         conversionRecipe(pRecipeOutput, TolkienBlocks.BLOCK_HALLOWED, Blocks.GRASS_BLOCK, TolkienItems.GEM_AMMOLITE);
         conversionRecipe(pRecipeOutput, TolkienBlocks.STONE_PATH, Blocks.MOSSY_COBBLESTONE, Items.IRON_PICKAXE);

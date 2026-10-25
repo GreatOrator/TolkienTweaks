@@ -15,18 +15,23 @@ public interface BackpackSettingsBlockEntity {
         output.putBoolean("sleepingBag", getBackpackSettings().sleepingBag);
         output.putBoolean("campfire", getBackpackSettings().campfire);
         output.putBoolean("upgrade", getBackpackSettings().upgrade);
+        output.putBoolean("magnet", getBackpackSettings().magnet);
     }
 
     default void loadBackpackSettings(ValueInput input) {
         getBackpackSettings().sleepingBag = input.getBooleanOr("sleepingBag", false);
         getBackpackSettings().campfire = input.getBooleanOr("campfire", false);
         getBackpackSettings().upgrade = input.getBooleanOr("upgrade", false);
+        // A backpack saved before the magnet existed loads with the magnet on, the same order a
+        // newly fitted upgrade arrives in.
+        getBackpackSettings().magnet = input.getBooleanOr("magnet", true);
     }
 
     default void setBackpackSettings(BackpackSettings backpackData) {
         getBackpackSettings().sleepingBag = backpackData.sleepingBag;
         getBackpackSettings().campfire = backpackData.campfire;
         getBackpackSettings().upgrade = backpackData.upgrade;
+        getBackpackSettings().magnet = backpackData.magnet;
         if (getBlockEntity() instanceof BackpackBlockEntity backpackBE)
             backpackBE.markDirtyClient();
     }

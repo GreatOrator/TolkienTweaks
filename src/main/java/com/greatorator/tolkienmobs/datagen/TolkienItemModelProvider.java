@@ -167,6 +167,9 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         basicItem(TolkienItems.ITEM_BACKPACK_UPGRADE_CRAFTING.get());
         basicItem(TolkienItems.ITEM_BACKPACK_UPGRADE_SLEEPING.get());
         basicItem(TolkienItems.ITEM_BACKPACK_UPGRADE_CAMPFIRE.get());
+        basicItem(TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_1.get());
+        basicItem(TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_2.get());
+        basicItem(TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_3.get());
         basicItem(TolkienItems.TEMPLATE_MITHRIL.get());
         basicItem(TolkienItems.TEMPLATE_MORGULIRON.get());
         basicItem(TolkienItems.TEMPLATE_AMMOLITE.get());

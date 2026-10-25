@@ -59,6 +59,8 @@ public final class PacketHandler {
     private static void registerClientToServer(PayloadRegistrar registrar) {
         registrar.playToServer(OpenBackpackCurioManager.TYPE,
                 OpenBackpackCurioManager.STREAM_CODEC, OpenBackpackCurioManager::handle);
+        registrar.playToServer(BackpackMagnetToggleManager.TYPE,
+                BackpackMagnetToggleManager.STREAM_CODEC, BackpackMagnetToggleManager::handle);
         registrar.playToServer(KeyCodeUpdateManager.TYPE,
                 KeyCodeUpdateManager.STREAM_CODEC, KeyCodeUpdateManager::handle);
         registrar.playToServer(LockedChestUpdateManager.TYPE,

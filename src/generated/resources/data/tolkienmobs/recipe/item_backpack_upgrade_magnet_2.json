@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "tolkienmobs:item_backpack_upgrade_magnet_1",
+    "G": "tolkienmobs:gem_ammolite",
+    "U": "minecraft:gold_ingot"
+  },
+  "pattern": [
+    " G ",
+    "UCU",
+    "UUU"
+  ],
+  "result": {
+    "id": "tolkienmobs:item_backpack_upgrade_magnet_2"
+  }
+}

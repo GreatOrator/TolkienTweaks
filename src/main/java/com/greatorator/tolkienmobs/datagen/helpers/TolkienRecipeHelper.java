@@ -414,6 +414,22 @@ public abstract class TolkienRecipeHelper extends RecipeProvider {
                 .save(recipeOutput);
     }
 
+    /**
+     * The magnet upgrade's own shape: a U of metal with the upgrade it builds on in the middle and
+     * a gem between the prongs, which is the silhouette the magnet item and its button show.
+     */
+    protected void magnetRecipe(RecipeOutput recipeOutput, Supplier<? extends Item> result, ItemLike centre, ItemLike metal, ItemLike gem) {
+        shaped(RecipeCategory.MISC, result.get().asItem(), 1)
+                .define('U', metal)
+                .define('C', centre)
+                .define('G', gem)
+                .pattern(" G ")
+                .pattern("UCU")
+                .pattern("UUU")
+                .unlockedBy("has_ingredient", InventoryChangeTrigger.TriggerInstance.hasItems(centre))
+                .save(recipeOutput);
+    }
+
     protected void upgradeRecipe3(RecipeOutput recipeOutput, Supplier<? extends Item> result, ItemLike item1, ItemLike item2) {
         shaped(RecipeCategory.MISC, result.get().asItem(), 1)
                 .define('A', item1)
