@@ -1,13 +1,11 @@
 package com.greatorator.tolkienmobs.block.custom;
 
 import com.greatorator.tolkienmobs.block.TolkienPlantBlock;
+import com.greatorator.tolkienmobs.handler.LeafPileTint;
 import com.greatorator.tolkienmobs.init.TolkienParticleTypes;
 import com.greatorator.tolkienmobs.network.manager.SpawnFallenLeafFromPacket;
 import com.greatorator.tolkienmobs.particle.data.LeafParticleData;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.color.block.BlockTintSource;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -22,7 +20,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BushBlock;
 import net.minecraft.world.level.block.IceBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -116,15 +113,12 @@ public class LeafPileBlock extends TolkienPlantBlock {
     }
 
     /**
-     * The particle takes the colour of oak leaves where it falls, which {@code BlockColors} answers
-     * through the leaves' tint source now that its per-layer {@code getColor} is gone. Only a client
-     * level can be asked, and both callers only reach here on the client; anywhere else the old
-     * "no tint" answer of -1 stands.
+     * The colour the particle takes: oak leaves, the colour of the wood a pile lies in. It comes
+     * from {@link LeafPileTint}, because the block colours that answer it are a client registry and
+     * naming them here would keep the whole block - and the mod - from loading on a server.
      */
     private static int oakLeafColour(Level level, BlockPos pos) {
-        BlockState oak = Blocks.OAK_LEAVES.defaultBlockState();
-        BlockTintSource tint = Minecraft.getInstance().getBlockColors().getTintSource(oak, 0);
-        return tint != null && level instanceof ClientLevel clientLevel ? tint.colorInWorld(oak, clientLevel, pos) : -1;
+        return LeafPileTint.colour(level, pos);
     }
 
     @Override
