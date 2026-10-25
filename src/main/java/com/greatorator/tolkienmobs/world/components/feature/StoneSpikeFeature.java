@@ -38,13 +38,6 @@ public class StoneSpikeFeature extends Feature<NoneFeatureConfiguration> {
             return false;
         }
 
-        // Mordor's lakes sit in its floor, and ground under one is still bare rock. A spike there
-        // cannot be built through the fluid - only air is - so every submerged cell was skipped and
-        // only the cells above the lake got stone, leaving a fragment in the air over the lava.
-        if (!level.getFluidState(ground.above()).isEmpty()) {
-            return false;
-        }
-
         // One attempt in sixty raises a needle instead of a lump: tall enough to be seen from the far
         // side of a plain, and narrow, because a cone of that height would be a mountain.
         boolean needle = random.nextInt(60) == 0;
@@ -91,9 +84,18 @@ public class StoneSpikeFeature extends Feature<NoneFeatureConfiguration> {
         return null;
     }
 
-    /** Air and whatever a plant would grow over; the spike stops at anything with a shape of its own. */
+    /**
+     * Air, whatever a plant would grow over, and the fluid of a lake. The spike stops at anything with
+     * a shape of its own, but a lake is only fluid: Mordor's lakes sit in its floor, so a spike built
+     * from the rock under one used to skip the lake and hang in the air above it - and refusing such a
+     * site instead would leave the biome's lowlands, where the lakes are, without a single spike. It
+     * fills the fluid it passes through now, so its foot plugs into the lake's floor and the spire
+     * stands in the water or lava.
+     */
     private static boolean canBuildThrough(WorldGenLevel level, BlockPos pos) {
         BlockState state = level.getBlockState(pos);
-        return state.isAir() || state.canBeReplaced();
+        // A fluid block itself, not a shape that merely holds fluid, so a waterlogged fence is rock
+        // the spike stops at rather than something it eats.
+        return state.isAir() || state.canBeReplaced() || state.liquid();
     }
 }
