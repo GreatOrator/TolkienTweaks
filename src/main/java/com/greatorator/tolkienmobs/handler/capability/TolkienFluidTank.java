@@ -39,12 +39,22 @@ public class TolkienFluidTank extends FluidStacksResourceHandler {
         return getAmountAsInt(0);
     }
 
+    /**
+     * Replaces the tank's contents, cut down to the tank's capacity.
+     * A negative amount would reach {@code set}, which refuses one outright, so it empties the tank
+     * instead: the backpack's menu data can hand over a half-written amount mid-update.
+     */
     public void setFluid(FluidStack stack) {
+        if (stack == null || stack.isEmpty() || stack.getAmount() <= 0) {
+            set(0, FluidResource.EMPTY, 0);
+            return;
+        }
         set(0, FluidResource.of(stack), Math.min(stack.getAmount(), capacity));
     }
 
+    /** Sets how much of the fluid already in the tank is there, kept between empty and full. */
     public void setAmount(int amount) {
-        set(0, getResource(0), Math.min(amount, capacity));
+        set(0, getResource(0), Math.max(0, Math.min(amount, capacity)));
     }
 
     public boolean isEmpty() {
