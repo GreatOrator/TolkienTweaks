@@ -80,7 +80,6 @@ public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProv
         }
     };
     public final Object2IntOpenHashMap<Identifier> recipes = new Object2IntOpenHashMap<>();
-    private static final int OUTPUT_SLOT = 0;
     protected final ContainerData data;
     private int progress = 0;
     private int maxProgress = 100;
@@ -238,7 +237,7 @@ public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProv
         tryConsumeFuel();
         setChanged(level, pPos, pState);
 
-        if(hasRecipe() && isOutputSlotEmptyOrReceivable()){
+        if(hasRecipe() && hasRoomForResult()){
             level.setBlockAndUpdate(pPos, pState.setValue(LIT, true));
             increaseCraftingProgress();
             setChanged(level, pPos, pState);
@@ -257,33 +256,37 @@ public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProv
 
     private void craftItem() {
         Optional<RecipeHolder<FireplaceRecipe>> recipe = getCurrentRecipe();
-        if (recipe.isPresent()) {
-            List<ItemStack> results = recipe.get().value().createOutputs();
+        if (recipe.isEmpty()) {
+            return;
+        }
+        List<ItemStack> results = recipe.get().value().createOutputs();
 
-            int extractFromSlot0 = 0;
-            int extractFromSlot1 = 0;
+        // Nothing is taken out of the inputs until every result has a slot waiting for it. A result
+        // that could not be placed used to be written to stderr, and the food that made it was gone.
+        int[] targets = planOutputs(results);
+        if (targets == null) {
+            return;
+        }
 
-            for (SizedIngredient ingredient : recipe.get().value().getInputItems()) {
-                if (ingredient.test(ItemUtil.getStack(itemHandler, 0))) {
-                    extractFromSlot0 += Math.min(ItemUtil.getStack(itemHandler, 0).getCount(), ingredient.count());
-                } else if (ingredient.test(ItemUtil.getStack(itemHandler, 1))) {
-                    extractFromSlot1 += Math.min(ItemUtil.getStack(itemHandler, 1).getCount(), ingredient.count());
-                }
+        int extractFromSlot0 = 0;
+        int extractFromSlot1 = 0;
+
+        for (SizedIngredient ingredient : recipe.get().value().getInputItems()) {
+            if (ingredient.test(ItemUtil.getStack(itemHandler, 0))) {
+                extractFromSlot0 += Math.min(ItemUtil.getStack(itemHandler, 0).getCount(), ingredient.count());
+            } else if (ingredient.test(ItemUtil.getStack(itemHandler, 1))) {
+                extractFromSlot1 += Math.min(ItemUtil.getStack(itemHandler, 1).getCount(), ingredient.count());
             }
+        }
 
-            takeFromInput(0, extractFromSlot0);
-            takeFromInput(1, extractFromSlot1);
+        takeFromInput(0, extractFromSlot0);
+        takeFromInput(1, extractFromSlot1);
 
-            for (ItemStack result : results) {
-                int outputSlot = findSuitableOutputSlot(result);
-                if (outputSlot != -1) {
-                    this.outputHandler.set(outputSlot, ItemResource.of(result),
-                            ItemUtil.getStack(this.outputHandler, outputSlot).getCount() + result.getCount());
-
-                } else {
-                    System.err.println("No suitable output slot found for item: " + result);
-                }
-            }
+        for (int i = 0; i < results.size(); i++) {
+            ItemStack result = results.get(i);
+            int outputSlot = targets[i];
+            this.outputHandler.set(outputSlot, ItemResource.of(result),
+                    ItemUtil.getStack(this.outputHandler, outputSlot).getCount() + result.getCount());
         }
     }
 
@@ -295,18 +298,45 @@ public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProv
         itemHandler.set(slot, ItemResource.of(stack), stack.getCount() - Math.min(amount, stack.getCount()));
     }
 
-    private int findSuitableOutputSlot(ItemStack result) {
-        // Implement logic to find a suitable output slot for the given result
-        // Return the slot index or -1 if no suitable slot is found
+    /**
+     * The output slot each result would land in, or null when the fireplace cannot take them all.
+     * The slots are simulated in place, so two results share a slot only when both fit there, and
+     * the answer is the same before the write as after it. An amount over a slot's own limit is
+     * never planned: that write would leave the slot holding more than the item stacks to.
+     */
+    private int[] planOutputs(List<ItemStack> results) {
+        List<ItemStack> simulated = new ArrayList<>(this.outputHandler.size());
         for (int i = 0; i < this.outputHandler.size(); i++) {
-            ItemStack stackInSlot = ItemUtil.getStack(this.outputHandler, i);
-            if (stackInSlot.isEmpty() || (stackInSlot.getItem() == result.getItem() && stackInSlot.getCount() + result.getCount() <= stackInSlot.getMaxStackSize())) {
-                return i;
-            }
+            simulated.add(ItemUtil.getStack(this.outputHandler, i).copy());
         }
-        return -1;
-    }
 
+        int[] plan = new int[results.size()];
+        for (int r = 0; r < results.size(); r++) {
+            ItemStack result = results.get(r);
+            int target = -1;
+
+            for (int i = 0; i < simulated.size(); i++) {
+                ItemStack existing = simulated.get(i);
+                if (existing.isEmpty()) {
+                    target = i;
+                    simulated.set(i, result.copy());
+                    break;
+                }
+                if (ItemStack.isSameItemSameComponents(existing, result)
+                        && existing.getCount() + result.getCount() <= existing.getMaxStackSize()) {
+                    target = i;
+                    simulated.set(i, existing.copyWithCount(existing.getCount() + result.getCount()));
+                    break;
+                }
+            }
+
+            if (target == -1) {
+                return null;
+            }
+            plan[r] = target;
+        }
+        return plan;
+    }
 
     private boolean hasProgressFinished() {
         return progress >= maxProgress;
@@ -324,9 +354,15 @@ public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProv
         return this.progress >= this.maxProgress;
     }
 
-    private boolean isOutputSlotEmptyOrReceivable() {
-        return ItemUtil.getStack(this.itemHandler, OUTPUT_SLOT).isEmpty() ||
-                ItemUtil.getStack(this.itemHandler, OUTPUT_SLOT).getCount() < ItemUtil.getStack(this.itemHandler, OUTPUT_SLOT).getMaxStackSize();
+    /**
+     * Whether the output slots can take everything the matching recipe hands back.
+     * This used to read slot 0 of the <em>input</em> handler, so it answered for a food item being
+     * cooked instead of for the cooked food already waiting in the output, and it never looked at
+     * the result at all.
+     */
+    private boolean hasRoomForResult() {
+        Optional<RecipeHolder<FireplaceRecipe>> recipe = getCurrentRecipe();
+        return recipe.isPresent() && planOutputs(recipe.get().value().createOutputs()) != null;
     }
 
     private boolean hasRecipe() {

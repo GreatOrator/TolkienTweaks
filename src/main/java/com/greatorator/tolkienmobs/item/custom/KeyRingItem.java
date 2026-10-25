@@ -72,7 +72,9 @@ public class KeyRingItem extends Item {
             if (stackInSlot.isEmpty()) emptySlots.add(i);
             if (!stackInSlot.isEmpty() && ItemStack.isSameItemSameComponents(stackInSlot, key)) {
                 int j = stackInSlot.getCount() + key.getCount();
-                int maxSize = 64;
+                // A key stacks to one, and its slot holds one: 64 here would write two keys into a
+                // slot whose capacity is one, which is more than the slot can hold.
+                int maxSize = Math.min(64, key.getMaxStackSize());
                 if (j <= maxSize) {
                     key.setCount(0);
                     handler.set(i, ItemResource.of(stackInSlot), j);

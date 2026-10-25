@@ -26,12 +26,13 @@ public interface BackpackFluids {
         return getFluidTank().getFluidAmount();
     }
 
+    /**
+     * The tank keeps the amount itself between empty and full. The old branch here compared the
+     * stored amount to a number the tank can never reach and then wrote {@code Integer.MAX_VALUE}
+     * into it, and any smaller amount - including a negative one - went through untouched.
+     */
     default void setAmountStored(int value) {
-        if (getAmountStored() > 128000) {
-            getFluidTank().setAmount(Integer.MAX_VALUE);
-        } else {
-            getFluidTank().setAmount(value);
-        }
+        getFluidTank().setAmount(value);
     }
 
     default boolean isFull() {
