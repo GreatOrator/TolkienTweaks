@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.containers;
 
 import com.greatorator.tolkienmobs.containers.slots.KeyCodeSlot;
+import com.greatorator.tolkienmobs.handler.capability.ComponentItemStackHandler;
 import com.greatorator.tolkienmobs.init.TolkienContainers;
 import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.greatorator.tolkienmobs.item.custom.KeyItem;
@@ -11,17 +12,17 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ComponentItemHandler;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.wrapper.InvWrapper;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
 
 public class KeyCodeContainer extends AbstractContainerMenu {
     public static ItemStack keyStack;
     private final String keyCode;
     public Player playerEntity;
-    private final IItemHandler playerInventory;
+    private final ResourceHandler<ItemResource> playerInventory;
     public BlockPos sourceContainer = BlockPos.ZERO;
-    public ComponentItemHandler keyCodeHandler;
+    public ComponentItemStackHandler keyCodeHandler;
 
     public KeyCodeContainer(int windowId, Inventory playerInventory, Player player, RegistryFriendlyByteBuf extraData) {
         this(windowId, playerInventory, player, ItemStack.OPTIONAL_STREAM_CODEC.decode(extraData));
@@ -30,8 +31,8 @@ public class KeyCodeContainer extends AbstractContainerMenu {
     public KeyCodeContainer(int windowId, Inventory playerInventory, Player player, ItemStack keyStack) {
         super(TolkienContainers.KEY_CODE_CONTAINER.get(), windowId);
         playerEntity = player;
-        this.keyCodeHandler = new ComponentItemHandler(keyStack, TolkienDataComponents.ITEMSTACK_HANDLER.get(), 1);
-        this.playerInventory = new InvWrapper(playerInventory);
+        this.keyCodeHandler = new ComponentItemStackHandler(keyStack, TolkienDataComponents.ITEMSTACK_HANDLER.get(), 1);
+        this.playerInventory = PlayerInventoryWrapper.of(playerInventory);
         KeyCodeContainer.keyStack = keyStack;
         this.keyCode = KeyItem.getKeyCode(this.keyStack);
     }

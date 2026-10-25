@@ -15,6 +15,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.neoforged.neoforge.transfer.item.ItemUtil;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -206,9 +207,9 @@ public class TrinketTableBlock extends TolkienEntityBlock {
 
         pLevel.addParticle(ParticleTypes.SMOKE, xPos + xOffsets, yPos + yOffset, zPos + zOffset, 0.0, 0.0, 0.0);
 
-        if(pLevel.getBlockEntity(pPos) instanceof TrinketTableBlockEntity blockEntity && !blockEntity.itemHandler.getStackInSlot(1).isEmpty()) {
+        if(pLevel.getBlockEntity(pPos) instanceof TrinketTableBlockEntity blockEntity && !ItemUtil.getStack(blockEntity.itemHandler, 1).isEmpty()) {
             // 26.1's item particle takes a template rather than a stack.
-            pLevel.addParticle(new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(blockEntity.itemHandler.getStackInSlot(1))),
+            pLevel.addParticle(new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(ItemUtil.getStack(blockEntity.itemHandler, 1))),
                     xPos + xOffsets, yPos + yOffset, zPos + zOffset, 0.0, 0.0, 0.0);
         }
     }

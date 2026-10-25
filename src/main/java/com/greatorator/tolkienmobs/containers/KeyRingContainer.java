@@ -1,8 +1,8 @@
 package com.greatorator.tolkienmobs.containers;
 
+import com.greatorator.tolkienmobs.containers.handlers.KeyRingItemStackHandler;
 import com.greatorator.tolkienmobs.containers.slots.KeyRingSlot;
 import com.greatorator.tolkienmobs.init.TolkienContainers;
-import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
@@ -11,18 +11,19 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ComponentItemHandler;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
-import net.neoforged.neoforge.items.wrapper.InvWrapper;
+import net.neoforged.neoforge.transfer.IndexModifier;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
+import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 
 public class KeyRingContainer extends AbstractContainerMenu {
     public static final int SLOTS = 15;
     public ItemStack keyRing;
     public Player playerEntity;
-    private final IItemHandler playerInventory;
+    private final Inventory playerInventory;
     public BlockPos sourceContainer = BlockPos.ZERO;
-    public ComponentItemHandler keyRingHandler;
+    public KeyRingItemStackHandler keyRingHandler;
 
     public KeyRingContainer(int windowId, Inventory playerInventory, Player player, RegistryFriendlyByteBuf extraData) {
         this(windowId, playerInventory, player, ItemStack.OPTIONAL_STREAM_CODEC.decode(extraData));
@@ -31,12 +32,10 @@ public class KeyRingContainer extends AbstractContainerMenu {
     public KeyRingContainer(int windowId, Inventory playerInventory, Player player, ItemStack keyRing) {
         super(TolkienContainers.KEY_RING_CONTAINER.get(), windowId);
         playerEntity = player;
-        this.keyRingHandler = new ComponentItemHandler(keyRing, TolkienDataComponents.ITEMSTACK_HANDLER.get(), SLOTS);
-        this.playerInventory = new InvWrapper(playerInventory);
+        this.keyRingHandler = new KeyRingItemStackHandler(SLOTS, keyRing);
+        this.playerInventory = playerInventory;
         this.keyRing = keyRing;
-        if (keyRingHandler != null) {
-            addSlotBox(keyRingHandler, 0, 44, 17, 5, 18, 3, 18);
-        }
+        addSlotBox(keyRingHandler, keyRingHandler, 0, 44, 17, 5, 18, 3, 18);
 
         layoutPlayerInventorySlots(8, 84);
     }
@@ -179,33 +178,37 @@ public class KeyRingContainer extends AbstractContainerMenu {
         return itemstack;
     }
 
-    private int addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx) {
+    private int addSlotRange(ResourceHandler<ItemResource> handler, IndexModifier<ItemResource> slotModifier, int index, int x, int y, int amount, int dx) {
         for (int i = 0; i < amount; i++) {
-            if ((handler.getSlots() == SLOTS))
-                addSlot(new KeyRingSlot(handler, index, x, y));
+            if ((handler.size() == SLOTS))
+                addSlot(new KeyRingSlot(handler, slotModifier, index, x, y));
             else
-                addSlot(new SlotItemHandler(handler, index, x, y));
+                addSlot(new ResourceHandlerSlot(handler, slotModifier, index, x, y));
             x += dx;
             index++;
         }
         return index;
     }
 
-    private int addSlotBox(IItemHandler handler, int index, int x, int y, int horAmount, int dx, int verAmount, int dy) {
+    private int addSlotBox(ResourceHandler<ItemResource> handler, IndexModifier<ItemResource> slotModifier, int index, int x, int y, int horAmount, int dx, int verAmount, int dy) {
         for (int j = 0; j < verAmount; j++) {
-            index = addSlotRange(handler, index, x, y, horAmount, dx);
+            index = addSlotRange(handler, slotModifier, index, x, y, horAmount, dx);
             y += dy;
         }
         return index;
     }
 
     private void layoutPlayerInventorySlots(int leftCol, int topRow) {
+        // The wrapper reads the inventory per slot; the write a slot needs goes straight to it.
+        ResourceHandler<ItemResource> playerSlotsView = PlayerInventoryWrapper.of(playerInventory);
+        IndexModifier<ItemResource> playerSlots = (index, resource, amount) -> playerInventory.setItem(index, resource.toStack(amount));
+
         // Player inventory
-        addSlotBox(playerInventory, 9, leftCol, topRow, 9, 18, 3, 18);
+        addSlotBox(playerSlotsView, playerSlots, 9, leftCol, topRow, 9, 18, 3, 18);
 
         // Hotbar
         topRow += 58;
-        addSlotRange(playerInventory, 0, leftCol, topRow, 9, 18);
+        addSlotRange(playerSlotsView, playerSlots, 0, leftCol, topRow, 9, 18);
     }
 
     @Override

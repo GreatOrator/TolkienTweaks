@@ -12,7 +12,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.items.ComponentItemHandler;
 
 public class LockableDoubleChestContainer extends AbstractContainerMenu {
     public final LockableDoubleChestBlockEntity tileEntity;
@@ -20,7 +19,6 @@ public class LockableDoubleChestContainer extends AbstractContainerMenu {
     public String keyCode = null;
     public Player playerEntity;
     public BlockPos sourceContainer = BlockPos.ZERO;
-    public ComponentItemHandler keyCodeHandler;
 
     public LockableDoubleChestContainer(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
         this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()));

@@ -19,18 +19,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import com.greatorator.tolkienmobs.handler.capability.TolkienItemStackHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemUtil;
 import org.jetbrains.annotations.Nullable;
 
 public class PiggyBankBlockEntity extends TolkienBlockEntity implements MenuProvider {
-    public final ItemStackHandler itemHandler = new ItemStackHandler(54) {
+    public final TolkienItemStackHandler itemHandler = new TolkienItemStackHandler(54) {
         @Override
-        protected int getStackLimit(int slot, ItemStack stack) {
+        protected int getCapacity(int slot, ItemResource resource) {
             return 54;
         }
 
         @Override
-        protected void onContentsChanged(int slot) {
+        protected void onContentsChanged(int slot, ItemStack stack) {
             setChanged();
             if(!level.isClientSide()) {
                 level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
@@ -89,9 +91,9 @@ public class PiggyBankBlockEntity extends TolkienBlockEntity implements MenuProv
     }
 
     public void drops() {
-        SimpleContainer inv = new SimpleContainer(itemHandler.getSlots());
-        for(int i = 0; i < itemHandler.getSlots(); i++) {
-            inv.setItem(i, itemHandler.getStackInSlot(i));
+        SimpleContainer inv = new SimpleContainer(itemHandler.size());
+        for(int i = 0; i < itemHandler.size(); i++) {
+            inv.setItem(i, ItemUtil.getStack(itemHandler, i));
         }
 
         Containers.dropContents(this.level, this.worldPosition, inv);

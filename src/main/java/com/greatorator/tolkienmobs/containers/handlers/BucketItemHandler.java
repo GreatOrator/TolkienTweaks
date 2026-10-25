@@ -2,23 +2,21 @@ package com.greatorator.tolkienmobs.containers.handlers;
 
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
+import net.neoforged.neoforge.transfer.IndexModifier;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 
-public class BucketItemHandler extends SlotItemHandler {
-    private final IItemHandler itemHandler;
-    protected final int index;
+public class BucketItemHandler extends ResourceHandlerSlot {
     protected boolean enabled = true;
 
-    public BucketItemHandler(IItemHandler itemHandler, int slotIndex, int xPosition, int yPosition) {
-        super(itemHandler, slotIndex, xPosition, yPosition);
-
-        this.itemHandler = itemHandler;
-        this.index = slotIndex;
+    public BucketItemHandler(ResourceHandler<ItemResource> itemHandler, IndexModifier<ItemResource> slotModifier, int slotIndex, int xPosition, int yPosition) {
+        super(itemHandler, slotModifier, slotIndex, xPosition, yPosition);
     }
 
     public boolean mayPlace(ItemStack stack) {
-        return stack.getItem() instanceof BucketItem && this.itemHandler.isItemValid(this.index, stack);
+        return stack.getItem() instanceof BucketItem
+                && getResourceHandler().isValid(getSlotIndex(), ItemResource.of(stack));
     }
 
     @Override

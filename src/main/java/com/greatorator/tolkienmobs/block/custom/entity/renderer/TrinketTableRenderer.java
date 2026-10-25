@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.neoforged.neoforge.transfer.item.ItemUtil;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.jspecify.annotations.Nullable;
@@ -47,7 +48,7 @@ public class TrinketTableRenderer implements BlockEntityRenderer<TrinketTableBlo
         for (int slot = 0; slot < TrinketTableRenderState.SLOTS; slot++) {
             this.itemModelResolver.updateForTopItem(
                     state.items[slot],
-                    blockEntity.itemHandler.getStackInSlot(slot),
+                    ItemUtil.getStack(blockEntity.itemHandler, slot),
                     ItemDisplayContext.FIXED,
                     blockEntity.getLevel(),
                     null,

@@ -31,9 +31,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import com.greatorator.tolkienmobs.handler.capability.TolkienItemStackHandler;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -44,36 +46,36 @@ import java.util.Optional;
 import static com.greatorator.tolkienmobs.block.custom.FireplaceBlock.LIT;
 
 public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProvider {
-    private final ItemStackHandler fuelHandler = new ItemStackHandler(1){
+    private final TolkienItemStackHandler fuelHandler = new TolkienItemStackHandler(1){
         @Override
-        public boolean isItemValid(int slot, ItemStack stack) {
-            return stack.getBurnTime(RecipeType.SMELTING, level.fuelValues()) > 0;
+        public boolean isValid(int slot, ItemResource resource) {
+            return !resource.isEmpty() && resource.toStack().getBurnTime(RecipeType.SMELTING, level.fuelValues()) > 0;
         }
 
         @Override
-        protected void onContentsChanged(int slot) {
+        protected void onContentsChanged(int slot, ItemStack stack) {
             setChanged();
         }
     };
-    public final ItemStackHandler itemHandler = new ItemStackHandler(2) {
+    public final TolkienItemStackHandler itemHandler = new TolkienItemStackHandler(2) {
         @Override
-        public boolean isItemValid(int slot, ItemStack stack) {
-            return stack.is(Tags.Items.FOODS);
+        public boolean isValid(int slot, ItemResource resource) {
+            return !resource.isEmpty() && resource.test(stack -> stack.is(Tags.Items.FOODS));
         }
 
         @Override
-        protected void onContentsChanged(int slot) {
+        protected void onContentsChanged(int slot, ItemStack stack) {
             setChanged();
         }
     };
-    public final ItemStackHandler outputHandler = new ItemStackHandler(1){
+    public final TolkienItemStackHandler outputHandler = new TolkienItemStackHandler(1){
         @Override
-        public boolean isItemValid(int slot, ItemStack stack) {
+        public boolean isValid(int slot, ItemResource resource) {
             return false;
         }
 
         @Override
-        protected void onContentsChanged(int slot) {
+        protected void onContentsChanged(int slot, ItemStack stack) {
             setChanged();
         }
     };
@@ -174,15 +176,15 @@ public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProv
         isBurning = input.getBooleanOr("isBurning", false);
     }
 
-    public ItemStackHandler getFuelHandler() {
+    public TolkienItemStackHandler getFuelHandler() {
         return fuelHandler;
     }
 
-    public ItemStackHandler getInputHandler() {
+    public TolkienItemStackHandler getInputHandler() {
         return itemHandler;
     }
 
-    public ItemStackHandler getOutputHandler() {
+    public TolkienItemStackHandler getOutputHandler() {
         return outputHandler;
     }
 
@@ -191,7 +193,7 @@ public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProv
     }
 
     private void tryConsumeFuel() {
-        ItemStack stack = fuelHandler.getStackInSlot(0);
+        ItemStack stack = ItemUtil.getStack(fuelHandler, 0);
         final int factor = 1;
         int burnTimeTicks = factor * stack.getBurnTime(RecipeType.SMELTING, level.fuelValues());
 
@@ -200,7 +202,8 @@ public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProv
         } else {
             if (fuelTime < maxFuelTime && ((maxFuelTime - fuelTime) >= burnTimeTicks)) {
                 fuelTime = fuelTime + burnTimeTicks;
-                stack.shrink(1);
+                // The stack read above is a copy, so the used piece of fuel has to go back into the slot.
+                fuelHandler.set(0, ItemResource.of(stack), stack.getCount() - 1);
             }
         }
     }
@@ -222,10 +225,10 @@ public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProv
 
     public void drops() {
         SimpleContainer inv = new SimpleContainer(4);
-        inv.setItem(0, itemHandler.getStackInSlot(0));
-        inv.setItem(1, itemHandler.getStackInSlot(1));
-        inv.setItem(2, outputHandler.getStackInSlot(0));
-        inv.setItem(3, fuelHandler.getStackInSlot(0));
+        inv.setItem(0, ItemUtil.getStack(itemHandler, 0));
+        inv.setItem(1, ItemUtil.getStack(itemHandler, 1));
+        inv.setItem(2, ItemUtil.getStack(outputHandler, 0));
+        inv.setItem(3, ItemUtil.getStack(fuelHandler, 0));
 
         Containers.dropContents(this.level, this.worldPosition, inv);
     }
@@ -260,25 +263,21 @@ public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProv
             int extractFromSlot1 = 0;
 
             for (SizedIngredient ingredient : recipe.get().value().getInputItems()) {
-                if (ingredient.test(itemHandler.getStackInSlot(0))) {
-                    extractFromSlot0 += Math.min(itemHandler.getStackInSlot(0).getCount(), ingredient.count());
-                } else if (ingredient.test(itemHandler.getStackInSlot(1))) {
-                    extractFromSlot1 += Math.min(itemHandler.getStackInSlot(1).getCount(), ingredient.count());
+                if (ingredient.test(ItemUtil.getStack(itemHandler, 0))) {
+                    extractFromSlot0 += Math.min(ItemUtil.getStack(itemHandler, 0).getCount(), ingredient.count());
+                } else if (ingredient.test(ItemUtil.getStack(itemHandler, 1))) {
+                    extractFromSlot1 += Math.min(ItemUtil.getStack(itemHandler, 1).getCount(), ingredient.count());
                 }
             }
 
-            if (extractFromSlot0 > 0) {
-                itemHandler.extractItem(0, extractFromSlot0, false);
-            }
-            if (extractFromSlot1 > 0) {
-                itemHandler.extractItem(1, extractFromSlot1, false);
-            }
+            takeFromInput(0, extractFromSlot0);
+            takeFromInput(1, extractFromSlot1);
 
             for (ItemStack result : results) {
                 int outputSlot = findSuitableOutputSlot(result);
                 if (outputSlot != -1) {
-                    this.outputHandler.setStackInSlot(outputSlot, new ItemStack(result.getItem(),
-                            this.outputHandler.getStackInSlot(outputSlot).getCount() + result.getCount()));
+                    this.outputHandler.set(outputSlot, ItemResource.of(result),
+                            ItemUtil.getStack(this.outputHandler, outputSlot).getCount() + result.getCount());
 
                 } else {
                     System.err.println("No suitable output slot found for item: " + result);
@@ -287,11 +286,19 @@ public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProv
         }
     }
 
+    /** Takes a recipe's worth of ingredients out of an input slot. */
+    private void takeFromInput(int slot, int amount) {
+        if (amount <= 0) return;
+        ItemStack stack = ItemUtil.getStack(itemHandler, slot);
+        if (stack.isEmpty()) return;
+        itemHandler.set(slot, ItemResource.of(stack), stack.getCount() - Math.min(amount, stack.getCount()));
+    }
+
     private int findSuitableOutputSlot(ItemStack result) {
         // Implement logic to find a suitable output slot for the given result
         // Return the slot index or -1 if no suitable slot is found
-        for (int i = 0; i < this.outputHandler.getSlots(); i++) {
-            ItemStack stackInSlot = this.outputHandler.getStackInSlot(i);
+        for (int i = 0; i < this.outputHandler.size(); i++) {
+            ItemStack stackInSlot = ItemUtil.getStack(this.outputHandler, i);
             if (stackInSlot.isEmpty() || (stackInSlot.getItem() == result.getItem() && stackInSlot.getCount() + result.getCount() <= stackInSlot.getMaxStackSize())) {
                 return i;
             }
@@ -317,8 +324,8 @@ public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProv
     }
 
     private boolean isOutputSlotEmptyOrReceivable() {
-        return this.itemHandler.getStackInSlot(OUTPUT_SLOT).isEmpty() ||
-                this.itemHandler.getStackInSlot(OUTPUT_SLOT).getCount() < this.itemHandler.getStackInSlot(OUTPUT_SLOT).getMaxStackSize();
+        return ItemUtil.getStack(this.itemHandler, OUTPUT_SLOT).isEmpty() ||
+                ItemUtil.getStack(this.itemHandler, OUTPUT_SLOT).getCount() < ItemUtil.getStack(this.itemHandler, OUTPUT_SLOT).getMaxStackSize();
     }
 
     private boolean hasRecipe() {
@@ -335,8 +342,8 @@ public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProv
 
         // Create a mutable copy of the user inputs
         List<ItemStack> userInputs = new ArrayList<>();
-        userInputs.add(this.itemHandler.getStackInSlot(0));
-        userInputs.add(this.itemHandler.getStackInSlot(1));
+        userInputs.add(ItemUtil.getStack(this.itemHandler, 0));
+        userInputs.add(ItemUtil.getStack(this.itemHandler, 1));
 
         // Check if all recipe ingredients are matched with user inputs
         for (SizedIngredient recipeIngredient : recipeIngredients) {
@@ -379,8 +386,8 @@ public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProv
             count++;
         }
 
-        for (int i = 0; i < this.outputHandler.getSlots(); i++) {
-            ItemStack stackInSlot = this.outputHandler.getStackInSlot(i);
+        for (int i = 0; i < this.outputHandler.size(); i++) {
+            ItemStack stackInSlot = ItemUtil.getStack(this.outputHandler, i);
             if(!stackInSlot.isEmpty()){
                 for (ItemStack result : results){
                     if(stackInSlot.getItem() == result.getItem()){
@@ -401,16 +408,16 @@ public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProv
     private Optional<RecipeHolder<FireplaceRecipe>> getCurrentRecipe(){
         List<ItemStack> inputs = new ArrayList<>();
 
-        for (int i = 0; i < this.itemHandler.getSlots(); i++) {
-            inputs.add(this.itemHandler.getStackInSlot(i));
+        for (int i = 0; i < this.itemHandler.size(); i++) {
+            inputs.add(ItemUtil.getStack(this.itemHandler, i));
         }
 
         return this.level.getServer().getRecipeManager().getRecipeFor(TolkienRecipesTypes.FIREPLACE_TYPE.get(), new FireplaceRecipeInput(inputs), level);
     }
 
     private boolean canInsertItemIntoOutputSlot(Item item) {
-        for (int i = 0; i < this.outputHandler.getSlots(); i++) {
-            ItemStack stackInSlot = this.outputHandler.getStackInSlot(i);
+        for (int i = 0; i < this.outputHandler.size(); i++) {
+            ItemStack stackInSlot = ItemUtil.getStack(this.outputHandler, i);
             if (stackInSlot.isEmpty() || stackInSlot.getItem() == item) {
                 return true;
             }
@@ -419,8 +426,8 @@ public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProv
     }
 
     private boolean canInsertAmountIntoOutputSlot(ItemStack  count) {
-        for (int i = 0; i < this.outputHandler.getSlots(); i++) {
-            ItemStack stackInSlot = this.outputHandler.getStackInSlot(i);
+        for (int i = 0; i < this.outputHandler.size(); i++) {
+            ItemStack stackInSlot = ItemUtil.getStack(this.outputHandler, i);
             if (stackInSlot.isEmpty() || (stackInSlot.getItem() == count.getItem() && stackInSlot.getCount() + count.getCount() <= stackInSlot.getMaxStackSize())) {
                 return true;
             }

@@ -12,9 +12,11 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.IndexModifier;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
-public class BackpackUpgradeContainer extends TolkienContainer{
+public class BackpackUpgradeContainer extends TolkienContainer<BackpackBlockEntity>{
     public final BackpackBlockEntity tileEntity;
     private final Level level;
     public static final int COLUMNS = 3;
@@ -30,7 +32,7 @@ public class BackpackUpgradeContainer extends TolkienContainer{
         this.tileEntity = ((BackpackBlockEntity) blockEntity);
         this.level = inv.player.level();
 
-        addContainerSlots(this.tileEntity.itemHandler, COLUMNS, ROWS);
+        addContainerSlots(this.tileEntity.itemHandler, this.tileEntity.itemHandler::set, COLUMNS, ROWS);
     }
 
     @Override
@@ -63,7 +65,7 @@ public class BackpackUpgradeContainer extends TolkienContainer{
     }
 
     @Override
-    void addContainerSlots(IItemHandler itemHandler, int cols, int rows) {
+    void addContainerSlots(ResourceHandler<ItemResource> itemHandler, IndexModifier<ItemResource> slotModifier, int cols, int rows) {
         int slot_index = 84;
 
         for (int row = 0; row < rows; row++) {
@@ -71,7 +73,7 @@ public class BackpackUpgradeContainer extends TolkienContainer{
                 int x = (-6) + col * 18;
                 int y = 17 + row * 18;
 
-                this.addSlot(new UpgradeItemHandler(itemHandler, slot_index, x, y));
+                this.addSlot(new UpgradeItemHandler(itemHandler, slotModifier, slot_index, x, y));
                 slot_index++;
             }
         }

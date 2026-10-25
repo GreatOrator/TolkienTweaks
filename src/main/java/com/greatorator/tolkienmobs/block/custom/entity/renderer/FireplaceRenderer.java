@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemUtil;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.jspecify.annotations.Nullable;
@@ -44,9 +45,9 @@ public class FireplaceRenderer implements BlockEntityRenderer<FireplaceBlockEnti
         state.facing = blockEntity.getBlockState().getValue(FireplaceBlock.FACING);
 
         ItemStack[] stacks = {
-                blockEntity.itemHandler.getStackInSlot(0),
-                blockEntity.itemHandler.getStackInSlot(1),
-                blockEntity.outputHandler.getStackInSlot(0)
+                ItemUtil.getStack(blockEntity.itemHandler, 0),
+                ItemUtil.getStack(blockEntity.itemHandler, 1),
+                ItemUtil.getStack(blockEntity.outputHandler, 0)
         };
 
         for (int slot = 0; slot < FireplaceRenderState.SLOTS; slot++) {

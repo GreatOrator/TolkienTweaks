@@ -5,25 +5,20 @@
 
 package com.greatorator.tolkienmobs.containers.handlers;
 
-import net.minecraft.resources.Identifier;
-
 import com.greatorator.tolkienmobs.init.TolkienTags;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
+import net.neoforged.neoforge.transfer.IndexModifier;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 
-public class PiggyBankItemStackHandler extends SlotItemHandler {
-    private final IItemHandler itemHandler;
-    protected final int index;
-
-    public PiggyBankItemStackHandler(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
-        super(itemHandler, index, xPosition, yPosition);
-
-        this.itemHandler = itemHandler;
-        this.index = index;
+public class PiggyBankItemStackHandler extends ResourceHandlerSlot {
+    public PiggyBankItemStackHandler(ResourceHandler<ItemResource> itemHandler, IndexModifier<ItemResource> slotModifier, int index, int xPosition, int yPosition) {
+        super(itemHandler, slotModifier, index, xPosition, yPosition);
     }
 
     public boolean mayPlace(ItemStack stack) {
-        return !stack.is(TolkienTags.Items.COINS) ? false : this.itemHandler.isItemValid(this.index, stack);
+        return stack.is(TolkienTags.Items.COINS)
+                && getResourceHandler().isValid(getSlotIndex(), ItemResource.of(stack));
     }
 }

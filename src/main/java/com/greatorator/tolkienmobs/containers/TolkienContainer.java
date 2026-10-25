@@ -14,14 +14,14 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
+import net.neoforged.neoforge.transfer.IndexModifier;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 
 import javax.annotation.Nullable;
 
 public abstract class TolkienContainer<T extends TolkienBlockEntity> extends AbstractContainerMenu {
-    public ItemStackHandler handler;
     private static final EquipmentSlot[] EQUIPMENT_SLOTS = new EquipmentSlot[] {
             EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
     protected static final int ITEMBOX = 18;
@@ -49,7 +49,7 @@ public abstract class TolkienContainer<T extends TolkienBlockEntity> extends Abs
         }
     }
 
-    void addContainerSlots(IItemHandler itemHandler, int cols, int rows) {
+    void addContainerSlots(ResourceHandler<ItemResource> itemHandler, IndexModifier<ItemResource> slotModifier, int cols, int rows) {
         int slot_index = 0;
 
         for (int row = 0; row < rows; row++) {
@@ -57,17 +57,17 @@ public abstract class TolkienContainer<T extends TolkienBlockEntity> extends Abs
                 int x = -15 + col * 18;
                 int y = 13 + row * 18;
 
-                this.addSlot(new SlotItemHandler(itemHandler, slot_index, x, y));
+                this.addSlot(new ResourceHandlerSlot(itemHandler, slotModifier, slot_index, x, y));
                 slot_index++;
             }
         }
     }
 
-    void addUpgradeSlots(IItemHandler itemHandler, int cols) {
+    void addUpgradeSlots(ResourceHandler<ItemResource> itemHandler, IndexModifier<ItemResource> slotModifier, int cols) {
         int slot_index = 0;
 
         for (int col = 0; col < cols; col++) {
-            this.addSlot(new SlotItemHandler(itemHandler, slot_index, 0, 0));
+            this.addSlot(new ResourceHandlerSlot(itemHandler, slotModifier, slot_index, 0, 0));
             slot_index++;
         }
     }
@@ -98,9 +98,9 @@ public abstract class TolkienContainer<T extends TolkienBlockEntity> extends Abs
         });
     }
 
-    protected int addSlotRange(IItemHandler handler, int index, int x, int y, int amount, int dx) {
+    protected int addSlotRange(ResourceHandler<ItemResource> handler, IndexModifier<ItemResource> slotModifier, int index, int x, int y, int amount, int dx) {
         for (int i = 0; i < amount; i++) {
-            addSlot(new SlotItemHandler(handler, index, x, y));
+            addSlot(new ResourceHandlerSlot(handler, slotModifier, index, x, y));
             x += dx;
             index++;
         }

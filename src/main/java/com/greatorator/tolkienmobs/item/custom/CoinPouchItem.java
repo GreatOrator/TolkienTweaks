@@ -15,8 +15,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.ComponentItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.transfer.item.ItemUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -68,7 +67,7 @@ public class CoinPouchItem extends TolkienItem {
         handler.convertCoins();
         while (!coin.isEmpty()) {
             int before = coin.getCount();
-            ItemStack remainder = ItemHandlerHelper.insertItemStacked(handler, coin, false);
+            ItemStack remainder = ItemUtil.insertItemReturnRemaining(handler, coin, false, null);
             coin.setCount(remainder.getCount());
             boolean converted = handler.convertCoins();
             // An exchange can free slots for the rest of a large pickup.
@@ -99,12 +98,11 @@ public class CoinPouchItem extends TolkienItem {
     }
 
     public static float getCoinCount(ItemStack stack) {
-        ComponentItemHandler handler = new ComponentItemHandler(stack, TolkienDataComponents.ITEMSTACK_HANDLER.get(), CoinPouchContainer.SLOTS);
+        CoinPouchItemStackHandler handler = new CoinPouchItemStackHandler(CoinPouchContainer.SLOTS, stack);
         int count = 0;
-        int j;
-        for (j = 0; j < handler.getSlots(); j++) {
-            count+=handler.getStackInSlot(j).getCount();
+        for (int slot = 0; slot < handler.size(); slot++) {
+            count += ItemUtil.getStack(handler, slot).getCount();
         }
-        return count / (float)(handler.getSlots() * 64);
+        return count / (float)(handler.size() * 64);
     }
 }

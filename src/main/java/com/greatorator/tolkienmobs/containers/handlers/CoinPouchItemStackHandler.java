@@ -1,18 +1,18 @@
 package com.greatorator.tolkienmobs.containers.handlers;
 
+import com.greatorator.tolkienmobs.handler.capability.ComponentItemStackHandler;
+import com.greatorator.tolkienmobs.handler.capability.TolkienItemStackHandler;
 import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienTags;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.ItemContainerContents;
-import net.neoforged.neoforge.items.ComponentItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
-import net.neoforged.neoforge.items.ItemStackHandler;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemUtil;
 
-public class CoinPouchItemStackHandler extends ComponentItemHandler {
+public class CoinPouchItemStackHandler extends ComponentItemStackHandler {
+    private static final int SLOT_LIMIT = 64;
+
     public CoinPouchItemStackHandler(int slots, ItemStack stack) {
         super(stack, TolkienDataComponents.ITEMSTACK_HANDLER.get(), slots);
     }
@@ -21,50 +21,54 @@ public class CoinPouchItemStackHandler extends ComponentItemHandler {
     public boolean convertCoins() {
         Item[] tiers = {TolkienItems.ITEM_COIN_BRONZE.get(), TolkienItems.ITEM_COIN_SILVER.get(),
                 TolkienItems.ITEM_COIN_GOLD.get(), TolkienItems.ITEM_COIN_MITHRIL.get()};
-        ItemContainerContents contents = getContents();
-        var converted = new ItemStackHandler(getSlots());
-        for (int slot = 0; slot < getSlots(); slot++) {
-            converted.setStackInSlot(slot, getStackFromContents(contents, slot).copy());
+        // Exchange in a scratch handler first, so a pouch that cannot hold the result is left alone.
+        TolkienItemStackHandler working = new TolkienItemStackHandler(size());
+        for (int slot = 0; slot < size(); slot++) {
+            ItemStack stack = ItemUtil.getStack(this, slot);
+            if (!stack.isEmpty()) {
+                working.set(slot, ItemResource.of(stack), stack.getCount());
+            }
         }
         boolean changed = false;
         for (int tier = 0; tier < tiers.length - 1; tier++) {
             int count = 0;
-            for (int slot = 0; slot < getSlots(); slot++) {
-                ItemStack stack = converted.getStackInSlot(slot);
+            for (int slot = 0; slot < size(); slot++) {
+                ItemStack stack = ItemUtil.getStack(working, slot);
                 if (stack.is(tiers[tier])) count += stack.getCount();
             }
             int upgrades = count / 64;
             if (upgrades == 0) continue;
             int remaining = upgrades * 64;
-            for (int slot = 0; slot < getSlots() && remaining > 0; slot++) {
-                ItemStack stack = converted.getStackInSlot(slot);
+            for (int slot = 0; slot < size() && remaining > 0; slot++) {
+                ItemStack stack = ItemUtil.getStack(working, slot);
                 if (!stack.is(tiers[tier])) continue;
                 int removed = Math.min(remaining, stack.getCount());
-                converted.setStackInSlot(slot, stack.copyWithCount(stack.getCount() - removed));
+                working.set(slot, ItemResource.of(stack), stack.getCount() - removed);
                 remaining -= removed;
             }
-            ItemStack overflow = ItemHandlerHelper.insertItemStacked(converted, new ItemStack(tiers[tier + 1], upgrades), false);
+            ItemStack overflow = ItemUtil.insertItemReturnRemaining(working, new ItemStack(tiers[tier + 1], upgrades), false, null);
             // Publish only a complete exchange, including for legacy overfilled stacks.
             if (!overflow.isEmpty()) return false;
             changed = true;
         }
         if (changed) {
-            var items = NonNullList.withSize(Math.max(contents.getSlots(), getSlots()), ItemStack.EMPTY);
-            contents.copyInto(items);
-            for (int slot = 0; slot < getSlots(); slot++) items.set(slot, converted.getStackInSlot(slot));
-            parent.set(component, ItemContainerContents.fromItems(items));
+            for (int slot = 0; slot < size(); slot++) {
+                ItemStack stack = ItemUtil.getStack(working, slot);
+                if (ItemStack.matches(stack, ItemUtil.getStack(this, slot))) continue;
+                set(slot, stack.isEmpty() ? ItemResource.EMPTY : ItemResource.of(stack), stack.getCount());
+            }
         }
         return changed;
     }
 
     @Override
-    public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-        if (stack.isEmpty()) return true;
-        return stack.is(TolkienTags.Items.COINS);
+    public boolean isValid(int index, ItemResource resource) {
+        if (resource.isEmpty()) return true;
+        return resource.test(stack -> stack.is(TolkienTags.Items.COINS)) && super.isValid(index, resource);
     }
 
     @Override
-    public int getSlotLimit(int slot) {
-        return 64;
+    protected int getCapacity(int index, ItemResource resource) {
+        return Math.min(SLOT_LIMIT, super.getCapacity(index, resource));
     }
 }

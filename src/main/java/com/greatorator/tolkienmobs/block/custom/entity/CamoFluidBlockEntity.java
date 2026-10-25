@@ -22,25 +22,27 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import com.greatorator.tolkienmobs.handler.capability.TolkienItemStackHandler;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CamoFluidBlockEntity extends TolkienBlockEntity implements MenuProvider {
-    public final ItemStackHandler mainInventory = new ItemStackHandler(1) {
+    public final TolkienItemStackHandler mainInventory = new TolkienItemStackHandler(1) {
         @Override
-        protected int getStackLimit(int slot, ItemStack stack) {
+        protected int getCapacity(int slot, ItemResource resource) {
             return 1;
         }
 
         @Override
-        protected void onContentsChanged(int slot) {
+        protected void onContentsChanged(int slot, ItemStack stack) {
             setChanged();
             if(!level.isClientSide()) {
                 level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
@@ -127,7 +129,7 @@ public class CamoFluidBlockEntity extends TolkienBlockEntity implements MenuProv
     }
 
     public void onNeighborChange(Level level) {
-        ItemStack stack = mainInventory.getStackInSlot(0);
+        ItemStack stack = ItemUtil.getStack(mainInventory, 0);
         if (stack.isEmpty()) {
             return;
         }

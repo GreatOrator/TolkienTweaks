@@ -6,15 +6,18 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
+import net.neoforged.neoforge.transfer.IndexModifier;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemUtil;
+import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 
-public class PotionSlot extends SlotItemHandler {
+public class PotionSlot extends ResourceHandlerSlot {
     public static final Identifier backgroundLoc = null;
     private final Level level;
 
-    public PotionSlot(Level level, IItemHandler itemHandler, int index, int xPosition, int yPosition, Identifier backgroundLoc) {
-        super(itemHandler, index, xPosition, yPosition);
+    public PotionSlot(Level level, ResourceHandler<ItemResource> itemHandler, IndexModifier<ItemResource> slotModifier, int index, int xPosition, int yPosition, Identifier backgroundLoc) {
+        super(itemHandler, slotModifier, index, xPosition, yPosition);
         this.level = level;
     }
 
@@ -26,7 +29,7 @@ public class PotionSlot extends SlotItemHandler {
         // A tool waiting in the trinket slot also takes its repair material here, such as a
         // diamond for a diamond tool or whatever a data pack names instead.
         return GeneralUtility.isRepairMaterialFor(level,
-                getItemHandler().getStackInSlot(TrinketTableBlockEntity.TRINKET_SLOT), itemstack);
+                ItemUtil.getStack(getResourceHandler(), TrinketTableBlockEntity.TRINKET_SLOT), itemstack);
     }
 
     @Override
