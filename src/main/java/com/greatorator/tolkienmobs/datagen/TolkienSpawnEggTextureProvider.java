@@ -8,17 +8,22 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 import javax.imageio.ImageIO;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -28,24 +33,26 @@ import java.util.concurrent.CompletableFuture;
  * <p>26.1 dropped the two-layer egg template and the pair of tints that went with it: vanilla now
  * ships a flat image per mob (87 of them) and points each egg's item definition straight at
  * {@code item/generated} with that image as {@code layer0}. A mod has to bring its own images, so
- * they are painted here from the two colours the egg was already registered with in
- * {@link TolkienEntities#SPAWN_EGG_COLORS} - adding an egg still means one line in
- * {@code TolkienEntities}, not a new asset.</p>
+ * they are painted here from art the mod already has - the 16x16 entity icons - rather than drawn
+ * by hand for every mob.</p>
  *
- * <p>Every egg keeps the shape a spawn egg is known for. What tells them apart is the face, the way
- * vanilla's differ: an orc's jaw and tusks, a goblin's grin, a spider's four eyes, a beast's muzzle,
- * a bird's beak, a wraith's glow under its hood, a troll's brow and teeth, a tiny creature's snout,
- * a balrog's flame. The two colours stay the ones the egg registered with, so the eggs still fall
- * into the groups the old tinted eggs did: the horde, the rings, the beasts, the little things,
- * the free peoples and the bosses each share a base tone and vary in their spots.</p>
+ * <p>Each egg is the one shape a spawn egg is known for, with the mob's icon filling it, the way
+ * vanilla's eggs show a mob's face. The icon is mixed a little way towards the colour the egg was
+ * registered with, so the eggs still fall into the groups the old tinted eggs did - the horde, the
+ * ring-bearers, the beasts, the little things, the free peoples and the bosses each share a base
+ * tone - while the face underneath stays its own. The rim of the egg is darkened and the body runs
+ * from a lit crown to a shaded base, so a flat icon still reads as a rounded egg.</p>
  *
- * <p>Shading is worked out rather than drawn: the rim of the egg is darkened from its own edge, the
- * crown is lit and the base sinks, and a face's eyes and gaps are painted near-black.</p>
+ * <p>Only the two horses have no icon to borrow (the mod ships none for a steed); their eggs take
+ * a face painted from the glyphs in {@link Face} instead.</p>
  */
 public class TolkienSpawnEggTextureProvider implements DataProvider {
     private static final int SIZE = 16;
     private static final String NAME_PREFIX = "entityttm";
     private static final String NAME_SUFFIX = "_spawn_egg";
+
+    /** How far an icon's hue is pulled towards the egg's own; at 1 they all match it exactly. */
+    private static final float TINT = 0.7F;
 
     private static final char EMPTY = '.';
     private static final char BODY = 'X';
@@ -75,53 +82,46 @@ public class TolkienSpawnEggTextureProvider implements DataProvider {
     private static final int TOP = firstRow();
     private static final int BOTTOM = lastRow();
 
+    private final ResourceManager resources;
     private final PackOutput.PathProvider pathProvider;
 
-    public TolkienSpawnEggTextureProvider(PackOutput output) {
+    public TolkienSpawnEggTextureProvider(PackOutput output, ResourceManager resources) {
+        this.resources = resources;
         this.pathProvider = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "textures/item");
     }
 
-    /** What a mob's face is drawn as. */
+    /** What a mob's face is drawn as when the mod has no icon of it. */
     enum Face {
-        /** Angry eyes over a wide jaw: the orcs, the uruks, the men who march with them. */
-        ORC,
-        /** Two calm eyes and a nose: elves, dwarves, hobbits, men. */
+        /** Two calm eyes and a nose. */
         MAN,
-        /** Squinting eyes over a row of teeth: goblins and Gollum. */
-        GOBLIN,
-        /** Two points of glow under a hood: the wraiths and the dead. */
-        WRAITH,
-        /** Four eyes above a pair of fangs: spiders. */
-        SPIDER,
-        /** A broad muzzle with two nostrils: wargs, goats, horses, the great beasts. */
+        /** A broad muzzle with two nostrils. */
         BEAST,
-        /** A beak under one eye: eagles, crebain, the fell beast. */
-        BIRD,
-        /** A heavy brow over a row of teeth: trolls, ent, golems, the goblin king. */
-        TROLL,
-        /** A hooked nose and a heavy eye: the swamp hag. */
+        /** Four eyes above a pair of fangs. */
+        SPIDER,
+        /** A hooked nose and a heavy eye. */
         HAG,
-        /** A crown of flame: the balrog. */
-        FLAME,
-        /** Two small eyes and a snout: rats, squirrels, frogs, the swarm. */
+        /** Two small eyes and a snout. */
         CRITTER
     }
 
-    /** Which face each egg's mob takes; anything not named gets a man's. */
-    private static final Map<String, Face> MOBS = mobs();
+    /** The mobs with no icon, and the face painted for them instead. */
+    private static final Map<String, Face> FACELESS = faceless();
 
-    /** The faces, laid over the egg; a '.' leaves the egg's own colour showing. */
+    /** The faces above, laid over the egg; a '.' leaves the egg's own colour showing. */
     private static final Map<Face, String[]> FACES = faces();
+
+    /** Which icon each mob's egg is painted from, under {@code textures/entity_icon/}. */
+    private static final Map<String, String> ICONS = icons();
 
     @Override
     public CompletableFuture<?> run(CachedOutput cache) {
         try {
             for (Map.Entry<DeferredItem<Item>, TolkienEntities.SpawnEggColors> entry : TolkienEntities.SPAWN_EGG_COLORS.entrySet()) {
                 Identifier item = BuiltInRegistries.ITEM.getKey(entry.getKey().get());
-                Face face = MOBS.getOrDefault(mobOf(item.getPath()), Face.MAN);
+                String mob = mobOf(item.getPath());
 
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                ImageIO.write(paint(face, entry.getValue()), "png", bytes);
+                ImageIO.write(paint(mob, entry.getValue()), "png", bytes);
                 byte[] data = bytes.toByteArray();
 
                 Identifier sprite = TolkienMobsMain.resLoc(item.getPath());
@@ -140,35 +140,98 @@ public class TolkienSpawnEggTextureProvider implements DataProvider {
     }
 
     /**
-     * Draws the egg in the colours it registered, then the face over it: the body takes the base
-     * colour, the face's pattern the highlight, and its eyes the dark that makes a face read.
+     * Draws the mob's icon into the egg's shape, mixed towards the colour the egg registered with,
+     * or - for a mob with no icon - paints its face from the glyphs instead.
      */
-    private static BufferedImage paint(Face face, TolkienEntities.SpawnEggColors colors) {
-        String[] features = FACES.get(face);
+    private BufferedImage paint(String mob, TolkienEntities.SpawnEggColors colors) throws IOException {
         BufferedImage image = new BufferedImage(SIZE, SIZE, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage icon = readIcon(mob);
+        String[] glyphs = icon == null ? FACES.get(FACELESS.getOrDefault(mob, Face.MAN)) : null;
 
         for (int y = 0; y < SIZE; y++) {
             for (int x = 0; x < SIZE; x++) {
                 if (EGG[y].charAt(x) != BODY) {
                     continue;
                 }
-                char cell = features[y].charAt(x) == EMPTY ? BODY : features[y].charAt(x);
-                int rgb = switch (cell) {
-                    case ACCENT -> colors.highlight();
-                    case DARK -> shade(colors.background(), 0.22F);
-                    default -> colors.background();
-                };
-                float light = cell == DARK ? 1.0F : lighting(x, y);
+                float light = lighting(x, y);
+                int rgb;
+
+                if (icon != null) {
+                    int pixel = icon.getRGB(x, y) & 0xFFFFFF;
+                    rgb = isEdge(x, y) ? rim(pixel, colors.background()) : tint(pixel, colors.background());
+                } else {
+                    char cell = glyphs[y].charAt(x);
+                    rgb = switch (cell) {
+                        case ACCENT -> colors.highlight();
+                        case DARK -> shade(colors.background(), 0.22F);
+                        default -> colors.background();
+                    };
+                    light = cell == DARK ? 1.0F : light;
+                }
                 image.setRGB(x, y, 0xFF000000 | shade(rgb, light));
             }
         }
         return image;
     }
 
+    /** The mob's icon, if the mod ships one; icons are 16x16, so they drop straight onto the egg. */
+    private BufferedImage readIcon(String mob) throws IOException {
+        String path = ICONS.get(mob);
+        if (path == null) {
+            return null;
+        }
+        Identifier location = TolkienMobsMain.resLoc("textures/entity_icon/" + path);
+        Optional<Resource> resource = this.resources.getResource(location);
+        if (resource.isEmpty()) {
+            throw new IOException("Missing " + location + ", which the spawn egg sprites are built from");
+        }
+        try (InputStream stream = resource.get().open()) {
+            BufferedImage icon = ImageIO.read(stream);
+            if (icon == null || icon.getWidth() != SIZE || icon.getHeight() != SIZE) {
+                throw new IOException(location + " is not a " + SIZE + "x" + SIZE + " icon");
+            }
+            return icon;
+        }
+    }
+
+    /**
+     * Pulls an icon pixel's hue and saturation towards the egg's colour, keeping its brightness
+     * and stretching that brightness a little. Blending the colours outright greys the face out;
+     * keeping the light and dark of it is what lets a face survive while every egg in a group
+     * still reads as one tone.
+     */
+    private static int tint(int rgb, int toward) {
+        float[] base = Color.RGBtoHSB((toward >> 16) & 0xFF, (toward >> 8) & 0xFF, toward & 0xFF, null);
+        float[] pixel = Color.RGBtoHSB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, null);
+
+        float hue = (base[0] + (pixel[0] - base[0]) * (1.0F - TINT) + 1.0F) % 1.0F;
+        float saturation = pixel[1] + (base[1] - pixel[1]) * (TINT * 0.5F);
+        float brightness = clamp((pixel[2] - 0.45F) * 1.45F + 0.47F);
+        return Color.HSBtoRGB(hue, saturation, brightness) & 0xFFFFFF;
+    }
+
+    /**
+     * The cell along the egg's edge: the egg's own colour, so the icon inside it ends where the
+     * egg does rather than showing its own square border a pixel in from the rim.
+     */
+    private static int rim(int rgb, int toward) {
+        float[] base = Color.RGBtoHSB((toward >> 16) & 0xFF, (toward >> 8) & 0xFF, toward & 0xFF, null);
+        float[] pixel = Color.RGBtoHSB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, null);
+        return Color.HSBtoRGB(base[0], base[1], (pixel[2] + base[2]) * 0.5F) & 0xFFFFFF;
+    }
+
+    private static float clamp(float value) {
+        return Math.max(0.0F, Math.min(1.0F, value));
+    }
+
+    /** Whether the egg has no body cell next to this one, which is what makes it its rim. */
+    private static boolean isEdge(int x, int y) {
+        return !isSolid(x - 1, y) || !isSolid(x + 1, y) || !isSolid(x, y - 1) || !isSolid(x, y + 1);
+    }
+
     /**
      * How much light a cell gets: the rim of the egg is darkened into an outline, and the body runs
-     * from a lit crown to a shaded base, a little brighter towards the top left, so the egg reads
-     * as round from two colours.
+     * from a lit crown to a shaded base, a little brighter towards the top left.
      */
     private static float lighting(int x, int y) {
         float lit = 1.10F - 0.28F * ((y - TOP) / (float) Math.max(1, BOTTOM - TOP));
@@ -213,32 +276,9 @@ public class TolkienSpawnEggTextureProvider implements DataProvider {
     private static Map<Face, String[]> faces() {
         Map<Face, String[]> faces = new LinkedHashMap<>();
 
-        faces.put(Face.ORC, new FaceBuilder()
-                .row(6, ".....DD..DD.....")    // narrow eyes
-                .row(8, "......O..O......")    // tusks, rising past the jaw
-                .row(9, "......ODDO......")    // mouth between them
-                .rows());
-
         faces.put(Face.MAN, new FaceBuilder()
                 .row(6, ".....D....D.....")    // eyes
                 .row(8, ".......OO.......")    // nose
-                .rows());
-
-        faces.put(Face.GOBLIN, new FaceBuilder()
-                .row(6, ".....DD..DD.....")    // eyes
-                .row(9, ".....DDDDDD.....")    // wide grin
-                .row(10, "......O..O......")    // two teeth hanging from it
-                .rows());
-
-        faces.put(Face.WRAITH, new FaceBuilder()
-                .row(5, ".....DDDDDD.....")    // the shadow of a hood
-                .row(7, "......O..O......")    // two points of glow beneath it
-                .rows());
-
-        faces.put(Face.SPIDER, new FaceBuilder()
-                .row(6, ".....DD..DD.....")    // the big pair of eyes
-                .row(7, "......D..D......")    // and the small pair beneath
-                .row(9, ".......DD.......")    // fangs
                 .rows());
 
         faces.put(Face.BEAST, new FaceBuilder()
@@ -247,30 +287,16 @@ public class TolkienSpawnEggTextureProvider implements DataProvider {
                 .row(9, ".......DD.......")    // mouth under it
                 .rows());
 
-        faces.put(Face.BIRD, new FaceBuilder()
-                .row(6, ".....D..........")    // eye
-                .row(7, "......OOOO......")    // beak
-                .row(8, ".......OO.......")
-                .rows());
-
-        faces.put(Face.TROLL, new FaceBuilder()
-                .row(5, "....DDDDDDDD....")    // one heavy brow
-                .row(7, ".....D....D.....")    // eyes under it
-                .row(9, ".......DD.......")    // mouth
-                .row(10, "......OOOO......")    // and an underbite of teeth
+        faces.put(Face.SPIDER, new FaceBuilder()
+                .row(6, ".....DD..DD.....")    // the big pair of eyes
+                .row(7, "......D..D......")    // and the small pair beneath
+                .row(9, ".......DD.......")    // fangs
                 .rows());
 
         faces.put(Face.HAG, new FaceBuilder()
                 .row(6, ".....D..........")    // one eye; the other sits in shadow
                 .row(7, ".......O........")    // hooked nose
                 .row(8, "......O.........")
-                .rows());
-
-        faces.put(Face.FLAME, new FaceBuilder()
-                .row(2, "......O.O.......")    // a crown of fire
-                .row(3, ".....OOOOOO.....")
-                .row(4, "....OOOOOOOO....")
-                .row(6, ".....D....D.....")    // eyes below it
                 .rows());
 
         faces.put(Face.CRITTER, new FaceBuilder()
@@ -311,28 +337,74 @@ public class TolkienSpawnEggTextureProvider implements DataProvider {
         }
     }
 
-    private static Map<String, Face> mobs() {
-        Map<String, Face> mobs = new LinkedHashMap<>();
+    /** The mobs the mod has no icon for. */
+    private static Map<String, Face> faceless() {
+        Map<String, Face> faceless = new LinkedHashMap<>();
 
-        add(mobs, Face.ORC, "orc mordororc orc_trader urukhai");
-        add(mobs, Face.MAN, "human elves dwarf duergar hobbit southron southron_npc istari romiewalker huron brigand haradrim");
-        add(mobs, Face.GOBLIN, "goblin goblinking gollum");
-        add(mobs, Face.WRAITH, "nazgul barrow fellspirit enragedfellspirit oathbreaker witchking");
-        add(mobs, Face.SPIDER, "mirkwoodspider shelob watcher deepclaw");
-        add(mobs, Face.BEAST, "warg auroch goat mumakil shadowfax nazgulsteed minotaur");
-        add(mobs, Face.BIRD, "greateagle gwahir crebain thrush fellbeast");
-        add(mobs, Face.TROLL, "troll treeent rockgolem mithrilgolem morgulirongolem elementalgolem mimicchest");
-        add(mobs, Face.HAG, "swamphag");
-        add(mobs, Face.FLAME, "balrog");
-        add(mobs, Face.CRITTER, "rat squirrel gecko frog swarm");
+        faceless.put("nazgulsteed", Face.BEAST);
+        faceless.put("shadowfax", Face.BEAST);
 
-        return mobs;
+        return faceless;
     }
 
-    private static void add(Map<String, Face> mobs, Face face, String names) {
-        for (String name : names.split(" ")) {
-            mobs.put(name, face);
-        }
+    private static Map<String, String> icons() {
+        Map<String, String> icons = new LinkedHashMap<>();
+
+        icons.put("auroch", "auroch/auroch1.png");
+        icons.put("balrog", "balrog.png");
+        icons.put("barrow", "barrowwight/barrowwight1.png");
+        icons.put("brigand", "tmbrigand/brigand0.png");
+        icons.put("crebain", "birds/crebain.png");
+        icons.put("deepclaw", "tmdeepclaw/tmdeepclaw1.png");
+        icons.put("duergar", "tmduergar/tmduergar1.png");
+        icons.put("dwarf", "dwarf/dwarf1.png");
+        icons.put("elementalgolem", "elementalgolem/elemental_golem_earth.png");
+        icons.put("elves", "elves/elves1.png");
+        icons.put("enragedfellspirit", "fellspirit/fellspirit1.png");
+        icons.put("fellbeast", "fellbeast/fellbeast.png");
+        icons.put("fellspirit", "fellspirit/fellspirit2.png");
+        icons.put("frog", "toaddle/toaddle_green.png");
+        icons.put("gecko", "toaddle/toaddle_green.png");
+        icons.put("goat", "goat/goat1.png");
+        icons.put("goblin", "goblin/goblin1.png");
+        icons.put("goblinking", "goblin/goblin2.png");
+        icons.put("gollum", "gollum.png");
+        icons.put("greateagle", "birds/greateagle.png");
+        icons.put("gwahir", "birds/greateagle.png");
+        icons.put("haradrim", "tmharadrim/haradrim0.png");
+        icons.put("hobbit", "hobbit/hobbit0.png");
+        icons.put("human", "human/human1.png");
+        icons.put("istari", "human/human4.png");
+        icons.put("huron", "huron.png");
+        icons.put("mimicchest", "mimicchest/mimicchest1.png");
+        icons.put("minotaur", "minotaur.png");
+        icons.put("mirkwoodspider", "mirkwoodspider.png");
+        icons.put("mithrilgolem", "elementalgolem/elemental_golem_mithril.png");
+        icons.put("mordororc", "orc/mordororc1.png");
+        icons.put("morgulirongolem", "elementalgolem/elemental_golem_morgul.png");
+        icons.put("mumakil", "mumakil/mumakil1.png");
+        icons.put("nazgul", "nazgul.png");
+        icons.put("oathbreaker", "oathbreaker/oathbreaker1.png");
+        icons.put("orc", "orc/mordororc2.png");
+        icons.put("orc_trader", "orc/mordororc3.png");
+        icons.put("rat", "entityttmrat/entityttmrat0.png");
+        icons.put("rockgolem", "elementalgolem/elemental_golem_none.png");
+        icons.put("romiewalker", "romiewalker/romiewalker0.png");
+        icons.put("shelob", "tmshelob.png");
+        icons.put("southron", "tmharadrim/haradrim1.png");
+        icons.put("southron_npc", "tmharadrim/haradrim2.png");
+        icons.put("squirrel", "sosquirrel/sosquirrel.png");
+        icons.put("swamphag", "human/human12.png");
+        icons.put("swarm", "midgeflies.png");
+        icons.put("thrush", "birds/thrush.png");
+        icons.put("treeent", "treeent/treeent1.png");
+        icons.put("troll", "troll/cave_troll1.png");
+        icons.put("urukhai", "urukhai/urukhai1.png");
+        icons.put("warg", "warg/warg1.png");
+        icons.put("watcher", "tmshelob.png");
+        icons.put("witchking", "witchking.png");
+
+        return icons;
     }
 
     @Override
