@@ -1,9 +1,13 @@
 package com.greatorator.tolkienmobs.world.components.feature;
 
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
+import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * What counts as ground for the loose surface decorations - rubble, rock piles, stone spikes and the
@@ -15,6 +19,30 @@ import net.minecraft.world.level.block.state.BlockState;
  */
 public final class GroundRules {
     private GroundRules() {
+    }
+
+    /** How far under a column's surface the floor of a leaf pile may be looked for. */
+    private static final int CANOPY_DEPTH = 48;
+
+    /**
+     * The floor a fallen-leaf pile lies on. A wood's surface heightmap counts the leaves above it, so
+     * in the middle of one its answer sits on the tops of the trees and the soil test under it fails;
+     * this walks down the column to the first cell with room and soil - or water - beneath it, which
+     * is where a pile lies in a clearing, on open ground and under a tree alike.
+     */
+    @Nullable
+    public static BlockPos leafPileFloor(WorldGenLevel level, BlockPos from) {
+        BlockPos.MutableBlockPos pos = from.mutable();
+        for (int step = 0; step < CANOPY_DEPTH && pos.getY() > level.getMinY(); step++, pos.move(0, -1, 0)) {
+            if (!level.isEmptyBlock(pos) && !level.getBlockState(pos).canBeReplaced()) {
+                continue;
+            }
+            BlockState floor = level.getBlockState(pos.below());
+            if (floor.is(BlockTags.DIRT) || level.getFluidState(pos.below()).is(Fluids.WATER)) {
+                return pos.immutable();
+            }
+        }
+        return null;
     }
 
     public static boolean isBareGround(BlockState state) {

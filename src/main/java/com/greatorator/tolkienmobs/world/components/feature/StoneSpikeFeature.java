@@ -3,100 +3,90 @@ package com.greatorator.tolkienmobs.world.components.feature;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import org.jetbrains.annotations.Nullable;
 
+/**
+ * The spires of dark stone that stand on Mordor's floor.
+ * <p>
+ * The spike grows out of the ground it stands on: air, snow and the plants a column carries are built
+ * through, and the rock or soil under them is built against. It used to write only into ground blocks,
+ * which is all a spike that reaches above the soil never touches, so an attempt on open ground spent
+ * itself replacing nothing and the biome came out without a single one.
+ */
 public class StoneSpikeFeature extends Feature<NoneFeatureConfiguration> {
-   public StoneSpikeFeature(Codec<NoneFeatureConfiguration> configIn) {
-      super(configIn);
-   }
+    /** How far below the column's surface the ground the spike stands on is looked for. */
+    private static final int GROUND_DEPTH = 8;
 
-    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> p_159882_) {
-        BlockPos blockpos = p_159882_.origin();
-        RandomSource randomsource = p_159882_.random();
+    public StoneSpikeFeature(Codec<NoneFeatureConfiguration> configIn) {
+        super(configIn);
+    }
 
-        WorldGenLevel worldgenlevel;
-        for(worldgenlevel = p_159882_.level(); worldgenlevel.isEmptyBlock(blockpos) && blockpos.getY() > worldgenlevel.getMinY() + 2; blockpos = blockpos.below()) {
-        }
+    @Override
+    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> ctx) {
+        WorldGenLevel level = ctx.level();
+        RandomSource random = ctx.random();
 
-        if (!GroundRules.isBareGround(worldgenlevel.getBlockState(blockpos))) {
+        BlockPos ground = groundUnder(level, ctx.origin());
+        if (ground == null) {
             return false;
-        } else {
-            blockpos = blockpos.above(randomsource.nextInt(4));
-            int i = randomsource.nextInt(4) + 7;
-            int j = i / 4 + randomsource.nextInt(2);
-            if (j > 1 && randomsource.nextInt(60) == 0) {
-                blockpos = blockpos.above(10 + randomsource.nextInt(30));
-            }
-
-            int k;
-            int l;
-            for(k = 0; k < i; ++k) {
-                float f = (1.0F - (float)k / (float)i) * (float)j;
-                l = Mth.ceil(f);
-
-                for(int i1 = -l; i1 <= l; ++i1) {
-                    float f1 = (float)Mth.abs(i1) - 0.25F;
-
-                    for(int j1 = -l; j1 <= l; ++j1) {
-                        float f2 = (float)Mth.abs(j1) - 0.25F;
-                        if ((i1 == 0 && j1 == 0 || !(f1 * f1 + f2 * f2 > f * f)) && (i1 != -l && i1 != l && j1 != -l && j1 != l || !(randomsource.nextFloat() > 0.75F))) {
-                            BlockState blockstate = worldgenlevel.getBlockState(blockpos.offset(i1, k, j1));
-                            if (GroundRules.isBareGround(blockstate)) {
-                                this.setBlock(worldgenlevel, blockpos.offset(i1, k, j1), TolkienBlocks.DARK_STONE.get().defaultBlockState());
-                            }
-
-                            if (k != 0 && l > 1) {
-                                blockstate = worldgenlevel.getBlockState(blockpos.offset(i1, -k, j1));
-                                if (GroundRules.isBareGround(blockstate)) {
-                                    this.setBlock(worldgenlevel, blockpos.offset(i1, -k, j1), TolkienBlocks.DARK_STONE.get().defaultBlockState());
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            k = j - 1;
-            if (k < 0) {
-                k = 0;
-            } else if (k > 1) {
-                k = 1;
-            }
-
-            for(int l1 = -k; l1 <= k; ++l1) {
-                for(l = -k; l <= k; ++l) {
-                    BlockPos blockpos1 = blockpos.offset(l1, -1, l);
-                    int j2 = 50;
-                    if (Math.abs(l1) == 1 && Math.abs(l) == 1) {
-                        j2 = randomsource.nextInt(5);
-                    }
-
-                    while(blockpos1.getY() > 50) {
-                        BlockState blockstate1 = worldgenlevel.getBlockState(blockpos1);
-                        if (!blockstate1.isAir() && !GroundRules.isBareGround(blockstate1)) {
-                            break;
-                        }
-
-                        this.setBlock(worldgenlevel, blockpos1, TolkienBlocks.DARK_STONE.get().defaultBlockState());
-                        blockpos1 = blockpos1.below();
-                        --j2;
-                        if (j2 <= 0) {
-                            blockpos1 = blockpos1.below(randomsource.nextInt(5) + 1);
-                            j2 = randomsource.nextInt(5);
-                        }
-                    }
-                }
-            }
-
-            return true;
         }
+
+        // One attempt in sixty raises a needle instead of a lump: tall enough to be seen from the far
+        // side of a plain, and narrow, because a cone of that height would be a mountain.
+        boolean needle = random.nextInt(60) == 0;
+        int height = needle ? 20 + random.nextInt(21) : random.nextInt(4) + 7;
+        int width = needle ? 1 : height / 4 + random.nextInt(2);
+
+        BlockState stone = TolkienBlocks.DARK_STONE.get().defaultBlockState();
+        boolean placed = false;
+        for (int y = 0; y < height; y++) {
+            float radiusHere = (1.0F - (float) y / (float) height) * (float) width;
+            int radius = Mth.ceil(radiusHere);
+            for (int dx = -radius; dx <= radius; dx++) {
+                for (int dz = -radius; dz <= radius; dz++) {
+                    float edgeX = (float) Mth.abs(dx) - 0.25F;
+                    float edgeZ = (float) Mth.abs(dz) - 0.25F;
+                    // A round cross-section, its corners thinned out so the spike reads as rock.
+                    if ((dx != 0 || dz != 0) && edgeX * edgeX + edgeZ * edgeZ > radiusHere * radiusHere) {
+                        continue;
+                    }
+                    if (radius > 1 && (Math.abs(dx) == radius || Math.abs(dz) == radius) && random.nextFloat() > 0.75F) {
+                        continue;
+                    }
+                    BlockPos pos = ground.above(y).offset(dx, 0, dz);
+                    if (pos.getY() > level.getMaxY() || !canBuildThrough(level, pos)) {
+                        continue;
+                    }
+                    this.setBlock(level, pos, stone);
+                    placed = true;
+                }
+            }
+        }
+        return placed;
+    }
+
+    /** The rock or soil the spike stands on, below the plants, snow or water the column carries. */
+    @Nullable
+    private static BlockPos groundUnder(WorldGenLevel level, BlockPos from) {
+        BlockPos pos = from;
+        for (int step = 0; step < GROUND_DEPTH && pos.getY() > level.getMinY(); step++, pos = pos.below()) {
+            if (GroundRules.isBareGround(level.getBlockState(pos))) {
+                return pos;
+            }
+        }
+        return null;
+    }
+
+    /** Air and whatever a plant would grow over; the spike stops at anything with a shape of its own. */
+    private static boolean canBuildThrough(WorldGenLevel level, BlockPos pos) {
+        BlockState state = level.getBlockState(pos);
+        return state.isAir() || state.canBeReplaced();
     }
 }

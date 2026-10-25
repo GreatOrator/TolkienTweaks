@@ -43,25 +43,19 @@ public class AvoidLandmarkModifier extends PlacementModifier {
 		return new AvoidLandmarkModifier(true, true, 0);
 	}
 
+	/**
+	 * The landmark clearance this modifier was written against is gone: it asked a structure start
+	 * whether surface decoration was allowed, through a landmark system the mod no longer carries, so
+	 * there is nothing left to consult and every place it is asked about keeps its position.
+	 * <p>
+	 * It used to answer with no positions at all, which emptied every placed feature that listed it -
+	 * the fallen-leaf piles of all six woods and the wood and plant roots - while their biome
+	 * attachments and their generated data stayed exactly as they were.
+	 */
 	@Override
 	public Stream<BlockPos> getPositions(PlacementContext worldDecoratingHelper, RandomSource random, BlockPos blockPos) {
-//		// Feature Center
-//		BlockPos.MutableBlockPos featurePos = LegacyLandmarkPlacements.getNearestCenterXZ(blockPos.getX() >> 4, blockPos.getZ() >> 4).mutable();
-//
-//		Optional<StructureStart> possibleStructureStart = LandmarkUtil.locateNearestLandmarkStart(worldDecoratingHelper.getLevel(), SectionPos.blockToSectionCoord(featurePos.getX()), SectionPos.blockToSectionCoord(featurePos.getZ()));
-//		if (possibleStructureStart.isEmpty() || !(possibleStructureStart.get().getStructure() instanceof DecorationClearance decorationClearance))
-//			return Stream.of(blockPos);
-//
-//		if ((!this.occupiesSurface || decorationClearance.isSurfaceDecorationsAllowed()) && (!this.occupiesUnderground || decorationClearance.isUndergroundDecoAllowed()))
-//			return Stream.of(blockPos);
-//
-//		// Turn Feature Center into Feature Offset
-//		featurePos.set(Math.abs(featurePos.getX() - blockPos.getX()), 0, Math.abs(featurePos.getZ() - blockPos.getZ()));
-//		int size = decorationClearance.chunkClearanceRadius() * 16 + this.additionalClearance;
-//
-//		return featurePos.getX() < size && featurePos.getZ() < size ? Stream.empty() : Stream.of(blockPos);
-        return Stream.empty();
-    }
+		return Stream.of(blockPos);
+	}
 
 	@Override
 	public PlacementModifierType<?> type() {
