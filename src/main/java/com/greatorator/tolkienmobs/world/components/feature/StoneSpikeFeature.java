@@ -41,8 +41,10 @@ public class StoneSpikeFeature extends Feature<NoneFeatureConfiguration> {
         // One attempt in sixty raises a needle instead of a lump: tall enough to be seen from the far
         // side of a plain, and narrow, because a cone of that height would be a mountain.
         boolean needle = random.nextInt(60) == 0;
-        int height = needle ? 20 + random.nextInt(21) : random.nextInt(4) + 7;
-        int width = needle ? 1 : height / 4 + random.nextInt(2);
+        int height = needle ? 40 + random.nextInt(41) : 14 + random.nextInt(7);
+        // The base stays the width it always was: the height doubled, so a base built from the same
+        // fraction of it would have widened every spike into a hill.
+        int width = needle ? 1 : height / 8 + random.nextInt(2);
 
         BlockState stone = TolkienBlocks.DARK_STONE.get().defaultBlockState();
         boolean placed = false;
