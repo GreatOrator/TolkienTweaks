@@ -229,11 +229,12 @@ public abstract class TolkienLangHelperCN extends LanguageProvider {
         // The sign and hanging sign a player carries are items of their own, not block items.
         this.add("item.tolkienmobs.sign_" + woodPrefix, woodName + "告示牌");
         this.add("item.tolkienmobs.hanging_sign_" + woodPrefix, "悬挂式" + woodName + "告示牌");
-        this.add("block.tolkienmobs.barrel_" + woodPrefix, woodName + "木桶");
+        this.add("block.tolkienmobs.barrel_" + woodPrefix, woodName + "桶");
         this.add("block.tolkienmobs.log_" + woodPrefix, woodName + "原木");
-        this.add("block.tolkienmobs.wood_" + woodPrefix, woodName + "木头");
+        // Vanilla names the bark-on-all-sides block after the wood itself (橡木), and 木桶 is already "barrel".
+        this.add("block.tolkienmobs.wood_" + woodPrefix, woodName);
         this.add("block.tolkienmobs.stripped_log_" + woodPrefix, "去皮" + woodName + "原木");
-        this.add("block.tolkienmobs.stripped_wood_" + woodPrefix, "去皮" + woodName + "木头");
+        this.add("block.tolkienmobs.stripped_wood_" + woodPrefix, "去皮" + woodName);
         this.add("block.tolkienmobs.sapling_" + woodPrefix, woodName + "树苗");
         this.add("block.tolkienmobs.potted_sapling_" + woodPrefix, "盆栽" + woodName + "树苗");
         this.add("block.tolkienmobs.leaves_" + woodPrefix, woodName + "树叶");
