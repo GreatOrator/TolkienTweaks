@@ -107,42 +107,46 @@ public class FluidTankRenderer {
         return tintSource == null ? 0xFFFFFFFF : tintSource.colorAsStack(fluidStack);
     }
 
+    /**
+     * The rows are stacked up from the tank's floor. Anchoring each 16-pixel row at the top of its
+     * own slot left the part-filled row that far above the bottom - a tank of 3,000 mB in 128,000
+     * drew its one-pixel sliver 15 pixels up - and put a gap between the sliver and the rows below
+     * it, so the level never looked like it sat on the floor. A row is now placed by its bottom edge
+     * and takes the bottom of the sprite, so partial rows stay flush and the rows meet without a
+     * seam.
+     */
     private static void drawTiledSprite(GuiGraphicsExtractor graphics, final int tiledWidth, final int tiledHeight, int color, long scaledAmount, TextureAtlasSprite sprite) {
-        final int xTileCount = tiledWidth / TEXTURE_SIZE;
-        final int xRemainder = tiledWidth - (xTileCount * TEXTURE_SIZE);
-        final long yTileCount = scaledAmount / TEXTURE_SIZE;
-        final long yRemainder = scaledAmount - (yTileCount * TEXTURE_SIZE);
+        final int filled = (int) Math.min(tiledHeight, scaledAmount);
+        final int columnCount = (tiledWidth + TEXTURE_SIZE - 1) / TEXTURE_SIZE;
 
-        final int yStart = tiledHeight;
+        for (int column = 0; column < columnCount; column++) {
+            final int x = column * TEXTURE_SIZE;
+            final int width = Math.min(TEXTURE_SIZE, tiledWidth - x);
 
-        for (int xTile = 0; xTile <= xTileCount; xTile++) {
-            for (int yTile = 0; yTile <= yTileCount; yTile++) {
-                int width = (xTile == xTileCount) ? xRemainder : TEXTURE_SIZE;
-                long height = (yTile == yTileCount) ? yRemainder : TEXTURE_SIZE;
-                int x = (xTile * TEXTURE_SIZE);
-                int y = yStart - ((yTile + 1) * TEXTURE_SIZE);
-                if (width > 0 && height > 0) {
-                    long maskTop = TEXTURE_SIZE - height;
-                    int maskRight = TEXTURE_SIZE - width;
-
-                    drawTextureWithMasking(graphics, x, y, sprite, maskTop, maskRight, color);
-                }
+            for (int drawn = 0; drawn < filled; ) {
+                final int height = Math.min(TEXTURE_SIZE, filled - drawn);
+                drawFluidSlice(graphics, x, tiledHeight - drawn - height, width, height, sprite, color);
+                drawn += height;
             }
         }
     }
 
-    private static void drawTextureWithMasking(GuiGraphicsExtractor graphics, int xCoord, int yCoord, TextureAtlasSprite textureSprite, long maskTop, long maskRight, int color) {
+    /**
+     * Draws one {@code width} x {@code height} slice of the sprite, taken from its top-left corner
+     * horizontally and from its bottom-left corner vertically, so the slice sits on the fluid below
+     * it rather than above it.
+     */
+    private static void drawFluidSlice(GuiGraphicsExtractor graphics, int xCoord, int yCoord, int width, int height,
+                                       TextureAtlasSprite textureSprite, int color) {
         float uMin = textureSprite.getU0();
-        float uMax = textureSprite.getU1();
         float vMin = textureSprite.getV0();
-        float vMax = textureSprite.getV1();
-        uMax = uMax - (maskRight / 16F * (uMax - uMin));
-        vMax = vMax - (maskTop / 16F * (vMax - vMin));
+        int spriteWidth = Math.max(1, Math.round((textureSprite.getU1() - uMin) * ATLAS_TEXTURE_SIZE));
+        int spriteHeight = Math.max(1, Math.round((textureSprite.getV1() - vMin) * ATLAS_TEXTURE_SIZE));
 
         int u = Math.round(uMin * ATLAS_TEXTURE_SIZE);
-        int v = Math.round(vMin * ATLAS_TEXTURE_SIZE);
-        int uWidth = Math.max(1, Math.round((uMax - uMin) * ATLAS_TEXTURE_SIZE));
-        int vHeight = Math.max(1, Math.round((vMax - vMin) * ATLAS_TEXTURE_SIZE));
+        int uWidth = Math.max(1, Math.round(spriteWidth * (width / (float) TEXTURE_SIZE)));
+        int vHeight = Math.max(1, Math.round(spriteHeight * (height / (float) TEXTURE_SIZE)));
+        int v = Math.round(vMin * ATLAS_TEXTURE_SIZE) + spriteHeight - vHeight;
 
         graphics.blit(
                 RenderPipelines.GUI_TEXTURED,
@@ -151,8 +155,8 @@ public class FluidTankRenderer {
                 yCoord,
                 u,
                 v,
-                TEXTURE_SIZE - (int) maskRight,
-                TEXTURE_SIZE - (int) maskTop,
+                width,
+                height,
                 uWidth,
                 vHeight,
                 ATLAS_TEXTURE_SIZE,
