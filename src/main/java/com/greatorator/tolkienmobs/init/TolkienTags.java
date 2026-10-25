@@ -51,7 +51,7 @@ public class TolkienTags {
         public static final TagKey<Item> CURIOS_RING = createTag("curios:ring");
         public static final TagKey<Item> CURIOS_CHARM = createTag("curios:charm");
         public static final TagKey<Item> CURIOS_BELT = createTag("curios:belt");
-        public static final TagKey<Item> CURIOS_AMULET = createTag("curios:amulet");
+        public static final TagKey<Item> CURIOS_NECKLACE = createTag("curios:necklace");
         public static final TagKey<Item> CURIOS_HANDS = createTag("curios:hands");
         public static final TagKey<Item> CURIOS_BODY = createTag("curios:body");
         public static final TagKey<Item> CURIOS_HEAD = createTag("curios:head");
