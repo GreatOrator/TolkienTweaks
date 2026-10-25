@@ -234,6 +234,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.add(TolkienBlocks.FIREPLACE.get(), "壁炉");
             this.add(TolkienBlocks.PIGGYBANK.get(), "猪猪存钱罐");
             this.add(TolkienBlocks.BACKPACK.get(), "冒险者背包");
+            this.addItem(TolkienBlocks.BACKPACK_ITEM, "冒险者背包");
             this.add(TolkienBlocks.CHAMELEON_BLOCK.get(), "变色方块");
             this.add(TolkienBlocks.KEY_STONE_BLOCK.get(), "伪装的钥匙石方块");
             this.add(TolkienBlocks.CAMO_GLOWSTONE_BLOCK.get(), "伪装的荧石");
@@ -241,6 +242,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.add(TolkienBlocks.CAMO_FLUID_BLOCK.get(), "伪装的流体源");
             this.add(TolkienBlocks.CAMO_CHEST_BLOCK.get(), "伪装的箱子");
             this.add(TolkienBlocks.CAMO_SPAWNER_BLOCK.get(), "伪装的刷怪笼");
+            this.addItem(TolkienBlocks.CAMO_SPAWNER_ITEM, "伪装的刷怪笼");
             this.add(TolkienBlocks.MILESTONE_BLOCK.get(), "快速旅行里程碑");
             this.add(TolkienBlocks.WELL.get(), "水井");
             this.add(TolkienBlocks.LOCKABLE_CHEST_BLOCK.get(), "可上锁的箱子");
@@ -250,13 +252,13 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addBlock(TolkienBlocks.SILMARIL_LANTERN, "埃兰迪尔之光");
             this.addBlock(TolkienBlocks.ELVEN_LANTERN, "精灵灯笼");
             this.addBlock(TolkienBlocks.MORGUL_LANTERN, "魔古尔灯笼");
-            this.addBlock(TolkienBlocks.TORCH_MALLORN, "瑁珑木火把");
-            this.addBlock(TolkienBlocks.TORCH_MIRKWOOD, "阴郁木火把");
-            this.addBlock(TolkienBlocks.TORCH_CULUMALDA, "库露瑁勒达木火把");
-            this.addBlock(TolkienBlocks.TORCH_LEBETHRON, "莱贝斯隆木火把");
-            this.addBlock(TolkienBlocks.TORCH_FANGORNOAK, "范贡橡木火把");
-            this.addBlock(TolkienBlocks.TORCH_DEADWOOD, "枯萎木火把");
-            this.addBlock(TolkienBlocks.TORCH_DWARVEN_MAPLE, "矮人枫木火把");
+            this.addTorch(TolkienItems.MALLORN_TORCH_ITEM.get(), TolkienBlocks.TORCH_MALLORN.get(), TolkienBlocks.WALL_TORCH_MALLORN.get(), "瑁珑木火把");
+            this.addTorch(TolkienItems.MIRKWOOD_TORCH_ITEM.get(), TolkienBlocks.TORCH_MIRKWOOD.get(), TolkienBlocks.WALL_TORCH_MIRKWOOD.get(), "阴郁木火把");
+            this.addTorch(TolkienItems.CULUMALDA_TORCH_ITEM.get(), TolkienBlocks.TORCH_CULUMALDA.get(), TolkienBlocks.WALL_TORCH_CULUMALDA.get(), "库露瑁勒达木火把");
+            this.addTorch(TolkienItems.LEBETHRON_TORCH_ITEM.get(), TolkienBlocks.TORCH_LEBETHRON.get(), TolkienBlocks.WALL_TORCH_LEBETHRON.get(), "莱贝斯隆木火把");
+            this.addTorch(TolkienItems.FANGORNOAK_TORCH_ITEM.get(), TolkienBlocks.TORCH_FANGORNOAK.get(), TolkienBlocks.WALL_TORCH_FANGORNOAK.get(), "范贡橡木火把");
+            this.addTorch(TolkienItems.DEADWOOD_TORCH_ITEM.get(), TolkienBlocks.TORCH_DEADWOOD.get(), TolkienBlocks.WALL_TORCH_DEADWOOD.get(), "枯萎木火把");
+            this.addTorch(TolkienItems.DWARVEN_MAPLE_TORCH_ITEM.get(), TolkienBlocks.TORCH_DWARVEN_MAPLE.get(), TolkienBlocks.WALL_TORCH_DWARVEN_MAPLE.get(), "矮人枫木火把");
             this.addBlock(TolkienBlocks.ANCIENT_WATCHER, "远古监视者石像");
             this.addBlock(TolkienBlocks.ANCIENT_DEAD_WATCHER, "损坏的远古监视者石像");
 
@@ -269,6 +271,10 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.createWoodSet("dwarven_maple", "矮人枫木");
             this.createMetalSet("mithril", "秘银");
             this.createMetalSet("morguliron", "魔古尔铁");
+
+            this.addTrimMaterial("mithril", "秘银");
+            this.addTrimMaterial("morguliron", "魔古尔铁");
+            this.addTrimMaterial("ammolite", "斑彩石");
 
             this.createStoneSet("dwarven_stone", "矮人岩石");
             this.createStoneSet("chiseled_dwarven_stone_bricks", "雕纹矮人岩石砖");
@@ -339,6 +345,23 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addBlockWithLore(TolkienBlocks.SLEEPING_BAG_PURPLE.get(), "紫色睡袋", "§c不会§r重置出生点。");
             this.addBlockWithLore(TolkienBlocks.SLEEPING_BAG_WHITE.get(), "白色睡袋", "§c不会§r重置出生点。");
             this.addBlockWithLore(TolkienBlocks.SLEEPING_BAG_YELLOW.get(), "黄色睡袋", "§c不会§r重置出生点。");
+            // The bag a player carries is an item of its own, so it needs its own name and lore line.
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_BLUE.get(), "蓝色睡袋", "§c不会§r重置出生点。");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_RED.get(), "红色睡袋", "§c不会§r重置出生点。");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_BLACK.get(), "黑色睡袋", "§c不会§r重置出生点。");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_BROWN.get(), "棕色睡袋", "§c不会§r重置出生点。");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_CYAN.get(), "青色睡袋", "§c不会§r重置出生点。");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_GRAY.get(), "灰色睡袋", "§c不会§r重置出生点。");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_GREEN.get(), "绿色睡袋", "§c不会§r重置出生点。");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_LIGHT_BLUE.get(), "淡蓝色睡袋", "§c不会§r重置出生点。");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_LIGHT_GRAY.get(), "淡灰色睡袋", "§c不会§r重置出生点。");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_LIME.get(), "黄绿色睡袋", "§c不会§r重置出生点。");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_MAGENTA.get(), "品红色睡袋", "§c不会§r重置出生点。");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_ORANGE.get(), "橙色睡袋", "§c不会§r重置出生点。");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_PINK.get(), "粉色睡袋", "§c不会§r重置出生点。");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_PURPLE.get(), "紫色睡袋", "§c不会§r重置出生点。");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_WHITE.get(), "白色睡袋", "§c不会§r重置出生点。");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_YELLOW.get(), "黄色睡袋", "§c不会§r重置出生点。");
 
                 // Screens
             this.addItemScreen(TolkienItems.BRONZE_KEY.get(), "青铜钥匙");

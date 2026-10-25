@@ -120,6 +120,7 @@ public abstract class TolkienLangHelperUS extends LanguageProvider {
     }
 
     public void createTrinketSet(String trinketType, String descriptionType) {
+        this.add("item.tolkienmobs.trinket_" + trinketType, "Magical " + descriptionType);
         this.add("item.tolkienmobs.trinket_" + trinketType + ".empty", "Base " + descriptionType);
         this.add("item.tolkienmobs.trinket_" + trinketType + ".water", "Magical " + descriptionType + " of Nothingness");
         this.add("item.tolkienmobs.trinket_" + trinketType + ".mundane", "Magical " + descriptionType + " of Nothingness");
@@ -225,6 +226,9 @@ public abstract class TolkienLangHelperUS extends LanguageProvider {
         this.add("block.tolkienmobs.sign_wall_" + woodPrefix, woodName + " Wall Sign");
         this.add("block.tolkienmobs.hanging_sign_" + woodPrefix, woodName + " Hanging Sign");
         this.add("block.tolkienmobs.hanging_sign_wall_" + woodPrefix, woodName + " Wall Hanging Sign");
+        // The sign and hanging sign a player carries are items of their own, not block items.
+        this.add("item.tolkienmobs.sign_" + woodPrefix, woodName + " Sign");
+        this.add("item.tolkienmobs.hanging_sign_" + woodPrefix, woodName + " Hanging Sign");
         this.add("block.tolkienmobs.barrel_" + woodPrefix, woodName + " Barrel");
         this.add("block.tolkienmobs.log_" + woodPrefix, woodName + " Log");
         this.add("block.tolkienmobs.wood_" + woodPrefix, woodName + " Wood");
@@ -238,6 +242,17 @@ public abstract class TolkienLangHelperUS extends LanguageProvider {
         this.add("item.tolkienmobs.chest_boat_" + woodPrefix, woodName + " Chest Boat");
         this.add("entity.tolkienmobs.boat_" + woodPrefix, woodName + " Boat");
         this.add("entity.tolkienmobs.chest_boat_" + woodPrefix, woodName + " Chest Boat");
+    }
+
+    /** A torch places a standing and a wall block, and its item is registered apart from both. */
+    public void addTorch(Item item, Block standing, Block wall, String name) {
+        this.add(item.getDescriptionId(), name);
+        this.add(standing.getDescriptionId(), name);
+        this.add(wall.getDescriptionId(), name);
+    }
+
+    public void addTrimMaterial(String material, String name) {
+        this.add("trim_material." + MODID + "." + material, name);
     }
 
     public void addTools(String itemKey, String item) {

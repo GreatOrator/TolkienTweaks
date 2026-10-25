@@ -234,6 +234,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add(TolkienBlocks.FIREPLACE.get(), "Fireplace");
             this.add(TolkienBlocks.PIGGYBANK.get(), "Piggy Bank");
             this.add(TolkienBlocks.BACKPACK.get(), "Adventurer's Backpack");
+            this.addItem(TolkienBlocks.BACKPACK_ITEM, "Adventurer's Backpack");
             this.add(TolkienBlocks.CHAMELEON_BLOCK.get(), "Chameleon Block");
             this.add(TolkienBlocks.KEY_STONE_BLOCK.get(), "Camouflage Key Stone Block");
             this.add(TolkienBlocks.CAMO_GLOWSTONE_BLOCK.get(), "Camouflage Glowstone");
@@ -241,6 +242,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add(TolkienBlocks.CAMO_FLUID_BLOCK.get(), "Camouflage Fluid Source");
             this.add(TolkienBlocks.CAMO_CHEST_BLOCK.get(), "Camouflage Chest");
             this.add(TolkienBlocks.CAMO_SPAWNER_BLOCK.get(), "Camouflage Spawner");
+            this.addItem(TolkienBlocks.CAMO_SPAWNER_ITEM, "Camouflage Spawner");
             this.add(TolkienBlocks.MILESTONE_BLOCK.get(), "Fast-travel Milestone");
             this.add(TolkienBlocks.WELL.get(), "Water Well");
             this.add(TolkienBlocks.LOCKABLE_CHEST_BLOCK.get(), "Lockable Chest");
@@ -250,13 +252,13 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.addBlock(TolkienBlocks.SILMARIL_LANTERN, "Light of Elendil");
             this.addBlock(TolkienBlocks.ELVEN_LANTERN, "Elven Lantern");
             this.addBlock(TolkienBlocks.MORGUL_LANTERN, "Morgul Lantern");
-            this.addBlock(TolkienBlocks.TORCH_MALLORN, "Mallorn Torch");
-            this.addBlock(TolkienBlocks.TORCH_MIRKWOOD, "Mirkwood Torch");
-            this.addBlock(TolkienBlocks.TORCH_CULUMALDA, "Culumalda Torch");
-            this.addBlock(TolkienBlocks.TORCH_LEBETHRON, "Lebethron Torch");
-            this.addBlock(TolkienBlocks.TORCH_FANGORNOAK, "Fangorn Oak Torch");
-            this.addBlock(TolkienBlocks.TORCH_DEADWOOD, "Deadwood Torch");
-            this.addBlock(TolkienBlocks.TORCH_DWARVEN_MAPLE, "Dwarven Maple Torch");
+            this.addTorch(TolkienItems.MALLORN_TORCH_ITEM.get(), TolkienBlocks.TORCH_MALLORN.get(), TolkienBlocks.WALL_TORCH_MALLORN.get(), "Mallorn Torch");
+            this.addTorch(TolkienItems.MIRKWOOD_TORCH_ITEM.get(), TolkienBlocks.TORCH_MIRKWOOD.get(), TolkienBlocks.WALL_TORCH_MIRKWOOD.get(), "Mirkwood Torch");
+            this.addTorch(TolkienItems.CULUMALDA_TORCH_ITEM.get(), TolkienBlocks.TORCH_CULUMALDA.get(), TolkienBlocks.WALL_TORCH_CULUMALDA.get(), "Culumalda Torch");
+            this.addTorch(TolkienItems.LEBETHRON_TORCH_ITEM.get(), TolkienBlocks.TORCH_LEBETHRON.get(), TolkienBlocks.WALL_TORCH_LEBETHRON.get(), "Lebethron Torch");
+            this.addTorch(TolkienItems.FANGORNOAK_TORCH_ITEM.get(), TolkienBlocks.TORCH_FANGORNOAK.get(), TolkienBlocks.WALL_TORCH_FANGORNOAK.get(), "Fangorn Oak Torch");
+            this.addTorch(TolkienItems.DEADWOOD_TORCH_ITEM.get(), TolkienBlocks.TORCH_DEADWOOD.get(), TolkienBlocks.WALL_TORCH_DEADWOOD.get(), "Deadwood Torch");
+            this.addTorch(TolkienItems.DWARVEN_MAPLE_TORCH_ITEM.get(), TolkienBlocks.TORCH_DWARVEN_MAPLE.get(), TolkienBlocks.WALL_TORCH_DWARVEN_MAPLE.get(), "Dwarven Maple Torch");
             this.addBlock(TolkienBlocks.ANCIENT_WATCHER, "Ancient Watching-stone");
             this.addBlock(TolkienBlocks.ANCIENT_DEAD_WATCHER, "Broken Ancient Watching-stone");
 
@@ -269,6 +271,10 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.createWoodSet("dwarven_maple", "Dwarven Maple");
             this.createMetalSet("mithril", "Mithril");
             this.createMetalSet("morguliron", "Morgul Iron");
+
+            this.addTrimMaterial("mithril", "Mithril");
+            this.addTrimMaterial("morguliron", "Morgul Iron");
+            this.addTrimMaterial("ammolite", "Ammolite");
 
             this.createStoneSet("dwarven_stone", "Dwarven Stone");
             this.createStoneSet("chiseled_dwarven_stone_bricks", "Chiseled Dwarven Stone Bricks");
@@ -339,6 +345,23 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.addBlockWithLore(TolkienBlocks.SLEEPING_BAG_PURPLE.get(), "Purple Sleeping Bag", "§cDoes not§r reset spawn point.");
             this.addBlockWithLore(TolkienBlocks.SLEEPING_BAG_WHITE.get(), "White Sleeping Bag", "§cDoes not§r reset spawn point.");
             this.addBlockWithLore(TolkienBlocks.SLEEPING_BAG_YELLOW.get(), "Yellow Sleeping Bag", "§cDoes not§r reset spawn point.");
+            // The bag a player carries is an item of its own, so it needs its own name and lore line.
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_BLUE.get(), "Blue Sleeping Bag", "§cDoes not§r reset spawn point.");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_RED.get(), "Red Sleeping Bag", "§cDoes not§r reset spawn point.");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_BLACK.get(), "Black Sleeping Bag", "§cDoes not§r reset spawn point.");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_BROWN.get(), "Brown Sleeping Bag", "§cDoes not§r reset spawn point.");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_CYAN.get(), "Cyan Sleeping Bag", "§cDoes not§r reset spawn point.");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_GRAY.get(), "Gray Sleeping Bag", "§cDoes not§r reset spawn point.");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_GREEN.get(), "Green Sleeping Bag", "§cDoes not§r reset spawn point.");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_LIGHT_BLUE.get(), "Light Blue Sleeping Bag", "§cDoes not§r reset spawn point.");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_LIGHT_GRAY.get(), "Light Gray Sleeping Bag", "§cDoes not§r reset spawn point.");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_LIME.get(), "Lime Sleeping Bag", "§cDoes not§r reset spawn point.");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_MAGENTA.get(), "Magenta Sleeping Bag", "§cDoes not§r reset spawn point.");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_ORANGE.get(), "Orange Sleeping Bag", "§cDoes not§r reset spawn point.");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_PINK.get(), "Pink Sleeping Bag", "§cDoes not§r reset spawn point.");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_PURPLE.get(), "Purple Sleeping Bag", "§cDoes not§r reset spawn point.");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_WHITE.get(), "White Sleeping Bag", "§cDoes not§r reset spawn point.");
+            this.addItemWithLore(TolkienItems.SLEEPING_BAG_YELLOW.get(), "Yellow Sleeping Bag", "§cDoes not§r reset spawn point.");
 
                 // Screens
             this.addItemScreen(TolkienItems.BRONZE_KEY.get(), "Bronze Key");
