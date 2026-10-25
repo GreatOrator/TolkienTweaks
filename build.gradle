@@ -292,4 +292,9 @@ idea {
 // port lands.
 tasks.withType(JavaCompile).configureEach {
     options.compilerArgs += ['-Xmaxerrs', providers.gradleProperty('maxCompileErrors').getOrElse('1000')]
+    // 26.1 marks NeoForge's item and fluid handler API for removal in favour of its transfer API,
+    // and the mod's menus and block entities still speak the old one, so every launch printed the
+    // same two dozen notices - and javac still sums them up in "Note:" lines once the categories
+    // are off. Remove this line once the handlers are ported to the transfer API.
+    options.compilerArgs += ['-Xlint:-removal', '-Xlint:-deprecation']
 }
