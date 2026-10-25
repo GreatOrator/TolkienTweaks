@@ -88,6 +88,8 @@ public final class PacketHandler {
 
         registrar.playToServer(KeyStoneDelayUpdateManager.TYPE,
                 KeyStoneDelayUpdateManager.STREAM_CODEC, KeyStoneDelayUpdateManager::handle);
+        registrar.playToServer(KeyStonePulseUpdateManager.TYPE,
+                KeyStonePulseUpdateManager.STREAM_CODEC, KeyStonePulseUpdateManager::handle);
         registrar.playToServer(BackpackSettingsUpdateManager.TYPE,
                 BackpackSettingsUpdateManager.STREAM_CODEC, BackpackSettingsUpdateManager::handle);
         registrar.playToServer(BackpackPlacementUpdateManager.TYPE,

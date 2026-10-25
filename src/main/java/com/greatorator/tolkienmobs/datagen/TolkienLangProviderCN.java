@@ -84,6 +84,9 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addBlock(TolkienFluids.MORGULIRON_BLOCK, "熔融魔古尔铁");
             this.addBlock(TolkienBlocks.ARDA_PORTAL, "阿尔达传送门");
             this.addBlockWithLore(TolkienBlocks.PLACARD.get(), "国家标识", "按住 Shift 并右键点击告示牌以切换类型");
+            // The placard's item is its own registry entry without the block description prefix, so it
+            // needs its own name and lore or it shows both as raw translation keys.
+            this.addItemWithLore(TolkienBlocks.PLACARD_ITEM.get(), "国家标识", "按住 Shift 并右键点击告示牌以切换类型");
             this.addBlock(TolkienBlocks.ROCKPILE, "石堆");
             this.addBlock(TolkienBlocks.MOSS_PATCH, "苔藓地");
             this.addBlock(TolkienBlocks.CLOVER_PATCH, "三叶草丛");
@@ -368,6 +371,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.add("screen.tolkienmobs.keystone.key.consume", "使用后消耗钥匙或扣除使用次数");
             this.add("screen.tolkienmobs.keystone.key.keep", "玩家保留钥匙直至用完次数");
             this.add("screen.tolkienmobs.keystone.tickdelay", "§l**仅限刻延迟模式**§r 设置红石延迟时间");
+            this.add("screen.tolkienmobs.keystone.pulsedelay", "§l**仅限脉冲模式**§r 设置脉冲持续时间");
             this.add("screen.tolkienmobs.backpack.bed.deployed", "铺设睡袋");
             this.add("screen.tolkienmobs.backpack.bed.remove", "收拾睡袋");
             this.add("screen.tolkienmobs.backpack.campfire.deployed", "架设营火");

@@ -49,8 +49,13 @@ public class KeyRingItem extends Item {
     @Override
     public void inventoryTick(@NotNull ItemStack stack, @NotNull ServerLevel level, @NotNull Entity entity, @Nullable EquipmentSlot slot) {
         if (entity instanceof Player player && getActive(stack)) {
+            // The key in either hand stays there: it is what a keystone or a lockable chest reads
+            // when it is used, and those only ever look at the stack in hand.
+            ItemStack mainHand = player.getMainHandItem();
+            ItemStack offHand = player.getOffhandItem();
             for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
                 ItemStack keyStack = player.getInventory().getItem(i);
+                if (keyStack == mainHand || keyStack == offHand) continue;
                 if (isValidItem(keyStack))
                     addKeyToInventory(stack, keyStack);
             }
@@ -58,8 +63,8 @@ public class KeyRingItem extends Item {
     }
 
     public static ItemStack addKeyToInventory(ItemStack keyHolder, ItemStack key) {
-        if (key.getItem() instanceof KeyItem && !key.isComponentsPatchEmpty())
-            return key;
+        // Every key is stowed. This used to skip any key carrying components, which is every key
+        // that has been given a code, so an active ring never picked one up.
         KeyRingItemStackHandler handler = new KeyRingItemStackHandler(KeyRingContainer.SLOTS, keyHolder);
         List<Integer> emptySlots = new ArrayList<>();
         for (int i = 0; i < handler.size(); i++) {

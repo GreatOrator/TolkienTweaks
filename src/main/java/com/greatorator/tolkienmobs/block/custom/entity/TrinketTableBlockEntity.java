@@ -56,6 +56,10 @@ public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuP
                 case POTION_SLOT -> resource.test(stack -> stack.getItem() instanceof PotionItem
                         || GeneralUtility.isRepairMaterialFor(level, getStackInSlot(TRINKET_SLOT), stack));
                 case GEM_SLOT -> resource.test(stack -> stack.is(TolkienItems.GEM_AMMOLITE.get()));
+                // The output only ever changes through set, and its menu slot refuses placement on
+                // its own, but 26.1 reads a capacity through isValid: a slot that refused every
+                // resource reported a capacity of 0, so a finished trinket never landed here.
+                case OUTPUT_SLOT -> true;
                 default -> false;
             };
         }

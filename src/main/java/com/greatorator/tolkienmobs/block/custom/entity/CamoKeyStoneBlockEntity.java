@@ -41,6 +41,8 @@ public class CamoKeyStoneBlockEntity extends TolkienBlockEntity implements MenuP
     public KeyStoneSettings keyStoneSettings = new KeyStoneSettings(true);
     public KeyStoneCode keyStoneCode = new KeyStoneCode("Enter Code");
     public int tickDelay = 20;
+    /** How long a pulse lasts, in ticks. This was a fixed 30 before the screen could set it. */
+    public int pulseLength = 30;
     private int activeTime = 0;
 
     public CamoKeyStoneBlockEntity(BlockPos pos, BlockState blockState) {
@@ -83,6 +85,15 @@ public class CamoKeyStoneBlockEntity extends TolkienBlockEntity implements MenuP
 
     public void setTickDelay(int newTickDelay) {
         this.tickDelay = newTickDelay;
+        markDirtyClient();
+    }
+
+    public int getPulseLength() {
+        return pulseLength;
+    }
+
+    public void setPulseLength(int newPulseLength) {
+        this.pulseLength = newPulseLength;
         markDirtyClient();
     }
 
@@ -150,7 +161,7 @@ public class CamoKeyStoneBlockEntity extends TolkienBlockEntity implements MenuP
 
     public void tickServer() {
         if (getRedstoneControlData().redstoneMode.equals(GeneralUtility.RedstoneMode.PULSE) && this.getBlockState().getValue(ACTIVE)) {
-            if (activeTime == 30) {
+            if (activeTime >= Math.max(1, getPulseLength())) {
                 this.level.setBlockAndUpdate(worldPosition, level.getBlockState(worldPosition).setValue(ACTIVE, false).setValue(POWERED, false));
                 this.getBlockState().setValue(ACTIVE, false);
                 this.getBlockState().setValue(POWERED, false);
@@ -177,6 +188,7 @@ public class CamoKeyStoneBlockEntity extends TolkienBlockEntity implements MenuP
         CompoundTag nbt = this.saveWithoutMetadata(pRegistries);
         nbt.putString("keyCode", getKeyStoneData().keyCode);
         nbt.putInt("tickDelay", getTickDelay());
+        nbt.putInt("pulseLength", getPulseLength());
         return nbt;
     }
 
@@ -184,6 +196,7 @@ public class CamoKeyStoneBlockEntity extends TolkienBlockEntity implements MenuP
     public void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         output.putInt("tickDelay", getTickDelay());
+        output.putInt("pulseLength", getPulseLength());
         output.putInt("activeTime", this.activeTime);
         this.saveKeyStoneSettings(output);
         this.saveKeyStoneData(output);
@@ -192,6 +205,7 @@ public class CamoKeyStoneBlockEntity extends TolkienBlockEntity implements MenuP
     @Override
     public void loadAdditional(ValueInput input) {
         setTickDelay(input.getIntOr("tickDelay", 0));
+        this.pulseLength = input.getIntOr("pulseLength", 30);
         this.activeTime = input.getIntOr("activeTime", 0);
         this.loadKeyStoneSettings(input);
         this.loadKeyStoneData(input);

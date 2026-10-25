@@ -215,6 +215,13 @@ public class ToggleButtonFactory {
         return new NumberButton(x, y, 24, 12, value, TolkienMobsConfig.MINIMUM_TICK_SPEED.get(), 1200, ticksButtonLocalization, onPress);
     }
 
+    /** How long the keystone's pulse lasts, which used to be a fixed thirty ticks. **/
+    private static final Component pulseDelayButtonLocalization = Component.translatable("screen.tolkienmobs.keystone.pulsedelay");
+
+    public static NumberButton PULSELENGTHBUTTON(int x, int y, int value, Button.OnPress onPress) {
+        return new NumberButton(x, y, 24, 12, value, TolkienMobsConfig.MINIMUM_TICK_SPEED.get(), 1200, pulseDelayButtonLocalization, onPress);
+    }
+
     /** Other Button Examples **/
     private static final Identifier EXTRACT_EXP_BUTTON = Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/mob_label_base.png");
     private static final Component EXTRACT_EXP_BUTTON_LOCALIZATION = Component.translatable("justdirethings.screen.retrieveexp");

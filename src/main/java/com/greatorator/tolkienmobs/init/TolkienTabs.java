@@ -149,6 +149,7 @@ public class TolkienTabs {
                         output.accept(TolkienItems.GOLD_KEY);
                         output.accept(TolkienItems.MITHRIL_KEY);
                         output.accept(TolkienItems.MASTER_KEY);
+                        output.accept(TolkienItems.RING_OF_HOPE);
                     }).build());
 
     public static final Supplier<CreativeModeTab> TOLKIEN_FOODS = CREATIVE_MODE_TAB.register("tolkienmobs_tab_food",
@@ -826,7 +827,6 @@ public class TolkienTabs {
                         output.accept(TolkienItems.COIN_POUCH);
                         output.accept(TolkienItems.KEY_RING);
                         output.accept(TolkienItems.HOBBIT_RING);
-                        output.accept(TolkienItems.RING_OF_HOPE);
                         output.accept(TolkienItems.SWORD_WITCHKING);
                         output.accept(TolkienItems.SWORD_URUK);
                         output.accept(TolkienItems.WHIP_FIRE);

@@ -84,6 +84,9 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.addBlock(TolkienFluids.MORGULIRON_BLOCK, "Molten Morgul Iron");
             this.addBlock(TolkienBlocks.ARDA_PORTAL, "Arda Portal");
             this.addBlockWithLore(TolkienBlocks.PLACARD.get(), "Country Signs", "Shift right-click on sign to cycle types");
+            // The placard's item is its own registry entry without the block description prefix, so it
+            // needs its own name and lore or it shows both as raw translation keys.
+            this.addItemWithLore(TolkienBlocks.PLACARD_ITEM.get(), "Country Signs", "Shift right-click on sign to cycle types");
             this.addBlock(TolkienBlocks.ROCKPILE, "Rockpile");
             this.addBlock(TolkienBlocks.MOSS_PATCH, "Moss Patch");
             this.addBlock(TolkienBlocks.CLOVER_PATCH, "Clover Patch");
@@ -368,6 +371,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add("screen.tolkienmobs.keystone.key.consume", "Key taken when used or has uses");
             this.add("screen.tolkienmobs.keystone.key.keep", "Player keeps key until uses exhausted");
             this.add("screen.tolkienmobs.keystone.tickdelay", "§l**Tick Delay Mode Only**§r Set the amount of delay for redstone");
+            this.add("screen.tolkienmobs.keystone.pulsedelay", "§l**Pulse Mode Only**§r Set how long the pulse lasts");
             this.add("screen.tolkienmobs.backpack.bed.deployed", "Lay out Sleepingbag");
             this.add("screen.tolkienmobs.backpack.bed.remove", "Pick up Sleepingbag");
             this.add("screen.tolkienmobs.backpack.campfire.deployed", "Set up Campfire");

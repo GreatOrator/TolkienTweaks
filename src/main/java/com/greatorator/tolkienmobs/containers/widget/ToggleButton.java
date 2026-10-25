@@ -61,6 +61,18 @@ public class ToggleButton extends TolkienButton {
         onPress(event);
     }
 
+    /**
+     * 26.1 hands a left click to {@link net.minecraft.client.gui.components.AbstractWidget#onClick},
+     * which used to be a no-op, so the press callback ran without the texture moving: a toggle with
+     * three faces only ever showed the first. Stepping it here keeps the face and the setting the
+     * callback reports in step.
+     */
+    @Override
+    public void onClick(MouseButtonEvent event, boolean doubleClick) {
+        nextTexturePosition();
+        super.onClick(event, doubleClick);
+    }
+
     public void setTexturePosition(int texturePosition) {
         if (texturePosition >= textureLocalizations.size())
             this.texturePosition = textureLocalizations.size();
