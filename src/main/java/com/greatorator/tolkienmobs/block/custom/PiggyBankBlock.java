@@ -2,11 +2,18 @@ package com.greatorator.tolkienmobs.block.custom;
 
 import com.greatorator.tolkienmobs.block.TolkienEntityBlock;
 import com.greatorator.tolkienmobs.block.custom.entity.PiggyBankBlockEntity;
+import com.greatorator.tolkienmobs.containers.CoinPouchContainer;
+import com.greatorator.tolkienmobs.containers.handlers.CoinPouchItemStackHandler;
+import com.greatorator.tolkienmobs.item.custom.CoinPouchItem;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -19,6 +26,8 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemUtil;
 import org.jetbrains.annotations.Nullable;
 
 public class PiggyBankBlock extends TolkienEntityBlock {
@@ -88,6 +97,43 @@ public class PiggyBankBlock extends TolkienEntityBlock {
 
     // 26.1 removed Block#onRemove; the block entity drops its slots itself in
     // BlockEntity#preRemoveSideEffects.
+
+    /**
+     * A loaded coin pouch tips its coins into the bank instead of opening either menu, which is how a
+     * pouch was meant to bank a haul of coins. An empty pouch, or anything else in hand, still opens
+     * the bank as before.
+     */
+    @Override
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (!(stack.getItem() instanceof CoinPouchItem) || CoinPouchItem.getCoinCount(stack) <= 0) {
+            return super.useItemOn(stack, state, level, pos, player, hand, hit);
+        }
+
+        if (!level.isClientSide() && level.getBlockEntity(pos) instanceof PiggyBankBlockEntity bank) {
+            if (depositCoins(bank, stack)) {
+                level.playSound(null, pos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 0.3F, 0.9F);
+            }
+        }
+        return InteractionResult.SUCCESS;
+    }
+
+    /** Moves every coin the pouch holds into the bank, leaving whatever the bank could not take. */
+    private static boolean depositCoins(PiggyBankBlockEntity bank, ItemStack pouchStack) {
+        CoinPouchItemStackHandler pouch = new CoinPouchItemStackHandler(CoinPouchContainer.SLOTS, pouchStack);
+        boolean moved = false;
+        for (int slot = 0; slot < pouch.size(); slot++) {
+            ItemStack coins = ItemUtil.getStack(pouch, slot);
+            if (coins.isEmpty()) continue;
+            ItemStack leftover = ItemUtil.insertItemReturnRemaining(bank.itemHandler, coins.copy(), false, null);
+            if (leftover.getCount() == coins.getCount()) continue;
+            pouch.set(slot, leftover.isEmpty() ? ItemResource.EMPTY : ItemResource.of(leftover), leftover.getCount());
+            moved = true;
+        }
+        if (moved) {
+            bank.setChanged();
+        }
+        return moved;
+    }
 
     @Override
     public InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult hit) {

@@ -9,6 +9,7 @@ import com.greatorator.tolkienmobs.containers.widget.ToggleButton;
 import com.greatorator.tolkienmobs.containers.widget.TolkienButton;
 import com.greatorator.tolkienmobs.network.manager.KeyStoneDataUpdateManager;
 import com.greatorator.tolkienmobs.network.manager.KeyStoneDelayUpdateManager;
+import com.greatorator.tolkienmobs.network.manager.KeyStonePulseUpdateManager;
 import com.greatorator.tolkienmobs.network.manager.KeyStoneRedstoneUpdateManager;
 import com.greatorator.tolkienmobs.network.manager.KeyStoneSettingsUpdateManager;
 import com.greatorator.tolkienmobs.util.GeneralUtility;
@@ -45,6 +46,7 @@ public class CamoKeyStoneScreen extends AbstractContainerScreen<CamoKeyStoneCont
     protected KeyStoneCode keyStoneCode;
     protected GeneralUtility.RedstoneMode redstoneMode;
     public int tickDelay;
+    public int pulseLength;
     protected boolean renderablesChanged = false;
     protected List<AbstractWidget> widgetsToRemove = new ArrayList<>();
     protected List<AbstractWidget> widgetsToAdd = new ArrayList<>();
@@ -57,8 +59,11 @@ public class CamoKeyStoneScreen extends AbstractContainerScreen<CamoKeyStoneCont
         this.keyCode = menu.keyCode;
         tileEntity = container.tileEntity;
         this.keyStoneSettings = tileEntity.getKeyStoneSettings();
-        this.redstoneMode = GeneralUtility.RedstoneMode.TOGGLE;
+        // The screen used to assume TOGGLE, so the duration button it showed on opening could
+        // belong to a mode the keystone was not in.
+        this.redstoneMode = tileEntity.getRedstoneControlData().redstoneMode;
         this.tickDelay = tileEntity.getTickDelay();
+        this.pulseLength = tileEntity.getPulseLength();
     }
 
     @Override
@@ -141,7 +146,7 @@ public class CamoKeyStoneScreen extends AbstractContainerScreen<CamoKeyStoneCont
             ret = true;
         }
         for (Renderable renderable : this.renderables) {
-            if (renderable instanceof NumberButton numberButton && GeneralUtility.inBounds(numberButton.getX(), numberButton.getY(), numberButton.getWidth(), numberButton.getHeight(), event.x(), event.y())) {
+            if (renderable instanceof NumberButton numberButton && numberButton.visible && GeneralUtility.inBounds(numberButton.getX(), numberButton.getY(), numberButton.getWidth(), numberButton.getHeight(), event.x(), event.y())) {
                 if (event.button() == 0)
                     numberButton.setValue(adjustNumberButton(numberButton.getValue(), 1, numberButton.min, numberButton.max, event));
                 else if (event.button() == 1)
@@ -150,7 +155,7 @@ public class CamoKeyStoneScreen extends AbstractContainerScreen<CamoKeyStoneCont
                 numberButton.playDownSound(Minecraft.getInstance().getSoundManager());
                 return true;
             }
-            if (renderable instanceof ToggleButton toggleButton && GeneralUtility.inBounds(toggleButton.getX(), toggleButton.getY(), toggleButton.getWidth(), toggleButton.getHeight(), event.x(), event.y())) {
+            if (renderable instanceof ToggleButton toggleButton && toggleButton.visible && GeneralUtility.inBounds(toggleButton.getX(), toggleButton.getY(), toggleButton.getWidth(), toggleButton.getHeight(), event.x(), event.y())) {
                 if (event.button() == 1) {
                     toggleButton.onClick(event);
                     toggleButton.playDownSound(Minecraft.getInstance().getSoundManager());
@@ -196,12 +201,20 @@ public class CamoKeyStoneScreen extends AbstractContainerScreen<CamoKeyStoneCont
         super.containerTick();
     }
 
+    /**
+     * Both lengths sit on the same row: the delay for the plate, then the pulse for the button.
+     * Until now the pulse was a fixed thirty ticks with nothing on screen to set it.
+     */
     public void addTickDelayButton() {
         int offsetX = (this.width - this.imageWidth) / 2;
         int offsetY = (this.height - this.imageHeight) / 2;
-        addRenderableWidget(ToggleButtonFactory.TICKDELAYBUTTON(offsetX + 71, offsetY + 58, tickDelay, b -> {
+        addRenderableWidget(ToggleButtonFactory.TICKDELAYBUTTON(offsetX + 55, offsetY + 58, tickDelay, b -> {
             tickDelay = ((NumberButton) b).getValue();
             ClientPacketDistributor.sendToServer(new KeyStoneDelayUpdateManager(tickDelay));
+        }));
+        addRenderableWidget(ToggleButtonFactory.PULSELENGTHBUTTON(offsetX + 85, offsetY + 58, pulseLength, b -> {
+            pulseLength = ((NumberButton) b).getValue();
+            ClientPacketDistributor.sendToServer(new KeyStonePulseUpdateManager(pulseLength));
         }));
     }
 
