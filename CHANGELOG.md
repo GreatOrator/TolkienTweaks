@@ -2,11 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [5.0.1] - 2026-10-25
-* Structural mod updates and compilation builds
-
-
-## [Unreleased]
+## [5.0.606] - 2026-10-25
 
 ### Added
 
@@ -30,7 +26,7 @@ All notable changes to this project will be documented in this file.
 - Data generation refuses to write a village house whose doorway marker is not on its own template's front edge. Such a marker can never join a house to a street - the game drops the whole house - which used to surface only as a town centre standing alone in a world. `./gradlew runData` now stops with the house's style, the marker's position, the template's size and the column it should have used.
 - A village house pool no longer offers vanilla's second small plains farm, which 26.1 does not ship; the plains-style villages now offer the house and the farm that exists, and the desert styles around Nurn keep both of theirs. A village's site check reads the terrain column directly and asks its highest block whether it holds a fluid, instead of comparing two heightmaps - the same rule, stated plainly: a lake still refuses a site, open ground, ice and snow still allow one.
 - Two things are worth a look in a world: the mod's decay blocks now join `supports_vegetation`, the tag a small mushroom reads, since 26.1 dropped the `mushroom_grow_block` tag they used to share, and the two molten metals no longer declare a translucent render layer of their own because 26.1 picks it from the fluid's textures.
-- The mod's version restarts at 5.0. The jar is 5.0.0 and the build-number task rolls it to 5.0.1, 5.0.2 and so on, so a 5.0 build can never be mistaken for a 4.3 release.
+- The mod's version restarts at 5.0. Its build number stands at 606, the number of commits behind this release, so the jar reports 5.0.606; from here the build-number task rolls it to 5.0.607, 5.0.608 and so on, and a 5.0 build can never be mistaken for a 4.3 release.
 
 ### Fixed
 
