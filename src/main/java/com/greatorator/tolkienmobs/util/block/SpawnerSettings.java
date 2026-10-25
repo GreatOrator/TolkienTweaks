@@ -3,9 +3,11 @@ package com.greatorator.tolkienmobs.util.block;
 import java.util.Objects;
 
 public class SpawnerSettings {
+    // A fresh spawner starts the way a vanilla one behaves: it needs a player nearby, it respects
+    // the mob's own spawn requirements, it does not wait for redstone, and it shows its flames.
     public boolean requirePlayer = true;
-    public boolean ignoreSpawnReq = true;
-    public boolean redstoneControl = true;
+    public boolean ignoreSpawnReq = false;
+    public boolean redstoneControl = false;
     public boolean spawnerParticles = true;
     public boolean spawnAllTogether = false; // false = random, true = spawn all
 

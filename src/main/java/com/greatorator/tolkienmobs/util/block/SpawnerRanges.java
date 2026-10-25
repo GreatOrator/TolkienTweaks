@@ -3,7 +3,9 @@ package com.greatorator.tolkienmobs.util.block;
 import java.util.Objects;
 
 public class SpawnerRanges {
-    public int activationRange = 4;
+    // Vanilla's own numbers: a player within 16 blocks wakes it, it spawns inside 4 blocks, up to
+    // four at a time, and stops at six of the same mob nearby.
+    public int activationRange = 16;
     public int spawnRange = 4;
     public int spawnCount = 4;
     public int maxCluster = 6;

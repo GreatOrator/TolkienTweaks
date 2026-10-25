@@ -9,7 +9,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
@@ -43,12 +42,12 @@ public record BackpackMagnetToggleManager() implements CustomPacketPayload {
                 return;
             }
 
-            // Otherwise the worn backpack, or the first one the player is carrying.
-            ItemStack stack = BackpackMagnet.findBackpack(player);
-            if (stack.isEmpty()) {
+            // Otherwise the worn or carried backpack that has a magnet fitted - the same one the scan
+            // fills, so the key and the button always flip the bag that is actually pulling.
+            BackpackBlockEntity backpack = BackpackMagnet.findMagnetBackpack(player);
+            if (backpack == null) {
                 return;
             }
-            BackpackBlockEntity backpack = BackpackBlockEntity.createHeld(player, stack, null);
             backpack.getBackpackSettings().magnet = !backpack.getBackpackSettings().magnet;
             backpack.saveToStack();
         });

@@ -4,8 +4,13 @@ import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
 import com.greatorator.tolkienmobs.containers.BackpackBlockContainer;
 import com.greatorator.tolkienmobs.integration.CuriosBackpackHelper;
 import com.greatorator.tolkienmobs.item.custom.BackpackItem;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -15,8 +20,9 @@ import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.transfer.RangedResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemUtil;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import javax.annotation.Nullable;
 
 /**
  * The backpack's magnet: while a backpack carries a magnet upgrade and its magnet is switched on, the
@@ -55,12 +61,17 @@ public final class BackpackMagnet {
         if (player.containerMenu instanceof BackpackBlockContainer open) {
             backpack = open.tileEntity;
         } else {
-            ItemStack backpackStack = findBackpack(player);
-            if (backpackStack.isEmpty()) {
-                return;
+            backpack = findMagnetBackpack(player);
+            if (backpack != null) {
+                persistAfterwards = true;
+            } else {
+                // Nothing worn or carried: a backpack set down beside the player still gathers, which is
+                // otherwise the one case where the magnet looked broken.
+                backpack = findPlacedBackpack(player);
+                if (backpack == null) {
+                    return;
+                }
             }
-            backpack = BackpackBlockEntity.createHeld(player, backpackStack, null);
-            persistAfterwards = true;
         }
 
         if (!backpack.getBackpackSettings().magnet) {
@@ -86,21 +97,84 @@ public final class BackpackMagnet {
         }
     }
 
-    /** The backpack the magnet works from: the worn one first, then the first one carried anywhere else. */
-    public static ItemStack findBackpack(Player player) {
+    /**
+     * The nearest placed backpack whose own reach covers the player, or null. Only loaded chunks are
+     * looked through, so this never pulls a chunk in, and only the block entity map of each chunk is
+     * touched rather than its blocks.
+     */
+    @Nullable
+    private static BackpackBlockEntity findPlacedBackpack(ServerPlayer player) {
+        ServerLevel level = player.level();
+        BlockPos origin = player.blockPosition();
+        int chunkRadius = MAX_RANGE >> 4;
+        ChunkPos center = new ChunkPos(origin.getX() >> 4, origin.getZ() >> 4);
+        BackpackBlockEntity nearest = null;
+        double nearestDistance = Double.MAX_VALUE;
+
+        for (int dx = -chunkRadius; dx <= chunkRadius; dx++) {
+            for (int dz = -chunkRadius; dz <= chunkRadius; dz++) {
+                LevelChunk chunk = level.getChunkSource().getChunkNow(center.x() + dx, center.z() + dz);
+                if (chunk == null) {
+                    continue;
+                }
+                for (BlockEntity blockEntity : chunk.getBlockEntities().values()) {
+                    if (!(blockEntity instanceof BackpackBlockEntity candidate)) {
+                        continue;
+                    }
+                    int reach = candidate.getBackpackUpgrades().magnetRange();
+                    double distance = candidate.getBlockPos().distSqr(origin);
+                    if (reach > 0 && distance <= (double) reach * reach && distance < nearestDistance) {
+                        nearest = candidate;
+                        nearestDistance = distance;
+                    }
+                }
+            }
+        }
+        return nearest;
+    }
+
+    /**
+     * The bag with a magnet fitted: the first one the player wears or carries. Looking past a bag without
+     * one matters, because a second bag left in the Curios slot would otherwise be chosen over the one in
+     * hand and the scan would stop at its zero reach. The switch itself is checked by the caller, so the
+     * same bag is the one the toggle button and the key work on.
+     */
+    @Nullable
+    public static BackpackBlockEntity findMagnetBackpack(ServerPlayer player) {
+        for (ItemStack candidate : findBackpacks(player)) {
+            if (candidate.isEmpty()) {
+                continue;
+            }
+            BackpackBlockEntity bag = BackpackBlockEntity.createHeld(player, candidate, null);
+            if (bag.getBackpackUpgrades().magnetRange() > 0) {
+                return bag;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Every backpack the player wears or carries: the Curios slot first, then the bag in either hand, then
+     * the rest of the inventory. The hands are read directly as well as through the inventory, because a bag
+     * in the offhand is the one case a plain inventory walk can miss.
+     */
+    private static List<ItemStack> findBackpacks(Player player) {
+        List<ItemStack> bags = new ArrayList<>(4);
         if (ModList.get().isLoaded("curios")) {
-            Optional<ItemStack> worn = CuriosBackpackHelper.findBackpack(player);
-            if (worn.isPresent()) {
-                return worn.get();
-            }
+            CuriosBackpackHelper.findBackpack(player).ifPresent(bag -> addBag(bags, bag));
         }
+        addBag(bags, player.getMainHandItem());
+        addBag(bags, player.getOffhandItem());
         for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-            ItemStack stack = player.getInventory().getItem(i);
-            if (stack.getItem() instanceof BackpackItem) {
-                return stack;
-            }
+            addBag(bags, player.getInventory().getItem(i));
         }
-        return ItemStack.EMPTY;
+        return bags;
+    }
+
+    private static void addBag(List<ItemStack> bags, ItemStack stack) {
+        if (stack.getItem() instanceof BackpackItem && bags.stream().noneMatch(bag -> bag == stack)) {
+            bags.add(stack);
+        }
     }
 
     /** Takes one drop: the backpack's storage first, then the player's inventory, then it stays on the ground. */
