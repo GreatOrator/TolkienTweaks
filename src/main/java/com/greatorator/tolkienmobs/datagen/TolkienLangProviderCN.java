@@ -253,7 +253,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addBlock(TolkienBlocks.ELVEN_LANTERN, "精灵灯笼");
             this.addBlock(TolkienBlocks.MORGUL_LANTERN, "魔古尔灯笼");
             this.addTorch(TolkienItems.MALLORN_TORCH_ITEM.get(), TolkienBlocks.TORCH_MALLORN.get(), TolkienBlocks.WALL_TORCH_MALLORN.get(), "瑁珑木火把");
-            this.addTorch(TolkienItems.MIRKWOOD_TORCH_ITEM.get(), TolkienBlocks.TORCH_MIRKWOOD.get(), TolkienBlocks.WALL_TORCH_MIRKWOOD.get(), "阴郁木火把");
+            this.addTorch(TolkienItems.MIRKWOOD_TORCH_ITEM.get(), TolkienBlocks.TORCH_MIRKWOOD.get(), TolkienBlocks.WALL_TORCH_MIRKWOOD.get(), "黑森林木火把");
             this.addTorch(TolkienItems.CULUMALDA_TORCH_ITEM.get(), TolkienBlocks.TORCH_CULUMALDA.get(), TolkienBlocks.WALL_TORCH_CULUMALDA.get(), "库露瑁勒达木火把");
             this.addTorch(TolkienItems.LEBETHRON_TORCH_ITEM.get(), TolkienBlocks.TORCH_LEBETHRON.get(), TolkienBlocks.WALL_TORCH_LEBETHRON.get(), "莱贝斯隆木火把");
             this.addTorch(TolkienItems.FANGORNOAK_TORCH_ITEM.get(), TolkienBlocks.TORCH_FANGORNOAK.get(), TolkienBlocks.WALL_TORCH_FANGORNOAK.get(), "范贡橡木火把");
