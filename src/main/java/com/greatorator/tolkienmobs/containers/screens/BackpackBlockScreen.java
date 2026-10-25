@@ -185,7 +185,8 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
         }
 
         if (backpackSettings.upgrade) {
-            graphics.blit(RenderPipelines.GUI_TEXTURED, GUI_UPGRADE, getGuiLeft() + 220, getGuiTop() + 36, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
+            // 26.1 marks the GUI origin accessors for removal; the frame's own relX/relY are the same corner.
+            graphics.blit(RenderPipelines.GUI_TEXTURED, GUI_UPGRADE, relX + 220, relY + 36, 0, 0, this.imageWidth, this.imageHeight, 256, 256);
         }
     }
 

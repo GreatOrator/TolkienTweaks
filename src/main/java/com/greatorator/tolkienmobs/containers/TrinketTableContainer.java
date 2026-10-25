@@ -18,11 +18,12 @@ import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeInput;
+import net.neoforged.neoforge.transfer.item.ItemUtil;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 
-public class TrinketTableContainer extends TolkienContainer implements RecipeInput {
+public class TrinketTableContainer extends TolkienContainer<TrinketTableBlockEntity> implements RecipeInput {
     private final TrinketTableBlockEntity tileEntity;
     private final Level level;
     private final ContainerData containerData;
@@ -51,10 +52,10 @@ public class TrinketTableContainer extends TolkienContainer implements RecipeInp
         addPlayerInventory(inv, -15, 56);
         addPlayerHotbar(inv, -15, 56);
 
-        this.addSlot(new TrinketSlot(this.tileEntity.itemHandler, TrinketTableBlockEntity.TRINKET_SLOT, 23, 15, TEXTURE_LOC_SLOT_TRINKET));
-        this.addSlot(new PotionSlot(this.level, this.tileEntity.itemHandler, TrinketTableBlockEntity.POTION_SLOT, 45, 15, TEXTURE_LOC_SLOT_POTION));
-        this.addSlot(new GemSlot(this.tileEntity.itemHandler, TrinketTableBlockEntity.GEM_SLOT, 34, 55, TEXTURE_LOC_SLOT_GEM));
-        this.addSlot(new OutputSlot(this.tileEntity.itemHandler, TrinketTableBlockEntity.OUTPUT_SLOT, 91, 35));
+        this.addSlot(new TrinketSlot(this.tileEntity.itemHandler, this.tileEntity.itemHandler::set, TrinketTableBlockEntity.TRINKET_SLOT, 23, 15, TEXTURE_LOC_SLOT_TRINKET));
+        this.addSlot(new PotionSlot(this.level, this.tileEntity.itemHandler, this.tileEntity.itemHandler::set, TrinketTableBlockEntity.POTION_SLOT, 45, 15, TEXTURE_LOC_SLOT_POTION));
+        this.addSlot(new GemSlot(this.tileEntity.itemHandler, this.tileEntity.itemHandler::set, TrinketTableBlockEntity.GEM_SLOT, 34, 55, TEXTURE_LOC_SLOT_GEM));
+        this.addSlot(new OutputSlot(this.tileEntity.itemHandler, this.tileEntity.itemHandler::set, TrinketTableBlockEntity.OUTPUT_SLOT, 91, 35));
 
         addDataSlots(data);
     }
@@ -120,7 +121,7 @@ public class TrinketTableContainer extends TolkienContainer implements RecipeInp
 
     @Override
     public @NotNull ItemStack getItem(int index) {
-        return this.tileEntity.itemHandler.getStackInSlot(index);
+        return ItemUtil.getStack(this.tileEntity.itemHandler, index);
     }
 
     @Override

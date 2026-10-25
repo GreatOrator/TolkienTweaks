@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [5.0.1] - 2026-10-25
+* Structural mod updates and compilation builds
+
+
 ## [Unreleased]
 
 ### Added
@@ -11,6 +15,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- The mod's storage speaks 26.1's transfer API everywhere now, and the compile's removal and deprecation notices are back on. Every menu slot, block entity, tank and item-held container was still using the item-handler API 26.1 marked for removal, so the build suppressed both warning categories and no longer reported anything it otherwise would. A menu slot now reads and writes its handler directly, a tank is a plain resource handler, and the pouch, ring and key keep their contents in the item component through a handler of their own - the one place the old API had no replacement, because a slot also replaces a slot's contents outright and NeoForge's component handler only inserts and extracts. Nothing a player sees changes: the backpack's storage, upgrade and bucket slots, the piggy bank, fireplace, trinket table, camouflage fluid block, coin pouch, key ring and key item screens open, quick-move and filter as they did, a backpack's tank still fills and drains through the same bucket slots, and a fireplace still consumes its fuel and the trinket table its gem and material. The only warnings the compile still prints come from JEI's own recipe API, which is a separate port.
 - Mordor's stone spikes are twice as tall. The lumps stood seven to ten blocks high, which read as boulders beside the biome's rock piles; they run fourteen to twenty now, and the rare needle - one spike in sixty - forty to eighty where it used to be twenty to forty. A cone's base is built from a fraction of its height, so that fraction was halved to match and the spikes keep the slender profile they had instead of spreading out into hills.
 - A village's site check reads the terrain column itself now. It used to compare the surface heightmap with the ocean floor heightmap and call the column wet when they disagreed; the column is now read directly and its highest block asked whether it holds a fluid, so a lake still refuses a site and open ground, ice or snow still allow one. This is a clearer statement of the same rule, not a change in where a village may stand.
 - The 26.1 launch no longer warns that the mod uses `@OnlyIn`. The annotation, with its `Dist` import, is gone from the sixteen places the mod's own classes carried it - the camo blocks' tick effects, the milestone's block and its client state update, the bow and arrow tooltips, the cobweb constructor and the three custom particles - because 26.1 no longer strips members by side, so it gated nothing. The client-only classes are still client-only, because only the client registers them.

@@ -17,10 +17,10 @@ import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import com.greatorator.tolkienmobs.handler.capability.TolkienItemStackHandler;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.items.IItemHandler;
 
-public class FireplaceContainer extends TolkienContainer {
+public class FireplaceContainer extends TolkienContainer<FireplaceBlockEntity> {
     private final FireplaceBlockEntity tileEntity;
     private final Level level;
     public final ContainerData containerData;
@@ -50,15 +50,15 @@ public class FireplaceContainer extends TolkienContainer {
         addPlayerInventory(inv, -15, 56);
         addPlayerHotbar(inv, -15, 56);
 
-        IItemHandler fuelHandler = tileEntity.getFuelHandler();
-        this.addSlot(new FuelSlot(fuelHandler, 0, 34, 55, TEXTURE_LOC_SLOT_FUEL, this));
+        TolkienItemStackHandler fuelHandler = tileEntity.getFuelHandler();
+        this.addSlot(new FuelSlot(fuelHandler, fuelHandler::set, 0, 34, 55, TEXTURE_LOC_SLOT_FUEL, this));
 
-        IItemHandler itemHandler = tileEntity.getInputHandler();
-        this.addSlot(new FireplaceSlot(itemHandler, 0, 23, 15, TEXTURE_LOC_SLOT_INGREDIENT_1, this));
-        this.addSlot(new FireplaceSlot(itemHandler, 1, 45, 15, TEXTURE_LOC_SLOT_INGREDIENT_2, this));
+        TolkienItemStackHandler itemHandler = tileEntity.getInputHandler();
+        this.addSlot(new FireplaceSlot(itemHandler, itemHandler::set, 0, 23, 15, TEXTURE_LOC_SLOT_INGREDIENT_1, this));
+        this.addSlot(new FireplaceSlot(itemHandler, itemHandler::set, 1, 45, 15, TEXTURE_LOC_SLOT_INGREDIENT_2, this));
 
-        IItemHandler outputHandler = tileEntity.getOutputHandler();
-        this.addSlot(new OutputSlot(outputHandler, 0, 91, 35));
+        TolkienItemStackHandler outputHandler = tileEntity.getOutputHandler();
+        this.addSlot(new OutputSlot(outputHandler, outputHandler::set, 0, 91, 35));
 
         addDataSlots(data);
     }

@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.item.custom;
 
 import com.greatorator.tolkienmobs.containers.KeyRingContainer;
+import com.greatorator.tolkienmobs.containers.handlers.KeyRingItemStackHandler;
 import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.greatorator.tolkienmobs.init.TolkienTags;
 import net.minecraft.network.chat.Component;
@@ -14,7 +15,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.ComponentItemHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -58,23 +60,20 @@ public class KeyRingItem extends Item {
     public static ItemStack addKeyToInventory(ItemStack keyHolder, ItemStack key) {
         if (key.getItem() instanceof KeyItem && !key.isComponentsPatchEmpty())
             return key;
-        ComponentItemHandler handler = new ComponentItemHandler(keyHolder, TolkienDataComponents.ITEMSTACK_HANDLER.get(), KeyRingContainer.SLOTS);
-        if (handler == null) return key;
+        KeyRingItemStackHandler handler = new KeyRingItemStackHandler(KeyRingContainer.SLOTS, keyHolder);
         List<Integer> emptySlots = new ArrayList<>();
-        for (int i = 0; i < handler.getSlots(); i++) {
-            ItemStack stackInSlot = handler.getStackInSlot(i);
+        for (int i = 0; i < handler.size(); i++) {
+            ItemStack stackInSlot = ItemUtil.getStack(handler, i);
             if (stackInSlot.isEmpty()) emptySlots.add(i);
             if (!stackInSlot.isEmpty() && ItemStack.isSameItemSameComponents(stackInSlot, key)) {
                 int j = stackInSlot.getCount() + key.getCount();
                 int maxSize = 64;
                 if (j <= maxSize) {
                     key.setCount(0);
-                    stackInSlot.setCount(j);
-                    handler.setStackInSlot(i, stackInSlot);
+                    handler.set(i, ItemResource.of(stackInSlot), j);
                 } else if (stackInSlot.getCount() < maxSize) {
                     key.shrink(maxSize - stackInSlot.getCount());
-                    stackInSlot.setCount(maxSize);
-                    handler.setStackInSlot(i, stackInSlot);
+                    handler.set(i, ItemResource.of(stackInSlot), maxSize);
                 }
                 if (key.isEmpty()) {
                     return key;
@@ -82,7 +81,8 @@ public class KeyRingItem extends Item {
             }
         }
         if (emptySlots.isEmpty()) return key;
-        handler.insertItem(emptySlots.get(0), key.split(key.getCount()), false);
+        handler.set(emptySlots.get(0), ItemResource.of(key), key.getCount());
+        key.setCount(0);
         return key;
     }
 
@@ -108,12 +108,11 @@ public class KeyRingItem extends Item {
     }
 
     public static float getKeyCount(ItemStack stack) {
-        ComponentItemHandler handler = new ComponentItemHandler(stack, TolkienDataComponents.ITEMSTACK_HANDLER.get(), KeyRingContainer.SLOTS);
+        KeyRingItemStackHandler handler = new KeyRingItemStackHandler(KeyRingContainer.SLOTS, stack);
         int count = 0;
-        int j;
-        for (j = 0; j < handler.getSlots(); j++) {
-            count+=handler.getStackInSlot(j).getCount();
+        for (int slot = 0; slot < handler.size(); slot++) {
+            count += ItemUtil.getStack(handler, slot).getCount();
         }
-        return count / (float)(handler.getSlots());
+        return count / (float)(handler.size());
     }
 }

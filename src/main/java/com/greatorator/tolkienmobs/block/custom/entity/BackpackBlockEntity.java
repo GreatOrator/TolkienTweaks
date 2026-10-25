@@ -58,6 +58,7 @@ import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemUtil;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
@@ -169,8 +170,8 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
         tickServer();
         TolkienItemStackHandler buckets = getMachineHandler();
         boolean changed = false;
-        for (int i = 0; i < lastHeldBuckets.length && i < buckets.getSlots(); i++) {
-            ItemStack stack = buckets.getStackInSlot(i);
+        for (int i = 0; i < lastHeldBuckets.length && i < buckets.size(); i++) {
+            ItemStack stack = ItemUtil.getStack(buckets, i);
             if (!ItemStack.matches(stack, lastHeldBuckets[i])) {
                 lastHeldBuckets[i] = stack.copy();
                 changed = true;
@@ -392,8 +393,8 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
         BackpackUpgrades upgrades = new BackpackUpgrades();
         BackpackFluidUpgrades fluidUpgrades = new BackpackFluidUpgrades();
 
-        for (int i = 0; i < this.upgradeItemHandler.getSlots(); i++) {
-            ItemStack invStack = this.upgradeItemHandler.getStackInSlot(i);
+        for (int i = 0; i < this.upgradeItemHandler.size(); i++) {
+            ItemStack invStack = ItemUtil.getStack(this.upgradeItemHandler, i);
             if (!IS_UPGRADE_ITEM.test(invStack) || !(invStack.getItem() instanceof UpgradeItem)) {
                 continue;
             }
@@ -641,7 +642,7 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
     }
 
     public ItemStack getItemStack() {
-        return getMachineHandler().getStackInSlot(0);
+        return ItemUtil.getStack(getMachineHandler(), 0);
     }
 
     public TolkienItemStackHandler getMachineHandler() {

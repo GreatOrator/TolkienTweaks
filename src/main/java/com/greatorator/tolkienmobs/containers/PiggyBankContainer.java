@@ -12,9 +12,11 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.IndexModifier;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
-public class PiggyBankContainer extends TolkienContainer {
+public class PiggyBankContainer extends TolkienContainer<PiggyBankBlockEntity> {
     private final PiggyBankBlockEntity tileEntity;
     private final Level level;
     private static final int TE_INVENTORY_SLOT_COUNT = 54;  // must be the number of slots you have!
@@ -36,7 +38,7 @@ public class PiggyBankContainer extends TolkienContainer {
         this.tileEntity = ((PiggyBankBlockEntity) blockEntity);
         this.level = inv.player.level();
 
-        addContainerSlots(this.tileEntity.itemHandler, COLUMNS, ROWS);
+        addContainerSlots(this.tileEntity.itemHandler, this.tileEntity.itemHandler::set, COLUMNS, ROWS);
 
         addPlayerInventory(inv, -15, 111);
         addPlayerHotbar(inv, -15, 111);
@@ -74,7 +76,7 @@ public class PiggyBankContainer extends TolkienContainer {
     }
 
     @Override
-    void addContainerSlots(IItemHandler itemHandler, int cols, int rows) {
+    void addContainerSlots(ResourceHandler<ItemResource> itemHandler, IndexModifier<ItemResource> slotModifier, int cols, int rows) {
         int slot_index = 0;
 
         for (int row = 0; row < rows; row++) {
@@ -82,7 +84,7 @@ public class PiggyBankContainer extends TolkienContainer {
                 int x = -15 + col * 18;
                 int y = 13 + row * 18;
 
-                this.addSlot(new PiggyBankItemStackHandler(itemHandler, slot_index, x, y));
+                this.addSlot(new PiggyBankItemStackHandler(itemHandler, slotModifier, slot_index, x, y));
                 slot_index++;
             }
         }

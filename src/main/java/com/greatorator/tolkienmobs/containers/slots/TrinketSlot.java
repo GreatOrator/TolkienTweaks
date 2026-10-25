@@ -4,14 +4,16 @@ import com.greatorator.tolkienmobs.item.custom.TrinketItem;
 import com.greatorator.tolkienmobs.util.GeneralUtility;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
+import net.neoforged.neoforge.transfer.IndexModifier;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 
-public class TrinketSlot extends SlotItemHandler {
+public class TrinketSlot extends ResourceHandlerSlot {
     public static final Identifier backgroundLoc = null;
 
-    public TrinketSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition, Identifier backgroundLoc) {
-        super(itemHandler, index, xPosition, yPosition);
+    public TrinketSlot(ResourceHandler<ItemResource> itemHandler, IndexModifier<ItemResource> slotModifier, int index, int xPosition, int yPosition, Identifier backgroundLoc) {
+        super(itemHandler, slotModifier, index, xPosition, yPosition);
     }
 
     @Override

@@ -33,7 +33,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import com.greatorator.tolkienmobs.handler.capability.TolkienItemStackHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -45,25 +47,31 @@ public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuP
     public static final int OUTPUT_SLOT = 3;
     private static final int DEFAULT_MAX_PROGRESS = 100;
 
-    public final ItemStackHandler itemHandler = new ItemStackHandler(4) {
+    public final TolkienItemStackHandler itemHandler = new TolkienItemStackHandler(4) {
         @Override
-        public boolean isItemValid(int slot, ItemStack stack) {
+        public boolean isValid(int slot, ItemResource resource) {
+            if (resource.isEmpty()) return true;
             return switch (slot) {
-                case TRINKET_SLOT -> stack.getItem() instanceof TrinketItem || GeneralUtility.isRepairTarget(stack);
-                case POTION_SLOT -> stack.getItem() instanceof PotionItem
-                        || GeneralUtility.isRepairMaterialFor(level, getStackInSlot(TRINKET_SLOT), stack);
-                case GEM_SLOT -> stack.is(TolkienItems.GEM_AMMOLITE.get());
+                case TRINKET_SLOT -> resource.test(stack -> stack.getItem() instanceof TrinketItem || GeneralUtility.isRepairTarget(stack));
+                case POTION_SLOT -> resource.test(stack -> stack.getItem() instanceof PotionItem
+                        || GeneralUtility.isRepairMaterialFor(level, getStackInSlot(TRINKET_SLOT), stack));
+                case GEM_SLOT -> resource.test(stack -> stack.is(TolkienItems.GEM_AMMOLITE.get()));
                 default -> false;
             };
         }
 
         @Override
-        public int getSlotLimit(int slot) {
+        protected int getCapacity(int slot, ItemResource resource) {
             return slot == GEM_SLOT ? 64 : 1;
         }
 
+        /** The slot's stack, for the checks above. */
+        private ItemStack getStackInSlot(int slot) {
+            return ItemUtil.getStack(this, slot);
+        }
+
         @Override
-        protected void onContentsChanged(int slot) {
+        protected void onContentsChanged(int slot, ItemStack stack) {
             if (slot != OUTPUT_SLOT) {
                 progress = 0;
             }
@@ -144,9 +152,9 @@ public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuP
     }
 
     public void drops() {
-        SimpleContainer inv = new SimpleContainer(itemHandler.getSlots());
-        for(int i = 0; i < itemHandler.getSlots(); i++) {
-            inv.setItem(i, itemHandler.getStackInSlot(i));
+        SimpleContainer inv = new SimpleContainer(itemHandler.size());
+        for(int i = 0; i < itemHandler.size(); i++) {
+            inv.setItem(i, ItemUtil.getStack(itemHandler, i));
         }
 
         Containers.dropContents(this.level, this.worldPosition, inv);
@@ -188,20 +196,35 @@ public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuP
         }
     }
 
+    /** The slot's stack, which is a copy: writes have to go back through the handler. */
+    private ItemStack stackIn(int slot) {
+        return ItemUtil.getStack(itemHandler, slot);
+    }
+
+    private void putIn(int slot, ItemStack stack) {
+        itemHandler.set(slot, stack.isEmpty() ? ItemResource.EMPTY : ItemResource.of(stack), stack.getCount());
+    }
+
+    private void takeFrom(int slot, int amount) {
+        ItemStack stack = stackIn(slot);
+        if (amount <= 0 || stack.isEmpty()) return;
+        // A recipe can ask for more than the slot holds; the old extractItem took what was there.
+        putIn(slot, stack.copyWithCount(stack.getCount() - Math.min(amount, stack.getCount())));
+    }
+
     private TrinketRecipeInput getRecipeInput() {
-        return new TrinketRecipeInput(itemHandler.getStackInSlot(TRINKET_SLOT),
-                itemHandler.getStackInSlot(POTION_SLOT), itemHandler.getStackInSlot(GEM_SLOT));
+        return new TrinketRecipeInput(stackIn(TRINKET_SLOT), stackIn(POTION_SLOT), stackIn(GEM_SLOT));
     }
 
     private boolean canAcceptOutput(ItemStack result) {
-        ItemStack existing = itemHandler.getStackInSlot(OUTPUT_SLOT);
+        ItemStack existing = stackIn(OUTPUT_SLOT);
         return (existing.isEmpty() || ItemStack.isSameItemSameComponents(existing, result))
                 && existing.getCount() + result.getCount()
-                <= Math.min(itemHandler.getSlotLimit(OUTPUT_SLOT), result.getMaxStackSize());
+                <= Math.min(itemHandler.getCapacityAsInt(OUTPUT_SLOT, ItemResource.of(result)), result.getMaxStackSize());
     }
 
     private void craftItem(TrinketRecipe recipe, ItemStack result) {
-        ItemStack potion = itemHandler.getStackInSlot(POTION_SLOT);
+        ItemStack potion = stackIn(POTION_SLOT);
         // 26.1 hands the remainder out as a template; the stack is only built when there is one.
         ItemStackTemplate remainderTemplate = potion.getCraftingRemainder();
         ItemStack remainder = remainderTemplate == null ? ItemStack.EMPTY : remainderTemplate.create();
@@ -209,22 +232,22 @@ public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuP
         if (remainder.isEmpty() && potion.is(Items.POTION)) {
             remainder = new ItemStack(Items.GLASS_BOTTLE);
         }
-        itemHandler.extractItem(TRINKET_SLOT, 1, false);
-        itemHandler.extractItem(POTION_SLOT, 1, false);
-        itemHandler.extractItem(GEM_SLOT, recipe.getFuel().count(), false);
-        itemHandler.setStackInSlot(POTION_SLOT, remainder);
+        takeFrom(TRINKET_SLOT, 1);
+        takeFrom(POTION_SLOT, 1);
+        takeFrom(GEM_SLOT, recipe.getFuel().count());
+        putIn(POTION_SLOT, remainder);
 
-        ItemStack output = result.copyWithCount(result.getCount() + itemHandler.getStackInSlot(OUTPUT_SLOT).getCount());
-        itemHandler.setStackInSlot(OUTPUT_SLOT, output);
+        ItemStack output = result.copyWithCount(result.getCount() + stackIn(OUTPUT_SLOT).getCount());
+        putIn(OUTPUT_SLOT, output);
     }
 
     /** The tool in the trinket slot as the table would repair it, empty when it would not. */
     private ItemStack repairedTool() {
-        ItemStack tool = itemHandler.getStackInSlot(TRINKET_SLOT);
-        if (!GeneralUtility.isRepairMaterialFor(level, tool, itemHandler.getStackInSlot(POTION_SLOT))) {
+        ItemStack tool = stackIn(TRINKET_SLOT);
+        if (!GeneralUtility.isRepairMaterialFor(level, tool, stackIn(POTION_SLOT))) {
             return ItemStack.EMPTY;
         }
-        if (!itemHandler.getStackInSlot(GEM_SLOT).is(TolkienItems.GEM_AMMOLITE.get())) {
+        if (!stackIn(GEM_SLOT).is(TolkienItems.GEM_AMMOLITE.get())) {
             return ItemStack.EMPTY;
         }
         // One gem and one repair material undo this much damage; anything past it needs another pair.
@@ -240,9 +263,9 @@ public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuP
         if (repaired.isEmpty()) {
             return;
         }
-        itemHandler.extractItem(POTION_SLOT, 1, false);
-        itemHandler.extractItem(GEM_SLOT, 1, false);
-        itemHandler.setStackInSlot(TRINKET_SLOT, repaired);
+        takeFrom(POTION_SLOT, 1);
+        takeFrom(GEM_SLOT, 1);
+        putIn(TRINKET_SLOT, repaired);
     }
 
     @Nullable

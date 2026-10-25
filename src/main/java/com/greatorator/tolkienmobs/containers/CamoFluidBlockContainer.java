@@ -11,7 +11,7 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public class CamoFluidBlockContainer extends TolkienContainer {
+public class CamoFluidBlockContainer extends TolkienContainer<CamoFluidBlockEntity> {
     public final CamoFluidBlockEntity tileEntity;
     private final Player player;
     private final Level level;
@@ -42,6 +42,6 @@ public class CamoFluidBlockContainer extends TolkienContainer {
     }
 
     public void addFluidSlots() {
-        this.addSlot(new BucketItemHandler(this.tileEntity.mainInventory, 0, 80, 17));
+        this.addSlot(new BucketItemHandler(this.tileEntity.mainInventory, this.tileEntity.mainInventory::set, 0, 80, 17));
     }
 }

@@ -25,7 +25,9 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.fml.ModList;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.IndexModifier;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 import java.util.Optional;
 
@@ -34,7 +36,7 @@ import java.util.Optional;
  * {@link Slot#isActive()} follows the block entity's current upgrades. This lets the open screen
  * grow/shrink as upgrades are added or removed without reopening the menu.
  */
-public class BackpackBlockContainer extends TolkienContainer{
+public class BackpackBlockContainer extends TolkienContainer<BackpackBlockEntity>{
     public final BackpackBlockEntity tileEntity;
     private final Level level;
     private final ContainerLevelAccess access;
@@ -101,8 +103,8 @@ public class BackpackBlockContainer extends TolkienContainer{
         };
         this.fluidData = tileEntity.getFluidContainerData();
 
-        addContainerSlots(this.tileEntity.itemHandler, COLUMNS, MAX_ROWS);
-        addUpgradeSlots(this.tileEntity.upgradeItemHandler, UPGRADE_COLUMNS, UPGRADE_ROWS);
+        addContainerSlots(this.tileEntity.itemHandler, this.tileEntity.itemHandler::set, COLUMNS, MAX_ROWS);
+        addUpgradeSlots(this.tileEntity.upgradeItemHandler, this.tileEntity.upgradeItemHandler::set, UPGRADE_COLUMNS, UPGRADE_ROWS);
 
         addPlayerInventory(inv, 65, 146);
         addPlayerHotbar(inv, 65, 146);
@@ -240,7 +242,7 @@ public class BackpackBlockContainer extends TolkienContainer{
     }
 
     @Override
-    void addContainerSlots(IItemHandler itemHandler, int cols, int rows) {
+    void addContainerSlots(ResourceHandler<ItemResource> itemHandler, IndexModifier<ItemResource> slotModifier, int cols, int rows) {
         int slot_index = 0;
 
         for (int row = 0; row < rows; row++) {
@@ -248,7 +250,7 @@ public class BackpackBlockContainer extends TolkienContainer{
                 int x = 65 + col * 18;
                 int y = 13 + row * 18;
 
-                this.addSlot(new BackpackItemStackHandler(itemHandler, slot_index, x, y) {
+                this.addSlot(new BackpackItemStackHandler(itemHandler, slotModifier, slot_index, x, y) {
                     @Override
                     public boolean isActive() {
                         return getContainerSlot() < getStorageSize();
@@ -265,7 +267,7 @@ public class BackpackBlockContainer extends TolkienContainer{
     }
 
     /** Upgrade Function */
-    void addUpgradeSlots(IItemHandler itemHandler, int cols, int rows) {
+    void addUpgradeSlots(ResourceHandler<ItemResource> itemHandler, IndexModifier<ItemResource> slotModifier, int cols, int rows) {
         int slot_index = 0;
 
         for (int row = 0; row < rows; row++) {
@@ -273,7 +275,7 @@ public class BackpackBlockContainer extends TolkienContainer{
                 int x = 237 + col * 18;
                 int y = 53 + row * 18;
 
-                this.addSlot(new UpgradeItemHandler(itemHandler, slot_index, x, y) {
+                this.addSlot(new UpgradeItemHandler(itemHandler, slotModifier, slot_index, x, y) {
                     @Override
                     public boolean isActive() {
                         return isUpgradePanelOpen();
@@ -353,7 +355,7 @@ public class BackpackBlockContainer extends TolkienContainer{
     public void addFluidSlots() {
         fluidHandler = tileEntity.getMachineHandler();
         for (int i = 0; i < FLUID_SLOTS; i++) {
-            this.addSlot(new BucketItemHandler(fluidHandler, i, 38, i == 0 ? 11 : 58) {
+            this.addSlot(new BucketItemHandler(fluidHandler, fluidHandler::set, i, 38, i == 0 ? 11 : 58) {
                 @Override
                 public boolean isActive() {
                     return tileEntity.hasFluidTank();
