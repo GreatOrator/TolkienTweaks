@@ -35,6 +35,7 @@ import net.minecraft.world.level.levelgen.structure.structures.JigsawStructure;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
 
 import java.util.*;
+import java.util.function.Function;
 
 /** Vanilla village assembly, with Tolkien houses selected through per-structure pool aliases. */
 public final class TolkienVillageProvider {
@@ -51,7 +52,9 @@ public final class TolkienVillageProvider {
             new Village(TolkienStructures.HOBBIT_HOUSE, "hobbit", "plains", TolkienBiomes.SHIRE, "entityttmhobbit", new BlockPos(27, 0, 14), "east_up", new BlockPos(11, 0, 20)),
             new Village(TolkienStructures.HOUSE_HUMAN, "human", "plains", TolkienBiomes.GLADDEN, "entityttmhuman", new BlockPos(6, 0, 12), "south_up", new BlockPos(5, 5, 8)),
             new Village(TolkienStructures.HOUSE_ORC, "orc", "desert", TolkienBiomes.MORDOR, "entityttmorc", new BlockPos(7, 0, 14), "south_up", new BlockPos(7, 0, 2)),
-            new Village(TolkienStructures.HOUSE_FROZEN, "frozen", "plains", TolkienBiomes.FOROCHEL, "entityttmhuman", new BlockPos(6, 0, 12), "south_up", new BlockPos(5, 5, 8), false, true)
+            // The frozen house is six blocks deeper than the human one it borrows its other
+            // numbers from, so its door socket sits on that deeper south wall, not on the human's.
+            new Village(TolkienStructures.HOUSE_FROZEN, "frozen", "plains", TolkienBiomes.FOROCHEL, "entityttmhuman", new BlockPos(6, 0, 18), "south_up", new BlockPos(5, 5, 8), false, true)
     );
     /** The vanilla villager templates datagen copies for every village; weights match vanilla. */
     public static final List<String> VILLAGERS = List.of("nitwit", "baby", "unemployed");
@@ -143,10 +146,15 @@ public final class TolkienVillageProvider {
                 + (village.vanillaStyle().equals("desert") ? "_farm_" : "_small_farm_");
         var farmProcessors = processors.getOrThrow(village.darkStone() ? TolkienProcessorLists.NURN_FARMS
                 : village.vanillaStyle().equals("desert") ? ProcessorLists.FARM_DESERT : ProcessorLists.FARM_PLAINS);
-        context.register(village.housePool(), new StructureTemplatePool(empty,
-                List.of(Pair.of(single(village.houseTemplate().toString(), stone), 6),
-                        Pair.of(StructurePoolElement.legacy(farm + "1", farmProcessors), 1),
-                        Pair.of(StructurePoolElement.legacy(farm + "2", farmProcessors), 1)),
+        // 26.1 dropped plains_small_farm_2, so a plains-style house pool can only offer the farm
+        // that still ships; the desert styles keep both of theirs.
+        var houseElements = new ArrayList<Pair<Function<StructureTemplatePool.Projection, ? extends StructurePoolElement>, Integer>>();
+        houseElements.add(Pair.of(single(village.houseTemplate().toString(), stone), 6));
+        houseElements.add(Pair.of(StructurePoolElement.legacy(farm + "1", farmProcessors), 1));
+        if (village.vanillaStyle().equals("desert")) {
+            houseElements.add(Pair.of(StructurePoolElement.legacy(farm + "2", farmProcessors), 1));
+        }
+        context.register(village.housePool(), new StructureTemplatePool(empty, houseElements,
                 StructureTemplatePool.Projection.RIGID));
         if (village.darkStone()) {
             context.register(village.decorPool(), new StructureTemplatePool(empty,
