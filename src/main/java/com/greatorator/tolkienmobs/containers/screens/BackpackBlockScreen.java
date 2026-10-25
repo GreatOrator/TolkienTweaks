@@ -213,22 +213,25 @@ public class BackpackBlockScreen extends AbstractContainerScreen<BackpackBlockCo
     public void addUpgradeButtons() {
         int offsetX = (this.width - this.imageWidth) / 2;
         int offsetY = (this.height - this.imageHeight) / 2;
-        if (this.tileEntity.backpackUpgrades.sleepingBag && !this.tileEntity.isHeld()) {
-            addRenderableWidget(ToggleButtonFactory.SLEEPING_BAG_TOGGLE_BUTTON(offsetX + 173, offsetY + 156, backpackSettings.sleepingBag, b -> {
+        // The row reads sleeping bag, campfire, magnet, upgrade, and it has to end inside the panel:
+        // the art stops at 233, so the four buttons sit at 155/173/191/209 and the upgrade toggle keeps
+        // the corner it has always had.
+        if (this.tileEntity.backpackUpgrades.sleepingBag) {
+            addRenderableWidget(ToggleButtonFactory.SLEEPING_BAG_TOGGLE_BUTTON(offsetX + 155, offsetY + 156, backpackSettings.sleepingBag, b -> {
                 ((ToggleButton) b).setTexturePosition(backpackSettings.sleepingBag);
                 ClientPacketDistributor.sendToServer(new BackpackPlacementUpdateManager(true, false));
             }));
         }
 
-        if (this.tileEntity.backpackUpgrades.campfire && !this.tileEntity.isHeld()) {
-            addRenderableWidget(ToggleButtonFactory.CAMPFIRE_TOGGLE_BUTTON(offsetX + 191, offsetY + 156, backpackSettings.campfire, b -> {
+        if (this.tileEntity.backpackUpgrades.campfire) {
+            addRenderableWidget(ToggleButtonFactory.CAMPFIRE_TOGGLE_BUTTON(offsetX + 173, offsetY + 156, backpackSettings.campfire, b -> {
                 ((ToggleButton) b).setTexturePosition(backpackSettings.campfire);
                 ClientPacketDistributor.sendToServer(new BackpackPlacementUpdateManager(false, true));
             }));
         }
 
         if (this.tileEntity.backpackUpgrades.magnetRange() > 0) {
-            addRenderableWidget(ToggleButtonFactory.MAGNET_TOGGLE_BUTTON(offsetX + 227, offsetY + 156, backpackSettings.magnet, b -> {
+            addRenderableWidget(ToggleButtonFactory.MAGNET_TOGGLE_BUTTON(offsetX + 191, offsetY + 156, backpackSettings.magnet, b -> {
                 // The face has already flipped; the server flips its own copy and sends the result back.
                 backpackSettings.magnet = !backpackSettings.magnet;
                 ClientPacketDistributor.sendToServer(new BackpackMagnetToggleManager());

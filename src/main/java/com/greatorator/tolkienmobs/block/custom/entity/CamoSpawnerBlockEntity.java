@@ -48,7 +48,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
 public class CamoSpawnerBlockEntity extends TolkienBlockEntity implements MenuProvider, TolkienSpawner, SpawnerSettingsBlockEntity {
-    public SpawnerSettings spawnerSettings = new SpawnerSettings(true, true, true, true);
+    public SpawnerSettings spawnerSettings = new SpawnerSettings(true, false, false, true);
     public SpawnerDelays spawnerDelays = new SpawnerDelays(200, 800, 20);
     public SpawnerRanges spawnerRanges = new SpawnerRanges(4, 4, 4, 6, 16);
     public List<MobSpawnData> mobSpawnDataList = new ArrayList<>(6);

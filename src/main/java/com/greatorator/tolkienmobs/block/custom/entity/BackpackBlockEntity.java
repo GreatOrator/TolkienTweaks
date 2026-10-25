@@ -67,7 +67,9 @@ import java.util.function.Predicate;
 public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvider, BackpackFluidUpgradesBlockEntity, BackpackUpgradesBlockEntity, BackpackSettingsBlockEntity, BackpackPlacementBlockEntity, BackpackFluids {
     public final BackpackFluidData backpackFluidData;
     public int BUCKET_SLOTS = 2;
-    public BackpackSettings backpackSettings = new BackpackSettings(true, true, true, true);
+    // The sleeping bag and campfire start packed away, the upgrade window starts closed, and a magnet
+    // starts on, so the screen opens the same way a saved backpack does.
+    public BackpackSettings backpackSettings = new BackpackSettings(true, true, false, true);
     public BackpackPlacement backpackPlacement = new BackpackPlacement(false, false);
     public BackpackUpgrades backpackUpgrades = new BackpackUpgrades(false, false, false, false, false, false, false, false);
     public BackpackFluidUpgrades backpackFluidUpgrades = new BackpackFluidUpgrades(false, false, false, false, false);
@@ -387,7 +389,7 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
      */
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
-        this.removeDeployables(state.getValue(BackpackBlock.FACING));
+        this.removeDeployables(pos, state.getValue(BackpackBlock.FACING));
         super.preRemoveSideEffects(pos, state);
     }
 
@@ -467,55 +469,68 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
         return level.getBlockState(getBlockPos()).getValue(BackpackBlock.FACING);
     }
 
+    /**
+     * Where the deployables go: in front of the placed backpack, or in front of the player carrying it.
+     * A worn backpack used to hide the two buttons outright, which left the upgrades looking broken.
+     */
+    private BlockPos deployOrigin(Player player) {
+        return isHeld() && player != null ? player.blockPosition() : getBlockPos();
+    }
+
+    private Direction deployFacing(Player player) {
+        return isHeld() && player != null ? player.getDirection() : getBlockDirection();
+    }
+
     /** Sleeping bag (two blocks in front) and campfire (one block in front) share space, so only one is deployed at a time. */
-    public boolean isSleepingBagDeployed(Direction facing) {
-        BlockState state = level.getBlockState(getBlockPos().relative(facing));
+    public boolean isSleepingBagDeployed(BlockPos origin, Direction facing) {
+        BlockState state = level.getBlockState(origin.relative(facing));
         return state.getBlock() instanceof SleepingBagBlock && !state.getValue(SleepingBagBlock.CAN_DROP);
     }
 
-    public boolean isCampfireDeployed(Direction facing) {
-        return !backpackSettings.campfire && level.getBlockState(getBlockPos().relative(facing)).getBlock() instanceof CampfireBlock;
+    public boolean isCampfireDeployed(BlockPos origin, Direction facing) {
+        return !backpackSettings.campfire && level.getBlockState(origin.relative(facing)).getBlock() instanceof CampfireBlock;
     }
 
     /** Called from the screen buttons: removes whatever is deployed, then deploys the requested item unless it was the one just removed. */
     public void toggleDeployable(boolean sleepingBag, Player player) {
-        if (level == null || level.isClientSide() || isHeld()) {
+        if (level == null || level.isClientSide()) {
             return;
         }
-        Direction facing = getBlockDirection();
-        boolean bagWasDeployed = isSleepingBagDeployed(facing);
-        boolean campfireWasDeployed = isCampfireDeployed(facing);
+        BlockPos origin = deployOrigin(player);
+        Direction facing = deployFacing(player);
+        boolean bagWasDeployed = isSleepingBagDeployed(origin, facing);
+        boolean campfireWasDeployed = isCampfireDeployed(origin, facing);
 
-        removeDeployables(facing);
+        removeDeployables(origin, facing);
 
         if (sleepingBag && !bagWasDeployed && backpackUpgrades.sleepingBag) {
-            placeSleepingBag(facing, player);
+            placeSleepingBag(origin, facing, player);
         } else if (!sleepingBag && !campfireWasDeployed && backpackUpgrades.campfire) {
-            placeCampfire(facing, player);
+            placeCampfire(origin, facing, player);
         }
     }
 
-    public void removeDeployables(Direction facing) {
-        if (level == null || level.isClientSide() || isHeld()) {
+    public void removeDeployables(BlockPos origin, Direction facing) {
+        if (level == null || level.isClientSide()) {
             return;
         }
-        BlockPos front = getBlockPos().relative(facing);
-        if (isSleepingBagDeployed(facing)) {
+        BlockPos front = origin.relative(facing);
+        if (isSleepingBagDeployed(origin, facing)) {
             BlockPos head = front.relative(facing);
             level.playSound(null, head, SoundEvents.WOOL_BREAK, SoundSource.BLOCKS, 0.5F, 1.0F);
             if (level.getBlockState(head).getBlock() instanceof SleepingBagBlock) {
                 level.setBlock(head, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL | Block.UPDATE_SUPPRESS_DROPS);
             }
             level.setBlock(front, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL | Block.UPDATE_SUPPRESS_DROPS);
-        } else if (isCampfireDeployed(facing)) {
+        } else if (isCampfireDeployed(origin, facing)) {
             level.playSound(null, front, SoundEvents.WOOD_BREAK, SoundSource.BLOCKS, 0.5F, 1.0F);
             level.setBlock(front, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL | Block.UPDATE_SUPPRESS_DROPS);
         }
         setDeployed(false, false);
     }
 
-    private void placeSleepingBag(Direction facing, Player player) {
-        BlockPos foot = getBlockPos().relative(facing);
+    private void placeSleepingBag(BlockPos origin, Direction facing, Player player) {
+        BlockPos foot = origin.relative(facing);
         BlockPos head = foot.relative(facing);
         if (!level.getBlockState(foot).canBeReplaced() || !level.getBlockState(head).canBeReplaced()) {
             notEnoughRoom(player);
@@ -530,8 +545,8 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
         setDeployed(true, false);
     }
 
-    private void placeCampfire(Direction facing, Player player) {
-        BlockPos front = getBlockPos().relative(facing);
+    private void placeCampfire(BlockPos origin, Direction facing, Player player) {
+        BlockPos front = origin.relative(facing);
         if (!level.getBlockState(front).canBeReplaced()) {
             notEnoughRoom(player);
             return;

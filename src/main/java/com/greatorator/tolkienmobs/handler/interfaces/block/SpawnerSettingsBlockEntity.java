@@ -18,7 +18,10 @@ public interface SpawnerSettingsBlockEntity {
     default void saveSpawnerSettings(ValueOutput output) {
         output.putBoolean("requirePlayer", getSpawnerSettings().requirePlayer);
         output.putBoolean("ignoreSpawnReq", getSpawnerSettings().ignoreSpawnReq);
+        // The redstone and spawn-all toggles have buttons on the screen, so they have to survive a save.
+        output.putBoolean("redstoneControl", getSpawnerSettings().redstoneControl);
         output.putBoolean("spawnerParticles", getSpawnerSettings().spawnerParticles);
+        output.putBoolean("spawnAllTogether", getSpawnerSettings().spawnAllTogether);
         output.putShort("minSpawnDelay", (short) getSpawnerDelays().minSpawnDelay);
         output.putShort("maxSpawnDelay", (short) getSpawnerDelays().maxSpawnDelay);
         output.putShort("spawnDelay", (short) getSpawnerDelays().spawnDelay);
@@ -29,24 +32,33 @@ public interface SpawnerSettingsBlockEntity {
         output.putShort("clusterRange", (short) getSpawnerRanges().clusterRange);
     }
 
+    /**
+     * Reads the saved settings, and falls back to vanilla's own numbers for anything an older save
+     * did not write. Those fallbacks used to be zero, which left a spawner that had never been
+     * touched with a zero-block range.
+     */
     default void loadSpawnerSettings(ValueInput input) {
-        getSpawnerSettings().requirePlayer = input.getBooleanOr("requirePlayer", false);
+        getSpawnerSettings().requirePlayer = input.getBooleanOr("requirePlayer", true);
         getSpawnerSettings().ignoreSpawnReq = input.getBooleanOr("ignoreSpawnReq", false);
-        getSpawnerSettings().spawnerParticles = input.getBooleanOr("spawnerParticles", false);
-        getSpawnerDelays().minSpawnDelay = input.getShortOr("minSpawnDelay", (short) 0);
-        getSpawnerDelays().maxSpawnDelay = input.getShortOr("maxSpawnDelay", (short) 0);
-        getSpawnerDelays().spawnDelay = input.getShortOr("spawnDelay", (short) 0);
-        getSpawnerRanges().activationRange = input.getShortOr("activationRange", (short) 0);
-        getSpawnerRanges().spawnRange = input.getShortOr("spawnRange", (short) 0);
-        getSpawnerRanges().spawnCount = input.getShortOr("spawnCount", (short) 0);
-        getSpawnerRanges().maxCluster = input.getShortOr("maxCluster", (short) 0);
-        getSpawnerRanges().clusterRange = input.getShortOr("clusterRange", (short) 0);
+        getSpawnerSettings().redstoneControl = input.getBooleanOr("redstoneControl", false);
+        getSpawnerSettings().spawnerParticles = input.getBooleanOr("spawnerParticles", true);
+        getSpawnerSettings().spawnAllTogether = input.getBooleanOr("spawnAllTogether", false);
+        getSpawnerDelays().minSpawnDelay = input.getShortOr("minSpawnDelay", (short) 200);
+        getSpawnerDelays().maxSpawnDelay = input.getShortOr("maxSpawnDelay", (short) 800);
+        getSpawnerDelays().spawnDelay = input.getShortOr("spawnDelay", (short) 20);
+        getSpawnerRanges().activationRange = input.getShortOr("activationRange", (short) 16);
+        getSpawnerRanges().spawnRange = input.getShortOr("spawnRange", (short) 4);
+        getSpawnerRanges().spawnCount = input.getShortOr("spawnCount", (short) 4);
+        getSpawnerRanges().maxCluster = input.getShortOr("maxCluster", (short) 6);
+        getSpawnerRanges().clusterRange = input.getShortOr("clusterRange", (short) 16);
     }
 
     default void setSpawnerSettings(SpawnerSettings spawnerData) {
         getSpawnerSettings().requirePlayer = spawnerData.requirePlayer;
         getSpawnerSettings().ignoreSpawnReq = spawnerData.ignoreSpawnReq;
+        getSpawnerSettings().redstoneControl = spawnerData.redstoneControl;
         getSpawnerSettings().spawnerParticles = spawnerData.spawnerParticles;
+        getSpawnerSettings().spawnAllTogether = spawnerData.spawnAllTogether;
         if (getBlockEntity() instanceof CamoSpawnerBlockEntity spawnerBE)
             spawnerBE.markDirtyClient();
     }

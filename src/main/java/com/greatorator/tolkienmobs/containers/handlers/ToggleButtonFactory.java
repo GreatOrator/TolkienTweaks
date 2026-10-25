@@ -34,17 +34,20 @@ public class ToggleButtonFactory {
     }
 
     /** Spawner Button **/
+    // A ToggleButton's starting value is the setting itself, and true shows entry 1. Each pair below is
+    // therefore written off first and on second, so the face and the tooltip follow the setting instead
+    // of reading backwards.
     private static final List<TextureLocalization> REDSTONE_SIGNAL = List.of(
-            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/redstone_always.png"), Component.translatable("screen.tolkienmobs.camo_spawner.redstone.enabled")),
-            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/redstone_always_inactive.png"), Component.translatable("screen.tolkienmobs.camo_spawner.redstone.disabled"))
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/redstone_always_inactive.png"), Component.translatable("screen.tolkienmobs.camo_spawner.redstone.disabled")),
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/redstone_always.png"), Component.translatable("screen.tolkienmobs.camo_spawner.redstone.enabled"))
     );
     private static final List<TextureLocalization> IGNORE_PARTICLES = List.of(
-            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/particles.png"), Component.translatable("screen.tolkienmobs.camo_spawner.spawnerParticles.enabled")),
-            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/hide_particles.png"), Component.translatable("screen.tolkienmobs.camo_spawner.spawnerParticles.disabled"))
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/hide_particles.png"), Component.translatable("screen.tolkienmobs.camo_spawner.spawnerParticles.disabled")),
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/particles.png"), Component.translatable("screen.tolkienmobs.camo_spawner.spawnerParticles.enabled"))
     );
     private static final List<TextureLocalization> IGNORE_PLAYER = List.of(
-            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/player.png"), Component.translatable("screen.tolkienmobs.camo_spawner.requirePlayer.enabled")),
-            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/ignore_player.png"), Component.translatable("screen.tolkienmobs.camo_spawner.requirePlayer.disabled"))
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/ignore_player.png"), Component.translatable("screen.tolkienmobs.camo_spawner.requirePlayer.disabled")),
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/player.png"), Component.translatable("screen.tolkienmobs.camo_spawner.requirePlayer.enabled"))
     );
     private static final List<TextureLocalization> IGNORE_REQUIREMENTS = List.of(
             new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/spawn_requirements.png"), Component.translatable("screen.tolkienmobs.camo_spawner.ignoreSpawnReq.enabled")),
@@ -59,8 +62,8 @@ public class ToggleButtonFactory {
             new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/delete_single.png"), Component.translatable("screen.tolkienmobs.camo_spawner.remove_single_mob"))
     );
     private static final List<TextureLocalization> SPAWN_ALL_TOGETHER = List.of(
-            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/spawn_all.png"), Component.translatable("screen.tolkienmobs.camo_spawner.spawn_all.enabled")),
-            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/spawn_random.png"), Component.translatable("screen.tolkienmobs.camo_spawner.spawn_random.enabled"))
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/spawn_random.png"), Component.translatable("screen.tolkienmobs.camo_spawner.spawn_random.enabled")),
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/spawner/spawn_all.png"), Component.translatable("screen.tolkienmobs.camo_spawner.spawn_all.enabled"))
     );
 
     public static ToggleButton REMOVE_MOB_BUTTON(int x, int y, boolean startingValue, Button.OnPress onPress) {
