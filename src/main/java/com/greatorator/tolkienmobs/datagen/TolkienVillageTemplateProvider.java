@@ -95,13 +95,36 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
         // The house's own path blocks, and the porch in front of its door, are this mod's path
         // block in a village that lays one; the source templates still carry vanilla's grass path.
         if (village.laysStonePath()) layStonePath(house);
-        putState(house, village.preparedEntrance().below(),
+        BlockPos entrance = village.preparedEntrance();
+        putState(house, entrance.below(),
                 village.laysStonePath() ? TolkienVillageProvider.stonePathBlock() : "minecraft:dirt_path");
-        addConnector(house, village.preparedEntrance(), village.orientation(), "minecraft:building_entrance",
+        addConnector(house, entrance, village.orientation(), "minecraft:building_entrance",
                 "minecraft:empty", "minecraft:air");
+        requireFrontEdge(village, house, entrance);
         addConnector(house, village.residentFloor().offset(shift), "up_north", "minecraft:bottom",
                 "minecraft:village/" + village.vanillaStyle() + "/villagers", null);
         return house;
+    }
+
+    /**
+     * A doorway marker only connects a house from the house's own front edge. One set inside the
+     * footprint asks the street behind it to grow into the walls, which the game refuses, and it
+     * drops the whole house rather than placing it: the village keeps its town centre and nothing
+     * else. The size read here already carries the porch column, so an entrance coordinate copied
+     * from a house of another depth or width fails the data run instead of a world.
+     */
+    private static void requireFrontEdge(TolkienVillageProvider.Village village, CompoundTag house, BlockPos marker) {
+        Direction front = village.front();
+        int extent = list(house, "size").getIntOr(front.getAxis() == Direction.Axis.X ? 0 : 2, 0);
+        int along = front.getAxis() == Direction.Axis.X ? marker.getX() : marker.getZ();
+        int edge = front.getAxisDirection() == Direction.AxisDirection.POSITIVE ? extent - 1 : 0;
+        if (along != edge) {
+            throw new IllegalStateException("The " + village.style() + " house puts its doorway marker at "
+                    + marker + ", column " + along + " of " + extent + " along " + front
+                    + ", but the marker has to sit on the " + front + " edge, column " + edge
+                    + ": an entrance coordinate is written against a house's own template, not against"
+                    + " the template whose other numbers it borrows.");
+        }
     }
 
     /** Vanilla's villager template with the entity swapped for this village's own NPC. */
