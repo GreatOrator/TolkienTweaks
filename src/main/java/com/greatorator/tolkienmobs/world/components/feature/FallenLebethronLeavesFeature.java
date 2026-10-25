@@ -8,7 +8,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
@@ -25,7 +24,12 @@ public class FallenLebethronLeavesFeature extends Feature<NoneFeatureConfigurati
 	@Override
 	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> ctx) {
 		WorldGenLevel level = ctx.level();
-		BlockPos position = level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE_WG, ctx.origin());
+		// The world surface heightmap counts leaves, so under a canopy it answers with the treetop;
+		// the floor is found by walking down the column instead.
+		BlockPos position = GroundRules.leafPileFloor(level, ctx.origin());
+		if (position == null) {
+			return false;
+		}
 		RandomSource rand = ctx.random();
 
 		if (this.canPlace(position, level)) {
