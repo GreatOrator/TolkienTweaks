@@ -56,6 +56,12 @@ public final class GroundRules {
                 || state.is(Blocks.ANDESITE)
                 || state.is(Blocks.DIORITE)
                 || state.is(Blocks.GRANITE)
-                || state.is(TolkienBlocks.DARK_STONE.get());
+                || state.is(TolkienBlocks.DARK_STONE.get())
+                // Mordor's and the Ash Mountains' surface rules lay these two down wherever their
+                // own stone noise says so, so the same biome can have dark stone, cobbled dark stone
+                // or smooth dark stone on top from one column to the next. Only the plain one
+                // counted as ground, which quietly skipped every column the other two finished.
+                || state.is(TolkienBlocks.COBBLED_DARK_STONE.get())
+                || state.is(TolkienBlocks.SMOOTH_DARK_STONE.get());
     }
 }
