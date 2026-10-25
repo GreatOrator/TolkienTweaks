@@ -10,7 +10,6 @@ import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.ComputeFovModifierEvent;
 import net.neoforged.neoforge.client.event.RecipesReceivedEvent;
-import net.neoforged.neoforge.common.NeoForge;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -64,9 +63,4 @@ public class TolkienClientEvents {
         TolkienSyncedRecipes.clear();
     }
 
-    public static void initGameEvents() {
-        NeoForge.EVENT_BUS.addListener(FogHandler::renderFog);
-        NeoForge.EVENT_BUS.addListener(FogHandler::computeFogColor);
-        NeoForge.EVENT_BUS.addListener(FogHandler::unloadFog);
-    }
 }

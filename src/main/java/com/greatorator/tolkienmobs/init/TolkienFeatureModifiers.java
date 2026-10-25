@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.init;
 import com.greatorator.tolkienmobs.world.components.feature.tree.components.SpheroidFoliagePlacer;
 import com.greatorator.tolkienmobs.world.components.feature.tree.placers.BranchingLargeTrunkPlacer;
 import com.greatorator.tolkienmobs.world.components.feature.tree.placers.BranchingTrunkPlacer;
+import com.greatorator.tolkienmobs.world.components.feature.tree.placers.GroundCoverDecorator;
 import com.greatorator.tolkienmobs.world.components.feature.tree.placers.TreeRootsDecorator;
 import com.greatorator.tolkienmobs.world.components.feature.tree.placers.TrunkSideDecorator;
 import com.greatorator.tolkienmobs.world.components.placements.AvoidLandmarkModifier;
@@ -29,6 +30,7 @@ public class TolkienFeatureModifiers {
 
     public static final DeferredHolder<TreeDecoratorType<?>, TreeDecoratorType<TreeRootsDecorator>> TREE_ROOTS = TREE_DECORATORS.register("tree_roots", () -> new TreeDecoratorType<>(TreeRootsDecorator.CODEC));
     public static final DeferredHolder<TreeDecoratorType<?>, TreeDecoratorType<TrunkSideDecorator>> TRUNKSIDE_DECORATOR = TREE_DECORATORS.register("trunkside_decorator", () -> new TreeDecoratorType<>(TrunkSideDecorator.CODEC));
+    public static final DeferredHolder<TreeDecoratorType<?>, TreeDecoratorType<GroundCoverDecorator>> GROUND_COVER = TREE_DECORATORS.register("ground_cover", () -> new TreeDecoratorType<>(GroundCoverDecorator.CODEC));
 
     public static final DeferredHolder<TrunkPlacerType<?>, TrunkPlacerType<BranchingTrunkPlacer>> TRUNK_BRANCHING = TRUNK_PLACERS.register("branching_trunk_placer", () -> new TrunkPlacerType<>(BranchingTrunkPlacer.CODEC));
     public static final DeferredHolder<TrunkPlacerType<?>, TrunkPlacerType<BranchingLargeTrunkPlacer>> TRUNK_LARGE_BRANCHING = TRUNK_PLACERS.register("branching_large_trunk_placer", () -> new TrunkPlacerType<>(BranchingLargeTrunkPlacer.CODEC));

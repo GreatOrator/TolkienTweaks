@@ -70,6 +70,7 @@ public class TolkienPlacedFeatures {
 
     public static final ResourceKey<PlacedFeature> PLACED_ROCKPILE = registerKey("rockpile");
     public static final ResourceKey<PlacedFeature> PLACED_STONE_SPIKE = registerKey("stone_spike");
+    public static final ResourceKey<PlacedFeature> PLACED_MOUNTAIN_PEAK = registerKey("mountain_peak");
     public static final ResourceKey<PlacedFeature> PLACED_RANDOM_RUBBLE = registerKey("random_rubble");
     public static final ResourceKey<PlacedFeature> PLACED_WEBS = registerKey("webs");
     public static final ResourceKey<PlacedFeature> PLACED_STUMPS = registerKey("stumps");
@@ -142,9 +143,10 @@ public class TolkienPlacedFeatures {
         context.register(HARDENED_FANGORNOAK_PLACED_KEY, new PlacedFeature(features.getOrThrow(HARDENED_FANGORNOAK_KEY),
                 VegetationPlacements.treePlacement(PlacementUtils.countExtra(25, 0.1f, 2),
                         TolkienBlocks.SAPLING_FANGORNOAK.get())));
+        // Dead trees stand on bare rock as well as soil, which is why this one does not go through the
+        // sapling overload: that filter only lets a tree place where the sapling itself would survive.
         context.register(DEADWOOD_PLACED_KEY, new PlacedFeature(features.getOrThrow(DEADWOOD_KEY),
-                VegetationPlacements.treePlacement(PlacementUtils.countExtra(3, 0.1f, 2),
-                        TolkienBlocks.SAPLING_DEADWOOD.get())));
+                VegetationPlacements.treePlacement(PlacementUtils.countExtra(3, 0.1f, 2))));
         context.register(DWARVEN_PLACED_KEY, new PlacedFeature(features.getOrThrow(DWARVEN_MAPLE_KEY),
                 VegetationPlacements.treePlacement(PlacementUtils.countExtra(1, 0.1f, 2),
                         TolkienBlocks.SAPLING_DWARVEN_MAPLE.get())));
@@ -230,6 +232,9 @@ public class TolkienPlacedFeatures {
         context.register(PLACED_ROCKPILE, new PlacedFeature(features.getOrThrow(ROCK_PILE), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(6), InSquarePlacement.spread(), BiomeFilter.biome()).build()));
         context.register(PLACED_RANDOM_RUBBLE, new PlacedFeature(features.getOrThrow(RANDOM_RUBBLE), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(6), InSquarePlacement.spread(), BiomeFilter.biome()).build()));
         context.register(PLACED_STONE_SPIKE, new PlacedFeature(features.getOrThrow(STONE_SPIKE), ImmutableList.<PlacementModifier>builder().add(RarityFilter.onAverageOnceEvery(6), CountPlacement.of(UniformInt.of(1, 2)), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome()).build()));
+        // One summit every dozen chunks or so: frequent enough that the range reads as a range,
+        // rare enough that the slopes between them keep their shape.
+        context.register(PLACED_MOUNTAIN_PEAK, new PlacedFeature(features.getOrThrow(MOUNTAIN_PEAK), ImmutableList.<PlacementModifier>builder().add(RarityFilter.onAverageOnceEvery(12), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome()).build()));
         // HEIGHTMAP is MOTION_BLOCKING, which is primed at the start of feature placement and kept
         // up to date as features place blocks, so under a canopy it reads the top of the tree.
         // HEIGHTMAP_WORLD_SURFACE reads the worldgen heightmap instead, which is only ever the

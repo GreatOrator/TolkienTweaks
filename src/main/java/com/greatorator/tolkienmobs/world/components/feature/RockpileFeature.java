@@ -6,7 +6,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -50,7 +49,7 @@ public class RockpileFeature extends Feature<NoneFeatureConfiguration> {
                         for (Direction direction : Direction.values())
                         {
                             BlockState blockstate1 = worldIn.getBlockState(blockpos.relative(direction));
-                            if (blockstate1.is(Blocks.GRASS_BLOCK))
+                            if (GroundRules.isBareGround(blockstate1))
                             {
                                 faces++;
                             }

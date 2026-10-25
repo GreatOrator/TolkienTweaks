@@ -3,8 +3,12 @@
     "minecraft:audio/ambient_sounds": {
       "loop": "tolkienmobs:ambient.tolkienmobs.pathsofthedead"
     },
+    "minecraft:visual/cloud_fog_end_distance": 64.0,
     "minecraft:visual/fog_color": "#a9a9a9",
+    "minecraft:visual/fog_end_distance": 64.0,
+    "minecraft:visual/fog_start_distance": 4.0,
     "minecraft:visual/sky_color": "#7da3ff",
+    "minecraft:visual/sky_fog_end_distance": 64.0,
     "minecraft:visual/water_fog_color": "#548fb7"
   },
   "carvers": [],

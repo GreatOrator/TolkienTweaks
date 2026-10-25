@@ -8,6 +8,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.NoiseColumn;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.WorldGenerationContext;
@@ -97,18 +99,28 @@ public class VillageStructure extends Structure {
     }
 
     /**
-     * Whether the column is dry, answered without touching the chunk. The world surface heightmap
-     * counts water and the ocean floor heightmap does not, so the two agree only where nothing is
-     * floating above the ground. Nurn's floor is dark stone, so a site no longer has to be grass;
-     * what it may not be is a lake.
+     * Whether the column is dry, answered without touching the chunk. The terrain column is read
+     * straight from the noise generator, and the highest block that is not air is asked whether it
+     * holds a fluid: a lake answers yes and is refused, while soil, snow or bare rock are ground.
+     * <p>
+     * The heightmap pair this used to compare could not tell those apart - the surface heightmap
+     * counts snow and the ocean floor heightmap does not - so every snowy column of Forochel, which
+     * is all of them, read as water and its villages were never built.
      */
     private static boolean startsOnDryGround(Structure.GenerationContext context, BlockPos start) {
         ChunkGenerator generator = context.chunkGenerator();
         int surface = generator.getBaseHeight(start.getX(), start.getZ(), Heightmap.Types.WORLD_SURFACE_WG,
                 context.heightAccessor(), context.randomState());
-        int floor = generator.getBaseHeight(start.getX(), start.getZ(), Heightmap.Types.OCEAN_FLOOR_WG,
-                context.heightAccessor(), context.randomState());
-        return surface <= floor;
+        NoiseColumn column = generator.getBaseColumn(start.getX(), start.getZ(), context.heightAccessor(),
+                context.randomState());
+        for (int y = surface - 1; y >= context.heightAccessor().getMinY(); y--) {
+            BlockState state = column.getBlock(y);
+            if (state.isAir()) {
+                continue;
+            }
+            return state.getFluidState().isEmpty();
+        }
+        return false;
     }
 
     @Override

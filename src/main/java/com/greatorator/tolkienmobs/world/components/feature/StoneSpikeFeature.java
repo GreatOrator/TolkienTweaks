@@ -26,7 +26,7 @@ public class StoneSpikeFeature extends Feature<NoneFeatureConfiguration> {
         for(worldgenlevel = p_159882_.level(); worldgenlevel.isEmptyBlock(blockpos) && blockpos.getY() > worldgenlevel.getMinY() + 2; blockpos = blockpos.below()) {
         }
 
-        if (!worldgenlevel.getBlockState(blockpos).is(Blocks.GRASS_BLOCK)) {
+        if (!GroundRules.isBareGround(worldgenlevel.getBlockState(blockpos))) {
             return false;
         } else {
             blockpos = blockpos.above(randomsource.nextInt(4));
@@ -49,13 +49,13 @@ public class StoneSpikeFeature extends Feature<NoneFeatureConfiguration> {
                         float f2 = (float)Mth.abs(j1) - 0.25F;
                         if ((i1 == 0 && j1 == 0 || !(f1 * f1 + f2 * f2 > f * f)) && (i1 != -l && i1 != l && j1 != -l && j1 != l || !(randomsource.nextFloat() > 0.75F))) {
                             BlockState blockstate = worldgenlevel.getBlockState(blockpos.offset(i1, k, j1));
-                            if (blockstate.is(BlockTags.DIRT) || blockstate.is(Blocks.GRASS_BLOCK) || blockstate.is(Blocks.STONE)) {
+                            if (GroundRules.isBareGround(blockstate)) {
                                 this.setBlock(worldgenlevel, blockpos.offset(i1, k, j1), TolkienBlocks.DARK_STONE.get().defaultBlockState());
                             }
 
                             if (k != 0 && l > 1) {
                                 blockstate = worldgenlevel.getBlockState(blockpos.offset(i1, -k, j1));
-                                if (blockstate.is(BlockTags.DIRT) || blockstate.is(Blocks.GRASS_BLOCK) || blockstate.is(Blocks.STONE)) {
+                                if (GroundRules.isBareGround(blockstate)) {
                                     this.setBlock(worldgenlevel, blockpos.offset(i1, -k, j1), TolkienBlocks.DARK_STONE.get().defaultBlockState());
                                 }
                             }
@@ -81,7 +81,7 @@ public class StoneSpikeFeature extends Feature<NoneFeatureConfiguration> {
 
                     while(blockpos1.getY() > 50) {
                         BlockState blockstate1 = worldgenlevel.getBlockState(blockpos1);
-                        if (!blockstate1.isAir() && !blockstate1.is(BlockTags.DIRT) && !blockstate1.is(Blocks.GRASS_BLOCK) && !blockstate1.is(Blocks.STONE)) {
+                        if (!blockstate1.isAir() && !GroundRules.isBareGround(blockstate1)) {
                             break;
                         }
 

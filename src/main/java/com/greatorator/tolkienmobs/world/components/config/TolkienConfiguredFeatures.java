@@ -23,7 +23,6 @@ import net.minecraft.world.level.levelgen.feature.featuresize.ThreeLayersFeature
 import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FancyFoliagePlacer;
 import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
-import net.minecraft.world.level.levelgen.feature.treedecorators.AlterGroundDecorator;
 import net.minecraft.world.level.levelgen.feature.treedecorators.LeaveVineDecorator;
 import net.minecraft.world.level.levelgen.feature.treedecorators.TrunkVineDecorator;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.FancyTrunkPlacer;
@@ -67,6 +66,7 @@ public class TolkienConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> DWARVEN_MAPLE_FALLEN_LEAVES = registerKey("ground/dwarven_maple_fallen_leaves");
     public static final ResourceKey<ConfiguredFeature<?, ?>> WEBS = registerKey("decoration/webs");
     public static final ResourceKey<ConfiguredFeature<?, ?>> STONE_SPIKE = registerKey("ground/stone_spike");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> MOUNTAIN_PEAK = registerKey("ground/mountain_peak");
     public static final ResourceKey<ConfiguredFeature<?, ?>> MALLORN_LOG = registerKey("ground/mallorn_log");
     public static final ResourceKey<ConfiguredFeature<?, ?>> MIRKWOOD_LOG = registerKey("ground/mirkwood_log");
     public static final ResourceKey<ConfiguredFeature<?, ?>> CULUMALDA_LOG = registerKey("ground/culumalda_log");
@@ -238,7 +238,7 @@ public class TolkienConfiguredFeatures {
                 BlockStateProvider.simple(TolkienBlocks.LEAVES_FANGORNOAK.get()),
                 new FancyFoliagePlacer(ConstantInt.of(4), ConstantInt.of(4), 4),
                 new TwoLayersFeatureSize(1, 0, 1))
-                .decorators(ImmutableList.of(TrunkVineDecorator.INSTANCE, new LeaveVineDecorator(0.25F), new AlterGroundDecorator(BlockStateProvider.simple(Blocks.PODZOL)), TolkienDecorators.WALL_BROWN))
+                .decorators(ImmutableList.of(TrunkVineDecorator.INSTANCE, new LeaveVineDecorator(0.25F), TolkienDecorators.PODZOL, TolkienDecorators.WALL_BROWN))
                 .belowTrunkProvider(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
                 .build()));
         context.register(HARDENED_FANGORNOAK_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
@@ -247,7 +247,7 @@ public class TolkienConfiguredFeatures {
                 BlockStateProvider.simple(TolkienBlocks.HARDENED_LEAVES_FANGORNOAK.get()),
                 new FancyFoliagePlacer(ConstantInt.of(4), ConstantInt.of(4), 4),
                 new TwoLayersFeatureSize(1, 0, 1))
-                .decorators(ImmutableList.of(TrunkVineDecorator.INSTANCE, new LeaveVineDecorator(0.25F), new AlterGroundDecorator(BlockStateProvider.simple(Blocks.PODZOL)), TolkienDecorators.WALL_BROWN))
+                .decorators(ImmutableList.of(TrunkVineDecorator.INSTANCE, new LeaveVineDecorator(0.25F), TolkienDecorators.PODZOL, TolkienDecorators.WALL_BROWN))
                 .belowTrunkProvider(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
                 .build()));
         context.register(CULUMALDA_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
@@ -290,7 +290,8 @@ public class TolkienConfiguredFeatures {
                 BlockStateProvider.simple(Blocks.AIR),
                 new FancyFoliagePlacer(ConstantInt.of(2), ConstantInt.of(4), 4),
                 new TwoLayersFeatureSize(0, 0, 0, OptionalInt.of(4)))
-                .belowTrunkProvider(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
+                // No below-trunk block: the dead trees stand in Mordor's dark stone as well as on
+                // grass, and a grass patch under each one would give the lie to both.
                 .build()));
         context.register(DWARVEN_MAPLE_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TolkienBlocks.WOOD_DWARVEN_MAPLE.get()),
@@ -314,7 +315,7 @@ public class TolkienConfiguredFeatures {
                 BlockStateProvider.simple(Blocks.DARK_OAK_LEAVES),
                 new FancyFoliagePlacer(ConstantInt.of(4), ConstantInt.of(4), 4),
                 new TwoLayersFeatureSize(1, 0, 1))
-                .decorators(ImmutableList.of(new LeaveVineDecorator(0.25F), new AlterGroundDecorator(BlockStateProvider.simple(Blocks.PODZOL)), TolkienDecorators.LIGHTNINGBUG, TolkienDecorators.LIVING_ROOTS))
+                .decorators(ImmutableList.of(new LeaveVineDecorator(0.25F), TolkienDecorators.PODZOL, TolkienDecorators.LIGHTNINGBUG, TolkienDecorators.LIVING_ROOTS))
                 .belowTrunkProvider(BlockStateProvider.simple(Blocks.GRASS_BLOCK))
                 .ignoreVines()
                 .build()));
@@ -376,6 +377,7 @@ public class TolkienConfiguredFeatures {
         context.register(DWARVEN_MAPLE_FALLEN_LEAVES, new ConfiguredFeature<>(TolkienFeatures.DWARVEN_MAPLE_FALLEN_LEAVES.get(), FeatureConfiguration.NONE));
         context.register(WEBS, new ConfiguredFeature<>(TolkienFeatures.WEBS.get(), FeatureConfiguration.NONE));
         context.register(STONE_SPIKE, new ConfiguredFeature<>(TolkienFeatures.STONE_SPIKE.get(), FeatureConfiguration.NONE));
+        context.register(MOUNTAIN_PEAK, new ConfiguredFeature<>(TolkienFeatures.MOUNTAIN_PEAK.get(), FeatureConfiguration.NONE));
         context.register(MALLORN_LOG, new ConfiguredFeature<>(TolkienFeatures.MALLORN_LOG.get(), NoneFeatureConfiguration.INSTANCE));
         context.register(MIRKWOOD_LOG, new ConfiguredFeature<>(TolkienFeatures.MIRKWOOD_LOG.get(), NoneFeatureConfiguration.INSTANCE));
         context.register(CULUMALDA_LOG, new ConfiguredFeature<>(TolkienFeatures.CULUMALDA_LOG.get(), NoneFeatureConfiguration.INSTANCE));

@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.block.custom;
 
+import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
@@ -34,6 +35,9 @@ public class RockPileBlock extends BushBlock {
 
     @Override
     protected boolean mayPlaceOn(BlockState blockState, BlockGetter blockReader, BlockPos blockPos) {
-        return blockState.is(Blocks.GRASS_BLOCK) || blockState.is(Blocks.DIRT) || blockState.is(Blocks.COARSE_DIRT) || blockState.is(Blocks.PODZOL) || blockState.is(Blocks.FARMLAND) || blockState.is(Blocks.STONE) || blockState.is(Blocks.COBBLESTONE);
+        // Mordor's floor is dark stone, so without it the pile cannot even be placed by hand there.
+        return blockState.is(Blocks.GRASS_BLOCK) || blockState.is(Blocks.DIRT) || blockState.is(Blocks.COARSE_DIRT) || blockState.is(Blocks.PODZOL)
+                || blockState.is(Blocks.FARMLAND) || blockState.is(Blocks.STONE) || blockState.is(Blocks.COBBLESTONE) || blockState.is(Blocks.GRAVEL)
+                || blockState.is(TolkienBlocks.DARK_STONE.get());
     }
 }
