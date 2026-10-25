@@ -738,9 +738,10 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.TRINKET_TABLE.get());
         dropSelf(TolkienBlocks.FIREPLACE.get());
         dropSelf(TolkienBlocks.PIGGYBANK.get());
+        // The backpack's item is registered apart from the block, so the drop names the item instead of the block.
         add(TolkienBlocks.BACKPACK.get(), block -> LootTable.lootTable().withPool(applyExplosionCondition(block, LootPool.lootPool()
                 .setRolls(ConstantValue.exactly(1.0F))
-                .add(LootItem.lootTableItem(block)
+                .add(LootItem.lootTableItem(TolkienBlocks.BACKPACK_ITEM.get())
                         .apply(CopyComponentsFunction.copyComponentsFromBlockEntity(LootContextParams.BLOCK_ENTITY)
                                 .include(TolkienDataComponents.BACKPACK_CONTENTS.get()))))));
         dropSelf(TolkienBlocks.CHAMELEON_BLOCK.get());

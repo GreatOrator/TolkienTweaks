@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.block.custom;
 import com.greatorator.tolkienmobs.block.TolkienEntityBlock;
 import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
 import com.greatorator.tolkienmobs.containers.BackpackBlockContainer;
+import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -100,18 +101,43 @@ public class BackpackBlock extends TolkienEntityBlock {
     /** Creative mode skips loot tables, so drop a backpack carrying the contents ourselves (like shulker boxes). */
     @Override
     public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
-        if (!level.isClientSide() && player.isCreative() && level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity && blockEntity.hasContents()) {
-            ItemStack stack = new ItemStack(this);
-            stack.applyComponents(blockEntity.collectComponents());
-            ItemEntity itemEntity = new ItemEntity(level, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, stack);
-            itemEntity.setDefaultPickUpDelay();
-            level.addFreshEntity(itemEntity);
+        if (!level.isClientSide() && player.isCreative() && level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
+            dropBackpack(level, pos, blockEntity);
         }
         return super.playerWillDestroy(level, pos, state, player);
     }
 
+    /**
+     * The backpack's item is not a block item, so the block cannot make one by itself: the item has to be named
+     * outright, and its contents copied across, or breaking the pack would lose both.
+     */
+    private static ItemStack packIntoItem(BackpackBlockEntity blockEntity) {
+        ItemStack stack = new ItemStack(TolkienBlocks.BACKPACK_ITEM.get());
+        stack.applyComponents(blockEntity.collectComponents());
+        return stack;
+    }
+
+    private static void dropBackpack(Level level, BlockPos pos, BackpackBlockEntity blockEntity) {
+        ItemEntity itemEntity = new ItemEntity(level, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, packIntoItem(blockEntity));
+        itemEntity.setDefaultPickUpDelay();
+        level.addFreshEntity(itemEntity);
+    }
+
     @Override
     public InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult hit) {
+        if (player.isSecondaryUseActive()) {
+            // Sneak-use folds the pack back up: the deployed sleeping bag or campfire goes, then the pack itself.
+            if (!level.isClientSide() && level.getBlockEntity(blockPos) instanceof BackpackBlockEntity blockEntity) {
+                ItemStack stack = packIntoItem(blockEntity);
+                blockEntity.removeDeployables(blockPos, blockState.getValue(FACING));
+                level.removeBlock(blockPos, false);
+                if (!player.getInventory().add(stack)) {
+                    player.drop(stack, false);
+                }
+                level.playSound(null, blockPos, SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.6F, 1.0F);
+            }
+            return InteractionResult.SUCCESS;
+        }
         if (!level.isClientSide()) {
             if (level.getBlockEntity(blockPos) instanceof BackpackBlockEntity blockEntity) {
                 player.openMenu(blockEntity, buf -> {
@@ -126,6 +152,10 @@ public class BackpackBlock extends TolkienEntityBlock {
         // Fluid Handling
     @Override
     protected InteractionResult useItemOn(ItemStack itemStack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
+        // Sneaking picks the pack up whatever is in hand, so a full bucket cannot drink from it instead.
+        if (player.isSecondaryUseActive()) {
+            return useWithoutItem(blockState, level, blockPos, player, blockHitResult);
+        }
         if (level.isClientSide()) return InteractionResult.TRY_WITH_EMPTY_HAND;
         ResourceHandler<FluidResource> itemTank = ItemAccess.forPlayerInteraction(player, hand).getCapability(Capabilities.Fluid.ITEM);
         if (itemTank == null) return InteractionResult.TRY_WITH_EMPTY_HAND;
