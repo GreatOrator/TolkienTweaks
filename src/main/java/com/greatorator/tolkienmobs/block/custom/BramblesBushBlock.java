@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.block.custom;
 
+import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -49,6 +50,15 @@ public class BramblesBushBlock extends BushBlock implements BonemealableBlock {
     public BramblesBushBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(AGE, Integer.valueOf(0)));
+    }
+
+    /**
+     * Mordor's floor is dark stone rather than soil, so brambles take root in bare rock there as
+     * readily as they do in the dirt of everywhere else.
+     */
+    @Override
+    protected boolean mayPlaceOn(BlockState state, BlockGetter level, BlockPos pos) {
+        return super.mayPlaceOn(state, level, pos) || state.is(TolkienBlocks.DARK_STONE.get());
     }
 
     @Override

@@ -20,8 +20,8 @@ import net.neoforged.neoforge.event.BlockEntityTypeAddBlocksEvent;
 
 /**
  * 26.1 removed {@code DimensionSpecialEffects} and the event that registered a dimension's own, so
- * the overworld fog and cloud overrides it used to install have no home here; the biome fog lives in
- * {@code FogHandler} instead.
+ * the overworld fog and cloud overrides it used to install have no home here; each biome now carries
+ * its own fog distances as environment attributes.
  */
 public class TolkienRegistration {
     public static void initModBusEvents(IEventBus bus) {

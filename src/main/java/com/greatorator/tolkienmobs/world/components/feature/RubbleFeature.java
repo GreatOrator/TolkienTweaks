@@ -27,7 +27,7 @@ public class RubbleFeature extends Feature<NoneFeatureConfiguration> {
 
         for(int j = 0; j < 16; ++j) {
             BlockPos blockpos = pos.offset(rand.nextInt(8) - rand.nextInt(8), rand.nextInt(4) - rand.nextInt(4), rand.nextInt(8) - rand.nextInt(8));
-            if (TreeFeature.isAirOrLeaves(world, blockpos) && world.getBlockState(blockpos.below()).is(Blocks.GRASS_BLOCK))
+            if (TreeFeature.isAirOrLeaves(world, blockpos) && GroundRules.isBareGround(world.getBlockState(blockpos.below())))
             {
 
                 if (rand.nextInt(3) == 0) {

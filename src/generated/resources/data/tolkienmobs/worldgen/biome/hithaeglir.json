@@ -3,16 +3,12 @@
     "minecraft:audio/ambient_sounds": {
       "loop": "minecraft:ambient.warped_forest.mood"
     },
-    "minecraft:visual/ambient_particles": [
-      {
-        "particle": {
-          "type": "tolkienmobs:dwarven_maple_leaves"
-        },
-        "probability": 0.00625
-      }
-    ],
-    "minecraft:visual/fog_color": "#a080a0",
+    "minecraft:visual/cloud_fog_end_distance": 38.0,
+    "minecraft:visual/fog_color": "#d7dde0",
+    "minecraft:visual/fog_end_distance": 38.0,
+    "minecraft:visual/fog_start_distance": 0.0,
     "minecraft:visual/sky_color": "#7ca3ff",
+    "minecraft:visual/sky_fog_end_distance": 38.0,
     "minecraft:visual/water_fog_color": "#050533"
   },
   "carvers": [],
@@ -65,7 +61,8 @@
       "tolkienmobs:dwarven_maple_fallen_log"
     ],
     [
-      "minecraft:freeze_top_layer"
+      "minecraft:freeze_top_layer",
+      "tolkienmobs:mountain_peak"
     ]
   ],
   "has_precipitation": true,

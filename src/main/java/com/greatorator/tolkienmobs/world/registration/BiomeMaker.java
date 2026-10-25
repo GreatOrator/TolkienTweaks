@@ -34,6 +34,23 @@ public class BiomeMaker extends BiomeHelper{
         return new AmbientSounds(Optional.of(loop), Optional.empty(), List.of());
     }
 
+    /**
+     * A biome's own fog. 26.1 reads the near and far planes from the biome's environment attributes
+     * rather than from a dimension effect, so a thick fog is just a short far plane: the sky and the
+     * clouds end where the terrain fog does, which is what closes a mist in overhead instead of
+     * leaving a clear sky above a grey floor.
+     * <p>
+     * The distances are blocks. A view of twelve chunks is 192 blocks, so 20% visibility is an end
+     * of about 38, 40% about 76 and 50% about 96.
+     */
+    private static Biome.BiomeBuilder foggedBiome(float start, float end) {
+        return new Biome.BiomeBuilder()
+                .setAttribute(EnvironmentAttributes.FOG_START_DISTANCE, start)
+                .setAttribute(EnvironmentAttributes.FOG_END_DISTANCE, end)
+                .setAttribute(EnvironmentAttributes.SKY_FOG_END_DISTANCE, end)
+                .setAttribute(EnvironmentAttributes.CLOUD_FOG_END_DISTANCE, end);
+    }
+
     public static Biome makeBiomeMirkwood(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
         mirkwoodGen(placedFeatureGetter, carverGetter);
         mirkwoodSpawning();
@@ -129,12 +146,13 @@ public class BiomeMaker extends BiomeHelper{
     public static Biome makeBiomeFangorn(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
         fangornForestGen(placedFeatureGetter, carverGetter);
         fangornForestSpawning();
-        return new Biome.BiomeBuilder()
+        return foggedBiome(8.0F, 80.0F)
                 .hasPrecipitation(true)
                 .temperature(0.8F)
                 .downfall(0.3F)
                 .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(0.8F)))
-                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(0x548FB7))
+                // A grey wood: a little under half the view is fog, and it is the grey of old woodsmoke.
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(0x9EA3A3))
                 .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(0x00D2FB))
                 .setAttribute(EnvironmentAttributes.AMBIENT_SOUNDS, AmbientSounds.LEGACY_CAVE_SETTINGS)
                 .setAttribute(EnvironmentAttributes.AMBIENT_PARTICLES, AmbientParticle.of(TolkienParticleTypes.FANGORNOAK_LEAVES.get(), 0.00625F))
@@ -151,15 +169,16 @@ public class BiomeMaker extends BiomeHelper{
     public static Biome makeBiomeHithaelgir(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
         hithaeglirGen(placedFeatureGetter, carverGetter);
         hithaeglirSpawning();
-        return new Biome.BiomeBuilder()
+        return foggedBiome(0.0F, 38.0F)
                 .hasPrecipitation(true)
                 .temperature(0.3F)
                 .downfall(0.2F)
                 .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(0.3F)))
-                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(10518688))
+                // The Misty Mountains: a cold, near-opaque mist, so about a fifth of the view is all
+                // there is. The leaves are gone too - snow is the only thing that should fall here.
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(0xD7DDE0))
                 .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(329011))
                 .setAttribute(EnvironmentAttributes.AMBIENT_SOUNDS, ambientLoop(SoundEvents.AMBIENT_WARPED_FOREST_MOOD))
-                .setAttribute(EnvironmentAttributes.AMBIENT_PARTICLES, AmbientParticle.of(TolkienParticleTypes.DWARVEN_MAPLE_LEAVES.get(), 0.00625F))
                 .specialEffects((new BiomeSpecialEffects.Builder())
                         .waterColor(4159204)
                         .foliageColorOverride(2292007)
@@ -278,7 +297,7 @@ public class BiomeMaker extends BiomeHelper{
     public static Biome makeBiomeOldForest(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
         oldForestForestGen(placedFeatureGetter, carverGetter);
         oldForestForestSpawning();
-        return new Biome.BiomeBuilder()
+        return foggedBiome(8.0F, 96.0F)
                 .hasPrecipitation(true)
                 .temperature(0.8F)
                 .downfall(0.8F)
@@ -302,13 +321,14 @@ public class BiomeMaker extends BiomeHelper{
     public static Biome makeBiomeBarrowDowns(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
         barrowGen(placedFeatureGetter, carverGetter);
         barrowSpawning();
-        return new Biome.BiomeBuilder()
+        return foggedBiome(4.0F, 64.0F)
                 .hasPrecipitation(true)
                 .temperature(0.25F)
                 .downfall(0.8F)
                 .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(0.25F)))
                 .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(11119017))
                 .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(5541815))
+                // A low mist among the barrows, closing well before the downs run out.
                 .setAttribute(EnvironmentAttributes.AMBIENT_SOUNDS, ambientLoop(TolkienSounds.PATH_OF_UNDEAD))
                 .specialEffects((new BiomeSpecialEffects.Builder())
                         .waterColor(808080)
@@ -440,12 +460,13 @@ public class BiomeMaker extends BiomeHelper{
     public static Biome makeBiomeForochel(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
         forochelGen(placedFeatureGetter, carverGetter);
         forochelSpawning();
-        return new Biome.BiomeBuilder()
+        return foggedBiome(8.0F, 96.0F)
                 .hasPrecipitation(true)
                 .temperature(-0.5F)
                 .downfall(0.5F)
                 .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(-0.5F)))
-                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(12638463))
+                // Snow-blind white, at half the view.
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(0xF2F6F8))
                 .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(329011))
                 .specialEffects((new BiomeSpecialEffects.Builder())
                         .waterColor(4020182)
@@ -458,12 +479,12 @@ public class BiomeMaker extends BiomeHelper{
     public static Biome makeBiomeForochelSlopes(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
         forochelSlopesGen(placedFeatureGetter, carverGetter);
         forochelSlopesSpawning();
-        return new Biome.BiomeBuilder()
+        return foggedBiome(8.0F, 96.0F)
                 .hasPrecipitation(true)
                 .temperature(-0.7F)
                 .downfall(0.4F)
                 .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(-0.7F)))
-                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(12638463))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(0xF2F6F8))
                 .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(329011))
                 .specialEffects((new BiomeSpecialEffects.Builder())
                         .waterColor(4020182)

@@ -478,11 +478,13 @@ public abstract class BiomeHelper {
 
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_FOREST);
 		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_DWARVEN_MAPLE_FALLEN_LEAVES);
-		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_DWARVEN_MAPLE_FALLEN_LOG);
-		biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.MITHRIL_ORE_PLACED_KEY);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_DWARVEN_MAPLE_FALLEN_LOG);        biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.MITHRIL_ORE_PLACED_KEY);
 
-		BiomeDefaultFeatures.addMountainTrees(biome);
-		BiomeDefaultFeatures.addSurfaceFreezing(biome);
+        BiomeDefaultFeatures.addMountainTrees(biome);
+        // Summits go in above the trees but before the freeze, so the snow lands on them and none
+        // of them is planted with a spruce.
+        biome.addFeature(GenerationStep.Decoration.TOP_LAYER_MODIFICATION, TolkienPlacedFeatures.PLACED_MOUNTAIN_PEAK);
+        BiomeDefaultFeatures.addSurfaceFreezing(biome);
 		BiomeDefaultFeatures.addDefaultOres(biome);
 		addLegacyOres(biome);
 

@@ -90,7 +90,6 @@ public class TolkienMobsMain {
 
         if (dist.isClient()) {
             TolkienRegistration.initModBusEvents(modEventBus);
-            TolkienClientEvents.initGameEvents();
         }
 
         MilestoneHandler.init();
