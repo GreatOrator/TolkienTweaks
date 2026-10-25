@@ -172,7 +172,7 @@ public class TolkienItemTagProvider extends ItemTagsProvider {
                 .add(TolkienItems.ITEM_BACKPACK_UPGRADE_CRAFTING.get())
                 .add(TolkienItems.ITEM_BACKPACK_UPGRADE_SLEEPING.get())
                 .add(TolkienItems.ITEM_BACKPACK_UPGRADE_CAMPFIRE.get());
-        tag(TolkienTags.Items.CURIOS_AMULET)
+        tag(TolkienTags.Items.CURIOS_NECKLACE)
                 .add(TolkienItems.TRINKET_AMULET.get());
         tag(TolkienTags.Items.CURIOS_RING)
                 .add(TolkienItems.TRINKET_RING.get());
