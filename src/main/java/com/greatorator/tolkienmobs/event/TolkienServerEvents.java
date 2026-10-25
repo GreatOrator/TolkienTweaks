@@ -5,6 +5,7 @@ import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienPotions;
 import com.greatorator.tolkienmobs.init.TolkienRecipesTypes;
 import com.greatorator.tolkienmobs.item.custom.DwarvenHammerItem;
+import com.greatorator.tolkienmobs.util.block.BackpackMagnet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -19,6 +20,7 @@ import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.brewing.RegisterBrewingRecipesEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerSetSpawnEvent;
 import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,6 +30,18 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 @EventBusSubscriber(modid = MODID)
 public class TolkienServerEvents {
     private static final Set<BlockPos> HARVESTED_BLOCKS = new HashSet<>();
+
+    /**
+     * The backpack's magnet gathers drops around a player several times a second. It runs on the
+     * server only: the drop is taken out of the world there, and the backpack it fills is the stack
+     * the player is carrying.
+     */
+    @SubscribeEvent
+    public static void playerTick(PlayerTickEvent.Post event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            BackpackMagnet.tick(player);
+        }
+    }
 
     @SubscribeEvent
     public static void onDatapackSync(OnDatapackSyncEvent event) {

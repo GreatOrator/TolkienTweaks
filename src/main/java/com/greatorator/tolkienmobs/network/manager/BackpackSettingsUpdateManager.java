@@ -40,7 +40,7 @@ public record BackpackSettingsUpdateManager(
 
             if (container instanceof BackpackBlockContainer backpackContainer && backpackContainer.tileEntity instanceof BackpackBlockEntity backpackBE) {
                 BackpackSettings current = backpackBE.getBackpackSettings();
-                backpackBE.setBackpackSettings(new BackpackSettings(current.sleepingBag, current.campfire, payload.upgrade()));
+                backpackBE.setBackpackSettings(new BackpackSettings(current.sleepingBag, current.campfire, payload.upgrade(), current.magnet));
             }
         });
     }

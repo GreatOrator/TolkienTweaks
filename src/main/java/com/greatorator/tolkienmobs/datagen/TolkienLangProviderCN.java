@@ -49,6 +49,9 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_CRAFTING.get(), "背包升级 - 合成", "允许随时随地合成（上限：1）");
             this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_SLEEPING.get(), "背包升级 - 睡袋", "随身携带睡袋（上限：1）");
             this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_CAMPFIRE.get(), "背包升级 - 营火", "快速使用营火（上限：1）");
+            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_1.get(), "背包升级 - 磁铁 - 等级1", "吸引 16 格内的掉落物（上限：1）");
+            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_2.get(), "背包升级 - 磁铁 - 等级2", "吸引 32 格内的掉落物（上限：1）");
+            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_3.get(), "背包升级 - 磁铁 - 等级3", "吸引 64 格内的掉落物（上限：1）");
             this.addItem(TolkienItems.TEMPLATE_MITHRIL, "锻造模板：秘银");
             this.addItem(TolkienItems.TEMPLATE_MORGULIRON, "锻造模板：魔古尔铁");
             this.addItem(TolkienItems.TEMPLATE_AMMOLITE, "锻造模板：斑彩石");
@@ -378,6 +381,9 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.add("screen.tolkienmobs.backpack.campfire.remove", "收拾营火");
             this.add("screen.tolkienmobs.backpack.no_room", "这里没有足够的空间");
             this.add("key.tolkienmobs.open_backpack", "打开背包（饰品背部栏位）");
+            this.add("key.tolkienmobs.toggle_magnet", "切换背包磁铁");
+            this.add("screen.tolkienmobs.backpack.magnet.enabled", "磁铁开启：正在吸取掉落物");
+            this.add("screen.tolkienmobs.backpack.magnet.disabled", "磁铁关闭");
             this.add("key.category.tolkienmobs.general", "托尔金微调");
             this.add("tooltip.tolkienmobs.backpack.controls", "右键打开，潜行+右键方块放置");
             this.add("screen.tolkienmobs.backpack.close.upgrade", "关闭升级窗口");

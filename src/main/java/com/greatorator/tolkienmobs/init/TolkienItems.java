@@ -247,6 +247,12 @@ public class TolkienItems {
             properties -> new UpgradeItem(properties).setHasLore(), () -> new Item.Properties().stacksTo(1));
     public static final DeferredItem<Item> ITEM_BACKPACK_UPGRADE_CAMPFIRE = ITEMS.registerItem("item_backpack_upgrade_campfire",
             properties -> new UpgradeItem(properties).setHasLore(), () -> new Item.Properties().stacksTo(1));
+    public static final DeferredItem<Item> ITEM_BACKPACK_UPGRADE_MAGNET_1 = ITEMS.registerItem("item_backpack_upgrade_magnet_1",
+            properties -> new UpgradeItem(properties).setHasLore(), () -> new Item.Properties().stacksTo(1));
+    public static final DeferredItem<Item> ITEM_BACKPACK_UPGRADE_MAGNET_2 = ITEMS.registerItem("item_backpack_upgrade_magnet_2",
+            properties -> new UpgradeItem(properties).setHasLore(), () -> new Item.Properties().stacksTo(1));
+    public static final DeferredItem<Item> ITEM_BACKPACK_UPGRADE_MAGNET_3 = ITEMS.registerItem("item_backpack_upgrade_magnet_3",
+            properties -> new UpgradeItem(properties).setHasLore(), () -> new Item.Properties().stacksTo(1));
     public static final DeferredItem<Item> TEMPLATE_MITHRIL = ITEMS.registerItem("template_mithril", properties -> new TolkienItem(properties));
     public static final DeferredItem<Item> TEMPLATE_MORGULIRON = ITEMS.registerItem("template_morguliron", properties -> new TolkienItem(properties));
     public static final DeferredItem<Item> TEMPLATE_AMMOLITE = ITEMS.registerItem("template_ammolite", properties -> new TolkienItem(properties));

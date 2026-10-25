@@ -68,6 +68,9 @@ public class TolkienTabs {
                         output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_CRAFTING);
                         output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_SLEEPING);
                         output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_CAMPFIRE);
+                        output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_1);
+                        output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_2);
+                        output.accept(TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_3);
                         output.accept(TolkienItems.TEMPLATE_MITHRIL);
                         output.accept(TolkienItems.TEMPLATE_MORGULIRON);
                         output.accept(TolkienItems.TEMPLATE_AMMOLITE);

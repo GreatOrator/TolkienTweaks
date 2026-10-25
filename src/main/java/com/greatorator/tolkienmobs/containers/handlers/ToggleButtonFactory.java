@@ -168,6 +168,15 @@ public class ToggleButtonFactory {
         return new ToggleButton(x, y, STANDARD_WIDTH, STANDARD_HEIGHT, UPGRADE_TOGGLE_TEXTURES, startingValue, onPress);
     }
 
+    /** Magnet **/
+    private static final List<TextureLocalization> MAGNET_TOGGLE_TEXTURES = List.of(
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/backpack/magnet_off.png"), Component.translatable("screen.tolkienmobs.backpack.magnet.disabled")),
+            new TextureLocalization(Identifier.fromNamespaceAndPath(MODID, "textures/gui/backpack/magnet_on.png"), Component.translatable("screen.tolkienmobs.backpack.magnet.enabled"))
+    );
+    public static ToggleButton MAGNET_TOGGLE_BUTTON(int x, int y, boolean startingValue, Button.OnPress onPress) {
+        return new ToggleButton(x, y, STANDARD_WIDTH, STANDARD_HEIGHT, MAGNET_TOGGLE_TEXTURES, startingValue, onPress);
+    }
+
     /** Set Key Uses **/
     private static final Component ticksButtonLocalization = Component.translatable("screen.tolkienmobs.keystone.tickdelay");
 

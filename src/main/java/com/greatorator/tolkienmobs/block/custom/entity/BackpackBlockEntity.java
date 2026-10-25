@@ -67,9 +67,9 @@ import java.util.function.Predicate;
 public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvider, BackpackFluidUpgradesBlockEntity, BackpackUpgradesBlockEntity, BackpackSettingsBlockEntity, BackpackPlacementBlockEntity, BackpackFluids {
     public final BackpackFluidData backpackFluidData;
     public int BUCKET_SLOTS = 2;
-    public BackpackSettings backpackSettings = new BackpackSettings(true, true, true);
+    public BackpackSettings backpackSettings = new BackpackSettings(true, true, true, true);
     public BackpackPlacement backpackPlacement = new BackpackPlacement(false, false);
-    public BackpackUpgrades backpackUpgrades = new BackpackUpgrades(false, false, false, false, false);
+    public BackpackUpgrades backpackUpgrades = new BackpackUpgrades(false, false, false, false, false, false, false, false);
     public BackpackFluidUpgrades backpackFluidUpgrades = new BackpackFluidUpgrades(false, false, false, false, false);
     private static final Predicate<ItemStack> IS_UPGRADE_ITEM = stack -> !stack.isEmpty() && isUpgradeItem(stack);
     public TolkienItemStackHandler fluidHandler;
@@ -260,7 +260,8 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
     public int getSyncedState(int index) {
         return switch (index) {
             case 0 -> upgradeBits();
-            case 1 -> (backpackSettings.sleepingBag ? 1 : 0) | (backpackSettings.campfire ? 2 : 0) | (backpackSettings.upgrade ? 4 : 0);
+            case 1 -> (backpackSettings.sleepingBag ? 1 : 0) | (backpackSettings.campfire ? 2 : 0) | (backpackSettings.upgrade ? 4 : 0)
+                    | (backpackSettings.magnet ? 8 : 0);
             case 2 -> BuiltInRegistries.FLUID.getId(FLUID_TANK.getFluid().getFluid());
             case 3 -> FLUID_TANK.getFluidAmount() & 0xFFFF;
             case 4 -> FLUID_TANK.getFluidAmount() >>> 16;
@@ -282,12 +283,16 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
                 backpackFluidUpgrades.fluid_tank_3 = (value & 128) != 0;
                 backpackFluidUpgrades.fluid_tank_4 = (value & 256) != 0;
                 backpackFluidUpgrades.fluid_tank_5 = (value & 512) != 0;
+                backpackUpgrades.magnet_1 = (value & 1024) != 0;
+                backpackUpgrades.magnet_2 = (value & 2048) != 0;
+                backpackUpgrades.magnet_3 = (value & 4096) != 0;
                 FLUID_TANK.setCapacity(getMaxMB());
             }
             case 1 -> {
                 backpackSettings.sleepingBag = (value & 1) != 0;
                 backpackSettings.campfire = (value & 2) != 0;
                 backpackSettings.upgrade = (value & 4) != 0;
+                backpackSettings.magnet = (value & 8) != 0;
             }
             case 2 -> syncedFluidId = value;
             case 3 -> syncedFluidAmount = (syncedFluidAmount & 0xFFFF0000) | value;
@@ -311,7 +316,10 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
                 | (backpackFluidUpgrades.fluid_tank_2 ? 64 : 0)
                 | (backpackFluidUpgrades.fluid_tank_3 ? 128 : 0)
                 | (backpackFluidUpgrades.fluid_tank_4 ? 256 : 0)
-                | (backpackFluidUpgrades.fluid_tank_5 ? 512 : 0);
+                | (backpackFluidUpgrades.fluid_tank_5 ? 512 : 0)
+                | (backpackUpgrades.magnet_1 ? 1024 : 0)
+                | (backpackUpgrades.magnet_2 ? 2048 : 0)
+                | (backpackUpgrades.magnet_3 ? 4096 : 0);
     }
 
     public FluidStack getFluid() {
@@ -418,6 +426,12 @@ public class BackpackBlockEntity extends TolkienBlockEntity implements MenuProvi
                 fluidUpgrades.fluid_tank_4 = true;
             } else if (invStack.is(TolkienItems.ITEM_BACKPACK_UPGRADE_FLUID_5.get())) {
                 fluidUpgrades.fluid_tank_5 = true;
+            } else if (invStack.is(TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_1.get())) {
+                upgrades.magnet_1 = true;
+            } else if (invStack.is(TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_2.get())) {
+                upgrades.magnet_2 = true;
+            } else if (invStack.is(TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_3.get())) {
+                upgrades.magnet_3 = true;
             }
         }
 
