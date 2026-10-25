@@ -32,7 +32,7 @@ public class TolkienDataGenerator {
         event.addProvider(new TolkienBlockStateProvider(packOutput, existingFileHelper));
         event.addProvider(new TolkienItemModelProvider(packOutput, existingFileHelper));
         event.addProvider(new TolkienTrimSpriteProvider(packOutput, event.getResourceManager(PackType.CLIENT_RESOURCES)));
-        event.addProvider(new TolkienSpawnEggTextureProvider(packOutput));
+        event.addProvider(new TolkienSpawnEggTextureProvider(packOutput, event.getResourceManager(PackType.CLIENT_RESOURCES)));
         event.addProvider(new TolkienLangProviderUS(packOutput));
         event.addProvider(new TolkienLangProviderCN(packOutput));
         event.addProvider(new TolkienSoundProvider(packOutput));
