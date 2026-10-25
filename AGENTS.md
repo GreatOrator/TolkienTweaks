@@ -53,6 +53,14 @@ placed features, tags or loot, regenerate and commit the generated JSON alongsid
   in `event/MordorLavaEvents`. It converts only columns whose surface biome is one of those two, and
   it writes into the sections directly: placing blocks through the chunk runs block placement, whose
   fluid interactions reach into neighbouring chunks and deadlock while the chunk is still loading.
+- A village house joins its street only from its own front edge. Datagen writes the
+  `minecraft:building_entrance` jigsaw one block outside the house's front wall, and the marker has to
+  sit on the template's outermost column in the direction it faces; one set inside the footprint asks
+  the street to grow into the walls, the game refuses it and drops the whole house, so a village shows
+  its town centre and no houses (that is what kept Forochel's houses away). An entrance coordinate in
+  `TolkienVillageProvider.VILLAGES_BY_STYLE` is written against that house's own template, never
+  against the template whose other numbers it borrows, and `TolkienVillageTemplateProvider
+  .requireFrontEdge` fails `runData` when it is not.
 - Mordor, the Ash Mountains and most other Tolkien biomes have `"carvers": {}`, and the mod's own
   `tolkien_caves` and `highland_caves` carvers (which deliberately carve `CAVE_AIR`) are registered
   and datagenned but attached to no biome, so they never run.
