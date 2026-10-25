@@ -199,12 +199,13 @@ public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProv
 
         if (this.getBlockState().getValue(LIT)) {
             fuelTime--;
-        } else {
-            if (fuelTime < maxFuelTime && ((maxFuelTime - fuelTime) >= burnTimeTicks)) {
-                fuelTime = fuelTime + burnTimeTicks;
-                // The stack read above is a copy, so the used piece of fuel has to go back into the slot.
-                fuelHandler.set(0, ItemResource.of(stack), stack.getCount() - 1);
-            }
+        } else if (!stack.isEmpty() && burnTimeTicks > 0
+                && fuelTime < maxFuelTime && ((maxFuelTime - fuelTime) >= burnTimeTicks)) {
+            fuelTime = fuelTime + burnTimeTicks;
+            // The stack read above is a copy, so the used piece of fuel has to go back into the slot.
+            // An empty slot has no burn time and must never reach this write.
+            int remaining = stack.getCount() - 1;
+            fuelHandler.set(0, remaining > 0 ? ItemResource.of(stack) : ItemResource.EMPTY, remaining);
         }
     }
 
