@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.world.components.placements;
 
 import com.google.common.collect.ImmutableList;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -186,30 +187,18 @@ public class TolkienPlacedFeatures {
         context.register(MOUNTAIN_STONE_PLACED_KEY, new PlacedFeature(features.getOrThrow(MOUNTAIN_STONE_BLOB),
                 TolkienOrePlacement.commonOrePlacement(16, HeightRangePlacement.triangle(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(128)))));
 
-        context.register(FLOWER_SIMBELMYNE_PLACED_KEY, new PlacedFeature(features.getOrThrow(FLOWER_SIMBELMYNE_KEY),
-                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(96), RandomOffsetPlacement.ofTriangle(7, 3), BiomeFilter.biome())));
-        context.register(FLOWER_MIRKWOOD_PLACED_KEY, new PlacedFeature(features.getOrThrow(FLOWER_MIRKWOOD_KEY),
-                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(96), RandomOffsetPlacement.ofTriangle(7, 3), BiomeFilter.biome())));
-        context.register(FLOWER_ALFIRIN_PLACED_KEY, new PlacedFeature(features.getOrThrow(FLOWER_ALFIRIN_KEY),
-                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(96), RandomOffsetPlacement.ofTriangle(7, 3), BiomeFilter.biome())));
-        context.register(FLOWER_ATHELAS_PLACED_KEY, new PlacedFeature(features.getOrThrow(FLOWER_ATHELAS_KEY),
-                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(96), RandomOffsetPlacement.ofTriangle(7, 3), BiomeFilter.biome())));
-        context.register(FLOWER_NIPHREDIL_PLACED_KEY, new PlacedFeature(features.getOrThrow(FLOWER_NIPHREDIL_KEY),
-                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(96), RandomOffsetPlacement.ofTriangle(7, 3), BiomeFilter.biome())));
-        context.register(FLOWER_SWAMPMILKWEED_PLACED_KEY, new PlacedFeature(features.getOrThrow(FLOWER_SWAMPMILKWEED_KEY),
-                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(96), RandomOffsetPlacement.ofTriangle(7, 3), BiomeFilter.biome())));
-        context.register(FLOWER_LILLYOFTHEVALLEY_PLACED_KEY, new PlacedFeature(features.getOrThrow(FLOWER_LILLYOFTHEVALLEY_KEY),
-                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(96), RandomOffsetPlacement.ofTriangle(7, 3), BiomeFilter.biome())));
-        context.register(FLOWER_ELANOR_PLACED_KEY, new PlacedFeature(features.getOrThrow(FLOWER_ELANOR_KEY),
-                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(96), RandomOffsetPlacement.ofTriangle(7, 3), BiomeFilter.biome())));
-        context.register(FLOWER_AEGLOS_PLACED_KEY, new PlacedFeature(features.getOrThrow(FLOWER_AEGLOS_KEY),
-                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(96), RandomOffsetPlacement.ofTriangle(7, 3), BiomeFilter.biome())));
-        context.register(FLOWER_LISSUIN_PLACED_KEY, new PlacedFeature(features.getOrThrow(FLOWER_LISSUIN_KEY),
-                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(96), RandomOffsetPlacement.ofTriangle(7, 3), BiomeFilter.biome())));
-        context.register(FLOWER_MALLOS_PLACED_KEY, new PlacedFeature(features.getOrThrow(FLOWER_MALLOS_KEY),
-                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(96), RandomOffsetPlacement.ofTriangle(7, 3), BiomeFilter.biome())));
-        context.register(FLOWER_BRAMBLES_PLACED_KEY, new PlacedFeature(features.getOrThrow(FLOWER_BRAMBLES_KEY),
-                List.of(RarityFilter.onAverageOnceEvery(32), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, CountPlacement.of(96), RandomOffsetPlacement.ofTriangle(7, 3), BiomeFilter.biome())));
+        context.register(FLOWER_SIMBELMYNE_PLACED_KEY, flowerClumps(features.getOrThrow(FLOWER_SIMBELMYNE_KEY), 64));
+        context.register(FLOWER_MIRKWOOD_PLACED_KEY, flowerClumps(features.getOrThrow(FLOWER_MIRKWOOD_KEY), 96));
+        context.register(FLOWER_ALFIRIN_PLACED_KEY, flowerClumps(features.getOrThrow(FLOWER_ALFIRIN_KEY), 80));
+        context.register(FLOWER_ATHELAS_PLACED_KEY, flowerClumps(features.getOrThrow(FLOWER_ATHELAS_KEY), 64));
+        context.register(FLOWER_NIPHREDIL_PLACED_KEY, flowerClumps(features.getOrThrow(FLOWER_NIPHREDIL_KEY), 64));
+        context.register(FLOWER_SWAMPMILKWEED_PLACED_KEY, flowerClumps(features.getOrThrow(FLOWER_SWAMPMILKWEED_KEY), 96));
+        context.register(FLOWER_LILLYOFTHEVALLEY_PLACED_KEY, flowerClumps(features.getOrThrow(FLOWER_LILLYOFTHEVALLEY_KEY), 96));
+        context.register(FLOWER_ELANOR_PLACED_KEY, flowerClumps(features.getOrThrow(FLOWER_ELANOR_KEY), 96));
+        context.register(FLOWER_AEGLOS_PLACED_KEY, flowerClumps(features.getOrThrow(FLOWER_AEGLOS_KEY), 224));
+        context.register(FLOWER_LISSUIN_PLACED_KEY, flowerClumps(features.getOrThrow(FLOWER_LISSUIN_KEY), 96));
+        context.register(FLOWER_MALLOS_PLACED_KEY, flowerClumps(features.getOrThrow(FLOWER_MALLOS_KEY), 64));
+        context.register(FLOWER_BRAMBLES_PLACED_KEY, flowerClumps(features.getOrThrow(FLOWER_BRAMBLES_KEY), 96));
 
         context.register(PLACED_DECAY_BLOOM_MUSHROOMS, new PlacedFeature(features.getOrThrow(DECAY_BLOOM_MUSHROOMS), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.absolute(15)), CountPlacement.of(3), AvoidLandmarkModifier.checkUnderground(), BiomeFilter.biome()).build()));
         context.register(PLACED_BLOOM_DECAY_MUSHROOMS, new PlacedFeature(features.getOrThrow(BLOOM_DECAY_MUSHROOMS), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.absolute(15)), CountPlacement.of(3), AvoidLandmarkModifier.checkUnderground(), BiomeFilter.biome()).build()));
@@ -252,5 +241,27 @@ public class TolkienPlacedFeatures {
         // generous and the biome came out crowded: one attempt every eighteen chunks leaves the
         // lowland with the occasional lake rather than a chain of them.
         context.register(PLACED_NURN_LAKE, new PlacedFeature(features.getOrThrow(NURN_LAKE), List.of(RarityFilter.onAverageOnceEvery(18), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome())));
+    }
+
+    /**
+     * A flower's clumps.
+     * <p>
+     * Every flower in the mod is placed the same way: once a chunk's roll comes up, one burst of
+     * attempts is made at a single column and spread over the ground around it, so what a player sees
+     * is a patch rather than an even scatter. The roll is the same for all of them - a clump every
+     * other chunk - and the attempts differ instead, because a patch is only as full as the ground
+     * under it allows: a meadow keeps most attempts, while a mountainside, a downs of bare earth or a
+     * dark wood keeps few and is given correspondingly more, so their patches come out as full as the
+     * meadows'. These counts were measured in single-biome worlds rather than guessed; a flower whose
+     * biome changes its ground should be re-measured rather than nudged.
+     */
+    private static PlacedFeature flowerClumps(Holder<ConfiguredFeature<?, ?>> feature, int attempts) {
+        return new PlacedFeature(feature, List.of(
+                RarityFilter.onAverageOnceEvery(2),
+                InSquarePlacement.spread(),
+                PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
+                CountPlacement.of(attempts),
+                RandomOffsetPlacement.ofTriangle(7, 3),
+                BiomeFilter.biome()));
     }
 }
