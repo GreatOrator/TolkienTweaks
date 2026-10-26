@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Removed
+
+- Seven biome-modifier entries that could never fire are gone: the elanor, mirkwood-flower, swamp-milkweed and brambles flowers, the squirrel and frog spawns, and the morguliron ore. Each named a vanilla biome the mod's region replaces, and each repeated content the biomes already produce from their own feature and spawn lists - the flowers in Lórinand, both Mirkwoods, the Marshes and Mordor, the squirrel and frog in five biomes each, and morguliron in Mordor, Nurn and the Ash Mountains - so nothing a player sees changes.
+
 ### Fixed
 
 - Mirkwood and Mirkwood Spooky close in at half the view again, the way both woods did before 5.0. Their fog was set by hand while the mod still drew its own overworld fog; 26.1 reads it from the biome, and the distance it reads is measured against a 1024-block default rather than the view, so a wood that had no distances of its own showed nothing until the far horizon. Both now end their terrain, sky and cloud fog at 96 blocks, in the grey-green their floor casts. The five woods and downs that reported the same in testing - Fangorn, the Old Forest, the Barrow Downs, Forochel and its slopes, and the Misty Mountains - keep the fog they were given then.
