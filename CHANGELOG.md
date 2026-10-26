@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Fixed
+
+- Mirkwood and Mirkwood Spooky close in at half the view again, the way both woods did before 5.0. Their fog was set by hand while the mod still drew its own overworld fog; 26.1 reads it from the biome, and the distance it reads is measured against a 1024-block default rather than the view, so a wood that had no distances of its own showed nothing until the far horizon. Both now end their terrain, sky and cloud fog at 96 blocks, in the grey-green their floor casts. The five woods and downs that reported the same in testing - Fangorn, the Old Forest, the Barrow Downs, Forochel and its slopes, and the Misty Mountains - keep the fog they were given then.
+- The Blue Mountains' mountain stone counts as ground for the loose rock the way vanilla stone and Mordor's dark stone already did. It is what the dwarven range is built of below its grass and what its caves are cut into, so a pile or a lump of rubble can now sit on it instead of needing soil under every candidate column; the cobbled form counts too.
+- Eight of the mod's flowers grow somewhere again, and the rats and geckos spawn. Every one of them was attached to `minecraft:plains`, `minecraft:dark_forest` or `minecraft:badlands` - vanilla biomes the mod's own region replaces in the overworld, so those modifiers never fired and the flowers could not be found in any world while the two animals had no natural spawn at all. Aeglos grows in the Blue Mountains, alfirin, athelas and mallos in Firien, lissuin and niphredil in Lórinand, simbelmyne over the Barrow Downs, and the lily of the valley in the Shire and the Old Forest; ammolite ore follows its dark forest into Mirkwood; rats live in the Shire, the Gladden fields, the Old Forest and the Barrow Downs, and geckos in Haradwaith, Nurn and Dagorlad. Each flower keeps the density it was written with, so none of them carpets a biome.
+
 ## [5.0.606] - 2026-10-25
 
 ### Added

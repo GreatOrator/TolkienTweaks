@@ -1,6 +1,6 @@
 {
   "type": "neoforge:add_features",
-  "biomes": "minecraft:plains",
+  "biomes": "tolkienmobs:firien",
   "features": "tolkienmobs:flower_athelas_placed",
   "step": "vegetal_decoration"
 }

@@ -1,6 +1,9 @@
 {
   "type": "neoforge:add_features",
-  "biomes": "minecraft:plains",
+  "biomes": [
+    "tolkienmobs:shire",
+    "tolkienmobs:old_forest"
+  ],
   "features": "tolkienmobs:flower_valley_lilly_placed",
   "step": "vegetal_decoration"
 }

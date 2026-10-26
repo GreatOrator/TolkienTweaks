@@ -1,6 +1,10 @@
 {
   "type": "neoforge:add_spawns",
-  "biomes": "minecraft:plains",
+  "biomes": [
+    "tolkienmobs:haradwaith",
+    "tolkienmobs:nurn",
+    "tolkienmobs:dagorlad"
+  ],
   "spawners": {
     "type": "tolkienmobs:entityttmgecko",
     "maxCount": 4,

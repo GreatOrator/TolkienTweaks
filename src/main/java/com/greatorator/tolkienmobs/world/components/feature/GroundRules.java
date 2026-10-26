@@ -62,6 +62,10 @@ public final class GroundRules {
                 // or smooth dark stone on top from one column to the next. Only the plain one
                 // counted as ground, which quietly skipped every column the other two finished.
                 || state.is(TolkienBlocks.COBBLED_DARK_STONE.get())
-                || state.is(TolkienBlocks.SMOOTH_DARK_STONE.get());
+                || state.is(TolkienBlocks.SMOOTH_DARK_STONE.get())
+                // The Blue Mountains stand on mountain stone from just under the grass down, and
+                // their caves are cut into it, so it is rock to build against like any other.
+                || state.is(TolkienBlocks.MOUNTAIN_STONE.get())
+                || state.is(TolkienBlocks.COBBLED_MOUNTAIN_STONE.get());
     }
 }
