@@ -65,6 +65,30 @@ placed features, tags or loot, regenerate and commit the generated JSON alongsid
   `tolkien_caves` and `highland_caves` carvers (which deliberately carve `CAVE_AIR`) are registered
   and datagenned but attached to no biome, so they never run.
 
+## Which climate a Tolkien biome gets
+
+- The region does not make its own climate: `TolkienClimate.SLOT_REPLACEMENTS` renames twenty vanilla
+  slots, so a biome is exactly as common as the slot it took.  
+- `TolkienClimate.CLAIMS` moves cells between slots: each claim names a source slot, the temperature,
+  humidity and erosion bands that suit the biome, and TerraBlender is asked to drop those vanilla
+  points (`removeParameter`) while a point for the Tolkien biome is emitted in their place. The cell
+  is *moved*, never shared - two points covering one climate tie, and the vanilla side of the tie
+  stands. Whole-slot replacements win over per-point ones inside TerraBlender, so a claim cannot be
+  written against a point of a slot that is also in `SLOT_REPLACEMENTS` without removing it first.
+- The bands are matched by their middle, not their edges: TerraBlender's `ParameterUtils` erosion
+  bands end at -0.375 and -0.2225 where vanilla's end at -0.38 and -0.22, so an `equals` test on a
+  parameter silently matches nothing.
+- Erosion, not temperature, is what makes a mountain: `EROSION_0..3` is the steep ground and
+  `EROSION_4..6` the flat, and plain and forest slots hold every erosion band. A range is therefore
+  given steep cells of plains or forest, not a whole peak slot - vanilla's peak and slope slots are
+  tiny in world space, which is why the Ash Mountains, Hithaeglir and Forochel Slopes were
+  unreachable before.
+- The region weight is the mod's share of the world as `weight / (weight + 50)`, vanilla's overworld
+  region weighing 50: 2 gave about 4% and 7 gives about 12%. Cold and hot cells are much rarer in
+  world space than their share of the parameter list suggests, so the snowy plains cannot support
+  Forochel, Forochel Slopes and Hithaeglir at once; two of the three have to take cool or mild cells
+  and rely on their own biome temperature for the snow.
+
 ## Nurn, the watered half of that country
 
 - Nurn's water is the aquifer's water, not a biome feature. Sea level is 63 and the lowland sits at
