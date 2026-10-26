@@ -54,11 +54,12 @@ public class BiomeMaker extends BiomeHelper{
     public static Biome makeBiomeMirkwood(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
         mirkwoodGen(placedFeatureGetter, carverGetter);
         mirkwoodSpawning();
-        return new Biome.BiomeBuilder()
+        return foggedBiome(8.0F, 96.0F)
                 .hasPrecipitation(true)
                 .temperature(0.7F)
                 .downfall(0.8F)
                 .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(0.6F)))
+                // Mirkwood closes at half the view, in the same grey-green the wood's floor has.
                 .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(5988193))
                 .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(5541815))
                 .setAttribute(EnvironmentAttributes.AMBIENT_SOUNDS, ambientLoop(SoundEvents.AMBIENT_WARPED_FOREST_LOOP))
@@ -76,7 +77,7 @@ public class BiomeMaker extends BiomeHelper{
     public static Biome makeBiomeMirkwoodSpooky(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
         mirkwoodSpookyGen(placedFeatureGetter, carverGetter);
         mirkwoodSpookySpawning();
-        return new Biome.BiomeBuilder()
+        return foggedBiome(8.0F, 96.0F)
                 .hasPrecipitation(true)
                 .temperature(0.7F)
                 .downfall(0.8F)

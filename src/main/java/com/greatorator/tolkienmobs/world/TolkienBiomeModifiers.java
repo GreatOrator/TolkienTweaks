@@ -122,8 +122,10 @@ public class TolkienBiomeModifiers {
                 biomes.getOrThrow(BiomeTags.IS_END),
                 HolderSet.direct(placedFeatures.getOrThrow(TolkienPlacedFeatures.END_MORGULIRON_ORE_PLACED_KEY)),
                 GenerationStep.Decoration.UNDERGROUND_ORES));
+        // The dark forest this ore was written for is the mod's own Mirkwood now, so that is where
+        // it goes; the vanilla biome it named is replaced in the overworld and never generates.
         context.register(ADD_AMMOLITE_ORE, new BiomeModifiers.AddFeaturesBiomeModifier(
-                HolderSet.direct(biomes.getOrThrow(Biomes.DARK_FOREST)),
+                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.MIRKWOOD)),
                 HolderSet.direct(placedFeatures.getOrThrow(AMMOLITE_ORE_PLACED_KEY)),
                 GenerationStep.Decoration.UNDERGROUND_ORES));
         context.register(ADD_NETHER_AMMOLITE_ORE, new BiomeModifiers.AddFeaturesBiomeModifier(
@@ -136,7 +138,7 @@ public class TolkienBiomeModifiers {
                 GenerationStep.Decoration.UNDERGROUND_ORES));
 
         context.register(ADD_FLOWER_SIMBELMYNE, new BiomeModifiers.AddFeaturesBiomeModifier(
-                HolderSet.direct(biomes.getOrThrow(Biomes.PLAINS)),
+                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.BARROW_DOWNS)),
                 HolderSet.direct(placedFeatures.getOrThrow(FLOWER_SIMBELMYNE_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
         context.register(ADD_FLOWER_MIRKWOOD, new BiomeModifiers.AddFeaturesBiomeModifier(
@@ -144,15 +146,15 @@ public class TolkienBiomeModifiers {
                 HolderSet.direct(placedFeatures.getOrThrow(FLOWER_MIRKWOOD_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
         context.register(ADD_FLOWER_ALFIRIN, new BiomeModifiers.AddFeaturesBiomeModifier(
-                HolderSet.direct(biomes.getOrThrow(Biomes.PLAINS)),
+                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.FIRIEN)),
                 HolderSet.direct(placedFeatures.getOrThrow(FLOWER_ALFIRIN_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
         context.register(ADD_FLOWER_ATHELAS, new BiomeModifiers.AddFeaturesBiomeModifier(
-                HolderSet.direct(biomes.getOrThrow(Biomes.PLAINS)),
+                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.FIRIEN)),
                 HolderSet.direct(placedFeatures.getOrThrow(FLOWER_ATHELAS_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
         context.register(ADD_FLOWER_NIPHREDIL, new BiomeModifiers.AddFeaturesBiomeModifier(
-                HolderSet.direct(biomes.getOrThrow(Biomes.PLAINS)),
+                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.LORINAND)),
                 HolderSet.direct(placedFeatures.getOrThrow(FLOWER_NIPHREDIL_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
         context.register(ADD_FLOWER_SWAMPMILKWEED, new BiomeModifiers.AddFeaturesBiomeModifier(
@@ -160,7 +162,7 @@ public class TolkienBiomeModifiers {
                 HolderSet.direct(placedFeatures.getOrThrow(FLOWER_SWAMPMILKWEED_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
         context.register(ADD_FLOWER_LILLYOFTHEVALLEY, new BiomeModifiers.AddFeaturesBiomeModifier(
-                HolderSet.direct(biomes.getOrThrow(Biomes.PLAINS)),
+                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.SHIRE), biomes.getOrThrow(TolkienBiomes.OLD_FOREST)),
                 HolderSet.direct(placedFeatures.getOrThrow(FLOWER_LILLYOFTHEVALLEY_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
         context.register(ADD_FLOWER_ELANOR, new BiomeModifiers.AddFeaturesBiomeModifier(
@@ -168,15 +170,15 @@ public class TolkienBiomeModifiers {
                 HolderSet.direct(placedFeatures.getOrThrow(FLOWER_ELANOR_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
         context.register(ADD_FLOWER_AEGLOS, new BiomeModifiers.AddFeaturesBiomeModifier(
-                HolderSet.direct(biomes.getOrThrow(Biomes.PLAINS)),
+                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.BLUE_MOUNTAINS)),
                 HolderSet.direct(placedFeatures.getOrThrow(FLOWER_AEGLOS_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
         context.register(ADD_FLOWER_LISSUIN, new BiomeModifiers.AddFeaturesBiomeModifier(
-                HolderSet.direct(biomes.getOrThrow(Biomes.PLAINS)),
+                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.LORINAND)),
                 HolderSet.direct(placedFeatures.getOrThrow(FLOWER_LISSUIN_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
         context.register(ADD_FLOWER_MALLOS, new BiomeModifiers.AddFeaturesBiomeModifier(
-                HolderSet.direct(biomes.getOrThrow(Biomes.PLAINS)),
+                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.FIRIEN)),
                 HolderSet.direct(placedFeatures.getOrThrow(FLOWER_MALLOS_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
         context.register(ADD_FLOWER_BRAMBLES, new BiomeModifiers.AddFeaturesBiomeModifier(
@@ -185,10 +187,12 @@ public class TolkienBiomeModifiers {
                 GenerationStep.Decoration.VEGETAL_DECORATION));
 
         context.register(SPAWN_GECKO, BiomeModifiers.AddSpawnsBiomeModifier.singleSpawn(
-                HolderSet.direct(biomes.getOrThrow(Biomes.PLAINS)),
+                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.HARADWAITH), biomes.getOrThrow(TolkienBiomes.NURN),
+                        biomes.getOrThrow(TolkienBiomes.DAGORLAD)),
                 new Weighted<>(new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_GECKO.get(), 2, 4), 20)));
         context.register(SPAWN_RAT, BiomeModifiers.AddSpawnsBiomeModifier.singleSpawn(
-                HolderSet.direct(biomes.getOrThrow(Biomes.PLAINS)),
+                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.SHIRE), biomes.getOrThrow(TolkienBiomes.GLADDEN),
+                        biomes.getOrThrow(TolkienBiomes.OLD_FOREST), biomes.getOrThrow(TolkienBiomes.BARROW_DOWNS)),
                 new Weighted<>(new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_RAT.get(), 2, 4), 20)));
         context.register(SPAWN_SQUIRREL, BiomeModifiers.AddSpawnsBiomeModifier.singleSpawn(
                 HolderSet.direct(biomes.getOrThrow(Biomes.PLAINS)),

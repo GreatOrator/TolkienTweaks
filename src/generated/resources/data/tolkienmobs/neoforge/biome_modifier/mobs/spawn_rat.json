@@ -1,6 +1,11 @@
 {
   "type": "neoforge:add_spawns",
-  "biomes": "minecraft:plains",
+  "biomes": [
+    "tolkienmobs:shire",
+    "tolkienmobs:gladden",
+    "tolkienmobs:old_forest",
+    "tolkienmobs:barrow_downs"
+  ],
   "spawners": {
     "type": "tolkienmobs:entityttmrat",
     "maxCount": 4,
