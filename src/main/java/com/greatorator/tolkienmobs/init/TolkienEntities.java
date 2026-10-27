@@ -86,29 +86,35 @@ public class TolkienEntities {
                     .sized(0.75F, 2.0F));
 
         // NPC
+        // Arda's own people are CREATURE, not MISC. 26.1 never spawns a MISC mob: NaturalSpawner
+        // leaves the misc list out of its spawning categories and refuses a MISC entry outright, and
+        // SpawnerData swaps one for a pig while the world is being built - which is how every one of
+        // these came to be written into the biome data as minecraft:pig. Vanilla's villagers are MISC
+        // because vanilla places them from its villages' own structure files; a country here has to
+        // hand its people to a spawn list, so they have to be a category that can spawn.
     public static final Supplier<EntityType<HumanEntity>> ENTITY_TTM_HUMAN =
-            registerEntity("entityttmhuman", () -> EntityType.Builder.of(HumanEntity::new, MobCategory.MISC)
+            registerEntity("entityttmhuman", () -> EntityType.Builder.of(HumanEntity::new, MobCategory.CREATURE)
                     .sized(0.5F, 2.0F));
     public static final Supplier<EntityType<DwarfEntity>> ENTITY_TTM_DWARF =
-            registerEntity("entityttmdwarf", () -> EntityType.Builder.of(DwarfEntity::new, MobCategory.MISC)
+            registerEntity("entityttmdwarf", () -> EntityType.Builder.of(DwarfEntity::new, MobCategory.CREATURE)
                     .sized(0.50625F, 1.51875F));
     public static final Supplier<EntityType<ElvesEntity>> ENTITY_TTM_ELVES =
-            registerEntity("entityttmelves", () -> EntityType.Builder.of(ElvesEntity::new, MobCategory.MISC)
+            registerEntity("entityttmelves", () -> EntityType.Builder.of(ElvesEntity::new, MobCategory.CREATURE)
                     .sized(0.55F, 2.2F));
     public static final Supplier<EntityType<HobbitEntity>> ENTITY_TTM_HOBBIT =
-            registerEntity("entityttmhobbit", () -> EntityType.Builder.of(HobbitEntity::new, MobCategory.MISC)
+            registerEntity("entityttmhobbit", () -> EntityType.Builder.of(HobbitEntity::new, MobCategory.CREATURE)
                     .sized(0.35F, 1.4F));
     public static final Supplier<EntityType<SouthronTraderEntity>> ENTITY_TTM_SOUTHRON =
-            registerEntity("entityttmsouthron", () -> EntityType.Builder.of(SouthronTraderEntity::new, MobCategory.MISC)
+            registerEntity("entityttmsouthron", () -> EntityType.Builder.of(SouthronTraderEntity::new, MobCategory.CREATURE)
                     .sized(0.5F, 2.0F));
     public static final Supplier<EntityType<OrcTraderEntity>> ENTITY_TTM_ORC_TRADER =
-            registerEntity("entityttmorc_trader", () -> EntityType.Builder.of(OrcTraderEntity::new, MobCategory.MISC)
+            registerEntity("entityttmorc_trader", () -> EntityType.Builder.of(OrcTraderEntity::new, MobCategory.CREATURE)
                     .sized(0.5F, 2.0F));
     public static final Supplier<EntityType<OrcEntity>> ENTITY_TTM_ORC =
-            registerEntity("entityttmorc", () -> EntityType.Builder.of(OrcEntity::new, MobCategory.MISC)
+            registerEntity("entityttmorc", () -> EntityType.Builder.of(OrcEntity::new, MobCategory.CREATURE)
                     .sized(0.5F, 2.0F));
     public static final Supplier<EntityType<SouthronEntity>> ENTITY_TTM_SOUTHRON_NPC =
-            registerEntity("entityttmsouthron_npc", () -> EntityType.Builder.of(SouthronEntity::new, MobCategory.MISC)
+            registerEntity("entityttmsouthron_npc", () -> EntityType.Builder.of(SouthronEntity::new, MobCategory.CREATURE)
                     .sized(0.5F, 2.0F));
 
         // Hostile

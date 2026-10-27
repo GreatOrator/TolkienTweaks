@@ -169,6 +169,18 @@
     "axolotls": [],
     "creature": [
       {
+        "type": "tolkienmobs:entityttmhuman",
+        "maxCount": 5,
+        "minCount": 1,
+        "weight": 25
+      },
+      {
+        "type": "tolkienmobs:entityttmhobbit",
+        "maxCount": 5,
+        "minCount": 1,
+        "weight": 25
+      },
+      {
         "type": "minecraft:sheep",
         "maxCount": 4,
         "minCount": 1,
@@ -205,20 +217,7 @@
         "weight": 10
       }
     ],
-    "misc": [
-      {
-        "type": "minecraft:pig",
-        "maxCount": 5,
-        "minCount": 1,
-        "weight": 25
-      },
-      {
-        "type": "minecraft:pig",
-        "maxCount": 5,
-        "minCount": 1,
-        "weight": 25
-      }
-    ],
+    "misc": [],
     "monster": [],
     "underground_water_creature": [],
     "water_ambient": [],

@@ -144,6 +144,12 @@
     "axolotls": [],
     "creature": [
       {
+        "type": "tolkienmobs:entityttmelves",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 35
+      },
+      {
         "type": "minecraft:wolf",
         "maxCount": 2,
         "minCount": 1,
@@ -192,14 +198,7 @@
         "weight": 10
       }
     ],
-    "misc": [
-      {
-        "type": "minecraft:pig",
-        "maxCount": 2,
-        "minCount": 1,
-        "weight": 35
-      }
-    ],
+    "misc": [],
     "monster": [
       {
         "type": "tolkienmobs:entityttmhuron",

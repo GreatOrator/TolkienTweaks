@@ -24,10 +24,29 @@ public abstract class BiomeHelper {
 	}
 
 		// Mob Spawning
+	/**
+	 * One country's own people in its spawn list.
+	 *
+	 * <p>26.1 cannot spawn a {@link MobCategory#MISC} mob out of biome data: its
+	 * {@code NaturalSpawner} leaves the misc list out of the categories it rolls and refuses a MISC
+	 * entry when it does meet one, and {@link MobSpawnSettings.SpawnerData} quietly replaces such a
+	 * mob with a pig as it is built. That is what turned every NPC in these lists into
+	 * {@code minecraft:pig}. Arda's people are registered {@link MobCategory#CREATURE} for it, and
+	 * this refuses to write the biome data if one is ever named against a category that cannot
+	 * spawn, rather than letting a country fill with pigs again.
+	 */
+	private static MobSpawnSettings.SpawnerData npc(EntityType<?> type, int min, int max) {
+		if (type.getCategory() != MobCategory.CREATURE) {
+			throw new IllegalStateException("NPC " + EntityType.getKey(type) + " is a "
+					+ type.getCategory().getName() + " mob, and 26.1 spawns none of those from biome data");
+		}
+		return new MobSpawnSettings.SpawnerData(type, min, max);
+	}
+
 	public static MobSpawnSettings.Builder lorinadSpawning() {
 
 			return new MobSpawnSettings.Builder()
-					.addSpawn(MobCategory.MISC, 35, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_ELVES.get(), 1, 2))
+					.addSpawn(MobCategory.CREATURE, 35, npc(TolkienEntities.ENTITY_TTM_ELVES.get(), 1, 2))
 					.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.SHEEP, 1, 4))
 					.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.PIG, 1, 4))
 					.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.CHICKEN, 1, 4))
@@ -53,7 +72,7 @@ public abstract class BiomeHelper {
 	public static MobSpawnSettings.Builder ironHillsSpawning() {
 
 		return new MobSpawnSettings.Builder()
-				.addSpawn(MobCategory.MISC, 45, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_DWARF.get(), 1, 3))
+				.addSpawn(MobCategory.CREATURE, 45, npc(TolkienEntities.ENTITY_TTM_DWARF.get(), 1, 3))
 				.addSpawn(MobCategory.CREATURE, 15, new MobSpawnSettings.SpawnerData(EntityType.GOAT, 1, 3))
 				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.SHEEP, 1, 3))
 				.addSpawn(MobCategory.AMBIENT, 15, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 1, 2))
@@ -82,7 +101,7 @@ public abstract class BiomeHelper {
 	public static MobSpawnSettings.Builder gladdenSpawning() {
 
 		return new MobSpawnSettings.Builder()
-				.addSpawn(MobCategory.MISC, 45, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_HUMAN.get(), 1, 5))
+				.addSpawn(MobCategory.CREATURE, 45, npc(TolkienEntities.ENTITY_TTM_HUMAN.get(), 1, 5))
 				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 1, 2))
 				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_FROG.get(), 1, 2))
 				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_THRUSH.get(), 1, 2))
@@ -150,7 +169,7 @@ public abstract class BiomeHelper {
 	public static MobSpawnSettings.Builder firienSpawning() {
 
 		return new MobSpawnSettings.Builder()
-				.addSpawn(MobCategory.MISC, 35, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_ELVES.get(), 1, 2))
+				.addSpawn(MobCategory.CREATURE, 35, npc(TolkienEntities.ENTITY_TTM_ELVES.get(), 1, 2))
 				.addSpawn(MobCategory.MONSTER, 45, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_HURON.get(), 1, 5))
 				.addSpawn(MobCategory.CREATURE, 20, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 1, 2))
 				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 1, 2))
@@ -183,7 +202,7 @@ public abstract class BiomeHelper {
 	public static MobSpawnSettings.Builder shireSpawning() {
 
 		return new MobSpawnSettings.Builder()
-				.addSpawn(MobCategory.MISC, 45, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_HOBBIT.get(), 1, 5))
+				.addSpawn(MobCategory.CREATURE, 45, npc(TolkienEntities.ENTITY_TTM_HOBBIT.get(), 1, 5))
 				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 1, 2))
 				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_FROG.get(), 1, 2))
 				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_THRUSH.get(), 1, 2))
@@ -323,7 +342,7 @@ public abstract class BiomeHelper {
     public static MobSpawnSettings.Builder forochelSpawning() {
 
         return new MobSpawnSettings.Builder()
-                .addSpawn(MobCategory.MISC, 45, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_HUMAN.get(), 1, 5))
+                .addSpawn(MobCategory.CREATURE, 45, npc(TolkienEntities.ENTITY_TTM_HUMAN.get(), 1, 5))
                 .addSpawn(MobCategory.CREATURE, 20, new MobSpawnSettings.SpawnerData(EntityType.POLAR_BEAR, 1, 2))
                 .addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.RABBIT, 2, 4))
                 .addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 1, 2))
@@ -375,7 +394,7 @@ public abstract class BiomeHelper {
 	public static MobSpawnSettings.Builder rohanSpawning() {
 
 		return new MobSpawnSettings.Builder()
-				.addSpawn(MobCategory.MISC, 45, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_HUMAN.get(), 1, 5))
+				.addSpawn(MobCategory.CREATURE, 45, npc(TolkienEntities.ENTITY_TTM_HUMAN.get(), 1, 5))
 				.addSpawn(MobCategory.CREATURE, 20, new MobSpawnSettings.SpawnerData(EntityType.HORSE, 2, 6))
 				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.SHEEP, 1, 4))
 				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.PIG, 1, 4))
@@ -448,7 +467,7 @@ public abstract class BiomeHelper {
 	public static MobSpawnSettings.Builder lindonSpawning() {
 
 		return new MobSpawnSettings.Builder()
-				.addSpawn(MobCategory.MISC, 45, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_ELVES.get(), 1, 3))
+				.addSpawn(MobCategory.CREATURE, 45, npc(TolkienEntities.ENTITY_TTM_ELVES.get(), 1, 3))
 				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.SHEEP, 1, 4))
 				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.PIG, 1, 4))
 				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.CHICKEN, 1, 4))
@@ -475,7 +494,7 @@ public abstract class BiomeHelper {
 	public static MobSpawnSettings.Builder gondorSpawning() {
 
 		return new MobSpawnSettings.Builder()
-				.addSpawn(MobCategory.MISC, 45, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_HUMAN.get(), 1, 5))
+				.addSpawn(MobCategory.CREATURE, 45, npc(TolkienEntities.ENTITY_TTM_HUMAN.get(), 1, 5))
 				.addSpawn(MobCategory.CREATURE, 15, new MobSpawnSettings.SpawnerData(EntityType.HORSE, 1, 4))
 				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.SHEEP, 1, 4))
 				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.PIG, 1, 4))
@@ -506,8 +525,8 @@ public abstract class BiomeHelper {
 	public static MobSpawnSettings.Builder eriadorSpawning() {
 
 		return new MobSpawnSettings.Builder()
-				.addSpawn(MobCategory.MISC, 25, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_HUMAN.get(), 1, 5))
-				.addSpawn(MobCategory.MISC, 25, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_HOBBIT.get(), 1, 5))
+				.addSpawn(MobCategory.CREATURE, 25, npc(TolkienEntities.ENTITY_TTM_HUMAN.get(), 1, 5))
+				.addSpawn(MobCategory.CREATURE, 25, npc(TolkienEntities.ENTITY_TTM_HOBBIT.get(), 1, 5))
 				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.SHEEP, 1, 4))
 				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.PIG, 1, 4))
 				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.CHICKEN, 1, 4))

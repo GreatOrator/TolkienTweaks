@@ -136,6 +136,12 @@
     "axolotls": [],
     "creature": [
       {
+        "type": "tolkienmobs:entityttmdwarf",
+        "maxCount": 3,
+        "minCount": 1,
+        "weight": 45
+      },
+      {
         "type": "minecraft:goat",
         "maxCount": 3,
         "minCount": 1,
@@ -148,14 +154,7 @@
         "weight": 10
       }
     ],
-    "misc": [
-      {
-        "type": "minecraft:pig",
-        "maxCount": 3,
-        "minCount": 1,
-        "weight": 45
-      }
-    ],
+    "misc": [],
     "monster": [],
     "underground_water_creature": [],
     "water_ambient": [],
