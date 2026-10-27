@@ -85,6 +85,11 @@ public final class ArdaMap {
 
         // The north and the western seaboard.
         FORODWAITH(Biomes.FROZEN_OCEAN, 70, 8, true),
+        // The Ice Bay of Forochel and the snowfield round it, with the slopes that climb out of it
+        // toward Ered Luin and Angmar. A low frozen coast is what the bay is; the slopes behind it
+        // are hills rather than peaks.
+        FOROCHEL(TolkienBiomes.FOROCHEL, 68, 5, true),
+        FOROCHEL_SLOPES(TolkienBiomes.FOROCHEL_SLOPES, 104, 18, true),
         LINDON(TolkienBiomes.LINDON, 68, 5, true),
         BLUE_MOUNTAINS(TolkienBiomes.BLUE_MOUNTAINS, 150, 30, true),
         ERED_MITHRIN(TolkienBiomes.IRON_HILLS, 145, 28, true),
@@ -317,6 +322,13 @@ public final class ArdaMap {
         fill(map, Country.LINDON, 1, 5, 2, 18);
         fill(map, Country.BLUE_MOUNTAINS, 3, 4, 5, 21);
         fill(map, Country.ERIADOR, 6, 6, 16, 18);
+
+        // Forochel, whose Ice Bay is the north-west coast the maps draw above Lindon. It takes the
+        // northern end of the seaboard and the north end of Ered Luin, leaving the range running
+        // from the slopes south to the Gulf, which is what makes the coast a shore there and a wall
+        // further down. Its slopes are the ground between the snowfield and the mountains behind.
+        fill(map, Country.FOROCHEL, 1, 4, 3, 8);
+        fill(map, Country.FOROCHEL_SLOPES, 4, 4, 6, 8);
 
         // The cold north-west: Angmar and the Ettenmoors above Rhudaur, all the barrow country.
         fill(map, Country.ANGMAR, 17, 4, 21, 7);

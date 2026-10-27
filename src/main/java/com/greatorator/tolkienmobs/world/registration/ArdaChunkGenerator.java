@@ -123,11 +123,24 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
     /**
      * The drawn surface, for anything that asks the generator instead of a chunk - structure sites,
      * heightmaps and blends all come through here.
+     *
+     * <p>The type is not decoration. A heightmap that counts fluids - the world surface, and what
+     * blocks motion - is read above the water the map stands over its ground, while the ocean floor
+     * is the ground itself however deep the water is. Villages are the reason this matters: their
+     * site check begins at this height and walks down looking for the first block that is not empty,
+     * and a check that started on the bed of a lake went on to approve a flooded site, because soil
+     * under water is dry soil. Answering the ocean floor for every type built that village on the
+     * bed of the lake the map had drawn over it.
      */
     @Override
     public int getBaseHeight(int x, int z, Heightmap.Types type, LevelHeightAccessor heightAccessor, RandomState randomState) {
         ArdaMap.Sample sample = ArdaMap.sample(x, z, randomState.sampler().weirdness(), randomState.sampler().erosion());
-        return Math.max(heightAccessor.getMinY(), sample.height() + 1);
+        int ground = sample.height();
+        int surface = switch (type) {
+            case OCEAN_FLOOR, OCEAN_FLOOR_WG -> ground;
+            default -> Math.max(ground, ArdaMap.SEA_LEVEL);
+        };
+        return Math.max(heightAccessor.getMinY(), Math.min(heightAccessor.getMaxY(), surface + 1));
     }
 
     /**
