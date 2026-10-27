@@ -40,6 +40,15 @@ public class TolkienEntityTagProvider extends EntityTypeTagsProvider {
         this.tag(EntityTypeTags.ARTHROPOD)
                 .add(TolkienEntities.ENTITY_TTM_MIRKWOODSPIDER.get())
                 .add(TolkienEntities.ENTITY_TTM_SHELOB.get());
+        // In 26.1 a saddle can only be worn by a kind of entity the saddle itself names, through the
+        // tag its equippable component carries - the Saddleable interface the port removed is what
+        // used to allow it. The mod's three mounts take a saddle again, which is what makes the bare
+        // "this.isSaddled()" their jockeys' spawn code carried mean something: a jockey goat or steed
+        // now arrives with the saddle its model draws, and a player can saddle one normally.
+        this.tag(EntityTypeTags.CAN_EQUIP_SADDLE)
+                .add(TolkienEntities.ENTITY_TTM_GOAT.get())
+                .add(TolkienEntities.ENTITY_TTM_SHADOWFAX.get())
+                .add(TolkienEntities.ENTITY_TTM_NAZGULSTEED.get());
         this.tag(TolkienTags.Entities.BOSSES)
                 .add(TolkienEntities.ENTITY_TTM_BALROG.get())
                 .add(TolkienEntities.ENTITY_TTM_ENRAGED_FELLSPIRIT.get())

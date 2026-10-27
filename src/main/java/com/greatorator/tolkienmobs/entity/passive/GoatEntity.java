@@ -26,6 +26,7 @@ import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.equine.AbstractChestedHorse;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -47,6 +48,13 @@ public class GoatEntity extends AbstractChestedHorse implements GeoEntity {
 
     /** How long a warning holds the goat's head up, the same 40 ticks the scream lasts. */
     private static final int WARNING_TICKS = 40;
+
+    /**
+     * Where a rider's feet go: the seat of the saddle the model carries. The saddle's topmost cubes sit
+     * 1.394 blocks above the goat's feet and the back below them at 1.375, so the 0.65 this carried
+     * before put the rider inside the animal's chest rather than on its back.
+     */
+    private static final float SADDLE_HEIGHT = 1.4F;
 
     private int warningSoundTicks;
 
@@ -110,11 +118,15 @@ public class GoatEntity extends AbstractChestedHorse implements GeoEntity {
         return false;
     }
 
+    /**
+     * A rider sits on the goat's saddle. The horizontal offsets the superclass worked out are left
+     * alone, so a passenger stays over the middle of the animal as the goat turns.
+     */
     @Override
     protected void positionRider(Entity passenger, Entity.MoveFunction callback) {
         super.positionRider(passenger, callback);
         if (passenger instanceof LivingEntity entity) {
-            callback.accept(entity, getX(), getY() + 0.65f, getZ());
+            callback.accept(entity, getX(), getY() + SADDLE_HEIGHT, getZ());
             this.xRotO = entity.xRotO;
         }
     }
@@ -183,7 +195,9 @@ public class GoatEntity extends AbstractChestedHorse implements GeoEntity {
             dwarfentity.snapTo(this.getX(), this.getY(), this.getZ(), this.getYRot(), 0.0F);
             dwarfentity.finalizeSpawn(level, difficulty, spawnType, null);
             this.setTamed(true);
-            this.isSaddled();
+            // 26.1 dropped setSaddled: a saddle lives in the entity's own saddle slot, and the saddle
+            // itself is what the renderer reads to decide whether to draw the model's saddle at all.
+            this.setItemSlot(EquipmentSlot.SADDLE, new ItemStack(Items.SADDLE));
             dwarfentity.startRiding(this);
         }
 
