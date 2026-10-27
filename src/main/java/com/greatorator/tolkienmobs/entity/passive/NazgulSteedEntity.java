@@ -44,8 +44,16 @@ public class NazgulSteedEntity extends AbstractChestedHorse implements GeoEntity
     /**
      * Where a rider's feet go: the seat of the saddle the model carries, whose top cubes sit 1.375
      * blocks above the steed's feet. The 0.65 this carried before put the Nazgul inside the animal.
+     *
+     * <p>These three are the steed's passenger attachment, declared on the entity type in
+     * {@code TolkienEntities}: vanilla turns that point by the mount's own yaw, which is what keeps
+     * the rider on the saddle whichever way the animal is facing. Handing the seat over in the
+     * world's own axes - which is what the pair of offsets below used to be - left the rider hanging
+     * off the animal's side the moment it faced anything but the direction the offsets were tuned for.
      */
-    private static final float SADDLE_HEIGHT = 1.375F;
+    public static final float RIDER_HEIGHT = 1.375F;
+    public static final float RIDER_OFFSET_X = 0.3F;
+    public static final float RIDER_OFFSET_Z = 0.25F;
 
     public NazgulSteedEntity(EntityType<? extends AbstractChestedHorse> entityType, Level level) {
         super(entityType, level);
@@ -87,12 +95,16 @@ public class NazgulSteedEntity extends AbstractChestedHorse implements GeoEntity
         return false;
     }
 
+    /**
+     * The seat itself is the passenger attachment the entity type declares, so the superclass has
+     * already set the rider down on it by the time this runs; only the rider's pitch is carried
+     * across, as the other mounts of the mod do.
+     */
     @Override
     protected void positionRider(Entity passenger, Entity.MoveFunction callback) {
         super.positionRider(passenger, callback);
-        if (passenger instanceof LivingEntity entity) {
-            callback.accept(entity, getX() + 0.3f, getY() + SADDLE_HEIGHT, getZ() + 0.25f);
-            this.xRotO = entity.xRotO;
+        if (passenger instanceof LivingEntity rider) {
+            this.xRotO = rider.xRotO;
         }
     }
 

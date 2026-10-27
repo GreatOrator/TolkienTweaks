@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.entity;
 
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import net.minecraft.util.Util;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -13,6 +14,7 @@ import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.storage.ValueInput;
@@ -33,6 +35,22 @@ public class TolkienVillagerEntity extends Villager implements GeoEntity {
 
     public TolkienVillagerEntity(EntityType<? extends TolkienVillagerEntity> entityType, Level level) {
         super(entityType, level);
+    }
+
+    /**
+     * What one of the mod's folk is called. 26.1 asks getName for a type name and a villager answers
+     * with its profession's name, so one that holds no trade introduces itself as a villager - which
+     * named every dwarf, hobbit, elf, man, southron and orc of the mod a villager until it happened to
+     * take a job, and left the ones standing in a village that never found their work block without a
+     * name of their own. Only that case is answered here: a trade still names itself the way vanilla
+     * names it, which is also the title of the screen it trades in, and a dwarf without one is a dwarf.
+     */
+    @Override
+    protected Component getTypeName() {
+        if (this.getVillagerData().profession().is(VillagerProfession.NONE)) {
+            return this.getType().getDescription();
+        }
+        return super.getTypeName();
     }
 
     @Nonnull

@@ -16,6 +16,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityAttachment;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.SpawnEggItem;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -72,9 +73,15 @@ public class TolkienEntities {
     public static final Supplier<EntityType<GoatEntity>> ENTITY_TTM_GOAT =
             registerEntity("entityttmgoat", () -> EntityType.Builder.of(GoatEntity::new, MobCategory.CREATURE)
                     .sized(0.875F, 1.875F));
+    // The steed's rider sits on the saddle its model draws, a little behind and to one side of the
+    // middle, so the seat is declared here rather than worked out in positionRider: an attachment
+    // point is turned by the animal's own yaw, and the rider keeps his place on the saddle whichever
+    // way the steed faces.
     public static final Supplier<EntityType<NazgulSteedEntity>> ENTITY_TTM_NAZGULSTEED =
             registerEntity("entityttmnazgulsteed", () -> EntityType.Builder.of(NazgulSteedEntity::new, MobCategory.CREATURE)
-                    .sized(1.0F, 1.5F));
+                    .sized(1.0F, 1.5F)
+                    .attach(EntityAttachment.PASSENGER, NazgulSteedEntity.RIDER_OFFSET_X,
+                            NazgulSteedEntity.RIDER_HEIGHT, NazgulSteedEntity.RIDER_OFFSET_Z));
     public static final Supplier<EntityType<ShadowfaxEntity>> ENTITY_TTM_SHADOWFAX =
             registerEntity("entityttmshadowfax", () -> EntityType.Builder.of(ShadowfaxEntity::new, MobCategory.CREATURE)
                     .sized(1.0F, 1.5F));

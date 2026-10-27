@@ -83,6 +83,20 @@ placed features, tags or loot, regenerate and commit the generated JSON alongsid
   given steep cells of plains or forest, not a whole peak slot - vanilla's peak and slope slots are
   tiny in world space, which is why the Ash Mountains, Hithaeglir and Forochel Slopes were
   unreachable before.
+- **The overworld's list of the mod's countries is `TolkienClimate.SLOT_REPLACEMENTS` plus
+  `TolkienClimate.CLAIMS`, and nothing else.** A biome that is in neither list is drawn by `ArdaMap`
+  and met in Arda alone, however complete the rest of its data is - `#tolkienmobs:overworld`, the
+  feature and spawn modifiers and every climate, mob and tag it belongs to do not put it in the
+  overworld. `ArdaBiomeSource` deliberately does not read either list, so adding a country to the
+  overworld cannot disturb Arda's drawing. The seven countries the map called for all sit in one list
+  or the other now: Rohan, the White Mountains, Dunland, Lindon and Gondor each rename the vanilla
+  slot whose ground they share (savanna, stony peaks, windswept savanna, cherry grove, meadow), and
+  the Wild Wood and Eriador take cells the region's own slots had left (the warm rolling half of the
+  forest, the cool dry flats of the plains). Measured with `/locate biome` in a fresh overworld, all
+  seven answer within 2,500 blocks of the origin.
+- No structure is placed in those seven countries: every `has_structure/<name>` biome tag names the
+  older biomes only, so no village, ruin or warcamp stands in Rohan, Gondor, Eriador, Lindon,
+  Dunland, the Wild Wood or the White Mountains - in Arda or in the overworld.
 - The region weight is the mod's share of the world as `weight / (weight + 50)`, vanilla's overworld
   region weighing 50: 2 gave about 4% and 7 gives about 12%. Cold and hot cells are much rarer in
   world space than their share of the parameter list suggests, so the snowy plains cannot support
@@ -166,3 +180,62 @@ placed features, tags or loot, regenerate and commit the generated JSON alongsid
   (355 such blocks across 2272 fresh Nurn columns). It is a boundary effect, and it is also why a
   Nurn village can have a sandstone or terracotta block in its outskirts that the village did not
   place.
+
+## Naming facts worth not rediscovering
+
+- **26.1 names an entity through `getTypeName()`, not through its entity type.** `Entity.getName()`
+  answers with the custom name, or otherwise `Entity.getTypeName()`, which is the type's own
+  description - but `Villager` overrides it with its *profession's* name, and an unprofessed villager
+  holds `minecraft:none`, whose name is "Villager". A mod entity extending `Villager` therefore
+  introduces itself as a villager in its name tag, in vanilla's `/summon` message and in death
+  messages until it takes a job, which is what made every one of the mod's folk a villager.
+  `TolkienVillagerEntity.getTypeName()` answers the no-trade case with its own type's description.
+  The wandering-trader branch is unaffected: `AbstractVillager` does not override the method, so
+  `TolkienWanderingEntity` and the traders based on it have always shown their own names. The title
+  of the screen a villager trades in is that same `getDisplayName()`, so a name change shows there
+  too, and a driven race+trade table would have to keep it sensible.
+- The lang table for the mod's villagers carries a race name (`entity.tolkienmobs.entityttmdwarf` =
+  "Dwarf") beside a race-then-trade name for every profession, written by `addVillager`; its
+  no-trade entry (`entity.tolkienmobs.entityttmdwarf.tolkienmobs.none`) writes the race it was
+  handed. It used to hardcode "Human" there for every race, and the pet-merchant and junk-trader
+  entries had each other's names - in the villager table and in the profession names the game shows
+  (`entity.minecraft.villager.tolkienmobs.pet_merchant`) alike. Nothing reads the per-race keys today
+  - the trade's own name is what shows - so those strings were inert rather than visible.
+- **A POI type's blocks are what makes a block a work block.** Each of the mod's professions names
+  its job site by comparing the POI holder against its own `PoiType`, so the grocers' bamboo block,
+  the banker's gold block and the trinket smith's ancient debris were the only blocks those trades
+  would work at. They are the mod's own furniture now - fireplace, piggy bank, trinket table - read
+  off the block's own state definition. `BuiltInRegistries` declares `POINT_OF_INTEREST_TYPE` after
+  `BLOCK`, so the block registry is filled when a POI type's supplier runs and it may name mod
+  blocks. A POI is created where a block is placed, by a player and by a structure alike.
+- A jobless villager only claims a POI that `#minecraft:acquirable_job_site` names, and the trade it
+  takes is the first registered profession whose `heldJobSite` test passes for the POI at the position
+  it remembered (`AssignProfessionFromJobSite` reads that POI again and walks the profession registry),
+  so a site no profession names leaves the villager unprofessed and reading `minecraft:none`. Two
+  traps cost a lot of time here: a villager summoned into a chunk that is not force-loaded is created
+  and then dropped (`No entity was found` on the next command), and one that cannot path to the site
+  takes no job at all - so read the summon's `Pos` back before believing a null result, and pave the
+  ground first. A site's existence can be read straight out of the world instead: the saved poi data
+  under `<level>/dimensions/minecraft/overworld/poi` holds one record per site, with the type as a
+  string, so a `Sections`/`Records` NBT dump answers "is this block a work block" without a villager.
+  Read the whole inflated record though - the region file's length field is the *compressed* size, and
+  a buffer that size truncates the records after the first and invents a missing POI that is not.
+
+## Mount and passenger facts worth not rediscovering
+
+- **A riding entity's saved position is not its own.** 26.1's `Entity.saveWithoutId` writes `Pos`
+  for a passenger as `(vehicle.getX(), this.getY(), vehicle.getZ())`, so `/data get entity` on a
+  ridden mob always reports its mount's x/z with the passenger's own height. A seat, a jockey's
+  place or any other riding offset therefore *reads* as zero however well it works - this is what
+  made the steed's attachment-point seat look broken while it was placing the rider correctly.
+  Measure a seat another way: teleport a witness entity to the rider (`execute as <rider>
+  positioned as @s run tp <witness> ~ ~ ~` - `as` alone does not adopt the entity's position), print
+  it from inside `positionRider`, or move the mount itself.
+- A horse keeps a seat through `EntityAttachment.PASSENGER` on its entity type: `.attach(PASSENGER,
+  x, y, z)` declares the point in the animal's own frame, `EntityAttachments.getClamped` turns it by
+  the mount's yaw, and `Entity.positionRider` sets the rider to `mount.position() + point -
+  passenger.getVehicleAttachmentPoint(...)`. `AbstractHorse.getPassengerAttachmentPoint` adds a
+  rearing shift of `(0, 0.15 * standAnimO, -0.7 * standAnimO)`, which is zero for a standing horse,
+  so a declared point lands exactly. Measured on the Nazgûl steed, whose seat is
+  `(0.3, 1.375, 0.25)`: the rider stands at `(0.30, 1.375, 0.25)` at yaw 0, `(-0.25, 1.375, 0.30)`
+  at 90, and the mirrors of those at 180 and 270.

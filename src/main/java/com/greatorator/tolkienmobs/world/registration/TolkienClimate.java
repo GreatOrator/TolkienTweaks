@@ -110,6 +110,16 @@ final class TolkienClimate {
         slots.put(Biomes.SUNFLOWER_PLAINS, TolkienBiomes.GLADDEN);
         slots.put(Biomes.SNOWY_PLAINS, TolkienBiomes.FOROCHEL);
         slots.put(Biomes.SNOWY_SLOPES, TolkienBiomes.FOROCHEL_SLOPES);
+
+        // The countries the drawn map names that none of the older biomes could stand for take the
+        // vanilla slot whose own country they are: the Mark's grass is the savanna, Ered Nimrais is
+        // the stone peaks, Dunland is the last windswept hills, Lindon is the cherry grove's green
+        // land, and Gondor is the meadow - open flowered grass - rather than the Shire's plains.
+        slots.put(Biomes.SAVANNA, TolkienBiomes.ROHAN);
+        slots.put(Biomes.STONY_PEAKS, TolkienBiomes.WHITE_MOUNTAINS);
+        slots.put(Biomes.WINDSWEPT_SAVANNA, TolkienBiomes.DUNLAND);
+        slots.put(Biomes.CHERRY_GROVE, TolkienBiomes.LINDON);
+        slots.put(Biomes.MEADOW, TolkienBiomes.GONDOR);
         return slots;
     }
 
@@ -131,6 +141,11 @@ final class TolkienClimate {
         claims.add(claim(Biomes.PLAINS, TolkienBiomes.IRON_HILLS,
                 temps(ParameterUtils.Temperature.COOL), hums(ParameterUtils.Humidity.ARID),
                 steep()));
+        // Eriador is the Shire's neighbour on the map and shares its slot: the flat cool dry ground
+        // that the Iron Hills left, which is the fields of the North.
+        claims.add(claim(Biomes.PLAINS, TolkienBiomes.ERIADOR,
+                temps(ParameterUtils.Temperature.COOL), hums(ParameterUtils.Humidity.ARID),
+                flat()));
         claims.add(claim(Biomes.PLAINS, TolkienBiomes.GLADDEN,
                 temps(ParameterUtils.Temperature.NEUTRAL), hums(ParameterUtils.Humidity.DRY),
                 flat()));
@@ -149,6 +164,14 @@ final class TolkienClimate {
         claims.add(claim(Biomes.FOREST, TolkienBiomes.LORINAND,
                 temps(ParameterUtils.Temperature.WARM), hums(ParameterUtils.Humidity.NEUTRAL),
                 eros(ParameterUtils.Erosion.EROSION_5, ParameterUtils.Erosion.EROSION_6)));
+        // The Wild Wood is Rhovanion's beech country, and the warm half of the forest slot is split
+        // the way its cool half is: its flat ground is Lothlorien's, its rolling ground is the wood
+        // that stayed wild.
+        claims.add(claim(Biomes.FOREST, TolkienBiomes.WILD_WOOD,
+                temps(ParameterUtils.Temperature.WARM), hums(ParameterUtils.Humidity.NEUTRAL),
+                eros(ParameterUtils.Erosion.EROSION_0, ParameterUtils.Erosion.EROSION_1,
+                        ParameterUtils.Erosion.EROSION_2, ParameterUtils.Erosion.EROSION_3,
+                        ParameterUtils.Erosion.EROSION_4)));
 
         // The desert is the second largest holding and Haradwaith the whole of it. Its two driest
         // halves become the brown plain of Dagorlad and the ash of Mordor, and its steep hot ground
