@@ -45,7 +45,7 @@ public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuP
     public static final int POTION_SLOT = 1;
     public static final int GEM_SLOT = 2;
     public static final int OUTPUT_SLOT = 3;
-    private static final int DEFAULT_MAX_PROGRESS = 100;
+
 
     public final TolkienItemStackHandler itemHandler = new TolkienItemStackHandler(4) {
         @Override
@@ -87,7 +87,7 @@ public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuP
     };
     private final ContainerData data;
     private int progress = 0;
-    private int maxProgress = DEFAULT_MAX_PROGRESS;
+    private int maxProgress = TolkienMobsConfig.trinketCraftTime();
     private float rotation;
 
     public TrinketTableBlockEntity(BlockPos pPos, BlockState pBlockState) {
@@ -142,7 +142,7 @@ public class TrinketTableBlockEntity extends TolkienBlockEntity implements MenuP
         super.loadAdditional(input);
         itemHandler.deserialize(input.childOrEmpty("inventory"));
         progress = input.getIntOr("progress", 0);
-        maxProgress = input.getInt("max_progress").isPresent() ? Math.max(1, input.getIntOr("max_progress", 0)) : DEFAULT_MAX_PROGRESS;
+        maxProgress = input.getInt("max_progress").isPresent() ? Math.max(1, input.getIntOr("max_progress", 0)) : TolkienMobsConfig.trinketCraftTime();
     }
 
     /**

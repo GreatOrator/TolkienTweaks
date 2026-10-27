@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.block.custom.entity;
 
+import com.greatorator.tolkienmobs.TolkienMobsConfig;
 import com.greatorator.tolkienmobs.block.custom.FireplaceBlock;
 import com.greatorator.tolkienmobs.containers.FireplaceContainer;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
@@ -82,7 +83,7 @@ public class FireplaceBlockEntity extends TolkienBlockEntity implements MenuProv
     public final Object2IntOpenHashMap<Identifier> recipes = new Object2IntOpenHashMap<>();
     protected final ContainerData data;
     private int progress = 0;
-    private int maxProgress = 100;
+    private int maxProgress = TolkienMobsConfig.fireplaceCookTime();
     private int burnProgress = 0;
     private int maxBurnProgress = 0;
     private int fuelTime = 0;

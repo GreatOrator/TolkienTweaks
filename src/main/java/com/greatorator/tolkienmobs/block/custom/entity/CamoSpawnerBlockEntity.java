@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.block.custom.entity;
 
+import com.greatorator.tolkienmobs.TolkienMobsConfig;
 import com.greatorator.tolkienmobs.block.TolkienBaseSpawner;
 import com.greatorator.tolkienmobs.containers.CamoSpawnerContainer;
 import com.greatorator.tolkienmobs.handler.data.MCDataInput;
@@ -48,9 +49,14 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
 public class CamoSpawnerBlockEntity extends TolkienBlockEntity implements MenuProvider, TolkienSpawner, SpawnerSettingsBlockEntity {
+    // A new spawner starts with the numbers the config gives it, which are vanilla's own by default.
     public SpawnerSettings spawnerSettings = new SpawnerSettings(true, false, false, true);
-    public SpawnerDelays spawnerDelays = new SpawnerDelays(200, 800, 20);
-    public SpawnerRanges spawnerRanges = new SpawnerRanges(4, 4, 4, 6, 16);
+    public SpawnerDelays spawnerDelays = new SpawnerDelays(
+            TolkienMobsConfig.spawnerMinDelay(), TolkienMobsConfig.spawnerMaxDelay(), 20);
+    public SpawnerRanges spawnerRanges = new SpawnerRanges(
+            TolkienMobsConfig.spawnerActivationRange(), TolkienMobsConfig.spawnerSpawnRange(),
+            TolkienMobsConfig.spawnerSpawnCount(), TolkienMobsConfig.spawnerMaxCluster(),
+            TolkienMobsConfig.spawnerClusterRange());
     public List<MobSpawnData> mobSpawnDataList = new ArrayList<>(6);
     private static final int MAX_MOBS = 6;
     private final TolkienBaseSpawner spawnerBase = new TolkienBaseSpawner(this) {

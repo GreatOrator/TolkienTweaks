@@ -1,5 +1,7 @@
 package com.greatorator.tolkienmobs.util.block;
 
+import com.greatorator.tolkienmobs.TolkienMobsConfig;
+
 import java.util.Objects;
 
 public class BackpackUpgrades {
@@ -28,15 +30,18 @@ public class BackpackUpgrades {
         this.magnet_3 = magnet_3;
     }
 
-    /** How far the magnet reaches, in blocks: the best installed tier wins, and none installed is none. */
+    /**
+     * How far the magnet reaches, in blocks: the best installed tier wins, and none installed is none.
+     * Each tier's reach is the config's, so a pack can set what iron, gold and mithril pull.
+     */
     public int magnetRange() {
         if (magnet_3) {
-            return 64;
+            return TolkienMobsConfig.magnetRange(3);
         }
         if (magnet_2) {
-            return 32;
+            return TolkienMobsConfig.magnetRange(2);
         }
-        return magnet_1 ? 16 : 0;
+        return magnet_1 ? TolkienMobsConfig.magnetRange(1) : 0;
     }
 
     @Override

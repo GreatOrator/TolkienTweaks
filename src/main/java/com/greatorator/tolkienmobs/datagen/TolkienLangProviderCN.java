@@ -49,9 +49,9 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_CRAFTING.get(), "背包升级 - 合成", "允许随时随地合成（上限：1）");
             this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_SLEEPING.get(), "背包升级 - 睡袋", "随身携带睡袋（上限：1）");
             this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_CAMPFIRE.get(), "背包升级 - 营火", "快速使用营火（上限：1）");
-            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_1.get(), "背包升级 - 磁铁 - 等级1", "吸引 16 格内的掉落物（上限：1）");
-            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_2.get(), "背包升级 - 磁铁 - 等级2", "吸引 32 格内的掉落物（上限：1）");
-            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_3.get(), "背包升级 - 磁铁 - 等级3", "吸引 64 格内的掉落物（上限：1）");
+            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_1.get(), "背包升级 - 磁铁 - 等级1", "吸引 %s 格内的掉落物（上限：1）");
+            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_2.get(), "背包升级 - 磁铁 - 等级2", "吸引 %s 格内的掉落物（上限：1）");
+            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_3.get(), "背包升级 - 磁铁 - 等级3", "吸引 %s 格内的掉落物（上限：1）");
             this.addItem(TolkienItems.TEMPLATE_MITHRIL, "锻造模板：秘银");
             this.addItem(TolkienItems.TEMPLATE_MORGULIRON, "锻造模板：魔古尔铁");
             this.addItem(TolkienItems.TEMPLATE_AMMOLITE, "锻造模板：斑彩石");
