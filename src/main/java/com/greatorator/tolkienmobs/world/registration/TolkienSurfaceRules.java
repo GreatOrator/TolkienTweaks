@@ -41,20 +41,24 @@ public class TolkienSurfaceRules {
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.NURN), nurnSurface()),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.MORDOR), DARK_STONE),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HARADWAITH), SAND),
-                                ironHillsSurface(), hithaeglirSurface(), makeTolkienWorldRules())),
+                                ironHillsSurface(), hithaeglirSurface(), whiteMountainsFloor(), makeTolkienWorldRules())),
                         SurfaceRules.ifTrue(SurfaceRules.UNDER_FLOOR, SurfaceRules.sequence(
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.NURN, TolkienBiomes.MORDOR, TolkienBiomes.ASH_MOUNTAINS), DARK_STONE),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HARADWAITH), SANDSTONE),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HITHAEGLIR), PACKED_ICE))),
                         blueMountainsFloor(),
                         blueMountainsRock(),
+                        whiteMountainsRock(),
                         overworldLikeFloor())),
                 // The Blue Mountains' rock is the biome's stone, not a surface dressing, so its
                 // rules sit outside the guard above as well: a shaft sunk into the mountain stays
                 // in mountain stone all the way down to the deepslate, and a floor that the
-                // preliminary surface guessed too low still gets its grass.
+                // preliminary surface guessed too low still gets its grass. The White Mountains
+                // are treated the same way, since their snow cap and their stone are one surface.
                 blueMountainsFloor(),
-                blueMountainsRock());
+                blueMountainsRock(),
+                whiteMountainsFloor(),
+                whiteMountainsRock());
 	}
 
 	/**
@@ -192,10 +196,28 @@ public class TolkienSurfaceRules {
 		SurfaceRules.RuleSource floor = SurfaceRules.sequence(grassGrows, DIRT);
 		return SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.BLUE_MOUNTAINS),
 				SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, floor));
+	}    private static SurfaceRules.RuleSource blueMountainsRock() {
+		return SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.BLUE_MOUNTAINS), MOUNTAIN_STONE);
 	}
 
-	private static SurfaceRules.RuleSource blueMountainsRock() {
-		return SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.BLUE_MOUNTAINS), MOUNTAIN_STONE);
+	/**
+	 * Ered Nimrais is the one range the mod paints white: snow on the level ground, bare stone on the
+	 * steep faces and under the snow, and the range's own stone beneath both, so the wall reads as
+	 * limestone under snow rather than as the Misty Mountains' ice.
+	 */
+	private static SurfaceRules.RuleSource whiteMountainsFloor() {
+		SurfaceRules.RuleSource floor = SurfaceRules.sequence(
+				SurfaceRules.ifTrue(SurfaceRules.waterBlockCheck(-1, 0), SurfaceRules.sequence(
+						SurfaceRules.ifTrue(SurfaceRules.steep(), STONE),
+						SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.SURFACE, -0.35, 0.2), STONE),
+						SNOW_BLOCK)),
+				GRAVEL);
+		return SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.WHITE_MOUNTAINS),
+				SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, floor));
+	}
+
+	private static SurfaceRules.RuleSource whiteMountainsRock() {
+		return SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.WHITE_MOUNTAINS), MOUNTAIN_STONE);
 	}
 
 	private static SurfaceRules.RuleSource haradwaithSurface() {

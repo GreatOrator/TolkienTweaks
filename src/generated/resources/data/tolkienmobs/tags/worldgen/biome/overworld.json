@@ -4,14 +4,18 @@
     "tolkienmobs:barrow_downs",
     "tolkienmobs:blue_mountains",
     "tolkienmobs:dagorlad",
+    "tolkienmobs:dunland",
+    "tolkienmobs:eriador",
     "tolkienmobs:fangorn_forest",
     "tolkienmobs:firien",
     "tolkienmobs:forochel",
     "tolkienmobs:forochel_slopes",
     "tolkienmobs:gladden",
+    "tolkienmobs:gondor",
     "tolkienmobs:haradwaith",
     "tolkienmobs:hithaeglir",
     "tolkienmobs:iron_hills",
+    "tolkienmobs:lindon",
     "tolkienmobs:lorinand",
     "tolkienmobs:marshes",
     "tolkienmobs:mirkwood",
@@ -19,6 +23,9 @@
     "tolkienmobs:mordor",
     "tolkienmobs:nurn",
     "tolkienmobs:old_forest",
-    "tolkienmobs:shire"
+    "tolkienmobs:rohan",
+    "tolkienmobs:shire",
+    "tolkienmobs:white_mountains",
+    "tolkienmobs:wild_wood"
   ]
 }

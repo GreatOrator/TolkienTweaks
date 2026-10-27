@@ -494,4 +494,174 @@ public class BiomeMaker extends BiomeHelper{
                 .generationSettings(forochelSlopesGen(placedFeatureGetter, carverGetter).build())
                 .build();
     }
+
+    /**
+     * The Wild Wood: the broadleaf belt the maps draw across Rhovanion, between Mirkwood's southern
+     * edge and the Brown Lands. It is a wood of the enemy's country, so it is fogged like Mirkwood
+     * but with a lighter, greener mist, and its ground is a brighter green than that wood's floor.
+     */
+    public static Biome makeBiomeWildWood(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return foggedBiome(8.0F, 144.0F)
+                .hasPrecipitation(true)
+                .temperature(0.7F)
+                .downfall(0.8F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(0.7F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(0x89A66B))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(0x3F76E4))
+                .setAttribute(EnvironmentAttributes.AMBIENT_SOUNDS, ambientLoop(SoundEvents.AMBIENT_WARPED_FOREST_LOOP))
+                .setAttribute(EnvironmentAttributes.AMBIENT_PARTICLES, AmbientParticle.of(TolkienParticleTypes.CULUMALDA_LEAVES.get(), 0.00625F))
+                .specialEffects((new BiomeSpecialEffects.Builder())
+                        .waterColor(0x3F76E4)
+                        .foliageColorOverride(0x4E8C3A)
+                        .grassColorOverride(0x4E8C3A)
+                        .build())
+                .mobSpawnSettings(wildWoodSpawning().build())
+                .generationSettings(wildWoodGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
+
+    /**
+     * Rohan, the Mark: open grass with the noon light the north does not get, a little warmer and
+     * drier than the fields beside it, and a settled land's music rather than a wild one's.
+     */
+    public static Biome makeBiomeRohan(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(true)
+                .temperature(0.8F)
+                .downfall(0.5F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(0.8F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(12638463))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(10518688))
+                .setAttribute(EnvironmentAttributes.AMBIENT_SOUNDS, ambientLoop(TolkienSounds.MEDIEVAL_CITY))
+                .setAttribute(EnvironmentAttributes.AMBIENT_PARTICLES, AmbientParticle.of(TolkienParticleTypes.CULUMALDA_LEAVES.get(), 0.00625F))
+                .specialEffects((new BiomeSpecialEffects.Builder())
+                        .waterColor(329011)
+                        .foliageColorOverride(0x8FA83C)
+                        .grassColorOverride(0x9AB54A)
+                        .build())
+                .mobSpawnSettings(rohanSpawning().build())
+                .generationSettings(rohanGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
+
+    /**
+     * Ered Nimrais, the white wall between the Mark and Gondor. A cold, snowblind range like Forochel
+     * to look at, and like the Misty Mountains in what grows on it; its stone is laid by
+     * {@code TolkienSurfaceRules.whiteMountainsSurface}.
+     */
+    public static Biome makeBiomeWhiteMountains(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return foggedBiome(8.0F, 96.0F)
+                .hasPrecipitation(true)
+                .temperature(0.2F)
+                .downfall(0.5F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(0.2F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(0xF0F4F7))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(329011))
+                .setAttribute(EnvironmentAttributes.AMBIENT_SOUNDS, ambientLoop(SoundEvents.AMBIENT_WARPED_FOREST_MOOD))
+                .specialEffects((new BiomeSpecialEffects.Builder())
+                        .waterColor(4159204)
+                        .foliageColorOverride(2292007)
+                        .grassColorOverride(2292007)
+                        .build())
+                .mobSpawnSettings(whiteMountainsSpawning().build())
+                .generationSettings(whiteMountainsGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
+
+    /**
+     * Dunland and the worn hills: the green hill country of Enedwaith, Minhiriath, Cardolan and the
+     * Weather Hills, greyer and gustier than the settled lands it lies between.
+     */
+    public static Biome makeBiomeDunland(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(true)
+                .temperature(0.6F)
+                .downfall(0.7F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(0.6F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(10518688))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(329011))
+                .setAttribute(EnvironmentAttributes.AMBIENT_SOUNDS, ambientLoop(TolkienSounds.MEDIEVAL_CITY))
+                .setAttribute(EnvironmentAttributes.AMBIENT_PARTICLES, AmbientParticle.of(TolkienParticleTypes.CULUMALDA_LEAVES.get(), 0.00625F))
+                .specialEffects((new BiomeSpecialEffects.Builder())
+                        .waterColor(4159204)
+                        .foliageColorOverride(0x6E8F4A)
+                        .grassColorOverride(0x7C9B52)
+                        .build())
+                .mobSpawnSettings(dunlandSpawning().build())
+                .generationSettings(dunlandGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
+
+    /**
+     * Lindon, the green land behind the Grey Havens, west of Ered Luin. The elves' own country: the
+     * Shire's grass with an elven wood's colours over it.
+     */
+    public static Biome makeBiomeLindon(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(true)
+                .temperature(0.8F)
+                .downfall(0.8F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(0.8F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(10518688))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(329011))
+                .setAttribute(EnvironmentAttributes.BACKGROUND_MUSIC, new BackgroundMusic(Musics.createGameMusic(TolkienSounds.MUSIC_DISC_LIGHTOFLOTHLORIEN)))
+                .setAttribute(EnvironmentAttributes.AMBIENT_SOUNDS, ambientLoop(SoundEvents.AMBIENT_CRIMSON_FOREST_LOOP))
+                .setAttribute(EnvironmentAttributes.AMBIENT_PARTICLES, AmbientParticle.of(TolkienParticleTypes.CULUMALDA_LEAVES.get(), 0.00625F))
+                .specialEffects((new BiomeSpecialEffects.Builder())
+                        .waterColor(4159204)
+                        .foliageColorOverride(0x4EAD4E)
+                        .grassColorOverride(0x5CB35C)
+                        .build())
+                .mobSpawnSettings(lindonSpawning().build())
+                .generationSettings(lindonGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
+
+    /**
+     * The fields of Gondor, from Anorien down to Belfalas. Green, well watered and warm, with the
+     * white flowers the kingdom is named for in the mod's own palette rather than the Shire's.
+     */
+    public static Biome makeBiomeGondor(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(true)
+                .temperature(0.8F)
+                .downfall(0.7F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(0.8F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(10518688))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(329011))
+                .setAttribute(EnvironmentAttributes.AMBIENT_SOUNDS, ambientLoop(TolkienSounds.MEDIEVAL_CITY))
+                .setAttribute(EnvironmentAttributes.AMBIENT_PARTICLES, AmbientParticle.of(TolkienParticleTypes.LEBETHRON_LEAVES.get(), 0.00625F))
+                .specialEffects((new BiomeSpecialEffects.Builder())
+                        .waterColor(4159204)
+                        .foliageColorOverride(0x4F9E46)
+                        .grassColorOverride(0x62AB4E)
+                        .build())
+                .mobSpawnSettings(gondorSpawning().build())
+                .generationSettings(gondorGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
+
+    /**
+     * Eriador, the lost realm of Arnor: Bree-land and the downs about it, green and settled, with
+     * Bree and the hobbit villages of the Shire's eastern fringe among its fields.
+     */
+    public static Biome makeBiomeEriador(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(true)
+                .temperature(0.7F)
+                .downfall(0.8F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(0.7F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(10518688))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(329011))
+                .setAttribute(EnvironmentAttributes.AMBIENT_SOUNDS, ambientLoop(TolkienSounds.MEDIEVAL_CITY))
+                .setAttribute(EnvironmentAttributes.AMBIENT_PARTICLES, AmbientParticle.of(TolkienParticleTypes.CULUMALDA_LEAVES.get(), 0.00625F))
+                .specialEffects((new BiomeSpecialEffects.Builder())
+                        .waterColor(4159204)
+                        .foliageColorOverride(0x54A34C)
+                        .grassColorOverride(0x6BB055)
+                        .build())
+                .mobSpawnSettings(eriadorSpawning().build())
+                .generationSettings(eriadorGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
 }

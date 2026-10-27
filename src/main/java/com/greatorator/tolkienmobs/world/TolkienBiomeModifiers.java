@@ -68,16 +68,25 @@ public class TolkienBiomeModifiers {
                 HolderSet.direct(biomes.getOrThrow(TolkienBiomes.LORINAND)),
                 HolderSet.direct(placedFeatures.getOrThrow(HARDENED_MALLORN_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
+        // The Wild Wood is the same beech country as Mirkwood, unwitched, so it takes the same
+        // trees rather than a wood of its own.
         context.register(ADD_TREE_MIRKWOOD, new BiomeModifiers.AddFeaturesBiomeModifier(
-                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.MIRKWOOD), biomes.getOrThrow(TolkienBiomes.MIRKWOOD_SPOOKY)),
+                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.MIRKWOOD), biomes.getOrThrow(TolkienBiomes.MIRKWOOD_SPOOKY),
+                        biomes.getOrThrow(TolkienBiomes.WILD_WOOD)),
                 HolderSet.direct(placedFeatures.getOrThrow(HARDENED_MIRKWOOD_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
+        // Culumalda and lebethron are the mod's own broadleaf trees, and the settled lands of the
+        // new map - the Mark, Lindon, Gondor and Eriador - are their country as much as the Shire's.
         context.register(ADD_TREE_CULUMALDA, new BiomeModifiers.AddFeaturesBiomeModifier(
-                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.SHIRE), biomes.getOrThrow(TolkienBiomes.FIRIEN)),
+                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.SHIRE), biomes.getOrThrow(TolkienBiomes.FIRIEN),
+                        biomes.getOrThrow(TolkienBiomes.ROHAN), biomes.getOrThrow(TolkienBiomes.LINDON),
+                        biomes.getOrThrow(TolkienBiomes.GONDOR), biomes.getOrThrow(TolkienBiomes.ERIADOR)),
                 HolderSet.direct(placedFeatures.getOrThrow(HARDENED_CULUMALDA_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
         context.register(ADD_TREE_LEBETHRON, new BiomeModifiers.AddFeaturesBiomeModifier(
-                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.SHIRE), biomes.getOrThrow(TolkienBiomes.FIRIEN)),
+                HolderSet.direct(biomes.getOrThrow(TolkienBiomes.SHIRE), biomes.getOrThrow(TolkienBiomes.FIRIEN),
+                        biomes.getOrThrow(TolkienBiomes.LINDON), biomes.getOrThrow(TolkienBiomes.GONDOR),
+                        biomes.getOrThrow(TolkienBiomes.ERIADOR)),
                 HolderSet.direct(placedFeatures.getOrThrow(HARDENED_LEBETHRON_PLACED_KEY)),
                 GenerationStep.Decoration.VEGETAL_DECORATION));
         context.register(ADD_TREE_FANGORNOAK, new BiomeModifiers.AddFeaturesBiomeModifier(

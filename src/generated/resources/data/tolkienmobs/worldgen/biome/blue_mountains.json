@@ -111,11 +111,11 @@
       "charge": 0.6,
       "energy_budget": 0.15
     },
-    "tolkienmobs:entityttmcrebain": {
+    "minecraft:rabbit": {
       "charge": 0.6,
       "energy_budget": 0.15
     },
-    "tolkienmobs:entityttmgoblin": {
+    "tolkienmobs:entityttmcrebain": {
       "charge": 0.6,
       "energy_budget": 0.15
     }
@@ -136,17 +136,16 @@
         "maxCount": 3,
         "minCount": 1,
         "weight": 15
+      },
+      {
+        "type": "minecraft:rabbit",
+        "maxCount": 3,
+        "minCount": 1,
+        "weight": 10
       }
     ],
     "misc": [],
-    "monster": [
-      {
-        "type": "tolkienmobs:entityttmgoblin",
-        "maxCount": 4,
-        "minCount": 1,
-        "weight": 25
-      }
-    ],
+    "monster": [],
     "underground_water_creature": [],
     "water_ambient": [],
     "water_creature": []

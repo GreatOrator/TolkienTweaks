@@ -1,0 +1,152 @@
+{
+  "attributes": {
+    "minecraft:audio/ambient_sounds": {
+      "loop": "minecraft:ambient.warped_forest.mood"
+    },
+    "minecraft:visual/cloud_fog_end_distance": 96.0,
+    "minecraft:visual/fog_color": "#f0f4f7",
+    "minecraft:visual/fog_end_distance": 96.0,
+    "minecraft:visual/fog_start_distance": 8.0,
+    "minecraft:visual/sky_color": "#7da2ff",
+    "minecraft:visual/sky_fog_end_distance": 96.0,
+    "minecraft:visual/water_fog_color": "#050533"
+  },
+  "carvers": [],
+  "downfall": 0.5,
+  "effects": {
+    "foliage_color": "#22f927",
+    "grass_color": "#22f927",
+    "water_color": "#3f76e4"
+  },
+  "features": [
+    [],
+    [],
+    [],
+    [
+      "minecraft:monster_room",
+      "minecraft:monster_room_deep"
+    ],
+    [],
+    [],
+    [
+      "minecraft:ore_dirt",
+      "minecraft:ore_gravel",
+      "minecraft:ore_granite_upper",
+      "minecraft:ore_granite_lower",
+      "minecraft:ore_diorite_upper",
+      "minecraft:ore_diorite_lower",
+      "minecraft:ore_andesite_upper",
+      "minecraft:ore_andesite_lower",
+      "minecraft:ore_tuff",
+      "minecraft:ore_coal_upper",
+      "minecraft:ore_coal_lower",
+      "minecraft:ore_iron_upper",
+      "minecraft:ore_iron_middle",
+      "minecraft:ore_iron_small",
+      "minecraft:ore_gold",
+      "minecraft:ore_gold_lower",
+      "minecraft:ore_redstone",
+      "minecraft:ore_redstone_lower",
+      "minecraft:ore_diamond",
+      "minecraft:ore_diamond_medium",
+      "minecraft:ore_diamond_large",
+      "minecraft:ore_diamond_buried",
+      "minecraft:ore_lapis",
+      "minecraft:ore_lapis_buried",
+      "minecraft:ore_copper",
+      "minecraft:underwater_magma",
+      "minecraft:disk_sand",
+      "minecraft:disk_clay",
+      "minecraft:disk_gravel",
+      "tolkienmobs:legacy_coal_ore",
+      "tolkienmobs:legacy_copper_ore",
+      "tolkienmobs:legacy_diamond_ore",
+      "tolkienmobs:legacy_gold_ore",
+      "tolkienmobs:legacy_iron_ore",
+      "tolkienmobs:legacy_lapis_ore",
+      "tolkienmobs:legacy_redstone_ore",
+      "tolkienmobs:mountain_stone_placed"
+    ],
+    [],
+    [],
+    [
+      "minecraft:glow_lichen",
+      "minecraft:trees_windswept_hills",
+      "minecraft:patch_grass_forest",
+      "minecraft:brown_mushroom_normal",
+      "minecraft:red_mushroom_normal",
+      "tolkienmobs:random_rubble"
+    ],
+    [
+      "minecraft:freeze_top_layer",
+      "tolkienmobs:mountain_peak"
+    ]
+  ],
+  "has_precipitation": true,
+  "spawn_costs": {
+    "minecraft:goat": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "minecraft:wolf": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmcrebain": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmtroll": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmwarg": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    }
+  },
+  "spawners": {
+    "ambient": [
+      {
+        "type": "tolkienmobs:entityttmcrebain",
+        "maxCount": 3,
+        "minCount": 1,
+        "weight": 15
+      }
+    ],
+    "axolotls": [],
+    "creature": [
+      {
+        "type": "minecraft:goat",
+        "maxCount": 4,
+        "minCount": 1,
+        "weight": 15
+      },
+      {
+        "type": "minecraft:wolf",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 10
+      }
+    ],
+    "misc": [],
+    "monster": [
+      {
+        "type": "tolkienmobs:entityttmtroll",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 35
+      },
+      {
+        "type": "tolkienmobs:entityttmwarg",
+        "maxCount": 3,
+        "minCount": 1,
+        "weight": 25
+      }
+    ],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "temperature": 0.2
+}

@@ -1,9 +1,14 @@
 {
   "values": [
     "tolkienmobs:dagorlad",
+    "tolkienmobs:dunland",
+    "tolkienmobs:eriador",
     "tolkienmobs:forochel",
     "tolkienmobs:gladden",
+    "tolkienmobs:gondor",
+    "tolkienmobs:lindon",
     "tolkienmobs:nurn",
+    "tolkienmobs:rohan",
     "tolkienmobs:shire"
   ]
 }
