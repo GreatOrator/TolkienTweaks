@@ -39,13 +39,18 @@ public abstract class TolkienLangHelperCN extends LanguageProvider {
         this.upsideDownEntries.put(key, LangConversionHelper.convertComponents(splitEnglish));
     }
 
+    /**
+     * One race's names: the type's own name, then a key per trade it can take. The no-trade key is
+     * the race's name as well - a folk with no trade is its own kind, never a vanilla villager - so
+     * the two read the same until race-then-trade naming is wired up.
+     */
     public void addVillager(EntityType<?> key, String name) {
         this.add(key.getDescriptionId(), name);
-        this.add(key.getDescriptionId() + ".tolkienmobs.none", "人类");
+        this.add(key.getDescriptionId() + ".tolkienmobs.none", name);
         this.add(key.getDescriptionId() + ".tolkienmobs.coin_trader", "硬币兑换商");
         this.add(key.getDescriptionId() + ".tolkienmobs.grocery_store", "杂货店");
-        this.add(key.getDescriptionId() + ".tolkienmobs.pet_merchant", "废品处理商");
-        this.add(key.getDescriptionId() + ".tolkienmobs.junk_trader", "宠物商人");
+        this.add(key.getDescriptionId() + ".tolkienmobs.pet_merchant", "宠物商人");
+        this.add(key.getDescriptionId() + ".tolkienmobs.junk_trader", "废品处理商");
         this.add(key.getDescriptionId() + ".tolkienmobs.trinket_smith", "魔法盔甲匠");
         this.add(key.getDescriptionId() + ".tolkienmobs.trinket_tailor", "魔法裁缝");
         this.add(key.getDescriptionId() + ".armorer", "盔甲匠");

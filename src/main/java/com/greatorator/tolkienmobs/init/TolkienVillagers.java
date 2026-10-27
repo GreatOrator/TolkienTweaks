@@ -25,13 +25,17 @@ public class TolkienVillagers {
     public static final DeferredRegister<VillagerProfession> VILLAGER_PROFESSIONS = DeferredRegister.create(BuiltInRegistries.VILLAGER_PROFESSION, MODID);
 
         // POI
+    // The three trades that name a building of their own work at the mod's own block: the grocer at
+    // a fireplace, the coin trader (the banker) at a piggy bank, and the trinket smith at a trinket
+    // table. The state sets are read from the blocks themselves, so a property added to one of those
+    // blocks later is a job site as soon as it is placed.
     public static final DeferredHolder<PoiType, PoiType> COIN_TRADER_POI = POI_TYPES.register("coin_trader_poi",
             () -> new PoiType(
-                    ImmutableSet.copyOf(Blocks.GOLD_BLOCK.getStateDefinition().getPossibleStates()),
+                    ImmutableSet.copyOf(TolkienBlocks.PIGGYBANK.get().getStateDefinition().getPossibleStates()),
                     1, 1));
     public static final DeferredHolder<PoiType, PoiType> GROCERY_STORE_POI = POI_TYPES.register("grocery_store_poi",
             () -> new PoiType(
-                    ImmutableSet.copyOf(Blocks.BAMBOO_BLOCK.getStateDefinition().getPossibleStates()),
+                    ImmutableSet.copyOf(TolkienBlocks.FIREPLACE.get().getStateDefinition().getPossibleStates()),
                     1, 1));
     public static final DeferredHolder<PoiType, PoiType> PET_MERCHANT_POI = POI_TYPES.register("pet_merchant_poi",
             () -> new PoiType(
@@ -43,7 +47,7 @@ public class TolkienVillagers {
                     1, 1));
     public static final DeferredHolder<PoiType, PoiType> TRINKET_SMITH_POI = POI_TYPES.register("trinket_smith_poi",
             () -> new PoiType(
-                    ImmutableSet.copyOf(Blocks.ANCIENT_DEBRIS.getStateDefinition().getPossibleStates()),
+                    ImmutableSet.copyOf(TolkienBlocks.TRINKET_TABLE.get().getStateDefinition().getPossibleStates()),
                     1, 1));
     public static final DeferredHolder<PoiType, PoiType> TRINKET_TAILOR_POI = POI_TYPES.register("trinket_tailor_poi",
             () -> new PoiType(

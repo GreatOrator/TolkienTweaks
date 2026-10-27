@@ -509,8 +509,8 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
                     // Villager
             this.add("entity.minecraft.villager.tolkienmobs.coin_trader", "硬币兑换商");
             this.add("entity.minecraft.villager.tolkienmobs.grocery_store", "杂货店");
-            this.add("entity.minecraft.villager.tolkienmobs.pet_merchant", "废品处理商");
-            this.add("entity.minecraft.villager.tolkienmobs.junk_trader", "宠物商人");
+            this.add("entity.minecraft.villager.tolkienmobs.pet_merchant", "宠物商人");
+            this.add("entity.minecraft.villager.tolkienmobs.junk_trader", "废品处理商");
             this.add("entity.minecraft.villager.tolkienmobs.trinket_smith", "魔法盔甲匠");
             this.add("entity.minecraft.villager.tolkienmobs.trinket_tailor", "魔法裁缝");
 
