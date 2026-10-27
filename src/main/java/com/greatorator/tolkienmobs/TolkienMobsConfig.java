@@ -67,9 +67,16 @@ public class TolkienMobsConfig {
     private static final ModConfigSpec.IntValue FELLBEAST_WINGBEAT_INTERVAL;
     private static final ModConfigSpec.IntValue FELLBEAST_DIVE_ANGLE;
 
+    /* The headings the switches are grouped under, which are the mod's own families of mobs. */
+    private static final String AMBIENT = "Ambient mobs";
+    private static final String PASSIVE = "Passive mobs";
+    private static final String NPCS = "NPCs";
+    private static final String HOSTILE = "Hostile mobs";
+    private static final String BOSSES = "Boss mobs";
+
     /**
      * Every mob the mod registers, in the order it registers them: the config key, the entity id path
-     * the switch stands for, and the name its comment shows.
+     * the switch stands for, the name its comment shows, and the group of mobs its comment sits under.
      *
      * <p>The table is written out rather than read off the entity registry, because the file is built
      * while the mod is still being constructed - the mod's entities are not in that registry yet, and
@@ -78,61 +85,61 @@ public class TolkienMobsConfig {
      * unnoticed.
      */
     private static final List<MobToggle> MOB_TOGGLES = List.of(
-            new MobToggle("enableGecko", "entityttmgecko", "Gecko"),
-            new MobToggle("enableRat", "entityttmrat", "Rat"),
-            new MobToggle("enableSquirrel", "entityttmsquirrel", "Squirrel"),
-            new MobToggle("enableFrog", "entityttmfrog", "Frog"),
-            new MobToggle("enableThrush", "entityttmthrush", "Thrush"),
-            new MobToggle("enableCrebain", "entityttmcrebain", "Crebain"),
-            new MobToggle("enableMidgeFly", "entityttmswarm", "MidgeFly"),
-            new MobToggle("enableGreatEagle", "entityttmgreateagle", "Great Eagle"),
-            new MobToggle("enableAuroch", "entityttmauroch", "Auroch"),
-            new MobToggle("enableMumakil", "entityttmmumakil", "Mumakil"),
-            new MobToggle("enableBattleGoat", "entityttmgoat", "Battle Goat"),
-            new MobToggle("enableNazgulSteed", "entityttmnazgulsteed", "Nazgul Steed"),
-            new MobToggle("enableShadowfax", "entityttmshadowfax", "Shadowfax"),
-            new MobToggle("enableGollum", "entityttmgollum", "Gollum"),
-            new MobToggle("enableIstari", "entityttmistari", "Istari"),
-            new MobToggle("enableHuman", "entityttmhuman", "Human"),
-            new MobToggle("enableDwarf", "entityttmdwarf", "Dwarf"),
-            new MobToggle("enableElf", "entityttmelves", "Elf"),
-            new MobToggle("enableHobbit", "entityttmhobbit", "Hobbit"),
-            new MobToggle("enableSouthronTrader", "entityttmsouthron", "Southron trader"),
-            new MobToggle("enableOrcTrader", "entityttmorc_trader", "Orc Trader"),
-            new MobToggle("enableOrc", "entityttmorc", "Orc"),
-            new MobToggle("enableSouthron", "entityttmsouthron_npc", "Southron villager"),
-            new MobToggle("enableBarrowWight", "entityttmbarrow", "Barrow Wight"),
-            new MobToggle("enableOathBreaker", "entityttmoathbreaker", "Oath Breaker"),
-            new MobToggle("enableFellSpirit", "entityttmfellspirit", "Fell Spirit"),
-            new MobToggle("enableEnragedFellSpirit", "entityttmenragedfellspirit", "Enraged Fell Spirit"),
-            new MobToggle("enableBrigand", "entityttmbrigand", "Brigand"),
-            new MobToggle("enableHaradrim", "entityttmharadrim", "Haradrim"),
-            new MobToggle("enableRomieWalker", "entityttmromiewalker", "Romie Walker"),
-            new MobToggle("enableMimicChest", "entityttmmimicchest", "Mimic Chest"),
-            new MobToggle("enableMordorOrc", "entityttmmordororc", "Mordor Orc"),
-            new MobToggle("enableUrukHai", "entityttmurukhai", "Uruk Hai"),
-            new MobToggle("enableDuergar", "entityttmduergar", "Duergar"),
-            new MobToggle("enableGoblin", "entityttmgoblin", "Goblin"),
-            new MobToggle("enableMirkwoodSpider", "entityttmmirkwoodspider", "Mirkwood Spider"),
-            new MobToggle("enableRockGolem", "entityttmrockgolem", "Rock Golem"),
-            new MobToggle("enableHuron", "entityttmhuron", "Huron"),
-            new MobToggle("enableMinotaur", "entityttmminotaur", "Minotaur"),
-            new MobToggle("enableDeepclaw", "entityttmdeepclaw", "Deepclaw"),
-            new MobToggle("enableCaveTroll", "entityttmtroll", "Cave Troll"),
-            new MobToggle("enableTreeEnt", "entityttmtreeent", "Tree Ent"),
-            new MobToggle("enableSwampHag", "entityttmswamphag", "Swamp Hag"),
-            new MobToggle("enableWarg", "entityttmwarg", "Warg"),
-            new MobToggle("enableElementalGolem", "entityttmelementalgolem", "Elemental Golem"),
-            new MobToggle("enableNazgul", "entityttmnazgul", "Nazgul"),
-            new MobToggle("enableGoblinKing", "entityttmgoblinking", "Goblin King"),
-            new MobToggle("enableBalrog", "entityttmbalrog", "Balrog"),
-            new MobToggle("enableShelob", "entityttmshelob", "Shelob"),
-            new MobToggle("enableWitchKing", "entityttmwitchking", "Witch King of Angmar"),
-            new MobToggle("enableWatcher", "entityttmwatcher", "Watcher of the Water"),
-            new MobToggle("enableMithrilGolem", "entityttmmithrilgolem", "Mithril Golem"),
-            new MobToggle("enableMorgulIronGolem", "entityttmmorgulirongolem", "Morgul Iron Golem"),
-            new MobToggle("enableGwahir", "entityttmgwahir", "Gwahir, Lord of the Eagles"),
-            new MobToggle("enableFellBeast", "entityttmfellbeast", "Fell Beast"));
+            new MobToggle("enableGecko", "entityttmgecko", "Gecko", AMBIENT),
+            new MobToggle("enableRat", "entityttmrat", "Rat", AMBIENT),
+            new MobToggle("enableSquirrel", "entityttmsquirrel", "Squirrel", AMBIENT),
+            new MobToggle("enableFrog", "entityttmfrog", "Frog", AMBIENT),
+            new MobToggle("enableThrush", "entityttmthrush", "Thrush", AMBIENT),
+            new MobToggle("enableCrebain", "entityttmcrebain", "Crebain", AMBIENT),
+            new MobToggle("enableMidgeFly", "entityttmswarm", "MidgeFly", AMBIENT),
+            new MobToggle("enableGreatEagle", "entityttmgreateagle", "Great Eagle", AMBIENT),
+            new MobToggle("enableAuroch", "entityttmauroch", "Auroch", PASSIVE),
+            new MobToggle("enableMumakil", "entityttmmumakil", "Mumakil", PASSIVE),
+            new MobToggle("enableBattleGoat", "entityttmgoat", "Battle Goat", PASSIVE),
+            new MobToggle("enableNazgulSteed", "entityttmnazgulsteed", "Nazgul Steed", PASSIVE),
+            new MobToggle("enableShadowfax", "entityttmshadowfax", "Shadowfax", PASSIVE),
+            new MobToggle("enableGollum", "entityttmgollum", "Gollum", PASSIVE),
+            new MobToggle("enableIstari", "entityttmistari", "Istari", PASSIVE),
+            new MobToggle("enableHuman", "entityttmhuman", "Human", NPCS),
+            new MobToggle("enableDwarf", "entityttmdwarf", "Dwarf", NPCS),
+            new MobToggle("enableElf", "entityttmelves", "Elf", NPCS),
+            new MobToggle("enableHobbit", "entityttmhobbit", "Hobbit", NPCS),
+            new MobToggle("enableSouthronTrader", "entityttmsouthron", "Southron trader", NPCS),
+            new MobToggle("enableOrcTrader", "entityttmorc_trader", "Orc Trader", NPCS),
+            new MobToggle("enableOrc", "entityttmorc", "Orc", NPCS),
+            new MobToggle("enableSouthron", "entityttmsouthron_npc", "Southron villager", NPCS),
+            new MobToggle("enableBarrowWight", "entityttmbarrow", "Barrow Wight", HOSTILE),
+            new MobToggle("enableOathBreaker", "entityttmoathbreaker", "Oath Breaker", HOSTILE),
+            new MobToggle("enableFellSpirit", "entityttmfellspirit", "Fell Spirit", HOSTILE),
+            new MobToggle("enableEnragedFellSpirit", "entityttmenragedfellspirit", "Enraged Fell Spirit", HOSTILE),
+            new MobToggle("enableBrigand", "entityttmbrigand", "Brigand", HOSTILE),
+            new MobToggle("enableHaradrim", "entityttmharadrim", "Haradrim", HOSTILE),
+            new MobToggle("enableRomieWalker", "entityttmromiewalker", "Romie Walker", HOSTILE),
+            new MobToggle("enableMimicChest", "entityttmmimicchest", "Mimic Chest", HOSTILE),
+            new MobToggle("enableMordorOrc", "entityttmmordororc", "Mordor Orc", HOSTILE),
+            new MobToggle("enableUrukHai", "entityttmurukhai", "Uruk Hai", HOSTILE),
+            new MobToggle("enableDuergar", "entityttmduergar", "Duergar", HOSTILE),
+            new MobToggle("enableGoblin", "entityttmgoblin", "Goblin", HOSTILE),
+            new MobToggle("enableMirkwoodSpider", "entityttmmirkwoodspider", "Mirkwood Spider", HOSTILE),
+            new MobToggle("enableRockGolem", "entityttmrockgolem", "Rock Golem", HOSTILE),
+            new MobToggle("enableHuron", "entityttmhuron", "Huron", HOSTILE),
+            new MobToggle("enableMinotaur", "entityttmminotaur", "Minotaur", HOSTILE),
+            new MobToggle("enableDeepclaw", "entityttmdeepclaw", "Deepclaw", HOSTILE),
+            new MobToggle("enableCaveTroll", "entityttmtroll", "Cave Troll", HOSTILE),
+            new MobToggle("enableTreeEnt", "entityttmtreeent", "Tree Ent", HOSTILE),
+            new MobToggle("enableSwampHag", "entityttmswamphag", "Swamp Hag", HOSTILE),
+            new MobToggle("enableWarg", "entityttmwarg", "Warg", HOSTILE),
+            new MobToggle("enableElementalGolem", "entityttmelementalgolem", "Elemental Golem", HOSTILE),
+            new MobToggle("enableNazgul", "entityttmnazgul", "Nazgul", HOSTILE),
+            new MobToggle("enableGoblinKing", "entityttmgoblinking", "Goblin King", BOSSES),
+            new MobToggle("enableBalrog", "entityttmbalrog", "Balrog", BOSSES),
+            new MobToggle("enableShelob", "entityttmshelob", "Shelob", BOSSES),
+            new MobToggle("enableWitchKing", "entityttmwitchking", "Witch King of Angmar", BOSSES),
+            new MobToggle("enableWatcher", "entityttmwatcher", "Watcher of the Water", BOSSES),
+            new MobToggle("enableMithrilGolem", "entityttmmithrilgolem", "Mithril Golem", BOSSES),
+            new MobToggle("enableMorgulIronGolem", "entityttmmorgulirongolem", "Morgul Iron Golem", BOSSES),
+            new MobToggle("enableGwahir", "entityttmgwahir", "Gwahir, Lord of the Eagles", BOSSES),
+            new MobToggle("enableFellBeast", "entityttmfellbeast", "Fell Beast", BOSSES));
 
     /** The switches, in the order the file lists them, each beside the entity id it stands for. */
     private static final List<MobSwitch> MOB_SWITCHES = new ArrayList<>();
@@ -147,8 +154,9 @@ public class TolkienMobsConfig {
         // The content switches. Nothing can be pulled back out of the registries once the game is
         // running, so these act on the paths that hand content out: a mob is refused where it enters
         // the world, and a block or an item is taken out of the creative tabs and the recipes.
-        BUILDER.comment("Whether the mod's mobs may enter the world at all. The master switch comes first and one",
-                        "switch for each of the mod's mobs follows it; the master overrides them all.")
+        BUILDER.comment("Whether the mod's mobs may enter the world at all. The master switch comes first, then one",
+                        "switch for each of the mod's mobs, grouped as the mod registers them: true lets a mob in as",
+                        "it always did, false keeps that one mob out. The master overrides them all.")
                 .push("mobs");
         DISABLE_ALL_MOBS = BUILDER
                 .comment("Stops every Tolkien mob from entering the world: they no longer spawn, a spawn egg for",
@@ -156,12 +164,18 @@ public class TolkienMobsConfig {
                         "are until they leave it, so this is not a way to clear a world of them. This switch",
                         "overrides every per-mob switch below it (Default false)")
                 .define("disableAllMobs", false);
+        // Each family of mobs gets a heading of its own, written as the first line of the comment on the
+        // first switch below it - the file has no other way to carry a comment that belongs to no entry.
+        String group = "";
         for (MobToggle mob : MOB_TOGGLES) {
+            List<String> lines = new ArrayList<>(2);
+            if (!mob.group().equals(group)) {
+                group = mob.group();
+                lines.add(group);
+            }
+            lines.add("The " + mob.label() + " (`" + MODID + ":" + mob.path() + "`)");
             MOB_SWITCHES.add(new MobSwitch(mob.path(),
-                    BUILDER.comment("The " + mob.label() + " (`" + MODID + ":" + mob.path() + "`): true lets it into the world as",
-                                    "it always did, false keeps that one mob out the same way the master switch keeps",
-                                    "them all out (Default true)")
-                            .define(mob.key(), true)));
+                    BUILDER.comment(lines.toArray(String[]::new)).define(mob.key(), true)));
         }
         BUILDER.pop();
 
@@ -321,9 +335,10 @@ public class TolkienMobsConfig {
 
     /**
      * One mob's switch: the config key, the entity id path it stands for - the part after the mod's
-     * own namespace, which is added when the id is resolved - and the name its comment shows.
+     * own namespace, which is added when the id is resolved - the name its comment shows, and the
+     * heading the comment is grouped under.
      */
-    private record MobToggle(String key, String path, String label) {
+    private record MobToggle(String key, String path, String label, String group) {
     }
 
     /** A built switch beside the entity id it stands for. */
