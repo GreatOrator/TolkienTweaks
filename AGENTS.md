@@ -141,7 +141,10 @@ placed features, tags or loot, regenerate and commit the generated JSON alongsid
   mod is still being constructed, so the mod's entities are not in the entity registry yet, and a
   display name for the comment would need a language file that is not loaded that early either. The
   price is that a mob added later needs a line there, which is what `warnOnMobsWithoutSwitch` is for:
-  it reads the spawn eggs on startup and names in the log any mob with no switch of its own.
+  it reads the spawn eggs on startup and names in the log any mob with no switch of its own. The
+  family headings ("Ambient mobs", "Passive mobs", "NPCs", "Hostile mobs", "Boss mobs") ride as the
+  first comment line of the first switch in each group, since `ModConfigSpec` cannot write a comment
+  that belongs to no entry.
 - **`BuiltInRegistries.ENTITY_TYPE` and `BuiltInRegistries.ITEM` are *defaulted* registries in
   26.1**: an id no entry answers to comes back as the registry's default entry (an entity type, or
   air) rather than as null. Any config name that is resolved against them has to be checked with
