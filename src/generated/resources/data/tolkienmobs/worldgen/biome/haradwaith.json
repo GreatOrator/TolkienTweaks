@@ -71,6 +71,12 @@
         "maxCount": 2,
         "minCount": 1,
         "weight": 25
+      },
+      {
+        "type": "tolkienmobs:entityttmsouthron",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 5
       }
     ],
     "misc": [],

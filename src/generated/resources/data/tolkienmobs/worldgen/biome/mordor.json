@@ -28,6 +28,7 @@
     "minecraft:visual/water_fog_color": "#050533"
   },
   "carvers": [],
+  "creature_spawn_probability": 0.01,
   "downfall": 0.0,
   "effects": {
     "foliage_color": "#000919",
@@ -93,7 +94,14 @@
       }
     ],
     "axolotls": [],
-    "creature": [],
+    "creature": [
+      {
+        "type": "tolkienmobs:entityttmorc_trader",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 1
+      }
+    ],
     "misc": [],
     "monster": [
       {
