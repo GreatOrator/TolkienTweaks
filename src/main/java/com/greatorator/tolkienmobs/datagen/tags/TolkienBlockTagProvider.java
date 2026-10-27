@@ -731,6 +731,23 @@ public class TolkienBlockTagProvider extends BlockTagsProvider {
         tag(TolkienTags.Blocks.CARVER_REPLACEABLES)
                 .addTag(BlockTags.OVERWORLD_CARVER_REPLACEABLES)
                 .add(Blocks.SNOW_BLOCK);
+        // The ground a country's flocks stand on. Vanilla's animal list counts only grass as pasture
+        // and the mod's map is not all green - Harad's sand, Nurn's and Mordor's dark stone, the
+        // ranges' stone, gravel, ice and snow are every one of them ground a country plants its
+        // fields on - so the ground below is named here for the animals a country's own list carries.
+        tag(TolkienTags.Blocks.COUNTRY_PASTURE)
+                .add(Blocks.SAND)
+                .add(Blocks.SANDSTONE)
+                .add(Blocks.STONE)
+                .add(Blocks.GRAVEL)
+                .add(Blocks.SNOW)
+                .add(Blocks.SNOW_BLOCK)
+                .add(Blocks.PACKED_ICE)
+                .add(Blocks.ICE)
+                .add(TolkienBlocks.DARK_STONE.get())
+                .add(TolkienBlocks.COBBLED_DARK_STONE.get())
+                .add(TolkienBlocks.SMOOTH_DARK_STONE.get())
+                .add(TolkienBlocks.MOUNTAIN_STONE.get());
     }
 
     @Nonnull

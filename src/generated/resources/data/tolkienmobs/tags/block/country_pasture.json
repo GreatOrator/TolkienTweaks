@@ -1,0 +1,16 @@
+{
+  "values": [
+    "minecraft:sand",
+    "minecraft:sandstone",
+    "minecraft:stone",
+    "minecraft:gravel",
+    "minecraft:snow",
+    "minecraft:snow_block",
+    "minecraft:packed_ice",
+    "minecraft:ice",
+    "tolkienmobs:dark_stone",
+    "tolkienmobs:cobbled_dark_stone",
+    "tolkienmobs:smooth_dark_stone",
+    "tolkienmobs:mountain_stone"
+  ]
+}

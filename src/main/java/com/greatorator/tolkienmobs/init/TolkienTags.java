@@ -20,6 +20,16 @@ public class TolkienTags {
         public static final TagKey<Block> TICK_SPEED_DENY = blockTag("tolkienmobs:tick_speed_deny");
         public static final TagKey<Block> TILLABLES = blockTag("tolkienmobs:farming");
         public static final TagKey<Block> CARVER_REPLACEABLES = blockTag("tolkienmobs:carver_replaceables");
+
+        /**
+         * The ground the mod's own map paints that a country's flocks can stand on. Vanilla's animal
+         * rule asks for {@code #minecraft:animals_spawnable_on}, which is grass and nothing else, and
+         * Arda is not all green: Harad is sand over sandstone, Nurn's dry ground is dark stone, the
+         * ranges are stone, gravel, ice and snow, and Mordor and the Ash Mountains are the mod's own
+         * rock. Read only inside a Tolkien biome - see {@code TolkienEventBusEvents
+         * .checkCountryPastureRules} - so it can never make pasture of a vanilla desert.
+         */
+        public static final TagKey<Block> COUNTRY_PASTURE = blockTag("tolkienmobs:country_pasture");
         public static final TagKey<Block> MALLORN_LOGS = blockTag("tolkienmobs:mallorn_logs");
         public static final TagKey<Block> MIRKWOOD_LOGS = blockTag("tolkienmobs:mirkwood_logs");
         public static final TagKey<Block> CULUMALDA_LOGS = blockTag("tolkienmobs:culumalda_logs");
