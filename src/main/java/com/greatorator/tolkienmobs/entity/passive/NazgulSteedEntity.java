@@ -41,6 +41,12 @@ import com.geckolib.util.GeckoLibUtil;
 public class NazgulSteedEntity extends AbstractChestedHorse implements GeoEntity, CommonTraits {
     private static final EntityDataAccessor<Boolean> DATA_ID_CHEST = SynchedEntityData.defineId(NazgulSteedEntity.class, EntityDataSerializers.BOOLEAN);
 
+    /**
+     * Where a rider's feet go: the seat of the saddle the model carries, whose top cubes sit 1.375
+     * blocks above the steed's feet. The 0.65 this carried before put the Nazgul inside the animal.
+     */
+    private static final float SADDLE_HEIGHT = 1.375F;
+
     public NazgulSteedEntity(EntityType<? extends AbstractChestedHorse> entityType, Level level) {
         super(entityType, level);
     }
@@ -85,7 +91,7 @@ public class NazgulSteedEntity extends AbstractChestedHorse implements GeoEntity
     protected void positionRider(Entity passenger, Entity.MoveFunction callback) {
         super.positionRider(passenger, callback);
         if (passenger instanceof LivingEntity entity) {
-            callback.accept(entity, getX() + 0.3f, getY() + 0.65f, getZ() + 0.25f);
+            callback.accept(entity, getX() + 0.3f, getY() + SADDLE_HEIGHT, getZ() + 0.25f);
             this.xRotO = entity.xRotO;
         }
     }
@@ -139,7 +145,9 @@ public class NazgulSteedEntity extends AbstractChestedHorse implements GeoEntity
             entityNazgul.snapTo(this.getX(), this.getY(), this.getZ(), this.yRotO, 0.0F);
             entityNazgul.finalizeSpawn(level, difficulty, spawnType, null);
             this.setTamed(true);
-            this.isSaddled();
+            // 26.1 dropped setSaddled: the saddle lives in the entity's own saddle slot, and it is what
+            // the renderer reads to decide whether to draw the model's saddle at all.
+            this.setItemSlot(EquipmentSlot.SADDLE, new ItemStack(Items.SADDLE));
             entityNazgul.startRiding(this);
         }
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);

@@ -37,6 +37,12 @@ import com.geckolib.util.GeckoLibUtil;
 
 public class ShadowfaxEntity extends AbstractChestedHorse implements GeoEntity, CommonTraits {
     private static final EntityDataAccessor<Boolean> DATA_ID_CHEST = SynchedEntityData.defineId(ShadowfaxEntity.class, EntityDataSerializers.BOOLEAN);
+
+    /**
+     * Where a rider's feet go: the seat of the saddle the model carries, whose top cubes sit 1.375
+     * blocks above the horse's feet. The 0.65 this carried before put the rider inside the animal.
+     */
+    private static final float SADDLE_HEIGHT = 1.375F;
     private int warningSoundTicks;
 
     public ShadowfaxEntity(EntityType<? extends AbstractChestedHorse> entityType, Level level) {
@@ -83,7 +89,7 @@ public class ShadowfaxEntity extends AbstractChestedHorse implements GeoEntity, 
     protected void positionRider(Entity passenger, Entity.MoveFunction callback) {
         super.positionRider(passenger, callback);
         if (passenger instanceof LivingEntity entity) {
-            callback.accept(entity, getX(), getY() + 0.65f, getZ());
+            callback.accept(entity, getX(), getY() + SADDLE_HEIGHT, getZ());
             this.xRotO = entity.xRotO;
         }
     }
