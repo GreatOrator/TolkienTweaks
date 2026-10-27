@@ -150,6 +150,16 @@ placed features, tags or loot, regenerate and commit the generated JSON alongsid
   air) rather than as null. Any config name that is resolved against them has to be checked with
   `containsKey` first; a bare `getValue` silently turns a typo into whichever mob the registry
   happens to default to. This was caught only by running a server and summoning the mob.
+- `[server.spawner]`'s numbers are what a *new* camo spawner starts with: each spawner keeps its own
+  copy in its NBT and its screen writes those, so a change in the file shows on the next one placed,
+  not on the ones already standing. `CamoSpawnerBlockEntity` builds its `SpawnerRanges`/`SpawnerDelays`
+  from the config at construction, and `spawnerMaxDelay()` never returns less than `spawnerMinDelay()`
+  whatever the two say. The screen's buttons allow exactly the ranges the config does.
+- The magnet's reach is read where it is used - `BackpackUpgrades.magnetRange()` asks the config for
+  the tier - and `BackpackMagnet` sweeps a box the size of the largest configured tier, so raising
+  one range widens every sweep. The three magnet items are `MagnetUpgradeItem`s because their lore
+  states that reach: the language file holds `%s` and the item fills it from the config at tooltip
+  time, which is why those three are registered without `setHasLore`.
 - Vanilla badlands strata still colour a few Nurn columns at biome borders. The surface system and
   `execute if biome` both read the fuzzed biome manager, so within a few blocks of a wooded badlands
   or jungle cell the badlands terracotta banding runs even where the stored biome cell is Nurn

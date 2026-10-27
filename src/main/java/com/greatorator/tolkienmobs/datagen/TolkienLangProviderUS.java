@@ -49,9 +49,9 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_CRAFTING.get(), "Backpack Upgrade - Crafting", "Allows crating anywhere (Max-1)");
             this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_SLEEPING.get(), "Backpack Upgrade - Sleeping Bag", "Carry around a sleeping bag (Max-1)");
             this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_CAMPFIRE.get(), "Backpack Upgrade - Campfire", "Quick use campfire (Max-1)");
-            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_1.get(), "Backpack Upgrade - Magnet - Level 1", "Draws dropped items in from 16 blocks away (Max-1)");
-            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_2.get(), "Backpack Upgrade - Magnet - Level 2", "Draws dropped items in from 32 blocks away (Max-1)");
-            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_3.get(), "Backpack Upgrade - Magnet - Level 3", "Draws dropped items in from 64 blocks away (Max-1)");
+            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_1.get(), "Backpack Upgrade - Magnet - Level 1", "Draws dropped items in from %s blocks away (Max-1)");
+            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_2.get(), "Backpack Upgrade - Magnet - Level 2", "Draws dropped items in from %s blocks away (Max-1)");
+            this.addItemWithLore(TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_3.get(), "Backpack Upgrade - Magnet - Level 3", "Draws dropped items in from %s blocks away (Max-1)");
             this.addItem(TolkienItems.TEMPLATE_MITHRIL, "Template: Mithril");
             this.addItem(TolkienItems.TEMPLATE_MORGULIRON, "Template: Morgul Iron");
             this.addItem(TolkienItems.TEMPLATE_AMMOLITE, "Template: Ammolite");

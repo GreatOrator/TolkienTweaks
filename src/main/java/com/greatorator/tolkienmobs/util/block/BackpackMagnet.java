@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.util.block;
 
+import com.greatorator.tolkienmobs.TolkienMobsConfig;
 import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
 import com.greatorator.tolkienmobs.containers.BackpackBlockContainer;
 import com.greatorator.tolkienmobs.integration.CuriosBackpackHelper;
@@ -27,12 +28,10 @@ import javax.annotation.Nullable;
 /**
  * The backpack's magnet: while a backpack carries a magnet upgrade and its magnet is switched on, the
  * drops around the owner are gathered into the backpack first and into the player's inventory second.
- * The range is the best installed tier - 16, 32 or 64 blocks - and it is a plain radius, so stone and
- * walls do not stop it.
+ * The range is the best installed tier - 16, 32 or 64 blocks as the config has them - and it is a plain
+ * radius, so stone and walls do not stop it.
  */
 public final class BackpackMagnet {
-    /** The furthest a tier reaches, and so the box every scan has to look through. */
-    private static final int MAX_RANGE = 64;
     /** How often the scan runs, in ticks: four times a second reads as a pull without a scan a tick. */
     private static final int SCAN_INTERVAL = 5;
 
@@ -48,7 +47,8 @@ public final class BackpackMagnet {
             return;
         }
 
-        AABB box = player.getBoundingBox().inflate(MAX_RANGE);
+        // The box is the furthest a tier can reach, since which tier the bag holds is not known yet.
+        AABB box = player.getBoundingBox().inflate(TolkienMobsConfig.magnetMaxRange());
         List<ItemEntity> drops = player.level().getEntitiesOfClass(ItemEntity.class, box);
         if (drops.isEmpty()) {
             return;
@@ -106,7 +106,7 @@ public final class BackpackMagnet {
     private static BackpackBlockEntity findPlacedBackpack(ServerPlayer player) {
         ServerLevel level = player.level();
         BlockPos origin = player.blockPosition();
-        int chunkRadius = MAX_RANGE >> 4;
+        int chunkRadius = TolkienMobsConfig.magnetMaxRange() >> 4;
         ChunkPos center = new ChunkPos(origin.getX() >> 4, origin.getZ() >> 4);
         BackpackBlockEntity nearest = null;
         double nearestDistance = Double.MAX_VALUE;

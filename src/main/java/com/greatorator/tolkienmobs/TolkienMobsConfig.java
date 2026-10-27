@@ -56,6 +56,20 @@ public class TolkienMobsConfig {
     private static final ModConfigSpec.DoubleValue FELLBEAST_DIVE_WIND_VOLUME;
     private static final ModConfigSpec.DoubleValue FELLBEAST_DIVE_WIND_PITCH;
 
+    /* Server: the backpack's magnet, the camo spawner's defaults and the two crafting times. */
+    private static final ModConfigSpec.IntValue MAGNET_IRON_RANGE;
+    private static final ModConfigSpec.IntValue MAGNET_GOLD_RANGE;
+    private static final ModConfigSpec.IntValue MAGNET_MITHRIL_RANGE;
+    private static final ModConfigSpec.IntValue SPAWNER_ACTIVATION_RANGE;
+    private static final ModConfigSpec.IntValue SPAWNER_SPAWN_RANGE;
+    private static final ModConfigSpec.IntValue SPAWNER_SPAWN_COUNT;
+    private static final ModConfigSpec.IntValue SPAWNER_MAX_CLUSTER;
+    private static final ModConfigSpec.IntValue SPAWNER_CLUSTER_RANGE;
+    private static final ModConfigSpec.IntValue SPAWNER_MIN_DELAY;
+    private static final ModConfigSpec.IntValue SPAWNER_MAX_DELAY;
+    private static final ModConfigSpec.IntValue TRINKET_CRAFT_TIME;
+    private static final ModConfigSpec.IntValue FIREPLACE_CRAFT_TIME;
+
     /* Server: the milestone and the fell beast, which read their own copies of these. */
     public static final ModConfigSpec.IntValue MINIMUM_TICK_SPEED;
     public static final ModConfigSpec.IntValue DISTANCE_COST;
@@ -217,6 +231,54 @@ public class TolkienMobsConfig {
         TRINKET_REPAIR_AMOUNT = BUILDER
                 .comment("Damage the trinket table undoes for one ammolite gem and one repair material (Default 1000)")
                 .defineInRange("trinketRepairAmount", 1000, 1, 1000000);
+        TRINKET_CRAFT_TIME = BUILDER
+                .comment("Ticks the trinket table takes to make a trinket, twenty to the second. A table already in a",
+                        "world keeps the number it saved (Default 100, or five seconds)")
+                .defineInRange("trinketCraftTime", 100, 1, 2000);
+        FIREPLACE_CRAFT_TIME = BUILDER
+                .comment("Ticks the fireplace takes to cook one thing, twenty to the second. A fireplace in a world",
+                        "picks this up the next time it loads (Default 100, or five seconds)")
+                .defineInRange("fireplaceCookTime", 100, 1, 2000);
+        BUILDER.pop();
+
+        BUILDER.comment("How far the backpack's magnet reaches at each tier. The best magnet fitted sets the reach,",
+                        "and the magnet items' own lore states these numbers (Default: 16, 32 and 64)").push("backpack");
+        MAGNET_IRON_RANGE = BUILDER
+                .comment("Reach of the iron magnet, in blocks, which is the least a magnet pulls (Default 16)")
+                .defineInRange("magnetIronRange", 16, 1, 128);
+        MAGNET_GOLD_RANGE = BUILDER
+                .comment("Reach of the gold magnet, in blocks (Default 32)")
+                .defineInRange("magnetGoldRange", 32, 1, 128);
+        MAGNET_MITHRIL_RANGE = BUILDER
+                .comment("Reach of the mithril magnet, in blocks, which is the most a magnet pulls (Default 64)")
+                .defineInRange("magnetMithrilRange", 64, 1, 128);
+        BUILDER.pop();
+
+        BUILDER.comment("The numbers a freshly placed camo spawner starts with, which are vanilla's own. Each spawner",
+                        "keeps its own copy and its screen can change them; the screen offers these same ranges, so a",
+                        "value set here stays editable in game").push("spawner");
+        SPAWNER_ACTIVATION_RANGE = BUILDER
+                .comment("How close a player has to be for the spawner to run, in blocks, when it is set to need one (Default 16)")
+                .defineInRange("activationRange", 16, 1, 32);
+        SPAWNER_SPAWN_RANGE = BUILDER
+                .comment("How far from itself the spawner may place a mob, in blocks (Default 4)")
+                .defineInRange("spawnRange", 4, 1, 32);
+        SPAWNER_SPAWN_COUNT = BUILDER
+                .comment("How many mobs one spawn attempt makes, at most (Default 4)")
+                .defineInRange("spawnCount", 4, 1, 16);
+        SPAWNER_MAX_CLUSTER = BUILDER
+                .comment("How many of the same mob may stand near the spawner before it stops spawning (Default 6)")
+                .defineInRange("maxCluster", 6, 1, 16);
+        SPAWNER_CLUSTER_RANGE = BUILDER
+                .comment("How far from the spawner that count is taken, in blocks (Default 16)")
+                .defineInRange("clusterRange", 16, 1, 32);
+        SPAWNER_MIN_DELAY = BUILDER
+                .comment("Shortest wait between two spawn attempts, in ticks (Default 200, or ten seconds)")
+                .defineInRange("minSpawnDelay", 200, 20, 200);
+        SPAWNER_MAX_DELAY = BUILDER
+                .comment("Longest wait between two spawn attempts, in ticks, picked at random within this and the",
+                        "shortest above (Default 800, or forty seconds)")
+                .defineInRange("maxSpawnDelay", 800, 40, 800);
         BUILDER.pop();
 
         BUILDER.comment("The keystone's timers and what a milestone charges for fast travel.").push("milestone");
@@ -323,6 +385,63 @@ public class TolkienMobsConfig {
     }
     public static int tolkienRegionWeight() {
         return SPEC.isLoaded() ? REGION_WEIGHT.get() : 7;
+    }
+
+    /** How far the magnet of a tier reaches, as configured: 1 iron, 2 gold, 3 mithril, 0 for no magnet. */
+    public static int magnetRange(int tier) {
+        return switch (tier) {
+            case 3 -> value(MAGNET_MITHRIL_RANGE, 64);
+            case 2 -> value(MAGNET_GOLD_RANGE, 32);
+            case 1 -> value(MAGNET_IRON_RANGE, 16);
+            default -> 0;
+        };
+    }
+
+    /** The furthest any magnet reaches, which is how wide a sweep for drops has to look. */
+    public static int magnetMaxRange() {
+        return Math.max(magnetRange(1), Math.max(magnetRange(2), magnetRange(3)));
+    }
+
+    public static int spawnerActivationRange() {
+        return value(SPAWNER_ACTIVATION_RANGE, 16);
+    }
+
+    public static int spawnerSpawnRange() {
+        return value(SPAWNER_SPAWN_RANGE, 4);
+    }
+
+    public static int spawnerSpawnCount() {
+        return value(SPAWNER_SPAWN_COUNT, 4);
+    }
+
+    public static int spawnerMaxCluster() {
+        return value(SPAWNER_MAX_CLUSTER, 6);
+    }
+
+    public static int spawnerClusterRange() {
+        return value(SPAWNER_CLUSTER_RANGE, 16);
+    }
+
+    public static int spawnerMinDelay() {
+        return value(SPAWNER_MIN_DELAY, 200);
+    }
+
+    /** The longest wait, never under the shortest one, whatever the two settings say. */
+    public static int spawnerMaxDelay() {
+        return Math.max(spawnerMinDelay(), value(SPAWNER_MAX_DELAY, 800));
+    }
+
+    public static int trinketCraftTime() {
+        return value(TRINKET_CRAFT_TIME, 100);
+    }
+
+    public static int fireplaceCookTime() {
+        return value(FIREPLACE_CRAFT_TIME, 100);
+    }
+
+    /** A setting's own value once the file has been read, or the default it was defined with before that. */
+    private static int value(ModConfigSpec.IntValue setting, int fallback) {
+        return SPEC.isLoaded() ? setting.get() : fallback;
     }
 
     private static boolean validateItemName(final Object obj) {
