@@ -142,11 +142,19 @@ public abstract class BiomeHelper {
 				.addMobCharge(TolkienEntities.ENTITY_TTM_SWARM.get(), 0.6, 0.15);
 	}
 
+	/**
+	 * Harad. The southrons' own country, so it carries their traders as well as the mumakil the
+	 * Haradrim ride. The trader is one entry of five against the beasts, which is a meeting every
+	 * sixty-odd chunks of the country rather than a fixture of it, and a trader is only ever placed
+	 * as the country is made - see {@code TolkienEventBusEvents} - so he is met in the field rather
+	 * than gathered around whoever stands still in it.
+	 */
 	public static MobSpawnSettings.Builder haradwaithSpawning() {
 
 		return new MobSpawnSettings.Builder()
 				.addSpawn(MobCategory.MONSTER, 45, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_HARADRIM.get(), 1, 4))
 				.addSpawn(MobCategory.CREATURE, 25, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_MUMAKIL.get(), 1, 2))
+				.addSpawn(MobCategory.CREATURE, 5, npc(TolkienEntities.ENTITY_TTM_SOUTHRON.get(), 1, 2))
 				.addSpawn(MobCategory.AMBIENT, 15, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 1, 1))
 				.addMobCharge(TolkienEntities.ENTITY_TTM_HARADRIM.get(), 0.6, 0.15)
 				.addMobCharge(TolkienEntities.ENTITY_TTM_MUMAKIL.get(), 0.6, 0.15)
@@ -289,9 +297,20 @@ public abstract class BiomeHelper {
 				.addMobCharge(TolkienEntities.ENTITY_TTM_TREEENT.get(), 0.6, 0.15);
 	}
 
+	/**
+	 * Mordor, the orcs' own country, which is where their traders walk - and the Ash Mountains with
+	 * it, since they share this list. The trader is the country's only creature, so what keeps him a
+	 * rare meeting rather than one at every turn is Mordor's own
+	 * generation rate: an entry this bare is otherwise rolled into a tenth of the country's chunks,
+	 * and a hundredth is a trader every thousand blocks or so. A trader is placed only as a country
+	 * is made, never by the tick pass, so that rate is the whole story. Nurn, inside the same ring,
+	 * carries the same trader among its farmers - see {@link #nurnSpawning()}.
+	 */
 	public static MobSpawnSettings.Builder mordorSpawning() {
 
         return new MobSpawnSettings.Builder()
+				.creatureGenerationProbability(0.01F)
+				.addSpawn(MobCategory.CREATURE, 1, npc(TolkienEntities.ENTITY_TTM_ORC_TRADER.get(), 1, 2))
 				.addSpawn(MobCategory.MONSTER, 20, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 1, 5))
 				.addSpawn(MobCategory.MONSTER, 25, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_WARG.get(), 1, 3))
 				.addSpawn(MobCategory.MONSTER, 25, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_MORDORORC.get(), 1, 4))
@@ -302,9 +321,9 @@ public abstract class BiomeHelper {
 				.addMobCharge(TolkienEntities.ENTITY_TTM_MORDORORC.get(), 0.6, 0.15)
 				.addMobCharge(TolkienEntities.ENTITY_TTM_URUKHAI.get(), 0.6, 0.15)
 				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15);
-	}
-
-	/** Nurn is worked ground inside Mordor, so the same wardens patrol it. */
+	}    /** Nurn is worked ground inside Mordor, so the same wardens patrol it, and its farms are where
+     * the dark tower's own traders come to deal - the trader is one entry of nine in its creature
+     * list, a meeting every ninety chunks or so of farmland. */
     public static MobSpawnSettings.Builder nurnSpawning() {
 
         return new MobSpawnSettings.Builder()
@@ -315,6 +334,7 @@ public abstract class BiomeHelper {
                 .addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 1, 4))
                 .addSpawn(MobCategory.CREATURE, 8, new MobSpawnSettings.SpawnerData(EntityType.SHEEP, 1, 3))
                 .addSpawn(MobCategory.CREATURE, 8, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_AUROCH.get(), 1, 3))
+                .addSpawn(MobCategory.CREATURE, 2, npc(TolkienEntities.ENTITY_TTM_ORC_TRADER.get(), 1, 2))
                 .addMobCharge(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 0.6, 0.15)
                 .addMobCharge(TolkienEntities.ENTITY_TTM_WARG.get(), 0.6, 0.15)
                 .addMobCharge(TolkienEntities.ENTITY_TTM_MORDORORC.get(), 0.6, 0.15)

@@ -29,6 +29,9 @@ import com.geckolib.util.GeckoLibUtil;
 public class TolkienWanderingEntity extends WanderingTrader implements GeoEntity {
     private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(TolkienWanderingEntity.class, EntityDataSerializers.INT);
 
+    /** Vanilla's own length for a wandering trader's visit: two in-game days, or forty minutes. */
+    private static final int VISIT_TICKS = 48000;
+
     public TolkienWanderingEntity(EntityType<? extends TolkienWanderingEntity> entityType, Level level) {
         super(entityType, level);
     }
@@ -78,7 +81,26 @@ public class TolkienWanderingEntity extends WanderingTrader implements GeoEntity
                                         EntitySpawnReason spawnType, @Nullable SpawnGroupData spawnGroupData) {
         TolkienVariant variant = Util.getRandom(TolkienVariant.values(), this.random);
         this.setVariant(variant);
+        // A trader the world put here - out of a country's spawn list, or as that country's chunk was
+        // built - is a visit and not a resident. Vanilla gives its own wandering trader two in-game
+        // days and takes it away when they are up, and that is the only thing that keeps a country
+        // from filling with merchants, since these never leave on their own account. A trader a
+        // player spawns, places or summons keeps vanilla's behaviour instead, which is to stay.
+        if (spawnType == EntitySpawnReason.NATURAL || spawnType == EntitySpawnReason.CHUNK_GENERATION) {
+            this.setDespawnDelay(VISIT_TICKS);
+        }
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
+    }
+
+    /**
+     * A trader that is left behind does not stay behind. Vanilla's wandering trader never leaves on
+     * distance, which suits the one its own spawner sends after a player now and then, but these are
+     * handed to a country's spawn list: without this, the merchants of a country collect around
+     * whoever stands in it and hold the creature cap the country's animals need.
+     */
+    @Override
+    public boolean removeWhenFarAway(double distanceToClosestPlayer) {
+        return true;
     }
 
 

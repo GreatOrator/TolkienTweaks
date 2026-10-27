@@ -14,10 +14,15 @@ import com.greatorator.tolkienmobs.entity.projectiles.model.FellBeastFireballMod
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -144,6 +149,17 @@ public class TolkienEventBusEvents {
         event.put(TolkienEntities.ENTITY_FELL_BEAST.get(), FellBeastEntity.createAttributes().build());
     }
 
+    /**
+     * The rule a country's traders are placed by: solid ground underfoot, and only while the chunk
+     * is being made. {@code Mob.checkMobSpawnRules} is asked without the daylight vanilla's animals
+     * want, because generation has not lit the chunk yet.
+     */
+    private static boolean checkTraderSpawnRules(EntityType<? extends Mob> type, ServerLevelAccessor level,
+                                                 EntitySpawnReason reason, BlockPos pos, RandomSource random) {
+        return reason == EntitySpawnReason.CHUNK_GENERATION
+                && Mob.checkMobSpawnRules(type, level, reason, pos, random);
+    }
+
     @SubscribeEvent
     public static void registerSpawnPlacements(RegisterSpawnPlacementsEvent event) {
         // Ambient
@@ -193,14 +209,23 @@ public class TolkienEventBusEvents {
                 Mob::checkMobSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
         event.register(TolkienEntities.ENTITY_TTM_HOBBIT.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 Mob::checkMobSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(TolkienEntities.ENTITY_TTM_SOUTHRON.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                Mob::checkMobSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(TolkienEntities.ENTITY_TTM_ORC_TRADER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                Mob::checkMobSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
         event.register(TolkienEntities.ENTITY_TTM_ORC.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 Mob::checkMobSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
         event.register(TolkienEntities.ENTITY_TTM_SOUTHRON_NPC.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 Mob::checkMobSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+
+        // Merchants
+        // A trader is met in the field, not delivered on a timer, so a country's traders are placed
+        // only while its chunks are first made. The tick pass that keeps topping up the mobs around
+        // a player would otherwise crowd a country whose creature list is nothing but a trader -
+        // Mordor's and the Ash Mountains' both are - with merchants standing a few blocks apart,
+        // however rare the list makes each chunk of untouched ground. Generation draws them at the
+        // rate their weight in the list allows, and a trader met that way stays where he is until
+        // his own visit timer runs out.
+        event.register(TolkienEntities.ENTITY_TTM_SOUTHRON.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                TolkienEventBusEvents::checkTraderSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(TolkienEntities.ENTITY_TTM_ORC_TRADER.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                TolkienEventBusEvents::checkTraderSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
 
         // Hostile
         event.register(TolkienEntities.ENTITY_TTM_BARROW.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
