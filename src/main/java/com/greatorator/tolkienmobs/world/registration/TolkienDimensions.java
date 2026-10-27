@@ -22,7 +22,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
-import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.timeline.Timeline;
 
@@ -31,12 +30,13 @@ import java.util.Optional;
 /**
  * Arda, the world the mod's biomes belong to.
  *
- * <p>It is an overworld: same height, same terrain, same sky, same clock, and coordinates that
- * line up one to one with the overworld's, so a place on one map is the same place on the other.
- * What makes it Arda is who lives there - {@link ArdaClimate} fills vanilla's own climate grid with
- * the mod's biomes, and {@link ArdaBiomeSource} bands them north to south - so the terrain is
- * driven by the same noise the overworld uses and every biome lands on ground of the shape it
- * belongs on.
+ * <p>It is an overworld: same height, same sky, same clock, and coordinates that line up one to one
+ * with the overworld's, so a place on one map is the same place on the other. What makes it Arda is
+ * that it is the Middle-earth of the maps - {@link ArdaMap} draws the countries, the ranges, the
+ * seas and the rivers, {@link ArdaBiomeSource} reads that drawing for its biomes and
+ * {@link ArdaChunkGenerator} cuts the terrain to it - so Mordor stands in its ring of ash, the Mark
+ * is grass between the Misty Mountains and the white wall, and the Anduin runs from the Grey
+ * Mountains to the Bay of Belfalas.
  *
  * <p>Terrain and surface come from {@code minecraft:overworld} itself: this dimension reuses its
  * noise settings rather than copying them, which keeps the sea level, the water, the aquifers and
@@ -105,8 +105,8 @@ public final class TolkienDimensions {
 
         context.register(ARDA_STEM, new LevelStem(
                 types.getOrThrow(ARDA_TYPE),
-                new NoiseBasedChunkGenerator(
-                        new ArdaBiomeSource(ArdaClimate.parameters(biomes)),
+                new ArdaChunkGenerator(
+                        ArdaBiomeSource.of(biomes),
                         settings.getOrThrow(NoiseGeneratorSettings.OVERWORLD))));
     }
 }

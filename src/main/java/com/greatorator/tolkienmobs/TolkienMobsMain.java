@@ -116,6 +116,7 @@ public class TolkienMobsMain {
         TolkienCaveCarvers.CARVER_TYPES.register(modEventBus);
         TolkienStructures.STRUCTURE.register(modEventBus);
         TolkienBiomeSources.BIOME_SOURCES.register(modEventBus);
+        TolkienChunkGenerators.CHUNK_GENERATORS.register(modEventBus);
 
         TolkienMobEffects.register(modEventBus);
         TolkienContainers.register(modEventBus);

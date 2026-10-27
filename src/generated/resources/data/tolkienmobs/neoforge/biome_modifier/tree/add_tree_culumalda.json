@@ -2,7 +2,11 @@
   "type": "neoforge:add_features",
   "biomes": [
     "tolkienmobs:shire",
-    "tolkienmobs:firien"
+    "tolkienmobs:firien",
+    "tolkienmobs:rohan",
+    "tolkienmobs:lindon",
+    "tolkienmobs:gondor",
+    "tolkienmobs:eriador"
   ],
   "features": "tolkienmobs:hardened_culumalda_placed",
   "step": "vegetal_decoration"

@@ -65,6 +65,20 @@ public class TolkienTags {
     public static class Biomes {
         public static final TagKey<Biome> IS_ARDA = createTag("is_arda");
 
+        /**
+         * The free peoples' heartlands, the ground their towns stand on. No spawn list for a biome
+         * in this tag names a hostile mob, so the Shire's fields, the Grey Havens' coast, the Mark,
+         * Gondor's fields, Bree and the lost realm of Arnor are safe to walk at night.
+         */
+        public static final TagKey<Biome> PEACEFUL = createTag("peaceful");
+
+        /**
+         * The enemy's country, and the wilds that answer to it. Biomes here always list hostile
+         * spawns, whatever people live among them, so a peaceful race placed in Mordor or in the
+         * spiders' wood cannot quiet it.
+         */
+        public static final TagKey<Biome> HOSTILE = createTag("hostile");
+
         public static final TagKey<Biome> OVERWORLD = createTag("overworld");
         public static final TagKey<Biome> HOT = createTag("climate/hot");
         public static final TagKey<Biome> TEMPERATE = createTag("climate/temperate");

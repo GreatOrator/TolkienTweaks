@@ -45,29 +45,37 @@ public abstract class BiomeHelper {
 					.addMobCharge(TolkienEntities.ENTITY_TTM_AUROCH.get(), 0.6, 0.15);
 	}
 
+	/**
+	 * The Iron Hills are the Lonely Mountain's own country: Dale, Esgaroth and the dwarf-city under
+	 * Erebor stand in them, so the hills carry dwarves and their flocks. They are tagged a heartland,
+	 * which means this list names no monster at all - it used to hand the hills to the Haradrim.
+	 */
 	public static MobSpawnSettings.Builder ironHillsSpawning() {
 
 		return new MobSpawnSettings.Builder()
-				.addSpawn(MobCategory.MONSTER, 45, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_HARADRIM.get(), 1, 4))
-				.addSpawn(MobCategory.CREATURE, 25, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_MUMAKIL.get(), 1, 2))
-				.addSpawn(MobCategory.AMBIENT, 15, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 1, 1))
-				.addMobCharge(TolkienEntities.ENTITY_TTM_HARADRIM.get(), 0.6, 0.15)
-				.addMobCharge(TolkienEntities.ENTITY_TTM_MUMAKIL.get(), 0.6, 0.15)
+				.addSpawn(MobCategory.MISC, 45, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_DWARF.get(), 1, 3))
+				.addSpawn(MobCategory.CREATURE, 15, new MobSpawnSettings.SpawnerData(EntityType.GOAT, 1, 3))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.SHEEP, 1, 3))
+				.addSpawn(MobCategory.AMBIENT, 15, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 1, 2))
+				.addMobCharge(TolkienEntities.ENTITY_TTM_DWARF.get(), 0.6, 0.15)
+				.addMobCharge(EntityType.GOAT, 0.6, 0.15)
+				.addMobCharge(EntityType.SHEEP, 0.6, 0.15)
 				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15);
 	}
 
 	/**
-	 * The Blue Mountains' own people arrive with the dwarven village, not as wanderers, so the wild
-	 * slopes carry only the creatures that live there: goats, crebain and the goblins of the deep.
+	 * The Blue Mountains are a heartland - Belegost and Nogrod stand in them, and the dwarven
+	 * village brings the range's own people - so the slopes carry only the creatures that live
+	 * there, the goats and the crebain. They used to hand the range to the goblins of the deep.
 	 */
 	public static MobSpawnSettings.Builder blueMountainsSpawning() {
 
 		return new MobSpawnSettings.Builder()
-				.addSpawn(MobCategory.MONSTER, 25, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 1, 4))
 				.addSpawn(MobCategory.CREATURE, 15, new MobSpawnSettings.SpawnerData(EntityType.GOAT, 1, 3))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.RABBIT, 1, 3))
 				.addSpawn(MobCategory.AMBIENT, 15, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 1, 2))
-				.addMobCharge(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 0.6, 0.15)
 				.addMobCharge(EntityType.GOAT, 0.6, 0.15)
+				.addMobCharge(EntityType.RABBIT, 0.6, 0.15)
 				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15);
 	}
 
@@ -337,6 +345,190 @@ public abstract class BiomeHelper {
                 .addMobCharge(EntityType.POLAR_BEAR, 0.6, 0.15)
                 .addMobCharge(EntityType.GOAT, 0.6, 0.15);
     }
+
+	/**
+	 * The Wild Wood's spawn list. The wood is the enemy's country: its orcs hold it, its spiders nest
+	 * in it and the vale's brigands hide in it, and it is tagged hostile, so it keeps them whatever
+	 * else is placed there. Wolves, crebain and squirrels are the only quiet company in it.
+	 */
+	public static MobSpawnSettings.Builder wildWoodSpawning() {
+
+		return new MobSpawnSettings.Builder()
+				.addSpawn(MobCategory.MONSTER, 35, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 1, 4))
+				.addSpawn(MobCategory.MONSTER, 35, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_MIRKWOODSPIDER.get(), 1, 3))
+				.addSpawn(MobCategory.MONSTER, 25, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_BRIGAND.get(), 1, 3))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 1, 3))
+				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 1, 2))
+				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 1, 2))
+				.addMobCharge(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_MIRKWOODSPIDER.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_BRIGAND.get(), 0.6, 0.15)
+				.addMobCharge(EntityType.WOLF, 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 0.6, 0.15);
+	}
+
+	/**
+	 * The Mark. Rohan is a heartland - Edoras, Aldburg and the Hornburg stand in it - so its riders,
+	 * herds and horses are the whole list and no monster is named.
+	 */
+	public static MobSpawnSettings.Builder rohanSpawning() {
+
+		return new MobSpawnSettings.Builder()
+				.addSpawn(MobCategory.MISC, 45, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_HUMAN.get(), 1, 5))
+				.addSpawn(MobCategory.CREATURE, 20, new MobSpawnSettings.SpawnerData(EntityType.HORSE, 2, 6))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.SHEEP, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.PIG, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.CHICKEN, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.COW, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.DONKEY, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_AUROCH.get(), 1, 4))
+				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_THRUSH.get(), 1, 2))
+				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 1, 2))
+				.addMobCharge(TolkienEntities.ENTITY_TTM_HUMAN.get(), 0.6, 0.15)
+				.addMobCharge(EntityType.HORSE, 0.6, 0.15)
+				.addMobCharge(EntityType.SHEEP, 0.6, 0.15)
+				.addMobCharge(EntityType.PIG, 0.6, 0.15)
+				.addMobCharge(EntityType.CHICKEN, 0.6, 0.15)
+				.addMobCharge(EntityType.COW, 0.6, 0.15)
+				.addMobCharge(EntityType.DONKEY, 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_AUROCH.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_THRUSH.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 0.6, 0.15);
+	}
+
+	/**
+	 * Ered Nimrais. Nothing is settled above the Mark's valleys, so the white wall carries the wild
+	 * things that live on stone: trolls out of the deeps, wargs on the passes, goats and wolves.
+	 */
+	public static MobSpawnSettings.Builder whiteMountainsSpawning() {
+
+		return new MobSpawnSettings.Builder()
+				.addSpawn(MobCategory.MONSTER, 35, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_TROLL.get(), 1, 2))
+				.addSpawn(MobCategory.MONSTER, 25, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_WARG.get(), 1, 3))
+				.addSpawn(MobCategory.CREATURE, 15, new MobSpawnSettings.SpawnerData(EntityType.GOAT, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 1, 2))
+				.addSpawn(MobCategory.AMBIENT, 15, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 1, 3))
+				.addMobCharge(TolkienEntities.ENTITY_TTM_TROLL.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_WARG.get(), 0.6, 0.15)
+				.addMobCharge(EntityType.GOAT, 0.6, 0.15)
+				.addMobCharge(EntityType.WOLF, 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15);
+	}
+
+	/**
+	 * Dunland and the worn hills: Enedwaith, Minhiriath, Cardolan and the Weather Hills. Wild
+	 * country, so the hillmen's brigands and their wargs keep it, among sheep and cattle.
+	 */
+	public static MobSpawnSettings.Builder dunlandSpawning() {
+
+		return new MobSpawnSettings.Builder()
+				.addSpawn(MobCategory.MONSTER, 35, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_BRIGAND.get(), 1, 4))
+				.addSpawn(MobCategory.MONSTER, 25, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_WARG.get(), 1, 3))
+				.addSpawn(MobCategory.CREATURE, 20, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 1, 3))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.SHEEP, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.COW, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_AUROCH.get(), 1, 4))
+				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 1, 2))
+				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 1, 2))
+				.addMobCharge(TolkienEntities.ENTITY_TTM_BRIGAND.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_WARG.get(), 0.6, 0.15)
+				.addMobCharge(EntityType.WOLF, 0.6, 0.15)
+				.addMobCharge(EntityType.SHEEP, 0.6, 0.15)
+				.addMobCharge(EntityType.COW, 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_AUROCH.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 0.6, 0.15);
+	}
+
+	/**
+	 * Lindon, the green land behind the Grey Havens. The elves' own country and a heartland, so the
+	 * list is elves and their herds.
+	 */
+	public static MobSpawnSettings.Builder lindonSpawning() {
+
+		return new MobSpawnSettings.Builder()
+				.addSpawn(MobCategory.MISC, 45, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_ELVES.get(), 1, 3))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.SHEEP, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.PIG, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.CHICKEN, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.COW, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.HORSE, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_AUROCH.get(), 1, 4))
+				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_THRUSH.get(), 1, 2))
+				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 1, 2))
+				.addMobCharge(TolkienEntities.ENTITY_TTM_ELVES.get(), 0.6, 0.15)
+				.addMobCharge(EntityType.SHEEP, 0.6, 0.15)
+				.addMobCharge(EntityType.PIG, 0.6, 0.15)
+				.addMobCharge(EntityType.CHICKEN, 0.6, 0.15)
+				.addMobCharge(EntityType.COW, 0.6, 0.15)
+				.addMobCharge(EntityType.HORSE, 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_AUROCH.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_THRUSH.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 0.6, 0.15);
+	}
+
+	/**
+	 * The fields of Gondor: Minas Tirith, Pelargir, Dol Amroth, Linhir and the rest stand in them,
+	 * so the kingdom is a heartland and its people and herds are the whole list.
+	 */
+	public static MobSpawnSettings.Builder gondorSpawning() {
+
+		return new MobSpawnSettings.Builder()
+				.addSpawn(MobCategory.MISC, 45, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_HUMAN.get(), 1, 5))
+				.addSpawn(MobCategory.CREATURE, 15, new MobSpawnSettings.SpawnerData(EntityType.HORSE, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.SHEEP, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.PIG, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.CHICKEN, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.COW, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.DONKEY, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_AUROCH.get(), 1, 4))
+				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_THRUSH.get(), 1, 2))
+				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 1, 2))
+				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_FROG.get(), 1, 2))
+				.addMobCharge(TolkienEntities.ENTITY_TTM_HUMAN.get(), 0.6, 0.15)
+				.addMobCharge(EntityType.HORSE, 0.6, 0.15)
+				.addMobCharge(EntityType.SHEEP, 0.6, 0.15)
+				.addMobCharge(EntityType.PIG, 0.6, 0.15)
+				.addMobCharge(EntityType.CHICKEN, 0.6, 0.15)
+				.addMobCharge(EntityType.COW, 0.6, 0.15)
+				.addMobCharge(EntityType.DONKEY, 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_AUROCH.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_THRUSH.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_FROG.get(), 0.6, 0.15);
+	}
+
+	/**
+	 * Eriador: Bree-land and the lost realm of Arnor, whose towns - Bree, Archet, Combe, Staddle,
+	 * Annuminas and Fornost - stand in it. A heartland, so hobbits, men and their herds, no monster.
+	 */
+	public static MobSpawnSettings.Builder eriadorSpawning() {
+
+		return new MobSpawnSettings.Builder()
+				.addSpawn(MobCategory.MISC, 25, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_HUMAN.get(), 1, 5))
+				.addSpawn(MobCategory.MISC, 25, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_HOBBIT.get(), 1, 5))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.SHEEP, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.PIG, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.CHICKEN, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.COW, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.HORSE, 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_AUROCH.get(), 1, 4))
+				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_THRUSH.get(), 1, 2))
+				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 1, 2))
+				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_FROG.get(), 1, 2))
+				.addMobCharge(TolkienEntities.ENTITY_TTM_HUMAN.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_HOBBIT.get(), 0.6, 0.15)
+				.addMobCharge(EntityType.SHEEP, 0.6, 0.15)
+				.addMobCharge(EntityType.PIG, 0.6, 0.15)
+				.addMobCharge(EntityType.CHICKEN, 0.6, 0.15)
+				.addMobCharge(EntityType.COW, 0.6, 0.15)
+				.addMobCharge(EntityType.HORSE, 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_AUROCH.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_THRUSH.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_FROG.get(), 0.6, 0.15);
+	}
 
 		// Biome Settings
 	public static BiomeGenerationSettings.Builder lorinadGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
@@ -700,6 +892,198 @@ public abstract class BiomeHelper {
 
         return biome;
     }
+
+	/**
+	 * The Wild Wood's ground: forest floor, ferns and flowers under the wood's own beeches, with the
+	 * fallen timber and stumps of an unworked wood. The trees themselves arrive through the
+	 * add_tree_mirkwood biome modifier.
+	 */
+	public static BiomeGenerationSettings.Builder wildWoodGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+		BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
+
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_FOREST);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_LARGE_FERN);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.FOREST_FLOWERS);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.BROWN_MUSHROOM_OLD_GROWTH);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.RED_MUSHROOM_OLD_GROWTH);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_MIRKWOOD_FALLEN_LOG);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_MIRKWOOD_FALLEN_LEAVES);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_STUMPS);
+		biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.PLACED_WOOD_ROOTS_SPREAD);
+
+		BiomeDefaultFeatures.addDefaultSprings(biome);
+		BiomeDefaultFeatures.addDefaultOres(biome);
+		BiomeDefaultFeatures.addDefaultMonsterRoom(biome);
+		BiomeDefaultFeatures.addDefaultMushrooms(biome);
+		BiomeDefaultFeatures.addDefaultUndergroundVariety(biome);
+		BiomeDefaultFeatures.addDefaultCarversAndLakes(biome);
+		BiomeDefaultFeatures.addDefaultFlowers(biome);
+		addLegacyOres(biome);
+
+		return biome;
+	}
+
+	/**
+	 * The Mark: open grass with the plain's oaks and flowers, a settled land's orchards, and the
+	 * springs and ores any grass country gets.
+	 */
+	public static BiomeGenerationSettings.Builder rohanGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+		BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
+
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_PLAIN);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_CULUMALDA_FALLEN_LOG);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_CULUMALDA_FALLEN_LEAVES);
+		biome.addFeature(GenerationStep.Decoration.LAKES, MiscOverworldPlacements.SPRING_WATER);
+
+		BiomeDefaultFeatures.addPlainVegetation(biome);
+		BiomeDefaultFeatures.addDefaultSprings(biome);
+		BiomeDefaultFeatures.addDefaultOres(biome);
+		BiomeDefaultFeatures.addDefaultMonsterRoom(biome);
+		BiomeDefaultFeatures.addDefaultMushrooms(biome);
+		BiomeDefaultFeatures.addDefaultUndergroundVariety(biome);
+		BiomeDefaultFeatures.addDefaultCarversAndLakes(biome);
+		BiomeDefaultFeatures.addDefaultFlowers(biome);
+		BiomeDefaultFeatures.addDefaultSoftDisks(biome);
+		addLegacyOres(biome);
+
+		return biome;
+	}
+
+	/**
+	 * Ered Nimrais, the white wall. Bare stone with snow on it, spruce below the snow line - the
+	 * Misty Mountains' generation with the ice softened to snow, and the mod's own rock underfoot.
+	 */
+	public static BiomeGenerationSettings.Builder whiteMountainsGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+		BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
+
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_FOREST);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_RANDOM_RUBBLE);
+		biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.MOUNTAIN_STONE_PLACED_KEY);
+		// Summits go in above the trees but before the freeze, so the snow lands on them.
+		biome.addFeature(GenerationStep.Decoration.TOP_LAYER_MODIFICATION, TolkienPlacedFeatures.PLACED_MOUNTAIN_PEAK);
+
+		BiomeDefaultFeatures.addMountainTrees(biome);
+		BiomeDefaultFeatures.addSurfaceFreezing(biome);
+		BiomeDefaultFeatures.addDefaultOres(biome);
+		BiomeDefaultFeatures.addDefaultSoftDisks(biome);
+		BiomeDefaultFeatures.addDefaultMonsterRoom(biome);
+		BiomeDefaultFeatures.addDefaultUndergroundVariety(biome);
+		BiomeDefaultFeatures.addDefaultMushrooms(biome);
+		addLegacyOres(biome);
+
+		return biome;
+	}
+
+	/**
+	 * The worn hills of Dunland: grass and fern over stone, with the rubble and the boulders the
+	 * hill country is strewn with, and the stumps of wood the hillmen cut.
+	 */
+	public static BiomeGenerationSettings.Builder dunlandGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+		BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
+
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_FOREST);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_LARGE_FERN);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_ROCKPILE);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_RANDOM_RUBBLE);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_STUMPS);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_DEADWOOD_FALLEN_LOG);
+
+		BiomeDefaultFeatures.addPlainVegetation(biome);
+		BiomeDefaultFeatures.addDefaultSprings(biome);
+		BiomeDefaultFeatures.addDefaultOres(biome);
+		BiomeDefaultFeatures.addDefaultMonsterRoom(biome);
+		BiomeDefaultFeatures.addDefaultMushrooms(biome);
+		BiomeDefaultFeatures.addDefaultUndergroundVariety(biome);
+		BiomeDefaultFeatures.addDefaultCarversAndLakes(biome);
+		BiomeDefaultFeatures.addDefaultFlowers(biome);
+		BiomeDefaultFeatures.addDefaultSoftDisks(biome);
+		addLegacyOres(biome);
+
+		return biome;
+	}
+
+	/** Lindon: the Shire's green ground, kept as the elves' own country rather than the hobbits'. */
+	public static BiomeGenerationSettings.Builder lindonGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+		BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
+
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_FOREST);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_LARGE_FERN);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.FLOWER_PLAINS);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.BROWN_MUSHROOM_OLD_GROWTH);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.RED_MUSHROOM_OLD_GROWTH);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_CULUMALDA_FALLEN_LEAVES);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_LEBETHRON_FALLEN_LEAVES);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_CULUMALDA_FALLEN_LOG);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_LEBETHRON_FALLEN_LOG);
+		biome.addFeature(GenerationStep.Decoration.LAKES, MiscOverworldPlacements.SPRING_WATER);
+
+		BiomeDefaultFeatures.addPlainVegetation(biome);
+		BiomeDefaultFeatures.addDefaultOres(biome);
+		BiomeDefaultFeatures.addDefaultSoftDisks(biome);
+		BiomeDefaultFeatures.addDefaultMonsterRoom(biome);
+		BiomeDefaultFeatures.addDefaultMushrooms(biome);
+		BiomeDefaultFeatures.addDefaultUndergroundVariety(biome);
+		BiomeDefaultFeatures.addDefaultCarversAndLakes(biome);
+		BiomeDefaultFeatures.addDefaultFlowers(biome);
+		addLegacyOres(biome);
+
+		return biome;
+	}
+
+	/** Gondor's fields: the same green ground as Lindon, with the kingdom's white flowers over it. */
+	public static BiomeGenerationSettings.Builder gondorGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+		BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
+
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_FOREST);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.FLOWER_PLAINS);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.BROWN_MUSHROOM_NORMAL);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.RED_MUSHROOM_NORMAL);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_CULUMALDA_FALLEN_LEAVES);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_LEBETHRON_FALLEN_LEAVES);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_CULUMALDA_FALLEN_LOG);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_LEBETHRON_FALLEN_LOG);
+		biome.addFeature(GenerationStep.Decoration.LAKES, MiscOverworldPlacements.SPRING_WATER);
+
+		BiomeDefaultFeatures.addPlainVegetation(biome);
+		BiomeDefaultFeatures.addDefaultOres(biome);
+		BiomeDefaultFeatures.addDefaultSoftDisks(biome);
+		BiomeDefaultFeatures.addDefaultMonsterRoom(biome);
+		BiomeDefaultFeatures.addDefaultMushrooms(biome);
+		BiomeDefaultFeatures.addDefaultUndergroundVariety(biome);
+		BiomeDefaultFeatures.addDefaultCarversAndLakes(biome);
+		BiomeDefaultFeatures.addDefaultFlowers(biome);
+		addLegacyOres(biome);
+
+		return biome;
+	}
+
+	/** Eriador: the Shire's ground again, for Bree-land and the lost realm of Arnor beside it. */
+	public static BiomeGenerationSettings.Builder eriadorGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+		BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
+
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_FOREST);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_LARGE_FERN);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.FLOWER_PLAINS);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.BROWN_MUSHROOM_OLD_GROWTH);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.RED_MUSHROOM_OLD_GROWTH);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_CULUMALDA_FALLEN_LEAVES);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_LEBETHRON_FALLEN_LEAVES);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_CULUMALDA_FALLEN_LOG);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_LEBETHRON_FALLEN_LOG);
+		biome.addFeature(GenerationStep.Decoration.LAKES, MiscOverworldPlacements.SPRING_WATER);
+
+		BiomeDefaultFeatures.addPlainVegetation(biome);
+		BiomeDefaultFeatures.addDefaultOres(biome);
+		BiomeDefaultFeatures.addDefaultSoftDisks(biome);
+		BiomeDefaultFeatures.addDefaultMonsterRoom(biome);
+		BiomeDefaultFeatures.addDefaultMushrooms(biome);
+		BiomeDefaultFeatures.addDefaultUndergroundVariety(biome);
+		BiomeDefaultFeatures.addDefaultCarversAndLakes(biome);
+		BiomeDefaultFeatures.addDefaultFlowers(biome);
+		addLegacyOres(biome);
+
+		return biome;
+	}
 
 	public static void addLegacyOres(BiomeGenerationSettings.Builder biome) {
 		biome.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, TolkienPlacedFeatures.PLACED_COAL_ORE);

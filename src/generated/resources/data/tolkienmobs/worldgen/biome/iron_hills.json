@@ -107,15 +107,19 @@
   ],
   "has_precipitation": true,
   "spawn_costs": {
+    "minecraft:goat": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "minecraft:sheep": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
     "tolkienmobs:entityttmcrebain": {
       "charge": 0.6,
       "energy_budget": 0.15
     },
-    "tolkienmobs:entityttmharadrim": {
-      "charge": 0.6,
-      "energy_budget": 0.15
-    },
-    "tolkienmobs:entityttmmumakil": {
+    "tolkienmobs:entityttmdwarf": {
       "charge": 0.6,
       "energy_budget": 0.15
     }
@@ -124,7 +128,7 @@
     "ambient": [
       {
         "type": "tolkienmobs:entityttmcrebain",
-        "maxCount": 1,
+        "maxCount": 2,
         "minCount": 1,
         "weight": 15
       }
@@ -132,21 +136,27 @@
     "axolotls": [],
     "creature": [
       {
-        "type": "tolkienmobs:entityttmmumakil",
-        "maxCount": 2,
+        "type": "minecraft:goat",
+        "maxCount": 3,
         "minCount": 1,
-        "weight": 25
+        "weight": 15
+      },
+      {
+        "type": "minecraft:sheep",
+        "maxCount": 3,
+        "minCount": 1,
+        "weight": 10
       }
     ],
-    "misc": [],
-    "monster": [
+    "misc": [
       {
-        "type": "tolkienmobs:entityttmharadrim",
-        "maxCount": 4,
+        "type": "minecraft:pig",
+        "maxCount": 3,
         "minCount": 1,
         "weight": 45
       }
     ],
+    "monster": [],
     "underground_water_creature": [],
     "water_ambient": [],
     "water_creature": []

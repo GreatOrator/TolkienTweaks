@@ -666,6 +666,13 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.add("biome.tolkienmobs.mirkwood_spooky", "蜘蛛黑森林");
             this.add("biome.tolkienmobs.lorinand", "洛丝罗瑞恩");
             this.add("biome.tolkienmobs.barrow_downs", "提殒戈沙德");
+            this.add("biome.tolkienmobs.wild_wood", "野林");
+            this.add("biome.tolkienmobs.rohan", "洛汗");
+            this.add("biome.tolkienmobs.white_mountains", "白色山脉");
+            this.add("biome.tolkienmobs.dunland", "登兰德");
+            this.add("biome.tolkienmobs.lindon", "林顿");
+            this.add("biome.tolkienmobs.gondor", "刚铎");
+            this.add("biome.tolkienmobs.eriador", "埃利阿多");
             this.add("biome.tolkienmobs.shire", "夏尔");
             this.add("biome.tolkienmobs.firien", "菲瑞恩森林");
             this.add("biome.tolkienmobs.dagorlad", "褐地");
