@@ -2,9 +2,11 @@ package com.greatorator.tolkienmobs.block.custom;
 
 import com.greatorator.tolkienmobs.block.TolkienBlock;
 import com.greatorator.tolkienmobs.init.*;
+import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -23,7 +25,9 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.portal.TeleportTransition;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -332,12 +336,149 @@ public class ArdaPortalBlock extends TolkienBlock implements Portal {
         }
     }
 
-    /** Dimension being travelled to */
+    /**
+     * How far from the crossing a portal already standing in the destination is looked for, before
+     * one is built instead.
+     */
+    private static final int PORTAL_SEARCH_RADIUS = 16;
 
+    /**
+     * Arda's portal leads between Arda and the overworld, at the same coordinates: the two worlds
+     * share a map, so a doorway in one stands where it does in the other and the way home is that
+     * crossing in reverse. The arrival is a portal already standing within sight of the crossing if
+     * there is one, and otherwise a new doorway built and lit on the ground there, so a traveller
+     * never comes out somewhere with no way back.
+     */
     @Nullable
     @Override
     public TeleportTransition getPortalDestination(ServerLevel serverLevel, Entity entity, BlockPos blockPos) {
-        return null;
+        ResourceKey<Level> target = serverLevel.dimension() == TolkienDimensions.ARDA
+                ? Level.OVERWORLD
+                : TolkienDimensions.ARDA;
+        ServerLevel destination = serverLevel.getServer().getLevel(target);
+        if (destination == null) {
+            return null;
+        }
+
+        BlockPos crossing = destination.getWorldBorder()
+                .clampToBounds(entity.getX(), entity.getY(), entity.getZ());
+        // The traveller is about to stand here, so the ground within sight of the crossing has to
+        // exist before there is anything to look at.
+        loadAround(destination, crossing);
+
+        BlockPos standing = findPortal(destination, crossing);
+        Vec3 arrival = standing == null
+                ? buildExit(destination, crossing)
+                : Vec3.atBottomCenterOf(standing);
+
+        return new TeleportTransition(destination, arrival, Vec3.ZERO,
+                entity.getYRot(), entity.getXRot(),
+                TeleportTransition.PLAY_PORTAL_SOUND.then(TeleportTransition.PLACE_PORTAL_TICKET));
+    }
+
+    /** Brings the chunks around the crossing in, so the portal search is not looking at nothing. */
+    private static void loadAround(ServerLevel level, BlockPos crossing) {
+        int chunkX = crossing.getX() >> 4;
+        int chunkZ = crossing.getZ() >> 4;
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dz = -1; dz <= 1; dz++) {
+                level.getChunk(chunkX + dx, chunkZ + dz);
+            }
+        }
+    }
+
+    /**
+     * The standing portal closest to the crossing, or null when there is none within sight.
+     *
+     * <p>Distance is measured across the ground rather than through the air: the two worlds share
+     * a map, so the doorway a traveller wants is the one at their own x and z, and the crossing's
+     * height is wherever they happened to stand when they went through. A doorway found by three
+     * dimensions of distance would slip away whenever the ground on the far side differed by more
+     * than the search radius.
+     */
+    @Nullable
+    private static BlockPos findPortal(ServerLevel level, BlockPos crossing) {
+        BlockPos nearest = null;
+        double nearestAcross = Double.MAX_VALUE;
+        double nearestDown = Double.MAX_VALUE;
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        int top = level.getMinY() + level.getHeight();
+
+        for (int x = crossing.getX() - PORTAL_SEARCH_RADIUS; x <= crossing.getX() + PORTAL_SEARCH_RADIUS; x++) {
+            int dx = x - crossing.getX();
+            for (int z = crossing.getZ() - PORTAL_SEARCH_RADIUS; z <= crossing.getZ() + PORTAL_SEARCH_RADIUS; z++) {
+                int dz = z - crossing.getZ();
+                double across = dx * dx + dz * dz;
+                if (across > nearestAcross) {
+                    continue;
+                }
+                for (int y = level.getMinY(); y < top; y++) {
+                    cursor.set(x, y, z);
+                    if (!level.getBlockState(cursor).is(TolkienBlocks.ARDA_PORTAL.get())) {
+                        continue;
+                    }
+                    // Scanning each column from the bottom up, the first hit is the foot of the
+                    // doorway, which is where a traveller steps out.
+                    int dy = y - crossing.getY();
+                    double down = (double) dy * dy;
+                    if (across < nearestAcross || down < nearestDown) {
+                        nearestAcross = across;
+                        nearestDown = down;
+                        nearest = cursor.immutable();
+                    }
+                    break;
+                }
+            }
+        }
+
+        return nearest;
+    }
+
+    /**
+     * Builds and lights an ammolite doorway - the same frame and the same blocks a player builds
+     * and lights by hand - on the ground at the crossing, and answers where in it to step out.
+     */
+    private static Vec3 buildExit(ServerLevel level, BlockPos crossing) {
+        BlockPos base = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, crossing);
+        BlockState frame = TolkienBlocks.BLOCK_AMMOLITE.get().defaultBlockState();
+        BlockState portal = TolkienBlocks.ARDA_PORTAL.get().defaultBlockState().setValue(AXIS, Direction.Axis.X);
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+
+        // Clear whatever grew on either side first, so the doorway can be walked through.
+        for (int dx = 0; dx <= 1; dx++) {
+            for (int dy = 0; dy <= 2; dy++) {
+                for (int dz = -1; dz <= 1; dz += 2) {
+                    cursor.set(base.getX() + dx, base.getY() + dy, base.getZ() + dz);
+                    if (!level.getBlockState(cursor).isAir()) {
+                        level.setBlock(cursor, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+                    }
+                }
+            }
+        }
+
+        // The frame is stood up first - a doorway two wide and three high, ringed by frame, all
+        // one block thick in Z - and only then is it filled. The filling is done without asking
+        // the blocks beside it to reshape themselves, the same way this mod's own portal blocks
+        // are laid down when a player lights one by hand: a doorway that is only part placed is
+        // not a doorway, so a portal block asked to validate itself mid-build turns straight back
+        // into air.
+        for (int dx = -1; dx <= 2; dx++) {
+            for (int dy = -1; dy <= 3; dy++) {
+                if (dx != -1 && dx != 2 && dy != -1 && dy != 3) {
+                    continue;
+                }
+                cursor.set(base.getX() + dx, base.getY() + dy, base.getZ());
+                level.setBlock(cursor, frame, Block.UPDATE_ALL);
+            }
+        }
+        for (int dx = 0; dx <= 1; dx++) {
+            for (int dy = 0; dy <= 2; dy++) {
+                cursor.set(base.getX() + dx, base.getY() + dy, base.getZ());
+                level.setBlock(cursor, portal, Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
+            }
+        }
+
+        return new Vec3(base.getX() + 1.0D, base.getY(), base.getZ() + 0.5D);
     }
 
 //    @Nullable

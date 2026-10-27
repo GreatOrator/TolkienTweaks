@@ -115,6 +115,7 @@ public class TolkienMobsMain {
         TolkienFeatureModifiers.FOLIAGE_PLACERS.register(modEventBus);
         TolkienCaveCarvers.CARVER_TYPES.register(modEventBus);
         TolkienStructures.STRUCTURE.register(modEventBus);
+        TolkienBiomeSources.BIOME_SOURCES.register(modEventBus);
 
         TolkienMobEffects.register(modEventBus);
         TolkienContainers.register(modEventBus);
