@@ -135,6 +135,13 @@ placed features, tags or loot, regenerate and commit the generated JSON alongsid
   the item out of the recipe book; it re-runs on `/reload`, which is what makes the switch
   reversible. `/summon` still answers `Summoned new X` when the mob was refused, because vanilla's
   `tryAddFreshEntityWithPassengers` does not look at whether the entity landed.
+- The mob switches are one boolean per mob (`enableGoblin`, `enableMordorOrc`, `enableShelob`, ...)
+  under `[server.mobs]`, from a hand-written table in `TolkienMobsConfig.MOB_TOGGLES` that pairs each
+  switch with the entity id it stands for. The table cannot be derived: the spec is built while the
+  mod is still being constructed, so the mod's entities are not in the entity registry yet, and a
+  display name for the comment would need a language file that is not loaded that early either. The
+  price is that a mob added later needs a line there, which is what `warnOnMobsWithoutSwitch` is for:
+  it reads the spawn eggs on startup and names in the log any mob with no switch of its own.
 - **`BuiltInRegistries.ENTITY_TYPE` and `BuiltInRegistries.ITEM` are *defaulted* registries in
   26.1**: an id no entry answers to comes back as the registry's default entry (an entity type, or
   air) rather than as null. Any config name that is resolved against them has to be checked with
