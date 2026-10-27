@@ -66,34 +66,35 @@ public abstract class BiomeHelper {
 
 	/**
 	 * The Iron Hills are the Lonely Mountain's own country: Dale, Esgaroth and the dwarf-city under
-	 * Erebor stand in them, so the hills carry dwarves and their flocks. They are tagged a heartland,
-	 * which means this list names no monster at all - it used to hand the hills to the Haradrim.
+	 * Erebor stand in them, so the hills carry dwarves and their flocks - the battle goats of the
+	 * mod's own making, one in a hundred of which comes with a dwarf already in the saddle, in place
+	 * of vanilla's shepherds' sheep. They are tagged a heartland, which means this list names no
+	 * monster at all - it used to hand the hills to the Haradrim.
 	 */
 	public static MobSpawnSettings.Builder ironHillsSpawning() {
 
 		return new MobSpawnSettings.Builder()
 				.addSpawn(MobCategory.CREATURE, 45, npc(TolkienEntities.ENTITY_TTM_DWARF.get(), 1, 3))
-				.addSpawn(MobCategory.CREATURE, 15, new MobSpawnSettings.SpawnerData(EntityType.GOAT, 1, 3))
-				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.SHEEP, 1, 3))
+				.addSpawn(MobCategory.CREATURE, 25, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_GOAT.get(), 1, 3))
 				.addSpawn(MobCategory.AMBIENT, 15, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 1, 2))
 				.addMobCharge(TolkienEntities.ENTITY_TTM_DWARF.get(), 0.6, 0.15)
-				.addMobCharge(EntityType.GOAT, 0.6, 0.15)
-				.addMobCharge(EntityType.SHEEP, 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_GOAT.get(), 0.6, 0.15)
 				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15);
 	}
 
 	/**
 	 * The Blue Mountains are a heartland - Belegost and Nogrod stand in them, and the dwarven
 	 * village brings the range's own people - so the slopes carry only the creatures that live
-	 * there, the goats and the crebain. They used to hand the range to the goblins of the deep.
+	 * there, the dwarves' battle goats and the crebain. They used to hand the range to the goblins
+	 * of the deep.
 	 */
 	public static MobSpawnSettings.Builder blueMountainsSpawning() {
 
 		return new MobSpawnSettings.Builder()
-				.addSpawn(MobCategory.CREATURE, 15, new MobSpawnSettings.SpawnerData(EntityType.GOAT, 1, 3))
+				.addSpawn(MobCategory.CREATURE, 15, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_GOAT.get(), 1, 3))
 				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.RABBIT, 1, 3))
 				.addSpawn(MobCategory.AMBIENT, 15, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 1, 2))
-				.addMobCharge(EntityType.GOAT, 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_GOAT.get(), 0.6, 0.15)
 				.addMobCharge(EntityType.RABBIT, 0.6, 0.15)
 				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15);
 	}
@@ -167,10 +168,12 @@ public abstract class BiomeHelper {
 				.addSpawn(MobCategory.MONSTER, 35, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_TROLL.get(), 1, 2))
 				.addSpawn(MobCategory.MONSTER, 45, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 1, 5))
 				.addSpawn(MobCategory.MONSTER, 20, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_DUERGAR.get(), 1, 2))
+				.addSpawn(MobCategory.CREATURE, 15, new MobSpawnSettings.SpawnerData(EntityType.GOAT, 1, 3))
 				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 1, 2))
 				.addMobCharge(TolkienEntities.ENTITY_TTM_TROLL.get(), 0.6, 0.15)
 				.addMobCharge(TolkienEntities.ENTITY_TTM_GOBLIN.get(), 0.6, 0.15)
 				.addMobCharge(TolkienEntities.ENTITY_TTM_DUERGAR.get(), 0.6, 0.15)
+				.addMobCharge(EntityType.GOAT, 0.6, 0.15)
 				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15);
 	}
 
@@ -365,10 +368,12 @@ public abstract class BiomeHelper {
                 .addSpawn(MobCategory.CREATURE, 45, npc(TolkienEntities.ENTITY_TTM_HUMAN.get(), 1, 5))
                 .addSpawn(MobCategory.CREATURE, 20, new MobSpawnSettings.SpawnerData(EntityType.POLAR_BEAR, 1, 2))
                 .addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.RABBIT, 2, 4))
+                .addSpawn(MobCategory.CREATURE, 15, new MobSpawnSettings.SpawnerData(EntityType.GOAT, 1, 3))
                 .addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 1, 2))
                 .addMobCharge(TolkienEntities.ENTITY_TTM_HUMAN.get(), 0.6, 0.15)
                 .addMobCharge(EntityType.POLAR_BEAR, 0.6, 0.15)
                 .addMobCharge(EntityType.RABBIT, 0.6, 0.15)
+                .addMobCharge(EntityType.GOAT, 0.6, 0.15)
                 .addMobCharge(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 0.6, 0.15);
     }
 

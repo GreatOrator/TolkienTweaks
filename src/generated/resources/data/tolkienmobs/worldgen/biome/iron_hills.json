@@ -107,19 +107,15 @@
   ],
   "has_precipitation": true,
   "spawn_costs": {
-    "minecraft:goat": {
-      "charge": 0.6,
-      "energy_budget": 0.15
-    },
-    "minecraft:sheep": {
-      "charge": 0.6,
-      "energy_budget": 0.15
-    },
     "tolkienmobs:entityttmcrebain": {
       "charge": 0.6,
       "energy_budget": 0.15
     },
     "tolkienmobs:entityttmdwarf": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmgoat": {
       "charge": 0.6,
       "energy_budget": 0.15
     }
@@ -142,16 +138,10 @@
         "weight": 45
       },
       {
-        "type": "minecraft:goat",
+        "type": "tolkienmobs:entityttmgoat",
         "maxCount": 3,
         "minCount": 1,
-        "weight": 15
-      },
-      {
-        "type": "minecraft:sheep",
-        "maxCount": 3,
-        "minCount": 1,
-        "weight": 10
+        "weight": 25
       }
     ],
     "misc": [],

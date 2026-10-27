@@ -107,15 +107,15 @@
   ],
   "has_precipitation": true,
   "spawn_costs": {
-    "minecraft:goat": {
-      "charge": 0.6,
-      "energy_budget": 0.15
-    },
     "minecraft:rabbit": {
       "charge": 0.6,
       "energy_budget": 0.15
     },
     "tolkienmobs:entityttmcrebain": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmgoat": {
       "charge": 0.6,
       "energy_budget": 0.15
     }
@@ -132,7 +132,7 @@
     "axolotls": [],
     "creature": [
       {
-        "type": "minecraft:goat",
+        "type": "tolkienmobs:entityttmgoat",
         "maxCount": 3,
         "minCount": 1,
         "weight": 15

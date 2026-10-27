@@ -67,6 +67,10 @@
   ],
   "has_precipitation": true,
   "spawn_costs": {
+    "minecraft:goat": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
     "tolkienmobs:entityttmcrebain": {
       "charge": 0.6,
       "energy_budget": 0.15
@@ -94,7 +98,14 @@
       }
     ],
     "axolotls": [],
-    "creature": [],
+    "creature": [
+      {
+        "type": "minecraft:goat",
+        "maxCount": 3,
+        "minCount": 1,
+        "weight": 15
+      }
+    ],
     "misc": [],
     "monster": [
       {
