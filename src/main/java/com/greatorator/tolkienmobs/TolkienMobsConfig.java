@@ -16,6 +16,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,7 +41,6 @@ public class TolkienMobsConfig {
 
     /* Server: the world's own settings. */
     private static final ModConfigSpec.BooleanValue DISABLE_ALL_MOBS;
-    private static final ModConfigSpec.ConfigValue<List<? extends String>> DISABLED_MOBS;
     private static final ModConfigSpec.BooleanValue DISABLE_ALL_BLOCKS;
     private static final ModConfigSpec.BooleanValue DISABLE_ALL_ITEMS;
     private static final ModConfigSpec.BooleanValue FAKE_PLAYER;
@@ -67,6 +67,76 @@ public class TolkienMobsConfig {
     private static final ModConfigSpec.IntValue FELLBEAST_WINGBEAT_INTERVAL;
     private static final ModConfigSpec.IntValue FELLBEAST_DIVE_ANGLE;
 
+    /**
+     * Every mob the mod registers, in the order it registers them: the config key, the entity id path
+     * the switch stands for, and the name its comment shows.
+     *
+     * <p>The table is written out rather than read off the entity registry, because the file is built
+     * while the mod is still being constructed - the mod's entities are not in that registry yet, and
+     * a display name would have to come from a language file that is not loaded this early either.
+     * The log names any mob that has no line here, so the table and the entities cannot drift apart
+     * unnoticed.
+     */
+    private static final List<MobToggle> MOB_TOGGLES = List.of(
+            new MobToggle("enableGecko", "entityttmgecko", "Gecko"),
+            new MobToggle("enableRat", "entityttmrat", "Rat"),
+            new MobToggle("enableSquirrel", "entityttmsquirrel", "Squirrel"),
+            new MobToggle("enableFrog", "entityttmfrog", "Frog"),
+            new MobToggle("enableThrush", "entityttmthrush", "Thrush"),
+            new MobToggle("enableCrebain", "entityttmcrebain", "Crebain"),
+            new MobToggle("enableMidgeFly", "entityttmswarm", "MidgeFly"),
+            new MobToggle("enableGreatEagle", "entityttmgreateagle", "Great Eagle"),
+            new MobToggle("enableAuroch", "entityttmauroch", "Auroch"),
+            new MobToggle("enableMumakil", "entityttmmumakil", "Mumakil"),
+            new MobToggle("enableBattleGoat", "entityttmgoat", "Battle Goat"),
+            new MobToggle("enableNazgulSteed", "entityttmnazgulsteed", "Nazgul Steed"),
+            new MobToggle("enableShadowfax", "entityttmshadowfax", "Shadowfax"),
+            new MobToggle("enableGollum", "entityttmgollum", "Gollum"),
+            new MobToggle("enableIstari", "entityttmistari", "Istari"),
+            new MobToggle("enableHuman", "entityttmhuman", "Human"),
+            new MobToggle("enableDwarf", "entityttmdwarf", "Dwarf"),
+            new MobToggle("enableElf", "entityttmelves", "Elf"),
+            new MobToggle("enableHobbit", "entityttmhobbit", "Hobbit"),
+            new MobToggle("enableSouthronTrader", "entityttmsouthron", "Southron trader"),
+            new MobToggle("enableOrcTrader", "entityttmorc_trader", "Orc Trader"),
+            new MobToggle("enableOrc", "entityttmorc", "Orc"),
+            new MobToggle("enableSouthron", "entityttmsouthron_npc", "Southron villager"),
+            new MobToggle("enableBarrowWight", "entityttmbarrow", "Barrow Wight"),
+            new MobToggle("enableOathBreaker", "entityttmoathbreaker", "Oath Breaker"),
+            new MobToggle("enableFellSpirit", "entityttmfellspirit", "Fell Spirit"),
+            new MobToggle("enableEnragedFellSpirit", "entityttmenragedfellspirit", "Enraged Fell Spirit"),
+            new MobToggle("enableBrigand", "entityttmbrigand", "Brigand"),
+            new MobToggle("enableHaradrim", "entityttmharadrim", "Haradrim"),
+            new MobToggle("enableRomieWalker", "entityttmromiewalker", "Romie Walker"),
+            new MobToggle("enableMimicChest", "entityttmmimicchest", "Mimic Chest"),
+            new MobToggle("enableMordorOrc", "entityttmmordororc", "Mordor Orc"),
+            new MobToggle("enableUrukHai", "entityttmurukhai", "Uruk Hai"),
+            new MobToggle("enableDuergar", "entityttmduergar", "Duergar"),
+            new MobToggle("enableGoblin", "entityttmgoblin", "Goblin"),
+            new MobToggle("enableMirkwoodSpider", "entityttmmirkwoodspider", "Mirkwood Spider"),
+            new MobToggle("enableRockGolem", "entityttmrockgolem", "Rock Golem"),
+            new MobToggle("enableHuron", "entityttmhuron", "Huron"),
+            new MobToggle("enableMinotaur", "entityttmminotaur", "Minotaur"),
+            new MobToggle("enableDeepclaw", "entityttmdeepclaw", "Deepclaw"),
+            new MobToggle("enableCaveTroll", "entityttmtroll", "Cave Troll"),
+            new MobToggle("enableTreeEnt", "entityttmtreeent", "Tree Ent"),
+            new MobToggle("enableSwampHag", "entityttmswamphag", "Swamp Hag"),
+            new MobToggle("enableWarg", "entityttmwarg", "Warg"),
+            new MobToggle("enableElementalGolem", "entityttmelementalgolem", "Elemental Golem"),
+            new MobToggle("enableNazgul", "entityttmnazgul", "Nazgul"),
+            new MobToggle("enableGoblinKing", "entityttmgoblinking", "Goblin King"),
+            new MobToggle("enableBalrog", "entityttmbalrog", "Balrog"),
+            new MobToggle("enableShelob", "entityttmshelob", "Shelob"),
+            new MobToggle("enableWitchKing", "entityttmwitchking", "Witch King of Angmar"),
+            new MobToggle("enableWatcher", "entityttmwatcher", "Watcher of the Water"),
+            new MobToggle("enableMithrilGolem", "entityttmmithrilgolem", "Mithril Golem"),
+            new MobToggle("enableMorgulIronGolem", "entityttmmorgulirongolem", "Morgul Iron Golem"),
+            new MobToggle("enableGwahir", "entityttmgwahir", "Gwahir, Lord of the Eagles"),
+            new MobToggle("enableFellBeast", "entityttmfellbeast", "Fell Beast"));
+
+    /** The switches, in the order the file lists them, each beside the entity id it stands for. */
+    private static final List<MobSwitch> MOB_SWITCHES = new ArrayList<>();
+
     static final ModConfigSpec SPEC;
 
     static {
@@ -75,18 +145,24 @@ public class TolkienMobsConfig {
                 .push("server");
 
         // The content switches. Nothing can be pulled back out of the registries once the game is
-        // running, so these act on the two paths that hand a block or an item out: the creative
-        // tabs and the recipes.
-        BUILDER.comment("Whether the mod's mobs may enter the world at all.").push("mobs");
+        // running, so these act on the paths that hand content out: a mob is refused where it enters
+        // the world, and a block or an item is taken out of the creative tabs and the recipes.
+        BUILDER.comment("Whether the mod's mobs may enter the world at all. The master switch comes first and one",
+                        "switch for each of the mod's mobs follows it; the master overrides them all.")
+                .push("mobs");
         DISABLE_ALL_MOBS = BUILDER
                 .comment("Stops every Tolkien mob from entering the world: they no longer spawn, a spawn egg for",
                         "one does nothing, and summoning one is refused. Mobs already in a world stay where they",
-                        "are until they leave it, so this is not a way to clear a world of them (Default false)")
+                        "are until they leave it, so this is not a way to clear a world of them. This switch",
+                        "overrides every per-mob switch below it (Default false)")
                 .define("disableAllMobs", false);
-        DISABLED_MOBS = BUILDER
-                .comment(mobIdComment())
-                .defineListAllowEmpty("disabledMobs", List.of(),
-                        () -> "tolkienmobs:entityttmgoblin", TolkienMobsConfig::validateEntityName);
+        for (MobToggle mob : MOB_TOGGLES) {
+            MOB_SWITCHES.add(new MobSwitch(mob.path(),
+                    BUILDER.comment("The " + mob.label() + " (`" + MODID + ":" + mob.path() + "`): true lets it into the world as",
+                                    "it always did, false keeps that one mob out the same way the master switch keeps",
+                                    "them all out (Default true)")
+                            .define(mob.key(), true)));
+        }
         BUILDER.pop();
 
         BUILDER.comment("Whether the mod hands out the blocks it adds.").push("blocks");
@@ -243,23 +319,32 @@ public class TolkienMobsConfig {
         return obj instanceof String itemName && Identifier.tryParse(itemName) != null;
     }
 
-    private static boolean validateEntityName(final Object obj) {
-        return obj instanceof String entityName && Identifier.tryParse(entityName) != null;
+    /**
+     * One mob's switch: the config key, the entity id path it stands for - the part after the mod's
+     * own namespace, which is added when the id is resolved - and the name its comment shows.
+     */
+    private record MobToggle(String key, String path, String label) {
+    }
+
+    /** A built switch beside the entity id it stands for. */
+    private record MobSwitch(String path, ModConfigSpec.BooleanValue value) {
     }
 
     /**
-     * The comment above {@code disabledMobs}, which lists the ids that are certain to mean something:
-     * the mod's own mobs, taken from its spawn eggs so a mob added later appears here by itself.
+     * Names every mob the mod registers that has no switch of its own. The table above is written by
+     * hand, so this is what keeps it and the entities from drifting apart: a mob added without a line
+     * there says so in the log instead of being a mob no config can switch off.
      */
-    private static String[] mobIdComment() {
-        List<String> lines = new ArrayList<>();
-        lines.add("Mobs to keep out of the world one at a time, by entity id. Each entry is the id of a");
-        lines.add("single mob; `disableAllMobs` above does the same thing to all of them at once. An id that");
-        lines.add("no entity answers to is reported in the log and ignored. The mod's own mob ids are:");
-        for (String id : tolkienMobIds()) {
-            lines.add("  " + id);
+    private static void warnOnMobsWithoutSwitch() {
+        Set<String> switched = new HashSet<>();
+        for (MobToggle mob : MOB_TOGGLES) {
+            switched.add(MODID + ":" + mob.path());
         }
-        return lines.toArray(String[]::new);
+        for (String id : tolkienMobIds()) {
+            if (!switched.contains(id)) {
+                LOGGER.warn("The mod's mob `{}` has no switch in the config; add a MobToggle line for it", id);
+            }
+        }
     }
 
     /** The entity id of every mob the mod registers, read off the spawn egg that goes with it. */
@@ -277,30 +362,27 @@ public class TolkienMobsConfig {
     private static final String EGG_SUFFIX = "_spawn_egg";
 
     /**
-     * Resolves the configured ids against the entity registry, which is filled by the time this
-     * runs.
+     * The entity types this game keeps out of the world: every mob the mod adds while the master
+     * switch is on, and otherwise the ones whose own switch was turned off.
      *
      * <p>The entity registry is a defaulted one - 26.1 answers an unknown id with its default entry
-     * rather than with nothing - so every name is checked for membership first. Looking a name up
-     * without that check would hand back a real entity type for a typo, and quietly switch off
-     * whichever mob happens to be the registry's default.
+     * rather than with nothing - so every id is checked for membership first. Looking one up without
+     * that check would hand back a real entity type for a name that matches nothing, and quietly
+     * switch off whichever mob happens to be the registry's default.
      */
-    private static Set<EntityType<?>> resolveDisabledMobs(List<? extends String> ids, boolean all) {
+    private static Set<EntityType<?>> resolveDisabledMobs(boolean all) {
         Set<EntityType<?>> disabled = new LinkedHashSet<>();
-        for (String id : ids) {
-            EntityType<?> type = entityType(id);
+        for (MobSwitch mob : MOB_SWITCHES) {
+            if (!all && mob.value().get()) {
+                continue;
+            }
+            // The table holds the path alone; the namespace has to be put back on, because a bare path
+            // parses as `minecraft:` and every one of these mobs is one of ours.
+            EntityType<?> type = entityType(MODID + ":" + mob.path());
             if (type == null) {
-                LOGGER.warn("Config `disabledMobs` names `{}`, which is not an entity in this game; ignoring it", id);
+                LOGGER.warn("The config's switch for `{}` names an entity this game does not have; it does nothing", mob.path());
             } else {
                 disabled.add(type);
-            }
-        }
-        if (all) {
-            for (String id : tolkienMobIds()) {
-                EntityType<?> type = entityType(id);
-                if (type != null) {
-                    disabled.add(type);
-                }
             }
         }
         return disabled;
@@ -336,13 +418,14 @@ public class TolkienMobsConfig {
         boolean disableAllMobs = DISABLE_ALL_MOBS.get();
         disableAllBlocks = DISABLE_ALL_BLOCKS.get();
         disableAllItems = DISABLE_ALL_ITEMS.get();
+        warnOnMobsWithoutSwitch();
+        disabledMobs = resolveDisabledMobs(disableAllMobs);
         // The two content switches are read straight from the spec - the tabs and the recipes only ask
         // about an item, so they call `isItemHidden` rather than keeping a list of their own.
-        if (disableAllBlocks || disableAllItems || disableAllMobs || !DISABLED_MOBS.get().isEmpty()) {
-            LOGGER.info("Tolkien content switches: mobs={}, blocks={}, items={}, {} mob(s) named off by id",
-                    disableAllMobs ? "all off" : "on", disableAllBlocks ? "off" : "on",
-                    disableAllItems ? "off" : "on", DISABLED_MOBS.get().size());
+        if (disableAllBlocks || disableAllItems || !disabledMobs.isEmpty()) {
+            LOGGER.info("Tolkien content switches: {} mob(s) off{}, blocks={}, items={}",
+                    disabledMobs.size(), disableAllMobs ? " (all of them, by the master switch)" : "",
+                    disableAllBlocks ? "off" : "on", disableAllItems ? "off" : "on");
         }
-        disabledMobs = resolveDisabledMobs(DISABLED_MOBS.get(), disableAllMobs);
     }
 }
