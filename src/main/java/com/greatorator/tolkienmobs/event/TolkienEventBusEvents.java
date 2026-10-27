@@ -20,11 +20,19 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.SpawnPlacementType;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.goat.Goat;
+import net.minecraft.world.entity.animal.polarbear.PolarBear;
+import net.minecraft.world.entity.animal.rabbit.Rabbit;
+import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.NaturalSpawner;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -177,13 +185,25 @@ public class TolkienEventBusEvents {
      * animal the country already carries. Daylight is asked for as well, which is what keeps the
      * flocks to the day the way vanilla's are; a chunk being drawn reads as lit, so the generation
      * pass places them exactly as it places the vanilla animals.
+     *
+     * <p>A snow drift is pasture as well. {@code Mob.checkMobSpawnRules} asks for a full top face,
+     * which a snow layer never has, so the cold countries' floors were refused layer by layer even
+     * though the pasture tag names snow: Forochel, its slopes and every range top above the snow
+     * line was shut to the bears, rabbits and goats their lists carry. Snow only ever settles on a
+     * full block - laying it needs one - so the layer is taken as the floor itself.
      */
     private static boolean checkCountryPastureRules(EntityType<? extends Mob> type, ServerLevelAccessor level,
                                                     EntitySpawnReason reason, BlockPos pos, RandomSource random) {
-        return level.getBiome(pos).is(TolkienTags.Biomes.OVERWORLD)
-                && level.getBlockState(pos.below()).is(TolkienTags.Blocks.COUNTRY_PASTURE)
-                && level.getRawBrightness(pos, 0) > 8
-                && Mob.checkMobSpawnRules(type, level, reason, pos, random);
+        if (!level.getBiome(pos).is(TolkienTags.Biomes.OVERWORLD)
+                || level.getRawBrightness(pos, 0) <= 8) {
+            return false;
+        }
+        BlockState ground = level.getBlockState(pos.below());
+        if (!ground.is(TolkienTags.Blocks.COUNTRY_PASTURE)) {
+            return false;
+        }
+        return ground.getBlock() instanceof SnowLayerBlock
+                || Mob.checkMobSpawnRules(type, level, reason, pos, random);
     }
 
     /** A mod animal's own rule, with the country pasture clause above added to it. */
@@ -193,40 +213,97 @@ public class TolkienEventBusEvents {
                 || checkCountryPastureRules(type, level, reason, pos, random);
     }
 
+    /** A country's rabbit, goat, wolf and bear each have a rule of vanilla's own to keep. */
+    private static boolean checkRabbitSpawnRules(EntityType<Rabbit> type, ServerLevelAccessor level,
+                                                 EntitySpawnReason reason, BlockPos pos, RandomSource random) {
+        return Rabbit.checkRabbitSpawnRules(type, level, reason, pos, random)
+                || checkCountryPastureRules(type, level, reason, pos, random);
+    }
+
+    private static boolean checkGoatSpawnRules(EntityType<? extends Animal> type, ServerLevelAccessor level,
+                                               EntitySpawnReason reason, BlockPos pos, RandomSource random) {
+        return Goat.checkGoatSpawnRules(type, level, reason, pos, random)
+                || checkCountryPastureRules(type, level, reason, pos, random);
+    }
+
+    private static boolean checkWolfSpawnRules(EntityType<Wolf> type, ServerLevelAccessor level,
+                                               EntitySpawnReason reason, BlockPos pos, RandomSource random) {
+        return Wolf.checkWolfSpawnRules(type, level, reason, pos, random)
+                || checkCountryPastureRules(type, level, reason, pos, random);
+    }
+
+    private static boolean checkPolarBearSpawnRules(EntityType<PolarBear> type, ServerLevelAccessor level,
+                                                    EntitySpawnReason reason, BlockPos pos, RandomSource random) {
+        return PolarBear.checkPolarBearSpawnRules(type, level, reason, pos, random)
+                || checkCountryPastureRules(type, level, reason, pos, random);
+    }
+
+    /**
+     * The floor a country's animals stand on.
+     *
+     * <p>{@code ON_GROUND} asks for a full top face under the spawn position, and a snow layer
+     * never has one. That is vanilla's own way of keeping mobs off a snowed-in floor - it is why a
+     * snow golem's trail stops them - and it is asked <em>before</em> any spawn rule, so no rule of
+     * ours could put an animal back on a drift: a cold country's every snowed column was refused,
+     * Forochel and its slopes and every range top above the snow line among them. The floor here is
+     * vanilla's own, or the country's pasture with a drift lying on it, and only inside a country of
+     * the mod's, so a vanilla plain keeps vanilla's rule and its snow keeps its quiet.
+     */
+    private static final SpawnPlacementType COUNTRY_GROUND = (level, pos, type) ->
+            SpawnPlacementTypes.ON_GROUND.isSpawnPositionOk(level, pos, type)
+                    || isCountryPastureFloor(level, pos, type);
+
+    /**
+     * A country's own floor: the pasture tag underfoot, with the spawn position and the block above
+     * it free - and a drift lying on the pasture counts as the floor itself, since snow only ever
+     * settles on a full block, so there is ground under it to stand on.
+     */
+    private static boolean isCountryPastureFloor(LevelReader level, BlockPos pos, EntityType<?> type) {
+        if (type == null || !level.getBiome(pos).is(TolkienTags.Biomes.OVERWORLD)) {
+            return false;
+        }
+        if (!level.getBlockState(pos.below()).is(TolkienTags.Blocks.COUNTRY_PASTURE)) {
+            return false;
+        }
+        BlockPos above = pos.above();
+        return NaturalSpawner.isValidEmptySpawnBlock(level, pos, level.getBlockState(pos), level.getFluidState(pos), type)
+                && NaturalSpawner.isValidEmptySpawnBlock(level, above, level.getBlockState(above), level.getFluidState(above), type);
+    }
+
     @SubscribeEvent
     public static void registerSpawnPlacements(RegisterSpawnPlacementsEvent event) {
         // Ambient
-        event.register(TolkienEntities.ENTITY_TTM_GECKO.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+        event.register(TolkienEntities.ENTITY_TTM_GECKO.get(), COUNTRY_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 TolkienEventBusEvents::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(TolkienEntities.ENTITY_TTM_RAT.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+        event.register(TolkienEntities.ENTITY_TTM_RAT.get(), COUNTRY_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 TolkienEventBusEvents::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+        event.register(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), COUNTRY_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 TolkienEventBusEvents::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(TolkienEntities.ENTITY_TTM_FROG.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+        event.register(TolkienEntities.ENTITY_TTM_FROG.get(), COUNTRY_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 TolkienEventBusEvents::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(TolkienEntities.ENTITY_TTM_THRUSH.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+        event.register(TolkienEntities.ENTITY_TTM_THRUSH.get(), COUNTRY_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 TolkienEventBusEvents::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(TolkienEntities.ENTITY_TTM_CREBAIN.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+        event.register(TolkienEntities.ENTITY_TTM_CREBAIN.get(), COUNTRY_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 TolkienEventBusEvents::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
         event.register(TolkienEntities.ENTITY_TTM_SWARM.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(TolkienEntities.ENTITY_TTM_GREAT_EAGLE.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+        event.register(TolkienEntities.ENTITY_TTM_GREAT_EAGLE.get(), COUNTRY_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 TolkienEventBusEvents::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
 
         // Passive
-        event.register(TolkienEntities.ENTITY_TTM_AUROCH.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+        event.register(TolkienEntities.ENTITY_TTM_AUROCH.get(), COUNTRY_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 TolkienEventBusEvents::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(TolkienEntities.ENTITY_TTM_MUMAKIL.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+        event.register(TolkienEntities.ENTITY_TTM_MUMAKIL.get(), COUNTRY_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 TolkienEventBusEvents::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(TolkienEntities.ENTITY_TTM_GOAT.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+        event.register(TolkienEntities.ENTITY_TTM_GOAT.get(), COUNTRY_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 TolkienEventBusEvents::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(TolkienEntities.ENTITY_TTM_SHADOWFAX.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+        event.register(TolkienEntities.ENTITY_TTM_SHADOWFAX.get(), COUNTRY_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 TolkienEventBusEvents::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(TolkienEntities.ENTITY_TTM_NAZGULSTEED.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+        event.register(TolkienEntities.ENTITY_TTM_NAZGULSTEED.get(), COUNTRY_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 TolkienEventBusEvents::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
         event.register(TolkienEntities.ENTITY_TTM_GOLLUM.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
-        event.register(TolkienEntities.ENTITY_TTM_ISTARI.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+        event.register(TolkienEntities.ENTITY_TTM_ISTARI.get(), COUNTRY_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 TolkienEventBusEvents::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
 
         // NPC
@@ -311,19 +388,33 @@ public class TolkienEventBusEvents {
                 Monster::checkMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
 
         // Pasture
-        // The animals the countries list are vanilla's own, so their rules are not taken away: the
-        // pasture clause is OR-ed on top of whatever vanilla asks for, and it answers only on ground
-        // a country paints inside a country of the mod's. A vanilla sheep in a vanilla plain is
-        // untouched; Nurn's sheep and Harad's mumakil finally have ground to stand on.
-        event.register(EntityType.SHEEP, TolkienEventBusEvents::checkCountryPastureRules);
-        event.register(EntityType.COW, TolkienEventBusEvents::checkCountryPastureRules);
-        event.register(EntityType.PIG, TolkienEventBusEvents::checkCountryPastureRules);
-        event.register(EntityType.CHICKEN, TolkienEventBusEvents::checkCountryPastureRules);
-        event.register(EntityType.HORSE, TolkienEventBusEvents::checkCountryPastureRules);
-        event.register(EntityType.DONKEY, TolkienEventBusEvents::checkCountryPastureRules);
-        event.register(EntityType.RABBIT, TolkienEventBusEvents::checkCountryPastureRules);
-        event.register(EntityType.WOLF, TolkienEventBusEvents::checkCountryPastureRules);
-        event.register(EntityType.GOAT, TolkienEventBusEvents::checkCountryPastureRules);
-        event.register(EntityType.POLAR_BEAR, TolkienEventBusEvents::checkCountryPastureRules);
+        // The animals the countries list are vanilla's own, so their rules are not taken away: each
+        // keeps the rule vanilla gave it and the pasture clause is added to it, answering only on
+        // ground a country paints inside a country of the mod's. A vanilla sheep in a vanilla plain
+        // is untouched; Nurn's sheep, Harad's mumakil and Forochel's bears and rabbits have ground
+        // to stand on. The floor has to be replaced along with the rule - see COUNTRY_GROUND - and
+        // the event takes a floor only with REPLACE, which is why each of these names the rule it
+        // replaces: sheep, cattle, pigs, chickens and the two equines ask Animal's own, and the
+        // rabbit, the goat, the wolf and the bear have a rule apiece.
+        event.register(EntityType.SHEEP, COUNTRY_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                TolkienEventBusEvents::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(EntityType.COW, COUNTRY_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                TolkienEventBusEvents::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(EntityType.PIG, COUNTRY_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                TolkienEventBusEvents::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(EntityType.CHICKEN, COUNTRY_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                TolkienEventBusEvents::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(EntityType.HORSE, COUNTRY_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                TolkienEventBusEvents::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(EntityType.DONKEY, COUNTRY_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                TolkienEventBusEvents::checkAnimalSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(EntityType.RABBIT, COUNTRY_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                TolkienEventBusEvents::checkRabbitSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(EntityType.GOAT, COUNTRY_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                TolkienEventBusEvents::checkGoatSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(EntityType.WOLF, COUNTRY_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                TolkienEventBusEvents::checkWolfSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
+        event.register(EntityType.POLAR_BEAR, COUNTRY_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                TolkienEventBusEvents::checkPolarBearSpawnRules, RegisterSpawnPlacementsEvent.Operation.REPLACE);
     }
 }
