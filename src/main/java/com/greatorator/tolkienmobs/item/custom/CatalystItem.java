@@ -4,6 +4,7 @@ import com.greatorator.tolkienmobs.block.custom.ArdaPortalBlock;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.item.TolkienItem;
 import com.greatorator.tolkienmobs.item.custom.render.CatalystRender;
+import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
@@ -32,8 +33,10 @@ public class CatalystItem extends TolkienItem implements GeoItem {
     @Override
     public InteractionResult useOn(UseOnContext context) {
         if(context.getPlayer() != null) {
-            if(/*context.getPlayer().level.dimension() == TolkienDimensions.ARDA_KEY
-                    || */context.getPlayer().level.dimension() == Level.OVERWORLD) {
+            // Either side of the crossing will light: a traveller who loses the doorway on the
+            // Arda side is as stranded as one who loses it at home.
+            if(context.getLevel().dimension() == Level.OVERWORLD
+                    || context.getLevel().dimension() == TolkienDimensions.ARDA) {
                 for(Direction direction : Direction.Plane.VERTICAL) {
                     BlockPos framePos = context.getClickedPos().relative(direction);
                     if(((ArdaPortalBlock) TolkienBlocks.ARDA_PORTAL.get()).trySpawnPortal(context.getLevel(), framePos)) {

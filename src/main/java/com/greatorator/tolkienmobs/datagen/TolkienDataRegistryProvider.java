@@ -4,6 +4,7 @@ import com.greatorator.tolkienmobs.init.*;
 import com.greatorator.tolkienmobs.world.TolkienBiomeModifiers;
 import com.greatorator.tolkienmobs.world.components.config.TolkienConfiguredFeatures;
 import com.greatorator.tolkienmobs.world.components.placements.TolkienPlacedFeatures;
+import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -36,7 +37,12 @@ public class TolkienDataRegistryProvider extends DatapackBuiltinEntriesProvider 
             .add(Registries.TRADE_SET, TolkienVillagerTrades::bootstrapSets)
             .add(Registries.TRIM_MATERIAL, TolkienTrimMaterials::bootstrap)
             .add(Registries.ENCHANTMENT, TolkienEnchantments::bootstrap)
-            .add(Registries.JUKEBOX_SONG, TolkienJukebox::bootstrap);
+            .add(Registries.JUKEBOX_SONG, TolkienJukebox::bootstrap)
+
+            // Arda goes last: its climate table is written against the biomes above it, and its
+            // level stem needs both those biomes and the dimension type built beside it.
+            .add(Registries.DIMENSION_TYPE, TolkienDimensions::bootstrapType)
+            .add(Registries.LEVEL_STEM, TolkienDimensions::bootstrapStem);
 
 
     public TolkienDataRegistryProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
