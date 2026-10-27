@@ -118,6 +118,28 @@ placed features, tags or loot, regenerate and commit the generated JSON alongsid
   water - it only sees its own column - so the two heights of grass are what "near water" means.
   A Nurn village therefore starts on dry ground, not on grass, and the lake shore can only reach one
   chunk from the water because of the write radius above.
+## Config facts worth not rediscovering
+
+- One file, `config/tolkienmobs-common.toml`, registered as `ModConfig.Type.COMMON`, split into a
+  `[server]` section for what the world decides and a `[client]` section for what a listener decides
+  for themselves. The only genuinely client-side options so far are the two fell beast dive-wind
+  volumes: `DiveWindSound` runs on each client and reads them from that client's own file, so they
+  must stay out of `[server]` and must keep being read as plain static fields.
+- The content switches cannot empty a registry, so they close the paths that hand content out.
+  Mobs are refused in `EntityJoinLevelEvent`, which every route into a level passes through
+  (`ServerLevel.addEntity` -> `entityManager.addNewEntity`), and entities with `loadedFromDisk()`
+  are deliberately left alone so switching a mob off does not delete the ones already living in a
+  world. Blocks and items are dropped from `BuildCreativeModeTabContentsEvent` (a mod bus event,
+  registered by hand in the mod's constructor since a class cannot subscribe to both buses) and
+  from `ModifyRecipeJsonsEvent`, which runs before the recipe JSON is deserialized and so also keeps
+  the item out of the recipe book; it re-runs on `/reload`, which is what makes the switch
+  reversible. `/summon` still answers `Summoned new X` when the mob was refused, because vanilla's
+  `tryAddFreshEntityWithPassengers` does not look at whether the entity landed.
+- **`BuiltInRegistries.ENTITY_TYPE` and `BuiltInRegistries.ITEM` are *defaulted* registries in
+  26.1**: an id no entry answers to comes back as the registry's default entry (an entity type, or
+  air) rather than as null. Any config name that is resolved against them has to be checked with
+  `containsKey` first; a bare `getValue` silently turns a typo into whichever mob the registry
+  happens to default to. This was caught only by running a server and summoning the mob.
 - Vanilla badlands strata still colour a few Nurn columns at biome borders. The surface system and
   `execute if biome` both read the fuzzed biome manager, so within a few blocks of a wooded badlands
   or jungle cell the badlands terracotta banding runs even where the stored biome cell is Nurn

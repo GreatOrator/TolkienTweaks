@@ -16,6 +16,7 @@ import com.greatorator.tolkienmobs.entity.projectiles.render.FellBeastFireballRe
 import com.greatorator.tolkienmobs.entity.projectiles.render.SimpleTrapRender;
 import com.greatorator.tolkienmobs.entity.projectiles.render.TolkienArrowRenderer;
 import com.greatorator.tolkienmobs.entity.projectiles.render.TornadoRender;
+import com.greatorator.tolkienmobs.event.TolkienContentEvents;
 import com.greatorator.tolkienmobs.event.TolkienRegistration;
 import com.greatorator.tolkienmobs.event.client.TolkienClientEvents;
 import com.greatorator.tolkienmobs.fluid.TolkienFluidType;
@@ -104,6 +105,8 @@ public class TolkienMobsMain {
         TolkienSounds.SOUND_EVENTS.register(modEventBus);
 
         modEventBus.addListener(TolkienDataGenerator::gatherData);
+        // A mod bus event, so the tab hook is registered here rather than by an annotation on the class.
+        modEventBus.addListener(TolkienContentEvents::buildCreativeTabContents);
 
         TolkienFeatureModifiers.TREE_DECORATORS.register(modEventBus);
         TolkienFeatures.FEATURES.register(modEventBus);

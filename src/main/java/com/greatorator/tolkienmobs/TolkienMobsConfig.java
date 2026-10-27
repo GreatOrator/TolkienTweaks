@@ -1,85 +1,199 @@
 package com.greatorator.tolkienmobs;
 
+import com.greatorator.tolkienmobs.init.TolkienEntities;
+import com.mojang.logging.LogUtils;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import org.slf4j.Logger;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
+/**
+ * The mod's settings, in one file, split into what the server owns and what the client owns.
+ *
+ * <p>The split is by who reads the value, not by who can change it. Everything under
+ * {@code [server]} decides what happens in the world - what spawns, what can be crafted, what the
+ * milestones charge - so on a dedicated server it is that server's copy of the file that governs
+ * play. Everything under {@code [client]} is read by the client that has it open: the two fell
+ * beast wind volumes are heard by each listener from their own settings, so a player can turn them
+ * down without touching the server's file.
+ */
 @EventBusSubscriber(modid = TolkienMobsMain.MODID)
 public class TolkienMobsConfig {
+    private static final Logger LOGGER = LogUtils.getLogger();
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
-    /* Client */
-    /* Server */
-    private static final ModConfigSpec.BooleanValue FAKE_PLAYER = BUILDER
-            .comment("Skip fake players, such as deployers, when Hallowed Earth damages the undead, so a farm built on it is not eaten by its own machine (Default true)")
-            .define("disableFakePlayer", true);
-    private static final ModConfigSpec.BooleanValue AUTO_USE = BUILDER
-            .comment("If enabled, players automatically attempt to use sleeping bags when placed.")
-            .define("autoUse", true);
-    private static final ModConfigSpec.BooleanValue HOBBIT_GROWTH = BUILDER
-            .comment("Turns off abilities for the Hobbit Growth Ring if enabled")
-            .define("disableHobbitGrowth", false);
+    /** The mod's own namespace, which is what marks an id as one of ours. */
+    private static final String MODID = TolkienMobsMain.MODID;
 
-    public static ModConfigSpec.IntValue MINIMUM_TICK_SPEED = BUILDER
-            .comment("Minimum speed anything that ticks can be set to. Defaults to 1, or every tick")
-            .defineInRange("minimum_tick_speed", 1, 1, 100);
+    /* Server: the world's own settings. */
+    private static final ModConfigSpec.BooleanValue DISABLE_ALL_MOBS;
+    private static final ModConfigSpec.ConfigValue<List<? extends String>> DISABLED_MOBS;
+    private static final ModConfigSpec.BooleanValue DISABLE_ALL_BLOCKS;
+    private static final ModConfigSpec.BooleanValue DISABLE_ALL_ITEMS;
+    private static final ModConfigSpec.BooleanValue FAKE_PLAYER;
+    private static final ModConfigSpec.BooleanValue AUTO_USE;
+    private static final ModConfigSpec.BooleanValue HOBBIT_GROWTH;
+    private static final ModConfigSpec.IntValue PICKUP_RANGE;
+    private static final ModConfigSpec.IntValue GROWTH_RANGE;
+    private static final ModConfigSpec.IntValue GROW_TIMER;
+    private static final ModConfigSpec.IntValue TRINKET_REPAIR_AMOUNT;
+    private static final ModConfigSpec.IntValue REGION_WEIGHT;
 
-    public static ModConfigSpec.IntValue DISTANCE_COST = BUILDER
-            .comment("Minimum Default cost for fast-travel (Default 500")
-            .defineInRange("distance_cost", 500, 500, 5000);
-    public static ModConfigSpec.IntValue DIMENSION_COST = BUILDER
-            .comment("Lowest cost the milestone's dimension button allows for fast-travel across dimensions (Default 1)")
-            .defineInRange("dimension_cost", 1, 1, 10);
-    public static final ModConfigSpec.BooleanValue PAYMENT_TYPE = BUILDER
-            .comment("How milestones charge for fast-travel: true costs the item below, false costs experience levels (Default false, experience)")
-            .define("paymentType", false);
-    public static final ModConfigSpec.ConfigValue<String> PAYMENT_ITEM = BUILDER
-            .comment("Item to use for payment to teleport")
-            .define("item", "tolkienmobs:item_coin_bronze", TolkienMobsConfig::validateItemName);
+    /* Client: the settings a listener keeps for themselves. */
+    private static final ModConfigSpec.DoubleValue FELLBEAST_DIVE_WIND_VOLUME;
+    private static final ModConfigSpec.DoubleValue FELLBEAST_DIVE_WIND_PITCH;
 
-    private static final ModConfigSpec.IntValue TRINKET_REPAIR_AMOUNT = BUILDER
-            .comment("Damage the trinket table undoes for one ammolite gem and one repair material (Default 1000)")
-            .defineInRange("trinket_repair_amount", 1000, 1, 1000000);
+    /* Server: the milestone and the fell beast, which read their own copies of these. */
+    public static final ModConfigSpec.IntValue MINIMUM_TICK_SPEED;
+    public static final ModConfigSpec.IntValue DISTANCE_COST;
+    public static final ModConfigSpec.IntValue DIMENSION_COST;
+    public static final ModConfigSpec.BooleanValue PAYMENT_TYPE;
+    public static final ModConfigSpec.ConfigValue<String> PAYMENT_ITEM;
+    private static final ModConfigSpec.IntValue HOME_RADIUS;
+    private static final ModConfigSpec.DoubleValue FELLBEAST_WINGBEAT_VOLUME;
+    private static final ModConfigSpec.IntValue FELLBEAST_WINGBEAT_INTERVAL;
+    private static final ModConfigSpec.IntValue FELLBEAST_DIVE_ANGLE;
 
-    private static final ModConfigSpec.IntValue PICKUP_RANGE = BUILDER
-            .comment("Range of pickup for Hobbit Ring")
-            .defineInRange("pickupRange", 7, 0, Integer.MAX_VALUE);
-    private static final ModConfigSpec.IntValue GROWTH_RANGE = BUILDER
-            .comment("Range of growth for Hobbit Ring")
-            .defineInRange("growthRange", 4, 0, Integer.MAX_VALUE);
-    private static final ModConfigSpec.IntValue GROW_TIMER = BUILDER
-            .comment("How often the Hobbit Ring will try to grow a block (in ticks)")
-            .defineInRange("growthTimer", 20, 0, Integer.MAX_VALUE);
+    static final ModConfigSpec SPEC;
 
-    private static final ModConfigSpec.IntValue HOME_RADIUS = BUILDER
-            .comment("How far the FellBeast will roam from home (Default 32, no less than 8)")
-            .defineInRange("homeRadius", 32, 8, 128);
+    static {
+        BUILDER.comment("What the world does. A dedicated server reads its own copy of these; the values here",
+                        "are the ones in play for every player on it.")
+                .push("server");
 
-    private static final ModConfigSpec.DoubleValue FELLBEAST_WINGBEAT_VOLUME = BUILDER
-            .comment("Volume of the FellBeast's wingbeat, before the beast's own sound scale. The default 2.0 is 3.0 in game, where the beast's idle voice plays at 1.5 (Default 2.0)")
-            .defineInRange("fellbeastWingbeatVolume", 2.0, 0.0, 10.0);
-    private static final ModConfigSpec.IntValue FELLBEAST_WINGBEAT_INTERVAL = BUILDER
-            .comment("Shortest gap between two heard wingbeats as the FellBeast flies, in ticks. 20 ticks is one second. The flap clip is half a second, so anything under 10 runs two beats into each other, and a beast holding its path beats about every 26 ticks (Default 15)")
-            .defineInRange("fellbeastWingbeatInterval", 15, 1, 200);
-    private static final ModConfigSpec.DoubleValue FELLBEAST_DIVE_WIND_VOLUME = BUILDER
-            .comment("Volume of the wind over a diving FellBeast. It is air rather than a voice, so unlike the wingbeat it is not scaled by the beast's own sound scale (Default 1.6)")
-            .defineInRange("fellbeastDiveWindVolume", 1.6, 0.0, 10.0);
-    private static final ModConfigSpec.DoubleValue FELLBEAST_DIVE_WIND_PITCH = BUILDER
-            .comment("Pitch of the wind over a diving FellBeast. The loop is recorded at the depth the dive is meant to play at, so 1.0 is the wind as intended; below it the wind is deeper and slower, above it sharper and quicker (Default 1.0)")
-            .defineInRange("fellbeastDiveWindPitch", 1.0, 0.5, 2.0);
-    private static final ModConfigSpec.IntValue FELLBEAST_DIVE_ANGLE = BUILDER
-            .comment("How steeply a ridden FellBeast must dive, in degrees below horizontal, before its wingbeat goes quiet (Default 45)")
-            .defineInRange("fellbeastDiveAngle", 45, 15, 90);
+        // The content switches. Nothing can be pulled back out of the registries once the game is
+        // running, so these act on the two paths that hand a block or an item out: the creative
+        // tabs and the recipes.
+        BUILDER.comment("Whether the mod's mobs may enter the world at all.").push("mobs");
+        DISABLE_ALL_MOBS = BUILDER
+                .comment("Stops every Tolkien mob from entering the world: they no longer spawn, a spawn egg for",
+                        "one does nothing, and summoning one is refused. Mobs already in a world stay where they",
+                        "are until they leave it, so this is not a way to clear a world of them (Default false)")
+                .define("disableAllMobs", false);
+        DISABLED_MOBS = BUILDER
+                .comment(mobIdComment())
+                .defineListAllowEmpty("disabledMobs", List.of(),
+                        () -> "tolkienmobs:entityttmgoblin", TolkienMobsConfig::validateEntityName);
+        BUILDER.pop();
 
-    static final ModConfigSpec SPEC = BUILDER.build();
+        BUILDER.comment("Whether the mod hands out the blocks it adds.").push("blocks");
+        DISABLE_ALL_BLOCKS = BUILDER
+                .comment("Takes the mod's blocks out of the creative tabs and stops the recipes that make them",
+                        "from making them. Blocks already in a world, in a chest or in a player's hands stay as",
+                        "they are, and the recipes that produce the mod's items from its blocks still work",
+                        "(Default false)")
+                .define("disableAllBlocks", false);
+        BUILDER.pop();
+
+        BUILDER.comment("Whether the mod hands out the items it adds.").push("items");
+        DISABLE_ALL_ITEMS = BUILDER
+                .comment("The same for every item the mod adds, block items included. This covers the mod's own",
+                        "recipes and any other pack's recipe that produces one of its items (Default false)")
+                .define("disableAllItems", false);
+        BUILDER.pop();
+
+        BUILDER.comment("The mod's own rules for how often things happen.").push("gameplay");
+        FAKE_PLAYER = BUILDER
+                .comment("Skip fake players, such as deployers, when Hallowed Earth damages the undead, so a farm built on it is not eaten by its own machine (Default true)")
+                .define("disableFakePlayer", true);
+        AUTO_USE = BUILDER
+                .comment("If enabled, players automatically attempt to use sleeping bags when placed.")
+                .define("autoUse", true);
+        HOBBIT_GROWTH = BUILDER
+                .comment("Turns off abilities for the Hobbit Growth Ring if enabled")
+                .define("disableHobbitGrowth", false);
+        PICKUP_RANGE = BUILDER
+                .comment("Range of pickup for Hobbit Ring")
+                .defineInRange("pickupRange", 7, 0, Integer.MAX_VALUE);
+        GROWTH_RANGE = BUILDER
+                .comment("Range of growth for Hobbit Ring")
+                .defineInRange("growthRange", 4, 0, Integer.MAX_VALUE);
+        GROW_TIMER = BUILDER
+                .comment("How often the Hobbit Ring will try to grow a block (in ticks)")
+                .defineInRange("growthTimer", 20, 0, Integer.MAX_VALUE);
+        TRINKET_REPAIR_AMOUNT = BUILDER
+                .comment("Damage the trinket table undoes for one ammolite gem and one repair material (Default 1000)")
+                .defineInRange("trinketRepairAmount", 1000, 1, 1000000);
+        BUILDER.pop();
+
+        BUILDER.comment("The keystone's timers and what a milestone charges for fast travel.").push("milestone");
+        MINIMUM_TICK_SPEED = BUILDER
+                .comment("Minimum speed anything that ticks can be set to. Defaults to 1, or every tick")
+                .defineInRange("minimumTickSpeed", 1, 1, 100);
+        DISTANCE_COST = BUILDER
+                .comment("Minimum Default cost for fast-travel (Default 500")
+                .defineInRange("distanceCost", 500, 500, 5000);
+        DIMENSION_COST = BUILDER
+                .comment("Lowest cost the milestone's dimension button allows for fast-travel across dimensions (Default 1)")
+                .defineInRange("dimensionCost", 1, 1, 10);
+        PAYMENT_TYPE = BUILDER
+                .comment("How milestones charge for fast-travel: true costs the item below, false costs experience levels (Default false, experience)")
+                .define("paymentType", false);
+        PAYMENT_ITEM = BUILDER
+                .comment("Item to use for payment to teleport")
+                .define("paymentItem", "tolkienmobs:item_coin_bronze", TolkienMobsConfig::validateItemName);
+        BUILDER.pop();
+
+        BUILDER.comment("How the fell beast flies and how loud it is heard by the players near it.").push("fellbeast");
+        HOME_RADIUS = BUILDER
+                .comment("How far the FellBeast will roam from home (Default 32, no less than 8)")
+                .defineInRange("homeRadius", 32, 8, 128);
+        FELLBEAST_WINGBEAT_VOLUME = BUILDER
+                .comment("Volume of the FellBeast's wingbeat, before the beast's own sound scale. The default 2.0 is 3.0 in game, where the beast's idle voice plays at 1.5 (Default 2.0)")
+                .defineInRange("wingbeatVolume", 2.0, 0.0, 10.0);
+        FELLBEAST_WINGBEAT_INTERVAL = BUILDER
+                .comment("Shortest gap between two heard wingbeats as the FellBeast flies, in ticks. 20 ticks is one second. The flap clip is half a second, so anything under 10 runs two beats into each other, and a beast holding its path beats about every 26 ticks (Default 15)")
+                .defineInRange("wingbeatInterval", 15, 1, 200);
+        FELLBEAST_DIVE_ANGLE = BUILDER
+                .comment("How steeply a ridden FellBeast must dive, in degrees below horizontal, before its wingbeat goes quiet (Default 45)")
+                .defineInRange("diveAngle", 45, 15, 90);
+        BUILDER.pop();
+
+        BUILDER.comment("How much of a new world belongs to the mod's region.").push("worldgen");
+        REGION_WEIGHT = BUILDER
+                .comment("The mod's region beside vanilla's, which TerraBlender weighs at 50, so the mod's share",
+                        "of the overworld is weight / (weight + 50): 7 is about 12%, and 1 is about 2%. The region",
+                        "is built into the biome source a world is created with, so a change here only shows in a",
+                        "world generated after the change (Default 7)")
+                .defineInRange("tolkienRegionWeight", 7, 1, 50);
+        BUILDER.pop();
+
+        BUILDER.pop();
+
+        BUILDER.comment("What this client does for itself. These are read by whichever client has the file,",
+                        "so a player can change them without asking the server.")
+                .push("client");
+
+        FELLBEAST_DIVE_WIND_VOLUME = BUILDER
+                .comment("Volume of the wind over a diving FellBeast. It is air rather than a voice, so unlike the wingbeat it is not scaled by the beast's own sound scale (Default 1.6)")
+                .defineInRange("fellbeastDiveWindVolume", 1.6, 0.0, 10.0);
+        FELLBEAST_DIVE_WIND_PITCH = BUILDER
+                .comment("Pitch of the wind over a diving FellBeast. The loop is recorded at the depth the dive is meant to play at, so 1.0 is the wind as intended; below it the wind is deeper and slower, above it sharper and quicker (Default 1.0)")
+                .defineInRange("fellbeastDiveWindPitch", 1.0, 0.5, 2.0);
+        BUILDER.pop();
+
+        SPEC = BUILDER.build();
+    }
 
     public static boolean disableFakePlayer;
     public static boolean autoUse;
     public static boolean disableHobbitGrowth;
     public static boolean paymentType;
+    public static boolean disableAllBlocks;
+    public static boolean disableAllItems;
 
     public static int distanceCost;
     public static int dimensionCost;
@@ -94,13 +208,109 @@ public class TolkienMobsConfig {
     public static int fellbeastDiveAngle;
     public static int trinketRepairAmount;
 
-    private static boolean validateItemName(final Object obj)
-    {
+    /** The entity types a spawn attempt is refused for; rebuilt whenever the config is read. */
+    private static Set<EntityType<?>> disabledMobs = Set.of();
+
+    /** Whether a mob of this type may enter the world, as the switches stand. */
+    public static boolean isMobDisabled(EntityType<?> type) {
+        return !disabledMobs.isEmpty() && disabledMobs.contains(type);
+    }
+
+    /**
+     * Whether the creative tabs and the recipe book should leave this item out. A block item of the
+     * mod's answers to either switch: {@code disableAllItems} covers everything the mod adds, and
+     * {@code disableAllBlocks} covers the ones that place a block.
+     */
+    public static boolean isItemHidden(Item item) {
+        if (item == null || item == Items.AIR || (!disableAllItems && !disableAllBlocks)) {
+            return false;
+        }
+        Identifier name = BuiltInRegistries.ITEM.getKey(item);
+        if (name == null || !MODID.equals(name.getNamespace())) {
+            return false;
+        }
+        return disableAllItems || item instanceof BlockItem;
+    }
+    public static int tolkienRegionWeight() {
+        return SPEC.isLoaded() ? REGION_WEIGHT.get() : 7;
+    }
+
+    private static boolean validateItemName(final Object obj) {
         // 26.1 validates a spec's default as the spec is built, which happens while the mod is still
         // being constructed - the mod's own coins are not in the item registry yet, so looking the name
         // up rejected the default. The check is that the name is a well-formed item id; a name no item
         // answers to leaves the milestone unable to charge, because the item registry hands back air.
         return obj instanceof String itemName && Identifier.tryParse(itemName) != null;
+    }
+
+    private static boolean validateEntityName(final Object obj) {
+        return obj instanceof String entityName && Identifier.tryParse(entityName) != null;
+    }
+
+    /**
+     * The comment above {@code disabledMobs}, which lists the ids that are certain to mean something:
+     * the mod's own mobs, taken from its spawn eggs so a mob added later appears here by itself.
+     */
+    private static String[] mobIdComment() {
+        List<String> lines = new ArrayList<>();
+        lines.add("Mobs to keep out of the world one at a time, by entity id. Each entry is the id of a");
+        lines.add("single mob; `disableAllMobs` above does the same thing to all of them at once. An id that");
+        lines.add("no entity answers to is reported in the log and ignored. The mod's own mob ids are:");
+        for (String id : tolkienMobIds()) {
+            lines.add("  " + id);
+        }
+        return lines.toArray(String[]::new);
+    }
+
+    /** The entity id of every mob the mod registers, read off the spawn egg that goes with it. */
+    private static List<String> tolkienMobIds() {
+        List<String> ids = new ArrayList<>();
+        for (DeferredHolder<Item, ? extends Item> egg : TolkienEntities.SPAWN_EGGS.getEntries()) {
+            String path = egg.getKey().identifier().getPath();
+            if (path.endsWith(EGG_SUFFIX)) {
+                ids.add(MODID + ":" + path.substring(0, path.length() - EGG_SUFFIX.length()));
+            }
+        }
+        return ids;
+    }
+
+    private static final String EGG_SUFFIX = "_spawn_egg";
+
+    /**
+     * Resolves the configured ids against the entity registry, which is filled by the time this
+     * runs.
+     *
+     * <p>The entity registry is a defaulted one - 26.1 answers an unknown id with its default entry
+     * rather than with nothing - so every name is checked for membership first. Looking a name up
+     * without that check would hand back a real entity type for a typo, and quietly switch off
+     * whichever mob happens to be the registry's default.
+     */
+    private static Set<EntityType<?>> resolveDisabledMobs(List<? extends String> ids, boolean all) {
+        Set<EntityType<?>> disabled = new LinkedHashSet<>();
+        for (String id : ids) {
+            EntityType<?> type = entityType(id);
+            if (type == null) {
+                LOGGER.warn("Config `disabledMobs` names `{}`, which is not an entity in this game; ignoring it", id);
+            } else {
+                disabled.add(type);
+            }
+        }
+        if (all) {
+            for (String id : tolkienMobIds()) {
+                EntityType<?> type = entityType(id);
+                if (type != null) {
+                    disabled.add(type);
+                }
+            }
+        }
+        return disabled;
+    }
+
+    /** The entity type an id names, or null if this game has no entity by that name. */
+    private static EntityType<?> entityType(String id) {
+        Identifier name = Identifier.tryParse(id);
+        return name != null && BuiltInRegistries.ENTITY_TYPE.containsKey(name)
+                ? BuiltInRegistries.ENTITY_TYPE.getValue(name) : null;
     }
 
     @SubscribeEvent
@@ -122,5 +332,17 @@ public class TolkienMobsConfig {
         distanceCost = DISTANCE_COST.get();
         dimensionCost = DIMENSION_COST.get();
         paymentType = PAYMENT_TYPE.get();
+
+        boolean disableAllMobs = DISABLE_ALL_MOBS.get();
+        disableAllBlocks = DISABLE_ALL_BLOCKS.get();
+        disableAllItems = DISABLE_ALL_ITEMS.get();
+        // The two content switches are read straight from the spec - the tabs and the recipes only ask
+        // about an item, so they call `isItemHidden` rather than keeping a list of their own.
+        if (disableAllBlocks || disableAllItems || disableAllMobs || !DISABLED_MOBS.get().isEmpty()) {
+            LOGGER.info("Tolkien content switches: mobs={}, blocks={}, items={}, {} mob(s) named off by id",
+                    disableAllMobs ? "all off" : "on", disableAllBlocks ? "off" : "on",
+                    disableAllItems ? "off" : "on", DISABLED_MOBS.get().size());
+        }
+        disabledMobs = resolveDisabledMobs(DISABLED_MOBS.get(), disableAllMobs);
     }
 }

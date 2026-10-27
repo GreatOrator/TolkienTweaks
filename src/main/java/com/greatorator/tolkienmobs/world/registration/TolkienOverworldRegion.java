@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.world.registration;
 
+import com.greatorator.tolkienmobs.TolkienMobsConfig;
 import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.Registry;
@@ -17,12 +18,12 @@ import java.util.function.Consumer;
 public class TolkienOverworldRegion extends Region {
     /**
      * TerraBlender weighs the vanilla overworld region at 50 by default, so the mod's share of the
-     * world is {@code weight / (weight + 50)}: 2 gave about 4%, and 7 gives about 12%.
+     * world is {@code weight / (weight + 50)}: 2 gave about 4%, and the config's default of 7 gives
+     * about 12%. The weight is read as the region is built, which happens before a world is
+     * generated, so a change is a restart away rather than a reload away.
      */
-    private static final int WEIGHT = 7;
-
     public TolkienOverworldRegion() {
-        super(TolkienMobsMain.resLoc("overworld"), RegionType.OVERWORLD, WEIGHT);
+        super(TolkienMobsMain.resLoc("overworld"), RegionType.OVERWORLD, TolkienMobsConfig.tolkienRegionWeight());
     }
 
     @Override
