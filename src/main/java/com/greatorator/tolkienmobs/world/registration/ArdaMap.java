@@ -26,16 +26,25 @@ import net.minecraft.world.level.levelgen.DensityFunction;
  * ground beside it is the country the map draws there.
  *
  * <p>Three things are worked out rather than drawn: the sea's biome is banded by latitude (frozen
- * ocean in the north, temperate in the middle, warm in the south), a land column at or within a few
- * blocks of sea level is a beach, and the named rivers - the Anduin, Brandywine, Greyflood, Isen,
- * Celduin, Forest River and Entwash - are cut where {@link River} draws them.
+ * ocean in the north, temperate in the middle, warm in the south), the shore is read off the ground
+ * rather than the cell, and the named rivers - the Anduin, Brandywine, Greyflood, Isen, Celduin,
+ * Forest River and Entwash - are cut where {@link River} draws them.
+ *
+ * <p>A column's biome follows its ground, not the cell it was drawn in. Because the heights are
+ * blended, a cell's own height only holds at its own edge and a coast is a slope: the waterline
+ * wanders half a cell either way. So the band a few blocks either side of the waterline is the
+ * shore, wherever it falls, and a sea cell whose middle stands dry above that band is not a sea - it
+ * is named for the land country the ground belongs to, which is what keeps a bay's far end, or a
+ * one-cell sea drawn between two countries, from reading as an ocean the player is standing on top
+ * of. Everything else keeps the biome of the country it was drawn in, so a country's own grass and
+ * rock still reach its coasts.
  */
 public final class ArdaMap {
     /** Blocks per map cell: the world is 48 cells wide and 36 deep, so 24,576 by 18,432 blocks. */
     public static final int CELL = 512;
     /** The height the world's water stands at, from the overworld's own noise settings. */
     public static final int SEA_LEVEL = 63;
-    /** How far a land column may stand above the water and still be read as the shore. */
+    /** How far either side of the waterline a column's ground may stand and still be the shore. */
     private static final int BEACH_HEIGHT = 3;
 
     static final int COLUMNS = 48;
@@ -58,15 +67,24 @@ public final class ArdaMap {
     private ArdaMap() {
     }
 
-    /** What is at a column: the country, the height its rock stands at, and whether it is a river. */
-    public record Sample(Country country, int height, boolean river) {
+    /**
+     * What is at a column: the country whose cell it falls in, the height its rock stands at,
+     * whether a river runs there, whether its ground is the water's edge, and - for ground standing
+     * dry in a cell the map drew as sea - the land country that ground belongs to.
+     */
+    public record Sample(Country country, int height, boolean river, boolean shore, Country upland) {
         /** The biome this column reads as, which is the river's or the shore's where those apply. */
         public ResourceKey<Biome> biome() {
             if (this.river) {
                 return Biomes.RIVER;
             }
-            if (this.country.land() && this.height <= SEA_LEVEL + BEACH_HEIGHT) {
+            if (this.shore) {
                 return Biomes.BEACH;
+            }
+            // A sea cell is a sea wherever its water reaches; only ground the blend has lifted clear
+            // of the waterline is land, and it belongs to the country it is nearest.
+            if (!this.country.land() && this.height > SEA_LEVEL + BEACH_HEIGHT) {
+                return this.upland.biome();
             }
             return this.country.biome();
         }
@@ -192,31 +210,27 @@ public final class ArdaMap {
         double mapX = warpedX / (double) CELL + ORIGIN_COLUMN;
         double mapZ = warpedZ / (double) CELL + ORIGIN_ROW;
 
-        Country country = countryAt(mapX, mapZ);
-        int height = heightAt(mapX, mapZ, blockX, blockZ);
+        Ground ground = groundAt(mapX, mapZ, blockX, blockZ);
 
         for (River river : RIVERS) {
             if (riverDistance(river, mapX, mapZ) < river.halfWidth()) {
-                return new Sample(country, Math.min(height, SEA_LEVEL - 3), true);
+                return new Sample(ground.country(), Math.min(ground.height(), SEA_LEVEL - 3), true,
+                        false, ground.upland());
             }
         }
-        return new Sample(country, height, false);
-    }
-
-    /** The country a cell coordinate falls in, or the nearest one when it falls off the map. */
-    static Country countryAt(double mapX, double mapZ) {
-        int column = Mth.clamp((int) Math.floor(mapX), 0, COLUMNS - 1);
-        int row = Mth.clamp((int) Math.floor(mapZ), 0, ROWS - 1);
-        return GRID[row][column];
+        return new Sample(ground.country(), ground.height(), false, ground.shore(), ground.upland());
     }
 
     /**
-     * The height of the rock at a cell coordinate: the four cells around it, blended with a
-     * smoothstep so a cell is flat in its middle and slopes where two countries meet, plus the
-     * ground's own roughness. Past the map's edge the border country simply continues, which is what
-     * keeps Forodwaith in the north, Harad in the south and the Great Sea in the west.
+     * The drawn ground at a block coordinate, read off the four cells around it.
+     *
+     * <p>The height of the rock there is the four cells' heights blended with a smoothstep, so a
+     * cell is flat at its own edge and slopes where two countries meet, plus the ground's own
+     * roughness. The blend also answers what the water is doing: whether a drawn sea is within reach
+     * of the column at all, and - of the land countries the blend reads - which one the ground is
+     * most nearly a part of.
      */
-    private static int heightAt(double mapX, double mapZ, int blockX, int blockZ) {
+    private static Ground groundAt(double mapX, double mapZ, int blockX, int blockZ) {
         int column = Mth.clamp((int) Math.floor(mapX), 0, COLUMNS - 1);
         int row = Mth.clamp((int) Math.floor(mapZ), 0, ROWS - 1);
         double fractionX = Mth.clamp(mapX - Math.floor(mapX), 0.0D, 1.0D);
@@ -231,16 +245,37 @@ public final class ArdaMap {
         double z = smooth(fractionZ);
         double top = northWest.height() + (northEast.height() - northWest.height()) * x;
         double bottom = southWest.height() + (southEast.height() - southWest.height()) * x;
-        double blended = top + (bottom - top) * z;
-        double relief = northWest.relief();
+        int drawn = Mth.clamp((int) Math.round(top + (bottom - top) * z), -60, 300);
+
+        // The four cells again, this time for what they cover more than how high they stand: the
+        // heaviest land country beside a column is the one its dry ground belongs to.
+        Country[] cells = {northWest, northEast, southWest, southEast};
+        double[] weights = {(1.0D - x) * (1.0D - z), x * (1.0D - z), (1.0D - x) * z, x * z};
+        Country upland = northWest;
+        double heaviest = -1.0D;
+        boolean seaInReach = false;
+        for (int index = 0; index < cells.length; index++) {
+            if (!cells[index].land()) {
+                seaInReach = true;
+            } else if (weights[index] > heaviest) {
+                heaviest = weights[index];
+                upland = cells[index];
+            }
+        }
 
         // Three octaves of the map's own hash noise: enough to break a drawn flat into country
         // without moving the country itself.
+        int relief = northWest.relief();
         double rough = fractal(blockX, blockZ, 192, 1) + 0.5D * fractal(blockX, blockZ, 96, 2)
                 + 0.25D * fractal(blockX, blockZ, 48, 3);
-        blended += relief * (rough / 1.75D - 0.5D) * 2.0D;
+        int height = Mth.clamp((int) Math.round(drawn + relief * (rough / 1.75D - 0.5D) * 2.0D), -60, 300);
 
-        return Mth.clamp((int) Math.round(blended), -60, 300);
+        boolean shore = seaInReach && Math.abs(drawn - SEA_LEVEL) <= BEACH_HEIGHT;
+        return new Ground(northWest, height, drawn, shore, upland);
+    }
+
+    /** The drawn ground at a column, before it is turned into a {@link Sample}. */
+    private record Ground(Country country, int height, int drawn, boolean shore, Country upland) {
     }
 
     private static double smooth(double value) {

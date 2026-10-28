@@ -64,6 +64,28 @@ placed features, tags or loot, regenerate and commit the generated JSON alongsid
 - Mordor, the Ash Mountains and most other Tolkien biomes have `"carvers": {}`, and the mod's own
   `tolkien_caves` and `highland_caves` carvers (which deliberately carve `CAVE_AIR`) are registered
   and datagenned but attached to no biome, so they never run.
+- **Arda does not take the surface from its noise settings.** It reuses `minecraft:overworld`'s
+  settings, whose rule TerraBlender wraps into a *namespaced* source: a mod biome is painted by the
+  registered `tolkienSurface()` and, where that returns null, by the vanilla rule under it - which is
+  why mod biomes still get vanilla's bedrock and deepslate. Both rules are gated by
+  `abovePreliminarySurface`, and that gate is `blockY >= preliminarySurfaceLevel(x,z) + surfaceDepth
+  - 8`, read from the *noise*: Arda keeps the noise and replaces its height with `ArdaMap`'s, so most
+  drawn columns fail a gate measured against ground nobody stands on, every material rule is skipped
+  and the ground stays the stone the reshape wrote (269 of 289 Shire columns had stone on top).
+  `ArdaChunkGenerator.buildSurface` therefore lays `TolkienSurfaceRules.ardaSurface()` itself - the same
+  materials unguarded, then `SurfaceRuleData.overworld()` for the map's vanilla biomes and for
+  bedrock/deepslate - so a change to the mod's materials belongs in `materials()` and reaches both
+  worlds. The generator also rocks over the noise's own voids below the drawn top, because the surface
+  pass runs *before* the carvers: without it a void cut for a height the map does not draw is a cave
+  whose floor the rules would dress. Caves in Arda are therefore the carvers' own, cut from the drawn
+  ground, and the drawn water is laid again after them (`seal`).
+- **A country's biome is read from its ground, not its cell.** `ArdaMap.Sample` carries `shore` and
+  `upland`: a column within `BEACH_HEIGHT` of sea level *with a drawn sea among the four cells it
+  blends* is `minecraft:beach` (a height-only test made every low field in the Shire sand), and a sea
+  cell whose blended ground stands more than `BEACH_HEIGHT` above the waterline is named for the
+  heaviest land country beside it (a height-only test left dry grass reading `minecraft:deep_ocean`).
+  Both tests use the blended `drawn` height, not the relieved one, so the noise on top of a plain
+  cannot invent a coast.
 
 ## Which climate a Tolkien biome gets
 

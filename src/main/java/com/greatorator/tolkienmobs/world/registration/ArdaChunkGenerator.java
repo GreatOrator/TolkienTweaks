@@ -2,22 +2,32 @@ package com.greatorator.tolkienmobs.world.registration;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.NoiseColumn;
 import net.minecraft.world.level.StructureManager;
+import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.levelgen.Aquifer;
+import net.minecraft.world.level.levelgen.Beardifier;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
+import net.minecraft.world.level.levelgen.NoiseChunk;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.RandomState;
+import net.minecraft.world.level.levelgen.WorldGenerationContext;
 import net.minecraft.world.level.levelgen.blending.Blender;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -38,6 +48,13 @@ import java.util.concurrent.CompletableFuture;
  * from the noise's heights would stand in the air over a drawn plain or bury itself in a drawn
  * mountain. The drawn rivers are cut by the map rather than here, and their beds stand a few blocks
  * under sea level so the water in them is the water the map draws.
+ *
+ * <p>Two things the reshape has to do for the steps that come after it. The heightmaps are re-read
+ * from the ground it wrote, because world generation places from those heightmaps and a chunk that
+ * kept the noise's surface would have the surface rules dress ground that is no longer the surface
+ * and leave the drawn ground bare stone, with trees and lakes set inside the hills the map raised.
+ * And the drawn water is laid again after the carvers, which cut from the noise's terrain rather
+ * than the map's: see {@link #seal}.
  */
 public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
     public static final MapCodec<ArdaChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -64,8 +81,79 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
         return super.fillFromNoise(blender, randomState, structureManager, centerChunk)
                 .thenApply(chunk -> {
                     reshape(chunk, randomState);
+                    republishGround(chunk);
                     return chunk;
                 });
+    }
+
+    /**
+     * The drawn ground is dressed with {@link TolkienSurfaceRules#ardaSurface()}, not with the noise
+     * settings' own rule.
+     *
+     * <p>The overworld settings Arda reuses carry the overworld's rule, and TerraBlender wraps it so
+     * that a mod biome is painted by the mod's rule - but that rule is guarded by
+     * {@code abovePreliminarySurface}, which asks how high the noise's own density says the ground
+     * is. Arda keeps the noise and throws its height away, so the guard is measured against ground
+     * the player never sees and most drawn columns fail it: the materials were skipped and the
+     * ground stayed the stone the reshape wrote. Arda therefore lays the surface itself, from the
+     * same materials without the guard (see {@link TolkienSurfaceRules#ardaSurface()}).
+     *
+     * <p>The noise chunk is the one the chunk already made for its own noise, as the vanilla surface
+     * pass uses it: the surface system reads its preliminary surface, its aquifers and its carver
+     * blending from there, and a second one built here would disagree with the ground it is
+     * dressing.
+     */
+    @Override
+    public void buildSurface(WorldGenRegion region, StructureManager structureManager, RandomState randomState,
+                             ChunkAccess chunk) {
+        if (SharedConstants.debugVoidTerrain(chunk.getPos()) || SharedConstants.DEBUG_DISABLE_SURFACE) {
+            return;
+        }
+
+        NoiseGeneratorSettings settings = this.generatorSettings().value();
+        NoiseChunk noiseChunk = chunk.getOrCreateNoiseChunk(c -> NoiseChunk.forChunk(c, randomState,
+                Beardifier.forStructuresInChunk(structureManager, c.getPos()), settings, fluidPicker(settings),
+                Blender.of(region)));
+        randomState.surfaceSystem().buildSurface(
+                randomState,
+                region.getBiomeManager(),
+                region.registryAccess().lookupOrThrow(Registries.BIOME),
+                settings.useLegacyRandomSource(),
+                new WorldGenerationContext(this, region),
+                chunk,
+                noiseChunk,
+                TolkienSurfaceRules.ardaSurface());
+    }
+
+    /** The water and lava a column is made of, built the way the vanilla generator builds it. */
+    private static Aquifer.FluidPicker fluidPicker(NoiseGeneratorSettings settings) {
+        Aquifer.FluidStatus lava = new Aquifer.FluidStatus(-54, Blocks.LAVA.defaultBlockState());
+        int seaLevel = settings.seaLevel();
+        Aquifer.FluidStatus sea = new Aquifer.FluidStatus(seaLevel, settings.defaultFluid());
+        Aquifer.FluidStatus empty = new Aquifer.FluidStatus(DimensionType.MIN_Y * 2, Blocks.AIR.defaultBlockState());
+        return (x, y, z) -> SharedConstants.DEBUG_DISABLE_FLUID_GENERATION
+                ? empty
+                : (y < Math.min(-54, seaLevel) ? lava : sea);
+    }
+
+    /**
+     * Carving happens after the ground is drawn, so the drawn water is laid again once it is over.
+     *
+     * <p>A carver cuts where the noise's own terrain was: a cave is dug where the noise would have
+     * been underground, which is not always where the drawn ground is, and the aquifer fills what
+     * the carver takes out of the noise's water table rather than the drawn one. So a cave cut
+     * through the bed of a drawn sea or river, or through the ground under the water the reshape
+     * laid, comes out as an air pocket with the drawn water standing over it - water hanging in the
+     * air where the map draws a sea. Every column the map floods is therefore laid again here: a
+     * floor of stone if the carver took the bed, and water over it up to the waterline. Caves the
+     * carver cut below the drawn bed, enclosed in rock the way a cave should be, are left alone.
+     */
+    @Override
+    public void applyCarvers(WorldGenRegion region, long seed, RandomState randomState, BiomeManager biomeManager,
+                             StructureManager structureManager, ChunkAccess chunk) {
+        super.applyCarvers(region, seed, randomState, biomeManager, structureManager, chunk);
+        seal(chunk, randomState);
+        republishGround(chunk);
     }
 
     /** Retargets every column of a chunk to the drawn ground and the drawn water. */
@@ -95,6 +183,19 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
                     }
                 }
 
+                // The noise's own caves are the height the noise arrived at, which is not the
+                // height the map draws: a void cut for a mountain that Arda draws as a plain is a
+                // hole under a field, and the surface rules would dress its floor as ground. Rock
+                // is therefore laid over every void below the drawn top. The carvers cut the caves
+                // afterwards, from this column (see getBaseColumn), so the caves a player walks into
+                // are cut into the drawn ground and the only voids left under it are the ones they
+                // made.
+                for (int y = minY; y <= target; y++) {
+                    if (chunk.getBlockState(position.set(blockX, y, blockZ)).isAir()) {
+                        chunk.setBlockState(position, STONE);
+                    }
+                }
+
                 // The aquifer only filled what the noise's own terrain left empty under the
                 // waterline, so water the map draws over ground the noise made solid has to be
                 // laid here instead. Raising a column never needs it: stone was written over any
@@ -106,6 +207,45 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
                 }
             }
         }
+    }
+
+    /** Lays the map's water and the drawn bed it stands on back over every column the map floods. */
+    private void seal(ChunkAccess chunk, RandomState randomState) {
+        BlockPos.MutableBlockPos position = new BlockPos.MutableBlockPos();
+        int minX = chunk.getPos().getMinBlockX();
+        int minZ = chunk.getPos().getMinBlockZ();
+        int maxY = chunk.getMaxY() - 1;
+
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                int blockX = minX + x;
+                int blockZ = minZ + z;
+                ArdaMap.Sample sample = ArdaMap.sample(blockX, blockZ,
+                        randomState.sampler().weirdness(), randomState.sampler().erosion());
+                int bed = Math.min(maxY, sample.height());
+                if (bed >= ArdaMap.SEA_LEVEL) {
+                    continue;
+                }
+
+                if (chunk.getBlockState(position.set(blockX, bed, blockZ)).isAir()) {
+                    chunk.setBlockState(position, STONE);
+                }
+                for (int y = bed + 1; y <= ArdaMap.SEA_LEVEL; y++) {
+                    if (chunk.getBlockState(position.set(blockX, y, blockZ)).isAir()) {
+                        chunk.setBlockState(position, WATER);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Re-reads a chunk's ground into the two heightmaps world generation reads. The reshape writes
+     * blocks straight into the sections, which the heightmaps do not notice, and the surface rules
+     * walk down from {@code WORLD_SURFACE_WG} while the features and the structures place from it.
+     */
+    private static void republishGround(ChunkAccess chunk) {
+        Heightmap.primeHeightmaps(chunk, EnumSet.of(Heightmap.Types.WORLD_SURFACE_WG, Heightmap.Types.OCEAN_FLOOR_WG));
     }
 
     /** The topmost block of the noise's own ground in a column, ignoring water and air. */
