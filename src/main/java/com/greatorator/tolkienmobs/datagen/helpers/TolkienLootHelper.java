@@ -17,6 +17,7 @@ public class TolkienLootHelper {
 
     public static final ResourceKey<LootTable> HOBBIT_GROCER = register("chests/hobbit_grocer");
     public static final ResourceKey<LootTable> HOBBIT_HOUSE = register("chests/hobbit_house");
+    public static final ResourceKey<LootTable> HOBBIT_BAKER = register("chests/hobbit_baker");
     public static final ResourceKey<LootTable> ELVEN_HOUSE = register("chests/elven_house");
     public static final ResourceKey<LootTable> DWARF_HOUSE = register("chests/dwarf_house");
     public static final ResourceKey<LootTable> HUMAN_HOUSE = register("chests/human_house");
