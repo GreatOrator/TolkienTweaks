@@ -54,7 +54,10 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
         return CompletableFuture.runAsync(() -> {
             try {
                 for (var village : TolkienVillageProvider.VILLAGES_BY_STYLE) {
-                    write(cache, village.houseTemplate(), prepareHouse(village, templates));
+                    // A village draws on one plan or several; each is prepared against its own NBT.
+                    for (var house : village.houses()) {
+                        write(cache, village.houseTemplate(house), prepareHouse(village, house, templates));
+                    }
                     // A village that lays this mod's path block starts from a copy of the town centre
                     // with the paths in its plaza swapped too, the sockets included.
                     if (village.rewiresStreets()) {
@@ -73,8 +76,9 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
         }, Util.backgroundExecutor());
     }
 
-    public static CompoundTag prepareHouse(TolkienVillageProvider.Village village, TemplateSource templates) throws IOException {
-        CompoundTag house = read(village.houseSource(), templates);
+    public static CompoundTag prepareHouse(TolkienVillageProvider.Village village, TolkienVillageProvider.House plan,
+                                           TemplateSource templates) throws IOException {
+        CompoundTag house = read(village.houseSource(plan), templates);
         // Add a one-block porch outside the original footprint, keeping the entire house intact.
         BlockPos shift = village.templateShift();
         for (Tag tag : list(house, "blocks")) shiftList(list((CompoundTag) tag, "pos"), shift, false);
@@ -95,13 +99,13 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
         // The house's own path blocks, and the porch in front of its door, are this mod's path
         // block in a village that lays one; the source templates still carry vanilla's grass path.
         if (village.laysStonePath()) layStonePath(house);
-        BlockPos entrance = village.preparedEntrance();
+        BlockPos entrance = village.preparedEntrance(plan);
         putState(house, entrance.below(),
                 village.laysStonePath() ? TolkienVillageProvider.stonePathBlock() : "minecraft:dirt_path");
         addConnector(house, entrance, village.orientation(), "minecraft:building_entrance",
                 "minecraft:empty", "minecraft:air");
-        requireFrontEdge(village, house, entrance);
-        addConnector(house, village.residentFloor().offset(shift), "up_north", "minecraft:bottom",
+        requireFrontEdge(village, plan, house, entrance);
+        addConnector(house, plan.residentFloor().offset(shift), "up_north", "minecraft:bottom",
                 "minecraft:village/" + village.vanillaStyle() + "/villagers", null);
         return house;
     }
@@ -113,13 +117,14 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
      * else. The size read here already carries the porch column, so an entrance coordinate copied
      * from a house of another depth or width fails the data run instead of a world.
      */
-    private static void requireFrontEdge(TolkienVillageProvider.Village village, CompoundTag house, BlockPos marker) {
+    private static void requireFrontEdge(TolkienVillageProvider.Village village, TolkienVillageProvider.House plan,
+                                         CompoundTag house, BlockPos marker) {
         Direction front = village.front();
         int extent = list(house, "size").getIntOr(front.getAxis() == Direction.Axis.X ? 0 : 2, 0);
         int along = front.getAxis() == Direction.Axis.X ? marker.getX() : marker.getZ();
         int edge = front.getAxisDirection() == Direction.AxisDirection.POSITIVE ? extent - 1 : 0;
         if (along != edge) {
-            throw new IllegalStateException("The " + village.style() + " house puts its doorway marker at "
+            throw new IllegalStateException("The " + village.style() + " village's " + plan.name() + " puts its doorway marker at "
                     + marker + ", column " + along + " of " + extent + " along " + front
                     + ", but the marker has to sit on the " + front + " edge, column " + edge
                     + ": an entrance coordinate is written against a house's own template, not against"
