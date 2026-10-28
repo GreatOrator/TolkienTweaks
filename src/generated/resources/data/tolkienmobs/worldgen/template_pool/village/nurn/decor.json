@@ -3,7 +3,7 @@
     {
       "element": {
         "element_type": "minecraft:legacy_single_pool_element",
-        "location": "minecraft:village/desert/desert_lamp_1",
+        "location": "tolkienmobs:village/decor/lamppost_3",
         "processors": "tolkienmobs:nurn_dark_stone",
         "projection": "rigid"
       },
