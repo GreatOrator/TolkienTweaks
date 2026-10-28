@@ -100,6 +100,19 @@ placed features, tags or loot, regenerate and commit the generated JSON alongsid
   heaviest land country beside it (a height-only test left dry grass reading `minecraft:deep_ocean`).
   Both tests use the blended `drawn` height, not the relieved one, so the noise on top of a plain
   cannot invent a coast.
+- **A village's lamp is a decor piece, and a decor piece needs a socket.** Vanilla's plains streets
+  carry `minecraft:bottom` jigsaw blocks - name and target `minecraft:bottom`, pool
+  `minecraft:village/plains/decor`, facing `up_north`, final state the path block - and the decor
+  pool puts pieces into them. A piece drawn from that pool must carry a matching socket of its own: a
+  jigsaw block at the foot of the build, facing `down_south` (the opposite of the street's), name and
+  target `minecraft:bottom`, pool `minecraft:empty`, joint `rollable`, and `final_state` set to the
+  block that belongs in that cell once it is placed. Without it the game finds no connector to join
+  and the piece is refused, which is why the mod's `lamppost.nbt` sat unused for years. The
+  human and dwarven villages alias `minecraft:village/plains/decor` to a pool of their own holding
+  `tolkienmobs:village/decor/lamppost` (that template with the socket written into the foot of its
+  post) at vanilla's own weights beside vanilla's hay bale, tree, flowers and empty draw - so only
+  the light post changes. Measured after `/place structure` on a flat world: 3 to 8 lamps a village
+  and no vanilla post, each lamp five blocks above a foot that stands on the grass at -60.
 
 ## Which climate a Tolkien biome gets
 
