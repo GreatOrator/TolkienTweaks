@@ -17,7 +17,7 @@ tasks.named('wrapper', Wrapper).configure {
 def buildNum = project.hasProperty('currentBuildNumber') ? project.property('currentBuildNumber') : '0'
 // The major.minor the whole build rides on: the jar's own version and the changelog headings the
 // increment task writes both come from here, so the two can no longer drift apart.
-def versionPrefix = "5.0"
+def versionPrefix = "5.1"
 project.ext.mod_version = "${versionPrefix}.${buildNum}"
 version = project.ext.mod_version
 group = mod_group_id
