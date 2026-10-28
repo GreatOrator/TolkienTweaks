@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.world.registration;
 
 import com.greatorator.tolkienmobs.init.TolkienBiomes;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
+import net.minecraft.data.worldgen.SurfaceRuleData;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -36,7 +37,45 @@ public class TolkienSurfaceRules {
         // TerraBlender selects this rule for our namespace; keep it out of caves
         // and leave bedrock/deepslate to the vanilla fallback rules.
         return SurfaceRules.sequence(
-                SurfaceRules.ifTrue(SurfaceRules.abovePreliminarySurface(), SurfaceRules.sequence(
+                SurfaceRules.ifTrue(SurfaceRules.abovePreliminarySurface(), materials()),
+                // The Blue Mountains' rock is the biome's stone, not a surface dressing, so its
+                // rules sit outside the guard above as well: a shaft sunk into the mountain stays
+                // in mountain stone all the way down to the deepslate, and a floor that the
+                // preliminary surface guessed too low still gets its grass. The White Mountains
+                // are treated the same way, since their snow cap and their stone are one surface.
+                blueMountainsFloor(),
+                blueMountainsRock(),
+                whiteMountainsFloor(),
+                whiteMountainsRock());
+	}
+
+    /**
+     * Arda's own surface, laid without the preliminary-surface guard.
+     *
+     * <p>That guard asks how high the noise's own density says the ground is, which is a fair guess
+     * in the overworld and meaningless in Arda: Arda keeps the overworld's noise settings but cuts
+     * its terrain to {@link ArdaMap}, so a drawn plain under a noise mountain sits far below the
+     * height the guard is measured against. Every block of such a column failed the guard, every
+     * material rule was skipped with it, and the ground came out as the stone the generator wrote.
+     * Arda therefore lays the same materials unguarded - the drawn ground is the surface, and the
+     * generator leaves no cave inside a column for them to dress by mistake - and follows them with
+     * the vanilla rule, which is what a TerraBlender dimension falls back to anyway: it gives the
+     * vanilla biomes of the map (its seas, shores and rivers) their sand and gravel, and it supplies
+     * the bedrock floor and the deepslate that the materials leave alone.
+     */
+    public static SurfaceRules.RuleSource ardaSurface() {
+        return SurfaceRules.sequence(
+                materials(),
+                blueMountainsFloor(),
+                blueMountainsRock(),
+                whiteMountainsFloor(),
+                whiteMountainsRock(),
+                SurfaceRuleData.overworld());
+    }
+
+    /** Every material the mod's biomes wear, without the guard the overworld needs around them. */
+    private static SurfaceRules.RuleSource materials() {
+        return SurfaceRules.sequence(
                         SurfaceRules.ifTrue(SurfaceRules.ON_FLOOR, SurfaceRules.sequence(
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.NURN), nurnSurface()),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.MORDOR), DARK_STONE),
@@ -49,17 +88,8 @@ public class TolkienSurfaceRules {
                         blueMountainsFloor(),
                         blueMountainsRock(),
                         whiteMountainsRock(),
-                        overworldLikeFloor())),
-                // The Blue Mountains' rock is the biome's stone, not a surface dressing, so its
-                // rules sit outside the guard above as well: a shaft sunk into the mountain stays
-                // in mountain stone all the way down to the deepslate, and a floor that the
-                // preliminary surface guessed too low still gets its grass. The White Mountains
-                // are treated the same way, since their snow cap and their stone are one surface.
-                blueMountainsFloor(),
-                blueMountainsRock(),
-                whiteMountainsFloor(),
-                whiteMountainsRock());
-	}
+                        overworldLikeFloor());
+    }
 
 	/**
 	 * Nurn's floor is dark stone, with the surface noise that shapes the badlands breaking it up into
