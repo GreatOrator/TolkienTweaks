@@ -44,17 +44,33 @@ public final class TolkienVillageProvider {
     public static final ResourceKey<StructureSet> VILLAGES = ResourceKey.create(Registries.STRUCTURE_SET,
             Identifier.fromNamespaceAndPath("tolkienmobs", "villages"));
     public static final List<Village> VILLAGES_BY_STYLE = List.of(
-            new Village(TolkienStructures.HOUSE_DESERT, "desert", "desert", TolkienBiomes.HARADWAITH, "entityttmsouthron_npc", new BlockPos(14, 0, 7), "east_up", new BlockPos(11, 4, 4)),
+            new Village(TolkienStructures.HOUSE_DESERT, "desert", "desert", TolkienBiomes.HARADWAITH, "entityttmsouthron_npc", "east_up",
+                    List.of(new House("house", 6, new BlockPos(14, 0, 7), new BlockPos(11, 4, 4)))),
             // Nurn is farmed by the same Southrons, in the same desert houses, rebuilt in dark stone.
-            new Village(TolkienStructures.HOUSE_NURN, "nurn", "desert", TolkienBiomes.NURN, "entityttmsouthron_npc", new BlockPos(14, 0, 7), "east_up", new BlockPos(11, 4, 4), true, true),
-            new Village(TolkienStructures.HOUSE_DWARF, "dwarf", "plains", TolkienBiomes.IRON_HILLS, "entityttmdwarf", new BlockPos(0, 0, 5), "west_up", new BlockPos(6, 0, 5)),
-            new Village(TolkienStructures.HOUSE_ELVEN, "elven", "plains", TolkienBiomes.LORINAND, "entityttmelves", new BlockPos(0, 0, 5), "west_up", new BlockPos(4, 8, 3)),
-            new Village(TolkienStructures.HOBBIT_HOUSE, "hobbit", "plains", TolkienBiomes.SHIRE, "entityttmhobbit", new BlockPos(27, 0, 14), "east_up", new BlockPos(11, 0, 20)),
-            new Village(TolkienStructures.HOUSE_HUMAN, "human", "plains", TolkienBiomes.GLADDEN, "entityttmhuman", new BlockPos(6, 0, 12), "south_up", new BlockPos(5, 5, 8)),
-            new Village(TolkienStructures.HOUSE_ORC, "orc", "desert", TolkienBiomes.MORDOR, "entityttmorc", new BlockPos(7, 0, 14), "south_up", new BlockPos(7, 0, 2)),
+            new Village(TolkienStructures.HOUSE_NURN, "nurn", "desert", TolkienBiomes.NURN, "entityttmsouthron_npc", "east_up",
+                    List.of(new House("house", 6, new BlockPos(14, 0, 7), new BlockPos(11, 4, 4))), true, true),
+            new Village(TolkienStructures.HOUSE_DWARF, "dwarf", "plains", TolkienBiomes.IRON_HILLS, "entityttmdwarf", "west_up",
+                    List.of(new House("house", 6, new BlockPos(0, 0, 5), new BlockPos(6, 0, 5)))),
+            new Village(TolkienStructures.HOUSE_ELVEN, "elven", "plains", TolkienBiomes.LORINAND, "entityttmelves", "west_up",
+                    List.of(new House("house", 6, new BlockPos(0, 0, 5), new BlockPos(4, 8, 3)))),
+            new Village(TolkienStructures.HOBBIT_HOUSE, "hobbit", "plains", TolkienBiomes.SHIRE, "entityttmhobbit", "east_up",
+                    List.of(new House("house", 6, new BlockPos(27, 0, 14), new BlockPos(11, 0, 20)))),
+            // The human village builds from five plans drawn out on its own plots: the triple house
+            // a street grows up around, the single house and the market that fill it out, and the
+            // inn and the church that stand roughly once in a village. Each plan carries its own
+            // doorway socket, on its own south wall, at the column its front path runs down.
+            new Village(TolkienStructures.HOUSE_HUMAN, "human", "plains", TolkienBiomes.GLADDEN, "entityttmhuman", "south_up",
+                    List.of(new House("triple_house", 6, new BlockPos(3, 0, 14), new BlockPos(3, 0, 11)),
+                            new House("small_house", 3, new BlockPos(10, 0, 14), new BlockPos(10, 0, 9)),
+                            new House("market", 3, new BlockPos(7, 0, 14), new BlockPos(4, 0, 9)),
+                            new House("inn", 1, new BlockPos(10, 0, 14), new BlockPos(10, 0, 8)),
+                            new House("church", 1, new BlockPos(6, 0, 14), new BlockPos(6, 0, 8)))),
+            new Village(TolkienStructures.HOUSE_ORC, "orc", "desert", TolkienBiomes.MORDOR, "entityttmorc", "south_up",
+                    List.of(new House("house", 6, new BlockPos(7, 0, 14), new BlockPos(7, 0, 2)))),
             // The frozen house is six blocks deeper than the human one it borrows its other
             // numbers from, so its door socket sits on that deeper south wall, not on the human's.
-            new Village(TolkienStructures.HOUSE_FROZEN, "frozen", "plains", TolkienBiomes.FOROCHEL, "entityttmhuman", new BlockPos(6, 0, 18), "south_up", new BlockPos(5, 5, 8), false, true)
+            new Village(TolkienStructures.HOUSE_FROZEN, "frozen", "plains", TolkienBiomes.FOROCHEL, "entityttmhuman", "south_up",
+                    List.of(new House("house", 6, new BlockPos(6, 0, 18), new BlockPos(5, 5, 8))), false, true)
     );
     /** The vanilla villager templates datagen copies for every village; weights match vanilla. */
     public static final List<String> VILLAGERS = List.of("nitwit", "baby", "unemployed");
@@ -149,7 +165,9 @@ public final class TolkienVillageProvider {
         // 26.1 dropped plains_small_farm_2, so a plains-style house pool can only offer the farm
         // that still ships; the desert styles keep both of theirs.
         var houseElements = new ArrayList<Pair<Function<StructureTemplatePool.Projection, ? extends StructurePoolElement>, Integer>>();
-        houseElements.add(Pair.of(single(village.houseTemplate().toString(), stone), 6));
+        for (var house : village.houses()) {
+            houseElements.add(Pair.of(single(village.houseTemplate(house).toString(), stone), house.weight()));
+        }
         houseElements.add(Pair.of(StructurePoolElement.legacy(farm + "1", farmProcessors), 1));
         if (village.vanillaStyle().equals("desert")) {
             houseElements.add(Pair.of(StructurePoolElement.legacy(farm + "2", farmProcessors), 1));
@@ -335,6 +353,19 @@ public final class TolkienVillageProvider {
         }
     }
 
+    /**
+     * One house plan a village can build: its template, how often the house pool picks it, and the
+     * two coordinates written against that template - where its doorway socket goes, and where its
+     * resident stands. {@code name} is also the template's own name, so a plan's coordinates can
+     * never be read against another plan's NBT by mistake.
+     *
+     * <p>The entrance is the column of the plan's outermost door, on the side of the build that
+     * faces the street: the triple house's south door, one row in from its south wall, not the
+     * doors of its two wings. A plan with no door at all - the market is an open square - takes any
+     * point on that front edge, so its own approach runs from the middle of its clearing.</p>
+     */
+    public record House(String name, int weight, BlockPos entrance, BlockPos residentFloor) {}
+
     public static void bootstrapSet(BootstrapContext<StructureSet> context) {
         var structures = context.lookup(Registries.STRUCTURE);
         context.register(VILLAGES, new StructureSet(VILLAGES_BY_STYLE.stream()
@@ -343,16 +374,16 @@ public final class TolkienVillageProvider {
     }
 
     /**
-     * Entrance and resident coordinates are local to the original house NBT. {@code darkStone} says
-     * the village is rebuilt from its vanilla style's blocks in dark stone, and {@code dryLand} that
-     * it may only start on grass.
+     * A house plan's doorway and resident coordinates are local to that plan's own NBT. {@code darkStone}
+     * says the village is rebuilt from its vanilla style's blocks in dark stone, and {@code dryLand}
+     * that it may only start on grass.
      */
     public record Village(ResourceKey<Structure> structure, String style, String vanillaStyle, ResourceKey<Biome> biome,
-                          String residentEntity, BlockPos entrance, String orientation, BlockPos residentFloor,
+                          String residentEntity, String orientation, List<House> houses,
                           boolean darkStone, boolean dryLand) {
         public Village(ResourceKey<Structure> structure, String style, String vanillaStyle, ResourceKey<Biome> biome,
-                       String residentEntity, BlockPos entrance, String orientation, BlockPos residentFloor) {
-            this(structure, style, vanillaStyle, biome, residentEntity, entrance, orientation, residentFloor, false, false);
+                       String residentEntity, String orientation, List<House> houses) {
+            this(structure, style, vanillaStyle, biome, residentEntity, orientation, houses, false, false);
         }
 
         public Direction front() { return Direction.byName(orientation.split("_")[0]); }
@@ -361,15 +392,27 @@ public final class TolkienVillageProvider {
             return new BlockPos(front() == Direction.WEST ? 1 : 0, 0, front() == Direction.NORTH ? 1 : 0);
         }
 
-        public BlockPos preparedEntrance() { return entrance.relative(front()).above().offset(templateShift()); }
+        public BlockPos preparedEntrance(House house) { return house.entrance().relative(front()).above().offset(templateShift()); }
 
-        public Identifier houseTemplate() {
-            return Identifier.fromNamespaceAndPath("tolkienmobs", "village/" + style + "/house");
+        /** Where datagen writes this plan's village-ready copy. */
+        public Identifier houseTemplate(House house) {
+            return Identifier.fromNamespaceAndPath("tolkienmobs", "village/" + style + "/" + house.name());
         }
 
-        /** A recoloured village builds from its vanilla style's house; only the blocks differ. */
-        public Identifier houseSource() {
-            return Identifier.fromNamespaceAndPath("tolkienmobs", "ttmhouse_" + (darkStone ? vanillaStyle : style));
+        /**
+         * The plan as it was drawn: a village with one plan is named for its style alone, so its
+         * template keeps the name it always had; a village with several suffixes each plan's name.
+         * A recoloured village builds from its vanilla style's house, so only the blocks differ.
+         */
+        public Identifier houseSource(House house) {
+            String base = "ttmhouse_" + (darkStone ? vanillaStyle : style);
+            return Identifier.fromNamespaceAndPath("tolkienmobs",
+                    house.name().equals("house") ? base : base + "_" + house.name());
+        }
+
+        /** True when this village builds one of its plans under a name of its own. */
+        public boolean namesItsHouses() {
+            return houses.stream().anyMatch(house -> !house.name().equals("house"));
         }
 
         /** True when this village lays this mod's path block where a vanilla one would lay a path. */

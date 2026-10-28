@@ -3,13 +3,57 @@
     {
       "element": {
         "element_type": "minecraft:single_pool_element",
-        "location": "tolkienmobs:village/human/house",
+        "location": "tolkienmobs:village/human/triple_house",
         "processors": {
           "processors": []
         },
         "projection": "rigid"
       },
       "weight": 6
+    },
+    {
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "tolkienmobs:village/human/small_house",
+        "processors": {
+          "processors": []
+        },
+        "projection": "rigid"
+      },
+      "weight": 3
+    },
+    {
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "tolkienmobs:village/human/market",
+        "processors": {
+          "processors": []
+        },
+        "projection": "rigid"
+      },
+      "weight": 3
+    },
+    {
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "tolkienmobs:village/human/inn",
+        "processors": {
+          "processors": []
+        },
+        "projection": "rigid"
+      },
+      "weight": 1
+    },
+    {
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "tolkienmobs:village/human/church",
+        "processors": {
+          "processors": []
+        },
+        "projection": "rigid"
+      },
+      "weight": 1
     },
     {
       "element": {
