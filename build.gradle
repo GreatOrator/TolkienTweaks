@@ -24,7 +24,7 @@ group = mod_group_id
 
 tasks.register("incrementBuildNumber") {
     group = "versioning"
-    description = "Increments the app build number and logs to changelog"
+    description = "Increments the app build number, leaving the changelog alone"
 
     doLast {
         def propsFile = file("gradle.properties")
@@ -32,40 +32,16 @@ tasks.register("incrementBuildNumber") {
             def props = new Properties()
             propsFile.withInputStream { props.load(it) }
 
-            // 1. Calculate the new numbers
+            // The changelog is written by hand under [Unreleased] and cut into a dated
+            // heading when a build is fit to publish, so this task only ever moves the
+            // build number: a jar build must not put a heading of its own above the
+            // section we are still writing into.
             int oldBuild = (props.getProperty("currentBuildNumber") ?: "0").toInteger()
             int nextBuild = oldBuild + 1
             props.setProperty("currentBuildNumber", nextBuild.toString())
             propsFile.withWriter { props.store(it, "Auto-incremented by Gradle build") }
 
-            // 2. Automate Local CHANGELOG tracking
-            def changelogFile = file("CHANGELOG.md")
-            if (changelogFile.exists()) {
-                // Correct Java format pattern for YYYY-MM-DD (Note: Use uppercase MM and lowercase dd)
-                def date = new java.text.SimpleDateFormat("yyyy-MM-dd").format(new Date())
-                // The changelog is UTF-8 and holds an em dash: read and write it as UTF-8 so a
-                // roll-up never re-encodes it into the platform charset.
-                def oldContent = changelogFile.getText('UTF-8')
-
-                // 💡 Prepends the entry with the full version: ## [5.0.X] - YYYY-MM-DD
-                def newEntry = "## [${versionPrefix}.${nextBuild}] - ${date}\n* Structural mod updates and compilation builds\n\n"
-
-                // Inject the entry right underneath the description banner header. The changelog is
-                // stored with CRLF endings, so the insert follows whichever the file already uses -
-                // a bare \n never matched and the entry was silently dropped.
-                def banner = "All notable changes to this project will be documented in this file."
-                if (!oldContent.contains(banner)) {
-                    throw new GradleException("CHANGELOG.md is missing its banner header, so the entry was not written.")
-                }
-                def newline = oldContent.contains("\r\n") ? "\r\n" : "\n"
-                def updatedContent = oldContent.replace(
-                        banner + newline,
-                        banner + newline + newline + newEntry.replace("\n", newline)
-                )
-                changelogFile.setText(updatedContent, 'UTF-8')
-            }
-
-            println "🚀 App version rolled up to: ${versionPrefix}.${nextBuild} (Local Changelog Tracked!)"
+            println "🚀 App version rolled up to: ${versionPrefix}.${nextBuild}"
         } else {
             throw new GradleException("Could not read gradle.properties!")
         }
@@ -270,7 +246,8 @@ tasks.withType(JavaCompile).configureEach {
 
 // The build number is bumped only when a distributable jar is produced, so that
 // loading the game for testing (runClient, runServer, runData) never rewrites
-// gradle.properties or CHANGELOG.md.
+// gradle.properties. The changelog is left alone either way: it is written by hand
+// under [Unreleased] and cut into a dated heading when a build is released.
 tasks.named('jar').configure {
     dependsOn incrementBuildNumber
 }
