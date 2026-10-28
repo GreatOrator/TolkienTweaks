@@ -61,6 +61,20 @@ placed features, tags or loot, regenerate and commit the generated JSON alongsid
   `TolkienVillageProvider.VILLAGES_BY_STYLE` is written against that house's own template, never
   against the template whose other numbers it borrows, and `TolkienVillageTemplateProvider
   .requireFrontEdge` fails `runData` when it is not.
+- **A building wider than a street never joins one.** The jigsaw fills a street's house sockets with a
+  piece and drops it if its bounding box touches anything already placed; a street is 11-16 blocks
+  long, so a plan wider than that is refused nearly every time the pool draws it. That is why the
+  human village never showed a church (31 blocks across where a house is 15) and why the dwarven
+  meadhall and smithy, 20 each, were just as rare. Plans like these are `Landmark`s instead: a
+  village with landmarks paves its meeting point out into a 21-block square, moves the meeting
+  point's own street sockets out to the square's edge (a street leaving from inside the square grows
+  across paving that belongs to the same piece, is refused, and the village loses that street), and
+  writes a doorway socket on each side a landmark fronts. The landmark's own pool holds one element,
+  so exactly one stands per village - the meeting point is built once. Its socket carries
+  `placement_priority: 1`, because the game works a piece's sockets through a priority queue: at the
+  same depth a street placed first takes the room the landmark needs, which is what left one tested
+  village with no smithy. Measured in a fresh world after the change, every village held its church
+  and inn (and its meadhall and smithy) once.
 - Mordor, the Ash Mountains and most other Tolkien biomes have `"carvers": {}`, and the mod's own
   `tolkien_caves` and `highland_caves` carvers (which deliberately carve `CAVE_AIR`) are registered
   and datagenned but attached to no biome, so they never run.
