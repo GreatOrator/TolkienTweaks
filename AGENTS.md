@@ -107,12 +107,18 @@ placed features, tags or loot, regenerate and commit the generated JSON alongsid
   jigsaw block at the foot of the build, facing `down_south` (the opposite of the street's), name and
   target `minecraft:bottom`, pool `minecraft:empty`, joint `rollable`, and `final_state` set to the
   block that belongs in that cell once it is placed. Without it the game finds no connector to join
-  and the piece is refused, which is why the mod's `lamppost.nbt` sat unused for years. The
-  human and dwarven villages alias `minecraft:village/plains/decor` to a pool of their own holding
-  `tolkienmobs:village/decor/lamppost` (that template with the socket written into the foot of its
-  post) at vanilla's own weights beside vanilla's hay bale, tree, flowers and empty draw - so only
-  the light post changes. Measured after `/place structure` on a flat world: 3 to 8 lamps a village
-  and no vanilla post, each lamp five blocks above a foot that stands on the grass at -60.
+  and the piece is refused, which is why the mod's `lamppost.nbt` sat unused for years. Five of the
+  villages alias their vanilla style's decor pool to a pool of their own, at vanilla's own weights,
+  beside vanilla's hay bale, tree, flowers, cactus and empty draw - so only the light post changes:
+  the human and dwarven villages stand `village/decor/lamppost`, the orc village of Mordor
+  `village/decor/lamppost_2` (black stone and soul fire) and Harad and Nurn
+  `village/decor/lamppost_3` (sandstone and a sea lantern). Each is the mod's free-standing post of
+  that name with the socket written into the foot of it, and `TolkienVillageProvider.LAMPPOSTS` is
+  the whole table. Nurn is the one village that drops a draw of its own: it keeps no cacti, and its
+  post is recoloured with the rest of the village, which reaches the socket's `final_state` too
+  because the element's processors run after the jigsaw replacement. Measured after `/place
+  structure` on flat worlds: 6 posts in a Harad village, 4 in a Mordor one and 2 in a Nurn one, none
+  of vanilla's, every post with its foot on the grass at -60 and its head at -57.
 
 ## Which climate a Tolkien biome gets
 
