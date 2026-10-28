@@ -96,12 +96,26 @@ public final class TolkienVillageProvider {
      * path at each house's door and the driveway that meets it.
      */
     private static final Set<String> STONE_PATH_STYLES = Set.of("dwarf", "human", "nurn", "frozen");
+    /**
+     * The villages that stand this mod's lamppost where vanilla stands its own. A lamp is a decor
+     * piece: a street carries sockets that draw from the vanilla decor pool, whose plains lamp is a
+     * fence post with four torches on it. These two villages point those sockets at a pool holding
+     * our post instead; the rest keep vanilla's.
+     */
+    private static final Set<String> LAMPPOST_STYLES = Set.of("dwarf", "human");
+    /** The village-ready copy of the lamppost: the same post, with a decor socket at its foot. */
+    public static final Identifier LAMPPOST = Identifier.fromNamespaceAndPath("tolkienmobs", "village/decor/lamppost");
 
     private TolkienVillageProvider() {}
 
     /** True when the village with this style lays this mod's path block. */
     public static boolean laysStonePath(String style) {
         return STONE_PATH_STYLES.contains(style);
+    }
+
+    /** True when the village with this style stands this mod's lamppost along its streets. */
+    public static boolean usesLamppost(String style) {
+        return LAMPPOST_STYLES.contains(style);
     }
 
     /** That block, read from the registry so a rename can never leave a stale id in a template. */
@@ -141,9 +155,10 @@ public final class TolkienVillageProvider {
                 // pool; send every socket to this village's own NPC instead.
                 PoolAliasBinding.direct(ResourceKey.create(Registries.TEMPLATE_POOL,
                         Identifier.withDefaultNamespace("village/" + village.vanillaStyle() + "/villagers")), village.villagerPool())));
-        if (village.darkStone()) {
+        if (village.darkStone() || usesLamppost(village.style())) {
             // The vanilla decorations are sandstone lamps and cacti. Ours are the same lamps in dark
-            // stone, because a cactus garden is not what a farmed lowland looks like.
+            // stone, because a cactus garden is not what a farmed lowland looks like - and where the
+            // vanilla style is the plains, the mod's own lamppost takes its fence post's place.
             aliases.add(PoolAliasBinding.direct(ResourceKey.create(Registries.TEMPLATE_POOL,
                     Identifier.withDefaultNamespace("village/" + village.vanillaStyle() + "/decor")), village.decorPool()));
         }
@@ -204,6 +219,16 @@ public final class TolkienVillageProvider {
                     List.of(Pair.of(legacy("village/" + village.vanillaStyle() + "/desert_lamp_1", stone), 10),
                             Pair.of(StructurePoolElement.feature(placed.getOrThrow(VillagePlacements.PILE_HAY_VILLAGE)), 4),
                             Pair.of(StructurePoolElement.empty(), 10)),
+                    StructureTemplatePool.Projection.RIGID));
+        } else if (usesLamppost(village.style())) {
+            // Vanilla's own mix - lamp, tree, flowers, hay, nothing - with our lamppost in the lamp's
+            // place, so only the light post itself changes.
+            context.register(village.decorPool(), new StructureTemplatePool(empty,
+                    List.of(Pair.of(legacy(LAMPPOST.toString(), stone), 2),
+                            Pair.of(StructurePoolElement.feature(placed.getOrThrow(VillagePlacements.OAK_VILLAGE)), 1),
+                            Pair.of(StructurePoolElement.feature(placed.getOrThrow(VillagePlacements.FLOWER_PLAIN_VILLAGE)), 1),
+                            Pair.of(StructurePoolElement.feature(placed.getOrThrow(VillagePlacements.PILE_HAY_VILLAGE)), 1),
+                            Pair.of(StructurePoolElement.empty(), 2)),
                     StructureTemplatePool.Projection.RIGID));
         }
         // The vanilla villager pool contents, same templates and weights (1/1/10), holding this NPC.
