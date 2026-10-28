@@ -39,7 +39,12 @@ import java.util.function.Function;
 
 /** Vanilla village assembly, with Tolkien houses selected through per-structure pool aliases. */
 public final class TolkienVillageProvider {
-    public static final int SIZE = 6;
+    /**
+     * How deep a village grows. Seven instead of vanilla's six because the buildings the villages put
+     * on their squares take a street's place: a village with two landmarks has two street exits, so it
+     * has to reach further to fill out.
+     */
+    public static final int SIZE = 7;
     public static final int MAX_DISTANCE = 112;
     public static final ResourceKey<StructureSet> VILLAGES = ResourceKey.create(Registries.STRUCTURE_SET,
             Identifier.fromNamespaceAndPath("tolkienmobs", "villages"));
@@ -49,22 +54,33 @@ public final class TolkienVillageProvider {
             // Nurn is farmed by the same Southrons, in the same desert houses, rebuilt in dark stone.
             new Village(TolkienStructures.HOUSE_NURN, "nurn", "desert", TolkienBiomes.NURN, "entityttmsouthron_npc", "east_up",
                     List.of(new House("house", 6, new BlockPos(14, 0, 7), new BlockPos(11, 4, 4))), true, true),
+            // The dwarven village builds from five plans of its own: the two halls that fill it out,
+            // the windmill that stands behind them, and the smithy and the meadhall that front its
+            // square. The halls and the windmill face the street at their doors - south for the
+            // halls, west for the smithy and the meadhall - so each carries its own front; the two on
+            // the square are turned by the game to face it, and stand once in every village.
             new Village(TolkienStructures.HOUSE_DWARF, "dwarf", "plains", TolkienBiomes.IRON_HILLS, "entityttmdwarf", "west_up",
-                    List.of(new House("house", 6, new BlockPos(0, 0, 5), new BlockPos(6, 0, 5)))),
+                    List.of(new House("house", 6, new BlockPos(12, 0, 15), new BlockPos(10, 1, 8), "south_up"),
+                            new House("house_2", 6, new BlockPos(0, 0, 10), new BlockPos(10, 1, 7)),
+                            new House("windmill", 3, new BlockPos(7, 0, 13), new BlockPos(8, 1, 7), "south_up"),
+                            new House("blacksmith", 1, new BlockPos(0, 0, 6), new BlockPos(10, 1, 10)),
+                            new House("meadhall", 1, new BlockPos(0, 0, 9), new BlockPos(10, 1, 10))),
+                    List.of(new Landmark("meadhall", Direction.SOUTH), new Landmark("blacksmith", Direction.NORTH))),
             new Village(TolkienStructures.HOUSE_ELVEN, "elven", "plains", TolkienBiomes.LORINAND, "entityttmelves", "west_up",
                     List.of(new House("house", 6, new BlockPos(0, 0, 5), new BlockPos(4, 8, 3)))),
             new Village(TolkienStructures.HOBBIT_HOUSE, "hobbit", "plains", TolkienBiomes.SHIRE, "entityttmhobbit", "east_up",
                     List.of(new House("house", 6, new BlockPos(27, 0, 14), new BlockPos(11, 0, 20)))),
             // The human village builds from five plans drawn out on its own plots: the triple house
             // a street grows up around, the single house and the market that fill it out, and the
-            // inn and the church that stand roughly once in a village. Each plan carries its own
+            // inn and the church that front its square, once each. Each plan carries its own
             // doorway socket, on its own south wall, at the column its front path runs down.
             new Village(TolkienStructures.HOUSE_HUMAN, "human", "plains", TolkienBiomes.GLADDEN, "entityttmhuman", "south_up",
                     List.of(new House("triple_house", 6, new BlockPos(3, 0, 14), new BlockPos(3, 0, 11)),
                             new House("small_house", 3, new BlockPos(10, 0, 14), new BlockPos(10, 0, 9)),
                             new House("market", 3, new BlockPos(7, 0, 14), new BlockPos(4, 0, 9)),
                             new House("inn", 1, new BlockPos(10, 0, 14), new BlockPos(10, 0, 8)),
-                            new House("church", 1, new BlockPos(6, 0, 14), new BlockPos(6, 0, 8)))),
+                            new House("church", 1, new BlockPos(6, 0, 14), new BlockPos(6, 0, 8))),
+                    List.of(new Landmark("church", Direction.SOUTH), new Landmark("inn", Direction.NORTH))),
             new Village(TolkienStructures.HOUSE_ORC, "orc", "desert", TolkienBiomes.MORDOR, "entityttmorc", "south_up",
                     List.of(new House("house", 6, new BlockPos(7, 0, 14), new BlockPos(7, 0, 2)))),
             // The frozen house is six blocks deeper than the human one it borrows its other
@@ -166,6 +182,8 @@ public final class TolkienVillageProvider {
         // that still ships; the desert styles keep both of theirs.
         var houseElements = new ArrayList<Pair<Function<StructureTemplatePool.Projection, ? extends StructurePoolElement>, Integer>>();
         for (var house : village.houses()) {
+            // A plan that stands on the square is drawn by its own pool, once, at the square's socket.
+            if (village.isLandmark(house)) continue;
             houseElements.add(Pair.of(single(village.houseTemplate(house).toString(), stone), house.weight()));
         }
         houseElements.add(Pair.of(StructurePoolElement.legacy(farm + "1", farmProcessors), 1));
@@ -174,6 +192,13 @@ public final class TolkienVillageProvider {
         }
         context.register(village.housePool(), new StructureTemplatePool(empty, houseElements,
                 StructureTemplatePool.Projection.RIGID));
+        for (var landmark : village.landmarks()) {
+            // The square's socket names this pool, and the centre is built once, so the plan it holds
+            // stands exactly once in a village - however wide it is, and with nothing to collide with.
+            context.register(village.landmarkPool(landmark), new StructureTemplatePool(empty,
+                    List.of(Pair.of(single(village.houseTemplate(village.plan(landmark)).toString(), stone), 1)),
+                    StructureTemplatePool.Projection.RIGID));
+        }
         if (village.darkStone()) {
             context.register(village.decorPool(), new StructureTemplatePool(empty,
                     List.of(Pair.of(legacy("village/" + village.vanillaStyle() + "/desert_lamp_1", stone), 10),
@@ -357,14 +382,24 @@ public final class TolkienVillageProvider {
      * One house plan a village can build: its template, how often the house pool picks it, and the
      * two coordinates written against that template - where its doorway socket goes, and where its
      * resident stands. {@code name} is also the template's own name, so a plan's coordinates can
-     * never be read against another plan's NBT by mistake.
+     * never be read against another plan's NBT by mistake. A plan that fronts the village's square
+     * is not in the house pool at all, and its weight is written down for the record only.
      *
      * <p>The entrance is the column of the plan's outermost door, on the side of the build that
      * faces the street: the triple house's south door, one row in from its south wall, not the
      * doors of its two wings. A plan with no door at all - the market is an open square - takes any
      * point on that front edge, so its own approach runs from the middle of its clearing.</p>
+     *
+     * <p>{@code orientation} is that front, as a jigsaw orientation string, for a plan whose door
+     * does not face the way the village's streets run; null means the village's own front. A build
+     * is drawn facing whichever way its builder put the door, and the street has to meet the door,
+     * so the dwarf village's round halls face south and its working buildings west.</p>
      */
-    public record House(String name, int weight, BlockPos entrance, BlockPos residentFloor) {}
+    public record House(String name, int weight, BlockPos entrance, BlockPos residentFloor, String orientation) {
+        public House(String name, int weight, BlockPos entrance, BlockPos residentFloor) {
+            this(name, weight, entrance, residentFloor, null);
+        }
+    }
 
     public static void bootstrapSet(BootstrapContext<StructureSet> context) {
         var structures = context.lookup(Registries.STRUCTURE);
@@ -374,25 +409,80 @@ public final class TolkienVillageProvider {
     }
 
     /**
+     * One of the buildings a village puts on its square instead of along a street. They are the plans
+     * too wide for a street to front - a church is thirty-one blocks across where every house is
+     * fifteen - so the game's own street fitting drops them nearly every time they are drawn. A
+     * landmark stands on one {@code side} of the square: it is turned to face the square and its door
+     * opens onto it.
+     *
+     * <p>The town centre is placed once, before anything else, and is paved out into a square so a
+     * landmark has room beside it; that gives exactly one of each landmark in a village, where a street
+     * could neither place one reliably nor keep it to one.</p>
+     */
+    public record Landmark(String name, Direction side) {}
+
+    /**
      * A house plan's doorway and resident coordinates are local to that plan's own NBT. {@code darkStone}
      * says the village is rebuilt from its vanilla style's blocks in dark stone, and {@code dryLand}
      * that it may only start on grass.
      */
     public record Village(ResourceKey<Structure> structure, String style, String vanillaStyle, ResourceKey<Biome> biome,
                           String residentEntity, String orientation, List<House> houses,
-                          boolean darkStone, boolean dryLand) {
+                          boolean darkStone, boolean dryLand, List<Landmark> landmarks) {
+        public Village(ResourceKey<Structure> structure, String style, String vanillaStyle, ResourceKey<Biome> biome,
+                       String residentEntity, String orientation, List<House> houses,
+                       boolean darkStone, boolean dryLand) {
+            this(structure, style, vanillaStyle, biome, residentEntity, orientation, houses, darkStone, dryLand, List.of());
+        }
+
         public Village(ResourceKey<Structure> structure, String style, String vanillaStyle, ResourceKey<Biome> biome,
                        String residentEntity, String orientation, List<House> houses) {
-            this(structure, style, vanillaStyle, biome, residentEntity, orientation, houses, false, false);
+            this(structure, style, vanillaStyle, biome, residentEntity, orientation, houses, false, false, List.of());
+        }
+
+        public Village(ResourceKey<Structure> structure, String style, String vanillaStyle, ResourceKey<Biome> biome,
+                       String residentEntity, String orientation, List<House> houses, List<Landmark> landmarks) {
+            this(structure, style, vanillaStyle, biome, residentEntity, orientation, houses, false, false, landmarks);
+        }
+
+        /** The plan a landmark is built from, read out of this village's own plans. */
+        public House plan(Landmark landmark) {
+            return houses.stream().filter(house -> house.name().equals(landmark.name())).findFirst()
+                    .orElseThrow(() -> new IllegalStateException("The " + style + " village's " + landmark.name()
+                            + " landmark has no plan of that name"));
+        }
+
+        /** True when a plan stands on the square rather than in the house pool. */
+        public boolean isLandmark(House house) {
+            return landmarks.stream().anyMatch(landmark -> landmark.name().equals(house.name()));
+        }
+
+        /** The pool a landmark's square socket draws from: one plan, so it stands exactly once. */
+        public ResourceKey<StructureTemplatePool> landmarkPool(Landmark landmark) {
+            return ResourceKey.create(Registries.TEMPLATE_POOL,
+                    Identifier.fromNamespaceAndPath("tolkienmobs", "village/" + style + "/landmarks/" + landmark.name()));
         }
 
         public Direction front() { return Direction.byName(orientation.split("_")[0]); }
 
-        public BlockPos templateShift() {
-            return new BlockPos(front() == Direction.WEST ? 1 : 0, 0, front() == Direction.NORTH ? 1 : 0);
+        /** The way this plan faces: its own front when it has one, the village's streets otherwise. */
+        public String orientation(House house) { return house.orientation() == null ? orientation : house.orientation(); }
+
+        public Direction front(House house) { return Direction.byName(orientation(house).split("_")[0]); }
+
+        /**
+         * The porch column this plan grows by: west and north plans grow at their far side, so every
+         * block moves one along the front's axis and the box gains a column there; a south-facing
+         * plan keeps its origin and the new column lands beyond its own last one.
+         */
+        public BlockPos templateShift(House house) {
+            Direction front = front(house);
+            return new BlockPos(front == Direction.WEST ? 1 : 0, 0, front == Direction.NORTH ? 1 : 0);
         }
 
-        public BlockPos preparedEntrance(House house) { return house.entrance().relative(front()).above().offset(templateShift()); }
+        public BlockPos preparedEntrance(House house) {
+            return house.entrance().relative(front(house)).above().offset(templateShift(house));
+        }
 
         /** Where datagen writes this plan's village-ready copy. */
         public Identifier houseTemplate(House house) {

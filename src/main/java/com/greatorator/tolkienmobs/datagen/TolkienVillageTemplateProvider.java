@@ -80,14 +80,14 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
                                            TemplateSource templates) throws IOException {
         CompoundTag house = read(village.houseSource(plan), templates);
         // Add a one-block porch outside the original footprint, keeping the entire house intact.
-        BlockPos shift = village.templateShift();
+        BlockPos shift = village.templateShift(plan);
         for (Tag tag : list(house, "blocks")) shiftList(list((CompoundTag) tag, "pos"), shift, false);
         for (Tag tag : list(house, "entities")) {
             shiftList(list((CompoundTag) tag, "blockPos"), shift, false);
             shiftList(list((CompoundTag) tag, "pos"), shift, true);
         }
         ListTag size = list(house, "size");
-        int dimension = village.front().getAxis() == Direction.Axis.X ? 0 : 2;
+        int dimension = village.front(plan).getAxis() == Direction.Axis.X ? 0 : 2;
         size.set(dimension, IntTag.valueOf(size.getIntOr(dimension, 0) + 1));
         // Clear occupied flags captured while building the templates, so generated beds can be used.
         for (Tag tag : list(house, "palette")) {
@@ -102,11 +102,11 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
         BlockPos entrance = village.preparedEntrance(plan);
         putState(house, entrance.below(),
                 village.laysStonePath() ? TolkienVillageProvider.stonePathBlock() : "minecraft:dirt_path");
-        addConnector(house, entrance, village.orientation(), "minecraft:building_entrance",
-                "minecraft:empty", "minecraft:air");
+        addConnector(house, entrance, village.orientation(plan), "minecraft:building_entrance",
+                "minecraft:empty", "minecraft:air", 0);
         requireFrontEdge(village, plan, house, entrance);
         addConnector(house, plan.residentFloor().offset(shift), "up_north", "minecraft:bottom",
-                "minecraft:village/" + village.vanillaStyle() + "/villagers", null);
+                "minecraft:village/" + village.vanillaStyle() + "/villagers", null, 0);
         return house;
     }
 
@@ -119,7 +119,7 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
      */
     private static void requireFrontEdge(TolkienVillageProvider.Village village, TolkienVillageProvider.House plan,
                                          CompoundTag house, BlockPos marker) {
-        Direction front = village.front();
+        Direction front = village.front(plan);
         int extent = list(house, "size").getIntOr(front.getAxis() == Direction.Axis.X ? 0 : 2, 0);
         int along = front.getAxis() == Direction.Axis.X ? marker.getX() : marker.getZ();
         int edge = front.getAxisDirection() == Direction.AxisDirection.POSITIVE ? extent - 1 : 0;
@@ -187,12 +187,123 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
         }
     }
 
+    /** How far the square is paved out beyond the vanilla meeting point: nine blocks across becomes twenty-one. */
+    private static final int PLAZA_MARGIN = 6;
+
     /** The town centre as a village that lays its own path block builds it: its paths swapped. */
     public static CompoundTag prepareTownCentre(TolkienVillageProvider.Village village,
                                                 TemplateSource templates) throws IOException {
         CompoundTag centre = read(TolkienVillageProvider.vanillaTownCentre(village), templates);
         layStonePath(centre);
-        return centre;
+        if (village.landmarks().isEmpty()) return centre;
+        if (!village.rewiresStreets()) {
+            throw new IllegalStateException("The " + village.style() + " village puts " + village.landmarks().size()
+                    + " landmark(s) on its square, but only a village that rebuilds the town centre has a copy of"
+                    + " it to pave a square around.");
+        }
+        return plaza(village, centre);
+    }
+
+    /**
+     * The meeting point paved out into a village square: the centre in the middle, the village's own path
+     * under the whole square, a doorway socket on each side a landmark fronts, and the street ends moved
+     * out to the square's own edge.
+     *
+     * <p>A landmark is a plan no street can front: a church is thirty-one blocks across where a house is
+     * fifteen, so the game drops it nearly every time a street draws it. The square is the one place with
+     * the room, and it has to be paved out first - beside a nine-block meeting point a plan that wide
+     * covers the sides the streets would have left by, and the streets are refused instead. The square is
+     * written here because it is geometry, not content: nothing in it depends on a world.</p>
+     */
+    private static CompoundTag plaza(TolkienVillageProvider.Village village, CompoundTag centre) {
+        ListTag centreSize = list(centre, "size");
+        int width = centreSize.getIntOr(0, 0) + PLAZA_MARGIN * 2;
+        int height = centreSize.getIntOr(1, 0);
+        int depth = centreSize.getIntOr(2, 0) + PLAZA_MARGIN * 2;
+        String floor = village.laysStonePath() ? TolkienVillageProvider.stonePathBlock() : "minecraft:dirt_path";
+        CompoundTag plaza = new CompoundTag();
+        plaza.putInt("DataVersion", centre.getIntOr("DataVersion", 0));
+        ListTag size = new ListTag();
+        size.add(IntTag.valueOf(width));
+        size.add(IntTag.valueOf(height));
+        size.add(IntTag.valueOf(depth));
+        plaza.put("size", size);
+        plaza.put("palette", new ListTag());
+        plaza.put("blocks", new ListTag());
+        plaza.put("entities", new ListTag());
+        for (int x = 0; x < width; x++) {
+            for (int z = 0; z < depth; z++) putState(plaza, new BlockPos(x, 0, z), floor);
+        }
+        // The meeting point stands in the middle of the square. Its own street ends are left out: a street
+        // leaving from inside the square would grow across paving that is part of the same piece, so it is
+        // refused and the village loses that street. The square's own edges carry them instead.
+        ListTag centrePalette = list(centre, "palette");
+        String streetPool = null;
+        for (Tag tag : list(centre, "blocks")) {
+            CompoundTag block = (CompoundTag) tag;
+            CompoundTag nbt = compound(block, "nbt");
+            if (string(nbt, "name").equals("minecraft:street")) {
+                streetPool = string(nbt, "pool");
+                continue;
+            }
+            addBlock(plaza, position(block).offset(PLAZA_MARGIN, 0, PLAZA_MARGIN),
+                    centrePalette.getCompoundOrEmpty(block.getIntOr("state", 0)), nbt.isEmpty() ? null : nbt.copy());
+        }
+        if (streetPool == null) {
+            throw new IllegalStateException("The " + village.style() + " village's meeting point has no street ends to"
+                    + " move out to its square; a village that paves a square is drawn against a meeting point that"
+                    + " has some.");
+        }
+        for (Direction side : Direction.Plane.HORIZONTAL) {
+            if (village.landmarks().stream().anyMatch(landmark -> landmark.side() == side)) continue;
+            addConnector(plaza, edge(width, depth, side), side.getName() + "_up", "minecraft:street", streetPool, floor, 0);
+        }
+        for (var landmark : village.landmarks()) {
+            // A landmark is drawn before the square's streets, not after them. The game works through a
+            // piece's sockets by placement priority, and a street that grew across the square first would
+            // take the room the landmark needs - which is what left villages without a church at all.
+            addConnector(plaza, edge(width, depth, landmark.side()), landmark.side().getName() + "_up",
+                    "minecraft:building_entrance", village.landmarkPool(landmark).identifier().toString(), floor, 1);
+        }
+        return plaza;
+    }
+
+    /** The middle of one side of the square, at the height a street's own sockets are written at. */
+    private static BlockPos edge(int width, int depth, Direction side) {
+        return switch (side) {
+            case NORTH -> new BlockPos(width / 2, 1, 0);
+            case SOUTH -> new BlockPos(width / 2, 1, depth - 1);
+            case WEST -> new BlockPos(0, 1, depth / 2);
+            case EAST -> new BlockPos(width - 1, 1, depth / 2);
+            default -> throw new IllegalStateException("A landmark stands on one of the square's four sides, not " + side);
+        };
+    }
+
+    private static BlockPos position(CompoundTag block) {
+        ListTag pos = list(block, "pos");
+        return new BlockPos(pos.getIntOr(0, 0), pos.getIntOr(1, 0), pos.getIntOr(2, 0));
+    }
+
+    /** Adds a block written by another template, merging its palette entry into this one's. */
+    private static void addBlock(CompoundTag template, BlockPos position, CompoundTag state, CompoundTag nbt) {
+        ListTag palette = list(template, "palette");
+        int index = -1;
+        for (int i = 0; i < palette.size(); i++) {
+            if (palette.getCompoundOrEmpty(i).equals(state)) { index = i; break; }
+        }
+        if (index == -1) {
+            index = palette.size();
+            palette.add(state.copy());
+        }
+        CompoundTag block = new CompoundTag();
+        ListTag pos = new ListTag();
+        pos.add(IntTag.valueOf(position.getX()));
+        pos.add(IntTag.valueOf(position.getY()));
+        pos.add(IntTag.valueOf(position.getZ()));
+        block.put("pos", pos);
+        block.putInt("state", index);
+        if (nbt != null) block.put("nbt", nbt);
+        list(template, "blocks").add(block);
     }
 
     /**
@@ -282,7 +393,7 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
     }
 
     private static void addConnector(CompoundTag house, BlockPos position, String orientation,
-                                     String name, String pool, String finalState) {
+                                     String name, String pool, String finalState, int placementPriority) {
         ListTag size = list(house, "size");
         if (position.getX() < 0 || position.getX() >= size.getIntOr(0, 0) || position.getY() < 0
                 || position.getY() >= size.getIntOr(1, 0) || position.getZ() < 0 || position.getZ() >= size.getIntOr(2, 0)) {
@@ -326,6 +437,8 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
         nbt.putString("pool", pool);
         nbt.putString("joint", "aligned");
         nbt.putString("final_state", finalState);
+        // Only the square's sockets carry one; a written zero would rewrite every village template.
+        if (placementPriority != 0) nbt.putInt("placement_priority", placementPriority);
         block.put("nbt", nbt);
         blocks.add(block);
     }
