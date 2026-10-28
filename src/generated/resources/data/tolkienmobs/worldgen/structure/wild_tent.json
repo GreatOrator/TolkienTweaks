@@ -1,0 +1,8 @@
+{
+  "type": "tolkienmobs:template_layout",
+  "biomes": "#tolkienmobs:has_structure/wild_tent",
+  "spawn_overrides": {},
+  "start_pool": "tolkienmobs:wild_tent",
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
+}
