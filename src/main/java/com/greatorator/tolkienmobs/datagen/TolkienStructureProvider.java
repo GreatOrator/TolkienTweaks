@@ -27,11 +27,28 @@ import java.util.Optional;
 
 /** Registry bootstrap callbacks used by TolkienDataRegistryProvider and the biome tag provider. */
 public final class TolkienStructureProvider {
+    /**
+     * Where a traveller's tent may stand. These are the mod's wilds - the woods, the downs, the
+     * marches and the passes a road crosses - and not the countries that have towns of their own,
+     * so a tent is met on the way somewhere rather than in someone's fields.
+     */
+    public static final List<ResourceKey<Biome>> WILD_CAMP_BIOMES = List.of(
+            TolkienBiomes.WILD_WOOD, TolkienBiomes.MIRKWOOD, TolkienBiomes.MIRKWOOD_SPOOKY,
+            TolkienBiomes.FANGORN, TolkienBiomes.OLD_FOREST, TolkienBiomes.BARROW_DOWNS,
+            TolkienBiomes.DAGORLAD, TolkienBiomes.MARSHES, TolkienBiomes.FIRIEN,
+            TolkienBiomes.HITHAEGLIR, TolkienBiomes.DUNLAND, TolkienBiomes.ERIADOR);
+
     // Add one definition per structure. Optional branches contain only side NBTs. Distances are chunks; heightOffset is blocks.
     // The structure, pool, set and biome tag names are derived from the structure key.
     public static final List<Definition> STRUCTURES = List.of(
             new Definition(TolkienStructures.HOBBIT_HOUSE, "tolkienmobs:ttmhouse_hobbit",
                     List.of(TolkienBiomes.SHIRE), 32, 8, 193764821, 0),
+            // A tent in the wilds a traveller crosses rather than in a country anyone has settled:
+            // the two Mirkwoods, the Wild Wood, Fangorn and the Old Forest, the Barrow Downs, the
+            // Dagorlad and the Marshes, Firien, the Misty Mountains' pass, Dunland and Eriador. One
+            // piece, dropped straight onto the ground it was found on.
+            new Definition(TolkienStructures.WILD_TENT, "tolkienmobs:wild_tent", WILD_CAMP_BIOMES,
+                    28, 8, 193764840, 0, Optional.empty(), false, Optional.of(Layout.single())),
             new Definition(TolkienStructures.SHIRE_RUIN, "tolkienmobs:ttmruin_small",
                     List.of(TolkienBiomes.DAGORLAD), 24, 8, 193764821, 0),
             new Definition(TolkienStructures.CAVE, "tolkienmobs:cave",
