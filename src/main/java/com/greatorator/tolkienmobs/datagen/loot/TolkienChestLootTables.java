@@ -78,6 +78,31 @@ public record TolkienChestLootTables(HolderLookup.Provider registries) implement
                                         .setWeight(15))
                                 .add(LootItem.lootTableItem(Items.COOKED_PORKCHOP)
                                         .setWeight(10))));
+        // The baker's pantry: what a hobbit household kneads, bakes and keeps in the crocks.
+        register.accept(TolkienLootHelper.HOBBIT_BAKER,
+                LootTable.lootTable()
+                        .withPool(LootPool.lootPool()
+                                .setRolls(UniformGenerator.between(3, 5))
+                                .setBonusRolls(UniformGenerator.between(1, 2))
+                                .add(LootItem.lootTableItem(Items.BREAD)
+                                        .setWeight(18)
+                                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 4))))
+                                .add(LootItem.lootTableItem(Items.COOKIE)
+                                        .setWeight(15)
+                                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 6))))
+                                .add(LootItem.lootTableItem(Items.WHEAT)
+                                        .setWeight(14)
+                                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 6))))
+                                .add(LootItem.lootTableItem(TolkienItems.CRAM.get())
+                                        .setWeight(12)
+                                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3))))
+                                .add(LootItem.lootTableItem(TolkienItems.HONEY_CAKE.get())
+                                        .setWeight(9)
+                                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2))))
+                                .add(LootItem.lootTableItem(Items.PUMPKIN_PIE)
+                                        .setWeight(9))
+                                .add(LootItem.lootTableItem(TolkienItems.FOOD_HONEY.get())
+                                        .setWeight(6))));
         register.accept(TolkienLootHelper.ELVEN_HOUSE,
                 LootTable.lootTable()
                         .withPool(LootPool.lootPool()

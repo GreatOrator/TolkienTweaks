@@ -68,8 +68,16 @@ public final class TolkienVillageProvider {
                     List.of(new Landmark("meadhall", Direction.SOUTH), new Landmark("blacksmith", Direction.NORTH))),
             new Village(TolkienStructures.HOUSE_ELVEN, "elven", "plains", TolkienBiomes.LORINAND, "entityttmelves", "west_up",
                     List.of(new House("house", 6, new BlockPos(0, 0, 5), new BlockPos(4, 8, 3)))),
+            // The hobbit village builds from three plans, drawn equally often. The old house fronts the
+            // street at its east door, level with its yard; the two burrows are cut into their own
+            // hills and open south through their gardens, so their doorway columns sit on that edge and
+            // their floors a step above the street. Each coordinate is the garden row the street walks
+            // in on, and a plan is only carried four rows below that row: the game refuses a doorway
+            // socket deeper than that, so the burrows were cut down to their own gardens' level.
             new Village(TolkienStructures.HOBBIT_HOUSE, "hobbit", "plains", TolkienBiomes.SHIRE, "entityttmhobbit", "east_up",
-                    List.of(new House("house", 6, new BlockPos(27, 0, 14), new BlockPos(11, 0, 20)))),
+                    List.of(new House("house", 6, new BlockPos(27, 0, 14), new BlockPos(11, 0, 20)),
+                            new House("house_2", 6, new BlockPos(14, 3, 31), new BlockPos(14, 2, 10), "south_up"),
+                            new House("house_3", 6, new BlockPos(23, 2, 41), new BlockPos(20, 1, 18), "south_up"))),
             // The human village builds from five plans drawn out on its own plots: the triple house
             // a street grows up around, the single house and the market that fill it out, and the
             // inn and the church that front its square, once each. Each plan carries its own

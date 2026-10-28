@@ -105,9 +105,36 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
         addConnector(house, entrance, village.orientation(plan), "minecraft:building_entrance",
                 "minecraft:empty", "minecraft:air", 0);
         requireFrontEdge(village, plan, house, entrance);
+        requireShallowFooting(village, plan, entrance);
         addConnector(house, plan.residentFloor().offset(shift), "up_north", "minecraft:bottom",
                 "minecraft:village/" + village.vanillaStyle() + "/villagers", null, 0);
         return house;
+    }
+
+    /**
+     * How far below its doorway a plan may reach. The game bridges a street socket to a doorway socket
+     * and drops the piece when the piece's box dips further below the street than this, without saying
+     * so; a village then simply never shows that house. Five rows was measured to be refused and four to
+     * join, on both of the mod's burrows, so this is the limit datagen enforces rather than a guess.
+     */
+    private static final int MAX_DOORWAY_FOOTING = 4;
+
+    /**
+     * A plan may only carry so much ground under its own doorway. The burrows are cut into hillsides, so
+     * their gardens sat seven rows above the plan's lowest row: the village drew them, refused them, and
+     * showed no house at all. The plan is now cut down to its garden first, and this fails the data run
+     * if another one arrives deeper than the game can fit.
+     */
+    private static void requireShallowFooting(TolkienVillageProvider.Village village,
+                                              TolkienVillageProvider.House plan, BlockPos entrance) {
+        if (entrance.getY() > MAX_DOORWAY_FOOTING) {
+            throw new IllegalStateException("The " + village.style() + " village's " + plan.name()
+                    + " puts its doorway at row " + entrance.getY() + " of its own template, but a plan may"
+                    + " only reach " + MAX_DOORWAY_FOOTING + " rows below its doorway: the game refuses a"
+                    + " piece that dips deeper, and the village would silently never build it. Cut the ground"
+                    + " below the doorway down to " + MAX_DOORWAY_FOOTING + " rows and write the entrance"
+                    + " coordinate against the trimmed template.");
+        }
     }
 
     /**
