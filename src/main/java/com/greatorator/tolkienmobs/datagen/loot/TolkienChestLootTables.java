@@ -168,6 +168,30 @@ public record TolkienChestLootTables(HolderLookup.Provider registries) implement
                                         .setWeight(15))
                                 .add(LootItem.lootTableItem(Items.COOKED_PORKCHOP)
                                         .setWeight(10))));
+        // A traveller's chest in a tent: what a night out in the wild asks for. Waybread and a
+        // drink for the road, a torch and the means to light it, arrows for the pot, and pipe-weed
+        // for the watch. Six things, so the chest reads as someone's kit rather than a hoard.
+        register.accept(TolkienLootHelper.WILD_TENT,
+                LootTable.lootTable()
+                        .withPool(LootPool.lootPool()
+                                .setRolls(UniformGenerator.between(2, 4))
+                                .setBonusRolls(UniformGenerator.between(1, 1))
+                                .add(LootItem.lootTableItem(TolkienItems.CRAM.get())
+                                        .setWeight(25)
+                                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3))))
+                                .add(LootItem.lootTableItem(Items.TORCH)
+                                        .setWeight(20)
+                                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4))))
+                                .add(LootItem.lootTableItem(Items.ARROW)
+                                        .setWeight(20)
+                                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 8))))
+                                .add(LootItem.lootTableItem(TolkienItems.GROG.get())
+                                        .setWeight(13))
+                                .add(LootItem.lootTableItem(Items.FLINT_AND_STEEL)
+                                        .setWeight(12))
+                                .add(LootItem.lootTableItem(TolkienItems.PIPEWEED_ITEM.get())
+                                        .setWeight(10)
+                                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2))))));
         register.accept(TolkienLootHelper.BARROW_CHEST,
                 LootTable.lootTable()
                         .withPool(LootPool.lootPool()

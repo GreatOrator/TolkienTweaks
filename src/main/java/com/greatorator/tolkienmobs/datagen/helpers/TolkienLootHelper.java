@@ -20,6 +20,7 @@ public class TolkienLootHelper {
     public static final ResourceKey<LootTable> ELVEN_HOUSE = register("chests/elven_house");
     public static final ResourceKey<LootTable> DWARF_HOUSE = register("chests/dwarf_house");
     public static final ResourceKey<LootTable> HUMAN_HOUSE = register("chests/human_house");
+    public static final ResourceKey<LootTable> WILD_TENT = register("chests/wild_tent");
     public static final ResourceKey<LootTable> BARROW_CHEST = register("chests/barrow_chest");
     public static final ResourceKey<LootTable> BARROW_GRAVE = register("chests/barrow_grave");
     public static final ResourceKey<LootTable> SWAMP_HAG_HUT = register("chests/swamp_hag_hut");
