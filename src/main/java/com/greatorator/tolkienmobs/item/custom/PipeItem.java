@@ -54,7 +54,10 @@ public class PipeItem extends TolkienItem {
         return ItemUseAnimation.SPYGLASS;
     }
 
-    /** A thin thread of smoke while the pipe is being drawn on, so the smoker sees it catch. */
+    /**
+     * A thin thread of smoke while the pipe is being drawn on, so the smoker sees it catch. It is drawn
+     * in the colour of the leaf being smoked, since the strain is known before the draw is released.
+     */
     @Override
     public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int remaining) {
         if (!level.isClientSide() || remaining % 6 != 0) {
@@ -64,7 +67,12 @@ public class PipeItem extends TolkienItem {
         double x = entity.getX() + look.x * 0.45;
         double y = entity.getEyeY() - 0.1 + look.y * 0.45;
         double z = entity.getZ() + look.z * 0.45;
-        level.addParticle(ParticleTypes.SMOKE, x, y, z, look.x * 0.01, 0.01, look.z * 0.01);
+        PipeweedStrain strain = entity instanceof Player player ? PipeweedStrain.find(player) : null;
+        if (strain == null) {
+            level.addParticle(ParticleTypes.SMOKE, x, y, z, look.x * 0.01, 0.01, look.z * 0.01);
+            return;
+        }
+        level.addParticle(PipeSmoke.smoke(strain.smoke()), x, y, z, look.x * 0.01, 0.01, look.z * 0.01);
     }
 
     @Override
@@ -84,7 +92,7 @@ public class PipeItem extends TolkienItem {
             PipeweedStrain.consume(player, strain);
             player.addEffect(new MobEffectInstance(strain.effect(), strain.duration(), strain.amplifier()));
             if (level instanceof ServerLevel serverLevel) {
-                PipeSmoke.blow(serverLevel, player, strain.shape());
+                PipeSmoke.blow(serverLevel, player, strain);
             }
             player.awardStat(Stats.ITEM_USED.get(this));
             player.getCooldowns().addCooldown(stack, COOLDOWN_TICKS);

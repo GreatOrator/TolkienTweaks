@@ -63,8 +63,9 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addItem(TolkienItems.PIPEWEED_SOUTHLINCH_SEEDS, "南林奇种子");
             this.addItem(TolkienItems.PIPEWEED_SOUTHLINCH_ITEM, "南林奇烟叶");
             this.addItemWithLore(TolkienItems.TOBACCO_PIPE.get(), "烟斗", "填上烟叶，用火绒点燃，就能把烟雾吹成各种形状。");
-            this.add("item.tolkienmobs.pipe.empty", "你没有烟斗草可抽。");
-            this.add("item.tolkienmobs.pipe.smoke", "你抽了一斗%s。");
+            // 键名要跟着物品自己的描述 id 走：烟斗读的是 tobacco_pipe 下的两个键。
+            this.add("item.tolkienmobs.tobacco_pipe.empty", "你没有烟叶可抽。");
+            this.add("item.tolkienmobs.tobacco_pipe.smoke", "你抽了一斗%s。");
             this.addFlowerBlock(TolkienBlocks.FLOWER_SIMBELMYNE.get(), "辛贝穆奈", TolkienBlocks.POTTED_FLOWER_SIMBELMYNE.get());
             this.addFlowerBlock(TolkienBlocks.FLOWER_MIRKWOOD.get(), "色瑞刚", TolkienBlocks.POTTED_FLOWER_MIRKWOOD.get());
             this.addFlowerBlock(TolkienBlocks.FLOWER_ALFIRIN.get(), "阿尔费琳", TolkienBlocks.POTTED_FLOWER_ALFIRIN.get());

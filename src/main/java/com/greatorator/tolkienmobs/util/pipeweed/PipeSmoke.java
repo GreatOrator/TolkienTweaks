@@ -1,6 +1,8 @@
 package com.greatorator.tolkienmobs.util.pipeweed;
 
-import net.minecraft.core.particles.ParticleTypes;
+import com.greatorator.tolkienmobs.init.TolkienParticleTypes;
+import net.minecraft.core.particles.ColorParticleOption;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -31,7 +33,9 @@ public final class PipeSmoke {
         DRAGON
     }
 
-    public static void blow(ServerLevel level, Player player, Shape shape) {
+    public static void blow(ServerLevel level, Player player, PipeweedStrain strain) {
+        Shape shape = strain.shape();
+        int colour = strain.smoke();
         Vec3 look = player.getLookAngle().normalize();
         Vec3 right = look.cross(new Vec3(0.0, 1.0, 0.0));
         if (right.lengthSqr() < 1.0E-4) {
@@ -44,19 +48,28 @@ public final class PipeSmoke {
 
         for (int i = 0; i < 3; i++) {
             Vec3 at = mouth.add(look.scale(i * 0.05));
-            puff(level, at, look);
+            puff(level, at, look, colour);
         }
 
         List<Vec3> outline = outline(shape);
         for (int i = 0; i < outline.size(); i++) {
             Vec3 point = outline.get(i);
             Vec3 at = mouth.add(right.scale(point.x)).add(up.scale(point.y)).add(look.scale(TRAIL * i));
-            puff(level, at, look);
+            puff(level, at, look, colour);
         }
     }
 
-    private static void puff(ServerLevel level, Vec3 at, Vec3 look) {
-        level.sendParticles(ParticleTypes.CAMPFIRE_COSY_SMOKE, at.x, at.y, at.z, 0,
+    /**
+     * The plume a strain burns to: vanilla's own cosy campfire smoke, which is what the pipe drew before
+     * the strains had colours, tinted with the colour the strain's flowers are drawn in. Untinted smoke
+     * would leave three identical plumes behind three different leaves.
+     */
+    public static ParticleOptions smoke(int colour) {
+        return ColorParticleOption.create(TolkienParticleTypes.TINTED_SMOKE.get(), 0xFF000000 | colour);
+    }
+
+    private static void puff(ServerLevel level, Vec3 at, Vec3 look, int colour) {
+        level.sendParticles(smoke(colour), at.x, at.y, at.z, 0,
                 look.x * DRIFT, look.y * DRIFT + 0.004, look.z * DRIFT, 0.01);
     }
 
