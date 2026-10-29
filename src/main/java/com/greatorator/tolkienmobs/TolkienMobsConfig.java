@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs;
 
 import com.greatorator.tolkienmobs.init.TolkienEntities;
+import com.greatorator.tolkienmobs.util.pipeweed.PipeweedStrain;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -69,6 +70,14 @@ public class TolkienMobsConfig {
     private static final ModConfigSpec.IntValue SPAWNER_MAX_DELAY;
     private static final ModConfigSpec.IntValue TRINKET_CRAFT_TIME;
     private static final ModConfigSpec.IntValue FIREPLACE_CRAFT_TIME;
+
+    /* Server: the pipe's own numbers - how long a draw takes and what each strain's smoke leaves behind. */
+    private static final ModConfigSpec.IntValue PIPE_DRAW_TICKS;
+    private static final ModConfigSpec.IntValue PIPE_MIN_DRAW_TICKS;
+    private static final ModConfigSpec.IntValue PIPE_COOLDOWN_TICKS;
+    private static final ModConfigSpec.IntValue PIPEWEED_LONGBOTTOM_DURATION;
+    private static final ModConfigSpec.IntValue PIPEWEED_OLD_TOBY_DURATION;
+    private static final ModConfigSpec.IntValue PIPEWEED_SOUTHLINCH_DURATION;
 
     /* Server: the milestone and the fell beast, which read their own copies of these. */
     public static final ModConfigSpec.IntValue MINIMUM_TICK_SPEED;
@@ -239,6 +248,33 @@ public class TolkienMobsConfig {
                 .comment("Ticks the fireplace takes to cook one thing, twenty to the second. A fireplace in a world",
                         "picks this up the next time it loads (Default 100, or five seconds)")
                 .defineInRange("fireplaceCookTime", 100, 1, 2000);
+        BUILDER.pop();
+
+        BUILDER.comment("How a Shire pipe draws, and what each strain of pipe-weed leaves behind once it is smoked.",
+                        "The pipe keeps no numbers of its own, so these are the only tuning a pack needs.").push("pipeweed");
+        PIPE_DRAW_TICKS = BUILDER
+                .comment("Ticks the use button is held for a full draw, twenty to the second (Default 20, or one second)")
+                .defineInRange("drawTicks", 20, 5, 200);
+        PIPE_MIN_DRAW_TICKS = BUILDER
+                .comment("Shortest draw that still smokes the bowl, in ticks. Letting go sooner only warms the leaf and",
+                        "leaves it packed, which is how a tap is told apart from a draw. It is never longer than the",
+                        "full draw above (Default 12)")
+                .defineInRange("minDrawTicks", 12, 1, 200);
+        PIPE_COOLDOWN_TICKS = BUILDER
+                .comment("Ticks before the pipe will draw again after a smoke, twenty to the second (Default 10, or half a second)")
+                .defineInRange("cooldownTicks", 10, 0, 200);
+        BUILDER.comment("How long each strain's comfort lasts, in ticks, twenty to the second. The leaf's own lore",
+                        "names what it gives, not how long it gives it, so a pack can lengthen or shorten these freely (Default: 1200,",
+                        "1200 and 600, or sixty seconds, sixty and thirty)");
+        PIPEWEED_LONGBOTTOM_DURATION = BUILDER
+                .comment("Ticks of Absorption from a pipe of Longbottom leaf (Default 1200, or sixty seconds)")
+                .defineInRange("longbottomDuration", 1200, 20, 72000);
+        PIPEWEED_OLD_TOBY_DURATION = BUILDER
+                .comment("Ticks of Regeneration from a pipe of Old Toby (Default 1200, or sixty seconds)")
+                .defineInRange("oldTobyDuration", 1200, 20, 72000);
+        PIPEWEED_SOUTHLINCH_DURATION = BUILDER
+                .comment("Ticks of Saturation from a pipe of Southlinch (Default 600, or thirty seconds)")
+                .defineInRange("southlinchDuration", 600, 20, 72000);
         BUILDER.pop();
 
         BUILDER.comment("How far the backpack's magnet reaches at each tier. The best magnet fitted sets the reach,",
@@ -433,6 +469,33 @@ public class TolkienMobsConfig {
 
     public static int trinketCraftTime() {
         return value(TRINKET_CRAFT_TIME, 100);
+    }
+
+    /** Ticks a full draw of the pipe takes. */
+    public static int pipeDrawTicks() {
+        return value(PIPE_DRAW_TICKS, 20);
+    }
+
+    /**
+     * The shortest draw that still smokes the bowl. It is held under the full draw whatever the two
+     * settings say - a minimum above it would mean no draw could ever finish.
+     */
+    public static int pipeMinDrawTicks() {
+        return Math.min(pipeDrawTicks(), value(PIPE_MIN_DRAW_TICKS, 12));
+    }
+
+    public static int pipeCooldownTicks() {
+        return value(PIPE_COOLDOWN_TICKS, 10);
+    }
+
+    /** Ticks the comfort of a bowl of this strain lasts, in the world's own numbers. */
+    public static int pipeweedDuration(PipeweedStrain strain) {
+        ModConfigSpec.IntValue setting = switch (strain) {
+            case LONGBOTTOM -> PIPEWEED_LONGBOTTOM_DURATION;
+            case OLD_TOBY -> PIPEWEED_OLD_TOBY_DURATION;
+            case SOUTHLINCH -> PIPEWEED_SOUTHLINCH_DURATION;
+        };
+        return value(setting, strain.baseDuration());
     }
 
     public static int fireplaceCookTime() {

@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.item.custom;
 
+import com.greatorator.tolkienmobs.TolkienMobsConfig;
 import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.greatorator.tolkienmobs.item.TolkienItem;
 import com.greatorator.tolkienmobs.util.pipeweed.PipeSmoke;
@@ -40,10 +41,6 @@ import java.util.function.Consumer;
  * tip it out.
  */
 public class PipeItem extends TolkienItem {
-    private static final int DRAW_TICKS = 20;
-    private static final int MIN_DRAW_TICKS = 12;
-    private static final int COOLDOWN_TICKS = 10;
-
     public PipeItem(Properties properties) {
         super(properties);
     }
@@ -94,7 +91,7 @@ public class PipeItem extends TolkienItem {
 
     @Override
     public int getUseDuration(ItemStack stack, LivingEntity entity) {
-        return DRAW_TICKS;
+        return TolkienMobsConfig.pipeDrawTicks();
     }
 
     @Override
@@ -132,7 +129,7 @@ public class PipeItem extends TolkienItem {
         if (strain == null) {
             return false;
         }
-        if (getUseDuration(stack, entity) - timeLeft < MIN_DRAW_TICKS) {
+        if (getUseDuration(stack, entity) - timeLeft < TolkienMobsConfig.pipeMinDrawTicks()) {
             return false;
         }
 
@@ -143,7 +140,7 @@ public class PipeItem extends TolkienItem {
                 PipeSmoke.blow(serverLevel, player, strain);
             }
             player.awardStat(Stats.ITEM_USED.get(this));
-            player.getCooldowns().addCooldown(stack, COOLDOWN_TICKS);
+            player.getCooldowns().addCooldown(stack, TolkienMobsConfig.pipeCooldownTicks());
             player.sendSystemMessage(Component.translatable(getDescriptionId() + ".smoke",
                     Component.translatable(strain.leafItem().getDescriptionId())));
         }
