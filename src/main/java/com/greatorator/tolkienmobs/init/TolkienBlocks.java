@@ -1878,6 +1878,10 @@ public class TolkienBlocks {
     // Flowers & Plants
     public static final DeferredBlock<Block> PIPEWEED = registerBlockWithoutBlockItem("pipeweed", properties -> new PipeweedCropBlock(properties),
             BlockBehaviour.Properties.of().noCollision().randomTicks().instabreak().sound(SoundType.CROP).pushReaction(PushReaction.DESTROY));
+    public static final DeferredBlock<Block> PIPEWEED_OLDTOBY = registerBlockWithoutBlockItem("pipeweed_oldtoby", properties -> new PipeweedCropBlock(properties, () -> TolkienItems.PIPEWEED_OLDTOBY_SEEDS.get()),
+            BlockBehaviour.Properties.of().noCollision().randomTicks().instabreak().sound(SoundType.CROP).pushReaction(PushReaction.DESTROY));
+    public static final DeferredBlock<Block> PIPEWEED_SOUTHLINCH = registerBlockWithoutBlockItem("pipeweed_southlinch", properties -> new PipeweedCropBlock(properties, () -> TolkienItems.PIPEWEED_SOUTHLINCH_SEEDS.get()),
+            BlockBehaviour.Properties.of().noCollision().randomTicks().instabreak().sound(SoundType.CROP).pushReaction(PushReaction.DESTROY));
     public static final DeferredBlock<Block> MOSS_PATCH = registerBlock("moss_patch", properties -> new MossPatchBlock(properties),
             BlockBehaviour.Properties.of().ignitedByLava().instabreak().mapColor(MapColor.PLANT).noCollision().noOcclusion().pushReaction(PushReaction.DESTROY).sound(SoundType.MOSS));
     public static final DeferredBlock<Block> CLOVER_PATCH = registerBlock("clover_patch", properties -> new TolkienPatchBlock(properties),

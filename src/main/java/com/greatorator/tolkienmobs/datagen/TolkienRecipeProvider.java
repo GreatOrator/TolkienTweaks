@@ -268,6 +268,16 @@ public class TolkienRecipeProvider extends TolkienRecipeHelper {
         smithingUpgrade(pRecipeOutput, "ammolite", TolkienItems.LEGGINGS_AMMOLITE.get(), TolkienItems.TEMPLATE_AMMOLITE.get(), Items.NETHERITE_LEGGINGS, TolkienItems.GEM_AMMOLITE.get());
         smithingUpgrade(pRecipeOutput, "ammolite", TolkienItems.BOOTS_AMMOLITE.get(), TolkienItems.TEMPLATE_AMMOLITE.get(), Items.NETHERITE_BOOTS, TolkienItems.GEM_AMMOLITE.get());
 
+        // A hobbit's pipe: a bowl and a stem of wood, cut to sit in the hand.
+        shaped(RecipeCategory.TOOLS, TolkienItems.TOBACCO_PIPE, 1)
+                .define('P', ItemTags.PLANKS)
+                .define('S', Items.STICK)
+                .pattern("  S")
+                .pattern(" P ")
+                .pattern("P  ")
+                .unlockedBy("has_pipeweed", has(TolkienItems.PIPEWEED_ITEM))
+                .save(pRecipeOutput);
+
         // Special Tools
         shaped(RecipeCategory.TOOLS, TolkienItems.HOBBIT_RING, 1)
                 .define('A', Blocks.BONE_BLOCK)

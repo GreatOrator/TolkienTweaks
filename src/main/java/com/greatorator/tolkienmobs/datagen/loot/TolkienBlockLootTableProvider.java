@@ -722,6 +722,14 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
                 .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(PipeweedCropBlock.AGE, 7));
         this.add(TolkienBlocks.PIPEWEED.get(), this.createCropDrops(TolkienBlocks.PIPEWEED.get(),
                 TolkienItems.PIPEWEED_ITEM.get(), TolkienItems.PIPEWEED_SEEDS.asItem(), lootItemConditionBuilder));
+        LootItemCondition.Builder oldTobyRipe = LootItemBlockStatePropertyCondition.hasBlockStateProperties(TolkienBlocks.PIPEWEED_OLDTOBY.get())
+                .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(PipeweedCropBlock.AGE, 7));
+        this.add(TolkienBlocks.PIPEWEED_OLDTOBY.get(), this.createCropDrops(TolkienBlocks.PIPEWEED_OLDTOBY.get(),
+                TolkienItems.PIPEWEED_OLDTOBY_ITEM.get(), TolkienItems.PIPEWEED_OLDTOBY_SEEDS.asItem(), oldTobyRipe));
+        LootItemCondition.Builder southlinchRipe = LootItemBlockStatePropertyCondition.hasBlockStateProperties(TolkienBlocks.PIPEWEED_SOUTHLINCH.get())
+                .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(PipeweedCropBlock.AGE, 7));
+        this.add(TolkienBlocks.PIPEWEED_SOUTHLINCH.get(), this.createCropDrops(TolkienBlocks.PIPEWEED_SOUTHLINCH.get(),
+                TolkienItems.PIPEWEED_SOUTHLINCH_ITEM.get(), TolkienItems.PIPEWEED_SOUTHLINCH_SEEDS.asItem(), southlinchRipe));
         LootItemCondition.Builder lootItemConditionBuilder2 = LootItemBlockStatePropertyCondition.hasBlockStateProperties(TolkienBlocks.PIPEWEED.get())
                 .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(BramblesBushBlock.AGE, 3));
         this.add(TolkienBlocks.FLOWER_BRAMBLES.get(), this.createCropDrops(TolkienBlocks.FLOWER_BRAMBLES.get(),

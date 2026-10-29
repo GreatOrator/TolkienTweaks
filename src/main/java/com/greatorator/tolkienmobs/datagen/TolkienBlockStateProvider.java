@@ -840,6 +840,8 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         patch(TolkienBlocks.CLOVER_PATCH.get(), modLoc("block/cloverpatch"), false);
 
         makeCrop(((PipeweedCropBlock) TolkienBlocks.PIPEWEED.get()), "pipeweed_crop_stage", "pipeweed_stage");
+        makeCrop(((PipeweedCropBlock) TolkienBlocks.PIPEWEED_OLDTOBY.get()), "pipeweed_oldtoby_crop_stage", "pipeweed_oldtoby_stage");
+        makeCrop(((PipeweedCropBlock) TolkienBlocks.PIPEWEED_SOUTHLINCH.get()), "pipeweed_southlinch_crop_stage", "pipeweed_southlinch_stage");
 
         makeBush(((BramblesBushBlock) TolkienBlocks.FLOWER_BRAMBLES.get()), TolkienBlocks.POTTED_FLOWER_BRAMBLES, "flower_brambles", "flower_brambles_stage");
 

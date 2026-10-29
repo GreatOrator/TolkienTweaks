@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.world.components.config;
 import com.google.common.collect.ImmutableList;
 import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.block.custom.BramblesBushBlock;
+import com.greatorator.tolkienmobs.block.custom.PipeweedCropBlock;
 import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.init.TolkienFeatures;
 import com.greatorator.tolkienmobs.world.components.feature.tree.TolkienDecorators;
@@ -15,6 +16,7 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.ConstantInt;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -97,6 +99,10 @@ public class TolkienConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> FLOWER_LISSUIN_KEY = registerKey("plants/flower_lissuin");
     public static final ResourceKey<ConfiguredFeature<?, ?>> FLOWER_MALLOS_KEY = registerKey("plants/flower_mallos");
     public static final ResourceKey<ConfiguredFeature<?, ?>> FLOWER_BRAMBLES_KEY = registerKey("plants/flower_brambles");
+
+    public static final ResourceKey<ConfiguredFeature<?, ?>> PIPEWEED_KEY = registerKey("plants/pipeweed");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> PIPEWEED_OLDTOBY_KEY = registerKey("plants/pipeweed_oldtoby");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> PIPEWEED_SOUTHLINCH_KEY = registerKey("plants/pipeweed_southlinch");
 
     public static final ResourceKey<ConfiguredFeature<?, ?>> OVERWORLD_ORE_MITHRIL_KEY = registerKey("ore/ore_mithril");
     public static final ResourceKey<ConfiguredFeature<?, ?>> NETHER_ORE_MITHRIL_KEY = registerKey("ore/nether_ore_mithril");
@@ -195,6 +201,14 @@ public class TolkienConfiguredFeatures {
         context.register(FLOWER_BRAMBLES_KEY, new ConfiguredFeature<>(Feature.SIMPLE_BLOCK,
                 new SimpleBlockConfiguration(BlockStateProvider.simple(TolkienBlocks.FLOWER_BRAMBLES.get()
                                 .defaultBlockState().setValue(BramblesBushBlock.AGE, 3)))));
+
+        // Wild pipe-weed stands ready to pick, the way the Shire grows it along every bank and hedge.
+        context.register(PIPEWEED_KEY, new ConfiguredFeature<>(Feature.SIMPLE_BLOCK,
+                new SimpleBlockConfiguration(ripePipeweed(TolkienBlocks.PIPEWEED.get()))));
+        context.register(PIPEWEED_OLDTOBY_KEY, new ConfiguredFeature<>(Feature.SIMPLE_BLOCK,
+                new SimpleBlockConfiguration(ripePipeweed(TolkienBlocks.PIPEWEED_OLDTOBY.get()))));
+        context.register(PIPEWEED_SOUTHLINCH_KEY, new ConfiguredFeature<>(Feature.SIMPLE_BLOCK,
+                new SimpleBlockConfiguration(ripePipeweed(TolkienBlocks.PIPEWEED_SOUTHLINCH.get()))));
 
         context.register(MALLORN_KEY, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(TolkienBlocks.WOOD_MALLORN.get()),
@@ -397,5 +411,10 @@ public class TolkienConfiguredFeatures {
         context.register(BLOOM_DECAY_MUSHROOMS, new ConfiguredFeature<>(TolkienFeatures.UNDERGROUND_PLANTS.get(), new BlockStateConfiguration(TolkienBlocks.MUSHROOM_BLOOM_DECAY.get().defaultBlockState())));
         context.register(DECAY_BLOOM_MUSHROOMS, new ConfiguredFeature<>(TolkienFeatures.UNDERGROUND_PLANTS.get(), new BlockStateConfiguration(TolkienBlocks.MUSHROOM_DECAY_BLOOM.get().defaultBlockState())));
         context.register(NURN_LAKE, new ConfiguredFeature<>(TolkienFeatures.NURN_LAKE.get(), FeatureConfiguration.NONE));
+    }
+
+    /** A pipe-weed plant as the Shire grows it: already ripe, so a walker can pick it straight off the bank. */
+    private static BlockStateProvider ripePipeweed(Block crop) {
+        return BlockStateProvider.simple(crop.defaultBlockState().setValue(PipeweedCropBlock.AGE, PipeweedCropBlock.MAX_AGE));
     }
 }
