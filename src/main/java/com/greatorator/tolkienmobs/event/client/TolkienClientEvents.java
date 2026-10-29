@@ -4,9 +4,13 @@ import com.greatorator.tolkienmobs.block.custom.entity.function.ChameleonBlockDy
 import com.greatorator.tolkienmobs.handler.LeafPileTint;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.integration.TolkienSyncedRecipes;
+import com.greatorator.tolkienmobs.item.custom.PipeItem;
+import com.greatorator.tolkienmobs.util.pipeweed.PipeweedStrain;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
@@ -17,6 +21,7 @@ import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.ComputeFovModifierEvent;
 import net.neoforged.neoforge.client.event.RecipesReceivedEvent;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -80,6 +85,28 @@ public class TolkienClientEvents {
     @SubscribeEvent
     public static void onRecipesReceived(RecipesReceivedEvent event) {
         TolkienSyncedRecipes.accept(event.getRecipeMap());
+    }
+
+    /**
+     * Names the leaf in a pipe's bowl, or says the bowl is empty.
+     *
+     * <p>The bowl is drawn in the colour of the strain the smoker is carrying, so what is in it is a
+     * question about the player rather than about the stack, and an item's own tooltip hook is handed
+     * a context with no player in it at all. This event is the one place a tooltip can ask.
+     */
+    @SubscribeEvent
+    public static void onItemTooltip(ItemTooltipEvent event) {
+        if (!(event.getItemStack().getItem() instanceof PipeItem pipe)) {
+            return;
+        }
+        Player player = event.getEntity();
+        PipeweedStrain strain = player == null || PipeItem.isSpent(event.getItemStack())
+                ? null
+                : PipeweedStrain.find(player);
+        event.getToolTip().add(strain == null
+                ? Component.translatable(pipe.getDescriptionId() + ".bowl_empty")
+                : Component.translatable(pipe.getDescriptionId() + ".bowl",
+                        Component.translatable(strain.leafItem().getDescriptionId())));
     }
 
     @SubscribeEvent
