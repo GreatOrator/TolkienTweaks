@@ -127,6 +127,24 @@ public final class TolkienVillageProvider {
         return Identifier.fromNamespaceAndPath("tolkienmobs", "village/decor/" + name);
     }
 
+    /**
+     * The villages that farm a crop of their own rather than borrowing vanilla's, by style, against
+     * the vanilla farm their copy is made from. The Shire is the one country in the mod whose fields
+     * are worth a plan of their own: a hobbit grows leaf, not wheat.
+     */
+    private static final Map<String, Identifier> OWN_FARMS = Map.of(
+            "hobbit", Identifier.withDefaultNamespace("village/plains/houses/plains_small_farm_1"));
+
+    /** True when the village with this style replants its farms with its own crops. */
+    public static boolean hasOwnFarm(String style) {
+        return OWN_FARMS.containsKey(style);
+    }
+
+    /** The vanilla farm a village's own copy is made from. */
+    public static Optional<Identifier> ownFarmSource(String style) {
+        return Optional.ofNullable(OWN_FARMS.get(style));
+    }
+
     private TolkienVillageProvider() {}
 
     /** True when the village with this style lays this mod's path block. */
@@ -226,9 +244,15 @@ public final class TolkienVillageProvider {
             if (village.isLandmark(house)) continue;
             houseElements.add(Pair.of(single(village.houseTemplate(house).toString(), stone), house.weight()));
         }
-        houseElements.add(Pair.of(StructurePoolElement.legacy(farm + "1", farmProcessors), 1));
-        if (village.vanillaStyle().equals("desert")) {
-            houseElements.add(Pair.of(StructurePoolElement.legacy(farm + "2", farmProcessors), 1));
+        if (hasOwnFarm(village.style())) {
+            // A village with a crop of its own farms it: the prepared copy has every row replanted, and
+            // the farm keeps its own street socket, so it still joins a road at its edge.
+            houseElements.add(Pair.of(legacy(village.farmTemplate().toString(), farmProcessors), 1));
+        } else {
+            houseElements.add(Pair.of(StructurePoolElement.legacy(farm + "1", farmProcessors), 1));
+            if (village.vanillaStyle().equals("desert")) {
+                houseElements.add(Pair.of(StructurePoolElement.legacy(farm + "2", farmProcessors), 1));
+            }
         }
         context.register(village.housePool(), new StructureTemplatePool(empty, houseElements,
                 StructureTemplatePool.Projection.RIGID));
@@ -543,6 +567,11 @@ public final class TolkienVillageProvider {
         /** Where datagen writes this plan's village-ready copy. */
         public Identifier houseTemplate(House house) {
             return Identifier.fromNamespaceAndPath("tolkienmobs", "village/" + style + "/" + house.name());
+        }
+
+        /** Where datagen writes this village's own farm; only a village that grows one has this. */
+        public Identifier farmTemplate() {
+            return Identifier.fromNamespaceAndPath("tolkienmobs", "village/" + style + "/farm");
         }
 
         /**

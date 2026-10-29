@@ -69,6 +69,11 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
                     for (var house : village.houses()) {
                         write(cache, village.houseTemplate(house), prepareHouse(village, house, templates));
                     }
+                    // A village that farms a crop of its own builds from a replanted copy of the
+                    // vanilla farm, the same way it builds from prepared copies of its houses.
+                    if (TolkienVillageProvider.hasOwnFarm(village.style())) {
+                        write(cache, village.farmTemplate(), prepareFarm(village, templates));
+                    }
                     // A village that lays this mod's path block starts from a copy of the town centre
                     // with the paths in its plaza swapped too, the sockets included.
                     if (village.rewiresStreets()) {
@@ -185,17 +190,67 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
         for (int i = 0; i < Math.min(GARDEN_PLANTS, turf.size()); i++) {
             BlockPos soil = turf.get(i);
             putState(house, soil, "minecraft:farmland");
-            // Mostly the common leaf, with a plant of each finer strain in every bed worth the name.
-            String crop = i % 4 == 3 ? "tolkienmobs:pipeweed_oldtoby"
-                    : i % 7 == 6 ? "tolkienmobs:pipeweed_southlinch"
-                    : "tolkienmobs:pipeweed";
-            CompoundTag ripe = new CompoundTag();
-            ripe.putString("Name", crop);
-            CompoundTag properties = new CompoundTag();
-            properties.putString("age", String.valueOf(PipeweedCropBlock.MAX_AGE));
-            ripe.put("Properties", properties);
-            putState(house, soil.above(), ripe);
+            putState(house, soil.above(), ripePipeweed(pipeweedStrain(i)));
         }
+    }
+
+    /**
+     * Which leaf stands in a given cell of a Shire bed: mostly the common one, with a plant of each
+     * finer strain in every bed worth the name. The position in the bed decides it, so the same plan
+     * always yields the same rows.
+     */
+    private static String pipeweedStrain(int i) {
+        return i % 4 == 3 ? "tolkienmobs:pipeweed_oldtoby"
+                : i % 7 == 6 ? "tolkienmobs:pipeweed_southlinch"
+                : "tolkienmobs:pipeweed";
+    }
+
+    /** A strain ready to cut, as a template state. */
+    private static CompoundTag ripePipeweed(String strain) {
+        CompoundTag ripe = new CompoundTag();
+        ripe.putString("Name", strain);
+        CompoundTag properties = new CompoundTag();
+        properties.putString("age", String.valueOf(PipeweedCropBlock.MAX_AGE));
+        ripe.put("Properties", properties);
+        return ripe;
+    }
+
+    /**
+     * The crops a vanilla farm plants, which a village with a crop of its own replants. Every row of
+     * the plan is taken, whatever it grew: the mod's farms are leaf fields, not a rotation of greens.
+     */
+    private static final Set<String> FARM_CROPS = Set.of(
+            "minecraft:wheat", "minecraft:carrots", "minecraft:potatoes", "minecraft:beetroots",
+            "minecraft:melon_stem", "minecraft:pumpkin_stem");
+
+    /**
+     * Replants a vanilla farm with the village's own crop.
+     *
+     * <p>The farm is copied rather than written from scratch, so it keeps the shape a plains village's
+     * fields have - the tilled rows, the water channel between them, the fence and the gate - and, most
+     * of all, its own street socket: a farm joins a village from its front edge exactly as a house does.
+     * Only what stands on the soil changes, and it changes to this mod's leaf, ripe, in the same mix the
+     * burrows' gardens grow. The copy is written whether or not the plan turns out to hold a crop, and
+     * this fails the data run if it holds none, so a game update that moves the crops cannot leave the
+     * Shire quietly growing wheat again.
+     */
+    public static CompoundTag prepareFarm(TolkienVillageProvider.Village village, TemplateSource templates) throws IOException {
+        CompoundTag farm = read(TolkienVillageProvider.ownFarmSource(village.style())
+                .orElseThrow(() -> new IllegalStateException("The " + village.style() + " village has no farm source")), templates);
+        ListTag palette = list(farm, "palette");
+        int planted = 0;
+        for (Tag tag : list(farm, "blocks")) {
+            CompoundTag block = (CompoundTag) tag;
+            String name = string(palette.getCompoundOrEmpty(block.getIntOr("state", 0)), "Name");
+            if (!FARM_CROPS.contains(name)) continue;
+            block.putInt("state", mergeState(palette, ripePipeweed(pipeweedStrain(planted++))));
+        }
+        if (planted == 0) {
+            throw new IllegalStateException("The " + village.style() + " village's farm copy holds no crop to"
+                    + " replant - the vanilla farm it is made from ('" + TolkienVillageProvider.ownFarmSource(village.style())
+                    .orElseThrow() + "') has moved or changed, so the village would grow nothing.");
+        }
+        return farm;
     }
 
     /**
@@ -553,20 +608,21 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
 
     /** Writes a block, with its properties, over whatever the plan had at that position. */
     private static void putState(CompoundTag template, BlockPos position, CompoundTag state) {
-        ListTag palette = list(template, "palette");
-        int index = -1;
-        for (int i = 0; i < palette.size(); i++) {
-            if (palette.getCompoundOrEmpty(i).equals(state)) { index = i; break; }
-        }
-        if (index == -1) {
-            index = palette.size();
-            palette.add(state.copy());
-        }
+        int index = mergeState(list(template, "palette"), state);
         removeBlock(template, position);
         CompoundTag block = new CompoundTag();
         ListTag pos = new ListTag(); pos.add(IntTag.valueOf(position.getX())); pos.add(IntTag.valueOf(position.getY())); pos.add(IntTag.valueOf(position.getZ()));
         block.put("pos", pos); block.putInt("state", index);
         list(template, "blocks").add(block);
+    }
+
+    /** A state's index in a template palette, added to the palette when the template lacks it. */
+    private static int mergeState(ListTag palette, CompoundTag state) {
+        for (int i = 0; i < palette.size(); i++) {
+            if (palette.getCompoundOrEmpty(i).equals(state)) return i;
+        }
+        palette.add(state.copy());
+        return palette.size() - 1;
     }
 
     private static void addConnector(CompoundTag house, BlockPos position, String orientation,
