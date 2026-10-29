@@ -1,0 +1,12 @@
+{
+  "type": "tolkienmobs:add_items",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "minecraft:entities/witch"
+    }
+  ],
+  "items": {
+    "tolkienmobs:item_pungentherb": 0.35
+  }
+}

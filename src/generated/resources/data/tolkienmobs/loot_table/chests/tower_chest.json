@@ -10,8 +10,35 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "tolkienmobs:drink_grog",
-          "weight": 18
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 3.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "tolkienmobs:item_coin_gold",
+          "weight": 16
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 6.0,
+                "min": 2.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "tolkienmobs:nugget_morguliron",
+          "weight": 14
         },
         {
           "type": "minecraft:item",
@@ -26,7 +53,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "tolkienmobs:food_cram",
+          "name": "minecraft:gold_ingot",
           "weight": 12
         },
         {
@@ -42,8 +69,19 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:name_tag",
-          "weight": 15
+          "name": "tolkienmobs:monster_flesh",
+          "weight": 8
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:enchant_randomly",
+              "options": "#minecraft:on_random_loot"
+            }
+          ],
+          "name": "minecraft:book",
+          "weight": 6
         },
         {
           "type": "minecraft:item",
@@ -58,88 +96,17 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:cookie",
-          "weight": 15
+          "name": "tolkienmobs:item_darksigil",
+          "weight": 5
         },
         {
           "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 1.0,
-                "min": 0.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
           "name": "minecraft:golden_apple",
-          "weight": 20
+          "weight": 4
         },
         {
           "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 1.0,
-                "min": 0.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "minecraft:enchanted_golden_apple",
-          "weight": 2
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 3.0,
-                "min": 1.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "tolkienmobs:monster_flesh",
-          "weight": 10
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 7.0,
-                "min": 1.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "tolkienmobs:nugget_morguliron",
-          "weight": 15
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 3.0,
-                "min": 1.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "tolkienmobs:item_coin_gold",
-          "weight": 10
+          "name": "minecraft:enchanted_golden_apple"
         }
       ],
       "rolls": {

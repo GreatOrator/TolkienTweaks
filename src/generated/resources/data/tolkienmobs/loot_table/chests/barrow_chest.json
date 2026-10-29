@@ -10,44 +10,56 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "tolkienmobs:food_honey",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 2.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "tolkienmobs:item_remains",
+          "weight": 20
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 5.0,
+                "min": 2.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "minecraft:bone",
           "weight": 18
         },
         {
           "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 3.0,
-                "min": 1.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "tolkienmobs:food_cram",
-          "weight": 12
+          "name": "tolkienmobs:item_brokensword",
+          "weight": 10
         },
         {
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:enchant_randomly",
-              "options": "#minecraft:on_random_loot"
-            },
-            {
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 1.0,
-                "min": 1.0
+                "max": 6.0,
+                "min": 2.0
               },
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:book",
-          "weight": 10
+          "name": "tolkienmobs:item_coin_bronze",
+          "weight": 8
         },
         {
           "type": "minecraft:item",
@@ -62,8 +74,8 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:golden_horse_armor",
-          "weight": 15
+          "name": "tolkienmobs:gem_ammolite",
+          "weight": 8
         },
         {
           "type": "minecraft:item",
@@ -78,45 +90,30 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:name_tag",
-          "weight": 20
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:music_disc_cat",
-          "weight": 2
+          "name": "minecraft:gold_ingot",
+          "weight": 6
         },
         {
           "type": "minecraft:item",
           "functions": [
             {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 3.0,
-                "min": 1.0
-              },
-              "function": "minecraft:set_count"
+              "function": "minecraft:enchant_randomly",
+              "options": "#minecraft:on_random_loot"
             }
           ],
-          "name": "minecraft:music_disc_13",
-          "weight": 10
+          "name": "minecraft:book",
+          "weight": 4
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:golden_apple",
-          "weight": 15
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:saddle",
-          "weight": 10
+          "name": "tolkienmobs:item_keyfragment",
+          "weight": 3
         }
       ],
       "rolls": {
         "type": "minecraft:uniform",
-        "max": 5.0,
-        "min": 3.0
+        "max": 4.0,
+        "min": 2.0
       }
     }
   ],

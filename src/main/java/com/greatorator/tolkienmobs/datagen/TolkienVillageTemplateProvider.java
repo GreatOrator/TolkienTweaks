@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.datagen;
 
 import com.google.common.hash.Hashing;
+import com.greatorator.tolkienmobs.datagen.helpers.TolkienLootHelper;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -9,14 +10,18 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.nbt.*;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Util;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.util.datafix.DataFixers;
+import net.minecraft.world.level.storage.loot.LootTable;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -108,7 +113,64 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
         requireShallowFooting(village, plan, entrance);
         addConnector(house, plan.residentFloor().offset(shift), "up_north", "minecraft:bottom",
                 "minecraft:village/" + village.vanillaStyle() + "/villagers", null, 0);
+        stockChests(house, houseLoot(village, plan));
         return house;
+    }
+
+    /**
+     * The table every chest in a plan's copy is stocked from.
+     *
+     * <p>A village builds from the copies written here rather than from the plans themselves, so this
+     * is the one place its chest loot is decided. That matters for two reasons: a plan can be reused by
+     * a second village (Nurn builds the desert house, and should still eat from a Nurn farmhouse's
+     * table), and the hobbit village's second plan is the baker's house, which keeps a baker's pantry
+     * where the other two keep a household's.
+     */
+    private static ResourceKey<LootTable> houseLoot(TolkienVillageProvider.Village village,
+                                                    TolkienVillageProvider.House plan) {
+        return switch (village.style()) {
+            case "hobbit" -> plan.name().equals("house_2")
+                    ? TolkienLootHelper.HOBBIT_BAKER
+                    : TolkienLootHelper.HOBBIT_HOUSE;
+            case "dwarf" -> TolkienLootHelper.DWARF_HOUSE;
+            case "elven" -> TolkienLootHelper.ELVEN_HOUSE;
+            case "human" -> TolkienLootHelper.HUMAN_HOUSE;
+            case "frozen" -> TolkienLootHelper.FROZEN_HOUSE;
+            case "orc" -> TolkienLootHelper.ORC_HOUSE;
+            case "desert" -> TolkienLootHelper.DESERT_HOUSE;
+            case "nurn" -> TolkienLootHelper.NURN_HOUSE;
+            // A new village has to say what its houses are stocked from; guessing one would put a
+            // human household's bread and letters in whatever was built next.
+            default -> throw new IllegalStateException("The " + village.style() + " village has no house loot"
+                    + " table; add one to houseLoot and to TolkienChestLootTables before it can build.");
+        };
+    }
+
+    /**
+     * Points every chest in a prepared house at a loot table.
+     *
+     * <p>Ender chests are left alone - their palette entries name a different block, so they never
+     * match - and so is every other container: a barrel or a furnace in a plan keeps whatever it was
+     * saved with.
+     */
+    private static void stockChests(CompoundTag house, ResourceKey<LootTable> table) {
+        ListTag palette = list(house, "palette");
+        Set<Integer> chestStates = new HashSet<>();
+        for (int i = 0; i < palette.size(); i++) {
+            if (string(palette.getCompoundOrEmpty(i), "Name").equals("minecraft:chest")) chestStates.add(i);
+        }
+        if (chestStates.isEmpty()) return;
+        for (Tag tag : list(house, "blocks")) {
+            CompoundTag block = (CompoundTag) tag;
+            if (!chestStates.contains(block.getIntOr("state", 0))) continue;
+            CompoundTag nbt = block.getCompound("nbt").orElseGet(() -> {
+                CompoundTag created = new CompoundTag();
+                block.put("nbt", created);
+                return created;
+            });
+            nbt.putString("id", "minecraft:chest");
+            nbt.putString("LootTable", table.identifier().toString());
+        }
     }
 
     /**
