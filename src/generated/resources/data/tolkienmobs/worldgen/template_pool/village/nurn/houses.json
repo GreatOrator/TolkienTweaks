@@ -12,7 +12,7 @@
     {
       "element": {
         "element_type": "minecraft:legacy_single_pool_element",
-        "location": "minecraft:village/desert/houses/desert_farm_1",
+        "location": "tolkienmobs:village/nurn/farm",
         "processors": "tolkienmobs:nurn_farms",
         "projection": "rigid"
       },
@@ -21,7 +21,7 @@
     {
       "element": {
         "element_type": "minecraft:legacy_single_pool_element",
-        "location": "minecraft:village/desert/houses/desert_farm_2",
+        "location": "tolkienmobs:village/nurn/farm_2",
         "processors": "tolkienmobs:nurn_farms",
         "projection": "rigid"
       },

@@ -128,21 +128,65 @@ public final class TolkienVillageProvider {
     }
 
     /**
-     * The villages that farm a crop of their own rather than borrowing vanilla's, by style, against
-     * the vanilla farm their copy is made from. The Shire is the one country in the mod whose fields
-     * are worth a plan of their own: a hobbit grows leaf, not wheat.
+     * A village's own farmland, by style: a vanilla plan it rebuilds, the block vanilla rings that plot
+     * with, and the mod block that ring becomes. A plan with no {@code bin} keeps vanilla's composter,
+     * which is where a farmer works; the Shire's is the one that keeps its crop in a barrel instead.
+     *
+     * <p>The Shire is also the one village that farms a crop of its own - its rows are replanted with
+     * leaf - while every other country keeps the crop vanilla plants there.
      */
-    private static final Map<String, Identifier> OWN_FARMS = Map.of(
-            "hobbit", Identifier.withDefaultNamespace("village/plains/houses/plains_small_farm_1"));
+    public record FarmPlan(Identifier source, String wall, String wood, String bin, String store) {
+        public FarmPlan(Identifier source, String wall, String wood) {
+            this(source, wall, wood, null, null);
+        }
+    }
 
-    /** True when the village with this style replants its farms with its own crops. */
+    /** One of vanilla's village plans, named as the template it is read from. */
+    private static Identifier vanillaFarm(String style, String name) {
+        return Identifier.withDefaultNamespace("village/" + style + "/houses/" + name);
+    }
+
+    /**
+     * The villages that build their fields in their own wood rather than vanilla's oak, by style. Each
+     * plot is walled in the wood its country already builds in: the shire's in lebethron, the wood of
+     * its burrows; the dwarves' in dwarven maple; the men of the Vales' in culumalda; the elves' in
+     * mallorn, the wood their halls are fenced and stair-stepped in; and the two desert villages' in
+     * the wood their own houses use - mirkwood in Mordor, deadwood in Nurn.
+     *
+     * <p>A plains farm is ringed with a log, so only the wood changes; a desert farm's rim is smooth
+     * sandstone stairs, the closest thing a sandstone plot has to a fence, and it is rebuilt as the
+     * post it stands in for. Every plot keeps the composter a farmer works at, except the Shire's,
+     * which keeps its leaf in a barrel.
+     */
+    private static final Map<String, List<FarmPlan>> OWN_FARMS = Map.of(
+            "hobbit", List.of(new FarmPlan(vanillaFarm("plains", "plains_small_farm_1"),
+                    "minecraft:oak_log", "tolkienmobs:log_lebethron",
+                    "minecraft:composter", "tolkienmobs:barrel_lebethron")),
+            "dwarf", List.of(new FarmPlan(vanillaFarm("plains", "plains_small_farm_1"),
+                    "minecraft:oak_log", "tolkienmobs:log_dwarven_maple")),
+            "human", List.of(new FarmPlan(vanillaFarm("plains", "plains_small_farm_1"),
+                    "minecraft:oak_log", "tolkienmobs:log_culumalda")),
+            "elven", List.of(new FarmPlan(vanillaFarm("plains", "plains_small_farm_1"),
+                    "minecraft:oak_log", "tolkienmobs:log_mallorn")),
+            "orc", List.of(
+                    new FarmPlan(vanillaFarm("desert", "desert_farm_1"),
+                            "minecraft:smooth_sandstone_stairs", "tolkienmobs:log_mirkwood"),
+                    new FarmPlan(vanillaFarm("desert", "desert_farm_2"),
+                            "minecraft:smooth_sandstone_stairs", "tolkienmobs:log_mirkwood")),
+            "nurn", List.of(
+                    new FarmPlan(vanillaFarm("desert", "desert_farm_1"),
+                            "minecraft:smooth_sandstone_stairs", "tolkienmobs:log_deadwood"),
+                    new FarmPlan(vanillaFarm("desert", "desert_farm_2"),
+                            "minecraft:smooth_sandstone_stairs", "tolkienmobs:log_deadwood")));
+
+    /** True when the village with this style builds its fields instead of drawing vanilla's. */
     public static boolean hasOwnFarm(String style) {
         return OWN_FARMS.containsKey(style);
     }
 
-    /** The vanilla farm a village's own copy is made from. */
-    public static Optional<Identifier> ownFarmSource(String style) {
-        return Optional.ofNullable(OWN_FARMS.get(style));
+    /** The fields a village with this style builds, in the order datagen writes them. */
+    public static List<FarmPlan> farmPlans(String style) {
+        return OWN_FARMS.getOrDefault(style, List.of());
     }
 
     private TolkienVillageProvider() {}
@@ -245,9 +289,12 @@ public final class TolkienVillageProvider {
             houseElements.add(Pair.of(single(village.houseTemplate(house).toString(), stone), house.weight()));
         }
         if (hasOwnFarm(village.style())) {
-            // A village with a crop of its own farms it: the prepared copy has every row replanted, and
-            // the farm keeps its own street socket, so it still joins a road at its edge.
-            houseElements.add(Pair.of(legacy(village.farmTemplate().toString(), farmProcessors), 1));
+            // A village that builds its own fields draws the prepared copies: each has its wall in the
+            // village's own wood and keeps its own street socket, so it still joins a road at its edge.
+            List<FarmPlan> plans = farmPlans(village.style());
+            for (int i = 0; i < plans.size(); i++) {
+                houseElements.add(Pair.of(legacy(village.farmTemplate(i).toString(), farmProcessors), 1));
+            }
         } else {
             houseElements.add(Pair.of(StructurePoolElement.legacy(farm + "1", farmProcessors), 1));
             if (village.vanillaStyle().equals("desert")) {
@@ -569,9 +616,13 @@ public final class TolkienVillageProvider {
             return Identifier.fromNamespaceAndPath("tolkienmobs", "village/" + style + "/" + house.name());
         }
 
-        /** Where datagen writes this village's own farm; only a village that grows one has this. */
-        public Identifier farmTemplate() {
-            return Identifier.fromNamespaceAndPath("tolkienmobs", "village/" + style + "/farm");
+        /**
+         * Where datagen writes a field this village builds; only a village that builds them has this.
+         * The first keeps the plain name, so a village that builds one field names it as it always has.
+         */
+        public Identifier farmTemplate(int index) {
+            return Identifier.fromNamespaceAndPath("tolkienmobs",
+                    "village/" + style + "/" + (index == 0 ? "farm" : "farm_" + (index + 1)));
         }
 
         /**
