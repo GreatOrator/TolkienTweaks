@@ -56,8 +56,15 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addItem(TolkienItems.TEMPLATE_MORGULIRON, "锻造模板：魔古尔铁");
             this.addItem(TolkienItems.TEMPLATE_AMMOLITE, "锻造模板：斑彩石");
         this.add("itemgroup.tolkienmobs.natural", "托尔金微调：自然方块");
-            this.addItem(TolkienItems.PIPEWEED_SEEDS, "烟斗草种子");
-            this.addItem(TolkienItems.PIPEWEED_ITEM, "烟斗草");
+            this.addItem(TolkienItems.PIPEWEED_SEEDS, "长谷烟叶种子");
+            this.addItem(TolkienItems.PIPEWEED_ITEM, "长谷烟叶");
+            this.addItem(TolkienItems.PIPEWEED_OLDTOBY_SEEDS, "老托比种子");
+            this.addItem(TolkienItems.PIPEWEED_OLDTOBY_ITEM, "老托比烟叶");
+            this.addItem(TolkienItems.PIPEWEED_SOUTHLINCH_SEEDS, "南林奇种子");
+            this.addItem(TolkienItems.PIPEWEED_SOUTHLINCH_ITEM, "南林奇烟叶");
+            this.addItemWithLore(TolkienItems.TOBACCO_PIPE.get(), "烟斗", "填上烟叶，用火绒点燃，就能把烟雾吹成各种形状。");
+            this.add("item.tolkienmobs.pipe.empty", "你没有烟斗草可抽。");
+            this.add("item.tolkienmobs.pipe.smoke", "你抽了一斗%s。");
             this.addFlowerBlock(TolkienBlocks.FLOWER_SIMBELMYNE.get(), "辛贝穆奈", TolkienBlocks.POTTED_FLOWER_SIMBELMYNE.get());
             this.addFlowerBlock(TolkienBlocks.FLOWER_MIRKWOOD.get(), "色瑞刚", TolkienBlocks.POTTED_FLOWER_MIRKWOOD.get());
             this.addFlowerBlock(TolkienBlocks.FLOWER_ALFIRIN.get(), "阿尔费琳", TolkienBlocks.POTTED_FLOWER_ALFIRIN.get());
@@ -82,7 +89,9 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addBlock(TolkienBlocks.WALL_MUSHROOM_RED, "蘑菇墙 - 红色");
             this.addBlock(TolkienBlocks.WALL_MUSHROOM_BROWN, "蘑菇墙 - 棕色");
             this.addBlock(TolkienBlocks.LIVING_ROOTS, "活根");
-            this.addBlock(TolkienBlocks.PIPEWEED, "烟斗草作物");
+            this.addBlock(TolkienBlocks.PIPEWEED, "长谷烟叶作物");
+            this.addBlock(TolkienBlocks.PIPEWEED_OLDTOBY, "老托比烟叶作物");
+            this.addBlock(TolkienBlocks.PIPEWEED_SOUTHLINCH, "南林奇烟叶作物");
             this.addBlock(TolkienFluids.MITHRIL_BLOCK, "熔融秘银");
             this.addBlock(TolkienFluids.MORGULIRON_BLOCK, "熔融魔古尔铁");
             this.addBlock(TolkienBlocks.ARDA_PORTAL, "阿尔达传送门");

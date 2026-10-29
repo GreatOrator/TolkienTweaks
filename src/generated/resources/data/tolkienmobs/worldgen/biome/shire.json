@@ -55,7 +55,10 @@
       "tolkienmobs:culumalda_fallen_leaves",
       "tolkienmobs:culumalda_fallen_log",
       "tolkienmobs:lebethron_fallen_leaves",
-      "tolkienmobs:lebethron_fallen_log"
+      "tolkienmobs:lebethron_fallen_log",
+      "tolkienmobs:pipeweed_oldtoby_placed",
+      "tolkienmobs:pipeweed_placed",
+      "tolkienmobs:pipeweed_southlinch_placed"
     ]
   ],
   "has_precipitation": true,

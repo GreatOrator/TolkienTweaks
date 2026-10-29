@@ -197,6 +197,11 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         // Crop
         basicItem(TolkienItems.PIPEWEED_ITEM.get());
         basicItem(TolkienItems.PIPEWEED_SEEDS.get());
+        basicItem(TolkienItems.PIPEWEED_OLDTOBY_ITEM.get());
+        basicItem(TolkienItems.PIPEWEED_OLDTOBY_SEEDS.get());
+        basicItem(TolkienItems.PIPEWEED_SOUTHLINCH_ITEM.get());
+        basicItem(TolkienItems.PIPEWEED_SOUTHLINCH_SEEDS.get());
+        // The tobacco pipe draws with its own hand-written model, so no generated one is written for it.
         basicItem(TolkienItems.BRAMBLES_BERRY.get());
 
         // Blocks

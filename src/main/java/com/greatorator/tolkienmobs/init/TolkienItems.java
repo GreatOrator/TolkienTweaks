@@ -282,6 +282,13 @@ public class TolkienItems {
         // Crops & Foliage
     public static final DeferredItem<Item> PIPEWEED_ITEM = ITEMS.registerSimpleItem("pipeweed");
     public static final DeferredItem<Item> PIPEWEED_SEEDS = ITEMS.registerItem("pipeweed_seeds", properties -> new BlockItem(TolkienBlocks.PIPEWEED.get(), properties));
+    public static final DeferredItem<Item> PIPEWEED_OLDTOBY_ITEM = ITEMS.registerSimpleItem("pipeweed_oldtoby");
+    public static final DeferredItem<Item> PIPEWEED_OLDTOBY_SEEDS = ITEMS.registerItem("pipeweed_oldtoby_seeds", properties -> new BlockItem(TolkienBlocks.PIPEWEED_OLDTOBY.get(), properties));
+    public static final DeferredItem<Item> PIPEWEED_SOUTHLINCH_ITEM = ITEMS.registerSimpleItem("pipeweed_southlinch");
+    public static final DeferredItem<Item> PIPEWEED_SOUTHLINCH_SEEDS = ITEMS.registerItem("pipeweed_southlinch_seeds", properties -> new BlockItem(TolkienBlocks.PIPEWEED_SOUTHLINCH.get(), properties));
+    // The pipe's model is drawn by hand in assets/models/item/tobacco_pipe.json, so nothing here
+    // generates one for it.
+    public static final DeferredItem<Item> TOBACCO_PIPE = ITEMS.registerItem("tobacco_pipe", properties -> new PipeItem(properties).setHasLore(), () -> new Item.Properties().stacksTo(1));
     public static final DeferredItem<Item> BRAMBLES_BERRY = ITEMS.registerItem("brambles_berry", properties -> new BlockItem(TolkienBlocks.FLOWER_BRAMBLES.get(), properties), () -> new Item.Properties().food(TolkienFoods.FOOD_BRAMBLES_BERRY, TolkienFoods.FOOD_BRAMBLES_BERRY_CONSUMABLE));
 
         // Music Discs

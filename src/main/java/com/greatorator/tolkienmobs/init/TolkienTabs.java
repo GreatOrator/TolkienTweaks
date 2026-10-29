@@ -808,6 +808,11 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.MUSHROOM_DECAY_BLOOM);
                         output.accept(TolkienItems.PIPEWEED_ITEM);
                         output.accept(TolkienItems.PIPEWEED_SEEDS);
+                        output.accept(TolkienItems.PIPEWEED_OLDTOBY_ITEM);
+                        output.accept(TolkienItems.PIPEWEED_OLDTOBY_SEEDS);
+                        output.accept(TolkienItems.PIPEWEED_SOUTHLINCH_ITEM);
+                        output.accept(TolkienItems.PIPEWEED_SOUTHLINCH_SEEDS);
+                        output.accept(TolkienItems.TOBACCO_PIPE);
                         output.accept(TolkienBlocks.LIGHTNINGBUG_BLOCK);
                         output.accept(TolkienBlocks.LOCUST_BLOCK);
                         output.accept(TolkienBlocks.BLOCK_HALLOWED);

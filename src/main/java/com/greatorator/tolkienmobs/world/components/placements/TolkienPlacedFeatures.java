@@ -50,6 +50,10 @@ public class TolkienPlacedFeatures {
     public static final ResourceKey<PlacedFeature> FLOWER_MALLOS_PLACED_KEY = registerKey("flower_mallos_placed");
     public static final ResourceKey<PlacedFeature> FLOWER_BRAMBLES_PLACED_KEY = registerKey("flower_brambles_placed");
 
+    public static final ResourceKey<PlacedFeature> PLACED_PIPEWEED = registerKey("pipeweed_placed");
+    public static final ResourceKey<PlacedFeature> PLACED_PIPEWEED_OLDTOBY = registerKey("pipeweed_oldtoby_placed");
+    public static final ResourceKey<PlacedFeature> PLACED_PIPEWEED_SOUTHLINCH = registerKey("pipeweed_southlinch_placed");
+
     public static final ResourceKey<PlacedFeature> PLACED_DECAY_BLOOM_MUSHROOMS = registerKey("decay_bloom_mushrooms");
     public static final ResourceKey<PlacedFeature> PLACED_BLOOM_DECAY_MUSHROOMS = registerKey("bloom_decay_mushrooms");
 
@@ -200,6 +204,11 @@ public class TolkienPlacedFeatures {
         context.register(FLOWER_MALLOS_PLACED_KEY, flowerClumps(features.getOrThrow(FLOWER_MALLOS_KEY), 64));
         context.register(FLOWER_BRAMBLES_PLACED_KEY, flowerClumps(features.getOrThrow(FLOWER_BRAMBLES_KEY), 96));
 
+        // The common leaf is the commonest plant; the two finer strains are found in fewer patches.
+        context.register(PLACED_PIPEWEED, wildPipeweed(features.getOrThrow(PIPEWEED_KEY), 2));
+        context.register(PLACED_PIPEWEED_OLDTOBY, wildPipeweed(features.getOrThrow(PIPEWEED_OLDTOBY_KEY), 6));
+        context.register(PLACED_PIPEWEED_SOUTHLINCH, wildPipeweed(features.getOrThrow(PIPEWEED_SOUTHLINCH_KEY), 10));
+
         context.register(PLACED_DECAY_BLOOM_MUSHROOMS, new PlacedFeature(features.getOrThrow(DECAY_BLOOM_MUSHROOMS), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.absolute(15)), CountPlacement.of(3), AvoidLandmarkModifier.checkUnderground(), BiomeFilter.biome()).build()));
         context.register(PLACED_BLOOM_DECAY_MUSHROOMS, new PlacedFeature(features.getOrThrow(BLOOM_DECAY_MUSHROOMS), ImmutableList.<PlacementModifier>builder().add(PlacementUtils.HEIGHTMAP_WORLD_SURFACE, HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.absolute(15)), CountPlacement.of(3), AvoidLandmarkModifier.checkUnderground(), BiomeFilter.biome()).build()));
 
@@ -255,6 +264,22 @@ public class TolkienPlacedFeatures {
      * meadows'. These counts were measured in single-biome worlds rather than guessed; a flower whose
      * biome changes its ground should be re-measured rather than nudged.
      */
+    /**
+     * A patch of wild pipe-weed. It is scattered over the meadow rather than laid out in a bed, so the
+     * tries spread across the chunk and wander a little from where they land. The spread is sideways
+     * only: a plant has to sit one above the ground it stands on, so asking the offset to lift it as
+     * well puts most of the tries inside the soil or in the air above it, where none of them take.
+     */
+    private static PlacedFeature wildPipeweed(Holder<ConfiguredFeature<?, ?>> feature, int rarity) {
+        return new PlacedFeature(feature, List.of(
+                RarityFilter.onAverageOnceEvery(rarity),
+                InSquarePlacement.spread(),
+                PlacementUtils.HEIGHTMAP_WORLD_SURFACE,
+                CountPlacement.of(24),
+                RandomOffsetPlacement.ofTriangle(6, 0),
+                BiomeFilter.biome()));
+    }
+
     private static PlacedFeature flowerClumps(Holder<ConfiguredFeature<?, ?>> feature, int attempts) {
         return new PlacedFeature(feature, List.of(
                 RarityFilter.onAverageOnceEvery(2),

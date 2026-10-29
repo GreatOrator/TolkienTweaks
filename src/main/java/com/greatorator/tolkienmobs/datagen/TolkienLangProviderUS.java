@@ -56,8 +56,15 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.addItem(TolkienItems.TEMPLATE_MORGULIRON, "Template: Morgul Iron");
             this.addItem(TolkienItems.TEMPLATE_AMMOLITE, "Template: Ammolite");
         this.add("itemgroup.tolkienmobs.natural", "TolkienTweaks: Natural Blocks");
-            this.addItem(TolkienItems.PIPEWEED_SEEDS, "Pipeweed Seeds");
-            this.addItem(TolkienItems.PIPEWEED_ITEM, "Pipeweed");
+            this.addItem(TolkienItems.PIPEWEED_SEEDS, "Longbottom Leaf Seeds");
+            this.addItem(TolkienItems.PIPEWEED_ITEM, "Longbottom Leaf");
+            this.addItem(TolkienItems.PIPEWEED_OLDTOBY_SEEDS, "Old Toby Seeds");
+            this.addItem(TolkienItems.PIPEWEED_OLDTOBY_ITEM, "Old Toby");
+            this.addItem(TolkienItems.PIPEWEED_SOUTHLINCH_SEEDS, "Southlinch Seeds");
+            this.addItem(TolkienItems.PIPEWEED_SOUTHLINCH_ITEM, "Southlinch");
+            this.addItemWithLore(TolkienItems.TOBACCO_PIPE.get(), "Tobacco Pipe", "Packed with leaf and lit with a taper, it blows shapes in the smoke.");
+            this.add("item.tolkienmobs.pipe.empty", "You have no pipe-weed to smoke.");
+            this.add("item.tolkienmobs.pipe.smoke", "You smoke a pipe of %s.");
             this.addFlowerBlock(TolkienBlocks.FLOWER_SIMBELMYNE.get(), "Simbelmyne", TolkienBlocks.POTTED_FLOWER_SIMBELMYNE.get());
             this.addFlowerBlock(TolkienBlocks.FLOWER_MIRKWOOD.get(), "Seregon", TolkienBlocks.POTTED_FLOWER_MIRKWOOD.get());
             this.addFlowerBlock(TolkienBlocks.FLOWER_ALFIRIN.get(), "Alfirin", TolkienBlocks.POTTED_FLOWER_ALFIRIN.get());
@@ -82,7 +89,9 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.addBlock(TolkienBlocks.WALL_MUSHROOM_RED, "Wall Mushroom - Red");
             this.addBlock(TolkienBlocks.WALL_MUSHROOM_BROWN, "Wall Mushroom - Brown");
             this.addBlock(TolkienBlocks.LIVING_ROOTS, "Living Roots");
-            this.addBlock(TolkienBlocks.PIPEWEED, "Pipeweed Crops");
+            this.addBlock(TolkienBlocks.PIPEWEED, "Longbottom Leaf Crops");
+            this.addBlock(TolkienBlocks.PIPEWEED_OLDTOBY, "Old Toby Crops");
+            this.addBlock(TolkienBlocks.PIPEWEED_SOUTHLINCH, "Southlinch Crops");
             this.addBlock(TolkienFluids.MITHRIL_BLOCK, "Molten Mithril");
             this.addBlock(TolkienFluids.MORGULIRON_BLOCK, "Molten Morgul Iron");
             this.addBlock(TolkienBlocks.ARDA_PORTAL, "Arda Portal");

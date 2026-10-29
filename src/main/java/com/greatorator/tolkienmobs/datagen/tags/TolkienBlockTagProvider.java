@@ -495,7 +495,9 @@ public class TolkienBlockTagProvider extends BlockTagsProvider {
                 .add(TolkienBlocks.SLEEPING_BAG_RED.get())
                 .add(TolkienBlocks.SLEEPING_BAG_BLACK.get());
         tag(BlockTags.CROPS)
-                .add(TolkienBlocks.PIPEWEED.get());
+                .add(TolkienBlocks.PIPEWEED.get())
+                .add(TolkienBlocks.PIPEWEED_OLDTOBY.get())
+                .add(TolkienBlocks.PIPEWEED_SOUTHLINCH.get());
         tag(BlockTags.PORTALS)
                 .add(TolkienBlocks.ARDA_PORTAL.get());
         tag(BlockTags.WALL_POST_OVERRIDE)
@@ -559,6 +561,8 @@ public class TolkienBlockTagProvider extends BlockTagsProvider {
                 .add(TolkienBlocks.LIVING_ROOTS.get());
         tag(BlockTags.MINEABLE_WITH_HOE)
                 .add(TolkienBlocks.PIPEWEED.get())
+                .add(TolkienBlocks.PIPEWEED_OLDTOBY.get())
+                .add(TolkienBlocks.PIPEWEED_SOUTHLINCH.get())
                 .add(TolkienBlocks.LEAVES_MALLORN.get())
                 .add(TolkienBlocks.LEAVES_MIRKWOOD.get())
                 .add(TolkienBlocks.LEAVES_CULUMALDA.get())
@@ -700,7 +704,9 @@ public class TolkienBlockTagProvider extends BlockTagsProvider {
                 .add(TolkienBlocks.LEAFPILE_FANGORNOAK.get())
                 .add(TolkienBlocks.LEAFPILE_DWARVEN_MAPLE.get());
         tag(BlockTags.MAINTAINS_FARMLAND)
-                .add(TolkienBlocks.PIPEWEED.get());
+                .add(TolkienBlocks.PIPEWEED.get())
+                .add(TolkienBlocks.PIPEWEED_OLDTOBY.get())
+                .add(TolkienBlocks.PIPEWEED_SOUTHLINCH.get());
         tag(TolkienTags.Blocks.ROOT_TRACE_SKIP)
                 .addTag(BlockTags.LOGS)
                 .add(TolkienBlocks.LIVING_ROOTS.get())
