@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.datagen;
 
 import com.google.common.hash.Hashing;
+import com.greatorator.tolkienmobs.block.custom.PipeweedCropBlock;
 import com.greatorator.tolkienmobs.datagen.helpers.TolkienLootHelper;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
@@ -20,7 +21,12 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -114,7 +120,82 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
         addConnector(house, plan.residentFloor().offset(shift), "up_north", "minecraft:bottom",
                 "minecraft:village/" + village.vanillaStyle() + "/villagers", null, 0);
         stockChests(house, houseLoot(village, plan));
+        if (village.style().equals("hobbit")) plantPipeweedGarden(house, entrance);
         return house;
+    }
+
+    /** How many plants a burrow's bed holds, how far from the door it may be laid, and how many rows
+     * above or below the door it may climb. */
+    private static final int GARDEN_PLANTS = 9;
+    private static final int GARDEN_REACH = 6;
+    private static final int GARDEN_ROWS = 4;
+
+    /**
+     * What a garden may clear off its ground: bare air, and the weeds and wildflowers the burrow plans
+     * grow around their doors. Anything else over a grass block - a fence, a slab, or the plan's own
+     * structure void - is part of the build and is left where it stands.
+     */
+    private static final Set<String> GARDEN_WEEDS = Set.of(
+            "minecraft:air",
+            "minecraft:short_grass", "minecraft:tall_grass", "minecraft:fern", "minecraft:large_fern",
+            "minecraft:dandelion", "minecraft:poppy", "minecraft:oxeye_daisy", "minecraft:cornflower",
+            "minecraft:azure_bluet", "minecraft:allium", "minecraft:blue_orchid",
+            "minecraft:lily_of_the_valley", "minecraft:red_tulip", "minecraft:orange_tulip",
+            "minecraft:white_tulip", "minecraft:pink_tulip");
+
+    /**
+     * Lays a hobbit burrow's pipe-weed bed.
+     *
+     * <p>A burrow arrives with grass terraces and nothing growing on them, so the Shire's own weed is
+     * put where a hobbit would keep it: the turf beside the door, tilled and planted. The bed is taken
+     * from ground the plan already has - grass a garden may clear, whether bare or under weeds - so it
+     * can never cut into the house, and it keeps clear of the doorstep. Its row is the nearest turf's,
+     * because a burrow's doorway does not always stand at its garden's level. Which leaf each plant is
+     * comes from its place in the bed, so the same plan always yields the same garden.
+     */
+    private static void plantPipeweedGarden(CompoundTag house, BlockPos entrance) {
+        ListTag palette = list(house, "palette");
+        ListTag blocks = list(house, "blocks");
+        Map<BlockPos, String> standing = new HashMap<>();
+        List<BlockPos> turf = new ArrayList<>();
+        for (Tag tag : blocks) {
+            CompoundTag block = (CompoundTag) tag;
+            BlockPos pos = position(block);
+            String name = string(palette.getCompoundOrEmpty(block.getIntOr("state", 0)), "Name");
+            standing.put(pos, name);
+            if (name.equals("minecraft:grass_block")) turf.add(pos);
+        }
+
+        // A saved plan lists the air inside and above it as blocks of its own, so open ground is read
+        // from what stands in the cell rather than from whether the plan mentions it at all. The top row
+        // is left alone: a plant there would hang outside the template.
+        int height = list(house, "size").getIntOr(1, 0);
+        turf.removeIf(pos -> pos.getY() + 1 >= height
+                || !GARDEN_WEEDS.contains(standing.getOrDefault(pos.above(), "minecraft:air"))
+                || Math.abs(pos.getY() - entrance.getY()) > GARDEN_ROWS
+                || Math.abs(pos.getX() - entrance.getX()) <= 1 && Math.abs(pos.getZ() - entrance.getZ()) <= 1
+                || pos.distSqr(entrance) > GARDEN_REACH * GARDEN_REACH);
+        if (turf.size() < 4) return;
+        turf.sort(Comparator.comparingDouble((BlockPos pos) -> pos.distSqr(entrance))
+                .thenComparingInt(BlockPos::getX).thenComparingInt(BlockPos::getZ));
+        int bed = turf.get(0).getY();
+        turf.removeIf(pos -> pos.getY() != bed);
+        if (turf.size() < 4) return;
+
+        for (int i = 0; i < Math.min(GARDEN_PLANTS, turf.size()); i++) {
+            BlockPos soil = turf.get(i);
+            putState(house, soil, "minecraft:farmland");
+            // Mostly the common leaf, with a plant of each finer strain in every bed worth the name.
+            String crop = i % 4 == 3 ? "tolkienmobs:pipeweed_oldtoby"
+                    : i % 7 == 6 ? "tolkienmobs:pipeweed_southlinch"
+                    : "tolkienmobs:pipeweed";
+            CompoundTag ripe = new CompoundTag();
+            ripe.putString("Name", crop);
+            CompoundTag properties = new CompoundTag();
+            properties.putString("age", String.valueOf(PipeweedCropBlock.MAX_AGE));
+            ripe.put("Properties", properties);
+            putState(house, soil.above(), ripe);
+        }
     }
 
     /**
@@ -465,14 +546,21 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
     }
 
     private static void putState(CompoundTag template, BlockPos position, String name) {
+        CompoundTag state = new CompoundTag();
+        state.putString("Name", name);
+        putState(template, position, state);
+    }
+
+    /** Writes a block, with its properties, over whatever the plan had at that position. */
+    private static void putState(CompoundTag template, BlockPos position, CompoundTag state) {
         ListTag palette = list(template, "palette");
         int index = -1;
         for (int i = 0; i < palette.size(); i++) {
-            if (string(palette.getCompoundOrEmpty(i), "Name").equals(name)) { index = i; break; }
+            if (palette.getCompoundOrEmpty(i).equals(state)) { index = i; break; }
         }
         if (index == -1) {
             index = palette.size();
-            CompoundTag state = new CompoundTag(); state.putString("Name", name); palette.add(state);
+            palette.add(state.copy());
         }
         removeBlock(template, position);
         CompoundTag block = new CompoundTag();
