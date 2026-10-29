@@ -57,11 +57,14 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.addItem(TolkienItems.TEMPLATE_AMMOLITE, "Template: Ammolite");
         this.add("itemgroup.tolkienmobs.natural", "TolkienTweaks: Natural Blocks");
             this.addItem(TolkienItems.PIPEWEED_SEEDS, "Longbottom Leaf Seeds");
-            this.addItem(TolkienItems.PIPEWEED_ITEM, "Longbottom Leaf");
+            this.addItemWithLore(TolkienItems.PIPEWEED_ITEM.get(), "Longbottom Leaf",
+                    "The common leaf of the Shire. It lends a hobbit's hardiness, and blows a neat ring.");
             this.addItem(TolkienItems.PIPEWEED_OLDTOBY_SEEDS, "Old Toby Seeds");
-            this.addItem(TolkienItems.PIPEWEED_OLDTOBY_ITEM, "Old Toby");
+            this.addItemWithLore(TolkienItems.PIPEWEED_OLDTOBY_ITEM.get(), "Old Toby",
+                    "The oldest and sweetest leaf, out of the Southfarthing. It knits the body's small hurts, and draws a ship in the smoke.");
             this.addItem(TolkienItems.PIPEWEED_SOUTHLINCH_SEEDS, "Southlinch Seeds");
-            this.addItem(TolkienItems.PIPEWEED_SOUTHLINCH_ITEM, "Southlinch");
+            this.addItemWithLore(TolkienItems.PIPEWEED_SOUTHLINCH_ITEM.get(), "Southlinch",
+                    "A thin, sharp leaf from the southern marches. It fills a hungry belly better than a meal, and goes up as a dragon.");
             this.addItemWithLore(TolkienItems.TOBACCO_PIPE.get(), "Tobacco Pipe", "Packed with leaf and lit with a taper, it blows shapes in the smoke.");
             // Named after the item that asks for them: the pipe reads its own description id, so these
             // two keys have to sit under tobacco_pipe, not under the pipe the item was once called.
@@ -69,6 +72,8 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add("item.tolkienmobs.tobacco_pipe.smoke", "You smoke a pipe of %s.");
             this.add("item.tolkienmobs.tobacco_pipe.bowl", "Bowl: %s");
             this.add("item.tolkienmobs.tobacco_pipe.bowl_empty", "Bowl: empty");
+            this.add("item.tolkienmobs.tobacco_pipe.pack", "You pack the bowl with %s.");
+            this.add("item.tolkienmobs.tobacco_pipe.tip", "You tip the %s back into your pack.");
             this.addFlowerBlock(TolkienBlocks.FLOWER_SIMBELMYNE.get(), "Simbelmyne", TolkienBlocks.POTTED_FLOWER_SIMBELMYNE.get());
             this.addFlowerBlock(TolkienBlocks.FLOWER_MIRKWOOD.get(), "Seregon", TolkienBlocks.POTTED_FLOWER_MIRKWOOD.get());
             this.addFlowerBlock(TolkienBlocks.FLOWER_ALFIRIN.get(), "Alfirin", TolkienBlocks.POTTED_FLOWER_ALFIRIN.get());

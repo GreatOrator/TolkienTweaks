@@ -386,6 +386,7 @@ public class TolkienMobsMain {
             pEvent.registerSpriteSet(TolkienParticleTypes.FANGORNOAK_LEAVES.get(), ClientModEvents::leafParticle);
             pEvent.registerSpriteSet(TolkienParticleTypes.DWARVEN_MAPLE_LEAVES.get(), ClientModEvents::leafParticle);
             pEvent.registerSpriteSet(TolkienParticleTypes.TINTED_SMOKE.get(), TintedSmokeParticle.Provider::new);
+            pEvent.registerSpriteSet(TolkienParticleTypes.PIPE_SMOKE.get(), TintedSmokeParticle.DotProvider::new);
         }
 
         /**

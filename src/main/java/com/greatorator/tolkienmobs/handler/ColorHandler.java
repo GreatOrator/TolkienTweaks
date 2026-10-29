@@ -9,7 +9,6 @@ import net.minecraft.client.color.item.ItemTintSource;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -21,11 +20,11 @@ import javax.annotation.Nullable;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 /**
- * Tints the gem layer of a trinket with the colour of the potion it holds, and the packed leaf in a
- * pipe's bowl with the colour of the strain the smoker is carrying. Both colours live in tint
- * sources, which an item model names in its {@code tints} list, rather than in an item colour
- * handler: the trinkets list a plain white first layer and the trinket source for the gem, and the
- * pipe points its bowl faces at tint index 0 and lists the pipe-weed source there.
+ * Tints the gem layer of a trinket with the colour of the potion it holds, and the leaf in a pipe's
+ * bowl with the colour of the strain that leaf came from. Both colours live in tint sources, which
+ * an item model names in its {@code tints} list, rather than in an item colour handler: the trinkets
+ * list a plain white first layer and the trinket source for the gem, and the pipe points its bowl
+ * faces at tint index 0 and lists the pipe-weed source there.
  */
 @EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class ColorHandler {
@@ -37,11 +36,9 @@ public class ColorHandler {
     }
 
     /**
-     * The leaf a pipe's bowl is packed with. A pipe carries no strain of its own: it smokes whichever
-     * leaf the smoker is holding, so the bowl is coloured by asking the same question the pipe asks
-     * when it is lit, {@link PipeweedStrain#find}, which means the bowl shows the leaf the next draw
-     * would spend. A bowl that has already been smoked out shows ash instead, whatever is in the pack,
-     * until the pipe is drawn on again, and so does one whose smoker carries no leaf at all.
+     * The leaf a pipe's bowl holds. Loading a pipe puts a leaf in the bowl, so the colour is read
+     * straight off the stack - the same leaf the draw will burn, whatever the smoker is carrying by
+     * then, and the same for whoever is looking at it. An empty bowl takes a dull ash brown.
      */
     public record PipeLeafTintSource() implements ItemTintSource {
         public static final MapCodec<PipeLeafTintSource> MAP_CODEC = MapCodec.unit(new PipeLeafTintSource());
@@ -58,16 +55,8 @@ public class ColorHandler {
 
         @Override
         public int calculate(ItemStack stack, @Nullable ClientLevel level, @Nullable LivingEntity entity) {
-            if (PipeItem.isSpent(stack)) {
-                return ARGB.opaque(ASH);
-            }
-            if (entity instanceof Player player) {
-                PipeweedStrain strain = PipeweedStrain.find(player);
-                if (strain != null) {
-                    return ARGB.opaque(shaded(strain.bloom()));
-                }
-            }
-            return ARGB.opaque(ASH);
+            PipeweedStrain bowl = PipeItem.bowlOf(stack);
+            return bowl == null ? ARGB.opaque(ASH) : ARGB.opaque(shaded(bowl.bloom()));
         }
 
         private static int shaded(int rgb) {

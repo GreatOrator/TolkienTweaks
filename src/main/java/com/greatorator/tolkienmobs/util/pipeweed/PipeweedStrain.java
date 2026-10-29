@@ -9,6 +9,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.registries.DeferredItem;
 
+import java.util.Locale;
+
 /**
  * The three leaves a Shire pipe can be packed with. Each one is a crop of its own, so a farm tells
  * them apart by what was planted, and each burns to its own shape, its own smoke and its own short,
@@ -19,16 +21,20 @@ import net.neoforged.neoforge.registries.DeferredItem;
  * smoke reads as smoke rather than as a puff of paint. A pipe therefore blows the same pink, salmon
  * or violet the plant flowers in, and the same pair of colours its leaf icon carries. The bowl of a
  * pipe holds that flower's own colour at full strength, since a bowl of leaf is not smoke.
+ *
+ * <p>A strain is named in the bowl by {@link #id()}, which is what a loaded pipe stores: the pipe
+ * holds one leaf of one strain until it is smoked or tipped out, rather than reading the pack each
+ * time it is looked at.
  */
 public enum PipeweedStrain {
     /** The common Shire leaf, the one every hobbit grows along the garden wall. */
-    LONGBOTTOM(TolkienItems.PIPEWEED_ITEM, PipeSmoke.Shape.RING, MobEffects.ABSORPTION, 200, 0,
+    LONGBOTTOM(TolkienItems.PIPEWEED_ITEM, PipeSmoke.Shape.RING, MobEffects.ABSORPTION, 1200, 0,
             0xd488a4, 0xf0bcd0),
     /** The oldest and sweetest, said to have come from the Southfarthing. */
-    OLD_TOBY(TolkienItems.PIPEWEED_OLDTOBY_ITEM, PipeSmoke.Shape.SHIP, MobEffects.REGENERATION, 200, 0,
+    OLD_TOBY(TolkienItems.PIPEWEED_OLDTOBY_ITEM, PipeSmoke.Shape.SHIP, MobEffects.REGENERATION, 1200, 0,
             0xdb9c74, 0xf4caa3),
     /** A thin, sharp leaf from the southern marches of the Shire. */
-    SOUTHLINCH(TolkienItems.PIPEWEED_SOUTHLINCH_ITEM, PipeSmoke.Shape.DRAGON, MobEffects.SATURATION, 120, 0,
+    SOUTHLINCH(TolkienItems.PIPEWEED_SOUTHLINCH_ITEM, PipeSmoke.Shape.DRAGON, MobEffects.SATURATION, 600, 0,
             0xc68fb6, 0xe8bcd9);
 
     /** How far a plume is lifted from the flower's own colour toward its pale centre. */
@@ -67,6 +73,21 @@ public enum PipeweedStrain {
 
     public Item leafItem() {
         return leaf.get();
+    }
+
+    /** How this strain is written into a pipe's bowl, so a loaded pipe keeps which leaf is in it. */
+    public String id() {
+        return name().toLowerCase(Locale.ROOT);
+    }
+
+    /** The strain a bowl holds, or null when the name on the stack means nothing. */
+    public static PipeweedStrain byId(String id) {
+        for (PipeweedStrain strain : values()) {
+            if (strain.id().equals(id)) {
+                return strain;
+            }
+        }
+        return null;
     }
 
     public PipeSmoke.Shape shape() {

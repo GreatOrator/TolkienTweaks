@@ -34,17 +34,32 @@ public class TolkienParticleTypes {
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> LEBETHRON_LEAVES = PARTICLES.register("lebethron_leaves", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> FANGORNOAK_LEAVES = PARTICLES.register("fangornoak_leaves", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> DWARVEN_MAPLE_LEAVES = PARTICLES.register("dwarven_maple_leaves", () -> new SimpleParticleType(false));
-    public static final DeferredHolder<ParticleType<?>, ParticleType<ColorParticleOption>> TINTED_SMOKE = PARTICLES.register("tinted_smoke", () -> new ParticleType<ColorParticleOption>(false) {
-        @Override
-        public MapCodec<ColorParticleOption> codec() {
-            return ColorParticleOption.codec(this);
-        }
+    /**
+     * Vanilla's campfire smoke carrying a colour. It is a plume rather than a dot - one puff is most
+     * of a block across - which is what a bowl or a smoker wants to give off.
+     */
+    public static final DeferredHolder<ParticleType<?>, ParticleType<ColorParticleOption>> TINTED_SMOKE = tinted("tinted_smoke");
 
-        @Override
-        public StreamCodec<? super RegistryFriendlyByteBuf, ColorParticleOption> streamCodec() {
-            return ColorParticleOption.streamCodec(this);
-        }
-    });
+    /**
+     * The same coloured smoke at a fifth of the size, for drawing the shapes a pipe blows. A ring
+     * sketched in campfire puffs is a ball of smoke: the figure cannot be read at all until each
+     * point of it is smaller than the gap to the next.
+     */
+    public static final DeferredHolder<ParticleType<?>, ParticleType<ColorParticleOption>> PIPE_SMOKE = tinted("pipe_smoke");
+
+    private static DeferredHolder<ParticleType<?>, ParticleType<ColorParticleOption>> tinted(String name) {
+        return PARTICLES.register(name, () -> new ParticleType<ColorParticleOption>(false) {
+            @Override
+            public MapCodec<ColorParticleOption> codec() {
+                return ColorParticleOption.codec(this);
+            }
+
+            @Override
+            public StreamCodec<? super RegistryFriendlyByteBuf, ColorParticleOption> streamCodec() {
+                return ColorParticleOption.streamCodec(this);
+            }
+        });
+    }
 
     public static void register(IEventBus eventBus) {
         PARTICLES.register(eventBus);

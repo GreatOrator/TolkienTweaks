@@ -39,6 +39,8 @@ public class TolkienParticleDescriptionProvider extends ParticleDescriptionProvi
         // Tinted smoke only adds a colour to vanilla campfire smoke, so it reuses those twelve sprites
         // rather than shipping a second copy of them.
         this.spriteSet(TolkienParticleTypes.TINTED_SMOKE.get(), Identifier.withDefaultNamespace("big_smoke"), 12, false);
+        // The pipe's shapes are the same smoke drawn small, so they share the sprites as well.
+        this.spriteSet(TolkienParticleTypes.PIPE_SMOKE.get(), Identifier.withDefaultNamespace("big_smoke"), 12, false);
     }
 
     @Nonnull
