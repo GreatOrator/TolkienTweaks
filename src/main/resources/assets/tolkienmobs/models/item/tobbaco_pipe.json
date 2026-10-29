@@ -1,0 +1,242 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"textures": {
+		"0": "tolkienmobs:item/tools/obj/pipebasecolor"
+	},
+	"elements": [
+		{
+			"name": "cube_Trubka.png_0",
+			"from": [10.5, 0, 7.25],
+			"to": [12, 3, 8.75],
+			"rotation": {"x": 180, "y": 0, "z": 180, "origin": [11.25, 1.5, 8]},
+			"faces": {
+				"north": {"uv": [0, 10, 3, 4], "texture": "#0"},
+				"east": {"uv": [6, 16, 9, 10], "texture": "#0"},
+				"south": {"uv": [0, 16, 3, 10], "texture": "#0"},
+				"west": {"uv": [3, 16, 6, 10], "texture": "#0"},
+				"up": {"uv": [3, 10, 6, 7], "texture": "#0"},
+				"down": {"uv": [6, 7, 9, 10], "texture": "#0"}
+			}
+		},
+		{
+			"name": "cube_1_Trubka.png_0",
+			"from": [8.5, 0.5, 7.75],
+			"to": [10.5, 1, 8.25],
+			"rotation": {"x": 180, "y": 0, "z": 180, "origin": [9.5, 0.75, 8]},
+			"faces": {
+				"north": {"uv": [9, 12, 13, 11], "texture": "#0"},
+				"east": {"uv": [2, 4, 3, 3], "texture": "#0"},
+				"south": {"uv": [9, 13, 13, 12], "texture": "#0"},
+				"west": {"uv": [1, 4, 2, 3], "texture": "#0"},
+				"up": {"uv": [9, 11, 13, 10], "texture": "#0"},
+				"down": {"uv": [9, 9, 13, 10], "texture": "#0"}
+			}
+		},
+		{
+			"name": "cube_2_Trubka.png_0",
+			"from": [8, 0.375, 7.625],
+			"to": [8.5, 1.125, 8.375],
+			"rotation": {"x": 0, "y": 0, "z": -180, "origin": [8.25, 0.75, 8]},
+			"faces": {
+				"north": {"uv": [4, 4, 3, 6], "texture": "#0"},
+				"east": {"uv": [10, 5, 8, 7], "texture": "#0"},
+				"south": {"uv": [5, 4, 4, 6], "texture": "#0"},
+				"west": {"uv": [11, 7, 9, 9], "texture": "#0"},
+				"up": {"uv": [6, 4, 7, 6], "texture": "#0"},
+				"down": {"uv": [5, 6, 6, 4], "texture": "#0"}
+			}
+		},
+		{
+			"name": "cube_3_Trubka.png_0",
+			"from": [5.5, 0.5, 7.75],
+			"to": [8, 1, 8.25],
+			"rotation": {"x": 180, "y": 0, "z": 180, "origin": [6.75, 0.75, 8]},
+			"faces": {
+				"north": {"uv": [9, 15, 14, 14], "texture": "#0"},
+				"east": {"uv": [4, 4, 5, 3], "texture": "#0"},
+				"south": {"uv": [9, 16, 14, 15], "texture": "#0"},
+				"west": {"uv": [3, 4, 4, 3], "texture": "#0"},
+				"up": {"uv": [9, 14, 14, 13], "texture": "#0"},
+				"down": {"uv": [3, 6, 8, 7], "texture": "#0"}
+			}
+		},
+		{
+			"name": "cube_4_Trubka.png_0",
+			"from": [4, 0.5, 7.8],
+			"to": [4.5, 0.8, 8.2],
+			"rotation": {"x": 0, "y": 0, "z": 180, "origin": [4.25, 0.65, 8]},
+			"faces": {
+				"north": {"uv": [8, 5, 7, 6], "texture": "#0"},
+				"east": {"uv": [11, 4, 10, 5], "texture": "#0"},
+				"south": {"uv": [10, 4, 9, 5], "texture": "#0"},
+				"west": {"uv": [12, 7, 11, 8], "texture": "#0"},
+				"up": {"uv": [0, 3, 1, 4], "texture": "#0"},
+				"down": {"uv": [11, 5, 12, 4], "texture": "#0"}
+			}
+		},
+		{
+			"name": "cube_5_Trubka.png_0",
+			"from": [4.5, 0.5, 7.8],
+			"to": [5.5, 0.925, 8.2],
+			"rotation": {"x": 180, "y": 0, "z": 180, "origin": [5, 0.712, 8]},
+			"faces": {
+				"north": {"uv": [10, 6, 12, 5], "texture": "#0"},
+				"east": {"uv": [6, 4, 7, 3], "texture": "#0"},
+				"south": {"uv": [10, 7, 12, 6], "texture": "#0"},
+				"west": {"uv": [5, 4, 6, 3], "texture": "#0"},
+				"up": {"uv": [7, 5, 9, 4], "texture": "#0"},
+				"down": {"uv": [11, 8, 13, 9], "texture": "#0"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [24.54, 52.49, -35.94],
+			"translation": [1.75, 4.75, -1]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [164.95, -69.91, 177.58],
+			"translation": [-1.25, 4.75, -1.75]
+		},
+		"firstperson_righthand": {
+			"rotation": [0, -90, 25],
+			"translation": [1.13, 3.2, 1.13],
+			"scale": [0.68, 0.68, 0.68]
+		},
+		"firstperson_lefthand": {
+			"rotation": [0, -90, 25],
+			"translation": [1.13, 3.2, 1.13],
+			"scale": [0.68, 0.68, 0.68]
+		},
+		"ground": {
+			"translation": [0, 4.75, 0]
+		},
+		"gui": {
+			"rotation": [0, 0, -54.75],
+			"translation": [8.25, 7, 0],
+			"scale": [1.65234, 1.51367, 1]
+		},
+		"fixed": {
+			"rotation": [0, 0, -50.5],
+			"translation": [4.75, 7.5, 0],
+			"scale": [1.37109, 1.25586, 2.82227]
+		}
+	},
+	"groups": [
+		{
+			"name": "Sketchfab_model",
+			"origin": [8, 0, 8.25],
+			"scope": 0,
+			"color": 0,
+			"children": [
+				{
+					"name": "Trubka.fbx",
+					"origin": [8, 0, 8.25],
+					"scope": 0,
+					"color": 0,
+					"children": [
+						{
+							"name": "RootNode",
+							"origin": [8, 0, 8.25],
+							"scope": 0,
+							"color": 0,
+							"children": [
+								{
+									"name": "cube",
+									"origin": [11.5, 0, 8.25],
+									"scope": 0,
+									"color": 0,
+									"children": [
+										{
+											"name": "cube_Trubka.png_0",
+											"origin": [11.5, 0, 8.25],
+											"scope": 0,
+											"color": 0,
+											"children": [0]
+										}
+									]
+								},
+								{
+									"name": "cube_1",
+									"origin": [10, 0, 8.25],
+									"scope": 0,
+									"color": 0,
+									"children": [
+										{
+											"name": "cube_1_Trubka.png_0",
+											"origin": [10, 0, 8.25],
+											"scope": 0,
+											"color": 0,
+											"children": [1]
+										}
+									]
+								},
+								{
+									"name": "cube_2",
+									"origin": [8, 0, 8.25],
+									"scope": 0,
+									"color": 0,
+									"children": [
+										{
+											"name": "cube_2_Trubka.png_0",
+											"origin": [8, 0, 8.25],
+											"scope": 0,
+											"color": 0,
+											"children": [2]
+										}
+									]
+								},
+								{
+									"name": "cube_3",
+									"origin": [7.5, 0, 8.25],
+									"scope": 0,
+									"color": 0,
+									"children": [
+										{
+											"name": "cube_3_Trubka.png_0",
+											"origin": [7.5, 0, 8.25],
+											"scope": 0,
+											"color": 0,
+											"children": [3]
+										}
+									]
+								},
+								{
+									"name": "cube_4",
+									"origin": [5.5, -0.25, 8.25],
+									"scope": 0,
+									"color": 0,
+									"children": [
+										{
+											"name": "cube_4_Trubka.png_0",
+											"origin": [5.5, -0.25, 8.25],
+											"scope": 0,
+											"color": 0,
+											"children": [4]
+										}
+									]
+								},
+								{
+									"name": "cube_5",
+									"origin": [5, 0, 8.25],
+									"scope": 0,
+									"color": 0,
+									"children": [
+										{
+											"name": "cube_5_Trubka.png_0",
+											"origin": [5, 0, 8.25],
+											"scope": 0,
+											"color": 0,
+											"children": [5]
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}
