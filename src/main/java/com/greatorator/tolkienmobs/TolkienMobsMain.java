@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs;
 
 import com.google.common.collect.Maps;
 import com.greatorator.tolkienmobs.block.custom.entity.BackpackBlockEntity;
+import com.greatorator.tolkienmobs.client.PipeDrawHud;
 import com.greatorator.tolkienmobs.containers.screens.*;
 import com.greatorator.tolkienmobs.datagen.TolkienDataGenerator;
 import com.greatorator.tolkienmobs.entity.ambient.render.*;
@@ -55,6 +56,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.RegisterFluidModelsEvent;
+import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
@@ -364,6 +366,11 @@ public class TolkienMobsMain {
                     .registerFluidModel(event, TolkienFluids.MITHRIL_FLUID.get(), TolkienFluids.MITHRIL_FLOWING.get());
             ((TolkienFluidType) TolkienFluidTypes.MOLTEN_MORGULIRON_LAVA_FLUID_TYPE.get())
                     .registerFluidModel(event, TolkienFluids.MORGULIRON_FLUID.get(), TolkienFluids.MORGULIRON_FLOWING.get());
+        }
+
+        @SubscribeEvent
+        public static void registerGuiLayers(RegisterGuiLayersEvent event) {
+            PipeDrawHud.register(event);
         }
 
         @SubscribeEvent
