@@ -20,9 +20,9 @@ import javax.annotation.Nullable;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 /**
- * Tints the gem layer of a trinket with the colour of the potion it holds, and the leaf in a pipe's
- * bowl with the colour of the strain that leaf came from. Both colours live in tint sources, which
- * an item model names in its {@code tints} list, rather than in an item colour handler: the trinkets
+ * Tints the gem layer of a trinket with the color of the potion it holds, and the leaf in a pipe's
+ * bowl with the color of the strain that leaf came from. Both colors live in tint sources, which
+ * an item model names in its {@code tints} list, rather than in an item color handler: the trinkets
  * list a plain white first layer and the trinket source for the gem, and the pipe points its bowl
  * faces at tint index 0 and lists the pipe-weed source there.
  */
@@ -36,14 +36,14 @@ public class ColorHandler {
     }
 
     /**
-     * The leaf a pipe's bowl holds. Loading a pipe puts a leaf in the bowl, so the colour is read
+     * The leaf a pipe's bowl holds. Loading a pipe puts a leaf in the bowl, so the color is read
      * straight off the stack - the same leaf the draw will burn, whatever the smoker is carrying by
      * then, and the same for whoever is looking at it. An empty bowl takes a dull ash brown.
      */
     public record PipeLeafTintSource() implements ItemTintSource {
         public static final MapCodec<PipeLeafTintSource> MAP_CODEC = MapCodec.unit(new PipeLeafTintSource());
 
-        /** An empty bowl, as packed RGB: the colour of leaf burnt out of it. */
+        /** An empty bowl, as packed RGB: the color of leaf burnt out of it. */
         private static final int ASH = 0x6F5A47;
 
         /**
