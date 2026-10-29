@@ -654,9 +654,10 @@ public class TolkienBlockTagProvider extends BlockTagsProvider {
                 .addTag(TolkienTags.Blocks.MITHRIL_ORES)
                 .addTag(TolkienTags.Blocks.MORGULIRON_ORES)
                 .addTag(TolkienTags.Blocks.AMMOLITE_ORES);
+        // No ore belongs here: all four variants of each of the three ores are named by the
+        // diamond tag above, through their own ore tags, so mithril must not be declared iron a
+        // second time while its two siblings are not.
         tag(BlockTags.NEEDS_IRON_TOOL)
-                .add(TolkienBlocks.ORE_MITHRIL.get())
-                .add(TolkienBlocks.ORE_NETHER_MITHRIL.get())
                 .add(TolkienBlocks.CHISELED_DARK_STONE_BRICKS.get())
                 .add(TolkienBlocks.COBBLED_DARK_STONE.get())
                 .add(TolkienBlocks.CRACKED_DARK_STONE_BRICKS.get())
