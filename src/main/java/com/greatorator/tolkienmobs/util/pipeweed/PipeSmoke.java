@@ -21,6 +21,16 @@ public final class PipeSmoke {
     private static final double TRAIL = 0.016;
     private static final double DRIFT = 0.02;
 
+    /**
+     * How much larger a shape is blown than the hand-space it is sketched in. A ring of half a block
+     * is a ball of smoke in front of the face whatever it is drawn with, so the figures are given room
+     * to be read: a ring here comes out about two blocks across.
+     */
+    private static final double FIGURE = 2.0;
+
+    /** How far a dot of a shape drifts as it fades, relative to a puff of the plume. */
+    private static final double DOT_DRIFT = 0.35;
+
     private PipeSmoke() {
     }
 
@@ -54,8 +64,9 @@ public final class PipeSmoke {
         List<Vec3> outline = outline(shape);
         for (int i = 0; i < outline.size(); i++) {
             Vec3 point = outline.get(i);
-            Vec3 at = mouth.add(right.scale(point.x)).add(up.scale(point.y)).add(look.scale(TRAIL * i));
-            puff(level, at, look, colour);
+            Vec3 at = mouth.add(right.scale(point.x * FIGURE)).add(up.scale(point.y * FIGURE))
+                    .add(look.scale(TRAIL * i));
+            dot(level, at, look, colour);
         }
     }
 
@@ -68,9 +79,22 @@ public final class PipeSmoke {
         return ColorParticleOption.create(TolkienParticleTypes.TINTED_SMOKE.get(), 0xFF000000 | colour);
     }
 
+    /**
+     * One point of a blown shape. It is the same colour as the plume but a fifth of the size, since a
+     * shape drawn in campfire-sized puffs is a cloud with a silhouette rather than a drawing of anything.
+     */
+    public static ParticleOptions dot(int colour) {
+        return ColorParticleOption.create(TolkienParticleTypes.PIPE_SMOKE.get(), 0xFF000000 | colour);
+    }
+
     private static void puff(ServerLevel level, Vec3 at, Vec3 look, int colour) {
         level.sendParticles(smoke(colour), at.x, at.y, at.z, 0,
                 look.x * DRIFT, look.y * DRIFT + 0.004, look.z * DRIFT, 0.01);
+    }
+
+    private static void dot(ServerLevel level, Vec3 at, Vec3 look, int colour) {
+        level.sendParticles(dot(colour), at.x, at.y, at.z, 0,
+                look.x * DRIFT * DOT_DRIFT, look.y * DRIFT * DOT_DRIFT + 0.002, look.z * DRIFT * DOT_DRIFT, 0.01);
     }
 
     private static List<Vec3> outline(Shape shape) {

@@ -57,11 +57,14 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addItem(TolkienItems.TEMPLATE_AMMOLITE, "锻造模板：斑彩石");
         this.add("itemgroup.tolkienmobs.natural", "托尔金微调：自然方块");
             this.addItem(TolkienItems.PIPEWEED_SEEDS, "长谷烟叶种子");
-            this.addItem(TolkienItems.PIPEWEED_ITEM, "长谷烟叶");
+            this.addItemWithLore(TolkienItems.PIPEWEED_ITEM.get(), "长谷烟叶",
+                    "夏尔最寻常的烟叶。抽上一斗，人便多几分霍比特人的硬朗，烟圈也吐得圆整。");
             this.addItem(TolkienItems.PIPEWEED_OLDTOBY_SEEDS, "老托比种子");
-            this.addItem(TolkienItems.PIPEWEED_OLDTOBY_ITEM, "老托比烟叶");
+            this.addItemWithLore(TolkienItems.PIPEWEED_OLDTOBY_ITEM.get(), "老托比烟叶",
+                    "最陈最甜的一味，出自南法辛。它能弥合身上的小伤，烟雾里会升起一条船。");
             this.addItem(TolkienItems.PIPEWEED_SOUTHLINCH_SEEDS, "南林奇种子");
-            this.addItem(TolkienItems.PIPEWEED_SOUTHLINCH_ITEM, "南林奇烟叶");
+            this.addItemWithLore(TolkienItems.PIPEWEED_SOUTHLINCH_ITEM.get(), "南林奇烟叶",
+                    "南境边地来的薄叶，辛辣。比一顿饭更能填饱肚子，烟升上去时是一条龙。");
             this.addItemWithLore(TolkienItems.TOBACCO_PIPE.get(), "烟斗", "填上烟叶，用火绒点燃，就能把烟雾吹成各种形状。");
             // 键名要跟着物品自己的描述 id 走：烟斗读的是 tobacco_pipe 下的两个键。
             this.add("item.tolkienmobs.tobacco_pipe.empty", "你没有烟叶可抽。");
@@ -69,6 +72,8 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             // 烟锅指斗钵，提示行说的是锅里装的是哪一款烟叶。
             this.add("item.tolkienmobs.tobacco_pipe.bowl", "烟锅：%s");
             this.add("item.tolkienmobs.tobacco_pipe.bowl_empty", "烟锅：空的");
+            this.add("item.tolkienmobs.tobacco_pipe.pack", "你往烟锅里填了%s。");
+            this.add("item.tolkienmobs.tobacco_pipe.tip", "你把%s倒回了背包。");
             this.addFlowerBlock(TolkienBlocks.FLOWER_SIMBELMYNE.get(), "辛贝穆奈", TolkienBlocks.POTTED_FLOWER_SIMBELMYNE.get());
             this.addFlowerBlock(TolkienBlocks.FLOWER_MIRKWOOD.get(), "色瑞刚", TolkienBlocks.POTTED_FLOWER_MIRKWOOD.get());
             this.addFlowerBlock(TolkienBlocks.FLOWER_ALFIRIN.get(), "阿尔费琳", TolkienBlocks.POTTED_FLOWER_ALFIRIN.get());

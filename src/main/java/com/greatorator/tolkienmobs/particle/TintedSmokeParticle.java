@@ -15,11 +15,16 @@ import net.minecraft.util.RandomSource;
  * undyed one, leaving the tint as the only difference.
  */
 public class TintedSmokeParticle extends SingleQuadParticle {
+    /** Campfire smoke's own size, and the size a pipe's shapes are drawn at so they can be read. */
+    private static final float PLUME = 3.0F;
+    private static final float DOT = 0.9F;
+
     private TintedSmokeParticle(
-            ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, TextureAtlasSprite sprite
+            ClientLevel level, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed,
+            TextureAtlasSprite sprite, float size
     ) {
         super(level, x, y, z, sprite);
-        this.scale(3.0F);
+        this.scale(size);
         this.setSize(0.25F, 0.25F);
         this.lifetime = this.random.nextInt(50) + 80;
         this.gravity = 3.0E-6F;
@@ -52,11 +57,33 @@ public class TintedSmokeParticle extends SingleQuadParticle {
         return SingleQuadParticle.Layer.TRANSLUCENT;
     }
 
-    public static class Provider implements ParticleProvider<ColorParticleOption> {
-        private final SpriteSet sprites;
-
+    /**
+     * The plume: one puff of coloured campfire smoke, at the size vanilla draws its own. A bowl or a
+     * smoker gives one of these off, and so does the thin thread a pipe draws while it is lit.
+     */
+    public static class Provider extends SizedProvider {
         public Provider(SpriteSet sprites) {
+            super(sprites, PLUME);
+        }
+    }
+
+    /**
+     * One dot of a blown shape, at a fraction of a puff: small enough that the gap between two points
+     * of a ring still reads as a gap.
+     */
+    public static class DotProvider extends SizedProvider {
+        public DotProvider(SpriteSet sprites) {
+            super(sprites, DOT);
+        }
+    }
+
+    public abstract static class SizedProvider implements ParticleProvider<ColorParticleOption> {
+        private final SpriteSet sprites;
+        private final float size;
+
+        protected SizedProvider(SpriteSet sprites, float size) {
             this.sprites = sprites;
+            this.size = size;
         }
 
         @Override
@@ -71,7 +98,8 @@ public class TintedSmokeParticle extends SingleQuadParticle {
                 double zSpeed,
                 RandomSource random
         ) {
-            TintedSmokeParticle particle = new TintedSmokeParticle(level, x, y, z, xSpeed, ySpeed, zSpeed, this.sprites.get(random));
+            TintedSmokeParticle particle = new TintedSmokeParticle(level, x, y, z, xSpeed, ySpeed, zSpeed,
+                    this.sprites.get(random), this.size);
             particle.setColor(option.getRed(), option.getGreen(), option.getBlue());
             return particle;
         }

@@ -280,11 +280,13 @@ public class TolkienItems {
     public static final DeferredItem<Item> DRINK_ERU_BLESSING = ITEMS.registerItem("drink_eru_blessing", properties -> new TolkienFood(properties).setEffectOverride(), () -> new Item.Properties().stacksTo(16).food(TolkienFoods.DRINK_ERU_BLESSING, TolkienFoods.DRINK_ERU_BLESSING_CONSUMABLE));
 
         // Crops & Foliage
-    public static final DeferredItem<Item> PIPEWEED_ITEM = ITEMS.registerSimpleItem("pipeweed");
+    // Each leaf says what smoking it does to you, so a strain is chosen by what it gives rather than
+    // by the smoke it happens to blow.
+    public static final DeferredItem<Item> PIPEWEED_ITEM = ITEMS.registerItem("pipeweed", properties -> new TolkienItem(properties).setHasLore());
     public static final DeferredItem<Item> PIPEWEED_SEEDS = ITEMS.registerItem("pipeweed_seeds", properties -> new BlockItem(TolkienBlocks.PIPEWEED.get(), properties));
-    public static final DeferredItem<Item> PIPEWEED_OLDTOBY_ITEM = ITEMS.registerSimpleItem("pipeweed_oldtoby");
+    public static final DeferredItem<Item> PIPEWEED_OLDTOBY_ITEM = ITEMS.registerItem("pipeweed_oldtoby", properties -> new TolkienItem(properties).setHasLore());
     public static final DeferredItem<Item> PIPEWEED_OLDTOBY_SEEDS = ITEMS.registerItem("pipeweed_oldtoby_seeds", properties -> new BlockItem(TolkienBlocks.PIPEWEED_OLDTOBY.get(), properties));
-    public static final DeferredItem<Item> PIPEWEED_SOUTHLINCH_ITEM = ITEMS.registerSimpleItem("pipeweed_southlinch");
+    public static final DeferredItem<Item> PIPEWEED_SOUTHLINCH_ITEM = ITEMS.registerItem("pipeweed_southlinch", properties -> new TolkienItem(properties).setHasLore());
     public static final DeferredItem<Item> PIPEWEED_SOUTHLINCH_SEEDS = ITEMS.registerItem("pipeweed_southlinch_seeds", properties -> new BlockItem(TolkienBlocks.PIPEWEED_SOUTHLINCH.get(), properties));
     // The pipe's model is drawn by hand in assets/models/item/tobacco_pipe.json, so nothing here
     // generates one for it.
