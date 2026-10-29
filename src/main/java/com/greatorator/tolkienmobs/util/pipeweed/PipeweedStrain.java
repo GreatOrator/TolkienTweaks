@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.util.pipeweed;
 
+import com.greatorator.tolkienmobs.TolkienMobsConfig;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
@@ -43,17 +44,17 @@ public enum PipeweedStrain {
     private final DeferredItem<Item> leaf;
     private final PipeSmoke.Shape shape;
     private final Holder<MobEffect> effect;
-    private final int duration;
+    private final int baseDuration;
     private final int amplifier;
     private final int bloom;
     private final int smoke;
 
-    PipeweedStrain(DeferredItem<Item> leaf, PipeSmoke.Shape shape, Holder<MobEffect> effect, int duration, int amplifier,
-                   int bloom, int bloomHeart) {
+    PipeweedStrain(DeferredItem<Item> leaf, PipeSmoke.Shape shape, Holder<MobEffect> effect, int baseDuration,
+                   int amplifier, int bloom, int bloomHeart) {
         this.leaf = leaf;
         this.shape = shape;
         this.effect = effect;
-        this.duration = duration;
+        this.baseDuration = baseDuration;
         this.amplifier = amplifier;
         this.bloom = bloom;
         this.smoke = pale(bloom, bloomHeart);
@@ -113,8 +114,14 @@ public enum PipeweedStrain {
         return bloom;
     }
 
+    /** Ticks of comfort a bowl of this strain leaves, as the world's config has it rather than as written here. */
     public int duration() {
-        return duration;
+        return TolkienMobsConfig.pipeweedDuration(this);
+    }
+
+    /** The number this strain was written with, which the config falls back to before its file is read. */
+    public int baseDuration() {
+        return baseDuration;
     }
 
     public int amplifier() {
