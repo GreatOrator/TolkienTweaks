@@ -1360,6 +1360,8 @@
   "item.tolkienmobs.template_mithril": "Template: Mithril",
   "item.tolkienmobs.template_morguliron": "Template: Morgul Iron",
   "item.tolkienmobs.tobacco_pipe": "Tobacco Pipe",
+  "item.tolkienmobs.tobacco_pipe.bowl": "Bowl: %s",
+  "item.tolkienmobs.tobacco_pipe.bowl_empty": "Bowl: empty",
   "item.tolkienmobs.tobacco_pipe.empty": "You have no pipe-weed to smoke.",
   "item.tolkienmobs.tobacco_pipe.lore": "Packed with leaf and lit with a taper, it blows shapes in the smoke.",
   "item.tolkienmobs.tobacco_pipe.smoke": "You smoke a pipe of %s.",

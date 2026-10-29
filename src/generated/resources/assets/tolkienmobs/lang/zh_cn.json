@@ -1360,6 +1360,8 @@
   "item.tolkienmobs.template_mithril": "锻造模板：秘银",
   "item.tolkienmobs.template_morguliron": "锻造模板：魔古尔铁",
   "item.tolkienmobs.tobacco_pipe": "烟斗",
+  "item.tolkienmobs.tobacco_pipe.bowl": "烟锅：%s",
+  "item.tolkienmobs.tobacco_pipe.bowl_empty": "烟锅：空的",
   "item.tolkienmobs.tobacco_pipe.empty": "你没有烟叶可抽。",
   "item.tolkienmobs.tobacco_pipe.lore": "填上烟叶，用火绒点燃，就能把烟雾吹成各种形状。",
   "item.tolkienmobs.tobacco_pipe.smoke": "你抽了一斗%s。",

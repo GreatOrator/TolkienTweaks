@@ -66,6 +66,9 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             // 键名要跟着物品自己的描述 id 走：烟斗读的是 tobacco_pipe 下的两个键。
             this.add("item.tolkienmobs.tobacco_pipe.empty", "你没有烟叶可抽。");
             this.add("item.tolkienmobs.tobacco_pipe.smoke", "你抽了一斗%s。");
+            // 烟锅指斗钵，提示行说的是锅里装的是哪一款烟叶。
+            this.add("item.tolkienmobs.tobacco_pipe.bowl", "烟锅：%s");
+            this.add("item.tolkienmobs.tobacco_pipe.bowl_empty", "烟锅：空的");
             this.addFlowerBlock(TolkienBlocks.FLOWER_SIMBELMYNE.get(), "辛贝穆奈", TolkienBlocks.POTTED_FLOWER_SIMBELMYNE.get());
             this.addFlowerBlock(TolkienBlocks.FLOWER_MIRKWOOD.get(), "色瑞刚", TolkienBlocks.POTTED_FLOWER_MIRKWOOD.get());
             this.addFlowerBlock(TolkienBlocks.FLOWER_ALFIRIN.get(), "阿尔费琳", TolkienBlocks.POTTED_FLOWER_ALFIRIN.get());

@@ -67,6 +67,8 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             // two keys have to sit under tobacco_pipe, not under the pipe the item was once called.
             this.add("item.tolkienmobs.tobacco_pipe.empty", "You have no pipe-weed to smoke.");
             this.add("item.tolkienmobs.tobacco_pipe.smoke", "You smoke a pipe of %s.");
+            this.add("item.tolkienmobs.tobacco_pipe.bowl", "Bowl: %s");
+            this.add("item.tolkienmobs.tobacco_pipe.bowl_empty", "Bowl: empty");
             this.addFlowerBlock(TolkienBlocks.FLOWER_SIMBELMYNE.get(), "Simbelmyne", TolkienBlocks.POTTED_FLOWER_SIMBELMYNE.get());
             this.addFlowerBlock(TolkienBlocks.FLOWER_MIRKWOOD.get(), "Seregon", TolkienBlocks.POTTED_FLOWER_MIRKWOOD.get());
             this.addFlowerBlock(TolkienBlocks.FLOWER_ALFIRIN.get(), "Alfirin", TolkienBlocks.POTTED_FLOWER_ALFIRIN.get());
