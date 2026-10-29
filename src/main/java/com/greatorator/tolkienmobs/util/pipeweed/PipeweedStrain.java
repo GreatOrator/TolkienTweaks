@@ -17,7 +17,8 @@ import net.neoforged.neoforge.registries.DeferredItem;
  * <p>The smoke is drawn from the crop art itself: the flower each strain opens at its last stage is
  * the colour its plume comes out, lifted a third of the way to that flower's pale centre so the
  * smoke reads as smoke rather than as a puff of paint. A pipe therefore blows the same pink, salmon
- * or violet the plant flowers in, and the same pair of colours its leaf icon carries.
+ * or violet the plant flowers in, and the same pair of colours its leaf icon carries. The bowl of a
+ * pipe holds that flower's own colour at full strength, since a bowl of leaf is not smoke.
  */
 public enum PipeweedStrain {
     /** The common Shire leaf, the one every hobbit grows along the garden wall. */
@@ -38,6 +39,7 @@ public enum PipeweedStrain {
     private final Holder<MobEffect> effect;
     private final int duration;
     private final int amplifier;
+    private final int bloom;
     private final int smoke;
 
     PipeweedStrain(DeferredItem<Item> leaf, PipeSmoke.Shape shape, Holder<MobEffect> effect, int duration, int amplifier,
@@ -47,6 +49,7 @@ public enum PipeweedStrain {
         this.effect = effect;
         this.duration = duration;
         this.amplifier = amplifier;
+        this.bloom = bloom;
         this.smoke = pale(bloom, bloomHeart);
     }
 
@@ -77,6 +80,16 @@ public enum PipeweedStrain {
     /** The colour this strain's smoke is drawn in, as packed RGB. */
     public int smoke() {
         return smoke;
+    }
+
+    /**
+     * The colour this strain's flowers open in, as packed RGB: the colour of the leaf itself, which
+     * is what a pipe's bowl shows while the smoker carries it. It is the same colour the crop and
+     * the leaf icon are drawn in, so the plant in the field, the leaf in the pack and the bowl all
+     * agree.
+     */
+    public int bloom() {
+        return bloom;
     }
 
     public int duration() {

@@ -490,6 +490,11 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         definition(TolkienItems.TRINKET_HAT.get(), trinketDefinition(TolkienItems.TRINKET_HAT.get()));
         definition(TolkienItems.TRINKET_CLOAK.get(), trinketDefinition(TolkienItems.TRINKET_CLOAK.get()));
 
+        // The pipe is one item that smells three leaves, so its bowl is drawn in the colour of the
+        // strain the smoker carries rather than by a model of its own: the hand-written model puts
+        // the bowl's leaf faces on tint index 0, and this source is what that index resolves to.
+        definition(TolkienItems.TOBACCO_PIPE.get(), pipeDefinition());
+
         // The Arda Staff is a GeckoLib model. 1.21.4 has no builtin/entity parent to hang it
         // on, so its definition names the GeckoLib special renderer and keeps item/arda_staff
         // as the base model that carries the display transforms and the particle sprite.
@@ -539,6 +544,12 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         return ItemModelDefinition.model(modelOf(BuiltInRegistries.ITEM.getKey(item)),
                 ItemModelDefinition.constantTint(0xFFFFFFFF),
                 ItemModelDefinition.tintSource(TolkienMobsMain.resLoc("trinket")));
+    }
+
+    /** A pipe: one model, whose packed leaf is tinted by the strain being smoked. */
+    private JsonObject pipeDefinition() {
+        return ItemModelDefinition.model(modelOf(BuiltInRegistries.ITEM.getKey(TolkienItems.TOBACCO_PIPE.get())),
+                ItemModelDefinition.tintSource(TolkienMobsMain.resLoc("pipe_leaf")));
     }
 
     private static Identifier withSuffix(Identifier location, String suffix) {
