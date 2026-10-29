@@ -41,8 +41,10 @@ import java.util.stream.Stream;
  *       boss), plus the faction coin and token that only the mobs of a faction carry, and the
  *       dark sigil that only the undead and Mordor's servants carry.</li>
  *   <li><b>the one odd thing</b> - the single item worth hunting the creature for: a trinket, a
- *       rare ingot, the Witch-king's own blade. The trinket is left behind by chance, and Looting
- *       improves the odds.</li>
+ *       rare ingot, the Witch-king's own blade. A trinket is the signature of the creature that
+ *       carries it and is always left behind - off the bosses, and off the Nazgul and Gollum,
+ *       who are named wretches rather than bosses. Only the mimic chest still leaves one behind
+ *       by chance.</li>
  * </ul>
  *
  * <p>Weights inside a pool are relative to that pool only, and a pool that is not the body pool is
@@ -63,7 +65,7 @@ public class TolkienEntityLootTables extends EntityLootSubProvider {
     private static final float FACTION_TOKEN = 0.04F;
     /** The mark of the Enemy - only the undead and Mordor's servants carry it. */
     private static final float DARK_SIGIL = 0.15F;
-    /** A trinket, off any of the twelve creatures that carry one. */
+    /** A trinket off the one carrier that is neither a boss nor a named wretch - the mimic. */
     private static final float TRINKET = 0.25F;
 
     public TolkienEntityLootTables(HolderLookup.Provider registries) {
@@ -203,7 +205,7 @@ public class TolkienEntityLootTables extends EntityLootSubProvider {
                         .withPool(chance(DARK_SIGIL, Drop.of(TolkienItems.ITEM_DARKSIGIL.get(), 1, 1, 1))));
 
         // The enraged spirit is a boss, the marsh-wraith swollen past its old shape: the crystal it
-        // was bound in twice over, and the remains.
+        // was bound in twice over, and the cloak it wears instead of a body.
         add(TolkienEntities.ENTITY_TTM_ENRAGED_FELLSPIRIT.get(),
                 LootTable.lootTable()
                         .withPool(body(2,
@@ -211,7 +213,8 @@ public class TolkienEntityLootTables extends EntityLootSubProvider {
                                 Drop.of(TolkienItems.MORGUL_CRYSTAL.get(), 2, 1, 2)))
                         .withPool(coins(TolkienItems.ITEM_COIN_BRONZE.get(), COMMON_PURSE, 1, 4))
                         .withPool(chance(DARK_SIGIL, Drop.of(TolkienItems.ITEM_DARKSIGIL.get(), 1, 1, 1)))
-                        .withPool(chance(0.05F, Drop.of(TolkienItems.RING_OF_HOPE.get(), 1, 1, 1))));
+                        .withPool(chance(0.05F, Drop.of(TolkienItems.RING_OF_HOPE.get(), 1, 1, 1)))
+                        .withPool(trinket(TolkienItems.TRINKET_CLOAK.get())));
 
         // The brigands are men and carry a man's purse: coin of the realm, and a blade they took
         // off the last traveller.
@@ -242,7 +245,7 @@ public class TolkienEntityLootTables extends EntityLootSubProvider {
                         .withPool(coins(TolkienItems.ITEM_COIN_BRONZE.get(), UNCOMMON_PURSE, 1, 3)));
 
         // A mimic is a chest that bites back: the chest, what was in it, the drink it guards, and
-        // a charm, if it has not swallowed it whole.
+        // the one trinket still left to chance - a charm, if it has not swallowed it whole.
         add(TolkienEntities.ENTITY_TTM_MIMICCHEST.get(),
                 LootTable.lootTable()
                         .withPool(body(3,
@@ -250,7 +253,7 @@ public class TolkienEntityLootTables extends EntityLootSubProvider {
                                 Drop.of(TolkienItems.DRINK_PERSONAL_BLACKSMITH.get(), 3, 1, 1),
                                 Drop.of(TolkienItems.GEM_AMMOLITE.get(), 1, 1, 3)))
                         .withPool(coins(TolkienItems.ITEM_COIN_BRONZE.get(), COMMON_PURSE, 1, 5))
-                        .withPool(trinket(TolkienItems.TRINKET_CHARM.get())));
+                        .withPool(rareTrinket(TolkienItems.TRINKET_CHARM.get())));
 
         // The orc-kin carry the three marks of their service: a purse, the faction coin, and the
         // token that raises standing with them.
@@ -527,12 +530,24 @@ public class TolkienEntityLootTables extends EntityLootSubProvider {
     }
 
     /**
-     * A trinket: one pool, one roll, on a dice roll that Looting improves.
+     * A trinket that is only sometimes there: one pool, one roll, on a dice roll that Looting
+     * improves. This is the mimic chest's alone.
      */
-    private LootPool.Builder trinket(ItemLike trinket) {
+    private LootPool.Builder rareTrinket(ItemLike trinket) {
         return trinketPool(trinket)
                 .when(LootItemRandomChanceWithEnchantedBonusCondition.randomChanceAndLootingBoost(
                         this.registries, TRINKET, 0.03F));
+    }
+
+    /**
+     * A trinket that is always there: one pool, one roll, and no dice on it. The trinket is the one
+     * thing that says which creature this was, so it is left behind whenever a player makes the
+     * kill - off a boss, and off the Nazgul and Gollum, whose trinket is the reason to find them.
+     * It still comes already rolled for its effect, so it is the same trinket every time and never
+     * the same effect twice.
+     */
+    private LootPool.Builder trinket(ItemLike trinket) {
+        return trinketPool(trinket);
     }
 
     private LootPool.Builder trinketPool(ItemLike trinket) {
