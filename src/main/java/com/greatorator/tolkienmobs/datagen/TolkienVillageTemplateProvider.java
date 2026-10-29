@@ -224,7 +224,8 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
             "minecraft:melon_stem", "minecraft:pumpkin_stem");
 
     /**
-     * Replants a vanilla farm with the village's own crop.
+     * Replants a vanilla farm with the village's own crop, and, in the Shire, rebuilds what stands
+     * around the rows in the village's own wood.
      *
      * <p>The farm is copied rather than written from scratch, so it keeps the shape a plains village's
      * fields have - the tilled rows, the water channel between them, the fence and the gate - and, most
@@ -237,6 +238,42 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
     public static CompoundTag prepareFarm(TolkienVillageProvider.Village village, TemplateSource templates) throws IOException {
         CompoundTag farm = read(TolkienVillageProvider.ownFarmSource(village.style())
                 .orElseThrow(() -> new IllegalStateException("The " + village.style() + " village has no farm source")), templates);
+        replant(farm, village.style());
+        if (village.style().equals("hobbit")) buildHobbitFarm(farm, village.style());
+        prunePalette(farm);
+        return farm;
+    }
+
+    /**
+     * Drops the palette entries a rewritten plan no longer points at, renumbering the rest in the
+     * order they are first used. The blocks a farm copy swaps out leave their old states behind in the
+     * palette otherwise, so the file would still list oak, wheat and a composter even though no block
+     * stands as one - and a plan that names a crop should not read as growing it.
+     */
+    private static void prunePalette(CompoundTag template) {
+        ListTag palette = list(template, "palette");
+        ListTag kept = new ListTag();
+        Map<Integer, Integer> remap = new HashMap<>();
+        for (Tag tag : list(template, "blocks")) {
+            CompoundTag block = (CompoundTag) tag;
+            int old = block.getIntOr("state", 0);
+            if (old < 0 || old >= palette.size()) {
+                throw new IllegalStateException("A farm block points at palette entry " + old
+                        + ", but the plan's palette has " + palette.size() + " entries");
+            }
+            Integer index = remap.get(old);
+            if (index == null) {
+                index = kept.size();
+                remap.put(old, index);
+                kept.add(palette.getCompoundOrEmpty(old).copy());
+            }
+            block.putInt("state", index);
+        }
+        template.put("palette", kept);
+    }
+
+    /** Every row of a farm replanted with the village's own crop; none found fails the data run. */
+    private static void replant(CompoundTag farm, String style) {
         ListTag palette = list(farm, "palette");
         int planted = 0;
         for (Tag tag : list(farm, "blocks")) {
@@ -246,11 +283,70 @@ public final class TolkienVillageTemplateProvider implements DataProvider {
             block.putInt("state", mergeState(palette, ripePipeweed(pipeweedStrain(planted++))));
         }
         if (planted == 0) {
-            throw new IllegalStateException("The " + village.style() + " village's farm copy holds no crop to"
-                    + " replant - the vanilla farm it is made from ('" + TolkienVillageProvider.ownFarmSource(village.style())
+            throw new IllegalStateException("The " + style + " village's farm copy holds no crop to"
+                    + " replant - the vanilla farm it is made from ('" + TolkienVillageProvider.ownFarmSource(style)
                     .orElseThrow() + "') has moved or changed, so the village would grow nothing.");
         }
-        return farm;
+    }
+
+    /** The wall vanilla rings a farm plot with, and the bin it keeps in the plot's corner. */
+    private static final String FARM_WALL = "minecraft:oak_log";
+    private static final String FARM_BIN = "minecraft:composter";
+    /** The Shire's own wood, the one the burrows are built and lit in. */
+    private static final String FARM_WOOD = "tolkienmobs:log_lebethron";
+    private static final String FARM_STORE = "tolkienmobs:barrel_lebethron";
+
+    /**
+     * Rebuilds a Shire farm in the Shire's own wood, so a hobbit field looks grown by hobbits rather
+     * than borrowed from a plains village: the one-block wall around the rows becomes lebethron, the
+     * wood the burrows are already built and lit in, and the composter in the plot's corner becomes a
+     * lebethron barrel. Only those two blocks change - the soil, the water channel, the crops and the
+     * street socket are left exactly as vanilla drew them - and the data run fails if neither turns up,
+     * because a farm that moved on would otherwise put oak and a composter back in the Shire.
+     */
+    private static void buildHobbitFarm(CompoundTag farm, String style) {
+        ListTag palette = list(farm, "palette");
+        int rebuilt = 0;
+        for (Tag tag : list(farm, "blocks")) {
+            CompoundTag block = (CompoundTag) tag;
+            CompoundTag state = palette.getCompoundOrEmpty(block.getIntOr("state", 0));
+            CompoundTag hobbit = switch (string(state, "Name")) {
+                // A wall log keeps its axis, so a stack of them still points the way vanilla drew it.
+                case FARM_WALL -> {
+                    CompoundTag wood = state.copy();
+                    wood.putString("Name", FARM_WOOD);
+                    yield wood;
+                }
+                // The bin sits at the far end of the rows, so its lid opens toward the rows and the
+                // gate a hobbit walks in through.
+                case FARM_BIN -> {
+                    CompoundTag barrel = new CompoundTag();
+                    barrel.putString("Name", FARM_STORE);
+                    CompoundTag properties = new CompoundTag();
+                    properties.putString("facing", "west");
+                    properties.putString("open", "false");
+                    barrel.put("Properties", properties);
+                    yield barrel;
+                }
+                default -> null;
+            };
+            if (hobbit == null) continue;
+            block.putInt("state", mergeState(palette, hobbit));
+            rebuilt++;
+        }
+        if (rebuilt == 0) {
+            throw new IllegalStateException("The " + style + " village's farm copy holds none of the blocks a"
+                    + " Shire farm is rebuilt from ('" + FARM_WALL + "' and '" + FARM_BIN + "') - the vanilla farm it"
+                    + " is made from ('" + TolkienVillageProvider.ownFarmSource(style).orElseThrow() + "') has moved or"
+                    + " changed, so the village would farm behind vanilla's wood again.");
+        }
+        // The farm's own street socket closes the gap in its wall with a log once a street joins it,
+        // and a socket's final state is written straight into the world after the processors have run.
+        // Leaving it as vanilla's would put one oak post in an otherwise lebethron wall.
+        for (Tag tag : list(farm, "blocks")) {
+            CompoundTag nbt = compound((CompoundTag) tag, "nbt");
+            if (string(nbt, "final_state").equals(FARM_WALL)) nbt.putString("final_state", FARM_WOOD);
+        }
     }
 
     /**
