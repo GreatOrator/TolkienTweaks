@@ -9,7 +9,6 @@ import com.greatorator.tolkienmobs.init.TolkienItems;
 import net.minecraft.advancements.criterion.StatePropertiesPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
@@ -18,7 +17,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BedPart;
@@ -116,7 +114,7 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.STRIPPED_MALLORN_WOOD.get());
         dropSelf(TolkienBlocks.PLANKS_MALLORN.get());
         add(TolkienBlocks.LEAVES_MALLORN.get(), createExtraLeavesDrops(TolkienBlocks.LEAVES_MALLORN.get(), TolkienBlocks.SAPLING_MALLORN.get(), TolkienItems.TREE_ACORN.get(), DEFAULT_SAPLING_DROP_RATES));
-        add(TolkienBlocks.HARDENED_LEAVES_MALLORN.get(), silkAndStick(TolkienBlocks.LEAVES_MALLORN.get(), TolkienBlocks.SAPLING_MALLORN.get(), DEFAULT_SAPLING_DROP_RATES));
+        add(TolkienBlocks.HARDENED_LEAVES_MALLORN.get(), createExtraHardenedLeavesDrops(TolkienBlocks.HARDENED_LEAVES_MALLORN.get(), TolkienBlocks.LEAVES_MALLORN.get(), TolkienBlocks.SAPLING_MALLORN.get(), TolkienItems.TREE_ACORN.get(), DEFAULT_SAPLING_DROP_RATES));
         dropSelf(TolkienBlocks.LEAFPILE_MALLORN.get());
         dropSelf(TolkienBlocks.STAIRS_MALLORN.get());
         this.add(TolkienBlocks.SLAB_MALLORN.get(),
@@ -780,14 +778,28 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
     }
 
     protected LootTable.Builder createExtraLeavesDrops(Block leavesBlock, Block saplingBlock, ItemLike extraItem, float... chances) {
+        return withExtraLeavesDrop(this.createLeavesDrops(leavesBlock, saplingBlock, chances), leavesBlock, extraItem);
+    }
+
+    /**
+     * The hardened leaves are the world's own face of the plain ones: no tree is ever built from
+     * plain leaves, so a table that stopped at shears and saplings would mean a mallorn never gave
+     * up an acorn anywhere it actually grows. This gives the hardened table the plain table's extra
+     * drop as well, leaving the only difference the leaves shears hand back.
+     */
+    protected LootTable.Builder createExtraHardenedLeavesDrops(Block hardenedLeaves, Block leavesBlock, Block saplingBlock, ItemLike extraItem, float... chances) {
+        return withExtraLeavesDrop(this.silkAndStick(leavesBlock, saplingBlock, chances), hardenedLeaves, extraItem);
+    }
+
+    private LootTable.Builder withExtraLeavesDrop(LootTable.Builder base, Block block, ItemLike extraItem) {
         HolderLookup.RegistryLookup<Enchantment> registrylookup = this.registries.lookupOrThrow(Registries.ENCHANTMENT);
-        return this.createLeavesDrops(leavesBlock, saplingBlock, chances)
+        return base
                 .withPool(
                         LootPool.lootPool()
                                 .setRolls(ConstantValue.exactly(1.0F))
                                 .when(doesNotHaveSilkTouch())
                                 .add(
-                                        ((LootPoolSingletonContainer.Builder)this.applyExplosionCondition(leavesBlock, LootItem.lootTableItem(extraItem)))
+                                        ((LootPoolSingletonContainer.Builder)this.applyExplosionCondition(block, LootItem.lootTableItem(extraItem)))
                                                 .when(
                                                         BonusLevelTableCondition.bonusLevelFlatChance(
                                                                 registrylookup.getOrThrow(Enchantments.FORTUNE), 0.005F, 0.0055555557F, 0.00625F, 0.008333334F, 0.025F
@@ -808,29 +820,6 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
 
     public void dropOther(Supplier<? extends Block> brokenBlock, ItemLike droppedBlock) {
         this.dropOther(brokenBlock.get(), droppedBlock);
-    }
-
-    private LootTable.Builder createTable(Block block) {
-        return LootTable.lootTable()
-                .withPool(
-                        this.applyExplosionCondition(
-                                block,
-                                LootPool.lootPool()
-                                        .setRolls(ConstantValue.exactly(1.0F))
-                                        .add(
-                                                LootItem.lootTableItem(block)
-                                                        .apply(CopyComponentsFunction.copyComponentsFromBlockEntity(
-                                                                LootContextParams.BLOCK_ENTITY).include(
-                                                                DataComponents.CUSTOM_NAME))
-                                                        .when(
-                                                                LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
-                                                                        .setProperties(
-                                                                                StatePropertiesPredicate.Builder.properties()
-                                                                                        .hasProperty(BedBlock.PART, BedPart.HEAD))
-                                                        )
-                                        )
-                        )
-                );
     }
 
     @Override

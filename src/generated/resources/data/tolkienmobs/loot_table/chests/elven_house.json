@@ -10,11 +10,6 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "tolkienmobs:drink_elf_vitality",
-          "weight": 18
-        },
-        {
-          "type": "minecraft:item",
           "functions": [
             {
               "add": false,
@@ -27,7 +22,12 @@
             }
           ],
           "name": "tolkienmobs:food_lembas",
-          "weight": 12
+          "weight": 18
+        },
+        {
+          "type": "minecraft:item",
+          "name": "tolkienmobs:drink_elf_vitality",
+          "weight": 14
         },
         {
           "type": "minecraft:item",
@@ -36,72 +36,19 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 3.0,
-                "min": 1.0
+                "max": 8.0,
+                "min": 4.0
               },
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:golden_axe",
-          "weight": 15
+          "name": "tolkienmobs:ammo_galadhrim_arrow",
+          "weight": 14
         },
         {
           "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 2.0,
-                "min": 1.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "minecraft:golden_pickaxe",
-          "weight": 15
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 3.0,
-                "min": 1.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "minecraft:name_tag",
-          "weight": 20
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:golden_apple",
-          "weight": 2
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 3.0,
-                "min": 1.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "minecraft:bread",
+          "name": "tolkienmobs:drink_miruvor",
           "weight": 10
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:cooked_salmon",
-          "weight": 15
         },
         {
           "type": "minecraft:item",
@@ -112,12 +59,17 @@
             }
           ],
           "name": "minecraft:book",
-          "weight": 2
+          "weight": 6
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:cooked_porkchop",
-          "weight": 10
+          "name": "minecraft:golden_apple",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "tolkienmobs:elven_bow",
+          "weight": 2
         }
       ],
       "rolls": {

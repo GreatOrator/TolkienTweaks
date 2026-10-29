@@ -3,10 +3,10 @@
   "conditions": [
     {
       "condition": "neoforge:loot_table_id",
-      "loot_table_id": "minecraft:entities/stray"
+      "loot_table_id": "minecraft:chests/shipwreck_treasure"
     }
   ],
   "items": {
-    "tolkienmobs:item_coin_bronze": 0.25
+    "tolkienmobs:item_coin_silver": 0.25
   }
 }

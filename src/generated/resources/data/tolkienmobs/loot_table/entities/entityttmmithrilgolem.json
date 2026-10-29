@@ -5,60 +5,7 @@
       "bonus_rolls": 0.0,
       "conditions": [
         {
-          "condition": "minecraft:random_chance_with_enchanted_bonus",
-          "enchanted_chance": {
-            "type": "minecraft:linear",
-            "base": 0.28,
-            "per_level_above_first": 0.03
-          },
-          "enchantment": "minecraft:looting",
-          "unenchanted_chance": 0.25
-        }
-      ],
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "function": "tolkienmobs:random_trinket"
-            },
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 1.0,
-                "min": 1.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "tolkienmobs:trinket_charm",
-          "weight": 10
-        },
-        {
-          "type": "minecraft:item",
-          "conditions": [
-            {
-              "condition": "minecraft:killed_by_player"
-            }
-          ],
-          "name": "tolkienmobs:trinket_charm"
-        }
-      ],
-      "rolls": 1.0
-    },
-    {
-      "bonus_rolls": 0.0,
-      "conditions": [
-        {
-          "condition": "minecraft:random_chance_with_enchanted_bonus",
-          "enchanted_chance": {
-            "type": "minecraft:linear",
-            "base": 0.28,
-            "per_level_above_first": 0.03
-          },
-          "enchantment": "minecraft:looting",
-          "unenchanted_chance": 0.25
+          "condition": "minecraft:killed_by_player"
         }
       ],
       "entries": [
@@ -69,23 +16,24 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 5.0,
-                "min": 1.0
+                "max": 8.0,
+                "min": 4.0
               },
               "function": "minecraft:set_count"
             }
           ],
-          "name": "tolkienmobs:item_coin_mithril",
-          "weight": 70
-        },
+          "name": "tolkienmobs:ingot_mithril"
+        }
+      ],
+      "functions": [
         {
-          "type": "minecraft:item",
-          "conditions": [
-            {
-              "condition": "minecraft:killed_by_player"
-            }
-          ],
-          "name": "tolkienmobs:item_coin_mithril"
+          "count": {
+            "type": "minecraft:uniform",
+            "max": 1.0,
+            "min": 0.0
+          },
+          "enchantment": "minecraft:looting",
+          "function": "minecraft:enchanted_count_increase"
         }
       ],
       "rolls": 1.0
@@ -105,57 +53,95 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 8.0,
-                "min": 4.0
+                "max": 5.0,
+                "min": 3.0
               },
               "function": "minecraft:set_count"
-            },
-            {
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 1.0,
-                "min": 0.0
-              },
-              "enchantment": "minecraft:looting",
-              "function": "minecraft:enchanted_count_increase"
             }
           ],
-          "name": "tolkienmobs:ingot_mithril"
+          "name": "tolkienmobs:item_golem_stone_summon"
+        }
+      ],
+      "functions": [
+        {
+          "count": {
+            "type": "minecraft:uniform",
+            "max": 1.0,
+            "min": 0.0
+          },
+          "enchantment": "minecraft:looting",
+          "function": "minecraft:enchanted_count_increase"
         }
       ],
       "rolls": 1.0
     },
     {
       "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:killed_by_player"
+        },
+        {
+          "condition": "minecraft:random_chance_with_enchanted_bonus",
+          "enchanted_chance": {
+            "type": "minecraft:linear",
+            "base": 1.03,
+            "per_level_above_first": 0.03
+          },
+          "enchantment": "minecraft:looting",
+          "unenchanted_chance": 1.0
+        }
+      ],
       "entries": [
         {
           "type": "minecraft:item",
-          "conditions": [
-            {
-              "condition": "minecraft:killed_by_player"
-            }
-          ],
+          "name": "tolkienmobs:item_coin_mithril"
+        }
+      ],
+      "functions": [
+        {
+          "count": {
+            "type": "minecraft:uniform",
+            "max": 1.0,
+            "min": 0.0
+          },
+          "enchantment": "minecraft:looting",
+          "function": "minecraft:enchanted_count_increase"
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:killed_by_player"
+        },
+        {
+          "condition": "minecraft:random_chance_with_enchanted_bonus",
+          "enchanted_chance": {
+            "type": "minecraft:linear",
+            "base": 0.28,
+            "per_level_above_first": 0.03
+          },
+          "enchantment": "minecraft:looting",
+          "unenchanted_chance": 0.25
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
           "functions": [
             {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 5.0,
-                "min": 3.0
-              },
-              "function": "minecraft:set_count"
+              "function": "tolkienmobs:random_trinket"
             },
             {
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 1.0,
-                "min": 0.0
-              },
-              "enchantment": "minecraft:looting",
-              "function": "minecraft:enchanted_count_increase"
+              "add": false,
+              "count": 1.0,
+              "function": "minecraft:set_count"
             }
           ],
-          "name": "tolkienmobs:item_golem_stone_summon"
+          "name": "tolkienmobs:trinket_charm"
         }
       ],
       "rolls": 1.0

@@ -10,6 +10,17 @@
       "entries": [
         {
           "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 2.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
           "name": "tolkienmobs:food_honey",
           "weight": 18
         },
@@ -27,60 +38,7 @@
             }
           ],
           "name": "tolkienmobs:food_cram",
-          "weight": 12
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 3.0,
-                "min": 1.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "minecraft:stone_axe",
-          "weight": 15
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 2.0,
-                "min": 1.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "minecraft:stone_pickaxe",
-          "weight": 15
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 3.0,
-                "min": 1.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "minecraft:name_tag",
-          "weight": 20
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:apple",
-          "weight": 2
+          "weight": 14
         },
         {
           "type": "minecraft:item",
@@ -96,17 +54,54 @@
             }
           ],
           "name": "minecraft:bread",
-          "weight": 10
+          "weight": 12
         },
         {
           "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 2.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
           "name": "minecraft:cooked_salmon",
-          "weight": 15
+          "weight": 10
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:cooked_porkchop",
-          "weight": 10
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 3.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "tolkienmobs:pipeweed",
+          "weight": 8
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:stone_hoe",
+          "weight": 6
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:stone_shovel",
+          "weight": 6
+        },
+        {
+          "type": "minecraft:item",
+          "name": "tolkienmobs:item_letter",
+          "weight": 3
         }
       ],
       "rolls": {

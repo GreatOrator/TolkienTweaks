@@ -42,8 +42,13 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:diamond_axe",
-          "weight": 15
+          "name": "minecraft:bread",
+          "weight": 12
+        },
+        {
+          "type": "minecraft:item",
+          "name": "tolkienmobs:item_letter",
+          "weight": 10
         },
         {
           "type": "minecraft:item",
@@ -58,55 +63,34 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:diamond_pickaxe",
-          "weight": 15
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 3.0,
-                "min": 1.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "minecraft:name_tag",
-          "weight": 20
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:golden_apple",
-          "weight": 2
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 3.0,
-                "min": 1.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "minecraft:bread",
-          "weight": 10
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:cooked_salmon",
-          "weight": 15
-        },
-        {
-          "type": "minecraft:item",
           "name": "minecraft:cooked_porkchop",
           "weight": 10
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 2.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "minecraft:emerald",
+          "weight": 6
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:iron_sword",
+          "weight": 6
+        },
+        {
+          "type": "minecraft:item",
+          "name": "tolkienmobs:item_scroll",
+          "weight": 4
         }
       ],
       "rolls": {

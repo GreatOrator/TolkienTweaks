@@ -10,43 +10,39 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "tolkienmobs:food_honey",
-          "weight": 18
-        },
-        {
-          "type": "minecraft:item",
           "functions": [
             {
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 7.0,
+                "max": 6.0,
                 "min": 3.0
               },
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:rotten_flesh",
-          "weight": 12
+          "name": "minecraft:bone",
+          "weight": 20
         },
         {
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:enchant_randomly",
-              "options": "#minecraft:on_random_loot"
-            },
-            {
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 1.0,
-                "min": 1.0
+                "max": 4.0,
+                "min": 2.0
               },
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:book",
+          "name": "minecraft:rotten_flesh",
+          "weight": 14
+        },
+        {
+          "type": "minecraft:item",
+          "name": "tolkienmobs:item_remains",
           "weight": 10
         },
         {
@@ -56,44 +52,7 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 8.0,
-                "min": 4.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "minecraft:bone",
-          "weight": 15
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 3.0,
-                "min": 1.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "minecraft:emerald",
-          "weight": 20
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:gold_ingot",
-          "weight": 2
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 3.0,
+                "max": 2.0,
                 "min": 1.0
               },
               "function": "minecraft:set_count"
@@ -104,13 +63,35 @@
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:golden_apple",
-          "weight": 15
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 4.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "tolkienmobs:item_coin_bronze",
+          "weight": 8
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:diamond",
-          "weight": 10
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 2.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "minecraft:emerald",
+          "weight": 8
         },
         {
           "type": "minecraft:item",
@@ -121,33 +102,13 @@
             }
           ],
           "name": "minecraft:book",
-          "weight": 2
-        }
-      ],
-      "functions": [
-        {
-          "add": false,
-          "count": {
-            "type": "minecraft:uniform",
-            "max": 3.0,
-            "min": 1.0
-          },
-          "function": "minecraft:set_count"
-        },
-        {
-          "add": false,
-          "count": {
-            "type": "minecraft:uniform",
-            "max": 3.0,
-            "min": 1.0
-          },
-          "function": "minecraft:set_count"
+          "weight": 3
         }
       ],
       "rolls": {
         "type": "minecraft:uniform",
-        "max": 5.0,
-        "min": 3.0
+        "max": 4.0,
+        "min": 2.0
       }
     }
   ],

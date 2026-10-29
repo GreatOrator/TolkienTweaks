@@ -1,16 +1,5 @@
 {
   "type": "minecraft:chest",
-  "functions": [
-    {
-      "add": false,
-      "count": {
-        "type": "minecraft:uniform",
-        "max": 3.0,
-        "min": 1.0
-      },
-      "function": "minecraft:set_count"
-    }
-  ],
   "pools": [
     {
       "bonus_rolls": {
@@ -26,13 +15,13 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 5.0,
-                "min": 1.0
+                "max": 6.0,
+                "min": 3.0
               },
               "function": "minecraft:set_count"
             }
           ],
-          "name": "tolkienmobs:item_coin_bronze",
+          "name": "minecraft:bone",
           "weight": 18
         },
         {
@@ -49,6 +38,22 @@
             }
           ],
           "name": "tolkienmobs:monster_flesh",
+          "weight": 16
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 3.0,
+                "min": 1.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "tolkienmobs:monster_fur",
           "weight": 12
         },
         {
@@ -64,8 +69,8 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "minecraft:bone",
-          "weight": 15
+          "name": "minecraft:leather",
+          "weight": 10
         },
         {
           "type": "minecraft:item",
@@ -74,83 +79,19 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 2.0,
-                "min": 1.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "minecraft:name_tag",
-          "weight": 15
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 3.0,
-                "min": 1.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "minecraft:gold_ingot",
-          "weight": 20
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 8.0,
+                "max": 6.0,
                 "min": 2.0
               },
               "function": "minecraft:set_count"
             }
           ],
-          "name": "tolkienmobs:ingot_morguliron",
-          "weight": 2
+          "name": "tolkienmobs:item_coin_bronze",
+          "weight": 8
         },
         {
           "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 3.0,
-                "min": 1.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "tolkienmobs:drink_grog",
-          "weight": 10
-        },
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 3.0,
-                "min": 1.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "tolkienmobs:food_cram",
-          "weight": 15
-        },
-        {
-          "type": "minecraft:item",
-          "name": "tolkienmobs:item_coin_silver",
-          "weight": 10
+          "name": "minecraft:name_tag",
+          "weight": 3
         }
       ],
       "rolls": {
