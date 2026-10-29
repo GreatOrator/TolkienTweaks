@@ -1,6 +1,11 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "tolkienmobs:item/tobacco_pipe"
+    "model": "tolkienmobs:item/tobacco_pipe",
+    "tints": [
+      {
+        "type": "tolkienmobs:pipe_leaf"
+      }
+    ]
   }
 }
