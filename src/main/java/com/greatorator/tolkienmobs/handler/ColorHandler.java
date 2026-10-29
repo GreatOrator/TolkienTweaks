@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.handler;
 
 import com.greatorator.tolkienmobs.TolkienMobsMain;
+import com.greatorator.tolkienmobs.item.custom.PipeItem;
 import com.greatorator.tolkienmobs.item.custom.TrinketItem;
 import com.greatorator.tolkienmobs.util.pipeweed.PipeweedStrain;
 import com.mojang.serialization.MapCodec;
@@ -38,9 +39,9 @@ public class ColorHandler {
     /**
      * The leaf a pipe's bowl is packed with. A pipe carries no strain of its own: it smokes whichever
      * leaf the smoker is holding, so the bowl is coloured by asking the same question the pipe asks
-     * when it is lit, {@link PipeweedStrain#find}, which means the bowl always shows the leaf the
-     * next draw would spend. Nothing carried means nothing packed, so the bowl takes a dull ash
-     * brown instead of a leaf colour.
+     * when it is lit, {@link PipeweedStrain#find}, which means the bowl shows the leaf the next draw
+     * would spend. A bowl that has already been smoked out shows ash instead, whatever is in the pack,
+     * until the pipe is drawn on again, and so does one whose smoker carries no leaf at all.
      */
     public record PipeLeafTintSource() implements ItemTintSource {
         public static final MapCodec<PipeLeafTintSource> MAP_CODEC = MapCodec.unit(new PipeLeafTintSource());
@@ -57,6 +58,9 @@ public class ColorHandler {
 
         @Override
         public int calculate(ItemStack stack, @Nullable ClientLevel level, @Nullable LivingEntity entity) {
+            if (PipeItem.isSpent(stack)) {
+                return ARGB.opaque(ASH);
+            }
             if (entity instanceof Player player) {
                 PipeweedStrain strain = PipeweedStrain.find(player);
                 if (strain != null) {

@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.item.custom;
 
+import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.greatorator.tolkienmobs.item.TolkienItem;
 import com.greatorator.tolkienmobs.util.pipeweed.PipeSmoke;
 import com.greatorator.tolkienmobs.util.pipeweed.PipeweedStrain;
@@ -22,6 +23,11 @@ import net.minecraft.world.level.Level;
  * A Shire pipe. Holding the use button draws on it, and letting go after a good draw spends one leaf
  * of whichever strain the smoker is carrying: the pipe blows that strain's shape into the air and
  * leaves them with its small comfort. Releasing too early spends nothing.
+ *
+ * <p>A pipe carries no leaf of its own, so its bowl is drawn in the colour of the strain the smoker
+ * is carrying. That colour is wrong the moment a draw is spent, because the bowl is empty and the
+ * strain is still in the pack, so the pipe keeps a spent flag: drawing on it packs the bowl again and
+ * clears the flag, and a finished draw sets it, which leaves the bowl showing ash until then.
  */
 public class PipeItem extends TolkienItem {
     private static final int DRAW_TICKS = 40;
@@ -40,6 +46,9 @@ public class PipeItem extends TolkienItem {
             }
             return InteractionResult.FAIL;
         }
+        // Packing the bowl: a pipe that was smoked out shows the leaf again from the moment it is
+        // drawn on, whether or not the draw is finished.
+        setSpent(player.getItemInHand(hand), false);
         player.startUsingItem(hand);
         return InteractionResult.CONSUME;
     }
@@ -90,6 +99,7 @@ public class PipeItem extends TolkienItem {
 
         if (!level.isClientSide()) {
             PipeweedStrain.consume(player, strain);
+            setSpent(stack, true);
             player.addEffect(new MobEffectInstance(strain.effect(), strain.duration(), strain.amplifier()));
             if (level instanceof ServerLevel serverLevel) {
                 PipeSmoke.blow(serverLevel, player, strain);
@@ -102,5 +112,22 @@ public class PipeItem extends TolkienItem {
         level.playSound(null, player.getX(), player.getY(), player.getZ(),
                 SoundEvents.CANDLE_EXTINGUISH, SoundSource.PLAYERS, 0.8F, 1.1F + level.getRandom().nextFloat() * 0.2F);
         return true;
+    }
+
+    /** Whether this pipe's bowl has been smoked since it was last packed. */
+    public static boolean isSpent(ItemStack stack) {
+        return stack.getOrDefault(TolkienDataComponents.PIPE_SPENT, false);
+    }
+
+    /**
+     * Records the bowl as smoked out, or as packed again. The flag is dropped rather than written as
+     * false, so an unspent pipe carries no component at all and stacks with any other it can.
+     */
+    public static void setSpent(ItemStack stack, boolean spent) {
+        if (spent) {
+            stack.set(TolkienDataComponents.PIPE_SPENT, true);
+        } else {
+            stack.remove(TolkienDataComponents.PIPE_SPENT);
+        }
     }
 }
