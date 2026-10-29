@@ -49,14 +49,18 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
             // Mithril
         dropSelf(TolkienBlocks.BLOCK_MITHRIL.get());
         dropSelf(TolkienBlocks.RAW_MITHRIL_BLOCK.get());
+        // The metal ores climb one rung at a time: stone, then the deepslate the stone turns into,
+        // then the End, then the Nether last and richest. Deepslate is the harder stone to break, so
+        // its ore pays more than the stone one - but no rung may out-earn the rung above it, which is
+        // what the deepslate used to do at three to nine.
         this.add(TolkienBlocks.ORE_MITHRIL.get(),
                 block -> createMultipleOreDrops(TolkienBlocks.ORE_MITHRIL.get(), TolkienItems.RAW_MITHRIL.get(),1, 3));
+        this.add(TolkienBlocks.ORE_DEEPSLATE_MITHRIL.get(),
+                block -> createMultipleOreDrops(TolkienBlocks.ORE_DEEPSLATE_MITHRIL.get(), TolkienItems.RAW_MITHRIL.get(),2, 4));
         this.add(TolkienBlocks.ORE_END_MITHRIL.get(),
-                block -> createMultipleOreDrops(TolkienBlocks.ORE_END_MITHRIL.get(), TolkienItems.RAW_MITHRIL.get(),2, 5));
+                block -> createMultipleOreDrops(TolkienBlocks.ORE_END_MITHRIL.get(), TolkienItems.RAW_MITHRIL.get(),3, 5));
         this.add(TolkienBlocks.ORE_NETHER_MITHRIL.get(),
                 block -> createMultipleOreDrops(TolkienBlocks.ORE_NETHER_MITHRIL.get(), TolkienItems.RAW_MITHRIL.get(),4, 7));
-        this.add(TolkienBlocks.ORE_DEEPSLATE_MITHRIL.get(),
-                block -> createMultipleOreDrops(TolkienBlocks.ORE_DEEPSLATE_MITHRIL.get(), TolkienItems.RAW_MITHRIL.get(),3, 9));
         dropSelf(TolkienBlocks.STAIRS_MITHRIL.get());
         this.add(TolkienBlocks.SLAB_MITHRIL.get(),
                 block -> createSlabItemTable(TolkienBlocks.SLAB_MITHRIL.get()));
@@ -74,12 +78,12 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(TolkienBlocks.RAW_MORGULIRON_BLOCK.get());
         this.add(TolkienBlocks.ORE_MORGULIRON.get(),
                 block -> createMultipleOreDrops(TolkienBlocks.ORE_MORGULIRON.get(), TolkienItems.RAW_MORGULIRON.get(),1, 3));
+        this.add(TolkienBlocks.ORE_DEEPSLATE_MORGULIRON.get(),
+                block -> createMultipleOreDrops(TolkienBlocks.ORE_DEEPSLATE_MORGULIRON.get(), TolkienItems.RAW_MORGULIRON.get(),2, 4));
         this.add(TolkienBlocks.ORE_END_MORGULIRON.get(),
-                block -> createMultipleOreDrops(TolkienBlocks.ORE_END_MORGULIRON.get(), TolkienItems.RAW_MORGULIRON.get(),2, 5));
+                block -> createMultipleOreDrops(TolkienBlocks.ORE_END_MORGULIRON.get(), TolkienItems.RAW_MORGULIRON.get(),3, 5));
         this.add(TolkienBlocks.ORE_NETHER_MORGULIRON.get(),
                 block -> createMultipleOreDrops(TolkienBlocks.ORE_NETHER_MORGULIRON.get(), TolkienItems.RAW_MORGULIRON.get(),4, 7));
-        this.add(TolkienBlocks.ORE_DEEPSLATE_MORGULIRON.get(),
-                block -> createMultipleOreDrops(TolkienBlocks.ORE_DEEPSLATE_MORGULIRON.get(), TolkienItems.RAW_MORGULIRON.get(),3, 9));
         dropSelf(TolkienBlocks.STAIRS_MORGULIRON.get());
         this.add(TolkienBlocks.SLAB_MORGULIRON.get(),
                 block -> createSlabItemTable(TolkienBlocks.SLAB_MORGULIRON.get()));
