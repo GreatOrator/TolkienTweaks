@@ -9,6 +9,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -31,9 +32,12 @@ import java.util.function.Consumer;
  * stays in the pipe, and the bowl is drawn in that strain's colour from then on. Holding the use
  * button draws on a loaded pipe, and letting go after a good draw spends the leaf that is in it -
  * the pipe blows that strain's shape into the air and leaves the smoker with its small comfort -
- * and the bowl is empty again. Letting go early smokes nothing and leaves the bowl loaded, which is
- * what makes a tap a loading gesture and a hold a smoke. Sneaking and using tips the bowl out and
- * puts the leaf back in the pack.
+ * and the bowl is empty again. A draw held right to its end smokes by itself rather than having to
+ * be let go of at the last moment, and because that ends with an empty bowl, a smoker who keeps the
+ * button down simply packs the next leaf and draws again - so a whole stack goes up one bowl at a
+ * time and the pipe stops of its own accord when the pack runs out. Letting go early smokes nothing
+ * and leaves the bowl loaded, which is what makes a tap a loading gesture and a hold a smoke.
+ * Sneaking and using tips the bowl out and puts the leaf back in the pack.
  *
  * <p>The bowl is a component rather than a reading of the pack, so what the pipe shows is what it
  * will actually burn: a pipe lying in a chest no longer takes the colour of whoever happens to look
@@ -71,7 +75,13 @@ public class PipeItem extends TolkienItem {
             PipeweedStrain strain = PipeweedStrain.find(player);
             if (strain == null) {
                 if (!level.isClientSide()) {
-                    player.sendSystemMessage(Component.translatable(getDescriptionId() + ".empty"));
+                    // The overlay rather than chat: a smoker holding the button on an empty pack keeps
+                    // asking, and one line that keeps being replaced beats five a second down the chat.
+                    if (player instanceof ServerPlayer server) {
+                        server.sendSystemMessage(Component.translatable(getDescriptionId() + ".empty"), true);
+                    } else {
+                        player.sendSystemMessage(Component.translatable(getDescriptionId() + ".empty"));
+                    }
                 }
                 return InteractionResult.FAIL;
             }
@@ -134,19 +144,53 @@ public class PipeItem extends TolkienItem {
         }
 
         if (!level.isClientSide()) {
-            clearBowl(stack);
-            player.addEffect(new MobEffectInstance(strain.effect(), strain.duration(), strain.amplifier()));
-            if (level instanceof ServerLevel serverLevel) {
-                PipeSmoke.blow(serverLevel, player, strain);
-            }
-            player.awardStat(Stats.ITEM_USED.get(this));
-            player.getCooldowns().addCooldown(stack, TolkienMobsConfig.pipeCooldownTicks());
-            player.sendSystemMessage(Component.translatable(getDescriptionId() + ".smoke",
-                    Component.translatable(strain.leafItem().getDescriptionId())));
+            smoke(player, stack, strain);
         }
+        playOut(level, player);
+        return true;
+    }
+
+    /**
+     * A draw held to its end, rather than let go of. The pipe used to do nothing at all here: the
+     * bowl stayed packed, the use ended of its own accord, and the smoker had held the button for
+     * nothing. A completed draw now burns the bowl exactly as a released one does, so holding is
+     * always at least as good as letting go in time - and because the use ends with an empty bowl,
+     * a smoker still holding the button simply packs the next leaf and draws again, until the pack
+     * is empty.
+     */
+    @Override
+    public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
+        if (entity instanceof Player player) {
+            PipeweedStrain strain = bowlOf(stack);
+            if (strain != null) {
+                smoke(player, stack, strain);
+                playOut(level, player);
+            }
+        }
+        return stack;
+    }
+
+    /**
+     * Burns the bowl: the strain's comfort, its shape in the air, the pipe cooling off and the line
+     * telling the smoker what they smoked. Called on the server only, by a release and by a draw
+     * that ran its full length.
+     */
+    private void smoke(Player player, ItemStack stack, PipeweedStrain strain) {
+        clearBowl(stack);
+        player.addEffect(new MobEffectInstance(strain.effect(), strain.duration(), strain.amplifier()));
+        if (player.level() instanceof ServerLevel serverLevel) {
+            PipeSmoke.blow(serverLevel, player, strain);
+        }
+        player.awardStat(Stats.ITEM_USED.get(this));
+        player.getCooldowns().addCooldown(stack, TolkienMobsConfig.pipeCooldownTicks());
+        player.sendSystemMessage(Component.translatable(getDescriptionId() + ".smoke",
+                Component.translatable(strain.leafItem().getDescriptionId())));
+    }
+
+    /** The pipe going out, heard by everyone nearby. */
+    private static void playOut(Level level, Player player) {
         level.playSound(null, player.getX(), player.getY(), player.getZ(),
                 SoundEvents.CANDLE_EXTINGUISH, SoundSource.PLAYERS, 0.8F, 1.1F + level.getRandom().nextFloat() * 0.2F);
-        return true;
     }
 
     /** The leaf in the bowl, above the pipe's own lore, so a pipe says what it is holding. */
