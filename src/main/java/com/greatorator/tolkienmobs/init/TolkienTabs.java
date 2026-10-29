@@ -812,7 +812,6 @@ public class TolkienTabs {
                         output.accept(TolkienItems.PIPEWEED_OLDTOBY_SEEDS);
                         output.accept(TolkienItems.PIPEWEED_SOUTHLINCH_ITEM);
                         output.accept(TolkienItems.PIPEWEED_SOUTHLINCH_SEEDS);
-                        output.accept(TolkienItems.TOBACCO_PIPE);
                         output.accept(TolkienBlocks.LIGHTNINGBUG_BLOCK);
                         output.accept(TolkienBlocks.LOCUST_BLOCK);
                         output.accept(TolkienBlocks.BLOCK_HALLOWED);
@@ -835,6 +834,7 @@ public class TolkienTabs {
                         output.accept(TolkienItems.COIN_POUCH);
                         output.accept(TolkienItems.KEY_RING);
                         output.accept(TolkienItems.HOBBIT_RING);
+                        output.accept(TolkienItems.TOBACCO_PIPE);
                         output.accept(TolkienItems.SWORD_WITCHKING);
                         output.accept(TolkienItems.SWORD_URUK);
                         output.accept(TolkienItems.WHIP_FIRE);
