@@ -28,6 +28,13 @@ public class TolkienDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<CustomData>> BACKPACK_CONTENTS = COMPONENTS.register("backpack_contents", () -> DataComponentType.<CustomData>builder().persistent(CustomData.CODEC).networkSynchronized(CustomData.STREAM_CODEC).cacheEncoding().build());
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> HOBBIT_RING_ACTIVE = COMPONENTS.register("hobbit_ring_active", () -> DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build());
+
+    /**
+     * Whether a pipe's bowl has been smoked since it was last packed. The bowl's leaf is drawn in the
+     * colour of the strain the smoker carries, so without this a pipe that had just been smoked out
+     * looked exactly like one that was loaded and waiting.
+     */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> PIPE_SPENT = COMPONENTS.register("pipe_spent", () -> DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> TRINKET_ACTIVE = COMPONENTS.register("trinket_active", () -> DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<TrinketComponent>> POTION_CONTENTS = COMPONENTS.register("trinket_contents", () -> DataComponentType.<TrinketComponent>builder().persistent(TrinketComponent.CODEC).networkSynchronized(TrinketComponent.STREAM_CODEC).build());
 
