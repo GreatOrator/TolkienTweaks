@@ -173,6 +173,31 @@
         }
       ],
       "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:killed_by_player"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "tolkienmobs:random_trinket"
+            },
+            {
+              "add": false,
+              "count": 1.0,
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "tolkienmobs:trinket_cloak"
+        }
+      ],
+      "rolls": 1.0
     }
   ],
   "random_sequence": "tolkienmobs:entities/entityttmenragedfellspirit"
