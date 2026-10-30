@@ -205,10 +205,14 @@ public class TolkienItems {
             properties -> new TolkienCoinItem(properties).setHasLore(), () -> new Item.Properties().stacksTo(3));
     public static final DeferredItem<Item> ITEM_WATCHERCOMPLETE = ITEMS.registerItem("item_watchercomplete",
             properties -> new TolkienCoinItem(properties).setHasLore(), () -> new Item.Properties().stacksTo(3));
+    // An alliance token is a currency now: a hall takes every one you carry, so a stack of them has
+    // to be possible or reaching a rank means a full inventory of single items.
     public static final DeferredItem<Item> ITEM_TOKEN_EASTERN_ALLIANCE = ITEMS.registerItem("item_token_eastern_alliance",
-            properties -> new TolkienCoinItem(properties).setHasLore(), () -> new Item.Properties().stacksTo(1));
+            properties -> new TolkienCoinItem(properties).setHasLore(), () -> new Item.Properties().stacksTo(16));
     public static final DeferredItem<Item> ITEM_TOKEN_WESTERN_ALLIANCE = ITEMS.registerItem("item_token_western_alliance",
-            properties -> new TolkienCoinItem(properties).setHasLore(), () -> new Item.Properties().stacksTo(1));
+            properties -> new TolkienCoinItem(properties).setHasLore(), () -> new Item.Properties().stacksTo(16));
+    public static final DeferredItem<Item> ITEM_TOKEN_HARAD_ALLIANCE = ITEMS.registerItem("item_token_harad_alliance",
+            properties -> new TolkienCoinItem(properties).setHasLore(), () -> new Item.Properties().stacksTo(16));
 
         // Mob Drops
     public static final DeferredItem<Item> CREBAIN_FEATHER = ITEMS.registerSimpleItem("feather_crebain");

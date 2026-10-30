@@ -180,6 +180,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addItemWithLore(TolkienItems.ITEM_WATCHERCOMPLETE.get(), "§3监视者击杀信物§r", "击败监视者的证明");
             this.addItemWithLore(TolkienItems.ITEM_TOKEN_EASTERN_ALLIANCE.get(), "§4东部联盟代币§r", "你决定与谁结盟的证明");
             this.addItemWithLore(TolkienItems.ITEM_TOKEN_WESTERN_ALLIANCE.get(), "§1西部联盟代币§r", "你决定与谁结盟的证明");
+            this.addItemWithLore(TolkienItems.ITEM_TOKEN_HARAD_ALLIANCE.get(), "§6哈拉德联盟代币§r", "你决定与谁结盟的证明");
             this.addItem(TolkienItems.ITEM_EXPERIENCE_ORB, "§2经验§r");
             this.addItemWithInstructions(TolkienItems.BRONZE_KEY.get(), "青铜钥匙", "剩余使用次数： ", "在创造模式下按住 Shift 键", "右键点击以输入或修改钥匙编码");
             this.addItemWithInstructions(TolkienItems.SILVER_KEY.get(), "银钥匙", "剩余使用次数： ", "在创造模式下按住 Shift 键", "右键点击以输入或修改钥匙编码");
@@ -597,6 +598,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.add(TolkienEntities.EGG_TTMENRAGEDFELLSPIRIT.get(), "愤怒的堕落之灵刷怪蛋");
             this.add(TolkienEntities.ENTITY_TTM_BRIGAND.get(), "土匪");
             this.add(TolkienEntities.EGG_TTMBRIGAND.get(), "土匪刷怪蛋");
+            this.add(TolkienEntities.ENTITY_TTM_FACTIONGUARD.get(), "联盟卫兵");
             this.add(TolkienEntities.ENTITY_TTM_HARADRIM.get(), "哈拉德人");
             this.add(TolkienEntities.EGG_TTMHARADRIM.get(), "哈拉德人刷怪蛋");
             this.add(TolkienEntities.ENTITY_TTM_ROMIEWALKER.get(), "希望行者");
@@ -756,6 +758,22 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.add("tolkienmobs.msg.wrong_key", "你需要正确的钥匙！");
         this.add("tolkienmobs.msg.ancient_watcher.warn", "恐惧的阴影笼罩着你，让你畏缩不前。");
         this.add("tolkienmobs.msg.ancient_watcher.safe", "压迫对你没有任何影响。");
+
+        // 三大联盟、名望等级与名册界面
+        this.add("faction.tolkienmobs.west", "西方联盟");
+        this.add("faction.tolkienmobs.east", "东方联盟");
+        this.add("faction.tolkienmobs.harad", "哈拉德");
+        this.add("faction.tolkienmobs.rank.hostile", "敌视");
+        this.add("faction.tolkienmobs.rank.outsider", "陌路人");
+        this.add("faction.tolkienmobs.rank.stranger", "生面孔");
+        this.add("faction.tolkienmobs.rank.guest", "宾客");
+        this.add("faction.tolkienmobs.rank.friend", "盟友");
+        this.add("faction.tolkienmobs.rank.kinsman", "族人");
+        this.add("faction.tolkienmobs.no_tokens", "%s的守馆人对空手而来的人毫无兴趣。");
+        this.add("faction.tolkienmobs.hand_in", "守馆人收下了 %s 枚信物。你与%s的关系为 %s（%s）。");
+        this.add("screen.tolkienmobs.faction_ledger", "联盟名册");
+        this.add("screen.tolkienmobs.faction_ledger.hint", "将联盟信物交给会馆的守馆人");
+        this.add("key.tolkienmobs.faction_ledger", "打开联盟名册");
     }
 
     @Nonnull

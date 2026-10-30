@@ -140,6 +140,13 @@ public class TolkienEntities {
     public static final Supplier<EntityType<BrigandEntity>> ENTITY_TTM_BRIGAND =
             registerEntity("entityttmbrigand", () -> EntityType.Builder.of(BrigandEntity::new, MobCategory.MONSTER)
                     .sized(0.5f, 2.0f));
+    /**
+     * The soldier a country musters. One entity wears every alliance's skins, so the West and Harad each
+     * send it; the East still sends its own orcs.
+     */
+    public static final Supplier<EntityType<FactionGuardEntity>> ENTITY_TTM_FACTIONGUARD =
+            registerEntity("entityttmfactionguard", () -> EntityType.Builder.of(FactionGuardEntity::new, MobCategory.MONSTER)
+                    .sized(0.5f, 2.0f));
     public static final Supplier<EntityType<HaradrimEntity>> ENTITY_TTM_HARADRIM =
             registerEntity("entityttmharadrim", () -> EntityType.Builder.of(HaradrimEntity::new, MobCategory.MONSTER)
                     .sized(0.5f, 2.0f));

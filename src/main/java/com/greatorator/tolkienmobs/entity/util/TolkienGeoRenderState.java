@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.entity.util;
 
 import com.geckolib.constant.dataticket.DataTicket;
 import com.geckolib.renderer.base.GeoRenderState;
+import com.greatorator.tolkienmobs.faction.Alliance;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 
@@ -30,6 +31,9 @@ public class TolkienGeoRenderState extends LivingEntityRenderState implements Ge
 
     /** Whether a human is in its winter clothing, set by the renderer during extraction. */
     public boolean winter;
+
+    /** The alliance a faction guard serves, set by its renderer during extraction. */
+    public Alliance alliance = Alliance.WEST;
 
     /**
      * The bones this pass must not draw, set by the renderer during extraction. 5 has no per-model

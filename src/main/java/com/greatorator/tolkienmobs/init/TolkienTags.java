@@ -147,4 +147,28 @@ public class TolkienTags {
             return TagKey.create(Registries.ENTITY_TYPE, Identifier.parse(name));
         }
     }
+
+    /**
+     * The three alliances, each with the ground it calls its own and the folk who fight for it.
+     * A country is what a hall may stand in and what a guard patrols; a soldier is what moves
+     * standing when a player kills it. Both are tags rather than lists so a pack can move a biome
+     * or a mob from one alliance to another without touching the mod's code.
+     */
+    public static class Factions {
+        public static final TagKey<Biome> WEST_COUNTRIES = biomeTag("tolkienmobs:factions/west");
+        public static final TagKey<Biome> EAST_COUNTRIES = biomeTag("tolkienmobs:factions/east");
+        public static final TagKey<Biome> HARAD_COUNTRIES = biomeTag("tolkienmobs:factions/harad");
+
+        public static final TagKey<EntityType<?>> WEST_SOLDIERS = entityTag("tolkienmobs:factions/west_soldiers");
+        public static final TagKey<EntityType<?>> EAST_SOLDIERS = entityTag("tolkienmobs:factions/east_soldiers");
+        public static final TagKey<EntityType<?>> HARAD_SOLDIERS = entityTag("tolkienmobs:factions/harad_soldiers");
+
+        private static TagKey<Biome> biomeTag(String name) {
+            return TagKey.create(Registries.BIOME, Identifier.parse(name));
+        }
+
+        private static TagKey<EntityType<?>> entityTag(String name) {
+            return TagKey.create(Registries.ENTITY_TYPE, Identifier.parse(name));
+        }
+    }
 }

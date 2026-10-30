@@ -1,0 +1,8 @@
+{
+  "type": "tolkienmobs:template_layout",
+  "biomes": "#tolkienmobs:has_structure/faction_hall_west",
+  "spawn_overrides": {},
+  "start_pool": "tolkienmobs:faction_hall_west",
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
+}
