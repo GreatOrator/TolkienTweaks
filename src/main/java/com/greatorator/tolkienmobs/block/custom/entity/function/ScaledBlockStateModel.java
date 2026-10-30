@@ -31,6 +31,14 @@ import java.util.List;
  * used to be.
  */
 public class ScaledBlockStateModel extends DelegateBlockStateModel {
+    /**
+     * The middle of the ground face, which is what the drawing grows out from. A quad corner is about a
+     * block - 0 to 1 - not a pixel of the 0 to 16 the model file is written in: the renderer adds the
+     * position of the block being drawn to it. The outline is built from the model file in pixels and so
+     * pivots on 8 there.
+     */
+    private static final float PIVOT = 0.5F;
+
     private final float scale;
 
     public ScaledBlockStateModel(BlockStateModel delegate, float scale) {
@@ -83,9 +91,9 @@ public class ScaledBlockStateModel extends DelegateBlockStateModel {
 
     private static Vector3fc scale(Vector3fc position, float scale) {
         return new Vector3f(
-                8.0F + (position.x() - 8.0F) * scale,
+                PIVOT + (position.x() - PIVOT) * scale,
                 position.y() * scale,
-                8.0F + (position.z() - 8.0F) * scale);
+                PIVOT + (position.z() - PIVOT) * scale);
     }
 
     /** One part of the bigger model: the quads are scaled as they are asked for, nothing else changes. */
