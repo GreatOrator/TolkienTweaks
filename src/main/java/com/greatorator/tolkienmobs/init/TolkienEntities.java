@@ -5,6 +5,7 @@ import com.greatorator.tolkienmobs.entity.boss.*;
 import com.greatorator.tolkienmobs.entity.item.*;
 import com.greatorator.tolkienmobs.entity.monster.*;
 import com.greatorator.tolkienmobs.entity.npc.*;
+import com.greatorator.tolkienmobs.entity.npc.FactionVendorEntity;
 import com.greatorator.tolkienmobs.entity.passive.*;
 import com.greatorator.tolkienmobs.entity.projectiles.*;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -123,6 +124,11 @@ public class TolkienEntities {
     public static final Supplier<EntityType<SouthronEntity>> ENTITY_TTM_SOUTHRON_NPC =
             registerEntity("entityttmsouthron_npc", () -> EntityType.Builder.of(SouthronEntity::new, MobCategory.CREATURE)
                     .sized(0.5F, 2.0F));
+
+    /** The merchant a hall keeps behind its counter: one entity, every alliance's envoy. */
+    public static final Supplier<EntityType<FactionVendorEntity>> ENTITY_TTM_FACTIONVENDOR =
+            registerEntity("entityttmfactionvendor", () -> EntityType.Builder.of(FactionVendorEntity::new, MobCategory.CREATURE)
+                    .sized(0.5f, 2.0f));
 
         // Hostile
     public static final Supplier<EntityType<BarrowWightEntity>> ENTITY_TTM_BARROW =
@@ -332,6 +338,8 @@ public class TolkienEntities {
     public static final DeferredItem<Item> EGG_TTMORC_TRADER = spawnEgg("entityttmorc_trader_spawn_egg", ENTITY_TTM_ORC_TRADER, 15186506, 16739362);
     public static final DeferredItem<Item> EGG_TTMORC = spawnEgg("entityttmorc_spawn_egg", ENTITY_TTM_ORC, 15186506, 9467561);
     public static final DeferredItem<Item> EGG_TTMSOUTHRON_NPC = spawnEgg("entityttmsouthron_npc_spawn_egg", ENTITY_TTM_SOUTHRON_NPC, 15186506, 12198412);
+    /** An envoy's egg rolls its side on spawn, so one egg shows all three. */
+    public static final DeferredItem<Item> EGG_TTMFACTIONVENDOR = spawnEgg("entityttmfactionvendor_spawn_egg", ENTITY_TTM_FACTIONVENDOR, 7231814, 14206918);
 
         // Hostile
     public static final DeferredItem<Item> EGG_TTMBARROW = spawnEgg("entityttmbarrow_spawn_egg", ENTITY_TTM_BARROW, 585619, 16121867);

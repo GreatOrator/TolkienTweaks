@@ -1,0 +1,9 @@
+{
+  "amount": 3.0,
+  "random_sequence": "tolkienmobs:trade_set/faction_vendor/harad/shelf_2",
+  "trades": [
+    "tolkienmobs:faction_vendor/harad/2/morgul_ingot",
+    "tolkienmobs:faction_vendor/harad/2/morgul_boots",
+    "tolkienmobs:faction_vendor/harad/2/amulet"
+  ]
+}

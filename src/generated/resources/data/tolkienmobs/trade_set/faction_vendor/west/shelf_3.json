@@ -1,0 +1,9 @@
+{
+  "amount": 3.0,
+  "random_sequence": "tolkienmobs:trade_set/faction_vendor/west/shelf_3",
+  "trades": [
+    "tolkienmobs:faction_vendor/west/3/ammolite_sword",
+    "tolkienmobs:faction_vendor/west/3/mithril_chestplate",
+    "tolkienmobs:faction_vendor/west/3/star_of_earendil"
+  ]
+}

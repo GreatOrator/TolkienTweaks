@@ -504,6 +504,7 @@ public class TolkienEntityLootTables extends EntityLootSubProvider {
         add(TolkienEntities.ENTITY_TTM_SOUTHRON_NPC.get(), emptyLootTable());
         add(TolkienEntities.ENTITY_TTM_ORC.get(), emptyLootTable());
         add(TolkienEntities.ENTITY_TTM_ORC_TRADER.get(), emptyLootTable());
+        add(TolkienEntities.ENTITY_TTM_FACTIONVENDOR.get(), emptyLootTable());
     }
 
     public LootTable.Builder emptyLootTable() {

@@ -33,8 +33,8 @@ public class TolkienDataRegistryProvider extends DatapackBuiltinEntriesProvider 
             .add(Registries.TEMPLATE_POOL, TolkienStructureProvider::bootstrapPools)
             .add(Registries.PROCESSOR_LIST, TolkienProcessorLists::bootstrap)
 
-            .add(Registries.VILLAGER_TRADE, TolkienVillagerTrades::bootstrap)
-            .add(Registries.TRADE_SET, TolkienVillagerTrades::bootstrapSets)
+            .add(Registries.VILLAGER_TRADE, TolkienFactionVendorTrades::bootstrap)
+            .add(Registries.TRADE_SET, TolkienFactionVendorTrades::bootstrapSets)
             .add(Registries.TRIM_MATERIAL, TolkienTrimMaterials::bootstrap)
             .add(Registries.ENCHANTMENT, TolkienEnchantments::bootstrap)
             .add(Registries.JUKEBOX_SONG, TolkienJukebox::bootstrap)

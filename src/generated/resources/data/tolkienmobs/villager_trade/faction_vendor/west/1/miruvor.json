@@ -1,0 +1,15 @@
+{
+  "additional_wants": {
+    "id": "tolkienmobs:item_coin2"
+  },
+  "gives": {
+    "count": 2,
+    "id": "tolkienmobs:drink_miruvor"
+  },
+  "max_uses": 12.0,
+  "wants": {
+    "count": 10.0,
+    "id": "tolkienmobs:item_coin1"
+  },
+  "xp": 10.0
+}

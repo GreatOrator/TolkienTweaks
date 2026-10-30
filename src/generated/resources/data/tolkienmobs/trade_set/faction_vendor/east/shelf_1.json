@@ -1,0 +1,9 @@
+{
+  "amount": 3.0,
+  "random_sequence": "tolkienmobs:trade_set/faction_vendor/east/shelf_1",
+  "trades": [
+    "tolkienmobs:faction_vendor/east/1/grog",
+    "tolkienmobs:faction_vendor/east/1/monster_flesh",
+    "tolkienmobs:faction_vendor/east/1/utumno_arrows"
+  ]
+}

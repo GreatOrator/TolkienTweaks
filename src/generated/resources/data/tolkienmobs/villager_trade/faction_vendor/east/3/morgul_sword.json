@@ -1,0 +1,15 @@
+{
+  "additional_wants": {
+    "count": 3.0,
+    "id": "tolkienmobs:item_coin2"
+  },
+  "gives": {
+    "id": "tolkienmobs:sword_morguliron"
+  },
+  "max_uses": 12.0,
+  "wants": {
+    "count": 48.0,
+    "id": "tolkienmobs:item_coin1"
+  },
+  "xp": 10.0
+}

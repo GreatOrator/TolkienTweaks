@@ -1015,6 +1015,7 @@ public class TolkienTabs {
                         output.accept(TolkienEntities.EGG_TTMORC);
                         output.accept(TolkienEntities.EGG_TTMSOUTHRON_NPC);
 
+                        output.accept(TolkienEntities.EGG_TTMFACTIONVENDOR);
                         output.accept(TolkienEntities.EGG_TTMBARROW);
                         output.accept(TolkienEntities.EGG_TTMBRIGAND);
                         output.accept(TolkienEntities.EGG_TTMDEEPCLAW);
