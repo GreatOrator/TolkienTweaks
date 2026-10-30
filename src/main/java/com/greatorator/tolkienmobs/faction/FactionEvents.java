@@ -35,9 +35,8 @@ public final class FactionEvents {
     }
 
     /**
-     * A soldier's death moves the two alliances that are not his own upward and his own downward.
-     * The downward step stops at the bottom of the rank the player holds, so a kill cannot cost a
-     * rank that was already earned - only a hand-in at a rival's hall can.
+     * A soldier's death moves the two alliances that are not his own upward and his own downward, so
+     * clearing a camp is a decision: the West notices an orc killed, and Mordor notices it too.
      */
     @SubscribeEvent
     public static void onLivingDeath(LivingDeathEvent event) {
@@ -45,9 +44,9 @@ public final class FactionEvents {
         Entity victim = event.getEntity();
         for (Alliance alliance : Alliance.values()) {
             if (!victim.getType().builtInRegistryHolder().is(alliance.soldiers())) continue;
-            FactionStandings.adjust(player, alliance, -FactionRank.KILL_VALUE, true);
+            FactionStandings.adjust(player, alliance, -FactionRank.KILL_VALUE);
             for (Alliance rival : alliance.rivals()) {
-                FactionStandings.adjust(player, rival, FactionRank.KILL_VALUE, true);
+                FactionStandings.adjust(player, rival, FactionRank.KILL_VALUE);
             }
             return;
         }

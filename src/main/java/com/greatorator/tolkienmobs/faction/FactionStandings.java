@@ -76,20 +76,18 @@ public final class FactionStandings extends SavedData {
 
     /**
      * Moves one alliance's standing and tells the player.
-     *
-     * @param keepRank a loss that may not cost a rank: the total stops at the bottom of the rank the
-     *                 player is in, so a soldier they kill cannot undo a rank they earned. A token
-     *                 hand-in is not held back this way, which is how a choice made at one hall can
-     *                 still lose another alliance's favour.
+     * <p>
+     * A loss is felt in full. It used to be held at the bottom of the rank the player already held, to
+     * keep a kill from undoing a rank - but the rank is read off the total, so at exactly a threshold that
+     * rule froze the number: six brigands killed cost the West nothing at all, and the only way to fall out
+     * of a country's favour was to hand its rivals tokens. Losing standing now simply works.
      */
-    public static void adjust(ServerPlayer player, Alliance alliance, int delta, boolean keepRank) {
+    public static void adjust(ServerPlayer player, Alliance alliance, int delta) {
         if (delta == 0) return;
         int[] row = row(player);
         int before = row[alliance.ordinal()];
         int after = before + delta;
         if (delta < 0) {
-            int floor = keepRank ? FactionRank.of(before).threshold() : FactionRank.FLOOR;
-            after = Math.max(after, Math.min(floor, before));
             after = Math.max(after, FactionRank.FLOOR);
         } else {
             after = Math.min(after, CEILING);
@@ -110,9 +108,9 @@ public final class FactionStandings extends SavedData {
     public static int handIn(ServerPlayer player, Alliance alliance) {
         int taken = takeTokens(player, alliance);
         if (taken == 0) return 0;
-        adjust(player, alliance, taken * FactionRank.TOKEN_VALUE, false);
+        adjust(player, alliance, taken * FactionRank.TOKEN_VALUE);
         for (Alliance rival : alliance.rivals()) {
-            adjust(player, rival, -taken * FactionRank.KILL_VALUE, false);
+            adjust(player, rival, -taken * FactionRank.KILL_VALUE);
         }
         return taken;
     }
