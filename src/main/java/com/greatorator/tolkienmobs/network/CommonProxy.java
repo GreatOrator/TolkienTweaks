@@ -50,4 +50,7 @@ public class CommonProxy {
     }
 
     public void setClipboardString(String text) {}
+
+    /** Opens the quest book on the tab it belongs on. Nothing to do on a dedicated server. */
+    public void openQuestBook() {}
 }

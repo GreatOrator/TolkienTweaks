@@ -28,6 +28,7 @@ import com.greatorator.tolkienmobs.network.ClientProxy;
 import com.greatorator.tolkienmobs.network.CommonProxy;
 import com.greatorator.tolkienmobs.network.PacketHandler;
 import com.greatorator.tolkienmobs.network.manager.FactionStandingsSyncManager;
+import com.greatorator.tolkienmobs.network.manager.QuestSyncManager;
 import com.greatorator.tolkienmobs.network.manager.SpawnFallenLeafFromPacket;
 import com.greatorator.tolkienmobs.particle.FellBeastBreathParticle;
 import com.greatorator.tolkienmobs.particle.LeafParticle;
@@ -220,6 +221,7 @@ public class TolkienMobsMain {
         PayloadRegistrar registrar = event.registrar(MODID).versioned("1.0.0").optional();
         registrar.playToClient(SpawnFallenLeafFromPacket.TYPE, SpawnFallenLeafFromPacket.STREAM_CODEC, SpawnFallenLeafFromPacket::handle);
         registrar.playToClient(FactionStandingsSyncManager.TYPE, FactionStandingsSyncManager.STREAM_CODEC, FactionStandingsSyncManager::handle);
+        registrar.playToClient(QuestSyncManager.TYPE, QuestSyncManager.STREAM_CODEC, QuestSyncManager::handle);
     }
 
         @EventBusSubscriber(modid = MODID, value = Dist.CLIENT)

@@ -1,0 +1,404 @@
+package com.greatorator.tolkienmobs.faction;
+
+import com.greatorator.tolkienmobs.init.TolkienItems;
+import com.greatorator.tolkienmobs.network.manager.QuestSyncManager;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
+import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
+/**
+ * Every player's quests, and every giver's unanswered offer, kept in the overworld's saved data.
+ * <p>
+ * Quests live here rather than on an item because the book is a list, not a stack of papers: a player
+ * with four quests has one book, and losing the book is not abandoning the work. The offers live here
+ * for the opposite reason - a giver is a world entity with a UUID and no room for a quest of its own
+ * unless it carries a data component, and keeping the offer beside the player's quests means one file
+ * answers both "what am I doing" and "who is waiting for an answer".
+ * <p>
+ * As with the standings, the server owns the data and sends each player their own copy; the client
+ * side is that copy and a set of giver ids, which is all the nameplate's question mark needs.
+ */
+public final class QuestLedger extends SavedData {
+    private static final String SAVE_DATA_NAME = "quest_ledger";
+    /** How many quests a player may hold at once, which is how many the book draws. */
+    public static final int MAX_ACTIVE = 4;
+    /** How long after logging in a player is first met by a giver, in ticks. */
+    private static final long WELCOME_DELAY = 1200L;
+
+    private static final Map<UUID, List<Quest>> ACTIVE = new HashMap<>();
+    private static final Map<UUID, Long> NEXT_GIVER = new HashMap<>();
+    private static final Map<UUID, Offer> OFFERS = new HashMap<>();
+
+    private static final List<Quest> CLIENT = new ArrayList<>();
+    private static final Set<UUID> CLIENT_GIVERS = new HashSet<>();
+
+    public static final Codec<QuestLedger> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            PlayerEntry.CODEC.listOf().optionalFieldOf("players", List.of()).forGetter(QuestLedger::players),
+            Offer.CODEC.listOf().optionalFieldOf("offers", List.of()).forGetter(QuestLedger::offers)
+    ).apply(instance, QuestLedger::fromEntries));
+
+    public static final SavedDataType<QuestLedger> TYPE = new SavedDataType<>(
+            Identifier.fromNamespaceAndPath("tolkienmobs", SAVE_DATA_NAME), QuestLedger::new, CODEC);
+
+    private QuestLedger() {
+        super();
+    }
+
+    // ---- reading ----
+
+    /** The quests a player holds, as last synced from the server on a client. */
+    public static List<Quest> clientQuests() {
+        return CLIENT;
+    }
+
+    /** Whether the giver this client knows by id is still waiting for an answer. */
+    public static boolean clientHasOffer(UUID giver) {
+        return CLIENT_GIVERS.contains(giver);
+    }
+
+    public static void acceptClient(List<Quest> quests, List<UUID> givers) {
+        CLIENT.clear();
+        CLIENT.addAll(quests);
+        CLIENT_GIVERS.clear();
+        CLIENT_GIVERS.addAll(givers);
+    }
+
+    public static List<Quest> active(Player player) {
+        if (player.level().isClientSide()) return clientQuests();
+        ensureLoaded(player.level());
+        return row(player);
+    }
+
+    /** Whether the player is carrying one of the quest books already. */
+    public static boolean hasBook(ServerPlayer player) {
+        var inventory = player.getInventory();
+        for (int slot = 0; slot < inventory.getContainerSize(); slot++) {
+            if (inventory.getItem(slot).is(TolkienItems.QUEST_BOOK.get())) return true;
+        }
+        return false;
+    }
+
+    // ---- taking work ----
+
+    /**
+     * Writes a quest into the player's book, and hands them the book if they have never had one. That
+     * is the only way a book enters a world: a player who has never been offered work has nothing to
+     * read, so there is nothing to carry.
+     */
+    public static boolean accept(ServerPlayer player, Quest quest) {
+        List<Quest> quests = row(player);
+        if (quests.size() >= MAX_ACTIVE) {
+            player.sendSystemMessage(Component.translatable("quest.tolkienmobs.full")
+                    .withStyle(ChatFormatting.GRAY));
+            return false;
+        }
+        quests.add(quest);
+        store(player).setDirty();
+        grantBook(player);
+        player.sendSystemMessage(Component.translatable("quest.tolkienmobs.accepted", quest.objective())
+                .withStyle(ChatFormatting.WHITE));
+        player.level().playSound(null, player.blockPosition(), SoundEvents.VILLAGER_YES,
+                SoundSource.PLAYERS, 0.6F, 1.0F);
+        sync(player);
+        return true;
+    }
+
+    /** Puts a book in the player's pack unless they already carry one. */
+    public static void grantBook(ServerPlayer player) {
+        if (hasBook(player)) return;
+        ItemStack book = new ItemStack(TolkienItems.QUEST_BOOK.get());
+        if (!player.getInventory().add(book)) {
+            player.drop(book, false);
+        }
+        player.sendSystemMessage(Component.translatable("quest.tolkienmobs.book.given")
+                .withStyle(ChatFormatting.GRAY));
+    }
+
+    // ---- offers ----
+
+    /** Notes what a giver is asking for, and tells the player so their nameplate shows it. */
+    public static void offer(ServerPlayer player, UUID giver, Quest quest) {
+        ensureLoaded(player.level());
+        OFFERS.put(giver, new Offer(giver, player.getUUID(), quest));
+        store(player).setDirty();
+        sync(player);
+    }
+
+    @Nullable
+    public static Quest offerOf(UUID giver) {
+        Offer offer = OFFERS.get(giver);
+        return offer == null ? null : offer.quest();
+    }
+
+    public static void dropOffer(ServerPlayer player, UUID giver) {
+        if (OFFERS.remove(giver) != null) {
+            store(player).setDirty();
+            sync(player);
+        }
+    }
+
+    /** Forgets every offer a giver held, for a giver that died or was removed. */
+    public static void forgetGiver(ServerPlayer player, UUID giver) {
+        dropOffer(player, giver);
+    }
+
+    // ---- progress ----
+
+    /**
+     * Moves every kill quest the player holds that this death answers. A faction quest is answered by
+     * whatever its target alliance's soldier tag names, and a hunt quest by the exact mob it names.
+     */
+    public static void progressKill(ServerPlayer player, Entity victim) {
+        List<Quest> quests = row(player);
+        boolean changed = false;
+        for (int slot = 0; slot < quests.size(); slot++) {
+            Quest quest = quests.get(slot);
+            if (quest.kind() == Quest.Kind.FETCH || quest.complete() || !answeredBy(quest, victim)) continue;
+            Quest after = quest.advanced();
+            quests.set(slot, after);
+            changed = true;
+            player.sendOverlayMessage(after.complete()
+                    ? Component.translatable("quest.tolkienmobs.done").withStyle(ChatFormatting.GREEN)
+                    : Component.translatable("quest.tolkienmobs.progress",
+                            Component.literal(String.valueOf(after.progress())),
+                            Component.literal(String.valueOf(after.goal())))
+                    .withStyle(ChatFormatting.GRAY));
+        }
+        if (changed) {
+            store(player).setDirty();
+            sync(player);
+        }
+    }
+
+    /**
+     * Reads every fetch quest's progress off the pack, since what a player carries is the progress and
+     * keeping a second copy of it in the file would only let the two drift apart.
+     */
+    public static void refreshFetch(ServerPlayer player) {
+        List<Quest> quests = row(player);
+        boolean changed = false;
+        for (int slot = 0; slot < quests.size(); slot++) {
+            Quest quest = quests.get(slot);
+            if (quest.kind() != Quest.Kind.FETCH) continue;
+            int carried = Math.min(quest.goal(), countOf(player, quest));
+            if (carried == quest.progress()) continue;
+            quests.set(slot, quest.withProgress(carried));
+            changed = true;
+        }
+        if (changed) {
+            store(player).setDirty();
+            sync(player);
+        }
+    }
+
+    private static boolean answeredBy(Quest quest, Entity victim) {
+        if (quest.kind() == Quest.Kind.FACTION) {
+            Alliance alliance = Alliance.byId(quest.target());
+            return victim.getType().builtInRegistryHolder().is(alliance.soldiers());
+        }
+        return BuiltInRegistries.ENTITY_TYPE.getKey(victim.getType()).toString().equals(quest.target());
+    }
+
+    // ---- handing work in ----
+
+    /**
+     * Pays the first quest the player has finished, if any.
+     *
+     * @return whether a quest was paid, which is what decides how a giver answers a right click
+     */
+    public static boolean turnInFirst(ServerPlayer player) {
+        List<Quest> quests = row(player);
+        for (int slot = 0; slot < quests.size(); slot++) {
+            Quest quest = quests.get(slot);
+            if (!ready(player, quest)) continue;
+            if (quest.kind() == Quest.Kind.FETCH && !take(player, quest)) continue;
+            pay(player, quest);
+            quests.remove(slot);
+            store(player).setDirty();
+            sync(player);
+            return true;
+        }
+        return false;
+    }
+
+    /** Whether a quest's terms are met: kills are counted, goods are read off the pack. */
+    public static boolean ready(ServerPlayer player, Quest quest) {
+        return quest.kind() == Quest.Kind.FETCH ? countOf(player, quest) >= quest.goal() : quest.complete();
+    }
+
+    private static void pay(ServerPlayer player, Quest quest) {
+        if (quest.kind() == Quest.Kind.FACTION) {
+            Alliance employer = quest.employerAlliance();
+            if (employer != null) {
+                FactionStandings.adjust(player, employer, quest.standing());
+            }
+        }
+        for (Quest.Reward reward : quest.rewards()) {
+            ItemStack stack = reward.stack();
+            if (stack.isEmpty()) continue;
+            if (!player.getInventory().add(stack)) {
+                player.drop(stack, false);
+            }
+        }
+        player.sendSystemMessage(Component.translatable("quest.tolkienmobs.turned_in", quest.objective())
+                .withStyle(ChatFormatting.GREEN));
+        player.level().playSound(null, player.blockPosition(), SoundEvents.PLAYER_LEVELUP,
+                SoundSource.PLAYERS, 0.7F, 1.2F);
+    }
+
+    private static int countOf(ServerPlayer player, Quest quest) {
+        Item item = quest.item();
+        if (item == null) return 0;
+        int count = 0;
+        var inventory = player.getInventory();
+        for (int slot = 0; slot < inventory.getContainerSize(); slot++) {
+            ItemStack stack = inventory.getItem(slot);
+            if (stack.is(item)) count += stack.getCount();
+        }
+        return count;
+    }
+
+    /** Takes exactly the quest's worth of its item out of the pack. */
+    private static boolean take(ServerPlayer player, Quest quest) {
+        Item item = quest.item();
+        if (item == null || countOf(player, quest) < quest.goal()) return false;
+        int left = quest.goal();
+        var inventory = player.getInventory();
+        for (int slot = 0; slot < inventory.getContainerSize() && left > 0; slot++) {
+            ItemStack stack = inventory.getItem(slot);
+            if (!stack.is(item)) continue;
+            int taken = Math.min(left, stack.getCount());
+            stack.shrink(taken);
+            left -= taken;
+        }
+        return left == 0;
+    }
+
+    // ---- the giver's clock ----
+
+    /** When the player may next be met by a giver, in world time. */
+    public static long nextGiver(Player player) {
+        ensureLoaded(player.level());
+        return NEXT_GIVER.getOrDefault(player.getUUID(), 0L);
+    }
+
+    public static void setNextGiver(ServerPlayer player, long when) {
+        NEXT_GIVER.put(player.getUUID(), when);
+        store(player).setDirty();
+    }
+
+    /** Gives a player who has never been offered work a short wait rather than a giver on login. */
+    public static void welcome(ServerPlayer player) {
+        ensureLoaded(player.level());
+        if (NEXT_GIVER.containsKey(player.getUUID())) return;
+        NEXT_GIVER.put(player.getUUID(), player.level().getGameTime() + WELCOME_DELAY);
+        store(player).setDirty();
+    }
+
+    // ---- pluming ----
+
+    public static void sync(ServerPlayer player) {
+        ensureLoaded(player.level());
+        List<UUID> givers = new ArrayList<>();
+        for (Offer offer : OFFERS.values()) {
+            if (offer.player().equals(player.getUUID())) {
+                givers.add(offer.giver());
+            }
+        }
+        PacketDistributor.sendToPlayer(player, new QuestSyncManager(List.copyOf(row(player)), givers));
+    }
+
+    private static List<Quest> row(Player player) {
+        // The world file is read before the row is touched: decoding it rebuilds these maps, so a
+        // write that landed before the load would be thrown away by it.
+        ensureLoaded(player.level());
+        return ACTIVE.computeIfAbsent(player.getUUID(), ignored -> new ArrayList<>());
+    }
+
+    private static void ensureLoaded(Level level) {
+        instance(level);
+    }
+
+    private static QuestLedger store(Player player) {
+        return instance(player.level());
+    }
+
+    private static QuestLedger instance(Level level) {
+        if (level instanceof ServerLevel serverLevel && serverLevel.getServer() != null) {
+            ServerLevel overworld = serverLevel.getServer().getLevel(Level.OVERWORLD);
+            if (overworld != null) return overworld.getDataStorage().computeIfAbsent(TYPE);
+        }
+        return new QuestLedger();
+    }
+
+    // ---- saving ----
+
+    private static QuestLedger fromEntries(List<PlayerEntry> players, List<Offer> offers) {
+        ACTIVE.clear();
+        NEXT_GIVER.clear();
+        OFFERS.clear();
+        for (PlayerEntry entry : players) {
+            ACTIVE.put(entry.player(), new ArrayList<>(entry.quests()));
+            NEXT_GIVER.put(entry.player(), entry.nextGiver());
+        }
+        for (Offer offer : offers) {
+            OFFERS.put(offer.giver(), offer);
+        }
+        return new QuestLedger();
+    }
+
+    private List<PlayerEntry> players() {
+        List<PlayerEntry> entries = new ArrayList<>(ACTIVE.size());
+        for (Map.Entry<UUID, List<Quest>> row : ACTIVE.entrySet()) {
+            entries.add(new PlayerEntry(row.getKey(), List.copyOf(row.getValue()),
+                    NEXT_GIVER.getOrDefault(row.getKey(), 0L)));
+        }
+        return entries;
+    }
+
+    private List<Offer> offers() {
+        return List.copyOf(OFFERS.values());
+    }
+
+    public record PlayerEntry(UUID player, List<Quest> quests, long nextGiver) {
+        public static final Codec<PlayerEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                UUIDUtil.CODEC.fieldOf("player").forGetter(PlayerEntry::player),
+                Quest.CODEC.listOf().optionalFieldOf("quests", List.of()).forGetter(PlayerEntry::quests),
+                Codec.LONG.optionalFieldOf("next_giver", 0L).forGetter(PlayerEntry::nextGiver)
+        ).apply(instance, PlayerEntry::new));
+    }
+
+    /** One giver's unanswered offer: who is waiting, and what they are asking for. */
+    public record Offer(UUID giver, UUID player, Quest quest) {
+        public static final Codec<Offer> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                UUIDUtil.CODEC.fieldOf("giver").forGetter(Offer::giver),
+                UUIDUtil.CODEC.fieldOf("player").forGetter(Offer::player),
+                Quest.CODEC.fieldOf("quest").forGetter(Offer::quest)
+        ).apply(instance, Offer::new));
+    }
+}
