@@ -74,6 +74,25 @@ public final class FactionStandings extends SavedData {
 
     // ---- changing ----
 
+    /** A standing is held between the floor a country turns on you at and the ceiling. */
+    public static int clamp(int value) {
+        return Math.max(FactionRank.FLOOR, Math.min(value, CEILING));
+    }
+
+    /**
+     * Puts a standing exactly where an operator asks for it, which is what the set command is for: a
+     * world being built or a scene being staged needs a rank now, not after an afternoon of tokens.
+     * The total is held to the same bounds every other change is, and sent to the player it happened to.
+     */
+    public static void set(ServerPlayer player, Alliance alliance, int value) {
+        int[] row = row(player);
+        int after = clamp(value);
+        if (row[alliance.ordinal()] == after) return;
+        row[alliance.ordinal()] = after;
+        instance(player.level()).setDirty();
+        sync(player);
+    }
+
     /**
      * Moves one alliance's standing and tells the player.
      * <p>
@@ -86,12 +105,7 @@ public final class FactionStandings extends SavedData {
         if (delta == 0) return;
         int[] row = row(player);
         int before = row[alliance.ordinal()];
-        int after = before + delta;
-        if (delta < 0) {
-            after = Math.max(after, FactionRank.FLOOR);
-        } else {
-            after = Math.min(after, CEILING);
-        }
+        int after = clamp(before + delta);
         if (after == before) return;
         row[alliance.ordinal()] = after;
         instance(player.level()).setDirty();
