@@ -1,0 +1,9 @@
+{
+  "amount": 3.0,
+  "random_sequence": "tolkienmobs:trade_set/faction_vendor/harad/shelf_1",
+  "trades": [
+    "tolkienmobs:faction_vendor/harad/1/cram",
+    "tolkienmobs:faction_vendor/harad/1/grog",
+    "tolkienmobs:faction_vendor/harad/1/mumakil_leather"
+  ]
+}

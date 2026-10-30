@@ -10,6 +10,7 @@ import com.greatorator.tolkienmobs.entity.ambient.model.SwarmModel;
 import com.greatorator.tolkienmobs.entity.boss.*;
 import com.greatorator.tolkienmobs.entity.monster.*;
 import com.greatorator.tolkienmobs.entity.npc.*;
+import com.greatorator.tolkienmobs.entity.npc.FactionVendorEntity;
 import com.greatorator.tolkienmobs.entity.passive.*;
 import com.greatorator.tolkienmobs.entity.projectiles.model.BoulderModel;
 import com.greatorator.tolkienmobs.entity.projectiles.model.FellBeastFireballModel;
@@ -139,6 +140,8 @@ public class TolkienEventBusEvents {
         event.put(TolkienEntities.ENTITY_TTM_ORC_TRADER.get(), OrcTraderEntity.createAttributes().build());
         event.put(TolkienEntities.ENTITY_TTM_ORC.get(), OrcEntity.createAttributes().build());
         event.put(TolkienEntities.ENTITY_TTM_SOUTHRON_NPC.get(), SouthronEntity.createAttributes().build());
+
+        event.put(TolkienEntities.ENTITY_TTM_FACTIONVENDOR.get(), FactionVendorEntity.createAttributes().build());
 
         // Hostile
         event.put(TolkienEntities.ENTITY_TTM_BARROW.get(), BarrowWightEntity.createAttributes().build());

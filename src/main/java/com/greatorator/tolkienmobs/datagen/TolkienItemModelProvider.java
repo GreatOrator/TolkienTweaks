@@ -416,6 +416,11 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         trinketItem(TolkienItems.TRINKET_AMULET.get(), TolkienMobsMain.prefix("item/trinket_amulet"), TolkienMobsMain.prefix("item/trinket_amulet_gem"));
         trinketItem(TolkienItems.TRINKET_BELT.get(), TolkienMobsMain.prefix("item/trinket_belt"), TolkienMobsMain.prefix("item/trinket_belt_gem"));
         trinketItem(TolkienItems.TRINKET_CHARM.get(), TolkienMobsMain.prefix("item/trinket_charm"), TolkienMobsMain.prefix("item/trinket_charm_gem"));
+
+        // The envoys' pieces draw as the trinket art they are cut from, so only the effect is new.
+        trinketItem(TolkienItems.FACTION_CHARM_WEST.get(), TolkienMobsMain.prefix("item/trinket_charm"), TolkienMobsMain.prefix("item/trinket_charm_gem"));
+        trinketItem(TolkienItems.FACTION_CHARM_EAST.get(), TolkienMobsMain.prefix("item/trinket_charm"), TolkienMobsMain.prefix("item/trinket_charm_gem"));
+        trinketItem(TolkienItems.FACTION_AMULET_HARAD.get(), TolkienMobsMain.prefix("item/trinket_amulet"), TolkienMobsMain.prefix("item/trinket_amulet_gem"));
         trinketItem(TolkienItems.TRINKET_HAT.get(), TolkienMobsMain.prefix("item/trinket_hat"), TolkienMobsMain.prefix("item/trinket_hat_gem"));
         trinketItem(TolkienItems.TRINKET_GLOVE.get(), TolkienMobsMain.prefix("item/trinket_glove"), TolkienMobsMain.prefix("item/trinket_glove_gem"));
         trinketItem(TolkienItems.TRINKET_CLOAK.get(), TolkienMobsMain.prefix("item/trinket_cloak"), TolkienMobsMain.prefix("item/trinket_cloak_gem"));

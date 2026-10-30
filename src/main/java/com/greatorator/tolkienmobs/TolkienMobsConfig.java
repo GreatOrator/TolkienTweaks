@@ -131,6 +131,7 @@ public class TolkienMobsConfig {
             new MobToggle("enableOrcTrader", "entityttmorc_trader", "Orc Trader", NPCS),
             new MobToggle("enableOrc", "entityttmorc", "Orc", NPCS),
             new MobToggle("enableSouthron", "entityttmsouthron_npc", "Southron villager", NPCS),
+            new MobToggle("enableFactionVendor", "entityttmfactionvendor", "Faction Envoy", NPCS),
             new MobToggle("enableBarrowWight", "entityttmbarrow", "Barrow Wight", HOSTILE),
             new MobToggle("enableOathBreaker", "entityttmoathbreaker", "Oath Breaker", HOSTILE),
             new MobToggle("enableFellSpirit", "entityttmfellspirit", "Fell Spirit", HOSTILE),

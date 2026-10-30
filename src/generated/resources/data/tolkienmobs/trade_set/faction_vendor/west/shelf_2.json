@@ -1,0 +1,9 @@
+{
+  "amount": 3.0,
+  "random_sequence": "tolkienmobs:trade_set/faction_vendor/west/shelf_2",
+  "trades": [
+    "tolkienmobs:faction_vendor/west/2/mithril_ingot",
+    "tolkienmobs:faction_vendor/west/2/elven_bow",
+    "tolkienmobs:faction_vendor/west/2/mithril_pickaxe"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "amount": 3.0,
+  "random_sequence": "tolkienmobs:trade_set/faction_vendor/west/shelf_1",
+  "trades": [
+    "tolkienmobs:faction_vendor/west/1/lembas",
+    "tolkienmobs:faction_vendor/west/1/cram",
+    "tolkienmobs:faction_vendor/west/1/miruvor"
+  ]
+}

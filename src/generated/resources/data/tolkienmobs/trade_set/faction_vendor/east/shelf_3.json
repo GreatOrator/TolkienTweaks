@@ -1,0 +1,9 @@
+{
+  "amount": 3.0,
+  "random_sequence": "tolkienmobs:trade_set/faction_vendor/east/shelf_3",
+  "trades": [
+    "tolkienmobs:faction_vendor/east/3/morgul_sword",
+    "tolkienmobs:faction_vendor/east/3/morgul_chestplate",
+    "tolkienmobs:faction_vendor/east/3/morgul_knot"
+  ]
+}

@@ -707,6 +707,9 @@ public class TolkienSpawnEggTextureProvider implements DataProvider {
         designs.put("gollum", new Design(Face.GAUNT, 0x8E9A86, 0xE4F0D8, 0x1A2018, 0xE8F0DC));
         designs.put("factionguard", new Design(Face.HELMED, 0x5A6472, 0xC8D2DA, 0x1A1E24, 0x9FB0BC));
 
+        // The envoys: a cowled head over a merchant's cloth, and one egg for all three sides.
+        designs.put("factionvendor", new Design(Face.HOODED, 0x6E5A46, 0xD8C49C, 0x1A1410, 0xF2E6C6));
+
         // The folk of the towns and the traders on the road.
         designs.put("southron", new Design(Face.CLOTH, 0xB08A5A, 0xE0CBAA, 0x241708, 0xF0DCB8));
         designs.put("southron_npc", new Design(Face.CLOTH, 0xC0A070, 0xEDDBBB, 0x241708, 0xF4E4C4));

@@ -35,6 +35,9 @@ public class TolkienGeoRenderState extends LivingEntityRenderState implements Ge
     /** The alliance a faction guard serves, set by its renderer during extraction. */
     public Alliance alliance = Alliance.WEST;
 
+    /** The livery a faction envoy wears inside its alliance's folder, set by its renderer. */
+    public int skin;
+
     /**
      * The bones this pass must not draw, set by the renderer during extraction. 5 has no per-model
      * {@code setCustomAnimations} left, so a model that used to hide a prop bone has to say so here and let

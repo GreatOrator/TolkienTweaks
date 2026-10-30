@@ -33,15 +33,20 @@ public class HallVariants {
     static final double WARDEN_Y = 1.0D;
     static final double WARDEN_Z = 10.5D;
 
-    record Variant(String file, String stairs, String warden, String wardenName, String tag) {}
+    /** Where the envoy stands: behind the counter beside the warden, facing the door. */
+    static final double VENDOR_X = 7.5D;
+    static final double VENDOR_Y = 1.0D;
+    static final double VENDOR_Z = 10.5D;
+
+    record Variant(String file, String stairs, String warden, String wardenName, String tag, int alliance, String vendorName) {}
 
     static final List<Variant> VARIANTS = List.of(
             new Variant("faction_hall_west.nbt", "tolkienmobs:stairs_lebethron",
-                    "tolkienmobs:entityttmhuman", "Warden of the West", "tolkienmobs:faction_envoy/west"),
+                    "tolkienmobs:entityttmhuman", "Warden of the West", "tolkienmobs:faction_envoy/west", 0, "Envoy of the West"),
             new Variant("faction_hall_east.nbt", "tolkienmobs:stairs_morguliron",
-                    "tolkienmobs:entityttmorc", "Warden of the East", "tolkienmobs:faction_envoy/east"),
+                    "tolkienmobs:entityttmorc", "Warden of the East", "tolkienmobs:faction_envoy/east", 1, "Envoy of the East"),
             new Variant("faction_hall_harad.nbt", "minecraft:sandstone_stairs",
-                    "tolkienmobs:entityttmsouthron_npc", "Warden of Haradwaith", "tolkienmobs:faction_envoy/harad"));
+                    "tolkienmobs:entityttmsouthron_npc", "Warden of Haradwaith", "tolkienmobs:faction_envoy/harad", 2, "Envoy of Haradwaith"));
 
     public static void main(String[] args) throws Exception {
         Path source = Paths.get(args[0]);
@@ -171,7 +176,7 @@ public class HallVariants {
 
         root.put("palette", newPalette);
         root.put("blocks", newBlocks);
-        root.put("entities", List.of(warden(variant)));
+        root.put("entities", List.of(warden(variant), vendor(variant)));
         System.out.printf("  %s: kept=%d air=%d void=%d palette=%d%n",
                 variant.file(), kept, airs, voids, newPalette.size());
     }
@@ -195,6 +200,33 @@ public class HallVariants {
         entry.put("pos", List.of(WARDEN_X, WARDEN_Y, WARDEN_Z));
         entry.put("blockPos", List.of((int) Math.floor(WARDEN_X), (int) Math.floor(WARDEN_Y),
                 (int) Math.floor(WARDEN_Z)));
+        entry.put("nbt", nbt);
+        return entry;
+    }
+    /**
+     * The envoy: the alliance's merchant, standing at the counter beside the warden. Its side is written
+     * into its own data rather than left to the scoreboard tag, because the side is what decides which
+     * shelves it opens - a tag is only how the hall is looked up.
+     */
+    static Map<String, Object> vendor(Variant variant) {
+        Map<String, Object> nbt = new LinkedHashMap<>();
+        nbt.put("id", "tolkienmobs:entityttmfactionvendor");
+        nbt.put("Tags", List.of("tolkienmobs:faction_vendor",
+                variant.tag().replace("faction_envoy", "faction_vendor")));
+        nbt.put("CustomName", variant.vendorName());
+        nbt.put("Alliance", variant.alliance());
+        nbt.put("Skin", 0);
+        nbt.put("PersistenceRequired", (byte) 1);
+        nbt.put("NoAI", (byte) 1);
+        nbt.put("Invulnerable", (byte) 1);
+        nbt.put("Silent", (byte) 1);
+        // Yaw 180 faces north, which is the door this counter sits behind.
+        nbt.put("Rotation", List.of(180.0F, 0.0F));
+
+        Map<String, Object> entry = new LinkedHashMap<>();
+        entry.put("pos", List.of(VENDOR_X, VENDOR_Y, VENDOR_Z));
+        entry.put("blockPos", List.of((int) Math.floor(VENDOR_X), (int) Math.floor(VENDOR_Y),
+                (int) Math.floor(VENDOR_Z)));
         entry.put("nbt", nbt);
         return entry;
     }

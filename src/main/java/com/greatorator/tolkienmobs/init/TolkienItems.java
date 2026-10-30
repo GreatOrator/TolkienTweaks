@@ -7,6 +7,9 @@ import com.greatorator.tolkienmobs.item.projectile.FellBeastFireballItem;
 import com.greatorator.tolkienmobs.item.projectile.GaladhrimArrowItem;
 import com.greatorator.tolkienmobs.item.projectile.UtumnoArrowItem;
 import com.greatorator.tolkienmobs.network.component.TrinketComponent;
+import net.minecraft.core.Holder;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.Potions;
 import com.greatorator.tolkienmobs.util.ColorUtility;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -431,6 +434,19 @@ public class TolkienItems {
     public static final DeferredItem<Item> TRINKET_GLOVE = trinket("trinket_glove");
     public static final DeferredItem<Item> TRINKET_HAT = trinket("trinket_hat");
     public static final DeferredItem<Item> TRINKET_CLOAK = trinket("trinket_cloak");
+
+        // The envoys' own pieces: one per side, its effect fixed rather than rolled, so a token buys a
+        // known thing rather than a lucky dip.
+    public static final DeferredItem<Item> FACTION_CHARM_WEST = factionTrinket("faction_charm_west", Potions.LONG_NIGHT_VISION);
+    public static final DeferredItem<Item> FACTION_CHARM_EAST = factionTrinket("faction_charm_east", Potions.STRONG_STRENGTH);
+    public static final DeferredItem<Item> FACTION_AMULET_HARAD = factionTrinket("faction_amulet_harad", Potions.LONG_FIRE_RESISTANCE);
+
+    /** A trinket whose potion is part of the item rather than rolled onto it: the envoy's own piece. */
+    private static DeferredItem<Item> factionTrinket(String name, Holder<Potion> potion) {
+        return ITEMS.registerItem(name,
+                properties -> new TrinketItem(properties.component(TolkienDataComponents.POTION_CONTENTS, new TrinketComponent(potion))),
+                () -> new Item.Properties().stacksTo(1));
+    }
 
     /**
      * Trinkets carry an empty potion component by default. It is attached while the item is

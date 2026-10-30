@@ -10,6 +10,7 @@ import com.greatorator.tolkienmobs.entity.boss.render.*;
 import com.greatorator.tolkienmobs.entity.item.render.*;
 import com.greatorator.tolkienmobs.entity.monster.render.*;
 import com.greatorator.tolkienmobs.entity.npc.render.*;
+import com.greatorator.tolkienmobs.entity.npc.render.FactionVendorRender;
 import com.greatorator.tolkienmobs.entity.passive.render.*;
 import com.greatorator.tolkienmobs.entity.projectiles.render.BoulderRender;
 import com.greatorator.tolkienmobs.entity.projectiles.render.CobwebRender;
@@ -300,6 +301,7 @@ public class TolkienMobsMain {
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_ORC.get(), OrcRender::new);
             EntityRenderers.register(TolkienEntities.ENTITY_TTM_SOUTHRON_NPC.get(), SouthronRender::new);
 
+            EntityRenderers.register(TolkienEntities.ENTITY_TTM_FACTIONVENDOR.get(), FactionVendorRender::new);
                 // Projectile
             EntityRenderers.register(TolkienEntities.AMMO_BOULDER.get(), BoulderRender::new);
             EntityRenderers.register(TolkienEntities.AMMO_FELLBEAST_FIREBALL.get(), FellBeastFireballRender::new);
