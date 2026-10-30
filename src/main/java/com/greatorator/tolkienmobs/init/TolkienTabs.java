@@ -147,6 +147,7 @@ public class TolkienTabs {
                         output.accept(TolkienItems.ITEM_WATCHERCOMPLETE);
                         output.accept(TolkienItems.ITEM_TOKEN_EASTERN_ALLIANCE);
                         output.accept(TolkienItems.ITEM_TOKEN_WESTERN_ALLIANCE);
+                        output.accept(TolkienItems.ITEM_TOKEN_HARAD_ALLIANCE);
                         output.accept(TolkienItems.BRONZE_KEY);
                         output.accept(TolkienItems.SILVER_KEY);
                         output.accept(TolkienItems.GOLD_KEY);
