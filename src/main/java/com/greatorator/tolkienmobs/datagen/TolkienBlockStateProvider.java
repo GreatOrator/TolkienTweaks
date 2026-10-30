@@ -929,6 +929,10 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         horizontalBlock(TolkienBlocks.NOTICE_BOARD.get(), models().getExistingFile(modLoc("block/notice_board")), 0);
         blockItem(TolkienBlocks.NOTICE_BOARD);
 
+        // The workbench is drawn from its own model too, two blocks wide with its hutch along the back.
+        horizontalBlock(TolkienBlocks.WORKBENCH.get(), models().getExistingFile(modLoc("block/workbench")), 180);
+        blockItem(TolkienBlocks.WORKBENCH);
+
         blockItem(TolkienBlocks.TRINKET_TABLE);
         simpleBlockItem(TolkienBlocks.FIREPLACE.get(), models().getExistingFile(modLoc("block/fireplace_active")));
         blockItem(TolkienBlocks.PIGGYBANK);

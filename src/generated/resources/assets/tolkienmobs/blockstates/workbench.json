@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "tolkienmobs:block/workbench",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "tolkienmobs:block/workbench"
+    },
+    "facing=south": {
+      "model": "tolkienmobs:block/workbench",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "tolkienmobs:block/workbench",
+      "y": 270
+    }
+  }
+}

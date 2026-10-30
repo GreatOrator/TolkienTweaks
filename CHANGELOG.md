@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- **A workbench is furniture two blocks wide.** The factions work at a bench of their own now, drawn from a model that reaches a full block past the cell it stands in - tabletop across, a hutch along the back and a shelf over it - so its outline follows the drawing instead of blocking a plain cube, and the overhanging half is as solid as it looks. It turns to face whoever places it, drops itself when broken, and waits in the function tab.
+
 - **Faction envoys sell for coin and token.** Every hall now keeps a merchant at its counter, and the shelves he opens are your rank with that side - Guest, Friend and Kinsman, one shelf each. Every offer costs faction coin and at least one faction token, and the top shelf carries a piece of the alliance's own: the Star of Earendil in the West, the Morgul Knot in the East and the Sun-brass Amulet in Harad.
 
 - **A contract is titled with the work it asks for.** One taken from a board is named after the task - how many soldiers of which alliance - so a pack of them can be read without opening a tooltip. The tooltip is unchanged: employer, objective, progress and pay.

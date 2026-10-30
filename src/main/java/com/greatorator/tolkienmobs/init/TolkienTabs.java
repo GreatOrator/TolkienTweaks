@@ -201,6 +201,7 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.CAMO_SPAWNER_BLOCK);
                         output.accept(TolkienBlocks.MILESTONE_BLOCK);
                         output.accept(TolkienBlocks.NOTICE_BOARD);
+                        output.accept(TolkienBlocks.WORKBENCH);
                         output.accept(TolkienBlocks.WELL);
                         output.accept(TolkienBlocks.LOCKABLE_CHEST_BLOCK);
                         output.accept(TolkienBlocks.LOCKABLE_TREASURE_CHEST_BLOCK);

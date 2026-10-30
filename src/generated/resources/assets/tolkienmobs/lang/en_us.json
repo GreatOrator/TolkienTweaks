@@ -638,6 +638,7 @@
   "block.tolkienmobs.wood_lebethron": "Lebethron Wood",
   "block.tolkienmobs.wood_mallorn": "Mallorn Wood",
   "block.tolkienmobs.wood_mirkwood": "Mirkwood Wood",
+  "block.tolkienmobs.workbench": "Workbench",
   "buttons.tolkienmobs.milestone.saveinfo": "Save",
   "buttons.tolkienmobs.saveinfo": "Save Info",
   "command.tolkienmobs.get_faction.all": "%s: %s",
