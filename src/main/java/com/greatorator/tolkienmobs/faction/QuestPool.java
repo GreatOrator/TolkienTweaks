@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.faction;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.Nullable;
@@ -76,19 +77,19 @@ public final class QuestPool {
         int goal = 3 + random.nextInt(4);
         // Paid at more than the kills themselves are worth, because the giver is asking on purpose.
         int standing = 20 + goal * 5;
-        return new Quest(Quest.Kind.FACTION, target.id(), goal, 0, employer.id(), standing, List.of());
+        return new Quest(Quest.Kind.FACTION, target.id(), goal, 0, employer.id(), standing, List.of(), "", BlockPos.ZERO);
     }
 
     private static Quest fetch(RandomSource random) {
         String item = FETCH.get(random.nextInt(FETCH.size()));
         int goal = 4 + random.nextInt(9);
-        return new Quest(Quest.Kind.FETCH, item, goal, 0, "", 0, payment(random, goal));
+        return new Quest(Quest.Kind.FETCH, item, goal, 0, "", 0, payment(random, goal), "", BlockPos.ZERO);
     }
 
     private static Quest hunt(RandomSource random) {
         String mob = HUNT.get(random.nextInt(HUNT.size()));
         int goal = 3 + random.nextInt(5);
-        return new Quest(Quest.Kind.HUNT, mob, goal, 0, "", 0, payment(random, goal));
+        return new Quest(Quest.Kind.HUNT, mob, goal, 0, "", 0, payment(random, goal), "", BlockPos.ZERO);
     }
 
     /** Coin, and sometimes a thing worth carrying: the harder the work, the more of both. */
@@ -106,7 +107,15 @@ public final class QuestPool {
      * folk who hand out work without touching a saved quest.
      */
     public static Component giverName(RandomSource random) {
-        return Component.translatable("quest.tolkienmobs.name." + random.nextInt(NAMES));
+        return Component.translatable(giverKey(random));
+    }
+
+    /**
+     * The same name as the key it is translated from, for a quest to keep. Storing the key rather than
+     * the words means the book reads the name in whatever language its reader uses.
+     */
+    public static String giverKey(RandomSource random) {
+        return "quest.tolkienmobs.name." + random.nextInt(NAMES);
     }
 
     /** Every item id a fetch quest can ask for, for the command that rolls one by hand. */
