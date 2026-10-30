@@ -638,6 +638,7 @@
   "block.tolkienmobs.wood_lebethron": "莱贝斯隆木",
   "block.tolkienmobs.wood_mallorn": "瑁珑木",
   "block.tolkienmobs.wood_mirkwood": "黑森林木",
+  "block.tolkienmobs.workbench": "工作台",
   "buttons.tolkienmobs.milestone.saveinfo": "保存",
   "buttons.tolkienmobs.saveinfo": "保存信息",
   "command.tolkienmobs.get_faction.all": "%s：%s",

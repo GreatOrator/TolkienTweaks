@@ -786,6 +786,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
 
         // 雇佣契约：由告示板张贴并结算
         this.add("block.tolkienmobs.notice_board", "告示板");
+        this.add("block.tolkienmobs.workbench", "工作台");
         this.add("item.tolkienmobs.mercenary_contract", "佣兵契约");
         this.add("item.tolkienmobs.mercenary_contract.blank", "上面还没有写任何内容。");
         this.add("item.tolkienmobs.mercenary_contract.named", "契约：%s 名%s士兵");

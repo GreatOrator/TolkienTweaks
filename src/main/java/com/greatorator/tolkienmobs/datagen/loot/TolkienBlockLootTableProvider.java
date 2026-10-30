@@ -47,6 +47,7 @@ public class TolkienBlockLootTableProvider extends BlockLootSubProvider {
     protected void generate() {
         // Faction work
         dropSelf(TolkienBlocks.NOTICE_BOARD.get());
+        dropSelf(TolkienBlocks.WORKBENCH.get());
         /* Metals & Gems */
             // Mithril
         dropSelf(TolkienBlocks.BLOCK_MITHRIL.get());
