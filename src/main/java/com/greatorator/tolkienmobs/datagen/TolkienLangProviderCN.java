@@ -830,6 +830,11 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("screen.tolkienmobs.quests.page2", "任务（续）");
         this.add("screen.tolkienmobs.quests.carried", "手上的任务");
         this.add("screen.tolkienmobs.quests.abandon.confirm", "放弃此任务？");
+        this.add("command.tolkienmobs.quest.give", "给了 %s %s 个任务。");
+        this.add("command.tolkienmobs.quest.quit", "为 %s 放下了 %s 个任务。");
+        this.add("command.tolkienmobs.quest.spawn", "任务发布者出现在了 %s 附近（%s）。");
+        this.add("command.tolkienmobs.quest.spawn.failed", "%s 附近没有可以站立任务发布者的地面。");
+        this.add("command.tolkienmobs.quest.players", "%s 名玩家");
         this.add("quest.tolkienmobs.name.0", "旅人奥德温");
         this.add("quest.tolkienmobs.name.1", "女猎手贝蕾丝");
         this.add("quest.tolkienmobs.name.2", "铁匠杜林");
