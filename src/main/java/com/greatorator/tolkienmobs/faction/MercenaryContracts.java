@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.faction;
 import com.greatorator.tolkienmobs.init.TolkienDataComponents;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -84,6 +85,11 @@ public final class MercenaryContracts {
         Contract contract = Contract.offer(player);
         ItemStack stack = new ItemStack(TolkienItems.MERCENARY_CONTRACT.get());
         stack.set(TolkienDataComponents.CONTRACT.get(), contract);
+        // The title of the paper is the work itself, so a pack of contracts can be read without a tooltip.
+        stack.set(DataComponents.CUSTOM_NAME, Component.translatable("item.tolkienmobs.mercenary_contract.named",
+                        Component.literal(String.valueOf(contract.goal())),
+                        contract.target().displayName().copy().withStyle(contract.target().chat()))
+                .withStyle(style -> style.withItalic(false)));
         if (!player.getInventory().add(stack)) {
             player.drop(stack, false);
         }

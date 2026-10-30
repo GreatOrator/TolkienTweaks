@@ -1292,6 +1292,7 @@
   "item.tolkienmobs.master_key.shift_down": "右键点击以输入或修改钥匙编码",
   "item.tolkienmobs.mercenary_contract": "佣兵契约",
   "item.tolkienmobs.mercenary_contract.blank": "上面还没有写任何内容。",
+  "item.tolkienmobs.mercenary_contract.named": "契约：%s 名%s士兵",
   "item.tolkienmobs.mithril_fluid_bucket": "桶装熔融秘银",
   "item.tolkienmobs.mithril_horse_armor": "秘银马铠",
   "item.tolkienmobs.mithril_key": "秘银钥匙",
