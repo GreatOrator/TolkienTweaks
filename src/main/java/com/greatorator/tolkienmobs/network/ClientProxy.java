@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.network;
 
+import com.greatorator.tolkienmobs.client.FactionLedgerScreen;
 import com.greatorator.tolkienmobs.handler.ProcessHandlerClient;
 import com.greatorator.tolkienmobs.handler.interfaces.block.IProcess;
 import net.minecraft.client.Minecraft;
@@ -67,5 +68,11 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void setClipboardString(String text) {
         Minecraft.getInstance().keyboardHandler.setClipboard(text);
+    }
+
+    /** The quest book opens the ledger on its Quests tab; the key opens it on the alliances. */
+    @Override
+    public void openQuestBook() {
+        Minecraft.getInstance().setScreen(new FactionLedgerScreen(FactionLedgerScreen.Tab.QUESTS));
     }
 }

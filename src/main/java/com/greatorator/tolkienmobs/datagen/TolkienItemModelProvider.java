@@ -480,6 +480,9 @@ public class TolkienItemModelProvider extends ItemModelProvider {
                 .parent(getExistingFile(mcLoc("item/generated")))
                 .texture("layer0", modLoc("item/mercenary_contract"));
 
+        // The quest book is a plain sprite: the screen it opens is where the work is.
+        basicItem(TolkienItems.QUEST_BOOK.get());
+
         // 26.1 has no shared spawn egg template left: every egg is its own flat sprite, painted
         // from the two colours it registered with by TolkienSpawnEggTextureProvider. So each egg is
         // an ordinary generated item, and its definition falls out of the default.

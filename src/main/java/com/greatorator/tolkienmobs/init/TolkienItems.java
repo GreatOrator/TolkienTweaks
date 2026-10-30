@@ -193,6 +193,13 @@ public class TolkienItems {
     public static final DeferredItem<MercenaryContractItem> MERCENARY_CONTRACT = ITEMS.registerItem("mercenary_contract",
             properties -> new MercenaryContractItem(properties), () -> new Item.Properties().stacksTo(1));
 
+    /**
+     * The book a player holds his quests in: it opens the ledger on its Quests tab. It carries no
+     * state - the quests belong to the player, and the book is only how they are read.
+     */
+    public static final DeferredItem<QuestBookItem> QUEST_BOOK = ITEMS.registerItem("quest_book",
+            properties -> new QuestBookItem(properties), () -> new Item.Properties().stacksTo(1));
+
         // Coins & Tokens
     public static final DeferredItem<Item> ITEM_COIN_BRONZE = ITEMS.registerItem("item_coin_bronze",
             properties -> new TolkienCoinItem(properties).setHasLore());

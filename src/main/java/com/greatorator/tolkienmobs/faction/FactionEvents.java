@@ -31,6 +31,8 @@ public final class FactionEvents {
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
             FactionStandings.sync(player);
+            QuestLedger.welcome(player);
+            QuestLedger.sync(player);
         }
     }
 
@@ -42,6 +44,7 @@ public final class FactionEvents {
     public static void onLivingDeath(LivingDeathEvent event) {
         if (!(event.getSource().getEntity() instanceof ServerPlayer player)) return;
         Entity victim = event.getEntity();
+        QuestLedger.progressKill(player, victim);
         for (Alliance alliance : Alliance.values()) {
             if (!victim.getType().builtInRegistryHolder().is(alliance.soldiers())) continue;
             FactionStandings.adjust(player, alliance, -FactionRank.KILL_VALUE);
@@ -85,6 +88,7 @@ public final class FactionEvents {
     public static void onPlayerTick(PlayerTickEvent.Post event) {
         if (event.getEntity() instanceof ServerPlayer player) {
             FactionGuards.tick(player);
+            QuestGivers.tick(player);
         }
     }
 
