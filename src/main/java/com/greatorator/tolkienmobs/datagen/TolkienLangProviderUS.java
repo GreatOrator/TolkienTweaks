@@ -772,6 +772,11 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("faction.tolkienmobs.rank.kinsman", "Kinsman");
         this.add("faction.tolkienmobs.no_tokens", "The warden of %s has no use for an empty hand.");
         this.add("faction.tolkienmobs.hand_in", "The warden takes %s tokens. Your standing with %s is now %s (%s).");
+        this.add("command.tolkienmobs.set_faction", "Set %s's standing with %s to %s (%s).");
+        this.add("command.tolkienmobs.set_faction.many", "Set %s players' standing with %s to %s (%s).");
+        this.add("command.tolkienmobs.get_faction.one", "%s stands with %s at %s (%s).");
+        this.add("command.tolkienmobs.get_faction.all", "%s: %s");
+        this.add("command.tolkienmobs.get_faction.entry", "%s %s (%s)");
         this.add("screen.tolkienmobs.faction_ledger", "Ledger of Alliances");
         this.add("screen.tolkienmobs.faction_ledger.hint", "Take alliance tokens to a hall's warden");
         this.add("key.tolkienmobs.faction_ledger", "Open Ledger of Alliances");

@@ -772,6 +772,11 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("faction.tolkienmobs.rank.kinsman", "族人");
         this.add("faction.tolkienmobs.no_tokens", "%s的守馆人对空手而来的人毫无兴趣。");
         this.add("faction.tolkienmobs.hand_in", "守馆人收下了 %s 枚信物。你与%s的关系为 %s（%s）。");
+        this.add("command.tolkienmobs.set_faction", "已将%s与%s的关系设为 %s（%s）。");
+        this.add("command.tolkienmobs.set_faction.many", "已将 %s 名玩家与%s的关系设为 %s（%s）。");
+        this.add("command.tolkienmobs.get_faction.one", "%s与%s的关系为 %s（%s）。");
+        this.add("command.tolkienmobs.get_faction.all", "%s：%s");
+        this.add("command.tolkienmobs.get_faction.entry", "%s %s（%s）");
         this.add("screen.tolkienmobs.faction_ledger", "联盟名册");
         this.add("screen.tolkienmobs.faction_ledger.hint", "将联盟信物交给会馆的守馆人");
         this.add("key.tolkienmobs.faction_ledger", "打开联盟名册");
