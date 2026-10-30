@@ -7,12 +7,12 @@ import com.greatorator.tolkienmobs.faction.FactionStandings;
 import com.greatorator.tolkienmobs.faction.Quest;
 import com.greatorator.tolkienmobs.faction.QuestLedger;
 import com.greatorator.tolkienmobs.network.manager.QuestAbandonManager;
-import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
@@ -31,6 +31,10 @@ import java.util.List;
  * bookmark spreads the work across both leaves, each entry naming the giver, the place the work was
  * taken and what it is for. Every line is measured before it is drawn - trimmed with an ellipsis, or
  * wrapped onto the leaf - because a page that spells a long item name off its own edge is not a page.
+ * <p>
+ * Every line of type is drawn without the drop shadow vanilla gives text. A shadow is drawn for the
+ * dark of the world behind a nameplate; on parchment it is a smudge under a dark ink on a light page,
+ * and it is what made the book hard to read. The inks carry the contrast instead.
  * <p>
  * Both leaves are drawn from caches the server last sent - the standings and the quest book - so this
  * screen never asks the server for anything except to set a quest aside, which it cannot do itself.
@@ -69,16 +73,19 @@ public class FactionLedgerScreen extends Screen {
     private static final int PAGE_EDGE = 0xFFC6AC83;
     private static final int PAGE_SHADE = 0xFFDDC9A3;
     private static final int INK = 0xFF35240F;
-    private static final int INK_DIM = 0xFF7A6446;
-    private static final int INK_GOLD = 0xFF8A5A22;
-    private static final int INK_GREEN = 0xFF3F6B34;
-    private static final int INK_BLUE = 0xFF4F7C8C;
+    private static final int INK_DIM = 0xFF6B5535;
+    private static final int INK_GOLD = 0xFF7A4A16;
+    private static final int INK_GREEN = 0xFF33602A;
+    private static final int INK_BLUE = 0xFF3F6B7C;
     private static final int INK_RED = 0xFF8C2F24;
     private static final int TRACK = 0xFFC6AC83;
     private static final int RIBBON_ON = 0xFF7A2E28;
     private static final int RIBBON_OFF = 0xFF3A2413;
     private static final int RIBBON_INK_ON = 0xFFF0E2C4;
     private static final int RIBBON_INK_OFF = 0xFFB9A88B;
+
+    /** No shadow: the book is ink on parchment, not a nameplate over the world. */
+    private static final boolean FLAT = false;
 
     private Tab tab;
 
@@ -187,7 +194,10 @@ public class FactionLedgerScreen extends Screen {
     }
 
     private void drawPageTitle(GuiGraphicsExtractor graphics, int pageX, Component title) {
-        graphics.centeredText(this.font, title, pageX + pageW / 2, pageTop() + 8, INK_GOLD);
+        String line = title.getString();
+        // Centred by hand: the centred helper has no way to say "no shadow", and a shadowed heading over
+        // flat body text is the one line of the page that still looks wrong.
+        graphics.text(this.font, line, pageX + (pageW - this.font.width(line)) / 2, pageTop() + 8, INK_GOLD, FLAT);
         graphics.fill(pageX + 12, pageTop() + 20, pageX + pageW - 12, pageTop() + 21, PAGE_EDGE);
     }
 
@@ -205,8 +215,9 @@ public class FactionLedgerScreen extends Screen {
             boolean on = tabs[i] == this.tab;
             graphics.fill(x, y, x + RIBBON_W, y + RIBBON_H + 1, on ? RIBBON_ON : RIBBON_OFF);
             graphics.fill(x, y, x + RIBBON_W, y + 1, on ? 0xFF9A4038 : 0xFF513322);
-            graphics.centeredText(this.font, Component.translatable(tabs[i].key), x + RIBBON_W / 2, y + 3,
-                    on ? RIBBON_INK_ON : RIBBON_INK_OFF);
+            String label = Component.translatable(tabs[i].key).getString();
+            graphics.text(this.font, label, x + (RIBBON_W - this.font.width(label)) / 2, y + 3,
+                    on ? RIBBON_INK_ON : RIBBON_INK_OFF, FLAT);
         }
     }
 
@@ -241,9 +252,10 @@ public class FactionLedgerScreen extends Screen {
         int textW = w - 21;
         String points = String.valueOf(standing);
         int pointsW = this.font.width(points);
-        graphics.text(this.font, fit(alliance.displayName().getString(), textW - pointsW - 4), textX, y + 2, nameInk);
-        graphics.text(this.font, points, x + w - pointsW, y + 2, rankInk);
-        graphics.text(this.font, fit(FactionEvents.rankName(rank).getString(), textW), textX, y + 12, rankInk);
+        graphics.text(this.font, fit(alliance.displayName().getString(), textW - pointsW - 4), textX, y + 2,
+                nameInk, FLAT);
+        graphics.text(this.font, points, x + w - pointsW, y + 2, rankInk, FLAT);
+        graphics.text(this.font, fit(FactionEvents.rankName(rank).getString(), textW), textX, y + 12, rankInk, FLAT);
 
         int barY = y + 23;
         graphics.fill(textX, barY, textX + textW, barY + 4, TRACK);
@@ -283,8 +295,8 @@ public class FactionLedgerScreen extends Screen {
         String counter = quest.progress() + " / " + quest.goal();
         int counterW = this.font.width(counter);
         graphics.text(this.font, fit(quest.objective().getString(), textW - counterW - 4), textX, y + 2,
-                quest.complete() ? INK_GREEN : INK);
-        graphics.text(this.font, counter, x + w - counterW, y + 2, INK_DIM);
+                quest.complete() ? INK_GREEN : INK, FLAT);
+        graphics.text(this.font, counter, x + w - counterW, y + 2, INK_DIM, FLAT);
 
         int barY = y + 13;
         graphics.fill(textX, barY, textX + textW, barY + 3, TRACK);
@@ -332,7 +344,7 @@ public class FactionLedgerScreen extends Screen {
 
     private void drawQuestEntry(GuiGraphicsExtractor graphics, int x, int y, int w, int h, Quest quest, int slot) {
         graphics.item(iconOf(quest), x, y);
-        graphics.text(this.font, fit(quest.objective().getString(), w - 21), x + 21, y + 2, INK);
+        graphics.text(this.font, fit(quest.objective().getString(), w - 21), x + 21, y + 2, INK, FLAT);
 
         // The abandon button closes the giver's line. It is small on purpose, so the first click only
         // arms it and the button itself says what the second click will do.
@@ -342,24 +354,24 @@ public class FactionLedgerScreen extends Screen {
                 : "x";
         int controlW = this.font.width(control);
         int controlX = x + w - controlW;
-        graphics.text(this.font, control, controlX, y + 13, armed ? INK_RED : INK_DIM);
+        graphics.text(this.font, control, controlX, y + 13, armed ? INK_RED : INK_DIM, FLAT);
         abandonSpots.add(new AbandonSpot(slot, controlX - 2, y + 11, controlW + 4, LINE + 2));
 
         // The details run the width of the leaf, under the picture rather than beside it.
-        graphics.text(this.font, fit(quest.giverName().getString(), w - controlW - 6), x, y + 13, INK_DIM);
-        graphics.text(this.font, fit(quest.takenAt().getString(), w), x, y + 23, INK_DIM);
+        graphics.text(this.font, fit(quest.giverName().getString(), w - controlW - 6), x, y + 13, INK_DIM, FLAT);
+        graphics.text(this.font, fit(quest.takenAt().getString(), w), x, y + 23, INK_DIM, FLAT);
 
         int summaryTop = y + 34;
         int lines = Math.max(1, Math.min(3, (h - 44) / LINE));
         for (String line : wrap(quest.summary().getString(), w, lines)) {
-            graphics.text(this.font, line, x, summaryTop, INK_DIM);
+            graphics.text(this.font, line, x, summaryTop, INK_DIM, FLAT);
             summaryTop += LINE;
         }
 
         int foot = y + h - 10;
         if (quest.complete()) {
             graphics.text(this.font, fit(Component.translatable("quest.tolkienmobs.complete").getString(), w),
-                    x, foot - 1, INK_GREEN);
+                    x, foot - 1, INK_GREEN, FLAT);
             return;
         }
         String counter = quest.progress() + " / " + quest.goal();
@@ -370,7 +382,7 @@ public class FactionLedgerScreen extends Screen {
         if (filled > 0) {
             graphics.fill(x, foot, x + filled, foot + 4, INK_BLUE);
         }
-        graphics.text(this.font, counter, x + w - counterW, foot - 2, INK_DIM);
+        graphics.text(this.font, counter, x + w - counterW, foot - 2, INK_DIM, FLAT);
     }
 
     /** The picture a quest's entry leads with: the goods it wants, the country it serves, or a blade. */
@@ -424,14 +436,14 @@ public class FactionLedgerScreen extends Screen {
                              int maxLines) {
         int lineY = y;
         for (String line : wrap(text.getString(), width, maxLines)) {
-            graphics.text(this.font, line, x, lineY, ink);
+            graphics.text(this.font, line, x, lineY, ink, FLAT);
             lineY += LINE;
         }
     }
 
     private void drawCentred(GuiGraphicsExtractor graphics, int pageX, Component text, int ink, int y) {
         String line = fit(text.getString(), pageW - 16);
-        graphics.text(this.font, line, pageX + (pageW - this.font.width(line)) / 2, y, ink);
+        graphics.text(this.font, line, pageX + (pageW - this.font.width(line)) / 2, y, ink, FLAT);
     }
 
     // ---- input ----

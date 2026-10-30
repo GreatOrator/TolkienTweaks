@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Fixed
+
+- **The book reads without its shadow.** Every line of the ledger is now drawn flat instead of with the drop shadow vanilla puts behind text. A shadow is drawn for the dark of the world behind a nameplate; on parchment it sat under dark ink on a light page and made names and numbers look smudged. The dim, gold and blue inks are a shade darker to make up the contrast the shadow was adding.
+
 
 ### Added
 
