@@ -148,6 +148,7 @@ public class TolkienTabs {
                         output.accept(TolkienItems.ITEM_TOKEN_EASTERN_ALLIANCE);
                         output.accept(TolkienItems.ITEM_TOKEN_WESTERN_ALLIANCE);
                         output.accept(TolkienItems.ITEM_TOKEN_HARAD_ALLIANCE);
+                        output.accept(TolkienItems.MERCENARY_CONTRACT);
                         output.accept(TolkienItems.BRONZE_KEY);
                         output.accept(TolkienItems.SILVER_KEY);
                         output.accept(TolkienItems.GOLD_KEY);
@@ -199,6 +200,7 @@ public class TolkienTabs {
                         output.accept(TolkienBlocks.CAMO_SMOKER_BLOCK);
                         output.accept(TolkienBlocks.CAMO_SPAWNER_BLOCK);
                         output.accept(TolkienBlocks.MILESTONE_BLOCK);
+                        output.accept(TolkienBlocks.CONTRACT_BOARD);
                         output.accept(TolkienBlocks.WELL);
                         output.accept(TolkienBlocks.LOCKABLE_CHEST_BLOCK);
                         output.accept(TolkienBlocks.LOCKABLE_TREASURE_CHEST_BLOCK);

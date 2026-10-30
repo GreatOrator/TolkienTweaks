@@ -770,6 +770,20 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("faction.tolkienmobs.rank.guest", "宾客");
         this.add("faction.tolkienmobs.rank.friend", "盟友");
         this.add("faction.tolkienmobs.rank.kinsman", "族人");
+
+        // 雇佣契约：由契约板张贴并结算
+        this.add("block.tolkienmobs.contract_board", "契约板");
+        this.add("item.tolkienmobs.mercenary_contract", "佣兵契约");
+        this.add("item.tolkienmobs.mercenary_contract.blank", "上面还没有写任何内容。");
+        this.add("contract.tolkienmobs.employer", "委托方：%s");
+        this.add("contract.tolkienmobs.objective", "击杀 %s 名%s士兵");
+        this.add("contract.tolkienmobs.progress", "进度：%s / %s");
+        this.add("contract.tolkienmobs.reward", "报酬：%s 声望");
+        this.add("contract.tolkienmobs.complete", "已完成－交回契约板");
+        this.add("contract.tolkienmobs.taken", "%s 张贴了针对 %s 的委托：击杀 %s 名。");
+        this.add("contract.tolkienmobs.carried", "你身上已经有一份契约了。");
+        this.add("contract.tolkienmobs.done", "契约已完成，请交回契约板。");
+        this.add("contract.tolkienmobs.paid", "契约板支付了 %s 点%s声望。");
         this.add("faction.tolkienmobs.no_tokens", "%s的守馆人对空手而来的人毫无兴趣。");
         this.add("faction.tolkienmobs.hand_in", "守馆人收下了 %s 枚信物。你与%s的关系为 %s（%s）。");
         this.add("command.tolkienmobs.set_faction", "已将%s与%s的关系设为 %s（%s）。");

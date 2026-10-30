@@ -770,6 +770,20 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("faction.tolkienmobs.rank.guest", "Guest");
         this.add("faction.tolkienmobs.rank.friend", "Friend");
         this.add("faction.tolkienmobs.rank.kinsman", "Kinsman");
+
+        // Mercenary contracts, which a contract board posts and pays.
+        this.add("block.tolkienmobs.contract_board", "Contract Board");
+        this.add("item.tolkienmobs.mercenary_contract", "Mercenary Contract");
+        this.add("item.tolkienmobs.mercenary_contract.blank", "Nothing is written on it yet.");
+        this.add("contract.tolkienmobs.employer", "For %s");
+        this.add("contract.tolkienmobs.objective", "Slay %s soldiers of %s");
+        this.add("contract.tolkienmobs.progress", "Progress: %s / %s");
+        this.add("contract.tolkienmobs.reward", "Reward: %s standing");
+        this.add("contract.tolkienmobs.complete", "Complete - take it to a contract board");
+        this.add("contract.tolkienmobs.taken", "%s posts work against %s: slay %s of them.");
+        this.add("contract.tolkienmobs.carried", "You already carry a contract.");
+        this.add("contract.tolkienmobs.done", "Contract complete. Take it back to a contract board.");
+        this.add("contract.tolkienmobs.paid", "The board pays %s standing with %s.");
         this.add("faction.tolkienmobs.no_tokens", "The warden of %s has no use for an empty hand.");
         this.add("faction.tolkienmobs.hand_in", "The warden takes %s tokens. Your standing with %s is now %s (%s).");
         this.add("command.tolkienmobs.set_faction", "Set %s's standing with %s to %s (%s).");
