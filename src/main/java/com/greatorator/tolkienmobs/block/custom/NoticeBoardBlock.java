@@ -39,6 +39,9 @@ public class NoticeBoardBlock extends Block {
     public static final MapCodec<NoticeBoardBlock> CODEC = simpleCodec(NoticeBoardBlock::new);
     public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
 
+    /** How much bigger the block is drawn than the model it is cut from. */
+    public static final float SCALE = 2.0F;
+
     /**
      * One box per element of {@code models/block/notice_board.json}, as drawn: each element already
      * turned by its own rotation, in the orientation the model is authored in (facing south).
@@ -120,6 +123,13 @@ public class NoticeBoardBlock extends Block {
     }
 
     /**
+     * The same scaling the renderer applies to the quads, so the outline follows the drawing.
+     */
+    private static double centre(double coordinate) {
+        return 8.0 + (coordinate - 8.0) * SCALE;
+    }
+
+    /**
      * Turns every box by the given number of degrees about the middle of the block, which is the same
      * quarter turn the blockstate applies to the model.
      */
@@ -154,7 +164,8 @@ public class NoticeBoardBlock extends Block {
                     az2 = z2;
                 }
             }
-            shape = Shapes.or(shape, Block.box(ax1, y1, az1, ax2, y2, az2));
+            shape = Shapes.or(shape, Block.box(centre(ax1), y1 * SCALE, centre(az1),
+                    centre(ax2), y2 * SCALE, centre(az2)));
         }
         return shape.optimize();
     }
