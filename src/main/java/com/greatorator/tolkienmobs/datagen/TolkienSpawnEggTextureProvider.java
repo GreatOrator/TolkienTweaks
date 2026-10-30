@@ -86,8 +86,18 @@ public class TolkienSpawnEggTextureProvider implements DataProvider {
     enum Face {
         /** A small face with wide-set eyes: the beasts of the field and the little things. */
         SMALL,
-        /** Two eyes, a nose and a mouth. */
+        /** Two eyes, a nose and a mouth: a Man with nothing on his head. */
         HUMAN,
+        /** The same face under a shaggy beard. */
+        BEARDED,
+        /** A cloth cowl over the crown, the face in shadow under it. */
+        HOODED,
+        /** A steel cap with a nasal bar down the face: the alliance's soldiers. */
+        HELMED,
+        /** A wrap across the brow with a fold falling either side: the desert folk. */
+        CLOTH,
+        /** A pointed hat with a brim, and a beard under it: a wizard. */
+        HAT,
         /** A heavy brow, a broad nose and a beard. */
         DWARF,
         /** High cheeks under a fall of hair. */
@@ -104,10 +114,26 @@ public class TolkienSpawnEggTextureProvider implements DataProvider {
         TROLL,
         /** Hollow sockets, a nasal hole and a row of teeth. */
         UNDEAD,
-        /** A hood with two points of light under it. */
+        /** A hood with two points of light under it, and the mouth open. */
         WRAITH,
+        /** A hood with loops of mail over it and a slot for the eyes: the ring-wraiths. */
+        HELM_SLIT,
+        /** A hood crowned in iron spikes: the wraith that wears a crown. */
+        HELM_SPIKED,
         /** One lit eye, a hooked nose and a thin mouth. */
         HAG,
+        /** Two eyes too large for the face, over a wide grin: the thin one. */
+        GAUNT,
+        /** Eyes on the crown of the head above a mouth ruled right across. */
+        FROG,
+        /** Eyes out at the rim of the face and a small closed smile. */
+        LIZARD,
+        /** A pointed snout with whiskers. */
+        RODENT,
+        /** A small nose over two front teeth. */
+        NIBBLER,
+        /** No face at all: a scatter of specks, the way a swarm reads. */
+        SWARM,
         /** A bark face: two seams of grain and lit eyes between them. */
         ENT,
         /** Blocks of stone seamed together, with lit eyes. */
@@ -116,6 +142,8 @@ public class TolkienSpawnEggTextureProvider implements DataProvider {
         SPIDER,
         /** A long muzzle with fangs below it. */
         WARG,
+        /** A long muzzle between two pricked ears, with fangs. */
+        WOLF,
         /** A long face with nostrils: the horses. */
         HORSE,
         /** A pair of horns over a broad snout. */
@@ -313,10 +341,63 @@ public class TolkienSpawnEggTextureProvider implements DataProvider {
                 .put(7, 10, "dd")
                 .rows());
 
+        // A mouth is a short line, not a solid bar across the face: the lip shadow that went under it
+        // read as a small beard on every Man in the set.
         faces.put(Face.HUMAN, new Glyph()
                 .put(5, 7, "dd").put(9, 7, "dd")
                 .put(7, 9, "a")
-                .put(6, 11, "dddd")
+                .put(6, 11, "ddd")
+                .rows());
+
+        // A beard hugs the jaw rather than hanging under the mouth, or it reads as an open screaming mouth.
+        faces.put(Face.BEARDED, new Glyph()
+                .put(5, 7, "dd").put(9, 7, "dd")
+                .put(7, 9, "aa")
+                .put(6, 10, "aaaa")
+                .put(4, 11, "a").put(11, 11, "a")
+                .put(5, 12, "aaaaaa")
+                .rows());
+
+        faces.put(Face.HOODED, new Glyph()
+                .put(5, 4, "aaaaaa")
+                .put(4, 5, "aaaaaaaa")
+                .put(3, 7, "aa").put(11, 7, "aa")
+                .put(3, 9, "a").put(12, 9, "a")
+                .put(5, 8, "dd").put(9, 8, "dd")
+                .put(7, 10, "a")
+                .put(6, 11, "ddd")
+                .rows());
+
+        faces.put(Face.HELMED, new Glyph()
+                .put(5, 4, "wwwwww")
+                .put(4, 5, "wwwwwwww")
+                .put(7, 6, "ww").put(7, 7, "ww")
+                .put(5, 8, "dd").put(9, 8, "dd")
+                .put(7, 10, "a")
+                .put(6, 11, "ddd")
+                .rows());
+
+        faces.put(Face.CLOTH, new Glyph()
+                .put(4, 5, "aaaaaaaa")
+                .put(3, 6, "aa").put(11, 6, "aa")
+                .put(5, 8, "dd").put(9, 8, "dd")
+                .put(7, 10, "a")
+                .put(6, 11, "ddd")
+                .rows());
+
+        // The hat fills the crown so its silhouette is the cone, in the dark tone: drawn in the light one it
+        // vanished into a pale egg and left a bald head with a band across it.
+        faces.put(Face.HAT, new Glyph()
+                .put(7, 1, "dd")
+                .put(6, 2, "dddd")
+                .put(5, 3, "dddddd")
+                .put(4, 4, "dddddddd")
+                .put(5, 7, "dd").put(9, 7, "dd")
+                .put(7, 9, "a")
+                .put(5, 11, "aaaaaa")
+                .put(6, 12, "aaaa")
+                .put(7, 13, "aa")
+                .put(7, 14, "a")
                 .rows());
 
         faces.put(Face.DWARF, new Glyph()
@@ -342,14 +423,14 @@ public class TolkienSpawnEggTextureProvider implements DataProvider {
 
         faces.put(Face.ORC, new Glyph()
                 .put(5, 7, "gg").put(9, 7, "gg")
-                .put(6, 10, "dddd")
+                .put(6, 10, "ddd")
                 .put(6, 11, "w..w")
                 .rows());
 
         faces.put(Face.GOBLIN, new Glyph()
                 .put(2, 7, "aa").put(12, 7, "aa")
                 .put(5, 7, "gg").put(9, 7, "gg")
-                .put(5, 10, "dddddd")
+                .put(6, 10, "dddd")
                 .rows());
 
         // Brows angled down towards the nose, which is what keeps the face from wearing a hat.
@@ -376,7 +457,66 @@ public class TolkienSpawnEggTextureProvider implements DataProvider {
                 .put(4, 5, "dddddddd")
                 .put(3, 6, "dd").put(12, 6, "dd")
                 .put(5, 8, "gg").put(9, 8, "gg")
-                .put(6, 11, "dddd")
+                .put(6, 11, "ddd")
+                .rows());
+
+        // The eyes shine out of a dark slot rather than sitting on the helm, which was the same colour as them.
+        faces.put(Face.HELM_SLIT, new Glyph()
+                .put(5, 4, "aaaaaa")
+                .put(4, 5, "aaaaaaaa")
+                .put(7, 6, "aa")
+                .put(4, 7, "dddddddd")
+                .put(5, 7, "gg").put(9, 7, "gg")
+                .put(6, 11, "ddd")
+                .rows());
+
+        faces.put(Face.HELM_SPIKED, new Glyph()
+                .put(5, 2, "g").put(7, 2, "g").put(9, 2, "g")
+                .put(4, 4, "aaaaaaaa")
+                .put(4, 5, "aaaaaaaa")
+                .put(4, 7, "dddddddd")
+                .put(5, 7, "gg").put(9, 7, "gg")
+                .put(6, 11, "ddd")
+                .rows());
+
+        faces.put(Face.GAUNT, new Glyph()
+                .put(5, 7, "gg").put(9, 7, "gg")
+                .put(5, 8, "gg").put(9, 8, "gg")
+                .put(6, 8, "d").put(9, 8, "d")
+                .put(7, 10, "d")
+                .put(4, 10, "d").put(11, 10, "d")
+                .put(5, 11, "dddddd")
+                .rows());
+
+        faces.put(Face.FROG, new Glyph()
+                .put(5, 5, "gg").put(9, 5, "gg")
+                .put(5, 6, "gg").put(9, 6, "gg")
+                .put(5, 9, "dddddd")
+                .rows());
+
+        faces.put(Face.LIZARD, new Glyph()
+                .put(3, 8, "gg").put(11, 8, "gg")
+                .put(6, 10, "d").put(7, 11, "dd").put(9, 10, "d")
+                .rows());
+
+        faces.put(Face.RODENT, new Glyph()
+                .put(4, 8, "dd").put(11, 8, "dd")
+                .put(6, 9, "aaaa")
+                .put(7, 10, "aa")
+                .put(7, 11, "dd")
+                .rows());
+
+        faces.put(Face.NIBBLER, new Glyph()
+                .put(5, 7, "dd").put(10, 7, "dd")
+                .put(7, 9, "d")
+                .put(6, 10, "ddd")
+                .put(7, 11, "ww")
+                .rows());
+
+        faces.put(Face.SWARM, new Glyph()
+                .put(4, 6, "a").put(9, 5, "a").put(11, 8, "a")
+                .put(5, 9, "d").put(8, 11, "a").put(10, 12, "a")
+                .put(6, 13, "a").put(3, 11, "d").put(12, 10, "a")
                 .rows());
 
         faces.put(Face.HAG, new Glyph()
@@ -389,7 +529,7 @@ public class TolkienSpawnEggTextureProvider implements DataProvider {
         faces.put(Face.ENT, new Glyph()
                 .put(4, 6, "d..d..d..d")
                 .put(5, 8, "gg").put(9, 8, "gg")
-                .put(6, 11, "dddd")
+                .put(6, 11, "ddd")
                 .rows());
 
         // Cracks rather than a seam across the brow, which read as a hat brim on the first pass.
@@ -415,10 +555,24 @@ public class TolkienSpawnEggTextureProvider implements DataProvider {
                 .rows());
 
         faces.put(Face.HORSE, new Glyph()
-                .put(5, 7, "dd").put(10, 7, "dd")
+                .put(4, 4, "dd").put(10, 4, "dd")
+                .put(4, 7, "dd").put(11, 7, "dd")
                 .put(6, 9, "aaaa")
                 .put(6, 10, "aaaa")
-                .put(6, 10, "d...d")
+                .put(6, 10, "d").put(9, 10, "d")
+                .put(6, 11, "aaaa")
+                .put(6, 12, "dddd")
+                .rows());
+
+        faces.put(Face.WOLF, new Glyph()
+                .put(4, 3, "d").put(11, 3, "d")
+                .put(4, 4, "dd").put(10, 4, "dd")
+                .put(5, 7, "gg").put(9, 7, "gg")
+                .put(6, 8, "aaaa")
+                .put(6, 9, "aaaa")
+                .put(7, 10, "aa")
+                .put(7, 9, "d")
+                .put(6, 11, "w..w")
                 .rows());
 
         faces.put(Face.AUROCH, new Glyph()
@@ -525,13 +679,13 @@ public class TolkienSpawnEggTextureProvider implements DataProvider {
         Map<String, Design> designs = new LinkedHashMap<>();
 
         // The little things: one pair of eyes and not much else, in each creature's own green or brown.
-        designs.put("gecko", new Design(Face.SMALL, 0x6FA34A, 0xC9E27A, 0x22321A, 0xF0F4E0));
-        designs.put("rat", new Design(Face.SMALL, 0x7A5B43, 0xD8C4A8, 0x241A12, 0xF0E4D4));
-        designs.put("squirrel", new Design(Face.SMALL, 0x9A5B32, 0xE8D9B0, 0x2A1808, 0xF4E8D0));
-        designs.put("frog", new Design(Face.SMALL, 0x4F8F3A, 0xD9E86B, 0x16300E, 0xF0F8D8));
+        designs.put("gecko", new Design(Face.LIZARD, 0x6FA34A, 0xC9E27A, 0x22321A, 0xF0F4E0));
+        designs.put("rat", new Design(Face.RODENT, 0x7A5B43, 0xD8C4A8, 0x241A12, 0xF0E4D4));
+        designs.put("squirrel", new Design(Face.NIBBLER, 0x9A5B32, 0xE8D9B0, 0x2A1808, 0xF4E8D0));
+        designs.put("frog", new Design(Face.FROG, 0x4F8F3A, 0xD9E86B, 0x16300E, 0xF0F8D8));
         designs.put("thrush", new Design(Face.BIRD, 0x6B5138, 0xE8D9A8, 0x1E160E, 0xF4ECD8));
         designs.put("crebain", new Design(Face.EAGLE, 0x2E2E34, 0xACA698, 0x101012, 0xE0DCCC));
-        designs.put("swarm", new Design(Face.SMALL, 0x5A5A4A, 0xD8CE8A, 0x1A1A10, 0xF4EEC8));
+        designs.put("swarm", new Design(Face.SWARM, 0x5A5A4A, 0xD8CE8A, 0x1A1A10, 0xF4EEC8));
 
         // The beasts of the field and the road.
         designs.put("greateagle", new Design(Face.EAGLE, 0x8A6A34, 0xF0D27A, 0x2A1E0C, 0xF8EEC8));
@@ -539,9 +693,9 @@ public class TolkienSpawnEggTextureProvider implements DataProvider {
         designs.put("auroch", new Design(Face.AUROCH, 0x5A4330, 0x8A6A4A, 0x1E1208, 0xF0E8D8));
         designs.put("mumakil", new Design(Face.MUMAKIL, 0x7A7470, 0x9A928C, 0x24211E, 0xF6F2E6));
         designs.put("goat", new Design(Face.GOAT, 0x8A8378, 0xB0A898, 0x24211C, 0xF0EBDC));
-        designs.put("shadowfax", new Design(Face.HORSE, 0xD8D8D4, 0xF4F4F0, 0x3A3A38, 0xFFFFFF));
+        designs.put("shadowfax", new Design(Face.HORSE, 0xD8D8D4, 0xC0C0BC, 0x3A3A38, 0xFFFFFF));
         designs.put("nazgulsteed", new Design(Face.HORSE, 0x24242A, 0x6E6E78, 0x08080A, 0xC8C8D0));
-        designs.put("warg", new Design(Face.WARG, 0x6A6A66, 0x4A4A46, 0x141412, 0xF0EEE4));
+        designs.put("warg", new Design(Face.WOLF, 0x6A6A66, 0x4A4A46, 0x141412, 0xF0EEE4));
         designs.put("fellbeast", new Design(Face.DRAGON, 0x4A4A4E, 0x9A9A9E, 0x101012, 0xE8E0C4));
 
         // The free peoples.
@@ -549,16 +703,16 @@ public class TolkienSpawnEggTextureProvider implements DataProvider {
         designs.put("hobbit", new Design(Face.HOBBIT, 0xD2A87C, 0x8A5E36, 0x331F0E, 0xF8EEDC));
         designs.put("dwarf", new Design(Face.DWARF, 0xB07A4E, 0xD9B25C, 0x26170C, 0xF0DCB8));
         designs.put("elves", new Design(Face.ELF, 0xE0C9A8, 0xF4E8CC, 0x3A2A16, 0xFFFBE8));
-        designs.put("istari", new Design(Face.HUMAN, 0xB8BCC4, 0xE8E2C8, 0x2A2E34, 0xF8F4E4));
-        designs.put("gollum", new Design(Face.SMALL, 0x8E9A86, 0xB8C4A8, 0x1A2018, 0xE8F0DC));
-        designs.put("factionguard", new Design(Face.HUMAN, 0x5A6472, 0xC8D2DA, 0x1A1E24, 0xE8EEF4));
+        designs.put("istari", new Design(Face.HAT, 0xB8BCC4, 0x7A808C, 0x2A2E34, 0xF8F4E4));
+        designs.put("gollum", new Design(Face.GAUNT, 0x8E9A86, 0xE4F0D8, 0x1A2018, 0xE8F0DC));
+        designs.put("factionguard", new Design(Face.HELMED, 0x5A6472, 0xC8D2DA, 0x1A1E24, 0x9FB0BC));
 
         // The folk of the towns and the traders on the road.
-        designs.put("southron", new Design(Face.HUMAN, 0xB08A5A, 0x6B4A2A, 0x241708, 0xF0DCB8));
-        designs.put("southron_npc", new Design(Face.HUMAN, 0xC0A070, 0x7A5432, 0x241708, 0xF4E4C4));
+        designs.put("southron", new Design(Face.CLOTH, 0xB08A5A, 0xE0CBAA, 0x241708, 0xF0DCB8));
+        designs.put("southron_npc", new Design(Face.CLOTH, 0xC0A070, 0xEDDBBB, 0x241708, 0xF4E4C4));
         designs.put("orc_trader", new Design(Face.ORC, 0x7A8A52, 0xD8C86A, 0x161C0C, 0xE8E8C8));
-        designs.put("haradrim", new Design(Face.HUMAN, 0xC0A070, 0x8A4A2A, 0x241708, 0xF0DCB4));
-        designs.put("brigand", new Design(Face.HUMAN, 0x8A6A4A, 0x3A2A1A, 0x160E06, 0xE0D0B4));
+        designs.put("haradrim", new Design(Face.CLOTH, 0xC0A070, 0xA8502A, 0x241708, 0xF0DCB4));
+        designs.put("brigand", new Design(Face.HOODED, 0x8A6A4A, 0x4A3620, 0x160E06, 0xE0D0B4));
 
         // The horde.
         designs.put("orc", new Design(Face.ORC, 0x6E8A4A, 0xC8B84A, 0x121808, 0xE8E8C0));
@@ -568,9 +722,9 @@ public class TolkienSpawnEggTextureProvider implements DataProvider {
         designs.put("goblin", new Design(Face.GOBLIN, 0x7A9A4A, 0xE8D25A, 0x121A08, 0xF0EEC8));
         designs.put("goblinking", new Design(Face.GOBLIN, 0xC8A83A, 0xF0DC6A, 0x201604, 0xFFF8D8));
         designs.put("troll", new Design(Face.TROLL, 0x7A8A6A, 0x9A9A88, 0x1C2218, 0xE8E4CC));
-        designs.put("huron", new Design(Face.HUMAN, 0x8A5A3A, 0x6A2A1A, 0x1A0E06, 0xE8D0B4));
+        designs.put("huron", new Design(Face.BEARDED, 0x8A5A3A, 0x5A2A14, 0x1A0E06, 0xE8D0B4));
         designs.put("minotaur", new Design(Face.MINOTAUR, 0x6A4A32, 0xB08A5A, 0x1A1008, 0xF4ECD4));
-        designs.put("deepclaw", new Design(Face.WARG, 0x3A4A5A, 0x94AABC, 0x0C1218, 0xD8E8F0));
+        designs.put("deepclaw", new Design(Face.WOLF, 0x3A4A5A, 0x94AABC, 0x0C1218, 0xD8E8F0));
 
         // The dead, and the wraiths.
         designs.put("barrow", new Design(Face.UNDEAD, 0xC8C4B0, 0x8A8A78, 0x22221A, 0xF6F2E0));
@@ -578,8 +732,8 @@ public class TolkienSpawnEggTextureProvider implements DataProvider {
         designs.put("oathbreaker", new Design(Face.WRAITH, 0x8AB8A8, 0xD8F2E8, 0x1A302A, 0xF0FFF8));
         designs.put("fellspirit", new Design(Face.WRAITH, 0x5A6470, 0x9AD8D0, 0x12181E, 0xE0F0EC));
         designs.put("enragedfellspirit", new Design(Face.WRAITH, 0x7A2A2A, 0xE8A05A, 0x1A0606, 0xF8D8B0));
-        designs.put("nazgul", new Design(Face.WRAITH, 0x241E28, 0x8A6A2A, 0x060508, 0xC8BCA0));
-        designs.put("witchking", new Design(Face.WRAITH, 0x22202A, 0x9AC8A8, 0x08070C, 0xD8E8DC));
+        designs.put("nazgul", new Design(Face.HELM_SLIT, 0x241E28, 0x8A6A2A, 0x060508, 0xC8BCA0));
+        designs.put("witchking", new Design(Face.HELM_SPIKED, 0x22202A, 0x9AC8A8, 0x08070C, 0xD8E8DC));
 
         // The beasts of the dark and the deep.
         designs.put("mirkwoodspider", new Design(Face.SPIDER, 0x2A2430, 0xC83A3A, 0x0A080E, 0xE8E0D0));
