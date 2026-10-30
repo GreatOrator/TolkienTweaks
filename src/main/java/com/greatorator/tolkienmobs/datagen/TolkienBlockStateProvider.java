@@ -926,7 +926,7 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         horizontalBlock(TolkienBlocks.MILESTONE_BLOCK.get(), e -> e.getValue(MilestoneBlock.LIT) ? mileActive : mileInactive, 180);
 
         // The notice board is drawn from its own model, which reaches past its block on every side.
-        simpleBlock(TolkienBlocks.NOTICE_BOARD.get(), models().getExistingFile(modLoc("block/notice_board")));
+        horizontalBlock(TolkienBlocks.NOTICE_BOARD.get(), models().getExistingFile(modLoc("block/notice_board")), 0);
         blockItem(TolkienBlocks.NOTICE_BOARD);
 
         blockItem(TolkienBlocks.TRINKET_TABLE);
