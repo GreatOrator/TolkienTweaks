@@ -19,6 +19,7 @@ import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -48,6 +49,20 @@ public class MilestoneHandler extends SavedData {
 
     public static void init() {
         NeoForge.EVENT_BUS.addListener(MilestoneHandler::onPlayerLogin);
+        NeoForge.EVENT_BUS.addListener(MilestoneHandler::onServerStarted);
+    }
+
+    /**
+     * Reads the world's file as the server finishes starting. A saved data is normally decoded lazily, on
+     * the first lookup, and decoding drops whatever is in the map - so a milestone placed, renamed or
+     * broken before that first lookup would be thrown away by the read that came after it. Reading it
+     * here means every change afterwards goes into the map the world actually holds.
+     */
+    public static void onServerStarted(ServerStartedEvent event) {
+        ServerLevel overworld = event.getServer().getLevel(Level.OVERWORLD);
+        if (overworld != null) {
+            getInstance(overworld);
+        }
     }
 
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
@@ -149,7 +164,7 @@ public class MilestoneHandler extends SavedData {
     /**
      * The map is static, so decoding fills it and encoding reads it; the handler instance itself
      * carries no state. Anything already in the map is dropped first, which is what loading a world
-     * should do.
+     * should do - and it is read once, as the server starts, before anything can write.
      */
     private static MilestoneHandler fromMilestones(List<MilestoneData> milestones) {
         dataMap.clear();
