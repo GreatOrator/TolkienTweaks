@@ -28,15 +28,24 @@ public class HallVariants {
     static final String AIR = "minecraft:air";
     static final String TRIM = "minecraft:acacia_stairs";
 
-    /** Where the warden stands: behind the counter, one pace into the hall from the south door. */
-    static final double WARDEN_X = 8.5D;
+    /**
+ * Where the warden stands: at the western table, the nearer of its pair to the front door, on the
+ * open side of the table and turned to read it. The hall keeps four lecterns as its tables, set
+ * against the pillar lines at (5,1,6) and (5,1,9) facing east and (10,1,6) and (10,1,9) facing west,
+ * so the open side of the western pair is x=6 and of the eastern pair is x=9.
+ */
+    static final double WARDEN_X = 6.5D;
     static final double WARDEN_Y = 1.0D;
-    static final double WARDEN_Z = 10.5D;
+    static final double WARDEN_Z = 6.5D;
+    /** Yaw 90 faces west, into the lectern it stands at. */
+    static final float WARDEN_YAW = 90.0F;
 
-    /** Where the envoy stands: behind the counter beside the warden, facing the door. */
-    static final double VENDOR_X = 7.5D;
+    /** Where the envoy stands: the table across the aisle from the warden, likewise on its open side. */
+    static final double VENDOR_X = 9.5D;
     static final double VENDOR_Y = 1.0D;
-    static final double VENDOR_Z = 10.5D;
+    static final double VENDOR_Z = 6.5D;
+    /** Yaw 270 faces east, into its lectern. */
+    static final float VENDOR_YAW = 270.0F;
 
     record Variant(String file, String stairs, String warden, String wardenName, String tag, int alliance, String vendorName) {}
 
@@ -194,7 +203,7 @@ public class HallVariants {
         nbt.put("NoAI", (byte) 1);
         nbt.put("Invulnerable", (byte) 1);
         nbt.put("Silent", (byte) 1);
-        nbt.put("Rotation", List.of(0.0F, 0.0F));
+        nbt.put("Rotation", List.of(WARDEN_YAW, 0.0F));
 
         Map<String, Object> entry = new LinkedHashMap<>();
         entry.put("pos", List.of(WARDEN_X, WARDEN_Y, WARDEN_Z));
@@ -219,8 +228,7 @@ public class HallVariants {
         nbt.put("NoAI", (byte) 1);
         nbt.put("Invulnerable", (byte) 1);
         nbt.put("Silent", (byte) 1);
-        // Yaw 180 faces north, which is the door this counter sits behind.
-        nbt.put("Rotation", List.of(180.0F, 0.0F));
+        nbt.put("Rotation", List.of(VENDOR_YAW, 0.0F));
 
         Map<String, Object> entry = new LinkedHashMap<>();
         entry.put("pos", List.of(VENDOR_X, VENDOR_Y, VENDOR_Z));
