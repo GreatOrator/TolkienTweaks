@@ -813,6 +813,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("quest.tolkienmobs.complete", "Complete - hand it in");
         this.add("quest.tolkienmobs.turned_in", "The work is done: %s");
         this.add("quest.tolkienmobs.full", "You are carrying as much work as you can.");
+        this.add("quest.tolkienmobs.abandoned", "You set aside the work: %s");
         this.add("quest.tolkienmobs.book.given", "You write your first quest in a new book.");
         this.add("quest.tolkienmobs.giver_arrived", "Someone with work for you has arrived nearby.");
         this.add("quest.tolkienmobs.giver.unknown", "Someone in need");
@@ -828,6 +829,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("screen.tolkienmobs.quests.page", "Quests");
         this.add("screen.tolkienmobs.quests.page2", "Quests, continued");
         this.add("screen.tolkienmobs.quests.carried", "Work Carried");
+        this.add("screen.tolkienmobs.quests.abandon.confirm", "Abandon?");
         this.add("quest.tolkienmobs.name.0", "Aldwyn the Wayfarer");
         this.add("quest.tolkienmobs.name.1", "Bereth the Huntress");
         this.add("quest.tolkienmobs.name.2", "Durin the Smith");

@@ -139,6 +139,25 @@ public final class QuestLedger extends SavedData {
                 .withStyle(ChatFormatting.GRAY));
     }
 
+    /**
+     * Sets a quest aside. Work is not a trap: a player who has changed their mind, or who cannot reach
+     * the mobs a hunt asks for, should not be carrying the quest for ever. Nothing is paid, nothing is
+     * taken out of the pack, and the slot it held is free again.
+     *
+     * @param slot the quest's place in the player's book, which is what the client sent
+     * @return whether there was a quest there to set aside
+     */
+    public static boolean abandon(ServerPlayer player, int slot) {
+        List<Quest> quests = row(player);
+        if (slot < 0 || slot >= quests.size()) return false;
+        Quest dropped = quests.remove(slot);
+        store(player).setDirty();
+        player.sendSystemMessage(Component.translatable("quest.tolkienmobs.abandoned", dropped.objective())
+                .withStyle(ChatFormatting.GRAY));
+        sync(player);
+        return true;
+    }
+
     // ---- offers ----
 
     /** Notes what a giver is asking for, and tells the player so their nameplate shows it. */
