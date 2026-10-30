@@ -61,6 +61,7 @@ public final class FactionStandings extends SavedData {
 
     public static int standing(Player player, Alliance alliance) {
         if (player.level().isClientSide()) return clientStanding(alliance);
+        ensureLoaded(player.level());
         return row(player)[alliance.ordinal()];
     }
 
@@ -85,11 +86,17 @@ public final class FactionStandings extends SavedData {
      * The total is held to the same bounds every other change is, and sent to the player it happened to.
      */
     public static void set(ServerPlayer player, Alliance alliance, int value) {
+        // The world's file is read before the row is touched. Decoding the file fills this map and drops
+        // whatever is in it, so a load that landed after the write would throw that write away.
+        FactionStandings store = instance(player.level());
         int[] row = row(player);
         int after = clamp(value);
-        if (row[alliance.ordinal()] == after) return;
-        row[alliance.ordinal()] = after;
-        instance(player.level()).setDirty();
+        if (row[alliance.ordinal()] != after) {
+            row[alliance.ordinal()] = after;
+            store.setDirty();
+        }
+        // Sent even when the standing already held the value that was asked for: a ledger showing an
+        // older number is then brought back into step by the command that names it.
         sync(player);
     }
 
@@ -103,12 +110,13 @@ public final class FactionStandings extends SavedData {
      */
     public static void adjust(ServerPlayer player, Alliance alliance, int delta) {
         if (delta == 0) return;
+        FactionStandings store = instance(player.level());
         int[] row = row(player);
         int before = row[alliance.ordinal()];
         int after = clamp(before + delta);
         if (after == before) return;
         row[alliance.ordinal()] = after;
-        instance(player.level()).setDirty();
+        store.setDirty();
         sync(player);
     }
 
@@ -145,6 +153,9 @@ public final class FactionStandings extends SavedData {
     // ---- pluming ----
 
     public static void sync(ServerPlayer player) {
+        // The client is told what the world holds, so the file is read first: a player who has just
+        // logged in would otherwise be sent the empty row that was built for them.
+        ensureLoaded(player.level());
         int[] row = row(player);
         PacketDistributor.sendToPlayer(player,
                 new FactionStandingsSyncManager(row[0], row[1], row[2]));
@@ -152,6 +163,14 @@ public final class FactionStandings extends SavedData {
 
     private static int[] row(Player player) {
         return STANDINGS.computeIfAbsent(player.getUUID(), ignored -> new int[Alliance.values().length]);
+    }
+
+    /**
+     * Reads the world's file into the map, once, before the map is read or written: the file is decoded
+     * lazily, on the first lookup of this saved data, and not when the player joins.
+     */
+    private static void ensureLoaded(Level level) {
+        instance(level);
     }
 
     private static FactionStandings instance(Level level) {
