@@ -215,7 +215,6 @@ public class HallVariants {
                 variant.tag().replace("faction_envoy", "faction_vendor")));
         nbt.put("CustomName", variant.vendorName());
         nbt.put("Alliance", variant.alliance());
-        nbt.put("Skin", 0);
         nbt.put("PersistenceRequired", (byte) 1);
         nbt.put("NoAI", (byte) 1);
         nbt.put("Invulnerable", (byte) 1);

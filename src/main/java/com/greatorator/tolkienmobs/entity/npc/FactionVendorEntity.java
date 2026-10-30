@@ -52,12 +52,6 @@ import org.jetbrains.annotations.Nullable;
 public class FactionVendorEntity extends Villager implements GeoEntity {
     private static final EntityDataAccessor<Integer> ALLIANCE =
             SynchedEntityData.defineId(FactionVendorEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Integer> SKIN =
-            SynchedEntityData.defineId(FactionVendorEntity.class, EntityDataSerializers.INT);
-
-    /** How many liveries each side has painted, in that side's own folder. */
-    public static final int SKINS = 3;
-
     /** Server-side only: whether anything has named this envoy's side yet. */
     private boolean allianceChosen;
 
@@ -79,13 +73,12 @@ public class FactionVendorEntity extends Villager implements GeoEntity {
     }
 
     /**
-     * ALLIANCE + SKIN
+     * ALLIANCE
      */
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(ALLIANCE, 0);
-        builder.define(SKIN, 0);
     }
 
     public Alliance alliance() {
@@ -97,26 +90,16 @@ public class FactionVendorEntity extends Villager implements GeoEntity {
         this.allianceChosen = true;
     }
 
-    public int skin() {
-        return Math.floorMod(this.entityData.get(SKIN), SKINS);
-    }
-
-    public void setSkin(int skin) {
-        this.entityData.set(SKIN, Math.floorMod(skin, SKINS));
-    }
-
     @Override
     public void addAdditionalSaveData(ValueOutput output) {
         super.addAdditionalSaveData(output);
         output.putInt("Alliance", this.alliance().ordinal());
-        output.putInt("Skin", this.skin());
     }
 
     @Override
     public void readAdditionalSaveData(ValueInput input) {
         super.readAdditionalSaveData(input);
         this.setAlliance(Alliance.values()[Mth.clamp(input.getIntOr("Alliance", 0), 0, Alliance.values().length - 1)]);
-        this.setSkin(input.getIntOr("Skin", 0));
         // The offers in the file were built for whoever last opened this counter. The next player's
         // standing decides the shelves, so they are dropped and built again on the next look.
         this.offers = null;
@@ -128,10 +111,9 @@ public class FactionVendorEntity extends Villager implements GeoEntity {
                                         EntitySpawnReason spawnType, @Nullable SpawnGroupData spawnGroupData) {
         SpawnGroupData result = super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
         // An envoy placed by a hall carries its side in its own data already. One that arrives any
-        // other way - an egg, a summon - takes a side and a livery at random, so one egg shows all three.
+        // other way - an egg, a summon - takes a side at random, so one egg shows all three.
         if (!this.allianceChosen) {
             this.setAlliance(Alliance.values()[this.random.nextInt(Alliance.values().length)]);
-            this.setSkin(this.random.nextInt(SKINS));
         }
         this.setPersistenceRequired();
         return result;

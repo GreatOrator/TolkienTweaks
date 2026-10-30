@@ -117,7 +117,10 @@ public class TolkienItemTagProvider extends ItemTagsProvider {
                 .add(TolkienItems.TRINKET_HAT.get())
                 .add(TolkienItems.TRINKET_GLOVE.get())
                 .add(TolkienItems.TRINKET_CHARM.get())
-                .add(TolkienItems.TRINKET_BELT.get());
+                .add(TolkienItems.TRINKET_BELT.get())
+                .add(TolkienItems.FACTION_CHARM_WEST.get())
+                .add(TolkienItems.FACTION_CHARM_EAST.get())
+                .add(TolkienItems.FACTION_AMULET_HARAD.get());
         tag(TolkienTags.Items.SLEEPING_BAG)
                 .add(TolkienItems.SLEEPING_BAG_BLACK.get())
                 .add(TolkienItems.SLEEPING_BAG_WHITE.get())
@@ -177,11 +180,14 @@ public class TolkienItemTagProvider extends ItemTagsProvider {
                 .add(TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_2.get())
                 .add(TolkienItems.ITEM_BACKPACK_UPGRADE_MAGNET_3.get());
         tag(TolkienTags.Items.CURIOS_NECKLACE)
-                .add(TolkienItems.TRINKET_AMULET.get());
+                .add(TolkienItems.TRINKET_AMULET.get())
+                .add(TolkienItems.FACTION_AMULET_HARAD.get());
         tag(TolkienTags.Items.CURIOS_RING)
                 .add(TolkienItems.TRINKET_RING.get());
         tag(TolkienTags.Items.CURIOS_CHARM)
-                .add(TolkienItems.TRINKET_CHARM.get());
+                .add(TolkienItems.TRINKET_CHARM.get())
+                .add(TolkienItems.FACTION_CHARM_WEST.get())
+                .add(TolkienItems.FACTION_CHARM_EAST.get());
         tag(TolkienTags.Items.CURIOS_BELT)
                 .add(TolkienItems.TRINKET_BELT.get());
         tag(TolkienTags.Items.CURIOS_HANDS)
