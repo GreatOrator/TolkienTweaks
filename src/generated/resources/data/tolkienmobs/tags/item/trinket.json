@@ -6,6 +6,9 @@
     "tolkienmobs:trinket_hat",
     "tolkienmobs:trinket_glove",
     "tolkienmobs:trinket_charm",
-    "tolkienmobs:trinket_belt"
+    "tolkienmobs:trinket_belt",
+    "tolkienmobs:faction_charm_west",
+    "tolkienmobs:faction_charm_east",
+    "tolkienmobs:faction_amulet_harad"
   ]
 }

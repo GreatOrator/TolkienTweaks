@@ -10,10 +10,7 @@ import net.minecraft.resources.Identifier;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 /**
- * An envoy's skin is picked by two things: the alliance it serves, which chooses the folder, and the
- * livery it rolled, which chooses the file inside it. Every side paints the same number, so the file
- * number runs one past the livery and is wrapped to the count - which means the model never has to know
- * how many skins any side painted.
+ * An envoy's skin is the alliance it serves: one texture per side, drawn under faction_trader.
  */
 public class FactionVendorRender extends GeoEntityRenderer<FactionVendorEntity, TolkienGeoRenderState> {
 
@@ -22,11 +19,10 @@ public class FactionVendorRender extends GeoEntityRenderer<FactionVendorEntity, 
         this.shadowRadius = 0.50F;
     }
 
-    /** The skin an envoy wears: its alliance's folder, its livery's numbered file. */
+    /** The skin an envoy wears: the one texture its side was drawn with. */
     public static Identifier textureFor(TolkienGeoRenderState renderState) {
-        int file = Math.floorMod(renderState.skin, FactionVendorEntity.SKINS) + 1;
         return Identifier.fromNamespaceAndPath(MODID,
-                "textures/entity/faction_vendor_" + renderState.alliance.id() + "/vendor" + file + ".png");
+                "textures/entity/faction_trader/trader_" + renderState.alliance.id() + ".png");
     }
 
     @Override
@@ -43,6 +39,5 @@ public class FactionVendorRender extends GeoEntityRenderer<FactionVendorEntity, 
     public void addRenderData(FactionVendorEntity animatable, Void relatedObject, TolkienGeoRenderState renderState,
                               float partialTick) {
         renderState.alliance = animatable.alliance();
-        renderState.skin = animatable.skin();
     }
 }
