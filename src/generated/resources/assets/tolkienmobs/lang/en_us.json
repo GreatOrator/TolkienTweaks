@@ -1292,6 +1292,7 @@
   "item.tolkienmobs.master_key.shift_down": "Right-click to enter/change key code",
   "item.tolkienmobs.mercenary_contract": "Mercenary Contract",
   "item.tolkienmobs.mercenary_contract.blank": "Nothing is written on it yet.",
+  "item.tolkienmobs.mercenary_contract.named": "Contract: %s soldiers of %s",
   "item.tolkienmobs.mithril_fluid_bucket": "Molten Mithril Bucket",
   "item.tolkienmobs.mithril_horse_armor": "Mithril Horse Armor",
   "item.tolkienmobs.mithril_key": "Mithril Key",

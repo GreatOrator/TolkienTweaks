@@ -775,6 +775,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("block.tolkienmobs.notice_board", "Notice Board");
         this.add("item.tolkienmobs.mercenary_contract", "Mercenary Contract");
         this.add("item.tolkienmobs.mercenary_contract.blank", "Nothing is written on it yet.");
+        this.add("item.tolkienmobs.mercenary_contract.named", "Contract: %s soldiers of %s");
         this.add("contract.tolkienmobs.employer", "For %s");
         this.add("contract.tolkienmobs.objective", "Slay %s soldiers of %s");
         this.add("contract.tolkienmobs.progress", "Progress: %s / %s");
