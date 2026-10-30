@@ -60,6 +60,9 @@ public class FactionGuardEntity extends TolkienMonsterEntity implements GeoEntit
     private static final int EAST_SKINS = 6;
     private static final int HARAD_SKINS = 6;
 
+    /** Server-side only: whether anything has named this guard's side yet. */
+    private boolean allianceChosen;
+
     public FactionGuardEntity(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
     }
@@ -104,8 +107,15 @@ public class FactionGuardEntity extends TolkienMonsterEntity implements GeoEntit
 
     @Override
     public void tick() {
-        if (!this.level().isClientSide() && this.getMainHandItem().isEmpty()) {
-            this.arm();
+        if (!this.level().isClientSide()) {
+            // A guard that arrives with no side named - from a spawn egg, or a plain /summon - takes one at
+            // random rather than always being the West's, so one egg shows all three liveries.
+            if (!this.allianceChosen) {
+                this.setAlliance(Alliance.values()[this.random.nextInt(Alliance.values().length)]);
+            }
+            if (this.getMainHandItem().isEmpty()) {
+                this.arm();
+            }
         }
         super.tick();
     }
@@ -134,6 +144,7 @@ public class FactionGuardEntity extends TolkienMonsterEntity implements GeoEntit
     /** Set by whatever musters the guard, which also rolls a skin from that alliance's own set. */
     public void setAlliance(Alliance alliance) {
         this.entityData.set(ALLIANCE, alliance.ordinal());
+        this.allianceChosen = true;
         this.setVariant(this.random.nextInt(skins(alliance)));
     }
 
@@ -169,7 +180,11 @@ public class FactionGuardEntity extends TolkienMonsterEntity implements GeoEntit
     @Override
     public void readAdditionalSaveData(ValueInput input) {
         super.readAdditionalSaveData(input);
-        this.entityData.set(ALLIANCE, input.getIntOr("Alliance", Alliance.WEST.ordinal()));
+        int stored = input.getIntOr("Alliance", -1);
+        if (stored >= 0) {
+            this.entityData.set(ALLIANCE, stored);
+            this.allianceChosen = true;
+        }
         this.setVariant(input.getIntOr("Variant", 0));
         this.reassessWeaponGoal();
     }
