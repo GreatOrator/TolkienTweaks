@@ -599,6 +599,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.add(TolkienEntities.ENTITY_TTM_BRIGAND.get(), "土匪");
             this.add(TolkienEntities.EGG_TTMBRIGAND.get(), "土匪刷怪蛋");
             this.add(TolkienEntities.ENTITY_TTM_FACTIONGUARD.get(), "联盟卫兵");
+            this.add(TolkienEntities.EGG_TTMFACTIONGUARD.get(), "联盟卫兵刷怪蛋");
             this.add(TolkienEntities.ENTITY_TTM_HARADRIM.get(), "哈拉德人");
             this.add(TolkienEntities.EGG_TTMHARADRIM.get(), "哈拉德人刷怪蛋");
             this.add(TolkienEntities.ENTITY_TTM_ROMIEWALKER.get(), "希望行者");

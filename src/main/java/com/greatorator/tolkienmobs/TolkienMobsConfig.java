@@ -137,6 +137,7 @@ public class TolkienMobsConfig {
             new MobToggle("enableEnragedFellSpirit", "entityttmenragedfellspirit", "Enraged Fell Spirit", HOSTILE),
             new MobToggle("enableBrigand", "entityttmbrigand", "Brigand", HOSTILE),
             new MobToggle("enableHaradrim", "entityttmharadrim", "Haradrim", HOSTILE),
+            new MobToggle("enableFactionGuard", "entityttmfactionguard", "Alliance Guard", HOSTILE),
             new MobToggle("enableRomieWalker", "entityttmromiewalker", "Romie Walker", HOSTILE),
             new MobToggle("enableMimicChest", "entityttmmimicchest", "Mimic Chest", HOSTILE),
             new MobToggle("enableMordorOrc", "entityttmmordororc", "Mordor Orc", HOSTILE),

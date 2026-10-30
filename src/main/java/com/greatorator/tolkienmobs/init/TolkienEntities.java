@@ -340,6 +340,8 @@ public class TolkienEntities {
     public static final DeferredItem<Item> EGG_TTMENRAGEDFELLSPIRIT = spawnEgg("entityttmenragedfellspirit_spawn_egg", ENTITY_TTM_ENRAGED_FELLSPIRIT, 585619, 9649602);
     public static final DeferredItem<Item> EGG_TTMBRIGAND = spawnEgg("entityttmbrigand_spawn_egg", ENTITY_TTM_BRIGAND, 585619, 14289362);
     public static final DeferredItem<Item> EGG_TTMHARADRIM = spawnEgg("entityttmharadrim_spawn_egg", ENTITY_TTM_HARADRIM, 585619, 12198412);
+    /** Steel with a pale-gold rim: the three alliances share this soldier, so his egg wears no side's colours. */
+    public static final DeferredItem<Item> EGG_TTMFACTIONGUARD = spawnEgg("entityttmfactionguard_spawn_egg", ENTITY_TTM_FACTIONGUARD, 5921906, 14270858);
     public static final DeferredItem<Item> EGG_TTMROMIEWALKER = spawnEgg("entityttmromiewalker_spawn_egg", ENTITY_TTM_ROMIEWALKER, 585619, 16739362);
     public static final DeferredItem<Item> EGG_TTMMIMICCHEST = spawnEgg("entityttmmimicchest_spawn_egg", ENTITY_TTM_MIMICCHEST, 585619, 14088652);
     public static final DeferredItem<Item> EGG_TTMMORDORORC = spawnEgg("entityttmmordororc_spawn_egg", ENTITY_TTM_MORDORORC, 585619, 9467561);

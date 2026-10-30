@@ -599,6 +599,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add(TolkienEntities.ENTITY_TTM_BRIGAND.get(), "Brigand");
             this.add(TolkienEntities.EGG_TTMBRIGAND.get(), "Brigand Spawn Egg");
             this.add(TolkienEntities.ENTITY_TTM_FACTIONGUARD.get(), "Alliance Guard");
+            this.add(TolkienEntities.EGG_TTMFACTIONGUARD.get(), "Alliance Guard Spawn Egg");
             this.add(TolkienEntities.ENTITY_TTM_HARADRIM.get(), "Haradrim");
             this.add(TolkienEntities.EGG_TTMHARADRIM.get(), "Haradrim Spawn Egg");
             this.add(TolkienEntities.ENTITY_TTM_ROMIEWALKER.get(), "Romie Walker");

@@ -1020,6 +1020,7 @@ public class TolkienTabs {
                         output.accept(TolkienEntities.EGG_TTMELEMENTALGOLEM);
                         output.accept(TolkienEntities.EGG_TTMFELLSPIRIT);
                         output.accept(TolkienEntities.EGG_TTMENRAGEDFELLSPIRIT);
+                        output.accept(TolkienEntities.EGG_TTMFACTIONGUARD);
                         output.accept(TolkienEntities.EGG_TTMGOBLIN);
                         output.accept(TolkienEntities.EGG_TTMHARADRIM);
                         output.accept(TolkienEntities.EGG_TTMHURON);
