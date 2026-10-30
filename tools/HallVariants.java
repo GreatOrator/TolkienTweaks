@@ -181,9 +181,10 @@ public class HallVariants {
         Map<String, Object> nbt = new LinkedHashMap<>();
         nbt.put("id", variant.warden());
         nbt.put("Tags", List.of("tolkienmobs:faction_envoy", variant.tag()));
-        // A literal text component rather than a translate key: the name is read on a dedicated
-        // server as well, where a lang file for this one line is not worth the registry lookup.
-        nbt.put("CustomName", "{\"text\":\"" + variant.wardenName() + "\"}");
+        // A plain string, which 26.1 reads as literal text. Handing it a JSON component here does not
+        // parse: the string is taken whole and the warden shows the braces, which is what a {"text":...}
+        // written into the tag used to do.
+        nbt.put("CustomName", variant.wardenName());
         nbt.put("PersistenceRequired", (byte) 1);
         nbt.put("NoAI", (byte) 1);
         nbt.put("Invulnerable", (byte) 1);

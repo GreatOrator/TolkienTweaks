@@ -7,6 +7,7 @@ import com.greatorator.tolkienmobs.faction.FactionStandings;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -60,12 +61,16 @@ public class FactionLedgerScreen extends Screen {
         graphics.fill(left + 6, rowTop, left + WIDTH - 6, rowTop + ROW_HEIGHT - 4, ROW);
         graphics.item(new ItemStack(alliance.token()), left + 10, rowTop + 6);
 
-        graphics.text(this.font, alliance.displayName(), left + 32, rowTop + 6, alliance.colour());
-        graphics.text(this.font, FactionEvents.rankName(rank), left + 32, rowTop + 18, rank.colour());
+        // The alliance colours are 0xRRGGBB, and every colour argument here is ARGB - text is skipped
+        // outright when its alpha is zero - so both inks are made opaque or a row draws nothing at all.
+        int allianceInk = ARGB.opaque(alliance.colour());
+        int rankInk = ARGB.opaque(rank.colour());
+        graphics.text(this.font, alliance.displayName(), left + 32, rowTop + 6, allianceInk);
+        graphics.text(this.font, FactionEvents.rankName(rank), left + 32, rowTop + 18, rankInk);
 
         // The total sits on the right of the row, next to the rank it bought.
         String points = String.valueOf(standing);
-        graphics.text(this.font, points, left + WIDTH - 12 - this.font.width(points), rowTop + 6, rank.colour());
+        graphics.text(this.font, points, left + WIDTH - 12 - this.font.width(points), rowTop + 6, rankInk);
 
         int barX = left + 32;
         int barY = rowTop + 30;
@@ -73,9 +78,10 @@ public class FactionLedgerScreen extends Screen {
         graphics.fill(barX, barY, barX + barWidth, barY + 5, TRACK);
         int filled = Math.round(barWidth * rank.progress(standing));
         if (filled > 0) {
-            graphics.fill(barX, barY, barX + filled, barY + 5, rank.colour());
+            graphics.fill(barX, barY, barX + filled, barY + 5, rankInk);
         }
     }
+
 
     @Override
     public boolean isPauseScreen() {
