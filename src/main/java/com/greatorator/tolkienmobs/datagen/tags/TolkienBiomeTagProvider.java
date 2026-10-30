@@ -29,6 +29,14 @@ public class TolkienBiomeTagProvider extends BiomeTagsProvider {
             var builder = tag(definition.biomeTag());
             definition.biomes().forEach(builder::add);
         });
+        // Where each alliance's hall may stand, and the ground its guards walk. The West is the free
+        // peoples' heartlands and the dwarves' two ranges; the East is Sauron's country and the wilds
+        // that answer to it; Harad is its own desert. A biome in no tag here belongs to nobody, so a
+        // hall is never raised there and no patrol is ever sent into it. The lists come from the
+        // structure provider, so a hall's ground and its country's tag cannot drift apart.
+        TolkienStructureProvider.WEST_COUNTRIES.forEach(tag(TolkienTags.Factions.WEST_COUNTRIES)::add);
+        TolkienStructureProvider.EAST_COUNTRIES.forEach(tag(TolkienTags.Factions.EAST_COUNTRIES)::add);
+        TolkienStructureProvider.HARAD_COUNTRIES.forEach(tag(TolkienTags.Factions.HARAD_COUNTRIES)::add);
 		TolkienBiomes.BIOME_FACTORIES.keySet().stream().sorted(Comparator.comparing(key -> key.identifier().toString())).toList().forEach(biome -> {
 			tag(TolkienTags.Biomes.OVERWORLD).add(biome);
 			float temperature = provider.lookupOrThrow(Registries.BIOME).getOrThrow(biome).value().getBaseTemperature();

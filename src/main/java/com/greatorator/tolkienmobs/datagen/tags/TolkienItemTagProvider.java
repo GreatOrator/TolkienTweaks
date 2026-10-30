@@ -89,7 +89,8 @@ public class TolkienItemTagProvider extends ItemTagsProvider {
                 .add(TolkienItems.ITEM_CAVECOMPLETE.get())
                 .add(TolkienItems.ITEM_WATCHERCOMPLETE.get())
                 .add(TolkienItems.ITEM_TOKEN_EASTERN_ALLIANCE.get())
-                .add(TolkienItems.ITEM_TOKEN_WESTERN_ALLIANCE.get());
+                .add(TolkienItems.ITEM_TOKEN_WESTERN_ALLIANCE.get())
+                .add(TolkienItems.ITEM_TOKEN_HARAD_ALLIANCE.get());
         tag(TolkienTags.Items.KEYS)
                 .add(TolkienItems.BRONZE_KEY.get())
                 .add(TolkienItems.SILVER_KEY.get())

@@ -236,6 +236,17 @@ public class TolkienEntityLootTables extends EntityLootSubProvider {
                         .withPool(coins(TolkienItems.ITEM_COIN_BRONZE.get(), COMMON_PURSE, 1, 5))
                         .withPool(coins(TolkienItems.ITEM_FACTIONCOIN.get(), FACTION_COIN, 1, 2)));
 
+        // A guard is a paid soldier rather than a marauder, so his kit is issued rather than taken:
+        // plain armour and rations, the silver he is owed, and the coin his alliance pays him in.
+        add(TolkienEntities.ENTITY_TTM_FACTIONGUARD.get(),
+                LootTable.lootTable()
+                        .withPool(body(2,
+                                Drop.of(Items.IRON_INGOT, 2, 0, 2),
+                                Drop.of(Items.LEATHER, 2, 0, 2),
+                                Drop.of(Items.BREAD, 1, 0, 1)))
+                        .withPool(coins(TolkienItems.ITEM_COIN_SILVER.get(), COMMON_PURSE, 1, 3))
+                        .withPool(coins(TolkienItems.ITEM_FACTIONCOIN.get(), FACTION_COIN, 1, 2)));
+
         add(TolkienEntities.ENTITY_TTM_ROMIEWALKER.get(),
                 LootTable.lootTable()
                         .withPool(body(2,

@@ -49,6 +49,20 @@ public class TolkienEntityTagProvider extends EntityTypeTagsProvider {
                 .add(TolkienEntities.ENTITY_TTM_GOAT.get())
                 .add(TolkienEntities.ENTITY_TTM_SHADOWFAX.get())
                 .add(TolkienEntities.ENTITY_TTM_NAZGULSTEED.get());
+        // Who fights for which alliance. A soldier's death raises the other two standings and costs
+        // his own, so this table is the whole of where killing moves a reputation. The West's only
+        // armed men in the wild are brigands - rough hands a hall turns a blind eye to - which is
+        // why they are the one human mob that counts as a soldier.
+        this.tag(TolkienTags.Factions.WEST_SOLDIERS)
+                .add(TolkienEntities.ENTITY_TTM_BRIGAND.get());
+        this.tag(TolkienTags.Factions.EAST_SOLDIERS)
+                .add(TolkienEntities.ENTITY_TTM_MORDORORC.get())
+                .add(TolkienEntities.ENTITY_TTM_URUKHAI.get())
+                .add(TolkienEntities.ENTITY_TTM_GOBLIN.get())
+                .add(TolkienEntities.ENTITY_TTM_DUERGAR.get())
+                .add(TolkienEntities.ENTITY_TTM_WARG.get());
+        this.tag(TolkienTags.Factions.HARAD_SOLDIERS)
+                .add(TolkienEntities.ENTITY_TTM_HARADRIM.get());
         this.tag(TolkienTags.Entities.BOSSES)
                 .add(TolkienEntities.ENTITY_TTM_BALROG.get())
                 .add(TolkienEntities.ENTITY_TTM_ENRAGED_FELLSPIRIT.get())

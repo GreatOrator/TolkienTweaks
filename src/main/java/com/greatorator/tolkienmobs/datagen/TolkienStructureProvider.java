@@ -38,9 +38,33 @@ public final class TolkienStructureProvider {
             TolkienBiomes.DAGORLAD, TolkienBiomes.MARSHES, TolkienBiomes.FIRIEN,
             TolkienBiomes.HITHAEGLIR, TolkienBiomes.DUNLAND, TolkienBiomes.ERIADOR);
 
+    /**
+     * Each alliance's countries, and the one table both the halls and the tags are written from: these
+     * lists name the biomes a hall may be raised in, and the biome tag provider writes the very same
+     * lists into {@code #tolkienmobs:factions/<alliance>}, which is what a guard patrol reads.
+     */
+    public static final List<ResourceKey<Biome>> WEST_COUNTRIES = List.of(
+            TolkienBiomes.SHIRE, TolkienBiomes.ERIADOR, TolkienBiomes.LINDON, TolkienBiomes.GONDOR,
+            TolkienBiomes.ROHAN, TolkienBiomes.GLADDEN, TolkienBiomes.LORINAND, TolkienBiomes.FIRIEN,
+            TolkienBiomes.IRON_HILLS, TolkienBiomes.BLUE_MOUNTAINS);
+    public static final List<ResourceKey<Biome>> EAST_COUNTRIES = List.of(
+            TolkienBiomes.MORDOR, TolkienBiomes.ASH_MOUNTAINS, TolkienBiomes.DAGORLAD,
+            TolkienBiomes.NURN, TolkienBiomes.MIRKWOOD_SPOOKY, TolkienBiomes.HITHAEGLIR,
+            TolkienBiomes.MARSHES);
+    public static final List<ResourceKey<Biome>> HARAD_COUNTRIES = List.of(TolkienBiomes.HARADWAITH);
+
     // Add one definition per structure. Optional branches contain only side NBTs. Distances are chunks; heightOffset is blocks.
     // The structure, pool, set and biome tag names are derived from the structure key.
     public static final List<Definition> STRUCTURES = List.of(
+            // One hall for each alliance, standing in that alliance's own country. The three templates
+            // are cut from the one build: the acacia trim becomes the alliance's own stair, and the
+            // warden behind the counter is that alliance's folk.
+            new Definition(TolkienStructures.FACTION_HALL_WEST, "tolkienmobs:faction_hall_west",
+                    WEST_COUNTRIES, 48, 16, 193764850, 0, Optional.empty(), false, Optional.of(Layout.single())),
+            new Definition(TolkienStructures.FACTION_HALL_EAST, "tolkienmobs:faction_hall_east",
+                    EAST_COUNTRIES, 48, 16, 193764851, 0, Optional.empty(), false, Optional.of(Layout.single())),
+            new Definition(TolkienStructures.FACTION_HALL_HARAD, "tolkienmobs:faction_hall_harad",
+                    HARAD_COUNTRIES, 48, 16, 193764852, 0, Optional.empty(), false, Optional.of(Layout.single())),
             new Definition(TolkienStructures.HOBBIT_HOUSE, "tolkienmobs:ttmhouse_hobbit",
                     List.of(TolkienBiomes.SHIRE), 32, 8, 193764821, 0),
             // A tent in the wilds a traveller crosses rather than in a country anyone has settled:

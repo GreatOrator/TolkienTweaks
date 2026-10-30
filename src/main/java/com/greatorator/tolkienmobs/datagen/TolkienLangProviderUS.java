@@ -180,6 +180,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.addItemWithLore(TolkienItems.ITEM_WATCHERCOMPLETE.get(), "§3Watcher Token§r", "Proof of defeating the Watcher");
             this.addItemWithLore(TolkienItems.ITEM_TOKEN_EASTERN_ALLIANCE.get(), "§4Eastern Alliance Token§r", "Proof of your decision of who you chose to align with");
             this.addItemWithLore(TolkienItems.ITEM_TOKEN_WESTERN_ALLIANCE.get(), "§1Western Alliance Token§r", "Proof of your decision of who you chose to align with");
+            this.addItemWithLore(TolkienItems.ITEM_TOKEN_HARAD_ALLIANCE.get(), "§6Haradwaith Alliance Token§r", "Proof of your decision of who you chose to align with");
             this.addItem(TolkienItems.ITEM_EXPERIENCE_ORB, "§2Experience§r");
             this.addItemWithInstructions(TolkienItems.BRONZE_KEY.get(), "Bronze Key", "Uses Left: ", "Hold Shift while in Creative", "Right-click to enter/change key code");
             this.addItemWithInstructions(TolkienItems.SILVER_KEY.get(), "Silver Key", "Uses Left: ", "Hold Shift while in Creative", "Right-click to enter/change key code");
@@ -597,6 +598,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add(TolkienEntities.EGG_TTMENRAGEDFELLSPIRIT.get(), "Enraged Fell Spirit Spawn Egg");
             this.add(TolkienEntities.ENTITY_TTM_BRIGAND.get(), "Brigand");
             this.add(TolkienEntities.EGG_TTMBRIGAND.get(), "Brigand Spawn Egg");
+            this.add(TolkienEntities.ENTITY_TTM_FACTIONGUARD.get(), "Alliance Guard");
             this.add(TolkienEntities.ENTITY_TTM_HARADRIM.get(), "Haradrim");
             this.add(TolkienEntities.EGG_TTMHARADRIM.get(), "Haradrim Spawn Egg");
             this.add(TolkienEntities.ENTITY_TTM_ROMIEWALKER.get(), "Romie Walker");
@@ -756,6 +758,22 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add("tolkienmobs.msg.wrong_key", "You need the correct key!");
         this.add("tolkienmobs.msg.ancient_watcher.warn", "The shadow of fear looms over you, causing you to cower.");
         this.add("tolkienmobs.msg.ancient_watcher.safe", "Oppression has no hold over you.");
+
+        // The three alliances, their ranks, and the ledger that shows them.
+        this.add("faction.tolkienmobs.west", "The West");
+        this.add("faction.tolkienmobs.east", "The East");
+        this.add("faction.tolkienmobs.harad", "Haradwaith");
+        this.add("faction.tolkienmobs.rank.hostile", "Hostile");
+        this.add("faction.tolkienmobs.rank.outsider", "Outsider");
+        this.add("faction.tolkienmobs.rank.stranger", "Stranger");
+        this.add("faction.tolkienmobs.rank.guest", "Guest");
+        this.add("faction.tolkienmobs.rank.friend", "Friend");
+        this.add("faction.tolkienmobs.rank.kinsman", "Kinsman");
+        this.add("faction.tolkienmobs.no_tokens", "The warden of %s has no use for an empty hand.");
+        this.add("faction.tolkienmobs.hand_in", "The warden takes %s tokens. Your standing with %s is now %s (%s).");
+        this.add("screen.tolkienmobs.faction_ledger", "Ledger of Alliances");
+        this.add("screen.tolkienmobs.faction_ledger.hint", "Take alliance tokens to a hall's warden");
+        this.add("key.tolkienmobs.faction_ledger", "Open Ledger of Alliances");
     }
 
     @Nonnull

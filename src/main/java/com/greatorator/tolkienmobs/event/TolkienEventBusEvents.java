@@ -128,6 +128,7 @@ public class TolkienEventBusEvents {
         event.put(TolkienEntities.ENTITY_TTM_ENRAGED_FELLSPIRIT.get(), EnragedFellSpiritEntity.createAttributes().build());
         event.put(TolkienEntities.ENTITY_TTM_BRIGAND.get(), BrigandEntity.createAttributes().build());
         event.put(TolkienEntities.ENTITY_TTM_HARADRIM.get(), HaradrimEntity.createAttributes().build());
+        event.put(TolkienEntities.ENTITY_TTM_FACTIONGUARD.get(), FactionGuardEntity.createAttributes().build());
         event.put(TolkienEntities.ENTITY_TTM_ROMIEWALKER.get(), RomieWalkerEntity.createAttributes().build());
         event.put(TolkienEntities.ENTITY_TTM_MIMICCHEST.get(), MimicChestEntity.createAttributes().build());
         event.put(TolkienEntities.ENTITY_TTM_MORDORORC.get(), MordorOrcEntity.createAttributes().build());

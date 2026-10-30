@@ -1,0 +1,8 @@
+{
+  "type": "tolkienmobs:template_layout",
+  "biomes": "#tolkienmobs:has_structure/faction_hall_harad",
+  "spawn_overrides": {},
+  "start_pool": "tolkienmobs:faction_hall_harad",
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
+}

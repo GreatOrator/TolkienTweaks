@@ -22,6 +22,8 @@ public class BackpackKeyHandler {
     public static final KeyMapping OPEN_BACKPACK = new KeyMapping("key.tolkienmobs.open_backpack", InputConstants.KEY_B, CATEGORY);
     /** Flips the magnet of the worn or carried backpack without opening it. */
     public static final KeyMapping TOGGLE_MAGNET = new KeyMapping("key.tolkienmobs.toggle_magnet", InputConstants.KEY_M, CATEGORY);
+    /** Opens the ledger of alliances: where the player stands with the West, the East and Harad. */
+    public static final KeyMapping FACTION_LEDGER = new KeyMapping("key.tolkienmobs.faction_ledger", InputConstants.KEY_J, CATEGORY);
 
     @EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
     public static class Registration {
@@ -30,6 +32,7 @@ public class BackpackKeyHandler {
             event.registerCategory(CATEGORY);
             event.register(OPEN_BACKPACK);
             event.register(TOGGLE_MAGNET);
+            event.register(FACTION_LEDGER);
         }
     }
 
@@ -49,6 +52,14 @@ public class BackpackKeyHandler {
                 Minecraft minecraft = Minecraft.getInstance();
                 if (minecraft.player != null) {
                     ClientPacketDistributor.sendToServer(new BackpackMagnetToggleManager());
+                }
+            }
+            // The ledger opens from the world only: with a screen already up the key would be typing,
+            // and a player reading their inventory does not want a ledger thrown over it.
+            while (FACTION_LEDGER.consumeClick()) {
+                Minecraft minecraft = Minecraft.getInstance();
+                if (minecraft.player != null && minecraft.screen == null) {
+                    minecraft.setScreen(new FactionLedgerScreen());
                 }
             }
         }
