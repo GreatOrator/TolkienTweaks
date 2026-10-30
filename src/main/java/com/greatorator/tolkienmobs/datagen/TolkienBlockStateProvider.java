@@ -925,9 +925,9 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
         ModelFile mileInactive = models().getExistingFile(modLoc("block/milestone_block"));
         horizontalBlock(TolkienBlocks.MILESTONE_BLOCK.get(), e -> e.getValue(MilestoneBlock.LIT) ? mileActive : mileInactive, 180);
 
-        // The contract board is a placeholder: drawn as planks until it has art of its own.
-        simpleBlock(TolkienBlocks.CONTRACT_BOARD.get(), models().getExistingFile(mcLoc("block/oak_planks")));
-        blockItem(TolkienBlocks.CONTRACT_BOARD);
+        // The notice board is drawn from its own model, which reaches past its block on every side.
+        simpleBlock(TolkienBlocks.NOTICE_BOARD.get(), models().getExistingFile(modLoc("block/notice_board")));
+        blockItem(TolkienBlocks.NOTICE_BOARD);
 
         blockItem(TolkienBlocks.TRINKET_TABLE);
         simpleBlockItem(TolkienBlocks.FIREPLACE.get(), models().getExistingFile(modLoc("block/fireplace_active")));

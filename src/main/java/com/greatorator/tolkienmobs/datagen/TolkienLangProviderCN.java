@@ -771,8 +771,8 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("faction.tolkienmobs.rank.friend", "盟友");
         this.add("faction.tolkienmobs.rank.kinsman", "族人");
 
-        // 雇佣契约：由契约板张贴并结算
-        this.add("block.tolkienmobs.contract_board", "契约板");
+        // 雇佣契约：由告示板张贴并结算
+        this.add("block.tolkienmobs.notice_board", "告示板");
         this.add("item.tolkienmobs.mercenary_contract", "佣兵契约");
         this.add("item.tolkienmobs.mercenary_contract.blank", "上面还没有写任何内容。");
         this.add("contract.tolkienmobs.employer", "委托方：%s");

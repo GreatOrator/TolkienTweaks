@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "tolkienmobs:contract_board"
+          "name": "tolkienmobs:notice_board"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "tolkienmobs:blocks/contract_board"
+  "random_sequence": "tolkienmobs:blocks/notice_board"
 }
