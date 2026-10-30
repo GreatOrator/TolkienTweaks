@@ -1,7 +1,9 @@
 package com.greatorator.tolkienmobs.event;
 
 import com.google.common.base.Suppliers;
+import com.greatorator.tolkienmobs.block.custom.NoticeBoardBlock;
 import com.greatorator.tolkienmobs.block.custom.entity.function.ChameleonBlockDynamicBakedModel;
+import com.greatorator.tolkienmobs.block.custom.entity.function.ScaledBlockStateModel;
 import com.greatorator.tolkienmobs.entity.ambient.*;
 import com.greatorator.tolkienmobs.entity.ambient.model.GeckoModel;
 import com.greatorator.tolkienmobs.entity.ambient.model.SwarmModel;
@@ -79,6 +81,23 @@ public class TolkienEventBusEvents {
             }
         }
     }
+    /**
+     * The notice board is drawn at twice the size of the model it is cut from. That cannot be said in
+     * the model file - an element may not reach past 32 pixels on any axis - so the model is wrapped
+     * here and its quads are scaled as they are collected.
+     */
+    @SubscribeEvent
+    public static void scaleNoticeBoard(ModelEvent.ModifyBakingResult event) {
+        Map<BlockState, BlockStateModel> modelRegistry = event.getBakingResult().blockStateModels();
+
+        for (BlockState blockState : TolkienBlocks.NOTICE_BOARD.get().getStateDefinition().getPossibleStates()) {
+            BlockStateModel existingModel = modelRegistry.get(blockState);
+            if (existingModel != null && !(existingModel instanceof ScaledBlockStateModel)) {
+                modelRegistry.put(blockState, new ScaledBlockStateModel(existingModel, NoticeBoardBlock.SCALE));
+            }
+        }
+    }
+
     @SubscribeEvent
     public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         // Ambient
