@@ -813,6 +813,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("quest.tolkienmobs.complete", "已完成 —— 请交付");
         this.add("quest.tolkienmobs.turned_in", "任务完成：%s");
         this.add("quest.tolkienmobs.full", "你手上的任务已经够多了。");
+        this.add("quest.tolkienmobs.abandoned", "你放下了这个任务：%s");
         this.add("quest.tolkienmobs.book.given", "你把第一个任务写进了一本新书。");
         this.add("quest.tolkienmobs.giver_arrived", "附近来了一位有事相求的人。");
         this.add("quest.tolkienmobs.giver.unknown", "一位需要帮助的人");
@@ -828,6 +829,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("screen.tolkienmobs.quests.page", "任务");
         this.add("screen.tolkienmobs.quests.page2", "任务（续）");
         this.add("screen.tolkienmobs.quests.carried", "手上的任务");
+        this.add("screen.tolkienmobs.quests.abandon.confirm", "放弃此任务？");
         this.add("quest.tolkienmobs.name.0", "旅人奥德温");
         this.add("quest.tolkienmobs.name.1", "女猎手贝蕾丝");
         this.add("quest.tolkienmobs.name.2", "铁匠杜林");

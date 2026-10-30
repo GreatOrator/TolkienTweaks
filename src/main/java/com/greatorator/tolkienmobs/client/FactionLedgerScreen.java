@@ -6,6 +6,8 @@ import com.greatorator.tolkienmobs.faction.FactionRank;
 import com.greatorator.tolkienmobs.faction.FactionStandings;
 import com.greatorator.tolkienmobs.faction.Quest;
 import com.greatorator.tolkienmobs.faction.QuestLedger;
+import com.greatorator.tolkienmobs.network.manager.QuestAbandonManager;
+import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -13,6 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +33,7 @@ import java.util.List;
  * wrapped onto the leaf - because a page that spells a long item name off its own edge is not a page.
  * <p>
  * Both leaves are drawn from caches the server last sent - the standings and the quest book - so this
- * screen never asks the server for anything and cannot show another player's numbers.
+ * screen never asks the server for anything except to set a quest aside, which it cannot do itself.
  */
 public class FactionLedgerScreen extends Screen {
     /** The two bookmarks of the book. */
@@ -55,6 +58,8 @@ public class FactionLedgerScreen extends Screen {
     private static final int RIBBON_H = 12;
     /** The height of one line of the book's type. */
     private static final int LINE = 9;
+    /** How long a first click on an abandon button stays armed before it lets go again. */
+    private static final long ARM_MILLIS = 4000L;
 
     private static final int LEATHER = 0xFF4A2F1B;
     private static final int LEATHER_DARK = 0xFF241408;
@@ -68,6 +73,7 @@ public class FactionLedgerScreen extends Screen {
     private static final int INK_GOLD = 0xFF8A5A22;
     private static final int INK_GREEN = 0xFF3F6B34;
     private static final int INK_BLUE = 0xFF4F7C8C;
+    private static final int INK_RED = 0xFF8C2F24;
     private static final int TRACK = 0xFFC6AC83;
     private static final int RIBBON_ON = 0xFF7A2E28;
     private static final int RIBBON_OFF = 0xFF3A2413;
@@ -84,6 +90,12 @@ public class FactionLedgerScreen extends Screen {
     private int pageH;
     private int leftPageX;
     private int rightPageX;
+
+    /** Where each abandon button was drawn this frame, so a click can be matched to a quest. */
+    private final List<AbandonSpot> abandonSpots = new ArrayList<>();
+    /** The entry a first click has armed, and when, so setting work aside takes two clicks. */
+    private int armedSlot = -1;
+    private long armedAt;
 
     public FactionLedgerScreen() {
         this(Tab.ALLIANCES);
@@ -137,6 +149,10 @@ public class FactionLedgerScreen extends Screen {
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         super.extractRenderState(graphics, mouseX, mouseY, partialTick);
         layout();
+        abandonSpots.clear();
+        if (armedSlot >= 0 && Util.getMillis() - armedAt > ARM_MILLIS) {
+            armedSlot = -1;
+        }
         drawBook(graphics);
         drawRibbons(graphics);
         if (this.tab == Tab.ALLIANCES) {
@@ -292,15 +308,16 @@ public class FactionLedgerScreen extends Screen {
                     INK_DIM, pageBottom() - 13);
             return;
         }
-        // The work is split down the middle of the book, so a full book is read left then right.
+        // The work is split down the middle of the book, so a full book is read left then right. The
+        // offset is what lets a click name the quest it landed on, whichever leaf drew it.
         int half = (quests.size() + 1) / 2;
-        drawQuestColumn(graphics, leftPageX, quests.subList(0, half));
-        drawQuestColumn(graphics, rightPageX, quests.subList(half, quests.size()));
+        drawQuestColumn(graphics, leftPageX, quests.subList(0, half), 0);
+        drawQuestColumn(graphics, rightPageX, quests.subList(half, quests.size()), half);
         drawCentred(graphics, leftPageX, Component.translatable("screen.tolkienmobs.quests.hint"),
                 INK_DIM, pageBottom() - 13);
     }
 
-    private void drawQuestColumn(GuiGraphicsExtractor graphics, int pageX, List<Quest> quests) {
+    private void drawQuestColumn(GuiGraphicsExtractor graphics, int pageX, List<Quest> quests, int first) {
         if (quests.isEmpty()) return;
         int x = innerX(pageX);
         int w = innerW();
@@ -309,16 +326,27 @@ public class FactionLedgerScreen extends Screen {
         // between at most two entries.
         int blockH = Math.min(84, Math.max(62, (bodyBottom() - top - 14) / Math.max(1, quests.size())));
         for (int i = 0; i < quests.size() && i < 2; i++) {
-            drawQuestEntry(graphics, x, top + i * blockH, w, blockH, quests.get(i));
+            drawQuestEntry(graphics, x, top + i * blockH, w, blockH, quests.get(i), first + i);
         }
     }
 
-    private void drawQuestEntry(GuiGraphicsExtractor graphics, int x, int y, int w, int h, Quest quest) {
+    private void drawQuestEntry(GuiGraphicsExtractor graphics, int x, int y, int w, int h, Quest quest, int slot) {
         graphics.item(iconOf(quest), x, y);
         graphics.text(this.font, fit(quest.objective().getString(), w - 21), x + 21, y + 2, INK);
 
+        // The abandon button closes the giver's line. It is small on purpose, so the first click only
+        // arms it and the button itself says what the second click will do.
+        boolean armed = slot == armedSlot;
+        String control = armed
+                ? Component.translatable("screen.tolkienmobs.quests.abandon.confirm").getString()
+                : "x";
+        int controlW = this.font.width(control);
+        int controlX = x + w - controlW;
+        graphics.text(this.font, control, controlX, y + 13, armed ? INK_RED : INK_DIM);
+        abandonSpots.add(new AbandonSpot(slot, controlX - 2, y + 11, controlW + 4, LINE + 2));
+
         // The details run the width of the leaf, under the picture rather than beside it.
-        graphics.text(this.font, fit(quest.giverName().getString(), w), x, y + 13, INK_DIM);
+        graphics.text(this.font, fit(quest.giverName().getString(), w - controlW - 6), x, y + 13, INK_DIM);
         graphics.text(this.font, fit(quest.takenAt().getString(), w), x, y + 23, INK_DIM);
 
         int summaryTop = y + 34;
@@ -418,8 +446,24 @@ public class FactionLedgerScreen extends Screen {
                 int x = leftPageX + i * (RIBBON_W + 4);
                 if (event.x() >= x && event.x() < x + RIBBON_W && event.y() >= y && event.y() < y + RIBBON_H + 1) {
                     this.tab = tabs[i];
+                    // A bookmark is a change of page, so a button armed on the last one is let go.
+                    this.armedSlot = -1;
                     return true;
                 }
+            }
+            for (AbandonSpot spot : abandonSpots) {
+                if (event.x() < spot.x() || event.x() >= spot.x() + spot.w()) continue;
+                if (event.y() < spot.y() || event.y() >= spot.y() + spot.h()) continue;
+                if (armedSlot == spot.slot() && Util.getMillis() - armedAt <= ARM_MILLIS) {
+                    // The server owns the book: this only names a slot in it, and the sync that comes
+                    // back is what redraws the page.
+                    ClientPacketDistributor.sendToServer(new QuestAbandonManager(spot.slot()));
+                    armedSlot = -1;
+                } else {
+                    armedSlot = spot.slot();
+                    armedAt = Util.getMillis();
+                }
+                return true;
             }
         }
         return super.mouseClicked(event, doubleClick);
@@ -428,5 +472,9 @@ public class FactionLedgerScreen extends Screen {
     @Override
     public boolean isPauseScreen() {
         return false;
+    }
+
+    /** An abandon button as it was drawn: the slot it would set aside, in screen coordinates. */
+    private record AbandonSpot(int slot, int x, int y, int w, int h) {
     }
 }
