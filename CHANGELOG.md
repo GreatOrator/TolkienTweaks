@@ -26,7 +26,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-- **Every faction hall seats its warden and envoy at a table.** The four lecterns the hall is built with are its tables, set against the pillar lines, so each hall now puts its warden at the western one nearer the front door and its envoy at the one across the aisle, both turned to read the book in front of them rather than standing loose in the middle of the floor.
+- **Every faction hall is built around workbenches, with its warden and envoy at one each.** The four tables a hall has are workbenches now, set against its side walls and turned to face the aisle so the two blocks a bench is drawn across stay clear of the way through, and the three alliance halls were cut again from the build as it now stands in the test world - its sea-lantern lighting and opened-up floor included. The warden works at the western bench, the nearer of its pair to the front door, and the envoy at the bench across the aisle, each standing on the side its own bench is worked from.
 
 - **Every faction hall carries a notice board.** One stands outside each hall's front door, to the right of it as you walk up, so the hall is where mercenary work is taken on and where a finished contract is paid.
 

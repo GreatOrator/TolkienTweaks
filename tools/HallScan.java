@@ -28,6 +28,7 @@ public class HallScan {
 
         System.out.println("file: " + file);
         System.out.println("size: " + width + " x " + height + " x " + depth + " (x, y, z)");
+        System.out.println("DataVersion: " + root.get("DataVersion"));
 
         List<String> names = paletteNames(root);
         Map<Long, String> at = new HashMap<>();
@@ -125,14 +126,14 @@ public class HallScan {
 
     // x in the high bits, z in the middle, y in the low 12: a key per block, no collisions.
     static long key(int x, int y, int z) {
-        return ((long) x << 32) | ((long) z << 12) | (y + 2048);
+        return ((long) (x & 0x3FFFFFF) << 38) | ((long) (z & 0x3FFFFFF) << 12) | (y & 0xFFF);
     }
 
-    static int x(long k) { return (int) (k >> 32); }
+    static int x(long k) { return (int) (k >> 38); }
 
-    static int z(long k) { return (int) ((k >> 12) & 0xFFFFF); }
+    static int z(long k) { return (int) (k << 26 >> 38); }
 
-    static int y(long k) { return (int) (k & 0xFFF) - 2048; }
+    static int y(long k) { return (int) (k << 52 >> 52); }
 
     // ---- NBT ----
 

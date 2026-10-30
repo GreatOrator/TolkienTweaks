@@ -26,26 +26,32 @@ public class HallVariants {
 
     static final String VOID = "minecraft:structure_void";
     static final String AIR = "minecraft:air";
-    static final String TRIM = "minecraft:acacia_stairs";
+    /**
+     * The trim band's stair, whichever wood it is cut in. A hall is authored in acacia and each
+     * alliance's copy recolours it, so a build that comes back out of a world already carries one of
+     * these three; any of them is the band, and every one is replaced by this alliance's own.
+     */
+    static final Set<String> TRIM = Set.of("minecraft:acacia_stairs", "tolkienmobs:stairs_lebethron",
+            "tolkienmobs:stairs_morguliron", "minecraft:sandstone_stairs");
 
     /**
- * Where the warden stands: at the western table, the nearer of its pair to the front door, on the
- * open side of the table and turned to read it. The hall keeps four lecterns as its tables, set
- * against the pillar lines at (5,1,6) and (5,1,9) facing east and (10,1,6) and (10,1,9) facing west,
- * so the open side of the western pair is x=6 and of the eastern pair is x=9.
+ * Where the warden stands: at the western workbench, the nearer of its pair to the front door. The
+ * hall keeps four workbenches as its tables - (3,1,6) and (3,1,9) facing east, (12,1,6) and (12,1,9)
+ * facing west - and a workbench is worked from the side it faces, so the western bench is worked
+ * from x=11 and the eastern one from x=4.
  */
-    static final double WARDEN_X = 6.5D;
+    static final double WARDEN_X = 11.5D;
     static final double WARDEN_Y = 1.0D;
-    static final double WARDEN_Z = 6.5D;
-    /** Yaw 90 faces west, into the lectern it stands at. */
-    static final float WARDEN_YAW = 90.0F;
+    static final double WARDEN_Z = 9.5D;
+    /** Yaw 270 faces east, into the bench it works at. */
+    static final float WARDEN_YAW = 270.0F;
 
-    /** Where the envoy stands: the table across the aisle from the warden, likewise on its open side. */
-    static final double VENDOR_X = 9.5D;
+    /** Where the envoy stands: the workbench across the aisle from the warden, likewise at its working side. */
+    static final double VENDOR_X = 4.5D;
     static final double VENDOR_Y = 1.0D;
-    static final double VENDOR_Z = 6.5D;
-    /** Yaw 270 faces east, into its lectern. */
-    static final float VENDOR_YAW = 270.0F;
+    static final double VENDOR_Z = 9.5D;
+    /** Yaw 90 faces west, into its bench. */
+    static final float VENDOR_YAW = 90.0F;
 
     record Variant(String file, String stairs, String warden, String wardenName, String tag, int alliance, String vendorName) {}
 
@@ -145,7 +151,7 @@ public class HallVariants {
                     if (!isAir(name)) {
                         // Only the block changes: the trim keeps every facing and half it had, so
                         // the band reads as the same carpentry in the alliance's own material.
-                        emit = name.equals(TRIM) ? variant.stairs() : name;
+                        emit = TRIM.contains(name) ? variant.stairs() : name;
                         kept++;
                     } else if (margin(x, z, width, depth)) {
                         // The build is drawn to a one-block margin and its eaves overhang that

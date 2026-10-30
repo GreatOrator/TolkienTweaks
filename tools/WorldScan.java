@@ -23,6 +23,8 @@ public class WorldScan {
 
     /** Every block in the world, keyed by position, as name[properties]. */
     static final Map<Long, String> WORLD = new HashMap<>();
+    /** The data version the saved chunks carry, copied into anything cut out of them. */
+    static int DATA_VERSION = 0;
 
     public static void main(String[] args) throws Exception {
         Path regionDir = Paths.get(args[0]);
@@ -129,7 +131,7 @@ public class WorldScan {
         root.put("palette", paletteList);
         root.put("blocks", blocks);
         root.put("entities", new ArrayList<>());
-        root.put("DataVersion", 4189);
+        root.put("DataVersion", DATA_VERSION);
         try (OutputStream os = new GZIPOutputStream(new BufferedOutputStream(Files.newOutputStream(out)))) {
             write(new DataOutputStream(os), root);
         }
@@ -145,6 +147,8 @@ public class WorldScan {
 
     @SuppressWarnings("unchecked")
     static void scanChunk(int chunkX, int chunkZ, Map<String, Object> chunk) {
+        Object version = chunk.get("DataVersion");
+        if (version instanceof Number number) DATA_VERSION = number.intValue();
         Object sections = chunk.get("sections");
         if (!(sections instanceof List<?> list)) return;
         for (Object o : list) {
@@ -312,14 +316,14 @@ public class WorldScan {
 
     // x in the high bits, z in the middle, y in the low 12: a key per block, no collisions.
     static long key(int x, int y, int z) {
-        return ((long) x << 32) | ((long) z << 12) | (y + 2048);
+        return ((long) (x & 0x3FFFFFF) << 38) | ((long) (z & 0x3FFFFFF) << 12) | (y & 0xFFF);
     }
 
-    static int x(long k) { return (int) (k >> 32); }
+    static int x(long k) { return (int) (k >> 38); }
 
-    static int z(long k) { return (int) ((k >> 12) & 0xFFFFF); }
+    static int z(long k) { return (int) (k << 26 >> 38); }
 
-    static int y(long k) { return (int) (k & 0xFFF) - 2048; }
+    static int y(long k) { return (int) (k << 52 >> 52); }
 
     // ---- NBT ----
 
