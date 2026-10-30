@@ -2049,9 +2049,10 @@ public class TolkienBlocks {
             BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).noLootTable().noOcclusion());
     public static final DeferredBlock<Block> WELL = registerBlock("well_block", properties -> new WellBlock(properties),
             BlockBehaviour.Properties.of().sound(SoundType.STONE).requiresCorrectToolForDrops().strength(3.5F, 3.5F).noOcclusion());
-    public static final DeferredBlock<Block> CONTRACT_BOARD = registerBlock("contract_board",
-            properties -> new ContractBoardBlock(properties),
-            BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).sound(SoundType.WOOD).strength(2.5F));
+    public static final DeferredBlock<Block> NOTICE_BOARD = registerBlock("notice_board",
+            properties -> new NoticeBoardBlock(properties),
+            BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).sound(SoundType.WOOD).strength(2.5F)
+                    .noOcclusion());
     public static final DeferredBlock<Block> ARDA_PORTAL = registerBlockWithoutBlockItem("arda_portal", properties -> new ArdaPortalBlock(properties),
             BlockBehaviour.Properties.of().strength(-1F).noCollision().lightLevel((state) -> 10).noLootTable());
     public static final DeferredBlock<Block> ANCIENT_WATCHER = registerBlock("ancient_watcher",

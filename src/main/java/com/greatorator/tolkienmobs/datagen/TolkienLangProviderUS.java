@@ -771,8 +771,8 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("faction.tolkienmobs.rank.friend", "Friend");
         this.add("faction.tolkienmobs.rank.kinsman", "Kinsman");
 
-        // Mercenary contracts, which a contract board posts and pays.
-        this.add("block.tolkienmobs.contract_board", "Contract Board");
+        // Mercenary contracts, which a notice board posts and pays.
+        this.add("block.tolkienmobs.notice_board", "Notice Board");
         this.add("item.tolkienmobs.mercenary_contract", "Mercenary Contract");
         this.add("item.tolkienmobs.mercenary_contract.blank", "Nothing is written on it yet.");
         this.add("contract.tolkienmobs.employer", "For %s");
