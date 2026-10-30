@@ -30,6 +30,8 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- **The ledger is an open book, and both halves sit on one spread.** The ledger was one narrow panel with the alliances and the quests behind two tabs; it is a leather book now, with two parchment leaves, a shadow down the gutter and its two bookmarks stitched over the spine. The alliances bookmark keeps the standings on the left leaf and the work in hand on the right, so who a player stands with and what they are doing are read together; the quests bookmark spreads the carried work across both leaves, two entries to a page. Each quest also records who offered it and where, so the book prints the giver and the place the work was taken under its objective, with a sentence of what the work is for and its progress at the foot of the entry - and the giver is kept as the key it was translated from, so the book reads the name in whatever language its reader uses.
+
 - **Every faction hall is built around workbenches, with its warden and envoy at one each.** The four tables a hall has are workbenches now, set against its side walls and turned to face the aisle so the two blocks a bench is drawn across stay clear of the way through, and the three alliance halls were cut again from the build as it now stands in the test world - its sea-lantern lighting and opened-up floor included. The warden works at the western bench, the nearer of its pair to the front door, and the envoy at the bench across the aisle, each standing on the side its own bench is worked from.
 
 - **Every faction hall carries a notice board.** One stands outside each hall's front door, to the right of it as you walk up, so the hall is where mercenary work is taken on and where a finished contract is paid.
@@ -62,6 +64,8 @@ All notable changes to this project will be documented in this file.
 - **The four lair tables that were copies of each other are four tables.** The swamp hag's hut and the spider tree gave identical loot, and the minotaur's hoard was the warg pit's with the coin changed. Each now holds what its occupant would have: the hag her herbs, her bottles and what she has been feeding; the spider its silk, its eyes and what it wrapped up; the pack its bones and offal; the minotaur what it has taken off everyone who came before.
 
 ### Fixed
+
+- **The ledger keeps its text on the page.** Every line was drawn at whatever width it happened to be inside a 176-pixel panel, so a long objective or a rank name ran off the edge of the screen. Lines are measured before they are drawn now and either trimmed with an ellipsis or wrapped onto the leaf, and the book shrinks to fit a smaller window rather than hanging off it.
 
 - **The notice board loads instead of showing a missing cube.** The upper rail was authored standing up and turned flat by a 90-degree element rotation, which put its bounds at y 38.5 - past the 32 the game allows, and it is checked before any rotation is applied - so the whole model was thrown away and the block fell back to an untextured cube. The rail is laid flat in the model at the same place, and the model carries display transforms now, so its icon and held form are scaled instead of drawn full size.
 

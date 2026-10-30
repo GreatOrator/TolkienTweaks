@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.faction;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -30,9 +31,14 @@ import java.util.List;
  * an entity type id, read back through the registries on demand. Both registries are defaulted in
  * 26.1, so every lookup is guarded by {@code containsKey} - a typo then reads as a quest nobody can
  * finish rather than as an arbitrary other quest.
+ * <p>
+ * {@code giver} is the name the NPC was handed, kept as its translation key rather than as the words
+ * the server happened to read it in, so a Chinese client sees the name in Chinese. {@code origin} is
+ * where the giver stood when the work was offered, which is what the book calls the place it was
+ * taken.
  */
 public record Quest(Kind kind, String target, int goal, int progress, String employer, int standing,
-                    List<Reward> rewards) {
+                    List<Reward> rewards, String giver, BlockPos origin) {
     /** The most progress a quest can hold, so a kill after completion cannot write past the goal. */
     public enum Kind {
         FACTION, FETCH, HUNT;
@@ -69,7 +75,9 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
             Codec.INT.optionalFieldOf("progress", 0).forGetter(Quest::progress),
             Codec.STRING.optionalFieldOf("employer", "").forGetter(Quest::employer),
             Codec.INT.optionalFieldOf("standing", 0).forGetter(Quest::standing),
-            Reward.CODEC.listOf().optionalFieldOf("rewards", List.of()).forGetter(Quest::rewards)
+            Reward.CODEC.listOf().optionalFieldOf("rewards", List.of()).forGetter(Quest::rewards),
+            Codec.STRING.optionalFieldOf("giver", "").forGetter(Quest::giver),
+            BlockPos.CODEC.optionalFieldOf("origin", BlockPos.ZERO).forGetter(Quest::origin)
     ).apply(instance, Quest::new));
 
     public boolean complete() {
@@ -78,11 +86,18 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
 
     /** The same quest one kill further on. Fetch quests are read off the pack instead. */
     public Quest advanced() {
-        return new Quest(kind, target, goal, Math.min(goal, progress + 1), employer, standing, rewards);
+        return new Quest(kind, target, goal, Math.min(goal, progress + 1), employer, standing, rewards,
+                giver, origin);
     }
 
     public Quest withProgress(int value) {
-        return new Quest(kind, target, goal, Math.max(0, Math.min(goal, value)), employer, standing, rewards);
+        return new Quest(kind, target, goal, Math.max(0, Math.min(goal, value)), employer, standing, rewards,
+                giver, origin);
+    }
+
+    /** The same quest, noting who offered it and where they stood when they did. */
+    public Quest withGiver(String giver, BlockPos origin) {
+        return new Quest(kind, target, goal, progress, employer, standing, rewards, giver, origin);
     }
 
     /** The alliance the work is done for, or null when the work is nobody's. */
@@ -128,6 +143,35 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
                 EntityType<?> type = entityType();
                 yield type == null ? Component.literal(target) : type.getDescription();
             }
+        };
+    }
+
+    /**
+     * The giver's own name, resolved on the client so it reads in the player's language. A name a pack
+     * wrote by hand carries no key and is shown as it was written.
+     */
+    public Component giverName() {
+        if (giver.isEmpty()) return Component.translatable("quest.tolkienmobs.giver.unknown");
+        return giver.startsWith("quest.tolkienmobs.name.")
+                ? Component.translatable(giver)
+                : Component.literal(giver);
+    }
+
+    /** Where the work was taken: the block the giver stood on when they offered it. */
+    public Component takenAt() {
+        return Component.translatable("quest.tolkienmobs.taken_at",
+                Component.literal(origin.getX() + ", " + origin.getY() + ", " + origin.getZ()));
+    }
+
+    /** A sentence of why the work exists, so the book is not only a shopping list. */
+    public Component summary() {
+        return switch (kind) {
+            case FACTION -> Component.translatable("quest.tolkienmobs.summary.faction",
+                    targetName(), Component.literal(String.valueOf(goal)));
+            case FETCH -> Component.translatable("quest.tolkienmobs.summary.fetch",
+                    Component.literal(String.valueOf(goal)), targetName());
+            case HUNT -> Component.translatable("quest.tolkienmobs.summary.hunt",
+                    targetName(), Component.literal(String.valueOf(goal)));
         };
     }
 

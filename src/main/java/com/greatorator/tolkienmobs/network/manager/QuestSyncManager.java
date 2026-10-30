@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.network.manager;
 
 import com.greatorator.tolkienmobs.faction.Quest;
 import com.greatorator.tolkienmobs.faction.QuestLedger;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -48,6 +49,8 @@ public record QuestSyncManager(List<Quest> quests, List<UUID> givers) implements
         buf.writeVarInt(quest.progress());
         buf.writeUtf(quest.employer());
         buf.writeVarInt(quest.standing());
+        buf.writeUtf(quest.giver());
+        buf.writeBlockPos(quest.origin());
         buf.writeVarInt(quest.rewards().size());
         for (Quest.Reward reward : quest.rewards()) {
             buf.writeUtf(reward.item());
@@ -65,12 +68,14 @@ public record QuestSyncManager(List<Quest> quests, List<UUID> givers) implements
             int progress = buf.readVarInt();
             String employer = buf.readUtf();
             int standing = buf.readVarInt();
+            String giver = buf.readUtf();
+            BlockPos origin = buf.readBlockPos();
             int rewards = buf.readVarInt();
             List<Quest.Reward> paid = new ArrayList<>(rewards);
             for (int slot = 0; slot < rewards; slot++) {
                 paid.add(new Quest.Reward(buf.readUtf(), buf.readVarInt()));
             }
-            quests.add(new Quest(kind, target, goal, progress, employer, standing, List.copyOf(paid)));
+            quests.add(new Quest(kind, target, goal, progress, employer, standing, List.copyOf(paid), giver, origin));
         }
         return quests;
     }
