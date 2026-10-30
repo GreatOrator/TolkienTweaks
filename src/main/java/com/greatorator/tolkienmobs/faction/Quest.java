@@ -32,10 +32,10 @@ import java.util.List;
  * 26.1, so every lookup is guarded by {@code containsKey} - a typo then reads as a quest nobody can
  * finish rather than as an arbitrary other quest.
  * <p>
- * {@code giver} is the name the NPC was handed, kept as its translation key rather than as the words
- * the server happened to read it in, so a Chinese client sees the name in Chinese. {@code origin} is
- * where the giver stood when the work was offered, which is what the book calls the place it was
- * taken.
+ * {@code giver} is the name the NPC was handed. A name drawn from the mod's own table is kept as the
+ * key it is translated from, so a client reads it in its own language; a name a pack set in the config
+ * is kept as the words it was written in. {@code origin} is where the giver stood when the work was
+ * offered, which is what the book calls the place it was taken.
  */
 public record Quest(Kind kind, String target, int goal, int progress, String employer, int standing,
                     List<Reward> rewards, String giver, BlockPos origin) {
@@ -148,13 +148,21 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
 
     /**
      * The giver's own name, resolved on the client so it reads in the player's language. A name a pack
-     * wrote by hand carries no key and is shown as it was written.
+     * set in the config carries no key and is shown as it was written.
      */
     public Component giverName() {
         if (giver.isEmpty()) return Component.translatable("quest.tolkienmobs.giver.unknown");
-        return giver.startsWith("quest.tolkienmobs.name.")
-                ? Component.translatable(giver)
-                : Component.literal(giver);
+        return label(giver);
+    }
+
+    /**
+     * A giver's name as the game draws it: the mod's own eight are keys, so a client reads them in its
+     * own language, and a name a pack set in the config is the words it was written in.
+     */
+    public static Component label(String name) {
+        return name.startsWith("quest.tolkienmobs.name.")
+                ? Component.translatable(name)
+                : Component.literal(name);
     }
 
     /** Where the work was taken: the block the giver stood on when they offered it. */
