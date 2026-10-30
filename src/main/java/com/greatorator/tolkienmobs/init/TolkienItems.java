@@ -186,6 +186,10 @@ public class TolkienItems {
     public static final DeferredItem<Item> ITEM_EXPERIENCE_ORB = ITEMS.registerItem("experience_orb",
             properties -> new TolkienItem(properties).setEffectOverride(), () -> new Item.Properties().stacksTo(1));
 
+    // Faction work
+    public static final DeferredItem<MercenaryContractItem> MERCENARY_CONTRACT = ITEMS.registerItem("mercenary_contract",
+            properties -> new MercenaryContractItem(properties), () -> new Item.Properties().stacksTo(1));
+
         // Coins & Tokens
     public static final DeferredItem<Item> ITEM_COIN_BRONZE = ITEMS.registerItem("item_coin_bronze",
             properties -> new TolkienCoinItem(properties).setHasLore());

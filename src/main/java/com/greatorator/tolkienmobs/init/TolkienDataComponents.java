@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.init;
 
+import com.greatorator.tolkienmobs.faction.Contract;
 import com.greatorator.tolkienmobs.network.component.KeyCodeComponent;
 import com.greatorator.tolkienmobs.network.component.TrinketComponent;
 import com.mojang.serialization.Codec;
@@ -43,6 +44,13 @@ public class TolkienDataComponents {
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> KEY_RING_ACTIVE = COMPONENTS.register("key_ring_active", () -> DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<KeyCodeComponent>> KEY_CODE = register("key_code", builder -> builder.persistent(KeyCodeComponent.CODEC).networkSynchronized(KeyCodeComponent.STREAM_CODEC));
+
+    /**
+     * The terms of a mercenary contract, or nothing on a blank one. It rides on the item, so the paper
+     * and the work are one thing: a lost contract is work abandoned.
+     */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Contract>> CONTRACT = COMPONENTS.register("contract",
+            () -> DataComponentType.<Contract>builder().persistent(Contract.CODEC).networkSynchronized(Contract.STREAM_CODEC).build());
 
     /**
      * The code a lockable chest is set to. 26.1 serializes an attachment through a map codec rather than a plain

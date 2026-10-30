@@ -469,6 +469,12 @@ public class TolkienItemModelProvider extends ItemModelProvider {
         basicItem(TolkienItems.MITHRIL_KEY.get());
         basicItem(TolkienItems.MASTER_KEY.get());
 
+        // A contract is a sheet of paper until it has art of its own: a plain generated sprite,
+        // with the terms read off the stack rather than off the model.
+        getBuilder("mercenary_contract")
+                .parent(getExistingFile(mcLoc("item/generated")))
+                .texture("layer0", mcLoc("item/paper"));
+
         // 26.1 has no shared spawn egg template left: every egg is its own flat sprite, painted
         // from the two colours it registered with by TolkienSpawnEggTextureProvider. So each egg is
         // an ordinary generated item, and its definition falls out of the default.
