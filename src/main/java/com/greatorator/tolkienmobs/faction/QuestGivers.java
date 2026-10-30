@@ -71,7 +71,7 @@ public final class QuestGivers {
             return;
         }
         RandomSource random = level.getRandom();
-        if (spawn(level, player, random)) {
+        if (spawnNear(level, player, random)) {
             QuestLedger.setNextGiver(player, now + MIN_GAP + Math.floorMod(random.nextLong(), MAX_GAP - MIN_GAP));
         } else {
             // No ground to stand on: try again shortly rather than writing off the whole wait.
@@ -80,7 +80,7 @@ public final class QuestGivers {
     }
 
     /** One giver, on solid dry ground, with work already in their hand. */
-    private static boolean spawn(ServerLevel level, ServerPlayer player, RandomSource random) {
+    public static boolean spawnNear(ServerLevel level, ServerPlayer player, RandomSource random) {
         BlockPos origin = player.blockPosition();
         for (int attempt = 0; attempt < 12; attempt++) {
             int dx = random.nextInt(MIN_SPAWN, MAX_SPAWN + 1) * (random.nextBoolean() ? 1 : -1);
@@ -105,7 +105,7 @@ public final class QuestGivers {
             if (!level.addFreshEntity(giver)) continue;
 
             // The work remembers who offered it and where they stood, so the book can say both later.
-            Quest work = QuestPool.offer(random, employer(level, player)).withGiver(label, giver.blockPosition());
+            Quest work = QuestPool.offer(random, employer(player)).withGiver(label, giver.blockPosition());
             QuestLedger.offer(player, giver.getUUID(), work);
             player.sendSystemMessage(Component.translatable("quest.tolkienmobs.giver_arrived")
                     .withStyle(ChatFormatting.GRAY));
@@ -114,8 +114,20 @@ public final class QuestGivers {
         return false;
     }
 
+    /**
+     * Puts a giver beside a player at once, for an operator staging a scene or trying the work out. The
+     * wait between givers and the one-giver rule are the player's experience of the feature rather than
+     * rules about the world, so a command skips both and asks only for ground to stand on.
+     *
+     * @return whether a giver found somewhere to stand
+     */
+    public static boolean forceSpawn(ServerPlayer player) {
+        return player.level() instanceof ServerLevel level && spawnNear(level, player, level.getRandom());
+    }
+
     /** The country a giver speaks for: the one the player is standing in, or none in the wilds. */
-    private static Alliance employer(ServerLevel level, ServerPlayer player) {
+    public static Alliance employer(ServerPlayer player) {
+        Level level = player.level();
         for (Alliance alliance : Alliance.values()) {
             if (level.getBiome(player.blockPosition()).is(alliance.countries())) return alliance;
         }

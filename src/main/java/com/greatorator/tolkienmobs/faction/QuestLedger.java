@@ -158,6 +158,17 @@ public final class QuestLedger extends SavedData {
         return true;
     }
 
+    /** Forgets every quest a player carries, for an operator starting a test over. Nothing is paid. */
+    public static int clear(ServerPlayer player) {
+        List<Quest> quests = row(player);
+        int cleared = quests.size();
+        if (cleared == 0) return 0;
+        quests.clear();
+        store(player).setDirty();
+        sync(player);
+        return cleared;
+    }
+
     // ---- offers ----
 
     /** Notes what a giver is asking for, and tells the player so their nameplate shows it. */
