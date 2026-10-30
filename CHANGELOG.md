@@ -26,6 +26,8 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- **Every faction hall seats its warden and envoy at a table.** The four lecterns the hall is built with are its tables, set against the pillar lines, so each hall now puts its warden at the western one nearer the front door and its envoy at the one across the aisle, both turned to read the book in front of them rather than standing loose in the middle of the floor.
+
 - **Every faction hall carries a notice board.** One stands outside each hall's front door, to the right of it as you walk up, so the hall is where mercenary work is taken on and where a finished contract is paid.
 
 - **The notice board is drawn twice the size of the model it is cut from.** A model file cannot say this - an element may not reach past 32 pixels on any axis, and the board is already at that limit - so the drawing is scaled instead: the model is wrapped at bake time and its quads are moved as they are collected, which keeps the block in the chunk mesh with its occlusion and materials. The block outline grows with it, about the middle of its ground face, so a click still lands on the wood. Placed, it now stands 3.25 blocks wide and 2.5 tall.
