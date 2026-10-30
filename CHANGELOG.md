@@ -22,6 +22,8 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+- **Every faction hall carries a notice board.** One stands outside each hall's front door, to the right of it as you walk up, so the hall is where mercenary work is taken on and where a finished contract is paid.
+
 - **The notice board is drawn twice the size of the model it is cut from.** A model file cannot say this - an element may not reach past 32 pixels on any axis, and the board is already at that limit - so the drawing is scaled instead: the model is wrapped at bake time and its quads are moved as they are collected, which keeps the block in the chunk mesh with its occlusion and materials. The block outline grows with it, about the middle of its ground face, so a click still lands on the wood. Placed, it now stands 3.25 blocks wide and 2.5 tall.
 
 - **The notice board turns to face whoever places it.** It had a single orientation, so a board set against a wall could show its back; it now takes a facing the way the well does, is placed with its front toward the player, and carries an outline per direction so the parts that hang over stay clickable whichever way it is turned.
