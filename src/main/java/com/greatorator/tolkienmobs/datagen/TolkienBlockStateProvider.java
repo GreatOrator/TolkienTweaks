@@ -931,7 +931,8 @@ public class TolkienBlockStateProvider extends BlockModelBuilders {
 
         // The workbench is drawn from its own model too, two blocks wide with its hutch along the back.
         horizontalBlock(TolkienBlocks.WORKBENCH.get(), models().getExistingFile(modLoc("block/workbench")), 180);
-        blockItem(TolkienBlocks.WORKBENCH);
+        // The workbench item model is written by hand under /models/item: it draws the two blocks of
+        // bench at half the size of a block item, which data generation has no way to say.
 
         blockItem(TolkienBlocks.TRINKET_TABLE);
         simpleBlockItem(TolkienBlocks.FIREPLACE.get(), models().getExistingFile(modLoc("block/fireplace_active")));
