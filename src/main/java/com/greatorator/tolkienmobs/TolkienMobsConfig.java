@@ -169,6 +169,60 @@ public class TolkienMobsConfig {
     /** The switches, in the order the file lists them, each beside the entity id it stands for. */
     private static final List<MobSwitch> MOB_SWITCHES = new ArrayList<>();
 
+    /** The work the mod offers until a pack writes its own, by registry name. */
+    private static final List<String> DEFAULT_FETCH = List.of(
+            "minecraft:wheat",
+            "minecraft:bread",
+            "minecraft:leather",
+            "minecraft:coal",
+            "minecraft:string",
+            "minecraft:bone",
+            "minecraft:iron_ingot",
+            "tolkienmobs:leather_mumakil",
+            "tolkienmobs:item_blankpaper");
+
+    private static final List<String> DEFAULT_HUNT = List.of(
+            "tolkienmobs:entityttmgoblin",
+            "tolkienmobs:entityttmwarg",
+            "tolkienmobs:entityttmmirkwoodspider",
+            "minecraft:zombie",
+            "minecraft:skeleton",
+            "minecraft:spider");
+
+    private static final List<String> DEFAULT_REWARDS = List.of(
+            "tolkienmobs:food_lembas",
+            "tolkienmobs:food_cram",
+            "tolkienmobs:item_blankpaper",
+            "tolkienmobs:leather_mumakil",
+            "minecraft:iron_ingot");
+
+    // The quest pool: one table per thing a giver hands out and one setting per number it uses. The
+    // tables hold registry names rather than objects so a pack can put work to its own items and mobs
+    // without touching the mod; a name nothing answers to makes work nobody can finish rather than
+    // crashing, which is why the ids are only ever parsed when a quest is read.
+    private static final ModConfigSpec.DoubleValue QUEST_FACTION_CHANCE;
+    private static final ModConfigSpec.ConfigValue<List<? extends String>> QUEST_FETCH_ITEMS;
+    private static final ModConfigSpec.ConfigValue<List<? extends String>> QUEST_HUNT_MOBS;
+    private static final ModConfigSpec.ConfigValue<List<? extends String>> QUEST_REWARD_ITEMS;
+    private static final ModConfigSpec.ConfigValue<String> QUEST_COIN_ITEM;
+    private static final ModConfigSpec.IntValue QUEST_FACTION_GOAL_MIN;
+    private static final ModConfigSpec.IntValue QUEST_FACTION_GOAL_MAX;
+    private static final ModConfigSpec.IntValue QUEST_FETCH_GOAL_MIN;
+    private static final ModConfigSpec.IntValue QUEST_FETCH_GOAL_MAX;
+    private static final ModConfigSpec.IntValue QUEST_HUNT_GOAL_MIN;
+    private static final ModConfigSpec.IntValue QUEST_HUNT_GOAL_MAX;
+    private static final ModConfigSpec.IntValue QUEST_STANDING_BASE;
+    private static final ModConfigSpec.IntValue QUEST_STANDING_PER_GOAL;
+    private static final ModConfigSpec.IntValue QUEST_COIN_BASE;
+    private static final ModConfigSpec.IntValue QUEST_COIN_SPREAD;
+    private static final ModConfigSpec.IntValue QUEST_COIN_PER_GOAL;
+    private static final ModConfigSpec.DoubleValue QUEST_GOODS_CHANCE;
+    private static final ModConfigSpec.IntValue QUEST_GOODS_MIN;
+    private static final ModConfigSpec.IntValue QUEST_GOODS_MAX;
+    private static final ModConfigSpec.ConfigValue<List<? extends String>> QUEST_GIVER_NAMES;
+    private static final ModConfigSpec.ConfigValue<List<? extends String>> QUEST_GIVER_TITLES;
+
+
     static final ModConfigSpec SPEC;
 
     static {
@@ -361,6 +415,81 @@ public class TolkienMobsConfig {
                 .defineInRange("tolkienRegionWeight", 7, 1, 50);
         BUILDER.pop();
 
+        BUILDER.comment("What the wandering folk hand out, and what it is worth. Every id here is a registry name",
+                        "- `minecraft:wheat`, `tolkienmobs:entityttmwarg` - so a pack can put work to the items and mobs",
+                        "of its own without touching the mod. A quest keeps the terms it was taken on, so a change here",
+                        "reaches the next offer rather than the work already in a player's book.").push("quests");
+        QUEST_FACTION_CHANCE = BUILDER
+                .comment("How often a giver standing in a country offers political work rather than an errand, from 0 to 1. A giver standing in no country never offers it (Default 0.45)")
+                .defineInRange("factionChance", 0.45D, 0.0D, 1.0D);
+        QUEST_FETCH_ITEMS = BUILDER
+                .comment("The items a fetch quest may ask for, by id. An id nothing answers to makes work nobody can finish, so read a new one back before shipping a pack (Defaults: wheat, bread, leather, coal, string, bone, iron ingot, mumakil leather, blank paper)")
+                .defineList("fetchItems", DEFAULT_FETCH, TolkienMobsConfig::validateItemName);
+        QUEST_HUNT_MOBS = BUILDER
+                .comment("The mobs a hunt quest may ask for, by entity id. A mob the world has none of makes work that cannot be finished (Defaults: goblin, warg, mirkwood spider, zombie, skeleton, spider)")
+                .defineList("huntMobs", DEFAULT_HUNT, TolkienMobsConfig::validateEntityName);
+        QUEST_REWARD_ITEMS = BUILDER
+                .comment("What a fetch or hunt quest may pay besides coin, one draw per quest (Defaults: lembas, cram, blank paper, mumakil leather, iron ingot)")
+                .defineList("rewardItems", DEFAULT_REWARDS, TolkienMobsConfig::validateItemName);
+        QUEST_COIN_ITEM = BUILDER
+                .comment("The coin a quest pays, by item id (Default tolkienmobs:item_coin_gold)")
+                .define("coinItem", "tolkienmobs:item_coin_gold", TolkienMobsConfig::validateItemName);
+        QUEST_FACTION_GOAL_MIN = BUILDER
+                .comment("Fewest soldiers a faction quest asks for (Default 3)")
+                .defineInRange("factionGoalMin", 3, 1, 64);
+        QUEST_FACTION_GOAL_MAX = BUILDER
+                .comment("Most soldiers a faction quest asks for, read as inclusive and never under the fewest (Default 6)")
+                .defineInRange("factionGoalMax", 6, 1, 64);
+        QUEST_FETCH_GOAL_MIN = BUILDER
+                .comment("Fewest of an item a fetch quest asks for (Default 4)")
+                .defineInRange("fetchGoalMin", 4, 1, 64);
+        QUEST_FETCH_GOAL_MAX = BUILDER
+                .comment("Most of an item a fetch quest asks for, read as inclusive and never under the fewest (Default 12)")
+                .defineInRange("fetchGoalMax", 12, 1, 64);
+        QUEST_HUNT_GOAL_MIN = BUILDER
+                .comment("Fewest of a mob a hunt quest asks for (Default 3)")
+                .defineInRange("huntGoalMin", 3, 1, 64);
+        QUEST_HUNT_GOAL_MAX = BUILDER
+                .comment("Most of a mob a hunt quest asks for, read as inclusive and never under the fewest (Default 7)")
+                .defineInRange("huntGoalMax", 7, 1, 64);
+        QUEST_STANDING_BASE = BUILDER
+                .comment("Standing a faction quest pays before its goal is counted. Paid above what the kills themselves are worth, because a giver asks on purpose (Default 20)")
+                .defineInRange("standingBase", 20, 0, 1000);
+        QUEST_STANDING_PER_GOAL = BUILDER
+                .comment("Standing added for each soldier a faction quest asks for, so longer work pays more (Default 5)")
+                .defineInRange("standingPerGoal", 5, 0, 1000);
+        QUEST_COIN_BASE = BUILDER
+                .comment("Least coin a fetch or hunt quest pays (Default 1)")
+                .defineInRange("coinBase", 1, 1, 64);
+        QUEST_COIN_SPREAD = BUILDER
+                .comment("How much the coin may vary on top of its base, before the goal's own share (Default 2)")
+                .defineInRange("coinSpread", 2, 1, 64);
+        QUEST_COIN_PER_GOAL = BUILDER
+                .comment("How many of the goal one coin of spread is worth, so harder work pays more: at 3, three more of an item is one more coin (Default 3)")
+                .defineInRange("coinPerGoal", 3, 1, 64);
+        QUEST_GOODS_CHANCE = BUILDER
+                .comment("How often a fetch or hunt quest pays goods as well as coin, from 0 to 1 (Default 0.6)")
+                .defineInRange("goodsChance", 0.6D, 0.0D, 1.0D);
+        QUEST_GOODS_MIN = BUILDER
+                .comment("Fewest of a good a quest pays when it pays one (Default 1)")
+                .defineInRange("goodsMin", 1, 1, 64);
+        QUEST_GOODS_MAX = BUILDER
+                .comment("Most of a good a quest pays when it pays one, never under the fewest (Default 3)")
+                .defineInRange("goodsMax", 3, 1, 64);
+        QUEST_GIVER_NAMES = BUILDER
+                .comment("The names a giver may be handed, joined to a title from the table below with a space. A giver",
+                        "is one name and one title drawn at random, so ten of each is a hundred travellers. Leave both",
+                        "tables empty to use the eight folk the mod ships, whose names are translated; fill either table",
+                        "and a giver is built from what is written here, in the one language a config file has.",
+                        "Defaults empty")
+                .defineListAllowEmpty("giverNames", List.of(), TolkienMobsConfig::validateLabel);
+        QUEST_GIVER_TITLES = BUILDER
+                .comment("The titles a giver may be handed, written the way they read after a name: `the Smith`,",
+                        "`of Rohan`, `the Caravan Guide`. An empty table adds nothing, so a pack that wants plain names",
+                        "can leave this one empty and fill only the names above. Defaults empty")
+                .defineListAllowEmpty("giverTitles", List.of(), TolkienMobsConfig::validateLabel);
+        BUILDER.pop();
+
         BUILDER.pop();
 
         BUILDER.comment("What this client does for itself. These are read by whichever client has the file,",
@@ -508,6 +637,135 @@ public class TolkienMobsConfig {
     private static int value(ModConfigSpec.IntValue setting, int fallback) {
         return SPEC.isLoaded() ? setting.get() : fallback;
     }
+
+    /** How often a giver in a country offers political work; a giver in no country never does. */
+    public static double questFactionChance() {
+        return value(QUEST_FACTION_CHANCE, 0.45D);
+    }
+
+    /** The items a fetch quest may ask for, by registry name. */
+    public static List<String> questFetchItems() {
+        return list(QUEST_FETCH_ITEMS, DEFAULT_FETCH);
+    }
+
+    /** The mobs a hunt quest may ask for, by entity id. */
+    public static List<String> questHuntMobs() {
+        return list(QUEST_HUNT_MOBS, DEFAULT_HUNT);
+    }
+
+    /** What a fetch or hunt quest may pay on top of its coin. */
+    public static List<String> questRewardItems() {
+        return list(QUEST_REWARD_ITEMS, DEFAULT_REWARDS);
+    }
+
+    /** The coin a quest pays. */
+    public static String questCoinItem() {
+        return value(QUEST_COIN_ITEM, "tolkienmobs:item_coin_gold");
+    }
+
+    public static int questFactionGoalMin() {
+        return value(QUEST_FACTION_GOAL_MIN, 3);
+    }
+
+    /** The top of a faction quest's goal, never under the bottom of it whatever the two say. */
+    public static int questFactionGoalMax() {
+        return Math.max(questFactionGoalMin(), value(QUEST_FACTION_GOAL_MAX, 6));
+    }
+
+    public static int questFetchGoalMin() {
+        return value(QUEST_FETCH_GOAL_MIN, 4);
+    }
+
+    public static int questFetchGoalMax() {
+        return Math.max(questFetchGoalMin(), value(QUEST_FETCH_GOAL_MAX, 12));
+    }
+
+    public static int questHuntGoalMin() {
+        return value(QUEST_HUNT_GOAL_MIN, 3);
+    }
+
+    public static int questHuntGoalMax() {
+        return Math.max(questHuntGoalMin(), value(QUEST_HUNT_GOAL_MAX, 7));
+    }
+
+    public static int questStandingBase() {
+        return value(QUEST_STANDING_BASE, 20);
+    }
+
+    public static int questStandingPerGoal() {
+        return value(QUEST_STANDING_PER_GOAL, 5);
+    }
+
+    public static int questCoinBase() {
+        return value(QUEST_COIN_BASE, 1);
+    }
+
+    public static int questCoinSpread() {
+        return value(QUEST_COIN_SPREAD, 2);
+    }
+
+    public static int questCoinPerGoal() {
+        return value(QUEST_COIN_PER_GOAL, 3);
+    }
+
+    public static double questGoodsChance() {
+        return value(QUEST_GOODS_CHANCE, 0.6D);
+    }
+
+    public static int questGoodsMin() {
+        return value(QUEST_GOODS_MIN, 1);
+    }
+
+    public static int questGoodsMax() {
+        return Math.max(questGoodsMin(), value(QUEST_GOODS_MAX, 3));
+    }
+
+    /** The names a giver may be handed, empty where the mod's own eight are to be used. */
+    public static List<String> questGiverNames() {
+        return entries(QUEST_GIVER_NAMES);
+    }
+
+    /** The titles a giver may be handed, empty where the mod's own eight are to be used. */
+    public static List<String> questGiverTitles() {
+        return entries(QUEST_GIVER_TITLES);
+    }
+
+    /**
+     * A table of ids: what the file holds once it is read, or the mod's own table before that. An empty
+     * list reads as the default, because a table a pack has emptied by accident should not leave a giver
+     * with no work to offer.
+     */
+    private static List<String> list(ModConfigSpec.ConfigValue<List<? extends String>> setting, List<String> fallback) {
+        List<String> read = entries(setting);
+        return read.isEmpty() ? fallback : read;
+    }
+
+    /** A table exactly as it was written, blank entries dropped. Empty is a real answer here. */
+    private static List<String> entries(ModConfigSpec.ConfigValue<List<? extends String>> setting) {
+        if (!SPEC.isLoaded()) return List.of();
+        List<String> read = new ArrayList<>();
+        for (String entry : setting.get()) {
+            if (entry != null && !entry.isBlank()) read.add(entry.trim());
+        }
+        return List.copyOf(read);
+    }
+
+    private static double value(ModConfigSpec.DoubleValue setting, double fallback) {
+        return SPEC.isLoaded() ? setting.get() : fallback;
+    }
+
+    private static String value(ModConfigSpec.ConfigValue<String> setting, String fallback) {
+        return SPEC.isLoaded() ? setting.get() : fallback;
+    }
+
+    private static boolean validateEntityName(final Object obj) {
+        return obj instanceof String name && Identifier.tryParse(name) != null;
+    }
+
+    private static boolean validateLabel(final Object obj) {
+        return obj instanceof String text && !text.isBlank();
+    }
+
 
     private static boolean validateItemName(final Object obj) {
         // 26.1 validates a spec's default as the spec is built, which happens while the mod is still

@@ -98,14 +98,14 @@ public final class QuestGivers {
             giver.snapTo(x + 0.5D, y, z + 0.5D, random.nextFloat() * 360.0F, 0.0F);
             // A giver holds work that is the player's to come back for, so it may not despawn.
             giver.setPersistenceRequired();
-            String nameKey = QuestPool.giverKey(random);
-            giver.setCustomName(Component.translatable(nameKey));
+            String label = QuestPool.giverLabel(random);
+            giver.setCustomName(Quest.label(label));
             giver.setCustomNameVisible(true);
             giver.addTag(GIVER_TAG);
             if (!level.addFreshEntity(giver)) continue;
 
             // The work remembers who offered it and where they stood, so the book can say both later.
-            Quest work = QuestPool.offer(random, employer(level, player)).withGiver(nameKey, giver.blockPosition());
+            Quest work = QuestPool.offer(random, employer(level, player)).withGiver(label, giver.blockPosition());
             QuestLedger.offer(player, giver.getUUID(), work);
             player.sendSystemMessage(Component.translatable("quest.tolkienmobs.giver_arrived")
                     .withStyle(ChatFormatting.GRAY));
