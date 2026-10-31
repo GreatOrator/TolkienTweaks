@@ -1,6 +1,7 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
+		"particle": "tolkienmobs:item/bottle_empty",
 		"0": "tolkienmobs:item/bottle_glass",
 		"1": "tolkienmobs:item/bottle_empty",
 		"2": "tolkienmobs:item/bottle_glass"
