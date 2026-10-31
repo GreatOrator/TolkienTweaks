@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Fixed
 
+- **The giver skins load.** A texture id on this version is the pack path itself, extension included - which is why the human variants are built as human1.png - so the three alliance skins asked the pack for a file with no extension at all, were reported missing and were drawn as the magenta checker. They name their .png now, and the renderer still falls back to the human's own clothes if a pack has no such art.
+
 - **A giver without its art keeps its own clothes.** The renderer now asks the pack whether the alliance skin is really there, once per file per reload, before drawing it: a missing file leaves an ordinary human in the clothes of its own folk instead of the magenta missing-texture checker, and a single line in the log names the file that was looked for.
 
 - **Two item models stop grumbling in the log.** The tobacco pipe and the fancy bottle were the only element-drawn models with no `particle` texture named, which the client warns about every time it loads models; both name one now, taken from the art they already draw with. Nothing about how they look changes.
