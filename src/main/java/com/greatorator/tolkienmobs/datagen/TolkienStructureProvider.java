@@ -108,7 +108,16 @@ public final class TolkienStructureProvider {
             site(TolkienStructures.RUIN_SMALL, TolkienBiomes.DAGORLAD, 4, 3, 193764832, Layout.single()),
             site(TolkienStructures.SPIDERTREE, TolkienBiomes.MIRKWOOD_SPOOKY, 12, 6, 193764833, Layout.single()),
             site(TolkienStructures.SWAMP_HAG_HUT, TolkienBiomes.MARSHES, 12, 6, 193764834, Layout.single()),
-            site(TolkienStructures.WARGPIT, TolkienBiomes.MORDOR, 16, 6, 193764835, Layout.top(2))
+            site(TolkienStructures.WARGPIT, TolkienBiomes.MORDOR, 16, 6, 193764835, Layout.top(2)),
+            // The campaign's ground. The spacing and separation are never used, because neither is in a
+            // structure set: they are registered so that a world builder can put one down with
+            // /place structure, and so that the campaign can build them where its story needs them.
+            new Definition(TolkienStructures.BOSS_CASTLE, "tolkienmobs:boss_castle",
+                    List.of(TolkienBiomes.MORDOR), 48, 12, 193764860, 0, Optional.empty(), false,
+                    Optional.of(Layout.single())),
+            new Definition(TolkienStructures.BOSS_ARENA, "tolkienmobs:boss_arena",
+                    List.of(TolkienBiomes.MORDOR), 48, 12, 193764861, 0, Optional.empty(), false,
+                    Optional.of(Layout.single()))
     );
 
     private TolkienStructureProvider() {}
@@ -181,8 +190,13 @@ public final class TolkienStructureProvider {
             if (TolkienVillageProvider.village(definition.key()).isPresent()) continue;
             // Old Shire ID stays loadable for saved chunks; warg pits are tower companions.
             // Ruins share one grid so the two sizes cannot generate too close together.
+            // The warg pits are tower companions, the ruins share one grid, and the two campaign
+            // builds are placed by the campaign rather than found: no set means no natural generation,
+            // which is what lets /place structure still name them.
             if (List.of(TolkienStructures.SHIRE_RUIN, TolkienStructures.WARGPIT,
-                    TolkienStructures.RUIN_LARGE, TolkienStructures.RUIN_SMALL).contains(definition.key())) continue;
+                    TolkienStructures.RUIN_LARGE, TolkienStructures.RUIN_SMALL,
+                    TolkienStructures.BOSS_CASTLE, TolkienStructures.BOSS_ARENA)
+                    .contains(definition.key())) continue;
             context.register(definition.setKey(), new StructureSet(structures.getOrThrow(definition.key()),
                     new RandomSpreadStructurePlacement(definition.spacing(), definition.separation(),
                             RandomSpreadType.LINEAR, definition.salt())));

@@ -45,6 +45,12 @@ public class TolkienStructures {
     public static final ResourceKey<Structure> SWAMP_HAG_HUT = key("ttmswamp_hag_hut");
     public static final ResourceKey<Structure> WARGPIT = key("ttmwargpit");
 
+        // The war's own ground: the fortress the Witch-king holds, and the arena beneath it. Both are
+        // registered so a scene can be staged - /place structure tolkienmobs:boss_castle - and both are
+        // kept out of natural generation, because where they stand is the campaign's business.
+    public static final ResourceKey<Structure> BOSS_CASTLE = key("boss_castle");
+    public static final ResourceKey<Structure> BOSS_ARENA = key("boss_arena");
+
     public static ResourceKey<Structure> key(String name) {
         return ResourceKey.create(Registries.STRUCTURE, Identifier.fromNamespaceAndPath(MODID, name));
     }
