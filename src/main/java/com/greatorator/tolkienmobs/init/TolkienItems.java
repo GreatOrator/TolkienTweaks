@@ -345,6 +345,9 @@ public class TolkienItems {
 
         // Tools
     public static final DeferredItem<Item> HYPE_HORN = ITEMS.registerItem("hype_horn", properties -> new HypeHornItem(properties), () -> new Item.Properties().stacksTo(1));
+    // The war horn: one note, and fear lets go of everyone who hears it. Where the hype horn
+    // celebrates a fight that is over, this one is blown to survive the one that is not.
+    public static final DeferredItem<Item> WAR_HORN = ITEMS.registerItem("war_horn", properties -> new WarHornItem(properties).setHasLore(), () -> new Item.Properties().stacksTo(1));
     public static final DeferredItem<DwarvenHammerItem> DWARVEN_HAMMER = ITEMS.registerItem("dwarven_hammer", properties -> new DwarvenHammerItem(TolkienToolMaterials.MITHRIL, 8F, -3.0F, properties));
 
     public static final DeferredItem<TolkienSwordItem> SWORD_MITHRIL = ITEMS.registerItem("sword_mithril", properties -> new TolkienSwordItem(TolkienToolMaterials.MITHRIL, 8F, -1.0F, properties));

@@ -36,6 +36,7 @@ public class TolkienSounds {
 
         // Items
     public static final DeferredHolder<SoundEvent, SoundEvent> HYPE_HORN = createEvent("item.tolkienmobs.hype_horn");
+    public static final DeferredHolder<SoundEvent, SoundEvent> WAR_HORN = createEvent("item.tolkienmobs.war_horn");
 
         // Ambient
     public static final DeferredHolder<SoundEvent, SoundEvent> ARDA_PORTAL = createEvent("ambient.tolkienmobs.arda_portal");

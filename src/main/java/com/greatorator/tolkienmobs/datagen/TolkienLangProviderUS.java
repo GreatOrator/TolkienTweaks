@@ -213,6 +213,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.addTools("ammolite", "Ammolite");
             this.addItem(TolkienItems.DWARVEN_HAMMER, "Dwarven Mining Hammer");
             this.addItem(TolkienItems.HYPE_HORN, "Hype Horn");
+            this.addItemWithLore(TolkienItems.WAR_HORN.get(), "War Horn", "One long note, and every fear within earshot lets go");
             this.addItem(TolkienItems.HELMET_MITHRIL, "Mithril Helmet");
             this.addItem(TolkienItems.CHESTPLATE_MITHRIL, "Mithril Chestplate");
             this.addItem(TolkienItems.LEGGINGS_MITHRIL, "Mithril Leggings");
@@ -521,6 +522,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.addSound("ambient", "pathsofthedead", "The way is shut, and the dead keep it");
             this.addSound("ambient", "arda_portal", "Portal to Arda beckons");
             this.addSound("item", "hype_horn", "Celebrating victory");
+            this.addSound("item", "war_horn", "A war horn sounds");
             this.addSound("mob", "coin_trader", "A Wild Coin Trader appears!");
             this.addSound("mob", "fellbeast_wind", "The beast dives.");
 
