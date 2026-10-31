@@ -389,7 +389,9 @@ body, a quest now remembers the id of the NPC that handed it out, not only the n
 **The herald stands in every hall, with nothing to say yet.** Each hall carries a third body, the herald,
 cut by `tools/HallVariants.java` beside the warden and the envoy: a human in all three halls, because the
 skin he wears is the quest-giver art of his alliance, tagged as a giver, as the alliance of his hall and
-as the campaign, so his clothes and his gold mark are right from the first load. What is still owed is the
+as the campaign, so his clothes and his gold mark are right from the first load. Unlike the warden and the envoy he is not
+frozen: the hall gives him a home area - the middle of the room, six blocks out - and the entity pulls
+any walk target that leaves it back inside, so he walks about a room he cannot leave. What is still owed is the
 gate. Nothing should appear over his head until the player is a **stranger** to that alliance - the first
 rank earned above outsider, 100 points of ordinary hall work - and then a gold **!** appears and the
 campaign has somewhere to begin. A rank rather than a page, because the line should open for someone who

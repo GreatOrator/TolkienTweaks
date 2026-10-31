@@ -10,6 +10,8 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -18,6 +20,7 @@ import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 public class HumanEntity extends TolkienVillagerEntity implements GeoEntity {
@@ -81,7 +84,47 @@ public class HumanEntity extends TolkienVillagerEntity implements GeoEntity {
             if (skin != this.giverSkin()) {
                 this.setGiverSkin(skin);
             }
+            // A hall gives its giver a home area, and a room with a body walking about it reads as a
+            // place rather than a display case.
+            if (this.hasHome()) {
+                this.keepInsideHome();
+            }
         }
+    }
+
+    /**
+     * Keeps a body that has been given a home area inside it. A villager stroll is written for a village
+     * and not for a room: with no meeting point it walks toward the nearest one, which from a hall means
+     * out of the door and off across the country. Rather than take the stroll away, the target it asks for
+     * is pulled back inside the home circle, so the walk keeps its direction and the body keeps its room;
+     * one that has already stepped outside is sent back to the middle.
+     */
+    private void keepInsideHome() {
+        Vec3 middle = Vec3.atBottomCenterOf(this.getHomePosition());
+        var wanted = this.getBrain().getMemory(MemoryModuleType.WALK_TARGET);
+        if (wanted.isPresent()) {
+            Vec3 asked = wanted.get().getTarget().currentPosition();
+            if (!this.isWithinHome(asked)) {
+                this.getBrain().setMemory(MemoryModuleType.WALK_TARGET,
+                        new WalkTarget(this.pulledInside(middle, asked), 0.5F, 1));
+            }
+        }
+        if (!this.isWithinHome()) {
+            this.getBrain().setMemory(MemoryModuleType.WALK_TARGET, new WalkTarget(middle, 0.6F, 1));
+        }
+    }
+
+    /** A point on the way to the target, stopped short of the home circle edge. */
+    private Vec3 pulledInside(Vec3 middle, Vec3 target) {
+        double dx = target.x - middle.x;
+        double dz = target.z - middle.z;
+        double distance = Math.sqrt(dx * dx + dz * dz);
+        double limit = Math.max(1.0D, this.getHomeRadius() - 1.0D);
+        if (distance <= limit || distance < 1.0E-4D) {
+            return target;
+        }
+        double scale = limit / distance;
+        return new Vec3(middle.x + dx * scale, target.y, middle.z + dz * scale);
     }
 
     @Override

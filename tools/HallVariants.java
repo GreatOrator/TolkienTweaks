@@ -61,6 +61,15 @@ public class HallVariants {
     static final double HERALD_Y = 1.0D;
     static final double HERALD_Z = 6.5D;
     /** Yaw 270 faces east, into the bench it stands at. */
+    /**
+     * The home area a hall giver is kept inside: the middle of the room, six blocks out. The entity
+     * clamps any walk target that leaves it, so the herald walks about the hall and cannot reach the
+     * door - the walls are at x=1 and x=14 and the openings at z=1 and z=13, all outside this circle.
+     */
+    static final int HOME_X = 7;
+    static final int HOME_Y = 1;
+    static final int HOME_Z = 7;
+    static final int HALL_RADIUS = 6;
     static final float HERALD_YAW = 270.0F;
 
     record Variant(String file, String stairs, String warden, String wardenName, String tag, int alliance, String vendorName, String heraldName) {}
@@ -266,7 +275,10 @@ public class HallVariants {
                 variant.tag().replace("faction_envoy", "quest_giver"), "tolkienmobs:campaign"));
         nbt.put("CustomName", variant.heraldName());
         nbt.put("PersistenceRequired", (byte) 1);
-        nbt.put("NoAI", (byte) 1);
+        // No NoAI: a hall is a room to walk about in, not a plinth to stand on. The home area is what
+        // keeps the walk inside, and the entity enforces it on every tick.
+        nbt.put("home_pos", List.of(HOME_X, HOME_Y, HOME_Z));
+        nbt.put("home_radius", HALL_RADIUS);
         nbt.put("Invulnerable", (byte) 1);
         nbt.put("Silent", (byte) 1);
         nbt.put("Rotation", List.of(HERALD_YAW, 0.0F));
