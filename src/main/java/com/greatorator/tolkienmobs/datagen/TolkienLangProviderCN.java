@@ -821,6 +821,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("quest.tolkienmobs.hunt", "杀死 %s 只%s");
         this.add("quest.tolkienmobs.progress", "%s / %s");
         this.add("quest.tolkienmobs.reward.standing", "奖励：%s 点%s声望");
+        this.add("quest.tolkienmobs.reward.standing.all", "与三国各 %s 点声望。");
         this.add("quest.tolkienmobs.reward.items", "奖励：%s");
         this.add("quest.tolkienmobs.accepted", "你接下了任务：%s");
         this.add("quest.tolkienmobs.done", "任务完成 —— 交给任意任务发布者。");
@@ -847,6 +848,9 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("screen.tolkienmobs.quests.story", "主线故事");
         this.add("screen.tolkienmobs.quests.bounties.empty", "手上还没有赏金任务 —— 外面的发布者手里有活。");
         this.add("screen.tolkienmobs.quests.story.empty", "主线故事暂时没有进行中的步骤。");
+        this.add("screen.tolkienmobs.quests.campaign.done", "三线之战已经结束。");
+        this.add("quest.tolkienmobs.herald.waiting", "我这一线已经了结，其余两线还没有走完。");
+        this.add("quest.tolkienmobs.herald.settled", "三条战线都安静了，戒灵不会再回来。再没有什么要托付给你了。");
         this.add("screen.tolkienmobs.quests.carried", "手上的任务");
         this.add("screen.tolkienmobs.quests.abandon.confirm", "放弃此任务？");
         this.add("command.tolkienmobs.quest.give", "给了 %s %s 个任务。");

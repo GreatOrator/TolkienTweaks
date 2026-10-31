@@ -53,7 +53,7 @@ public final class QuestMarkRenderer {
         Alliance herald = heraldAlliance(entity);
         if (herald != null && !hasEarOf(herald)) return;
         if (mark == null) {
-            if (herald == null || Campaign.clientStage(herald) >= Campaign.PAGES) return;
+            if (herald == null || !Campaign.clientHasWork(herald)) return;
             mark = new QuestLedger.Mark(QuestLedger.Mark.State.AVAILABLE, true);
         }
         Component name = event.getContent();

@@ -349,8 +349,15 @@ public final class QuestLedger extends SavedData {
                 .withStyle(ChatFormatting.GREEN));
         player.level().playSound(null, player.blockPosition(), SoundEvents.PLAYER_LEVELUP,
                 SoundSource.PLAYERS, 0.7F, 1.2F);
-        // A campaign page moves its front on when it is settled, and only then.
-        Campaign.settle(player, quest);
+        // A campaign page moves its front on when it is settled, and only then. The Rider is the
+        // campaign's own page and names no single employer, because all three countries asked for him,
+        // so every one of them pays its price.
+        boolean rider = Campaign.settle(player, quest);
+        if (rider && quest.standing() > 0) {
+            for (Alliance alliance : Alliance.values()) {
+                FactionStandings.adjust(player, alliance, quest.standing());
+            }
+        }
     }
 
     private static int countOf(ServerPlayer player, Quest quest) {

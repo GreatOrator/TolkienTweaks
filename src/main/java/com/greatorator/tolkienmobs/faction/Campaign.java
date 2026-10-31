@@ -1,14 +1,12 @@
 package com.greatorator.tolkienmobs.faction;
 
 import com.greatorator.tolkienmobs.init.TolkienEntities;
-import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.network.manager.CampaignSyncManager;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -37,23 +35,25 @@ import java.util.UUID;
  * it against the page this front handed out, so a page dropped from the book, or a command clearing it,
  * leaves the front exactly where it was.
  * <p>
+ * The Rider is the one page that is not a front's. He belongs to nobody and everybody fears him, so all
+ * three countries ask for him together, and only once all three lines are settled: one step for the
+ * campaign as a whole, kept in a fourth slot beside the three fronts. That is also what gives the thing
+ * an ending - a campaign whose every page belongs to a front has no way to be over.
+ * <p>
  * The stage is synced to its owner because the mark over the herald's head is drawn on the client, and
- * that mark has to stop when a front has no more pages to give.
+ * that mark has to stop when nothing is left to ask.
  */
 public final class Campaign extends SavedData {
     private static final String SAVE_DATA_NAME = "campaign";
     /**
      * What each page of a front asks for, in order: soldiers of one rival army, then soldiers of the
-     * other, and then the Rider himself. The list is the line - a stage past its end is a front with
-     * nothing left to hand over - so writing one more page here is all the campaign needs to go on, and
-     * a front has as many pages as this list is long. A page is a kind as well as a size, so the line can
-     * change shape without new machinery: the ledger settles a hunt as readily as it settles a kill of
-     * the soldiers a country tag names.
+     * other. The list is the line - a stage past its end is a front with nothing left to hand over - so
+     * writing one more page here is all the campaign needs to go on, and a front has as many pages as
+     * this list is long.
      */
     private static final List<Page> PAGE_LINE = List.of(
             new Page(Quest.Kind.FACTION, 6, 60),
-            new Page(Quest.Kind.FACTION, 12, 120),
-            new Page(Quest.Kind.HUNT, 1, 200));
+            new Page(Quest.Kind.FACTION, 12, 120));
 
     /** One page of a front's line: what it asks of the player, and what the country pays for it. */
     private record Page(Quest.Kind kind, int goal, int standing) {
@@ -62,8 +62,20 @@ public final class Campaign extends SavedData {
     /** How many pages a front has. */
     public static final int PAGES = PAGE_LINE.size();
 
+    /**
+     * The slot the campaign's own page lives in, one past the three fronts. It is a stage like any
+     * other - 0 until the Rider is paid off - so it needs no machinery of its own.
+     */
+    private static final int RIDER_SLOT = Alliance.values().length;
+    /**
+     * What the Rider is worth. All three countries pay it, each in full: they were all afraid of him
+     * and all wanted him gone, and none of them sent the player alone.
+     */
+    private static final int RIDER_STANDING = 200;
+
     private static final Map<UUID, Front[]> PROGRESS = new HashMap<>();
     private static final int[] CLIENT = new int[Alliance.values().length];
+    private static int clientRider;
 
     /** One player's place in one front: how far it has got, and the page it is holding out. */
     public record Front(int stage, @Nullable Quest handed) {
@@ -91,10 +103,34 @@ public final class Campaign extends SavedData {
         return CLIENT[alliance.ordinal()];
     }
 
+    /** The local player's stage on the campaign's own page: 0 while the Rider is still out there. */
+    public static int clientRider() {
+        return clientRider;
+    }
+
+    /** Whether all three fronts are settled on the client's last-synced copy. */
+    public static boolean clientSealed() {
+        for (Alliance alliance : Alliance.values()) {
+            if (CLIENT[alliance.ordinal()] < PAGES) return false;
+        }
+        return true;
+    }
+
+    /**
+     * Whether this herald still has something to say to the player, which is what his mark means: a front
+     * with pages left, or the campaign's own page once every front is settled and the Rider is not yet
+     * behind the player.
+     */
+    public static boolean clientHasWork(Alliance alliance) {
+        if (CLIENT[alliance.ordinal()] < PAGES) return true;
+        return clientSealed() && clientRider == 0;
+    }
+
     public static void acceptClient(int[] stages) {
         for (Alliance alliance : Alliance.values()) {
             CLIENT[alliance.ordinal()] = alliance.ordinal() < stages.length ? stages[alliance.ordinal()] : 0;
         }
+        clientRider = stages.length > RIDER_SLOT ? stages[RIDER_SLOT] : 0;
     }
 
     public static int stage(ServerPlayer player, Alliance alliance) {
@@ -102,25 +138,56 @@ public final class Campaign extends SavedData {
         return row(player)[alliance.ordinal()].stage();
     }
 
+    /** Whether every front has been carried to the end of its line. */
+    public static boolean sealed(ServerPlayer player) {
+        ensureLoaded(player.level());
+        return sealed(row(player));
+    }
+
+    /** Whether the campaign's own page is behind the player, which is the campaign finished. */
+    public static boolean done(ServerPlayer player) {
+        ensureLoaded(player.level());
+        return row(player)[RIDER_SLOT].stage() > 0;
+    }
+
     /**
-     * The page the herald of an alliance is holding for this player, or null once the front is written
-     * out. The giver is left blank here and filled in where it is handed over, so the page itself is the
-     * same for every player.
+     * The page this alliance's herald is holding for this player, or null once there is nothing left to
+     * ask. A herald whose own front is settled still has something to give while the other two fight, and
+     * once all three are settled any of them hands over the campaign's last page - whoever the player
+     * reaches first, since it is the same quarry.
+     * <p>
+     * The giver is left blank here and filled in where it is handed over, so the page itself is the same
+     * for every player.
      */
     @Nullable
     public static Quest page(ServerPlayer player, Alliance alliance) {
         ensureLoaded(player.level());
-        int stage = row(player)[alliance.ordinal()].stage();
-        if (stage >= PAGES) return null;
-        Page page = PAGE_LINE.get(stage);
-        // The soldier pages name a different rival each, so the line alternates whose soldiers it wants
-        // rather than asking for the same ones twice running.
-        List<Alliance> rivals = alliance.rivals();
-        String target = page.kind() == Quest.Kind.HUNT
-                ? riderId()
-                : rivals.get(stage % rivals.size()).id();
-        return new Quest(page.kind(), target, page.goal(), 0, alliance.id(), page.standing(), List.of(),
+        Front[] row = row(player);
+        int stage = row[alliance.ordinal()].stage();
+        if (stage < PAGES) {
+            Page page = PAGE_LINE.get(stage);
+            // The soldier pages name a different rival each, so the line alternates whose soldiers it
+            // wants rather than asking for the same ones twice running.
+            List<Alliance> rivals = alliance.rivals();
+            String target = rivals.get(stage % rivals.size()).id();
+            return new Quest(page.kind(), target, page.goal(), 0, alliance.id(), page.standing(), List.of(),
+                    "", BlockPos.ZERO, Quest.NOBODY, true);
+        }
+        return sealed(row) && row[RIDER_SLOT].stage() == 0 ? riderPage() : null;
+    }
+
+    /**
+     * The Rider, as a page: a hunt of one, priced by all three countries together. Asked of the registry
+     * rather than written out, so a page cannot name a mob the world does not have - a hunt whose target
+     * is in no registry can never be finished, and the campaign would sit on it for good.
+     */
+    private static Quest riderPage() {
+        return new Quest(Quest.Kind.HUNT, riderId(), 1, 0, "", RIDER_STANDING, List.of(),
                 "", BlockPos.ZERO, Quest.NOBODY, true);
+    }
+
+    private static String riderId() {
+        return BuiltInRegistries.ENTITY_TYPE.getKey(TolkienEntities.ENTITY_TTM_NAZGUL.get()).toString();
     }
 
     // ---- handing it over and settling it ----
@@ -128,36 +195,53 @@ public final class Campaign extends SavedData {
     /** Notes the page that was really handed over, so settling it can be told apart from any other. */
     public static void noteHanded(ServerPlayer player, Alliance alliance, Quest page) {
         Front[] row = row(player);
-        row[alliance.ordinal()] = new Front(row[alliance.ordinal()].stage(), page);
+        int slot = slotOf(page, alliance);
+        row[slot] = new Front(row[slot].stage(), page);
         store(player).setDirty();
     }
 
     /**
-     * Moves a front on when the page it handed out is paid. The ledger calls this from the one place a
-     * quest is settled, which is what keeps a page dropped, abandoned or cleared from counting as done.
+     * Whether a page is the campaign's own rather than one of a front's. Read off its kind and target
+     * rather than by equality, because the copy the player carries has advanced past the copy noted here
+     * as soon as a blow lands.
      */
-    public static void settle(ServerPlayer player, Quest quest) {
-        if (!(player.level() instanceof ServerLevel)) return;
+    public static boolean isCampaignPage(ServerPlayer player, Quest quest) {
+        ensureLoaded(player.level());
+        Front rider = row(player)[RIDER_SLOT].handed() == null ? null : row(player)[RIDER_SLOT];
+        return rider != null && quest.kind() == rider.handed().kind()
+                && quest.target().equals(rider.handed().target());
+    }
+
+    /**
+     * Moves a front on when the page it handed out is paid, and answers whether the page settled was the
+     * campaign's own rather than a front's - the ledger pays that one differently, because it has no
+     * single employer. The ledger calls this from the one place a quest is settled, which is what keeps a
+     * page dropped, abandoned or cleared from counting as done.
+     */
+    public static boolean settle(ServerPlayer player, Quest quest) {
+        if (!(player.level() instanceof ServerLevel)) return false;
         ensureLoaded(player.level());
         Front[] row = PROGRESS.get(player.getUUID());
-        if (row == null) return;
+        if (row == null) return false;
         for (Alliance alliance : Alliance.values()) {
             Front front = row[alliance.ordinal()];
             if (front.handed() == null || !front.handed().equals(quest)) continue;
             row[alliance.ordinal()] = new Front(front.stage() + 1, null);
             store(player).setDirty();
             sync(player);
-            return;
+            return false;
         }
+        Front rider = row[RIDER_SLOT];
+        if (rider.handed() == null || !rider.handed().equals(quest)) return false;
+        row[RIDER_SLOT] = new Front(1, null);
+        store(player).setDirty();
+        sync(player);
+        return true;
     }
 
-    /**
-     * The Rider, as the registry names it. Asked of the registry rather than written out, so a page
-     * cannot name a mob the world does not have: a hunt whose target is in no registry can never be
-     * finished, and the front would sit on that page for good.
-     */
-    private static String riderId() {
-        return BuiltInRegistries.ENTITY_TYPE.getKey(TolkienEntities.ENTITY_TTM_NAZGUL.get()).toString();
+    /** Which slot of a player's row a page belongs to: the campaign's own, or the herald's front. */
+    private static int slotOf(Quest page, Alliance alliance) {
+        return page.kind() == Quest.Kind.HUNT ? RIDER_SLOT : alliance.ordinal();
     }
 
     // ---- plumbing ----
@@ -166,7 +250,15 @@ public final class Campaign extends SavedData {
         ensureLoaded(player.level());
         Front[] row = row(player);
         PacketDistributor.sendToPlayer(player,
-                new CampaignSyncManager(row[0].stage(), row[1].stage(), row[2].stage()));
+                new CampaignSyncManager(row[0].stage(), row[1].stage(), row[2].stage(),
+                        row[RIDER_SLOT].stage()));
+    }
+
+    private static boolean sealed(Front[] row) {
+        for (Alliance alliance : Alliance.values()) {
+            if (row[alliance.ordinal()].stage() < PAGES) return false;
+        }
+        return true;
     }
 
     private static Front[] row(Player player) {
@@ -174,7 +266,8 @@ public final class Campaign extends SavedData {
     }
 
     private static Front[] blank() {
-        return new Front[]{new Front(0, null), new Front(0, null), new Front(0, null)};
+        return new Front[]{new Front(0, null), new Front(0, null), new Front(0, null),
+                new Front(0, null)};
     }
 
     private static Campaign store(ServerPlayer player) {
@@ -197,7 +290,8 @@ public final class Campaign extends SavedData {
     private static Campaign fromEntries(List<Entry> entries) {
         PROGRESS.clear();
         for (Entry entry : entries) {
-            PROGRESS.put(entry.player(), new Front[]{entry.west(), entry.east(), entry.harad()});
+            PROGRESS.put(entry.player(), new Front[]{entry.west(), entry.east(), entry.harad(),
+                    entry.rider()});
         }
         return new Campaign();
     }
@@ -206,17 +300,18 @@ public final class Campaign extends SavedData {
         List<Entry> entries = new ArrayList<>(PROGRESS.size());
         for (Map.Entry<UUID, Front[]> row : PROGRESS.entrySet()) {
             Front[] fronts = row.getValue();
-            entries.add(new Entry(row.getKey(), fronts[0], fronts[1], fronts[2]));
+            entries.add(new Entry(row.getKey(), fronts[0], fronts[1], fronts[2], fronts[RIDER_SLOT]));
         }
         return entries;
     }
 
-    public record Entry(UUID player, Front west, Front east, Front harad) {
+    public record Entry(UUID player, Front west, Front east, Front harad, Front rider) {
         public static final Codec<Entry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 UUIDUtil.CODEC.fieldOf("player").forGetter(Entry::player),
                 Front.CODEC.optionalFieldOf("west", new Front(0, null)).forGetter(Entry::west),
                 Front.CODEC.optionalFieldOf("east", new Front(0, null)).forGetter(Entry::east),
-                Front.CODEC.optionalFieldOf("harad", new Front(0, null)).forGetter(Entry::harad)
+                Front.CODEC.optionalFieldOf("harad", new Front(0, null)).forGetter(Entry::harad),
+                Front.CODEC.optionalFieldOf("rider", new Front(0, null)).forGetter(Entry::rider)
         ).apply(instance, Entry::new));
     }
 }

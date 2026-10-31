@@ -24,6 +24,8 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- **The campaign has an ending: the Rider is everybody's page.** A front is two soldier pages now, and the Nazgûl is not the last of them - all three countries ask for him together once every line is settled, any herald hands him over, and all three pay the 200 standing between them, since he was feared by all and sent after by none of them alone. Settling him writes the war's end into the quest book's story leaf, and a herald with no page left says where the war stands instead of idling.
+
 - **A third page on every front: the Rider.** A front no longer only counts soldiers. Page 0 asks for six of one rival's, page 1 for twelve of the other's, and page 2 asks for one Nazgûl for two hundred standing, so the line changes kind as it goes. Standing is now paid for any kind of page rather than faction work alone, which is what lets a story page be a hunt, and the Rider is named from the registry so a page can never ask for a mob this world does not have.
 
 - **A second page on every front, and the campaign line is a table now.** Page 0 asks for six soldiers of one rival army for sixty standing; page 1 asks for twelve of the other rival's for a hundred and twenty. `Campaign.PAGE_GOALS` is the line, so a front has as many pages as that list is long and adding one is a single number. The ledger's courage row also sits with the countries now, one row-spacing under Harad, instead of pinned to the foot of the leaf.

@@ -8,24 +8,25 @@ import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 /**
- * Carries a player's three campaign stages from the server to that player alone. The mark over a hall
- * herald is drawn on the client, and it has to know when a front has nothing left to give, so the stage
- * travels with the same syncs the quest book does.
+ * Carries a player's three campaign stages, and the campaign's own page, from the server to that player
+ * alone. The mark over a hall herald is drawn on the client, and it has to know when nothing is left to
+ * give, so the stages travel with the same syncs the quest book does.
  */
-public record CampaignSyncManager(int west, int east, int harad) implements CustomPacketPayload {
+public record CampaignSyncManager(int west, int east, int harad, int rider) implements CustomPacketPayload {
     public static final Type<CampaignSyncManager> TYPE = new Type<>(
             Identifier.fromNamespaceAndPath("tolkienmobs", "campaign_sync"));
     public static final StreamCodec<RegistryFriendlyByteBuf, CampaignSyncManager> STREAM_CODEC =
             CustomPacketPayload.codec(CampaignSyncManager::write, CampaignSyncManager::new);
 
     public CampaignSyncManager(RegistryFriendlyByteBuf buf) {
-        this(buf.readVarInt(), buf.readVarInt(), buf.readVarInt());
+        this(buf.readVarInt(), buf.readVarInt(), buf.readVarInt(), buf.readVarInt());
     }
 
     public void write(RegistryFriendlyByteBuf buf) {
         buf.writeVarInt(west);
         buf.writeVarInt(east);
         buf.writeVarInt(harad);
+        buf.writeVarInt(rider);
     }
 
     @Override
@@ -34,6 +35,6 @@ public record CampaignSyncManager(int west, int east, int harad) implements Cust
     }
 
     public static void handle(CampaignSyncManager payload, IPayloadContext context) {
-        Campaign.acceptClient(new int[]{payload.west(), payload.east(), payload.harad()});
+        Campaign.acceptClient(new int[]{payload.west(), payload.east(), payload.harad(), payload.rider()});
     }
 }

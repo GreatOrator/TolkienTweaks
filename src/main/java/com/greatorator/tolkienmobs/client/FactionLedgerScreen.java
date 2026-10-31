@@ -22,6 +22,7 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.greatorator.tolkienmobs.faction.Campaign;
 
 /**
  * The book: an open ledger of leather and parchment, two leaves at a time.
@@ -427,8 +428,14 @@ public class FactionLedgerScreen extends Screen {
             }
         }
         if (story == null) {
+            // A finished campaign is the one thing an empty leaf must not be left saying, so the leaf
+            // says it is over instead.
+            boolean won = Campaign.clientRider() > 0;
             drawWrapped(graphics, x, bodyTop() + 8, w,
-                    Component.translatable("screen.tolkienmobs.quests.story.empty"), INK_DIM, 5);
+                    Component.translatable(won
+                            ? "screen.tolkienmobs.quests.campaign.done"
+                            : "screen.tolkienmobs.quests.story.empty"),
+                    won ? INK_GOLD : INK_DIM, 5);
             return;
         }
         graphics.item(iconOf(story), x, bodyTop());

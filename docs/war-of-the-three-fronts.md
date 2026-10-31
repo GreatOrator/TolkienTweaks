@@ -398,8 +398,9 @@ outsider, 100 points of ordinary hall work - and a mark drawn for anyone below i
 earned a gold **!** stands there, and right-clicking hands over the front page: six soldiers of a rival
 army for sixty standing, which is page 0 of `faction/Campaign`. A rank rather than a page, because the
 line should open for someone who has already done the country a favour, not for whoever walks through the
-door first. With only page 0 written, a player who has settled it is told there is no more work, which is
-the truth.
+door first. Once his own front is settled he does not offer work he does not have: he says where the war
+stands - the other fronts still fighting, or the Rider not yet behind the player - and says plainly that
+nothing is left to ask once the Rider is.
 
 The other two are frozen at their tables on purpose, and their life is drawn instead of walked:
 `entity/util/TableIdle` turns each of them slowly about the place it was set, lifts its head from the work
@@ -437,12 +438,14 @@ world is protected on its next load.
 
 The gap was the same in every row, and the smallest part of it is closed: **the mod has a stage counter**
 now. `faction/Campaign` keeps how far each player has got on each of the three fronts, saved with the
-world and synced to its owner, and the first two pages of each front are written - six soldiers of a
-rival army for sixty standing, twelve of the other rival's for a hundred and twenty, and then the
-Rider himself for two hundred. It is paid through the ordinary ledger, and that is also what advances it:
-ledger settles that exact page, so one dropped or cleared from the book leaves the front where it was.
-What that unlocks is the rest of the table - every page above is ordinary work at a numbered stage - and
-the Rider, because a page number is what lets the same Nazgul be met twice.
+world and synced to its owner, and each front's line is written - six soldiers of one rival army for
+sixty standing, then twelve of the other rival's for a hundred and twenty. The line stops there: the
+Rider is the campaign's own page rather than a front's, because he was nobody's rival and everybody's
+fear, so any herald hands him over once all three fronts are settled and all three countries pay his
+two hundred between them. It is paid through the ordinary ledger, and that, too, is what advances it:
+the ledger settles the exact page handed out, so one dropped or cleared from the book leaves the front
+where it was. What that unlocks is the rest of the table - every page above is ordinary work at a
+numbered stage - and an ending, because a page can belong to the campaign and not to a front.
 
 ---
 
