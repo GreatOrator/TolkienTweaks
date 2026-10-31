@@ -29,6 +29,7 @@ import com.greatorator.tolkienmobs.network.CommonProxy;
 import com.greatorator.tolkienmobs.network.PacketHandler;
 import com.greatorator.tolkienmobs.network.manager.FactionStandingsSyncManager;
 import com.greatorator.tolkienmobs.network.manager.QuestAbandonManager;
+import com.greatorator.tolkienmobs.network.manager.CourageSyncManager;
 import com.greatorator.tolkienmobs.network.manager.QuestSyncManager;
 import com.greatorator.tolkienmobs.network.manager.SpawnFallenLeafFromPacket;
 import com.greatorator.tolkienmobs.particle.FellBeastBreathParticle;
@@ -223,6 +224,7 @@ public class TolkienMobsMain {
         registrar.playToClient(SpawnFallenLeafFromPacket.TYPE, SpawnFallenLeafFromPacket.STREAM_CODEC, SpawnFallenLeafFromPacket::handle);
         registrar.playToClient(FactionStandingsSyncManager.TYPE, FactionStandingsSyncManager.STREAM_CODEC, FactionStandingsSyncManager::handle);
         registrar.playToClient(QuestSyncManager.TYPE, QuestSyncManager.STREAM_CODEC, QuestSyncManager::handle);
+        registrar.playToClient(CourageSyncManager.TYPE, CourageSyncManager.STREAM_CODEC, CourageSyncManager::handle);
         registrar.playToServer(QuestAbandonManager.TYPE, QuestAbandonManager.STREAM_CODEC, QuestAbandonManager::handle);
     }
 
