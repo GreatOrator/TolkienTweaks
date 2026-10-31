@@ -23,6 +23,7 @@ mechanic can be built for the page rather than guessed at.
 
 The West's front. The country is Eriador's roads and the Shire's edges: quiet ground, and that is the
 point, because the first thing the war does is make quiet ground frightening.
+
 **Outline.**
 
 - **1. The wrongness.** Maelgrin sends you out to a late scout. You find a cold in a ditch and
@@ -149,6 +150,7 @@ the one mechanic Act I cannot be built without.
 
 The East's front, and the act where the fear changes its grip. The ground: Mirkwood's eaves, the
 Dagorlad, and the road the enemy's smiths use to feed Mordor.
+
 **Outline.**
 
 - **1. The wagons.** Guthlac: forty-one wagons east, coming back empty but not light. You break the
@@ -247,6 +249,24 @@ The South's front, and the end of it. Two builds the mod now carries: the fortre
 the arena beneath it (`boss_arena`). This act is where the courage ladder pays out — at Unbowed the
 `dread_aura` is refused outright, and a player who has done the work walks into the arena and simply
 does not flinch.
+
+**Outline.**
+
+- **1. The muster.** Three tokens, three alliances, one gate. This is the only stage in the war where
+  standing with everybody pays, and a player who has burned one alliance has to buy its token back.
+  *Cost:* the politics of the whole campaign, cashed in.
+- **2. The court.** Three Riders in the fortress, staggered, and the horn is the answer to each. The
+  Fearless rung lands between the second and the third, so the third is fought with the fear already
+  refused.
+- **3. The floor of sand.** The arena, the `dread_aura`, and a Witch-king who tells you he has seen to
+  it that you can keep your feet - because he wants you standing for this. At Unbowed the aura is
+  refused outright, and the joke is on him. *Pays:* the Unbowed rung, the war end.
+- **4. (Not yet written.) The accounting.** What happened to the two fronts you did not stand on.
+  Every campaign that ends on one battlefield owes the other two a sentence.
+
+**The open question for this act:** three Riders in one build is a lot of boss for one room. The
+alternative is one Rider per level of the fortress as a descent - court, gallery, keep - which is
+more work to stage but gives the act its own shape instead of a second arena.
 
 ### 10. The Last Muster — the player's own alliance warden
 
