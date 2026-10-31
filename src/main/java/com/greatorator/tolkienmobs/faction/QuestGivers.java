@@ -111,9 +111,9 @@ public final class QuestGivers {
             giver.setCustomName(Quest.label(label));
             giver.setCustomNameVisible(true);
             giver.addTag(GIVER_TAG);
-            // The alliance is read once: it decides the work offered and the clothes the giver wears.
-            Alliance employer = employer(player);
-            giver.addTag((employer == null ? Alliance.WEST : employer).giverTag());
+            // The alliance is read once, and only decides the work this giver holds out: the clothes
+            // belong to the giver standing in a hall, which carries an alliance tag of its own.
+            Alliance employer = employer(player);
             makeSafe(giver);
             if (!level.addFreshEntity(giver)) continue;
 
@@ -217,7 +217,7 @@ public final class QuestGivers {
     public static int giverSkinOf(Entity entity) {
         if (!isGiver(entity)) return 0;
         Alliance alliance = factionOf(entity);
-        return (alliance == null ? Alliance.WEST : alliance).ordinal() + 1;
+        return alliance == null ? 0 : alliance.ordinal() + 1;
     }
 
     /** Whether the work a giver holds is the mainline's, which the mark over its head draws in gold. */

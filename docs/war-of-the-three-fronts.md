@@ -398,16 +398,17 @@ becomes the one that reflects the stage - **!** for the next page, **?** for a p
 - while the hall's ordinary givers keep spawning as they do now. That is also what keeps the campaign
 from being a wall of text at one NPC. The herald hands out the thread; the world does the rest.
 
-**His clothes.** A giver is one of the ordinary folk dressed for the work: `faction_west/quest_giver_west.png`,
-`faction_east/quest_giver_east.png` and `faction_harad/quest_giver_harad.png`, one per alliance and all
-three human-sized, so any of the mod's races can be pointed at a skin if a giver ever needs to be one.
-Which of them is worn comes from a scoreboard tag, `tolkienmobs:quest_giver/<alliance>`, read on the server
-and copied into synched data, so the clothes follow the work rather than the quest: the mainline's givers
-carry the West's and wear its skin, and a giver placed without a tag defaults to the West. Everything else
-in the campaign can stay an ordinary mob in an ordinary skin. A giver is also **invulnerable** as well as
-persistent - a mob that wanders into the scene cannot end a quest by killing the one thing that can hand it
-in - and that is applied on the way into the world, so a giver already standing in a saved world is
-protected on its next load.
+**His clothes.** Only the giver standing in a hall is dressed for the work:
+`faction_west/quest_giver_west.png`, `faction_east/quest_giver_east.png` and
+`faction_harad/quest_giver_harad.png`, one per alliance and all three human-sized, so any race the mod
+ships can be pointed at one. The skin follows a scoreboard tag, `tolkienmobs:quest_giver/<alliance>`,
+read on the server and copied into synched data, so a hall only has to tag its own giver. A giver met in
+the wide world carries no alliance tag and keeps the clothes of its own folk: the folk who walk a country
+are ordinary people, and the one dressed for the work is the one who stands still in a hall. Everything
+else in the campaign can stay an ordinary mob in an ordinary skin. A giver is also **invulnerable** as
+well as persistent - a mob that wanders into the scene cannot end a quest by killing the one thing that
+can hand it in - and that is applied on the way into the world, so a giver already standing in a saved
+world is protected on its next load.
 
 ## What is buildable now, and what is not
 
