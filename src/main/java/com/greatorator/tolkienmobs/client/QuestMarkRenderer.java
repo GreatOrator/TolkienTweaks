@@ -5,9 +5,12 @@ import com.greatorator.tolkienmobs.faction.Alliance;
 import com.greatorator.tolkienmobs.faction.Campaign;
 import com.greatorator.tolkienmobs.faction.FactionRank;
 import com.greatorator.tolkienmobs.faction.FactionStandings;
+import com.greatorator.tolkienmobs.faction.Quest;
+import com.greatorator.tolkienmobs.faction.QuestGivers;
 import com.greatorator.tolkienmobs.faction.QuestLedger;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.util.TriState;
 import net.neoforged.api.distmarker.Dist;
@@ -15,6 +18,8 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderNameTagEvent;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.UUID;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -46,34 +51,112 @@ public final class QuestMarkRenderer {
     @SubscribeEvent
     public static void onNameTag(RenderNameTagEvent.CanRender event) {
         Entity entity = event.getEntity();
-        QuestLedger.Mark mark = QuestLedger.clientMark(entity.getUUID());
-        // The mainline does not call on a stranger: a hall herald keeps a bare name until the country
-        // knows the player, which is the first rank above outsider. Once it does he shows the gold mark
-        // even with no page behind it, because that mark is the campaign saying it has somewhere to start.
         Alliance herald = heraldAlliance(entity);
-        if (herald != null && !hasEarOf(herald)) return;
+        QuestLedger.Mark mark = QuestLedger.clientMark(entity.getUUID());
         if (mark == null) {
-            if (herald == null || !Campaign.clientHasWork(herald)) return;
-            mark = new QuestLedger.Mark(QuestLedger.Mark.State.AVAILABLE, true);
+            // The quest sync is where a mark comes from, and a mark can be missing from it - a page taken
+            // before the sync carried the giver's id, or a copy written into the book by a command. What
+            // the player is holding is the same answer and is always here, so the book is read as well.
+            mark = markFromBook(entity.getUUID(), herald);
         }
+        // A hall herald hands his page over to whoever asks for it, so what his plate says is what he
+        // has, not what the player has earned: a mark held back until a rank is reached told a player
+        // standing in front of a body holding work that there was nothing there, and the page handed over
+        // a moment later proved the plate wrong. The mark still stops when the front has nothing left to
+        // give, which is the one time he really has nothing to say.
+        if (herald != null) {
+            if (mark == null && hasEarOf(herald) && Campaign.clientHasWork(herald)) {
+                mark = new QuestLedger.Mark(QuestLedger.Mark.State.AVAILABLE, true);
+            }
+            Component plate = withOffice(event.getContent(), herald);
+            if (mark == null) {
+                // Nothing to mark, so the plate keeps the visibility it would have had: his office is
+                // worth reading at the distance a name is, and not one block further.
+                event.setContent(plate);
+                return;
+            }
+            event.setContent(glyph(mark).append(plate));
+            event.setCanRender(TriState.TRUE);
+            return;
+        }
+        if (mark == null) return;
         Component name = event.getContent();
-        Component glyph = glyph(mark);
-        event.setContent(name == null ? glyph : glyph.copy().append(name));
+        event.setContent(name == null ? glyph(mark) : glyph(mark).append(name));
         // A giver's plate is normally shown because its name is visible; the mark is worth showing even
         // where the name would be hidden, since the whole point is to be noticed.
         event.setCanRender(TriState.TRUE);
     }
 
-    /** The alliance whose herald this entity is dressed as, or null for anything that is not one. */
+    /**
+     * His name with the office he holds beside it - Maelgrin, Herald of the West - in the grey a subtitle
+     * is drawn in, because the name is the man and the office is what he is standing there for. A herald
+     * without a name yet still says what he is, so nothing is left where a title should be.
+     */
+    private static Component withOffice(@Nullable Component name, Alliance herald) {
+        Component office = Component.literal(" \u00b7 ").withStyle(ChatFormatting.GRAY)
+                .append(Component.translatable("campaign.tolkienmobs.giver.title." + herald.id())
+                        .withStyle(ChatFormatting.GRAY));
+        return name == null ? office : name.copy().append(office);
+    }
+
+    /**
+     * The alliance whose herald this entity is dressed as, or null for anything that is not one.
+     * <p>
+     * The clothes are the first answer: a giver's alliance is copied into synched data on the server so
+     * a renderer on the far side can read it. That copy can reach a client as nothing - a body standing
+     * in a hall placed from a template is not written by the code that sets it until its first tick - and
+     * a herald read as an ordinary man lost his office and his mark while keeping the gold name the server
+     * had already given him, which is exactly backwards: he was the only body the miss could not hide.
+     * His name is the second answer, because a hall's giver is named for his front and a name travels with
+     * the same body however the clothes are synced.
+     */
     @Nullable
     private static Alliance heraldAlliance(Entity entity) {
         if (!(entity instanceof HumanEntity human)) return null;
         int skin = human.giverSkin();
         Alliance[] alliances = Alliance.values();
-        return skin > 0 && skin <= alliances.length ? alliances[skin - 1] : null;
+        if (skin > 0 && skin <= alliances.length) return alliances[skin - 1];
+        Component name = human.getCustomName();
+        if (name == null) return null;
+        for (Alliance alliance : alliances) {
+            if (QuestGivers.campaignName(alliance).equals(name.getString())) return alliance;
+        }
+        return null;
     }
 
-    /** Whether the player has earned the ear of an alliance: its first rank above outsider. */
+    /**
+     * The mark read off the player's own book: a body they are carrying work from still has something to
+     * say, and it says it in the same three states the sync would have sent.
+     * <p>
+     * The giver's id is the exact answer. Failing that, a page of a front belongs to that front's herald
+     * whoever handed it over and whether or not it remembers an id, and he is the body standing in its
+     * hall - so the page in hand is his business, and a white name over a body whose page the player is
+     * already carrying is the one reading that is never true.
+     */
+    @Nullable
+    private static QuestLedger.Mark markFromBook(UUID giver, @Nullable Alliance herald) {
+        for (Quest quest : QuestLedger.clientQuests()) {
+            if (giver.equals(quest.giverId())) return markOf(quest);
+        }
+        if (herald == null) return null;
+        for (Quest quest : QuestLedger.clientQuests()) {
+            if (quest.story() && quest.employerAlliance() == herald) return markOf(quest);
+        }
+        return null;
+    }
+
+    /** What the plate says about one quest in hand. */
+    private static QuestLedger.Mark markOf(Quest quest) {
+        return new QuestLedger.Mark(quest.complete() ? QuestLedger.Mark.State.TURN_IN
+                : QuestLedger.Mark.State.IN_PROGRESS, quest.story());
+    }
+
+    /**
+     * Whether the country will deal with this player at all: the first rank above outsider. The plate and
+     * the hand-over ask it of the same number, which is the point of asking it here - a mark offering work
+     * the body will refuse is a plate that lies, and one keeping quiet about work it would hand over is a
+     * plate that hides. Work already in hand is marked whoever carries it.
+     */
     private static boolean hasEarOf(Alliance alliance) {
         return FactionStandings.clientStanding(alliance) >= FactionRank.STRANGER.threshold();
     }
@@ -82,7 +165,7 @@ public final class QuestMarkRenderer {
      * The mark itself. Work in hand is grey whatever line it came from: at that point the player is
      * already carrying it and knows whose it is, and all the plate has to say is "back here".
      */
-    private static Component glyph(QuestLedger.Mark mark) {
+    private static MutableComponent glyph(QuestLedger.Mark mark) {
         ChatFormatting ink = switch (mark.state()) {
             case AVAILABLE, TURN_IN -> mark.mainline() ? ChatFormatting.GOLD : ChatFormatting.BLUE;
             case IN_PROGRESS -> ChatFormatting.GRAY;

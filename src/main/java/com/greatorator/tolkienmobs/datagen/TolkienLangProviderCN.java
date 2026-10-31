@@ -20,6 +20,15 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
 
     @Override
     protected void addTranslations() {
+        // The book's captions are written here rather than left to TolkienSoundProvider's subtitle
+        // maker: those entries are read by that provider while this one has already collected its own,
+        // which is why most sound subtitles never reach the lang file.
+        this.add("subtitles.tolkienmobs.ui.ledger_page", "书页翻动");
+        this.add("subtitles.tolkienmobs.ui.ledger_open", "账簿翻开");
+        this.add("subtitles.tolkienmobs.ui.ledger_close", "账簿合上");
+        this.add("subtitles.tolkienmobs.ui.ledger_seal", "印章按入火漆");
+        this.add("subtitles.tolkienmobs.ui.ledger_coin", "清点钱币");
+
         this.add("itemgroup.tolkienmobs.deco", "托尔金微调：建筑方块");
             this.addItem(TolkienItems.CREBAIN_FEATHER, "克拉班的羽毛");
             this.addItem(TolkienItems.BIRD_FEATHER, "鸟羽");
@@ -847,11 +856,33 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("screen.tolkienmobs.quests.bounties", "赏金任务");
         this.add("screen.tolkienmobs.quests.story", "主线故事");
         this.add("screen.tolkienmobs.quests.bounties.empty", "手上还没有赏金任务 —— 外面的发布者手里有活。");
+        this.add("screen.tolkienmobs.quests.bounties.front", "手上没有零活 —— 战线的书页就在右页，可以从那里翻看。");
         this.add("screen.tolkienmobs.quests.story.empty", "主线故事暂时没有进行中的步骤。");
+        this.add("campaign.tolkienmobs.page.muster", "首次征召");
+        this.add("campaign.tolkienmobs.page.muster.place", "绿道，斥候遇难的水沟一带");
+        this.add("campaign.tolkienmobs.page.southroad", "南去的长路");
+        this.add("campaign.tolkienmobs.page.southroad.place", "绿道与南方大道分岔之处");
+        this.add("campaign.tolkienmobs.page.marches", "边境守望");
+        this.add("campaign.tolkienmobs.page.marches.place", "山脉以东的边境");
+        this.add("campaign.tolkienmobs.page.levy", "第二次征募");
+        this.add("campaign.tolkienmobs.page.levy.place", "东方与南方之间的隘口");
+        this.add("campaign.tolkienmobs.page.sun", "沙上烈日");
+        this.add("campaign.tolkienmobs.page.sun.place", "渡口以南的哈拉德大道");
+        this.add("campaign.tolkienmobs.page.ford", "浅滩集结");
+        this.add("campaign.tolkienmobs.page.ford.place", "哈尔能河的渡口");
+        this.add("campaign.tolkienmobs.page.rider", "戒灵之言");
+        this.add("campaign.tolkienmobs.page.rider.place", "他选择现身之处");
+        this.add("campaign.tolkienmobs.page.steward", "南方的管家");
+        this.add("campaign.tolkienmobs.page.steward.place", "努恩，队长们的道路上");
+        this.add("campaign.tolkienmobs.giver.title.west", "西境的传令官");
+        this.add("campaign.tolkienmobs.giver.title.east", "东境的传令官");
+        this.add("campaign.tolkienmobs.giver.title.harad", "哈拉德威斯的传令官");
         this.add("screen.tolkienmobs.quests.campaign.done", "三线之战已经结束。");
         this.add("quest.tolkienmobs.herald.waiting", "我这一线已经了结，其余两线还没有走完。");
         this.add("quest.tolkienmobs.herald.rider", "三条战线都已了结。戒灵归你了。");
+        this.add("quest.tolkienmobs.herald.carrying", "你已经带着这一线的那一页了。先把它走完，再写下一页。");
         this.add("quest.tolkienmobs.herald.settled", "三条战线都安静了，戒灵不会再回来。再没有什么要托付给你了。");
+        this.add("quest.tolkienmobs.herald.stranger", "我不认得你是谁。等你在这里挣出了名号再回来，这一页就交给你。");
         this.add("screen.tolkienmobs.quests.carried", "手上的任务");
         this.add("screen.tolkienmobs.quests.abandon.confirm", "放弃此任务？");
         this.add("command.tolkienmobs.quest.give", "给了 %s %s 个任务。");
@@ -859,6 +890,10 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("command.tolkienmobs.quest.spawn", "任务发布者出现在了 %s 附近（%s）。");
         this.add("command.tolkienmobs.quest.spawn.failed", "%s 附近没有可以站立任务发布者的地面。");
         this.add("command.tolkienmobs.quest.players", "%s 名玩家");
+        this.add("command.tolkienmobs.quest.campaign_giver", "%s 名%s战役发布者已在 %s 附近立起。");
+        this.add("command.tolkienmobs.quest.campaign_giver.present", "%s的战役发布者已经站在 %s 附近。");
+        this.add("command.tolkienmobs.quest.campaign_giver.unknown", "没有叫 %s 的阵营。");
+        this.add("command.tolkienmobs.quest.campaign_giver.no_ground", "%s 在 %s 附近找不到可以站人的干燥平地。");
         this.add("quest.tolkienmobs.name.0", "旅人奥德温");
         this.add("quest.tolkienmobs.name.1", "女猎手贝蕾丝");
         this.add("quest.tolkienmobs.name.2", "铁匠杜林");

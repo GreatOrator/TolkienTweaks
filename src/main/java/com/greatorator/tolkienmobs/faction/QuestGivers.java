@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -18,7 +19,9 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,6 +51,28 @@ public final class QuestGivers {
 
     public static final String GIVER_TAG = "tolkienmobs:quest_giver";
 
+    /**
+     * The tag a campaign giver carries: the fixed NPC who hands a front's pages out rather than an
+     * errand. It is what tells the herald in a hall from a traveller met on a road, since a giver
+     * carrying it hands over a page instead of an offer.
+     */
+    public static final String CAMPAIGN_GIVER_TAG = "tolkienmobs:campaign_giver";
+
+    /** How far a campaign giver is looked for before another is stood up in its place. */
+    private static final double CAMPAIGN_NEAR = 100.0D;
+    /** How far from the operator a campaign giver is stood, so it lands beside them and not inside them. */
+    private static final int CAMPAIGN_SPAWN = 6;
+
+    /** What standing a front's giver beside a player came to, so a caller can say which. */
+    public enum Placement {
+        /** A giver was put on the ground beside them. */
+        STOOD,
+        /** One of that alliance's was already within reach, so nothing was done. */
+        ALREADY_THERE,
+        /** Nowhere within reach had dry, solid ground to stand on. */
+        NO_GROUND
+    }
+
     /** How often a player is looked at, in ticks. */
     private static final int INTERVAL = 100;
     /** The wait between one giver and the next, so an arrival is an event and not scenery. */
@@ -60,6 +85,12 @@ public final class QuestGivers {
     private static final double NEAR = 64.0;
     /** The home area a hall giver is kept inside: the middle of the room, six blocks out. */
     private static final int HALL_RADIUS = 6;
+    /** How far a planted giver looks for someone to watch, which is the room and the step outside it. */
+    private static final double WATCH = 12.0D;
+    /** How fast that gaze turns, in degrees a tick, so it swings round rather than snapping. */
+    private static final float WATCH_STEP = 6.0F;
+    /** How often the gaze is turned, in ticks: every tenth of a second is as smooth as a body needs. */
+    private static final int WATCH_INTERVAL = 2;
 
     private QuestGivers() {
     }
@@ -174,8 +205,25 @@ public final class QuestGivers {
         // A hall herald does not leave the campaign page lying about as an offer to think about: he hands
         // it over, because the line is not one of the errands and there is nothing to choose between.
         Alliance herald = factionOf(target);
-        if (herald != null && isCampaign(player.level(), target.getUUID())
-                && !holdsPageFrom(player, target.getUUID()) && !holdsCampaignPage(player)) {
+        if (herald != null && isCampaign(player.level(), target.getUUID())) {
+            // A page already in the book is not written a second time - not by this herald, and not by
+            // another of the same front. Two copies of one step would both have to be paid before the
+            // front moved on, and only the copy the slot noted last could ever be paid at all.
+            if (holdsPageFrom(player, target.getUUID()) || holdsCampaignPage(player)
+                    || Campaign.holdsFrontPage(player, herald)) {
+                player.sendSystemMessage(Component.translatable("quest.tolkienmobs.herald.carrying")
+                        .withStyle(ChatFormatting.GRAY));
+                return;
+            }
+            // The line opens on a rank rather than on a walk through the door: a country does not trust its
+            // war to a face it has never seen. The plate asks the same question of the same number, so a
+            // mark can no longer advertise work the body refuses to hand over - and turn-in runs above this,
+            // so a page already in hand is still paid for whoever carries it.
+            if (FactionStandings.standing(player, herald) < FactionRank.STRANGER.threshold()) {
+                player.sendSystemMessage(Component.translatable("quest.tolkienmobs.herald.stranger")
+                        .withStyle(ChatFormatting.GRAY));
+                return;
+            }
             Quest page = Campaign.page(player, herald);
             if (page != null) {
                 Quest handed = page.withGiver(target.getName().getString(), target.blockPosition(),
@@ -228,23 +276,63 @@ public final class QuestGivers {
         }
         if (giver instanceof Mob mob) {
             mob.setPersistenceRequired();
-            if (factionOf(giver) != null) keepInHall(mob);
+            Alliance alliance = factionOf(giver);
+            if (alliance != null) {
+                keepInHall(mob);
+                // A hall cut into a world before the named givers existed still has its herald standing
+                // in it, carrying the campaign tag but not this one. He is marked here so the hall and
+                // the operator command agree on which body is the front's own, and an old world does not
+                // gain a second giver standing beside the one it already had.
+                if (mob.entityTags().contains(CAMPAIGN_TAG)) {
+                    mob.addTag(CAMPAIGN_GIVER_TAG);
+                    // A hall cut into a world before the givers were named still has "Herald of the
+                    // West" at its bench. He is the same body, so he is given the name the book now
+                    // writes down - but only while he still carries the old one, so a pack that named
+                    // him itself keeps the name it chose. A herald already wearing the right name is
+                    // only recoloured: the halls wrote it as the plain white text a template holds, and
+                    // a front's giver is named in the gold the mark over his head is drawn in.
+                    if (retiredName(mob) || campaignName(alliance).equals(nameOf(mob))) {
+                        mob.setCustomName(goldName(alliance));
+                        mob.setCustomNameVisible(true);
+                    }
+                }
+            }
         }
     }
 
+    /** Whether a herald still carries the plain name the halls used before their givers were named. */
+    private static boolean retiredName(Mob herald) {
+        return nameOf(herald).startsWith("Herald of");
+    }
+
+    /** The name a giver is wearing as plain text, or an empty string for one wearing none. */
+    private static String nameOf(Mob giver) {
+        Component name = giver.getCustomName();
+        return name == null ? "" : name.getString();
+    }
+
+    /** The gold a front's giver is named in, which is the ink his mark is drawn with. */
+    private static Component goldName(Alliance alliance) {
+        return Component.literal(campaignName(alliance)).withStyle(ChatFormatting.GOLD);
+    }
+
     /**
-     * A hall giver stands in a room, so it is given the room. A herald cut into a structure carries its own
-     * home area and its own brain; one saved in a world from before that was frozen and has neither, and is
-     * repaired here on load rather than being left standing where it was placed. The radius is the hall
-     * own - six blocks out from the middle of a room sixteen wide - and the entity pulls any walk target
-     * that leaves it back inside.
+     * A hall's staff are the hall's furniture, not its patrol. The warden and the envoy already stand at
+     * their benches with their brains off, and a herald left with his on walks out of the door and is next
+     * seen somewhere in the country; he is planted the same way, so the room keeps a body at the bench
+     * instead of an empty hall and a giver wandering the fields. He is not a statue - {@link #watch} turns
+     * him to whoever comes in - and he keeps the spot the hall stood him on, so a hall is staffed however
+     * many times a player leaves it.
+     * <p>
+     * The home area is set as well, for a world holding one of these saved from before he was planted: the
+     * radius is the hall's own - six blocks out from the middle of a room sixteen wide.
      */
     private static void keepInHall(Mob herald) {
         if (!herald.hasHome()) {
             herald.setHomeTo(herald.blockPosition(), HALL_RADIUS);
         }
-        if (herald.isNoAi()) {
-            herald.setNoAi(false);
+        if (!herald.isNoAi()) {
+            herald.setNoAi(true);
         }
     }
 
@@ -256,48 +344,113 @@ public final class QuestGivers {
     }
 
     /**
-     * Spawns a named campaign giver at the given position. This can be called by commands or
-     * structure placement logic to ensure campaign NPCs are present at their designated locations.
+     * Turns a hall's givers toward whoever is nearest, which is the only moving a planted giver does. Read
+     * from the player's own tick rather than from each entity's: a gaze only matters when there is somebody
+     * in the room to see it, and the player tick is already the clock the rest of this class runs on.
      */
-    public static void ensureCampaignGiver(ServerPlayer player, Alliance alliance) {
+    @SubscribeEvent
+    public static void onPlayerTick(PlayerTickEvent.Post event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+        if (player.tickCount % WATCH_INTERVAL != 0) return;
         if (!(player.level() instanceof ServerLevel level)) return;
-        // Check if a campaign giver for this alliance already exists near the player
-        for (Entity entity : level.getAllEntities()) {
-            if (entity instanceof Mob mob && mob.entityTags().contains("tolkienmobs:campaign_giver")
-                    && factionOf(mob) == alliance) {
-                double dist = mob.position().distanceTo(player.position());
-                if (dist < 100.0) return; // Already exists nearby
-            }
+        List<Entity> staff = level.getEntities(player, player.getBoundingBox().inflate(WATCH),
+                entity -> entity instanceof Mob mob && mob.isNoAi()
+                        && factionOf(entity) != null && isGiver(entity));
+        for (Entity entity : staff) {
+            watch((Mob) entity, player);
         }
-        // Spawn a new campaign giver at the player's location
-        spawnCampaignGiver(level, player.blockPosition(), alliance);
+    }
+
+    /** A slow turn toward the player, so a staffed hall reads as watching rather than as three statues. */
+    private static void watch(Mob giver, ServerPlayer player) {
+        double dx = player.getX() - giver.getX();
+        double dz = player.getZ() - giver.getZ();
+        if (dx * dx + dz * dz < 0.25D) return;
+        float wanted = (float) (Mth.atan2(dz, dx) * (180.0D / Math.PI)) - 90.0F;
+        float step = Mth.clamp(Mth.wrapDegrees(wanted - giver.getYRot()), -WATCH_STEP, WATCH_STEP);
+        float yaw = giver.getYRot() + step;
+        giver.setYRot(yaw);
+        giver.setYHeadRot(yaw);
+        giver.yBodyRot = yaw;
     }
 
     /**
-     * Spawns a named campaign giver at the given position.
+     * Stands this alliance's named campaign giver beside the player, unless one of that alliance already
+     * stands within {@link #CAMPAIGN_NEAR} blocks. This is what a hall will call once its template
+     * carries a giver, and what the operator command calls today, so the two cannot come to disagree
+     * about which body is a front's own.
+     *
+     * @return whether a giver was actually stood up
      */
-    private static void spawnCampaignGiver(ServerLevel level, BlockPos pos, Alliance alliance) {
-        Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
-        if (!(entity instanceof Mob giver)) return;
-        giver.snapTo(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, 0.0F, 0.0F);
-        giver.setPersistenceRequired();
-        giver.addTag(GIVER_TAG);
-        giver.addTag(alliance.giverTag());
-        giver.addTag(CAMPAIGN_TAG);
-        giver.addTag("tolkienmobs:campaign_giver");
-        
-        String name = switch (alliance) {
+    public static Placement ensureCampaignGiver(ServerPlayer player, Alliance alliance) {
+        if (!(player.level() instanceof ServerLevel level)) return Placement.NO_GROUND;
+        if (campaignGiverNear(level, player, alliance) != null) return Placement.ALREADY_THERE;
+        return spawnCampaignGiver(level, player, alliance);
+    }
+
+    /** This alliance's campaign giver already standing near the player, if one is. */
+    @Nullable
+    private static Mob campaignGiverNear(ServerLevel level, ServerPlayer player, Alliance alliance) {
+        AABB box = player.getBoundingBox().inflate(CAMPAIGN_NEAR);
+        List<Entity> found = level.getEntities(player, box, entity -> entity instanceof Mob
+                && entity.entityTags().contains(CAMPAIGN_GIVER_TAG) && factionOf(entity) == alliance);
+        return found.isEmpty() ? null : (Mob) found.getFirst();
+    }
+
+    /**
+     * Stands a named campaign giver on ground near the player, turned to face them. A giver is put beside
+     * the player rather than on them: standing one in the block they occupy raises it inside their own
+     * body, and that block may as well be a wall, a river or the middle of the air.
+     */
+    private static Placement spawnCampaignGiver(ServerLevel level, ServerPlayer player, Alliance alliance) {
+        RandomSource random = level.getRandom();
+        for (int attempt = 0; attempt < 12; attempt++) {
+            BlockPos pos = groundNear(level, player, random);
+            if (pos == null) continue;
+            Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
+            if (!(entity instanceof Mob giver)) return Placement.NO_GROUND;
+            giver.snapTo(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D,
+                    player.getYRot() + 180.0F, 0.0F);
+            giver.setPersistenceRequired();
+            giver.addTag(GIVER_TAG);
+            giver.addTag(alliance.giverTag());
+            giver.addTag(CAMPAIGN_TAG);
+            giver.addTag(CAMPAIGN_GIVER_TAG);
+
+            giver.setCustomName(goldName(alliance));
+            giver.setCustomNameVisible(true);
+
+            // makeSafe already plants an alliance-tagged giver and gives it a home area, so neither is
+            // done a second time here.
+            makeSafe(giver);
+            if (level.addFreshEntity(giver)) return Placement.STOOD;
+        }
+        return Placement.NO_GROUND;
+    }
+
+    /** The name a front's hall gives its giver, which is the name the book writes down. */
+    public static String campaignName(Alliance alliance) {
+        return switch (alliance) {
             case WEST -> "Maelgrin";
             case EAST -> "Guthlac";
             case HARAD -> "Zarabi";
         };
-        giver.setCustomName(Component.literal(name));
-        giver.setCustomNameVisible(true);
-        
-        makeSafe(giver);
-        keepInHall(giver);
-        
-        level.addFreshEntity(giver);
+    }
+
+    /** Solid dry ground a few blocks off the player, with room to stand in, or null if there is none. */
+    @Nullable
+    private static BlockPos groundNear(ServerLevel level, ServerPlayer player, RandomSource random) {
+        BlockPos origin = player.blockPosition();
+        int dx = random.nextInt(3, CAMPAIGN_SPAWN + 1) * (random.nextBoolean() ? 1 : -1);
+        int dz = random.nextInt(3, CAMPAIGN_SPAWN + 1) * (random.nextBoolean() ? 1 : -1);
+        int x = origin.getX() + dx;
+        int z = origin.getZ() + dz;
+        int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
+        BlockPos pos = new BlockPos(x, y, z);
+        if (!level.getBlockState(pos).isAir() || !level.getBlockState(pos.above()).isAir()) return null;
+        if (!level.getBlockState(pos.below()).isSolid()) return null;
+        if (!level.getFluidState(pos).isEmpty()) return null;
+        return pos;
     }
 
     /** The alliance whose work a giver carries, or null for one placed without an alliance of its own. */

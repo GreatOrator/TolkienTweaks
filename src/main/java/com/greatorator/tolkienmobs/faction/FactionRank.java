@@ -11,7 +11,10 @@ import net.minecraft.ChatFormatting;
 public enum FactionRank {
     HOSTILE("hostile", -100, 0x9B2C2C, ChatFormatting.DARK_RED),
     OUTSIDER("outsider", 0, 0x8A8A8A, ChatFormatting.GRAY),
-    STRANGER("stranger", 100, 0xD8D8D8, ChatFormatting.WHITE),
+    // Slate rather than white: the ledger writes this name in ink on parchment, and a white name over a
+    // parchment page is a rank the player cannot read at the one moment it matters - the rung they were
+    // just told they had not reached.
+    STRANGER("stranger", 100, 0x4A5460, ChatFormatting.WHITE),
     GUEST("guest", 300, 0x62B45B, ChatFormatting.GREEN),
     FRIEND("friend", 700, 0x4FB8C9, ChatFormatting.AQUA),
     KINSMAN("kinsman", 1500, 0xD9A441, ChatFormatting.GOLD);

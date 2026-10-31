@@ -9,11 +9,15 @@ import com.greatorator.tolkienmobs.faction.FactionStandings;
 import com.greatorator.tolkienmobs.faction.Quest;
 import com.greatorator.tolkienmobs.faction.QuestLedger;
 import com.greatorator.tolkienmobs.init.TolkienItems;
+import com.greatorator.tolkienmobs.init.TolkienSounds;
 import com.greatorator.tolkienmobs.network.manager.QuestAbandonManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
@@ -108,6 +112,11 @@ public class FactionLedgerScreen extends Screen {
     private int armedSlot = -1;
     private long armedAt;
 
+    /** Which carried front page the story leaf is open at, counted among the front's pages only. */
+    private int storyTurn;
+    /** Where the leaf's page arrows were drawn this frame, so a click can turn a page. */
+    private final List<TurnSpot> turnSpots = new ArrayList<>();
+
     public FactionLedgerScreen() {
         this(Tab.ALLIANCES);
     }
@@ -115,6 +124,32 @@ public class FactionLedgerScreen extends Screen {
     public FactionLedgerScreen(Tab tab) {
         super(Component.translatable("screen.tolkienmobs.faction_ledger"));
         this.tab = tab;
+    }
+
+    /** Whether the book has already made its opening sound, so resizing the window does not repeat it. */
+    private boolean announced;
+
+    @Override
+    protected void init() {
+        super.init();
+        if (this.announced) return;
+        this.announced = true;
+        playSound(TolkienSounds.LEDGER_OPEN.get(), 1.0F);
+    }
+
+    @Override
+    public void removed() {
+        playSound(TolkienSounds.LEDGER_CLOSE.get(), 0.95F);
+        super.removed();
+    }
+
+    /**
+     * Plays one of the book's own sounds on this client. A screen cannot ask the server for one - a page has
+     * no place in the world to be heard from - so the client that is looking at the page plays it, at a
+     * volume that sits under the world rather than over it.
+     */
+    private static void playSound(SoundEvent sound, float pitch) {
+        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(sound, pitch, 0.55F));
     }
 
     // ---- the book itself ----
@@ -161,6 +196,7 @@ public class FactionLedgerScreen extends Screen {
         super.extractRenderState(graphics, mouseX, mouseY, partialTick);
         layout();
         abandonSpots.clear();
+        turnSpots.clear();
         if (armedSlot >= 0 && Util.getMillis() - armedAt > ARM_MILLIS) {
             armedSlot = -1;
         }
@@ -351,7 +387,7 @@ public class FactionLedgerScreen extends Screen {
 
         List<Quest> quests = QuestLedger.clientQuests();
         drawBounties(graphics, quests);
-        drawStory(graphics, quests);
+        drawStory(graphics, storiesOf(quests));
         drawCentred(graphics, leftPageX, Component.translatable("screen.tolkienmobs.quests.hint"),
                 INK_DIM, pageBottom() - 13);
     }
@@ -371,8 +407,13 @@ public class FactionLedgerScreen extends Screen {
             if (!quests.get(i).story()) slots.add(i);
         }
         if (slots.isEmpty()) {
+            // A player carrying nothing but the fronts' pages is not a player with nothing: the leaf
+            // says where the pages they do hold are, rather than sending them out to look for work they
+            // are already doing.
             drawWrapped(graphics, x, bodyTop() + 8, w,
-                    Component.translatable("screen.tolkienmobs.quests.bounties.empty"), INK_DIM, 4);
+                    Component.translatable(quests.isEmpty()
+                            ? "screen.tolkienmobs.quests.bounties.empty"
+                            : "screen.tolkienmobs.quests.bounties.front"), INK_DIM, 4);
             return;
         }
         int room = bodyBottom() - bodyTop() - 14;
@@ -413,21 +454,15 @@ public class FactionLedgerScreen extends Screen {
     }
 
     /**
-     * The story leaf: the campaign step, alone, with the room the errands used to take given over to
-     * its prose. One page is the whole of it - the front has one step in hand at a time - so what is
-     * left of the leaf goes into the sentence that says what is being asked and why.
+     * The story leaf: one campaign step at a time, with the room the errands used to take given over to
+     * its prose. A player can carry a page from each of the three fronts, so the leaf turns between them
+     * and says which of how many is open - it used to draw whichever page came first in the book and stop
+     * there, which left the other two in hand and unreadable.
      */
-    private void drawStory(GuiGraphicsExtractor graphics, List<Quest> quests) {
+    private void drawStory(GuiGraphicsExtractor graphics, List<Quest> stories) {
         int x = innerX(rightPageX);
         int w = innerW();
-        Quest story = null;
-        for (Quest quest : quests) {
-            if (quest.story()) {
-                story = quest;
-                break;
-            }
-        }
-        if (story == null) {
+        if (stories.isEmpty()) {
             // A finished campaign is the one thing an empty leaf must not be left saying, so the leaf
             // says it is over instead.
             boolean won = Campaign.clientRider() > 0;
@@ -438,10 +473,36 @@ public class FactionLedgerScreen extends Screen {
                     won ? INK_GOLD : INK_DIM, 5);
             return;
         }
-        graphics.item(iconOf(story), x, bodyTop());
-        graphics.text(this.font, fit(story.objective().getString(), w - 21), x + 21, bodyTop() + 2, INK, FLAT);
+        this.storyTurn = Math.max(0, Math.min(this.storyTurn, stories.size() - 1));
+        Quest story = stories.get(this.storyTurn);
+        drawTurns(graphics, this.storyTurn, stories.size());
+        // What the step is called and where it happens, where the page says: a page of the campaign is a
+        // place and a name before it is a count, and the leaf says so above the counting.
+        var front = story.employerAlliance();
+        Component title = front == null ? Campaign.clientRiderTitle() : Campaign.clientTitle(front);
+        Component place = front == null ? Campaign.clientRiderPlace() : Campaign.clientPlace(front);
+        boolean named = !title.getString().isEmpty();
 
-        int y = wrapped(graphics, x, bodyTop() + 22, w, story.summary().getString(), INK_DIM, 7) + 2;
+        graphics.item(iconOf(story), x, bodyTop());
+        int y = bodyTop();
+        if (named) {
+            graphics.text(this.font, fit(title.getString(), w - 21), x + 21, y, INK_GOLD, FLAT);
+            y += 11;
+            // The objective is what the step asks for, and it is a sentence: "Slay 12 soldiers of
+            // Haradwaith" does not fit the width of a leaf, so it wraps onto a second line instead of
+            // ending in "Slay 12 soldiers of H..." - a page that says what it is only half-read is the
+            // same page it was before it had a name.
+            y = wrapped(graphics, x + 21, y, w - 21, story.objective().getString(), INK, 2) + 4;
+        } else {
+            y = wrapped(graphics, x, y + 2, w, story.objective().getString(), INK, 2) + 4;
+        }
+
+        y = wrapped(graphics, x, y, w, story.summary().getString(), INK_DIM, 6) + 2;
+        if (!place.getString().isEmpty()) {
+            // Where the step happens is a sentence too, and it is written down because it can be read:
+            // "the Green Way, where the scout's ditch runs" takes two lines rather than one and a half.
+            y = wrapped(graphics, x, y, w, place.getString(), INK_DIM, 2) + 2;
+        }
         graphics.text(this.font, fit(story.giverName().getString(), w), x, y, INK_DIM, FLAT);
         y += LINE;
         graphics.text(this.font, fit(story.takenAt().getString(), w), x, y, INK_DIM, FLAT);
@@ -463,6 +524,37 @@ public class FactionLedgerScreen extends Screen {
             graphics.fill(x, foot, x + filled, foot + 4, INK_BLUE);
         }
         graphics.text(this.font, counter, x + w - counterW, foot - 2, INK_DIM, FLAT);
+    }
+
+    /** The carried pages of the fronts, in the order the book keeps them. */
+    private static List<Quest> storiesOf(List<Quest> quests) {
+        List<Quest> stories = new ArrayList<>();
+        for (Quest quest : quests) {
+            if (quest.story()) stories.add(quest);
+        }
+        return stories;
+    }
+
+    /**
+     * The page arrows and the count between them, written into the story leaf's heading row. A player can
+     * hold a page from every front at once, and until now the leaf had no way to say so: it drew the first
+     * one and stopped. The ends dim rather than vanish, so the leaf always says how many pages there are.
+     */
+    private void drawTurns(GuiGraphicsExtractor graphics, int turn, int count) {
+        if (count < 2) return;
+        String counter = (turn + 1) + " / " + count;
+        int counterW = this.font.width(counter);
+        int arrowW = this.font.width("<");
+        int right = rightPageX + pageW - 14;
+        int y = pageTop() + 8;
+        int backX = right - counterW - arrowW * 2 - 8;
+        boolean back = turn > 0;
+        boolean forth = turn < count - 1;
+        graphics.text(this.font, "<", backX, y, back ? INK : PAGE_EDGE, FLAT);
+        graphics.text(this.font, counter, backX + arrowW + 4, y, INK_DIM, FLAT);
+        graphics.text(this.font, ">", right - arrowW, y, forth ? INK : PAGE_EDGE, FLAT);
+        turnSpots.add(new TurnSpot(-1, backX - 3, y - 2, arrowW + 6, LINE + 3));
+        turnSpots.add(new TurnSpot(1, right - arrowW - 3, y - 2, arrowW + 6, LINE + 3));
     }
 
     /** Draws prose onto a leaf and answers the y it finished on, so what follows sits under it. */
@@ -548,6 +640,7 @@ public class FactionLedgerScreen extends Screen {
                 int x = leftPageX + i * (RIBBON_W + 4);
                 if (event.x() >= x && event.x() < x + RIBBON_W && event.y() >= y && event.y() < y + RIBBON_H + 1) {
                     this.tab = tabs[i];
+                    playSound(TolkienSounds.LEDGER_PAGE.get(), 0.92F);
                     // A bookmark is a change of page, so a button armed on the last one is let go.
                     this.armedSlot = -1;
                     return true;
@@ -567,6 +660,13 @@ public class FactionLedgerScreen extends Screen {
                 }
                 return true;
             }
+            for (TurnSpot spot : turnSpots) {
+                if (event.x() < spot.x() || event.x() >= spot.x() + spot.w()) continue;
+                if (event.y() < spot.y() || event.y() >= spot.y() + spot.h()) continue;
+                this.storyTurn = Math.max(0, this.storyTurn + spot.dir());
+                playSound(TolkienSounds.LEDGER_PAGE.get(), spot.dir() > 0 ? 1.02F : 0.98F);
+                return true;
+            }
         }
         return super.mouseClicked(event, doubleClick);
     }
@@ -578,5 +678,9 @@ public class FactionLedgerScreen extends Screen {
 
     /** An abandon button as it was drawn: the slot it would set aside, in screen coordinates. */
     private record AbandonSpot(int slot, int x, int y, int w, int h) {
+    }
+
+    /** A page arrow on the story leaf: which way it turns, and where it was drawn. */
+    private record TurnSpot(int dir, int x, int y, int w, int h) {
     }
 }

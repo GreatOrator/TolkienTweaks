@@ -867,5 +867,35 @@
         "stream": true
       }
     ]
+  },
+  "ui.tolkienmobs.ledger_close": {
+    "sounds": [
+      "tolkienmobs:ui/ledger_close"
+    ],
+    "subtitle": "subtitles.tolkienmobs.ui.ledger_close"
+  },
+  "ui.tolkienmobs.ledger_coin": {
+    "sounds": [
+      "tolkienmobs:ui/ledger_coin"
+    ],
+    "subtitle": "subtitles.tolkienmobs.ui.ledger_coin"
+  },
+  "ui.tolkienmobs.ledger_open": {
+    "sounds": [
+      "tolkienmobs:ui/ledger_open"
+    ],
+    "subtitle": "subtitles.tolkienmobs.ui.ledger_open"
+  },
+  "ui.tolkienmobs.ledger_page": {
+    "sounds": [
+      "tolkienmobs:ui/ledger_page"
+    ],
+    "subtitle": "subtitles.tolkienmobs.ui.ledger_page"
+  },
+  "ui.tolkienmobs.ledger_seal": {
+    "sounds": [
+      "tolkienmobs:ui/ledger_seal"
+    ],
+    "subtitle": "subtitles.tolkienmobs.ui.ledger_seal"
   }
 }

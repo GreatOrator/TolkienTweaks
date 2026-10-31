@@ -389,16 +389,15 @@ body, a quest now remembers the id of the NPC that handed it out, not only the n
 **The herald stands in every hall, with one page in his hand.** Each hall carries a third body, the
 herald, cut by `tools/HallVariants.java` beside the warden and the envoy: a human in all three halls,
 because the skin he wears is the quest-giver art of his alliance, tagged as a giver, as the alliance of
-his hall and as the campaign, so his clothes and his gold mark are right from the first load. Unlike the
-warden and the envoy he is not frozen: the hall gives him a home area - the middle of the room, six
-blocks out - and the entity pulls any walk target that leaves it back inside, so he walks about a room he
-cannot leave, and turns to face a player who comes near. His gate is a rank rather than a page: nothing
-appears over his head until the player is a **stranger** to that alliance - the first rank earned above
-outsider, 100 points of ordinary hall work - and a mark drawn for anyone below is dropped. Once it is
-earned a gold **!** stands there, and right-clicking hands over the front page: six soldiers of a rival
-army for sixty standing, which is page 0 of `faction/Campaign`. A rank rather than a page, because the
-line should open for someone who has already done the country a favour, not for whoever walks through the
-door first. Once his own front is settled he does not offer work he does not have: he says where the war
+his hall and as the campaign, so his clothes and his gold mark are right from the first load. Like the
+warden and the envoy he is planted at his bench with no brain, and turns to face a player who comes near:
+a room keeps a body at the bench, and a giver left with his brain on walks out of the door into the
+country. The line opens on a rank rather than on a walk through the door: nothing appears over his head until the
+player is a **stranger** to that alliance - the first rung earned above outsider, 100 points of ordinary
+hall work - and right-clicking below it is refused with a word about making a name first. A gold **!** stands there
+once it is earned, the grey one while that page is carried and the **?** while it is done, and no mark at
+all once his front has nothing left to give. Right-clicking hands over the front page: six soldiers of a rival
+army for sixty standing, which is page 0 of `faction/Campaign`. Once his own front is settled he does not offer work he does not have: he says where the war
 stands - the other fronts still fighting, or the Rider not yet behind the player - and says plainly that
 nothing is left to ask once the Rider is.
 

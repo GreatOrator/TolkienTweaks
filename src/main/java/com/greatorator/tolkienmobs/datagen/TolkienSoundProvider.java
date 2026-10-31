@@ -161,6 +161,15 @@ public class TolkienSoundProvider extends SoundDefinitionsProvider {
         this.generateNewSound(TolkienSounds.SHOOT_WEB, "mob/ammo/web_impact", 2, " ");
         this.generateNewSound(TolkienSounds.SHOOT_TORNADO, "mob/ammo/lift_wind", 3, " ");
 
+        // UI
+            // The book's own sounds. They are played by the client that is looking at the page rather
+            // than by the server, because a page has no place in the world to be heard from.
+        this.generateNewSoundWithSubtitle(TolkienSounds.LEDGER_PAGE, "ui/ledger_page", 1, "A page turns");
+        this.generateNewSoundWithSubtitle(TolkienSounds.LEDGER_OPEN, "ui/ledger_open", 1, "The ledger opens");
+        this.generateNewSoundWithSubtitle(TolkienSounds.LEDGER_CLOSE, "ui/ledger_close", 1, "The ledger closes");
+        this.generateNewSoundWithSubtitle(TolkienSounds.LEDGER_SEAL, "ui/ledger_seal", 1, "A seal is pressed into wax");
+        this.generateNewSoundWithSubtitle(TolkienSounds.LEDGER_COIN, "ui/ledger_coin", 1, "Coins are counted out");
+
         // Records
         this.makeMusicDisc(TolkienSounds.MUSIC_DISC_ALLTHATGLITTERS, "allthatglitterserebor");
         this.makeMusicDisc(TolkienSounds.MUSIC_DISC_CONCERNINGHOBBITS, "concerninghobbits");

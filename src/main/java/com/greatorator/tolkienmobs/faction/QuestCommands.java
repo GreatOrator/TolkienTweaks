@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.faction;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
@@ -14,6 +15,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.function.Predicate;
 
@@ -23,7 +25,7 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
  * The commands that let an operator arrange the work by hand, so the quest system can be tried without
  * waiting to be met by a giver.
  * <p>
- * One root, {@code /tmquest <targets> <give|quit|spawn>}:
+ * One root, {@code /tmquest <targets> <give|quit|spawn|campaign_giver>}:
  * <ul>
  *   <li>{@code give [count]} writes fresh work straight into the targets' books, as if a giver had
  *   offered it. No NPC is placed, so the entry is named for a giver who does not exist - that is the
@@ -32,6 +34,10 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
  *   <li>{@code spawn} puts a real giver, with a real offer, beside each target now, skipping the wait
  *   between givers and the one-near rule: those are the player's experience of the feature, not rules
  *   about the world.</li>
+ *   <li>{@code campaign_giver <alliance>} stands that front's named giver - Maelgrin, Guthlac or
+ *   Zarabi - beside each target, so the campaign can be walked without first cutting his hall. A giver
+ *   of that alliance already standing near the target is left where it is, and the answer says which
+ *   of the two happened.</li>
  * </ul>
  * This is gamemaster work - the work a player takes is meant to be earned - so the root answers only to
  * an operator at gamemaster level or to a player in creative, exactly as the faction commands do.
@@ -63,7 +69,7 @@ public final class QuestCommands {
                         .then(Commands.literal("quit").executes(QuestCommands::quit))
                         .then(Commands.literal("spawn").executes(QuestCommands::spawn))
                         .then(Commands.literal("campaign_giver")
-                                .then(Commands.argument("alliance", com.mojang.brigadier.arguments.StringArgumentType.string())
+                                .then(Commands.argument("alliance", StringArgumentType.word())
                                         .suggests((context, builder) -> {
                                             for (Alliance alliance : Alliance.values()) {
                                                 builder.suggest(alliance.id());
@@ -133,26 +139,61 @@ public final class QuestCommands {
         return spawned;
     }
 
-    /** Spawns a named campaign giver for the specified alliance beside each target. */
+    /** Stands a named campaign giver for the named alliance beside each target. */
     private static int spawnCampaignGiver(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         Collection<ServerPlayer> players = EntityArgument.getPlayers(context, "targets");
-        String allianceId = com.mojang.brigadier.arguments.StringArgumentType.getString(context, "alliance");
-        Alliance alliance = Alliance.byId(allianceId);
+        String allianceId = StringArgumentType.getString(context, "alliance");
+        Alliance alliance = allianceOf(allianceId);
         if (alliance == null) {
-            context.getSource().sendFailure(Component.literal("Unknown alliance: " + allianceId));
+            context.getSource().sendFailure(Component.translatable(
+                    "command.tolkienmobs.quest.campaign_giver.unknown", Component.literal(allianceId)));
             return 0;
         }
-        
-        int spawned = 0;
+
+        int stood = 0;
+        int already = 0;
+        int blocked = 0;
         for (ServerPlayer player : players) {
-            QuestGivers.ensureCampaignGiver(player, alliance);
-            spawned++;
+            switch (QuestGivers.ensureCampaignGiver(player, alliance)) {
+                case STOOD -> stood++;
+                case ALREADY_THERE -> already++;
+                case NO_GROUND -> blocked++;
+            }
         }
-        
-        int total = spawned;
+
+        // Three answers, because three different things can have happened: a body was put down, one was
+        // already standing, or the ground would not take one. Reporting the last as the second said the
+        // command had found the giver it was looking for when it had found nothing at all.
+        int total = stood;
         Collection<ServerPlayer> who = players;
-        context.getSource().sendSuccess(() -> Component.literal("Spawned " + total + " campaign giver(s) for " + alliance.id()), true);
-        return spawned;
+        if (total > 0) {
+            context.getSource().sendSuccess(() -> Component.translatable(
+                    "command.tolkienmobs.quest.campaign_giver", Component.literal(String.valueOf(total)),
+                    alliance.displayName(), nameOf(who)), true);
+        }
+        if (already > 0) {
+            context.getSource().sendSuccess(() -> Component.translatable(
+                    "command.tolkienmobs.quest.campaign_giver.present", alliance.displayName(), nameOf(who)),
+                    false);
+        }
+        if (blocked > 0) {
+            context.getSource().sendFailure(Component.translatable(
+                    "command.tolkienmobs.quest.campaign_giver.no_ground", alliance.displayName(), nameOf(who)));
+        }
+        return total;
+    }
+
+    /**
+     * The alliance an id names, or null when it names none. {@link Alliance#byId} answers the West for
+     * anything it does not recognise - the suppliers that read a saved name off disk need it to answer
+     * something - so a command that has to refuse a typo cannot go through it.
+     */
+    @Nullable
+    private static Alliance allianceOf(String id) {
+        for (Alliance alliance : Alliance.values()) {
+            if (alliance.id().equals(id)) return alliance;
+        }
+        return null;
     }
 
     /** One player by name, or a count when the command was given a selector that matched several. */

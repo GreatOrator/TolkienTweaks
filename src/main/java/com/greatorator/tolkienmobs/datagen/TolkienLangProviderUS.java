@@ -20,6 +20,15 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
 
     @Override
     protected void addTranslations() {
+        // The book's captions are written here rather than left to TolkienSoundProvider's subtitle
+        // maker: those entries are read by that provider while this one has already collected its own,
+        // which is why most sound subtitles never reach the lang file.
+        this.add("subtitles.tolkienmobs.ui.ledger_page", "A page turns");
+        this.add("subtitles.tolkienmobs.ui.ledger_open", "The ledger opens");
+        this.add("subtitles.tolkienmobs.ui.ledger_close", "The ledger closes");
+        this.add("subtitles.tolkienmobs.ui.ledger_seal", "A seal is pressed into wax");
+        this.add("subtitles.tolkienmobs.ui.ledger_coin", "Coins are counted out");
+
         this.add("itemgroup.tolkienmobs.deco", "TolkienTweaks: Building Blocks");
             this.addItem(TolkienItems.CREBAIN_FEATHER, "Crebain Feather");
             this.addItem(TolkienItems.BIRD_FEATHER, "Bird Feather");
@@ -847,11 +856,33 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("screen.tolkienmobs.quests.bounties", "Bounties");
         this.add("screen.tolkienmobs.quests.story", "Story");
         this.add("screen.tolkienmobs.quests.bounties.empty", "No bounty in hand - a giver out there has work.");
+        this.add("screen.tolkienmobs.quests.bounties.front", "No errand in hand - the pages of the front are leafed on the right. Turn them there.");
         this.add("screen.tolkienmobs.quests.story.empty", "No step of the campaign is in your hands.");
+        this.add("campaign.tolkienmobs.page.muster", "The First Muster");
+        this.add("campaign.tolkienmobs.page.muster.place", "the Green Way, where the scout's ditch runs");
+        this.add("campaign.tolkienmobs.page.southroad", "The Long Road South");
+        this.add("campaign.tolkienmobs.page.southroad.place", "the Green Way, where the south road forks from it");
+        this.add("campaign.tolkienmobs.page.marches", "The Watch on the Marches");
+        this.add("campaign.tolkienmobs.page.marches.place", "the marches east of the mountains");
+        this.add("campaign.tolkienmobs.page.levy", "The Second Levy");
+        this.add("campaign.tolkienmobs.page.levy.place", "the passes between the East and the South");
+        this.add("campaign.tolkienmobs.page.sun", "The Sun on the Sand");
+        this.add("campaign.tolkienmobs.page.sun.place", "the Harad road, south of the crossings");
+        this.add("campaign.tolkienmobs.page.ford", "The Gathering at the Ford");
+        this.add("campaign.tolkienmobs.page.ford.place", "the fords of the Harnen");
+        this.add("campaign.tolkienmobs.page.rider", "The Rider's Word");
+        this.add("campaign.tolkienmobs.page.rider.place", "wherever he chooses to be met");
+        this.add("campaign.tolkienmobs.page.steward", "The Steward of the South");
+        this.add("campaign.tolkienmobs.page.steward.place", "Nurn, on the captains' road");
+        this.add("campaign.tolkienmobs.giver.title.west", "Herald of the West");
+        this.add("campaign.tolkienmobs.giver.title.east", "Herald of the East");
+        this.add("campaign.tolkienmobs.giver.title.harad", "Herald of Haradwaith");
         this.add("screen.tolkienmobs.quests.campaign.done", "The war of the three fronts is over.");
         this.add("quest.tolkienmobs.herald.waiting", "This front is settled. The other two have not finished their line.");
         this.add("quest.tolkienmobs.herald.rider", "All three fronts are settled. The Rider is yours.");
+        this.add("quest.tolkienmobs.herald.carrying", "You are already carrying this front's page. Finish it before another is written.");
         this.add("quest.tolkienmobs.herald.settled", "All three fronts are quiet, and the Rider is not coming back. There is nothing left to ask of you.");
+        this.add("quest.tolkienmobs.herald.stranger", "I do not know who you are. Come back when you have made a name for yourself, and this page is yours.");
         this.add("screen.tolkienmobs.quests.carried", "Work Carried");
         this.add("screen.tolkienmobs.quests.abandon.confirm", "Abandon?");
         this.add("command.tolkienmobs.quest.give", "Gave %s %s quest(s).");
@@ -859,6 +890,10 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("command.tolkienmobs.quest.spawn", "A quest giver appeared near %s (%s).");
         this.add("command.tolkienmobs.quest.spawn.failed", "No ground for a quest giver near %s.");
         this.add("command.tolkienmobs.quest.players", "%s players");
+        this.add("command.tolkienmobs.quest.campaign_giver", "%s campaign giver(s) of %s now stand near %s.");
+        this.add("command.tolkienmobs.quest.campaign_giver.present", "A campaign giver of %s already stands near %s.");
+        this.add("command.tolkienmobs.quest.campaign_giver.unknown", "No alliance is called %s.");
+        this.add("command.tolkienmobs.quest.campaign_giver.no_ground", "%s found no dry, level ground near %s to stand a giver on.");
         this.add("quest.tolkienmobs.name.0", "Aldwyn the Wayfarer");
         this.add("quest.tolkienmobs.name.1", "Bereth the Huntress");
         this.add("quest.tolkienmobs.name.2", "Durin the Smith");

@@ -204,6 +204,13 @@ public class TolkienSounds {
 
 
 
+    // UI
+    public static final DeferredHolder<SoundEvent, SoundEvent> LEDGER_PAGE = createEvent("ui.tolkienmobs.ledger_page");
+    public static final DeferredHolder<SoundEvent, SoundEvent> LEDGER_OPEN = createEvent("ui.tolkienmobs.ledger_open");
+    public static final DeferredHolder<SoundEvent, SoundEvent> LEDGER_CLOSE = createEvent("ui.tolkienmobs.ledger_close");
+    public static final DeferredHolder<SoundEvent, SoundEvent> LEDGER_SEAL = createEvent("ui.tolkienmobs.ledger_seal");
+    public static final DeferredHolder<SoundEvent, SoundEvent> LEDGER_COIN = createEvent("ui.tolkienmobs.ledger_coin");
+
     private static DeferredHolder<SoundEvent, SoundEvent> createEvent(String sound) {
         return SOUND_EVENTS.register(sound, () -> SoundEvent.createVariableRangeEvent(TolkienMobsMain.prefix(sound)));
     }

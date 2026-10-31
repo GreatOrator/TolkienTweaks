@@ -61,26 +61,17 @@ public class HallVariants {
     static final double HERALD_Y = 1.0D;
     static final double HERALD_Z = 6.5D;
     /** Yaw 270 faces east, into the bench it stands at. */
-    /**
-     * The home area a hall giver is kept inside: the middle of the room, six blocks out. The entity
-     * clamps any walk target that leaves it, so the herald walks about the hall and cannot reach the
-     * door - the walls are at x=1 and x=14 and the openings at z=1 and z=13, all outside this circle.
-     */
-    static final int HOME_X = 7;
-    static final int HOME_Y = 1;
-    static final int HOME_Z = 7;
-    static final int HALL_RADIUS = 6;
     static final float HERALD_YAW = 270.0F;
 
-    record Variant(String file, String stairs, String warden, String wardenName, String tag, int alliance, String vendorName, String heraldName) {}
+    record Variant(String file, String stairs, String warden, String wardenName, String tag, int alliance, String vendorName, String giverName) {}
 
     static final List<Variant> VARIANTS = List.of(
             new Variant("faction_hall_west.nbt", "tolkienmobs:stairs_lebethron",
-                    "tolkienmobs:entityttmhuman", "Warden of the West", "tolkienmobs:faction_envoy/west", 0, "Envoy of the West", "Herald of the West"),
+                    "tolkienmobs:entityttmhuman", "Warden of the West", "tolkienmobs:faction_envoy/west", 0, "Envoy of the West", "Maelgrin"),
             new Variant("faction_hall_east.nbt", "tolkienmobs:stairs_morguliron",
-                    "tolkienmobs:entityttmorc", "Warden of the East", "tolkienmobs:faction_envoy/east", 1, "Envoy of the East", "Herald of the East"),
+                    "tolkienmobs:entityttmorc", "Warden of the East", "tolkienmobs:faction_envoy/east", 1, "Envoy of the East", "Guthlac"),
             new Variant("faction_hall_harad.nbt", "minecraft:sandstone_stairs",
-                    "tolkienmobs:entityttmsouthron_npc", "Warden of Haradwaith", "tolkienmobs:faction_envoy/harad", 2, "Envoy of Haradwaith", "Herald of Haradwaith"));
+                    "tolkienmobs:entityttmsouthron_npc", "Warden of Haradwaith", "tolkienmobs:faction_envoy/harad", 2, "Envoy of Haradwaith", "Zarabi"));
 
     public static void main(String[] args) throws Exception {
         Path source = Paths.get(args[0]);
@@ -264,21 +255,32 @@ public class HallVariants {
     }
 
     /**
-     * The herald: the hall giver, standing in the aisle so a player meets it on walking in. It is a
-     * human in every hall, because the art it wears is the quest-giver skin of its alliance and that
-     * art is human-sized. The three tags are what make it a giver, dress it, and draw its mark in gold.
+     * The herald: the front's named giver - Maelgrin of the West, Guthlac of the East, Zarabi of
+     * Haradwaith - standing at a bench so a player meets him on walking in. He is a human in every hall,
+     * because the art he wears is the quest-giver skin of his alliance and that art is human-sized. He is
+     * named rather than called "Herald of the West" because the book writes his name down as the one who
+     * gave the work, and a page from Maelgrin should say so.
+     * <p>
+     * Four tags dress him. {@code quest_giver} makes him a giver at all; {@code quest_giver/<alliance>}
+     * dresses him and keeps him in his room; {@code campaign} draws the mark over his head in gold; and
+     * {@code campaign_giver} says the work he holds is a front's pages rather than an errand. The last is
+     * the tag {@code QuestGivers.ensureCampaignGiver} looks for, so a hall and the operator command
+     * cannot both stand a second body beside him.
      */
     static Map<String, Object> herald(Variant variant) {
         Map<String, Object> nbt = new LinkedHashMap<>();
         nbt.put("id", "tolkienmobs:entityttmhuman");
         nbt.put("Tags", List.of("tolkienmobs:quest_giver",
-                variant.tag().replace("faction_envoy", "quest_giver"), "tolkienmobs:campaign"));
-        nbt.put("CustomName", variant.heraldName());
+                variant.tag().replace("faction_envoy", "quest_giver"), "tolkienmobs:campaign",
+                "tolkienmobs:campaign_giver"));
+        nbt.put("CustomName", variant.giverName());
+        nbt.put("NoAI", (byte) 1);
         nbt.put("PersistenceRequired", (byte) 1);
-        // No NoAI: a hall is a room to walk about in, not a plinth to stand on. The home area is what
-        // keeps the walk inside, and the entity enforces it on every tick.
-        nbt.put("home_pos", List.of(HOME_X, HOME_Y, HOME_Z));
-        nbt.put("home_radius", HALL_RADIUS);
+        // A hall's staff do not patrol: the warden and the envoy stand at their benches with no brain,
+        // and he is planted the same way. He is kept in the room by having no brain at all rather than
+        // by a home area, because a home written into a template is a tag the game does not always read
+        // back - one that was not read is a herald with nothing holding him, who walks out of the door
+        // and off into the country.
         nbt.put("Invulnerable", (byte) 1);
         nbt.put("Silent", (byte) 1);
         nbt.put("Rotation", List.of(HERALD_YAW, 0.0F));

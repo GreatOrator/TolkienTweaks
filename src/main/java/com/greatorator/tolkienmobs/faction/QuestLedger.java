@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.faction;
 
 import com.greatorator.tolkienmobs.init.TolkienItems;
+import com.greatorator.tolkienmobs.init.TolkienSounds;
 import com.greatorator.tolkienmobs.network.manager.QuestSyncManager;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -11,7 +12,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -60,6 +60,8 @@ public final class QuestLedger extends SavedData {
 
     private static final List<Quest> CLIENT = new ArrayList<>();
     private static final Map<UUID, Mark> CLIENT_MARKS = new HashMap<>();
+    /** What {@link #instance} answers with when there is no server to hold a file. */
+    private static final QuestLedger NO_SERVER = new QuestLedger(false);
 
     /**
      * What is drawn over a giver's head, from the point of view of one player.
@@ -91,8 +93,24 @@ public final class QuestLedger extends SavedData {
     public static final SavedDataType<QuestLedger> TYPE = new SavedDataType<>(
             Identifier.fromNamespaceAndPath("tolkienmobs", SAVE_DATA_NAME), QuestLedger::new, CODEC);
 
+    /**
+     * The instance a world with no ledger file starts from. The clearing is the point: these maps are
+     * static, so a world opened in the same session as another would otherwise be handed that world's
+     * quests, marks and giver clock, which is exactly what a fresh world must not do. When a world does
+     * have a file, {@link #fromEntries} clears the same maps before it fills them.
+     */
     private QuestLedger() {
+        this(true);
+    }
+
+    /** A stand-in for a level with no server behind it, which neither reads nor clears anything. */
+    private QuestLedger(boolean fresh) {
         super();
+        if (fresh) {
+            ACTIVE.clear();
+            NEXT_GIVER.clear();
+            OFFERS.clear();
+        }
     }
 
     // ---- reading ----
@@ -155,7 +173,7 @@ public final class QuestLedger extends SavedData {
         grantBook(player);
         player.sendSystemMessage(Component.translatable("quest.tolkienmobs.accepted", quest.objective())
                 .withStyle(ChatFormatting.WHITE));
-        player.level().playSound(null, player.blockPosition(), SoundEvents.VILLAGER_YES,
+        player.level().playSound(null, player.blockPosition(), TolkienSounds.LEDGER_SEAL.get(),
                 SoundSource.PLAYERS, 0.6F, 1.0F);
         sync(player);
         return true;
@@ -352,8 +370,8 @@ public final class QuestLedger extends SavedData {
         CourageLedger.award(player, CourageLedger.Deed.WORK_DONE);
         player.sendSystemMessage(Component.translatable("quest.tolkienmobs.turned_in", quest.objective())
                 .withStyle(ChatFormatting.GREEN));
-        player.level().playSound(null, player.blockPosition(), SoundEvents.PLAYER_LEVELUP,
-                SoundSource.PLAYERS, 0.7F, 1.2F);
+        player.level().playSound(null, player.blockPosition(), TolkienSounds.LEDGER_COIN.get(),
+                SoundSource.PLAYERS, 0.7F, 1.0F);
         // A campaign page moves its front on when it is settled, and only then. The Rider is the
         // campaign's own page and names no single employer, because all three countries asked for him,
         // so every one of them pays its price.
@@ -473,7 +491,7 @@ public final class QuestLedger extends SavedData {
             ServerLevel overworld = serverLevel.getServer().getLevel(Level.OVERWORLD);
             if (overworld != null) return overworld.getDataStorage().computeIfAbsent(TYPE);
         }
-        return new QuestLedger();
+        return NO_SERVER;
     }
 
     // ---- saving ----
@@ -489,7 +507,8 @@ public final class QuestLedger extends SavedData {
         for (Offer offer : offers) {
             OFFERS.put(offer.giver(), offer);
         }
-        return new QuestLedger();
+        // Read without clearing: the maps were just filled from the file.
+        return new QuestLedger(false);
     }
 
     private List<PlayerEntry> players() {

@@ -59,19 +59,33 @@ public final class Campaign extends SavedData {
      */
     private static final Map<Alliance, List<Page>> PAGE_LINES = Map.of(
             Alliance.WEST, List.of(
-                    new Page(Quest.Kind.FACTION, "", 6, 60),
-                    new Page(Quest.Kind.FACTION, "", 12, 120)),
+                    new Page(Quest.Kind.FACTION, "", 6, 60,
+                            "campaign.tolkienmobs.page.muster", "campaign.tolkienmobs.page.muster.place"),
+                    new Page(Quest.Kind.FACTION, "", 12, 120,
+                            "campaign.tolkienmobs.page.southroad", "campaign.tolkienmobs.page.southroad.place")),
             Alliance.EAST, List.of(
-                    new Page(Quest.Kind.FACTION, "", 6, 60),
-                    new Page(Quest.Kind.FACTION, "", 12, 120),
-                    new Page(Quest.Kind.FETCH, "tolkienmobs:item_scroll", 1, 0)),
+                    new Page(Quest.Kind.FACTION, "", 6, 60,
+                            "campaign.tolkienmobs.page.marches", "campaign.tolkienmobs.page.marches.place"),
+                    new Page(Quest.Kind.FACTION, "", 12, 120,
+                            "campaign.tolkienmobs.page.levy", "campaign.tolkienmobs.page.levy.place"),
+                    new Page(Quest.Kind.FETCH, "tolkienmobs:item_scroll", 1, 0,
+                            "campaign.tolkienmobs.page.steward", "campaign.tolkienmobs.page.steward.place")),
             Alliance.HARAD, List.of(
-                    new Page(Quest.Kind.FACTION, "", 6, 60),
-                    new Page(Quest.Kind.FACTION, "", 12, 120))
+                    new Page(Quest.Kind.FACTION, "", 6, 60,
+                            "campaign.tolkienmobs.page.sun", "campaign.tolkienmobs.page.sun.place"),
+                    new Page(Quest.Kind.FACTION, "", 12, 120,
+                            "campaign.tolkienmobs.page.ford", "campaign.tolkienmobs.page.ford.place"))
     );
 
-    /** One page of a front's line: what it asks of the player, and what the country pays for it. */
-    private record Page(Quest.Kind kind, String target, int goal, int standing) {
+    /**
+     * One page of a front's line: what it asks of the player, what the country pays for it, and the two
+     * things that say what the step <em>is</em> - its name, and the place it happens in.
+     * <p>
+     * Both are translation keys rather than words, so a page is read in its reader's language, and both
+     * are blank on a page that has no name of its own: the book then falls back to the objective alone
+     * rather than printing an empty heading.
+     */
+    private record Page(Quest.Kind kind, String target, int goal, int standing, String title, String place) {
     }
 
     /** How many pages a front has. */
@@ -89,8 +103,16 @@ public final class Campaign extends SavedData {
      * and all wanted him gone, and none of them sent the player alone.
      */
     private static final int RIDER_STANDING = 200;
+    /**
+     * The name of the campaign's own page, and the place the book says it is met at. He belongs to no
+     * front, so his name cannot sit in a front's line and is written here instead.
+     */
+    private static final String RIDER_TITLE = "campaign.tolkienmobs.page.rider";
+    private static final String RIDER_PLACE = "campaign.tolkienmobs.page.rider.place";
 
     private static final Map<UUID, Front[]> PROGRESS = new HashMap<>();
+    /** What {@link #instance} answers with when there is no server to hold a file. */
+    private static final Campaign NO_SERVER = new Campaign(false);
     private static final int[] CLIENT = new int[Alliance.values().length];
     private static int clientRider;
 
@@ -112,8 +134,20 @@ public final class Campaign extends SavedData {
     public static final SavedDataType<Campaign> TYPE = new SavedDataType<>(
             Identifier.fromNamespaceAndPath("tolkienmobs", SAVE_DATA_NAME), Campaign::new, CODEC);
 
+    /**
+     * The instance a world with no campaign file starts from. The clearing is the point: these maps are
+     * static, so a player who leaves one world and starts another in the same session would otherwise
+     * find the last world's stages still standing in them, with no file to overwrite them. When a world
+     * does have a file, {@link #fromEntries} clears the same map before it fills it.
+     */
     private Campaign() {
+        this(true);
+    }
+
+    /** A stand-in for a level with no server behind it, which neither reads nor clears anything. */
+    private Campaign(boolean fresh) {
         super();
+        if (fresh) PROGRESS.clear();
     }
 
     // ---- reading ----
@@ -144,6 +178,37 @@ public final class Campaign extends SavedData {
     public static boolean clientHasWork(Alliance alliance) {
         if (CLIENT[alliance.ordinal()] < pages(alliance)) return true;
         return clientSealed() && clientRider == 0;
+    }
+
+    /**
+     * The name of the step a front is on, as the book draws it, or an empty component when that step has
+     * no name of its own. Read off the synced stage rather than off the page itself: a stage only moves
+     * when the ledger settles a page, so while one is carried the stage is that page's index.
+     */
+    public static Component clientTitle(Alliance alliance) {
+        List<Page> line = PAGE_LINES.get(alliance);
+        int stage = CLIENT[alliance.ordinal()];
+        return stage < line.size() ? named(line.get(stage).title()) : Component.empty();
+    }
+
+    /** Where the front's current step happens, or an empty component when the page does not say. */
+    public static Component clientPlace(Alliance alliance) {
+        List<Page> line = PAGE_LINES.get(alliance);
+        int stage = CLIENT[alliance.ordinal()];
+        return stage < line.size() ? named(line.get(stage).place()) : Component.empty();
+    }
+
+    /** The campaign's own page, which is the Rider's: what it is called and where he is met. */
+    public static Component clientRiderTitle() {
+        return named(RIDER_TITLE);
+    }
+
+    public static Component clientRiderPlace() {
+        return named(RIDER_PLACE);
+    }
+
+    private static Component named(String key) {
+        return key.isEmpty() ? Component.empty() : Component.translatable(key);
     }
 
     public static void acceptClient(int[] stages) {
@@ -295,15 +360,39 @@ public final class Campaign extends SavedData {
     }
 
     /**
-     * Whether a page is the campaign's own rather than one of a front's. Read off its kind and target
-     * rather than by equality, because the copy the player carries has advanced past the copy noted here
-     * as soon as a blow lands.
+     * Whether a page is the campaign's own rather than one of a front's. Read off what the page asks for
+     * rather than off what was noted as handed over, because this is asked while a page is still being
+     * handed out - before the slot knows about it - and again of every copy already in a book.
      */
     public static boolean isCampaignPage(ServerPlayer player, Quest quest) {
-        ensureLoaded(player.level());
-        Front rider = row(player)[RIDER_SLOT].handed() == null ? null : row(player)[RIDER_SLOT];
-        return rider != null && quest.kind() == rider.handed().kind()
-                && quest.target().equals(rider.handed().target());
+        return quest.story() && quest.kind() == Quest.Kind.HUNT && quest.target().equals(riderId());
+    }
+
+    /**
+     * Whether the player is already carrying a page of this front, whoever handed it over. Two halls of
+     * one alliance - an old one and a new one, or a hall beside a giver stood up by a command - would
+     * otherwise each write a page for the same step, and only the last of them could ever settle it.
+     */
+    public static boolean holdsFrontPage(ServerPlayer player, Alliance alliance) {
+        for (Quest quest : QuestLedger.active(player)) {
+            if (quest.story() && !isCampaignPage(player, quest) && alliance.id().equals(quest.employer())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Whether the page paid off is the page a slot handed out. Compared by its terms rather than by the
+     * record itself, because the copy the player carries has moved on by every blow they landed: the
+     * noted page sits at no progress from the moment it is handed over, so equality would never recognise
+     * a finished one, and the front would hand the same page out again for ever.
+     */
+    private static boolean sameErrand(@Nullable Quest handed, Quest paid) {
+        return handed != null && handed.kind() == paid.kind()
+                && handed.target().equals(paid.target())
+                && handed.employer().equals(paid.employer())
+                && handed.goal() == paid.goal();
     }
 
     /**
@@ -319,14 +408,14 @@ public final class Campaign extends SavedData {
         if (row == null) return false;
         for (Alliance alliance : Alliance.values()) {
             Front front = row[alliance.ordinal()];
-            if (front.handed() == null || !front.handed().equals(quest)) continue;
+            if (!sameErrand(front.handed(), quest)) continue;
             row[alliance.ordinal()] = new Front(front.stage() + 1, null);
             store(player).setDirty();
             sync(player);
             return false;
         }
         Front rider = row[RIDER_SLOT];
-        if (rider.handed() == null || !rider.handed().equals(quest)) return false;
+        if (!sameErrand(rider.handed(), quest)) return false;
         row[RIDER_SLOT] = new Front(1, null);
         store(player).setDirty();
         sync(player);
@@ -378,7 +467,7 @@ public final class Campaign extends SavedData {
             ServerLevel overworld = serverLevel.getServer().getLevel(Level.OVERWORLD);
             if (overworld != null) return overworld.getDataStorage().computeIfAbsent(TYPE);
         }
-        return new Campaign();
+        return NO_SERVER;
     }
 
     private static Campaign fromEntries(List<Entry> entries) {
@@ -387,7 +476,8 @@ public final class Campaign extends SavedData {
             PROGRESS.put(entry.player(), new Front[]{entry.west(), entry.east(), entry.harad(),
                     entry.rider()});
         }
-        return new Campaign();
+        // Read without clearing: the map was just filled from the file.
+        return new Campaign(false);
     }
 
     private static List<Entry> toEntries(Campaign campaign) {
