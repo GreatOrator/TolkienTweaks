@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.entity;
 
+import com.greatorator.tolkienmobs.entity.util.TableIdle;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import net.minecraft.util.Util;
 import net.minecraft.network.chat.Component;
@@ -35,6 +36,15 @@ public class TolkienVillagerEntity extends Villager implements GeoEntity {
 
     public TolkienVillagerEntity(EntityType<? extends TolkienVillagerEntity> entityType, Level level) {
         super(entityType, level);
+    }
+
+    /** The hall idle: the yaw this body was placed at, captured the first time it is asked. */
+    private final TableIdle.Pose tablePose = new TableIdle.Pose();
+
+    @Override
+    public void tick() {
+        super.tick();
+        this.tablePose.tick(this);
     }
 
     /**
