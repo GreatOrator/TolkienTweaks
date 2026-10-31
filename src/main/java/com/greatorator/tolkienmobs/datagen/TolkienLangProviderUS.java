@@ -523,6 +523,18 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.addSound("ambient", "arda_portal", "Portal to Arda beckons");
             this.addSound("item", "hype_horn", "Celebrating victory");
             this.addSound("item", "war_horn", "A war horn sounds");
+            this.add("screen.tolkienmobs.faction_ledger.courage", "Courage");
+            this.add("courage.tolkienmobs.fainthearted", "Faint-hearted");
+            this.add("courage.tolkienmobs.trembling", "Trembling");
+            this.add("courage.tolkienmobs.steady", "Steady");
+            this.add("courage.tolkienmobs.stouthearted", "Stout-hearted");
+            this.add("courage.tolkienmobs.fearless", "Fearless");
+            this.add("courage.tolkienmobs.unbowed", "Unbowed");
+            this.add("courage.tolkienmobs.risen", "Your courage grows: %s");
+            this.add("courage.tolkienmobs.risen.overlay", "Courage: %s");
+            this.add("hud.tolkienmobs.courage.steadfast", "You do not flinch.");
+            this.add("command.tolkienmobs.courage.set", "Set %s courage to %s deeds");
+            this.add("command.tolkienmobs.courage.get", "%s: %s deeds (%s)");
             this.addSound("mob", "coin_trader", "A Wild Coin Trader appears!");
             this.addSound("mob", "fellbeast_wind", "The beast dives.");
 

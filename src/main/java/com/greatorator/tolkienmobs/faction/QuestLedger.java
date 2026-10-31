@@ -295,6 +295,8 @@ public final class QuestLedger extends SavedData {
                 player.drop(stack, false);
             }
         }
+        // Work seen through is courage earned the long way: one deed, whatever the work was.
+        CourageLedger.award(player, CourageLedger.Deed.WORK_DONE);
         player.sendSystemMessage(Component.translatable("quest.tolkienmobs.turned_in", quest.objective())
                 .withStyle(ChatFormatting.GREEN));
         player.level().playSound(null, player.blockPosition(), SoundEvents.PLAYER_LEVELUP,

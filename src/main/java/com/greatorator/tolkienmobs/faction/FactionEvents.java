@@ -8,6 +8,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import com.greatorator.tolkienmobs.entity.boss.WitchKingEntity;
+import com.greatorator.tolkienmobs.entity.monster.NazgulEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
@@ -33,6 +35,7 @@ public final class FactionEvents {
             FactionStandings.sync(player);
             QuestLedger.welcome(player);
             QuestLedger.sync(player);
+            CourageLedger.sync(player);
         }
     }
 
@@ -45,6 +48,12 @@ public final class FactionEvents {
         if (!(event.getSource().getEntity() instanceof ServerPlayer player)) return;
         Entity victim = event.getEntity();
         QuestLedger.progressKill(player, victim);
+        // Felling one of the Nine, or their master, is the lesson that the terror can be outlived.
+        if (victim instanceof WitchKingEntity) {
+            CourageLedger.award(player, CourageLedger.Deed.WITCHKING_FELLED);
+        } else if (victim instanceof NazgulEntity) {
+            CourageLedger.award(player, CourageLedger.Deed.NAZGUL_FELLED);
+        }
         for (Alliance alliance : Alliance.values()) {
             if (!victim.getType().builtInRegistryHolder().is(alliance.soldiers())) continue;
             FactionStandings.adjust(player, alliance, -FactionRank.KILL_VALUE);

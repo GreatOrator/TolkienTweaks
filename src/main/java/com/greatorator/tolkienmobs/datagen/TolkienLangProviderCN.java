@@ -523,6 +523,18 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addSound("ambient", "arda_portal", "Portal to Arda beckons");
             this.addSound("item", "hype_horn", "Celebrating victory");
             this.addSound("item", "war_horn", "战争号角响起");
+            this.add("screen.tolkienmobs.faction_ledger.courage", "勇气");
+            this.add("courage.tolkienmobs.fainthearted", "胆怯");
+            this.add("courage.tolkienmobs.trembling", "颤抖");
+            this.add("courage.tolkienmobs.steady", "坚定");
+            this.add("courage.tolkienmobs.stouthearted", "坚毅");
+            this.add("courage.tolkienmobs.fearless", "无惧");
+            this.add("courage.tolkienmobs.unbowed", "不屈");
+            this.add("courage.tolkienmobs.risen", "你的勇气增长了：%s");
+            this.add("courage.tolkienmobs.risen.overlay", "勇气：%s");
+            this.add("hud.tolkienmobs.courage.steadfast", "你不再畏缩。");
+            this.add("command.tolkienmobs.courage.set", "已将 %s 的勇气设为 %s 功绩");
+            this.add("command.tolkienmobs.courage.get", "%s：%s 功绩（%s）");
             this.addSound("mob", "coin_trader", "A Wild Coin Trader appears!");
             this.addSound("mob", "fellbeast_wind", "The beast dives.");
 

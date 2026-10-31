@@ -1,11 +1,14 @@
 package com.greatorator.tolkienmobs.client;
 
 import com.greatorator.tolkienmobs.faction.Alliance;
+import com.greatorator.tolkienmobs.faction.Courage;
+import com.greatorator.tolkienmobs.faction.CourageLedger;
 import com.greatorator.tolkienmobs.faction.FactionEvents;
 import com.greatorator.tolkienmobs.faction.FactionRank;
 import com.greatorator.tolkienmobs.faction.FactionStandings;
 import com.greatorator.tolkienmobs.faction.Quest;
 import com.greatorator.tolkienmobs.faction.QuestLedger;
+import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.network.manager.QuestAbandonManager;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
@@ -230,10 +233,14 @@ public class FactionLedgerScreen extends Screen {
         int w = innerW();
         int top = bodyTop();
         int rows = Alliance.values().length;
-        int rowH = Math.min(42, Math.max(26, (bodyBottom() - top - 14) / Math.max(1, rows)));
+        // The courage row takes the foot of the leaf: it is the only line on this page that is about
+        // the player rather than about a country.
+        int courageTop = bodyBottom() - 34;
+        int rowH = Math.min(42, Math.max(26, (courageTop - top - 14) / Math.max(1, rows)));
         for (int i = 0; i < rows; i++) {
             drawStanding(graphics, x, top + i * rowH, w, Alliance.values()[i]);
         }
+        drawCourage(graphics, x, courageTop, w);
         drawCentred(graphics, leftPageX, Component.translatable("screen.tolkienmobs.faction_ledger.hint"),
                 INK_DIM, pageBottom() - 13);
     }
@@ -265,7 +272,35 @@ public class FactionLedgerScreen extends Screen {
         }
     }
 
-    // ---- the right leaf on the ledger bookmark: what is in hand ----
+    /**
+     * The one row on this leaf about the player rather than a country: how much of the dark they can
+     * stand, and how far into the next rung they are. It is drawn with the horn that answers fear, in
+     * the book that carries the work, because courage is earned out of the two together.
+     */
+    private void drawCourage(GuiGraphicsExtractor graphics, int x, int y, int w) {
+        int deeds = CourageLedger.clientCourage();
+        Courage stage = Courage.of(deeds);
+        int ink = ARGB.opaque(stage.colour());
+
+        graphics.item(new ItemStack(TolkienItems.WAR_HORN.get()), x, y + 1);
+        int textX = x + 21;
+        int textW = w - 21;
+        String count = String.valueOf(deeds);
+        int countW = this.font.width(count);
+        graphics.text(this.font, fit(Component.translatable("screen.tolkienmobs.faction_ledger.courage").getString(), textW - countW - 4),
+                textX, y + 2, INK_DIM, FLAT);
+        graphics.text(this.font, count, x + w - countW, y + 2, ink, FLAT);
+        graphics.text(this.font, fit(stage.displayName().getString(), textW), textX, y + 12, ink, FLAT);
+
+        int barY = y + 23;
+        graphics.fill(textX, barY, textX + textW, barY + 4, TRACK);
+        int filled = Math.round(textW * stage.progress(deeds));
+        if (filled > 0) {
+            graphics.fill(textX, barY, textX + filled, barY + 4, ink);
+        }
+    }
+
+        // ---- the right leaf on the ledger bookmark: what is in hand ----
 
     private void drawCarried(GuiGraphicsExtractor graphics) {
         drawPageTitle(graphics, rightPageX, Component.translatable("screen.tolkienmobs.quests.carried"));
