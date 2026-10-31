@@ -55,7 +55,7 @@ public class FactionVendorEntity extends Villager implements GeoEntity {
     private final TableIdle.Pose tablePose = new TableIdle.Pose();
 
     /**
-     * A hall envoy is frozen at its bench with no brain, so its life is the pose drawn by { TableIdle}
+     * A hall envoy is frozen at its bench with no brain, so its life is the pose drawn by {@link TableIdle}
      * rather than anything walked; a vendor met anywhere else is untouched.
      */
     @Override
