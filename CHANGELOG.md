@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Fixed
 
+- **Two item models stop grumbling in the log.** The tobacco pipe and the fancy bottle were the only element-drawn models with no `particle` texture named, which the client warns about every time it loads models; both name one now, taken from the art they already draw with. Nothing about how they look changes.
+
 - **The giver skins are in the same pixel format as the rest of the mod's art.** All three were saved as plain 8-bit RGBA, as every other skin in the mod is, instead of one paletted map and one image with no alpha channel - the client's own PNG reader, not Java's, is what has to take them, and this gives it the only form it has never had trouble with.
 
 - **Quest givers can no longer be killed.** A giver is made invulnerable and persistent on its way into the world, so a mob that wanders into the scene cannot end a quest by killing the one thing that can hand it in - and givers already standing in a saved world are protected on their next load.
