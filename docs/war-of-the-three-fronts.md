@@ -438,8 +438,8 @@ world is protected on its next load.
 The gap was the same in every row, and the smallest part of it is closed: **the mod has a stage counter**
 now. `faction/Campaign` keeps how far each player has got on each of the three fronts, saved with the
 world and synced to its owner, and the first two pages of each front are written - six soldiers of a
-rival army for sixty standing, then twelve for a hundred and twenty, handed to a player the country
-already calls a stranger. It is paid through the ordinary ledger, and that is also what advances it: the
+rival army for sixty standing, twelve of the other rival's for a hundred and twenty, and then the
+Rider himself for two hundred. It is paid through the ordinary ledger, and that is also what advances it:
 ledger settles that exact page, so one dropped or cleared from the book leaves the front where it was.
 What that unlocks is the rest of the table - every page above is ordinary work at a numbered stage - and
 the Rider, because a page number is what lets the same Nazgul be met twice.

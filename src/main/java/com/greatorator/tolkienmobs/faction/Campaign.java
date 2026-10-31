@@ -1,9 +1,13 @@
 package com.greatorator.tolkienmobs.faction;
 
+import com.greatorator.tolkienmobs.init.TolkienEntities;
+import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.network.manager.CampaignSyncManager;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
@@ -39,15 +43,24 @@ import java.util.UUID;
 public final class Campaign extends SavedData {
     private static final String SAVE_DATA_NAME = "campaign";
     /**
-     * What each page of a front asks for, in order: soldiers of a rival army, and for now nothing else.
-     * The list is the line - a stage past its end is a front with nothing left to hand over - so writing
-     * one more number here is all the campaign needs to go on, and a front has as many pages as it is long.
+     * What each page of a front asks for, in order: soldiers of one rival army, then soldiers of the
+     * other, and then the Rider himself. The list is the line - a stage past its end is a front with
+     * nothing left to hand over - so writing one more page here is all the campaign needs to go on, and
+     * a front has as many pages as this list is long. A page is a kind as well as a size, so the line can
+     * change shape without new machinery: the ledger settles a hunt as readily as it settles a kill of
+     * the soldiers a country tag names.
      */
-    private static final int[] PAGE_GOALS = {6, 12};
-    /** What one soldier of a rival is worth to the country that asked for them, in standing. */
-    private static final int STANDING_PER_SOLDIER = 10;
+    private static final List<Page> PAGE_LINE = List.of(
+            new Page(Quest.Kind.FACTION, 6, 60),
+            new Page(Quest.Kind.FACTION, 12, 120),
+            new Page(Quest.Kind.HUNT, 1, 200));
+
+    /** One page of a front's line: what it asks of the player, and what the country pays for it. */
+    private record Page(Quest.Kind kind, int goal, int standing) {
+    }
+
     /** How many pages a front has. */
-    public static final int PAGES = PAGE_GOALS.length;
+    public static final int PAGES = PAGE_LINE.size();
 
     private static final Map<UUID, Front[]> PROGRESS = new HashMap<>();
     private static final int[] CLIENT = new int[Alliance.values().length];
@@ -99,13 +112,15 @@ public final class Campaign extends SavedData {
         ensureLoaded(player.level());
         int stage = row(player)[alliance.ordinal()].stage();
         if (stage >= PAGES) return null;
-        // Each page names a different rival, so a line alternates whose soldiers it wants rather than
-        // asking for the same ones twice running.
+        Page page = PAGE_LINE.get(stage);
+        // The soldier pages name a different rival each, so the line alternates whose soldiers it wants
+        // rather than asking for the same ones twice running.
         List<Alliance> rivals = alliance.rivals();
-        Alliance target = rivals.get(stage % rivals.size());
-        int goal = PAGE_GOALS[stage];
-        return new Quest(Quest.Kind.FACTION, target.id(), goal, 0, alliance.id(),
-                goal * STANDING_PER_SOLDIER, List.of(), "", BlockPos.ZERO, Quest.NOBODY, true);
+        String target = page.kind() == Quest.Kind.HUNT
+                ? riderId()
+                : rivals.get(stage % rivals.size()).id();
+        return new Quest(page.kind(), target, page.goal(), 0, alliance.id(), page.standing(), List.of(),
+                "", BlockPos.ZERO, Quest.NOBODY, true);
     }
 
     // ---- handing it over and settling it ----
@@ -134,6 +149,15 @@ public final class Campaign extends SavedData {
             sync(player);
             return;
         }
+    }
+
+    /**
+     * The Rider, as the registry names it. Asked of the registry rather than written out, so a page
+     * cannot name a mob the world does not have: a hunt whose target is in no registry can never be
+     * finished, and the front would sit on that page for good.
+     */
+    private static String riderId() {
+        return BuiltInRegistries.ENTITY_TYPE.getKey(TolkienEntities.ENTITY_TTM_NAZGUL.get()).toString();
     }
 
     // ---- plumbing ----
