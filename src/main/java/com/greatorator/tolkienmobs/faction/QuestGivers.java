@@ -113,7 +113,7 @@ public final class QuestGivers {
             giver.addTag(GIVER_TAG);
             // The alliance is read once, and only decides the work this giver holds out: the clothes
             // belong to the giver standing in a hall, which carries an alliance tag of its own.
-            Alliance employer = employer(player);
+            Alliance employer = employer(player);
             makeSafe(giver);
             if (!level.addFreshEntity(giver)) continue;
 
@@ -211,8 +211,8 @@ public final class QuestGivers {
 
     /**
      * The giver skin an entity wears, as 0 for anything that is not a giver and otherwise an alliance's
-     * ordinal plus one. A giver placed with no alliance tag speaks for the West, because the mainline is
-     * the West's and that is the only skin an untagged giver could sensibly want.
+     * ordinal plus one. Only a body carrying an alliance tag wears one of the hall skins: a giver met
+     * in the world carries no such tag and keeps the clothes of its own folk.
      */
     public static int giverSkinOf(Entity entity) {
         if (!isGiver(entity)) return 0;
