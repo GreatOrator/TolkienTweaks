@@ -252,6 +252,11 @@ public final class QuestLedger extends SavedData {
      * whatever its target alliance's soldier tag names, and a hunt quest by the exact mob it names.
      */
     public static void progressKill(ServerPlayer player, Entity victim) {
+        // Check if this is the campaign's Rider dying
+        if (Campaign.isCampaignRider(player, victim)) {
+            Campaign.onRiderDeath(player);
+        }
+
         List<Quest> quests = row(player);
         boolean changed = false;
         for (int slot = 0; slot < quests.size(); slot++) {

@@ -7,11 +7,17 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -51,16 +57,27 @@ public final class Campaign extends SavedData {
      * writing one more page here is all the campaign needs to go on, and a front has as many pages as
      * this list is long.
      */
-    private static final List<Page> PAGE_LINE = List.of(
-            new Page(Quest.Kind.FACTION, 6, 60),
-            new Page(Quest.Kind.FACTION, 12, 120));
+    private static final Map<Alliance, List<Page>> PAGE_LINES = Map.of(
+            Alliance.WEST, List.of(
+                    new Page(Quest.Kind.FACTION, "", 6, 60),
+                    new Page(Quest.Kind.FACTION, "", 12, 120)),
+            Alliance.EAST, List.of(
+                    new Page(Quest.Kind.FACTION, "", 6, 60),
+                    new Page(Quest.Kind.FACTION, "", 12, 120),
+                    new Page(Quest.Kind.FETCH, "tolkienmobs:item_scroll", 1, 0)),
+            Alliance.HARAD, List.of(
+                    new Page(Quest.Kind.FACTION, "", 6, 60),
+                    new Page(Quest.Kind.FACTION, "", 12, 120))
+    );
 
     /** One page of a front's line: what it asks of the player, and what the country pays for it. */
-    private record Page(Quest.Kind kind, int goal, int standing) {
+    private record Page(Quest.Kind kind, String target, int goal, int standing) {
     }
 
     /** How many pages a front has. */
-    public static final int PAGES = PAGE_LINE.size();
+    public static int pages(Alliance alliance) {
+        return PAGE_LINES.get(alliance).size();
+    }
 
     /**
      * The slot the campaign's own page lives in, one past the three fronts. It is a stage like any
@@ -85,6 +102,9 @@ public final class Campaign extends SavedData {
                         .forGetter(Front::handed)
         ).apply(instance, Front::new));
     }
+
+    /** The campaign's Rider, tracked per player so he can be respawned fresh at each stage. */
+    private static final Map<UUID, UUID> RIDER_ENTITY = new HashMap<>();
 
     public static final Codec<Campaign> CODEC = Entry.CODEC.listOf()
             .xmap(Campaign::fromEntries, Campaign::toEntries);
@@ -111,7 +131,7 @@ public final class Campaign extends SavedData {
     /** Whether all three fronts are settled on the client's last-synced copy. */
     public static boolean clientSealed() {
         for (Alliance alliance : Alliance.values()) {
-            if (CLIENT[alliance.ordinal()] < PAGES) return false;
+            if (CLIENT[alliance.ordinal()] < pages(alliance)) return false;
         }
         return true;
     }
@@ -122,7 +142,7 @@ public final class Campaign extends SavedData {
      * behind the player.
      */
     public static boolean clientHasWork(Alliance alliance) {
-        if (CLIENT[alliance.ordinal()] < PAGES) return true;
+        if (CLIENT[alliance.ordinal()] < pages(alliance)) return true;
         return clientSealed() && clientRider == 0;
     }
 
@@ -164,12 +184,16 @@ public final class Campaign extends SavedData {
         ensureLoaded(player.level());
         Front[] row = row(player);
         int stage = row[alliance.ordinal()].stage();
-        if (stage < PAGES) {
-            Page page = PAGE_LINE.get(stage);
+        List<Page> line = PAGE_LINES.get(alliance);
+        if (stage < line.size()) {
+            Page page = line.get(stage);
             // The soldier pages name a different rival each, so the line alternates whose soldiers it
             // wants rather than asking for the same ones twice running.
-            List<Alliance> rivals = alliance.rivals();
-            String target = rivals.get(stage % rivals.size()).id();
+            String target = page.target();
+            if (page.kind() == Quest.Kind.FACTION) {
+                List<Alliance> rivals = alliance.rivals();
+                target = rivals.get(stage % rivals.size()).id();
+            }
             return new Quest(page.kind(), target, page.goal(), 0, alliance.id(), page.standing(), List.of(),
                     "", BlockPos.ZERO, Quest.NOBODY, true);
         }
@@ -198,6 +222,76 @@ public final class Campaign extends SavedData {
         int slot = slotOf(page, alliance);
         row[slot] = new Front(row[slot].stage(), page);
         store(player).setDirty();
+        // Spawn the Rider when the campaign page is handed over, but only if one isn't already spawned
+        if (isCampaignPage(player, page) && !RIDER_ENTITY.containsKey(player.getUUID())) {
+            spawnRider(player);
+        }
+    }
+
+    /**
+     * Spawns the campaign's Rider for a player. The Rider is placed near the player and marked as
+     * the campaign's, so his death can be tracked separately from any other Nazgûl the player might
+     * encounter.
+     */
+    private static void spawnRider(ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel level)) return;
+        BlockPos pos = player.blockPosition();
+        // Spawn the Rider 10-15 blocks away from the player
+        RandomSource random = level.getRandom();
+        int dx = random.nextInt(10, 16) * (random.nextBoolean() ? 1 : -1);
+        int dz = random.nextInt(10, 16) * (random.nextBoolean() ? 1 : -1);
+        int x = pos.getX() + dx;
+        int z = pos.getZ() + dz;
+        int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
+        BlockPos spawnPos = new BlockPos(x, y, z);
+
+        Entity entity = TolkienEntities.ENTITY_TTM_NAZGUL.get().create(level, EntitySpawnReason.EVENT);
+        if (!(entity instanceof Mob rider)) return;
+        rider.snapTo(x + 0.5D, y, z + 0.5D, random.nextFloat() * 360.0F, 0.0F);
+        rider.setPersistenceRequired();
+        rider.setCustomName(Component.literal("The Rider"));
+        rider.setCustomNameVisible(true);
+        rider.addTag("tolkienmobs:campaign_rider");
+        rider.addTag("tolkienmobs:rider_" + player.getUUID());
+
+        if (level.addFreshEntity(rider)) {
+            RIDER_ENTITY.put(player.getUUID(), rider.getUUID());
+        }
+    }
+
+    /**
+     * Checks whether a killed entity is the campaign's Rider for a given player. The Rider is
+     * identified by his tags, which include the player's UUID.
+     */
+    public static boolean isCampaignRider(ServerPlayer player, Entity victim) {
+        return victim.entityTags().contains("tolkienmobs:campaign_rider")
+                && victim.entityTags().contains("tolkienmobs:rider_" + player.getUUID());
+    }
+
+    /**
+     * Called when the campaign's Rider dies. The Rider is removed from the tracking map, but the
+     * quest is not settled here - that happens through the normal quest ledger when the player
+     * hands in the completed quest. The Rider can be respawned fresh for the next stage.
+     */
+    public static void onRiderDeath(ServerPlayer player) {
+        RIDER_ENTITY.remove(player.getUUID());
+    }
+
+    /**
+     * Respawns the Rider for a player if they have an active Rider quest. This is called when
+     * a player takes the Rider page again (e.g., after handing in a previous Rider encounter).
+     */
+    public static void respawnRider(ServerPlayer player) {
+        // Remove any existing Rider for this player
+        UUID oldRiderId = RIDER_ENTITY.remove(player.getUUID());
+        if (oldRiderId != null && player.level() instanceof ServerLevel level) {
+            Entity oldRider = level.getEntity(oldRiderId);
+            if (oldRider != null) {
+                oldRider.discard();
+            }
+        }
+        // Spawn a fresh Rider
+        spawnRider(player);
     }
 
     /**
@@ -256,7 +350,7 @@ public final class Campaign extends SavedData {
 
     private static boolean sealed(Front[] row) {
         for (Alliance alliance : Alliance.values()) {
-            if (row[alliance.ordinal()].stage() < PAGES) return false;
+            if (row[alliance.ordinal()].stage() < pages(alliance)) return false;
         }
         return true;
     }

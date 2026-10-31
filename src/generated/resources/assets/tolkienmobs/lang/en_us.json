@@ -1759,6 +1759,7 @@
   "quest.tolkienmobs.giver.idle": "I have no work for you just now.",
   "quest.tolkienmobs.giver.unknown": "Someone in need",
   "quest.tolkienmobs.giver_arrived": "Someone with work for you has arrived nearby.",
+  "quest.tolkienmobs.herald.rider": "All three fronts are settled. The Rider is yours.",
   "quest.tolkienmobs.herald.settled": "All three fronts are quiet, and the Rider is not coming back. There is nothing left to ask of you.",
   "quest.tolkienmobs.herald.waiting": "This front is settled. The other two have not finished their line.",
   "quest.tolkienmobs.hunt": "Slay %s %s",

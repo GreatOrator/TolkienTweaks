@@ -1759,6 +1759,7 @@
   "quest.tolkienmobs.giver.idle": "我眼下没有适合你的活。",
   "quest.tolkienmobs.giver.unknown": "一位需要帮助的人",
   "quest.tolkienmobs.giver_arrived": "附近来了一位有事相求的人。",
+  "quest.tolkienmobs.herald.rider": "三条战线都已了结。戒灵归你了。",
   "quest.tolkienmobs.herald.settled": "三条战线都安静了，戒灵不会再回来。再没有什么要托付给你了。",
   "quest.tolkienmobs.herald.waiting": "我这一线已经了结，其余两线还没有走完。",
   "quest.tolkienmobs.hunt": "杀死 %s 只%s",
