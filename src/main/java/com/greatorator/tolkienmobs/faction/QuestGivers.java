@@ -58,6 +58,8 @@ public final class QuestGivers {
     private static final int MAX_SPAWN = 28;
     /** One giver at a time near a player: the offer is theirs, and a crowd of them reads as a bug. */
     private static final double NEAR = 64.0;
+    /** The home area a hall giver is kept inside: the middle of the room, six blocks out. */
+    private static final int HALL_RADIUS = 6;
 
     private QuestGivers() {
     }
@@ -192,6 +194,23 @@ public final class QuestGivers {
         }
         if (giver instanceof Mob mob) {
             mob.setPersistenceRequired();
+            if (factionOf(giver) != null) keepInHall(mob);
+        }
+    }
+
+    /**
+     * A hall giver stands in a room, so it is given the room. A herald cut into a structure carries its own
+     * home area and its own brain; one saved in a world from before that was frozen and has neither, and is
+     * repaired here on load rather than being left standing where it was placed. The radius is the hall
+     * own - six blocks out from the middle of a room sixteen wide - and the entity pulls any walk target
+     * that leaves it back inside.
+     */
+    private static void keepInHall(Mob herald) {
+        if (!herald.hasHome()) {
+            herald.setHomeTo(herald.blockPosition(), HALL_RADIUS);
+        }
+        if (herald.isNoAi()) {
+            herald.setNoAi(false);
         }
     }
 
