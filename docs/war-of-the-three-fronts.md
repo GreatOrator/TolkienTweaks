@@ -399,6 +399,12 @@ for someone who has already done the country a favour, not for whoever walks thr
 the stage counter below exists and a page is written for him to hand out, right-clicking him answers that
 there is no work, which is the truth.
 
+The other two are frozen at their tables on purpose, and their life is drawn instead of walked:
+`entity/util/TableIdle` turns each of them slowly about the place it was set and lifts its head from the
+work now and then, on two waves of different lengths. What makes a body staff is having no brain and
+carrying one of the hall tags, so a hall placed before that code learns nothing new and simply stops
+reading as furniture.
+
 Once the stage counter below exists, the herald stops holding the whole line in one hand: his mark
 becomes the one that reflects the stage - **!** for the next page, **?** for a page finished and unread
 - while the hall's ordinary givers keep spawning as they do now. That is also what keeps the campaign

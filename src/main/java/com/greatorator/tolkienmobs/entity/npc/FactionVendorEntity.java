@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.entity.npc;
 
+import com.greatorator.tolkienmobs.entity.util.TableIdle;
 import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animatable.manager.AnimatableManager;
@@ -50,6 +51,18 @@ import org.jetbrains.annotations.Nullable;
  * the state that decides the stock is on the player, not on the shopkeeper.
  */
 public class FactionVendorEntity extends Villager implements GeoEntity {
+    /** The hall idle: the yaw this envoy was placed at, captured the first time it is asked. */
+    private final TableIdle.Pose tablePose = new TableIdle.Pose();
+
+    /**
+     * A hall envoy is frozen at its bench with no brain, so its life is the pose drawn by { TableIdle}
+     * rather than anything walked; a vendor met anywhere else is untouched.
+     */
+    @Override
+    public void tick() {
+        super.tick();
+        this.tablePose.tick(this);
+    }
     private static final EntityDataAccessor<Integer> ALLIANCE =
             SynchedEntityData.defineId(FactionVendorEntity.class, EntityDataSerializers.INT);
     /** Server-side only: whether anything has named this envoy's side yet. */
