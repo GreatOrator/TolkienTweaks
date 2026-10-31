@@ -1,16 +1,30 @@
-# The War of the Three Fronts
+# The War of the Three Fronts — the West's line
 
 The campaign script: what is said, where it happens, and what the player has to do. It is written to
 be read aloud by NPCs the way the older quest pages were, one page per quest, so a stage can be built
 from a page without inventing anything.
 
-**The spine.** Three alliances (West, East, Harad) each hold a front, and the war is lost or won on
-whatever front the player chooses to stand. The enemy is not three armies but one will behind them —
-a Rider who was never thrown down at the Ford — and every act ends by showing that the front just
-cleared was only a diversion. Act I teaches the player fear (the `PARALYSING_FEAR` pin). Act II turns
-that pin into slowness, so the fear still costs something without stopping the fight. Act III is where
-a player who has done the work can stand in the arena and not flinch at all — the courage ladder is
-the story's own progression, and the Witch-king's refusal is earned rather than granted.
+**One faction, for now.** This is the West's questline and nobody else's. Every hall the player is
+sent to is the West's, every speaker answers to the West, and the standing it pays is the West's. The
+East and Harad lines come later by retooling this one — the spine, the acts and the courage ladder
+stay, and only the halls, the speakers, the countries and the items the enemy is moving change. The
+note at the foot of this file lists exactly what a retool touches, so the second and third lines are
+a rewrite rather than a design.
+
+**The spine.** The war has three fronts and the player holds one of them: the West's. The enemy is not
+three armies but one will behind them — a Rider who was never thrown down at the Ford — and every act
+ends by showing that the front just cleared was only a diversion. Act I teaches the player fear (the
+`PARALYSING_FEAR` pin). Act II turns that pin into slowness, so the fear still costs something without
+stopping the fight. Act III is where a player who has done the work can stand in the arena and not
+flinch at all — the courage ladder is the story's own progression, and the Witch-king's refusal is
+earned rather than granted.
+
+**The Rider cannot be killed, and the game lets you kill him anyway.** A Nazgûl is not a dead man, it
+is a will that has been given a shape; nothing a player carries can end one, and in the tales they are
+not ended at all until the Ring is. So page 5's Rider takes damage, runs out of health, and falls like
+anything else — and then he is standing on the next page, unharmed, unimpressed, and mildly interested
+that you tried. The mechanic is a lie the game tells with a straight face, and it is the truest thing
+in the campaign.
 
 **What each page gives.** A speaker, the ground they stand on, the words, the errand, what the errand
 pays, and which of the mod's quest kinds can express it today. Where a page needs machinery the mod
@@ -34,14 +48,13 @@ point, because the first thing the war does is make quiet ground frightening.
   barrows. *Cost:* an ordinary person's livelihood, on screen. *Reveals:* the war is local now.
 - **4. The duty.** The barrow wight was *guarding* a key, not hoarding it. *Reveals:* the enemy set the
   dead to a task. *Pays:* the key fragment, and the Trembling rung.
-- **5. The tower.** You open the tower and there is no boss inside. There is a conversation, and the
-  Rider leaves. *Cost:* nothing you can prevent. *Reveals:* he has been counting, and help is what he
-  came for. *Turns the act.*
+- **5. The tower.** You fight the Rider, you beat him, and he falls. Then he is on the next page,
+  unharmed, and the act turns on the player realising what that means. *Cost:* the fight you thought
+  you had won. *Reveals:* you cannot end him, and he has been counting your halls for years.
 
-**The open question for this act:** page 5 asks for a Nazgul that cannot be beaten, and a player who
-has been taught to fight everything will spend ten minutes trying anyway. The alternative is a Rider
-who *is* killable but reconstitutes on the next stage - more forgiving, less frightening.
-
+**Settled for this act:** the Rider is killable and reconstitutes. An unkillable mob reads as a bug to
+a player who has been taught to hit things, and a mob that dies reads as a win until it walks back in.
+The second sentence is the one the act needs.
 
 ### 1. A Rider on the Greenway — Maelgrin, Ranger of Eriador
 
@@ -124,7 +137,7 @@ tower's door — the campaign's first hand-placed gate. **Pays:** the Act I cour
 
 ### 5. The Rider's Word — the Nazgûl
 
-*Place:* the top of the dark tower. One conversation, and the player does not get to win it.
+*Place:* the top of the dark tower. He is killable here. It changes nothing.
 
 > **The Rider:** "You came up the stair. They always come up the stair."
 >
@@ -135,26 +148,33 @@ tower's door — the campaign's first hand-placed gate. **Pays:** the Act I cour
 > the ice went out, walking your roads, counting your halls, and I have not been counting for myself.
 > Blow your little horn, Man of the West. It will bring help, and help is what I came for."
 >
-> *The Rider does not fight. He leaves, and the tower's stores burn behind him.*
+> *He fights, and he is beatable — the corpse falls and the tower's stores burn behind you as you
+> leave. Then, on the next page, he is in a doorway with the same patient voice, and the ledger has
+> already forgotten the kill.*
 
-**Errand:** Survive the tower as it burns; the Rider is not killable here. **Built from:** a scripted
-encounter — the Nazgûl (`entityttm_nazgul`) with the player unable to finish it. **Pays:** courage deed
-for the Nazgûl encounter (5 deeds), and the act's turn.
+**Errand:** Beat the Rider, then find him again. **Built from:** a real Nazgûl fight
+(`entityttm_nazgul`) that resolves normally — drops, death message and all — with the identity held
+outside the entity, so the same Rider stands at the next stage. **Pays:** courage deed for the Nazgûl
+killed (5 deeds), and the act's turn.
 
-**Needs:** a non-lethal encounter state — the mob must leave at a threshold rather than die. This is
-the one mechanic Act I cannot be built without.
+**Needs:** a rider that outlives its own corpse. The clean way is a campaign holder (a per-player stage,
+below) that spawns the Rider fresh at each stage with the same name and no memory of dying; the mob
+needs no special code at all, only the campaign needs to know that killing him does not advance the
+story. Cheap, and the lie holds because the player never sees the respawn happen.
 
 ---
 
 ## Act II — The Iron Road
 
-The East's front, and the act where the fear changes its grip. The ground: Mirkwood's eaves, the
-Dagorlad, and the road the enemy's smiths use to feed Mordor.
+The East's front, seen from the West's side: the player is still the West's, and this act is the West's
+expedition east. The ground is Mirkwood's eaves, the Dagorlad, and the road the enemy's smiths use to
+feed Mordor.
 
 **Outline.**
 
-- **1. The wagons.** Guthlac: forty-one wagons east, coming back empty but not light. You break the
-  warg pit and take the plan out of its cache. *Cost:* the road's garrison. *Pays:* the fortress map.
+- **1. The wagons.** Guthlac, a dwarf of the Iron Hills who answered the West's summons: forty-one
+  wagons east, coming back empty but not light. You break the warg pit and take the plan out of its
+  cache. *Cost:* the road's garrison. *Pays:* the fortress map.
 - **2. The plan.** It was drawn from inside the fortress. Either there is a friend, or the enemy is
   handing plans to travellers. *Reveals:* the bait, and the player knows it is bait.
 - **3. The quiet front.** Maelgrin's letter: the West has been silent for a month, and that is what
@@ -162,18 +182,16 @@ Dagorlad, and the road the enemy's smiths use to feed Mordor.
 - **4. What the wagons fed.** You follow the road into Nurn and count what has been built. The
   overseer's scroll is addressed to the captains of the southern road: you will be glad when you are
   no longer needed. *Reveals:* the arena. *Pays:* the Stout-hearted rung.
-- **5. The fork.** The last line of the scroll is in a smaller hand: *"Run."* You carry it to whichever
-  hall you stand with, and the Witch-king is named for the first time - and not fought.
-  *Turns the act.*
+- **5. The scroll home.** The last line is in a smaller hand: *"Run."* You carry it back to Maelgrin,
+  and the Witch-king is named for the first time - and not fought. *Turns the act.*
 
 **The open question for this act:** the fear is meant to become slowness here, but the player has had
 the full pin already in Act I, so Act II's fear must be *newly* worse in a way that is not "again, but
 slower" - otherwise the change reads as the game being kind rather than the enemy being clever.
 
-
 ### 6. Smiths on the Iron Road — Guthlac, a dwarf of the Iron Hills
 
-*Place:* the East's hall (`faction_hall_east`).
+*Place:* the West's camp on the Iron Road (`wild_tent`), east of Mirkwood.
 
 > **Guthlac:** "You want the short version? Wagons. Wagons going east that come back empty, and
 > wagons are heavy things to move for no reason. I put a lad on the road to count them and he counted
@@ -188,7 +206,7 @@ slower" - otherwise the change reads as the game being kind rather than the enem
 > you tell me what you found in the mud."
 
 **Errand:** Warg pit (`ttmwargpit`) and the road beside it. **Built from:** `HUNT` wargs and orcs;
-`FETCH` the fortress map from the pit's cache. **Pays:** standing with the East, coin.
+`FETCH` the fortress map from the pit's cache. **Pays:** standing with the West, coin.
 
 ### 7. The Map That Should Not Exist — Guthlac
 
@@ -221,7 +239,7 @@ standing.
 
 **Errand:** Follow the road south into Nurn (`nurn`) and count what has been built. **Built from:**
 `HUNT` the orc garrison of a Nurn village (`ttmhouse_nurn`); `FETCH` a scroll (`ITEM_SCROLL`) from the
-overseer. **Pays:** standing with the East, the Act II rung (Stout-hearted, 40 deeds).
+overseer. **Pays:** standing with the West, the Act II rung (Stout-hearted, 40 deeds).
 
 ### 9. The Steward of the South — the Witch-king's voice, through a scroll
 
@@ -237,42 +255,41 @@ overseer. **Pays:** standing with the East, the Act II rung (Stout-hearted, 40 d
 > *The last line is not in the same hand. It is smaller, and it was added later: "He is not wrong.
 > Run."*
 
-**Errand:** Take the scroll to whoever the player stands with — the campaign forks here by alliance.
-**Built from:** `FETCH` the scroll to the player's best-standing hall. **Pays:** courage deed for the
-Witch-king's name spoken (no fight yet), and the Act II turn.
+**Errand:** Carry the scroll home to Maelgrin at the West's hall. **Built from:** `FETCH` the scroll
+to the West's hall (`faction_hall_west`). **Pays:** courage deed for the Witch-king's name spoken (no
+fight yet), and the Act II turn.
 
 ---
 
 ## Act III — The Arena
 
-The South's front, and the end of it. Two builds the mod now carries: the fortress (`boss_castle`) and
-the arena beneath it (`boss_arena`). This act is where the courage ladder pays out — at Unbowed the
-`dread_aura` is refused outright, and a player who has done the work walks into the arena and simply
-does not flinch.
+The end of the West's war. Two builds the mod now carries: the fortress (`boss_castle`) and the arena
+beneath it (`boss_arena`). This act is where the courage ladder pays out — at Unbowed the `dread_aura`
+is refused outright, and a player who has done the work walks into the arena and simply does not
+flinch.
 
 **Outline.**
 
-- **1. The muster.** Three tokens, three alliances, one gate. This is the only stage in the war where
-  standing with everybody pays, and a player who has burned one alliance has to buy its token back.
-  *Cost:* the politics of the whole campaign, cashed in.
-- **2. The court.** Three Riders in the fortress, staggered, and the horn is the answer to each. The
-  Fearless rung lands between the second and the third, so the third is fought with the fear already
-  refused.
+- **1. The muster.** Maelgrin calls the West's companies and their allies to one gate: three tokens,
+  three errands, and the politics of the whole line cashed in. *Cost:* the running about.
+- **2. The court.** Three Riders in the fortress, staggered, and the horn is the answer to each - and
+  killing any of them is exactly as permanent as it was the first time. The Fearless rung lands
+  between the second and the third, so the third is fought with the fear already refused.
 - **3. The floor of sand.** The arena, the `dread_aura`, and a Witch-king who tells you he has seen to
   it that you can keep your feet - because he wants you standing for this. At Unbowed the aura is
-  refused outright, and the joke is on him. *Pays:* the Unbowed rung, the war end.
-- **4. (Not yet written.) The accounting.** What happened to the two fronts you did not stand on.
-  Every campaign that ends on one battlefield owes the other two a sentence.
+  refused outright, and the joke is on him. *Pays:* the Unbowed rung, the West's war end.
+- **4. (Not yet written.) The accounting.** What the war cost the West, and what the East and Harad
+  lines will open on.
 
 **The open question for this act:** three Riders in one build is a lot of boss for one room. The
 alternative is one Rider per level of the fortress as a descent - court, gallery, keep - which is
 more work to stage but gives the act its own shape instead of a second arena.
 
-### 10. The Last Muster — the player's own alliance warden
+### 10. The Last Muster — Maelgrin
 
-*Place:* whichever hall the player has the highest standing with.
+*Place:* the West's hall.
 
-> **The warden:** "You have brought us a scroll that says we are not the war. I have read it to the
+> **Maelgrin:** "You have brought us a scroll that says we are not the war. I have read it to the
 > hall twice. The first time they laughed. The second time nobody did, and now they are sharpening
 > things they had put away, and I do not know whether to thank you or put you out."
 >
@@ -283,9 +300,9 @@ more work to stage but gives the act its own shape instead of a second arena.
 > yard there is a floor of sand that no one lays for grain. Take the horn. Take whoever will follow a
 > fool. Blow it at the gate and do not stop blowing until the gate is behind you."
 
-**Errand:** Muster the three alliances' volunteers at the fortress gate. **Built from:** `FETCH` a
-faction token of each alliance to the site (three tokens, three errands — the act's gathering phase).
-**Pays:** courage deed per token, standing with each.
+**Errand:** Muster the West's three companies, each of which sends its token. **Built from:** `FETCH`
+three Western tokens (`ITEM_TOKEN_WESTERN_ALLIANCE`) to the muster site — three errands, one per
+company. **Pays:** courage deed per token, standing with the West.
 
 ### 11. The Court of the Fortress — three Nazgûl
 
@@ -300,6 +317,9 @@ fear — a player who blows it at the right moment keeps their feet. **Built fro
 Nazgûl (`entityttm_nazgul`) encounters. **Pays:** courage deed per Rider (5 each), the Fearless rung
 (75 deeds) between the second and third.
 
+**Needs:** the same holder as page 5 — the Riders are spawned by the campaign at each stage, so their
+deaths are the campaign's business rather than the world's.
+
 ### 12. The Floor of Sand — the Witch-king
 
 *Place:* `boss_arena`, below the fortress.
@@ -313,7 +333,7 @@ Nazgûl (`entityttm_nazgul`) encounters. **Pays:** courage deed per Rider (5 eac
 > 2. *(Say nothing. Blow the horn.)*
 
 **Errand:** The Witch-king (`entityttm_witchking`), in the arena, with `dread_aura` running. **Pays:**
-courage deed 20 (the Unbowed rung at 130 deeds lands here or just before), the war's end text.
+courage deed 20 (the Unbowed rung at 130 deeds lands here or just before), the West's war end text.
 
 **Needs:** the boss arena staged under the castle — both are placed builds now, and this is the
 campaign's job to place them together, not the generator's.
@@ -325,12 +345,34 @@ campaign's job to place them together, not the generator's.
 | Page | Today | Missing |
 |---|---|---|
 | 1–4, 6–8, 10 | `HUNT` / `FETCH` / `FACTION` at a named giver, courage deeds on hand-in and on fear | a fixed giver at a known place rather than a spawned one |
-| 5 | — | a Nazgûl that leaves instead of dying |
-| 9, 12 | `FETCH` to a hall; `HUNT` the boss | a per-player campaign stage, so page 9 does not read as a random scroll |
+| 5, 11 | `HUNT` the Rider — a normal fight, a normal drop, a normal death message | a rider that outlives its corpse: a campaign-spawned Nazgûl, respawned fresh at the next stage |
+| 9, 12 | `FETCH` to the West's hall; `HUNT` the boss | a per-player campaign stage, so page 9 does not read as a random scroll |
 | 10 | three `FETCH` errands | — |
-| 11 | three staged Nazgûl | ordered encounters in one build |
 
 The gap is the same one in every row: **the mod has quests, not a questline.** A stage counter per
 player (which page they are on) turns every page above into ordinary work the existing pool already
 knows how to pay, and it is the smallest thing that makes the campaign a campaign rather than a
-handful of good errands.
+handful of good errands. It also happens to be the thing that makes the Rider work: a page number is
+what lets the same Nazgûl be met twice.
+
+---
+
+## Retooling the line for the East and for Harad
+
+What a second line changes, and nothing else:
+
+- **The halls.** `faction_hall_east` / `faction_hall_harad` where this line says the West's, and the
+  muster sends that alliance's token.
+- **The speakers.** Maelgrin becomes a captain of that alliance; the farmer in page 3 becomes a
+  crofter of that country and the ground becomes a village of that folk (`ttmhouse_orc`,
+  `ttmhouse_desert`, `ttmhouse_nurn`). Guthlac stays Guthlac in the East's line only if he would work
+  for them, and becomes someone else in Harad's.
+- **The ground.** Act I's barrows and old forest become that country's own ruins
+  (`ttmruin_large`/`ttmruin_small`), and the tower stays the same tower for all three lines, because
+  there is one Rider and he goes where he likes.
+- **The things the enemy is moving.** This line's wagons carry iron to the arena. The East's line can
+  carry the same iron for a different reason; Harad's should carry something else entirely, or the
+  second line reads as the first one repainted.
+
+What stays fixed: the five beats of each act, the fear's progression act by act, the courage rungs
+landing in the same places, the Rider dying and coming back, and the arena.
