@@ -33,6 +33,30 @@ mechanic can be built for the page rather than guessed at.
 
 ---
 
+## The Nine
+
+The Ringwraiths, named once, so a page can name one instead of calling him "the Rider" for three acts.
+Most of these names are not Tolkien's - they come from the old campaign material that gave the Nine
+names at all - so they are furniture that can be moved, not scripture. Two are canon and stay: **the
+Witch-king of Angmar**, who is the will behind the whole war, and **Khamul the Easterling**, the Shadow
+of the East, who was the wraith sent to look for the Shire, which is exactly the errand this line puts
+him on.
+
+- **The Witch-king of Angmar** - page 12. He is the war, and he is fought once, at the end.
+- **Khamul the Easterling**, the Shadow of the East - the Rider of pages 5 and 11. Act I's shape is his
+  errand in the North: he was sent to find a country and count its halls, and he is doing it slowly
+  because he has all the time there is.
+- **Murazor** - the Witch-king's own name in the same table, not a tenth body. This file calls him by
+  Angmar's name, and keeps this one for a page that wants him named without saying "the Witch-king".
+- **Akhorahil**, **Hoarmurath** - the other two on page 11, and the reason that page's three lines are
+  written without names: in a dark court the player cannot tell them apart, which is the point.
+- **Dwar**, **Ji Indur**, **Adunaphel**, **Ren**, **Uvatha** - held back. The East's and Harad's lines
+  want wraiths of their own, and five is enough for two fronts.
+
+**What the names are for:** nothing the mechanic depends on. A page names a Rider in its stage
+direction and the stage spawns that one. The rule the line keeps is that a wraith is never killed
+permanently, so a named Rider can stand on more than one page without the campaign explaining itself.
+
 ## Act I — The Green Way
 
 The West's front. The country is Eriador's roads and the Shire's edges: quiet ground, and that is the
@@ -340,10 +364,37 @@ campaign's job to place them together, not the generator's.
 
 ---
 
+## The marks over their heads
+
+Every giver carries a mark on its nameplate, and it says one of three things:
+
+- **!** in gold - work here, not yet taken.
+- **!** in grey - work taken, not yet done. The same glyph dimmed, because it is the same promise.
+- **?** in green - work done, hand it in.
+
+The mark is per player: two players standing in front of one giver see different glyphs, and a player
+with no business there sees a bare name. **This one is built.** It is drawn onto the nameplate from the
+quest sync, so it costs no texture, no extra render pass and no per-tick work, and it appears on every
+giver the mod spawns - the campaign's and the ordinary ones alike. For the mark to follow the right
+body, a quest now remembers the id of the NPC that handed it out, not only the name it was given.
+
+**The herald is not built yet.** Each hall already has its work tables and its warden; the campaign
+wants a third body in each, the herald, whose only job is to open the line. His mark is the gate:
+nothing appears over his head until the player is a **stranger** to that alliance - the first rank
+earned above outsider, 100 points of ordinary hall work - and then a gold **!** appears and the
+campaign has somewhere to begin. A rank rather than a page, because the line should open for someone
+who has already done the country a favour, not for whoever walks through the door first.
+
+Once the stage counter below exists, the herald stops holding the whole line in one hand: his mark
+becomes the one that reflects the stage - **!** for the next page, **?** for a page finished and unread
+- while the hall's ordinary givers keep spawning as they do now. That is also what keeps the campaign
+from being a wall of text at one NPC. The herald hands out the thread; the world does the rest.
+
 ## What is buildable now, and what is not
 
 | Page | Today | Missing |
 |---|---|---|
+| every giver | the mark over their head: gold **!** for work to take, grey **!** for work in hand, green **?** for work to hand in | nothing - it is drawn from the quest sync |
 | 1–4, 6–8, 10 | `HUNT` / `FETCH` / `FACTION` at a named giver, courage deeds on hand-in and on fear | a fixed giver at a known place rather than a spawned one |
 | 5, 11 | `HUNT` the Rider — a normal fight, a normal drop, a normal death message | a rider that outlives its corpse: a campaign-spawned Nazgûl, respawned fresh at the next stage |
 | 9, 12 | `FETCH` to the West's hall; `HUNT` the boss | a per-player campaign stage, so page 9 does not read as a random scroll |
@@ -376,3 +427,7 @@ What a second line changes, and nothing else:
 
 What stays fixed: the five beats of each act, the fear's progression act by act, the courage rungs
 landing in the same places, the Rider dying and coming back, and the arena.
+
+**Free with the retool:** the marks over the heads. They are keyed on a giver id rather than on the
+alliance it serves, so a second line gets the whole ladder for nothing, and the herald's gate
+becomes that alliance's first rank, which is the same number for all three.

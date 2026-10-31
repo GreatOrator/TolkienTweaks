@@ -48,21 +48,21 @@ public final class QuestPool {
         int goal = between(random, TolkienMobsConfig.questFactionGoalMin(), TolkienMobsConfig.questFactionGoalMax());
         // Paid at more than the kills themselves are worth, because the giver is asking on purpose.
         int standing = TolkienMobsConfig.questStandingBase() + goal * TolkienMobsConfig.questStandingPerGoal();
-        return new Quest(Quest.Kind.FACTION, target.id(), goal, 0, employer.id(), standing, List.of(), "", BlockPos.ZERO);
+        return new Quest(Quest.Kind.FACTION, target.id(), goal, 0, employer.id(), standing, List.of(), "", BlockPos.ZERO, Quest.NOBODY);
     }
 
     private static Quest fetch(RandomSource random) {
         List<String> items = TolkienMobsConfig.questFetchItems();
         String item = items.get(random.nextInt(items.size()));
         int goal = between(random, TolkienMobsConfig.questFetchGoalMin(), TolkienMobsConfig.questFetchGoalMax());
-        return new Quest(Quest.Kind.FETCH, item, goal, 0, "", 0, payment(random, goal), "", BlockPos.ZERO);
+        return new Quest(Quest.Kind.FETCH, item, goal, 0, "", 0, payment(random, goal), "", BlockPos.ZERO, Quest.NOBODY);
     }
 
     private static Quest hunt(RandomSource random) {
         List<String> mobs = TolkienMobsConfig.questHuntMobs();
         String mob = mobs.get(random.nextInt(mobs.size()));
         int goal = between(random, TolkienMobsConfig.questHuntGoalMin(), TolkienMobsConfig.questHuntGoalMax());
-        return new Quest(Quest.Kind.HUNT, mob, goal, 0, "", 0, payment(random, goal), "", BlockPos.ZERO);
+        return new Quest(Quest.Kind.HUNT, mob, goal, 0, "", 0, payment(random, goal), "", BlockPos.ZERO, Quest.NOBODY);
     }
 
     /** Coin, and sometimes a thing worth carrying: the harder the work, the more of both. */
