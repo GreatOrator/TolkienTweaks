@@ -391,12 +391,14 @@ cut by `tools/HallVariants.java` beside the warden and the envoy: a human in all
 skin he wears is the quest-giver art of his alliance, tagged as a giver, as the alliance of his hall and
 as the campaign, so his clothes and his gold mark are right from the first load. Unlike the warden and the
 envoy he is not frozen: the hall gives him a home area - the middle of the room, six blocks out - and the
-entity pulls any walk target that leaves it back inside, so he walks about a room he cannot leave. What is
-still owed is the gate. Nothing should appear over his head until the player is a **stranger** to that
-alliance - the first rank earned above outsider, 100 points of ordinary hall work - and then a gold **!**
-appears and the campaign has somewhere to begin. A rank rather than a page, because the line should open
-for someone who has already done the country a favour, not for whoever walks through the door first. Until
-the stage counter below exists and a page is written for him to hand out, right-clicking him answers that
+entity pulls any walk target that leaves it back inside, so he walks about a room he cannot leave, and
+turns to face a player who comes near. His gate is cut already: nothing appears over his head until the
+player is a **stranger** to that alliance - the first rank earned above outsider, 100 points of ordinary
+hall work - and a mark drawn for anyone below is dropped, so a herald's name is bare until the country
+knows you. Once it does a gold **!** stands there with no page behind it, which is the campaign saying it
+has somewhere to begin and not yet what. A rank rather than a page, because the line should open for
+someone who has already done the country a favour, not for whoever walks through the door first. Until the
+stage counter below exists and a page is written for him to hand out, right-clicking him answers that
 there is no work, which is the truth.
 
 The other two are frozen at their tables on purpose, and their life is drawn instead of walked:
