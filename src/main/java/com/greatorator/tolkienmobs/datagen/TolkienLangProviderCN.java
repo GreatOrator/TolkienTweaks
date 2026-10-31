@@ -213,6 +213,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addTools("ammolite", "斑彩石");
             this.addItem(TolkienItems.DWARVEN_HAMMER, "矮人矿锤");
             this.addItem(TolkienItems.HYPE_HORN, "庆典号角");
+            this.addItemWithLore(TolkienItems.WAR_HORN.get(), "战争号角", "一声长鸣，闻者心中的恐惧随之消散");
             this.addItem(TolkienItems.HELMET_MITHRIL, "秘银头盔");
             this.addItem(TolkienItems.CHESTPLATE_MITHRIL, "秘银胸甲");
             this.addItem(TolkienItems.LEGGINGS_MITHRIL, "秘银护腿");
@@ -521,6 +522,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addSound("ambient", "pathsofthedead", "The way is shut, and the dead keep it");
             this.addSound("ambient", "arda_portal", "Portal to Arda beckons");
             this.addSound("item", "hype_horn", "Celebrating victory");
+            this.addSound("item", "war_horn", "战争号角响起");
             this.addSound("mob", "coin_trader", "A Wild Coin Trader appears!");
             this.addSound("mob", "fellbeast_wind", "The beast dives.");
 

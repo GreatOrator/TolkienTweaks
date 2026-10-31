@@ -22,6 +22,7 @@ public class TolkienSoundProvider extends SoundDefinitionsProvider {
     public void registerSounds() {
             // Items
         this.generateNewSoundWithSubtitle(TolkienSounds.HYPE_HORN, "item/hype_horn", 1, "BOO YAH!");
+        this.generateNewSoundWithSubtitle(TolkienSounds.WAR_HORN, "item/war_horn", 1, "A war horn sounds");
 
             // Blocks
         this.generateNewSoundWithSubtitle(TolkienSounds.CATHEDRALBELL, "block/cathedralbell", 1, "Ringing church bell");

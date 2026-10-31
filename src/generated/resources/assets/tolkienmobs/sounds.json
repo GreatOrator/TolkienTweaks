@@ -110,6 +110,12 @@
     ],
     "subtitle": "subtitles.tolkienmobs.item.hype_horn"
   },
+  "item.tolkienmobs.war_horn": {
+    "sounds": [
+      "tolkienmobs:item/war_horn"
+    ],
+    "subtitle": "subtitles.tolkienmobs.item.war_horn"
+  },
   "mob.balrog.death": {
     "sounds": [
       "tolkienmobs:mob/balrog/balrog_death"
