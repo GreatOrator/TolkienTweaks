@@ -398,6 +398,13 @@ becomes the one that reflects the stage - **!** for the next page, **?** for a p
 - while the hall's ordinary givers keep spawning as they do now. That is also what keeps the campaign
 from being a wall of text at one NPC. The herald hands out the thread; the world does the rest.
 
+**His clothes.** He is a human, and a human carrying the scoreboard tag `tolkienmobs:campaign` is drawn
+from `textures/entity/herald/herald.png` rather than from the ordinary eight faces, so one skin dresses
+every one of the mainline's own. What ships there now is a copy of an ordinary human of the right shape
+(64x64, the same layout as the rest) standing in until the art arrives: overwrite that one file and the
+mainline changes clothes with no code at all. The tag is read on the server every tick and copied into
+synched data, so tagging an NPC in game puts the clothes on it where it stands.
+
 ## What is buildable now, and what is not
 
 | Page | Today | Missing |
