@@ -19,7 +19,9 @@ import java.util.UUID;
  * Carries a player's book to that player alone: the quests they hold, and one mark per giver this
  * player has business with. The marks are on the wire because the client cannot read world data and
  * the mark over a giver's head has to be drawn from something - and because the mark is the player's,
- * not the giver's, so the same NPC is a question mark to one player and a grey exclamation to another.
+ * not the giver's, so the same NPC is a question mark to one player and a dimmed exclamation to
+ * another. A mark also says which line it belongs to, since the ink is what tells a mainline step from
+ * an ordinary errand.
  * <p>
  * Written by hand rather than composed, because a quest is a record of ten fields and a table that a
  * composite codec would spell out twice.
@@ -43,7 +45,8 @@ public record QuestSyncManager(List<Quest> quests, Map<UUID, QuestLedger.Mark> m
         buf.writeVarInt(marks.size());
         for (Map.Entry<UUID, QuestLedger.Mark> mark : marks.entrySet()) {
             buf.writeUUID(mark.getKey());
-            buf.writeVarInt(mark.getValue().ordinal());
+            buf.writeVarInt(mark.getValue().state().ordinal());
+            buf.writeBoolean(mark.getValue().mainline());
         }
     }
 
@@ -88,14 +91,15 @@ public record QuestSyncManager(List<Quest> quests, Map<UUID, QuestLedger.Mark> m
         return quests;
     }
 
-    /** A mark is one byte on the wire, clamped so a client dropped in from a newer build still reads. */
+    /** A mark is a byte and a flag, clamped so a client dropped in from a newer build still reads. */
     private static Map<UUID, QuestLedger.Mark> readMarks(RegistryFriendlyByteBuf buf) {
         int count = buf.readVarInt();
-        QuestLedger.Mark[] all = QuestLedger.Mark.values();
+        QuestLedger.Mark.State[] states = QuestLedger.Mark.State.values();
         Map<UUID, QuestLedger.Mark> marks = new LinkedHashMap<>(Math.max(1, count));
         for (int i = 0; i < count; i++) {
             UUID giver = buf.readUUID();
-            marks.put(giver, all[Math.min(buf.readVarInt(), all.length - 1)]);
+            QuestLedger.Mark.State state = states[Math.min(buf.readVarInt(), states.length - 1)];
+            marks.put(giver, new QuestLedger.Mark(state, buf.readBoolean()));
         }
         return Map.copyOf(marks);
     }
