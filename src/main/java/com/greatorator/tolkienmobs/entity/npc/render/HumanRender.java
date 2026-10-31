@@ -43,9 +43,9 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
      */
     private static final Identifier[] GIVER_BY_ALLIANCE = {
             null,
-            Identifier.fromNamespaceAndPath(MODID, "textures/entity/faction_west/quest_giver_west"),
-            Identifier.fromNamespaceAndPath(MODID, "textures/entity/faction_east/quest_giver_east"),
-            Identifier.fromNamespaceAndPath(MODID, "textures/entity/faction_harad/quest_giver_harad")
+            Identifier.fromNamespaceAndPath(MODID, "textures/entity/faction_west/quest_giver_west.png"),
+            Identifier.fromNamespaceAndPath(MODID, "textures/entity/faction_east/quest_giver_east.png"),
+            Identifier.fromNamespaceAndPath(MODID, "textures/entity/faction_harad/quest_giver_harad.png")
     };
 
     /** What the pack held the last time each giver skin was asked for, dropped when resources reload. */
@@ -93,10 +93,9 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
             GIVER_SKIN_PRESENT.clear();
         }
         return GIVER_SKIN_PRESENT.computeIfAbsent(texture, id -> {
-            Identifier file = id.withSuffix(".png");
-            boolean present = manager != null && manager.getResource(file).isPresent();
+            boolean present = manager != null && manager.getResource(id).isPresent();
             if (!present) {
-                LOGGER.warn("No giver skin at {}; the giver keeps the clothes of its own folk.", file);
+                LOGGER.warn("No giver skin at {}; the giver keeps the clothes of its own folk.", id);
             }
             return present;
         });
