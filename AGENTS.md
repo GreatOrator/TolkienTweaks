@@ -1,8 +1,8 @@
 ---
-push_when_confident: true
-auto_push: true
+push_when_confident: false
+auto_push: false
 git:
-  push_on_success: true
+  push_on_success: false
 ---
 
 ## Changelog Updates
@@ -19,15 +19,32 @@ git:
 
 # Project Core Guidelines & Agent Directives
 
-> **CRITICAL AUTOMATION NOTE:** `push_when_confident` is explicitly set to **TRUE**. 
-> Before pushing changes directly to the remote repository, you must guarantee that all local compilation, linting, and automated test steps pass with an exit code of `0`.
+> **CRITICAL AUTOMATION NOTE:** the maintainer pushes to GitHub when they are ready to, and nothing
+> here does it for them. `push_when_confident`, `auto_push` and `git.push_on_success` are all **FALSE**
+> on purpose: commit your work to `main` when it verifies, and stop there. A local commit costs nothing
+> to amend; a push is published, and publishing is the maintainer's decision, not the agent's.
+
+## Committing
+
+- **Commit when the work is verified, and never push.** A finished change is verified locally, written
+  up in `CHANGELOG.md`, and committed straight to `main` - and that is the end of it. The maintainer
+  pushes when they are ready, so all they have to do is `git push`: nothing is left lying uncommitted
+  for them to sort through, and nothing reaches GitHub that they did not send.
+- **Verified means** `./gradlew compileJava` (and `runData` when datagen output moved) exited `0`.
+  Anything that can only be seen in game is named as unverified in the commit body or the reply, never
+  claimed as tested.
+- **One change, one commit.** The changelog bullet and the generated JSON go in beside the code they
+  describe, so a commit is a whole change and not half of one. Never commit a failing build, and never
+  sweep someone else's unfinished work into the same commit.
+- **A commit message says why.** Short, sentence style, focused on what needed fixing rather than a
+  list of files.
 
 ## Verification
 
 The maintainer keeps a **test world for each biome**, so a change can be checked in game quickly
 after a pull. Prefer that loop over a long local test: verify what can be verified locally
 (`./gradlew compileJava`; a dev server through `./gradlew runServer` when world generation is
-involved), then commit and push, saying plainly what was verified and what was not.
+involved), then commit to `main` and leave the push to the maintainer, saying plainly what was verified and what was not.
 
 Keep commit messages short, sentence style, and focused on why the change is needed.
 
