@@ -1,0 +1,8 @@
+{
+  "type": "tolkienmobs:template_layout",
+  "biomes": "#tolkienmobs:has_structure/boss_castle",
+  "spawn_overrides": {},
+  "start_pool": "tolkienmobs:boss_castle",
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
+}

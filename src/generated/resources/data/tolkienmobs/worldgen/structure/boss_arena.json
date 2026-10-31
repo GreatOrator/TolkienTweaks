@@ -1,0 +1,8 @@
+{
+  "type": "tolkienmobs:template_layout",
+  "biomes": "#tolkienmobs:has_structure/boss_arena",
+  "spawn_overrides": {},
+  "start_pool": "tolkienmobs:boss_arena",
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
+}
