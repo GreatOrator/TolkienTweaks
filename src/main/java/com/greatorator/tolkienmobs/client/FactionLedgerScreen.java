@@ -233,10 +233,11 @@ public class FactionLedgerScreen extends Screen {
         int w = innerW();
         int top = bodyTop();
         int rows = Alliance.values().length;
-        // The courage row takes the foot of the leaf: it is the only line on this page that is about
-        // the player rather than about a country.
-        int courageTop = bodyBottom() - 34;
-        int rowH = Math.min(42, Math.max(26, (courageTop - top - 14) / Math.max(1, rows)));
+        // The courage row is the last row of the leaf rather than pinned to its foot: it is the only
+        // line here about the player rather than a country, and it reads as one more entry when it sits
+        // at the spacing the countries above it are drawn at.
+        int rowH = Math.min(42, Math.max(26, (bodyBottom() - top - 14) / Math.max(1, rows + 1)));
+        int courageTop = top + rows * rowH;
         for (int i = 0; i < rows; i++) {
             drawStanding(graphics, x, top + i * rowH, w, Alliance.values()[i]);
         }

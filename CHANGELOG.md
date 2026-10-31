@@ -24,6 +24,8 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- **A second page on every front, and the campaign line is a table now.** Page 0 asks for six soldiers of one rival army for sixty standing; page 1 asks for twelve of the other rival's for a hundred and twenty. `Campaign.PAGE_GOALS` is the line, so a front has as many pages as that list is long and adding one is a single number. The ledger's courage row also sits with the countries now, one row-spacing under Harad, instead of pinned to the foot of the leaf.
+
 - **A giver turns away a player who is already carrying all the work they can hold.** Right-clicking a giver with a full book of errands now answers "You look too busy to help right now." instead of silently refusing the new work. Handing in a finished quest and taking the herald campaign page still work at any fullness, since neither is an errand competing for a row.
 
 - **The quest book has a bounties leaf and a story leaf.** The quest bookmark no longer splits the work down the middle of the spread and hides whatever did not fit: **Bounties** holds the errands, hard-limited to what one leaf was measured to show, and **Story** holds the campaign step alone, with the room the other entries took given over to its description. A campaign page is exempt from the bounty cap, so a book full of errands never blocks the mainline.
