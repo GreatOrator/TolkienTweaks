@@ -201,6 +201,13 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
     public Component rewardLine() {
         if (standing > 0) {
             Alliance alliance = employerAlliance();
+            // A page every country pays for names no single employer, so it is read as what it is
+            // rather than as standing with nobody.
+            if (alliance == null) {
+                return Component.translatable("quest.tolkienmobs.reward.standing.all",
+                                Component.literal(String.valueOf(standing)))
+                        .withStyle(ChatFormatting.GOLD);
+            }
             return Component.translatable("quest.tolkienmobs.reward.standing",
                             Component.literal(String.valueOf(standing)),
                             alliance == null ? Component.empty() : alliance.displayName())

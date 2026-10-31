@@ -821,6 +821,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("quest.tolkienmobs.hunt", "Slay %s %s");
         this.add("quest.tolkienmobs.progress", "%s / %s");
         this.add("quest.tolkienmobs.reward.standing", "Reward: %s standing with %s");
+        this.add("quest.tolkienmobs.reward.standing.all", "%s standing with all three countries.");
         this.add("quest.tolkienmobs.reward.items", "Reward: %s");
         this.add("quest.tolkienmobs.accepted", "You take on the work: %s");
         this.add("quest.tolkienmobs.done", "Quest complete - hand it in to any quest giver.");
@@ -847,6 +848,9 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("screen.tolkienmobs.quests.story", "Story");
         this.add("screen.tolkienmobs.quests.bounties.empty", "No bounty in hand - a giver out there has work.");
         this.add("screen.tolkienmobs.quests.story.empty", "No step of the campaign is in your hands.");
+        this.add("screen.tolkienmobs.quests.campaign.done", "The war of the three fronts is over.");
+        this.add("quest.tolkienmobs.herald.waiting", "This front is settled. The other two have not finished their line.");
+        this.add("quest.tolkienmobs.herald.settled", "All three fronts are quiet, and the Rider is not coming back. There is nothing left to ask of you.");
         this.add("screen.tolkienmobs.quests.carried", "Work Carried");
         this.add("screen.tolkienmobs.quests.abandon.confirm", "Abandon?");
         this.add("command.tolkienmobs.quest.give", "Gave %s %s quest(s).");

@@ -175,7 +175,7 @@ public final class QuestGivers {
         // it over, because the line is not one of the errands and there is nothing to choose between.
         Alliance herald = factionOf(target);
         if (herald != null && isCampaign(player.level(), target.getUUID())
-                && !holdsPageFrom(player, target.getUUID())) {
+                && !holdsPageFrom(player, target.getUUID()) && !holdsCampaignPage(player)) {
             Quest page = Campaign.page(player, herald);
             if (page != null) {
                 Quest handed = page.withGiver(target.getName().getString(), target.blockPosition(),
@@ -183,6 +183,13 @@ public final class QuestGivers {
                 if (QuestLedger.accept(player, handed)) Campaign.noteHanded(player, herald, handed);
                 return;
             }
+            // His own front is settled, so there is no page to hand over: he says where the war stands
+            // rather than offering work he does not have.
+            player.sendSystemMessage(Component.translatable(Campaign.done(player)
+                            ? "quest.tolkienmobs.herald.settled"
+                            : "quest.tolkienmobs.herald.waiting")
+                    .withStyle(ChatFormatting.GRAY));
+            return;
         }
 
         // A player carrying as much work as the leaf has room for is not given more: what they hold is
@@ -271,6 +278,18 @@ public final class QuestGivers {
     private static boolean holdsPageFrom(ServerPlayer player, UUID giver) {
         for (Quest quest : QuestLedger.active(player)) {
             if (giver.equals(quest.giverId())) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Whether the player is already carrying the campaign's own page. Every herald offers that one, so
+     * without this a second hall would hand over a second copy of the same quarry, and only the copy the
+     * server noted last could ever settle it.
+     */
+    private static boolean holdsCampaignPage(ServerPlayer player) {
+        for (Quest quest : QuestLedger.active(player)) {
+            if (Campaign.isCampaignPage(player, quest)) return true;
         }
         return false;
     }
