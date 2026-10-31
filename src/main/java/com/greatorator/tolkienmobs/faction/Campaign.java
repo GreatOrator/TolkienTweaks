@@ -38,11 +38,16 @@ import java.util.UUID;
  */
 public final class Campaign extends SavedData {
     private static final String SAVE_DATA_NAME = "campaign";
-    /** How many pages a front has. Page 0 is the first the herald holds; the rest are written one at a time. */
-    public static final int PAGES = 1;
-    /** The opening page: soldiers of one rival army, enough to be noticed and not yet a war. */
-    private static final int OPENING_GOAL = 6;
-    private static final int OPENING_STANDING = 60;
+    /**
+     * What each page of a front asks for, in order: soldiers of a rival army, and for now nothing else.
+     * The list is the line - a stage past its end is a front with nothing left to hand over - so writing
+     * one more number here is all the campaign needs to go on, and a front has as many pages as it is long.
+     */
+    private static final int[] PAGE_GOALS = {6, 12};
+    /** What one soldier of a rival is worth to the country that asked for them, in standing. */
+    private static final int STANDING_PER_SOLDIER = 10;
+    /** How many pages a front has. */
+    public static final int PAGES = PAGE_GOALS.length;
 
     private static final Map<UUID, Front[]> PROGRESS = new HashMap<>();
     private static final int[] CLIENT = new int[Alliance.values().length];
@@ -94,10 +99,13 @@ public final class Campaign extends SavedData {
         ensureLoaded(player.level());
         int stage = row(player)[alliance.ordinal()].stage();
         if (stage >= PAGES) return null;
+        // Each page names a different rival, so a line alternates whose soldiers it wants rather than
+        // asking for the same ones twice running.
         List<Alliance> rivals = alliance.rivals();
         Alliance target = rivals.get(stage % rivals.size());
-        return new Quest(Quest.Kind.FACTION, target.id(), OPENING_GOAL, 0, alliance.id(),
-                OPENING_STANDING, List.of(), "", BlockPos.ZERO, Quest.NOBODY, true);
+        int goal = PAGE_GOALS[stage];
+        return new Quest(Quest.Kind.FACTION, target.id(), goal, 0, alliance.id(),
+                goal * STANDING_PER_SOLDIER, List.of(), "", BlockPos.ZERO, Quest.NOBODY, true);
     }
 
     // ---- handing it over and settling it ----
