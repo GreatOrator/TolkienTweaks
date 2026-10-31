@@ -91,6 +91,11 @@ public enum Alliance {
         return ENVOY_TAG + "/" + id;
     }
 
+    /** The scoreboard tag a giver of this alliance's work carries, which decides the clothes it wears. */
+    public String giverTag() {
+        return "tolkienmobs:quest_giver/" + id;
+    }
+
     public Component displayName() {
         return Component.translatable("faction.tolkienmobs." + id);
     }

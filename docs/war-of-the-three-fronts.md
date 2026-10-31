@@ -398,12 +398,16 @@ becomes the one that reflects the stage - **!** for the next page, **?** for a p
 - while the hall's ordinary givers keep spawning as they do now. That is also what keeps the campaign
 from being a wall of text at one NPC. The herald hands out the thread; the world does the rest.
 
-**His clothes.** He is a human, and a human carrying the scoreboard tag `tolkienmobs:campaign` is drawn
-from `textures/entity/herald/herald.png` rather than from the ordinary eight faces, so one skin dresses
-every one of the mainline's own. What ships there now is a copy of an ordinary human of the right shape
-(64x64, the same layout as the rest) standing in until the art arrives: overwrite that one file and the
-mainline changes clothes with no code at all. The tag is read on the server every tick and copied into
-synched data, so tagging an NPC in game puts the clothes on it where it stands.
+**His clothes.** A giver is one of the ordinary folk dressed for the work: `faction_west/quest_giver_west.png`,
+`faction_east/quest_giver_east.png` and `faction_harad/quest_giver_harad.png`, one per alliance and all
+three human-sized, so any of the mod's races can be pointed at a skin if a giver ever needs to be one.
+Which of them is worn comes from a scoreboard tag, `tolkienmobs:quest_giver/<alliance>`, read on the server
+and copied into synched data, so the clothes follow the work rather than the quest: the mainline's givers
+carry the West's and wear its skin, and a giver placed without a tag defaults to the West. Everything else
+in the campaign can stay an ordinary mob in an ordinary skin. A giver is also **invulnerable** as well as
+persistent - a mob that wanders into the scene cannot end a quest by killing the one thing that can hand it
+in - and that is applied on the way into the world, so a giver already standing in a saved world is
+protected on its next load.
 
 ## What is buildable now, and what is not
 
