@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Fixed
 
+- **Sleepnesia keeps every sleeper's sleep to themselves.** An effect is one object shared by everything holding it, and the draught kept its slumber in a field of that object: the first sleeper in a world put everyone who came after them to bed for good, and nobody stood up again. Whether a sleeper is still under is now read from their own instance of the effect, they are stood up a few ticks before it lapses - once it has gone there is no tick left to do it - and only a player is laid down, so a boss handing the draught to something that is not a player no longer breaks on the cast. The movement modifier it added and never reliably took away is gone with it; the slowness and blindness it already applied are what keep a sleeper still.
+
+- **The blessing of Eru cures what it is meant to cure.** It is an instant effect, and an instant effect is never ticked, so the cleansing written as a tick never ran at all - whatever the blessing was drunk or eaten from did nothing. The cure happens where the game applies an instant effect now, and it takes only harmful effects: the old test compared an effect instance against the category enum, which is never equal, so the draught was also stripping every buff its drinker carried, miruvor and elven vitality among them.
+
 - **The book reads without its shadow.** Every line of the ledger is now drawn flat instead of with the drop shadow vanilla puts behind text. A shadow is drawn for the dark of the world behind a nameplate; on parchment it sat under dark ink on a light page and made names and numbers look smudged. The dim, gold and blue inks are a shade darker to make up the contrast the shadow was adding.
 
 
