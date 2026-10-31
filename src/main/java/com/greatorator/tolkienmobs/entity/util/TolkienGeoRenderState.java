@@ -32,6 +32,13 @@ public class TolkienGeoRenderState extends LivingEntityRenderState implements Ge
     /** Whether a human is in its winter clothing, set by the renderer during extraction. */
     public boolean winter;
 
+    /**
+     * Whether a human is one of the mainline's own, set by the renderer during extraction. It outranks
+     * the variant and the winter clothing both: a herald wears one skin and nothing about it is random
+     * or seasonal.
+     */
+    public boolean herald;
+
     /** The alliance a faction guard serves, set by its renderer during extraction. */
     public Alliance alliance = Alliance.WEST;
 
