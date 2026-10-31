@@ -105,7 +105,7 @@ public final class QuestGivers {
             if (!level.addFreshEntity(giver)) continue;
 
             // The work remembers who offered it and where they stood, so the book can say both later.
-            Quest work = QuestPool.offer(random, employer(player)).withGiver(label, giver.blockPosition());
+            Quest work = QuestPool.offer(random, employer(player)).withGiver(label, giver.blockPosition(), giver.getUUID());
             QuestLedger.offer(player, giver.getUUID(), work);
             player.sendSystemMessage(Component.translatable("quest.tolkienmobs.giver_arrived")
                     .withStyle(ChatFormatting.GRAY));

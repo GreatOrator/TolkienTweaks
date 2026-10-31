@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -12,6 +13,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * One piece of work a quest giver hands out, and the terms it is done on.
@@ -35,10 +37,15 @@ import java.util.List;
  * {@code giver} is the name the NPC was handed. A name drawn from the mod's own table is kept as the
  * key it is translated from, so a client reads it in its own language; a name a pack set in the config
  * is kept as the words it was written in. {@code origin} is where the giver stood when the work was
- * offered, which is what the book calls the place it was taken.
+ * offered, which is what the book calls the place it was taken. {@code giverId} is that same giver's
+ * entity id, which is what lets the mark over their head follow <em>this</em> player's copy of the
+ * work: the name is for reading, the id is for finding them again.
  */
 public record Quest(Kind kind, String target, int goal, int progress, String employer, int standing,
-                    List<Reward> rewards, String giver, BlockPos origin) {
+                    List<Reward> rewards, String giver, BlockPos origin, UUID giverId) {
+    /** The id a quest carries when no NPC handed it out, as when a command writes one into a book. */
+    public static final UUID NOBODY = new UUID(0L, 0L);
+
     /** The most progress a quest can hold, so a kill after completion cannot write past the goal. */
     public enum Kind {
         FACTION, FETCH, HUNT;
@@ -77,27 +84,33 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
             Codec.INT.optionalFieldOf("standing", 0).forGetter(Quest::standing),
             Reward.CODEC.listOf().optionalFieldOf("rewards", List.of()).forGetter(Quest::rewards),
             Codec.STRING.optionalFieldOf("giver", "").forGetter(Quest::giver),
-            BlockPos.CODEC.optionalFieldOf("origin", BlockPos.ZERO).forGetter(Quest::origin)
+            BlockPos.CODEC.optionalFieldOf("origin", BlockPos.ZERO).forGetter(Quest::origin),
+            UUIDUtil.CODEC.optionalFieldOf("giver_id", NOBODY).forGetter(Quest::giverId)
     ).apply(instance, Quest::new));
 
     public boolean complete() {
         return progress >= goal;
     }
 
+    /** Whether an NPC is behind this work, which is what puts a mark over their head. */
+    public boolean fromNpc() {
+        return !NOBODY.equals(giverId);
+    }
+
     /** The same quest one kill further on. Fetch quests are read off the pack instead. */
     public Quest advanced() {
         return new Quest(kind, target, goal, Math.min(goal, progress + 1), employer, standing, rewards,
-                giver, origin);
+                giver, origin, giverId);
     }
 
     public Quest withProgress(int value) {
         return new Quest(kind, target, goal, Math.max(0, Math.min(goal, value)), employer, standing, rewards,
-                giver, origin);
+                giver, origin, giverId);
     }
 
-    /** The same quest, noting who offered it and where they stood when they did. */
-    public Quest withGiver(String giver, BlockPos origin) {
-        return new Quest(kind, target, goal, progress, employer, standing, rewards, giver, origin);
+    /** The same quest, noting who offered it, where they stood, and which body they were. */
+    public Quest withGiver(String giver, BlockPos origin, UUID giverId) {
+        return new Quest(kind, target, goal, progress, employer, standing, rewards, giver, origin, giverId);
     }
 
     /** The alliance the work is done for, or null when the work is nobody's. */

@@ -25,10 +25,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -40,8 +38,11 @@ import java.util.UUID;
  * unless it carries a data component, and keeping the offer beside the player's quests means one file
  * answers both "what am I doing" and "who is waiting for an answer".
  * <p>
- * As with the standings, the server owns the data and sends each player their own copy; the client
- * side is that copy and a set of giver ids, which is all the nameplate's question mark needs.
+ * As with the standings, the server owns the data and sends each player their own copy. What it sends
+ * beside the book is one {@link Mark} per giver this player has business with - work to take, work in
+ * hand, or work to hand in - because a nameplate is drawn on the client and the client cannot read
+ * world data. The mark is per player, so two players can stand in front of the same giver and see
+ * different things over its head, which is the whole point of a questbook.
  */
 public final class QuestLedger extends SavedData {
     private static final String SAVE_DATA_NAME = "quest_ledger";
@@ -55,7 +56,22 @@ public final class QuestLedger extends SavedData {
     private static final Map<UUID, Offer> OFFERS = new HashMap<>();
 
     private static final List<Quest> CLIENT = new ArrayList<>();
-    private static final Set<UUID> CLIENT_GIVERS = new HashSet<>();
+    private static final Map<UUID, Mark> CLIENT_MARKS = new HashMap<>();
+
+    /**
+     * What is drawn over a giver's head, from the point of view of one player.
+     * <p>
+     * The order matters: when a giver has two reasons to be marked - a quest in hand and, somehow, a
+     * fresh offer as well - the later constant wins, so a hand-in is never hidden behind a new offer.
+     */
+    public enum Mark {
+        /** There is work here this player has not taken: a gold exclamation mark. */
+        AVAILABLE,
+        /** This player has taken work from here and has not finished it: a grey exclamation mark. */
+        IN_PROGRESS,
+        /** The work is done and this giver will take it: a green question mark. */
+        TURN_IN
+    }
 
     public static final Codec<QuestLedger> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             PlayerEntry.CODEC.listOf().optionalFieldOf("players", List.of()).forGetter(QuestLedger::players),
@@ -76,16 +92,22 @@ public final class QuestLedger extends SavedData {
         return CLIENT;
     }
 
-    /** Whether the giver this client knows by id is still waiting for an answer. */
-    public static boolean clientHasOffer(UUID giver) {
-        return CLIENT_GIVERS.contains(giver);
+    /** What to draw over a giver, or null when this player has no business with it. */
+    @Nullable
+    public static Mark clientMark(UUID giver) {
+        return CLIENT_MARKS.get(giver);
     }
 
-    public static void acceptClient(List<Quest> quests, List<UUID> givers) {
+    /** Whether the giver this client knows by id is still waiting for an answer. */
+    public static boolean clientHasOffer(UUID giver) {
+        return CLIENT_MARKS.get(giver) == Mark.AVAILABLE;
+    }
+
+    public static void acceptClient(List<Quest> quests, Map<UUID, Mark> marks) {
         CLIENT.clear();
         CLIENT.addAll(quests);
-        CLIENT_GIVERS.clear();
-        CLIENT_GIVERS.addAll(givers);
+        CLIENT_MARKS.clear();
+        CLIENT_MARKS.putAll(marks);
     }
 
     public static List<Quest> active(Player player) {
@@ -354,15 +376,30 @@ public final class QuestLedger extends SavedData {
 
     // ---- pluming ----
 
+    /**
+     * Sends a player their own book, and the mark for every giver it mentions: an offer still waiting,
+     * a quest still in hand, or a quest that is done and can be handed in.
+     */
     public static void sync(ServerPlayer player) {
         ensureLoaded(player.level());
-        List<UUID> givers = new ArrayList<>();
+        Map<UUID, Mark> marks = new HashMap<>();
         for (Offer offer : OFFERS.values()) {
             if (offer.player().equals(player.getUUID())) {
-                givers.add(offer.giver());
+                marks.put(offer.giver(), Mark.AVAILABLE);
             }
         }
-        PacketDistributor.sendToPlayer(player, new QuestSyncManager(List.copyOf(row(player)), givers));
+        for (Quest quest : row(player)) {
+            // A quest a command wrote into the book has no giver to mark, so it marks nobody.
+            if (!quest.fromNpc()) continue;
+            marks.merge(quest.giverId(), ready(player, quest) ? Mark.TURN_IN : Mark.IN_PROGRESS,
+                    QuestLedger::later);
+        }
+        PacketDistributor.sendToPlayer(player, new QuestSyncManager(List.copyOf(row(player)), Map.copyOf(marks)));
+    }
+
+    /** The mark that wins when a giver has two claims on this player's attention. */
+    private static Mark later(Mark first, Mark second) {
+        return first.ordinal() >= second.ordinal() ? first : second;
     }
 
     private static List<Quest> row(Player player) {
