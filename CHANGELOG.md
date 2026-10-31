@@ -20,7 +20,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
-- **A hall has a herald.** The third body the campaign wanted stands in every alliance hall now, in the aisle facing the door, cut into the structure beside the warden and the envoy. He is a human in all three halls, because the skin he wears is the quest-giver art of his alliance, and he carries the giver, the alliance and the campaign tags, so his clothes and his gold mark are right from the first load. He has nothing to hand out yet - the pages and the rank that opens them are still owed - so he stands there rather than speaking.
+- **A hall has a herald.** The third body the campaign wanted stands in every alliance hall now, at the workbench the warden does not use, cut into the structure beside the warden and the envoy. He is a human in all three halls, because the skin he wears is the quest-giver art of his alliance, and he carries the giver, the alliance and the campaign tags, so his clothes and his gold mark are right from the first load. He has nothing to hand out yet - the pages and the rank that opens them are still owed - so he stands there rather than speaking.
 
 - **The giver who stands in a hall is dressed for it.** The one body in each hall wears a skin of its own, one per alliance - `faction_west/quest_giver_west.png`, `faction_east/quest_giver_east.png` and `faction_harad/quest_giver_harad.png` - chosen by the scoreboard tag that names the alliance it speaks for. A giver met out in the world carries no such tag and keeps the clothes of its own folk, because the people who walk a country are ordinary people. All three are human-sized, so any race the mod ships can be pointed at a file.
 

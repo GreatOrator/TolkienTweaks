@@ -53,14 +53,15 @@ public class HallVariants {
     /** Yaw 90 faces west, into its bench. */
     static final float VENDOR_YAW = 90.0F;
     /**
-     * Where the herald stands: in the aisle between the two counters, facing the front door, so it is
-     * the first body a player meets on walking in.
+     * Where the herald stands: at the workbench the warden does not use, of the pair on the far side
+     * of the aisle. A hall keeps four benches and staffs two, so the spare pair is where a third body
+     * belongs - standing in the open aisle only made a body to walk around.
      */
     static final double HERALD_X = 7.5D;
     static final double HERALD_Y = 1.0D;
-    static final double HERALD_Z = 10.5D;
-    /** Yaw 0 faces south, toward the door at the front of the hall. */
-    static final float HERALD_YAW = 0.0F;
+    static final double HERALD_Z = 6.5D;
+    /** Yaw 270 faces east, into the bench it stands at. */
+    static final float HERALD_YAW = 270.0F;
 
     record Variant(String file, String stairs, String warden, String wardenName, String tag, int alliance, String vendorName, String heraldName) {}
 
