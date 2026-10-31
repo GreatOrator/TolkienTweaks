@@ -222,6 +222,7 @@ public final class QuestGivers {
             if (FactionStandings.standing(player, herald) < FactionRank.STRANGER.threshold()) {
                 player.sendSystemMessage(Component.translatable("quest.tolkienmobs.herald.stranger")
                         .withStyle(ChatFormatting.GRAY));
+                speak(player, target, true);
                 return;
             }
             Quest page = Campaign.page(player, herald);
@@ -233,7 +234,10 @@ public final class QuestGivers {
                     player.sendSystemMessage(Component.translatable("quest.tolkienmobs.herald.rider")
                             .withStyle(ChatFormatting.GOLD));
                 }
-                if (QuestLedger.accept(player, handed)) Campaign.noteHanded(player, herald, handed);
+                if (QuestLedger.accept(player, handed)) {
+                    Campaign.noteHanded(player, herald, handed);
+                    speak(player, target, false);
+                }
                 return;
             }
             // His own front is settled, so there is no page to hand over: he says where the war stands
@@ -270,6 +274,19 @@ public final class QuestGivers {
      * can hand it in. Applied on the way into the world rather than only at spawn, so a giver already
      * standing in a saved world is protected on its next load and one tagged by hand is protected too.
      */
+    /**
+     * Plays a herald's recorded line at the body that said it, so the words come from where he stands
+     * rather than from the player's own feet. Both lines are his voice whatever front he serves, because
+     * a herald is one office wearing three countries' colours.
+     */
+    private static void speak(ServerPlayer player, Entity herald, boolean refusal) {
+        var sound = (refusal
+                ? com.greatorator.tolkienmobs.init.TolkienSounds.HERALD_REFUSE
+                : com.greatorator.tolkienmobs.init.TolkienSounds.HERALD_OFFER).get();
+        player.level().playSound(null, herald.blockPosition(), sound,
+                net.minecraft.sounds.SoundSource.NEUTRAL, 0.85F, 1.0F);
+    }
+
     private static void makeSafe(Entity giver) {
         if (!giver.isInvulnerable()) {
             giver.setInvulnerable(true);

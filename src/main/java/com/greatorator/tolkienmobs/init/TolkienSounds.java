@@ -54,6 +54,10 @@ public class TolkienSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> VILLAGER_COIN_TRADER = createEvent("mob.tolkienmobs.coin_trader");
 
         // NPC
+            // A herald's own voice. It is played at the body that spoke, so a page is handed over by a
+            // voice standing in front of the player rather than by a title card.
+    public static final DeferredHolder<SoundEvent, SoundEvent> HERALD_REFUSE = createEvent("mob.tolkienmobs.herald_refuse");
+    public static final DeferredHolder<SoundEvent, SoundEvent> HERALD_OFFER = createEvent("mob.tolkienmobs.herald_offer");
     public static final DeferredHolder<SoundEvent, SoundEvent> IDLE_DWARF = createEvent("mob.dwarf.idle");
     public static final DeferredHolder<SoundEvent, SoundEvent> ANGRY_DWARF = createEvent("mob.dwarf.angry");
     public static final DeferredHolder<SoundEvent, SoundEvent> HURT_DWARF = createEvent("mob.dwarf.hurt");

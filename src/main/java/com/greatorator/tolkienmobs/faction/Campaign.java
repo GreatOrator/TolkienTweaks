@@ -4,7 +4,9 @@ import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.network.manager.CampaignSyncManager;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -125,8 +127,26 @@ public final class Campaign extends SavedData {
         ).apply(instance, Front::new));
     }
 
-    /** The campaign's Rider, tracked per player so he can be respawned fresh at each stage. */
+    /**
+     * The campaign's Rider, tracked per player while he is out there. The map is a shortcut rather
+     * than a record: a reloaded world forgets it, and {@link #livingRider} falls back to the tag he
+     * carries before it concludes there is nobody to find.
+     */
     private static final Map<UUID, UUID> RIDER_ENTITY = new HashMap<>();
+    /** The tag every campaign Rider wears, and the tag that ties one to the player he was sent for. */
+    private static final String RIDER_TAG = "tolkienmobs:campaign_rider";
+    /**
+     * Where a player stood when the Rider's page came into their hands. He is owed to the road, not
+     * to the room the page was handed over in, so this is where the ride out has to begin.
+     */
+    private static final Map<UUID, BlockPos> RIDER_CALLED = new HashMap<>();
+    /** How far from that door, and how far ahead, he is stood up. */
+    private static final int RIDER_CALL_DISTANCE = 24;
+    private static final int RIDER_WAY_AHEAD = 24;
+    private static final int RIDER_WAY_SPREAD = 6;
+    /** How wide a search for a Rider who is already out there, and how often to look. */
+    private static final double RIDER_SEARCH = 128.0D;
+    private static final int RIDER_CHECK_INTERVAL = 20;
 
     public static final Codec<Campaign> CODEC = Entry.CODEC.listOf()
             .xmap(Campaign::fromEntries, Campaign::toEntries);
@@ -287,36 +307,38 @@ public final class Campaign extends SavedData {
         int slot = slotOf(page, alliance);
         row[slot] = new Front(row[slot].stage(), page);
         store(player).setDirty();
-        // Spawn the Rider when the campaign page is handed over, but only if one isn't already spawned
-        if (isCampaignPage(player, page) && !RIDER_ENTITY.containsKey(player.getUUID())) {
-            spawnRider(player);
+        // The Rider is not stood up in the room the page is handed over in: the page is taken at a
+        // bench, and a wraith conjured beside it reads as a trick. Where the player stood is noted,
+        // and {@link #tick} stands him up once they are out under open sky and a ride away from the
+        // door, which is a meeting rather than a magic trick.
+        if (isCampaignPage(player, page)) {
+            RIDER_CALLED.put(player.getUUID(), player.blockPosition());
         }
     }
 
     /**
-     * Spawns the campaign's Rider for a player. The Rider is placed near the player and marked as
-     * the campaign's, so his death can be tracked separately from any other Nazgûl the player might
-     * encounter.
+     * Stands the campaign's Rider up in front of the player, out on the ground, and marks him as the
+     * campaign's so his death can be told apart from any other Nazgûl the player meets. He is placed
+     * at riding distance rather than beside the player, because the meeting the page promises is one
+     * the player has to ride out to.
      */
-    private static void spawnRider(ServerPlayer player) {
+    private static void standRiderUp(ServerPlayer player) {
         if (!(player.level() instanceof ServerLevel level)) return;
-        BlockPos pos = player.blockPosition();
-        // Spawn the Rider 10-15 blocks away from the player
         RandomSource random = level.getRandom();
-        int dx = random.nextInt(10, 16) * (random.nextBoolean() ? 1 : -1);
-        int dz = random.nextInt(10, 16) * (random.nextBoolean() ? 1 : -1);
-        int x = pos.getX() + dx;
-        int z = pos.getZ() + dz;
+        Direction facing = player.getDirection();
+        int reach = RIDER_WAY_AHEAD + random.nextInt(RIDER_WAY_SPREAD);
+        int x = player.blockPosition().getX() + facing.getStepX() * reach;
+        int z = player.blockPosition().getZ() + facing.getStepZ() * reach;
+        // A chunk that is not loaded has no ground to stand on yet: the next look will find one.
+        if (!level.hasChunkAt(new BlockPos(x, player.blockPosition().getY(), z))) return;
         int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
-        BlockPos spawnPos = new BlockPos(x, y, z);
-
         Entity entity = TolkienEntities.ENTITY_TTM_NAZGUL.get().create(level, EntitySpawnReason.EVENT);
         if (!(entity instanceof Mob rider)) return;
         rider.snapTo(x + 0.5D, y, z + 0.5D, random.nextFloat() * 360.0F, 0.0F);
         rider.setPersistenceRequired();
         rider.setCustomName(Component.literal("The Rider"));
         rider.setCustomNameVisible(true);
-        rider.addTag("tolkienmobs:campaign_rider");
+        rider.addTag(RIDER_TAG);
         rider.addTag("tolkienmobs:rider_" + player.getUUID());
 
         if (level.addFreshEntity(rider)) {
@@ -325,11 +347,78 @@ public final class Campaign extends SavedData {
     }
 
     /**
+     * Keeps the campaign's Rider in the world while his page is carried and unfinished.
+     * <p>
+     * Two things are settled here that a one-off spawn at the hand-over could not settle. The first is
+     * <em>where</em>: while the player is indoors, or still within sight of the bench the page was
+     * taken at, nothing happens - and once they are out under open sky and a ride away from that door,
+     * he is waiting a little ahead of them. The second is <em>whether he still is</em>: a world reloaded
+     * forgets which body was his, a player who walks to another country leaves him behind, and either
+     * way the page must not turn into a hunt with nothing left to hunt. What keeps a second Rider from
+     * being stood up after the first is killed is the page itself - the kill is counted while the page
+     * is still carried, so a finished page means the meeting has already happened.
+     */
+    public static void tick(ServerPlayer player) {
+        if (player.tickCount % RIDER_CHECK_INTERVAL != 0) return;
+        Quest page = carriedCampaignPage(player);
+        if (page == null || page.complete()) {
+            RIDER_CALLED.remove(player.getUUID());
+            return;
+        }
+        if (livingRider(player) != null) return;
+        BlockPos called = RIDER_CALLED.get(player.getUUID());
+        if (called == null) {
+            // Owed with no place remembered - a reloaded world - so the road starts under their feet.
+            RIDER_CALLED.put(player.getUUID(), player.blockPosition());
+            return;
+        }
+        if (!player.level().canSeeSky(player.blockPosition())) return;
+        int dx = player.blockPosition().getX() - called.getX();
+        int dz = player.blockPosition().getZ() - called.getZ();
+        if (dx * dx + dz * dz < RIDER_CALL_DISTANCE * RIDER_CALL_DISTANCE) return;
+        standRiderUp(player);
+        if (RIDER_ENTITY.containsKey(player.getUUID())) {
+            player.sendSystemMessage(Component.translatable("quest.tolkienmobs.rider.coming")
+                    .withStyle(ChatFormatting.DARK_PURPLE));
+        }
+    }
+
+    /** The campaign's own page if the player is carrying it and has not finished it yet. */
+    @Nullable
+    private static Quest carriedCampaignPage(ServerPlayer player) {
+        for (Quest quest : QuestLedger.active(player)) {
+            if (isCampaignPage(player, quest)) return quest;
+        }
+        return null;
+    }
+
+    /**
+     * The Rider this player is owed, if he is already out there. The tracked id is tried first, and a
+     * Rider found by tag is written back into it - which is how a reloaded world, or a player who
+     * walked to another country, is kept from being handed a second one.
+     */
+    @Nullable
+    private static Entity livingRider(ServerPlayer player) {
+        UUID known = RIDER_ENTITY.get(player.getUUID());
+        if (known != null) {
+            Entity rider = player.level() instanceof ServerLevel level ? level.getEntity(known) : null;
+            if (rider != null && !rider.isRemoved()) return rider;
+            RIDER_ENTITY.remove(player.getUUID());
+        }
+        for (Entity rider : player.level().getEntities(player,
+                player.getBoundingBox().inflate(RIDER_SEARCH), found -> isCampaignRider(player, found))) {
+            RIDER_ENTITY.put(player.getUUID(), rider.getUUID());
+            return rider;
+        }
+        return null;
+    }
+
+    /**
      * Checks whether a killed entity is the campaign's Rider for a given player. The Rider is
      * identified by his tags, which include the player's UUID.
      */
     public static boolean isCampaignRider(ServerPlayer player, Entity victim) {
-        return victim.entityTags().contains("tolkienmobs:campaign_rider")
+        return victim.entityTags().contains(RIDER_TAG)
                 && victim.entityTags().contains("tolkienmobs:rider_" + player.getUUID());
     }
 
@@ -340,23 +429,6 @@ public final class Campaign extends SavedData {
      */
     public static void onRiderDeath(ServerPlayer player) {
         RIDER_ENTITY.remove(player.getUUID());
-    }
-
-    /**
-     * Respawns the Rider for a player if they have an active Rider quest. This is called when
-     * a player takes the Rider page again (e.g., after handing in a previous Rider encounter).
-     */
-    public static void respawnRider(ServerPlayer player) {
-        // Remove any existing Rider for this player
-        UUID oldRiderId = RIDER_ENTITY.remove(player.getUUID());
-        if (oldRiderId != null && player.level() instanceof ServerLevel level) {
-            Entity oldRider = level.getEntity(oldRiderId);
-            if (oldRider != null) {
-                oldRider.discard();
-            }
-        }
-        // Spawn a fresh Rider
-        spawnRider(player);
     }
 
     /**

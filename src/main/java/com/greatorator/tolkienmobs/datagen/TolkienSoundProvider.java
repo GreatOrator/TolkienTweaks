@@ -47,6 +47,8 @@ public class TolkienSoundProvider extends SoundDefinitionsProvider {
         this.generateNewSoundWithSubtitle(TolkienSounds.VILLAGER_COIN_TRADER, "mob/villager/coin_trader", 1, "A wild Coin Trader Appears!");
 
             // NPC
+        this.generateNewSoundWithSubtitle(TolkienSounds.HERALD_REFUSE, "mob/herald/herald_refuse", 1, "The herald refuses you");
+        this.generateNewSoundWithSubtitle(TolkienSounds.HERALD_OFFER, "mob/herald/herald_offer", 1, "The herald hands over a page");
         this.generateNewSoundWithSubtitle(TolkienSounds.IDLE_DWARF, "mob/dwarf/dwarf_say", 4, "Dwarf speaking");
         this.generateNewSoundWithSubtitle(TolkienSounds.HURT_DWARF, "mob/dwarf/dwarf_hurt", 1, "Dwarf being hurt");
         this.generateNewSoundWithSubtitle(TolkienSounds.ANGRY_DWARF, "mob/dwarf/dwarf_angry", 1, "Dwarf getting angry");

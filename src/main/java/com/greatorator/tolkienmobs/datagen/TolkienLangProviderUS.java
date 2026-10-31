@@ -28,6 +28,8 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("subtitles.tolkienmobs.ui.ledger_close", "The ledger closes");
         this.add("subtitles.tolkienmobs.ui.ledger_seal", "A seal is pressed into wax");
         this.add("subtitles.tolkienmobs.ui.ledger_coin", "Coins are counted out");
+        this.add("subtitles.tolkienmobs.mob.herald_refuse", "The herald refuses you");
+        this.add("subtitles.tolkienmobs.mob.herald_offer", "The herald hands over a page");
 
         this.add("itemgroup.tolkienmobs.deco", "TolkienTweaks: Building Blocks");
             this.addItem(TolkienItems.CREBAIN_FEATHER, "Crebain Feather");
@@ -881,6 +883,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("quest.tolkienmobs.herald.waiting", "This front is settled. The other two have not finished their line.");
         this.add("quest.tolkienmobs.herald.rider", "All three fronts are settled. The Rider is yours.");
         this.add("quest.tolkienmobs.herald.carrying", "You are already carrying this front's page. Finish it before another is written.");
+        this.add("quest.tolkienmobs.rider.coming", "Something is waiting on the road ahead. It has been waiting a long time.");
         this.add("quest.tolkienmobs.herald.settled", "All three fronts are quiet, and the Rider is not coming back. There is nothing left to ask of you.");
         this.add("quest.tolkienmobs.herald.stranger", "I do not know who you are. Come back when you have made a name for yourself, and this page is yours.");
         this.add("screen.tolkienmobs.quests.carried", "Work Carried");

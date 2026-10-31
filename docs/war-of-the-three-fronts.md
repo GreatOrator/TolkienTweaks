@@ -401,6 +401,13 @@ army for sixty standing, which is page 0 of `faction/Campaign`. Once his own fro
 stands - the other fronts still fighting, or the Rider not yet behind the player - and says plainly that
 nothing is left to ask once the Rider is.
 
+**His voice.** Two of his moments are recorded and played at his own feet: the refusal that turns a
+stranger away, and the hand-over of a page. Both lines were synthesised locally - Piper reading
+`en_GB-alan-medium`, a voice small enough to run on the CPU while the game is open - and both live in
+`sounds/mob/herald/`, so replacing either is dropping in another Ogg Vorbis file. The chat line stays
+beside the voice, because a player with the sound down, or reading the book in Chinese, still has to be
+told what happened.
+
 The other two are frozen at their tables on purpose, and their life is drawn instead of walked:
 `entity/util/TableIdle` turns each of them slowly about the place it was set, lifts its head from the work
 now and then on a second wave, and turns to look at a player who comes up to the counter, holding it while
@@ -434,6 +441,17 @@ world is protected on its next load.
 | 5, 11 | `HUNT` the Rider — a normal fight, a normal drop, a normal death message | a rider that outlives its corpse: a campaign-spawned Nazgûl, respawned fresh at the next stage |
 | 9, 12 | `FETCH` to the West's hall; `HUNT` the boss | a per-player campaign stage, so page 9 does not read as a random scroll |
 | 10 | three `FETCH` errands | — |
+
+**How he arrives.** Not at the counter. A page is taken standing at a bench with a book in your hands,
+and a wraith conjured in that room reads as a trick; the page says he is met wherever he chooses, so
+the meeting belongs to the road. Taking his page notes the door, and the campaign stands him up once
+the player is out under open sky and a ride away from it, a little ahead on the ground - the page is
+therefore a reason to leave the hall rather than a fight that begins inside it. The same walk is what
+brings him back: a reloaded world forgets which body was his, a player who crosses into another
+country leaves him behind, and either way the page must not become a hunt with nothing left to hunt,
+so he is found by the tag he wears and stood up again only if no Rider is out there. The page is what
+keeps a second one from appearing after the first is killed - the kill is counted while the page is
+still in hand, and a finished page means the meeting has already happened.
 
 The gap was the same in every row, and the smallest part of it is closed: **the mod has a stage counter**
 now. `faction/Campaign` keeps how far each player has got on each of the three fronts, saved with the

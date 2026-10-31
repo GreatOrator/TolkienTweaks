@@ -28,6 +28,8 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("subtitles.tolkienmobs.ui.ledger_close", "账簿合上");
         this.add("subtitles.tolkienmobs.ui.ledger_seal", "印章按入火漆");
         this.add("subtitles.tolkienmobs.ui.ledger_coin", "清点钱币");
+        this.add("subtitles.tolkienmobs.mob.herald_refuse", "传令官拒绝了你");
+        this.add("subtitles.tolkienmobs.mob.herald_offer", "传令官递给你一页");
 
         this.add("itemgroup.tolkienmobs.deco", "托尔金微调：建筑方块");
             this.addItem(TolkienItems.CREBAIN_FEATHER, "克拉班的羽毛");
@@ -881,6 +883,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("quest.tolkienmobs.herald.waiting", "我这一线已经了结，其余两线还没有走完。");
         this.add("quest.tolkienmobs.herald.rider", "三条战线都已了结。戒灵归你了。");
         this.add("quest.tolkienmobs.herald.carrying", "你已经带着这一线的那一页了。先把它走完，再写下一页。");
+        this.add("quest.tolkienmobs.rider.coming", "前方的路上有东西在等着。它已经等了很久。");
         this.add("quest.tolkienmobs.herald.settled", "三条战线都安静了，戒灵不会再回来。再没有什么要托付给你了。");
         this.add("quest.tolkienmobs.herald.stranger", "我不认得你是谁。等你在这里挣出了名号再回来，这一页就交给你。");
         this.add("screen.tolkienmobs.quests.carried", "手上的任务");

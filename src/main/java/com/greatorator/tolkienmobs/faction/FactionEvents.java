@@ -98,6 +98,7 @@ public final class FactionEvents {
         if (event.getEntity() instanceof ServerPlayer player) {
             FactionGuards.tick(player);
             QuestGivers.tick(player);
+            Campaign.tick(player);
         }
     }
 
