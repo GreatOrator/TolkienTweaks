@@ -40,9 +40,9 @@ import java.util.UUID;
  * <p>
  * As with the standings, the server owns the data and sends each player their own copy. What it sends
  * beside the book is one {@link Mark} per giver this player has business with - work to take, work in
- * hand, or work to hand in - because a nameplate is drawn on the client and the client cannot read
- * world data. The mark is per player, so two players can stand in front of the same giver and see
- * different things over its head, which is the whole point of a questbook.
+ * hand, or work to hand in, and whether that work is the mainline's or an errand - because a nameplate
+ * is drawn on the client and the client cannot read world data. The mark is per player, so two players
+ * can stand in front of the same giver and see different things over its head.
  */
 public final class QuestLedger extends SavedData {
     private static final String SAVE_DATA_NAME = "quest_ledger";
@@ -60,17 +60,24 @@ public final class QuestLedger extends SavedData {
 
     /**
      * What is drawn over a giver's head, from the point of view of one player.
-     * <p>
-     * The order matters: when a giver has two reasons to be marked - a quest in hand and, somehow, a
-     * fresh offer as well - the later constant wins, so a hand-in is never hidden behind a new offer.
+     *
+     * @param state    what this player has to do about the giver
+     * @param mainline whether the work is the campaign's rather than an errand, which decides the ink
      */
-    public enum Mark {
-        /** There is work here this player has not taken: a gold exclamation mark. */
-        AVAILABLE,
-        /** This player has taken work from here and has not finished it: a grey exclamation mark. */
-        IN_PROGRESS,
-        /** The work is done and this giver will take it: a green question mark. */
-        TURN_IN
+    public record Mark(State state, boolean mainline) {
+        /**
+         * The three states a mark can be in. The order matters: when a giver has two reasons to be
+         * marked - a quest in hand and, somehow, a fresh offer as well - the later one wins, so a
+         * hand-in is never hidden behind a new offer.
+         */
+        public enum State {
+            /** There is work here this player has not taken: an exclamation mark. */
+            AVAILABLE,
+            /** This player has taken work from here and has not finished it: a dim exclamation mark. */
+            IN_PROGRESS,
+            /** The work is done and this giver will take it: a question mark. */
+            TURN_IN
+        }
     }
 
     public static final Codec<QuestLedger> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -100,7 +107,8 @@ public final class QuestLedger extends SavedData {
 
     /** Whether the giver this client knows by id is still waiting for an answer. */
     public static boolean clientHasOffer(UUID giver) {
-        return CLIENT_MARKS.get(giver) == Mark.AVAILABLE;
+        Mark mark = CLIENT_MARKS.get(giver);
+        return mark != null && mark.state() == Mark.State.AVAILABLE;
     }
 
     public static void acceptClient(List<Quest> quests, Map<UUID, Mark> marks) {
@@ -370,28 +378,37 @@ public final class QuestLedger extends SavedData {
     public static void welcome(ServerPlayer player) {
         ensureLoaded(player.level());
         if (NEXT_GIVER.containsKey(player.getUUID())) return;
-        NEXT_GIVER.put(player.getUUID(), player.level().getGameTime() + WELCOME_DELAY);
+        NEXT_GIVER.put(player.getUUID(), levelTime(player) + WELCOME_DELAY);
         store(player).setDirty();
+    }
+
+    private static long levelTime(ServerPlayer player) {
+        return player.level().getGameTime();
     }
 
     // ---- pluming ----
 
     /**
      * Sends a player their own book, and the mark for every giver it mentions: an offer still waiting,
-     * a quest still in hand, or a quest that is done and can be handed in.
+     * a quest still in hand, or a quest that is done and can be handed in. A giver of the mainline is
+     * marked as such, which is what colours it gold rather than blue.
      */
     public static void sync(ServerPlayer player) {
         ensureLoaded(player.level());
+        if (!(player.level() instanceof ServerLevel level)) return;
         Map<UUID, Mark> marks = new HashMap<>();
         for (Offer offer : OFFERS.values()) {
             if (offer.player().equals(player.getUUID())) {
-                marks.put(offer.giver(), Mark.AVAILABLE);
+                marks.put(offer.giver(), new Mark(Mark.State.AVAILABLE,
+                        QuestGivers.isCampaign(level, offer.giver())));
             }
         }
         for (Quest quest : row(player)) {
             // A quest a command wrote into the book has no giver to mark, so it marks nobody.
             if (!quest.fromNpc()) continue;
-            marks.merge(quest.giverId(), ready(player, quest) ? Mark.TURN_IN : Mark.IN_PROGRESS,
+            marks.merge(quest.giverId(), new Mark(
+                            ready(player, quest) ? Mark.State.TURN_IN : Mark.State.IN_PROGRESS,
+                            QuestGivers.isCampaign(level, quest.giverId())),
                     QuestLedger::later);
         }
         PacketDistributor.sendToPlayer(player, new QuestSyncManager(List.copyOf(row(player)), Map.copyOf(marks)));
@@ -399,7 +416,7 @@ public final class QuestLedger extends SavedData {
 
     /** The mark that wins when a giver has two claims on this player's attention. */
     private static Mark later(Mark first, Mark second) {
-        return first.ordinal() >= second.ordinal() ? first : second;
+        return first.state().ordinal() >= second.state().ordinal() ? first : second;
     }
 
     private static List<Quest> row(Player player) {

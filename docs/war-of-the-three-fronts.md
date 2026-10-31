@@ -368,9 +368,17 @@ campaign's job to place them together, not the generator's.
 
 Every giver carries a mark on its nameplate, and it says one of three things:
 
-- **!** in gold - work here, not yet taken.
+- **!** in blue - an errand here, not yet taken.
+- **!** in gold - the mainline's next step, not yet taken.
 - **!** in grey - work taken, not yet done. The same glyph dimmed, because it is the same promise.
-- **?** in green - work done, hand it in.
+
+The ink is the line and the shape is the state, so the two are told apart without reading either: blue
+is anybody's errand, gold is the campaign's own. A giver is the mainline's by carrying the scoreboard
+tag `tolkienmobs:campaign` - the herald and Maelgrin will, an ordinary traveller never will - so the
+colour lives on the NPC rather than on the quest, and a giver tagged mid-play turns gold on the next
+sync.
+- **?** in blue - an errand done, hand it in.
+- **?** in gold - the mainline's page done, hand it in.
 
 The mark is per player: two players standing in front of one giver see different glyphs, and a player
 with no business there sees a bare name. **This one is built.** It is drawn onto the nameplate from the
@@ -394,7 +402,7 @@ from being a wall of text at one NPC. The herald hands out the thread; the world
 
 | Page | Today | Missing |
 |---|---|---|
-| every giver | the mark over their head: gold **!** for work to take, grey **!** for work in hand, green **?** for work to hand in | nothing - it is drawn from the quest sync |
+| every giver | the mark over their head: **!** for work to take and **?** for work to hand in, blue for an errand and gold for the mainline, grey while the work is in hand | nothing - it is drawn from the quest sync |
 | 1–4, 6–8, 10 | `HUNT` / `FETCH` / `FACTION` at a named giver, courage deeds on hand-in and on fear | a fixed giver at a known place rather than a spawned one |
 | 5, 11 | `HUNT` the Rider — a normal fight, a normal drop, a normal death message | a rider that outlives its corpse: a campaign-spawned Nazgûl, respawned fresh at the next stage |
 | 9, 12 | `FETCH` to the West's hall; `HUNT` the boss | a per-player campaign stage, so page 9 does not read as a random scroll |

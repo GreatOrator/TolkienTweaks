@@ -19,6 +19,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 import java.util.List;
+import java.util.UUID;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
@@ -37,6 +38,13 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 @EventBusSubscriber(modid = MODID)
 public final class QuestGivers {
     /** The scoreboard tag every giver carries, and the only thing that makes an NPC one. */
+    /**
+     * The tag a giver carries when the work it holds is the mainline rather than an errand. The mark
+     * over its head is gold instead of blue, which is the only thing a player needs to tell the two
+     * apart before they have read either.
+     */
+    public static final String CAMPAIGN_TAG = "tolkienmobs:campaign";
+
     public static final String GIVER_TAG = "tolkienmobs:quest_giver";
 
     /** How often a player is looked at, in ticks. */
@@ -165,6 +173,12 @@ public final class QuestGivers {
         if (QuestLedger.accept(player, offer)) {
             QuestLedger.dropOffer(player, target.getUUID());
         }
+    }
+
+    /** Whether the work a giver holds is the mainline's, which the mark over its head draws in gold. */
+    public static boolean isCampaign(Level level, UUID giver) {
+        Entity entity = level.getEntity(giver);
+        return entity != null && entity.entityTags().contains(CAMPAIGN_TAG);
     }
 
     /** Whether an entity is one of the mod's givers, for a command or an audit. */
