@@ -8,7 +8,7 @@ import java.util.zip.GZIPOutputStream;
  * Cuts one hall build into the three alliance halls the mod ships.
  * <p>
  * There is one source build - {@code faction_hall.nbt} - so a change to the hall is made once and the
- * three variants are cut from it again. Three things differ between them, and the game cannot do any
+ * three variants are cut from it again. Four things differ between them, and the game cannot do any
  * of those with a template processor, which is why this is a build step rather than a processor list:
  * <ul>
  *   <li>the acacia trim band is replaced by the alliance's own stair, keeping each stair's facing and
@@ -52,16 +52,25 @@ public class HallVariants {
     static final double VENDOR_Z = 9.5D;
     /** Yaw 90 faces west, into its bench. */
     static final float VENDOR_YAW = 90.0F;
+    /**
+     * Where the herald stands: in the aisle between the two counters, facing the front door, so it is
+     * the first body a player meets on walking in.
+     */
+    static final double HERALD_X = 7.5D;
+    static final double HERALD_Y = 1.0D;
+    static final double HERALD_Z = 10.5D;
+    /** Yaw 0 faces south, toward the door at the front of the hall. */
+    static final float HERALD_YAW = 0.0F;
 
-    record Variant(String file, String stairs, String warden, String wardenName, String tag, int alliance, String vendorName) {}
+    record Variant(String file, String stairs, String warden, String wardenName, String tag, int alliance, String vendorName, String heraldName) {}
 
     static final List<Variant> VARIANTS = List.of(
             new Variant("faction_hall_west.nbt", "tolkienmobs:stairs_lebethron",
-                    "tolkienmobs:entityttmhuman", "Warden of the West", "tolkienmobs:faction_envoy/west", 0, "Envoy of the West"),
+                    "tolkienmobs:entityttmhuman", "Warden of the West", "tolkienmobs:faction_envoy/west", 0, "Envoy of the West", "Herald of the West"),
             new Variant("faction_hall_east.nbt", "tolkienmobs:stairs_morguliron",
-                    "tolkienmobs:entityttmorc", "Warden of the East", "tolkienmobs:faction_envoy/east", 1, "Envoy of the East"),
+                    "tolkienmobs:entityttmorc", "Warden of the East", "tolkienmobs:faction_envoy/east", 1, "Envoy of the East", "Herald of the East"),
             new Variant("faction_hall_harad.nbt", "minecraft:sandstone_stairs",
-                    "tolkienmobs:entityttmsouthron_npc", "Warden of Haradwaith", "tolkienmobs:faction_envoy/harad", 2, "Envoy of Haradwaith"));
+                    "tolkienmobs:entityttmsouthron_npc", "Warden of Haradwaith", "tolkienmobs:faction_envoy/harad", 2, "Envoy of Haradwaith", "Herald of Haradwaith"));
 
     public static void main(String[] args) throws Exception {
         Path source = Paths.get(args[0]);
@@ -191,7 +200,7 @@ public class HallVariants {
 
         root.put("palette", newPalette);
         root.put("blocks", newBlocks);
-        root.put("entities", List.of(warden(variant), vendor(variant)));
+        root.put("entities", List.of(warden(variant), vendor(variant), herald(variant)));
         System.out.printf("  %s: kept=%d air=%d void=%d palette=%d%n",
                 variant.file(), kept, airs, voids, newPalette.size());
     }
@@ -240,6 +249,31 @@ public class HallVariants {
         entry.put("pos", List.of(VENDOR_X, VENDOR_Y, VENDOR_Z));
         entry.put("blockPos", List.of((int) Math.floor(VENDOR_X), (int) Math.floor(VENDOR_Y),
                 (int) Math.floor(VENDOR_Z)));
+        entry.put("nbt", nbt);
+        return entry;
+    }
+
+    /**
+     * The herald: the hall giver, standing in the aisle so a player meets it on walking in. It is a
+     * human in every hall, because the art it wears is the quest-giver skin of its alliance and that
+     * art is human-sized. The three tags are what make it a giver, dress it, and draw its mark in gold.
+     */
+    static Map<String, Object> herald(Variant variant) {
+        Map<String, Object> nbt = new LinkedHashMap<>();
+        nbt.put("id", "tolkienmobs:entityttmhuman");
+        nbt.put("Tags", List.of("tolkienmobs:quest_giver",
+                variant.tag().replace("faction_envoy", "quest_giver"), "tolkienmobs:campaign"));
+        nbt.put("CustomName", variant.heraldName());
+        nbt.put("PersistenceRequired", (byte) 1);
+        nbt.put("NoAI", (byte) 1);
+        nbt.put("Invulnerable", (byte) 1);
+        nbt.put("Silent", (byte) 1);
+        nbt.put("Rotation", List.of(HERALD_YAW, 0.0F));
+
+        Map<String, Object> entry = new LinkedHashMap<>();
+        entry.put("pos", List.of(HERALD_X, HERALD_Y, HERALD_Z));
+        entry.put("blockPos", List.of((int) Math.floor(HERALD_X), (int) Math.floor(HERALD_Y),
+                (int) Math.floor(HERALD_Z)));
         entry.put("nbt", nbt);
         return entry;
     }
