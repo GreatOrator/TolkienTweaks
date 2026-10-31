@@ -9,13 +9,17 @@ import com.greatorator.tolkienmobs.entity.npc.HumanEntity;
 import com.greatorator.tolkienmobs.entity.npc.model.HumanModel;
 import com.greatorator.tolkienmobs.entity.util.TolkienGeoRenderState;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+import static com.greatorator.tolkienmobs.TolkienMobsMain.LOGGER;
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 
 /**
@@ -44,6 +48,10 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
             Identifier.fromNamespaceAndPath(MODID, "textures/entity/faction_harad/quest_giver_harad")
     };
 
+    /** What the pack held the last time each giver skin was asked for, dropped when resources reload. */
+    private static final Map<Identifier, Boolean> GIVER_SKIN_PRESENT = new ConcurrentHashMap<>();
+    private static ResourceManager seenResourceManager;
+
     public static final Map<TolkienVariant, Identifier> LOCATION_BY_VARIANT = textures(HUMAN);
     public static final Map<TolkienVariant, Identifier> WINTER_LOCATION_BY_VARIANT = textures(WINTER_HUMAN);
 
@@ -66,10 +74,32 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
     public static Identifier textureFor(TolkienGeoRenderState renderState) {
         // Asked before the variant and the weather: a giver's clothes are not a face and not a season.
         if (renderState.giverSkin > 0 && renderState.giverSkin < GIVER_BY_ALLIANCE.length) {
-            return GIVER_BY_ALLIANCE[renderState.giverSkin];
+            Identifier giver = GIVER_BY_ALLIANCE[renderState.giverSkin];
+            if (giver != null && giverSkinIsLoaded(giver)) return giver;
         }
         Map<TolkienVariant, Identifier> byVariant = renderState.winter ? WINTER_LOCATION_BY_VARIANT : LOCATION_BY_VARIANT;
         return byVariant.get(renderState.variant);
+    }
+
+    /**
+     * Whether the pack actually holds a giver skin, asked once per file per reload. A client that cannot
+     * find one draws the missing-texture checker, so a giver whose art is absent keeps the clothes of its
+     * own folk instead, and one warning names the file that was looked for.
+     */
+    private static boolean giverSkinIsLoaded(Identifier texture) {
+        ResourceManager manager = Minecraft.getInstance().getResourceManager();
+        if (manager != seenResourceManager) {
+            seenResourceManager = manager;
+            GIVER_SKIN_PRESENT.clear();
+        }
+        return GIVER_SKIN_PRESENT.computeIfAbsent(texture, id -> {
+            Identifier file = id.withSuffix(".png");
+            boolean present = manager != null && manager.getResource(file).isPresent();
+            if (!present) {
+                LOGGER.warn("No giver skin at {}; the giver keeps the clothes of its own folk.", file);
+            }
+            return present;
+        });
     }
 
     public HumanRender(EntityRendererProvider.Context context) {

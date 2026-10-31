@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Fixed
 
+- **A giver without its art keeps its own clothes.** The renderer now asks the pack whether the alliance skin is really there, once per file per reload, before drawing it: a missing file leaves an ordinary human in the clothes of its own folk instead of the magenta missing-texture checker, and a single line in the log names the file that was looked for.
+
 - **Two item models stop grumbling in the log.** The tobacco pipe and the fancy bottle were the only element-drawn models with no `particle` texture named, which the client warns about every time it loads models; both name one now, taken from the art they already draw with. Nothing about how they look changes.
 
 - **The giver skins are in the same pixel format as the rest of the mod's art.** All three were saved as plain 8-bit RGBA, as every other skin in the mod is, instead of one paletted map and one image with no alpha channel - the client's own PNG reader, not Java's, is what has to take them, and this gives it the only form it has never had trouble with.
