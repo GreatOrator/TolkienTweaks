@@ -53,11 +53,11 @@ public class HallVariants {
     /** Yaw 90 faces west, into its bench. */
     static final float VENDOR_YAW = 90.0F;
     /**
-     * Where the herald stands: at the workbench the warden does not use, of the pair on the far side
-     * of the aisle. A hall keeps four benches and staffs two, so the spare pair is where a third body
-     * belongs - standing in the open aisle only made a body to walk around.
+     * Where the herald stands: at the workbench of the pair the warden works, the one further from the
+     * door, facing east into it as the warden does. A hall keeps four benches and staffs two, so a spare
+     * one is where a third body belongs - standing in the open aisle only made a body to walk around.
      */
-    static final double HERALD_X = 7.5D;
+    static final double HERALD_X = 11.5D;
     static final double HERALD_Y = 1.0D;
     static final double HERALD_Z = 6.5D;
     /** Yaw 270 faces east, into the bench it stands at. */
