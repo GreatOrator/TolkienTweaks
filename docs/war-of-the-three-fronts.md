@@ -23,6 +23,24 @@ mechanic can be built for the page rather than guessed at.
 
 The West's front. The country is Eriador's roads and the Shire's edges: quiet ground, and that is the
 point, because the first thing the war does is make quiet ground frightening.
+**Outline.**
+
+- **1. The wrongness.** Maelgrin sends you out to a late scout. You find a cold in a ditch and
+  breathing where nothing stands. *Cost:* the walk. *Reveals:* nothing yet - this one is bait.
+- **2. The night.** You go back out with the scout, and the fear lands for the first time: pinned,
+  blind, helpless. *Cost:* the pin. *Pays:* the "fear withstood" deed.
+- **3. The theft.** Aldwyn's beasts went whole, the fence went with them, and there are lights on the
+  barrows. *Cost:* an ordinary person's livelihood, on screen. *Reveals:* the war is local now.
+- **4. The duty.** The barrow wight was *guarding* a key, not hoarding it. *Reveals:* the enemy set the
+  dead to a task. *Pays:* the key fragment, and the Trembling rung.
+- **5. The tower.** You open the tower and there is no boss inside. There is a conversation, and the
+  Rider leaves. *Cost:* nothing you can prevent. *Reveals:* he has been counting, and help is what he
+  came for. *Turns the act.*
+
+**The open question for this act:** page 5 asks for a Nazgul that cannot be beaten, and a player who
+has been taught to fight everything will spend ten minutes trying anyway. The alternative is a Rider
+who *is* killable but reconstitutes on the next stage - more forgiving, less frightening.
+
 
 ### 1. A Rider on the Greenway — Maelgrin, Ranger of Eriador
 
@@ -131,6 +149,25 @@ the one mechanic Act I cannot be built without.
 
 The East's front, and the act where the fear changes its grip. The ground: Mirkwood's eaves, the
 Dagorlad, and the road the enemy's smiths use to feed Mordor.
+**Outline.**
+
+- **1. The wagons.** Guthlac: forty-one wagons east, coming back empty but not light. You break the
+  warg pit and take the plan out of its cache. *Cost:* the road's garrison. *Pays:* the fortress map.
+- **2. The plan.** It was drawn from inside the fortress. Either there is a friend, or the enemy is
+  handing plans to travellers. *Reveals:* the bait, and the player knows it is bait.
+- **3. The quiet front.** Maelgrin's letter: the West has been silent for a month, and that is what
+  frightens him. *Reveals:* a war that stops on one front has moved, not stopped.
+- **4. What the wagons fed.** You follow the road into Nurn and count what has been built. The
+  overseer's scroll is addressed to the captains of the southern road: you will be glad when you are
+  no longer needed. *Reveals:* the arena. *Pays:* the Stout-hearted rung.
+- **5. The fork.** The last line of the scroll is in a smaller hand: *"Run."* You carry it to whichever
+  hall you stand with, and the Witch-king is named for the first time - and not fought.
+  *Turns the act.*
+
+**The open question for this act:** the fear is meant to become slowness here, but the player has had
+the full pin already in Act I, so Act II's fear must be *newly* worse in a way that is not "again, but
+slower" - otherwise the change reads as the game being kind rather than the enemy being clever.
+
 
 ### 6. Smiths on the Iron Road — Guthlac, a dwarf of the Iron Hills
 
