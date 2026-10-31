@@ -400,8 +400,9 @@ the stage counter below exists and a page is written for him to hand out, right-
 there is no work, which is the truth.
 
 The other two are frozen at their tables on purpose, and their life is drawn instead of walked:
-`entity/util/TableIdle` turns each of them slowly about the place it was set and lifts its head from the
-work now and then, on two waves of different lengths. What makes a body staff is having no brain and
+`entity/util/TableIdle` turns each of them slowly about the place it was set, lifts its head from the work
+now and then on a second wave, and turns to look at a player who comes up to the counter, holding it while
+they are there and settling back to the work once they go. What makes a body staff is having no brain and
 carrying one of the hall tags, so a hall placed before that code learns nothing new and simply stops
 reading as furniture.
 
