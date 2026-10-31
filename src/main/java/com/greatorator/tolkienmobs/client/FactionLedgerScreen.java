@@ -344,43 +344,45 @@ public class FactionLedgerScreen extends Screen {
     // ---- both leaves on the quest bookmark ----
 
     private void drawQuestBook(GuiGraphicsExtractor graphics) {
-        drawPageTitle(graphics, leftPageX, Component.translatable("screen.tolkienmobs.quests.page"));
-        drawPageTitle(graphics, rightPageX, Component.translatable("screen.tolkienmobs.quests.page2"));
+        drawPageTitle(graphics, leftPageX, Component.translatable("screen.tolkienmobs.quests.bounties"));
+        drawPageTitle(graphics, rightPageX, Component.translatable("screen.tolkienmobs.quests.story"));
 
         List<Quest> quests = QuestLedger.clientQuests();
-        if (quests.isEmpty()) {
-            drawWrapped(graphics, innerX(leftPageX), bodyTop() + 8, innerW(),
-                    Component.translatable("screen.tolkienmobs.quests.empty"), INK_DIM, 4);
-            drawCentred(graphics, leftPageX, Component.translatable("screen.tolkienmobs.quests.hint"),
-                    INK_DIM, pageBottom() - 13);
-            return;
-        }
-        // The work is split down the middle of the book, so a full book is read left then right. The
-        // offset is what lets a click name the quest it landed on, whichever leaf drew it.
-        int half = (quests.size() + 1) / 2;
-        drawQuestColumn(graphics, leftPageX, quests.subList(0, half), 0);
-        drawQuestColumn(graphics, rightPageX, quests.subList(half, quests.size()), half);
+        drawBounties(graphics, quests);
+        drawStory(graphics, quests);
         drawCentred(graphics, leftPageX, Component.translatable("screen.tolkienmobs.quests.hint"),
                 INK_DIM, pageBottom() - 13);
     }
 
-    private void drawQuestColumn(GuiGraphicsExtractor graphics, int pageX, List<Quest> quests, int first) {
-        if (quests.isEmpty()) return;
-        int x = innerX(pageX);
+    /**
+     * The bounties leaf: the ordinary errands, in the order they were taken, and no more of them than
+     * the leaf has room to spell out. The limit is the server's too - {@link QuestLedger#MAX_BOUNTIES}
+     * is what a player may hold - so this page can be trusted to fit whatever it is handed.
+     */
+    private void drawBounties(GuiGraphicsExtractor graphics, List<Quest> quests) {
+        int x = innerX(leftPageX);
         int w = innerW();
-        int top = bodyTop();
-        // A line at the foot of the leaf is kept for the hand-in reminder, and what is left is split
-        // between at most two entries.
-        int blockH = Math.min(84, Math.max(62, (bodyBottom() - top - 14) / Math.max(1, quests.size())));
-        for (int i = 0; i < quests.size() && i < 2; i++) {
-            drawQuestEntry(graphics, x, top + i * blockH, w, blockH, quests.get(i), first + i);
+        // The book's order is the player's order, and a story page sits somewhere in it, so the slots
+        // are the book's own rather than the count of errands drawn.
+        List<Integer> slots = new ArrayList<>();
+        for (int i = 0; i < quests.size(); i++) {
+            if (!quests.get(i).story()) slots.add(i);
+        }
+        if (slots.isEmpty()) {
+            drawWrapped(graphics, x, bodyTop() + 8, w,
+                    Component.translatable("screen.tolkienmobs.quests.bounties.empty"), INK_DIM, 4);
+            return;
+        }
+        int room = bodyBottom() - bodyTop() - 14;
+        int rows = Math.max(1, Math.min(slots.size(), QuestLedger.MAX_BOUNTIES));
+        int rowH = Math.min(38, Math.max(24, room / rows));
+        for (int i = 0; i < rows; i++) {
+            drawBounty(graphics, x, bodyTop() + i * rowH, w, rowH, quests.get(slots.get(i)), slots.get(i));
         }
     }
 
-    private void drawQuestEntry(GuiGraphicsExtractor graphics, int x, int y, int w, int h, Quest quest, int slot) {
+    private void drawBounty(GuiGraphicsExtractor graphics, int x, int y, int w, int h, Quest quest, int slot) {
         graphics.item(iconOf(quest), x, y);
-        graphics.text(this.font, fit(quest.objective().getString(), w - 21), x + 21, y + 2, INK, FLAT);
-
         // The abandon button closes the giver's line. It is small on purpose, so the first click only
         // arms it and the button itself says what the second click will do.
         boolean armed = slot == armedSlot;
@@ -389,35 +391,80 @@ public class FactionLedgerScreen extends Screen {
                 : "x";
         int controlW = this.font.width(control);
         int controlX = x + w - controlW;
-        graphics.text(this.font, control, controlX, y + 13, armed ? INK_RED : INK_DIM, FLAT);
-        abandonSpots.add(new AbandonSpot(slot, controlX - 2, y + 11, controlW + 4, LINE + 2));
+        graphics.text(this.font, fit(quest.objective().getString(), w - controlW - 25), x + 21, y + 2,
+                quest.complete() ? INK_GREEN : INK, FLAT);
+        graphics.text(this.font, control, controlX, y + 2, armed ? INK_RED : INK_DIM, FLAT);
+        abandonSpots.add(new AbandonSpot(slot, controlX - 2, y + 1, controlW + 4, LINE + 2));
 
-        // The details run the width of the leaf, under the picture rather than beside it.
-        graphics.text(this.font, fit(quest.giverName().getString(), w - controlW - 6), x, y + 13, INK_DIM, FLAT);
-        graphics.text(this.font, fit(quest.takenAt().getString(), w), x, y + 23, INK_DIM, FLAT);
+        graphics.text(this.font, fit(quest.giverName().getString(), w - 21), x + 21, y + 12, INK_DIM, FLAT);
 
-        int summaryTop = y + 34;
-        int lines = Math.max(1, Math.min(3, (h - 44) / LINE));
-        for (String line : wrap(quest.summary().getString(), w, lines)) {
-            graphics.text(this.font, line, x, summaryTop, INK_DIM, FLAT);
-            summaryTop += LINE;
+        int foot = y + h - 6;
+        String counter = quest.progress() + " / " + quest.goal();
+        int counterW = this.font.width(counter);
+        int barW = Math.max(0, w - 21 - counterW - 6);
+        graphics.fill(x + 21, foot, x + 21 + barW, foot + 3, TRACK);
+        int filled = quest.goal() <= 0 ? 0 : Math.round(barW * (quest.progress() / (float) quest.goal()));
+        if (filled > 0) {
+            graphics.fill(x + 21, foot, x + 21 + filled, foot + 3, quest.complete() ? INK_GREEN : INK_BLUE);
         }
+        graphics.text(this.font, counter, x + w - counterW, foot - 3, INK_DIM, FLAT);
+    }
 
-        int foot = y + h - 10;
-        if (quest.complete()) {
+    /**
+     * The story leaf: the campaign step, alone, with the room the errands used to take given over to
+     * its prose. One page is the whole of it - the front has one step in hand at a time - so what is
+     * left of the leaf goes into the sentence that says what is being asked and why.
+     */
+    private void drawStory(GuiGraphicsExtractor graphics, List<Quest> quests) {
+        int x = innerX(rightPageX);
+        int w = innerW();
+        Quest story = null;
+        for (Quest quest : quests) {
+            if (quest.story()) {
+                story = quest;
+                break;
+            }
+        }
+        if (story == null) {
+            drawWrapped(graphics, x, bodyTop() + 8, w,
+                    Component.translatable("screen.tolkienmobs.quests.story.empty"), INK_DIM, 5);
+            return;
+        }
+        graphics.item(iconOf(story), x, bodyTop());
+        graphics.text(this.font, fit(story.objective().getString(), w - 21), x + 21, bodyTop() + 2, INK, FLAT);
+
+        int y = wrapped(graphics, x, bodyTop() + 22, w, story.summary().getString(), INK_DIM, 7) + 2;
+        graphics.text(this.font, fit(story.giverName().getString(), w), x, y, INK_DIM, FLAT);
+        y += LINE;
+        graphics.text(this.font, fit(story.takenAt().getString(), w), x, y, INK_DIM, FLAT);
+        y += LINE + 2;
+        graphics.text(this.font, fit(story.rewardLine().getString(), w), x, y, INK_GOLD, FLAT);
+
+        int foot = bodyBottom() - 8;
+        if (story.complete()) {
             graphics.text(this.font, fit(Component.translatable("quest.tolkienmobs.complete").getString(), w),
                     x, foot - 1, INK_GREEN, FLAT);
             return;
         }
-        String counter = quest.progress() + " / " + quest.goal();
+        String counter = story.progress() + " / " + story.goal();
         int counterW = this.font.width(counter);
         int barW = Math.max(0, w - counterW - 6);
         graphics.fill(x, foot, x + barW, foot + 4, TRACK);
-        int filled = quest.goal() <= 0 ? 0 : Math.round(barW * (quest.progress() / (float) quest.goal()));
+        int filled = story.goal() <= 0 ? 0 : Math.round(barW * (story.progress() / (float) story.goal()));
         if (filled > 0) {
             graphics.fill(x, foot, x + filled, foot + 4, INK_BLUE);
         }
         graphics.text(this.font, counter, x + w - counterW, foot - 2, INK_DIM, FLAT);
+    }
+
+    /** Draws prose onto a leaf and answers the y it finished on, so what follows sits under it. */
+    private int wrapped(GuiGraphicsExtractor graphics, int x, int y, int width, String text, int ink, int maxLines) {
+        int lineY = y;
+        for (String line : wrap(text, width, maxLines)) {
+            graphics.text(this.font, line, x, lineY, ink, FLAT);
+            lineY += LINE;
+        }
+        return lineY;
     }
 
     /** The picture a quest's entry leads with: the goods it wants, the country it serves, or a blade. */

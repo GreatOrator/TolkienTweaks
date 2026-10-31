@@ -24,6 +24,8 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+- **The quest book has a bounties leaf and a story leaf.** The quest bookmark no longer splits the work down the middle of the spread and hides whatever did not fit: **Bounties** holds the errands, hard-limited to what one leaf was measured to show, and **Story** holds the campaign step alone, with the room the other entries took given over to its description. A campaign page is exempt from the bounty cap, so a book full of errands never blocks the mainline.
+
 - **A campaign stage counter, and the herald has a page.** faction/Campaign keeps how far each player has got on each of the three fronts, saved with the world and synced to its owner. Page 0 of every front is written - six soldiers of a rival army for sixty standing - and the hall herald hands it over directly rather than leaving it as an offer to browse. The front only moves on when the ledger settles that exact page, so a page dropped or cleared from the book leaves the front where it was, and the mark over his head stops once a front has nothing left to give.
 
 - **The herald's gate is cut.** His gold mark is drawn only for a player who is at least a **stranger** to his alliance - the first rank above outsider, 100 points of ordinary hall work - and a mark for anyone below is dropped, so the hall's herald keeps a bare name until the country knows you. The mark stands with no page behind it yet, which is the campaign saying it has somewhere to begin and not yet what; until a page is written, right-clicking him answers that there is no work.

@@ -75,7 +75,7 @@ public final class QuestGivers {
 
         long now = level.getGameTime();
         if (now < QuestLedger.nextGiver(player)) return;
-        if (QuestLedger.active(player).size() >= QuestLedger.MAX_ACTIVE) return;
+        if (QuestLedger.bountiesFull(player)) return;
 
         if (giverNear(level, player) != null) {
             QuestLedger.setNextGiver(player, now + MIN_GAP);

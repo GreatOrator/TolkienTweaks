@@ -842,6 +842,10 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("screen.tolkienmobs.quests.hint", "把完成的任务交给任意任务发布者。");
         this.add("screen.tolkienmobs.quests.page", "任务");
         this.add("screen.tolkienmobs.quests.page2", "任务（续）");
+        this.add("screen.tolkienmobs.quests.bounties", "赏金任务");
+        this.add("screen.tolkienmobs.quests.story", "主线故事");
+        this.add("screen.tolkienmobs.quests.bounties.empty", "手上还没有赏金任务 —— 外面的发布者手里有活。");
+        this.add("screen.tolkienmobs.quests.story.empty", "主线故事暂时没有进行中的步骤。");
         this.add("screen.tolkienmobs.quests.carried", "手上的任务");
         this.add("screen.tolkienmobs.quests.abandon.confirm", "放弃此任务？");
         this.add("command.tolkienmobs.quest.give", "给了 %s %s 个任务。");

@@ -57,7 +57,7 @@ public final class QuestCommands {
                         .then(Commands.literal("give")
                                 .executes(context -> give(context, 1))
                                 .then(Commands.argument("count",
-                                                IntegerArgumentType.integer(1, QuestLedger.MAX_ACTIVE))
+                                                IntegerArgumentType.integer(1, QuestLedger.MAX_BOUNTIES))
                                         .executes(context -> give(context,
                                                 IntegerArgumentType.getInteger(context, "count")))))
                         .then(Commands.literal("quit").executes(QuestCommands::quit))

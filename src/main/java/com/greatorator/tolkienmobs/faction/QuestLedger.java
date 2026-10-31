@@ -46,8 +46,11 @@ import java.util.UUID;
  */
 public final class QuestLedger extends SavedData {
     private static final String SAVE_DATA_NAME = "quest_ledger";
-    /** How many quests a player may hold at once, which is how many the book draws. */
-    public static final int MAX_ACTIVE = 4;
+    /**
+     * How many bounties a player may hold at once, which is how many the bounties leaf was measured
+     * for. A story page is not one of these: the campaign step is not an errand competing for a slot.
+     */
+    public static final int MAX_BOUNTIES = 5;
     /** How long after logging in a player is first met by a giver, in ticks. */
     private static final long WELCOME_DELAY = 1200L;
 
@@ -142,7 +145,7 @@ public final class QuestLedger extends SavedData {
      */
     public static boolean accept(ServerPlayer player, Quest quest) {
         List<Quest> quests = row(player);
-        if (quests.size() >= MAX_ACTIVE) {
+        if (!quest.story() && bounties(quests) >= MAX_BOUNTIES) {
             player.sendSystemMessage(Component.translatable("quest.tolkienmobs.full")
                     .withStyle(ChatFormatting.GRAY));
             return false;
@@ -156,6 +159,21 @@ public final class QuestLedger extends SavedData {
                 SoundSource.PLAYERS, 0.6F, 1.0F);
         sync(player);
         return true;
+    }
+
+    /** How many of a book's quests are errands, which is what the bounties leaf counts. */
+    private static int bounties(List<Quest> quests) {
+        int held = 0;
+        for (Quest quest : quests) {
+            if (!quest.story()) held++;
+        }
+        return held;
+    }
+
+    /** Whether the player is already carrying as many bounties as the bounties leaf has room for. */
+    public static boolean bountiesFull(ServerPlayer player) {
+        ensureLoaded(player.level());
+        return bounties(row(player)) >= MAX_BOUNTIES;
     }
 
     /** Puts a book in the player's pack unless they already carry one. */
