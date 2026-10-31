@@ -836,6 +836,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("quest.tolkienmobs.summary.fetch", "The stores are running thin; %s %s would see the household through the season.");
         this.add("quest.tolkienmobs.summary.hunt", "%s have been troubling the road, and %s of them will do.");
         this.add("quest.tolkienmobs.giver.idle", "I have no work for you just now.");
+        this.add("quest.tolkienmobs.busy", "You look too busy to help right now.");
         this.add("screen.tolkienmobs.faction_ledger.tab.alliances", "Alliances");
         this.add("screen.tolkienmobs.faction_ledger.tab.quests", "Quests");
         this.add("screen.tolkienmobs.quests.empty", "No work taken yet - someone out there has some.");
