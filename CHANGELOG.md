@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Fixed
 
+- **The giver skins are in the same pixel format as the rest of the mod's art.** All three were saved as plain 8-bit RGBA, as every other skin in the mod is, instead of one paletted map and one image with no alpha channel - the client's own PNG reader, not Java's, is what has to take them, and this gives it the only form it has never had trouble with.
+
 - **Quest givers can no longer be killed.** A giver is made invulnerable and persistent on its way into the world, so a mob that wanders into the scene cannot end a quest by killing the one thing that can hand it in - and givers already standing in a saved world are protected on their next load.
 
 - **Sleepnesia keeps every sleeper's sleep to themselves.** An effect is one object shared by everything holding it, and the draught kept its slumber in a field of that object: the first sleeper in a world put everyone who came after them to bed for good, and nobody stood up again. Whether a sleeper is still under is now read from their own instance of the effect, they are stood up a few ticks before it lapses - once it has gone there is no tick left to do it - and only a player is laid down, so a boss handing the draught to something that is not a player no longer breaks on the cast. The movement modifier it added and never reliably took away is gone with it; the slowness and blindness it already applied are what keep a sleeper still.
