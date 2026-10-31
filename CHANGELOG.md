@@ -14,7 +14,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
-- **The war's three acts are written down.** `docs/war-of-the-three-fronts.md` holds the campaign's twelve quest pages in the older quest-sheet style - who speaks, what they say, the ground the errand happens on, what it pays, and which of the mod's quest kinds can express it today. Each page also names what it still needs, so the missing pieces of a questline (a Nazgul that leaves rather than dies, a per-player campaign stage) are listed rather than left to be rediscovered.
+- **The war's three acts are written down.** `docs/war-of-the-three-fronts.md` holds the West's questline page by page in the older quest-sheet style - who speaks, what they say, the ground the errand happens on, what it pays, and which of the mod's quest kinds can express it today. The Rider is killable and comes back, because a Nazgul that cannot be hurt reads as a bug while one that dies and returns tells the truth. A closing section lists what a line for the East or Harad would change, so the other two fronts are a rewrite rather than a redesign.
 
 - **The fortress and the arena are structures of the mod now.** The Witch-king's fortress and the arena beneath it are registered builds, so either can be put down without carrying a template about: `/place structure tolkienmobs:boss_castle` and `/place structure tolkienmobs:boss_arena`, both cut from Mordor's own stone. Neither is drawn into a world by the generator - where they stand is the campaign's business - so Mordor is not littered with fortresses waiting to be found; giving one a structure set later is a one-line change.
 
