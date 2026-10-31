@@ -850,6 +850,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("screen.tolkienmobs.quests.story.empty", "No step of the campaign is in your hands.");
         this.add("screen.tolkienmobs.quests.campaign.done", "The war of the three fronts is over.");
         this.add("quest.tolkienmobs.herald.waiting", "This front is settled. The other two have not finished their line.");
+        this.add("quest.tolkienmobs.herald.rider", "All three fronts are settled. The Rider is yours.");
         this.add("quest.tolkienmobs.herald.settled", "All three fronts are quiet, and the Rider is not coming back. There is nothing left to ask of you.");
         this.add("screen.tolkienmobs.quests.carried", "Work Carried");
         this.add("screen.tolkienmobs.quests.abandon.confirm", "Abandon?");

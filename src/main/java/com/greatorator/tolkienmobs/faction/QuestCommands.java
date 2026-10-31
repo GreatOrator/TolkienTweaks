@@ -61,7 +61,16 @@ public final class QuestCommands {
                                         .executes(context -> give(context,
                                                 IntegerArgumentType.getInteger(context, "count")))))
                         .then(Commands.literal("quit").executes(QuestCommands::quit))
-                        .then(Commands.literal("spawn").executes(QuestCommands::spawn))));
+                        .then(Commands.literal("spawn").executes(QuestCommands::spawn))
+                        .then(Commands.literal("campaign_giver")
+                                .then(Commands.argument("alliance", com.mojang.brigadier.arguments.StringArgumentType.string())
+                                        .suggests((context, builder) -> {
+                                            for (Alliance alliance : Alliance.values()) {
+                                                builder.suggest(alliance.id());
+                                            }
+                                            return builder.buildFuture();
+                                        })
+                                        .executes(QuestCommands::spawnCampaignGiver)))));
     }
 
     /**
@@ -121,6 +130,28 @@ public final class QuestCommands {
             context.getSource().sendSuccess(() -> Component.translatable("command.tolkienmobs.quest.spawn",
                     nameOf(who), Component.literal(String.valueOf(total))), true);
         }
+        return spawned;
+    }
+
+    /** Spawns a named campaign giver for the specified alliance beside each target. */
+    private static int spawnCampaignGiver(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        Collection<ServerPlayer> players = EntityArgument.getPlayers(context, "targets");
+        String allianceId = com.mojang.brigadier.arguments.StringArgumentType.getString(context, "alliance");
+        Alliance alliance = Alliance.byId(allianceId);
+        if (alliance == null) {
+            context.getSource().sendFailure(Component.literal("Unknown alliance: " + allianceId));
+            return 0;
+        }
+        
+        int spawned = 0;
+        for (ServerPlayer player : players) {
+            QuestGivers.ensureCampaignGiver(player, alliance);
+            spawned++;
+        }
+        
+        int total = spawned;
+        Collection<ServerPlayer> who = players;
+        context.getSource().sendSuccess(() -> Component.literal("Spawned " + total + " campaign giver(s) for " + alliance.id()), true);
         return spawned;
     }
 

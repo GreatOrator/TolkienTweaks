@@ -180,6 +180,11 @@ public final class QuestGivers {
             if (page != null) {
                 Quest handed = page.withGiver(target.getName().getString(), target.blockPosition(),
                         target.getUUID());
+                // The herald speaks when handing over the Rider page, the campaign's final page.
+                if (Campaign.isCampaignPage(player, handed)) {
+                    player.sendSystemMessage(Component.translatable("quest.tolkienmobs.herald.rider")
+                            .withStyle(ChatFormatting.GOLD));
+                }
                 if (QuestLedger.accept(player, handed)) Campaign.noteHanded(player, herald, handed);
                 return;
             }
@@ -246,7 +251,53 @@ public final class QuestGivers {
     @SubscribeEvent
     public static void onGiverJoin(EntityJoinLevelEvent event) {
         if (event.getLevel().isClientSide()) return;
-        if (isGiver(event.getEntity())) makeSafe(event.getEntity());
+        Entity entity = event.getEntity();
+        if (isGiver(entity)) makeSafe(entity);
+    }
+
+    /**
+     * Spawns a named campaign giver at the given position. This can be called by commands or
+     * structure placement logic to ensure campaign NPCs are present at their designated locations.
+     */
+    public static void ensureCampaignGiver(ServerPlayer player, Alliance alliance) {
+        if (!(player.level() instanceof ServerLevel level)) return;
+        // Check if a campaign giver for this alliance already exists near the player
+        for (Entity entity : level.getAllEntities()) {
+            if (entity instanceof Mob mob && mob.entityTags().contains("tolkienmobs:campaign_giver")
+                    && factionOf(mob) == alliance) {
+                double dist = mob.position().distanceTo(player.position());
+                if (dist < 100.0) return; // Already exists nearby
+            }
+        }
+        // Spawn a new campaign giver at the player's location
+        spawnCampaignGiver(level, player.blockPosition(), alliance);
+    }
+
+    /**
+     * Spawns a named campaign giver at the given position.
+     */
+    private static void spawnCampaignGiver(ServerLevel level, BlockPos pos, Alliance alliance) {
+        Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
+        if (!(entity instanceof Mob giver)) return;
+        giver.snapTo(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, 0.0F, 0.0F);
+        giver.setPersistenceRequired();
+        giver.addTag(GIVER_TAG);
+        giver.addTag(alliance.giverTag());
+        giver.addTag(CAMPAIGN_TAG);
+        giver.addTag("tolkienmobs:campaign_giver");
+        
+        String name = switch (alliance) {
+            case WEST -> "Maelgrin";
+            case EAST -> "Guthlac";
+            case HARAD -> "Zarabi";
+        };
+        giver.setCustomName(Component.literal(name));
+        giver.setCustomNameVisible(true);
+        
+        makeSafe(giver);
+        keepInHall(giver);
+        
+        level.addFreshEntity(giver);
     }
 
     /** The alliance whose work a giver carries, or null for one placed without an alliance of its own. */
