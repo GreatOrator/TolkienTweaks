@@ -199,7 +199,7 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
 
     /** The line the ledger prints under a quest's name: what the work pays. */
     public Component rewardLine() {
-        if (kind == Kind.FACTION) {
+        if (standing > 0) {
             Alliance alliance = employerAlliance();
             return Component.translatable("quest.tolkienmobs.reward.standing",
                             Component.literal(String.valueOf(standing)),

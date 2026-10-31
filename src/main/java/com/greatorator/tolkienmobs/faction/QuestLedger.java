@@ -330,11 +330,11 @@ public final class QuestLedger extends SavedData {
     }
 
     private static void pay(ServerPlayer player, Quest quest) {
-        if (quest.kind() == Quest.Kind.FACTION) {
-            Alliance employer = quest.employerAlliance();
-            if (employer != null) {
-                FactionStandings.adjust(player, employer, quest.standing());
-            }
+        // Standing is what a country pays, whatever shape the work takes: the field is the price of
+        // the page, not a property of faction work, and a story page may ask for a kill or a delivery.
+        Alliance employer = quest.employerAlliance();
+        if (employer != null && quest.standing() > 0) {
+            FactionStandings.adjust(player, employer, quest.standing());
         }
         for (Quest.Reward reward : quest.rewards()) {
             ItemStack stack = reward.stack();
