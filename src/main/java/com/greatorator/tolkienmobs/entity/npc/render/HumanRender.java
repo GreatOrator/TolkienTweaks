@@ -23,17 +23,26 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
  * state, so the two choices it used to read off the entity are captured during extraction and looked up
  * again when the texture is asked for.
  * <p>
- * The mainline's own are the third case and the simplest: one skin, one file, no variant and no winter
- * clothing. It is keyed on the same campaign tag everything else about the mainline is keyed on, so the
- * art is a drop-in - put a 64x64 skin at {@code textures/entity/herald/herald.png} and every NPC wearing
- * that tag changes clothes.
+ * The folk who carry work are the third case: one skin per alliance, one file each, no variant and no
+ * winter clothing. Which of the three is worn is keyed on the same scoreboard tag that says whose work a
+ * giver holds, so the art is a drop-in - overwrite {@code faction_west/quest_giver_west.png} and every
+ * giver of the West's work changes clothes.
  */
 public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRenderState> {
     private static final Identifier WINTER_HUMAN = Identifier.fromNamespaceAndPath(MODID, "textures/entity/human_winter/winter");
     private static final Identifier HUMAN = Identifier.fromNamespaceAndPath(MODID, "textures/entity/human/human");
 
-    /** The one skin the mainline's own wear, whatever their face and whatever the weather. */
-    public static final Identifier HERALD = Identifier.fromNamespaceAndPath(MODID, "textures/entity/herald/herald");
+    /**
+     * The giver skins, indexed by an alliance's ordinal plus one; slot 0 is an ordinary human and is never
+     * asked for. The order matches {@link com.greatorator.tolkienmobs.faction.Alliance}, which is what the
+     * entity's synched skin index encodes.
+     */
+    private static final Identifier[] GIVER_BY_ALLIANCE = {
+            null,
+            Identifier.fromNamespaceAndPath(MODID, "textures/entity/faction_west/quest_giver_west"),
+            Identifier.fromNamespaceAndPath(MODID, "textures/entity/faction_east/quest_giver_east"),
+            Identifier.fromNamespaceAndPath(MODID, "textures/entity/faction_harad/quest_giver_harad")
+    };
 
     public static final Map<TolkienVariant, Identifier> LOCATION_BY_VARIANT = textures(HUMAN);
     public static final Map<TolkienVariant, Identifier> WINTER_LOCATION_BY_VARIANT = textures(WINTER_HUMAN);
@@ -55,8 +64,10 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
 
     /** The variant's texture, for the model and for the base class's texture lookup. */
     public static Identifier textureFor(TolkienGeoRenderState renderState) {
-        // Asked before the variant and the weather: a herald's clothes are not a face and not a season.
-        if (renderState.herald) return HERALD;
+        // Asked before the variant and the weather: a giver's clothes are not a face and not a season.
+        if (renderState.giverSkin > 0 && renderState.giverSkin < GIVER_BY_ALLIANCE.length) {
+            return GIVER_BY_ALLIANCE[renderState.giverSkin];
+        }
         Map<TolkienVariant, Identifier> byVariant = renderState.winter ? WINTER_LOCATION_BY_VARIANT : LOCATION_BY_VARIANT;
         return byVariant.get(renderState.variant);
     }
@@ -80,7 +91,7 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
     public void addRenderData(HumanEntity animatable, Void relatedObject, TolkienGeoRenderState renderState, float partialTick) {
         renderState.variant = animatable.getTolkienVariant();
         renderState.winter = animatable.isWinter();
-        renderState.herald = animatable.isHerald();
+        renderState.giverSkin = animatable.giverSkin();
     }
 
     /** A human child is drawn at half size; 5 applies that here rather than in preRender. */

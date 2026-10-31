@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class HumanEntity extends TolkienVillagerEntity implements GeoEntity {
     private static final EntityDataAccessor<Boolean> WINTER = SynchedEntityData.defineId(HumanEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> HERALD = SynchedEntityData.defineId(HumanEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> GIVER_SKIN = SynchedEntityData.defineId(HumanEntity.class, EntityDataSerializers.INT);
 
     /** Server-side only: whether the spawn biome has been looked at yet. */
     private boolean winterResolved;
@@ -35,7 +35,7 @@ public class HumanEntity extends TolkienVillagerEntity implements GeoEntity {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(WINTER, false);
-        builder.define(HERALD, false);
+        builder.define(GIVER_SKIN, 0);
     }
 
     public boolean isWinter() {
@@ -47,19 +47,20 @@ public class HumanEntity extends TolkienVillagerEntity implements GeoEntity {
     }
 
     /**
-     * Whether this human is one of the mainline's own, which is what decides the clothes it wears.
+     * Which of the folk who carry work this human is dressed as: {@code 0} for an ordinary human,
+     * otherwise an alliance's ordinal plus one.
      * <p>
      * The answer lives in a scoreboard tag, and a scoreboard tag is a server fact - the client is never
      * sent one - so it is copied into synched data here for a renderer to read on the far side. It is
      * read on every tick rather than once at spawn, so tagging a giver by hand puts the clothes on them
-     * where they stand, and untagging takes them off again.
+     * where they stand and untagging takes them off again.
      */
-    public boolean isHerald() {
-        return this.entityData.get(HERALD);
+    public int giverSkin() {
+        return this.entityData.get(GIVER_SKIN);
     }
 
-    private void setHerald(boolean herald) {
-        this.entityData.set(HERALD, herald);
+    private void setGiverSkin(int skin) {
+        this.entityData.set(GIVER_SKIN, skin);
     }
 
     @Override
@@ -76,9 +77,9 @@ public class HumanEntity extends TolkienVillagerEntity implements GeoEntity {
         }
         // Only written when it changes, so a tick is a tag lookup and not a packet.
         if (!this.level().isClientSide()) {
-            boolean herald = this.entityTags().contains(QuestGivers.CAMPAIGN_TAG);
-            if (herald != this.isHerald()) {
-                this.setHerald(herald);
+            int skin = QuestGivers.giverSkinOf(this);
+            if (skin != this.giverSkin()) {
+                this.setGiverSkin(skin);
             }
         }
     }

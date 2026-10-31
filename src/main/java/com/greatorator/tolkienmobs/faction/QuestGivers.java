@@ -16,6 +16,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 
 import java.util.List;
@@ -110,10 +111,14 @@ public final class QuestGivers {
             giver.setCustomName(Quest.label(label));
             giver.setCustomNameVisible(true);
             giver.addTag(GIVER_TAG);
+            // The alliance is read once: it decides the work offered and the clothes the giver wears.
+            Alliance employer = employer(player);
+            giver.addTag((employer == null ? Alliance.WEST : employer).giverTag());
+            makeSafe(giver);
             if (!level.addFreshEntity(giver)) continue;
 
             // The work remembers who offered it and where they stood, so the book can say both later.
-            Quest work = QuestPool.offer(random, employer(player)).withGiver(label, giver.blockPosition(), giver.getUUID());
+            Quest work = QuestPool.offer(random, employer).withGiver(label, giver.blockPosition(), giver.getUUID());
             QuestLedger.offer(player, giver.getUUID(), work);
             player.sendSystemMessage(Component.translatable("quest.tolkienmobs.giver_arrived")
                     .withStyle(ChatFormatting.GRAY));
@@ -173,6 +178,46 @@ public final class QuestGivers {
         if (QuestLedger.accept(player, offer)) {
             QuestLedger.dropOffer(player, target.getUUID());
         }
+    }
+
+    /**
+     * A giver holds work that is the player's to come back for, so it is made permanent and made
+     * invulnerable: a mob that wanders into the scene cannot end a quest by killing the one thing that
+     * can hand it in. Applied on the way into the world rather than only at spawn, so a giver already
+     * standing in a saved world is protected on its next load and one tagged by hand is protected too.
+     */
+    private static void makeSafe(Entity giver) {
+        if (!giver.isInvulnerable()) {
+            giver.setInvulnerable(true);
+        }
+        if (giver instanceof Mob mob) {
+            mob.setPersistenceRequired();
+        }
+    }
+
+    @SubscribeEvent
+    public static void onGiverJoin(EntityJoinLevelEvent event) {
+        if (event.getLevel().isClientSide()) return;
+        if (isGiver(event.getEntity())) makeSafe(event.getEntity());
+    }
+
+    /** The alliance whose work a giver carries, or null for one placed without an alliance of its own. */
+    public static Alliance factionOf(Entity giver) {
+        for (Alliance alliance : Alliance.values()) {
+            if (giver.entityTags().contains(alliance.giverTag())) return alliance;
+        }
+        return null;
+    }
+
+    /**
+     * The giver skin an entity wears, as 0 for anything that is not a giver and otherwise an alliance's
+     * ordinal plus one. A giver placed with no alliance tag speaks for the West, because the mainline is
+     * the West's and that is the only skin an untagged giver could sensibly want.
+     */
+    public static int giverSkinOf(Entity entity) {
+        if (!isGiver(entity)) return 0;
+        Alliance alliance = factionOf(entity);
+        return (alliance == null ? Alliance.WEST : alliance).ordinal() + 1;
     }
 
     /** Whether the work a giver holds is the mainline's, which the mark over its head draws in gold. */
