@@ -371,14 +371,14 @@ Every giver carries a mark on its nameplate, and it says one of three things:
 - **!** in blue - an errand here, not yet taken.
 - **!** in gold - the mainline's next step, not yet taken.
 - **!** in grey - work taken, not yet done. The same glyph dimmed, because it is the same promise.
+- **?** in blue - an errand done, hand it in.
+- **?** in gold - the mainline's page done, hand it in.
 
 The ink is the line and the shape is the state, so the two are told apart without reading either: blue
 is anybody's errand, gold is the campaign's own. A giver is the mainline's by carrying the scoreboard
 tag `tolkienmobs:campaign` - the herald and Maelgrin will, an ordinary traveller never will - so the
 colour lives on the NPC rather than on the quest, and a giver tagged mid-play turns gold on the next
 sync.
-- **?** in blue - an errand done, hand it in.
-- **?** in gold - the mainline's page done, hand it in.
 
 The mark is per player: two players standing in front of one giver see different glyphs, and a player
 with no business there sees a bare name. **This one is built.** It is drawn onto the nameplate from the
