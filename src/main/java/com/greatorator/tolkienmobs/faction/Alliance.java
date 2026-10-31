@@ -91,7 +91,11 @@ public enum Alliance {
         return ENVOY_TAG + "/" + id;
     }
 
-    /** The scoreboard tag a giver of this alliance's work carries, which decides the clothes it wears. */
+    /**
+     * The scoreboard tag the giver standing in this alliance's hall carries, which is what decides the
+     * clothes it wears. A giver met in the wide world carries no alliance tag and keeps the clothes of
+     * its own folk, which is what ordinary people walking their own country ought to look like.
+     */
     public String giverTag() {
         return "tolkienmobs:quest_giver/" + id;
     }
