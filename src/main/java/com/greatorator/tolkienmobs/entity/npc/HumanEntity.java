@@ -17,6 +17,7 @@ import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -26,6 +27,9 @@ import org.jetbrains.annotations.Nullable;
 public class HumanEntity extends TolkienVillagerEntity implements GeoEntity {
     private static final EntityDataAccessor<Boolean> WINTER = SynchedEntityData.defineId(HumanEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> GIVER_SKIN = SynchedEntityData.defineId(HumanEntity.class, EntityDataSerializers.INT);
+
+    /** How close a player has to be before a hall giver turns to look at them. */
+    private static final double GREETING_RANGE = 5.0D;
 
     /** Server-side only: whether the spawn biome has been looked at yet. */
     private boolean winterResolved;
@@ -88,7 +92,20 @@ public class HumanEntity extends TolkienVillagerEntity implements GeoEntity {
             // place rather than a display case.
             if (this.hasHome()) {
                 this.keepInsideHome();
+                this.greetNearbyPlayer();
             }
+        }
+    }
+
+    /**
+     * A body at a hall door should notice the player who walks in. The look control is what vanilla turns
+     * a head with, so a giver with a home asks it to look at the nearest player within a few blocks and lets
+     * it turn at its own pace; nothing about the walk changes, and a player who steps away is forgotten.
+     */
+    private void greetNearbyPlayer() {
+        Player player = this.level().getNearestPlayer(this, GREETING_RANGE);
+        if (player != null && player.isAlive() && !player.isSpectator()) {
+            this.getLookControl().setLookAt(player, 10.0F, 10.0F);
         }
     }
 
