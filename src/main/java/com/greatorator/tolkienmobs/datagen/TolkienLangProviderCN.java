@@ -836,6 +836,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("quest.tolkienmobs.summary.fetch", "家中存粮将尽，%s 个%s足以撑过这一季。");
         this.add("quest.tolkienmobs.summary.hunt", "%s一直在骚扰道路，杀掉 %s 只就好。");
         this.add("quest.tolkienmobs.giver.idle", "我眼下没有适合你的活。");
+        this.add("quest.tolkienmobs.busy", "你看起来太忙了，眼下怕是腾不出手。");
         this.add("screen.tolkienmobs.faction_ledger.tab.alliances", "联盟");
         this.add("screen.tolkienmobs.faction_ledger.tab.quests", "任务");
         this.add("screen.tolkienmobs.quests.empty", "还没有接下任何任务 —— 外面有人需要帮手。");

@@ -1750,6 +1750,7 @@
   "quest.tolkienmobs.abandoned": "You set aside the work: %s",
   "quest.tolkienmobs.accepted": "You take on the work: %s",
   "quest.tolkienmobs.book.given": "You write your first quest in a new book.",
+  "quest.tolkienmobs.busy": "You look too busy to help right now.",
   "quest.tolkienmobs.complete": "Complete - hand it in",
   "quest.tolkienmobs.done": "Quest complete - hand it in to any quest giver.",
   "quest.tolkienmobs.faction": "Slay %s soldiers of %s",

@@ -1750,6 +1750,7 @@
   "quest.tolkienmobs.abandoned": "你放下了这个任务：%s",
   "quest.tolkienmobs.accepted": "你接下了任务：%s",
   "quest.tolkienmobs.book.given": "你把第一个任务写进了一本新书。",
+  "quest.tolkienmobs.busy": "你看起来太忙了，眼下怕是腾不出手。",
   "quest.tolkienmobs.complete": "已完成 —— 请交付",
   "quest.tolkienmobs.done": "任务完成 —— 交给任意任务发布者。",
   "quest.tolkienmobs.faction": "杀死 %s 名%s士兵",

@@ -185,6 +185,14 @@ public final class QuestGivers {
             }
         }
 
+        // A player carrying as much work as the leaf has room for is not given more: what they hold is
+        // theirs to finish, and one more would only be a row the page cannot show.
+        if (QuestLedger.bountiesFull(player)) {
+            player.sendSystemMessage(Component.translatable("quest.tolkienmobs.busy")
+                    .withStyle(ChatFormatting.GRAY));
+            return;
+        }
+
         Quest offer = QuestLedger.offerOf(target.getUUID());
         if (offer == null) {
             player.sendSystemMessage(Component.translatable("quest.tolkienmobs.giver.idle")
