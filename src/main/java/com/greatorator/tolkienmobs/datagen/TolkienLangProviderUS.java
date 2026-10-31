@@ -842,6 +842,10 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("screen.tolkienmobs.quests.hint", "Hand a finished quest to any quest giver.");
         this.add("screen.tolkienmobs.quests.page", "Quests");
         this.add("screen.tolkienmobs.quests.page2", "Quests, continued");
+        this.add("screen.tolkienmobs.quests.bounties", "Bounties");
+        this.add("screen.tolkienmobs.quests.story", "Story");
+        this.add("screen.tolkienmobs.quests.bounties.empty", "No bounty in hand - a giver out there has work.");
+        this.add("screen.tolkienmobs.quests.story.empty", "No step of the campaign is in your hands.");
         this.add("screen.tolkienmobs.quests.carried", "Work Carried");
         this.add("screen.tolkienmobs.quests.abandon.confirm", "Abandon?");
         this.add("command.tolkienmobs.quest.give", "Gave %s %s quest(s).");

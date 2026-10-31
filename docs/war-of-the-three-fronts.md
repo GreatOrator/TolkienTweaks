@@ -446,6 +446,24 @@ the Rider, because a page number is what lets the same Nazgul be met twice.
 
 ---
 
+## The book has two leaves
+
+The quest bookmark used to split the player's work down the middle of the spread and draw two entries
+per leaf, so a fifth quest was in the book and nowhere on the page. The left leaf is **Bounties** now
+and the right is **Story**, and they are two pages rather than two halves of one list.
+
+A bounty is any errand: a hunt, a fetch, or work for a country. `QuestLedger.MAX_BOUNTIES` is five,
+which is what the leaf was measured for - five rows of a name, a giver and a bar fill the written area
+and never run off it - and it is enforced in `QuestLedger.accept`, so a book cannot be built past what
+the page can show. The screen reads the same constant for its row height, so the two cannot drift.
+
+A story page is the campaign step in hand, and it is marked as one by `Quest.story`: a flag saved with
+the quest as an optional field, so work written before the flag existed reads as a bounty. Only the
+herald's page sets it. It does not count against the bounty cap - a player at five errands is still
+handed the mainline - and because it stands alone on its leaf it gets the room the other entries used
+to take: its sentence is wrapped to the leaf, and under it sit the giver, the place it was taken and
+what it pays.
+
 ## Retooling the line for the East and for Harad
 
 What a second line changes, and nothing else:

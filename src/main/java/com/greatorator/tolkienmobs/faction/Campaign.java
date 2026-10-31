@@ -97,7 +97,7 @@ public final class Campaign extends SavedData {
         List<Alliance> rivals = alliance.rivals();
         Alliance target = rivals.get(stage % rivals.size());
         return new Quest(Quest.Kind.FACTION, target.id(), OPENING_GOAL, 0, alliance.id(),
-                OPENING_STANDING, List.of(), "", BlockPos.ZERO, Quest.NOBODY);
+                OPENING_STANDING, List.of(), "", BlockPos.ZERO, Quest.NOBODY, true);
     }
 
     // ---- handing it over and settling it ----

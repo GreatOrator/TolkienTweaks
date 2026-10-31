@@ -42,7 +42,7 @@ import java.util.UUID;
  * work: the name is for reading, the id is for finding them again.
  */
 public record Quest(Kind kind, String target, int goal, int progress, String employer, int standing,
-                    List<Reward> rewards, String giver, BlockPos origin, UUID giverId) {
+                    List<Reward> rewards, String giver, BlockPos origin, UUID giverId, boolean story) {
     /** The id a quest carries when no NPC handed it out, as when a command writes one into a book. */
     public static final UUID NOBODY = new UUID(0L, 0L);
 
@@ -85,7 +85,8 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
             Reward.CODEC.listOf().optionalFieldOf("rewards", List.of()).forGetter(Quest::rewards),
             Codec.STRING.optionalFieldOf("giver", "").forGetter(Quest::giver),
             BlockPos.CODEC.optionalFieldOf("origin", BlockPos.ZERO).forGetter(Quest::origin),
-            UUIDUtil.CODEC.optionalFieldOf("giver_id", NOBODY).forGetter(Quest::giverId)
+            UUIDUtil.CODEC.optionalFieldOf("giver_id", NOBODY).forGetter(Quest::giverId),
+            Codec.BOOL.optionalFieldOf("story", false).forGetter(Quest::story)
     ).apply(instance, Quest::new));
 
     public boolean complete() {
@@ -100,17 +101,17 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
     /** The same quest one kill further on. Fetch quests are read off the pack instead. */
     public Quest advanced() {
         return new Quest(kind, target, goal, Math.min(goal, progress + 1), employer, standing, rewards,
-                giver, origin, giverId);
+                giver, origin, giverId, story);
     }
 
     public Quest withProgress(int value) {
         return new Quest(kind, target, goal, Math.max(0, Math.min(goal, value)), employer, standing, rewards,
-                giver, origin, giverId);
+                giver, origin, giverId, story);
     }
 
     /** The same quest, noting who offered it, where they stood, and which body they were. */
     public Quest withGiver(String giver, BlockPos origin, UUID giverId) {
-        return new Quest(kind, target, goal, progress, employer, standing, rewards, giver, origin, giverId);
+        return new Quest(kind, target, goal, progress, employer, standing, rewards, giver, origin, giverId, story);
     }
 
     /** The alliance the work is done for, or null when the work is nobody's. */
