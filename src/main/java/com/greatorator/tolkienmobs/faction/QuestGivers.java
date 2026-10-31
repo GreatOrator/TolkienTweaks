@@ -171,6 +171,20 @@ public final class QuestGivers {
 
         if (QuestLedger.turnInFirst(player)) return;
 
+        // A hall herald does not leave the campaign page lying about as an offer to think about: he hands
+        // it over, because the line is not one of the errands and there is nothing to choose between.
+        Alliance herald = factionOf(target);
+        if (herald != null && isCampaign(player.level(), target.getUUID())
+                && !holdsPageFrom(player, target.getUUID())) {
+            Quest page = Campaign.page(player, herald);
+            if (page != null) {
+                Quest handed = page.withGiver(target.getName().getString(), target.blockPosition(),
+                        target.getUUID());
+                if (QuestLedger.accept(player, handed)) Campaign.noteHanded(player, herald, handed);
+                return;
+            }
+        }
+
         Quest offer = QuestLedger.offerOf(target.getUUID());
         if (offer == null) {
             player.sendSystemMessage(Component.translatable("quest.tolkienmobs.giver.idle")
@@ -245,7 +259,15 @@ public final class QuestGivers {
         return entity != null && entity.entityTags().contains(CAMPAIGN_TAG);
     }
 
-    /** Whether an entity is one of the mod's givers, for a command or an audit. */
+    /** Whether the player is already carrying the page this giver handed them. */
+    private static boolean holdsPageFrom(ServerPlayer player, UUID giver) {
+        for (Quest quest : QuestLedger.active(player)) {
+            if (giver.equals(quest.giverId())) return true;
+        }
+        return false;
+    }
+
+    /** Whether an entity is one of the mod givers, for a command or an audit. */
     public static boolean isGiver(Entity entity) {
         return entity.entityTags().contains(GIVER_TAG);
     }

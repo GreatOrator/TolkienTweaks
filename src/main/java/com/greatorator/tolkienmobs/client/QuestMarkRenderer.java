@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.client;
 
 import com.greatorator.tolkienmobs.entity.npc.HumanEntity;
 import com.greatorator.tolkienmobs.faction.Alliance;
+import com.greatorator.tolkienmobs.faction.Campaign;
 import com.greatorator.tolkienmobs.faction.FactionRank;
 import com.greatorator.tolkienmobs.faction.FactionStandings;
 import com.greatorator.tolkienmobs.faction.QuestLedger;
@@ -52,7 +53,7 @@ public final class QuestMarkRenderer {
         Alliance herald = heraldAlliance(entity);
         if (herald != null && !hasEarOf(herald)) return;
         if (mark == null) {
-            if (herald == null) return;
+            if (herald == null || Campaign.clientStage(herald) >= Campaign.PAGES) return;
             mark = new QuestLedger.Mark(QuestLedger.Mark.State.AVAILABLE, true);
         }
         Component name = event.getContent();

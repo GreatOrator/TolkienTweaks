@@ -27,6 +27,7 @@ import com.greatorator.tolkienmobs.init.*;
 import com.greatorator.tolkienmobs.network.ClientProxy;
 import com.greatorator.tolkienmobs.network.CommonProxy;
 import com.greatorator.tolkienmobs.network.PacketHandler;
+import com.greatorator.tolkienmobs.network.manager.CampaignSyncManager;
 import com.greatorator.tolkienmobs.network.manager.FactionStandingsSyncManager;
 import com.greatorator.tolkienmobs.network.manager.QuestAbandonManager;
 import com.greatorator.tolkienmobs.network.manager.CourageSyncManager;
@@ -223,6 +224,7 @@ public class TolkienMobsMain {
         PayloadRegistrar registrar = event.registrar(MODID).versioned("1.0.0").optional();
         registrar.playToClient(SpawnFallenLeafFromPacket.TYPE, SpawnFallenLeafFromPacket.STREAM_CODEC, SpawnFallenLeafFromPacket::handle);
         registrar.playToClient(FactionStandingsSyncManager.TYPE, FactionStandingsSyncManager.STREAM_CODEC, FactionStandingsSyncManager::handle);
+        registrar.playToClient(CampaignSyncManager.TYPE, CampaignSyncManager.STREAM_CODEC, CampaignSyncManager::handle);
         registrar.playToClient(QuestSyncManager.TYPE, QuestSyncManager.STREAM_CODEC, QuestSyncManager::handle);
         registrar.playToClient(CourageSyncManager.TYPE, CourageSyncManager.STREAM_CODEC, CourageSyncManager::handle);
         registrar.playToServer(QuestAbandonManager.TYPE, QuestAbandonManager.STREAM_CODEC, QuestAbandonManager::handle);

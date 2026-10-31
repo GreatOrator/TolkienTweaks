@@ -331,6 +331,8 @@ public final class QuestLedger extends SavedData {
                 .withStyle(ChatFormatting.GREEN));
         player.level().playSound(null, player.blockPosition(), SoundEvents.PLAYER_LEVELUP,
                 SoundSource.PLAYERS, 0.7F, 1.2F);
+        // A campaign page moves its front on when it is settled, and only then.
+        Campaign.settle(player, quest);
     }
 
     private static int countOf(ServerPlayer player, Quest quest) {
@@ -412,6 +414,8 @@ public final class QuestLedger extends SavedData {
                     QuestLedger::later);
         }
         PacketDistributor.sendToPlayer(player, new QuestSyncManager(List.copyOf(row(player)), Map.copyOf(marks)));
+        // A page place in its front is read beside the book, so it travels with it.
+        Campaign.sync(player);
     }
 
     /** The mark that wins when a giver has two claims on this player's attention. */
