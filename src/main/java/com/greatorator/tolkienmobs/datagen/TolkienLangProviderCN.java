@@ -1023,6 +1023,9 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("campaign.tolkienmobs.page.witchking", "城堡里等着的东西");
         this.add("campaign.tolkienmobs.page.castle.place", "今早还不存在的一座城堡");
         this.add("campaign.tolkienmobs.page.castle", "这场战争立起来的城堡");
+        this.add("campaign.tolkienmobs.page.arena", "战争留下的东西");
+        this.add("campaign.tolkienmobs.page.arena.place", "一座还没有打过任何一仗的斗场");
+        this.add("campaign.tolkienmobs.page.arena.closing", "斗场是为一场本该有人观看的胜利而立的。没有人来，沙土留住了血，而厅堂还会继续发问。");
         this.add("campaign.tolkienmobs.page.steward", "南方的管家");
         this.add("campaign.tolkienmobs.page.steward.place", "努恩，队长们的道路上");
         this.add("campaign.tolkienmobs.page.steward.closing", "一封封好的信，一位管家的字迹，一条离开那个要他消失的国家的路。东境用纸买下了一桩怨恨，而这笔账记在你身上。");

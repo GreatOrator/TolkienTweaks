@@ -488,8 +488,8 @@ public class FactionLedgerScreen extends Screen {
         // What the step is called and where it happens, where the page says: a page of the campaign is a
         // place and a name before it is a count, and the leaf says so above the counting.
         var front = story.employerAlliance();
-        Component title = front == null ? Campaign.clientRiderTitle() : Campaign.clientTitle(front);
-        Component place = front == null ? Campaign.clientRiderPlace() : Campaign.clientPlace(front);
+        Component title = front == null ? Campaign.clientFinaleTitle() : Campaign.clientTitle(front);
+        Component place = front == null ? Campaign.clientFinalePlace() : Campaign.clientPlace(front);
         boolean named = !title.getString().isEmpty();
 
         graphics.item(iconOf(story), x, bodyTop());

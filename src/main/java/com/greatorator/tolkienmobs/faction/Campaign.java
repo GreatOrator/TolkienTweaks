@@ -149,25 +149,45 @@ public final class Campaign extends SavedData {
     private static final String RIDER_TITLE = "campaign.tolkienmobs.page.rider";
     private static final String RIDER_PLACE = "campaign.tolkienmobs.page.rider.place";
     /**
-     * How many pages the campaign's own slot walks through: the Rider, the castle, and what is in it.
-     * The stage is what the client is told, so a herald's mark stays up until the last of them is paid.
+     * How many pages the campaign's own slot walks through: the Rider, the castle, what waits in it,
+     * and the arena the war leaves standing. The stage is what the client is told, so a herald's mark
+     * stays up until the last of them is paid.
      */
-    private static final int FINALE_STAGES = 3;
-    /** Where the last act happens, what it pays, and what the book calls it. */
+    private static final int FINALE_STAGES = 4;
+    /** Where each last act happens, what it pays, and what the book calls it. */
     private static final String CASTLE_TARGET = Quest.siteTarget(Sites.BOSS_CASTLE);
     private static final String CASTLE_TITLE = "campaign.tolkienmobs.page.castle";
     private static final String CASTLE_PLACE = "campaign.tolkienmobs.page.castle.place";
     private static final String WITCHKING_TITLE = "campaign.tolkienmobs.page.witchking";
     private static final String WITCHKING_PLACE = "campaign.tolkienmobs.page.witchking.place";
-    private static final String FINALE_CLOSING = "campaign.tolkienmobs.page.witchking.closing";
-    private static final int ARENA_STANDING = 300;
-    /** The rung the ladder has been holding back for the arena, paid when the last page is settled. */
+    private static final String WITCHKING_CLOSING = "campaign.tolkienmobs.page.witchking.closing";
+    /**
+     * The arena: the last ground the campaign raises, and the only one of its buildings nobody is sent
+     * to until the thing the castle was built around has been felled. Its words are the ones the war
+     * ends on, because a fortress is what a war is fought with and an arena is what it leaves behind.
+     */
+    private static final String ARENA_TARGET = Quest.siteTarget(Sites.BOSS_ARENA);
+    private static final String ARENA_TITLE = "campaign.tolkienmobs.page.arena";
+    private static final String ARENA_PLACE = "campaign.tolkienmobs.page.arena.place";
+    private static final String ARENA_CLOSING = "campaign.tolkienmobs.page.arena.closing";
+    /** What the Witch-king's page pays: a country's thanks for a crown, not the price of a beast. */
+    private static final int WITCHKING_STANDING = 300;
+    /** The rung the ladder has been holding back for the arena, paid when the arena page is settled. */
     private static final int ARENA_COURAGE = 75;
     /** The tag the Witch-king wears when the campaign stands him up, and how far he is looked for. */
     private static final String WITCHKING_TAG = "tolkienmobs:campaign_witchking";
     private static final double WITCHKING_SEARCH = 96.0D;
     /** How far up a castle is searched for room to stand a body. */
     private static final int WITCHKING_HEADROOM = 24;
+    /**
+     * How far from the middle of a building a roofed room is looked for, in blocks, how high a ceiling
+     * may be over a body's head and still count as one, and how far a wall may stand from it. A hall
+     * behind the gate is found by the first, a courtyard is passed over because no roof is within the
+     * second, and a doorway is passed over because nothing stands within the third.
+     */
+    private static final int ROOM_REACH = 24;
+    private static final int ROOM_CEILING = 6;
+    private static final int ROOM_WALL = 3;
     /**
      * The pages whose prose has been written into their talk keys, and so are read aloud rather than
      * summarised when a herald hands one over. One, for now: the West's first muster, which is where
@@ -330,13 +350,27 @@ public final class Campaign extends SavedData {
         return stage < line.size() ? named(line.get(stage).closing()) : Component.empty();
     }
 
-    /** The campaign's own page, which is the Rider's: what it is called and where he is met. */
-    public static Component clientRiderTitle() {
-        return named(RIDER_TITLE);
+    /**
+     * What the campaign's own page is called, and where it happens, as the leaf draws it: whichever of
+     * the last acts the player has reached. It read as the Rider's page for all of them until the
+     * castle, the hall and the arena were given names of their own to be drawn under.
+     */
+    public static Component clientFinaleTitle() {
+        return named(switch (clientRider) {
+            case 1 -> CASTLE_TITLE;
+            case 2 -> WITCHKING_TITLE;
+            case 3 -> ARENA_TITLE;
+            default -> RIDER_TITLE;
+        });
     }
 
-    public static Component clientRiderPlace() {
-        return named(RIDER_PLACE);
+    public static Component clientFinalePlace() {
+        return named(switch (clientRider) {
+            case 1 -> CASTLE_PLACE;
+            case 2 -> WITCHKING_PLACE;
+            case 3 -> ARENA_PLACE;
+            default -> RIDER_PLACE;
+        });
     }
 
     private static Component named(String key) {
@@ -402,6 +436,7 @@ public final class Campaign extends SavedData {
             case 0 -> riderPage();
             case 1 -> castlePage();
             case 2 -> witchKingPage();
+            case 3 -> arenaPage();
             default -> null;
         };
     }
@@ -442,13 +477,28 @@ public final class Campaign extends SavedData {
      * boss the pack does not have can never be finished.
      */
     private static Quest witchKingPage() {
-        return new Quest(Quest.Kind.HUNT, witchKingId(), 1, 0, "", ARENA_STANDING, List.of(),
+        return new Quest(Quest.Kind.HUNT, witchKingId(), 1, 0, "", WITCHKING_STANDING, List.of(),
                 "", BlockPos.ZERO, Quest.NOBODY, true, "");
     }
 
     private static String witchKingId() {
         return BuiltInRegistries.ENTITY_TYPE.getKey(TolkienEntities.ENTITY_TTM_WITCHKING.get())
                 .toString();
+    }
+
+    /**
+     * The arena: ground the campaign raises as its own last act rather than ground it finds. The castle
+     * is where the war's business is finished; the arena is what stands afterwards and empty, which is
+     * the one thing a campaign that ends on a kill has never had a way to say. It is a walk like the
+     * hilltop and the castle before it, settled by standing in it, so nobody places anything by hand.
+     * <p>
+     * It comes after the Witch-king rather than beside the castle, because a player keeps one site at a
+     * time: the fortress is built where the map puts it, and only once it has been walked into and its
+     * master felled is the next ground surveyed.
+     */
+    private static Quest arenaPage() {
+        return new Quest(Quest.Kind.LOCATION, ARENA_TARGET, 1, 0, "", 0, List.of(),
+                "", BlockPos.ZERO, Quest.NOBODY, true, "");
     }
 
     // ---- handing it over and settling it ----
@@ -710,20 +760,76 @@ public final class Campaign extends SavedData {
     }
 
     /**
-     * The first place in a building where a body would fit: two blocks of air over solid ground, looked
-     * for from the floor it was placed at upward. Null when there is no such room yet, which the next
-     * look tries again rather than standing him in a wall.
+     * A place in a building where a body would fit and be out of the weather: two blocks of air over
+     * solid ground, a ceiling over its head and a wall within reach.
+     * <p>
+     * The room is looked for across the building rather than only straight up its middle, because the
+     * middle of a keep at the height it was placed at is its courtyard, and the first column there that
+     * would take a body is a body standing in the open with the gate behind it. Rings are walked out
+     * from the middle so a hall behind the gate wins over a stairwell in a corner, and the walk is
+     * bounded, since it runs on the player's clock while his page is carried.
      */
     @Nullable
     private static BlockPos standingRoom(ServerLevel level, BlockPos centre) {
+        for (int ring = 0; ring <= ROOM_REACH; ring += 2) {
+            for (int dx = -ring; dx <= ring; dx += 2) {
+                for (int dz = -ring; dz <= ring; dz += 2) {
+                    if (Math.max(Math.abs(dx), Math.abs(dz)) != ring) continue;
+                    BlockPos found = roofed(level, centre.offset(dx, 0, dz));
+                    if (found != null) return found;
+                }
+            }
+        }
+        // A building with no roofed room to it at all - one still going up, or one that is walls only -
+        // keeps the older answer: the first place a body fits, wherever that turns out to be.
         for (int dy = 0; dy <= WITCHKING_HEADROOM; dy++) {
             BlockPos feet = centre.above(dy);
-            if (!level.getBlockState(feet).isAir()) continue;
-            if (!level.getBlockState(feet.above()).isAir()) continue;
-            if (!level.getBlockState(feet.below()).isSolid()) continue;
+            if (stands(level, feet)) return feet;
+        }
+        return null;
+    }
+
+    /** The lowest place in one column of a building where a body fits under a roof, or null. */
+    @Nullable
+    private static BlockPos roofed(ServerLevel level, BlockPos column) {
+        for (int dy = 0; dy <= WITCHKING_HEADROOM; dy++) {
+            BlockPos feet = column.above(dy);
+            if (!stands(level, feet)) continue;
+            if (!ceiling(level, feet)) continue;
+            if (!walled(level, feet)) continue;
             return feet;
         }
         return null;
+    }
+
+    /** Two blocks of air over a solid floor, which is what a body needs to stand at all. */
+    private static boolean stands(ServerLevel level, BlockPos feet) {
+        return level.getBlockState(feet).isAir() && level.getBlockState(feet.above()).isAir()
+                && level.getBlockState(feet.below()).isSolid();
+    }
+
+    /** Whether a roof stands over that spot within a room's height of it. */
+    private static boolean ceiling(ServerLevel level, BlockPos feet) {
+        for (int dy = 2; dy <= ROOM_CEILING; dy++) {
+            if (level.getBlockState(feet.above(dy)).isSolid()) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Whether walls stand on two of the four sides within reach, which is the difference between a room
+     * and the middle of a courtyard that merely has something over part of it.
+     */
+    private static boolean walled(ServerLevel level, BlockPos feet) {
+        int sides = 0;
+        for (Direction side : Direction.Plane.HORIZONTAL) {
+            for (int step = 1; step <= ROOM_WALL; step++) {
+                if (!level.getBlockState(feet.relative(side, step)).isSolid()) continue;
+                sides++;
+                break;
+            }
+        }
+        return sides >= 2;
     }
 
     /** The campaign's own page if the player is carrying it and has not finished it yet. */
@@ -848,12 +954,16 @@ public final class Campaign extends SavedData {
         Front finale = row[RIDER_SLOT];
         if (!sameErrand(finale.handed(), quest)) return false;
         int next = finale.stage() + 1;
-        // The last page pays the rung the ladder has been holding back for the arena, and says the
-        // words the campaign ends on. The Rider's own fall pays no courage of its own: felling one of
-        // the Nine is already a deed, and his page asks for him twice.
-        if (next >= FINALE_STAGES) {
+        // Two of the last acts have words of their own: the crown's line is said in the castle it was
+        // found in and belongs to the Witch-king, and the arena says the last of the war. The Rider's
+        // own fall pays no courage - felling one of the Nine is already a deed, and his page asks for
+        // him twice - and the arena pays the rung the ladder has been holding back for it.
+        if (next == FINALE_STAGES - 1) {
+            player.sendSystemMessage(Component.translatable(WITCHKING_CLOSING)
+                    .withStyle(ChatFormatting.GOLD));
+        } else if (next >= FINALE_STAGES) {
             CourageLedger.add(player, ARENA_COURAGE);
-            player.sendSystemMessage(Component.translatable(FINALE_CLOSING)
+            player.sendSystemMessage(Component.translatable(ARENA_CLOSING)
                     .withStyle(ChatFormatting.GOLD));
         }
         row[RIDER_SLOT] = new Front(next, null);
@@ -880,7 +990,8 @@ public final class Campaign extends SavedData {
     private static boolean isFinale(Quest page) {
         return page.story() && (page.target().equals(riderId())
                 || page.target().equals(witchKingId())
-                || page.target().equals(CASTLE_TARGET));
+                || page.target().equals(CASTLE_TARGET)
+                || page.target().equals(ARENA_TARGET));
     }
 
     /**

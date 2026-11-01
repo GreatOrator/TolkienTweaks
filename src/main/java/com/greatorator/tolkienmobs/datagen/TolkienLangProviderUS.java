@@ -1023,6 +1023,9 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.page.witchking", "What waits in the castle");
         this.add("campaign.tolkienmobs.page.castle.place", "a castle that was not there this morning");
         this.add("campaign.tolkienmobs.page.castle", "The castle the war raised");
+        this.add("campaign.tolkienmobs.page.arena", "What the war left standing");
+        this.add("campaign.tolkienmobs.page.arena.place", "an arena nothing has been fought in yet");
+        this.add("campaign.tolkienmobs.page.arena.closing", "The arena was raised for a victory somebody meant to watch. Nobody came, the sand kept the blood, and the halls will go on asking.");
         this.add("campaign.tolkienmobs.page.steward", "The Steward of the South");
         this.add("campaign.tolkienmobs.page.steward.place", "Nurn, on the captains' road");
         this.add("campaign.tolkienmobs.page.steward.closing", "A sealed scroll, a steward's hand, and a road out of a country that wanted him gone. The East has bought a grudge with paper, and it is owed to you.");
