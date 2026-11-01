@@ -73,6 +73,8 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+- **Angmar has a country of its own.** The northern barrow country was standing in for it, which made the Witch-king's realm the Barrow Downs with another name. It now has its own biome: a subarctic rocky upland, below freezing so its weather falls as snow, with thin cold soil over broken stone, grass only in the hollows, boulders and rubble, deadwood, stumps and brambles, wind-beaten spruces, a far grey fog, and a spawn list of orcs, uruks, wargs, wolves and crebain. The map's Angmar country, the fortress and the arena all name it, so the ground matches the country that was drawn.
+
 - **The fortress and the arena say Angmar in the data too.** Both were seated in Angmar by the canon table, but their structure definitions still named Mordor, which is a claim nobody reads any more and everybody would have believed. Their biome list is now Angmar's, and the two generated `has_structure` tags were brought into line with it rather than left to a datagen run.
 
 - **The last act happens in Angmar.** Weathertop was the first landmark to be seated by the map rather than by whoever took the page; the Witch-king's fortress and the arena beneath it are now seated the same way, in the country the books give them. Both were written into the canon table, which means they are surveyed from the middle of Angmar and may drift two map cells from it, so the campaign's finale stands in the same part of the world for every world and every hall - and, as before, a castle page already in hand is re-surveyed rather than kept. The arena also gained the id the table needs, so a location page can name it directly.

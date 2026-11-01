@@ -116,7 +116,7 @@ public final class ArdaMap {
 
         // The north-west: Arnor's lost realm and the cold moors beyond it.
         ERIADOR(TolkienBiomes.ERIADOR, 70, 5, true),
-        ANGMAR(TolkienBiomes.BARROW_DOWNS, 88, 14, true),
+        ANGMAR(TolkienBiomes.ANGMAR, 88, 14, true),
         RHUDAUR(TolkienBiomes.BARROW_DOWNS, 86, 13, true),
         SHIRE(TolkienBiomes.SHIRE, 68, 4, true),
         OLD_FOREST(TolkienBiomes.OLD_FOREST, 74, 8, true),

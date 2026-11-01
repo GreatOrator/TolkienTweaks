@@ -1,15 +1,16 @@
 {
   "values": [
+    "tolkienmobs:angmar",
+    "tolkienmobs:barrow_downs",
     "tolkienmobs:barrow_downs",
     "tolkienmobs:forochel",
+    "tolkienmobs:forochel",
+    "tolkienmobs:forochel_slopes",
     "tolkienmobs:forochel_slopes",
     "tolkienmobs:hithaeglir",
     "tolkienmobs:iron_hills",
-    "tolkienmobs:white_mountains",
-    "tolkienmobs:barrow_downs",
-    "tolkienmobs:forochel",
-    "tolkienmobs:forochel_slopes",
     "tolkienmobs:iron_hills",
+    "tolkienmobs:white_mountains",
     "tolkienmobs:white_mountains"
   ]
 }

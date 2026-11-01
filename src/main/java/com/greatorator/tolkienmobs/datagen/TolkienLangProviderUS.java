@@ -728,6 +728,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add("biome.tolkienmobs.mirkwood_spooky", "Mirkwood Spider Forest");
             this.add("biome.tolkienmobs.lorinand", "Lothlorien");
             this.add("biome.tolkienmobs.barrow_downs", "Tyrn Gorthad");
+            this.add("biome.tolkienmobs.angmar", "Angmar");
             this.add("biome.tolkienmobs.wild_wood", "Wild Wood");
             this.add("biome.tolkienmobs.rohan", "Rohan");
             this.add("biome.tolkienmobs.white_mountains", "White Mountains");

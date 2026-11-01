@@ -458,6 +458,36 @@ public class BiomeMaker extends BiomeHelper{
                 .build();
     }
 
+    /**
+     * Angmar, the Witch-king's country: a subarctic highland, open and cold under a low grey sky.
+     *
+     * <p>The wind never stops, so the fog sits far out and the falling weather is snow. The ground is
+     * thin cold soil over broken stone, dressed by {@code TolkienSurfaceRules}, and what grows on it is
+     * the blighted growth of the enemy's country: brambles, deadwood and the stumps of what little wood
+     * ever stood here. The snowflake particles are thin enough to read as weather, not as a whiteout.
+     */
+    public static Biome makeBiomeAngmar(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        var generation = angmarGen(placedFeatureGetter, carverGetter);
+        var spawning = angmarSpawning();
+        return foggedBiome(32.0F, 160.0F)
+                .hasPrecipitation(true)
+                .temperature(-0.1F)
+                .downfall(0.4F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(-0.1F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(0x9AA3A8))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(0x24394A))
+                .setAttribute(EnvironmentAttributes.AMBIENT_SOUNDS, ambientLoop(SoundEvents.AMBIENT_SOUL_SAND_VALLEY_LOOP))
+                .setAttribute(EnvironmentAttributes.AMBIENT_PARTICLES, AmbientParticle.of(ParticleTypes.SNOWFLAKE, 0.0125F))
+                .specialEffects((new BiomeSpecialEffects.Builder())
+                        .waterColor(0x24394A)
+                        .foliageColorOverride(0x5F6B4E)
+                        .grassColorOverride(0x6B6F52)
+                        .build())
+                .mobSpawnSettings(spawning.build())
+                .generationSettings(generation.build())
+                .build();
+    }
+
     public static Biome makeBiomeForochel(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
         forochelGen(placedFeatureGetter, carverGetter);
         forochelSpawning();

@@ -64,6 +64,12 @@ public class TolkienBiomes {
     public static final ResourceKey<Biome> LINDON = createBiome("lindon", BiomeMaker::makeBiomeLindon, TolkienTags.Biomes.PLAINS, TolkienTags.Biomes.TEMPERATE, TolkienTags.Biomes.PEACEFUL);
     public static final ResourceKey<Biome> GONDOR = createBiome("gondor", BiomeMaker::makeBiomeGondor, TolkienTags.Biomes.PLAINS, TolkienTags.Biomes.TEMPERATE, TolkienTags.Biomes.PEACEFUL);
     public static final ResourceKey<Biome> ERIADOR = createBiome("eriador", BiomeMaker::makeBiomeEriador, TolkienTags.Biomes.PLAINS, TolkienTags.Biomes.TEMPERATE, TolkienTags.Biomes.PEACEFUL);
+    /**
+     * Angmar: the Witch-king's own country, and no longer the barrow field it used to borrow. A cold
+     * rocky upland with thin soil, low scrub and wind-beaten spruce - subarctic, hostile, and the
+     * enemy's ground, as the books describe the land under Carn Dum.
+     */
+    public static final ResourceKey<Biome> ANGMAR = createBiome("angmar", BiomeMaker::makeBiomeAngmar, TolkienTags.Biomes.WASTELAND, TolkienTags.Biomes.HOSTILE, TolkienTags.Biomes.WINDSWEPT, TolkienTags.Biomes.SPARSE);
 
     public static void bootstrap(BootstrapContext<Biome> context) {
         BIOME_FACTORIES.forEach((key, factory) -> context.register(key,

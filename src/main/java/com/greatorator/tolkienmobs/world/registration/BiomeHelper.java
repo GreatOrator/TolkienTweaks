@@ -265,6 +265,28 @@ public abstract class BiomeHelper {
 				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15);
 	}
 
+	/**
+	 * Angmar's own people: the Witch-king's orcs and uruks, the wargs that run with them, and the
+	 * wolves and crebain of the cold. The country answers to the East, so this list names monsters and
+	 * nothing peaceful - a heartland's sheep and farmers have no business in it.
+	 */
+	public static MobSpawnSettings.Builder angmarSpawning() {
+
+		return new MobSpawnSettings.Builder()
+				.addSpawn(MobCategory.MONSTER, 35, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_MORDORORC.get(), 1, 4))
+				.addSpawn(MobCategory.MONSTER, 25, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_URUKHAI.get(), 1, 4))
+				.addSpawn(MobCategory.MONSTER, 20, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_WARG.get(), 1, 3))
+				.addSpawn(MobCategory.MONSTER, 15, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_BRIGAND.get(), 1, 3))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 1, 3))
+				.addSpawn(MobCategory.AMBIENT, 15, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 1, 2))
+				.addMobCharge(TolkienEntities.ENTITY_TTM_MORDORORC.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_URUKHAI.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_WARG.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_BRIGAND.get(), 0.6, 0.15)
+				.addMobCharge(EntityType.WOLF, 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15);
+	}
+
 	public static MobSpawnSettings.Builder mirkwoodSpookySpawning() {
 
 		return new MobSpawnSettings.Builder()
@@ -900,6 +922,37 @@ public abstract class BiomeHelper {
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_PUMPKIN)
 				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_WATERLILY)
 				.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, MiscOverworldPlacements.DISK_CLAY);
+	}
+
+	/**
+	 * Angmar's vegetation: tussocks and thin grass in the lee of the rocks, the boulders and rubble the
+	 * upland is strewn with, deadwood and stumps where a stunted tree stood, and the enemy's brambles.
+	 * There is no wood here - the cold and the thin soil do not carry one - so the only trees are the
+	 * wind-beaten spruces the mountain list scatters, and freezing lays snow over the whole of it.
+	 */
+	public static BiomeGenerationSettings.Builder angmarGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+		BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
+
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_NORMAL);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_FOREST);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.BROWN_MUSHROOM_NORMAL);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_ROCKPILE);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_RANDOM_RUBBLE);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_STUMPS);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_DEADWOOD_FALLEN_LOG);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.FLOWER_BRAMBLES_PLACED_KEY);
+
+		BiomeDefaultFeatures.addMountainTrees(biome);
+		BiomeDefaultFeatures.addDefaultOres(biome);
+		BiomeDefaultFeatures.addDefaultMonsterRoom(biome);
+		BiomeDefaultFeatures.addDefaultMushrooms(biome);
+		BiomeDefaultFeatures.addDefaultUndergroundVariety(biome);
+		BiomeDefaultFeatures.addDefaultCarversAndLakes(biome);
+		BiomeDefaultFeatures.addDefaultSprings(biome);
+		BiomeDefaultFeatures.addSurfaceFreezing(biome);
+		addLegacyOres(biome);
+
+		return biome;
 	}
 
     public static BiomeGenerationSettings.Builder forochelGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {

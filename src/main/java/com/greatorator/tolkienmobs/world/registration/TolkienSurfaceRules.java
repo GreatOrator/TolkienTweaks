@@ -80,10 +80,12 @@ public class TolkienSurfaceRules {
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.NURN), nurnSurface()),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.MORDOR), DARK_STONE),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HARADWAITH), SAND),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.ANGMAR), angmarSurface()),
                                 ironHillsSurface(), hithaeglirSurface(), whiteMountainsFloor(), makeTolkienWorldRules())),
                         SurfaceRules.ifTrue(SurfaceRules.UNDER_FLOOR, SurfaceRules.sequence(
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.NURN, TolkienBiomes.MORDOR, TolkienBiomes.ASH_MOUNTAINS), DARK_STONE),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HARADWAITH), SANDSTONE),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.ANGMAR), COARSE_DIRT),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HITHAEGLIR), PACKED_ICE))),
                         blueMountainsFloor(),
                         blueMountainsRock(),
@@ -119,7 +121,22 @@ public class TolkienSurfaceRules {
 	 */
 	private static final double NURN_COBBLE_NOISE = 1.2D;
 
-	private static SurfaceRules.RuleSource makeTolkienWorldRules() {
+	/**
+	 * Angmar's floor: thin cold soil over broken stone. The rock shows through where the surface noise
+	 * is at its highest - the ribs and outcrops of the upland - and what soil there is comes in patches
+	 * of coarse dirt and podzol, with grass holding on only in the hollows. The freezing the biome's
+	 * generation settings ask for lays snow over all of it, which is what the country looks like under
+	 * its own weather.
+	 */
+	private static SurfaceRules.RuleSource angmarSurface() {
+		return SurfaceRules.sequence(
+				SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.SURFACE, 0.25D, 1.0D), STONE),
+				SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.SURFACE, -0.15D, 0.25D), COARSE_DIRT),
+				SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.SURFACE, -0.5D, -0.15D), PODZOL),
+				GRASS_BLOCK);
+	}
+
+private static SurfaceRules.RuleSource makeTolkienWorldRules() {
 		SurfaceRules.ConditionSource isAtOrAboveWaterLevel = SurfaceRules.waterBlockCheck(-1, 0);
 		SurfaceRules.ConditionSource sixBelowWater = SurfaceRules.waterStartCheck(-6, -1);
 		SurfaceRules.ConditionSource isAbove62 = SurfaceRules.yBlockCheck(VerticalAnchor.absolute(62), 0);
