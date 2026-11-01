@@ -1,12 +1,8 @@
 package com.greatorator.tolkienmobs.network.manager;
 
-import com.greatorator.tolkienmobs.handler.LeafPileTint;
-import com.greatorator.tolkienmobs.particle.data.LeafParticleData;
-import net.minecraft.util.Mth;
+import com.greatorator.tolkienmobs.init.TolkienParticleTypes;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-
-import java.util.Random;
 
 /**
  * Draws the falling leaf a block sends to the client that walks through a leaf pile.
@@ -23,12 +19,9 @@ public final class ClientFallenLeaf {
     public static void spawn(SpawnFallenLeafFromPacket message, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             Level level = ctx.player().level();
-            Random rand = new Random();
-            int color = LeafPileTint.colour(level, message.pos());
-            int r = Mth.clamp(((color >> 16) & 0xFF) + rand.nextInt(0x22) - 0x11, 0x00, 0xFF);
-            int g = Mth.clamp(((color >> 8) & 0xFF) + rand.nextInt(0x22) - 0x11, 0x00, 0xFF);
-            int b = Mth.clamp((color & 0xFF) + rand.nextInt(0x22) - 0x11, 0x00, 0xFF);
-            level.addParticle(new LeafParticleData(r, g, b),
+            // The plain maple leaf, for the reason the block itself gives: a tinted blob cannot be
+            // handed to a particle type that was registered without one.
+            level.addParticle(TolkienParticleTypes.DWARVEN_MAPLE_LEAVES.get(),
                     message.pos().getX() + level.getRandom().nextFloat(),
                     message.pos().getY(),
                     message.pos().getZ() + level.getRandom().nextFloat(),

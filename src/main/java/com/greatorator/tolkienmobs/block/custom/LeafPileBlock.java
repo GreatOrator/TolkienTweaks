@@ -4,7 +4,6 @@ import com.greatorator.tolkienmobs.block.TolkienPlantBlock;
 import com.greatorator.tolkienmobs.handler.LeafPileTint;
 import com.greatorator.tolkienmobs.init.TolkienParticleTypes;
 import com.greatorator.tolkienmobs.network.manager.SpawnFallenLeafFromPacket;
-import com.greatorator.tolkienmobs.particle.data.LeafParticleData;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -152,11 +151,11 @@ public class LeafPileBlock extends TolkienPlantBlock {
         }
         if (entity instanceof LivingEntity && (entity.getDeltaMovement().x() != 0 || entity.getDeltaMovement().z() != 0) && level.getRandom().nextBoolean()) {
             if (level.isClientSide()) {
-                int color = oakLeafColour(level, pos);
-                int r = Mth.clamp(((color >> 16) & 0xFF) + level.getRandom().nextInt(0x22) - 0x11, 0x00, 0xFF);
-                int g = Mth.clamp(((color >> 8) & 0xFF) + level.getRandom().nextInt(0x22) - 0x11, 0x00, 0xFF);
-                int b = Mth.clamp((color & 0xFF) + level.getRandom().nextInt(0x22) - 0x11, 0x00, 0xFF);
-                level.addParticle(new LeafParticleData(r, g, b),
+                // The leaf that comes off a pile is the pack's own maple leaf, not a tinted copy of it.
+                // A particle type registered plain cannot be handed a coloured data blob: the client's
+                // particle engine casts it back to its own type, and that cast is what crashed the game
+                // the first time anybody walked through a pile.
+                level.addParticle(TolkienParticleTypes.DWARVEN_MAPLE_LEAVES.get(),
                         pos.getX() + level.getRandom().nextFloat(),
                         pos.getY() + ((2F / 16F) * (state.getValue(LAYERS) - 1)),
                         pos.getZ() + level.getRandom().nextFloat(),

@@ -61,8 +61,8 @@ public class FactionLedgerScreen extends Screen {
     }
 
     /** The book's largest size in GUI pixels; it shrinks to fit a small window rather than overflow. */
-    private static final int MAX_BOOK_W = 340;
-    private static final int MAX_BOOK_H = 206;
+    private static final int MAX_BOOK_W = 392;
+    private static final int MAX_BOOK_H = 216;
     /** The leather showing around the leaves, and the gap the stitching runs down. */
     private static final int COVER = 10;
     private static final int SPINE = 12;
@@ -273,7 +273,8 @@ public class FactionLedgerScreen extends Screen {
         // The courage row is the last row of the leaf rather than pinned to its foot: it is the only
         // line here about the player rather than a country, and it reads as one more entry when it sits
         // at the spacing the countries above it are drawn at.
-        int rowH = Math.min(42, Math.max(26, (bodyBottom() - top - 14) / Math.max(1, rows + 1)));
+        int rowH = Math.min(40, Math.max(26,
+                (bodyBottom() - top - 6 - hintLines() * LINE) / Math.max(1, rows + 1)));
         int courageTop = top + rows * rowH;
         for (int i = 0; i < rows; i++) {
             drawStanding(graphics, x, top + i * rowH, w, Alliance.values()[i]);
@@ -353,27 +354,27 @@ public class FactionLedgerScreen extends Screen {
                     INK_DIM, pageBottom() - 13);
             return;
         }
-        int rowH = Math.min(30, Math.max(18, (bodyBottom() - bodyTop() - 12) / Math.max(1, quests.size())));
+        int rowH = Math.min(34, Math.max(20,
+                (bodyBottom() - bodyTop() - 6 - hintLines() * LINE) / Math.max(1, quests.size())));
         for (int i = 0; i < quests.size(); i++) {
             drawCarriedRow(graphics, x, bodyTop() + i * rowH, w, quests.get(i));
         }
-        drawCentred(graphics, rightPageX, Component.translatable("screen.tolkienmobs.quests.hint"),
-                INK_DIM, pageBottom() - 13);
+        drawHint(graphics, rightPageX);
     }
 
     private void drawCarriedRow(GuiGraphicsExtractor graphics, int x, int y, int w, Quest quest) {
         graphics.item(iconOf(quest), x, y + 1);
         int textX = x + 21;
-        int textW = w - 21;
         String counter = quest.progress() + " / " + quest.goal();
         int counterW = this.font.width(counter);
-        graphics.text(this.font, fit(quest.objective().getString(), textW - counterW - 4), textX, y + 2,
-                quest.complete() ? INK_GREEN : INK, FLAT);
+        int textW = w - 21 - counterW - 4;
+        int after = wrapped(graphics, textX, y + 2, textW, quest.objective().getString(),
+                quest.complete() ? INK_GREEN : INK, 2);
         graphics.text(this.font, counter, x + w - counterW, y + 2, INK_DIM, FLAT);
 
-        int barY = y + 13;
-        graphics.fill(textX, barY, textX + textW, barY + 3, TRACK);
-        int filled = quest.goal() <= 0 ? 0 : Math.round(textW * (quest.progress() / (float) quest.goal()));
+        int barY = Math.max(y + 13, after + 1);
+        graphics.fill(textX, barY, textX + w - 21, barY + 3, TRACK);
+        int filled = quest.goal() <= 0 ? 0 : Math.round((w - 21) * (quest.progress() / (float) quest.goal()));
         if (filled > 0) {
             graphics.fill(textX, barY, textX + filled, barY + 3, quest.complete() ? INK_GREEN : INK_BLUE);
         }
@@ -388,8 +389,7 @@ public class FactionLedgerScreen extends Screen {
         List<Quest> quests = QuestLedger.clientQuests();
         drawBounties(graphics, quests);
         drawStory(graphics, storiesOf(quests));
-        drawCentred(graphics, leftPageX, Component.translatable("screen.tolkienmobs.quests.hint"),
-                INK_DIM, pageBottom() - 13);
+        drawHint(graphics, leftPageX);
     }
 
     /**
@@ -416,9 +416,11 @@ public class FactionLedgerScreen extends Screen {
                             : "screen.tolkienmobs.quests.bounties.front"), INK_DIM, 4);
             return;
         }
-        int room = bodyBottom() - bodyTop() - 14;
+        // The foot of the leaf says what to do with finished work, so it is measured before the rows
+        // are sized rather than drawn over their last line.
+        int room = bodyBottom() - bodyTop() - 4 - hintLines() * LINE;
         int rows = Math.max(1, Math.min(slots.size(), QuestLedger.MAX_BOUNTIES));
-        int rowH = Math.min(38, Math.max(24, room / rows));
+        int rowH = Math.min(40, Math.max(24, room / rows));
         for (int i = 0; i < rows; i++) {
             drawBounty(graphics, x, bodyTop() + i * rowH, w, rowH, quests.get(slots.get(i)), slots.get(i));
         }
@@ -434,23 +436,30 @@ public class FactionLedgerScreen extends Screen {
                 : "x";
         int controlW = this.font.width(control);
         int controlX = x + w - controlW;
-        graphics.text(this.font, fit(quest.objective().getString(), w - controlW - 25), x + 21, y + 2,
-                quest.complete() ? INK_GREEN : INK, FLAT);
+        int textX = x + 21;
+        // The ask is a sentence, and one leaf is not wide enough for a sentence: it takes a second line
+        // where the row has the height for one, rather than ending in an ellipsis that leaves the work
+        // unnamed. Nobody can act on "Reach somewhe...".
+        int after = wrapped(graphics, textX, y + 2, w - controlW - 25, quest.objective().getString(),
+                quest.complete() ? INK_GREEN : INK, h >= 34 ? 2 : 1);
         graphics.text(this.font, control, controlX, y + 2, armed ? INK_RED : INK_DIM, FLAT);
         abandonSpots.add(new AbandonSpot(slot, controlX - 2, y + 1, controlW + 4, LINE + 2));
 
-        graphics.text(this.font, fit(quest.giverName().getString(), w - 21), x + 21, y + 12, INK_DIM, FLAT);
-
-        int foot = y + h - 6;
         String counter = quest.progress() + " / " + quest.goal();
         int counterW = this.font.width(counter);
-        int barW = Math.max(0, w - 21 - counterW - 6);
-        graphics.fill(x + 21, foot, x + 21 + barW, foot + 3, TRACK);
+        int lineY = Math.max(y + 11, after);
+        graphics.text(this.font, fit(quest.giverName().getString(), w - 21 - counterW - 4), textX, lineY,
+                INK_DIM, FLAT);
+        graphics.text(this.font, counter, x + w - counterW, lineY, INK_DIM, FLAT);
+
+        // The bar closes the row and holds the whole width, since the count has moved up beside the name.
+        int foot = y + h - 4;
+        int barW = w - 21;
+        graphics.fill(textX, foot, textX + barW, foot + 3, TRACK);
         int filled = quest.goal() <= 0 ? 0 : Math.round(barW * (quest.progress() / (float) quest.goal()));
         if (filled > 0) {
-            graphics.fill(x + 21, foot, x + 21 + filled, foot + 3, quest.complete() ? INK_GREEN : INK_BLUE);
+            graphics.fill(textX, foot, textX + filled, foot + 3, quest.complete() ? INK_GREEN : INK_BLUE);
         }
-        graphics.text(this.font, counter, x + w - counterW, foot - 3, INK_DIM, FLAT);
     }
 
     /**
@@ -635,6 +644,29 @@ public class FactionLedgerScreen extends Screen {
             graphics.text(this.font, line, x, lineY, ink, FLAT);
             lineY += LINE;
         }
+    }
+
+    /**
+     * The line at the foot of a leaf telling the player what to do with finished work. It is wrapped
+     * rather than trimmed: it used to be cut to "Hand a finished quest to..." on every leaf, which is a
+     * sentence that stops before it says anything.
+     */
+    private void drawHint(GuiGraphicsExtractor graphics, int pageX) {
+        List<String> lines = wrap(hint().getString(), pageW - 16, 2);
+        int y = pageBottom() - 6 - lines.size() * LINE;
+        for (String line : lines) {
+            graphics.text(this.font, line, pageX + (pageW - this.font.width(line)) / 2, y, INK_DIM, FLAT);
+            y += LINE;
+        }
+    }
+
+    /** How many lines the foot hint needs on this leaf, so the rows above it can keep out of the way. */
+    private int hintLines() {
+        return wrap(hint().getString(), pageW - 16, 2).size();
+    }
+
+    private Component hint() {
+        return Component.translatable("screen.tolkienmobs.quests.hint");
     }
 
     private void drawCentred(GuiGraphicsExtractor graphics, int pageX, Component text, int ink, int y) {

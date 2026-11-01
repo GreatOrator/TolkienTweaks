@@ -67,6 +67,10 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+- **Walking through a leaf pile no longer crashes the game.** The pile asked the client for a tinted falling leaf, handing the particle engine a colour to go with a particle type that was registered without one; the engine casts what it is given back to its own type, and that cast brought the game down the first time a foot went through a pile. The pile and the pack it sends for a client both ask for the plain maple leaf now, which is the same leaf the biome's own wind already drops.
+
+- **A page in the book can be read to the end.** The leaves were narrow enough that an errand came out as "Reach somewhe..." and the line at the foot as "Hand a finished quest to...", which left the player holding work they could not name. The book is wider, the ask wraps onto a second line where the row has the height for one, the count has moved up beside the giver's name to free the foot of the row, and the foot hint wraps instead of being cut. Four errands still fit one leaf, because the room the hint needs is measured before the rows are sized rather than taken out of them.
+
 - **`/tmquest page` can be run at all.** The branch was written to hang off the command root, but its brackets left it nested inside the target selector, so the literal was read as a player's name and the page was never built. It is a sibling of the selector now and writes the page into the book of whoever ran it.
 
 - **Turning the story leaf crashed the game.** The line that says what a page pays handed the translation a string builder, which is not one of the things a translatable argument may be, and the game took the exception rather than the page: a player turning to the East's steward page - the one that wants a scroll carried and pays nothing in standing or goods - was looking at a crash before they could read it. It passes the words now, and a page that pays nothing in goods draws no reward line at all instead of announcing a reward of nothing.
