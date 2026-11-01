@@ -453,6 +453,13 @@ so he is found by the tag he wears and stood up again only if no Rider is out th
 keeps a second one from appearing after the first is killed - the kill is counted while the page is
 still in hand, and a finished page means the meeting has already happened.
 
+**What killing him does.** The page asks for him twice, because one fall is a fight and two is the
+story. The first meeting is the one the page promised; he goes down normally - drops, death message
+and all - and the campaign sees the page is still carried and stands him up again a ride ahead, with a
+line that says he has lost nothing. Only the second fall settles the page. The lie is the only honest
+thing in the campaign and it is told with a straight face: nothing about the fight is scripted, because
+a player who has been taught to hit things believes what the game lets them do.
+
 The gap was the same in every row, and the smallest part of it is closed: **the mod has a stage counter**
 now. `faction/Campaign` keeps how far each player has got on each of the three fronts, saved with the
 world and synced to its owner, and each front's line is written - six soldiers of one rival army for

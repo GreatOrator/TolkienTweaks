@@ -25,12 +25,16 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
  * The commands that let an operator arrange the work by hand, so the quest system can be tried without
  * waiting to be met by a giver.
  * <p>
- * One root, {@code /tmquest <targets> <give|quit|spawn|campaign_giver>}:
+ * One root, {@code /tmquest <targets> <give|quit|spawn|campaign_giver|complete>}:
  * <ul>
  *   <li>{@code give [count]} writes fresh work straight into the targets' books, as if a giver had
  *   offered it. No NPC is placed, so the entry is named for a giver who does not exist - that is the
  *   point of it, the book filling without a walk in the world.</li>
  *   <li>{@code quit} sets aside everything a target carries, which is how a test starts over.</li>
+ *   <li>{@code complete [count]} pays off what the targets are carrying at once, through the same
+ *   path a hand-in takes, so a line of campaign pages can be walked without earning every one of them.
+ *   This is the only entry here that gives a player something they did not do, and that is why it
+ *   stands beside {@code quit} rather than being folded into {@code give}.</li>
  *   <li>{@code spawn} puts a real giver, with a real offer, beside each target now, skipping the wait
  *   between givers and the one-near rule: those are the player's experience of the feature, not rules
  *   about the world.</li>
@@ -68,6 +72,11 @@ public final class QuestCommands {
                                                 IntegerArgumentType.getInteger(context, "count")))))
                         .then(Commands.literal("quit").executes(QuestCommands::quit))
                         .then(Commands.literal("spawn").executes(QuestCommands::spawn))
+                        .then(Commands.literal("complete")
+                                .executes(context -> complete(context, Integer.MAX_VALUE))
+                                .then(Commands.argument("count", IntegerArgumentType.integer(1, 32))
+                                        .executes(context -> complete(context,
+                                                IntegerArgumentType.getInteger(context, "count")))))
                         .then(Commands.literal("campaign_giver")
                                 .then(Commands.argument("alliance", StringArgumentType.word())
                                         .suggests((context, builder) -> {
@@ -116,6 +125,27 @@ public final class QuestCommands {
         context.getSource().sendSuccess(() -> Component.translatable("command.tolkienmobs.quest.quit",
                 Component.literal(String.valueOf(total)), nameOf(who)), true);
         return cleared;
+    }
+
+    /**
+     * Settles what the targets are carrying, so a chain of pages can be walked without earning it. A
+     * book with nothing in it is told so rather than reported as a success of zero.
+     */
+    private static int complete(CommandContext<CommandSourceStack> context, int limit) throws CommandSyntaxException {
+        Collection<ServerPlayer> players = EntityArgument.getPlayers(context, "targets");
+        int settled = 0;
+        for (ServerPlayer player : players) {
+            settled += QuestLedger.complete(player, limit);
+        }
+        if (settled == 0) {
+            context.getSource().sendFailure(Component.translatable("command.tolkienmobs.quest.complete.none"));
+            return 0;
+        }
+        int total = settled;
+        Collection<ServerPlayer> who = players;
+        context.getSource().sendSuccess(() -> Component.translatable("command.tolkienmobs.quest.complete",
+                nameOf(who), Component.literal(String.valueOf(total))), true);
+        return settled;
     }
 
     /** Stands a giver beside each target at once, each holding work of its own. */

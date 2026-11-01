@@ -235,6 +235,33 @@ public final class QuestLedger extends SavedData {
         return cleared;
     }
 
+    /**
+     * Pays a player's carried work off without asking them to earn it, which is what an operator
+     * walking the campaign in a test world needs: three pages a front is a week of play, and the
+     * question being asked of a test is whether the pages chain, not whether the wights can be found.
+     * <p>
+     * Everything a hand-in does happens here - the standing, the reward, the deed, and a campaign page
+     * moving its front on - because the point of the command is to exercise that path and not a
+     * second one written beside it. The single part it cannot reproduce is the pack: a fetch page is
+     * paid without its goods being taken, since nothing in a command can make a player carry them.
+     *
+     * @param limit how many of the book's pages to settle, from the front of it
+     * @return how many were actually paid
+     */
+    public static int complete(ServerPlayer player, int limit) {
+        List<Quest> quests = row(player);
+        int paid = 0;
+        while (paid < limit && !quests.isEmpty()) {
+            pay(player, quests.remove(0));
+            paid++;
+        }
+        if (paid > 0) {
+            store(player).setDirty();
+            sync(player);
+        }
+        return paid;
+    }
+
     // ---- offers ----
 
     /** Notes what a giver is asking for, and tells the player so their nameplate shows it. */

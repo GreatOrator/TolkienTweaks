@@ -886,6 +886,9 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("screen.tolkienmobs.quests.campaign.done", "三线之战已经结束。");
         this.add("quest.tolkienmobs.herald.waiting", "我这一线已经了结，其余两线还没有走完。");
         this.add("quest.tolkienmobs.herald.rider", "三条战线都已了结。戒灵归你了。");
+        this.add("command.tolkienmobs.quest.complete", "已为 %s 结算 %s 个任务。");
+        this.add("command.tolkienmobs.quest.complete.none", "手上没有可以结算的任务。");
+        this.add("quest.tolkienmobs.rider.again", "他又出现在路上了，而他没有失去任何东西。");
         this.add("quest.tolkienmobs.herald.carrying", "你已经带着这一线的那一页了。先把它走完，再写下一页。");
         this.add("quest.tolkienmobs.rider.coming", "前方的路上有东西在等着。它已经等了很久。");
         this.add("quest.tolkienmobs.herald.settled", "三条战线都安静了，戒灵不会再回来。再没有什么要托付给你了。");

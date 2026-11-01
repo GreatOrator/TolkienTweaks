@@ -292,12 +292,18 @@ public final class Campaign extends SavedData {
     }
 
     /**
-     * The Rider, as a page: a hunt of one, priced by all three countries together. Asked of the registry
+     * The Rider, as a page: a hunt of two, priced by all three countries together. Asked of the registry
      * rather than written out, so a page cannot name a mob the world does not have - a hunt whose target
      * is in no registry can never be finished, and the campaign would sit on it for good.
+     * <p>
+     * Two, and not one, because the page's whole business is the kill that changes nothing. Felling him
+     * once paid the page, so the meeting the act turns on - him standing there afterwards, unharmed and
+     * uninterested - happened only as a sentence in a changelog. The campaign stands him up again while
+     * the page is still carried (see {@link #tick}), so the second meeting is the one the player has to
+     * come to terms with, and the second fall is what settles the page.
      */
     private static Quest riderPage() {
-        return new Quest(Quest.Kind.HUNT, riderId(), 1, 0, "", RIDER_STANDING, List.of(),
+        return new Quest(Quest.Kind.HUNT, riderId(), 2, 0, "", RIDER_STANDING, List.of(),
                 "", BlockPos.ZERO, Quest.NOBODY, true);
     }
 
@@ -384,7 +390,11 @@ public final class Campaign extends SavedData {
         if (dx * dx + dz * dz < RIDER_CALL_DISTANCE * RIDER_CALL_DISTANCE) return;
         standRiderUp(player);
         if (RIDER_ENTITY.containsKey(player.getUUID())) {
-            player.sendSystemMessage(Component.translatable("quest.tolkienmobs.rider.coming")
+            // The first meeting is what the page promised. Every one after it is him answering the only
+            // thing the player has to say to him, which is that they killed him.
+            player.sendSystemMessage(Component.translatable(page.progress() > 0
+                            ? "quest.tolkienmobs.rider.again"
+                            : "quest.tolkienmobs.rider.coming")
                     .withStyle(ChatFormatting.DARK_PURPLE));
         }
     }
