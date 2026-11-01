@@ -267,6 +267,7 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
 
 ### Changed
 
+- **Every people in the notes is placed with one of the three sides.** The notes kept a faction per people, and this pack keeps three sides, so `Alliance` now records which is which: Elves of any kind, Dwarves, Hobbits and the Men of the West are the West; Mordor, Angmar, Isengard, Orcs, Goblins, Uruk-hai, Trolls and the Easterlings are the East; the Haradrim, the Corsairs of Umbar, Khand and the Variags are the Harad.
 - **The notes' races and realms are read as the three fronts.** Where the document names the payer as the High Elves, the Dwarves or Gondor, the line takes it as the front the act belongs to and pays West, East or Harad standing, since a page pays one of the three countries and never a people.
 - **The notes' standing is taken at a flat tenth.** Their ladder ran to five or ten thousand and this one tops out at fifteen hundred, so the rule is now one divisor rather than a figure per page: the cave hand-over's hundred pays ten and the Giant's nine hundred pays ninety. Pages the notes never priced keep the figures this line has always paid them.
 - **The line's standing is the notes' figures scaled to this pack's ladder, and says so.** The notes were written against a ladder running to five or ten thousand; this one tops out far lower, so a page they price at a hundred pays twenty-five here and the Giant's nine hundred pays fifty. That rule is now written above the page list rather than rediscovered each time a page is added.

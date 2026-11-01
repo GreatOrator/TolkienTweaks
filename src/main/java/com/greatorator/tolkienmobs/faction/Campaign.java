@@ -199,6 +199,8 @@ public final class Campaign extends SavedData {
      * - the line reads that as the front the act belongs to and nothing more: the notes' Elves are this
      * line's West, so an errand they price for the Elves pays West standing. A page pays one of the three
      * countries, never a people, which is also why a front's own war pages name no race at all.
+     * Which people stands with which side - Elves and Dwarves with the West, Orcs and Angmar with
+     * the East, the Haradrim and the Corsairs with the Harad - is written out on {@link Alliance}.
      */
     private static final Map<Alliance, List<Page>> PAGE_LINES = Map.of(
             Alliance.WEST, List.of(

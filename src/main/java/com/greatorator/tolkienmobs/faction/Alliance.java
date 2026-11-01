@@ -17,6 +17,22 @@ import java.util.function.Supplier;
  * one of them separately, so rising with the West is a decision rather than a score: the hall that
  * took your tokens has rivals, and they remember it.
  * <p>
+ * The notes this campaign was written from kept a faction per people - Elves, Dwarves, Hobbits, the
+ * Men of Gondor and Rohan, and a dozen more. This pack keeps three sides, so every people the notes
+ * name is read as the side it stood on rather than as a faction of its own:
+ * <ul>
+ *   <li><b>West</b> - Elves of any kind (Rivendell, Mirkwood, Lorien), Dwarves (Erebor and the Iron
+ *   Hills), Hobbits, and the Men of the West: Gondor, Rohan, Dale and the Bree-folk.</li>
+ *   <li><b>East</b> - the Enemy&#39;s own: Mordor, Angmar, Isengard, Orcs, Goblins, Uruk-hai and
+ *   Trolls, and the Easterlings of Rhun.</li>
+ *   <li><b>Harad</b> - the South: Haradrim, the Corsairs of Umbar, Khand and the Variags, and the
+ *   beasts they drive to war.</li>
+ * </ul>
+ * A page written for any of those peoples pays that side&#39;s standing, and a mob of such a people
+ * belongs in that side&#39;s soldier tag, which is what makes killing it move standing at all. Where
+ * the notes want a people this table has no place for, it takes the nearest side the act belongs
+ * to rather than growing a fourth one.
+ * <p>
  * An alliance owns two things. Its <em>countries</em> are the biomes it can raise a hall in and the
  * ground its guards patrol. Its <em>soldiers</em> are the mobs whose death moves standing - killing
  * one raises the two alliances that are not its own and costs the one that is. Both are tags, so a
