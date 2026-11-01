@@ -307,11 +307,17 @@ public final class QuestGivers {
         }
     }
 
-    /** Whether a page that asks to be walked somewhere has somewhere in this world to be walked. */
+    /**
+     * Whether a page that asks to be walked somewhere has somewhere in this world to be walked. Ground
+     * the catalogue names but this world has never placed is named here, from the map, rather than
+     * refused: the refusal was written to keep a page nobody can finish out of a book, but it left the
+     * front stopped at that page for good, waiting on an operator who was never told to stand anywhere.
+     * A place an operator has placed is left exactly where they put it.
+     */
     private static boolean groundNamed(ServerPlayer player, Quest page) {
         Quest.Spot spot = page.spot();
         if (spot == null || spot.place() == null) return true;
-        return Places.place(player.level(), spot.place()) != null;
+        return Places.ensure(player, spot.place(), spot.radius()) != null;
     }
 
     /**

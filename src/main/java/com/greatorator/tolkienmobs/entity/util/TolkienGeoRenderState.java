@@ -45,6 +45,13 @@ public class TolkienGeoRenderState extends LivingEntityRenderState implements Ge
      */
     public String giverName = "";
 
+    /**
+     * Whether a human is the body minding a built camp, set by the renderer during extraction. A
+     * keeper is not a giver and wears no alliance's cloth: he is one of the mod's folk put where a
+     * page sent somebody, and he is drawn in the one skin the pack has for that job.
+     */
+    public boolean campKeeper;
+
     /** The alliance a faction guard serves, set by its renderer during extraction. */
     public Alliance alliance = Alliance.WEST;
 

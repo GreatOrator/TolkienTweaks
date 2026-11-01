@@ -55,6 +55,15 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
     };
 
     /**
+     * The one skin a camp keeper wears, if the pack has drawn it: a ranger of the West sitting at a
+     * fire the campaign built. It is a file on its own rather than an alliance's cloth, because a
+     * keeper holds no work and serves nobody's hall - and it is optional, so a pack without the art
+     * gets an ordinary human at the fire rather than a missing-texture checker.
+     */
+    private static final Identifier KEEPER = Identifier.fromNamespaceAndPath(MODID,
+            "textures/entity/middle-earth/ranger.png");
+
+    /**
      * Where the art for one named giver is looked for, if anybody has drawn it. The mod ships the three
      * alliance skins and names its heralds, so the named files are for the artist rather than for the
      * build: {@code middle-earth/maelgrin.png} is the West's herald's own face.
@@ -88,6 +97,8 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
 
     /** The variant's texture, for the model and for the base class's texture lookup. */
     public static Identifier textureFor(TolkienGeoRenderState renderState) {
+        // A keeper is the first case: not a giver, not a season, and one file for the job.
+        if (renderState.campKeeper && skinIsLoaded(KEEPER, false)) return KEEPER;
         // Asked before the variant and the weather: a giver's clothes are not a face and not a season.
         if (renderState.giverSkin > 0 && renderState.giverSkin < GIVER_BY_ALLIANCE.length) {
             // A herald with art of his own wears it, and his alliance's cloth is what he falls back
@@ -170,6 +181,7 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
         renderState.variant = animatable.getTolkienVariant();
         renderState.winter = animatable.isWinter();
         renderState.giverSkin = animatable.giverSkin();
+        renderState.campKeeper = animatable.isCampKeeper();
         // Only a giver has any use for a name, and asking every human in a village for one would be a
         // string a frame for something no texture lookup will ever ask about.
         var name = renderState.giverSkin > 0 ? animatable.getCustomName() : null;

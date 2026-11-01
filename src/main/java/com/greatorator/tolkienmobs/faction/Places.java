@@ -1,6 +1,8 @@
 package com.greatorator.tolkienmobs.faction;
 
 import com.greatorator.tolkienmobs.init.TolkienItems;
+import com.greatorator.tolkienmobs.world.registration.ArdaMap;
+import com.greatorator.tolkienmobs.world.registration.ArdaSurvey;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
@@ -67,6 +69,11 @@ public final class Places extends SavedData {
 
     /** How wide a place is unless it says otherwise, which is the radius the notes used. */
     public static final int DEFAULT_RADIUS = 32;
+    /**
+     * How much ground a place needs before it is named: a circle has to be stood in, not built on, so
+     * it asks the map for far less than a building does and is found far more often.
+     */
+    private static final int PLACE_GROUND = 5;
     /** How often a player's feet are looked at. A circle thirty blocks across cannot be crossed in one. */
     private static final int CHECK_INTERVAL = 20;
     /**
@@ -222,6 +229,32 @@ public final class Places extends SavedData {
     public static Place place(Level level, String id) {
         instance(level);
         return PLACED.get(id);
+    }
+
+    /**
+     * A place this world has named, naming it first if it never was.
+     * <p>
+     * A placement has always been an operator's to make - somebody stands where a place ought to be and
+     * says so - and that is the right way to put Weathertop where Weathertop belongs. What it is not is
+     * a thing the campaign can wait on: a walk page is handed by a herald, and a page whose ground this
+     * world has never named is a page nobody can finish, so a front that needs one stops at it for good.
+     * The catalogue's names are ground the map already draws, so the map is asked where one of them would
+     * stand - the same pick a structure gets, made in the country the drawing puts it - and the answer is
+     * written down as a placement. The banner then fires on arrival exactly as it does at a hand-placed
+     * one, and a world where somebody has already placed it is left alone.
+     *
+     * @return the place, or null when the catalogue has no such name or the map draws no ground for it
+     */
+    @Nullable
+    public static Place ensure(ServerPlayer player, String id, int radius) {
+        Place existing = place(player.level(), id);
+        if (existing != null) return existing;
+        Name name = known(id);
+        if (name == null || !(player.level() instanceof ServerLevel level)) return null;
+        ArdaSurvey.Ground ground = ArdaSurvey.find(level, player.blockPosition(),
+                ArdaMap.Country::land, PLACE_GROUND, PLACE_GROUND, id.hashCode());
+        if (ground == null) return null;
+        return set(level, id, ground.centre(), radius);
     }
 
     /** Every place this world has set, in the catalogue's order. */

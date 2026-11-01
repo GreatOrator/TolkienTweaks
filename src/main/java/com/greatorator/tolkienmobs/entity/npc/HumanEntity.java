@@ -4,6 +4,7 @@ import com.geckolib.animatable.GeoEntity;
 import com.greatorator.tolkienmobs.entity.TolkienVillagerEntity;
 import com.greatorator.tolkienmobs.entity.util.TolkienVariant;
 import com.greatorator.tolkienmobs.faction.QuestGivers;
+import com.greatorator.tolkienmobs.faction.Sites;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienTags;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -27,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 public class HumanEntity extends TolkienVillagerEntity implements GeoEntity {
     private static final EntityDataAccessor<Boolean> WINTER = SynchedEntityData.defineId(HumanEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> GIVER_SKIN = SynchedEntityData.defineId(HumanEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> CAMP_KEEPER = SynchedEntityData.defineId(HumanEntity.class, EntityDataSerializers.BOOLEAN);
 
     /** How close a player has to be before a hall giver turns to look at them. */
     private static final double GREETING_RANGE = 5.0D;
@@ -43,6 +45,7 @@ public class HumanEntity extends TolkienVillagerEntity implements GeoEntity {
         super.defineSynchedData(builder);
         builder.define(WINTER, false);
         builder.define(GIVER_SKIN, 0);
+        builder.define(CAMP_KEEPER, false);
     }
 
     public boolean isWinter() {
@@ -70,6 +73,19 @@ public class HumanEntity extends TolkienVillagerEntity implements GeoEntity {
         this.entityData.set(GIVER_SKIN, skin);
     }
 
+    /**
+     * Whether this body is the one minding a camp the campaign built. Like the giver's clothes it is
+     * decided by a tag, and a tag is a server fact the client is never sent, so the answer is copied
+     * into synched data for the renderer to read.
+     */
+    public boolean isCampKeeper() {
+        return this.entityData.get(CAMP_KEEPER);
+    }
+
+    private void setCampKeeper(boolean keeper) {
+        this.entityData.set(CAMP_KEEPER, keeper);
+    }
+
     @Override
     public void tick() {
         super.tick();
@@ -87,6 +103,10 @@ public class HumanEntity extends TolkienVillagerEntity implements GeoEntity {
             int skin = QuestGivers.giverSkinOf(this);
             if (skin != this.giverSkin()) {
                 this.setGiverSkin(skin);
+            }
+            boolean keeper = this.entityTags().contains(Sites.KEEPER_TAG);
+            if (keeper != this.isCampKeeper()) {
+                this.setCampKeeper(keeper);
             }
             // A hall gives its giver a home area, and a room with a body walking about it reads as a
             // place rather than a display case.
