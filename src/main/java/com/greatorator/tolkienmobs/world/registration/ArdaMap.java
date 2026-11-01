@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.world.registration;
 
 import com.greatorator.tolkienmobs.init.TolkienBiomes;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.biome.Biome;
@@ -243,6 +244,35 @@ public final class ArdaMap {
     /** The country drawn in one cell, which is the whole of what a survey needs to begin. */
     static ArdaMap.Country cellCountry(int column, int row) {
         return GRID[Mth.clamp(row, 0, ROWS - 1)][Mth.clamp(column, 0, COLUMNS - 1)];
+    }
+
+    /**
+     * The middle of a country's drawn ground, as a point in the world.
+     * <p>
+     * The maps put a name in the middle of a country rather than at a corner of it, and the middle of
+     * the cells a country was drawn in is the nearest thing this drawing has to that. It is where a
+     * landmark the books place is looked for - Weathertop is Amon Sul, a hill in the heart of Eriador -
+     * so where the landmark stands stops depending on where in the world the page was taken.
+     */
+    public static BlockPos anchor(Country country) {
+        long columns = 0;
+        long rows = 0;
+        int cells = 0;
+        for (int row = 0; row < ROWS; row++) {
+            for (int column = 0; column < COLUMNS; column++) {
+                if (GRID[row][column] != country) continue;
+                columns += column;
+                rows += row;
+                cells++;
+            }
+        }
+        // A country the drawing does not contain has no middle; the origin is the honest answer, and
+        // the survey's own country test refuses it a moment later.
+        if (cells == 0) return BlockPos.ZERO;
+        int column = (int) Math.round((double) columns / cells);
+        int row = (int) Math.round((double) rows / cells);
+        return new BlockPos((column - ORIGIN_COLUMN) * CELL + CELL / 2, 0,
+                (row - ORIGIN_ROW) * CELL + CELL / 2);
     }
 
     /**

@@ -56,10 +56,12 @@ public final class ArdaSurvey {
      * @param wide the footprint's width, in blocks, along x
      * @param deep the footprint's depth, in blocks, along z
      * @param salt what makes two structures pick different ground in the same country
+     * @param away how close to {@code near} the ground may be, in blocks, so a page is a walk rather
+     *             than a build rising at the page-taker's own feet
      */
     @Nullable
     public static Ground find(ServerLevel level, BlockPos near, Predicate<ArdaMap.Country> fits,
-                              int wide, int deep, int salt) {
+                              int wide, int deep, int salt, int away) {
         if (!(level.getChunkSource().getGenerator() instanceof ArdaChunkGenerator)) return null;
         int column = Math.floorDiv(near.getX(), ArdaMap.CELL) + ArdaMap.ORIGIN_COLUMN;
         int row = Math.floorDiv(near.getZ(), ArdaMap.CELL) + ArdaMap.ORIGIN_ROW;
@@ -70,7 +72,8 @@ public final class ArdaSurvey {
                     if (!ArdaMap.inside(column + across, row + along)) continue;
                     ArdaMap.Country country = ArdaMap.cellCountry(column + across, row + along);
                     if (!country.land() || !fits.test(country)) continue;
-                    Ground ground = within(country, column + across, row + along, wide, deep, salt);
+                    Ground ground = within(country, column + across, row + along, wide, deep, salt,
+                            near, away);
                     if (ground != null) return ground;
                 }
             }
@@ -81,7 +84,7 @@ public final class ArdaSurvey {
     /** The first of one cell's fixed spots that will take the building, or null when none will. */
     @Nullable
     private static Ground within(ArdaMap.Country country, int column, int row,
-                                 int wide, int deep, int salt) {
+                                 int wide, int deep, int salt, BlockPos near, int away) {
         int room = ArdaMap.CELL - MARGIN * 2 - Math.max(wide, deep);
         if (room <= 0) return null;
         int west = (column - ArdaMap.ORIGIN_COLUMN) * ArdaMap.CELL + MARGIN;
@@ -90,6 +93,7 @@ public final class ArdaSurvey {
             long mixed = mix(column, row, salt * 31L + attempt);
             int x = west + Math.floorMod(mixed >>> 20, room);
             int z = north + Math.floorMod(mixed >>> 44, room);
+            if (!clear(near, x + wide / 2, z + deep / 2, away)) continue;
             Ground ground = judge(country, x, z, wide, deep);
             if (ground != null) return ground;
         }
@@ -127,6 +131,18 @@ public final class ArdaSurvey {
      */
     public static int dropAllowed(int wide, int deep) {
         return Math.max(2, Math.max(wide, deep) / 8);
+    }
+
+    /**
+     * Whether a spot is at least {@code away} blocks from the point the search started at. The map is
+     * read a cell at a time, and the player's own cell is searched first, so without this a landmark
+     * whose country they are already standing in is built exactly where they are standing.
+     */
+    private static boolean clear(BlockPos near, int x, int z, int away) {
+        if (away <= 0) return true;
+        long dx = x - near.getX();
+        long dz = z - near.getZ();
+        return dx * dx + dz * dz >= (long) away * away;
     }
 
     /** A well-mixed number from a cell and a structure, so one cell's ground is chosen once. */

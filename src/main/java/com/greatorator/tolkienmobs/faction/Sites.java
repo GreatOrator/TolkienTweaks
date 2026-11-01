@@ -86,6 +86,17 @@ public final class Sites extends SavedData {
     public static final String WILD_TENT = "tolkienmobs:key_structures/wild_tent";
     /** The hilltop the West's line walks to, a landmark rather than a camp. */
     public static final String WEATHERTOP = "tolkienmobs:key_structures/weathertop";
+    /**
+     * The country each landmark stands in, where the books put it rather than where the page was taken.
+     * <p>
+     * A site named here is surveyed from the middle of that country, so it is the same ground for every
+     * player in every world: Weathertop is Amon Sul, and Amon Sul is a hill in the heart of Eriador, not
+     * the field behind whatever hall the page was handed over in. Anything not named here keeps looking
+     * around the player, which is what lets the tent's wilds and the castle's Mordor stay in the data.
+     */
+    private static final Map<String, ArdaMap.Country> CANON = Map.of(
+            WEATHERTOP, ArdaMap.Country.ERIADOR);
+
     /** The castle the campaign raises for its last act, which no world generator ever places. */
     public static final String BOSS_CASTLE = "tolkienmobs:key_structures/boss_castle";
 
@@ -96,6 +107,11 @@ public final class Sites extends SavedData {
     private static final int PITCH_ACROSS = 8;
     /** How close the player has to be before anything is built, in blocks: four chunks. */
     private static final int BUILD_REACH = 64;
+    /**
+     * How far from the page-taker a site is pitched at the nearest, in blocks. A page is a walk: a
+     * landmark that rises where the page was taken is a landmark nobody had to go and find.
+     */
+    private static final int SITE_AWAY = 192;
     /**
      * How far out from the written spot real ground is looked for, in blocks. The drawing and the
      * world do not agree to the block - the drawing is read without the warp - so a spot the map
@@ -184,8 +200,11 @@ public final class Sites extends SavedData {
         // A second page to a structure the player has not reached yet is the same ground: a quest in
         // pieces sends them on to what they are already walking toward rather than pitching a rival
         // beside it. Once they have found one, a new page is a new place.
+        // A landmark is the exception: its ground comes from the map rather than from where the page
+        // was taken, so surveying it again is idempotent - the same spot comes back - and a site pitched
+        // before the map was asked where the landmark belonged is corrected instead of kept.
         if (existing != null && !existing.found() && existing.structure().equals(structure)
-                && level.dimension().equals(existing.dimension())) {
+                && level.dimension().equals(existing.dimension()) && !CANON.containsKey(structure)) {
             return true;
         }
         // The drawing answers first. A structure's own biome list decides the country it may stand
@@ -267,8 +286,14 @@ public final class Sites extends SavedData {
     private static ArdaSurvey.Ground survey(ServerLevel level, ServerPlayer player, String structure) {
         Vec3i size = footprint(level, structure);
         if (size == null) return null;
-        return ArdaSurvey.find(level, player.blockPosition(), countries(level, structure),
-                size.getX(), size.getZ(), structure.hashCode());
+        // A landmark is looked for from the middle of the country the books give it, so the hilltop
+        // stands in the heart of Eriador whether the page was taken in the Shire, in Bree or at the
+        // herald's own bench. Everything else is looked for around the player - but never at their
+        // feet, since the search begins in the cell they are standing in.
+        ArdaMap.Country home = CANON.get(structure);
+        BlockPos from = home == null ? player.blockPosition() : ArdaMap.anchor(home);
+        return ArdaSurvey.find(level, from, countries(level, structure),
+                size.getX(), size.getZ(), structure.hashCode(), home == null ? SITE_AWAY : 0);
     }
 
     /** A template's own size, or null when there is no such template to build. */

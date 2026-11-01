@@ -251,8 +251,11 @@ public final class Places extends SavedData {
         if (existing != null) return existing;
         Name name = known(id);
         if (name == null || !(player.level() instanceof ServerLevel level)) return null;
+        // A name is written where the drawing puts it, and the drawing's pick inside a cell is fixed
+        // by the cell and the name, so a place needs no distance of its own: two players asking for the
+        // same name are sent to the same ground wherever they were standing when they asked.
         ArdaSurvey.Ground ground = ArdaSurvey.find(level, player.blockPosition(),
-                ArdaMap.Country::land, PLACE_GROUND, PLACE_GROUND, id.hashCode());
+                ArdaMap.Country::land, PLACE_GROUND, PLACE_GROUND, id.hashCode(), 0);
         if (ground == null) return null;
         return set(level, id, ground.centre(), radius);
     }
