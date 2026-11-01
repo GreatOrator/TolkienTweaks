@@ -34,8 +34,10 @@ public class WorldScan {
         switch (mode) {
             case "find" -> find(Pattern.compile(args[2]));
             case "slice" -> slice(parseBox(args, 2), Integer.parseInt(args[8]));
-            case "extract" -> extract(parseBox(args, 2), Paths.get(args[8]));
-            default -> throw new IllegalArgumentException("mode is find, slice or extract");
+            case "extract" -> extract(parseBox(args, 2), Paths.get(args[8]), false);
+            case "extract_void" -> extract(parseBox(args, 2), Paths.get(args[8]), true);
+            case "layers" -> layers(parseBox(args, 2));
+            default -> throw new IllegalArgumentException("mode is find, slice, layers, extract or extract_void");
         }
     }
 
@@ -93,7 +95,7 @@ public class WorldScan {
         legend.forEach((name, ch) -> System.out.println("  " + ch + " = " + name));
     }
 
-    static void extract(int[] box, Path out) throws IOException {
+    static void extract(int[] box, Path out, boolean voidAir) throws IOException {
         int width = box[3] - box[0] + 1;
         int height = box[4] - box[1] + 1;
         int depth = box[5] - box[2] + 1;
@@ -108,7 +110,8 @@ public class WorldScan {
                     if (base.equals("minecraft:air") || base.equals("minecraft:cave_air")
                             || base.equals("minecraft:void_air")) {
                         air++;
-                        continue;
+                        if (!voidAir) continue;
+                        state = "minecraft:structure_void[]";
                     }
                     Integer index = palette.get(state);
                     if (index == null) {
@@ -137,6 +140,21 @@ public class WorldScan {
         }
         System.out.printf("wrote %s: %d x %d x %d, %d blocks, %d air skipped, %d palette entries%n",
                 out, width, height, depth, blocks.size(), air, palette.size());
+    }
+
+    /** How much of each layer of a box is solid, so a floor and a roof can be found by eye. */
+    static void layers(int[] box) {
+        for (int y = box[1]; y <= box[4]; y++) {
+            int solid = 0;
+            int air = 0;
+            for (int z = box[2]; z <= box[5]; z++) {
+                for (int x = box[0]; x <= box[3]; x++) {
+                    String name = base(WORLD.getOrDefault(key(x, y, z), "minecraft:air[]"));
+                    if (name.endsWith("air")) air++; else solid++;
+                }
+            }
+            System.out.printf("y=%3d  solid %6d  air %6d%n", y, solid, air);
+        }
     }
 
     // ---- chunks ----

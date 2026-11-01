@@ -78,7 +78,10 @@ public final class Campaign extends SavedData {
                             "campaign.tolkienmobs.page.keeping", "campaign.tolkienmobs.page.keeping.place", ""),
                     new Page(Quest.Kind.DIALOGUE, "leaf:campaign.tolkienmobs.page.beryl", 1, 20, 4,
                             "campaign.tolkienmobs.page.beryl", "campaign.tolkienmobs.page.beryl.place", ""),
-                    new Page(Quest.Kind.LOCATION, "place:weathertop", 1, 50, 4,
+                    // The hilltop is raised rather than named. A place is a circle somebody has to stand
+                    // in and declare; this is ground the campaign builds where the map puts it, so the page
+                    // is settled by standing in the building and nobody has to place anything by hand.
+                    new Page(Quest.Kind.LOCATION, Quest.siteTarget(Sites.WEATHERTOP), 1, 50, 4,
                             "campaign.tolkienmobs.page.watched", "campaign.tolkienmobs.page.watched.place", ""),
                     new Page(Quest.Kind.FACTION, "", 8, 70, 5,
                             "campaign.tolkienmobs.page.hunters", "campaign.tolkienmobs.page.hunters.place", ""),

@@ -83,6 +83,8 @@ public final class Sites extends SavedData {
 
     /** The tent the camp errand pitches, as a template the mod already ships. */
     public static final String WILD_TENT = "tolkienmobs:wild_tent";
+    /** The hilltop the West's line walks to, a landmark rather than a camp. */
+    public static final String WEATHERTOP = "tolkienmobs:weathertop";
     /** The castle the campaign raises for its last act, which no world generator ever places. */
     public static final String BOSS_CASTLE = "tolkienmobs:boss_castle";
 
@@ -114,6 +116,8 @@ public final class Sites extends SavedData {
     private static final Map<UUID, Site> SITES = new HashMap<>();
     /** Players whose site has already been complained about, so a refusal is said once, not every tick. */
     private static final Set<UUID> UNBUILDABLE = new HashSet<>();
+    /** Which templates leave the ground standing, asked once each rather than once a build attempt. */
+    private static final Map<String, Boolean> LEAVES_TERRAIN = new HashMap<>();
     private static final Sites NO_SERVER = new Sites(false);
 
     /**
@@ -304,13 +308,17 @@ public final class Sites extends SavedData {
      */
     private static void build(ServerPlayer player, Site site) {
         if (!(player.level() instanceof ServerLevel level)) return;
-        if (!level.hasChunkAt(site.centre())) return;
         Identifier id = Identifier.tryParse(site.structure());
         if (id == null) return;
         StructureTemplate template = level.getStructureManager().get(id).orElse(null);
         if (template == null) return;
         Vec3i size = template.getSize();
         if (size.getX() <= 0 || size.getZ() <= 0) return;
+        // Everything the building stands over has to be loaded, not just the chunk at its middle:
+        // a block written into an unloaded chunk is quietly dropped, and half a castle is worse than
+        // none. The tent fit in one chunk and never needed to ask; a hilltop a hundred blocks across
+        // does, and waits at the site until the player is close enough for all of it.
+        if (!chunksLoaded(level, site.centre(), size)) return;
         BlockPos corner = locate(level, site.centre(), size.getX(), size.getZ());
         if (corner == null) {
             // Ground the drawing would take and the world would not: worth saying, because the
@@ -323,7 +331,11 @@ public final class Sites extends SavedData {
             return;
         }
         UNBUILDABLE.remove(site.player());
-        clearFootprint(level, corner, size.getX(), size.getY(), size.getZ());
+        // A build carrying structure void for its open sky wants the ground left standing: the void
+        // is the builder saying "terrain goes here". Everything else is cleared as it always was.
+        if (!leavesTerrainStanding(template, site.structure())) {
+            clearFootprint(level, corner, size.getX(), size.getY(), size.getZ());
+        }
         underpin(level, corner, size.getX(), size.getZ());
         template.placeInWorld(level, corner, corner, new StructurePlaceSettings(), level.getRandom(), 2);
         if (site.keeper()) standKeeper(level, corner, size);
@@ -338,8 +350,9 @@ public final class Sites extends SavedData {
      */
     @Nullable
     private static BlockPos locate(ServerLevel level, BlockPos written, int wide, int deep) {
-        int step = Math.max(8, Math.max(wide, deep) / 2);
-        for (int ring = 0; ring * step <= SEARCH_REACH; ring++) {
+        int step = Math.max(8, Math.max(wide, deep) / 4);
+        int reach = Math.max(SEARCH_REACH, Math.max(wide, deep));
+        for (int ring = 0; ring * step <= reach; ring++) {
             for (int dx = -ring; dx <= ring; dx++) {
                 for (int dz = -ring; dz <= ring; dz++) {
                     if (Math.max(Math.abs(dx), Math.abs(dz)) != ring) continue;
@@ -387,6 +400,26 @@ public final class Sites extends SavedData {
     }
 
     /**
+     * Whether a template leaves its open sky as structure void, which is a builder asking for the
+     * terrain to stand rather than be cut away around the building.
+     * <p>
+     * A template written by a structure block records its air, and placing that air is what keeps a
+     * treetop from coming up through a tent. A template cut out of a finished build instead records
+     * structure void wherever there was nothing, so it replaces nothing and everything around it stays
+     * as the world made it. The two cannot be told apart by size, so the void is counted - once per
+     * structure, since counting it walks every cell of a template that may be a hundred blocks across.
+     */
+    private static boolean leavesTerrainStanding(StructureTemplate template, String structure) {
+        return LEAVES_TERRAIN.computeIfAbsent(structure, ignored -> {
+            Vec3i size = template.getSize();
+            long volume = (long) size.getX() * size.getY() * size.getZ();
+            int open = template.filterBlocks(BlockPos.ZERO, new StructurePlaceSettings(),
+                    Blocks.STRUCTURE_VOID, false).size();
+            return open * 2L > volume;
+        });
+    }
+
+    /**
      * Takes everything out of the box the building is about to fill, so a treetop does not come up
      * through a tent and a hill has no corner left standing in the middle of a courtyard. It is the one
      * thing here that takes blocks out of a world instead of putting them in, which is why a site is only
@@ -403,6 +436,17 @@ public final class Sites extends SavedData {
                 }
             }
         }
+    }
+
+    /**
+     * Whether every chunk the footprint covers is loaded, asked at the two opposite corners: a footprint
+     * is a rectangle, so the pair that is furthest apart is the furthest anything can be.
+     */
+    private static boolean chunksLoaded(ServerLevel level, BlockPos centre, Vec3i size) {
+        int halfW = size.getX() / 2 + 1;
+        int halfD = size.getZ() / 2 + 1;
+        return level.hasChunkAt(centre.offset(-halfW, 0, -halfD))
+                && level.hasChunkAt(centre.offset(halfW, 0, halfD));
     }
 
     /**
