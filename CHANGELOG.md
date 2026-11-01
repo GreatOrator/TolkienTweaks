@@ -155,6 +155,7 @@ All notable changes to this project will be documented in this file.
 
 - **The book reads without its shadow.** Every line of the ledger is now drawn flat instead of with the drop shadow vanilla puts behind text. A shadow is drawn for the dark of the world behind a nameplate; on parchment it sat under dark ink on a light page and made names and numbers look smudged. The dim, gold and blue inks are a shade darker to make up the contrast the shadow was adding.
 
+- **A new world no longer freezes on the way in.** Angmar's biome was registered and named by the tags, but its definition was never written out: every other biome has a file under `worldgen/biome/`, and the one key with nothing behind it made the biome registry refuse to freeze, which crashed the client while a world was loading. The data generator wrote `angmar.json`, and with it the biome list in `dimension/arda.json` that Arda's biome source counts itself against - the line whose absence would have failed the dimension the same way.
 
 ### Added
 
