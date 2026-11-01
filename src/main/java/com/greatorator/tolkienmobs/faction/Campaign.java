@@ -160,6 +160,9 @@ public final class Campaign extends SavedData {
     private static final String STONE_SHALLOW = "campaign.tolkienmobs.beryl.shallow";
     private static final String STONE_ELSEWHERE = "campaign.tolkienmobs.beryl.elsewhere";
     private static final String STONE_SAME = "campaign.tolkienmobs.beryl.same";
+    /** What a cleared chamber says, and what the stone says while its keeper is still standing. */
+    private static final String STONE_CLEARED = "campaign.tolkienmobs.cave.reached";
+    private static final String STONE_GUARDED = "campaign.tolkienmobs.cave.guarded";
     /** Where each player last held the stone up, and when, so one spot gets one question. */
     private static final Map<UUID, BlockPos> STONE_LAST = new HashMap<>();
     private static final Map<UUID, Long> STONE_RAISED = new HashMap<>();
@@ -751,7 +754,35 @@ public final class Campaign extends SavedData {
         player.sendSystemMessage(named != null ? named
                 : cave.isEmpty() ? caveReading(here)
                 : Component.translatable(STONE_DARK, cave).withStyle(ChatFormatting.ITALIC));
+        // The notes make each cave an area kill rather than a place to hold a stone up in, so the raise
+        // is the reading and the chamber is cleared by the troll that keeps it. Standing at the bottom of
+        // an empty cave and asking again would otherwise pay a page for walking.
+        player.sendSystemMessage(Component.translatable(STONE_GUARDED).withStyle(ChatFormatting.GRAY));
+    }
+
+    /**
+     * Counts a cave troll felled in the dark toward the search of the caves.
+     * <p>
+     * The notes write each of the three caves as an area kill of a cave troll rather than as ground to be
+     * stood on, and the stone is dark in all three, so the kill is the step: one troll at depth is one
+     * cave answered, and the name in the message is the cave the page has reached rather than the cave the
+     * body happens to be in - a player killing one in the wrong valley is still one chamber the Nazgul
+     * cannot be sheltering in.
+     * <p>
+     * Depth is read off the body rather than off the killer, because a troll dragged up into the mouth of
+     * the cave and killed there was not the thing the page asks for. The book that moves is the killer's,
+     * so the killer is the player the page is looked for on.
+     */
+    public static void onCaveTrollDeath(ServerPlayer player, Entity victim) {
+        if (victim.getType() != TolkienEntities.ENTITY_TTM_TROLL.get()) return;
+        Quest stone = stoneQuest(player);
+        if (stone == null || stone.complete() || !stone.namedGround().isEmpty()) return;
+        if (!(player.level() instanceof ServerLevel level)) return;
+        if (!underRock(level, victim.blockPosition(), CAVE_DEEP)) return;
+        String cave = caveName(stone);
         QuestLedger.progressSurvey(player);
+        player.sendSystemMessage(Component.translatable(STONE_CLEARED, cave).withStyle(ChatFormatting.AQUA));
+        player.sendSystemMessage(Component.translatable(STONE_DARK, cave).withStyle(ChatFormatting.ITALIC));
     }
 
     /** The ground the stone's current page has to be held over, or an empty string when it asks for caves. */

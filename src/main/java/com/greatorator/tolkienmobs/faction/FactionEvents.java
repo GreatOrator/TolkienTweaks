@@ -48,6 +48,8 @@ public final class FactionEvents {
         if (!(event.getSource().getEntity() instanceof ServerPlayer player)) return;
         Entity victim = event.getEntity();
         QuestLedger.progressKill(player, victim);
+        // A cave troll felled at depth is what clears a chamber of the stone's cave search.
+        Campaign.onCaveTrollDeath(player, victim);
         // Felling one of the Nine, or their master, is the lesson that the terror can be outlived.
         if (victim instanceof WitchKingEntity) {
             CourageLedger.award(player, CourageLedger.Deed.WITCHKING_FELLED);
