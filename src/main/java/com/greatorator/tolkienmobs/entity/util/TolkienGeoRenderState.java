@@ -39,6 +39,12 @@ public class TolkienGeoRenderState extends LivingEntityRenderState implements Ge
      */
     public int giverSkin;
 
+    /**
+     * The name a giver is wearing, set by its renderer during extraction, so a herald can wear art
+     * drawn for that person rather than art drawn for his alliance. Empty for an ordinary human.
+     */
+    public String giverName = "";
+
     /** The alliance a faction guard serves, set by its renderer during extraction. */
     public Alliance alliance = Alliance.WEST;
 

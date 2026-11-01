@@ -16,6 +16,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -31,6 +32,11 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
  * winter clothing. Which of the three is worn is keyed on the same scoreboard tag that says whose work a
  * giver holds, so the art is a drop-in - overwrite {@code faction_west/quest_giver_west.png} and every
  * giver of the West's work changes clothes.
+ * <p>
+ * A hall's herald is also a person with a name, so before the alliance's cloth is asked for, the name he
+ * is wearing is looked for as a file of its own under {@code textures/entity/middle-earth/}. Those files
+ * are optional: drawn, Maelgrin wears his own face; not drawn, he wears the West's, and nothing is said
+ * about it, because a missing named skin is the ordinary state of a mod whose art arrives by degrees.
  */
 public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRenderState> {
     private static final Identifier WINTER_HUMAN = Identifier.fromNamespaceAndPath(MODID, "textures/entity/human_winter/winter");
@@ -47,6 +53,16 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
             Identifier.fromNamespaceAndPath(MODID, "textures/entity/faction_east/quest_giver_east.png"),
             Identifier.fromNamespaceAndPath(MODID, "textures/entity/faction_harad/quest_giver_harad.png")
     };
+
+    /**
+     * Where the art for one named giver is looked for, if anybody has drawn it. The mod ships the three
+     * alliance skins and names its heralds, so the named files are for the artist rather than for the
+     * build: {@code middle-earth/maelgrin.png} is the West's herald's own face.
+     */
+    private static final Identifier NAMED_GIVER =
+            Identifier.fromNamespaceAndPath(MODID, "textures/entity/middle-earth/");
+    /** One identifier per name, so a nameplate is not turned into a texture path every frame. */
+    private static final Map<String, Identifier> NAMED_BY_SLUG = new ConcurrentHashMap<>();
 
     /** What the pack held the last time each giver skin was asked for, dropped when resources reload. */
     private static final Map<Identifier, Boolean> GIVER_SKIN_PRESENT = new ConcurrentHashMap<>();
@@ -74,19 +90,52 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
     public static Identifier textureFor(TolkienGeoRenderState renderState) {
         // Asked before the variant and the weather: a giver's clothes are not a face and not a season.
         if (renderState.giverSkin > 0 && renderState.giverSkin < GIVER_BY_ALLIANCE.length) {
+            // A herald with art of his own wears it, and his alliance's cloth is what he falls back
+            // to. The named file is asked for quietly: not being there is the ordinary case, not a
+            // fault worth a line in the log on every load.
+            Identifier own = namedGiverSkin(renderState.giverName);
+            if (own != null && skinIsLoaded(own, false)) return own;
             Identifier giver = GIVER_BY_ALLIANCE[renderState.giverSkin];
-            if (giver != null && giverSkinIsLoaded(giver)) return giver;
+            if (giver != null && skinIsLoaded(giver, true)) return giver;
         }
         Map<TolkienVariant, Identifier> byVariant = renderState.winter ? WINTER_LOCATION_BY_VARIANT : LOCATION_BY_VARIANT;
         return byVariant.get(renderState.variant);
     }
 
     /**
-     * Whether the pack actually holds a giver skin, asked once per file per reload. A client that cannot
-     * find one draws the missing-texture checker, so a giver whose art is absent keeps the clothes of its
-     * own folk instead, and one warning names the file that was looked for.
+     * The file a named giver's own art would be in, or null for a body wearing no name or a name a
+     * filesystem cannot spell. {@code Maelgrin} is looked for as {@code maelgrin.png}; a name with a space
+     * in it keeps the space as an underscore, so two names cannot collide by being run together.
      */
-    private static boolean giverSkinIsLoaded(Identifier texture) {
+    @Nullable
+    private static Identifier namedGiverSkin(String name) {
+        if (name.isEmpty()) return null;
+        String slug = slugOf(name);
+        if (slug.isEmpty()) return null;
+        return NAMED_BY_SLUG.computeIfAbsent(slug, found -> NAMED_GIVER.withSuffix(found + ".png"));
+    }
+
+    /** A name as a file name: lower case, spaces to underscores, and nothing a path cannot hold. */
+    private static String slugOf(String name) {
+        StringBuilder slug = new StringBuilder(name.length());
+        for (int i = 0; i < name.length(); i++) {
+            char c = Character.toLowerCase(name.charAt(i));
+            if (c >= 'a' && c <= 'z' || c >= '0' && c <= '9') {
+                slug.append(c);
+            } else if (c == ' ' || c == '-' || c == '_') {
+                slug.append('_');
+            }
+        }
+        return slug.toString();
+    }
+
+    /**
+     * Whether the pack actually holds a skin, asked once per file per reload. A client that cannot find
+     * one draws the missing-texture checker, so a giver whose art is absent keeps the clothes of its own
+     * folk instead. Only the alliance's file is worth a warning - that one is the mod's own promise - and
+     * a named file that nobody has drawn is passed over in silence.
+     */
+    private static boolean skinIsLoaded(Identifier texture, boolean warn) {
         ResourceManager manager = Minecraft.getInstance().getResourceManager();
         if (manager != seenResourceManager) {
             seenResourceManager = manager;
@@ -94,7 +143,7 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
         }
         return GIVER_SKIN_PRESENT.computeIfAbsent(texture, id -> {
             boolean present = manager != null && manager.getResource(id).isPresent();
-            if (!present) {
+            if (!present && warn) {
                 LOGGER.warn("No giver skin at {}; the giver keeps the clothes of its own folk.", id);
             }
             return present;
@@ -121,6 +170,10 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
         renderState.variant = animatable.getTolkienVariant();
         renderState.winter = animatable.isWinter();
         renderState.giverSkin = animatable.giverSkin();
+        // Only a giver has any use for a name, and asking every human in a village for one would be a
+        // string a frame for something no texture lookup will ever ask about.
+        var name = renderState.giverSkin > 0 ? animatable.getCustomName() : null;
+        renderState.giverName = name == null ? "" : name.getString();
     }
 
     /** A human child is drawn at half size; 5 applies that here rather than in preRender. */
