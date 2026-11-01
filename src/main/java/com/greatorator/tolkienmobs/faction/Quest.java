@@ -12,6 +12,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,13 +43,14 @@ import java.util.UUID;
  * work: the name is for reading, the id is for finding them again.
  */
 public record Quest(Kind kind, String target, int goal, int progress, String employer, int standing,
-                    List<Reward> rewards, String giver, BlockPos origin, UUID giverId, boolean story) {
+                    List<Reward> rewards, String giver, BlockPos origin, UUID giverId, boolean story,
+                    String turnIn) {
     /** The id a quest carries when no NPC handed it out, as when a command writes one into a book. */
     public static final UUID NOBODY = new UUID(0L, 0L);
 
     /** The most progress a quest can hold, so a kill after completion cannot write past the goal. */
     public enum Kind {
-        FACTION, FETCH, HUNT;
+        FACTION, FETCH, HUNT, LOCATION, DIALOGUE;
 
         public static final Codec<Kind> CODEC = Codec.STRING.xmap(Kind::byName, Kind::name);
 
@@ -86,7 +88,8 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
             Codec.STRING.optionalFieldOf("giver", "").forGetter(Quest::giver),
             BlockPos.CODEC.optionalFieldOf("origin", BlockPos.ZERO).forGetter(Quest::origin),
             UUIDUtil.CODEC.optionalFieldOf("giver_id", NOBODY).forGetter(Quest::giverId),
-            Codec.BOOL.optionalFieldOf("story", false).forGetter(Quest::story)
+            Codec.BOOL.optionalFieldOf("story", false).forGetter(Quest::story),
+            Codec.STRING.optionalFieldOf("turn_in", "").forGetter(Quest::turnIn)
     ).apply(instance, Quest::new));
 
     public boolean complete() {
@@ -101,17 +104,18 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
     /** The same quest one kill further on. Fetch quests are read off the pack instead. */
     public Quest advanced() {
         return new Quest(kind, target, goal, Math.min(goal, progress + 1), employer, standing, rewards,
-                giver, origin, giverId, story);
+                giver, origin, giverId, story, turnIn);
     }
 
     public Quest withProgress(int value) {
         return new Quest(kind, target, goal, Math.max(0, Math.min(goal, value)), employer, standing, rewards,
-                giver, origin, giverId, story);
+                giver, origin, giverId, story, turnIn);
     }
 
     /** The same quest, noting who offered it, where they stood, and which body they were. */
     public Quest withGiver(String giver, BlockPos origin, UUID giverId) {
-        return new Quest(kind, target, goal, progress, employer, standing, rewards, giver, origin, giverId, story);
+        return new Quest(kind, target, goal, progress, employer, standing, rewards, giver, origin, giverId,
+                story, turnIn);
     }
 
     /** The alliance the work is done for, or null when the work is nobody's. */
@@ -133,6 +137,106 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
         return BuiltInRegistries.ENTITY_TYPE.getValue(id);
     }
 
+    /**
+     * Where a location page ends: a named place, whose circle the world has drawn where the world put
+     * it, or a point of the page's own with a reach round it. A place is named because a barrow is
+     * where a world made it rather than where a page guessed; a point is written down for ground no
+     * catalogue knows.
+     */
+    public record Spot(@Nullable String place, BlockPos centre, int radius) {
+        /** The name a player reads: the place's own, or the point spelled out. */
+        public Component name() {
+            return place != null
+                    ? Component.translatable("place.tolkienmobs." + place)
+                    : Component.literal(centre.getX() + ", " + centre.getY() + ", " + centre.getZ());
+        }
+    }
+
+    /** A place of the catalogue as a page's target, as in {@code place:greenway}. */
+    public static String placeTarget(String id) {
+        return "place:" + id;
+    }
+
+    /** A point as a page's target, as in {@code at:100,64,-20,16}. */
+    public static String pointTarget(int x, int y, int z, int radius) {
+        return "at:" + x + "," + y + "," + z + "," + radius;
+    }
+
+    /** A page of talk as a dialogue page's target, as in {@code leaf:campaign.tolkienmobs.page.muster}. */
+    public static String leafTarget(String key) {
+        return "leaf:" + key;
+    }
+
+    /** A body as a dialogue page's target, as in {@code person:Maelgrin}. */
+    public static String personTarget(String name) {
+        return "person:" + name;
+    }
+
+    /** Whether the work is done by walking to a place rather than by killing or fetching anything. */
+    public boolean walks() {
+        return kind == Kind.LOCATION;
+    }
+
+    /** Whether the work is done by hearing somebody out. */
+    public boolean talks() {
+        return kind == Kind.DIALOGUE;
+    }
+
+    /**
+     * Whether the work settles itself where it happens instead of being carried back to a giver.
+     * Reaching a place and hearing a conversation are each their own proof, so there is nothing for a
+     * giver to check and no reason to walk back for the words "well done".
+     */
+    public boolean selfSettles() {
+        return walks() || talks();
+    }
+
+    /** Where a location page ends, or null when the page is not one or names nowhere to walk. */
+    @Nullable
+    public Spot spot() {
+        if (!walks()) return null;
+        if (target.startsWith("at:")) {
+            String[] parts = target.substring("at:".length()).split(",");
+            if (parts.length < 3) return null;
+            try {
+                int x = Integer.parseInt(parts[0].trim());
+                int y = Integer.parseInt(parts[1].trim());
+                int z = Integer.parseInt(parts[2].trim());
+                int radius = parts.length > 3
+                        ? Math.max(1, Integer.parseInt(parts[3].trim()))
+                        : Places.DEFAULT_RADIUS;
+                return new Spot(null, new BlockPos(x, y, z), radius);
+            } catch (NumberFormatException malformed) {
+                // A hand-written page whose point is not a point is a page nobody can walk, which is
+                // what the book then says, rather than a throw in the middle of a tick.
+                return null;
+            }
+        }
+        // A bare id is read as a place, because that is the shorter way to write the commoner case.
+        String id = target.startsWith("place:") ? target.substring("place:".length()) : target;
+        return id.isEmpty() ? null : new Spot(id, BlockPos.ZERO, Places.DEFAULT_RADIUS);
+    }
+
+    /** The page of talk a dialogue page asks to be read, or null when it asks for a body instead. */
+    @Nullable
+    public String leaf() {
+        return talks() && target.startsWith("leaf:") ? target.substring("leaf:".length()) : null;
+    }
+
+    /** The body a dialogue page asks to be spoken to, or null when it asks for a page instead. */
+    @Nullable
+    public String person() {
+        if (!talks() || target.startsWith("leaf:")) return null;
+        return target.startsWith("person:") ? target.substring("person:".length()) : target;
+    }
+
+    /** Who the work goes back to, or an empty component when any giver will take it. */
+    public Component takenTo() {
+        return turnIn.isEmpty()
+                ? Component.empty()
+                : Component.translatable("quest.tolkienmobs.turn_in", Component.literal(turnIn));
+    }
+
     /** What the quest asks for, in the terms the player reads it in. */
     public Component objective() {
         return switch (kind) {
@@ -142,6 +246,10 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
                     Component.literal(String.valueOf(goal)), targetName());
             case HUNT -> Component.translatable("quest.tolkienmobs.hunt",
                     Component.literal(String.valueOf(goal)), targetName());
+            case LOCATION -> Component.translatable("quest.tolkienmobs.reach", targetName());
+            case DIALOGUE -> leaf() != null
+                    ? Component.translatable("quest.tolkienmobs.read", targetName())
+                    : Component.translatable("quest.tolkienmobs.speak", targetName());
         };
     }
 
@@ -156,6 +264,14 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
             case HUNT -> {
                 EntityType<?> type = entityType();
                 yield type == null ? Component.literal(target) : type.getDescription();
+            }
+            case LOCATION -> {
+                Spot spot = spot();
+                yield spot == null ? Component.literal(target) : spot.name();
+            }
+            case DIALOGUE -> {
+                String leaf = leaf();
+                yield leaf != null ? Component.translatable(leaf) : Component.literal(target);
             }
         };
     }
@@ -194,6 +310,8 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
                     Component.literal(String.valueOf(goal)), targetName());
             case HUNT -> Component.translatable("quest.tolkienmobs.summary.hunt",
                     targetName(), Component.literal(String.valueOf(goal)));
+            case LOCATION -> Component.translatable("quest.tolkienmobs.summary.reach", targetName());
+            case DIALOGUE -> Component.translatable("quest.tolkienmobs.summary.dialogue");
         };
     }
 

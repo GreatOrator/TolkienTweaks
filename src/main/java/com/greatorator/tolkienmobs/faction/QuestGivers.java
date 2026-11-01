@@ -80,6 +80,8 @@ public final class QuestGivers {
     /** The wait between one giver and the next, so an arrival is an event and not scenery. */
     private static final long MIN_GAP = 6000L;
     private static final long MAX_GAP = 12000L;
+    /** How far off a page's named recipient is looked for, which is as far as a nameplate reads. */
+    private static final double TURN_IN_REACH = 64.0D;
     /** How far from the player a giver arrives, so they are met rather than dropped on. */
     private static final int MIN_SPAWN = 16;
     private static final int MAX_SPAWN = 28;
@@ -202,7 +204,18 @@ public final class QuestGivers {
         event.setCanceled(true);
         if (player.level().isClientSide()) return;
 
-        if (QuestLedger.turnInFirst(player)) return;
+        String name = target.getName().getString();
+        if (QuestLedger.turnInFirst(player, name)) return;
+        // A page given as words is finished by hearing them out, and is paid where they were said.
+        QuestLedger.spokeTo(player, name);
+        // A page owed to somebody else is not this giver's to take, and saying so is kinder than
+        // the silence of a giver who then has nothing to offer.
+        String owed = QuestLedger.owedTo(player, name);
+        if (owed != null) {
+            player.sendSystemMessage(Component.translatable("quest.tolkienmobs.turn_in_elsewhere",
+                    Component.literal(owed)).withStyle(ChatFormatting.GRAY));
+            return;
+        }
 
         // A hall herald does not leave the campaign page lying about as an offer to think about: he hands
         // it over, because the line is not one of the errands and there is nothing to choose between.
@@ -506,6 +519,24 @@ public final class QuestGivers {
         if (!isGiver(entity)) return 0;
         Alliance alliance = factionOf(entity);
         return alliance == null ? 0 : alliance.ordinal() + 1;
+    }
+
+    /** The name a giver is wearing, or an empty string for a body this world no longer has. */
+    public static String giverName(Level level, UUID giver) {
+        Entity entity = level.getEntity(giver);
+        return entity == null ? "" : entity.getName().getString();
+    }
+
+    /**
+     * The givers near a player wearing a given name, which is what a page's turn-in is matched to.
+     * Only as far as a nameplate can be read: a body in another country is not waiting in front of
+     * anybody, so it is not marked.
+     */
+    public static List<UUID> named(Level level, ServerPlayer player, String name) {
+        return level.getEntities(player, player.getBoundingBox().inflate(TURN_IN_REACH),
+                        entity -> entity.entityTags().contains(GIVER_TAG)
+                                && name.equalsIgnoreCase(entity.getName().getString()))
+                .stream().map(Entity::getUUID).toList();
     }
 
     /** Whether the work a giver holds is the mainline's, which the mark over its head draws in gold. */

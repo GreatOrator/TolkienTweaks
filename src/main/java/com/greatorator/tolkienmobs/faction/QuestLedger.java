@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.faction;
 
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
+import com.greatorator.tolkienmobs.network.manager.ConversationManager;
 import com.greatorator.tolkienmobs.network.manager.QuestSyncManager;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -175,6 +176,14 @@ public final class QuestLedger extends SavedData {
                 .withStyle(ChatFormatting.WHITE));
         player.level().playSound(null, player.blockPosition(), TolkienSounds.LEDGER_SEAL.get(),
                 SoundSource.PLAYERS, 0.6F, 1.0F);
+        // Work that is words rather than counting opens its own page as it is taken: a dialogue
+        // page that had to be hunted for in the book before it could be read would be read by
+        // nobody.
+        String leaf = quest.leaf();
+        if (leaf != null) {
+            PacketDistributor.sendToPlayer(player,
+                    new ConversationManager(quest.giverName().getString(), leaf));
+        }
         sync(player);
         return true;
     }
@@ -344,6 +353,97 @@ public final class QuestLedger extends SavedData {
         }
     }
 
+    /**
+     * Settles any page the ground has finished. A location page asks to be walked to a place or to a
+     * point, and standing in it is the whole of the work, so it is paid where the player stands.
+     */
+    public static void checkArrival(ServerPlayer player) {
+        List<Quest> quests = row(player);
+        for (int slot = quests.size() - 1; slot >= 0; slot--) {
+            Quest quest = quests.get(slot);
+            if (!quest.walks() || !arrived(player, quest.spot())) continue;
+            settleSelf(player, slot);
+        }
+    }
+
+    /** Whether a location page's ground is under the player: its place's circle, or its own reach. */
+    private static boolean arrived(ServerPlayer player, @Nullable Quest.Spot spot) {
+        if (spot == null) return false;
+        if (spot.place() != null) {
+            Places.Place here = Places.at(player);
+            return here != null && spot.place().equals(here.id());
+        }
+        double reach = spot.radius();
+        return spot.centre().distToCenterSqr(player.position()) <= reach * reach;
+    }
+
+    /**
+     * Settles a dialogue page whose conversation has been read to the end. The client knows only which
+     * page of talk it put away - the words are its own - so it says that, and the book decides what
+     * finishing it is worth.
+     *
+     * @return whether a page was settled by it
+     */
+    public static boolean finishTalk(ServerPlayer player, String page) {
+        if (page.isEmpty()) return false;
+        List<Quest> quests = row(player);
+        for (int slot = 0; slot < quests.size(); slot++) {
+            if (!page.equals(quests.get(slot).leaf())) continue;
+            settleSelf(player, slot);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Settles a dialogue page that asked to be spoken to a named body, when that body is spoken to.
+     *
+     * @return whether a page was settled by it
+     */
+    public static boolean spokeTo(ServerPlayer player, String name) {
+        if (name.isEmpty()) return false;
+        List<Quest> quests = row(player);
+        for (int slot = 0; slot < quests.size(); slot++) {
+            String person = quests.get(slot).person();
+            if (person == null || !person.equalsIgnoreCase(name)) continue;
+            settleSelf(player, slot);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Pays a page the world finished on the spot, through the same hand-in as any other: standing,
+     * goods, courage, and a front moving on with it. A page that settles itself must not be worth less
+     * than one carried back to a hall, or there would be no reason to write one.
+     */
+    private static void settleSelf(ServerPlayer player, int slot) {
+        List<Quest> quests = row(player);
+        if (slot < 0 || slot >= quests.size()) return;
+        Quest quest = quests.remove(slot);
+        store(player).setDirty();
+        pay(player, quest);
+        sync(player);
+    }
+
+    /** Whether a giver of this name may take a page: anyone, unless the page names somebody. */
+    public static boolean canTurnIn(Quest quest, String giverName) {
+        return quest.turnIn().isEmpty() || quest.turnIn().equalsIgnoreCase(giverName);
+    }
+
+    /**
+     * The body a finished page is owed to, when this giver is not it: what he says instead of paying
+     * for work that is somebody else's to take. Null when nothing carried is waiting on another body.
+     */
+    @Nullable
+    public static String owedTo(ServerPlayer player, String giverName) {
+        for (Quest quest : row(player)) {
+            if (quest.turnIn().isEmpty() || canTurnIn(quest, giverName) || !ready(player, quest)) continue;
+            return quest.turnIn();
+        }
+        return null;
+    }
+
     private static boolean answeredBy(Quest quest, Entity victim) {
         if (quest.kind() == Quest.Kind.FACTION) {
             Alliance alliance = Alliance.byId(quest.target());
@@ -359,11 +459,11 @@ public final class QuestLedger extends SavedData {
      *
      * @return whether a quest was paid, which is what decides how a giver answers a right click
      */
-    public static boolean turnInFirst(ServerPlayer player) {
+    public static boolean turnInFirst(ServerPlayer player, String giverName) {
         List<Quest> quests = row(player);
         for (int slot = 0; slot < quests.size(); slot++) {
             Quest quest = quests.get(slot);
-            if (!ready(player, quest)) continue;
+            if (!canTurnIn(quest, giverName) || !ready(player, quest)) continue;
             if (quest.kind() == Quest.Kind.FETCH && !take(player, quest)) continue;
             pay(player, quest);
             quests.remove(slot);
@@ -483,10 +583,21 @@ public final class QuestLedger extends SavedData {
         for (Quest quest : row(player)) {
             // A quest a command wrote into the book has no giver to mark, so it marks nobody.
             if (!quest.fromNpc()) continue;
+            boolean done = ready(player, quest);
+            // A page that names the body it goes back to is not paid by whoever is nearest: the
+            // one who handed it over wears the work's mark, and only the one it is owed to wears
+            // the question mark that means he will take it.
             marks.merge(quest.giverId(), new Mark(
-                            ready(player, quest) ? Mark.State.TURN_IN : Mark.State.IN_PROGRESS,
+                            done && canTurnIn(quest, QuestGivers.giverName(level, quest.giverId()))
+                                    ? Mark.State.TURN_IN
+                                    : Mark.State.IN_PROGRESS,
                             QuestGivers.isCampaign(level, quest.giverId())),
                     QuestLedger::later);
+            if (!done || quest.turnIn().isEmpty()) continue;
+            for (UUID waiting : QuestGivers.named(level, player, quest.turnIn())) {
+                marks.merge(waiting, new Mark(Mark.State.TURN_IN,
+                        QuestGivers.isCampaign(level, waiting)), QuestLedger::later);
+            }
         }
         PacketDistributor.sendToPlayer(player, new QuestSyncManager(List.copyOf(row(player)), Map.copyOf(marks)));
         // A page place in its front is read beside the book, so it travels with it.

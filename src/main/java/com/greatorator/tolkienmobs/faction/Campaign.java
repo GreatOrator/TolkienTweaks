@@ -70,25 +70,25 @@ public final class Campaign extends SavedData {
     private static final Map<Alliance, List<Page>> PAGE_LINES = Map.of(
             Alliance.WEST, List.of(
                     new Page(Quest.Kind.FACTION, "", 6, 60, 2,
-                            "campaign.tolkienmobs.page.muster", "campaign.tolkienmobs.page.muster.place"),
+                            "campaign.tolkienmobs.page.muster", "campaign.tolkienmobs.page.muster.place", ""),
                     new Page(Quest.Kind.FACTION, "", 12, 120, 4,
-                            "campaign.tolkienmobs.page.southroad", "campaign.tolkienmobs.page.southroad.place"),
+                            "campaign.tolkienmobs.page.southroad", "campaign.tolkienmobs.page.southroad.place", ""),
                     new Page(Quest.Kind.HUNT, "tolkienmobs:entityttmbarrow", 2, 150, 7,
-                            "campaign.tolkienmobs.page.keeping", "campaign.tolkienmobs.page.keeping.place")),
+                            "campaign.tolkienmobs.page.keeping", "campaign.tolkienmobs.page.keeping.place", "campaign.tolkienmobs.page.keeping.closing")),
             Alliance.EAST, List.of(
                     new Page(Quest.Kind.FACTION, "", 6, 60, 2,
-                            "campaign.tolkienmobs.page.marches", "campaign.tolkienmobs.page.marches.place"),
+                            "campaign.tolkienmobs.page.marches", "campaign.tolkienmobs.page.marches.place", ""),
                     new Page(Quest.Kind.FACTION, "", 12, 120, 4,
-                            "campaign.tolkienmobs.page.levy", "campaign.tolkienmobs.page.levy.place"),
+                            "campaign.tolkienmobs.page.levy", "campaign.tolkienmobs.page.levy.place", ""),
                     new Page(Quest.Kind.FETCH, "tolkienmobs:item_scroll", 1, 0, 7,
-                            "campaign.tolkienmobs.page.steward", "campaign.tolkienmobs.page.steward.place")),
+                            "campaign.tolkienmobs.page.steward", "campaign.tolkienmobs.page.steward.place", "campaign.tolkienmobs.page.steward.closing")),
             Alliance.HARAD, List.of(
                     new Page(Quest.Kind.FACTION, "", 6, 60, 2,
-                            "campaign.tolkienmobs.page.sun", "campaign.tolkienmobs.page.sun.place"),
+                            "campaign.tolkienmobs.page.sun", "campaign.tolkienmobs.page.sun.place", ""),
                     new Page(Quest.Kind.FACTION, "", 12, 120, 4,
-                            "campaign.tolkienmobs.page.ford", "campaign.tolkienmobs.page.ford.place"),
+                            "campaign.tolkienmobs.page.ford", "campaign.tolkienmobs.page.ford.place", ""),
                     new Page(Quest.Kind.HUNT, "tolkienmobs:entityttmmumakil", 1, 150, 7,
-                            "campaign.tolkienmobs.page.mumak", "campaign.tolkienmobs.page.mumak.place"))
+                            "campaign.tolkienmobs.page.mumak", "campaign.tolkienmobs.page.mumak.place", "campaign.tolkienmobs.page.mumak.closing"))
     );
 
     /**
@@ -101,7 +101,7 @@ public final class Campaign extends SavedData {
      * rather than printing an empty heading.
      */
     private record Page(Quest.Kind kind, String target, int goal, int standing, int courage,
-                        String title, String place) {
+                        String title, String place, String closing) {
     }
 
     /** How many pages a front has. */
@@ -252,6 +252,13 @@ public final class Campaign extends SavedData {
         return stage < line.size() ? named(line.get(stage).place()) : Component.empty();
     }
 
+    /** The words a front's last page ends on, or empty when this stage is not that page. */
+    public static Component clientClosing(Alliance alliance) {
+        List<Page> line = PAGE_LINES.get(alliance);
+        int stage = CLIENT[alliance.ordinal()];
+        return stage < line.size() ? named(line.get(stage).closing()) : Component.empty();
+    }
+
     /** The campaign's own page, which is the Rider's: what it is called and where he is met. */
     public static Component clientRiderTitle() {
         return named(RIDER_TITLE);
@@ -314,7 +321,7 @@ public final class Campaign extends SavedData {
                 target = rivals.get(stage % rivals.size()).id();
             }
             return new Quest(page.kind(), target, page.goal(), 0, alliance.id(), page.standing(), List.of(),
-                    "", BlockPos.ZERO, Quest.NOBODY, true);
+                    "", BlockPos.ZERO, Quest.NOBODY, true, "");
         }
         return sealed(row) && row[RIDER_SLOT].stage() == 0 ? riderPage() : null;
     }
@@ -332,7 +339,7 @@ public final class Campaign extends SavedData {
      */
     private static Quest riderPage() {
         return new Quest(Quest.Kind.HUNT, riderId(), 2, 0, "", RIDER_STANDING, List.of(),
-                "", BlockPos.ZERO, Quest.NOBODY, true);
+                "", BlockPos.ZERO, Quest.NOBODY, true, "");
     }
 
     private static String riderId() {
@@ -589,7 +596,15 @@ public final class Campaign extends SavedData {
             // felling one of the Nine already pays a deed, and his page asks for him twice.
             List<Page> line = PAGE_LINES.get(alliance);
             if (front.stage() < line.size()) {
-                CourageLedger.add(player, line.get(front.stage()).courage());
+                Page paid = line.get(front.stage());
+                CourageLedger.add(player, paid.courage());
+                // The page that ends a front has the front's last words on it, and this is where
+                // they are said: the front moves on the moment its last page is paid, so a line
+                // left to the next page would be spoken by a page that no longer exists.
+                if (front.stage() + 1 == line.size() && !paid.closing().isEmpty()) {
+                    player.sendSystemMessage(Component.translatable(paid.closing())
+                            .withStyle(ChatFormatting.GOLD));
+                }
             }
             row[alliance.ordinal()] = new Front(front.stage() + 1, null);
             store(player).setDirty();

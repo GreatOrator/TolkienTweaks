@@ -61,6 +61,7 @@ public record QuestSyncManager(List<Quest> quests, Map<UUID, QuestLedger.Mark> m
         buf.writeBlockPos(quest.origin());
         buf.writeUUID(quest.giverId());
         buf.writeBoolean(quest.story());
+        buf.writeUtf(quest.turnIn());
         buf.writeVarInt(quest.rewards().size());
         for (Quest.Reward reward : quest.rewards()) {
             buf.writeUtf(reward.item());
@@ -82,13 +83,14 @@ public record QuestSyncManager(List<Quest> quests, Map<UUID, QuestLedger.Mark> m
             BlockPos origin = buf.readBlockPos();
             UUID giverId = buf.readUUID();
             boolean story = buf.readBoolean();
+            String turnIn = buf.readUtf();
             int rewards = buf.readVarInt();
             List<Quest.Reward> paid = new ArrayList<>(rewards);
             for (int slot = 0; slot < rewards; slot++) {
                 paid.add(new Quest.Reward(buf.readUtf(), buf.readVarInt()));
             }
             quests.add(new Quest(kind, target, goal, progress, employer, standing, List.copyOf(paid), giver,
-                    origin, giverId, story));
+                    origin, giverId, story, turnIn));
         }
         return quests;
     }

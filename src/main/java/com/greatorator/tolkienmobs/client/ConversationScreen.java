@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.client;
 
 import com.greatorator.tolkienmobs.init.TolkienSounds;
+import com.greatorator.tolkienmobs.network.manager.ConversationDoneManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
@@ -8,6 +9,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -242,6 +244,17 @@ public class ConversationScreen extends Screen {
      */
     private static void playSound(SoundEvent sound, float pitch) {
         Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(sound, pitch, 0.55F));
+    }
+
+    @Override
+    public void onClose() {
+        // The leaf says which page of talk it was on the way out. A dialogue page in the book is
+        // finished by hearing the words out, and this is the only moment the client knows that
+        // happened - the words themselves never leave the client.
+        if (this.chosen >= 0 && !this.page.isEmpty()) {
+            ClientPacketDistributor.sendToServer(new ConversationDoneManager(this.page));
+        }
+        super.onClose();
     }
 
     @Override

@@ -17,6 +17,8 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
 import java.util.function.Predicate;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
@@ -85,7 +87,21 @@ public final class QuestCommands {
                                             }
                                             return builder.buildFuture();
                                         })
-                                        .executes(QuestCommands::spawnCampaignGiver)))));
+                                        .executes(QuestCommands::spawnCampaignGiver)))
+                .then(Commands.literal("page")
+                        .then(Commands.argument("kind", StringArgumentType.word())
+                                .suggests((context, builder) -> {
+                                    for (Quest.Kind kind : Quest.Kind.values()) {
+                                        builder.suggest(kind.name().toLowerCase(Locale.ROOT));
+                                    }
+                                    return builder.buildFuture();
+                                })
+                                .then(Commands.argument("target", StringArgumentType.string())
+                                        .executes(context -> page(context, 1))
+                                        .then(Commands.argument("goal",
+                                                        IntegerArgumentType.integer(1, 64))
+                                                .executes(context -> page(context,
+                                                        IntegerArgumentType.getInteger(context, "goal")))))))));
     }
 
     /**
@@ -211,6 +227,32 @@ public final class QuestCommands {
                     "command.tolkienmobs.quest.campaign_giver.no_ground", alliance.displayName(), nameOf(who)));
         }
         return total;
+    }
+
+    /**
+     * Writes one page of a named shape straight into a book, so a page that is walked or spoken can be
+     * tried without a hall to hand it out. The target is written the way a page writes it, with a
+     * prefix saying what it is: {@code place:greenway}, {@code at:100,64,-20,16},
+     * {@code leaf:campaign.tolkienmobs.page.muster} or {@code person:Maelgrin}. A bare word is read as
+     * a place for a location page and as a body for a dialogue one.
+     */
+    private static int page(CommandContext<CommandSourceStack> context, int goal) throws CommandSyntaxException {
+        Collection<ServerPlayer> players = EntityArgument.getPlayers(context, "targets");
+        Quest.Kind kind = Quest.Kind.byName(StringArgumentType.getString(context, "kind"));
+        String target = StringArgumentType.getString(context, "target");
+        int written = 0;
+        for (ServerPlayer player : players) {
+            // A page written by hand pays nothing by itself: what is being tried is whether the
+            // ground or the words finish it, not what it is worth.
+            Quest work = new Quest(kind, target, goal, 0, "", 0, List.of(), "",
+                    player.blockPosition(), Quest.NOBODY, false, "");
+            if (QuestLedger.accept(player, work)) written++;
+        }
+        int total = written;
+        Collection<ServerPlayer> who = players;
+        context.getSource().sendSuccess(() -> Component.translatable("command.tolkienmobs.quest.page",
+                nameOf(who), Component.literal(String.valueOf(total))), true);
+        return written;
     }
 
     /**

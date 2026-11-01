@@ -503,6 +503,12 @@ public class FactionLedgerScreen extends Screen {
             // "the Green Way, where the scout's ditch runs" takes two lines rather than one and a half.
             y = wrapped(graphics, x, y, w, place.getString(), INK_DIM, 2) + 2;
         }
+        // A page that has to be carried somewhere else says so above the name of whoever handed
+        // it over, because the walk back is part of the work and not a footnote to it.
+        Component to = story.takenTo();
+        if (!to.getString().isEmpty()) {
+            y = wrapped(graphics, x, y, w, to.getString(), INK_RED, 1) + 2;
+        }
         graphics.text(this.font, fit(story.giverName().getString(), w), x, y, INK_DIM, FLAT);
         y += LINE;
         graphics.text(this.font, fit(story.takenAt().getString(), w), x, y, INK_DIM, FLAT);
@@ -511,6 +517,12 @@ public class FactionLedgerScreen extends Screen {
 
         int foot = bodyBottom() - 8;
         if (story.complete()) {
+            // The page that ends a front has the front's last words on it, and they are drawn only
+            // once the work is done: it is the one thing on the leaf a player cannot read early.
+            Component closing = front == null ? Component.empty() : Campaign.clientClosing(front);
+            if (!closing.getString().isEmpty()) {
+                wrapped(graphics, x, foot - 12, w, closing.getString(), INK_GOLD, 1);
+            }
             graphics.text(this.font, fit(Component.translatable("quest.tolkienmobs.complete").getString(), w),
                     x, foot - 1, INK_GREEN, FLAT);
             return;
@@ -573,6 +585,8 @@ public class FactionLedgerScreen extends Screen {
             case FETCH -> quest.item() == null ? new ItemStack(Items.PAPER) : new ItemStack(quest.item());
             case FACTION -> new ItemStack(Alliance.byId(quest.target()).token());
             case HUNT -> new ItemStack(Items.IRON_SWORD);
+            case LOCATION -> new ItemStack(Items.COMPASS);
+            case DIALOGUE -> new ItemStack(Items.WRITABLE_BOOK);
         };
     }
 

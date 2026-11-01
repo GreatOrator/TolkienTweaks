@@ -234,6 +234,9 @@ public final class Places extends SavedData {
      */
     public static void tick(ServerPlayer player) {
         if (player.tickCount % CHECK_INTERVAL != 0) return;
+        // A page that asks to be walked somewhere is settled by the ground under the player's
+        // feet, so it is looked at on the clock that already measures where they are standing.
+        QuestLedger.checkArrival(player);
         Place here = at(player);
         if (here == null) return;
         if (!markSeen(player, here.id())) return;

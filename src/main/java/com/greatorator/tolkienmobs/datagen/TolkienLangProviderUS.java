@@ -839,6 +839,13 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("quest.tolkienmobs.reward.items", "Reward: %s");
         this.add("quest.tolkienmobs.accepted", "You take on the work: %s");
         this.add("quest.tolkienmobs.done", "Quest complete - hand it in to any quest giver.");
+        this.add("quest.tolkienmobs.turn_in_elsewhere", "Not mine to take: that one belongs to %s.");
+        this.add("quest.tolkienmobs.turn_in", "Take it to %s");
+        this.add("quest.tolkienmobs.summary.dialogue", "Some of this work is done with the mouth rather than the hand, and it is not done until the words are heard.");
+        this.add("quest.tolkienmobs.summary.reach", "%s has not been walked yet, and the work is to walk it.");
+        this.add("quest.tolkienmobs.read", "Read %s");
+        this.add("quest.tolkienmobs.speak", "Speak with %s");
+        this.add("quest.tolkienmobs.reach", "Reach %s");
         this.add("quest.tolkienmobs.complete", "Complete - hand it in");
         this.add("quest.tolkienmobs.turned_in", "The work is done: %s");
         this.add("quest.tolkienmobs.full", "You are carrying as much work as you can.");
@@ -911,10 +918,13 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.page.rider.place", "wherever he chooses to be met");
         this.add("campaign.tolkienmobs.page.steward", "The Steward of the South");
         this.add("campaign.tolkienmobs.page.steward.place", "Nurn, on the captains' road");
+        this.add("campaign.tolkienmobs.page.steward.closing", "A sealed scroll, a steward's hand, and a road out of a country that wanted him gone. The East has bought a grudge with paper, and it is owed to you.");
         this.add("campaign.tolkienmobs.page.keeping", "What the Dead Were Keeping");
         this.add("campaign.tolkienmobs.page.keeping.place", "the barrow downs, above the Shire's edge");
+        this.add("campaign.tolkienmobs.page.keeping.closing", "The mounds are quiet, and the quiet is the payment. Whatever the dead were keeping, they have stopped being asked for it, and the West will hear of it before the week is out.");
         this.add("campaign.tolkienmobs.page.mumak", "The Mûmak of the Sands");
         this.add("campaign.tolkienmobs.page.mumak.place", "the deep sands of Haradwaith");
+        this.add("campaign.tolkienmobs.page.mumak.closing", "The sand takes a day to forget a thing that size. The Haradrim will say the beast was old and wandered, and they will say it quietly, and they will not say it to you.");
         this.add("campaign.tolkienmobs.giver.title.west", "Herald of the West");
         this.add("campaign.tolkienmobs.giver.title.east", "Herald of the East");
         this.add("campaign.tolkienmobs.giver.title.harad", "Herald of Haradwaith");
@@ -932,6 +942,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("screen.tolkienmobs.quests.carried", "Work Carried");
         this.add("screen.tolkienmobs.quests.abandon.confirm", "Abandon?");
         this.add("command.tolkienmobs.quest.give", "Gave %s %s quest(s).");
+        this.add("command.tolkienmobs.quest.page", "Wrote %s %s page(s).");
         this.add("command.tolkienmobs.quest.quit", "Set aside %s quest(s) for %s.");
         this.add("command.tolkienmobs.quest.spawn", "A quest giver appeared near %s (%s).");
         this.add("command.tolkienmobs.quest.spawn.failed", "No ground for a quest giver near %s.");

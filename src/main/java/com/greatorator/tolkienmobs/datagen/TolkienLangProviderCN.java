@@ -839,6 +839,13 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("quest.tolkienmobs.reward.items", "奖励：%s");
         this.add("quest.tolkienmobs.accepted", "你接下了任务：%s");
         this.add("quest.tolkienmobs.done", "任务完成 —— 交给任意任务发布者。");
+        this.add("quest.tolkienmobs.turn_in_elsewhere", "这不是我能收的：那一页该交给%s。");
+        this.add("quest.tolkienmobs.turn_in", "把它交给%s");
+        this.add("quest.tolkienmobs.summary.dialogue", "有些差事靠嘴而不是靠手；话没有听完，事情就不算完。");
+        this.add("quest.tolkienmobs.summary.reach", "%s还没有人走到过，这趟差事就是要走过去。");
+        this.add("quest.tolkienmobs.read", "阅读%s");
+        this.add("quest.tolkienmobs.speak", "与%s交谈");
+        this.add("quest.tolkienmobs.reach", "抵达%s");
         this.add("quest.tolkienmobs.complete", "已完成 —— 请交付");
         this.add("quest.tolkienmobs.turned_in", "任务完成：%s");
         this.add("quest.tolkienmobs.full", "你手上的任务已经够多了。");
@@ -911,10 +918,13 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("campaign.tolkienmobs.page.rider.place", "他选择现身之处");
         this.add("campaign.tolkienmobs.page.steward", "南方的管家");
         this.add("campaign.tolkienmobs.page.steward.place", "努恩，队长们的道路上");
+        this.add("campaign.tolkienmobs.page.steward.closing", "一封封好的信，一位管家的字迹，一条离开那个要他消失的国家的路。东境用纸买下了一桩怨恨，而这笔账记在你身上。");
         this.add("campaign.tolkienmobs.page.keeping", "亡者所守之物");
         this.add("campaign.tolkienmobs.page.keeping.place", "夏尔边缘之上的古冢丘陵");
+        this.add("campaign.tolkienmobs.page.keeping.closing", "坟丘安静下来了，这份安静就是酬劳。亡者所守之物从此再无人讨要；西境不用一周便会听说。");
         this.add("campaign.tolkienmobs.page.mumak", "沙海中的猛犸");
         this.add("campaign.tolkienmobs.page.mumak.place", "哈拉德威斯的深处沙海");
+        this.add("campaign.tolkienmobs.page.mumak.closing", "那么大的东西，沙子要一天才忘得掉。哈拉德人会说是那头老兽自己走丢了，他们会小声说，而且不会说给你听。");
         this.add("campaign.tolkienmobs.giver.title.west", "西境的传令官");
         this.add("campaign.tolkienmobs.giver.title.east", "东境的传令官");
         this.add("campaign.tolkienmobs.giver.title.harad", "哈拉德威斯的传令官");
@@ -932,6 +942,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("screen.tolkienmobs.quests.carried", "手上的任务");
         this.add("screen.tolkienmobs.quests.abandon.confirm", "放弃此任务？");
         this.add("command.tolkienmobs.quest.give", "给了 %s %s 个任务。");
+        this.add("command.tolkienmobs.quest.page", "为 %s 写了 %s 页。");
         this.add("command.tolkienmobs.quest.quit", "为 %s 放下了 %s 个任务。");
         this.add("command.tolkienmobs.quest.spawn", "任务发布者出现在了 %s 附近（%s）。");
         this.add("command.tolkienmobs.quest.spawn.failed", "%s 附近没有可以站立任务发布者的地面。");
