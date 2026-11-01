@@ -259,9 +259,9 @@ public final class Places extends SavedData {
         if (player.tickCount % CHECK_INTERVAL != 0) return;
         // A page that asks to be walked somewhere is settled by the ground under the player's
         // feet, so it is looked at on the clock that already measures where they are standing.
-        // A camp is built on the same clock: close enough to see it is close enough for the chunk
-        // to be loaded, so nothing is built into ground nobody is looking at.
-        Encampment.tick(player);
+        // Built ground is built on the same clock: close enough to see it is close enough for the
+        // chunk to be loaded, so nothing is raised into ground nobody is looking at.
+        Sites.tick(player);
         QuestLedger.checkArrival(player);
         answerPendingBeryl(player);
         Place here = at(player);

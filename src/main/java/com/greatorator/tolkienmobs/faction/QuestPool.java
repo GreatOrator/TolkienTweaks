@@ -64,7 +64,7 @@ public final class QuestPool {
                 case 1 -> hunt(random);
                 case 2 -> walk(player, random);
                 case 3 -> listen(random);
-                default -> camp(random);
+                default -> site(random);
             };
             if (work != null) return work;
         }
@@ -89,11 +89,11 @@ public final class QuestPool {
     }
 
     /**
-     * A camp to be found: the only errand whose ground did not exist when it was offered, because the
-     * tent is pitched from where the player was standing when they took it.
+     * Built ground to be found: the only errand whose place did not exist when it was offered, because
+     * it is chosen from where the player was standing when they took it.
      */
-    private static Quest camp(RandomSource random) {
-        return new Quest(Quest.Kind.LOCATION, Quest.campTarget(Encampment.WILD_CAMP), 1, 0, "", 0,
+    private static Quest site(RandomSource random) {
+        return new Quest(Quest.Kind.LOCATION, Quest.siteTarget(Sites.WILD_TENT), 1, 0, "", 0,
                 payment(random, 2), "", BlockPos.ZERO, Quest.NOBODY, false, "");
     }
 

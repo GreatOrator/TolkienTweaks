@@ -173,13 +173,19 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
     }
 
     /**
-     * A camp as a location page's target, as in {@code camp:tolkienmobs:wild_tent}: the ground is not
-     * written down here because it is not chosen until the page is taken, and the campaign keeps it
-     * (see {@link Encampment}).
+     * A structure the campaign builds as a location page's target, as in
+     * {@code site:tolkienmobs:wild_tent}: the ground is not written down here because it is not chosen
+     * until the page is taken, and the campaign keeps it (see {@link Sites}).
      */
-    public static String campTarget(String structure) {
-        return "camp:" + structure;
+    public static String siteTarget(String structure) {
+        return "site:" + structure;
     }
+
+    /**
+     * The prefixes a page can name built ground with. {@code camp:} is the older of the two and still
+     * read, so a page already in somebody's book settles against the same machinery the new ones do.
+     */
+    private static final List<String> SITE_PREFIXES = List.of("site:", "camp:");
 
     /** Whether the work is done by walking to a place rather than by killing or fetching anything. */
     public boolean walks() {
@@ -200,20 +206,31 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
         return walks() || talks();
     }
 
-    /** Whether the work is a walk to a camp the campaign pitches rather than to ground already named. */
-    public boolean isCamp() {
-        return walks() && target.startsWith("camp:");
+    /** Whether the work is a walk to ground the campaign builds rather than ground already named. */
+    public boolean isSite() {
+        return walks() && sitePrefix() != null;
     }
 
-    /** The template a camp page is pitched from, or an empty string when the page is not one. */
-    public String camp() {
-        return isCamp() ? target.substring("camp:".length()) : "";
+    /** The template a site page builds, or an empty string when the page is not one. */
+    public String site() {
+        String prefix = sitePrefix();
+        return prefix == null ? "" : target.substring(prefix.length());
+    }
+
+    /** The prefix this page names a structure with, or null when it names ground instead. */
+    @Nullable
+    private String sitePrefix() {
+        if (!walks()) return null;
+        for (String prefix : SITE_PREFIXES) {
+            if (target.startsWith(prefix)) return prefix;
+        }
+        return null;
     }
 
     /** Where a location page ends, or null when the page is not one or names nowhere to walk. */
     @Nullable
     public Spot spot() {
-        if (!walks() || isCamp()) return null;
+        if (!walks() || isSite()) return null;
         if (target.startsWith("at:")) {
             String[] parts = target.substring("at:".length()).split(",");
             if (parts.length < 3) return null;
@@ -285,9 +302,9 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
                 yield type == null ? Component.literal(target) : type.getDescription();
             }
             case LOCATION -> {
-                // A camp's ground is not written down anywhere: it is pitched when the page is taken,
+                // A site's ground is not written down anywhere: it is chosen when the page is taken,
                 // so the page names the kind of place rather than a place.
-                if (isCamp()) yield Component.translatable("quest.tolkienmobs.camp");
+                if (isSite()) yield Component.translatable("quest.tolkienmobs.site");
                 Spot spot = spot();
                 yield spot == null ? Component.literal(target) : spot.name();
             }
@@ -332,8 +349,8 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
                     Component.literal(String.valueOf(goal)), targetName());
             case HUNT -> Component.translatable("quest.tolkienmobs.summary.hunt",
                     targetName(), Component.literal(String.valueOf(goal)));
-            case LOCATION -> isCamp()
-                    ? Component.translatable("quest.tolkienmobs.summary.camp")
+            case LOCATION -> isSite()
+                    ? Component.translatable("quest.tolkienmobs.summary.site")
                     : Component.translatable("quest.tolkienmobs.summary.reach", targetName());
             case DIALOGUE -> Component.translatable("quest.tolkienmobs.summary.dialogue");
         };

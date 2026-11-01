@@ -839,9 +839,10 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("quest.tolkienmobs.reward.items", "Reward: %s");
         this.add("quest.tolkienmobs.accepted", "You take on the work: %s");
         this.add("quest.tolkienmobs.done", "Quest complete - hand it in to any quest giver.");
-        this.add("quest.tolkienmobs.camp.found", "%s: You found it, then. A fire and a name are all I have to offer, and the fire is worth more.");
-        this.add("quest.tolkienmobs.summary.camp", "Somebody has pitched a fire out past the ridge and is waiting to be found. There is no tent there until you are close enough to see it.");
-        this.add("quest.tolkienmobs.camp", "a camp out past the ridge");
+        this.add("quest.tolkienmobs.site.keeper", "%s: You found it, then. A fire and a name are all I have to offer, and the fire is worth more.");
+        this.add("quest.tolkienmobs.site.found", "You have found what you were sent to find.");
+        this.add("quest.tolkienmobs.summary.site", "Somebody has told you where to go, and there is nothing there until you are close enough to see it: the place is built for you as you come.");
+        this.add("quest.tolkienmobs.site", "somewhere out past the ridge");
         this.add("quest.tolkienmobs.turn_in_elsewhere", "Not mine to take: that one belongs to %s.");
         this.add("quest.tolkienmobs.turn_in", "Take it to %s");
         this.add("quest.tolkienmobs.summary.dialogue", "Some of this work is done with the mouth rather than the hand, and it is not done until the words are heard.");

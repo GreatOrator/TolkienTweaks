@@ -1,0 +1,345 @@
+package com.greatorator.tolkienmobs.faction;
+
+import com.greatorator.tolkienmobs.init.TolkienEntities;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+/**
+ * The ground the campaign has built on: a structure it put down for one player, and the laying of it.
+ * <p>
+ * This is not {@link Places}, and the difference is worth keeping straight. A place is a <em>name</em>
+ * for ground that a world already had, set by an operator and announced when somebody walks into it. A
+ * site is ground that did not exist until the campaign built it - a camp, an arena, a castle - and it is
+ * built for the player who was sent there rather than found by whoever happens to pass.
+ * <p>
+ * The mod has always carried its buildings as templates - the halls, the towers, the arena - and had
+ * never once put one down itself: they were all the world generator's, or an operator's with
+ * {@code /place structure}. A page that says "go there" cannot wait for either, because "there" has to
+ * be chosen when the page is taken and be standing when the player arrives. So the spot is written down
+ * against the player at the moment they take the work, and nothing is built until they are within four
+ * chunks - at which range the chunk is loaded anyway, so no chunk is ever force-loaded to hold a
+ * building nobody may visit, and nothing is dropped into ground nobody is looking at.
+ * <p>
+ * Nothing here knows what a tent is. The footprint that has to be judged is the template's own size,
+ * read from the file when the build is about to happen, and the tolerance for uneven ground grows with
+ * it: two blocks of rise and fall across a tent is a hillside through the middle of it, and two blocks
+ * across a castle courtyard is flat.
+ * <p>
+ * One site is kept per player, and taking a second page to a structure they have not reached yet keeps
+ * the site they already have rather than pitching a rival beside it - which is what lets a quest in
+ * pieces send somebody back to the same ground twice.
+ */
+public final class Sites extends SavedData {
+    private static final String SAVE_DATA_NAME = "sites";
+
+    /** The tent the camp errand pitches, as a template the mod already ships. */
+    public static final String WILD_TENT = "tolkienmobs:wild_tent";
+
+    /** How far out a site is picked, in blocks, and how much of that is left to chance. */
+    private static final int PITCH_MIN = 48;
+    private static final int PITCH_SPREAD = 48;
+    /** How far off the line the spot is nudged sideways, so a site is not always dead ahead. */
+    private static final int PITCH_ACROSS = 8;
+    /** How close the player has to be before anything is built, in blocks: four chunks. */
+    private static final int BUILD_REACH = 64;
+    /** How many rings of candidate ground are tried around the written spot before giving up. */
+    private static final int SEARCH_RINGS = 2;
+    /** The least rise and fall a footprint will take, before a building's own size widens it. */
+    private static final int DROP_MIN = 2;
+
+    /** The tag the body minding a camp wears, so it can be told from any other of its folk. */
+    public static final String KEEPER_TAG = "tolkienmobs:camp_keeper";
+
+    private static final Map<UUID, Site> SITES = new HashMap<>();
+    private static final Sites NO_SERVER = new Sites(false);
+
+    /**
+     * One player's site: what is being built, where it was chosen, and how far along it is. The centre
+     * is the middle of the building once it is standing, and the spot that was written down before
+     * that, so a distance to it always means the same thing.
+     */
+    public record Site(UUID player, ResourceKey<Level> dimension, BlockPos centre, String structure,
+                       boolean keeper, boolean built, boolean found) {
+        static final Codec<Site> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                UUIDUtil.CODEC.fieldOf("player").forGetter(Site::player),
+                ResourceKey.codec(Registries.DIMENSION).fieldOf("dimension").forGetter(Site::dimension),
+                BlockPos.CODEC.fieldOf("centre").forGetter(Site::centre),
+                Codec.STRING.fieldOf("structure").forGetter(Site::structure),
+                Codec.BOOL.optionalFieldOf("keeper", false).forGetter(Site::keeper),
+                Codec.BOOL.optionalFieldOf("built", false).forGetter(Site::built),
+                Codec.BOOL.optionalFieldOf("found", false).forGetter(Site::found)
+        ).apply(instance, Site::new));
+
+        Site builtAt(BlockPos middle) {
+            return new Site(player, dimension, middle, structure, keeper, true, found);
+        }
+
+        /** The same site, noted as walked into. Named apart from the accessor it shadows. */
+        Site markedFound() {
+            return new Site(player, dimension, centre, structure, keeper, built, true);
+        }
+    }
+
+    public static final Codec<Sites> CODEC = Site.CODEC.listOf().xmap(Sites::from, Sites::toList);
+
+    public static final SavedDataType<Sites> TYPE = new SavedDataType<>(
+            Identifier.fromNamespaceAndPath("tolkienmobs", SAVE_DATA_NAME), Sites::new, CODEC);
+
+    /** A world with no site file starts with nothing built, and forgets whatever the last world built. */
+    private Sites() {
+        this(true);
+    }
+
+    /** A stand-in for a level with no server behind it, which neither reads nor clears anything. */
+    private Sites(boolean fresh) {
+        super();
+        if (fresh) SITES.clear();
+    }
+
+    // ---- choosing the ground ----
+
+    /**
+     * Chooses where this player's structure will stand. It is picked in the direction they are facing
+     * rather than at random, so a player who takes a page and walks on walks toward it.
+     *
+     * @param structure the template to build, as its own id, as in {@code tolkienmobs:wild_tent}
+     * @param keeper    whether to stand one of the mod's folk at it once it is built, which a camp wants
+     *                  and an arena does not
+     * @return whether a spot could be written down at all
+     */
+    public static boolean plan(ServerPlayer player, String structure, boolean keeper) {
+        if (!(player.level() instanceof ServerLevel level)) return false;
+        Sites store = instance(level);
+        Site existing = SITES.get(player.getUUID());
+        // A second page to a structure the player has not reached yet is the same ground: a quest in
+        // pieces sends them on to what they are already walking toward rather than pitching a rival
+        // beside it. Once they have found one, a new page is a new place.
+        if (existing != null && !existing.found() && existing.structure().equals(structure)
+                && level.dimension().equals(existing.dimension())) {
+            return true;
+        }
+        RandomSource random = level.getRandom();
+        Direction facing = player.getDirection();
+        Direction across = facing.getClockWise();
+        int reach = PITCH_MIN + random.nextInt(PITCH_SPREAD);
+        int side = random.nextInt(PITCH_ACROSS * 2 + 1) - PITCH_ACROSS;
+        BlockPos centre = player.blockPosition().offset(
+                facing.getStepX() * reach + across.getStepX() * side,
+                0,
+                facing.getStepZ() * reach + across.getStepZ() * side);
+        SITES.put(player.getUUID(), new Site(player.getUUID(), level.dimension(), centre, structure,
+                keeper, false, false));
+        store.setDirty();
+        return true;
+    }
+
+    /** Where this player's site is, or null when they have not been sent to one. */
+    @Nullable
+    public static Site siteOf(ServerPlayer player) {
+        instance(player.level());
+        return SITES.get(player.getUUID());
+    }
+
+    /** Whether the player is standing in the structure they were sent to find. */
+    public static boolean reached(ServerPlayer player) {
+        Site site = siteOf(player);
+        if (site == null || !site.built()) return false;
+        if (!player.level().dimension().equals(site.dimension())) return false;
+        return away(player, site) <= foundReach(site);
+    }
+
+    /**
+     * Looks at where the player is, builds their site once they are close enough for the chunk to be
+     * loaded, and tells them when they have walked into it. Called from the same clock that names the
+     * ground they are walking over.
+     */
+    public static void tick(ServerPlayer player) {
+        Site site = siteOf(player);
+        if (site == null) return;
+        if (!player.level().dimension().equals(site.dimension())) return;
+        double away = away(player, site);
+        if (!site.built()) {
+            if (away <= BUILD_REACH) build(player, site);
+            return;
+        }
+        if (site.found() || away > foundReach(site)) return;
+        if (!(player.level() instanceof ServerLevel level)) return;
+        SITES.put(player.getUUID(), site.markedFound());
+        instance(level).setDirty();
+        player.sendSystemMessage(keeperNearby(player, site)
+                ? Component.translatable("quest.tolkienmobs.site.keeper", keeperName(player))
+                        .withStyle(ChatFormatting.GOLD)
+                : Component.translatable("quest.tolkienmobs.site.found").withStyle(ChatFormatting.GOLD));
+    }
+
+    /**
+     * Builds it: the template on tested ground, and the body at it if the site asked for one. A template
+     * that is not in the pack, or a footprint that no ground nearby will take, leaves the site unbuilt
+     * rather than half-built, so the next look can try again.
+     */
+    private static void build(ServerPlayer player, Site site) {
+        if (!(player.level() instanceof ServerLevel level)) return;
+        if (!level.hasChunkAt(site.centre())) return;
+        Identifier id = Identifier.tryParse(site.structure());
+        if (id == null) return;
+        StructureTemplate template = level.getStructureManager().get(id).orElse(null);
+        if (template == null) return;
+        Vec3i size = template.getSize();
+        if (size.getX() <= 0 || size.getZ() <= 0) return;
+        BlockPos corner = locate(level, site.centre(), size.getX(), size.getZ());
+        if (corner == null) return;
+
+        template.placeInWorld(level, corner, corner, new StructurePlaceSettings(), level.getRandom(), 2);
+        if (site.keeper()) standKeeper(level, corner, size);
+        SITES.put(player.getUUID(), site.builtAt(corner.offset(size.getX() / 2, 0, size.getZ() / 2)));
+        instance(level).setDirty();
+    }
+
+    /**
+     * The nearest ground to the written spot that will take a building of this size, or null when none
+     * of it will. The rings are tried nearest first, and the step between them grows with the building,
+     * so a castle is not searched for at tent-sized intervals.
+     */
+    @Nullable
+    private static BlockPos locate(ServerLevel level, BlockPos written, int wide, int deep) {
+        int step = Math.max(4, Math.max(wide, deep) / 4);
+        for (int ring = 0; ring <= SEARCH_RINGS; ring++) {
+            for (int dx = -ring; dx <= ring; dx++) {
+                for (int dz = -ring; dz <= ring; dz++) {
+                    if (Math.max(Math.abs(dx), Math.abs(dz)) != ring) continue;
+                    BlockPos site = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                            written.offset(dx * step, 0, dz * step));
+                    if (!level.getFluidState(site).isEmpty()) continue;
+                    if (!level.getBlockState(site.above()).isAir()) continue;
+                    if (footprintFits(level, site, wide, deep)) return site;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Whether the ground will take the building lying where it is written: every column of its own
+     * footprint within the tolerance of the site's height, over solid ground, with no water standing in
+     * any of them. Large buildings are sampled on a stride, since a castle is thousands of columns and
+     * the ground under one is not going to change between two adjacent ones in any way that matters.
+     */
+    private static boolean footprintFits(ServerLevel level, BlockPos site, int wide, int deep) {
+        int drop = dropAllowed(wide, deep);
+        int stride = Math.max(1, Math.max(wide, deep) / 24);
+        for (int dx = 0; dx < wide; dx += stride) {
+            for (int dz = 0; dz < deep; dz += stride) {
+                int x = site.getX() + dx;
+                int z = site.getZ() + dz;
+                int height = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
+                if (Math.abs(height - site.getY()) > drop) return false;
+                if (!level.getBlockState(new BlockPos(x, height - 1, z)).isSolid()) return false;
+                if (!level.getFluidState(new BlockPos(x, height, z)).isEmpty()) return false;
+            }
+        }
+        return true;
+    }
+
+    /** How much rise and fall a building will still sit on: two blocks, widened by its own size. */
+    private static int dropAllowed(int wide, int deep) {
+        return Math.max(DROP_MIN, Math.max(wide, deep) / 8);
+    }
+
+    /** How close to the middle of a building counts as standing in it, which grows with the building. */
+    private static double foundReach(Site site) {
+        return 12.0D;
+    }
+
+    /**
+     * Puts somebody at the fire. He is an ordinary body of his folk with a name and a tag, not a giver:
+     * a camp is a place a player is sent to, and the man minding it is what makes it one rather than
+     * what makes it another bench to take work from.
+     */
+    private static void standKeeper(ServerLevel level, BlockPos corner, Vec3i size) {
+        Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
+        if (!(entity instanceof Mob keeper)) return;
+        BlockPos stand = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                corner.offset(size.getX() / 2, 0, size.getZ() + 2));
+        keeper.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D,
+                level.getRandom().nextFloat() * 360.0F, 0.0F);
+        keeper.setPersistenceRequired();
+        keeper.addTag(KEEPER_TAG);
+        keeper.setCustomName(QuestPool.giverName(level.getRandom()));
+        keeper.setCustomNameVisible(true);
+        level.addFreshEntity(keeper);
+    }
+
+    /** Whether one of the mod's folk is standing within sight of the player, which a camp always has. */
+    private static boolean keeperNearby(ServerPlayer player, Site site) {
+        return !keeperName(player).getString().isEmpty();
+    }
+
+    /** The keeper's name, if one is near enough to be seen. */
+    private static Component keeperName(ServerPlayer player) {
+        var found = player.level().getEntities(player, player.getBoundingBox().inflate(BUILD_REACH),
+                entity -> entity.entityTags().contains(KEEPER_TAG));
+        return found.isEmpty() ? Component.empty() : found.getFirst().getName();
+    }
+
+    /**
+     * How far the player is from the middle of the building, across the ground. The middle is where the
+     * fire is in a camp and where the floor of an arena is in an arena - a player who has walked up to
+     * the open end of a tent is at the tent, and should not have to reach its far corner.
+     */
+    private static double away(ServerPlayer player, Site site) {
+        double dx = player.getX() - (site.centre().getX() + 0.5D);
+        double dz = player.getZ() - (site.centre().getZ() + 0.5D);
+        return Math.sqrt(dx * dx + dz * dz);
+    }
+
+    // ---- plumbing ----
+
+    private static Sites instance(Level level) {
+        if (level instanceof ServerLevel serverLevel && serverLevel.getServer() != null) {
+            ServerLevel overworld = serverLevel.getServer().getLevel(Level.OVERWORLD);
+            if (overworld != null) return overworld.getDataStorage().computeIfAbsent(TYPE);
+        }
+        return NO_SERVER;
+    }
+
+    private static Sites from(List<Site> sites) {
+        SITES.clear();
+        for (Site site : sites) {
+            SITES.put(site.player(), site);
+        }
+        // Read without clearing: the map was just filled from the file.
+        return new Sites(false);
+    }
+
+    private List<Site> toList() {
+        return new ArrayList<>(SITES.values());
+    }
+}
