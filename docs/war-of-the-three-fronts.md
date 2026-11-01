@@ -461,6 +461,16 @@ longer one - with a line that says the looking is over. It is the same courtesy 
 pages really want - a barrow cut into the world and the wights coming out of it is still owed - but it
 is the difference between an errand and a goose chase.
 
+**What the war is worth in courage.** The campaign is the ladder's own climb, and it used to pay a
+deed a page - the same as a farmer's errand - so a player could carry three fronts to the end and
+still be the frightened one the ladder starts with. A front's pages pay courage beside their standing
+now, and the price rises along the line: two deeds for the first muster, four for the second, seven
+for the third, because the page that sends a player to their own country's barrows or sand is not a
+body count. Three fronts come to thirty-nine deeds, forty-eight with the nine the hand-ins already
+pay, which is **stouthearted** - the terror still slows, and no longer blinds - with the fearless rung
+still owed, which is where the arena act wants it. The Rider needs no figure of his own: felling one
+of the Nine already pays five deeds, and the page asks for him twice.
+
 **What killing him does.** The page asks for him twice, because one fall is a fight and two is the
 story. The first meeting is the one the page promised; he goes down normally - drops, death message
 and all - and the campaign sees the page is still carried and stands him up again a ride ahead, with a

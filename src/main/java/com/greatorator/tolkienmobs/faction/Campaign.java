@@ -61,40 +61,46 @@ public final class Campaign extends SavedData {
      * line - a stage past its end is a front with nothing left to hand over - so
      * writing one more page here is all the campaign needs to go on, and a front has as many pages as
      * this list is long.
+     * <p>
+     * The courage a page pays rises along the line, from the first muster to the front's own errand:
+     * the third page is that country's business rather than a rival's soldiers, and it is worth
+     * what the walk to the barrows or the sand is worth.
      */
     private static final Map<Alliance, List<Page>> PAGE_LINES = Map.of(
             Alliance.WEST, List.of(
-                    new Page(Quest.Kind.FACTION, "", 6, 60,
+                    new Page(Quest.Kind.FACTION, "", 6, 60, 2,
                             "campaign.tolkienmobs.page.muster", "campaign.tolkienmobs.page.muster.place"),
-                    new Page(Quest.Kind.FACTION, "", 12, 120,
+                    new Page(Quest.Kind.FACTION, "", 12, 120, 4,
                             "campaign.tolkienmobs.page.southroad", "campaign.tolkienmobs.page.southroad.place"),
-                    new Page(Quest.Kind.HUNT, "tolkienmobs:entityttmbarrow", 2, 150,
+                    new Page(Quest.Kind.HUNT, "tolkienmobs:entityttmbarrow", 2, 150, 7,
                             "campaign.tolkienmobs.page.keeping", "campaign.tolkienmobs.page.keeping.place")),
             Alliance.EAST, List.of(
-                    new Page(Quest.Kind.FACTION, "", 6, 60,
+                    new Page(Quest.Kind.FACTION, "", 6, 60, 2,
                             "campaign.tolkienmobs.page.marches", "campaign.tolkienmobs.page.marches.place"),
-                    new Page(Quest.Kind.FACTION, "", 12, 120,
+                    new Page(Quest.Kind.FACTION, "", 12, 120, 4,
                             "campaign.tolkienmobs.page.levy", "campaign.tolkienmobs.page.levy.place"),
-                    new Page(Quest.Kind.FETCH, "tolkienmobs:item_scroll", 1, 0,
+                    new Page(Quest.Kind.FETCH, "tolkienmobs:item_scroll", 1, 0, 7,
                             "campaign.tolkienmobs.page.steward", "campaign.tolkienmobs.page.steward.place")),
             Alliance.HARAD, List.of(
-                    new Page(Quest.Kind.FACTION, "", 6, 60,
+                    new Page(Quest.Kind.FACTION, "", 6, 60, 2,
                             "campaign.tolkienmobs.page.sun", "campaign.tolkienmobs.page.sun.place"),
-                    new Page(Quest.Kind.FACTION, "", 12, 120,
+                    new Page(Quest.Kind.FACTION, "", 12, 120, 4,
                             "campaign.tolkienmobs.page.ford", "campaign.tolkienmobs.page.ford.place"),
-                    new Page(Quest.Kind.HUNT, "tolkienmobs:entityttmmumakil", 1, 150,
+                    new Page(Quest.Kind.HUNT, "tolkienmobs:entityttmmumakil", 1, 150, 7,
                             "campaign.tolkienmobs.page.mumak", "campaign.tolkienmobs.page.mumak.place"))
     );
 
     /**
-     * One page of a front's line: what it asks of the player, what the country pays for it, and the two
-     * things that say what the step <em>is</em> - its name, and the place it happens in.
+     * One page of a front's line: what it asks of the player, what the country pays for it - standing,
+     * and courage, which is the ladder this whole mod is climbed with - and the two things that say
+     * what the step <em>is</em>: its name, and the place it happens in.
      * <p>
      * Both are translation keys rather than words, so a page is read in its reader's language, and both
      * are blank on a page that has no name of its own: the book then falls back to the objective alone
      * rather than printing an empty heading.
      */
-    private record Page(Quest.Kind kind, String target, int goal, int standing, String title, String place) {
+    private record Page(Quest.Kind kind, String target, int goal, int standing, int courage,
+                        String title, String place) {
     }
 
     /** How many pages a front has. */
@@ -570,6 +576,14 @@ public final class Campaign extends SavedData {
         for (Alliance alliance : Alliance.values()) {
             Front front = row[alliance.ordinal()];
             if (!sameErrand(front.handed(), quest)) continue;
+            // A front's page is worth courage as well as standing: the ladder the campaign is built
+            // on is climbed by walking the war, and a player who carries three fronts to the end is
+            // not the frightened one they started as. The Rider's page needs no figure of its own -
+            // felling one of the Nine already pays a deed, and his page asks for him twice.
+            List<Page> line = PAGE_LINES.get(alliance);
+            if (front.stage() < line.size()) {
+                CourageLedger.add(player, line.get(front.stage()).courage());
+            }
             row[alliance.ordinal()] = new Front(front.stage() + 1, null);
             store(player).setDirty();
             sync(player);
