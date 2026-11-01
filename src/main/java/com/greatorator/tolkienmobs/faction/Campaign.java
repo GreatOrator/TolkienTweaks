@@ -1283,7 +1283,9 @@ public final class Campaign extends SavedData {
             BlockPos stand = floorOf(level,
                     valley.centre().offset(VALLEY_PATHS[i][0], 0, VALLEY_PATHS[i][1]));
             if (stand == null) continue;
-            Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
+            // The pack's own Elves, not the human body the named Elves of the line are stood in: these
+            // six are a people going about a valley and should read as Elves at a glance.
+            Entity entity = TolkienEntities.ENTITY_TTM_ELVES.get().create(level, EntitySpawnReason.EVENT);
             if (!(entity instanceof Mob elf)) continue;
             elf.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D,
                     level.getRandom().nextFloat() * 360.0F, 0.0F);
