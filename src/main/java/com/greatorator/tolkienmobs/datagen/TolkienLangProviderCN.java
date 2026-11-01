@@ -969,7 +969,9 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("campaign.tolkienmobs.page.ford.place", "哈尔能河的渡口");
         this.add("campaign.tolkienmobs.page.rider", "戒灵之言");
         this.add("campaign.tolkienmobs.page.rider.place", "他选择现身之处");
-        this.add("campaign.tolkienmobs.witchking.rising", "城堡里有东西注意到了你。");
+        this.add("campaign.tolkienmobs.witchking.rising", "斗场里有东西注意到了你。");
+        this.add("campaign.tolkienmobs.witchking.guarded", "三个戒灵从沙里站起身来，挡在你与王冠之间：两个你见过，一个你没有。");
+        this.add("campaign.tolkienmobs.witchking.shielded", "只要他的守卫还站着，王冠就不会倒下。");
         this.add("arda.tolkienmobs.country.frozen_sea", "冰封之海");
         this.add("arda.tolkienmobs.country.temperate_sea", "远海");
         this.add("arda.tolkienmobs.country.warm_sea", "暖海");
@@ -1019,7 +1021,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("quest.tolkienmobs.bearing.north_west", "西北");
         this.add("quest.tolkienmobs.quarry.road", "他们在前面的路上等着:%s。");
         this.add("campaign.tolkienmobs.page.witchking.closing", "王冠并不在它落下的地方。这场战争无论为了什么，都不是三国对自己说的那件事，而厅堂还会继续发问。");
-        this.add("campaign.tolkienmobs.page.witchking.place", "黑冠之下的厅堂");
+        this.add("campaign.tolkienmobs.page.witchking.place", "黑冠之下的沙场");
         this.add("campaign.tolkienmobs.page.witchking", "城堡里等着的东西");
         this.add("campaign.tolkienmobs.page.castle.place", "今早还不存在的一座城堡");
         this.add("campaign.tolkienmobs.page.castle", "这场战争立起来的城堡");

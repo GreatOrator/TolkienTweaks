@@ -969,7 +969,9 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.page.ford.place", "the fords of the Harnen");
         this.add("campaign.tolkienmobs.page.rider", "The Rider's Word");
         this.add("campaign.tolkienmobs.page.rider.place", "wherever he chooses to be met");
-        this.add("campaign.tolkienmobs.witchking.rising", "Something in the castle has noticed you.");
+        this.add("campaign.tolkienmobs.witchking.rising", "Something on the sand has noticed you.");
+        this.add("campaign.tolkienmobs.witchking.guarded", "Three of the Nine come up out of the sand between you and the crown: two you have met, and one you have not.");
+        this.add("campaign.tolkienmobs.witchking.shielded", "The crown does not fall while his keepers stand.");
         this.add("arda.tolkienmobs.country.frozen_sea", "the frozen sea");
         this.add("arda.tolkienmobs.country.temperate_sea", "the wide sea");
         this.add("arda.tolkienmobs.country.warm_sea", "the warm sea");
@@ -1019,7 +1021,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("quest.tolkienmobs.bearing.north_west", "north-west");
         this.add("quest.tolkienmobs.quarry.road", "They are waiting on the road ahead: %s.");
         this.add("campaign.tolkienmobs.page.witchking.closing", "The crown was not on the ground where it fell. Whatever the war was for, it was never the thing the three countries told themselves it was, and the halls will go on asking.");
-        this.add("campaign.tolkienmobs.page.witchking.place", "the hall under the black crown");
+        this.add("campaign.tolkienmobs.page.witchking.place", "the sand under the black crown");
         this.add("campaign.tolkienmobs.page.witchking", "What waits in the castle");
         this.add("campaign.tolkienmobs.page.castle.place", "a castle that was not there this morning");
         this.add("campaign.tolkienmobs.page.castle", "The castle the war raised");

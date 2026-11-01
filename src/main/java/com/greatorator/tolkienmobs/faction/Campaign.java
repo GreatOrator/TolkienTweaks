@@ -149,9 +149,9 @@ public final class Campaign extends SavedData {
     private static final String RIDER_TITLE = "campaign.tolkienmobs.page.rider";
     private static final String RIDER_PLACE = "campaign.tolkienmobs.page.rider.place";
     /**
-     * How many pages the campaign's own slot walks through: the Rider, the castle, what waits in it,
-     * and the arena the war leaves standing. The stage is what the client is told, so a herald's mark
-     * stays up until the last of them is paid.
+     * How many pages the campaign's own slot walks through: the Rider, the castle, the arena the war
+     * raises, and what waits in it. The stage is what the client is told, so a herald's mark stays up
+     * until the last of them is paid.
      */
     private static final int FINALE_STAGES = 4;
     /** Where each last act happens, what it pays, and what the book calls it. */
@@ -180,14 +180,31 @@ public final class Campaign extends SavedData {
     /** How far up a castle is searched for room to stand a body. */
     private static final int WITCHKING_HEADROOM = 24;
     /**
-     * How far from the middle of a building a roofed room is looked for, in blocks, how high a ceiling
-     * may be over a body's head and still count as one, and how far a wall may stand from it. A hall
-     * behind the gate is found by the first, a courtyard is passed over because no roof is within the
-     * second, and a doorway is passed over because nothing stands within the third.
+     * The tag the three keepers wear, how many of them there are, and how far out from the middle of
+     * the floor they stand. The ring is walked in a circle rather than laid out by hand, so the crown
+     * is in the middle of it wherever the arena's own walls happen to be.
      */
-    private static final int ROOM_REACH = 24;
-    private static final int ROOM_CEILING = 6;
-    private static final int ROOM_WALL = 3;
+    private static final String GUARD_TAG = "tolkienmobs:campaign_guard";
+    private static final int GUARD_COUNT = 3;
+    private static final int GUARD_RING = 8;
+    /** How near the king a keeper still counts as standing over him, in blocks. */
+    private static final double GUARD_REACH = 48.0D;
+    /**
+     * How close a player has to be to the arena for the crown to come up in it, in blocks. A body added
+     * to a chunk that is not loaded is dropped without a word, and a ring stood up while the player is
+     * in another country is a ring nobody arrives at - the page reads better as something the sand does
+     * when they walk onto it.
+     */
+    private static final double WITCHKING_REACH = 128.0D;
+    /**
+     * How far up and down from the middle of a building's floor a place to stand a body is looked for.
+     * An arena is laid on its own sand, so this only ever covers a step or a threshold.
+     */
+    private static final int FLOOR_UP = 12;
+    private static final int FLOOR_DOWN = 4;
+    /** How often the crown will explain why nothing is landing, in ticks, and when it last did. */
+    private static final int SHIELD_SAY_INTERVAL = 60;
+    private static final Map<UUID, Long> SHIELD_SAID = new HashMap<>();
     /**
      * The pages whose prose has been written into their talk keys, and so are read aloud rather than
      * summarised when a herald hands one over. One, for now: the West's first muster, which is where
@@ -358,8 +375,8 @@ public final class Campaign extends SavedData {
     public static Component clientFinaleTitle() {
         return named(switch (clientRider) {
             case 1 -> CASTLE_TITLE;
-            case 2 -> WITCHKING_TITLE;
-            case 3 -> ARENA_TITLE;
+            case 2 -> ARENA_TITLE;
+            case 3 -> WITCHKING_TITLE;
             default -> RIDER_TITLE;
         });
     }
@@ -367,8 +384,8 @@ public final class Campaign extends SavedData {
     public static Component clientFinalePlace() {
         return named(switch (clientRider) {
             case 1 -> CASTLE_PLACE;
-            case 2 -> WITCHKING_PLACE;
-            case 3 -> ARENA_PLACE;
+            case 2 -> ARENA_PLACE;
+            case 3 -> WITCHKING_PLACE;
             default -> RIDER_PLACE;
         });
     }
@@ -435,8 +452,8 @@ public final class Campaign extends SavedData {
         return switch (row[RIDER_SLOT].stage()) {
             case 0 -> riderPage();
             case 1 -> castlePage();
-            case 2 -> witchKingPage();
-            case 3 -> arenaPage();
+            case 2 -> arenaPage();
+            case 3 -> witchKingPage();
             default -> null;
         };
     }
@@ -473,8 +490,13 @@ public final class Campaign extends SavedData {
     }
 
     /**
-     * What is waiting in it. Asked of the registry for the same reason the Rider is: a page naming a
-     * boss the pack does not have can never be finished.
+     * What is waiting on the sand. He is not alone and never was meant to be: three of the Nine stand
+     * round him at the edge of the ring, two the player has met before and one they have not, and while
+     * one of them still stands nothing lands on the crown at all - so the page asks for four bodies and
+     * not for one, and the last of them is the one it was written about.
+     * <p>
+     * Asked of the registry for the same reason the Rider is: a page naming a boss the pack does not
+     * have can never be finished.
      */
     private static Quest witchKingPage() {
         return new Quest(Quest.Kind.HUNT, witchKingId(), 1, 0, "", WITCHKING_STANDING, List.of(),
@@ -492,9 +514,11 @@ public final class Campaign extends SavedData {
      * the one thing a campaign that ends on a kill has never had a way to say. It is a walk like the
      * hilltop and the castle before it, settled by standing in it, so nobody places anything by hand.
      * <p>
-     * It comes after the Witch-king rather than beside the castle, because a player keeps one site at a
-     * time: the fortress is built where the map puts it, and only once it has been walked into and its
-     * master felled is the next ground surveyed.
+     * It comes between the castle and the crown, because the sand is where the crown is fought for: the
+     * arena is raised and walked into first, and only then does the page that names him put him in the
+     * middle of it. A player keeps one site at a time, so the order is also what makes it possible - the
+     * fortress is built where the map puts it, and the arena is surveyed once the fortress has been
+     * walked into.
      */
     private static Quest arenaPage() {
         return new Quest(Quest.Kind.LOCATION, ARENA_TARGET, 1, 0, "", 0, List.of(),
@@ -717,21 +741,30 @@ public final class Campaign extends SavedData {
     }
 
     /**
-     * Stands the Witch-king up in the castle the campaign raised, once the player is carrying his page
-     * and the castle is standing. He is not put on the road ahead of the player the way lesser quarry
-     * is: the page that names him is taken at a bench, and he belongs in the building rather than beside
-     * the bench. What keeps a second one from being stood up is the tag, so a reloaded world or a player
-     * who walked away finds the same one waiting rather than a fresh one every look.
+     * Stands the Witch-king up in the middle of the arena the campaign raised, once the player is
+     * carrying his page and the sand is standing, and stands three of the Nine round him.
+     * <p>
+     * The arena and nothing else: a page taken while the player's own site is still the castle waits
+     * rather than standing him in a citadel, because the ground the crown is fought on is the ground
+     * the war raised for it. He is not put on the road ahead of the player the way lesser quarry is -
+     * the page that names him is taken at a bench, and he belongs in the ring. What keeps a second one
+     * from being stood up is the tag, so a reloaded world or a player who walked away finds the same
+     * one waiting rather than a fresh one every look; his keepers are stood once with him and never
+     * topped up, because a keeper who falls has been dealt with.
      */
     private static void keepWitchKing(ServerPlayer player) {
         if (carriedWitchKingPage(player) == null) return;
         if (!(player.level() instanceof ServerLevel level)) return;
         Sites.Site site = Sites.siteOf(player);
         if (site == null || !site.built()) return;
-        // The castle a player is standing in is not necessarily the castle in the world: a site is
+        if (!Sites.BOSS_ARENA.equals(site.structure())) return;
+        // Nothing is stood up in ground nobody is near: the arena has to be in front of the player for
+        // the crown to be met in it, and a chunk that is not loaded would drop the body that stood there.
+        if (site.centre().distToCenterSqr(player.position()) > WITCHKING_REACH * WITCHKING_REACH) return;
+        // The arena a player is standing in is not necessarily the arena in the world: a site is
         // recorded against the dimension it was raised in, and only built in that one.
         if (level.dimension().equals(site.dimension()) && witchKingLiving(level, site.centre())) return;
-        BlockPos stand = standingRoom(level, site.centre());
+        BlockPos stand = floorOf(level, site.centre());
         if (stand == null) return;
         Entity entity = TolkienEntities.ENTITY_TTM_WITCHKING.get().create(level, EntitySpawnReason.EVENT);
         if (!(entity instanceof Mob king)) return;
@@ -740,7 +773,57 @@ public final class Campaign extends SavedData {
         king.setPersistenceRequired();
         king.addTag(WITCHKING_TAG);
         level.addFreshEntity(king);
+        standGuards(level, stand);
         player.sendSystemMessage(Component.translatable("campaign.tolkienmobs.witchking.rising")
+                .withStyle(ChatFormatting.DARK_PURPLE));
+        player.sendSystemMessage(Component.translatable("campaign.tolkienmobs.witchking.guarded")
+                .withStyle(ChatFormatting.DARK_PURPLE));
+    }
+
+    /**
+     * Stands three of the Nine round him, evenly on a ring of the arena's own floor. They are ordinary
+     * Ring-wraiths with a tag, which is all that makes them his: the tag is what the shield reads after
+     * a reload, and what keeps a keeper apart from any Nazgul a player meets on the road.
+     */
+    private static void standGuards(ServerLevel level, BlockPos middle) {
+        RandomSource random = level.getRandom();
+        for (int guard = 0; guard < GUARD_COUNT; guard++) {
+            double angle = Math.PI * 2.0D * guard / GUARD_COUNT;
+            int x = middle.getX() + (int) Math.round(Math.cos(angle) * GUARD_RING);
+            int z = middle.getZ() + (int) Math.round(Math.sin(angle) * GUARD_RING);
+            BlockPos stand = floorOf(level, new BlockPos(x, middle.getY(), z));
+            if (stand == null) continue;
+            Entity entity = TolkienEntities.ENTITY_TTM_NAZGUL.get().create(level, EntitySpawnReason.EVENT);
+            if (!(entity instanceof Mob keeper)) continue;
+            keeper.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D,
+                    random.nextFloat() * 360.0F, 0.0F);
+            keeper.setPersistenceRequired();
+            keeper.addTag(GUARD_TAG);
+            level.addFreshEntity(keeper);
+        }
+    }
+
+    /**
+     * Whether the crown is still behind its keepers. While one of the three stands within reach of him
+     * nothing lands on the Witch-king at all, which is what makes the last page ask for four bodies
+     * rather than for one: a player who ignores the ring is told why their blows are not counting.
+     * <p>
+     * The ring is read off the world rather than off a list kept here, because a reloaded world has no
+     * list and a keeper's tag survives being written down while a map does not.
+     */
+    public static boolean guarded(Entity king) {
+        if (!king.entityTags().contains(WITCHKING_TAG)) return false;
+        return !king.level().getEntities(king, king.getBoundingBox().inflate(GUARD_REACH),
+                found -> found.entityTags().contains(GUARD_TAG)).isEmpty();
+    }
+
+    /** Says why that blow did not land, once every few seconds rather than on every one of them. */
+    public static void tellGuarded(Entity king, ServerPlayer player) {
+        long now = king.level().getGameTime();
+        Long said = SHIELD_SAID.get(king.getUUID());
+        if (said != null && now - said < SHIELD_SAY_INTERVAL) return;
+        SHIELD_SAID.put(king.getUUID(), now);
+        player.sendSystemMessage(Component.translatable("campaign.tolkienmobs.witchking.shielded")
                 .withStyle(ChatFormatting.DARK_PURPLE));
     }
 
@@ -760,44 +843,15 @@ public final class Campaign extends SavedData {
     }
 
     /**
-     * A place in a building where a body would fit and be out of the weather: two blocks of air over
-     * solid ground, a ceiling over its head and a wall within reach.
-     * <p>
-     * The room is looked for across the building rather than only straight up its middle, because the
-     * middle of a keep at the height it was placed at is its courtyard, and the first column there that
-     * would take a body is a body standing in the open with the gate behind it. Rings are walked out
-     * from the middle so a hall behind the gate wins over a stairwell in a corner, and the walk is
-     * bounded, since it runs on the player's clock while his page is carried.
+     * The place at the middle of a piece of built ground where a body would stand: two blocks of air
+     * over its own floor, looked for a step up and a step down from the height the building was laid at
+     * so that a rim or a threshold is covered and a colonnade is not.
      */
     @Nullable
-    private static BlockPos standingRoom(ServerLevel level, BlockPos centre) {
-        for (int ring = 0; ring <= ROOM_REACH; ring += 2) {
-            for (int dx = -ring; dx <= ring; dx += 2) {
-                for (int dz = -ring; dz <= ring; dz += 2) {
-                    if (Math.max(Math.abs(dx), Math.abs(dz)) != ring) continue;
-                    BlockPos found = roofed(level, centre.offset(dx, 0, dz));
-                    if (found != null) return found;
-                }
-            }
-        }
-        // A building with no roofed room to it at all - one still going up, or one that is walls only -
-        // keeps the older answer: the first place a body fits, wherever that turns out to be.
-        for (int dy = 0; dy <= WITCHKING_HEADROOM; dy++) {
-            BlockPos feet = centre.above(dy);
+    private static BlockPos floorOf(ServerLevel level, BlockPos centre) {
+        for (int dy = -FLOOR_DOWN; dy <= FLOOR_UP; dy++) {
+            BlockPos feet = centre.offset(0, dy, 0);
             if (stands(level, feet)) return feet;
-        }
-        return null;
-    }
-
-    /** The lowest place in one column of a building where a body fits under a roof, or null. */
-    @Nullable
-    private static BlockPos roofed(ServerLevel level, BlockPos column) {
-        for (int dy = 0; dy <= WITCHKING_HEADROOM; dy++) {
-            BlockPos feet = column.above(dy);
-            if (!stands(level, feet)) continue;
-            if (!ceiling(level, feet)) continue;
-            if (!walled(level, feet)) continue;
-            return feet;
         }
         return null;
     }
@@ -806,30 +860,6 @@ public final class Campaign extends SavedData {
     private static boolean stands(ServerLevel level, BlockPos feet) {
         return level.getBlockState(feet).isAir() && level.getBlockState(feet.above()).isAir()
                 && level.getBlockState(feet.below()).isSolid();
-    }
-
-    /** Whether a roof stands over that spot within a room's height of it. */
-    private static boolean ceiling(ServerLevel level, BlockPos feet) {
-        for (int dy = 2; dy <= ROOM_CEILING; dy++) {
-            if (level.getBlockState(feet.above(dy)).isSolid()) return true;
-        }
-        return false;
-    }
-
-    /**
-     * Whether walls stand on two of the four sides within reach, which is the difference between a room
-     * and the middle of a courtyard that merely has something over part of it.
-     */
-    private static boolean walled(ServerLevel level, BlockPos feet) {
-        int sides = 0;
-        for (Direction side : Direction.Plane.HORIZONTAL) {
-            for (int step = 1; step <= ROOM_WALL; step++) {
-                if (!level.getBlockState(feet.relative(side, step)).isSolid()) continue;
-                sides++;
-                break;
-            }
-        }
-        return sides >= 2;
     }
 
     /** The campaign's own page if the player is carrying it and has not finished it yet. */
@@ -954,15 +984,14 @@ public final class Campaign extends SavedData {
         Front finale = row[RIDER_SLOT];
         if (!sameErrand(finale.handed(), quest)) return false;
         int next = finale.stage() + 1;
-        // Two of the last acts have words of their own: the crown's line is said in the castle it was
-        // found in and belongs to the Witch-king, and the arena says the last of the war. The Rider's
-        // own fall pays no courage - felling one of the Nine is already a deed, and his page asks for
-        // him twice - and the arena pays the rung the ladder has been holding back for it.
-        if (next == FINALE_STAGES - 1) {
+        // The war ends on the sand, so the last of it is said there: the crown's line first, then what
+        // the arena is now that the shouting is over. The courage the ladder has been holding back for
+        // the arena is paid with them; the Rider's own fall pays none, because felling one of the Nine
+        // is already a deed and his page asks for him twice.
+        if (next >= FINALE_STAGES) {
+            CourageLedger.add(player, ARENA_COURAGE);
             player.sendSystemMessage(Component.translatable(WITCHKING_CLOSING)
                     .withStyle(ChatFormatting.GOLD));
-        } else if (next >= FINALE_STAGES) {
-            CourageLedger.add(player, ARENA_COURAGE);
             player.sendSystemMessage(Component.translatable(ARENA_CLOSING)
                     .withStyle(ChatFormatting.GOLD));
         }
