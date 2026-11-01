@@ -263,6 +263,15 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
         return id.isEmpty() ? null : new Spot(id, BlockPos.ZERO, Places.DEFAULT_RADIUS);
     }
 
+    /**
+     * The named ground a page of the stone is to be held over, or an empty string when the page asks for
+     * caves instead. A page that names ground is one hold at one landmark; a page that names none is a
+     * search of the dark, and the two are asked for in different words.
+     */
+    public String namedGround() {
+        return target.startsWith("place:") ? target.substring("place:".length()) : "";
+    }
+
     /** The page of talk a dialogue page asks to be read, or null when it asks for a body instead. */
     @Nullable
     public String leaf() {
@@ -296,8 +305,10 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
             case DIALOGUE -> leaf() != null
                     ? Component.translatable("quest.tolkienmobs.read", targetName())
                     : Component.translatable("quest.tolkienmobs.speak", targetName());
-            case SURVEY -> Component.translatable("quest.tolkienmobs.survey",
-                    Component.literal(String.valueOf(goal)));
+            case SURVEY -> namedGround().isEmpty()
+                    ? Component.translatable("quest.tolkienmobs.survey",
+                            Component.literal(String.valueOf(goal)))
+                    : Component.translatable("quest.tolkienmobs.survey.place", targetName());
         };
     }
 
@@ -324,9 +335,11 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
                 String leaf = leaf();
                 yield leaf != null ? Component.translatable(leaf) : Component.literal(target);
             }
-            // The work is the stone, so the stone is what the page names - by the key its own name is
-            // drawn under, so a client reads it in its own language rather than in this one.
-            case SURVEY -> Component.translatable("item.tolkienmobs.item_beryl");
+            // A page that names ground is named by that ground; one that asks for caves is named by the
+            // stone, since what it is about is the thing in the player's hand.
+            case SURVEY -> namedGround().isEmpty()
+                    ? Component.translatable("item.tolkienmobs.item_beryl")
+                    : Component.translatable("place.tolkienmobs." + namedGround());
         };
     }
 
@@ -373,7 +386,9 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
                     ? Component.translatable("quest.tolkienmobs.summary.site")
                     : Component.translatable("quest.tolkienmobs.summary.reach", targetName());
             case DIALOGUE -> Component.translatable("quest.tolkienmobs.summary.dialogue");
-            case SURVEY -> Component.translatable("quest.tolkienmobs.summary.survey", targetName());
+            case SURVEY -> namedGround().isEmpty()
+                    ? Component.translatable("quest.tolkienmobs.summary.survey", targetName())
+                    : Component.translatable("quest.tolkienmobs.summary.survey.place", targetName());
         };
     }
 

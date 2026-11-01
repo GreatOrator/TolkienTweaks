@@ -79,16 +79,23 @@ public final class Campaign extends SavedData {
      * what the walk to the barrows or the sand is worth.
      */
     /**
-     * The stone's page, which is priced in caves rather than in bodies or in places walked to. The old
-     * campaign asked the beryl in caves, to see whether the Enemy had been in them; this is that question
-     * with the caves left to the world to make - any hollow with enough rock over its head is ground the
-     * stone will answer, one cave is one answer, and four of them finish the page. The distance is wide
-     * because two mouths of one cave system are still one cave.
+     * The stone's two askings, in the order the old campaign had them.
+     * <p>
+     * The first is one landmark: the beryl is held aloft at the Ford of Bruinen, the last ground anyone
+     * knows the missing Rider touched, and carried back to Glorfindel. The second is the search that
+     * follows it - caves, which in the old world were three named and pointed at, and here are any three
+     * with enough rock over their heads, asked in the deepest chamber of each because that is where a hurt
+     * thing would have gone to ground. One cave is one answer and the distance is wide, since two mouths
+     * of one system are still one cave.
      */
-    private static final int STONE_SPOTS = 4;
+    private static final String FORD_PLACE = "ford";
+    private static final String FORD_TARGET = Quest.placeTarget(FORD_PLACE);
+    private static final int STONE_CAVES = 3;
     private static final int STONE_APART = 64;
     /** How much world has to stand over a player's head before the stone agrees it is in a cave. */
     private static final int CAVE_COVER = 8;
+    /** And how much before it agrees it is in the deepest chamber rather than at the mouth of one. */
+    private static final int CAVE_DEEP = 16;
     /** How many cave readings are written. The cave's own blocks pick which, so a cave keeps its answer. */
     private static final int CAVE_READINGS = 5;
     /**
@@ -108,6 +115,8 @@ public final class Campaign extends SavedData {
     private static final String STONE_GIVEN = "campaign.tolkienmobs.beryl.given";
     private static final String STONE_RETURNED = "campaign.tolkienmobs.beryl.returned";
     private static final String STONE_DAYLIGHT = "campaign.tolkienmobs.beryl.daylight";
+    private static final String STONE_SHALLOW = "campaign.tolkienmobs.beryl.shallow";
+    private static final String STONE_ELSEWHERE = "campaign.tolkienmobs.beryl.elsewhere";
     private static final String STONE_SAME = "campaign.tolkienmobs.beryl.same";
     /** Where each player last held the stone up, and when, so one spot gets one question. */
     private static final Map<UUID, BlockPos> STONE_LAST = new HashMap<>();
@@ -127,11 +136,15 @@ public final class Campaign extends SavedData {
                     // at the end of the walk hands the next one.
                     new Page(Quest.Kind.LOCATION, SUMMON_TARGET, 1, 25, 4,
                             "campaign.tolkienmobs.page.summon", "campaign.tolkienmobs.page.summon.place", ""),
-                    // The one errand in the line whose subject is an object, and the only one counted in
-                    // ground rather than in bodies or in places arrived at. Written first as a page of talk,
-                    // it was finished by reading about a stone nobody was ever given.
-                    new Page(Quest.Kind.SURVEY, "", STONE_SPOTS, 20, 4,
+                    // The stone's first asking, and the one page of the line whose whole errand is a
+                    // single place: held aloft at the ford, and carried back to Glorfindel who asked for it.
+                    new Page(Quest.Kind.SURVEY, FORD_TARGET, 1, 20, 4,
                             "campaign.tolkienmobs.page.beryl", "campaign.tolkienmobs.page.beryl.place", ""),
+                    // Then the search of the dark, which is the part of the old campaign that could not be
+                    // carried over literally: three caves were named and pointed at, and here any three with
+                    // rock over their heads will do, asked at the bottom of each.
+                    new Page(Quest.Kind.SURVEY, "", STONE_CAVES, 25, 5,
+                            "campaign.tolkienmobs.page.caves", "campaign.tolkienmobs.page.caves.place", ""),
                     // The hilltop is raised rather than named. A place is a circle somebody has to stand
                     // in and declare; this is ground the campaign builds where the map puts it, so the page
                     // is settled by standing in the building and nobody has to place anything by hand.
@@ -284,7 +297,7 @@ public final class Campaign extends SavedData {
      * the campaign opens and where the script's argument for a conversation is made.
      */
     private static final Set<String> SPOKEN = Set.of("campaign.tolkienmobs.page.muster", "campaign.tolkienmobs.page.summon",
-            "campaign.tolkienmobs.page.beryl");
+            "campaign.tolkienmobs.page.beryl", "campaign.tolkienmobs.page.caves");
 
     private static final Map<UUID, Front[]> PROGRESS = new HashMap<>();
     /** What {@link #instance} answers with when there is no server to hold a file. */
@@ -630,18 +643,19 @@ public final class Campaign extends SavedData {
     }
 
     /**
-     * Holds the stone up, which is the only thing the beryl does.
+     * Holds the stone up, which is the only thing the beryl does, and the two askings it is put to are
+     * not the same shape.
      * <p>
-     * It wants rock over its head. The old campaign asked it in caves - whether the Enemy had been in
-     * them - and this is the same question with the caves left to the world: underground it answers the
-     * dark it is held in, and above ground it says so and gives nothing, because a stone that read the
-     * open air would read every road the player already walks.
+     * A page that names ground is one hold at one landmark - the ford, first - and the page is finished by
+     * standing there and holding it aloft, because the stone is a tracker and the ford is where the trail
+     * was last known to run. A page that names none is the search of the dark: it wants rock over its head,
+     * and the bottom of the cave rather than the mouth of it, since a thing that has been hurt goes as deep
+     * as it can. One cave is one answer, and a raise inside a walk of the last cave answered is the same
+     * cave asked twice and says so rather than counting.
      * <p>
-     * One cave is one answer. A raise inside a walk of the last cave answered is the same cave asked
-     * twice and says so rather than counting, which is what stops the page being finished beside one
-     * crack in the rock. Catalogue ground with an answer written still speaks above ground - that answer
-     * is the whole point of the place - but it is not the errand: the four that finish the page are four
-     * caves.
+     * Ground of the catalogue with an answer written still speaks wherever it is asked, above ground
+     * included: that answer is the whole point of the place, and a stone that went quiet at the ford
+     * because the sky was showing would be a stone that did not know what it had been lent for.
      */
     public static void raiseStone(ServerPlayer player) {
         if (!(player.level() instanceof ServerLevel level)) return;
@@ -651,11 +665,28 @@ public final class Campaign extends SavedData {
         STONE_RAISED.put(player.getUUID(), now);
         BlockPos here = player.blockPosition();
         var named = Places.readingAt(player);
-        if (!underRock(level, here)) {
+        String wanted = wantedGround(player);
+        if (!wanted.isEmpty()) {
+            // A page that names ground is held aloft there and nowhere else.
+            Places.Place inside = Places.at(player);
+            if (inside == null || !inside.id().equals(wanted)) {
+                player.sendSystemMessage(Component.translatable(STONE_ELSEWHERE,
+                        Component.translatable("place.tolkienmobs." + wanted)).withStyle(ChatFormatting.GRAY));
+                return;
+            }
+            player.sendSystemMessage(named != null ? named : caveReading(here));
+            QuestLedger.progressSurvey(player);
+            return;
+        }
+        if (!underRock(level, here, CAVE_COVER)) {
             // The place's own answer comes first where there is one: the stone remembers ground whether or
             // not the hand is somewhere it can be asked for anything new.
             if (named != null) player.sendSystemMessage(named);
             player.sendSystemMessage(Component.translatable(STONE_DAYLIGHT).withStyle(ChatFormatting.GRAY));
+            return;
+        }
+        if (!underRock(level, here, CAVE_DEEP)) {
+            player.sendSystemMessage(Component.translatable(STONE_SHALLOW).withStyle(ChatFormatting.GRAY));
             return;
         }
         BlockPos last = STONE_LAST.get(player.getUUID());
@@ -668,16 +699,28 @@ public final class Campaign extends SavedData {
         QuestLedger.progressSurvey(player);
     }
 
+    /** The ground the stone's current page has to be held over, or an empty string when it asks for caves. */
+    private static String wantedGround(ServerPlayer player) {
+        Quest stone = null;
+        for (Quest quest : QuestLedger.active(player)) {
+            if (asksForStone(quest)) {
+                stone = quest;
+                break;
+            }
+        }
+        return stone == null ? "" : stone.namedGround();
+    }
+
     /**
      * Whether enough of the world stands over a player's head for the stone to agree it is in a cave: no
-     * sky in sight and the ground's own height well above them. Both halves earn their keep - the first
-     * rules out standing in the open, and the second rules out a house, where the height over the floor
-     * is a roof rather than a mountain.
+     * sky in sight and the ground's own height above them by the given margin. Both halves earn their keep
+     * - the first rules out standing in the open, and the second rules out a house, where the height over
+     * the floor is a roof rather than a mountain.
      */
-    private static boolean underRock(ServerLevel level, BlockPos feet) {
+    private static boolean underRock(ServerLevel level, BlockPos feet, int cover) {
         if (level.canSeeSky(feet)) return false;
         int surface = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, feet.getX(), feet.getZ());
-        return surface >= feet.getY() + CAVE_COVER;
+        return surface >= feet.getY() + cover;
     }
 
     /** What the stone says in a cave: picked by the cave rather than by the player, so it says it again next time. */
@@ -699,8 +742,8 @@ public final class Campaign extends SavedData {
      */
     private static void keepGlorfindel(ServerPlayer player) {
         if (!(player.level() instanceof ServerLevel level)) return;
-        int stone = stoneStage();
-        if (stone < 0 || stage(player, Alliance.WEST) != stone) return;
+        Quest stone = page(player, Alliance.WEST);
+        if (stone == null || stone.kind() != Quest.Kind.SURVEY) return;
         Places.Place valley = Places.place(level, SUMMON_PLACE);
         if (valley == null || !valley.dimension().equals(level.dimension())) return;
         if (valley.centre().distToCenterSqr(player.position()) > GLORFINDEL_REACH * GLORFINDEL_REACH) return;
@@ -725,13 +768,14 @@ public final class Campaign extends SavedData {
         level.addFreshEntity(elf);
     }
 
-    /** Which step of the West's line the stone's work is, found by its shape rather than counted by hand. */
-    private static int stoneStage() {
-        List<Page> line = PAGE_LINES.get(Alliance.WEST);
-        for (int stage = 0; stage < line.size(); stage++) {
-            if (line.get(stage).kind() == Quest.Kind.SURVEY) return stage;
-        }
-        return -1;
+    /**
+     * Whether the stone has been asked everything it was lent for, which is the last of its pages and not
+     * the first: the ford is one asking and the caves are another, and a stone given back after the ford
+     * would leave the player searching caves with their hands empty.
+     */
+    private static boolean stonePaid(List<Page> line, int paid) {
+        if (paid >= line.size() || line.get(paid).kind() != Quest.Kind.SURVEY) return false;
+        return paid + 1 >= line.size() || line.get(paid + 1).kind() != Quest.Kind.SURVEY;
     }
 
     /** Takes the lent stone back out of the player's pack, one stone and no more. */
@@ -1415,7 +1459,7 @@ public final class Campaign extends SavedData {
                 CourageLedger.add(player, paid.courage());
                 // The stone goes back with the work it was lent for: an errand finished is the end of a
                 // loan rather than the beginning of a keepsake.
-                if (paid.kind() == Quest.Kind.SURVEY) takeStone(player);
+                if (stonePaid(line, front.stage())) takeStone(player);
                 // The page that ends a front has the front's last words on it, and this is where
                 // they are said: the front moves on the moment its last page is paid, so a line
                 // left to the next page would be spoken by a page that no longer exists.
