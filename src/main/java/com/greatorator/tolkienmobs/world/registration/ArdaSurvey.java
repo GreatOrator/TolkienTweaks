@@ -65,6 +65,19 @@ public final class ArdaSurvey {
     @Nullable
     public static Ground find(ServerLevel level, BlockPos near, Predicate<ArdaMap.Country> fits,
                               int wide, int deep, int salt, int away, int within) {
+        return find(level, near, fits, wide, deep, salt, away, within, spot -> true);
+    }
+
+    /**
+     * The same search, with a say over the ground it comes back with. A name that has to stand clear
+     * of the names already written refuses the spots that would crowd them and the spiral carries on
+     * to the next cell - which is the difference between a country's places and one place announced
+     * under three names.
+     */
+    @Nullable
+    public static Ground find(ServerLevel level, BlockPos near, Predicate<ArdaMap.Country> fits,
+                              int wide, int deep, int salt, int away, int within,
+                              Predicate<BlockPos> accept) {
         if (!(level.getChunkSource().getGenerator() instanceof ArdaChunkGenerator)) return null;
         int column = Math.floorDiv(near.getX(), ArdaMap.CELL) + ArdaMap.ORIGIN_COLUMN;
         int row = Math.floorDiv(near.getZ(), ArdaMap.CELL) + ArdaMap.ORIGIN_ROW;
@@ -80,7 +93,7 @@ public final class ArdaSurvey {
                     ArdaMap.Country country = ArdaMap.cellCountry(column + across, row + along);
                     if (!country.land() || !fits.test(country)) continue;
                     Ground ground = within(country, column + across, row + along, wide, deep, salt,
-                            near, away);
+                            near, away, accept);
                     if (ground != null) return ground;
                 }
             }
@@ -91,7 +104,8 @@ public final class ArdaSurvey {
     /** The first of one cell's fixed spots that will take the building, or null when none will. */
     @Nullable
     private static Ground within(ArdaMap.Country country, int column, int row,
-                                 int wide, int deep, int salt, BlockPos near, int away) {
+                                 int wide, int deep, int salt, BlockPos near, int away,
+                                 Predicate<BlockPos> accept) {
         int room = ArdaMap.CELL - MARGIN * 2 - Math.max(wide, deep);
         if (room <= 0) return null;
         int west = (column - ArdaMap.ORIGIN_COLUMN) * ArdaMap.CELL + MARGIN;
@@ -102,7 +116,7 @@ public final class ArdaSurvey {
             int z = north + Math.floorMod(mixed >>> 44, room);
             if (!clear(near, x + wide / 2, z + deep / 2, away)) continue;
             Ground ground = judge(country, x, z, wide, deep);
-            if (ground != null) return ground;
+            if (ground != null && accept.test(ground.centre())) return ground;
         }
         return null;
     }

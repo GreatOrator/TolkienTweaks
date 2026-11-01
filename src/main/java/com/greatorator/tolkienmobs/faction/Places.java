@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 /**
  * The world's named ground: what a place is called, where it has been set, and who has already been
@@ -75,6 +76,17 @@ public final class Places extends SavedData {
      * it asks the map for far less than a building does and is found far more often.
      */
     private static final int PLACE_GROUND = 5;
+    /**
+     * How far apart two names in the same world stand, in blocks: one cell of the map.
+     * <p>
+     * A country is a handful of cells, and every name in it is surveyed from the same anchor - the
+     * middle of its cells - so the first cell that takes a five-block circle takes it for every name
+     * in that country. Measured on the drawing, Rivendell, Elladan's camp and Barachen's fire all came
+     * back inside one Trollshaw cell, fifty to a hundred and twenty blocks apart: three places a
+     * player crosses in a minute, each announcing itself over the last. A name now refuses ground that
+     * would crowd a name already written, and the search moves on to the next cell.
+     */
+    private static final int PLACE_SPACING = ArdaMap.CELL;
     /** How often a player's feet are looked at. A circle thirty blocks across cannot be crossed in one. */
     private static final int CHECK_INTERVAL = 20;
     /**
@@ -151,6 +163,20 @@ public final class Places extends SavedData {
             "thorenhad", ArdaMap.Country.TROLLSHAWS,
             // His fire is south of the road through the same country, not wherever the page was taken.
             "barachen", ArdaMap.Country.TROLLSHAWS);
+
+    /**
+     * The cell of the drawing a name the maps pinpoint is asked for in, as {column, row}.
+     * <p>
+     * A country is six cells and a name is a walk, so the country alone is not enough to place one: the
+     * valley is at the north-western corner of the Trollshaws with the mountains behind it, Elladan's
+     * camp is a walk east of it, and Barachen's fire is south of the road below both. Asking for the
+     * country's middle put all three in one cell, and then in whichever cells the spacing rule could
+     * reach - which had Elladan's camp north-west of the valley it is supposed to be east of.
+     */
+    private static final Map<String, int[]> CANON_CELL = Map.of(
+            "rivendell", new int[]{18, 12},
+            "thorenhad", new int[]{19, 13},
+            "barachen", new int[]{18, 14});
 
     /**
      * One place as this world has it: which of the catalogue it is, the dimension it stands in, the
@@ -266,13 +292,40 @@ public final class Places extends SavedData {
         // books give a country is asked for in that country's own middle instead, so it lands in the part
         // of the map it belongs to rather than the part of the map the asker happens to be in.
         ArdaMap.Country home = CANON.get(id);
+        Predicate<BlockPos> apart = clearOfPlaces(level);
+        // A name the maps pinpoint is asked for its own cell first, and only a cell that will not take
+        // it falls back to the country-wide search - ground under a mountain is not ground a name can
+        // be written on, and a page that names one has to be completable.
+        int[] cell = home == null ? null : CANON_CELL.get(id);
+        if (cell != null) {
+            ArdaSurvey.Ground pinned = ArdaSurvey.find(level, ArdaMap.centreOf(cell[0], cell[1]),
+                    home::equals, PLACE_GROUND, PLACE_GROUND, id.hashCode(), 0, ArdaMap.CELL / 2, apart);
+            if (pinned != null) return set(level, id, pinned.centre(), radius);
+        }
         ArdaSurvey.Ground ground = home == null
                 ? ArdaSurvey.find(level, player.blockPosition(),
-                        ArdaMap.Country::land, PLACE_GROUND, PLACE_GROUND, id.hashCode(), 0, 0)
+                        ArdaMap.Country::land, PLACE_GROUND, PLACE_GROUND, id.hashCode(), 0, 0, apart)
                 : ArdaSurvey.find(level, ArdaMap.anchor(home), home::equals,
-                        PLACE_GROUND, PLACE_GROUND, id.hashCode(), 0, 0);
+                        PLACE_GROUND, PLACE_GROUND, id.hashCode(), 0, 0, apart);
         if (ground == null) return null;
         return set(level, id, ground.centre(), radius);
+    }
+
+    /**
+     * Ground that is {@link #PLACE_SPACING} away from every name this world has already written. Asked
+     * of the survey rather than of the answer, so a name that would crowd another sends the search on
+     * to the next cell instead of taking the first spot and being moved afterwards.
+     */
+    private static Predicate<BlockPos> clearOfPlaces(Level level) {
+        return spot -> {
+            for (Place place : PLACED.values()) {
+                if (!place.dimension().equals(level.dimension())) continue;
+                long dx = place.centre().getX() - (long) spot.getX();
+                long dz = place.centre().getZ() - (long) spot.getZ();
+                if (dx * dx + dz * dz < (long) PLACE_SPACING * PLACE_SPACING) return false;
+            }
+            return true;
+        };
     }
 
     /** Every place this world has set, in the catalogue's order. */

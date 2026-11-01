@@ -279,6 +279,19 @@ public final class ArdaMap {
     }
 
     /**
+     * The middle of one cell of the drawing, as a point in the world.
+     * <p>
+     * {@link #anchor} answers where a country is - the middle of all the cells it was drawn in - which
+     * is the right answer for a country and the wrong one for a place: three names in a country of six
+     * cells all survey from that one point and all come back in the cell it lands in. A name the maps
+     * pinpoint asks for its own cell instead, and this is how that cell is named in blocks.
+     */
+    public static BlockPos centreOf(int column, int row) {
+        return new BlockPos((column - ORIGIN_COLUMN) * CELL + CELL / 2, 0,
+                (row - ORIGIN_ROW) * CELL + CELL / 2);
+    }
+
+    /**
      * The drawn ground at a block coordinate, read off the four cells around it.
      *
      * <p>The height of the rock there is the four cells' heights blended with a smoothstep, so a

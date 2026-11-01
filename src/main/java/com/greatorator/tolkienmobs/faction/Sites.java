@@ -140,6 +140,19 @@ public final class Sites extends SavedData {
             BOSS_ARENA, ArdaMap.Country.ANGMAR,
             WOOD_RUIN, ArdaMap.Country.TROLLSHAWS);
     /**
+     * The cell of the drawing a landmark the books pinpoint is asked for in, as {column, row}.
+     * <p>
+     * The country alone cannot say where a small building stands in it: the ruin the rider is found at
+     * is fourteen blocks across, so the middle of the Trollshaws takes it just as happily as the
+     * channels south of the road do, and it came back in the anchor's own cell - a hundred and fifty
+     * blocks from Elladan's fire, at the camp the page sends the player to. The ruin is asked for a
+     * cell of its own now, and the country's middle remains the fallback for ground a building cannot
+     * stand on.
+     */
+    private static final Map<String, int[]> CANON_CELL = Map.of(
+            WOOD_RUIN, new int[]{19, 14});
+
+    /**
      * How far from its country's middle a landmark may drift, in blocks: two cells of the map. The spot
      * does not have to be the exact hill the books name - the world's own ground decides where a building
      * can stand - but it does have to be in that part of the country rather than anywhere the country
@@ -360,6 +373,12 @@ public final class Sites extends SavedData {
         if (home == null) {
             return ArdaSurvey.find(level, player.blockPosition(), countries(level, structure),
                     size.getX(), size.getZ(), structure.hashCode(), SITE_AWAY, 0);
+        }
+        int[] cell = CANON_CELL.get(structure);
+        if (cell != null) {
+            ArdaSurvey.Ground pinned = ArdaSurvey.find(level, ArdaMap.centreOf(cell[0], cell[1]),
+                    home::equals, size.getX(), size.getZ(), structure.hashCode(), 0, ArdaMap.CELL / 2);
+            if (pinned != null) return pinned;
         }
         BlockPos from = ArdaMap.anchor(home);
         // The landmark's own country first, so it stands in the country the books give it. A country
