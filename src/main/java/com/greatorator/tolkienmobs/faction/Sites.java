@@ -91,6 +91,13 @@ public final class Sites extends SavedData {
     /** The arena beneath the castle, the same campaign hand's other building, also never generated. */
     public static final String BOSS_ARENA = "tolkienmobs:key_structures/boss_arena";
     /**
+     * The troll cave the stone's cave page is asked in. The mod's own caves are a Mirkwood jigsaw, a
+     * country away from the road this line walks, so the campaign cuts its own and raises it ahead of the
+     * player rather than sending them to a cave the world generator never put there. Cut by
+     * {@code tools/make_troll_cave.py}: a crag with the inside taken out of it.
+     */
+    public static final String TROLL_CAVE = "tolkienmobs:key_structures/troll_cave";
+    /**
      * The country each landmark stands in, where the books put it rather than where the page was taken.
      * <p>
      * A site named here is surveyed from the middle of that country, so it is the same ground for every

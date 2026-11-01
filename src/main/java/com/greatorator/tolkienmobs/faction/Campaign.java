@@ -769,6 +769,32 @@ public final class Campaign extends SavedData {
     }
 
     /**
+     * Raises a troll cave ahead of the player while the cave page is the stone's asking in hand.
+     * <p>
+     * The old campaign named three caves on a map that was drawn by hand, and the pack's own caves are a
+     * Mirkwood jigsaw: a player carrying this page through Eriador could walk a country that has no cave
+     * in it at all, which is a page nobody can finish. So the campaign cuts its own, the way it raises the
+     * camp and the hilltop, and pitches it on the road rather than at a landmark's country: the cave is
+     * ground the page is walked to, so it belongs ahead of the player and not in the middle of Eriador.
+     * <p>
+     * It is pitched once. A second page to ground the player has not reached yet is the same ground, so
+     * this only asks when they have no site of their own - and the ford's asking names the ford, which is
+     * ground the map already has, so nothing is built for it.
+     */
+    private static void keepCaveOpen(ServerPlayer player) {
+        Quest stone = null;
+        for (Quest quest : QuestLedger.active(player)) {
+            if (asksForStone(quest)) {
+                stone = quest;
+                break;
+            }
+        }
+        if (stone == null || stone.kind() != Quest.Kind.SURVEY || !stone.namedGround().isEmpty()) return;
+        if (Sites.siteOf(player) != null) return;
+        Sites.plan(player, Sites.TROLL_CAVE, false);
+    }
+
+    /**
      * Whether the stone has been asked everything it was lent for, which is the last of its pages and not
      * the first: the ford is one asking and the caves are another, and a stone given back after the ford
      * would leave the player searching caves with their hands empty.
@@ -994,6 +1020,7 @@ public final class Campaign extends SavedData {
         keepQuarryComing(player);
         keepStoneInHand(player);
         keepGlorfindel(player);
+        keepCaveOpen(player);
         Quest page = carriedCampaignPage(player);
         if (page == null || page.complete()) {
             RIDER_CALLED.remove(player.getUUID());
