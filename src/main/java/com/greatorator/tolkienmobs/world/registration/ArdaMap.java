@@ -56,8 +56,8 @@ public final class ArdaMap {
      * map is measured from there. Block coordinates pass through the portal unchanged, so this one
      * number is what lines Arda up with the overworld.
      */
-    private static final int ORIGIN_COLUMN = 10;
-    private static final int ORIGIN_ROW = 20;
+    static final int ORIGIN_COLUMN = 10;
+    static final int ORIGIN_ROW = 20;
 
     /** How far the drawn borders wander, in blocks. Bigger is more organic and less faithful. */
     private static final double WARP = 192.0D;
@@ -205,10 +205,24 @@ public final class ArdaMap {
      * from the same sampler in its random state.
      */
     public static Sample sample(int blockX, int blockZ, DensityFunction warpX, DensityFunction warpZ) {
-        double warpedX = blockX + warp(warpX, blockX, blockZ, 1.0D);
-        double warpedZ = blockZ + warp(warpZ, blockX, blockZ, 1.0D);
-        double mapX = warpedX / (double) CELL + ORIGIN_COLUMN;
-        double mapZ = warpedZ / (double) CELL + ORIGIN_ROW;
+        return read(blockX, blockZ, warp(warpX, blockX, blockZ, 1.0D), warp(warpZ, blockX, blockZ, 1.0D));
+    }
+
+    /**
+     * What stands at a column with no warp applied: the drawing as it is drawn.
+     *
+     * <p>The warp needs the world's own noise, which only a generator has been handed. A survey of
+     * ground the world has not generated therefore reads the drawing unwarped, and the build checks
+     * the ground it actually has before it lays anything down (see {@link ArdaSurvey}).
+     */
+    public static Sample sample(int blockX, int blockZ) {
+        return read(blockX, blockZ, 0.0D, 0.0D);
+    }
+
+    /** The drawing at a column, shifted by whatever warp the caller has already read. */
+    private static Sample read(int blockX, int blockZ, double shiftX, double shiftZ) {
+        double mapX = (blockX + shiftX) / (double) CELL + ORIGIN_COLUMN;
+        double mapZ = (blockZ + shiftZ) / (double) CELL + ORIGIN_ROW;
 
         Ground ground = groundAt(mapX, mapZ, blockX, blockZ);
 
@@ -219,6 +233,16 @@ public final class ArdaMap {
             }
         }
         return new Sample(ground.country(), ground.height(), false, ground.shore(), ground.upland());
+    }
+
+    /** Whether a cell of the map exists at all, since a search may walk off its edge. */
+    static boolean inside(int column, int row) {
+        return column >= 0 && column < COLUMNS && row >= 0 && row < ROWS;
+    }
+
+    /** The country drawn in one cell, which is the whole of what a survey needs to begin. */
+    static ArdaMap.Country cellCountry(int column, int row) {
+        return GRID[Mth.clamp(row, 0, ROWS - 1)][Mth.clamp(column, 0, COLUMNS - 1)];
     }
 
     /**

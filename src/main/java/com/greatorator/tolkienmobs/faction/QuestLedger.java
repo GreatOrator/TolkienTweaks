@@ -26,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -175,6 +176,15 @@ public final class QuestLedger extends SavedData {
         // a camp is the tent - anything else is built with nobody at it.
         if (quest.isSite()) {
             Sites.plan(player, quest.site(), Sites.WILD_TENT.equals(quest.site()));
+            // The ground is named but not numbered: a page says which country the work is in, which
+            // is true because the map decided where it is, and leaves the walking to the player.
+            String country = Sites.countryOf(player);
+            if (!country.isEmpty()) {
+                player.sendSystemMessage(Component.translatable("quest.tolkienmobs.site.country",
+                                Component.translatable("arda.tolkienmobs.country."
+                                        + country.toLowerCase(Locale.ROOT)))
+                        .withStyle(ChatFormatting.GRAY));
+            }
         }
         grantBook(player);
         player.sendSystemMessage(Component.translatable("quest.tolkienmobs.accepted", quest.objective())

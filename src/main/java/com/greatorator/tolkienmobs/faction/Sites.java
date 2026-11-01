@@ -1,6 +1,8 @@
 package com.greatorator.tolkienmobs.faction;
 
 import com.greatorator.tolkienmobs.init.TolkienEntities;
+import com.greatorator.tolkienmobs.world.registration.ArdaMap;
+import com.greatorator.tolkienmobs.world.registration.ArdaSurvey;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
@@ -19,6 +21,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -32,7 +35,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * The ground the campaign has built on: a structure it put down for one player, and the laying of it.
@@ -58,6 +65,12 @@ import java.util.UUID;
  * One site is kept per player, and taking a second page to a structure they have not reached yet keeps
  * the site they already have rather than pitching a rival beside it - which is what lets a quest in
  * pieces send somebody back to the same ground twice.
+ * <p>
+ * Where that ground is comes from the drawing rather than from the player's facing. {@link ArdaSurvey}
+ * reads {@link ArdaMap} for a column the world has not generated, so a site is chosen in the country
+ * its structure belongs to, on dry, level ground, before a chunk of it has ever been made. The spot is
+ * fixed by the country and the structure rather than by whoever asked, which is what lets a page name
+ * a country and be right, and what lets two people sent there arrive at the same door.
  */
 public final class Sites extends SavedData {
     private static final String SAVE_DATA_NAME = "sites";
@@ -76,8 +89,6 @@ public final class Sites extends SavedData {
     private static final int BUILD_REACH = 64;
     /** How many rings of candidate ground are tried around the written spot before giving up. */
     private static final int SEARCH_RINGS = 2;
-    /** The least rise and fall a footprint will take, before a building's own size widens it. */
-    private static final int DROP_MIN = 2;
 
     /** The tag the body minding a camp wears, so it can be told from any other of its folk. */
     public static final String KEEPER_TAG = "tolkienmobs:camp_keeper";
@@ -91,7 +102,7 @@ public final class Sites extends SavedData {
      * that, so a distance to it always means the same thing.
      */
     public record Site(UUID player, ResourceKey<Level> dimension, BlockPos centre, String structure,
-                       boolean keeper, boolean built, boolean found) {
+                       boolean keeper, boolean built, boolean found, String country) {
         static final Codec<Site> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 UUIDUtil.CODEC.fieldOf("player").forGetter(Site::player),
                 ResourceKey.codec(Registries.DIMENSION).fieldOf("dimension").forGetter(Site::dimension),
@@ -99,16 +110,17 @@ public final class Sites extends SavedData {
                 Codec.STRING.fieldOf("structure").forGetter(Site::structure),
                 Codec.BOOL.optionalFieldOf("keeper", false).forGetter(Site::keeper),
                 Codec.BOOL.optionalFieldOf("built", false).forGetter(Site::built),
-                Codec.BOOL.optionalFieldOf("found", false).forGetter(Site::found)
+                Codec.BOOL.optionalFieldOf("found", false).forGetter(Site::found),
+                Codec.STRING.optionalFieldOf("country", "").forGetter(Site::country)
         ).apply(instance, Site::new));
 
         Site builtAt(BlockPos middle) {
-            return new Site(player, dimension, middle, structure, keeper, true, found);
+            return new Site(player, dimension, middle, structure, keeper, true, found, country);
         }
 
         /** The same site, noted as walked into. Named apart from the accessor it shadows. */
         Site markedFound() {
-            return new Site(player, dimension, centre, structure, keeper, built, true);
+            return new Site(player, dimension, centre, structure, keeper, built, true, country);
         }
     }
 
@@ -150,6 +162,17 @@ public final class Sites extends SavedData {
                 && level.dimension().equals(existing.dimension())) {
             return true;
         }
+        // The drawing answers first. A structure's own biome list decides the country it may stand
+        // in - the tent's wilds and the castle's Mordor are both already in the data - so nothing is
+        // written down here about where anything belongs.
+        ArdaSurvey.Ground surveyed = survey(level, player, structure);
+        if (surveyed != null) {
+            SITES.put(player.getUUID(), new Site(player.getUUID(), level.dimension(),
+                    surveyed.centre(), structure, keeper, false, false, surveyed.country().name()));
+            store.setDirty();
+            return true;
+        }
+        // A world the map does not draw keeps the older answer: a spot out in front of the player.
         RandomSource random = level.getRandom();
         Direction facing = player.getDirection();
         Direction across = facing.getClockWise();
@@ -160,7 +183,7 @@ public final class Sites extends SavedData {
                 0,
                 facing.getStepZ() * reach + across.getStepZ() * side);
         SITES.put(player.getUUID(), new Site(player.getUUID(), level.dimension(), centre, structure,
-                keeper, false, false));
+                keeper, false, false, ""));
         store.setDirty();
         return true;
     }
@@ -170,6 +193,12 @@ public final class Sites extends SavedData {
     public static Site siteOf(ServerPlayer player) {
         instance(player.level());
         return SITES.get(player.getUUID());
+    }
+
+    /** The country of the map a player's site stands in, or an empty string when none was named. */
+    public static String countryOf(ServerPlayer player) {
+        Site site = siteOf(player);
+        return site == null ? "" : site.country();
     }
 
     /** Whether the player is standing in the structure they were sent to find. */
@@ -202,6 +231,49 @@ public final class Sites extends SavedData {
                 ? Component.translatable("quest.tolkienmobs.site.keeper", keeperName(player))
                         .withStyle(ChatFormatting.GOLD)
                 : Component.translatable("quest.tolkienmobs.site.found").withStyle(ChatFormatting.GOLD));
+    }
+
+    /**
+     * The ground the map can offer this structure near the player, or null when the level is not
+     * Arda's or the template is not in the pack, which is what falls back to the older pick.
+     */
+    @Nullable
+    private static ArdaSurvey.Ground survey(ServerLevel level, ServerPlayer player, String structure) {
+        Vec3i size = footprint(level, structure);
+        if (size == null) return null;
+        return ArdaSurvey.find(level, player.blockPosition(), countries(level, structure),
+                size.getX(), size.getZ(), structure.hashCode());
+    }
+
+    /** A template's own size, or null when there is no such template to build. */
+    @Nullable
+    private static Vec3i footprint(ServerLevel level, String structure) {
+        Identifier id = Identifier.tryParse(structure);
+        if (id == null) return null;
+        StructureTemplate template = level.getStructureManager().get(id).orElse(null);
+        if (template == null) return null;
+        Vec3i size = template.getSize();
+        return size.getX() <= 0 || size.getZ() <= 0 ? null : size;
+    }
+
+    /**
+     * The countries a structure may stand in, read from the structure's own biome list rather than
+     * written down again here: a page naming a third structure gets its answer without anybody
+     * editing this, and the tent and the castle cannot drift from the data they were registered with.
+     */
+    private static Predicate<ArdaMap.Country> countries(ServerLevel level, String structure) {
+        Identifier id = Identifier.tryParse(structure);
+        if (id == null) return ArdaMap.Country::land;
+        Set<ResourceKey<Biome>> allowed = level.registryAccess()
+                .lookupOrThrow(Registries.STRUCTURE)
+                .get(ResourceKey.create(Registries.STRUCTURE, id))
+                .map(holder -> holder.value().biomes().stream()
+                        .map(biome -> biome.unwrapKey().orElse(null))
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toSet()))
+                .orElse(Set.of());
+        if (allowed.isEmpty()) return ArdaMap.Country::land;
+        return country -> allowed.contains(country.biome());
     }
 
     /**
@@ -263,7 +335,7 @@ public final class Sites extends SavedData {
      */
     @Nullable
     private static BlockPos plane(ServerLevel level, BlockPos spot, int wide, int deep) {
-        int drop = dropAllowed(wide, deep);
+        int drop = ArdaSurvey.dropAllowed(wide, deep);
         int stride = Math.max(1, Math.max(wide, deep) / 24);
         int low = Integer.MAX_VALUE;
         int high = Integer.MIN_VALUE;
@@ -299,11 +371,6 @@ public final class Sites extends SavedData {
                 }
             }
         }
-    }
-
-    /** How much rise and fall a building will still sit on: two blocks, widened by its own size. */
-    private static int dropAllowed(int wide, int deep) {
-        return Math.max(DROP_MIN, Math.max(wide, deep) / 8);
     }
 
     /** How close to the middle of a building counts as standing in it, which grows with the building. */
