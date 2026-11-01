@@ -255,11 +255,13 @@ public final class Campaign extends SavedData {
     /** The return to the camp with the caves searched, where the stone's next asking is decided. */
     private static final String REGAIN_TITLE = "campaign.tolkienmobs.page.regain";
     /**
-     * The notes' last page of the chapter, and the hand-off into the next one: Elladan at Thorenhad with
-     * something older than the wraith found in the wilderness of the Trollshaws. Built now so the second
-     * chapter starts from a page that already points at it rather than from a line that simply stops.
+     * The notes' second page of the chapter, which the line had put at the end of it: the walk to
+     * Thorenhad where Elladan says what has been found in the wilderness. The ids settle it - quest eight
+     * hands into the Horse and Rider dialogues, and nine's completion text is him greeting a player his
+     * father sent - so the chapter ends on the tidings carried back to Elrond, as the notes end it.
      */
     private static final String HORSE_TITLE = "campaign.tolkienmobs.page.horse";
+    private static final String HORSE_TARGET = Quest.placeTarget(THORENHAD_PLACE);
     /** How far ahead of the player he is stood up, sideways off that line, and how far out he counts. */
     private static final int MATUNA_WAY_AHEAD = 16;
     private static final int MATUNA_WAY_SPREAD = 10;
@@ -313,6 +315,13 @@ public final class Campaign extends SavedData {
                     // at the end of the walk hands the next one.
                     new Page(Quest.Kind.LOCATION, SUMMON_TARGET, 1, 25, 4,
                             "campaign.tolkienmobs.page.summon", "campaign.tolkienmobs.page.summon.place", ""),
+                    // The notes' Where is the Horse and the Rider?, read off the ids as the chapter's second
+                    // page and not its last: quest eight's own dialogues hand straight into the Horse and
+                    // Rider set, and nine's completion text is Elladan greeting a player his father sent.
+                    // So it is the walk to Thorenhad, and the unsettled ground is what the hunts are for.
+                    new Page(Quest.Kind.LOCATION, HORSE_TARGET, 1, 5, 5,
+                            HORSE_TITLE, "campaign.tolkienmobs.page.horse.place",
+                            "campaign.tolkienmobs.page.horse.closing", 0, 0, 25),
                     // The notes' Missing Rider, which the line had skipped over: the hoofprints are found
                     // south of the road and the horse is found in the ruins. A corpse is not a hunt, so the
                     // page is the ground and the finding is the closing line the notes wrote for it.
@@ -380,11 +389,6 @@ public final class Campaign extends SavedData {
                     // over, and it is settled by speaking to the Elf it is about.
                     new Page(Quest.Kind.DIALOGUE, Quest.personTarget(ELROND), 1, 120, 5,
                             DEPARTURE_TITLE, DEPARTURE_PLACE, DEPARTURE_CLOSING),
-                    // The notes' Where is the Horse and the Rider?, which closes the chapter at Thorenhad and
-                    // opens the next one: Elladan has found something older than the wraith in the wild.
-                    new Page(Quest.Kind.DIALOGUE, Quest.personTarget(ELLADAN), 1, 5, 5,
-                            HORSE_TITLE, "campaign.tolkienmobs.page.horse.place",
-                            "campaign.tolkienmobs.page.horse.closing", 0, 0, 25),
                     // The hilltop is raised rather than named. A place is a circle somebody has to stand
                     // in and declare; this is ground the campaign builds where the map puts it, so the page
                     // is settled by standing in the building and nobody has to place anything by hand.
@@ -1139,11 +1143,10 @@ public final class Campaign extends SavedData {
         // pages are his to hear at the camp, and a camp that only filled in once the caves were paid would
         // have nobody in it to hear what the ruins held. He stays until the chapter's last page, which is
         // the one he hands on.
-        int from = stageOfTitle(MISSING_RIDER_TITLE);
+        int from = stageOfTitle(HORSE_TITLE);
+        if (from < 0) from = stageOfTitle(MISSING_RIDER_TITLE);
         if (from < 0) from = stageOf(Quest.Kind.SURVEY, "");
         int to = stageOf(Quest.Kind.HUNT, GIANT_TARGET);
-        int exit = stageOfTitle(HORSE_TITLE);
-        if (exit > to) to = exit;
         if (from < 0 || to < from) return;
         int step = stage(player, Alliance.WEST);
         if (step < from || step > to) return;

@@ -966,12 +966,12 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("campaign.tolkienmobs.page.regain.closing", "格罗芬德尔大人的话极有智慧，他赠的这块绿柱石给了我们一些希望，或能重寻那失踪戒灵的踪迹。现在我得弄清该把它带到哪里，才显得出他去了何处。");
         this.add("campaign.tolkienmobs.page.horse", "马与骑手何在？");
         this.add("campaign.tolkienmobs.page.horse.place", "索伦哈德埃拉丹的营地");
-        this.add("campaign.tolkienmobs.page.horse.say.1", "这么说林子交出了它的巨魔，而巨魔什么也没交出。我父亲又找你，而我先有件事要说。");
-        this.add("campaign.tolkienmobs.page.horse.say.2", "我们在特罗尔肖的荒野里找到了些东西。不是那幽灵。是更古老的东西，而且它一直在掘地。");
-        this.add("campaign.tolkienmobs.page.horse.reply.1", "掘地？");
-        this.add("campaign.tolkienmobs.page.horse.reply.2", "特罗尔肖里有什么？");
-        this.add("campaign.tolkienmobs.page.horse.said", "那正是我们要弄清的。先歇一歇吧——若你带着这念头还睡得着——然后再来找我。");
-        this.add("campaign.tolkienmobs.page.horse.closing", "你来了就好，因为我们有了一个令人不安的发现，而它多半就在特罗尔肖的荒野之中。");
+        this.add("campaign.tolkienmobs.page.horse.say.1", "我父亲派你来帮我们？你来了就好，因为我们有了一个令人不安的发现，而它多半就在特罗尔肖的荒野之中。");
+        this.add("campaign.tolkienmobs.page.horse.say.2", "路南很远的地方发现了蹄印，我认为留下蹄印的东西还在这片土地上。不管它是什么，它没有往东回去。");
+        this.add("campaign.tolkienmobs.page.horse.reply.1", "你们发现了什么？");
+        this.add("campaign.tolkienmobs.page.horse.reply.2", "我该从哪里入手？");
+        this.add("campaign.tolkienmobs.page.horse.said", "路南，岩壁收拢、还有一道旧墙立在水上的地方。走那些狭窄谷地，记得要回来。");
+        this.add("campaign.tolkienmobs.page.horse.closing", "埃拉丹先在他自己的地图上标出那片地方，然后才把地图递回来：路南，狭窄谷地，那道墙所在之处。");
         this.add("campaign.tolkienmobs.page.barachen.place", "巴拉亨的营地，在巨魔荒野东大道以南");
         this.add("campaign.tolkienmobs.page.barachen", "大路旁的斥候");
         this.add("campaign.tolkienmobs.page.giant.said", "那你会知道一件宝石说不了的事。小心些，无论找到什么，都回来告诉我。");

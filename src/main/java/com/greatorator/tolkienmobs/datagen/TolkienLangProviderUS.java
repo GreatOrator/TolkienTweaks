@@ -966,12 +966,12 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.page.regain.closing", "The words of Lord Glorfindel are most wise, and his gift of this beryl gives some hope that we may regain the trail of this missing Nazgul. Now I must determine where we are to carry it, if it is to show us where he went.");
         this.add("campaign.tolkienmobs.page.horse", "Where is the Horse and the Rider?");
         this.add("campaign.tolkienmobs.page.horse.place", "Elladan's camp at Thorenhad");
-        this.add("campaign.tolkienmobs.page.horse.say.1", "So the wood gave up its troll, and the troll gave up nothing. My father has asked for you again, and I have a thing of my own to say first.");
-        this.add("campaign.tolkienmobs.page.horse.say.2", "We have found something in the wilderness of the Trollshaws. Not the wraith. Something older, and it has been digging.");
-        this.add("campaign.tolkienmobs.page.horse.reply.1", "Digging?");
-        this.add("campaign.tolkienmobs.page.horse.reply.2", "What is in the Trollshaws?");
-        this.add("campaign.tolkienmobs.page.horse.said", "That is what we mean to learn. Rest first, if you can rest with that in your head, and then come back to me.");
-        this.add("campaign.tolkienmobs.page.horse.closing", "It is good that you have come, for we have made an unsettling discovery, and it seems likely to lie within the wilderness of the Trollshaws.");
+        this.add("campaign.tolkienmobs.page.horse.say.1", "My father has sent you to aid us? It is good that you have come, for we have made an unsettling discovery, and it seems likely to lie within the wilderness of the Trollshaws.");
+        this.add("campaign.tolkienmobs.page.horse.say.2", "Hoofprints were found far south of the road, and I hold that whatever left them is still in this country. Whatever it is, it has not gone back east.");
+        this.add("campaign.tolkienmobs.page.horse.reply.1", "What have you found?");
+        this.add("campaign.tolkienmobs.page.horse.reply.2", "Where do I begin?");
+        this.add("campaign.tolkienmobs.page.horse.said", "South of the road, where the rock closes in and an old wall still stands above the water. Take the narrow channels, and mind that you come back.");
+        this.add("campaign.tolkienmobs.page.horse.closing", "Elladan marks the ground on his own map before he hands it back: south of the road, in the narrow channels, where the wall stands.");
         this.add("campaign.tolkienmobs.page.barachen.place", "Barachen's camp, south of the East Road in the Trollshaws");
         this.add("campaign.tolkienmobs.page.barachen", "The Scout at the Road");
         this.add("campaign.tolkienmobs.page.giant.said", "Then you will have learned something the stone could not tell us. Go carefully, and come back to me whatever you find.");
