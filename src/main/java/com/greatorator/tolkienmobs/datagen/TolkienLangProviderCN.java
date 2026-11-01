@@ -896,6 +896,11 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("place.tolkienmobs.tharbad.line", "无人养护的路上，一座被淹的渡口");
         this.add("place.tolkienmobs.oldforest", "老林");
         this.add("place.tolkienmobs.oldforest.line", "树木自有其谋");
+        this.add("place.tolkienmobs.tharbad.beryl", "石头变得又暗又沉，像铁挨近了沉没之地。有人死在这个渡口，却没有人回来报信。");
+        this.add("place.tolkienmobs.ford.beryl", "石头在发抖。很久以前，有极大的恐惧在这个渡口被掀翻，水至今没有忘记那份重量。");
+        this.add("place.tolkienmobs.weathertop.beryl", "石头在你掌心里像找北的针一样转，而它找到的不是北，是山顶。有什么东西站在那里，顺着大路望了很久。");
+        this.add("place.tolkienmobs.barrows.beryl", "凉，坟丘越高就越凉。亡者所守的东西并没有睡着，只是安静着。");
+        this.add("place.tolkienmobs.greenway.beryl", "石头在你手里发凉，在沟渠经过的地方更凉。有什么东西从这条路上过去了，而且不想被人看见。");
         this.add("command.tolkienmobs.place.added", "已将 %s 设在此处，半径 %s 格。");
         this.add("command.tolkienmobs.place.unknown", "没有名为 %s 的地点。");
         this.add("command.tolkienmobs.place.not_set", "%s 尚未在此世界设定。");

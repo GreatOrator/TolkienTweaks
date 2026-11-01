@@ -118,13 +118,13 @@ public final class Places extends SavedData {
      * their lines are written, which is the same shape of work as a page.
      */
     private static final List<Name> CATALOGUE = List.of(
-            new Name("greenway", Alliance.WEST, false),
-            new Name("barrows", Alliance.WEST, false),
+            new Name("greenway", Alliance.WEST, true),
+            new Name("barrows", Alliance.WEST, true),
             new Name("hobbiton", Alliance.WEST, false),
             new Name("bree", Alliance.WEST, false),
-            new Name("weathertop", Alliance.WEST, false),
-            new Name("ford", Alliance.WEST, false),
-            new Name("tharbad", Alliance.WEST, false),
+            new Name("weathertop", Alliance.WEST, true),
+            new Name("ford", Alliance.WEST, true),
+            new Name("tharbad", Alliance.WEST, true),
             new Name("oldforest", null, false)
     );
 

@@ -896,6 +896,11 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("place.tolkienmobs.tharbad.line", "a drowned ford on a road nobody keeps");
         this.add("place.tolkienmobs.oldforest", "The Old Forest");
         this.add("place.tolkienmobs.oldforest.line", "the trees keep their own counsel");
+        this.add("place.tolkienmobs.tharbad.beryl", "The stone goes dull and heavy, the way iron does near a drowned place. Men died on this crossing and no one came back to say so.");
+        this.add("place.tolkienmobs.ford.beryl", "The stone shivers. A great dread was thrown down at this crossing once, and the water has not forgotten the weight of it.");
+        this.add("place.tolkienmobs.weathertop.beryl", "The stone turns in your palm like a needle finding north, and the north it finds is the hilltop. Something stood up there and looked a long way down the road.");
+        this.add("place.tolkienmobs.barrows.beryl", "Cold, and colder the higher the mounds stand. Whatever the dead are keeping, it is not asleep - only quiet.");
+        this.add("place.tolkienmobs.greenway.beryl", "The stone is cold in your hand, and colder where the ditch runs. Something went by this way that did not wish to be seen.");
         this.add("command.tolkienmobs.place.added", "Set %s here, %s blocks out.");
         this.add("command.tolkienmobs.place.unknown", "There is no place called %s.");
         this.add("command.tolkienmobs.place.not_set", "%s has not been set in this world.");
