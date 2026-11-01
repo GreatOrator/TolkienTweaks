@@ -720,6 +720,10 @@ public final class Campaign extends SavedData {
             // having named the creature, and he is the one who hears what came of it. A page owed to a
             // body that did not hand it is a page a herald refuses to give at all (see QuestGivers), so
             // sending the kill's word to Elrond here would have stopped the line at the guest house.
+            // Naming him is also what keeps a hall's herald out of it: an owed page is handed by the
+            // body it is owed to, so the wood is described by the Elf who has fought in it rather than
+            // across a bench in Eriador.
+            if (MATUNA.equals(target)) return built.withTurnIn(LEGOLAS);
             return built;
         }
         if (!sealed(row)) return null;

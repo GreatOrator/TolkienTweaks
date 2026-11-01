@@ -271,6 +271,7 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
 
 ### Changed
 
+- **The Wood-troll is Legolas' page at both ends.** A page owed to a body is handed and taken by that body alone, so naming Legolas as the turn-in is what keeps the hall's herald from giving out the hunt for a creature it has never seen - the same shape the Giant already had at Elladan's camp.
 - **The Elves of the line stand at their doors.** Glorfindel is out on the square's southern road, Elrond at the library's door and Legolas at the guest house's, instead of all three on the middle of the place, where the buildings now are.
 - **The duergar are the East's.** They are dwarves who took the Enemy's service, so the peoples table says so rather than reading as though every dwarf were Erebor's.
 - **Every people in the notes is placed with one of the three sides.** The notes kept a faction per people, and this pack keeps three sides, so `Alliance` now records which is which: Elves of any kind, Dwarves, Hobbits and the Men of the West are the West; Mordor, Angmar, Isengard, Orcs, Goblins, Uruk-hai, Trolls and the Easterlings are the East; the Haradrim, the Corsairs of Umbar, Khand and the Variags are the Harad.
