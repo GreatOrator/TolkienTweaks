@@ -24,6 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
@@ -100,6 +101,12 @@ public final class Sites extends SavedData {
      * never going to stand.
      */
     private static final int SEARCH_REACH = 48;
+    /**
+     * How many layers of ground are put back under a building before the drop under it is read as a
+     * cliff rather than a dip. The flatness test a site has to pass is measured in the same order, so
+     * this only ever covers the shallow end of it - a building on a bank, not a building on a butte.
+     */
+    private static final int UNDERPIN_DEPTH = 6;
 
     /** The tag the body minding a camp wears, so it can be told from any other of its folk. */
     public static final String KEEPER_TAG = "tolkienmobs:camp_keeper";
@@ -317,6 +324,7 @@ public final class Sites extends SavedData {
         }
         UNBUILDABLE.remove(site.player());
         clearFootprint(level, corner, size.getX(), size.getY(), size.getZ());
+        underpin(level, corner, size.getX(), size.getZ());
         template.placeInWorld(level, corner, corner, new StructurePlaceSettings(), level.getRandom(), 2);
         if (site.keeper()) standKeeper(level, corner, size);
         SITES.put(player.getUUID(), site.builtAt(corner.offset(size.getX() / 2, 0, size.getZ() / 2)));
@@ -392,6 +400,30 @@ public final class Sites extends SavedData {
                     cursor.set(corner.getX() + dx, corner.getY() + dy, corner.getZ() + dz);
                     if (level.getBlockState(cursor).isAir()) continue;
                     level.setBlock(cursor, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+                }
+            }
+        }
+    }
+
+    /**
+     * Puts ground back under the building, the way a village does: a column the floor has been lifted
+     * clear of is filled from the building's own base down to the ground it was lifted off, so a tent on
+     * a bank stands on earth rather than on stilts with the water showing under one wall.
+     * <p>
+     * Air and water are both filled, because a building beside a shore is standing in the water it was
+     * built beside, and a wall with a hole under it is worse than a wall with a bank under it. The
+     * filling stops at the first solid block, so nothing is put where ground already is, and it gives up
+     * after a few layers rather than hanging a plinth a long way down off a building that is on a cliff.
+     */
+    private static void underpin(ServerLevel level, BlockPos corner, int wide, int deep) {
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        for (int dx = 0; dx < wide; dx++) {
+            for (int dz = 0; dz < deep; dz++) {
+                for (int dy = 1; dy <= UNDERPIN_DEPTH; dy++) {
+                    cursor.set(corner.getX() + dx, corner.getY() - dy, corner.getZ() + dz);
+                    BlockState state = level.getBlockState(cursor);
+                    if (!state.isAir() && state.getFluidState().isEmpty()) break;
+                    level.setBlock(cursor, Blocks.DIRT.defaultBlockState(), Block.UPDATE_CLIENTS);
                 }
             }
         }

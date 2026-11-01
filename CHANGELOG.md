@@ -67,6 +67,8 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+- **A site stands on ground rather than over a hole.** A building is set at the highest column under it, so on a bank or a shoreline the lower side of it was left floating with air or sea showing under a wall. Every column of the footprint is now filled back up from the building's own base to the first solid block, the way a village does it, for a few layers at most - so the tent on the beach in the test sits on earth, and nothing gets a plinth hung off a cliff.
+
 - **A site the ground refuses is no longer silent.** Real ground was looked for within eight blocks of the spot the map picked, and if none of it would take the building nothing was built and nothing was said - so a player could stand on the printed point, watch nothing happen, and have no way to tell a hard spot from a broken page. The search now reaches forty-eight blocks, which is the order of the drift between the drawing and the world, and a site that still will not stand is written to the log once rather than swallowed.
 
 - **Walking through a leaf pile no longer crashes the game.** The pile asked the client for a tinted falling leaf, handing the particle engine a colour to go with a particle type that was registered without one; the engine casts what it is given back to its own type, and that cast brought the game down the first time a foot went through a pile. The pile and the pack it sends for a client both ask for the plain maple leaf now, which is the same leaf the biome's own wind already drops.
