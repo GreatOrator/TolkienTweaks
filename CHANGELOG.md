@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **A page says which way the work lies, not only which country.** A country is a haystack: a site is one hashed point inside a five-hundred-block cell, and a page that named only the country sent the player out to search it. The country line now carries an eight-point bearing as well - "The work lies in the Shire, away to the north-east" - which costs nothing to say and turns a search back into a walk, while still leaving the ground unnamed.
+
 - **`/tmquest page` says where it put the ground.** A page names a country and leaves the walking to the player, which leaves an operator testing a site with no way to know which way to walk: the command now prints the coordinates it chose, and only the command does.
 
 - **Quarry a page owes is collected on the road, not at the bench.** A page used to put its mobs down the moment it was taken, a dozen or two blocks in front of the player, so every step of the campaign arrived within sight of the herald who described it. A hunt now holds its quarry back for a minute and a half after the page is taken, and only pays it out once the player is out under open sky and a hundred blocks from that bench - then stands it up forty to sixty blocks ahead instead of twenty. The Rider keeps his own arrival but waits on the same clock, and stands further off when he comes. One hand-over owes one meeting, so a quarry killed is a hunt that moves on rather than a road that restocks itself.

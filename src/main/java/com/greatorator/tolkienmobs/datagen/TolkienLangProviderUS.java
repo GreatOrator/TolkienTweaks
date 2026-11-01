@@ -1006,6 +1006,16 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("arda.tolkienmobs.country.nurn", "Nurn");
         this.add("arda.tolkienmobs.country.harad", "Harad");
         this.add("quest.tolkienmobs.site.country", "The work lies in %s.");
+        this.add("quest.tolkienmobs.site.bearing", "The work lies in %s, away to the %s.");
+        this.add("quest.tolkienmobs.site.bearing.only", "The work lies away to the %s.");
+        this.add("quest.tolkienmobs.bearing.north", "north");
+        this.add("quest.tolkienmobs.bearing.north_east", "north-east");
+        this.add("quest.tolkienmobs.bearing.east", "east");
+        this.add("quest.tolkienmobs.bearing.south_east", "south-east");
+        this.add("quest.tolkienmobs.bearing.south", "south");
+        this.add("quest.tolkienmobs.bearing.south_west", "south-west");
+        this.add("quest.tolkienmobs.bearing.west", "west");
+        this.add("quest.tolkienmobs.bearing.north_west", "north-west");
         this.add("quest.tolkienmobs.quarry.road", "They are waiting on the road ahead: %s.");
         this.add("campaign.tolkienmobs.page.witchking.closing", "The crown was not on the ground where it fell. Whatever the war was for, it was never the thing the three countries told themselves it was, and the halls will go on asking.");
         this.add("campaign.tolkienmobs.page.witchking.place", "the hall under the black crown");

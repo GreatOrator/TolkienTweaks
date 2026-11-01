@@ -8,6 +8,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
@@ -178,11 +179,24 @@ public final class QuestLedger extends SavedData {
             Sites.plan(player, quest.site(), Sites.WILD_TENT.equals(quest.site()));
             // The ground is named but not numbered: a page says which country the work is in, which
             // is true because the map decided where it is, and leaves the walking to the player.
+            // A country on its own is a haystack: the spot is a hashed point inside a five-hundred
+            // block cell, and a page that names only the country sends the player out to search it.
+            // The octant costs nothing to say and turns the search into a walk.
             String country = Sites.countryOf(player);
-            if (!country.isEmpty()) {
-                player.sendSystemMessage(Component.translatable("quest.tolkienmobs.site.country",
-                                Component.translatable("arda.tolkienmobs.country."
-                                        + country.toLowerCase(Locale.ROOT)))
+            Sites.Site site = Sites.siteOf(player);
+            String bearing = site == null ? "" : bearingOf(player, site.centre());
+            Component where = country.isEmpty() ? null
+                    : Component.translatable("arda.tolkienmobs.country." + country.toLowerCase(Locale.ROOT));
+            Component toward = bearing.isEmpty() ? null
+                    : Component.translatable("quest.tolkienmobs.bearing." + bearing);
+            if (where != null && toward != null) {
+                player.sendSystemMessage(Component.translatable("quest.tolkienmobs.site.bearing", where, toward)
+                        .withStyle(ChatFormatting.GRAY));
+            } else if (where != null) {
+                player.sendSystemMessage(Component.translatable("quest.tolkienmobs.site.country", where)
+                        .withStyle(ChatFormatting.GRAY));
+            } else if (toward != null) {
+                player.sendSystemMessage(Component.translatable("quest.tolkienmobs.site.bearing.only", toward)
                         .withStyle(ChatFormatting.GRAY));
             }
         }
@@ -704,5 +718,28 @@ public final class QuestLedger extends SavedData {
                 UUIDUtil.CODEC.fieldOf("player").forGetter(Offer::player),
                 Quest.CODEC.fieldOf("quest").forGetter(Offer::quest)
         ).apply(instance, Offer::new));
+    }
+
+    /**
+     * Which way a site lies from where the player is standing, as the suffix of its own translation key,
+     * or an empty string when they are already on top of it. Eight points rather than a number, because
+     * the walking is the errand - a bearing is what tells the player which way to start.
+     */
+    private static String bearingOf(ServerPlayer player, BlockPos centre) {
+        double east = centre.getX() - player.getX();
+        double south = centre.getZ() - player.getZ();
+        if (Math.abs(east) < 1.0D && Math.abs(south) < 1.0D) return "";
+        // Degrees counter-clockwise from east, so north is straight up whatever the map's axes are.
+        double degrees = Math.toDegrees(Math.atan2(-south, east));
+        return switch ((int) Math.floor((degrees + 22.5D + 360.0D) / 45.0D) % 8) {
+            case 0 -> "east";
+            case 1 -> "north_east";
+            case 2 -> "north";
+            case 3 -> "north_west";
+            case 4 -> "west";
+            case 5 -> "south_west";
+            case 6 -> "south";
+            default -> "south_east";
+        };
     }
 }
