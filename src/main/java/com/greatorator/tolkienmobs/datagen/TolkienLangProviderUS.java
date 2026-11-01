@@ -631,6 +631,9 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add("entity.tolkienmobs.entityttmfactionvendor.east", "Envoy of the East");
             this.add("entity.tolkienmobs.entityttmfactionvendor.harad", "Envoy of Haradwaith");
             this.add("faction.tolkienmobs.vendor.refused", "%s will not trade with an enemy of its side.");
+        this.add("faction.tolkienmobs.hall_guard.west", "Keep your peace under this roof and you may keep your teeth.");
+        this.add("faction.tolkienmobs.hall_guard.east", "Mind your tongue in here. And your hands.");
+        this.add("faction.tolkienmobs.hall_guard.harad", "The shade is a gift. The trouble would not be.");
             this.add("faction.tolkienmobs.vendor.unknown", "%s serves only those it knows. Earn %s standing with them.");
             this.add("item.tolkienmobs.faction_charm_west", "Faction Charm");
             this.add("item.tolkienmobs.faction_charm_west.long_night_vision", "Star of Earendil");

@@ -24,6 +24,8 @@ public final class TableIdle {
     /** The tag a hall's warden carries, and the one its envoy carries. */
     private static final String WARDEN = "tolkienmobs:faction_envoy";
     private static final String ENVOY = "tolkienmobs:faction_vendor";
+    /** The tag a hall doorway guard carries, so a soldier standing at a door is posed like staff. */
+    private static final String HALL_GUARD = "tolkienmobs:hall_guard";
     /** The longest turn away from where the body was set, and how far the head is tipped at work. */
     private static final float TURN = 9.0F;
     private static final float LIFT = 12.0F;
@@ -44,7 +46,8 @@ public final class TableIdle {
 
         public void tick(Mob body) {
             if (body.level().isClientSide() || !body.isNoAi()) return;
-            if (!body.entityTags().contains(WARDEN) && !body.entityTags().contains(ENVOY)) return;
+            if (!body.entityTags().contains(WARDEN) && !body.entityTags().contains(ENVOY)
+                    && !body.entityTags().contains(HALL_GUARD)) return;
             if (Float.isNaN(this.placedYaw)) this.placedYaw = body.getYRot();
             int ticks = body.tickCount;
 

@@ -9,7 +9,9 @@ import com.geckolib.animation.object.PlayState;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.util.GeckoLibUtil;
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
+import com.greatorator.tolkienmobs.entity.util.TableIdle;
 import com.greatorator.tolkienmobs.faction.Alliance;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -32,11 +34,14 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.UUID;
 
 /**
  * The soldier a country sends after a player it will not have.
@@ -56,12 +61,28 @@ public class FactionGuardEntity extends TolkienMonsterEntity implements GeoEntit
     private static final EntityDataAccessor<Integer> VARIANT =
             SynchedEntityData.defineId(FactionGuardEntity.class, EntityDataSerializers.INT);
 
+    /**
+     * The tag a hall doorway guard carries. A guard that carries it is staff rather than a patrol: it
+     * holds a post with no brain, is dressed by this class and posed by {@link TableIdle}, and speaks to
+     * whoever comes through the door.
+     */
+    public static final String HALL_GUARD_TAG = "tolkienmobs:hall_guard";
+    /** How close a player must come to be spoken to, and how long a guard waits before speaking again. */
+    private static final double GREETING_RANGE = 4.5D;
+    private static final int GREETING_COOLDOWN = 400;
+
     private static final int WEST_SKINS = 8;
     private static final int EAST_SKINS = 6;
     private static final int HARAD_SKINS = 6;
 
     /** Server-side only: whether anything has named this guard's side yet. */
     private boolean allianceChosen;
+    /** The hall idle: the yaw this guard was posted at, captured the first time it is asked. */
+    private final TableIdle.Pose hallPose = new TableIdle.Pose();
+    /** Server-side only: the player this guard last spoke to, so one visitor is greeted once a visit. */
+    @Nullable private UUID greeted;
+    /** Server-side only: ticks still owed before this guard may speak again. */
+    private int greetingCooldown;
 
     public FactionGuardEntity(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
@@ -116,8 +137,65 @@ public class FactionGuardEntity extends TolkienMonsterEntity implements GeoEntit
             if (this.getMainHandItem().isEmpty()) {
                 this.arm();
             }
+            if (this.isHallGuard()) {
+                this.standPost();
+            }
         }
         super.tick();
+        this.hallPose.tick(this);
+    }
+
+    /** Whether this guard is holding a hall doorway rather than walking a country. */
+    public boolean isHallGuard() {
+        return this.entityTags().contains(HALL_GUARD_TAG);
+    }
+
+    /**
+     * What a guard posted at a hall door does with its life: takes up a shield it was never handed, and says
+     * its piece to whoever comes through. The stance is not here - a body with no brain is posed by
+     * {@link TableIdle}, the same as the warden and the envoy inside - and neither is the blade, which
+     * {@link #arm()} has already put in its hand.
+     */
+    private void standPost() {
+        if (this.getOffhandItem().isEmpty()) {
+            this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.SHIELD));
+        }
+        this.greeting();
+    }
+
+    /**
+     * Speaks to a player who comes through the door, once a visit.
+     * <p>
+     * A hall has two guards to a door and two doors, and four voices saying one thing is a chorus, so only
+     * the guard the player is actually walking up to speaks and the rest keep it to themselves. Stepping
+     * away and coming back is a new visit, so the line is offered again rather than never again.
+     */
+    private void greeting() {
+        if (this.greetingCooldown > 0) {
+            this.greetingCooldown--;
+            return;
+        }
+        Player player = this.level().getNearestPlayer(this, GREETING_RANGE);
+        if (player == null || !player.isAlive() || player.isSpectator()) {
+            this.greeted = null;
+            return;
+        }
+        if (player.getUUID().equals(this.greeted) || this.anotherGuardIsCloser(player)) return;
+        this.greeted = player.getUUID();
+        this.greetingCooldown = GREETING_COOLDOWN;
+        player.sendOverlayMessage(
+                Component.translatable("faction.tolkienmobs.hall_guard." + this.alliance().id()));
+    }
+
+    /** Whether another post is the one the player is walking up to, so this one stays quiet. */
+    private boolean anotherGuardIsCloser(Player player) {
+        var reach = this.getBoundingBox().inflate(GREETING_RANGE * 2.0D);
+        var others = this.level().getEntitiesOfClass(FactionGuardEntity.class, reach,
+                guard -> guard != this && guard.isHallGuard());
+        for (FactionGuardEntity guard : others) {
+            if (guard.distanceToSqr(player) < this.distanceToSqr(player)) return true;
+        }
+        return false;
     }
 
     /** A guard carries the blade its own alliance arms it with: ammolite in the West, morgul iron east and south. */

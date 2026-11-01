@@ -631,6 +631,9 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.add("entity.tolkienmobs.entityttmfactionvendor.east", "东方使节");
             this.add("entity.tolkienmobs.entityttmfactionvendor.harad", "哈拉德使节");
             this.add("faction.tolkienmobs.vendor.refused", "%s 不会与敌视其阵营的人交易。");
+        this.add("faction.tolkienmobs.hall_guard.west", "在这屋顶下安分些，牙也就能留住。");
+        this.add("faction.tolkienmobs.hall_guard.east", "在这里管好你的嘴。还有你的手。");
+        this.add("faction.tolkienmobs.hall_guard.harad", "阴凉是白送的，麻烦可不是。");
             this.add("faction.tolkienmobs.vendor.unknown", "%s 只与相识之人交易。需获得 %s 点声望。");
             this.add("item.tolkienmobs.faction_charm_west", "阵营饰品");
             this.add("item.tolkienmobs.faction_charm_west.long_night_vision", "埃雅仁迪尔之星");

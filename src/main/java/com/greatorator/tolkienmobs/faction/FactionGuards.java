@@ -82,11 +82,16 @@ public final class FactionGuards {
         }
     }
 
-    /** The patrol already standing near the player. A guard of another alliance is not in it. */
+    /**
+     * The patrol already standing near the player. A guard of another alliance is not in it, and neither is
+     * a hall doorway pair: they are staff at a post, and a hall that counted its own door as a patrol
+     * already sent would never raise another one.
+     */
     private static int guardsNear(ServerLevel level, ServerPlayer player, Alliance alliance) {
         AABB box = player.getBoundingBox().inflate(COUNT_REACH);
         List<Mob> found = level.getEntitiesOfClass(Mob.class, box, mob -> mob.getType() == alliance.guard()
-                && (!(mob instanceof FactionGuardEntity guard) || guard.alliance() == alliance));
+                && (!(mob instanceof FactionGuardEntity guard)
+                || (guard.alliance() == alliance && !guard.isHallGuard())));
         return found.size();
     }
 

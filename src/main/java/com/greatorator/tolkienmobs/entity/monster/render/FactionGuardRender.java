@@ -22,6 +22,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,12 +42,22 @@ public class FactionGuardRender extends GeoEntityRenderer<FactionGuardEntity, To
             @Override
             protected List<RenderData> getRelevantBones(FactionGuardEntity animatable, @Nullable Void relatedObject,
                                                         TolkienGeoRenderState renderState, float partialTick) {
-                ItemStack stack = animatable.getMainHandItem();
-                if (stack.isEmpty()) return List.of();
-                ItemDisplayContext hand = ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
-
-                return List.of(RenderData.item("rightArm", hand,
-                        RenderUtil.createRenderStateForItem(stack, this.itemModelResolver, hand, animatable)));
+                var held = new ArrayList<RenderData>(2);
+                ItemStack blade = animatable.getMainHandItem();
+                if (!blade.isEmpty()) {
+                    held.add(RenderData.item("rightArm", ItemDisplayContext.THIRD_PERSON_RIGHT_HAND,
+                            RenderUtil.createRenderStateForItem(blade, this.itemModelResolver,
+                                    ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, animatable)));
+                }
+                // A doorway guard wears its shield on the other arm. Without this the shield would be in the
+                // entity all along and seen by nobody, since a guard has no inventory to open.
+                ItemStack shield = animatable.getOffhandItem();
+                if (!shield.isEmpty()) {
+                    held.add(RenderData.item("leftArm", ItemDisplayContext.THIRD_PERSON_LEFT_HAND,
+                            RenderUtil.createRenderStateForItem(shield, this.itemModelResolver,
+                                    ItemDisplayContext.THIRD_PERSON_LEFT_HAND, animatable)));
+                }
+                return held;
             }
 
             @Override
@@ -61,9 +72,16 @@ public class FactionGuardRender extends GeoEntityRenderer<FactionGuardEntity, To
                                                  ItemDisplayContext displayContext, TolkienGeoRenderState renderState,
                                                  SubmitNodeCollector renderTasks, int packedLight) {
                 poseStack.pushPose();
-                poseStack.mulPose(Axis.XP.rotationDegrees(-30));
-                poseStack.mulPose(Axis.YP.rotationDegrees(90));
-                poseStack.translate(0.45D, -0.4D, 0.0D);
+                // The blade sits in the fist, the way the brigand holds his; a shield lies across the
+                // forearm facing out, which is the other rotation on the other arm.
+                if (displayContext == ItemDisplayContext.THIRD_PERSON_LEFT_HAND) {
+                    poseStack.mulPose(Axis.YP.rotationDegrees(180));
+                    poseStack.translate(-0.05D, -0.15D, 0.1D);
+                } else {
+                    poseStack.mulPose(Axis.XP.rotationDegrees(-30));
+                    poseStack.mulPose(Axis.YP.rotationDegrees(90));
+                    poseStack.translate(0.45D, -0.4D, 0.0D);
+                }
                 super.submitItemStackRender(poseStack, bone, stackState, displayContext, renderState, renderTasks, packedLight);
                 poseStack.popPose();
             }
