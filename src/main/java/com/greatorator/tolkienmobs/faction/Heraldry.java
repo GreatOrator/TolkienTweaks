@@ -20,8 +20,8 @@ import java.util.List;
  * <p>
  * A side's colours are drawn the way a loom draws them - a base colour, then a stack of pattern layers,
  * each in a dye - which is all a banner or a shield actually is. Keeping the designs here rather than in a
- * texture means the same four lines describe everything a side puts its mark on: the guards' shields now,
- * and the hall banners when they are hung in the templates.
+ * texture means the same four lines describe everything a side puts its mark on: the shields the guards at
+ * the hall doors wear, and the banners hung either side of those same hall doorways.
  * <p>
  * The layers are in the order they were applied, because that order is the design. A border cut before a
  * flower is a border the flower covers; the same two layers the other way round is a flower framed. So the
