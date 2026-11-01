@@ -48,6 +48,13 @@ import com.greatorator.tolkienmobs.faction.Campaign;
  * screen never asks the server for anything except to set a quest aside, which it cannot do itself.
  */
 public class FactionLedgerScreen extends Screen {
+    /**
+     * Where the pointer is, kept on the screen rather than threaded through the drawing: the reward row
+     * is drawn deep inside the leaf, and what it pays is only worth saying while the hand is over it.
+     */
+    private int pointerX;
+    private int pointerY;
+
     /** The two bookmarks of the book. */
     public enum Tab {
         ALLIANCES("screen.tolkienmobs.faction_ledger.tab.alliances"),
@@ -195,6 +202,8 @@ public class FactionLedgerScreen extends Screen {
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         super.extractRenderState(graphics, mouseX, mouseY, partialTick);
         layout();
+        this.pointerX = mouseX;
+        this.pointerY = mouseY;
         abandonSpots.clear();
         turnSpots.clear();
         if (armedSlot >= 0 && Util.getMillis() - armedAt > ARM_MILLIS) {
@@ -528,6 +537,26 @@ public class FactionLedgerScreen extends Screen {
         }
         y += 2;
         graphics.text(this.font, fit(story.rewardLine().getString(), w), x, y, INK_GOLD, FLAT);
+        // What a page pays besides its standing is a second thing to say and not a second row to make
+        // room for: the reward row keeps its width, and the coin - a purse on the pages the notes priced
+        // so - is said on a hover over it. Nothing is drawn at all for a page that pays no coin, so
+        // every other leaf in the book reads exactly as it did.
+        if (front != null) {
+            List<Component> purse = Campaign.clientPurse(front);
+            boolean over = this.pointerX >= x - 2 && this.pointerX < x + w
+                    && this.pointerY >= y - 2 && this.pointerY < y + LINE;
+            if (!purse.isEmpty() && over) {
+                int boxH = purse.size() * 10 + 4;
+                int boxY = Math.max(bodyTop(), Math.min(y + LINE, bodyBottom() - 6 - boxH));
+                graphics.fill(x - 2, boxY, x + w + 2, boxY + boxH, PAGE_SHADE);
+                graphics.outline(x - 2, boxY, w + 4, boxH, PAGE_EDGE);
+                int ink = boxY + 3;
+                for (Component part : purse) {
+                    graphics.text(this.font, fit(part.getString(), w - 4), x, ink, INK_GOLD, FLAT);
+                    ink += 10;
+                }
+            }
+        }
 
         int foot = bodyBottom() - 8;
         if (story.complete()) {

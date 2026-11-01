@@ -955,6 +955,12 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.page.legolas", "The Guest House");
         this.add("campaign.tolkienmobs.page.matuna", "Aid of Mirkwood");
         this.add("campaign.tolkienmobs.page.matuna.place", "the Wood-trolls' lair, in the wood east of the valley");
+            this.add("campaign.tolkienmobs.page.departure", "Hasten Their Departure");
+            this.add("campaign.tolkienmobs.page.departure.place", "the library of the valley");
+            this.add("campaign.tolkienmobs.page.departure.closing", "You tell Elrond what came out of the wood, and he is silent a while. \"A servant of the Enemy in the shape of a beast, and old. That is worse news than the creature itself.\"");
+            this.add("screen.tolkienmobs.quests.purse.silver", "Pays %s silver");
+            this.add("screen.tolkienmobs.quests.purse.bronze", "Pays %s bronze");
+            this.add("screen.tolkienmobs.quests.purse.exp", "Pays %s experience");
         this.add("campaign.tolkienmobs.page.matuna.say.1", "We of Mirkwood have met these creatures before, though I did not think to see them again. A tribe of trolls once dwelt near Dol Guldur, and we who fought them called them Wood-trolls. Before that they were wanderers, each alone and loath even to camp near its fellows - and then something at Dol Guldur drew them together and raised a king among them. My father sent many warriors, and it was done.");
         this.add("campaign.tolkienmobs.page.matuna.say.2", "One of them is back, and it has a name. Matuna keeps a lair in the wood east of here, and what he has gathered in it is what Elrond must hear. I will show you the tracks. You will do the rest, and carry the tidings back to the Last Homely House.");
         this.add("campaign.tolkienmobs.page.matuna.reply.1", "One was bad. A whole tribe?");

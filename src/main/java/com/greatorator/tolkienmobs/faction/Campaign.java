@@ -30,6 +30,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.RestrictSunGoal;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -230,6 +231,14 @@ public final class Campaign extends SavedData {
     private static final String MATUNA_TRACKS = "campaign.tolkienmobs.matuna.tracks";
     private static final String MATUNA_TITLE = "campaign.tolkienmobs.page.matuna";
     private static final String MATUNA_CLOSING = "campaign.tolkienmobs.page.matuna.closing";
+    /** The notes' own price on the kill, paid in the coin the old campaign paid in, and its experience. */
+    private static final int MATUNA_SILVER = 8;
+    private static final int MATUNA_BRONZE = 40;
+    private static final int MATUNA_XP = 50;
+    /** The notes' last word on the creature: the tidings carried back to the Elf who asked for them. */
+    private static final String DEPARTURE_TITLE = "campaign.tolkienmobs.page.departure";
+    private static final String DEPARTURE_PLACE = "campaign.tolkienmobs.page.departure.place";
+    private static final String DEPARTURE_CLOSING = "campaign.tolkienmobs.page.departure.closing";
     /** How far ahead of the player he is stood up, sideways off that line, and how far out he counts. */
     private static final int MATUNA_WAY_AHEAD = 16;
     private static final int MATUNA_WAY_SPREAD = 10;
@@ -319,7 +328,15 @@ public final class Campaign extends SavedData {
                     // at twelve hundred - a hundred and twenty at the tenth. The tidings go to Elrond,
                     // because the notes have them carried back to the Last Homely House.
                     new Page(Quest.Kind.HUNT, MATUNA, 1, 120, 6,
-                            MATUNA_TITLE, "campaign.tolkienmobs.page.matuna.place", MATUNA_CLOSING),
+                            MATUNA_TITLE, "campaign.tolkienmobs.page.matuna.place", MATUNA_CLOSING,
+                            MATUNA_SILVER, MATUNA_BRONZE, MATUNA_XP),
+                    // The notes' Hasten Their Departure: the tidings are Legolas' to send and Elrond's to
+                    // hear, so the page is a page of talk rather than a walk - the player is already
+                    // standing in the valley, and what is left is telling him what came out of the wood.
+                    // It is owed to nobody, so the Elf who names the creature is the one who hands it
+                    // over, and it is settled by speaking to the Elf it is about.
+                    new Page(Quest.Kind.DIALOGUE, Quest.personTarget(ELROND), 1, 120, 5,
+                            DEPARTURE_TITLE, DEPARTURE_PLACE, DEPARTURE_CLOSING),
                     // The hilltop is raised rather than named. A place is a circle somebody has to stand
                     // in and declare; this is ground the campaign builds where the map puts it, so the page
                     // is settled by standing in the building and nobody has to place anything by hand.
@@ -366,7 +383,17 @@ public final class Campaign extends SavedData {
      * rather than printing an empty heading.
      */
     private record Page(Quest.Kind kind, String target, int goal, int standing, int courage,
-                        String title, String place, String closing) {
+                        String title, String place, String closing, int silver, int bronze, int xp) {
+        /**
+         * A page that pays nothing but its standing, which is most of them: the ladder the campaign is
+         * climbed with is standing and courage, and the notes only put a purse on the odd errand. The
+         * coins are written where the notes wrote them and nowhere else, so the line does not turn into
+         * a wage.
+         */
+        Page(Quest.Kind kind, String target, int goal, int standing, int courage,
+             String title, String place, String closing) {
+            this(kind, target, goal, standing, courage, title, place, closing, 0, 0, 0);
+        }
     }
 
     /** How many pages a front has. */
@@ -623,6 +650,26 @@ public final class Campaign extends SavedData {
     }
 
     /** The words a front's last page ends on, or empty when this stage is not that page. */
+    /**
+     * What a front's page in hand pays besides its standing and courage, one line per kind of coin, for
+     * the ledger to say on a hover. A page with no purse answers with nothing at all, which is what
+     * keeps the leaf's reward row exactly as wide as it was.
+     */
+    public static List<Component> clientPurse(Alliance alliance) {
+        List<Page> line = PAGE_LINES.get(alliance);
+        int stage = CLIENT[alliance.ordinal()];
+        if (stage < 0 || stage >= line.size()) return List.of();
+        Page page = line.get(stage);
+        List<Component> lines = new ArrayList<>();
+        if (page.silver() > 0) lines.add(Component.translatable("screen.tolkienmobs.quests.purse.silver",
+                Component.literal(String.valueOf(page.silver()))));
+        if (page.bronze() > 0) lines.add(Component.translatable("screen.tolkienmobs.quests.purse.bronze",
+                Component.literal(String.valueOf(page.bronze()))));
+        if (page.xp() > 0) lines.add(Component.translatable("screen.tolkienmobs.quests.purse.exp",
+                Component.literal(String.valueOf(page.xp()))));
+        return lines;
+    }
+
     public static Component clientClosing(Alliance alliance) {
         List<Page> line = PAGE_LINES.get(alliance);
         int stage = CLIENT[alliance.ordinal()];
@@ -810,6 +857,13 @@ public final class Campaign extends SavedData {
 
     /** Notes the page that was really handed over, so settling it can be told apart from any other. */
     public static void noteHanded(ServerPlayer player, Alliance alliance, Quest page) {
+        // A troll that comes down out of a crag has a lair, and the pack already cuts one: the cave is
+        // pitched when the page is taken, so the player tracks the creature toward ground that can be
+        // recognised rather than toward an open field with one monster standing in it. A player already
+        // walking to a site of their own keeps it, because the page in their hand sent them there.
+        if (page.target().equals(MATUNA) && Sites.siteOf(player) == null) {
+            Sites.plan(player, Sites.TROLL_CAVE, false);
+        }
         Front[] row = row(player);
         int slot = slotOf(page, alliance);
         row[slot] = new Front(row[slot].stage(), page);
@@ -1305,12 +1359,12 @@ public final class Campaign extends SavedData {
 
     /** Elrond, who the line comes back to after the Giant to hear what the creature was. */
     private static void keepElrond(ServerPlayer player) {
-        keepElfInValley(player, ELROND, ELROND_TAG, AUDIENCE_TITLE);
+        keepElfInValley(player, ELROND, ELROND_TAG, AUDIENCE_TITLE, 1);
     }
 
     /** Legolas, who Elrond sends the player on to, in the guest room of the same valley. */
     private static void keepLegolas(ServerPlayer player) {
-        keepElfInValley(player, LEGOLAS, LEGOLAS_TAG, LEGOLAS_TITLE);
+        keepElfInValley(player, LEGOLAS, LEGOLAS_TAG, LEGOLAS_TITLE, 2);
     }
 
     /**
@@ -1319,12 +1373,17 @@ public final class Campaign extends SavedData {
      * valley is one place and the pages do not overlap, so only one of them stands there at a time:
      * Glorfindel while the stone is asked at the ford, Elrond for the audience, Legolas for the guest room.
      */
-    private static void keepElfInValley(ServerPlayer player, String name, String tag, String title) {
+    private static void keepElfInValley(ServerPlayer player, String name, String tag, String title,
+                                        int through) {
         if (!(player.level() instanceof ServerLevel level)) return;
+        // A page of talk names the body it is owed to, and that body has to be somewhere to be spoken
+        // to: the word Legolas sends back to Elrond arrives at a library that would otherwise be empty,
+        // because the step it belongs to is several pages past the one that stood him there.
+        boolean awaited = carriesWordFor(player, name);
         int at = stageOfTitle(title);
         if (at < 0) return;
         int step = stage(player, Alliance.WEST);
-        if (step < at || step > at + 1) return;
+        if (!awaited && (step < at || step > at + through)) return;
         Places.Place valley = Places.ensure(player, SUMMON_PLACE, CAMP_RADIUS);
         if (valley == null || !valley.dimension().equals(level.dimension())) return;
         if (valley.centre().distToCenterSqr(player.position()) > VALLEY_REACH * VALLEY_REACH) return;
@@ -1359,6 +1418,17 @@ public final class Campaign extends SavedData {
             if (line.get(i).title().equals(title)) return i;
         }
         return -1;
+    }
+
+    /**
+     * Whether a page of talk in hand names this body. What it is asked of the book rather than of the
+     * line, so an errand from a herald stands its speaker just as a campaign page stands Elrond.
+     */
+    private static boolean carriesWordFor(ServerPlayer player, String name) {
+        for (Quest quest : QuestLedger.active(player)) {
+            if (quest.talks() && name.equalsIgnoreCase(quest.person())) return true;
+        }
+        return false;
     }
 
     /**
@@ -2241,6 +2311,10 @@ public final class Campaign extends SavedData {
             if (front.stage() < line.size()) {
                 Page paid = line.get(front.stage());
                 CourageLedger.add(player, paid.courage());
+                // The country's coin, where the notes put a price on the work: a kill worth a purse is
+                // worth it in the coin the pack already trades in, and paid through the same hand-over
+                // as the standing so a page cannot be worth one and not the other.
+                payPurse(player, paid);
                 // The stone goes back with the work it was lent for: an errand finished is the end of a
                 // loan rather than the beginning of a keepsake.
                 // The stone goes back with the chambers' tokens, which are the proof the search was
@@ -2253,7 +2327,12 @@ public final class Campaign extends SavedData {
                 // The page that ends a front has the front's last words on it, and this is where
                 // they are said: the front moves on the moment its last page is paid, so a line
                 // left to the next page would be spoken by a page that no longer exists.
-                if (front.stage() + 1 == line.size() && !paid.closing().isEmpty()) {
+                // A page that settles itself is never read back - it leaves the book the moment it is
+                // done - so its closing line is said here or it is never said at all. A page carried to
+                // a giver keeps its words on the leaf until it is handed over, and is said here only when
+                // it is the front's last, because those are the words a front ends on.
+                boolean readBack = paid.kind() == Quest.Kind.DIALOGUE || paid.kind() == Quest.Kind.LOCATION;
+                if ((front.stage() + 1 == line.size() || readBack) && !paid.closing().isEmpty()) {
                     player.sendSystemMessage(Component.translatable(paid.closing())
                             .withStyle(ChatFormatting.GOLD));
                 }
@@ -2289,6 +2368,18 @@ public final class Campaign extends SavedData {
      * on a hunt of its own country's beast - and a hunt written into the campaign's slot would end the
      * war on the first wight a player felled, long before any front was settled.
      */
+    /** Pays the coin and experience a page carries, into the pack, and at the feet if the pack is full. */
+    private static void payPurse(ServerPlayer player, Page page) {
+        if (page.silver() > 0) payCoin(player, TolkienItems.ITEM_COIN_SILVER.get(), page.silver());
+        if (page.bronze() > 0) payCoin(player, TolkienItems.ITEM_COIN_BRONZE.get(), page.bronze());
+        if (page.xp() > 0) player.giveExperiencePoints(page.xp());
+    }
+
+    private static void payCoin(ServerPlayer player, Item item, int count) {
+        ItemStack stack = new ItemStack(item, count);
+        if (!player.getInventory().add(stack)) player.drop(stack, false);
+    }
+
     private static int slotOf(Quest page, Alliance alliance) {
         return isFinale(page) ? RIDER_SLOT : alliance.ordinal();
     }

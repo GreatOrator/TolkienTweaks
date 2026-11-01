@@ -955,6 +955,12 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("campaign.tolkienmobs.page.legolas", "客房");
         this.add("campaign.tolkienmobs.page.matuna", "幽暗密林之援");
         this.add("campaign.tolkienmobs.page.matuna.place", "山谷以东林中的食人妖巢穴");
+            this.add("campaign.tolkienmobs.page.departure", "催促他们离开");
+            this.add("campaign.tolkienmobs.page.departure.place", "山谷中的藏书室");
+            this.add("campaign.tolkienmobs.page.departure.closing", "你把林中的遭遇告诉了埃尔隆德，他沉默了许久。“以野兽之形行事的敌人仆从，而且已经活了很久。这比那头怪物本身更糟。”");
+            this.add("screen.tolkienmobs.quests.purse.silver", "付 %s 枚银币");
+            this.add("screen.tolkienmobs.quests.purse.bronze", "付 %s 枚铜币");
+            this.add("screen.tolkienmobs.quests.purse.exp", "付 %s 点经验");
         this.add("campaign.tolkienmobs.page.matuna.say.1", "我们幽暗密林的人见过这类东西，只是没想到还会再见。曾有一族食人妖住在多古尔都附近，与它们交过手的我们称它们为林地食人妖。在那之前它们只是游荡者，各自独居，连在彼此附近扎营都不愿——后来多古尔都的什么东西把它们聚拢起来，在它们中间立起了一位王。我父王派去了许多战士，事情了结了。");
         this.add("campaign.tolkienmobs.page.matuna.say.2", "如今它们中有一个回来了，而且它有名字。马图纳在东边的林中有一处巢穴，他在其中聚起的东西，正是埃尔隆德必须听到的。我会指给你看足迹，剩下的由你来做；事成之后，把消息带回最后家园。");
         this.add("campaign.tolkienmobs.page.matuna.reply.1", "一个已经够糟了。整整一族？");
