@@ -206,6 +206,12 @@ final class TolkienClimate {
         claims.add(claim(Biomes.FOREST, TolkienBiomes.FOROCHEL_SLOPES,
                 temps(ParameterUtils.Temperature.NEUTRAL), hums(ParameterUtils.Humidity.NEUTRAL),
                 eros(ParameterUtils.Erosion.EROSION_0, ParameterUtils.Erosion.EROSION_1)));
+        // Angmar is the frozen north's rocky upland. The snowy plain's dry third is the only frozen
+        // ground that neither the Misty Mountains nor Forochel has taken, and it is the right one:
+        // cold enough to snow, too dry to grow the taiga that fills the wetter half of the plain.
+        claims.add(claim(Biomes.SNOWY_PLAINS, TolkienBiomes.ANGMAR,
+                temps(ParameterUtils.Temperature.ICY), hums(ParameterUtils.Humidity.DRY)));
+
         return claims;
     }
 
