@@ -174,7 +174,7 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
 
     /**
      * A structure the campaign builds as a location page's target, as in
-     * {@code site:tolkienmobs:wild_tent}: the ground is not written down here because it is not chosen
+     * {@code site:tolkienmobs:key_structures/wild_tent}: the ground is not written down here because it is not chosen
      * until the page is taken, and the campaign keeps it (see {@link Sites}).
      */
     public static String siteTarget(String structure) {

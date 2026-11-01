@@ -18,6 +18,8 @@ import java.util.zip.Inflater;
  *   WorldScan &lt;regionDir&gt; find &lt;blockRegex&gt;
  *   WorldScan &lt;regionDir&gt; slice &lt;x0&gt; &lt;y0&gt; &lt;z0&gt; &lt;x1&gt; &lt;y1&gt; &lt;z1&gt; &lt;y&gt;
  *   WorldScan &lt;regionDir&gt; extract &lt;x0&gt; &lt;y0&gt; &lt;z0&gt; &lt;x1&gt; &lt;y1&gt; &lt;z1&gt; &lt;out.nbt&gt;
+   WorldScan &lt;regionDir&gt; extract_enclosed &lt;x0&gt; &lt;y0&gt; &lt;z0&gt; &lt;x1&gt; &lt;y1&gt; &lt;z1&gt; &lt;out.nbt&gt;
+   WorldScan x stripvoid &lt;file.nbt&gt;
  */
 public class WorldScan {
 
@@ -42,6 +44,7 @@ public class WorldScan {
             case "extract" -> extract(parseBox(args, 2), Paths.get(args[8]), false);
             case "extract_void" -> extract(parseBox(args, 2), Paths.get(args[8]), true);
             case "layers" -> layers(parseBox(args, 2));
+            case "extract_enclosed" -> extractEnclosed(parseBox(args, 2), Paths.get(args[8]));
             case "stripvoid" -> stripVoid(Paths.get(args[2]));
             default -> throw new IllegalArgumentException("mode is find, slice, layers, extract, extract_void or stripvoid");
         }
@@ -206,6 +209,102 @@ public class WorldScan {
             write(new DataOutputStream(os), root);
         }
         System.out.println(file.getFileName() + ": dropped " + dropped + " void of " + blocks.size());
+    }
+
+    /**
+     * Cuts a box out of the world the way a build should be carried: the building itself, and the air
+     * the building encloses, and nothing else.
+     * <p>
+     * An empty cell in a template means "leave whatever is here alone", so air recorded around a build
+     * has to be dropped or the ground it lands on is cut away into a square. Air recorded <em>inside</em>
+     * a build has to be kept, or the terrain it lands on fills the rooms. The two are told apart by
+     * reach: a body of air that can get to the edge of the box is the weather, and one that cannot is
+     * a room.
+     */
+    static void extractEnclosed(int[] box, Path out) throws IOException {
+        int width = box[3] - box[0] + 1;
+        int height = box[4] - box[1] + 1;
+        int depth = box[5] - box[2] + 1;
+        boolean[][][] air = new boolean[width][height][depth];
+        boolean[][][] outside = new boolean[width][height][depth];
+        for (int y = 0; y < height; y++) {
+            for (int z = 0; z < depth; z++) {
+                for (int x = 0; x < width; x++) {
+                    String state = WORLD.getOrDefault(key(box[0] + x, box[1] + y, box[2] + z), "minecraft:air[]");
+                    air[x][y][z] = base(state).endsWith("air");
+                }
+            }
+        }
+        // Every air cell that can walk to the edge of the box is weather; the flood is the whole test.
+        ArrayDeque<int[]> queue = new ArrayDeque<>();
+        for (int y = 0; y < height; y++) {
+            for (int z = 0; z < depth; z++) {
+                for (int x = 0; x < width; x++) {
+                    boolean edge = x == 0 || y == 0 || z == 0
+                            || x == width - 1 || y == height - 1 || z == depth - 1;
+                    if (edge && air[x][y][z] && !outside[x][y][z]) {
+                        outside[x][y][z] = true;
+                        queue.add(new int[]{x, y, z});
+                    }
+                }
+            }
+        }
+        int[][] steps = {{1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1}};
+        while (!queue.isEmpty()) {
+            int[] at = queue.poll();
+            for (int[] step : steps) {
+                int x = at[0] + step[0];
+                int y = at[1] + step[1];
+                int z = at[2] + step[2];
+                if (x < 0 || y < 0 || z < 0 || x >= width || y >= height || z >= depth) continue;
+                if (!air[x][y][z] || outside[x][y][z]) continue;
+                outside[x][y][z] = true;
+                queue.add(new int[]{x, y, z});
+            }
+        }
+        Map<String, Integer> palette = new LinkedHashMap<>();
+        List<Object> blocks = new ArrayList<>();
+        int skipped = 0;
+        int rooms = 0;
+        for (int y = 0; y < height; y++) {
+            for (int z = 0; z < depth; z++) {
+                for (int x = 0; x < width; x++) {
+                    boolean hollow = air[x][y][z];
+                    if (hollow && outside[x][y][z]) {
+                        skipped++;
+                        continue;
+                    }
+                    String state = hollow
+                            ? "minecraft:air[]"
+                            : WORLD.getOrDefault(key(box[0] + x, box[1] + y, box[2] + z), "minecraft:air[]");
+                    if (hollow) rooms++;
+                    Integer index = palette.get(state);
+                    if (index == null) {
+                        index = palette.size();
+                        palette.put(state, index);
+                    }
+                    Map<String, Object> block = new LinkedHashMap<>();
+                    block.put("pos", List.of(x, y, z));
+                    block.put("state", index);
+                    blocks.add(block);
+                }
+            }
+        }
+        List<Object> paletteList = new ArrayList<>();
+        for (String state : palette.keySet()) {
+            paletteList.add(stateTag(state));
+        }
+        Map<String, Object> root = new LinkedHashMap<>();
+        root.put("size", List.of(width, height, depth));
+        root.put("palette", paletteList);
+        root.put("blocks", blocks);
+        root.put("entities", new ArrayList<>());
+        root.put("DataVersion", DATA_VERSION);
+        try (OutputStream os = new GZIPOutputStream(new BufferedOutputStream(Files.newOutputStream(out)))) {
+            write(new DataOutputStream(os), root);
+        }
+        System.out.printf("wrote %s: %d x %d x %d, %d blocks, %d enclosed air kept, %d outside air left out%n",
+                out, width, height, depth, blocks.size(), rooms, skipped);
     }
 
     // ---- chunks ----

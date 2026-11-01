@@ -49,7 +49,13 @@ during extraction, exactly like the chests in the house builds.
 | **Banner** | On the wall behind the envoy, 2 blocks up | The alliance's emblem — the one block swapped per alliance |
 
 Corners of the whole build marked with ammolite in opposing corners as usual, ground level at the
-floor, outside air set to void so terrain is not replaced around it. Inside air stays air.
+floor. **Do not fill the outside with structure void.** This version of the game does not skip
+structure void when a template is placed - it is an invisible block with a small collision box, so a
+template full of it raises an invisible lattice wherever it stands, and that is what was showing in the
+earlier converted builds. An absent cell already means "leave whatever is here alone", so the air
+around a build is simply left out. Air *inside* the build stays air, or the terrain it lands on fills
+the rooms. `tools/WorldScan extract_enclosed` applies exactly that rule: solid blocks kept, air that
+cannot reach the edge of the box kept as air, air that can reach it dropped.
 
 ## What's inside
 

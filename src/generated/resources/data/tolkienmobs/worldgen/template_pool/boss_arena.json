@@ -3,7 +3,7 @@
     {
       "element": {
         "element_type": "minecraft:single_pool_element",
-        "location": "tolkienmobs:boss_arena",
+        "location": "tolkienmobs:key_structures/boss_arena",
         "processors": {
           "processors": []
         },

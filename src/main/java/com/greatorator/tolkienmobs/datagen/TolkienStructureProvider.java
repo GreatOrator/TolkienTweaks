@@ -71,7 +71,7 @@ public final class TolkienStructureProvider {
             // the two Mirkwoods, the Wild Wood, Fangorn and the Old Forest, the Barrow Downs, the
             // Dagorlad and the Marshes, Firien, the Misty Mountains' pass, Dunland and Eriador. One
             // piece, dropped straight onto the ground it was found on.
-            new Definition(TolkienStructures.WILD_TENT, "tolkienmobs:wild_tent", WILD_CAMP_BIOMES,
+            new Definition(TolkienStructures.WILD_TENT, "tolkienmobs:key_structures/wild_tent", WILD_CAMP_BIOMES,
                     28, 8, 193764840, 0, Optional.empty(), false, Optional.of(Layout.single())),
             new Definition(TolkienStructures.SHIRE_RUIN, "tolkienmobs:ttmruin_small",
                     List.of(TolkienBiomes.DAGORLAD), 24, 8, 193764821, 0),
@@ -112,10 +112,10 @@ public final class TolkienStructureProvider {
             // The campaign's ground. The spacing and separation are never used, because neither is in a
             // structure set: they are registered so that a world builder can put one down with
             // /place structure, and so that the campaign can build them where its story needs them.
-            new Definition(TolkienStructures.BOSS_CASTLE, "tolkienmobs:boss_castle",
+            new Definition(TolkienStructures.BOSS_CASTLE, "tolkienmobs:key_structures/boss_castle",
                     List.of(TolkienBiomes.MORDOR), 48, 12, 193764860, 0, Optional.empty(), false,
                     Optional.of(Layout.single())),
-            new Definition(TolkienStructures.BOSS_ARENA, "tolkienmobs:boss_arena",
+            new Definition(TolkienStructures.BOSS_ARENA, "tolkienmobs:key_structures/boss_arena",
                     List.of(TolkienBiomes.MORDOR), 48, 12, 193764861, 0, Optional.empty(), false,
                     Optional.of(Layout.single()))
     );

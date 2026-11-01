@@ -3,7 +3,7 @@
     {
       "element": {
         "element_type": "minecraft:single_pool_element",
-        "location": "tolkienmobs:boss_castle",
+        "location": "tolkienmobs:key_structures/boss_castle",
         "processors": {
           "processors": []
         },

@@ -3,7 +3,7 @@
     {
       "element": {
         "element_type": "minecraft:single_pool_element",
-        "location": "tolkienmobs:wild_tent",
+        "location": "tolkienmobs:key_structures/wild_tent",
         "processors": {
           "processors": []
         },

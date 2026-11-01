@@ -82,11 +82,11 @@ public final class Sites extends SavedData {
     private static final Logger LOGGER = LoggerFactory.getLogger(Sites.class);
 
     /** The tent the camp errand pitches, as a template the mod already ships. */
-    public static final String WILD_TENT = "tolkienmobs:wild_tent";
+    public static final String WILD_TENT = "tolkienmobs:key_structures/wild_tent";
     /** The hilltop the West's line walks to, a landmark rather than a camp. */
-    public static final String WEATHERTOP = "tolkienmobs:weathertop";
+    public static final String WEATHERTOP = "tolkienmobs:key_structures/weathertop";
     /** The castle the campaign raises for its last act, which no world generator ever places. */
-    public static final String BOSS_CASTLE = "tolkienmobs:boss_castle";
+    public static final String BOSS_CASTLE = "tolkienmobs:key_structures/boss_castle";
 
     /** How far out a site is picked, in blocks, and how much of that is left to chance. */
     private static final int PITCH_MIN = 48;
