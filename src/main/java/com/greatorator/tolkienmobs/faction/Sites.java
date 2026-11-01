@@ -86,16 +86,25 @@ public final class Sites extends SavedData {
     public static final String WILD_TENT = "tolkienmobs:key_structures/wild_tent";
     /** The hilltop the West's line walks to, a landmark rather than a camp. */
     public static final String WEATHERTOP = "tolkienmobs:key_structures/weathertop";
+    /** The castle the campaign raises for its last act, which no world generator ever places. */
+    public static final String BOSS_CASTLE = "tolkienmobs:key_structures/boss_castle";
+    /** The arena beneath the castle, the same campaign hand's other building, also never generated. */
+    public static final String BOSS_ARENA = "tolkienmobs:key_structures/boss_arena";
     /**
      * The country each landmark stands in, where the books put it rather than where the page was taken.
      * <p>
      * A site named here is surveyed from the middle of that country, so it is the same ground for every
      * player in every world: Weathertop is Amon Sul, and Amon Sul is a hill in the heart of Eriador, not
-     * the field behind whatever hall the page was handed over in. Anything not named here keeps looking
-     * around the player, which is what lets the tent's wilds and the castle's Mordor stay in the data.
+     * the field behind whatever hall the page was handed over in. The same goes for the last act: the
+     * Witch-king's fortress is Carn Dum and Carn Dum is in Angmar, so both the castle and the arena under
+     * it stand in that country whichever hall the page came from, and neither is ever a building raised
+     * beside the player. Anything not named here keeps looking around the player, which is what lets the
+     * tent's wilds stay in the data.
      */
     private static final Map<String, ArdaMap.Country> CANON = Map.of(
-            WEATHERTOP, ArdaMap.Country.ERIADOR);
+            WEATHERTOP, ArdaMap.Country.ERIADOR,
+            BOSS_CASTLE, ArdaMap.Country.ANGMAR,
+            BOSS_ARENA, ArdaMap.Country.ANGMAR);
     /**
      * How far from its country's middle a landmark may drift, in blocks: two cells of the map. The spot
      * does not have to be the exact hill the books name - the world's own ground decides where a building
@@ -103,9 +112,6 @@ public final class Sites extends SavedData {
      * reaches, which is the difference between Weathertop and a hilltop in the Shire's east marches.
      */
     private static final int CANON_REACH = ArdaMap.CELL * 2;
-
-    /** The castle the campaign raises for its last act, which no world generator ever places. */
-    public static final String BOSS_CASTLE = "tolkienmobs:key_structures/boss_castle";
 
     /** How far out a site is picked, in blocks, and how much of that is left to chance. */
     private static final int PITCH_MIN = 48;
@@ -215,8 +221,8 @@ public final class Sites extends SavedData {
             return true;
         }
         // The drawing answers first. A structure's own biome list decides the country it may stand
-        // in - the tent's wilds and the castle's Mordor are both already in the data - so nothing is
-        // written down here about where anything belongs.
+        // in - the tent's wilds are already in the data - so nothing is written down here about where
+        // anything belongs, beyond the handful of landmarks the books put somewhere specific.
         ArdaSurvey.Ground surveyed = survey(level, player, structure);
         if (surveyed != null) {
             SITES.put(player.getUUID(), new Site(player.getUUID(), level.dimension(),
