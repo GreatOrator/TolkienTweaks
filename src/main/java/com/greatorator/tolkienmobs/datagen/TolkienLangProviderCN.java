@@ -930,8 +930,6 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("campaign.tolkienmobs.page.barachen.reply.1", "巨人？在巨魔荒野里？");
         this.add("campaign.tolkienmobs.page.barachen.say.2", "巴拉亨在大东道以南、地势开始抬升的地方扎了营。他传信说荒野中出了一个巨人——那些古老族类之一，立在林中，和树木一样高。沿大路向西走，会有斥候为你指路去他的火堆。听听他要说的话，也留意你对他说的。");
         this.add("campaign.tolkienmobs.page.barachen.say.1", "宝石已经做完了它能做的事。它做不到的，是告诉我们有人亲眼看见了什么——而巨魔荒野里就有一个人看见了什么。");
-        this.add("place.tolkienmobs.ruins", "谷地中的废墟");
-        this.add("place.tolkienmobs.ruins.line", "特罗尔肖狭窄谷地中的断墙，比任何人国都更古老。");
         this.add("campaign.tolkienmobs.page.missingrider", "失踪的骑手");
         this.add("campaign.tolkienmobs.page.missingrider.place", "特罗尔肖的狭窄谷地中的废墟");
         this.add("campaign.tolkienmobs.page.missingrider.say.1", "蹄印是在路南很远的地方找到的，我兄弟认为留下蹄印的东西还在特罗尔肖。到狭窄谷地去，查明那匹马的下落。");

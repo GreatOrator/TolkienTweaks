@@ -245,8 +245,7 @@ public final class Campaign extends SavedData {
      * itself, and the pack keeps no steed, so the finding is the ground: the page is a walk to the ruins
      * and the corpse is told in the closing line, which is what the notes' own completion text is.
      */
-    private static final String MISSING_RIDER_PLACE = "ruins";
-    private static final String MISSING_RIDER_TARGET = Quest.placeTarget(MISSING_RIDER_PLACE);
+    private static final String MISSING_RIDER_TARGET = Quest.siteTarget(Sites.WOOD_RUIN);
     private static final String MISSING_RIDER_TITLE = "campaign.tolkienmobs.page.missingrider";
     /** The report Elladan hears at his camp, which is the second half of the same beat. */
     private static final String RIDER_RETURN_TITLE = "campaign.tolkienmobs.page.riderreport";
@@ -324,7 +323,9 @@ public final class Campaign extends SavedData {
                             "campaign.tolkienmobs.page.horse.closing", 0, 0, 25),
                     // The notes' Missing Rider, which the line had skipped over: the hoofprints are found
                     // south of the road and the horse is found in the ruins. A corpse is not a hunt, so the
-                    // page is the ground and the finding is the closing line the notes wrote for it.
+                    // page is the walk to the ruin and the finding is the closing line the notes wrote for it.
+                    // The ruin is the pack's own template rather than bare ground, so what is found is found
+                    // at a wall; the ledger pitches it when the page is taken, as it pitches any site page.
                     new Page(Quest.Kind.LOCATION, MISSING_RIDER_TARGET, 1, 5, 4,
                             MISSING_RIDER_TITLE, "campaign.tolkienmobs.page.missingrider.place",
                             "campaign.tolkienmobs.page.missingrider.closing", 0, 0, 25),

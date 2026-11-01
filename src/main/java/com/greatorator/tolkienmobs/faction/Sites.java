@@ -98,6 +98,12 @@ public final class Sites extends SavedData {
      */
     public static final String TROLL_CAVE = "tolkienmobs:key_structures/troll_cave";
     /**
+     * The ruin the rider is found at. The notes put it in the narrow channels south of the road, and the
+     * pack already ships a ruin for wild ground: rather than a point on the map with a reach round it,
+     * the page asks for a wall to be standing there, so the player finds a place and not a field.
+     */
+    public static final String WOOD_RUIN = "tolkienmobs:ttmruin_large";
+    /**
      * The country each landmark stands in, where the books put it rather than where the page was taken.
      * <p>
      * A site named here is surveyed from the middle of that country, so it is the same ground for every
@@ -111,7 +117,8 @@ public final class Sites extends SavedData {
     private static final Map<String, ArdaMap.Country> CANON = Map.of(
             WEATHERTOP, ArdaMap.Country.ERIADOR,
             BOSS_CASTLE, ArdaMap.Country.ANGMAR,
-            BOSS_ARENA, ArdaMap.Country.ANGMAR);
+            BOSS_ARENA, ArdaMap.Country.ANGMAR,
+            WOOD_RUIN, ArdaMap.Country.TROLLSHAWS);
     /**
      * How far from its country's middle a landmark may drift, in blocks: two cells of the map. The spot
      * does not have to be the exact hill the books name - the world's own ground decides where a building

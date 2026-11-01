@@ -131,10 +131,6 @@ public final class Places extends SavedData {
             // The scout's camp the West walks to after the caves: south of the Great East Road, in
             // the same country as Thorenhad, and named rather than built for the same reason.
             new Name("barachen", Alliance.WEST, false),
-            // The ruins in the narrow channels where the riderless horse is found. The notes' Missing
-            // Rider puts them south of the road in the Trollshaws, and they are ground rather than a
-            // building, so the map is asked for them the way it is asked for a camp.
-            new Name("ruins", Alliance.WEST, false),
             new Name("oldforest", null, false)
     );
 
@@ -151,9 +147,7 @@ public final class Places extends SavedData {
             // page that mentions it happens to be taken.
             "thorenhad", ArdaMap.Country.TROLLSHAWS,
             // His fire is south of the road through the same country, not wherever the page was taken.
-            "barachen", ArdaMap.Country.TROLLSHAWS,
-            // The ruins are in the same country as the camps and not wherever the page was taken.
-            "ruins", ArdaMap.Country.TROLLSHAWS);
+            "barachen", ArdaMap.Country.TROLLSHAWS);
 
     /**
      * One place as this world has it: which of the catalogue it is, the dimension it stands in, the

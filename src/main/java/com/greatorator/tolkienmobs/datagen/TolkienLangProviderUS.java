@@ -930,8 +930,6 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.page.barachen.reply.1", "A Giant? In the Trollshaws?");
         this.add("campaign.tolkienmobs.page.barachen.say.2", "Barachen keeps a camp south of the Great East Road, where the country begins to climb. He sent word of a Giant in the wild - one of the old ones, standing among the trees as tall as they are. Take the road west and a scout will put you on the path to his fire. Hear what he has to say, and mind what you tell him.");
         this.add("campaign.tolkienmobs.page.barachen.say.1", "The stone has done what a stone can do. What it cannot do is tell us what a man saw with his own eyes, and there is a man in the Trollshaws who has seen something.");
-        this.add("place.tolkienmobs.ruins", "The Ruins in the Channels");
-        this.add("place.tolkienmobs.ruins.line", "Broken walls in the narrow channels of the Trollshaws, older than any kingdom of Men.");
         this.add("campaign.tolkienmobs.page.missingrider", "The Missing Rider");
         this.add("campaign.tolkienmobs.page.missingrider.place", "the ruins in the narrow channels of the Trollshaws");
         this.add("campaign.tolkienmobs.page.missingrider.say.1", "The hoofprints were found far south of the road, and my brother holds that whatever left them is still in the Trollshaws. Go down into the narrow channels and find what became of the horse.");
