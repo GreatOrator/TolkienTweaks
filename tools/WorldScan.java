@@ -29,6 +29,11 @@ public class WorldScan {
     public static void main(String[] args) throws Exception {
         Path regionDir = Paths.get(args[0]);
         String mode = args[1];
+        // Rewriting one template has no need of a world, which the other modes are given.
+        if (mode.equals("stripvoid")) {
+            stripVoid(Paths.get(args[2]));
+            return;
+        }
         read(regionDir, (cx, cz, nbt) -> scanChunk(cx, cz, nbt));
 
         switch (mode) {
@@ -37,7 +42,8 @@ public class WorldScan {
             case "extract" -> extract(parseBox(args, 2), Paths.get(args[8]), false);
             case "extract_void" -> extract(parseBox(args, 2), Paths.get(args[8]), true);
             case "layers" -> layers(parseBox(args, 2));
-            default -> throw new IllegalArgumentException("mode is find, slice, layers, extract or extract_void");
+            case "stripvoid" -> stripVoid(Paths.get(args[2]));
+            default -> throw new IllegalArgumentException("mode is find, slice, layers, extract, extract_void or stripvoid");
         }
     }
 
@@ -155,6 +161,51 @@ public class WorldScan {
             }
             System.out.printf("y=%3d  solid %6d  air %6d%n", y, solid, air);
         }
+    }
+
+    /**
+     * Removes every structure void block from a template, leaving the rest of it alone.
+     * <p>
+     * The game's template placement does not skip structure void: the block is invisible and has a
+     * small collision box, so a template carrying void raises an invisible lattice of blocks wherever
+     * it is placed. A cell with nothing in it at all is the way to say "leave whatever is here", which
+     * is what {@code extract} writes, so this is for the templates cut before that was understood.
+     */
+    static void stripVoid(Path file) throws IOException {
+        Map<String, Object> root;
+        try (DataInputStream in = new DataInputStream(new BufferedInputStream(
+                new GZIPInputStream(Files.newInputStream(file))))) {
+            int type = in.readUnsignedByte();
+            in.readUTF();
+            if (type != 10) throw new IOException("root is not a compound");
+            root = (Map<String, Object>) payload(in, type);
+        }
+        List<?> palette = (List<?>) root.get("palette");
+        Set<Integer> voidStates = new HashSet<>();
+        for (int i = 0; i < palette.size(); i++) {
+            Map<?, ?> state = (Map<?, ?>) palette.get(i);
+            if ("minecraft:structure_void".equals(state.get("Name"))) voidStates.add(i);
+        }
+        if (voidStates.isEmpty()) {
+            System.out.println(file.getFileName() + ": no void, left alone");
+            return;
+        }
+        List<?> blocks = (List<?>) root.get("blocks");
+        List<Object> kept = new ArrayList<>(blocks.size());
+        int dropped = 0;
+        for (Object o : blocks) {
+            Map<?, ?> block = (Map<?, ?>) o;
+            if (voidStates.contains(((Number) block.get("state")).intValue())) {
+                dropped++;
+                continue;
+            }
+            kept.add(o);
+        }
+        root.put("blocks", kept);
+        try (OutputStream os = new GZIPOutputStream(new BufferedOutputStream(Files.newOutputStream(file)))) {
+            write(new DataOutputStream(os), root);
+        }
+        System.out.println(file.getFileName() + ": dropped " + dropped + " void of " + blocks.size());
     }
 
     // ---- chunks ----
