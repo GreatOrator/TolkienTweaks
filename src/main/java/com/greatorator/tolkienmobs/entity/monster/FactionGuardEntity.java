@@ -11,6 +11,7 @@ import com.geckolib.util.GeckoLibUtil;
 import com.greatorator.tolkienmobs.entity.TolkienMonsterEntity;
 import com.greatorator.tolkienmobs.entity.util.TableIdle;
 import com.greatorator.tolkienmobs.faction.Alliance;
+import com.greatorator.tolkienmobs.faction.Heraldry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -158,7 +159,7 @@ public class FactionGuardEntity extends TolkienMonsterEntity implements GeoEntit
      */
     private void standPost() {
         if (this.getOffhandItem().isEmpty()) {
-            this.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(Items.SHIELD));
+            this.setItemSlot(EquipmentSlot.OFFHAND, Heraldry.shield(this.level(), this.alliance()));
         }
         this.greeting();
     }
