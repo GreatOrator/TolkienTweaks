@@ -968,6 +968,12 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("campaign.tolkienmobs.page.ford.place", "哈尔能河的渡口");
         this.add("campaign.tolkienmobs.page.rider", "戒灵之言");
         this.add("campaign.tolkienmobs.page.rider.place", "他选择现身之处");
+        this.add("campaign.tolkienmobs.witchking.rising", "城堡里有东西注意到了你。");
+        this.add("campaign.tolkienmobs.page.witchking.closing", "王冠并不在它落下的地方。这场战争无论为了什么，都不是三国对自己说的那件事，而厅堂还会继续发问。");
+        this.add("campaign.tolkienmobs.page.witchking.place", "黑冠之下的厅堂");
+        this.add("campaign.tolkienmobs.page.witchking", "城堡里等着的东西");
+        this.add("campaign.tolkienmobs.page.castle.place", "今早还不存在的一座城堡");
+        this.add("campaign.tolkienmobs.page.castle", "这场战争立起来的城堡");
         this.add("campaign.tolkienmobs.page.steward", "南方的管家");
         this.add("campaign.tolkienmobs.page.steward.place", "努恩，队长们的道路上");
         this.add("campaign.tolkienmobs.page.steward.closing", "一封封好的信，一位管家的字迹，一条离开那个要他消失的国家的路。东境用纸买下了一桩怨恨，而这笔账记在你身上。");

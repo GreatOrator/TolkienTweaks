@@ -23,6 +23,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
@@ -145,6 +146,26 @@ public final class Campaign extends SavedData {
     private static final String RIDER_TITLE = "campaign.tolkienmobs.page.rider";
     private static final String RIDER_PLACE = "campaign.tolkienmobs.page.rider.place";
     /**
+     * How many pages the campaign's own slot walks through: the Rider, the castle, and what is in it.
+     * The stage is what the client is told, so a herald's mark stays up until the last of them is paid.
+     */
+    private static final int FINALE_STAGES = 3;
+    /** Where the last act happens, what it pays, and what the book calls it. */
+    private static final String CASTLE_TARGET = Quest.siteTarget(Sites.BOSS_CASTLE);
+    private static final String CASTLE_TITLE = "campaign.tolkienmobs.page.castle";
+    private static final String CASTLE_PLACE = "campaign.tolkienmobs.page.castle.place";
+    private static final String WITCHKING_TITLE = "campaign.tolkienmobs.page.witchking";
+    private static final String WITCHKING_PLACE = "campaign.tolkienmobs.page.witchking.place";
+    private static final String FINALE_CLOSING = "campaign.tolkienmobs.page.witchking.closing";
+    private static final int ARENA_STANDING = 300;
+    /** The rung the ladder has been holding back for the arena, paid when the last page is settled. */
+    private static final int ARENA_COURAGE = 75;
+    /** The tag the Witch-king wears when the campaign stands him up, and how far he is looked for. */
+    private static final String WITCHKING_TAG = "tolkienmobs:campaign_witchking";
+    private static final double WITCHKING_SEARCH = 96.0D;
+    /** How far up a castle is searched for room to stand a body. */
+    private static final int WITCHKING_HEADROOM = 24;
+    /**
      * The pages whose prose has been written into their talk keys, and so are read aloud rather than
      * summarised when a herald hands one over. One, for now: the West's first muster, which is where
      * the campaign opens and where the script's argument for a conversation is made.
@@ -250,7 +271,7 @@ public final class Campaign extends SavedData {
      */
     public static boolean clientHasWork(Alliance alliance) {
         if (CLIENT[alliance.ordinal()] < pages(alliance)) return true;
-        return clientSealed() && clientRider == 0;
+        return clientSealed() && clientRider < FINALE_STAGES;
     }
 
     /**
@@ -312,7 +333,7 @@ public final class Campaign extends SavedData {
     /** Whether the campaign's own page is behind the player, which is the campaign finished. */
     public static boolean done(ServerPlayer player) {
         ensureLoaded(player.level());
-        return row(player)[RIDER_SLOT].stage() > 0;
+        return row(player)[RIDER_SLOT].stage() >= FINALE_STAGES;
     }
 
     /**
@@ -342,7 +363,16 @@ public final class Campaign extends SavedData {
             return new Quest(page.kind(), target, page.goal(), 0, alliance.id(), page.standing(), List.of(),
                     "", BlockPos.ZERO, Quest.NOBODY, true, "");
         }
-        return sealed(row) && row[RIDER_SLOT].stage() == 0 ? riderPage() : null;
+        if (!sealed(row)) return null;
+        // The slot the campaign keeps for itself walks through its last acts: the Rider, then the
+        // castle raised after him, then what is waiting in it. A herald who has nothing left of his
+        // own front still has these to hand over, so the war ends at a bench like everything else.
+        return switch (row[RIDER_SLOT].stage()) {
+            case 0 -> riderPage();
+            case 1 -> castlePage();
+            case 2 -> witchKingPage();
+            default -> null;
+        };
     }
 
     /**
@@ -363,6 +393,31 @@ public final class Campaign extends SavedData {
 
     private static String riderId() {
         return BuiltInRegistries.ENTITY_TYPE.getKey(TolkienEntities.ENTITY_TTM_NAZGUL.get()).toString();
+    }
+
+    /**
+     * The castle: the first page in the campaign that asks for ground the campaign raises itself, and
+     * the first thing the war builds rather than the last thing it finds. It stands where the player was
+     * when they took the page, forty-eight blocks on and out of sight, so the last act of the campaign
+     * is somewhere they have to walk to.
+     */
+    private static Quest castlePage() {
+        return new Quest(Quest.Kind.LOCATION, CASTLE_TARGET, 1, 0, "", 0, List.of(),
+                "", BlockPos.ZERO, Quest.NOBODY, true, "");
+    }
+
+    /**
+     * What is waiting in it. Asked of the registry for the same reason the Rider is: a page naming a
+     * boss the pack does not have can never be finished.
+     */
+    private static Quest witchKingPage() {
+        return new Quest(Quest.Kind.HUNT, witchKingId(), 1, 0, "", ARENA_STANDING, List.of(),
+                "", BlockPos.ZERO, Quest.NOBODY, true, "");
+    }
+
+    private static String witchKingId() {
+        return BuiltInRegistries.ENTITY_TYPE.getKey(TolkienEntities.ENTITY_TTM_WITCHKING.get())
+                .toString();
     }
 
     // ---- handing it over and settling it ----
@@ -401,7 +456,10 @@ public final class Campaign extends SavedData {
      */
     private static void standQuarryUp(ServerPlayer player, Quest page) {
         if (!(player.level() instanceof ServerLevel level)) return;
-        if (page.kind() != Quest.Kind.HUNT || isCampaignPage(player, page)) return;
+        // The campaign's own last acts are not stood up on the road: the Rider has his own arrival
+        // out under open sky, and the Witch-king belongs in the castle rather than beside the bench
+        // the page was taken at.
+        if (page.kind() != Quest.Kind.HUNT || isFinale(page)) return;
         EntityType<?> quarry = page.entityType();
         if (quarry == null) return;
         if (quarryOnTheGround(player, quarry)) return;
@@ -484,6 +542,7 @@ public final class Campaign extends SavedData {
      */
     public static void tick(ServerPlayer player) {
         if (player.tickCount % RIDER_CHECK_INTERVAL != 0) return;
+        keepWitchKing(player);
         Quest page = carriedCampaignPage(player);
         if (page == null || page.complete()) {
             RIDER_CALLED.remove(player.getUUID());
@@ -509,6 +568,66 @@ public final class Campaign extends SavedData {
                             : "quest.tolkienmobs.rider.coming")
                     .withStyle(ChatFormatting.DARK_PURPLE));
         }
+    }
+
+    /**
+     * Stands the Witch-king up in the castle the campaign raised, once the player is carrying his page
+     * and the castle is standing. He is not put on the road ahead of the player the way lesser quarry
+     * is: the page that names him is taken at a bench, and he belongs in the building rather than beside
+     * the bench. What keeps a second one from being stood up is the tag, so a reloaded world or a player
+     * who walked away finds the same one waiting rather than a fresh one every look.
+     */
+    private static void keepWitchKing(ServerPlayer player) {
+        if (carriedWitchKingPage(player) == null) return;
+        if (!(player.level() instanceof ServerLevel level)) return;
+        Sites.Site site = Sites.siteOf(player);
+        if (site == null || !site.built()) return;
+        // The castle a player is standing in is not necessarily the castle in the world: a site is
+        // recorded against the dimension it was raised in, and only built in that one.
+        if (level.dimension().equals(site.dimension()) && witchKingLiving(level, site.centre())) return;
+        BlockPos stand = standingRoom(level, site.centre());
+        if (stand == null) return;
+        Entity entity = TolkienEntities.ENTITY_TTM_WITCHKING.get().create(level, EntitySpawnReason.EVENT);
+        if (!(entity instanceof Mob king)) return;
+        king.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D,
+                level.getRandom().nextFloat() * 360.0F, 0.0F);
+        king.setPersistenceRequired();
+        king.addTag(WITCHKING_TAG);
+        level.addFreshEntity(king);
+        player.sendSystemMessage(Component.translatable("campaign.tolkienmobs.witchking.rising")
+                .withStyle(ChatFormatting.DARK_PURPLE));
+    }
+
+    /** The page that names the Witch-king, if the player is carrying it. */
+    @Nullable
+    private static Quest carriedWitchKingPage(ServerPlayer player) {
+        for (Quest quest : QuestLedger.active(player)) {
+            if (quest.story() && quest.target().equals(witchKingId())) return quest;
+        }
+        return null;
+    }
+
+    /** Whether the campaign's Witch-king is already standing near the castle. */
+    private static boolean witchKingLiving(ServerLevel level, BlockPos centre) {
+        return !level.getEntities((Entity) null, new AABB(centre).inflate(WITCHKING_SEARCH),
+                found -> found.entityTags().contains(WITCHKING_TAG)).isEmpty();
+    }
+
+    /**
+     * The first place in a building where a body would fit: two blocks of air over solid ground, looked
+     * for from the floor it was placed at upward. Null when there is no such room yet, which the next
+     * look tries again rather than standing him in a wall.
+     */
+    @Nullable
+    private static BlockPos standingRoom(ServerLevel level, BlockPos centre) {
+        for (int dy = 0; dy <= WITCHKING_HEADROOM; dy++) {
+            BlockPos feet = centre.above(dy);
+            if (!level.getBlockState(feet).isAir()) continue;
+            if (!level.getBlockState(feet.above()).isAir()) continue;
+            if (!level.getBlockState(feet.below()).isSolid()) continue;
+            return feet;
+        }
+        return null;
     }
 
     /** The campaign's own page if the player is carrying it and has not finished it yet. */
@@ -630,9 +749,18 @@ public final class Campaign extends SavedData {
             sync(player);
             return false;
         }
-        Front rider = row[RIDER_SLOT];
-        if (!sameErrand(rider.handed(), quest)) return false;
-        row[RIDER_SLOT] = new Front(1, null);
+        Front finale = row[RIDER_SLOT];
+        if (!sameErrand(finale.handed(), quest)) return false;
+        int next = finale.stage() + 1;
+        // The last page pays the rung the ladder has been holding back for the arena, and says the
+        // words the campaign ends on. The Rider's own fall pays no courage of its own: felling one of
+        // the Nine is already a deed, and his page asks for him twice.
+        if (next >= FINALE_STAGES) {
+            CourageLedger.add(player, ARENA_COURAGE);
+            player.sendSystemMessage(Component.translatable(FINALE_CLOSING)
+                    .withStyle(ChatFormatting.GOLD));
+        }
+        row[RIDER_SLOT] = new Front(next, null);
         store(player).setDirty();
         sync(player);
         return true;
@@ -645,9 +773,18 @@ public final class Campaign extends SavedData {
      * war on the first wight a player felled, long before any front was settled.
      */
     private static int slotOf(Quest page, Alliance alliance) {
-        return page.kind() == Quest.Kind.HUNT && page.target().equals(riderId())
-                ? RIDER_SLOT
-                : alliance.ordinal();
+        return isFinale(page) ? RIDER_SLOT : alliance.ordinal();
+    }
+
+    /**
+     * Whether a page is one of the campaign's own last acts rather than a front's. Read off what it asks
+     * for rather than off what was noted as handed over, because this is asked while a page is still
+     * being handed out - before the slot knows about it.
+     */
+    private static boolean isFinale(Quest page) {
+        return page.story() && (page.target().equals(riderId())
+                || page.target().equals(witchKingId())
+                || page.target().equals(CASTLE_TARGET));
     }
 
     /**
