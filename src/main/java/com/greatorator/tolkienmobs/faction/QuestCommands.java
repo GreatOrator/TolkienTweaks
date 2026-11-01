@@ -65,6 +65,22 @@ public final class QuestCommands {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
         dispatcher.register(Commands.literal("tmquest")
                 .requires(MAY_ARRANGE)
+                // The literal is written before the selector: a word typed here would otherwise be read
+                // as a player's name, which swallowed "page" and left the page branch unreachable.
+                .then(Commands.literal("page")
+                        .then(Commands.argument("kind", StringArgumentType.word())
+                                .suggests((context, builder) -> {
+                                    for (Quest.Kind kind : Quest.Kind.values()) {
+                                        builder.suggest(kind.name().toLowerCase(Locale.ROOT));
+                                    }
+                                    return builder.buildFuture();
+                                })
+                                .then(Commands.argument("target", StringArgumentType.string())
+                                        .executes(context -> page(context, 1))
+                                        .then(Commands.argument("goal",
+                                                        IntegerArgumentType.integer(1, 64))
+                                                .executes(context -> page(context,
+                                                        IntegerArgumentType.getInteger(context, "goal")))))))
                 .then(Commands.argument("targets", EntityArgument.players())
                         .then(Commands.literal("give")
                                 .executes(context -> give(context, 1))
@@ -87,21 +103,7 @@ public final class QuestCommands {
                                             }
                                             return builder.buildFuture();
                                         })
-                                        .executes(QuestCommands::spawnCampaignGiver)))
-                .then(Commands.literal("page")
-                        .then(Commands.argument("kind", StringArgumentType.word())
-                                .suggests((context, builder) -> {
-                                    for (Quest.Kind kind : Quest.Kind.values()) {
-                                        builder.suggest(kind.name().toLowerCase(Locale.ROOT));
-                                    }
-                                    return builder.buildFuture();
-                                })
-                                .then(Commands.argument("target", StringArgumentType.string())
-                                        .executes(context -> page(context, 1))
-                                        .then(Commands.argument("goal",
-                                                        IntegerArgumentType.integer(1, 64))
-                                                .executes(context -> page(context,
-                                                        IntegerArgumentType.getInteger(context, "goal")))))))));
+                                        .executes(QuestCommands::spawnCampaignGiver)))));
     }
 
     /**
