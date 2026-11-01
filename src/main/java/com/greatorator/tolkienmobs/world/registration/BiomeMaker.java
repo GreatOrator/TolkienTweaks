@@ -675,6 +675,32 @@ public class BiomeMaker extends BiomeHelper{
      * Eriador, the lost realm of Arnor: Bree-land and the downs about it, green and settled, with
      * Bree and the hobbit villages of the Shire's eastern fringe among its fields.
      */
+    /**
+     * The Trollshaws, the hill-trolls' wood. A cool upland forest rather than a lowland one, so it is
+     * greyer and more open than Firien beside it: the light of a northern autumn, the water of a
+     * mountain river, and grass and leaves darker than the fields below the hills.
+     */
+    public static Biome makeBiomeTrollshaws(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        var generation = trollshawsGen(placedFeatureGetter, carverGetter);
+        var spawning = trollshawsSpawning();
+        return foggedBiome(24.0F, 128.0F)
+                .hasPrecipitation(true)
+                .temperature(0.55F)
+                .downfall(0.75F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(0.55F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(0x8FA6B8))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(0x1E3A4A))
+                .setAttribute(EnvironmentAttributes.AMBIENT_SOUNDS, ambientLoop(SoundEvents.AMBIENT_CRIMSON_FOREST_MOOD))
+                .specialEffects((new BiomeSpecialEffects.Builder())
+                        .waterColor(0x3F76E4)
+                        .foliageColorOverride(0x5F7C3F)
+                        .grassColorOverride(0x6E8B4A)
+                        .build())
+                .mobSpawnSettings(spawning.build())
+                .generationSettings(generation.build())
+                .build();
+    }
+
     public static Biome makeBiomeEriador(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
         return new Biome.BiomeBuilder()
                 .hasPrecipitation(true)

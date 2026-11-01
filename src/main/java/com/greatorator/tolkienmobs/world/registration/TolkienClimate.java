@@ -105,6 +105,9 @@ final class TolkienClimate {
         slots.put(Biomes.FOREST, TolkienBiomes.OLD_FOREST);
         slots.put(Biomes.PLAINS, TolkienBiomes.SHIRE);
         slots.put(Biomes.FLOWER_FOREST, TolkienBiomes.FIRIEN);
+        // The old-growth birch is a cool northern wood that nothing else in the region had taken, and
+        // that is the climate the Trollshaws are drawn in.
+        slots.put(Biomes.OLD_GROWTH_BIRCH_FOREST, TolkienBiomes.TROLLSHAWS);
         slots.put(Biomes.DESERT, TolkienBiomes.HARADWAITH);
         slots.put(Biomes.SAVANNA_PLATEAU, TolkienBiomes.DAGORLAD);
         slots.put(Biomes.SUNFLOWER_PLAINS, TolkienBiomes.GLADDEN);
@@ -211,6 +214,11 @@ final class TolkienClimate {
         // cold enough to snow, too dry to grow the taiga that fills the wetter half of the plain.
         claims.add(claim(Biomes.SNOWY_PLAINS, TolkienBiomes.ANGMAR,
                 temps(ParameterUtils.Temperature.ICY), hums(ParameterUtils.Humidity.DRY)));
+
+        // The Trollshaws take the forest slot's cool dry half, which none of the other woods had
+        // claimed: an upland wood rather than the wet lowland forest or the cold high ground beside it.
+        claims.add(claim(Biomes.FOREST, TolkienBiomes.TROLLSHAWS,
+                temps(ParameterUtils.Temperature.COOL), hums(ParameterUtils.Humidity.DRY)));
 
         return claims;
     }

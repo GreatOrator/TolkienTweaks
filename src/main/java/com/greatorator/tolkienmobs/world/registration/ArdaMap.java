@@ -126,6 +126,9 @@ public final class ArdaMap {
         // The Misty Mountains and the countries either side of them.
         HITHAEGLIR(TolkienBiomes.HITHAEGLIR, 175, 34, true),
         FIRIEN(TolkienBiomes.FIRIEN, 76, 8, true),
+        // The Trollshaws, west of the mountains and south of Rhudaur: higher and rougher than Eregion
+        // below them, which is what makes them a hill country rather than more of the same wood.
+        TROLLSHAWS(TolkienBiomes.TROLLSHAWS, 84, 16, true),
         LORINAND(TolkienBiomes.LORINAND, 74, 6, true),
         FANGORN(TolkienBiomes.FANGORN, 78, 10, true),
 
@@ -437,6 +440,9 @@ public final class ArdaMap {
         // Vales on the eastern one.
         line(map, Country.HITHAEGLIR, 2, new double[]{20.5, 21.0, 21.0, 22.0, 22.5},
                 new double[]{3.0, 7.0, 11.0, 15.0, 19.0});
+        // The Trollshaws take the northern end of the country drawn as Firien - the ground under
+        // Rhudaur and against the mountains - leaving Eregion and the holly country south of it.
+        fill(map, Country.TROLLSHAWS, 18, 12, 19, 14);
         fill(map, Country.FIRIEN, 18, 12, 20, 17);
         fill(map, Country.LORINAND, 21, 13, 21, 14);
         fill(map, Country.LORINAND, 23, 15, 24, 18);

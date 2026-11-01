@@ -1,0 +1,195 @@
+{
+  "attributes": {
+    "minecraft:audio/ambient_sounds": {
+      "loop": "minecraft:ambient.crimson_forest.mood"
+    },
+    "minecraft:visual/fog_color": "#8fa6b8",
+    "minecraft:visual/fog_end_distance": 128.0,
+    "minecraft:visual/fog_start_distance": 24.0,
+    "minecraft:visual/sky_color": "#7b9bd1",
+    "minecraft:visual/water_fog_color": "#1e3a4a"
+  },
+  "carvers": [
+    "minecraft:cave",
+    "minecraft:cave_extra_underground",
+    "minecraft:canyon"
+  ],
+  "downfall": 0.75,
+  "effects": {
+    "foliage_color": "#5f7c3f",
+    "grass_color": "#6e8b4a",
+    "water_color": "#3f76e4"
+  },
+  "features": [
+    [],
+    [
+      "minecraft:lake_lava_underground",
+      "minecraft:lake_lava_surface"
+    ],
+    [],
+    [
+      "minecraft:monster_room",
+      "minecraft:monster_room_deep"
+    ],
+    [],
+    [],
+    [
+      "minecraft:ore_dirt",
+      "minecraft:ore_gravel",
+      "minecraft:ore_granite_upper",
+      "minecraft:ore_granite_lower",
+      "minecraft:ore_diorite_upper",
+      "minecraft:ore_diorite_lower",
+      "minecraft:ore_andesite_upper",
+      "minecraft:ore_andesite_lower",
+      "minecraft:ore_tuff",
+      "minecraft:ore_coal_upper",
+      "minecraft:ore_coal_lower",
+      "minecraft:ore_iron_upper",
+      "minecraft:ore_iron_middle",
+      "minecraft:ore_iron_small",
+      "minecraft:ore_gold",
+      "minecraft:ore_gold_lower",
+      "minecraft:ore_redstone",
+      "minecraft:ore_redstone_lower",
+      "minecraft:ore_diamond",
+      "minecraft:ore_diamond_medium",
+      "minecraft:ore_diamond_large",
+      "minecraft:ore_diamond_buried",
+      "minecraft:ore_lapis",
+      "minecraft:ore_lapis_buried",
+      "minecraft:ore_copper",
+      "minecraft:underwater_magma",
+      "tolkienmobs:legacy_coal_ore",
+      "tolkienmobs:legacy_copper_ore",
+      "tolkienmobs:legacy_diamond_ore",
+      "tolkienmobs:legacy_gold_ore",
+      "tolkienmobs:legacy_iron_ore",
+      "tolkienmobs:legacy_lapis_ore",
+      "tolkienmobs:legacy_redstone_ore"
+    ],
+    [],
+    [
+      "minecraft:spring_water",
+      "minecraft:spring_lava"
+    ],
+    [
+      "minecraft:trees_birch_and_oak",
+      "minecraft:patch_grass_forest",
+      "minecraft:patch_large_fern",
+      "minecraft:patch_tall_grass_2",
+      "minecraft:brown_mushroom_normal",
+      "minecraft:red_mushroom_normal",
+      "minecraft:patch_berry_common",
+      "tolkienmobs:random_rubble",
+      "tolkienmobs:stumps"
+    ]
+  ],
+  "has_precipitation": true,
+  "spawn_costs": {
+    "minecraft:sheep": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "minecraft:wolf": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmauroch": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmbrigand": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmcrebain": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmsquirrel": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmthrush": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmtroll": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmwarg": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    }
+  },
+  "spawners": {
+    "ambient": [
+      {
+        "maxCount": 2,
+        "minCount": 1,
+        "type": "tolkienmobs:entityttmcrebain",
+        "weight": 15
+      },
+      {
+        "maxCount": 2,
+        "minCount": 1,
+        "type": "tolkienmobs:entityttmsquirrel",
+        "weight": 10
+      },
+      {
+        "maxCount": 2,
+        "minCount": 1,
+        "type": "tolkienmobs:entityttmthrush",
+        "weight": 10
+      }
+    ],
+    "axolotls": [],
+    "creature": [
+      {
+        "maxCount": 3,
+        "minCount": 1,
+        "type": "minecraft:wolf",
+        "weight": 20
+      },
+      {
+        "maxCount": 4,
+        "minCount": 1,
+        "type": "tolkienmobs:entityttmauroch",
+        "weight": 10
+      },
+      {
+        "maxCount": 4,
+        "minCount": 1,
+        "type": "minecraft:sheep",
+        "weight": 10
+      }
+    ],
+    "misc": [],
+    "monster": [
+      {
+        "maxCount": 2,
+        "minCount": 1,
+        "type": "tolkienmobs:entityttmtroll",
+        "weight": 35
+      },
+      {
+        "maxCount": 3,
+        "minCount": 1,
+        "type": "tolkienmobs:entityttmbrigand",
+        "weight": 25
+      },
+      {
+        "maxCount": 2,
+        "minCount": 1,
+        "type": "tolkienmobs:entityttmwarg",
+        "weight": 15
+      }
+    ],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "temperature": 0.55
+}

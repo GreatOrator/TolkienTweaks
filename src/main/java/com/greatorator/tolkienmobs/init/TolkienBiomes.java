@@ -44,6 +44,13 @@ public class TolkienBiomes {
     public static final ResourceKey<Biome> OLD_FOREST = createBiome("old_forest", BiomeMaker::makeBiomeOldForest, TolkienTags.Biomes.DARK_FOREST, TolkienTags.Biomes.TEMPERATE);
     public static final ResourceKey<Biome> SHIRE = createBiome("shire", BiomeMaker::makeBiomeShire, TolkienTags.Biomes.PLAINS, TolkienTags.Biomes.TEMPERATE, TolkienTags.Biomes.PEACEFUL);
     public static final ResourceKey<Biome> FIRIEN = createBiome("firien", BiomeMaker::makeBiomeFirien, TolkienTags.Biomes.FOREST, TolkienTags.Biomes.TEMPERATE);
+    /**
+     * The Trollshaws: the upland wood between Rhudaur and the Misty Mountains, west of Rivendell. Beech
+     * and oak on the slopes with pine above them, cut through by gorges and by the Hoarwell and the
+     * Bruinen, and named for the hill-trolls that came down out of the Ettenmoors to live in it - which
+     * is why it is tagged hostile rather than peaceful, temperate wood or not.
+     */
+    public static final ResourceKey<Biome> TROLLSHAWS = createBiome("trollshaws", BiomeMaker::makeBiomeTrollshaws, TolkienTags.Biomes.FOREST, TolkienTags.Biomes.TEMPERATE, TolkienTags.Biomes.WINDSWEPT, TolkienTags.Biomes.HOSTILE);
     public static final ResourceKey<Biome> HARADWAITH = createBiome("haradwaith", BiomeMaker::makeBiomeHaradwaith, TolkienTags.Biomes.DESERT, TolkienTags.Biomes.DRY, TolkienTags.Biomes.HOSTILE);
     public static final ResourceKey<Biome> DAGORLAD = createBiome("dagorlad", BiomeMaker::makeBiomeDagorland, TolkienTags.Biomes.PLAINS, TolkienTags.Biomes.TEMPERATE);
     public static final ResourceKey<Biome> GLADDEN = createBiome("gladden", BiomeMaker::makeBiomeGladden, TolkienTags.Biomes.PLAINS, TolkienTags.Biomes.TEMPERATE, TolkienTags.Biomes.PEACEFUL);

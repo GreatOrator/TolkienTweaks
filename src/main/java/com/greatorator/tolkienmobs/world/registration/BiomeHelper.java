@@ -596,6 +596,68 @@ public abstract class BiomeHelper {
 				.addMobCharge(TolkienEntities.ENTITY_TTM_FROG.get(), 0.6, 0.15);
 	}
 
+	/**
+	 * The Trollshaws. A temperate upland wood: beech and oak below, pine on the higher slopes, ferns and
+	 * fallen timber under them, and the mod's own rubble where the rock shows through - the country is
+	 * hilly and cut by gorges rather than flat, so its floor is never tidy. Aurochs and wolves keep it
+	 * with the hill-trolls, and the brigands of the old Rhudaur forts hide in it.
+	 */
+	public static MobSpawnSettings.Builder trollshawsSpawning() {
+
+		return new MobSpawnSettings.Builder()
+				.addSpawn(MobCategory.MONSTER, 35, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_TROLL.get(), 1, 2))
+				.addSpawn(MobCategory.MONSTER, 25, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_BRIGAND.get(), 1, 3))
+				.addSpawn(MobCategory.MONSTER, 15, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_WARG.get(), 1, 2))
+				.addSpawn(MobCategory.CREATURE, 20, new MobSpawnSettings.SpawnerData(EntityType.WOLF, 1, 3))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_AUROCH.get(), 1, 4))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.SHEEP, 1, 4))
+				.addSpawn(MobCategory.AMBIENT, 15, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 1, 2))
+				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 1, 2))
+				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_THRUSH.get(), 1, 2))
+				.addMobCharge(TolkienEntities.ENTITY_TTM_TROLL.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_BRIGAND.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_WARG.get(), 0.6, 0.15)
+				.addMobCharge(EntityType.WOLF, 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_AUROCH.get(), 0.6, 0.15)
+				.addMobCharge(EntityType.SHEEP, 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_THRUSH.get(), 0.6, 0.15);
+	}
+
+	public static BiomeGenerationSettings.Builder trollshawsGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+		BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
+
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_FOREST);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_LARGE_FERN);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.BROWN_MUSHROOM_NORMAL);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.RED_MUSHROOM_NORMAL);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_RANDOM_RUBBLE);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_STUMPS);
+
+		// Beech and oak below the broken ground and pine above it: the mix the country is drawn with
+		// rather than the single wood of a lowland forest.
+		BiomeDefaultFeatures.addBirchTrees(biome);
+		BiomeDefaultFeatures.addTaigaTrees(biome);
+		BiomeDefaultFeatures.addMountainTrees(biome);
+		BiomeDefaultFeatures.addDefaultCarversAndLakes(biome);
+		BiomeDefaultFeatures.addDefaultOres(biome);
+		BiomeDefaultFeatures.addDefaultSoftDisks(biome);
+		BiomeDefaultFeatures.addDefaultMonsterRoom(biome);
+		BiomeDefaultFeatures.addDefaultUndergroundVariety(biome);
+		BiomeDefaultFeatures.addDefaultMushrooms(biome);
+		BiomeDefaultFeatures.addDefaultSprings(biome);
+		BiomeDefaultFeatures.addForestGrass(biome);
+		BiomeDefaultFeatures.addFerns(biome);
+		BiomeDefaultFeatures.addDefaultFlowers(biome);
+		BiomeDefaultFeatures.addPlainVegetation(biome);
+		BiomeDefaultFeatures.addDefaultExtraVegetation(biome, true);
+		BiomeDefaultFeatures.addCommonBerryBushes(biome);
+		addLegacyOres(biome);
+
+		return biome;
+	}
+
 		// Biome Settings
 	public static BiomeGenerationSettings.Builder lorinadGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
 		BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
