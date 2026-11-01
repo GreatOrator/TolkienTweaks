@@ -99,6 +99,7 @@ public final class FactionEvents {
             FactionGuards.tick(player);
             QuestGivers.tick(player);
             Campaign.tick(player);
+            Places.tick(player);
         }
     }
 
