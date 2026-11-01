@@ -8,6 +8,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.core.Direction;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -134,6 +137,8 @@ public final class Campaign extends SavedData {
     private static final double ELLADAN_REACH = 128.0D;
     /** How wide a circle Elladan's camp is, in blocks: enough to walk into from any side of it. */
     private static final int CAMP_RADIUS = 48;
+    /** The tent the camp is: the same template the Rangers' camp errand pitches, laid down at Thorenhad. */
+    private static final String CAMP_TENT = Sites.WILD_TENT;
     /** What he says as he hands it over, what it says when it comes back, and the two ways it is quiet. */
     private static final String STONE_GIVEN = "campaign.tolkienmobs.beryl.given";
     private static final String STONE_RETURNED = "campaign.tolkienmobs.beryl.returned";
@@ -835,6 +840,9 @@ public final class Campaign extends SavedData {
         if (camp.centre().distToCenterSqr(player.position()) > ELLADAN_REACH * ELLADAN_REACH) return;
         if (!level.getEntities((Entity) null, new AABB(camp.centre()).inflate(ELLADAN_REACH),
                 seen -> seen.entityTags().contains(ELLADAN_TAG)).isEmpty()) return;
+        // The camp is a camp before it is a man: the tent goes down first, and he is stood at it in the
+        // same look, so there is never an Elf in a field waiting for a tent that never comes.
+        if (!standTent(level, camp)) return;
         BlockPos stand = floorOf(level, camp.centre());
         if (stand == null) return;
         Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
@@ -850,6 +858,54 @@ public final class Campaign extends SavedData {
         elf.setCustomName(Component.literal(ELLADAN).withStyle(ChatFormatting.GOLD));
         elf.setCustomNameVisible(true);
         level.addFreshEntity(elf);
+    }
+
+    /**
+     * Puts the camp's tent down on the ground Thorenhad is named for, and answers whether it is standing.
+     * <p>
+     * Thorenhad is a place rather than a site - one camp in the Trollshaws for everybody in the world,
+     * not ground raised per player - so the tent is laid straight from the template instead of through
+     * {@link Sites}, which keeps one site per player and is already holding the troll cave this page was
+     * walked to. It is seated the way a site is: on the highest ground under the footprint, with the
+     * drop beneath it filled, so a tent on a slope stands rather than hangs off one side of it.
+     * <p>
+     * Nothing is built into a chunk that is not loaded, since a block written there is quietly dropped;
+     * the camp is only looked at when the player is within sight of it, so the tent is laid on the visit
+     * that sees it. Laying it twice is laying the same blocks in the same place, which is why a camp
+     * whose Elladan has been killed rather than merely mislaid simply puts him back.
+     */
+    private static boolean standTent(ServerLevel level, Places.Place camp) {
+        Identifier id = Identifier.tryParse(CAMP_TENT);
+        if (id == null) return true;
+        StructureTemplate template = level.getStructureManager().get(id).orElse(null);
+        if (template == null) return true;
+        int wide = template.getSize().getX();
+        int deep = template.getSize().getZ();
+        if (wide <= 0 || deep <= 0) return true;
+        BlockPos corner = camp.centre().offset(-wide / 2, 0, -deep / 2);
+        if (!level.hasChunkAt(corner) || !level.hasChunkAt(corner.offset(wide, 0, deep))) return false;
+        // The highest column under the tent is the tent's floor, so the ground comes up to it rather than
+        // through it, whichever side of the camp is the uphill one.
+        int floor = Integer.MIN_VALUE;
+        for (int dx = 0; dx <= wide; dx += Math.max(1, wide / 4)) {
+            for (int dz = 0; dz <= deep; dz += Math.max(1, deep / 4)) {
+                floor = Math.max(floor, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                        corner.getX() + dx, corner.getZ() + dz));
+            }
+        }
+        corner = new BlockPos(corner.getX(), floor, corner.getZ());
+        template.placeInWorld(level, corner, corner, new StructurePlaceSettings(), level.getRandom(), 2);
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        for (int dx = 0; dx < wide; dx++) {
+            for (int dz = 0; dz < deep; dz++) {
+                for (int dy = 1; dy <= 4; dy++) {
+                    cursor.set(corner.getX() + dx, corner.getY() - dy, corner.getZ() + dz);
+                    if (!level.getBlockState(cursor).isAir()) break;
+                    level.setBlock(cursor, net.minecraft.world.level.block.Blocks.DIRT.defaultBlockState(), 2);
+                }
+            }
+        }
+        return true;
     }
 
     /**
