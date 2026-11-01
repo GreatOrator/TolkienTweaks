@@ -99,6 +99,17 @@ public final class Campaign extends SavedData {
     /** How many cave readings are written. The cave's own blocks pick which, so a cave keeps its answer. */
     private static final int CAVE_READINGS = 5;
     /**
+     * The three caves the notes name, in the order the page asks them. The old campaign gave each cave
+     * its own name, its own quest and its own token, and the names are kept here: a player holding a
+     * stone up in the dark wants to know which cave they are standing at the bottom of.
+     */
+    private static final List<String> CAVE_NAMES = List.of("Bandrith", "Hoklond", "Sholdroth");
+    /**
+     * What the stone says in one of those named caves. It stays dark, and that is the answer rather than
+     * the failure: the notes promise the beryl will say where he has not been as well as where he has.
+     */
+    private static final String STONE_DARK = "campaign.tolkienmobs.cave.dark";
+    /**
      * The Elf the stone's work belongs to, the valley the map keeps for him, and the tag the body who
      * hands the work wears. The valley is a name of the catalogue rather than a building: nothing in the
      * pack has ever built Rivendell, and a named place is ground the map already knows how to put where
@@ -695,20 +706,38 @@ public final class Campaign extends SavedData {
             return;
         }
         STONE_LAST.put(player.getUUID(), here);
-        player.sendSystemMessage(named != null ? named : caveReading(here));
+        String cave = caveName(stoneQuest(player));
+        player.sendSystemMessage(named != null ? named
+                : cave.isEmpty() ? caveReading(here)
+                : Component.translatable(STONE_DARK, cave).withStyle(ChatFormatting.ITALIC));
         QuestLedger.progressSurvey(player);
     }
 
     /** The ground the stone's current page has to be held over, or an empty string when it asks for caves. */
     private static String wantedGround(ServerPlayer player) {
-        Quest stone = null;
-        for (Quest quest : QuestLedger.active(player)) {
-            if (asksForStone(quest)) {
-                stone = quest;
-                break;
-            }
-        }
+        Quest stone = stoneQuest(player);
         return stone == null ? "" : stone.namedGround();
+    }
+
+    /** The stone's page in hand, or null when the player is carrying none. */
+    private static Quest stoneQuest(ServerPlayer player) {
+        for (Quest quest : QuestLedger.active(player)) {
+            if (asksForStone(quest)) return quest;
+        }
+        return null;
+    }
+
+    /**
+     * Which of the page's three named caves this asking is for, or empty when the asking is not theirs.
+     * <p>
+     * The notes name three caves and the stone is asked in each before the page pays, so the count of
+     * askings already made is the cave the player is standing in: the first is Bandrith's, the second
+     * Hoklond's, the third Sholdroth's.
+     */
+    private static String caveName(Quest stone) {
+        if (stone == null || stone.kind() != Quest.Kind.SURVEY || !stone.namedGround().isEmpty()) return "";
+        int progress = stone.progress();
+        return progress >= 0 && progress < CAVE_NAMES.size() ? CAVE_NAMES.get(progress) : "";
     }
 
     /**

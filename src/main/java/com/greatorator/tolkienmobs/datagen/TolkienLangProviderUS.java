@@ -922,7 +922,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.page.caves.reply.1", "Three caves, and the bottom of each?");
         this.add("campaign.tolkienmobs.page.caves.say.2", "Many caves dot this country, and a thing as hurt as he was must have gone to ground in one of them to gather himself. Descend into the deepest chamber of three, hold the beryl aloft, and we will learn whether he sheltered there. Take company with you: trolls keep these caves, and they do not care whose war it is.");
         this.add("campaign.tolkienmobs.page.caves.say.1", "The ford is only the beginning. The Nine leave a mark on a land, and a hurt one leaves more of it than a whole one would.");
-        this.add("campaign.tolkienmobs.page.caves.place", "three caves, and the deepest chamber of each");
+        this.add("campaign.tolkienmobs.page.caves.place", "Bandrith, Hoklond and Sholdroth, and the deepest chamber of each");
         this.add("campaign.tolkienmobs.page.caves", "Hiding in the Dark");
         this.add("campaign.tolkienmobs.beryl.shallow", "Deep, but not deep enough. The stone wants the bottom of the cave and not the mouth of it.");
         this.add("campaign.tolkienmobs.beryl.elsewhere", "%s is where the stone was asked for, and this is not it.");
@@ -939,6 +939,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.cave.3", "Cold at the fork and colder where the water goes down. Men came in here once, and something followed them in and did not come out.");
         this.add("campaign.tolkienmobs.cave.4", "The stone pulls toward the dark at the back of the cave and holds there. There is more rock behind this wall than the mountain has any need of.");
         this.add("campaign.tolkienmobs.cave.5", "It goes cold all at once, the way a hand does when a door opens behind it. Whatever was here was not long gone when the stone was last asked.");
+        this.add("campaign.tolkienmobs.cave.dark", "You hold Glorfindel's beryl aloft in %s, and it stays dark. If he sheltered here, he did not leave the stone anything to find.");
         this.add("campaign.tolkienmobs.beryl.given", "The stone is in your hand: cold, and heavier than a thing that size has any right to be.");
         this.add("campaign.tolkienmobs.beryl.returned", "The stone is back in your hand. It was lent to be carried, not put down.");
         this.add("campaign.tolkienmobs.page.beryl", "The Elf-lord's Stone");
