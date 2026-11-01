@@ -953,6 +953,16 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.page.legolas.say.1", "Master Elrond has spoken for you, so I will hear you. I am Legolas of Mirkwood, and we have met such things before, though not for many years.");
         this.add("campaign.tolkienmobs.page.legolas.place", "the guest room of the last homely house, west of the library");
         this.add("campaign.tolkienmobs.page.legolas", "The Guest House");
+        this.add("campaign.tolkienmobs.page.matuna", "Aid of Mirkwood");
+        this.add("campaign.tolkienmobs.page.matuna.place", "the Wood-trolls' lair, in the wood east of the valley");
+        this.add("campaign.tolkienmobs.page.matuna.say.1", "We of Mirkwood have met these creatures before, though I did not think to see them again. A tribe of trolls once dwelt near Dol Guldur, and we who fought them called them Wood-trolls. Before that they were wanderers, each alone and loath even to camp near its fellows - and then something at Dol Guldur drew them together and raised a king among them. My father sent many warriors, and it was done.");
+        this.add("campaign.tolkienmobs.page.matuna.say.2", "One of them is back, and it has a name. Matuna keeps a lair in the wood east of here, and what he has gathered in it is what Elrond must hear. I will show you the tracks. You will do the rest, and carry the tidings back to the Last Homely House.");
+        this.add("campaign.tolkienmobs.page.matuna.reply.1", "One was bad. A whole tribe?");
+        this.add("campaign.tolkienmobs.page.matuna.reply.2", "So where did this one come from?");
+        this.add("campaign.tolkienmobs.page.matuna.said", "Legolas has marked the tracks for you. Go east into the wood, and let nothing in that lair outlive the day.");
+        this.add("campaign.tolkienmobs.page.matuna.closing", "You have ended the Nazgul's designs by slaying the Wood-troll Matuna, but the escape of so great a servant of the Enemy casts a shadow upon my heart.");
+        this.add("campaign.tolkienmobs.matuna.name", "Matuna");
+        this.add("campaign.tolkienmobs.matuna.tracks", "The tracks are fresh, and heavy, and they lead away into the wood.");
         this.add("campaign.tolkienmobs.valley_elf.1", "Erestor");
         this.add("campaign.tolkienmobs.valley_elf.2", "Lindir");
         this.add("campaign.tolkienmobs.valley_elf.3", "Melpomaen");

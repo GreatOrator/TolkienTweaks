@@ -953,6 +953,16 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("campaign.tolkienmobs.page.legolas.say.1", "既然埃尔隆德大人为你开口，我就听你说。我是幽暗密林的莱戈拉斯；我们见过这类东西，只是已有许多年未见了。");
         this.add("campaign.tolkienmobs.page.legolas.place", "最后家园的客房，书库以西");
         this.add("campaign.tolkienmobs.page.legolas", "客房");
+        this.add("campaign.tolkienmobs.page.matuna", "幽暗密林之援");
+        this.add("campaign.tolkienmobs.page.matuna.place", "山谷以东林中的食人妖巢穴");
+        this.add("campaign.tolkienmobs.page.matuna.say.1", "我们幽暗密林的人见过这类东西，只是没想到还会再见。曾有一族食人妖住在多古尔都附近，与它们交过手的我们称它们为林地食人妖。在那之前它们只是游荡者，各自独居，连在彼此附近扎营都不愿——后来多古尔都的什么东西把它们聚拢起来，在它们中间立起了一位王。我父王派去了许多战士，事情了结了。");
+        this.add("campaign.tolkienmobs.page.matuna.say.2", "如今它们中有一个回来了，而且它有名字。马图纳在东边的林中有一处巢穴，他在其中聚起的东西，正是埃尔隆德必须听到的。我会指给你看足迹，剩下的由你来做；事成之后，把消息带回最后家园。");
+        this.add("campaign.tolkienmobs.page.matuna.reply.1", "一个已经够糟了。整整一族？");
+        this.add("campaign.tolkienmobs.page.matuna.reply.2", "那这一个是从哪里来的？");
+        this.add("campaign.tolkienmobs.page.matuna.said", "莱戈拉斯已经为你标了足迹。往东进林子去，别让那巢穴里的任何东西活过今天。");
+        this.add("campaign.tolkienmobs.page.matuna.closing", "你以斩杀林地食人妖马图纳终结了戒灵的安排，但如此强大的敌人仆从竟得以逃脱，仍在我心中投下阴影。");
+        this.add("campaign.tolkienmobs.matuna.name", "马图纳");
+        this.add("campaign.tolkienmobs.matuna.tracks", "足迹是新的，而且很重，一路往林子里去了。");
         this.add("campaign.tolkienmobs.valley_elf.1", "埃瑞斯托");
         this.add("campaign.tolkienmobs.valley_elf.2", "林迪尔");
         this.add("campaign.tolkienmobs.valley_elf.3", "梅尔波门");

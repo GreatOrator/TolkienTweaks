@@ -216,6 +216,27 @@ public final class Campaign extends SavedData {
             GLORFINDEL_TAG, new int[]{0, 8},
             ELROND_TAG, new int[]{-18, 0},
             LEGOLAS_TAG, new int[]{-6, -15});
+    /**
+     * The Wood-troll Legolas names, and the tag of the one body his page is about.
+     * <p>
+     * The page's target is a name rather than an entity type, because the pack ships no wood-troll: a
+     * hunt of the cave troll would be settled by any troll in Eriador, and the notes' page is about one
+     * creature that has a name. An id no registry answers prints in the book as the name it is, and the
+     * kill is attributed to the tagged body alone (see {@link #namesBody}).
+     */
+    private static final String MATUNA = "Matuna";
+    private static final String MATUNA_TAG = "tolkienmobs:campaign_matuna";
+    private static final String MATUNA_NAME = "campaign.tolkienmobs.matuna.name";
+    private static final String MATUNA_TRACKS = "campaign.tolkienmobs.matuna.tracks";
+    private static final String MATUNA_TITLE = "campaign.tolkienmobs.page.matuna";
+    private static final String MATUNA_CLOSING = "campaign.tolkienmobs.page.matuna.closing";
+    /** How far ahead of the player he is stood up, sideways off that line, and how far out he counts. */
+    private static final int MATUNA_WAY_AHEAD = 16;
+    private static final int MATUNA_WAY_SPREAD = 10;
+    private static final double MATUNA_SEARCH = 128.0D;
+    private static final double MATUNA_CALL_DISTANCE = 24.0D;
+    /** The hand-over that owes the meeting, so a page does not restock the road he was killed on. */
+    private static final Map<UUID, Call> MATUNA_CALLED = new HashMap<>();
     private static final String AUDIENCE_TITLE = "campaign.tolkienmobs.page.audience";
     /** What he says as he hands it over, what it says when it comes back, and the two ways it is quiet. */
     private static final String STONE_GIVEN = "campaign.tolkienmobs.beryl.given";
@@ -293,6 +314,12 @@ public final class Campaign extends SavedData {
                     // taken at a tenth: the same valley again, with Legolas stood in it.
                     new Page(Quest.Kind.LOCATION, SUMMON_TARGET, 1, 25, 5,
                             LEGOLAS_TITLE, "campaign.tolkienmobs.page.legolas.place", ""),
+                    // The Wood-troll of the notes' Aid of Mirkwood: Legolas, having named the
+                    // creature, shows the player where to track one down, and the notes price the kill
+                    // at twelve hundred - a hundred and twenty at the tenth. The tidings go to Elrond,
+                    // because the notes have them carried back to the Last Homely House.
+                    new Page(Quest.Kind.HUNT, MATUNA, 1, 120, 6,
+                            MATUNA_TITLE, "campaign.tolkienmobs.page.matuna.place", MATUNA_CLOSING),
                     // The hilltop is raised rather than named. A place is a circle somebody has to stand
                     // in and declare; this is ground the campaign builds where the map puts it, so the page
                     // is settled by standing in the building and nobody has to place anything by hand.
@@ -689,6 +716,9 @@ public final class Campaign extends SavedData {
             // The Giant is the camp's as well: the scout names the valley, and Elladan is the one who asks
             // for the kill and hears what came of it.
             if (GIANT_TARGET.equals(target)) return built.withTurnIn(ELLADAN);
+            // The lair's tidings are Elrond's to hear, in the valley the page before this one was
+            // walked to.
+            if (MATUNA.equals(target)) return built.withTurnIn(ELROND);
             return built;
         }
         if (!sealed(row)) return null;
@@ -1598,6 +1628,94 @@ public final class Campaign extends SavedData {
     }
 
     /**
+     * Whether a page that names one body is answered by this death.
+     * <p>
+     * A hunt is normally answered by a kind of mob, read off the target id. The Wood-troll's page names
+     * a creature instead, so the tag is the whole of the test: the campaign put it on the one body it
+     * stood up, and a troll met in a cave is a troll rather than the page's quarry.
+     */
+    public static boolean namesBody(Quest quest, Entity victim) {
+        return quest.kind() == Quest.Kind.HUNT && MATUNA.equals(quest.target())
+                && victim.entityTags().contains(MATUNA_TAG);
+    }
+
+    /**
+     * Stands the Wood-troll up ahead of the player while his page is carried and unfinished.
+     * <p>
+     * The Rider's rules hold here, and for the same reason: a page taken at an Elf's shoulder cannot be
+     * finished by a body standing at it, and a page whose quarry the country may not have within a day's
+     * ride is a goose chase. So he is put down once the player is out under open sky and a short walk
+     * from where the page was taken, some way ahead of them and off the line they are walking, and he
+     * stays where he was put: one meeting per hand-over, which is what {@link Call} remembers. What
+     * keeps a second one from being stood up beside the first is the tag.
+     */
+    private static void keepMatuna(ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel level)) return;
+        Quest page = carriedPage(player, MATUNA);
+        if (page == null || page.complete()) {
+            MATUNA_CALLED.remove(player.getUUID());
+            return;
+        }
+        if (matunaOnTheGround(player)) return;
+        Call called = MATUNA_CALLED.get(player.getUUID());
+        if (called == null) {
+            // Owed with no road remembered - a reloaded world - so the clock starts again here.
+            MATUNA_CALLED.put(player.getUUID(), call(player));
+            return;
+        }
+        if (called.spent()) return;
+        if (level.getGameTime() < called.due()) return;
+        if (!player.level().canSeeSky(player.blockPosition())) return;
+        int dx = player.blockPosition().getX() - called.from().getX();
+        int dz = player.blockPosition().getZ() - called.from().getZ();
+        if (dx * dx + dz * dz < MATUNA_CALL_DISTANCE * MATUNA_CALL_DISTANCE) return;
+        if (standMatunaUp(player)) {
+            MATUNA_CALLED.put(player.getUUID(), spent(called));
+        }
+    }
+
+    /** Puts the one Wood-troll the page is about on the ground ahead, named and tagged. */
+    private static boolean standMatunaUp(ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel level)) return false;
+        RandomSource random = level.getRandom();
+        Direction facing = player.getDirection();
+        Direction across = facing.getClockWise();
+        int reach = MATUNA_WAY_AHEAD + random.nextInt(MATUNA_WAY_SPREAD);
+        int side = random.nextInt(9) - 4;
+        int x = player.blockPosition().getX() + facing.getStepX() * reach + across.getStepX() * side;
+        int z = player.blockPosition().getZ() + facing.getStepZ() * reach + across.getStepZ() * side;
+        // A chunk that is not loaded has no ground to stand on yet: the next look will find one.
+        if (!level.hasChunkAt(new BlockPos(x, player.blockPosition().getY(), z))) return false;
+        int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
+        Entity entity = TolkienEntities.ENTITY_TTM_TROLL.get().create(level, EntitySpawnReason.EVENT);
+        if (!(entity instanceof Mob troll)) return false;
+        troll.snapTo(x + 0.5D, y, z + 0.5D, random.nextFloat() * 360.0F, 0.0F);
+        troll.setPersistenceRequired();
+        troll.setCustomName(Component.translatable(MATUNA_NAME));
+        troll.setCustomNameVisible(true);
+        troll.addTag(MATUNA_TAG);
+        if (!level.addFreshEntity(troll)) return false;
+        player.sendSystemMessage(Component.translatable(MATUNA_TRACKS).withStyle(ChatFormatting.DARK_GREEN));
+        return true;
+    }
+
+    /** Whether the Wood-troll of this page is already standing near the player. */
+    private static boolean matunaOnTheGround(ServerPlayer player) {
+        return !player.level().getEntities(player, player.getBoundingBox().inflate(MATUNA_SEARCH),
+                found -> found.entityTags().contains(MATUNA_TAG)).isEmpty();
+    }
+
+    /** A page of the campaign the player is carrying whose target is this one, or null. */
+    @Nullable
+    private static Quest carriedPage(ServerPlayer player, String target) {
+        for (Quest quest : QuestLedger.active(player)) {
+            if (quest.story() && quest.kind() == Quest.Kind.HUNT && target.equals(quest.target())) {
+                return quest;
+            }
+        }
+        return null;
+    }
+    /**
      * Stands the campaign's Rider up in front of the player, out on the ground, and marks him as the
      * campaign's so his death can be told apart from any other Nazgûl the player meets. He is placed
      * at riding distance rather than beside the player, because the meeting the page promises is one
@@ -1644,6 +1762,7 @@ public final class Campaign extends SavedData {
         keepCrownSeated(player);
         keepWitchKing(player);
         keepQuarryComing(player);
+        keepMatuna(player);
         keepStoneInHand(player);
         keepValleyStanding(player);
         keepGlorfindel(player);

@@ -522,6 +522,9 @@ public final class QuestLedger extends SavedData {
     }
 
     private static boolean answeredBy(Quest quest, Entity victim) {
+        // A page that names one body is answered by that body, and by nothing of its kind: the notes'
+        // Wood-troll is a name and a tag rather than an entity type, so an ordinary troll is not him.
+        if (Campaign.namesBody(quest, victim)) return true;
         if (quest.kind() == Quest.Kind.FACTION) {
             Alliance alliance = Alliance.byId(quest.target());
             return victim.getType().builtInRegistryHolder().is(alliance.soldiers());
