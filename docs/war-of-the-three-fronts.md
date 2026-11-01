@@ -453,6 +453,14 @@ so he is found by the tag he wears and stood up again only if no Rider is out th
 keeps a second one from appearing after the first is killed - the kill is counted while the page is
 still in hand, and a finished page means the meeting has already happened.
 
+**Where the quarry comes from.** A front's last page names a kind of ground rather than a place on a
+map - the barrow downs, the deep sand - and a world is not obliged to have put that ground within a
+day's ride of the hall. So taking such a page puts part of its quarry on the ground ahead of the
+player: permanent, tagged, capped at three and put down once - the whole of a two-wight page, part of a
+longer one - with a line that says the looking is over. It is the same courtesy the Rider gets on the road, and it is not the staged build the
+pages really want - a barrow cut into the world and the wights coming out of it is still owed - but it
+is the difference between an errand and a goose chase.
+
 **What killing him does.** The page asks for him twice, because one fall is a fight and two is the
 story. The first meeting is the one the page promised; he goes down normally - drops, death message
 and all - and the campaign sees the page is still carried and stands him up again a ride ahead, with a

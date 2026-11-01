@@ -1803,6 +1803,7 @@
   "quest.tolkienmobs.name.6": "学者伊尔文",
   "quest.tolkienmobs.name.7": "猎手凯尔",
   "quest.tolkienmobs.progress": "%s / %s",
+  "quest.tolkienmobs.quarry.staged": "不必远寻%s了。前方的地面上就有 %s 个。",
   "quest.tolkienmobs.reward.items": "奖励：%s",
   "quest.tolkienmobs.reward.standing": "奖励：%s 点%s声望",
   "quest.tolkienmobs.reward.standing.all": "与三国各 %s 点声望。",

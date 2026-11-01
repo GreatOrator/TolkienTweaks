@@ -16,6 +16,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -153,6 +154,20 @@ public final class Campaign extends SavedData {
     /** How wide a search for a Rider who is already out there, and how often to look. */
     private static final double RIDER_SEARCH = 128.0D;
     private static final int RIDER_CHECK_INTERVAL = 20;
+
+    /**
+     * Where a front page's quarry is stood up: ahead of the player rather than on them, spread across
+     * the road so the page reads as ground somebody has already walked, and always fewer than the page
+     * asks for, because the rest of the hunt is still the player's to find.
+     */
+    private static final int QUARRY_AHEAD = 18;
+    private static final int QUARRY_SPREAD = 8;
+    private static final int QUARRY_SIDE = 4;
+    private static final int QUARRY_LIMIT = 3;
+    /** The tag the quarry a page put on the ground wears, so a second hand-over does not double it. */
+    private static final String QUARRY_TAG = "tolkienmobs:campaign_quarry";
+    /** How far off a page's quarry is looked for before more is put down. */
+    private static final double QUARRY_SEARCH = 64.0D;
 
     public static final Codec<Campaign> CODEC = Entry.CODEC.listOf()
             .xmap(Campaign::fromEntries, Campaign::toEntries);
@@ -325,7 +340,65 @@ public final class Campaign extends SavedData {
         // door, which is a meeting rather than a magic trick.
         if (isCampaignPage(player, page)) {
             RIDER_CALLED.put(player.getUUID(), player.blockPosition());
+        } else {
+            standQuarryUp(player, page);
         }
+    }
+
+    /**
+     * Puts the quarry a front's page names on the ground ahead of the player, so the page can be walked
+     * the moment it is taken.
+     * <p>
+     * A page that asks for two wights is asking for the barrow downs, and the barrows are a country a
+     * world may not have within a day's ride: the hunt then reads as a wild goose chase rather than as
+     * the errand the herald just described. The campaign has already learned to stand the Rider up on
+     * the road for exactly this reason, and this is the same courtesy done for lesser quarry - a few of
+     * them, ahead of the player on the surface, marked so a second hand-over of the same page does not
+     * double them.
+     * <p>
+     * Only part of the page is ever put down ({@link #QUARRY_LIMIT}), and only for a hunt of a front's
+     * own: the campaign's own page has his own arrival, a fetch has nothing to stand up, and the rest of
+     * a long hunt is the hunt.
+     */
+    private static void standQuarryUp(ServerPlayer player, Quest page) {
+        if (!(player.level() instanceof ServerLevel level)) return;
+        if (page.kind() != Quest.Kind.HUNT || isCampaignPage(player, page)) return;
+        EntityType<?> quarry = page.entityType();
+        if (quarry == null) return;
+        if (quarryOnTheGround(player, quarry)) return;
+        RandomSource random = level.getRandom();
+        Direction facing = player.getDirection();
+        Direction across = facing.getClockWise();
+        int wanted = Math.min(page.goal(), QUARRY_LIMIT);
+        int stood = 0;
+        for (int i = 0; i < wanted; i++) {
+            int reach = QUARRY_AHEAD + random.nextInt(QUARRY_SPREAD);
+            int side = random.nextInt(QUARRY_SIDE * 2 + 1) - QUARRY_SIDE;
+            int x = player.blockPosition().getX() + facing.getStepX() * reach + across.getStepX() * side;
+            int z = player.blockPosition().getZ() + facing.getStepZ() * reach + across.getStepZ() * side;
+            // A chunk with no ground under it yet is skipped rather than waited for: the rest of the
+            // hunt is out there, and this is the page being generous, not the page being complete.
+            if (!level.hasChunkAt(new BlockPos(x, player.blockPosition().getY(), z))) continue;
+            int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
+            Entity entity = quarry.create(level, EntitySpawnReason.EVENT);
+            if (!(entity instanceof Mob mob)) continue;
+            mob.snapTo(x + 0.5D, y, z + 0.5D, random.nextFloat() * 360.0F, 0.0F);
+            mob.setPersistenceRequired();
+            mob.addTag(QUARRY_TAG);
+            if (level.addFreshEntity(mob)) stood++;
+        }
+        if (stood > 0) {
+            player.sendSystemMessage(Component.translatable("quest.tolkienmobs.quarry.staged",
+                            page.targetName(), Component.literal(String.valueOf(stood)))
+                    .withStyle(ChatFormatting.DARK_RED));
+        }
+    }
+
+    /** Whether a page's quarry is already standing near the player, put there by an earlier hand-over. */
+    private static boolean quarryOnTheGround(ServerPlayer player, EntityType<?> quarry) {
+        return !player.level().getEntities(player,
+                player.getBoundingBox().inflate(QUARRY_SEARCH),
+                found -> found.getType() == quarry && found.entityTags().contains(QUARRY_TAG)).isEmpty();
     }
 
     /**

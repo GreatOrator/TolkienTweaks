@@ -889,6 +889,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("command.tolkienmobs.quest.complete", "已为 %s 结算 %s 个任务。");
         this.add("command.tolkienmobs.quest.complete.none", "手上没有可以结算的任务。");
         this.add("quest.tolkienmobs.rider.again", "他又出现在路上了，而他没有失去任何东西。");
+        this.add("quest.tolkienmobs.quarry.staged", "不必远寻%s了。前方的地面上就有 %s 个。");
         this.add("quest.tolkienmobs.herald.carrying", "你已经带着这一线的那一页了。先把它走完，再写下一页。");
         this.add("quest.tolkienmobs.rider.coming", "前方的路上有东西在等着。它已经等了很久。");
         this.add("quest.tolkienmobs.herald.settled", "三条战线都安静了，戒灵不会再回来。再没有什么要托付给你了。");

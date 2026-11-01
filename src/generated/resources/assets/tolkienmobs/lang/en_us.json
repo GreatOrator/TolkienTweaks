@@ -1803,6 +1803,7 @@
   "quest.tolkienmobs.name.6": "Irwyn the Scholar",
   "quest.tolkienmobs.name.7": "Kael the Trapper",
   "quest.tolkienmobs.progress": "%s / %s",
+  "quest.tolkienmobs.quarry.staged": "You will not have to look far for the %s. %s of them are on the ground ahead.",
   "quest.tolkienmobs.reward.items": "Reward: %s",
   "quest.tolkienmobs.reward.standing": "Reward: %s standing with %s",
   "quest.tolkienmobs.reward.standing.all": "%s standing with all three countries.",

@@ -889,6 +889,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("command.tolkienmobs.quest.complete", "Settled the work of %s (%s quest(s)).");
         this.add("command.tolkienmobs.quest.complete.none", "There is no work in hand to settle.");
         this.add("quest.tolkienmobs.rider.again", "He is on the road again, and he has lost nothing.");
+        this.add("quest.tolkienmobs.quarry.staged", "You will not have to look far for the %s. %s of them are on the ground ahead.");
         this.add("quest.tolkienmobs.herald.carrying", "You are already carrying this front's page. Finish it before another is written.");
         this.add("quest.tolkienmobs.rider.coming", "Something is waiting on the road ahead. It has been waiting a long time.");
         this.add("quest.tolkienmobs.herald.settled", "All three fronts are quiet, and the Rider is not coming back. There is nothing left to ask of you.");
