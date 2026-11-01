@@ -25,3 +25,8 @@ run-data
 
 repo
 /src/generated/resources/.cache/
+
+# Reference material kept on this machine for the agent: the old pack's skins and
+# the Middle-earth map the regions are read from. Not part of the mod, never committed.
+/CustomSkins/
+/middleearth.jpeg
