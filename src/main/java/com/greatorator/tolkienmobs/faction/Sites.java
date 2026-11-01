@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.faction;
 
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.world.registration.ArdaMap;
+import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import com.greatorator.tolkienmobs.world.registration.ArdaSurvey;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -138,7 +139,15 @@ public final class Sites extends SavedData {
             WEATHERTOP, ArdaMap.Country.ERIADOR,
             BOSS_CASTLE, ArdaMap.Country.ANGMAR,
             BOSS_ARENA, ArdaMap.Country.ANGMAR,
-            WOOD_RUIN, ArdaMap.Country.TROLLSHAWS);
+            WOOD_RUIN, ArdaMap.Country.TROLLSHAWS,
+            // The camp the errands pitch and the three crags the stone asks in are the campaign's own
+            // buildings, and a building that is pitched where the page was taken is a building two
+            // players on one server get two of. They stand in the hills with the rest of the chapter,
+            // on ground written down once.
+            WILD_TENT, ArdaMap.Country.TROLLSHAWS,
+            TROLL_CAVE, ArdaMap.Country.TROLLSHAWS,
+            TROLL_CAVE_2, ArdaMap.Country.TROLLSHAWS,
+            TROLL_CAVE_3, ArdaMap.Country.TROLLSHAWS);
     /**
      * The cell of the drawing a landmark the books pinpoint is asked for in, as {column, row}.
      * <p>
@@ -150,7 +159,11 @@ public final class Sites extends SavedData {
      * stand on.
      */
     private static final Map<String, int[]> CANON_CELL = Map.of(
-            WOOD_RUIN, new int[]{19, 14});
+            WOOD_RUIN, new int[]{19, 14},
+            WILD_TENT, new int[]{17, 13},
+            TROLL_CAVE, new int[]{17, 15},
+            TROLL_CAVE_2, new int[]{18, 16},
+            TROLL_CAVE_3, new int[]{19, 16});
 
     /**
      * How far from its country's middle a landmark may drift, in blocks: two cells of the map. The spot
@@ -273,6 +286,10 @@ public final class Sites extends SavedData {
      */
     public static boolean plan(ServerPlayer player, String structure, boolean keeper) {
         if (!(player.level() instanceof ServerLevel level)) return false;
+        // Nothing is pitched outside Arda. The drawing is what decides where a building stands, so a
+        // level without it has no answer for a page to be built on - and the overworld, which keeps
+        // vanilla's generation, is left entirely alone.
+        if (!TolkienDimensions.ARDA.equals(level.dimension())) return false;
         Sites store = instance(level);
         UNBUILDABLE.remove(player.getUUID());
         Site existing = SITES.get(player.getUUID());

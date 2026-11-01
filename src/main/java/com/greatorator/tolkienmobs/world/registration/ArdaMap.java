@@ -459,8 +459,12 @@ public final class ArdaMap {
         // the three rows the Trollshaws had just taken, so the country ended up with no cells at all
         // and every place the books put in it had nowhere to be surveyed. The mountains are drawn
         // before either, so a Trollshaw column that is really mountainside keeps its rock.
-        fill(map, Country.FIRIEN, 18, 15, 20, 17);
-        fill(map, Country.TROLLSHAWS, 18, 12, 19, 14);
+        // The hills run from Rhudaur's edge down to the mountains' feet: three cells wide and five
+        // deep, which is the room chapter one needs rather than the two-by-three the maps' scale would
+        // give them anyway - the valley, Elladan's camp, Barachen's fire, the rider's ruin, the camp
+        // the errands pitch and the three crags the stone asks in each want ground of their own.
+        fill(map, Country.FIRIEN, 18, 17, 19, 18);
+        fill(map, Country.TROLLSHAWS, 17, 12, 19, 16);
         fill(map, Country.LORINAND, 21, 13, 21, 14);
         fill(map, Country.LORINAND, 23, 15, 24, 18);
         fill(map, Country.GLADDEN, 25, 6, 26, 20);

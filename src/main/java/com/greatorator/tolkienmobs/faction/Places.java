@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.faction;
 
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.world.registration.ArdaMap;
+import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import com.greatorator.tolkienmobs.world.registration.ArdaSurvey;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -284,6 +285,10 @@ public final class Places extends SavedData {
     public static Place ensure(ServerPlayer player, String id, int radius) {
         Place existing = place(player.level(), id);
         if (existing != null) return existing;
+        // A name is written on Arda's ground and nowhere else. The overworld is left to vanilla's own
+        // generation and holds no campaign: no places to be told about, no pages to walk, no building
+        // to be raised in it.
+        if (!TolkienDimensions.ARDA.equals(player.level().dimension())) return null;
         Name name = known(id);
         if (name == null || !(player.level() instanceof ServerLevel level)) return null;
         // A name is written where the drawing puts it, and the drawing's pick inside a cell is fixed
@@ -361,6 +366,10 @@ public final class Places extends SavedData {
      */
     public static void tick(ServerPlayer player) {
         if (player.tickCount % CHECK_INTERVAL != 0) return;
+        // Everything the clock drives - the names being announced, the ground being watched for a
+        // page, a site being raised - belongs to Arda. A player in the overworld is in vanilla's
+        // world, and vanilla's world is not where this campaign happens.
+        if (!TolkienDimensions.ARDA.equals(player.level().dimension())) return;
         // A page that asks to be walked somewhere is settled by the ground under the player's
         // feet, so it is looked at on the clock that already measures where they are standing.
         // Built ground is built on the same clock: close enough to see it is close enough for the
