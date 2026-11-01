@@ -153,6 +153,13 @@ public final class Campaign extends SavedData {
     private static final String BARACHEN_TAG = "tolkienmobs:barachen";
     /** How near his fire a player has to be for him to be standing at it, in blocks. */
     private static final double BARACHEN_REACH = 128.0D;
+    /**
+     * The Giant the scout saw. The notes call him a Giant and then have Elrond answer that the player could
+     * not have faced a true Onod, which is the pack's tree-ent exactly: a creature standing among the trees
+     * as tall as they are. The page is a hunt, so the campaign stands the quarry up ahead of the player the
+     * way it does for any other hunt, and the camp takes it back once the kill is made.
+     */
+    private static final String GIANT_TARGET = "tolkienmobs:entityttmtreeent";
     /** What he says as he hands it over, what it says when it comes back, and the two ways it is quiet. */
     private static final String STONE_GIVEN = "campaign.tolkienmobs.beryl.given";
     private static final String STONE_RETURNED = "campaign.tolkienmobs.beryl.returned";
@@ -196,6 +203,12 @@ public final class Campaign extends SavedData {
                     new Page(Quest.Kind.LOCATION, BARACHEN_TARGET, 1, 25, 4,
                             "campaign.tolkienmobs.page.barachen", "campaign.tolkienmobs.page.barachen.place",
                             ""),
+                    // The Giant, which is what the scout's word bought: the notes have the creature standing
+                    // among the trees as tall as they are, so the hunt is for the tree-ent the pack already
+                    // ships rather than for a body the pack would have to invent. It is worth what the notes
+                    // say it is worth - nine hundred of the Elves' standing - and the camp takes it back.
+                    new Page(Quest.Kind.HUNT, GIANT_TARGET, 1, 900, 5,
+                            "campaign.tolkienmobs.page.giant", "campaign.tolkienmobs.page.giant.place", ""),
                     // The hilltop is raised rather than named. A place is a circle somebody has to stand
                     // in and declare; this is ground the campaign builds where the map puts it, so the page
                     // is settled by standing in the building and nobody has to place anything by hand.
@@ -586,9 +599,13 @@ public final class Campaign extends SavedData {
             // taken back by him, so the herald who sent the player there has neither to give nor to take.
             // The ford is Glorfindel's to take and the caves are Elladan's: the notes leave the stone in
             // the player's care until the three caves have been asked, and the camp is where it goes back.
-            return page.kind() == Quest.Kind.SURVEY
-                    ? built.withTurnIn(page.target().isEmpty() ? ELLADAN : GLORFINDEL)
-                    : built;
+            if (page.kind() == Quest.Kind.SURVEY) {
+                return built.withTurnIn(page.target().isEmpty() ? ELLADAN : GLORFINDEL);
+            }
+            // The Giant is the camp's as well: the scout names the valley, and Elladan is the one who asks
+            // for the kill and hears what came of it.
+            if (GIANT_TARGET.equals(target)) return built.withTurnIn(ELLADAN);
+            return built;
         }
         if (!sealed(row)) return null;
         // The slot the campaign keeps for itself walks through its last acts: the Rider, then the
@@ -889,8 +906,14 @@ public final class Campaign extends SavedData {
      */
     private static void keepElladan(ServerPlayer player) {
         if (!(player.level() instanceof ServerLevel level)) return;
-        Quest stone = page(player, Alliance.WEST);
-        if (stone == null || stone.kind() != Quest.Kind.SURVEY || !stone.namedGround().isEmpty()) return;
+        // He stands from the cave page until the Giant's has been taken off him, rather than only while the
+        // stone is in somebody's hand: the notes send the player back to the camp with the kill, so a camp
+        // that emptied as the caves were paid would have nobody to give the Giant's page or take it back.
+        int from = stageOf(Quest.Kind.SURVEY, "");
+        int to = stageOf(Quest.Kind.HUNT, GIANT_TARGET);
+        if (from < 0 || to < from) return;
+        int step = stage(player, Alliance.WEST);
+        if (step < from || step > to) return;
         Places.Place camp = Places.ensure(player, THORENHAD_PLACE, CAMP_RADIUS);
         if (camp == null || !camp.dimension().equals(level.dimension())) return;
         if (camp.centre().distToCenterSqr(player.position()) > ELLADAN_REACH * ELLADAN_REACH) return;
@@ -959,6 +982,16 @@ public final class Campaign extends SavedData {
         scout.setCustomName(Component.literal(BARACHEN).withStyle(ChatFormatting.GOLD));
         scout.setCustomNameVisible(true);
         level.addFreshEntity(scout);
+    }
+
+    /** The slot a page of this shape holds in the West's line, or -1 when the line has none of them. */
+    private static int stageOf(Quest.Kind kind, String target) {
+        List<Page> line = PAGE_LINES.get(Alliance.WEST);
+        for (int i = 0; i < line.size(); i++) {
+            Page page = line.get(i);
+            if (page.kind() == kind && page.target().equals(target)) return i;
+        }
+        return -1;
     }
 
     /**

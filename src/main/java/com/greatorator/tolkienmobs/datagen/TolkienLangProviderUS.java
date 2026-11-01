@@ -932,6 +932,13 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.page.barachen.say.1", "The stone has done what a stone can do. What it cannot do is tell us what a man saw with his own eyes, and there is a man in the Trollshaws who has seen something.");
         this.add("campaign.tolkienmobs.page.barachen.place", "Barachen's camp, south of the East Road in the Trollshaws");
         this.add("campaign.tolkienmobs.page.barachen", "The Scout at the Road");
+        this.add("campaign.tolkienmobs.page.giant.said", "Then you will have learned something the stone could not tell us. Go carefully, and come back to me whatever you find.");
+        this.add("campaign.tolkienmobs.page.giant.reply.2", "And if it will not talk?");
+        this.add("campaign.tolkienmobs.page.giant.reply.1", "You want me to talk to a giant?");
+        this.add("campaign.tolkienmobs.page.giant.say.2", "Go south into the valley under the moor, where the trees grow close and the Bruinen runs loud, and find it. I would have you speak with it rather than fight it - but the giants of that valley are not known for their welcome, and a thing that size does not have to mean you harm to kill you.");
+        this.add("campaign.tolkienmobs.page.giant.say.1", "Barachen's word is good. Something walks in the Trollshaws that is taller than the trees it walks among, and he saw it from the High Moor before a boulder took it out of his sight.");
+        this.add("campaign.tolkienmobs.page.giant.place", "the valley of the giants, south of the High Moor");
+        this.add("campaign.tolkienmobs.page.giant", "The Valley of Giants");
         this.add("campaign.tolkienmobs.beryl.shallow", "Deep, but not deep enough. The stone wants the bottom of the cave and not the mouth of it.");
         this.add("campaign.tolkienmobs.beryl.elsewhere", "%s is where the stone was asked for, and this is not it.");
         this.add("campaign.tolkienmobs.page.beryl.said", "The ford is where this begins, because it is the last ground we know he touched. Hold the beryl aloft there, and it will answer.");

@@ -932,6 +932,13 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("campaign.tolkienmobs.page.barachen.say.1", "宝石已经做完了它能做的事。它做不到的，是告诉我们有人亲眼看见了什么——而巨魔荒野里就有一个人看见了什么。");
         this.add("campaign.tolkienmobs.page.barachen.place", "巴拉亨的营地，在巨魔荒野东大道以南");
         this.add("campaign.tolkienmobs.page.barachen", "大路旁的斥候");
+        this.add("campaign.tolkienmobs.page.giant.said", "那你会知道一件宝石说不了的事。小心些，无论找到什么，都回来告诉我。");
+        this.add("campaign.tolkienmobs.page.giant.reply.2", "如果它不肯说话呢？");
+        this.add("campaign.tolkienmobs.page.giant.reply.1", "你要我去和一个巨人说话？");
+        this.add("campaign.tolkienmobs.page.giant.say.2", "往南走进高地下的山谷，那里树木稠密、布鲁南河声很响，去找它。我宁愿你去与它交谈，而不是动手——但那个山谷里的巨人是出了名的不欢迎客人，而那么大东西并不需要存心伤你，也能把你弄死。");
+        this.add("campaign.tolkienmobs.page.giant.say.1", "巴拉亨的话可信。巨魔荒野里确实有比身边的树木还高的东西在走动，他从高地望见了它，直到一块巨石挡住了视线。");
+        this.add("campaign.tolkienmobs.page.giant.place", "高地以南的巨人山谷");
+        this.add("campaign.tolkienmobs.page.giant", "巨人山谷");
         this.add("campaign.tolkienmobs.beryl.shallow", "够深了，但还不够深。石头要的是洞穴的最深处，不是洞口。");
         this.add("campaign.tolkienmobs.beryl.elsewhere", "石头被要求举在%s，而不是这里。");
         this.add("campaign.tolkienmobs.page.beryl.said", "一切都从渡口开始，因为那是我们知道他最后踏过的土地。在那里把宝石举起来，它会回答你。");
