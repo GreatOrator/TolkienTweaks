@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.faction;
 
 import com.greatorator.tolkienmobs.init.TolkienEntities;
+import com.greatorator.tolkienmobs.network.manager.ConversationManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -20,6 +21,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -213,6 +215,7 @@ public final class QuestGivers {
                     || Campaign.holdsFrontPage(player, herald)) {
                 player.sendSystemMessage(Component.translatable("quest.tolkienmobs.herald.carrying")
                         .withStyle(ChatFormatting.GRAY));
+                talk(player, target, herald);
                 return;
             }
             // The line opens on a rank rather than on a walk through the door: a country does not trust its
@@ -237,6 +240,7 @@ public final class QuestGivers {
                 if (QuestLedger.accept(player, handed)) {
                     Campaign.noteHanded(player, herald, handed);
                     speak(player, target, false);
+                    talk(player, target, herald);
                 }
                 return;
             }
@@ -285,6 +289,21 @@ public final class QuestGivers {
                 : com.greatorator.tolkienmobs.init.TolkienSounds.HERALD_OFFER).get();
         player.level().playSound(null, herald.blockPosition(), sound,
                 net.minecraft.sounds.SoundSource.NEUTRAL, 0.85F, 1.0F);
+    }
+    /**
+     * Opens a page's own words for the player, where that page has been written out.
+     * <p>
+     * A page in the book is a name, a place and a count, and the script behind it is a conversation:
+     * what the speaker says, and the two things a player can say back to him. Nothing carried that, so
+     * the page was handed over as one chat line and the best writing in the campaign stayed in a
+     * document. A page's talk keys hang off the page's own name, and a page with none written is handed
+     * over exactly as it was - so writing one is naming it in {@link Campaign#spokenKey} and adding the
+     * words, not building a second feature.
+     */
+    private static void talk(ServerPlayer player, Entity herald, Alliance alliance) {
+        String page = Campaign.spokenKey(player, alliance);
+        if (page == null) return;
+        PacketDistributor.sendToPlayer(player, new ConversationManager(herald.getName().getString(), page));
     }
 
     private static void makeSafe(Entity giver) {

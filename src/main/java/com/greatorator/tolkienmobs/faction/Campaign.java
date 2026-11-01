@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -124,6 +125,12 @@ public final class Campaign extends SavedData {
      */
     private static final String RIDER_TITLE = "campaign.tolkienmobs.page.rider";
     private static final String RIDER_PLACE = "campaign.tolkienmobs.page.rider.place";
+    /**
+     * The pages whose prose has been written into their talk keys, and so are read aloud rather than
+     * summarised when a herald hands one over. One, for now: the West's first muster, which is where
+     * the campaign opens and where the script's argument for a conversation is made.
+     */
+    private static final Set<String> SPOKEN = Set.of("campaign.tolkienmobs.page.muster");
 
     private static final Map<UUID, Front[]> PROGRESS = new HashMap<>();
     /** What {@link #instance} answers with when there is no server to hold a file. */
@@ -609,6 +616,25 @@ public final class Campaign extends SavedData {
                 : alliance.ordinal();
     }
 
+    /**
+     * The dialogue a front's current page is written out in, as the key prefix its lines hang off, or
+     * null where that page's prose has not been written yet. The stage is the page's index, because it
+     * only moves when the ledger settles a page, so while one is carried the stage is that page.
+     * <p>
+     * The list is the guard: a page that is named here is read as a conversation when it is handed
+     * over, and one that is not is handed over as it always was. It is deliberately not every page -
+     * a screen with no words on it would be worse than the chat line - so growing the campaign's voice
+     * is naming the page here and writing its keys.
+     */
+    @Nullable
+    public static String spokenKey(ServerPlayer player, Alliance alliance) {
+        ensureLoaded(player.level());
+        List<Page> line = PAGE_LINES.get(alliance);
+        int stage = stage(player, alliance);
+        if (stage >= line.size()) return null;
+        String title = line.get(stage).title();
+        return SPOKEN.contains(title) ? title : null;
+    }
     // ---- plumbing ----
 
     public static void sync(ServerPlayer player) {

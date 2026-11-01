@@ -862,6 +862,12 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("screen.tolkienmobs.quests.story.empty", "No step of the campaign is in your hands.");
         this.add("campaign.tolkienmobs.page.muster", "The First Muster");
         this.add("campaign.tolkienmobs.page.muster.place", "the Green Way, where the scout's ditch runs");
+        this.add("campaign.tolkienmobs.page.muster.say.1", "You have come a long road to stand in a cold hall. Sit, then - but not long.");
+        this.add("campaign.tolkienmobs.page.muster.say.2", "I have riders out on the Greenway and two of them are late, and lateness on that road has not meant anything good in thirty years.");
+        this.add("campaign.tolkienmobs.page.muster.reply.1", "Late riders are often only tired.");
+        this.add("campaign.tolkienmobs.page.muster.reply.2", "What is on the Greenway that frightens a Ranger?");
+        this.add("campaign.tolkienmobs.page.muster.said", "Travellers, mostly. Farm carts, a pedlar with too many knives. And three nights ago, a shape that my scout swore was a horseman and would not swear was a man. He has not sworn anything since; he came back at a walk with his horse lathered and would not say what he saw, only that he heard breathing where nothing stood. Go out to the road, and find what he found. Take the horn - if you must blow it, blow it once and run.");
+        this.add("campaign.tolkienmobs.talk.close", "Say no more.");
         this.add("campaign.tolkienmobs.page.southroad", "The Long Road South");
         this.add("campaign.tolkienmobs.page.southroad.place", "the Green Way, where the south road forks from it");
         this.add("campaign.tolkienmobs.page.marches", "The Watch on the Marches");
