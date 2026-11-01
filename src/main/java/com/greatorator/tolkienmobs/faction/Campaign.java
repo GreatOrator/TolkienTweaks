@@ -178,12 +178,12 @@ public final class Campaign extends SavedData {
     /**
      * The pages each front works through, and what they pay.
      * <p>
-     * The standing written here is the notes' own figures scaled to this pack's ladder. The notes were
-     * written against a ladder that ran to five or ten thousand, and this one tops out at a fraction of
-     * that, so a page the notes price at a hundred pays twenty-five, and one they price at nine hundred
-     * pays fifty. Paying the notes' figures straight would put most of a rank on a single fight, which is
-     * how the Giant's nine hundred came to be fifty: anything carried over from the notes is divided down
-     * to match, rather than copied.
+     * The standing written here is the notes' own figures at a tenth. Their ladder ran to five or ten
+     * thousand and this one tops out at fifteen hundred, so a page the notes price at a hundred pays ten
+     * and one they price at nine hundred pays ninety. The flat tenth is the whole rule: it is easier to
+     * check against the notes than a figure worked out per page, and it cannot be argued with. The pages
+     * the notes never priced - the fronts' own wars - keep the figures this line has always paid them,
+     * since those were chosen for this ladder in the first place.
      */
     private static final Map<Alliance, List<Page>> PAGE_LINES = Map.of(
             Alliance.WEST, List.of(
@@ -205,7 +205,7 @@ public final class Campaign extends SavedData {
                     // Then the search of the dark, which is the part of the old campaign that could not be
                     // carried over literally: three caves were named and pointed at, and here any three with
                     // rock over their heads will do, asked at the bottom of each.
-                    new Page(Quest.Kind.SURVEY, "", STONE_CAVES, 25, 5,
+                    new Page(Quest.Kind.SURVEY, "", STONE_CAVES, 10, 5,
                             "campaign.tolkienmobs.page.caves", "campaign.tolkienmobs.page.caves.place", ""),
                     // The scout's camp, which is the page the caves were a search of the road towards: the
                     // stone goes back to Elladan and the next lead is a man who saw something. A camp is
@@ -216,9 +216,8 @@ public final class Campaign extends SavedData {
                     // The Giant, which is what the scout's word bought: the notes have the creature standing
                     // among the trees as tall as they are, so the hunt is for the tree-ent the pack already
                     // ships rather than for a body the pack would have to invent. The notes pay it nine
-                    // hundred of the Elves' standing, which is most of a rank in this pack for one kill, so
-                    // it pays fifty: the page is one act of several, not the end of the line.
-                    new Page(Quest.Kind.HUNT, GIANT_TARGET, 1, 50, 5,
+                    // hundred of the Elves' standing, and the line takes the notes at a flat tenth: ninety.
+                    new Page(Quest.Kind.HUNT, GIANT_TARGET, 1, 90, 5,
                             "campaign.tolkienmobs.page.giant", "campaign.tolkienmobs.page.giant.place", ""),
                     // The hilltop is raised rather than named. A place is a circle somebody has to stand
                     // in and declare; this is ground the campaign builds where the map puts it, so the page
@@ -1157,8 +1156,8 @@ public final class Campaign extends SavedData {
      * smiths and the mithril that came up with it. The enchantment is left out rather than handed over as a
      * blank book nobody can put on anything.
      * <p>
-     * The standing the page pays is the page's own - twenty-five of the Elves' - rather than the hundred the
-     * notes wrote, since a hundred is most of a rank in this pack and the cave search is one act of several.
+     * The standing the page pays is a tenth of the notes' hundred - ten of the Elves' - because a hundred is
+     * most of a rank in this pack and the cave search is one act of several.
      */
     private static void payCaveReward(ServerPlayer player) {
         handOver(player, TolkienItems.ITEM_REFORGEDSWORD.get(), 1);

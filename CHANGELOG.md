@@ -266,6 +266,7 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
 
 ### Changed
 
+- **The notes' standing is taken at a flat tenth.** Their ladder ran to five or ten thousand and this one tops out at fifteen hundred, so the rule is now one divisor rather than a figure per page: the cave hand-over's hundred pays ten and the Giant's nine hundred pays ninety. Pages the notes never priced keep the figures this line has always paid them.
 - **The line's standing is the notes' figures scaled to this pack's ladder, and says so.** The notes were written against a ladder running to five or ten thousand; this one tops out far lower, so a page they price at a hundred pays twenty-five here and the Giant's nine hundred pays fifty. That rule is now written above the page list rather than rediscovered each time a page is added.
 - **The Giant is worth fifty of the Elves' standing, not nine hundred.** The notes pay the kill nine hundred, which is most of a rank in this pack for a single fight; the page now pays fifty and keeps its courage, so the Giant is a step in the line rather than a shortcut up it.
 - **The cave hand-over pays in goods as well as standing.** The notes end the search with a choice of equipment, an enchantment and ore; a page does not roll loot in this pack, so the camp now hands over a reforged blade and four mithril nuggets with the standing it already paid - twenty-five of the Elves', not the hundred the notes wrote, which is most of a rank here.
