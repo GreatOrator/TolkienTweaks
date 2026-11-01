@@ -101,8 +101,14 @@ public final class Sites extends SavedData {
      * The ruin the rider is found at. The notes put it in the narrow channels south of the road, and the
      * pack already ships a ruin for wild ground: rather than a point on the map with a reach round it,
      * the page asks for a wall to be standing there, so the player finds a place and not a field.
+     * <p>
+     * It is the second of the pack's large ruins rather than the first. {@code ttmruin_large} is a
+     * structure the world generator places in the wild, so a page that built it would raise a copy of
+     * ground the player can already walk up to out there, and the ruin the notes send them to would be one
+     * of many. This one is never generated - nothing but the page puts it anywhere - so the wall the
+     * bridle is found at is that wall and no other.
      */
-    public static final String WOOD_RUIN = "tolkienmobs:ttmruin_large";
+    public static final String WOOD_RUIN = "tolkienmobs:ttmruin_large_2";
     /**
      * The country each landmark stands in, where the books put it rather than where the page was taken.
      * <p>
