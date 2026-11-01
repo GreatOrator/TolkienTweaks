@@ -33,6 +33,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -198,6 +199,23 @@ public final class Campaign extends SavedData {
      * when they walk onto it.
      */
     private static final double WITCHKING_REACH = 128.0D;
+    /**
+     * The tag the crown wears when he is met in his own house, before the sand, and how the seat he is met
+     * in is found.
+     * <p>
+     * The seat is a block of the build rather than a spot worked out from the middle: a castle is a plan,
+     * and a plan has a chair in it. Until the build names that chair, the room is found by looking - air to
+     * stand in, a roof over it, nearest the middle of the castle - so the meeting happens in a hall with a
+     * ceiling in it rather than on the flagstones of a courtyard with the sky open over it.
+     */
+    private static final String CASTLE_TAG = "tolkienmobs:campaign_king_castle";
+    private static final BlockPos CASTLE_SEAT = null;
+    private static final int CASTLE_ROOM_REACH = 16;
+    private static final int CASTLE_ROOM_UP = 16;
+    /** How near the seat the player has to come to be spoken to, in blocks. */
+    private static final double CASTLE_MEET = 10.0D;
+    /** The players the crown has already said his piece to in his own house, so he says it once. */
+    private static final Set<UUID> SUMMONED = new HashSet<>();
     /**
      * How far up and down from the middle of a building's floor a place to stand a body is looked for.
      * An arena is laid on its own sand, so this only ever covers a step or a threshold.
@@ -712,6 +730,7 @@ public final class Campaign extends SavedData {
      */
     public static void tick(ServerPlayer player) {
         if (player.tickCount % RIDER_CHECK_INTERVAL != 0) return;
+        keepCrownSeated(player);
         keepWitchKing(player);
         keepQuarryComing(player);
         Quest page = carriedCampaignPage(player);
@@ -767,7 +786,7 @@ public final class Campaign extends SavedData {
         // recorded against the dimension it was raised in, and only built in that one.
         if (level.dimension().equals(site.dimension()) && witchKingLiving(level, site.centre())) {
             // A body written down and read back is built afresh, habits and all.
-            steadyRing(level, site.centre());
+            steadyShade(level, site.centre());
             return;
         }
         BlockPos stand = floorOf(level, site.centre());
@@ -784,6 +803,125 @@ public final class Campaign extends SavedData {
         player.sendSystemMessage(Component.translatable("campaign.tolkienmobs.witchking.rising")
                 .withStyle(ChatFormatting.DARK_PURPLE));
         player.sendSystemMessage(Component.translatable("campaign.tolkienmobs.witchking.guarded")
+                .withStyle(ChatFormatting.DARK_PURPLE));
+    }
+
+
+    /**
+     * Keeps the crown in his own house while the player is walking into it, and has him say where the war
+     * is settled.
+     * <p>
+     * The last act is two meetings, not one. The castle page does not send the player to a fortress and
+     * then to a different boss: it sends them into the house the war raised, where he is waiting in it,
+     * seated, unkillable and not interested in a fight yet - and it is there, close enough to hear him, that
+     * he names the sand. The page that follows is his invitation rather than a herald's, which is the whole
+     * reason the arena stands before the crown instead of after it.
+     * <p>
+     * He does not get up: he is stood with his mind switched off (see {@link #seated}), so the meeting is a
+     * man in a chair rather than a boss fight the campaign has not asked for yet - and being unhurtable
+     * here as well as there is what stops a player from ending the war at the castle door.
+     * <p>
+     * Once the page has moved on he is dismissed the next time the player looks, leaving an empty chair
+     * behind him - but only after he has spoken. Arriving at the gate is not the meeting, and a page that
+     * settles on the doorstep must not take the words with it.
+     */
+    private static void keepCrownSeated(ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel level)) return;
+        Sites.Site site = Sites.siteOf(player);
+        if (site == null || !site.built() || !Sites.BOSS_CASTLE.equals(site.structure())) return;
+        if (!level.dimension().equals(site.dimension())) return;
+        if (site.centre().distToCenterSqr(player.position()) > WITCHKING_REACH * WITCHKING_REACH) return;
+        Entity king = seatedKing(level, site.centre());
+        boolean waited = carriedCastlePage(player) != null;
+        if (king == null) {
+            if (!waited) return;
+            standSeatedKing(level, site.centre());
+            return;
+        }
+        // A body written down and read back is built afresh, habits and all.
+        steadyShade(level, site.centre());
+        if (SUMMONED.contains(player.getUUID())) {
+            // He has said it. The page moving on is what empties the chair, and the next look does it.
+            if (waited) return;
+            king.discard();
+            SUMMONED.remove(player.getUUID());
+            player.sendSystemMessage(Component.translatable("campaign.tolkienmobs.witchking.gone")
+                    .withStyle(ChatFormatting.DARK_PURPLE));
+            return;
+        }
+        if (king.distanceToSqr(player) > CASTLE_MEET * CASTLE_MEET) return;
+        SUMMONED.add(player.getUUID());
+        player.sendSystemMessage(Component.translatable("campaign.tolkienmobs.witchking.summons")
+                .withStyle(ChatFormatting.DARK_PURPLE));
+    }
+
+    /** The crown as he is met in his own house, if he is already standing there. */
+    @Nullable
+    private static Entity seatedKing(ServerLevel level, BlockPos centre) {
+        List<Entity> seated = level.getEntities((Entity) null, new AABB(centre).inflate(WITCHKING_SEARCH),
+                seen -> seen.entityTags().contains(CASTLE_TAG));
+        return seated.isEmpty() ? null : seated.get(0);
+    }
+
+    /**
+     * Stands him in the chair of his own house: no mind of his own, so he does not walk the rooms, and no
+     * way to be killed there, which the event that hears the blows is what enforces.
+     */
+    private static void standSeatedKing(ServerLevel level, BlockPos centre) {
+        BlockPos seat = CASTLE_SEAT != null ? CASTLE_SEAT : seatOf(level, centre);
+        if (seat == null) return;
+        Entity entity = TolkienEntities.ENTITY_TTM_WITCHKING.get().create(level, EntitySpawnReason.EVENT);
+        if (!(entity instanceof Mob king)) return;
+        king.snapTo(seat.getX() + 0.5D, seat.getY(), seat.getZ() + 0.5D,
+                level.getRandom().nextFloat() * 360.0F, 0.0F);
+        king.setPersistenceRequired();
+        king.setNoAi(true);
+        king.addTag(CASTLE_TAG);
+        shadeBlind(king);
+        level.addFreshEntity(king);
+    }
+
+    /**
+     * Where a body is seated in a building: air to stand in with a roof over it, the nearest such block to
+     * the middle. Walked out in rings rather than by height, so the first hit is the one closest to the
+     * middle of the house instead of the first one under any floor at all.
+     */
+    @Nullable
+    private static BlockPos seatOf(ServerLevel level, BlockPos centre) {
+        for (int out = 0; out <= CASTLE_ROOM_REACH; out++) {
+            for (int dx = -out; dx <= out; dx++) {
+                for (int dz = -out; dz <= out; dz++) {
+                    if (Math.max(Math.abs(dx), Math.abs(dz)) != out) continue;
+                    for (int dy = -FLOOR_DOWN; dy <= CASTLE_ROOM_UP; dy++) {
+                        BlockPos feet = centre.offset(dx, dy, dz);
+                        if (stands(level, feet) && roofed(level, feet)) return feet;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /** Whether anything at all is over a body's head within a room's height, which is what a roof is. */
+    private static boolean roofed(ServerLevel level, BlockPos feet) {
+        for (int up = 2; up <= CASTLE_ROOM_UP; up++) {
+            if (!level.getBlockState(feet.above(up)).isAir()) return true;
+        }
+        return false;
+    }
+
+    /** Whether the crown is the one met in his own house, which nothing is allowed to kill. */
+    public static boolean seated(Entity king) {
+        return king.entityTags().contains(CASTLE_TAG);
+    }
+
+    /** Says that the crown does not fall in his own house, once every few seconds rather than on every blow. */
+    public static void tellSeated(Entity king, ServerPlayer player) {
+        long now = king.level().getGameTime();
+        Long said = SHIELD_SAID.get(king.getUUID());
+        if (said != null && now - said < SHIELD_SAY_INTERVAL) return;
+        SHIELD_SAID.put(king.getUUID(), now);
+        player.sendSystemMessage(Component.translatable("campaign.tolkienmobs.witchking.seated")
                 .withStyle(ChatFormatting.DARK_PURPLE));
     }
 
@@ -855,6 +993,15 @@ public final class Campaign extends SavedData {
                 .withStyle(ChatFormatting.DARK_PURPLE));
     }
 
+    /** The page that names the castle, if the player is carrying it. */
+    @Nullable
+    private static Quest carriedCastlePage(ServerPlayer player) {
+        for (Quest quest : QuestLedger.active(player)) {
+            if (quest.story() && quest.target().equals(CASTLE_TARGET)) return quest;
+        }
+        return null;
+    }
+
     /** The page that names the Witch-king, if the player is carrying it. */
     @Nullable
     private static Quest carriedWitchKingPage(ServerPlayer player) {
@@ -873,9 +1020,10 @@ public final class Campaign extends SavedData {
      * strips them again, which costs a scan of a small box once a second and is idempotent - a body already
      * blind to the sun has nothing left to take off.
      */
-    private static void steadyRing(ServerLevel level, BlockPos centre) {
+    private static void steadyShade(ServerLevel level, BlockPos centre) {
         for (Entity found : level.getEntities((Entity) null, new AABB(centre).inflate(WITCHKING_SEARCH),
-                seen -> seen.entityTags().contains(WITCHKING_TAG) || seen.entityTags().contains(GUARD_TAG))) {
+                seen -> seen.entityTags().contains(WITCHKING_TAG) || seen.entityTags().contains(GUARD_TAG)
+                        || seen.entityTags().contains(CASTLE_TAG))) {
             if (found instanceof Mob mob) shadeBlind(mob);
         }
     }
