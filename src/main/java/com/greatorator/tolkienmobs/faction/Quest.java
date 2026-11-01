@@ -112,6 +112,16 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
                 giver, origin, giverId, story, turnIn);
     }
 
+    /**
+     * The same quest, with the body it goes back to written on it. A page can be another giver's to
+     * hand and to take: the herald who sends a player to somebody says so, and this is how the page
+     * carries the name of whoever is actually waiting for them.
+     */
+    public Quest withTurnIn(String name) {
+        return new Quest(kind, target, goal, progress, employer, standing, rewards, giver, origin, giverId,
+                story, name);
+    }
+
     /** The same quest, noting who offered it, where they stood, and which body they were. */
     public Quest withGiver(String giver, BlockPos origin, UUID giverId) {
         return new Quest(kind, target, goal, progress, employer, standing, rewards, giver, origin, giverId,

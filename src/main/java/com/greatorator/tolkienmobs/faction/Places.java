@@ -126,8 +126,18 @@ public final class Places extends SavedData {
             new Name("weathertop", Alliance.WEST, true),
             new Name("ford", Alliance.WEST, true),
             new Name("tharbad", Alliance.WEST, true),
+            new Name("rivendell", Alliance.WEST, false),
             new Name("oldforest", null, false)
     );
+
+    /**
+     * The countries the books give a name, for the names the map should not be free to put anywhere. A
+     * village is a village wherever the drawing happens to have room for it, but the valley the Elves
+     * keep is in the west of Eriador and a world that put it in the Harad would be a world with the
+     * wrong map in it. Read only when a name is placed for the first time.
+     */
+    private static final Map<String, ArdaMap.Country> CANON = Map.of(
+            "rivendell", ArdaMap.Country.ERIADOR);
 
     /**
      * One place as this world has it: which of the catalogue it is, the dimension it stands in, the
@@ -239,9 +249,15 @@ public final class Places extends SavedData {
         if (name == null || !(player.level() instanceof ServerLevel level)) return null;
         // A name is written where the drawing puts it, and the drawing's pick inside a cell is fixed
         // by the cell and the name, so a place needs no distance of its own: two players asking for the
-        // same name are sent to the same ground wherever they were standing when they asked.
-        ArdaSurvey.Ground ground = ArdaSurvey.find(level, player.blockPosition(),
-                ArdaMap.Country::land, PLACE_GROUND, PLACE_GROUND, id.hashCode(), 0, 0);
+        // same name are sent to the same ground wherever they were standing when they asked. A name the
+        // books give a country is asked for in that country's own middle instead, so it lands in the part
+        // of the map it belongs to rather than the part of the map the asker happens to be in.
+        ArdaMap.Country home = CANON.get(id);
+        ArdaSurvey.Ground ground = home == null
+                ? ArdaSurvey.find(level, player.blockPosition(),
+                        ArdaMap.Country::land, PLACE_GROUND, PLACE_GROUND, id.hashCode(), 0, 0)
+                : ArdaSurvey.find(level, ArdaMap.anchor(home), home::equals,
+                        PLACE_GROUND, PLACE_GROUND, id.hashCode(), 0, 0);
         if (ground == null) return null;
         return set(level, id, ground.centre(), radius);
     }

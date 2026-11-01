@@ -375,7 +375,11 @@ public final class QuestLedger extends SavedData {
             store(player).setDirty();
             sync(player);
             if (after.complete()) {
-                settleSelf(player, slot);
+                // The last spot is where the stone says its piece, not where the work is paid: the page
+                // is somebody's to take back, and a survey of ground that settled itself in a field
+                // would leave the one who lent the stone never hearing what it said.
+                player.sendSystemMessage(Component.translatable("campaign.tolkienmobs.beryl.finished")
+                        .withStyle(ChatFormatting.AQUA));
             } else {
                 player.sendOverlayMessage(Component.translatable("quest.tolkienmobs.progress",
                                 Component.literal(String.valueOf(after.progress())),

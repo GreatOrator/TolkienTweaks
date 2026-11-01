@@ -257,6 +257,14 @@ public final class QuestGivers {
                 return;
             }
             Quest page = Campaign.page(player, herald);
+            // A page that belongs to another body is not this herald's to hand out. The work behind it is
+            // somebody else's to give and to take, and handing it here would put it in a book without the
+            // player ever meeting the one who asked for them.
+            if (page != null && !page.turnIn().isEmpty() && !page.turnIn().equalsIgnoreCase(name)) {
+                player.sendSystemMessage(Component.translatable("quest.tolkienmobs.herald.elsewhere",
+                        Component.literal(page.turnIn())).withStyle(ChatFormatting.GRAY));
+                return;
+            }
             // A walk to ground this world has never had named is a page nobody can finish, so it
             // waits at the herald rather than sitting in a book as a dead end.
             if (page != null && !groundNamed(player, page)) {

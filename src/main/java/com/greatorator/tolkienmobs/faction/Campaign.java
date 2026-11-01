@@ -86,6 +86,19 @@ public final class Campaign extends SavedData {
      */
     private static final int STONE_SPOTS = 4;
     private static final int STONE_APART = 32;
+    /**
+     * The Elf the stone's work belongs to, the valley the map keeps for him, and the tag the body who
+     * hands the work wears. The valley is a name of the catalogue rather than a building: nothing in the
+     * pack has ever built Rivendell, and a named place is ground the map already knows how to put where
+     * the books put it.
+     */
+    private static final String GLORFINDEL = "Glorfindel";
+    private static final String SUMMON_PLACE = "rivendell";
+    private static final String SUMMON_TARGET = Quest.placeTarget(SUMMON_PLACE);
+    private static final String SUMMON_TITLE = "campaign.tolkienmobs.page.summon";
+    private static final String GLORFINDEL_TAG = "tolkienmobs:glorfindel";
+    /** How near the valley a player has to be for him to be standing in it, in blocks. */
+    private static final double GLORFINDEL_REACH = 128.0D;
     /** What he says as he hands it over, what it says when it comes back, and the two ways it is quiet. */
     private static final String STONE_GIVEN = "campaign.tolkienmobs.beryl.given";
     private static final String STONE_RETURNED = "campaign.tolkienmobs.beryl.returned";
@@ -104,6 +117,11 @@ public final class Campaign extends SavedData {
                             "campaign.tolkienmobs.page.southroad", "campaign.tolkienmobs.page.southroad.place", ""),
                     new Page(Quest.Kind.HUNT, "tolkienmobs:entityttmbarrow", 2, 150, 7,
                             "campaign.tolkienmobs.page.keeping", "campaign.tolkienmobs.page.keeping.place", ""),
+                    // The Elves' errand, and the one page of the line a hall herald cannot hand: the
+                    // Rangers' war is not his to give, so the walk to the valley is the page, and what waits
+                    // at the end of the walk hands the next one.
+                    new Page(Quest.Kind.LOCATION, SUMMON_TARGET, 1, 25, 4,
+                            "campaign.tolkienmobs.page.summon", "campaign.tolkienmobs.page.summon.place", ""),
                     // The one errand in the line whose subject is an object, and the only one counted in
                     // ground rather than in bodies or in places arrived at. Written first as a page of talk,
                     // it was finished by reading about a stone nobody was ever given.
@@ -260,7 +278,8 @@ public final class Campaign extends SavedData {
      * summarised when a herald hands one over. One, for now: the West's first muster, which is where
      * the campaign opens and where the script's argument for a conversation is made.
      */
-    private static final Set<String> SPOKEN = Set.of("campaign.tolkienmobs.page.muster", "campaign.tolkienmobs.page.beryl");
+    private static final Set<String> SPOKEN = Set.of("campaign.tolkienmobs.page.muster", "campaign.tolkienmobs.page.summon",
+            "campaign.tolkienmobs.page.beryl");
 
     private static final Map<UUID, Front[]> PROGRESS = new HashMap<>();
     /** What {@link #instance} answers with when there is no server to hold a file. */
@@ -492,8 +511,11 @@ public final class Campaign extends SavedData {
                 List<Alliance> rivals = alliance.rivals();
                 target = rivals.get(stage % rivals.size()).id();
             }
-            return new Quest(page.kind(), target, page.goal(), 0, alliance.id(), page.standing(), List.of(),
-                    "", BlockPos.ZERO, Quest.NOBODY, true, "");
+            Quest built = new Quest(page.kind(), target, page.goal(), 0, alliance.id(), page.standing(),
+                    List.of(), "", BlockPos.ZERO, Quest.NOBODY, true, "");
+            // The stone's work is the Elves': it is handed by the body waiting at the end of the walk and
+            // taken back by him, so the herald who sent the player there has neither to give nor to take.
+            return page.kind() == Quest.Kind.SURVEY ? built.withTurnIn(GLORFINDEL) : built;
         }
         if (!sealed(row)) return null;
         // The slot the campaign keeps for itself walks through its last acts: the Rider, then the
@@ -629,6 +651,63 @@ public final class Campaign extends SavedData {
                 ? Component.translatable(STONE_SILENT)
                 : reading).withStyle(ChatFormatting.AQUA));
         QuestLedger.progressSurvey(player);
+    }
+
+    /**
+     * Stands Glorfindel in the valley while the stone's work is the West's current step.
+     * <p>
+     * The work is his and nobody else's, so it is not handed at a bench: the herald sends the player up
+     * the eastern road, and this is the body waiting at the end of it. He is a campaign giver like the one
+     * in the hall, which is what lets the same right-click hand the page and take it back when the four
+     * spots are walked - the only difference between him and a herald is that his work is a stone rather
+     * than a country's war. He is stood once and found by his tag afterwards, so a reloaded world keeps
+     * one Elf in the valley instead of one every time the player looks.
+     */
+    private static void keepGlorfindel(ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel level)) return;
+        int stone = stoneStage();
+        if (stone < 0 || stage(player, Alliance.WEST) != stone) return;
+        Places.Place valley = Places.place(level, SUMMON_PLACE);
+        if (valley == null || !valley.dimension().equals(level.dimension())) return;
+        if (valley.centre().distToCenterSqr(player.position()) > GLORFINDEL_REACH * GLORFINDEL_REACH) return;
+        if (!level.getEntities((Entity) null, new AABB(valley.centre()).inflate(GLORFINDEL_REACH),
+                seen -> seen.entityTags().contains(GLORFINDEL_TAG)).isEmpty()) return;
+        BlockPos stand = floorOf(level, valley.centre());
+        if (stand == null) return;
+        Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
+        if (!(entity instanceof Mob elf)) return;
+        elf.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D,
+                level.getRandom().nextFloat() * 360.0F, 0.0F);
+        elf.setPersistenceRequired();
+        // A giver, a campaign giver, and a front's own: the first three tags are what the right-click and
+        // the mark over his head already read, and the last is only how this class finds him again.
+        elf.addTag(QuestGivers.GIVER_TAG);
+        elf.addTag(QuestGivers.CAMPAIGN_TAG);
+        elf.addTag(QuestGivers.CAMPAIGN_GIVER_TAG);
+        elf.addTag(Alliance.WEST.giverTag());
+        elf.addTag(GLORFINDEL_TAG);
+        elf.setCustomName(Component.literal(GLORFINDEL).withStyle(ChatFormatting.GOLD));
+        elf.setCustomNameVisible(true);
+        level.addFreshEntity(elf);
+    }
+
+    /** Which step of the West's line the stone's work is, found by its shape rather than counted by hand. */
+    private static int stoneStage() {
+        List<Page> line = PAGE_LINES.get(Alliance.WEST);
+        for (int stage = 0; stage < line.size(); stage++) {
+            if (line.get(stage).kind() == Quest.Kind.SURVEY) return stage;
+        }
+        return -1;
+    }
+
+    /** Takes the lent stone back out of the player's pack, one stone and no more. */
+    private static void takeStone(ServerPlayer player) {
+        var inventory = player.getInventory();
+        for (int slot = 0; slot < inventory.getContainerSize(); slot++) {
+            if (!inventory.getItem(slot).is(TolkienItems.ITEM_BERYL.get())) continue;
+            inventory.getItem(slot).shrink(1);
+            return;
+        }
     }
 
     /** How far apart two blocks stand, in blocks and on the level: the stone is asked about ground, not height. */
@@ -836,6 +915,7 @@ public final class Campaign extends SavedData {
         keepWitchKing(player);
         keepQuarryComing(player);
         keepStoneInHand(player);
+        keepGlorfindel(player);
         Quest page = carriedCampaignPage(player);
         if (page == null || page.complete()) {
             RIDER_CALLED.remove(player.getUUID());
@@ -1299,6 +1379,9 @@ public final class Campaign extends SavedData {
             if (front.stage() < line.size()) {
                 Page paid = line.get(front.stage());
                 CourageLedger.add(player, paid.courage());
+                // The stone goes back with the work it was lent for: an errand finished is the end of a
+                // loan rather than the beginning of a keepsake.
+                if (paid.kind() == Quest.Kind.SURVEY) takeStone(player);
                 // The page that ends a front has the front's last words on it, and this is where
                 // they are said: the front moves on the moment its last page is paid, so a line
                 // left to the next page would be spoken by a page that no longer exists.
