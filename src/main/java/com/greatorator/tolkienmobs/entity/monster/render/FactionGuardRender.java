@@ -73,11 +73,12 @@ public class FactionGuardRender extends GeoEntityRenderer<FactionGuardEntity, To
                                                  SubmitNodeCollector renderTasks, int packedLight) {
                 poseStack.pushPose();
                 // The blade sits in the fist, the way the brigand holds his. A shield is a plate and not a
-                // blade: turned a quarter off the arm it presents its face instead of its edge, and it rides
-                // out along the forearm rather than sitting in the palm where the grip is.
+                // blade: it hangs square across the forearm with the design looking the way the guard looks,
+                // low enough to sit on the arm rather than at the shoulder, and the other way round from the
+                // turn that showed the back of it to whoever was behind the guard.
                 if (displayContext == ItemDisplayContext.THIRD_PERSON_LEFT_HAND) {
-                    poseStack.mulPose(Axis.YP.rotationDegrees(90));
-                    poseStack.translate(-0.02D, -0.18D, 0.16D);
+                    poseStack.mulPose(Axis.YP.rotationDegrees(-90));
+                    poseStack.translate(0.0D, -0.45D, -0.05D);
                 } else {
                     poseStack.mulPose(Axis.XP.rotationDegrees(-30));
                     poseStack.mulPose(Axis.YP.rotationDegrees(90));
