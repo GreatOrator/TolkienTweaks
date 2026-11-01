@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.client;
 
 import com.greatorator.tolkienmobs.init.TolkienSounds;
 import com.greatorator.tolkienmobs.network.manager.ConversationDoneManager;
+import com.greatorator.tolkienmobs.network.manager.ConversationManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
@@ -30,6 +31,12 @@ import java.util.List;
  * The two answers are voice rather than branch: the page's business is the same whichever is said, and the
  * speaker answers both in the same breath. A page that branches can hang its keys off a reply instead, and
  * this screen does not care which.
+ * <p>
+ * Two other ways it opens are the same leaf with less on it. A page already taken is opened again to be
+ * read, and it opens <em>answered</em>: the last thing the speaker said and the row that puts the page away,
+ * because a player who has read it once is not being asked the same question twice. A herald who will not
+ * hand his country's work over says so here too, on a leaf headed with his answer and holding one paragraph
+ * and the same close row - a refusal is a thing said, and a chat line that scrolls away is not saying it.
  */
 public class ConversationScreen extends Screen {
     /** The leaf's largest size in GUI pixels; it shrinks to fit a small window rather than overflow. */
@@ -62,11 +69,17 @@ public class ConversationScreen extends Screen {
 
     /** The key prefix a page's words hang off, as {@code campaign.tolkienmobs.page.muster}. */
     private final String page;
+    /** How the leaf was opened: a page handed over, a page re-read, or a refusal. */
+    private final ConversationManager.Mode mode;
+    /** The key the leaf's own words hang off, which is the page's or the refusal's. */
+    private final String words;
+    /** The leaf a refusal is written on, shared by the three heralds, who are one office. */
+    private static final String REFUSED = "campaign.tolkienmobs.talk.refused";
     /** Who is speaking, as the body that handed the page is named in the world. */
     private final String speaker;
 
     /** Which reply was given, or -1 while the leaf is still waiting for one. */
-    private int chosen = -1;
+    private int chosen;
 
     private int bookX;
     private int bookY;
@@ -78,10 +91,15 @@ public class ConversationScreen extends Screen {
     /** Where the close row was drawn, once the page has been answered. */
     private Spot closeSpot;
 
-    public ConversationScreen(String speaker, String page) {
-        super(Component.translatable(page));
+    public ConversationScreen(String speaker, String page, ConversationManager.Mode mode) {
+        super(Component.translatable(mode == ConversationManager.Mode.REFUSED ? REFUSED : page));
         this.speaker = speaker;
         this.page = page;
+        this.mode = mode;
+        this.words = mode == ConversationManager.Mode.REFUSED ? REFUSED : page;
+        // A page opened to be read again is already at its last line; a fresh one and a refusal both
+        // start at the top, and only the fresh one is waiting for an answer.
+        this.chosen = mode == ConversationManager.Mode.ANSWERED ? 0 : -1;
     }
 
     // ---- the leaf ----
@@ -114,7 +132,7 @@ public class ConversationScreen extends Screen {
         int w = pageW - 24;
         // What the step is called, centred, and the rule under it: the page is the same page the book
         // holds, so it is headed the same way.
-        String title = fit(Component.translatable(page).getString(), w);
+        String title = fit(Component.translatable(this.words).getString(), w);
         graphics.text(this.font, title, x + (w - this.font.width(title)) / 2, pageY + 9, INK_GOLD, FLAT);
         graphics.fill(pageX + 12, pageY + 20, pageX + pageW - 12, pageY + 21, PAGE_EDGE);
 
@@ -123,7 +141,10 @@ public class ConversationScreen extends Screen {
         y += LINE + 5;
 
         int foot = pageY + pageH - 12;
-        if (this.chosen < 0) {
+        // A refusal has nothing to answer to: the herald has already said what he has to say, so the
+        // leaf shows his answer and the row that puts it away.
+        boolean answered = this.mode == ConversationManager.Mode.REFUSED || this.chosen >= 0;
+        if (!answered) {
             // The opening waits for an answer, so the replies are laid out first and the words are
             // wrapped into what is left above them.
             int replyTop = foot - REPLIES * (LINE + REPLY_GAP);
@@ -143,9 +164,9 @@ public class ConversationScreen extends Screen {
         drawClose(graphics, x, foot, w, mouseX, mouseY);
     }
 
-    /** The text of one of this page's keys. */
+    /** The text of one of this leaf's keys. */
     private String key(String suffix) {
-        return Component.translatable(page + suffix).getString();
+        return Component.translatable(this.words + suffix).getString();
     }
 
     private void drawReply(GuiGraphicsExtractor graphics, int x, int y, int w, int index, int mouseX, int mouseY) {
@@ -251,7 +272,9 @@ public class ConversationScreen extends Screen {
         // The leaf says which page of talk it was on the way out. A dialogue page in the book is
         // finished by hearing the words out, and this is the only moment the client knows that
         // happened - the words themselves never leave the client.
-        if (this.chosen >= 0 && !this.page.isEmpty()) {
+        // Only a page handed over can be finished by reading it: a re-read was finished long ago, and
+        // a refusal is not work at all.
+        if (this.mode == ConversationManager.Mode.OPEN && this.chosen >= 0 && !this.page.isEmpty()) {
             ClientPacketDistributor.sendToServer(new ConversationDoneManager(this.page));
         }
         super.onClose();

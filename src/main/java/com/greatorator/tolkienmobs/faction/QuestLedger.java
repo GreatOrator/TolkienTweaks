@@ -181,8 +181,8 @@ public final class QuestLedger extends SavedData {
         // nobody.
         String leaf = quest.leaf();
         if (leaf != null) {
-            PacketDistributor.sendToPlayer(player,
-                    new ConversationManager(quest.giverName().getString(), leaf));
+            PacketDistributor.sendToPlayer(player, new ConversationManager(
+                    quest.giverName().getString(), leaf, ConversationManager.Mode.OPEN));
         }
         sync(player);
         return true;

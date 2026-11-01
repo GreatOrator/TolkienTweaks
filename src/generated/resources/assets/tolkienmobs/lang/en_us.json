@@ -665,6 +665,8 @@
   "campaign.tolkienmobs.page.muster.said": "Travellers, mostly. Farm carts, a pedlar with too many knives. And three nights ago, a shape that my scout swore was a horseman and would not swear was a man. He has not sworn anything since; he came back at a walk with his horse lathered and would not say what he saw, only that he heard breathing where nothing stood. Go out to the road, and find what he found. Take the horn - if you must blow it, blow it once and run.",
   "campaign.tolkienmobs.page.steward.closing": "A sealed scroll, a steward's hand, and a road out of a country that wanted him gone. The East has bought a grudge with paper, and it is owed to you.",
   "campaign.tolkienmobs.talk.close": "Say no more.",
+  "campaign.tolkienmobs.talk.refused": "The Herald's Answer",
+  "campaign.tolkienmobs.talk.refused.said": "I hand my country's business to folk my country knows, and it does not know you yet. Do something here worth a name, and come back to this bench.",
   "command.tolkienmobs.quest.page": "Wrote %s %s page(s).",
   "place.tolkienmobs.greenway": "The Green Way",
   "place.tolkienmobs.greenway.line": "the old road north, and its long ditches",

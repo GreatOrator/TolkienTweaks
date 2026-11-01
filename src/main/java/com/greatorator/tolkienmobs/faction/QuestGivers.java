@@ -228,7 +228,9 @@ public final class QuestGivers {
                     || Campaign.holdsFrontPage(player, herald)) {
                 player.sendSystemMessage(Component.translatable("quest.tolkienmobs.herald.carrying")
                         .withStyle(ChatFormatting.GRAY));
-                talk(player, target, herald);
+                // Opened answered: the page is in the book and has been read, so it is opened at its
+                // last line rather than at the question the player has already answered.
+                talk(player, target, herald, ConversationManager.Mode.ANSWERED);
                 return;
             }
             // The line opens on a rank rather than on a walk through the door: a country does not trust its
@@ -239,6 +241,11 @@ public final class QuestGivers {
                 player.sendSystemMessage(Component.translatable("quest.tolkienmobs.herald.stranger")
                         .withStyle(ChatFormatting.GRAY));
                 speak(player, target, true);
+                // And he says it to the player's face: the refusal is a leaf of its own, headed with
+                // his answer, so being turned away is a thing that happens rather than a line in chat.
+                PacketDistributor.sendToPlayer(player, new ConversationManager(
+                        target.getName().getString(), "campaign.tolkienmobs.talk.refused",
+                        ConversationManager.Mode.REFUSED));
                 return;
             }
             Quest page = Campaign.page(player, herald);
@@ -253,7 +260,7 @@ public final class QuestGivers {
                 if (QuestLedger.accept(player, handed)) {
                     Campaign.noteHanded(player, herald, handed);
                     speak(player, target, false);
-                    talk(player, target, herald);
+                    talk(player, target, herald, ConversationManager.Mode.OPEN);
                 }
                 return;
             }
@@ -313,10 +320,11 @@ public final class QuestGivers {
      * over exactly as it was - so writing one is naming it in {@link Campaign#spokenKey} and adding the
      * words, not building a second feature.
      */
-    private static void talk(ServerPlayer player, Entity herald, Alliance alliance) {
+    private static void talk(ServerPlayer player, Entity herald, Alliance alliance,
+                             ConversationManager.Mode mode) {
         String page = Campaign.spokenKey(player, alliance);
         if (page == null) return;
-        PacketDistributor.sendToPlayer(player, new ConversationManager(herald.getName().getString(), page));
+        PacketDistributor.sendToPlayer(player, new ConversationManager(herald.getName().getString(), page, mode));
     }
 
     private static void makeSafe(Entity giver) {

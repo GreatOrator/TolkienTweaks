@@ -871,6 +871,8 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("screen.tolkienmobs.quests.bounties.front", "No errand in hand - the pages of the front are leafed on the right. Turn them there.");
         this.add("screen.tolkienmobs.quests.story.empty", "No step of the campaign is in your hands.");
         this.add("campaign.tolkienmobs.page.muster", "The First Muster");
+        this.add("campaign.tolkienmobs.talk.refused.said", "I hand my country's business to folk my country knows, and it does not know you yet. Do something here worth a name, and come back to this bench.");
+        this.add("campaign.tolkienmobs.talk.refused", "The Herald's Answer");
         this.add("campaign.tolkienmobs.page.muster.place", "the Green Way, where the scout's ditch runs");
         this.add("campaign.tolkienmobs.page.muster.say.1", "You have come a long road to stand in a cold hall. Sit, then - but not long.");
         this.add("campaign.tolkienmobs.page.muster.say.2", "I have riders out on the Greenway and two of them are late, and lateness on that road has not meant anything good in thirty years.");

@@ -665,6 +665,8 @@
   "campaign.tolkienmobs.page.muster.said": "多半是旅人。农夫的板车，一个带了太多刀子的货郎。可三天前，我的斥候发誓说那是一个骑在马上的身形，却怎么也不肯发誓说那是个人。从那以后他就不再开口了；他是牵着马走回来的，马浑身是汗，问他看见了什么，他只说：他听见了呼吸声，而那里什么都没有。到路上去，看看他看见了什么。带上号角——若你非吹不可，就只吹一声，然后跑。",
   "campaign.tolkienmobs.page.steward.closing": "一封封好的信，一位管家的字迹，一条离开那个要他消失的国家的路。东境用纸买下了一桩怨恨，而这笔账记在你身上。",
   "campaign.tolkienmobs.talk.close": "我不再多问。",
+  "campaign.tolkienmobs.talk.refused": "传令官的答复",
+  "campaign.tolkienmobs.talk.refused.said": "我只把本国的事交给本国认得的人，而它还不认得你。在这里做点配得上一个名字的事，再回到这张桌前。",
   "command.tolkienmobs.quest.page": "为 %s 写了 %s 页。",
   "place.tolkienmobs.greenway": "绿道",
   "place.tolkienmobs.greenway.line": "北去的古道，与它长长的沟渠",

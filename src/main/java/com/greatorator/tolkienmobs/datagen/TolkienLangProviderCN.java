@@ -871,6 +871,8 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("screen.tolkienmobs.quests.bounties.front", "手上没有零活 —— 战线的书页就在右页，可以从那里翻看。");
         this.add("screen.tolkienmobs.quests.story.empty", "主线故事暂时没有进行中的步骤。");
         this.add("campaign.tolkienmobs.page.muster", "首次征召");
+        this.add("campaign.tolkienmobs.talk.refused.said", "我只把本国的事交给本国认得的人，而它还不认得你。在这里做点配得上一个名字的事，再回到这张桌前。");
+        this.add("campaign.tolkienmobs.talk.refused", "传令官的答复");
         this.add("campaign.tolkienmobs.page.muster.place", "绿道，斥候遇难的水沟一带");
         this.add("campaign.tolkienmobs.page.muster.say.1", "你走了很长的路，才走进这座冷清的厅堂。坐吧——但别坐久。");
         this.add("campaign.tolkienmobs.page.muster.say.2", "我在绿道上派了骑手，有两个迟了；三十年来，那条路上的迟到从来没有带来过好事。");
