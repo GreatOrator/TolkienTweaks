@@ -1925,6 +1925,7 @@
   "quest.tolkienmobs.name.6": "学者伊尔文",
   "quest.tolkienmobs.name.7": "猎手凯尔",
   "quest.tolkienmobs.progress": "%s / %s",
+  "quest.tolkienmobs.quarry.road": "他们在前面的路上等着:%s。",
   "quest.tolkienmobs.quarry.staged": "不必远寻%s了。前方的地面上就有 %s 个。",
   "quest.tolkienmobs.reach": "抵达%s",
   "quest.tolkienmobs.read": "阅读%s",

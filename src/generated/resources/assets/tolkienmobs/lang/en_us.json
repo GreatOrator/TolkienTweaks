@@ -1925,6 +1925,7 @@
   "quest.tolkienmobs.name.6": "Irwyn the Scholar",
   "quest.tolkienmobs.name.7": "Kael the Trapper",
   "quest.tolkienmobs.progress": "%s / %s",
+  "quest.tolkienmobs.quarry.road": "They are waiting on the road ahead: %s.",
   "quest.tolkienmobs.quarry.staged": "You will not have to look far for the %s. %s of them are on the ground ahead.",
   "quest.tolkienmobs.reach": "Reach %s",
   "quest.tolkienmobs.read": "Read %s",

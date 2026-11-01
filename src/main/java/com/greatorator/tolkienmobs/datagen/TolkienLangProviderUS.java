@@ -1006,6 +1006,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("arda.tolkienmobs.country.nurn", "Nurn");
         this.add("arda.tolkienmobs.country.harad", "Harad");
         this.add("quest.tolkienmobs.site.country", "The work lies in %s.");
+        this.add("quest.tolkienmobs.quarry.road", "They are waiting on the road ahead: %s.");
         this.add("campaign.tolkienmobs.page.witchking.closing", "The crown was not on the ground where it fell. Whatever the war was for, it was never the thing the three countries told themselves it was, and the halls will go on asking.");
         this.add("campaign.tolkienmobs.page.witchking.place", "the hall under the black crown");
         this.add("campaign.tolkienmobs.page.witchking", "What waits in the castle");

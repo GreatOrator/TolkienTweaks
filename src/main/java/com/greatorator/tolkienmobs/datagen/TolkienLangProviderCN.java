@@ -1006,6 +1006,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("arda.tolkienmobs.country.nurn", "努尔嫩");
         this.add("arda.tolkienmobs.country.harad", "哈拉德");
         this.add("quest.tolkienmobs.site.country", "这活儿在%s。");
+        this.add("quest.tolkienmobs.quarry.road", "他们在前面的路上等着:%s。");
         this.add("campaign.tolkienmobs.page.witchking.closing", "王冠并不在它落下的地方。这场战争无论为了什么，都不是三国对自己说的那件事，而厅堂还会继续发问。");
         this.add("campaign.tolkienmobs.page.witchking.place", "黑冠之下的厅堂");
         this.add("campaign.tolkienmobs.page.witchking", "城堡里等着的东西");

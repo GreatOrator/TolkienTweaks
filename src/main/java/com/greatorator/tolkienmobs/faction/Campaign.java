@@ -199,23 +199,51 @@ public final class Campaign extends SavedData {
      * Where a player stood when the Rider's page came into their hands. He is owed to the road, not
      * to the room the page was handed over in, so this is where the ride out has to begin.
      */
-    private static final Map<UUID, BlockPos> RIDER_CALLED = new HashMap<>();
+    private static final Map<UUID, Call> RIDER_CALLED = new HashMap<>();
     /** How far from that door, and how far ahead, he is stood up. */
     private static final int RIDER_CALL_DISTANCE = 24;
-    private static final int RIDER_WAY_AHEAD = 24;
-    private static final int RIDER_WAY_SPREAD = 6;
+    private static final int RIDER_WAY_AHEAD = 36;
+    private static final int RIDER_WAY_SPREAD = 12;
     /** How wide a search for a Rider who is already out there, and how often to look. */
     private static final double RIDER_SEARCH = 128.0D;
     private static final int RIDER_CHECK_INTERVAL = 20;
 
     /**
-     * Where a front page's quarry is stood up: ahead of the player rather than on them, spread across
-     * the road so the page reads as ground somebody has already walked, and always fewer than the page
-     * asks for, because the rest of the hunt is still the player's to find.
+     * A page's quarry, owed to the road rather than to the bench: where the player stood when the page
+     * came into their hands, when it is owed, and whether it has already been paid out once.
      */
-    private static final int QUARRY_AHEAD = 18;
-    private static final int QUARRY_SPREAD = 8;
-    private static final int QUARRY_SIDE = 4;
+    private static final Map<UUID, Call> QUARRY_CALLED = new HashMap<>();
+
+    /** A quarry owed to the road. Held in memory only, so a reloaded world starts the clock again. */
+    private record Call(BlockPos from, long due, boolean spent) {
+    }
+
+    /**
+     * How long a page's quarry keeps away, in ticks: a minute and a half.
+     *
+     * <p>A page that puts its quarry on the ground as it is handed over makes the walk to them part of
+     * the hand-over, and the meeting the page promised happens beside the bench with the herald still
+     * watching. A page that holds them back makes the meeting something the player was already doing
+     * when it arrived, which is the difference between an errand and an adventure.
+     */
+    private static final int AMBUSH_DELAY = 1800;
+
+    /**
+     * How far the player has to have come from that door before anything is owed at all. Time alone
+     * would mean a player who stood still at the bench for two minutes being found where they stood;
+     * the walk is the other half of what makes it a meeting.
+     */
+    private static final int AMBUSH_WAY = 96;
+
+    /**
+     * Where a front page's quarry is found, once it is owed at all: far enough ahead that it is a
+     * meeting on the road rather than a spawn beside the player, and spread across the way so it
+     * reads as ground somebody has already walked. Always fewer than the page asks for, because the
+     * rest of the hunt is still the player's to find.
+     */
+    private static final int QUARRY_AHEAD = 40;
+    private static final int QUARRY_SPREAD = 24;
+    private static final int QUARRY_SIDE = 16;
     private static final int QUARRY_LIMIT = 3;
     /** The tag the quarry a page put on the ground wears, so a second hand-over does not double it. */
     private static final String QUARRY_TAG = "tolkienmobs:campaign_quarry";
@@ -428,14 +456,14 @@ public final class Campaign extends SavedData {
         int slot = slotOf(page, alliance);
         row[slot] = new Front(row[slot].stage(), page);
         store(player).setDirty();
-        // The Rider is not stood up in the room the page is handed over in: the page is taken at a
+        // Nothing is put on the ground in the room the page is handed over in: the page is taken at a
         // bench, and a wraith conjured beside it reads as a trick. Where the player stood is noted,
-        // and {@link #tick} stands him up once they are out under open sky and a ride away from the
-        // door, which is a meeting rather than a magic trick.
+        // and {@link #tick} stands the quarry up later, once the clock has run out and they are out
+        // under open sky and a walk away from the door, which is a meeting rather than a magic trick.
         if (isCampaignPage(player, page)) {
-            RIDER_CALLED.put(player.getUUID(), player.blockPosition());
-        } else {
-            standQuarryUp(player, page);
+            RIDER_CALLED.put(player.getUUID(), call(player));
+        } else if (carriesQuarry(page)) {
+            QUARRY_CALLED.put(player.getUUID(), call(player));
         }
     }
 
@@ -454,15 +482,15 @@ public final class Campaign extends SavedData {
      * own: the campaign's own page has his own arrival, a fetch has nothing to stand up, and the rest of
      * a long hunt is the hunt.
      */
-    private static void standQuarryUp(ServerPlayer player, Quest page) {
-        if (!(player.level() instanceof ServerLevel level)) return;
+    private static boolean standQuarryUp(ServerPlayer player, Quest page) {
+        if (!(player.level() instanceof ServerLevel level)) return false;
         // The campaign's own last acts are not stood up on the road: the Rider has his own arrival
         // out under open sky, and the Witch-king belongs in the castle rather than beside the bench
         // the page was taken at.
-        if (page.kind() != Quest.Kind.HUNT || isFinale(page)) return;
+        if (page.kind() != Quest.Kind.HUNT || isFinale(page)) return false;
         EntityType<?> quarry = page.entityType();
-        if (quarry == null) return;
-        if (quarryOnTheGround(player, quarry)) return;
+        if (quarry == null) return false;
+        if (quarryOnTheGround(player, quarry)) return false;
         RandomSource random = level.getRandom();
         Direction facing = player.getDirection();
         Direction across = facing.getClockWise();
@@ -485,10 +513,73 @@ public final class Campaign extends SavedData {
             if (level.addFreshEntity(mob)) stood++;
         }
         if (stood > 0) {
-            player.sendSystemMessage(Component.translatable("quest.tolkienmobs.quarry.staged",
-                            page.targetName(), Component.literal(String.valueOf(stood)))
+            player.sendSystemMessage(Component.translatable("quest.tolkienmobs.quarry.road",
+                            page.targetName())
                     .withStyle(ChatFormatting.DARK_RED));
         }
+        return stood > 0;
+    }
+
+    /**
+     * Keeps a front page's quarry coming: it is owed to the road, so every look asks whether it is
+     * owed yet, and pays it out once. Three things have to be true first - the page still carried and
+     * unfinished, the clock run out, and the player out under open sky and a walk away from the bench
+     * the page was taken at. What that buys is a meeting the player was already walking into when it
+     * arrived, rather than a mob standing beside the herald who described it.
+     */
+    private static void keepQuarryComing(ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel level)) return;
+        Quest page = carriedQuarryPage(player);
+        if (page == null) {
+            QUARRY_CALLED.remove(player.getUUID());
+            return;
+        }
+        Call call = QUARRY_CALLED.get(player.getUUID());
+        if (call == null) {
+            // Owed with no road remembered - a reloaded world - so the clock starts again here.
+            QUARRY_CALLED.put(player.getUUID(), call(player));
+            return;
+        }
+        // One hand-over owes one meeting: quarry killed is a hunt that moves on, not a page that
+        // keeps restocking the road the player is standing on.
+        if (call.spent()) return;
+        if (quarryOnTheGround(player, page.entityType())) return;
+        if (level.getGameTime() < call.due()) return;
+        if (!player.level().canSeeSky(player.blockPosition())) return;
+        int dx = player.blockPosition().getX() - call.from().getX();
+        int dz = player.blockPosition().getZ() - call.from().getZ();
+        if (dx * dx + dz * dz < AMBUSH_WAY * AMBUSH_WAY) return;
+        if (standQuarryUp(player, page)) {
+            QUARRY_CALLED.put(player.getUUID(), spent(call));
+        }
+    }
+
+    /** The quarry a front page asks for, while the player is carrying one; null when nothing is owed. */
+    @Nullable
+    private static Quest carriedQuarryPage(ServerPlayer player) {
+        for (Quest quest : QuestLedger.active(player)) {
+            if (carriesQuarry(quest)) return quest;
+        }
+        return null;
+    }
+
+    /**
+     * Whether taking a page puts quarry on the ground, which is a front's hunt and no other: a fetch
+     * has nothing to stand up, a walk or a conversation is not about a body, and the campaign's own
+     * last acts are placed by their own pages (the Rider on the road, the Witch-king in his castle).
+     */
+    private static boolean carriesQuarry(Quest page) {
+        return page.kind() == Quest.Kind.HUNT && page.entityType() != null && !isFinale(page);
+    }
+
+    /** The road a page's quarry is owed to: where the player stands now, and when it is owed. */
+    private static Call call(ServerPlayer player) {
+        return new Call(player.blockPosition(), player.level().getGameTime() + AMBUSH_DELAY, false);
+    }
+
+    /** The same call, paid out: this hand-over owes no more quarry. */
+    private static Call spent(Call call) {
+        return new Call(call.from(), call.due(), true);
     }
 
     /** Whether a page's quarry is already standing near the player, put there by an earlier hand-over. */
@@ -543,21 +634,23 @@ public final class Campaign extends SavedData {
     public static void tick(ServerPlayer player) {
         if (player.tickCount % RIDER_CHECK_INTERVAL != 0) return;
         keepWitchKing(player);
+        keepQuarryComing(player);
         Quest page = carriedCampaignPage(player);
         if (page == null || page.complete()) {
             RIDER_CALLED.remove(player.getUUID());
             return;
         }
         if (livingRider(player) != null) return;
-        BlockPos called = RIDER_CALLED.get(player.getUUID());
+        Call called = RIDER_CALLED.get(player.getUUID());
         if (called == null) {
-            // Owed with no place remembered - a reloaded world - so the road starts under their feet.
-            RIDER_CALLED.put(player.getUUID(), player.blockPosition());
+            // Owed with no road remembered - a reloaded world - so the clock starts again here.
+            RIDER_CALLED.put(player.getUUID(), call(player));
             return;
         }
+        if (player.level().getGameTime() < called.due()) return;
         if (!player.level().canSeeSky(player.blockPosition())) return;
-        int dx = player.blockPosition().getX() - called.getX();
-        int dz = player.blockPosition().getZ() - called.getZ();
+        int dx = player.blockPosition().getX() - called.from().getX();
+        int dz = player.blockPosition().getZ() - called.from().getZ();
         if (dx * dx + dz * dz < RIDER_CALL_DISTANCE * RIDER_CALL_DISTANCE) return;
         standRiderUp(player);
         if (RIDER_ENTITY.containsKey(player.getUUID())) {
