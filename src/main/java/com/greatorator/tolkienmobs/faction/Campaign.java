@@ -79,13 +79,18 @@ public final class Campaign extends SavedData {
      * what the walk to the barrows or the sand is worth.
      */
     /**
-     * The stone's page, which is priced in ground rather than in bodies or in places walked to: the
-     * stone is held up, and what it answers is the place it is held over. Asking it twice where it has
-     * already answered is asking one spot once, so the count is of spots a walk apart, and the walking
-     * is the work rather than an inconvenience on the way to it.
+     * The stone's page, which is priced in caves rather than in bodies or in places walked to. The old
+     * campaign asked the beryl in caves, to see whether the Enemy had been in them; this is that question
+     * with the caves left to the world to make - any hollow with enough rock over its head is ground the
+     * stone will answer, one cave is one answer, and four of them finish the page. The distance is wide
+     * because two mouths of one cave system are still one cave.
      */
     private static final int STONE_SPOTS = 4;
-    private static final int STONE_APART = 32;
+    private static final int STONE_APART = 64;
+    /** How much world has to stand over a player's head before the stone agrees it is in a cave. */
+    private static final int CAVE_COVER = 8;
+    /** How many cave readings are written. The cave's own blocks pick which, so a cave keeps its answer. */
+    private static final int CAVE_READINGS = 5;
     /**
      * The Elf the stone's work belongs to, the valley the map keeps for him, and the tag the body who
      * hands the work wears. The valley is a name of the catalogue rather than a building: nothing in the
@@ -102,7 +107,7 @@ public final class Campaign extends SavedData {
     /** What he says as he hands it over, what it says when it comes back, and the two ways it is quiet. */
     private static final String STONE_GIVEN = "campaign.tolkienmobs.beryl.given";
     private static final String STONE_RETURNED = "campaign.tolkienmobs.beryl.returned";
-    private static final String STONE_SILENT = "campaign.tolkienmobs.beryl.silent";
+    private static final String STONE_DAYLIGHT = "campaign.tolkienmobs.beryl.daylight";
     private static final String STONE_SAME = "campaign.tolkienmobs.beryl.same";
     /** Where each player last held the stone up, and when, so one spot gets one question. */
     private static final Map<UUID, BlockPos> STONE_LAST = new HashMap<>();
@@ -625,32 +630,61 @@ public final class Campaign extends SavedData {
     }
 
     /**
-     * Holds the stone up, which is the only thing the beryl does: it answers the ground under it, and
-     * the page lent with it counts ground rather than holding.
+     * Holds the stone up, which is the only thing the beryl does.
      * <p>
-     * One spot is one answer. A raise within a walk of the last one is the same question asked again and
-     * says so rather than counting, which is what stops a player finishing the page by standing still and
-     * clicking - the road is the work. Ground with nothing written for it is answered with silence and
-     * still counted: the stone has no opinion about most of the world, and a page that only spoke in five
-     * places would read as broken where it is simply quiet.
+     * It wants rock over its head. The old campaign asked it in caves - whether the Enemy had been in
+     * them - and this is the same question with the caves left to the world: underground it answers the
+     * dark it is held in, and above ground it says so and gives nothing, because a stone that read the
+     * open air would read every road the player already walks.
+     * <p>
+     * One cave is one answer. A raise inside a walk of the last cave answered is the same cave asked
+     * twice and says so rather than counting, which is what stops the page being finished beside one
+     * crack in the rock. Catalogue ground with an answer written still speaks above ground - that answer
+     * is the whole point of the place - but it is not the errand: the four that finish the page are four
+     * caves.
      */
     public static void raiseStone(ServerPlayer player) {
-        long now = player.level().getGameTime();
+        if (!(player.level() instanceof ServerLevel level)) return;
+        long now = level.getGameTime();
         Long before = STONE_RAISED.get(player.getUUID());
         if (before != null && now - before < STONE_RAISE_INTERVAL) return;
         STONE_RAISED.put(player.getUUID(), now);
         BlockPos here = player.blockPosition();
+        var named = Places.readingAt(player);
+        if (!underRock(level, here)) {
+            // The place's own answer comes first where there is one: the stone remembers ground whether or
+            // not the hand is somewhere it can be asked for anything new.
+            if (named != null) player.sendSystemMessage(named);
+            player.sendSystemMessage(Component.translatable(STONE_DAYLIGHT).withStyle(ChatFormatting.GRAY));
+            return;
+        }
         BlockPos last = STONE_LAST.get(player.getUUID());
         if (last != null && apart(last, here) < STONE_APART) {
             player.sendSystemMessage(Component.translatable(STONE_SAME).withStyle(ChatFormatting.GRAY));
             return;
         }
         STONE_LAST.put(player.getUUID(), here);
-        var reading = Places.readingAt(player);
-        player.sendSystemMessage((reading == null
-                ? Component.translatable(STONE_SILENT)
-                : reading).withStyle(ChatFormatting.AQUA));
+        player.sendSystemMessage(named != null ? named : caveReading(here));
         QuestLedger.progressSurvey(player);
+    }
+
+    /**
+     * Whether enough of the world stands over a player's head for the stone to agree it is in a cave: no
+     * sky in sight and the ground's own height well above them. Both halves earn their keep - the first
+     * rules out standing in the open, and the second rules out a house, where the height over the floor
+     * is a roof rather than a mountain.
+     */
+    private static boolean underRock(ServerLevel level, BlockPos feet) {
+        if (level.canSeeSky(feet)) return false;
+        int surface = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, feet.getX(), feet.getZ());
+        return surface >= feet.getY() + CAVE_COVER;
+    }
+
+    /** What the stone says in a cave: picked by the cave rather than by the player, so it says it again next time. */
+    private static Component caveReading(BlockPos at) {
+        int which = Math.floorMod(at.hashCode(), CAVE_READINGS) + 1;
+        return Component.translatable("campaign.tolkienmobs.cave." + which)
+                .withStyle(ChatFormatting.ITALIC);
     }
 
     /**
