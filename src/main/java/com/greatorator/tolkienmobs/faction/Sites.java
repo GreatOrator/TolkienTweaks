@@ -30,9 +30,13 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -74,6 +78,7 @@ import java.util.stream.Collectors;
  */
 public final class Sites extends SavedData {
     private static final String SAVE_DATA_NAME = "sites";
+    private static final Logger LOGGER = LoggerFactory.getLogger(Sites.class);
 
     /** The tent the camp errand pitches, as a template the mod already ships. */
     public static final String WILD_TENT = "tolkienmobs:wild_tent";
@@ -87,13 +92,21 @@ public final class Sites extends SavedData {
     private static final int PITCH_ACROSS = 8;
     /** How close the player has to be before anything is built, in blocks: four chunks. */
     private static final int BUILD_REACH = 64;
-    /** How many rings of candidate ground are tried around the written spot before giving up. */
-    private static final int SEARCH_RINGS = 2;
+    /**
+     * How far out from the written spot real ground is looked for, in blocks. The drawing and the
+     * world do not agree to the block - the drawing is read without the warp - so a spot the map
+     * would happily take can sit on a slope the world actually made. The search used to reach eight
+     * blocks and then give up without saying so, which is how a page came to wait on a tent that was
+     * never going to stand.
+     */
+    private static final int SEARCH_REACH = 48;
 
     /** The tag the body minding a camp wears, so it can be told from any other of its folk. */
     public static final String KEEPER_TAG = "tolkienmobs:camp_keeper";
 
     private static final Map<UUID, Site> SITES = new HashMap<>();
+    /** Players whose site has already been complained about, so a refusal is said once, not every tick. */
+    private static final Set<UUID> UNBUILDABLE = new HashSet<>();
     private static final Sites NO_SERVER = new Sites(false);
 
     /**
@@ -154,6 +167,7 @@ public final class Sites extends SavedData {
     public static boolean plan(ServerPlayer player, String structure, boolean keeper) {
         if (!(player.level() instanceof ServerLevel level)) return false;
         Sites store = instance(level);
+        UNBUILDABLE.remove(player.getUUID());
         Site existing = SITES.get(player.getUUID());
         // A second page to a structure the player has not reached yet is the same ground: a quest in
         // pieces sends them on to what they are already walking toward rather than pitching a rival
@@ -291,7 +305,17 @@ public final class Sites extends SavedData {
         Vec3i size = template.getSize();
         if (size.getX() <= 0 || size.getZ() <= 0) return;
         BlockPos corner = locate(level, site.centre(), size.getX(), size.getZ());
-        if (corner == null) return;
+        if (corner == null) {
+            // Ground the drawing would take and the world would not: worth saying, because the
+            // player standing on the spot sees only that nothing happened. Once per site, since
+            // this is retried on the clock the player is measured on.
+            if (UNBUILDABLE.add(site.player())) {
+                LOGGER.info("No ground within {} blocks of {} would take {}", SEARCH_REACH,
+                        site.centre(), site.structure());
+            }
+            return;
+        }
+        UNBUILDABLE.remove(site.player());
         clearFootprint(level, corner, size.getX(), size.getY(), size.getZ());
         template.placeInWorld(level, corner, corner, new StructurePlaceSettings(), level.getRandom(), 2);
         if (site.keeper()) standKeeper(level, corner, size);
@@ -306,8 +330,8 @@ public final class Sites extends SavedData {
      */
     @Nullable
     private static BlockPos locate(ServerLevel level, BlockPos written, int wide, int deep) {
-        int step = Math.max(4, Math.max(wide, deep) / 4);
-        for (int ring = 0; ring <= SEARCH_RINGS; ring++) {
+        int step = Math.max(8, Math.max(wide, deep) / 2);
+        for (int ring = 0; ring * step <= SEARCH_REACH; ring++) {
             for (int dx = -ring; dx <= ring; dx++) {
                 for (int dz = -ring; dz <= ring; dz++) {
                     if (Math.max(Math.abs(dx), Math.abs(dz)) != ring) continue;

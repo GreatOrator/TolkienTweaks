@@ -67,6 +67,8 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+- **A site the ground refuses is no longer silent.** Real ground was looked for within eight blocks of the spot the map picked, and if none of it would take the building nothing was built and nothing was said - so a player could stand on the printed point, watch nothing happen, and have no way to tell a hard spot from a broken page. The search now reaches forty-eight blocks, which is the order of the drift between the drawing and the world, and a site that still will not stand is written to the log once rather than swallowed.
+
 - **Walking through a leaf pile no longer crashes the game.** The pile asked the client for a tinted falling leaf, handing the particle engine a colour to go with a particle type that was registered without one; the engine casts what it is given back to its own type, and that cast brought the game down the first time a foot went through a pile. The pile and the pack it sends for a client both ask for the plain maple leaf now, which is the same leaf the biome's own wind already drops.
 
 - **A page in the book can be read to the end.** The leaves were narrow enough that an errand came out as "Reach somewhe..." and the line at the foot as "Hand a finished quest to...", which left the player holding work they could not name. The book is wider, the ask wraps onto a second line where the row has the height for one, the count has moved up beside the giver's name to free the foot of the row, and the foot hint wraps instead of being cut. Four errands still fit one leaf, because the room the hint needs is measured before the rows are sized rather than taken out of them.
