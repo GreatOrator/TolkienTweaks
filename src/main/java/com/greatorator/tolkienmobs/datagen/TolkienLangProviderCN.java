@@ -948,6 +948,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("campaign.tolkienmobs.cave.4", "石头朝洞穴深处那片黑暗偏过去，停在那里不动。这堵墙后面的岩石，比这座山该有的还要多。");
         this.add("campaign.tolkienmobs.cave.5", "它一下子凉了，像身后有门打开时的手背。石头上次被问的时候，这里的东西离开还不久。");
         this.add("campaign.tolkienmobs.cave.dark", "你在%s中高举格罗芬德尔的绿柱石，它依旧暗淡。若他曾在此藏身，也没有给石头留下任何可寻之物。");
+        this.add("campaign.tolkienmobs.cave.short", "你手上只有石室欠下的 %s 枚信物，共需 %s 枚。三枚都在你手里时，我才会收回宝石。");
         this.add("campaign.tolkienmobs.cave.guarded", "宝石依旧暗着，而更深处有什么东西并不希望它亮起来。守着这间石室的家伙还没有倒下。");
         this.add("campaign.tolkienmobs.cave.reached", "你已经到达%s最深的石室，而守着它的东西再也站不起来了。");
         this.add("campaign.tolkienmobs.beryl.given", "石头已经在你手里：冰凉，比这个大小的东西本该有的分量要沉。");

@@ -694,6 +694,7 @@
   "campaign.tolkienmobs.cave.dark": "You hold Glorfindel's beryl aloft in %s, and it stays dark. If he sheltered here, he did not leave the stone anything to find.",
   "campaign.tolkienmobs.cave.guarded": "The stone stays dark, and something further down would rather it did. Whatever keeps this chamber is not yet dead.",
   "campaign.tolkienmobs.cave.reached": "You have reached the deepest chamber of %s, and what was keeping it is not getting up again.",
+  "campaign.tolkienmobs.cave.short": "You carry %s of the %s tokens the chambers owe. I will take the stone back when all three are in your hand, and not before.",
   "campaign.tolkienmobs.giver.title.east": "Herald of the East",
   "campaign.tolkienmobs.giver.title.harad": "Herald of Haradwaith",
   "campaign.tolkienmobs.giver.title.west": "Herald of the West",

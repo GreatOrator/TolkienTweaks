@@ -205,6 +205,9 @@ public final class QuestGivers {
         if (player.level().isClientSide()) return;
 
         String name = target.getName().getString();
+        // The cave search is an item page in the notes, so the camp can refuse it at the door: the
+        // three chambers' tokens go back with the stone, and a player short of them is told so.
+        if (Campaign.stoneHeldBack(player, name)) return;
         if (QuestLedger.turnInFirst(player, name)) return;
         // A page given as words is finished by hearing them out, and is paid where they were said.
         QuestLedger.spokeTo(player, name);

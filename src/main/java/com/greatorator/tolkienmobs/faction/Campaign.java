@@ -781,6 +781,11 @@ public final class Campaign extends SavedData {
         if (!underRock(level, victim.blockPosition(), CAVE_DEEP)) return;
         String cave = caveName(stone);
         QuestLedger.progressSurvey(player);
+        // The notes pay each cave a token of its own, and the camp asks for the three of them back
+        // with the stone: the token is the proof of a chamber emptied, so it is handed out where
+        // the chamber is, not at the end of the search.
+        ItemStack proof = new ItemStack(TolkienItems.ITEM_CAVECOMPLETE.get());
+        if (!player.getInventory().add(proof)) player.drop(proof, false);
         player.sendSystemMessage(Component.translatable(STONE_CLEARED, cave).withStyle(ChatFormatting.AQUA));
         player.sendSystemMessage(Component.translatable(STONE_DARK, cave).withStyle(ChatFormatting.ITALIC));
     }
@@ -1050,6 +1055,53 @@ public final class Campaign extends SavedData {
     private static boolean stonePaid(List<Page> line, int paid) {
         if (paid >= line.size() || line.get(paid).kind() != Quest.Kind.SURVEY) return false;
         return paid + 1 >= line.size() || line.get(paid + 1).kind() != Quest.Kind.SURVEY;
+    }
+
+    /** How many cave completion tokens a player carries, counted off the pack rather than noted down. */
+    private static int countCaveTokens(ServerPlayer player) {
+        var inventory = player.getInventory();
+        int held = 0;
+        for (int slot = 0; slot < inventory.getContainerSize(); slot++) {
+            ItemStack stack = inventory.getItem(slot);
+            if (stack.is(TolkienItems.ITEM_CAVECOMPLETE.get())) held += stack.getCount();
+        }
+        return held;
+    }
+
+    /** Takes the tokens the camp asks for, and no more than it asked for: spare ones are the player's. */
+    private static void takeCaveTokens(ServerPlayer player, int wanted) {
+        var inventory = player.getInventory();
+        int taken = 0;
+        for (int slot = 0; slot < inventory.getContainerSize() && taken < wanted; slot++) {
+            ItemStack stack = inventory.getItem(slot);
+            if (!stack.is(TolkienItems.ITEM_CAVECOMPLETE.get())) continue;
+            int take = Math.min(stack.getCount(), wanted - taken);
+            stack.shrink(take);
+            taken += take;
+        }
+    }
+
+    /**
+     * Whether the camp holds the stone back because the chambers' tokens are not all in hand.
+     * <p>
+     * The notes make the end of the cave search an item page: three cave completion tokens and the beryl,
+     * handed to Elladan. The tokens are the proof of three chambers emptied, so they are what the page is
+     * checked against at the door rather than something the camp asks for afterwards - a player who has
+     * searched one cave and walks into the camp is told what is short instead of being sent on to the next
+     * lead with a stone he did not earn.
+     *
+     * @return whether the hand-over was refused, having said why
+     */
+    public static boolean stoneHeldBack(ServerPlayer player, String giver) {
+        if (!ELLADAN.equalsIgnoreCase(giver)) return false;
+        Quest stone = stoneQuest(player);
+        if (stone == null || !stone.complete() || !stone.namedGround().isEmpty()) return false;
+        int held = countCaveTokens(player);
+        if (held >= STONE_CAVES) return false;
+        player.sendSystemMessage(Component.translatable("campaign.tolkienmobs.cave.short",
+                        Component.literal(String.valueOf(held)), Component.literal(String.valueOf(STONE_CAVES)))
+                .withStyle(ChatFormatting.GRAY));
+        return true;
     }
 
     /** Takes the lent stone back out of the player's pack, one stone and no more. */
@@ -1736,7 +1788,12 @@ public final class Campaign extends SavedData {
                 CourageLedger.add(player, paid.courage());
                 // The stone goes back with the work it was lent for: an errand finished is the end of a
                 // loan rather than the beginning of a keepsake.
-                if (stonePaid(line, front.stage())) takeStone(player);
+                // The stone goes back with the chambers' tokens, which are the proof the search was
+                // made rather than walked: both are spent in the one hand-over.
+                if (stonePaid(line, front.stage())) {
+                    takeStone(player);
+                    takeCaveTokens(player, STONE_CAVES);
+                }
                 // The page that ends a front has the front's last words on it, and this is where
                 // they are said: the front moves on the moment its last page is paid, so a line
                 // left to the next page would be spoken by a page that no longer exists.
