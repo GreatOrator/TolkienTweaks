@@ -204,12 +204,14 @@ public final class Campaign extends SavedData {
      * in is found.
      * <p>
      * The seat is a block of the build rather than a spot worked out from the middle: a castle is a plan,
-     * and a plan has a chair in it. Until the build names that chair, the room is found by looking - air to
-     * stand in, a roof over it, nearest the middle of the castle - so the meeting happens in a hall with a
-     * ceiling in it rather than on the flagstones of a courtyard with the sky open over it.
+     * and a plan has a chair in it. It is the block the debug screen names with the crosshair on that
+     * chair in the castle the war raises, so the meeting happens where the build meant it to instead of
+     * wherever a search found air; a build with no chair named keeps the search, which is air to stand in
+     * under a roof, nearest the middle.
      */
     private static final String CASTLE_TAG = "tolkienmobs:campaign_king_castle";
-    private static final BlockPos CASTLE_SEAT = null;
+    @Nullable
+    private static final BlockPos CASTLE_SEAT = new BlockPos(3850, 107, -7425);
     private static final int CASTLE_ROOM_REACH = 16;
     private static final int CASTLE_ROOM_UP = 16;
     /** How near the seat the player has to come to be spoken to, in blocks. */
@@ -868,7 +870,7 @@ public final class Campaign extends SavedData {
      * way to be killed there, which the event that hears the blows is what enforces.
      */
     private static void standSeatedKing(ServerLevel level, BlockPos centre) {
-        BlockPos seat = CASTLE_SEAT != null ? CASTLE_SEAT : seatOf(level, centre);
+        BlockPos seat = CASTLE_SEAT != null ? onTopOf(level, CASTLE_SEAT) : seatOf(level, centre);
         if (seat == null) return;
         Entity entity = TolkienEntities.ENTITY_TTM_WITCHKING.get().create(level, EntitySpawnReason.EVENT);
         if (!(entity instanceof Mob king)) return;
@@ -879,6 +881,15 @@ public final class Campaign extends SavedData {
         king.addTag(CASTLE_TAG);
         shadeBlind(king);
         level.addFreshEntity(king);
+    }
+
+    /**
+     * Where a body stands on a block a build calls a seat: in it when it is air, on it when it is not. The
+     * block a crosshair names is the chair rather than the air above the chair, and a body stood inside a
+     * chair block is a body stuck in the floor.
+     */
+    private static BlockPos onTopOf(ServerLevel level, BlockPos seat) {
+        return level.getBlockState(seat).isAir() ? seat : seat.above();
     }
 
     /**
