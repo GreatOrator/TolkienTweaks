@@ -72,11 +72,12 @@ public class FactionGuardRender extends GeoEntityRenderer<FactionGuardEntity, To
                                                  ItemDisplayContext displayContext, TolkienGeoRenderState renderState,
                                                  SubmitNodeCollector renderTasks, int packedLight) {
                 poseStack.pushPose();
-                // The blade sits in the fist, the way the brigand holds his; a shield lies across the
-                // forearm facing out, which is the other rotation on the other arm.
+                // The blade sits in the fist, the way the brigand holds his. A shield is a plate and not a
+                // blade: turned a quarter off the arm it presents its face instead of its edge, and it rides
+                // out along the forearm rather than sitting in the palm where the grip is.
                 if (displayContext == ItemDisplayContext.THIRD_PERSON_LEFT_HAND) {
-                    poseStack.mulPose(Axis.YP.rotationDegrees(180));
-                    poseStack.translate(-0.05D, -0.15D, 0.1D);
+                    poseStack.mulPose(Axis.YP.rotationDegrees(90));
+                    poseStack.translate(-0.02D, -0.18D, 0.16D);
                 } else {
                     poseStack.mulPose(Axis.XP.rotationDegrees(-30));
                     poseStack.mulPose(Axis.YP.rotationDegrees(90));
