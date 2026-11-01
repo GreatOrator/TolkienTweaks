@@ -239,6 +239,27 @@ public final class Campaign extends SavedData {
     private static final String DEPARTURE_TITLE = "campaign.tolkienmobs.page.departure";
     private static final String DEPARTURE_PLACE = "campaign.tolkienmobs.page.departure.place";
     private static final String DEPARTURE_CLOSING = "campaign.tolkienmobs.page.departure.closing";
+    /**
+     * The notes' Missing Rider: the hoofprints south of the road, the ruins in the narrow channels of the
+     * Trollshaws, and the black horse found there with no rider. The notes hand the finding to the horse
+     * itself, and the pack keeps no steed, so the finding is the ground: the page is a walk to the ruins
+     * and the corpse is told in the closing line, which is what the notes' own completion text is.
+     */
+    private static final String MISSING_RIDER_PLACE = "ruins";
+    private static final String MISSING_RIDER_TARGET = Quest.placeTarget(MISSING_RIDER_PLACE);
+    private static final String MISSING_RIDER_TITLE = "campaign.tolkienmobs.page.missingrider";
+    /** The report Elladan hears at his camp, which is the second half of the same beat. */
+    private static final String RIDER_RETURN_TITLE = "campaign.tolkienmobs.page.riderreport";
+    /** Glorfindel's counsel at the waterfalls, which the notes put before ever touching the stone. */
+    private static final String WISDOM_TITLE = "campaign.tolkienmobs.page.wisdom";
+    /** The return to the camp with the caves searched, where the stone's next asking is decided. */
+    private static final String REGAIN_TITLE = "campaign.tolkienmobs.page.regain";
+    /**
+     * The notes' last page of the chapter, and the hand-off into the next one: Elladan at Thorenhad with
+     * something older than the wraith found in the wilderness of the Trollshaws. Built now so the second
+     * chapter starts from a page that already points at it rather than from a line that simply stops.
+     */
+    private static final String HORSE_TITLE = "campaign.tolkienmobs.page.horse";
     /** How far ahead of the player he is stood up, sideways off that line, and how far out he counts. */
     private static final int MATUNA_WAY_AHEAD = 16;
     private static final int MATUNA_WAY_SPREAD = 10;
@@ -292,6 +313,22 @@ public final class Campaign extends SavedData {
                     // at the end of the walk hands the next one.
                     new Page(Quest.Kind.LOCATION, SUMMON_TARGET, 1, 25, 4,
                             "campaign.tolkienmobs.page.summon", "campaign.tolkienmobs.page.summon.place", ""),
+                    // The notes' Missing Rider, which the line had skipped over: the hoofprints are found
+                    // south of the road and the horse is found in the ruins. A corpse is not a hunt, so the
+                    // page is the ground and the finding is the closing line the notes wrote for it.
+                    new Page(Quest.Kind.LOCATION, MISSING_RIDER_TARGET, 1, 5, 4,
+                            MISSING_RIDER_TITLE, "campaign.tolkienmobs.page.missingrider.place",
+                            "campaign.tolkienmobs.page.missingrider.closing", 0, 0, 25),
+                    // ... and the report of it, which is the note's second page of the beat: Elladan at
+                    // the camp, who is stood for it by his own keeper rather than by this page.
+                    new Page(Quest.Kind.DIALOGUE, Quest.personTarget(ELLADAN), 1, 5, 4,
+                            RIDER_RETURN_TITLE, "campaign.tolkienmobs.page.riderreport.place",
+                            "campaign.tolkienmobs.page.riderreport.closing", 0, 0, 25),
+                    // Then Glorfindel's counsel at the waterfalls, which is where the stone comes from and
+                    // the one page of the line that needs the face the west's skin folder was drawn for.
+                    new Page(Quest.Kind.DIALOGUE, Quest.personTarget(GLORFINDEL), 1, 10, 4,
+                            WISDOM_TITLE, "campaign.tolkienmobs.page.wisdom.place",
+                            "campaign.tolkienmobs.page.wisdom.closing", 0, 0, 25),
                     // The stone's first asking, and the one page of the line whose whole errand is a
                     // single place: held aloft at the ford, and carried back to Glorfindel who asked for it.
                     new Page(Quest.Kind.SURVEY, FORD_TARGET, 1, 20, 4,
@@ -301,6 +338,12 @@ public final class Campaign extends SavedData {
                     // rock over their heads will do, asked at the bottom of each.
                     new Page(Quest.Kind.SURVEY, "", STONE_CAVES, 10, 5,
                             "campaign.tolkienmobs.page.caves", "campaign.tolkienmobs.page.caves.place", ""),
+                    // The notes' Regaining the Trail: back to the camp with the caves searched, where it is
+                    // decided what the stone is to be carried to next. It sits between the cave search and
+                    // the scout's word because that is where the notes put it.
+                    new Page(Quest.Kind.DIALOGUE, Quest.personTarget(ELLADAN), 1, 8, 5,
+                            REGAIN_TITLE, "campaign.tolkienmobs.page.regain.place",
+                            "campaign.tolkienmobs.page.regain.closing", 0, 0, 25),
                     // The scout's camp, which is the page the caves were a search of the road towards: the
                     // stone goes back to Elladan and the next lead is a man who saw something. A camp is
                     // ground rather than a landmark, so the page is a walk and the walk is the whole of it.
@@ -337,6 +380,11 @@ public final class Campaign extends SavedData {
                     // over, and it is settled by speaking to the Elf it is about.
                     new Page(Quest.Kind.DIALOGUE, Quest.personTarget(ELROND), 1, 120, 5,
                             DEPARTURE_TITLE, DEPARTURE_PLACE, DEPARTURE_CLOSING),
+                    // The notes' Where is the Horse and the Rider?, which closes the chapter at Thorenhad and
+                    // opens the next one: Elladan has found something older than the wraith in the wild.
+                    new Page(Quest.Kind.DIALOGUE, Quest.personTarget(ELLADAN), 1, 5, 5,
+                            HORSE_TITLE, "campaign.tolkienmobs.page.horse.place",
+                            "campaign.tolkienmobs.page.horse.closing", 0, 0, 25),
                     // The hilltop is raised rather than named. A place is a circle somebody has to stand
                     // in and declare; this is ground the campaign builds where the map puts it, so the page
                     // is settled by standing in the building and nobody has to place anything by hand.
@@ -1038,11 +1086,15 @@ public final class Campaign extends SavedData {
      */
     private static void keepGlorfindel(ServerPlayer player) {
         if (!(player.level() instanceof ServerLevel level)) return;
+        // A page of talk that names him stands him wherever it sits in the line: the notes have the player
+        // come to him for counsel before the stone is ever held up, and a page owed to an Elf who is not
+        // standing in the valley is a page nobody can finish.
+        boolean awaited = carriesWordFor(player, GLORFINDEL);
         Quest stone = page(player, Alliance.WEST);
-        if (stone == null || stone.kind() != Quest.Kind.SURVEY) return;
+        if (!awaited && (stone == null || stone.kind() != Quest.Kind.SURVEY)) return;
         // He waits at the end of the ford, not at the end of the cave search: by then the stone is
         // Elladan's to take, and an Elf standing in the valley asking for it would be the wrong hand.
-        if (stone.namedGround().isEmpty()) return;
+        if (!awaited && stone.namedGround().isEmpty()) return;
         if (Places.place(player.level(), SUMMON_PLACE) == null) Places.ensure(player, SUMMON_PLACE, CAMP_RADIUS);
         Places.Place valley = Places.place(level, SUMMON_PLACE);
         if (valley == null || !valley.dimension().equals(level.dimension())) return;
@@ -1083,8 +1135,15 @@ public final class Campaign extends SavedData {
         // He stands from the cave page until the Giant's has been taken off him, rather than only while the
         // stone is in somebody's hand: the notes send the player back to the camp with the kill, so a camp
         // that emptied as the caves were paid would have nobody to give the Giant's page or take it back.
-        int from = stageOf(Quest.Kind.SURVEY, "");
+        // He stands from the first of the notes' rider beats, not only from the cave search: two of those
+        // pages are his to hear at the camp, and a camp that only filled in once the caves were paid would
+        // have nobody in it to hear what the ruins held. He stays until the chapter's last page, which is
+        // the one he hands on.
+        int from = stageOfTitle(MISSING_RIDER_TITLE);
+        if (from < 0) from = stageOf(Quest.Kind.SURVEY, "");
         int to = stageOf(Quest.Kind.HUNT, GIANT_TARGET);
+        int exit = stageOfTitle(HORSE_TITLE);
+        if (exit > to) to = exit;
         if (from < 0 || to < from) return;
         int step = stage(player, Alliance.WEST);
         if (step < from || step > to) return;
