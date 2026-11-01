@@ -19,6 +19,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
@@ -216,7 +218,7 @@ public final class Sites extends SavedData {
         if (size.getX() <= 0 || size.getZ() <= 0) return;
         BlockPos corner = locate(level, site.centre(), size.getX(), size.getZ());
         if (corner == null) return;
-
+        clearFootprint(level, corner, size.getX(), size.getY(), size.getZ());
         template.placeInWorld(level, corner, corner, new StructurePlaceSettings(), level.getRandom(), 2);
         if (site.keeper()) standKeeper(level, corner, size);
         SITES.put(player.getUUID(), site.builtAt(corner.offset(size.getX() / 2, 0, size.getZ() / 2)));
@@ -235,11 +237,10 @@ public final class Sites extends SavedData {
             for (int dx = -ring; dx <= ring; dx++) {
                 for (int dz = -ring; dz <= ring; dz++) {
                     if (Math.max(Math.abs(dx), Math.abs(dz)) != ring) continue;
-                    BlockPos site = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                            written.offset(dx * step, 0, dz * step));
-                    if (!level.getFluidState(site).isEmpty()) continue;
-                    if (!level.getBlockState(site.above()).isAir()) continue;
-                    if (footprintFits(level, site, wide, deep)) return site;
+                    BlockPos spot = written.offset(dx * step, 0, dz * step);
+                    if (!level.hasChunkAt(spot)) continue;
+                    BlockPos plane = plane(level, spot, wide, deep);
+                    if (plane != null) return plane;
                 }
             }
         }
@@ -247,25 +248,55 @@ public final class Sites extends SavedData {
     }
 
     /**
-     * Whether the ground will take the building lying where it is written: every column of its own
-     * footprint within the tolerance of the site's height, over solid ground, with no water standing in
-     * any of them. Large buildings are sampled on a stride, since a castle is thousands of columns and
-     * the ground under one is not going to change between two adjacent ones in any way that matters.
+     * The height a building of this size stands at, or null when the ground under it will not take one.
+     * <p>
+     * Two things are asked of the ground. It has to be solid, dry and within tolerance of itself from one
+     * edge of the footprint to the other - and the height it is built at is the <em>highest</em> column
+     * under it rather than an average or the height where it happens to be standing, because a building
+     * placed at the lowest point has a hillside through the middle of it and a hillside is harder to
+     * excuse in a castle than a gap under one wall.
+     * <p>
+     * Large buildings are sampled on a stride, since a castle is thousands of columns and the ground under
+     * one is not going to change between two adjacent ones in any way that matters.
      */
-    private static boolean footprintFits(ServerLevel level, BlockPos site, int wide, int deep) {
+    @Nullable
+    private static BlockPos plane(ServerLevel level, BlockPos spot, int wide, int deep) {
         int drop = dropAllowed(wide, deep);
         int stride = Math.max(1, Math.max(wide, deep) / 24);
+        int low = Integer.MAX_VALUE;
+        int high = Integer.MIN_VALUE;
         for (int dx = 0; dx < wide; dx += stride) {
             for (int dz = 0; dz < deep; dz += stride) {
-                int x = site.getX() + dx;
-                int z = site.getZ() + dz;
+                int x = spot.getX() + dx;
+                int z = spot.getZ() + dz;
                 int height = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
-                if (Math.abs(height - site.getY()) > drop) return false;
-                if (!level.getBlockState(new BlockPos(x, height - 1, z)).isSolid()) return false;
-                if (!level.getFluidState(new BlockPos(x, height, z)).isEmpty()) return false;
+                if (!level.getBlockState(new BlockPos(x, height - 1, z)).isSolid()) return null;
+                if (!level.getFluidState(new BlockPos(x, height, z)).isEmpty()) return null;
+                low = Math.min(low, height);
+                high = Math.max(high, height);
             }
         }
-        return true;
+        if (high - low > drop) return null;
+        return new BlockPos(spot.getX(), high, spot.getZ());
+    }
+
+    /**
+     * Takes everything out of the box the building is about to fill, so a treetop does not come up
+     * through a tent and a hill has no corner left standing in the middle of a courtyard. It is the one
+     * thing here that takes blocks out of a world instead of putting them in, which is why a site is only
+     * ever chosen in open country a long way from where the page was taken.
+     */
+    private static void clearFootprint(ServerLevel level, BlockPos corner, int wide, int tall, int deep) {
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        for (int dx = 0; dx < wide; dx++) {
+            for (int dz = 0; dz < deep; dz++) {
+                for (int dy = 0; dy < tall; dy++) {
+                    cursor.set(corner.getX() + dx, corner.getY() + dy, corner.getZ() + dz);
+                    if (level.getBlockState(cursor).isAir()) continue;
+                    level.setBlock(cursor, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+                }
+            }
+        }
     }
 
     /** How much rise and fall a building will still sit on: two blocks, widened by its own size. */
