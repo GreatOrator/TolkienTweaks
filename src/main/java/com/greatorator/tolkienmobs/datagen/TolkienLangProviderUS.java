@@ -871,6 +871,12 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("screen.tolkienmobs.quests.bounties.front", "No errand in hand - the pages of the front are leafed on the right. Turn them there.");
         this.add("screen.tolkienmobs.quests.story.empty", "No step of the campaign is in your hands.");
         this.add("campaign.tolkienmobs.page.muster", "The First Muster");
+        this.add("quest.tolkienmobs.talk.listen.said", "The quiet went from the ditch to the ford in a single night, and by morning the ditch was running water that had not rained. That is the whole of it. Now you have heard it, so you can say you were the ninth.");
+        this.add("quest.tolkienmobs.talk.listen.reply.2", "What went quiet?");
+        this.add("quest.tolkienmobs.talk.listen.reply.1", "Go on, then.");
+        this.add("quest.tolkienmobs.talk.listen.say.2", "Three winters back the whole of the Greenway went quiet at once. No owls, no water over the stones, nothing at all. I have told the end of that to nine people and eight of them called me a liar.");
+        this.add("quest.tolkienmobs.talk.listen.say.1", "Work that is not killing, then. Sit a moment - this is worth the hearing, or I would not be telling it to a stranger.");
+        this.add("quest.tolkienmobs.talk.listen", "the tale they are keeping");
         this.add("campaign.tolkienmobs.talk.refused.said", "I hand my country's business to folk my country knows, and it does not know you yet. Do something here worth a name, and come back to this bench.");
         this.add("campaign.tolkienmobs.talk.refused", "The Herald's Answer");
         this.add("campaign.tolkienmobs.page.muster.place", "the Green Way, where the scout's ditch runs");

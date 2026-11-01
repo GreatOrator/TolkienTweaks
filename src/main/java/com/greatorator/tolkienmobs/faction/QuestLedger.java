@@ -2,7 +2,6 @@ package com.greatorator.tolkienmobs.faction;
 
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
-import com.greatorator.tolkienmobs.network.manager.ConversationManager;
 import com.greatorator.tolkienmobs.network.manager.QuestSyncManager;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -176,14 +175,8 @@ public final class QuestLedger extends SavedData {
                 .withStyle(ChatFormatting.WHITE));
         player.level().playSound(null, player.blockPosition(), TolkienSounds.LEDGER_SEAL.get(),
                 SoundSource.PLAYERS, 0.6F, 1.0F);
-        // Work that is words rather than counting opens its own page as it is taken: a dialogue
-        // page that had to be hunted for in the book before it could be read would be read by
-        // nobody.
-        String leaf = quest.leaf();
-        if (leaf != null) {
-            PacketDistributor.sendToPlayer(player, new ConversationManager(
-                    quest.giverName().getString(), leaf, ConversationManager.Mode.OPEN));
-        }
+        // A page of talk is not read out at the hand-over: the work of hearing it is the errand, so
+        // it is told to a player who comes back and asks for it (see {@link #carriedTale}).
         sync(player);
         return true;
     }
@@ -424,6 +417,20 @@ public final class QuestLedger extends SavedData {
         store(player).setDirty();
         pay(player, quest);
         sync(player);
+    }
+
+    /**
+     * The page of talk this player is carrying and has not heard yet, which is what a giver opens
+     * when they are asked for the rest of it. Null when the work in hand is not words.
+     */
+    @Nullable
+    public static String carriedTale(ServerPlayer player) {
+        for (Quest quest : row(player)) {
+            if (!quest.talks() || quest.complete()) continue;
+            String leaf = quest.leaf();
+            if (leaf != null) return leaf;
+        }
+        return null;
     }
 
     /** Whether a giver of this name may take a page: anyone, unless the page names somebody. */

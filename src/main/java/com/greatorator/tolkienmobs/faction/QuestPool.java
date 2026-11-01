@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.faction;
 
 import com.greatorator.tolkienmobs.TolkienMobsConfig;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.Nullable;
@@ -25,20 +26,71 @@ import java.util.List;
 public final class QuestPool {
     /** How many folk the mod ships, whose names are translated rather than written into the config. */
     private static final int SHIPPED_GIVERS = 8;
+    /**
+     * The page every giver reads out when the work is hearing them out. It hangs off a key of the
+     * office rather than off a page of the campaign, so a bounty of this shape costs nothing to
+     * write per giver and can never name words that are not there.
+     */
+    private static final String LISTEN_LEAF = "quest.tolkienmobs.talk.listen";
 
     private QuestPool() {
     }
 
     /**
      * Fresh work for whoever is standing in front of the giver.
+     * <p>
+     * A country's own work is the work that pays standing, and it is offered at the chance the config
+     * gives it: everything else is an errand, and there are now four shapes of those rather than two,
+     * so a player who spends a month in one country is not spending it killing the same two armies.
      *
      * @param employer the country the giver stands in, or null when they stand in no country at all
      */
-    public static Quest offer(RandomSource random, @Nullable Alliance employer) {
+    public static Quest offer(ServerPlayer player, RandomSource random, @Nullable Alliance employer) {
         if (employer != null && random.nextFloat() < TolkienMobsConfig.questFactionChance()) {
             return faction(random, employer);
         }
-        return random.nextBoolean() ? fetch(random) : hunt(random);
+        return errand(player, random);
+    }
+
+    /**
+     * Work that belongs to nobody's war: goods wanted, beasts wanted, ground to be walked, or a body
+     * to be heard out. The shapes are drawn evenly, and a walk is skipped clean when this world has
+     * named no ground to walk to - a page nobody can finish is worse than no page.
+     */
+    private static Quest errand(ServerPlayer player, RandomSource random) {
+        for (int attempt = 0; attempt < 6; attempt++) {
+            Quest work = switch (random.nextInt(4)) {
+                case 0 -> fetch(random);
+                case 1 -> hunt(random);
+                case 2 -> walk(player, random);
+                default -> listen(random);
+            };
+            if (work != null) return work;
+        }
+        return fetch(random);
+    }
+
+    /**
+     * A walk to ground this world has already named, in the country the player is standing in. Only
+     * settled places are offered: the catalogue names what a world might hold, and a page to ground
+     * another dimension put somewhere is a page that cannot be walked.
+     */
+    @Nullable
+    private static Quest walk(ServerPlayer player, RandomSource random) {
+        List<Places.Place> places = new ArrayList<>();
+        for (Places.Place place : Places.placed(player.level())) {
+            if (place.dimension().equals(player.level().dimension())) places.add(place);
+        }
+        if (places.isEmpty()) return null;
+        Places.Place place = places.get(random.nextInt(places.size()));
+        return new Quest(Quest.Kind.LOCATION, Quest.placeTarget(place.id()), 1, 0, "", 0,
+                payment(random, 1), "", BlockPos.ZERO, Quest.NOBODY, false, "");
+    }
+
+    /** Hearing a giver out: the one errand whose worth is the telling rather than the doing. */
+    private static Quest listen(RandomSource random) {
+        return new Quest(Quest.Kind.DIALOGUE, Quest.leafTarget(LISTEN_LEAF), 1, 0, "", 0,
+                payment(random, 1), "", BlockPos.ZERO, Quest.NOBODY, false, "");
     }
 
     /** Work for a country: its rivals' soldiers are the target, and the pay is standing. */

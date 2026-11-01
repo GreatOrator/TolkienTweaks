@@ -871,6 +871,12 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("screen.tolkienmobs.quests.bounties.front", "手上没有零活 —— 战线的书页就在右页，可以从那里翻看。");
         this.add("screen.tolkienmobs.quests.story.empty", "主线故事暂时没有进行中的步骤。");
         this.add("campaign.tolkienmobs.page.muster", "首次征召");
+        this.add("quest.tolkienmobs.talk.listen.said", "那份安静一夜之间从沟渠漫到了渡口，天亮时沟里流着没下过雨的水。就这些。现在你听过了，你可以说你是第九个。");
+        this.add("quest.tolkienmobs.talk.listen.reply.2", "是什么静了？");
+        this.add("quest.tolkienmobs.talk.listen.reply.1", "接着说。");
+        this.add("quest.tolkienmobs.talk.listen.say.2", "三年前的冬天，整条绿道一下子静了下来。没有猫头鹰，石头上的水也不响，什么都没有。这段的结尾我讲给九个人听过，其中八个说我在撒谎。");
+        this.add("quest.tolkienmobs.talk.listen.say.1", "那么，来件不必动刀的事。坐一会儿——这段值得听，否则我不会讲给一个陌生人。");
+        this.add("quest.tolkienmobs.talk.listen", "他们留着没讲完的那段话");
         this.add("campaign.tolkienmobs.talk.refused.said", "我只把本国的事交给本国认得的人，而它还不认得你。在这里做点配得上一个名字的事，再回到这张桌前。");
         this.add("campaign.tolkienmobs.talk.refused", "传令官的答复");
         this.add("campaign.tolkienmobs.page.muster.place", "绿道，斥候遇难的水沟一带");

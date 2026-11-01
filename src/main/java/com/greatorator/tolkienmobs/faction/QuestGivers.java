@@ -155,7 +155,7 @@ public final class QuestGivers {
             if (!level.addFreshEntity(giver)) continue;
 
             // The work remembers who offered it and where they stood, so the book can say both later.
-            Quest work = QuestPool.offer(random, employer).withGiver(label, giver.blockPosition(), giver.getUUID());
+            Quest work = QuestPool.offer(player, random, employer).withGiver(label, giver.blockPosition(), giver.getUUID());
             QuestLedger.offer(player, giver.getUUID(), work);
             player.sendSystemMessage(Component.translatable("quest.tolkienmobs.giver_arrived")
                     .withStyle(ChatFormatting.GRAY));
@@ -214,6 +214,14 @@ public final class QuestGivers {
         if (owed != null) {
             player.sendSystemMessage(Component.translatable("quest.tolkienmobs.turn_in_elsewhere",
                     Component.literal(owed)).withStyle(ChatFormatting.GRAY));
+            return;
+        }
+        // Work that is finished by listening is finished by coming back and asking for the rest of it:
+        // the telling is the errand, so it is not spent in the same breath as the offer.
+        String tale = QuestLedger.carriedTale(player);
+        if (tale != null) {
+            PacketDistributor.sendToPlayer(player,
+                    new ConversationManager(name, tale, ConversationManager.Mode.OPEN));
             return;
         }
 

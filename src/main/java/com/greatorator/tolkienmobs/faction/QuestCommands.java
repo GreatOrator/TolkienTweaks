@@ -116,7 +116,7 @@ public final class QuestCommands {
             RandomSource random = player.level().getRandom();
             Alliance employer = QuestGivers.employer(player);
             for (int i = 0; i < count; i++) {
-                Quest work = QuestPool.offer(random, employer)
+                Quest work = QuestPool.offer(player, random, employer)
                         .withGiver(QuestPool.giverLabel(random), player.blockPosition(), Quest.NOBODY);
                 if (!QuestLedger.accept(player, work)) break;
                 given++;
