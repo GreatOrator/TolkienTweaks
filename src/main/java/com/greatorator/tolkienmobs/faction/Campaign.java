@@ -74,7 +74,26 @@ public final class Campaign extends SavedData {
                     new Page(Quest.Kind.FACTION, "", 12, 120, 4,
                             "campaign.tolkienmobs.page.southroad", "campaign.tolkienmobs.page.southroad.place", ""),
                     new Page(Quest.Kind.HUNT, "tolkienmobs:entityttmbarrow", 2, 150, 7,
-                            "campaign.tolkienmobs.page.keeping", "campaign.tolkienmobs.page.keeping.place", "campaign.tolkienmobs.page.keeping.closing")),
+                            "campaign.tolkienmobs.page.keeping", "campaign.tolkienmobs.page.keeping.place", ""),
+                    new Page(Quest.Kind.DIALOGUE, "leaf:campaign.tolkienmobs.page.beryl", 1, 20, 4,
+                            "campaign.tolkienmobs.page.beryl", "campaign.tolkienmobs.page.beryl.place", ""),
+                    new Page(Quest.Kind.LOCATION, "place:weathertop", 1, 50, 4,
+                            "campaign.tolkienmobs.page.watched", "campaign.tolkienmobs.page.watched.place", ""),
+                    new Page(Quest.Kind.FACTION, "", 8, 70, 5,
+                            "campaign.tolkienmobs.page.hunters", "campaign.tolkienmobs.page.hunters.place", ""),
+                    new Page(Quest.Kind.LOCATION, "place:ford", 1, 60, 5,
+                            "campaign.tolkienmobs.page.raised", "campaign.tolkienmobs.page.raised.place", ""),
+                    new Page(Quest.Kind.DIALOGUE, "leaf:campaign.tolkienmobs.page.heard", 1, 30, 6,
+                            "campaign.tolkienmobs.page.heard", "campaign.tolkienmobs.page.heard.place", ""),
+                    new Page(Quest.Kind.FACTION, "", 10, 80, 6,
+                            "campaign.tolkienmobs.page.spears", "campaign.tolkienmobs.page.spears.place", ""),
+                    new Page(Quest.Kind.LOCATION, "place:tharbad", 1, 70, 7,
+                            "campaign.tolkienmobs.page.drowned", "campaign.tolkienmobs.page.drowned.place", ""),
+                    new Page(Quest.Kind.DIALOGUE, "leaf:campaign.tolkienmobs.page.counsel", 1, 40, 8,
+                            "campaign.tolkienmobs.page.counsel", "campaign.tolkienmobs.page.counsel.place", ""),
+                    new Page(Quest.Kind.FACTION, "", 16, 160, 10,
+                            "campaign.tolkienmobs.page.musterlast", "campaign.tolkienmobs.page.musterlast.place",
+                            "campaign.tolkienmobs.page.musterlast.closing")),
             Alliance.EAST, List.of(
                     new Page(Quest.Kind.FACTION, "", 6, 60, 2,
                             "campaign.tolkienmobs.page.marches", "campaign.tolkienmobs.page.marches.place", ""),
@@ -130,7 +149,7 @@ public final class Campaign extends SavedData {
      * summarised when a herald hands one over. One, for now: the West's first muster, which is where
      * the campaign opens and where the script's argument for a conversation is made.
      */
-    private static final Set<String> SPOKEN = Set.of("campaign.tolkienmobs.page.muster");
+    private static final Set<String> SPOKEN = Set.of("campaign.tolkienmobs.page.muster", "campaign.tolkienmobs.page.beryl");
 
     private static final Map<UUID, Front[]> PROGRESS = new HashMap<>();
     /** What {@link #instance} answers with when there is no server to hold a file. */

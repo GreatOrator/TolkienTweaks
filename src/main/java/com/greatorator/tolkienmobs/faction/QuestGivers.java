@@ -257,6 +257,13 @@ public final class QuestGivers {
                 return;
             }
             Quest page = Campaign.page(player, herald);
+            // A walk to ground this world has never had named is a page nobody can finish, so it
+            // waits at the herald rather than sitting in a book as a dead end.
+            if (page != null && !groundNamed(player, page)) {
+                player.sendSystemMessage(Component.translatable("quest.tolkienmobs.herald.unnamed",
+                        page.targetName()).withStyle(ChatFormatting.GRAY));
+                return;
+            }
             if (page != null) {
                 Quest handed = page.withGiver(target.getName().getString(), target.blockPosition(),
                         target.getUUID());
@@ -298,6 +305,13 @@ public final class QuestGivers {
         if (QuestLedger.accept(player, offer)) {
             QuestLedger.dropOffer(player, target.getUUID());
         }
+    }
+
+    /** Whether a page that asks to be walked somewhere has somewhere in this world to be walked. */
+    private static boolean groundNamed(ServerPlayer player, Quest page) {
+        Quest.Spot spot = page.spot();
+        if (spot == null || spot.place() == null) return true;
+        return Places.place(player.level(), spot.place()) != null;
     }
 
     /**
