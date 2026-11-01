@@ -170,6 +170,9 @@ public final class QuestLedger extends SavedData {
         }
         quests.add(quest);
         store(player).setDirty();
+        // A camp is pitched where the page is taken, not where the page was written: the ground is
+        // chosen in front of this player and kept until they walk to it.
+        if (quest.isCamp()) Encampment.plan(player, quest.camp());
         grantBook(player);
         player.sendSystemMessage(Component.translatable("quest.tolkienmobs.accepted", quest.objective())
                 .withStyle(ChatFormatting.WHITE));
@@ -354,7 +357,11 @@ public final class QuestLedger extends SavedData {
         List<Quest> quests = row(player);
         for (int slot = quests.size() - 1; slot >= 0; slot--) {
             Quest quest = quests.get(slot);
-            if (!quest.walks() || !arrived(player, quest.spot())) continue;
+            if (!quest.walks()) continue;
+            // A camp is looked for in the campaign's own record rather than in the page, because its
+            // ground did not exist when the page was written.
+            boolean here = quest.isCamp() ? Encampment.reached(player) : arrived(player, quest.spot());
+            if (!here) continue;
             settleSelf(player, slot);
         }
     }

@@ -172,6 +172,15 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
         return "person:" + name;
     }
 
+    /**
+     * A camp as a location page's target, as in {@code camp:tolkienmobs:wild_tent}: the ground is not
+     * written down here because it is not chosen until the page is taken, and the campaign keeps it
+     * (see {@link Encampment}).
+     */
+    public static String campTarget(String structure) {
+        return "camp:" + structure;
+    }
+
     /** Whether the work is done by walking to a place rather than by killing or fetching anything. */
     public boolean walks() {
         return kind == Kind.LOCATION;
@@ -191,10 +200,20 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
         return walks() || talks();
     }
 
+    /** Whether the work is a walk to a camp the campaign pitches rather than to ground already named. */
+    public boolean isCamp() {
+        return walks() && target.startsWith("camp:");
+    }
+
+    /** The template a camp page is pitched from, or an empty string when the page is not one. */
+    public String camp() {
+        return isCamp() ? target.substring("camp:".length()) : "";
+    }
+
     /** Where a location page ends, or null when the page is not one or names nowhere to walk. */
     @Nullable
     public Spot spot() {
-        if (!walks()) return null;
+        if (!walks() || isCamp()) return null;
         if (target.startsWith("at:")) {
             String[] parts = target.substring("at:".length()).split(",");
             if (parts.length < 3) return null;
@@ -266,6 +285,9 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
                 yield type == null ? Component.literal(target) : type.getDescription();
             }
             case LOCATION -> {
+                // A camp's ground is not written down anywhere: it is pitched when the page is taken,
+                // so the page names the kind of place rather than a place.
+                if (isCamp()) yield Component.translatable("quest.tolkienmobs.camp");
                 Spot spot = spot();
                 yield spot == null ? Component.literal(target) : spot.name();
             }
@@ -310,7 +332,9 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
                     Component.literal(String.valueOf(goal)), targetName());
             case HUNT -> Component.translatable("quest.tolkienmobs.summary.hunt",
                     targetName(), Component.literal(String.valueOf(goal)));
-            case LOCATION -> Component.translatable("quest.tolkienmobs.summary.reach", targetName());
+            case LOCATION -> isCamp()
+                    ? Component.translatable("quest.tolkienmobs.summary.camp")
+                    : Component.translatable("quest.tolkienmobs.summary.reach", targetName());
             case DIALOGUE -> Component.translatable("quest.tolkienmobs.summary.dialogue");
         };
     }

@@ -839,6 +839,9 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("quest.tolkienmobs.reward.items", "奖励：%s");
         this.add("quest.tolkienmobs.accepted", "你接下了任务：%s");
         this.add("quest.tolkienmobs.done", "任务完成 —— 交给任意任务发布者。");
+        this.add("quest.tolkienmobs.camp.found", "%s：你找到这儿了。我能给的只有一堆火和一个名字，而火更值钱。");
+        this.add("quest.tolkienmobs.summary.camp", "有人在那边点起了火，等着被人找到。你走近到能看见之前，那顶帐篷并不存在。");
+        this.add("quest.tolkienmobs.camp", "山脊那边的一处营地");
         this.add("quest.tolkienmobs.turn_in_elsewhere", "这不是我能收的：那一页该交给%s。");
         this.add("quest.tolkienmobs.turn_in", "把它交给%s");
         this.add("quest.tolkienmobs.summary.dialogue", "有些差事靠嘴而不是靠手；话没有听完，事情就不算完。");

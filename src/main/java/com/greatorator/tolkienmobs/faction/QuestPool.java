@@ -59,11 +59,12 @@ public final class QuestPool {
      */
     private static Quest errand(ServerPlayer player, RandomSource random) {
         for (int attempt = 0; attempt < 6; attempt++) {
-            Quest work = switch (random.nextInt(4)) {
+            Quest work = switch (random.nextInt(5)) {
                 case 0 -> fetch(random);
                 case 1 -> hunt(random);
                 case 2 -> walk(player, random);
-                default -> listen(random);
+                case 3 -> listen(random);
+                default -> camp(random);
             };
             if (work != null) return work;
         }
@@ -85,6 +86,15 @@ public final class QuestPool {
         Places.Place place = places.get(random.nextInt(places.size()));
         return new Quest(Quest.Kind.LOCATION, Quest.placeTarget(place.id()), 1, 0, "", 0,
                 payment(random, 1), "", BlockPos.ZERO, Quest.NOBODY, false, "");
+    }
+
+    /**
+     * A camp to be found: the only errand whose ground did not exist when it was offered, because the
+     * tent is pitched from where the player was standing when they took it.
+     */
+    private static Quest camp(RandomSource random) {
+        return new Quest(Quest.Kind.LOCATION, Quest.campTarget(Encampment.WILD_CAMP), 1, 0, "", 0,
+                payment(random, 2), "", BlockPos.ZERO, Quest.NOBODY, false, "");
     }
 
     /** Hearing a giver out: the one errand whose worth is the telling rather than the doing. */
