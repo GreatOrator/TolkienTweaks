@@ -156,6 +156,17 @@ public final class Sites extends SavedData {
      * up around its foot and the slope shows through the bottom of the building rather than beside it.
      */
     private static final int SEAT_SINK = 4;
+    /**
+     * The crag's own seat. It is cut in two halves - bare rock from its foot to y 8, grass from y 9 to
+     * its crown, with the mouth's sill at y 6 - so seating it like a house leaves the rock skirt
+     * standing above the ground and the grass a good six blocks higher than the terrain it was dropped
+     * on. Seated by its grass line instead: nine blocks in puts the grass at the ground it is placed
+     * on, and ten is as deep as it is ever set, which is the one-block error the shape of the ground
+     * under a footprint this size is allowed to leave.
+     */
+    private static final Seat SUNK_CRAG = new Seat(9, 10);
+    /** A building that stands on its ground rather than in it: hall, tent, house, arena. */
+    private static final Seat ON_SURFACE = new Seat(0, SEAT_SINK);
 
     /** The tag the body minding a camp wears, so it can be told from any other of its folk. */
     public static final String KEEPER_TAG = "tolkienmobs:camp_keeper";
@@ -383,7 +394,7 @@ public final class Sites extends SavedData {
         // none. The tent fit in one chunk and never needed to ask; a hilltop a hundred blocks across
         // does, and waits at the site until the player is close enough for all of it.
         if (!chunksLoaded(level, site.centre(), size)) return;
-        Plane found = locate(level, site.centre(), size.getX(), size.getZ());
+        Plane found = locate(level, site.centre(), size.getX(), size.getZ(), seatFor(site.structure()));
         if (found == null) {
             // Ground the drawing would take and the world would not: worth saying, because the
             // player standing on the spot sees only that nothing happened. Once per site, since
@@ -412,7 +423,7 @@ public final class Sites extends SavedData {
      * so a castle is not searched for at tent-sized intervals.
      */
     @Nullable
-    private static Plane locate(ServerLevel level, BlockPos written, int wide, int deep) {
+    private static Plane locate(ServerLevel level, BlockPos written, int wide, int deep, Seat seat) {
         int step = Math.max(8, Math.max(wide, deep) / 4);
         int reach = Math.max(SEARCH_REACH, Math.max(wide, deep));
         int drop = ArdaSurvey.dropAllowed(wide, deep);
@@ -426,7 +437,7 @@ public final class Sites extends SavedData {
                     // hundred blocks from the spot the page named, and a block written into an
                     // unloaded chunk is dropped without a word - half a hilltop is worse than none.
                     if (!level.hasChunkAt(spot) || !level.hasChunkAt(spot.offset(wide, 0, deep))) continue;
-                    Plane plane = plane(level, spot, wide, deep);
+                    Plane plane = plane(level, spot, wide, deep, seat);
                     if (plane == null) continue;
                     if (plane.relief() <= drop) return plane;
                     // Ground that is only mostly level is still ground. A refuse here left a page
@@ -450,20 +461,37 @@ public final class Sites extends SavedData {
     }
 
     /**
+     * How deep a building is set into its ground: never less than {@code floor}, and never more than
+     * {@code cap}. A house asks for no floor and takes half the drop under it; the cave asks to be
+     * buried by its grass line rather than seated on its base.
+     */
+    private record Seat(int floor, int cap) {
+    }
+
+    /**
+     * Which seat a structure wants, by the one thing that differs about it. The crag is the mod's only
+     * build whose lower half is rock meant to be underground; every other piece - hall, tent, house,
+     * arena - sits on its ground, and says so by asking for no floor at all.
+     */
+    private static Seat seatFor(String structure) {
+        return TROLL_CAVE.equals(structure) ? SUNK_CRAG : ON_SURFACE;
+    }
+
+    /**
      * The ground a building of this size would stand on, or null when the footprint is not ground at all.
      * <p>
      * Three things are asked of it. Every column has to reach solid, dry ground - and the height it is
      * built at is the <em>highest</em> column under it rather than an average, because a building placed
      * at the lowest point has a hillside through the middle of it, and a hillside is harder to excuse in a
      * castle than a gap under one wall. It is then set a little below that column - half the drop under the
-     * footprint, up to {@link #SEAT_SINK} - so that what would have been left standing in the air is ground
+     * footprint within that building's own seat - so that what would have been left standing in the air is ground
      * the building has been sunk into instead.
      * <p>
      * Large buildings are sampled on a stride, since a castle is thousands of columns and the ground under
      * one is not going to change between two adjacent ones in any way that matters.
      */
     @Nullable
-    private static Plane plane(ServerLevel level, BlockPos spot, int wide, int deep) {
+    private static Plane plane(ServerLevel level, BlockPos spot, int wide, int deep, Seat seat) {
         int stride = Math.max(1, Math.max(wide, deep) / 24);
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
         int low = Integer.MAX_VALUE;
@@ -479,7 +507,7 @@ public final class Sites extends SavedData {
         // Half the drop under the footprint, so the plinth it would have stood on is halved and the
         // ground rises around its base. Bounded, because a castle on a hillside still has to keep its
         // door above the ground it opens onto, and flat ground has nothing to sink into at all.
-        int sink = Math.min(SEAT_SINK, (high - low) / 2);
+        int sink = Math.min(seat.cap(), Math.max(seat.floor(), (high - low) / 2));
         return new Plane(new BlockPos(spot.getX(), high - sink, spot.getZ()), high - low);
     }
 
