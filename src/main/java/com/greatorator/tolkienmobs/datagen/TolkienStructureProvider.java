@@ -112,11 +112,13 @@ public final class TolkienStructureProvider {
             // The campaign's ground. The spacing and separation are never used, because neither is in a
             // structure set: they are registered so that a world builder can put one down with
             // /place structure, and so that the campaign can build them where its story needs them.
+            // Their country is Angmar's, because that is where the books put the Witch-king's seat and
+            // that is where Sites seats both of them; the biome here only says the same thing twice.
             new Definition(TolkienStructures.BOSS_CASTLE, "tolkienmobs:key_structures/boss_castle",
-                    List.of(TolkienBiomes.MORDOR), 48, 12, 193764860, 0, Optional.empty(), false,
+                    List.of(TolkienBiomes.BARROW_DOWNS), 48, 12, 193764860, 0, Optional.empty(), false,
                     Optional.of(Layout.single())),
             new Definition(TolkienStructures.BOSS_ARENA, "tolkienmobs:key_structures/boss_arena",
-                    List.of(TolkienBiomes.MORDOR), 48, 12, 193764861, 0, Optional.empty(), false,
+                    List.of(TolkienBiomes.BARROW_DOWNS), 48, 12, 193764861, 0, Optional.empty(), false,
                     Optional.of(Layout.single()))
     );
 
