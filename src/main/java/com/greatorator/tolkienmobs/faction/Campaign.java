@@ -716,9 +716,10 @@ public final class Campaign extends SavedData {
             // The Giant is the camp's as well: the scout names the valley, and Elladan is the one who asks
             // for the kill and hears what came of it.
             if (GIANT_TARGET.equals(target)) return built.withTurnIn(ELLADAN);
-            // The lair's tidings are Elrond's to hear, in the valley the page before this one was
-            // walked to.
-            if (MATUNA.equals(target)) return built.withTurnIn(ELROND);
+            // The Wood-troll's page is Legolas' at both ends, as the notes have it: he hands it over
+            // having named the creature, and he is the one who hears what came of it. A page owed to a
+            // body that did not hand it is a page a herald refuses to give at all (see QuestGivers), so
+            // sending the kill's word to Elrond here would have stopped the line at the guest house.
             return built;
         }
         if (!sealed(row)) return null;
