@@ -18,6 +18,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.goal.FleeSunGoal;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.RestrictSunGoal;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -177,8 +181,6 @@ public final class Campaign extends SavedData {
     /** The tag the Witch-king wears when the campaign stands him up, and how far he is looked for. */
     private static final String WITCHKING_TAG = "tolkienmobs:campaign_witchking";
     private static final double WITCHKING_SEARCH = 96.0D;
-    /** How far up a castle is searched for room to stand a body. */
-    private static final int WITCHKING_HEADROOM = 24;
     /**
      * The tag the three keepers wear, how many of them there are, and how far out from the middle of
      * the floor they stand. The ring is walked in a circle rather than laid out by hand, so the crown
@@ -763,7 +765,11 @@ public final class Campaign extends SavedData {
         if (site.centre().distToCenterSqr(player.position()) > WITCHKING_REACH * WITCHKING_REACH) return;
         // The arena a player is standing in is not necessarily the arena in the world: a site is
         // recorded against the dimension it was raised in, and only built in that one.
-        if (level.dimension().equals(site.dimension()) && witchKingLiving(level, site.centre())) return;
+        if (level.dimension().equals(site.dimension()) && witchKingLiving(level, site.centre())) {
+            // A body written down and read back is built afresh, habits and all.
+            steadyRing(level, site.centre());
+            return;
+        }
         BlockPos stand = floorOf(level, site.centre());
         if (stand == null) return;
         Entity entity = TolkienEntities.ENTITY_TTM_WITCHKING.get().create(level, EntitySpawnReason.EVENT);
@@ -772,6 +778,7 @@ public final class Campaign extends SavedData {
                 level.getRandom().nextFloat() * 360.0F, 0.0F);
         king.setPersistenceRequired();
         king.addTag(WITCHKING_TAG);
+        shadeBlind(king);
         level.addFreshEntity(king);
         standGuards(level, stand);
         player.sendSystemMessage(Component.translatable("campaign.tolkienmobs.witchking.rising")
@@ -799,8 +806,29 @@ public final class Campaign extends SavedData {
                     random.nextFloat() * 360.0F, 0.0F);
             keeper.setPersistenceRequired();
             keeper.addTag(GUARD_TAG);
+            shadeBlind(keeper);
             level.addFreshEntity(keeper);
         }
+    }
+
+
+    /**
+     * Takes the sun out of the head of one of the bodies this fight is made of.
+     * <p>
+     * The Nine, and the crown above them, are built on {@link com.greatorator.tolkienmobs.entity.TolkienMonsterEntity},
+     * which walks a servant of the dark out of daylight and into shade. That is the right habit on the road and
+     * the wrong one on the sand: an arena has no shade to reach and no door to duck through, so the ring would
+     * come apart in the morning and the crown would walk off the floor he was stood on. The goals are dropped
+     * from the body rather than from the class, so the Rider, and every Ring-wraith a player meets anywhere
+     * else in the world, keeps the habits it was given.
+     */
+    private static void shadeBlind(Mob mob) {
+        List<Goal> sun = new ArrayList<>();
+        for (WrappedGoal wrapped : mob.goalSelector.getAvailableGoals()) {
+            Goal goal = wrapped.getGoal();
+            if (goal instanceof RestrictSunGoal || goal instanceof FleeSunGoal) sun.add(goal);
+        }
+        sun.forEach(mob.goalSelector::removeGoal);
     }
 
     /**
@@ -837,6 +865,21 @@ public final class Campaign extends SavedData {
     }
 
     /** Whether the campaign's Witch-king is already standing near the castle. */
+    /**
+     * Takes the sun out of the fight's eyes again, for a fight that has been through a save.
+     * <p>
+     * Goals are registered when a body is constructed, so a keeper or a crown read back off the world comes
+     * back with the two sun goals the last load took off it. This walks the bodies this fight is made of and
+     * strips them again, which costs a scan of a small box once a second and is idempotent - a body already
+     * blind to the sun has nothing left to take off.
+     */
+    private static void steadyRing(ServerLevel level, BlockPos centre) {
+        for (Entity found : level.getEntities((Entity) null, new AABB(centre).inflate(WITCHKING_SEARCH),
+                seen -> seen.entityTags().contains(WITCHKING_TAG) || seen.entityTags().contains(GUARD_TAG))) {
+            if (found instanceof Mob mob) shadeBlind(mob);
+        }
+    }
+
     private static boolean witchKingLiving(ServerLevel level, BlockPos centre) {
         return !level.getEntities((Entity) null, new AABB(centre).inflate(WITCHKING_SEARCH),
                 found -> found.entityTags().contains(WITCHKING_TAG)).isEmpty();
