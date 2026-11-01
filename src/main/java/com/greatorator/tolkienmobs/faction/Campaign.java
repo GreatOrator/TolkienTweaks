@@ -121,8 +121,6 @@ public final class Campaign extends SavedData {
      */
     private static final String GLORFINDEL = "Glorfindel";
     private static final String SUMMON_PLACE = "rivendell";
-    private static final String SUMMON_TARGET = Quest.placeTarget(SUMMON_PLACE);
-    private static final String SUMMON_TITLE = "campaign.tolkienmobs.page.summon";
     private static final String GLORFINDEL_TAG = "tolkienmobs:glorfindel";
     /** How near the valley a player has to be for him to be standing in it, in blocks. */
     private static final double GLORFINDEL_REACH = 128.0D;
@@ -150,7 +148,6 @@ public final class Campaign extends SavedData {
      */
     private static final String BARACHEN = "Barachen";
     private static final String BARACHEN_PLACE = "barachen";
-    private static final String BARACHEN_TARGET = Quest.placeTarget(BARACHEN_PLACE);
     private static final String BARACHEN_TAG = "tolkienmobs:barachen";
     /** How near his fire a player has to be for him to be standing at it, in blocks. */
     private static final double BARACHEN_REACH = 128.0D;
@@ -260,7 +257,6 @@ public final class Campaign extends SavedData {
      * father sent - so the chapter ends on the tidings carried back to Elrond, as the notes end it.
      */
     private static final String HORSE_TITLE = "campaign.tolkienmobs.page.horse";
-    private static final String HORSE_TARGET = Quest.placeTarget(THORENHAD_PLACE);
     /** How far ahead of the player he is stood up, sideways off that line, and how far out he counts. */
     private static final int MATUNA_WAY_AHEAD = 16;
     private static final int MATUNA_WAY_SPREAD = 10;
@@ -285,6 +281,49 @@ public final class Campaign extends SavedData {
     /** How often the stone can be held up at all, in ticks, so a held mouse is not a hundred questions. */
     private static final int STONE_RAISE_INTERVAL = 10;
     /**
+     * The chapter as the old series wrote it.
+     * <p>
+     * The notes' chapter one is eighteen quests numbered eight to twenty-five, and the West's line is
+     * now those beats and nothing else: the pages this line had invented to fill the gaps between them -
+     * the muster, the south road, the barrow hunt, the walk to the valley, the hilltop, the hunters, the
+     * ford that was raised, Bree, Tharbad, the Old Forest and the last muster - are gone rather than left
+     * standing beside the notes, because a line answering two books at once is a line nobody can check
+     * against either of them.
+     * <p>
+     * One pair of the notes' quests shares a page here. Their thirteen is the stone held aloft at the
+     * ford; their fourteen is the return to Glorfindel to say what it did. A stone's asking is settled in
+     * the hand that lent it - the ford is where it is asked and he is where it is given back - so the two
+     * are one page, and a second page of talk with him would be the same Elf twice in a row with nothing
+     * between. Everything else is one page to one quest.
+     */
+    /** The notes' Troubles of Rivendell, which is where the chapter opens: Elrond in his library. */
+    private static final String TROUBLES_TITLE = "campaign.tolkienmobs.page.troubles";
+    private static final String TROUBLES_PLACE = "campaign.tolkienmobs.page.troubles.place";
+    private static final String TROUBLES_CLOSING = "campaign.tolkienmobs.page.troubles.closing";
+    /**
+     * The notes' three trolls, one to each cave the stone is asked in. They are three pages rather than
+     * one because the notes wrote three, and the pack's cave troll is the body asked for: the notes'
+     * trolls are the creature that gives the Trollshaws its name, and the chambers the stone is carried
+     * into are theirs.
+     */
+    private static final String CAVE_TROLL_TARGET = "tolkienmobs:entityttmtroll";
+    private static final String CAVE_BANDRITH_TITLE = "campaign.tolkienmobs.page.cave.bandrith";
+    private static final String CAVE_BANDRITH_PLACE = "campaign.tolkienmobs.page.cave.bandrith.place";
+    private static final String CAVE_BANDRITH_CLOSING = "campaign.tolkienmobs.page.cave.bandrith.closing";
+    private static final String CAVE_HOKLOND_TITLE = "campaign.tolkienmobs.page.cave.hoklond";
+    private static final String CAVE_HOKLOND_PLACE = "campaign.tolkienmobs.page.cave.hoklond.place";
+    private static final String CAVE_HOKLOND_CLOSING = "campaign.tolkienmobs.page.cave.hoklond.closing";
+    private static final String CAVE_SHOLDROTH_TITLE = "campaign.tolkienmobs.page.cave.sholdroth";
+    private static final String CAVE_SHOLDROTH_PLACE = "campaign.tolkienmobs.page.cave.sholdroth.place";
+    private static final String CAVE_SHOLDROTH_CLOSING = "campaign.tolkienmobs.page.cave.sholdroth.closing";
+    /** Barachen's own page, named here so the scout can be stood for it the way the Elves are. */
+    private static final String BARACHEN_TITLE = "campaign.tolkienmobs.page.barachen";
+    /** The notes' purse on the Giant: four silver and sixteen bronze, and their experience beside it. */
+    private static final int GIANT_SILVER = 4;
+    private static final int GIANT_BRONZE = 16;
+    private static final int GIANT_XP = 50;
+
+    /**
      * The pages each front works through, and what they pay.
      * <p>
      * The standing written here is the notes' own figures at a tenth. Their ladder ran to five or ten
@@ -303,113 +342,80 @@ public final class Campaign extends SavedData {
      */
     private static final Map<Alliance, List<Page>> PAGE_LINES = Map.of(
             Alliance.WEST, List.of(
-                    new Page(Quest.Kind.FACTION, "", 6, 60, 2,
-                            "campaign.tolkienmobs.page.muster", "campaign.tolkienmobs.page.muster.place", ""),
-                    new Page(Quest.Kind.FACTION, "", 12, 120, 4,
-                            "campaign.tolkienmobs.page.southroad", "campaign.tolkienmobs.page.southroad.place", ""),
-                    new Page(Quest.Kind.HUNT, "tolkienmobs:entityttmbarrow", 2, 150, 7,
-                            "campaign.tolkienmobs.page.keeping", "campaign.tolkienmobs.page.keeping.place", ""),
-                    // The Elves' errand, and the one page of the line a hall herald cannot hand: the
-                    // Rangers' war is not his to give, so the walk to the valley is the page, and what waits
-                    // at the end of the walk hands the next one.
-                    new Page(Quest.Kind.LOCATION, SUMMON_TARGET, 1, 25, 4,
-                            "campaign.tolkienmobs.page.summon", "campaign.tolkienmobs.page.summon.place", ""),
-                    // The notes' Where is the Horse and the Rider?, read off the ids as the chapter's second
-                    // page and not its last: quest eight's own dialogues hand straight into the Horse and
-                    // Rider set, and nine's completion text is Elladan greeting a player his father sent.
-                    // So it is the walk to Thorenhad, and the unsettled ground is what the hunts are for.
-                    new Page(Quest.Kind.LOCATION, HORSE_TARGET, 1, 5, 5,
+                    // The notes' chapter one, eight to twenty-five, in the notes' own order.
+                    //
+                    // 8 - Troubles of Rivendell. The chapter opens at Elrond's door and not at a herald's
+                    // bench: the notes have the player sent to the library, and the library is where the
+                    // missing Rider is first spoken of.
+                    new Page(Quest.Kind.DIALOGUE, Quest.personTarget(ELROND), 1, 5, 3,
+                            TROUBLES_TITLE, TROUBLES_PLACE, TROUBLES_CLOSING),
+                    // 9 - Where is the Horse and the Rider? Elladan at Thorenhad, who is stood for it by his
+                    // own keeper rather than by the page.
+                    new Page(Quest.Kind.DIALOGUE, Quest.personTarget(ELLADAN), 1, 5, 4,
                             HORSE_TITLE, "campaign.tolkienmobs.page.horse.place",
-                            "campaign.tolkienmobs.page.horse.closing", 0, 0, 25),
-                    // The notes' Missing Rider, which the line had skipped over: the hoofprints are found
-                    // south of the road and the horse is found in the ruins. A corpse is not a hunt, so the
-                    // page is the walk to the ruin and the finding is the closing line the notes wrote for it.
-                    // The ruin is the pack's own template rather than bare ground, so what is found is found
-                    // at a wall; the ledger pitches it when the page is taken, as it pitches any site page.
+                            "campaign.tolkienmobs.page.horse.closing"),
+                    // 10 - The Missing Rider I: the walk into the narrow channels, where the ruin stands and
+                    // the black horse lies in it. A corpse is not a hunt, so the page is the ground and the
+                    // finding is the line it closes on.
                     new Page(Quest.Kind.LOCATION, MISSING_RIDER_TARGET, 1, 5, 4,
                             MISSING_RIDER_TITLE, "campaign.tolkienmobs.page.missingrider.place",
-                            "campaign.tolkienmobs.page.missingrider.closing", 0, 0, 25),
-                    // ... and the report of it, which is the note's second page of the beat: Elladan at
-                    // the camp, who is stood for it by his own keeper rather than by this page.
+                            "campaign.tolkienmobs.page.missingrider.closing"),
+                    // 11 - The Missing Rider II: the bridle carried back to the camp, which is the half of
+                    // the beat the notes end on Elladan's answer.
                     new Page(Quest.Kind.DIALOGUE, Quest.personTarget(ELLADAN), 1, 5, 4,
                             RIDER_RETURN_TITLE, "campaign.tolkienmobs.page.riderreport.place",
-                            "campaign.tolkienmobs.page.riderreport.closing", 0, 0, 25),
-                    // Then Glorfindel's counsel at the waterfalls, which is where the stone comes from and
-                    // the one page of the line that needs the face the west's skin folder was drawn for.
+                            "campaign.tolkienmobs.page.riderreport.closing"),
+                    // 12 - Wisdom of Lord Glorfindel I: the Elf-lord above the water, who says what a
+                    // riderless horse means.
                     new Page(Quest.Kind.DIALOGUE, Quest.personTarget(GLORFINDEL), 1, 10, 4,
                             WISDOM_TITLE, "campaign.tolkienmobs.page.wisdom.place",
-                            "campaign.tolkienmobs.page.wisdom.closing", 0, 0, 25),
-                    // The stone's first asking, and the one page of the line whose whole errand is a
-                    // single place: held aloft at the ford, and carried back to Glorfindel who asked for it.
-                    new Page(Quest.Kind.SURVEY, FORD_TARGET, 1, 20, 4,
+                            "campaign.tolkienmobs.page.wisdom.closing"),
+                    // 13 and 14 - the stone held aloft at the ford, and carried back to the hand that lent
+                    // it. One page, because a survey is settled at its giver rather than in the field (see
+                    // QuestLedger.progressSurvey): the ford is where it is asked and he is where it is given
+                    // back, and two pages of talk with him back to back would be the same Elf twice running.
+                    new Page(Quest.Kind.SURVEY, FORD_TARGET, 1, 10, 4,
                             "campaign.tolkienmobs.page.beryl", "campaign.tolkienmobs.page.beryl.place", ""),
-                    // Then the search of the dark, which is the part of the old campaign that could not be
-                    // carried over literally: three caves were named and pointed at, and here any three with
-                    // rock over their heads will do, asked at the bottom of each.
+                    // 15 - Hiding in the Dark: three caves, the bottom of each, and the stone asked in all
+                    // three. It is Elladan's to take back, because the notes end the search at his camp.
                     new Page(Quest.Kind.SURVEY, "", STONE_CAVES, 10, 5,
                             "campaign.tolkienmobs.page.caves", "campaign.tolkienmobs.page.caves.place", ""),
-                    // The notes' Regaining the Trail: back to the camp with the caves searched, where it is
-                    // decided what the stone is to be carried to next. It sits between the cave search and
-                    // the scout's word because that is where the notes put it.
+                    // 16, 17, 18 - the notes' three trolls, one to each cave the stone was asked in. They
+                    // are the only three pages of the chapter of one shape, because the notes wrote three
+                    // of them, and each is a kill in the chamber it kept.
+                    new Page(Quest.Kind.HUNT, CAVE_TROLL_TARGET, 1, 10, 5,
+                            CAVE_BANDRITH_TITLE, CAVE_BANDRITH_PLACE, CAVE_BANDRITH_CLOSING),
+                    new Page(Quest.Kind.HUNT, CAVE_TROLL_TARGET, 1, 10, 5,
+                            CAVE_HOKLOND_TITLE, CAVE_HOKLOND_PLACE, CAVE_HOKLOND_CLOSING),
+                    new Page(Quest.Kind.HUNT, CAVE_TROLL_TARGET, 1, 10, 5,
+                            CAVE_SHOLDROTH_TITLE, CAVE_SHOLDROTH_PLACE, CAVE_SHOLDROTH_CLOSING),
+                    // 19 - Regaining the Trail: the stone carried back to Elladan, who decides where it is
+                    // to be brought next. The notes' seventy-five, at the tenth.
                     new Page(Quest.Kind.DIALOGUE, Quest.personTarget(ELLADAN), 1, 8, 5,
                             REGAIN_TITLE, "campaign.tolkienmobs.page.regain.place",
-                            "campaign.tolkienmobs.page.regain.closing", 0, 0, 25),
-                    // The scout's camp, which is the page the caves were a search of the road towards: the
-                    // stone goes back to Elladan and the next lead is a man who saw something. A camp is
-                    // ground rather than a landmark, so the page is a walk and the walk is the whole of it.
-                    new Page(Quest.Kind.LOCATION, BARACHEN_TARGET, 1, 25, 4,
-                            "campaign.tolkienmobs.page.barachen", "campaign.tolkienmobs.page.barachen.place",
-                            ""),
-                    // The Giant, which is what the scout's word bought: the notes have the creature standing
-                    // among the trees as tall as they are, so the hunt is for the tree-ent the pack already
-                    // ships rather than for a body the pack would have to invent. The notes pay it nine
-                    // hundred of the West's standing - the notes' High Elves are this line's West - and the line takes the
-                    // notes at a flat tenth: ninety.
-                    new Page(Quest.Kind.HUNT, GIANT_TARGET, 1, 90, 5,
-                            "campaign.tolkienmobs.page.giant", "campaign.tolkienmobs.page.giant.place", ""),
-                    // The audience the notes send the player back for, priced at the notes' two hundred and
-                    // fifty taken at a tenth. It is the valley the map already keeps for the Elves, walked to
-                    // and settled there, with Elrond stood in it to name the creature.
-                    new Page(Quest.Kind.LOCATION, SUMMON_TARGET, 1, 25, 5,
+                            "campaign.tolkienmobs.page.regain.closing"),
+                    // 20 - Knowledge of Giants I: Barachen at his fire, south of the East Road.
+                    new Page(Quest.Kind.DIALOGUE, Quest.personTarget(BARACHEN), 1, 10, 5,
+                            BARACHEN_TITLE, "campaign.tolkienmobs.page.barachen.place", ""),
+                    // 21 - Knowledge of Giants II: the Giant seen from the High Moor, at the notes' nine
+                    // hundred taken at the tenth, with the notes' purse beside it.
+                    new Page(Quest.Kind.HUNT, GIANT_TARGET, 1, 90, 6,
+                            "campaign.tolkienmobs.page.giant", "campaign.tolkienmobs.page.giant.place", "",
+                            GIANT_SILVER, GIANT_BRONZE, GIANT_XP),
+                    // 22 - Aid of Mirkwood I: the audience with Elrond, who names what the creature was.
+                    new Page(Quest.Kind.DIALOGUE, Quest.personTarget(ELROND), 1, 25, 6,
                             AUDIENCE_TITLE, "campaign.tolkienmobs.page.audience.place", ""),
-                    // The guest room Elrond sends the player to, at the notes' two hundred and fifty
-                    // taken at a tenth: the same valley again, with Legolas stood in it.
-                    new Page(Quest.Kind.LOCATION, SUMMON_TARGET, 1, 25, 5,
+                    // 23 - Aid of Mirkwood II: Legolas in the guest room, who knows the name of it.
+                    new Page(Quest.Kind.DIALOGUE, Quest.personTarget(LEGOLAS), 1, 10, 6,
                             LEGOLAS_TITLE, "campaign.tolkienmobs.page.legolas.place", ""),
-                    // The Wood-troll of the notes' Aid of Mirkwood: Legolas, having named the
-                    // creature, shows the player where to track one down, and the notes price the kill
-                    // at twelve hundred - a hundred and twenty at the tenth. The tidings go to Elrond,
-                    // because the notes have them carried back to the Last Homely House.
-                    new Page(Quest.Kind.HUNT, MATUNA, 1, 120, 6,
+                    // 24 - Aid of Mirkwood III: Matuna, at the notes' twelve hundred taken at the tenth.
+                    new Page(Quest.Kind.HUNT, MATUNA, 1, 120, 7,
                             MATUNA_TITLE, "campaign.tolkienmobs.page.matuna.place", MATUNA_CLOSING,
                             MATUNA_SILVER, MATUNA_BRONZE, MATUNA_XP),
-                    // The notes' Hasten Their Departure: the tidings are Legolas' to send and Elrond's to
-                    // hear, so the page is a page of talk rather than a walk - the player is already
-                    // standing in the valley, and what is left is telling him what came out of the wood.
-                    // It is owed to nobody, so the Elf who names the creature is the one who hands it
-                    // over, and it is settled by speaking to the Elf it is about.
-                    new Page(Quest.Kind.DIALOGUE, Quest.personTarget(ELROND), 1, 120, 5,
-                            DEPARTURE_TITLE, DEPARTURE_PLACE, DEPARTURE_CLOSING),
-                    // The hilltop is raised rather than named. A place is a circle somebody has to stand
-                    // in and declare; this is ground the campaign builds where the map puts it, so the page
-                    // is settled by standing in the building and nobody has to place anything by hand.
-                    new Page(Quest.Kind.LOCATION, Quest.siteTarget(Sites.WEATHERTOP), 1, 50, 4,
-                            "campaign.tolkienmobs.page.watched", "campaign.tolkienmobs.page.watched.place", ""),
-                    new Page(Quest.Kind.FACTION, "", 8, 70, 5,
-                            "campaign.tolkienmobs.page.hunters", "campaign.tolkienmobs.page.hunters.place", ""),
-                    new Page(Quest.Kind.LOCATION, "place:ford", 1, 60, 5,
-                            "campaign.tolkienmobs.page.raised", "campaign.tolkienmobs.page.raised.place", ""),
-                    new Page(Quest.Kind.DIALOGUE, "leaf:campaign.tolkienmobs.page.heard", 1, 30, 6,
-                            "campaign.tolkienmobs.page.heard", "campaign.tolkienmobs.page.heard.place", ""),
-                    new Page(Quest.Kind.FACTION, "", 10, 80, 6,
-                            "campaign.tolkienmobs.page.spears", "campaign.tolkienmobs.page.spears.place", ""),
-                    new Page(Quest.Kind.LOCATION, "place:tharbad", 1, 70, 7,
-                            "campaign.tolkienmobs.page.drowned", "campaign.tolkienmobs.page.drowned.place", ""),
-                    new Page(Quest.Kind.DIALOGUE, "leaf:campaign.tolkienmobs.page.counsel", 1, 40, 8,
-                            "campaign.tolkienmobs.page.counsel", "campaign.tolkienmobs.page.counsel.place", ""),
-                    new Page(Quest.Kind.FACTION, "", 16, 160, 10,
-                            "campaign.tolkienmobs.page.musterlast", "campaign.tolkienmobs.page.musterlast.place",
-                            "campaign.tolkienmobs.page.musterlast.closing")),
+                    // 25 - Hasten Their Departure: the tidings carried back to Elrond, which is where the
+                    // notes end the chapter and where the campaign's own last act begins.
+                    new Page(Quest.Kind.DIALOGUE, Quest.personTarget(ELROND), 1, 10, 8,
+                            DEPARTURE_TITLE, DEPARTURE_PLACE, DEPARTURE_CLOSING)),
             Alliance.EAST, List.of(
                     new Page(Quest.Kind.FACTION, "", 6, 60, 2,
                             "campaign.tolkienmobs.page.marches", "campaign.tolkienmobs.page.marches.place", ""),
@@ -551,7 +557,7 @@ public final class Campaign extends SavedData {
      * summarised when a herald hands one over. One, for now: the West's first muster, which is where
      * the campaign opens and where the script's argument for a conversation is made.
      */
-    private static final Set<String> SPOKEN = Set.of("campaign.tolkienmobs.page.muster", "campaign.tolkienmobs.page.summon",
+    private static final Set<String> SPOKEN = Set.of("campaign.tolkienmobs.page.wisdom",
             "campaign.tolkienmobs.page.beryl", "campaign.tolkienmobs.page.caves");
 
     private static final Map<UUID, Front[]> PROGRESS = new HashMap<>();
@@ -1232,15 +1238,12 @@ public final class Campaign extends SavedData {
     }
 
     /**
-     * The slot Barachen's camp holds in the West's line, read off the line rather than written down a
-     * second time: a page inserted above his would otherwise leave the scout standing at the wrong step.
+     * The slot the scout's own page holds in the West's line, read off the line rather than written down a
+     * second time: a page inserted above his would otherwise leave him standing at the wrong step. His page
+     * names him rather than his fire now that the notes have him spoken to rather than merely walked to.
      */
     private static int campStage() {
-        List<Page> line = PAGE_LINES.get(Alliance.WEST);
-        for (int i = 0; i < line.size(); i++) {
-            if (BARACHEN_TARGET.equals(line.get(i).target())) return i;
-        }
-        return -1;
+        return stageOfTitle(BARACHEN_TITLE);
     }
 
     /**
