@@ -168,7 +168,11 @@ public final class Campaign extends SavedData {
      */
     private static final String ELROND = "Elrond";
     private static final String ELROND_TAG = "tolkienmobs:elrond";
-    private static final double ELROND_REACH = 128.0D;
+    private static final double VALLEY_REACH = 128.0D;
+    /** Legolas, who Elrond sends the player to: the guest room in the same valley. */
+    private static final String LEGOLAS = "Legolas";
+    private static final String LEGOLAS_TAG = "tolkienmobs:legolas";
+    private static final String LEGOLAS_TITLE = "campaign.tolkienmobs.page.legolas";
     private static final String AUDIENCE_TITLE = "campaign.tolkienmobs.page.audience";
     /** What he says as he hands it over, what it says when it comes back, and the two ways it is quiet. */
     private static final String STONE_GIVEN = "campaign.tolkienmobs.beryl.given";
@@ -242,6 +246,10 @@ public final class Campaign extends SavedData {
                     // and settled there, with Elrond stood in it to name the creature.
                     new Page(Quest.Kind.LOCATION, SUMMON_TARGET, 1, 25, 5,
                             AUDIENCE_TITLE, "campaign.tolkienmobs.page.audience.place", ""),
+                    // The guest room Elrond sends the player to, at the notes' two hundred and fifty
+                    // taken at a tenth: the same valley again, with Legolas stood in it.
+                    new Page(Quest.Kind.LOCATION, SUMMON_TARGET, 1, 25, 5,
+                            LEGOLAS_TITLE, "campaign.tolkienmobs.page.legolas.place", ""),
                     // The hilltop is raised rather than named. A place is a circle somebody has to stand
                     // in and declare; this is ground the campaign builds where the map puts it, so the page
                     // is settled by standing in the building and nobody has to place anything by hand.
@@ -1087,42 +1095,48 @@ public final class Campaign extends SavedData {
         return true;
     }
 
-    /**
-     * Stands Elrond in the valley while the audience with him is the step the West is on.
-     * <p>
-     * The notes bring the line back to Imladris after the Giant: Elrond is the one who can name what the
-     * creature was, and who arranges the audience with the Mirkwood company. So he waits in the valley the
-     * map already keeps for the Elves, and stands from the page that walks to him until the page he hands -
-     * the guest room where Legolas is staying - has been taken off him. Glorfindel stands in the same valley
-     * earlier in the line and never at the same time, since the valley is one place and the stages do not
-     * overlap. Like the others he is stood once and found by tag afterwards.
-     */
+    /** Elrond, who the line comes back to after the Giant to hear what the creature was. */
     private static void keepElrond(ServerPlayer player) {
+        keepElfInValley(player, ELROND, ELROND_TAG, AUDIENCE_TITLE);
+    }
+
+    /** Legolas, who Elrond sends the player on to, in the guest room of the same valley. */
+    private static void keepLegolas(ServerPlayer player) {
+        keepElfInValley(player, LEGOLAS, LEGOLAS_TAG, LEGOLAS_TITLE);
+    }
+
+    /**
+     * Stands one of the Elves in the valley while the page titled after their part of it is the step the
+     * West is on, and for the page after it as well, so the page they hand can be taken off them. The
+     * valley is one place and the pages do not overlap, so only one of them stands there at a time:
+     * Glorfindel while the stone is asked at the ford, Elrond for the audience, Legolas for the guest room.
+     */
+    private static void keepElfInValley(ServerPlayer player, String name, String tag, String title) {
         if (!(player.level() instanceof ServerLevel level)) return;
-        int audience = stageOfTitle(AUDIENCE_TITLE);
-        if (audience < 0) return;
+        int at = stageOfTitle(title);
+        if (at < 0) return;
         int step = stage(player, Alliance.WEST);
-        if (step < audience || step > audience + 1) return;
+        if (step < at || step > at + 1) return;
         Places.Place valley = Places.ensure(player, SUMMON_PLACE, CAMP_RADIUS);
         if (valley == null || !valley.dimension().equals(level.dimension())) return;
-        if (valley.centre().distToCenterSqr(player.position()) > ELROND_REACH * ELROND_REACH) return;
-        if (!level.getEntities((Entity) null, new AABB(valley.centre()).inflate(ELROND_REACH),
-                seen -> seen.entityTags().contains(ELROND_TAG)).isEmpty()) return;
+        if (valley.centre().distToCenterSqr(player.position()) > VALLEY_REACH * VALLEY_REACH) return;
+        if (!level.getEntities((Entity) null, new AABB(valley.centre()).inflate(VALLEY_REACH),
+                seen -> seen.entityTags().contains(tag)).isEmpty()) return;
         BlockPos stand = floorOf(level, valley.centre());
         if (stand == null) return;
         Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
-        if (!(entity instanceof Mob lord)) return;
-        lord.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D,
+        if (!(entity instanceof Mob elf)) return;
+        elf.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D,
                 level.getRandom().nextFloat() * 360.0F, 0.0F);
-        lord.setPersistenceRequired();
-        lord.addTag(QuestGivers.GIVER_TAG);
-        lord.addTag(QuestGivers.CAMPAIGN_TAG);
-        lord.addTag(QuestGivers.CAMPAIGN_GIVER_TAG);
-        lord.addTag(Alliance.WEST.giverTag());
-        lord.addTag(ELROND_TAG);
-        lord.setCustomName(Component.literal(ELROND).withStyle(ChatFormatting.GOLD));
-        lord.setCustomNameVisible(true);
-        level.addFreshEntity(lord);
+        elf.setPersistenceRequired();
+        elf.addTag(QuestGivers.GIVER_TAG);
+        elf.addTag(QuestGivers.CAMPAIGN_TAG);
+        elf.addTag(QuestGivers.CAMPAIGN_GIVER_TAG);
+        elf.addTag(Alliance.WEST.giverTag());
+        elf.addTag(tag);
+        elf.setCustomName(Component.literal(name).withStyle(ChatFormatting.GOLD));
+        elf.setCustomNameVisible(true);
+        level.addFreshEntity(elf);
     }
 
     /**
@@ -1464,6 +1478,7 @@ public final class Campaign extends SavedData {
         keepElladan(player);
         keepBarachen(player);
         keepElrond(player);
+        keepLegolas(player);
         Quest page = carriedCampaignPage(player);
         if (page == null || page.complete()) {
             RIDER_CALLED.remove(player.getUUID());

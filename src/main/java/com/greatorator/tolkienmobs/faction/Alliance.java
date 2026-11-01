@@ -24,7 +24,8 @@ import java.util.function.Supplier;
  *   <li><b>West</b> - Elves of any kind (Rivendell, Mirkwood, Lorien), Dwarves (Erebor and the Iron
  *   Hills), Hobbits, and the Men of the West: Gondor, Rohan, Dale and the Bree-folk.</li>
  *   <li><b>East</b> - the Enemy&#39;s own: Mordor, Angmar, Isengard, Orcs, Goblins, Uruk-hai and
- *   Trolls, and the Easterlings of Rhun.</li>
+ *   Trolls, the Easterlings of Rhun, and the duergar - dwarves who took the Enemy&#39;s service,
+ *   which is why the soldier tag puts them here rather than with Erebor.</li>
  *   <li><b>Harad</b> - the South: Haradrim, the Corsairs of Umbar, Khand and the Variags, and the
  *   beasts they drive to war.</li>
  * </ul>

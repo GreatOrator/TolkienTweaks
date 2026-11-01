@@ -946,6 +946,13 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.page.audience.say.1", "You are fortunate. What you faced in that valley could not have been a true Onod - the tree-herds are not given to violence, and one of the Old Ones would have left nothing of you to describe.");
         this.add("campaign.tolkienmobs.page.audience.place", "Imladris, east of Thorenhad and above the Bruinen");
         this.add("campaign.tolkienmobs.page.audience", "Elrond's Library");
+        this.add("campaign.tolkienmobs.page.legolas.said", "Hail to you. Had you not brought such dire news I would greet you more heartily, but your tidings are troubling.");
+        this.add("campaign.tolkienmobs.page.legolas.reply.2", "And if it is something worse?");
+        this.add("campaign.tolkienmobs.page.legolas.reply.1", "You know what I faced?");
+        this.add("campaign.tolkienmobs.page.legolas.say.2", "The guest room is west of the library, and he keeps to it while he thinks. Tell him what you told me, and do not soften it: a creature of that size does not wander out of the Misty Mountains by accident.");
+        this.add("campaign.tolkienmobs.page.legolas.say.1", "Master Elrond has spoken for you, so I will hear you. I am Legolas of Mirkwood, and we have met such things before, though not for many years.");
+        this.add("campaign.tolkienmobs.page.legolas.place", "the guest room of the last homely house, west of the library");
+        this.add("campaign.tolkienmobs.page.legolas", "The Guest House");
         this.add("campaign.tolkienmobs.beryl.shallow", "Deep, but not deep enough. The stone wants the bottom of the cave and not the mouth of it.");
         this.add("campaign.tolkienmobs.beryl.elsewhere", "%s is where the stone was asked for, and this is not it.");
         this.add("campaign.tolkienmobs.page.beryl.said", "The ford is where this begins, because it is the last ground we know he touched. Hold the beryl aloft there, and it will answer.");

@@ -946,6 +946,13 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("campaign.tolkienmobs.page.audience.say.1", "你算走运。你在那山谷里遇上的，不可能真是昂诺德——树牧者并不好战；若真是古老者之一，你根本留不下命来讲述。");
         this.add("campaign.tolkienmobs.page.audience.place", "伊姆拉崔，索伦哈德以东、布鲁南河上游");
         this.add("campaign.tolkienmobs.page.audience", "埃尔隆德的书库");
+        this.add("campaign.tolkienmobs.page.legolas.said", "向你问好。若不是你带来这样可怕的消息，我会更热情地迎接你；但你的消息令人不安。");
+        this.add("campaign.tolkienmobs.page.legolas.reply.2", "如果事情更糟呢？");
+        this.add("campaign.tolkienmobs.page.legolas.reply.1", "你知道我遇上的是什么？");
+        this.add("campaign.tolkienmobs.page.legolas.say.2", "客房在书库以西，他沉思时常待在那里。把你对我说过的都告诉他，不要轻描淡写：那么大的东西不会无缘无故从迷雾山脉里走出来。");
+        this.add("campaign.tolkienmobs.page.legolas.say.1", "既然埃尔隆德大人为你开口，我就听你说。我是幽暗密林的莱戈拉斯；我们见过这类东西，只是已有许多年未见了。");
+        this.add("campaign.tolkienmobs.page.legolas.place", "最后家园的客房，书库以西");
+        this.add("campaign.tolkienmobs.page.legolas", "客房");
         this.add("campaign.tolkienmobs.beryl.shallow", "够深了，但还不够深。石头要的是洞穴的最深处，不是洞口。");
         this.add("campaign.tolkienmobs.beryl.elsewhere", "石头被要求举在%s，而不是这里。");
         this.add("campaign.tolkienmobs.page.beryl.said", "一切都从渡口开始，因为那是我们知道他最后踏过的土地。在那里把宝石举起来，它会回答你。");
