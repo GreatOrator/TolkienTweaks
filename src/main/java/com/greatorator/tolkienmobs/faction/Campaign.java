@@ -626,7 +626,7 @@ public final class Campaign extends SavedData {
             }
             Quest built = new Quest(page.kind(), target, page.goal(), 0, alliance.id(), page.standing(),
                     List.of(), "", BlockPos.ZERO, Quest.NOBODY, true, "");
-            // The stone's work is the Elves': it is handed by the body waiting at the end of the walk and
+            // The stone's work is the West's: it is handed by the body waiting at the end of the walk and
             // taken back by him, so the herald who sent the player there has neither to give nor to take.
             // The ford is Glorfindel's to take and the caves are Elladan's: the notes leave the stone in
             // the player's care until the three caves have been asked, and the camp is where it goes back.
