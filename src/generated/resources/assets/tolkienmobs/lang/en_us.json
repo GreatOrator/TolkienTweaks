@@ -743,6 +743,7 @@
   "campaign.tolkienmobs.talk.refused.said": "I hand my country's business to folk my country knows, and it does not know you yet. Do something here worth a name, and come back to this bench.",
   "campaign.tolkienmobs.witchking.rising": "Something in the castle has noticed you.",
   "command.tolkienmobs.quest.page": "Wrote %s %s page(s).",
+  "command.tolkienmobs.quest.page.site": "The site is at %s.",
   "place.tolkienmobs.barrows.beryl": "Cold, and colder the higher the mounds stand. Whatever the dead are keeping, it is not asleep - only quiet.",
   "place.tolkienmobs.ford.beryl": "The stone shivers. A great dread was thrown down at this crossing once, and the water has not forgotten the weight of it.",
   "place.tolkienmobs.greenway": "The Green Way",

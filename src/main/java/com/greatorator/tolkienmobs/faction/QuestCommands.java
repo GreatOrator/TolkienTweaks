@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.core.BlockPos;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -251,7 +252,20 @@ public final class QuestCommands {
             // ground or the words finish it, not what it is worth.
             Quest work = new Quest(kind, target, goal, 0, "", 0, List.of(), "",
                     player.blockPosition(), Quest.NOBODY, false, "");
-            if (QuestLedger.accept(player, work)) written++;
+            if (QuestLedger.accept(player, work)) {
+                written++;
+                // The page itself names a country and nothing more, which is the right amount for a
+                // player and useless to an operator trying to stand in the spot: the command says
+                // where it picked, and only the command does.
+                Sites.Site site = Sites.siteOf(player);
+                if (site != null) {
+                    BlockPos centre = site.centre();
+                    context.getSource().sendSuccess(() -> Component.translatable(
+                            "command.tolkienmobs.quest.page.site",
+                            Component.literal(centre.getX() + " " + centre.getY() + " " + centre.getZ())),
+                            false);
+                }
+            }
         }
         int total = written;
         Collection<ServerPlayer> who = players;

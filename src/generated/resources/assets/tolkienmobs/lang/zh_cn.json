@@ -743,6 +743,7 @@
   "campaign.tolkienmobs.talk.refused.said": "我只把本国的事交给本国认得的人，而它还不认得你。在这里做点配得上一个名字的事，再回到这张桌前。",
   "campaign.tolkienmobs.witchking.rising": "城堡里有东西注意到了你。",
   "command.tolkienmobs.quest.page": "为 %s 写了 %s 页。",
+  "command.tolkienmobs.quest.page.site": "地点在%s。",
   "place.tolkienmobs.barrows.beryl": "凉，坟丘越高就越凉。亡者所守的东西并没有睡着，只是安静着。",
   "place.tolkienmobs.ford.beryl": "石头在发抖。很久以前，有极大的恐惧在这个渡口被掀翻，水至今没有忘记那份重量。",
   "place.tolkienmobs.greenway": "绿道",

@@ -1038,6 +1038,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("screen.tolkienmobs.quests.abandon.confirm", "Abandon?");
         this.add("command.tolkienmobs.quest.give", "Gave %s %s quest(s).");
         this.add("command.tolkienmobs.quest.page", "Wrote %s %s page(s).");
+        this.add("command.tolkienmobs.quest.page.site", "The site is at %s.");
         this.add("command.tolkienmobs.quest.quit", "Set aside %s quest(s) for %s.");
         this.add("command.tolkienmobs.quest.spawn", "A quest giver appeared near %s (%s).");
         this.add("command.tolkienmobs.quest.spawn.failed", "No ground for a quest giver near %s.");
