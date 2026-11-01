@@ -220,7 +220,14 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
             if (!paid.isEmpty()) paid.append(", ");
             paid.append(stack.getCount()).append(' ').append(stack.getHoverName().getString());
         }
-        return Component.translatable("quest.tolkienmobs.reward.items", paid)
+        // A page can pay nothing in goods at all - a front's errand pays standing and courage, and the
+        // East's ends on a scroll it wants carried rather than on a purse - so the line is left off
+        // rather than drawn as a reward of nothing.
+        if (paid.isEmpty()) return Component.empty();
+        // The words are read as text: a translation takes components, numbers, booleans or strings,
+        // and the builder this was written with is none of them. Handing it one threw while the leaf
+        // was being drawn, which is a crash rather than a page.
+        return Component.translatable("quest.tolkienmobs.reward.items", paid.toString())
                 .withStyle(ChatFormatting.GOLD);
     }
 }
