@@ -389,6 +389,9 @@ public final class QuestLedger extends SavedData {
             // because its ground did not exist when the page was written.
             boolean here = quest.isSite() ? Sites.reached(player) : arrived(player, quest.spot());
             if (!here) continue;
+            // A page can ask for something carried as well as something walked to, and the stone is the
+            // one that does: standing on the road with empty hands is not the errand.
+            if (Campaign.stoneMissing(player, quest)) continue;
             settleSelf(player, slot);
         }
     }

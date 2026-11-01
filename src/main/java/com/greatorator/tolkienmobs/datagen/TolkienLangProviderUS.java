@@ -907,9 +907,11 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.page.beryl.said", "It goes cold where he has been and colder where he stayed. Where it speaks, listen; where it says nothing, that is an answer too. You will find you want the silence and fear the cold, which is the wrong way round for a stone that only ever tells the truth.");
         this.add("campaign.tolkienmobs.page.beryl.reply.2", "And if it stays quiet?");
         this.add("campaign.tolkienmobs.page.beryl.reply.1", "What does it do, exactly?");
-        this.add("campaign.tolkienmobs.page.beryl.say.2", "Glorfindel sent it south with a rider who never came back. It goes cold where the Enemy has been. It has been quiet since the barrows, and quieter than a thing of its making should be.");
+        this.add("campaign.tolkienmobs.page.beryl.say.2", "Glorfindel sent it south with a rider who never came back. It goes cold where the Enemy has been. It has been quiet since the barrows, and quieter than a thing of its making should be. Take it up the Green Way and hold it out over the ditch where my scout heard breathing - if it has anything left to say, it will say it there.");
         this.add("campaign.tolkienmobs.page.beryl.say.1", "There is an Elf-stone in this hall that I am not to keep, and today is the day I stop keeping it. Hold out your hand.");
-        this.add("campaign.tolkienmobs.page.beryl.place", "the bench at the West's hearth");
+        this.add("campaign.tolkienmobs.page.beryl.place", "the Green Way, with the stone in your hand");
+        this.add("campaign.tolkienmobs.beryl.given", "The stone is in your hand: cold, and heavier than a thing that size has any right to be.");
+        this.add("campaign.tolkienmobs.beryl.returned", "The stone is back in your hand. It was lent to be carried, not put down.");
         this.add("campaign.tolkienmobs.page.beryl", "The Elf-lord's Stone");
         this.add("quest.tolkienmobs.talk.listen.said", "The quiet went from the ditch to the ford in a single night, and by morning the ditch was running water that had not rained. That is the whole of it. Now you have heard it, so you can say you were the ninth.");
         this.add("quest.tolkienmobs.talk.listen.reply.2", "What went quiet?");

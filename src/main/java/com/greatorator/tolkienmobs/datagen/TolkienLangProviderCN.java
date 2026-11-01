@@ -907,9 +907,11 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("campaign.tolkienmobs.page.beryl.said", "他走过的地方它会变冷，他停留过的地方更冷。它开口时你就听；它不开口，那也是答案。你会发现你盼着它沉默、怕它变冷——对一颗只会说实话的石头来说，这正好是反的。");
         this.add("campaign.tolkienmobs.page.beryl.reply.2", "如果它一直沉默呢？");
         this.add("campaign.tolkienmobs.page.beryl.reply.1", "它究竟能做什么？");
-        this.add("campaign.tolkienmobs.page.beryl.say.2", "格罗芬德尔把它交给一位南下的骑手，那骑手再没回来。敌人走过的地方，它会变冷。自从坟丘之后它一直很安静——安静得不该像它这样的东西。");
+        this.add("campaign.tolkienmobs.page.beryl.say.2", "格罗芬德尔把它交给一位南下的骑手，那骑手再没回来。敌人走过的地方，它会变冷。自从坟丘之后它一直很安静——安静得不该像它这样的东西。带它上绿道去，在我的斥候听见呼吸声的那条沟渠上把它举起来——若它还有话要说，就会在那里说。");
         this.add("campaign.tolkienmobs.page.beryl.say.1", "这座大厅里有一颗精灵的宝石，本来不该由我保管，而今天就是我不管它的日子。把手伸出来。");
-        this.add("campaign.tolkienmobs.page.beryl.place", "西境大厅的火塘前");
+        this.add("campaign.tolkienmobs.page.beryl.place", "绿道，握着那颗宝石");
+        this.add("campaign.tolkienmobs.beryl.given", "石头已经在你手里：冰凉，比这个大小的东西本该有的分量要沉。");
+        this.add("campaign.tolkienmobs.beryl.returned", "石头又回到了你手里。它借给你是要你带着它，不是让你放下。");
         this.add("campaign.tolkienmobs.page.beryl", "精灵领主的宝石");
         this.add("quest.tolkienmobs.talk.listen.said", "那份安静一夜之间从沟渠漫到了渡口，天亮时沟里流着没下过雨的水。就这些。现在你听过了，你可以说你是第九个。");
         this.add("quest.tolkienmobs.talk.listen.reply.2", "是什么静了？");

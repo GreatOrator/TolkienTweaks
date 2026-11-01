@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.faction;
 
 import com.greatorator.tolkienmobs.entity.boss.WitchKingEntity;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
+import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.network.manager.CampaignSyncManager;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -26,6 +27,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.RestrictSunGoal;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -76,6 +78,17 @@ public final class Campaign extends SavedData {
      * the third page is that country's business rather than a rival's soldiers, and it is worth
      * what the walk to the barrows or the sand is worth.
      */
+    /**
+     * The ground the Elf-lord's stone is first asked anything at: the long road the West's own line
+     * opens on, where the stone has something to say about what walked it unseen. The page that puts
+     * the stone in the player's hand is the carrying of it there, so that road is the page's place and
+     * the stone is what the road answers - see {@link #stoneMissing}.
+     */
+    private static final String STONE_PLACE = "greenway";
+    private static final String STONE_TARGET = Quest.placeTarget(STONE_PLACE);
+    /** What he says as he hands the stone over, and what it says for itself when it comes back. */
+    private static final String STONE_GIVEN = "campaign.tolkienmobs.beryl.given";
+    private static final String STONE_RETURNED = "campaign.tolkienmobs.beryl.returned";
     private static final Map<Alliance, List<Page>> PAGE_LINES = Map.of(
             Alliance.WEST, List.of(
                     new Page(Quest.Kind.FACTION, "", 6, 60, 2,
@@ -84,7 +97,11 @@ public final class Campaign extends SavedData {
                             "campaign.tolkienmobs.page.southroad", "campaign.tolkienmobs.page.southroad.place", ""),
                     new Page(Quest.Kind.HUNT, "tolkienmobs:entityttmbarrow", 2, 150, 7,
                             "campaign.tolkienmobs.page.keeping", "campaign.tolkienmobs.page.keeping.place", ""),
-                    new Page(Quest.Kind.DIALOGUE, "leaf:campaign.tolkienmobs.page.beryl", 1, 20, 4,
+                    // The one errand in the line whose subject is an object rather than a body or a
+                    // piece of ground. Written as a page of talk, it was finished by reading about a stone
+                    // nobody was ever given; it is a walk now, and the stone is put in the player's hand
+                    // as that same conversation ends.
+                    new Page(Quest.Kind.LOCATION, STONE_TARGET, 1, 20, 4,
                             "campaign.tolkienmobs.page.beryl", "campaign.tolkienmobs.page.beryl.place", ""),
                     // The hilltop is raised rather than named. A place is a circle somebody has to stand
                     // in and declare; this is ground the campaign builds where the map puts it, so the page
@@ -569,6 +586,50 @@ public final class Campaign extends SavedData {
         } else if (carriesQuarry(page)) {
             QUARRY_CALLED.put(player.getUUID(), call(player));
         }
+        // The one page whose subject is an object: he says hold out your hand, so the stone goes into
+        // the hand here, in the room the words are said in.
+        if (asksForStone(page)) giveStone(player, STONE_GIVEN);
+    }
+
+    /** Whether a page is the carrying of the Elf-lord's stone to ground it has an answer for. */
+    private static boolean asksForStone(Quest page) {
+        return page.story() && page.walks() && page.target().equals(STONE_TARGET);
+    }
+
+    /**
+     * Whether a page is being stood on without the thing it is about. The ground answers the stone and
+     * not the boots, so an arrival with empty hands is not the walk the page asked for.
+     */
+    public static boolean stoneMissing(ServerPlayer player, Quest page) {
+        return asksForStone(page) && !Places.carriesBeryl(player);
+    }
+
+    /**
+     * Puts the stone in a player's hand and says so. A player already holding it is left alone, which
+     * is what keeps the line on the tick from repeating itself.
+     */
+    private static void giveStone(ServerPlayer player, String line) {
+        if (Places.carriesBeryl(player)) return;
+        ItemStack stone = new ItemStack(TolkienItems.ITEM_BERYL.get());
+        if (!player.getInventory().add(stone)) player.drop(stone, false);
+        player.sendSystemMessage(Component.translatable(line).withStyle(ChatFormatting.AQUA));
+    }
+
+    /**
+     * Keeps the stone in the hand of a player carrying the page it was given with.
+     * <p>
+     * That page is finished by ground the stone answers, and ground only answers a hand that is holding
+     * it - so a stone dropped in a river would stop the West's line for good on an errand nobody could
+     * finish, which is worse than the page that gave the player nothing at all. What was lent is lent
+     * for the length of the errand: it comes back to the hand it was put in, and says so, so it reads
+     * as the stone's own business rather than as a pack tidying itself up.
+     */
+    private static void keepStoneInHand(ServerPlayer player) {
+        for (Quest page : QuestLedger.active(player)) {
+            if (!asksForStone(page)) continue;
+            giveStone(player, STONE_RETURNED);
+            return;
+        }
     }
 
     /**
@@ -740,6 +801,7 @@ public final class Campaign extends SavedData {
         keepCrownSeated(player);
         keepWitchKing(player);
         keepQuarryComing(player);
+        keepStoneInHand(player);
         Quest page = carriedCampaignPage(player);
         if (page == null || page.complete()) {
             RIDER_CALLED.remove(player.getUUID());

@@ -355,8 +355,12 @@ public final class Places extends SavedData {
         player.connection.send(new ClientboundSetTitleTextPacket(title));
     }
 
-    /** Whether the player is carrying the beryl, which is what asks the stone its question. */
-    private static boolean carriesBeryl(ServerPlayer player) {
+    /**
+     * Whether the player is carrying the beryl, which is what asks the stone its question. Read by
+     * the campaign too, because the page the stone is lent on is only finished by a hand holding
+     * it: the ground answers the stone, and there is nothing to answer without one.
+     */
+    public static boolean carriesBeryl(ServerPlayer player) {
         var inventory = player.getInventory();
         for (int slot = 0; slot < inventory.getContainerSize(); slot++) {
             if (inventory.getItem(slot).is(TolkienItems.ITEM_BERYL.get())) return true;
