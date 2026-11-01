@@ -122,6 +122,18 @@ public final class Campaign extends SavedData {
     private static final String GLORFINDEL_TAG = "tolkienmobs:glorfindel";
     /** How near the valley a player has to be for him to be standing in it, in blocks. */
     private static final double GLORFINDEL_REACH = 128.0D;
+    /**
+     * Elladan, and the camp of Thorenhad he keeps in the Trollshaws. The beryl changes hands at the end of
+     * the cave search rather than at the start: the notes have Elladan take the stone back to Glorfindel
+     * himself once the three caves have been asked, and it is he who sends the player on to the next lead.
+     * He stands while the cave page is the step in hand, which is the page his camp is the end of.
+     */
+    private static final String ELLADAN = "Elladan";
+    private static final String THORENHAD_PLACE = "thorenhad";
+    private static final String ELLADAN_TAG = "tolkienmobs:elladan";
+    private static final double ELLADAN_REACH = 128.0D;
+    /** How wide a circle Elladan's camp is, in blocks: enough to walk into from any side of it. */
+    private static final int CAMP_RADIUS = 48;
     /** What he says as he hands it over, what it says when it comes back, and the two ways it is quiet. */
     private static final String STONE_GIVEN = "campaign.tolkienmobs.beryl.given";
     private static final String STONE_RETURNED = "campaign.tolkienmobs.beryl.returned";
@@ -544,7 +556,11 @@ public final class Campaign extends SavedData {
                     List.of(), "", BlockPos.ZERO, Quest.NOBODY, true, "");
             // The stone's work is the Elves': it is handed by the body waiting at the end of the walk and
             // taken back by him, so the herald who sent the player there has neither to give nor to take.
-            return page.kind() == Quest.Kind.SURVEY ? built.withTurnIn(GLORFINDEL) : built;
+            // The ford is Glorfindel's to take and the caves are Elladan's: the notes leave the stone in
+            // the player's care until the three caves have been asked, and the camp is where it goes back.
+            return page.kind() == Quest.Kind.SURVEY
+                    ? built.withTurnIn(page.target().isEmpty() ? ELLADAN : GLORFINDEL)
+                    : built;
         }
         if (!sealed(row)) return null;
         // The slot the campaign keeps for itself walks through its last acts: the Rider, then the
@@ -773,6 +789,10 @@ public final class Campaign extends SavedData {
         if (!(player.level() instanceof ServerLevel level)) return;
         Quest stone = page(player, Alliance.WEST);
         if (stone == null || stone.kind() != Quest.Kind.SURVEY) return;
+        // He waits at the end of the ford, not at the end of the cave search: by then the stone is
+        // Elladan's to take, and an Elf standing in the valley asking for it would be the wrong hand.
+        if (stone.namedGround().isEmpty()) return;
+        if (Places.place(player.level(), SUMMON_PLACE) == null) Places.ensure(player, SUMMON_PLACE, CAMP_RADIUS);
         Places.Place valley = Places.place(level, SUMMON_PLACE);
         if (valley == null || !valley.dimension().equals(level.dimension())) return;
         if (valley.centre().distToCenterSqr(player.position()) > GLORFINDEL_REACH * GLORFINDEL_REACH) return;
@@ -793,6 +813,41 @@ public final class Campaign extends SavedData {
         elf.addTag(Alliance.WEST.giverTag());
         elf.addTag(GLORFINDEL_TAG);
         elf.setCustomName(Component.literal(GLORFINDEL).withStyle(ChatFormatting.GOLD));
+        elf.setCustomNameVisible(true);
+        level.addFreshEntity(elf);
+    }
+
+    /**
+     * Stands Elladan at the camp of Thorenhad while the cave search is the step in hand.
+     * <p>
+     * The notes end the cave search at his camp rather than at the valley: the stone is his to carry back
+     * to Glorfindel, and he is the one with the next lead. He is a campaign giver wearing the same three
+     * tags as the Elf in the valley, so the same right-click takes the finished page off the player and
+     * the beryl with it, and he is stood once and found by his tag afterwards, so a reloaded world keeps
+     * one Elladan at the fire instead of one every time the player looks.
+     */
+    private static void keepElladan(ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel level)) return;
+        Quest stone = page(player, Alliance.WEST);
+        if (stone == null || stone.kind() != Quest.Kind.SURVEY || !stone.namedGround().isEmpty()) return;
+        Places.Place camp = Places.ensure(player, THORENHAD_PLACE, CAMP_RADIUS);
+        if (camp == null || !camp.dimension().equals(level.dimension())) return;
+        if (camp.centre().distToCenterSqr(player.position()) > ELLADAN_REACH * ELLADAN_REACH) return;
+        if (!level.getEntities((Entity) null, new AABB(camp.centre()).inflate(ELLADAN_REACH),
+                seen -> seen.entityTags().contains(ELLADAN_TAG)).isEmpty()) return;
+        BlockPos stand = floorOf(level, camp.centre());
+        if (stand == null) return;
+        Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
+        if (!(entity instanceof Mob elf)) return;
+        elf.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D,
+                level.getRandom().nextFloat() * 360.0F, 0.0F);
+        elf.setPersistenceRequired();
+        elf.addTag(QuestGivers.GIVER_TAG);
+        elf.addTag(QuestGivers.CAMPAIGN_TAG);
+        elf.addTag(QuestGivers.CAMPAIGN_GIVER_TAG);
+        elf.addTag(Alliance.WEST.giverTag());
+        elf.addTag(ELLADAN_TAG);
+        elf.setCustomName(Component.literal(ELLADAN).withStyle(ChatFormatting.GOLD));
         elf.setCustomNameVisible(true);
         level.addFreshEntity(elf);
     }
@@ -1050,6 +1105,7 @@ public final class Campaign extends SavedData {
         keepStoneInHand(player);
         keepGlorfindel(player);
         keepCaveOpen(player);
+        keepElladan(player);
         Quest page = carriedCampaignPage(player);
         if (page == null || page.complete()) {
             RIDER_CALLED.remove(player.getUUID());

@@ -802,6 +802,8 @@
   "place.tolkienmobs.tharbad.line": "无人养护的路上，一座被淹的渡口",
   "place.tolkienmobs.rivendell.line": "大海之路以东，最后一处温暖的家",
   "place.tolkienmobs.rivendell": "幽谷",
+  "place.tolkienmobs.thorenhad.line": "巨魔荒野中埃拉丹的营地",
+  "place.tolkienmobs.thorenhad": "索伦哈德",
   "place.tolkienmobs.oldforest": "老林",
   "place.tolkienmobs.oldforest.line": "树木自有其谋",
   "command.tolkienmobs.place.added": "已将 %s 设在此处，半径 %s 格。",

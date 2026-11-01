@@ -974,6 +974,8 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("place.tolkienmobs.tharbad.line", "无人养护的路上，一座被淹的渡口");
         this.add("place.tolkienmobs.rivendell.line", "大海之路以东，最后一处温暖的家");
         this.add("place.tolkienmobs.rivendell", "幽谷");
+        this.add("place.tolkienmobs.thorenhad.line", "巨魔荒野中埃拉丹的营地");
+        this.add("place.tolkienmobs.thorenhad", "索伦哈德");
         this.add("place.tolkienmobs.oldforest", "老林");
         this.add("place.tolkienmobs.oldforest.line", "树木自有其谋");
         this.add("place.tolkienmobs.tharbad.beryl", "石头变得又暗又沉，像铁挨近了沉没之地。有人死在这个渡口，却没有人回来报信。");

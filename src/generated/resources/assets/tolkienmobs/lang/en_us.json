@@ -802,6 +802,8 @@
   "place.tolkienmobs.tharbad.line": "a drowned ford on a road nobody keeps",
   "place.tolkienmobs.rivendell.line": "the last homely house, east of the sea-road",
   "place.tolkienmobs.rivendell": "Rivendell",
+  "place.tolkienmobs.thorenhad.line": "Elladan's camp in the Trollshaws",
+  "place.tolkienmobs.thorenhad": "Thorenhad",
   "place.tolkienmobs.oldforest": "The Old Forest",
   "place.tolkienmobs.oldforest.line": "the trees keep their own counsel",
   "command.tolkienmobs.place.added": "Set %s here, %s blocks out.",

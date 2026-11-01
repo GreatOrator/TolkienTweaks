@@ -974,6 +974,8 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("place.tolkienmobs.tharbad.line", "a drowned ford on a road nobody keeps");
         this.add("place.tolkienmobs.rivendell.line", "the last homely house, east of the sea-road");
         this.add("place.tolkienmobs.rivendell", "Rivendell");
+        this.add("place.tolkienmobs.thorenhad.line", "Elladan's camp in the Trollshaws");
+        this.add("place.tolkienmobs.thorenhad", "Thorenhad");
         this.add("place.tolkienmobs.oldforest", "The Old Forest");
         this.add("place.tolkienmobs.oldforest.line", "the trees keep their own counsel");
         this.add("place.tolkienmobs.tharbad.beryl", "The stone goes dull and heavy, the way iron does near a drowned place. Men died on this crossing and no one came back to say so.");

@@ -127,6 +127,7 @@ public final class Places extends SavedData {
             new Name("ford", Alliance.WEST, true),
             new Name("tharbad", Alliance.WEST, true),
             new Name("rivendell", Alliance.WEST, false),
+            new Name("thorenhad", Alliance.WEST, false),
             new Name("oldforest", null, false)
     );
 
