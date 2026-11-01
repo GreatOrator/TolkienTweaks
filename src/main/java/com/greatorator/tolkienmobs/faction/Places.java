@@ -138,7 +138,11 @@ public final class Places extends SavedData {
      * wrong map in it. Read only when a name is placed for the first time.
      */
     private static final Map<String, ArdaMap.Country> CANON = Map.of(
-            "rivendell", ArdaMap.Country.ERIADOR);
+            "rivendell", ArdaMap.Country.ERIADOR,
+            // The Trollshaws are the western slopes of the Misty Mountains in this drawing, which is the
+            // country it calls Firien: Elladan's camp belongs a walk east of the valley, not wherever the
+            // page that mentions it happens to be taken.
+            "thorenhad", ArdaMap.Country.FIRIEN);
 
     /**
      * One place as this world has it: which of the catalogue it is, the dimension it stands in, the
