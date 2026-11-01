@@ -205,9 +205,10 @@ public final class Campaign extends SavedData {
                             ""),
                     // The Giant, which is what the scout's word bought: the notes have the creature standing
                     // among the trees as tall as they are, so the hunt is for the tree-ent the pack already
-                    // ships rather than for a body the pack would have to invent. It is worth what the notes
-                    // say it is worth - nine hundred of the Elves' standing - and the camp takes it back.
-                    new Page(Quest.Kind.HUNT, GIANT_TARGET, 1, 900, 5,
+                    // ships rather than for a body the pack would have to invent. The notes pay it nine
+                    // hundred of the Elves' standing, which is most of a rank in this pack for one kill, so
+                    // it pays fifty: the page is one act of several, not the end of the line.
+                    new Page(Quest.Kind.HUNT, GIANT_TARGET, 1, 50, 5,
                             "campaign.tolkienmobs.page.giant", "campaign.tolkienmobs.page.giant.place", ""),
                     // The hilltop is raised rather than named. A place is a circle somebody has to stand
                     // in and declare; this is ground the campaign builds where the map puts it, so the page
