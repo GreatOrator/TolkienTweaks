@@ -255,7 +255,7 @@ public final class Places extends SavedData {
         // by the cell and the name, so a place needs no distance of its own: two players asking for the
         // same name are sent to the same ground wherever they were standing when they asked.
         ArdaSurvey.Ground ground = ArdaSurvey.find(level, player.blockPosition(),
-                ArdaMap.Country::land, PLACE_GROUND, PLACE_GROUND, id.hashCode(), 0);
+                ArdaMap.Country::land, PLACE_GROUND, PLACE_GROUND, id.hashCode(), 0, 0);
         if (ground == null) return null;
         return set(level, id, ground.centre(), radius);
     }

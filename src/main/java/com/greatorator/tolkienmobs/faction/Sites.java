@@ -96,6 +96,13 @@ public final class Sites extends SavedData {
      */
     private static final Map<String, ArdaMap.Country> CANON = Map.of(
             WEATHERTOP, ArdaMap.Country.ERIADOR);
+    /**
+     * How far from its country's middle a landmark may drift, in blocks: two cells of the map. The spot
+     * does not have to be the exact hill the books name - the world's own ground decides where a building
+     * can stand - but it does have to be in that part of the country rather than anywhere the country
+     * reaches, which is the difference between Weathertop and a hilltop in the Shire's east marches.
+     */
+    private static final int CANON_REACH = ArdaMap.CELL * 2;
 
     /** The castle the campaign raises for its last act, which no world generator ever places. */
     public static final String BOSS_CASTLE = "tolkienmobs:key_structures/boss_castle";
@@ -291,9 +298,19 @@ public final class Sites extends SavedData {
         // herald's own bench. Everything else is looked for around the player - but never at their
         // feet, since the search begins in the cell they are standing in.
         ArdaMap.Country home = CANON.get(structure);
-        BlockPos from = home == null ? player.blockPosition() : ArdaMap.anchor(home);
-        return ArdaSurvey.find(level, from, countries(level, structure),
-                size.getX(), size.getZ(), structure.hashCode(), home == null ? SITE_AWAY : 0);
+        if (home == null) {
+            return ArdaSurvey.find(level, player.blockPosition(), countries(level, structure),
+                    size.getX(), size.getZ(), structure.hashCode(), SITE_AWAY, 0);
+        }
+        BlockPos from = ArdaMap.anchor(home);
+        // The landmark's own country first, so it stands in the country the books give it. A country
+        // that will not take a building this size anywhere near its middle is asked again with no
+        // opinion about which country it is - the drift stays inside the same two cells either way, so
+        // the answer is still the right part of the map.
+        ArdaSurvey.Ground ground = ArdaSurvey.find(level, from, home::equals,
+                size.getX(), size.getZ(), structure.hashCode(), 0, CANON_REACH);
+        return ground != null ? ground : ArdaSurvey.find(level, from, ArdaMap.Country::land,
+                size.getX(), size.getZ(), structure.hashCode(), 0, CANON_REACH);
     }
 
     /** A template's own size, or null when there is no such template to build. */

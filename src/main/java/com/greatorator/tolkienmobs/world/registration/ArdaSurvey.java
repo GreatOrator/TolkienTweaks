@@ -58,10 +58,13 @@ public final class ArdaSurvey {
      * @param salt what makes two structures pick different ground in the same country
      * @param away how close to {@code near} the ground may be, in blocks, so a page is a walk rather
      *             than a build rising at the page-taker's own feet
+     * @param within how far from {@code near} the ground may be at the furthest, in blocks, so a place
+     *               the books put somewhere stays in that part of the map rather than anywhere the
+     *               country happens to reach; zero means no limit
      */
     @Nullable
     public static Ground find(ServerLevel level, BlockPos near, Predicate<ArdaMap.Country> fits,
-                              int wide, int deep, int salt, int away) {
+                              int wide, int deep, int salt, int away, int within) {
         if (!(level.getChunkSource().getGenerator() instanceof ArdaChunkGenerator)) return null;
         int column = Math.floorDiv(near.getX(), ArdaMap.CELL) + ArdaMap.ORIGIN_COLUMN;
         int row = Math.floorDiv(near.getZ(), ArdaMap.CELL) + ArdaMap.ORIGIN_ROW;
@@ -70,6 +73,10 @@ public final class ArdaSurvey {
                 for (int along = -ring; along <= ring; along++) {
                     if (Math.max(Math.abs(across), Math.abs(along)) != ring) continue;
                     if (!ArdaMap.inside(column + across, row + along)) continue;
+                    // The cell is judged by its middle: a landmark allowed two cells of drift may take
+                    // ground in the one next door, which is still the country the books name, and may
+                    // not take ground on the far side of the map.
+                    if (!nearby(near, column + across, row + along, within)) continue;
                     ArdaMap.Country country = ArdaMap.cellCountry(column + across, row + along);
                     if (!country.land() || !fits.test(country)) continue;
                     Ground ground = within(country, column + across, row + along, wide, deep, salt,
@@ -131,6 +138,14 @@ public final class ArdaSurvey {
      */
     public static int dropAllowed(int wide, int deep) {
         return Math.max(2, Math.max(wide, deep) / 8);
+    }
+
+    /** Whether a cell's middle is within {@code within} blocks of the point the search started at. */
+    private static boolean nearby(BlockPos near, int column, int row, int within) {
+        if (within <= 0) return true;
+        long dx = (long) (column - ArdaMap.ORIGIN_COLUMN) * ArdaMap.CELL + ArdaMap.CELL / 2 - near.getX();
+        long dz = (long) (row - ArdaMap.ORIGIN_ROW) * ArdaMap.CELL + ArdaMap.CELL / 2 - near.getZ();
+        return dx * dx + dz * dz <= (long) within * within;
     }
 
     /**
