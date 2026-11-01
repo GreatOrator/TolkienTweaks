@@ -237,7 +237,10 @@ public final class QuestCommands {
      * a place for a location page and as a body for a dialogue one.
      */
     private static int page(CommandContext<CommandSourceStack> context, int goal) throws CommandSyntaxException {
-        Collection<ServerPlayer> players = EntityArgument.getPlayers(context, "targets");
+        // A page written by hand is written into the hand that wrote it: this branch hangs off the root
+        // rather than off {@code targets}, and reading a target selector it was never given threw before
+        // the page was ever built.
+        List<ServerPlayer> players = List.of(context.getSource().getPlayerOrException());
         Quest.Kind kind = Quest.Kind.byName(StringArgumentType.getString(context, "kind"));
         String target = StringArgumentType.getString(context, "target");
         int written = 0;
