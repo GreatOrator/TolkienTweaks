@@ -208,6 +208,9 @@ public final class QuestGivers {
         // The cave search is an item page in the notes, so the camp can refuse it at the door: the
         // three chambers' tokens go back with the stone, and a player short of them is told so.
         if (Campaign.stoneHeldBack(player, name)) return;
+        // The same at the other end of the chapter: the rider's bridle is the proof of the report, so a
+        // player who has not picked it up is told what is missing instead of being paid for the tale.
+        if (Campaign.bridleHeldBack(player, name)) return;
         if (QuestLedger.turnInFirst(player, name)) return;
         // A page given as words is finished by hearing them out, and is paid where they were said.
         QuestLedger.spokeTo(player, name);

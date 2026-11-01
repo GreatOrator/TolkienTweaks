@@ -1009,6 +1009,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.cave.5", "It goes cold all at once, the way a hand does when a door opens behind it. Whatever was here was not long gone when the stone was last asked.");
         this.add("campaign.tolkienmobs.cave.dark", "You hold Glorfindel's beryl aloft in %s, and it stays dark. If he sheltered here, he did not leave the stone anything to find.");
         this.add("campaign.tolkienmobs.cave.short", "You carry %s of the %s tokens the chambers owe. I will take the stone back when all three are in your hand, and not before.");
+        this.add("campaign.tolkienmobs.bridle.short", "The horse's tack is the proof of it, and I have not heard the tale yet. Bring me the dark saddle you took off him.");
         this.add("campaign.tolkienmobs.cave.guarded", "The stone stays dark, and something further down would rather it did. Whatever keeps this chamber is not yet dead.");
         this.add("campaign.tolkienmobs.cave.reached", "You have reached the deepest chamber of %s, and what was keeping it is not getting up again.");
         this.add("campaign.tolkienmobs.beryl.given", "The stone is in your hand: cold, and heavier than a thing that size has any right to be.");

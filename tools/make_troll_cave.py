@@ -9,19 +9,33 @@ writes it as the structure NBT that `Sites` places.
 Everything outside the crag is left out of the file rather than written as air, so the world's own
 ground and trees stay where they were and only the hill is added to them.
 """
+import argparse
 import gzip
 import math
 import random
 import struct
 
-OUT = 'src/main/resources/data/tolkienmobs/structure/key_structures/troll_cave.nbt'
+DEFAULT_OUT = 'src/main/resources/data/tolkienmobs/structure/key_structures/troll_cave.nbt'
 # The data version every template this pack already ships was written with - weathertop, the tent and
 # the arena are all this - so a cave cut here loads in the same game they do.
 DATA_VERSION = 4790
 
+# Which crag is written, and whether it is allowed to differ from the pack's first one. The campaign
+# needs three of these - one for each troll the stone's cave page names - so the same generator is asked
+# three times rather than a cave being copied twice: a seed alone moves the moss and the bones about,
+# and --vary also nudges the chambers and the hill, so a variant is a crag of its own and not the first
+# crag with its furniture rearranged. Left alone it writes the shipped cave, byte for byte.
+parser = argparse.ArgumentParser(description='Write a troll-cave template.')
+parser.add_argument('--seed', type=int, default=20261101)
+parser.add_argument('--out', default=DEFAULT_OUT)
+parser.add_argument('--vary', action='store_true',
+                    help='nudge the chambers and the hill, so a variant is a different crag')
+args = parser.parse_args()
+
+OUT = args.out
 SIZE = (56, 36, 56)
 CX, CZ = SIZE[0] // 2, SIZE[2] // 2
-SEED = 20261101
+SEED = args.seed
 random.seed(SEED)
 
 AIR = 'minecraft:air'
@@ -39,22 +53,46 @@ TWIGS = 'minecraft:dead_bush'
 WEB = 'minecraft:cobweb'
 
 
+HILL_R = 27.0 if not args.vary else random.uniform(25.0, 29.0)
+
+
 def hill(x, z):
     """How high the crag stands at a column: a dome, dropping to nothing at its foot."""
-    r = math.hypot(x - CX, z - CZ) / 27.0
+    r = math.hypot(x - CX, z - CZ) / HILL_R
     if r >= 1.0:
         return 0
     return int(10 + 18 * (1.0 - r * r))
 
 
-CHAMBERS = (
+BASE_CHAMBERS = (
     (CX - 10, 11, CZ - 9, 11.0),
     (CX + 11, 10, CZ + 8, 10.5),
     (CX - 5, 6, CZ + 13, 10.0),
     (CX + 4, 16, CZ - 13, 9.0),
 )
-# The trolls' own chamber, where the fire and the bones are.
-LAIR = (CX + 1, 8, CZ + 1, 13.0)
+
+
+def chambers():
+    """The four chambers, and the trolls' own among them, as this crag has them.
+
+    A variant moves each chamber a few blocks and widens or narrows it, which is what makes the
+    second and third crags read as other hills rather than as the first one with other moss. The
+    move is kept small on purpose: a chamber that wanders out from under its own hill carves a
+    hole in the flank, and the seat that buries the crag is what would have covered it.
+    """
+    if not args.vary:
+        return BASE_CHAMBERS, (CX + 1, 8, CZ + 1, 13.0)
+    moved = []
+    for (x, y, z, radius) in BASE_CHAMBERS:
+        moved.append((x + random.randint(-3, 3), y + random.randint(-2, 2),
+                      z + random.randint(-3, 3), radius + random.uniform(-1.2, 1.4)))
+    lair = (CX + 1 + random.randint(-2, 2), max(6, 8 + random.randint(-1, 2)),
+            CZ + 1 + random.randint(-2, 2), LAIR_RADIUS + random.uniform(-1.0, 1.5))
+    return tuple(moved), lair
+
+
+LAIR_RADIUS = 13.0
+CHAMBERS, LAIR = chambers()
 CORRIDORS = (
     ((CX - 10, 11, CZ - 9), (CX + 1, 8, CZ + 1), 3.4),
     ((CX + 11, 10, CZ + 8), (CX + 1, 8, CZ + 1), 3.4),
@@ -63,7 +101,10 @@ CORRIDORS = (
 )
 # The way in: a corridor cut from the eastern flank's own surface down into the lair, so the mouth is a
 # hole in the hillside rather than a tunnel hanging over the ground.
-ENTRANCE = ((CX + 19, max(3, hill(CX + 19, CZ + 3) - 1), CZ + 3), (CX + 7, 9, CZ + 1), 3.2)
+# The corridor ends a few blocks short of the lair's middle in the shipped crag, exactly as it always
+# has; only a variant, whose lair has moved, is followed to where the lair now is.
+ENTRANCE = ((CX + 19, max(3, hill(CX + 19, CZ + 3) - 1), CZ + 3),
+            (LAIR[0], 9, LAIR[2]) if args.vary else (CX + 7, 9, CZ + 1), 3.2)
 
 solid = {}
 

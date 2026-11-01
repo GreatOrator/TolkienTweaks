@@ -97,6 +97,20 @@ public final class Sites extends SavedData {
      * {@code tools/make_troll_cave.py}: a crag with the inside taken out of it.
      */
     public static final String TROLL_CAVE = "tolkienmobs:key_structures/troll_cave";
+    /** The second crag, cut by the same hand and asked for the second cave of the stone's page. */
+    public static final String TROLL_CAVE_2 = "tolkienmobs:key_structures/troll_cave_2";
+    /** The third crag, for the last of the three chambers the notes name. */
+    public static final String TROLL_CAVE_3 = "tolkienmobs:key_structures/troll_cave_3";
+    /**
+     * The crags in the order the stone asks for them: Bandrith's first, Sholdroth's last.
+     * <p>
+     * Three crags rather than one raised three times. The notes name three caves and send the player to
+     * each in turn, and a page that raised the same hill for every one of them would be three errands in
+     * one place - the player would walk a new distance to the same cave. They are one generator's three
+     * askings ({@code tools/make_troll_cave.py} with its own seed and its chambers nudged), so the second
+     * and third are different hills and still the same cave to be lost in.
+     */
+    public static final List<String> CAVE_VARIANTS = List.of(TROLL_CAVE, TROLL_CAVE_2, TROLL_CAVE_3);
     /**
      * The ruin the rider is found at. The notes put it in the narrow channels south of the road, and the
      * pack already ships a ruin for wild ground: rather than a point on the map with a reach round it,
@@ -486,8 +500,18 @@ public final class Sites extends SavedData {
      * build whose lower half is rock meant to be underground; every other piece - hall, tent, house,
      * arena - sits on its ground, and says so by asking for no floor at all.
      */
+    /** The crag the nth asking of the stone is made in, and the last of them for any asking past it. */
+    public static String caveAt(int asked) {
+        return CAVE_VARIANTS.get(Math.max(0, Math.min(CAVE_VARIANTS.size() - 1, asked)));
+    }
+
+    /** Whether a template is one of the campaign's crags, which are buried in their ground, not seated on it. */
+    public static boolean isCave(String structure) {
+        return CAVE_VARIANTS.contains(structure);
+    }
+
     private static Seat seatFor(String structure) {
-        return TROLL_CAVE.equals(structure) ? SUNK_CRAG : ON_SURFACE;
+        return isCave(structure) ? SUNK_CRAG : ON_SURFACE;
     }
 
     /**

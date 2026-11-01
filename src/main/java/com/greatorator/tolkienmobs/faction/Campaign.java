@@ -921,7 +921,7 @@ public final class Campaign extends SavedData {
         // recognised rather than toward an open field with one monster standing in it. A player already
         // walking to a site of their own keeps it, because the page in their hand sent them there.
         if (page.target().equals(MATUNA) && Sites.siteOf(player) == null) {
-            Sites.plan(player, Sites.TROLL_CAVE, false);
+            Sites.plan(player, caveFor(player), false);
         }
         Front[] row = row(player);
         int slot = slotOf(page, alliance);
@@ -1519,8 +1519,28 @@ public final class Campaign extends SavedData {
             }
         }
         if (stone == null || stone.kind() != Quest.Kind.SURVEY || !stone.namedGround().isEmpty()) return;
-        if (Sites.siteOf(player) != null) return;
-        Sites.plan(player, Sites.TROLL_CAVE, false);
+        String cave = caveFor(player);
+        Sites.Site site = Sites.siteOf(player);
+        // The crag already pitched is the one this asking is made in, so long as it has not been walked
+        // into yet: a crag the player has already searched is the last asking's, and the next asking wants
+        // a hill of its own rather than a second walk to the first one. A site of another kind is another
+        // page's ground, and is left where it is.
+        if (site != null && (!Sites.isCave(site.structure()) || !site.found()
+                || site.structure().equals(cave))) {
+            return;
+        }
+        Sites.plan(player, cave, false);
+    }
+
+    /**
+     * The crag the stone's next asking is made in: the first asking is Bandrith's crag, the second
+     * Hoklond's, the third Sholdroth's, and the count of askings already made is the cave the page has
+     * reached. The notes name three caves and expect three walks, so the campaign cuts three crags rather
+     * than raising one hill three times.
+     */
+    private static String caveFor(ServerPlayer player) {
+        Quest stone = stoneQuest(player);
+        return Sites.caveAt(stone == null ? 0 : stone.progress());
     }
 
     /**
@@ -1578,6 +1598,55 @@ public final class Campaign extends SavedData {
                         Component.literal(String.valueOf(held)), Component.literal(String.valueOf(STONE_CAVES)))
                 .withStyle(ChatFormatting.GRAY));
         return true;
+    }
+
+    /**
+     * Whether the camp holds the tale back because the bridle is not in hand.
+     * <p>
+     * The notes' missing rider is reported with his horse's tack: the dark saddle is taken off the beast
+     * in the ruin, and Elladan hears the rest of the tale when it is laid in front of him. Asking for it at
+     * the door rather than after the hand-over is what stops a player being paid for a report they cannot
+     * make - and it is the one page of the chapter whose subject is an object rather than a place.
+     */
+    public static boolean bridleHeldBack(ServerPlayer player, String giver) {
+        if (!ELLADAN.equalsIgnoreCase(giver)) return false;
+        Front[] row = PROGRESS.get(player.getUUID());
+        if (row == null) return false;
+        Front front = row[Alliance.WEST.ordinal()];
+        List<Page> line = PAGE_LINES.get(Alliance.WEST);
+        Quest handed = front.handed();
+        if (handed == null || !handed.complete() || front.stage() >= line.size()) return false;
+        if (!RIDER_RETURN_TITLE.equals(line.get(front.stage()).title())) return false;
+        if (countBridles(player) > 0) return false;
+        // A chapter walked before the bridle was an item can be holding this page with no saddle to show
+        // for it. The tack is put in the pack here rather than leaving a page that cannot be finished, so
+        // the next word at the fire is heard.
+        handOver(player, TolkienItems.ITEM_DARKSADDLE.get(), 1);
+        player.sendSystemMessage(Component.translatable("campaign.tolkienmobs.bridle.short")
+                .withStyle(ChatFormatting.GRAY));
+        return true;
+    }
+
+    /** How many dark saddles a player carries, counted off the pack rather than noted down. */
+    private static int countBridles(ServerPlayer player) {
+        var inventory = player.getInventory();
+        int held = 0;
+        for (int slot = 0; slot < inventory.getContainerSize(); slot++) {
+            ItemStack stack = inventory.getItem(slot);
+            if (stack.is(TolkienItems.ITEM_DARKSADDLE.get())) held += stack.getCount();
+        }
+        return held;
+    }
+
+    /** Takes the bridle back, one saddle and no more: a second one is the player's. */
+    private static void takeBridle(ServerPlayer player) {
+        var inventory = player.getInventory();
+        for (int slot = 0; slot < inventory.getContainerSize(); slot++) {
+            ItemStack stack = inventory.getItem(slot);
+            if (!stack.is(TolkienItems.ITEM_DARKSADDLE.get())) continue;
+            stack.shrink(1);
+            return;
+        }
     }
 
     /**
@@ -2381,6 +2450,14 @@ public final class Campaign extends SavedData {
                 // worth it in the coin the pack already trades in, and paid through the same hand-over
                 // as the standing so a page cannot be worth one and not the other.
                 payPurse(player, paid);
+                // The missing rider is found with his horse's tack still in the ruin, and the notes make
+                // the bridle the thing carried back rather than the tale alone: the page that finds him
+                // puts the dark saddle in the player's hand, and the report to Elladan is not heard
+                // without it. It is taken off the page that hands it over, the way the stone is.
+                if (MISSING_RIDER_TITLE.equals(paid.title())) {
+                    handOver(player, TolkienItems.ITEM_DARKSADDLE.get(), 1);
+                }
+                if (RIDER_RETURN_TITLE.equals(paid.title())) takeBridle(player);
                 // The stone goes back with the work it was lent for: an errand finished is the end of a
                 // loan rather than the beginning of a keepsake.
                 // The stone goes back with the chambers' tokens, which are the proof the search was
