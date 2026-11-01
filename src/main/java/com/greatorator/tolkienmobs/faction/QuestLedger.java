@@ -356,6 +356,38 @@ public final class QuestLedger extends SavedData {
     }
 
     /**
+     * Moves the stone's page on when it is held up somewhere it has not been asked already.
+     * <p>
+     * The count is of ground rather than of raises: a player who stands still and clicks has asked one
+     * question, and the campaign refuses the second one before it ever reaches this. Finishing the page
+     * here rather than at a giver is the same rule every self-finishing page follows - the answer is its
+     * own proof, and there is nothing to carry back to a bench.
+     *
+     * @return whether a page took the count
+     */
+    public static boolean progressSurvey(ServerPlayer player) {
+        List<Quest> quests = row(player);
+        for (int slot = 0; slot < quests.size(); slot++) {
+            Quest quest = quests.get(slot);
+            if (quest.kind() != Quest.Kind.SURVEY || quest.complete()) continue;
+            Quest after = quest.advanced();
+            quests.set(slot, after);
+            store(player).setDirty();
+            sync(player);
+            if (after.complete()) {
+                settleSelf(player, slot);
+            } else {
+                player.sendOverlayMessage(Component.translatable("quest.tolkienmobs.progress",
+                                Component.literal(String.valueOf(after.progress())),
+                                Component.literal(String.valueOf(after.goal())))
+                        .withStyle(ChatFormatting.GRAY));
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Reads every fetch quest's progress off the pack, since what a player carries is the progress and
      * keeping a second copy of it in the file would only let the two drift apart.
      */
@@ -389,9 +421,6 @@ public final class QuestLedger extends SavedData {
             // because its ground did not exist when the page was written.
             boolean here = quest.isSite() ? Sites.reached(player) : arrived(player, quest.spot());
             if (!here) continue;
-            // A page can ask for something carried as well as something walked to, and the stone is the
-            // one that does: standing on the road with empty hands is not the errand.
-            if (Campaign.stoneMissing(player, quest)) continue;
             settleSelf(player, slot);
         }
     }

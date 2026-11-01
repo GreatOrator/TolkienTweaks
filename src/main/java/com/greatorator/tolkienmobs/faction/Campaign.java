@@ -79,16 +79,23 @@ public final class Campaign extends SavedData {
      * what the walk to the barrows or the sand is worth.
      */
     /**
-     * The ground the Elf-lord's stone is first asked anything at: the long road the West's own line
-     * opens on, where the stone has something to say about what walked it unseen. The page that puts
-     * the stone in the player's hand is the carrying of it there, so that road is the page's place and
-     * the stone is what the road answers - see {@link #stoneMissing}.
+     * The stone's page, which is priced in ground rather than in bodies or in places walked to: the
+     * stone is held up, and what it answers is the place it is held over. Asking it twice where it has
+     * already answered is asking one spot once, so the count is of spots a walk apart, and the walking
+     * is the work rather than an inconvenience on the way to it.
      */
-    private static final String STONE_PLACE = "greenway";
-    private static final String STONE_TARGET = Quest.placeTarget(STONE_PLACE);
-    /** What he says as he hands the stone over, and what it says for itself when it comes back. */
+    private static final int STONE_SPOTS = 4;
+    private static final int STONE_APART = 32;
+    /** What he says as he hands it over, what it says when it comes back, and the two ways it is quiet. */
     private static final String STONE_GIVEN = "campaign.tolkienmobs.beryl.given";
     private static final String STONE_RETURNED = "campaign.tolkienmobs.beryl.returned";
+    private static final String STONE_SILENT = "campaign.tolkienmobs.beryl.silent";
+    private static final String STONE_SAME = "campaign.tolkienmobs.beryl.same";
+    /** Where each player last held the stone up, and when, so one spot gets one question. */
+    private static final Map<UUID, BlockPos> STONE_LAST = new HashMap<>();
+    private static final Map<UUID, Long> STONE_RAISED = new HashMap<>();
+    /** How often the stone can be held up at all, in ticks, so a held mouse is not a hundred questions. */
+    private static final int STONE_RAISE_INTERVAL = 10;
     private static final Map<Alliance, List<Page>> PAGE_LINES = Map.of(
             Alliance.WEST, List.of(
                     new Page(Quest.Kind.FACTION, "", 6, 60, 2,
@@ -97,11 +104,10 @@ public final class Campaign extends SavedData {
                             "campaign.tolkienmobs.page.southroad", "campaign.tolkienmobs.page.southroad.place", ""),
                     new Page(Quest.Kind.HUNT, "tolkienmobs:entityttmbarrow", 2, 150, 7,
                             "campaign.tolkienmobs.page.keeping", "campaign.tolkienmobs.page.keeping.place", ""),
-                    // The one errand in the line whose subject is an object rather than a body or a
-                    // piece of ground. Written as a page of talk, it was finished by reading about a stone
-                    // nobody was ever given; it is a walk now, and the stone is put in the player's hand
-                    // as that same conversation ends.
-                    new Page(Quest.Kind.LOCATION, STONE_TARGET, 1, 20, 4,
+                    // The one errand in the line whose subject is an object, and the only one counted in
+                    // ground rather than in bodies or in places arrived at. Written first as a page of talk,
+                    // it was finished by reading about a stone nobody was ever given.
+                    new Page(Quest.Kind.SURVEY, "", STONE_SPOTS, 20, 4,
                             "campaign.tolkienmobs.page.beryl", "campaign.tolkienmobs.page.beryl.place", ""),
                     // The hilltop is raised rather than named. A place is a circle somebody has to stand
                     // in and declare; this is ground the campaign builds where the map puts it, so the page
@@ -591,17 +597,45 @@ public final class Campaign extends SavedData {
         if (asksForStone(page)) giveStone(player, STONE_GIVEN);
     }
 
-    /** Whether a page is the carrying of the Elf-lord's stone to ground it has an answer for. */
+    /** Whether a page is the Elf-lord's stone: the survey of ground it is lent for. */
     private static boolean asksForStone(Quest page) {
-        return page.story() && page.walks() && page.target().equals(STONE_TARGET);
+        return page.story() && page.kind() == Quest.Kind.SURVEY;
     }
 
     /**
-     * Whether a page is being stood on without the thing it is about. The ground answers the stone and
-     * not the boots, so an arrival with empty hands is not the walk the page asked for.
+     * Holds the stone up, which is the only thing the beryl does: it answers the ground under it, and
+     * the page lent with it counts ground rather than holding.
+     * <p>
+     * One spot is one answer. A raise within a walk of the last one is the same question asked again and
+     * says so rather than counting, which is what stops a player finishing the page by standing still and
+     * clicking - the road is the work. Ground with nothing written for it is answered with silence and
+     * still counted: the stone has no opinion about most of the world, and a page that only spoke in five
+     * places would read as broken where it is simply quiet.
      */
-    public static boolean stoneMissing(ServerPlayer player, Quest page) {
-        return asksForStone(page) && !Places.carriesBeryl(player);
+    public static void raiseStone(ServerPlayer player) {
+        long now = player.level().getGameTime();
+        Long before = STONE_RAISED.get(player.getUUID());
+        if (before != null && now - before < STONE_RAISE_INTERVAL) return;
+        STONE_RAISED.put(player.getUUID(), now);
+        BlockPos here = player.blockPosition();
+        BlockPos last = STONE_LAST.get(player.getUUID());
+        if (last != null && apart(last, here) < STONE_APART) {
+            player.sendSystemMessage(Component.translatable(STONE_SAME).withStyle(ChatFormatting.GRAY));
+            return;
+        }
+        STONE_LAST.put(player.getUUID(), here);
+        var reading = Places.readingAt(player);
+        player.sendSystemMessage((reading == null
+                ? Component.translatable(STONE_SILENT)
+                : reading).withStyle(ChatFormatting.AQUA));
+        QuestLedger.progressSurvey(player);
+    }
+
+    /** How far apart two blocks stand, in blocks and on the level: the stone is asked about ground, not height. */
+    private static double apart(BlockPos from, BlockPos to) {
+        double dx = from.getX() - to.getX();
+        double dz = from.getZ() - to.getZ();
+        return Math.sqrt(dx * dx + dz * dz);
     }
 
     /**

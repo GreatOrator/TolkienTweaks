@@ -50,7 +50,7 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
 
     /** The most progress a quest can hold, so a kill after completion cannot write past the goal. */
     public enum Kind {
-        FACTION, FETCH, HUNT, LOCATION, DIALOGUE;
+        FACTION, FETCH, HUNT, LOCATION, DIALOGUE, SURVEY;
 
         public static final Codec<Kind> CODEC = Codec.STRING.xmap(Kind::byName, Kind::name);
 
@@ -286,6 +286,8 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
             case DIALOGUE -> leaf() != null
                     ? Component.translatable("quest.tolkienmobs.read", targetName())
                     : Component.translatable("quest.tolkienmobs.speak", targetName());
+            case SURVEY -> Component.translatable("quest.tolkienmobs.survey",
+                    Component.literal(String.valueOf(goal)));
         };
     }
 
@@ -312,6 +314,9 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
                 String leaf = leaf();
                 yield leaf != null ? Component.translatable(leaf) : Component.literal(target);
             }
+            // The work is the stone, so the stone is what the page names - by the key its own name is
+            // drawn under, so a client reads it in its own language rather than in this one.
+            case SURVEY -> Component.translatable("item.tolkienmobs.item_beryl");
         };
     }
 
@@ -336,6 +341,11 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
 
     /** Where the work was taken: the block the giver stood on when they offered it. */
     public Component takenAt() {
+        // Ground the campaign builds is chosen where the player stands when they take the page, so the
+        // place it was taken is their own feet rather than anything the page is about: printing those
+        // coordinates reads as the answer to where the walk is, which is the one thing a site page must
+        // not say. A page is empty here rather than silently wrong.
+        if (isSite()) return Component.empty();
         return Component.translatable("quest.tolkienmobs.taken_at",
                 Component.literal(origin.getX() + ", " + origin.getY() + ", " + origin.getZ()));
     }
@@ -353,6 +363,7 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
                     ? Component.translatable("quest.tolkienmobs.summary.site")
                     : Component.translatable("quest.tolkienmobs.summary.reach", targetName());
             case DIALOGUE -> Component.translatable("quest.tolkienmobs.summary.dialogue");
+            case SURVEY -> Component.translatable("quest.tolkienmobs.summary.survey", targetName());
         };
     }
 

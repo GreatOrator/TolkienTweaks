@@ -520,8 +520,13 @@ public class FactionLedgerScreen extends Screen {
         }
         graphics.text(this.font, fit(story.giverName().getString(), w), x, y, INK_DIM, FLAT);
         y += LINE;
-        graphics.text(this.font, fit(story.takenAt().getString(), w), x, y, INK_DIM, FLAT);
-        y += LINE + 2;
+        // A page whose ground does not exist yet says nothing about where it was taken: those would be
+        // the player's own feet printed as the answer to where the work is.
+        if (!story.takenAt().getString().isEmpty()) {
+            graphics.text(this.font, fit(story.takenAt().getString(), w), x, y, INK_DIM, FLAT);
+            y += LINE;
+        }
+        y += 2;
         graphics.text(this.font, fit(story.rewardLine().getString(), w), x, y, INK_GOLD, FLAT);
 
         int foot = bodyBottom() - 8;
@@ -596,6 +601,7 @@ public class FactionLedgerScreen extends Screen {
             case HUNT -> new ItemStack(Items.IRON_SWORD);
             case LOCATION -> new ItemStack(Items.COMPASS);
             case DIALOGUE -> new ItemStack(Items.WRITABLE_BOOK);
+            case SURVEY -> new ItemStack(TolkienItems.ITEM_BERYL.get());
         };
     }
 

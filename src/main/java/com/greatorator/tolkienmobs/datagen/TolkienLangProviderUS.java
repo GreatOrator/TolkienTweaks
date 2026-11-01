@@ -842,6 +842,8 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("quest.tolkienmobs.done", "Quest complete - hand it in to any quest giver.");
         this.add("quest.tolkienmobs.site.keeper", "%s: You found it, then. A fire and a name are all I have to offer, and the fire is worth more.");
         this.add("quest.tolkienmobs.site.found", "You have found what you were sent to find.");
+        this.add("quest.tolkienmobs.summary.survey", "%s answers the ground it is held over and not the hand holding it, so every place gets one question: carry it somewhere, raise it, and be a walk away before asking again.");
+        this.add("quest.tolkienmobs.survey", "Hold the stone up at %s places, each a walk from the last");
         this.add("quest.tolkienmobs.summary.site", "Somebody has told you where to go, and there is nothing there until you are close enough to see it: the place is built for you as you come.");
         this.add("quest.tolkienmobs.site", "somewhere out past the ridge");
         this.add("quest.tolkienmobs.turn_in_elsewhere", "Not mine to take: that one belongs to %s.");
@@ -909,7 +911,9 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.page.beryl.reply.1", "What does it do, exactly?");
         this.add("campaign.tolkienmobs.page.beryl.say.2", "Glorfindel sent it south with a rider who never came back. It goes cold where the Enemy has been. It has been quiet since the barrows, and quieter than a thing of its making should be. Take it up the Green Way and hold it out over the ditch where my scout heard breathing - if it has anything left to say, it will say it there.");
         this.add("campaign.tolkienmobs.page.beryl.say.1", "There is an Elf-stone in this hall that I am not to keep, and today is the day I stop keeping it. Hold out your hand.");
-        this.add("campaign.tolkienmobs.page.beryl.place", "the Green Way, with the stone in your hand");
+        this.add("campaign.tolkienmobs.page.beryl.place", "the Green Way, and the road out from it");
+        this.add("campaign.tolkienmobs.beryl.same", "You have asked it here already. It answers ground rather than hands - walk on, and hold it up again.");
+        this.add("campaign.tolkienmobs.beryl.silent", "The stone gives you nothing here: only the cold it has held since the hall, and no word with it.");
         this.add("campaign.tolkienmobs.beryl.given", "The stone is in your hand: cold, and heavier than a thing that size has any right to be.");
         this.add("campaign.tolkienmobs.beryl.returned", "The stone is back in your hand. It was lent to be carried, not put down.");
         this.add("campaign.tolkienmobs.page.beryl", "The Elf-lord's Stone");

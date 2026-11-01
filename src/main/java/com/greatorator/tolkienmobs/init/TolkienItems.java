@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.init;
 
+import com.greatorator.tolkienmobs.item.custom.BerylItem;
 import com.greatorator.tolkienmobs.item.*;
 import com.greatorator.tolkienmobs.item.custom.*;
 import com.greatorator.tolkienmobs.item.projectile.BoulderItem;
@@ -97,7 +98,7 @@ public class TolkienItems {
 
     // Quest
     public static final DeferredItem<Item> ITEM_BERYL = ITEMS.registerItem("item_beryl",
-            properties -> new TolkienItem(properties).setEffectOverride().setHasLore(), () -> new Item.Properties().stacksTo(1));
+            properties -> new BerylItem(properties).setEffectOverride().setHasLore(), () -> new Item.Properties().stacksTo(1));
     public static final DeferredItem<Item> ITEM_FORTRESSMAP = ITEMS.registerItem("item_fortressmap",
             properties -> new TolkienItem(properties).setHasLore(), () -> new Item.Properties().stacksTo(1));
     public static final DeferredItem<Item> ITEM_WATCHERHEART = ITEMS.registerItem("item_watcherheart",
