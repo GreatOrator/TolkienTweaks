@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.faction;
 
+import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
@@ -68,20 +69,35 @@ public final class Places extends SavedData {
     public static final int DEFAULT_RADIUS = 32;
     /** How often a player's feet are looked at. A circle thirty blocks across cannot be crossed in one. */
     private static final int CHECK_INTERVAL = 20;
+    /**
+     * How long after a place has named itself the stone answers, in ticks. The banner takes a second
+     * to arrive, holds five and leaves in one; this is that, plus a breath, so the two are read as
+     * two things rather than as one flicker.
+     */
+    private static final int BERYL_DELAY = 140;
 
     /**
-     * One name the world can be told about: the id its translation keys hang off, and the country
-     * whose ink it is written in - or none, for ground that belongs to nobody, which is written
-     * plainly rather than being given to the nearest power.
+     * One name the world can be told about: the id its translation keys hang off, the country whose
+     * ink it is written in - or none, for ground that belongs to nobody, which is written plainly
+     * rather than being given to the nearest power - and whether the stone has anything to say here.
+     * <p>
+     * That last one is a mark rather than a list kept elsewhere, so ground is marked by the entry
+     * that describes it: writing a place's sheet is what makes the beryl react to it, and a place
+     * without a sheet is ground the stone has no opinion about.
      * <p>
      * The line under the name is not stored here because it is not a fact about the place: it is the
      * second translation key, {@code place.tolkienmobs.<id>.line}, so a name and what it is to the
      * people who live there are written together and read in the reader's own language.
      */
-    public record Name(String id, @Nullable Alliance alliance) {
+    public record Name(String id, @Nullable Alliance alliance, boolean beryl) {
         /** The key the place's name is written under. */
         public String key() {
             return "place.tolkienmobs." + id;
+        }
+
+        /** The key the stone's answer for this place is written under. */
+        public String berylKey() {
+            return key() + ".beryl";
         }
 
         /** The key the one line introducing it is written under. */
@@ -102,14 +118,14 @@ public final class Places extends SavedData {
      * their lines are written, which is the same shape of work as a page.
      */
     private static final List<Name> CATALOGUE = List.of(
-            new Name("greenway", Alliance.WEST),
-            new Name("barrows", Alliance.WEST),
-            new Name("hobbiton", Alliance.WEST),
-            new Name("bree", Alliance.WEST),
-            new Name("weathertop", Alliance.WEST),
-            new Name("ford", Alliance.WEST),
-            new Name("tharbad", Alliance.WEST),
-            new Name("oldforest", null)
+            new Name("greenway", Alliance.WEST, false),
+            new Name("barrows", Alliance.WEST, false),
+            new Name("hobbiton", Alliance.WEST, false),
+            new Name("bree", Alliance.WEST, false),
+            new Name("weathertop", Alliance.WEST, false),
+            new Name("ford", Alliance.WEST, false),
+            new Name("tharbad", Alliance.WEST, false),
+            new Name("oldforest", null, false)
     );
 
     /**
@@ -129,6 +145,12 @@ public final class Places extends SavedData {
     private static final Map<String, Place> PLACED = new LinkedHashMap<>();
     /** What each player has already been shown, by their id. */
     private static final Map<UUID, Set<String>> SEEN = new HashMap<>();
+    /** The stone's answers owed to each player: which place owes one, and when it falls due. */
+    private static final Map<UUID, Pending> PENDING_BERYL = new HashMap<>();
+
+    /** An answer the stone owes a player at a place, due once that place has finished naming itself. */
+    private record Pending(String place, long due) {
+    }
 
     /** What {@link #instance} answers with when there is no server to hold a file. */
     private static final Places NO_SERVER = new Places(false);
@@ -156,6 +178,7 @@ public final class Places extends SavedData {
         if (fresh) {
             PLACED.clear();
             SEEN.clear();
+            PENDING_BERYL.clear();
         }
     }
 
@@ -237,10 +260,13 @@ public final class Places extends SavedData {
         // A page that asks to be walked somewhere is settled by the ground under the player's
         // feet, so it is looked at on the clock that already measures where they are standing.
         QuestLedger.checkArrival(player);
+        answerPendingBeryl(player);
         Place here = at(player);
         if (here == null) return;
         if (!markSeen(player, here.id())) return;
         announce(player, here);
+        // The stone is asked after the ground has said its name, not instead of it.
+        oweBerylAnswer(player, here);
     }
 
     /** Whether a player has already been shown a place. */
@@ -288,6 +314,52 @@ public final class Places extends SavedData {
         player.connection.send(new ClientboundSetTitlesAnimationPacket(FADE_IN, STAY, FADE_OUT));
         player.connection.send(new ClientboundSetSubtitleTextPacket(line));
         player.connection.send(new ClientboundSetTitleTextPacket(title));
+    }
+
+    /** Whether the player is carrying the beryl, which is what asks the stone its question. */
+    private static boolean carriesBeryl(ServerPlayer player) {
+        var inventory = player.getInventory();
+        for (int slot = 0; slot < inventory.getContainerSize(); slot++) {
+            if (inventory.getItem(slot).is(TolkienItems.ITEM_BERYL.get())) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Notes that a place owes this player the stone's answer, where that place has one written and the
+     * stone is in their pack. Nothing is shown yet: the answer waits until the ground has finished
+     * naming itself, or the two banners are drawn over each other and neither is read.
+     */
+    private static void oweBerylAnswer(ServerPlayer player, Place place) {
+        Name name = known(place.id());
+        if (name == null || !name.beryl() || !carriesBeryl(player)) return;
+        PENDING_BERYL.put(player.getUUID(),
+                new Pending(place.id(), player.level().getGameTime() + BERYL_DELAY));
+    }
+
+    /**
+     * Gives the answer once its wait is up, and only if the player is still standing in that place and
+     * still carrying the stone: a line about the ground under their feet, arriving after they have left
+     * it, is a line about nothing.
+     */
+    private static void answerPendingBeryl(ServerPlayer player) {
+        Pending pending = PENDING_BERYL.get(player.getUUID());
+        if (pending == null || player.level().getGameTime() < pending.due()) return;
+        PENDING_BERYL.remove(player.getUUID());
+        Place here = at(player);
+        if (here == null || !here.id().equals(pending.place())) return;
+        if (!carriesBeryl(player)) return;
+        Name name = known(here.id());
+        if (name == null || !name.beryl()) return;
+        // The same banner as an arrival, the other way up: the place names itself again and the stone
+        // answers under the name, so a player reads one thing said about one piece of ground.
+        player.connection.send(new ClientboundSetTitlesAnimationPacket(FADE_IN, STAY, FADE_OUT));
+        player.connection.send(new ClientboundSetSubtitleTextPacket(
+                Component.translatable(name.key())
+                        .withStyle(ChatFormatting.BOLD, ChatFormatting.ITALIC, name.ink())));
+        player.connection.send(new ClientboundSetTitleTextPacket(
+                Component.translatable(name.berylKey())
+                        .withStyle(ChatFormatting.BOLD, ChatFormatting.ITALIC)));
     }
 
     // ---- plumbing ----
