@@ -953,6 +953,12 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.page.legolas.say.1", "Master Elrond has spoken for you, so I will hear you. I am Legolas of Mirkwood, and we have met such things before, though not for many years.");
         this.add("campaign.tolkienmobs.page.legolas.place", "the guest room of the last homely house, west of the library");
         this.add("campaign.tolkienmobs.page.legolas", "The Guest House");
+        this.add("campaign.tolkienmobs.valley_elf.1", "Erestor");
+        this.add("campaign.tolkienmobs.valley_elf.2", "Lindir");
+        this.add("campaign.tolkienmobs.valley_elf.3", "Melpomaen");
+        this.add("campaign.tolkienmobs.valley_elf.4", "Galdor");
+        this.add("campaign.tolkienmobs.valley_elf.5", "Eleniel");
+        this.add("campaign.tolkienmobs.valley_elf.6", "Nimrodel");
         this.add("campaign.tolkienmobs.beryl.shallow", "Deep, but not deep enough. The stone wants the bottom of the cave and not the mouth of it.");
         this.add("campaign.tolkienmobs.beryl.elsewhere", "%s is where the stone was asked for, and this is not it.");
         this.add("campaign.tolkienmobs.page.beryl.said", "The ford is where this begins, because it is the last ground we know he touched. Hold the beryl aloft there, and it will answer.");

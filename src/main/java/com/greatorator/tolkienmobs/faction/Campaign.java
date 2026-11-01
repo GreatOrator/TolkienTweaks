@@ -173,6 +173,49 @@ public final class Campaign extends SavedData {
     private static final String LEGOLAS = "Legolas";
     private static final String LEGOLAS_TAG = "tolkienmobs:legolas";
     private static final String LEGOLAS_TITLE = "campaign.tolkienmobs.page.legolas";
+    /** The Elves who walk the valley's square, who are ordinary bodies rather than givers. */
+    private static final String VALLEY_ELF_TAG = "tolkienmobs:valley_elf";
+    private static final int VALLEY_ELVES = 6;
+    /** How far from the middle of the square the valley's Elves are allowed to stroll. */
+    private static final int VALLEY_HOME = 26;
+    private static final int[][] VALLEY_PATHS = {
+            {-12, 4}, {12, 4}, {4, -10}, {-4, 10}, {14, -6}, {-14, -6}};
+
+    /**
+     * One piece of the valley: its template under {@code tolkienmobs:key_structures/}, and where the middle
+     * of its footprint sits relative to the middle of the place.
+     * <p>
+     * The offsets are written down rather than chosen, so that two players in two worlds walk into the same
+     * Rivendell: the square at the middle, the library off its western side, the guest house north of it,
+     * the second house east, and the gate on the southern road with a banner either side of it. The lamps
+     * stand at the square's four corners, which is where its roads leave it.
+     */
+    private record Part(String name, int dx, int dz) {
+    }
+
+    private static final List<Part> VALLEY_PARTS = List.of(
+            new Part("elven_square", 0, 0),
+            new Part("elven_library", -48, 0),
+            new Part("elven_house_1", -6, -26),
+            new Part("elven_house_2", 32, 0),
+            new Part("elven_gate", 0, 23),
+            new Part("elven_lamp", -17, -14),
+            new Part("elven_lamp", 16, -14),
+            new Part("elven_lamp", -17, 14),
+            new Part("elven_lamp", 16, 14),
+            new Part("elven_banner", -25, 23),
+            new Part("elven_banner", 25, 23));
+
+    /**
+     * Where each of the three Elves of the line stands, as a step from the middle of the square: Glorfindel
+     * out on its southern road where the stone is asked, Elrond at the door of the library he keeps, and
+     * Legolas at the door of the guest house. The roads are the square's, so a stand point is paving rather
+     * than the inside of a wall.
+     */
+    private static final Map<String, int[]> VALLEY_STANDS = Map.of(
+            GLORFINDEL_TAG, new int[]{0, 8},
+            ELROND_TAG, new int[]{-18, 0},
+            LEGOLAS_TAG, new int[]{-6, -15});
     private static final String AUDIENCE_TITLE = "campaign.tolkienmobs.page.audience";
     /** What he says as he hands it over, what it says when it comes back, and the two ways it is quiet. */
     private static final String STONE_GIVEN = "campaign.tolkienmobs.beryl.given";
@@ -917,7 +960,8 @@ public final class Campaign extends SavedData {
         if (valley.centre().distToCenterSqr(player.position()) > GLORFINDEL_REACH * GLORFINDEL_REACH) return;
         if (!level.getEntities((Entity) null, new AABB(valley.centre()).inflate(GLORFINDEL_REACH),
                 seen -> seen.entityTags().contains(GLORFINDEL_TAG)).isEmpty()) return;
-        BlockPos stand = floorOf(level, valley.centre());
+        int[] spot = VALLEY_STANDS.get(GLORFINDEL_TAG);
+        BlockPos stand = floorOf(level, valley.centre().offset(spot[0], 0, spot[1]));
         if (stand == null) return;
         Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
         if (!(entity instanceof Mob elf)) return;
@@ -1082,6 +1126,77 @@ public final class Campaign extends SavedData {
         }
         corner = new BlockPos(corner.getX(), floor, corner.getZ());
         template.placeInWorld(level, corner, corner, new StructurePlaceSettings(), level.getRandom(), 2);
+        underpin(level, corner, wide, deep);
+        return true;
+    }
+
+    /**
+     * Builds the valley the notes call the last homely house, out of the pieces the pack ships for it.
+     * <p>
+     * The tent's rules hold here: nothing is raised into a chunk that is not loaded, and laying a piece
+     * twice is laying the same blocks in the same place. What the valley adds is one floor for the whole
+     * of it - the square is seated on the highest ground under it and every other piece is laid at that
+     * same height, so the houses meet the paving rather than stepping up and down a hillside - and ground
+     * under each piece, so a building on the downhill side stands on dirt rather than on air.
+     */
+    private static boolean standValley(ServerLevel level, Places.Place valley) {
+        StructureTemplate square = valleyPiece(level, "elven_square");
+        if (square == null) return false;
+        int floor = seatOf(level, cornerOf(valley.centre(), 0, 0, square), square);
+        if (floor == Integer.MIN_VALUE) return false;
+        boolean whole = true;
+        for (Part part : VALLEY_PARTS) {
+            StructureTemplate piece = valleyPiece(level, part.name());
+            if (piece == null) continue;
+            BlockPos corner = cornerOf(valley.centre(), part.dx(), part.dz(), piece);
+            // A piece whose ground is not loaded is left for a visit that can see it: the rest of the
+            // valley is already standing, and laying it again changes nothing.
+            if (seatOf(level, corner, piece) == Integer.MIN_VALUE) {
+                whole = false;
+                continue;
+            }
+            BlockPos at = new BlockPos(corner.getX(), floor, corner.getZ());
+            piece.placeInWorld(level, at, at, new StructurePlaceSettings(), level.getRandom(), 2);
+            underpin(level, at, piece.getSize().getX(), piece.getSize().getZ());
+        }
+        return whole;
+    }
+
+    /** One of the valley's templates, or null when the pack has no such piece. */
+    private static StructureTemplate valleyPiece(ServerLevel level, String name) {
+        Identifier id = Identifier.tryParse("tolkienmobs:key_structures/" + name);
+        return id == null ? null : level.getStructureManager().get(id).orElse(null);
+    }
+
+    /** The corner a piece is laid from, with its middle put at that step from the place's middle. */
+    private static BlockPos cornerOf(BlockPos centre, int dx, int dz, StructureTemplate piece) {
+        return centre.offset(dx - piece.getSize().getX() / 2, 0, dz - piece.getSize().getZ() / 2);
+    }
+
+    /**
+     * The highest ground under a piece's footprint, which is the height its floor is laid at, or
+     * {@code Integer.MIN_VALUE} when a corner of that footprint is in a chunk nobody has loaded - a block
+     * written into an unloaded chunk is quietly dropped, so that piece has to wait.
+     */
+    private static int seatOf(ServerLevel level, BlockPos corner, StructureTemplate piece) {
+        int wide = piece.getSize().getX();
+        int deep = piece.getSize().getZ();
+        if (wide <= 0 || deep <= 0) return Integer.MIN_VALUE;
+        if (!level.hasChunkAt(corner) || !level.hasChunkAt(corner.offset(wide, 0, deep))) {
+            return Integer.MIN_VALUE;
+        }
+        int floor = Integer.MIN_VALUE;
+        for (int dx = 0; dx <= wide; dx += Math.max(1, wide / 4)) {
+            for (int dz = 0; dz <= deep; dz += Math.max(1, deep / 4)) {
+                floor = Math.max(floor, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                        corner.getX() + dx, corner.getZ() + dz));
+            }
+        }
+        return floor;
+    }
+
+    /** Fills the ground under a piece that has been laid, so nothing on a slope stands on air. */
+    private static void underpin(ServerLevel level, BlockPos corner, int wide, int deep) {
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
         for (int dx = 0; dx < wide; dx++) {
             for (int dz = 0; dz < deep; dz++) {
@@ -1092,7 +1207,63 @@ public final class Campaign extends SavedData {
                 }
             }
         }
-        return true;
+    }
+
+    /**
+     * Whether the valley is already standing. Its square is bedded on glowstone, which no ground grows by
+     * itself, so a run of glowstone under the middle of the place is that square and nothing else: the
+     * reading costs a few block reads and keeps a built valley from being laid again on every visit, which
+     * would put back anything a player had built inside it.
+     */
+    private static boolean valleyBuilt(ServerLevel level, Places.Place valley) {
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        for (int dy = -16; dy <= 12; dy++) {
+            cursor.set(valley.centre().getX(), valley.centre().getY() + dy, valley.centre().getZ());
+            if (level.getBlockState(cursor).is(net.minecraft.world.level.block.Blocks.GLOWSTONE)) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Keeps the valley built and lived in while the player is close enough to see it: the buildings stood
+     * once, and the Elves who walk the square kept up to their number.
+     */
+    private static void keepValleyStanding(ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel level)) return;
+        Places.Place valley = Places.place(level, SUMMON_PLACE);
+        if (valley == null || !valley.dimension().equals(level.dimension())) return;
+        if (valley.centre().distToCenterSqr(player.position()) > VALLEY_REACH * VALLEY_REACH) return;
+        if (!valleyBuilt(level, valley)) standValley(level, valley);
+        standValleyElves(level, valley);
+    }
+
+    /**
+     * Stands the valley's own Elves on the square, up to their number and no further.
+     * <p>
+     * They are ordinary bodies and not givers: no tag a right-click reads, no gold name over them, and no
+     * work to hand. What makes them stay is a home as wide as the square, because a villager's stroll is
+     * written for a village - without a home it walks toward the nearest meeting point, which from a valley
+     * means out of the gate and across the country. A body counts toward the number by its tag, so one that
+     * is killed is replaced on a later visit and one that is only reloaded is not doubled.
+     */
+    private static void standValleyElves(ServerLevel level, Places.Place valley) {
+        int walking = level.getEntities((Entity) null, new AABB(valley.centre()).inflate(VALLEY_REACH),
+                seen -> seen.entityTags().contains(VALLEY_ELF_TAG)).size();
+        for (int i = walking; i < VALLEY_ELVES && i < VALLEY_PATHS.length; i++) {
+            BlockPos stand = floorOf(level,
+                    valley.centre().offset(VALLEY_PATHS[i][0], 0, VALLEY_PATHS[i][1]));
+            if (stand == null) continue;
+            Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
+            if (!(entity instanceof Mob elf)) continue;
+            elf.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D,
+                    level.getRandom().nextFloat() * 360.0F, 0.0F);
+            elf.setPersistenceRequired();
+            elf.addTag(VALLEY_ELF_TAG);
+            elf.setHomeTo(valley.centre(), VALLEY_HOME);
+            elf.setCustomName(Component.translatable("campaign.tolkienmobs.valley_elf." + (i + 1)));
+            elf.setCustomNameVisible(true);
+            level.addFreshEntity(elf);
+        }
     }
 
     /** Elrond, who the line comes back to after the Giant to hear what the creature was. */
@@ -1122,7 +1293,8 @@ public final class Campaign extends SavedData {
         if (valley.centre().distToCenterSqr(player.position()) > VALLEY_REACH * VALLEY_REACH) return;
         if (!level.getEntities((Entity) null, new AABB(valley.centre()).inflate(VALLEY_REACH),
                 seen -> seen.entityTags().contains(tag)).isEmpty()) return;
-        BlockPos stand = floorOf(level, valley.centre());
+        int[] spot = VALLEY_STANDS.getOrDefault(tag, VALLEY_STANDS.get(ELROND_TAG));
+        BlockPos stand = floorOf(level, valley.centre().offset(spot[0], 0, spot[1]));
         if (stand == null) return;
         Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
         if (!(entity instanceof Mob elf)) return;
@@ -1473,6 +1645,7 @@ public final class Campaign extends SavedData {
         keepWitchKing(player);
         keepQuarryComing(player);
         keepStoneInHand(player);
+        keepValleyStanding(player);
         keepGlorfindel(player);
         keepCaveOpen(player);
         keepElladan(player);

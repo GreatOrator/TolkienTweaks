@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **Rivendell stands.** The valley is built out of seven elven pieces - a square at its middle, a library, two houses, a gate, a lamp at each corner of the square and a banner either side of the gate - laid at one floor so the buildings meet the paving, with dirt under each so nothing on a slope hangs. Six Elves walk the square, named, homed to it and never givers.
 - **The line moves to the guest house to hear Legolas.** Elrond's audience hands on to the notes' guest room, walked to in the same valley at the notes' two hundred and fifty taken at a tenth, with Legolas stood in it to hear the tale and hand on the Wood-troll hunt.
 - **The line comes back to Imladris to hear Elrond out.** After the Giant the notes send the player back to Elrond, who can name the creature and arrange the audience with the Mirkwood company: the walk to the valley is the page, priced at the notes' two hundred and fifty taken at a tenth, and Elrond now stands in the valley to hand on the guest room where Legolas is staying.
 - **The scout's report pays off as a Giant in the valley.** The West's line gains the notes' hunt for the creature Barachen saw: a tree-ent, since the notes have it standing among the trees as tall as they are and then have Elrond say the player could not have faced a true Onod. Elladan hands the page at the camp and takes it back, so he now stands from the cave page until the Giant's has been taken off him rather than only while the stone is in somebody's hand.
@@ -268,6 +269,7 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
 
 ### Changed
 
+- **The Elves of the line stand at their doors.** Glorfindel is out on the square's southern road, Elrond at the library's door and Legolas at the guest house's, instead of all three on the middle of the place, where the buildings now are.
 - **The duergar are the East's.** They are dwarves who took the Enemy's service, so the peoples table says so rather than reading as though every dwarf were Erebor's.
 - **Every people in the notes is placed with one of the three sides.** The notes kept a faction per people, and this pack keeps three sides, so `Alliance` now records which is which: Elves of any kind, Dwarves, Hobbits and the Men of the West are the West; Mordor, Angmar, Isengard, Orcs, Goblins, Uruk-hai, Trolls and the Easterlings are the East; the Haradrim, the Corsairs of Umbar, Khand and the Variags are the Harad.
 - **The notes' races and realms are read as the three fronts.** Where the document names the payer as the High Elves, the Dwarves or Gondor, the line takes it as the front the act belongs to and pays West, East or Harad standing, since a page pays one of the three countries and never a people.

@@ -953,6 +953,12 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("campaign.tolkienmobs.page.legolas.say.1", "既然埃尔隆德大人为你开口，我就听你说。我是幽暗密林的莱戈拉斯；我们见过这类东西，只是已有许多年未见了。");
         this.add("campaign.tolkienmobs.page.legolas.place", "最后家园的客房，书库以西");
         this.add("campaign.tolkienmobs.page.legolas", "客房");
+        this.add("campaign.tolkienmobs.valley_elf.1", "埃瑞斯托");
+        this.add("campaign.tolkienmobs.valley_elf.2", "林迪尔");
+        this.add("campaign.tolkienmobs.valley_elf.3", "梅尔波门");
+        this.add("campaign.tolkienmobs.valley_elf.4", "加尔多");
+        this.add("campaign.tolkienmobs.valley_elf.5", "埃莱尼尔");
+        this.add("campaign.tolkienmobs.valley_elf.6", "宁洛德尔");
         this.add("campaign.tolkienmobs.beryl.shallow", "够深了，但还不够深。石头要的是洞穴的最深处，不是洞口。");
         this.add("campaign.tolkienmobs.beryl.elsewhere", "石头被要求举在%s，而不是这里。");
         this.add("campaign.tolkienmobs.page.beryl.said", "一切都从渡口开始，因为那是我们知道他最后踏过的土地。在那里把宝石举起来，它会回答你。");
