@@ -442,8 +442,12 @@ public final class ArdaMap {
                 new double[]{3.0, 7.0, 11.0, 15.0, 19.0});
         // The Trollshaws take the northern end of the country drawn as Firien - the ground under
         // Rhudaur and against the mountains - leaving Eregion and the holly country south of it.
+        // Firien is painted round them rather than over them: a fill that started at row 12 covered
+        // the three rows the Trollshaws had just taken, so the country ended up with no cells at all
+        // and every place the books put in it had nowhere to be surveyed. The mountains are drawn
+        // before either, so a Trollshaw column that is really mountainside keeps its rock.
+        fill(map, Country.FIRIEN, 18, 15, 20, 17);
         fill(map, Country.TROLLSHAWS, 18, 12, 19, 14);
-        fill(map, Country.FIRIEN, 18, 12, 20, 17);
         fill(map, Country.LORINAND, 21, 13, 21, 14);
         fill(map, Country.LORINAND, 23, 15, 24, 18);
         fill(map, Country.GLADDEN, 25, 6, 26, 20);
