@@ -3,10 +3,12 @@
     "minecraft:audio/ambient_sounds": {
       "loop": "minecraft:ambient.crimson_forest.mood"
     },
+    "minecraft:visual/cloud_fog_end_distance": 128.0,
     "minecraft:visual/fog_color": "#8fa6b8",
     "minecraft:visual/fog_end_distance": 128.0,
     "minecraft:visual/fog_start_distance": 24.0,
-    "minecraft:visual/sky_color": "#7b9bd1",
+    "minecraft:visual/sky_color": "#7aa5ff",
+    "minecraft:visual/sky_fog_end_distance": 128.0,
     "minecraft:visual/water_fog_color": "#1e3a4a"
   },
   "carvers": [
@@ -60,6 +62,9 @@
       "minecraft:ore_lapis_buried",
       "minecraft:ore_copper",
       "minecraft:underwater_magma",
+      "minecraft:disk_sand",
+      "minecraft:disk_clay",
+      "minecraft:disk_gravel",
       "tolkienmobs:legacy_coal_ore",
       "tolkienmobs:legacy_copper_ore",
       "tolkienmobs:legacy_diamond_ore",
@@ -74,12 +79,21 @@
       "minecraft:spring_lava"
     ],
     [
-      "minecraft:trees_birch_and_oak_leaf_litter",
-      "minecraft:patch_grass_forest",
+      "minecraft:glow_lichen",
+      "minecraft:trees_windswept_hills",
       "minecraft:patch_large_fern",
-      "minecraft:patch_tall_grass_2",
+      "minecraft:trees_taiga",
+      "minecraft:trees_birch",
+      "minecraft:trees_plains",
+      "minecraft:flower_plains",
+      "minecraft:patch_grass_plain",
+      "minecraft:flower_default",
+      "minecraft:patch_grass_forest",
       "minecraft:brown_mushroom_normal",
       "minecraft:red_mushroom_normal",
+      "minecraft:patch_pumpkin",
+      "minecraft:patch_sugar_cane",
+      "minecraft:patch_firefly_bush_near_water",
       "minecraft:patch_berry_common",
       "tolkienmobs:random_rubble",
       "tolkienmobs:stumps"
@@ -127,63 +141,63 @@
   "spawners": {
     "ambient": [
       {
+        "type": "tolkienmobs:entityttmcrebain",
         "maxCount": 2,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmcrebain",
         "weight": 15
       },
       {
+        "type": "tolkienmobs:entityttmsquirrel",
         "maxCount": 2,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmsquirrel",
         "weight": 10
       },
       {
+        "type": "tolkienmobs:entityttmthrush",
         "maxCount": 2,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmthrush",
         "weight": 10
       }
     ],
     "axolotls": [],
     "creature": [
       {
+        "type": "minecraft:wolf",
         "maxCount": 3,
         "minCount": 1,
-        "type": "minecraft:wolf",
         "weight": 20
       },
       {
+        "type": "tolkienmobs:entityttmauroch",
         "maxCount": 4,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmauroch",
         "weight": 10
       },
       {
+        "type": "minecraft:sheep",
         "maxCount": 4,
         "minCount": 1,
-        "type": "minecraft:sheep",
         "weight": 10
       }
     ],
     "misc": [],
     "monster": [
       {
+        "type": "tolkienmobs:entityttmtroll",
         "maxCount": 2,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmtroll",
         "weight": 35
       },
       {
+        "type": "tolkienmobs:entityttmbrigand",
         "maxCount": 3,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmbrigand",
         "weight": 25
       },
       {
+        "type": "tolkienmobs:entityttmwarg",
         "maxCount": 2,
         "minCount": 1,
-        "type": "tolkienmobs:entityttmwarg",
         "weight": 15
       }
     ],
