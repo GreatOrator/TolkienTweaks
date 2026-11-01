@@ -194,6 +194,11 @@ public final class Campaign extends SavedData {
      * check against the notes than a figure worked out per page, and it cannot be argued with. The pages
      * the notes never priced - the fronts' own wars - keep the figures this line has always paid them,
      * since those were chosen for this ladder in the first place.
+     * <p>
+     * Where the notes name a race or a realm as the one that pays - the High Elves, the Dwarves, Gondor
+     * - the line reads that as the front the act belongs to and nothing more: the notes' Elves are this
+     * line's West, so an errand they price for the Elves pays West standing. A page pays one of the three
+     * countries, never a people, which is also why a front's own war pages name no race at all.
      */
     private static final Map<Alliance, List<Page>> PAGE_LINES = Map.of(
             Alliance.WEST, List.of(
@@ -226,7 +231,8 @@ public final class Campaign extends SavedData {
                     // The Giant, which is what the scout's word bought: the notes have the creature standing
                     // among the trees as tall as they are, so the hunt is for the tree-ent the pack already
                     // ships rather than for a body the pack would have to invent. The notes pay it nine
-                    // hundred of the Elves' standing, and the line takes the notes at a flat tenth: ninety.
+                    // hundred of the West's standing - the notes' High Elves are this line's West - and the line takes the
+                    // notes at a flat tenth: ninety.
                     new Page(Quest.Kind.HUNT, GIANT_TARGET, 1, 90, 5,
                             "campaign.tolkienmobs.page.giant", "campaign.tolkienmobs.page.giant.place", ""),
                     // The audience the notes send the player back for, priced at the notes' two hundred and
@@ -1222,7 +1228,7 @@ public final class Campaign extends SavedData {
      * smiths and the mithril that came up with it. The enchantment is left out rather than handed over as a
      * blank book nobody can put on anything.
      * <p>
-     * The standing the page pays is a tenth of the notes' hundred - ten of the Elves' - because a hundred is
+     * The standing the page pays is a tenth of the notes' hundred - ten of the West's - because a hundred is
      * most of a rank in this pack and the cave search is one act of several.
      */
     private static void payCaveReward(ServerPlayer player) {
