@@ -1137,6 +1137,29 @@ public final class Campaign extends SavedData {
         return true;
     }
 
+    /**
+     * What the camp puts in a player's hands when the cave search comes home.
+     * <p>
+     * The notes pay the end of the search with random equipment, an enchantment and some ore. This pack does
+     * not roll loot off a page, and a rolled page would be a table to keep in step with every item added, so
+     * the reward is the two of the three that can be carried and used: a blade out of the Trollshaws' own
+     * smiths and the mithril that came up with it. The enchantment is left out rather than handed over as a
+     * blank book nobody can put on anything.
+     * <p>
+     * The standing the page pays is the page's own - twenty-five of the Elves' - rather than the hundred the
+     * notes wrote, since a hundred is most of a rank in this pack and the cave search is one act of several.
+     */
+    private static void payCaveReward(ServerPlayer player) {
+        handOver(player, TolkienItems.ITEM_REFORGEDSWORD.get(), 1);
+        handOver(player, TolkienItems.ITEM_MITHRILNUGGET.get(), 4);
+    }
+
+    /** Puts a reward in the pack, or on the ground at the player's feet when the pack has no room for it. */
+    private static void handOver(ServerPlayer player, net.minecraft.world.item.Item item, int count) {
+        ItemStack stack = new ItemStack(item, count);
+        if (!player.getInventory().add(stack)) player.drop(stack, false);
+    }
+
     /** Takes the lent stone back out of the player's pack, one stone and no more. */
     private static void takeStone(ServerPlayer player) {
         var inventory = player.getInventory();
@@ -1826,6 +1849,7 @@ public final class Campaign extends SavedData {
                 if (stonePaid(line, front.stage())) {
                     takeStone(player);
                     takeCaveTokens(player, STONE_CAVES);
+                    payCaveReward(player);
                 }
                 // The page that ends a front has the front's last words on it, and this is where
                 // they are said: the front moves on the moment its last page is paid, so a line
