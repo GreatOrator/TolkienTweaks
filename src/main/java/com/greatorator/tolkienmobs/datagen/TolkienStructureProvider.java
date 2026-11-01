@@ -140,8 +140,13 @@ public final class TolkienStructureProvider {
             }
             var settings = new Structure.StructureSettings(biomes.getOrThrow(definition.biomeTag()), Map.of(),
                     below ? GenerationStep.Decoration.UNDERGROUND_STRUCTURES : GenerationStep.Decoration.SURFACE_STRUCTURES,
-                    (below || definition.layout().flatMap(Layout::topOffset).isPresent()
-                            || definition.layout().flatMap(Layout::companion).isPresent()) ? TerrainAdjustment.NONE : TerrainAdjustment.BEARD_THIN);
+                    // A surface structure is bearded, always: the beard is what fills the ground under a
+                    // piece up to the terrain it stands on, so nothing we generate sits on stilts. It used
+                    // to be skipped for pieces given a top offset or a companion, and every structure the
+                    // mod ships says beard_thin anyway - this keeps a re-run of the data from quietly
+                    // dropping the fill under exactly the pieces that stand highest. Underground pieces
+                    // keep none, because there is nothing under them to fill.
+                    below ? TerrainAdjustment.NONE : TerrainAdjustment.BEARD_THIN);
             var pool = pools.getOrThrow(definition.poolKey());
             int depth = definition.branches().map(Branches::depth).orElse(1);
             if (definition.layout().isPresent()) {
