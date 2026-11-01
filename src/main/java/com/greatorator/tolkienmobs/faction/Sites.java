@@ -141,6 +141,14 @@ public final class Sites extends SavedData {
     private static final int UNDERPIN_DEPTH = 6;
     /** How far the fill is allowed to reach when the ground under a footprint falls away badly. */
     private static final int UNDERPIN_MAX = 24;
+    /**
+     * How far into its own ground a building is set, in blocks, at the most: half the drop under its
+     * footprint, and never more than this. Seated on the highest column alone, a building stood on a
+     * plinth of its own fill the height of the slope it had been dropped on - a bare wall of dirt under
+     * it and the ground a good way below the sill. Half the drop buried instead, the ground comes back
+     * up around its foot and the slope shows through the bottom of the building rather than beside it.
+     */
+    private static final int SEAT_SINK = 4;
 
     /** The tag the body minding a camp wears, so it can be told from any other of its folk. */
     public static final String KEEPER_TAG = "tolkienmobs:camp_keeper";
@@ -440,7 +448,9 @@ public final class Sites extends SavedData {
      * Three things are asked of it. Every column has to reach solid, dry ground - and the height it is
      * built at is the <em>highest</em> column under it rather than an average, because a building placed
      * at the lowest point has a hillside through the middle of it, and a hillside is harder to excuse in a
-     * castle than a gap under one wall.
+     * castle than a gap under one wall. It is then set a little below that column - half the drop under the
+     * footprint, up to {@link #SEAT_SINK} - so that what would have been left standing in the air is ground
+     * the building has been sunk into instead.
      * <p>
      * Large buildings are sampled on a stride, since a castle is thousands of columns and the ground under
      * one is not going to change between two adjacent ones in any way that matters.
@@ -459,7 +469,11 @@ public final class Sites extends SavedData {
                 high = Math.max(high, height);
             }
         }
-        return new Plane(new BlockPos(spot.getX(), high, spot.getZ()), high - low);
+        // Half the drop under the footprint, so the plinth it would have stood on is halved and the
+        // ground rises around its base. Bounded, because a castle on a hillside still has to keep its
+        // door above the ground it opens onto, and flat ground has nothing to sink into at all.
+        int sink = Math.min(SEAT_SINK, (high - low) / 2);
+        return new Plane(new BlockPos(spot.getX(), high - sink, spot.getZ()), high - low);
     }
 
     /**
