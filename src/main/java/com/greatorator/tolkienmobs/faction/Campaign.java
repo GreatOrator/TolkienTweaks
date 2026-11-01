@@ -175,6 +175,16 @@ public final class Campaign extends SavedData {
     private static final Map<UUID, Long> STONE_RAISED = new HashMap<>();
     /** How often the stone can be held up at all, in ticks, so a held mouse is not a hundred questions. */
     private static final int STONE_RAISE_INTERVAL = 10;
+    /**
+     * The pages each front works through, and what they pay.
+     * <p>
+     * The standing written here is the notes' own figures scaled to this pack's ladder. The notes were
+     * written against a ladder that ran to five or ten thousand, and this one tops out at a fraction of
+     * that, so a page the notes price at a hundred pays twenty-five, and one they price at nine hundred
+     * pays fifty. Paying the notes' figures straight would put most of a rank on a single fight, which is
+     * how the Giant's nine hundred came to be fifty: anything carried over from the notes is divided down
+     * to match, rather than copied.
+     */
     private static final Map<Alliance, List<Page>> PAGE_LINES = Map.of(
             Alliance.WEST, List.of(
                     new Page(Quest.Kind.FACTION, "", 6, 60, 2,
