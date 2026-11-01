@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **Every front ends on ground of its own.** A front was two soldier pages and then the Rider, so the three lines were the same two errands in three colours and the country a player had chosen never asked anything of them that the other two would not have. Each front carries a third page now: the West sends them to the barrow downs for the wights that have been opening the barrows from the inside, Harad to the deep sand for a mûmak out of its own host, and the East keeps the steward's scroll it already had. A page belongs to the campaign by what it asks for rather than by the kind of work it is, so a hunt of wights is not mistaken for the Rider's page - the campaign's own page is the one that names the Nazgûl - which would otherwise have ended the war on the first wight felled and left the three fronts standing unsettled behind it.
+
 - **The book has a voice.** The ledger now sounds like the thing it is: a leaf turns under the story arrows and the two bookmarks, the covers open when the book is first shown and close when it is put away, a seal is pressed into wax when a giver's page is taken, and coins are counted out when a page is settled - where a villager's cheerful "yes" and the level-up chime used to stand in for both. The five effects are synthesised from noise and decaying oscillators rather than sampled, so they carry no licence, weigh five to nine kilobytes each, and are mono Ogg Vorbis at 44.1 kHz like the rest of the pack. A sound a screen plays has no place in the world, so the client looking at the page plays it, and each of the five carries a subtitle in English and Chinese.
 
 

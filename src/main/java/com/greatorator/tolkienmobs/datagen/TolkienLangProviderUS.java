@@ -876,6 +876,10 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.page.rider.place", "wherever he chooses to be met");
         this.add("campaign.tolkienmobs.page.steward", "The Steward of the South");
         this.add("campaign.tolkienmobs.page.steward.place", "Nurn, on the captains' road");
+        this.add("campaign.tolkienmobs.page.keeping", "What the Dead Were Keeping");
+        this.add("campaign.tolkienmobs.page.keeping.place", "the barrow downs, above the Shire's edge");
+        this.add("campaign.tolkienmobs.page.mumak", "The Mûmak of the Sands");
+        this.add("campaign.tolkienmobs.page.mumak.place", "the deep sands of Haradwaith");
         this.add("campaign.tolkienmobs.giver.title.west", "Herald of the West");
         this.add("campaign.tolkienmobs.giver.title.east", "Herald of the East");
         this.add("campaign.tolkienmobs.giver.title.harad", "Herald of Haradwaith");

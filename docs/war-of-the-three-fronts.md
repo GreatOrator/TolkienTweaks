@@ -456,7 +456,13 @@ still in hand, and a finished page means the meeting has already happened.
 The gap was the same in every row, and the smallest part of it is closed: **the mod has a stage counter**
 now. `faction/Campaign` keeps how far each player has got on each of the three fronts, saved with the
 world and synced to its owner, and each front's line is written - six soldiers of one rival army for
-sixty standing, then twelve of the other rival's for a hundred and twenty. The line stops there: the
+sixty standing, then twelve of the other rival's for a hundred and twenty, and then a third page that is
+the front's own rather than a rival's: the barrow downs and the wights that open them for the West, a
+mûmak out of Harad's own host for Harad, the steward's scroll off the enemy's road for the East. That
+third page is what keeps the three lines from reading as one line repainted, and it is a hunt or a fetch
+rather than a body count. A page is told from the campaign's own by what it asks for, never by what kind
+of work it is - the Rider's page is the one that names the Nazgûl - so the first front to end on a hunt
+does not end the campaign on its first kill. The line stops there: the
 Rider is the campaign's own page rather than a front's, because he was nobody's rival and everybody's
 fear, so any herald hands him over once all three fronts are settled and all three countries pay his
 two hundred between them. It is paid through the ordinary ledger, and that, too, is what advances it:

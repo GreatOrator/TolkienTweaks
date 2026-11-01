@@ -876,6 +876,10 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("campaign.tolkienmobs.page.rider.place", "他选择现身之处");
         this.add("campaign.tolkienmobs.page.steward", "南方的管家");
         this.add("campaign.tolkienmobs.page.steward.place", "努恩，队长们的道路上");
+        this.add("campaign.tolkienmobs.page.keeping", "亡者所守之物");
+        this.add("campaign.tolkienmobs.page.keeping.place", "夏尔边缘之上的古冢丘陵");
+        this.add("campaign.tolkienmobs.page.mumak", "沙海中的猛犸");
+        this.add("campaign.tolkienmobs.page.mumak.place", "哈拉德威斯的深处沙海");
         this.add("campaign.tolkienmobs.giver.title.west", "西境的传令官");
         this.add("campaign.tolkienmobs.giver.title.east", "东境的传令官");
         this.add("campaign.tolkienmobs.giver.title.harad", "哈拉德威斯的传令官");

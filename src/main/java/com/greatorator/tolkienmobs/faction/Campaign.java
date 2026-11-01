@@ -55,7 +55,9 @@ public final class Campaign extends SavedData {
     private static final String SAVE_DATA_NAME = "campaign";
     /**
      * What each page of a front asks for, in order: soldiers of one rival army, then soldiers of the
-     * other. The list is the line - a stage past its end is a front with nothing left to hand over - so
+     * other, and then the front's own errand - a beast of its own country, or a scroll off the enemy's
+     * road - which is the page that stops the three lines reading as one line repainted. The list is the
+     * line - a stage past its end is a front with nothing left to hand over - so
      * writing one more page here is all the campaign needs to go on, and a front has as many pages as
      * this list is long.
      */
@@ -64,7 +66,9 @@ public final class Campaign extends SavedData {
                     new Page(Quest.Kind.FACTION, "", 6, 60,
                             "campaign.tolkienmobs.page.muster", "campaign.tolkienmobs.page.muster.place"),
                     new Page(Quest.Kind.FACTION, "", 12, 120,
-                            "campaign.tolkienmobs.page.southroad", "campaign.tolkienmobs.page.southroad.place")),
+                            "campaign.tolkienmobs.page.southroad", "campaign.tolkienmobs.page.southroad.place"),
+                    new Page(Quest.Kind.HUNT, "tolkienmobs:entityttmbarrow", 2, 150,
+                            "campaign.tolkienmobs.page.keeping", "campaign.tolkienmobs.page.keeping.place")),
             Alliance.EAST, List.of(
                     new Page(Quest.Kind.FACTION, "", 6, 60,
                             "campaign.tolkienmobs.page.marches", "campaign.tolkienmobs.page.marches.place"),
@@ -76,7 +80,9 @@ public final class Campaign extends SavedData {
                     new Page(Quest.Kind.FACTION, "", 6, 60,
                             "campaign.tolkienmobs.page.sun", "campaign.tolkienmobs.page.sun.place"),
                     new Page(Quest.Kind.FACTION, "", 12, 120,
-                            "campaign.tolkienmobs.page.ford", "campaign.tolkienmobs.page.ford.place"))
+                            "campaign.tolkienmobs.page.ford", "campaign.tolkienmobs.page.ford.place"),
+                    new Page(Quest.Kind.HUNT, "tolkienmobs:entityttmmumakil", 1, 150,
+                            "campaign.tolkienmobs.page.mumak", "campaign.tolkienmobs.page.mumak.place"))
     );
 
     /**
@@ -494,9 +500,16 @@ public final class Campaign extends SavedData {
         return true;
     }
 
-    /** Which slot of a player's row a page belongs to: the campaign's own, or the herald's front. */
+    /**
+     * Which slot of a player's row a page belongs to: the campaign's own, or the herald's front. The
+     * Rider is picked out by what he asks for rather than by the kind of work, because a front can end
+     * on a hunt of its own country's beast - and a hunt written into the campaign's slot would end the
+     * war on the first wight a player felled, long before any front was settled.
+     */
     private static int slotOf(Quest page, Alliance alliance) {
-        return page.kind() == Quest.Kind.HUNT ? RIDER_SLOT : alliance.ordinal();
+        return page.kind() == Quest.Kind.HUNT && page.target().equals(riderId())
+                ? RIDER_SLOT
+                : alliance.ordinal();
     }
 
     // ---- plumbing ----
