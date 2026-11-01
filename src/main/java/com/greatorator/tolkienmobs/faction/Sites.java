@@ -11,6 +11,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -109,6 +110,8 @@ public final class Sites extends SavedData {
      * this only ever covers the shallow end of it - a building on a bank, not a building on a butte.
      */
     private static final int UNDERPIN_DEPTH = 6;
+    /** How far the fill is allowed to reach when the ground under a footprint falls away badly. */
+    private static final int UNDERPIN_MAX = 24;
 
     /** The tag the body minding a camp wears, so it can be told from any other of its folk. */
     public static final String KEEPER_TAG = "tolkienmobs:camp_keeper";
@@ -317,8 +320,8 @@ public final class Sites extends SavedData {
         // none. The tent fit in one chunk and never needed to ask; a hilltop a hundred blocks across
         // does, and waits at the site until the player is close enough for all of it.
         if (!chunksLoaded(level, site.centre(), size)) return;
-        BlockPos corner = locate(level, site.centre(), size.getX(), size.getZ());
-        if (corner == null) {
+        Plane found = locate(level, site.centre(), size.getX(), size.getZ());
+        if (found == null) {
             // Ground the drawing would take and the world would not: worth saying, because the
             // player standing on the spot sees only that nothing happened. Once per site, since
             // this is retried on the clock the player is measured on.
@@ -329,7 +332,11 @@ public final class Sites extends SavedData {
             return;
         }
         UNBUILDABLE.remove(site.player());
-        underpin(level, corner, size.getX(), size.getZ());
+        BlockPos corner = found.corner();
+        // A building on a bank wants a bank under it, so the fill reaches as far down as the ground
+        // it was lifted off actually fell away, up to a limit that keeps a butte from a plinth.
+        underpin(level, corner, size.getX(), size.getZ(),
+                Math.min(UNDERPIN_MAX, Math.max(UNDERPIN_DEPTH, found.relief() + 2)));
         template.placeInWorld(level, corner, corner, new StructurePlaceSettings(), level.getRandom(), 2);
         if (site.keeper()) standKeeper(level, corner, size);
         SITES.put(player.getUUID(), site.builtAt(corner.offset(size.getX() / 2, 0, size.getZ() / 2)));
@@ -342,54 +349,95 @@ public final class Sites extends SavedData {
      * so a castle is not searched for at tent-sized intervals.
      */
     @Nullable
-    private static BlockPos locate(ServerLevel level, BlockPos written, int wide, int deep) {
+    private static Plane locate(ServerLevel level, BlockPos written, int wide, int deep) {
         int step = Math.max(8, Math.max(wide, deep) / 4);
         int reach = Math.max(SEARCH_REACH, Math.max(wide, deep));
+        int drop = ArdaSurvey.dropAllowed(wide, deep);
+        Plane best = null;
         for (int ring = 0; ring * step <= reach; ring++) {
             for (int dx = -ring; dx <= ring; dx++) {
                 for (int dz = -ring; dz <= ring; dz++) {
                     if (Math.max(Math.abs(dx), Math.abs(dz)) != ring) continue;
                     BlockPos spot = written.offset(dx * step, 0, dz * step);
-                    if (!level.hasChunkAt(spot)) continue;
-                    BlockPos plane = plane(level, spot, wide, deep);
-                    if (plane != null) return plane;
+                    // Both ends of the footprint, not just the near one: a site may now stand a
+                    // hundred blocks from the spot the page named, and a block written into an
+                    // unloaded chunk is dropped without a word - half a hilltop is worse than none.
+                    if (!level.hasChunkAt(spot) || !level.hasChunkAt(spot.offset(wide, 0, deep))) continue;
+                    Plane plane = plane(level, spot, wide, deep);
+                    if (plane == null) continue;
+                    if (plane.relief() <= drop) return plane;
+                    // Ground that is only mostly level is still ground. A refuse here left a page
+                    // waiting on a hilltop that was never going to stand, and the alternative is
+                    // what the building does everywhere else: stand on the highest column and let
+                    // the hill show through what it left empty. So the search keeps the gentlest
+                    // spot it has seen and hands that back rather than nothing at all.
+                    if (best == null || plane.relief() < best.relief()) best = plane;
                 }
             }
         }
-        return null;
+        return best;
     }
 
     /**
-     * The height a building of this size stands at, or null when the ground under it will not take one.
+     * Ground a footprint would stand on: where it stands, and how far the ground under it falls away from
+     * its highest column to its lowest. The falling away is reported rather than refused so that the
+     * search can pick the gentlest spot it found instead of coming back empty handed.
+     */
+    private record Plane(BlockPos corner, int relief) {
+    }
+
+    /**
+     * The ground a building of this size would stand on, or null when the footprint is not ground at all.
      * <p>
-     * Two things are asked of the ground. It has to be solid, dry and within tolerance of itself from one
-     * edge of the footprint to the other - and the height it is built at is the <em>highest</em> column
-     * under it rather than an average or the height where it happens to be standing, because a building
-     * placed at the lowest point has a hillside through the middle of it and a hillside is harder to
-     * excuse in a castle than a gap under one wall.
+     * Three things are asked of it. Every column has to reach solid, dry ground - and the height it is
+     * built at is the <em>highest</em> column under it rather than an average, because a building placed
+     * at the lowest point has a hillside through the middle of it, and a hillside is harder to excuse in a
+     * castle than a gap under one wall.
      * <p>
      * Large buildings are sampled on a stride, since a castle is thousands of columns and the ground under
      * one is not going to change between two adjacent ones in any way that matters.
      */
     @Nullable
-    private static BlockPos plane(ServerLevel level, BlockPos spot, int wide, int deep) {
-        int drop = ArdaSurvey.dropAllowed(wide, deep);
+    private static Plane plane(ServerLevel level, BlockPos spot, int wide, int deep) {
         int stride = Math.max(1, Math.max(wide, deep) / 24);
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
         int low = Integer.MAX_VALUE;
         int high = Integer.MIN_VALUE;
         for (int dx = 0; dx < wide; dx += stride) {
             for (int dz = 0; dz < deep; dz += stride) {
-                int x = spot.getX() + dx;
-                int z = spot.getZ() + dz;
-                int height = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
-                if (!level.getBlockState(new BlockPos(x, height - 1, z)).isSolid()) return null;
-                if (!level.getFluidState(new BlockPos(x, height, z)).isEmpty()) return null;
+                int height = ground(level, spot.getX() + dx, spot.getZ() + dz, cursor);
+                if (height == Integer.MIN_VALUE) return null;
                 low = Math.min(low, height);
                 high = Math.max(high, height);
             }
         }
-        if (high - low > drop) return null;
-        return new BlockPos(spot.getX(), high, spot.getZ());
+        return new Plane(new BlockPos(spot.getX(), high, spot.getZ()), high - low);
+    }
+
+    /**
+     * The top of the ground in one column, with whatever is growing on it discounted.
+     * <p>
+     * A heightmap answers with the top of the world, and the top of the world in a wood is a trunk: a
+     * forest footprint therefore measured as a cliff from trunk to grass and no building of any size
+     * could be seated in one, which is exactly what a hilltop in the trees kept hitting. Walking down
+     * past the wood answers what the column is actually made of. Anything that is not ground - open air,
+     * water, a column buried in stone - comes back as {@link Integer#MIN_VALUE}.
+     */
+    private static int ground(ServerLevel level, int x, int z, BlockPos.MutableBlockPos cursor) {
+        int height = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
+        for (int guard = 0; guard < 96; guard++) {
+            cursor.set(x, height - 1, z);
+            BlockState state = level.getBlockState(cursor);
+            if (state.is(BlockTags.LOGS) || state.is(BlockTags.LEAVES)) {
+                height--;
+                continue;
+            }
+            if (!state.isSolid()) return Integer.MIN_VALUE;
+            cursor.setY(height);
+            if (!level.getFluidState(cursor).isEmpty()) return Integer.MIN_VALUE;
+            return height;
+        }
+        return Integer.MIN_VALUE;
     }
 
     /**
@@ -411,13 +459,14 @@ public final class Sites extends SavedData {
      * Air and water are both filled, because a building beside a shore is standing in the water it was
      * built beside, and a wall with a hole under it is worse than a wall with a bank under it. The
      * filling stops at the first solid block, so nothing is put where ground already is, and it gives up
-     * after a few layers rather than hanging a plinth a long way down off a building that is on a cliff.
+     * after the layers it was given rather than hanging a plinth a long way down off a building that is
+     * on a cliff.
      */
-    private static void underpin(ServerLevel level, BlockPos corner, int wide, int deep) {
+    private static void underpin(ServerLevel level, BlockPos corner, int wide, int deep, int layers) {
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
         for (int dx = 0; dx < wide; dx++) {
             for (int dz = 0; dz < deep; dz++) {
-                for (int dy = 1; dy <= UNDERPIN_DEPTH; dy++) {
+                for (int dy = 1; dy <= layers; dy++) {
                     cursor.set(corner.getX() + dx, corner.getY() - dy, corner.getZ() + dz);
                     BlockState state = level.getBlockState(cursor);
                     if (!state.isAir() && state.getFluidState().isEmpty()) break;
