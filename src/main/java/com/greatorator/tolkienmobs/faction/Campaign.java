@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.faction;
 
+import com.greatorator.tolkienmobs.entity.boss.WitchKingEntity;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.network.manager.CampaignSyncManager;
 import com.mojang.serialization.Codec;
@@ -13,11 +14,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.ai.goal.FleeSunGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.RestrictSunGoal;
@@ -210,6 +213,8 @@ public final class Campaign extends SavedData {
      * under a roof, nearest the middle.
      */
     private static final String CASTLE_TAG = "tolkienmobs:campaign_king_castle";
+    /** The tag the chair he sits on wears, so it is put away with him rather than left standing. */
+    private static final String SEAT_TAG = "tolkienmobs:campaign_seat";
     @Nullable
     private static final BlockPos CASTLE_SEAT = new BlockPos(3850, 107, -7425);
     private static final int CASTLE_ROOM_REACH = 16;
@@ -837,7 +842,7 @@ public final class Campaign extends SavedData {
         boolean waited = carriedCastlePage(player) != null;
         if (king == null) {
             if (!waited) return;
-            standSeatedKing(level, site.centre());
+            standSeatedKing(level, site.centre(), player);
             return;
         }
         // A body written down and read back is built afresh, habits and all.
@@ -845,7 +850,7 @@ public final class Campaign extends SavedData {
         if (SUMMONED.contains(player.getUUID())) {
             // He has said it. The page moving on is what empties the chair, and the next look does it.
             if (waited) return;
-            king.discard();
+            dismissSeat(level, site.centre());
             SUMMONED.remove(player.getUUID());
             player.sendSystemMessage(Component.translatable("campaign.tolkienmobs.witchking.gone")
                     .withStyle(ChatFormatting.DARK_PURPLE));
@@ -861,26 +866,54 @@ public final class Campaign extends SavedData {
     @Nullable
     private static Entity seatedKing(ServerLevel level, BlockPos centre) {
         List<Entity> seated = level.getEntities((Entity) null, new AABB(centre).inflate(WITCHKING_SEARCH),
-                seen -> seen.entityTags().contains(CASTLE_TAG));
+                seen -> seen instanceof WitchKingEntity && seen.entityTags().contains(CASTLE_TAG));
         return seated.isEmpty() ? null : seated.get(0);
     }
 
     /**
-     * Stands him in the chair of his own house: no mind of his own, so he does not walk the rooms, and no
-     * way to be killed there, which the event that hears the blows is what enforces.
+     * Seats him in his own house: no mind of his own, so he does not walk the rooms, no way to be killed
+     * there - which the event that hears the blows is what enforces - and a chair under him, because a
+     * crown standing in front of its own throne reads as a man who has lost the war already.
+     * <p>
+     * The chair is a body with nothing drawn of it rather than a pose: his own idle controller plays its
+     * `sitting` clip whenever he is a passenger, which is how he sits a fell beast, so mounting him on an
+     * invisible stand is the whole of it. It is put in the world before he is, because a rider with nowhere
+     * to sit is dropped back onto the floor, and it is marked unbreakable and gravityless so a stray arrow
+     * or a broken floor cannot take the seat out from under a meeting.
      */
-    private static void standSeatedKing(ServerLevel level, BlockPos centre) {
+    private static void standSeatedKing(ServerLevel level, BlockPos centre, ServerPlayer player) {
         BlockPos seat = CASTLE_SEAT != null ? onTopOf(level, CASTLE_SEAT) : seatOf(level, centre);
         if (seat == null) return;
+        // He faces whoever walks in rather than the wall the chair was built against, and he does not turn
+        // afterwards: a crown that follows you round the room is a statue, and this one is waiting.
+        double dx = player.getX() - (seat.getX() + 0.5D);
+        double dz = player.getZ() - (seat.getZ() + 0.5D);
+        float yaw = (float) (Mth.atan2(dz, dx) * (180.0D / Math.PI)) - 90.0F;
+        ArmorStand chair = EntityType.ARMOR_STAND.create(level, EntitySpawnReason.EVENT);
+        if (chair == null) return;
+        chair.snapTo(seat.getX() + 0.5D, seat.getY(), seat.getZ() + 0.5D, yaw, 0.0F);
+        chair.setInvisible(true);
+        chair.setNoGravity(true);
+        chair.setInvulnerable(true);
+        chair.addTag(SEAT_TAG);
+        if (!level.addFreshEntity(chair)) return;
         Entity entity = TolkienEntities.ENTITY_TTM_WITCHKING.get().create(level, EntitySpawnReason.EVENT);
         if (!(entity instanceof Mob king)) return;
-        king.snapTo(seat.getX() + 0.5D, seat.getY(), seat.getZ() + 0.5D,
-                level.getRandom().nextFloat() * 360.0F, 0.0F);
+        king.snapTo(seat.getX() + 0.5D, seat.getY(), seat.getZ() + 0.5D, yaw, 0.0F);
         king.setPersistenceRequired();
         king.setNoAi(true);
         king.addTag(CASTLE_TAG);
         shadeBlind(king);
-        level.addFreshEntity(king);
+        if (!level.addFreshEntity(king)) return;
+        king.startRiding(chair, true, true);
+    }
+
+    /** Puts the crown and his chair away together, so an empty hall has no invisible chair standing in it. */
+    private static void dismissSeat(ServerLevel level, BlockPos centre) {
+        for (Entity found : level.getEntities((Entity) null, new AABB(centre).inflate(WITCHKING_SEARCH),
+                seen -> seen.entityTags().contains(CASTLE_TAG) || seen.entityTags().contains(SEAT_TAG))) {
+            found.discard();
+        }
     }
 
     /**
