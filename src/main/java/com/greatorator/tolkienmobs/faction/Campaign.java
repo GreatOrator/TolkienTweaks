@@ -160,6 +160,16 @@ public final class Campaign extends SavedData {
      * way it does for any other hunt, and the camp takes it back once the kill is made.
      */
     private static final String GIANT_TARGET = "tolkienmobs:entityttmtreeent";
+    /**
+     * Elrond, who the line comes back to once the Giant is dead: the notes have him name what the creature
+     * was and arrange the audience with the company from Mirkwood. He waits in the valley the map already
+     * keeps for the Elves - a place rather than a building, so nothing has to be raised for him - and the
+     * page that walks there is titled after his library, which is how he is found again off the line.
+     */
+    private static final String ELROND = "Elrond";
+    private static final String ELROND_TAG = "tolkienmobs:elrond";
+    private static final double ELROND_REACH = 128.0D;
+    private static final String AUDIENCE_TITLE = "campaign.tolkienmobs.page.audience";
     /** What he says as he hands it over, what it says when it comes back, and the two ways it is quiet. */
     private static final String STONE_GIVEN = "campaign.tolkienmobs.beryl.given";
     private static final String STONE_RETURNED = "campaign.tolkienmobs.beryl.returned";
@@ -219,6 +229,11 @@ public final class Campaign extends SavedData {
                     // hundred of the Elves' standing, and the line takes the notes at a flat tenth: ninety.
                     new Page(Quest.Kind.HUNT, GIANT_TARGET, 1, 90, 5,
                             "campaign.tolkienmobs.page.giant", "campaign.tolkienmobs.page.giant.place", ""),
+                    // The audience the notes send the player back for, priced at the notes' two hundred and
+                    // fifty taken at a tenth. It is the valley the map already keeps for the Elves, walked to
+                    // and settled there, with Elrond stood in it to name the creature.
+                    new Page(Quest.Kind.LOCATION, SUMMON_TARGET, 1, 25, 5,
+                            AUDIENCE_TITLE, "campaign.tolkienmobs.page.audience.place", ""),
                     // The hilltop is raised rather than named. A place is a circle somebody has to stand
                     // in and declare; this is ground the campaign builds where the map puts it, so the page
                     // is settled by standing in the building and nobody has to place anything by hand.
@@ -1065,6 +1080,57 @@ public final class Campaign extends SavedData {
     }
 
     /**
+     * Stands Elrond in the valley while the audience with him is the step the West is on.
+     * <p>
+     * The notes bring the line back to Imladris after the Giant: Elrond is the one who can name what the
+     * creature was, and who arranges the audience with the Mirkwood company. So he waits in the valley the
+     * map already keeps for the Elves, and stands from the page that walks to him until the page he hands -
+     * the guest room where Legolas is staying - has been taken off him. Glorfindel stands in the same valley
+     * earlier in the line and never at the same time, since the valley is one place and the stages do not
+     * overlap. Like the others he is stood once and found by tag afterwards.
+     */
+    private static void keepElrond(ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel level)) return;
+        int audience = stageOfTitle(AUDIENCE_TITLE);
+        if (audience < 0) return;
+        int step = stage(player, Alliance.WEST);
+        if (step < audience || step > audience + 1) return;
+        Places.Place valley = Places.ensure(player, SUMMON_PLACE, CAMP_RADIUS);
+        if (valley == null || !valley.dimension().equals(level.dimension())) return;
+        if (valley.centre().distToCenterSqr(player.position()) > ELROND_REACH * ELROND_REACH) return;
+        if (!level.getEntities((Entity) null, new AABB(valley.centre()).inflate(ELROND_REACH),
+                seen -> seen.entityTags().contains(ELROND_TAG)).isEmpty()) return;
+        BlockPos stand = floorOf(level, valley.centre());
+        if (stand == null) return;
+        Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
+        if (!(entity instanceof Mob lord)) return;
+        lord.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D,
+                level.getRandom().nextFloat() * 360.0F, 0.0F);
+        lord.setPersistenceRequired();
+        lord.addTag(QuestGivers.GIVER_TAG);
+        lord.addTag(QuestGivers.CAMPAIGN_TAG);
+        lord.addTag(QuestGivers.CAMPAIGN_GIVER_TAG);
+        lord.addTag(Alliance.WEST.giverTag());
+        lord.addTag(ELROND_TAG);
+        lord.setCustomName(Component.literal(ELROND).withStyle(ChatFormatting.GOLD));
+        lord.setCustomNameVisible(true);
+        level.addFreshEntity(lord);
+    }
+
+    /**
+     * The slot a page of this title holds in the West's line, or -1 when the line has none. Read by title
+     * rather than by target because two pages of the line can name the same ground - the valley is walked to
+     * twice - and only the title tells them apart.
+     */
+    private static int stageOfTitle(String title) {
+        List<Page> line = PAGE_LINES.get(Alliance.WEST);
+        for (int i = 0; i < line.size(); i++) {
+            if (line.get(i).title().equals(title)) return i;
+        }
+        return -1;
+    }
+
+    /**
      * Raises a troll cave ahead of the player while the cave page is the stone's asking in hand.
      * <p>
      * The old campaign named three caves on a map that was drawn by hand, and the pack's own caves are a
@@ -1389,6 +1455,7 @@ public final class Campaign extends SavedData {
         keepCaveOpen(player);
         keepElladan(player);
         keepBarachen(player);
+        keepElrond(player);
         Quest page = carriedCampaignPage(player);
         if (page == null || page.complete()) {
             RIDER_CALLED.remove(player.getUUID());

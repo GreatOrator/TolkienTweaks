@@ -939,6 +939,13 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.page.giant.say.1", "Barachen's word is good. Something walks in the Trollshaws that is taller than the trees it walks among, and he saw it from the High Moor before a boulder took it out of his sight.");
         this.add("campaign.tolkienmobs.page.giant.place", "the valley of the giants, south of the High Moor");
         this.add("campaign.tolkienmobs.page.giant", "The Valley of Giants");
+        this.add("campaign.tolkienmobs.page.audience.said", "I am glad you so ably serve my sons. I feel you are close to locating the Nazgul that escaped the raging waters of the Bruinen.");
+        this.add("campaign.tolkienmobs.page.audience.reply.2", "Hopefully they will allow me to speak with them.");
+        this.add("campaign.tolkienmobs.page.audience.reply.1", "So what now?");
+        this.add("campaign.tolkienmobs.page.audience.say.2", "A company of Elves from Mirkwood came to Imladris to consult with me, and one of them may know what manner of creature that was. Come up to the library and we will hear you out together.");
+        this.add("campaign.tolkienmobs.page.audience.say.1", "You are fortunate. What you faced in that valley could not have been a true Onod - the tree-herds are not given to violence, and one of the Old Ones would have left nothing of you to describe.");
+        this.add("campaign.tolkienmobs.page.audience.place", "Imladris, east of Thorenhad and above the Bruinen");
+        this.add("campaign.tolkienmobs.page.audience", "Elrond's Library");
         this.add("campaign.tolkienmobs.beryl.shallow", "Deep, but not deep enough. The stone wants the bottom of the cave and not the mouth of it.");
         this.add("campaign.tolkienmobs.beryl.elsewhere", "%s is where the stone was asked for, and this is not it.");
         this.add("campaign.tolkienmobs.page.beryl.said", "The ford is where this begins, because it is the last ground we know he touched. Hold the beryl aloft there, and it will answer.");

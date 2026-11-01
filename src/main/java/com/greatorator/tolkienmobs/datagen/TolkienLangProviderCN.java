@@ -939,6 +939,13 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("campaign.tolkienmobs.page.giant.say.1", "巴拉亨的话可信。巨魔荒野里确实有比身边的树木还高的东西在走动，他从高地望见了它，直到一块巨石挡住了视线。");
         this.add("campaign.tolkienmobs.page.giant.place", "高地以南的巨人山谷");
         this.add("campaign.tolkienmobs.page.giant", "巨人山谷");
+        this.add("campaign.tolkienmobs.page.audience.said", "我很高兴你如此得力地侍奉我的儿子们。我觉得你已接近找到那个从布鲁南河的怒水中逃脱的戒灵了。");
+        this.add("campaign.tolkienmobs.page.audience.reply.2", "但愿他们肯听我说话。");
+        this.add("campaign.tolkienmobs.page.audience.reply.1", "那现在怎么办？");
+        this.add("campaign.tolkienmobs.page.audience.say.2", "有一队来自幽暗密林的精灵来到伊姆拉崔与我商议，其中一位或许认得出那是何种生物。到书库来吧，我们一起听你说。");
+        this.add("campaign.tolkienmobs.page.audience.say.1", "你算走运。你在那山谷里遇上的，不可能真是昂诺德——树牧者并不好战；若真是古老者之一，你根本留不下命来讲述。");
+        this.add("campaign.tolkienmobs.page.audience.place", "伊姆拉崔，索伦哈德以东、布鲁南河上游");
+        this.add("campaign.tolkienmobs.page.audience", "埃尔隆德的书库");
         this.add("campaign.tolkienmobs.beryl.shallow", "够深了，但还不够深。石头要的是洞穴的最深处，不是洞口。");
         this.add("campaign.tolkienmobs.beryl.elsewhere", "石头被要求举在%s，而不是这里。");
         this.add("campaign.tolkienmobs.page.beryl.said", "一切都从渡口开始，因为那是我们知道他最后踏过的土地。在那里把宝石举起来，它会回答你。");
