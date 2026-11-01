@@ -128,6 +128,9 @@ public final class Places extends SavedData {
             new Name("tharbad", Alliance.WEST, true),
             new Name("rivendell", Alliance.WEST, false),
             new Name("thorenhad", Alliance.WEST, false),
+            // The scout's camp the West walks to after the caves: south of the Great East Road, in
+            // the same country as Thorenhad, and named rather than built for the same reason.
+            new Name("barachen", Alliance.WEST, false),
             new Name("oldforest", null, false)
     );
 
@@ -142,7 +145,9 @@ public final class Places extends SavedData {
             // The Trollshaws are the western slopes of the Misty Mountains in this drawing, which is the
             // country it calls Firien: Elladan's camp belongs a walk east of the valley, not wherever the
             // page that mentions it happens to be taken.
-            "thorenhad", ArdaMap.Country.TROLLSHAWS);
+            "thorenhad", ArdaMap.Country.TROLLSHAWS,
+            // His fire is south of the road through the same country, not wherever the page was taken.
+            "barachen", ArdaMap.Country.TROLLSHAWS);
 
     /**
      * One place as this world has it: which of the catalogue it is, the dimension it stands in, the

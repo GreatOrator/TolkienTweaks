@@ -925,6 +925,13 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("campaign.tolkienmobs.page.caves.say.1", "渡口只是开始。九骑会在土地上留下痕迹，而受了伤的留下的更多。");
         this.add("campaign.tolkienmobs.page.caves.place", "班德里思、霍克隆德与绍德罗斯，以及每一处的最深处");
         this.add("campaign.tolkienmobs.page.caves", "藏身于暗处");
+        this.add("campaign.tolkienmobs.page.barachen.said", "那你就在路上花掉了一天，并且得知斥候会说谎。还是去吧。");
+        this.add("campaign.tolkienmobs.page.barachen.reply.2", "如果那只是传闻呢？");
+        this.add("campaign.tolkienmobs.page.barachen.reply.1", "巨人？在巨魔荒野里？");
+        this.add("campaign.tolkienmobs.page.barachen.say.2", "巴拉亨在大东道以南、地势开始抬升的地方扎了营。他传信说荒野中出了一个巨人——那些古老族类之一，立在林中，和树木一样高。沿大路向西走，会有斥候为你指路去他的火堆。听听他要说的话，也留意你对他说的。");
+        this.add("campaign.tolkienmobs.page.barachen.say.1", "宝石已经做完了它能做的事。它做不到的，是告诉我们有人亲眼看见了什么——而巨魔荒野里就有一个人看见了什么。");
+        this.add("campaign.tolkienmobs.page.barachen.place", "巴拉亨的营地，在巨魔荒野东大道以南");
+        this.add("campaign.tolkienmobs.page.barachen", "大路旁的斥候");
         this.add("campaign.tolkienmobs.beryl.shallow", "够深了，但还不够深。石头要的是洞穴的最深处，不是洞口。");
         this.add("campaign.tolkienmobs.beryl.elsewhere", "石头被要求举在%s，而不是这里。");
         this.add("campaign.tolkienmobs.page.beryl.said", "一切都从渡口开始，因为那是我们知道他最后踏过的土地。在那里把宝石举起来，它会回答你。");
@@ -977,6 +984,8 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("place.tolkienmobs.rivendell", "幽谷");
         this.add("place.tolkienmobs.thorenhad.line", "巨魔荒野中埃拉丹的营地");
         this.add("place.tolkienmobs.thorenhad", "索伦哈德");
+        this.add("place.tolkienmobs.barachen.line", "巨魔荒野中一名斥候的营地");
+        this.add("place.tolkienmobs.barachen", "巴拉亨的营地");
         this.add("place.tolkienmobs.oldforest", "老林");
         this.add("place.tolkienmobs.oldforest.line", "树木自有其谋");
         this.add("place.tolkienmobs.tharbad.beryl", "石头变得又暗又沉，像铁挨近了沉没之地。有人死在这个渡口，却没有人回来报信。");

@@ -139,6 +139,20 @@ public final class Campaign extends SavedData {
     private static final int CAMP_RADIUS = 48;
     /** The tent the camp is: the same template the Rangers' camp errand pitches, laid down at Thorenhad. */
     private static final String CAMP_TENT = Sites.WILD_TENT;
+    /**
+     * Barachen, and the camp of his the notes send the player to once the caves have answered nothing.
+     * He is the West's scout rather than an Elf, and his word is what turns the line from a search of
+     * the dark into a Giant somebody saw: the report is his to give, and the page walks to his fire.
+     * The camp is a named place like Thorenhad - a clearing and a fire, not a building the pack would
+     * have to raise - and it is canon to the Trollshaws so it lands south of the road the notes name
+     * rather than wherever the page happened to be taken.
+     */
+    private static final String BARACHEN = "Barachen";
+    private static final String BARACHEN_PLACE = "barachen";
+    private static final String BARACHEN_TARGET = Quest.placeTarget(BARACHEN_PLACE);
+    private static final String BARACHEN_TAG = "tolkienmobs:barachen";
+    /** How near his fire a player has to be for him to be standing at it, in blocks. */
+    private static final double BARACHEN_REACH = 128.0D;
     /** What he says as he hands it over, what it says when it comes back, and the two ways it is quiet. */
     private static final String STONE_GIVEN = "campaign.tolkienmobs.beryl.given";
     private static final String STONE_RETURNED = "campaign.tolkienmobs.beryl.returned";
@@ -173,6 +187,12 @@ public final class Campaign extends SavedData {
                     // rock over their heads will do, asked at the bottom of each.
                     new Page(Quest.Kind.SURVEY, "", STONE_CAVES, 25, 5,
                             "campaign.tolkienmobs.page.caves", "campaign.tolkienmobs.page.caves.place", ""),
+                    // The scout's camp, which is the page the caves were a search of the road towards: the
+                    // stone goes back to Elladan and the next lead is a man who saw something. A camp is
+                    // ground rather than a landmark, so the page is a walk and the walk is the whole of it.
+                    new Page(Quest.Kind.LOCATION, BARACHEN_TARGET, 1, 25, 4,
+                            "campaign.tolkienmobs.page.barachen", "campaign.tolkienmobs.page.barachen.place",
+                            ""),
                     // The hilltop is raised rather than named. A place is a circle somebody has to stand
                     // in and declare; this is ground the campaign builds where the map puts it, so the page
                     // is settled by standing in the building and nobody has to place anything by hand.
@@ -861,6 +881,63 @@ public final class Campaign extends SavedData {
     }
 
     /**
+     * Stands Barachen at his camp while the camp is the step the West is on.
+     * <p>
+     * He is the scout whose word turns the line from a search of the dark into a Giant somebody saw, and
+     * the notes put his fire south of the Great East Road: a camp is a clearing and a fire, so it is a
+     * named place the map already draws ground for rather than a hall the campaign raises. He wears the
+     * same three tags as the Elves, so the same right-click hands and takes his pages, and he is stood
+     * once and found by tag afterwards, so a reloaded world keeps one scout at the fire.
+     * <p>
+     * What puts him there is the stage rather than the page in his own name: a walk page settles the
+     * moment the player stands in the circle, so a scout who vanished as they arrived would never be
+     * spoken to. He stands from the page that walks to him until the page he hands has been taken off
+     * him - one stage later - and no further, so the camp does not follow the player across the map.
+     */
+    private static void keepBarachen(ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel level)) return;
+        int camp = campStage();
+        if (camp < 0) return;
+        int step = stage(player, Alliance.WEST);
+        if (step < camp || step > camp + 1) return;
+        Places.Place fire = Places.ensure(player, BARACHEN_PLACE, CAMP_RADIUS);
+        if (fire == null || !fire.dimension().equals(level.dimension())) return;
+        if (fire.centre().distToCenterSqr(player.position()) > BARACHEN_REACH * BARACHEN_REACH) return;
+        if (!level.getEntities((Entity) null, new AABB(fire.centre()).inflate(BARACHEN_REACH),
+                seen -> seen.entityTags().contains(BARACHEN_TAG)).isEmpty()) return;
+        // The camp is a camp before it is a man: the tent goes down first, so there is never a scout in a
+        // field waiting for a tent that never comes.
+        if (!standTent(level, fire)) return;
+        BlockPos stand = floorOf(level, fire.centre());
+        if (stand == null) return;
+        Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
+        if (!(entity instanceof Mob scout)) return;
+        scout.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D,
+                level.getRandom().nextFloat() * 360.0F, 0.0F);
+        scout.setPersistenceRequired();
+        scout.addTag(QuestGivers.GIVER_TAG);
+        scout.addTag(QuestGivers.CAMPAIGN_TAG);
+        scout.addTag(QuestGivers.CAMPAIGN_GIVER_TAG);
+        scout.addTag(Alliance.WEST.giverTag());
+        scout.addTag(BARACHEN_TAG);
+        scout.setCustomName(Component.literal(BARACHEN).withStyle(ChatFormatting.GOLD));
+        scout.setCustomNameVisible(true);
+        level.addFreshEntity(scout);
+    }
+
+    /**
+     * The slot Barachen's camp holds in the West's line, read off the line rather than written down a
+     * second time: a page inserted above his would otherwise leave the scout standing at the wrong step.
+     */
+    private static int campStage() {
+        List<Page> line = PAGE_LINES.get(Alliance.WEST);
+        for (int i = 0; i < line.size(); i++) {
+            if (BARACHEN_TARGET.equals(line.get(i).target())) return i;
+        }
+        return -1;
+    }
+
+    /**
      * Puts the camp's tent down on the ground Thorenhad is named for, and answers whether it is standing.
      * <p>
      * Thorenhad is a place rather than a site - one camp in the Trollshaws for everybody in the world,
@@ -1162,6 +1239,7 @@ public final class Campaign extends SavedData {
         keepGlorfindel(player);
         keepCaveOpen(player);
         keepElladan(player);
+        keepBarachen(player);
         Quest page = carriedCampaignPage(player);
         if (page == null || page.complete()) {
             RIDER_CALLED.remove(player.getUUID());

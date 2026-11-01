@@ -925,6 +925,13 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.page.caves.say.1", "The ford is only the beginning. The Nine leave a mark on a land, and a hurt one leaves more of it than a whole one would.");
         this.add("campaign.tolkienmobs.page.caves.place", "Bandrith, Hoklond and Sholdroth, and the deepest chamber of each");
         this.add("campaign.tolkienmobs.page.caves", "Hiding in the Dark");
+        this.add("campaign.tolkienmobs.page.barachen.said", "Then you will have spent a day on the road and learned that scouts lie. Go anyway.");
+        this.add("campaign.tolkienmobs.page.barachen.reply.2", "And if it is only a tale?");
+        this.add("campaign.tolkienmobs.page.barachen.reply.1", "A Giant? In the Trollshaws?");
+        this.add("campaign.tolkienmobs.page.barachen.say.2", "Barachen keeps a camp south of the Great East Road, where the country begins to climb. He sent word of a Giant in the wild - one of the old ones, standing among the trees as tall as they are. Take the road west and a scout will put you on the path to his fire. Hear what he has to say, and mind what you tell him.");
+        this.add("campaign.tolkienmobs.page.barachen.say.1", "The stone has done what a stone can do. What it cannot do is tell us what a man saw with his own eyes, and there is a man in the Trollshaws who has seen something.");
+        this.add("campaign.tolkienmobs.page.barachen.place", "Barachen's camp, south of the East Road in the Trollshaws");
+        this.add("campaign.tolkienmobs.page.barachen", "The Scout at the Road");
         this.add("campaign.tolkienmobs.beryl.shallow", "Deep, but not deep enough. The stone wants the bottom of the cave and not the mouth of it.");
         this.add("campaign.tolkienmobs.beryl.elsewhere", "%s is where the stone was asked for, and this is not it.");
         this.add("campaign.tolkienmobs.page.beryl.said", "The ford is where this begins, because it is the last ground we know he touched. Hold the beryl aloft there, and it will answer.");
@@ -977,6 +984,8 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("place.tolkienmobs.rivendell", "Rivendell");
         this.add("place.tolkienmobs.thorenhad.line", "Elladan's camp in the Trollshaws");
         this.add("place.tolkienmobs.thorenhad", "Thorenhad");
+        this.add("place.tolkienmobs.barachen.line", "a scout's camp in the Trollshaws");
+        this.add("place.tolkienmobs.barachen", "Barachen's Camp");
         this.add("place.tolkienmobs.oldforest", "The Old Forest");
         this.add("place.tolkienmobs.oldforest.line", "the trees keep their own counsel");
         this.add("place.tolkienmobs.tharbad.beryl", "The stone goes dull and heavy, the way iron does near a drowned place. Men died on this crossing and no one came back to say so.");
