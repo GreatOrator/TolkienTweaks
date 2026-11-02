@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **A speaker the book names is always somewhere reachable.** If the valley's square has no room for an Elf at the step they keep, they are stood on open ground in front of the player rather than not stood at all, and the log records it.
+
 - **A speaker is stood beside their step rather than lost to it.** Glorfindel stands eight blocks south of the valley's middle, and that step is only walkable ground if the square was laid exactly there; in a wood it was not, the ground check answered nothing, and he was never stood at all. Keepers now look outward from their step for ground that will take them.
 
 - **The beryl is put in the hand the moment Glorfindel says "take this".** The stone used to be handed over when the survey it is lent for was taken from him, which is a visit later, so the line that lends it could be heard with nothing in the pack.

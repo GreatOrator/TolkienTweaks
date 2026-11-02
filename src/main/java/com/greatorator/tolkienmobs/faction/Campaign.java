@@ -1,5 +1,7 @@
 package com.greatorator.tolkienmobs.faction;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.greatorator.tolkienmobs.entity.boss.WitchKingEntity;
 import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienItems;
@@ -73,6 +75,8 @@ import java.util.function.Supplier;
  * that mark has to stop when nothing is left to ask.
  */
 public final class Campaign extends SavedData {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Campaign.class);
+
     private static final String SAVE_DATA_NAME = "campaign";
     /**
      * What each page of a front asks for, in order: soldiers of one rival army, then soldiers of the
@@ -1242,7 +1246,7 @@ public final class Campaign extends SavedData {
         if (!level.getEntities((Entity) null, new AABB(valley.centre()).inflate(GLORFINDEL_REACH),
                 seen -> seen.entityTags().contains(GLORFINDEL_TAG)).isEmpty()) return;
         int[] spot = VALLEY_STANDS.get(GLORFINDEL_TAG);
-        BlockPos stand = floorNear(level, valley.centre().offset(spot[0], 0, spot[1]));
+        BlockPos stand = floorNear(level, valley.centre().offset(spot[0], 0, spot[1]), player);
         if (stand == null) return;
         Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
         if (!(entity instanceof Mob elf)) return;
@@ -1577,7 +1581,7 @@ public final class Campaign extends SavedData {
         if (!level.getEntities((Entity) null, new AABB(valley.centre()).inflate(VALLEY_REACH),
                 seen -> seen.entityTags().contains(tag)).isEmpty()) return;
         int[] spot = VALLEY_STANDS.getOrDefault(tag, VALLEY_STANDS.get(ELROND_TAG));
-        BlockPos stand = floorNear(level, valley.centre().offset(spot[0], 0, spot[1]));
+        BlockPos stand = floorNear(level, valley.centre().offset(spot[0], 0, spot[1]), player);
         if (stand == null) return;
         Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
         if (!(entity instanceof Mob elf)) return;
@@ -2487,6 +2491,28 @@ public final class Campaign extends SavedData {
             }
         }
         return null;
+    }
+
+    /**
+     * The same search with the player's own feet as the last resort.
+     * <p>
+     * A page that says "take it to Glorfindel" cannot be finished by a player who has walked to the valley
+     * and found nobody in it, so an Elf the line is waiting on is never left unstood for want of paving: if
+     * the step and the six blocks around it are all trunk or all wall, he is stood on open ground in front
+     * of the player, a pace off the road he was meant to be found on.
+     */
+    @Nullable
+    private static BlockPos floorNear(ServerLevel level, BlockPos around, ServerPlayer player) {
+        BlockPos stand = floorNear(level, around);
+        if (stand != null) return stand;
+        BlockPos beside = player.blockPosition().offset(player.getDirection().getStepX() * 3, 0,
+                player.getDirection().getStepZ() * 3);
+        stand = floorNear(level, beside);
+        // Said out loud, because a keeper stood beside the player instead of at their post is a placement
+        // failing that used to be silent, and this is the line that says it happened.
+        LOGGER.info("No ground for a keeper at {}; standing beside {} at {} instead", around,
+                player.getName().getString(), stand);
+        return stand;
     }
 
     /** The campaign's own page if the player is carrying it and has not finished it yet. */
