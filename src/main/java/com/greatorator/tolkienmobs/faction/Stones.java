@@ -15,7 +15,9 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
-import java.util.List;
+import java.util.ArrayDeque;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -39,6 +41,9 @@ public final class Stones {
     private static final int REACH = 12;
     /** The radius within which an existing stone counts as already standing there. */
     private static final int ALREADY = 24;
+    /** How far into the room a body stands in the search reads, and how many blocks of it it counts. */
+    private static final int ROOM_REACH = 20;
+    private static final int ROOM_LIMIT = 3000;
 
     private Stones() {
     }
@@ -53,7 +58,13 @@ public final class Stones {
         Waypoint.Mark ground = Waypoint.ground(player, quest);
         if (ground != null) plantAt(player, words(ground.label()), ground.pos());
         String hall = quest.giver().isEmpty() ? "" : Quest.label(quest.giver()).getString();
-        if (!hall.isEmpty()) plantAt(player, hall, quest.origin());
+        if (!hall.isEmpty() && player.level() instanceof ServerLevel level) {
+            // The hall's stone belongs in the middle of the hall, not wherever the herald happened to
+            // be standing when the page changed hands: a herald drifts about his own floor, and a stone
+            // that follows him is a stone that ends up in a corner.
+            BlockPos middle = roomCentre(level, quest.origin());
+            plantAt(player, hall, middle == null ? quest.origin() : middle);
+        }
     }
 
     /** A name as a stone shows it: a key if it is one, and the words themselves if they are a name. */
@@ -81,6 +92,44 @@ public final class Stones {
         stone.setChanged();
         level.sendBlockUpdated(spot, state, state, 3);
         MilestoneHandler.updateMilestone(stone, player);
+    }
+
+    /**
+     * The middle of the room a body is standing in, read as the average of the floor they could walk
+     * across without leaving it.
+     * <p>
+     * This is a hall's own answer to where its middle is: the building knows it, and nothing else in the
+     * campaign does - the herald's position is where he stood, and a template's corner is not written
+     * down anywhere a page can read. The walk is horizontal and stays on the storey it started on, so a
+     * stair is not followed up into the rafters, and it is bounded by a reach that keeps an open door
+     * from pulling the middle of the room out into the street.
+     */
+    @Nullable
+    private static BlockPos roomCentre(ServerLevel level, BlockPos from) {
+        Set<BlockPos> floor = new HashSet<>();
+        ArrayDeque<BlockPos> queue = new ArrayDeque<>();
+        queue.add(from);
+        long sumX = 0L;
+        long sumZ = 0L;
+        double reach = (double) ROOM_REACH * ROOM_REACH;
+        while (!queue.isEmpty() && floor.size() < ROOM_LIMIT) {
+            BlockPos at = queue.poll();
+            if (!floor.add(at)) continue;
+            sumX += at.getX();
+            sumZ += at.getZ();
+            for (Direction side : Direction.Plane.HORIZONTAL) {
+                BlockPos next = at.relative(side);
+                if (floor.contains(next) || next.distSqr(from) > reach) continue;
+                if (!level.hasChunkAt(next)) continue;
+                if (!level.getBlockState(next).isAir()) continue;
+                // A block with nothing under it is not this room's floor, so the walk does not drift
+                // out of a doorway and down a hill.
+                if (level.getBlockState(next.below()).isAir()) continue;
+                queue.add(next);
+            }
+        }
+        if (floor.size() < 9) return null;
+        return new BlockPos((int) (sumX / floor.size()), from.getY(), (int) (sumZ / floor.size()));
     }
 
     /** Whether a stone of this name already stands within a short walk of the spot. */

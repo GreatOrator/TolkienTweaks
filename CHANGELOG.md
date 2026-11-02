@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **A hall's milestone stands in the middle of the hall.** The stone a taken page plants at the hall was put at the herald's own feet, which is wherever he happened to be standing and could be the inside of the man himself; the room he stands in is read instead - the floor he can walk across without leaving it - and the stone goes at its middle.
+
 - **A page now points the way to the ground it names.** An arrow at the top of the screen gives the bearing and a rounded distance to the place the page in hand sends the player, and points at the town a named body is kept in when the page asks for a person rather than a place; it is a hint and not an answer, so the country still has to be crossed, and it clears itself when the page is paid.
 
 - **The chapter plants its own milestones.** A stone is planted on the ground a page names and beside the body that handed it over, the first time the page is taken, so the halls and Rivendell have a way back that is not the road again. A stone still only lists itself to a player who has stood at it, so travel is unlocked by arriving rather than by being sent.
