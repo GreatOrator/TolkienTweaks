@@ -919,9 +919,6 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("campaign.tolkienmobs.page.wisdom.reply.2", "我们怎么找到一个不留足迹的东西？");
         this.add("campaign.tolkienmobs.page.wisdom.said", "拿着这个。这是一块绿柱石，它比我看得更远。到那带走他同伙的河湾渡口把它举起来，看它给你显出什么。");
         this.add("campaign.tolkienmobs.page.wisdom.closing", "格罗芬德尔在手中转了转那块石头，递给你；有一瞬间，露台下方的水面仿佛静止了。");
-        this.add("campaign.tolkienmobs.page.wisdom3", "格罗芬德尔大人的智慧之三");
-        this.add("campaign.tolkienmobs.page.wisdom3.place", "最后家园之下的瀑布旁");
-        this.add("campaign.tolkienmobs.page.wisdom3.closing", "你回来了。你到达渡口时，可曾注意到我交给你的那颗绿柱石有什么变化？");
         this.add("campaign.tolkienmobs.page.regain", "重寻踪迹");
         this.add("campaign.tolkienmobs.page.regain.place", "索伦哈德埃拉丹的营地");
         this.add("campaign.tolkienmobs.page.regain.say.1", "消息比你先到了。格罗芬德尔大人给了你一块石头，这地方若还剩什么目力，就在那里面。");

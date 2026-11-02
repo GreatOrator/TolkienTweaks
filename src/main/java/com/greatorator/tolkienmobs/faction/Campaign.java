@@ -251,10 +251,6 @@ public final class Campaign extends SavedData {
     private static final String RIDER_RETURN_TITLE = "campaign.tolkienmobs.page.riderreport";
     /** Glorfindel's counsel at the waterfalls, which the notes put before ever touching the stone. */
     private static final String WISDOM_TITLE = "campaign.tolkienmobs.page.wisdom";
-    /** Wisdom III, the return to Glorfindel with the beryl: the reference's fourteenth quest. */
-    private static final String WISDOM3_TITLE = "campaign.tolkienmobs.page.wisdom3";
-    private static final String WISDOM3_PLACE = "campaign.tolkienmobs.page.wisdom3.place";
-    private static final String WISDOM3_CLOSING = "campaign.tolkienmobs.page.wisdom3.closing";
     /** The return to the camp with the caves searched, where the stone's next asking is decided. */
     private static final String REGAIN_TITLE = "campaign.tolkienmobs.page.regain";
     /**
@@ -381,15 +377,13 @@ public final class Campaign extends SavedData {
                     new Page(Quest.Kind.DIALOGUE, Quest.personTarget(GLORFINDEL), 1, 10, 4,
                             ELLADAN, GLORFINDEL, WISDOM_TITLE, "campaign.tolkienmobs.page.wisdom.place",
                             "campaign.tolkienmobs.page.wisdom.closing"),
-                    // 13 - the beryl held aloft at the ford, and 14 - carried back to the hand that lent
-                    // it. The reference writes them as two quests, and they are two pages again: the ford
-                    // is where the stone is asked, Glorfindel is where it is given back and asked what it
-                    // did.
+                    // 13 - the beryl held aloft at the ford, and carried straight back to the hand that
+                    // lent it. The reference writes it as one quest: Glorfindel says return to me once you
+                    // have done so, and the next words out of him are what the stone showed. The old
+                    // campaign's page between the two is not in the reference and is not here.
                     new Page(Quest.Kind.SURVEY, FORD_TARGET, 1, 10, 4,
                             GLORFINDEL, GLORFINDEL, "campaign.tolkienmobs.page.beryl",
                             "campaign.tolkienmobs.page.beryl.place", "campaign.tolkienmobs.page.beryl.closing"),
-                    new Page(Quest.Kind.DIALOGUE, Quest.personTarget(GLORFINDEL), 1, 10, 4,
-                            GLORFINDEL, GLORFINDEL, WISDOM3_TITLE, WISDOM3_PLACE, WISDOM3_CLOSING),
                     // 19 - Regaining the Trail. Glorfindel leaves the stone in the player's care and sends
                     // them back to Elladan, who decides where it must be brought next. It is the
                     // reference's nineteenth quest and its eighth page.
