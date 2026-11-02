@@ -36,8 +36,15 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 public final class RoadHud {
     private static final Identifier LAYER = Identifier.fromNamespaceAndPath(MODID, "road");
 
-    /** The plate across the top of the screen, and how long the arrow's shaft is. */
-    private static final int PLATE_TOP = 6;
+    /**
+     * How far above the bottom edge the plate sits, and how long the arrow's shaft is.
+     * <p>
+     * The bottom of the screen rather than the top, because the top is where a boss bar is drawn: the
+     * needle stood there and a Murder Frog's health covered it completely. This height is above the
+     * hotbar, the experience bar, the pipe's draw bar and the courage line, so nothing in the pack or
+     * in vanilla reaches it.
+     */
+    private static final int ABOVE_BOTTOM = 88;
     private static final int PLATE_HEIGHT = 34;
     private static final int PLATE = 30;
     private static final int SHAFT = 9;
@@ -88,9 +95,10 @@ public final class RoadHud {
         // The plate is the point: an arrow and a line of text over open sky reads as a rendering
         // glitch rather than as a compass, and this has to be recognisable at a glance from a walk.
         int width = Math.max(PLATE, font.width(line)) + 12;
-        graphics.fill(centre - width / 2, PLATE_TOP, centre + width / 2, PLATE_TOP + PLATE_HEIGHT, BACKING);
-        drawArrow(graphics, centre, PLATE_TOP + 11, octant);
-        graphics.text(font, line, centre - font.width(line) / 2, PLATE_TOP + 22, PARCHMENT, true);
+        int plateTop = graphics.guiHeight() - ABOVE_BOTTOM;
+        graphics.fill(centre - width / 2, plateTop, centre + width / 2, plateTop + PLATE_HEIGHT, BACKING);
+        drawArrow(graphics, centre, plateTop + 11, octant);
+        graphics.text(font, line, centre - font.width(line) / 2, plateTop + 22, PARCHMENT, true);
     }
 
     /** One of the eight stamps: a shaft outward from the centre and a two-stroke head at its tip. */

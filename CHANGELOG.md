@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The road's needle is drawn above the hotbar rather than at the top of the screen.** Vanilla draws a boss bar across the top centre, and any boss in the neighbourhood covered the needle completely; the plate now sits where nothing in the game or in the pack reaches it.
+
 - **A hall's milestone stands in the middle of the hall.** The stone a taken page plants at the hall was put at the herald's own feet, which is wherever he happened to be standing and could be the inside of the man himself; the room he stands in is read instead - the floor he can walk across without leaving it - and the stone goes at its middle.
 
 - **A page now points the way to the ground it names.** An arrow at the top of the screen gives the bearing and a rounded distance to the place the page in hand sends the player, and points at the town a named body is kept in when the page asks for a person rather than a place; it is a hint and not an answer, so the country still has to be crossed, and it clears itself when the page is paid.
