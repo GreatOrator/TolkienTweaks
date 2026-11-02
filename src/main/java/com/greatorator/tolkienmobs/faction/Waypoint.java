@@ -54,6 +54,16 @@ public final class Waypoint {
             if (site == null || !site.dimension().equals(level.dimension())) return null;
             return new Mark("quest.tolkienmobs.site", site.centre(), level.dimension());
         }
+        // A page of the stone that asks for caves names no ground at all, and the crag it is asked in is
+        // not the page's either: the campaign pitches it when the page is taken, so it is a site and not a
+        // place. Read as neither, this was the one page with no needle in the book - a search of the dark,
+        // with three hills already cut for it and no direction to any of them.
+        if (quest.kind() == Quest.Kind.SURVEY) {
+            Sites.Site cave = Sites.siteOf(player);
+            if (cave != null && Sites.isCave(cave.structure()) && cave.dimension().equals(level.dimension())) {
+                return new Mark("quest.tolkienmobs.cave", cave.centre(), level.dimension());
+            }
+        }
         // A page of the stone names ground as plainly as any other page, and its spot is null because
         // the page is not settled by arriving: it is settled by holding the beryl over a place. Read as
         // nothing but a spot, the ford page was a page with no direction at all.
@@ -114,22 +124,24 @@ public final class Waypoint {
      * has already written - a page whose ground is still being placed will say it when it exists.
      */
     private static void sayBearing(ServerPlayer player, Quest quest) {
-        String named = quest.namedGround();
-        if (named.isEmpty() && quest.spot() != null && quest.spot().place() != null) named = quest.spot().place();
-        if (named.isEmpty() || !(player.level() instanceof ServerLevel level)) return;
-        Places.Place where = Places.place(level, named);
-        if (where == null || !where.dimension().equals(level.dimension())) return;
-        if (!TOLD.add(player.getUUID() + "|" + named)) return;
+        Mark mark = ground(player, quest);
+        if (mark == null || !(player.level() instanceof ServerLevel level)) return;
+        // Only the marks that are a place and not a phrase: a site page already has its own sentence,
+        // and "somewhere out past the ridge lies four hundred blocks north" is not one of them.
+        if (!mark.label().startsWith("place.tolkienmobs.")
+                && !mark.label().equals("quest.tolkienmobs.cave")
+                && !mark.label().equals("hud.tolkienmobs.road.mark")) return;
+        if (!mark.dimension().equals(level.dimension())) return;
         BlockPos from = player.blockPosition();
-        BlockPos to = where.centre();
-        int away = (int) Math.sqrt(from.distSqr(to));
+        int away = (int) Math.sqrt(from.distSqr(mark.pos()));
         if (away < 64) return;
+        if (!TOLD.add(player.getUUID() + "|" + mark.label() + "|" + mark.pos().toShortString())) return;
         player.sendSystemMessage(net.minecraft.network.chat.Component.translatable(
                 "campaign.tolkienmobs.bearing",
-                net.minecraft.network.chat.Component.translatable("place.tolkienmobs." + named),
+                net.minecraft.network.chat.Component.translatable(mark.label()),
                 net.minecraft.network.chat.Component.literal(String.valueOf(away)),
                 net.minecraft.network.chat.Component.translatable(
-                        "campaign.tolkienmobs.bearing." + compass(from, to)))
+                        "campaign.tolkienmobs.bearing." + compass(from, mark.pos())))
                 .withStyle(net.minecraft.ChatFormatting.GRAY));
     }
 

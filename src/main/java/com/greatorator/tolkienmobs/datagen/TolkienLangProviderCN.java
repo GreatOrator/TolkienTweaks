@@ -852,6 +852,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("quest.tolkienmobs.survey", "在 %s 处洞穴里高举石头，每一处都要下到最深处");
         this.add("quest.tolkienmobs.summary.site", "有人告诉了你该往哪去，而在你走近到能看见之前，那里什么都没有：那地方是随着你的到来才立起来的。");
         this.add("quest.tolkienmobs.site", "山脊那边的一处地方");
+        this.add("quest.tolkienmobs.cave", "\u5de8\u77f3\u6240\u95ee\u7684\u6d1e\u7a74");
         this.add("quest.tolkienmobs.turn_in_elsewhere", "这不是我能收的：那一页该交给%s。");
         this.add("quest.tolkienmobs.turn_in", "把它交给%s");
         this.add("quest.tolkienmobs.summary.dialogue", "有些差事靠嘴而不是靠手；话没有听完，事情就不算完。");
