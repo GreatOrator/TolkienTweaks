@@ -163,7 +163,10 @@ public final class Places extends SavedData {
             // itself, and named rather than built for that reason.
             "thorenhad", ArdaMap.Country.TROLLSHAWS,
             // His fire is south of the road through the same country, not wherever the page was taken.
-            "barachen", ArdaMap.Country.TROLLSHAWS);
+            "barachen", ArdaMap.Country.TROLLSHAWS,
+            // The crossing the beryl is carried to is below the valley and a walk down the road
+            // from it, in the same hills, rather than wherever the page was taken.
+            "ford", ArdaMap.Country.TROLLSHAWS);
 
     /**
      * The cell of the drawing a name the maps pinpoint is asked for in, as {column, row}.
@@ -177,7 +180,9 @@ public final class Places extends SavedData {
     private static final Map<String, int[]> CANON_CELL = Map.of(
             "rivendell", new int[]{18, 12},
             "thorenhad", new int[]{19, 13},
-            "barachen", new int[]{18, 14});
+            "barachen", new int[]{18, 14},
+            // The ford is south-west of the valley: down the road, off it, and over the water.
+            "ford", new int[]{17, 13});
 
     /**
      * One place as this world has it: which of the catalogue it is, the dimension it stands in, the

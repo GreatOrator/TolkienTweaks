@@ -1846,6 +1846,29 @@ public final class Campaign extends SavedData {
     }
 
     /**
+     * Writes down the ground a page in hand names, when this world has never had it written.
+     * <p>
+     * A herald will not offer a walk to a place the world has not placed - the offer is checked, and the
+     * place is named from the drawing if it never was - but the campaign's own pages are a relay: they are
+     * handed over by the speaker before, not offered, and nothing checked their ground. A page that names
+     * a ford nobody has ever written is a page with two faults at once: the book can only say "the ford",
+     * and the needle has nothing to point at, so the player is told the name of a place and no way to find
+     * it. The ground is written here, once, and the needle is sent again the moment it exists, because the
+     * one it was sent with was empty.
+     */
+    private static void keepGroundWritten(ServerPlayer player) {
+        for (Quest page : QuestLedger.active(player)) {
+            if (!page.story() || page.isSite()) continue;
+            Quest.Spot spot = page.spot();
+            if (spot == null || spot.place() == null) continue;
+            if (Places.place(player.level(), spot.place()) != null) continue;
+            if (Places.ensure(player, spot.place(), spot.radius()) == null) continue;
+            Waypoint.send(player, QuestLedger.active(player));
+            return;
+        }
+    }
+
+    /**
      * Puts the quarry a front's page names on the ground ahead of the player, so the page can be walked
      * the moment it is taken.
      * <p>
@@ -2104,6 +2127,7 @@ public final class Campaign extends SavedData {
         keepQuarryComing(player);
         keepMatuna(player);
         keepStoneInHand(player);
+        keepGroundWritten(player);
         keepValleyStanding(player);
         keepGlorfindel(player);
         keepCaveOpen(player);

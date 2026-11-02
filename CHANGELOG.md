@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The page that names the ford now has a ford.** A story page handed over by a speaker, rather than offered by a herald, no longer goes unchecked: the ground it names is written into the world when it has never been, so the book's place has a direction and the needle appears. The ford itself is placed below the valley, down the road, instead of at the player's feet.
+
 - **A speaker the book names is always somewhere reachable.** If the valley's square has no room for an Elf at the step they keep, they are stood on open ground in front of the player rather than not stood at all, and the log records it.
 
 - **A speaker is stood beside their step rather than lost to it.** Glorfindel stands eight blocks south of the valley's middle, and that step is only walkable ground if the square was laid exactly there; in a wood it was not, the ground check answered nothing, and he was never stood at all. Keepers now look outward from their step for ground that will take them.
