@@ -521,7 +521,7 @@ public final class Campaign extends SavedData {
                     // company has gone, and Elrond sends the player north after the dwarves, to Glóin's
                     // camp at the east end of the pass. It is a page of walking and one conversation, not a
                     // kill, because what the chapter has to say first is that the road has changed hands.
-                    new Page(Quest.Kind.DIALOGUE, Quest.personTarget(GLOIN), 1, 5, 3,
+                    new Page(Quest.Kind.DIALOGUE, Quest.personTarget(GLOIN), 1, 50, 3,
                             ELROND, GLOIN, TOCAMP_TITLE, TOCAMP_PLACE, TOCAMP_CLOSING,
                             TOCAMP_SILVER, TOCAMP_BRONZE, 0))
     );
