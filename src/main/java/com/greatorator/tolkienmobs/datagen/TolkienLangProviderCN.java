@@ -1068,7 +1068,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("place.tolkienmobs.barachen.line", "巨魔荒野中一名斥候的营地");
         this.add("place.tolkienmobs.barachen", "巴拉亨的营地");
         this.add("place.tolkienmobs.gloin", "格罗因的营地");
-        this.add("place.tolkienmobs.gloin.line", "山口东端的一座矮人营地");
+        this.add("place.tolkienmobs.gloin.line", "迷雾山脉东侧、卡兰拉斯山下的矮人营地");
         this.add("place.tolkienmobs.gundabad", "刚达巴");
         this.add("place.tolkienmobs.gundabad.line", "多尔汉德家族占据的古老矮人要塞");
         this.add("place.tolkienmobs.vault", "刚达巴地库");
