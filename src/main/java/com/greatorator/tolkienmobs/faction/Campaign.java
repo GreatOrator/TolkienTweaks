@@ -32,6 +32,9 @@ import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -48,6 +51,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 /**
  * How far a player has got on each of the three fronts, which is the one thing the mod was missing to
@@ -2536,31 +2540,30 @@ public final class Campaign extends SavedData {
      * <p>
      * The reference gives most pages a purse or an object, and the objects are what make a chapter feel
      * like a country looking after its own: waybread for a road it is sending you down, a blade after a
-     * report it believed, a drink after three chambers in the dark. Ores are the one thing deliberately
-     * left out - "equipment or ores" is the reference's own hedge, and ore is the version nobody keeps.
+     * report it believed, a potion after three chambers in the dark. What goes in this table has to work -
+     * the pack's decorative "fancy" swords, picks and shields are props and are not rewards - and the
+     * trinkets are rationed to one in the chapter, because a charm is a powerful thing to be able to hold.
      * <p>
      * The list and the reason for each choice are in {@code docs/chapter-one-rewards.md}, so the next
      * chapter's rewards start from a decision rather than from the pool again.
      */
-    private record Gift(String item, int count) {
+    private record Gift(Supplier<ItemStack> stack) {
     }
 
     private static final Map<String, Gift> PAGE_GIFTS = Map.of(
-            TROUBLES_TITLE, new Gift("tolkienmobs:food_cram", 4),
-            HORSE_TITLE, new Gift("tolkienmobs:food_lembas", 2),
-            RIDER_RETURN_TITLE, new Gift("tolkienmobs:item_fancysword", 1),
-            "campaign.tolkienmobs.page.caves", new Gift("tolkienmobs:drink_miruvor", 2),
-            DEPARTURE_TITLE, new Gift("tolkienmobs:faction_charm_west", 1));
+            TROUBLES_TITLE, new Gift(() -> new ItemStack(TolkienItems.CRAM.get(), 4)),
+            HORSE_TITLE, new Gift(() -> new ItemStack(TolkienItems.LEMBAS.get(), 2)),
+            RIDER_RETURN_TITLE, new Gift(() -> new ItemStack(TolkienItems.SWORD_AMMOLITE.get(), 1)),
+            "campaign.tolkienmobs.page.caves",
+            new Gift(() -> PotionContents.createItemStack(Items.POTION, Potions.HEALING)),
+            DEPARTURE_TITLE, new Gift(() -> new ItemStack(TolkienItems.FACTION_CHARM_WEST.get(), 1)));
 
     /** Hands over the item a page carries, where the reference gives one rather than a purse. */
     private static void payGift(ServerPlayer player, Page page) {
         Gift gift = PAGE_GIFTS.get(page.title());
         if (gift == null) return;
-        Identifier id = Identifier.tryParse(gift.item());
-        // The item registry is defaulted in 26.1, so an id nothing answers to would pay air rather than
-        // fail: the guard is what keeps a typo in the table from quietly emptying a page.
-        if (id == null || !BuiltInRegistries.ITEM.containsKey(id)) return;
-        ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.getValue(id), gift.count());
+        ItemStack stack = gift.stack().get();
+        if (stack.isEmpty()) return;
         if (!player.getInventory().add(stack)) player.drop(stack, false);
     }
 
