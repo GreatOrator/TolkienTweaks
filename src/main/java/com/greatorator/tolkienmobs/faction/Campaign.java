@@ -2097,12 +2097,16 @@ public final class Campaign extends SavedData {
      * smiths and the mithril that came up with it. The enchantment is left out rather than handed over as a
      * blank book nobody can put on anything.
      * <p>
+     * The mithril is paid as the metal itself, not as Bilbo's nugget: that nugget is a keepsake the notes
+     * carry through the Shire and the Lonely Mountain, worth nothing in a pack and owed to another page,
+     * where four nuggets of the real thing are stock a smith can use.
+     * <p>
      * The standing the page pays is a tenth of the notes' hundred - ten of the West's - because a hundred is
      * most of a rank in this pack and the cave search is one act of several.
      */
     private static void payCaveReward(ServerPlayer player) {
         handOver(player, TolkienItems.ITEM_REFORGEDSWORD.get(), 1);
-        handOver(player, TolkienItems.ITEM_MITHRILNUGGET.get(), 4);
+        handOver(player, TolkienItems.NUGGET_MITHRIL.get(), 4);
     }
 
     /** Puts a reward in the pack, or on the ground at the player's feet when the pack has no room for it. */
