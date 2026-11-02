@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **A speaker is stood beside their step rather than lost to it.** Glorfindel stands eight blocks south of the valley's middle, and that step is only walkable ground if the square was laid exactly there; in a wood it was not, the ground check answered nothing, and he was never stood at all. Keepers now look outward from their step for ground that will take them.
+
 - **The beryl is put in the hand the moment Glorfindel says "take this".** The stone used to be handed over when the survey it is lent for was taken from him, which is a visit later, so the line that lends it could be heard with nothing in the pack.
 
 - **The missing rider's report is carried back, not asked for again.** Finding the black horse now puts the report to Elladan in the book itself, because the bridle is the subject of that beat and not a page he hands over. Walking back with the saddle in the pack and speaking to him finishes it in one visit, instead of a player being sent to the camp twice for one errand.

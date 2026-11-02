@@ -129,6 +129,11 @@ public final class Campaign extends SavedData {
     /** How near the valley a player has to be for him to be standing in it, in blocks. */
     private static final double GLORFINDEL_REACH = 128.0D;
     /**
+     * How far from its written step a keeper may be stood, in blocks. A step is paving only if the ground
+     * is where the survey said; a wood, a rock or a laid square a pace off is enough to lose the spot.
+     */
+    private static final int KEEPER_SEARCH = 6;
+    /**
      * Elladan, and the camp of Thorenhad he keeps in the Trollshaws. The beryl changes hands at the end of
      * the cave search rather than at the start: the notes have Elladan take the stone back to Glorfindel
      * himself once the three caves have been asked, and it is he who sends the player on to the next lead.
@@ -1237,7 +1242,7 @@ public final class Campaign extends SavedData {
         if (!level.getEntities((Entity) null, new AABB(valley.centre()).inflate(GLORFINDEL_REACH),
                 seen -> seen.entityTags().contains(GLORFINDEL_TAG)).isEmpty()) return;
         int[] spot = VALLEY_STANDS.get(GLORFINDEL_TAG);
-        BlockPos stand = floorOf(level, valley.centre().offset(spot[0], 0, spot[1]));
+        BlockPos stand = floorNear(level, valley.centre().offset(spot[0], 0, spot[1]));
         if (stand == null) return;
         Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
         if (!(entity instanceof Mob elf)) return;
@@ -1286,7 +1291,7 @@ public final class Campaign extends SavedData {
         // The camp is a camp before it is a man: the tent goes down first, and he is stood at it in the
         // same look, so there is never an Elf in a field waiting for a tent that never comes.
         if (!standTent(level, camp)) return;
-        BlockPos stand = floorOf(level, camp.centre());
+        BlockPos stand = floorNear(level, camp.centre());
         if (stand == null) return;
         Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
         if (!(entity instanceof Mob elf)) return;
@@ -1328,7 +1333,7 @@ public final class Campaign extends SavedData {
         // The camp is a camp before it is a man: the tent goes down first, so there is never a scout in a
         // field waiting for a tent that never comes.
         if (!standTent(level, fire)) return;
-        BlockPos stand = floorOf(level, fire.centre());
+        BlockPos stand = floorNear(level, fire.centre());
         if (stand == null) return;
         Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
         if (!(entity instanceof Mob scout)) return;
@@ -1572,7 +1577,7 @@ public final class Campaign extends SavedData {
         if (!level.getEntities((Entity) null, new AABB(valley.centre()).inflate(VALLEY_REACH),
                 seen -> seen.entityTags().contains(tag)).isEmpty()) return;
         int[] spot = VALLEY_STANDS.getOrDefault(tag, VALLEY_STANDS.get(ELROND_TAG));
-        BlockPos stand = floorOf(level, valley.centre().offset(spot[0], 0, spot[1]));
+        BlockPos stand = floorNear(level, valley.centre().offset(spot[0], 0, spot[1]));
         if (stand == null) return;
         Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
         if (!(entity instanceof Mob elf)) return;
@@ -2158,7 +2163,7 @@ public final class Campaign extends SavedData {
             steadyShade(level, site.centre());
             return;
         }
-        BlockPos stand = floorOf(level, site.centre());
+        BlockPos stand = floorNear(level, site.centre());
         if (stand == null) return;
         Entity entity = TolkienEntities.ENTITY_TTM_WITCHKING.get().create(level, EntitySpawnReason.EVENT);
         if (!(entity instanceof Mob king)) return;
@@ -2342,7 +2347,7 @@ public final class Campaign extends SavedData {
             double angle = Math.PI * 2.0D * guard / GUARD_COUNT;
             int x = middle.getX() + (int) Math.round(Math.cos(angle) * GUARD_RING);
             int z = middle.getZ() + (int) Math.round(Math.sin(angle) * GUARD_RING);
-            BlockPos stand = floorOf(level, new BlockPos(x, middle.getY(), z));
+            BlockPos stand = floorNear(level, new BlockPos(x, middle.getY(), z));
             if (stand == null) continue;
             Entity entity = TolkienEntities.ENTITY_TTM_NAZGUL.get().create(level, EntitySpawnReason.EVENT);
             if (!(entity instanceof Mob keeper)) continue;
@@ -2457,6 +2462,31 @@ public final class Campaign extends SavedData {
     private static boolean stands(ServerLevel level, BlockPos feet) {
         return level.getBlockState(feet).isAir() && level.getBlockState(feet.above()).isAir()
                 && level.getBlockState(feet.below()).isSolid();
+    }
+
+    /**
+     * The nearest ground to a written spot that a body can actually stand on, looked for in rings.
+     * <p>
+     * An Elf is stood on a step from the middle of the square - the southern road, the library door, the
+     * guest house - and those steps are only paving if the valley was laid where the survey said it would
+     * be, which in a wood it often was not. {@link #floorOf} answers nothing for a step whose two blocks
+     * are a tree trunk, or whose ground is more than a pace off the height the middle was surveyed at,
+     * and the keeper then returned without a word: the road up to the valley was walked by a player owed
+     * counsel by an Elf who was never stood. The search widens instead, so the speaker is beside the road
+     * and not missing from it.
+     */
+    @Nullable
+    private static BlockPos floorNear(ServerLevel level, BlockPos around) {
+        for (int ring = 0; ring <= KEEPER_SEARCH; ring++) {
+            for (int dx = -ring; dx <= ring; dx++) {
+                for (int dz = -ring; dz <= ring; dz++) {
+                    if (Math.max(Math.abs(dx), Math.abs(dz)) != ring) continue;
+                    BlockPos stand = floorOf(level, around.offset(dx, 0, dz));
+                    if (stand != null) return stand;
+                }
+            }
+        }
+        return null;
     }
 
     /** The campaign's own page if the player is carrying it and has not finished it yet. */
