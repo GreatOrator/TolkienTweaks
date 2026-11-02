@@ -1829,11 +1829,29 @@ public final class Campaign extends SavedData {
      * written for a village - without a home it walks toward the nearest meeting point, which from a valley
      * means out of the gate and across the country. A body counts toward the number by its tag, so one that
      * is killed is replaced on a later visit and one that is only reloaded is not doubled.
+     * <p>
+     * A world that has been visited many times carries a dozen of each name, because every version of this
+     * that ever stood a body too many left it there for good and nothing has ever dismissed one. So the
+     * square is read by slot rather than by number: the surplus is sent on, and a name that is missing is
+     * stood again where that Elf walks.
      */
     private static void standValleyElves(ServerLevel level, Places.Place valley) {
-        int walking = level.getEntities((Entity) null, new AABB(valley.centre()).inflate(VALLEY_REACH),
-                seen -> seen.entityTags().contains(VALLEY_ELF_TAG)).size();
-        for (int i = walking; i < VALLEY_ELVES && i < VALLEY_PATHS.length; i++) {
+        // Each name has a slot of its own on the tag, so the square is read by name rather than by count:
+        // the first body wearing a slot stays, every other body wearing it is dismissed, and a slot with
+        // nobody in it is filled where that Elf walks. Counting tagged bodies keeps a visit from standing
+        // a seventh Elf and says nothing about two of them both being called Erestor.
+        boolean[] standing = new boolean[VALLEY_ELVES];
+        for (Entity elf : level.getEntities((Entity) null, new AABB(valley.centre()).inflate(VALLEY_REACH),
+                found -> found.entityTags().contains(VALLEY_ELF_TAG))) {
+            int slot = valleyElfSlot(elf);
+            if (slot < 0 || standing[slot]) {
+                elf.discard();
+                continue;
+            }
+            standing[slot] = true;
+        }
+        for (int i = 0; i < VALLEY_ELVES; i++) {
+            if (standing[i]) continue;
             BlockPos stand = floorOf(level,
                     valley.centre().offset(VALLEY_PATHS[i][0], 0, VALLEY_PATHS[i][1]));
             if (stand == null) continue;
@@ -1845,11 +1863,25 @@ public final class Campaign extends SavedData {
                     level.getRandom().nextFloat() * 360.0F, 0.0F);
             elf.setPersistenceRequired();
             elf.addTag(VALLEY_ELF_TAG);
+            elf.addTag(valleyElfTag(i));
             elf.setHomeTo(valley.centre(), VALLEY_HOME);
             elf.setCustomName(Component.translatable("campaign.tolkienmobs.valley_elf." + (i + 1)));
             elf.setCustomNameVisible(true);
             level.addFreshEntity(elf);
         }
+    }
+
+    /** Which of the six a valley Elf is, or -1 for a body that carries no slot of its own. */
+    private static int valleyElfSlot(Entity elf) {
+        for (int i = 0; i < VALLEY_ELVES; i++) {
+            if (elf.entityTags().contains(valleyElfTag(i))) return i;
+        }
+        return -1;
+    }
+
+    /** The tag that says which of the six an Elf is, so one name is kept to one body. */
+    private static String valleyElfTag(int slot) {
+        return VALLEY_ELF_TAG + ":" + (slot + 1);
     }
 
     /**
