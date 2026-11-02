@@ -251,7 +251,11 @@ public final class QuestGivers {
             // war to a face it has never seen. The plate asks the same question of the same number, so a
             // mark can no longer advertise work the body refuses to hand over - and turn-in runs above this,
             // so a page already in hand is still paid for whoever carries it.
-            if (FactionStandings.standing(player, herald) < FactionRank.STRANGER.threshold()) {
+            // The rank is the hall's gate rather than the chapter's: a country does not trust its war to a
+            // face it has never seen, but the speakers of the line - Aragorn at the gate, Elrond in his
+            // library - know the player by the tale they are in the middle of.
+            if (Campaign.holder(player, herald).equalsIgnoreCase(campaignName(herald))
+                    && FactionStandings.standing(player, herald) < FactionRank.STRANGER.threshold()) {
                 player.sendSystemMessage(Component.translatable("quest.tolkienmobs.herald.stranger")
                         .withStyle(ChatFormatting.GRAY));
                 speak(player, target, true);
@@ -263,12 +267,12 @@ public final class QuestGivers {
                 return;
             }
             Quest page = Campaign.page(player, herald);
-            // A page that belongs to another body is not this herald's to hand out. The work behind it is
-            // somebody else's to give and to take, and handing it here would put it in a book without the
-            // player ever meeting the one who asked for them.
-            if (page != null && !page.turnIn().isEmpty() && !page.turnIn().equalsIgnoreCase(name)) {
+            // The chapter is a relay of speakers, so the body in front of the player hands a page over only
+            // where the line says that page is theirs. Any other giver points them at the one it is.
+            String holder = Campaign.holder(player, herald);
+            if (!holder.equalsIgnoreCase(name)) {
                 player.sendSystemMessage(Component.translatable("quest.tolkienmobs.herald.elsewhere",
-                        Component.literal(page.turnIn())).withStyle(ChatFormatting.GRAY));
+                        Component.literal(holder)).withStyle(ChatFormatting.GRAY));
                 return;
             }
             // A walk to ground this world has never had named is a page nobody can finish, so it
