@@ -240,6 +240,8 @@ public final class Campaign extends SavedData {
     private static final String MATUNA_NAME = "campaign.tolkienmobs.matuna.name";
     private static final String MATUNA_TRACKS = "campaign.tolkienmobs.matuna.tracks";
     private static final String MATUNA_TITLE = "campaign.tolkienmobs.page.matuna";
+    /** What the needle calls the ground the Wood-troll keeps, before a player has reached it. */
+    private static final String LAIR_MARK = "quest.tolkienmobs.lair";
     private static final String MATUNA_CLOSING = "campaign.tolkienmobs.page.matuna.closing";
     /** The notes' own price on the kill, paid in the coin the old campaign paid in, and its experience. */
     private static final int MATUNA_SILVER = 8;
@@ -2333,6 +2335,29 @@ public final class Campaign extends SavedData {
     public static boolean namesBody(Quest quest, Entity victim) {
         return quest.kind() == Quest.Kind.HUNT && MATUNA.equals(quest.target())
                 && victim.entityTags().contains(MATUNA_TAG);
+    }
+
+    /**
+     * The ground a hunt page names, for the needle: the creature while he stands, or the lair he was
+     * stood in when he does not.
+     * <p>
+     * A page that names a creature rather than a kind of mob has no place to walk to in the usual way -
+     * its target is a body, not a spot - and read as neither it left the needle empty at the one page
+     * whose whole errand is a walk into the wood. The lair is ground the campaign pitches when the page
+     * is taken, so it is there to point at long before the creature is; once he is up the needle follows
+     * him instead, since a bearing to a cave mouth is no help once a player is inside it.
+     */
+    @Nullable
+    public static Waypoint.Mark quarryMark(ServerPlayer player, Quest quest) {
+        if (quest.kind() != Quest.Kind.HUNT || !MATUNA.equals(quest.target())) return null;
+        if (!(player.level() instanceof ServerLevel level)) return null;
+        for (Entity found : level.getEntities(player, player.getBoundingBox().inflate(MATUNA_SEARCH),
+                found -> found.entityTags().contains(MATUNA_TAG))) {
+            return new Waypoint.Mark(MATUNA_NAME, found.blockPosition(), level.dimension());
+        }
+        Sites.Site lair = Sites.siteOf(player);
+        if (lair == null || !level.dimension().equals(lair.dimension())) return null;
+        return new Waypoint.Mark(LAIR_MARK, lair.centre(), level.dimension());
     }
 
     /**

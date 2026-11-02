@@ -94,6 +94,11 @@ public final class Waypoint {
         // would be better and is not something a server can promise: it is only standing while the page
         // is the one it belongs to, and a needle that vanished when a keeper unloaded would be worse
         // than one that points at the town he lives in.
+        // A page whose quarry is a named body rather than a kind of mob: the campaign stands that one
+        // creature itself, so the ground behind the page is the lair it was pitched in, not a mob that
+        // may be found anywhere. Read as nothing but a name, this was another page with no needle.
+        Mark quarry = Campaign.quarryMark(player, quest);
+        if (quarry != null) return quarry;
         String person = quest.person();
         if (person == null) return null;
         String place = Campaign.groundOf(person);
@@ -157,6 +162,7 @@ public final class Waypoint {
         // and "somewhere out past the ridge lies four hundred blocks north" is not one of them.
         if (!mark.label().startsWith("place.tolkienmobs.")
                 && !mark.label().equals("quest.tolkienmobs.cave")
+                && !mark.label().equals("quest.tolkienmobs.lair")
                 && !mark.label().equals("hud.tolkienmobs.road.mark")) return;
         if (!mark.dimension().equals(level.dimension())) return;
         BlockPos from = player.blockPosition();

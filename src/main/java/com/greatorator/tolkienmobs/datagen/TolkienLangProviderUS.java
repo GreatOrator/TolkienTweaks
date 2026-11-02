@@ -853,6 +853,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("quest.tolkienmobs.summary.site", "Somebody has told you where to go, and there is nothing there until you are close enough to see it: the place is built for you as you come.");
         this.add("quest.tolkienmobs.site", "somewhere out past the ridge");
         this.add("quest.tolkienmobs.cave", "the cave the stone is asking in");
+        this.add("quest.tolkienmobs.lair", "the Wood-trolls' lair");
         this.add("campaign.tolkienmobs.cave.troll", "the troll of %s");
         this.add("campaign.tolkienmobs.cave.guard", "Something heavy is breathing in the dark below.");
         this.add("quest.tolkienmobs.turn_in_elsewhere", "Not mine to take: that one belongs to %s.");
