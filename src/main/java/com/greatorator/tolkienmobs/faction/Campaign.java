@@ -331,6 +331,16 @@ public final class Campaign extends SavedData {
      * into are theirs.
      */
     private static final String CAVE_TROLL_TARGET = "tolkienmobs:entityttmtroll";
+    /** The tag the crag's keeper carries, which is how the next look knows the chamber is not empty. */
+    private static final String CAVE_TROLL_TAG = "tolkienmobs:cave_troll";
+    /** What the keeper is called: the cave the asking has reached, by its name. */
+    private static final String CAVE_TROLL_NAME = "campaign.tolkienmobs.cave.troll";
+    /** Said once when he stands, so a player walking in knows the chamber is not empty. */
+    private static final String CAVE_TROLL_GUARD = "campaign.tolkienmobs.cave.guard";
+    /** How near the crag a player has to be for its keeper to be stood up, in blocks. */
+    private static final int CAVE_TROLL_WAY = 64;
+    /** How far across the crag's middle the floor of its deepest chamber is looked for. */
+    private static final int CAVE_TROLL_RING = 10;
     private static final String CAVE_BANDRITH_TITLE = "campaign.tolkienmobs.page.cave.bandrith";
     private static final String CAVE_BANDRITH_PLACE = "campaign.tolkienmobs.page.cave.bandrith.place";
     private static final String CAVE_BANDRITH_CLOSING = "campaign.tolkienmobs.page.cave.bandrith.closing";
@@ -1373,6 +1383,84 @@ public final class Campaign extends SavedData {
         return surface >= feet.getY() + cover;
     }
 
+    /**
+     * Stands a troll in the crag while the stone's cave page is asking there.
+     * <p>
+     * The crags the campaign cuts are forty thousand blocks of rock with nothing living in them, and the
+     * page is finished by a kill at depth: with an empty chamber the search of the caves could not be paid
+     * at all. So the keeper is stood when the page is carried and the crag is built, at the bottom of the
+     * deepest chamber found, and never topped up - a kill at depth moves the page to the next crag, while
+     * one killed somewhere shallow is still owed a body down here.
+     */
+    private static void keepCaveTroll(ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel level)) return;
+        Quest stone = stoneQuest(player);
+        if (stone == null || stone.complete() || !stone.namedGround().isEmpty()) return;
+        Sites.Site site = Sites.siteOf(player);
+        if (site == null || !Sites.isCave(site.structure()) || !site.built()) return;
+        if (!level.dimension().equals(site.dimension())) return;
+        if (site.centre().distToCenterSqr(player.position()) > CAVE_TROLL_WAY * CAVE_TROLL_WAY) return;
+        if (caveTrollNear(player)) return;
+        BlockPos stand = caveFloor(level, site.centre());
+        if (stand == null) return;
+        Entity entity = TolkienEntities.ENTITY_TTM_TROLL.get().create(level, EntitySpawnReason.EVENT);
+        if (!(entity instanceof Mob troll)) return;
+        troll.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D,
+                level.getRandom().nextFloat() * 360.0F, 0.0F);
+        troll.setPersistenceRequired();
+        troll.setCustomName(Component.translatable(CAVE_TROLL_NAME, Component.literal(caveName(stone))));
+        troll.setCustomNameVisible(true);
+        troll.addTag(CAVE_TROLL_TAG);
+        troll.addTag(CAVE_TROLL_TAG + "_" + player.getUUID());
+        if (!level.addFreshEntity(troll)) return;
+        player.sendSystemMessage(Component.translatable(CAVE_TROLL_GUARD).withStyle(ChatFormatting.DARK_GREEN));
+    }
+
+    /**
+     * The bottom of the deepest chamber under a crag's middle, or null when the rock has no floor in it.
+     * <p>
+     * Read by walking across the middle a ring at a time and keeping the lowest stand any column offers,
+     * because the template's own middle is as likely to be a wall as a floor: what is wanted is somewhere
+     * a body can be stood with sixteen blocks of mountain over its head, not the arithmetic centre of the
+     * build. A stand outside the mountain has no rock over it and is refused by the same test the stone
+     * makes when the player raises it, so the keeper is always where the page can be answered.
+     */
+    @Nullable
+    private static BlockPos caveFloor(ServerLevel level, BlockPos centre) {
+        BlockPos deepest = null;
+        for (int ring = 0; ring <= CAVE_TROLL_RING; ring++) {
+            for (int dx = -ring; dx <= ring; dx++) {
+                for (int dz = -ring; dz <= ring; dz++) {
+                    if (Math.max(Math.abs(dx), Math.abs(dz)) != ring) continue;
+                    BlockPos column = centre.offset(dx, 0, dz);
+                    if (!level.hasChunkAt(column)) continue;
+                    BlockPos stand = deepStand(level, column);
+                    if (stand != null && (deepest == null || stand.getY() < deepest.getY())) deepest = stand;
+                }
+            }
+        }
+        return deepest;
+    }
+
+    /** The highest air in one column with a floor under it and rock over it, or null for none. */
+    @Nullable
+    private static BlockPos deepStand(ServerLevel level, BlockPos column) {
+        for (int dy = 20; dy >= -24; dy--) {
+            BlockPos at = column.offset(0, dy, 0);
+            if (!level.getBlockState(at).isAir() || !level.getBlockState(at.above()).isAir()) continue;
+            if (!level.getBlockState(at.below()).blocksMotion()) continue;
+            if (!underRock(level, at, CAVE_DEEP)) continue;
+            return at;
+        }
+        return null;
+    }
+
+    /** Whether the crag's keeper is already standing in it, tagged rather than counted. */
+    private static boolean caveTrollNear(ServerPlayer player) {
+        return !player.level().getEntities(player, player.getBoundingBox().inflate(CAVE_TROLL_WAY * 2),
+                found -> found.entityTags().contains(CAVE_TROLL_TAG)).isEmpty();
+    }
+
     /** What the stone says in a cave: picked by the cave rather than by the player, so it says it again next time. */
     private static Component caveReading(BlockPos at) {
         int which = Math.floorMod(at.hashCode(), CAVE_READINGS) + 1;
@@ -2374,6 +2462,7 @@ public final class Campaign extends SavedData {
         keepValleyStanding(player);
         keepGlorfindel(player);
         keepCaveOpen(player);
+        keepCaveTroll(player);
         keepElladan(player);
         keepBarachen(player);
         keepElrond(player);

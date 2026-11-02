@@ -2074,6 +2074,8 @@
   "quest.tolkienmobs.rider.coming": "Something is waiting on the road ahead. It has been waiting a long time.",
   "quest.tolkienmobs.site": "somewhere out past the ridge",
   "quest.tolkienmobs.cave": "the cave the stone is asking in",
+  "campaign.tolkienmobs.cave.troll": "the troll of %s",
+  "campaign.tolkienmobs.cave.guard": "Something heavy is breathing in the dark below.",
   "quest.tolkienmobs.site.bearing": "The work lies in %s, away to the %s.",
   "quest.tolkienmobs.site.bearing.only": "The work lies away to the %s.",
   "quest.tolkienmobs.site.country": "The work lies in %s.",

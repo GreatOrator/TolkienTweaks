@@ -2062,6 +2062,8 @@
   "quest.tolkienmobs.rider.coming": "前方的路上有东西在等着。它已经等了很久。",
   "quest.tolkienmobs.site": "山脊那边的一处地方",
   "quest.tolkienmobs.cave": "\u5de8\u77f3\u6240\u95ee\u7684\u6d1e\u7a74",
+  "campaign.tolkienmobs.cave.troll": "%s的食人妖",
+  "campaign.tolkienmobs.cave.guard": "黑暗中有什么沉重的东西在呼吸。",
   "quest.tolkienmobs.site.bearing": "这活儿在%s，往%s边。",
   "quest.tolkienmobs.site.bearing.only": "这活儿在%s边。",
   "quest.tolkienmobs.site.country": "这活儿在%s。",
