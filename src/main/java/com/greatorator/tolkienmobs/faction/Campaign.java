@@ -1542,6 +1542,12 @@ public final class Campaign extends SavedData {
         if (square == null) return false;
         int floor = seatOf(level, cornerOf(valley.centre(), 0, 0, square), square);
         if (floor == Integer.MIN_VALUE) return false;
+        // The paving is laid into a hole rather than under a hill. The floor is the highest ground under
+        // the square, so on a slope the hillside above it hangs over the plaza and the trees come up
+        // through the middle of it: the air over the square's own footprint is taken out first, and the
+        // pieces then fill the floor that was cleared. It only ever runs on the visit that lays the
+        // valley, since a built valley is never laid again.
+        clearAbove(level, cornerOf(valley.centre(), 0, 0, square), square, floor);
         boolean whole = true;
         for (Part part : VALLEY_PARTS) {
             StructureTemplate piece = valleyPiece(level, part.name());
@@ -1593,6 +1599,46 @@ public final class Campaign extends SavedData {
         return floor;
     }
 
+    /** How much air is kept over the square, in blocks: taller than any piece the valley lays. */
+    private static final int PLAZA_AIR = 16;
+
+    /**
+     * Takes the air over a piece's footprint, so a valley cut into a hillside has a plaza rather than a
+     * hillside with paving under it. Only the visit that lays the valley calls this, and that visit only
+     * happens where nothing of the valley stands yet, so nothing a player raised there is cleared later.
+     */
+    private static void clearAbove(ServerLevel level, BlockPos corner, StructureTemplate piece, int floor) {
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        int wide = piece.getSize().getX();
+        int deep = piece.getSize().getZ();
+        for (int dx = 0; dx < wide; dx++) {
+            for (int dz = 0; dz < deep; dz++) {
+                for (int dy = 1; dy <= PLAZA_AIR; dy++) {
+                    cursor.set(corner.getX() + dx, floor + dy, corner.getZ() + dz);
+                    if (!level.hasChunkAt(cursor)) continue;
+                    if (level.getBlockState(cursor).isAir()) continue;
+                    level.setBlock(cursor, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), 2);
+                }
+            }
+        }
+    }
+
+    /**
+     * Names whatever stones the valley's own templates carry. The stone's place in the square is written
+     * into the piece that stands there, which is where a building's middle is actually known, rather than
+     * into a coordinate here that goes stale the moment a piece is moved - and a piece with no stone in it
+     * simply names nothing.
+     */
+    private static void nameValleyStones(ServerLevel level, ServerPlayer player, Places.Place valley) {
+        String name = Component.translatable("place.tolkienmobs." + SUMMON_PLACE).getString();
+        for (Part part : VALLEY_PARTS) {
+            StructureTemplate piece = valleyPiece(level, part.name());
+            if (piece == null) continue;
+            Stones.nameLaid(level, cornerOf(valley.centre(), part.dx(), part.dz(), piece),
+                    piece.getSize(), name, player);
+        }
+    }
+
     /** Fills the ground under a piece that has been laid, so nothing on a slope stands on air. */
     private static void underpin(ServerLevel level, BlockPos corner, int wide, int deep) {
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
@@ -1631,7 +1677,13 @@ public final class Campaign extends SavedData {
         Places.Place valley = Places.place(level, SUMMON_PLACE);
         if (valley == null || !valley.dimension().equals(level.dimension())) return;
         if (valley.centre().distToCenterSqr(player.position()) > VALLEY_REACH * VALLEY_REACH) return;
-        if (!valleyBuilt(level, valley)) standValley(level, valley);
+        if (!valleyBuilt(level, valley)) {
+            standValley(level, valley);
+            // A stone the pieces carry is named by the visit that lays them, rather than planted at a
+            // coordinate the class has to know: the template says where the stone is, and this says
+            // what it is called.
+            nameValleyStones(level, player, valley);
+        }
         standValleyElves(level, valley);
     }
 

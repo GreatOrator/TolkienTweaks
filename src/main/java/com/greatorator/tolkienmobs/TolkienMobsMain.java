@@ -32,6 +32,7 @@ import com.greatorator.tolkienmobs.network.manager.ConversationDoneManager;
 import com.greatorator.tolkienmobs.network.manager.ConversationManager;
 import com.greatorator.tolkienmobs.network.manager.FactionStandingsSyncManager;
 import com.greatorator.tolkienmobs.network.manager.QuestAbandonManager;
+import com.greatorator.tolkienmobs.network.manager.QuestReturnManager;
 import com.greatorator.tolkienmobs.network.manager.CourageSyncManager;
 import com.greatorator.tolkienmobs.network.manager.QuestSyncManager;
 import com.greatorator.tolkienmobs.network.manager.SpawnFallenLeafFromPacket;
@@ -233,6 +234,7 @@ public class TolkienMobsMain {
         registrar.playToClient(QuestSyncManager.TYPE, QuestSyncManager.STREAM_CODEC, QuestSyncManager::handle);
         registrar.playToClient(CourageSyncManager.TYPE, CourageSyncManager.STREAM_CODEC, CourageSyncManager::handle);
         registrar.playToServer(QuestAbandonManager.TYPE, QuestAbandonManager.STREAM_CODEC, QuestAbandonManager::handle);
+        registrar.playToServer(QuestReturnManager.TYPE, QuestReturnManager.STREAM_CODEC, QuestReturnManager::handle);
     }
 
         @EventBusSubscriber(modid = MODID, value = Dist.CLIENT)

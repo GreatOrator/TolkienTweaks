@@ -298,6 +298,59 @@ public final class QuestLedger extends SavedData {
         return paid;
     }
 
+    /** How far from the giver a player has to be before the walk back is worth a road of its own. */
+    private static final double RETURN_REACH = 48.0D;
+    /** How often the book may walk somebody back, in ticks: enough that it cannot be used as a lift. */
+    private static final long RETURN_COOLDOWN = 400L;
+    /** When each player was last walked back. */
+    private static final Map<UUID, Long> RETURNED = new HashMap<>();
+
+    /**
+     * Walks a player back to the body who gave them a page they have finished.
+     * <p>
+     * This is the answer to a chapter that would otherwise need a stone outside every hall: the walk back
+     * over ground already crossed is not the work, and the work is what the page is about. Only a story
+     * page that is done is answered, and only one a body actually handed over - a page with no origin has
+     * nowhere to walk to. Somebody already within sight of the giver is told so rather than moved, so this
+     * is never a shortcut across the last few blocks, and ground since built over is refused rather than
+     * dropping the player inside it.
+     */
+    public static void returnToGiver(ServerPlayer player, int slot) {
+        if (!(player.level() instanceof net.minecraft.server.level.ServerLevel level)) return;
+        List<Quest> quests = row(player);
+        if (slot < 0 || slot >= quests.size()) return;
+        Quest quest = quests.get(slot);
+        if (!quest.story() || !quest.complete()) return;
+        net.minecraft.core.BlockPos at = quest.origin();
+        if (at == null || net.minecraft.core.BlockPos.ZERO.equals(at)) return;
+        if (player.blockPosition().distSqr(at) <= RETURN_REACH * RETURN_REACH) {
+            player.sendSystemMessage(Component.translatable("quest.tolkienmobs.return.near")
+                    .withStyle(ChatFormatting.GRAY));
+            return;
+        }
+        long now = level.getGameTime();
+        if (now < RETURNED.getOrDefault(player.getUUID(), 0L)) return;
+        net.minecraft.core.BlockPos stand = null;
+        for (int dy = 0; dy <= 3; dy++) {
+            net.minecraft.core.BlockPos tryAt = at.above(dy);
+            if (!level.hasChunkAt(tryAt)) break;
+            if (level.getBlockState(tryAt).isAir() && level.getBlockState(tryAt.above()).isAir()) {
+                stand = tryAt;
+                break;
+            }
+        }
+        if (stand == null) {
+            player.sendSystemMessage(Component.translatable("quest.tolkienmobs.return.blocked")
+                    .withStyle(ChatFormatting.GRAY));
+            return;
+        }
+        player.teleportTo(level, stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D,
+                java.util.Set.of(), player.getYRot(), player.getXRot(), false);
+        RETURNED.put(player.getUUID(), now + RETURN_COOLDOWN);
+        player.sendSystemMessage(Component.translatable("quest.tolkienmobs.return.made")
+                .withStyle(ChatFormatting.GOLD));
+    }
+
     // ---- offers ----
 
     /** Notes what a giver is asking for, and tells the player so their nameplate shows it. */

@@ -548,6 +548,27 @@ rule is about. If the answer is "nothing", the page needs either a follow-on iss
 issues one, or a pointer to the body who hands the next over - and if it is the last of its line, a closing
 that names what the war still wants.
 
+## The way back
+
+A page finished in the field is carried back to the body who gave it, and that walk is a journey the
+chapter used to answer with a stone outside every hall. Stones are the wrong answer to it: a stone is a
+landmark, and one per hall turns a map into a list of lift points. So the walk back is offered where it is
+actually owed. The book grows a `Return` on a finished page, and only when the player is more than
+forty-eight blocks from the giver who handed it over. `QuestReturnManager` carries the slot;
+`QuestLedger.returnToGiver` decides again on the server, refusing a page that is not finished, a giver the
+player is standing beside, and ground since built over, and it will not answer more than once every twenty
+seconds.
+
+Buildings that do want a stone carry it themselves. A milestone block written into a template is named by
+the visit that lays the building (`Stones.nameLaid`), so its coordinate travels with the piece instead of
+being written down in code - the number in the class would be wrong the moment a piece was moved. The
+valley's square carries its own, and the air over that square is cleared to sixteen blocks when it is first
+laid, so a hillside or a stand of trees does not grow up through the plaza.
+
+Travellers are not monuments either. A giver whose offer nobody has taken goes after half an hour, with the
+offer, so a long-lived world does not fill with immortal strangers holding pages nobody will read; a giver
+whose work was taken stays, because that is the body it is carried back to.
+
 ## Retooling the line for the East and for Harad
 
 What a second line changes, and nothing else:

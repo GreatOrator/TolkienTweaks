@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **A finished page offers the way back.** A story page that is done and handed over more than
+  forty-eight blocks behind the player shows `Return` in the book, which asks the server to walk
+  them back to the giver. The server checks the page again, refuses to move somebody who is
+  already there or ground that has been built over, and answers at most once every twenty
+  seconds - so the chapter does not need a stone outside every hall.
+- **Stones travel with the buildings that carry them.** A milestone block written into a template
+  is named by the visit that lays it, instead of being planted at a coordinate written in code.
+- **The plaza keeps its air.** The valley's square clears sixteen blocks of air over its own
+  footprint when it is laid, so a hillside or a stand of trees no longer grows through the paving.
+- **Travellers with untaken work move on.** A naturally arrived giver whose offer nobody took
+  after half an hour is discarded along with the offer; one whose work was accepted stays, since
+  the page is carried back to them.
+
 - **A line that runs out says what is left of the war.** A settled page already named the body who
   holds the next one, but a front's last page named nobody: the book emptied and the chapter said
   nothing. The last page of a line now names every front that still has pages, and once none has,

@@ -957,6 +957,10 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.next.place", "Find them at %s.");
         this.add("campaign.tolkienmobs.line.other", "That is the last page of this line. %s has a line of its own, and a herald with work to give.");
         this.add("campaign.tolkienmobs.line.sealed", "Every front has run out of pages, and the war has not: the Rider is still out there, and any herald of the three will speak of him now.");
+        this.add("screen.tolkienmobs.quests.return", "Return");
+        this.add("quest.tolkienmobs.return.near", "You are already within sight of them.");
+        this.add("quest.tolkienmobs.return.blocked", "There is no room left to stand where they were.");
+        this.add("quest.tolkienmobs.return.made", "The road back is shorter than it was: you stand where the page was given.");
         this.add("alliance.tolkienmobs.west", "the West");
         this.add("alliance.tolkienmobs.east", "the East");
         this.add("alliance.tolkienmobs.harad", "the Harad");

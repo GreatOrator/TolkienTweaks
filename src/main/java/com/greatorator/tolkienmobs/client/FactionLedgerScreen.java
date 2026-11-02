@@ -11,6 +11,7 @@ import com.greatorator.tolkienmobs.faction.QuestLedger;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
 import com.greatorator.tolkienmobs.network.manager.QuestAbandonManager;
+import com.greatorator.tolkienmobs.network.manager.QuestReturnManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
@@ -123,6 +124,8 @@ public class FactionLedgerScreen extends Screen {
     private int storyTurn;
     /** Where the leaf's page arrows were drawn this frame, so a click can turn a page. */
     private final List<TurnSpot> turnSpots = new ArrayList<>();
+    /** The way back a finished page offers, as it was drawn: the slot it would walk to. */
+    private final List<ReturnSpot> returnSpots = new ArrayList<>();
 
     public FactionLedgerScreen() {
         this(Tab.ALLIANCES);
@@ -206,6 +209,7 @@ public class FactionLedgerScreen extends Screen {
         this.pointerY = mouseY;
         abandonSpots.clear();
         turnSpots.clear();
+        returnSpots.clear();
         if (armedSlot >= 0 && Util.getMillis() - armedAt > ARM_MILLIS) {
             armedSlot = -1;
         }
@@ -568,6 +572,18 @@ public class FactionLedgerScreen extends Screen {
             }
             graphics.text(this.font, fit(Component.translatable("quest.tolkienmobs.complete").getString(), w),
                     x, foot - 1, INK_GREEN, FLAT);
+            // The walk back is not the work. A finished page handed over somewhere the player has since
+            // walked away from offers a way back, and offers nothing from close by: the button is the road
+            // home, not a step over the last twenty blocks. The server decides again before moving anybody.
+            int slot = QuestLedger.clientQuests().indexOf(story);
+            if (slot >= 0 && farFromGiver(story)) {
+                String back = Component.translatable("screen.tolkienmobs.quests.return").getString();
+                int backW = this.font.width(back);
+                int backX = x + w - backW;
+                graphics.text(this.font, back, backX, foot - 1, INK_BLUE, FLAT);
+                graphics.outline(backX - 3, foot - 3, backW + 6, LINE + 3, PAGE_EDGE);
+                returnSpots.add(new ReturnSpot(slot, backX - 4, foot - 4, backW + 8, LINE + 5));
+            }
             return;
         }
         String counter = story.progress() + " / " + story.goal();
@@ -748,6 +764,14 @@ public class FactionLedgerScreen extends Screen {
                 playSound(TolkienSounds.LEDGER_PAGE.get(), spot.dir() > 0 ? 1.02F : 0.98F);
                 return true;
             }
+            for (ReturnSpot spot : returnSpots) {
+                if (event.x() < spot.x() || event.x() >= spot.x() + spot.w()) continue;
+                if (event.y() < spot.y() || event.y() >= spot.y() + spot.h()) continue;
+                // The server owns the book and the world: this names a slot in it and nothing more.
+                ClientPacketDistributor.sendToServer(new QuestReturnManager(spot.slot()));
+                playSound(TolkienSounds.LEDGER_PAGE.get(), 1.04F);
+                return true;
+            }
         }
         return super.mouseClicked(event, doubleClick);
     }
@@ -763,5 +787,16 @@ public class FactionLedgerScreen extends Screen {
 
     /** A page arrow on the story leaf: which way it turns, and where it was drawn. */
     private record TurnSpot(int dir, int x, int y, int w, int h) {
+    }
+
+    /** The way back from a finished page: the slot it walks to, and where the button was drawn. */
+    private record ReturnSpot(int slot, int x, int y, int w, int h) {
+    }
+
+    /** Whether the player has walked far enough from a page's giver that the way back is worth offering. */
+    private static boolean farFromGiver(Quest story) {
+        var player = Minecraft.getInstance().player;
+        if (player == null) return false;
+        return player.blockPosition().distSqr(story.origin()) > 48.0D * 48.0D;
     }
 }

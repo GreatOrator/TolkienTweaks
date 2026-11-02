@@ -87,6 +87,17 @@ public final class QuestGivers {
     private static final int MAX_SPAWN = 28;
     /** One giver at a time near a player: the offer is theirs, and a crowd of them reads as a bug. */
     private static final double NEAR = 64.0;
+    /**
+     * How long a traveller stands with work nobody has taken before moving on, in ticks: half an hour.
+     * One who has handed the work over is a body the player has to come back to, and is left alone; one
+     * whose offer is still lying in the road is scenery, and a long-lived world would otherwise fill with
+     * immortal strangers holding pages nobody will ever read.
+     */
+    private static final long GIVER_LIFETIME = 20L * 60L * 30L;
+    /** How far from the player travellers are swept for having stood too long, in blocks. */
+    private static final double SWEEP = 96.0D;
+    /** Where the world time a traveller arrived is kept, since an entity's own age starts at each load. */
+    private static final String BORN = "tolkienmobs:giver_born";
     /** The home area a hall giver is kept inside: the middle of the room, six blocks out. */
     private static final int HALL_RADIUS = 6;
     /** How far a planted giver looks for someone to watch, which is the room and the step outside it. */
@@ -103,6 +114,8 @@ public final class QuestGivers {
         if (player.tickCount % INTERVAL != 0) return;
         if (!(player.level() instanceof ServerLevel level)) return;
         if (!player.isAlive() || player.isSpectator()) return;
+        // Travellers nobody takes work from do not stand forever, whoever is looking at them.
+        sweepStaleGivers(level, player, level.getGameTime());
 
         // A fetch quest's progress is what the player is carrying, so it is read back here rather than
         // written on every pickup - once every five seconds is as often as the book needs it.
@@ -122,6 +135,33 @@ public final class QuestGivers {
         } else {
             // No ground to stand on: try again shortly rather than writing off the whole wait.
             QuestLedger.setNextGiver(player, now + 600L);
+        }
+    }
+
+    /**
+     * Lets travellers go who have stood with work nobody took for half an hour.
+     * <p>
+     * Only a giver still holding an unaccepted offer goes: once the work is taken they are the body it is
+     * carried back to, and the ledger would send the player to a name with nobody behind it. The offer goes
+     * with them, so the mark over where they stood stops pointing at a quiet road. The clock is kept on the
+     * body rather than in memory, so a traveller left in the wild while its chunk was unloaded is still old
+     * when somebody walks back into it.
+     */
+    private static void sweepStaleGivers(ServerLevel level, ServerPlayer player, long now) {
+        for (Entity body : level.getEntities(player, player.getBoundingBox().inflate(SWEEP),
+                seen -> seen.entityTags().contains(GIVER_TAG)
+                        && !seen.entityTags().contains(CAMPAIGN_GIVER_TAG))) {
+            long born = body.getPersistentData().getLong(BORN).orElse(0L);
+            if (born <= 0L) {
+                // A traveller from before this was written down starts its half hour now rather than
+                // going the moment a player first looks at it.
+                body.getPersistentData().putLong(BORN, now);
+                continue;
+            }
+            if (now - born < GIVER_LIFETIME) continue;
+            if (QuestLedger.offerOf(body.getUUID()) == null) continue;
+            QuestLedger.forgetGiver(player, body.getUUID());
+            body.discard();
         }
     }
 
@@ -148,6 +188,8 @@ public final class QuestGivers {
             giver.setCustomName(Quest.label(label));
             giver.setCustomNameVisible(true);
             giver.addTag(GIVER_TAG);
+            // When the work was put in their hand, so a traveller nobody talks to can move on later.
+            giver.getPersistentData().putLong(BORN, level.getGameTime());
             // The alliance is read once, and only decides the work this giver holds out: the clothes
             // belong to the giver standing in a hall, which carries an alliance tag of its own.
             Alliance employer = employer(player);

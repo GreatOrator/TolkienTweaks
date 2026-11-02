@@ -7,6 +7,7 @@ import com.greatorator.tolkienmobs.init.TolkienBlocks;
 import com.greatorator.tolkienmobs.util.block.MilestoneSettings;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -104,6 +105,47 @@ public final class Stones {
      * stair is not followed up into the rafters, and it is bounded by a reach that keeps an open door
      * from pulling the middle of the room out into the street.
      */
+    /**
+     * Names the stones a template has already laid, and answers how many it found.
+     * <p>
+     * A building knows where its own middle is, so a milestone written into the piece that stands there
+     * carries its coordinate with it: the piece is laid, and this reads the footprint back for anything
+     * that is a stone and gives it the name of the place. That is what keeps a stone's position out of a
+     * coordinate written down in this class - the number here would be wrong the moment a piece was moved,
+     * and a template with no stone in it simply names nothing.
+     * <p>
+     * A stone that already carries a name keeps it: this runs on the visit that lays a building, and a
+     * place somebody has since renamed must not be written over by a later visit.
+     */
+    public static int nameLaid(ServerLevel level, BlockPos corner, Vec3i size, String name,
+                               ServerPlayer player) {
+        if (name.isEmpty() || size.getX() <= 0 || size.getZ() <= 0) return 0;
+        int named = 0;
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        for (int dx = 0; dx <= size.getX(); dx++) {
+            for (int dy = 0; dy <= size.getY(); dy++) {
+                for (int dz = 0; dz <= size.getZ(); dz++) {
+                    cursor.set(corner.getX() + dx, corner.getY() + dy, corner.getZ() + dz);
+                    if (!level.hasChunkAt(cursor)) continue;
+                    if (!(level.getBlockEntity(cursor) instanceof MilestoneBlockEntity stone)) continue;
+                    MilestoneSettings settings = stone.getMilestoneSettings();
+                    boolean fresh = settings.name == null || settings.name.isEmpty()
+                            || settings.name.equals("Enter Name");
+                    stone.setMilestoneSettings(new MilestoneSettings(settings.distance, settings.dimension,
+                            fresh ? name : settings.name,
+                            settings.uuid == null || settings.uuid.isEmpty()
+                                    ? UUID.randomUUID().toString() : settings.uuid));
+                    stone.setChanged();
+                    BlockState state = level.getBlockState(cursor);
+                    level.sendBlockUpdated(cursor, state, state, 3);
+                    MilestoneHandler.updateMilestone(stone, player);
+                    if (fresh) named++;
+                }
+            }
+        }
+        return named;
+    }
+
     @Nullable
     private static BlockPos roomCentre(ServerLevel level, BlockPos from) {
         Set<BlockPos> floor = new HashSet<>();
