@@ -415,6 +415,10 @@ public final class Campaign extends SavedData {
                             ELLADAN, BARACHEN, BARACHEN_TITLE, "campaign.tolkienmobs.page.barachen.place", ""),
                     // 21 - Knowledge of Giants II: the Giant killed in the valley of the giants, and the
                     // kill carried back to Elladan. One land, two men's business, as the reference has it.
+                    // Barachen's words are "speak with this creature", and that is the trap rather than a
+                    // stage direction: the thing attacks. The player is sent to parley and ends up fighting,
+                    // which is what the reference wants the valley to do to them - do not soften it back
+                    // into a page of talk because the dialogue reads like an invitation.
                     new Page(Quest.Kind.HUNT, GIANT_TARGET, 1, 90, 6,
                             BARACHEN, ELLADAN, "campaign.tolkienmobs.page.giant",
                             "campaign.tolkienmobs.page.giant.place", "",
@@ -427,6 +431,10 @@ public final class Campaign extends SavedData {
                     new Page(Quest.Kind.DIALOGUE, Quest.personTarget(LEGOLAS), 1, 10, 6,
                             ELROND, LEGOLAS, LEGOLAS_TITLE, "campaign.tolkienmobs.page.legolas.place", ""),
                     // 24 - Aid of Mirkwood III: Legolas names the Wood-troll and hands over the hunt.
+                    // Legolas offers to take the player where the Wood-trolls are, and the errand reads as
+                    // an escort: it is a fight. The misdirection is the point of the page, so the hunt is
+                    // not a stand-in for a conversation that was cut - 1-13 is an area kill in the
+                    // reference's own list.
                     new Page(Quest.Kind.HUNT, MATUNA, 1, 120, 7,
                             LEGOLAS, LEGOLAS, MATUNA_TITLE, "campaign.tolkienmobs.page.matuna.place",
                             MATUNA_CLOSING, MATUNA_SILVER, MATUNA_BRONZE, MATUNA_XP),
