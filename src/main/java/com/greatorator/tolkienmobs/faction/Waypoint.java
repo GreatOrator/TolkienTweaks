@@ -54,6 +54,15 @@ public final class Waypoint {
             if (site == null || !site.dimension().equals(level.dimension())) return null;
             return new Mark("quest.tolkienmobs.site", site.centre(), level.dimension());
         }
+        // A page of the stone names ground as plainly as any other page, and its spot is null because
+        // the page is not settled by arriving: it is settled by holding the beryl over a place. Read as
+        // nothing but a spot, the ford page was a page with no direction at all.
+        String named = quest.namedGround();
+        if (!named.isEmpty()) {
+            Places.Place place = Places.place(level, named);
+            if (place == null || !place.dimension().equals(level.dimension())) return null;
+            return new Mark("place.tolkienmobs." + named, place.centre(), level.dimension());
+        }
         Quest.Spot spot = quest.spot();
         if (spot != null) {
             if (spot.place() == null) return new Mark("hud.tolkienmobs.road.mark", spot.centre(), level.dimension());

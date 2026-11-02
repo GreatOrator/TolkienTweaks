@@ -1859,13 +1859,31 @@ public final class Campaign extends SavedData {
     private static void keepGroundWritten(ServerPlayer player) {
         for (Quest page : QuestLedger.active(player)) {
             if (!page.story() || page.isSite()) continue;
+            // A page of the stone names its ground in a field of its own rather than in a spot, because
+            // it is settled by holding the beryl over a place instead of by arriving at it - and that is
+            // why this skipped the very page it was written for.
+            String named = namedGroundOf(page);
+            if (named == null) continue;
+            if (Places.place(player.level(), named) != null) continue;
             Quest.Spot spot = page.spot();
-            if (spot == null || spot.place() == null) continue;
-            if (Places.place(player.level(), spot.place()) != null) continue;
-            if (Places.ensure(player, spot.place(), spot.radius()) == null) continue;
+            int radius = spot == null ? Places.DEFAULT_RADIUS : spot.radius();
+            if (Places.ensure(player, named, radius) == null) continue;
+            LOGGER.info("Wrote {} for the page carried by {}", named, player.getName().getString());
             Waypoint.send(player, QuestLedger.active(player));
             return;
         }
+    }
+
+    /**
+     * The place a story page names, or null when it names none this world would have to write down. A
+     * walked page carries it in its spot; a page of the stone carries it as the ground to hold over.
+     */
+    @Nullable
+    private static String namedGroundOf(Quest page) {
+        Quest.Spot spot = page.spot();
+        if (spot != null) return spot.place();
+        String named = page.namedGround();
+        return named.isEmpty() ? null : named;
     }
 
     /**
