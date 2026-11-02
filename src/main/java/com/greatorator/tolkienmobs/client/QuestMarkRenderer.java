@@ -66,7 +66,7 @@ public final class QuestMarkRenderer {
         // give, which is the one time he really has nothing to say.
         if (herald != null) {
             if (mark == null && hasEarOf(herald) && Campaign.clientHasWork(herald)
-                    && isHerald(entity, herald)) {
+                    && holdsNextPage(entity, herald)) {
                 mark = new QuestLedger.Mark(QuestLedger.Mark.State.AVAILABLE, true);
             }
             Component plate = withOffice(event.getContent(), herald);
@@ -163,17 +163,17 @@ public final class QuestMarkRenderer {
     }
 
     /**
-     * Whether this body is the front's own herald rather than one of the line's speakers.
+     * Whether the body in front of the player is the one the line says holds this front's next page.
      * <p>
      * A speaker of the campaign wears the same clothes and the same tags as a hall's herald, because the
-     * right-click they answer is the same one - so the name is what tells them apart, which is the same
-     * answer {@link #heraldAlliance} reads. Without it every Elf of the valley was offered work in the
-     * herald's name, and Elrond stood in Rivendell advertising a page that was Legolas' to hand.
+     * right-click they answer is the same one, so the name is what tells them apart - and the name is on
+     * the line the client already has. Read by the clothes alone, every Elf of the valley advertised work
+     * in the herald's name, and Elrond stood in Rivendell offering a page that was Legolas' to hand. Read
+     * from the line, exactly one body wears the mark, and it is the body the page is waiting at.
      */
-    private static boolean isHerald(Entity entity, Alliance herald) {
-        if (!entity.entityTags().contains(QuestGivers.CAMPAIGN_GIVER_TAG)) return true;
+    private static boolean holdsNextPage(Entity entity, Alliance herald) {
         Component name = entity.getCustomName();
-        return name == null || QuestGivers.campaignName(herald).equals(name.getString());
+        return name != null && name.getString().equalsIgnoreCase(Campaign.clientHolder(herald));
     }
 
     /** What the plate says about one quest in hand. */

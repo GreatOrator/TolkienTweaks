@@ -756,6 +756,23 @@ public final class Campaign extends SavedData {
         return stage < line.size() ? named(line.get(stage).title()) : Component.empty();
     }
 
+    /**
+     * The body holding this front's next page, as the last synced stage reads it: the same answer
+     * {@link #holder} gives the server, worked out from the line rather than from a body's id.
+     * <p>
+     * The stage travels with the book and the line is common code, so a nameplate can say which body a
+     * page is waiting at without a packet of its own - which is the answer a plate needs, since a speaker
+     * of the line answers the same right-click as a hall's herald and cannot be told from him by clothes.
+     */
+    public static String clientHolder(Alliance alliance) {
+        List<Page> line = PAGE_LINES.get(alliance);
+        int stage = CLIENT[alliance.ordinal()];
+        if (stage >= 0 && stage < line.size() && !line.get(stage).giver().isEmpty()) {
+            return line.get(stage).giver();
+        }
+        return QuestGivers.campaignName(alliance);
+    }
+
     /** Where the front's current step happens, or an empty component when the page does not say. */
     public static Component clientPlace(Alliance alliance) {
         List<Page> line = PAGE_LINES.get(alliance);
