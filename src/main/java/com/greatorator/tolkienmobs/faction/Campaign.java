@@ -959,6 +959,49 @@ public final class Campaign extends SavedData {
     }
 
     /**
+     * What a player is told when a line runs out with the war still on. Every other gap is covered by
+     * {@link #announceNext}: a settled page names the body holding the next one and the ground they keep
+     * it on. The end of a line has no such body, so the fronts that still have pages are named instead,
+     * and once none of them has one, the Rider - who belongs to all three and is the step no front owns.
+     * A line that said nothing here would end the chapter by leaving the player in silence.
+     */
+    private static void sayWhatIsLeft(ServerPlayer player) {
+        if (riderStage(player) >= FINALE_STAGES) return;
+        boolean any = false;
+        for (Alliance alliance : Alliance.values()) {
+            if (stage(player, alliance) >= pages(alliance)) continue;
+            any = true;
+            player.sendSystemMessage(Component.translatable("campaign.tolkienmobs.line.other",
+                            Component.translatable("alliance.tolkienmobs." + alliance.id()))
+                    .withStyle(ChatFormatting.GOLD));
+        }
+        if (any) return;
+        player.sendSystemMessage(Component.translatable("campaign.tolkienmobs.line.sealed")
+                .withStyle(ChatFormatting.GOLD));
+    }
+
+    /**
+     * Puts a player back on the line when they join carrying nothing. The gap between one page and the
+     * next outlives a logout, and a player who comes back a week later has no memory of the sentence that
+     * closed the last page, so the pointer is said again rather than assumed.
+     */
+    public static void remindNext(ServerPlayer player) {
+        if (QuestLedger.carriesStory(player)) return;
+        if (nextStep(player, Alliance.WEST) != null) {
+            announceNext(player);
+            return;
+        }
+        sayWhatIsLeft(player);
+    }
+
+    /** The campaign's own stage: 0 while the Rider is out there, {@link #FINALE_STAGES} once it is over. */
+    public static int riderStage(ServerPlayer player) {
+        ensureLoaded(player.level());
+        Front[] row = PROGRESS.get(player.getUUID());
+        return row == null ? 0 : row[RIDER_SLOT].stage();
+    }
+
+    /**
      * Whether this body is the West's business at the stage the player is on: the page ahead is theirs to
      * hand over, or the one in the player's book is theirs to take back.
      */
@@ -2781,6 +2824,9 @@ public final class Campaign extends SavedData {
                 riderFound = MISSING_RIDER_TITLE.equals(paid.title());
             }
             row[alliance.ordinal()] = new Front(front.stage() + 1, null);
+            // A line that has just run out is the one moment the book empties with the war still
+            // on: it must not let go of the player without saying where the rest of it is.
+            if (front.stage() + 1 >= line.size()) sayWhatIsLeft(player);
             store(player).setDirty();
             if (riderFound) handOnward(player, alliance);
             sync(player);

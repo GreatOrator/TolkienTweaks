@@ -34,6 +34,7 @@ public final class FactionEvents {
         if (event.getEntity() instanceof ServerPlayer player) {
             FactionStandings.sync(player);
             QuestLedger.welcome(player);
+            Campaign.remindNext(player);
             QuestLedger.sync(player);
             CourageLedger.sync(player);
         }

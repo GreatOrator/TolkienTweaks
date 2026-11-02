@@ -955,6 +955,11 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.page.horse.closing", "Elladan marks the ground on his own map before he hands it back: south of the road, in the narrow channels, where the wall stands.");
         this.add("campaign.tolkienmobs.next.person", "The line goes on. %s holds the next page.");
         this.add("campaign.tolkienmobs.next.place", "Find them at %s.");
+        this.add("campaign.tolkienmobs.line.other", "That is the last page of this line. %s has a line of its own, and a herald with work to give.");
+        this.add("campaign.tolkienmobs.line.sealed", "Every front has run out of pages, and the war has not: the Rider is still out there, and any herald of the three will speak of him now.");
+        this.add("alliance.tolkienmobs.west", "the West");
+        this.add("alliance.tolkienmobs.east", "the East");
+        this.add("alliance.tolkienmobs.harad", "the Harad");
         this.add("campaign.tolkienmobs.page.barachen.place", "Barachen's camp, south of the East Road in the Trollshaws");
         this.add("campaign.tolkienmobs.page.barachen", "Knowledge of Giants I");
         this.add("campaign.tolkienmobs.page.giant.said", "Then you will have learned something the stone could not tell us. Go carefully, and come back to me whatever you find.");

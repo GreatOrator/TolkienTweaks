@@ -515,6 +515,39 @@ handed the mainline - and because it stands alone on its leaf it gets the room t
 to take: its sentence is wrapped to the leaf, and under it sit the giver, the place it was taken and
 what it pays.
 
+## No page leaves a player without a direction
+
+This is the one rule the chapter is checked against, and it comes from the older quest pages rather than
+from anything in the notes: **a player who is questing is never left not knowing what to do next or where
+to go to be told.** In the old series the quest page was never empty while there was work left - when a
+page completed, another page took its place, even when all that page said was who to see or where to walk.
+A player who has to guess is a player who stops playing, and this chapter is long enough that one silent
+gap is enough to lose them.
+
+How the line keeps it:
+
+- **A finished page names its successor.** `Campaign.announceNext` runs wherever a page is paid - the
+  turn-in at a giver, and the page that settles itself in the field - and prints who holds the next page
+  and the ground they keep it on (`campaign.tolkienmobs.next.person` / `.place`). A page is never the
+  last thing said to a player who is still being sent somewhere.
+- **A page whose next step is a walk back is issued at once.** The missing rider is the beat whose subject
+  is an object: the saddle comes off the horse and the report to Elladan is the walk home, so
+  `Campaign.handOnward` puts that page in the book the moment the ruin settles. The book is never empty
+  where the next page is the player's own errand.
+- **A line that runs out says what is left of the war.** `Campaign.sayWhatIsLeft` fires as a front's last
+  page settles: it names every front that still has pages, and once none has, the Rider - who belongs to
+  all three and is the one step no front owns. The end of a line is the only place the book empties
+  legitimately, and it still has something to say.
+- **A login carrying nothing is put back on the line.** `Campaign.remindNext` repeats the pointer for a
+  player who joins with an empty book, because the gap between two pages outlives a logout and a player
+  who comes back a week later has no memory of the sentence that closed the last page.
+
+**The rule for the next page written.** A new page is not finished until three questions answer yes: what
+does it ask, who takes it back, and what is the player holding when it is done? The third is the one this
+rule is about. If the answer is "nothing", the page needs either a follow-on issued the way `handOnward`
+issues one, or a pointer to the body who hands the next over - and if it is the last of its line, a closing
+that names what the war still wants.
+
 ## Retooling the line for the East and for Harad
 
 What a second line changes, and nothing else:

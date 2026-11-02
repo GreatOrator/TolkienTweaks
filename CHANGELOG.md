@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **A line that runs out says what is left of the war.** A settled page already named the body who
+  holds the next one, but a front's last page named nobody: the book emptied and the chapter said
+  nothing. The last page of a line now names every front that still has pages, and once none has,
+  the Rider - so the campaign is never handed back to the player without a direction.
+- **A player who joins carrying nothing is told again.** The pointer is repeated on login for a
+  player whose book is empty, because the gap between two pages outlives a logout.
+- **The rule is written down.** `docs/war-of-the-three-fronts.md` carries the no-empty-page rule
+  and the three questions a new page has to answer; `AGENTS.md` carries the short form.
+
 - **The beryl says how it is used.** The stone's tooltip now names the one thing it does: right-click to raise it aloft, because an item whose whole use is a right click over open air is an item that reads as decoration.
 
 - **The last step of the stone's page says what it wants.** Standing on the ground a page of the beryl names now says so once, with the one thing the page left to be guessed: hold the stone aloft there, in the air rather than on the milestone. Raising it out of reach now names the place and how far off it still is, and a place is read as a circle of ground rather than a sphere in the air - a ford is walked on its bank, not on the water its middle was surveyed on.

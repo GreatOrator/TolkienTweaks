@@ -17,6 +17,16 @@ git:
   - `Fixed` for any bug fixes.
 - **Tone**: Write concise, user-facing summary bullet points (do not just dump raw git commit logs).
 
+## Campaign Direction
+
+- **No page leaves a player without a direction.** The campaign comes from quest pages whose design rule
+  was that a player is never left not knowing what to do next: a completed page is always replaced by the
+  next one, or by the name of the body and the ground where the next one is handed over. Every new page,
+  front or beat keeps that. A page that settles leaves something behind - `Campaign.announceNext` for the
+  pointer, `Campaign.handOnward` for a page the player issues to themselves - and a line that runs out
+  names what is left of the war (`Campaign.sayWhatIsLeft`). The long form of the rule, with the reasons,
+  is in `docs/war-of-the-three-fronts.md`; check a new page against it before committing.
+
 # Project Core Guidelines & Agent Directives
 
 > **CRITICAL AUTOMATION NOTE:** the maintainer pushes to GitHub when they are ready to, and nothing

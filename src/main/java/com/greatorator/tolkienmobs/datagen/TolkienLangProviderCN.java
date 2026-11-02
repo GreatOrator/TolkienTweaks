@@ -943,6 +943,11 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("campaign.tolkienmobs.page.horse.closing", "埃拉丹先在他自己的地图上标出那片地方，然后才把地图递回来：路南，狭窄谷地，那道墙所在之处。");
         this.add("campaign.tolkienmobs.next.person", "线索仍在继续。下一页在%s手中。");
         this.add("campaign.tolkienmobs.next.place", "去%s找他。");
+        this.add("campaign.tolkienmobs.line.other", "这条线索的最后一页已经交出。%s仍有自己的线索，也有待你领取的工作。");
+        this.add("campaign.tolkienmobs.line.sealed", "三方的页面都已走完，战争却还未结束：骑手仍在外头，如今任何一位传令官都会向你提起他。");
+        this.add("alliance.tolkienmobs.west", "西方");
+        this.add("alliance.tolkienmobs.east", "东方");
+        this.add("alliance.tolkienmobs.harad", "哈拉德");
         this.add("campaign.tolkienmobs.page.barachen.place", "巴拉亨的营地，在巨魔荒野东大道以南");
         this.add("campaign.tolkienmobs.page.barachen", "巨人的知识 一");
         this.add("campaign.tolkienmobs.page.giant.said", "那你会知道一件宝石说不了的事。小心些，无论找到什么，都回来告诉我。");
