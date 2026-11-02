@@ -74,6 +74,20 @@ public final class Waypoint {
         return new Mark("place.tolkienmobs." + place, where.centre(), level.dimension());
     }
 
+    /**
+     * The step after the one just settled, pointed at through the ground the next speaker is kept on.
+     * Null when the line has run out, or when the next page is held by a body with no town of its own.
+     */
+    @Nullable
+    private static Mark onward(ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel level)) return null;
+        Campaign.Next next = Campaign.nextStep(player, Alliance.WEST);
+        if (next == null || next.place() == null) return null;
+        Places.Place where = Places.place(level, next.place());
+        if (where == null || !where.dimension().equals(level.dimension())) return null;
+        return new Mark("place.tolkienmobs." + next.place(), where.centre(), level.dimension());
+    }
+
     /** Sends the player the direction of the first page they are carrying, or an empty mark for none. */
     public static void send(ServerPlayer player, List<Quest> row) {
         Quest carried = null;
@@ -88,7 +102,10 @@ public final class Waypoint {
         // settled: a player walks out of the hall and up the road, and the stone that gets them back
         // has to be standing at the valley by the time they get there.
         if (carried != null) Stones.plant(player, carried);
-        Mark mark = carried == null ? null : ground(player, carried);
+        // Between pages the book is empty and the needle used to go blank, which was the one moment a
+        // player most needed it: the step is finished, and the next one belongs to somebody else. The
+        // line knows whose it is and where that body is kept, so the needle keeps its bearing.
+        Mark mark = carried != null ? ground(player, carried) : onward(player);
         PacketDistributor.sendToPlayer(player, mark == null
                 ? new WaypointManager("", BlockPos.ZERO, "", false)
                 : new WaypointManager(mark.label(), mark.pos(), mark.dimension().identifier().toString(), true));

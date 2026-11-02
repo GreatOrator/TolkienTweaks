@@ -901,6 +901,45 @@ public final class Campaign extends SavedData {
     }
 
     /**
+     * The step after the one in hand: the body holding this front's next page, and the ground the line
+     * keeps them on - which is null for a body the campaign does not keep in a place of its own, such as
+     * a front's herald, who is wherever his own hall was built.
+     */
+    public record Next(String person, String place) {
+    }
+
+    /**
+     * Who the chapter goes to next, or null when this front's line has run out and there is nobody left
+     * to speak to. Read from the page that is waiting rather than from the one just settled.
+     */
+    @Nullable
+    public static Next nextStep(ServerPlayer player, Alliance alliance) {
+        ensureLoaded(player.level());
+        if (page(player, alliance) == null) return null;
+        String person = holder(player, alliance);
+        if (person.isEmpty()) return null;
+        return new Next(person, groundOf(person));
+    }
+
+    /**
+     * Tells a player whose hand the chapter's next page is in, which is the one thing an empty book
+     * cannot say. A page names the work; the relay is the other half of it, and a player who has just
+     * finished a step is left holding a book with nothing in it and no way of knowing whether the fault
+     * is theirs. Said where a page is settled, so a player who logs back in is not told again.
+     */
+    public static void announceNext(ServerPlayer player) {
+        Next next = nextStep(player, Alliance.WEST);
+        if (next == null) return;
+        player.sendSystemMessage(Component.translatable("campaign.tolkienmobs.next.person", next.person())
+                .withStyle(ChatFormatting.GOLD));
+        if (next.place() != null) {
+            player.sendSystemMessage(Component.translatable("campaign.tolkienmobs.next.place",
+                    Component.translatable("place.tolkienmobs." + next.place()))
+                    .withStyle(ChatFormatting.GRAY));
+        }
+    }
+
+    /**
      * Whether this body is the West's business at the stage the player is on: the page ahead is theirs to
      * hand over, or the one in the player's book is theirs to take back.
      */

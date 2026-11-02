@@ -494,6 +494,7 @@ public final class QuestLedger extends SavedData {
         store(player).setDirty();
         pay(player, quest);
         sync(player);
+        Campaign.announceNext(player);
     }
 
     /**
@@ -556,6 +557,7 @@ public final class QuestLedger extends SavedData {
             quests.remove(slot);
             store(player).setDirty();
             sync(player);
+            Campaign.announceNext(player);
             return true;
         }
         return false;

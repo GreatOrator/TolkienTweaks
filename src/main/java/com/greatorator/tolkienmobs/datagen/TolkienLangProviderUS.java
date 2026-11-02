@@ -952,6 +952,8 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.page.cave.sholdroth.place", "the troll of Sholdroth, in a cave under the ruins of the narrow channels");
         this.add("campaign.tolkienmobs.page.cave.sholdroth.closing", "You have managed to kill the troll of Sholdroth.");
         this.add("campaign.tolkienmobs.page.horse.closing", "Elladan marks the ground on his own map before he hands it back: south of the road, in the narrow channels, where the wall stands.");
+        this.add("campaign.tolkienmobs.next.person", "The line goes on. %s holds the next page.");
+        this.add("campaign.tolkienmobs.next.place", "Find them at %s.");
         this.add("campaign.tolkienmobs.page.barachen.place", "Barachen's camp, south of the East Road in the Trollshaws");
         this.add("campaign.tolkienmobs.page.barachen", "Knowledge of Giants I");
         this.add("campaign.tolkienmobs.page.giant.said", "Then you will have learned something the stone could not tell us. Go carefully, and come back to me whatever you find.");

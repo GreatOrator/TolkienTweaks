@@ -713,6 +713,8 @@
   "campaign.tolkienmobs.page.audience.say.2": "A company of Elves from Mirkwood came to Imladris to consult with me, and one of them may know what manner of creature that was. Come up to the library and we will hear you out together.",
   "campaign.tolkienmobs.page.barachen": "Knowledge of Giants I",
   "campaign.tolkienmobs.page.barachen.place": "Barachen's camp, south of the East Road in the Trollshaws",
+  "campaign.tolkienmobs.next.person": "The line goes on. %s holds the next page.",
+  "campaign.tolkienmobs.next.place": "Find them at %s.",
   "campaign.tolkienmobs.page.barachen.reply.1": "A Giant? In the Trollshaws?",
   "campaign.tolkienmobs.page.barachen.reply.2": "And if it is only a tale?",
   "campaign.tolkienmobs.page.barachen.said": "Then you will have spent a day on the road and learned that scouts lie. Go anyway.",

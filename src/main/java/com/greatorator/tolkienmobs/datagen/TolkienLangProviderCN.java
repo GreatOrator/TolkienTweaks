@@ -940,6 +940,8 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("campaign.tolkienmobs.page.horse.reply.2", "我该从哪里入手？");
         this.add("campaign.tolkienmobs.page.horse.said", "路南，岩壁收拢、还有一道旧墙立在水上的地方。走那些狭窄谷地，记得要回来。");
         this.add("campaign.tolkienmobs.page.horse.closing", "埃拉丹先在他自己的地图上标出那片地方，然后才把地图递回来：路南，狭窄谷地，那道墙所在之处。");
+        this.add("campaign.tolkienmobs.next.person", "线索仍在继续。下一页在%s手中。");
+        this.add("campaign.tolkienmobs.next.place", "去%s找他。");
         this.add("campaign.tolkienmobs.page.barachen.place", "巴拉亨的营地，在巨魔荒野东大道以南");
         this.add("campaign.tolkienmobs.page.barachen", "巨人的知识 一");
         this.add("campaign.tolkienmobs.page.giant.said", "那你会知道一件宝石说不了的事。小心些，无论找到什么，都回来告诉我。");

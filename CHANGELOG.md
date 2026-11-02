@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **A finished page says whose hand the next one is in.** Between steps the book is empty and the needle went blank, which left a player who had just settled a page with no idea whether the fault was theirs. Settling a page now names the body holding the next one and the place they are kept in, and the needle keeps pointing at that town until the page is taken.
+
 - **A page to a built place is finished by standing in it, not by finding its exact middle.** The reach that counts as arriving was a flat twelve blocks, measured against the centre of the footprint - so a player standing in the ruin they had walked to, under its own milestone, was still a dozen blocks short and the page never settled. The reach now follows the building's size.
 
 - **The road's needle is drawn above the hotbar rather than at the top of the screen.** Vanilla draws a boss bar across the top centre, and any boss in the neighbourhood covered the needle completely; the plate now sits where nothing in the game or in the pack reaches it.

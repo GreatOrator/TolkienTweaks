@@ -713,6 +713,8 @@
   "campaign.tolkienmobs.page.audience.say.2": "有一队来自幽暗密林的精灵来到伊姆拉崔与我商议，其中一位或许认得出那是何种生物。到书库来吧，我们一起听你说。",
   "campaign.tolkienmobs.page.barachen": "巨人的知识 一",
   "campaign.tolkienmobs.page.barachen.place": "巴拉亨的营地，在巨魔荒野东大道以南",
+  "campaign.tolkienmobs.next.person": "线索仍在继续。下一页在%s手中。",
+  "campaign.tolkienmobs.next.place": "去%s找他。",
   "campaign.tolkienmobs.page.barachen.reply.1": "巨人？在巨魔荒野里？",
   "campaign.tolkienmobs.page.barachen.reply.2": "如果那只是传闻呢？",
   "campaign.tolkienmobs.page.barachen.said": "那你就在路上花掉了一天，并且得知斥候会说谎。还是去吧。",
