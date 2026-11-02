@@ -908,6 +908,50 @@ public final class Campaign extends SavedData {
         return null;
     }
 
+    /**
+     * Where a named body is standing, as near as the world can say: the body itself when it is out there,
+     * and otherwise the step the line keeps it on.
+     * <p>
+     * A page that says "speak with Glorfindel" was pointed at the valley, and the valley's middle is a
+     * fountain: the needle sent the player to the water and the Elf was eight blocks off it on the road.
+     * The middle of a place is where the place is, not where anybody is, so the ground a page of talk
+     * points at is the body's own stand - read off him while he is standing, since a keeper drifts about
+     * his post, and off {@link #VALLEY_STANDS} when he is not.
+     */
+    @Nullable
+    public static BlockPos standOf(ServerPlayer player, String person) {
+        String place = groundOf(person);
+        if (place == null || !(player.level() instanceof ServerLevel level)) return null;
+        Places.Place where = Places.place(level, place);
+        if (where == null || !where.dimension().equals(level.dimension())) return null;
+        String tag = keeperTag(person);
+        if (tag == null) return where.centre();
+        List<Entity> found = level.getEntities((Entity) null, new AABB(where.centre()).inflate(KEEPER_WAY),
+                seen -> seen.entityTags().contains(tag));
+        if (!found.isEmpty()) return found.getFirst().blockPosition();
+        int[] step = VALLEY_STANDS.get(tag);
+        return step == null ? where.centre() : where.centre().offset(step[0], 0, step[1]);
+    }
+
+    /**
+     * The tag a named keeper wears, or null when the name is nobody the line stands anywhere. Read off
+     * the name rather than written beside every page, so a page that names him at length still finds him.
+     */
+    @Nullable
+    public static String keeperTag(String person) {
+        if (person == null || person.isEmpty()) return null;
+        String lower = person.toLowerCase(java.util.Locale.ROOT);
+        if (lower.contains("glorfindel")) return GLORFINDEL_TAG;
+        if (lower.contains("elladan")) return ELLADAN_TAG;
+        if (lower.contains("barachen")) return BARACHEN_TAG;
+        if (lower.contains("elrond")) return ELROND_TAG;
+        if (lower.contains("legolas")) return LEGOLAS_TAG;
+        return null;
+    }
+
+    /** How far around a place its keeper is looked for, in blocks: a camp is wider than a square. */
+    private static final double KEEPER_WAY = 96.0D;
+
     public static String holder(ServerPlayer player, Alliance alliance) {
         ensureLoaded(player.level());
         List<Page> line = PAGE_LINES.get(alliance);

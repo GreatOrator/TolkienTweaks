@@ -206,6 +206,15 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
 
 ### Fixed
 
+- **The needle points at the body, not at the middle of the town.** A page that names somebody now
+  points at the ground that body is standing on - read off him while he is out there, off the line's
+  own stand points when he is not - instead of the middle of his place. Glorfindel's page led the
+  needle into the Rivendell fountain, because the middle of the valley's square is a fountain.
+- **"Speak with Glorfindel", not "speak with person:Glorfindel".** The prefix that says what a target
+  is was being printed into the objective line.
+- **Stones stay where buildings are.** A page of talk no longer plants a milestone where it sends the
+  player, and a stone is only planted at the place a page was taken when that place is a room, so the
+  line no longer scatters stones through camps and open ground.
 - **The Trollshaws' data is generated data again.** The biome was added to the generator and its tag list, but the files in the tree were a hand-written copy of what that generator writes, so the country was in the code and in none of the data: an old tree feature the game had dropped, and no tags at all, because the tag files were last written before the country existed. A data run writes both properly - the wood is plains oak and beech with birch on the lower ground and the uplands' pines above them, ferns, lichen, gravel, clay and sand where the rock shows, boulders, stumps and fallen timber - and the country is picked up by `overworld`, `forest`, `temperate`, `hostile` and `windswept` from the tags on the biome itself rather than being named in any of them. Nothing is lost by it: the run rewrote the two language files and both came back with the same 2187 keys.
 - **Arda's map and the dimension name the same biomes again.** The Trollshaws were added to the map's countries but not to the dimension's biome list, which is written beside it in the map's own order - seas, the north and the seaboard, the north-west, the Misty Mountains and the countries either side of them. The source compares the two counts as it is built and refuses a world where they differ, so the dimension failed to parse before a map could open. It is named between Firien and Lothlorien, where the map draws it.
 - **The Trollshaws no longer stop a world loading.** The biome's wood was drawn with `minecraft:trees_birch_and_oak`, which 26.1 took out of the game; the biome file was a hand-copied list stood beside the code that generates it, and its copy had not been regenerated since. A feature name nothing defines leaves the placed-feature registry unbound, and the registry is loaded before any world is, so the whole pack failed at the load screen rather than in the wood. Every other feature the biomes name was checked against the game's own registry beside it; this was the only name in the pack that had gone.

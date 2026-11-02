@@ -56,15 +56,22 @@ public final class Stones {
      */
     public static void plant(ServerPlayer player, Quest quest) {
         if (!quest.story()) return;
+        // A stone is a landmark, and a page of talk is a meeting: the stone a page earns is planted on
+        // ground it sends the player to walk, while a conversation already has a body standing at the end
+        // of it. Planting one beside every speaker put stones in fountains and camps, and the walk back
+        // from a finished page is the book's to answer now.
         Waypoint.Mark ground = Waypoint.ground(player, quest);
-        if (ground != null) plantAt(player, words(ground.label()), ground.pos());
+        if (ground != null && !quest.talks()) plantAt(player, words(ground.label()), ground.pos());
         String hall = quest.giver().isEmpty() ? "" : Quest.label(quest.giver()).getString();
         if (!hall.isEmpty() && player.level() instanceof ServerLevel level) {
             // The hall's stone belongs in the middle of the hall, not wherever the herald happened to
             // be standing when the page changed hands: a herald drifts about his own floor, and a stone
             // that follows him is a stone that ends up in a corner.
             BlockPos middle = roomCentre(level, quest.origin());
-            plantAt(player, hall, middle == null ? quest.origin() : middle);
+            // A stone belongs where a building stands: a room found is a room stoned, and a giver met in
+            // the open is not - a stone at every camp the line passes is a map full of them, and the walk
+            // back over open ground is what the finished page's Return is for.
+            if (middle != null) plantAt(player, hall, middle);
         }
     }
 

@@ -303,13 +303,25 @@ public record Quest(Kind kind, String target, int goal, int progress, String emp
                     Component.literal(String.valueOf(goal)), targetName());
             case LOCATION -> Component.translatable("quest.tolkienmobs.reach", targetName());
             case DIALOGUE -> leaf() != null
-                    ? Component.translatable("quest.tolkienmobs.read", targetName())
-                    : Component.translatable("quest.tolkienmobs.speak", targetName());
+                    ? Component.translatable("quest.tolkienmobs.read", bodyName())
+                    : Component.translatable("quest.tolkienmobs.speak", bodyName());
             case SURVEY -> namedGround().isEmpty()
                     ? Component.translatable("quest.tolkienmobs.survey",
                             Component.literal(String.valueOf(goal)))
                     : Component.translatable("quest.tolkienmobs.survey.place", targetName());
         };
+    }
+
+    /**
+     * A body's name as the book reads it: the name itself, without the prefix the target is written with.
+     * <p>
+     * The prefix is how a page says what kind of thing its target is, and it was never meant to be read:
+     * a page that said "speak with Glorfindel" printed "speak with person:Glorfindel", which reads as a
+     * broken page rather than as an Elf standing eight blocks away.
+     */
+    private Component bodyName() {
+        String person = person();
+        return person == null ? targetName() : Component.literal(person);
     }
 
     /** The alliance, item or mob the quest is about, named the way its own screen names it. */

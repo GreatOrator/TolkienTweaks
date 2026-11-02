@@ -80,7 +80,12 @@ public final class Waypoint {
         if (place == null) return null;
         Places.Place where = Places.place(level, place);
         if (where == null || !where.dimension().equals(level.dimension())) return null;
-        return new Mark("place.tolkienmobs." + place, where.centre(), level.dimension());
+        // The body, not the middle of the town: a place's centre is where the place is, and the body a
+        // page names is usually standing a step off it - Glorfindel's step is on the square's south road,
+        // while the middle of that square is a fountain. Pointed at the middle, the needle led into water.
+        BlockPos stand = Campaign.standOf(player, person);
+        return new Mark("place.tolkienmobs." + place,
+                stand == null ? where.centre() : stand, level.dimension());
     }
 
     /**
