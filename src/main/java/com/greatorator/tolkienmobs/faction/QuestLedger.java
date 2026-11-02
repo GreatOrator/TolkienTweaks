@@ -497,6 +497,14 @@ public final class QuestLedger extends SavedData {
         Campaign.announceNext(player);
     }
 
+    /** Whether the book holds a story page, which is what stands in for a pointer to the next one. */
+    public static boolean carriesStory(ServerPlayer player) {
+        for (Quest quest : row(player)) {
+            if (quest.story()) return true;
+        }
+        return false;
+    }
+
     /**
      * The page of talk this player is carrying and has not heard yet, which is what a giver opens
      * when they are asked for the rest of it. Null when the work in hand is not words.

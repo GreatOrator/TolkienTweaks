@@ -928,6 +928,9 @@ public final class Campaign extends SavedData {
      * is theirs. Said where a page is settled, so a player who logs back in is not told again.
      */
     public static void announceNext(ServerPlayer player) {
+        // A page that followed the last one into the book needs no pointer: the player is already
+        // carrying what there is to carry.
+        if (QuestLedger.carriesStory(player)) return;
         Next next = nextStep(player, Alliance.WEST);
         if (next == null) return;
         player.sendSystemMessage(Component.translatable("campaign.tolkienmobs.next.person", next.person())
@@ -1046,6 +1049,22 @@ public final class Campaign extends SavedData {
         // The one page whose subject is an object: he says hold out your hand, so the stone goes into
         // the hand here, in the room the words are said in.
         if (asksForStone(page)) giveStone(player, STONE_GIVEN);
+    }
+
+    /**
+     * Puts a front's next page in a player's book without their going back to ask for it.
+     * <p>
+     * The missing rider is the one beat of the chapter whose subject is an object. The notes take the dark
+     * saddle off the horse in the ruin and carry it back, so the report to Elladan is not a page he hands
+     * over - it is the walk back, with the tack in the pack. A player who finds the horse and is left
+     * holding an empty book has been sent to the camp twice for one errand: once for the page, and again
+     * for the answer to it.
+     */
+    private static void handOnward(ServerPlayer player, Alliance alliance) {
+        Quest next = page(player, alliance);
+        if (next == null) return;
+        noteHanded(player, alliance, next);
+        QuestLedger.accept(player, next);
     }
 
     /** Whether a page is the Elf-lord's stone: the survey of ground it is lent for. */
@@ -2543,6 +2562,7 @@ public final class Campaign extends SavedData {
             // not the frightened one they started as. The Rider's page needs no figure of its own -
             // felling one of the Nine already pays a deed, and his page asks for him twice.
             List<Page> line = PAGE_LINES.get(alliance);
+            boolean riderFound = false;
             if (front.stage() < line.size()) {
                 Page paid = line.get(front.stage());
                 CourageLedger.add(player, paid.courage());
@@ -2580,9 +2600,11 @@ public final class Campaign extends SavedData {
                     player.sendSystemMessage(Component.translatable(paid.closing())
                             .withStyle(ChatFormatting.GOLD));
                 }
+                riderFound = MISSING_RIDER_TITLE.equals(paid.title());
             }
             row[alliance.ordinal()] = new Front(front.stage() + 1, null);
             store(player).setDirty();
+            if (riderFound) handOnward(player, alliance);
             sync(player);
             return false;
         }
