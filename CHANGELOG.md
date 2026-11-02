@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The beryl is put in the hand the moment Glorfindel says "take this".** The stone used to be handed over when the survey it is lent for was taken from him, which is a visit later, so the line that lends it could be heard with nothing in the pack.
+
 - **The missing rider's report is carried back, not asked for again.** Finding the black horse now puts the report to Elladan in the book itself, because the bridle is the subject of that beat and not a page he hands over. Walking back with the saddle in the pack and speaking to him finishes it in one visit, instead of a player being sent to the camp twice for one errand.
 
 - **A finished page says whose hand the next one is in.** Between steps the book is empty and the needle went blank, which left a player who had just settled a page with no idea whether the fault was theirs. Settling a page now names the body holding the next one and the place they are kept in, and the needle keeps pointing at that town until the page is taken.

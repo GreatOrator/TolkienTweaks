@@ -2579,6 +2579,12 @@ public final class Campaign extends SavedData {
                     handOver(player, TolkienItems.ITEM_DARKSADDLE.get(), 1);
                 }
                 if (RIDER_RETURN_TITLE.equals(paid.title())) takeBridle(player);
+                // The lending is a sentence rather than an errand. Glorfindel says "take this" while he
+                // hears the report, so the stone has to be in the player's hand in that conversation -
+                // and it was not: the old rule handed it over when the survey it is lent for was taken,
+                // which is a visit later, so a player who had just been told to take the beryl walked
+                // out of the valley with nothing in their pack and no way to know they had been robbed.
+                if (WISDOM_TITLE.equals(paid.title())) giveStone(player, STONE_GIVEN);
                 // The stone goes back with the work it was lent for: an errand finished is the end of a
                 // loan rather than the beginning of a keepsake.
                 // The stone goes back with the chambers' tokens, which are the proof the search was
