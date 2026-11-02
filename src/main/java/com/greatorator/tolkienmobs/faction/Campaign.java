@@ -164,8 +164,6 @@ public final class Campaign extends SavedData {
      * keeps for the Elves - a place rather than a building, so nothing has to be raised for him - and the
      * page that walks there is titled after his library, which is how he is found again off the line.
      */
-    private static final String ARAGORN = "Aragorn";
-    private static final String ARAGORN_TAG = "tolkienmobs:aragorn";
     private static final String ELROND = "Elrond";
     private static final String ELROND_TAG = "tolkienmobs:elrond";
     private static final double VALLEY_REACH = 128.0D;
@@ -213,7 +211,6 @@ public final class Campaign extends SavedData {
      * than the inside of a wall.
      */
     private static final Map<String, int[]> VALLEY_STANDS = Map.of(
-            ARAGORN_TAG, new int[]{0, 18},
             GLORFINDEL_TAG, new int[]{0, 8},
             ELROND_TAG, new int[]{-18, 0},
             LEGOLAS_TAG, new int[]{-6, -15});
@@ -357,10 +354,12 @@ public final class Campaign extends SavedData {
                     // Elladan takes it, and so on down the line. The notes number the quests; this list is
                     // the order they are met in.
                     //
-                    // 8 - Troubles of Rivendell. Aragorn, at the gate of the valley, and Elrond in the
-                    // library who hears the errand.
+                    // 1-1 - Troubles of Rivendell. The chapter opens at the West's herald, who hands the
+                    // errand over at his bench the way he hands the front's own work, and Elrond hears it in
+                    // the library at the end of the walk. Everything past this page belongs to a speaker
+                    // rather than to a hall: the herald starts the chapter and the road carries it.
                     new Page(Quest.Kind.DIALOGUE, Quest.personTarget(ELROND), 1, 5, 3,
-                            ARAGORN, ELROND, TROUBLES_TITLE, TROUBLES_PLACE, TROUBLES_CLOSING),
+                            "", ELROND, TROUBLES_TITLE, TROUBLES_PLACE, TROUBLES_CLOSING),
                     // 9 - Where is the Horse and the Rider? Elrond explains the missing Rider and sends the
                     // player to his sons; Elladan hears it at Thorenhad.
                     new Page(Quest.Kind.DIALOGUE, Quest.personTarget(ELLADAN), 1, 5, 4,
@@ -1456,14 +1455,6 @@ public final class Campaign extends SavedData {
     }
 
     /**
-     * Aragorn, who meets the player at the gate of the valley and sets the chapter going: the reference
-     * opens with him, and the first page of the line is his to hand over and Elrond's to take.
-     */
-    private static void keepAragorn(ServerPlayer player) {
-        keepElfInValley(player, ARAGORN, ARAGORN_TAG);
-    }
-
-    /**
      * Stands one of the Elves in the valley while the page titled after their part of it is the step the
      * West is on, and for the page after it as well, so the page they hand can be taken off them. The
      * valley is one place and the pages do not overlap, so only one of them stands there at a time:
@@ -2009,7 +2000,6 @@ public final class Campaign extends SavedData {
         keepCaveOpen(player);
         keepElladan(player);
         keepBarachen(player);
-        keepAragorn(player);
         keepElrond(player);
         keepLegolas(player);
         Quest page = carriedCampaignPage(player);
