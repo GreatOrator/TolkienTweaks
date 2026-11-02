@@ -1860,12 +1860,15 @@ public final class Campaign extends SavedData {
         Sites.Site site = Sites.siteOf(player);
         // The crag already pitched is the one this asking is made in, so long as it has not been walked
         // into yet: a crag the player has already searched is the last asking's, and the next asking wants
-        // a hill of its own rather than a second walk to the first one. A site of another kind is another
-        // page's ground, and is left where it is.
-        if (site != null && (!Sites.isCave(site.structure()) || !site.found()
-                || site.structure().equals(cave))) {
-            return;
+        // a hill of its own rather than a second walk to the first one.
+        if (site != null && !Sites.isCave(site.structure())) {
+            // A site of another kind is another page's ground while that page is carried - and the
+            // leftovers of a page that is done. A crag is the one thing the stone's cave page cannot be
+            // answered without, so ground nobody is walking to any more is ground the crag may have.
+            if (carriesSitePage(player)) return;
+            site = null;
         }
+        if (site != null && (!site.found() || site.structure().equals(cave))) return;
         Sites.plan(player, cave, false);
     }
 
@@ -1875,6 +1878,14 @@ public final class Campaign extends SavedData {
      * reached. The notes name three caves and expect three walks, so the campaign cuts three crags rather
      * than raising one hill three times.
      */
+    /** Whether the book still carries a page whose ground is a site, which is whose site is not spare. */
+    private static boolean carriesSitePage(ServerPlayer player) {
+        for (Quest quest : QuestLedger.active(player)) {
+            if (quest.isSite()) return true;
+        }
+        return false;
+    }
+
     private static String caveFor(ServerPlayer player) {
         Quest stone = stoneQuest(player);
         return Sites.caveAt(stone == null ? 0 : stone.progress());
@@ -2358,6 +2369,7 @@ public final class Campaign extends SavedData {
         keepMatuna(player);
         keepStoneInHand(player);
         keepGroundWritten(player);
+        Waypoint.keepCurrent(player);
         tellStoneHere(player);
         keepValleyStanding(player);
         keepGlorfindel(player);

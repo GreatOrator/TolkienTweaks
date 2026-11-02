@@ -112,6 +112,9 @@ public final class Waypoint {
         return new Mark("place.tolkienmobs." + next.place(), where.centre(), level.dimension());
     }
 
+    /** What each player's needle is showing, so ground that appears later is still sent. */
+    private static final java.util.Map<java.util.UUID, String> SENT = new java.util.HashMap<>();
+
     /** Pages whose bearing has already been said to a player, so the sentence is only read once. */
     private static final java.util.Set<String> TOLD = new java.util.HashSet<>();
 
@@ -167,23 +170,54 @@ public final class Waypoint {
 
     /** Sends the player the direction of the first page they are carrying, or an empty mark for none. */
     public static void send(ServerPlayer player, List<Quest> row) {
-        Quest carried = null;
-        for (Quest quest : row) {
-            // The campaign's pages are the only story in the book; an errand has no place to walk to.
-            if (quest.story()) {
-                carried = quest;
-                break;
-            }
-        }
+        Quest carried = carriedPage(row);
         // The stone the page is worth is planted where the page is taken rather than where it is
         // settled: a player walks out of the hall and up the road, and the stone that gets them back
         // has to be standing at the valley by the time they get there.
         if (carried != null) Stones.plant(player, carried);
-        if (carried != null) sayBearing(player, carried);
-        // Between pages the book is empty and the needle used to go blank, which was the one moment a
-        // player most needed it: the step is finished, and the next one belongs to somebody else. The
-        // line knows whose it is and where that body is kept, so the needle keeps its bearing.
         Mark mark = carried != null ? ground(player, carried) : onward(player);
+        SENT.put(player.getUUID(), keyOf(mark));
+        if (carried != null) sayBearing(player, carried);
+        sendMark(player, mark);
+    }
+
+    /**
+     * Sends the needle again whenever the ground behind the carried page has changed since the last look.
+     * <p>
+     * The needle used to be worked out at the three moments a page moves - taken, handed in, and read -
+     * and never again, which is a promise the world cannot keep: a crag is pitched on the road <em>after</em>
+     * the cave page is in hand, a body walks to his stand, and a place is named the first time somebody
+     * carries a page that names it. Worked out once, each of those arrived too late and left the book with
+     * a page that says where to go and no direction on the screen. Worked out every second and sent only
+     * when it differs, the needle cannot be out of date for longer than a second.
+     */
+    public static void keepCurrent(ServerPlayer player) {
+        List<Quest> row = QuestLedger.active(player);
+        Quest carried = carriedPage(row);
+        Mark mark = carried != null ? ground(player, carried) : onward(player);
+        if (keyOf(mark).equals(SENT.get(player.getUUID()))) return;
+        SENT.put(player.getUUID(), keyOf(mark));
+        if (carried != null) sayBearing(player, carried);
+        sendMark(player, mark);
+    }
+
+    /** The first page in the book that belongs to the campaign, which is the only kind with a road. */
+    @Nullable
+    private static Quest carriedPage(List<Quest> row) {
+        for (Quest quest : row) {
+            // The campaign's pages are the only story in the book; an errand has no place to walk to.
+            if (quest.story()) return quest;
+        }
+        return null;
+    }
+
+    /** What a mark looks like written down, so the same ground is not sent twice. */
+    private static String keyOf(@Nullable Mark mark) {
+        return mark == null ? "-"
+                : mark.label() + "@" + mark.pos().asLong() + "#" + mark.dimension().identifier();
+    }
+
+    private static void sendMark(ServerPlayer player, @Nullable Mark mark) {
         PacketDistributor.sendToPlayer(player, mark == null
                 ? new WaypointManager("", BlockPos.ZERO, "", false)
                 : new WaypointManager(mark.label(), mark.pos(), mark.dimension().identifier().toString(), true));
