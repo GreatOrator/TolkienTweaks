@@ -126,6 +126,20 @@ public class MilestoneHandler extends SavedData {
         return known;
     }
 
+    /**
+     * Whether a stone of this name already stands within a short walk of a point, whether or not this
+     * player has touched it. The campaign plants its stones from a page rather than from a hand, and a
+     * page is taken more than once - by a second player, or by the same one after a death - so the
+     * question is about the world's list rather than about one player's.
+     */
+    public static boolean standsNear(Level world, String name, BlockPos pos, int radius) {
+        if (getInstance(world) == null) return false;
+        for (MilestoneData data : dataMap.values()) {
+            if (name.equals(data.getName()) && data.getPos().closerThan(pos, radius)) return true;
+        }
+        return false;
+    }
+
     @Nullable
     public static MilestoneData getMilestoneData(Level world, UUID uuid) {
         MilestoneHandler saveData = getInstance(world);

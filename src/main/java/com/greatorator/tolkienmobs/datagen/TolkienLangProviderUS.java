@@ -544,6 +544,8 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add("courage.tolkienmobs.risen", "Your courage grows: %s");
             this.add("courage.tolkienmobs.risen.overlay", "Courage: %s");
             this.add("hud.tolkienmobs.courage.steadfast", "You do not flinch.");
+            this.add("hud.tolkienmobs.road.blocks", "%s blocks");
+            this.add("hud.tolkienmobs.road.mark", "the ground ahead");
             this.add("command.tolkienmobs.courage.set", "Set %s courage to %s deeds");
             this.add("command.tolkienmobs.courage.get", "%s: %s deeds (%s)");
             this.addSound("mob", "coin_trader", "A Wild Coin Trader appears!");

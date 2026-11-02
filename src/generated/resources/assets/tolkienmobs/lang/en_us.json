@@ -1200,6 +1200,8 @@
   "fluid_type.tolkienmobs.molten_mithril_lava_fluid": "Molten Mithril",
   "fluid_type.tolkienmobs.molten_morguliron_lava_fluid": "Molten Morgul Iron",
   "hud.tolkienmobs.courage.steadfast": "You do not flinch.",
+  "hud.tolkienmobs.road.blocks": "%s blocks",
+  "hud.tolkienmobs.road.mark": "the ground ahead",
   "item.minecraft.lingering_potion.effect.blessing_of_eru": "Lingering Potion of Eru's Blessing",
   "item.minecraft.lingering_potion.effect.crippling_terror": "Lingering Potion of Paralysing Fear",
   "item.minecraft.lingering_potion.effect.dread_aura": "Lingering Potion of Great Dread",

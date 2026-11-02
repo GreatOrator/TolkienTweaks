@@ -862,6 +862,26 @@ public final class Campaign extends SavedData {
      * the front's own herald. Read off the line, so moving a page to another speaker moves the hand that
      * hands it over.
      */
+    /**
+     * The ground the line keeps a named body on, or null when the name is nobody the campaign stands.
+     * <p>
+     * A page that says "speak to Elrond" names a person rather than a place, and a player who has never
+     * been to the valley has no way to know that Elrond is in it. The three Elves of the valley are all
+     * kept there, Elladan in his camp east of it, and Barachen at his fire south of the road, so a page
+     * that names one of them can be pointed at the town it belongs to without asking where the body is.
+     */
+    @Nullable
+    public static String groundOf(String person) {
+        if (person == null || person.isEmpty()) return null;
+        if (person.equalsIgnoreCase(ELROND) || person.equalsIgnoreCase(LEGOLAS)
+                || person.equalsIgnoreCase(GLORFINDEL)) {
+            return SUMMON_PLACE;
+        }
+        if (person.equalsIgnoreCase(ELLADAN)) return THORENHAD_PLACE;
+        if (person.equalsIgnoreCase(BARACHEN)) return BARACHEN_PLACE;
+        return null;
+    }
+
     public static String holder(ServerPlayer player, Alliance alliance) {
         ensureLoaded(player.level());
         List<Page> line = PAGE_LINES.get(alliance);

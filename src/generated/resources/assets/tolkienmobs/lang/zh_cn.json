@@ -1188,6 +1188,8 @@
   "fluid_type.tolkienmobs.molten_mithril_lava_fluid": "熔融秘银",
   "fluid_type.tolkienmobs.molten_morguliron_lava_fluid": "熔融魔古尔铁",
   "hud.tolkienmobs.courage.steadfast": "你不再畏缩。",
+  "hud.tolkienmobs.road.blocks": "%s 格",
+  "hud.tolkienmobs.road.mark": "前方的地面",
   "item.minecraft.lingering_potion.effect.blessing_of_eru": "滞留型一如祝福药水",
   "item.minecraft.lingering_potion.effect.crippling_terror": "滞留型致命恐惧药水",
   "item.minecraft.lingering_potion.effect.dread_aura": "滞留型强烈悚怖药水",

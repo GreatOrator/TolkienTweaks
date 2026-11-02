@@ -689,6 +689,9 @@ public final class QuestLedger extends SavedData {
         PacketDistributor.sendToPlayer(player, new QuestSyncManager(List.copyOf(row(player)), Map.copyOf(marks)));
         // A page place in its front is read beside the book, so it travels with it.
         Campaign.sync(player);
+        // And so does the direction it sends the player in, since the page it belongs to has just
+        // changed: the needle is read off the same row the book is drawn from.
+        Waypoint.send(player, List.copyOf(row(player)));
     }
 
     /** The mark that wins when a giver has two claims on this player's attention. */

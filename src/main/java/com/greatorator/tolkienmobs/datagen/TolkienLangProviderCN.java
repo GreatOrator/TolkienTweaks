@@ -544,6 +544,8 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.add("courage.tolkienmobs.risen", "你的勇气增长了：%s");
             this.add("courage.tolkienmobs.risen.overlay", "勇气：%s");
             this.add("hud.tolkienmobs.courage.steadfast", "你不再畏缩。");
+            this.add("hud.tolkienmobs.road.blocks", "%s 格");
+            this.add("hud.tolkienmobs.road.mark", "前方的地面");
             this.add("command.tolkienmobs.courage.set", "已将 %s 的勇气设为 %s 功绩");
             this.add("command.tolkienmobs.courage.get", "%s：%s 功绩（%s）");
             this.addSound("mob", "coin_trader", "A Wild Coin Trader appears!");

@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **A page now points the way to the ground it names.** An arrow at the top of the screen gives the bearing and a rounded distance to the place the page in hand sends the player, and points at the town a named body is kept in when the page asks for a person rather than a place; it is a hint and not an answer, so the country still has to be crossed, and it clears itself when the page is paid.
+
+- **The chapter plants its own milestones.** A stone is planted on the ground a page names and beside the body that handed it over, the first time the page is taken, so the halls and Rivendell have a way back that is not the road again. A stone still only lists itself to a player who has stood at it, so travel is unlocked by arriving rather than by being sent.
+
 - **The two pages that promise a conversation are written down as a fight on purpose.** Barachen says to speak with the Giant and Legolas offers an escort to the Wood-trolls, and both end in a body on the ground: it is the reference misleading the player, not the line softening a parley into a hunt. The pages carry that note now, so the next pass over them does not read the invitation as a stage direction.
 
 - **The beryl's page no longer names a closing line it does not have.** A survey is settled where it is asked and is never read back, so its closing key was a page in the leaf that would have printed as its own name; the page carries no closing, as the cave search's does not.

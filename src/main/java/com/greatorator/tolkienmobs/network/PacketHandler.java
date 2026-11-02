@@ -52,6 +52,7 @@ public final class PacketHandler {
         modEventBus.addListener(RegisterPayloadHandlersEvent.class, event -> {
             var registrar = event.registrar(MODID).versioned("1");
             registerClientToServer(registrar);
+            registerServerToClient(registrar);
         });
         CHANNEL.init(modEventBus);
     }
@@ -100,6 +101,10 @@ public final class PacketHandler {
                 MilestoneSettingsUpdateManager.STREAM_CODEC, MilestoneSettingsUpdateManager::handle);
         registrar.playToServer(MilestoneTeleportUpdateManager.TYPE,
                 MilestoneTeleportUpdateManager.STREAM_CODEC, MilestoneTeleportUpdateManager::handle);
+    }
+
+    private static void registerServerToClient(PayloadRegistrar registrar) {
+        registrar.playToClient(WaypointManager.TYPE, WaypointManager.STREAM_CODEC, WaypointManager::handle);
     }
 
     private static void registerServerToClient(IEventBus modBus) {
