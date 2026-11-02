@@ -2469,6 +2469,7 @@ public final class Campaign extends SavedData {
                 // worth it in the coin the pack already trades in, and paid through the same hand-over
                 // as the standing so a page cannot be worth one and not the other.
                 payPurse(player, paid);
+                payGift(player, paid);
                 // The missing rider is found with his horse's tack still in the ruin, and the notes make
                 // the bridle the thing carried back rather than the tale alone: the page that finds him
                 // puts the dark saddle in the player's hand, and the report to Elladan is not heard
@@ -2530,6 +2531,39 @@ public final class Campaign extends SavedData {
      * on a hunt of its own country's beast - and a hunt written into the campaign's slot would end the
      * war on the first wight a player felled, long before any front was settled.
      */
+    /**
+     * The thing a page hands over besides its coin, keyed by the page's own name.
+     * <p>
+     * The reference gives most pages a purse or an object, and the objects are what make a chapter feel
+     * like a country looking after its own: waybread for a road it is sending you down, a blade after a
+     * report it believed, a drink after three chambers in the dark. Ores are the one thing deliberately
+     * left out - "equipment or ores" is the reference's own hedge, and ore is the version nobody keeps.
+     * <p>
+     * The list and the reason for each choice are in {@code docs/chapter-one-rewards.md}, so the next
+     * chapter's rewards start from a decision rather than from the pool again.
+     */
+    private record Gift(String item, int count) {
+    }
+
+    private static final Map<String, Gift> PAGE_GIFTS = Map.of(
+            TROUBLES_TITLE, new Gift("tolkienmobs:food_cram", 4),
+            HORSE_TITLE, new Gift("tolkienmobs:food_lembas", 2),
+            RIDER_RETURN_TITLE, new Gift("tolkienmobs:item_fancysword", 1),
+            "campaign.tolkienmobs.page.caves", new Gift("tolkienmobs:drink_miruvor", 2),
+            DEPARTURE_TITLE, new Gift("tolkienmobs:faction_charm_west", 1));
+
+    /** Hands over the item a page carries, where the reference gives one rather than a purse. */
+    private static void payGift(ServerPlayer player, Page page) {
+        Gift gift = PAGE_GIFTS.get(page.title());
+        if (gift == null) return;
+        Identifier id = Identifier.tryParse(gift.item());
+        // The item registry is defaulted in 26.1, so an id nothing answers to would pay air rather than
+        // fail: the guard is what keeps a typo in the table from quietly emptying a page.
+        if (id == null || !BuiltInRegistries.ITEM.containsKey(id)) return;
+        ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.getValue(id), gift.count());
+        if (!player.getInventory().add(stack)) player.drop(stack, false);
+    }
+
     /** Pays the coin and experience a page carries, into the pack, and at the feet if the pack is full. */
     private static void payPurse(ServerPlayer player, Page page) {
         if (page.silver() > 0) payCoin(player, TolkienItems.ITEM_COIN_SILVER.get(), page.silver());
