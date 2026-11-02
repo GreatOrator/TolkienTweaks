@@ -391,7 +391,7 @@ public final class Campaign extends SavedData {
                     // because he says return to me once you have done so in the same breath as the lending.
                     new Page(Quest.Kind.SURVEY, FORD_TARGET, 1, 10, 4,
                             GLORFINDEL, GLORFINDEL, "campaign.tolkienmobs.page.beryl",
-                            "campaign.tolkienmobs.page.beryl.place", "campaign.tolkienmobs.page.beryl.closing"),
+                            "campaign.tolkienmobs.page.beryl.place", ""),
                     new Page(Quest.Kind.DIALOGUE, Quest.personTarget(GLORFINDEL), 1, 10, 4,
                             GLORFINDEL, GLORFINDEL, WISDOM3_TITLE, WISDOM3_PLACE, WISDOM3_CLOSING),
                     // 19 - Regaining the Trail. Glorfindel leaves the stone in the player's care and sends

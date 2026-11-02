@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The beryl's page no longer names a closing line it does not have.** A survey is settled where it is asked and is never read back, so its closing key was a page in the leaf that would have printed as its own name; the page carries no closing, as the cave search's does not.
+
 - **The pages hand over what the reference gives them, and the choices are written down.** Most of the chapter's non-coin rewards were unpicked: the reference gives the first two pages bread, the report at the camp a piece of equipment, the cave hand-in a random reward and the last page an earring. They are Cram, Lembas, an ammolite sword, a potion of healing at the camp and the West's own charm now - drawn from the pack's food, drinks, gear and trinkets - real gear, not the decorative swords and picks that do nothing - with ores, the herb and a second trinket deliberately left out. `docs/chapter-one-rewards.md` holds the page-by-page table, the pool the choices come from and the reason for each, so the next chapter starts from a decision rather than from the pool again.
 
 - **The herald asks a rank before he hands the chapter over.** A hall opens on a rank - nothing appears over the herald's head until the player has made a name for itself - and the chapter now begins at his bench, so the opening page is behind that rank like every other page he holds. The speakers along the line are not gated: Elrond and Elladan hand their own pages to whoever has come that far, and the only body asking for a name is the one standing in a hall.
