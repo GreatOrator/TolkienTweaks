@@ -32,6 +32,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlac
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
+import net.minecraft.world.phys.AABB;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -223,6 +224,8 @@ public final class Sites extends SavedData {
 
     /** The tag the body minding a camp wears, so it can be told from any other of its folk. */
     public static final String KEEPER_TAG = "tolkienmobs:camp_keeper";
+    /** How close to a camp's fire another keeper counts as already minding it, in blocks. */
+    private static final int KEEPER_REACH = 32;
 
     private static final Map<UUID, Site> SITES = new HashMap<>();
     /** Players whose site has already been complained about, so a refusal is said once, not every tick. */
@@ -661,6 +664,13 @@ public final class Sites extends SavedData {
         if (!(entity instanceof Mob keeper)) return;
         BlockPos stand = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 corner.offset(size.getX() / 2, 0, size.getZ() + 2));
+        // One keeper per fire, whichever player raised the camp. A site belongs to the player who took
+        // the page, but the ground it names is the same for everybody, so two players arriving at the
+        // same camp both run the build - and without this each of them would put a second man at it.
+        if (!level.getEntitiesOfClass(Mob.class, new AABB(stand).inflate(KEEPER_REACH),
+                found -> found.entityTags().contains(KEEPER_TAG)).isEmpty()) {
+            return;
+        }
         keeper.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D,
                 level.getRandom().nextFloat() * 360.0F, 0.0F);
         keeper.setPersistenceRequired();
