@@ -5,6 +5,25 @@ git:
   push_on_success: false
 ---
 
+## Reference material
+
+- **The old CustomNPCs world is where names and faces come from.**
+  `G:\GitHub\TolkienCraft-3-Return-to-Middle-earth\client\minecraft\customnpcs` holds the TolkienCraft 3
+  NPC setup: `clones/1`..`clones/5` are roughly three hundred `*.json` clones, one per body in that world,
+  and `assets/customnpcs/textures/customskins/<group>/` holds the 446 skins they wore (`middleearth`,
+  `elves`, `dwarves`, `hobbits`, `male`, `female`, `merchants`, `military`, `creatures`, `horses`).
+- A clone answers what the mod cannot invent. `"Name"` and `"Title"` are how the body introduced itself
+  (`"Elrond"`, `"Lord of Rivendell"`); `"Texture"` is the skin it wore
+  (`customnpcs:textures/CustomSkins/MiddleEarth/Elrond.png`, the same file under
+  `assets/customnpcs/textures/customskins/middleearth/`); `"NpcLines"`, `"NpcInteractLines"` and
+  `"NpcScenes"` are what it said and the scenes it played; `"FactionID"` is who it answered to. These are
+  not strict JSON - they carry `1b`, `300s` and `5.0f` literals - so read them with a regex or a lenient
+  parser rather than `json.load`.
+- A face drawn there is copied into the mod at `textures/entity/middle-earth/<name>.png`, the path
+  `HumanRender` looks a named body's art up at. `elrond.png`, `legolas.png` and `glorfindel.png` came from
+  those 64x32 CustomSkins and were converted to the model's 64x64; a new named body needs the same
+  conversion, not a copied file.
+
 ## Changelog Updates
 - **Requirement**: Whenever you complete a task, fix a bug, or add a feature, you must update `CHANGELOG.md` before finishing the session.
 - **Exception**: Tools that live outside the mod - the Amulet plugins such as `fill_modded_block.py`, and the audit scripts - are not part of the mod, so they get no changelog entry.
