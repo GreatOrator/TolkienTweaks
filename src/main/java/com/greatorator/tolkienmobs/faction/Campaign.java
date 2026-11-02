@@ -332,7 +332,7 @@ public final class Campaign extends SavedData {
      */
     private static final String CAVE_TROLL_TARGET = "tolkienmobs:entityttmtroll";
     /** The tag the crag's keeper carries, which is how the next look knows the chamber is not empty. */
-    private static final String CAVE_TROLL_TAG = "tolkienmobs:cave_troll";
+    public static final String CAVE_TROLL_TAG = "tolkienmobs:cave_troll";
     /** What the keeper is called: the cave the asking has reached, by its name. */
     private static final String CAVE_TROLL_NAME = "campaign.tolkienmobs.cave.troll";
     /** Said once when he stands, so a player walking in knows the chamber is not empty. */

@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.faction;
 
 import com.greatorator.tolkienmobs.network.manager.WaypointManager;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -61,6 +62,15 @@ public final class Waypoint {
         if (quest.kind() == Quest.Kind.SURVEY) {
             Sites.Site cave = Sites.siteOf(player);
             if (cave != null && Sites.isCave(cave.structure()) && cave.dimension().equals(level.dimension())) {
+                // The keeper is what the page is waiting on, so once the crag is cut the needle follows
+                // him into the chamber: the middle of the hill is where the player walks in, and an arrow
+                // to the ground under their own feet is not a direction.
+                BlockPos keeper = caveKeeper(level, cave.centre());
+                if (keeper != null) return new Mark("quest.tolkienmobs.cave", keeper, level.dimension());
+                // Standing in a crag whose chamber is empty is the one place the needle has nothing to
+                // add: the page is a kill at depth, not a walk, and a bearing to a point two blocks away
+                // reads as a broken compass rather than as an errand. It comes back with the next asking.
+                if (cave.centre().distToCenterSqr(player.position()) < CAVE_INSIDE * CAVE_INSIDE) return null;
                 return new Mark("quest.tolkienmobs.cave", cave.centre(), level.dimension());
             }
         }
@@ -110,6 +120,20 @@ public final class Waypoint {
         Places.Place where = Places.place(level, next.place());
         if (where == null || !where.dimension().equals(level.dimension())) return null;
         return new Mark("place.tolkienmobs." + next.place(), where.centre(), level.dimension());
+    }
+
+    /** How near a crag's middle a player counts as being inside it, in blocks. */
+    private static final int CAVE_INSIDE = 24;
+
+    /** The crag's keeper, wherever he stands in it, or null while the chamber is empty. */
+    @Nullable
+    private static BlockPos caveKeeper(ServerLevel level, BlockPos centre) {
+        for (Entity found : level.getEntities((Entity) null,
+                new net.minecraft.world.phys.AABB(centre).inflate(64.0D),
+                e -> e.entityTags().contains(Campaign.CAVE_TROLL_TAG))) {
+            return found.blockPosition();
+        }
+        return null;
     }
 
     /** What each player's needle is showing, so ground that appears later is still sent. */
