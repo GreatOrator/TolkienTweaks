@@ -949,6 +949,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("campaign.tolkienmobs.next.place", "去%s找他。");
         this.add("campaign.tolkienmobs.line.other", "这条线索的最后一页已经交出。%s仍有自己的线索，也有待你领取的工作。");
         this.add("campaign.tolkienmobs.line.sealed", "三方的页面都已走完，战争却还未结束：骑手仍在外头，如今任何一位传令官都会向你提起他。");
+        this.add("campaign.tolkienmobs.line.end", "路写到这里为止。之后的书页尚未落笔。");
         this.add("screen.tolkienmobs.quests.return", "返回");
         this.add("quest.tolkienmobs.return.near", "你已在他们近旁。");
         this.add("quest.tolkienmobs.return.blocked", "他们站过的地方已经没有落脚的空地。");

@@ -376,6 +376,22 @@ public final class Campaign extends SavedData {
      * Which people stands with which side - Elves and Dwarves with the West, Orcs and Angmar with
      * the East, the Haradrim and the Corsairs with the Harad - is written out on {@link Alliance}.
      */
+    /**
+     * The fronts the chapter actually runs. The East and the Harad are written out in the notes and
+     * their lines will be walked later, but nothing of them is in the chain yet: a player is not sent
+     * to a country whose line has not been written, and a herald there has nothing to hand over until
+     * it has.
+     */
+    public static final List<Alliance> FRONTS = List.of(Alliance.WEST);
+
+    /**
+     * Whether the campaign's last acts are open. They used to open when the three fronts were settled -
+     * and with two of the fronts unwritten that gate would spring the moment the West's line ended and
+     * hand a chapter-one player the Rider, the castle and the crown. The road stays closed by name until
+     * those pages are written.
+     */
+    private static final boolean FINALE_OPEN = false;
+
     private static final Map<Alliance, List<Page>> PAGE_LINES = Map.of(
             Alliance.WEST, List.of(
                     // The reference chapter, whose eighteen quests are numbered 8 to 25 and are walked in
@@ -469,21 +485,7 @@ public final class Campaign extends SavedData {
                     // 25 - Hasten Their Departure: Legolas sends the tidings back to Elrond, which is
                     // where the reference ends the chapter.
                     new Page(Quest.Kind.DIALOGUE, Quest.personTarget(ELROND), 1, 10, 8,
-                            LEGOLAS, ELROND, DEPARTURE_TITLE, DEPARTURE_PLACE, DEPARTURE_CLOSING)),
-            Alliance.EAST, List.of(
-                    new Page(Quest.Kind.FACTION, "", 6, 60, 2,
-                            "", "", "campaign.tolkienmobs.page.marches", "campaign.tolkienmobs.page.marches.place", ""),
-                    new Page(Quest.Kind.FACTION, "", 12, 120, 4,
-                            "", "", "campaign.tolkienmobs.page.levy", "campaign.tolkienmobs.page.levy.place", ""),
-                    new Page(Quest.Kind.FETCH, "tolkienmobs:item_scroll", 1, 0, 7,
-                            "", "", "campaign.tolkienmobs.page.steward", "campaign.tolkienmobs.page.steward.place", "campaign.tolkienmobs.page.steward.closing")),
-            Alliance.HARAD, List.of(
-                    new Page(Quest.Kind.FACTION, "", 6, 60, 2,
-                            "", "", "campaign.tolkienmobs.page.sun", "campaign.tolkienmobs.page.sun.place", ""),
-                    new Page(Quest.Kind.FACTION, "", 12, 120, 4,
-                            "", "", "campaign.tolkienmobs.page.ford", "campaign.tolkienmobs.page.ford.place", ""),
-                    new Page(Quest.Kind.HUNT, "tolkienmobs:entityttmmumakil", 1, 150, 7,
-                            "", "", "campaign.tolkienmobs.page.mumak", "campaign.tolkienmobs.page.mumak.place", "campaign.tolkienmobs.page.mumak.closing"))
+                            LEGOLAS, ELROND, DEPARTURE_TITLE, DEPARTURE_PLACE, DEPARTURE_CLOSING))
     );
 
     /**
@@ -512,7 +514,7 @@ public final class Campaign extends SavedData {
 
     /** How many pages a front has. */
     public static int pages(Alliance alliance) {
-        return PAGE_LINES.get(alliance).size();
+        return PAGE_LINES.getOrDefault(alliance, List.of()).size();
     }
 
     /**
@@ -729,10 +731,10 @@ public final class Campaign extends SavedData {
 
     /** Whether all three fronts are settled on the client's last-synced copy. */
     public static boolean clientSealed() {
-        for (Alliance alliance : Alliance.values()) {
+        for (Alliance alliance : FRONTS) {
             if (CLIENT[alliance.ordinal()] < pages(alliance)) return false;
         }
-        return true;
+        return FINALE_OPEN;
     }
 
     /**
@@ -741,6 +743,7 @@ public final class Campaign extends SavedData {
      * behind the player.
      */
     public static boolean clientHasWork(Alliance alliance) {
+        if (!FRONTS.contains(alliance)) return false;
         if (CLIENT[alliance.ordinal()] < pages(alliance)) return true;
         return clientSealed() && clientRider < FINALE_STAGES;
     }
@@ -751,7 +754,7 @@ public final class Campaign extends SavedData {
      * when the ledger settles a page, so while one is carried the stage is that page's index.
      */
     public static Component clientTitle(Alliance alliance) {
-        List<Page> line = PAGE_LINES.get(alliance);
+        List<Page> line = PAGE_LINES.getOrDefault(alliance, List.of());
         int stage = CLIENT[alliance.ordinal()];
         return stage < line.size() ? named(line.get(stage).title()) : Component.empty();
     }
@@ -765,7 +768,7 @@ public final class Campaign extends SavedData {
      * of the line answers the same right-click as a hall's herald and cannot be told from him by clothes.
      */
     public static String clientHolder(Alliance alliance) {
-        List<Page> line = PAGE_LINES.get(alliance);
+        List<Page> line = PAGE_LINES.getOrDefault(alliance, List.of());
         int stage = CLIENT[alliance.ordinal()];
         if (stage >= 0 && stage < line.size() && !line.get(stage).giver().isEmpty()) {
             return line.get(stage).giver();
@@ -775,7 +778,7 @@ public final class Campaign extends SavedData {
 
     /** Where the front's current step happens, or an empty component when the page does not say. */
     public static Component clientPlace(Alliance alliance) {
-        List<Page> line = PAGE_LINES.get(alliance);
+        List<Page> line = PAGE_LINES.getOrDefault(alliance, List.of());
         int stage = CLIENT[alliance.ordinal()];
         return stage < line.size() ? named(line.get(stage).place()) : Component.empty();
     }
@@ -787,7 +790,7 @@ public final class Campaign extends SavedData {
      * keeps the leaf's reward row exactly as wide as it was.
      */
     public static List<Component> clientPurse(Alliance alliance) {
-        List<Page> line = PAGE_LINES.get(alliance);
+        List<Page> line = PAGE_LINES.getOrDefault(alliance, List.of());
         int stage = CLIENT[alliance.ordinal()];
         if (stage < 0 || stage >= line.size()) return List.of();
         Page page = line.get(stage);
@@ -802,7 +805,7 @@ public final class Campaign extends SavedData {
     }
 
     public static Component clientClosing(Alliance alliance) {
-        List<Page> line = PAGE_LINES.get(alliance);
+        List<Page> line = PAGE_LINES.getOrDefault(alliance, List.of());
         int stage = CLIENT[alliance.ordinal()];
         return stage < line.size() ? named(line.get(stage).closing()) : Component.empty();
     }
@@ -870,9 +873,12 @@ public final class Campaign extends SavedData {
     @Nullable
     public static Quest page(ServerPlayer player, Alliance alliance) {
         ensureLoaded(player.level());
+        // A front whose line is not written hands nothing: its halls still stand and its herald still
+        // speaks for his country, but the campaign does not send a player anywhere it has no pages for.
+        if (!FRONTS.contains(alliance)) return null;
         Front[] row = row(player);
         int stage = row[alliance.ordinal()].stage();
-        List<Page> line = PAGE_LINES.get(alliance);
+        List<Page> line = PAGE_LINES.getOrDefault(alliance, List.of());
         if (stage < line.size()) {
             Page page = line.get(stage);
             // The soldier pages name a different rival each, so the line alternates whose soldiers it
@@ -983,7 +989,7 @@ public final class Campaign extends SavedData {
 
     public static String holder(ServerPlayer player, Alliance alliance) {
         ensureLoaded(player.level());
-        List<Page> line = PAGE_LINES.get(alliance);
+        List<Page> line = PAGE_LINES.getOrDefault(alliance, List.of());
         int stage = stage(player, alliance);
         if (stage < line.size() && !line.get(stage).giver().isEmpty()) return line.get(stage).giver();
         return QuestGivers.campaignName(alliance);
@@ -1041,7 +1047,7 @@ public final class Campaign extends SavedData {
     private static void sayWhatIsLeft(ServerPlayer player) {
         if (riderStage(player) >= FINALE_STAGES) return;
         boolean any = false;
-        for (Alliance alliance : Alliance.values()) {
+        for (Alliance alliance : FRONTS) {
             if (stage(player, alliance) >= pages(alliance)) continue;
             any = true;
             player.sendSystemMessage(Component.translatable("campaign.tolkienmobs.line.other",
@@ -1049,7 +1055,7 @@ public final class Campaign extends SavedData {
                     .withStyle(ChatFormatting.GOLD));
         }
         if (any) return;
-        player.sendSystemMessage(Component.translatable("campaign.tolkienmobs.line.sealed")
+        player.sendSystemMessage(Component.translatable("campaign.tolkienmobs.line.end")
                 .withStyle(ChatFormatting.GOLD));
     }
 
@@ -1080,7 +1086,7 @@ public final class Campaign extends SavedData {
      */
     public static boolean holdsOrTakes(ServerPlayer player, String name) {
         ensureLoaded(player.level());
-        List<Page> line = PAGE_LINES.get(Alliance.WEST);
+        List<Page> line = PAGE_LINES.getOrDefault(Alliance.WEST, List.of());
         int stage = stage(player, Alliance.WEST);
         if (stage >= line.size()) return false;
         Page page = line.get(stage);
@@ -1623,7 +1629,7 @@ public final class Campaign extends SavedData {
 
     /** The slot a page of this shape holds in the West's line, or -1 when the line has none of them. */
     private static int stageOf(Quest.Kind kind, String target) {
-        List<Page> line = PAGE_LINES.get(Alliance.WEST);
+        List<Page> line = PAGE_LINES.getOrDefault(Alliance.WEST, List.of());
         for (int i = 0; i < line.size(); i++) {
             Page page = line.get(i);
             if (page.kind() == kind && page.target().equals(target)) return i;
@@ -1955,7 +1961,7 @@ public final class Campaign extends SavedData {
      * twice - and only the title tells them apart.
      */
     private static int stageOfTitle(String title) {
-        List<Page> line = PAGE_LINES.get(Alliance.WEST);
+        List<Page> line = PAGE_LINES.getOrDefault(Alliance.WEST, List.of());
         for (int i = 0; i < line.size(); i++) {
             if (line.get(i).title().equals(title)) return i;
         }
@@ -2103,7 +2109,7 @@ public final class Campaign extends SavedData {
         Front[] row = PROGRESS.get(player.getUUID());
         if (row == null) return false;
         Front front = row[Alliance.WEST.ordinal()];
-        List<Page> line = PAGE_LINES.get(Alliance.WEST);
+        List<Page> line = PAGE_LINES.getOrDefault(Alliance.WEST, List.of());
         Quest handed = front.handed();
         if (handed == null || !handed.complete() || front.stage() >= line.size()) return false;
         if (!RIDER_RETURN_TITLE.equals(line.get(front.stage()).title())) return false;
@@ -3051,7 +3057,7 @@ public final class Campaign extends SavedData {
             // on is climbed by walking the war, and a player who carries three fronts to the end is
             // not the frightened one they started as. The Rider's page needs no figure of its own -
             // felling one of the Nine already pays a deed, and his page asks for him twice.
-            List<Page> line = PAGE_LINES.get(alliance);
+            List<Page> line = PAGE_LINES.getOrDefault(alliance, List.of());
             boolean riderFound = false;
             if (front.stage() < line.size()) {
                 Page paid = line.get(front.stage());
@@ -3206,7 +3212,7 @@ public final class Campaign extends SavedData {
     @Nullable
     public static String spokenKey(ServerPlayer player, Alliance alliance) {
         ensureLoaded(player.level());
-        List<Page> line = PAGE_LINES.get(alliance);
+        List<Page> line = PAGE_LINES.getOrDefault(alliance, List.of());
         int stage = stage(player, alliance);
         if (stage >= line.size()) return null;
         String title = line.get(stage).title();
@@ -3223,10 +3229,10 @@ public final class Campaign extends SavedData {
     }
 
     private static boolean sealed(Front[] row) {
-        for (Alliance alliance : Alliance.values()) {
+        for (Alliance alliance : FRONTS) {
             if (row[alliance.ordinal()].stage() < pages(alliance)) return false;
         }
-        return true;
+        return FINALE_OPEN;
     }
 
     private static Front[] row(Player player) {
