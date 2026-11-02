@@ -919,6 +919,9 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.page.wisdom.reply.2", "How do we find a thing that leaves no tracks?");
         this.add("campaign.tolkienmobs.page.wisdom.said", "Take this. It is a beryl, and it has more sight in it than I have. Hold it up at the ford where the waters took his brethren, and see what it shows you.");
         this.add("campaign.tolkienmobs.page.wisdom.closing", "Glorfindel turns the stone over in his hand and gives it to you, and for a moment the water below the terrace seems to hold still.");
+        this.add("campaign.tolkienmobs.page.wisdom3", "Wisdom of Lord Glorfindel III");
+        this.add("campaign.tolkienmobs.page.wisdom3.place", "the waterfalls below the last homely house");
+        this.add("campaign.tolkienmobs.page.wisdom3.closing", "You have returned. Did you notice any change in the beryl I gave you when you came to the Ford?");
         this.add("campaign.tolkienmobs.page.regain", "Regaining the Trail");
         this.add("campaign.tolkienmobs.page.regain.place", "Elladan's camp at Thorenhad");
         this.add("campaign.tolkienmobs.page.regain.say.1", "Word came ahead of you. Lord Glorfindel has given you a stone, and if any sight is left in this country it is in that.");

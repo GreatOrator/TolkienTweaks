@@ -251,6 +251,10 @@ public final class Campaign extends SavedData {
     private static final String RIDER_RETURN_TITLE = "campaign.tolkienmobs.page.riderreport";
     /** Glorfindel's counsel at the waterfalls, which the notes put before ever touching the stone. */
     private static final String WISDOM_TITLE = "campaign.tolkienmobs.page.wisdom";
+    /** 1-6, the return to Glorfindel with the beryl: the reference's sixth quest. */
+    private static final String WISDOM3_TITLE = "campaign.tolkienmobs.page.wisdom3";
+    private static final String WISDOM3_PLACE = "campaign.tolkienmobs.page.wisdom3.place";
+    private static final String WISDOM3_CLOSING = "campaign.tolkienmobs.page.wisdom3.closing";
     /** The return to the camp with the caves searched, where the stone's next asking is decided. */
     private static final String REGAIN_TITLE = "campaign.tolkienmobs.page.regain";
     /**
@@ -377,31 +381,31 @@ public final class Campaign extends SavedData {
                     new Page(Quest.Kind.DIALOGUE, Quest.personTarget(GLORFINDEL), 1, 10, 4,
                             ELLADAN, GLORFINDEL, WISDOM_TITLE, "campaign.tolkienmobs.page.wisdom.place",
                             "campaign.tolkienmobs.page.wisdom.closing"),
-                    // 13 - the beryl held aloft at the ford, and carried straight back to the hand that
-                    // lent it. The reference writes it as one quest: Glorfindel says return to me once you
-                    // have done so, and the next words out of him are what the stone showed. The old
-                    // campaign's page between the two is not in the reference and is not here.
+                    // 1-5 and 1-6 - the beryl held aloft at the ford, and the return to Glorfindel with it.
+                    // The reference's quest list makes them two: the fifth completes itself at the water
+                    // (its own note is "completion - automatic"), and the sixth is a page of talk that ends
+                    // with him asking what the stone did. The dialogue tree reads as one conversation
+                    // because he says return to me once you have done so in the same breath as the lending.
                     new Page(Quest.Kind.SURVEY, FORD_TARGET, 1, 10, 4,
                             GLORFINDEL, GLORFINDEL, "campaign.tolkienmobs.page.beryl",
                             "campaign.tolkienmobs.page.beryl.place", "campaign.tolkienmobs.page.beryl.closing"),
+                    new Page(Quest.Kind.DIALOGUE, Quest.personTarget(GLORFINDEL), 1, 10, 4,
+                            GLORFINDEL, GLORFINDEL, WISDOM3_TITLE, WISDOM3_PLACE, WISDOM3_CLOSING),
                     // 19 - Regaining the Trail. Glorfindel leaves the stone in the player's care and sends
                     // them back to Elladan, who decides where it must be brought next. It is the
                     // reference's nineteenth quest and its eighth page.
                     new Page(Quest.Kind.DIALOGUE, Quest.personTarget(ELLADAN), 1, 8, 5,
                             GLORFINDEL, ELLADAN, REGAIN_TITLE, "campaign.tolkienmobs.page.regain.place",
                             "campaign.tolkienmobs.page.regain.closing"),
-                    // 15 - Hiding in the Dark: Elladan names three caves and the stone is asked at the
-                    // bottom of each. Then 16, 17 and 18 - the troll of each cave, in the order he wrote
-                    // them, because the reference cuts the three chambers as three kills.
+                    // 1-8a, 1-8b and 1-8c - Hiding in the Dark: three caves, an area kill in the deepest
+                    // chamber of each, and a completion token for the troll that keeps it. One page with
+                    // three readings, because the reference writes the three chambers as one search and
+                    // the kill that clears each is counted where the stone is raised. Then 1-8d is the
+                    // camp's item page, which is why Elladan will not take the stone back short of the
+                    // three tokens (see stoneHeldBack).
                     new Page(Quest.Kind.SURVEY, "", STONE_CAVES, 10, 5,
                             ELLADAN, ELLADAN, "campaign.tolkienmobs.page.caves",
                             "campaign.tolkienmobs.page.caves.place", ""),
-                    new Page(Quest.Kind.HUNT, CAVE_TROLL_TARGET, 1, 10, 5,
-                            ELLADAN, "", CAVE_BANDRITH_TITLE, CAVE_BANDRITH_PLACE, CAVE_BANDRITH_CLOSING),
-                    new Page(Quest.Kind.HUNT, CAVE_TROLL_TARGET, 1, 10, 5,
-                            ELLADAN, "", CAVE_HOKLOND_TITLE, CAVE_HOKLOND_PLACE, CAVE_HOKLOND_CLOSING),
-                    new Page(Quest.Kind.HUNT, CAVE_TROLL_TARGET, 1, 10, 5,
-                            ELLADAN, "", CAVE_SHOLDROTH_TITLE, CAVE_SHOLDROTH_PLACE, CAVE_SHOLDROTH_CLOSING),
                     // 20 - Knowledge of Giants I: Elladan sends the player to the scout's fire, and
                     // Barachen tells what he saw.
                     new Page(Quest.Kind.DIALOGUE, Quest.personTarget(BARACHEN), 1, 10, 5,
