@@ -164,6 +164,10 @@ public final class QuestLedger extends SavedData {
      * read, so there is nothing to carry.
      */
     public static boolean accept(ServerPlayer player, Quest quest) {
+        // Work is taken on Arda's ground and nowhere else. The overworld keeps vanilla's generation and
+        // vanilla's business, and a page handed out there would be a page that cannot be finished - its
+        // ground is surveyed from the drawing, which the overworld does not have.
+        if (!com.greatorator.tolkienmobs.world.registration.TolkienDimensions.ARDA.equals(player.level().dimension())) return false;
         List<Quest> quests = row(player);
         if (!quest.story() && bounties(quests) >= MAX_BOUNTIES) {
             player.sendSystemMessage(Component.translatable("quest.tolkienmobs.full")
@@ -329,6 +333,9 @@ public final class QuestLedger extends SavedData {
      * whatever its target alliance's soldier tag names, and a hunt quest by the exact mob it names.
      */
     public static void progressKill(ServerPlayer player, Entity victim) {
+        // A kill counts where the campaign is played. Anything felled in the overworld is vanilla's
+        // business and advances none of this.
+        if (!com.greatorator.tolkienmobs.world.registration.TolkienDimensions.ARDA.equals(player.level().dimension())) return;
         // Check if this is the campaign's Rider dying
         if (Campaign.isCampaignRider(player, victim)) {
             Campaign.onRiderDeath(player);
