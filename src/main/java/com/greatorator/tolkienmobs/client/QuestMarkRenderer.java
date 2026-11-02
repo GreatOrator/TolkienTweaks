@@ -57,7 +57,7 @@ public final class QuestMarkRenderer {
             // The quest sync is where a mark comes from, and a mark can be missing from it - a page taken
             // before the sync carried the giver's id, or a copy written into the book by a command. What
             // the player is holding is the same answer and is always here, so the book is read as well.
-            mark = markFromBook(entity.getUUID(), herald);
+            mark = markFromBook(entity, herald);
         }
         // A hall herald hands his page over to whoever asks for it, so what his plate says is what he
         // has, not what the player has earned: a mark held back until a rank is reached told a player
@@ -65,7 +65,8 @@ public final class QuestMarkRenderer {
         // a moment later proved the plate wrong. The mark still stops when the front has nothing left to
         // give, which is the one time he really has nothing to say.
         if (herald != null) {
-            if (mark == null && hasEarOf(herald) && Campaign.clientHasWork(herald)) {
+            if (mark == null && hasEarOf(herald) && Campaign.clientHasWork(herald)
+                    && isHerald(entity, herald)) {
                 mark = new QuestLedger.Mark(QuestLedger.Mark.State.AVAILABLE, true);
             }
             Component plate = withOffice(event.getContent(), herald);
@@ -134,15 +135,45 @@ public final class QuestMarkRenderer {
      * already carrying is the one reading that is never true.
      */
     @Nullable
-    private static QuestLedger.Mark markFromBook(UUID giver, @Nullable Alliance herald) {
+    private static QuestLedger.Mark markFromBook(Entity entity, @Nullable Alliance herald) {
+        UUID giver = entity.getUUID();
         for (Quest quest : QuestLedger.clientQuests()) {
             if (giver.equals(quest.giverId())) return markOf(quest);
         }
+        // A page that names the body it goes back to is that body's to take and nobody else's: the Elf
+        // it is owed to wears the question mark wherever he is standing, since the sync only marks the
+        // bodies it could see when the book was sent.
+        String name = entity.getName().getString();
+        for (Quest quest : QuestLedger.clientQuests()) {
+            if (quest.complete() && name.equalsIgnoreCase(quest.turnIn())) {
+                return new QuestLedger.Mark(QuestLedger.Mark.State.TURN_IN, quest.story());
+            }
+        }
         if (herald == null) return null;
         for (Quest quest : QuestLedger.clientQuests()) {
-            if (quest.story() && quest.employerAlliance() == herald) return markOf(quest);
+            // The herald's fallback is for work any giver will pay. A page owed to a named body is not
+            // his to take whichever front it belongs to, and reading it as his put a gold question mark
+            // over Elrond for a Wood-troll kill that is Legolas' to take - the one body who could not
+            // pay it wearing the mark that says he would.
+            if (quest.turnIn().isEmpty() && quest.story() && quest.employerAlliance() == herald) {
+                return markOf(quest);
+            }
         }
         return null;
+    }
+
+    /**
+     * Whether this body is the front's own herald rather than one of the line's speakers.
+     * <p>
+     * A speaker of the campaign wears the same clothes and the same tags as a hall's herald, because the
+     * right-click they answer is the same one - so the name is what tells them apart, which is the same
+     * answer {@link #heraldAlliance} reads. Without it every Elf of the valley was offered work in the
+     * herald's name, and Elrond stood in Rivendell advertising a page that was Legolas' to hand.
+     */
+    private static boolean isHerald(Entity entity, Alliance herald) {
+        if (!entity.entityTags().contains(QuestGivers.CAMPAIGN_GIVER_TAG)) return true;
+        Component name = entity.getCustomName();
+        return name == null || QuestGivers.campaignName(herald).equals(name.getString());
     }
 
     /** What the plate says about one quest in hand. */
