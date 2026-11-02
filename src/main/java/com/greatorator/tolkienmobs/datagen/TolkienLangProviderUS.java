@@ -1076,6 +1076,16 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("place.tolkienmobs.thorenhad", "Thorenhad");
         this.add("place.tolkienmobs.barachen.line", "a scout's camp in the Trollshaws");
         this.add("place.tolkienmobs.barachen", "Barachen's Camp");
+        this.add("place.tolkienmobs.gloin", "Glóin's Camp");
+        this.add("place.tolkienmobs.gloin.line", "a dwarf camp at the east end of the pass");
+        this.add("place.tolkienmobs.gundabad", "Gundabad");
+        this.add("place.tolkienmobs.gundabad.line", "the old dwarf-fortress the Dourhands hold");
+        this.add("place.tolkienmobs.vault", "Gundabad's Vault");
+        this.add("place.tolkienmobs.vault.line", "the eastern road under the mountain, where the plans were laid");
+        this.add("place.tolkienmobs.keystone", "the Key-stone's Vault");
+        this.add("place.tolkienmobs.keystone.line", "a dwarf-vault in the ruins at the source of the Bruinen");
+        this.add("place.tolkienmobs.carndum", "Carn Dûm");
+        this.add("place.tolkienmobs.carndum.line", "the Witch-king's capital in Angmar");
         this.add("place.tolkienmobs.oldforest", "The Old Forest");
         this.add("place.tolkienmobs.oldforest.line", "the trees keep their own counsel");
         this.add("place.tolkienmobs.tharbad.beryl", "The stone goes dull and heavy, the way iron does near a drowned place. Men died on this crossing and no one came back to say so.");

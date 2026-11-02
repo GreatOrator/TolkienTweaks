@@ -144,6 +144,15 @@ public final class Places extends SavedData {
             // The scout's camp the West walks to after the caves: south of the Great East Road, in
             // the same country as Thorenhad, and named rather than built for the same reason.
             new Name("barachen", Alliance.WEST, false),
+            // Chapter two, and the north: Glóin's camp at the east end of the pass out of the valley, the
+            // old fortress the Dourhands hold and the vault on its eastern road, the dwarf-vault at the
+            // source of the Bruinen where the key-stone was hidden, and the Witch-king's capital in Angmar
+            // where the chapter ends.
+            new Name("gloin", Alliance.WEST, false),
+            new Name("gundabad", Alliance.WEST, false),
+            new Name("vault", Alliance.WEST, false),
+            new Name("keystone", Alliance.WEST, false),
+            new Name("carndum", Alliance.WEST, false),
             new Name("oldforest", null, false)
     );
 
@@ -166,7 +175,16 @@ public final class Places extends SavedData {
             "barachen", ArdaMap.Country.TROLLSHAWS,
             // The crossing the beryl is carried to is below the valley and a walk down the road
             // from it, in the same hills, rather than wherever the page was taken.
-            "ford", ArdaMap.Country.TROLLSHAWS);
+            "ford", ArdaMap.Country.TROLLSHAWS,
+            // Glóin's camp, Gundabad and its vault are all Misty Mountain ground: the pass out of the
+            // valley and the fortress the notes put far north of it, in the same range.
+            "gloin", ArdaMap.Country.HITHAEGLIR,
+            "gundabad", ArdaMap.Country.HITHAEGLIR,
+            "vault", ArdaMap.Country.HITHAEGLIR,
+            // The key-stone's vault is at the source of the Bruinen, in the hills below the valley.
+            "keystone", ArdaMap.Country.TROLLSHAWS,
+            // Carn Dûm is the capital of Angmar, and Angmar is a country the drawing already has.
+            "carndum", ArdaMap.Country.ANGMAR);
 
     /**
      * The cell of the drawing a name the maps pinpoint is asked for in, as {column, row}.
