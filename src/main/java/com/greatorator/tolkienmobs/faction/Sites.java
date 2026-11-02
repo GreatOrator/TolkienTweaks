@@ -350,7 +350,7 @@ public final class Sites extends SavedData {
         Site site = siteOf(player);
         if (site == null || !site.built()) return false;
         if (!player.level().dimension().equals(site.dimension())) return false;
-        return away(player, site) <= foundReach(site);
+        return away(player, site) <= foundReach(player.level(), site);
     }
 
     /**
@@ -367,7 +367,7 @@ public final class Sites extends SavedData {
             if (away <= BUILD_REACH) build(player, site);
             return;
         }
-        if (site.found() || away > foundReach(site)) return;
+        if (site.found() || away > foundReach(player.level(), site)) return;
         if (!(player.level() instanceof ServerLevel level)) return;
         SITES.put(player.getUUID(), site.markedFound());
         instance(level).setDirty();
@@ -649,9 +649,23 @@ public final class Sites extends SavedData {
         }
     }
 
-    /** How close to the middle of a building counts as standing in it, which grows with the building. */
-    private static double foundReach(Site site) {
-        return 12.0D;
+    /**
+     * How close to the middle of a building counts as standing in it, which grows with the building.
+     * <p>
+     * It did not grow: a flat twelve blocks was measured against the middle of the footprint, which for
+     * any building wider than a tent is further from its own walls than twelve blocks. A player who had
+     * walked into the ruin they were sent to stood under its stone with the page still open, because the
+     * middle being measured to was half a footprint away over their head. The template has the size the
+     * rest of this class already judges ground by, so the reach is half of it plus a little: standing
+     * anywhere inside the walls is standing in the place.
+     */
+    private static double foundReach(Level level, Site site) {
+        double half = 0.0D;
+        if (level instanceof ServerLevel server) {
+            Vec3i size = footprint(server, site.structure());
+            if (size != null) half = Math.max(size.getX(), size.getZ()) / 2.0D;
+        }
+        return Math.max(12.0D, half + 4.0D);
     }
 
     /**
