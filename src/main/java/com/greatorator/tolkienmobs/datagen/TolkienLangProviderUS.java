@@ -1000,7 +1000,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.valley_elf.5", "Eleniel");
         this.add("campaign.tolkienmobs.valley_elf.6", "Nimrodel");
         this.add("campaign.tolkienmobs.beryl.shallow", "Deep, but not deep enough. The stone wants the bottom of the cave and not the mouth of it.");
-        this.add("campaign.tolkienmobs.beryl.elsewhere", "%s is where the stone was asked for, and this is not it.");
+        this.add("campaign.tolkienmobs.beryl.elsewhere", "%s is where the stone was asked for, and this is not it - %s blocks from here.");
         this.add("campaign.tolkienmobs.page.beryl.said", "The ford is where this begins, because it is the last ground we know he touched. Hold the beryl aloft there, and it will answer.");
         this.add("campaign.tolkienmobs.page.beryl.reply.2", "And if it stays quiet?");
         this.add("campaign.tolkienmobs.page.beryl.reply.1", "What does it do, exactly?");
@@ -1020,6 +1020,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.cave.guarded", "The stone stays dark, and something further down would rather it did. Whatever keeps this chamber is not yet dead.");
         this.add("campaign.tolkienmobs.cave.reached", "You have reached the deepest chamber of %s, and what was keeping it is not getting up again.");
         this.add("campaign.tolkienmobs.beryl.given", "The stone is in your hand: cold, and heavier than a thing that size has any right to be.");
+        this.add("campaign.tolkienmobs.beryl.here", "This is %s, and the stone is in your hand - hold it aloft here: use it in the air rather than on the milestone.");
         this.add("campaign.tolkienmobs.beryl.returned", "The stone is back in your hand. It was lent to be carried, not put down.");
         this.add("campaign.tolkienmobs.page.beryl", "Wisdom of Lord Glorfindel II");
         this.add("quest.tolkienmobs.talk.listen.said", "The quiet went from the ditch to the ford in a single night, and by morning the ditch was running water that had not rained. That is the whole of it. Now you have heard it, so you can say you were the ninth.");

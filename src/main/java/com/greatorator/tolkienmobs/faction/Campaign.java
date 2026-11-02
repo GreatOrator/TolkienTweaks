@@ -298,6 +298,13 @@ public final class Campaign extends SavedData {
     /** How often the stone can be held up at all, in ticks, so a held mouse is not a hundred questions. */
     private static final int STONE_RAISE_INTERVAL = 10;
     /**
+     * How far above or below a place's own middle still counts as standing on it, in blocks. A ford is
+     * surveyed on the water and walked on the bank, and a hall's middle is a floor with a stair in it.
+     */
+    private static final int PLACE_UP_AND_DOWN = 16;
+    /** Players already told the ground under their feet is the ground the stone wants. */
+    private static final Set<UUID> STONE_HERE_SPOKEN = new HashSet<>();
+    /**
      * The chapter as the old series wrote it.
      * <p>
      * The notes' chapter one is eighteen quests numbered eight to twenty-five, and the West's line is
@@ -1107,13 +1114,18 @@ public final class Campaign extends SavedData {
         String wanted = wantedGround(player);
         if (!wanted.isEmpty()) {
             // A page that names ground is held aloft there and nowhere else.
-            Places.Place inside = Places.at(player);
-            if (inside == null || !inside.id().equals(wanted)) {
+            // A place is a circle of ground, not a sphere in the air: the middle of a ford was surveyed
+            // on the water, and the player standing on its own bank is two or three blocks above it.
+            // Read as a sphere, the stone told them they were not at the ford while they stood at it.
+            if (!standingOn(player, wanted)) {
+                int away = (int) Math.max(1, Math.round(flatTo(player, wanted)));
                 player.sendSystemMessage(Component.translatable(STONE_ELSEWHERE,
-                        Component.translatable("place.tolkienmobs." + wanted)).withStyle(ChatFormatting.GRAY));
+                                Component.translatable("place.tolkienmobs." + wanted),
+                                Component.literal(String.valueOf(away)))
+                        .withStyle(ChatFormatting.GRAY));
                 return;
             }
-            player.sendSystemMessage(named != null ? named : caveReading(here));
+            player.sendSystemMessage(named != null ? named : readingFor(wanted, here));
             QuestLedger.progressSurvey(player);
             return;
         }
@@ -1142,6 +1154,67 @@ public final class Campaign extends SavedData {
         // is the reading and the chamber is cleared by the troll that keeps it. Standing at the bottom of
         // an empty cave and asking again would otherwise pay a page for walking.
         player.sendSystemMessage(Component.translatable(STONE_GUARDED).withStyle(ChatFormatting.GRAY));
+    }
+
+    /**
+     * Whether a player is standing on the ground a place names.
+     * <p>
+     * The circle is read flat, with an allowance up and down for a bank, a stair or a fallen tree. A
+     * place is ground to be stood on rather than a point in the air, and the middle of a ford is the
+     * water rather than the path beside it, so the sphere the stone used to check was a check a player
+     * standing on the ford's own bank could fail.
+     */
+    private static boolean standingOn(ServerPlayer player, String id) {
+        Places.Place place = placeFor(player, id);
+        if (place == null) return false;
+        return flatTo(player, id) <= place.radius()
+                && Math.abs(place.centre().getY() - player.getY()) <= PLACE_UP_AND_DOWN;
+    }
+
+    /** How far a player's feet are from a place's middle, flat; {@code -1} where the place is unwritten. */
+    private static double flatTo(ServerPlayer player, String id) {
+        Places.Place place = placeFor(player, id);
+        if (place == null) return -1;
+        double dx = place.centre().getX() + 0.5D - player.getX();
+        double dz = place.centre().getZ() + 0.5D - player.getZ();
+        return Math.sqrt(dx * dx + dz * dz);
+    }
+
+    /** A place this world has written on this player's ground, or null when the name is not written. */
+    @Nullable
+    private static Places.Place placeFor(ServerPlayer player, String id) {
+        Places.Place place = Places.place(player.level(), id);
+        return place != null && place.dimension().equals(player.level().dimension()) ? place : null;
+    }
+
+    /** What the stone answers over a place it was lent for: the place's own line where it has one. */
+    private static Component readingFor(String wanted, BlockPos here) {
+        Places.Name name = Places.known(wanted);
+        return name != null && name.beryl()
+                ? Component.translatable(name.berylKey()).withStyle(ChatFormatting.ITALIC)
+                : caveReading(here);
+    }
+
+    /**
+     * Says where the stone is to be held, once, when the player finally stands there.
+     * <p>
+     * The page says "hold the stone aloft in the ford" and the walk to it ends at a milestone, which is
+     * a stone for coming back by rather than the stone to ask anything of: nothing said that the last
+     * step is a use of the beryl, or that standing on the ground is the test rather than standing at a
+     * marker. That left the page's own instruction to be guessed, and the milestone is the wrong guess.
+     * Said once per arrival, and again after the player walks out of the circle.
+     */
+    private static void tellStoneHere(ServerPlayer player) {
+        Quest stone = stoneQuest(player);
+        String wanted = stone == null || stone.complete() ? "" : stone.namedGround();
+        if (wanted.isEmpty() || !standingOn(player, wanted)) {
+            STONE_HERE_SPOKEN.remove(player.getUUID());
+            return;
+        }
+        if (!STONE_HERE_SPOKEN.add(player.getUUID())) return;
+        player.sendSystemMessage(Component.translatable("campaign.tolkienmobs.beryl.here",
+                        Component.translatable("place.tolkienmobs." + wanted))
+                .withStyle(ChatFormatting.AQUA));
     }
 
     /**
@@ -2146,6 +2219,7 @@ public final class Campaign extends SavedData {
         keepMatuna(player);
         keepStoneInHand(player);
         keepGroundWritten(player);
+        tellStoneHere(player);
         keepValleyStanding(player);
         keepGlorfindel(player);
         keepCaveOpen(player);

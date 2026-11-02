@@ -988,7 +988,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("campaign.tolkienmobs.valley_elf.5", "埃莱尼尔");
         this.add("campaign.tolkienmobs.valley_elf.6", "宁洛德尔");
         this.add("campaign.tolkienmobs.beryl.shallow", "够深了，但还不够深。石头要的是洞穴的最深处，不是洞口。");
-        this.add("campaign.tolkienmobs.beryl.elsewhere", "石头被要求举在%s，而不是这里。");
+        this.add("campaign.tolkienmobs.beryl.elsewhere", "石头要在%s举起，而不是这里——距此处还有%s格。");
         this.add("campaign.tolkienmobs.page.beryl.said", "一切都从渡口开始，因为那是我们知道他最后踏过的土地。在那里把宝石举起来，它会回答你。");
         this.add("campaign.tolkienmobs.page.beryl.reply.2", "如果它一直沉默呢？");
         this.add("campaign.tolkienmobs.page.beryl.reply.1", "它究竟能做什么？");
@@ -1008,6 +1008,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("campaign.tolkienmobs.cave.guarded", "宝石依旧暗着，而更深处有什么东西并不希望它亮起来。守着这间石室的家伙还没有倒下。");
         this.add("campaign.tolkienmobs.cave.reached", "你已经到达%s最深的石室，而守着它的东西再也站不起来了。");
         this.add("campaign.tolkienmobs.beryl.given", "石头已经在你手里：冰凉，比这个大小的东西本该有的分量要沉。");
+        this.add("campaign.tolkienmobs.beryl.here", "这里就是%s，石头已在你手中——就在此处把它举起：对着空气使用，别对着里程碑。");
         this.add("campaign.tolkienmobs.beryl.returned", "石头又回到了你手里。它借给你是要你带着它，不是让你放下。");
         this.add("campaign.tolkienmobs.page.beryl", "格罗芬德尔的智慧 二");
         this.add("quest.tolkienmobs.talk.listen.said", "那份安静一夜之间从沟渠漫到了渡口，天亮时沟里流着没下过雨的水。就这些。现在你听过了，你可以说你是第九个。");
