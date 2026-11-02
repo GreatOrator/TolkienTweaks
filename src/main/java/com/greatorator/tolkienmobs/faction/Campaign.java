@@ -399,7 +399,7 @@ public final class Campaign extends SavedData {
      * <p>
      * He is the first body of the chapter the notes name, and the camp he keeps is the pack's one captured
      * building: the old world's dwarf camp, saved as it stood and raised by {@link Sites} where the drawing
-     * puts the east foot of the pass over Caradhras. The camp's door is in the middle of its south side, so he stands a few
+     * puts the east end of the High Pass. The camp's door is in the middle of its south side, so he stands a few
      * blocks out from it on the approach and faces the way a player walks in.
      * <p>
      * He is a human model at a dwarf's height rather than the mod's dwarf, which is the old world's own
@@ -518,9 +518,9 @@ public final class Campaign extends SavedData {
                     new Page(Quest.Kind.DIALOGUE, Quest.personTarget(ELROND), 1, 10, 8,
                             LEGOLAS, ELROND, DEPARTURE_TITLE, DEPARTURE_PLACE, DEPARTURE_CLOSING),
                     // 2-1 - Onward, Misty Mountains. The second chapter opens where the first left off: the
-                    // company has gone, and Elrond sends the player to Glóin's camp east of the mountains,
-                    // below Caradhras. It is a page of walking and one conversation, not a kill, because what
-                    // the chapter has to say first is that the road has changed hands.
+                    // company has gone, and Elrond sends the player to Glóin's camp at the east end of the High
+                    // Pass. It is a page of walking and one conversation, not a kill, because what the chapter
+                    // has to say first is that the road has changed hands.
                     new Page(Quest.Kind.DIALOGUE, Quest.personTarget(GLOIN), 1, 50, 3,
                             ELROND, GLOIN, TOCAMP_TITLE, TOCAMP_PLACE, TOCAMP_CLOSING,
                             TOCAMP_SILVER, TOCAMP_BRONZE, 0))

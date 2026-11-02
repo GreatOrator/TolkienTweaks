@@ -281,10 +281,10 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   bronze. Two fixes came with him: the two blocks the capture used to mark its door and front post are plain
   earth now, and a giver's name is finally flattened before it is looked for as a file, so `Glóin` asks for
   `gloin.png` instead of `glin.png` (the same was true of every accented name in the pack).
-- **Glóin's camp stands where it was built, not where I first put it.** It is on the eastern side of the
-  Misty Mountains, on the ground below Caradhras where the pass lets a player down, so it is canon'd to
-  Lorinand and pinned to that country's southern end instead of to the mountains themselves. The place line
-  and the page's own wording moved with it.
+- **Glóin's camp stands at the east end of the High Pass.** First in the mountains and then below Caradhras,
+  and neither was where the old world built it: the notes put the camp north of the valley, at the ground the
+  High Pass drops into, which the drawing names Gladden. It is canon'd there and pinned to the pass's mouth,
+  and the place line and the page's wording name the High Pass again.
 - **A tool for taking a build out of a world.** `tools/grab_build.py` reads a saved world's region files, or
   an existing structure file, and cuts the build into 48-cube templates with a `.parts` table of the offsets
   they stand at - which is what a large build needs, since neither a structure block nor `Sites` will take

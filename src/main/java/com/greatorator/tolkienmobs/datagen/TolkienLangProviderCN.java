@@ -951,7 +951,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("campaign.tolkienmobs.line.sealed", "三方的页面都已走完，战争却还未结束：骑手仍在外头，如今任何一位传令官都会向你提起他。");
         this.add("campaign.tolkienmobs.line.end", "路写到这里为止。之后的书页尚未落笔。");
         this.add("campaign.tolkienmobs.page.tocamp", "向北，迷雾山脉");
-        this.add("campaign.tolkienmobs.page.tocamp.place", "迷雾山脉东侧、卡兰拉斯山下的矮人营地");
+        this.add("campaign.tolkienmobs.page.tocamp.place", "高地隘口东端的矮人营地");
         this.add("campaign.tolkienmobs.page.tocamp.closing", "同伴们已经离去，向北的路如今属于矮人。格罗因就在山口外的火堆旁，他一直在等游侠的消息。");
         this.add("screen.tolkienmobs.quests.return", "返回");
         this.add("quest.tolkienmobs.return.near", "你已在他们近旁。");
@@ -1068,7 +1068,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("place.tolkienmobs.barachen.line", "巨魔荒野中一名斥候的营地");
         this.add("place.tolkienmobs.barachen", "巴拉亨的营地");
         this.add("place.tolkienmobs.gloin", "格罗因的营地");
-        this.add("place.tolkienmobs.gloin.line", "迷雾山脉东侧、卡兰拉斯山下的矮人营地");
+        this.add("place.tolkienmobs.gloin.line", "高地隘口东端的矮人营地");
         this.add("place.tolkienmobs.gundabad", "刚达巴");
         this.add("place.tolkienmobs.gundabad.line", "多尔汉德家族占据的古老矮人要塞");
         this.add("place.tolkienmobs.vault", "刚达巴地库");

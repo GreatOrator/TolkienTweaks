@@ -29,9 +29,9 @@ becomes 70, 1200 becomes 120. The coin the notes put on each page is paid as wri
 
 ## The ground
 
-- **Glóin's camp** — a place east of the Misty Mountains (`gloin`), on the ground below Caradhras where a
-  player comes down off the pass, and pinned to the southern end of Lorinand. Captured from the old world's
-  own camp rather than modelled: a fire, tents and a dwarf waiting at the door.
+- **Glóin's camp** — a place at the east end of the High Pass (`gloin`), north of the valley, on the ground
+  the pass drops into on the Anduin side (Gladden) and pinned to that pass's mouth. Captured from the old
+  world's own camp rather than modelled: a fire, tents and a dwarf waiting at the door.
 - **Gundabad and its vault** — places (`gundabad`, `vault`) in the same range, north of the camp. The
   fortress itself is the one real asset question left: the pack has no dwarf-fortress template, and the
   notes want an outer fortress, a vault and an inner keep.

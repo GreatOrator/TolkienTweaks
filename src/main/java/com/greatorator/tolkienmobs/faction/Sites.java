@@ -91,8 +91,8 @@ public final class Sites extends SavedData {
      * than modelled: the pack ships no dwarf camp of its own, and the notes open the second chapter at a
      * fire a player walks up to. Captured as it stood - 28 by 8 by 22, its door in the middle of the south
      * side and a post marking the front a few blocks further out - so the ground chapter two is spoken on
-     * is the ground it was written on. It stands on the east side of the range, below Caradhras, where the
-     * old world had it: the road north from there runs under the mountains' feet, not over them. The two marker blocks the capture used for its door and its front
+     * is the ground it was written on. It stands at the east end of the High Pass, where the old world had
+     * it: the road north from there runs along the vale, not over the mountains. The two marker blocks the capture used for its door and its front
      * post are plain earth now: a page names the camp, and what the old world left to point at it is not
      * something a player should have to read as scenery.
      */
@@ -160,10 +160,10 @@ public final class Sites extends SavedData {
             TROLL_CAVE, ArdaMap.Country.TROLLSHAWS,
             TROLL_CAVE_2, ArdaMap.Country.TROLLSHAWS,
             TROLL_CAVE_3, ArdaMap.Country.TROLLSHAWS,
-            // The camp is on the eastern side of the range, not in it: it was built under Caradhras, at the
-            // foot of the pass a player comes down after crossing the mountains, and that ground is drawn
-            // as Lorinand - the holly country east of the ridge - rather than as the mountains themselves.
-            GLOIN_CAMP, ArdaMap.Country.LORINAND);
+            // The camp is at the east end of the High Pass: the ground the pass drops into on the Anduin
+            // side, which the drawing names Gladden, rather than the mountains it cuts through. That is where
+            // the old world built it and where the notes send the player, north of the valley.
+            GLOIN_CAMP, ArdaMap.Country.GLADDEN);
     /**
      * The cell of the drawing a landmark the books pinpoint is asked for in, as {column, row}.
      * <p>
@@ -180,10 +180,10 @@ public final class Sites extends SavedData {
             TROLL_CAVE, new int[]{17, 15},
             TROLL_CAVE_2, new int[]{18, 16},
             TROLL_CAVE_3, new int[]{19, 16},
-            // The camp is pinned to the southern end of Lorinand, which is the ground just east of the pass
-            // over Caradhras: the country alone would put it anywhere in the holly country, and a camp two
-            // hundred blocks from the road it is meant to be found on is a camp nobody walks past.
-            GLOIN_CAMP, new int[]{23, 18});
+            // The camp is pinned to the pass's mouth: the country alone would put it anywhere along the vale,
+            // and a camp that is not on the road down out of the High Pass is a camp nobody walks past. Row 10
+            // is north of the valley, which sits at row 12, and east of the ridge, which ends at column 23.
+            GLOIN_CAMP, new int[]{24, 10});
 
     /**
      * How far from its country's middle a landmark may drift, in blocks: two cells of the map. The spot

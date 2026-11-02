@@ -963,7 +963,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.line.sealed", "Every front has run out of pages, and the war has not: the Rider is still out there, and any herald of the three will speak of him now.");
         this.add("campaign.tolkienmobs.line.end", "This is as far as the road has been written. The pages beyond it are not yet set down.");
         this.add("campaign.tolkienmobs.page.tocamp", "Onward, Misty Mountains");
-        this.add("campaign.tolkienmobs.page.tocamp.place", "the dwarf camp east of the mountains");
+        this.add("campaign.tolkienmobs.page.tocamp.place", "the dwarf camp at the east end of the High Pass");
         this.add("campaign.tolkienmobs.page.tocamp.closing", "The company is gone, and the road north is the dwarves' road now. Glóin keeps the fire beyond the pass, and he has been waiting for a Ranger's word.");
         this.add("screen.tolkienmobs.quests.return", "Return");
         this.add("quest.tolkienmobs.return.near", "You are already within sight of them.");
@@ -1080,7 +1080,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("place.tolkienmobs.barachen.line", "a scout's camp in the Trollshaws");
         this.add("place.tolkienmobs.barachen", "Barachen's Camp");
         this.add("place.tolkienmobs.gloin", "Glóin's Camp");
-        this.add("place.tolkienmobs.gloin.line", "a dwarf camp east of the mountains, below Caradhras");
+        this.add("place.tolkienmobs.gloin.line", "a dwarf camp at the east end of the High Pass");
         this.add("place.tolkienmobs.gundabad", "Gundabad");
         this.add("place.tolkienmobs.gundabad.line", "the old dwarf-fortress the Dourhands hold");
         this.add("place.tolkienmobs.vault", "Gundabad's Vault");
