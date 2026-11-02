@@ -10,6 +10,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
@@ -102,6 +104,11 @@ public final class Stones {
                         cursor.set(around.getX() + dx, around.getY() + dy, around.getZ() + dz);
                         if (!level.hasChunkAt(cursor)) continue;
                         if (!level.getBlockState(cursor).isAir()) continue;
+                        // A spot a body is standing in is not free ground. The hall's stone is asked
+                        // for at the herald's own feet, which is air over a floor and would otherwise
+                        // be the first answer - a stone inside the man who just handed the page over.
+                        if (!level.getEntities((Entity) null, new AABB(cursor),
+                                seen -> !seen.isSpectator()).isEmpty()) continue;
                         if (level.getBlockState(cursor.above()).isAir()
                                 && !level.getBlockState(cursor.below()).isAir()) {
                             return cursor.immutable();
