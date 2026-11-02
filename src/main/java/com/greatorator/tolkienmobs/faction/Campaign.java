@@ -879,6 +879,16 @@ public final class Campaign extends SavedData {
         }
         if (person.equalsIgnoreCase(ELLADAN)) return THORENHAD_PLACE;
         if (person.equalsIgnoreCase(BARACHEN)) return BARACHEN_PLACE;
+        // A page may name a body at length - "Elrond Half-elven", "Barachen the scout" - and a needle
+        // that gave up on the extra words would be no needle at all for that page.
+        String short_ = person.toLowerCase(java.util.Locale.ROOT);
+        if (short_.contains(ELROND.toLowerCase(java.util.Locale.ROOT))
+                || short_.contains(LEGOLAS.toLowerCase(java.util.Locale.ROOT))
+                || short_.contains(GLORFINDEL.toLowerCase(java.util.Locale.ROOT))) {
+            return SUMMON_PLACE;
+        }
+        if (short_.contains(ELLADAN.toLowerCase(java.util.Locale.ROOT))) return THORENHAD_PLACE;
+        if (short_.contains(BARACHEN.toLowerCase(java.util.Locale.ROOT))) return BARACHEN_PLACE;
         return null;
     }
 

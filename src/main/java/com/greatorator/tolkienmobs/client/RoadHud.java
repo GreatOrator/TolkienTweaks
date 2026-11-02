@@ -4,6 +4,7 @@ import com.greatorator.tolkienmobs.TolkienMobsMain;
 import com.greatorator.tolkienmobs.faction.Waypoint;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
@@ -35,9 +36,11 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 public final class RoadHud {
     private static final Identifier LAYER = Identifier.fromNamespaceAndPath(MODID, "road");
 
-    /** How far from the top edge the arrow sits, and how long its shaft is. */
-    private static final int TOP = 10;
-    private static final int SHAFT = 7;
+    /** The plate across the top of the screen, and how long the arrow's shaft is. */
+    private static final int PLATE_TOP = 6;
+    private static final int PLATE_HEIGHT = 34;
+    private static final int PLATE = 30;
+    private static final int SHAFT = 9;
 
     private static final int PARCHMENT = 0xE9D8B4;
     private static final int BACKING = 0x66000000;
@@ -75,18 +78,19 @@ public final class RoadHud {
         int octant = Math.floorMod((int) Math.round((toTarget - view) / (Math.PI / 4.0D)), STAMPS.length);
 
         int centre = graphics.guiWidth() / 2;
-        drawArrow(graphics, centre, TOP, octant);
-
         String name = mark.label().indexOf('.') < 0
                 ? mark.label()
                 : Component.translatable(mark.label()).getString();
         String line = name + "  ·  "
                 + Component.translatable("hud.tolkienmobs.road.blocks",
                 String.valueOf(Math.max(1, Math.round(distance)))).getString();
-        int width = Minecraft.getInstance().font.width(line);
-        int y = TOP + SHAFT + 8;
-        graphics.fill(centre - width / 2 - 4, y - 2, centre + width / 2 + 4, y + 10, BACKING);
-        graphics.text(Minecraft.getInstance().font, line, centre - width / 2, y, PARCHMENT, false);
+        Font font = Minecraft.getInstance().font;
+        // The plate is the point: an arrow and a line of text over open sky reads as a rendering
+        // glitch rather than as a compass, and this has to be recognisable at a glance from a walk.
+        int width = Math.max(PLATE, font.width(line)) + 12;
+        graphics.fill(centre - width / 2, PLATE_TOP, centre + width / 2, PLATE_TOP + PLATE_HEIGHT, BACKING);
+        drawArrow(graphics, centre, PLATE_TOP + 11, octant);
+        graphics.text(font, line, centre - font.width(line) / 2, PLATE_TOP + 22, PARCHMENT, true);
     }
 
     /** One of the eight stamps: a shaft outward from the centre and a two-stroke head at its tip. */
