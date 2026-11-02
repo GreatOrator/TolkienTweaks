@@ -251,11 +251,12 @@ public final class QuestGivers {
             // war to a face it has never seen. The plate asks the same question of the same number, so a
             // mark can no longer advertise work the body refuses to hand over - and turn-in runs above this,
             // so a page already in hand is still paid for whoever carries it.
-            // The rank is the hall's gate on the hall's own work, and on the chapter's from its second page:
-            // a country does not trust its war to a face it has never seen, but the errand that opens the
-            // story is how a face gets known, so the first page is handed to anybody who walks in.
+            // The rank is the hall's gate, and the chapter's opening page is behind it like every other: a
+            // country does not trust its war to a face it has never seen, and a player who cannot make a
+            // name in a hall has no business being sent to Elrond by one. Pages a speaker holds are his own
+            // to hand over and are not gated - the herald is the only body here who asks.
             boolean hallPage = Campaign.holder(player, herald).equalsIgnoreCase(campaignName(herald));
-            if (hallPage && Campaign.stage(player, herald) > 0
+            if (hallPage
                     && FactionStandings.standing(player, herald) < FactionRank.STRANGER.threshold()) {
                 player.sendSystemMessage(Component.translatable("quest.tolkienmobs.herald.stranger")
                         .withStyle(ChatFormatting.GRAY));

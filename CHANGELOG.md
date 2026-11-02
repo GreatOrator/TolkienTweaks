@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
-- **The herald hands the opening page to a stranger.** A hall opens on a rank - nothing appears over the herald's head until the player has made a name for itself - which would have left the chapter unstartable, since it now begins at his bench. The first page of the line is handed to anyone who walks in, and the rank still guards everything after it, including the front's own muster pages.
+- **The herald asks a rank before he hands the chapter over.** A hall opens on a rank - nothing appears over the herald's head until the player has made a name for itself - and the chapter now begins at his bench, so the opening page is behind that rank like every other page he holds. The speakers along the line are not gated: Elrond and Elladan hand their own pages to whoever has come that far, and the only body asking for a name is the one standing in a hall.
 
 - **The chapter starts at the West's herald, and the road takes it from there.** A hall is where a player is given work, and a chapter that opened in a valley gave the herald nothing to do but hand over the front's own three pages. He hands the opening page over at his bench - Elrond is still the one who hears it, at the end of the walk - and every speaker after that is the one the reference names: Elrond, Elladan, Glorfindel, Barachen, Legolas and back to Elrond. So the gate of the valley stops being a giver's post and the stand that put Aragorn on it is gone with the page that needed him.
 
