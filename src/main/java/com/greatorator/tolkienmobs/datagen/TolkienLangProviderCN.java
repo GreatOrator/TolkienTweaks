@@ -950,6 +950,9 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("campaign.tolkienmobs.line.other", "这条线索的最后一页已经交出。%s仍有自己的线索，也有待你领取的工作。");
         this.add("campaign.tolkienmobs.line.sealed", "三方的页面都已走完，战争却还未结束：骑手仍在外头，如今任何一位传令官都会向你提起他。");
         this.add("campaign.tolkienmobs.line.end", "路写到这里为止。之后的书页尚未落笔。");
+        this.add("campaign.tolkienmobs.page.tocamp", "向北，迷雾山脉");
+        this.add("campaign.tolkienmobs.page.tocamp.place", "山口东端的矮人营地");
+        this.add("campaign.tolkienmobs.page.tocamp.closing", "同伴们已经离去，向北的路如今属于矮人。格罗因就在山口外的火堆旁，他一直在等游侠的消息。");
         this.add("screen.tolkienmobs.quests.return", "返回");
         this.add("quest.tolkienmobs.return.near", "你已在他们近旁。");
         this.add("quest.tolkienmobs.return.blocked", "他们站过的地方已经没有落脚的空地。");

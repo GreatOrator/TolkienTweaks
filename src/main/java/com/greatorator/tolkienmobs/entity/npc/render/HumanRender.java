@@ -18,6 +18,7 @@ import net.minecraft.util.Util;
 
 import javax.annotation.Nullable;
 import java.util.Map;
+import java.text.Normalizer;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.LOGGER;
@@ -133,11 +134,21 @@ public class HumanRender extends GeoEntityRenderer<HumanEntity, TolkienGeoRender
         return NAMED_BY_SLUG.computeIfAbsent(slug, found -> NAMED_GIVER.withSuffix(found + ".png"));
     }
 
-    /** A name as a file name: lower case, spaces to underscores, and nothing a path cannot hold. */
+    /**
+     * A name as a file name: lower case, spaces to underscores, and nothing a path cannot hold.
+     * <p>
+     * Accents are flattened to the letter under them before anything else happens, which is the
+     * difference between a named file being found and never being found at all: the old slug dropped
+     * whatever was not a to z, so {@code Glóin} was asked for as {@code glin.png}, and so would
+     * {@code Théoden} and {@code Gríma}. The same goes for the pack's own spelling: a name written plain
+     * and a name written with its accent look for one file.
+     */
     private static String slugOf(String name) {
-        StringBuilder slug = new StringBuilder(name.length());
-        for (int i = 0; i < name.length(); i++) {
-            char c = Character.toLowerCase(name.charAt(i));
+        String flat = Normalizer.normalize(name, Normalizer.Form.NFD);
+        StringBuilder slug = new StringBuilder(flat.length());
+        for (int i = 0; i < flat.length(); i++) {
+            char c = Character.toLowerCase(flat.charAt(i));
+            if (Character.getType(c) == Character.NON_SPACING_MARK) continue;
             if (c >= 'a' && c <= 'z' || c >= '0' && c <= '9') {
                 slug.append(c);
             } else if (c == ' ' || c == '-' || c == '_') {

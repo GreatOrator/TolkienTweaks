@@ -26,6 +26,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.ai.goal.FleeSunGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -392,6 +394,35 @@ public final class Campaign extends SavedData {
      */
     private static final boolean FINALE_OPEN = false;
 
+    /**
+     * Glóin, and the camp chapter two opens at.
+     * <p>
+     * He is the first body of the chapter the notes name, and the camp he keeps is the pack's one captured
+     * building: the old world's dwarf camp, saved as it stood and raised by {@link Sites} where the drawing
+     * puts the east end of the pass. The camp's door is in the middle of its south side, so he stands a few
+     * blocks out from it on the approach and faces the way a player walks in.
+     * <p>
+     * He is a human model at a dwarf's height rather than the mod's dwarf, which is the old world's own
+     * answer: the reference's dwarves were always the human silhouette, drawn short. The pack's dwarf is a
+     * villager of the Iron Hills and would have to be redrawn to stop reading as one, and a named body
+     * that is a scaled man keeps the face the reference gave him - {@code glo.in.png}, in the pack's own
+     * middle-earth folder, found by the same name-to-file rule the Elves' faces use.
+     */
+    private static final String GLOIN = "Glóin";
+    private static final String GLOIN_TAG = "tolkienmobs:campaign_gloin";
+    /** How far from the middle of the camp a player has to be for him to be stood at it, in blocks. */
+    private static final double GLOIN_REACH = 96.0D;
+    /** Where he stands, from the middle of the camp's footprint: south of the door, on the way in. */
+    private static final int[] GLOIN_STAND = {0, 6};
+    /** Shoulder-high on an Elf: about waist height on a man, which is what a dwarf's door was cut for. */
+    private static final float GLOIN_HEIGHT = 0.62F;
+    private static final String TOCAMP_TITLE = "campaign.tolkienmobs.page.tocamp";
+    private static final String TOCAMP_PLACE = "campaign.tolkienmobs.page.tocamp.place";
+    private static final String TOCAMP_CLOSING = "campaign.tolkienmobs.page.tocamp.closing";
+    /** What the notes put on the page: five silver and thirty-three bronze, and the dwarves' thanks. */
+    private static final int TOCAMP_SILVER = 5;
+    private static final int TOCAMP_BRONZE = 33;
+
     private static final Map<Alliance, List<Page>> PAGE_LINES = Map.of(
             Alliance.WEST, List.of(
                     // The reference chapter, whose eighteen quests are numbered 8 to 25 and are walked in
@@ -485,7 +516,14 @@ public final class Campaign extends SavedData {
                     // 25 - Hasten Their Departure: Legolas sends the tidings back to Elrond, which is
                     // where the reference ends the chapter.
                     new Page(Quest.Kind.DIALOGUE, Quest.personTarget(ELROND), 1, 10, 8,
-                            LEGOLAS, ELROND, DEPARTURE_TITLE, DEPARTURE_PLACE, DEPARTURE_CLOSING))
+                            LEGOLAS, ELROND, DEPARTURE_TITLE, DEPARTURE_PLACE, DEPARTURE_CLOSING),
+                    // 2-1 - Onward, Misty Mountains. The second chapter opens where the first left off: the
+                    // company has gone, and Elrond sends the player north after the dwarves, to Glóin's
+                    // camp at the east end of the pass. It is a page of walking and one conversation, not a
+                    // kill, because what the chapter has to say first is that the road has changed hands.
+                    new Page(Quest.Kind.DIALOGUE, Quest.personTarget(GLOIN), 1, 5, 3,
+                            ELROND, GLOIN, TOCAMP_TITLE, TOCAMP_PLACE, TOCAMP_CLOSING,
+                            TOCAMP_SILVER, TOCAMP_BRONZE, 0))
     );
 
     /**
@@ -1171,6 +1209,13 @@ public final class Campaign extends SavedData {
         if (page.target().equals(MATUNA) && Sites.siteOf(player) == null) {
             Sites.plan(player, caveFor(player), false);
         }
+        // Chapter two opens at a camp the pack does not otherwise ship, so it is pitched when Elrond's page
+        // is handed over rather than found: the walk north then ends at a fire that is standing by the time
+        // the player gets there. It is canon'd to the Misty Mountains, so taking it never leaves an older
+        // camp standing as the page's ground.
+        if (page.target().equals(Quest.personTarget(GLOIN))) {
+            Sites.plan(player, Sites.GLOIN_CAMP, false);
+        }
         Front[] row = row(player);
         int slot = slotOf(page, alliance);
         row[slot] = new Front(row[slot].stage(), page);
@@ -1493,6 +1538,7 @@ public final class Campaign extends SavedData {
                 .withStyle(ChatFormatting.ITALIC);
     }
 
+
     /**
      * Stands Glorfindel in the valley while the stone's work is the West's current step.
      * <p>
@@ -1536,6 +1582,47 @@ public final class Campaign extends SavedData {
         elf.setCustomName(Component.literal(GLORFINDEL).withStyle(ChatFormatting.GOLD));
         elf.setCustomNameVisible(true);
         level.addFreshEntity(elf);
+    }
+
+    /**
+     * Stands Glóin at the camp while a page names him, which from page 26 to the end of the chapter is
+     * most of them.
+     * <p>
+     * The camp is a site rather than a place: it did not exist until the campaign built it, so there is no
+     * middle to stand him at until the build has happened. He is therefore stood from the site the player
+     * already carries - built, and the camp's own - and found by his tag afterwards, so a reloaded world
+     * keeps one dwarf at the fire instead of one every time the player looks. He is a campaign giver like
+     * the Elves in the valley, which is what lets the same right-click hand the page and take it back.
+     */
+    private static void keepGloin(ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel level)) return;
+        if (!carriesWordFor(player, GLOIN) && !holdsOrTakes(player, GLOIN)) return;
+        Sites.Site site = Sites.siteOf(player);
+        if (site == null || !Sites.GLOIN_CAMP.equals(site.structure()) || !site.built()) return;
+        if (!site.dimension().equals(level.dimension())) return;
+        BlockPos middle = site.centre();
+        if (middle.distToCenterSqr(player.position()) > GLOIN_REACH * GLOIN_REACH) return;
+        if (!level.getEntities((Entity) null, new AABB(middle).inflate(GLOIN_REACH),
+                seen -> seen.entityTags().contains(GLOIN_TAG)).isEmpty()) return;
+        BlockPos stand = floorNear(level, middle.offset(GLOIN_STAND[0], 0, GLOIN_STAND[1]), player);
+        if (stand == null) return;
+        Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
+        if (!(entity instanceof Mob dwarf)) return;
+        // Facing south, which is the way the camp's door looks: a player walks up to his face, not his back.
+        dwarf.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D, 0.0F, 0.0F);
+        dwarf.setPersistenceRequired();
+        dwarf.addTag(QuestGivers.GIVER_TAG);
+        dwarf.addTag(QuestGivers.CAMPAIGN_TAG);
+        dwarf.addTag(QuestGivers.CAMPAIGN_GIVER_TAG);
+        dwarf.addTag(Alliance.WEST.giverTag());
+        dwarf.addTag(GLOIN_TAG);
+        dwarf.setCustomName(Component.literal(GLOIN).withStyle(ChatFormatting.GOLD));
+        dwarf.setCustomNameVisible(true);
+        // The height is an attribute rather than a model's business, so his reach, his step and his nameplate
+        // are all a dwarf's and the renderer needs to know nothing about the chapter's cast.
+        AttributeInstance height = dwarf.getAttribute(Attributes.SCALE);
+        if (height != null) height.setBaseValue(GLOIN_HEIGHT);
+        level.addFreshEntity(dwarf);
     }
 
     /**
@@ -2551,6 +2638,7 @@ public final class Campaign extends SavedData {
         keepBarachen(player);
         keepElrond(player);
         keepLegolas(player);
+        keepGloin(player);
         Quest page = carriedCampaignPage(player);
         if (page == null || page.complete()) {
             RIDER_CALLED.remove(player.getUUID());

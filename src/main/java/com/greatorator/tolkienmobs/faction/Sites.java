@@ -86,6 +86,16 @@ public final class Sites extends SavedData {
 
     /** The tent the camp errand pitches, as a template the mod already ships. */
     public static final String WILD_TENT = "tolkienmobs:key_structures/wild_tent";
+    /**
+     * The dwarf camp Glóin keeps at the east end of the pass, taken from the old world's own camp rather
+     * than modelled: the pack ships no dwarf camp of its own, and the notes open the second chapter at a
+     * fire a player walks up to. Captured as it stood - 28 by 8 by 22, its door in the middle of the south
+     * side and a post marking the front a few blocks further out - so the ground chapter two is spoken on
+     * is the ground it was written on. The two marker blocks the capture used for its door and its front
+     * post are plain earth now: a page names the camp, and what the old world left to point at it is not
+     * something a player should have to read as scenery.
+     */
+    public static final String GLOIN_CAMP = "tolkienmobs:key_structures/gloin_camp";
     /** The hilltop the West's line walks to, a landmark rather than a camp. */
     public static final String WEATHERTOP = "tolkienmobs:key_structures/weathertop";
     /** The castle the campaign raises for its last act, which no world generator ever places. */
@@ -148,7 +158,10 @@ public final class Sites extends SavedData {
             WILD_TENT, ArdaMap.Country.TROLLSHAWS,
             TROLL_CAVE, ArdaMap.Country.TROLLSHAWS,
             TROLL_CAVE_2, ArdaMap.Country.TROLLSHAWS,
-            TROLL_CAVE_3, ArdaMap.Country.TROLLSHAWS);
+            TROLL_CAVE_3, ArdaMap.Country.TROLLSHAWS,
+            // The camp is Misty Mountain ground: the east end of the pass out of the valley, which is where
+            // the notes put it and where the road north from Rivendell actually goes.
+            GLOIN_CAMP, ArdaMap.Country.HITHAEGLIR);
     /**
      * The cell of the drawing a landmark the books pinpoint is asked for in, as {column, row}.
      * <p>
