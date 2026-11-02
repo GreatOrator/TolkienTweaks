@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The beryl says how it is used.** The stone's tooltip now names the one thing it does: right-click to raise it aloft, because an item whose whole use is a right click over open air is an item that reads as decoration.
+
 - **The last step of the stone's page says what it wants.** Standing on the ground a page of the beryl names now says so once, with the one thing the page left to be guessed: hold the stone aloft there, in the air rather than on the milestone. Raising it out of reach now names the place and how far off it still is, and a place is read as a circle of ground rather than a sphere in the air - a ford is walked on its bank, not on the water its middle was surveyed on.
 
 - **The stone's page now carries a direction.** A page of the beryl that names ground - "hold the stone aloft in the ford" - is settled by holding rather than by arriving, so it has no spot, and the needle read it as a page that names nowhere. It now points at the ground such a page names, with its distance, and the ground is written into the world when it never was.

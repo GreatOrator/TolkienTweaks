@@ -136,6 +136,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addItem(TolkienItems.DRINK_PERSONAL_BLACKSMITH, "随身铁匠");
         this.add("itemgroup.tolkienmobs.quest", "托尔金微调：基础物品");
             this.addItemWithLore(TolkienItems.ITEM_BERYL.get(), "§3格罗芬德尔的绿玉§r", "借给你的一颗魔法宝石，用来协助你的搜寻");
+            this.add("item.tolkienmobs.item_beryl.use", "右键将它高举——宝石或许能在此处找到什么。");
             this.addItemWithLore(TolkienItems.ITEM_FORTRESSMAP.get(), "§3要塞图纸§r", "看似脆弱，却能完好保存如此之久，令人惊讶！");
             this.addItemWithLore(TolkienItems.ITEM_WATCHERHEART.get(), "§5石心§r", "这颗心脏具有令人恐惧与不安的能量");
             this.addItemWithLore(TolkienItems.ITEM_WATCHERHEART_CRACKED.get(), "§5监视者的心脏§r", "这颗心看起来破旧不堪");

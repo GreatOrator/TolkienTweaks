@@ -136,6 +136,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.addItem(TolkienItems.DRINK_PERSONAL_BLACKSMITH, "Portable Blacksmith");
         this.add("itemgroup.tolkienmobs.quest", "TolkienTweaks: Basic Items");
             this.addItemWithLore(TolkienItems.ITEM_BERYL.get(), "§3Glorfindel's Beryl§r", "Magical gem loaned to you to help on your search");
+            this.add("item.tolkienmobs.item_beryl.use", "Right-click to raise it aloft - the jewel may find something where you stand.");
             this.addItemWithLore(TolkienItems.ITEM_FORTRESSMAP.get(), "§3Fortress Plans§r", "Seemingly fragile, surprising it survived so long");
             this.addItemWithLore(TolkienItems.ITEM_WATCHERHEART.get(), "§5Stone Heart§r", "This heart has a disturbing and fearful energy");
             this.addItemWithLore(TolkienItems.ITEM_WATCHERHEART_CRACKED.get(), "§5Watcher's Heart§r", "This heart looks like it has seen better days");

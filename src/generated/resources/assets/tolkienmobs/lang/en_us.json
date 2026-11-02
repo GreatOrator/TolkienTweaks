@@ -1423,6 +1423,7 @@
   "item.tolkienmobs.item_backpack_upgrade_sleeping.lore": "Carry around a sleeping bag (Max-1)",
   "item.tolkienmobs.item_beryl": "§3Glorfindel's Beryl§r",
   "item.tolkienmobs.item_beryl.lore": "Magical gem loaned to you to help on your search",
+  "item.tolkienmobs.item_beryl.use": "Right-click to raise it aloft - the jewel may find something where you stand.",
   "item.tolkienmobs.item_blankpaper": "§5Manuscript page§r",
   "item.tolkienmobs.item_blankpaper.lore": "Lost page from a manuscript",
   "item.tolkienmobs.item_brokensword": "§5Sword Hilt§r",

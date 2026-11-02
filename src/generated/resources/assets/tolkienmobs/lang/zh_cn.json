@@ -1411,6 +1411,7 @@
   "item.tolkienmobs.item_backpack_upgrade_sleeping.lore": "随身携带睡袋（上限：1）",
   "item.tolkienmobs.item_beryl": "§3格罗芬德尔的绿玉§r",
   "item.tolkienmobs.item_beryl.lore": "借给你的一颗魔法宝石，用来协助你的搜寻",
+  "item.tolkienmobs.item_beryl.use": "右键将它高举——宝石或许能在此处找到什么。",
   "item.tolkienmobs.item_blankpaper": "§5手稿书页§r",
   "item.tolkienmobs.item_blankpaper.lore": "一份手稿的遗失书页",
   "item.tolkienmobs.item_brokensword": "§5剑柄§r",
