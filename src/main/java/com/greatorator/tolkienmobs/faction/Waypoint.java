@@ -102,6 +102,57 @@ public final class Waypoint {
         return new Mark("place.tolkienmobs." + next.place(), where.centre(), level.dimension());
     }
 
+    /** Pages whose bearing has already been said to a player, so the sentence is only read once. */
+    private static final java.util.Set<String> TOLD = new java.util.HashSet<>();
+
+    /**
+     * Says how far off a page's ground is and which way, the first time the page is carried.
+     * <p>
+     * A bearing on a HUD is a line to walk and nothing more: it does not say that the water is two days
+     * off, and a player told "hold the stone aloft at the Ford" is told a place and no distance at all.
+     * So the sentence is said once beside the needle, in the same tick, and only for ground the world
+     * has already written - a page whose ground is still being placed will say it when it exists.
+     */
+    private static void sayBearing(ServerPlayer player, Quest quest) {
+        String named = quest.namedGround();
+        if (named.isEmpty() && quest.spot() != null && quest.spot().place() != null) named = quest.spot().place();
+        if (named.isEmpty() || !(player.level() instanceof ServerLevel level)) return;
+        Places.Place where = Places.place(level, named);
+        if (where == null || !where.dimension().equals(level.dimension())) return;
+        if (!TOLD.add(player.getUUID() + "|" + named)) return;
+        BlockPos from = player.blockPosition();
+        BlockPos to = where.centre();
+        int away = (int) Math.sqrt(from.distSqr(to));
+        if (away < 64) return;
+        player.sendSystemMessage(net.minecraft.network.chat.Component.translatable(
+                "campaign.tolkienmobs.bearing",
+                net.minecraft.network.chat.Component.translatable("place.tolkienmobs." + named),
+                net.minecraft.network.chat.Component.literal(String.valueOf(away)),
+                net.minecraft.network.chat.Component.translatable(
+                        "campaign.tolkienmobs.bearing." + compass(from, to)))
+                .withStyle(net.minecraft.ChatFormatting.GRAY));
+    }
+
+    /**
+     * Which of the eight bearings a point lies on, as the key of its word. North is -Z, which is how the
+     * world is laid out and how a map is drawn, so a player reading "north" and pressing F3 agrees with it.
+     */
+    private static String compass(BlockPos from, BlockPos to) {
+        double dx = to.getX() - from.getX();
+        double dz = to.getZ() - from.getZ();
+        int sector = Math.floorMod((int) Math.round(Math.toDegrees(Math.atan2(dx, -dz)) / 45.0D), 8);
+        return switch (sector) {
+            case 0 -> "n";
+            case 1 -> "ne";
+            case 2 -> "e";
+            case 3 -> "se";
+            case 4 -> "s";
+            case 5 -> "sw";
+            case 6 -> "w";
+            default -> "nw";
+        };
+    }
+
     /** Sends the player the direction of the first page they are carrying, or an empty mark for none. */
     public static void send(ServerPlayer player, List<Quest> row) {
         Quest carried = null;
@@ -116,6 +167,7 @@ public final class Waypoint {
         // settled: a player walks out of the hall and up the road, and the stone that gets them back
         // has to be standing at the valley by the time they get there.
         if (carried != null) Stones.plant(player, carried);
+        if (carried != null) sayBearing(player, carried);
         // Between pages the book is empty and the needle used to go blank, which was the one moment a
         // player most needed it: the step is finished, and the next one belongs to somebody else. The
         // line knows whose it is and where that body is kept, so the needle keeps its bearing.

@@ -999,6 +999,15 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("campaign.tolkienmobs.valley_elf.6", "宁洛德尔");
         this.add("campaign.tolkienmobs.beryl.shallow", "够深了，但还不够深。石头要的是洞穴的最深处，不是洞口。");
         this.add("campaign.tolkienmobs.beryl.elsewhere", "石头要在%s举起，而不是这里——距此处还有%s格。");
+        this.add("campaign.tolkienmobs.bearing", "%s：%s格，%s。");
+        this.add("campaign.tolkienmobs.bearing.n", "北");
+        this.add("campaign.tolkienmobs.bearing.ne", "东北");
+        this.add("campaign.tolkienmobs.bearing.e", "东");
+        this.add("campaign.tolkienmobs.bearing.se", "东南");
+        this.add("campaign.tolkienmobs.bearing.s", "南");
+        this.add("campaign.tolkienmobs.bearing.sw", "西南");
+        this.add("campaign.tolkienmobs.bearing.w", "西");
+        this.add("campaign.tolkienmobs.bearing.nw", "西北");
         this.add("campaign.tolkienmobs.page.beryl.said", "一切都从渡口开始，因为那是我们知道他最后踏过的土地。在那里把宝石举起来，它会回答你。");
         this.add("campaign.tolkienmobs.page.beryl.reply.2", "如果它一直沉默呢？");
         this.add("campaign.tolkienmobs.page.beryl.reply.1", "它究竟能做什么？");

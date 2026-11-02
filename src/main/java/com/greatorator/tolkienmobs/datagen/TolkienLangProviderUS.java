@@ -847,9 +847,9 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("quest.tolkienmobs.site.keeper", "%s: You found it, then. A fire and a name are all I have to offer, and the fire is worth more.");
         this.add("quest.tolkienmobs.site.found", "You have found what you were sent to find.");
         this.add("quest.tolkienmobs.summary.survey.place", "The stone is a tracker rather than a weapon: it has to be held over ground the trail runs through, and %s is the last place we know he touched.");
-        this.add("quest.tolkienmobs.survey.place", "Hold the stone aloft in %s");
+        this.add("quest.tolkienmobs.survey.place", "Hold the stone aloft at %s");
         this.add("quest.tolkienmobs.summary.survey", "%s answers the ground it is held over and not the hand holding it, so every place gets one question: carry it somewhere, raise it, and be a walk away before asking again.");
-        this.add("quest.tolkienmobs.survey", "Hold the stone aloft in %s caves, down to the deepest chamber of each");
+        this.add("quest.tolkienmobs.survey", "Hold the stone aloft at %s caves, down to the deepest chamber of each");
         this.add("quest.tolkienmobs.summary.site", "Somebody has told you where to go, and there is nothing there until you are close enough to see it: the place is built for you as you come.");
         this.add("quest.tolkienmobs.site", "somewhere out past the ridge");
         this.add("quest.tolkienmobs.turn_in_elsewhere", "Not mine to take: that one belongs to %s.");
@@ -1011,6 +1011,15 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("campaign.tolkienmobs.valley_elf.6", "Nimrodel");
         this.add("campaign.tolkienmobs.beryl.shallow", "Deep, but not deep enough. The stone wants the bottom of the cave and not the mouth of it.");
         this.add("campaign.tolkienmobs.beryl.elsewhere", "%s is where the stone was asked for, and this is not it - %s blocks from here.");
+        this.add("campaign.tolkienmobs.bearing", "%s lies %s blocks %s of here.");
+        this.add("campaign.tolkienmobs.bearing.n", "north");
+        this.add("campaign.tolkienmobs.bearing.ne", "north-east");
+        this.add("campaign.tolkienmobs.bearing.e", "east");
+        this.add("campaign.tolkienmobs.bearing.se", "south-east");
+        this.add("campaign.tolkienmobs.bearing.s", "south");
+        this.add("campaign.tolkienmobs.bearing.sw", "south-west");
+        this.add("campaign.tolkienmobs.bearing.w", "west");
+        this.add("campaign.tolkienmobs.bearing.nw", "north-west");
         this.add("campaign.tolkienmobs.page.beryl.said", "The ford is where this begins, because it is the last ground we know he touched. Hold the beryl aloft there, and it will answer.");
         this.add("campaign.tolkienmobs.page.beryl.reply.2", "And if it stays quiet?");
         this.add("campaign.tolkienmobs.page.beryl.reply.1", "What does it do, exactly?");
@@ -1052,7 +1061,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("place.tolkienmobs.bree.line", "men and hobbits under one hill");
         this.add("place.tolkienmobs.weathertop", "Weathertop");
         this.add("place.tolkienmobs.weathertop.line", "a watchtower with nothing left to watch");
-        this.add("place.tolkienmobs.ford", "The Ford");
+        this.add("place.tolkienmobs.ford", "the Ford of Bruinen");
         this.add("place.tolkienmobs.ford.line", "where the river was made to rise");
         this.add("place.tolkienmobs.tharbad", "Tharbad");
         this.add("place.tolkienmobs.tharbad.line", "a drowned ford on a road nobody keeps");
