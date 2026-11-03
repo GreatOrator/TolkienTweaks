@@ -16,6 +16,13 @@ All notable changes to this project will be documented in this file.
   and takes the hillside under them away at the same time. Both directions are written now: deepslate
   through the course under the five lifted rooms, and each tile's own air over it - the schematics'
   rooms were being poured full of that stone until their boxes were written as air first.
+- **The inner keep is all six of the example structures.** `2tl` and `2tr`, `2ml` and `2mr`, `2bl` and
+  `2br` go down in the drawing's own two-across, three-down grid, laid whole from the stair's floor up
+  with their stone re-materialled and their soil read as the hold's rock. Each carries three floors and
+  its own stairs and ladder, so the storey under the hold is a small fortress of its own rather than two
+  rooms beside the stair; the stair's well is carried empty through all six and the course under the
+  hold's floor is solid over the lot. 3,621 cells on the inner route at the stair's level, every piece on
+  it.
 - **The inner keep is a level under the hold, reached by the spiral.** The chapter's notes ask for a
   fortress inside the fortress and no drawing gives ground for one, so the ground is two of the example
   schematics that came with the drawings - the open hall and the barred undercroft - laid twelve blocks

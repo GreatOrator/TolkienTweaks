@@ -49,12 +49,13 @@ LAYOUT = (
 )
 # The inner keep: the undercroft with its cells, and the hall beside it, under the south row.
 INNER = (
-    ("2ml", 0, 2 * EDGE),
-    ("2mr", EDGE, 2 * EDGE),
+    ("2tl", 0, 0), ("2tr", EDGE, 0),
+    ("2ml", 0, EDGE), ("2mr", EDGE, EDGE),
+    ("2bl", 0, 2 * EDGE), ("2br", EDGE, 2 * EDGE),
 )
 WIDE = 2 * EDGE
 DEEP = 3 * EDGE
-INNER_BOX = (0, 2 * EDGE, WIDE, DEEP)   # x0, z0, x1, z1
+INNER_BOX = (0, 0, WIDE, DEEP)          # x0, z0, x1, z1 - the whole footprint, all six pieces
 
 HERE = pathlib.Path(__file__).resolve().parent.parent
 SRC = HERE / "src" / "main" / "resources" / "data" / "tolkienmobs" / "structure"
