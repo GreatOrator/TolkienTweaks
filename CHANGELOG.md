@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The dwarven hold is built from the drawings, not from the example tiles.** The geomorph
+  sheets are split and read into a 61 by 61 plan by `tools/geom_extract.py`, and
+  `tools/fortress_build.py` raises the first tile from that plan in Angainor masonry: a hall
+  behind a five-wide gallery ring, so the eight quarter-point doorways meet any neighbouring
+  tile without being matched.
 - **A finished page offers the way back.** A story page that is done and handed over more than
   forty-eight blocks behind the player shows `Return` in the book, which asks the server to walk
   them back to the giver. The server checks the page again, refuses to move somebody who is

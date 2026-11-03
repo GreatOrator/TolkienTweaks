@@ -92,3 +92,32 @@ it to be worked around, so the tiles were deleted and the asset is left for what
 The converted save reads the same build to the block, so nothing is lost by keeping the 1.21.1 backup as the
 source. One thing the conversion did change is worth remembering: 26.1.2 no longer keeps the overworld in
 `region/` but in `dimensions/minecraft/overworld/region/`, and the reader falls back to that.
+
+## Building the hold
+
+The fortress is raised from the geomorph drawings in `tools/geomorphs/` (set 5), not from the six
+example schematics collected alongside them. Those are somebody else's tiles - generic ruined corridors,
+no columns, no apse, no screens - so re-materialling them in Angainor stone would give a tidy ruin rather
+than a dwarven hold. What they are good for is a ruler: read block by block they are 61 square and 9 to 12
+high, with five-wide openings at blocks 13-17 and 43-47 on every face, which is squares 3 and 8 of ten.
+The drawings carry openings at the same quarter points, at about fifteen pixels per block once upscaled,
+so the conversion is settled rather than guessed.
+
+`tools/geom_extract.py` splits a sheet into its six panels and classifies each cell as floor or rock by
+ink density; `tools/geom_panels.py` writes the result over the artwork so it can be checked by eye.
+Extraction recovers layout and proportion but not intent: a bench, a statue, a well and a curtain are all
+just ink, and a hand-drawn curve arrives as a staircase at one block per cell. So the drawings are the
+blueprint and the tiles are authored from them as squared masonry.
+
+Every tile is 61 by 61 with open doorways at the quarter points on all four faces, so any tile meets any
+tile without matching. Behind that wall each tile carries a five-wide gallery ring which all eight
+doorways reach, so a tile's own connectivity is free and the chambers inside can be shaped however the
+drawing wants. `ch2_hall` is the first of the six: a 39-wide hall behind the ring, a raised seat at the
+north end, two rows of piers carrying the ceiling ribs, an aisle down the middle and benches along the
+walls. The tiles are written to `data/tolkienmobs/structure/ch2_*.nbt` and can be placed in a test world
+with `/place template tolkienmobs:ch2_hall`.
+
+Symbols worth keeping from the drawings: the concentric arcs at the bottom right of one set 5 tile are a
+spiral stair, and the short parallel hatch marks are steps. Neither set draws a level change in full, so
+where the stairs between levels go is still ours to decide.
+
