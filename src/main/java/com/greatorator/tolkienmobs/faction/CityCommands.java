@@ -118,6 +118,9 @@ public final class CityCommands {
             int lowZ = parts.stream().mapToInt(Part::dz).min().orElse(0);
             BlockPos feet = BlockPos.containing(source.getPosition());
             BlockPos planted = feet.offset(-lowX, -lowY, -lowZ);
+            // The marked spots are written in this same frame, so the folk know where they are the moment
+            // the corner is planted - otherwise the city would stand empty of the people meant to live in it.
+            Campaign.setValleyOrigin(planted);
             write(folder, new Mark(planted, 0, false));
             source.sendSuccess(() -> Component.literal("City corner planted at "
                     + planted.toShortString() + "; " + bands(parts).size() + " bands, "

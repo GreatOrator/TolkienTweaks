@@ -209,8 +209,18 @@ public final class Campaign extends SavedData {
     private static final int VALLEY_FOLK_HOME = 20;
     /** How far from the middle of the city a resident is put when it is not on a mark, in blocks. */
     private static final int VALLEY_CITY = 400;
-    /** The corner of the cut the city was built from, once it is planted. Zero while it is not. */
-    private static final BlockPos VALLEY_ORIGIN = BlockPos.ZERO;
+    /**
+     * The corner of the cut the city was built from, once it is planted. Zero until it is: the marked spots
+     * are positions in that cut, so they mean nothing until the frame they were taken in is somewhere. The
+     * hand that plants the city says where - the build command while it is being stood up, the shipped
+     * placement once it is.
+     */
+    private static BlockPos VALLEY_ORIGIN = BlockPos.ZERO;
+
+    /** Says where the city's cut frame has been planted, so the spots written in it can be walked to. */
+    public static void setValleyOrigin(BlockPos origin) {
+        VALLEY_ORIGIN = origin == null ? BlockPos.ZERO : origin;
+    }
     /** The fifteen spots marked in the build, as positions in the cut with the sink already in them. */
     private static final int[][] VALLEY_FOLK_SPOTS = {
             {250, 88, 251}, {255, 89, 280}, {266, 89, 280}, {269, 85, 259}, {270, 98, 242},

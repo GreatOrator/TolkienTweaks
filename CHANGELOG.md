@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The planted corner tells the valley where its people go.** The marked spots are written in the cut's
+  frame, so `/tmcity origin` now hands that frame to the campaign as well: the city stands up with its
+  crowd already knowing where they live, instead of needing the origins wired in a second place.
 - **The city can be stood up in a world before it is packed.** The cut lives in `run/rivendell_art` with a
   table of where each piece goes, so `/tmcity origin` plants its corner where the caller stands,
   `/tmcity band` lays the next band - a whole city is two thousand chunks, and those are generated chunk
