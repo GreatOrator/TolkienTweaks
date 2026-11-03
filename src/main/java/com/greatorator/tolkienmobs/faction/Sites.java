@@ -666,7 +666,7 @@ public final class Sites extends SavedData {
      * after the layers it was given rather than hanging a plinth a long way down off a building that is
      * on a cliff.
      */
-    private static void underpin(ServerLevel level, BlockPos corner, int wide, int deep, int layers) {
+    public static void underpin(ServerLevel level, BlockPos corner, int wide, int deep, int layers) {
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
         for (int dx = 0; dx < wide; dx++) {
             for (int dz = 0; dz < deep; dz++) {
@@ -676,6 +676,58 @@ public final class Sites extends SavedData {
                     if (!state.isAir() && state.getFluidState().isEmpty()) break;
                     level.setBlock(cursor, Blocks.DIRT.defaultBlockState(), Block.UPDATE_CLIENTS);
                 }
+            }
+        }
+    }
+
+    /**
+     * How far a single column of the shoulder may be moved, in blocks: a guard against a cliff being
+     * shaved into a terrace. Ground that would have to move further than this is left as it is.
+     */
+    private static final int APRON_CAP = 6;
+
+    /**
+     * Blends the ground around a footprint into the level a build stands at, which a template cannot do for
+     * itself: `beard_thin` and `beard_box` are worldgen jigsaw settings, read while chunks generate, and
+     * never run on a structure laid at runtime. So the shoulder is built here instead - the rings just
+     * outside the walls are cut down or filled up toward the build's own base, the difference tapering
+     * across the rings so it is spent a block at a time rather than in one cliff at the wall. Nothing
+     * outside the taper moves, and no column moves further than {@link #APRON_CAP}.
+     */
+    public static void apron(ServerLevel level, BlockPos corner, int wide, int deep, int rings, int base) {
+        for (int ring = 1; ring <= rings; ring++) {
+            // How much of the way this ring has come from open ground back to the build's own level.
+            double share = 1.0D - (double) ring / (rings + 1);
+            for (int dx = -ring; dx <= wide + ring; dx++) {
+                side(level, corner, dx, -ring, base, share);
+                side(level, corner, dx, deep + ring, base, share);
+            }
+            for (int dz = -ring + 1; dz < deep + ring; dz++) {
+                side(level, corner, -ring, dz, base, share);
+                side(level, corner, wide + ring, dz, base, share);
+            }
+        }
+    }
+
+    /** One column of one ring, brought toward the build's level by that ring's share of the way. */
+    private static void side(ServerLevel level, BlockPos corner, int dx, int dz, int base, double share) {
+        int x = corner.getX() + dx;
+        int z = corner.getZ() + dz;
+        int ground = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
+        int target = (int) Math.round(ground + (base - ground) * share);
+        if (target == ground || Math.abs(ground - target) > APRON_CAP) return;
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        if (target < ground) {
+            for (int y = ground - 1; y >= target; y--) {
+                cursor.set(x, y, z);
+                if (level.getBlockState(cursor).isAir()) continue;
+                level.setBlock(cursor, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+            }
+        } else {
+            for (int y = ground; y < target; y++) {
+                cursor.set(x, y, z);
+                if (!level.getBlockState(cursor).isAir()) continue;
+                level.setBlock(cursor, Blocks.DIRT.defaultBlockState(), Block.UPDATE_CLIENTS);
             }
         }
     }

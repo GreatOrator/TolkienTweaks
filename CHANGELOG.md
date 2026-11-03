@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The ground meets a build instead of stopping at its wall.** A template has no terrain adaptation of
+  its own - `beard_thin` and `beard_box` are jigsaw settings read while chunks generate, so a structure
+  laid at runtime met the hill in a cliff. `Sites.apron` cuts or fills the rings just outside a footprint
+  toward the level the build stands at, tapering the difference so no column moves more than six blocks,
+  and `underpin` is public now so the same pass can put ground under a piece that was sunk into a slope
+  rather than set on one.
 - **The city keeps a crowd, and none of it is anybody.** Rivendell's six walkers are enough for a square
   and not for a city seven hundred blocks across, which reads as a place abandoned rather than a quiet
   one. The valley now keeps twenty-four people at once: the fifteen spots marked in the build are

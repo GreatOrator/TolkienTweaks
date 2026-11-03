@@ -229,6 +229,12 @@ public final class Campaign extends SavedData {
     private record Part(String name, int dx, int dz) {
     }
 
+    /**
+     * The valley as the pack first laid it: a square with a library, two houses, a gate, four lamps and a
+     * pair of banners, all on one floor. The hand-built city replaces this arrangement - it is the same
+     * valley, built properly - and these pieces stay in {@code key_structures} rather than being retired,
+     * because a smaller elven outpost somewhere else will want exactly this kit.
+     */
     private static final List<Part> VALLEY_PARTS = List.of(
             new Part("elven_square", 0, 0),
             new Part("elven_library", -48, 0),
