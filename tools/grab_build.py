@@ -327,6 +327,7 @@ def blocks_from_world(world, dimension, low, high):
 # ---- cutting and writing -----------------------------------------------------------------------
 
 def write_tile(blocks, origin, size, path, keep_air):
+    """size and each block pos must be lists of ints, as vanilla writes them."""
     palette = []
     indices = {}
     listed = []
@@ -344,11 +345,11 @@ def write_tile(blocks, origin, size, path, keep_air):
                     if state[1]:
                         entry["Properties"] = dict(state[1])
                     palette.append(entry)
-                listed.append({"pos": IntArray((x, y, z)), "state": indices[state]})
+                listed.append({"pos": NbtList(3, (x, y, z)), "state": indices[state]})
     if not listed:
         return False
     root = {
-        "size": IntArray(size),
+        "size": NbtList(3, size),
         "palette": NbtList(10, palette),
         "blocks": NbtList(10, listed),
         "entities": NbtList(10, []),
