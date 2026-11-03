@@ -9,17 +9,22 @@ All notable changes to this project will be documented in this file.
   dropped, the keep went into the file with no rooms in it at all - 151,055 cells against a box of
   580,476 - because a cell the writer skips is a cell the game reads as air, which hollows the rooms
   and takes the hillside under them away at the same time. Both directions are written now: deepslate
-  through the course under the five lifted rooms, and each tile's own air over it - the inner tiles'
+  through the course under the five lifted rooms, and each tile's own air over it - the schematics'
   rooms were being poured full of that stone until their boxes were written as air first.
-- **The inner keep is a level under the hold, reached by the spiral, and it is set 4 cut as drawn.**
-  The chapter's notes ask for a fortress inside the fortress and no drawing gives ground for one, so the
-  ground is two panels of the cave sheet - `r2c1` and `r2c2` - cut by `tools/cave_tile.py` and laid
-  twelve blocks under the south row, on the level the stair's landing already stands at. It is the
-  hold's one pixel-for-block build, because a cave is rubble and outcrop and squared masonry would make
-  it a ruin: ink becomes rock and the open cells become the room, the hatching drawn inside the rooms
-  is smoothed out of the mask so it does not stand up as pillars, the hold's own stone is left as a kerb
-  where rock meets a room, and a passage is driven between chambers the drawing walls off. The keep is
-  one template still, 122 by 183 by 26.
+- **The inner keep is a level under the hold, reached by the spiral.** The chapter's notes ask for a
+  fortress inside the fortress and no drawing gives ground for one, so the ground is two of the example
+  schematics that came with the drawings - the open hall and the barred undercroft - laid twelve blocks
+  under the south row, on the level the stair's landing already stands at, and re-cut in the hold's own
+  stone: their stone brick and cobble would read as somebody else's ruin inside a dwarven fortress, so
+  what is taken from them is the shape. Each tile is lifted by its own lowest floored course, the stair's
+  well is carried empty through them and a door cut in its wall and a way cut west from it until it
+  stands in a room, and the keep is one template still, 122 by 183 by 26.
+- **Set 4 is cut as a cave dungeon of its own, and nothing places it yet.** `tools/cave_tile.py` takes a
+  panel of the cave sheet at one block per cell - ink rock, open cells room, twelve blocks of tile with
+  the cave seven high - digs the quarter-point doorways in from each face, smooths the hatching drawn
+  inside the rooms out of the mask so it does not stand up as pillars, and drives a passage to any
+  chamber the drawing walls off. `ch2_cave_a` and `ch2_cave_b` are `r2c1` and `r2c2`, 61 square, 40 of
+  40 door cells reached on both.
 - **The dwarven tiles are Gundabad.** The six geomorph tiles are assembled by `tools/gundabad_keep.py`
   into one keep, `key_structures/gundabad.nbt` - the sheet's own arrangement, two panels across and three
   down, 122 by 183 by 26 - with the five surface rooms lifted thirteen blocks so every room and the stair

@@ -10,7 +10,7 @@ stair's landing opens into them and the two tiles join each other.
 This is the one place in the hold that is a pixel-for-block build, and deliberately: a cave is rubble
 and outcrop, and a cave drawn in squared masonry is a ruin, not a cave.
 
-    python cave_tile.py a b        panels r1c1 .. r3c2, written as ch2_inner_a, ch2_inner_b
+    python cave_tile.py a b        panels r1c1 .. r3c2, written as ch2_cave_a, ch2_cave_b
 """
 import pathlib
 import sys
