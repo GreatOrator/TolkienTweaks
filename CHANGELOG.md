@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **Chapter two walks on to the hold.** Past Glóin's fire the line runs `2-2`, the goblin fires of the
+  Pinnath Fenui; `2-3`, the hold itself; and `2-4`, the plans read back at the camp table. Gundabad is
+  ground the campaign pitches now - `key_structures/gundabad` stands in the Hithaeglir as a site the
+  way the camp and the castle do - so "go to Gundabad" is a keep that is already standing when the
+  player arrives, not ground they have to be told about.
 - **A structure file cannot leave a cell alone, so the keep writes stone instead.** Written with air
   dropped, the keep went into the file with no rooms in it at all - 151,055 cells against a box of
   580,476 - because a cell the writer skips is a cell the game reads as air, which hollows the rooms

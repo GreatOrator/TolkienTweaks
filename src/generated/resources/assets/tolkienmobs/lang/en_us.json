@@ -2293,5 +2293,14 @@
   "tooltip.tolkienmobs.ranged.power": " %sx Shooting Power",
   "trim_material.tolkienmobs.ammolite": "Ammolite",
   "trim_material.tolkienmobs.mithril": "Mithril",
-  "trim_material.tolkienmobs.morguliron": "Morgul Iron"
+  "trim_material.tolkienmobs.morguliron": "Morgul Iron",
+  "campaign.tolkienmobs.page.goblins": "Troublesome Goblins",
+  "campaign.tolkienmobs.page.goblins.place": "the goblin fires of the Pinnath Fenui, north-east of the pass",
+  "campaign.tolkienmobs.page.goblins.closing": "I crossed the mountains with Thorin once, and goblins beset us in the dark the way weather does. Ulmug keeps a fire in the Pinnath Fenui now, and his folk have been troubling what little traffic the pass still has. Put the fire out - not the creatures only, the fire - and the road north will be mine again.",
+  "campaign.tolkienmobs.page.gundabad": "Return to Gundabad I",
+  "campaign.tolkienmobs.page.gundabad.place": "Gundabad, in the Hithaeglir",
+  "campaign.tolkienmobs.page.gundabad.closing": "The hold stands where the dwarves left it, and the vault under its floor has not been opened since. Find the cornerstone and the plans the masons drew, and bring them out whole - a hold is a thing made twice, once in a mason's head and once in the rock.",
+  "campaign.tolkienmobs.page.plans": "Return to Gundabad II",
+  "campaign.tolkienmobs.page.plans.place": "Glóin's camp at the east end of the High Pass",
+  "campaign.tolkienmobs.page.plans.closing": "You lay the plans out on the camp table and Glóin reads them twice before he says anything at all. Then he puts a finger on the south room, where a stair is drawn going down into the rock, and asks whether it is still there."
 }

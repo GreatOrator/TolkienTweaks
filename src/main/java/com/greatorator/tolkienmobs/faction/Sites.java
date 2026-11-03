@@ -97,6 +97,13 @@ public final class Sites extends SavedData {
      * something a player should have to read as scenery.
      */
     public static final String GLOIN_CAMP = "tolkienmobs:key_structures/gloin_camp";
+    /**
+     * The dwarven hold the chapter walks to, assembled from the geomorph sheet by
+     * {@code tools/gundabad_keep.py}: 122 by 183 by 26, six rooms on one floor over an inner keep of
+     * three more. It is ground the campaign pitches rather than ground the world generator makes, so
+     * the page that sends the player there names this and the keep is built for them.
+     */
+    public static final String GUNDABAD = "tolkienmobs:key_structures/gundabad";
     /** The hilltop the West's line walks to, a landmark rather than a camp. */
     public static final String WEATHERTOP = "tolkienmobs:key_structures/weathertop";
     /** The castle the campaign raises for its last act, which no world generator ever places. */
@@ -163,7 +170,12 @@ public final class Sites extends SavedData {
             // The camp is at the east end of the High Pass: the ground the pass drops into on the Anduin
             // side, which the drawing names Gladden, rather than the mountains it cuts through. That is where
             // the old world built it and where the notes send the player, north of the valley.
-            GLOIN_CAMP, ArdaMap.Country.GLADDEN);
+            GLOIN_CAMP, ArdaMap.Country.GLADDEN,
+            // Gundabad is in the Hithaeglir - the Misty Mountains themselves - which is where the
+            // notes put it and where the dwarves would have cut it. No cell is pinned for it, because
+            // a building 122 by 183 can only stand where the ground is level enough to take it, and the
+            // search has to be free to walk out from the country's middle to find that ground.
+            GUNDABAD, ArdaMap.Country.HITHAEGLIR);
     /**
      * The cell of the drawing a landmark the books pinpoint is asked for in, as {column, row}.
      * <p>

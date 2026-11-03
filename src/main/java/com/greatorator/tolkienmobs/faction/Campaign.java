@@ -362,6 +362,33 @@ public final class Campaign extends SavedData {
     private static final int GIANT_XP = 50;
 
     /**
+     * 2-2 - Troublesome Goblins. Glóin's own memory of the pass, and the goblin fires he crossed it
+     * through: the quarry is the pack's goblin, which is the body the notes describe, and the page names
+     * Ulmug in its prose rather than tagging one body - the fires are a camp, not a single creature.
+     */
+    private static final String GOBLINS_TARGET = "tolkienmobs:entityttmgoblin";
+    private static final String GOBLINS_TITLE = "campaign.tolkienmobs.page.goblins";
+    private static final String GOBLINS_PLACE = "campaign.tolkienmobs.page.goblins.place";
+    private static final String GOBLINS_CLOSING = "campaign.tolkienmobs.page.goblins.closing";
+    /**
+     * 2-3 - Return to Gundabad I. The page is the hold itself: {@link Sites} pitches the assembled keep
+     * in the Misty Mountains as the page is taken and builds it as the player comes within sight of it,
+     * so "go to Gundabad" is ground that is standing when they arrive.
+     */
+    private static final String GUNDABAD_TARGET = Quest.siteTarget(Sites.GUNDABAD);
+    private static final String GUNDABAD_TITLE = "campaign.tolkienmobs.page.gundabad";
+    private static final String GUNDABAD_PLACE = "campaign.tolkienmobs.page.gundabad.place";
+    private static final String GUNDABAD_CLOSING = "campaign.tolkienmobs.page.gundabad.closing";
+    /**
+     * 2-4 - Return to Gundabad II. The plans read at the camp table, which is the one beat of the notes
+     * that needs no ground of its own: the page is Glóin, the map, and what the two of them decide the
+     * south room's stair is for.
+     */
+    private static final String PLANS_TITLE = "campaign.tolkienmobs.page.plans";
+    private static final String PLANS_PLACE = "campaign.tolkienmobs.page.plans.place";
+    private static final String PLANS_CLOSING = "campaign.tolkienmobs.page.plans.closing";
+
+    /**
      * The pages each front works through, and what they pay.
      * <p>
      * The standing written here is the notes' own figures at a tenth. Their ladder ran to five or ten
@@ -523,7 +550,24 @@ public final class Campaign extends SavedData {
                     // has to say first is that the road has changed hands.
                     new Page(Quest.Kind.DIALOGUE, Quest.personTarget(GLOIN), 1, 50, 3,
                             ELROND, GLOIN, TOCAMP_TITLE, TOCAMP_PLACE, TOCAMP_CLOSING,
-                            TOCAMP_SILVER, TOCAMP_BRONZE, 0))
+                            TOCAMP_SILVER, TOCAMP_BRONZE, 0),
+                    // 2-2 - Troublesome Goblins. The goblin fires of the Pinnath Fenui, which Glóin crossed
+                    // the pass through himself and which the notes put north-east of the camp. The quarry is
+                    // the pack's goblin: the fires are a camp of them rather than one creature, so the page
+                    // counts a kill in Ulmug's fires and lets the prose carry his name.
+                    new Page(Quest.Kind.HUNT, GOBLINS_TARGET, 1, 50, 3,
+                            GLOIN, GLOIN, GOBLINS_TITLE, GOBLINS_PLACE, GOBLINS_CLOSING),
+                    // 2-3 - Return to Gundabad I. The hold, pitched by the campaign in the Misty Mountains
+                    // when the page is taken and built as the player comes up to it. The notes send them
+                    // here for the cornerstone and the plans, and the vault is inside the keep.
+                    new Page(Quest.Kind.LOCATION, GUNDABAD_TARGET, 1, 50, 4,
+                            GLOIN, GLOIN, GUNDABAD_TITLE, GUNDABAD_PLACE, GUNDABAD_CLOSING),
+                    // 2-4 - Return to Gundabad II. The plans laid out at the camp and read twice, which is
+                    // where the notes put the second half of the beat: not a second walk, but what the walk
+                    // was for.
+                    new Page(Quest.Kind.DIALOGUE, Quest.personTarget(GLOIN), 1, 30, 4,
+                            GLOIN, GLOIN, PLANS_TITLE, PLANS_PLACE, PLANS_CLOSING)
+            )
     );
 
     /**

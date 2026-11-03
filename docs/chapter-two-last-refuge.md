@@ -24,6 +24,12 @@ rather than against memory, the same way chapter one's are.
 | 35 | 2-10 | Evil Tidings | Glóin → Elrond | `DIALOGUE`, Elrond's library |
 | 36 | 2-11 | Fire & Ice | Elrond → Elrond | `HUNT`, Drugoth and the Dragon Wight, in Carn Dûm |
 
+Pages 26 to 29 are built. `2-1` hands the player from Elrond to Glóin at the camp, `2-2` is Ulmug's
+fires in the Pinnath Fenui, `2-3` walks them to the hold and `2-4` brings the plans back to Glóin's
+table. Gundabad is ground the campaign pitches now, like the camp and the castle: the assembled keep
+is pinned to the Hithaeglir in `Sites` and built as the player comes up to it, so the page names the
+hold and the hold is standing when they arrive.
+
 Rewards follow the notes at the tenth the whole campaign is priced at: their 500 becomes 50 standing, 700
 becomes 70, 1200 becomes 120. The coin the notes put on each page is paid as written, in silver and bronze.
 
