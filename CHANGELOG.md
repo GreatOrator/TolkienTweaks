@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The city can be stood up in a world before it is packed.** The cut lives in `run/rivendell_art` with a
+  table of where each piece goes, so `/tmcity origin` plants its corner where the caller stands,
+  `/tmcity band` lays the next band - a whole city is two thousand chunks, and those are generated chunk
+  by chunk - and the last band blends the shoulder with `Sites.apron`. The pieces are read from the folder
+  rather than the jar, so a re-cut is picked up by walking back to it, and the lowest band is underpinned
+  as it is laid.
 - **The ground meets a build instead of stopping at its wall.** A template has no terrain adaptation of
   its own - `beard_thin` and `beard_box` are jigsaw settings read while chunks generate, so a structure
   laid at runtime met the hill in a cliff. `Sites.apron` cuts or fills the rings just outside a footprint
