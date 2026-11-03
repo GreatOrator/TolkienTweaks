@@ -16,6 +16,14 @@ All notable changes to this project will be documented in this file.
   and takes the hillside under them away at the same time. Both directions are written now: deepslate
   through the course under the five lifted rooms, and each tile's own air over it - the schematics'
   rooms were being poured full of that stone until their boxes were written as air first.
+- **The hold is lit from its own floors.** A camouflage glowstone every fifteen blocks, set into the
+  floor course at both walk levels, carries the rooms: light fifteen, wearing the look of the stone it
+  stands among, so there is no fixture to see and none for a player to knock out in the dark. The
+  lanterns and chains the geomorph sheets hang come out, and water - the flooded storey is lit through
+  it and swims the same as air walks.
+- **The bottom storey comes back flooded.** The six inner-keep pieces were re-cut from the placed build
+  in the structure test world, so the water standing in the lower rooms is part of the hold rather than
+  something one save did to it.
 - **A placed build can be read back out of a saved world.** `tools/world_scan.py` finds the corner a
   template went down at, compares the world with the template block by block, and cuts the inner keep
   pieces out again, so a build decorated in the test world can be brought back into the pack instead of

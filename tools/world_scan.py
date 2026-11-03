@@ -123,7 +123,7 @@ def cut(blocks, anchor, out):
     out.mkdir(parents=True, exist_ok=True)
     written = []
     for name, dx, dz in gk.INNER:
-        low = (anchor[0] + dx, anchor[1], anchor[2] + dz)
+        low = (anchor[0] + dx, anchor[1] + gk.LOWER, anchor[2] + dz)
         piece = {}
         for y in range(12):
             for z in range(gk.EDGE):

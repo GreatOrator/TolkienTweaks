@@ -39,6 +39,9 @@ FLOOR = 14                  # the one level the hold above is walked on
 LIFT = FLOOR - 1            # a surface tile is written with its floor at y 0
 LOWER = 1                   # the inner keep's floor: one room's height under the hold
 LOWER_WALK = LOWER + 1      # where a player stands in it, which is where the stair lands
+LIGHT = "tolkienmobs:block_camo_glowstone"   # a light that wears the look of the stone around it
+LIGHT_STEP = 15                             # one set into the floor about every fifteen blocks
+LIT = {"minecraft:lantern", "minecraft:chain"}   # what the sheets hang, and what the hold does without
 FILL = "minecraft:deepslate"    # the stone under the rooms that are lifted above their own ground
 
 # The sheet, read the way it is drawn: two panels across, three down.
@@ -177,6 +180,68 @@ def join_inner(blocks, cx, cz):
             main |= comp
 
 
+# ---- the light ------------------------------------------------------------------------------
+
+NOT_FLOOR = ("stairs", "slab", "ladder", "bars", "fence", "wall", "door", "trapdoor",
+             "lantern", "chain", "water", "lava", "glowstone")
+
+
+OPEN = {"minecraft:air", "minecraft:water"}
+
+
+def clear(state):
+    """Whether a player can be in this cell: air, or the water of a flooded room they can swim."""
+    return state[0] in OPEN
+
+
+def plain(state):
+    """Whether a block can stand in as a floor: whole, and not part of a way up or a light."""
+    return not any(state[0].endswith(suffix) for suffix in NOT_FLOOR)
+
+
+def floor_beside(blocks, x0, z0, level, reach):
+    """The nearest cell to (x0, z0) that is plain floor with two clear courses over it."""
+    for ring in range(reach + 1):
+        for dx in range(-ring, ring + 1):
+            for dz in range(-ring, ring + 1):
+                if max(abs(dx), abs(dz)) != ring:
+                    continue
+                x, z = x0 + dx, z0 + dz
+                if not (0 <= x < WIDE and 0 <= z < DEEP):
+                    continue
+                under = blocks.get((x, level - 1, z))
+                if not under or not plain(under):
+                    continue
+                if not clear(blocks.get((x, level, z), ("minecraft:air", ()))):
+                    continue
+                if not clear(blocks.get((x, level + 1, z), ("minecraft:air", ()))):
+                    continue
+                return (x, level - 1, z)
+    return None
+
+
+def light_rooms(blocks):
+    """One camo glowstone in the floor every fifteen blocks, in place of the drawings' lanterns.
+
+    A camo glowstone is a full block of light fifteen that wears the look of the stone it stands in, so
+    set into a floor it is invisible and the room above it is lit: no lamp to hang, nothing to see, and
+    nothing standing in a corner for a player to knock away in the dark. The sheets' own lanterns and
+    the chains they hang from come out - that is the light the drawings carry, and this is the light the
+    hold is built with.
+    """
+    for pos in [pos for pos, state in blocks.items() if state[0] in LIT]:
+        blocks.pop(pos, None)
+    lit = []
+    for level in (FLOOR, LOWER_WALK):
+        for x in range(LIGHT_STEP // 2, WIDE, LIGHT_STEP):
+            for z in range(LIGHT_STEP // 2, DEEP, LIGHT_STEP):
+                spot = floor_beside(blocks, x, z, level, LIGHT_STEP // 2)
+                if spot and spot not in lit:
+                    blocks[spot] = (LIGHT, ())
+                    lit.append(spot)
+    return lit
+
+
 def assemble():
     """The inner keep, the hold above it, and the stair between them."""
     # The whole box is written, air and all. A structure file cannot say "leave this cell alone": a cell
@@ -215,6 +280,7 @@ def assemble():
             blocks[(x + dx, y + lift, z + dz)] = state
     cut_stair_way(blocks, cx, cz, r)
     join_inner(blocks, cx, cz)
+    light_rooms(blocks)
     return blocks
 
 
@@ -236,8 +302,8 @@ def cut_stair_way(blocks, cx, cz, r):
 def walk(blocks, level, x0, z0, x1, z1):
     """The floor cells one level up that can be walked to, and the pockets left out."""
     def open_(x, z):
-        return (blocks.get((x, level, z), ("minecraft:air",))[0] == "minecraft:air"
-                and blocks.get((x, level + 1, z), ("minecraft:air",))[0] == "minecraft:air")
+        return (clear(blocks.get((x, level, z), ("minecraft:air",)))
+                and clear(blocks.get((x, level + 1, z), ("minecraft:air",))))
 
     left = {(x, z) for x in range(x0, x1) for z in range(z0, z1) if open_(x, z)}
     comps = []
@@ -284,6 +350,8 @@ def main():
         len({state[0] for state in blocks.values()})))
     print("  %d x %d x %d, blocks standing from y %d to y %d" % (
         WIDE, DEEP, TOP, min(heights), max(heights)))
+
+    print("  %d camo glowstone set into the floors" % sum(1 for state in blocks.values() if state[0] == LIGHT))
 
     hold, hold_pockets = walk(blocks, FLOOR, 0, 0, WIDE, DEEP)
     print("  hold, floor y %d: %d cells on the walked route, %d pockets" % (FLOOR, len(hold), len(hold_pockets)))

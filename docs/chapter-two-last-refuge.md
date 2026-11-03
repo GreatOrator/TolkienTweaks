@@ -153,17 +153,22 @@ rooms out of the hillside and leaves the ground beneath them standing.
 Under the hold is the **inner keep**: the six example structures that came with the drawings, kept as
 structure files under `Templates/nbtstructures`, laid in the drawing's own two-across, three-down grid -
 `2tl` and `2tr` north, `2ml` and `2mr` in the middle, `2bl` and `2br` south. They are 61 square like the
-hold's own tiles and nine to twelve courses deep, and each carries three floors: a course at its base, a
-gallery over that, another above, and their own stairs and a ladder between them. Laid whole from the
-stair's floor up, the inner keep is a small fortress under the fortress rather than one room, and the
-south row is where the spiral's landing opens into it. Their stone is re-materialled into the hold's own
-on the way in, since what is taken is the shape and their brick would read as somebody else's ruin; their
-soil and rock become the hold's rock, and their doors are dropped, because a door is two blocks with a
-hinge and what the shape needs is the opening. The spiral tile above is the one room that reaches all the
-way down - it stands on the hold's own floor - so below that floor it writes only its own well and leaves
-the rooms it is standing on alone. The stair's well is carried empty through them, a door is cut in the
-wall of the well, and any chamber the files leave walled off is joined to the rest by a passage three
-wide and four high.
+hold's own tiles and twelve courses deep, and each carries three floors: a course at its base, a gallery
+over that, another above, and their own stairs and a ladder between them. Laid whole from the stair's
+floor up, the inner keep is a small fortress under the fortress rather than one room, and the south row is
+where the spiral's landing opens into it. Their stone is re-materialled into the hold's own on the way in,
+since what is taken is the shape and their brick would read as somebody else's ruin; their soil and rock
+become the hold's rock. The lower storey comes back flooded, which is how it was left in the test world:
+the six pieces are cut from the placed build rather than only from the drawings, so the water standing in
+the bottom rooms is part of the hold. The stair's well is carried empty through them, a door is cut in the
+wall of the well, and any chamber the files leave walled off is joined to the rest by a passage three wide
+and four high.
+
+Light comes from the floor in both storeys. A camouflage glowstone - light fifteen, wearing the look of
+whatever stone it stands among - is set into the floor course about every fifteen blocks, so a room is
+carried by its own paving and there is no lantern to see and none to knock out in the dark. The lanterns
+and chains the sheets hang are gone with it; water is light enough to swim and to be lit through, so the
+flooded storey is lit the same way as the dry one.
 
 Reading the drawings' symbols, corrected by the mapmaker: the concentric arcs in the corner of the bottom
 right tile are a **well or pool**, not a stair, and the short ruled marks with an arrowhead are **stairs,
