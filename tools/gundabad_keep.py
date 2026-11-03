@@ -220,6 +220,31 @@ def floor_beside(blocks, x0, z0, level, reach):
     return None
 
 
+FLOODABLE = {"minecraft:air", "minecraft:cave_air", "minecraft:void_air", "minecraft:water"}
+
+
+def flood_floor(blocks):
+    """One course of water standing on the inner keep's floor, everywhere a player can stand.
+
+    The lower storey was left flooded in the test world, and the pieces cut from there bring that water
+    with them - but only where it happened to settle: a source in one room, a dry patch in the next, and
+    nothing at all at the foot of the stair, because the well is cut empty after the pieces are laid.
+    So the flood is laid here instead of trusted: every standable cell of the storey gets one course of
+    water, the stair's own base included, and the outer ring is left dry so the pool cannot run out of
+    the template where a piece opens on its edge.
+    """
+    filled = 0
+    for x in range(1, WIDE - 1):
+        for z in range(1, DEEP - 1):
+            state = blocks.get((x, LOWER_WALK, z), ("minecraft:air", ()))[0]
+            if state not in FLOODABLE:
+                continue
+            if state != "minecraft:water":
+                filled += 1
+            blocks[(x, LOWER_WALK, z)] = ("minecraft:water", ())
+    return filled
+
+
 def light_rooms(blocks):
     """One camo glowstone in the floor every fifteen blocks, in place of the drawings' lanterns.
 
@@ -280,7 +305,10 @@ def assemble():
             blocks[(x + dx, y + lift, z + dz)] = state
     cut_stair_way(blocks, cx, cz, r)
     join_inner(blocks, cx, cz)
+    # The lanterns and chains come out before the water goes in: a fixture pulled from the floor course
+    # would otherwise leave a hole in the flood.
     light_rooms(blocks)
+    flood_floor(blocks)
     return blocks
 
 
@@ -351,6 +379,9 @@ def main():
     print("  %d x %d x %d, blocks standing from y %d to y %d" % (
         WIDE, DEEP, TOP, min(heights), max(heights)))
 
+    print("  %d cells flooded one course deep at y %d" % (
+        sum(1 for (x, y, z), state in blocks.items() if y == LOWER_WALK and state[0] == "minecraft:water"),
+        LOWER_WALK))
     print("  %d camo glowstone set into the floors" % sum(1 for state in blocks.values() if state[0] == LIGHT))
 
     hold, hold_pockets = walk(blocks, FLOOR, 0, 0, WIDE, DEEP)

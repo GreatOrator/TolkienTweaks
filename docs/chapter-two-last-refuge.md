@@ -158,9 +158,10 @@ over that, another above, and their own stairs and a ladder between them. Laid w
 floor up, the inner keep is a small fortress under the fortress rather than one room, and the south row is
 where the spiral's landing opens into it. Their stone is re-materialled into the hold's own on the way in,
 since what is taken is the shape and their brick would read as somebody else's ruin; their soil and rock
-become the hold's rock. The lower storey comes back flooded, which is how it was left in the test world:
-the six pieces are cut from the placed build rather than only from the drawings, so the water standing in
-the bottom rooms is part of the hold. The stair's well is carried empty through them, a door is cut in the
+become the hold's rock. The lower storey stands flooded one course deep: the six pieces are cut from the placed build in
+the test world, where it was left flooded, and the builder then lays a single course of water over every
+walkable cell of that floor - the foot of the spiral's stair among them - so the pool is the whole storey
+rather than the patch of it the world happened to keep. The stair's well is carried empty through them, a door is cut in the
 wall of the well, and any chamber the files leave walled off is joined to the rest by a passage three wide
 and four high.
 

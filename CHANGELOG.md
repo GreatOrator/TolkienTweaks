@@ -16,6 +16,11 @@ All notable changes to this project will be documented in this file.
   and takes the hillside under them away at the same time. Both directions are written now: deepslate
   through the course under the five lifted rooms, and each tile's own air over it - the schematics'
   rooms were being poured full of that stone until their boxes were written as air first.
+- **The flooded storey is flooded everywhere.** The water the pieces carried only stood where it
+  happened to settle, and the stair's well is cut after they are laid, so its foot was dry. The builder
+  lays the course itself now, after the lanterns and chains are out of the floor: one block of water over
+  every walkable cell of the lower floor, the base of the spiral's stair included, stopping one cell
+  short of the outer wall so the pool cannot run out where a piece opens on its edge.
 - **The hold is lit from its own floors.** A camouflage glowstone every fifteen blocks, set into the
   floor course at both walk levels, carries the rooms: light fifteen, wearing the look of the stone it
   stands among, so there is no fixture to see and none for a player to knock out in the dark. The
