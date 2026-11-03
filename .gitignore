@@ -33,3 +33,6 @@ repo
 
 # Python bytecode from tools/
 __pycache__/
+
+# reference maps downloaded while planning: working copies, third-party art
+tools/geomorphs/
