@@ -114,3 +114,10 @@ what is worth carrying out of the old world. A room shell standing in air belong
 the useful unit is the opposite: a plug of rock with the halls already inside it. Placed into a hillside its
 stone merges and its air carves the passage, which is how the build worked in the first place - and it is why
 the mountain inside the box is not waste. Only the tile budget limits that: 48 cubes a piece.
+
+Tried it on the vault and the corridor leading to it. A 48-cube of that rock cuts as one tile: 86,697 stone,
+2,639 stone brick, 232 slab, 209 stair and 12,740 air - 11.5% of the box is already hollow, so the passage is cut
+into the rock and dropping it into a hillside reads as a dwarven hall rather than a room standing in the open.
+Bedrock has to be dropped, since placing it would put unbreakable blocks in the world; `--drop` is for that, and
+for snow that belonged to the old mountain's surface rather than to the halls. With both dropped the tile is 265
+KB and 15.7% air.

@@ -386,6 +386,7 @@ def main():
     parser.add_argument("--name", help="the pieces are named after this")
     parser.add_argument("--no-air", action="store_true", help="drop air, so the build carves nothing")
     parser.add_argument("--only", help="keep only these block names (comma separated); the rest becomes air")
+    parser.add_argument("--drop", help="leave these block names out entirely, as air (comma separated)")
     parser.add_argument("--report", action="store_true", help="count blocks and stop, writing nothing")
     parser.add_argument("--pack", default="src/main/resources/assets/tolkienmobs/blockstates",
                         help="the pack's own blockstates, to report names the mod does not have")
@@ -412,6 +413,10 @@ def main():
         blocks = {pos: state for pos, state in blocks.items() if state[0] in allowed}
         if not blocks:
             raise SystemExit("--only matched no blocks")
+
+    if args.drop:
+        dropped = {name.strip() for name in args.drop.split(",") if name.strip()}
+        blocks = {pos: state for pos, state in blocks.items() if state[0] not in dropped}
 
     counts = Counter(state[0] for state in blocks.values())
     tiles = ((size[0] + TILE - 1) // TILE, (size[1] + TILE - 1) // TILE, (size[2] + TILE - 1) // TILE)
