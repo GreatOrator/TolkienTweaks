@@ -144,19 +144,19 @@ alone: a cell left out of it is written as air, and the ground there goes with i
 box holds deepslate under the lifted rooms and the rooms' own air above it, so the hold carves its
 rooms out of the hillside and leaves the ground beneath them standing.
 
-Under the south row is the **inner keep**, cut by the same tool from two of the example schematics that
-came with the drawings - `2ml` and `2mr`, the barred undercroft and the open hall. Those files are
-slices of a valley rather than rooms: sixty-one square and twelve deep cuts of ground, sky over it, and
-a hollow driven through the ground with shafts up to the surface. Laid down as they stand, one pours
-its sky over the floor and the other its hillside into the rooms. So what is taken from each is the air
-that stands under a roof - the hollow - with every column's own floor brought up to the stair's level
-and the hold's own stone everywhere else, which is what makes them rooms in a fortress instead of a
-hole somebody left in a field; it also flattens their staggered floors onto one, twelve blocks under
-the hold, on the level the stair delivers a player to. They are re-materialled into the hold's own
-stone on the way in, since what is taken is the shape and their brick and cobble would read as somebody
-else's ruin. The stair's well is carried empty through them, a door is cut in the wall of the well, a
-way is cut west from it until it stands in a room and not in a wall, and any chamber the files leave
-walled off is joined to the hall by a passage three wide and four high.
+Under the south row is the **inner keep**, and it is the two example structures that came with the
+drawings - `2ml` and `2mr`, now kept as structure files under `Templates/nbtstructures` - laid whole.
+Each is 61 square and twelve courses deep: a floor course, a gallery over it, two floors over that, and
+their own stairs and a ladder between them. Twelve courses is exactly the storey the hold leaves empty
+under its own floor, so the files go down as they stand, from the stair's floor up, and the inner keep
+is a small fortress under the fortress rather than one room. Their stone is re-materialled into the
+hold's own on the way in, since what is taken is the shape and their brick would read as somebody
+else's ruin; their soil and rock become the hold's rock, and their doors are dropped, because a door is
+two blocks with a hinge and what the shape needs is the opening. The spiral tile above is the one room
+that reaches all the way down - it stands on the hold's own floor - so below that floor it writes only
+its own well and leaves the rooms it is standing on alone. The stair's well is carried empty through
+them, a door is cut in the wall of the well, and any chamber the files leave walled off is joined to
+the rest by a passage three wide and four high.
 
 Reading the drawings' symbols, corrected by the mapmaker: the concentric arcs in the corner of the bottom
 right tile are a **well or pool**, not a stair, and the short ruled marks with an arrowhead are **stairs,

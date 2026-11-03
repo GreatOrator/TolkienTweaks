@@ -19,12 +19,13 @@ All notable changes to this project will be documented in this file.
   what is taken from them is the shape. Each tile is lifted by its own lowest floored course, the stair's
   well is carried empty through them and a door cut in its wall and a way cut west from it until it
   stands in a room, and the keep is one template still, 122 by 183 by 26.
-- **The inner keep takes the schematics' hollow, not their boxes.** `2ml` and `2mr` are slices of a
-  valley, not rooms: ground with a hollow cut through it and shafts up to the surface. Laid down whole,
-  one poured its sky over the floor and the other its hillside into the cells - a square of field under
-  the south row. What is taken now is the air that stands under a roof, each column floored at the
-  stair's level with the hold's stone everywhere else, and a passage driven to any chamber the files
-  wall off: 4,417 cells on the inner route, both files on it, and the stair landing in the hall.
+- **The inner keep is the example structures laid whole, three floors of them.** `2ml` and `2mr` came
+  as 61 by 12 by 61 cuts of the valley the rooms were built in - a gallery at the base, two floors over
+  it, stairs and a ladder between - and the hold's inner storey is exactly twelve courses, so they go
+  down as they stand, their stone re-materialled into the hold's and their soil read as the hold's
+  rock. The spiral tile, which stands on the hold's own floor and so reached all the way down, was
+  burying the rooms it stands on: below that floor it now writes only its own well. 1,695 cells on the
+  inner route at the stair's level, both files on it, the landing inside 2mr's hall.
 - **Set 4 is cut as a cave dungeon of its own, and nothing places it yet.** `tools/cave_tile.py` takes a
   panel of the cave sheet at one block per cell - ink rock, open cells room, twelve blocks of tile with
   the cave seven high - digs the quarter-point doorways in from each face, smooths the hatching drawn

@@ -65,70 +65,29 @@ SCHEMATICS = HERE / "Templates" / "schematics"
 BLOCKSTATES = (HERE / "src" / "main" / "resources" / "assets" / "tolkienmobs" / "blockstates",
                HERE / "src" / "generated" / "resources" / "assets" / "tolkienmobs" / "blockstates")
 
-# ---- the example schematics: 2014 MCEdit files, numeric ids, no palette ----------------------
+# ---- the example structures: 61 x 12 x 61 slices of the valley the rooms were cut in ----------
 
-# What each of their blocks becomes in this hold. The schematics are somebody else's ruined corridors,
-# so what is taken from them is the shape - the cells, the hall, the way they join - and the stone is
-# the hold's own, which is also what stops the inner keep reading as a ruin inside a fortress.
-STONE = {
-    1: "tolkienmobs:angainor",                  # stone, the rock the passages are cut through
-    2: "tolkienmobs:mossy_cobbled_angainor",    # grass on the crown
-    3: "tolkienmobs:cobbled_angainor",          # dirt under it
-    4: "tolkienmobs:cobbled_angainor",          # cobblestone
-    5: "tolkienmobs:smooth_angainor",           # planks, as flagged stone
-    98: "tolkienmobs:angainor_bricks",          # stone brick, their whole vocabulary
-    44: "tolkienmobs:slab_angainor_bricks",     # stone slab
-    126: "tolkienmobs:slab_angainor_bricks",    # wooden slab
-    109: "tolkienmobs:stairs_angainor_bricks",  # stone brick stairs
-    67: "tolkienmobs:stairs_angainor_bricks",   # cobble stairs
-    101: "minecraft:iron_bars",                 # the bars of the cells
-    85: "minecraft:iron_bars",                  # fences, read as rails
-    65: "minecraft:ladder",                     # the ladder in the undercroft's shaft
-    66: "minecraft:iron_bars",                  # rails, read as bars
-    139: "tolkienmobs:wall_angainor_bricks",    # cobble wall, read as a parapet
-    50: "minecraft:torch",                      # what little light they left
-    89: "minecraft:glowstone",                  # and the rest of it
+STRUCTS = HERE / "Templates" / "nbtstructures"
+
+# What each of their blocks becomes in this hold. What is taken is the shape - the rooms and the stone
+# that walls them - and the material is the hold's own, which is also what stops the inner keep reading
+# as somebody else's ruin inside a dwarven fortress. Their soil and their rock become the hold's rock;
+# their doors are dropped, because a door is two blocks with a hinge and what the shape needs is the
+# opening.
+KEEP_OUT = {
+    "minecraft:stone_bricks": "tolkienmobs:angainor_bricks",
+    "minecraft:stone_brick_slab": "tolkienmobs:slab_angainor_bricks",
+    "minecraft:stone_brick_stairs": "tolkienmobs:stairs_angainor_bricks",
 }
-# Taken out rather than translated: lava, doors, trapdoors, signs and a skull. A door is two blocks
-# with a hinge and a half; what the shape needs is the opening, and the opening is what it gets.
-GONE = {0, 11, 64, 68, 96, 144}
-FACING = {0: "east", 1: "west", 2: "south", 3: "north"}
-LADDER = {2: "north", 3: "south", 4: "west", 5: "east"}
+DROP = {"minecraft:dirt": FILL, "minecraft:stone": FILL, "minecraft:oak_door": "minecraft:air"}
 
 
-def convert(ident, meta, where):
-    """One old block as one of this hold's, or None when it is not carried."""
-    if ident in GONE:
-        return None
-    if ident not in STONE:
-        raise SystemExit("%s: block id %d (data %d) has no place in the hold" % (where, ident, meta))
-    name = STONE[ident]
-    if ident in (44, 126):
-        return (name, (("type", "top" if meta & 8 else "bottom"),))
-    if ident in (109, 67):
-        return (name, (("facing", FACING[meta & 3]), ("half", "top" if meta & 4 else "bottom"),
-                       ("shape", "straight")))
-    if ident == 65:
-        return (name, (("facing", LADDER.get(meta & 7, "north")),))
-    return (name, ())
-
-
-def schematic_tile(name):
-    """One .schematic as {pos: state} plus the size of its own box, with its own coords."""
-    path = SCHEMATICS / (name + ".schematic")
-    root = gb.read_nbt(path.read_bytes())
-    wide, high, deep = int(root["Width"]), int(root["Height"]), int(root["Length"])
-    blocks = bytes(root["Blocks"])
-    data = bytes(root["Data"])
-    tile = {}
-    for y in range(high):
-        for z in range(deep):
-            for x in range(wide):
-                index = (y * deep + z) * wide + x
-                state = convert(blocks[index], data[index], path.name)
-                if state is not None:
-                    tile[(x, y, z)] = state
-    return tile, (wide, high, deep)
+def carry(state):
+    """One of their blocks as one of the hold's."""
+    name, props = state
+    if name in DROP:
+        return (DROP[name], ())
+    return (KEEP_OUT.get(name, name), props)
 
 
 # ---- the keep ------------------------------------------------------------------------------
@@ -137,49 +96,27 @@ ROOM = 6                    # the hollow kept above the cave's floor; the hold's
 
 
 def inner_tile(name):
-    """One example schematic read as the cave it holds, not as the valley it was cut out of.
+    """One of the example structures laid whole, with the three floors it carries.
 
-    These files are slices of a valley: ground, sky over it, and a hollow cut through the ground with
-    shafts up to the surface. Laid down as they stand, the sky wipes the tile and the ground fills it.
-    What is taken is the air that stands under a roof - the hollow - with each column's own floor
-    brought up to the stair's level, and the hold's stone everywhere else. That is what makes them
-    rooms in a fortress instead of a hole in a field.
+    Each file is a 61 by 12 by 61 cut of the rooms as they were built: a course at its base, a gallery
+    over that, two floors over that, and their own stairs and ladder between them. Twelve courses is
+    exactly the storey the hold leaves empty under its own floor, so the file is laid as it stands from
+    the stair's floor up - its stone re-materialled into the hold's, its soil and rock read as the
+    hold's rock, its doors dropped for the openings they leave.
     """
-    tile, (wide, high, deep) = schematic_tile(name)
-
-    roof = {}
-    for x in range(wide):
-        for z in range(deep):
-            tops = [y for y in range(high) if (x, y, z) in tile]
-            if tops:
-                roof[(x, z)] = max(tops)
-
-    cols = {}
-    for x in range(wide):
-        for z in range(deep):
-            top = roof.get((x, z), 0)
-            for y in range(top):
-                if (x, y, z) not in tile:
-                    cols.setdefault((x, z), []).append(y)
+    path = STRUCTS / (name + ".nbt")
+    if not path.exists():
+        raise SystemExit("%s is missing" % path)
+    blocks, (wide, high, deep) = gb.blocks_from_template(gb.read_nbt(path.read_bytes()))
 
     out = {}
     for x in range(wide):
         for z in range(deep):
             for y in range(FLOOR):
                 out[(x, y, z)] = (FILL, ())
-            ys = sorted(cols.get((x, z), []))
-            if not ys:
-                continue
-            foot = tile.get((x, ys[0] - 1, z))
-            if foot is None:
-                continue
-            out[(x, LOWER, z)] = foot
-            for h, y in enumerate(ys[:ROOM], start=1):
-                out[(x, LOWER + h, z)] = ("minecraft:air", ())
-            for y in range(ys[0], min(ys[0] + ROOM, high)):
-                state = tile.get((x, y, z))
-                if state is not None:
-                    out[(x, LOWER + 1 + (y - ys[0]), z)] = state
+            for y in range(min(high, FLOOR - LOWER)):
+                state = blocks.get((x, y, z))
+                out[(x, LOWER + y, z)] = carry(state) if state else ("minecraft:air", ())
     return out
 
 
@@ -203,7 +140,7 @@ def join_inner(blocks, cx, cz):
 
     # The files carry the valley's mouths too, so a cave can break a tile's edge and open the inner
     # keep to the sky. The hold's stone goes back along the four edges of the box.
-    for y in range(LOWER, LOWER + ROOM + 1):
+    for y in range(LOWER, FLOOR):
         for x in range(x0, x1):
             blocks[(x, y, z0)] = (FILL, ())
             blocks[(x, y, z1 - 1)] = (FILL, ())
@@ -269,6 +206,11 @@ def assemble():
         tile, _ = gb.blocks_from_template(gb.read_nbt(path.read_bytes()))
         lift = 0 if name == "spiral" else LIFT
         for (x, y, z), state in tile.items():
+            # The spiral tile stands on the hold's own floor, so it reaches all the way down; below that
+            # floor its own rock and air would bury the inner keep it is standing on, so down there it
+            # writes only the stair's well and leaves the rooms under it alone.
+            if name == "spiral" and y < LIFT and (abs(x - 30) > 6 or abs(z - 30) > 6):
+                continue
             blocks[(x + dx, y + lift, z + dz)] = state
     cut_stair_way(blocks, cx, cz, r)
     join_inner(blocks, cx, cz)
