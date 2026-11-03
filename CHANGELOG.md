@@ -10,6 +10,12 @@ All notable changes to this project will be documented in this file.
   the page is handed over, so `groundOf` had no answer for him and the road showed no direction at all.
   The ground a page's body is standing on is now asked for before the place the map would name, which
   also puts Gimli's page on the hold rather than on the country the hold stands in.
+
+- **`/tmcity` names the city's own ground, and can put you on it.** The corner it printed was a
+  bookkeeping corner of the cut's frame, more than five hundred blocks off the build, so a city that had
+  been laid in full read as an empty hillside. Every message now speaks in the box the pieces fill,
+  `goto` stands the caller on the middle of it, and the corner remembers which dimension it was planted
+  in, so bands cannot be laid in a country nobody is looking at.
 - **The planted corner tells the valley where its people go.** The marked spots are written in the cut's
   frame, so `/tmcity origin` now hands that frame to the campaign as well: the city stands up with its
   crowd already knowing where they live, instead of needing the origins wired in a second place.

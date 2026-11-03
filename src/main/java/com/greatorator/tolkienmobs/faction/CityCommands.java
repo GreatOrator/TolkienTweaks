@@ -3,6 +3,7 @@ package com.greatorator.tolkienmobs.faction;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -13,6 +14,7 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -43,10 +45,16 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
  * <p>
  * It exists for the two things that need a city in a world before the pack has one: looking at the
  * terrain, and walking the campaign's pages through a valley of the right size. One root,
- * {@code /tmcity}, with four hands: {@code origin}, which plants the corner where the caller stands;
+ * {@code /tmcity}, with five hands: {@code origin}, which plants the corner where the caller stands;
  * {@code band [count]}, which lays the next band of the city and stops, because a whole city is two
  * thousand chunks and those are generated chunk by chunk; {@code apron}, which blends the shoulder into
- * the ground once the last band is down; and {@code status}, which says how much is standing.
+ * the ground once the last band is down; {@code goto}, which stands the caller on the middle of the
+ * city; and {@code status}, which says how much is standing.
+ * <p>
+ * Every number it prints is a world coordinate of the city itself rather than of the table the pieces
+ * are cut against. The two differ by the width of the cut's own frame - five hundred blocks or more -
+ * so the frame is kept to itself: a message that names it sends whoever is testing the build to a
+ * hillside a long walk from the build.
  * <p>
  * It answers to the same caller the arrangement commands do: a gamemaster-level operator, or a player
  * in creative.
@@ -79,8 +87,45 @@ public final class CityCommands {
     private record Part(String name, int dx, int dy, int dz) {
     }
 
-    /** How far through the city a world is: the corner, the next band, and whether the shoulder is done. */
-    private record Mark(BlockPos origin, int band, boolean apron) {
+    /**
+     * The ground the city covers once its corner is planted, in world coordinates.
+     * <p>
+     * The pieces are cut against a frame that is wider than the city - the box the cut was taken out of
+     * - so a piece's offset is not where it lands. This is the one place that difference is worked out,
+     * and every message and every teleport reads the city through it.
+     */
+    private record Box(int lowX, int lowY, int lowZ, int highX, int highY, int highZ) {
+        static Box of(List<Part> parts, BlockPos origin) {
+            int lowX = parts.stream().mapToInt(Part::dx).min().orElse(0);
+            int lowY = parts.stream().mapToInt(Part::dy).min().orElse(0);
+            int lowZ = parts.stream().mapToInt(Part::dz).min().orElse(0);
+            int highX = parts.stream().mapToInt(Part::dx).max().orElse(0) + TILE - 1;
+            int highY = parts.stream().mapToInt(Part::dy).max().orElse(0) + TILE - 1;
+            int highZ = parts.stream().mapToInt(Part::dz).max().orElse(0) + TILE - 1;
+            return new Box(origin.getX() + lowX, origin.getY() + lowY, origin.getZ() + lowZ,
+                    origin.getX() + highX, origin.getY() + highY, origin.getZ() + highZ);
+        }
+
+        BlockPos middle() {
+            return new BlockPos((this.lowX + this.highX) / 2, (this.lowY + this.highY) / 2,
+                    (this.lowZ + this.highZ) / 2);
+        }
+
+        String spoken() {
+            return this.lowX + ".." + this.highX + " x, " + this.lowZ + ".." + this.highZ + " z, y "
+                    + this.lowY + ".." + this.highY;
+        }
+    }
+
+    /**
+     * How far through the city a world is: the corner, the next band, whether the shoulder is done, and
+     * the dimension it was planted in.
+     * <p>
+     * The marker sits in the game directory rather than in a save, so it survives being taken to another
+     * world. The dimension is written down with it for that reason: a corner planted in one country and
+     * bands laid in another raises the city in a place nobody is looking at.
+     */
+    private record Mark(BlockPos origin, int band, boolean apron, String dimension) {
     }
 
     private CityCommands() {
@@ -97,6 +142,7 @@ public final class CityCommands {
                         .then(Commands.argument("count", IntegerArgumentType.integer(1, 8))
                                 .executes(context -> band(context, IntegerArgumentType.getInteger(context, "count")))))
                 .then(Commands.literal("apron").executes(CityCommands::apron))
+                .then(Commands.literal("goto").executes(CityCommands::visit))
                 .then(Commands.literal("status").executes(CityCommands::status)));
     }
 
@@ -121,10 +167,13 @@ public final class CityCommands {
             // The marked spots are written in this same frame, so the folk know where they are the moment
             // the corner is planted - otherwise the city would stand empty of the people meant to live in it.
             Campaign.setValleyOrigin(planted);
-            write(folder, new Mark(planted, 0, false));
-            source.sendSuccess(() -> Component.literal("City corner planted at "
-                    + planted.toShortString() + "; " + bands(parts).size() + " bands, "
-                    + parts.size() + " pieces. Run /tmcity band to start."), true);
+            write(folder, new Mark(planted, 0, false, level.dimension().identifier().toString()));
+            Box box = Box.of(parts, planted);
+            String spoken = box.spoken();
+            int bands = bands(parts).size();
+            int pieces = parts.size();
+            source.sendSuccess(() -> Component.literal("City planted at " + spoken + "; " + bands
+                    + " bands, " + pieces + " pieces. Run /tmcity band to lay it, /tmcity goto to stand in it."), true);
             return 1;
         } catch (IOException failed) {
             source.sendFailure(Component.literal("The cut could not be read: " + failed.getMessage()));
@@ -143,6 +192,11 @@ public final class CityCommands {
                 source.sendFailure(Component.literal("No corner planted yet - run /tmcity origin where it should stand."));
                 return 0;
             }
+            String elsewhere = elsewhere(mark, level);
+            if (elsewhere != null) {
+                source.sendFailure(Component.literal(elsewhere));
+                return 0;
+            }
             List<Part> parts = parts(folder);
             List<Integer> bands = bands(parts);
             int laid = 0;
@@ -158,20 +212,21 @@ public final class CityCommands {
                     }
                     laid++;
                 }
-                mark = new Mark(mark.origin(), mark.band() + 1, mark.apron());
+                mark = new Mark(mark.origin(), mark.band() + 1, mark.apron(), mark.dimension());
             }
             boolean finished = mark.band() >= bands.size();
             if (finished && !mark.apron()) {
                 skirt(level, parts, mark.origin());
-                mark = new Mark(mark.origin(), mark.band(), true);
+                mark = new Mark(mark.origin(), mark.band(), true, mark.dimension());
             }
             write(folder, mark);
             int soFar = laid;
             boolean whole = finished;
-            int bandNow = Math.min(mark.band(), bands.size());
-            int bandTotal = bands.size();
-            source.sendSuccess(() -> Component.literal("Laid " + soFar + " pieces; band "
-                    + bandNow + " of " + bandTotal + (whole ? ", and the shoulder with it" : "")), true);
+            int done = Math.min(mark.band(), bands.size());
+            int total = bands.size();
+            String spoken = whole ? " - the whole city is down; /tmcity goto to stand in it" : "";
+            source.sendSuccess(() -> Component.literal("Laid " + soFar + " pieces; " + done + " of "
+                    + total + " bands down" + spoken), true);
             return laid;
         } catch (IOException failed) {
             source.sendFailure(Component.literal("The cut could not be read: " + failed.getMessage()));
@@ -190,9 +245,14 @@ public final class CityCommands {
                 source.sendFailure(Component.literal("No corner planted yet - run /tmcity origin first."));
                 return 0;
             }
+            String elsewhere = elsewhere(mark, level);
+            if (elsewhere != null) {
+                source.sendFailure(Component.literal(elsewhere));
+                return 0;
+            }
             List<Part> parts = parts(folder);
             skirt(level, parts, mark.origin());
-            write(folder, new Mark(mark.origin(), mark.band(), true));
+            write(folder, new Mark(mark.origin(), mark.band(), true, mark.dimension()));
             source.sendSuccess(() -> Component.literal("Shoulder blended over " + RINGS + " rings."), true);
             return 1;
         } catch (IOException failed) {
@@ -201,26 +261,81 @@ public final class CityCommands {
         }
     }
 
-    /** Says where the city's corner is and how much of it is standing. */
-    private static int status(CommandContext<CommandSourceStack> context) {
+    /** Stands the caller on the middle of the city, which is where a build is walked from. */
+    private static int visit(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         CommandSourceStack source = context.getSource();
+        ServerLevel level = source.getLevel();
         Path folder = folder();
         try {
             Mark mark = read(folder);
-            List<Part> parts = parts(folder);
             if (mark == null) {
-                source.sendSuccess(() -> Component.literal("Nothing planted; " + parts.size()
-                        + " pieces waiting in " + folder), false);
+                source.sendFailure(Component.literal("No corner planted yet - run /tmcity origin where it should stand."));
                 return 0;
             }
-            source.sendSuccess(() -> Component.literal("Corner " + mark.origin().toShortString()
-                    + "; band " + mark.band() + " of " + bands(parts).size()
-                    + "; shoulder " + (mark.apron() ? "blended" : "not blended")), false);
+            String elsewhere = elsewhere(mark, level);
+            if (elsewhere != null) {
+                source.sendFailure(Component.literal(elsewhere));
+                return 0;
+            }
+            List<Part> parts = parts(folder);
+            if (parts.isEmpty()) {
+                source.sendFailure(Component.literal("No pieces in " + folder + " - is the cut there?"));
+                return 0;
+            }
+            BlockPos middle = Box.of(parts, mark.origin()).middle();
+            // On top of whatever is standing in the middle rather than inside it: the middle of a city
+            // is usually a wall, and a caller dropped into one is a caller who has to dig out.
+            int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING, middle.getX(), middle.getZ()) + 2;
+            ServerPlayer player = source.getPlayerOrException();
+            player.teleportTo(middle.getX() + 0.5D, top, middle.getZ() + 0.5D);
+            BlockPos landed = new BlockPos(middle.getX(), top, middle.getZ());
+            source.sendSuccess(() -> Component.literal("Stood on the middle of the city at "
+                    + landed.toShortString()), true);
             return 1;
         } catch (IOException failed) {
             source.sendFailure(Component.literal("The cut could not be read: " + failed.getMessage()));
             return 0;
         }
+    }
+
+    /** Says where the city stands and how much of it is standing. */
+    private static int status(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        ServerLevel level = source.getLevel();
+        Path folder = folder();
+        try {
+            Mark mark = read(folder);
+            List<Part> parts = parts(folder);
+            if (mark == null) {
+                int waiting = parts.size();
+                source.sendSuccess(() -> Component.literal("Nothing planted; " + waiting
+                        + " pieces waiting in " + folder), false);
+                return 0;
+            }
+            Box box = Box.of(parts, mark.origin());
+            BlockPos middle = box.middle();
+            String spoken = box.spoken();
+            int band = mark.band();
+            int total = bands(parts).size();
+            boolean blended = mark.apron();
+            source.sendSuccess(() -> Component.literal("City " + spoken + "; middle "
+                    + middle.toShortString() + "; band " + band + " of " + total + "; shoulder "
+                    + (blended ? "blended" : "not blended")), false);
+            String elsewhere = elsewhere(mark, level);
+            if (elsewhere != null) source.sendFailure(Component.literal(elsewhere));
+            return 1;
+        } catch (IOException failed) {
+            source.sendFailure(Component.literal("The cut could not be read: " + failed.getMessage()));
+            return 0;
+        }
+    }
+
+    /** The complaint a corner planted in another dimension earns, or null when it was planted here. */
+    private static String elsewhere(Mark mark, ServerLevel level) {
+        String here = level.dimension().identifier().toString();
+        if (mark.dimension() == null || mark.dimension().equals(here)) return null;
+        return "That corner was planted in " + mark.dimension() + ", not in " + here
+                + " - run /tmcity origin here to plant this country's own.";
     }
 
     /** One piece, with its chunks loaded first: a chunk that is not loaded cannot take blocks. */
@@ -237,13 +352,10 @@ public final class CityCommands {
 
     /** The shoulder of the whole city: its own footprint, its own lowest corner, and the ground as base. */
     private static void skirt(ServerLevel level, List<Part> parts, BlockPos origin) {
-        int lowX = parts.stream().mapToInt(Part::dx).min().orElse(0);
-        int lowY = parts.stream().mapToInt(Part::dy).min().orElse(0);
-        int lowZ = parts.stream().mapToInt(Part::dz).min().orElse(0);
-        int highX = parts.stream().mapToInt(Part::dx).max().orElse(0);
-        int highZ = parts.stream().mapToInt(Part::dz).max().orElse(0);
-        BlockPos corner = origin.offset(lowX, lowY, lowZ);
-        Sites.apron(level, corner, highX + TILE - lowX, highZ + TILE - lowZ, RINGS, corner.getY());
+        Box box = Box.of(parts, origin);
+        int wide = box.highX() - box.lowX() + 1;
+        int deep = box.highZ() - box.lowZ() + 1;
+        Sites.apron(level, new BlockPos(box.lowX(), box.lowY(), box.lowZ()), wide, deep, RINGS, box.lowY());
     }
 
     /** A piece's template, read from the cut the first time it is asked for. */
@@ -299,14 +411,16 @@ public final class CityCommands {
         if (!Files.isRegularFile(marker)) return null;
         String[] fields = Files.readString(marker).trim().split("\\s+");
         if (fields.length < 5) return null;
+        String dimension = fields.length > 5 ? fields[5] : null;
         return new Mark(new BlockPos(Integer.parseInt(fields[0]), Integer.parseInt(fields[1]),
-                Integer.parseInt(fields[2])), Integer.parseInt(fields[3]), "1".equals(fields[4]));
+                Integer.parseInt(fields[2])), Integer.parseInt(fields[3]), "1".equals(fields[4]), dimension);
     }
 
     private static void write(Path folder, Mark mark) throws IOException {
         Files.createDirectories(folder);
         Files.writeString(folder.resolve(MARKER), mark.origin().getX() + " " + mark.origin().getY()
-                + " " + mark.origin().getZ() + " " + mark.band() + " " + (mark.apron() ? 1 : 0));
+                + " " + mark.origin().getZ() + " " + mark.band() + " " + (mark.apron() ? 1 : 0)
+                + (mark.dimension() == null ? "" : " " + mark.dimension()));
     }
 
     private static Path folder() {
