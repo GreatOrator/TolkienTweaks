@@ -10,6 +10,10 @@ All notable changes to this project will be documented in this file.
   `tools/fortress_build.py` raises the first tile from that plan in Angainor masonry: a hall
   behind a five-wide gallery ring, so the eight quarter-point doorways meet any neighbouring
   tile without being matched.
+- **The other five tiles of the hold are raised, one of them two storeys.** The winding approach,
+  the crenellated vault, the four-pier colonnade and the water hall join the great hall, and
+  `ascent` carries a seven-wide flight up to a parapetted gallery over a double-height hall - the
+  first tile with a level change, and the pattern the rest of the vertical work can follow.
 - **A finished page offers the way back.** A story page that is done and handed over more than
   forty-eight blocks behind the player shows `Return` in the book, which asks the server to walk
   them back to the giver. The server checks the page again, refuses to move somebody who is

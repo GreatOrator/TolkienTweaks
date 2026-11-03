@@ -1,12 +1,12 @@
 """Build the chapter-two dwarven fortress tiles as structure NBT.
 
-The geomorph drawings (tools/geomorphs) supply the layout and the features;
-this turns them into squared dwarven masonry. Every tile is 61x61 blocks with
-open doorways at blocks 13-17 and 43-47 on all four faces, which is the
-convention the pack's example schematics use, so any tile meets any tile.
+The geomorph drawings (tools/geomorphs, set 5) supply the layout and the features; this turns
+each panel into squared dwarven masonry. Every tile is 61x61 with open doorways at blocks 13-17
+and 43-47 on all four faces - the convention the pack's example schematics use - so any tile
+meets any tile without being matched.
 
-Usage: python fortress_build.py [name]
-Writes ../src/main/resources/data/tolkienmobs/structure/ch2_<name>.nbt
+    python fortress_build.py all            every tile
+    python fortress_build.py hall vault     named tiles
 """
 import pathlib
 import random
@@ -15,11 +15,11 @@ import sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import grab_build as gb
 
-W = 61            # tile edge, blocks
-H = 13            # piece height: floor at y=0, tops out at y=12
-CEIL_HALL = 12
-CEIL_GAL = 9
+W = 61                      # tile edge, blocks
+H_MAX = 25                  # tallest piece we write
 DOORS = ((13, 17), (43, 47))
+IN = (11, 49)               # interior of the hall behind the gallery ring
+RING = (3, 7)               # gallery ring, five wide
 
 ROCK = "minecraft:deepslate"
 FLOOR = "tolkienmobs:angainor"
@@ -28,10 +28,14 @@ WALL = "tolkienmobs:angainor_bricks"
 CHISEL = "tolkienmobs:chiseled_angainor_bricks"
 SMOOTH = "tolkienmobs:smooth_angainor"
 SLAB = "tolkienmobs:slab_angainor_bricks"
+SLAB_SMOOTH = "tolkienmobs:slab_smooth_angainor"
 STAIRS = "tolkienmobs:stairs_angainor_bricks"
+PARAPET = "tolkienmobs:wall_angainor_bricks"
+PARAPET_CHISEL = "tolkienmobs:wall_chiseled_angainor_bricks"
 GOLD = "minecraft:gold_block"
 LAMP = "minecraft:lantern"
 CHAIN = "minecraft:chain"
+WATER = "minecraft:water"
 GRAVEL = "minecraft:gravel"
 COBBLE = "minecraft:cobblestone"
 CRACKED = "tolkienmobs:cracked_angainor_bricks"
@@ -41,16 +45,20 @@ BAR = "minecraft:iron_bars"
 
 
 class Plan:
-    def __init__(self, seed=0):
+    def __init__(self, seed=0, top=H_MAX):
         self.b = {}
         self.rnd = random.Random(seed)
+        self.top = top
+
+    def get(self, x, y, z):
+        return self.b.get((x, y, z), ("minecraft:air", ()))[0]
 
     def put(self, x, y, z, name, props=()):
-        if 0 <= x < W and 0 <= y < H and 0 <= z < W:
+        if 0 <= x < W and 0 <= y < self.top and 0 <= z < W:
             self.b[(x, y, z)] = (name, tuple(props))
 
     def air(self, x, y, z):
-        if 0 <= x < W and 0 <= y < H and 0 <= z < W:
+        if 0 <= x < W and 0 <= y < self.top and 0 <= z < W:
             self.b[(x, y, z)] = ("minecraft:air", ())
 
     def fill(self, x0, y0, z0, x1, y1, z1, name, props=()):
@@ -71,96 +79,90 @@ class Plan:
     def slab(self, x, y, z, name=SLAB, top=False):
         self.put(x, y, z, name, (("type", "top" if top else "bottom"),))
 
-    def open_at(self, y=1):
-        """Set of (x,z) with a walkable floor at y."""
-        return {(x, z) for (x, yy, z), (n, _) in self.b.items() if yy == y and n == "minecraft:air"}
+    def post(self, x, y, z, name=PARAPET):
+        self.put(x, y, z, name, (("up", "true"), ("east", "low"), ("north", "low"),
+                                 ("south", "low"), ("west", "low"), ("waterlogged", "false")))
 
 
-# ---- pieces -----------------------------------------------------------------
+# ---- shared shell -----------------------------------------------------------
 
-def floor_slab(p):
-    """Floor over the whole footprint so tiles join without seams."""
+def shell(p, hall_top, gal_top=9, ring=True, door_h=7):
+    """Floor, outer wall, gallery ring, partition frame, doorways and ceilings."""
     for x in range(W):
         for z in range(W):
             edge = x < 3 or x > W - 4 or z < 3 or z > W - 4
-            name = FLOOR_ALT if edge else FLOOR
-            p.put(x, 0, z, name)
-
-
-def outer_wall(p):
-    """Three blocks thick, rising the full height, with chiseled courses."""
+            p.put(x, 0, z, FLOOR_ALT if edge else FLOOR, ())
     for x in range(W):
         for z in range(W):
             if not (x < 3 or x > W - 4 or z < 3 or z > W - 4):
                 continue
-            for y in range(H):
+            for y in range(hall_top):
                 name = WALL
-                if y == 8 or (y in (1, 11) and (x + z) % 8 == 0):
+                if y == door_h + 1 or (y in (1, door_h) and (x + z) % 8 == 0):
                     name = CHISEL
                 elif (x * 7 + z * 13) % 41 == 0:
                     name = CRACKED
-                p.put(x, y, z, name)
-
-
-def gallery_and_partition(p):
-    """Five-wide ring gallery, and the wall between it and the hall."""
-    # partition frame (3 thick) between gallery and hall
-    p.fill(8, 0, 8, 10, CEIL_HALL - 1, W - 9, WALL)
-    p.fill(8, 0, 8, W - 9, CEIL_HALL - 1, 10, WALL)
-    p.fill(W - 11, 0, 8, W - 9, CEIL_HALL - 1, W - 9, WALL)
-    p.fill(8, 0, W - 11, W - 9, CEIL_HALL - 1, W - 9, WALL)
-    # pilaster courses on the hall face
-    for i in range(9, W - 8, 10):
-        if 26 <= i <= 34:
-            continue          # keep the archway mouths clear
-        p.put(11, 1, i, CHISEL)
-        p.put(11, 10, i, CHISEL)
-        p.put(i, 1, 11, CHISEL)
-        p.put(i, 10, 11, CHISEL)
-    # carve the gallery ring
-    p.clear(3, 1, 3, W - 4, CEIL_GAL - 1, 7)
-    p.clear(3, 1, W - 8, W - 4, CEIL_GAL - 1, W - 4)
-    p.clear(3, 1, 3, 7, CEIL_GAL - 1, W - 4)
-    p.clear(W - 8, 1, 3, W - 4, CEIL_GAL - 1, W - 4)
-    # gallery ceilings
-    p.fill(3, CEIL_GAL, 3, W - 4, CEIL_GAL, 7, WALL)
-    p.fill(3, CEIL_GAL, W - 8, W - 4, CEIL_GAL, W - 4, WALL)
-    p.fill(3, CEIL_GAL, 3, 7, CEIL_GAL, W - 4, WALL)
-    p.fill(W - 8, CEIL_GAL, 3, W - 4, CEIL_GAL, W - 4, WALL)
-    # carve the hall
-    p.clear(11, 1, 11, W - 12, CEIL_HALL - 1, W - 12)
-    # hall ceiling
-    p.fill(8, CEIL_HALL, 8, W - 9, CEIL_HALL, W - 9, WALL)
+                p.put(x, y, z, name, ())
+    if ring:
+        p.fill(8, 0, 8, 10, hall_top - 1, 10, WALL)
+        p.fill(8, 0, 8, W - 9, hall_top - 1, 10, WALL)
+        p.fill(W - 11, 0, 8, W - 9, hall_top - 1, W - 9, WALL)
+        p.fill(8, 0, W - 11, W - 9, hall_top - 1, W - 9, WALL)
+        for i in range(9, W - 8, 10):
+            if 26 <= i <= 34:
+                continue
+            p.put(11, 1, i, CHISEL)
+            p.put(11, gal_top - 2, i, CHISEL)
+            p.put(i, 1, 11, CHISEL)
+            p.put(i, gal_top - 2, 11, CHISEL)
+        p.clear(3, 1, 3, W - 4, gal_top - 1, 7)
+        p.clear(3, 1, W - 8, W - 4, gal_top - 1, W - 4)
+        p.clear(3, 1, 3, 7, gal_top - 1, W - 4)
+        p.clear(W - 8, 1, 3, W - 4, gal_top - 1, W - 4)
+        p.fill(3, gal_top, 3, W - 4, gal_top, 7, WALL)
+        p.fill(3, gal_top, W - 8, W - 4, gal_top, W - 4, WALL)
+        p.fill(3, gal_top, 3, 7, gal_top, W - 4, WALL)
+        p.fill(W - 8, gal_top, 3, W - 4, gal_top, W - 4, WALL)
+        # solid above the gallery, so the tile reads as rock with a passage in it
+        if hall_top - 1 > gal_top:
+            p.fill(3, gal_top + 1, 3, W - 8, hall_top - 1, 7, WALL)
+            p.fill(3, gal_top + 1, W - 8, W - 4, hall_top - 1, W - 4, WALL)
+            p.fill(3, gal_top + 1, 3, 7, hall_top - 1, W - 8, WALL)
+            p.fill(W - 8, gal_top + 1, 3, W - 4, hall_top - 1, W - 8, WALL)
+    else:
+        p.fill(8, 0, 8, 10, hall_top - 1, 10, WALL)
+        p.fill(8, 0, 8, W - 9, hall_top - 1, 10, WALL)
+        p.fill(W - 11, 0, 8, W - 9, hall_top - 1, W - 9, WALL)
+        p.fill(8, 0, W - 11, W - 9, hall_top - 1, W - 9, WALL)
+    p.clear(IN[0], 1, IN[0], IN[1], hall_top - 1, IN[1])
+    p.fill(8, hall_top, 8, W - 9, hall_top, W - 9, WALL)
     for x in range(8, W - 8, 4):
         for z in range(8, W - 8, 4):
-            p.put(x, CEIL_HALL, z, CHISEL)
+            p.put(x, hall_top, z, CHISEL)
+    doorways(p, door_h)
+    archways(p, gal_top)
 
 
-def doorways(p):
-    """Open 5-wide ways through the outer wall at the quarter points."""
+def doorways(p, door_h=7):
     for a, b in DOORS:
-        for y in range(1, 8):
+        for y in range(1, door_h + 1):
             for i in range(a, b + 1):
-                # north and south
                 for d in range(0, 4):
                     p.air(i, y, d)
                     p.air(i, y, W - 1 - d)
                     p.air(d, y, i)
                     p.air(W - 1 - d, y, i)
-        # arches over each opening
         for i in range(a - 1, b + 2):
-            p.put(i, 8, 2, CHISEL)
-            p.put(i, 8, W - 3, CHISEL)
-            p.put(2, 8, i, CHISEL)
-            p.put(W - 3, 8, i, CHISEL)
-        # a smooth course in the floor, so each gate reads as a gate
+            p.put(i, door_h + 1, 2, CHISEL)
+            p.put(i, door_h + 1, W - 3, CHISEL)
+            p.put(2, door_h + 1, i, CHISEL)
+            p.put(W - 3, door_h + 1, i, CHISEL)
         for i in range(a, b + 1):
             p.put(i, 0, 1, SMOOTH)
             p.put(i, 0, W - 2, SMOOTH)
             p.put(1, 0, i, SMOOTH)
             p.put(W - 2, 0, i, SMOOTH)
-        # iron gate posts
-        for y in range(1, 8):
+        for y in range(1, door_h + 1):
             p.put(a - 1, y, 2, CHISEL)
             p.put(b + 1, y, 2, CHISEL)
             p.put(a - 1, y, W - 3, CHISEL)
@@ -171,90 +173,27 @@ def doorways(p):
             p.put(W - 3, y, b + 1, CHISEL)
 
 
-def archways(p):
-    """Four ways between gallery and hall, on the axes."""
-    for x0, x1, z0, z1 in ((27, 33, 8, 10), (27, 33, W - 11, W - 9),
-                           (8, 10, 27, 33), (W - 11, W - 9, 27, 33)):
-        p.clear(x0, 1, z0, x1, 8, z1)
+def archways(p, gal_top=9, spans=None):
+    spans = spans or ((27, 33, 8, 10), (27, 33, W - 11, W - 9),
+                      (8, 10, 27, 33), (W - 11, W - 9, 27, 33))
+    for x0, x1, z0, z1 in spans:
+        p.clear(x0, 1, z0, x1, gal_top - 1, z1)
         for a in range(x0 - 1, x1 + 2):
             for b in range(z0, z1 + 1):
-                p.put(a, 9, b, CHISEL)
+                p.put(a, gal_top, b, CHISEL)
 
 
-def colonnade(p):
-    """Two rows of squared piers, aligned to the ceiling ribs."""
-    for cx in (20, 40):
-        for cz in (20, 30, 40):
-            p.fill(cx, 1, cz, cx + 1, CEIL_HALL - 1, cz + 1, WALL)
-            for dx in (0, 1):
-                for dz in (0, 1):
-                    p.put(cx + dx, 1, cz + dz, CHISEL)
-                    p.put(cx + dx, 9, cz + dz, CHISEL)
-                    p.put(cx + dx, CEIL_HALL - 2, cz + dz, CHISEL)
-            # capital ring
-            for d in range(-1, 3):
-                for e in (-1, 2):
-                    p.put(cx + d, CEIL_HALL - 2, cz + e, CHISEL)
-                    p.put(cx + e, CEIL_HALL - 2, cz + d, CHISEL)
+def lamps_ring(p, gal_top=9):
+    for i in range(6, W - 6, 9):
+        p.put(i, gal_top - 1, 5, LAMP)
+        p.put(i, gal_top - 1, W - 6, LAMP)
+        p.put(5, gal_top - 1, i, LAMP)
+        p.put(W - 6, gal_top - 1, i, LAMP)
 
 
-def vault_ribs(p):
-    """Corbelled ribs across the hall at the pier lines."""
-    for cz in (20, 30, 40):
-        p.fill(11, CEIL_HALL - 1, cz, W - 12, CEIL_HALL - 1, cz, WALL)
-    # wall corbels springing the vault
-    for i in range(11, W - 11):
-        for y in (CEIL_HALL - 1,):
-            if p.b.get((i, y, 11), ("", ()))[0] == "minecraft:air":
-                p.stairs(i, y, 11, "north")
-            if p.b.get((i, y, W - 12), ("", ()))[0] == "minecraft:air":
-                p.stairs(i, y, W - 12, "south")
-            if p.b.get((11, y, i), ("", ()))[0] == "minecraft:air":
-                p.stairs(11, y, i, "west")
-            if p.b.get((W - 12, y, i), ("", ()))[0] == "minecraft:air":
-                p.stairs(W - 12, y, i, "east")
-
-
-def dais_and_throne(p):
-    """Raised seat at the north end, with steps down to the aisle."""
-    p.fill(24, 1, 12, 36, 2, 18, SMOOTH)
-    p.fill(24, 1, 19, 36, 1, 19, SMOOTH)          # first step
-    for x in range(24, 37):
-        p.put(x, 3, 12, CHISEL)                    # back course
-    # relief panels either side of the north way, which stays open
-    for x in list(range(22, 27)) + list(range(34, 39)):
-        for y in range(4, 9):
-            p.put(x, y, 11, CHISEL if (x + y) % 3 else WALL)
-    # throne
-    p.fill(29, 3, 14, 31, 3, 15, SMOOTH)
-    p.fill(29, 4, 14, 31, 6, 14, CHISEL)           # back
-    p.put(30, 4, 15, GOLD)
-    for dx in (-1, 1):
-        p.put(30 + dx * 3, 3, 15, WALL)
-        p.put(30 + dx * 3, 4, 15, LAMP)
-    # flanking piers
-    for dx in (24, 36):
-        p.fill(dx, 3, 13, dx, 8, 13, CHISEL)
-        p.put(dx, 9, 13, LAMP)
-
-
-def aisle_and_benches(p):
-    """The long approach and the benches along it."""
-    for z in range(20, 50):
-        for x in range(29, 32):
-            p.put(x, 1, z, FLOOR_ALT)
-    for z0 in (24, 36):
-        for x in (13, 45):
-            for z in range(z0, z0 + 6):
-                p.slab(x, 1, z)
-                p.slab(x + (1 if x < 30 else -1), 1, z)
-
-
-def rubble(p):
-    """Collapsed stone in the corners, and a little gravel spill."""
-    spots = [(13, 13), (13, 47), (47, 13), (47, 47), (14, 30), (46, 30)]
+def rubble(p, spots):
     for cx, cz in spots:
-        for _ in range(22):
+        for _ in range(24):
             x = cx + p.rnd.randint(-2, 2)
             z = cz + p.rnd.randint(-2, 2)
             if not (11 <= x <= W - 12 and 11 <= z <= W - 12):
@@ -264,22 +203,76 @@ def rubble(p):
                 p.put(x, 2, z, p.rnd.choice((COBBLED, GRAVEL, CRACKED)))
 
 
-def lighting(p):
-    for i in range(6, W - 6, 9):
-        for y, z in ((CEIL_GAL - 1, 5), (CEIL_GAL - 1, W - 6)):
-            p.put(i, y, z, LAMP)
-        for y, x in ((CEIL_GAL - 1, 5), (CEIL_GAL - 1, W - 6)):
-            p.put(x, y, i, LAMP)
+# ---- the six tiles ----------------------------------------------------------
+
+def build_hall(p):
+    """Set 5, middle left: the great hall."""
+    colonnade(p, top=11)
+    for cz in (20, 30, 40):
+        p.fill(11, 11, cz, W - 12, 11, cz, WALL)
+    for i in range(11, W - 11):
+        for y in (11,):
+            if p.get(i, y, 11) == "minecraft:air":
+                p.stairs(i, y, 11, "north")
+            if p.get(i, y, W - 12) == "minecraft:air":
+                p.stairs(i, y, W - 12, "south")
+            if p.get(11, y, i) == "minecraft:air":
+                p.stairs(11, y, i, "west")
+            if p.get(W - 12, y, i) == "minecraft:air":
+                p.stairs(W - 12, y, i, "east")
+    # raised seat at the north end
+    p.fill(24, 1, 12, 36, 2, 18, SMOOTH)
+    p.fill(24, 1, 19, 36, 1, 19, SMOOTH)
+    for x in range(24, 37):
+        p.put(x, 3, 12, CHISEL)
+    for x in list(range(22, 27)) + list(range(34, 39)):
+        for y in range(4, 9):
+            p.put(x, y, 11, CHISEL if (x + y) % 3 else WALL)
+    p.fill(29, 3, 14, 31, 3, 15, SMOOTH)
+    p.fill(29, 4, 14, 31, 6, 14, CHISEL)
+    p.put(30, 4, 15, GOLD)
+    for dx in (-1, 1):
+        p.put(30 + dx * 3, 3, 15, WALL)
+        p.put(30 + dx * 3, 4, 15, LAMP)
+    for dx in (24, 36):
+        p.fill(dx, 3, 13, dx, 8, 13, CHISEL)
+        p.put(dx, 9, 13, LAMP)
+    # approach and benches
+    for z in range(20, 50):
+        for x in range(29, 32):
+            p.put(x, 1, z, FLOOR_ALT)
+    for z0 in (24, 36):
+        for x in (13, 45):
+            for z in range(z0, z0 + 6):
+                p.slab(x, 1, z)
+                p.slab(x + (1 if x < 30 else -1), 1, z)
+    rubble(p, [(13, 13), (13, 47), (47, 13), (47, 47), (14, 30), (46, 30)])
+    lamps_ring(p)
     for cz in (20, 30, 40):
         for cx in (24, 30, 36):
-            p.put(cx, CEIL_HALL - 2, cz + 2, CHAIN)
-            p.put(cx, CEIL_HALL - 3, cz + 2, LAMP)
+            p.put(cx, 10, cz + 2, CHAIN)
+            p.put(cx, 9, cz + 2, LAMP)
+    gallery_detail(p)
+    return 12, 12
+
+
+def colonnade(p, top=11):
+    for cx in (20, 40):
+        for cz in (20, 30, 40):
+            p.fill(cx, 1, cz, cx + 1, top, cz + 1, WALL)
+            for dx in (0, 1):
+                for dz in (0, 1):
+                    p.put(cx + dx, 1, cz + dz, CHISEL)
+                    p.put(cx + dx, top - 2, cz + dz, CHISEL)
+            for d in range(-1, 3):
+                for e in (-1, 2):
+                    p.put(cx + d, top - 1, cz + e, CHISEL)
+                    p.put(cx + e, top - 1, cz + d, CHISEL)
 
 
 def gallery_detail(p):
-    """Pilasters and a barred cell gate or two along the ring, for texture."""
     for i in range(9, W - 8, 10):
-        for y in range(1, CEIL_GAL):
+        for y in range(1, 8):
             p.put(3, y, i, CHISEL)
             p.put(W - 4, y, i, CHISEL)
             p.put(i, y, 3, CHISEL)
@@ -292,42 +285,300 @@ def gallery_detail(p):
                 p.put(3, y, x, BAR)
 
 
-def build_hall(seed=7):
-    p = Plan(seed)
-    floor_slab(p)
-    outer_wall(p)
-    gallery_and_partition(p)
-    doorways(p)
-    archways(p)
-    colonnade(p)
-    vault_ribs(p)
-    dais_and_throne(p)
-    aisle_and_benches(p)
-    rubble(p)
-    lighting(p)
-    gallery_detail(p)
-    return p
+def build_approach(p):
+    """Set 5, top left: the winding way in - dog-legged, with two chambers."""
+    # two walls force the way to turn twice
+    p.fill(11, 1, 24, 40, 8, 26, WALL)
+    p.fill(20, 1, 34, 49, 8, 36, WALL)
+    for x in range(11, 41):
+        p.put(x, 9, 24, CHISEL)
+        p.put(x, 9, 26, CHISEL)
+    for x in range(20, 50):
+        p.put(x, 9, 34, CHISEL)
+        p.put(x, 9, 36, CHISEL)
+    # gate piers at the turn
+    for x in (11, 49):
+        p.fill(x, 1, 24, x, 8, 26, CHISEL)
+    # north chamber: a cell block against the east side, clear of the way in
+    p.fill(36, 0, 13, 44, 0, 21, FLOOR_ALT)
+    for y in range(1, 8):
+        for z in range(13, 22):
+            p.put(36, y, z, BAR)
+            p.put(44, y, z, CHISEL)
+    for z in (13, 21):
+        p.fill(36, 1, z, 44, 8, z, WALL)
+    # south chamber: a mustering hall with a low bench ring
+    p.fill(13, 1, 44, 47, 1, 47, WALL)
+    for x in range(14, 47):
+        p.slab(x, 2, 44, SLAB_SMOOTH)
+    for z in range(44, 48):
+        p.slab(13, 2, z, SLAB_SMOOTH)
+        p.slab(47, 2, z, SLAB_SMOOTH)
+    # braziers at the turns
+    for z in (23, 27, 33, 37):
+        p.put(15, 1, z, CHISEL)
+        p.put(15, 2, z, LAMP)
+        p.put(45, 1, z, CHISEL)
+        p.put(45, 2, z, LAMP)
+    rubble(p, [(13, 13), (47, 13), (30, 30)])
+    lamps_ring(p)
+    for i in range(14, 48, 6):
+        p.put(i, 8, 5, LAMP)
+        p.put(i, 8, W - 6, LAMP)
+    return 12, 12
 
 
-TILES = {"hall": build_hall}
+def build_vault(p):
+    """Set 5, top right: the treasure vault - rounded, crenellated inside."""
+    cx = cz = 30
+    r = 16
+    # outer ring of the chamber
+    for x in range(cx - r, cx + r + 1):
+        for z in range(cz - r, cz + r + 1):
+            dx, dz = abs(x - cx), abs(z - cz)
+            if max(dx, dz) <= r and dx + dz <= r + 8:
+                p.fill(x, 1, z, x, 9, z, WALL)
+    for x in range(cx - r + 2, cx + r - 1):
+        for z in range(cz - r + 2, cz + r - 1):
+            dx, dz = abs(x - cx), abs(z - cz)
+            if max(dx, dz) <= r - 2 and dx + dz <= r + 6:
+                p.clear(x, 1, z, x, 9, z)
+    # crenellation: every third block of the inner face juts out
+    for x in range(cx - r + 2, cx + r - 1):
+        for z in range(cz - r + 2, cz + r - 1):
+            dx, dz = abs(x - cx), abs(z - cz)
+            if max(dx, dz) == r - 2 and dx + dz <= r + 6 and (x + z) % 3 == 0:
+                p.fill(x, 1, z, x, 5, z, CHISEL)
+    # floor inlay and the strongroom door on the west side
+    for x in range(cx - 8, cx + 9):
+        for z in range(cz - 8, cz + 9):
+            if (x + z) % 4 == 0:
+                p.put(x, 0, z, SMOOTH)
+    # the way in, open to head height, with a raised portcullis over it
+    p.clear(cx - r, 1, cz - 3, cx - r + 2, 6, cz + 3)
+    p.fill(cx - r, 7, cz - 3, cx - r + 2, 7, cz + 3, BAR)
+    p.fill(cx - r, 1, cz - 4, cx - r + 1, 7, cz - 4, CHISEL)
+    p.fill(cx - r, 1, cz + 4, cx - r + 1, 7, cz + 4, CHISEL)
+    p.fill(cx - r, 8, cz - 4, cx - r + 1, 8, cz + 4, CHISEL)
+    # gold on the plinth at the centre
+    p.fill(cx - 2, 1, cz - 2, cx + 2, 1, cz + 2, CHISEL)
+    p.fill(cx - 1, 2, cz - 1, cx + 1, 2, cz + 1, GOLD)
+    for dx, dz in ((0, 0), (-1, -1), (1, 1), (-1, 1), (1, -1)):
+        p.put(cx + dx * 3, 3, cz + dz * 3, LAMP)
+    # ribs springing to the chamber ceiling
+    for i in range(cx - 10, cx + 11, 5):
+        p.fill(i, 9, cz - 12, i, 9, cz + 12, CHISEL)
+    rubble(p, [(cx - 12, cz - 12), (cx + 12, cz + 12)])
+    lamps_ring(p)
+    return 12, 12
+
+
+def build_colonnade(p):
+    """Set 5, middle right: four free-standing piers under a coffered ceiling."""
+    for cx in (20, 40):
+        for cz in (20, 40):
+            p.fill(cx, 1, cz, cx + 2, 11, cz + 2, WALL)
+            for dx in range(3):
+                for dz in range(3):
+                    p.put(cx + dx, 1, cz + dz, CHISEL)
+                    p.put(cx + dx, 10, cz + dz, CHISEL)
+            for d in range(-1, 4):
+                for e in (-1, 3):
+                    p.put(cx + d, 11, cz + e, CHISEL)
+                    p.put(cx + e, 11, cz + d, CHISEL)
+    # arcade screens along the north and south walls
+    for z in (12, 48):
+        for x in range(13, 49, 3):
+            p.fill(x, 1, z, x, 7, z, PARAPET)
+            p.put(x, 8, z, CHISEL)
+        for x in range(13, 49):
+            if (x - 13) % 3:
+                p.put(x, 8, z, SLAB)
+    # the well in the north-east corner
+    p.fill(43, 1, 14, 47, 1, 18, CHISEL)
+    p.fill(44, 1, 15, 46, 1, 17, WATER)
+    p.fill(44, 2, 15, 44, 4, 15, PARAPET)
+    p.fill(46, 2, 15, 46, 4, 17, PARAPET)
+    p.fill(44, 4, 15, 46, 4, 17, SLAB)
+    p.put(45, 5, 16, CHAIN)
+    p.put(45, 4, 16, LAMP)
+    # hanging lights between the piers
+    for cx in (24, 30, 36):
+        for cz in (24, 36):
+            p.put(cx, 11, cz, CHAIN)
+            p.put(cx, 10, cz, LAMP)
+    rubble(p, [(14, 14), (46, 46), (30, 30)])
+    lamps_ring(p)
+    return 12, 12
+
+
+def build_cistern(p):
+    """Set 5, bottom left: the water hall - a sunken basin and alcoves."""
+    cx = cz = 30
+    r = 7
+    for x in range(cx - r, cx + r + 1):
+        for z in range(cz - r, cz + r + 1):
+            if (x - cx) ** 2 + (z - cz) ** 2 <= r * r:
+                p.put(x, 1, z, WATER)
+                p.put(x, 2, z, "minecraft:air")
+    for x in range(cx - r - 1, cx + r + 2):
+        for z in range(cz - r - 1, cz + r + 2):
+            d = (x - cx) ** 2 + (z - cz) ** 2
+            if r * r < d <= (r + 1) ** 2:
+                p.put(x, 1, z, CHISEL)
+    # the spring column at the centre, water falling round it
+    p.fill(cx, 1, cz, cx, 4, cz, CHISEL)
+    p.put(cx, 5, cz, WATER)
+    for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+        p.put(cx + dx, 1, cz + dz, WATER)
+    # three columns round the basin
+    for ax, az in ((18, 18), (42, 18), (18, 42)):
+        p.fill(ax, 1, az, ax + 1, 11, az + 1, WALL)
+        for dx in (0, 1):
+            for dz in (0, 1):
+                p.put(ax + dx, 1, az + dz, CHISEL)
+                p.put(ax + dx, 9, az + dz, CHISEL)
+    # alcoves cut into three walls, with a lamp in each
+    for x0 in (16, 24, 32, 40):
+        p.clear(x0, 1, 11, x0 + 3, 5, 12)
+        p.put(x0 + 1, 4, 11, LAMP)
+        p.clear(x0, 1, 49, x0 + 3, 5, 48)
+        p.put(x0 + 1, 4, 49, LAMP)
+    for z0 in (16, 24, 32, 40):
+        p.clear(11, 1, z0, 12, 5, z0 + 3)
+        p.put(11, 4, z0 + 1, LAMP)
+        p.clear(49, 1, z0, 48, 5, z0 + 3)
+        p.put(49, 4, z0 + 1, LAMP)
+    for i in range(14, 48, 6):
+        p.put(i, 11, 20, CHAIN)
+        p.put(i, 10, 20, LAMP)
+        p.put(i, 11, 40, CHAIN)
+        p.put(i, 10, 40, LAMP)
+    rubble(p, [(13, 13), (47, 47)])
+    lamps_ring(p)
+    return 12, 12
+
+
+def build_ascent(p):
+    """Set 5, bottom right: two levels - a flight up to a gallery over the hall."""
+    top = 25
+    hall_top = 23
+    # the flight, seven wide, rising one block per block from the south-west
+    for k in range(12):
+        z = 46 - k
+        y = 1 + k
+        for x in range(12, 19):
+            p.stairs(x, y, z, "north")
+            if y > 1:
+                p.fill(x, 1, z, x, y - 1, z, WALL)
+    # gallery decks: west strip and north strip, one level above the flight top
+    deck = 12
+    p.fill(11, deck, 11, 18, deck, 34, WALL)
+    for x in range(19, 50):
+        p.fill(x, deck, 11, x, deck, 18, WALL)
+    for x in range(11, 19):
+        for z in range(11, 35):
+            p.put(x, deck, z, FLOOR if (x + z) % 3 else FLOOR_ALT)
+    for x in range(19, 50):
+        for z in range(11, 19):
+            p.put(x, deck, z, FLOOR if (x + z) % 3 else FLOOR_ALT)
+    # parapets on the open edges
+    for z in range(19, 35):
+        p.post(19, deck + 1, z)
+        if z % 5 == 0:
+            p.fill(19, deck + 1, z, 19, deck + 2, z, CHISEL)
+    for x in range(19, 50):
+        p.post(x, deck + 1, 19)
+        if x % 5 == 0:
+            p.fill(x, deck + 1, 19, x, deck + 2, 19, CHISEL)
+    # a gap in the parapet where the flight arrives
+    for z in range(34, 47):
+        for x in range(12, 19):
+            if p.get(x, deck + 1, z) in (PARAPET, CHISEL):
+                p.air(x, deck + 1, z)
+    # under-gallery piers
+    for z in (16, 26, 33):
+        p.fill(17, 1, z, 18, 11, z, WALL)
+    for x in (26, 36, 46):
+        p.fill(x, 1, 17, x, 11, 17, WALL)
+    # lanterns on the gallery and over the hall floor
+    for z in range(14, 34, 6):
+        p.put(15, deck + 3, z, CHAIN)
+        p.put(15, deck + 2, z, LAMP)
+    for x in (28, 38):
+        p.put(x, 22, 24, CHAIN)
+        p.put(x, 21, 24, LAMP)
+    rubble(p, [(44, 40), (24, 40), (14, 24)])
+    lamps_ring(p)
+    return hall_top, top
+
+
+# name -> (hall ceiling height, piece height, interior)
+TILES = {
+    "hall": (12, 13, build_hall),
+    "approach": (12, 13, build_approach),
+    "vault": (12, 13, build_vault),
+    "colonnade": (12, 13, build_colonnade),
+    "cistern": (12, 13, build_cistern),
+    "ascent": (23, 25, build_ascent),
+}
+
+
+# ---- checks -----------------------------------------------------------------
+
+def check(p):
+    """Largest reachable floor component; every doorway has to belong to it."""
+    y = 1
+    def open_(x, z):
+        return p.get(x, y, z) == "minecraft:air" and p.get(x, y + 1, z) == "minecraft:air"
+
+    left = {(x, z) for x in range(W) for z in range(W) if open_(x, z)}
+    best = set()
+    while left:
+        start = left.pop()
+        comp = {start}
+        stack = [start]
+        while stack:
+            x, z = stack.pop()
+            for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                n = (x + dx, z + dz)
+                if n in left:
+                    left.discard(n)
+                    comp.add(n)
+                    stack.append(n)
+        if len(comp) > len(best):
+            best = comp
+
+    doors = all((i, 0) in best and (i, W - 1) in best and (0, i) in best and (W - 1, i) in best
+                for a, b in DOORS for i in range(a, b + 1))
+    reached = sum(1 for (x, z) in best if z in range(3, 8) or z in range(W - 8, W - 3))
+    return len(best), doors, "ring cells reached %d" % reached
 
 
 def main():
-    name = sys.argv[1] if len(sys.argv) > 1 else "hall"
-    if name not in TILES:
-        raise SystemExit("unknown tile %s (have %s)" % (name, ", ".join(TILES)))
-    p = TILES[name]()
-    out = pathlib.Path(__file__).resolve().parent.parent / "src" / "main" / "resources" \
-        / "data" / "tolkienmobs" / "structure" / ("ch2_%s.nbt" % name)
-    ok = gb.write_tile(p.b, (0, 0, 0), (W, H, W), out, keep_air=True)
-    if not ok:
-        raise SystemExit("nothing to write")
-    from collections import Counter
-    counts = Counter(state[0] for state in p.b.values())
-    print("wrote %s  %d blocks  %.0f KB  %d kinds"
-          % (out, len(p.b), out.stat().st_size / 1024, len(counts)))
-    for n, c in counts.most_common(10):
-        print("   %-46s %d" % (n, c))
+    names = sys.argv[1:] or ["hall"]
+    if names == ["all"]:
+        names = list(TILES)
+    out_dir = (pathlib.Path(__file__).resolve().parent.parent / "src" / "main" / "resources"
+               / "data" / "tolkienmobs" / "structure")
+    for name in names:
+        if name not in TILES:
+            raise SystemExit("unknown tile %s (have %s)" % (name, ", ".join(TILES)))
+        hall_top, top, interior = TILES[name]
+        p = Plan(seed=sum((i + 1) * ord(c) for i, c in enumerate(name)), top=top)
+        shell(p, hall_top)
+        interior(p)
+        target = out_dir / ("ch2_%s.nbt" % name)
+        if not gb.write_tile(p.b, (0, 0, 0), (W, top, W), target, keep_air=True):
+            raise SystemExit("%s: nothing to write" % name)
+        cells, doors, note = check(p)
+        from collections import Counter
+        counts = Counter(state[0] for state in p.b.values())
+        print("%-10s %5d blocks  %4.0f KB  %2d kinds  floor reach %4d  doors %s  %s"
+              % (name, len(p.b), target.stat().st_size / 1024, len(counts), cells,
+                 "ok" if doors else "BROKEN", note))
+        if not doors:
+            print("   !! a doorway does not connect to the rest of the tile")
     return 0
 
 

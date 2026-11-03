@@ -117,6 +117,20 @@ north end, two rows of piers carrying the ceiling ribs, an aisle down the middle
 walls. The tiles are written to `data/tolkienmobs/structure/ch2_*.nbt` and can be placed in a test world
 with `/place template tolkienmobs:ch2_hall`.
 
+The six tiles, in the order the sheet reads:
+
+    hall        the great hall: raised seat, two rows of piers carrying the ribs, aisle, benches
+    approach    the way in: a dog-legged gallery, a barred cell block, a mustering room
+    vault       a rounded, crenellated treasury, a plinth of gold, one raised portcullis
+    colonnade   four free-standing piers, arcade screens along two walls, a well
+    cistern     a water hall: sunken basin, spring column, alcoves cut into three walls
+    ascent      a double-height hall with a seven-wide flight up to a gallery over it
+
+Each stands on its own and can be walked with `/place template tolkienmobs:ch2_<name>`. `ascent` is
+25 blocks tall against 13 for the rest, so it wants placing twelve blocks deeper. Its gallery is the
+answer to the vertical question for now: a flight inside the hall, rather than a stairwell tile that
+eats a whole square of floor plan.
+
 Symbols worth keeping from the drawings: the concentric arcs at the bottom right of one set 5 tile are a
 spiral stair, and the short parallel hatch marks are steps. Neither set draws a level change in full, so
 where the stairs between levels go is still ours to decide.
