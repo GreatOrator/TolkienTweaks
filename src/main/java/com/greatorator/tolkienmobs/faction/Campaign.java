@@ -387,6 +387,56 @@ public final class Campaign extends SavedData {
     private static final String PLANS_TITLE = "campaign.tolkienmobs.page.plans";
     private static final String PLANS_PLACE = "campaign.tolkienmobs.page.plans.place";
     private static final String PLANS_CLOSING = "campaign.tolkienmobs.page.plans.closing";
+    /**
+     * 2-5 - Key-Stone. The vault at the source of the Bruinen, which the notes name and the plans point
+     * at. It is named ground rather than a site: the ruins are on the drawing already, so the page walks
+     * to a place and the vault is standing in it.
+     */
+    private static final String KEYSTONE_TITLE = "campaign.tolkienmobs.page.keystone";
+    private static final String KEYSTONE_PLACE = "campaign.tolkienmobs.page.keystone.place";
+    private static final String KEYSTONE_CLOSING = "campaign.tolkienmobs.page.keystone.closing";
+    /**
+     * 2-6 - Last Refuge I. Gimli, met at the hold. He is a named keeper like the Elves in the valley: a
+     * man's model at a dwarf's height, a tag to find him by afterwards, and a face in the pack's own
+     * middle-earth folder under his name. He stands beside the spiral's well rather than in the hall,
+     * because the well is the way down the plans drew and this is the page that sends the player to it.
+     */
+    private static final String GIMLI = "Gimli";
+    private static final String GIMLI_TAG = "tolkienmobs:campaign_gimli";
+    private static final double GIMLI_REACH = 96.0D;
+    private static final float GIMLI_HEIGHT = 0.62F;
+    /** Where he stands, from the middle of the hold's footprint: the spiral room, beside its well. */
+    private static final int[] GIMLI_STAND = {38, 61};
+    private static final String REFUGE_TITLE = "campaign.tolkienmobs.page.refuge";
+    private static final String REFUGE_PLACE = "campaign.tolkienmobs.page.refuge.place";
+    private static final String REFUGE_CLOSING = "campaign.tolkienmobs.page.refuge.closing";
+    /** 2-7 - Last Refuge II, walked below the stair and carried back to Gloin at the camp. */
+    private static final String DUGORIM_TARGET = "tolkienmobs:entityttmdwarf";
+    private static final String DUGORIM_TITLE = "campaign.tolkienmobs.page.dugorim";
+    private static final String DUGORIM_PLACE = "campaign.tolkienmobs.page.dugorim.place";
+    private static final String DUGORIM_CLOSING = "campaign.tolkienmobs.page.dugorim.closing";
+    /** 2-8 - Steps of Evil I: the camps on the borders of Carn Dum, walked to by name. */
+    private static final String STEPS_TITLE = "campaign.tolkienmobs.page.steps";
+    private static final String STEPS_PLACE = "campaign.tolkienmobs.page.steps.place";
+    private static final String STEPS_CLOSING = "campaign.tolkienmobs.page.steps.closing";
+    /** 2-9 - Steps of Evil II: the Dark Sigil, carried back by the hand that took it. */
+    private static final String SIGIL_TARGET = "tolkienmobs:item_darksigil";
+    private static final String SIGIL_TITLE = "campaign.tolkienmobs.page.sigil";
+    private static final String SIGIL_PLACE = "campaign.tolkienmobs.page.sigil.place";
+    private static final String SIGIL_CLOSING = "campaign.tolkienmobs.page.sigil.closing";
+    /** 2-10 - Evil Tidings: the sigil carried back to the library the chapter opened in. */
+    private static final String TIDINGS_TITLE = "campaign.tolkienmobs.page.tidings";
+    private static final String TIDINGS_PLACE = "campaign.tolkienmobs.page.tidings.place";
+    private static final String TIDINGS_CLOSING = "campaign.tolkienmobs.page.tidings.closing";
+    /**
+     * 2-11 - Fire & Ice, the chapter's last page. Drugoth and the dragon's wight, fought in Carn Dum:
+     * the wight is the pack's own barrow wight, named in the page's prose the way Ulmug's goblins are,
+     * which is the one of the two answers the plan left open and needs no new asset to stand.
+     */
+    private static final String WIGHT_TARGET = "tolkienmobs:entityttmbarrow";
+    private static final String FIRE_TITLE = "campaign.tolkienmobs.page.fire";
+    private static final String FIRE_PLACE = "campaign.tolkienmobs.page.fire.place";
+    private static final String FIRE_CLOSING = "campaign.tolkienmobs.page.fire.closing";
 
     /**
      * The pages each front works through, and what they pay.
@@ -566,7 +616,40 @@ public final class Campaign extends SavedData {
                     // where the notes put the second half of the beat: not a second walk, but what the walk
                     // was for.
                     new Page(Quest.Kind.DIALOGUE, Quest.personTarget(GLOIN), 1, 30, 4,
-                            GLOIN, GLOIN, PLANS_TITLE, PLANS_PLACE, PLANS_CLOSING)
+                            GLOIN, GLOIN, PLANS_TITLE, PLANS_PLACE, PLANS_CLOSING),
+                    // 2-5 - Key-Stone. The plans name a stone, and the vault it sits in is the ruin at the
+                    // source of the Bruinen: ground the drawing already has, so the page walks to a place
+                    // rather than raising one.
+                    new Page(Quest.Kind.LOCATION, Quest.placeTarget("keystone"), 1, 60, 5,
+                            GLOIN, GLOIN, KEYSTONE_TITLE, KEYSTONE_PLACE, KEYSTONE_CLOSING),
+                    // 2-6 - Last Refuge I. Gloin sends the player to his son at the stair into the inner
+                    // keep, and Gimli is stood at the hold rather than in the hall: the well is the way
+                    // down, and this is the page that says so.
+                    new Page(Quest.Kind.DIALOGUE, Quest.personTarget(GIMLI), 1, 40, 5,
+                            GLOIN, GIMLI, REFUGE_TITLE, REFUGE_PLACE, REFUGE_CLOSING),
+                    // 2-7 - Last Refuge II. Dugorim below the stair. The pack's dwarf is the body the
+                    // notes describe, and the page names him in its prose rather than tagging one body,
+                    // the way Ulmug's fires are the goblins' and not one goblin.
+                    new Page(Quest.Kind.HUNT, DUGORIM_TARGET, 1, 80, 6,
+                            GIMLI, GLOIN, DUGORIM_TITLE, DUGORIM_PLACE, DUGORIM_CLOSING),
+                    // 2-8 - Steps of Evil I. North into Angmar, to the camps the notes put on the borders
+                    // of Carn Dum: named ground the drawing already has, like the vault.
+                    new Page(Quest.Kind.LOCATION, Quest.placeTarget("carndum"), 1, 50, 7,
+                            GLOIN, GLOIN, STEPS_TITLE, STEPS_PLACE, STEPS_CLOSING),
+                    // 2-9 - Steps of Evil II. The Dark Sigil, which the pack's own minions drop and the
+                    // notes make the proof of the second step: an item page, so what is carried back is
+                    // the thing itself rather than a count of kills.
+                    new Page(Quest.Kind.FETCH, SIGIL_TARGET, 1, 60, 7,
+                            GLOIN, GLOIN, SIGIL_TITLE, SIGIL_PLACE, SIGIL_CLOSING),
+                    // 2-10 - Evil Tidings. The sigil carried the length of the map back to the library the
+                    // chapter opened in, which is where the notes end the eve of the last fight.
+                    new Page(Quest.Kind.DIALOGUE, Quest.personTarget(ELROND), 1, 60, 8,
+                            GLOIN, ELROND, TIDINGS_TITLE, TIDINGS_PLACE, TIDINGS_CLOSING),
+                    // 2-11 - Fire & Ice, and the end of the chapter. Drugoth's dragon wight, met in Carn
+                    // Dum; the page is the front's last, and settling it leaves the line finished rather
+                    // than pointing at a page that was never written.
+                    new Page(Quest.Kind.HUNT, WIGHT_TARGET, 1, 120, 10,
+                            ELROND, ELROND, FIRE_TITLE, FIRE_PLACE, FIRE_CLOSING)
             )
     );
 
@@ -978,6 +1061,10 @@ public final class Campaign extends SavedData {
             return page.turnIn().isEmpty() ? built : built.withTurnIn(page.turnIn());
         }
         if (!sealed(row)) return null;
+        // The chapter's last page is the end of the line, not the door to the finale: the Rider, the
+        // castle and the crown are still shut by name, so a West that has just finished its eleven pages
+        // is told what is left of the war instead of being handed a front that was never written.
+        if (!FINALE_OPEN) return null;
         // The slot the campaign keeps for itself walks through its last acts: the Rider, then the
         // castle raised after him, then what is waiting in it. A herald who has nothing left of his
         // own front still has these to hand over, so the war ends at a bench like everything else.
@@ -1012,6 +1099,8 @@ public final class Campaign extends SavedData {
         }
         if (person.equalsIgnoreCase(ELLADAN)) return THORENHAD_PLACE;
         if (person.equalsIgnoreCase(BARACHEN)) return BARACHEN_PLACE;
+        // Gimli keeps the hold rather than a camp, so a page naming him is pointed at Gundabad.
+        if (person.equalsIgnoreCase(GIMLI)) return "gundabad";
         // A page may name a body at length - "Elrond Half-elven", "Barachen the scout" - and a needle
         // that gave up on the extra words would be no needle at all for that page.
         String short_ = person.toLowerCase(java.util.Locale.ROOT);
@@ -1022,6 +1111,7 @@ public final class Campaign extends SavedData {
         }
         if (short_.contains(ELLADAN.toLowerCase(java.util.Locale.ROOT))) return THORENHAD_PLACE;
         if (short_.contains(BARACHEN.toLowerCase(java.util.Locale.ROOT))) return BARACHEN_PLACE;
+        if (short_.contains(GIMLI.toLowerCase(java.util.Locale.ROOT))) return "gundabad";
         return null;
     }
 
@@ -1666,6 +1756,46 @@ public final class Campaign extends SavedData {
         // are all a dwarf's and the renderer needs to know nothing about the chapter's cast.
         AttributeInstance height = dwarf.getAttribute(Attributes.SCALE);
         if (height != null) height.setBaseValue(GLOIN_HEIGHT);
+        level.addFreshEntity(dwarf);
+    }
+
+    /**
+     * Stands Gimli at Gundabad's stair while the hold is the step the chapter is on.
+     * <p>
+     * The hold is a site rather than a place - it did not exist until the campaign built it - so he is
+     * stood from the site the player already carries, the way Gloin is stood at the camp, and found by
+     * his tag afterwards so a reloaded world keeps one dwarf at the stair instead of one every time the
+     * player looks. He is a campaign giver like the Elves, which is what lets the same right-click take
+     * the page off him and hand the next one over.
+     */
+    private static void keepGimli(ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel level)) return;
+        if (!carriesWordFor(player, GIMLI) && !holdsOrTakes(player, GIMLI)) return;
+        Sites.Site site = Sites.siteOf(player);
+        if (site == null || !Sites.GUNDABAD.equals(site.structure()) || !site.built()) return;
+        if (!site.dimension().equals(level.dimension())) return;
+        BlockPos middle = site.centre();
+        if (middle.distToCenterSqr(player.position()) > GIMLI_REACH * GIMLI_REACH) return;
+        if (!level.getEntities((Entity) null, new AABB(middle).inflate(GIMLI_REACH),
+                seen -> seen.entityTags().contains(GIMLI_TAG)).isEmpty()) return;
+        BlockPos stand = floorNear(level, middle.offset(GIMLI_STAND[0], 0, GIMLI_STAND[1]), player);
+        if (stand == null) return;
+        Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
+        if (!(entity instanceof Mob dwarf)) return;
+        dwarf.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D,
+                level.getRandom().nextFloat() * 360.0F, 0.0F);
+        dwarf.setPersistenceRequired();
+        dwarf.addTag(QuestGivers.GIVER_TAG);
+        dwarf.addTag(QuestGivers.CAMPAIGN_TAG);
+        dwarf.addTag(QuestGivers.CAMPAIGN_GIVER_TAG);
+        dwarf.addTag(Alliance.WEST.giverTag());
+        dwarf.addTag(GIMLI_TAG);
+        dwarf.setCustomName(Component.literal(GIMLI).withStyle(ChatFormatting.GOLD));
+        dwarf.setCustomNameVisible(true);
+        // His father's height, for the same reason: the pack's dwarf is a villager of the Iron Hills, and
+        // a named body that is a scaled man keeps the face the old world gave him.
+        AttributeInstance height = dwarf.getAttribute(Attributes.SCALE);
+        if (height != null) height.setBaseValue(GIMLI_HEIGHT);
         level.addFreshEntity(dwarf);
     }
 
@@ -2683,6 +2813,7 @@ public final class Campaign extends SavedData {
         keepElrond(player);
         keepLegolas(player);
         keepGloin(player);
+        keepGimli(player);
         Quest page = carriedCampaignPage(player);
         if (page == null || page.complete()) {
             RIDER_CALLED.remove(player.getUUID());

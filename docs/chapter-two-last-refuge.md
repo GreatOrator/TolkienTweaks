@@ -24,11 +24,18 @@ rather than against memory, the same way chapter one's are.
 | 35 | 2-10 | Evil Tidings | Glóin → Elrond | `DIALOGUE`, Elrond's library |
 | 36 | 2-11 | Fire & Ice | Elrond → Elrond | `HUNT`, Drugoth and the Dragon Wight, in Carn Dûm |
 
-Pages 26 to 29 are built. `2-1` hands the player from Elrond to Glóin at the camp, `2-2` is Ulmug's
+All eleven pages are built. `2-1` hands the player from Elrond to Glóin at the camp, `2-2` is Ulmug's
 fires in the Pinnath Fenui, `2-3` walks them to the hold and `2-4` brings the plans back to Glóin's
 table. Gundabad is ground the campaign pitches now, like the camp and the castle: the assembled keep
 is pinned to the Hithaeglir in `Sites` and built as the player comes up to it, so the page names the
 hold and the hold is standing when they arrive.
+
+`2-5` walks them to the key-stone's vault at the source of the Bruinen, `2-6` sends them back to the
+hold and Gimli at its stair, and `2-7` is Dugorim in the keep below it. From there the chapter leaves
+the mountains: `2-8` is the camps on the borders of Carn Dum, `2-9` is the Dark Sigil carried out of
+them, `2-10` takes it the length of the map back to Elrond's library, and `2-11` is Drugoth and the
+dragon's wight in Carn Dum. The eleventh page is the front's last: settling it finishes the West's
+line, and the finale's own pages stay shut behind their flag rather than opening on the back of it.
 
 Rewards follow the notes at the tenth the whole campaign is priced at: their 500 becomes 50 standing, 700
 becomes 70, 1200 becomes 120. The coin the notes put on each page is paid as written, in silver and bronze.
@@ -58,8 +65,9 @@ becomes 70, 1200 becomes 120. The coin the notes put on each page is paid as wri
 - **Ulmug** (goblin), **Dugorim** (Dourhand dwarf) and **Drugoth** (Gaunt-lord) are named quarries, which is
   the power the campaign already has: a tagged body of an existing kind, named, and the kill counted for
   that body alone.
-- **The Dragon Wight** is the notes' raised corpse and the pack has no such creature. It is either a named
-  wight of an existing kind or the chapter needs an asset. Open question, and the last page's only one.
+- **The Dragon Wight** is the notes' raised corpse, and the pack has no such creature. It is the
+  pack's barrow wight, named in the last page's prose the way Ulmug's fires and Dugorim are, so the
+  chapter needs no asset it does not have.
 
 ## The seam with chapter one
 

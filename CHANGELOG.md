@@ -33,6 +33,15 @@ All notable changes to this project will be documented in this file.
 - **The joiner reads the flooded floor the way the walk does.** Driving a passage between the chambers
   counted only air as open, so a chamber reached across the water looked shut and went unjoined: the
   well, behind the stair raised in it, was left as a second pocket. Water is open in both now.
+- **Chapter two runs to the end of its line.** The notes wrote eleven pages and four were built, so
+  the West stopped at the plans. The other seven are in: the key-stone's vault at the source of the
+  Bruinen, Gimli at the stair into the inner keep and Dugorim below it, the camps on the borders of
+  Carn Dum, the Dark Sigil carried out of them, Elrond reading it in his library, and Drugoth's dragon
+  wight fought in Carn Dum. With the eleventh page the front is settled, and the finale stays shut
+  behind its own flag instead of opening the moment the chapter ends.
+- **Gimli keeps the stair at Gundabad.** A named keeper like the Elves: his father's height on a
+  man's model, stood from the hold's own site beside the spiral's well while the inner keep is the
+  step in hand, and found by his tag afterwards so a reloaded world keeps one dwarf at the stair.
 - **The hold is lit from its own floors.** A camouflage glowstone every fifteen blocks, set into the
   floor course at both walk levels, carries the rooms: light fifteen, wearing the look of the stone it
   stands among, so there is no fixture to see and none for a player to knock out in the dark. The
