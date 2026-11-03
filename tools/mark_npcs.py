@@ -14,8 +14,10 @@ hole there is a hole in the floor.
     python tools/mark_npcs.py --cut run/rivendell_art --corner 555,0,-706 --sink 12 \
                               --out run/rivendell_art/rivendell.npcs
 
-The mark goes in the cell a body's feet occupy - the block a body stands in - and that cell is the spot
-reported. The `.npcs` file is one line a body: `x y z`, in blocks from the corner the cut was taken from,
+The mark goes in the cell a body's feet occupy - the block a body stands in, the air just above the
+floor - and that cell is the spot reported. Nothing is buried and nothing is dug out: the cell is air in
+the build already. A mark left inside the floor block instead is read with `--mark-in-floor`, which puts
+the body on top of it, so both habits survive. The `.npcs` file is one line a body: `x y z`, in blocks from the corner the cut was taken from,
 with the same sink the pieces are placed at, so the two tables are in one frame.
 
 A mark that is not a body's is taken out of the report with `--not`, given the coordinates the report
@@ -159,6 +161,9 @@ def main():
     # that matched the word would read an ore in the rock as a body waiting to be stood up.
     parser.add_argument("--mark", default="block_ammolite",
                         help="what marks a spot, matched on the block name")
+    # For marks put into the floor rather than into the air above it: the body stands on the marked block.
+    parser.add_argument("--mark-in-floor", dest="in_floor", action="store_true",
+                        help="the mark was placed in the floor, so the body goes on top of it")
     # `not` is a keyword, so the flag and the name it lands on are not the same word.
     parser.add_argument("--not", dest="exclude", default="",
                         help="marks that are not bodies, as x,y,z;x,y,z in the frame reported")
@@ -174,6 +179,8 @@ def main():
     else:
         marks, names = marks_in_world(args.world, args.dim, args.mark)
 
+    if args.in_floor:
+        marks = [(x, y + 1, z) for x, y, z in marks]
     if args.corner:
         corner = tuple(int(part) for part in args.corner.split(","))
         marks = [(x - corner[0], y - corner[1], z - corner[2]) for x, y, z in marks]
