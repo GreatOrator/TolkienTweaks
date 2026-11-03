@@ -55,7 +55,6 @@ INNER = (
 WIDE = 2 * EDGE
 DEEP = 3 * EDGE
 INNER_BOX = (0, 2 * EDGE, WIDE, DEEP)   # x0, z0, x1, z1
-PLANES = {}                             # the floor each inner tile was written with
 
 HERE = pathlib.Path(__file__).resolve().parent.parent
 SRC = HERE / "src" / "main" / "resources" / "data" / "tolkienmobs" / "structure"
@@ -134,18 +133,110 @@ def schematic_tile(name):
 
 # ---- the keep ------------------------------------------------------------------------------
 
-def floor_plane(tile):
-    """The course a tile is floored on: the lowest solid layer with a room standing on it.
+ROOM = 6                    # the hollow kept above the cave's floor; the hold's floor is its roof
 
-    Not the layer with the most open air over it - these schematics were cut out of a valley, so
-    their highest solid course is the grass on their own crown, ten blocks above the rooms they hold.
+
+def inner_tile(name):
+    """One example schematic read as the cave it holds, not as the valley it was cut out of.
+
+    These files are slices of a valley: ground, sky over it, and a hollow cut through the ground with
+    shafts up to the surface. Laid down as they stand, the sky wipes the tile and the ground fills it.
+    What is taken is the air that stands under a roof - the hollow - with each column's own floor
+    brought up to the stair's level, and the hold's stone everywhere else. That is what makes them
+    rooms in a fortress instead of a hole in a field.
     """
-    for y in sorted({y for (_, y, _) in tile}):
-        walked = sum(1 for (x, yy, z) in tile
-                     if yy == y and (x, y + 1, z) not in tile and (x, y + 2, z) not in tile)
-        if walked >= 32:
-            return y
-    return min(y for (_, y, _) in tile)
+    tile, (wide, high, deep) = schematic_tile(name)
+
+    roof = {}
+    for x in range(wide):
+        for z in range(deep):
+            tops = [y for y in range(high) if (x, y, z) in tile]
+            if tops:
+                roof[(x, z)] = max(tops)
+
+    cols = {}
+    for x in range(wide):
+        for z in range(deep):
+            top = roof.get((x, z), 0)
+            for y in range(top):
+                if (x, y, z) not in tile:
+                    cols.setdefault((x, z), []).append(y)
+
+    out = {}
+    for x in range(wide):
+        for z in range(deep):
+            for y in range(FLOOR):
+                out[(x, y, z)] = (FILL, ())
+            ys = sorted(cols.get((x, z), []))
+            if not ys:
+                continue
+            foot = tile.get((x, ys[0] - 1, z))
+            if foot is None:
+                continue
+            out[(x, LOWER, z)] = foot
+            for h, y in enumerate(ys[:ROOM], start=1):
+                out[(x, LOWER + h, z)] = ("minecraft:air", ())
+            for y in range(ys[0], min(ys[0] + ROOM, high)):
+                state = tile.get((x, y, z))
+                if state is not None:
+                    out[(x, LOWER + 1 + (y - ys[0]), z)] = state
+    return out
+
+
+def join_inner(blocks, cx, cz):
+    """Drive a passage between every chamber the two files leave cut off from the stair.
+
+    Both files carry the valley's own mouths, so a cave can end in a wall a block from the next one. A
+    party must not be handed an inner keep it cannot walk, so the chambers are joined the way the
+    hold's own tiles are joined: a passage three wide and four high, standing on the stair's floor.
+    """
+    x0, z0, x1, z1 = INNER_BOX
+
+    def open_(x, z):
+        return (blocks.get((x, LOWER_WALK, z), ("minecraft:air",))[0] == "minecraft:air"
+                and blocks.get((x, LOWER_WALK + 1, z), ("minecraft:air",))[0] == "minecraft:air")
+
+    def carve(x, z):
+        for y in range(LOWER_WALK, LOWER_WALK + 4):
+            blocks.pop((x, y, z), None)
+        blocks[(x, LOWER, z)] = (FILL, ())
+
+    # The files carry the valley's mouths too, so a cave can break a tile's edge and open the inner
+    # keep to the sky. The hold's stone goes back along the four edges of the box.
+    for y in range(LOWER, LOWER + ROOM + 1):
+        for x in range(x0, x1):
+            blocks[(x, y, z0)] = (FILL, ())
+            blocks[(x, y, z1 - 1)] = (FILL, ())
+        for z in range(z0, z1):
+            blocks[(x0, y, z)] = (FILL, ())
+            blocks[(x1 - 1, y, z)] = (FILL, ())
+
+    for _ in range(12):
+        left = {(x, z) for x in range(x0, x1) for z in range(z0, z1) if open_(x, z)}
+        comps = []
+        while left:
+            start = left.pop(); comp = {start}; stack = [start]
+            while stack:
+                x, z = stack.pop()
+                for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    n = (x + dx, z + dz)
+                    if n in left:
+                        left.discard(n); comp.add(n); stack.append(n)
+            comps.append(comp)
+        comps.sort(key=len, reverse=True)
+        if len(comps) <= 1:
+            return
+        main = comps[0]
+        for comp in comps[1:]:
+            ax, az = min(comp)
+            bx, bz = min(main, key=lambda c: abs(c[0] - ax) + abs(c[1] - az))
+            for x in range(min(ax, bx), max(ax, bx) + 1):
+                for dz in (-1, 0, 1):
+                    carve(x, az + dz)
+            for z in range(min(az, bz), max(az, bz) + 1):
+                for dx in (-1, 0, 1):
+                    carve(bx + dx, z)
+            main |= comp
 
 
 def assemble():
@@ -159,22 +250,11 @@ def assemble():
         for z in range(DEEP):
             for y in range(FLOOR):
                 blocks[(x, y, z)] = (FILL, ())
-    # Each tile is lifted by its own floor, not by a height written down here: the schematics were
-    # cut from a world and do not all keep their feet on the same course, so what has to line up is
-    # their floors, and the stair landing is the floor they have to line up with.
+    # Two buried rooms, taken out of the files as the hollows they are, with the hold's stone
+    # standing where the files carry hillside.
     for name, dx, dz in INNER:
-        tile, (wide, high, deep) = schematic_tile(name)
-        plane = floor_plane(tile)
-        PLANES[name] = plane
-        lift = LOWER - plane
-        # A tile's rooms are the cells it leaves empty, and those cells are stone from the fill laid
-        # above, so its box is written as air before its own blocks go in on top of it.
-        for x in range(wide):
-            for y in range(high):
-                for z in range(deep):
-                    blocks[(x + dx, y + lift, z + dz)] = ("minecraft:air", ())
-        for (x, y, z), state in tile.items():
-            blocks[(x + dx, y + lift, z + dz)] = state
+        for (x, y, z), state in inner_tile(name).items():
+            blocks[(x + dx, y, z + dz)] = state
     cx, cz, r = EDGE + 30, 2 * EDGE + 30, 4      # the stair's well, in the hold's own coords
     # The well is empty all the way down: nothing of the inner keep may stand in the stair.
     for x in range(cx - r, cx + r + 1):
@@ -191,6 +271,7 @@ def assemble():
         for (x, y, z), state in tile.items():
             blocks[(x + dx, y + lift, z + dz)] = state
     cut_stair_way(blocks, cx, cz, r)
+    join_inner(blocks, cx, cz)
     return blocks
 
 
@@ -279,8 +360,7 @@ def main():
         LOWER_WALK, len(inner), len(inner_pockets), "on the route" if landing else "CUT OFF"))
     for name, dx, dz in INNER:
         inside = sum(1 for (x, z) in inner if dx <= x < dx + EDGE and dz <= z < dz + EDGE)
-        print("   %-10s %5d of its own floor cells reached, floor cut at %d"
-              % (name, inside, PLANES.get(name, LOWER)))
+        print("   %-10s %5d of its own floor cells reached" % (name, inside))
         if inside < 200:
             short.append(name)
 

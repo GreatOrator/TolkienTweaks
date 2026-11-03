@@ -145,14 +145,18 @@ box holds deepslate under the lifted rooms and the rooms' own air above it, so t
 rooms out of the hillside and leaves the ground beneath them standing.
 
 Under the south row is the **inner keep**, cut by the same tool from two of the example schematics that
-came with the drawings - `2ml` and `2mr`, the open hall and the barred undercroft - laid at y 1 to 12,
-which is exactly where the spiral's landing is: twelve blocks under the hold's floor, on the level the
-stair delivers a player to. They are re-materialled into the hold's own stone on the way in, since what
-is taken from them is the shape and their stone brick and cobble would read as somebody else's ruin
-inside a dwarven fortress. Each is lifted by its own lowest floored course - these were cut out of a
-valley, so their highest solid course is the grass on their crown, ten blocks above the rooms they
-hold - the stair's well is carried empty through them, a door is cut in the wall of the well, and a way
-is cut west from it until it stands in a room and not in a wall.
+came with the drawings - `2ml` and `2mr`, the barred undercroft and the open hall. Those files are
+slices of a valley rather than rooms: sixty-one square and twelve deep cuts of ground, sky over it, and
+a hollow driven through the ground with shafts up to the surface. Laid down as they stand, one pours
+its sky over the floor and the other its hillside into the rooms. So what is taken from each is the air
+that stands under a roof - the hollow - with every column's own floor brought up to the stair's level
+and the hold's own stone everywhere else, which is what makes them rooms in a fortress instead of a
+hole somebody left in a field; it also flattens their staggered floors onto one, twelve blocks under
+the hold, on the level the stair delivers a player to. They are re-materialled into the hold's own
+stone on the way in, since what is taken is the shape and their brick and cobble would read as somebody
+else's ruin. The stair's well is carried empty through them, a door is cut in the wall of the well, a
+way is cut west from it until it stands in a room and not in a wall, and any chamber the files leave
+walled off is joined to the hall by a passage three wide and four high.
 
 Reading the drawings' symbols, corrected by the mapmaker: the concentric arcs in the corner of the bottom
 right tile are a **well or pool**, not a stair, and the short ruled marks with an arrowhead are **stairs,
