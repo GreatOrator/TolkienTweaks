@@ -327,14 +327,31 @@ public final class Sites extends SavedData {
         Sites store = instance(level);
         UNBUILDABLE.remove(player.getUUID());
         Site existing = SITES.get(player.getUUID());
-        // A second page to a structure the player has not reached yet is the same ground: a quest in
-        // pieces sends them on to what they are already walking toward rather than pitching a rival
-        // beside it. Once they have found one, a new page is a new place.
-        // A landmark is the exception: its ground comes from the map rather than from where the page
-        // was taken, so surveying it again is idempotent - the same spot comes back - and a site pitched
-        // before the map was asked where the landmark belonged is corrected instead of kept.
-        if (existing != null && !existing.found() && existing.structure().equals(structure)
-                && level.dimension().equals(existing.dimension()) && !CANON.containsKey(structure)) {
+        if (existing != null && level.dimension().equals(existing.dimension())) {
+            // A building that is already standing is the answer to every page that names it, however
+            // many times the page is taken. Surveying it again finds the map's own spot, and building it
+            // again raises a copy - on ground its first copy has already changed, so a copy beside it
+            // rather than over it. A player walking the campaign through a second time met a second crag
+            // at every cave.
+            if (existing.built() && existing.structure().equals(structure)) return true;
+            // A second page to a structure the player has not reached yet is the same ground: a quest in
+            // pieces sends them on to what they are already walking toward rather than pitching a rival
+            // beside it. Once they have found one, a new page is a new place.
+            // A landmark is the exception: its ground comes from the map rather than from where the page
+            // was taken, so a site pitched before the map was asked where the landmark belonged is
+            // corrected instead of kept.
+            if (!existing.found() && existing.structure().equals(structure)
+                    && !CANON.containsKey(structure)) {
+                return true;
+            }
+        }
+        // A landmark stands once in a world rather than once for each player sent to it: whoever takes a
+        // page naming it is sent to the building that is already there, and nothing is raised twice.
+        Site standing = standing(level, structure);
+        if (standing != null) {
+            SITES.put(player.getUUID(), new Site(player.getUUID(), standing.dimension(), standing.centre(),
+                    structure, keeper, true, false, standing.country()));
+            store.setDirty();
             return true;
         }
         // The drawing answers first. A structure's own biome list decides the country it may stand
@@ -361,6 +378,16 @@ public final class Sites extends SavedData {
                 keeper, false, false, ""));
         store.setDirty();
         return true;
+    }
+
+    /** A site of this structure that is already standing in this world, or null when none is. */
+    @Nullable
+    private static Site standing(ServerLevel level, String structure) {
+        for (Site site : SITES.values()) {
+            if (!site.built() || !site.structure().equals(structure)) continue;
+            if (level.dimension().equals(site.dimension())) return site;
+        }
+        return null;
     }
 
     /** Where this player's site is, or null when they have not been sent to one. */

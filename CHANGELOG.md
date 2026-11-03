@@ -510,6 +510,12 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
 
 - **A new world no longer freezes on the way in.** Angmar's biome was registered and named by the tags, but its definition was never written out: every other biome has a file under `worldgen/biome/`, and the one key with nothing behind it made the biome registry refuse to freeze, which crashed the client while a world was loading. The data generator wrote `angmar.json`, and with it the biome list in `dimension/arda.json` that Arda's biome source counts itself against - the line whose absence would have failed the dimension the same way.
 
+- **A building that is already standing is not raised a second time.** Taking the page again - a campaign
+  walked through twice, or a second player sent to the same landmark - pitched the site afresh, and the
+  survey put it back on ground its own first copy had already changed, so the crag went up beside the one
+  already there. A built site now answers every page that names it, and a landmark stands once in a world
+  rather than once for each player sent to it.
+
 ### Added
 
 - **The campaign has an ending: the Rider is everybody's page.** A front is two soldier pages now, and the Nazgûl is not the last of them - all three countries ask for him together once every line is settled, any herald hands him over, and all three pay the 200 standing between them, since he was feared by all and sent after by none of them alone. Settling him writes the war's end into the quest book's story leaf, and a herald with no page left says where the war stands instead of idling.
