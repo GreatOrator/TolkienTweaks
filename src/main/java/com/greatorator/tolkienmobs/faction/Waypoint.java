@@ -83,6 +83,18 @@ public final class Waypoint {
             if (place == null || !place.dimension().equals(level.dimension())) return null;
             return new Mark("place.tolkienmobs." + named, place.centre(), level.dimension());
         }
+
+        // A body the campaign stands on ground it pitched itself - the camp at the pass, the hold in the
+        // mountains - is named by a page that is a conversation rather than a walk, and nothing above has
+        // looked at the site for it, since the site branch is for pages whose target is a site. Read as a
+        // place only, Glóin's page had no needle at all: his camp is not a place the map already has, it
+        // is ground the campaign raises when the page is handed over. So the ground a page's body stands
+        // on is asked for before the place the map would name.
+        Sites.Site pitched = Sites.siteOf(player);
+        if (pitched != null && pitched.dimension().equals(level.dimension())
+                && pitchesFor(quest.person(), pitched.structure())) {
+            return new Mark("quest.tolkienmobs.site", pitched.centre(), level.dimension());
+        }
         Quest.Spot spot = quest.spot();
         if (spot != null) {
             if (spot.place() == null) return new Mark("hud.tolkienmobs.road.mark", spot.centre(), level.dimension());
@@ -125,6 +137,19 @@ public final class Waypoint {
         Places.Place where = Places.place(level, next.place());
         if (where == null || !where.dimension().equals(level.dimension())) return null;
         return new Mark("place.tolkienmobs." + next.place(), where.centre(), level.dimension());
+    }
+
+    /**
+     * Whether the ground the campaign has pitched is the ground a page's body is standing on: Glóin at the
+     * camp at the east end of the pass, Gimli in the hold. Matched on the names the line writes, because a
+     * page names a body in words rather than by tag, and the map has no entry for either of them.
+     */
+    private static boolean pitchesFor(@Nullable String person, String structure) {
+        if (person == null) return false;
+        String said = person.toLowerCase(java.util.Locale.ROOT);
+        if (said.contains("glóin") || said.contains("gloin")) return structure.equals(Sites.GLOIN_CAMP);
+        if (said.contains("gimli")) return structure.equals(Sites.GUNDABAD);
+        return false;
     }
 
     /** How near a crag's middle a player counts as being inside it, in blocks. */
