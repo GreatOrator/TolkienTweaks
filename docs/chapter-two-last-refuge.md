@@ -161,7 +161,14 @@ since what is taken is the shape and their brick would read as somebody else's r
 become the hold's rock. The lower storey stands flooded one course deep: the six pieces are cut from the placed build in
 the test world, where it was left flooded, and the builder then lays a single course of water over every
 walkable cell of that floor - the foot of the spiral's stair among them - so the pool is the whole storey
-rather than the patch of it the world happened to keep. The stair's well is carried empty through them, a door is cut in the
+rather than the patch of it the world happened to keep.
+
+The hold above was dressed by hand in the test world as well, and the six tiles it is drawn from are cut
+back out of that world the way the pieces are, so what was set down on the hold's own floor is in the
+build: the market of campfires, hoppers and carpet along the hall, and at its head a throne of dark stone
+and its variants - a slab seat, stair arms, wall-capped posts, a chiseled crest and red wool behind it.
+Two chiseled Angainor blocks stand one on either side of the approach, set for posted guards; a later
+stage can seat an NPC on the throne and stand the guards at those two blocks. The stair's well is carried empty through them, a door is cut in the
 wall of the well, and any chamber the files leave walled off is joined to the rest by a passage three wide
 and four high.
 

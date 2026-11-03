@@ -134,8 +134,10 @@ def join_inner(blocks, cx, cz):
     x0, z0, x1, z1 = INNER_BOX
 
     def open_(x, z):
-        return (blocks.get((x, LOWER_WALK, z), ("minecraft:air",))[0] == "minecraft:air"
-                and blocks.get((x, LOWER_WALK + 1, z), ("minecraft:air",))[0] == "minecraft:air")
+        # Water counts, as it does on the walk: the storey is flooded, and a chamber reached through
+        # water is a chamber a party can reach. Counting only air left the well behind the stair shut.
+        return (clear(blocks.get((x, LOWER_WALK, z), ("minecraft:air", ())))
+                and clear(blocks.get((x, LOWER_WALK + 1, z), ("minecraft:air", ()))))
 
     def carve(x, z):
         for y in range(LOWER_WALK, LOWER_WALK + 4):
@@ -256,10 +258,19 @@ def light_rooms(blocks):
     """
     for pos in [pos for pos, state in blocks.items() if state[0] in LIT]:
         blocks.pop(pos, None)
+    def already(x0, z0, level, reach):
+        """Whether a light already stands in this stretch of floor: pieces cut from the world bring the
+        last build's lights back with them, and a room lit twice is lit twice every time it is read."""
+        return any(blocks.get((x, level - 1, z), ("", ()))[0] == LIGHT
+                   for x in range(max(0, x0 - reach), min(WIDE, x0 + reach + 1))
+                   for z in range(max(0, z0 - reach), min(DEEP, z0 + reach + 1)))
+
     lit = []
     for level in (FLOOR, LOWER_WALK):
         for x in range(LIGHT_STEP // 2, WIDE, LIGHT_STEP):
             for z in range(LIGHT_STEP // 2, DEEP, LIGHT_STEP):
+                if already(x, z, level, LIGHT_STEP // 2):
+                    continue
                 spot = floor_beside(blocks, x, z, level, LIGHT_STEP // 2)
                 if spot and spot not in lit:
                     blocks[spot] = (LIGHT, ())
@@ -367,6 +378,9 @@ def main():
     for name in sorted({state[0] for state in blocks.values()}):
         if not known(name):
             raise SystemExit("!! %s is not in the pack's blockstates" % name)
+    above = sum(1 for (_, y, _) in blocks if y >= TOP)
+    if above:
+        raise SystemExit("!! %d cells stand above the template's own %d courses" % (above, TOP))
     if not gb.write_tile(blocks, (0, 0, 0), (WIDE, TOP, DEEP), OUT, keep_air=True):
         raise SystemExit("nothing to write")
     heights = [y for _, y, _ in blocks]

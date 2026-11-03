@@ -21,6 +21,18 @@ All notable changes to this project will be documented in this file.
   lays the course itself now, after the lanterns and chains are out of the floor: one block of water over
   every walkable cell of the lower floor, the base of the spiral's stair included, stopping one cell
   short of the outer wall so the pool cannot run out where a piece opens on its edge.
+- **The hold keeps what was set into it by hand.** The scan cut the inner keep's six pieces back out
+  of the test world but not the six tiles the hold above is drawn from, so a throne put into the hall
+  stayed in the world and out of the build. Both are cut now: a lifted tile brings back the thirteen
+  courses it carries and the spiral the whole twenty-six, written at the height it was cut at so no
+  padding of air stands over the roof, and holding back only the camo glowstone the builder sets into
+  the floors. The throne of dark stone and its two chiseled Angainor guard posts are part of Gundabad.
+- **A rescan no longer lights a room twice.** Pieces cut from the world carry the last build's camo
+  glowstone back with them, and the grid went on setting a second one beside every group of them - 63
+  extra in the storey. A stretch of floor that already holds a light is left alone now.
+- **The joiner reads the flooded floor the way the walk does.** Driving a passage between the chambers
+  counted only air as open, so a chamber reached across the water looked shut and went unjoined: the
+  well, behind the stair raised in it, was left as a second pocket. Water is open in both now.
 - **The hold is lit from its own floors.** A camouflage glowstone every fifteen blocks, set into the
   floor course at both walk levels, carries the rooms: light fifteen, wearing the look of the stone it
   stands among, so there is no fixture to see and none for a player to knock out in the dark. The

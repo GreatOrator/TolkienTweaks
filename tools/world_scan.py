@@ -137,6 +137,45 @@ def cut(blocks, anchor, out):
     return written
 
 
+def cut_hold(blocks, anchor, out):
+    """The six hold tiles as the world has them now, each in its own 61 x 26 x 61 box.
+
+    The hold above is drawn by the six tiles, so what is put into it by hand - a throne, a stall, a
+    stretch of stair rebuilt - is a change to a tile and not to the inner keep. The tiles are cut back
+    out of the world the same way the pieces are, from the lift each one was laid at.
+
+    Two things are left out. The camo glowstone the builder sets into the hold's own floors is the
+    builder's, and baking it into the tile would only make it stand a cell away from where it is laid
+    again. And the spiral tile is cut only where the builder reads it, above its own floor or inside the
+    stair's well, so the rooms of the inner keep under the rest of it are not read as tile art.
+    """
+    out.mkdir(parents=True, exist_ok=True)
+    written = []
+    for name, dx, dz in gk.LAYOUT:
+        lift = 0 if name == "spiral" else gk.LIFT
+        low = (anchor[0] + dx, anchor[1] + lift, anchor[2] + dz)
+        path = out / ("ch2_%s.nbt" % name)
+        # A lifted tile carries thirteen courses - its floor and the room over it - laid thirteen up;
+        # the spiral carries the whole twenty-six from the floor of its own stair. Cutting deeper would
+        # take the hillside standing over the hold's roof and write it into the build.
+        courses = gk.TOP if name == "spiral" else gk.LIFT
+        tile = {}
+        for y in range(courses):
+            for z in range(gk.EDGE):
+                for x in range(gk.EDGE):
+                    if name == "spiral" and y < gk.LIFT and (abs(x - 30) > 6 or abs(z - 30) > 6):
+                        continue
+                    state = blocks.get((low[0] + x, low[1] + y, low[2] + z))
+                    if state is None or state[0] == gk.LIGHT:
+                        continue
+                    tile[(x, y, z)] = state
+        # Written at the height it was cut at: a tile padded out to the full twenty-six courses is
+        # padding of air, and air laid above a lifted tile stands over the hold's roof.
+        if gb.write_tile(tile, (0, 0, 0), (gk.EDGE, courses, gk.EDGE), path, keep_air=True):
+            written.append((name, len(tile), path.stat().st_size / 1024, tile))
+    return written
+
+
 def against(pieces, folder):
     """Each cut piece against the file the keep was built from, after the same materiallling."""
     for name, cells, _, piece in pieces:
@@ -164,6 +203,7 @@ def main():
     parser.add_argument("--world", required=True, help="saved world folder (the one holding level.dat)")
     parser.add_argument("--dim", default="", help="dimension folder; blank for the overworld")
     parser.add_argument("--cut", help="folder to write the six inner keep pieces into")
+    parser.add_argument("--cut-hold", help="folder to write the six hold tiles into")
     args = parser.parse_args()
 
     names, chunks, files, low, high = scan(args.world, args.dim)
@@ -193,6 +233,11 @@ def main():
             print("  wrote %-4s %6d cells  %5.0f KB" % (name, cells, kb))
         print("  against the files it was built from:")
         against(pieces, gk.STRUCTS)
+
+    if args.cut_hold:
+        tiles = cut_hold(blocks, anchor, pathlib.Path(args.cut_hold))
+        for name, cells, kb, _ in tiles:
+            print("  wrote ch2_%-10s %6d cells  %5.0f KB" % (name, cells, kb))
 
 
 if __name__ == "__main__":
