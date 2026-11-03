@@ -59,6 +59,22 @@ class LongArray(list):
     pass
 
 
+class NbtByte(int):
+    """A byte tag, kept distinct from an int so a list of them keeps its width."""
+
+
+class NbtShort(int):
+    pass
+
+
+class NbtLong(int):
+    pass
+
+
+class NbtDouble(float):
+    pass
+
+
 class NbtReader:
     def __init__(self, data):
         self.data = data
@@ -94,15 +110,15 @@ class NbtReader:
         if kind == 1:
             value = struct.unpack_from(">b", self.data, self.at)[0]
             self.at += 1
-            return value
+            return NbtByte(value)
         if kind == 2:
             value = struct.unpack_from(">h", self.data, self.at)[0]
             self.at += 2
-            return value
+            return NbtShort(value)
         if kind == 3:
             return self.i4()
         if kind == 4:
-            return self.i8()
+            return NbtLong(self.i8())
         if kind == 5:
             value = struct.unpack_from(">f", self.data, self.at)[0]
             self.at += 4
@@ -110,7 +126,7 @@ class NbtReader:
         if kind == 6:
             value = struct.unpack_from(">d", self.data, self.at)[0]
             self.at += 8
-            return value
+            return NbtDouble(value)
         if kind == 7:
             length = self.i4()
             value = self.data[self.at:self.at + length]
@@ -148,7 +164,8 @@ def read_nbt(data):
     return reader.tag(kind)
 
 
-NBT_TYPE = {dict: 10, NbtList: 9, IntArray: 11, LongArray: 12, str: 8, bytes: 7, int: 3, float: 5}
+NBT_TYPE = {dict: 10, NbtList: 9, IntArray: 11, LongArray: 12, str: 8, bytes: 7, int: 3, float: 5,
+            NbtByte: 1, NbtShort: 2, NbtLong: 4, NbtDouble: 6}
 
 
 def write_payload(value):
@@ -167,6 +184,14 @@ def write_payload(value):
         return struct.pack(">i", len(value)) + b"".join(struct.pack(">i", x) for x in value)
     if isinstance(value, LongArray):
         return struct.pack(">i", len(value)) + b"".join(struct.pack(">q", x) for x in value)
+    if isinstance(value, NbtByte):
+        return struct.pack(">b", value)
+    if isinstance(value, NbtShort):
+        return struct.pack(">h", value)
+    if isinstance(value, NbtLong):
+        return struct.pack(">q", value)
+    if isinstance(value, NbtDouble):
+        return struct.pack(">d", value)
     if isinstance(value, str):
         encoded = value.encode("utf-8")
         return struct.pack(">H", len(encoded)) + encoded
@@ -324,7 +349,7 @@ def write_tile(blocks, origin, size, path, keep_air):
         "palette": NbtList(10, palette),
         "blocks": NbtList(10, listed),
         "entities": NbtList(10, []),
-        "DataVersion": 3955,
+        "DataVersion": 4790,  # the version this pack's own structures are saved at
     }
     path.write_bytes(write_nbt(root))
     return True
