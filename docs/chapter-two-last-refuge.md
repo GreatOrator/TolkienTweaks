@@ -65,3 +65,32 @@ the only one in the campaign.
   rather than in this one.
 - Whether the notes' **Pinnath Fenui** is named ground or a direction: the notes describe it as the hills
   north-east of the camp, which a compass bearing already covers.
+
+## Source: the old world's Gundabad
+
+The fortress chapter two needs still stands in the upgraded backup of the old world, and this is where to find
+it again:
+
+    G:\GitHub\MC1_21_x\TolkienTweaks\run\backups\2026-11-01_10-39-03_Arda\Arda     (overworld, region/)
+    corners  14473,9,2275  ->  14701,9,2546     both taken on the lowest level of the build
+
+Measured with `tools/grab_build.py`. The box is 229 x 272 and reaches from y 0 to the build limit, and it holds
+7.9M blocks - of which 6.7M are the mountain itself: stone 6.66M, andesite 246k, diorite 255k, granite 247k,
+dirt 203k. Only 195k blocks are built. So Gundabad is not a structure standing on ground; it is rooms cut into
+a mountain, with a stair two blocks wide winding up the outside of it above y 50. The mountain is not portable
+and is not worth carrying: what the chapter uses are the rooms at its feet.
+
+| part | box | size | built blocks | tiles |
+| --- | --- | --- | --- | --- |
+| forge (anvils at y 3, nether brick) | 14570,0,2276 - 14604,16,2312 | 35x17x37 | 771 | 1 |
+| treasury (emerald shelf at y 13) | 14590,4,2330 - 14620,20,2362 | 31x17x33 | 274 | 1 |
+| goblin works (netherrack, hoppers) | 14596,24,2484 - 14644,52,2532 | 49x29x49 | 9,153 | 4 |
+| obsidian ruin (cobble, fern) | 14528,20,2432 - 14576,44,2480 | 49x25x49 | 992 | 4 |
+
+Cut with `--only` naming the masonry and the fixtures, so the hillside around a room becomes air and the room's
+own walls, floor, stairs and shelf come across. The treasury is written and read back clean: one tile, 31 x 17
+x 33, 274 solid blocks in a 41 KB file.
+
+The old build's fixtures are worth knowing because they say what each room was for: 24 emerald blocks in a row
+at y 13 (a treasury shelf), 14 anvils and nether brick slabs at y 3 (a forge), 32 hoppers and 480 gray
+terracotta at y 39-50 (the goblins' works), 63 obsidian and 171 coal blocks at y 25-39 (a burnt-out place).

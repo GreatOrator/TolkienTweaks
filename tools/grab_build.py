@@ -21,6 +21,9 @@ build's own north-west bottom corner:
 `Sites` places a template with its corner at the chosen spot, so a parts table is all a multi-piece
 build needs: the offsets are the same kind the valley's own eleven pieces are laid by.
 
+A build standing inside a mountain brings the mountain with it, so `--only` keeps just the blocks named
+and turns everything else into air: the rooms come across, the hillside they were cut into does not.
+
 Block entities (chest contents, sign text, spawners) are not carried: a palette of block states is
 what a structure file is made of. Everything else - every block, every state, every air gap inside
 the build's box - is kept, because air in a template is what carves a fortress out of a hillside.
@@ -198,15 +201,22 @@ def blocks_from_template(root):
     return blocks, tuple(root["size"])
 
 
-def read_region(path):
-    """Every chunk in one region file, as (chunkX, chunkZ, root)."""
+def read_region(path, window=None):
+    """Every chunk in one region file, or only those touching a window, as (chunkX, chunkZ, root)."""
     data = path.read_bytes()
     if len(data) < 8192:
         return
+    region_x, region_z = int(path.name.split(".")[1]), int(path.name.split(".")[2])
     for index in range(1024):
         header = struct.unpack_from(">I", data, index * 4)[0]
         if header == 0:
             continue
+        local_x, local_z = index % 32, index // 32
+        if window:
+            if ((region_x << 5) + local_x) * 16 + 15 < window[0] or ((region_x << 5) + local_x) * 16 > window[1]:
+                continue
+            if ((region_z << 5) + local_z) * 16 + 15 < window[2] or ((region_z << 5) + local_z) * 16 > window[3]:
+                continue
         sector = header >> 8
         start = sector * 4096
         if start + 5 > len(data):
@@ -236,21 +246,20 @@ def blocks_from_world(world, dimension, low, high):
     if not region_dir.is_dir():
         raise SystemExit("no region folder at %s" % region_dir)
 
-    first_x, first_z = low[0] >> 4, low[2] >> 4
-    last_x, last_z = high[0] >> 4, high[2] >> 4
-    blocks = {}
-    chunks = 0
-    for chunk_x in range(first_x, last_x + 1):
-        for chunk_z in range(first_z, last_z + 1):
-            path = region_dir / ("r.%d.%d.mca" % (chunk_x >> 5, chunk_z >> 5))
-            if not path.exists():
-                continue
-            chunks += 1
-    if chunks == 0:
+    paths = []
+    for region_x in range((low[0] >> 4) >> 5, ((high[0] >> 4) >> 5) + 1):
+        for region_z in range((low[2] >> 4) >> 5, ((high[2] >> 4) >> 5) + 1):
+            path = region_dir / ("r.%d.%d.mca" % (region_x, region_z))
+            if path.exists():
+                paths.append(path)
+    if not paths:
         raise SystemExit("no region files cover that box")
 
-    for region_path in sorted(region_dir.glob("r.*.*.mca")):
-        for local_x, local_z, chunk in read_region(region_path):
+    window = (low[0], high[0], low[2], high[2])
+    blocks = {}
+    chunks = 0
+    for region_path in paths:
+        for local_x, local_z, chunk in read_region(region_path, window):
             base_x = chunk.get("xPos", (int(region_path.name.split(".")[1]) << 5) + local_x) * 16
             base_z = chunk.get("zPos", (int(region_path.name.split(".")[2]) << 5) + local_z) * 16
             if base_x + 15 < low[0] or base_x > high[0]:
@@ -348,6 +357,7 @@ def main():
     parser.add_argument("--out", required=True, help="folder to write the pieces into")
     parser.add_argument("--name", required=True, help="the pieces are named after this")
     parser.add_argument("--no-air", action="store_true", help="drop air, so the build carves nothing")
+    parser.add_argument("--only", help="keep only these block names (comma separated); the rest becomes air")
     parser.add_argument("--report", action="store_true", help="count blocks and stop, writing nothing")
     parser.add_argument("--pack", default="src/main/resources/assets/tolkienmobs/blockstates",
                         help="the pack's own blockstates, to report names the mod does not have")
@@ -366,6 +376,12 @@ def main():
         blocks, size, low = blocks_from_world(args.world, args.dim, low, high)
     else:
         parser.error("give --nbt, or --world with --from and --to")
+
+    if args.only:
+        allowed = {name.strip() for name in args.only.split(",") if name.strip()}
+        blocks = {pos: state for pos, state in blocks.items() if state[0] in allowed}
+        if not blocks:
+            raise SystemExit("--only matched no blocks")
 
     counts = Counter(state[0] for state in blocks.values())
     tiles = ((size[0] + TILE - 1) // TILE, (size[1] + TILE - 1) // TILE, (size[2] + TILE - 1) // TILE)
