@@ -37,7 +37,9 @@ becomes 70, 1200 becomes 120. The coin the notes put on each page is paid as wri
   sheet's own two-across, three-down arrangement, with every room on one floor. The old world's build is
   not carried, for the reasons in the last section, and the pack's `boss_castle` is the finale's and is
   not spent twice. The notes' outer fortress and its vault are both in the keep, and the inner keep is the level below
-  it, reached by the spiral's stair.
+  it, reached by the spiral's stair. Set 4, the cave sheet, is cut by
+  `tools/cave_tile.py` into two 61-square cave tiles, `ch2_cave_a` and `ch2_cave_b`, held for a cave
+  dungeon the chapter has no page for yet; nothing places them.
 - **The key-stone's vault** — a place (`keystone`) in the Trollshaws, at the source of the Bruinen: ruins
   with a vault still in them, and bears in the ruins.
 - **Carn Dûm** — a place (`carndum`) in Angmar, which the drawing already has, and where the campaign's

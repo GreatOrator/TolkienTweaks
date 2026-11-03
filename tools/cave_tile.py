@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
-"""Carve a set 4 (cave) geomorph panel into a dwarven tile for the inner keep.
+"""Carve a set 4 (cave) geomorph panel into a tile of its own.
 
 Set 5 gave the hold its six rooms, authored as squared masonry from the drawings because a hand-drawn
-wall is thinner than a block. Set 4 is the cave dungeon, and the inner keep is the level where the hold
-stops being squared: its panels are taken as drawn - rock where the sheet has ink, open where it does
-not - and given the same 61-square box and the same quarter-point doorways as the hold above, so the
-stair's landing opens into them and the two tiles join each other.
+wall is thinner than a block. Set 4 is the cave sheet: its panels are taken as drawn - rock where the
+sheet has ink, open where it does not - and given the hold's 61-square box and the same quarter-point
+doorways, so a cave tile joins its neighbours the way the hold's rooms do.
 
-This is the one place in the hold that is a pixel-for-block build, and deliberately: a cave is rubble
-and outcrop, and a cave drawn in squared masonry is a ruin, not a cave.
+This is the one pixel-for-block build in the chapter, and deliberately: a cave is rubble and outcrop,
+and a cave drawn in squared masonry is a ruin, not a cave.
 
     python cave_tile.py a b        panels r1c1 .. r3c2, written as ch2_cave_a, ch2_cave_b
 """
@@ -241,7 +240,7 @@ def main():
     out_dir = (pathlib.Path(__file__).resolve().parent.parent / "src" / "main" / "resources"
                / "data" / "tolkienmobs" / "structure")
     failed = False
-    for name, key in zip(("inner_a", "inner_b"), keys):
+    for name, key in zip(("cave_a", "cave_b"), keys):
         if key not in masks:
             raise SystemExit("no panel called %s (have %s)" % (key, ", ".join(masks)))
         rooms, main = open_rooms(masks[key])
