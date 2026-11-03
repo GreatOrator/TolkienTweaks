@@ -124,14 +124,16 @@ The six tiles, in the order the sheet reads:
     vault       a rounded, crenellated treasury, a plinth of gold, one raised portcullis
     colonnade   four free-standing piers, arcade screens along two walls, a well
     cistern     a water hall: sunken basin, spring column, alcoves cut into three walls
-    ascent      a double-height hall with a seven-wide flight up to a gallery over it
+    spiral      the way down: a helical stair in the middle of its room, thirteen deep
 
-Each stands on its own and can be walked with `/place template tolkienmobs:ch2_<name>`. `ascent` is
-25 blocks tall against 13 for the rest, so it wants placing twelve blocks deeper. Its gallery is the
-answer to the vertical question for now: a flight inside the hall, rather than a stairwell tile that
-eats a whole square of floor plan.
+Each stands on its own and can be walked with `/place template tolkienmobs:ch2_<name>`. `spiral` is the
+one tile that leaves its own floor: it is 26 blocks tall with the hall floor thirteen blocks up, so it
+wants placing thirteen blocks lower than its neighbours, and the stair arrives at the level below. A
+helical stair about a newel in the middle of a room keeps every tile's floor plan whole - the stair is
+the room's centrepiece instead of taking a square away from it.
 
-Symbols worth keeping from the drawings: the concentric arcs at the bottom right of one set 5 tile are a
-spiral stair, and the short parallel hatch marks are steps. Neither set draws a level change in full, so
-where the stairs between levels go is still ours to decide.
+Reading the drawings' symbols, corrected by the mapmaker: the concentric arcs in the corner of the bottom
+right tile are a **well or pool**, not a stair, and the short ruled marks with an arrowhead are **stairs,
+pointing the way they run**. So the sets do draw level changes, and the arrows are the authority on which
+way the steps go.
 

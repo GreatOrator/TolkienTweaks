@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The way down is a helical stair in the middle of the room.** The lower-right tile now cuts thirteen
+  blocks below its own floor and winds one tread per block about a newel, so the stair is the room's
+  centrepiece and no tile gives up its floor plan for a stairwell. The old gallery flight is gone, and the
+  reading of the drawing's symbols is corrected with it - the concentric arcs are a well or pool, and the
+  ruled marks with arrowheads are stairs, pointing the way they run.
 - **The dwarven hold is built from the drawings, not from the example tiles.** The geomorph
   sheets are split and read into a 61 by 61 plan by `tools/geom_extract.py`, and
   `tools/fortress_build.py` raises the first tile from that plan in Angainor masonry: a hall

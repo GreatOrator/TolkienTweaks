@@ -16,7 +16,8 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import grab_build as gb
 
 W = 61                      # tile edge, blocks
-H_MAX = 25                  # tallest piece we write
+H_MAX = 26                  # tallest piece we write
+H_DEEP = 20                 # how far below a tile's floor it may cut while building
 DOORS = ((13, 17), (43, 47))
 IN = (11, 49)               # interior of the hall behind the gallery ring
 RING = (3, 7)               # gallery ring, five wide
@@ -54,11 +55,11 @@ class Plan:
         return self.b.get((x, y, z), ("minecraft:air", ()))[0]
 
     def put(self, x, y, z, name, props=()):
-        if 0 <= x < W and 0 <= y < self.top and 0 <= z < W:
+        if 0 <= x < W and -H_DEEP <= y < self.top and 0 <= z < W:
             self.b[(x, y, z)] = (name, tuple(props))
 
     def air(self, x, y, z):
-        if 0 <= x < W and 0 <= y < self.top and 0 <= z < W:
+        if 0 <= x < W and -H_DEEP <= y < self.top and 0 <= z < W:
             self.b[(x, y, z)] = ("minecraft:air", ())
 
     def fill(self, x0, y0, z0, x1, y1, z1, name, props=()):
@@ -78,6 +79,11 @@ class Plan:
 
     def slab(self, x, y, z, name=SLAB, top=False):
         self.put(x, y, z, name, (("type", "top" if top else "bottom"),))
+
+    def shift(self, dy):
+        """Move the piece up, so a tile dug below its floor still writes from 0."""
+        self.b = {(x, y + dy, z): st for (x, y, z), st in self.b.items()}
+        self.top += dy
 
     def post(self, x, y, z, name=PARAPET):
         self.put(x, y, z, name, (("up", "true"), ("east", "low"), ("north", "low"),
@@ -459,76 +465,64 @@ def build_cistern(p):
     return 12, 12
 
 
-def build_ascent(p):
-    """Set 5, bottom right: two levels - a flight up to a gallery over the hall."""
-    top = 25
-    hall_top = 23
-    # the flight, seven wide, rising one block per block from the south-west
-    for k in range(12):
-        z = 46 - k
-        y = 1 + k
-        for x in range(12, 19):
-            p.stairs(x, y, z, "north")
-            if y > 1:
-                p.fill(x, 1, z, x, y - 1, z, WALL)
-    # gallery decks: west strip and north strip, one level above the flight top
-    deck = 12
-    p.fill(11, deck, 11, 18, deck, 34, WALL)
-    for x in range(19, 50):
-        p.fill(x, deck, 11, x, deck, 18, WALL)
-    for x in range(11, 19):
-        for z in range(11, 35):
-            p.put(x, deck, z, FLOOR if (x + z) % 3 else FLOOR_ALT)
-    for x in range(19, 50):
-        for z in range(11, 19):
-            p.put(x, deck, z, FLOOR if (x + z) % 3 else FLOOR_ALT)
-    # parapets on the open edges
-    for z in range(19, 35):
-        p.post(19, deck + 1, z)
-        if z % 5 == 0:
-            p.fill(19, deck + 1, z, 19, deck + 2, z, CHISEL)
-    for x in range(19, 50):
-        p.post(x, deck + 1, 19)
-        if x % 5 == 0:
-            p.fill(x, deck + 1, 19, x, deck + 2, 19, CHISEL)
-    # a gap in the parapet where the flight arrives
-    for z in range(34, 47):
-        for x in range(12, 19):
-            if p.get(x, deck + 1, z) in (PARAPET, CHISEL):
-                p.air(x, deck + 1, z)
-    # under-gallery piers
-    for z in (16, 26, 33):
-        p.fill(17, 1, z, 18, 11, z, WALL)
-    for x in (26, 36, 46):
-        p.fill(x, 1, 17, x, 11, 17, WALL)
-    # lanterns on the gallery and over the hall floor
-    for z in range(14, 34, 6):
-        p.put(15, deck + 3, z, CHAIN)
-        p.put(15, deck + 2, z, LAMP)
-    for x in (28, 38):
-        p.put(x, 22, 24, CHAIN)
-        p.put(x, 21, 24, LAMP)
-    rubble(p, [(44, 40), (24, 40), (14, 24)])
+def build_spiral(p):
+    """Set 5, bottom right: the way down - a helical stair in the middle of the room."""
+    cx = cz = 30
+    r = 4                       # the opening is 9x9, so the stair turns inside the room
+    deep = 13                   # hall floor at 0, landing twelve blocks below it
+    for x in range(cx - r - 1, cx + r + 2):
+        for z in range(cz - r - 1, cz + r + 2):
+            if max(abs(x - cx), abs(z - cz)) == r + 1:
+                p.fill(x, -deep, z, x, 0, z, WALL)
+    p.fill(cx - 1, -deep, cz - 1, cx + 1, 0, cz + 1, WALL)
+    p.clear(cx - r, 0, cz - r, cx + r, 0, cz + r)
+    # one tread per block round the newel, one block down each
+    a = 3
+    ring = ([(x, cz - a) for x in range(cx - a, cx + a + 1)]
+            + [(cx + a, z) for z in range(cz - a + 1, cz + a + 1)]
+            + [(x, cz + a) for x in range(cx + a - 1, cx - a - 1, -1)]
+            + [(cx - a, z) for z in range(cz + a - 1, cz - a, -1)])
+    treads = ring[:12]
+    for i, (x, z) in enumerate(treads):
+        y = -i
+        hx, hz = ring[i - 1] if i else (cx - a, cz - a + 1)
+        dx, dz = hx - x, hz - z
+        facing = ("north" if dz < 0 else "south" if dz > 0
+                  else "east" if dx > 0 else "west")
+        p.stairs(x, y, z, facing)
+        p.fill(x, -deep, z, x, y - 1, z, WALL)
+    # the foot: a small landing with light in it
+    p.fill(cx - 3, -deep + 1, cz - 3, cx + 3, -deep + 1, cz + 3, FLOOR_ALT)
+    p.put(cx, -11, cz + 2, LAMP)
+    p.put(cx + 2, -11, cz - 2, LAMP)
+    # a parapet round the opening, open on the north-west where the stair starts
+    for x in range(cx - r - 1, cx + r + 2):
+        for z in range(cz - r - 1, cz + r + 2):
+            if max(abs(x - cx), abs(z - cz)) == r + 1 and not (x <= cx - r and z <= cz - r):
+                p.post(x, 1, z)
+    p.put(cx, 1, cz, CHISEL)
+    p.put(cx, 2, cz, LAMP)
+    rubble(p, [(cx - 9, cz + 9), (cx + 9, cz + 9)])
     lamps_ring(p)
-    return hall_top, top
+    p.shift(deep)
+    return 12, 26, deep + 1
 
 
-# name -> (hall ceiling height, piece height, interior)
 TILES = {
-    "hall": (12, 13, build_hall),
-    "approach": (12, 13, build_approach),
-    "vault": (12, 13, build_vault),
-    "colonnade": (12, 13, build_colonnade),
-    "cistern": (12, 13, build_cistern),
-    "ascent": (23, 25, build_ascent),
+    "hall": (12, 13, 1, build_hall),
+    "approach": (12, 13, 1, build_approach),
+    "vault": (12, 13, 1, build_vault),
+    "colonnade": (12, 13, 1, build_colonnade),
+    "cistern": (12, 13, 1, build_cistern),
+    "spiral": (12, 26, 14, build_spiral),
 }
 
 
 # ---- checks -----------------------------------------------------------------
 
-def check(p):
+def check(p, floor_y=1):
     """Largest reachable floor component; every doorway has to belong to it."""
-    y = 1
+    y = floor_y
     def open_(x, z):
         return p.get(x, y, z) == "minecraft:air" and p.get(x, y + 1, z) == "minecraft:air"
 
@@ -564,14 +558,14 @@ def main():
     for name in names:
         if name not in TILES:
             raise SystemExit("unknown tile %s (have %s)" % (name, ", ".join(TILES)))
-        hall_top, top, interior = TILES[name]
+        hall_top, top, floor_y, interior = TILES[name]
         p = Plan(seed=sum((i + 1) * ord(c) for i, c in enumerate(name)), top=top)
         shell(p, hall_top)
         interior(p)
         target = out_dir / ("ch2_%s.nbt" % name)
         if not gb.write_tile(p.b, (0, 0, 0), (W, top, W), target, keep_air=True):
             raise SystemExit("%s: nothing to write" % name)
-        cells, doors, note = check(p)
+        cells, doors, note = check(p, floor_y)
         from collections import Counter
         counts = Counter(state[0] for state in p.b.values())
         print("%-10s %5d blocks  %4.0f KB  %2d kinds  floor reach %4d  doors %s  %s"
