@@ -265,6 +265,9 @@ def blocks_from_world(world, dimension, low, high):
     root = pathlib.Path(world)
     if dimension in ("", "overworld", "minecraft:overworld"):
         region_dir = root / "region"
+        if not region_dir.is_dir():
+            # 26.1 moved the overworld in with the other dimensions.
+            region_dir = root / "dimensions" / "minecraft" / "overworld" / "region"
     else:
         namespace, _, name = dimension.partition(":")
         region_dir = root / "dimensions" / (namespace or "minecraft") / name / "region"
@@ -379,14 +382,16 @@ def main():
     parser.add_argument("--from", dest="low", help="north-west bottom corner, x,y,z")
     parser.add_argument("--to", dest="high", help="south-east top corner, x,y,z")
     parser.add_argument("--nbt", help="a structure file to re-cut instead of a world")
-    parser.add_argument("--out", required=True, help="folder to write the pieces into")
-    parser.add_argument("--name", required=True, help="the pieces are named after this")
+    parser.add_argument("--out", help="folder to write the pieces into")
+    parser.add_argument("--name", help="the pieces are named after this")
     parser.add_argument("--no-air", action="store_true", help="drop air, so the build carves nothing")
     parser.add_argument("--only", help="keep only these block names (comma separated); the rest becomes air")
     parser.add_argument("--report", action="store_true", help="count blocks and stop, writing nothing")
     parser.add_argument("--pack", default="src/main/resources/assets/tolkienmobs/blockstates",
                         help="the pack's own blockstates, to report names the mod does not have")
     args = parser.parse_args()
+    if not args.report and (not args.out or not args.name):
+        parser.error("--out and --name are needed to write pieces")
 
     if args.nbt:
         root = read_nbt(pathlib.Path(args.nbt).read_bytes())

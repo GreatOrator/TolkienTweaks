@@ -94,3 +94,23 @@ x 33, 274 solid blocks in a 41 KB file.
 The old build's fixtures are worth knowing because they say what each room was for: 24 emerald blocks in a row
 at y 13 (a treasury shelf), 14 anvils and nether brick slabs at y 3 (a forge), 32 hoppers and 480 gray
 terracotta at y 39-50 (the goblins' works), 63 obsidian and 171 coal blocks at y 25-39 (a burnt-out place).
+
+### The converted save
+
+    G:\GitHub\MC1_21_x\TolkienTweaks\run\saves\Arda    (26.1.2, DataVersion 4790)
+
+Reading it gives the same build to the block: 195,107 built blocks, 44 distinct names, and the emerald shelf,
+the anvil row, the hoppers and the obsidian all at the same coordinates. The only difference is 12 extra lava
+blocks, from lava that kept running while the save sat. Conversion cost nothing and bought nothing - for
+extraction the two saves are the same world, so the 1.21.1 backup is the one to read.
+
+One thing did change with the version: 26.1.2 no longer keeps the overworld in `region/`. It lives in
+`dimensions/minecraft/overworld/region/`, and the reader now falls back to that when `region/` is missing.
+
+### Gundabad is underground
+
+Dwarven strongholds - Gundabad, Khazad-dum - were halls cut into rock, not castles on a hill. That reframes
+what is worth carrying out of the old world. A room shell standing in air belongs on open ground; for Gundabad
+the useful unit is the opposite: a plug of rock with the halls already inside it. Placed into a hillside its
+stone merges and its air carves the passage, which is how the build worked in the first place - and it is why
+the mountain inside the box is not waste. Only the tile budget limits that: 48 cubes a piece.
