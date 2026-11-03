@@ -30,3 +30,6 @@ repo
 # the Middle-earth map the regions are read from. Not part of the mod, never committed.
 /CustomSkins/
 /middleearth.jpeg
+
+# Python bytecode from tools/
+__pycache__/
