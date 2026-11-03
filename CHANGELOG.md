@@ -16,6 +16,10 @@ All notable changes to this project will be documented in this file.
   and takes the hillside under them away at the same time. Both directions are written now: deepslate
   through the course under the five lifted rooms, and each tile's own air over it - the schematics'
   rooms were being poured full of that stone until their boxes were written as air first.
+- **A placed build can be read back out of a saved world.** `tools/world_scan.py` finds the corner a
+  template went down at, compares the world with the template block by block, and cuts the inner keep
+  pieces out again, so a build decorated in the test world can be brought back into the pack instead of
+  being rebuilt by hand.
 - **The inner keep is all six of the example structures.** `2tl` and `2tr`, `2ml` and `2mr`, `2bl` and
   `2br` go down in the drawing's own two-across, three-down grid, laid whole from the stair's floor up
   with their stone re-materialled and their soil read as the hold's rock. Each carries three floors and
