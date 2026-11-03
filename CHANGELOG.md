@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **A structure file cannot leave a cell alone, so the keep writes stone instead.** Written with air
+  dropped, the keep went into the file with no rooms in it at all - 151,055 cells against a box of
+  580,476 - because a cell the writer skips is a cell the game reads as air, which hollows the rooms
+  and takes the hillside under them away at the same time. Both directions are written now: deepslate
+  through the course under the five lifted rooms, and each tile's own air over it - the schematics'
+  rooms were being poured full of that stone until their boxes were written as air first.
 - **The inner keep is a level under the hold, reached by the spiral.** The chapter's notes ask for a
   fortress inside the fortress and no drawing gives ground for one, so the ground is two of the example
   schematics that came with the drawings - the open hall and the barred undercroft - laid twelve blocks
@@ -16,9 +22,10 @@ All notable changes to this project will be documented in this file.
 - **The dwarven tiles are Gundabad.** The six geomorph tiles are assembled by `tools/gundabad_keep.py`
   into one keep, `key_structures/gundabad.nbt` - the sheet's own arrangement, two panels across and three
   down, 122 by 183 by 26 - with the five surface rooms lifted thirteen blocks so every room and the stair
-  down are walked on one floor. The file carries the tiles' own air and nothing else, so the keep cuts its
-  rooms out of the hillside instead of carving the ground beneath them, and the chapter's open question
-  about which build stands for the fortress is answered with ground the mapmaker drew.
+  down are walked on one floor. The file writes its whole box, stone under the lifted rooms and the
+  rooms' own air above it, so the keep cuts its rooms out of the hillside without taking the ground
+  under them with it, and the chapter's open question about which build stands for the fortress is
+  answered with ground the mapmaker drew.
 - **The way down is a helical stair in the middle of the room.** The lower-right tile now cuts thirteen
   blocks below its own floor and winds one tread per block about a newel, so the stair is the room's
   centrepiece and no tile gives up its floor plan for a stairwell. The old gallery flight is gone, and the

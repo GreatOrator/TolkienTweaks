@@ -137,10 +137,10 @@ The six are also assembled into the keep itself, by `tools/gundabad_keep.py`: th
 arrangement - approach and vault across the north, hall and colonnade in the middle, cistern and spiral
 across the south - written whole to `key_structures/gundabad.nbt` at 122 by 183 by 26. The spiral is the
 one tile that leaves its own floor, so the other five are lifted thirteen blocks to meet it and every
-room is walked on one level. What sits under those five rooms is left out of the file rather than filled:
-a template writes the air it carries, so air under a room would be a room taken out of the hillside,
-while a cell that is not in the file is ground nobody touched. The keep carves its own rooms and leaves
-the ground under the rest alone.
+room is walked on one level. What sits under those five rooms is filled with stone, because a structure file cannot leave a cell
+alone: a cell left out of it is written as air, and the ground there goes with it. Written whole, the
+box holds deepslate under the lifted rooms and the rooms' own air above it, so the hold carves its
+rooms out of the hillside and leaves the ground beneath them standing.
 
 Under the south row is the **inner keep**, cut by the same tool from two of the example schematics that
 came with the drawings - `2ml` and `2mr`, the open hall and the barred undercroft - laid at y 1 to 12,

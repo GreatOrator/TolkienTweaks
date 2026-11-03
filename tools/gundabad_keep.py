@@ -39,6 +39,7 @@ FLOOR = 14                  # the one level the hold above is walked on
 LIFT = FLOOR - 1            # a surface tile is written with its floor at y 0
 LOWER = 1                   # the inner keep's floor: one room's height under the hold
 LOWER_WALK = LOWER + 1      # where a player stands in it, which is where the stair lands
+FILL = "minecraft:deepslate"    # the stone under the rooms that are lifted above their own ground
 
 # The sheet, read the way it is drawn: two panels across, three down.
 LAYOUT = (
@@ -114,7 +115,7 @@ def convert(ident, meta, where):
 
 
 def schematic_tile(name):
-    """One .schematic as {pos: state}, air dropped, with its own coords."""
+    """One .schematic as {pos: state} plus the size of its own box, with its own coords."""
     path = SCHEMATICS / (name + ".schematic")
     root = gb.read_nbt(path.read_bytes())
     wide, high, deep = int(root["Width"]), int(root["Height"]), int(root["Length"])
@@ -128,7 +129,7 @@ def schematic_tile(name):
                 state = convert(blocks[index], data[index], path.name)
                 if state is not None:
                     tile[(x, y, z)] = state
-    return tile
+    return tile, (wide, high, deep)
 
 
 # ---- the keep ------------------------------------------------------------------------------
@@ -149,15 +150,29 @@ def floor_plane(tile):
 
 def assemble():
     """The inner keep, the hold above it, and the stair between them."""
+    # The whole box is written, air and all. A structure file cannot say "leave this cell alone": a cell
+    # left out of it is written as air, and the ground there goes with it. What keeps the hillside whole
+    # is stone - the course under the five lifted rooms is filled before anything is laid on it - so the
+    # hold carves its own rooms and leaves the ground beneath them standing.
     blocks = {}
+    for x in range(WIDE):
+        for z in range(DEEP):
+            for y in range(FLOOR):
+                blocks[(x, y, z)] = (FILL, ())
     # Each tile is lifted by its own floor, not by a height written down here: the schematics were
     # cut from a world and do not all keep their feet on the same course, so what has to line up is
     # their floors, and the stair landing is the floor they have to line up with.
     for name, dx, dz in INNER:
-        tile = schematic_tile(name)
+        tile, (wide, high, deep) = schematic_tile(name)
         plane = floor_plane(tile)
         PLANES[name] = plane
         lift = LOWER - plane
+        # A tile's rooms are the cells it leaves empty, and those cells are stone from the fill laid
+        # above, so its box is written as air before its own blocks go in on top of it.
+        for x in range(wide):
+            for y in range(high):
+                for z in range(deep):
+                    blocks[(x + dx, y + lift, z + dz)] = ("minecraft:air", ())
         for (x, y, z), state in tile.items():
             blocks[(x + dx, y + lift, z + dz)] = state
     cx, cz, r = EDGE + 30, 2 * EDGE + 30, 4      # the stair's well, in the hold's own coords
@@ -234,7 +249,7 @@ def main():
     for name in sorted({state[0] for state in blocks.values()}):
         if not known(name):
             raise SystemExit("!! %s is not in the pack's blockstates" % name)
-    if not gb.write_tile(blocks, (0, 0, 0), (WIDE, TOP, DEEP), OUT, keep_air=False):
+    if not gb.write_tile(blocks, (0, 0, 0), (WIDE, TOP, DEEP), OUT, keep_air=True):
         raise SystemExit("nothing to write")
     heights = [y for _, y, _ in blocks]
     if min(heights) < 0:
