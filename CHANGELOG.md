@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The inner keep is a level under the hold, reached by the spiral.** The chapter's notes ask for a
+  fortress inside the fortress and no drawing gives ground for one, so the ground is two of the example
+  schematics that came with the drawings - the open hall and the barred undercroft - laid twelve blocks
+  under the south row, on the level the stair's landing already stands at, and re-cut in the hold's own
+  stone: their stone brick and cobble would read as somebody else's ruin inside a dwarven fortress, so
+  what is taken from them is the shape. Each tile is lifted by its own lowest floored course, the stair's
+  well is carried empty through them and a door cut in its wall and a way cut west from it until it
+  stands in a room, and the keep is one template still, 122 by 183 by 26.
 - **The dwarven tiles are Gundabad.** The six geomorph tiles are assembled by `tools/gundabad_keep.py`
   into one keep, `key_structures/gundabad.nbt` - the sheet's own arrangement, two panels across and three
   down, 122 by 183 by 26 - with the five surface rooms lifted thirteen blocks so every room and the stair

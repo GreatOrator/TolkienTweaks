@@ -36,8 +36,8 @@ becomes 70, 1200 becomes 120. The coin the notes put on each page is paid as wri
   asset is the six geomorph tiles, assembled: `key_structures/gundabad.nbt` is 122 by 183 by 26, the
   sheet's own two-across, three-down arrangement, with every room on one floor. The old world's build is
   not carried, for the reasons in the last section, and the pack's `boss_castle` is the finale's and is
-  not spent twice. The notes' outer fortress and its vault are both in the keep; the inner keep is still
-  to be placed inside it.
+  not spent twice. The notes' outer fortress and its vault are both in the keep, and the inner keep is the level below
+  it, reached by the spiral's stair.
 - **The key-stone's vault** — a place (`keystone`) in the Trollshaws, at the source of the Bruinen: ruins
   with a vault still in them, and bears in the ruins.
 - **Carn Dûm** — a place (`carndum`) in Angmar, which the drawing already has, and where the campaign's
@@ -63,9 +63,8 @@ the only one in the campaign.
 
 ## Deliberately not decided here
 
-- Where the **inner keep** sits inside the assembled fortress, and whether the notes' vault is the `vault`
-  tile or a room cut later: the sheet draws one hold, and the notes ask for a fortress inside a fortress
-  that no drawing gives ground for.
+- How the **inner keep** is gated. The notes make page 31 the secret entrance, and the stair is open now:
+  the way in wants a door the plans open, not a passage a player can simply walk down.
 - Whether the notes' **Pinnath Fenui** is named ground or a direction: the notes describe it as the hills
   north-east of the camp, which a compass bearing already covers.
 
@@ -142,6 +141,16 @@ room is walked on one level. What sits under those five rooms is left out of the
 a template writes the air it carries, so air under a room would be a room taken out of the hillside,
 while a cell that is not in the file is ground nobody touched. The keep carves its own rooms and leaves
 the ground under the rest alone.
+
+Under the south row is the **inner keep**, cut by the same tool from two of the example schematics that
+came with the drawings - `2ml` and `2mr`, the open hall and the barred undercroft - laid at y 1 to 12,
+which is exactly where the spiral's landing is: twelve blocks under the hold's floor, on the level the
+stair delivers a player to. They are re-materialled into the hold's own stone on the way in, since what
+is taken from them is the shape and their stone brick and cobble would read as somebody else's ruin
+inside a dwarven fortress. Each is lifted by its own lowest floored course - these were cut out of a
+valley, so their highest solid course is the grass on their crown, ten blocks above the rooms they
+hold - the stair's well is carried empty through them, a door is cut in the wall of the well, and a way
+is cut west from it until it stands in a room and not in a wall.
 
 Reading the drawings' symbols, corrected by the mapmaker: the concentric arcs in the corner of the bottom
 right tile are a **well or pool**, not a stair, and the short ruled marks with an arrowhead are **stairs,
