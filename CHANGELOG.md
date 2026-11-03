@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The dwarven tiles are Gundabad.** The six geomorph tiles are assembled by `tools/gundabad_keep.py`
+  into one keep, `key_structures/gundabad.nbt` - the sheet's own arrangement, two panels across and three
+  down, 122 by 183 by 26 - with the five surface rooms lifted thirteen blocks so every room and the stair
+  down are walked on one floor. The file carries the tiles' own air and nothing else, so the keep cuts its
+  rooms out of the hillside instead of carving the ground beneath them, and the chapter's open question
+  about which build stands for the fortress is answered with ground the mapmaker drew.
 - **The way down is a helical stair in the middle of the room.** The lower-right tile now cuts thirteen
   blocks below its own floor and winds one tread per block about a newel, so the stair is the room's
   centrepiece and no tile gives up its floor plan for a stairwell. The old gallery flight is gone, and the

@@ -33,9 +33,11 @@ becomes 70, 1200 becomes 120. The coin the notes put on each page is paid as wri
   the pass drops into on the Anduin side (Gladden) and pinned to that pass's mouth. Captured from the old
   world's own camp rather than modelled: a fire, tents and a dwarf waiting at the door.
 - **Gundabad and its vault** — places (`gundabad`, `vault`) in the same range, north of the camp. The
-  asset is open: the old world's build is not being carried, for the reasons in the last section, and the
-  pack has no dwarf-fortress template of its own. Something else is to be used when page 28 is written.
-  The notes want an outer fortress, a vault and an inner keep.
+  asset is the six geomorph tiles, assembled: `key_structures/gundabad.nbt` is 122 by 183 by 26, the
+  sheet's own two-across, three-down arrangement, with every room on one floor. The old world's build is
+  not carried, for the reasons in the last section, and the pack's `boss_castle` is the finale's and is
+  not spent twice. The notes' outer fortress and its vault are both in the keep; the inner keep is still
+  to be placed inside it.
 - **The key-stone's vault** — a place (`keystone`) in the Trollshaws, at the source of the Bruinen: ruins
   with a vault still in them, and bears in the ruins.
 - **Carn Dûm** — a place (`carndum`) in Angmar, which the drawing already has, and where the campaign's
@@ -61,9 +63,9 @@ the only one in the campaign.
 
 ## Deliberately not decided here
 
-- Which build stands for **Gundabad**. Not the old world's: that was measured, cut and dropped. Not the
-  pack's own `boss_castle` either, since that one is the finale's and using it twice is a cost paid in the
-  last act rather than in this one. A third asset is expected.
+- Where the **inner keep** sits inside the assembled fortress, and whether the notes' vault is the `vault`
+  tile or a room cut later: the sheet draws one hold, and the notes ask for a fortress inside a fortress
+  that no drawing gives ground for.
 - Whether the notes' **Pinnath Fenui** is named ground or a direction: the notes describe it as the hills
   north-east of the camp, which a compass bearing already covers.
 
@@ -131,6 +133,15 @@ one tile that leaves its own floor: it is 26 blocks tall with the hall floor thi
 wants placing thirteen blocks lower than its neighbours, and the stair arrives at the level below. A
 helical stair about a newel in the middle of a room keeps every tile's floor plan whole - the stair is
 the room's centrepiece instead of taking a square away from it.
+
+The six are also assembled into the keep itself, by `tools/gundabad_keep.py`: the sheet's own
+arrangement - approach and vault across the north, hall and colonnade in the middle, cistern and spiral
+across the south - written whole to `key_structures/gundabad.nbt` at 122 by 183 by 26. The spiral is the
+one tile that leaves its own floor, so the other five are lifted thirteen blocks to meet it and every
+room is walked on one level. What sits under those five rooms is left out of the file rather than filled:
+a template writes the air it carries, so air under a room would be a room taken out of the hillside,
+while a cell that is not in the file is ground nobody touched. The keep carves its own rooms and leaves
+the ground under the rest alone.
 
 Reading the drawings' symbols, corrected by the mapmaker: the concentric arcs in the corner of the bottom
 right tile are a **well or pool**, not a stair, and the short ruled marks with an arrowhead are **stairs,
