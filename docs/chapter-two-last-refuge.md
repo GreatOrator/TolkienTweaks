@@ -142,15 +142,15 @@ alone: a cell left out of it is written as air, and the ground there goes with i
 box holds deepslate under the lifted rooms and the rooms' own air above it, so the hold carves its
 rooms out of the hillside and leaves the ground beneath them standing.
 
-Under the south row is the **inner keep**, cut by the same tool from two of the example schematics that
-came with the drawings - `2ml` and `2mr`, the open hall and the barred undercroft - laid at y 1 to 12,
-which is exactly where the spiral's landing is: twelve blocks under the hold's floor, on the level the
-stair delivers a player to. They are re-materialled into the hold's own stone on the way in, since what
-is taken from them is the shape and their stone brick and cobble would read as somebody else's ruin
-inside a dwarven fortress. Each is lifted by its own lowest floored course - these were cut out of a
-valley, so their highest solid course is the grass on their crown, ten blocks above the rooms they
-hold - the stair's well is carried empty through them, a door is cut in the wall of the well, and a way
-is cut west from it until it stands in a room and not in a wall.
+Under the south row is the **inner keep**, cut by `tools/cave_tile.py` from two panels of set 4, the
+cave sheet, and laid at y 1 to 12 - exactly where the spiral's landing is, twelve blocks under the
+hold's floor, on the level the stair delivers a player to. It is the hold's one pixel-for-block build
+and deliberately so: a cave is rubble and outcrop, and a cave laid out in squared masonry is a ruin. The
+panels are taken as drawn, rock where the sheet has ink and open where it has none, with the hatching
+drawn inside their rooms smoothed out of the mask so it does not stand up as a thicket of pillars, the
+hold's own stone left as a kerb where rock meets a room, and a passage driven between any chamber the
+drawing leaves walled off - no party should find its own inner keep shut against it. The stair's well is
+carried empty through them and a door is cut in the wall of the well.
 
 Reading the drawings' symbols, corrected by the mapmaker: the concentric arcs in the corner of the bottom
 right tile are a **well or pool**, not a stair, and the short ruled marks with an arrowhead are **stairs,

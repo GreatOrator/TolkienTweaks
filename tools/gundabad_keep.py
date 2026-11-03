@@ -13,17 +13,16 @@ The spiral is the one tile that leaves its own floor: its hall floor is thirteen
 height, because the stair cuts below it. So the other five are lifted thirteen blocks to meet it and
 every room in the keep is walked on one level, with the stair descending from it.
 
-The stair has somewhere to arrive. Two of the example schematics collected beside the drawings - the
-barred undercroft and the hall next to it - are re-cut in the hold's own stone and laid under the south
-row, twelve blocks below the hold's floor, which is exactly where the spiral's landing is. They are not
-the geomorphs and make no claim to be: the drawings give the hold, and the notes ask for a fortress
-inside a fortress, which no drawing gives ground for. These are the ground for it, held to the same
-61-square quarter-point convention so they join the hold above.
+The stair has somewhere to arrive. Two panels of set 4, the cave sheet, are cut into the inner keep by
+`tools/cave_tile.py` and laid under the south row, twelve blocks below the hold's floor, which is exactly
+where the spiral's landing is. They are the hold's one pixel-for-block build, and deliberately so: a cave
+is rubble and outcrop, and a cave drawn in squared masonry is a ruin. The notes ask for a fortress inside
+the fortress, which no drawing gives ground for; this is the ground for it, held to the same 61-square
+quarter-point convention so it joins the hold above.
 
-What sits under the five lifted rooms is left out of the file rather than filled with rock. A template
-writes the air it carries, so air under a room would be a room taken out of the hillside the keep
-stands in; a cell that is simply not in the file is ground nobody touched. The keep therefore cuts its
-own rooms out of the ground and leaves the ground under the rest alone.
+What sits under the five lifted rooms is filled with stone. A structure file cannot leave a cell alone -
+a cell left out of it is written as air, and the ground there goes with it - so the box is written whole,
+deepslate under the lifted rooms and each tile's own air above it.
 
     python gundabad_keep.py            write the keep and check it
 """
@@ -49,104 +48,22 @@ LAYOUT = (
 )
 # The inner keep: the undercroft with its cells, and the hall beside it, under the south row.
 INNER = (
-    ("2ml", 0, 2 * EDGE),
-    ("2mr", EDGE, 2 * EDGE),
+    ("ch2_inner_a", 0, 2 * EDGE),
+    ("ch2_inner_b", EDGE, 2 * EDGE),
 )
 WIDE = 2 * EDGE
 DEEP = 3 * EDGE
 INNER_BOX = (0, 2 * EDGE, WIDE, DEEP)   # x0, z0, x1, z1
-PLANES = {}                             # the floor each inner tile was written with
 
 HERE = pathlib.Path(__file__).resolve().parent.parent
 SRC = HERE / "src" / "main" / "resources" / "data" / "tolkienmobs" / "structure"
 OUT = SRC / "key_structures" / "gundabad.nbt"
-SCHEMATICS = HERE / "Templates" / "schematics"
 # The pack's blockstates live in both trees: hand-written ones in main, the generated ones in
 # generated/resources, and a block may be in either.
 BLOCKSTATES = (HERE / "src" / "main" / "resources" / "assets" / "tolkienmobs" / "blockstates",
                HERE / "src" / "generated" / "resources" / "assets" / "tolkienmobs" / "blockstates")
 
-# ---- the example schematics: 2014 MCEdit files, numeric ids, no palette ----------------------
-
-# What each of their blocks becomes in this hold. The schematics are somebody else's ruined corridors,
-# so what is taken from them is the shape - the cells, the hall, the way they join - and the stone is
-# the hold's own, which is also what stops the inner keep reading as a ruin inside a fortress.
-STONE = {
-    1: "tolkienmobs:angainor",                  # stone, the rock the passages are cut through
-    2: "tolkienmobs:mossy_cobbled_angainor",    # grass on the crown
-    3: "tolkienmobs:cobbled_angainor",          # dirt under it
-    4: "tolkienmobs:cobbled_angainor",          # cobblestone
-    5: "tolkienmobs:smooth_angainor",           # planks, as flagged stone
-    98: "tolkienmobs:angainor_bricks",          # stone brick, their whole vocabulary
-    44: "tolkienmobs:slab_angainor_bricks",     # stone slab
-    126: "tolkienmobs:slab_angainor_bricks",    # wooden slab
-    109: "tolkienmobs:stairs_angainor_bricks",  # stone brick stairs
-    67: "tolkienmobs:stairs_angainor_bricks",   # cobble stairs
-    101: "minecraft:iron_bars",                 # the bars of the cells
-    85: "minecraft:iron_bars",                  # fences, read as rails
-    65: "minecraft:ladder",                     # the ladder in the undercroft's shaft
-    66: "minecraft:iron_bars",                  # rails, read as bars
-    139: "tolkienmobs:wall_angainor_bricks",    # cobble wall, read as a parapet
-    50: "minecraft:torch",                      # what little light they left
-    89: "minecraft:glowstone",                  # and the rest of it
-}
-# Taken out rather than translated: lava, doors, trapdoors, signs and a skull. A door is two blocks
-# with a hinge and a half; what the shape needs is the opening, and the opening is what it gets.
-GONE = {0, 11, 64, 68, 96, 144}
-FACING = {0: "east", 1: "west", 2: "south", 3: "north"}
-LADDER = {2: "north", 3: "south", 4: "west", 5: "east"}
-
-
-def convert(ident, meta, where):
-    """One old block as one of this hold's, or None when it is not carried."""
-    if ident in GONE:
-        return None
-    if ident not in STONE:
-        raise SystemExit("%s: block id %d (data %d) has no place in the hold" % (where, ident, meta))
-    name = STONE[ident]
-    if ident in (44, 126):
-        return (name, (("type", "top" if meta & 8 else "bottom"),))
-    if ident in (109, 67):
-        return (name, (("facing", FACING[meta & 3]), ("half", "top" if meta & 4 else "bottom"),
-                       ("shape", "straight")))
-    if ident == 65:
-        return (name, (("facing", LADDER.get(meta & 7, "north")),))
-    return (name, ())
-
-
-def schematic_tile(name):
-    """One .schematic as {pos: state} plus the size of its own box, with its own coords."""
-    path = SCHEMATICS / (name + ".schematic")
-    root = gb.read_nbt(path.read_bytes())
-    wide, high, deep = int(root["Width"]), int(root["Height"]), int(root["Length"])
-    blocks = bytes(root["Blocks"])
-    data = bytes(root["Data"])
-    tile = {}
-    for y in range(high):
-        for z in range(deep):
-            for x in range(wide):
-                index = (y * deep + z) * wide + x
-                state = convert(blocks[index], data[index], path.name)
-                if state is not None:
-                    tile[(x, y, z)] = state
-    return tile, (wide, high, deep)
-
-
 # ---- the keep ------------------------------------------------------------------------------
-
-def floor_plane(tile):
-    """The course a tile is floored on: the lowest solid layer with a room standing on it.
-
-    Not the layer with the most open air over it - these schematics were cut out of a valley, so
-    their highest solid course is the grass on their own crown, ten blocks above the rooms they hold.
-    """
-    for y in sorted({y for (_, y, _) in tile}):
-        walked = sum(1 for (x, yy, z) in tile
-                     if yy == y and (x, y + 1, z) not in tile and (x, y + 2, z) not in tile)
-        if walked >= 32:
-            return y
-    return min(y for (_, y, _) in tile)
-
 
 def assemble():
     """The inner keep, the hold above it, and the stair between them."""
@@ -159,22 +76,15 @@ def assemble():
         for z in range(DEEP):
             for y in range(FLOOR):
                 blocks[(x, y, z)] = (FILL, ())
-    # Each tile is lifted by its own floor, not by a height written down here: the schematics were
-    # cut from a world and do not all keep their feet on the same course, so what has to line up is
-    # their floors, and the stair landing is the floor they have to line up with.
+    # The inner keep is cut as the hold's own kind of file, so it is laid the hold's way: read whole,
+    # air and all, and lifted to sit on the stair's floor.
     for name, dx, dz in INNER:
-        tile, (wide, high, deep) = schematic_tile(name)
-        plane = floor_plane(tile)
-        PLANES[name] = plane
-        lift = LOWER - plane
-        # A tile's rooms are the cells it leaves empty, and those cells are stone from the fill laid
-        # above, so its box is written as air before its own blocks go in on top of it.
-        for x in range(wide):
-            for y in range(high):
-                for z in range(deep):
-                    blocks[(x + dx, y + lift, z + dz)] = ("minecraft:air", ())
+        path = SRC / ("%s.nbt" % name)
+        if not path.exists():
+            raise SystemExit("%s is missing: run cave_tile.py first" % path.name)
+        tile, _ = gb.blocks_from_template(gb.read_nbt(path.read_bytes()))
         for (x, y, z), state in tile.items():
-            blocks[(x + dx, y + lift, z + dz)] = state
+            blocks[(x + dx, y + LOWER, z + dz)] = state
     cx, cz, r = EDGE + 30, 2 * EDGE + 30, 4      # the stair's well, in the hold's own coords
     # The well is empty all the way down: nothing of the inner keep may stand in the stair.
     for x in range(cx - r, cx + r + 1):
@@ -279,8 +189,7 @@ def main():
         LOWER_WALK, len(inner), len(inner_pockets), "on the route" if landing else "CUT OFF"))
     for name, dx, dz in INNER:
         inside = sum(1 for (x, z) in inner if dx <= x < dx + EDGE and dz <= z < dz + EDGE)
-        print("   %-10s %5d of its own floor cells reached, floor cut at %d"
-              % (name, inside, PLANES.get(name, LOWER)))
+        print("   %-10s %5d of its own floor cells reached" % (name, inside))
         if inside < 200:
             short.append(name)
 
