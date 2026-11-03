@@ -195,6 +195,29 @@ public final class Campaign extends SavedData {
             {-12, 4}, {12, 4}, {4, -10}, {-4, 10}, {14, -6}, {-14, -6}};
 
     /**
+     * The city's own people: no name over them, no tag a click reads, and no work to hand. Six walkers
+     * are enough for a square and not for a city four hundred blocks across, so the valley keeps a crowd.
+     * <p>
+     * The number is the whole of them, marked spots included, and the spots are the ones set down in the
+     * build in the frame of the cut it came from - the same frame the pieces are laid in - with the rest
+     * of the number filled wherever the city has ground under it. Nothing walks until the city is
+     * planted, because a cut frame means nothing until the corner it was taken from is somewhere.
+     */
+    private static final int VALLEY_FOLK = 24;
+    private static final String VALLEY_FOLK_TAG = "tolkienmobs:valley_folk";
+    /** How far from its own spot one of the city's people may wander, in blocks. */
+    private static final int VALLEY_FOLK_HOME = 20;
+    /** How far from the middle of the city a resident is put when it is not on a mark, in blocks. */
+    private static final int VALLEY_CITY = 400;
+    /** The corner of the cut the city was built from, once it is planted. Zero while it is not. */
+    private static final BlockPos VALLEY_ORIGIN = BlockPos.ZERO;
+    /** The fifteen spots marked in the build, as positions in the cut with the sink already in them. */
+    private static final int[][] VALLEY_FOLK_SPOTS = {
+            {250, 88, 251}, {255, 89, 280}, {266, 89, 280}, {269, 85, 259}, {270, 98, 242},
+            {294, 104, 245}, {294, 82, 267}, {294, 75, 290}, {303, 112, 246}, {303, 75, 290},
+            {313, 112, 246}, {315, 112, 186}, {320, 112, 216}, {323, 112, 181}, {358, 108, 266}};
+
+    /**
      * One piece of the valley: its template under {@code tolkienmobs:key_structures/}, and where the middle
      * of its footprint sits relative to the middle of the place.
      * <p>
@@ -2103,6 +2126,7 @@ public final class Campaign extends SavedData {
             nameValleyStones(level, player, valley);
         }
         standValleyElves(level, valley);
+        standValleyFolk(level, valley);
     }
 
     /**
@@ -2166,6 +2190,81 @@ public final class Campaign extends SavedData {
     /** The tag that says which of the six an Elf is, so one name is kept to one body. */
     private static String valleyElfTag(int slot) {
         return VALLEY_ELF_TAG + ":" + (slot + 1);
+    }
+
+    /**
+     * Stands the city's own people, up to their number and no further.
+     * <p>
+     * Each marked spot keeps one body, read by its own slot on the tag so a spot is answered once and a
+     * body that was merely reloaded is never doubled. The rest of the number is filled wherever the city
+     * has ground under it, so the crowd spreads rather than gathering on the marks. Nobody here is a giver
+     * and nobody has a name: the six walkers and the three Elves of the line are still the only ones who
+     * answer to anything. Each is homed where it stands, for the same reason the walkers are, and the bell
+     * the city carries is where they gather.
+     */
+    private static void standValleyFolk(ServerLevel level, Places.Place valley) {
+        if (VALLEY_ORIGIN.equals(BlockPos.ZERO)) return;
+        int marked = VALLEY_FOLK_SPOTS.length;
+        int spare = Math.max(0, VALLEY_FOLK - marked);
+        boolean[] filled = new boolean[marked];
+        int loose = 0;
+        for (Entity elf : level.getEntities((Entity) null, new AABB(valley.centre()).inflate(VALLEY_CITY),
+                found -> found.entityTags().contains(VALLEY_FOLK_TAG))) {
+            int slot = valleyFolkSlot(elf);
+            if (slot < 0) {
+                loose++;
+            } else if (filled[slot]) {
+                elf.discard();
+            } else {
+                filled[slot] = true;
+            }
+        }
+        for (int i = 0; i < marked; i++) {
+            if (filled[i]) continue;
+            BlockPos stand = floorOf(level, VALLEY_ORIGIN.offset(
+                    VALLEY_FOLK_SPOTS[i][0], VALLEY_FOLK_SPOTS[i][1], VALLEY_FOLK_SPOTS[i][2]));
+            if (stand != null) standFolk(level, stand, valleyFolkTag(i));
+        }
+        for (int i = loose; i < spare; i++) {
+            BlockPos stand = folkGround(level, valley);
+            if (stand != null) standFolk(level, stand, VALLEY_FOLK_TAG);
+        }
+    }
+
+    /** One of the city's people, standing where it was put and homed to it. */
+    private static void standFolk(ServerLevel level, BlockPos stand, String tag) {
+        Entity entity = TolkienEntities.ENTITY_TTM_ELVES.get().create(level, EntitySpawnReason.EVENT);
+        if (!(entity instanceof Mob elf)) return;
+        elf.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D,
+                level.getRandom().nextFloat() * 360.0F, 0.0F);
+        elf.setPersistenceRequired();
+        elf.addTag(tag);
+        elf.setHomeTo(stand, VALLEY_FOLK_HOME);
+        level.addFreshEntity(elf);
+    }
+
+    /** Somewhere in the city with ground under it, or nothing when the throws all came up empty. */
+    private static BlockPos folkGround(ServerLevel level, Places.Place valley) {
+        for (int attempt = 0; attempt < 16; attempt++) {
+            int dx = level.getRandom().nextInt(-VALLEY_CITY, VALLEY_CITY + 1);
+            int dz = level.getRandom().nextInt(-VALLEY_CITY, VALLEY_CITY + 1);
+            BlockPos stand = floorOf(level, valley.centre().offset(dx, 0, dz));
+            if (stand != null) return stand;
+        }
+        return null;
+    }
+
+    /** Which marked spot one of the city's people holds, or -1 for one that stands anywhere. */
+    private static int valleyFolkSlot(Entity elf) {
+        for (int i = 0; i < VALLEY_FOLK_SPOTS.length; i++) {
+            if (elf.entityTags().contains(valleyFolkTag(i))) return i;
+        }
+        return -1;
+    }
+
+    /** The tag that says which spot one of the city's people holds. */
+    private static String valleyFolkTag(int slot) {
+        return VALLEY_FOLK_TAG + ":" + (slot + 1);
     }
 
     /**

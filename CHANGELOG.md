@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The city keeps a crowd, and none of it is anybody.** Rivendell's six walkers are enough for a square
+  and not for a city seven hundred blocks across, which reads as a place abandoned rather than a quiet
+  one. The valley now keeps twenty-four people at once: the fifteen spots marked in the build are
+  answered first, one body to a spot and no spot twice, and the rest are put down wherever the city has
+  ground under it. None is a giver, none carries a name, and each is homed where it stands so the crowd
+  keeps its own quarter and gathers at the bell the city already carries. The count includes the marked
+  spots, so fifteen marks leave nine to fill; the six named walkers and the three Elves of the line are
+  still the only ones who answer to anything.
 - **Chapter two walks on to the hold.** Past Glóin's fire the line runs `2-2`, the goblin fires of the
   Pinnath Fenui; `2-3`, the hold itself; and `2-4`, the plans read back at the camp table. Gundabad is
   ground the campaign pitches now - `key_structures/gundabad` stands in the Hithaeglir as a site the
