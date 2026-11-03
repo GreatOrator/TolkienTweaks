@@ -167,10 +167,20 @@ def main():
     # `not` is a keyword, so the flag and the name it lands on are not the same word.
     parser.add_argument("--not", dest="exclude", default="",
                         help="marks that are not bodies, as x,y,z;x,y,z in the frame reported")
+    parser.add_argument("--label", action="append", default=[], metavar="X,Y,Z=NAME",
+                        help="name a spot, given in the frame the marks are found in; repeatable")
     parser.add_argument("--out", help="where to write the .npcs table, if anywhere")
     args = parser.parse_args()
     if not args.world and not args.cut:
         parser.error("give --world, or --cut with the pieces already made")
+
+    # A name belongs to the spot, so it is looked up before the frame is changed under it.
+    labels = {}
+    for entry in args.label:
+        place, _, name = entry.partition("=")
+        if not name.strip():
+            parser.error("a label reads x,y,z=name, and '%s' has no name" % entry)
+        labels[tuple(int(v) for v in place.split(","))] = name.strip()
 
     corner = None
     marks, names, stripped = [], [], 0
@@ -179,14 +189,16 @@ def main():
     else:
         marks, names = marks_in_world(args.world, args.dim, args.mark)
 
+    rows = [(mark, labels.get(mark, "")) for mark in marks]
+
     if args.in_floor:
-        marks = [(x, y + 1, z) for x, y, z in marks]
+        rows = [((x, y + 1, z), name) for (x, y, z), name in rows]
     if args.corner:
         corner = tuple(int(part) for part in args.corner.split(","))
-        marks = [(x - corner[0], y - corner[1], z - corner[2]) for x, y, z in marks]
+        rows = [((x - corner[0], y - corner[1], z - corner[2]), name) for (x, y, z), name in rows]
     # The same sink the pieces are placed at, so a body stands where the ground under it went.
     if args.sink:
-        marks = [(x, y - args.sink, z) for x, y, z in marks]
+        rows = [((x, y - args.sink, z), name) for (x, y, z), name in rows]
 
     excluded = set()
     if args.exclude:
@@ -194,23 +206,27 @@ def main():
             if part.strip():
                 excluded.add(tuple(int(v) for v in part.split(",")))
     if excluded:
-        kept = [m for m in marks if m not in excluded]
-        print("  left out as not a body: %d" % (len(marks) - len(kept)))
-        marks = kept
+        kept = [row for row in rows if row[0] not in excluded]
+        print("  left out as not a body: %d" % (len(rows) - len(kept)))
+        rows = kept
 
-    print("  marks found %d%s" % (len(marks), "" if not names else " (%s)" % ", ".join(names)))
+    # Those not named by hand are handed out in the order they are read in - west to east, then
+    # south to north - so the same marks always come back in the same order.
+    rows.sort(key=lambda row: (row[0][0], row[0][2], row[0][1]))
+
+    print("  marks found %d%s" % (len(rows), "" if not names else " (%s)" % ", ".join(names)))
     if stripped:
         print("  put back as the stone around them: %d" % stripped)
-    for x, y, z in marks[:12]:
-        if corner:
-            print("     %5d %4d %5d   (%d %d %d in the world)"
-                  % (x, y, z, x + corner[0], y + corner[1], z + corner[2]))
-        else:
-            print("     %5d %4d %5d" % (x, y, z))
-    if len(marks) > 12:
-        print("     ... and %d more" % (len(marks) - 12))
-    if args.out and marks:
-        pathlib.Path(args.out).write_text("".join("%d %d %d\n" % m for m in marks), encoding="utf-8")
+    for (x, y, z), name in rows[:12]:
+        where = ("(%d %d %d in the world)" % (x + corner[0], y + corner[1], z + corner[2])
+                 if corner else "")
+        print("     %-10s %5d %4d %5d   %s" % (name or "-", x, y, z, where))
+    if len(rows) > 12:
+        print("     ... and %d more" % (len(rows) - 12))
+    if args.out and rows:
+        pathlib.Path(args.out).write_text(
+            "".join("%s %d %d %d\n" % (name or "-", x, y, z) for (x, y, z), name in rows),
+            encoding="utf-8")
         print("  written to %s" % args.out)
     return 0
 
