@@ -3,26 +3,36 @@
 
 An NPC mark is a block standing where a body is meant to go - ammolite by default, matched on its name
 so the pack's own variants all count. The mark is not part of the build: this reports where each one is,
-relative to the build's own corner, and takes the block out of the templates so no piece ships a marker.
+relative to the build's own corner, and takes the block out of the templates. A stripped mark is put
+back as the stone around it rather than left as air, because the cell is somewhere a body stands and a
+hole there is a hole in the floor.
 
     # where the marks are, before anything is cut
-    python tools/mark_npcs.py --world "run/saves/Rivendell_Imladris" --corner 555,0,-706
+    python tools/mark_npcs.py --world "run/saves/Rivendell_Imladris" --corner 555,0,-706 --sink 12
 
     # and again from the pieces, writing the marks out beside them
-    python tools/mark_npcs.py --cut run/rivendell_art --corner 555,0,-706
+    python tools/mark_npcs.py --cut run/rivendell_art --corner 555,0,-706 --sink 12 \
+                              --out run/rivendell_art/rivendell.npcs
 
 The mark goes in the cell a body's feet occupy - the block a body stands in - and that cell is the spot
 reported. The `.npcs` file is one line a body: `x y z`, in blocks from the corner the cut was taken from,
 with the same sink the pieces are placed at, so the two tables are in one frame.
+
+A mark that is not a body's is taken out of the report with `--not`, given the coordinates the report
+prints. That is what a probe block is: a mark put down to measure something, which should be cleaned up
+like the rest and not stand a guard where it was.
 """
 
 import argparse
+import collections
 import pathlib
 import sys
 
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import grab_build as gb
+
+NEIGHBOURS = ((1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, -1, 0), (0, 0, 1), (0, 0, -1))
 
 
 def region_dir(world, dimension):
@@ -44,7 +54,6 @@ def section_blocks(states, mark):
     wanted = {index for index, state in enumerate(palette) if mark in state[0]}
     data = states.get("data")
     if not data:
-        # One state for the whole section: either all of it or none of it.
         return list(range(4096)) if wanted else []
     bit = max(4, (len(palette) - 1).bit_length())
     per, mask = 64 // bit, (1 << bit) - 1
@@ -63,8 +72,9 @@ def marks_in_world(world, dimension, mark):
     for path in sorted(region_dir(world, dimension).glob("*.mca")):
         region_x, region_z = int(path.name.split(".")[1]), int(path.name.split(".")[2])
         for local_x, local_z, chunk in gb.read_region(path):
-            base_x = region_x * 32 + local_x * 16
-            base_z = region_z * 32 + local_z * 16
+            # Region offset and local chunk are both in chunks; the whole sum is what becomes blocks.
+            base_x = (region_x * 32 + local_x) * 16
+            base_z = (region_z * 32 + local_z) * 16
             for section in (chunk.get("sections") or []):
                 states = section.get("block_states") or {}
                 hits = section_blocks(states, mark)
@@ -80,42 +90,60 @@ def marks_in_world(world, dimension, mark):
     return sorted(found), sorted(names)
 
 
+def put_back(at, pos, mark):
+    """The stone this cell should be: the commonest of the six around it that is not a mark itself."""
+    x, y, z = pos
+    around = collections.Counter()
+    for dx, dy, dz in NEIGHBOURS:
+        state = at.get((x + dx, y + dy, z + dz))
+        if state and mark not in state[0] and state[0] != "minecraft:air":
+            around[state] += 1
+    if around:
+        return around.most_common(1)[0][0]
+    # Nothing solid beside it: the floor under it is the next best answer, and air the last.
+    under = at.get((x, y - 1, z))
+    if under and mark not in under[0]:
+        return under
+    return None
+
+
 def marks_in_pieces(folder, mark):
-    """Where the marks stand inside a set of pieces, as offsets from the pieces' own corner."""
+    """Where the marks stand inside a set of pieces, and the pieces with them put back as stone."""
     found, names, stripped = [], set(), 0
     for path in sorted(folder.glob("*.nbt")):
         root = gb.read_nbt(path.read_bytes())
         palette = [gb.state_of(entry) for entry in root["palette"]]
-        keep = []
-        removed = []
+        at = {}
         for block in root["blocks"]:
-            state = palette[block["state"]]
+            at[tuple(block["pos"])] = palette[block["state"]]
+        hits = [pos for pos, state in at.items() if mark in state[0]]
+        if not hits:
+            continue
+        for state in palette:
             if mark in state[0]:
                 names.add(state[0])
-                removed.append(tuple(block["pos"]))
-            else:
-                keep.append(block)
-        if not removed:
-            continue
-        # The piece's own offset is in the parts table; the rest is local to the piece.
-        suffix = path.stem.split("_", 1)[1]
-        tile_x, tile_y, tile_z = (int(part) for part in suffix.split("_"))
-        for x, y, z in removed:
-            found.append((tile_x * 48 + x, tile_y * 48 + y, tile_z * 48 + z))
-        root["blocks"] = gb.NbtList(10, keep)
-        # And the palette without the states nothing points at any more, so a stripped piece carries no
-        # trace of the mark at all - an entry no block uses would still be written into the template.
+        for pos in hits:
+            at[pos] = put_back(at, pos, mark)
+        keep = [{"pos": gb.NbtList(3, pos), "state": state}
+                for pos, state in sorted(at.items()) if state is not None]
+        # Rebuild the palette from what is left: a state no block uses is still written into a template.
         slot, used = {}, []
         for block in keep:
-            if block["state"] not in slot:
-                slot[block["state"]] = len(used)
-                used.append(palette[block["state"]])
-            block["state"] = slot[block["state"]]
+            state = at[tuple(block["pos"])]
+            if state not in slot:
+                slot[state] = len(used)
+                used.append(state)
+            block["state"] = slot[state]
+        root["blocks"] = gb.NbtList(10, keep)
         root["palette"] = gb.NbtList(10, [
             {"Name": state[0], **({"Properties": dict(state[1])} if state[1] else {})}
             for state in used])
+        suffix = path.stem.split("_", 1)[1]
+        tile_x, tile_y, tile_z = (int(part) for part in suffix.split("_"))
+        for x, y, z in hits:
+            found.append((tile_x * 48 + x, tile_y * 48 + y, tile_z * 48 + z))
         path.write_bytes(gb.write_nbt(root))
-        stripped += len(removed)
+        stripped += len(hits)
     return sorted(found), sorted(names), stripped
 
 
@@ -127,10 +155,13 @@ def main():
     parser.add_argument("--corner", default="", help="the cut's corner, x,y,z, to report offsets from")
     parser.add_argument("--sink", type=int, default=0,
                         help="how far the pieces are placed below the world they were cut from")
-    # The plain block rather than the bare word: the pack also has ammolite ores and a pane, and a
-    # mark that matched the word would read an ore in the rock as a body waiting to be stood up.
+    # The plain block rather than the bare word: the pack also has ammolite ores and a pane, and a mark
+    # that matched the word would read an ore in the rock as a body waiting to be stood up.
     parser.add_argument("--mark", default="block_ammolite",
                         help="what marks a spot, matched on the block name")
+    # `not` is a keyword, so the flag and the name it lands on are not the same word.
+    parser.add_argument("--not", dest="exclude", default="",
+                        help="marks that are not bodies, as x,y,z;x,y,z in the frame reported")
     parser.add_argument("--out", help="where to write the .npcs table, if anywhere")
     args = parser.parse_args()
     if not args.world and not args.cut:
@@ -150,9 +181,19 @@ def main():
     if args.sink:
         marks = [(x, y - args.sink, z) for x, y, z in marks]
 
+    excluded = set()
+    if args.exclude:
+        for part in args.exclude.split(";"):
+            if part.strip():
+                excluded.add(tuple(int(v) for v in part.split(",")))
+    if excluded:
+        kept = [m for m in marks if m not in excluded]
+        print("  left out as not a body: %d" % (len(marks) - len(kept)))
+        marks = kept
+
     print("  marks found %d%s" % (len(marks), "" if not names else " (%s)" % ", ".join(names)))
     if stripped:
-        print("  blocks taken out of the pieces: %d" % stripped)
+        print("  put back as the stone around them: %d" % stripped)
     for x, y, z in marks[:12]:
         if corner:
             print("     %5d %4d %5d   (%d %d %d in the world)"
