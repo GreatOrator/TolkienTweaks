@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The mountain no longer ends in a cliff of its own making, and its flank is a mountainside rather than
+  a wall.** Two things cut the massif off. The rib noise on the flank was still 12 blocks high where the
+  climb met the ridge and dropped to nothing beyond it, so there was a sheer face running the whole length
+  of the ridge that nothing had asked for; the ribs now fade out before the ridge as well as in from the
+  floor. And the climb of the last change put the same 306 blocks of rise into 130 blocks - three up for
+  every one out - which is a staircase wall up close; it is 220 blocks now, so the ground climbs about
+  1.4 blocks for every block out, and the far side runs down over 400 blocks instead of 260, so the range
+  carries on into the country instead of stopping at a rim a couple of hundred blocks away.
+
 - **The massif round Imladris stands at the city's walls instead of across a lawn from it.** The same
   306 blocks of rise were spread over 240 blocks of climb, which put the ridge two hundred blocks out and
   left the ground between the city and the rock as a wide, evenly stepped apron - the mountain read as cut
