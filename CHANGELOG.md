@@ -355,6 +355,12 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   crowd wherever the city has ground under it - all of it read out of the cut's own `rivendell.npcs` table
   rather than written down a second time in code, so a re-cut carries its people with it.
 
+- **The shoulder of a city now says what it came to.** `/tmcity apron` answered only that it had run over
+  four rings, which is the same answer whether it reshaped a hillside or moved nothing: it now counts the
+  columns it cut down, the ones it built up, and the ones it left standing because they were more than six
+  blocks off the city's base. Whether a city reads as a block cut out of the ground is now a number rather
+  than something to squint at from across a valley.
+
 ### Fixed
 
 - **The needle points at the body, not at the middle of the town.** A page that names somebody now

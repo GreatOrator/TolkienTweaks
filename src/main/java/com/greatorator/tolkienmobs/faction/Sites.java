@@ -713,6 +713,21 @@ public final class Sites extends SavedData {
      */
     private static final int APRON_CAP = 6;
 
+    /** What one column of the shoulder came to, so a blend can be counted rather than only claimed. */
+    private static final int UNTOUCHED = 0;
+    private static final int CUT = 1;
+    private static final int FILLED = 2;
+    private static final int TOO_FAR = 3;
+
+    /**
+     * What a shoulder came to, in columns: the ones cut down to the build's level, the ones built up to it,
+     * and the ones left alone because they stood further off it than {@link #APRON_CAP} allowed. A city
+     * whose shoulder left most of its rim alone is a city that will read as a block cut out of the ground,
+     * so this is the number that says whether the ground was blended or merely touched.
+     */
+    public record Apron(int cut, int filled, int left) {
+    }
+
     /**
      * Blends the ground around a footprint into the level a build stands at, which a template cannot do for
      * itself: `beard_thin` and `beard_box` are worldgen jigsaw settings, read while chunks generate, and
@@ -721,28 +736,31 @@ public final class Sites extends SavedData {
      * across the rings so it is spent a block at a time rather than in one cliff at the wall. Nothing
      * outside the taper moves, and no column moves further than {@link #APRON_CAP}.
      */
-    public static void apron(ServerLevel level, BlockPos corner, int wide, int deep, int rings, int base) {
+    public static Apron apron(ServerLevel level, BlockPos corner, int wide, int deep, int rings, int base) {
+        int[] counts = new int[4];
         for (int ring = 1; ring <= rings; ring++) {
             // How much of the way this ring has come from open ground back to the build's own level.
             double share = 1.0D - (double) ring / (rings + 1);
             for (int dx = -ring; dx <= wide + ring; dx++) {
-                side(level, corner, dx, -ring, base, share);
-                side(level, corner, dx, deep + ring, base, share);
+                counts[side(level, corner, dx, -ring, base, share)]++;
+                counts[side(level, corner, dx, deep + ring, base, share)]++;
             }
             for (int dz = -ring + 1; dz < deep + ring; dz++) {
-                side(level, corner, -ring, dz, base, share);
-                side(level, corner, wide + ring, dz, base, share);
+                counts[side(level, corner, -ring, dz, base, share)]++;
+                counts[side(level, corner, wide + ring, dz, base, share)]++;
             }
         }
+        return new Apron(counts[CUT], counts[FILLED], counts[TOO_FAR]);
     }
 
     /** One column of one ring, brought toward the build's level by that ring's share of the way. */
-    private static void side(ServerLevel level, BlockPos corner, int dx, int dz, int base, double share) {
+    private static int side(ServerLevel level, BlockPos corner, int dx, int dz, int base, double share) {
         int x = corner.getX() + dx;
         int z = corner.getZ() + dz;
         int ground = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
         int target = (int) Math.round(ground + (base - ground) * share);
-        if (target == ground || Math.abs(ground - target) > APRON_CAP) return;
+        if (target == ground) return UNTOUCHED;
+        if (Math.abs(ground - target) > APRON_CAP) return TOO_FAR;
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
         if (target < ground) {
             for (int y = ground - 1; y >= target; y--) {
@@ -750,13 +768,14 @@ public final class Sites extends SavedData {
                 if (level.getBlockState(cursor).isAir()) continue;
                 level.setBlock(cursor, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
             }
-        } else {
-            for (int y = ground; y < target; y++) {
-                cursor.set(x, y, z);
-                if (!level.getBlockState(cursor).isAir()) continue;
-                level.setBlock(cursor, Blocks.DIRT.defaultBlockState(), Block.UPDATE_CLIENTS);
-            }
+            return CUT;
         }
+        for (int y = ground; y < target; y++) {
+            cursor.set(x, y, z);
+            if (!level.getBlockState(cursor).isAir()) continue;
+            level.setBlock(cursor, Blocks.DIRT.defaultBlockState(), Block.UPDATE_CLIENTS);
+        }
+        return FILLED;
     }
 
     /**

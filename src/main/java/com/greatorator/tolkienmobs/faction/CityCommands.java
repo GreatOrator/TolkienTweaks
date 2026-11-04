@@ -416,9 +416,13 @@ public final class CityCommands {
                 return 0;
             }
             List<Part> parts = parts(folder);
-            skirt(level, parts, mark.origin());
+            Sites.Apron done = skirt(level, parts, mark.origin());
             write(folder, new Mark(mark.origin(), mark.band(), true, mark.dimension()));
-            source.sendSuccess(() -> Component.literal("Shoulder blended over " + RINGS + " rings."), true);
+            // The count is the point of the report: a shoulder that left its whole rim alone is a city that
+            // reads as a block cut out of the ground, and no message that only says it ran would show that.
+            source.sendSuccess(() -> Component.literal("Shoulder blended over " + RINGS + " rings: "
+                    + done.cut() + " columns cut down, " + done.filled() + " built up, " + done.left()
+                    + " left as they stand for being too far off the city's base to meet it in one step."), true);
             return 1;
         } catch (IOException failed) {
             source.sendFailure(Component.literal("The cut could not be read: " + failed.getMessage()));
@@ -516,11 +520,12 @@ public final class CityCommands {
     }
 
     /** The shoulder of the whole city: its own footprint, its own lowest corner, and the ground as base. */
-    private static void skirt(ServerLevel level, List<Part> parts, BlockPos origin) {
+    private static Sites.Apron skirt(ServerLevel level, List<Part> parts, BlockPos origin) {
         Box box = Box.of(parts, origin);
         int wide = box.highX() - box.lowX() + 1;
         int deep = box.highZ() - box.lowZ() + 1;
-        Sites.apron(level, new BlockPos(box.lowX(), box.lowY(), box.lowZ()), wide, deep, RINGS, box.lowY());
+        return Sites.apron(level, new BlockPos(box.lowX(), box.lowY(), box.lowZ()), wide, deep, RINGS,
+                box.lowY());
     }
 
     /** A piece's template, read from the cut the first time it is asked for. */
