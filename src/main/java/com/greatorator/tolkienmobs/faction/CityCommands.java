@@ -45,11 +45,12 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
  * <p>
  * It exists for the two things that need a city in a world before the pack has one: looking at the
  * terrain, and walking the campaign's pages through a valley of the right size. One root,
- * {@code /tmcity}, with five hands: {@code origin}, which plants the corner where the caller stands;
+ * {@code /tmcity}, with six hands: {@code origin}, which plants the corner where the caller stands;
  * {@code band [count]}, which lays the next band of the city and stops, because a whole city is two
- * thousand chunks and those are generated chunk by chunk; {@code apron}, which blends the shoulder into
- * the ground once the last band is down; {@code goto}, which stands the caller on the middle of the
- * city; and {@code status}, which says how much is standing.
+ * thousand chunks and those are generated chunk by chunk; {@code relay}, which puts the counter back at
+ * the bottom of the city it already stands in; {@code apron}, which blends the shoulder into the ground
+ * once the last band is down; {@code goto}, which stands the caller on the middle of the city; and
+ * {@code status}, which says how much is standing.
  * <p>
  * Every number it prints is a world coordinate of the city itself rather than of the table the pieces
  * are cut against. The two differ by the width of the cut's own frame - five hundred blocks or more -
@@ -141,6 +142,7 @@ public final class CityCommands {
                         .executes(context -> band(context, 1))
                         .then(Commands.argument("count", IntegerArgumentType.integer(1, 8))
                                 .executes(context -> band(context, IntegerArgumentType.getInteger(context, "count")))))
+                .then(Commands.literal("relay").executes(CityCommands::relay))
                 .then(Commands.literal("apron").executes(CityCommands::apron))
                 .then(Commands.literal("goto").executes(CityCommands::visit))
                 .then(Commands.literal("status").executes(CityCommands::status)));
@@ -263,6 +265,51 @@ public final class CityCommands {
             source.sendSuccess(() -> Component.literal("Laid " + soFar + " pieces; " + which
                     + " down" + sky + spoken), true);
             return laid;
+        } catch (IOException failed) {
+            source.sendFailure(Component.literal("The cut could not be read: " + failed.getMessage()));
+            return 0;
+        }
+    }
+
+    /**
+     * Lays the city again where it already stands, without planting a new corner.
+     * <p>
+     * A corner is planted once and the bands walk up from it, so a piece re-cut after the city was laid
+     * is never laid at all: the counter is at the top and has nothing left to give. This puts the counter
+     * back at the bottom and keeps the corner, which is all a re-lay needs - a piece laid over itself
+     * writes the same blocks to the same places, so nothing is doubled, and a cut that gained blocks
+     * fills them in. What it cannot do is take blocks away: a piece that lost some leaves those standing.
+     */
+    private static int relay(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        ServerLevel level = source.getLevel();
+        Path folder = folder();
+        try {
+            Mark mark = read(folder);
+            if (mark == null) {
+                source.sendFailure(Component.literal("No corner planted yet - run /tmcity origin where it should stand."));
+                return 0;
+            }
+            String elsewhere = elsewhere(mark, level);
+            if (elsewhere != null) {
+                source.sendFailure(Component.literal(elsewhere));
+                return 0;
+            }
+            List<Part> parts = parts(folder);
+            if (parts.isEmpty()) {
+                source.sendFailure(Component.literal("No pieces in " + folder + " - is the cut there?"));
+                return 0;
+            }
+            write(folder, new Mark(mark.origin(), 0, false, mark.dimension()));
+            Campaign.setValleyOrigin(mark.origin());
+            Box box = Box.of(parts, mark.origin());
+            String spoken = box.spoken();
+            int count = bands(parts).size();
+            int pieces = parts.size();
+            source.sendSuccess(() -> Component.literal("Same corner, back to the bottom: " + spoken
+                    + "; " + count + " bands, " + pieces + " pieces. Run /tmcity band " + count
+                    + " to lay it over what is already standing."), true);
+            return 1;
         } catch (IOException failed) {
             source.sendFailure(Component.literal("The cut could not be read: " + failed.getMessage()));
             return 0;

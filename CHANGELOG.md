@@ -336,6 +336,12 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
 
 - **A page is spoken, not only summarised.** The campaign script's best writing never reached the game: a page was a name, a place and a count, and a herald's whole part in it was five chat lines, so the conversation the West's line opens on - a Ranger's cold hall, a late scout, the horn - arrived as a notice. Taking a page from a herald now opens it as parchment and lets it speak: the speaker's name, the words, the two answers a player can give, his reply to whichever was given, and a row under it that puts the page away. The first page written is the West's first muster, and its words are the script's own. A page whose prose has not been written keeps the hand-over it had, because a screen with nothing on it is worse than a chat line: the guard is one set of page names, so giving a page a voice is naming it there and writing its keys. The words travel as keys rather than as text, so a page is read in the player's own language, and the name at the top is the name the body in front of the player is actually wearing, so the page cannot contradict its own nameplate.
 
+- **`/tmcity relay` lays the city again where it already stands.** A corner is planted once and the bands
+  walk up from it, so a piece re-cut after the city was laid is never laid at all - the counter is at the top
+  and `band` has nothing left to give, which is what a re-lay after a cut change looked like. `relay` keeps
+  the corner and the dimension and puts the counter back at the bottom, so one `/tmcity band 6` writes the
+  amended pieces over the standing city.
+
 ### Fixed
 
 - **The needle points at the body, not at the middle of the town.** A page that names somebody now
