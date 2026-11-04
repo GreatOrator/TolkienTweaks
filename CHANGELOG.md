@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The mountain the city's north-east corner was cut into is put back.** The build carries no blocks
+  above its lowest band in that corner - 73 by 47 of it, against the north and east walls - because the
+  rock stood there rather than the city. The valley raises that rock again: from the floor at the notch's
+  inner edges to the city's own crown at 318 in the corner, and back down outside the walls over 60 blocks
+  into the massif's climb, so the corner reads as a spur of the mountain with the city cut round it.
+
 - **Arda is tall enough to build over Imladris in.** The world was 384 blocks tall, so its ceiling was 319
   and the city's crown 318: nothing in Arda could stand above the city's roof, and the mountains meant to
   close over the valley had to stop a block short of it. The world is 512 blocks now, which leaves 128
