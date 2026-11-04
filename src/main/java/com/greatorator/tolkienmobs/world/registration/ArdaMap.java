@@ -80,8 +80,8 @@ public final class ArdaMap {
      */
     private static final int VALLEY_X = 4628;
     private static final int VALLEY_Z = -3577;
-    private static final int VALLEY_HALF_X = 272;
-    private static final int VALLEY_HALF_Z = 251;
+    private static final int VALLEY_HALF_X = 280;
+    private static final int VALLEY_HALF_Z = 259;
 
     /**
      * The height the rock stands at where the massif meets the build: the crown of the city itself.
