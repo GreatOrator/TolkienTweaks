@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.biome.FeatureSorter;
 import net.minecraft.world.level.biome.MultiNoiseBiomeSourceParameterList;
+import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 
@@ -19,6 +20,23 @@ public class TolkienBiomeGenerationSettings extends BiomeGenerationSettings.Buil
 
     public TolkienBiomeGenerationSettings(HolderGetter<PlacedFeature> features, HolderGetter<ConfiguredWorldCarver<?>> carvers) {
         super(features, carvers);
+    }
+
+    /**
+     * Leaves vanilla's own water out of every Tolkien biome.
+     * <p>
+     * The map draws Arda's rivers and lakes, and its ground is fixed: a placed lake digs a bowl of its own
+     * and fills it to a height it picks, which is a sheet of water standing over the ground the drawing put
+     * there - and a water spring does the same on a smaller scale. Lava lakes and lava springs are left as
+     * they are, since the drawing says nothing about them.
+     */
+    @Override
+    public BiomeGenerationSettings.Builder addFeature(GenerationStep.Decoration step, Holder<PlacedFeature> feature) {
+        String path = feature.unwrapKey().map(key -> key.identifier().getPath()).orElse("");
+        if (!path.equals("lake_water") && !path.equals("spring_water")) {
+            super.addFeature(step, feature);
+        }
+        return this;
     }
 
     @Override

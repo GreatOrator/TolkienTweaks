@@ -140,6 +140,10 @@ what lets a river fall and a lake sit in its basin.
   and reverted: the masks say what the ranges are.
 - **The river and lake masks are solid.** Where they are marked is where the water goes; the bake only
   records how much of each cell is marked, so that a bank can fall between cells instead of on the grid.
+- **The drawing is Arda's only water.** Vanilla's water lakes and water springs are filtered out of the
+  biome builder, and out of the generated biome files: a placed lake digs a bowl of its own and fills it to
+  a height it picks, which is water standing over ground the drawing fixed. Lava lakes and lava springs
+  stay, since the drawing says nothing about them.
 - **The final height mask is the locator.** It is what matches a build or a landmark to the Middle-earth
   map, and it also draws the ground's own shape, from the sea's 63 up to the 318 crown.
 - **A drawn river is as deep as it is wide, to a cap of sixteen.** A three-block channel is three deep in

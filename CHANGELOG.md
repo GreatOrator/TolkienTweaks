@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **Vanilla's water lakes and water springs are gone from Arda.** They are placed by the biome rather than the
+  map, and a placed lake fills to a level of its own - which is the sheet of water standing three or four
+  blocks over Arda's ground, and the pond sitting inside the valley. Both are filtered out of the biome
+  builder and removed from the sixteen generated biome files; lava lakes and lava springs are untouched.
+
 - **Water stands at the ground the drawing gives it, not at a graded average.** The surface was the mean of
   the drawn ground over ±64 blocks for a river and ±192 for a lake, which lifted water over the land wherever
   the drawing dips - a lake sheet three or four blocks above its own shore. The drawing's water is already
