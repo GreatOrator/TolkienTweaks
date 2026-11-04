@@ -342,6 +342,12 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   the corner and the dimension and puts the counter back at the bottom, so one `/tmcity band 6` writes the
   amended pieces over the standing city.
 
+- **`/tmcity summon` puts the whole city down in one word, in whatever world the caller stands in.** The
+  city could only be raised by planting a corner and then walking the bands up, which is the pair for
+  building it by hand but three commands and a remembered corner for anyone who just wants the build alone
+  in an empty world. `summon` plants at the caller's feet and then lays every band and the shoulder, so a
+  flat world can be turned into the build and nothing else.
+
 ### Fixed
 
 - **The needle points at the body, not at the middle of the town.** A page that names somebody now

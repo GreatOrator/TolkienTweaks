@@ -45,9 +45,10 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
  * <p>
  * It exists for the two things that need a city in a world before the pack has one: looking at the
  * terrain, and walking the campaign's pages through a valley of the right size. One root,
- * {@code /tmcity}, with six hands: {@code origin}, which plants the corner where the caller stands;
- * {@code band [count]}, which lays the next band of the city and stops, because a whole city is two
- * thousand chunks and those are generated chunk by chunk; {@code relay}, which puts the counter back at
+ * {@code /tmcity}, with seven hands: {@code origin}, which plants the corner where the caller stands;
+ * {@code summon}, which plants it and lays the whole city in one word, for putting the build alone into
+ * an empty world; {@code band [count]}, which lays the next band of the city and stops, because a whole
+ * city is two thousand chunks and those are generated chunk by chunk; {@code relay}, which puts the counter back at
  * the bottom of the city it already stands in; {@code apron}, which blends the shoulder into the ground
  * once the last band is down; {@code goto}, which stands the caller on the middle of the city; and
  * {@code status}, which says how much is standing.
@@ -138,6 +139,7 @@ public final class CityCommands {
         dispatcher.register(Commands.literal("tmcity")
                 .requires(MAY_BUILD)
                 .then(Commands.literal("origin").executes(CityCommands::origin))
+                .then(Commands.literal("summon").executes(CityCommands::summon))
                 .then(Commands.literal("band")
                         .executes(context -> band(context, 1))
                         .then(Commands.argument("count", IntegerArgumentType.integer(1, 8))
@@ -150,14 +152,33 @@ public final class CityCommands {
 
     /** Plants the city's corner at the caller's feet, and forgets whatever was standing before. */
     private static int origin(CommandContext<CommandSourceStack> context) {
-        CommandSourceStack source = context.getSource();
+        return plant(context.getSource()) ? 1 : 0;
+    }
+
+    /**
+     * Plants the city where the caller stands and lays every band of it at once, in whatever country
+     * they are in.
+     * <p>
+     * {@code origin} and {@code band} are the pair for building a city by hand, one band at a time,
+     * because two thousand chunks of blocks is a stall the server sits through. This is the one word for
+     * putting the whole city down: the same planting, then every band that is left, then the shoulder.
+     * It is for making a world that holds the build and nothing else, where the build can be looked at
+     * without the ground around it arguing about what is missing.
+     */
+    private static int summon(CommandContext<CommandSourceStack> context) {
+        if (!plant(context.getSource())) return 0;
+        return band(context, 99);
+    }
+
+    /** Plants the corner and writes the marker, saying why not when it cannot. */
+    private static boolean plant(CommandSourceStack source) {
         ServerLevel level = source.getLevel();
         Path folder = folder();
         try {
             List<Part> parts = parts(folder);
             if (parts.isEmpty()) {
                 source.sendFailure(Component.literal("No pieces in " + folder + " - is the cut there?"));
-                return 0;
+                return false;
             }
             // The city's lowest corner goes under the caller's feet, so the band that carries the ground
             // lands where they are standing and the rest of the city rises from there.
@@ -187,10 +208,10 @@ public final class CityCommands {
                         + " of it stand above the sky and cannot be laid. Plant the corner at y " + fits
                         + " or lower to stand the whole city."));
             }
-            return 1;
+            return true;
         } catch (IOException failed) {
             source.sendFailure(Component.literal("The cut could not be read: " + failed.getMessage()));
-            return 0;
+            return false;
         }
     }
 
