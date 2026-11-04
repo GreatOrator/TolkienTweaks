@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **River and lake banks fall where the drawing put them.** The two masks are baked as the share of each
+  eight-block cell the drawing marks instead of one sample taken nearest, and the game reads that share
+  interpolated between cells and calls a column water at a third of one: an oblique river used to be a
+  staircase of eight-block steps, and its bank now follows the drawn line. No cell the drawing touches is
+  left stranded without water beside it, so a thin tributary is still a channel.
+
 - **The ground is the heightmap's own shape, read at eight blocks to the pixel.** The bake went from
   sixteen blocks to the pixel to eight, so ridges and river bends are twice as sharp, and the mountain
   mask no longer lifts a bright column toward the crown: that lift flattened every ridge it touched to the

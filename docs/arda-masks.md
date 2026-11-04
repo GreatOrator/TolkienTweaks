@@ -67,15 +67,22 @@ it to be right: it reads `Reference/` directly, using the same calibration world
 
 | file | size | marked |
 | --- | --- | --- |
-| `rivers.png` | 53 kB | 2.2% |
+| `rivers.png` | 84 kB | 2.6% touched, 2.3% water |
 | `bruinen.png` | 1.4 kB | 4.3%, 400 x 400 at **3 blocks to the pixel** - the Bruinen's own corner |
-| `lakes.png` | 11 kB | 1.2% |
+| `lakes.png` | 13 kB | 1.2% water |
 | `mountains.png` | 363 kB | 23.8% above half brightness |
 | `height.png` | 7.9 MB, sixteen-bit topography | sea 16.8% of the frame |
 
 Run it from the mod root whenever the masks or `Reference/work/calibration.json` change. `ArdaMasks`
 reads whatever is in the assets; a missing image leaves that mask empty and the drawing answers as it
 did before.
+
+The rivers and lakes are written as **cover**: how much of each eight-block cell the drawing marks, from
+0 to 255. The game reads that share, interpolated between the cells round it, and calls a column water at a
+third of a cell — so a bank falls where the line was drawn rather than on the cell grid, and a tributary
+drawn along a cell's middle is still a channel. Measured on the bake: no cell the drawing touches is left
+without water beside it, and a channel runs a median of eight blocks across with a ninetieth percentile of
+twenty-one.
 
 The river and lake censuses below were taken at the sixteen-block bake; the rule they describe is the
 same at eight, and the counts have not been re-measured.
