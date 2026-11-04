@@ -63,11 +63,12 @@ public final class TolkienDimensions {
      * sky light and weather, a day and a night on the overworld's clock, sleeping that works and
      * respawn anchors that do not.
      * <p>
-     * The one value that is not the overworld's is the height. Imladris stands 243 blocks tall, from its
-     * floor at 75 to its crown at 318, so in a 384-block world - whose ceiling is 319 - nothing could
-     * stand above the city's roof: the mountains meant to close over it would have had to stop a block
-     * short of it, and no ground in Arda could be raised over the city at all. 512 blocks leaves 128
-     * above that crown, which is the room the massif round the valley needs.
+     * The height is the overworld's too - 384 blocks, whose highest block is 319 - because that is the
+     * height everything else in the game is built and measured against, and a ceiling higher than the
+     * overworld's is a ceiling nobody can climb to from here without a command. The city's own crown at
+     * 318 is therefore one block under the sky, and the room its massif needs comes from the ground
+     * instead: the country round the valley is brought down to the vale the city stands in, rather than
+     * the city being raised out of it (see ArdaMap's vale).
      */
     public static void bootstrapType(BootstrapContext<DimensionType> context) {
         HolderGetter<Timeline> timelines = context.lookup(Registries.TIMELINE);
@@ -80,8 +81,8 @@ public final class TolkienDimensions {
                 false,
                 1.0,
                 -64,
-                512,
-                512,
+                384,
+                384,
                 BlockTags.INFINIBURN_OVERWORLD,
                 0.0F,
                 new DimensionType.MonsterSettings(UniformInt.of(0, 7), 0),
