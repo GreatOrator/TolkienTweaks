@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The valley's floor runs out along the river, so the branch leaves the city on flat ground.** With the
+  floor ending inside the south wall, the climb stood a bank across the branch's own course; the floor
+  now follows the course for 18 blocks either side of it.
 - **The floor runs three blocks under the build, and out past the drawn Bruinen.** A shelf of any
   width leaves a seam of flat ground the city does not stand on, so the valley's floor now ends three
   blocks inside the walls on the west, north and south and the climb starts under the build's own outer

@@ -235,6 +235,17 @@ public final class ArdaMap {
     private static final double BRUINEN_FORD_SHALLOW = 0.8D;
     /** Steps the channel's water is read at along its course, from the outlet to the ford. */
     private static final int BRUINEN_STEPS = 96;
+    /**
+     * How wide the flat ground the valley's own water leaves through is, either side of the branch's
+     * course, in blocks.
+     * <p>
+     * The floor's south edge is three blocks inside the build, and the branch runs out of the build's
+     * south-east corner: where the two meet, the climb would stand a bank across the water's own course
+     * and the river would leave the city through a notch thirty blocks deep. The floor runs out along the
+     * course instead, so the branch leaves the walls on the valley's ground and meets the drawn Bruinen
+     * in the open.
+     */
+    private static final int BRUINEN_CORRIDOR = 18;
     /** The course's water, read once; and the lock that keeps two chunks from reading it together. */
     private static volatile int[] bruinenProfile;
     private static final Object BRUINEN_LOCK = new Object();
@@ -501,9 +512,14 @@ public final class ArdaMap {
      * lowest band, because the mountain stood there, so {@link #shoulder} stands the rock back up.
      */
     private static Sample valley(double blockX, double blockZ, Ground ground) {
+        // The floor runs out along the branch's course, so the river leaves the city on flat ground
+        // instead of cutting a notch through the bank the overlap puts inside the south wall.
         // A distance from the floor's rectangle, not one from each of its four sides: the difference is
         // at the corners, where this rounds the mountain's foot instead of squaring it off.
         double beyond = beyond(blockX, blockZ);
+        if (beyond > 0.0D && corridor(blockX, blockZ)) {
+            beyond = 0.0D;
+        }
         int x = (int) Math.floor(blockX);
         int z = (int) Math.floor(blockZ);
         // The ridge is not a ring at one height: it wanders in and out, and its summits rise and fall
@@ -700,6 +716,23 @@ public final class ArdaMap {
         // the height of the river thirty blocks away from it.
         int water = out <= 0.0D ? (int) Math.round(level) : SEA_LEVEL;
         return new Sample(ground.country(), height, height < level, false, ground.upland(), water);
+    }
+
+    /**
+     * Whether a column lies within the corridor the branch leaves the valley through, measured across its
+     * course rather than from either end so the corridor is the river's own width and not a box round it.
+     */
+    private static boolean corridor(double blockX, double blockZ) {
+        double alongX = BRUINEN_FORD_X - BRUINEN_OUTLET_X;
+        double alongZ = BRUINEN_FORD_Z - BRUINEN_OUTLET_Z;
+        double share = ((blockX - BRUINEN_OUTLET_X) * alongX + (blockZ - BRUINEN_OUTLET_Z) * alongZ)
+                / (alongX * alongX + alongZ * alongZ);
+        if (share < 0.0D || share > 1.0D) {
+            return false;
+        }
+        double offsetX = blockX - (BRUINEN_OUTLET_X + share * alongX);
+        double offsetZ = blockZ - (BRUINEN_OUTLET_Z + share * alongZ);
+        return Math.hypot(offsetX, offsetZ) <= BRUINEN_CORRIDOR;
     }
 
     /** Whether a cell of the map exists at all, since a search may walk off its edge. */

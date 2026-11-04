@@ -45,6 +45,9 @@ what is still open, so the next session does not have to rebuild that from the c
 - East it runs **135 blocks** to x **5040**, past the Bruinen the drawing puts at 5008, so the river
   the branch runs into stands on the valley's own ground rather than in a slot three blocks off the
   wall. The massif's east flank starts beyond it, on the river's far bank.
+- The floor also runs out **18 blocks either side of the branch's course** (`BRUINEN_CORRIDOR`): the
+  branch leaves the build's south-east corner, and without it the overlap's bank would stand across the
+  water and the river would leave the city through a notch a hundred blocks up the climb.
 - The east's longer shelf is the river's: the drawn Bruinen reaches that edge, and the branch has to meet
   it at the floor's level, so a climb in between would stand the river two hundred blocks over the city.
   A hundred blocks on *every* side (one build earlier) put the hillside a field away all round; twelve,
