@@ -29,7 +29,7 @@ import net.minecraft.world.level.levelgen.DensityFunction;
  * <p>Three things are worked out rather than drawn: the sea's biome is banded by latitude (frozen
  * ocean in the north, temperate in the middle, warm in the south), the shore is read off the ground
  * rather than the cell, and the named rivers - the Anduin, Brandywine, Greyflood, Isen, Celduin,
- * Forest River and Entwash - are cut where {@link River} draws them.
+ * Forest River and Entwash - are cut where the reference mask draws them.
  *
  * <p>A column's biome follows its ground, not the cell it was drawn in. Because the heights are
  * blended, a cell's own height only holds at its own edge and a coast is a slope: the waterline
@@ -182,6 +182,36 @@ public final class ArdaMap {
     private static final double BRUINEN_BANK = 1.2D;
     private static final double BRUINEN_FORD_SHALLOW = 0.8D;
 
+    /** How deep a river's and a lake's bed lies under its water, and how far the grade is read. */
+    private static final int RIVER_DEPTH = 4;
+    private static final int RIVER_GRADE = 64;
+    private static final int LAKE_DEPTH = 6;
+    private static final int LAKE_GRADE = 192;
+    /** The highest the drawing may raise the ground, leaving the world's ceiling room above it. */
+    private static final int MOUNTAIN_CEILING = 420;
+
+    /**
+     * The height water stands at over a column, read as the ground's own grade about it.
+     * <p>
+     * A river is not level and neither is the ground it runs through: the surface is the average of
+     * the ground over a square of the map, so the water follows the fall of the country instead of
+     * standing at one height from the mountains to the sea.
+     */
+    private static int grade(int blockX, int blockZ, double shiftX, double shiftZ, int reach) {
+        int total = 0;
+        int samples = 0;
+        for (int dx = -reach; dx <= reach; dx += reach) {
+            for (int dz = -reach; dz <= reach; dz += reach) {
+                int x = blockX + dx;
+                int z = blockZ + dz;
+                total += groundAt((x + shiftX) / (double) CELL + ORIGIN_COLUMN,
+                        (z + shiftZ) / (double) CELL + ORIGIN_ROW, x, z).height();
+                samples++;
+            }
+        }
+        return Math.round(total / (float) samples);
+    }
+
     private static final Country[][] GRID = draw();
 
     private ArdaMap() {
@@ -313,28 +343,6 @@ public final class ArdaMap {
         }
     }
 
-    /** The rivers the maps name, drawn in cell coordinates and half a width in blocks. */
-    private record River(double[] columns, double[] rows, int halfWidth) {
-    }
-
-    private static final River[] RIVERS = {
-            // The Anduin, out of the Grey Mountains to the delta at Belfalas.
-            new River(new double[]{29.0, 29.0, 28.0, 27.0, 26.5, 26.0, 26.0, 27.0, 26.0, 24.5, 23.5, 23.0, 23.5},
-                    new double[]{3.0, 6.0, 9.0, 12.0, 15.0, 17.0, 19.0, 20.5, 22.0, 23.5, 25.5, 27.5, 29.5}, 22),
-            // The Brandywine, down the Shire's eastern border to the sea.
-            new River(new double[]{11.0, 11.5, 11.0, 10.0, 9.0}, new double[]{17.0, 19.0, 21.0, 22.5, 24.0}, 11),
-            // The Greyflood, from Tharbad down to the coast of Minhiriath.
-            new River(new double[]{14.0, 13.0, 11.5, 10.0}, new double[]{19.0, 21.0, 22.5, 24.0}, 13),
-            // The Isen, out of the Gap of Rohan to the sea.
-            new River(new double[]{22.0, 21.5, 21.0, 20.5}, new double[]{20.0, 22.0, 24.0, 26.0}, 11),
-            // The Celduin, the River Running, from under Erebor to the Sea of Rhun.
-            new River(new double[]{35.0, 36.5, 38.0, 39.5, 41.0}, new double[]{9.0, 10.5, 12.0, 13.0, 14.0}, 13),
-            // The Forest River, out of northern Mirkwood to the Long Lake.
-            new River(new double[]{30.0, 31.5, 33.0, 34.5}, new double[]{5.0, 6.5, 8.0, 9.5}, 11),
-            // The Entwash, out of Fangorn to the Anduin's delta.
-            new River(new double[]{25.0, 25.5, 26.5, 27.0}, new double[]{19.0, 21.0, 22.5, 23.5}, 10)
-    };
-
     /**
      * What stands at a column of the world. The warp is the world's own noise, so it is the caller's
      * to hand in: the biome source reads it from the climate sampler it is given and the generator
@@ -379,11 +387,19 @@ public final class ArdaMap {
             return valley;
         }
 
-        for (River river : RIVERS) {
-            if (riverDistance(river, mapX, mapZ) < river.halfWidth()) {
-                return new Sample(ground.country(), Math.min(ground.height(), SEA_LEVEL - 3), true,
-                        false, ground.upland());
-            }
+        // The masks answer where a river or a lake is, and the water stands at the grade of the
+        // ground it is cut into rather than at one level for the whole world: a river that starts in
+        // the mountains and ends at the sea falls the way the ground under it falls.
+        if (ArdaMasks.lake(blockX, blockZ)) {
+            // An inland sea is drawn at the height of the sea, so a lake never drains below it.
+            int surface = Math.max(SEA_LEVEL, grade(blockX, blockZ, shiftX, shiftZ, LAKE_GRADE));
+            return new Sample(ground.country(), Math.min(ground.height(), surface - LAKE_DEPTH), true,
+                    false, ground.upland(), surface);
+        }
+        if (ArdaMasks.river(blockX, blockZ)) {
+            int surface = grade(blockX, blockZ, shiftX, shiftZ, RIVER_GRADE);
+            return new Sample(ground.country(), Math.min(ground.height(), surface - RIVER_DEPTH), true,
+                    false, ground.upland(), surface);
         }
         return new Sample(ground.country(), ground.height(), false, ground.shore(), ground.upland());
     }
@@ -658,7 +674,8 @@ public final class ArdaMap {
         int relief = northWest.relief();
         double rough = fractal(blockX, blockZ, 192, 1) + 0.5D * fractal(blockX, blockZ, 96, 2)
                 + 0.25D * fractal(blockX, blockZ, 48, 3);
-        int height = Mth.clamp((int) Math.round(drawn + relief * (rough / 1.75D - 0.5D) * 2.0D), -60, 300);
+        int height = Mth.clamp((int) Math.round(drawn + relief * (rough / 1.75D - 0.5D) * 2.0D)
+                + ArdaMasks.uplift(blockX, blockZ), -60, MOUNTAIN_CEILING);
 
         boolean shore = seaInReach && Math.abs(drawn - SEA_LEVEL) <= BEACH_HEIGHT;
         return new Ground(northWest, height, drawn, shore, upland);
@@ -675,25 +692,6 @@ public final class ArdaMap {
     /** The warp for one axis, read from the climate sampler's own noise. */
     private static double warp(DensityFunction noise, int blockX, int blockZ, double scale) {
         return noise.compute(new DensityFunction.SinglePointContext(blockX, 0, blockZ)) * WARP * scale;
-    }
-
-    /** Signed distance from a cell coordinate to the nearest point of a river's course. */
-    private static double riverDistance(River river, double mapX, double mapZ) {
-        double closest = Double.MAX_VALUE;
-        for (int point = 0; point < river.columns().length - 1; point++) {
-            double x0 = river.columns()[point];
-            double z0 = river.rows()[point];
-            double dx = river.columns()[point + 1] - x0;
-            double dz = river.rows()[point + 1] - z0;
-            double lengthSquared = dx * dx + dz * dz;
-            double along = lengthSquared == 0.0D ? 0.0D
-                    : Mth.clamp(((mapX - x0) * dx + (mapZ - z0) * dz) / lengthSquared, 0.0D, 1.0D);
-            double offsetX = mapX - (x0 + along * dx);
-            double offsetZ = mapZ - (z0 + along * dz);
-            closest = Math.min(closest, Math.sqrt(offsetX * offsetX + offsetZ * offsetZ));
-        }
-        // Distance is in cells; a river's width is in blocks, so convert before comparing.
-        return closest * CELL;
     }
 
     /** Value noise in [0, 1] at a block position, on a lattice of the given size. */
@@ -806,7 +804,6 @@ public final class ArdaMap {
         fill(map, Country.IRON_HILLS, 35, 11, 36, 12);
         fill(map, Country.RHUN, 40, 5, 43, 22);
         fill(map, Country.HARAD, 44, 4, 47, 35);
-        fill(map, Country.TEMPERATE_SEA, 40, 12, 43, 15);
 
         // The Mark, the white wall across the middle of the south, and Gondor below it.
         fill(map, Country.ROHAN, 23, 20, 29, 24);
@@ -824,7 +821,6 @@ public final class ArdaMap {
         fill(map, Country.ASH_MOUNTAINS, 34, 24, 36, 28);
         fill(map, Country.MORDOR, 37, 24, 44, 26);
         fill(map, Country.NURN, 37, 27, 43, 29);
-        fill(map, Country.TEMPERATE_SEA, 39, 27, 41, 28);
 
         // Ithilien, between the Anduin and Mordor's western wall, and the Haradwaith: Umbar on the
         // coast, South Gondor above it and the lands of the south to the map's edge.

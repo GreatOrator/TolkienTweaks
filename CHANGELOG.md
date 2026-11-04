@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **Mountain ranges take their height from the reference mask instead of from the drawn bands.**
+  `ArdaMasks` reads the mountain mask baked to sixteen blocks to the pixel over the world's own frame,
+  and a column's brightness - white at the crest, black on the plain - raises the drawn ground by up
+  to a hundred and fifty blocks. Ranges now follow their real courses: the Misty Mountains are a
+  wandering wall rather than a five-point line with a half-width of two cells, and the Grey Mountains,
+  Mordor's ring and the White Mountains stand where the map puts them. The drawing still says what
+  the country is and what its ground sits at; the mask says how high it stands.
+
+- **Rivers and lakes are the mask's now, and their water stands at the grade of the ground they cut
+  into.** The seven rivers the drawing named as polylines are gone, and so are the two inland seas it
+  laid down as rectangles: the river and lake masks answer instead. Each column of water sits at the
+  average height of the ground about it - within five blocks of its own ground on 87% of the channel
+  measured - so a river falls from the mountains to the sea the way the country under it falls,
+  instead of standing at one level from end to end with a cliff at each end. A river's bed lies four
+  blocks under the water and a lake's six, and a lake never drains below the sea's own height.
+
+- **`tools/arda_masks.py` bakes the masks into the mod's assets.** It crops each 8192 mask to the
+  world's frame at sixteen blocks to the pixel - 1536 by 1152 - using the calibration in
+  `reference/work/calibration.json`, and writes `assets/tolkienmobs/arda/{rivers,lakes,mountains}.png`,
+  a hundred and sixty kilobytes together. The game reads whatever is in the assets, so the masks can be
+  re-baked without touching the code, and a build without them still makes a world.
+
 - **The gorge is the width the build gives its river: twelve blocks, five to the left of the course and
   seven to the right.** The channel the city carries out of the west wall is twelve across with its middle
   block on the line the outlet and the ford draw, and not symmetrical about that block. The cut is measured
