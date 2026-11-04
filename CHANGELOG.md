@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **Arda is tall enough to build over Imladris in.** The world was 384 blocks tall, so its ceiling was 319
+  and the city's crown 318: nothing in Arda could stand above the city's roof, and the mountains meant to
+  close over the valley had to stop a block short of it. The world is 512 blocks now, which leaves 128
+  above that crown for ground to stand in.
+
+- **The mountains round Imladris stand over the city instead of ringing it below the roof.** The crest
+  was 300 - eighteen blocks under the city's 318 - and a quarter of a kilometre out, so from the city's
+  top the ground read as a distant green edge and the corners looked bare. The crest is 380 now, 62 above
+  the crown, reached over the same 260 blocks of climb, so the ridge crosses the city's own height 224
+  blocks from its walls and tops out above its skyline; the fall beyond it is 260 blocks, so the
+  mountainside comes back down into the Trollshaws at a gentler angle than it went up.
+
 - **Chapter two's state is written down.** With the valley done and other work next, the quest line's
   place needed to survive the gap: `docs/chapter-two-state.md` records the eleven pages as built - givers,
   quarries, ground and rewards - where each piece of ground is pinned, the two decisions left open (gating

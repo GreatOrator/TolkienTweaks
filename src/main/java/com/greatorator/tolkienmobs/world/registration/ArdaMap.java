@@ -72,8 +72,9 @@ public final class ArdaMap {
      * blended back into them at its rim. Its middle is the middle of that city - the corner it is
      * planted from, plus half of its 554 by 512 footprint - so a city planted at 4352, -3833 stands in
      * the middle of the floor rather than against one of its walls. The floor holds the whole footprint
-     * with 34 blocks to spare on every side, and the rim is 128 blocks of climb, which is a mountainside
-     * a player walks instead of the wall 64 blocks made of it.
+     * with 16 blocks to spare on its north and south sides and 17 on its east and west, so the mountain's
+     * foot begins a dozen paces from the walls, and the rim is 260 blocks of climb, which is a
+     * mountainside rather than the wall 64 blocks made of it.
      */
     private static final int VALLEY_X = 4628;
     private static final int VALLEY_Z = -3577;
@@ -92,14 +93,16 @@ public final class ArdaMap {
      * walls for the mountains to take the city into themselves, which is the whole point of them.
      */
     private static final int VALLEY_RIM = 260;
-    private static final int VALLEY_FALL = 200;
+    private static final int VALLEY_FALL = 260;
 
     /**
-     * The height the mountains round the valley reach. It is the map's own ceiling - no drawn column
-     * stands higher - and it is a shade under the city's crown, so the mountains meet the city rather
-     * than burying it.
+     * The height the mountains round the valley reach: 62 blocks above the city's crown at 318, so the
+     * ridge stands over the city's own skyline and the city is shut inside the massif rather than
+     * sitting in a bowl below it. The drawn map tops out at 300 and every other column in Arda is still
+     * clamped there; this is the valley's own number, and it needed a taller world before it could be
+     * above the roof of the thing it surrounds.
      */
-    private static final int VALLEY_CREST = 300;
+    private static final int VALLEY_CREST = 380;
 
     private static final Country[][] GRID = draw();
 
