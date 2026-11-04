@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The branch's water starts at the build's own level, 82, not two blocks under the floor.** The city carries
+  its water out at the floor plus eight - mapped from its 584 pieces, 302,049 water blocks whose surface at
+  the mouth is 82 - but the branch was initialised at 72, ten blocks lower, so the water at the mouth stood
+  over a channel it could not run into. The branch also starts at 4900, -3322, which carries no build water:
+  the city's low mouth is the west edge at 4352, -3530, and its east edge carries only a high aqueduct.
+
 - **The river's corridor is open again at Rivendell's exit.** Within 24 blocks of the branch's bent course the
   valley floor runs out and the climb fades back in, so the water leaves the city between two slopes rather
   than through a notch cut in a wall. The corridor was built, softened and then dropped with the old valley

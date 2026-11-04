@@ -190,7 +190,13 @@ public final class ArdaMap {
      */
     private static final int BRUINEN_OUTLET_X = 4900;
     private static final int BRUINEN_OUTLET_Z = -3322;
-    private static volatile int BRUINEN_WATER = PLANTED_FLOOR - 2;
+    /**
+     * The branch's water at the build's own mouth: the city carries its water out at {@link #PLANTED_FLOOR}
+     * plus eight, seven blocks above the valley's floor, and this is that level, not the floor's. An
+     * initialiser two blocks under the floor left the branch ten blocks below the build's own water, so the
+     * water at the city's mouth stood over a channel it could not run into.
+     */
+    private static volatile int BRUINEN_WATER = PLANTED_FLOOR + 8;
     private static final int BRUINEN_BED = 7;
     /** How much of the channel's width the ford takes away, 0 at the outlet and 0.55 at the ford. */
     private static final double BRUINEN_FORD_NARROW = 0.30D;
