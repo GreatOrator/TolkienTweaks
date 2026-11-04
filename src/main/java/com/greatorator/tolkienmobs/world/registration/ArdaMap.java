@@ -552,27 +552,12 @@ public final class ArdaMap {
     }
 
     /**
-     * The Bruinen's gorge at a column, or the ground unchanged where the gorge does not reach.
-     * <p>
-     * The channel is cut into whatever stands there rather than drawn over it: the massif's flank and the
-     * shoulder where the valley answers, the drawn country beyond the ridge where the valley has handed the
-     * ground back, so the same cut opens the front of the valley and runs out to the ford. Its water falls
-     * along the course, its bed lies {@link #BRUINEN_BED} under that, and its walls climb from the water at
-     * {@link #BRUINEN_BANK} blocks for each block out. The climb stops where the natural ground is lower than
-     * the wall, which is what leaves the gorge an open mouth rather than a trench with a lid on it.
-     * <p>
-     * The cut begins at the outlet rather than a few blocks past it, because the build's own channel is there
-     * and the city plants its lowest band over the floor; and it shallows over the last stretch, because the
-     * ford is where the river is waded rather than a place a channel can end in a wall.
-     */
-    /**
      * The water's own height along the Bruinen's course, read off the ground and kept.
      * <p>
-     * Water does not run uphill and does not stand above the lowest ground downstream of it, so the
-     * height at any point on the course is the lowest ground between that point and the ford, and never
-     * above the build's own outlet at {@link #BRUINEN_WATER}. Nothing is set at the ford: if the ground
-     * there is under the outlet the river slopes down to it, and if it is above, the river runs level and
-     * the ground has to be cut to reach it - which is what a valley sunk in a plateau asks for.
+     * Water does not run uphill, so the surface steps down the course and never back up: read forward from
+     * the outlet, it holds the build's own level at {@link #BRUINEN_WATER} until the ground falls under it
+     * and takes the ground from there. Nothing is set at the ford - the river arrives at grade if the
+     * ground has come down to it, and the cut carries it the rest of the way if it has not.
      * <p>
      * Read once and kept, because a column of the gorge would otherwise walk the whole course.
      */
@@ -593,7 +578,8 @@ public final class ArdaMap {
     private static int[] readBruinenProfile() {
         int[] profile = new int[BRUINEN_STEPS + 1];
         int lowest = BRUINEN_WATER;
-        for (int step = BRUINEN_STEPS; step >= 1; step--) {
+        profile[0] = lowest;
+        for (int step = 1; step <= BRUINEN_STEPS; step++) {
             int x = (int) Math.round(BRUINEN_OUTLET_X
                     + (BRUINEN_FORD_X - BRUINEN_OUTLET_X) * step / (double) BRUINEN_STEPS);
             int z = (int) Math.round(BRUINEN_OUTLET_Z
@@ -602,10 +588,23 @@ public final class ArdaMap {
                     groundAt(x / (double) CELL + ORIGIN_COLUMN, z / (double) CELL + ORIGIN_ROW, x, z).height());
             profile[step] = lowest;
         }
-        profile[0] = BRUINEN_WATER;
         return profile;
     }
 
+    /**
+     * The Bruinen's gorge at a column, or the ground unchanged where the gorge does not reach.
+     * <p>
+     * The channel is cut into whatever stands there rather than drawn over it: the massif's flank and the
+     * shoulder where the valley answers, the drawn country beyond the ridge where the valley has handed the
+     * ground back, so the same cut opens the front of the valley and runs out to the ford. Its water falls
+     * along the course, its bed lies {@link #BRUINEN_BED} under that, and its walls climb from the water at
+     * {@link #BRUINEN_BANK} blocks for each block out. The climb stops where the natural ground is lower than
+     * the wall, which is what leaves the gorge an open mouth rather than a trench with a lid on it.
+     * <p>
+     * The cut begins at the outlet rather than a few blocks past it, because the build's own channel is there
+     * and the city plants its lowest band over the floor; and it shallows over the last stretch, because the
+     * ford is where the river is waded rather than a place a channel can end in a wall.
+     */
     private static Sample bruinen(double blockX, double blockZ, Sample ground) {
         double alongX = BRUINEN_FORD_X - BRUINEN_OUTLET_X;
         double alongZ = BRUINEN_FORD_Z - BRUINEN_OUTLET_Z;
