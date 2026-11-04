@@ -257,6 +257,19 @@ def read_region(path, window=None):
         # 1.18 flattened the Level wrapper away; older chunks still wear it.
         if "Level" in root:
             root = root["Level"]
+        # A chunk from before 1.13 keeps its sections under capitalised names and its palette in
+        # `Palette`/`BlockStates`. Renamed here rather than at every reader, so a twelve-year-old world
+        # reads with the same code as a new one.
+        if "Sections" in root:
+            sections = []
+            for old in root["Sections"]:
+                section = {"Y": old.get("Y", 0)}
+                palette = old.get("Palette")
+                if palette:
+                    section["block_states"] = {"palette": palette, "data": old.get("BlockStates")}
+                sections.append(section)
+            root = {key: value for key, value in root.items() if key != "Sections"}
+            root["sections"] = sections
         yield index % 32, index // 32, root
 
 
