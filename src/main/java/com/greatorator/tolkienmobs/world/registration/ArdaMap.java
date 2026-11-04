@@ -245,7 +245,7 @@ public final class ArdaMap {
      * course instead, so the branch leaves the walls on the valley's ground and meets the drawn Bruinen
      * in the open.
      */
-    private static final int BRUINEN_CORRIDOR = 18;
+    private static final int BRUINEN_CORRIDOR = 24;
     /** The course's water, read once; and the lock that keeps two chunks from reading it together. */
     private static volatile int[] bruinenProfile;
     private static final Object BRUINEN_LOCK = new Object();
@@ -517,8 +517,11 @@ public final class ArdaMap {
         // A distance from the floor's rectangle, not one from each of its four sides: the difference is
         // at the corners, where this rounds the mountain's foot instead of squaring it off.
         double beyond = beyond(blockX, blockZ);
-        if (beyond > 0.0D && corridor(blockX, blockZ)) {
-            beyond = 0.0D;
+        double across = corridor(blockX, blockZ);
+        if (across < Double.MAX_VALUE) {
+            // Softened rather than cut off at the corridor's edge: the floor runs out along the course,
+            // and the climb fades back in over the next blocks instead of standing a wall beside the water.
+            beyond *= smooth(Mth.clamp(across / BRUINEN_CORRIDOR, 0.0D, 1.0D));
         }
         int x = (int) Math.floor(blockX);
         int z = (int) Math.floor(blockZ);
@@ -719,20 +722,21 @@ public final class ArdaMap {
     }
 
     /**
-     * Whether a column lies within the corridor the branch leaves the valley through, measured across its
-     * course rather than from either end so the corridor is the river's own width and not a box round it.
+     * How far a column lies across the corridor the branch leaves the valley through, in blocks, or
+     * {@link Double#MAX_VALUE} where it is not within the course's own reach at all. Measured across the
+     * course rather than from either end, so the corridor follows the water instead of boxing it in.
      */
-    private static boolean corridor(double blockX, double blockZ) {
+    private static double corridor(double blockX, double blockZ) {
         double alongX = BRUINEN_FORD_X - BRUINEN_OUTLET_X;
         double alongZ = BRUINEN_FORD_Z - BRUINEN_OUTLET_Z;
         double share = ((blockX - BRUINEN_OUTLET_X) * alongX + (blockZ - BRUINEN_OUTLET_Z) * alongZ)
                 / (alongX * alongX + alongZ * alongZ);
         if (share < 0.0D || share > 1.0D) {
-            return false;
+            return Double.MAX_VALUE;
         }
         double offsetX = blockX - (BRUINEN_OUTLET_X + share * alongX);
         double offsetZ = blockZ - (BRUINEN_OUTLET_Z + share * alongZ);
-        return Math.hypot(offsetX, offsetZ) <= BRUINEN_CORRIDOR;
+        return Math.hypot(offsetX, offsetZ);
     }
 
     /** Whether a cell of the map exists at all, since a search may walk off its edge. */
