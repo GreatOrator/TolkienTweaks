@@ -82,9 +82,6 @@ public final class CityCommands {
     private static final int TILE = 48;
     /** How deep under the lowest band the ground is filled, in blocks. */
     private static final int UNDERPIN = 24;
-    /** How many rings the shoulder is tapered over. */
-    private static final int RINGS = 4;
-
     /** Templates already read this session, so the ten megabytes are parsed once. */
     private static final Map<String, StructureTemplate> LOADED = new HashMap<>();
 
@@ -418,11 +415,11 @@ public final class CityCommands {
             List<Part> parts = parts(folder);
             Sites.Apron done = skirt(level, parts, mark.origin());
             write(folder, new Mark(mark.origin(), mark.band(), true, mark.dimension()));
-            // The count is the point of the report: a shoulder that left its whole rim alone is a city that
+            // The count is the point of the report: a shoulder that moved nothing at all is a city that
             // reads as a block cut out of the ground, and no message that only says it ran would show that.
-            source.sendSuccess(() -> Component.literal("Shoulder blended over " + RINGS + " rings: "
+            source.sendSuccess(() -> Component.literal("Shoulder walked out from the walls: "
                     + done.cut() + " columns cut down, " + done.filled() + " built up, " + done.left()
-                    + " left as they stand for being too far off the city's base to meet it in one step."), true);
+                    + " already standing on its line."), true);
             return 1;
         } catch (IOException failed) {
             source.sendFailure(Component.literal("The cut could not be read: " + failed.getMessage()));
@@ -524,7 +521,7 @@ public final class CityCommands {
         Box box = Box.of(parts, origin);
         int wide = box.highX() - box.lowX() + 1;
         int deep = box.highZ() - box.lowZ() + 1;
-        return Sites.apron(level, new BlockPos(box.lowX(), box.lowY(), box.lowZ()), wide, deep, RINGS,
+        return Sites.apron(level, new BlockPos(box.lowX(), box.lowY(), box.lowZ()), wide, deep,
                 box.lowY());
     }
 

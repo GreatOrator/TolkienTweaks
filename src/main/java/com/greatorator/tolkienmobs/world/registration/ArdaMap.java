@@ -69,16 +69,18 @@ public final class ArdaMap {
      * <p>
      * A cell of the drawing is 512 blocks and the city that stands here is 554 across, so this ground
      * cannot be a country of the 48 by 36 grid: it is cut out of cells the drawing already fills and
-     * blended back into them at its rim. The floor is wide enough for the city's whole footprint with a
-     * few blocks to spare on every side, and the rim is long enough that the climb back to the hills is
-     * a slope rather than a wall.
+     * blended back into them at its rim. Its middle is the middle of that city - the corner it is
+     * planted from, plus half of its 554 by 512 footprint - so a city planted at 4352, -3833 stands in
+     * the middle of the floor rather than against one of its walls. The floor holds the whole footprint
+     * with 34 blocks to spare on every side, and the rim is 128 blocks of climb, which is a mountainside
+     * a player walks instead of the wall 64 blocks made of it.
      */
-    private static final int VALLEY_X = 4352;
-    private static final int VALLEY_Z = -3840;
+    private static final int VALLEY_X = 4628;
+    private static final int VALLEY_Z = -3577;
     private static final int VALLEY_HALF_X = 320;
     private static final int VALLEY_HALF_Z = 290;
     private static final int VALLEY_FLOOR = 74;
-    private static final int VALLEY_RIM = 64;
+    private static final int VALLEY_RIM = 128;
 
     private static final Country[][] GRID = draw();
 

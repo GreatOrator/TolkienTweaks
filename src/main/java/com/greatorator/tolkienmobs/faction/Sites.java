@@ -708,66 +708,104 @@ public final class Sites extends SavedData {
     }
 
     /**
-     * How far a single column of the shoulder may be moved, in blocks: a guard against a cliff being
-     * shaved into a terrace. Ground that would have to move further than this is left as it is.
+     * How far the shoulder is walked out from the walls, in blocks, before the ground is left to
+     * itself. A ramp meets the hillside on its own long before this; the number is the guard against a
+     * build on a mountainside spending a whole session on its own shoulder.
      */
-    private static final int APRON_CAP = 6;
+    private static final int APRON_REACH = 128;
+
+    /**
+     * How steeply a shoulder may climb or fall, in blocks of height per block walked out from the
+     * wall. About twenty-one degrees: a hillside a player will walk, where six blocks in one ring was
+     * a wall with a step cut into its foot.
+     */
+    private static final double APRON_SLOPE = 0.4D;
 
     /** What one column of the shoulder came to, so a blend can be counted rather than only claimed. */
     private static final int UNTOUCHED = 0;
     private static final int CUT = 1;
     private static final int FILLED = 2;
-    private static final int TOO_FAR = 3;
 
     /**
-     * What a shoulder came to, in columns: the ones cut down to the build's level, the ones built up to it,
-     * and the ones left alone because they stood further off it than {@link #APRON_CAP} allowed. A city
-     * whose shoulder left most of its rim alone is a city that will read as a block cut out of the ground,
-     * so this is the number that says whether the ground was blended or merely touched.
+     * What a shoulder came to, in columns: the ones cut down to the ramp's line, the ones built up to
+     * it, and the ones that already stood on it. A city whose shoulder moved nothing at all is a city
+     * that will read as a block cut out of the ground, so this is the number that says whether the
+     * ground was blended or merely touched.
      */
     public record Apron(int cut, int filled, int left) {
     }
 
     /**
-     * Blends the ground around a footprint into the level a build stands at, which a template cannot do for
-     * itself: `beard_thin` and `beard_box` are worldgen jigsaw settings, read while chunks generate, and
-     * never run on a structure laid at runtime. So the shoulder is built here instead - the rings just
-     * outside the walls are cut down or filled up toward the build's own base, the difference tapering
-     * across the rings so it is spent a block at a time rather than in one cliff at the wall. Nothing
-     * outside the taper moves, and no column moves further than {@link #APRON_CAP}.
+     * Blends the ground around a footprint into the level a build stands at, which a template cannot do
+     * for itself: `beard_thin` and `beard_box` are worldgen jigsaw settings, read while chunks generate,
+     * and never run on a structure laid at runtime. So the shoulder is built here instead, as a ramp:
+     * the ground beside the walls is brought to the build's own base, and the difference is spent at
+     * {@link #APRON_SLOPE} per block walked out, so a hill is walked down - or a hollow built up - to
+     * meet the walls instead of being cut off at them. The ramp stops where it has met the ground it was
+     * walking toward, or at {@link #APRON_REACH}, and nothing beyond that is touched.
      */
-    public static Apron apron(ServerLevel level, BlockPos corner, int wide, int deep, int rings, int base) {
-        int[] counts = new int[4];
+    public static Apron apron(ServerLevel level, BlockPos corner, int wide, int deep, int base) {
+        int[] counts = new int[3];
+        int rings = reach(level, corner, wide, deep, base);
         for (int ring = 1; ring <= rings; ring++) {
-            // How much of the way this ring has come from open ground back to the build's own level.
-            double share = 1.0D - (double) ring / (rings + 1);
             for (int dx = -ring; dx <= wide + ring; dx++) {
-                counts[side(level, corner, dx, -ring, base, share)]++;
-                counts[side(level, corner, dx, deep + ring, base, share)]++;
+                counts[side(level, corner, dx, -ring, base, ring)]++;
+                counts[side(level, corner, dx, deep + ring, base, ring)]++;
             }
             for (int dz = -ring + 1; dz < deep + ring; dz++) {
-                counts[side(level, corner, -ring, dz, base, share)]++;
-                counts[side(level, corner, wide + ring, dz, base, share)]++;
+                counts[side(level, corner, -ring, dz, base, ring)]++;
+                counts[side(level, corner, wide + ring, dz, base, ring)]++;
             }
         }
-        return new Apron(counts[CUT], counts[FILLED], counts[TOO_FAR]);
+        return new Apron(counts[CUT], counts[FILLED], counts[UNTOUCHED]);
     }
 
-    /** One column of one ring, brought toward the build's level by that ring's share of the way. */
-    private static int side(ServerLevel level, BlockPos corner, int dx, int dz, int base, double share) {
+    /**
+     * How many rings the ramp needs: the worst difference between the build's base and the ground right
+     * against its walls, divided by the slope a ring may spend, and two rings more so the ramp has met
+     * the hillside rather than stopping a block short of it.
+     */
+    private static int reach(ServerLevel level, BlockPos corner, int wide, int deep, int base) {
+        int worst = 0;
+        for (int dx = 0; dx <= wide; dx++) {
+            worst = Math.max(worst, Math.abs(height(level, corner.getX() + dx, corner.getZ() - 1) - base));
+            worst = Math.max(worst, Math.abs(height(level, corner.getX() + dx, corner.getZ() + deep) - base));
+        }
+        for (int dz = 1; dz < deep; dz++) {
+            worst = Math.max(worst, Math.abs(height(level, corner.getX() - 1, corner.getZ() + dz) - base));
+            worst = Math.max(worst, Math.abs(height(level, corner.getX() + wide, corner.getZ() + dz) - base));
+        }
+        int needed = (int) Math.ceil(worst / APRON_SLOPE) + 2;
+        return Math.min(APRON_REACH, Math.max(needed, 4));
+    }
+
+    private static int height(ServerLevel level, int x, int z) {
+        return level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
+    }
+
+    /** One column of one ring, brought to where the ramp has got to by that ring. */
+    private static int side(ServerLevel level, BlockPos corner, int dx, int dz, int base, int distance) {
         int x = corner.getX() + dx;
         int z = corner.getZ() + dz;
-        int ground = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
-        int target = (int) Math.round(ground + (base - ground) * share);
+        int ground = height(level, x, z);
+        int target = ramp(ground, base, distance);
         if (target == ground) return UNTOUCHED;
-        if (Math.abs(ground - target) > APRON_CAP) return TOO_FAR;
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        // What the column was paved with, so a shelf cut into a grass hill keeps its grass instead of
+        // showing the rock the blade went through.
+        cursor.set(x, ground - 1, z);
+        BlockState surface = level.getBlockState(cursor);
+        boolean grassy = surface.is(Blocks.GRASS_BLOCK) || surface.is(Blocks.DIRT)
+                || surface.is(Blocks.PODZOL) || surface.is(Blocks.MYCELIUM)
+                || surface.is(Blocks.COARSE_DIRT);
+        boolean wet = !surface.getFluidState().isEmpty();
         if (target < ground) {
             for (int y = ground - 1; y >= target; y--) {
                 cursor.set(x, y, z);
                 if (level.getBlockState(cursor).isAir()) continue;
                 level.setBlock(cursor, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
             }
+            cap(level, cursor, x, target, z, grassy, wet);
             return CUT;
         }
         for (int y = ground; y < target; y++) {
@@ -775,7 +813,30 @@ public final class Sites extends SavedData {
             if (!level.getBlockState(cursor).isAir()) continue;
             level.setBlock(cursor, Blocks.DIRT.defaultBlockState(), Block.UPDATE_CLIENTS);
         }
+        cap(level, cursor, x, target, z, grassy, wet);
         return FILLED;
+    }
+
+    /** Puts the grass back on the top of a column the shoulder moved, where the hill had grass. */
+    private static void cap(ServerLevel level, BlockPos.MutableBlockPos cursor, int x, int target, int z,
+                            boolean grassy, boolean wet) {
+        if (!grassy || wet) return;
+        cursor.set(x, target - 1, z);
+        BlockState top = level.getBlockState(cursor);
+        if (top.isAir() || !top.getFluidState().isEmpty()) return;
+        level.setBlock(cursor, Blocks.GRASS_BLOCK.defaultBlockState(), Block.UPDATE_CLIENTS);
+    }
+
+    /**
+     * Where the ramp has got to at a given distance from the wall: the build's own level, lifted or
+     * dropped toward the ground no faster than {@link #APRON_SLOPE} allows, and the ground itself once
+     * the ramp has reached it.
+     */
+    private static int ramp(int ground, int base, int distance) {
+        double allowed = APRON_SLOPE * distance;
+        if (ground > base + allowed) return (int) Math.floor(base + allowed);
+        if (ground < base - allowed) return (int) Math.ceil(base - allowed);
+        return ground;
     }
 
     /**

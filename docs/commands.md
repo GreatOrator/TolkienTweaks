@@ -83,10 +83,10 @@ caller's feet, so **the feet must be at y 76 or below**: above that the top band
 message rather than laid.
 
 1. **Pick the ground.** In Arda, Rivendell has a valley of its own: a flat Imladris floor at y 74, across
-   x 4032..4672 and z -4130..-3550, which is the map's cell column 18, row 12. Stand on it - `/execute in
-   tolkienmobs:arda run tp @s 4352 100 -3840`, then let yourself fall - and plant with your feet at 75,
-   which puts the crown at 318, one block under the ceiling. Planting from `4075, 72, -4096` also centres
-   the footprint on the cell. In any other world, pick flat ground with 554 x 512 clear and feet at or
+   x 4308..4948 and z -3867..-3287, centred on the city's own middle. Stand on it - `/execute in
+   tolkienmobs:arda run tp @s 4628 100 -3577`, then let yourself fall - and plant with your feet at 75,
+   which puts the crown at 318, one block under the ceiling. Planting from the corner `4352, 75, -3833`
+   centres the 554 by 512 footprint in the floor. In any other world, pick flat ground with 554 x 512 clear and feet at or
    below 76.
 
 2. **Plant it.** `/tmcity origin`. Whatever ground was there stays around it; the city replaces its own box
@@ -94,8 +94,9 @@ message rather than laid.
 3. **Raise it.** `/tmcity summon` for the whole city in one word (long stall), or `/tmcity band 1` six times
    to watch it come up band by band from the bottom.
 4. **Stand its people.** `summon` does this already; otherwise `/tmcity folk`.
-5. **Blend the shoulder.** Automatic on the last band. `/tmcity apron` re-runs it and reports the counts — a
-   high "left as they stand" is the city reading as a block cut out of the ground.
+5. **Blend the shoulder.** Automatic on the last band. `/tmcity apron` re-runs it and reports the counts —
+   ground "already standing on its line" was level enough to need nothing, and a shoulder that moved nothing
+   on ground that was not level is one that did not run.
 6. **Walk it.** `/tmcity goto`, then `/tmcity status` for which band it is on and whether the shoulder is done.
 7. **After a re-cut.** Replace the folder, `/tmcity relay`, `/tmcity band 8`, and `/tmcity apron` again.
 

@@ -675,6 +675,18 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
 
 ### Changed
 
+- **The city's shoulder is a ramp instead of a step.** Four rings and a six-block cap could only meet
+  ground already near the build's base, so the rim of a city on a hillside was left as the cut face it
+  complains about: 5,518 of its columns were skipped for being too far off to meet in one step. The shoulder
+  now walks out from the walls at about twenty-one degrees and stops where it has met the ground, cutting the
+  hill down or building the hollow up a block at a time, keeping the grass on ground it moves and counting
+  what it cut, what it filled and what already stood on the line.
+- **The valley is centred on the city planted in it.** Its middle sat 276 east and 263 south of the city's
+  own middle, so a city planted at 4352, -3833 stood with part of its footprint against the valley's wall.
+  The middle is 4628, -3577 - the planted corner plus half of the 554 by 512 footprint - and the rim is 128
+  blocks of climb rather than 64, so the ground outside the walls is a mountainside a player walks down rather
+  than a cliff to look at.
+
 - **The Wood-troll is Legolas' page at both ends.** A page owed to a body is handed and taken by that body alone, so naming Legolas as the turn-in is what keeps the hall's herald from giving out the hunt for a creature it has never seen - the same shape the Giant already had at Elladan's camp.
 - **The Elves of the line stand at their doors.** Glorfindel is out on the square's southern road, Elrond at the library's door and Legolas at the guest house's, instead of all three on the middle of the place, where the buildings now are.
 - **The duergar are the East's.** They are dwarves who took the Enemy's service, so the peoples table says so rather than reading as though every dwarf were Erebor's.
