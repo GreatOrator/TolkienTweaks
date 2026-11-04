@@ -171,15 +171,15 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
                 ArdaMap.Sample sample = ArdaMap.sample(blockX, blockZ,
                         randomState.sampler().weirdness(), randomState.sampler().erosion());
                 int target = Math.max(minY + 1, Math.min(maxY, sample.height()));
-                int top = solidTop(chunk, position, blockX, blockZ);
 
-                if (target > top) {
-                    for (int y = top + 1; y <= target; y++) {
-                        chunk.setBlockState(position.set(blockX, y, blockZ), STONE);
-                    }
-                } else if (target < top) {
-                    for (int y = target + 1; y <= top; y++) {
-                        chunk.setBlockState(position.set(blockX, y, blockZ), AIR);
+                // The column is made the drawn one outright - air above, rock below - rather than moved
+                // toward a top read back out of the chunk. Cutting only down to the topmost solid block
+                // left the noise's own mountain standing wherever the heightmap had not seen it yet: a
+                // column the drawing puts on a valley floor arrived with three hundred blocks of stone
+                // under a cap of grass at the ceiling, and that stone is the sheer face around the city.
+                for (int y = target + 1; y <= maxY; y++) {
+                    if (!chunk.getBlockState(position.set(blockX, y, blockZ)).isAir()) {
+                        chunk.setBlockState(position, AIR);
                     }
                 }
 
@@ -246,18 +246,6 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
      */
     private static void republishGround(ChunkAccess chunk) {
         Heightmap.primeHeightmaps(chunk, EnumSet.of(Heightmap.Types.WORLD_SURFACE_WG, Heightmap.Types.OCEAN_FLOOR_WG));
-    }
-
-    /** The topmost block of the noise's own ground in a column, ignoring water and air. */
-    private static int solidTop(ChunkAccess chunk, BlockPos.MutableBlockPos position, int blockX, int blockZ) {
-        int start = Math.min(chunk.getHeight(Heightmap.Types.WORLD_SURFACE_WG, blockX, blockZ), chunk.getMaxY() - 1);
-        for (int y = start; y >= chunk.getMinY(); y--) {
-            BlockState state = chunk.getBlockState(position.set(blockX, y, blockZ));
-            if (!state.isAir() && state.getFluidState().isEmpty()) {
-                return y;
-            }
-        }
-        return chunk.getMinY();
     }
 
     /**

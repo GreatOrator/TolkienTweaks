@@ -389,6 +389,13 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
 
 ### Fixed
 
+- **The map's ground is the ground, with no mountain left standing over it.** Arda cuts the noise's own
+  terrain down to the height the drawing gives a column, but it did so by reading back the chunk's topmost
+  solid block, and a heightmap that had not seen the noise yet answered with the valley floor: the column kept
+  three hundred blocks of stone under a cap of grass at the ceiling, which is the flat-topped wall standing
+  beside Rivendell. A column is now made the drawn one outright - air above its height, rock below - so no
+  noise mountain can survive inside a valley.
+
 - **The valley reaches the data as well as the code.** A country's biome and Arda's stem list are written by
   a data run, and neither had been written since the valley was added: the dimension still named thirty-five
   biomes and there was no `worldgen/biome/imladris.json`, so the registry had no such biome and the dimension
