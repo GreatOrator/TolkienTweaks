@@ -197,8 +197,8 @@ public final class ArdaMap {
      * rise from the water at a grade a hillside holds rather than a wall a map cell draws. The ford's own
      * water level is read off the ground as the course goes rather than set at either end.
      */
-    private static final int BRUINEN_OUTLET_X = 4356;
-    private static final int BRUINEN_OUTLET_Z = -3528;
+    private static final int BRUINEN_OUTLET_X = 4900;
+    private static final int BRUINEN_OUTLET_Z = -3312;
     private static volatile int BRUINEN_WATER = PLANTED_FLOOR + 8;
     private static final int BRUINEN_BED = 7;
     /** How much of the channel's width the ford takes away, 0 at the outlet and 0.55 at the ford. */
@@ -218,7 +218,7 @@ public final class ArdaMap {
      */
     private static final int BRUINEN_LEFT = 5;
     private static final int BRUINEN_RIGHT = 7;
-    private static final int BRUINEN_FORD_X = 3840;
+    private static final int BRUINEN_FORD_X = 5008;
     private static final int BRUINEN_FORD_Z = -3328;
     private static final double BRUINEN_BANK = 1.2D;
     private static final double BRUINEN_FORD_SHALLOW = 0.8D;
@@ -428,14 +428,43 @@ public final class ArdaMap {
         // nothing the maps draw as a river runs through it. It is measured in unwarped blocks on
         // purpose - the warp is there to make drawn borders organic, and a floor a city is planted on
         // by hand must not wander a hundred blocks off the middle the city was planted around.
+        // A drawn river is not buried by the massif. The Bruinen the map draws runs into the mountain
+        // the valley was planted over, and a branch leaving the city has to meet it in the open: off the
+        // floor, the drawing answers before the rock does. On the floor it yields, because nothing is
+        // drawn through a valley that was laid over the map.
+        if (beyond(blockX, blockZ) > 0.0D) {
+            Sample drawn = water(blockX, blockZ, shiftX, shiftZ, ground);
+            if (drawn != null) {
+                return drawn;
+            }
+        }
         Sample valley = valley(blockX, blockZ, ground);
         if (valley != null) {
             return valley;
         }
+        Sample drawn = water(blockX, blockZ, shiftX, shiftZ, ground);
+        if (drawn != null) {
+            return drawn;
+        }
+        return new Sample(ground.country(), ground.height(), false, ground.shore(), ground.upland());
+    }
 
-        // The masks answer where a river or a lake is, and the water stands at the grade of the
-        // ground it is cut into rather than at one level for the whole world: a river that starts in
-        // the mountains and ends at the sea falls the way the ground under it falls.
+    /** How far a column lies beyond the floor's rectangle, in blocks: nothing on the floor itself. */
+    private static double beyond(double blockX, double blockZ) {
+        double beyondX = Math.abs(blockX - VALLEY_X) - VALLEY_HALF_X;
+        double beyondZ = Math.abs(blockZ - VALLEY_Z) - VALLEY_HALF_Z;
+        return Math.hypot(Math.max(0.0D, beyondX), Math.max(0.0D, beyondZ));
+    }
+
+    /**
+     * The water the drawing puts at a column, or null where it draws none.
+     * <p>
+     * The masks answer where a river or a lake is, and the water stands at the grade of the ground it is
+     * cut into rather than at one level for the whole world: a river that starts in the mountains and ends
+     * at the sea falls the way the ground under it falls. A drawn river's bed slopes from its middle out to
+     * its banks, because one depth for a sixteen-block-wide drawing puts a cliff at both of them.
+     */
+    private static Sample water(int blockX, int blockZ, double shiftX, double shiftZ, Ground ground) {
         if (ArdaMasks.lake(blockX, blockZ)) {
             // An inland sea is drawn at the height of the sea, so a lake never drains below it.
             int surface = Math.max(SEA_LEVEL, grade(blockX, blockZ, shiftX, shiftZ, LAKE_GRADE));
@@ -446,13 +475,11 @@ public final class ArdaMap {
             // Near a coast the ground's grade falls under the sea; held there, the last stretch of a
             // river meets the sea instead of digging a trench beside it.
             int surface = Math.max(SEA_LEVEL, grade(blockX, blockZ, shiftX, shiftZ, RIVER_GRADE));
-            // The same sloping bed the Bruinen has, worked out from the drawing: a drawn river is sixteen
-            // blocks wide at its narrowest, and one depth for all of it puts a cliff at both banks.
             int deep = (int) Math.round(RIVER_DEPTH * drawnRiverDepth(blockX, blockZ));
             return new Sample(ground.country(), Math.min(ground.height(), surface - deep), true,
                     false, ground.upland(), surface);
         }
-        return new Sample(ground.country(), ground.height(), false, ground.shore(), ground.upland());
+        return null;
     }
 
     /**
