@@ -71,25 +71,26 @@ public final class ArdaMap {
      * cannot be a country of the 48 by 36 grid: it is cut out of cells the drawing already fills and
      * blended back into them at its rim. Its middle is the middle of that city - the corner it is
      * planted from, plus half of its 554 by 512 footprint - so a city planted at 4352, -3833 stands in
-     * the middle of the floor rather than against one of its walls. The floor holds the whole footprint
-     * with 16 blocks to spare on its north and south sides and 17 on its east and west, so the mountain's
-     * foot begins a dozen paces from the walls, and the rim is 175 blocks of climb, which is a
-     * mountainside rather than the wall 64 blocks made of it.
+     * the middle of the floor rather than against one of its walls. The floor is a few blocks smaller
+     * than the footprint on every side - 544 by 502 inside a 554 by 512 city - so the mountain's foot
+     * begins inside the build and the build embeds itself in it. There is no apron of flat ground in
+     * front of the walls for the join to be dressed across, because there is no join: the lowest band of
+     * the city is laid into the rising ground, and the rock that was there shows wherever the build has
+     * nothing of its own.
      */
     private static final int VALLEY_X = 4628;
     private static final int VALLEY_Z = -3577;
-    private static final int VALLEY_HALF_X = 293;
-    private static final int VALLEY_HALF_Z = 272;
+    private static final int VALLEY_HALF_X = 272;
+    private static final int VALLEY_HALF_Z = 251;
     private static final int VALLEY_FLOOR = 74;
 
     /**
      * How far the ground climbs out of the valley floor before it is mountain, and how far the mountain
      * takes to come back down into the country beyond it, in blocks.
      * <p>
-     * The valley is a vale in a massif rather than a pan beside a hillside: the floor is the city's own
-     * foot with a field's width round it - 586 by 544 for a 554 by 512 footprint - so the mountain's foot
-     * starts at the walls rather than a lawn away from them, and 175 blocks of climb for 306 of rise puts
-     * the ridge over the roofs rather than across a field from them.
+     * The valley is a vale in a massif rather than a pan beside a hillside: the floor is smaller than the
+     * city, so the mountain's foot starts inside the build rather than a lawn away from it, and 175 blocks
+     * of climb for 306 of rise puts the ridge over the roofs rather than across a field from them.
      */
     private static final int VALLEY_RIM = 175;
     private static final int VALLEY_FALL = 400;

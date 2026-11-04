@@ -317,11 +317,11 @@ public final class CityCommands {
                 }
                 mark = new Mark(mark.origin(), mark.band() + 1, mark.apron(), mark.dimension());
             }
+            // The ground is not walked out from the walls any more. The mountain's foot is drawn inside
+            // the city's own footprint (see ArdaMap's valley), so the lowest band is laid into rising rock
+            // and a skirt cut round it would take away exactly the rock the build is meant to sit in.
+            // /tmcity apron is still there, for a city planted on ground that does want bedding in.
             boolean finished = mark.band() >= bands.size();
-            if (finished && !mark.apron()) {
-                skirt(level, parts, mark.origin());
-                mark = new Mark(mark.origin(), mark.band(), true, mark.dimension());
-            }
             write(folder, mark);
             int soFar = laid;
             int skipped = over;

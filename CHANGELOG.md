@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The mountain's foot stands inside the city, and the apron that dressed the join is gone.** The valley
+  floor was 586 by 544 blocks for a 554 by 512 city, which left sixteen blocks of flat ground outside
+  every wall for a ramp to be walked across - the wide, stepped apron the last rounds kept producing,
+  whatever the flank above it was doing. The floor is 544 by 502 now, a few blocks smaller than the
+  footprint on every side, so the rising ground starts inside the build: the lowest band is laid into the
+  rock, and the rock shows wherever the build has nothing of its own. Planting no longer runs the skirt
+  round the walls either, since a ramp walking the ground down to the city's base would cut away the rock
+  the build is meant to sit in; `/tmcity apron` is still there for a city on open ground. There is no
+  join left to dress, so nothing has to be tuned to make one look natural.
+
 - **A world keeps the height it was made with, so an old save cuts Arda's mountains off flat.** Arda was
   raised to 512 blocks so the massif round Imladris could stand over the city's crown, but a dimension's
   height is fixed the moment its world is made, and a save copied from an older one carries the old height
