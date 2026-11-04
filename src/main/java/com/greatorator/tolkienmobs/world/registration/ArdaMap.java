@@ -215,6 +215,32 @@ public final class ArdaMap {
     private static final double BRUINEN_FORD_SHALLOW = 0.8D;
     /** Steps the channel's water is read at along its course, from the outlet to the ford. */
     private static final int BRUINEN_STEPS = 96;
+    /**
+     * How far the branch wanders off the straight line between the build's outlet and the Bruinen, and how
+     * many turns it makes on the way, in blocks and in half turns.
+     * <p>
+     * A river drawn as one straight cut from a wall to another river is a canal: the water leaves the city,
+     * runs dead straight for a hundred blocks and arrives. These two numbers give it a course that leaves
+     * the outlet and the join exactly where they are - the wander is zero at both ends - and bends between
+     * them, which is also what makes the gorge read as the valley a river cuts rather than as a slot.
+     */
+    private static final double BRUINEN_SNAKE = 18.0D;
+    private static final double BRUINEN_TURNS = 1.5D;
+    /** How far off the straight line the course's middle stands at a share of the way along it. */
+    private static double wander(double share) {
+        return BRUINEN_SNAKE * Math.sin(share * BRUINEN_TURNS * Math.PI) * Math.sin(Math.PI * share);
+    }
+
+    /** The course's middle at a share of the way from the outlet to the join: x first. */
+    private static double courseX(double share, double alongX, double alongZ, double length) {
+        return BRUINEN_OUTLET_X + share * alongX - alongZ / length * wander(share);
+    }
+
+    /** The same middle, z. */
+    private static double courseZ(double share, double alongX, double alongZ, double length) {
+        return BRUINEN_OUTLET_Z + share * alongZ + alongX / length * wander(share);
+    }
+
     /** The course's water, read once; and the lock that keeps two chunks from reading it together. */
     private static volatile int[] bruinenProfile;
     private static final Object BRUINEN_LOCK = new Object();
@@ -604,10 +630,12 @@ public final class ArdaMap {
         int lowest = BRUINEN_WATER;
         profile[0] = lowest;
         for (int step = 1; step <= BRUINEN_STEPS; step++) {
-            int x = (int) Math.round(BRUINEN_OUTLET_X
-                    + (BRUINEN_FORD_X - BRUINEN_OUTLET_X) * step / (double) BRUINEN_STEPS);
-            int z = (int) Math.round(BRUINEN_OUTLET_Z
-                    + (BRUINEN_FORD_Z - BRUINEN_OUTLET_Z) * step / (double) BRUINEN_STEPS);
+            double alongX = BRUINEN_FORD_X - BRUINEN_OUTLET_X;
+            double alongZ = BRUINEN_FORD_Z - BRUINEN_OUTLET_Z;
+            double length = Math.sqrt(alongX * alongX + alongZ * alongZ);
+            double share = step / (double) BRUINEN_STEPS;
+            int x = (int) Math.round(courseX(share, alongX, alongZ, length));
+            int z = (int) Math.round(courseZ(share, alongX, alongZ, length));
             lowest = Math.min(lowest,
                     groundAt(x / (double) CELL + ORIGIN_COLUMN, z / (double) CELL + ORIGIN_ROW, x, z).height());
             profile[step] = lowest;
@@ -637,12 +665,14 @@ public final class ArdaMap {
         if (share < 0.0D || share > 1.0D) {
             return ground;
         }
-        double offsetX = blockX - (BRUINEN_OUTLET_X + share * alongX);
-        double offsetZ = blockZ - (BRUINEN_OUTLET_Z + share * alongZ);
+        // Measured from the course's own middle rather than from the straight line between its ends, so
+        // the channel and the gorge round it bend with the river.
+        double length = Math.sqrt(alongX * alongX + alongZ * alongZ);
+        double offsetX = blockX - courseX(share, alongX, alongZ, length);
+        double offsetZ = blockZ - courseZ(share, alongX, alongZ, length);
         // Measured across the course rather than as a radius: the river is twelve blocks wide and is not
         // the same width either side of it, so the bank is found by which way the column lies of the flow.
-        double along = Math.sqrt(alongX * alongX + alongZ * alongZ);
-        double side = (offsetX * -alongZ + offsetZ * alongX) / along;
+        double side = (offsetX * -alongZ + offsetZ * alongX) / length;
         double level = bruinenWater(share);
         double shallow = smooth(Mth.clamp((share - BRUINEN_FORD_SHALLOW) / (1.0D - BRUINEN_FORD_SHALLOW),
                 0.0D, 1.0D));

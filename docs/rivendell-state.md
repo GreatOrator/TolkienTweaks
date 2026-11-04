@@ -68,10 +68,16 @@ what is still open, so the next session does not have to rebuild that from the c
   city's own footprint.
 - **A drawn river answers before the massif and before the floor**: the Bruinen cuts its own channel
   through both, so the branch meets it in open water instead of running into a wall of massif at 5005.
-- **The branch out of Rivendell** runs from the build's own south edge at **4900, -3322** to the
-  drawn Bruinen at **5008, -3328**: 109 blocks at **72**, two blocks under the valley's floor, 2+ blocks
-  of water the whole way, 7 at the middle, narrowing to 0.7 of its width into the join. Where the two
-  meet there is a small step, because the drawn river takes its level from the ground it is drawn on.
+- **The branch out of Rivendell** runs from the build's own outlet at **4900, -3322** to the drawn
+  Bruinen at **5008, -3328**: 109 blocks at **72**, two blocks under the valley's floor, twelve wide
+  (5 left of the middle, 7 right), 2+ blocks of water the whole way, 7 at the middle, narrowing to 0.7 of
+  its width into the join. Its course **wanders** up to 18 blocks off the straight line
+  (`BRUINEN_SNAKE`, one and a half turns) and is exactly at the outlet and the join at both ends, so it
+  leaves the city where the build opens and arrives on the drawn river. With the rock at the crown
+  outside the floor, that course is a gorge through the massif - the gap in the wall the reference image
+  shows - and it is cut by `bruinen()` wherever it runs.
+- Where the two rivers meet there is a **two-block step**, 72 against the drawn river's 74, because the
+  drawn river takes its level from the ground it is drawn on.
 - The earlier course - 4356, -3528 west to the drawing's 3840, -3328 - **ended 1,176 blocks from any
   drawn river**: the "drawn ford" there is not on drawn water. That vale river is gone for now; whether
   both arms should stand is open (below).

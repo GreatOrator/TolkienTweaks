@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The branch winds from the city to the Bruinen instead of running straight.** Its ends are fixed - the
+  build's outlet at 4900, -3322 and the joined drawn river at 5008, -3328 - and the course between them
+  wanders up to 18 blocks on one and a half turns, with the channel, the bed and the gorge cut following
+  it. A straight cut from one water to another is a canal, not a river.
 - **The mountain stands at the crown at the city's walls again.** The floor is 544 by 502 inside the
   554 by 512 footprint and the rock is at 318 from its edge outward, which is the shape the valley had
   before `fef98351` turned the climb into a bank a hundred blocks out; `VALLEY_STEEP`, the shelf and the
