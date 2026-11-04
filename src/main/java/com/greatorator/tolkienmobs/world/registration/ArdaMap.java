@@ -731,11 +731,12 @@ public final class ArdaMap {
         double alongZ = BRUINEN_FORD_Z - BRUINEN_OUTLET_Z;
         double share = ((blockX - BRUINEN_OUTLET_X) * alongX + (blockZ - BRUINEN_OUTLET_Z) * alongZ)
                 / (alongX * alongX + alongZ * alongZ);
-        if (share < 0.0D || share > 1.0D) {
-            return Double.MAX_VALUE;
-        }
-        double offsetX = blockX - (BRUINEN_OUTLET_X + share * alongX);
-        double offsetZ = blockZ - (BRUINEN_OUTLET_Z + share * alongZ);
+        // The nearest point of the course, ends included: a column beside the outlet is across the
+        // corridor whether it projects onto the course or not, and one that did not would keep the full
+        // height of the bank right next to the water.
+        double along = Mth.clamp(share, 0.0D, 1.0D);
+        double offsetX = blockX - (BRUINEN_OUTLET_X + along * alongX);
+        double offsetZ = blockZ - (BRUINEN_OUTLET_Z + along * alongZ);
         return Math.hypot(offsetX, offsetZ);
     }
 
