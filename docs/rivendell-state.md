@@ -5,14 +5,19 @@ what is still open, so the next session does not have to rebuild that from the c
 
 ## What the map says
 
-- The reference map is `middleearth.jpeg` at the mod's root, 10000 x 5455. Everything named below is
-  read off it.
-- **The Bruinen** rises in the Misty Mountains **north of Rivendell** and runs north to south past the
-  valley. It is the named river, and the one the drawn river mask carries past the city.
-- **The ford is a bridge over the Bruinen** - the crossing is where a road bridges the river, not a
-  shallow in a stream.
-- **The stream that leaves Rivendell has no name.** It is the valley's own branch: it comes out of
-  Imladris and joins the Bruinen. Where the map shows a fork, the lower arm is this branch.
+- The reference map is `middleearth.jpeg` at the mod's root, 10000 x 5455. The area that matters is
+  cropped to `docs/map-rivendell.jpg` (regenerated with `python -c` on the jpeg, box 3900,900..6100,2500).
+- **Rivendell** sits in the foothills on the western side of the Misty Mountains, with the High Pass
+  east of it and the Trollshaws west.
+- **The Bruinen (Loudwater)** rises in the Misty Mountains **north of Rivendell**, flows south past the
+  valley and then south-west to join the **Mitheithel (Hoarwell)**; the **Last Bridge** stands on the
+  East-West Road down there. It is the named river, and the one the drawn river mask carries past the
+  city.
+- **The Ford** is just south-east of Rivendell, where the **Old Forest Road** crosses the Bruinen - a
+  bridge over the river on the map's dotted road, not a shallow in a stream.
+- **The stream that leaves Rivendell has no name on the map.** It is the valley's own branch: it comes
+  out of Imladris and joins the Bruinen. Where the map shows a fork, the lower arm is this branch, which
+  is why the branch runs east-south-east to the drawn river and not west to nowhere.
 
 ## The city
 
