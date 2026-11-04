@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **Water stands at the ground the drawing gives it, not at a graded average.** The surface was the mean of
+  the drawn ground over ±64 blocks for a river and ±192 for a lake, which lifted water over the land wherever
+  the drawing dips - a lake sheet three or four blocks above its own shore. The drawing's water is already
+  drawn at its own level, so the top of the water is now the column's own ground with the bed cut under it,
+  and a river follows the land down instead of being averaged across the country round it.
+
 - **The reference set is sorted out, and so is the world a test needs.** The new canon map is a different
   projection from the masks - the coordinates for Rivendell land on Swanfleet on it - so it is a list of
   places rather than a layer; the terrain albedo is the painted source the masks were cut from, and the rom

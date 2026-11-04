@@ -107,15 +107,14 @@ same at eight, and the counts have not been re-measured.
   the climb from the ground the heightmap draws up to that pin. Of the drawn land, 28.6% stands under the
   mask, the median climb there is 37 blocks, and 0.5% of it reaches the crown. Read at eight blocks to
   the pixel and interpolated, an eight-block step never enters the flank.
-- **Rivers.** The mask says where the water is. The water's surface is the average height of the
-  drawn ground over a square of ±64 blocks about the column, so it follows the fall of the country
-  instead of standing at one level; the bed lies as deep under it as the channel is wide - a three-block
+- **Rivers.** The mask says where the water is. The water's surface is the drawn ground at the column itself, so it falls
+  with the land instead of standing at a level of its own; the bed lies as deep under it as the channel is wide - a three-block
   river is three deep in the middle, a five-block one five deep, rising a block per block to the banks -
   and the column is cut down to it, sixteen blocks at the
   deepest: the mask paints its rivers as bands thirty blocks and more across, and a bed that deep would be
   a canyon. Measured over all 39,613 river columns of 16 blocks: water from 38 to 306, median 141, and within
   five blocks of its own ground on 88.4% of the channel, none of it above the crown.
-- **Lakes.** The same rule with a ±192-block square, so a lake reads as the basin it sits in rather
+- **Lakes.** The same rule, so a lake reads as the basin it sits in rather
   than as a plateau, and never below the sea's own height of 63. Bed six blocks under the surface.
   Measured over 21,346 columns: surface 63 to 285, median 67, at the sea's own height on 46% of them, bed 64 to 66.
 

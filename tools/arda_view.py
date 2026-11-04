@@ -14,7 +14,7 @@ from PIL import Image
 SEA, FLOOR, CROWN = 63, 74, 318
 VALLEY_X, VALLEY_Z, VALLEY_HX, VALLEY_HZ = 4628, -3577, 272, 251
 VALLEY_RIM, VALLEY_FALL, VALLEY_VALE = 175, 340, 900
-RIVER_GRADE, LAKE_GRADE, LAKE_DEPTH = 64, 192, 6
+LAKE_DEPTH = 6
 RIVER_REACH, RIVER_DEPTH_MAX = 24, 16
 OUTLET_X, OUTLET_Z, FORD_X, FORD_Z = 4900, -3322, 4995, -3311
 BRUINEN_WATER, BRUINEN_BED = FLOOR - 2, 7
@@ -99,11 +99,6 @@ def ground_height(x, z):
     return lift(x, z, vale(x, z, SEA + int(round(mapped / 65535.0 * (CROWN - SEA)))))
 
 
-def grade(x, z, reach):
-    total = sum(ground_height(x + dx, z + dz) for dx in (-reach, 0, reach) for dz in (-reach, 0, reach))
-    return int(round(total / 9.0))
-
-
 def drawn_width(x, z):
     for reach in range(1, RIVER_REACH + 1):
         if not (river(x + reach, z) and river(x - reach, z) and river(x, z + reach) and river(x, z - reach)):
@@ -112,13 +107,13 @@ def drawn_width(x, z):
 
 
 def drawn_water(x, z):
-    if lake(x, z):
-        surface = max(SEA, grade(x, z, LAKE_GRADE))
-        return surface, min(ground_height(x, z), surface - LAKE_DEPTH)
-    if river(x, z):
-        surface = max(SEA, grade(x, z, RIVER_GRADE))
-        return surface, min(ground_height(x, z), surface - min(drawn_width(x, z), RIVER_DEPTH_MAX))
-    return None
+    wet = lake(x, z) or river(x, z)
+    if not wet:
+        return None
+    ground = ground_height(x, z)
+    surface = max(SEA, ground)
+    deep = LAKE_DEPTH if lake(x, z) else min(drawn_width(x, z), RIVER_DEPTH_MAX)
+    return surface, min(ground, surface - deep)
 
 
 def wander(share):

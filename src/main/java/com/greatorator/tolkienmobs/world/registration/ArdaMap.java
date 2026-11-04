@@ -253,34 +253,10 @@ public final class ArdaMap {
     private static volatile int[] bruinenProfile;
     private static final Object BRUINEN_LOCK = new Object();
 
-    /** How deep a lake's bed lies under its water, and how far a river's and a lake's grade is read. */
-    private static final int RIVER_GRADE = 64;
+    /** How deep a lake's bed lies under its water. */
     private static final int LAKE_DEPTH = 6;
-    private static final int LAKE_GRADE = 192;
     /** The highest the drawing may raise the ground, leaving the world's ceiling room above it. */
     private static final int MOUNTAIN_CEILING = 420;
-
-    /**
-     * The height water stands at over a column, read as the ground's own grade about it.
-     * <p>
-     * A river is not level and neither is the ground it runs through: the surface is the average of
-     * the ground over a square of the map, so the water follows the fall of the country instead of
-     * standing at one height from the mountains to the sea.
-     */
-    private static int grade(int blockX, int blockZ, double shiftX, double shiftZ, int reach) {
-        int total = 0;
-        int samples = 0;
-        for (int dx = -reach; dx <= reach; dx += reach) {
-            for (int dz = -reach; dz <= reach; dz += reach) {
-                int x = blockX + dx;
-                int z = blockZ + dz;
-                total += groundAt((x + shiftX) / (double) CELL + ORIGIN_COLUMN,
-                        (z + shiftZ) / (double) CELL + ORIGIN_ROW, x, z).height();
-                samples++;
-            }
-        }
-        return Math.round(total / (float) samples);
-    }
 
     private static final Country[][] GRID = draw();
 
@@ -456,7 +432,7 @@ public final class ArdaMap {
         // map draws runs past the valley's east side, inside the floor the city stands on, and the branch
         // out of the city has to meet it in the open: the drawing answers before the rock and before the
         // floor, so the river cuts its own channel through both and the fork is water, not a notch.
-        Sample drawn = water(blockX, blockZ, shiftX, shiftZ, ground);
+        Sample drawn = water(blockX, blockZ, ground);
         if (drawn != null) {
             return drawn;
         }
@@ -477,22 +453,24 @@ public final class ArdaMap {
     /**
      * The water the drawing puts at a column, or null where it draws none.
      * <p>
-     * The masks answer where a river or a lake is, and the water stands at the grade of the ground it is
-     * cut into rather than at one level for the whole world: a river that starts in the mountains and ends
-     * at the sea falls the way the ground under it falls. A drawn river's bed slopes from its middle out to
-     * its banks, because one depth for a sixteen-block-wide drawing puts a cliff at both of them.
+     * The masks answer where a river or a lake is, and the top of the water is the ground the drawing gives
+     * the column: the drawing's rivers and lakes are already drawn at their own level, so water follows the
+     * land down instead of standing at a level of its own. Averaging the ground over the country round the
+     * column was tried and put water on top of the land wherever the drawing dips - a lake sheet three or
+     * four blocks over its own shore. The bed is cut under that surface, and a drawn river's bed slopes from
+     * its middle out to its banks, because one depth for a sixteen-block-wide drawing puts a cliff at both.
      */
-    private static Sample water(int blockX, int blockZ, double shiftX, double shiftZ, Ground ground) {
+    private static Sample water(int blockX, int blockZ, Ground ground) {
         if (ArdaMasks.lake(blockX, blockZ)) {
             // An inland sea is drawn at the height of the sea, so a lake never drains below it.
-            int surface = Math.max(SEA_LEVEL, grade(blockX, blockZ, shiftX, shiftZ, LAKE_GRADE));
+            int surface = Math.max(SEA_LEVEL, ground.height());
             return new Sample(ground.country(), Math.min(ground.height(), surface - LAKE_DEPTH), true,
                     false, ground.upland(), surface);
         }
         if (ArdaMasks.river(blockX, blockZ)) {
             // Near a coast the ground's grade falls under the sea; held there, the last stretch of a
             // river meets the sea instead of digging a trench beside it.
-            int surface = Math.max(SEA_LEVEL, grade(blockX, blockZ, shiftX, shiftZ, RIVER_GRADE));
+            int surface = Math.max(SEA_LEVEL, ground.height());
             // As deep as it is wide, within what a channel can be without becoming a canyon.
             int deep = Math.min(drawnRiverWidth(blockX, blockZ), RIVER_DEPTH_MAX);
             return new Sample(ground.country(), Math.min(ground.height(), surface - deep), true,
