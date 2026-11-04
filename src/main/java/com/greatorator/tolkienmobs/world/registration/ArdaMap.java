@@ -71,19 +71,24 @@ public final class ArdaMap {
      * cannot be a country of the 48 by 36 grid: it is cut out of cells the drawing already fills and
      * blended back into them at its rim. Its middle is the middle of that city - the corner it is
      * planted from, plus half of its 554 by 512 footprint - so a city planted at 4352, -3833 stands in
-     * the middle of the floor rather than against one of its walls. The floor is that footprint and then
-     * {@link #VALLEY_LAWN} blocks of level country around it on every side, because a floor cut to the
-     * walls puts the mountain's foot in the same block as the build: the city stands at the bottom of a
-     * pit that hugs it, and wherever the build has nothing of its own the ground climbs from the build's
-     * own base instead of from a hill away from it. A hundred blocks of level ground on every side is a
-     * valley the city sits in rather than a trench it was dropped into; the climb still reaches the crown
-     * within ninety more, so the mountain closes over the roofs from there.
+     * the middle of the floor rather than against one of its walls. The floor is that footprint plus a
+     * shelf, and the shelf is not the same width all round. West, north and south it is
+     * {@link #VALLEY_LAWN} blocks - enough that the build's ragged edge is not jammed into rock, and no
+     * more, because a floor cut to the walls puts the mountain's foot in the same block as the build and
+     * the city reads as a trench, while a floor a hundred blocks wide puts the hillside a field away from
+     * it and the city reads as a pan in the open. East it is {@link #VALLEY_LAWN_EAST} blocks, because the
+     * drawn Bruinen comes to that edge and the branch has to meet it at the floor's own level: a climb
+     * between the two would stand the river two hundred blocks above the city it is supposed to leave.
      */
     private static final int VALLEY_X = 4628;
     private static final int VALLEY_Z = -3577;
-    private static final int VALLEY_LAWN = 100;
-    private static final int VALLEY_HALF_X = 277 + VALLEY_LAWN;
-    private static final int VALLEY_HALF_Z = 256 + VALLEY_LAWN;
+    /** The shelf round the build's west, north and south edges, and the longer one on its east. */
+    private static final int VALLEY_LAWN = 12;
+    private static final int VALLEY_LAWN_EAST = 100;
+    private static final int VALLEY_WEST = 4352 - VALLEY_LAWN;
+    private static final int VALLEY_EAST = 4905 + VALLEY_LAWN_EAST;
+    private static final int VALLEY_NORTH = -3833 - VALLEY_LAWN;
+    private static final int VALLEY_SOUTH = -3322 + VALLEY_LAWN;
 
     /**
      * The height the rock stands at where the massif meets the build: the crown of the city itself.
@@ -453,8 +458,8 @@ public final class ArdaMap {
 
     /** How far a column lies beyond the floor's rectangle, in blocks: nothing on the floor itself. */
     private static double beyond(double blockX, double blockZ) {
-        double beyondX = Math.abs(blockX - VALLEY_X) - VALLEY_HALF_X;
-        double beyondZ = Math.abs(blockZ - VALLEY_Z) - VALLEY_HALF_Z;
+        double beyondX = Math.max(VALLEY_WEST - blockX, blockX - VALLEY_EAST);
+        double beyondZ = Math.max(VALLEY_NORTH - blockZ, blockZ - VALLEY_SOUTH);
         return Math.hypot(Math.max(0.0D, beyondX), Math.max(0.0D, beyondZ));
     }
 
@@ -498,11 +503,9 @@ public final class ArdaMap {
      * lowest band, because the mountain stood there, so {@link #shoulder} stands the rock back up.
      */
     private static Sample valley(double blockX, double blockZ, Ground ground) {
-        double beyondX = Math.abs(blockX - VALLEY_X) - VALLEY_HALF_X;
-        double beyondZ = Math.abs(blockZ - VALLEY_Z) - VALLEY_HALF_Z;
         // A distance from the floor's rectangle, not one from each of its four sides: the difference is
         // at the corners, where this rounds the mountain's foot instead of squaring it off.
-        double beyond = Math.hypot(Math.max(0.0D, beyondX), Math.max(0.0D, beyondZ));
+        double beyond = beyond(blockX, blockZ);
         int x = (int) Math.floor(blockX);
         int z = (int) Math.floor(blockZ);
         // The ridge is not a ring at one height: it wanders in and out, and its summits rise and fall
@@ -873,9 +876,7 @@ public final class ArdaMap {
      * country rises to meet it, so a world of either height has a valley that belongs to it.
      */
     private static int vale(double blockX, double blockZ, int height) {
-        double beyondX = Math.abs(blockX - VALLEY_X) - VALLEY_HALF_X;
-        double beyondZ = Math.abs(blockZ - VALLEY_Z) - VALLEY_HALF_Z;
-        double beyond = Math.hypot(Math.max(0.0D, beyondX), Math.max(0.0D, beyondZ));
+        double beyond = beyond(blockX, blockZ);
         double share = (beyond - (VALLEY_RIM + VALLEY_FALL)) / (double) VALLEY_VALE;
         if (share >= 1.0D) {
             return height;
