@@ -1,10 +1,15 @@
 package com.greatorator.tolkienmobs.world.registration;
 
 import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.MapLike;
+import com.mojang.serialization.RecordBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.QuartPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
@@ -14,8 +19,8 @@ import net.minecraft.world.level.biome.MultiNoiseBiomeSource;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -44,47 +49,66 @@ public class ArdaBiomeSource extends BiomeSource {
      * so the generated dimension reads the way every other one does and every biome it may place is
      * named in it.
      */
-    public static final MapCodec<ArdaBiomeSource> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-                    Biome.CODEC.listOf().fieldOf("biomes").forGetter(ArdaBiomeSource::biomes))
-            .apply(instance, ArdaBiomeSource::new));
+    public static final MapCodec<ArdaBiomeSource> CODEC = new MapCodec<>() {
+        @Override
+        public <T> Stream<T> keys(DynamicOps<T> ops) {
+            return Stream.of(ops.createString("biomes"));
+        }
+
+        @Override
+        public <T> DataResult<ArdaBiomeSource> decode(DynamicOps<T> ops, MapLike<T> input) {
+            if (input.get("biomes") == null) {
+                return DataResult.error(() -> "Arda's dimension names no biomes at all");
+            }
+            // The biomes are read from the registry rather than from the world's own copy of this list. A
+            // world saved before a country was added carries the older list, and reading it either shifts
+            // every biome after the new one or loses the new one altogether - which is how a world made
+            // before the valley came to have no valley biome in it and refused to open. The world's entry
+            // now only has to say that this is a biome source; what it can place is the map's business.
+            if (!(ops instanceof RegistryOps<?> registryOps)) {
+                return DataResult.error(() -> "Arda's biomes can only be read from a registry");
+            }
+            Optional<HolderGetter<Biome>> getter = registryOps.getter(Registries.BIOME);
+            if (getter.isEmpty()) {
+                return DataResult.error(() -> "Arda's biomes need a biome registry to be read from");
+            }
+            List<Holder<Biome>> holders = new ArrayList<>();
+            for (ResourceKey<Biome> key : ArdaBiomeSource.keys()) {
+                Optional<Holder.Reference<Biome>> holder = getter.get().get(key);
+                if (holder.isEmpty()) {
+                    return DataResult.error(() -> "Arda's map names " + key.identifier()
+                            + ", which this world has no biome for");
+                }
+                holders.add(holder.get());
+            }
+            return DataResult.success(new ArdaBiomeSource(holders));
+        }
+
+        @Override
+        public <T> RecordBuilder<T> encode(ArdaBiomeSource source, DynamicOps<T> ops, RecordBuilder<T> prefix) {
+            // Written as ids, one per biome the map can place: a world saved again names the biomes the
+            // code names, so the first save after a country is added carries that country's biome with it.
+            return prefix.add("biomes", ops.createList(ArdaBiomeSource.keys().stream()
+                    .map(key -> ops.createString(key.identifier().toString()))));
+        }
+    };
 
     private final List<Holder<Biome>> biomes;
     private final Map<ResourceKey<Biome>, Holder<Biome>> byKey;
 
-    /**
-     * Reads a world's biome list, which may have been saved before the map last gained a country.
-     * <p>
-     * The list is matched by biome id rather than by position, so a country added since the world was
-     * made does not shift every biome after it. A list that named thirty-five biomes where the map now
-     * names thirty-six used to abort the dimension outright, and a world that will not open is a worse
-     * answer than one whose newest ground reads as the hills it was cut out of: a biome the world does
-     * not name is filled with the country the new ground was carved from - the Trollshaws, for the
-     * valley - so the floor still stands where it should, and only that ground's own colour, foliage
-     * and people wait for the world to be remade.
-     */
+    /** Every biome the map can place, in the order it names them; the registry has already answered. */
     private ArdaBiomeSource(List<Holder<Biome>> biomes) {
-        Map<ResourceKey<Biome>, Holder<Biome>> saved = new LinkedHashMap<>();
-        for (Holder<Biome> holder : biomes) {
-            holder.unwrapKey().ifPresent(key -> saved.put(key, holder));
+        List<ResourceKey<Biome>> keys = keys();
+        if (biomes.size() != keys.size()) {
+            throw new IllegalStateException("Arda's map names " + keys.size()
+                    + " biomes and the source was given " + biomes.size() + "; the two are read together");
         }
-        Holder<Biome> stand = saved.get(ArdaMap.Country.TROLLSHAWS.biome());
-        if (stand == null && !biomes.isEmpty()) {
-            stand = biomes.get(0);
-        }
-        if (stand == null) {
-            throw new IllegalStateException("Arda's world names no biomes at all, so nothing can be placed");
-        }
-
+        this.biomes = List.copyOf(biomes);
         Map<ResourceKey<Biome>, Holder<Biome>> lookup = new LinkedHashMap<>();
-        for (ResourceKey<Biome> key : keys()) {
-            Holder<Biome> holder = saved.get(key);
-            lookup.put(key, holder == null ? stand : holder);
+        for (int index = 0; index < keys.size(); index++) {
+            lookup.put(keys.get(index), biomes.get(index));
         }
         this.byKey = Map.copyOf(lookup);
-        // A substituted country is one holder named twice, so the list handed back and re-encoded is
-        // deduplicated: a world carries each biome the map has once, and never the same one under two
-        // names.
-        this.biomes = List.copyOf(new LinkedHashSet<>(lookup.values()));
     }
 
     /** Arda's biomes, resolved from the registry the dimension is being built against. */
