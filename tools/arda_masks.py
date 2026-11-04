@@ -25,6 +25,13 @@ BLOCKS_PER_PIXEL = 16
 WORLD_X0, WORLD_X1 = -5120, 19456
 WORLD_Z0, WORLD_Z1 = -10240, 8192
 
+# The river the hand-built city runs out to. A twelve-block channel cannot be placed on the sixteen-block
+# pixels the whole frame is baked at, so the Bruinen's own corner is baked a second time, finer, on its
+# own: three blocks to the pixel, which is close to the reference's own 3.95 and small enough to read.
+BRUINEN_X0, BRUINEN_X1 = 4200, 5400
+BRUINEN_Z0, BRUINEN_Z1 = -4100, -2900
+BRUINEN_BLOCKS = 3
+
 
 def calibration():
     cal = json.load(open(os.path.join(REFERENCE, "work", "calibration.json")))
@@ -49,6 +56,19 @@ def crop(path, sx, ox, sz, oz, threshold=None):
     return out
 
 
+def window(path, sx, ox, sz, oz, x0, x1, z0, z1, blocks, threshold):
+    """One corner of a mask, at a finer blocks-to-the-pixel than the whole frame is baked at."""
+    source = np.array(Image.open(path).convert("L"))
+    width = (x1 - x0) // blocks
+    height = (z1 - z0) // blocks
+    xs = np.arange(width) * blocks + x0
+    zs = np.arange(height) * blocks + z0
+    columns = np.clip(((xs - ox) / sx).astype(int), 0, source.shape[1] - 1)
+    rows = np.clip(((zs - oz) / sz).astype(int), 0, source.shape[0] - 1)
+    out = source[np.ix_(rows, columns)]
+    return np.where(out > threshold, 255, 0).astype(np.uint8)
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     sx, ox, sz, oz = calibration()
@@ -67,6 +87,14 @@ def main():
         print("%-13s %dx%d %-6s %5.1f%% marked  %7.1f kB" % (
             name, image.size[0], image.size[1], image.mode, 100 * marked,
             os.path.getsize(path) / 1024.0))
+    raster = window(os.path.join(REFERENCE, "ME_SimpleTopoTerrain_Rivers_albedo.png"), sx, ox, sz, oz,
+                    BRUINEN_X0, BRUINEN_X1, BRUINEN_Z0, BRUINEN_Z1, BRUINEN_BLOCKS, 100)
+    image = Image.fromarray((raster > 0).astype(np.uint8) * 255)
+    path = os.path.join(OUT, "bruinen.png")
+    image.save(path)
+    print("%-13s %dx%d %-6s %5.1f%% marked  %7.1f kB" % (
+        "bruinen.png", image.size[0], image.size[1], image.mode, 100 * (raster > 0).mean(),
+        os.path.getsize(path) / 1024.0))
 
 
 if __name__ == "__main__":

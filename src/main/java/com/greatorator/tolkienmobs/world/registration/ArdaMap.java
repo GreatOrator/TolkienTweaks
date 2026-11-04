@@ -209,8 +209,8 @@ public final class ArdaMap {
      */
     private static final int BRUINEN_LEFT = 5;
     private static final int BRUINEN_RIGHT = 7;
-    private static final int BRUINEN_FORD_X = 5008;
-    private static final int BRUINEN_FORD_Z = -3328;
+    private static final int BRUINEN_FORD_X = 4995;
+    private static final int BRUINEN_FORD_Z = -3311;
     private static final double BRUINEN_BANK = 1.2D;
     private static final double BRUINEN_FORD_SHALLOW = 0.8D;
     /** Steps the channel's water is read at along its course, from the outlet to the ford. */

@@ -50,6 +50,7 @@ along — a hundred and sixty blocks, inside the noise.
 | file | size | marked |
 | --- | --- | --- |
 | `rivers.png` | 23 kB | 2.24% |
+| `bruinen.png` | 1 kB | 4.3%, 400 x 400 at **3 blocks to the pixel** - the Bruinen's own corner |
 | `lakes.png` | 4 kB | 1.21% |
 | `mountains.png` | 132 kB | 8.1% above half brightness |
 | `height.png` | sixteen-bit topography | sea 16.9% of the frame |
@@ -83,7 +84,8 @@ what lets a river fall and a lake sit in its basin.
 
 ## Still open
 
-- The Bruinen is the one river not laid by the mask: it leaves a hand-built channel at 82 and its water
-  is read off the ground down its own course. That is where the mask's Bruinen is not - the nearest
-  column of it is 1,176 blocks east - and the valley it leaves is 86 blocks below the country, so the
-  water runs level and the cut does the descending.
+- The Bruinen used to be the one river not laid by the mask, because a sixteen-block pixel cannot place
+  a twelve-block channel. It now has its own bake at **three blocks to the pixel** over
+  x 4200..5400 by z -4100..-2900, read before the coarse mask inside that window. The nearest water to
+  the city's outlet (4900, -3322) is **4995, -3311**, ninety-five blocks east and running north-south at
+  about 101 degrees; that is where the branch joins.

@@ -63,13 +63,15 @@ what is still open, so the next session does not have to rebuild that from the c
 
 ## The water
 
-- **The drawn Bruinen is nearest the valley at 5008, -3328**, now **inside** the floor's east run to
-  5040, running north-east to south-west: the drawing has river pixels east of the city and none on the
-  city's own footprint.
+- **The drawn Bruinen is nearest the valley at 4995, -3311**, ninety-five blocks east of the build's
+  outlet and running north-south at about 101 degrees, read from the mask's own resolution: the river
+  layer is baked again at **three blocks to the pixel** over x 4200..5400 by z -4100..-2900
+  (`bruinen.png`), because a sixteen-block pixel cannot place a twelve-block channel. There are no river
+  pixels on the city's own footprint.
 - **A drawn river answers before the massif and before the floor**: the Bruinen cuts its own channel
   through both, so the branch meets it in open water instead of running into a wall of massif at 5005.
 - **The branch out of Rivendell** runs from the build's own outlet at **4900, -3322** to the drawn
-  Bruinen at **5008, -3328**: 109 blocks at **72**, two blocks under the valley's floor, twelve wide
+  Bruinen at **4995, -3311**: 96 blocks at **72**, two blocks under the valley's floor, twelve wide
   (5 left of the middle, 7 right), 2+ blocks of water the whole way, 7 at the middle, narrowing to 0.7 of
   its width into the join. Its course **wanders** up to 18 blocks off the straight line
   (`BRUINEN_SNAKE`, one and a half turns) and is exactly at the outlet and the join at both ends, so it

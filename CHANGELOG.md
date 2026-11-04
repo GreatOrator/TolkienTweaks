@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The Bruinen joins at 4995, -3311, and the mask is read finely enough to say so.** The river layer is
+  baked again at three blocks to the pixel over the corner the city stands in (`bruinen.png`), and
+  `ArdaMasks.river` reads that bake before the sixteen-block one inside its window: the nearest water to
+  the outlet is 95 blocks east at 4995, -3311, not the 5008, -3328 the coarse pixel suggested, and the
+  branch's join is moved onto it.
 - **The branch winds from the city to the Bruinen instead of running straight.** Its ends are fixed - the
   build's outlet at 4900, -3322 and the joined drawn river at 5008, -3328 - and the course between them
   wanders up to 18 blocks on one and a half turns, with the channel, the bed and the gorge cut following
