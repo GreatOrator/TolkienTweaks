@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The mask rules are written down.** `docs/arda-masks.md` now carries the decisions behind the terrain -
+  the mountain mask's white pinned at 318, the river and lake masks as solid placement, the height map as
+  the locator, river depth following width up to sixteen, and eight blocks to the pixel - with the open
+  questions beside them, so the reasoning is not left only in the conversation that produced it.
+
 - **A drawn river's bed is as deep as the channel is wide.** A three-block channel is three deep in the
   middle and a five-block one five, rising a block per block from each bank, in place of the flat four
   blocks every river used to get. The bed is capped at **16**: the reference paints its rivers as bands

@@ -129,3 +129,32 @@ what lets a river fall and a lake sit in its basin.
   x 4200..5400 by z -4100..-2900, read before the coarse mask inside that window. The nearest water to
   the city's outlet (4900, -3322) is **4995, -3311**, ninety-five blocks east and running north-south at
   about 101 degrees; that is where the branch joins.
+
+## Decisions worth keeping
+
+- **The built city wins where it stands, and the masks answer everywhere else.** The vale and its massif
+  are laid over the drawing, and a drawn river still cuts through both, because the branch out of
+  Rivendell has to meet the drawn Bruinen in the open.
+- **The mountain mask's brightness is height, and its whiteness is the pin at 318.** It reaches pure white
+  and is scaled by its own brightest pixel, so a drawn summit stands at the crown the city's massif reaches
+  and drawn rock and built rock meet the same sky. Leaving the ranges to the heightmap instead was tried
+  and reverted: the masks say what the ranges are.
+- **The river and lake masks are solid.** Where they are marked is where the water goes; the bake only
+  records how much of each cell is marked, so that a bank can fall between cells instead of on the grid.
+- **The final height mask is the locator.** It is what matches a build or a landmark to the Middle-earth
+  map, and it also draws the ground's own shape, from the sea's 63 up to the 318 crown.
+- **A drawn river is as deep as it is wide, to a cap of sixteen.** A three-block channel is three deep in
+  the middle and a five-block one five; the cap exists because the mask paints bands thirty blocks and
+  more across, and a bed as deep as a band is wide is a canyon.
+- **Eight blocks to the pixel** is the bake's resolution. It costs about 28 MB of masks at load - fourteen
+  of height, seven each for rivers and lakes - and keeps a ridge to the shape the map draws.
+
+## Open questions
+
+- **Band or channel?** The rivers mask paints bands a median 31 blocks across at the narrowest crossing. If
+  only the core of a band is water, narrowing it would let the depth rule follow a true channel width.
+- The river and lake surface censuses were taken at the sixteen-block bake and have not been re-measured at
+  eight.
+- Nothing has been looked at in a world since the eight-block rework. The seam where the drawn ranges meet
+  the city's massif, and the join where the deeper drawn Bruinen meets the branch, are where an error is
+  likeliest.
