@@ -30,6 +30,11 @@ final class ArdaMasks {
     private static final boolean[] LAKES = bits("lakes.png");
     private static final byte[] ROCK = shade("mountains.png");
 
+    /** The topography, unsigned 16-bit at BLOCKS to the pixel; sea is zero. */
+    private static final char[] GROUND = ground("height.png");
+    /** What {@link #ground} answers where the heightmap has no land. */
+    static final int NO_GROUND = Integer.MIN_VALUE;
+
     private ArdaMasks() {
     }
 
@@ -65,6 +70,48 @@ final class ArdaMasks {
             return height;
         }
         return height + (int) Math.round(rock * (crown - height));
+    }
+
+    /**
+     * The heightmap at a block column, interpolated between its pixels, or {@link #NO_GROUND} at sea.
+     * <p>
+     * The map is read at sixteen blocks to the pixel, so a value taken nearest would step the ground a
+     * pixel at a time and make terraces with a sixteen-block tread. Interpolation costs three multiplies
+     * and turns those steps into the slope the map actually draws.
+     */
+    static int ground(int blockX, int blockZ) {
+        if (GROUND.length == 0) {
+            return NO_GROUND;
+        }
+        double across = (blockX - WEST) / (double) BLOCKS;
+        double along = (blockZ - NORTH) / (double) BLOCKS;
+        if (across < 0.0D || along < 0.0D || across > WIDTH - 1 || along > HEIGHT - 1) {
+            return NO_GROUND;
+        }
+        int west = (int) Math.floor(across);
+        int north = (int) Math.floor(along);
+        int east = Math.min(WIDTH - 1, west + 1);
+        int south = Math.min(HEIGHT - 1, north + 1);
+        double shareX = across - west;
+        double shareZ = along - north;
+        double north1 = GROUND[north * WIDTH + west] * (1.0D - shareX) + GROUND[north * WIDTH + east] * shareX;
+        double south1 = GROUND[south * WIDTH + west] * (1.0D - shareX) + GROUND[south * WIDTH + east] * shareX;
+        double raw = north1 * (1.0D - shareZ) + south1 * shareZ;
+        return raw <= 0.5D ? NO_GROUND : (int) Math.round(raw);
+    }
+
+    private static char[] ground(String name) {
+        BufferedImage image = read(name);
+        if (image == null) {
+            return new char[0];
+        }
+        char[] raster = new char[WIDTH * HEIGHT];
+        for (int y = 0; y < HEIGHT; y++) {
+            for (int x = 0; x < WIDTH; x++) {
+                raster[y * WIDTH + x] = (char) image.getRaster().getSample(x, y, 0);
+            }
+        }
+        return raster;
     }
 
     private static boolean marked(boolean[] mask, int blockX, int blockZ) {

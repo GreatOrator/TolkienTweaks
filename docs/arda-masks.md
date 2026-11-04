@@ -52,6 +52,7 @@ along — a hundred and sixty blocks, inside the noise.
 | `rivers.png` | 23 kB | 2.24% |
 | `lakes.png` | 4 kB | 1.21% |
 | `mountains.png` | 132 kB | 8.1% above half brightness |
+| `height.png` | sixteen-bit topography | sea 16.9% of the frame |
 
 Run it from the mod root whenever the masks or `reference/work/calibration.json` change. `ArdaMasks`
 reads whatever is in the assets; a missing image leaves that mask empty and the drawing answers as it
@@ -59,27 +60,32 @@ did before.
 
 ## What the game does with them
 
+- **The ground.** `height.png` is `Final Height.png` at sixteen blocks to the pixel, unsigned 16-bit, and
+  it is the ground now: interpolated between its pixels from the sea's own 63 up to the crown at 318, so
+  the country rolls where the map rolls. The Shire reads 116 where the drawing had 68, Rohan 170, Mordor's
+  plateau 224, the Misty Mountains 178. A column the map calls sea keeps the drawing's bed, because the
+  map's zero is the sea's height.
 - **Mountains.** Brightness is height: white is a crest, black is a plain. Each column's brightness
-  lifts the drawn ground toward **318 blocks** - the crown the city's massif reaches - smoothly, because the mask is blurred. The drawing
+  lifts whatever ground is under it toward **318 blocks** - the crown the city's massif reaches - smoothly, because the mask is blurred. The drawing
   still decides what the country is and what its ground sits at; the mask decides how high it stands.
   The drawing may raise ground to **420** now, which leaves the 512-tall world's ceiling room.
 - **Rivers.** The mask says where the water is. The water's surface is the average height of the
   drawn ground over a square of ±64 blocks about the column, so it follows the fall of the country
   instead of standing at one level; the bed is four blocks under it, and the column is cut down to the
-  bed. Measured over all 39,613 river columns of 16 blocks: water from 38 to 297, median 72, and within
-  five blocks of its own ground on 86.2% of the channel, none of it above the crown.
+  bed. Measured over all 39,613 river columns of 16 blocks: water from 38 to 306, median 141, and within
+  five blocks of its own ground on 88.4% of the channel, none of it above the crown.
 - **Lakes.** The same rule with a ±192-block square, so a lake reads as the basin it sits in rather
   than as a plateau, and never below the sea's own height of 63. Bed six blocks under the surface.
-  Measured over 21,346 columns: surface 70 to 283, median 72, bed 64 to 66.
+  Measured over 21,346 columns: surface 63 to 285, median 67, at the sea's own height on 46% of them, bed 64 to 66.
 
 Water is given to the generator as a per-column height (`Sample.water`), not as one constant, which is
 what lets a river fall and a lake sit in its basin.
 
 ## Still open
 
-- The heightmap's own absolute heights are not used yet: the world's ground still comes from the
-  drawing, with the mask as relief on top. Reading `Final Height.png` as the ground itself would rebuild
-  the whole map's topography, and would have to be reconciled with the hand-built Rivendell valley, whose
-  floor is at 74.
+- The Rivendell valley has not been re-seated. Its floor is hand-laid at 74 and the heightmap now puts
+  the country round it at 160, so the city sits 86 blocks down inside its massif, and the Bruinen's
+  gorge ends 93 blocks under the ground at the drawn ford. Re-seating means raising the city's own base
+  to the heightmap's floor and re-cutting the gorge to meet it.
 - The Bruinen's gorge still runs to the drawn ford at 63. That is where the mask's Bruinen is not, and
   the ford's real coordinate and water level are still pending from the player.

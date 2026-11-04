@@ -114,13 +114,14 @@ public final class ArdaMap {
     /**
      * The height the mountains round the valley reach, and how far from that they are allowed to wander.
      * <p>
-     * The ridge stands above the city's crown at 318, so the city is shut inside the massif and its roof
-     * is not the highest thing in the country. Neither the ridge's height nor its distance is one number,
-     * though: the drawn noise raises summits and hollows saddles along it, over the scales given here.
-     * Fixed, the same numbers are a wall of even height at an even distance - a basin, not a range.
+     * The ridge tops out at the city's own crown, 318, because that is as high as this world can stand: a save
+     * made before Arda was raised is 384 blocks tall, its ceiling is 319, and a summit drawn above it is cut
+     * off flat. The mask's white means the same height, so the ranges and the build reach the same sky. The
+     * ridge's distance still wanders - the drawn noise swings it in and out over the scale below - and with
+     * the crest swing at nothing its top is the crown itself, level with the roofs the massif shuts in.
      */
-    private static final int VALLEY_CREST = 380;
-    private static final int CREST_SWING = 45;
+    private static final int VALLEY_CREST = VALLEY_CROWN;
+    private static final int CREST_SWING = 0;
     private static final int CREST_SCALE = 420;
     private static final double RIDGE_SWING = 0.35D;
     private static final int RIDGE_SCALE = 320;
@@ -397,7 +398,9 @@ public final class ArdaMap {
                     false, ground.upland(), surface);
         }
         if (ArdaMasks.river(blockX, blockZ)) {
-            int surface = grade(blockX, blockZ, shiftX, shiftZ, RIVER_GRADE);
+            // Near a coast the ground's grade falls under the sea; held there, the last stretch of a
+            // river meets the sea instead of digging a trench beside it.
+            int surface = Math.max(SEA_LEVEL, grade(blockX, blockZ, shiftX, shiftZ, RIVER_GRADE));
             return new Sample(ground.country(), Math.min(ground.height(), surface - RIVER_DEPTH), true,
                     false, ground.upland(), surface);
         }
@@ -674,11 +677,30 @@ public final class ArdaMap {
         int relief = northWest.relief();
         double rough = fractal(blockX, blockZ, 192, 1) + 0.5D * fractal(blockX, blockZ, 96, 2)
                 + 0.25D * fractal(blockX, blockZ, 48, 3);
-        int height = ArdaMasks.lift(blockX, blockZ, Mth.clamp((int) Math.round(
-                drawn + relief * (rough / 1.75D - 0.5D) * 2.0D), -60, MOUNTAIN_CEILING), VALLEY_CROWN);
+        // The ground is the reference heightmap where it has land, and the drawing where it has sea:
+        // an ocean column is the drawing's, and the map's own zero would put it at the sea's height.
+        int height = groundHeight(blockX, blockZ, drawn, relief, rough);
+        height = ArdaMasks.lift(blockX, blockZ, height, VALLEY_CROWN);
 
         boolean shore = seaInReach && Math.abs(drawn - SEA_LEVEL) <= BEACH_HEIGHT;
         return new Ground(northWest, height, drawn, shore, upland);
+    }
+
+    /**
+     * The ground at a column: the reference heightmap where it has land, the drawing where it has sea.
+     * <p>
+     * The heightmap is read from the sea's own height up to the crown, so its highest column stands where
+     * the mask's white does and the two agree about where the world's sky is. A column the map calls sea
+     * keeps the drawing's answer, because the map's zero is the sea's height and a bed at that height is
+     * a dry ocean.
+     */
+    private static int groundHeight(int blockX, int blockZ, int drawn, int relief, double rough) {
+        int mapped = ArdaMasks.ground(blockX, blockZ);
+        if (mapped != ArdaMasks.NO_GROUND) {
+            return SEA_LEVEL + (int) Math.round(mapped / 65535.0D * (VALLEY_CROWN - SEA_LEVEL));
+        }
+        return Mth.clamp((int) Math.round(drawn + relief * (rough / 1.75D - 0.5D) * 2.0D), -60,
+                MOUNTAIN_CEILING);
     }
 
     /** The drawn ground at a column, before it is turned into a {@link Sample}. */

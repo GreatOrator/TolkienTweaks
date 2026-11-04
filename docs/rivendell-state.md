@@ -49,6 +49,21 @@ the commit log.
   running) is the bar. The agent does not playtest; heights are checked by mirroring the
   generator's arithmetic in a script, never by generating a world.
 
+## What the heightmap did to the valley
+
+The ground is the reference topography now (see `docs/arda-masks.md`), and the valley floor is still the
+hand-laid 74. The map puts the country round Imladris at **160**, so the city now sits **86 blocks down**
+inside its massif rather than at the foot of it, and the Bruinen's gorge - still falling to the drawn
+ford at water 63 - is **93 blocks deep** where it ends. Nothing about the build itself has moved; the
+land around it rose.
+
+Re-seating is the next job: raise the city's own base to the heightmap's floor, drop the valley override
+to match, and re-cut the gorge from the new outlet to the masked Bruinen.
+
+Worth knowing before that: the nearest column of the masked Bruinen to the drawn ford at 3840, -3328 is
+**1,176 blocks away, at 5016, -3320** - 465 from the valley centre. So the mask does not put a ford where
+the drawing does, and adopting the mask's course moves the crossing about a kilometre east of it.
+
 ## What is next
 
 - The reference masks in `reference/` are calibrated to the world (`reference/work/`,

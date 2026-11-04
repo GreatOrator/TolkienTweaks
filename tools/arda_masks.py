@@ -5,6 +5,9 @@ records the transform (about four blocks per pixel, origin -7546, -13561). This 
 each mask to the world frame at a fixed number of blocks per pixel and writes it as a PNG next
 to the mod's other assets, which is the only form the game can read.
 
+Four layers come out of it: the rivers and lakes masks as one bit each, the mountain mask as
+eight-bit brightness (white is a crest), and the topography as unsigned sixteen-bit.
+
 Run it from the mod root:  python tools/arda_masks.py
 """
 
@@ -33,8 +36,9 @@ def crop(path, sx, ox, sz, oz, threshold=None):
     """The world frame of one 8192 mask, at BLOCKS_PER_PIXEL blocks to the pixel."""
     width = (WORLD_X1 - WORLD_X0) // BLOCKS_PER_PIXEL
     height = (WORLD_Z1 - WORLD_Z0) // BLOCKS_PER_PIXEL
-    image = Image.open(path).convert("L")
-    source = np.array(image)
+    image = Image.open(path)
+    # The topography is sixteen bits to the pixel and is read as it stands; the masks are grey.
+    source = np.array(image) if image.mode.startswith("I") else np.array(image.convert("L"))
     xs = np.arange(width) * BLOCKS_PER_PIXEL + WORLD_X0
     zs = np.arange(height) * BLOCKS_PER_PIXEL + WORLD_Z0
     columns = np.clip(((xs - ox) / sx).astype(int), 0, source.shape[1] - 1)
@@ -52,6 +56,7 @@ def main():
         ("ME_SimpleTopoTerrain_Rivers_albedo.png", "rivers.png", 100, False),
         ("ME_SimpleTopoTerrain_Lakes_albedo.png", "lakes.png", 100, False),
         ("AreaMasks_westernMountain.png", "mountains.png", None, True),
+        ("Final Height.png", "height.png", None, True),
     ]
     for source, name, threshold, graded in jobs:
         raster = crop(os.path.join(REFERENCE, source), sx, ox, sz, oz, threshold)
@@ -59,8 +64,9 @@ def main():
         path = os.path.join(OUT, name)
         image.save(path)
         marked = (raster > 0).mean()
-        print("%-14s %dx%d  %5.1f%% marked  %6.1f kB" % (
-            name, image.size[0], image.size[1], 100 * marked, os.path.getsize(path) / 1024.0))
+        print("%-13s %dx%d %-6s %5.1f%% marked  %7.1f kB" % (
+            name, image.size[0], image.size[1], image.mode, 100 * marked,
+            os.path.getsize(path) / 1024.0))
 
 
 if __name__ == "__main__":
