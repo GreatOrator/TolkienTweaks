@@ -352,7 +352,8 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   people were only ever stood by the page that builds the valley as a place, so a city put down with
   `/tmcity` in a fresh country came out empty - no Elrond, no Legolas, no walkers. The three Elves of the
   line now stand at the marks the build carries, the fifteen unnamed walkers at theirs, and the rest of the
-  crowd wherever the city has ground under it.
+  crowd wherever the city has ground under it - all of it read out of the cut's own `rivendell.npcs` table
+  rather than written down a second time in code, so a re-cut carries its people with it.
 
 ### Fixed
 

@@ -76,6 +76,8 @@ public final class CityCommands {
     private static final String PARTS = "rivendell.parts";
     /** Where the marker lives: how much of the city is standing, and where its corner was planted. */
     private static final String MARKER = "_laid.txt";
+    /** The people the build marks out for itself: a name or none, and a step from the corner it was cut at. */
+    private static final String FOLK = "rivendell.npcs";
     /** A piece is this wide and this tall, which is also the height of one band. */
     private static final int TILE = 48;
     /** How deep under the lowest band the ground is filled, in blocks. */
@@ -164,8 +166,9 @@ public final class CityCommands {
     private static int folk(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
         ServerLevel level = source.getLevel();
+        Path folder = folder();
         try {
-            Mark mark = read(folder());
+            Mark mark = read(folder);
             if (mark == null) {
                 source.sendFailure(Component.literal("No corner planted yet - run /tmcity summon where it should stand."));
                 return 0;
@@ -175,7 +178,9 @@ public final class CityCommands {
                 source.sendFailure(Component.literal(elsewhere));
                 return 0;
             }
-            int stood = Campaign.standCityFolk(level, mark.origin());
+            List<Campaign.FolkSpot> spots = folkSpots(folder);
+            int stood = spots.isEmpty() ? Campaign.standCityFolk(level, mark.origin())
+                    : Campaign.standCityFolk(level, mark.origin(), spots);
             source.sendSuccess(() -> Component.literal("Stood " + stood + " of the city's folk"
                     + (stood == 0 ? " - every mark already has its body." : ".")), true);
             return stood;
@@ -183,6 +188,25 @@ public final class CityCommands {
             source.sendFailure(Component.literal("The city could not be read: " + failed.getMessage()));
             return 0;
         }
+    }
+
+    /** The city's people as the build's own table gives them, or nothing when the cut carries no table. */
+    private static List<Campaign.FolkSpot> folkSpots(Path folder) throws IOException {
+        List<Campaign.FolkSpot> spots = new ArrayList<>();
+        Path table = folder.resolve(FOLK);
+        if (!Files.isRegularFile(table)) return spots;
+        for (String line : Files.readAllLines(table)) {
+            String[] fields = line.trim().split("\s+");
+            if (fields.length < 4) continue;
+            try {
+                String name = "-".equals(fields[0]) ? "" : fields[0];
+                spots.add(new Campaign.FolkSpot(name, Integer.parseInt(fields[1]),
+                        Integer.parseInt(fields[2]), Integer.parseInt(fields[3])));
+            } catch (NumberFormatException skipped) {
+                // A line that is not a body is not a reason to leave the rest of them unstood.
+            }
+        }
+        return spots;
     }
 
     /** Plants the city's corner at the caller's feet, and forgets whatever was standing before. */

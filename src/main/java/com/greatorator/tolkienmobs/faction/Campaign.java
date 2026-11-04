@@ -221,15 +221,6 @@ public final class Campaign extends SavedData {
     public static void setValleyOrigin(BlockPos origin) {
         VALLEY_ORIGIN = origin == null ? BlockPos.ZERO : origin;
     }
-    /**
-     * Where the three Elves of the line stand in the hand-built city, as steps from its own corner: the
-     * marks set down in the build, the same table the fifteen below come from.
-     */
-    private static final Map<String, int[]> CITY_STANDS = Map.of(
-            GLORFINDEL_TAG, new int[]{414, 175, 159},
-            ELROND_TAG, new int[]{308, 112, 233},
-            LEGOLAS_TAG, new int[]{200, 83, 151});
-
     /** The fifteen spots marked in the build, as positions in the cut with the sink already in them. */
     private static final int[][] VALLEY_FOLK_SPOTS = {
             {250, 88, 251}, {255, 89, 280}, {266, 89, 280}, {269, 85, 259}, {270, 98, 242},
@@ -2260,36 +2251,58 @@ public final class Campaign extends SavedData {
         }
     }
 
+    /** One of the city's people as the build gives it: a name or none, and its step from the corner. */
+    public record FolkSpot(String name, int dx, int dy, int dz) {
+    }
+
     /**
-     * Stands the city's people in a city planted by hand, with no place of its own to hang them on.
+     * Stands the city's people from the build's own table, so a re-cut carries its people with it.
      * <p>
      * The valley stands its folk when a page builds it, which is no help to a city put down with
-     * {@code /tmcity} in a country nobody has walked: the same fifteen marks are read against the planted
-     * corner, and the three Elves of the line join them at the spots the build gives them. A body counts by
-     * its tag, so a second word stands nobody twice and one that was killed is put back. The rest of the
-     * number walks the city rather than standing on its marks. Answers how many were stood.
+     * {@code /tmcity} in a country nobody has walked: this reads the marks the build was cut with - the
+     * fifteen unnamed walkers and the three Elves of the line, who are named in it - against the planted
+     * corner. A named mark is a giver with a gold name over it; one without a name is an ordinary walker.
+     * A body counts by its tag, so a second word stands nobody twice and one that was killed is put back.
+     * The rest of the number walks the city rather than standing on its marks. Answers how many were stood.
      */
-    public static int standCityFolk(ServerLevel level, BlockPos origin) {
+    public static int standCityFolk(ServerLevel level, BlockPos origin, List<FolkSpot> spots) {
         if (origin == null) return 0;
         VALLEY_ORIGIN = origin;
         int stood = 0;
-        for (Map.Entry<String, int[]> line : CITY_STANDS.entrySet()) {
-            int[] at = line.getValue();
-            BlockPos spot = floorOf(level, origin.offset(at[0], at[1], at[2]));
-            if (spot == null || !nearby(level, spot, line.getKey()).isEmpty()) continue;
-            String tag = line.getKey();
-            stoodNamed(level, spot, tag.equals(GLORFINDEL_TAG) ? GLORFINDEL
-                    : tag.equals(ELROND_TAG) ? ELROND : LEGOLAS, tag);
+        for (int i = 0; i < spots.size(); i++) {
+            FolkSpot body = spots.get(i);
+            BlockPos spot = floorOf(level, origin.offset(body.dx(), body.dy(), body.dz()));
+            if (spot == null) continue;
+            String tag = tagOfName(body.name());
+            boolean named = tag != null;
+            if (!named) tag = valleyFolkTag(i);
+            if (!nearby(level, spot, tag).isEmpty()) continue;
+            if (named) {
+                stoodNamed(level, spot, capitalised(body.name()), tag);
+            } else {
+                standFolk(level, spot, tag);
+            }
             stood++;
         }
-        for (int i = 0; i < VALLEY_FOLK_SPOTS.length; i++) {
-            BlockPos spot = floorOf(level, origin.offset(VALLEY_FOLK_SPOTS[i][0],
-                    VALLEY_FOLK_SPOTS[i][1], VALLEY_FOLK_SPOTS[i][2]));
-            if (spot == null || !nearby(level, spot, valleyFolkTag(i)).isEmpty()) continue;
-            standFolk(level, spot, valleyFolkTag(i));
-            stood++;
+        return stood + crowd(level, origin, stood);
+    }
+
+    /**
+     * Stands the city's people for a cut with no table beside it, from the spots written down here: the
+     * fifteen walkers only, since a named body needs the build's own word for where it stands.
+     */
+    public static int standCityFolk(ServerLevel level, BlockPos origin) {
+        List<FolkSpot> spots = new ArrayList<>();
+        for (int[] at : VALLEY_FOLK_SPOTS) {
+            spots.add(new FolkSpot("", at[0], at[1], at[2]));
         }
+        return standCityFolk(level, origin, spots);
+    }
+
+    /** The rest of the number, put wherever the city has ground under it rather than on its marks. */
+    private static int crowd(ServerLevel level, BlockPos origin, int stood) {
         BlockPos middle = origin.offset(277, 60, 256);
+        int loose = 0;
         for (int i = stood; i < VALLEY_FOLK; i++) {
             for (int attempt = 0; attempt < 16; attempt++) {
                 BlockPos spot = floorOf(level, middle.offset(
@@ -2297,11 +2310,26 @@ public final class Campaign extends SavedData {
                         level.getRandom().nextInt(-VALLEY_CITY, VALLEY_CITY + 1)));
                 if (spot == null) continue;
                 standFolk(level, spot, VALLEY_FOLK_TAG);
-                stood++;
+                loose++;
                 break;
             }
         }
-        return stood;
+        return loose;
+    }
+
+    /** The tag the line knows a body by, or null when the build names somebody the campaign does not. */
+    private static String tagOfName(String name) {
+        if (name == null || name.isEmpty()) return null;
+        if (name.equalsIgnoreCase(GLORFINDEL)) return GLORFINDEL_TAG;
+        if (name.equalsIgnoreCase(ELROND)) return ELROND_TAG;
+        if (name.equalsIgnoreCase(LEGOLAS)) return LEGOLAS_TAG;
+        return null;
+    }
+
+    /** A name out of a table written in lower case, as it should stand over a head. */
+    private static String capitalised(String name) {
+        return name == null || name.isEmpty() ? ""
+                : name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
     }
 
     /** Bodies carrying a tag within a few paces of a spot, so the same mark is never stood twice. */
