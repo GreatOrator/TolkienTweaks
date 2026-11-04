@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The river depth cap is settled at sixteen, and it is not provisional.** The mask's rivers really do run
+  that wide in canon, so the wide bands are the drawing being right rather than something to narrow down to
+  a channel; the note now says so, instead of leaving the cap looking like an open question.
+
 - **The mask rules are written down.** `docs/arda-masks.md` now carries the decisions behind the terrain -
   the mountain mask's white pinned at 318, the river and lake masks as solid placement, the height map as
   the locator, river depth following width up to sixteen, and eight blocks to the pixel - with the open

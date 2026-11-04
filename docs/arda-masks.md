@@ -146,13 +146,13 @@ what lets a river fall and a lake sit in its basin.
 - **A drawn river is as deep as it is wide, to a cap of sixteen.** A three-block channel is three deep in
   the middle and a five-block one five; the cap exists because the mask paints bands thirty blocks and
   more across, and a bed as deep as a band is wide is a canyon.
+  The cap is settled, not provisional: the mask's rivers really do run that wide in canon, so sixteen is
+  the deepest a drawn river's bed goes and the bands are not narrowed to find a thinner channel.
 - **Eight blocks to the pixel** is the bake's resolution. It costs about 28 MB of masks at load - fourteen
   of height, seven each for rivers and lakes - and keeps a ridge to the shape the map draws.
 
 ## Open questions
 
-- **Band or channel?** The rivers mask paints bands a median 31 blocks across at the narrowest crossing. If
-  only the core of a band is water, narrowing it would let the depth rule follow a true channel width.
 - The river and lake surface censuses were taken at the sixteen-block bake and have not been re-measured at
   eight.
 - Nothing has been looked at in a world since the eight-block rework. The seam where the drawn ranges meet
