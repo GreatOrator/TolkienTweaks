@@ -31,31 +31,36 @@ what is still open, so the next session does not have to rebuild that from the c
 
 - Arda is **384 blocks tall** (-64..319), the overworld's own height, so the city's crown at 318 stands
   one block under the sky (`d8faf61f`).
-- `ArdaMap.liftTo(ceiling)` still exists for taller worlds: it raises the floor, the crown, the shoulder
-  and the water together by whatever room the ceiling gives. At 384 it is **0**.
+- `ArdaMap.liftTo(ceiling)` still exists for taller worlds: it raises the floor, the crown and the water
+  together by whatever room the ceiling gives. At 384 it is **0**.
 
 ## The valley
 
-- Floor **74**, centred on **4628, -3577**, half-extents **277 x 256** - exactly the build's footprint
-  (x 4351..4905, z -3833..-3321), so the rock meets the walls with no ledge.
-- The rim **climbs from the floor** to the crown over `VALLEY_STEEP = 90` blocks (74, 80, 90, 106, 138,
-  168, 212, 253, 318), holds the crown out to `VALLEY_RIM = 175`, then falls to the vale over
+- Floor **74**, centred on **4628, -3577**, half-extents **377 x 356**: the build's footprint
+  (x 4352..4905, z -3833..-3322) plus a `VALLEY_LAWN` of **100 blocks** on every side, so the level
+  ground runs x 4251..5005 by z -3933..-3221 and the city stands on country rather than against a wall.
+  With the half-extents at the footprint itself the rim began in the same block as the walls, and the
+  build sat at the bottom of a trench that hugged it.
+- The rim **climbs from the lawn's edge** to the crown over `VALLEY_STEEP = 90` blocks (74, 80, 90, 106,
+  138, 168, 212, 253, 318), holds the crown out to `VALLEY_RIM = 175`, then falls to the vale over
   `VALLEY_FALL = 340`.
 - Past the massif's foot the country is blended toward the city's water level over `VALLEY_VALE = 900`
   blocks, settling back to the heightmap's 156-193 by **1,415** blocks out, so the foot itself stands on
   **74**, the city's own floor. It used to stand on 82, eight above the floor, which put the country's
   lowest ground higher than the water in the valley: a river could not leave, because the water in the
   floor was already below everything it had to reach.
-- The north-east corner is a `shoulder()` shelf at 318 in the build's own gap (x 4797..4905 by
-  z -3833..-3774), run down to the floor over 110 blocks.
+- The north-east corner is plain floor now: the `shoulder()` shelf that stood rock at 318 inside the
+  build's own empty gap is gone. It existed to fill a corner the mountain had cut, but a shelf at the
+  crown inside the city is rock where the city has none, and with a lawn the mountain belongs a hundred
+  blocks out.
 - The mountain mask's ridge is sixteen blocks wide, and the vale's blend runs **after** the mask, so a
   lifted ridge cannot stand as a blade inside the valley (`51823803`).
 
 ## The water
 
-- **The drawn Bruinen is nearest the valley at 5008, -3328**, 682 blocks south-east of the valley's east
-  edge, running north-west to south-east. It passes **through** the massif: 106 drawn river pixels sit in
-  the ring east of the floor and none on the floor.
+- **The drawn Bruinen is nearest the valley at 5008, -3328**, three blocks east of the lawn's edge at
+  5005, running north-east to south-west. It passes **through** the massif: the drawing has river pixels
+  in the ring east of the lawn and none on the lawn itself.
 - **A drawn river answers before the massif** everywhere off the valley floor (`3f920f09`), so the
   Bruinen cuts its own gorge through the rock instead of being buried by it.
 - **The branch out of Rivendell** runs from the build's own south edge at **4900, -3322** to the

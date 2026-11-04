@@ -71,17 +71,19 @@ public final class ArdaMap {
      * cannot be a country of the 48 by 36 grid: it is cut out of cells the drawing already fills and
      * blended back into them at its rim. Its middle is the middle of that city - the corner it is
      * planted from, plus half of its 554 by 512 footprint - so a city planted at 4352, -3833 stands in
-     * the middle of the floor rather than against one of its walls. The floor is a few blocks smaller
-     * than the footprint on every side - 544 by 502 inside a 554 by 512 city - so the mountain's foot
-     * begins inside the build and the build embeds itself in it. There is no apron of flat ground in
-     * front of the walls for the join to be dressed across, because there is no join: the lowest band of
-     * the city is laid into the rising ground, and the rock that was there shows wherever the build has
-     * nothing of its own.
+     * the middle of the floor rather than against one of its walls. The floor is that footprint and then
+     * {@link #VALLEY_LAWN} blocks of level country around it on every side, because a floor cut to the
+     * walls puts the mountain's foot in the same block as the build: the city stands at the bottom of a
+     * pit that hugs it, and wherever the build has nothing of its own the ground climbs from the build's
+     * own base instead of from a hill away from it. A hundred blocks of level ground on every side is a
+     * valley the city sits in rather than a trench it was dropped into; the climb still reaches the crown
+     * within ninety more, so the mountain closes over the roofs from there.
      */
     private static final int VALLEY_X = 4628;
     private static final int VALLEY_Z = -3577;
-    private static final int VALLEY_HALF_X = 277;
-    private static final int VALLEY_HALF_Z = 256;
+    private static final int VALLEY_LAWN = 100;
+    private static final int VALLEY_HALF_X = 277 + VALLEY_LAWN;
+    private static final int VALLEY_HALF_Z = 256 + VALLEY_LAWN;
 
     /**
      * The height the rock stands at where the massif meets the build: the crown of the city itself.
@@ -527,11 +529,6 @@ public final class ArdaMap {
             double fell = Math.min(1.0D, (beyond - ridge) / (double) VALLEY_FALL);
             height = (int) Math.round(crest + (ground.height() - crest) * smooth(fell));
         }
-        int shoulder = shoulder(blockX, blockZ);
-        if (shoulder > height) {
-            // Rock standing in the city's corner is the mountain's country, not the city's floor.
-            return new Sample(ground.country(), shoulder, false, false, ground.upland());
-        }
         return new Sample(country, height, false, false, ground.upland());
     }
 
@@ -578,37 +575,13 @@ public final class ArdaMap {
     /**
      * How much of the way up the mountain the ground has climbed at a share of the distance to the ridge.
      * <p>
-     * Steepest at the foot and rounded at the top: the ground starts climbing at the city's walls rather
-     * than lying flat for a lawn's width, gains most of its height in the first half of the climb, and eases
-     * into the ridge so the top is a shoulder rather than a point.
+     * Steepest at the foot and rounded at the top: the ground starts climbing a lawn's width out from the
+     * city's walls, gains most of its height in the first half of the climb, and eases into the ridge so
+     * the top is a shoulder rather than a point.
      */
     private static double climb(double share) {
         double t = Math.min(1.0D, share);
         return 1.0D - Math.pow(1.0D - t, 1.2D);
-    }
-
-    /**
-     * The rock the city's north-east corner was cut into, as a height.
-     * <p>
-     * The build's own gap is x 4797..4905 by z -3833..-3774, and nothing in the cut stands in it above the
-     * lowest band: the mountain was there rather than the city. So the mountain is there again - a shelf at
-     * the city's own crown, level with the roofs it meets, that falls away outside the walls over
-     * {@link #SHOULDER_RUN} blocks into the massif's foot. Inside the footprint it stops at the gap's own
-     * edges, where the build's blocks are, so it can bury nothing the city has.
-     */
-    private static int shoulder(double blockX, double blockZ) {
-        double beyondX = Math.max(Math.max(0.0D, SHOULDER_WEST - blockX), blockX - SHOULDER_EAST);
-        double beyondZ = Math.max(Math.max(0.0D, SHOULDER_NORTH - blockZ), blockZ - SHOULDER_SOUTH);
-        boolean beyondTheBuild = blockX > SHOULDER_EAST || blockZ < SHOULDER_NORTH;
-        if (!beyondTheBuild && (beyondX > 0.0D || beyondZ > 0.0D)) {
-            return Integer.MIN_VALUE;
-        }
-        double beyond = Math.hypot(Math.max(0.0D, beyondX), Math.max(0.0D, beyondZ));
-        if (beyond >= SHOULDER_RUN) {
-            return Integer.MIN_VALUE;
-        }
-        return (int) Math.round(SHOULDER_TOP
-                - (SHOULDER_TOP - VALLEY_FLOOR) * smooth(beyond / (double) SHOULDER_RUN));
     }
 
     /**
