@@ -92,7 +92,7 @@ public final class ArdaMap {
      * walls for the mountains to take the city into themselves, which is the whole point of them.
      */
     private static final int VALLEY_RIM = 260;
-    private static final int VALLEY_FALL = 170;
+    private static final int VALLEY_FALL = 200;
 
     /**
      * The height the mountains round the valley reach. It is the map's own ceiling - no drawn column
@@ -320,10 +320,11 @@ public final class ArdaMap {
             int height = (int) Math.round(VALLEY_FLOOR + (VALLEY_CREST - VALLEY_FLOOR) * climbed);
             return new Sample(ground.country(), height, false, false, ground.upland());
         }
-        // Over the crest the mountain is handed back to the country it stands in, a share at a time,
-        // so the ridge has an outside as well as an inside and nothing ends in a cut face.
-        double share = (outside - VALLEY_RIM) / (double) VALLEY_FALL;
-        int height = (int) Math.round(VALLEY_CREST + (ground.height() - VALLEY_CREST) * smooth(share));
+        // Over the crest the mountain is handed back to the country it stands in, at the same even
+        // angle - shallower than the climb, so the ridge is a mountain seen from outside rather than a
+        // face - and it lands exactly on the country's own ground at the far end.
+        double fell = (outside - VALLEY_RIM) / (double) VALLEY_FALL;
+        int height = (int) Math.round(VALLEY_CREST + (ground.height() - VALLEY_CREST) * fell);
         return new Sample(ground.country(), height, false, false, ground.upland());
     }
 
