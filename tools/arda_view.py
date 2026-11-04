@@ -16,11 +16,11 @@ VALLEY_X, VALLEY_Z, VALLEY_HX, VALLEY_HZ = 4628, -3577, 272, 251
 VALLEY_RIM, VALLEY_FALL, VALLEY_VALE = 175, 340, 900
 LAKE_DEPTH = 6
 RIVER_REACH, RIVER_DEPTH_MAX = 24, 16
-OUTLET_X, OUTLET_Z, FORD_X, FORD_Z = 4900, -3322, 4995, -3311
-BRUINEN_WATER, BRUINEN_BED = FLOOR - 2, 7
+OUTLET_X, OUTLET_Z, FORD_X, FORD_Z = 4352, -3530, 4995, -3311
+BRUINEN_WATER, BRUINEN_BED = FLOOR + 8, 7
 LEFT, RIGHT, BANK = 5, 7, 1.2
-NARROW, FORD_DEPTH, SHALLOWING, SHALLOW = 0.30, 2.0, 0.55, 0.8
-STEPS, SNAKE, TURNS = 96, 18.0, 1.5
+NARROW, FORD_DEPTH, SHALLOWING, SHALLOW = 0.30, 2.0, 0.55, 0.92
+STEPS, SNAKE, TURNS = 256, 18.0, 1.5
 WEST, NORTH, BLOCKS = -5120, -10240, 8
 FINE_WEST, FINE_NORTH, FINE = 4200, -4100, 3
 WATER = 0.3
@@ -116,17 +116,54 @@ def drawn_water(x, z):
     return surface, min(ground, surface - deep)
 
 
+COURSE = ((4352, -3530), (4272, -3530), (4272, -3256), (4952, -3256), (4995, -3311))
+LEG = [float(np.hypot(b[0] - a[0], b[1] - a[1])) for a, b in zip(COURSE, COURSE[1:])]
+START = [float(sum(LEG[:index])) for index in range(len(LEG))]
+TOTAL = float(sum(LEG))
+
+
 def wander(share):
     return SNAKE * np.sin(share * TURNS * np.pi) * np.sin(np.pi * share)
 
 
-ALONG_X, ALONG_Z = FORD_X - OUTLET_X, FORD_Z - OUTLET_Z
-LENGTH = float(np.hypot(ALONG_X, ALONG_Z))
+def leg_of(share):
+    along = min(1.0, max(0.0, share)) * TOTAL
+    index = 0
+    while index < len(LEG) - 1 and along >= START[index] + LEG[index]:
+        index += 1
+    return index
+
+
+def into(share):
+    index = leg_of(share)
+    return min(1.0, max(0.0, (min(1.0, max(0.0, share)) * TOTAL - START[index]) / LEG[index]))
 
 
 def course(share):
-    return (OUTLET_X + share * ALONG_X - ALONG_Z / LENGTH * wander(share),
-            OUTLET_Z + share * ALONG_Z + ALONG_X / LENGTH * wander(share))
+    index, at = leg_of(share), into(share)
+    along_x = COURSE[index + 1][0] - COURSE[index][0]
+    along_z = COURSE[index + 1][1] - COURSE[index][1]
+    dir_x, dir_z = along_x / LEG[index], along_z / LEG[index]
+    wobble = wander(share) * np.sin(np.pi * at)
+    return (COURSE[index][0] + at * along_x - dir_z * wobble,
+            COURSE[index][1] + at * along_z + dir_x * wobble)
+
+
+def project(x, z):
+    near, share, side, before, after = float("inf"), 0.0, 0.0, False, False
+    for index, (start, end) in enumerate(zip(COURSE, COURSE[1:])):
+        along_x, along_z = end[0] - start[0], end[1] - start[1]
+        at = ((x - start[0]) * along_x + (z - start[1]) * along_z) / (along_x ** 2 + along_z ** 2)
+        foot = min(1.0, max(0.0, at))
+        foot_x, foot_z = start[0] + foot * along_x, start[1] + foot * along_z
+        away = float(np.hypot(x - foot_x, z - foot_z))
+        if away < near:
+            near = away
+            share = (START[index] + foot * LEG[index]) / TOTAL
+            side = ((x - foot_x) * -along_z + (z - foot_z) * along_x) / LEG[index]
+            before = index == 0 and at < 0.0
+            after = index == len(LEG) - 1 and at > 1.0
+    return share, side, near, before, after
 
 
 def profile():
@@ -142,11 +179,14 @@ LEVELS = profile()
 
 
 def bruinen(x, z, ground):
-    share = ((x - OUTLET_X) * ALONG_X + (z - OUTLET_Z) * ALONG_Z) / (ALONG_X ** 2 + ALONG_Z ** 2)
-    if share < 0.0 or share > 1.0:
+    share, _, _, before, after = project(x, z)
+    if before or after:
         return None
     middle_x, middle_z = course(share)
-    side = ((x - middle_x) * -ALONG_Z + (z - middle_z) * ALONG_X) / LENGTH
+    index = leg_of(share)
+    along_x = COURSE[index + 1][0] - COURSE[index][0]
+    along_z = COURSE[index + 1][1] - COURSE[index][1]
+    side = ((x - middle_x) * -along_z + (z - middle_z) * along_x) / LEG[index]
     level = LEVELS[int(min(max(round(share * STEPS), 0), STEPS))]
     shallow = smooth(min(1.0, max(0.0, (share - SHALLOW) / (1.0 - SHALLOW))))
     bank = 1.0 - NARROW * shallow

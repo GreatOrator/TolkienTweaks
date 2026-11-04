@@ -126,8 +126,9 @@ what lets a river fall and a lake sit in its basin.
 - The Bruinen used to be the one river not laid by the mask, because a sixteen-block pixel cannot place
   a twelve-block channel. It now has its own bake at **three blocks to the pixel** over
   x 4200..5400 by z -4100..-2900, read before the coarse mask inside that window. The nearest water to
-  the city's outlet (4900, -3322) is **4995, -3311**, ninety-five blocks east and running north-south at
-  about 101 degrees; that is where the branch joins.
+  the city's mouth (4352, -3530) is **4996, -3308**, 681 blocks off; the branch reaches it at
+  **4995, -3311**, running round the valley's south side and meeting the river where it runs north-south at
+  about 101 degrees.
 
 ## Decisions worth keeping
 

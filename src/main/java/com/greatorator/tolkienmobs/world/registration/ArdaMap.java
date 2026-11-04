@@ -176,20 +176,22 @@ public final class ArdaMap {
     private static final int SHOULDER_RUN = 110;
 
     /**
-     * The Bruinen: where the city's own channel leaves the walls, the ford below the valley, and the gorge
-     * the river is cut through on its way there.
+     * The Bruinen: where the city's own water leaves the walls, the water it feeds, and the course between.
      * <p>
-     * The build carries its water out at 82 with its bed seven blocks under that, a little above the valley
-     * floor, and the drawing pins the ford to the Trollshaws' cell at 3840, -3328. Between the two the massif
-     * stands at the city's crown, so a channel cut by the maps' own river lines - which flatten every column
-     * they touch to a level 63 - met rock two hundred and thirty blocks over the water, and the front of the
-     * valley was a sliced terrace rather than a bank. The river is cut as its own gorge instead: the build's
-     * level at the outlet, the level the drawing's rivers stand at at the ford, a bed under it, and walls that
-     * rise from the water at a grade a hillside holds rather than a wall a map cell draws. The ford's own
-     * water level is read off the ground as the course goes rather than set at either end.
+     * The mouth is read off the build rather than guessed. Its 584 pieces carry 302,049 water blocks, and the
+     * water stands against the west wall over x 4352..4354, z -3536..-3525 with its surface at 82 - seven
+     * blocks above the valley's floor. The east wall's only water is an aqueduct at y 239, which is a spring
+     * inside the city, not an outflow. So the branch leaves west, falls the eight blocks to the vale, and runs
+     * round the valley's south side to the drawn Bruinen: the nearest drawn water to the mouth is at 4996,
+     * -3308, 681 blocks off, and the straight line to it runs through the city.
+     * <p>
+     * The river is cut as its own channel rather than by the maps' own river lines - which flatten every
+     * column they touch to a level 63 and met the massif's rock two hundred and thirty blocks over the water.
+     * Its water is read off the ground as the course goes rather than set at either end, so it falls where the
+     * ground falls and never runs uphill.
      */
-    private static final int BRUINEN_OUTLET_X = 4900;
-    private static final int BRUINEN_OUTLET_Z = -3322;
+    private static final int BRUINEN_OUTLET_X = 4352;
+    private static final int BRUINEN_OUTLET_Z = -3530;
     /**
      * The branch's water at the build's own mouth: the city carries its water out at {@link #PLANTED_FLOOR}
      * plus eight, seven blocks above the valley's floor, and this is that level, not the floor's. An
@@ -226,9 +228,9 @@ public final class ArdaMap {
     private static final int BRUINEN_FORD_X = 4995;
     private static final int BRUINEN_FORD_Z = -3311;
     private static final double BRUINEN_BANK = 1.2D;
-    private static final double BRUINEN_FORD_SHALLOW = 0.8D;
+    private static final double BRUINEN_FORD_SHALLOW = 0.92D;
     /** Steps the channel's water is read at along its course, from the outlet to the ford. */
-    private static final int BRUINEN_STEPS = 96;
+    private static final int BRUINEN_STEPS = 256;
     /**
      * How wide the ground the branch leaves the valley through is, either side of its course, in blocks.
      * <p>
@@ -240,8 +242,9 @@ public final class ArdaMap {
     /** How finely the corridor follows the course's bend. */
     private static final int CORRIDOR_STEPS = 32;
     /**
-     * How far the branch wanders off the straight line between the build's outlet and the Bruinen, and how
-     * many turns it makes on the way, in blocks and in half turns.
+     * How far the branch wanders off its own course, and how many turns it makes on the way, in blocks and in
+     * half turns. The wander falls to nothing at each corner, so the water is one channel rather than a
+     * channel and a step wherever the course turns.
      * <p>
      * A river drawn as one straight cut from a wall to another river is a canal: the water leaves the city,
      * runs dead straight for a hundred blocks and arrives. These two numbers give it a course that leaves
@@ -252,19 +255,112 @@ public final class ArdaMap {
     private static final double BRUINEN_TURNS = 1.5D;
     /** How far out a column can be and still be measured against the course's bend. */
     private static final double CORRIDOR_REACH = BRUINEN_CORRIDOR + BRUINEN_SNAKE;
-    /** How far off the straight line the course's middle stands at a share of the way along it. */
+    /**
+     * The course the branch runs, in blocks: the city's mouth, out west of the wall, south round the valley's
+     * own side, east below the city, and in to the drawn Bruinen.
+     * <p>
+     * A straight line from the mouth to the nearest drawn water runs through the city, and the drawn river
+     * passes the valley's east side while the city's water leaves on its west, so the water has to go round.
+     * The legs keep a corridor's width clear of the walls, so the corridor the valley is cut with does not eat
+     * the city's foot.
+     */
+    private static final int[] COURSE_X = {BRUINEN_OUTLET_X, 4272, 4272, 4952, BRUINEN_FORD_X};
+    private static final int[] COURSE_Z = {BRUINEN_OUTLET_Z, -3530, -3256, -3256, BRUINEN_FORD_Z};
+    /** How long each leg is, where each leg starts along the course, and the whole course. */
+    private static final double[] COURSE_LEG = new double[COURSE_X.length - 1];
+    private static final double[] COURSE_START = new double[COURSE_X.length - 1];
+    private static final double COURSE_LENGTH;
+
+    static {
+        double total = 0.0D;
+        for (int leg = 0; leg < COURSE_LEG.length; leg++) {
+            COURSE_START[leg] = total;
+            COURSE_LEG[leg] = Math.hypot(COURSE_X[leg + 1] - COURSE_X[leg], COURSE_Z[leg + 1] - COURSE_Z[leg]);
+            total += COURSE_LEG[leg];
+        }
+        COURSE_LENGTH = total;
+    }
+
+    /** How far off the course's own line its middle stands at a share of the way along it. */
     private static double wander(double share) {
         return BRUINEN_SNAKE * Math.sin(share * BRUINEN_TURNS * Math.PI) * Math.sin(Math.PI * share);
     }
 
-    /** The course's middle at a share of the way from the outlet to the join: x first. */
-    private static double courseX(double share, double alongX, double alongZ, double length) {
-        return BRUINEN_OUTLET_X + share * alongX - alongZ / length * wander(share);
+    /** Which leg of the course a share of the way along it falls on. */
+    private static int courseLeg(double share) {
+        double along = Mth.clamp(share, 0.0D, 1.0D) * COURSE_LENGTH;
+        int leg = 0;
+        while (leg < COURSE_LEG.length - 1 && along >= COURSE_START[leg] + COURSE_LEG[leg]) {
+            leg++;
+        }
+        return leg;
+    }
+
+    /** How far into its own leg a share of the way along the course falls, from 0 to 1. */
+    private static double courseInto(int leg, double share) {
+        return Mth.clamp((Mth.clamp(share, 0.0D, 1.0D) * COURSE_LENGTH - COURSE_START[leg]) / COURSE_LEG[leg],
+                0.0D, 1.0D);
+    }
+
+    /** The direction the course runs on a leg: x first. */
+    private static double courseDirX(int leg) {
+        return (COURSE_X[leg + 1] - COURSE_X[leg]) / COURSE_LEG[leg];
+    }
+
+    /** The same direction, z. */
+    private static double courseDirZ(int leg) {
+        return (COURSE_Z[leg + 1] - COURSE_Z[leg]) / COURSE_LEG[leg];
+    }
+
+    /** The course's middle at a share of the way along it: x first. */
+    private static double courseX(double share) {
+        int leg = courseLeg(share);
+        double into = courseInto(leg, share);
+        return COURSE_X[leg] + into * (COURSE_X[leg + 1] - COURSE_X[leg])
+                - courseDirZ(leg) * wander(share) * Math.sin(Math.PI * into);
     }
 
     /** The same middle, z. */
-    private static double courseZ(double share, double alongX, double alongZ, double length) {
-        return BRUINEN_OUTLET_Z + share * alongZ + alongX / length * wander(share);
+    private static double courseZ(double share) {
+        int leg = courseLeg(share);
+        double into = courseInto(leg, share);
+        return COURSE_Z[leg] + into * (COURSE_Z[leg + 1] - COURSE_Z[leg])
+                + courseDirX(leg) * wander(share) * Math.sin(Math.PI * into);
+    }
+
+    /**
+     * Where a column lies of the course: the share of the way along it, how far across at the nearest point,
+     * how far off the course that is, the direction the water runs there, and whether the column is behind
+     * the mouth or past the join.
+     */
+    private static double[] project(double blockX, double blockZ) {
+        double near = Double.MAX_VALUE;
+        double share = 0.0D;
+        double side = 0.0D;
+        double dirX = 1.0D;
+        double dirZ = 0.0D;
+        boolean before = false;
+        boolean after = false;
+        for (int leg = 0; leg < COURSE_LEG.length; leg++) {
+            double alongX = COURSE_X[leg + 1] - COURSE_X[leg];
+            double alongZ = COURSE_Z[leg + 1] - COURSE_Z[leg];
+            double at = ((blockX - COURSE_X[leg]) * alongX + (blockZ - COURSE_Z[leg]) * alongZ)
+                    / (alongX * alongX + alongZ * alongZ);
+            double into = Mth.clamp(at, 0.0D, 1.0D);
+            double footX = COURSE_X[leg] + into * alongX;
+            double footZ = COURSE_Z[leg] + into * alongZ;
+            double away = Math.hypot(blockX - footX, blockZ - footZ);
+            if (away < near) {
+                near = away;
+                share = (COURSE_START[leg] + into * COURSE_LEG[leg]) / COURSE_LENGTH;
+                dirX = courseDirX(leg);
+                dirZ = courseDirZ(leg);
+                side = (blockX - footX) * -dirZ + (blockZ - footZ) * dirX;
+                before = leg == 0 && at < 0.0D;
+                after = leg == COURSE_LEG.length - 1 && at > 1.0D;
+            }
+        }
+        return new double[] {share, side, near, dirX, dirZ, before ? 1.0D : 0.0D, after ? 1.0D : 0.0D};
     }
 
     /** The course's water, read once; and the lock that keeps two chunks from reading it together. */
@@ -639,12 +735,9 @@ public final class ArdaMap {
         int lowest = BRUINEN_WATER;
         profile[0] = lowest;
         for (int step = 1; step <= BRUINEN_STEPS; step++) {
-            double alongX = BRUINEN_FORD_X - BRUINEN_OUTLET_X;
-            double alongZ = BRUINEN_FORD_Z - BRUINEN_OUTLET_Z;
-            double length = Math.sqrt(alongX * alongX + alongZ * alongZ);
             double share = step / (double) BRUINEN_STEPS;
-            int x = (int) Math.round(courseX(share, alongX, alongZ, length));
-            int z = (int) Math.round(courseZ(share, alongX, alongZ, length));
+            int x = (int) Math.round(courseX(share));
+            int z = (int) Math.round(courseZ(share));
             lowest = Math.min(lowest,
                     groundAt(x / (double) CELL + ORIGIN_COLUMN, z / (double) CELL + ORIGIN_ROW, x, z).height());
             profile[step] = lowest;
@@ -667,21 +760,19 @@ public final class ArdaMap {
      * ford is where the river is waded rather than a place a channel can end in a wall.
      */
     private static Sample bruinen(double blockX, double blockZ, Sample ground) {
-        double alongX = BRUINEN_FORD_X - BRUINEN_OUTLET_X;
-        double alongZ = BRUINEN_FORD_Z - BRUINEN_OUTLET_Z;
-        double share = ((blockX - BRUINEN_OUTLET_X) * alongX + (blockZ - BRUINEN_OUTLET_Z) * alongZ)
-                / (alongX * alongX + alongZ * alongZ);
-        if (share < 0.0D || share > 1.0D) {
+        double[] at = project(blockX, blockZ);
+        if (at[5] > 0.5D || at[6] > 0.5D) {
+            // Behind the mouth is the city's own water; past the join is the Bruinen's.
             return ground;
         }
-        // Measured from the course's own middle rather than from the straight line between its ends, so
-        // the channel and the gorge round it bend with the river.
-        double length = Math.sqrt(alongX * alongX + alongZ * alongZ);
-        double offsetX = blockX - courseX(share, alongX, alongZ, length);
-        double offsetZ = blockZ - courseZ(share, alongX, alongZ, length);
+        double share = at[0];
+        // Measured from the course's own middle rather than from the legs between its points, so the channel
+        // and the ground round it bend with the river.
+        double offsetX = blockX - courseX(share);
+        double offsetZ = blockZ - courseZ(share);
         // Measured across the course rather than as a radius: the river is twelve blocks wide and is not
         // the same width either side of it, so the bank is found by which way the column lies of the flow.
-        double side = (offsetX * -alongZ + offsetZ * alongX) / length;
+        double side = offsetX * -at[4] + offsetZ * at[3];
         double level = bruinenWater(share);
         double shallow = smooth(Mth.clamp((share - BRUINEN_FORD_SHALLOW) / (1.0D - BRUINEN_FORD_SHALLOW),
                 0.0D, 1.0D));
@@ -733,22 +824,17 @@ public final class ArdaMap {
      * bank's full height next to the water would wall the mouth on its own side.
      */
     private static double corridor(double blockX, double blockZ) {
-        double alongX = BRUINEN_FORD_X - BRUINEN_OUTLET_X;
-        double alongZ = BRUINEN_FORD_Z - BRUINEN_OUTLET_Z;
-        double length = Math.sqrt(alongX * alongX + alongZ * alongZ);
-        double share = ((blockX - BRUINEN_OUTLET_X) * alongX + (blockZ - BRUINEN_OUTLET_Z) * alongZ)
-                / (alongX * alongX + alongZ * alongZ);
-        double along = Mth.clamp(share, 0.0D, 1.0D);
-        double straight = Math.hypot(blockX - (BRUINEN_OUTLET_X + along * alongX),
-                blockZ - (BRUINEN_OUTLET_Z + along * alongZ));
-        if (straight > CORRIDOR_REACH) {
-            return straight;
+        double[] at = project(blockX, blockZ);
+        // The course's own bend can stand this far off the legs, so a column that is further out than both is
+        // beyond the corridor whichever way the bend went.
+        if (at[2] > CORRIDOR_REACH + BRUINEN_SNAKE) {
+            return at[2];
         }
-        double nearest = straight;
+        double nearest = at[2];
         for (int step = 0; step <= CORRIDOR_STEPS; step++) {
-            double at = step / (double) CORRIDOR_STEPS;
-            double offsetX = blockX - courseX(at, alongX, alongZ, length);
-            double offsetZ = blockZ - courseZ(at, alongX, alongZ, length);
+            double share = step / (double) CORRIDOR_STEPS;
+            double offsetX = blockX - courseX(share);
+            double offsetZ = blockZ - courseZ(share);
             nearest = Math.min(nearest, Math.hypot(offsetX, offsetZ));
         }
         return nearest;

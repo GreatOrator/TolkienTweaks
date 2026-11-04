@@ -77,17 +77,19 @@ what is still open, so the next session does not have to rebuild that from the c
   pixels on the city's own footprint.
 - **A drawn river answers before the massif and before the floor**: the Bruinen cuts its own channel
   through both, so the branch meets it in open water instead of running into a wall of massif at 5005.
-- **The branch out of Rivendell has to start at the build's own mouth, and that mouth is on the west.**
-  The city's 584 pieces carry 302,049 water blocks over 40,321 columns; the water leaves at **4352, -3530**
-  with its surface at **82**, and the only water on the east edge is an aqueduct at y 239. The branch was
-  built from 4900, -3322, which carries no water of the build's at all - the nearest build water to it is
-  48 blocks away. The nearest drawn water to the real mouth is the Bruinen at **4996, -3308**, 681 blocks
-  off; the join the branch uses is 97 blocks from the 4900 point. Twelve blocks wide, 5 left and 7 right of
-  the middle, from the mouth to the water it feeds.
+- **The branch leaves Rivendell on the west and runs round the valley to the Bruinen.** The city's 584
+  pieces carry 302,049 water blocks over 40,321 columns; the water stands at **4352, -3530** with its
+  surface at **82**, and the only water on the east edge is an aqueduct at y 239. The branch was built from
+  4900, -3322, which carries no water of the build's at all. Its course is four legs - out west of the wall
+  to 4272, south to z -3256, east below the city to 4952, and in to the drawn water at **4995, -3311**:
+  **1,104 blocks** in all, twelve wide with 5 left and 7 right of the middle. The ground is the vale's
+  **74** the whole way, so the river falls the eight blocks from the city's water at the wall and then
+  arrives level with the drawn river.
 - **The ford is a bridge.** Nothing places a road or a bridge over the Bruinen yet; the join is water and
   banks only.
-- **The join's step.** The branch runs at 72 and the drawn Bruinen at whatever grade the drawing gives it;
-  a 2 to 18 block step at the meeting point is possible until the drawn river is taught the same level.
+- **The join's step is closed.** The branch falls from the city's water to the vale's 74 on its way out
+  and the drawn Bruinen stands at 74 too, so the two meet at the same level; a step was possible while the
+  branch was initialised under the floor.
 - **The vale's own river.** The long west-running river is gone in favour of the south-east branch. If
   the fork should show both arms, the old course can come back beside the new one.
 - **The drawn Bruinen's gorge** is a mask-width channel (16-32 blocks) cutting about 240 blocks of rock.
@@ -105,8 +107,8 @@ what is still open, so the next session does not have to rebuild that from the c
 
     ./gradlew runClient
     /execute in tolkienmobs:arda run tp @s 4628 120 -3577     the valley's middle
-    /tp @s 4900 100 -3322                                    the branch's start
-    /tp @s 5008 100 -3328                                    where it meets the Bruinen
+    /tp @s 4352 92 -3530                                     the branch's mouth
+    /tp @s 4995 92 -3311                                     where it meets the Bruinen
     /tmcity origin        in creative, standing on the floor: plants the city
     /tmcity band 8        repeat; /tmcity summon does all of it in one word
     /tmcity goto

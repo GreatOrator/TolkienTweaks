@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The river now leaves Rivendell where the build's water leaves it, and reaches the Bruinen.** The
+  branch's course was a straight line from 4900, -3322 - a point with no build water within 48 blocks - to
+  the ford. The city's water stands against its west wall at 82, so the course is four legs: out west of
+  the wall, south round the valley's own side, east below the city, and in to the drawn Bruinen at 4995,
+  -3311. 1,104 blocks, continuous and twelve wide, falling the eight blocks to the vale's 74 at the wall
+  and meeting the drawn river at its own level. The wander now falls to nothing at each corner, so the
+  channel is one river rather than a river with a step at every turn.
+
 - **The branch's water starts at the build's own level, 82, not two blocks under the floor.** The city carries
   its water out at the floor plus eight - mapped from its 584 pieces, 302,049 water blocks whose surface at
   the mouth is 82 - but the branch was initialised at 72, ten blocks lower, so the water at the mouth stood
