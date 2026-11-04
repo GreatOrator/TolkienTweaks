@@ -64,35 +64,24 @@ public final class ArdaMap {
     private static final double WARP = 192.0D;
 
     /**
-     * The valley the map overrides rather than draws: its middle, the half-widths of its flat floor, the
-     * height of that floor, and how many blocks of rim it takes to climb back to the Trollshaws.
+     * The valley the map overrides rather than draws: its middle, the half-widths of its floor, and the
+     * height of that floor.
      * <p>
      * A cell of the drawing is 512 blocks and the city that stands here is 554 across, so this ground
      * cannot be a country of the 48 by 36 grid: it is cut out of cells the drawing already fills and
      * blended back into them at its rim. Its middle is the middle of that city - the corner it is
      * planted from, plus half of its 554 by 512 footprint - so a city planted at 4352, -3833 stands in
-     * the middle of the floor rather than against one of its walls. West, north and south the floor ends
-     * {@link #VALLEY_LAWN} blocks outside the build - three blocks inside it, since the number is
-     * negative - because the build's own outer wall is flush with its footprint, and a floor that stops
-     * at the footprint leaves the hill a block away with a seam of empty ground between the two. East the
-     * floor runs {@link #VALLEY_LAWN_EAST} blocks past the build, out beyond the Bruinen the map draws at
-     * 5008, so the river the branch runs into stands on the valley's own ground instead of in a slot
-     * three blocks from the city's wall.
+     * the middle of the floor rather than against one of its walls. The floor is a few blocks smaller
+     * than the footprint on every side - 544 by 502 inside a 554 by 512 city - so the mountain's foot
+     * begins inside the build and the build embeds itself in it. There is no apron of flat ground in
+     * front of the walls for the join to be dressed across, because there is no join: the lowest band of
+     * the city is laid into the rock, and the stone that was there shows wherever the build has nothing
+     * of its own.
      */
     private static final int VALLEY_X = 4628;
     private static final int VALLEY_Z = -3577;
-    /**
-     * How far the floor ends from the build's west, north and south walls, and how far it runs past its
-     * east one. The first is negative: the climb begins three blocks <em>inside</em> the build, so the
-     * ground rises from underneath the city's own outer band and the hillside is laid over it rather than
-     * stopping a block short with a seam left between them.
-     */
-    private static final int VALLEY_LAWN = -3;
-    private static final int VALLEY_LAWN_EAST = 135;
-    private static final int VALLEY_WEST = 4352 - VALLEY_LAWN;
-    private static final int VALLEY_EAST = 4905 + VALLEY_LAWN_EAST;
-    private static final int VALLEY_NORTH = -3833 - VALLEY_LAWN;
-    private static final int VALLEY_SOUTH = -3322 + VALLEY_LAWN;
+    private static final int VALLEY_HALF_X = 272;
+    private static final int VALLEY_HALF_Z = 251;
 
     /**
      * The height the rock stands at where the massif meets the build: the crown of the city itself.
@@ -133,15 +122,6 @@ public final class ArdaMap {
      */
     private static final int VALLEY_RIM = 175;
     private static final int VALLEY_FALL = 340;
-    /**
-     * How far out the rock climbs from the floor to the crown, in blocks: the mountain's own foot.
-     * <p>
-     * A face that begins at the crown is a wall standing beside the city however the rest of the range
-     * is shaped - which is what the rock at the valley's edge was, five blocks out and two hundred and
-     * forty-four high, with the build's wall a step away from it. Ninety blocks is the climb: steep
-     * enough to close over the walls and read as a mountainside rather than a bowl.
-     */
-    private static final int VALLEY_STEEP = 90;
     /**
      * How far past the massif's foot the country is brought down to the valley's own level, in blocks.
      * <p>
@@ -235,17 +215,6 @@ public final class ArdaMap {
     private static final double BRUINEN_FORD_SHALLOW = 0.8D;
     /** Steps the channel's water is read at along its course, from the outlet to the ford. */
     private static final int BRUINEN_STEPS = 96;
-    /**
-     * How wide the flat ground the valley's own water leaves through is, either side of the branch's
-     * course, in blocks.
-     * <p>
-     * The floor's south edge is three blocks inside the build, and the branch runs out of the build's
-     * south-east corner: where the two meet, the climb would stand a bank across the water's own course
-     * and the river would leave the city through a notch thirty blocks deep. The floor runs out along the
-     * course instead, so the branch leaves the walls on the valley's ground and meets the drawn Bruinen
-     * in the open.
-     */
-    private static final int BRUINEN_CORRIDOR = 24;
     /** The course's water, read once; and the lock that keeps two chunks from reading it together. */
     private static volatile int[] bruinenProfile;
     private static final Object BRUINEN_LOCK = new Object();
@@ -467,8 +436,8 @@ public final class ArdaMap {
 
     /** How far a column lies beyond the floor's rectangle, in blocks: nothing on the floor itself. */
     private static double beyond(double blockX, double blockZ) {
-        double beyondX = Math.max(VALLEY_WEST - blockX, blockX - VALLEY_EAST);
-        double beyondZ = Math.max(VALLEY_NORTH - blockZ, blockZ - VALLEY_SOUTH);
+        double beyondX = Math.abs(blockX - VALLEY_X) - VALLEY_HALF_X;
+        double beyondZ = Math.abs(blockZ - VALLEY_Z) - VALLEY_HALF_Z;
         return Math.hypot(Math.max(0.0D, beyondX), Math.max(0.0D, beyondZ));
     }
 
@@ -508,21 +477,13 @@ public final class ArdaMap {
      * one distance and tops out at one fixed summit is a box with a pyramid in it.
      * Beyond the ridge the ground is handed back to the drawn country over {@link #VALLEY_FALL}.
      * <p>
-     * One corner of the floor is not floor: the city's north-east corner has no build in it above its
-     * lowest band, because the mountain stood there, so {@link #shoulder} stands the rock back up.
+     * The rock stands at the crown from the floor's own edge outward, which is what lays the lowest band
+     * of the build into the mountain instead of setting it down beside it.
      */
     private static Sample valley(double blockX, double blockZ, Ground ground) {
-        // The floor runs out along the branch's course, so the river leaves the city on flat ground
-        // instead of cutting a notch through the bank the overlap puts inside the south wall.
         // A distance from the floor's rectangle, not one from each of its four sides: the difference is
         // at the corners, where this rounds the mountain's foot instead of squaring it off.
         double beyond = beyond(blockX, blockZ);
-        double across = corridor(blockX, blockZ);
-        if (across < Double.MAX_VALUE) {
-            // Softened rather than cut off at the corridor's edge: the floor runs out along the course,
-            // and the climb fades back in over the next blocks instead of standing a wall beside the water.
-            beyond *= smooth(Mth.clamp(across / BRUINEN_CORRIDOR, 0.0D, 1.0D));
-        }
         int x = (int) Math.floor(blockX);
         int z = (int) Math.floor(blockZ);
         // The ridge is not a ring at one height: it wanders in and out, and its summits rise and fall
@@ -543,8 +504,10 @@ public final class ArdaMap {
             double ribs = (fractal(x, z, CLIMB_SCALE, 17) - 0.5D) * 2.0D * CLIMB_ROUGH
                     * Math.min(1.0D, beyond / CLIMB_EASE)
                     * Math.min(1.0D, (ridge - beyond) / CLIMB_EASE);
-            double rise = Math.min(1.0D, beyond / (double) VALLEY_STEEP);
-            height = (int) Math.round(VALLEY_FLOOR + (crest - VALLEY_FLOOR) * climb(rise) + ribs);
+            // The rock stands at the crown where it meets the build and climbs from there to the ridge:
+            // the ground outside the walls is a continuation of the ground inside them, and the mountain
+            // grows out of the roofline instead of out of a field below it.
+            height = (int) Math.round(VALLEY_CROWN + (crest - VALLEY_CROWN) * climb(beyond / ridge) + ribs);
         } else {
             double fell = Math.min(1.0D, (beyond - ridge) / (double) VALLEY_FALL);
             height = (int) Math.round(crest + (ground.height() - crest) * smooth(fell));
@@ -721,24 +684,6 @@ public final class ArdaMap {
         return new Sample(ground.country(), height, height < level, false, ground.upland(), water);
     }
 
-    /**
-     * How far a column lies across the corridor the branch leaves the valley through, in blocks, or
-     * {@link Double#MAX_VALUE} where it is not within the course's own reach at all. Measured across the
-     * course rather than from either end, so the corridor follows the water instead of boxing it in.
-     */
-    private static double corridor(double blockX, double blockZ) {
-        double alongX = BRUINEN_FORD_X - BRUINEN_OUTLET_X;
-        double alongZ = BRUINEN_FORD_Z - BRUINEN_OUTLET_Z;
-        double share = ((blockX - BRUINEN_OUTLET_X) * alongX + (blockZ - BRUINEN_OUTLET_Z) * alongZ)
-                / (alongX * alongX + alongZ * alongZ);
-        // The nearest point of the course, ends included: a column beside the outlet is across the
-        // corridor whether it projects onto the course or not, and one that did not would keep the full
-        // height of the bank right next to the water.
-        double along = Mth.clamp(share, 0.0D, 1.0D);
-        double offsetX = blockX - (BRUINEN_OUTLET_X + along * alongX);
-        double offsetZ = blockZ - (BRUINEN_OUTLET_Z + along * alongZ);
-        return Math.hypot(offsetX, offsetZ);
-    }
 
     /** Whether a cell of the map exists at all, since a search may walk off its edge. */
     static boolean inside(int column, int row) {

@@ -36,25 +36,16 @@ what is still open, so the next session does not have to rebuild that from the c
 
 ## The valley
 
-- Floor **74**. West, north and south it ends **three blocks inside** the build (`VALLEY_LAWN = -3`:
-  x 4355, z -3830, z -3325), because the build's base band is flush with its footprint on all four
-  sides (measured from the 102 edge pieces: inset 0 in every row), so a floor that stops at the
-  footprint leaves the hill a block away with a seam column between. The climb begins under the city's
-  own outer band: 74 at three blocks in, **84 at the wall line**, 87 four out, 105 twelve out, 150 at
-  27, 318 at 90.
-- East it runs **135 blocks** to x **5040**, past the Bruinen the drawing puts at 5008, so the river
-  the branch runs into stands on the valley's own ground rather than in a slot three blocks off the
-  wall. The massif's east flank starts beyond it, on the river's far bank.
-- The floor also runs out **18 blocks either side of the branch's course** (`BRUINEN_CORRIDOR`): the
-  branch leaves the build's south-east corner, and without it the overlap's bank would stand across the
-  water and the river would leave the city through a notch a hundred blocks up the climb.
-- The east's longer shelf is the river's: the drawn Bruinen reaches that edge, and the branch has to meet
-  it at the floor's level, so a climb in between would stand the river two hundred blocks over the city.
-  A hundred blocks on *every* side (one build earlier) put the hillside a field away all round; twelve,
-  four and then none left a step of floor between the walls and the hill, because a shelf of any width
-  is a strip of flat ground the city does not stand on. The floor now runs three blocks *under* the
-  build's own outer band instead, and `/tmcity origin` caps its base at the valley floor so the city
-  still plants at 75.
+- Floor **74**, and it is **544 by 502** centred on 4628, -3577: x 4356..4900, z -3828..-3326, which is
+  four to five blocks *inside* the 554 by 512 footprint. This is the shape the valley had at `82abe999`,
+  and the one that reads as a straight wall: the rock stands at the **crown, 318**, from the floor's own
+  edge outward, so the city is embedded in the mountain rather than set down beside it and there is no
+  strip of ground between the two to be a seam. The build's base band is flush with its footprint on all
+  four sides (measured from the 102 edge pieces), which is why a floor cut to the footprint and a shelf
+  in front of it both left a gap.
+- What changed it, and why it is back: `fef98351` made the climb start at the floor over
+  `VALLEY_STEEP = 90`, which put a bank of terraces a hundred blocks from the city instead of a wall at
+  its walls. The climb from the crown is restored and `VALLEY_STEEP` is gone.
 - The rim **climbs from the lawn's edge** to the crown over `VALLEY_STEEP = 90` blocks (74, 80, 90, 106,
   138, 168, 212, 253, 318), holds the crown out to `VALLEY_RIM = 175`, then falls to the vale over
   `VALLEY_FALL = 340`.

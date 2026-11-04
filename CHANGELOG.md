@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The mountain stands at the crown at the city's walls again.** The floor is 544 by 502 inside the
+  554 by 512 footprint and the rock is at 318 from its edge outward, which is the shape the valley had
+  before `fef98351` turned the climb into a bank a hundred blocks out; `VALLEY_STEEP`, the shelf and the
+  river corridor are gone with it. `/tmcity origin` still caps its base at the valley floor, because the
+  corner is now under the crown.
 - **The valley's floor runs out along the river, so the branch leaves the city on flat ground.** With the
   floor ending inside the south wall, the climb stood a bank across the branch's own course; the floor
   now follows the course for 18 blocks either side of it.
