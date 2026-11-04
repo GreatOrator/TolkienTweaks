@@ -389,6 +389,13 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
 
 ### Fixed
 
+- **The valley reaches the data as well as the code.** A country's biome and Arda's stem list are written by
+  a data run, and neither had been written since the valley was added: the dimension still named thirty-five
+  biomes and there was no `worldgen/biome/imladris.json`, so the registry had no such biome and the dimension
+  failed to parse before a world could open. A data run writes both, the biome tags pick the valley up
+  (forest, temperate, peaceful, and a new magical), and the source reads its biomes from the registry rather
+  than from the stem's list - so a list that falls behind the map cannot close a world again.
+
 - **The needle points at the body, not at the middle of the town.** A page that names somebody now
   points at the ground that body is standing on - read off him while he is out there, off the line's
   own stand points when he is not - instead of the middle of his place. Glorfindel's page led the
