@@ -121,7 +121,16 @@ public final class ArdaMap {
      * out from it, and 175 blocks of it puts the ridge over the roofs rather than across a field from them.
      */
     private static final int VALLEY_RIM = 175;
-    private static final int VALLEY_FALL = 400;
+    private static final int VALLEY_FALL = 340;
+    /**
+     * How far past the massif's foot the country is brought down to the valley's own level, in blocks.
+     * <p>
+     * A hundred and seventy-five blocks of mountain, then its fall, then nine
+     * hundred more of country settling to the vale's floor: without the last of those the massif ends in
+     * a wall of six blocks where the heightmap happens to be, and a valley that the map puts a hundred
+     * blocks above the city is a pit with the whole country standing on its rim.
+     */
+    private static final int VALLEY_VALE = 900;
 
     /**
      * The height the mountains round the valley reach, and how far from that they are allowed to wander.
@@ -781,10 +790,33 @@ public final class ArdaMap {
     private static int groundHeight(int blockX, int blockZ, int drawn, int relief, double rough) {
         int mapped = ArdaMasks.ground(blockX, blockZ);
         if (mapped != ArdaMasks.NO_GROUND) {
-            return SEA_LEVEL + (int) Math.round(mapped / 65535.0D * (VALLEY_CROWN - SEA_LEVEL));
+            return vale(blockX, blockZ,
+                    SEA_LEVEL + (int) Math.round(mapped / 65535.0D * (VALLEY_CROWN - SEA_LEVEL)));
         }
         return Mth.clamp((int) Math.round(drawn + relief * (rough / 1.75D - 0.5D) * 2.0D), -60,
                 MOUNTAIN_CEILING);
+    }
+
+    /**
+     * The country brought down, or up, to meet the valley the city stands in.
+     * <p>
+     * Past the massif's own foot the heightmap is blended toward the height the city's water sits at, over
+     * {@link #VALLEY_VALE} blocks, so the mountain rises out of a vale instead of out of a wall and the river
+     * leaving it has ground to run on rather than a slot cut through a plateau. It works either way: where
+     * the map is above the city the country comes down to it, and where the city has been raised the
+     * country rises to meet it, so a world of either height has a valley that belongs to it.
+     */
+    private static int vale(double blockX, double blockZ, int height) {
+        double beyondX = Math.abs(blockX - VALLEY_X) - VALLEY_HALF_X;
+        double beyondZ = Math.abs(blockZ - VALLEY_Z) - VALLEY_HALF_Z;
+        double beyond = Math.hypot(Math.max(0.0D, beyondX), Math.max(0.0D, beyondZ));
+        double share = (beyond - (VALLEY_RIM + VALLEY_FALL)) / (double) VALLEY_VALE;
+        if (share >= 1.0D) {
+            return height;
+        }
+        double weight = 1.0D - smooth(Mth.clamp(share, 0.0D, 1.0D));
+        int floor = VALLEY_FLOOR + 8;
+        return (int) Math.round(floor * weight + height * (1.0D - weight));
     }
 
     /** The drawn ground at a column, before it is turned into a {@link Sample}. */

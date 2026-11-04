@@ -41,16 +41,22 @@ coordinate is still the drawing's 3840, -3328.
 
 ## What the heightmap did to the valley
 
-The ground is the reference topography now (see `docs/arda-masks.md`), and the valley floor is still the
-hand-laid 74 - in a 384-tall save. The ground moves with the world's own ceiling: the generator reads it
-and lifts the floor, the crown, the shoulder and the Bruinen's outlet together, so that the build's crown
-stands one block under the sky and nothing else changes. A 512-tall world gets a lift of **128** - floor
-**202**, crown **446**, outlet water **210** - and a 384-tall save gets **nothing at all**, which is why the
-old save keeps the ground it was made with.
+The ground is the reference topography now (see `docs/arda-masks.md`). Two things put the city in it
+rather than on it or under it.
 
-At 128 the country round the valley is 156, so the valley stands 46 above it and the Bruinen leaves
-through 236 blocks of rock at the wall, easing to grade by the ford. At 0 the city sits 86 blocks down
-inside its massif, as it did before.
+**The height the build stands at follows the world.** The generator reads its own ceiling and lifts the
+floor, the crown, the shoulder and the Bruinen's outlet together: a 512-tall world gets floor **202**,
+crown **446**, outlet water **210**, and a 384-tall save gets **nothing at all**, which is why the old
+save keeps the ground it was made with.
+
+**The country follows the build.** Past the massif's foot the heightmap is blended toward the level of
+the city's water over 900 blocks, so where the map is above the city the ground comes down to it and
+where the city has been raised the ground rises to meet it. At a lift of nothing the massif's foot
+stands on **82**, the water's own level, and the country settles from there back to the heightmap's
+**156-193** over **1,415** blocks from the floor's edge. The fall is **340** blocks so its foot lands on
+the ford: the gorge's wall is **236** deep at the outlet and **nothing** at the ford, and the water runs
+level at 82 the whole way. At a lift of 128 the same blend raises the country to the massif's foot at
+210 instead.
 
 Worth knowing before re-seating: the nearest column of the masked Bruinen to the drawn ford at 3840,
 -3328 is **1,176 blocks away, at 5016, -3320** - 465 from the valley centre. So the mask does not put a
