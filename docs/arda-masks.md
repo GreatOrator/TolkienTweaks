@@ -60,17 +60,17 @@ did before.
 ## What the game does with them
 
 - **Mountains.** Brightness is height: white is a crest, black is a plain. Each column's brightness
-  raises the drawn ground by up to **150 blocks**, smoothly, because the mask is blurred. The drawing
+  lifts the drawn ground toward **318 blocks** - the crown the city's massif reaches - smoothly, because the mask is blurred. The drawing
   still decides what the country is and what its ground sits at; the mask decides how high it stands.
   The drawing may raise ground to **420** now, which leaves the 512-tall world's ceiling room.
 - **Rivers.** The mask says where the water is. The water's surface is the average height of the
   drawn ground over a square of ±64 blocks about the column, so it follows the fall of the country
   instead of standing at one level; the bed is four blocks under it, and the column is cut down to the
-  bed. Measured over all 39,613 river columns of 16 blocks: water from 38 to 254, median 72, and within
-  five blocks of its own ground on 87.2% of the channel.
+  bed. Measured over all 39,613 river columns of 16 blocks: water from 38 to 297, median 72, and within
+  five blocks of its own ground on 86.2% of the channel, none of it above the crown.
 - **Lakes.** The same rule with a ±192-block square, so a lake reads as the basin it sits in rather
   than as a plateau, and never below the sea's own height of 63. Bed six blocks under the surface.
-  Measured over 21,346 columns: surface 70 to 201, median 72, bed 64 to 66.
+  Measured over 21,346 columns: surface 70 to 283, median 72, bed 64 to 66.
 
 Water is given to the generator as a per-column height (`Sample.water`), not as one constant, which is
 what lets a river fall and a lake sit in its basin.

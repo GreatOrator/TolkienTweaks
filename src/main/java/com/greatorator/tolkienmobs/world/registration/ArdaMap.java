@@ -674,8 +674,8 @@ public final class ArdaMap {
         int relief = northWest.relief();
         double rough = fractal(blockX, blockZ, 192, 1) + 0.5D * fractal(blockX, blockZ, 96, 2)
                 + 0.25D * fractal(blockX, blockZ, 48, 3);
-        int height = Mth.clamp((int) Math.round(drawn + relief * (rough / 1.75D - 0.5D) * 2.0D)
-                + ArdaMasks.uplift(blockX, blockZ), -60, MOUNTAIN_CEILING);
+        int height = ArdaMasks.lift(blockX, blockZ, Mth.clamp((int) Math.round(
+                drawn + relief * (rough / 1.75D - 0.5D) * 2.0D), -60, MOUNTAIN_CEILING), VALLEY_CROWN);
 
         boolean shore = seaInReach && Math.abs(drawn - SEA_LEVEL) <= BEACH_HEIGHT;
         return new Ground(northWest, height, drawn, shore, upland);

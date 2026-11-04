@@ -7,8 +7,10 @@ All notable changes to this project will be documented in this file.
 
 - **Mountain ranges take their height from the reference mask instead of from the drawn bands.**
   `ArdaMasks` reads the mountain mask baked to sixteen blocks to the pixel over the world's own frame,
-  and a column's brightness - white at the crest, black on the plain - raises the drawn ground by up
-  to a hundred and fifty blocks. Ranges now follow their real courses: the Misty Mountains are a
+  and a column's brightness - white at the crest, black on the plain - lifts the ground toward the
+  crown: a full-brightness column stands at 318, the height the city's own massif tops out at, so the
+  mask's ranges and the build reach the same sky, and a black column stays exactly where the drawing
+  put it. Ranges now follow their real courses: the Misty Mountains are a
   wandering wall rather than a five-point line with a half-width of two cells, and the Grey Mountains,
   Mordor's ring and the White Mountains stand where the map puts them. The drawing still says what
   the country is and what its ground sits at; the mask says how high it stands.

@@ -21,9 +21,6 @@ import java.io.InputStream;
 final class ArdaMasks {
     /** Blocks to the pixel in all three masks. */
     static final int BLOCKS = 16;
-    /** How much height the mountain mask may add to the drawn ground, in blocks. */
-    static final int MOUNTAIN_UPLIFT = 150;
-
     private static final int WEST = -5120;
     private static final int NORTH = -10240;
     private static final int WIDTH = (19456 - WEST) / BLOCKS;
@@ -46,15 +43,28 @@ final class ArdaMasks {
         return marked(LAKES, blockX, blockZ);
     }
 
-    /** How far the mountain mask raises the ground at a column, in blocks. */
-    static int uplift(int blockX, int blockZ) {
+    /** How bright the mountain mask is over a column, from nothing to full. */
+    static double rock(int blockX, int blockZ) {
         int column = column(blockX);
         int row = row(blockZ);
-        if (column < 0 || row < 0) {
-            return 0;
+        return column < 0 || row < 0 ? 0.0D : (ROCK[row * WIDTH + column] & 0xFF) / 255.0D;
+    }
+
+    /**
+     * The drawn ground, raised toward the crown by how bright the mask is over it.
+     * <p>
+     * White is the crown: a full-brightness column stands at {@code crown}, the height the city's own
+     * massif tops out at, so the mask's ranges and the build reach the same sky. Black leaves the drawn
+     * ground exactly as the drawing set it, and everything between takes its share of the climb - which
+     * is why the mask being blurred helps, as a range then rises out of the country instead of being
+     * stood on top of it.
+     */
+    static int lift(int blockX, int blockZ, int height, int crown) {
+        double rock = rock(blockX, blockZ);
+        if (rock <= 0.0D || crown <= height) {
+            return height;
         }
-        int rock = ROCK[row * WIDTH + column] & 0xFF;
-        return (int) Math.round(rock / 255.0D * MOUNTAIN_UPLIFT);
+        return height + (int) Math.round(rock * (crown - height));
     }
 
     private static boolean marked(boolean[] mask, int blockX, int blockZ) {
