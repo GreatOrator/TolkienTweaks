@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The massif round Imladris stands at the city's walls instead of across a lawn from it.** The same
+  306 blocks of rise were spread over 240 blocks of climb, which put the ridge two hundred blocks out and
+  left the ground between the city and the rock as a wide, evenly stepped apron - the mountain read as cut
+  away from the build. The climb is 130 blocks now and steepest at its foot, so the rock begins a few
+  paces past the walls, and the flank carries 12 blocks of rib noise so the even contours that stacked as
+  terraces break up into spurs and gullies.
+
 - **The mountains round Imladris are drawn as a range instead of a ring.** One height at one distance,
   rising on four straight sides to one summit, is a wall with a pyramid in it - which is why the corner
   came out as a spike and nothing read as mountains wrapping round the city. The ridge now wanders in and

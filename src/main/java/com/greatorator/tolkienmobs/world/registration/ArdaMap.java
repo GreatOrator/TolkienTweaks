@@ -73,7 +73,7 @@ public final class ArdaMap {
      * planted from, plus half of its 554 by 512 footprint - so a city planted at 4352, -3833 stands in
      * the middle of the floor rather than against one of its walls. The floor holds the whole footprint
      * with 16 blocks to spare on its north and south sides and 17 on its east and west, so the mountain's
-     * foot begins a dozen paces from the walls, and the rim is 260 blocks of climb, which is a
+     * foot begins a dozen paces from the walls, and the rim is 130 blocks of climb, which is a
      * mountainside rather than the wall 64 blocks made of it.
      */
     private static final int VALLEY_X = 4628;
@@ -88,9 +88,10 @@ public final class ArdaMap {
      * <p>
      * The valley is a vale in a massif rather than a pan beside a hillside: the floor is the city's own
      * foot with a field's width round it - 586 by 544 for a 554 by 512 footprint - so the mountain's foot
-     * starts at the walls rather than a lawn away from them.
+     * starts at the walls rather than a lawn away from them, and 130 blocks of climb for 306 of rise puts
+     * the ridge over the roofs rather than across a field from them.
      */
-    private static final int VALLEY_RIM = 240;
+    private static final int VALLEY_RIM = 130;
     private static final int VALLEY_FALL = 260;
 
     /**
@@ -106,6 +107,18 @@ public final class ArdaMap {
     private static final int CREST_SCALE = 420;
     private static final double RIDGE_SWING = 0.35D;
     private static final int RIDGE_SCALE = 320;
+
+    /**
+     * How far the mountain's flank is broken up, in blocks of height, and over what distance that broken
+     * ground fades in from the floor.
+     * <p>
+     * A flank whose height is a function of distance alone draws the same contour at every level, and
+     * contours two blocks apart are terraces. Twelve blocks of the map's own noise makes spurs and gullies
+     * of them instead; the fade keeps the floor flat where the city stands.
+     */
+    private static final int CLIMB_ROUGH = 12;
+    private static final int CLIMB_SCALE = 88;
+    private static final int CLIMB_EASE = 28;
 
     /**
      * The city's north-east corner: the rectangle the build itself leaves empty, the height the rock stood
@@ -346,7 +359,11 @@ public final class ArdaMap {
             country = Country.IMLADRIS;
             height = VALLEY_FLOOR;
         } else if (beyond <= ridge) {
-            height = (int) Math.round(VALLEY_FLOOR + (crest - VALLEY_FLOOR) * climb(beyond / ridge));
+            // Ribs and gullies, faded in from the floor: without them the flank is a contour map of the
+            // city's own footprint, and a contour every couple of blocks is a terrace.
+            double ribs = (fractal(x, z, CLIMB_SCALE, 17) - 0.5D) * 2.0D * CLIMB_ROUGH
+                    * Math.min(1.0D, beyond / CLIMB_EASE);
+            height = (int) Math.round(VALLEY_FLOOR + (crest - VALLEY_FLOOR) * climb(beyond / ridge) + ribs);
         } else {
             double fell = Math.min(1.0D, (beyond - ridge) / (double) VALLEY_FALL);
             height = (int) Math.round(crest + (ground.height() - crest) * smooth(fell));
@@ -362,13 +379,13 @@ public final class ArdaMap {
     /**
      * How much of the way up the mountain the ground has climbed at a share of the distance to the ridge.
      * <p>
-     * Some of the straight line and more of the curve. The straight part keeps the mountain's foot climbing
-     * from the city's walls instead of lying flat for fifty blocks, and the curve rounds the last of the
-     * way so the top is a shoulder rather than a point.
+     * Steepest at the foot and rounded at the top: the ground starts climbing at the city's walls rather
+     * than lying flat for a lawn's width, gains most of its height in the first half of the climb, and eases
+     * into the ridge so the top is a shoulder rather than a point.
      */
     private static double climb(double share) {
         double t = Math.min(1.0D, share);
-        return 0.4D * t + 0.6D * smooth(t);
+        return 1.0D - Math.pow(1.0D - t, 1.4D);
     }
 
     /**
