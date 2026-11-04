@@ -202,7 +202,11 @@ public final class ArdaMap {
     private static volatile int BRUINEN_WATER = PLANTED_FLOOR + 8;
     private static final int BRUINEN_BED = 7;
     /** How much of the channel's width the ford takes away, 0 at the outlet and 0.55 at the ford. */
-    private static final double BRUINEN_FORD_NARROW = 0.55D;
+    private static final double BRUINEN_FORD_NARROW = 0.30D;
+    /** Blocks of water the branch keeps under it where it comes to the ford, however shallow it gets. */
+    private static final double BRUINEN_FORD_DEPTH = 2.0D;
+    /** How much of the branch's depth the last stretch to the ford takes away, 0.55 at most. */
+    private static final double BRUINEN_FORD_SHALLOWING = 0.55D;
     /** How many steps outward a drawn river's depth is measured, and how far each one reaches. */
     private static final int RIVER_PROBES = 2;
     private static final int RIVER_PROBE_REACH = 6;
@@ -665,7 +669,12 @@ public final class ArdaMap {
             // shallow water a person wades at is nowhere.
             double reach = Math.min(1.0D, Math.abs(side) / Math.max(1.0D, side > 0.0D ? right : left));
             double deep = 1.0D - reach * reach;
-            height = (int) Math.round(level - BRUINEN_BED * deep * (1.0D - shallow));
+            // A branch that shallows to nothing stops being a river before it reaches the water it feeds,
+            // so the ford keeps two blocks under it however far into the shallow it has come, and the
+            // slope down to it is gentler than the bank's.
+            double under = Math.max(BRUINEN_FORD_DEPTH,
+                    BRUINEN_BED * deep * (1.0D - shallow * BRUINEN_FORD_SHALLOWING));
+            height = (int) Math.round(level - under);
         } else {
             int x = (int) Math.floor(blockX);
             int z = (int) Math.floor(blockZ);
