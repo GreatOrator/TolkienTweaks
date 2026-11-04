@@ -239,8 +239,9 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
                 // waterline, so water the map draws over ground the noise made solid has to be
                 // laid here instead. Raising a column never needs it: stone was written over any
                 // water the noise had put above the old top.
-                if (target < ArdaMap.SEA_LEVEL) {
-                    for (int y = target + 1; y <= ArdaMap.SEA_LEVEL; y++) {
+                int surface = sample.water();
+                if (target < surface) {
+                    for (int y = target + 1; y <= surface; y++) {
                         chunk.setBlockState(position.set(blockX, y, blockZ), WATER);
                     }
                 }
@@ -262,14 +263,15 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
                 ArdaMap.Sample sample = ArdaMap.sample(blockX, blockZ,
                         randomState.sampler().weirdness(), randomState.sampler().erosion());
                 int bed = Math.min(maxY, sample.height());
-                if (bed >= ArdaMap.SEA_LEVEL) {
+                int surface = sample.water();
+                if (bed >= surface) {
                     continue;
                 }
 
                 if (chunk.getBlockState(position.set(blockX, bed, blockZ)).isAir()) {
                     chunk.setBlockState(position, STONE);
                 }
-                for (int y = bed + 1; y <= ArdaMap.SEA_LEVEL; y++) {
+                for (int y = bed + 1; y <= surface; y++) {
                     if (chunk.getBlockState(position.set(blockX, y, blockZ)).isAir()) {
                         chunk.setBlockState(position, WATER);
                     }
@@ -305,7 +307,7 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
         int ground = sample.height();
         int surface = switch (type) {
             case OCEAN_FLOOR, OCEAN_FLOOR_WG -> ground;
-            default -> Math.max(ground, ArdaMap.SEA_LEVEL);
+            default -> Math.max(ground, sample.water());
         };
         return Math.max(heightAccessor.getMinY(), Math.min(heightAccessor.getMaxY(), surface + 1));
     }
@@ -323,7 +325,7 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
 
         ArdaMap.Sample sample = ArdaMap.sample(x, z, randomState.sampler().weirdness(), randomState.sampler().erosion());
         int top = sample.height();
-        int waterTop = top < ArdaMap.SEA_LEVEL ? ArdaMap.SEA_LEVEL : top;
+        int waterTop = top < sample.water() ? sample.water() : top;
 
         for (int y = minY; y < minY + column.length; y++) {
             int index = y - minY;

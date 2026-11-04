@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The Bruinen leaves the city in a gorge and runs to the ford, instead of a hillside sliced by a
+  trench.** The build carries its water out of the west wall at 82 with its bed seven blocks under it, a
+  little above the valley floor, and outside the walls the massif stands at the city's crown - so a channel
+  cut the way the drawing's rivers cut one (every column flattened to 63) met two hundred and thirty blocks
+  of rock and came out as the terraced cliff at the front of the valley. The river is cut as its own gorge
+  now: from the outlet at 4356, -3528 to the ford the drawing pins in the Trollshaws at 3840, -3328, with
+  the water falling from the build's 82 to the level the map's rivers stand at, a bed seven blocks under it,
+  walls that rise a little over one block for each block out instead of standing sheer, ribs in the walls so
+  they are not contours, and a channel that shallows into the crossing over the last fifth of the run. The
+  cut takes the massif's flank and the country beyond the ridge alike, so the ground outside the west wall
+  slopes down to the water rather than crowning over it. Columns now carry the height their water stands at
+  rather than assuming the world's own, which is what lets the river leave the city at 82.
+
 - **The mountain meets the city at the city's own roofline, all the way round.** The last change put the
   foot inside the build, but the climb still started at the valley floor, so the ground the build met was
   240 blocks under its own crown and did not climb back to 318 until 140 blocks out from the walls - the

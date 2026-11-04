@@ -153,6 +153,30 @@ public final class ArdaMap {
     private static final int SHOULDER_TOP = VALLEY_CROWN;
     private static final int SHOULDER_RUN = 110;
 
+    /**
+     * The Bruinen: where the city's own channel leaves the walls, the ford below the valley, and the gorge
+     * the river is cut through on its way there.
+     * <p>
+     * The build carries its water out at 82 with its bed seven blocks under that, a little above the valley
+     * floor, and the drawing pins the ford to the Trollshaws' cell at 3840, -3328. Between the two the massif
+     * stands at the city's crown, so a channel cut by the maps' own river lines - which flatten every column
+     * they touch to a level 63 - met rock two hundred and thirty blocks over the water, and the front of the
+     * valley was a sliced terrace rather than a bank. The river is cut as its own gorge instead: the build's
+     * level at the outlet, the level the drawing's rivers stand at at the ford, a bed under it, and walls that
+     * rise from the water at a grade a hillside holds rather than a wall a map cell draws. The ford's own
+     * water level replaces {@link #BRUINEN_FORD_WATER} as soon as it is read off the ground there.
+     */
+    private static final int BRUINEN_OUTLET_X = 4356;
+    private static final int BRUINEN_OUTLET_Z = -3528;
+    private static final int BRUINEN_WATER = 82;
+    private static final int BRUINEN_BED = 7;
+    private static final int BRUINEN_HALF = 8;
+    private static final int BRUINEN_FORD_X = 3840;
+    private static final int BRUINEN_FORD_Z = -3328;
+    private static final int BRUINEN_FORD_WATER = SEA_LEVEL;
+    private static final double BRUINEN_BANK = 1.2D;
+    private static final double BRUINEN_FORD_SHALLOW = 0.8D;
+
     private static final Country[][] GRID = draw();
 
     private ArdaMap() {
@@ -163,7 +187,13 @@ public final class ArdaMap {
      * whether a river runs there, whether its ground is the water's edge, and - for ground standing
      * dry in a cell the map drew as sea - the land country that ground belongs to.
      */
-    public record Sample(Country country, int height, boolean river, boolean shore, Country upland) {
+    public record Sample(Country country, int height, boolean river, boolean shore, Country upland,
+            int water) {
+        /** The same column with water standing at the world's own level, which is almost every column. */
+        public Sample(Country country, int height, boolean river, boolean shore, Country upland) {
+            this(country, height, river, shore, upland, SEA_LEVEL);
+        }
+
         /** The biome this column reads as, which is the river's or the shore's where those apply. */
         public ResourceKey<Biome> biome() {
             if (this.river) {
@@ -322,6 +352,14 @@ public final class ArdaMap {
 
     /** The drawing at a column, shifted by whatever warp the caller has already read. */
     private static Sample read(int blockX, int blockZ, double shiftX, double shiftZ) {
+        // The Bruinen is cut into whatever the drawing and the valley answer, because it runs through
+        // both: out of the valley's own floor, through the massif's flank, and into the country beyond
+        // its ridge.
+        return bruinen(blockX, blockZ, readDrawn(blockX, blockZ, shiftX, shiftZ));
+    }
+
+    /** The drawing at a column, before the river the build carries is cut into it. */
+    private static Sample readDrawn(int blockX, int blockZ, double shiftX, double shiftZ) {
         double mapX = (blockX + shiftX) / (double) CELL + ORIGIN_COLUMN;
         double mapZ = (blockZ + shiftZ) / (double) CELL + ORIGIN_ROW;
 
@@ -443,6 +481,55 @@ public final class ArdaMap {
         }
         return (int) Math.round(SHOULDER_TOP
                 - (SHOULDER_TOP - VALLEY_FLOOR) * smooth(beyond / (double) SHOULDER_RUN));
+    }
+
+    /**
+     * The Bruinen's gorge at a column, or the ground unchanged where the gorge does not reach.
+     * <p>
+     * The channel is cut into whatever stands there rather than drawn over it: the massif's flank and the
+     * shoulder where the valley answers, the drawn country beyond the ridge where the valley has handed the
+     * ground back, so the same cut opens the front of the valley and runs out to the ford. Its water falls
+     * along the course, its bed lies {@link #BRUINEN_BED} under that, and its walls climb from the water at
+     * {@link #BRUINEN_BANK} blocks for each block out. The climb stops where the natural ground is lower than
+     * the wall, which is what leaves the gorge an open mouth rather than a trench with a lid on it.
+     * <p>
+     * The cut begins at the outlet rather than a few blocks past it, because the build's own channel is there
+     * and the city plants its lowest band over the floor; and it shallows over the last stretch, because the
+     * ford is where the river is waded rather than a place a channel can end in a wall.
+     */
+    private static Sample bruinen(double blockX, double blockZ, Sample ground) {
+        double alongX = BRUINEN_FORD_X - BRUINEN_OUTLET_X;
+        double alongZ = BRUINEN_FORD_Z - BRUINEN_OUTLET_Z;
+        double share = ((blockX - BRUINEN_OUTLET_X) * alongX + (blockZ - BRUINEN_OUTLET_Z) * alongZ)
+                / (alongX * alongX + alongZ * alongZ);
+        if (share < 0.0D || share > 1.0D) {
+            return ground;
+        }
+        double offsetX = blockX - (BRUINEN_OUTLET_X + share * alongX);
+        double offsetZ = blockZ - (BRUINEN_OUTLET_Z + share * alongZ);
+        double out = Math.sqrt(offsetX * offsetX + offsetZ * offsetZ) - BRUINEN_HALF;
+        double level = BRUINEN_WATER + (BRUINEN_FORD_WATER - BRUINEN_WATER) * share;
+        double shallow = smooth(Mth.clamp((share - BRUINEN_FORD_SHALLOW) / (1.0D - BRUINEN_FORD_SHALLOW),
+                0.0D, 1.0D));
+        int height;
+        if (out <= 0.0D) {
+            height = (int) Math.round(level - BRUINEN_BED * (1.0D - shallow));
+        } else {
+            int x = (int) Math.floor(blockX);
+            int z = (int) Math.floor(blockZ);
+            // The same ribs and gullies the massif's flank has, faded in from the water: a wall whose height
+            // is a function of distance alone draws the same contour at every level, and contours two blocks
+            // apart are terraces.
+            double ribs = (fractal(x, z, CLIMB_SCALE, 23) - 0.5D) * 2.0D * CLIMB_ROUGH
+                    * Math.min(1.0D, out / CLIMB_EASE);
+            double wall = Math.max(level, level + out * BRUINEN_BANK + ribs);
+            height = (int) Math.round(Math.min(ground.height(), wall));
+        }
+        // Only the channel carries the river's own level: the walls stand above it, and the valley floor
+        // beside the mouth stands under it, so a floor given this level as its water would be flooded to
+        // the height of the river thirty blocks away from it.
+        int water = out <= 0.0D ? (int) Math.round(level) : SEA_LEVEL;
+        return new Sample(ground.country(), height, height < level, false, ground.upland(), water);
     }
 
     /** Whether a cell of the map exists at all, since a search may walk off its edge. */
