@@ -77,19 +77,19 @@ public final class ArdaMap {
      */
     private static final int VALLEY_X = 4628;
     private static final int VALLEY_Z = -3577;
-    private static final int VALLEY_HALF_X = 560;
-    private static final int VALLEY_HALF_Z = 530;
+    private static final int VALLEY_HALF_X = 293;
+    private static final int VALLEY_HALF_Z = 272;
     private static final int VALLEY_FLOOR = 74;
 
     /**
      * How far the ground climbs out of the valley floor before it is mountain, and how far the mountain
      * takes to come back down into the country beyond it, in blocks.
      *
-     * <p>The valley is a vale in a massif rather than a pan beside a hillside. The floor is wide enough
-     * to hold the city with a field around it, and the ground then rises from that field at a walkable
-     * angle to {@link #VALLEY_CREST} over the rim, which is what lets the city stand inside the
-     * mountains instead of on a plain at their foot: its own carved flanks run up into ground that is
-     * already as high, and the crown is what is left showing above the ridge.
+     * <p>The valley is a vale in a massif rather than a pan beside a hillside. The floor is the city's
+     * own foot with a field's width around it - the footprint is 554 by 512, and the floor is 586 by
+     * 544 - and the mountain rises from that field at a walkable angle to {@link #VALLEY_CREST} over the
+     * rim. A wider floor was a lawn the city stood on: the ground has to start climbing at the city's
+     * walls for the mountains to take the city into themselves, which is the whole point of them.
      */
     private static final int VALLEY_RIM = 260;
     private static final int VALLEY_FALL = 170;

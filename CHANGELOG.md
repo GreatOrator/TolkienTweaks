@@ -684,7 +684,7 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
 
 - **Imladris is a vale inside a massif, not a pan beside a hill.** The city is carved into the sides of a
   mountain whose crown it reaches, so the ground has to be there before it is planted: the valley floor is
-  widened to hold the city with a field around it, and the ground outside it climbs straight from the floor
+  the city's own foot with a field's width around it, and the ground outside it climbs straight from the floor
   to y 300 - the map's own ceiling, just under the city's crown - before it is handed back to the Trollshaws
   over a second fall. The city's carved flanks run up into ground already as high, and the ridge is what a
   player sees from outside rather than a wall of the city's own stone standing on a plain.
