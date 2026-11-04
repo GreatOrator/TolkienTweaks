@@ -301,6 +301,19 @@ public final class ArdaMap {
         return column >= 0 && column < COLUMNS && row >= 0 && row < ROWS;
     }
 
+    /**
+     * The country at the middle of one cell, read off the ground rather than off the drawing.
+     * <p>
+     * {@link #cellCountry} answers what the 48 by 36 grid paints in a cell, and it is the wrong answer
+     * for the valley: Imladris is laid over cells the drawing gives to the Trollshaws, so it has no cell
+     * of its own and a survey looking for it would be refused every cell in the map. This asks the same
+     * column the generator will shape, which is the valley's own answer where the valley is.
+     */
+    static ArdaMap.Country countryAt(int column, int row) {
+        BlockPos centre = centreOf(column, row);
+        return sample(centre.getX(), centre.getZ()).country();
+    }
+
     /** The country drawn in one cell, which is the whole of what a survey needs to begin. */
     static ArdaMap.Country cellCountry(int column, int row) {
         return GRID[Mth.clamp(row, 0, ROWS - 1)][Mth.clamp(column, 0, COLUMNS - 1)];

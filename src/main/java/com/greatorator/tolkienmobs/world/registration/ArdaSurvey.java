@@ -90,7 +90,9 @@ public final class ArdaSurvey {
                     // ground in the one next door, which is still the country the books name, and may
                     // not take ground on the far side of the map.
                     if (!nearby(near, column + across, row + along, within)) continue;
-                    ArdaMap.Country country = ArdaMap.cellCountry(column + across, row + along);
+                    // Read off the ground rather than off the drawing: the valley is cut into cells the
+                    // grid gives to the Trollshaws, so a name surveyed for it has no cell of its own.
+                    ArdaMap.Country country = ArdaMap.countryAt(column + across, row + along);
                     if (!country.land() || !fits.test(country)) continue;
                     Ground ground = within(country, column + across, row + along, wide, deep, salt,
                             near, away, accept);
