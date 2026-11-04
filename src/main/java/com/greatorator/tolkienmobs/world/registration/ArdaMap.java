@@ -165,7 +165,7 @@ public final class ArdaMap {
      * valley was a sliced terrace rather than a bank. The river is cut as its own gorge instead: the build's
      * level at the outlet, the level the drawing's rivers stand at at the ford, a bed under it, and walls that
      * rise from the water at a grade a hillside holds rather than a wall a map cell draws. The ford's own
-     * water level replaces {@link #BRUINEN_FORD_WATER} as soon as it is read off the ground there.
+     * water level is read off the ground as the course goes rather than set at either end.
      */
     private static final int BRUINEN_OUTLET_X = 4356;
     private static final int BRUINEN_OUTLET_Z = -3528;
@@ -179,9 +179,13 @@ public final class ArdaMap {
     private static final int BRUINEN_RIGHT = 7;
     private static final int BRUINEN_FORD_X = 3840;
     private static final int BRUINEN_FORD_Z = -3328;
-    private static final int BRUINEN_FORD_WATER = SEA_LEVEL;
     private static final double BRUINEN_BANK = 1.2D;
     private static final double BRUINEN_FORD_SHALLOW = 0.8D;
+    /** Steps the channel's water is read at along its course, from the outlet to the ford. */
+    private static final int BRUINEN_STEPS = 96;
+    /** The course's water, read once; and the lock that keeps two chunks from reading it together. */
+    private static volatile int[] bruinenProfile;
+    private static final Object BRUINEN_LOCK = new Object();
 
     /** How deep a river's and a lake's bed lies under its water, and how far the grade is read. */
     private static final int RIVER_DEPTH = 4;
@@ -521,6 +525,47 @@ public final class ArdaMap {
      * and the city plants its lowest band over the floor; and it shallows over the last stretch, because the
      * ford is where the river is waded rather than a place a channel can end in a wall.
      */
+    /**
+     * The water's own height along the Bruinen's course, read off the ground and kept.
+     * <p>
+     * Water does not run uphill and does not stand above the lowest ground downstream of it, so the
+     * height at any point on the course is the lowest ground between that point and the ford, and never
+     * above the build's own outlet at {@link #BRUINEN_WATER}. Nothing is set at the ford: if the ground
+     * there is under the outlet the river slopes down to it, and if it is above, the river runs level and
+     * the ground has to be cut to reach it - which is what a valley sunk in a plateau asks for.
+     * <p>
+     * Read once and kept, because a column of the gorge would otherwise walk the whole course.
+     */
+    private static int bruinenWater(double share) {
+        int[] profile = bruinenProfile;
+        if (profile == null) {
+            synchronized (BRUINEN_LOCK) {
+                profile = bruinenProfile;
+                if (profile == null) {
+                    profile = readBruinenProfile();
+                    bruinenProfile = profile;
+                }
+            }
+        }
+        return profile[Mth.clamp((int) Math.round(share * BRUINEN_STEPS), 0, BRUINEN_STEPS)];
+    }
+
+    private static int[] readBruinenProfile() {
+        int[] profile = new int[BRUINEN_STEPS + 1];
+        int lowest = BRUINEN_WATER;
+        for (int step = BRUINEN_STEPS; step >= 1; step--) {
+            int x = (int) Math.round(BRUINEN_OUTLET_X
+                    + (BRUINEN_FORD_X - BRUINEN_OUTLET_X) * step / (double) BRUINEN_STEPS);
+            int z = (int) Math.round(BRUINEN_OUTLET_Z
+                    + (BRUINEN_FORD_Z - BRUINEN_OUTLET_Z) * step / (double) BRUINEN_STEPS);
+            lowest = Math.min(lowest,
+                    groundAt(x / (double) CELL + ORIGIN_COLUMN, z / (double) CELL + ORIGIN_ROW, x, z).height());
+            profile[step] = lowest;
+        }
+        profile[0] = BRUINEN_WATER;
+        return profile;
+    }
+
     private static Sample bruinen(double blockX, double blockZ, Sample ground) {
         double alongX = BRUINEN_FORD_X - BRUINEN_OUTLET_X;
         double alongZ = BRUINEN_FORD_Z - BRUINEN_OUTLET_Z;
@@ -536,7 +581,7 @@ public final class ArdaMap {
         double along = Math.sqrt(alongX * alongX + alongZ * alongZ);
         double side = (offsetX * -alongZ + offsetZ * alongX) / along;
         double out = side > 0.0D ? side - BRUINEN_RIGHT : -BRUINEN_LEFT - side;
-        double level = BRUINEN_WATER + (BRUINEN_FORD_WATER - BRUINEN_WATER) * share;
+        double level = bruinenWater(share);
         double shallow = smooth(Mth.clamp((share - BRUINEN_FORD_SHALLOW) / (1.0D - BRUINEN_FORD_SHALLOW),
                 0.0D, 1.0D));
         int height;

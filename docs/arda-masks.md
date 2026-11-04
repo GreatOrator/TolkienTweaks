@@ -83,9 +83,7 @@ what lets a river fall and a lake sit in its basin.
 
 ## Still open
 
-- The Rivendell valley has not been re-seated. Its floor is hand-laid at 74 and the heightmap now puts
-  the country round it at 160, so the city sits 86 blocks down inside its massif, and the Bruinen's
-  gorge ends 93 blocks under the ground at the drawn ford. Re-seating means raising the city's own base
-  to the heightmap's floor and re-cutting the gorge to meet it.
-- The Bruinen's gorge still runs to the drawn ford at 63. That is where the mask's Bruinen is not, and
-  the ford's real coordinate and water level are still pending from the player.
+- The Bruinen is the one river not laid by the mask: it leaves a hand-built channel at 82 and its water
+  is read off the ground down its own course. That is where the mask's Bruinen is not - the nearest
+  column of it is 1,176 blocks east - and the valley it leaves is 86 blocks below the country, so the
+  water runs level and the cut does the descending.
