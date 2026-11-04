@@ -73,7 +73,7 @@ public final class ArdaMap {
      * planted from, plus half of its 554 by 512 footprint - so a city planted at 4352, -3833 stands in
      * the middle of the floor rather than against one of its walls. The floor holds the whole footprint
      * with 16 blocks to spare on its north and south sides and 17 on its east and west, so the mountain's
-     * foot begins a dozen paces from the walls, and the rim is 220 blocks of climb, which is a
+     * foot begins a dozen paces from the walls, and the rim is 175 blocks of climb, which is a
      * mountainside rather than the wall 64 blocks made of it.
      */
     private static final int VALLEY_X = 4628;
@@ -88,10 +88,10 @@ public final class ArdaMap {
      * <p>
      * The valley is a vale in a massif rather than a pan beside a hillside: the floor is the city's own
      * foot with a field's width round it - 586 by 544 for a 554 by 512 footprint - so the mountain's foot
-     * starts at the walls rather than a lawn away from them, and 220 blocks of climb for 306 of rise puts
+     * starts at the walls rather than a lawn away from them, and 175 blocks of climb for 306 of rise puts
      * the ridge over the roofs rather than across a field from them.
      */
-    private static final int VALLEY_RIM = 220;
+    private static final int VALLEY_RIM = 175;
     private static final int VALLEY_FALL = 400;
 
     /**
@@ -377,6 +377,18 @@ public final class ArdaMap {
             return new Sample(ground.country(), shoulder, false, false, ground.upland());
         }
         return new Sample(country, height, false, false, ground.upland());
+    }
+
+    /**
+     * The height the massif round the valley reaches at its highest, which is the room a world must
+     * have for it.
+     * <p>
+     * A dimension's height is fixed when its world is made, so a save copied from one made before Arda
+     * was raised keeps the old ceiling, and every summit drawn above it is cut off flat. The generator
+     * reads this to say so once, rather than leaving it to look like a range that stops in the sky.
+     */
+    static int massifTop() {
+        return VALLEY_CREST + CREST_SWING;
     }
 
     /**

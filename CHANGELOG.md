@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **A world keeps the height it was made with, so an old save cuts Arda's mountains off flat.** Arda was
+  raised to 512 blocks so the massif round Imladris could stand over the city's crown, but a dimension's
+  height is fixed the moment its world is made, and a save copied from an older one carries the old height
+  with it. The world this round was measured in ends at y 335 (25 sections, -64 to 335), so every summit
+  the map draws above that was cut off at the ceiling: a range that stops in the sky, which is exactly
+  what a flat-topped mountain looks like and very hard to tell from a range drawn badly. Nothing in the
+  terrain could be tuned out of it. The generator now says so once, naming the ceiling it found and the
+  height the massif wants, rather than leaving it to be guessed at.
+
+- **The massif stands closer to the city.** 220 blocks of climb put the summits 190 to 270 blocks out from
+  the walls, which is further than the valley is wide; they are 150 to 210 out now, at about 1.8 blocks of
+  rise for every block walked.
+
 - **The mountain no longer ends in a cliff of its own making, and its flank is a mountainside rather than
   a wall.** Two things cut the massif off. The rib noise on the flank was still 12 blocks high where the
   climb met the ridge and dropped to nothing beyond it, so there was a sheer face running the whole length

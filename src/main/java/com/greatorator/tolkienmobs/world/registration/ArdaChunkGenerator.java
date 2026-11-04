@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Arda's terrain: the overworld's own noise, cut to the shape the map draws.
@@ -74,6 +75,9 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
                     NoiseGeneratorSettings.CODEC.fieldOf("settings").forGetter(NoiseBasedChunkGenerator::generatorSettings))
             .apply(instance, instance.stable(ArdaChunkGenerator::new)));
 
+    /** Whether the too-short-world warning has already been said, since it is read once per chunk. */
+    private static final AtomicBoolean REPORTED_SHORT_WORLD = new AtomicBoolean();
+
     private static final BlockState AIR = Blocks.AIR.defaultBlockState();
     private static final BlockState STONE = Blocks.STONE.defaultBlockState();
     private static final BlockState WATER = Blocks.WATER.defaultBlockState();
@@ -92,6 +96,7 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
                                                         ChunkAccess centerChunk) {
         return super.fillFromNoise(blender, randomState, structureManager, centerChunk)
                 .thenApply(chunk -> {
+                    reportShortWorld(chunk);
                     reshape(chunk, randomState);
                     republishGround(chunk);
                     return chunk;
@@ -166,6 +171,28 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
         super.applyCarvers(region, seed, randomState, biomeManager, structureManager, chunk);
         seal(chunk, randomState);
         republishGround(chunk);
+    }
+
+    /**
+     * Says, once, that this world is too short for the massif round Imladris.
+     *
+     * <p>A dimension's height is fixed when its world is made, and a save copied from an older one
+     * carries that height with it however new the build is. Everything drawn above the ceiling is cut
+     * off flat, which reads as a mountain range that stops in the sky - and that is very hard to tell
+     * from a badly shaped range, since both look like a flat top. So the numbers are said out loud,
+     * with the ceiling this world has and the height the massif wants, rather than left to be guessed
+     * at from a screenshot.
+     */
+    private static void reportShortWorld(ChunkAccess chunk) {
+        int ceiling = chunk.getMaxY() - 1;
+        int wanted = ArdaMap.massifTop();
+        if (ceiling >= wanted || !REPORTED_SHORT_WORLD.compareAndSet(false, true)) {
+            return;
+        }
+        LogUtils.getLogger().warn("Arda in this world ends at y {}, but the massif round Imladris stands at {}: "
+                + "its mountains are cut off flat at this world's ceiling. A world keeps the height it was made "
+                + "with, and copying an old save copies that too - make a new world rather than a copy.",
+                ceiling, wanted);
     }
 
     /** Retargets every column of a chunk to the drawn ground and the drawn water. */
