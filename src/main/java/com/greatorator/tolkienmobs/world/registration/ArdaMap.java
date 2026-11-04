@@ -123,6 +123,15 @@ public final class ArdaMap {
     private static final int VALLEY_RIM = 175;
     private static final int VALLEY_FALL = 340;
     /**
+     * How far out the rock climbs from the floor to the crown, in blocks: the mountain's own foot.
+     * <p>
+     * A face that begins at the crown is a wall standing beside the city however the rest of the range
+     * is shaped - which is what the rock at the valley's edge was, five blocks out and two hundred and
+     * forty-four high, with the build's wall a step away from it. Ninety blocks is the climb: steep
+     * enough to close over the walls and read as a mountainside rather than a bowl.
+     */
+    private static final int VALLEY_STEEP = 90;
+    /**
      * How far past the massif's foot the country is brought down to the valley's own level, in blocks.
      * <p>
      * A hundred and seventy-five blocks of mountain, then its fall, then nine
@@ -471,7 +480,8 @@ public final class ArdaMap {
             double ribs = (fractal(x, z, CLIMB_SCALE, 17) - 0.5D) * 2.0D * CLIMB_ROUGH
                     * Math.min(1.0D, beyond / CLIMB_EASE)
                     * Math.min(1.0D, (ridge - beyond) / CLIMB_EASE);
-            height = (int) Math.round(VALLEY_CROWN + (crest - VALLEY_CROWN) * climb(beyond / ridge) + ribs);
+            double rise = Math.min(1.0D, beyond / (double) VALLEY_STEEP);
+            height = (int) Math.round(VALLEY_FLOOR + (crest - VALLEY_FLOOR) * climb(rise) + ribs);
         } else {
             double fell = Math.min(1.0D, (beyond - ridge) / (double) VALLEY_FALL);
             height = (int) Math.round(crest + (ground.height() - crest) * smooth(fell));
