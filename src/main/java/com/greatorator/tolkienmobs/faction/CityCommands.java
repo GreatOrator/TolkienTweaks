@@ -15,6 +15,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.levelgen.Heightmap;
+import com.greatorator.tolkienmobs.world.registration.ArdaMap;
+import com.greatorator.tolkienmobs.world.registration.TolkienDimensions;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -251,6 +253,12 @@ public final class CityCommands {
             int cornerX = feet.getX();
             int cornerZ = feet.getZ();
             int groundY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, cornerX, cornerZ);
+            // In the valley the corner may already be standing on the hillside the city is laid into, so
+            // the ground under it is three blocks up the climb and planting on that would stand the whole
+            // build a dozen blocks in the air. The city's floor is the valley's floor, and that is the cap.
+            if (TolkienDimensions.ARDA.equals(level.dimension())) {
+                groundY = Math.min(groundY, ArdaMap.valleyFloor() + 1);
+            }
             BlockPos planted = new BlockPos(cornerX - lowX, groundY - lowY, cornerZ - lowZ);
             // The marked spots are written in this same frame, so the folk know where they are the moment
             // the corner is planted - otherwise the city would stand empty of the people meant to live in it.

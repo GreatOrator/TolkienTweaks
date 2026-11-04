@@ -36,18 +36,22 @@ what is still open, so the next session does not have to rebuild that from the c
 
 ## The valley
 
-- Floor **74**, cut to the build's footprint exactly (x 4352..4905, z -3833..-3322) on the west, north
-  and south, and running **100 blocks** east to x 5005 for the river's mouth. There is no shelf: the
-  mountain's foot stands `VALLEY_FOOT = 10` over the floor at the walls, so the first ring outside them
-  is **84** and the climb takes it from there (90 by 5 out, 105 by 12, 150 by 27, 318 at 90). The
-  build's lowest band at 75 is under that ground, so the city is laid into the hillside and its ragged
-  edge is buried instead of standing in a lawn.
+- Floor **74**. West, north and south it ends **three blocks inside** the build (`VALLEY_LAWN = -3`:
+  x 4355, z -3830, z -3325), because the build's base band is flush with its footprint on all four
+  sides (measured from the 102 edge pieces: inset 0 in every row), so a floor that stops at the
+  footprint leaves the hill a block away with a seam column between. The climb begins under the city's
+  own outer band: 74 at three blocks in, **84 at the wall line**, 87 four out, 105 twelve out, 150 at
+  27, 318 at 90.
+- East it runs **135 blocks** to x **5040**, past the Bruinen the drawing puts at 5008, so the river
+  the branch runs into stands on the valley's own ground rather than in a slot three blocks off the
+  wall. The massif's east flank starts beyond it, on the river's far bank.
 - The east's longer shelf is the river's: the drawn Bruinen reaches that edge, and the branch has to meet
   it at the floor's level, so a climb in between would stand the river two hundred blocks over the city.
-  A hundred blocks on *every* side (one build earlier) put the hillside a field away all round; twelve
-  and then four left a step of floor between the walls and the hill, because a shelf of any width is a
-  strip of flat ground the city does not stand on. The foot replaces the shelf: the floor is the
-  footprint, and the height the shelf would have produced three blocks in stands one block out.
+  A hundred blocks on *every* side (one build earlier) put the hillside a field away all round; twelve,
+  four and then none left a step of floor between the walls and the hill, because a shelf of any width
+  is a strip of flat ground the city does not stand on. The floor now runs three blocks *under* the
+  build's own outer band instead, and `/tmcity origin` caps its base at the valley floor so the city
+  still plants at 75.
 - The rim **climbs from the lawn's edge** to the crown over `VALLEY_STEEP = 90` blocks (74, 80, 90, 106,
   138, 168, 212, 253, 318), holds the crown out to `VALLEY_RIM = 175`, then falls to the vale over
   `VALLEY_FALL = 340`.
@@ -65,11 +69,11 @@ what is still open, so the next session does not have to rebuild that from the c
 
 ## The water
 
-- **The drawn Bruinen is nearest the valley at 5008, -3328**, three blocks east of the lawn's edge at
-  5005, running north-east to south-west. It passes **through** the massif: the drawing has river pixels
-  in the ring east of the lawn and none on the lawn itself.
-- **A drawn river answers before the massif** everywhere off the valley floor (`3f920f09`), so the
-  Bruinen cuts its own gorge through the rock instead of being buried by it.
+- **The drawn Bruinen is nearest the valley at 5008, -3328**, now **inside** the floor's east run to
+  5040, running north-east to south-west: the drawing has river pixels east of the city and none on the
+  city's own footprint.
+- **A drawn river answers before the massif and before the floor**: the Bruinen cuts its own channel
+  through both, so the branch meets it in open water instead of running into a wall of massif at 5005.
 - **The branch out of Rivendell** runs from the build's own south edge at **4900, -3322** to the
   drawn Bruinen at **5008, -3328**: 109 blocks at **72**, two blocks under the valley's floor, 2+ blocks
   of water the whole way, 7 at the middle, narrowing to 0.7 of its width into the join. Where the two

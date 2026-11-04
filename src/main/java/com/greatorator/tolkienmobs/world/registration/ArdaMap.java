@@ -71,33 +71,24 @@ public final class ArdaMap {
      * cannot be a country of the 48 by 36 grid: it is cut out of cells the drawing already fills and
      * blended back into them at its rim. Its middle is the middle of that city - the corner it is
      * planted from, plus half of its 554 by 512 footprint - so a city planted at 4352, -3833 stands in
-     * the middle of the floor rather than against one of its walls. The floor is that footprint, cut to
-     * the walls: west, north and south the mountain's foot stands {@link #VALLEY_FOOT} blocks over the
-     * floor, so the first ground outside the wall is already taller than the build's lowest band and the
-     * city is laid into the hill rather than set down in a lawn beside it. East the floor runs
-     * {@link #VALLEY_LAWN_EAST} blocks past the build, because the drawn Bruinen comes to that edge and
-     * the branch has to meet it at the floor's own level: a climb in between would stand the river two
-     * hundred blocks above the city it is supposed to leave.
+     * the middle of the floor rather than against one of its walls. West, north and south the floor ends
+     * {@link #VALLEY_LAWN} blocks outside the build - three blocks inside it, since the number is
+     * negative - because the build's own outer wall is flush with its footprint, and a floor that stops
+     * at the footprint leaves the hill a block away with a seam of empty ground between the two. East the
+     * floor runs {@link #VALLEY_LAWN_EAST} blocks past the build, out beyond the Bruinen the map draws at
+     * 5008, so the river the branch runs into stands on the valley's own ground instead of in a slot
+     * three blocks from the city's wall.
      */
     private static final int VALLEY_X = 4628;
     private static final int VALLEY_Z = -3577;
-    /** The shelf round the build's west, north and south edges, and the longer one on its east. */
-    private static final int VALLEY_LAWN = 0;
-    private static final int VALLEY_LAWN_EAST = 100;
     /**
-     * How far above the floor the mountain's foot stands where it meets the walls, in blocks.
-     * <p>
-     * A foot at the floor's own height leaves the first ring outside the walls at 74, level with the
-     * build's lowest band: whatever the climb does above it, the city still reads as a block set down on
-     * flat ground with its ragged edge standing in the open, and a shelf - even a shelf of nothing - is
-     * still a step of ground between the wall and the hill. Ten blocks puts that first ring at 84 and the
-     * hillside on top of the build's bottom band, so the city's own stone and grass are buried in the
-     * hill the way a building cut into a slope is. It is the ground a shelf of three blocks would have
-     * produced three blocks inside the wall, without moving the floor the city is planted on: the corner
-     * `/tmcity origin` snaps to is that floor, and raising it would plant the whole build fifteen blocks
-     * into the air.
+     * How far the floor ends from the build's west, north and south walls, and how far it runs past its
+     * east one. The first is negative: the climb begins three blocks <em>inside</em> the build, so the
+     * ground rises from underneath the city's own outer band and the hillside is laid over it rather than
+     * stopping a block short with a seam left between them.
      */
-    private static final int VALLEY_FOOT = 10;
+    private static final int VALLEY_LAWN = -3;
+    private static final int VALLEY_LAWN_EAST = 135;
     private static final int VALLEY_WEST = 4352 - VALLEY_LAWN;
     private static final int VALLEY_EAST = 4905 + VALLEY_LAWN_EAST;
     private static final int VALLEY_NORTH = -3833 - VALLEY_LAWN;
@@ -448,23 +439,17 @@ public final class ArdaMap {
         // nothing the maps draw as a river runs through it. It is measured in unwarped blocks on
         // purpose - the warp is there to make drawn borders organic, and a floor a city is planted on
         // by hand must not wander a hundred blocks off the middle the city was planted around.
-        // A drawn river is not buried by the massif. The Bruinen the map draws runs into the mountain
-        // the valley was planted over, and a branch leaving the city has to meet it in the open: off the
-        // floor, the drawing answers before the rock does. On the floor it yields, because nothing is
-        // drawn through a valley that was laid over the map.
-        if (beyond(blockX, blockZ) > 0.0D) {
-            Sample drawn = water(blockX, blockZ, shiftX, shiftZ, ground);
-            if (drawn != null) {
-                return drawn;
-            }
+        // A drawn river is not buried - not by the massif and not by the floor either. The Bruinen the
+        // map draws runs past the valley's east side, inside the floor the city stands on, and the branch
+        // out of the city has to meet it in the open: the drawing answers before the rock and before the
+        // floor, so the river cuts its own channel through both and the fork is water, not a notch.
+        Sample drawn = water(blockX, blockZ, shiftX, shiftZ, ground);
+        if (drawn != null) {
+            return drawn;
         }
         Sample valley = valley(blockX, blockZ, ground);
         if (valley != null) {
             return valley;
-        }
-        Sample drawn = water(blockX, blockZ, shiftX, shiftZ, ground);
-        if (drawn != null) {
-            return drawn;
         }
         return new Sample(ground.country(), ground.height(), false, ground.shore(), ground.upland());
     }
@@ -540,8 +525,7 @@ public final class ArdaMap {
                     * Math.min(1.0D, beyond / CLIMB_EASE)
                     * Math.min(1.0D, (ridge - beyond) / CLIMB_EASE);
             double rise = Math.min(1.0D, beyond / (double) VALLEY_STEEP);
-            double foot = Math.min(crest, VALLEY_FLOOR + VALLEY_FOOT);
-            height = (int) Math.round(foot + (crest - foot) * climb(rise) + ribs);
+            height = (int) Math.round(VALLEY_FLOOR + (crest - VALLEY_FLOOR) * climb(rise) + ribs);
         } else {
             double fell = Math.min(1.0D, (beyond - ridge) / (double) VALLEY_FALL);
             height = (int) Math.round(crest + (ground.height() - crest) * smooth(fell));
@@ -587,6 +571,14 @@ public final class ArdaMap {
 
     static int massifTop() {
         return VALLEY_CREST + CREST_SWING;
+    }
+
+    /**
+     * The height the valley's floor stands at: where a city in it is planted from, whatever the climb
+     * beside its walls has done.
+     */
+    public static int valleyFloor() {
+        return VALLEY_FLOOR;
     }
 
     /**
