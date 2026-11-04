@@ -77,24 +77,13 @@ what is still open, so the next session does not have to rebuild that from the c
   pixels on the city's own footprint.
 - **A drawn river answers before the massif and before the floor**: the Bruinen cuts its own channel
   through both, so the branch meets it in open water instead of running into a wall of massif at 5005.
-- **The branch out of Rivendell** runs from the build's own outlet at **4900, -3322** to the drawn
-  Bruinen at **4995, -3311**: 96 blocks at **72**, two blocks under the valley's floor, twelve wide
-  (5 left of the middle, 7 right), 2+ blocks of water the whole way, 7 at the middle, narrowing to 0.7 of
-  its width into the join. Its course **wanders** up to 18 blocks off the straight line
-  (`BRUINEN_SNAKE`, one and a half turns) and is exactly at the outlet and the join at both ends, so it
-  leaves the city where the build opens and arrives on the drawn river. With the rock at the crown
-  outside the floor, that course is a gorge through the massif - the gap in the wall the reference image
-  shows - and it is cut by `bruinen()` wherever it runs.
-- Where the two rivers meet there is a **two-block step**, 72 against the drawn river's 74, because the
-  drawn river takes its level from the ground it is drawn on.
-- The earlier course - 4356, -3528 west to the drawing's 3840, -3328 - **ended 1,176 blocks from any
-  drawn river**: the "drawn ford" there is not on drawn water. That vale river is gone for now; whether
-  both arms should stand is open (below).
-- Both river kinds have a **bed that slopes from its middle out to the water's edge** (`2bbdcad2`), and
-  drawn rivers take their depth from the drawing: as deep as the channel is wide, to a cap of sixteen.
-
-## Open
-
+- **The branch out of Rivendell has to start at the build's own mouth, and that mouth is on the west.**
+  The city's 584 pieces carry 302,049 water blocks over 40,321 columns; the water leaves at **4352, -3530**
+  with its surface at **82**, and the only water on the east edge is an aqueduct at y 239. The branch was
+  built from 4900, -3322, which carries no water of the build's at all - the nearest build water to it is
+  48 blocks away. The nearest drawn water to the real mouth is the Bruinen at **4996, -3308**, 681 blocks
+  off; the join the branch uses is 97 blocks from the 4900 point. Twelve blocks wide, 5 left and 7 right of
+  the middle, from the mouth to the water it feeds.
 - **The ford is a bridge.** Nothing places a road or a bridge over the Bruinen yet; the join is water and
   banks only.
 - **The join's step.** The branch runs at 72 and the drawn Bruinen at whatever grade the drawing gives it;
