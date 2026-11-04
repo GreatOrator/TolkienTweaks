@@ -378,7 +378,8 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   and grass over mossy rock. The name `rivendell` is surveyed from the valley's middle now, so the place is
   written where the city goes rather than wherever the hills around it would take it - and a survey asks
   the ground what country it is in rather than asking the drawing, because a valley cut into the grid has
-  no cell of its own to be found in.
+  no cell of its own to be found in. The command walkthrough plants from the valley floor now, rather
+  than from the 72-block corner the Trollshaws' own ground needed.
 
 ### Fixed
 

@@ -82,9 +82,13 @@ with cheats, and creative or op 2. The city is **554 x 244 x 512**, and its lowe
 caller's feet, so **the feet must be at y 76 or below**: above that the top bands are left out with a
 message rather than laid.
 
-1. **Pick the ground.** In Arda, Rivendell's cell is column 18, row 12 — centre `4352, -3840`, ground drawn
-   at 84, which is above the ceiling line. Plant from `4075, 72, -4096` to centre the footprint on that
-   cell, or find a hollow and plant there. In any other world, pick flat ground with 554 x 512 clear.
+1. **Pick the ground.** In Arda, Rivendell has a valley of its own: a flat Imladris floor at y 74, across
+   x 4032..4672 and z -4130..-3550, which is the map's cell column 18, row 12. Stand on it - `/execute in
+   tolkienmobs:arda run tp @s 4352 100 -3840`, then let yourself fall - and plant with your feet at 75,
+   which puts the crown at 318, one block under the ceiling. Planting from `4075, 72, -4096` also centres
+   the footprint on the cell. In any other world, pick flat ground with 554 x 512 clear and feet at or
+   below 76.
+
 2. **Plant it.** `/tmcity origin`. Whatever ground was there stays around it; the city replaces its own box
    and underpins the bottom band with dirt.
 3. **Raise it.** `/tmcity summon` for the whole city in one word (long stall), or `/tmcity band 1` six times
