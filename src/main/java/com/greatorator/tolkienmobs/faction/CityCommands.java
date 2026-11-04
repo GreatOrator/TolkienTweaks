@@ -252,11 +252,14 @@ public final class CityCommands {
                         + " bands are down. /tmcity goto stands you in the middle of it."), true);
                 return 0;
             }
+            int left = Math.max(0, total - last);
             String which = last <= first ? "band " + first + " of " + total
                     : "bands " + first + "-" + last + " of " + total;
             String sky = skipped == 0 ? "" : "; " + skipped
                     + " were above the sky and left out - /tmcity origin planted lower would take them";
-            String spoken = whole ? "; the whole city is down - /tmcity goto to stand in it" : "";
+            // How many more bands are waiting, so nobody has to be told what to type next.
+            String spoken = whole ? "; the whole city is down - /tmcity goto to stand in it"
+                    : "; " + left + (left == 1 ? " band" : " bands") + " to go";
             source.sendSuccess(() -> Component.literal("Laid " + soFar + " pieces; " + which
                     + " down" + sky + spoken), true);
             return laid;
