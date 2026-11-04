@@ -45,9 +45,10 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
  * <p>
  * It exists for the two things that need a city in a world before the pack has one: looking at the
  * terrain, and walking the campaign's pages through a valley of the right size. One root,
- * {@code /tmcity}, with seven hands: {@code origin}, which plants the corner where the caller stands;
- * {@code summon}, which plants it and lays the whole city in one word, for putting the build alone into
- * an empty world; {@code band [count]}, which lays the next band of the city and stops, because a whole
+ * {@code /tmcity}, with eight hands: {@code origin}, which plants the corner where the caller stands;
+ * {@code summon}, which plants it, lays the whole city in one word and stands its people, for putting the
+ * build alone into an empty world; {@code folk}, which stands the city's people where the build marks
+ * them; {@code band [count]}, which lays the next band of the city and stops, because a whole
  * city is two thousand chunks and those are generated chunk by chunk; {@code relay}, which puts the counter back at
  * the bottom of the city it already stands in; {@code apron}, which blends the shoulder into the ground
  * once the last band is down; {@code goto}, which stands the caller on the middle of the city; and
@@ -144,6 +145,7 @@ public final class CityCommands {
                 .requires(MAY_BUILD)
                 .then(Commands.literal("origin").executes(CityCommands::origin))
                 .then(Commands.literal("summon").executes(CityCommands::summon))
+                .then(Commands.literal("folk").executes(CityCommands::folk))
                 .then(Commands.literal("band")
                         .executes(context -> band(context, 1))
                         .then(Commands.argument("count", IntegerArgumentType.integer(1, 8))
@@ -152,6 +154,35 @@ public final class CityCommands {
                 .then(Commands.literal("apron").executes(CityCommands::apron))
                 .then(Commands.literal("goto").executes(CityCommands::visit))
                 .then(Commands.literal("status").executes(CityCommands::status)));
+    }
+
+    /**
+     * Stands the city's people where the build marks them: the three Elves of the line at the spots set
+     * down for them, the fifteen unnamed walkers at theirs, and the rest of the crowd wherever the city has
+     * ground under it. A body counts by its tag, so saying it twice stands nobody twice.
+     */
+    private static int folk(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        ServerLevel level = source.getLevel();
+        try {
+            Mark mark = read(folder());
+            if (mark == null) {
+                source.sendFailure(Component.literal("No corner planted yet - run /tmcity summon where it should stand."));
+                return 0;
+            }
+            String elsewhere = elsewhere(mark, level);
+            if (elsewhere != null) {
+                source.sendFailure(Component.literal(elsewhere));
+                return 0;
+            }
+            int stood = Campaign.standCityFolk(level, mark.origin());
+            source.sendSuccess(() -> Component.literal("Stood " + stood + " of the city's folk"
+                    + (stood == 0 ? " - every mark already has its body." : ".")), true);
+            return stood;
+        } catch (IOException failed) {
+            source.sendFailure(Component.literal("The city could not be read: " + failed.getMessage()));
+            return 0;
+        }
     }
 
     /** Plants the city's corner at the caller's feet, and forgets whatever was standing before. */
@@ -171,7 +202,10 @@ public final class CityCommands {
      */
     private static int summon(CommandContext<CommandSourceStack> context) {
         if (!plant(context.getSource())) return 0;
-        return band(context, 99);
+        int laid = band(context, 99);
+        // A city laid and left empty of its people is half a city, so the crowd is stood with it.
+        if (laid > 0) folk(context);
+        return laid;
     }
 
     /** Plants the corner and writes the marker, saying why not when it cannot. */

@@ -348,6 +348,12 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   in an empty world. `summon` plants at the caller's feet and then lays every band and the shoulder, so a
   flat world can be turned into the build and nothing else.
 
+- **`/tmcity folk` stands the city's people, and `summon` stands them as it lays the city.** The valley's
+  people were only ever stood by the page that builds the valley as a place, so a city put down with
+  `/tmcity` in a fresh country came out empty - no Elrond, no Legolas, no walkers. The three Elves of the
+  line now stand at the marks the build carries, the fifteen unnamed walkers at theirs, and the rest of the
+  crowd wherever the city has ground under it.
+
 ### Fixed
 
 - **The needle points at the body, not at the middle of the town.** A page that names somebody now

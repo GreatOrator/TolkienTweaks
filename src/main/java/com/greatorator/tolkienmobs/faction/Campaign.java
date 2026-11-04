@@ -221,6 +221,15 @@ public final class Campaign extends SavedData {
     public static void setValleyOrigin(BlockPos origin) {
         VALLEY_ORIGIN = origin == null ? BlockPos.ZERO : origin;
     }
+    /**
+     * Where the three Elves of the line stand in the hand-built city, as steps from its own corner: the
+     * marks set down in the build, the same table the fifteen below come from.
+     */
+    private static final Map<String, int[]> CITY_STANDS = Map.of(
+            GLORFINDEL_TAG, new int[]{414, 175, 159},
+            ELROND_TAG, new int[]{308, 112, 233},
+            LEGOLAS_TAG, new int[]{200, 83, 151});
+
     /** The fifteen spots marked in the build, as positions in the cut with the sink already in them. */
     private static final int[][] VALLEY_FOLK_SPOTS = {
             {250, 88, 251}, {255, 89, 280}, {266, 89, 280}, {269, 85, 259}, {270, 98, 242},
@@ -2251,6 +2260,56 @@ public final class Campaign extends SavedData {
         }
     }
 
+    /**
+     * Stands the city's people in a city planted by hand, with no place of its own to hang them on.
+     * <p>
+     * The valley stands its folk when a page builds it, which is no help to a city put down with
+     * {@code /tmcity} in a country nobody has walked: the same fifteen marks are read against the planted
+     * corner, and the three Elves of the line join them at the spots the build gives them. A body counts by
+     * its tag, so a second word stands nobody twice and one that was killed is put back. The rest of the
+     * number walks the city rather than standing on its marks. Answers how many were stood.
+     */
+    public static int standCityFolk(ServerLevel level, BlockPos origin) {
+        if (origin == null) return 0;
+        VALLEY_ORIGIN = origin;
+        int stood = 0;
+        for (Map.Entry<String, int[]> line : CITY_STANDS.entrySet()) {
+            int[] at = line.getValue();
+            BlockPos spot = floorOf(level, origin.offset(at[0], at[1], at[2]));
+            if (spot == null || !nearby(level, spot, line.getKey()).isEmpty()) continue;
+            String tag = line.getKey();
+            stoodNamed(level, spot, tag.equals(GLORFINDEL_TAG) ? GLORFINDEL
+                    : tag.equals(ELROND_TAG) ? ELROND : LEGOLAS, tag);
+            stood++;
+        }
+        for (int i = 0; i < VALLEY_FOLK_SPOTS.length; i++) {
+            BlockPos spot = floorOf(level, origin.offset(VALLEY_FOLK_SPOTS[i][0],
+                    VALLEY_FOLK_SPOTS[i][1], VALLEY_FOLK_SPOTS[i][2]));
+            if (spot == null || !nearby(level, spot, valleyFolkTag(i)).isEmpty()) continue;
+            standFolk(level, spot, valleyFolkTag(i));
+            stood++;
+        }
+        BlockPos middle = origin.offset(277, 60, 256);
+        for (int i = stood; i < VALLEY_FOLK; i++) {
+            for (int attempt = 0; attempt < 16; attempt++) {
+                BlockPos spot = floorOf(level, middle.offset(
+                        level.getRandom().nextInt(-VALLEY_CITY, VALLEY_CITY + 1), 0,
+                        level.getRandom().nextInt(-VALLEY_CITY, VALLEY_CITY + 1)));
+                if (spot == null) continue;
+                standFolk(level, spot, VALLEY_FOLK_TAG);
+                stood++;
+                break;
+            }
+        }
+        return stood;
+    }
+
+    /** Bodies carrying a tag within a few paces of a spot, so the same mark is never stood twice. */
+    private static List<Entity> nearby(ServerLevel level, BlockPos spot, String tag) {
+        return level.getEntities((Entity) null, new AABB(spot).inflate(6.0D),
+                found -> found.entityTags().contains(tag));
+    }
+
     /** One of the city's people, standing where it was put and homed to it. */
     private static void standFolk(ServerLevel level, BlockPos stand, String tag) {
         Entity entity = TolkienEntities.ENTITY_TTM_ELVES.get().create(level, EntitySpawnReason.EVENT);
@@ -2320,6 +2379,11 @@ public final class Campaign extends SavedData {
         int[] spot = VALLEY_STANDS.getOrDefault(tag, VALLEY_STANDS.get(ELROND_TAG));
         BlockPos stand = floorNear(level, valley.centre().offset(spot[0], 0, spot[1]), player);
         if (stand == null) return;
+        stoodNamed(level, stand, name, tag);
+    }
+
+    /** One of the Elves of the line: standing where it was put, named, and able to hand a page over. */
+    private static void stoodNamed(ServerLevel level, BlockPos stand, String name, String tag) {
         Entity entity = TolkienEntities.ENTITY_TTM_HUMAN.get().create(level, EntitySpawnReason.EVENT);
         if (!(entity instanceof Mob elf)) return;
         elf.snapTo(stand.getX() + 0.5D, stand.getY(), stand.getZ() + 0.5D,
