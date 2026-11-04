@@ -71,20 +71,33 @@ public final class ArdaMap {
      * cannot be a country of the 48 by 36 grid: it is cut out of cells the drawing already fills and
      * blended back into them at its rim. Its middle is the middle of that city - the corner it is
      * planted from, plus half of its 554 by 512 footprint - so a city planted at 4352, -3833 stands in
-     * the middle of the floor rather than against one of its walls. The floor is that footprint plus a
-     * shelf, and the shelf is not the same width all round. West, north and south it is
-     * {@link #VALLEY_LAWN} blocks - three to five, so the build's own lowest band is laid into the rising
-     * ground instead of standing beside it and the ragged edge of the city is buried in the hillside
-     * rather than left in the open. A floor cut exactly to the walls is a trench that hugs the build; a
-     * floor a hundred blocks wide is a pan with the mountain a field away from it. East it is {@link #VALLEY_LAWN_EAST} blocks, because the
-     * drawn Bruinen comes to that edge and the branch has to meet it at the floor's own level: a climb
-     * between the two would stand the river two hundred blocks above the city it is supposed to leave.
+     * the middle of the floor rather than against one of its walls. The floor is that footprint, cut to
+     * the walls: west, north and south the mountain's foot stands {@link #VALLEY_FOOT} blocks over the
+     * floor, so the first ground outside the wall is already taller than the build's lowest band and the
+     * city is laid into the hill rather than set down in a lawn beside it. East the floor runs
+     * {@link #VALLEY_LAWN_EAST} blocks past the build, because the drawn Bruinen comes to that edge and
+     * the branch has to meet it at the floor's own level: a climb in between would stand the river two
+     * hundred blocks above the city it is supposed to leave.
      */
     private static final int VALLEY_X = 4628;
     private static final int VALLEY_Z = -3577;
     /** The shelf round the build's west, north and south edges, and the longer one on its east. */
-    private static final int VALLEY_LAWN = 4;
+    private static final int VALLEY_LAWN = 0;
     private static final int VALLEY_LAWN_EAST = 100;
+    /**
+     * How far above the floor the mountain's foot stands where it meets the walls, in blocks.
+     * <p>
+     * A foot at the floor's own height leaves the first ring outside the walls at 74, level with the
+     * build's lowest band: whatever the climb does above it, the city still reads as a block set down on
+     * flat ground with its ragged edge standing in the open, and a shelf - even a shelf of nothing - is
+     * still a step of ground between the wall and the hill. Ten blocks puts that first ring at 84 and the
+     * hillside on top of the build's bottom band, so the city's own stone and grass are buried in the
+     * hill the way a building cut into a slope is. It is the ground a shelf of three blocks would have
+     * produced three blocks inside the wall, without moving the floor the city is planted on: the corner
+     * `/tmcity origin` snaps to is that floor, and raising it would plant the whole build fifteen blocks
+     * into the air.
+     */
+    private static final int VALLEY_FOOT = 10;
     private static final int VALLEY_WEST = 4352 - VALLEY_LAWN;
     private static final int VALLEY_EAST = 4905 + VALLEY_LAWN_EAST;
     private static final int VALLEY_NORTH = -3833 - VALLEY_LAWN;
@@ -527,7 +540,8 @@ public final class ArdaMap {
                     * Math.min(1.0D, beyond / CLIMB_EASE)
                     * Math.min(1.0D, (ridge - beyond) / CLIMB_EASE);
             double rise = Math.min(1.0D, beyond / (double) VALLEY_STEEP);
-            height = (int) Math.round(VALLEY_FLOOR + (crest - VALLEY_FLOOR) * climb(rise) + ribs);
+            double foot = Math.min(crest, VALLEY_FLOOR + VALLEY_FOOT);
+            height = (int) Math.round(foot + (crest - foot) * climb(rise) + ribs);
         } else {
             double fell = Math.min(1.0D, (beyond - ridge) / (double) VALLEY_FALL);
             height = (int) Math.round(crest + (ground.height() - crest) * smooth(fell));
