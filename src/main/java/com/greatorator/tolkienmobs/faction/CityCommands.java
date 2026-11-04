@@ -245,7 +245,13 @@ public final class CityCommands {
             int lowY = parts.stream().mapToInt(Part::dy).min().orElse(0);
             int lowZ = parts.stream().mapToInt(Part::dz).min().orElse(0);
             BlockPos feet = BlockPos.containing(source.getPosition());
-            BlockPos planted = feet.offset(-lowX, -lowY, -lowZ);
+            // The city stands on the ground under its own corner, not at whatever height the caller happens
+            // to be at: a corner planted from the air leaves the whole build hanging over the valley with a
+            // gap under it, and the ground flowing away from it in every direction.
+            int cornerX = feet.getX();
+            int cornerZ = feet.getZ();
+            int groundY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, cornerX, cornerZ);
+            BlockPos planted = new BlockPos(cornerX - lowX, groundY - lowY, cornerZ - lowZ);
             // The marked spots are written in this same frame, so the folk know where they are the moment
             // the corner is planted - otherwise the city would stand empty of the people meant to live in it.
             Campaign.setValleyOrigin(planted);

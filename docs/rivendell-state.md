@@ -43,7 +43,9 @@ what is still open, so the next session does not have to rebuild that from the c
   `VALLEY_FALL = 340`.
 - Past the massif's foot the country is blended toward the city's water level over `VALLEY_VALE = 900`
   blocks, settling back to the heightmap's 156-193 by **1,415** blocks out, so the foot itself stands on
-  **82**, the water's own level.
+  **74**, the city's own floor. It used to stand on 82, eight above the floor, which put the country's
+  lowest ground higher than the water in the valley: a river could not leave, because the water in the
+  floor was already below everything it had to reach.
 - The north-east corner is a `shoulder()` shelf at 318 in the build's own gap (x 4797..4905 by
   z -3833..-3774), run down to the floor over 110 blocks.
 - The mountain mask's ridge is sixteen blocks wide, and the vale's blend runs **after** the mask, so a
@@ -56,9 +58,10 @@ what is still open, so the next session does not have to rebuild that from the c
   the ring east of the floor and none on the floor.
 - **A drawn river answers before the massif** everywhere off the valley floor (`3f920f09`), so the
   Bruinen cuts its own gorge through the rock instead of being buried by it.
-- **The branch out of Rivendell** runs from the valley's south-east corner at **4900, -3312** to the
-  drawn Bruinen at **5008, -3328**: 109 blocks, 2+ blocks of water the whole way, 7 at the middle,
-  narrowing to 0.7 of its width into the join.
+- **The branch out of Rivendell** runs from the build's own south edge at **4900, -3322** to the
+  drawn Bruinen at **5008, -3328**: 109 blocks at **72**, two blocks under the valley's floor, 2+ blocks
+  of water the whole way, 7 at the middle, narrowing to 0.7 of its width into the join. Where the two
+  meet there is a small step, because the drawn river takes its level from the ground it is drawn on.
 - The earlier course - 4356, -3528 west to the drawing's 3840, -3328 - **ended 1,176 blocks from any
   drawn river**: the "drawn ford" there is not on drawn water. That vale river is gone for now; whether
   both arms should stand is open (below).
@@ -70,6 +73,8 @@ what is still open, so the next session does not have to rebuild that from the c
 
 - **The ford is a bridge.** Nothing places a road or a bridge over the Bruinen yet; the join is water and
   banks only.
+- **The join's step.** The branch runs at 72 and the drawn Bruinen at whatever grade the drawing gives it;
+  a 2 to 18 block step at the meeting point is possible until the drawn river is taught the same level.
 - **The vale's own river.** The long west-running river is gone in favour of the south-east branch. If
   the fork should show both arms, the old course can come back beside the new one.
 - **The drawn Bruinen's gorge** is a mask-width channel (16-32 blocks) cutting about 240 blocks of rock.
@@ -81,7 +86,7 @@ what is still open, so the next session does not have to rebuild that from the c
 
     ./gradlew runClient
     /execute in tolkienmobs:arda run tp @s 4628 120 -3577     the valley's middle
-    /tp @s 4900 100 -3312                                    the branch's start
+    /tp @s 4900 100 -3322                                    the branch's start
     /tp @s 5008 100 -3328                                    where it meets the Bruinen
     /tmcity origin        in creative, standing on the floor: plants the city
     /tmcity band 8        repeat; /tmcity summon does all of it in one word

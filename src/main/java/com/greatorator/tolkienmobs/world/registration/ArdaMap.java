@@ -198,8 +198,8 @@ public final class ArdaMap {
      * water level is read off the ground as the course goes rather than set at either end.
      */
     private static final int BRUINEN_OUTLET_X = 4900;
-    private static final int BRUINEN_OUTLET_Z = -3312;
-    private static volatile int BRUINEN_WATER = PLANTED_FLOOR + 8;
+    private static final int BRUINEN_OUTLET_Z = -3322;
+    private static volatile int BRUINEN_WATER = PLANTED_FLOOR - 2;
     private static final int BRUINEN_BED = 7;
     /** How much of the channel's width the ford takes away, 0 at the outlet and 0.55 at the ford. */
     private static final double BRUINEN_FORD_NARROW = 0.30D;
@@ -908,7 +908,10 @@ public final class ArdaMap {
             return height;
         }
         double weight = 1.0D - smooth(Mth.clamp(share, 0.0D, 1.0D));
-        int floor = VALLEY_FLOOR + 8;
+        // The vale's floor is the city's own floor. It used to be eight blocks above it, which put the
+        // country's lowest ground higher than the valley's water: a river could not leave the valley,
+        // because the water sitting in the floor was already below everything it had to reach.
+        int floor = VALLEY_FLOOR;
         return (int) Math.round(floor * weight + height * (1.0D - weight));
     }
 
