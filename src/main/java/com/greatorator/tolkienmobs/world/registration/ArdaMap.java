@@ -201,6 +201,13 @@ public final class ArdaMap {
     private static final int BRUINEN_OUTLET_Z = -3528;
     private static volatile int BRUINEN_WATER = PLANTED_FLOOR + 8;
     private static final int BRUINEN_BED = 7;
+    /** How much of the channel's width the ford takes away, 0 at the outlet and 0.55 at the ford. */
+    private static final double BRUINEN_FORD_NARROW = 0.55D;
+    /** How many steps outward a drawn river's depth is measured, and how far each one reaches. */
+    private static final int RIVER_PROBES = 2;
+    private static final int RIVER_PROBE_REACH = 6;
+    /** The share of probes that must be water before a column is given the river's full depth. */
+    private static final double RIVER_PROBE_FULL = 0.75D;
     /**
      * How far the channel runs either side of the course, read off the build's own water: twelve blocks
      * across, five to the left of the middle block and seven to the right.
@@ -435,7 +442,10 @@ public final class ArdaMap {
             // Near a coast the ground's grade falls under the sea; held there, the last stretch of a
             // river meets the sea instead of digging a trench beside it.
             int surface = Math.max(SEA_LEVEL, grade(blockX, blockZ, shiftX, shiftZ, RIVER_GRADE));
-            return new Sample(ground.country(), Math.min(ground.height(), surface - RIVER_DEPTH), true,
+            // The same sloping bed the Bruinen has, worked out from the drawing: a drawn river is sixteen
+            // blocks wide at its narrowest, and one depth for all of it puts a cliff at both banks.
+            int deep = (int) Math.round(RIVER_DEPTH * drawnRiverDepth(blockX, blockZ));
+            return new Sample(ground.country(), Math.min(ground.height(), surface - deep), true,
                     false, ground.upland(), surface);
         }
         return new Sample(ground.country(), ground.height(), false, ground.shore(), ground.upland());
@@ -638,13 +648,24 @@ public final class ArdaMap {
         // the same width either side of it, so the bank is found by which way the column lies of the flow.
         double along = Math.sqrt(alongX * alongX + alongZ * alongZ);
         double side = (offsetX * -alongZ + offsetZ * alongX) / along;
-        double out = side > 0.0D ? side - BRUINEN_RIGHT : -BRUINEN_LEFT - side;
         double level = bruinenWater(share);
         double shallow = smooth(Mth.clamp((share - BRUINEN_FORD_SHALLOW) / (1.0D - BRUINEN_FORD_SHALLOW),
                 0.0D, 1.0D));
+        // The channel narrows as it comes to the ford, so the water ends in a crossing a person can wade
+        // rather than in a square of water with a straight edge.
+        double bank = 1.0D - BRUINEN_FORD_NARROW * shallow;
+        double left = BRUINEN_LEFT * bank;
+        double right = BRUINEN_RIGHT * bank;
+        double out = side > 0.0D ? side - right : -left - side;
         int height;
         if (out <= 0.0D) {
-            height = (int) Math.round(level - BRUINEN_BED * (1.0D - shallow));
+            // The bed slopes from the middle of the channel up to the water's edge instead of lying flat
+            // with a wall at the bank. A flat bed under a river is a square of water cut into the ground:
+            // every block of it is the same seven under the surface, so the edge is a cliff and the
+            // shallow water a person wades at is nowhere.
+            double reach = Math.min(1.0D, Math.abs(side) / Math.max(1.0D, side > 0.0D ? right : left));
+            double deep = 1.0D - reach * reach;
+            height = (int) Math.round(level - BRUINEN_BED * deep * (1.0D - shallow));
         } else {
             int x = (int) Math.floor(blockX);
             int z = (int) Math.floor(blockZ);
@@ -666,6 +687,28 @@ public final class ArdaMap {
     /** Whether a cell of the map exists at all, since a search may walk off its edge. */
     static boolean inside(int column, int row) {
         return column >= 0 && column < COLUMNS && row >= 0 && row < ROWS;
+    }
+
+    /**
+     * How much of its depth a drawn river has at a column: one in the middle of it, nothing at its edge.
+     * <p>
+     * The river mask is a drawing, not a distance field, so how far a column is from the bank is answered
+     * by walking outward from it a few times and seeing where the drawing stops being water. Eight probes
+     * at two reaches are enough for a bed that slopes over the sixteen blocks a drawn river is wide.
+     */
+    private static double drawnRiverDepth(double blockX, double blockZ) {
+        int x = (int) Math.floor(blockX);
+        int z = (int) Math.floor(blockZ);
+        int open = 0;
+        for (int step = 1; step <= RIVER_PROBES; step++) {
+            int reach = step * RIVER_PROBE_REACH;
+            if (ArdaMasks.river(x + reach, z)) open++;
+            if (ArdaMasks.river(x - reach, z)) open++;
+            if (ArdaMasks.river(x, z + reach)) open++;
+            if (ArdaMasks.river(x, z - reach)) open++;
+        }
+        double share = open / (double) (4 * RIVER_PROBES);
+        return Math.min(1.0D, share / RIVER_PROBE_FULL);
     }
 
     /**
