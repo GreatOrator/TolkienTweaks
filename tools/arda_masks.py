@@ -19,7 +19,7 @@ from PIL import Image
 
 Image.MAX_IMAGE_PIXELS = None
 
-REFERENCE = "reference"
+REFERENCE = "Reference"
 OUT = os.path.join("src", "main", "resources", "assets", "tolkienmobs", "arda")
 BLOCKS_PER_PIXEL = 16
 WORLD_X0, WORLD_X1 = -5120, 19456

@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The reference masks are pinned with a probe.** `tools/mask_probe.py` answers height, river, lake and
+  mountain brightness at any block, and the nearest river to one, straight from `Reference/` at the
+  rasters' own resolution - so a build or a river can be placed against the map rather than against
+  anyone's recollection of it. `tools/arda_masks.py` now names the folder `Reference`, as it is on disk.
+
+
 - **The Bruinen joins at 4995, -3311, and the mask is read finely enough to say so.** The river layer is
   baked again at three blocks to the pixel over the corner the city stands in (`bruinen.png`), and
   `ArdaMasks.river` reads that bake before the sixteen-block one inside its window: the nearest water to

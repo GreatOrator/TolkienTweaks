@@ -42,6 +42,24 @@ The mountain mask lines up with the rest. Of its ridges, 43.3% stand on the heig
 ground against 5.5% for the rest of the canvas, and the best line-up shift is 0 pixels across and 10
 along — a hundred and sixty blocks, inside the noise.
 
+## Where they live
+
+`Reference/` in the mod root, committed with the project: eight files, 59 MB, of which `Final Height.png`
+is 57 MB. `Final Height.png` is the sixteen-bit topography, `ME_SimpleTopoTerrain_Rivers_albedo.png` the
+rivers, `..._Lakes_albedo.png` the lakes, `AreaMasks_westernMountain.png` the ranges, and
+`work/calibration.json` the transform between the 8192 canvas and the world.
+
+`tools/mask_probe.py` reads them at their own resolution while a build or a piece of terrain is being
+worked on, which is finer than the game's bake can afford to be:
+
+    python tools/mask_probe.py 4995 -3311                      what the masks say about one block
+    python tools/mask_probe.py --near 4900 -3322 --radius 400   the nearest river, in blocks
+    python tools/mask_probe.py --near 4900 -3322 --radius 900 --layer lake
+
+It answers the height as the world will stand on it - the game's own 63 to 318 scaling - whether a river
+or a lake runs through the column, and how bright the mountain mask is there. Nothing has to be baked for
+it to be right: it reads `Reference/` directly, using the same calibration worldgen uses.
+
 ## The baked layers
 
 `tools/arda_masks.py` crops the three masks to the world frame at **16 blocks to the pixel** — 1536 by
