@@ -8,6 +8,9 @@ speaks to a body already in the pack's cast or one it can stand.
 This is the plan the work is built against. It is written down so the pages can be checked against the notes
 rather than against memory, the same way chapter one's are.
 
+Where the work actually stands - what is built, what is open, and what to do next - is
+`docs/chapter-two-state.md`. This file is the plan; that one is the state.
+
 ## The eleven pages (26–36 of the West's line)
 
 | # | Notes | Page | Giver → turns in | Kind and ground |

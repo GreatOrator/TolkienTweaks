@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **Chapter two's state is written down.** With the valley done and other work next, the quest line's
+  place needed to survive the gap: `docs/chapter-two-state.md` records the eleven pages as built - givers,
+  quarries, ground and rewards - where each piece of ground is pinned, the two decisions left open (gating
+  the inner keep's stair, naming the Pinnath Fenui), what is not built after `2-11`, and the loose end in
+  the camp's place, canon'd to the mountains while its site sits in Gladden.
+
 - **A page that names a dwarf at his fire points at the fire.** The needle read a page naming a body as a
   place the map already has, and Glóin is not one of those: his camp is ground the campaign pitches when
   the page is handed over, so `groundOf` had no answer for him and the road showed no direction at all.
