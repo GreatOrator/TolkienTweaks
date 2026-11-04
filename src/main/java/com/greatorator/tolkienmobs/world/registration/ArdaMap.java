@@ -85,37 +85,41 @@ public final class ArdaMap {
     /**
      * How far the ground climbs out of the valley floor before it is mountain, and how far the mountain
      * takes to come back down into the country beyond it, in blocks.
-     *
-     * <p>The valley is a vale in a massif rather than a pan beside a hillside. The floor is the city's
-     * own foot with a field's width around it - the footprint is 554 by 512, and the floor is 586 by
-     * 544 - and the mountain rises from that field at a walkable angle to {@link #VALLEY_CREST} over the
-     * rim. A wider floor was a lawn the city stood on: the ground has to start climbing at the city's
-     * walls for the mountains to take the city into themselves, which is the whole point of them.
+     * <p>
+     * The valley is a vale in a massif rather than a pan beside a hillside: the floor is the city's own
+     * foot with a field's width round it - 586 by 544 for a 554 by 512 footprint - so the mountain's foot
+     * starts at the walls rather than a lawn away from them.
      */
-    private static final int VALLEY_RIM = 260;
+    private static final int VALLEY_RIM = 240;
     private static final int VALLEY_FALL = 260;
 
     /**
-     * The height the mountains round the valley reach: 62 blocks above the city's crown at 318, so the
-     * ridge stands over the city's own skyline and the city is shut inside the massif rather than
-     * sitting in a bowl below it. The drawn map tops out at 300 and every other column in Arda is still
-     * clamped there; this is the valley's own number, and it needed a taller world before it could be
-     * above the roof of the thing it surrounds.
+     * The height the mountains round the valley reach, and how far from that they are allowed to wander.
+     * <p>
+     * The ridge stands above the city's crown at 318, so the city is shut inside the massif and its roof
+     * is not the highest thing in the country. Neither the ridge's height nor its distance is one number,
+     * though: the drawn noise raises summits and hollows saddles along it, over the scales given here.
+     * Fixed, the same numbers are a wall of even height at an even distance - a basin, not a range.
      */
     private static final int VALLEY_CREST = 380;
+    private static final int CREST_SWING = 45;
+    private static final int CREST_SCALE = 420;
+    private static final double RIDGE_SWING = 0.35D;
+    private static final int RIDGE_SCALE = 320;
 
     /**
-     * The city's north-east corner, where the build carries nothing above its lowest band and the rock is
-     * meant to stand instead: 73 blocks west and 47 south of the corner at 4905, -3833, up to the city's
-     * own crown. Outside the walls the buttress reaches {@link #SPUR_OUT} blocks before the massif's climb
-     * takes over, so the corner is a spur of the mountain rather than a wall round the city.
+     * The city's north-east corner: the rectangle the build itself leaves empty, the height the rock stood
+     * at in it, and how far outside the walls that face runs before the massif's foot takes over.
+     * <p>
+     * The gap is read off the cut rather than guessed: it has no piece at all in x 4797..4905 by z
+     * -3833..-3774 above the lowest band, and those are the two positions the build marks as its corners.
      */
-    private static final int SPUR_X = 4905;
-    private static final int SPUR_Z = -3833;
-    private static final int SPUR_RUN_X = 73;
-    private static final int SPUR_RUN_Z = 47;
-    private static final int SPUR_OUT = 60;
-    private static final int SPUR_TOP = 318;
+    private static final int SHOULDER_WEST = 4797;
+    private static final int SHOULDER_EAST = 4905;
+    private static final int SHOULDER_NORTH = -3833;
+    private static final int SHOULDER_SOUTH = -3774;
+    private static final int SHOULDER_TOP = 318;
+    private static final int SHOULDER_RUN = 110;
 
     private static final Country[][] GRID = draw();
 
@@ -312,68 +316,83 @@ public final class ArdaMap {
     /**
      * The hidden valley, or null for ground the drawing answers for.
      * <p>
-     * The floor is flat at {@link #VALLEY_FLOOR} and is the valley's own country; outside it the ground
-     * climbs straight to {@link #VALLEY_CREST}, which is the massif the city is carved into, and then
-     * comes back down into the country beyond over {@link #VALLEY_FALL}, so the wood keeps its name and
-     * its trees up the mountainside and nothing ends at a cut face. Nothing outside the rim and its fall
-     * moves at all, and both are measured from the drawn edge of the rectangle rather than from its
-     * middle, so the floor is exactly as wide as it says.
+     * The floor is flat at {@link #VALLEY_FLOOR} and is the valley's own country. Round it the mountain
+     * rises, measured outward from the floor's own rectangle so its foot hugs the city, with rounded
+     * corners and a ridge that wanders and changes height - because a massif whose foot follows four
+     * straight sides at one distance and tops out at one fixed summit is a box with a pyramid in it.
+     * Beyond the ridge the ground is handed back to the drawn country over {@link #VALLEY_FALL}.
      * <p>
-     * One corner of that floor is not floor: the city's north-east corner has no build in it above its
-     * lowest band, because the mountain stood there, so {@link #spur} raises the rock in that corner and
-     * the floor gives way to it wherever the rock is the higher of the two.
+     * One corner of the floor is not floor: the city's north-east corner has no build in it above its
+     * lowest band, because the mountain stood there, so {@link #shoulder} stands the rock back up.
      */
     private static Sample valley(double blockX, double blockZ, Ground ground) {
-        double outsideX = Math.abs(blockX - VALLEY_X) - VALLEY_HALF_X;
-        double outsideZ = Math.abs(blockZ - VALLEY_Z) - VALLEY_HALF_Z;
-        double outside = Math.max(outsideX, outsideZ);
-        if (outside > VALLEY_RIM + VALLEY_FALL) {
+        double beyondX = Math.abs(blockX - VALLEY_X) - VALLEY_HALF_X;
+        double beyondZ = Math.abs(blockZ - VALLEY_Z) - VALLEY_HALF_Z;
+        // A distance from the floor's rectangle, not one from each of its four sides: the difference is
+        // at the corners, where this rounds the mountain's foot instead of squaring it off.
+        double beyond = Math.hypot(Math.max(0.0D, beyondX), Math.max(0.0D, beyondZ));
+        int x = (int) Math.floor(blockX);
+        int z = (int) Math.floor(blockZ);
+        // The ridge is not a ring at one height: it wanders in and out, and its summits rise and fall
+        // along it, which is the whole difference between a range of mountains and the rim of a bowl.
+        double ridge = VALLEY_RIM * (1.0D + RIDGE_SWING * (fractal(x, z, RIDGE_SCALE, 31) - 0.5D) * 2.0D);
+        double crest = VALLEY_CREST + CREST_SWING * (fractal(x, z, CREST_SCALE, 43) - 0.5D) * 2.0D;
+        if (beyond > ridge + VALLEY_FALL) {
             return null;
         }
         int height;
         Country country = ground.country();
-        if (outside <= 0.0D) {
+        if (beyond <= 0.0D) {
             country = Country.IMLADRIS;
             height = VALLEY_FLOOR;
-        } else if (outside <= VALLEY_RIM) {
-            // A straight climb, so every block of the rim is walked at the same angle: a curve would
-            // make the foot of the mountain flat and its head a wall.
-            height = (int) Math.round(VALLEY_FLOOR + (VALLEY_CREST - VALLEY_FLOOR) * (outside / VALLEY_RIM));
+        } else if (beyond <= ridge) {
+            height = (int) Math.round(VALLEY_FLOOR + (crest - VALLEY_FLOOR) * climb(beyond / ridge));
         } else {
-            // Over the crest the mountain is handed back to the country it stands in, at the same even
-            // angle - shallower than the climb, so the ridge is a mountain seen from outside rather than
-            // a face - and it lands exactly on the country's own ground at the far end.
-            double fell = (outside - VALLEY_RIM) / (double) VALLEY_FALL;
-            height = (int) Math.round(VALLEY_CREST + (ground.height() - VALLEY_CREST) * fell);
+            double fell = Math.min(1.0D, (beyond - ridge) / (double) VALLEY_FALL);
+            height = (int) Math.round(crest + (ground.height() - crest) * smooth(fell));
         }
-        int spur = spur(blockX, blockZ);
-        if (spur > height) {
+        int shoulder = shoulder(blockX, blockZ);
+        if (shoulder > height) {
             // Rock standing in the city's corner is the mountain's country, not the city's floor.
-            return new Sample(ground.country(), spur, false, false, ground.upland());
+            return new Sample(ground.country(), shoulder, false, false, ground.upland());
         }
         return new Sample(country, height, false, false, ground.upland());
     }
 
     /**
-     * The mountain that stood in the city's north-east corner, as a height.
+     * How much of the way up the mountain the ground has climbed at a share of the distance to the ridge.
      * <p>
-     * The build carries no blocks above its lowest band in that corner - the two tiles against the north
-     * wall have no piece at all - because the rock was there rather than the city. So the rock is raised
-     * again: the corner itself stands at {@link #SPUR_TOP}, which is the city's crown, and the mountain
-     * falls from it to the valley floor over the notch's own 73 blocks west and 47 south, and to the
-     * massif's climb over {@link #SPUR_OUT} blocks outside the walls. Every column the corner has no
-     * claim on is left exactly as it was, so this only ever adds rock where the city is not.
+     * Some of the straight line and more of the curve. The straight part keeps the mountain's foot climbing
+     * from the city's walls instead of lying flat for fifty blocks, and the curve rounds the last of the
+     * way so the top is a shoulder rather than a point.
      */
-    private static int spur(double blockX, double blockZ) {
-        double intoX = SPUR_X - blockX;
-        double intoZ = blockZ - SPUR_Z;
-        double alongX = intoX >= 0.0D ? intoX / SPUR_RUN_X : -intoX / (double) SPUR_OUT;
-        double alongZ = intoZ >= 0.0D ? intoZ / SPUR_RUN_Z : -intoZ / (double) SPUR_OUT;
-        double share = (1.0D - Math.min(1.0D, alongX)) * (1.0D - Math.min(1.0D, alongZ));
-        if (share <= 0.0D) {
+    private static double climb(double share) {
+        double t = Math.min(1.0D, share);
+        return 0.4D * t + 0.6D * smooth(t);
+    }
+
+    /**
+     * The rock the city's north-east corner was cut into, as a height.
+     * <p>
+     * The build's own gap is x 4797..4905 by z -3833..-3774, and nothing in the cut stands in it above the
+     * lowest band: the mountain was there rather than the city. So the mountain is there again - a shelf at
+     * the city's own crown, level with the roofs it meets, that falls away outside the walls over
+     * {@link #SHOULDER_RUN} blocks into the massif's foot. Inside the footprint it stops at the gap's own
+     * edges, where the build's blocks are, so it can bury nothing the city has.
+     */
+    private static int shoulder(double blockX, double blockZ) {
+        double beyondX = Math.max(Math.max(0.0D, SHOULDER_WEST - blockX), blockX - SHOULDER_EAST);
+        double beyondZ = Math.max(Math.max(0.0D, SHOULDER_NORTH - blockZ), blockZ - SHOULDER_SOUTH);
+        boolean beyondTheBuild = blockX > SHOULDER_EAST || blockZ < SHOULDER_NORTH;
+        if (!beyondTheBuild && (beyondX > 0.0D || beyondZ > 0.0D)) {
             return Integer.MIN_VALUE;
         }
-        return (int) Math.round(VALLEY_FLOOR + (SPUR_TOP - VALLEY_FLOOR) * share);
+        double beyond = Math.hypot(Math.max(0.0D, beyondX), Math.max(0.0D, beyondZ));
+        if (beyond >= SHOULDER_RUN) {
+            return Integer.MIN_VALUE;
+        }
+        return (int) Math.round(SHOULDER_TOP
+                - (SHOULDER_TOP - VALLEY_FLOOR) * smooth(beyond / (double) SHOULDER_RUN));
     }
 
     /** Whether a cell of the map exists at all, since a search may walk off its edge. */

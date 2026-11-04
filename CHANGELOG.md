@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The mountains round Imladris are drawn as a range instead of a ring.** One height at one distance,
+  rising on four straight sides to one summit, is a wall with a pyramid in it - which is why the corner
+  came out as a spike and nothing read as mountains wrapping round the city. The ridge now wanders in and
+  out by a third of its distance and its summits rise and fall 45 blocks either side of 380, its foot is
+  measured as a distance from the floor's rectangle so its corners are rounded, and the climb is a curve
+  with some of the straight line left in it at the bottom.
+
+- **The city's missing corner is a shelf of rock at roof height, not a point.** The build leaves x
+  4797..4905 by z -3833..-3774 empty above its lowest band - the mountain was there - and the rock now
+  fills that whole rectangle level with the roofs it meets, falling away outside the walls over 110 blocks
+  into the massif's foot. It stops at the gap's own edges inside the footprint, so it buries nothing.
+
 - **The mountain the city's north-east corner was cut into is put back.** The build carries no blocks
   above its lowest band in that corner - 73 by 47 of it, against the north and east walls - because the
   rock stood there rather than the city. The valley raises that rock again: from the floor at the notch's
