@@ -85,12 +85,28 @@ public final class ArdaMap {
     private static final int VALLEY_FLOOR = 74;
 
     /**
+     * The height the rock stands at where the massif meets the build: the crown of the city itself.
+     * <p>
+     * The climb used to begin at the floor, a few blocks inside the walls, so the ground the build met
+     * was 240 blocks under its own roof and the mountain did not rise to the city's height until 140
+     * blocks out - the city stood on a pan in the middle of a bowl, and the join was a cliff of the
+     * build's own making rather than a hillside. The rock is level with the crown where it meets the
+     * build now, all the way round: the ground outside the walls is a continuation of the ground inside
+     * them, and the mountain grows out of the roofline instead of out of a field below it. Inside the
+     * footprint the floor is still the floor, because the build is what stands over it; the crown is
+     * what shows wherever the build has nothing of its own, which is why the corner the mountain stood
+     * in still reads as it did.
+     */
+    private static final int VALLEY_CROWN = 318;
+
+    /**
      * How far the ground climbs out of the valley floor before it is mountain, and how far the mountain
      * takes to come back down into the country beyond it, in blocks.
      * <p>
      * The valley is a vale in a massif rather than a pan beside a hillside: the floor is smaller than the
-     * city, so the mountain's foot starts inside the build rather than a lawn away from it, and 175 blocks
-     * of climb for 306 of rise puts the ridge over the roofs rather than across a field from them.
+     * city, so the mountain's foot starts inside the build rather than a lawn away from it, and its foot is
+     * the city's own crown, so the climb begins where the build ends rather than a hundred and forty blocks
+     * out from it, and 175 blocks of it puts the ridge over the roofs rather than across a field from them.
      */
     private static final int VALLEY_RIM = 175;
     private static final int VALLEY_FALL = 400;
@@ -134,7 +150,7 @@ public final class ArdaMap {
     private static final int SHOULDER_EAST = 4905;
     private static final int SHOULDER_NORTH = -3833;
     private static final int SHOULDER_SOUTH = -3774;
-    private static final int SHOULDER_TOP = 318;
+    private static final int SHOULDER_TOP = VALLEY_CROWN;
     private static final int SHOULDER_RUN = 110;
 
     private static final Country[][] GRID = draw();
@@ -332,10 +348,11 @@ public final class ArdaMap {
     /**
      * The hidden valley, or null for ground the drawing answers for.
      * <p>
-     * The floor is flat at {@link #VALLEY_FLOOR} and is the valley's own country. Round it the mountain
-     * rises, measured outward from the floor's own rectangle so its foot hugs the city, with rounded
-     * corners and a ridge that wanders and changes height - because a massif whose foot follows four
-     * straight sides at one distance and tops out at one fixed summit is a box with a pyramid in it.
+     * The floor is flat at {@link #VALLEY_FLOOR} and is the valley's own country. Round it the mountain's
+     * rock stands at {@link #VALLEY_CROWN} - the crown of the build - and climbs from there, measured
+     * outward from the floor's own rectangle so its foot is the walls themselves, with rounded corners and
+     * a ridge that wanders and changes height - because a massif whose foot follows four straight sides at
+     * one distance and tops out at one fixed summit is a box with a pyramid in it.
      * Beyond the ridge the ground is handed back to the drawn country over {@link #VALLEY_FALL}.
      * <p>
      * One corner of the floor is not floor: the city's north-east corner has no build in it above its
@@ -367,7 +384,7 @@ public final class ArdaMap {
             double ribs = (fractal(x, z, CLIMB_SCALE, 17) - 0.5D) * 2.0D * CLIMB_ROUGH
                     * Math.min(1.0D, beyond / CLIMB_EASE)
                     * Math.min(1.0D, (ridge - beyond) / CLIMB_EASE);
-            height = (int) Math.round(VALLEY_FLOOR + (crest - VALLEY_FLOOR) * climb(beyond / ridge) + ribs);
+            height = (int) Math.round(VALLEY_CROWN + (crest - VALLEY_CROWN) * climb(beyond / ridge) + ribs);
         } else {
             double fell = Math.min(1.0D, (beyond - ridge) / (double) VALLEY_FALL);
             height = (int) Math.round(crest + (ground.height() - crest) * smooth(fell));

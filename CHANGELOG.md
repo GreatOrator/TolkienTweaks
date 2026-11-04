@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The mountain meets the city at the city's own roofline, all the way round.** The last change put the
+  foot inside the build, but the climb still started at the valley floor, so the ground the build met was
+  240 blocks under its own crown and did not climb back to 318 until 140 blocks out from the walls - the
+  city stood in a pan with a cliff of its own making at the rim, and the transition the build was meant
+  to embed into was a hundred and forty blocks away. The rock now stands at the crown of the build
+  (318) where it meets it, on every side, and climbs to the ridge from there: 4 to 5 blocks inside the
+  footprint, which is where the floor's rectangle ends, the ground outside the walls is level with the
+  ground inside them, and the city replaces that rock as it is planted, so what is left is the walk from
+  the build onto the mountainside rather than a step down onto a lawn. The corner the mountain stood in
+  still reads as it did, because it was already standing at the crown.
+
 - **The mountain's foot stands inside the city, and the apron that dressed the join is gone.** The valley
   floor was 586 by 544 blocks for a 554 by 512 city, which left sixteen blocks of flat ground outside
   every wall for a ramp to be walked across - the wide, stepped apron the last rounds kept producing,
