@@ -170,7 +170,12 @@ public final class ArdaMap {
     private static final int BRUINEN_OUTLET_Z = -3528;
     private static final int BRUINEN_WATER = 82;
     private static final int BRUINEN_BED = 7;
-    private static final int BRUINEN_HALF = 8;
+    /**
+     * How far the channel runs either side of the course, read off the build's own water: twelve blocks
+     * across, five to the left of the middle block and seven to the right.
+     */
+    private static final int BRUINEN_LEFT = 5;
+    private static final int BRUINEN_RIGHT = 7;
     private static final int BRUINEN_FORD_X = 3840;
     private static final int BRUINEN_FORD_Z = -3328;
     private static final int BRUINEN_FORD_WATER = SEA_LEVEL;
@@ -507,7 +512,11 @@ public final class ArdaMap {
         }
         double offsetX = blockX - (BRUINEN_OUTLET_X + share * alongX);
         double offsetZ = blockZ - (BRUINEN_OUTLET_Z + share * alongZ);
-        double out = Math.sqrt(offsetX * offsetX + offsetZ * offsetZ) - BRUINEN_HALF;
+        // Measured across the course rather than as a radius: the river is twelve blocks wide and is not
+        // the same width either side of it, so the bank is found by which way the column lies of the flow.
+        double along = Math.sqrt(alongX * alongX + alongZ * alongZ);
+        double side = (offsetX * -alongZ + offsetZ * alongX) / along;
+        double out = side > 0.0D ? side - BRUINEN_RIGHT : -BRUINEN_LEFT - side;
         double level = BRUINEN_WATER + (BRUINEN_FORD_WATER - BRUINEN_WATER) * share;
         double shallow = smooth(Mth.clamp((share - BRUINEN_FORD_SHALLOW) / (1.0D - BRUINEN_FORD_SHALLOW),
                 0.0D, 1.0D));

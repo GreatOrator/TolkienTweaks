@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The gorge is the width the build gives its river: twelve blocks, five to the left of the course and
+  seven to the right.** The channel the city carries out of the west wall is twelve across with its middle
+  block on the line the outlet and the ford draw, and not symmetrical about that block. The cut is measured
+  across the course now - five blocks one way, seven the other - rather than as a radius of a fixed
+  half-width, so the river leaves the build at its own width instead of widening or pinching a block at the
+  mouth.
+
 - **The Bruinen leaves the city in a gorge and runs to the ford, instead of a hillside sliced by a
   trench.** The build carries its water out of the west wall at 82 with its bed seven blocks under it, a
   little above the valley floor, and outside the walls the massif stands at the city's crown - so a channel
