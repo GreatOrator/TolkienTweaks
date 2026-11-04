@@ -174,6 +174,17 @@ public final class CityCommands {
             int pieces = parts.size();
             source.sendSuccess(() -> Component.literal("City planted at " + spoken + "; " + bands
                     + " bands, " + pieces + " pieces. Run /tmcity band to lay it, /tmcity goto to stand in it."), true);
+            // A city with a mountain in it is taller than the sky it is planted under, and the world does
+            // not refuse blocks above its ceiling out loud - it drops them. Said here rather than after
+            // the laying, when the only sign of it is a build with the tops of its towers missing.
+            int tall = box.highY() - box.lowY() + 1;
+            if (box.highY() > level.getMaxY()) {
+                int overflow = box.highY() - level.getMaxY();
+                int fits = level.getMaxY() - tall + 1;
+                source.sendFailure(Component.literal("That is " + tall + " blocks tall, so " + overflow
+                        + " of it stand above the sky and cannot be laid. Plant the corner at y " + fits
+                        + " or lower to stand the whole city."));
+            }
             return 1;
         } catch (IOException failed) {
             source.sendFailure(Component.literal("The cut could not be read: " + failed.getMessage()));
@@ -200,16 +211,22 @@ public final class CityCommands {
             List<Part> parts = parts(folder);
             List<Integer> bands = bands(parts);
             int laid = 0;
+            int over = 0;
             for (int placed = 0; placed < count && mark.band() < bands.size(); placed++) {
                 int height = bands.get(mark.band());
                 for (Part part : parts) {
                     if (part.dy() != height) continue;
+                    BlockPos at = mark.origin().offset(part.dx(), part.dy(), part.dz());
+                    // A piece that would stand above the sky is not laid at all, and is counted rather
+                    // than reported as laid: the world drops a block above its own ceiling without a
+                    // word, so the old count said "laid" for pieces that put nothing anywhere.
+                    if (at.getY() + TILE - 1 > level.getMaxY() || at.getY() < level.getMinY()) {
+                        over++;
+                        continue;
+                    }
                     lay(level, folder, part, mark.origin());
                     // The lowest band is the city's floor, so it is the one that needs ground under it.
-                    if (mark.band() == 0) {
-                        BlockPos at = mark.origin().offset(part.dx(), part.dy(), part.dz());
-                        Sites.underpin(level, at, TILE, TILE, UNDERPIN);
-                    }
+                    if (mark.band() == 0) Sites.underpin(level, at, TILE, TILE, UNDERPIN);
                     laid++;
                 }
                 mark = new Mark(mark.origin(), mark.band() + 1, mark.apron(), mark.dimension());
@@ -221,12 +238,15 @@ public final class CityCommands {
             }
             write(folder, mark);
             int soFar = laid;
+            int skipped = over;
             boolean whole = finished;
             int done = Math.min(mark.band(), bands.size());
             int total = bands.size();
+            String sky = skipped == 0 ? "" : "; " + skipped
+                    + " were above the sky and left out - /tmcity origin planted lower would take them";
             String spoken = whole ? " - the whole city is down; /tmcity goto to stand in it" : "";
             source.sendSuccess(() -> Component.literal("Laid " + soFar + " pieces; " + done + " of "
-                    + total + " bands down" + spoken), true);
+                    + total + " bands down" + sky + spoken), true);
             return laid;
         } catch (IOException failed) {
             source.sendFailure(Component.literal("The cut could not be read: " + failed.getMessage()));

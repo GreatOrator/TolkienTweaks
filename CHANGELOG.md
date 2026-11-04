@@ -522,6 +522,12 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   never close enough for the dwarf to be stood. The reach now grows with the building, and the search for
   one already standing uses the same distance.
 
+- **A city taller than the sky is refused out loud.** The world drops a block above its own ceiling without a
+  word, so planting Rivendell on Arda's surface laid the top two of its six bands into nothing and left its
+  towers cut off at the build limit, with the command reporting them as laid. `origin` now says how far over
+  the sky the city would stand and the highest y the corner can be planted at, and `band` leaves those pieces
+  out by name instead of counting them.
+
 ### Added
 
 - **The campaign has an ending: the Rider is everybody's page.** A front is two soldier pages now, and the Nazgûl is not the last of them - all three countries ask for him together once every line is settled, any herald hands him over, and all three pay the 200 standing between them, since he was feared by all and sent after by none of them alone. Settling him writes the war's end into the quest book's story leaf, and a herald with no page left says where the war stands instead of idling.
