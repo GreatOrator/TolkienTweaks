@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **A mountain's whiteness is its height again, pinned at 318.** The range mask is read over the drawn
+  ground at eight blocks to the pixel, interpolated, and scaled by the mask's own brightest pixel, which
+  is the pin: a drawn summit and the city's crown stand at the same sky, black leaves the ground as the
+  heightmap drew it, and every column between takes its share of the climb, which is what turns a bright
+  patch of the mask into a range with flanks rather than a plateau.
+
 - **River and lake banks fall where the drawing put them.** The two masks are baked as the share of each
   eight-block cell the drawing marks instead of one sample taken nearest, and the game reads that share
   interpolated between cells and calls a column water at a third of one: an oblique river used to be a

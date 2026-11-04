@@ -60,6 +60,14 @@ It answers the height as the world will stand on it - the game's own 63 to 318 s
 or a lake runs through the column, and how bright the mountain mask is there. Nothing has to be baked for
 it to be right: it reads `Reference/` directly, using the same calibration worldgen uses.
 
+## What each mask is for
+
+- **The mountain mask**, `AreaMasks_westernMountain.png`, is the ranges' height: its whitest pixels are the
+  summits and they are pinned at **318 blocks**, the crown the city's massif reaches.
+- **The river and lake masks** are solid: where they are marked is where the water is placed.
+- **The final height mask**, `Final Height.png`, is the reference for pinpointing places - it is what lets a
+  build or a landmark be matched to the Middle-earth map - and it also draws the ground's own shape.
+
 ## The baked layers
 
 `tools/arda_masks.py` crops the three masks to the world frame at **8 blocks to the pixel** — 3072 by
@@ -94,10 +102,11 @@ same at eight, and the counts have not been re-measured.
   the country rolls where the map rolls. The Shire reads 116 where the drawing had 68, Rohan 170, Mordor's
   plateau 224, the Misty Mountains 178. A column the map calls sea keeps the drawing's bed, because the
   map's zero is the sea's height.
-- **Mountains.** The heightmap already draws the ranges, so the range mask no longer stands on top of the
-  ground: it used to lift every bright column toward **318 blocks**, which flattened the ridges the
-  heightmap had shaped into a plateau at the ceiling. `mountains.png` is still baked and the probe still
-  reads it, but the terrain follows the heights the map draws, and a range is the map's own shape.
+- **Mountains.** Brightness is height, and the pin is the crown: the mask's whitest pixels stand at
+  **318 blocks** - the height the city's massif tops out at - and every column between takes its share of
+  the climb from the ground the heightmap draws up to that pin. Of the drawn land, 28.6% stands under the
+  mask, the median climb there is 37 blocks, and 0.5% of it reaches the crown. Read at eight blocks to
+  the pixel and interpolated, an eight-block step never enters the flank.
 - **Rivers.** The mask says where the water is. The water's surface is the average height of the
   drawn ground over a square of ±64 blocks about the column, so it follows the fall of the country
   instead of standing at one level; the bed is four blocks under it, and the column is cut down to the

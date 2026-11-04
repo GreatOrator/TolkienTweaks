@@ -864,19 +864,22 @@ public final class ArdaMap {
     /**
      * The ground at a column: the reference heightmap where it has land, the drawing where it has sea.
      * <p>
-     * The heightmap is read from the sea's own height up to the crown, so its highest column stands where
-     * the mask's white does and the two agree about where the world's sky is. A column the map calls sea
-     * keeps the drawing's answer, because the map's zero is the sea's height and a bed at that height is
-     * a dry ocean.
+     * The heightmap is read from the sea's own height up to the crown, and the mountain mask then raises
+     * the ground toward the crown by its brightness, pinning its whitest pixels there: the ranges stand
+     * where the mask draws them, and a summit is the city's own crown, so drawn rock and built rock reach
+     * the same sky. A column the map calls sea keeps the drawing's answer, because the map's zero is the
+     * sea's height and a bed at that height is a dry ocean.
      */
     private static int groundHeight(int blockX, int blockZ, int drawn, int relief, double rough) {
         int mapped = ArdaMasks.ground(blockX, blockZ);
         if (mapped != ArdaMasks.NO_GROUND) {
-            return vale(blockX, blockZ,
-                    SEA_LEVEL + (int) Math.round(mapped / 65535.0D * (VALLEY_CROWN - SEA_LEVEL)));
+            return ArdaMasks.lift(blockX, blockZ, vale(blockX, blockZ,
+                    SEA_LEVEL + (int) Math.round(mapped / 65535.0D * (VALLEY_CROWN - SEA_LEVEL))),
+                    VALLEY_CROWN);
         }
-        return Mth.clamp((int) Math.round(drawn + relief * (rough / 1.75D - 0.5D) * 2.0D), -60,
-                MOUNTAIN_CEILING);
+        return ArdaMasks.lift(blockX, blockZ,
+                Mth.clamp((int) Math.round(drawn + relief * (rough / 1.75D - 0.5D) * 2.0D), -60,
+                        MOUNTAIN_CEILING), VALLEY_CROWN);
     }
 
     /**

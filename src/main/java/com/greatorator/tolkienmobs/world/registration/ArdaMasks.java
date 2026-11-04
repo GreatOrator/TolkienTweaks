@@ -10,7 +10,7 @@ import java.io.InputStream;
  * <p>
  * Arda's ground began as a hand-drawn 48 by 36 grid with seven river polylines on it. The maps the
  * world was drawn from are rasters, and they are read here instead: a river mask and a lake mask, which
- * say how much of each cell the drawing marks, and a mountain mask that is reference only now. All cover the
+ * say how much of each cell the drawing marks, and a mountain mask whose brightness is height. All cover the
  * world's own frame at {@link #BLOCKS} blocks to the pixel, which is x -5120..19456 by
  * z -10240..8192, or 3072 by 2304 pixels, and they are baked from the 8192 originals by
  * {@code tools/arda_masks.py} using the calibration in {@code Reference/work/calibration.json}.
@@ -51,6 +51,16 @@ final class ArdaMasks {
      * third, the tributary is still a channel and a wide river's bank falls just outside the line drawn.
      */
     private static final double WATER = 0.3D;
+    /**
+     * The mountain mask: brightness is height, and its whitest pixel is the crown.
+     * <p>
+     * It reaches pure white, so the pin is on the ranges' own summits: a column the mask draws white
+     * stands at the crown the city's massif reaches, and the ground is raised toward it by the brightness
+     * between, which the blur turns into a range rising out of the country.
+     */
+    private static final byte[] ROCK = coverage("mountains.png");
+    /** How bright the mask's brightest pixel is, from 0 to 1: the climb that pins the crown. */
+    private static final double PEAK = peak(ROCK);
 
     /** The topography, unsigned 16-bit at BLOCKS to the pixel; sea is zero. */
     private static final char[] GROUND = ground("height.png");
@@ -68,6 +78,31 @@ final class ArdaMasks {
             return BRUINEN[row * BRUINEN_WIDE + column];
         }
         return cover(RIVERS, blockX, blockZ) >= WATER;
+    }
+
+    /**
+     * How bright the mountain mask is over a column, from nothing to the pin.
+     * <p>
+     * Read between the cells like the water masks, because a bright ridge taken nearest would climb in
+     * steps of eight blocks and terrace the flanks it is meant to smooth.
+     */
+    static double rock(int blockX, int blockZ) {
+        return PEAK <= 0.0D ? 0.0D : cover(ROCK, blockX, blockZ) / PEAK;
+    }
+
+    /**
+     * The ground at a column, raised toward the crown by how bright the mountain mask is over it.
+     * <p>
+     * The whitest pixels are pinned: a full-brightness column stands at {@code crown}, the height the
+     * city's massif tops out at, so the drawn ranges and the build reach the same sky. Black leaves the
+     * ground exactly as it was drawn, and everything between takes its share of the climb.
+     */
+    static int lift(int blockX, int blockZ, int height, int crown) {
+        double rock = rock(blockX, blockZ);
+        if (rock <= 0.0D || crown <= height) {
+            return height;
+        }
+        return height + (int) Math.round(rock * (crown - height));
     }
 
     /** Whether the lake mask covers a column. */
@@ -146,6 +181,14 @@ final class ArdaMasks {
 
     private static double share(byte[] mask, int row, int west, int east, double shareX) {
         return (mask[row * WIDTH + west] & 0xFF) * (1.0D - shareX) + (mask[row * WIDTH + east] & 0xFF) * shareX;
+    }
+
+    private static double peak(byte[] mask) {
+        int brightest = 0;
+        for (byte value : mask) {
+            brightest = Math.max(brightest, value & 0xFF);
+        }
+        return brightest / 255.0D;
     }
 
     private static byte[] coverage(String name) {
