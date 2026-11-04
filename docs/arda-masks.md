@@ -158,3 +158,18 @@ what lets a river fall and a lake sit in its basin.
 - Nothing has been looked at in a world since the eight-block rework. The seam where the drawn ranges meet
   the city's massif, and the join where the deeper drawn Bruinen meets the branch, are where an error is
   likeliest.
+
+## The other references
+
+- **`middle-earth.jpeg` is not in the masks' frame.** The new canon map - Thierry Jungels' version 7 at
+  8192 - is a different projection and extent: the block coordinates that land on Rivendell in the masks
+  land on Swanfleet on it, and its east edge stops at Rhun, so it has no Orocarni ridge to correct the
+  east with. It is a list of canon places, not a layer, and using it as one needs its own calibration
+  against known points before anything is read off it.
+- **`ME_Terrain_albedo.png` is the painted source the masks were cut from** - blue water, white peaks,
+  green forest - so it is the thing to check a bake against: a river that is blue there and absent from
+  `rivers.png` is a bake that dropped it.
+- **`rom_terrain_curve.png` and `rom_terrain_curve_Smooth.png` are computed relief, not canon heights.**
+  They are smoother and finer than `Final Height` and show drainage and basins well, which makes them the
+  better field for testing whether a slope steps in eight-block treads or whether a drawn lake sits in a
+  basin - but they are the generator's own surface, so they cannot say where the mountains ought to be.

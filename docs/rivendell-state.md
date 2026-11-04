@@ -84,8 +84,7 @@ what is still open, so the next session does not have to rebuild that from the c
   drawn river**: the "drawn ford" there is not on drawn water. That vale river is gone for now; whether
   both arms should stand is open (below).
 - Both river kinds have a **bed that slopes from its middle out to the water's edge** (`2bbdcad2`), and
-  drawn rivers take their depth from the drawing - eight probes at 6 and 12 blocks, full depth once
-  three quarters are water.
+  drawn rivers take their depth from the drawing: as deep as the channel is wide, to a cap of sixteen.
 
 ## Open
 
@@ -101,6 +100,12 @@ what is still open, so the next session does not have to rebuild that from the c
   hillside meeting the walls or as a bowl: 45 is steeper, 150 gentler.
 
 ## How to look at it
+
+- **A world is only as new as its chunks.** Terrain is generated once per chunk, so a save written before
+  a bake shows the old ground however new the code is. Check the save's own dates before judging a
+  screenshot: the 4 November screenshots came from regions last written on 2 and 3 November, and the west
+  mouth they showed at 4355, -3526 is the old course the code no longer has - the branch leaves at
+  4900, -3322 now. Make a new world, then plant the city in it.
 
     ./gradlew runClient
     /execute in tolkienmobs:arda run tp @s 4628 120 -3577     the valley's middle
