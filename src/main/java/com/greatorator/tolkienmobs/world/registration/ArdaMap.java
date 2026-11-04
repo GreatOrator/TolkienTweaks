@@ -224,6 +224,16 @@ public final class ArdaMap {
     /** Steps the channel's water is read at along its course, from the outlet to the ford. */
     private static final int BRUINEN_STEPS = 96;
     /**
+     * How wide the ground the branch leaves the valley through is, either side of its course, in blocks.
+     * <p>
+     * Where the branch crosses the massif's foot the rock would stand a bank across the water's own course,
+     * and the river would leave the city through a notch cut in a wall. The floor runs out along the course
+     * instead, over this many blocks, so the water leaves between two slopes.
+     */
+    private static final int BRUINEN_CORRIDOR = 24;
+    /** How finely the corridor follows the course's bend. */
+    private static final int CORRIDOR_STEPS = 32;
+    /**
      * How far the branch wanders off the straight line between the build's outlet and the Bruinen, and how
      * many turns it makes on the way, in blocks and in half turns.
      * <p>
@@ -234,6 +244,8 @@ public final class ArdaMap {
      */
     private static final double BRUINEN_SNAKE = 18.0D;
     private static final double BRUINEN_TURNS = 1.5D;
+    /** How far out a column can be and still be measured against the course's bend. */
+    private static final double CORRIDOR_REACH = BRUINEN_CORRIDOR + BRUINEN_SNAKE;
     /** How far off the straight line the course's middle stands at a share of the way along it. */
     private static double wander(double share) {
         return BRUINEN_SNAKE * Math.sin(share * BRUINEN_TURNS * Math.PI) * Math.sin(Math.PI * share);
@@ -496,6 +508,11 @@ public final class ArdaMap {
         // A distance from the floor's rectangle, not one from each of its four sides: the difference is
         // at the corners, where this rounds the mountain's foot instead of squaring it off.
         double beyond = beyond(blockX, blockZ);
+        // The branch leaves the valley through an opening rather than a notch: across its course the floor
+        // runs out and the climb fades back in over the corridor, so the water leaves the city between two
+        // slopes. Fading it, rather than cutting it off at the corridor's edge, is what keeps it a valley
+        // mouth instead of a trench with a wall beside it.
+        beyond *= smooth(Mth.clamp(corridor(blockX, blockZ) / BRUINEN_CORRIDOR, 0.0D, 1.0D));
         int x = (int) Math.floor(blockX);
         int z = (int) Math.floor(blockZ);
         // The ridge is not a ring at one height: it wanders in and out, and its summits rise and fall
@@ -700,6 +717,36 @@ public final class ArdaMap {
         return new Sample(ground.country(), height, height < level, false, ground.upland(), water);
     }
 
+
+    /**
+     * How far a column lies across the corridor the branch leaves the valley through, in blocks.
+     * <p>
+     * Measured to the nearest point of the bent course rather than to the straight line between its ends,
+     * because the water does not run straight and a corridor that did would wall the bend. A column beside
+     * the outlet is measured to the end it is beside, since it projects onto nothing - and one that kept the
+     * bank's full height next to the water would wall the mouth on its own side.
+     */
+    private static double corridor(double blockX, double blockZ) {
+        double alongX = BRUINEN_FORD_X - BRUINEN_OUTLET_X;
+        double alongZ = BRUINEN_FORD_Z - BRUINEN_OUTLET_Z;
+        double length = Math.sqrt(alongX * alongX + alongZ * alongZ);
+        double share = ((blockX - BRUINEN_OUTLET_X) * alongX + (blockZ - BRUINEN_OUTLET_Z) * alongZ)
+                / (alongX * alongX + alongZ * alongZ);
+        double along = Mth.clamp(share, 0.0D, 1.0D);
+        double straight = Math.hypot(blockX - (BRUINEN_OUTLET_X + along * alongX),
+                blockZ - (BRUINEN_OUTLET_Z + along * alongZ));
+        if (straight > CORRIDOR_REACH) {
+            return straight;
+        }
+        double nearest = straight;
+        for (int step = 0; step <= CORRIDOR_STEPS; step++) {
+            double at = step / (double) CORRIDOR_STEPS;
+            double offsetX = blockX - courseX(at, alongX, alongZ, length);
+            double offsetZ = blockZ - courseZ(at, alongX, alongZ, length);
+            nearest = Math.min(nearest, Math.hypot(offsetX, offsetZ));
+        }
+        return nearest;
+    }
 
     /** Whether a cell of the map exists at all, since a search may walk off its edge. */
     static boolean inside(int column, int row) {

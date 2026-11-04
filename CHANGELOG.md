@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The river's corridor is open again at Rivendell's exit.** Within 24 blocks of the branch's bent course the
+  valley floor runs out and the climb fades back in, so the water leaves the city between two slopes rather
+  than through a notch cut in a wall. The corridor was built, softened and then dropped with the old valley
+  profile; it is back beside the wall profile, and measured to the nearest point of the course so the bend
+  is not walled either.
+- **The build carries water after all.** 763 `minecraft:water` blocks across 306 of the city's 584 pieces, not
+  the none an earlier note claimed: that is the pool and channel inside the city, and the ground has to meet
+  it at the build's own mouth rather than the other way round.
+
 - **Vanilla's water lakes and water springs are gone from Arda.** They are placed by the biome rather than the
   map, and a placed lake fills to a level of its own - which is the sheet of water standing three or four
   blocks over Arda's ground, and the pond sitting inside the valley. Both are filtered out of the biome

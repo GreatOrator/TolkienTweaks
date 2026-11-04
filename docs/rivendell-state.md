@@ -23,8 +23,10 @@ what is still open, so the next session does not have to rebuild that from the c
 
 - Hand-built `Rivendell_Imladris`, planted by `/tmcity` at **4352, 75, -3833**: 584 pieces, 554 x 512
   blocks (x 4352..4905, z -3833..-3322), bands from **y 75** to a crown of **318**.
-- The build carries **no water blocks at all** - 0 of its 584 pieces contain `minecraft:water` - so every
-  river in and around the valley is the generator's, and the water's route is ours to choose.
+- The build carries its **own water** - 763 `minecraft:water` blocks across 306 of its 584 pieces, not the
+  none an earlier note claimed - which is the pool and channel inside the city. The ground round it is the
+  generator's, so the two meet at the build's own mouth and the map does not get to choose where the city's
+  water is.
 - The cut it is planted from lives in `run/rivendell_art` (`rivendell.parts`, `_laid.txt`, 584 pieces).
 
 ## The world
@@ -46,6 +48,11 @@ what is still open, so the next session does not have to rebuild that from the c
 - What changed it, and why it is back: `fef98351` made the climb start at the floor over
   `VALLEY_STEEP = 90`, which put a bank of terraces a hundred blocks from the city instead of a wall at
   its walls. The climb from the crown is restored and `VALLEY_STEEP` is gone.
+- **The river's corridor is open again.** Within 24 blocks of the branch's own bent course the floor runs out
+  and the climb fades back in (`smooth` of the distance over 24), so the water leaves the city between two
+  slopes instead of through a notch in a wall. It was built in `1e3149f0`, softened in `c9d9f72f` and
+  measured to the nearest point of the course in `3ac048cc`, then removed with the profile in `7ecabee0`;
+  it is back beside the wall profile, which stays flush wherever the river does not run.
 - The rim **climbs from the lawn's edge** to the crown over `VALLEY_STEEP = 90` blocks (74, 80, 90, 106,
   138, 168, 212, 253, 318), holds the crown out to `VALLEY_RIM = 175`, then falls to the vale over
   `VALLEY_FALL = 340`.
