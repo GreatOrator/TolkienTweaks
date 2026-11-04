@@ -77,10 +77,29 @@ public final class ArdaMap {
      */
     private static final int VALLEY_X = 4628;
     private static final int VALLEY_Z = -3577;
-    private static final int VALLEY_HALF_X = 320;
-    private static final int VALLEY_HALF_Z = 290;
+    private static final int VALLEY_HALF_X = 560;
+    private static final int VALLEY_HALF_Z = 530;
     private static final int VALLEY_FLOOR = 74;
-    private static final int VALLEY_RIM = 128;
+
+    /**
+     * How far the ground climbs out of the valley floor before it is mountain, and how far the mountain
+     * takes to come back down into the country beyond it, in blocks.
+     *
+     * <p>The valley is a vale in a massif rather than a pan beside a hillside. The floor is wide enough
+     * to hold the city with a field around it, and the ground then rises from that field at a walkable
+     * angle to {@link #VALLEY_CREST} over the rim, which is what lets the city stand inside the
+     * mountains instead of on a plain at their foot: its own carved flanks run up into ground that is
+     * already as high, and the crown is what is left showing above the ridge.
+     */
+    private static final int VALLEY_RIM = 260;
+    private static final int VALLEY_FALL = 170;
+
+    /**
+     * The height the mountains round the valley reach. It is the map's own ceiling - no drawn column
+     * stands higher - and it is a shade under the city's crown, so the mountains meet the city rather
+     * than burying it.
+     */
+    private static final int VALLEY_CREST = 300;
 
     private static final Country[][] GRID = draw();
 
@@ -277,24 +296,34 @@ public final class ArdaMap {
     /**
      * The hidden valley, or null for ground the drawing answers for.
      * <p>
-     * The floor is flat at {@link #VALLEY_FLOOR} and is the valley's own country; the rim outside it is
-     * still the Trollshaws' ground, brought down toward the floor a share at a time, so the wood keeps
-     * its name and its trees up the walls while the cliff the city would otherwise stand at the foot of
-     * becomes a slope. Nothing outside the rim moves at all, and the rim is measured from the drawn edge
-     * of the rectangle rather than from its middle, so the floor is exactly as wide as it says.
+     * The floor is flat at {@link #VALLEY_FLOOR} and is the valley's own country; outside it the ground
+     * climbs straight to {@link #VALLEY_CREST}, which is the massif the city is carved into, and then
+     * comes back down into the country beyond over {@link #VALLEY_FALL}, so the wood keeps its name and
+     * its trees up the mountainside and nothing ends at a cut face. Nothing outside the rim and its fall
+     * moves at all, and both are measured from the drawn edge of the rectangle rather than from its
+     * middle, so the floor is exactly as wide as it says.
      */
     private static Sample valley(double blockX, double blockZ, Ground ground) {
         double outsideX = Math.abs(blockX - VALLEY_X) - VALLEY_HALF_X;
         double outsideZ = Math.abs(blockZ - VALLEY_Z) - VALLEY_HALF_Z;
         double outside = Math.max(outsideX, outsideZ);
-        if (outside > VALLEY_RIM) {
+        if (outside > VALLEY_RIM + VALLEY_FALL) {
             return null;
         }
         if (outside <= 0.0D) {
             return new Sample(Country.IMLADRIS, VALLEY_FLOOR, false, false, ground.upland());
         }
-        double share = 1.0D - smooth(outside / VALLEY_RIM);
-        int height = (int) Math.round(ground.height() + (VALLEY_FLOOR - ground.height()) * share);
+        if (outside <= VALLEY_RIM) {
+            // A straight climb, so every block of the rim is walked at the same angle: a curve would
+            // make the foot of the mountain flat and its head a wall.
+            double climbed = outside / VALLEY_RIM;
+            int height = (int) Math.round(VALLEY_FLOOR + (VALLEY_CREST - VALLEY_FLOOR) * climbed);
+            return new Sample(ground.country(), height, false, false, ground.upland());
+        }
+        // Over the crest the mountain is handed back to the country it stands in, a share at a time,
+        // so the ridge has an outside as well as an inside and nothing ends in a cut face.
+        double share = (outside - VALLEY_RIM) / (double) VALLEY_FALL;
+        int height = (int) Math.round(VALLEY_CREST + (ground.height() - VALLEY_CREST) * smooth(share));
         return new Sample(ground.country(), height, false, false, ground.upland());
     }
 

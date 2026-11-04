@@ -83,7 +83,7 @@ caller's feet, so **the feet must be at y 76 or below**: above that the top band
 message rather than laid.
 
 1. **Pick the ground.** In Arda, Rivendell has a valley of its own: a flat Imladris floor at y 74, across
-   x 4308..4948 and z -3867..-3287, centred on the city's own middle. Stand on it - `/execute in
+   x 4068..5188 and z -4107..-3047, centred on the city's own middle. Stand on it - `/execute in
    tolkienmobs:arda run tp @s 4628 100 -3577`, then let yourself fall - and plant with your feet at 75,
    which puts the crown at 318, one block under the ceiling. Planting from the corner `4352, 75, -3833`
    centres the 554 by 512 footprint in the floor. In any other world, pick flat ground with 554 x 512 clear and feet at or
