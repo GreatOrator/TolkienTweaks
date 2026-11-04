@@ -14,6 +14,7 @@ import net.minecraft.world.level.biome.MultiNoiseBiomeSource;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -50,19 +51,40 @@ public class ArdaBiomeSource extends BiomeSource {
     private final List<Holder<Biome>> biomes;
     private final Map<ResourceKey<Biome>, Holder<Biome>> byKey;
 
+    /**
+     * Reads a world's biome list, which may have been saved before the map last gained a country.
+     * <p>
+     * The list is matched by biome id rather than by position, so a country added since the world was
+     * made does not shift every biome after it. A list that named thirty-five biomes where the map now
+     * names thirty-six used to abort the dimension outright, and a world that will not open is a worse
+     * answer than one whose newest ground reads as the hills it was cut out of: a biome the world does
+     * not name is filled with the country the new ground was carved from - the Trollshaws, for the
+     * valley - so the floor still stands where it should, and only that ground's own colour, foliage
+     * and people wait for the world to be remade.
+     */
     private ArdaBiomeSource(List<Holder<Biome>> biomes) {
-        List<ResourceKey<Biome>> keys = keys();
-        if (biomes.size() != keys.size()) {
-            throw new IllegalStateException("Arda's map names " + keys.size() + " biomes and the world names "
-                    + biomes.size() + "; the two lists are written together and cannot be edited apart");
+        Map<ResourceKey<Biome>, Holder<Biome>> saved = new LinkedHashMap<>();
+        for (Holder<Biome> holder : biomes) {
+            holder.unwrapKey().ifPresent(key -> saved.put(key, holder));
+        }
+        Holder<Biome> stand = saved.get(ArdaMap.Country.TROLLSHAWS.biome());
+        if (stand == null && !biomes.isEmpty()) {
+            stand = biomes.get(0);
+        }
+        if (stand == null) {
+            throw new IllegalStateException("Arda's world names no biomes at all, so nothing can be placed");
         }
 
-        this.biomes = List.copyOf(biomes);
         Map<ResourceKey<Biome>, Holder<Biome>> lookup = new LinkedHashMap<>();
-        for (int index = 0; index < keys.size(); index++) {
-            lookup.put(keys.get(index), biomes.get(index));
+        for (ResourceKey<Biome> key : keys()) {
+            Holder<Biome> holder = saved.get(key);
+            lookup.put(key, holder == null ? stand : holder);
         }
         this.byKey = Map.copyOf(lookup);
+        // A substituted country is one holder named twice, so the list handed back and re-encoded is
+        // deduplicated: a world carries each biome the map has once, and never the same one under two
+        // names.
+        this.biomes = List.copyOf(new LinkedHashSet<>(lookup.values()));
     }
 
     /** Arda's biomes, resolved from the registry the dimension is being built against. */

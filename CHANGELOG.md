@@ -584,6 +584,13 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   top band of the new Rivendell cut is four blocks tall, and a sky check that added 47 to its bottom refused
   the band as though it would reach past the ceiling.
 
+- **A world made before the valley no longer refuses to open.** Arda's biome list is stored with the world,
+  and the valley added a thirty-sixth entry to a saved thirty-five, so the dimension aborted on load with
+  "the two lists are written together and cannot be edited apart". The list is matched by biome id now
+  rather than by position, and a biome the world does not name is filled with the country the new ground
+  was carved from - an older world opens with the valley floor still flat at 74, reading as Trollshaws
+  until it is remade, and every other country is untouched.
+
 ### Added
 
 - **The campaign has an ending: the Rider is everybody's page.** A front is two soldier pages now, and the Nazgûl is not the last of them - all three countries ask for him together once every line is settled, any herald hands him over, and all three pay the 200 standing between them, since he was feared by all and sent after by none of them alone. Settling him writes the war's end into the quest book's story leaf, and a herald with no page left says where the war stands instead of idling.
