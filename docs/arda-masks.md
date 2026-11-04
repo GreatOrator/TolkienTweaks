@@ -89,8 +89,8 @@ The rivers and lakes are written as **cover**: how much of each eight-block cell
 0 to 255. The game reads that share, interpolated between the cells round it, and calls a column water at a
 third of a cell — so a bank falls where the line was drawn rather than on the cell grid, and a tributary
 drawn along a cell's middle is still a channel. Measured on the bake: no cell the drawing touches is left
-without water beside it, and a channel runs a median of eight blocks across with a ninetieth percentile of
-twenty-one.
+without water beside it, and the drawn bands are wide - eight cells across at the median, twenty-one at the ninetieth, which is
+sixty-four and a hundred and sixty-eight blocks.
 
 The river and lake censuses below were taken at the sixteen-block bake; the rule they describe is the
 same at eight, and the counts have not been re-measured.
@@ -109,8 +109,11 @@ same at eight, and the counts have not been re-measured.
   the pixel and interpolated, an eight-block step never enters the flank.
 - **Rivers.** The mask says where the water is. The water's surface is the average height of the
   drawn ground over a square of ±64 blocks about the column, so it follows the fall of the country
-  instead of standing at one level; the bed is four blocks under it, and the column is cut down to the
-  bed. Measured over all 39,613 river columns of 16 blocks: water from 38 to 306, median 141, and within
+  instead of standing at one level; the bed lies as deep under it as the channel is wide - a three-block
+  river is three deep in the middle, a five-block one five deep, rising a block per block to the banks -
+  and the column is cut down to it, sixteen blocks at the
+  deepest: the mask paints its rivers as bands thirty blocks and more across, and a bed that deep would be
+  a canyon. Measured over all 39,613 river columns of 16 blocks: water from 38 to 306, median 141, and within
   five blocks of its own ground on 88.4% of the channel, none of it above the crown.
 - **Lakes.** The same rule with a ±192-block square, so a lake reads as the basin it sits in rather
   than as a plateau, and never below the sea's own height of 63. Bed six blocks under the surface.

@@ -198,11 +198,19 @@ public final class ArdaMap {
     private static final double BRUINEN_FORD_DEPTH = 2.0D;
     /** How much of the branch's depth the last stretch to the ford takes away, 0.55 at most. */
     private static final double BRUINEN_FORD_SHALLOWING = 0.55D;
-    /** How many steps outward a drawn river's depth is measured, and how far each one reaches. */
-    private static final int RIVER_PROBES = 2;
-    private static final int RIVER_PROBE_REACH = 6;
-    /** The share of probes that must be water before a column is given the river's full depth. */
-    private static final double RIVER_PROBE_FULL = 0.75D;
+    /**
+     * How far out the bed looks for a drawn river's bank, in blocks: a channel wider than this counts as
+     * this wide, so a river drawn as a bay is not a canyon.
+     */
+    private static final int RIVER_REACH = 24;
+    /**
+     * The deepest a drawn river's bed goes, in blocks, however wide the mask paints it.
+     * <p>
+     * The reference paints its rivers as bands thirty blocks and more across, and a bed as deep as the
+     * band is wide cuts a canyon where the map draws a river - and undercuts the city's outlet where the
+     * branch meets the drawn Bruinen. Sixteen is deep enough to be a real channel at any of those widths.
+     */
+    private static final int RIVER_DEPTH_MAX = 16;
     /**
      * How far the channel runs either side of the course, read off the build's own water: twelve blocks
      * across, five to the left of the middle block and seven to the right.
@@ -245,8 +253,7 @@ public final class ArdaMap {
     private static volatile int[] bruinenProfile;
     private static final Object BRUINEN_LOCK = new Object();
 
-    /** How deep a river's and a lake's bed lies under its water, and how far the grade is read. */
-    private static final int RIVER_DEPTH = 4;
+    /** How deep a lake's bed lies under its water, and how far a river's and a lake's grade is read. */
     private static final int RIVER_GRADE = 64;
     private static final int LAKE_DEPTH = 6;
     private static final int LAKE_GRADE = 192;
@@ -486,7 +493,8 @@ public final class ArdaMap {
             // Near a coast the ground's grade falls under the sea; held there, the last stretch of a
             // river meets the sea instead of digging a trench beside it.
             int surface = Math.max(SEA_LEVEL, grade(blockX, blockZ, shiftX, shiftZ, RIVER_GRADE));
-            int deep = (int) Math.round(RIVER_DEPTH * drawnRiverDepth(blockX, blockZ));
+            // As deep as it is wide, within what a channel can be without becoming a canyon.
+            int deep = Math.min(drawnRiverWidth(blockX, blockZ), RIVER_DEPTH_MAX);
             return new Sample(ground.country(), Math.min(ground.height(), surface - deep), true,
                     false, ground.upland(), surface);
         }
@@ -721,25 +729,23 @@ public final class ArdaMap {
     }
 
     /**
-     * How much of its depth a drawn river has at a column: one in the middle of it, nothing at its edge.
+     * How wide the drawn channel is at a column, in blocks.
      * <p>
-     * The river mask is a drawing, not a distance field, so how far a column is from the bank is answered
-     * by walking outward from it a few times and seeing where the drawing stops being water. Eight probes
-     * at two reaches are enough for a bed that slopes over the sixteen blocks a drawn river is wide.
+     * The mask is a drawing, not a distance field, so the bank is found by walking out in blocks until
+     * the drawing stops being water; the narrowest of the four walks is across the channel, because along
+     * it the water runs on. A river as deep as it is wide is the shape water cuts, and walking in blocks
+     * keeps the bed rising a block per block to each bank instead of stepping.
      */
-    private static double drawnRiverDepth(double blockX, double blockZ) {
+    private static int drawnRiverWidth(double blockX, double blockZ) {
         int x = (int) Math.floor(blockX);
         int z = (int) Math.floor(blockZ);
-        int open = 0;
-        for (int step = 1; step <= RIVER_PROBES; step++) {
-            int reach = step * RIVER_PROBE_REACH;
-            if (ArdaMasks.river(x + reach, z)) open++;
-            if (ArdaMasks.river(x - reach, z)) open++;
-            if (ArdaMasks.river(x, z + reach)) open++;
-            if (ArdaMasks.river(x, z - reach)) open++;
+        for (int reach = 1; reach <= RIVER_REACH; reach++) {
+            if (!ArdaMasks.river(x + reach, z) || !ArdaMasks.river(x - reach, z)
+                    || !ArdaMasks.river(x, z + reach) || !ArdaMasks.river(x, z - reach)) {
+                return 2 * reach - 1;
+            }
         }
-        double share = open / (double) (4 * RIVER_PROBES);
-        return Math.min(1.0D, share / RIVER_PROBE_FULL);
+        return 2 * RIVER_REACH + 1;
     }
 
     /**

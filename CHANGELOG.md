@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **A drawn river's bed is as deep as the channel is wide.** A three-block channel is three deep in the
+  middle and a five-block one five, rising a block per block from each bank, in place of the flat four
+  blocks every river used to get. The bed is capped at **16**: the reference paints its rivers as bands
+  thirty blocks and more across, and a bed as deep as a band is wide is a canyon, not a river.
+
 - **A mountain's whiteness is its height again, pinned at 318.** The range mask is read over the drawn
   ground at eight blocks to the pixel, interpolated, and scaled by the mask's own brightest pixel, which
   is the pin: a drawn summit and the city's crown stand at the same sky, black leaves the ground as the
