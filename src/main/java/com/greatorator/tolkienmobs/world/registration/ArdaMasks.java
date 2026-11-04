@@ -12,7 +12,7 @@ import java.io.InputStream;
  * world was drawn from are rasters, and they are read here instead: a river mask, a lake mask, and a
  * mountain mask whose brightness is height - white is summit, black is plain. All three cover the
  * world's own frame at {@link #BLOCKS} blocks to the pixel, which is x -5120..19456 by
- * z -10240..8192, or 1536 by 1152 pixels, and they are baked from the 8192 originals by
+ * z -10240..8192, or 3072 by 2304 pixels, and they are baked from the 8192 originals by
  * {@code tools/arda_masks.py} using the calibration in {@code reference/work/calibration.json}.
  * <p>
  * Nothing here is fatal. A missing image leaves its mask empty and the drawing answers as it did
@@ -20,7 +20,7 @@ import java.io.InputStream;
  */
 final class ArdaMasks {
     /** Blocks to the pixel in all three masks. */
-    static final int BLOCKS = 16;
+    static final int BLOCKS = 8;
     private static final int WEST = -5120;
     private static final int NORTH = -10240;
     private static final int WIDTH = (19456 - WEST) / BLOCKS;
@@ -42,7 +42,6 @@ final class ArdaMasks {
     private static final int BRUINEN_DEEP = (-2900 - BRUINEN_NORTH) / BRUINEN_BLOCKS;
     private static final boolean[] BRUINEN = fine("bruinen.png");
     private static final boolean[] LAKES = bits("lakes.png");
-    private static final byte[] ROCK = shade("mountains.png");
 
     /** The topography, unsigned 16-bit at BLOCKS to the pixel; sea is zero. */
     private static final char[] GROUND = ground("height.png");
@@ -65,30 +64,6 @@ final class ArdaMasks {
     /** Whether the lake mask covers a column. */
     static boolean lake(int blockX, int blockZ) {
         return marked(LAKES, blockX, blockZ);
-    }
-
-    /** How bright the mountain mask is over a column, from nothing to full. */
-    static double rock(int blockX, int blockZ) {
-        int column = column(blockX);
-        int row = row(blockZ);
-        return column < 0 || row < 0 ? 0.0D : (ROCK[row * WIDTH + column] & 0xFF) / 255.0D;
-    }
-
-    /**
-     * The drawn ground, raised toward the crown by how bright the mask is over it.
-     * <p>
-     * White is the crown: a full-brightness column stands at {@code crown}, the height the city's own
-     * massif tops out at, so the mask's ranges and the build reach the same sky. Black leaves the drawn
-     * ground exactly as the drawing set it, and everything between takes its share of the climb - which
-     * is why the mask being blurred helps, as a range then rises out of the country instead of being
-     * stood on top of it.
-     */
-    static int lift(int blockX, int blockZ, int height, int crown) {
-        double rock = rock(blockX, blockZ);
-        if (rock <= 0.0D || crown <= height) {
-            return height;
-        }
-        return height + (int) Math.round(rock * (crown - height));
     }
 
     /**
@@ -173,20 +148,6 @@ final class ArdaMasks {
         for (int y = 0; y < BRUINEN_DEEP; y++) {
             for (int x = 0; x < BRUINEN_WIDE; x++) {
                 mask[y * BRUINEN_WIDE + x] = (image.getRGB(x, y) & 0xFF) > 100;
-            }
-        }
-        return mask;
-    }
-
-    private static byte[] shade(String name) {
-        byte[] mask = new byte[WIDTH * HEIGHT];
-        BufferedImage image = read(name);
-        if (image == null) {
-            return mask;
-        }
-        for (int y = 0; y < HEIGHT; y++) {
-            for (int x = 0; x < WIDTH; x++) {
-                mask[y * WIDTH + x] = (byte) (image.getRGB(x, y) & 0xFF);
             }
         }
         return mask;

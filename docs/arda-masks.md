@@ -62,32 +62,35 @@ it to be right: it reads `Reference/` directly, using the same calibration world
 
 ## The baked layers
 
-`tools/arda_masks.py` crops the three masks to the world frame at **16 blocks to the pixel** — 1536 by
-1152 — and writes them as `src/main/resources/assets/tolkienmobs/arda/`:
+`tools/arda_masks.py` crops the three masks to the world frame at **8 blocks to the pixel** — 3072 by
+2304 — and writes them as `src/main/resources/assets/tolkienmobs/arda/`:
 
 | file | size | marked |
 | --- | --- | --- |
-| `rivers.png` | 23 kB | 2.24% |
-| `bruinen.png` | 1 kB | 4.3%, 400 x 400 at **3 blocks to the pixel** - the Bruinen's own corner |
-| `lakes.png` | 4 kB | 1.21% |
-| `mountains.png` | 132 kB | 8.1% above half brightness |
-| `height.png` | sixteen-bit topography | sea 16.9% of the frame |
+| `rivers.png` | 53 kB | 2.2% |
+| `bruinen.png` | 1.4 kB | 4.3%, 400 x 400 at **3 blocks to the pixel** - the Bruinen's own corner |
+| `lakes.png` | 11 kB | 1.2% |
+| `mountains.png` | 363 kB | 23.8% above half brightness |
+| `height.png` | 7.9 MB, sixteen-bit topography | sea 16.8% of the frame |
 
-Run it from the mod root whenever the masks or `reference/work/calibration.json` change. `ArdaMasks`
+Run it from the mod root whenever the masks or `Reference/work/calibration.json` change. `ArdaMasks`
 reads whatever is in the assets; a missing image leaves that mask empty and the drawing answers as it
 did before.
 
+The river and lake censuses below were taken at the sixteen-block bake; the rule they describe is the
+same at eight, and the counts have not been re-measured.
+
 ## What the game does with them
 
-- **The ground.** `height.png` is `Final Height.png` at sixteen blocks to the pixel, unsigned 16-bit, and
+- **The ground.** `height.png` is `Final Height.png` at eight blocks to the pixel, unsigned 16-bit, and
   it is the ground now: interpolated between its pixels from the sea's own 63 up to the crown at 318, so
   the country rolls where the map rolls. The Shire reads 116 where the drawing had 68, Rohan 170, Mordor's
   plateau 224, the Misty Mountains 178. A column the map calls sea keeps the drawing's bed, because the
   map's zero is the sea's height.
-- **Mountains.** Brightness is height: white is a crest, black is a plain. Each column's brightness
-  lifts whatever ground is under it toward **318 blocks** - the crown the city's massif reaches - smoothly, because the mask is blurred. The drawing
-  still decides what the country is and what its ground sits at; the mask decides how high it stands.
-  The drawing may raise ground to **420** now, which leaves the 512-tall world's ceiling room.
+- **Mountains.** The heightmap already draws the ranges, so the range mask no longer stands on top of the
+  ground: it used to lift every bright column toward **318 blocks**, which flattened the ridges the
+  heightmap had shaped into a plateau at the ceiling. `mountains.png` is still baked and the probe still
+  reads it, but the terrain follows the heights the map draws, and a range is the map's own shape.
 - **Rivers.** The mask says where the water is. The water's surface is the average height of the
   drawn ground over a square of ±64 blocks about the column, so it follows the fall of the country
   instead of standing at one level; the bed is four blocks under it, and the column is cut down to the

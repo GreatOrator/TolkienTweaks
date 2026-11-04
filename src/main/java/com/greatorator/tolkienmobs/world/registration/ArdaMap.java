@@ -857,12 +857,6 @@ public final class ArdaMap {
         // The ground is the reference heightmap where it has land, and the drawing where it has sea:
         // an ocean column is the drawing's, and the map's own zero would put it at the sea's height.
         int height = groundHeight(blockX, blockZ, drawn, relief, rough);
-        height = ArdaMasks.lift(blockX, blockZ, height, VALLEY_CROWN);
-        // The drawn range is not raised in the vale. The mountain mask is a ridge sixteen blocks
-        // wide, so a lift next to the city is a blade of rock standing out of flat ground - the wall
-        // that was left where the vale had already brought the country down.
-        height = vale(blockX, blockZ, height);
-
         boolean shore = seaInReach && Math.abs(drawn - SEA_LEVEL) <= BEACH_HEIGHT;
         return new Ground(northWest, height, drawn, shore, upland);
     }

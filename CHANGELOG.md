@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The ground is the heightmap's own shape, read at eight blocks to the pixel.** The bake went from
+  sixteen blocks to the pixel to eight, so ridges and river bends are twice as sharp, and the mountain
+  mask no longer lifts a bright column toward the crown: that lift flattened every ridge it touched to the
+  ceiling, and the height rasters already carry the ranges, so the mask is reference and probe only now.
+
 - **The reference masks are pinned with a probe.** `tools/mask_probe.py` answers height, river, lake and
   mountain brightness at any block, and the nearest river to one, straight from `Reference/` at the
   rasters' own resolution - so a build or a river can be placed against the map rather than against
