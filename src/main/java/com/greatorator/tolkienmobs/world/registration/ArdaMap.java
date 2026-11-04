@@ -107,9 +107,9 @@ public final class ArdaMap {
      * build can stand that much higher with its crown still under the sky - which is what
      * {@link #liftTo} does, and it does nothing at all where there is no room for it.
      */
-    private static int VALLEY_FLOOR = PLANTED_FLOOR;
-    private static int VALLEY_CROWN = PLANTED_CROWN;
-    private static int VALLEY_LIFT;
+    private static volatile int VALLEY_FLOOR = PLANTED_FLOOR;
+    private static volatile int VALLEY_CROWN = PLANTED_CROWN;
+    private static volatile int VALLEY_LIFT;
 
     /**
      * How far the ground climbs out of the valley floor before it is mountain, and how far the mountain
@@ -141,7 +141,7 @@ public final class ArdaMap {
      * ridge's distance still wanders - the drawn noise swings it in and out over the scale below - and with
      * the crest swing at nothing its top is the crown itself, level with the roofs the massif shuts in.
      */
-    private static int VALLEY_CREST = VALLEY_CROWN;
+    private static volatile int VALLEY_CREST = VALLEY_CROWN;
     private static final int CREST_SWING = 0;
     private static final int CREST_SCALE = 420;
     private static final double RIDGE_SWING = 0.35D;
@@ -172,7 +172,7 @@ public final class ArdaMap {
     private static final int SHOULDER_EAST = 4905;
     private static final int SHOULDER_NORTH = -3833;
     private static final int SHOULDER_SOUTH = -3774;
-    private static int SHOULDER_TOP = VALLEY_CROWN;
+    private static volatile int SHOULDER_TOP = VALLEY_CROWN;
     private static final int SHOULDER_RUN = 110;
 
     /**
@@ -190,7 +190,7 @@ public final class ArdaMap {
      */
     private static final int BRUINEN_OUTLET_X = 4356;
     private static final int BRUINEN_OUTLET_Z = -3528;
-    private static int BRUINEN_WATER = PLANTED_FLOOR + 8;
+    private static volatile int BRUINEN_WATER = PLANTED_FLOOR + 8;
     private static final int BRUINEN_BED = 7;
     /**
      * How far the channel runs either side of the course, read off the build's own water: twelve blocks
