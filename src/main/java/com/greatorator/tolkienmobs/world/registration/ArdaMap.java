@@ -82,7 +82,6 @@ public final class ArdaMap {
     private static final int VALLEY_Z = -3577;
     private static final int VALLEY_HALF_X = 272;
     private static final int VALLEY_HALF_Z = 251;
-    private static final int VALLEY_FLOOR = 74;
 
     /**
      * The height the rock stands at where the massif meets the build: the crown of the city itself.
@@ -97,7 +96,20 @@ public final class ArdaMap {
      * what shows wherever the build has nothing of its own, which is why the corner the mountain stood
      * in still reads as it did.
      */
-    private static final int VALLEY_CROWN = 318;
+    private static final int PLANTED_CROWN = 318;
+    private static final int PLANTED_FLOOR = 74;
+
+    /**
+     * The valley's own heights, and how far they have been raised to fit the world they are in.
+     * <p>
+     * The city and the rock it was cut into were planted at 74 and 318 in a world whose sky was 319. A
+     * world made since Arda was raised to 512 is a hundred and twenty-eight blocks taller, so the same
+     * build can stand that much higher with its crown still under the sky - which is what
+     * {@link #liftTo} does, and it does nothing at all where there is no room for it.
+     */
+    private static int VALLEY_FLOOR = PLANTED_FLOOR;
+    private static int VALLEY_CROWN = PLANTED_CROWN;
+    private static int VALLEY_LIFT;
 
     /**
      * How far the ground climbs out of the valley floor before it is mountain, and how far the mountain
@@ -120,7 +132,7 @@ public final class ArdaMap {
      * ridge's distance still wanders - the drawn noise swings it in and out over the scale below - and with
      * the crest swing at nothing its top is the crown itself, level with the roofs the massif shuts in.
      */
-    private static final int VALLEY_CREST = VALLEY_CROWN;
+    private static int VALLEY_CREST = VALLEY_CROWN;
     private static final int CREST_SWING = 0;
     private static final int CREST_SCALE = 420;
     private static final double RIDGE_SWING = 0.35D;
@@ -151,7 +163,7 @@ public final class ArdaMap {
     private static final int SHOULDER_EAST = 4905;
     private static final int SHOULDER_NORTH = -3833;
     private static final int SHOULDER_SOUTH = -3774;
-    private static final int SHOULDER_TOP = VALLEY_CROWN;
+    private static int SHOULDER_TOP = VALLEY_CROWN;
     private static final int SHOULDER_RUN = 110;
 
     /**
@@ -169,7 +181,7 @@ public final class ArdaMap {
      */
     private static final int BRUINEN_OUTLET_X = 4356;
     private static final int BRUINEN_OUTLET_Z = -3528;
-    private static final int BRUINEN_WATER = 82;
+    private static int BRUINEN_WATER = PLANTED_FLOOR + 8;
     private static final int BRUINEN_BED = 7;
     /**
      * How far the channel runs either side of the course, read off the build's own water: twelve blocks
@@ -471,6 +483,34 @@ public final class ArdaMap {
      * was raised keeps the old ceiling, and every summit drawn above it is cut off flat. The generator
      * reads this to say so once, rather than leaving it to look like a range that stops in the sky.
      */
+    /**
+     * Raises the valley, the massif and the Bruinen together to stand as high as the world allows.
+     * <p>
+     * The sky is the highest block the world will hold, so the build's crown - the rock's crown with it -
+     * is set one block under that and everything else moves up by the same amount: the floor from 74,
+     * the crown from 318, the outlet's water from 82, and the shoulder with them. Where a world has no
+     * room - a save made before Arda was raised is 384 blocks tall - the lift is nothing, and the ground
+     * stays exactly where that save was made with.
+     */
+    static synchronized void liftTo(int sky) {
+        int lift = Math.max(0, sky - 1 - PLANTED_CROWN);
+        if (lift == VALLEY_LIFT) {
+            return;
+        }
+        VALLEY_LIFT = lift;
+        VALLEY_FLOOR = PLANTED_FLOOR + lift;
+        VALLEY_CROWN = PLANTED_CROWN + lift;
+        VALLEY_CREST = VALLEY_CROWN;
+        SHOULDER_TOP = VALLEY_CROWN;
+        BRUINEN_WATER = PLANTED_FLOOR + 8 + lift;
+        bruinenProfile = null;
+    }
+
+    /** How far the valley has been raised above where the city was planted, in blocks. */
+    static int valleyLift() {
+        return VALLEY_LIFT;
+    }
+
     static int massifTop() {
         return VALLEY_CREST + CREST_SWING;
     }

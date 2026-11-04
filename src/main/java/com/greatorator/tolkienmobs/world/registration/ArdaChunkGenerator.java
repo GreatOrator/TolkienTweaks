@@ -202,6 +202,8 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
         int minZ = chunk.getPos().getMinBlockZ();
         int minY = chunk.getMinY();
         int maxY = chunk.getMaxY() - 1;
+        // The valley stands as high as this world has room for, before any column is read.
+        ArdaMap.liftTo(maxY);
 
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
@@ -303,6 +305,7 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
      */
     @Override
     public int getBaseHeight(int x, int z, Heightmap.Types type, LevelHeightAccessor heightAccessor, RandomState randomState) {
+        ArdaMap.liftTo(heightAccessor.getMaxY() - 1);
         ArdaMap.Sample sample = ArdaMap.sample(x, z, randomState.sampler().weirdness(), randomState.sampler().erosion());
         int ground = sample.height();
         int surface = switch (type) {
@@ -319,6 +322,7 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
      */
     @Override
     public NoiseColumn getBaseColumn(int x, int z, LevelHeightAccessor heightAccessor, RandomState randomState) {
+        ArdaMap.liftTo(heightAccessor.getMaxY() - 1);
         int minY = heightAccessor.getMinY();
         BlockState[] column = new BlockState[heightAccessor.getHeight()];
         Arrays.fill(column, AIR);

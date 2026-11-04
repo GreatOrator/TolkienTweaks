@@ -42,17 +42,19 @@ coordinate is still the drawing's 3840, -3328.
 ## What the heightmap did to the valley
 
 The ground is the reference topography now (see `docs/arda-masks.md`), and the valley floor is still the
-hand-laid 74. The map puts the country round Imladris at **160**, so the city now sits **86 blocks down**
-inside its massif rather than at the foot of it, and the Bruinen's gorge - held at the build's own 82 because the ground round it is
-156 - is **74 blocks deep** where it ends. Nothing about the build itself has moved; the
-land around it rose.
+hand-laid 74 - in a 384-tall save. The ground moves with the world's own ceiling: the generator reads it
+and lifts the floor, the crown, the shoulder and the Bruinen's outlet together, so that the build's crown
+stands one block under the sky and nothing else changes. A 512-tall world gets a lift of **128** - floor
+**202**, crown **446**, outlet water **210** - and a 384-tall save gets **nothing at all**, which is why the
+old save keeps the ground it was made with.
 
-Re-seating is the next job: raise the city's own base to the heightmap's floor, drop the valley override
-to match, and re-cut the gorge from the new outlet to the masked Bruinen.
+At 128 the country round the valley is 156, so the valley stands 46 above it and the Bruinen leaves
+through 236 blocks of rock at the wall, easing to grade by the ford. At 0 the city sits 86 blocks down
+inside its massif, as it did before.
 
-Worth knowing before that: the nearest column of the masked Bruinen to the drawn ford at 3840, -3328 is
-**1,176 blocks away, at 5016, -3320** - 465 from the valley centre. So the mask does not put a ford where
-the drawing does, and adopting the mask's course moves the crossing about a kilometre east of it.
+Worth knowing before re-seating: the nearest column of the masked Bruinen to the drawn ford at 3840,
+-3328 is **1,176 blocks away, at 5016, -3320** - 465 from the valley centre. So the mask does not put a
+ford where the drawing does.
 
 ## What is next
 
