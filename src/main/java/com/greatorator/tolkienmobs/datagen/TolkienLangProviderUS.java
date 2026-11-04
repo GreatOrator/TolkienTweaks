@@ -741,6 +741,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add("biome.tolkienmobs.eriador", "Eriador");
             this.add("biome.tolkienmobs.shire", "The Shire");
             this.add("biome.tolkienmobs.firien", "Firien Wood");
+            this.add("biome.tolkienmobs.imladris", "Imladris");
             this.add("biome.tolkienmobs.trollshaws", "Trollshaws");
             this.add("biome.tolkienmobs.dagorlad", "The Brown Lands");
             this.add("biome.tolkienmobs.haradwaith", "Haradwaith");

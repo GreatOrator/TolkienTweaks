@@ -78,6 +78,15 @@ public class TolkienBiomes {
      */
     public static final ResourceKey<Biome> ANGMAR = createBiome("angmar", BiomeMaker::makeBiomeAngmar, TolkienTags.Biomes.WASTELAND, TolkienTags.Biomes.HOSTILE, TolkienTags.Biomes.WINDSWEPT, TolkienTags.Biomes.SPARSE);
 
+    /**
+     * Imladris, the hidden valley: a cool, semi-continental broadleaf hollow held inside an alpine gorge
+     * under the western feet of the Misty Mountains. The walls above it are mountain, and the pine on
+     * them is the mountain's; the floor is sheltered enough to be oak and beech over deep grass, with
+     * gardens, terraces and loud water rather than a wild wood. It is tagged peaceful because the
+     * valley is the one part of that country the hill-trolls never held.
+     */
+    public static final ResourceKey<Biome> IMLADRIS = createBiome("imladris", BiomeMaker::makeBiomeImladris, TolkienTags.Biomes.FOREST, TolkienTags.Biomes.TEMPERATE, TolkienTags.Biomes.PEACEFUL, TolkienTags.Biomes.MAGICAL);
+
     public static void bootstrap(BootstrapContext<Biome> context) {
         BIOME_FACTORIES.forEach((key, factory) -> context.register(key,
                 factory.generate(context.lookup(Registries.PLACED_FEATURE), context.lookup(Registries.CONFIGURED_CARVER))));

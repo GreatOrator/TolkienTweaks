@@ -63,6 +63,23 @@ public final class ArdaMap {
     /** How far the drawn borders wander, in blocks. Bigger is more organic and less faithful. */
     private static final double WARP = 192.0D;
 
+    /**
+     * The valley the map overrides rather than draws: its middle, the half-widths of its flat floor, the
+     * height of that floor, and how many blocks of rim it takes to climb back to the Trollshaws.
+     * <p>
+     * A cell of the drawing is 512 blocks and the city that stands here is 554 across, so this ground
+     * cannot be a country of the 48 by 36 grid: it is cut out of cells the drawing already fills and
+     * blended back into them at its rim. The floor is wide enough for the city's whole footprint with a
+     * few blocks to spare on every side, and the rim is long enough that the climb back to the hills is
+     * a slope rather than a wall.
+     */
+    private static final int VALLEY_X = 4352;
+    private static final int VALLEY_Z = -3840;
+    private static final int VALLEY_HALF_X = 320;
+    private static final int VALLEY_HALF_Z = 290;
+    private static final int VALLEY_FLOOR = 74;
+    private static final int VALLEY_RIM = 64;
+
     private static final Country[][] GRID = draw();
 
     private ArdaMap() {
@@ -129,6 +146,13 @@ public final class ArdaMap {
         // The Trollshaws, west of the mountains and south of Rhudaur: higher and rougher than Eregion
         // below them, which is what makes them a hill country rather than more of the same wood.
         TROLLSHAWS(TolkienBiomes.TROLLSHAWS, 84, 16, true),
+        /**
+         * Imladris, the hidden valley: a floor of its own cut by hand into the Trollshaws' western edge,
+         * because the city that stands in it is 554 blocks across and no cell of a 512-block drawing can
+         * be its own. Its height is the floor it is drawn at and its relief two blocks, which is what
+         * lets a city sit in it instead of on a hillside - see {@link #valley}.
+         */
+        IMLADRIS(TolkienBiomes.IMLADRIS, 74, 2, true),
         LORINAND(TolkienBiomes.LORINAND, 74, 6, true),
         FANGORN(TolkienBiomes.FANGORN, 78, 10, true),
 
@@ -230,6 +254,15 @@ public final class ArdaMap {
 
         Ground ground = groundAt(mapX, mapZ, blockX, blockZ);
 
+        // The valley is laid over the drawing rather than read out of it, and before the rivers:
+        // nothing the maps draw as a river runs through it. It is measured in unwarped blocks on
+        // purpose - the warp is there to make drawn borders organic, and a floor a city is planted on
+        // by hand must not wander a hundred blocks off the middle the city was planted around.
+        Sample valley = valley(blockX, blockZ, ground);
+        if (valley != null) {
+            return valley;
+        }
+
         for (River river : RIVERS) {
             if (riverDistance(river, mapX, mapZ) < river.halfWidth()) {
                 return new Sample(ground.country(), Math.min(ground.height(), SEA_LEVEL - 3), true,
@@ -237,6 +270,30 @@ public final class ArdaMap {
             }
         }
         return new Sample(ground.country(), ground.height(), false, ground.shore(), ground.upland());
+    }
+
+    /**
+     * The hidden valley, or null for ground the drawing answers for.
+     * <p>
+     * The floor is flat at {@link #VALLEY_FLOOR} and is the valley's own country; the rim outside it is
+     * still the Trollshaws' ground, brought down toward the floor a share at a time, so the wood keeps
+     * its name and its trees up the walls while the cliff the city would otherwise stand at the foot of
+     * becomes a slope. Nothing outside the rim moves at all, and the rim is measured from the drawn edge
+     * of the rectangle rather than from its middle, so the floor is exactly as wide as it says.
+     */
+    private static Sample valley(double blockX, double blockZ, Ground ground) {
+        double outsideX = Math.abs(blockX - VALLEY_X) - VALLEY_HALF_X;
+        double outsideZ = Math.abs(blockZ - VALLEY_Z) - VALLEY_HALF_Z;
+        double outside = Math.max(outsideX, outsideZ);
+        if (outside > VALLEY_RIM) {
+            return null;
+        }
+        if (outside <= 0.0D) {
+            return new Sample(Country.IMLADRIS, VALLEY_FLOOR, false, false, ground.upland());
+        }
+        double share = 1.0D - smooth(outside / VALLEY_RIM);
+        int height = (int) Math.round(ground.height() + (VALLEY_FLOOR - ground.height()) * share);
+        return new Sample(ground.country(), height, false, false, ground.upland());
     }
 
     /** Whether a cell of the map exists at all, since a search may walk off its edge. */
@@ -258,6 +315,11 @@ public final class ArdaMap {
      * so where the landmark stands stops depending on where in the world the page was taken.
      */
     public static BlockPos anchor(Country country) {
+        // The valley is not one of the grid's cells, so it has no middle to average: its own numbers
+        // are its middle, and a name the maps put in it is surveyed from there.
+        if (country == Country.IMLADRIS) {
+            return new BlockPos(VALLEY_X, 0, VALLEY_Z);
+        }
         long columns = 0;
         long rows = 0;
         int cells = 0;

@@ -741,6 +741,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.add("biome.tolkienmobs.eriador", "埃利阿多");
             this.add("biome.tolkienmobs.shire", "夏尔");
             this.add("biome.tolkienmobs.firien", "菲瑞恩森林");
+            this.add("biome.tolkienmobs.imladris", "伊姆拉缀斯");
             this.add("biome.tolkienmobs.trollshaws", "巨魔荒野");
             this.add("biome.tolkienmobs.dagorlad", "褐地");
             this.add("biome.tolkienmobs.haradwaith", "哈拉德地区");

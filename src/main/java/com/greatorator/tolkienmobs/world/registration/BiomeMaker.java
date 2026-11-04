@@ -720,4 +720,39 @@ public class BiomeMaker extends BiomeHelper{
                 .generationSettings(eriadorGen(placedFeatureGetter, carverGetter).build())
                 .build();
     }
+
+    /**
+     * Imladris, the hidden valley under the western feet of the Misty Mountains.
+     * <p>
+     * A cool, semi-continental hollow inside an alpine gorge: pine and fir hold the walls above it and
+     * the mountain's own rock shows through them, while the floor - sheltered, wet, and warm enough for
+     * it - is broadleaf, oak and beech over deep grass, with gardens and terraces rather than a wild
+     * forest floor. The water is the valley's whole weather: it falls into the hollow off the mountains
+     * and leaves it by the Bruinen, which is what the springs, the ferns and the sound of it are for.
+     * <p>
+     * Its fog is set far out, unlike the Trollshaws' closing mist. The valley is meant to be looked
+     * across, from the road at its rim to the houses at its heart; a countryside that hides its own
+     * walls in fog is a countryside a player cannot find their way down into.
+     */
+    public static Biome makeBiomeImladris(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        var generation = imladrisGen(placedFeatureGetter, carverGetter);
+        var spawning = imladrisSpawning();
+        return foggedBiome(48.0F, 192.0F)
+                .hasPrecipitation(true)
+                .temperature(0.6F)
+                .downfall(0.8F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(0.6F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(0xA9C3D6))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(0x24485C))
+                .setAttribute(EnvironmentAttributes.AMBIENT_SOUNDS, ambientLoop(TolkienSounds.MEDIEVAL_CITY))
+                .setAttribute(EnvironmentAttributes.AMBIENT_PARTICLES, AmbientParticle.of(TolkienParticleTypes.CULUMALDA_LEAVES.get(), 0.003125F))
+                .specialEffects((new BiomeSpecialEffects.Builder())
+                        .waterColor(0x3E8CC8)
+                        .foliageColorOverride(0x4C7A3E)
+                        .grassColorOverride(0x5E8F4C)
+                        .build())
+                .mobSpawnSettings(spawning.build())
+                .generationSettings(generation.build())
+                .build();
+    }
 }

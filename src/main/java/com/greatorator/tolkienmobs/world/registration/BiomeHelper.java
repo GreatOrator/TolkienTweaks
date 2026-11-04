@@ -602,6 +602,69 @@ public abstract class BiomeHelper {
 	 * hilly and cut by gorges rather than flat, so its floor is never tidy. Aurochs and wolves keep it
 	 * with the hill-trolls, and the brigands of the old Rhudaur forts hide in it.
 	 */
+	/**
+	 * The valley's own people and its quiet company. No monster is named, because the valley is tagged
+	 * peaceful and the hill-trolls of the country outside come no further than its rim. The elves are
+	 * Arda's own people, registered as creatures for exactly this reason.
+	 */
+	public static MobSpawnSettings.Builder imladrisSpawning() {
+
+		return new MobSpawnSettings.Builder()
+				.addSpawn(MobCategory.CREATURE, 35, npc(TolkienEntities.ENTITY_TTM_ELVES.get(), 1, 3))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.RABBIT, 1, 3))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.SHEEP, 1, 3))
+				.addSpawn(MobCategory.CREATURE, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_AUROCH.get(), 1, 3))
+				.addSpawn(MobCategory.AMBIENT, 15, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 1, 2))
+				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_THRUSH.get(), 1, 2))
+				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_FROG.get(), 1, 2))
+				.addMobCharge(TolkienEntities.ENTITY_TTM_ELVES.get(), 0.6, 0.15)
+				.addMobCharge(EntityType.RABBIT, 0.6, 0.15)
+				.addMobCharge(EntityType.SHEEP, 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_AUROCH.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_SQUIRREL.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_THRUSH.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_FROG.get(), 0.6, 0.15);
+	}
+
+	/**
+	 * The valley's ground: broadleaf on the floor with the tall grass, ferns and flowers of a tended
+	 * place rather than a wild wood, elanor at the water, fallen mallorn leaves among the oak and beech,
+	 * and the springs and lakes the vanilla forests ask for - the valley is made by water as much as by
+	 * trees. No mountain trees: those belong to the walls, which are the Misty Mountains' ground and not
+	 * this country's.
+	 */
+	public static BiomeGenerationSettings.Builder imladrisGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+		BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
+
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_FOREST);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_LARGE_FERN);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.BROWN_MUSHROOM_NORMAL);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.RED_MUSHROOM_NORMAL);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.FLOWER_ELANOR_PLACED_KEY);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_MALLORN_FALLEN_LOG);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_MALLORN_FALLEN_LEAVES);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_RANDOM_RUBBLE);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_STUMPS);
+
+		BiomeDefaultFeatures.addBirchTrees(biome);
+		BiomeDefaultFeatures.addDefaultCarversAndLakes(biome);
+		BiomeDefaultFeatures.addDefaultOres(biome);
+		BiomeDefaultFeatures.addDefaultSoftDisks(biome);
+		BiomeDefaultFeatures.addDefaultMonsterRoom(biome);
+		BiomeDefaultFeatures.addDefaultUndergroundVariety(biome);
+		BiomeDefaultFeatures.addDefaultMushrooms(biome);
+		BiomeDefaultFeatures.addDefaultSprings(biome);
+		BiomeDefaultFeatures.addForestGrass(biome);
+		BiomeDefaultFeatures.addFerns(biome);
+		BiomeDefaultFeatures.addDefaultFlowers(biome);
+		BiomeDefaultFeatures.addPlainVegetation(biome);
+		BiomeDefaultFeatures.addDefaultExtraVegetation(biome, true);
+		BiomeDefaultFeatures.addCommonBerryBushes(biome);
+		addLegacyOres(biome);
+
+		return biome;
+	}
+
 	public static MobSpawnSettings.Builder trollshawsSpawning() {
 
 		return new MobSpawnSettings.Builder()

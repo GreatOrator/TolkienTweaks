@@ -368,6 +368,16 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   decides how high the base may be, the band-by-band route, the shoulder and what its counts mean, and the
   re-cut loop.
 
+- **Imladris is its own country: a hidden valley cut into the Trollshaws at the mountains' feet.** The city
+  had nowhere of its own to stand - the ground under it was Trollshaws from edge to edge, drawn at 84 with
+  sixteen blocks of relief, so a 554-block build dropped there either lost its crown to the ceiling or sat
+  in a pit with a rock wall around it. Arda now lays an `imladris` floor at 74 with two blocks of relief
+  across 640 by 580 blocks centred on the valley's own cell, blended back into the Trollshaws over a
+  64-block rim, and the biome is what the books describe: oak and beech on the floor with pine holding the
+  walls, elanor and fallen mallorn leaves, springs and ferns and loud water, elves rather than hill-trolls,
+  and grass over mossy rock. The name `rivendell` is surveyed from the valley's middle now, so the place is
+  written where the city goes rather than wherever the hills around it would take it.
+
 ### Fixed
 
 - **The needle points at the body, not at the middle of the town.** A page that names somebody now

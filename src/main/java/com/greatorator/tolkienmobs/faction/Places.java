@@ -163,11 +163,11 @@ public final class Places extends SavedData {
      * wrong map in it. Read only when a name is placed for the first time.
      */
     private static final Map<String, ArdaMap.Country> CANON = Map.of(
-            // The valley is at the western feet of the Misty Mountains, which is the country this drawing
-            // calls the Trollshaws. It used to be asked for in Eriador, and a country is anchored at the
-            // middle of all its cells - Eriador's is Bree and the Weather Hills - so the valley stood
-            // four thousand blocks west of the mountains the maps set it under.
-            "rivendell", ArdaMap.Country.TROLLSHAWS,
+            // The valley is its own ground now: a floor cut into the Trollshaws' western edge at the feet
+            // of the Misty Mountains, so the name is surveyed where the city stands rather than wherever
+            // the hills around it happen to take a five-block circle. The cell the maps pinpoint it in is
+            // unchanged - see CANON_CELL below - and the floor is laid out around that cell's own middle.
+            "rivendell", ArdaMap.Country.IMLADRIS,
             // Elladan's camp is a walk east of the valley, in the same hills rather than in the valley
             // itself, and named rather than built for that reason.
             "thorenhad", ArdaMap.Country.TROLLSHAWS,

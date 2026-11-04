@@ -28,6 +28,7 @@ public class TolkienSurfaceRules {
 	private static final SurfaceRules.RuleSource SMOOTH_DARK_STONE = makeStateRule(TolkienBlocks.SMOOTH_DARK_STONE.get());
 	private static final SurfaceRules.RuleSource DARK_STONE = makeStateRule(TolkienBlocks.DARK_STONE.get());
 	private static final SurfaceRules.RuleSource MOUNTAIN_STONE = makeStateRule(TolkienBlocks.MOUNTAIN_STONE.get());
+	private static final SurfaceRules.RuleSource MOSSY_COBBLESTONE = makeStateRule(Blocks.MOSSY_COBBLESTONE);
 
 	private static SurfaceRules.RuleSource makeStateRule(Block block) {
 		return SurfaceRules.state(block.defaultBlockState());
@@ -81,6 +82,7 @@ public class TolkienSurfaceRules {
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.MORDOR), DARK_STONE),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.HARADWAITH), SAND),
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.ANGMAR), angmarSurface()),
+                                SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.IMLADRIS), imladrisSurface()),
                                 ironHillsSurface(), hithaeglirSurface(), whiteMountainsFloor(), makeTolkienWorldRules())),
                         SurfaceRules.ifTrue(SurfaceRules.UNDER_FLOOR, SurfaceRules.sequence(
                                 SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.NURN, TolkienBiomes.MORDOR, TolkienBiomes.ASH_MOUNTAINS), DARK_STONE),
@@ -134,6 +136,19 @@ public class TolkienSurfaceRules {
 				SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.SURFACE, -0.15D, 0.25D), COARSE_DIRT),
 				SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.SURFACE, -0.5D, -0.15D), PODZOL),
 				GRASS_BLOCK);
+	}
+
+/**
+	 * The valley's floor: deep grass wherever water is within reach, mossy rock where the surface noise
+	 * breaks it - the outcrops and the old walls of a place that has been lived in for ages - and plain
+	 * soil under both. Its ground is flat by the map's own arrangement, so this is dressing rather than
+	 * shaping: what makes the valley read as a valley is that it is drawn flat, not that it is painted.
+	 */
+	private static SurfaceRules.RuleSource imladrisSurface() {
+		return SurfaceRules.sequence(
+				SurfaceRules.ifTrue(SurfaceRules.waterBlockCheck(-1, 0), GRASS_BLOCK),
+				SurfaceRules.ifTrue(SurfaceRules.noiseCondition(Noises.SURFACE, 0.3D, 1.0D), MOSSY_COBBLESTONE),
+				DIRT);
 	}
 
 private static SurfaceRules.RuleSource makeTolkienWorldRules() {
