@@ -361,6 +361,13 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   blocks off the city's base. Whether a city reads as a block cut out of the ground is now a number rather
   than something to squint at from across a valley.
 
+- **Every command the pack registers is written down in one place.** `docs/commands.md` holds the five
+  roots - `/tmcity`, `/tmquest`, `/tmplace`, `/tmfaction` with its two flat aliases, and `/tmcourage` - each
+  hand's syntax and what it answers, who may run them, and, at the end, the walkthrough for standing
+  Rivendell up in a world: the Arda cell and the corner that centres the footprint on it, the ceiling that
+  decides how high the base may be, the band-by-band route, the shoulder and what its counts mean, and the
+  re-cut loop.
+
 ### Fixed
 
 - **The needle points at the body, not at the middle of the town.** A page that names somebody now

@@ -1,0 +1,101 @@
+# The mod's commands
+
+Every command the pack registers, in the order a world-runner reaches for them. All five roots are for
+arranging a world rather than for playing in one: each asks for **creative, or a gamemaster-level operator
+(op 2)**, and none of them is how a player plays the campaign. Nothing here reaches the world by a menu, so
+this file is also the only list of what the pack can be told to do.
+
+The last section is the walkthrough for standing the hand-built Rivendell up in a world.
+
+## `/tmcity` — the hand-built city
+
+The build's own hand, for standing the city up while the cut still lives in a folder rather than in the jar.
+It reads `run/rivendell_art` beside the game directory: `rivendell.parts` (each piece and its offset),
+`rivendell.npcs` (the city's people), and `_laid.txt` (where the corner was planted, how far it has been
+laid, and in which dimension).
+
+| hand | what it does |
+|---|---|
+| `origin` | Plants the cut's lowest corner at the caller's feet, in the dimension they stand in, forgetting any earlier plant. Answers with the ground the city covers and how many bands it has. |
+| `summon` | `origin`, every band in one word, and the city's people after them. One long stall: about two thousand chunks and forty million blocks. |
+| `folk` | Stands Elrond, Legolas and Glorfindel at the marks the build gives them, the fifteen unnamed walkers at theirs, and the rest of a crowd of twenty-four wherever the city has ground. Bodies are counted by tag, so it is safe to repeat and a killed one is put back. |
+| `band [count]` | Lays the next band, or `count` of them (1–8), and stops. The last one also blends the shoulder. Answers with pieces laid, which bands went down, pieces left out above the sky, and bands still to come. |
+| `relay` | Puts the counter back at the bottom of a city already standing, keeping the corner, so a re-cut can be laid over it. Adding is safe; removing is not — a piece that lost blocks leaves the old ones standing. |
+| `apron` | Blends the shoulder by hand and reports what it came to: columns cut down, columns built up, and columns left standing because they were more than six blocks off the city's base. |
+| `goto` | Stands the caller in the middle of the city. |
+| `status` | The city's ground, its middle, which band it is on, and whether the shoulder is blended. Also refuses politely when the corner was planted in another dimension. |
+
+The marker lives in the game directory rather than in a save, so it survives being carried between worlds;
+the dimension is written down with it for the same reason.
+
+## `/tmquest` — work, given by hand
+
+| command | what it does |
+|---|---|
+| `page <kind> <target> [goal]` | Writes one page of the chosen kind against the named target, goal 1–64 (default 1). Kinds: `faction`, `fetch`, `hunt`, `location`, `dialogue`, `survey`. |
+| `<targets> give [count]` | Fills the targets' books with work drawn as a giver draws it, from the country they stand in. |
+| `<targets> quit` | Takes the work back off the targets without paying for any of it. |
+| `<targets> spawn` | Stands a giver beside each target, holding work of its own. |
+| `<targets> complete [count]` | Settles what the targets carry, up to `count` pages, without earning it. |
+| `<targets> campaign_giver <alliance>` | Stands the campaign's own herald for `west`, `east` or `harad`. |
+
+## `/tmplace` — ground the world knows by name
+
+A place is a circle of ground with a name and a radius, not a border. It is what makes a road announce
+itself, and what the beryl's survey counts as ground.
+
+| command | what it does |
+|---|---|
+| `add <id> [radius]` | Sets a catalogue place at the caller's feet, radius 4–512 (default 32). |
+| `remove <id>` | Takes a name back off the ground, so nothing is introduced there any more. |
+| `list` | Every catalogue name, where it stands in this world, or that it has not been set. |
+| `where` | Which place the caller is standing in — how a radius is checked by hand. |
+| `forget <targets>` | Clears what the targets have been shown, so the banners on a road can be walked again. |
+
+The catalogue: `greenway`, `barrows`, `hobbiton`, `bree`, `weathertop`, `ford`, `tharbad`, `rivendell`,
+`thorenhad`, `barachen`, `gloin`, `gundabad`, `vault`, `keystone`, `carndum`, `oldforest`.
+
+## `/tmfaction` — standing with the three alliances
+
+| command | what it does |
+|---|---|
+| `set <targets> <west \| east \| harad> <amount>` | Puts every target at one standing, clamped to the same bounds a hand-in or a kill is held to. |
+| `get <targets> [alliance]` | Reads a standing back: one alliance, or all three with their ranks. Answered to the caller only, so asking about a player is not an announcement. |
+
+`/tmsetfaction` and `/tmgetfaction` are the same two branches under flat names, for anyone who would rather
+type the verb first.
+
+## `/tmcourage` — where a player is on the climb
+
+| command | what it does |
+|---|---|
+| `<targets> get` | What each target has earned, and the stage that makes them. |
+| `<targets> <deeds>` | Sets courage to an exact number of deeds, 0 to the ceiling. |
+
+Courage is earned in play; this exists because the rungs are a long climb by design, and trying what the
+fourth rung does to a Nazgul should not cost an afternoon.
+
+# Standing Rivendell in a world
+
+What it needs: the cut in `run/rivendell_art/` (584 pieces, `rivendell.parts`, `rivendell.npcs`), a world
+with cheats, and creative or op 2. The city is **554 x 244 x 512**, and its lowest corner is planted at the
+caller's feet, so **the feet must be at y 76 or below**: above that the top bands are left out with a
+message rather than laid.
+
+1. **Pick the ground.** In Arda, Rivendell's cell is column 18, row 12 — centre `4352, -3840`, ground drawn
+   at 84, which is above the ceiling line. Plant from `4075, 72, -4096` to centre the footprint on that
+   cell, or find a hollow and plant there. In any other world, pick flat ground with 554 x 512 clear.
+2. **Plant it.** `/tmcity origin`. Whatever ground was there stays around it; the city replaces its own box
+   and underpins the bottom band with dirt.
+3. **Raise it.** `/tmcity summon` for the whole city in one word (long stall), or `/tmcity band 1` six times
+   to watch it come up band by band from the bottom.
+4. **Stand its people.** `summon` does this already; otherwise `/tmcity folk`.
+5. **Blend the shoulder.** Automatic on the last band. `/tmcity apron` re-runs it and reports the counts — a
+   high "left as they stand" is the city reading as a block cut out of the ground.
+6. **Walk it.** `/tmcity goto`, then `/tmcity status` for which band it is on and whether the shoulder is done.
+7. **After a re-cut.** Replace the folder, `/tmcity relay`, `/tmcity band 8`, and `/tmcity apron` again.
+
+**What is not there yet.** The cut is outside the jar and nothing in the pack generates this city: the valley
+page still builds the older small kit, and `/tmcity` is the only way to raise the real one. A world that is
+to have Rivendell without a command needs the cut packed into the mod and a placement written for it — the
+same ground the map draws, raised by the generator or by the page that names the valley.
