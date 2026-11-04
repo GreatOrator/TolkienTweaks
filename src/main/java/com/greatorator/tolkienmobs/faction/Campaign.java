@@ -1814,8 +1814,12 @@ public final class Campaign extends SavedData {
         if (site == null || !Sites.GUNDABAD.equals(site.structure()) || !site.built()) return;
         if (!site.dimension().equals(level.dimension())) return;
         BlockPos middle = site.centre();
-        if (middle.distToCenterSqr(player.position()) > GIMLI_REACH * GIMLI_REACH) return;
-        if (!level.getEntities((Entity) null, new AABB(middle).inflate(GIMLI_REACH),
+        // The hold is a hundred and twenty by a hundred and eighty, so its middle is a hundred blocks
+        // from its own door: measured to the middle with a reach meant for a camp, a player standing in
+        // the hall was out of it and nobody keeping the hold was ever stood. The reach grows with it.
+        double reach = Math.max(GIMLI_REACH, Sites.span(level, site) + 24.0D);
+        if (middle.distToCenterSqr(player.position()) > reach * reach) return;
+        if (!level.getEntities((Entity) null, new AABB(middle).inflate(reach),
                 seen -> seen.entityTags().contains(GIMLI_TAG)).isEmpty()) return;
         BlockPos stand = floorNear(level, middle.offset(GIMLI_STAND[0], 0, GIMLI_STAND[1]), player);
         if (stand == null) return;

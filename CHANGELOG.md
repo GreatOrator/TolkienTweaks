@@ -516,6 +516,12 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   already there. A built site now answers every page that names it, and a landmark stands once in a world
   rather than once for each player sent to it.
 
+- **Gimli is stood at the hold he keeps.** The reach that decides when a keeper is put down was written for a
+  camp, and it was measured from the middle of the building: Gundabad is a hundred and twenty by a hundred
+  and eighty, so its own door is a hundred blocks from its middle and a player standing in the hall was
+  never close enough for the dwarf to be stood. The reach now grows with the building, and the search for
+  one already standing uses the same distance.
+
 ### Added
 
 - **The campaign has an ending: the Rider is everybody's page.** A front is two soldier pages now, and the Nazgûl is not the last of them - all three countries ask for him together once every line is settled, any herald hands him over, and all three pay the 200 standing between them, since he was feared by all and sent after by none of them alone. Settling him writes the war's end into the quest book's story leaf, and a herald with no page left says where the war stands instead of idling.

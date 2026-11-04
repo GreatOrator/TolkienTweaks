@@ -760,6 +760,20 @@ public final class Sites extends SavedData {
     }
 
     /**
+     * How far the walls of a site's building stand from its middle.
+     * <p>
+     * A body kept at a building is stood once the player is inside it, and the inside of a hall a
+     * hundred and twenty blocks across is a long way from the numbers in its middle: measured to the
+     * middle with a reach meant for a camp, nobody keeping the hold was ever stood at all.
+     */
+    public static double span(Level level, Site site) {
+        if (!(level instanceof ServerLevel server)) return 0.0D;
+        Vec3i size = footprint(server, site.structure());
+        if (size == null) return 0.0D;
+        return Math.sqrt((double) size.getX() * size.getX() + (double) size.getZ() * size.getZ()) / 2.0D;
+    }
+
+    /**
      * How close to the middle of a building counts as standing in it, which grows with the building.
      * <p>
      * It did not grow: a flat twelve blocks was measured against the middle of the footprint, which for
