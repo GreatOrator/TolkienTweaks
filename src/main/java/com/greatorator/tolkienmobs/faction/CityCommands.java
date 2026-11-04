@@ -212,6 +212,10 @@ public final class CityCommands {
             List<Integer> bands = bands(parts);
             int laid = 0;
             int over = 0;
+            // Which bands this call actually lays, so the answer can name them: the count is how many
+            // bands to lay, not which one, and a caller who reads it the other way - band 1, band 2,
+            // band 3 - lays six bands in three calls and then finds the last three have nothing to do.
+            int from = mark.band();
             for (int placed = 0; placed < count && mark.band() < bands.size(); placed++) {
                 int height = bands.get(mark.band());
                 for (Part part : parts) {
@@ -240,13 +244,21 @@ public final class CityCommands {
             int soFar = laid;
             int skipped = over;
             boolean whole = finished;
-            int done = Math.min(mark.band(), bands.size());
             int total = bands.size();
+            int first = Math.min(from, total - 1) + 1;
+            int last = Math.min(mark.band(), total);
+            if (soFar == 0 && skipped == 0) {
+                source.sendSuccess(() -> Component.literal("Nothing left to lay - all " + total
+                        + " bands are down. /tmcity goto stands you in the middle of it."), true);
+                return 0;
+            }
+            String which = last <= first ? "band " + first + " of " + total
+                    : "bands " + first + "-" + last + " of " + total;
             String sky = skipped == 0 ? "" : "; " + skipped
                     + " were above the sky and left out - /tmcity origin planted lower would take them";
-            String spoken = whole ? " - the whole city is down; /tmcity goto to stand in it" : "";
-            source.sendSuccess(() -> Component.literal("Laid " + soFar + " pieces; " + done + " of "
-                    + total + " bands down" + sky + spoken), true);
+            String spoken = whole ? "; the whole city is down - /tmcity goto to stand in it" : "";
+            source.sendSuccess(() -> Component.literal("Laid " + soFar + " pieces; " + which
+                    + " down" + sky + spoken), true);
             return laid;
         } catch (IOException failed) {
             source.sendFailure(Component.literal("The cut could not be read: " + failed.getMessage()));

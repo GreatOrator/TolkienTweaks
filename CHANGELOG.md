@@ -528,6 +528,12 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   the sky the city would stand and the highest y the corner can be planted at, and `band` leaves those pieces
   out by name instead of counting them.
 
+- **`/tmcity band` says which bands it laid, not how far up the city it has got.** Its count is how many bands
+  to lay, and it was reported as "band 3 of 6" whatever number was passed: a caller reading the count as "which
+  band" typed 1, 2, 3, laid six bands in three calls, and then found the last three had nothing to do because
+  the city was already whole. The line now names the bands it laid ("bands 1-6 of 6 down") and says plainly
+  when there is nothing left.
+
 ### Added
 
 - **The campaign has an ending: the Rider is everybody's page.** A front is two soldier pages now, and the Nazgûl is not the last of them - all three countries ask for him together once every line is settled, any herald hands him over, and all three pay the 200 standing between them, since he was feared by all and sent after by none of them alone. Settling him writes the war's end into the quest book's story leaf, and a herald with no page left says where the war stands instead of idling.
