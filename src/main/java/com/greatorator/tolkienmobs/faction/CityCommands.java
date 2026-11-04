@@ -86,7 +86,11 @@ public final class CityCommands {
     private static final Map<String, StructureTemplate> LOADED = new HashMap<>();
 
     /** One piece: its file, and where its corner sits in the frame the cut was taken in. */
-    private record Part(String name, int dx, int dy, int dz) {
+    private record Part(String name, int dx, int dy, int dz, int wide, int deep, int tall) {
+        /** A piece out of a cut that did not write its sizes was one whole tile each way. */
+        Part(String name, int dx, int dy, int dz) {
+            this(name, dx, dy, dz, TILE, TILE, TILE);
+        }
     }
 
     /**
@@ -101,9 +105,9 @@ public final class CityCommands {
             int lowX = parts.stream().mapToInt(Part::dx).min().orElse(0);
             int lowY = parts.stream().mapToInt(Part::dy).min().orElse(0);
             int lowZ = parts.stream().mapToInt(Part::dz).min().orElse(0);
-            int highX = parts.stream().mapToInt(Part::dx).max().orElse(0) + TILE - 1;
-            int highY = parts.stream().mapToInt(Part::dy).max().orElse(0) + TILE - 1;
-            int highZ = parts.stream().mapToInt(Part::dz).max().orElse(0) + TILE - 1;
+            int highX = parts.stream().mapToInt(part -> part.dx() + part.wide() - 1).max().orElse(0);
+            int highY = parts.stream().mapToInt(part -> part.dy() + part.tall() - 1).max().orElse(0);
+            int highZ = parts.stream().mapToInt(part -> part.dz() + part.deep() - 1).max().orElse(0);
             return new Box(origin.getX() + lowX, origin.getY() + lowY, origin.getZ() + lowZ,
                     origin.getX() + highX, origin.getY() + highY, origin.getZ() + highZ);
         }
@@ -247,13 +251,13 @@ public final class CityCommands {
                     // A piece that would stand above the sky is not laid at all, and is counted rather
                     // than reported as laid: the world drops a block above its own ceiling without a
                     // word, so the old count said "laid" for pieces that put nothing anywhere.
-                    if (at.getY() + TILE - 1 > level.getMaxY() || at.getY() < level.getMinY()) {
+                    if (at.getY() + part.tall() - 1 > level.getMaxY() || at.getY() < level.getMinY()) {
                         over++;
                         continue;
                     }
                     lay(level, folder, part, mark.origin());
                     // The lowest band is the city's floor, so it is the one that needs ground under it.
-                    if (mark.band() == 0) Sites.underpin(level, at, TILE, TILE, UNDERPIN);
+                    if (mark.band() == 0) Sites.underpin(level, at, part.wide(), part.deep(), UNDERPIN);
                     laid++;
                 }
                 mark = new Mark(mark.origin(), mark.band() + 1, mark.apron(), mark.dimension());
@@ -445,8 +449,8 @@ public final class CityCommands {
     private static void lay(ServerLevel level, Path folder, Part part, BlockPos origin) throws IOException {
         StructureTemplate template = template(level, folder, part.name());
         BlockPos at = origin.offset(part.dx(), part.dy(), part.dz());
-        for (int dx = 0; dx < TILE; dx += 16) {
-            for (int dz = 0; dz < TILE; dz += 16) {
+        for (int dx = 0; dx < part.wide(); dx += 16) {
+            for (int dz = 0; dz < part.deep(); dz += 16) {
                 level.getChunk((at.getX() + dx) >> 4, (at.getZ() + dz) >> 4);
             }
         }
@@ -484,8 +488,12 @@ public final class CityCommands {
             String[] fields = line.trim().split("\\s+");
             if (fields.length < 4) continue;
             try {
+                // A cut writes the piece's own size after its offset, because a box that is not a multiple
+                // of 48 ends in slivers - the last band of the new cut is four blocks tall - and a piece
+                // that claimed a whole tile was refused for standing above a sky it never reached.
                 parts.add(new Part(fields[0], Integer.parseInt(fields[1]),
-                        Integer.parseInt(fields[2]), Integer.parseInt(fields[3])));
+                        Integer.parseInt(fields[2]), Integer.parseInt(fields[3]),
+                        size(fields, 4), size(fields, 5), size(fields, 6)));
             } catch (NumberFormatException skipped) {
                 // A line that is not a piece is not a reason to refuse the rest of the city.
             }
@@ -496,6 +504,16 @@ public final class CityCommands {
             return Integer.compare(left.dx(), right.dx());
         });
         return parts;
+    }
+
+    /** A size out of the table, or a whole tile when the line does not carry one. */
+    private static int size(String[] fields, int at) {
+        if (fields.length <= at) return TILE;
+        try {
+            return Math.max(1, Math.min(TILE, Integer.parseInt(fields[at])));
+        } catch (NumberFormatException notANumber) {
+            return TILE;
+        }
     }
 
     /** The heights the pieces sit at, lowest first: one of these is one band of the city. */

@@ -546,6 +546,11 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   the city was already whole. The line now names the bands it laid ("bands 1-6 of 6 down"), counts what is
   still waiting ("3 bands to go"), and says plainly when there is nothing left.
 
+- **A piece of the city keeps its own size, so a cut whose box is not a multiple of 48 lays whole.** Every
+  piece was taken for a 48 cube, which is true of most of a cut and not of the slivers along its edges: the
+  top band of the new Rivendell cut is four blocks tall, and a sky check that added 47 to its bottom refused
+  the band as though it would reach past the ceiling.
+
 ### Added
 
 - **The campaign has an ending: the Rider is everybody's page.** A front is two soldier pages now, and the Nazgûl is not the last of them - all three countries ask for him together once every line is settled, any herald hands him over, and all three pay the 200 standing between them, since he was feared by all and sent after by none of them alone. Settling him writes the war's end into the quest book's story leaf, and a herald with no page left says where the war stands instead of idling.
