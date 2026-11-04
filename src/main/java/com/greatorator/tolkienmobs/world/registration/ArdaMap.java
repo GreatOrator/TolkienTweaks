@@ -73,17 +73,17 @@ public final class ArdaMap {
      * planted from, plus half of its 554 by 512 footprint - so a city planted at 4352, -3833 stands in
      * the middle of the floor rather than against one of its walls. The floor is that footprint plus a
      * shelf, and the shelf is not the same width all round. West, north and south it is
-     * {@link #VALLEY_LAWN} blocks - enough that the build's ragged edge is not jammed into rock, and no
-     * more, because a floor cut to the walls puts the mountain's foot in the same block as the build and
-     * the city reads as a trench, while a floor a hundred blocks wide puts the hillside a field away from
-     * it and the city reads as a pan in the open. East it is {@link #VALLEY_LAWN_EAST} blocks, because the
+     * {@link #VALLEY_LAWN} blocks - three to five, so the build's own lowest band is laid into the rising
+     * ground instead of standing beside it and the ragged edge of the city is buried in the hillside
+     * rather than left in the open. A floor cut exactly to the walls is a trench that hugs the build; a
+     * floor a hundred blocks wide is a pan with the mountain a field away from it. East it is {@link #VALLEY_LAWN_EAST} blocks, because the
      * drawn Bruinen comes to that edge and the branch has to meet it at the floor's own level: a climb
      * between the two would stand the river two hundred blocks above the city it is supposed to leave.
      */
     private static final int VALLEY_X = 4628;
     private static final int VALLEY_Z = -3577;
     /** The shelf round the build's west, north and south edges, and the longer one on its east. */
-    private static final int VALLEY_LAWN = 12;
+    private static final int VALLEY_LAWN = 4;
     private static final int VALLEY_LAWN_EAST = 100;
     private static final int VALLEY_WEST = 4352 - VALLEY_LAWN;
     private static final int VALLEY_EAST = 4905 + VALLEY_LAWN_EAST;

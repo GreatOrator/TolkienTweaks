@@ -36,13 +36,15 @@ what is still open, so the next session does not have to rebuild that from the c
 
 ## The valley
 
-- Floor **74**, the build's footprint (x 4352..4905, z -3833..-3322) plus a shelf that is **12 blocks**
-  on the west, north and south and **100 blocks** on the east. Level ground runs x 4340..5005 by
-  z -3845..-3310, so the hillside begins twelve blocks from the walls and the ground twelve out stands
-  at 112 - a steep flank beside the city, not a wall at its crown and not a field away from it.
+- Floor **74**, the build's footprint (x 4352..4905, z -3833..-3322) plus a shelf that is **4 blocks**
+  on the west, north and south and **100 blocks** on the east. Level ground runs x 4348..5005 by
+  z -3837..-3318: the hillside starts four blocks from the walls and the ground stands at 84 three out,
+  87 four out and 90 five out, so the build's lowest band is laid into the hill and its ragged edge is
+  buried rather than standing in the open.
 - The east's longer shelf is the river's: the drawn Bruinen reaches that edge, and the branch has to meet
   it at the floor's level, so a climb in between would stand the river two hundred blocks over the city.
-  A hundred blocks on *every* side (one build earlier) put the hillside a field away all round.
+  A hundred blocks on *every* side (one build earlier) put the hillside a field away all round, and
+  twelve put the first floor block a visible step out from the walls.
 - The rim **climbs from the lawn's edge** to the crown over `VALLEY_STEEP = 90` blocks (74, 80, 90, 106,
   138, 168, 212, 253, 318), holds the crown out to `VALLEY_RIM = 175`, then falls to the vale over
   `VALLEY_FALL = 340`.
