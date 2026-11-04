@@ -15,8 +15,7 @@ All notable changes to this project will be documented in this file.
   projection from the masks - the coordinates for Rivendell land on Swanfleet on it - so it is a list of
   places rather than a layer; the terrain albedo is the painted source the masks were cut from, and the rom
   curves are finer computed relief. `docs/arda-masks.md` now says what each is good for, and
-  `docs/rivendell-state.md` warns that a save older than the bake shows the old ground, which is what the
-  4 November screenshots did. `tools/arda_view.py` renders what the water arithmetic answers for a patch of
+  `docs/rivendell-state.md` warns that a save older than the bake shows the old ground. `tools/arda_view.py` renders what the water arithmetic answers for a patch of
   the map without loading a world.
 
 - **The river depth cap is settled at sixteen, and it is not provisional.** The mask's rivers really do run

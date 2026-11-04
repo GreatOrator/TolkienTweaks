@@ -102,10 +102,10 @@ what is still open, so the next session does not have to rebuild that from the c
 ## How to look at it
 
 - **A world is only as new as its chunks.** Terrain is generated once per chunk, so a save written before
-  a bake shows the old ground however new the code is. Check the save's own dates before judging a
-  screenshot: the 4 November screenshots came from regions last written on 2 and 3 November, and the west
-  mouth they showed at 4355, -3526 is the old course the code no longer has - the branch leaves at
-  4900, -3322 now. Make a new world, then plant the city in it.
+  a bake shows the old ground however new the code is. The test worlds are deleted after each round, which
+  is what keeps that honest - so a screenshot leaves no save behind to read back, and the F3 coordinates on
+  it are the whole record. There is no save on disk newer than 3 November because the 4 November worlds
+  were removed after testing, not because the test was old.
 
     ./gradlew runClient
     /execute in tolkienmobs:arda run tp @s 4628 120 -3577     the valley's middle
