@@ -43,7 +43,9 @@ import java.util.stream.Stream;
  */
 public class ArdaBiomeSource extends BiomeSource {
     /** The biomes the map can name that are not countries: a river's bed and a shore. */
-    private static final List<ResourceKey<Biome>> OVERLAYS = List.of(Biomes.RIVER, Biomes.BEACH);
+    private static final List<ResourceKey<Biome>> OVERLAYS = List.of(Biomes.RIVER, Biomes.BEACH,
+            TolkienBiomes.RIVER, TolkienBiomes.LAKE, TolkienBiomes.LAKE_EVENDIM, TolkienBiomes.SEA_OF_RHUN,
+            TolkienBiomes.SEA_OF_NURNEN, TolkienBiomes.LONG_LAKE);
 
     /**
      * The biome list is serialized as a plain list of biome ids, one per entry of {@link #keys()},
@@ -142,6 +144,15 @@ public class ArdaBiomeSource extends BiomeSource {
     }
 
     /**
+     * What a column of water reads as. The sample only knows that it is water - a river and a lake are laid
+     * the same way - so the map is asked which drawn water this column belongs to, and that is the biome.
+     */
+    private static ResourceKey<Biome> water(ArdaMap.Sample sample, int blockX, int blockZ) {
+        ResourceKey<Biome> key = sample.biome();
+        return key == Biomes.RIVER ? ArdaMap.waterBiome(blockX, blockZ) : key;
+    }
+
+    /**
      * The biome at a quart position. The map is asked in block coordinates, so a border drawn in
      * cells lands within four blocks of where it is drawn rather than sixteen.
      */
@@ -157,7 +168,7 @@ public class ArdaBiomeSource extends BiomeSource {
         // a column above it keeps its country's biome.
         boolean halls = QuartPos.toBlock(quartY) < ArdaMap.moriaRoof()
                 && ArdaMap.underMoria(blockX, blockZ);
-        Holder<Biome> biome = this.byKey.get(halls ? TolkienBiomes.MORIA : sample.biome());
+        Holder<Biome> biome = this.byKey.get(halls ? TolkienBiomes.MORIA : water(sample, blockX, blockZ));
         if (biome == null) {
             throw new IllegalStateException("Arda's map named " + sample.biome().identifier()
                     + ", which is not in its biome list; add it to ArdaMap and the source together");

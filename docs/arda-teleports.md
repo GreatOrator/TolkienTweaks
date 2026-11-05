@@ -78,7 +78,9 @@ the south, not where the 48 by 36 grid draws its hand-painted sea cells.
 | North-eastern lake, above Mirkwood's eaves | 11484 | 164 | -4916 | x 11424..11560, z -5120..-4696 |
 
 Evendim is the mask's own bigger blob in the north-west, with the smaller blob to its south-east; the
-hand-drawn ellipse that stood in for it is gone, and the lake is the drawn one like the rest. The three
+hand-drawn ellipse that stood in for it is gone, and the lake is the drawn one like the rest. Each named sheet is its own biome - `lake_evendim`,
+`sea_of_rhun`, `sea_of_nurnen`, `long_lake` - while any other drawn lake is `lake` and every drawn river is
+`river`. The three
 sheets outside the frame are at x 19833..20070 z -1495..-1295, x 22411..22707 z 11446..11646 and
 x 9957..10158 z 13724..13908.
 

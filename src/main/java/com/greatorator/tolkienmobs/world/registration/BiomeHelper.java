@@ -1050,6 +1050,22 @@ public abstract class BiomeHelper {
 				.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, MiscOverworldPlacements.DISK_CLAY);
 	}
 
+	/** The water's own plants: lily pads on the still sheets, and grass on what of the bank is not drowned. */
+	public static BiomeGenerationSettings.Builder waterGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+		BiomeGenerationSettings.Builder biome = new TolkienBiomeGenerationSettings(featureGetter, carverGetter);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_WATERLILY);
+		biome.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_TALL_GRASS);
+		return biome;
+	}
+
+	/** The fish of Arda's fresh water, so a lake and a river are worth fishing rather than only looking at. */
+	public static MobSpawnSettings.Builder waterSpawning() {
+		return new MobSpawnSettings.Builder()
+				.addSpawn(MobCategory.WATER_CREATURE, 20, new MobSpawnSettings.SpawnerData(EntityType.COD, 3, 6))
+				.addSpawn(MobCategory.WATER_CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.SALMON, 1, 5))
+				.addSpawn(MobCategory.WATER_CREATURE, 10, new MobSpawnSettings.SpawnerData(EntityType.SQUID, 1, 4));
+	}
+
 	/**
 	 * The Dead Marshes: the swamp's drowned trees and reeds with the colour taken out of them, dead bush
 	 * where the water has drawn back, and the mud the marsh is made of. No cane and no pumpkin - nothing

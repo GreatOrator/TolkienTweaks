@@ -1,0 +1,63 @@
+{
+  "attributes": {
+    "minecraft:visual/cloud_fog_end_distance": 320.0,
+    "minecraft:visual/fog_color": "#a8c0d8",
+    "minecraft:visual/fog_end_distance": 320.0,
+    "minecraft:visual/fog_start_distance": 96.0,
+    "minecraft:visual/sky_color": "#6e93be",
+    "minecraft:visual/sky_fog_end_distance": 320.0,
+    "minecraft:visual/water_fog_color": "#2e5f8a"
+  },
+  "carvers": [],
+  "downfall": 0.5,
+  "effects": {
+    "water_color": "#2e5f8a"
+  },
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "minecraft:patch_tall_grass",
+      "minecraft:patch_waterlily"
+    ]
+  ],
+  "has_precipitation": true,
+  "spawn_costs": {},
+  "spawners": {
+    "ambient": [],
+    "axolotls": [],
+    "creature": [],
+    "misc": [],
+    "monster": [],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": [
+      {
+        "type": "minecraft:cod",
+        "maxCount": 6,
+        "minCount": 3,
+        "weight": 20
+      },
+      {
+        "type": "minecraft:salmon",
+        "maxCount": 5,
+        "minCount": 1,
+        "weight": 10
+      },
+      {
+        "type": "minecraft:squid",
+        "maxCount": 4,
+        "minCount": 1,
+        "weight": 10
+      }
+    ]
+  },
+  "temperature": 0.4
+}

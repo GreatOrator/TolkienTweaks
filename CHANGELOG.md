@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **Rivers and lakes have biomes of their own.** Water used to read as the vanilla river wherever it
+  lay; it now has a generic `river` and `lake` for the sheets the drawing does not name, and its own biome
+  for each lake it does - Evendim, the Sea of Rhun, the Sea of Nurnen and the Long Lake - so a player can
+  tell where they are standing from the biome name alone.
 - **The Dead Marshes are their own biome.** The drowned battlefield between the Emyn Muil and the
   Dagorlad is no longer more of the Wetwang: `dead_marshes` closes the fog at forty blocks, darkens the
   sky and the water to the colours of a fen under cloud, and keeps the fell spirits out of its spawn list.

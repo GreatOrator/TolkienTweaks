@@ -60,6 +60,12 @@
         "tolkienmobs:eastern_waste",
         "minecraft:river",
         "minecraft:beach",
+        "tolkienmobs:river",
+        "tolkienmobs:lake",
+        "tolkienmobs:lake_evendim",
+        "tolkienmobs:sea_of_rhun",
+        "tolkienmobs:sea_of_nurnen",
+        "tolkienmobs:long_lake",
         "tolkienmobs:moria"
       ]
     },

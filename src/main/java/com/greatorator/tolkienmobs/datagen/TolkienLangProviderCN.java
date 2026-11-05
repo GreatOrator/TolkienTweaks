@@ -727,6 +727,12 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.add("biome.tolkienmobs.forochel_slopes", "福罗切尔坡地");
             this.add("biome.tolkienmobs.marshes", "宁达尔夫草沼");
             this.add("biome.tolkienmobs.dead_marshes", "死亡沼泽");
+            this.add("biome.tolkienmobs.river", "河流");
+            this.add("biome.tolkienmobs.lake", "湖泊");
+            this.add("biome.tolkienmobs.lake_evendim", "依汶迪姆湖");
+            this.add("biome.tolkienmobs.sea_of_rhun", "鲁恩海");
+            this.add("biome.tolkienmobs.sea_of_nurnen", "努尔能海");
+            this.add("biome.tolkienmobs.long_lake", "长湖");
             this.add("biome.tolkienmobs.mirkwood", "黑森林");
             this.add("biome.tolkienmobs.old_forest", "老林");
             this.add("biome.tolkienmobs.mirkwood_spooky", "蜘蛛黑森林");

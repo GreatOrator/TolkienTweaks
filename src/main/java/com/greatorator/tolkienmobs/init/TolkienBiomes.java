@@ -65,6 +65,18 @@ public class TolkienBiomes {
      * dread there is the point of it - a closed, dark sky over black water, and the bodies in it.
      */
     public static final ResourceKey<Biome> DEAD_MARSHES = createBiome("dead_marshes", BiomeMaker::makeBiomeDeadMarshes, TolkienTags.Biomes.SWAMP, TolkienTags.Biomes.WET, TolkienTags.Biomes.DEAD, TolkienTags.Biomes.HOSTILE);
+    /*
+     * The water itself, so a river and a lake can be told apart in the world rather than both reading as
+     * the vanilla river: one generic river and lake for the sheets the drawing does not name, and one for
+     * each lake that it does. They carry no climate tags on purpose - a tag names one biome as its
+     * climate's answer, and open water is not a climate.
+     */
+    public static final ResourceKey<Biome> RIVER = createBiome("river", BiomeMaker::makeBiomeRiver);
+    public static final ResourceKey<Biome> LAKE = createBiome("lake", BiomeMaker::makeBiomeLake);
+    public static final ResourceKey<Biome> LAKE_EVENDIM = createBiome("lake_evendim", BiomeMaker::makeBiomeLakeEvendim);
+    public static final ResourceKey<Biome> SEA_OF_RHUN = createBiome("sea_of_rhun", BiomeMaker::makeBiomeSeaOfRhun);
+    public static final ResourceKey<Biome> SEA_OF_NURNEN = createBiome("sea_of_nurnen", BiomeMaker::makeBiomeSeaOfNurnen);
+    public static final ResourceKey<Biome> LONG_LAKE = createBiome("long_lake", BiomeMaker::makeBiomeLongLake);
     public static final ResourceKey<Biome> LORINAND = createBiome("lorinand", BiomeMaker::makeBiomeLorinad, TolkienTags.Biomes.CONIFEROUS, TolkienTags.Biomes.TEMPERATE, TolkienTags.Biomes.PEACEFUL);
     public static final ResourceKey<Biome> BARROW_DOWNS = createBiome("barrow_downs", BiomeMaker::makeBiomeBarrowDowns, TolkienTags.Biomes.DEAD, TolkienTags.Biomes.COLD, TolkienTags.Biomes.HOSTILE);
     public static final ResourceKey<Biome> OLD_FOREST = createBiome("old_forest", BiomeMaker::makeBiomeOldForest, TolkienTags.Biomes.DARK_FOREST, TolkienTags.Biomes.TEMPERATE);

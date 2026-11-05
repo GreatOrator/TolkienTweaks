@@ -1106,6 +1106,58 @@ public class BiomeMaker extends BiomeHelper{
                 .build();
     }
 
+    /**
+     * Open water, and the one body every water biome is made of.
+     * <p>
+     * A lake is a lake whatever its name: the same water, the same plants, the same fish, and the same
+     * open sky. What a player reads is the biome's own name, so each of the named ones differs only in the
+     * colour of its water and the light over it - Rhun's eastern water is deeper and colder than Evendim's,
+     * and Nurnen's stands under Mordor's ash - rather than in anything it generates.
+     */
+    private static Biome waterBiome(HolderGetter<PlacedFeature> placedFeatureGetter,
+                                    HolderGetter<ConfiguredWorldCarver<?>> carverGetter,
+                                    int water, int sky, int fog, float temperature) {
+        var generation = waterGen(placedFeatureGetter, carverGetter);
+        var spawning = waterSpawning();
+        return foggedBiome(96.0F, 320.0F)
+                .hasPrecipitation(true)
+                .temperature(temperature)
+                .downfall(0.5F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(sky))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(fog))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(water))
+                .specialEffects((new BiomeSpecialEffects.Builder())
+                        .waterColor(water)
+                        .build())
+                .mobSpawnSettings(spawning.build())
+                .generationSettings(generation.build())
+                .build();
+    }
+
+    public static Biome makeBiomeRiver(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return waterBiome(placedFeatureGetter, carverGetter, 0x3F76E4, 0x78A7FF, 0xC0D8FF, 0.5F);
+    }
+
+    public static Biome makeBiomeLake(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return waterBiome(placedFeatureGetter, carverGetter, 0x3F76E4, 0x78A7FF, 0xC0D8FF, 0.5F);
+    }
+
+    public static Biome makeBiomeLakeEvendim(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return waterBiome(placedFeatureGetter, carverGetter, 0x2E5F8A, 0x6E93BE, 0xA8C0D8, 0.4F);
+    }
+
+    public static Biome makeBiomeSeaOfRhun(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return waterBiome(placedFeatureGetter, carverGetter, 0x1F5C74, 0x6C93A8, 0x9FB6C4, 0.6F);
+    }
+
+    public static Biome makeBiomeSeaOfNurnen(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return waterBiome(placedFeatureGetter, carverGetter, 0x243F33, 0x6A7F72, 0x93A398, 0.7F);
+    }
+
+    public static Biome makeBiomeLongLake(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return waterBiome(placedFeatureGetter, carverGetter, 0x2D6489, 0x7A9FBB, 0xA9C3D6, 0.35F);
+    }
+
     public static Biome makeBiomeEriador(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
         return new Biome.BiomeBuilder()
                 .hasPrecipitation(true)

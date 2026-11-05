@@ -453,6 +453,46 @@ public final class ArdaMap {
     }
 
     /**
+     * The named lakes, by the span the lake mask draws each of them in. The drawing is the authority: a
+     * column of water inside one of these spans is that lake, and every other sheet the mask draws is a
+     * lake without a name of its own.
+     */
+    private static final int[] EVENDIM_SPAN = {248, 768, -5176, -4600};
+    private static final int[] RHUN_SPAN = {16336, 18808, -1400, 1168};
+    private static final int[] NURNEN_SPAN = {14304, 16608, 6488, 7648};
+    private static final int[] LONG_LAKE_SPAN = {11424, 11560, -5120, -4696};
+
+    /**
+     * The biome a column of open water reads as.
+     * <p>
+     * The sample only says that a column is water, because rivers and lakes are laid the same way; which
+     * water it is has to be asked of the mask. A lake column is the lake whose drawn span holds it, and a
+     * lake the drawing does not name stays the generic one; everything else is the generic river.
+     */
+    public static ResourceKey<Biome> waterBiome(int blockX, int blockZ) {
+        if (!ArdaMasks.lake(blockX, blockZ)) {
+            return TolkienBiomes.RIVER;
+        }
+        if (within(blockX, blockZ, EVENDIM_SPAN)) {
+            return TolkienBiomes.LAKE_EVENDIM;
+        }
+        if (within(blockX, blockZ, RHUN_SPAN)) {
+            return TolkienBiomes.SEA_OF_RHUN;
+        }
+        if (within(blockX, blockZ, NURNEN_SPAN)) {
+            return TolkienBiomes.SEA_OF_NURNEN;
+        }
+        if (within(blockX, blockZ, LONG_LAKE_SPAN)) {
+            return TolkienBiomes.LONG_LAKE;
+        }
+        return TolkienBiomes.LAKE;
+    }
+
+    private static boolean within(int blockX, int blockZ, int[] span) {
+        return blockX >= span[0] && blockX <= span[1] && blockZ >= span[2] && blockZ <= span[3];
+    }
+
+    /**
      * What is at a column: the country whose cell it falls in, the height its rock stands at,
      * whether a river runs there, whether its ground is the water's edge, and - for ground standing
      * dry in a cell the map drew as sea - the land country that ground belongs to.
