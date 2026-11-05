@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The road's surface is specified: three widths, three bands, and a mix for each.** `docs/arda-roads.md`
+  now records what a road will be laid in. Width is set per stretch as the builds are placed - wild at 7
+  blocks, urban at 5, and rural at 3 for a spur - and the surface is chosen by distance from a pinned cell:
+  gravel, coarse dirt, dirt path and grass beyond 64 blocks; cobblestone, dirt path, coarse dirt, mossy
+  cobblestone and a little grass from 64 down to 16; and inside 16 that same mix with dirt path, coarse dirt
+  and grass swapped for stone path, stone and mossy stone, which is the surface the mod's own village streets
+  already use. The mix is picked per block from a hash of the column so it is seamless across a chunk border,
+  and a one-block rise becomes a cobblestone bottom slab. Nothing is generated yet.
 - **The roads, surveyed before any ground is moved.** `docs/arda-roads.md` records where the roads in Arda
   can come from - the canon map's line symbology, the places the mod already pins to cells, and the drawing's
   own grid - why they cannot be traced in pixels (the two references are in different projections, and road

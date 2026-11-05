@@ -43,16 +43,16 @@ to this world's frame has never been established — `docs/arda-masks.md` record
 projection, where the block coordinates that land on Rivendell land on Swanfleet. Tracing roads block by
 block from that map would import that error with false precision. Cell waypoints are the honest resolution.
 
-## What a road has to be in the game (decided by whoever builds it)
+## What a road has to be in the game
 
 - **Stateless.** Worldgen runs per chunk with no persistent state, so a road has to be a pure function of
   x and z — like the rivers, which read a mask, or like a cell polyline read arithmetically. No saved
   road registry, no structure pass.
-- **Width and surface.** Nothing says three blocks wide or gravel; the reference flattened a radius of 4.
-  Per-country surfaces (packed earth in the Shire, stone in Gondor) are a choice, not a given.
-- **Cut, fill, or paint.** The WorldPainter script cut and filled the terrain flat across the road's
-  width. Doing the same here means the generator has to move ground, not just replace the surface block,
-  or a road across a slope is a staircase of single blocks.
+- **Width and surface.** Settled together in *The surface, as decided* below: three widths, three bands by
+  distance to a location, and one fixed per-block mix for each band.
+- **Cut, fill, or paint.** Settled as paint. The road follows the ground and replaces its top block; the
+  only ground it moves is a cobblestone slab on the low side of a one-block rise. Nothing cuts a corridor,
+  so a road on a slope is a staircase - of half steps, at least.
 - **Water.** Shaping ground cannot bridge a river. `docs/rivendell-state.md` already says the Ford is
   water and banks with no bridge — "nothing places a road or a bridge over the Bruinen yet". A route that
   crosses water needs a ford, a bridge structure, or to stop at the bank.
@@ -104,11 +104,57 @@ Tirith 25/28, Edoras 26/24 — are proposals, read off the drawing's countries a
 `tools/arda_roads.py` renders these over the reference terrain, with the grid and the campaign's pinned
 places, so a route can be seen against the ground before anything is built.
 
+## The surface, as decided
+
+**Width is set per stretch, not per route**, because which road is a highway and which is a track to a
+cave is decided by what it serves - that is, as the builds are placed. Three widths, named for where each
+belongs:
+
+| width | blocks | half-width | where |
+| --- | --- | --- | --- |
+| `wild` | 7 | 3 | the default: open country, the roads between towns |
+| `urban` | 5 | 2 | the last stretch into a settlement |
+| `rural` | 3 | 1 | a spur: the track out to a cave or a camp |
+
+The wild width's edge is ragged - a block of hash jitter on the half-width - because that is what the
+reference surface shows; the narrower two keep a clean edge.
+
+**Three bands, by distance from the nearest location**, in blocks, measured at generation time to a
+*pinned* cell centre (`ArdaMap.centreOf`, the way `Places.CANON_CELL` pins Rivendell). It has to be a
+pinned cell and not a surveyed site: the band is part of the surface `ArdaMap.sample` answers, which runs
+before the place itself exists.
+
+| band | distance | mix |
+| --- | --- | --- |
+| wild | beyond 64 | gravel ~40%, coarse dirt ~25%, grass block ~20%, dirt path ~15% |
+| transition | 64 down to 16 | cobblestone ~50%, dirt path ~27%, coarse dirt ~10%, mossy cobblestone ~8%, grass block ~5% |
+| town | inside 16 | the transition mix with dirt path -> stone path, coarse dirt -> stone, grass block -> mossy stone |
+
+The percentages were read off two screenshots of the reference surface: a wild strip in open country, and a
+transition strip at the edge of a place. The wild band is earth, gravel and grass wearing through; the
+transition band is paved, with grass left only at the rim; the town band is that paving with nothing soft
+left in it. The town swap is the one the mod's villages already make - `TolkienProcessorLists.stonePathStreets()`
+replaces `DIRT_PATH` with `STONE_PATH` in the dwarven, human, Nurn and frozen street sets - so a road's
+town band and a village's street are the same walking surface.
+
+The mix is chosen **per block, from a hash of (x, z)**, never per blob: both reference strips are a
+per-block scatter with no clumps, and a hash is the one form that survives a chunk border - the same
+column gets the same block whichever chunk asks for it. Grass block is placed literally everywhere,
+including sand and snow: a Harad road will have green squares in it, which is the chosen look.
+
+**Steps.** Where two neighbouring road columns differ by exactly one block, the lower column's top becomes
+a bottom `minecraft:cobblestone_slab`, so the rise is a half step rather than a full drop. That needs one
+sample of the column ahead, which a road pass reads anyway. Gravel in the wild band is gravity-affected:
+a wild road's gravel falls if the ground under it is ever removed - a note, not a problem.
+
 ## What is not decided
 
 - Whether these seven routes are the right seven, and whether their bends match the canon map well enough.
 - Which road towns get pinned cells, and to which cells: that is the first actual change, and it is small.
-- Whether a road is ground-shaping (cut and fill) or surface-only, and how wide.
+- Which blocks the town band's "stone" and "mossy stone" are: plain `minecraft:stone` and
+  `minecraft:mossy_cobblestone`, or the mod's dark stone set.
+- The band radii themselves (64, and 16 inside that), and which locations own a band: both fixed as the
+  builds are placed.
 - How a road crosses a river — ford today, bridge later.
 - How a road behaves on the ground the drawn cells and the painted relief disagree about, Rivendell's
   approach being the obvious case.
