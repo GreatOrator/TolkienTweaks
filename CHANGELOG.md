@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **Nine countries and their biomes are on the map, and Rhun and the empty east get their own.** Dale below
+  Erebor, Eregion west of the mountains, the Ettenmoors, Eryn Vorn, the Brown Lands, the Emyn Muil, Belfalas,
+  Khand and the eastern waste were all on the poster and not in the dimension: they read as Eriador, Firien,
+  Dunland, Gladden or the Haradwaith's dunes. Rhun is dry steppe now rather than Gladden's wet grass, and the
+  eastern edge is a wasteland of its own instead of Harad's desert, which had laid dunes along the northern
+  cold-lands.
 - **The masks alone make the ground now.** The city's valley floor, its 318 rim, the shoulder and the
   branch cut out of them were laid over the drawing at every column within reach of one footprint, which
   put a 244-block pit into ground the masks read at 154 to 173 and then argued about the walls of it. They

@@ -30,6 +30,17 @@ public class TolkienBiomes {
     public static final Multimap<TagKey<Biome>, ResourceKey<Biome>> BIOMES_BY_TAG = Multimaps.newSetMultimap(new HashMap<>(), HashSet::new);
 
     public static final ResourceKey<Biome> MIRKWOOD = createBiome("mirkwood", BiomeMaker::makeBiomeMirkwood, TolkienTags.Biomes.DARK_FOREST, TolkienTags.Biomes.TEMPERATE);
+
+    public static final ResourceKey<Biome> RHUN = createBiome("rhun", BiomeMaker::makeBiomeRhun, TolkienTags.Biomes.PLAINS, TolkienTags.Biomes.DRY, TolkienTags.Biomes.PEACEFUL);
+    public static final ResourceKey<Biome> EASTERN_WASTE = createBiome("eastern_waste", BiomeMaker::makeBiomeEasternWaste, TolkienTags.Biomes.WASTELAND, TolkienTags.Biomes.DRY, TolkienTags.Biomes.HOSTILE, TolkienTags.Biomes.SPARSE);
+    public static final ResourceKey<Biome> EREGION = createBiome("eregion", BiomeMaker::makeBiomeEregion, TolkienTags.Biomes.FOREST, TolkienTags.Biomes.TEMPERATE, TolkienTags.Biomes.PEACEFUL);
+    public static final ResourceKey<Biome> DALE = createBiome("dale", BiomeMaker::makeBiomeDale, TolkienTags.Biomes.PLAINS, TolkienTags.Biomes.TEMPERATE, TolkienTags.Biomes.PEACEFUL);
+    public static final ResourceKey<Biome> ETTENMOORS = createBiome("ettenmoors", BiomeMaker::makeBiomeEttenmoors, TolkienTags.Biomes.PLAINS, TolkienTags.Biomes.COLD, TolkienTags.Biomes.WINDSWEPT);
+    public static final ResourceKey<Biome> ERYN_VORN = createBiome("eryn_vorn", BiomeMaker::makeBiomeErynVorn, TolkienTags.Biomes.DARK_FOREST, TolkienTags.Biomes.TEMPERATE);
+    public static final ResourceKey<Biome> BROWN_LANDS = createBiome("brown_lands", BiomeMaker::makeBiomeBrownLands, TolkienTags.Biomes.WASTELAND, TolkienTags.Biomes.DRY, TolkienTags.Biomes.SPARSE);
+    public static final ResourceKey<Biome> EMYN_MUIL = createBiome("emyn_muil", BiomeMaker::makeBiomeEmynMuil, TolkienTags.Biomes.PLAINS, TolkienTags.Biomes.WINDSWEPT, TolkienTags.Biomes.SPARSE);
+    public static final ResourceKey<Biome> BELFALAS = createBiome("belfalas", BiomeMaker::makeBiomeBelfalas, TolkienTags.Biomes.PLAINS, TolkienTags.Biomes.TEMPERATE, TolkienTags.Biomes.PEACEFUL);
+    public static final ResourceKey<Biome> KHAND = createBiome("khand", BiomeMaker::makeBiomeKhand, TolkienTags.Biomes.DESERT, TolkienTags.Biomes.DRY, TolkienTags.Biomes.HOSTILE);
     public static final ResourceKey<Biome> MIRKWOOD_SPOOKY = createBiome("mirkwood_spooky", BiomeMaker::makeBiomeMirkwoodSpooky, TolkienTags.Biomes.DARK_FOREST, TolkienTags.Biomes.TEMPERATE, TolkienTags.Biomes.HOSTILE);
     public static final ResourceKey<Biome> IRON_HILLS = createBiome("iron_hills", BiomeMaker::makeBiomeIronHills, TolkienTags.Biomes.MOUNTAIN, TolkienTags.Biomes.COLD, TolkienTags.Biomes.PEACEFUL);
     public static final ResourceKey<Biome> BLUE_MOUNTAINS = createBiome("blue_mountains", BiomeMaker::makeBiomeBlueMountains, TolkienTags.Biomes.MOUNTAIN, TolkienTags.Biomes.TEMPERATE, TolkienTags.Biomes.PEACEFUL);

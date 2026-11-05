@@ -295,6 +295,204 @@ public class BiomeMaker extends BiomeHelper{
                 .build();
     }
 
+/**
+     * Rhun: the dry steppe east of Mirkwood and round the inland sea, whose shore the drawn water lays.
+     * <p>
+     * It was Gladden's grass, which is a wet field in the Vales of Anduin - the wrong country for the plain
+     * that runs from Mirkwood's edge to the Orocarni, and the reason the east read as more of the west.
+     */
+    public static Biome makeBiomeRhun(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(false)
+                .temperature(0.95F)
+                .downfall(0.2F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(1.1F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(12697274))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(329011))
+                .specialEffects(new BiomeSpecialEffects.Builder()
+                        .waterColor(4159204)
+                        .foliageColorOverride(10663026)
+                        .grassColorOverride(11118421)
+                        .build())
+                .mobSpawnSettings(rohanSpawning().build())
+                .generationSettings(gladdenGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
+
+    /**
+     * The empty east: the wasteland canon leaves unpeopled beyond Rhun. The ground is bare and it is
+     * nobody's country, which is why it is its own biome and not the Haradwaith's dune.
+     */
+    public static Biome makeBiomeEasternWaste(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(false)
+                .temperature(0.8F)
+                .downfall(0.1F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(0.9F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(13158600))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(789516))
+                .specialEffects(new BiomeSpecialEffects.Builder()
+                        .waterColor(4159204)
+                        .foliageColorOverride(9079434)
+                        .grassColorOverride(10066329)
+                        .build())
+                .mobSpawnSettings(angmarSpawning().build())
+                .generationSettings(angmarGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
+
+    /** Eregion, the holly country west of the mountains and south of the Trollshaws. */
+    public static Biome makeBiomeEregion(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(true)
+                .temperature(0.7F)
+                .downfall(0.7F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(0.8F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(10518688))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(329011))
+                .specialEffects(new BiomeSpecialEffects.Builder()
+                        .waterColor(4159204)
+                        .foliageColorOverride(4351321)
+                        .grassColorOverride(6985776)
+                        .build())
+                .mobSpawnSettings(firienSpawning().build())
+                .generationSettings(firienGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
+
+    /** The Ettenmoors: the cold fells between Angmar and Rhudaur, above the road out of the Trollshaws. */
+    public static Biome makeBiomeEttenmoors(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(true)
+                .temperature(0.15F)
+                .downfall(0.3F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(0.4F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(11184810))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(329011))
+                .specialEffects(new BiomeSpecialEffects.Builder()
+                        .waterColor(4020182)
+                        .foliageColorOverride(6974058)
+                        .grassColorOverride(9013642)
+                        .build())
+                .mobSpawnSettings(dunlandSpawning().build())
+                .generationSettings(dunlandGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
+
+    /** The Brown Lands: the barren ground north of Mordor that the Last Alliance left bare. */
+    public static Biome makeBiomeBrownLands(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(false)
+                .temperature(0.8F)
+                .downfall(0.1F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(0.9F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(11316396))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(789516))
+                .specialEffects(new BiomeSpecialEffects.Builder()
+                        .waterColor(4159204)
+                        .foliageColorOverride(9079434)
+                        .grassColorOverride(10519131)
+                        .build())
+                .mobSpawnSettings(dagorladSpawning().build())
+                .generationSettings(dagorladGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
+
+    /** The Emyn Muil: the bare, broken rock between Rohan and the Dagorlad. */
+    public static Biome makeBiomeEmynMuil(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(false)
+                .temperature(0.6F)
+                .downfall(0.2F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(0.8F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(11184810))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(329011))
+                .specialEffects(new BiomeSpecialEffects.Builder()
+                        .waterColor(4159204)
+                        .foliageColorOverride(6974058)
+                        .grassColorOverride(8421504)
+                        .build())
+                .mobSpawnSettings(firienSpawning().build())
+                .generationSettings(firienGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
+
+    /** Eryn Vorn: the dark wood on the western cape, south of Lindon and its blue mountains. */
+    public static Biome makeBiomeErynVorn(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(true)
+                .temperature(0.7F)
+                .downfall(0.8F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(0.7F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(5921370))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(329011))
+                .specialEffects(new BiomeSpecialEffects.Builder()
+                        .waterColor(4159204)
+                        .foliageColorOverride(2772833)
+                        .grassColorOverride(3629914)
+                        .build())
+                .mobSpawnSettings(oldForestForestSpawning().build())
+                .generationSettings(oldForestForestGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
+
+    /** Dale: the north-east's open ground below Erebor, on the Long Lake the drawn water fills. */
+    public static Biome makeBiomeDale(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(true)
+                .temperature(0.5F)
+                .downfall(0.5F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(0.6F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(12632301))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(329011))
+                .specialEffects(new BiomeSpecialEffects.Builder()
+                        .waterColor(4159204)
+                        .foliageColorOverride(5993082)
+                        .grassColorOverride(8160086)
+                        .build())
+                .mobSpawnSettings(eriadorSpawning().build())
+                .generationSettings(eriadorGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
+
+    /** Belfalas: the warm coast of south Gondor, between the Ered Nimrais and the Bay. */
+    public static Biome makeBiomeBelfalas(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(true)
+                .temperature(1.0F)
+                .downfall(0.6F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(1.1F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(13426175))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(329011))
+                .specialEffects(new BiomeSpecialEffects.Builder()
+                        .waterColor(4445678)
+                        .foliageColorOverride(6056834)
+                        .grassColorOverride(8160086)
+                        .build())
+                .mobSpawnSettings(gondorSpawning().build())
+                .generationSettings(gondorGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
+
+    /** Khand: the dry plains east of Mordor, where the Variags ride. */
+    public static Biome makeBiomeKhand(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(false)
+                .temperature(1.0F)
+                .downfall(0.2F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(1.1F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(13421772))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(329011))
+                .specialEffects(new BiomeSpecialEffects.Builder()
+                        .waterColor(4159204)
+                        .foliageColorOverride(10658968)
+                        .grassColorOverride(11448723)
+                        .build())
+                .mobSpawnSettings(haradwaithSpawning().build())
+                .generationSettings(haradwaithGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
+
     public static Biome makeBiomeOldForest(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
         oldForestForestGen(placedFeatureGetter, carverGetter);
         oldForestForestSpawning();

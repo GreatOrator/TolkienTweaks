@@ -478,7 +478,7 @@ public final class ArdaMap {
         MIRKWOOD_SPOOKY(TolkienBiomes.MIRKWOOD_SPOOKY, 74, 8, true),
         WILD_WOOD(TolkienBiomes.WILD_WOOD, 74, 8, true),
         GLADDEN(TolkienBiomes.GLADDEN, 68, 5, true),
-        RHUN(TolkienBiomes.GLADDEN, 70, 7, true),
+        RHUN(TolkienBiomes.RHUN, 70, 7, true),
 
         // The south: the Mark, the white wall, Gondor and the enemy's country.
         ROHAN(TolkienBiomes.ROHAN, 72, 6, true),
@@ -490,7 +490,20 @@ public final class ArdaMap {
         MORDOR(TolkienBiomes.MORDOR, 74, 10, true),
         ASH_MOUNTAINS(TolkienBiomes.ASH_MOUNTAINS, 150, 30, true),
         NURN(TolkienBiomes.NURN, 61, 4, true),
-        HARAD(TolkienBiomes.HARADWAITH, 72, 8, true);
+        HARAD(TolkienBiomes.HARADWAITH, 72, 8, true),
+
+        // The rest of the poster: the north-east's Dale below Erebor, Eregion west of the mountains, the
+        // cold Ettenmoors, the western cape's dark wood, the Brown Lands and the Emyn Muil, the warm coast
+        // of Belfalas, Khand beyond Mordor's eastern wall, and the empty east canon leaves unpeopled.
+        DALE(TolkienBiomes.DALE, 72, 8, true),
+        EREGION(TolkienBiomes.EREGION, 82, 14, true),
+        ETTENMOORS(TolkienBiomes.ETTENMOORS, 96, 18, true),
+        ERYN_VORN(TolkienBiomes.ERYN_VORN, 72, 10, true),
+        BROWN_LANDS(TolkienBiomes.BROWN_LANDS, 72, 6, true),
+        EMYN_MUIL(TolkienBiomes.EMYN_MUIL, 96, 22, true),
+        BELFALAS(TolkienBiomes.BELFALAS, 68, 5, true),
+        KHAND(TolkienBiomes.KHAND, 74, 8, true),
+        EASTERN_WASTE(TolkienBiomes.EASTERN_WASTE, 76, 12, true);
 
         private final ResourceKey<Biome> biome;
         private final int height;
@@ -1198,7 +1211,10 @@ public final class ArdaMap {
         fill(map, Country.IRON_HILLS, 35, 6, 41, 7);
         fill(map, Country.IRON_HILLS, 35, 11, 36, 12);
         fill(map, Country.RHUN, 40, 5, 43, 22);
-        fill(map, Country.HARAD, 44, 4, 47, 35);
+        // The empty east: canon leaves the land beyond Rhun unpeopled, and the maps draw it as waste. It
+        // was painted as the Haradwaith's desert, which put dunes along the northern cold-lands as well;
+        // it is its own country now, and still nobody lives there.
+        fill(map, Country.EASTERN_WASTE, 44, 4, 47, 35);
 
         // The Mark, the white wall across the middle of the south, and Gondor below it.
         fill(map, Country.ROHAN, 23, 20, 29, 24);
@@ -1223,6 +1239,19 @@ public final class ArdaMap {
         fill(map, Country.HARAD, 22, 31, 47, 35);
         fill(map, Country.HARAD, 26, 30, 33, 31);
         fill(map, Country.HARAD, 34, 31, 43, 33);
+
+        // The rest of the poster: Dale on the Long Lake below Erebor, Eregion between the Trollshaws and
+        // the mountains, the Ettenmoors above Rhudaur, Eryn Vorn on the western cape, the Brown Lands and
+        // the Emyn Muil north and west of the Dagorlad, Belfalas on the southern coast, and Khand east of
+        // Mordor's wall. Each is its own ground and its own biome, so a place can be asked for by country.
+        fill(map, Country.DALE, 34, 5, 36, 7);
+        fill(map, Country.EREGION, 17, 15, 20, 16);
+        fill(map, Country.ETTENMOORS, 16, 7, 18, 9);
+        fill(map, Country.ERYN_VORN, 5, 19, 7, 21);
+        fill(map, Country.BROWN_LANDS, 31, 21, 33, 22);
+        fill(map, Country.EMYN_MUIL, 29, 23, 30, 24);
+        fill(map, Country.BELFALAS, 22, 31, 27, 33);
+        fill(map, Country.KHAND, 43, 28, 46, 31);
 
         bandSeas(map);
         return map;
