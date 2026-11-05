@@ -424,6 +424,16 @@ public final class ArdaMap {
     /** The highest the drawing may raise the ground, leaving the world's ceiling room above it. */
     private static final int MOUNTAIN_CEILING = 420;
 
+    /**
+     * How far a ridge's crests and gullies stand either side of the mask's own climb, in blocks.
+     * <p>
+     * The mask's brightness is blurred, and a blurred brightness read linearly is a cone: every drawn
+     * range came out a smooth hill with nothing on it but its own gradient. This is the roughness put
+     * back - crests, spurs and the gullies between them - scaled by how much rock the mask puts at the
+     * column, so a range is ragged where the drawing is dark and a plain beside it is untouched.
+     */
+    private static final int CRAG = 42;
+
     private static final Country[][] GRID = draw();
 
     /**
@@ -1458,19 +1468,41 @@ public final class ArdaMap {
      * The heightmap is read from the sea's own height up to the crown, and the mountain mask then raises
      * the ground toward the crown by its brightness, pinning its whitest pixels there: the ranges stand
      * where the mask draws them, and a summit is the city's own crown, so drawn rock and built rock reach
-     * the same sky. A column the map calls sea keeps the drawing's answer, because the map's zero is the
-     * sea's height and a bed at that height is a dry ocean.
+     * the same sky. That climb alone is a cone, because the brightness it is read from is blurred - so the
+     * ridges are broken by {@link #ragged} before they are answered. A column the map calls sea keeps the
+     * drawing's answer, because the map's zero is the sea's height and a bed at that height is a dry ocean.
      */
     private static int groundHeight(int blockX, int blockZ, int drawn, int relief, double rough) {
         int mapped = ArdaMasks.ground(blockX, blockZ);
         if (mapped != ArdaMasks.NO_GROUND) {
-            return ArdaMasks.lift(blockX, blockZ, vale(blockX, blockZ,
+            return ragged(blockX, blockZ, ArdaMasks.lift(blockX, blockZ, vale(blockX, blockZ,
                     SEA_LEVEL + (int) Math.round(mapped / 65535.0D * (VALLEY_CROWN - SEA_LEVEL))),
-                    VALLEY_CROWN);
+                    VALLEY_CROWN));
         }
-        return ArdaMasks.lift(blockX, blockZ,
+        return ragged(blockX, blockZ, ArdaMasks.lift(blockX, blockZ,
                 Mth.clamp((int) Math.round(drawn + relief * (rough / 1.75D - 0.5D) * 2.0D), -60,
-                        MOUNTAIN_CEILING), VALLEY_CROWN);
+                        MOUNTAIN_CEILING), VALLEY_CROWN));
+    }
+
+    /**
+     * A lifted column broken into ridge and gully by the map's own noise, so a range has crests and spurs
+     * instead of the smooth cone its blurred brightness gradient makes.
+     * <p>
+     * The noise is folded - one less the absolute value of it, which is what turns a wandering value into a
+     * line of sharp crossings - so its crests are ridges rather than dunes, and it is read at two scales: the
+     * range's, a hundred blocks across, and the crag's, thirty. The amplitude follows the square of the
+     * mask's brightness, so the ground near a range's foot moves barely a block while its flanks break into
+     * several; a plain with no rock on it is left exactly as it was drawn.
+     */
+    private static int ragged(int blockX, int blockZ, int height) {
+        double rock = ArdaMasks.rock(blockX, blockZ);
+        if (rock <= 0.05D) {
+            return height;
+        }
+        double crest = 1.0D - Math.abs(fractal(blockX, blockZ, 128, 11));
+        crest += 0.5D * (1.0D - Math.abs(fractal(blockX, blockZ, 32, 12)));
+        double shift = (crest / 1.5D - 0.5D) * CRAG * rock * rock;
+        return Mth.clamp(height + (int) Math.round(shift), -60, MOUNTAIN_CEILING);
     }
 
     /**

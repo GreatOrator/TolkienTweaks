@@ -16,6 +16,12 @@ All notable changes to this project will be documented in this file.
   disc rather than the height of the one column the feature happened to start on, and the block or two of
   ground standing over that line is cut instead of left as an island: no more sheets standing above their
   shore, and no more dirt rings inside the water.
+- **Mountains are ridges and gullies, not smooth hills.** The drawn ground was raised toward the crown by
+  the mountain mask's brightness, and that brightness is blurred, so every range came out as a cone with
+  nothing on it but its own gradient. Ridged noise is now folded into the climb over each range's flank -
+  crests, spurs and the gullies between them, at a hundred blocks and at thirty - scaled by the square of
+  the mask's brightness, so a plain beside a range is left exactly as drawn. The mask's whitest columns are
+  still pinned at the crown, and a crag may stand up to about twenty blocks over it, within the ceiling.
 - **The drawn ground runs in curves, not a grid of squares.** The heightmap was interpolated between two
   pixels, which turns every eight-block pixel into a flat facet whose contours run straight through it and
   turn at its edge - the squared-off terraces any drawn hill showed, whatever shape the drawing had. The
