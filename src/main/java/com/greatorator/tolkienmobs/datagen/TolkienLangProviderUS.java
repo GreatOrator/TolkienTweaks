@@ -726,6 +726,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add("biome.tolkienmobs.forochel", "Forochel");
             this.add("biome.tolkienmobs.forochel_slopes", "Forochel Slopes");
             this.add("biome.tolkienmobs.marshes", "Nindalf Marsh");
+            this.add("biome.tolkienmobs.dead_marshes", "Dead Marshes");
             this.add("biome.tolkienmobs.mirkwood", "Mirkwood Forest");
             this.add("biome.tolkienmobs.old_forest", "Old Forest");
             this.add("biome.tolkienmobs.mirkwood_spooky", "Mirkwood Spider Forest");
@@ -1183,6 +1184,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
         this.add("arda.tolkienmobs.country.white_mountains", "the White Mountains");
         this.add("arda.tolkienmobs.country.gondor", "Gondor");
         this.add("arda.tolkienmobs.country.marshes", "the marshes");
+        this.add("arda.tolkienmobs.country.dead_marshes", "the Dead Marshes");
         this.add("arda.tolkienmobs.country.dagorlad", "Dagorlad");
         this.add("arda.tolkienmobs.country.ithilien", "Ithilien");
         this.add("arda.tolkienmobs.country.mordor", "Mordor");

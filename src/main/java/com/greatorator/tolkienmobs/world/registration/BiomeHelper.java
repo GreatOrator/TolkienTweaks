@@ -1050,6 +1050,39 @@ public abstract class BiomeHelper {
 	}
 
 	/**
+	 * The Dead Marshes: the swamp's drowned trees and reeds with the colour taken out of them, dead bush
+	 * where the water has drawn back, and the mud the marsh is made of. No cane and no pumpkin - nothing
+	 * here is tended - and the bodies are laid by {@link com.greatorator.tolkienmobs.world.components.feature.DeadBodiesFeature}
+	 * in whatever water a chunk keeps.
+	 */
+	public static BiomeGenerationSettings.Builder deadMarshesGen(HolderGetter<PlacedFeature> featureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+		return new TolkienBiomeGenerationSettings(featureGetter, carverGetter)
+				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.TREES_SWAMP)
+				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_DEAD_BUSH)
+				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.BROWN_MUSHROOM_SWAMP)
+				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.RED_MUSHROOM_SWAMP)
+				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.FLOWER_SWAMPMILKWEED_PLACED_KEY)
+				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_MUD_SPLATTER)
+				.addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, TolkienPlacedFeatures.PLACED_DEAD_BODIES)
+				.addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, MiscOverworldPlacements.DISK_CLAY);
+	}
+
+	/**
+	 * The Dead Marshes' own spawns: the swamp hag and the swarm, and the crows, with the fell spirits left
+	 * out of the list. Their bodies are laid in the water at generation and do not wander; a spirit that
+	 * spawned as an ordinary monster would walk the bank, and the marsh is meant to hold its dead.
+	 */
+	public static MobSpawnSettings.Builder deadMarshesSpawning() {
+		return new MobSpawnSettings.Builder()
+				.addSpawn(MobCategory.MONSTER, 20, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SWAMPHAG.get(), 1, 1))
+				.addSpawn(MobCategory.MONSTER, 15, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_SWARM.get(), 1, 4))
+				.addSpawn(MobCategory.AMBIENT, 10, new MobSpawnSettings.SpawnerData(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 1, 3))
+				.addMobCharge(TolkienEntities.ENTITY_TTM_SWAMPHAG.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_SWARM.get(), 0.6, 0.15)
+				.addMobCharge(TolkienEntities.ENTITY_TTM_CREBAIN.get(), 0.6, 0.15);
+	}
+
+	/**
 	 * Angmar's vegetation: tussocks and thin grass in the lee of the rocks, the boulders and rubble the
 	 * upland is strewn with, deadwood and stumps where a stunted tree stood, and the enemy's brambles.
 	 * There is no wood here - the cold and the thin soil do not carry one - so the only trees are the

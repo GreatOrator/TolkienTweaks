@@ -59,6 +59,12 @@ public class TolkienBiomes {
     public static final ResourceKey<Biome> NURN = createBiome("nurn", BiomeMaker::makeBiomeNurn, TolkienTags.Biomes.PLAINS);
     public static final ResourceKey<Biome> ASH_MOUNTAINS = createBiome("ash_mountains", BiomeMaker::makeBiomeAshMountain, TolkienTags.Biomes.MOUNTAIN, TolkienTags.Biomes.DRY, TolkienTags.Biomes.HOSTILE);
     public static final ResourceKey<Biome> MARSHES = createBiome("marshes", BiomeMaker::makeBiomeMarshes, TolkienTags.Biomes.SWAMP, TolkienTags.Biomes.WET, TolkienTags.Biomes.HOSTILE);
+    /**
+     * The Dead Marshes: the drowned battlefield between the Emyn Muil and the Dagorlad, where the dead of
+     * the Last Alliance lie in the pools. It is its own biome rather than more of the Wetwang because the
+     * dread there is the point of it - a closed, dark sky over black water, and the bodies in it.
+     */
+    public static final ResourceKey<Biome> DEAD_MARSHES = createBiome("dead_marshes", BiomeMaker::makeBiomeDeadMarshes, TolkienTags.Biomes.SWAMP, TolkienTags.Biomes.WET, TolkienTags.Biomes.DEAD, TolkienTags.Biomes.HOSTILE);
     public static final ResourceKey<Biome> LORINAND = createBiome("lorinand", BiomeMaker::makeBiomeLorinad, TolkienTags.Biomes.CONIFEROUS, TolkienTags.Biomes.TEMPERATE, TolkienTags.Biomes.PEACEFUL);
     public static final ResourceKey<Biome> BARROW_DOWNS = createBiome("barrow_downs", BiomeMaker::makeBiomeBarrowDowns, TolkienTags.Biomes.DEAD, TolkienTags.Biomes.COLD, TolkienTags.Biomes.HOSTILE);
     public static final ResourceKey<Biome> OLD_FOREST = createBiome("old_forest", BiomeMaker::makeBiomeOldForest, TolkienTags.Biomes.DARK_FOREST, TolkienTags.Biomes.TEMPERATE);

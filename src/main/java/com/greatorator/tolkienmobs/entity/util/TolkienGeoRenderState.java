@@ -32,6 +32,9 @@ public class TolkienGeoRenderState extends LivingEntityRenderState implements Ge
     /** Whether a human is in its winter clothing, set by the renderer during extraction. */
     public boolean winter;
 
+    /** Whether a fell spirit is one of the marshes' drowned dead, set by its renderer during extraction. */
+    public boolean lying;
+
     /**
      * Which alliance's giver skin a human wears, set by the renderer during extraction, as 0 for an
      * ordinary human. It outranks the variant and the winter clothing both: a giver wears one skin and

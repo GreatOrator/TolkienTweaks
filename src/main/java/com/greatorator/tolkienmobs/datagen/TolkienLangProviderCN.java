@@ -726,6 +726,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.add("biome.tolkienmobs.forochel", "福罗切尔");
             this.add("biome.tolkienmobs.forochel_slopes", "福罗切尔坡地");
             this.add("biome.tolkienmobs.marshes", "宁达尔夫草沼");
+            this.add("biome.tolkienmobs.dead_marshes", "死亡沼泽");
             this.add("biome.tolkienmobs.mirkwood", "黑森林");
             this.add("biome.tolkienmobs.old_forest", "老林");
             this.add("biome.tolkienmobs.mirkwood_spooky", "蜘蛛黑森林");
@@ -1141,6 +1142,7 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
         this.add("arda.tolkienmobs.country.white_mountains", "白色山脉");
         this.add("arda.tolkienmobs.country.gondor", "刚铎");
         this.add("arda.tolkienmobs.country.marshes", "沼泽地");
+        this.add("arda.tolkienmobs.country.dead_marshes", "死亡沼泽");
         this.add("arda.tolkienmobs.country.dagorlad", "达戈拉德");
         this.add("arda.tolkienmobs.country.ithilien", "伊西利恩");
         this.add("arda.tolkienmobs.country.mordor", "魔多");

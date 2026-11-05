@@ -24,6 +24,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -39,6 +40,9 @@ public class FellSpiritEntity extends TolkienMonsterEntity implements GeoEntity 
             SynchedEntityData.defineId(FellSpiritEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> VARIANT =
             SynchedEntityData.defineId(FellSpiritEntity.class, EntityDataSerializers.INT);
+    /** Whether this spirit is one of the drowned dead, laid in the water and holding its place there. */
+    private static final EntityDataAccessor<Boolean> LYING =
+            SynchedEntityData.defineId(FellSpiritEntity.class, EntityDataSerializers.BOOLEAN);
 
     public FellSpiritEntity(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
@@ -65,6 +69,7 @@ public class FellSpiritEntity extends TolkienMonsterEntity implements GeoEntity 
         super.defineSynchedData(builder);
         builder.define(ATTACKING, false);
         builder.define(VARIANT, 0);
+        builder.define(LYING, false);
     }
 
     private int getTypeVariant() {
@@ -83,6 +88,7 @@ public class FellSpiritEntity extends TolkienMonsterEntity implements GeoEntity 
     public void addAdditionalSaveData(ValueOutput output) {
         super.addAdditionalSaveData(output);
         output.putInt("Variant", this.getTypeVariant());
+        output.putBoolean("Lying", this.isLying());
     }
 
     @Override
@@ -90,6 +96,35 @@ public class FellSpiritEntity extends TolkienMonsterEntity implements GeoEntity 
         super.readAdditionalSaveData(input);
         this.reassessWeaponGoal();
         this.entityData.set(VARIANT, input.getIntOr("Variant", 0));
+        this.setLying(input.getBooleanOr("Lying", false));
+    }
+
+    public boolean isLying() {
+        return this.entityData.get(LYING);
+    }
+
+    public void setLying(boolean lying) {
+        this.entityData.set(LYING, lying);
+    }
+
+    /**
+     * A body in the marsh does not swim. Without this the water's own lift carries a spirit to the
+     * surface the moment its chunk ticks, and the marshes would be a fog full of standing figures
+     * instead of one with its dead at the bottom of the pools.
+     */
+    @Override
+    public void aiStep() {
+        if (this.isLying()) {
+            this.setDeltaMovement(Vec3.ZERO);
+            return;
+        }
+        super.aiStep();
+    }
+
+    /** A body under the water is not drowning: it is where it belongs. */
+    @Override
+    public boolean canBreatheUnderwater() {
+        return this.isLying() || super.canBreatheUnderwater();
     }
 
     @Override

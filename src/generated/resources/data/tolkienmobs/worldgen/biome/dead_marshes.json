@@ -1,0 +1,97 @@
+{
+  "attributes": {
+    "minecraft:audio/ambient_sounds": {
+      "loop": "minecraft:ambient.soul_sand_valley.loop"
+    },
+    "minecraft:visual/ambient_particles": [
+      {
+        "particle": {
+          "type": "minecraft:soul"
+        },
+        "probability": 0.0125
+      }
+    ],
+    "minecraft:visual/cloud_fog_end_distance": 40.0,
+    "minecraft:visual/fog_color": "#252b24",
+    "minecraft:visual/fog_end_distance": 40.0,
+    "minecraft:visual/fog_start_distance": 0.0,
+    "minecraft:visual/sky_color": "#1a201c",
+    "minecraft:visual/sky_fog_end_distance": 40.0,
+    "minecraft:visual/water_fog_color": "#11160f"
+  },
+  "carvers": [],
+  "downfall": 0.8,
+  "effects": {
+    "foliage_color": "#3c4632",
+    "grass_color": "#46513a",
+    "water_color": "#1e2a1a"
+  },
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "minecraft:disk_clay"
+    ],
+    [],
+    [],
+    [
+      "minecraft:trees_swamp",
+      "minecraft:patch_dead_bush",
+      "minecraft:brown_mushroom_swamp",
+      "minecraft:red_mushroom_swamp",
+      "tolkienmobs:dead_bodies",
+      "tolkienmobs:flower_swamp_milkweed_placed",
+      "tolkienmobs:mud_splatter"
+    ]
+  ],
+  "has_precipitation": true,
+  "spawn_costs": {
+    "tolkienmobs:entityttmcrebain": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmswamphag": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmswarm": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    }
+  },
+  "spawners": {
+    "ambient": [
+      {
+        "type": "tolkienmobs:entityttmcrebain",
+        "maxCount": 3,
+        "minCount": 1,
+        "weight": 10
+      }
+    ],
+    "axolotls": [],
+    "creature": [],
+    "misc": [],
+    "monster": [
+      {
+        "type": "tolkienmobs:entityttmswamphag",
+        "maxCount": 1,
+        "minCount": 1,
+        "weight": 20
+      },
+      {
+        "type": "tolkienmobs:entityttmswarm",
+        "maxCount": 4,
+        "minCount": 1,
+        "weight": 15
+      }
+    ],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "temperature": 0.6
+}

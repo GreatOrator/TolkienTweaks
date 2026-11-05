@@ -106,6 +106,7 @@ public class TolkienPlacedFeatures {
     public static final ResourceKey<PlacedFeature> PLACED_PLANT_ROOTS = registerKey("plant_roots");
     public static final ResourceKey<PlacedFeature> PLACED_MUD_SPLATTER = registerKey("mud_splatter");
     public static final ResourceKey<PlacedFeature> PLACED_NURN_LAKE = registerKey("nurn_lake");
+    public static final ResourceKey<PlacedFeature> PLACED_DEAD_BODIES = registerKey("dead_bodies");
 
     private static ResourceKey<PlacedFeature> registerKey(String name) {
         return ResourceKey.create(Registries.PLACED_FEATURE, Identifier.fromNamespaceAndPath(MODID, name));
@@ -250,6 +251,10 @@ public class TolkienPlacedFeatures {
         // generous and the biome came out crowded: one attempt every eighteen chunks leaves the
         // lowland with the occasional lake rather than a chain of them.
         context.register(PLACED_NURN_LAKE, new PlacedFeature(features.getOrThrow(NURN_LAKE), List.of(RarityFilter.onAverageOnceEvery(18), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_WORLD_SURFACE, BiomeFilter.biome())));
+        // Two tries a chunk, on the sea's own floor rather than on the surface: the feature refuses any
+        // column whose bed is dry or whose water is too shallow, so the marsh gets its dead only where
+        // the drawing puts water and the bank stays empty.
+        context.register(PLACED_DEAD_BODIES, new PlacedFeature(features.getOrThrow(DEAD_BODIES_KEY), List.of(CountPlacement.of(2), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_OCEAN_FLOOR, BiomeFilter.biome())));
     }
 
     /**

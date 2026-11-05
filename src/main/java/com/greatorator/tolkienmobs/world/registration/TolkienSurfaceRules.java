@@ -330,7 +330,7 @@ private static SurfaceRules.RuleSource makeTolkienWorldRules() {
 
 	@NotNull
 	private static SurfaceRules.RuleSource overworldLikeFloor() {
-		SurfaceRules.RuleSource swampBeds = SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.MARSHES), SurfaceRules.sequence(
+		SurfaceRules.RuleSource swampBeds = SurfaceRules.ifTrue(SurfaceRules.isBiome(TolkienBiomes.MARSHES, TolkienBiomes.DEAD_MARSHES), SurfaceRules.sequence(
 			SurfaceRules.ifTrue(SurfaceRules.waterBlockCheck(-1, 0), GRASS_BLOCK),
 			DIRT
 		));

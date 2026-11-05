@@ -408,25 +408,6 @@ public final class ArdaMap {
     /** How deep a lake's bed lies under its water. */
     private static final int LAKE_DEPTH = 6;
 
-    /**
-     * Lake Evendim, at Annuminas: the lake the mask does not draw.
-     * <p>
-     * Nenuial is the one lake of the west the reference lake mask has nothing for, and the ground north of
-     * the Shire is a lowland that drains west to the Gulf rather than a basin a contour closes around - at
-     * every level, the water under it runs off the map. So the lake is drawn here instead: an ellipse of
-     * the right size where the poster puts it, filled to {@link #EVENDIM_LEVEL}. Ground inside the ellipse
-     * that stands under the level is the lake and ground above it is the shore, so the lake's own outline
-     * is the country's contour rather than the ellipse; the seam where the ellipse crosses low ground is
-     * closed by a bank, or the lake would run away to the sea along its western side.
-     */
-    private static final int EVENDIM_X = -2500;
-    private static final int EVENDIM_Z = -2990;
-    private static final int EVENDIM_RADIUS_X = 430;
-    private static final int EVENDIM_RADIUS_Z = 300;
-    private static final int EVENDIM_LEVEL = 95;
-    /** How far outside the ellipse the bank runs, and how far it stands over the water at its foot. */
-    private static final int EVENDIM_BANK = 40;
-    private static final int EVENDIM_RIM = 2;
     /** The highest the drawing may raise the ground, leaving the world's ceiling room above it. */
     private static final int MOUNTAIN_CEILING = 420;
 
@@ -560,6 +541,7 @@ public final class ArdaMap {
         WHITE_MOUNTAINS(TolkienBiomes.WHITE_MOUNTAINS, 165, 32, true),
         GONDOR(TolkienBiomes.GONDOR, 70, 5, true),
         MARSHES(TolkienBiomes.MARSHES, 64, 3, true),
+        DEAD_MARSHES(TolkienBiomes.DEAD_MARSHES, 62, 2, true),
         DAGORLAD(TolkienBiomes.DAGORLAD, 70, 6, true),
         ITHILIEN(TolkienBiomes.ITHILIEN, 74, 8, true),
         MORDOR(TolkienBiomes.MORDOR, 74, 10, true),
@@ -664,12 +646,6 @@ public final class ArdaMap {
         if (drawn != null) {
             return drawn;
         }
-        // Evendim's western side would run out into the lowland, which stands under the lake's level all the
-        // way to the Gulf; the bank holds it and falls away into the country's own ground.
-        int rim = evendimBank(blockX, blockZ);
-        if (rim > ground.height()) {
-            return new Sample(ground.country(), rim, false, ground.shore(), ground.upland());
-        }
         if (PLANTED) {
             Sample valley = valley(blockX, blockZ, ground);
             if (valley != null) {
@@ -724,11 +700,6 @@ public final class ArdaMap {
             return new Sample(ground.country(), Math.min(ground.height(), surface - deep), true,
                     false, ground.upland(), surface);
         }
-        // Lake Evendim is not in the mask, so it is drawn here: ground inside the ellipse standing under
-        // the water's level is the lake, and the rest of the ellipse is its shore.
-        if (evendimReach(blockX, blockZ) <= 1.0D && ground.height() < EVENDIM_LEVEL) {
-            return new Sample(ground.country(), ground.height(), true, false, ground.upland(), EVENDIM_LEVEL);
-        }
         return null;
     }
 
@@ -745,38 +716,6 @@ public final class ArdaMap {
      * The rock stands at the crown from the floor's own edge outward, which is what lays the lowest band
      * of the build into the mountain instead of setting it down beside it.
      */
-    /**
-     * How far a column lies from the middle of Lake Evendim's ellipse, where one is its edge.
-     * <p>
-     * Measured in the ellipse's own radii rather than in blocks, so the lake is long north to south the way
-     * the drawn one is and a single number says whether a column is inside it.
-     */
-    private static double evendimReach(double blockX, double blockZ) {
-        double across = (blockX - EVENDIM_X) / (double) EVENDIM_RADIUS_X;
-        double along = (blockZ - EVENDIM_Z) / (double) EVENDIM_RADIUS_Z;
-        return Math.sqrt(across * across + along * along);
-    }
-
-    /**
-     * The bank that holds Lake Evendim's western side, or {@link Integer#MIN_VALUE} where the country's own
-     * ground is high enough.
-     * <p>
-     * Flat for the first few blocks outside the ellipse and then falling away a block per block, so the
-     * lake meets rising ground instead of ending in a wall; the caller keeps whichever is higher, the bank
-     * or the drawn country, so this only ever adds a shore where the land would have let the water out.
-     */
-    private static int evendimBank(double blockX, double blockZ) {
-        double reach = evendimReach(blockX, blockZ);
-        if (reach <= 1.0D) {
-            return Integer.MIN_VALUE;
-        }
-        int out = (int) Math.round((reach - 1.0D) * EVENDIM_RADIUS_X);
-        if (out > EVENDIM_BANK) {
-            return Integer.MIN_VALUE;
-        }
-        return EVENDIM_LEVEL + EVENDIM_RIM - out;
-    }
-
     /**
      * The height the ground beside a column has to stand at to keep the water beside it in its bed, or
      * {@link Integer#MIN_VALUE} where no drawn water stands within {@link #BANK_REACH}.
@@ -1454,9 +1393,14 @@ public final class ArdaMap {
         fill(map, Country.GONDOR, 16, 27, 30, 30);
 
         // The Dead Marshes, the Brown Lands and the Dagorlad, north of Mordor's wall.
-        fill(map, Country.MARSHES, 27, 22, 30, 24);
+        fill(map, Country.MARSHES, 27, 22, 28, 24);
         fill(map, Country.DAGORLAD, 30, 23, 34, 25);
         fill(map, Country.DAGORLAD, 31, 21, 36, 22);
+        // The Dead Marshes lie between the Emyn Muil and the Dagorlad, east of the Wetwang, and the
+        // Midgewater is the fen east of Bree on the East Road. Both hold water of their own, so they are
+        // painted after the countries round them rather than under them.
+        fill(map, Country.DEAD_MARSHES, 29, 22, 30, 24);
+        fill(map, Country.MARSHES, 13, 18, 14, 18);
 
         // Mordor: Gorgoroth inside its ring, Nurn and the Sea of Nurnen below it, and the ring
         // itself - Ered Lithui across the north and Ephel Duth down the west.

@@ -5,10 +5,17 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
-- **Lake Evendim is there.** Nenuial was the one lake of the west the mask draws nothing for, and the
-  ground north of the Shire drains away to the Gulf at every level a contour could close at, so the lake
-  is drawn by hand at Annuminas: an ellipse filled to 95, 570 by 505 blocks, with its shore the land's own
-  contour and a bank outside it where the low ground would have let the water run west.
+- **The Dead Marshes are their own biome.** The drowned battlefield between the Emyn Muil and the
+  Dagorlad is no longer more of the Wetwang: `dead_marshes` closes the fog at forty blocks, darkens the
+  sky and the water to the colours of a fen under cloud, and keeps the fell spirits out of its spawn list.
+- **The dead lie in the water.** A `dead_bodies` feature lays fell spirits on the bed of standing water,
+  two tries a chunk, and refuses any column that is dry or too shallow: they are laid flat with their AI
+  off and no gravity, so they hold the bottom of the pool and never walk the bank.
+- **The Midgewater and the Wetwang are marshes.** The fen east of Bree and the marsh at the Entwash's
+  mouth are painted as marsh cells of their own, so the marsh biome reaches them rather than Eriador.
+- **Lake Evendim is the mask's own.** Nenuial was thought to be the one lake of the west the mask draws
+  nothing for, and was drawn by hand at Annuminas; the mask does draw it, so the hand-drawn ellipse is
+  gone and the lake is the drawn one.
 - **The halls are Moria whatever the surface is called.** The rectangle the biome answers in lies under
   a cell the drawing gives to Lorinand, so the country check refused it and the chamber read as Lorinand;
   the rock below the roof is the halls' own now, and the surface keeps its biome.

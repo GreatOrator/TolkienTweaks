@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
@@ -109,6 +110,25 @@ public class FellSpiritRender extends GeoEntityRenderer<FellSpiritEntity, Tolkie
         });
     }
 
+    /**
+     * A body in the water is laid out flat rather than standing in it: the whole model is tipped about the
+     * entity's own side-to-side axis, which lays the head along the way the body faces, and raised by its
+     * half-thickness so it lies on the bed rather than half through it. 26.1 hands the renderer only the
+     * collected draw, so the tip is taken around the super call and only for a body.
+     */
+    @Override
+    public void submit(TolkienGeoRenderState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState camera) {
+        if (!state.lying) {
+            super.submit(state, poseStack, submitNodeCollector, camera);
+            return;
+        }
+        poseStack.pushPose();
+        poseStack.translate(0.0F, 0.30F, 0.0F);
+        poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+        super.submit(state, poseStack, submitNodeCollector, camera);
+        poseStack.popPose();
+    }
+
     /** The variant's texture, for the model and for the base class's texture lookup. */
     public static Identifier textureFor(TolkienGeoRenderState renderState) {
         return LOCATION_BY_VARIANT.get(renderState.variant);
@@ -122,6 +142,7 @@ public class FellSpiritRender extends GeoEntityRenderer<FellSpiritEntity, Tolkie
     @Override
     public void addRenderData(FellSpiritEntity animatable, Void relatedObject, TolkienGeoRenderState renderState, float partialTick) {
         renderState.variant = animatable.getVariant();
+        renderState.lying = animatable.isLying();
     }
 
     @Override

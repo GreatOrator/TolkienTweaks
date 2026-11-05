@@ -832,6 +832,38 @@ public class BiomeMaker extends BiomeHelper{
     }
 
     /**
+     * The Dead Marshes: the drowned battlefield north of the Black Gate, and the one place in Arda the
+     * building is meant to be felt before it is seen. The fog closes at forty blocks, so the far bank is
+     * never there and a figure in the water appears out of nothing; the sky and the water are the colours
+     * of a fen under cloud, and the only light in them is what the marsh gives off itself.
+     * <p>
+     * The spawn list has no fell spirits in it: the bodies in the water are laid by the generation, and a
+     * spirit that spawned as a monster would walk the shore. What does spawn is the hag, the swarm and the
+     * crows, at rates low enough that the marsh stays quiet.
+     */
+    public static Biome makeBiomeDeadMarshes(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        var generation = deadMarshesGen(placedFeatureGetter, carverGetter);
+        var spawning = deadMarshesSpawning();
+        return foggedBiome(0.0F, 40.0F)
+                .hasPrecipitation(true)
+                .temperature(0.6F)
+                .downfall(0.8F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(0x1A201C))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(0x252B24))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(0x11160F))
+                .setAttribute(EnvironmentAttributes.AMBIENT_SOUNDS, ambientLoop(SoundEvents.AMBIENT_SOUL_SAND_VALLEY_LOOP))
+                .setAttribute(EnvironmentAttributes.AMBIENT_PARTICLES, AmbientParticle.of(ParticleTypes.SOUL, 0.0125F))
+                .specialEffects((new BiomeSpecialEffects.Builder())
+                        .waterColor(0x1E2A1A)
+                        .foliageColorOverride(0x3C4632)
+                        .grassColorOverride(0x46513A)
+                        .build())
+                .mobSpawnSettings(spawning.build())
+                .generationSettings(generation.build())
+                .build();
+    }
+
+    /**
      * Angmar, the Witch-king's country: a subarctic highland, open and cold under a low grey sky.
      *
      * <p>The wind never stops, so the fog sits far out and the falling weather is snow. The ground is
