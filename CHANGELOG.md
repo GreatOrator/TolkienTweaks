@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The Dead Marshes weigh on you.** A dread of the marsh itself takes the speed from your legs and the
+  strength from your arm while you stand in it, with no wither and no blindness: nothing here is looking
+  at you, the dead are only lying under the water. It fades a moment after you step out.
 - **The great rivers are named.** `tools/arda_river_names.py` bakes the river mask's components into a
   names raster, so the Anduin, the Celduin, the Gwathlo and the Lune are their own biomes instead of all
   reading as the generic river; the rest of the drawing's water stays generic, because it fuses

@@ -22,9 +22,20 @@ import net.minecraft.world.entity.LivingEntity;
  */
 public class FearEffect extends TolkienEffect{
     int fearDuration = 10;
+    /**
+     * Whether this dread withers and blinds as well as frightens. The Watcher's does; the Dead Marshes'
+     * does not, because a marsh is a place the dead are laid in rather than a gaze that eats flesh - what
+     * it takes is the will to move quickly and to hit hard.
+     */
+    private final boolean withersAndBlinds;
 
     public FearEffect(MobEffectCategory category, int color) {
+        this(category, color, true);
+    }
+
+    public FearEffect(MobEffectCategory category, int color, boolean withersAndBlinds) {
         super(category, color);
+        this.withersAndBlinds = withersAndBlinds;
     }
 
     @Override
@@ -33,7 +44,9 @@ public class FearEffect extends TolkienEffect{
 
         if (courage.refusesDread()) {
             // Nothing left of the dread but what it does to the body.
-            entity.addEffect((new MobEffectInstance(MobEffects.WITHER, 40, amplifier, true, false, false, null)));
+            if (this.withersAndBlinds) {
+                entity.addEffect((new MobEffectInstance(MobEffects.WITHER, 40, amplifier, true, false, false, null)));
+            }
             return true;
         }
 
@@ -41,8 +54,10 @@ public class FearEffect extends TolkienEffect{
             CourageLedger.fearWithstood(player);
         }
 
-        entity.addEffect((new MobEffectInstance(MobEffects.WITHER, 40, amplifier, true, false, false, null)));
-        entity.addEffect((new MobEffectInstance(MobEffects.BLINDNESS, 40, amplifier, true, false, false, null)));
+        if (this.withersAndBlinds) {
+            entity.addEffect((new MobEffectInstance(MobEffects.WITHER, 40, amplifier, true, false, false, null)));
+            entity.addEffect((new MobEffectInstance(MobEffects.BLINDNESS, 40, amplifier, true, false, false, null)));
+        }
         entity.addEffect((new MobEffectInstance(MobEffects.WEAKNESS, 40, amplifier, true, false, false, null)));
         entity.addEffect((new MobEffectInstance(MobEffects.SLOWNESS, 40, amplifier, true, false, false, null)));
 

@@ -717,6 +717,7 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.addEnchantment("hobbit_plow_key", "Hobbit's Plow");
             this.addEnchantmentDesc("hobbit_plow_key", "Automatically till a 9x9 area with required water source.");
             this.add("effect.tolkienmobs.elven_nimbleness.tooltip", " step height");
+            this.add("effect.tolkienmobs.marsh_dread", "Marsh Dread");
 
         // Biomes
             this.add("biome.tolkienmobs.fangorn_forest", "Fangorn Forest");

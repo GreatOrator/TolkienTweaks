@@ -89,8 +89,10 @@ x 9957..10158 z 13724..13908.
 
 Read off the countries the map paints, so these are the drawn wetlands rather than anything the masks
 say. The wetwang and the Midgewater are the one marsh country - low ground with standing water and drowned
-trees. The Dead Marshes are their own country and their own biome: the same water, under a fog that closes
-at forty blocks, with fell spirits laid in it by the generation and none walking the bank.
+trees. The Dead Marshes are their own country and their own biome: the same water, the pools and all, under a fog
+that closes at forty blocks, with fell spirits laid in it by the generation and none walking the bank.
+Standing in them lays a dread on you - the slowness and the weakness of fear, with no wither and no
+blindness, because nothing there is looking at you; it fades a moment after you leave.
 
 | Marsh | x | y | z | drawn cells |
 | --- | --- | --- | --- | --- |

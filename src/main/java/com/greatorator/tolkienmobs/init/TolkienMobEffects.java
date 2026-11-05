@@ -45,6 +45,13 @@ public class TolkienMobEffects {
             () -> new TerrorEffect(MobEffectCategory.HARMFUL, 5655556));
     public static final DeferredHolder<MobEffect, MobEffect> WATCHER_FEAR = MOB_EFFECTS.register("dread_aura",
             () -> new FearEffect(MobEffectCategory.HARMFUL, 4852999));
+    /**
+     * The Dead Marshes' own dread: the fear of a place where the dead are lying under the water, with the
+     * wither and the blindness left out. No gaze is doing this, so nothing should eat the body or take the
+     * eyes; it weighs on the legs and the arm.
+     */
+    public static final DeferredHolder<MobEffect, MobEffect> MARSH_DREAD = MOB_EFFECTS.register("marsh_dread",
+            () -> new FearEffect(MobEffectCategory.HARMFUL, 4607808, false));
 
     public static void register(IEventBus eventBus) {
         MOB_EFFECTS.register(eventBus);

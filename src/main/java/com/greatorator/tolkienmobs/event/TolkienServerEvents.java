@@ -1,6 +1,8 @@
 package com.greatorator.tolkienmobs.event;
 
 import com.greatorator.tolkienmobs.block.custom.SleepingBagBlock;
+import com.greatorator.tolkienmobs.init.TolkienBiomes;
+import com.greatorator.tolkienmobs.init.TolkienMobEffects;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienPotions;
 import com.greatorator.tolkienmobs.init.TolkienRecipesTypes;
@@ -8,6 +10,7 @@ import com.greatorator.tolkienmobs.item.custom.DwarvenHammerItem;
 import com.greatorator.tolkienmobs.util.block.BackpackMagnet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionBrewing;
@@ -40,6 +43,22 @@ public class TolkienServerEvents {
     public static void playerTick(PlayerTickEvent.Post event) {
         if (event.getEntity() instanceof ServerPlayer player) {
             BackpackMagnet.tick(player);
+            marshDread(player);
+        }
+    }
+
+    /**
+     * The Dead Marshes weigh on whoever walks them: a dread that takes the speed from the legs and the
+     * strength from the arm, and nothing else. It is refreshed a second at a time and lasts three, so
+     * leaving the marsh lets it go rather than carrying it out onto Nindalf.
+     */
+    private static void marshDread(ServerPlayer player) {
+        if (player.tickCount % 20 != 0 || player.isCreative() || player.isSpectator()) {
+            return;
+        }
+
+        if (player.level().getBiome(player.blockPosition()).is(TolkienBiomes.DEAD_MARSHES)) {
+            player.addEffect(new MobEffectInstance(TolkienMobEffects.MARSH_DREAD, 60, 0, true, false, true));
         }
     }
 
