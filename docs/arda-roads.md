@@ -128,14 +128,16 @@ before the place itself exists.
 | --- | --- | --- |
 | wild | beyond 64 | gravel ~40%, coarse dirt ~25%, grass block ~20%, dirt path ~15% |
 | transition | 64 down to 16 | cobblestone ~50%, dirt path ~27%, coarse dirt ~10%, mossy cobblestone ~8%, grass block ~5% |
-| town | inside 16 | the transition mix with dirt path -> stone path, coarse dirt -> stone, grass block -> mossy stone |
+| town | inside 16 | the transition mix with dirt path -> stone path, coarse dirt -> stone bricks, grass block -> mossy stone bricks |
 
 The percentages were read off two screenshots of the reference surface: a wild strip in open country, and a
 transition strip at the edge of a place. The wild band is earth, gravel and grass wearing through; the
 transition band is paved, with grass left only at the rim; the town band is that paving with nothing soft
 left in it. The town swap is the one the mod's villages already make - `TolkienProcessorLists.stonePathStreets()`
 replaces `DIRT_PATH` with `STONE_PATH` in the dwarven, human, Nurn and frozen street sets - so a road's
-town band and a village's street are the same walking surface.
+town band and a village's street are the same walking surface. The band's other two swaps are the vanilla
+`minecraft:stone_bricks` and `minecraft:mossy_stone_bricks`, so the loose ground of the transition band
+becomes built masonry at the gate.
 
 The mix is chosen **per block, from a hash of (x, z)**, never per blob: both reference strips are a
 per-block scatter with no clumps, and a hash is the one form that survives a chunk border - the same
@@ -151,8 +153,6 @@ a wild road's gravel falls if the ground under it is ever removed - a note, not 
 
 - Whether these seven routes are the right seven, and whether their bends match the canon map well enough.
 - Which road towns get pinned cells, and to which cells: that is the first actual change, and it is small.
-- Which blocks the town band's "stone" and "mossy stone" are: plain `minecraft:stone` and
-  `minecraft:mossy_cobblestone`, or the mod's dark stone set.
 - The band radii themselves (64, and 16 inside that), and which locations own a band: both fixed as the
   builds are placed.
 - How a road crosses a river — ford today, bridge later.

@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file.
   blocks, urban at 5, and rural at 3 for a spur - and the surface is chosen by distance from a pinned cell:
   gravel, coarse dirt, dirt path and grass beyond 64 blocks; cobblestone, dirt path, coarse dirt, mossy
   cobblestone and a little grass from 64 down to 16; and inside 16 that same mix with dirt path, coarse dirt
-  and grass swapped for stone path, stone and mossy stone, which is the surface the mod's own village streets
+  and grass swapped for stone path, stone bricks and mossy stone bricks, which is the surface the mod's own village streets
   already use. The mix is picked per block from a hash of the column so it is seamless across a chunk border,
   and a one-block rise becomes a cobblestone bottom slab. Nothing is generated yet.
 - **The roads, surveyed before any ground is moved.** `docs/arda-roads.md` records where the roads in Arda
