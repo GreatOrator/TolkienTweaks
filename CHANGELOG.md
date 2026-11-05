@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **`/tmcity` plants the city on the pin.** In Arda the corner comes off the `rivendell` pin rather than
+  off the caller's feet, so `origin` and `summon` put the same 554 by 512 footprint in the same place
+  from whatever block the caller is on, at the pin's own y, and the planting message says the pin
+  decided it. That lands the cut's low corner at 4820, 75, -3266 and the crown at 318; nowhere but
+  Arda changes, where there is no pin to obey.
 - **The valley is pinned where it was scouted, not where it was worked out.** The scouted pin is
   **5097, 75, -3010**, read back out of the world's own `pins.dat` - `/tmpin` keeps a pin in the save and
   prints the source line, it does not write the source - and the planting corner is **4820, 75, -3266**,

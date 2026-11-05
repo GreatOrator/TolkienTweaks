@@ -130,7 +130,7 @@ public final class Campaign extends SavedData {
      * the books put it.
      */
     private static final String GLORFINDEL = "Glorfindel";
-    private static final String SUMMON_PLACE = "rivendell";
+    static final String SUMMON_PLACE = "rivendell";
     private static final String GLORFINDEL_TAG = "tolkienmobs:glorfindel";
     /** How near the valley a player has to be for him to be standing in it, in blocks. */
     private static final double GLORFINDEL_REACH = 128.0D;

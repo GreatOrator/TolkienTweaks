@@ -3,7 +3,7 @@
 > **The city's own ground is laid aside (`PLANTED = false` in `ArdaMap`), and the valley is pinned.** The
 > dimension is the drawn height, rivers, lakes and mountains and nothing else, so the city stands on drawn
 > ground: `Pins.SOURCE` puts `rivendell` at **5097, 75, -3010**, the middle of its own 554 by 512 footprint,
-> with the cut planted from the corner **4820, 75, -3266**. The valley floor at 74, the 318 rim, the shoulder
+> with `/tmcity` centring the city on that pin, so the cut's low corner is **4820, 75, -3266**. The valley floor at 74, the 318 rim, the shoulder
 > and the branch described below are the shape the city would be laid into - still in the source, behind one
 > switch, and no longer generated.
 >
@@ -31,8 +31,9 @@ what is still open, so the next session does not have to rebuild that from the c
 
 ## The city
 
-- Hand-built `Rivendell_Imladris`, planted by `/tmcity` at **4820, 75, -3266**: 584 pieces, 554 x 512
-  blocks (x 4352..4905, z -3833..-3322), bands from **y 75** to a crown of **318**.
+- Hand-built `Rivendell_Imladris`, raised by `/tmcity` on the pin and standing on the cut's low corner
+  **4820, 75, -3266**: 584 pieces, 554 x 512 blocks (x 4820..5373, z -3266..-2755), bands from **y 75** to a
+  crown of **318**.
 - The build carries its **own water** - 763 `minecraft:water` blocks across 306 of its 584 pieces, not the
   none an earlier note claimed - which is the pool and channel inside the city. The ground round it is the
   generator's, so the two meet at the build's own mouth and the map does not get to choose where the city's
