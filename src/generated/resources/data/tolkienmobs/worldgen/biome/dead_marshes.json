@@ -28,7 +28,9 @@
   },
   "features": [
     [],
-    [],
+    [
+      "tolkienmobs:marsh_pools"
+    ],
     [],
     [],
     [],

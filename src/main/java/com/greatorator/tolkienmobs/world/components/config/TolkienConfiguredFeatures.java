@@ -87,6 +87,7 @@ public class TolkienConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> PLANT_ROOTS = registerKey("plant_roots");
     public static final ResourceKey<ConfiguredFeature<?, ?>> MUD_SPLATTER = registerKey("mud_splatter");
     public static final ResourceKey<ConfiguredFeature<?, ?>> DEAD_BODIES_KEY = registerKey("dead_bodies");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> MARSH_POOL_KEY = registerKey("marsh_pool");
 
     public static final ResourceKey<ConfiguredFeature<?, ?>> FLOWER_SIMBELMYNE_KEY = registerKey("plants/flower_simbelmyne");
     public static final ResourceKey<ConfiguredFeature<?, ?>> FLOWER_MIRKWOOD_KEY = registerKey("plants/flower_mirkwood");
@@ -413,6 +414,7 @@ public class TolkienConfiguredFeatures {
         context.register(DECAY_BLOOM_MUSHROOMS, new ConfiguredFeature<>(TolkienFeatures.UNDERGROUND_PLANTS.get(), new BlockStateConfiguration(TolkienBlocks.MUSHROOM_DECAY_BLOOM.get().defaultBlockState())));
         context.register(NURN_LAKE, new ConfiguredFeature<>(TolkienFeatures.NURN_LAKE.get(), FeatureConfiguration.NONE));
         context.register(DEAD_BODIES_KEY, new ConfiguredFeature<>(TolkienFeatures.DEAD_BODIES.get(), NoneFeatureConfiguration.INSTANCE));
+        context.register(MARSH_POOL_KEY, new ConfiguredFeature<>(TolkienFeatures.MARSH_POOL.get(), NoneFeatureConfiguration.INSTANCE));
     }
 
     /** A pipe-weed plant as the Shire grows it: already ripe, so a walker can pick it straight off the bank. */

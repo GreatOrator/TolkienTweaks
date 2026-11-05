@@ -11,6 +11,9 @@ All notable changes to this project will be documented in this file.
 - **The dead lie in the water.** A `dead_bodies` feature lays fell spirits on the bed of standing water,
   two tries a chunk, and refuses any column that is dry or too shallow: they are laid flat with their AI
   off and no gravity, so they hold the bottom of the pool and never walk the bank.
+- **The marshes hold pools of their own.** A `marsh_pool` feature digs shallow, level pools into the fen,
+  two tries a chunk, kept inside its own chunk so the bodies laid after it find them: neither the drawing
+  nor the mask has water in the Dead Marshes or the Midgewater, only in the Wetwang's channels.
 - **The Midgewater and the Wetwang are marshes.** The fen east of Bree and the marsh at the Entwash's
   mouth are painted as marsh cells of their own, so the marsh biome reaches them rather than Eriador.
 - **Lake Evendim is the mask's own.** Nenuial was thought to be the one lake of the west the mask draws

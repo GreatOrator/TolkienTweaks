@@ -107,6 +107,7 @@ public class TolkienPlacedFeatures {
     public static final ResourceKey<PlacedFeature> PLACED_MUD_SPLATTER = registerKey("mud_splatter");
     public static final ResourceKey<PlacedFeature> PLACED_NURN_LAKE = registerKey("nurn_lake");
     public static final ResourceKey<PlacedFeature> PLACED_DEAD_BODIES = registerKey("dead_bodies");
+    public static final ResourceKey<PlacedFeature> PLACED_MARSH_POOLS = registerKey("marsh_pools");
 
     private static ResourceKey<PlacedFeature> registerKey(String name) {
         return ResourceKey.create(Registries.PLACED_FEATURE, Identifier.fromNamespaceAndPath(MODID, name));
@@ -255,6 +256,9 @@ public class TolkienPlacedFeatures {
         // column whose bed is dry or whose water is too shallow, so the marsh gets its dead only where
         // the drawing puts water and the bank stays empty.
         context.register(PLACED_DEAD_BODIES, new PlacedFeature(features.getOrThrow(DEAD_BODIES_KEY), List.of(CountPlacement.of(2), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_OCEAN_FLOOR, BiomeFilter.biome())));
+        // Two pools a chunk, dug into the ground the marsh stands on. A pool is water the bodies laid later
+        // in the same chunk can be found in, which is why neither the drawing nor the mask had to be cut.
+        context.register(PLACED_MARSH_POOLS, new PlacedFeature(features.getOrThrow(MARSH_POOL_KEY), List.of(CountPlacement.of(2), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_TOP_SOLID, BiomeFilter.biome())));
     }
 
     /**

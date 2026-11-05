@@ -38,4 +38,5 @@ public class TolkienFeatures {
     public static final DeferredHolder<Feature<?>, Feature<NoneFeatureConfiguration>> MUD_SPLATTER = FEATURES.register("mud_splatter", () -> new MudSplatterFeature(NoneFeatureConfiguration.CODEC));
     public static final DeferredHolder<Feature<?>, Feature<NoneFeatureConfiguration>> NURN_LAKE = FEATURES.register("nurn_lake", () -> new NurnLakeFeature(NoneFeatureConfiguration.CODEC));
     public static final DeferredHolder<Feature<?>, Feature<NoneFeatureConfiguration>> DEAD_BODIES = FEATURES.register("dead_bodies", () -> new DeadBodiesFeature(NoneFeatureConfiguration.CODEC));
+    public static final DeferredHolder<Feature<?>, Feature<NoneFeatureConfiguration>> MARSH_POOL = FEATURES.register("marsh_pool", () -> new MarshPoolFeature(NoneFeatureConfiguration.CODEC));
 }
