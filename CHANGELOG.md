@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The masks alone make the ground now.** The city's valley floor, its 318 rim, the shoulder and the
+  branch cut out of them were laid over the drawing at every column within reach of one footprint, which
+  put a 244-block pit into ground the masks read at 154 to 173 and then argued about the walls of it. They
+  sit behind one switch, off: the world is the drawn height, the drawn rivers and lakes and the drawn
+  mountains, and a build is to be sited against that ground rather than the ground bent round a build.
 - **The massif gives way to the river's own ends, not only its length.** The give-way read a column
   beyond the course's start as having no water to fall away from, so the mouth - water at 82 three blocks
   from the rock - was the one place the wall was left standing, and the join the same. A course's ends are

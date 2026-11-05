@@ -64,6 +64,18 @@ public final class ArdaMap {
     private static final double WARP = 192.0D;
 
     /**
+     * Whether the city's own ground - its valley floor, its massif, the shoulder and the branch cut out of
+     * them - is laid over the drawing.
+     * <p>
+     * Off, the masks alone make the world: the drawn ground, the drawn rivers and lakes, and the drawn
+     * mountains, with nothing invented for a build. That is the ground a place is to be sited against, since
+     * a build can stand where the terrain suits it and the terrain cannot be bent round every build. The
+     * city's own ground is kept rather than deleted: it is what will be laid at whatever site is chosen for
+     * it, and the numbers below are its shape.
+     */
+    private static final boolean PLANTED = false;
+
+    /**
      * The valley the map overrides rather than draws: its middle, the half-widths of its floor, and the
      * height of that floor.
      * <p>
@@ -532,10 +544,11 @@ public final class ArdaMap {
 
     /** The drawing at a column, shifted by whatever warp the caller has already read. */
     private static Sample read(int blockX, int blockZ, double shiftX, double shiftZ) {
-        // The Bruinen is cut into whatever the drawing and the valley answer, because it runs through
-        // both: out of the valley's own floor, through the massif's flank, and into the country beyond
-        // its ridge.
-        return bruinen(blockX, blockZ, readDrawn(blockX, blockZ, shiftX, shiftZ));
+        Sample drawn = readDrawn(blockX, blockZ, shiftX, shiftZ);
+        // The Bruinen the city carries is cut into whatever the drawing and the valley answer, because it
+        // runs through both: out of the valley's own floor, through the massif's flank, and into the country
+        // beyond its ridge. With the city's ground not laid there is no branch to cut.
+        return PLANTED ? bruinen(blockX, blockZ, drawn) : drawn;
     }
 
     /** The drawing at a column, before the river the build carries is cut into it. */
@@ -557,9 +570,11 @@ public final class ArdaMap {
         if (drawn != null) {
             return drawn;
         }
-        Sample valley = valley(blockX, blockZ, ground);
-        if (valley != null) {
-            return valley;
+        if (PLANTED) {
+            Sample valley = valley(blockX, blockZ, ground);
+            if (valley != null) {
+                return valley;
+            }
         }
         return new Sample(ground.country(), ground.height(), false, ground.shore(), ground.upland());
     }

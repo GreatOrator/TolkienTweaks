@@ -1,5 +1,10 @@
 # Rivendell - the build, the mountain and the water
 
+> **The city's own ground is laid aside (`PLANTED = false` in `ArdaMap`).** The dimension is now the
+> drawn height, rivers, lakes and mountains and nothing else. The valley floor at 74, the 318 rim, the
+> shoulder and the branch described below are the shape the city will be laid into at whatever site is
+> chosen for it - they are still in the source, behind one switch, and no longer generated.
+
 A state note, last written 2026-11-04. It records what the generator does now, what the map says, and
 what is still open, so the next session does not have to rebuild that from the commit log.
 
