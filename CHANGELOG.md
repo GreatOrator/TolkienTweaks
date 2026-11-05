@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **`/tmpin checklist` says how much of the map has been walked.** The command lists the fifteen locations
+  the two chapters ask for - six names and nine buildings - each marked as pinned in this world, pinned for
+  every world, or still left to the drawing, with a count at the top. It places nothing: it is the checklist
+  of what scouting still owes, so progress is readable in game rather than by reading two chapters of pages
+  and remembering which ones needed ground.
 - **A location can be pinned where you stand, by `/tmpin`.** `Pins` is now saved with the world as well as
   written into the build: `/tmpin place <id>` pins a catalogue name at the caller's feet, `/tmpin build <name>`
   pins a template by a short name (`camp`, `ruin`, `cave2`, `gloincamp`, `castle`...) or by its own id, and

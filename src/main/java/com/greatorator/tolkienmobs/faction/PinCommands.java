@@ -94,6 +94,7 @@ public final class PinCommands {
                         .then(Commands.argument("build", StringArgumentType.string())
                                 .suggests(PinCommands::suggestBuilds)
                                 .executes(PinCommands::pinBuild)))
+                .then(Commands.literal("checklist").executes(PinCommands::checklist))
                 .then(Commands.literal("remove")
                         .then(Commands.argument("name", StringArgumentType.string())
                                 .suggests(PinCommands::suggestAll)
@@ -193,6 +194,44 @@ public final class PinCommands {
             source.sendSuccess(() -> Component.literal("  " + key + ", every world"), false);
         }
         return pins.size();
+    }
+
+    /**
+     * The ground the two chapters ask for and what this world has pinned of it, which is the whole
+     * scouting job in one answer: a location not on this list is not ground a page names, and a
+     * location marked not pinned is one the drawing is still guessing at.
+     */
+    private static int checklist(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        CommandSourceStack source = context.getSource();
+        ServerPlayer player = source.getPlayerOrException();
+        if (!(player.level() instanceof ServerLevel level)) return 0;
+        List<Pins.Need> needs = Pins.needed();
+        int done = 0;
+        for (Pins.Need need : needs) {
+            if (Pins.state(level, need.key()) != Pins.State.NONE) done++;
+        }
+        int pinned = done;
+        source.sendSuccess(() -> Component.literal("Quest ground: " + pinned + " of " + needs.size()
+                + " pinned"), false);
+        for (Pins.Need need : needs) {
+            String mark = switch (Pins.state(level, need.key())) {
+                case WORLD -> "this world";
+                case SOURCE -> "every world";
+                case NONE -> "not pinned";
+            };
+            source.sendSuccess(() -> Component.literal("  " + pad(need.key(), 36) + pad(mark, 14)
+                    + need.what()), false);
+        }
+        if (pinned < needs.size()) {
+            source.sendSuccess(() -> Component.literal("Stand where one belongs and use /tmpin place <id> "
+                    + "or /tmpin build <name>."), false);
+        }
+        return pinned;
+    }
+
+    /** Pads a column so the checklist lines up when it is read in a chat window. */
+    private static String pad(String text, int width) {
+        return text.length() >= width ? text + " " : text + " ".repeat(width - text.length());
     }
 
     // ---- names ----

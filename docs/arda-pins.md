@@ -37,6 +37,10 @@ print the source line to copy. `/tmpin list` shows what is pinned; `/tmpin remov
 world pin. A world pin is saved with the world and wins over a source pin; a source pin holds in every
 world, including one nobody has walked.
 
+`/tmpin checklist` lists the ground both chapters ask for - six names and nine buildings - and how each
+one stands: pinned in this world, pinned for every world, or still left to the drawing. It is the
+scouting job in one answer, and it places nothing.
+
 ## What a pin changes
 
 - **A name** stands exactly at the pinned block, and the spacing rule and country requirement are

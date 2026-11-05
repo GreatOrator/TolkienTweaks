@@ -150,6 +150,69 @@ public final class Pins extends SavedData {
         return List.copyOf(SOURCE.keySet());
     }
 
+    /** How a key stands, as a checklist reads it. */
+    public enum State {
+        /** Pinned in this world, by {@code /tmpin} or by a scout standing on the ground. */
+        WORLD,
+        /** Pinned in the build, so every world has it whether anybody walked one or not. */
+        SOURCE,
+        /** Not pinned, so the drawing decides where it goes. */
+        NONE
+    }
+
+    /**
+     * One piece of ground the pages ask for: the key a pin would be written under, and what it is.
+     */
+    public record Need(String key, String what) {
+    }
+
+    /**
+     * The ground the campaign's pages ask for, in the order a chapter reaches it: every location either
+     * chapter names, as a name to be announced or a building to be raised.
+     * <p>
+     * It is a checklist rather than a placement. Nothing here places anything, and a key without a pin
+     * is surveyed from the drawing exactly as it always was, so this list cannot break a world that
+     * ignores it - what it does is say how much of the map has actually been walked, which is otherwise
+     * only knowable by reading two chapters of pages and remembering which ones needed ground.
+     * <p>
+     * The five quarries that are stood up ahead of the player rather than at a place - the Giant,
+     * Ulmug's goblins, Dugorim, the barrow-wight and the Rider - are not here, because they are not
+     * ground anybody chooses.
+     */
+    private static final List<Need> NEEDED = List.of(
+            new Need("rivendell", "Rivendell - Elrond, Glorfindel and Legolas"),
+            new Need("thorenhad", "Thorenhad - Elladan's camp"),
+            new Need("barachen", "Barachen's fire"),
+            new Need("ford", "the ford the beryl is carried to"),
+            new Need("keystone", "the vault at the source of the Bruinen"),
+            new Need("carndum", "Carn Dum"),
+            new Need(Sites.WILD_TENT, "the tent laid at Thorenhad"),
+            new Need(Sites.WOOD_RUIN, "the wood ruin the black horse lies in"),
+            new Need(Sites.TROLL_CAVE, "Bandrith's cave"),
+            new Need(Sites.TROLL_CAVE_2, "Sholdroth's cave"),
+            new Need(Sites.TROLL_CAVE_3, "the third cave"),
+            new Need(Sites.GLOIN_CAMP, "Gloin's camp at the pass mouth"),
+            new Need(Sites.GUNDABAD, "Gundabad"),
+            new Need(Sites.BOSS_CASTLE, "the Witch-king's castle"),
+            new Need(Sites.BOSS_ARENA, "the arena beneath it"));
+
+    /** The ground the pages ask for, in the order they reach it. */
+    public static List<Need> needed() {
+        return NEEDED;
+    }
+
+    /**
+     * How a key stands: pinned in this world, pinned for every world, or left to the drawing. The same
+     * order {@link #at} reads, so a checklist and a placement cannot disagree about what is pinned.
+     */
+    public static State state(@Nullable Level level, String key) {
+        if (level != null) {
+            instance(level);
+            if (PINNED.containsKey(key)) return State.WORLD;
+        }
+        return SOURCE.containsKey(key) ? State.SOURCE : State.NONE;
+    }
+
     // ---- plumbing ----
 
     private static Pins instance(Level level) {
