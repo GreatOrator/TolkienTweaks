@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The three heralds have files of their own.** The faction folders' `quest_giver` skins are copied into
+  the named-giver folder as `maelgrin.png`, `guthlac.png` and `zarabi.png`, so a herald resolves by name
+  before his alliance's cloth. They are copies rather than moves on purpose: those three files are what
+  every giver of the West, East and Harad wears, so moving them would leave every one of them without a
+  skin and a warning on each load. The art is unchanged for now - the point is that each herald can be
+  redrawn on its own without touching the cloth the rest of his front wears.
 - **Barachen has a face of his own.** `middle-earth/barachen.png` is drawn and dropped into the named-giver
   folder, which is where the renderer already looks for a giver whose name it knows: a body wearing the
   West's work and the name "Barachen" is looked for as `barachen.png` before the alliance's cloth, so the
