@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **Ground is scouted before a location is settled.** `tools/arda_scout.py` renders a window of the drawn
+  world at two to four blocks to the pixel, hillshaded from the sixteen-bit topography and with the river and
+  lake masks painted over it - the painted terrain draws water as sand, so a river reads as a beach without
+  the masks - under a 128-block grid labelled in block coordinates, so a spot is read off the ground instead
+  of guessed from a cell. Each `--at X,Z,name` is marked on the render and reported as the ground a building
+  would have to stand on: the height at its middle, the lowest and highest ground within the footprint, the
+  drop across it, the share of it under water, and the distance to the nearest river. The first survey with it
+  found the camp and the ruin flat and a hundred-odd blocks off the Bruinen, a dry 174-block bench for the
+  valley, and the ford's pinned cell off the water by 1,155 blocks and off the drawn road besides.
 - **`/tmtp` jumps to any of the drawing's 49 countries.** A quick map for walking the regions while no
   build is pinned: `/tmtp <region>` reads the country's middle from `ArdaMap.anchor`, puts the caller eight
   blocks over its ground - over the water, for the three seas - and moves them into Arda from wherever they
