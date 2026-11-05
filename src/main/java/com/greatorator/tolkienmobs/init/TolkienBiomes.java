@@ -77,6 +77,15 @@ public class TolkienBiomes {
     public static final ResourceKey<Biome> SEA_OF_RHUN = createBiome("sea_of_rhun", BiomeMaker::makeBiomeSeaOfRhun);
     public static final ResourceKey<Biome> SEA_OF_NURNEN = createBiome("sea_of_nurnen", BiomeMaker::makeBiomeSeaOfNurnen);
     public static final ResourceKey<Biome> LONG_LAKE = createBiome("long_lake", BiomeMaker::makeBiomeLongLake);
+    /*
+     * The named rivers: the channels the river mask's own components can be named without guessing. The
+     * rest of the drawing's water stays the generic river, because the drawing fuses tributaries into one
+     * component and one name cannot stand for three rivers.
+     */
+    public static final ResourceKey<Biome> RIVER_ANDUIN = createBiome("river_anduin", BiomeMaker::makeBiomeRiverAnduin);
+    public static final ResourceKey<Biome> RIVER_CELDUIN = createBiome("river_celduin", BiomeMaker::makeBiomeRiverCelduin);
+    public static final ResourceKey<Biome> RIVER_GWATHLO = createBiome("river_gwathlo", BiomeMaker::makeBiomeRiverGwathlo);
+    public static final ResourceKey<Biome> RIVER_LUNE = createBiome("river_lune", BiomeMaker::makeBiomeRiverLune);
     public static final ResourceKey<Biome> LORINAND = createBiome("lorinand", BiomeMaker::makeBiomeLorinad, TolkienTags.Biomes.CONIFEROUS, TolkienTags.Biomes.TEMPERATE, TolkienTags.Biomes.PEACEFUL);
     public static final ResourceKey<Biome> BARROW_DOWNS = createBiome("barrow_downs", BiomeMaker::makeBiomeBarrowDowns, TolkienTags.Biomes.DEAD, TolkienTags.Biomes.COLD, TolkienTags.Biomes.HOSTILE);
     public static final ResourceKey<Biome> OLD_FOREST = createBiome("old_forest", BiomeMaker::makeBiomeOldForest, TolkienTags.Biomes.DARK_FOREST, TolkienTags.Biomes.TEMPERATE);

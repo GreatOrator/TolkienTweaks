@@ -66,6 +66,10 @@
         "tolkienmobs:sea_of_rhun",
         "tolkienmobs:sea_of_nurnen",
         "tolkienmobs:long_lake",
+        "tolkienmobs:river_anduin",
+        "tolkienmobs:river_celduin",
+        "tolkienmobs:river_gwathlo",
+        "tolkienmobs:river_lune",
         "tolkienmobs:moria"
       ]
     },

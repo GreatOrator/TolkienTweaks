@@ -733,6 +733,10 @@ public class TolkienLangProviderUS extends TolkienLangHelperUS {
             this.add("biome.tolkienmobs.sea_of_rhun", "Sea of Rhun");
             this.add("biome.tolkienmobs.sea_of_nurnen", "Sea of Nurnen");
             this.add("biome.tolkienmobs.long_lake", "Long Lake");
+            this.add("biome.tolkienmobs.river_anduin", "Anduin");
+            this.add("biome.tolkienmobs.river_celduin", "Celduin");
+            this.add("biome.tolkienmobs.river_gwathlo", "Gwathlo");
+            this.add("biome.tolkienmobs.river_lune", "Lune");
             this.add("biome.tolkienmobs.mirkwood", "Mirkwood Forest");
             this.add("biome.tolkienmobs.old_forest", "Old Forest");
             this.add("biome.tolkienmobs.mirkwood_spooky", "Mirkwood Spider Forest");

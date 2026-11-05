@@ -44,6 +44,11 @@ final class ArdaMasks {
     private static final boolean[] BRUINEN = fine("bruinen.png");
     private static final byte[] LAKES = coverage("lakes.png");
     /**
+     * The named rivers, one byte per cell: 0 where the channel has no name of its own and 1..4 for the
+     * rivers the bake could name without guessing. Baked by {@code tools/arda_river_names.py}.
+     */
+    private static final byte[] RIVER_NAMES = coverage("river-names.png");
+    /**
      * How much of a cell the drawing has to mark before the game calls it water.
      * <p>
      * Cells are eight blocks across and the drawing's own pixel is four, so a river crossing a cell
@@ -191,6 +196,24 @@ final class ArdaMasks {
             return height;
         }
         return height + (int) Math.round(rock * (crown - height));
+    }
+
+    /**
+     * Which named river a column's water belongs to, or 0 for water the bake could not name.
+     * <p>
+     * Read nearest rather than between cells: the name is a fact about the whole channel, so a bank that
+     * falls inside a named river takes that name to its own edge instead of fading into the generic one.
+     */
+    static int riverName(int blockX, int blockZ) {
+        if (RIVER_NAMES.length == 0) {
+            return 0;
+        }
+        int column = Math.floorDiv(blockX - WEST, BLOCKS);
+        int row = Math.floorDiv(blockZ - NORTH, BLOCKS);
+        if (column < 0 || column >= WIDTH || row < 0 || row >= HEIGHT) {
+            return 0;
+        }
+        return RIVER_NAMES[row * WIDTH + column] & 0xFF;
     }
 
     /** Whether the lake mask covers a column. */

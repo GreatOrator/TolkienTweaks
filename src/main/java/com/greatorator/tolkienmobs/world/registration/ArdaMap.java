@@ -471,7 +471,13 @@ public final class ArdaMap {
      */
     public static ResourceKey<Biome> waterBiome(int blockX, int blockZ) {
         if (!ArdaMasks.lake(blockX, blockZ)) {
-            return TolkienBiomes.RIVER;
+            return switch (ArdaMasks.riverName(blockX, blockZ)) {
+                case 1 -> TolkienBiomes.RIVER_ANDUIN;
+                case 2 -> TolkienBiomes.RIVER_CELDUIN;
+                case 3 -> TolkienBiomes.RIVER_GWATHLO;
+                case 4 -> TolkienBiomes.RIVER_LUNE;
+                default -> TolkienBiomes.RIVER;
+            };
         }
         if (within(blockX, blockZ, EVENDIM_SPAN)) {
             return TolkienBiomes.LAKE_EVENDIM;

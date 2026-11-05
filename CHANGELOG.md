@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The great rivers are named.** `tools/arda_river_names.py` bakes the river mask's components into a
+  names raster, so the Anduin, the Celduin, the Gwathlo and the Lune are their own biomes instead of all
+  reading as the generic river; the rest of the drawing's water stays generic, because it fuses
+  tributaries into one component and one name cannot stand for three rivers.
 - **Rivers and lakes have biomes of their own.** Water used to read as the vanilla river wherever it
   lay; it now has a generic `river` and `lake` for the sheets the drawing does not name, and its own biome
   for each lake it does - Evendim, the Sea of Rhun, the Sea of Nurnen and the Long Lake - so a player can

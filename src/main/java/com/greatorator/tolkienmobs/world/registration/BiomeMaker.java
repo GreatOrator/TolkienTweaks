@@ -1142,6 +1142,22 @@ public class BiomeMaker extends BiomeHelper{
         return waterBiome(placedFeatureGetter, carverGetter, 0x3F76E4, 0x78A7FF, 0xC0D8FF, 0.5F);
     }
 
+    public static Biome makeBiomeRiverAnduin(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return waterBiome(placedFeatureGetter, carverGetter, 0x2F6E9E, 0x7FA8C9, 0xB6CFE2, 0.6F);
+    }
+
+    public static Biome makeBiomeRiverCelduin(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return waterBiome(placedFeatureGetter, carverGetter, 0x2C6A86, 0x83A5B5, 0xB4C6D0, 0.5F);
+    }
+
+    public static Biome makeBiomeRiverGwathlo(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return waterBiome(placedFeatureGetter, carverGetter, 0x356F8A, 0x8FAFC2, 0xBCCFDC, 0.5F);
+    }
+
+    public static Biome makeBiomeRiverLune(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return waterBiome(placedFeatureGetter, carverGetter, 0x2B6478, 0x86A9B6, 0xB9CDD6, 0.45F);
+    }
+
     public static Biome makeBiomeLakeEvendim(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
         return waterBiome(placedFeatureGetter, carverGetter, 0x2E5F8A, 0x6E93BE, 0xA8C0D8, 0.4F);
     }

@@ -79,8 +79,9 @@ the south, not where the 48 by 36 grid draws its hand-painted sea cells.
 
 Evendim is the mask's own bigger blob in the north-west, with the smaller blob to its south-east; the
 hand-drawn ellipse that stood in for it is gone, and the lake is the drawn one like the rest. Each named sheet is its own biome - `lake_evendim`,
-`sea_of_rhun`, `sea_of_nurnen`, `long_lake` - while any other drawn lake is `lake` and every drawn river is
-`river`. The three
+`sea_of_rhun`, `sea_of_nurnen`, `long_lake` - while any other drawn lake is `lake`. Rivers are `river`,
+except the four the river mask's own components can be named without guessing: `river_anduin`,
+`river_celduin`, `river_gwathlo` and `river_lune`. The three
 sheets outside the frame are at x 19833..20070 z -1495..-1295, x 22411..22707 z 11446..11646 and
 x 9957..10158 z 13724..13908.
 
