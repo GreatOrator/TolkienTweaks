@@ -116,11 +116,11 @@ with cheats, and creative or op 2. The city is **554 x 244 x 512**, and its lowe
 caller's feet, so **the feet must be at y 76 or below**: above that the top bands are left out with a
 message rather than laid.
 
-1. **Pick the ground.** In Arda, Rivendell is pinned at `4628, 75, -3577` (`Pins.SOURCE`): the middle of
+1. **Pick the ground.** In Arda, Rivendell is pinned at `5097, 75, -3010` (`Pins.SOURCE`): the middle of
    the 554 by 512 footprint, on ground the city was scouted against. No floor is cut for it any more
    (`PLANTED = false` in `ArdaMap`), so the drawn ground is what it stands on. Stand there - `/execute in
-   tolkienmobs:arda run tp @s 4628 100 -3577`, then let yourself fall - and plant with your feet at 75,
-   which puts the crown at 318, one block under the ceiling; planting from the corner `4352, 75, -3833`
+   tolkienmobs:arda run tp @s 5097 100 -3010`, then let yourself fall - and plant with your feet at 75,
+   which puts the crown at 318, one block under the ceiling; planting from the corner `4820, 75, -3266`
    centres the footprint on the pin. In any other world, pick flat ground with 554 x 512 clear and feet at
    or below 76.
 

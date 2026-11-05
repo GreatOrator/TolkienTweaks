@@ -5,12 +5,17 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The valley is pinned where it was scouted, not where it was worked out.** The scouted pin is
+  **5097, 75, -3010**, read back out of the world's own `pins.dat` - `/tmpin` keeps a pin in the save and
+  prints the source line, it does not write the source - and the planting corner is **4820, 75, -3266**,
+  derived from the cut's own 584-piece table rather than from a remembered footprint. The first pass
+  had the middle computed from the old planting, which was the right size in the wrong place.
 - **The city marker is read once, not once a visit.** `CityCommands.plantedCorner` keeps the corner it
   read for the dimension and every write to the marker drops it, so dressing a planted city costs a field
   read on the tick rather than a file read every time a player walks near the valley.
 - **Rivendell is pinned, and the valley stopped building its stand-in.** `Pins.SOURCE` holds
-  `Map.entry("rivendell", new BlockPos(4628, 75, -3577))` - the middle of the cut's own 554 by 512
-  footprint, planted from the corner 4352, 75, -3833 - and `Campaign` no longer lays the old square kit at
+  `Map.entry("rivendell", new BlockPos(5097, 75, -3010))` - the middle of the cut's own 554 by 512
+  footprint, planted from the corner 4820, 75, -3266 - and `Campaign` no longer lays the old square kit at
   all: `standValley`, its pieces, their seating and their stone-naming are gone. A visit to the valley now
   reads where `/tmcity` planted the city, stands the build's own marks and the crowd in it, and leaves the
   Elves on the pinned ground until a city is there. `/tmpin` prints its source line as a `Map.entry(...)`,
