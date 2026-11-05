@@ -60,7 +60,7 @@ scouting job in one answer, and it places nothing.
 | pages | what | key | note |
 | --- | --- | --- | --- |
 | 1, 5, 7, 12, 13, 15 | Rivendell, where the West's Elves stand | `rivendell` | the valley floor; unblocks every Elrond/Glorfindel page |
-| 2, 4, 8 | Elladan's camp (a pitched tent) | `tolkienmobs:key_structures/wild_tent` | level ground, a walk from the road |
+| 2, 4, 8 | Elladan's camp | `tolkienmobs:key_structures/elledancamp` | 20 by 8 by 20; level ground a walk from the road |
 | 3 | the wood ruin the black horse is found in | `tolkienmobs:ttmruin_large_2` | about fourteen blocks across; a standing wall in the channels south of the road |
 | 6 | the ford the beryl is carried to | `ford` | **must be water the road can cross** — the drawn cell has neither |
 | 9 | Bandrith's, Sholdroth's and the third cave | `tolkienmobs:key_structures/troll_cave`, `.../troll_cave_2`, `.../troll_cave_3` | each is a crag cut by `tools/make_troll_cave.py`, so the ground wants a hillside |

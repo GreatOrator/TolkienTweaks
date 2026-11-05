@@ -151,8 +151,12 @@ public final class Campaign extends SavedData {
     private static final double ELLADAN_REACH = 128.0D;
     /** How wide a circle Elladan's camp is, in blocks: enough to walk into from any side of it. */
     private static final int CAMP_RADIUS = 48;
-    /** The tent the camp is: the same template the Rangers' camp errand pitches, laid down at Thorenhad. */
-    private static final String CAMP_TENT = Sites.WILD_TENT;
+    /**
+     * The camp itself: Elladan's own cut, laid down at Thorenhad by {@link #standTent}. The Rangers'
+     * tent it replaces is still the camp errand's and still the world generator's; this is the one
+     * the chapter stands, and the one whose door the page is spoken at.
+     */
+    private static final String CAMP_TENT = Sites.ELLADAN_CAMP;
     /**
      * Barachen, and the camp of his the notes send the player to once the caves have answered nothing.
      * He is the West's scout rather than an Elf, and his word is what turns the line from a search of

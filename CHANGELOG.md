@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **Elladan's camp is a cut of its own.** `key_structures/elledancamp.nbt` - 20 by 8 by 20, 940 blocks,
+  no entities - is `Sites.ELLADAN_CAMP`, canon'd to the Trollshaws and pinned to Thorenhad's cell, and
+  `Campaign.CAMP_TENT` lays it at the named camp in place of the Rangers' tent. The tent keeps both of its
+  jobs: it is still what the camp errand pitches and still what the world generator stands in the wilds, so
+  nothing else moves. `/tmpin build camp` and `elledancamp` name the new cut, and the scouting checklist
+  counts it instead of the tent.
 - **`/tmpin checklist` says how much of the map has been walked.** The command lists the fifteen locations
   the two chapters ask for - six names and nine buildings - each marked as pinned in this world, pinned for
   every world, or still left to the drawing, with a count at the top. It places nothing: it is the checklist

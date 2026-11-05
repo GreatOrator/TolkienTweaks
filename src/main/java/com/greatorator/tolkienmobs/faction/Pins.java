@@ -186,7 +186,7 @@ public final class Pins extends SavedData {
             new Need("ford", "the ford the beryl is carried to"),
             new Need("keystone", "the vault at the source of the Bruinen"),
             new Need("carndum", "Carn Dum"),
-            new Need(Sites.WILD_TENT, "the tent laid at Thorenhad"),
+            new Need(Sites.ELLADAN_CAMP, "Elladan's camp at Thorenhad"),
             new Need(Sites.WOOD_RUIN, "the wood ruin the black horse lies in"),
             new Need(Sites.TROLL_CAVE, "Bandrith's cave"),
             new Need(Sites.TROLL_CAVE_2, "Sholdroth's cave"),

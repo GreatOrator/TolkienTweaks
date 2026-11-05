@@ -61,7 +61,8 @@ public final class PinCommands {
     private static final Map<String, String> BUILDINGS = new LinkedHashMap<>();
 
     static {
-        BUILDINGS.put("camp", Sites.WILD_TENT);
+        BUILDINGS.put("camp", Sites.ELLADAN_CAMP);
+        BUILDINGS.put("elledancamp", Sites.ELLADAN_CAMP);
         BUILDINGS.put("tent", Sites.WILD_TENT);
         BUILDINGS.put("ruin", Sites.WOOD_RUIN);
         BUILDINGS.put("cave", Sites.TROLL_CAVE);

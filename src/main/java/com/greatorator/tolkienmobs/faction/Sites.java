@@ -87,6 +87,17 @@ public final class Sites extends SavedData {
     /** The tent the camp errand pitches, as a template the mod already ships. */
     public static final String WILD_TENT = "tolkienmobs:key_structures/wild_tent";
     /**
+     * Elladan's own camp at Thorenhad, cut rather than pitched: twenty by eight by twenty, stone and
+     * podzol under spruce with the rock of the hillside still in it - the shape of a camp the Dunedain
+     * keep, not the canvas a traveller carries.
+     * <p>
+     * It replaces the tent at Thorenhad and nowhere else. The tent keeps both of its jobs - the camp
+     * errand pitches it wherever that errand is taken, and the world generator stands it in the wilds
+     * as scenery - so this is ground only the chapter raises, named here and pinned to a cell like the
+     * rest of the chapter's own buildings.
+     */
+    public static final String ELLADAN_CAMP = "tolkienmobs:key_structures/elledancamp";
+    /**
      * The dwarf camp Glóin keeps at the east end of the pass, taken from the old world's own camp rather
      * than modelled: the pack ships no dwarf camp of its own, and the notes open the second chapter at a
      * fire a player walks up to. Captured as it stood - 28 by 8 by 22, its door in the middle of the south
@@ -154,28 +165,31 @@ public final class Sites extends SavedData {
      * beside the player. Anything not named here keeps looking around the player, which is what lets the
      * tent's wilds stay in the data.
      */
-    private static final Map<String, ArdaMap.Country> CANON = Map.of(
-            WEATHERTOP, ArdaMap.Country.ERIADOR,
-            BOSS_CASTLE, ArdaMap.Country.ANGMAR,
-            BOSS_ARENA, ArdaMap.Country.ANGMAR,
-            WOOD_RUIN, ArdaMap.Country.TROLLSHAWS,
+    private static final Map<String, ArdaMap.Country> CANON = Map.ofEntries(
+            Map.entry(WEATHERTOP, ArdaMap.Country.ERIADOR),
+            Map.entry(BOSS_CASTLE, ArdaMap.Country.ANGMAR),
+            Map.entry(BOSS_ARENA, ArdaMap.Country.ANGMAR),
+            Map.entry(WOOD_RUIN, ArdaMap.Country.TROLLSHAWS),
             // The camp the errands pitch and the three crags the stone asks in are the campaign's own
             // buildings, and a building that is pitched where the page was taken is a building two
             // players on one server get two of. They stand in the hills with the rest of the chapter,
             // on ground written down once.
-            WILD_TENT, ArdaMap.Country.TROLLSHAWS,
-            TROLL_CAVE, ArdaMap.Country.TROLLSHAWS,
-            TROLL_CAVE_2, ArdaMap.Country.TROLLSHAWS,
-            TROLL_CAVE_3, ArdaMap.Country.TROLLSHAWS,
+            Map.entry(WILD_TENT, ArdaMap.Country.TROLLSHAWS),
+            // Elladan's own cut is the camp the rider's pages are heard at, a walk east of the
+            // valley in the same hills rather than in the valley itself.
+            Map.entry(ELLADAN_CAMP, ArdaMap.Country.TROLLSHAWS),
+            Map.entry(TROLL_CAVE, ArdaMap.Country.TROLLSHAWS),
+            Map.entry(TROLL_CAVE_2, ArdaMap.Country.TROLLSHAWS),
+            Map.entry(TROLL_CAVE_3, ArdaMap.Country.TROLLSHAWS),
             // The camp is at the east end of the High Pass: the ground the pass drops into on the Anduin
             // side, which the drawing names Gladden, rather than the mountains it cuts through. That is where
             // the old world built it and where the notes send the player, north of the valley.
-            GLOIN_CAMP, ArdaMap.Country.GLADDEN,
+            Map.entry(GLOIN_CAMP, ArdaMap.Country.GLADDEN),
             // Gundabad is in the Hithaeglir - the Misty Mountains themselves - which is where the
             // notes put it and where the dwarves would have cut it. No cell is pinned for it, because
             // a building 122 by 183 can only stand where the ground is level enough to take it, and the
             // search has to be free to walk out from the country's middle to find that ground.
-            GUNDABAD, ArdaMap.Country.HITHAEGLIR);
+            Map.entry(GUNDABAD, ArdaMap.Country.HITHAEGLIR));
     /**
      * The cell of the drawing a landmark the books pinpoint is asked for in, as {column, row}.
      * <p>
@@ -189,6 +203,9 @@ public final class Sites extends SavedData {
     private static final Map<String, int[]> CANON_CELL = Map.of(
             WOOD_RUIN, new int[]{19, 14},
             WILD_TENT, new int[]{17, 13},
+            // Thorenhad's own cell, which the place is named in too: the camp stands where its pages
+            // are heard, a walk east of the valley and off the road.
+            ELLADAN_CAMP, new int[]{19, 13},
             TROLL_CAVE, new int[]{17, 15},
             TROLL_CAVE_2, new int[]{18, 16},
             TROLL_CAVE_3, new int[]{19, 16},
