@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The city marker is read once, not once a visit.** `CityCommands.plantedCorner` keeps the corner it
+  read for the dimension and every write to the marker drops it, so dressing a planted city costs a field
+  read on the tick rather than a file read every time a player walks near the valley.
 - **Rivendell is pinned, and the valley stopped building its stand-in.** `Pins.SOURCE` holds
   `Map.entry("rivendell", new BlockPos(4628, 75, -3577))` - the middle of the cut's own 554 by 512
   footprint, planted from the corner 4352, 75, -3833 - and `Campaign` no longer lays the old square kit at

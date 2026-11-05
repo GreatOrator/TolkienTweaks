@@ -86,6 +86,9 @@ public final class CityCommands {
     private static final int UNDERPIN = 24;
     /** Templates already read this session, so the ten megabytes are parsed once. */
     private static final Map<String, StructureTemplate> LOADED = new HashMap<>();
+    /** The corner last read out of the marker, and the dimension it was read for. */
+    private static BlockPos PLANTED;
+    private static String PLANTED_IN;
 
     /** One piece: its file, and where its corner sits in the frame the cut was taken in. */
     private record Part(String name, int dx, int dy, int dz, int wide, int deep, int tall) {
@@ -216,15 +219,20 @@ public final class CityCommands {
      * told so rather than walked to a frame that belongs to another country.
      */
     static BlockPos plantedCorner(ServerLevel level) {
+        // Read once and kept: this is asked on the tick, whenever a player is near the valley, and a file
+        // read a second is not what walking into Rivendell should cost. Every write to the marker clears
+        // it, so a city planted or re-cut by hand is picked up on the next visit either way.
+        String here = level.dimension().identifier().toString();
+        if (here.equals(PLANTED_IN)) return PLANTED;
         try {
             Mark mark = read(folder());
-            if (mark == null) return null;
-            String here = level.dimension().identifier().toString();
-            if (mark.dimension() != null && !mark.dimension().equals(here)) return null;
-            return mark.origin();
+            boolean mine = mark != null && (mark.dimension() == null || mark.dimension().equals(here));
+            PLANTED = mine ? mark.origin() : null;
         } catch (IOException unreadable) {
-            return null;
+            PLANTED = null;
         }
+        PLANTED_IN = here;
+        return PLANTED;
     }
 
     /** The city's people as the build's own table gives them, for a visit that dresses a planted city. */
@@ -644,6 +652,8 @@ public final class CityCommands {
         Files.writeString(folder.resolve(MARKER), mark.origin().getX() + " " + mark.origin().getY()
                 + " " + mark.origin().getZ() + " " + mark.band() + " " + (mark.apron() ? 1 : 0)
                 + (mark.dimension() == null ? "" : " " + mark.dimension()));
+        // Every change to the marker goes through here, so this is the one place the cache is dropped.
+        PLANTED_IN = null;
     }
 
     private static Path folder() {
