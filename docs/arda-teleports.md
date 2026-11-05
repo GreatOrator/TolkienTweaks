@@ -44,7 +44,6 @@ narrow shelf of land, so its point is the first dry column of it rather than the
 | Ithilien | 11264 | 175 | 3840 | 167 |
 | Khand | 17920 | 163 | 5120 | 155 |
 | Lindon | -4096 | 120 | -4096 | 112 |
-| Long Lake (inland water) | 12800 | 197 | -6144 | 189 |
 | Lorinand | 7168 | 231 | -1536 | 223 |
 | Marshes | 9728 | 210 | 1792 | 202 |
 | Minhiriath (patch grid) | -768 | 103 | 1280 | 95 |
@@ -56,13 +55,41 @@ narrow shelf of land, so its point is the first dry column of it rather than the
 | Rhudaur | 3840 | 176 | -4864 | 168 |
 | Rhun | 13824 | 169 | -3584 | 161 |
 | Rohan | 8448 | 187 | 1280 | 179 |
-| Sea Of Nurnen (inland water) | 15360 | 237 | 4096 | 229 |
-| Sea Of Rhun (inland water) | 15872 | 178 | -3584 | 170 |
 | Shire | 0 | 116 | 256 | 108 |
 | Trollshaws | 4352 | 166 | -2816 | 158 |
 | Umbar (patch grid) | 9216 | 100 | 7936 | 92 |
 | White Mountains | 6656 | 183 | 3072 | 175 |
 | Wild Wood | 11264 | 184 | 512 | 176 |
+
+## Lakes
+
+These are the six the lake mask draws. The water is laid at the ground the mask gives it, so a point is
+the middle of the drawn sheet and the span is the extent of it; the two great seas are in the east and
+the south, not where the 48 by 36 grid draws its hand-painted sea cells.
+
+| Lake | x | y | z | drawn span |
+| --- | --- | --- | --- | --- |
+| Sea of Rhun, the great eastern water | 17580 | 84 | -212 | x 16336..18800, z -1400..1168 |
+| Sea of Nurnen, the southern water | 15460 | 72 | 7140 | x 14312..16600, z 6488..7648 |
+| Northern lake, above Angmar | 524 | 127 | -4860 | x 248..768, z -5176..-4600 |
+| Lake at the Bruinen's head | 2828 | 137 | -3588 | x 2656..3024, z -3736..-3448 |
+| Far-eastern lake | 18836 | 179 | -4236 | x 18608..19048, z -4368..-4096 |
+| North-eastern lake, above Mirkwood's eaves | 11484 | 164 | -4916 | x 11424..11560, z -5120..-4696 |
+
+Annuminas has no lake: the mask draws nothing at Nenuial, so the city's water would have to be put in by
+hand.
+
+## Marshes
+
+Read off the countries the map paints, so these are the drawn wetlands rather than anything the masks
+say. Both marsh countries are low ground with standing water and drowned trees.
+
+| Marsh | x | y | z | drawn cells |
+| --- | --- | --- | --- | --- |
+| Nindalf, the Wetwang, and the Dead Marshes | 9728 | 210 | 1792 | cols 27-30, rows 22-24 |
+| Gladden Fields, the Anduin's northern vale | 8192 | 203 | -3328 | cols 25-26, rows 6-20 |
+| Gladden Fields, the east bank | 11520 | 178 | -3328 | cols 31-33, rows 11-15 |
+| Dol Guldur, the southern Mirkwood | 11008 | 185 | -1280 | cols 30-32, rows 16-18 |
 
 Moria: the surface point above the halls is the Misty Mountains entry. The halls are hollow now, so the
 point below lands inside the chamber; the rock over it is the mountain's own ground.
