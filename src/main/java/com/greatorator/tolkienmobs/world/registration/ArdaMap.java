@@ -693,8 +693,8 @@ public final class ArdaMap {
             // instead of ending in a wall. A bed cut flat from bank to bank makes the river a square hole
             // in the ground, because every column of it holds the same depth of water right up to the
             // land; a bed that rises a block per block to each bank is the riverside a person wades in.
-            int deep = Math.min(drawnRiverWidth(blockX, blockZ), RIVER_DEPTH_MAX);
-            deep = Math.min(deep, ArdaMasks.riverEdge(blockX, blockZ) + 1);
+            int deep = ArdaMasks.riverDepth(blockX, blockZ,
+                    Math.min(drawnRiverWidth(blockX, blockZ), RIVER_DEPTH_MAX));
             return new Sample(ground.country(), Math.min(ground.height(), surface - deep), true,
                     false, ground.upland(), surface);
         }

@@ -132,21 +132,27 @@ final class ArdaMasks {
     }
 
     /**
-     * How many blocks a river column stands from its own bank, from nothing at the water's edge.
+     * How deep the water stands in a river column: one block at the bank, deepening a block per block
+     * toward the middle, and never more than {@code cap}.
      * <p>
-     * Walked in single blocks, unlike the width, because this is the slope of the bed rather than a
-     * measurement of it: a column one block out of the channel cannot have two blocks of water under it
-     * without the bank becoming a wall. Past {@link #RIVER_STEP} blocks the channel is deep enough that
-     * the depth cap answers instead, so the walk stops there.
+     * Measured from the narrowed bank rather than from the drawing's: the cut is already taken off the
+     * edge, so the distance to the drawn bank is that much further out and a slope measured from it would
+     * begin outside the water and leave the channel square again - which is exactly what it did. The walk
+     * is in single blocks, because one block out of the water is one block of depth it cannot have, and it
+     * ends at the cap's own distance, since past that the cap answers and deeper is flat.
      */
-    static int riverEdge(int blockX, int blockZ) {
-        for (int step = 1; step <= RIVER_STEP; step++) {
+    static int riverDepth(int blockX, int blockZ, int cap) {
+        int cut = cut(blockX, blockZ);
+        int edge = 0;
+        for (int step = 1; step <= cap + cut; step++) {
             if (!drawn(blockX + step, blockZ) || !drawn(blockX - step, blockZ)
                     || !drawn(blockX, blockZ + step) || !drawn(blockX, blockZ - step)) {
-                return step - 1;
+                edge = step - 1;
+                break;
             }
+            edge = step;
         }
-        return RIVER_STEP;
+        return Math.max(1, Math.min(cap, edge - cut + 1));
     }
 
     /** How far the drawing is still water from a column, walking out in one direction. */

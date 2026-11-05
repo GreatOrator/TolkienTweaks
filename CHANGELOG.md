@@ -8,8 +8,10 @@ All notable changes to this project will be documented in this file.
 - **The halls are Moria whatever the surface is called.** The rectangle the biome answers in lies under
   a cell the drawing gives to Lorinand, so the country check refused it and the chamber read as Lorinand;
   the rock below the roof is the halls' own now, and the surface keeps its biome.
-- **Rivers have sloped banks.** The bed rises a block per block to each bank instead of holding the
-  full depth right up to the land, which is what made a river a square hole in the ground.
+- **Rivers have sloped banks.** The water stands one block deep at the narrowed bank and deepens a
+  block per block inward, reaching the eleven-block cap about twelve blocks out, instead of holding
+  the full depth right up to the land - which is what made a river a square hole in the ground. The
+  slope is measured from the cut bank, not the drawing's, or it would begin on dry land.
 - **A river is at most eleven blocks deep.** With the channels a third narrower the old sixteen-block
   cap was a canyon under a brook; the bed still follows the channel's width, up to eleven.
 - **The rivers are a third narrower.** The bake marks channels forty blocks across and more, which
