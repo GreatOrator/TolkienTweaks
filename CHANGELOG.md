@@ -16,6 +16,12 @@ All notable changes to this project will be documented in this file.
   disc rather than the height of the one column the feature happened to start on, and the block or two of
   ground standing over that line is cut instead of left as an island: no more sheets standing above their
   shore, and no more dirt rings inside the water.
+- **The drawing is measured against the reference the masks came from, and the offsets do not hold.** The
+  table in `docs/arda-map-gaps.md` was measured from a map that is not in the repository; rendered over
+  `Reference/ME_Terrain_albedo.png` - the painted terrain every mask is cut from - the eastern fills are
+  already on the ground they name, and the Sea of Rhun falls at columns 41-46 rows 17-22, inside Rhun's own
+  cells, not at the table's 40-43 rows 12-15. The fills are unchanged; `tools/arda_grid_overlay.py` renders
+  the comparison so it can be repeated.
 - **Mountains are ridges and gullies, not smooth hills.** The drawn ground was raised toward the crown by
   the mountain mask's brightness, and that brightness is blurred, so every range came out as a cone with
   nothing on it but its own gradient. Ridged noise is now folded into the climb over each range's flank -

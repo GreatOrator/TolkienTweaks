@@ -12,6 +12,28 @@ map, so that a chapter which walks into one of these countries can fix that coun
 surveying ground in it. The grid is the map's own: column 0 is the west edge and each cell is
 `ArdaMap.CELL` (512 blocks) across.
 
+## Re-measured against the reference the masks came from
+
+The table below was measured against `middleearth.jpeg`, a hand-placed map that is not in this repository.
+The reference that *is* here is `Reference/ME_Terrain_albedo.png` plus `Reference/work/calibration.json` -
+the painted terrain the rivers, lakes, mountains and heights were all cut from - so the drawing was measured
+against that instead. `tools/arda_grid_overlay.py` renders each eastern country's cells over it (the result
+is `build/arda-grid-overlay.png`) and the answer is that the fills are already where the reference puts the
+ground they name:
+
+- Mirkwood's cells sit on the drawn forest, Gladden's strip on the Anduin's valley, and the Iron Hills' on
+  the brown hills north-east of it.
+- Rohan's cells sit on the grassland below the Misty Mountains' southern end.
+- Mordor's on the ash plain, and Nurn's on the ground below it.
+- The Sea of Rhun is at columns 41-46, rows 17-22, inside Rhun's own cells and its eastern edge - not at
+  columns 33-36, rows 12-15, which is what the table below records.
+- The Sea of Nurnen falls inside the cells Nurn already holds, columns 37-43, rows 27-29.
+
+So the numbers below are a property of the *other* map's calibration, not a defect in the drawing: moving
+the fills by them would carry every eastern biome off the ground and the water the masks draw. No fill was
+moved. Anyone restoring `middleearth.jpeg` should re-run `tools/arda_grid_overlay.py` against it before
+believing a number in that table, and should not move a country on the strength of the table alone.
+
 ## The shifts, in cells
 
 "Reference" is what the map shows; "drawn" is what `draw()` fills today. The measured error is within
