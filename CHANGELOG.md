@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **Gimli has a face, and four named files are repainted.** `middle-earth/gimli.png` closes the last named
+  body that had no art - the dwarf beside Gundabad's well - and `elrond.png`, `gloin.png`, `legolas.png` and
+  `ranger.png` are redrawn in place, so every named giver and the camp keeper's fallback now wear current
+  art. All of them are 64 by 64 like the rest of the folder, which is what the human model's sheet is.
 - **The three heralds have files of their own.** The faction folders' `quest_giver` skins are copied into
   the named-giver folder as `maelgrin.png`, `guthlac.png` and `zarabi.png`, so a herald resolves by name
   before his alliance's cloth. They are copies rather than moves on purpose: those three files are what
