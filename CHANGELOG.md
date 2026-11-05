@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The roads, surveyed before any ground is moved.** `docs/arda-roads.md` records where the roads in Arda
+  can come from - the canon map's line symbology, the places the mod already pins to cells, and the drawing's
+  own grid - why they cannot be traced in pixels (the two references are in different projections, and road
+  ink is the same ink as labels), and seven candidate routes with their cell waypoints. `tools/arda_roads.py`
+  renders them over the reference terrain so the routes can be argued about first. Nothing is generated yet.
 - **More of the drowned dead, and pools that hold a few of them.** A placement now searches nine blocks
   around its column instead of five and lays up to two bodies on separate beds, and four placements are
   rolled per chunk rather than two, so a deep pool is not left with a single corpse in it.
