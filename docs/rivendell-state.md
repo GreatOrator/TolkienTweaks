@@ -2,8 +2,8 @@
 
 > **The city's own ground is laid aside (`PLANTED = false` in `ArdaMap`), and the valley is pinned.** The
 > dimension is the drawn height, rivers, lakes and mountains and nothing else, so the city stands on drawn
-> ground: `Pins.SOURCE` puts `rivendell` at **5097, 75, -3010**, the cut's own low corner, so the city covers
-> x 5097..5650 by z -3010..-2499 with its crown at 318. The valley floor at 74, the 318 rim, the shoulder
+> ground: `Pins.SOURCE` puts `rivendell` at **5200, 75, -3370**, the cut's own low corner, so the city covers
+> x 5200..5753 by z -3370..-2859 with its crown at 318. The valley floor at 74, the 318 rim, the shoulder
 > and the branch described below are the shape the city would be laid into - still in the source, behind one
 > switch, and no longer generated.
 >
@@ -32,7 +32,7 @@ what is still open, so the next session does not have to rebuild that from the c
 ## The city
 
 - Hand-built `Rivendell_Imladris`, raised by `/tmcity` on the pin, standing on the cut's low corner
-  **5097, 75, -3010**: 584 pieces, 554 x 512 blocks (x 5097..5650, z -3010..-2499), bands from **y 75** to a
+  **5200, 75, -3370**: 584 pieces, 554 x 512 blocks (x 5200..5753, z -3370..-2859), bands from **y 75** to a
   crown of **318**.
 - The build carries its **own water** - 763 `minecraft:water` blocks across 306 of its 584 pieces, not the
   none an earlier note claimed - which is the pool and channel inside the city. The ground round it is the
@@ -52,7 +52,7 @@ what is still open, so the next session does not have to rebuild that from the c
 - Floor **74**, and it is **544 by 502** centred on 4628, -3577: x 4356..4900, z -3828..-3326, which is
   four to five blocks *inside* the 554 by 512 footprint. Those columns are the pre-pin planting's and are
   kept as the shape that was measured, not as ground: no floor is generated any more (`PLANTED = false`),
-  and with the city on the pin this profile sits 745 east and 823 north of where the city now stands. This is the shape the valley had at `82abe999`,
+  and with the city on the pin this profile sits 848 east and 463 south of where the city now stands. This is the shape the valley had at `82abe999`,
   and the one that reads as a straight wall: the rock stands at the **crown, 318**, from the floor's own
   edge outward, so the city is embedded in the mountain rather than set down beside it and there is no
   strip of ground between the two to be a seam. The build's base band is flush with its footprint on all
@@ -83,7 +83,7 @@ what is still open, so the next session does not have to rebuild that from the c
 
 ## The water
 
-- **The drawn Bruinen is nearest the valley at 4995, -3311**, ninety-five blocks east of the build's
+- **The drawn Bruinen is nearest the city's mouth at 5054, -3086**, a hundred and forty-seven blocks west of the build's
   outlet and running north-south at about 101 degrees, read from the mask's own resolution: the river
   layer is baked again at **three blocks to the pixel** over x 4200..5400 by z -4100..-2900
   (`bruinen.png`), because a sixteen-block pixel cannot place a twelve-block channel. There are no river
@@ -91,12 +91,12 @@ what is still open, so the next session does not have to rebuild that from the c
 - **A drawn river answers before the massif and before the floor**: the Bruinen cuts its own channel
   through both, so the branch meets it in open water instead of running into a wall of massif at 5005.
 - **The branch leaves Rivendell on the west and runs round the valley to the Bruinen.** The city's 584
-  pieces carry 302,049 water blocks over 40,321 columns; the water stands at **5097, -2707** with its
+  pieces carry 302,049 water blocks over 40,321 columns; the water stands at **5200, -3067** with its
   surface at **82**, and the only water on the east edge is an aqueduct at y 239. The branch was built from
-  5645, -2499, which carries no water of the build's at all. Both are world columns with the city on the
-  pin; the legs below were measured from the old planting at 4352, -3833, so they shift with it by 745
-  east and 823 north, while the drawn water at 4995, -3311 is the map's own and stays put. Its course is
-  four legs - out west of the wall to 5017, south to z -2433, east below the city to 5697, and in to the
+  5748, -2859, which carries no water of the build's at all. Both are world columns with the city on the
+  pin; the legs below were measured from the old planting at 4352, -3833, so they shift with it by 848
+  east and 463 south, while the drawn water at 4995, -3311 is the map's own and stays put. Its course is
+  four legs - out west of the wall to 5120, south to z -2793, east below the city to 5800, and in to the
   drawn water at **4995, -3311**:
   **1,104 blocks** in all, twelve wide with 5 left and 7 right of the middle. The ground is the vale's
   **74** the whole way, so the river falls the eight blocks from the city's water at the wall and then
@@ -107,7 +107,7 @@ what is still open, so the next session does not have to rebuild that from the c
   Bruinen's own banks, where it runs 96 blocks east of the walls with no branch beside it, still stand at
   the crown to the water's edge, because a drawn river's distance is only read out to **64** blocks and a
   cone cut off at 64 leaves the step it was cut to remove. And the city's spring - water at up to **317**
-  in the build's own upper levels, ending at the east wall over x 5605..5650, z -2698..-2657 - has no course
+  in the build's own upper levels, ending at the east wall over x 5708..5753, z -3058..-3017 - has no course
   out of the build yet, so the ground outside it has nothing to slope to.
 - **The ford is a bridge.** Nothing places a road or a bridge over the Bruinen yet; the join is water and
   banks only.
@@ -130,8 +130,8 @@ what is still open, so the next session does not have to rebuild that from the c
   were removed after testing, not because the test was old.
 
     ./gradlew runClient
-    /execute in tolkienmobs:arda run tp @s 5097 120 -3010     the pin, the valley's middle
-    /tp @s 5097 92 -2707                                     the branch's mouth
+    /execute in tolkienmobs:arda run tp @s 5477 120 -3114     the city's middle
+    /tp @s 5200 92 -3067                                     the branch's mouth
     /tp @s 4995 92 -3311                                     where it meets the Bruinen
     /tmcity origin        in creative, standing on the floor: plants the city
     /tmcity band 8        repeat; /tmcity summon does all of it in one word

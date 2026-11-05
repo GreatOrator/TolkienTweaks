@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **Rivendell's pin is the corner the raised city stands on.** `rivendell` moves from 5097, 75, -3010 to
+  **5200, 75, -3370**, the low corner of the build put down in the scouted world, so the city covers
+  x 5200..5753 by z -3370..-2859 with its crown at 318. Every column measured from the pin moved 103 east
+  and 360 north with it: the water at 5200, -3067, the east wall's aqueduct at 5748, -2859, the spring over
+  x 5708..5753 by z -3058..-3017, and the branch's legs at 5120, -2793 and 5800. The drawn river is the
+  map's own and did not move.
 - **The pin is the corner, not the middle.** `rivendell` at 5097, 75, -3010 is the block the cut's low
   corner goes on, so `/tmcity origin` and `summon` plant the corner there from whatever block the caller
   is on, and the message says so. The city covers x 5097..5650 by z -3010..-2499 with its crown at

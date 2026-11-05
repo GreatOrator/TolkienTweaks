@@ -53,8 +53,8 @@ rivers, `..._Lakes_albedo.png` the lakes, `AreaMasks_westernMountain.png` the ra
 worked on, which is finer than the game's bake can afford to be:
 
     python tools/mask_probe.py 4995 -3311                      what the masks say about one block
-    python tools/mask_probe.py --near 5374 -2754 --radius 400   the nearest river, in blocks
-    python tools/mask_probe.py --near 5374 -2754 --radius 900 --layer lake
+    python tools/mask_probe.py --near 5477 -3114 --radius 400   the nearest river, in blocks
+    python tools/mask_probe.py --near 5477 -3114 --radius 900 --layer lake
 
 It answers the height as the world will stand on it - the game's own 63 to 318 scaling - whether a river
 or a lake runs through the column, and how bright the mountain mask is there. Nothing has to be baked for
@@ -126,9 +126,8 @@ what lets a river fall and a lake sit in its basin.
 - The Bruinen used to be the one river not laid by the mask, because a sixteen-block pixel cannot place
   a twelve-block channel. It now has its own bake at **three blocks to the pixel** over
   x 4200..5400 by z -4100..-2900, read before the coarse mask inside that window. The nearest water to
-  the city's mouth (5097, -2707) is **4996, -3308**, 609 blocks off; the branch reaches it at
-  **4995, -3311**, running round the valley's south side and meeting the river where it runs north-south at
-  about 101 degrees.
+  the city's mouth (5200, -3067) is **5054, -3086**, 147 blocks off; the branch runs round the valley's
+  south side and meets the river where it runs north-south at about 101 degrees.
 
 ## Decisions worth keeping
 

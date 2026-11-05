@@ -58,10 +58,10 @@ public final class Pins extends SavedData {
      * Lines added here are printed by {@code /tmpin}, which is the intended way to get them.
      */
     private static final Map<String, BlockPos> SOURCE = new LinkedHashMap<>(Map.ofEntries(
-            // Rivendell, scouted on the ground the city was cut for: the block its low corner goes on,
-            // at the surface the scout stood on. /tmcity raises the city on this pin, so it covers
-            // x 5097..5650 by z -3010..-2499, with the crown at 318.
-            Map.entry("rivendell", new BlockPos(5097, 75, -3010))
+            // Rivendell, scouted on the ground the city was cut for and since raised there: the block its
+            // low corner goes on, at the surface the scout stood on. /tmcity plants the corner here, so
+            // the city covers x 5200..5753 by z -3370..-2859, with the crown at 318.
+            Map.entry("rivendell", new BlockPos(5200, 75, -3370))
             // The shape a line takes, for the next one: a comma and the slashes gone.
             // Map.entry("thorenhad", new BlockPos(4864, 157, -3328)),
             // Map.entry("tolkienmobs:key_structures/wild_tent", new BlockPos(4864, 157, -3340))
