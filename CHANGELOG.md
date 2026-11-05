@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The cast's faces are written down.** `docs/arda-faces.md` records the order the renderer asks in -
+  keeper, named file, alliance cloth, variant face - the slug rule (`Gloin` is `gloin.png`), the cast and
+  the file each wears, and what the faction folders are for. It also records that `maelgrin.png`,
+  `guthlac.png` and `zarabi.png` are byte-for-byte copies of the three `quest_giver_*` cloths: a herald can
+  be redrawn on his own, but he will not follow a repainted cloth until the copy is taken again.
 - **Gimli has a face, and four named files are repainted.** `middle-earth/gimli.png` closes the last named
   body that had no art - the dwarf beside Gundabad's well - and `elrond.png`, `gloin.png`, `legolas.png` and
   `ranger.png` are redrawn in place, so every named giver and the camp keeper's fallback now wear current
