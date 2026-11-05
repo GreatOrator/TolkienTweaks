@@ -216,6 +216,49 @@ final class ArdaMasks {
         return RIVER_NAMES[row * WIDTH + column] & 0xFF;
     }
 
+    /**
+     * The lake sheets, one byte per cell: 0 for dry ground and 1..6 for the sheet a cell belongs to. Baked by
+     * {@code tools/arda_lake_ids.py} from the same mask, so a lake can be given one water level of its own
+     * instead of inheriting the rise and fall of the ground it is drawn over.
+     */
+    private static final byte[] LAKE_SHEETS = coverage("lake-ids.png");
+
+    static int lakeId(int blockX, int blockZ) {
+        if (LAKE_SHEETS.length == 0) {
+            return 0;
+        }
+        int column = Math.floorDiv(blockX - WEST, BLOCKS);
+        int row = Math.floorDiv(blockZ - NORTH, BLOCKS);
+        if (column < 0 || column >= WIDTH || row < 0 || row >= HEIGHT) {
+            return 0;
+        }
+        return LAKE_SHEETS[row * WIDTH + column] & 0xFF;
+    }
+
+    static byte[] lakeSheets() {
+        return LAKE_SHEETS;
+    }
+
+    static int maskWidth() {
+        return WIDTH;
+    }
+
+    static int maskHeight() {
+        return HEIGHT;
+    }
+
+    static int maskWest() {
+        return WEST;
+    }
+
+    static int maskNorth() {
+        return NORTH;
+    }
+
+    static int maskBlocks() {
+        return BLOCKS;
+    }
+
     /** Whether the lake mask covers a column. */
     static boolean lake(int blockX, int blockZ) {
         return cover(LAKES, blockX, blockZ) >= WATER;

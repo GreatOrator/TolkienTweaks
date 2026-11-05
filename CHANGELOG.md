@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **Marsh pools lie in the fen instead of on it.** A pool's water line is now the lowest ground of its own
+  disc rather than the height of the one column the feature happened to start on, and the block or two of
+  ground standing over that line is cut instead of left as an island: no more sheets standing above their
+  shore, and no more dirt rings inside the water.
+- **Each drawn lake is one level.** The lakes are measured once per drawn sheet and laid at that sheet's
+  own level, with the bed cut to it, so the Sea of Nurnen and the Sea of Rhun are sheets of water rather
+  than waterfalls down the terrain under them. Baked by `tools/arda_lake_ids.py`.
+- **The Dead Marshes are a marsh again.** Emyn Muil's fill covered the Dead Marshes' whole rectangle - the
+  two fills were the same cells, and Emyn Muil was painted last - so the marsh generated as Emyn Muil from
+  edge to edge. Emyn Muil is now the row north of the marsh.
 - **The marsh warns you when it deepens.** Each step of the dread puts a line on the action bar and a low
   sound with it, so a player being worn down can tell before the slowness has them, rather than discovering
   it at the bottom of the marsh with no idea how far in they are.

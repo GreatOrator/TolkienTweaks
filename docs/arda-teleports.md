@@ -64,8 +64,9 @@ narrow shelf of land, so its point is the first dry column of it rather than the
 ## Lakes
 
 These are the lake mask's nine sheets: six inside the world frame, and three beyond its eastern and
-southern edges that the bake crops away. The water is laid at the ground the mask gives it, so a point is
-the middle of the drawn sheet and the span is the extent of it; the two great seas are in the east and
+southern edges that the bake crops away. Each sheet is one water level, measured from the mean ground the sheet is drawn over, so the lakes are level
+sheets rather than water following the rise and fall of the ground under them. A point is the middle of the
+drawn sheet and the span is the extent of it; the two great seas are in the east and
 the south, not where the 48 by 36 grid draws its hand-painted sea cells.
 
 | Lake | x | y | z | drawn span |
@@ -90,7 +91,8 @@ x 9957..10158 z 13724..13908.
 Read off the countries the map paints, so these are the drawn wetlands rather than anything the masks
 say. The wetwang and the Midgewater are the one marsh country - low ground with standing water and drowned
 trees. The Dead Marshes are their own country and their own biome: the same water, the pools and all, under a fog
-that closes at forty blocks, with fell spirits laid in it by the generation and none walking the bank.
+that closes at forty blocks, with fell spirits laid in it by the generation and none walking the bank. Its pools lie in the lowest
+ground of the fen, cut to that line, so the water sits in the marsh rather than on top of it.
 Standing in them lays a dread on you - the slowness and the weakness of fear, with no wither and no
 blindness, because nothing there is looking at you. It deepens the longer you stay: nothing for the first
 half minute, one step after thirty seconds, and two after ninety, which is where it holds. It says so when it steps

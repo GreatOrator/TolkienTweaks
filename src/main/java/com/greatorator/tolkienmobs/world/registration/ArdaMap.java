@@ -727,8 +727,11 @@ public final class ArdaMap {
      */
     private static Sample water(int blockX, int blockZ, Ground ground) {
         if (ArdaMasks.lake(blockX, blockZ)) {
-            // An inland sea is drawn at the height of the sea, so a lake never drains below it.
-            int surface = Math.max(SEA_LEVEL, ground.height());
+            // One level for the whole sheet. Laid at the ground the drawing gives each column, a lake
+            // inherits every rise and fall under it and comes out as a staircase of water - the sheet the
+            // player walks down like a waterfall. A lake is a level surface, so the level is measured once
+            // per sheet and the bed under it is cut to it.
+            int surface = lakeLevel(blockX, blockZ, ground.height());
             return new Sample(ground.country(), Math.min(ground.height(), surface - LAKE_DEPTH), true,
                     false, ground.upland(), surface);
         }
@@ -763,6 +766,22 @@ public final class ArdaMap {
      * of the build into the mountain instead of setting it down beside it.
      */
     /**
+     * The water level of a lake sheet, or the drawn ground where the sheet is one the bake does not know.
+     * <p>
+     * The level is the mean drawn ground over the sheet, sampled at 64 blocks: high enough that most of the
+     * sheet is water and not a dry basin, low enough that the ground above it is cut rather than drowned.
+     */
+    private static int lakeLevel(int blockX, int blockZ, int fallback) {
+        int id = ArdaMasks.lakeId(blockX, blockZ);
+        int[] levels = LakeLevels.LEVELS;
+
+        if (id > 0 && id < levels.length && levels[id] > 0) {
+            return levels[id];
+        }
+        return Math.max(SEA_LEVEL, fallback);
+    }
+
+    /**
      * The height the ground beside a column has to stand at to keep the water beside it in its bed, or
      * {@link Integer#MIN_VALUE} where no drawn water stands within {@link #BANK_REACH}.
      * <p>
@@ -787,13 +806,67 @@ public final class ArdaMap {
                 if (!ArdaMasks.river(px, pz) && !ArdaMasks.lake(px, pz)) {
                     continue;
                 }
-                int surface = Math.max(SEA_LEVEL, groundAt(px / (double) CELL + ORIGIN_COLUMN,
-                        pz / (double) CELL + ORIGIN_ROW, px, pz).height());
+                int drawn = groundAt(px / (double) CELL + ORIGIN_COLUMN,
+                        pz / (double) CELL + ORIGIN_ROW, px, pz).height();
+                // A lake's bank has to reach its one level, not the ground of the column the mask happens
+                // to hold there, or the bank is as stepped as the sheet used to be.
+                int surface = ArdaMasks.lake(px, pz) ? lakeLevel(px, pz, drawn) : Math.max(SEA_LEVEL, drawn);
                 need = Math.max(need, surface + 1 - Math.max(0, reach - (BANK_REACH - BANK_FALL)));
                 break;
             }
         }
         return need;
+    }
+
+    /**
+     * One water level per drawn lake sheet, measured once from the ground the sheet lies on.
+     * <p>
+     * The map is sampled at 128 blocks rather than column by column, so a whole world's lakes are measured
+     * in one pass at a cost a chunk's worth of generation would not notice. The mean is used rather than the
+     * lowest ground: a level taken from the lowest point turns the rest of the sheet into a cliff, and one
+     * taken from the highest leaves most of it dry.
+     */
+    private static final class LakeLevels {
+        private static final int[] LEVELS = measure();
+
+        private static int[] measure() {
+            byte[] sheets = ArdaMasks.lakeSheets();
+            int width = ArdaMasks.maskWidth();
+            int height = ArdaMasks.maskHeight();
+            int blocks = ArdaMasks.maskBlocks();
+            int west = ArdaMasks.maskWest();
+            int north = ArdaMasks.maskNorth();
+            int highest = 0;
+
+            for (byte sheet : sheets) {
+                highest = Math.max(highest, sheet & 0xFF);
+            }
+
+            long[] sums = new long[highest + 1];
+            int[] counts = new int[highest + 1];
+            for (int row = 0; row < height; row += 16) {
+                for (int column = 0; column < width; column += 16) {
+                    int id = sheets[row * width + column] & 0xFF;
+
+                    if (id == 0) {
+                        continue;
+                    }
+
+                    int x = west + column * blocks;
+                    int z = north + row * blocks;
+                    sums[id] += groundAt(x / (double) CELL + ORIGIN_COLUMN, z / (double) CELL + ORIGIN_ROW, x, z).height();
+                    counts[id]++;
+                }
+            }
+
+            int[] levels = new int[highest + 1];
+            for (int id = 1; id <= highest; id++) {
+                if (counts[id] > 0) {
+                    levels[id] = Math.max(SEA_LEVEL, (int) Math.round(sums[id] / (double) counts[id]));
+                }
+            }
+            return levels;
+        }
     }
 
     private static Sample valley(double blockX, double blockZ, Ground ground) {
@@ -1471,7 +1544,10 @@ public final class ArdaMap {
         fill(map, Country.ETTENMOORS, 16, 7, 18, 9);
         fill(map, Country.ERYN_VORN, 5, 19, 7, 21);
         fill(map, Country.BROWN_LANDS, 31, 21, 33, 22);
-        fill(map, Country.EMYN_MUIL, 29, 23, 30, 24);
+        // Emyn Muil is the rock north of the marsh. Drawn over rows 23-24 it took the Dead Marshes'
+        // whole rectangle with it - the two fills were the same cells - and the marsh generated as Emyn
+        // Muil from edge to edge. The row north of the marsh is all of Emyn Muil this map can hold.
+        fill(map, Country.EMYN_MUIL, 29, 22, 30, 22);
         fill(map, Country.BELFALAS, 22, 31, 27, 33);
         fill(map, Country.KHAND, 43, 28, 46, 31);
 
