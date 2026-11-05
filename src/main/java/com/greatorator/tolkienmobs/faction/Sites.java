@@ -87,7 +87,7 @@ public final class Sites extends SavedData {
     /** The tent the camp errand pitches, as a template the mod already ships. */
     public static final String WILD_TENT = "tolkienmobs:key_structures/wild_tent";
     /**
-     * Elladan's own camp at Thorenhad, cut rather than pitched: twenty by eight by twenty, stone and
+     * Elladan's own camp at Thorenhad, cut rather than pitched: sixteen by eight by sixteen, stone and
      * podzol under spruce with the rock of the hillside still in it - the shape of a camp the Dunedain
      * keep, not the canvas a traveller carries.
      * <p>

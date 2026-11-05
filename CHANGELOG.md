@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The three new camps come out of their builder's footing.** `elledancamp`, `wild_tent` and
+  `snow_camp` carried a ring of white, purple, black and magenta wool round their floor - the pinks are
+  magenta in the template - with a target block at each of two opposite corners, one block inside a
+  20-wide box. The ring is cut and each template cropped to what stands, so the footprints are 16 by 16
+  rather than 20 by 20, and only the camps' own wool is left in them.
 - **Rivendell's pin is the corner the raised city stands on.** `rivendell` moves from 5097, 75, -3010 to
   **5200, 75, -3370**, the low corner of the build put down in the scouted world, so the city covers
   x 5200..5753 by z -3370..-2859 with its crown at 318. Every column measured from the pin moved 103 east

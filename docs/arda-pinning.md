@@ -65,7 +65,7 @@ written into the build.
 | --- | --- | --- | --- |
 | 1, 2, 5, 6, 7, 8, 12, 13, 14, 15 | Rivendell, where the Elves stand | `place rivendell` | pinned at **5200, 75, -3370** - the cut's own low corner of its 554 by 512 footprint, which is the block `/tmcity` plants the corner on, covering x 5200..5753 by z -3370..-2859 - on drawn ground, since no floor is cut for the city any more (`PLANTED = false`); **unblocks every page whose giver or turn-in is Elrond, Glorfindel or Legolas**, and chapter two's 2-1, 2-10 and 2-11 come back to the same city |
 | 2, 3, 4, 5, 8, 9, 10, 11, 12 | Thorenhad, Elladan's camp | `place thorenhad` | level ground a walk east of the valley, off the road |
-| 2, 4, 8 | Elladan's camp itself | `build camp` | 20 by 8 by 20; about 20 by 20 of level ground |
+| 2, 4, 8 | Elladan's camp itself | `build camp` | 16 by 8 by 16; about 16 by 16 of level ground |
 | 3 | the wood ruin the black horse lies in | `build ruin` | a standing wall in the channels south of the road; about fourteen blocks across |
 | 6 | the ford the beryl is carried to | `place ford` | **water the road can cross** - the drawn cell has neither water nor the road |
 | 9 | Bandrith's, Sholdroth's and the third cave | `build cave`, `cave2`, `cave3` | three hillsides; each crag is cut rock and seats nine to ten blocks into the ground |
