@@ -240,6 +240,14 @@ public final class ArdaMap {
      * mountainside's own grade, about thirty degrees, and it is what the rock falls away at beside any water.
      */
     private static final double MOUNTAIN_SLOPE = 0.6D;
+    /**
+     * How far the crown's own surface rolls below the crown, in blocks.
+     * <p>
+     * A summit standing at exactly one height is a table: every contour on it is the crown's own outline, and
+     * the mountain's edge reads as a cut however softly the flank is graded. A few blocks of roll over the
+     * same distance as the ridge's wander costs the world no height and stops the top being a plane.
+     */
+    private static final double CROWN_ROLL = 3.0D;
     /** How far out a column looks for a drawn river whose ground it has to give way to, in blocks. */
     private static final int WATER_REACH = 64;
     /**
@@ -615,6 +623,8 @@ public final class ArdaMap {
         // along it, which is the whole difference between a range of mountains and the rim of a bowl.
         double ridge = VALLEY_RIM * (1.0D + RIDGE_SWING * (fractal(x, z, RIDGE_SCALE, 31) - 0.5D) * 2.0D);
         double crest = VALLEY_CREST + CREST_SWING * (fractal(x, z, CREST_SCALE, 43) - 0.5D) * 2.0D;
+        // The crown rolls a little below its own height, so the summit is a surface and not a plane.
+        double crown = VALLEY_CROWN - CROWN_ROLL * fractal(x, z, RIDGE_SCALE, 59);
         if (beyond > ridge + VALLEY_FALL) {
             return null;
         }
@@ -632,7 +642,7 @@ public final class ArdaMap {
             // The rock stands at the crown where it meets the build and climbs from there to the ridge:
             // the ground outside the walls is a continuation of the ground inside them, and the mountain
             // grows out of the roofline instead of out of a field below it.
-            height = (int) Math.round(VALLEY_CROWN + (crest - VALLEY_CROWN) * climb(beyond / ridge) + ribs);
+            height = (int) Math.round(crown + (crest - crown) * climb(beyond / ridge) + ribs);
         } else {
             double fell = Math.min(1.0D, (beyond - ridge) / (double) VALLEY_FALL);
             height = (int) Math.round(crest + (ground.height() - crest) * smooth(fell));
@@ -825,15 +835,14 @@ public final class ArdaMap {
      * to come down to. Nothing is done where the column already stands no higher than that.
      */
     private static int giveWay(int blockX, int blockZ, int height) {
-        double run = Double.MAX_VALUE;
-        int level = height;
+        // The course is measured where it runs and off its own ends, because its ends are water too: the
+        // city's own water at the mouth and the Bruinen's at the join. Reading a column beyond an end as
+        // having no water at all closed the massif over the river's own mouth, and the flat crown then
+        // stood at 318 three blocks from water at 82 - the wall this cone was written to remove.
         double[] at = project(blockX, blockZ);
-        boolean course = at[5] < 0.5D && at[6] < 0.5D;
-        if (course) {
-            // Behind the mouth the city's own water is the level; past the join it is the Bruinen's.
-            run = at[2] - BRUINEN_RIGHT;
-            level = bruinenWater(at[0]);
-        }
+        double run = at[2] - BRUINEN_RIGHT;
+        int level = bruinenWater(at[0]);
+        boolean drawn = false;
         for (int step = 0; step < 8; step++) {
             double dirX = Math.cos(step * Math.PI / 4.0D);
             double dirZ = Math.sin(step * Math.PI / 4.0D);
@@ -845,7 +854,7 @@ public final class ArdaMap {
                 }
                 double away = reach - 2.0D;
                 if (away < run) {
-                    course = false;
+                    drawn = true;
                     run = away;
                     level = Math.max(SEA_LEVEL, groundAt(px / (double) CELL + ORIGIN_COLUMN,
                             pz / (double) CELL + ORIGIN_ROW, px, pz).height());
@@ -857,7 +866,7 @@ public final class ArdaMap {
         // the river the whole way up its bank. A drawn river is only found within the reach above, and a cone
         // cut off at that reach would leave the step it was cut to remove - so the drawn river's own banks
         // stay as they are until its distance can be read as far.
-        if (!course && run >= WATER_REACH) {
+        if (drawn && run >= WATER_REACH) {
             return height;
         }
         double limit = level + Math.max(0.0D, run) * MOUNTAIN_SLOPE;

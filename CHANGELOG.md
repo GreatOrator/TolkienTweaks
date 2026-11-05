@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The massif gives way to the river's own ends, not only its length.** The give-way read a column
+  beyond the course's start as having no water to fall away from, so the mouth - water at 82 three blocks
+  from the rock - was the one place the wall was left standing, and the join the same. A course's ends are
+  water too, the city's at the mouth and the Bruinen's at the join, and the ground climbs away from them at
+  the same grade as from the length.
+- **The crown's summit rolls a few blocks below its own height.** A top standing at exactly 318 is a table:
+  every contour on it is the crown's own outline, so the mountain's edge reads as a cut however the flank is
+  graded. Three blocks of roll over the ridge's own scale make it a surface without raising the ceiling.
 - **The massif gives way to the branch at a mountainside's grade, so the river no longer leaves the city
   between two walls.** The rock stood at the crown wherever the city's floor rectangle ended - 318, against
   the branch's water at 82 - and the water was cut through it as a slot whose walls went up at 1.2 blocks
