@@ -150,9 +150,12 @@ public class ArdaBiomeSource extends BiomeSource {
         int blockX = QuartPos.toBlock(quartX);
         int blockZ = QuartPos.toBlock(quartZ);
         ArdaMap.Sample sample = ArdaMap.sample(blockX, blockZ, sampler.weirdness(), sampler.erosion());
-        // Rock under the Misty crest is Moria's; the mountain over it stays the mountain.
-        boolean halls = sample.country() == ArdaMap.Country.HITHAEGLIR
-                && QuartPos.toBlock(quartY) < ArdaMap.moriaRoof()
+        // Rock under the Misty crest is Moria's; the mountain over it stays the mountain. The rectangle
+        // is the halls' own ground and answers whatever country the drawing puts above it: the range's
+        // eastern flank is drawn as Lorinand in the cell the halls' middle stands in, and rock under the
+        // range is the halls' whatever the map calls the surface. Only the rock below the roof is asked;
+        // a column above it keeps its country's biome.
+        boolean halls = QuartPos.toBlock(quartY) < ArdaMap.moriaRoof()
                 && ArdaMap.underMoria(blockX, blockZ);
         Holder<Biome> biome = this.byKey.get(halls ? TolkienBiomes.MORIA : sample.biome());
         if (biome == null) {

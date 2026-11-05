@@ -688,8 +688,13 @@ public final class ArdaMap {
             // Near a coast the ground's grade falls under the sea; held there, the last stretch of a
             // river meets the sea instead of digging a trench beside it.
             int surface = Math.max(SEA_LEVEL, ground.height());
-            // As deep as it is wide, within what a channel can be without becoming a canyon.
+            // As deep as it is wide, within what a channel can be without becoming a canyon - and never
+            // deeper than the column stands from its own bank, so the water shallows out to its edge
+            // instead of ending in a wall. A bed cut flat from bank to bank makes the river a square hole
+            // in the ground, because every column of it holds the same depth of water right up to the
+            // land; a bed that rises a block per block to each bank is the riverside a person wades in.
             int deep = Math.min(drawnRiverWidth(blockX, blockZ), RIVER_DEPTH_MAX);
+            deep = Math.min(deep, ArdaMasks.riverEdge(blockX, blockZ) + 1);
             return new Sample(ground.country(), Math.min(ground.height(), surface - deep), true,
                     false, ground.upland(), surface);
         }
