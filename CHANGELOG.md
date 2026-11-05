@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The rivers are a third narrower.** The bake marks channels forty blocks across and more, which
+  is a river with no banks worth the name; a sixth of the width is taken off each side, measured across
+  the channel, down to a floor of three blocks.
 - **The Barrow Downs are on the map again.** Dunland was painted after them and reached back over
   their two cells, so the country had a biome and nothing to stand in; the Downs are painted last.
 - **Rivers and lakes keep their water.** Ground within twelve blocks of drawn water is raised to the

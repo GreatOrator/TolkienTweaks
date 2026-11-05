@@ -51,6 +51,11 @@ final class ArdaMasks {
      * third, the tributary is still a channel and a wide river's bank falls just outside the line drawn.
      */
     private static final double WATER = 0.3D;
+    /** The narrowest a drawn channel is cut to, in blocks: a river a person can still stand in. */
+    private static final int RIVER_MIN = 3;
+    /** How finely, and how far, a channel's width is walked when a third of it is taken off. */
+    private static final int RIVER_STEP = 4;
+    private static final int RIVER_WALK = 60;
     /**
      * The mountain mask: brightness is height, and its whitest pixel is the crown.
      * <p>
@@ -70,14 +75,73 @@ final class ArdaMasks {
     private ArdaMasks() {
     }
 
-    /** Whether the river mask runs through a column. */
+    /**
+     * Whether the river mask runs through a column, narrowed by a third.
+     * <p>
+     * The rivers the map is drawn from are wide - the bake marks a channel forty blocks across and more
+     * - and water laid across the whole of that is a river with no banks worth the name: nothing to
+     * bridge, nothing to ford, and every drawn brook the width of a lake. A third of the width is taken
+     * off, a sixth from each bank, so a forty-block channel reads at twenty-eight and a wide one at
+     * about two-thirds of what it was. The cut is proportional rather than a fixed number of blocks because the
+     * drawings are not one width: a channel is cut where the drawing is still water that far in from each
+     * bank, and never taken under {@link #RIVER_MIN} blocks, which is the narrowest a channel can be and
+     * still be a channel.
+     */
     static boolean river(int blockX, int blockZ) {
         int column = Math.floorDiv(blockX - BRUINEN_WEST, BRUINEN_BLOCKS);
         int row = Math.floorDiv(blockZ - BRUINEN_NORTH, BRUINEN_BLOCKS);
         if (column >= 0 && column < BRUINEN_WIDE && row >= 0 && row < BRUINEN_DEEP) {
             return BRUINEN[row * BRUINEN_WIDE + column];
         }
+        if (!drawn(blockX, blockZ)) {
+            return false;
+        }
+        int cut = cut(blockX, blockZ);
+        return cut == 0
+                || (drawn(blockX + cut, blockZ) && drawn(blockX - cut, blockZ)
+                && drawn(blockX, blockZ + cut) && drawn(blockX, blockZ - cut));
+    }
+
+    /** Whether the drawing marks a column as water, before any narrowing. */
+    private static boolean drawn(int blockX, int blockZ) {
         return cover(RIVERS, blockX, blockZ) >= WATER;
+    }
+
+    /**
+     * How far each bank is taken in, in blocks: a sixth of the channel's width, never enough to leave it
+     * under {@link #RIVER_MIN} across.
+     */
+    private static int cut(int blockX, int blockZ) {
+        int width = channelWidth(blockX, blockZ);
+        int sixth = width / 6;
+        return Math.max(0, Math.min(sixth, (width - RIVER_MIN) / 2));
+    }
+
+    /**
+     * The channel's width at a column, in blocks.
+     * <p>
+     * Walked as far as the drawing is water along each of the four axes and read as the shorter of the
+     * two chords through the column: the long one runs down the river, the short one crosses it. Every
+     * column across a straight channel is on the same chord, so the width is the channel's own and not
+     * the reader's distance from the bank.
+     */
+    static int channelWidth(int blockX, int blockZ) {
+        int across = reach(blockX, blockZ, 1, 0) + reach(blockX, blockZ, -1, 0) + 1;
+        int along = reach(blockX, blockZ, 0, 1) + reach(blockX, blockZ, 0, -1) + 1;
+        return Math.min(across, along);
+    }
+
+    /** How far the drawing is still water from a column, walking out in one direction. */
+    private static int reach(int blockX, int blockZ, int stepX, int stepZ) {
+        int out = 0;
+        for (int step = RIVER_WALK; step >= RIVER_STEP; step -= RIVER_STEP) {
+            if (!drawn(blockX + stepX * step, blockZ + stepZ * step)) {
+                continue;
+            }
+            out = step;
+            break;
+        }
+        return out;
     }
 
     /**

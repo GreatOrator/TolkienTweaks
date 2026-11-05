@@ -1065,15 +1065,7 @@ public final class ArdaMap {
      * keeps the bed rising a block per block to each bank instead of stepping.
      */
     private static int drawnRiverWidth(double blockX, double blockZ) {
-        int x = (int) Math.floor(blockX);
-        int z = (int) Math.floor(blockZ);
-        for (int reach = 1; reach <= RIVER_REACH; reach++) {
-            if (!ArdaMasks.river(x + reach, z) || !ArdaMasks.river(x - reach, z)
-                    || !ArdaMasks.river(x, z + reach) || !ArdaMasks.river(x, z - reach)) {
-                return 2 * reach - 1;
-            }
-        }
-        return 2 * RIVER_REACH + 1;
+        return ArdaMasks.channelWidth((int) Math.floor(blockX), (int) Math.floor(blockZ));
     }
 
     /**
