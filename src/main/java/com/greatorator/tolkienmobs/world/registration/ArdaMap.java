@@ -236,6 +236,20 @@ public final class ArdaMap {
      * branch meets the drawn Bruinen. Sixteen is deep enough to be a real channel at any of those widths.
      */
     private static final int RIVER_DEPTH_MAX = 16;
+
+    /**
+     * How far from a drawn river or lake its bank is raised, and how many of those blocks the raise falls
+     * away over.
+     * <p>
+     * The drawing's water is laid at the height of the ground it is drawn on, and the ground beside it is
+     * whatever the country answers: a channel cut into a slope has a low side, and water finds it in a
+     * tick or two and floods the country to the river's height. The same trouble in a hand-painted world is
+     * cured by levelling the corridor round a road, and this is the river's version of it - the ground
+     * within the reach stands at least one block over the water, flat while it is walked and falling away
+     * over the last few blocks so the bank meets the country's own ground instead of ending in a step.
+     */
+    private static final int BANK_REACH = 12;
+    private static final int BANK_FALL = 4;
     /**
      * How far the channel runs either side of the course, read off the build's own water: twelve blocks
      * across, five to the left of the middle block and seven to the right.
@@ -636,6 +650,13 @@ public final class ArdaMap {
                 return valley;
             }
         }
+        // Water the drawing lays stays in the bed the drawing gives it: beside a drawn river or lake the
+        // ground is raised to hold it, because a channel whose bank stands under the water it carries is
+        // not a channel at all - the water runs out at the first tick and the country is flooded instead.
+        int bank = bank(blockX, blockZ, ground.height());
+        if (bank > ground.height()) {
+            return new Sample(ground.country(), bank, false, ground.shore(), ground.upland());
+        }
         return new Sample(ground.country(), ground.height(), false, ground.shore(), ground.upland());
     }
 
@@ -688,6 +709,40 @@ public final class ArdaMap {
      * The rock stands at the crown from the floor's own edge outward, which is what lays the lowest band
      * of the build into the mountain instead of setting it down beside it.
      */
+    /**
+     * The height the ground beside a column has to stand at to keep the water beside it in its bed, or
+     * {@link Integer#MIN_VALUE} where no drawn water stands within {@link #BANK_REACH}.
+     * <p>
+     * Read outward in eight directions until a column of the river or lake mask is met, and from that
+     * column's water surface - the drawing lays water at the height of its own ground, never below the sea
+     * - comes the level the bank has to reach. Where two rivers run close the higher of them sets the
+     * bank, because the lower one's water is already inside the higher one's reach.
+     */
+    private static int bank(int blockX, int blockZ, int height) {
+        // Ground under the waterline is the sea's own bed, not a bank: lifting it would put a wall of
+        // land across the mouth of every river that reaches the coast.
+        if (height < SEA_LEVEL) {
+            return Integer.MIN_VALUE;
+        }
+        int need = Integer.MIN_VALUE;
+        for (int step = 0; step < 8; step++) {
+            double dirX = Math.cos(step * Math.PI / 4.0D);
+            double dirZ = Math.sin(step * Math.PI / 4.0D);
+            for (int reach = 2; reach <= BANK_REACH; reach += 2) {
+                int px = blockX + (int) Math.round(dirX * reach);
+                int pz = blockZ + (int) Math.round(dirZ * reach);
+                if (!ArdaMasks.river(px, pz) && !ArdaMasks.lake(px, pz)) {
+                    continue;
+                }
+                int surface = Math.max(SEA_LEVEL, groundAt(px / (double) CELL + ORIGIN_COLUMN,
+                        pz / (double) CELL + ORIGIN_ROW, px, pz).height());
+                need = Math.max(need, surface + 1 - Math.max(0, reach - (BANK_REACH - BANK_FALL)));
+                break;
+            }
+        }
+        return need;
+    }
+
     private static Sample valley(double blockX, double blockZ, Ground ground) {
         // A distance from the floor's rectangle, not one from each of its four sides: the difference is
         // at the corners, where this rounds the mountain's foot instead of squaring it off.
@@ -969,6 +1024,31 @@ public final class ArdaMap {
     /** Whether a column stands over Moria's halls. */
     static boolean underMoria(int blockX, int blockZ) {
         return blockX >= MORIA_X0 && blockX <= MORIA_X1 && blockZ >= MORIA_Z0 && blockZ <= MORIA_Z1;
+    }
+
+    /**
+     * The room the halls are hollowed into: its floor, and the rectangle of it under the range.
+     * <p>
+     * A rectangle of rock under a mountain is not a place. The biome was given to the rock below the roof
+     * and the rock stayed rock, so the halls could only be found on the debug screen at a height a player
+     * cannot stand at - which is what a country that is all stone looks like. This is a chamber cut out of
+     * that rock: the ground the halls will be built on, and somewhere to stand while they are looked at.
+     * It is narrower than the rock the biome covers, so the mountain keeps its feet.
+     */
+    private static final int MORIA_FLOOR = 14;
+    private static final int HALL_X0 = 5376;
+    private static final int HALL_X1 = 5888;
+    private static final int HALL_Z0 = -3712;
+    private static final int HALL_Z1 = -2688;
+
+    static int moriaFloor() {
+        return MORIA_FLOOR;
+    }
+
+    /** Whether a block is inside the hollowed halls, between their floor and the roof of the rock. */
+    public static boolean moriaHalls(int blockX, int y, int blockZ) {
+        return y > MORIA_FLOOR && y < MORIA_ROOF
+                && blockX >= HALL_X0 && blockX <= HALL_X1 && blockZ >= HALL_Z0 && blockZ <= HALL_Z1;
     }
 
     /** Whether a cell of the map exists at all, since a search may walk off its edge. */
@@ -1258,9 +1338,13 @@ public final class ArdaMap {
         fill(map, Country.SHIRE, 8, 19, 11, 21);
         fill(map, Country.ERIADOR, 12, 17, 16, 21);
         fill(map, Country.OLD_FOREST, 11, 22, 12, 22);
-        fill(map, Country.BARROW_DOWNS, 12, 23, 13, 23);
         fill(map, Country.DUNLAND, 12, 23, 20, 26);
         fill(map, Country.DUNLAND, 20, 23, 23, 25);
+        // The Downs are painted after Dunland, not before it: both Dunland fills reach back over the two
+        // cells the Downs stand on, and painted first the barrows had no cells left at all - a country
+        // with a biome, a structure and a name, and nowhere in the world to be. Dunland gives those two
+        // cells up to them.
+        fill(map, Country.BARROW_DOWNS, 12, 23, 13, 23);
 
         // The Misty Mountains, the greatest wall of the west, from Mount Gundabad to the Gap of
         // Rohan; Eregion and the Trollshaws on their western side and Lorien, Rivendell and the

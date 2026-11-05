@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The Barrow Downs are on the map again.** Dunland was painted after them and reached back over
+  their two cells, so the country had a biome and nothing to stand in; the Downs are painted last.
+- **Rivers and lakes keep their water.** Ground within twelve blocks of drawn water is raised to the
+  water's own level where it stood lower, so a channel cut into a slope no longer floods the country
+  on its low side.
+- **The rock under the Misty crest has a room in it.** A chamber is cut beneath Moria's roof, so the
+  halls' biome can be stood in instead of only read on the debug screen.
 - **There is a teleport sheet for the map.** `docs/arda-teleports.md` lists one point per country,
   at the middle of the largest block of cells it is drawn in, with the height the masks give that column
   plus eight - so a region can be looked at from a command instead of by walking to it.

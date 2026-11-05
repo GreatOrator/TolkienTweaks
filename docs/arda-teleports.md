@@ -64,7 +64,8 @@ narrow shelf of land, so its point is the first dry column of it rather than the
 | White Mountains | 6656 | 183 | 3072 | 175 |
 | Wild Wood | 11264 | 184 | 512 | 176 |
 
-Moria: the surface point above the halls is the Misty Mountains entry. To see the halls, dig, or
+Moria: the surface point above the halls is the Misty Mountains entry. The halls are hollow now, so the
+point below lands inside the chamber; the rock over it is the mountain's own ground.
 
 ```
 /execute in tolkienmobs:arda run tp @s 5632 20 -3200

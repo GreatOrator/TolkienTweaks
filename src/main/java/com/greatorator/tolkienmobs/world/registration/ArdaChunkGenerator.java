@@ -247,6 +247,17 @@ public class ArdaChunkGenerator extends NoiseBasedChunkGenerator {
                         chunk.setBlockState(position.set(blockX, y, blockZ), WATER);
                     }
                 }
+
+                // Moria's biome is the rock under the Misty crest, and rock with no room in it is a biome
+                // read on the debug screen and nowhere else. The halls are cut out here, after the column
+                // is stone, so there is a chamber to stand in under the roof the biome starts below.
+                if (ArdaMap.underMoria(blockX, blockZ)) {
+                    for (int y = ArdaMap.moriaFloor(); y < ArdaMap.moriaRoof(); y++) {
+                        if (ArdaMap.moriaHalls(blockX, y, blockZ)) {
+                            chunk.setBlockState(position.set(blockX, y, blockZ), AIR);
+                        }
+                    }
+                }
             }
         }
     }
