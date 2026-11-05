@@ -104,10 +104,8 @@ than by retyping coordinates out of a debug screen.
 | `build <name>` | Pins a template at the caller's feet: `camp`/`elledancamp` (Elladan's camp), `tent` (the camp errand's), `ruin`, `cave`/`cave1`, `cave2`, `cave3`, `gloincamp`, `gundabad`/`keep`, `weathertop`, `castle`, `arena`, or a full template id. |
 | `remove <name>` | Forgets this world's pin for that name. A pin written into the build is in the jar, not in the world, and this does not touch it. |
 
-A pin outranks the drawing: a name stands exactly at the pinned block instead of being surveyed from its
-cell, and a building's spot is taken as given, with only the laying still seating its footprint. It is also
-the only way a name stands where the map paints nothing - the valley, whose columns never sample as Imladris
-- so pinning `rivendell` is what lets the pages that need Elrond, Glorfindel and Legolas be finished.
+A pin outranks the drawing. What each kind does to placement, the ground still to scout and the traps
+are all in [`arda-pinning.md`](arda-pinning.md), which is the one place they are written down.
 
 Arda only: the pin is read by the campaign's own placement, so the caller has to be standing in Arda.
 

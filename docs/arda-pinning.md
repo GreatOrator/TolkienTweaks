@@ -63,13 +63,13 @@ written into the build.
 
 | pages | location | pin as | what to look for |
 | --- | --- | --- | --- |
-| 1, 2, 5, 7, 12, 13, 15 | Rivendell, where the Elves stand | `place rivendell` | the valley floor; **unblocks every Elrond, Glorfindel and Legolas page** |
-| 2, 4, 8 | Thorenhad, Elladan's camp | `place thorenhad` | level ground a walk east of the valley, off the road |
+| 1, 2, 5, 6, 7, 8, 12, 13, 14, 15 | Rivendell, where the Elves stand | `place rivendell` | ground in the vale under the mountains' western feet. No floor is cut for the city any more (`PLANTED = false` in `ArdaMap`), so the ground you choose is the drawn ground; **unblocks every page whose giver or turn-in is Elrond, Glorfindel or Legolas**, and chapter two's 2-1, 2-10 and 2-11 come back to the same city |
+| 2, 3, 4, 5, 8, 9, 10, 11, 12 | Thorenhad, Elladan's camp | `place thorenhad` | level ground a walk east of the valley, off the road |
 | 2, 4, 8 | Elladan's camp itself | `build camp` | 20 by 8 by 20; about 20 by 20 of level ground |
 | 3 | the wood ruin the black horse lies in | `build ruin` | a standing wall in the channels south of the road; about fourteen blocks across |
 | 6 | the ford the beryl is carried to | `place ford` | **water the road can cross** - the drawn cell has neither water nor the road |
 | 9 | Bandrith's, Sholdroth's and the third cave | `build cave`, `cave2`, `cave3` | three hillsides; each crag is cut rock and seats nine to ten blocks into the ground |
-| 10 | Barachen's fire | `place barachen` | level ground south of the road |
+| 10, 11 | Barachen's fire | `place barachen` | level ground south of the road |
 | 14 | Matuna's lair | *(covered by the caves)* | the page reuses a crag, so it needs no pin of its own |
 
 ### Chapter two - the Misty Mountains and Angmar
@@ -77,7 +77,7 @@ written into the build.
 | page | location | pin as | what to look for |
 | --- | --- | --- | --- |
 | 2-1, 2-4 | Gloin's camp at the pass mouth | `build gloincamp` | 28 by 8 by 22, door in the middle of its south wall; the Gladden side of the High Pass |
-| 2-3, 2-6, 2-7 | Gundabad | `build gundabad` | **122 by 183 by 26** - the biggest ground ask in the pack; a Hithaeglir shelf that will take it |
+| 2-3, 2-6, 2-7 | Gundabad | `build gundabad` | **122 by 183 by 26** - the biggest ground ask in the pack; a Hithaeglir shelf that will take it. No pin is written for it today, so it searches out from the range's middle, and a pin is what would stop that search |
 | 2-5 | the vault at the source of the Bruinen | `place keystone` | the ruin the key-stone sits in |
 | 2-8, 2-11 | Carn Dum | `place carndum` | the camps on its borders; the wight is a hunt, so the circle is all the ground it needs |
 
@@ -98,9 +98,9 @@ The rest of the catalogue - `greenway`, `barrows`, `hobbiton`, `bree`, `weathert
 
 ## Checking progress
 
-`/tmpin checklist` prints the fifteen, in the order the chapters reach them, with the ones still leaning on
-the drawing marked `not pinned`. Its keys come from the `Sites` constants, so a checklist line and a
-placement can never disagree about what counts as pinned.
+`/tmpin checklist` prints the fifteen - the six names first, then the nine buildings - with the ones still
+leaning on the drawing marked `not pinned`, and a count at the top. Its keys come from the `Sites`
+constants, so a checklist line and a placement can never disagree about what counts as pinned.
 
 ## Notes and traps
 

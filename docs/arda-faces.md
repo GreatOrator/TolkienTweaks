@@ -18,13 +18,13 @@ The slug is the name lowercased, with accents flattened to the letter under them
 
 | body | slug | where it stands |
 | --- | --- | --- |
-| Elrond | `elrond` | Rivendell: pages 1, 2, 5, 7, 12, 13, 15, and 2-1, 2-10, 2-11 |
-| Glorfindel | `glorfindel` | Rivendell: pages 5, 6, 7 |
-| Legolas | `legolas` | Rivendell: pages 13, 14 |
-| Elladan | `elladan` | Thorenhad: pages 2, 4, 8 |
-| Barachen | `barachen` | his fire: page 10 |
+| Elrond | `elrond` | Rivendell: pages 1, 2, 12, 13, 15, and 2-1, 2-10, 2-11 |
+| Glorfindel | `glorfindel` | Rivendell: pages 5, 6, 7, 8 |
+| Legolas | `legolas` | Rivendell: pages 13, 14, 15 |
+| Elladan | `elladan` | Thorenhad: pages 2, 3, 4, 5, 8, 9, 10, 11, 12 |
+| Barachen | `barachen` | his fire: pages 10, 11 |
 | Glóin | `gloin` | the pass camp: chapter two |
-| Gimli | `gimli` | Gundabad: page 2-6 |
+| Gimli | `gimli` | Gundabad: pages 2-6, 2-7 |
 | Maelgrin | `maelgrin` | the West's herald, at a bench in every West hall |
 | Guthlac | `guthlac` | the East's herald |
 | Zarabi | `zarabi` | Harad's herald |

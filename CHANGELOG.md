@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The Arda docs hold one copy of each fact again.** Rivendell's pages were listed differently in three
+  places, and wrongly in all three: a page needs the city whenever its giver or turn-in is Elrond,
+  Glorfindel or Legolas, which is 1, 2, 5, 6, 7, 8, 12, 13, 14, 15 and 2-1, 2-10, 2-11. The guide now
+  carries the lists the code actually has, `arda-pins.md` keeps the table and the source-line format and
+  leaves the commands and the scouting to it, and `commands.md` points at it rather than repeating what a
+  pin changes. Gundabad is also noted as unpinned today, and Rivendell's ground as drawn rather than cut,
+  since the city's own floor is behind `PLANTED = false`.
 - **The pinning instructions are in one file.** `docs/arda-pinning.md` collects what was spread across
   several conversations: the `/tmpin` commands and what each does to placement, the two kinds of key and who
   reads them, the world-pin-over-source-pin order, the fifteen locations the two chapters ask for with what
