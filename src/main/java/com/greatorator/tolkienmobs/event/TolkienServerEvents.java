@@ -210,6 +210,7 @@ public class TolkienServerEvents {
 
             float yaw = (float) (Mth.atan2(player.getX() - (x + 0.5D), player.getZ() - (z + 0.5D)) * (180.0F / (float) Math.PI));
             figure.snapTo(x + 0.5D, y, z + 0.5D, yaw, 0.0F);
+            figure.setFigure(true);
             figure.setNoAi(true);
             figure.setSilent(true);
             figure.setInvulnerable(true);
@@ -225,9 +226,9 @@ public class TolkienServerEvents {
     }
 
     /**
-     * Ages the player's figure a second at a time and takes it away when it has been seen long enough, when
-     * the player walks up to it, or when they are no longer in the marsh at all. A figure is never left
-     * standing in a marsh nobody is being haunted by.
+     * Ages the player's figure a second at a time and takes it away when it has been seen long enough or
+     * when the player is no longer in the marsh at all. Approaching is not handled here: the figure ends
+     * itself, so it goes for every player who comes near it and not only the one it was shown to.
      */
     private static void figureTick(ServerPlayer player) {
         if (player.tickCount % 20 != 0) {
@@ -249,23 +250,13 @@ public class TolkienServerEvents {
 
         boolean inMarsh = player.level().getBiome(player.blockPosition()).is(TolkienBiomes.DEAD_MARSHES);
 
-        if (!inMarsh || figure.ticksLeft <= 20 || player.distanceToSqr(spirit) < 36.0D) {
-            vanish(spirit);
+        if (!inMarsh || figure.ticksLeft <= 20) {
+            spirit.fadeAway();
             FIGURES.remove(player.getUUID());
             return;
         }
 
         FIGURES.put(player.getUUID(), new Figure(figure.entityId, figure.ticksLeft - 20));
-    }
-
-    /** What a figure does when it is approached: comes apart into the marsh's own light and is gone. */
-    private static void vanish(FellSpiritEntity spirit) {
-        ServerLevel level = (ServerLevel) spirit.level();
-        level.sendParticles(ParticleTypes.SOUL, spirit.getX(), spirit.getY() + 0.9D, spirit.getZ(),
-                10, 0.4D, 0.7D, 0.4D, 0.02D);
-        level.playSound(null, spirit.getX(), spirit.getY(), spirit.getZ(), TolkienSounds.IDLE_BARROW.get(),
-                SoundSource.AMBIENT, 0.4F, 0.45F);
-        spirit.discard();
     }
 
     @SubscribeEvent

@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **Marsh figures end for everyone.** A figure now comes apart for any player who gets within six blocks of
+  it, and carries a saved mark so a figure read back from disk - after a restart or a chunk reload - is
+  discarded on its first tick instead of being left standing in the marsh as a real spirit.
 - **The Dead Marshes keep their dead for those who linger.** After a minute in the marsh, figures of the
   drowned begin to stand out in the fog eighteen to twenty-six blocks away, facing the player, and come apart
   into soul-light when approached; they come more often the longer the stay lasts, and leaving resets it.

@@ -97,7 +97,9 @@ The marsh is also not quiet: corpse-lights stand on the pools within twenty bloc
 out of the water every fifteen seconds or so, and the spirits under it stir every few seconds - bubbles and
 a low sound through the water, and a slow roll of the body where it lies.
 Stay in the marsh for a minute and the dead start standing out in the fog: a figure eighteen to twenty-six
-blocks off, turned to face you, that is gone the moment you get within six blocks of it. It comes more often
+blocks off, turned to face you, that is gone the moment anyone gets within six blocks of it - not only the
+player it was shown to - and that never survives a save: a figure read back from disk is dropped on its first
+tick rather than standing in the marsh after a restart. It comes more often
 the longer you linger - once every twenty-five seconds after the first minute, every eighteen after two,
 every twelve after three - and the count resets the moment you step out.
 

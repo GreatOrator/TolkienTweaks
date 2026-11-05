@@ -47,6 +47,11 @@ public class FellSpiritEntity extends TolkienMonsterEntity implements GeoEntity 
     private static final EntityDataAccessor<Boolean> LYING =
             SynchedEntityData.defineId(FellSpiritEntity.class, EntityDataSerializers.BOOLEAN);
 
+    /** Whether this spirit is a marsh vision rather than one of the marsh's real dead. */
+    private boolean figure;
+    /** Set when a figure is read back from a save, so it is cleaned up instead of being shown again. */
+    private boolean figureFromSave;
+
     public FellSpiritEntity(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);
     }
@@ -92,6 +97,7 @@ public class FellSpiritEntity extends TolkienMonsterEntity implements GeoEntity 
         super.addAdditionalSaveData(output);
         output.putInt("Variant", this.getTypeVariant());
         output.putBoolean("Lying", this.isLying());
+        output.putBoolean("MarshFigure", this.figure);
     }
 
     @Override
@@ -100,6 +106,11 @@ public class FellSpiritEntity extends TolkienMonsterEntity implements GeoEntity 
         this.reassessWeaponGoal();
         this.entityData.set(VARIANT, input.getIntOr("Variant", 0));
         this.setLying(input.getBooleanOr("Lying", false));
+
+        if (input.getBooleanOr("MarshFigure", false)) {
+            this.figure = true;
+            this.figureFromSave = true;
+        }
     }
 
     public boolean isLying() {
@@ -108,6 +119,14 @@ public class FellSpiritEntity extends TolkienMonsterEntity implements GeoEntity 
 
     public void setLying(boolean lying) {
         this.entityData.set(LYING, lying);
+    }
+
+    public void setFigure(boolean figure) {
+        this.figure = figure;
+    }
+
+    public boolean isFigure() {
+        return this.figure;
     }
 
     /**
@@ -133,6 +152,11 @@ public class FellSpiritEntity extends TolkienMonsterEntity implements GeoEntity 
     public void tick() {
         super.tick();
 
+        if (this.figure) {
+            this.figureTick();
+            return;
+        }
+
         if (!this.isLying() || this.level().isClientSide() || this.random.nextInt(180) != 0) {
             return;
         }
@@ -146,6 +170,38 @@ public class FellSpiritEntity extends TolkienMonsterEntity implements GeoEntity 
         server.sendParticles(ParticleTypes.SOUL, this.getX(), y + 0.1D, this.getZ(), 2, 0.25D, 0.1D, 0.25D, 0.01D);
         server.playSound(null, this.getX(), y, this.getZ(), TolkienSounds.IDLE_BARROW.get(),
                 SoundSource.AMBIENT, 0.5F, 0.6F);
+    }
+
+    /**
+     * A marsh figure is not a spirit that happens to stand still: it is a vision, and a vision ends. It is
+     * discarded the first time it is loaded from a save, so neither a restart nor a chunk that unloads and
+     * comes back can leave one standing in the marsh for good, and it comes apart the moment anybody - not
+     * only the player it was shown to - gets within six blocks of it.
+     */
+    private void figureTick() {
+        if (this.figureFromSave) {
+            this.discard();
+            return;
+        }
+
+        if (this.level().isClientSide() || this.tickCount % 10 != 0) {
+            return;
+        }
+
+        if (this.level().getNearestPlayer(this, 6.0D) != null) {
+            this.fadeAway();
+        }
+    }
+
+    /** What a figure does when it ends: comes apart into the marsh's own light and is gone. */
+    public void fadeAway() {
+        if (this.level() instanceof ServerLevel server) {
+            server.sendParticles(ParticleTypes.SOUL, this.getX(), this.getY() + 0.9D, this.getZ(),
+                    10, 0.4D, 0.7D, 0.4D, 0.02D);
+            server.playSound(null, this.getX(), this.getY(), this.getZ(), TolkienSounds.IDLE_BARROW.get(),
+                    SoundSource.AMBIENT, 0.4F, 0.45F);
+        }
+        this.discard();
     }
 
     /** A body under the water is not drowning: it is where it belongs. */
