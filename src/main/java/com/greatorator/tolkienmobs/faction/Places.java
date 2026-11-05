@@ -314,6 +314,13 @@ public final class Places extends SavedData {
         if (!TolkienDimensions.ARDA.equals(player.level().dimension())) return null;
         Name name = known(id);
         if (name == null || !(player.level() instanceof ServerLevel level)) return null;
+        // A name scouted on real ground stands where the scout stood, whatever the drawing would have
+        // picked: the ground was walked before the name was written, so there is nothing left to ask
+        // the survey. It is also the only way a name stands in a country the map never paints - the
+        // valley is pinned this way, since no column of the drawing samples as IMLADRIS until the city
+        // is built.
+        BlockPos scouted = Pins.at(id);
+        if (scouted != null) return set(level, id, scouted, radius);
         // A name is written where the drawing puts it, and the drawing's pick inside a cell is fixed
         // by the cell and the name, so a place needs no distance of its own: two players asking for the
         // same name are sent to the same ground wherever they were standing when they asked. A name the

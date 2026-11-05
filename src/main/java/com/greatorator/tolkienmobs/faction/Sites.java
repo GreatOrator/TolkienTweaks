@@ -443,6 +443,14 @@ public final class Sites extends SavedData {
     private static ArdaSurvey.Ground survey(ServerLevel level, ServerPlayer player, String structure) {
         Vec3i size = footprint(level, structure);
         if (size == null) return null;
+        // A building scouted on real ground stands where the scout stood. The spot is written down as
+        // given and the survey is skipped, since its whole job was to guess the ground a scout has
+        // since looked at; the laying still measures the footprint and seats it, so the building is
+        // not dropped onto a slope the drawing never knew about.
+        BlockPos scouted = Pins.at(structure);
+        if (scouted != null) {
+            return new ArdaSurvey.Ground(ArdaMap.sample(scouted.getX(), scouted.getZ()).country(), scouted);
+        }
         // A landmark is looked for from the middle of the country the books give it, so the hilltop
         // stands in the heart of Eriador whether the page was taken in the Shire, in Bree or at the
         // herald's own bench. Everything else is looked for around the player - but never at their

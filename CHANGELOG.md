@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **A location is pinned to the block it was scouted on.** `faction/Pins.java` is a table of hand-chosen
+  points, read before the drawing by both of the things that place ground: `Places.ensure` puts a name
+  exactly at its pinned block, skipping the cell survey and the spacing rule, and `Sites.survey` writes a
+  building's spot down as given, leaving the laying to seat the footprint on the ground the world actually
+  made. An empty table is the working default and behaves exactly as before. The pin is also the way a name
+  stands where the drawing paints nothing - the valley, which no column samples as `IMLADRIS`, can be pinned
+  by hand and stop holding the pages that need Elrond, Glorfindel or Legolas. `docs/arda-pins.md` records the
+  two key forms and the chapter-one ground still to scout.
 - **Ground is scouted before a location is settled.** `tools/arda_scout.py` renders a window of the drawn
   world at two to four blocks to the pixel, hillshaded from the sixteen-bit topography and with the river and
   lake masks painted over it - the painted terrain draws water as sand, so a river reads as a beach without
