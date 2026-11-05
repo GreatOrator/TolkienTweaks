@@ -89,10 +89,13 @@ what is still open, so the next session does not have to rebuild that from the c
 - **A drawn river answers before the massif and before the floor**: the Bruinen cuts its own channel
   through both, so the branch meets it in open water instead of running into a wall of massif at 5005.
 - **The branch leaves Rivendell on the west and runs round the valley to the Bruinen.** The city's 584
-  pieces carry 302,049 water blocks over 40,321 columns; the water stands at **4352, -3530** with its
+  pieces carry 302,049 water blocks over 40,321 columns; the water stands at **4820, -2963** with its
   surface at **82**, and the only water on the east edge is an aqueduct at y 239. The branch was built from
-  4900, -3322, which carries no water of the build's at all. Its course is four legs - out west of the wall
-  to 4272, south to z -3256, east below the city to 4952, and in to the drawn water at **4995, -3311**:
+  5368, -2755, which carries no water of the build's at all. Both are world columns with the city on the
+  pin; the legs below were measured from the old planting at 4352, -3833, so they shift with it by 468
+  east and 567 north, while the drawn water at 4995, -3311 is the map's own and stays put. Its course is
+  four legs - out west of the wall to 4740, south to z -2689, east below the city to 5420, and in to the
+  drawn water at **4995, -3311**:
   **1,104 blocks** in all, twelve wide with 5 left and 7 right of the middle. The ground is the vale's
   **74** the whole way, so the river falls the eight blocks from the city's water at the wall and then
   arrives level with the drawn river. The massif gives way to the course at **0.6 blocks of height per block
@@ -102,7 +105,7 @@ what is still open, so the next session does not have to rebuild that from the c
   Bruinen's own banks, where it runs 96 blocks east of the walls with no branch beside it, still stand at
   the crown to the water's edge, because a drawn river's distance is only read out to **64** blocks and a
   cone cut off at 64 leaves the step it was cut to remove. And the city's spring - water at up to **317**
-  in the build's own upper levels, ending at the east wall over x 4860..4905, z -3521..-3480 - has no course
+  in the build's own upper levels, ending at the east wall over x 5328..5373, z -2954..-2913 - has no course
   out of the build yet, so the ground outside it has nothing to slope to.
 - **The ford is a bridge.** Nothing places a road or a bridge over the Bruinen yet; the join is water and
   banks only.
@@ -125,8 +128,8 @@ what is still open, so the next session does not have to rebuild that from the c
   were removed after testing, not because the test was old.
 
     ./gradlew runClient
-    /execute in tolkienmobs:arda run tp @s 4628 120 -3577     the valley's middle
-    /tp @s 4352 92 -3530                                     the branch's mouth
+    /execute in tolkienmobs:arda run tp @s 5097 120 -3010     the pin, the valley's middle
+    /tp @s 4820 92 -2963                                     the branch's mouth
     /tp @s 4995 92 -3311                                     where it meets the Bruinen
     /tmcity origin        in creative, standing on the floor: plants the city
     /tmcity band 8        repeat; /tmcity summon does all of it in one word

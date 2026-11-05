@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The city's own columns follow the pin.** Every world coordinate the valley's water, its spring and
+  the walkthrough were described at was measured from the planting at 4352, -3833; with the city on the
+  pin they move 468 east and 567 north, so the branch's mouth is 4820, -2963, the spring ends over
+  x 5328..5373, and the mouth is 387 blocks from the drawn Bruinen rather than 681. The drawn water
+  itself is the map's own and did not move.
 - **`/tmcity` plants the city on the pin.** In Arda the corner comes off the `rivendell` pin rather than
   off the caller's feet, so `origin` and `summon` put the same 554 by 512 footprint in the same place
   from whatever block the caller is on, at the pin's own y, and the planting message says the pin
