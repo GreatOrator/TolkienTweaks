@@ -1,6 +1,6 @@
 # The mod's commands
 
-Every command the pack registers, in the order a world-runner reaches for them. All six roots are for
+Every command the pack registers, in the order a world-runner reaches for them. All seven roots are for
 arranging a world rather than for playing in one: each asks for **creative, or a gamemaster-level operator
 (op 2)**, and none of them is how a player plays the campaign. Nothing here reaches the world by a menu, so
 this file is also the only list of what the pack can be told to do.
@@ -89,6 +89,26 @@ The point is not typed: it is `ArdaMap.anchor`, the middle of the cells the coun
 A country whose build is settled wants the build, not its middle. Add one line to `LOCKED` in
 `TeleportCommands` - `"bree", new BlockPos(x, y, z)` - and that name lands on the build exactly, with no
 other change anywhere. That is how the quick map becomes a map of the world rather than of the poster.
+
+## `/tmpin` - pinning a location to the ground it was scouted on
+
+Stand where a build or a named place belongs and say which it is; the caller's feet become the pin, and
+the exact line for `Pins.SOURCE` is printed back, so a spot can be kept for every world by copying rather
+than by retyping coordinates out of a debug screen.
+
+| command | what it does |
+|---|---|
+| *(no argument)*, or `list` | What this world has pinned, and what the build pins for every world. |
+| `place <id>` | Pins a catalogue name at the caller's feet - one of the sixteen `/tmplace` lists. |
+| `build <name>` | Pins a template at the caller's feet: `camp`/`tent`, `ruin`, `cave`/`cave1`, `cave2`, `cave3`, `gloincamp`, `gundabad`/`keep`, `weathertop`, `castle`, `arena`, or a full template id. |
+| `remove <name>` | Forgets this world's pin for that name. A pin written into the build is in the jar, not in the world, and this does not touch it. |
+
+A pin outranks the drawing: a name stands exactly at the pinned block instead of being surveyed from its
+cell, and a building's spot is taken as given, with only the laying still seating its footprint. It is also
+the only way a name stands where the map paints nothing - the valley, whose columns never sample as Imladris
+- so pinning `rivendell` is what lets the pages that need Elrond, Glorfindel and Legolas be finished.
+
+Arda only: the pin is read by the campaign's own placement, so the caller has to be standing in Arda.
 
 # Standing Rivendell in a world
 

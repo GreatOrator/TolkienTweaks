@@ -10,7 +10,7 @@ this part of the country", which is the right answer for a world nobody has look
 an answer to "here".
 
 Scouting a fresh world and reporting coordinates is the better answer, so a location can now be
-written down as the block it stands on. The table is `Pins.POINTS`, and both things that place ground
+written down as the block it stands on. The table is `Pins.SOURCE`, and both things that place ground
 read it before they read the drawing:
 
 | what was scouted | key | asked by |
@@ -20,7 +20,7 @@ read it before they read the drawing:
 
 ## Pinning one
 
-One line in `Pins.POINTS`:
+One line in `Pins.SOURCE`:
 
 ```java
 "thorenhad", new BlockPos(4864, 157, -3328),
@@ -29,6 +29,13 @@ One line in `Pins.POINTS`:
 The y is the surface the scout stood on. It is a note, not a measurement: a building is still seated
 by the laying, which reads the ground under the footprint and sinks or underpins it, so a y a block or
 two out changes nothing. The x and z are taken as given.
+
+## Pinning one in-world
+
+`/tmpin place <id>` and `/tmpin build <name>` pin the caller's feet, apply to this world at once, and
+print the source line to copy. `/tmpin list` shows what is pinned; `/tmpin remove <name>` forgets a
+world pin. A world pin is saved with the world and wins over a source pin; a source pin holds in every
+world, including one nobody has walked.
 
 ## What a pin changes
 

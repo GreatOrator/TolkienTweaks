@@ -447,7 +447,7 @@ public final class Sites extends SavedData {
         // given and the survey is skipped, since its whole job was to guess the ground a scout has
         // since looked at; the laying still measures the footprint and seats it, so the building is
         // not dropped onto a slope the drawing never knew about.
-        BlockPos scouted = Pins.at(structure);
+        BlockPos scouted = Pins.at(level, structure);
         if (scouted != null) {
             return new ArdaSurvey.Ground(ArdaMap.sample(scouted.getX(), scouted.getZ()).country(), scouted);
         }

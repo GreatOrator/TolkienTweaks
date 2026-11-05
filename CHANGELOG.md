@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **A location can be pinned where you stand, by `/tmpin`.** `Pins` is now saved with the world as well as
+  written into the build: `/tmpin place <id>` pins a catalogue name at the caller's feet, `/tmpin build <name>`
+  pins a template by a short name (`camp`, `ruin`, `cave2`, `gloincamp`, `castle`...) or by its own id, and
+  both print the exact `Pins.SOURCE` line so a spot scouted once is kept for every world by copying. A world
+  pin outranks a source pin, which outranks the drawing; `/tmpin list` and `/tmpin remove` manage them, and it
+  answers to the same caller as the other arrangement commands, inside Arda only.
 - **A location is pinned to the block it was scouted on.** `faction/Pins.java` is a table of hand-chosen
   points, read before the drawing by both of the things that place ground: `Places.ensure` puts a name
   exactly at its pinned block, skipping the cell survey and the spacing rule, and `Sites.survey` writes a

@@ -319,7 +319,7 @@ public final class Places extends SavedData {
         // the survey. It is also the only way a name stands in a country the map never paints - the
         // valley is pinned this way, since no column of the drawing samples as IMLADRIS until the city
         // is built.
-        BlockPos scouted = Pins.at(id);
+        BlockPos scouted = Pins.at(player.level(), id);
         if (scouted != null) return set(level, id, scouted, radius);
         // A name is written where the drawing puts it, and the drawing's pick inside a cell is fixed
         // by the cell and the name, so a place needs no distance of its own: two players asking for the
