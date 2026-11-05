@@ -413,7 +413,12 @@ public final class ArdaMap {
             // The corsairs' haven and its dry hills, on the warm coast below Belfalas.
             new Patch(Country.UMBAR, 100, 136, 119, 143),
             // The vineyards of Dorwinion, at the Sea of Rhun's north-west corner.
-            new Patch(Country.DORWINION, 150, 34, 159, 43)
+            new Patch(Country.DORWINION, 150, 34, 159, 43),
+            // The three countries south of the Shire, on the land the masks keep above water there: rows 22
+            // and 23 are ground and the row below them is the sea.
+            new Patch(Country.MINHIRIATH, 20, 88, 31, 95),
+            new Patch(Country.CARDOLAN, 32, 88, 47, 95),
+            new Patch(Country.ENEDWAITH, 52, 88, 67, 95)
     };
 
     /** The patch country at a column of the drawing, or null where the cells answer. */
@@ -542,6 +547,9 @@ public final class ArdaMap {
         // The countries smaller than a cell, painted on the quarter-cell grid.
         UMBAR(TolkienBiomes.UMBAR, 70, 8, true),
         DORWINION(TolkienBiomes.DORWINION, 70, 6, true),
+        MINHIRIATH(TolkienBiomes.MINHIRIATH, 70, 6, true),
+        CARDOLAN(TolkienBiomes.CARDOLAN, 76, 10, true),
+        ENEDWAITH(TolkienBiomes.ENEDWAITH, 74, 8, true),
         EASTERN_WASTE(TolkienBiomes.EASTERN_WASTE, 76, 12, true);
 
         private final ResourceKey<Biome> biome;

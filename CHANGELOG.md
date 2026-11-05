@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **Cardolan, Minhiriath and Enedwaith are their own countries, and Eriador keeps Bree-land.** Eriador is
+  the whole land west of the Misty Mountains, so one country carrying its name labelled the Shire, Arnor's
+  old realm and the empty coast at once, and the poster's three southern countries had nowhere to be asked
+  for. The masks keep ground only on rows 22 and 23 south of the Shire - the row below is sea - so the
+  three are painted on the quarter-cell grid there: Minhiriath's grey empty coast west, Cardolan's downs
+  between the Baranduin and the Greyflood, and Enedwaith's wet interior against Dunland. Eregion stays
+  Hollin's name, under the mountains east of them.
 - **The drawing has quarter-cell patches, and Umbar and Dorwinion are on it.** A cell is 512 blocks, so
   a haven or a shore of vineyards could only ever be a whole county: Dorwinion was Rhun's steppe and
   Umbar the Haradwaith's dune. The same drawing is now also painted at 128 blocks, laid over the cells

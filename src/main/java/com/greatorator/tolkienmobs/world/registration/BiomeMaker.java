@@ -436,6 +436,63 @@ public class BiomeMaker extends BiomeHelper{
                 .build();
     }
 
+    /** Cardolan: the downs south of the Shire, between the Baranduin and the Greyflood. */
+    public static Biome makeBiomeCardolan(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(true)
+                .temperature(0.8F)
+                .downfall(0.8F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(0.8F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(10518688))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(329011))
+                .specialEffects(new BiomeSpecialEffects.Builder()
+                        .waterColor(4159204)
+                        .foliageColorOverride(6581840)
+                        .grassColorOverride(8106000)
+                        .build())
+                .mobSpawnSettings(eriadorSpawning().build())
+                .generationSettings(eriadorGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
+
+    /** Minhiriath: the grey, empty coast between the Baranduin and the Greyflood. */
+    public static Biome makeBiomeMinhiriath(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(true)
+                .temperature(0.8F)
+                .downfall(0.7F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(0.8F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(11843706))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(329011))
+                .specialEffects(new BiomeSpecialEffects.Builder()
+                        .waterColor(4159204)
+                        .foliageColorOverride(7112098)
+                        .grassColorOverride(9092321)
+                        .build())
+                .mobSpawnSettings(eriadorSpawning().build())
+                .generationSettings(eriadorGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
+
+    /** Enedwaith: the wet interior between the Greyflood and Dunland, north of the Isen. */
+    public static Biome makeBiomeEnedwaith(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(true)
+                .temperature(0.7F)
+                .downfall(0.9F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(0.7F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(11184810))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(329011))
+                .specialEffects(new BiomeSpecialEffects.Builder()
+                        .waterColor(4159204)
+                        .foliageColorOverride(6328900)
+                        .grassColorOverride(8160094)
+                        .build())
+                .mobSpawnSettings(dunlandSpawning().build())
+                .generationSettings(dunlandGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
+
 /** Eregion, the holly country west of the mountains and south of the Trollshaws. */
     public static Biome makeBiomeEregion(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
         return new Biome.BiomeBuilder()

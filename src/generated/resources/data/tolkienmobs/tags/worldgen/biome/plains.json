@@ -1,11 +1,13 @@
 {
   "values": [
     "tolkienmobs:belfalas",
+    "tolkienmobs:cardolan",
     "tolkienmobs:dagorlad",
     "tolkienmobs:dale",
     "tolkienmobs:dorwinion",
     "tolkienmobs:dunland",
     "tolkienmobs:emyn_muil",
+    "tolkienmobs:enedwaith",
     "tolkienmobs:eriador",
     "tolkienmobs:ettenmoors",
     "tolkienmobs:forochel",
@@ -13,6 +15,7 @@
     "tolkienmobs:gondor",
     "tolkienmobs:ithilien",
     "tolkienmobs:lindon",
+    "tolkienmobs:minhiriath",
     "tolkienmobs:nurn",
     "tolkienmobs:rhudaur",
     "tolkienmobs:rhun",
