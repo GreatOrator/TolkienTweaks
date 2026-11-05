@@ -48,6 +48,7 @@ public class TolkienBiomes {
     public static final ResourceKey<Biome> CARDOLAN = createBiome("cardolan", BiomeMaker::makeBiomeCardolan, TolkienTags.Biomes.PLAINS, TolkienTags.Biomes.TEMPERATE, TolkienTags.Biomes.WINDSWEPT);
     public static final ResourceKey<Biome> MINHIRIATH = createBiome("minhiriath", BiomeMaker::makeBiomeMinhiriath, TolkienTags.Biomes.PLAINS, TolkienTags.Biomes.TEMPERATE, TolkienTags.Biomes.SPARSE);
     public static final ResourceKey<Biome> ENEDWAITH = createBiome("enedwaith", BiomeMaker::makeBiomeEnedwaith, TolkienTags.Biomes.PLAINS, TolkienTags.Biomes.TEMPERATE, TolkienTags.Biomes.WET);
+    public static final ResourceKey<Biome> MORIA = createBiome("moria", BiomeMaker::makeBiomeMoria, TolkienTags.Biomes.MOUNTAIN, TolkienTags.Biomes.COLD, TolkienTags.Biomes.HOSTILE);
     public static final ResourceKey<Biome> DORWINION = createBiome("dorwinion", BiomeMaker::makeBiomeDorwinion, TolkienTags.Biomes.PLAINS, TolkienTags.Biomes.TEMPERATE, TolkienTags.Biomes.PEACEFUL);
     public static final ResourceKey<Biome> MIRKWOOD_SPOOKY = createBiome("mirkwood_spooky", BiomeMaker::makeBiomeMirkwoodSpooky, TolkienTags.Biomes.DARK_FOREST, TolkienTags.Biomes.TEMPERATE, TolkienTags.Biomes.HOSTILE);
     public static final ResourceKey<Biome> IRON_HILLS = createBiome("iron_hills", BiomeMaker::makeBiomeIronHills, TolkienTags.Biomes.MOUNTAIN, TolkienTags.Biomes.COLD, TolkienTags.Biomes.PEACEFUL);

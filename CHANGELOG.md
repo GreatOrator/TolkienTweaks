@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **Moria is ground of its own, under the mountain.** The poster puts the halls below the Misty
+  Mountains, so the surface over the Dimrill Dale keeps the range's biome and its drawn ground and the
+  rock beneath that crest, below its roof, reads as Moria: dark, dry, close-fogged, and reached by
+  digging rather than by walking. The biome source answers it by height, which is the one place the map
+  has of putting a country at a depth instead of a place.
 - **Cardolan, Minhiriath and Enedwaith are their own countries, and Eriador keeps Bree-land.** Eriador is
   the whole land west of the Misty Mountains, so one country carrying its name labelled the Shire, Arnor's
   old realm and the empty coast at once, and the poster's three southern countries had nowhere to be asked

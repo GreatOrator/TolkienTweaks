@@ -1,0 +1,132 @@
+{
+  "attributes": {
+    "minecraft:visual/cloud_fog_end_distance": 48.0,
+    "minecraft:visual/fog_color": "#0a0a0a",
+    "minecraft:visual/fog_end_distance": 48.0,
+    "minecraft:visual/fog_start_distance": 8.0,
+    "minecraft:visual/sky_color": "#0a0a0a",
+    "minecraft:visual/sky_fog_end_distance": 48.0,
+    "minecraft:visual/water_fog_color": "#0a0a0a"
+  },
+  "carvers": [],
+  "downfall": 0.0,
+  "effects": {
+    "foliage_color": "#2b2b24",
+    "grass_color": "#2b2b24",
+    "water_color": "#0f0f0f"
+  },
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "minecraft:ore_coal_upper",
+      "minecraft:ore_coal_lower",
+      "minecraft:ore_iron_upper",
+      "minecraft:ore_iron_middle",
+      "minecraft:ore_iron_small",
+      "minecraft:ore_gold",
+      "minecraft:ore_gold_lower",
+      "minecraft:ore_redstone",
+      "minecraft:ore_redstone_lower",
+      "minecraft:ore_diamond",
+      "minecraft:ore_diamond_medium",
+      "minecraft:ore_diamond_large",
+      "minecraft:ore_diamond_buried",
+      "minecraft:ore_lapis",
+      "minecraft:ore_lapis_buried",
+      "minecraft:ore_copper",
+      "minecraft:underwater_magma",
+      "tolkienmobs:legacy_coal_ore",
+      "tolkienmobs:legacy_copper_ore",
+      "tolkienmobs:legacy_diamond_ore",
+      "tolkienmobs:legacy_gold_ore",
+      "tolkienmobs:legacy_iron_ore",
+      "tolkienmobs:legacy_lapis_ore",
+      "tolkienmobs:legacy_redstone_ore",
+      "tolkienmobs:mithril_ore_placed"
+    ],
+    [],
+    [],
+    [
+      "minecraft:trees_windswept_hills",
+      "minecraft:patch_grass_forest",
+      "tolkienmobs:dwarven_maple_fallen_leaves",
+      "tolkienmobs:dwarven_maple_fallen_log"
+    ],
+    [
+      "minecraft:freeze_top_layer",
+      "tolkienmobs:mountain_peak"
+    ]
+  ],
+  "has_precipitation": false,
+  "spawn_costs": {
+    "minecraft:goat": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmcrebain": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmduergar": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmgoblin": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmtroll": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    }
+  },
+  "spawners": {
+    "ambient": [
+      {
+        "type": "tolkienmobs:entityttmcrebain",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 10
+      }
+    ],
+    "axolotls": [],
+    "creature": [
+      {
+        "type": "minecraft:goat",
+        "maxCount": 3,
+        "minCount": 1,
+        "weight": 15
+      }
+    ],
+    "misc": [],
+    "monster": [
+      {
+        "type": "tolkienmobs:entityttmtroll",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 35
+      },
+      {
+        "type": "tolkienmobs:entityttmgoblin",
+        "maxCount": 5,
+        "minCount": 1,
+        "weight": 45
+      },
+      {
+        "type": "tolkienmobs:entityttmduergar",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 20
+      }
+    ],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "temperature": 0.9
+}

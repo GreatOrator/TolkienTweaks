@@ -398,6 +398,29 @@ public class BiomeMaker extends BiomeHelper{
                 .build();
     }
 
+    /**
+     * Moria: the halls under the Misty Mountains. The surface above keeps the range's own biome and ground;
+     * this is the rock beneath it, handed out by the biome source below Moria's roof. Dark, dry and still,
+     * with the fog close in so a hall reads as depth rather than weather.
+     */
+    public static Biome makeBiomeMoria(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return foggedBiome(8.0F, 48.0F)
+                .hasPrecipitation(false)
+                .temperature(0.9F)
+                .downfall(0.0F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(0x0A0A0A))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(0x0A0A0A))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(0x0A0A0A))
+                .specialEffects(new BiomeSpecialEffects.Builder()
+                        .waterColor(0x0F0F0F)
+                        .foliageColorOverride(0x2B2B24)
+                        .grassColorOverride(0x2B2B24)
+                        .build())
+                .mobSpawnSettings(hithaeglirSpawning().build())
+                .generationSettings(hithaeglirGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
+
     /** Umbar: the corsairs' haven and its dry brown hills, on the warm coast below Belfalas. */
     public static Biome makeBiomeUmbar(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
         return new Biome.BiomeBuilder()

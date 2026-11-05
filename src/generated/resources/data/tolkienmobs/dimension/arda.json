@@ -58,7 +58,8 @@
         "tolkienmobs:enedwaith",
         "tolkienmobs:eastern_waste",
         "minecraft:river",
-        "minecraft:beach"
+        "minecraft:beach",
+        "tolkienmobs:moria"
       ]
     },
     "settings": "minecraft:overworld"

@@ -948,6 +948,29 @@ public final class ArdaMap {
         return limit >= height ? height : (int) Math.round(limit);
     }
 
+    /**
+     * Moria's roof, in blocks, and the rectangle of the range it lies under.
+     * <p>
+     * The halls are not a country of the drawing: the surface over them is the Misty Mountains, which is
+     * what the poster draws, and the map has no cell at a depth. So the biome source asks this instead -
+     * rock under these columns, below this height - and the surface keeps its own biome and its own ground.
+     * The rectangle is the stretch of the range above the Dimrill Dale, west of Lorien's north.
+     */
+    private static final int MORIA_ROOF = 40;
+    private static final int MORIA_X0 = 5120;
+    private static final int MORIA_X1 = 6144;
+    private static final int MORIA_Z0 = -4096;
+    private static final int MORIA_Z1 = -2304;
+
+    static int moriaRoof() {
+        return MORIA_ROOF;
+    }
+
+    /** Whether a column stands over Moria's halls. */
+    static boolean underMoria(int blockX, int blockZ) {
+        return blockX >= MORIA_X0 && blockX <= MORIA_X1 && blockZ >= MORIA_Z0 && blockZ <= MORIA_Z1;
+    }
+
     /** Whether a cell of the map exists at all, since a search may walk off its edge. */
     static boolean inside(int column, int row) {
         return column >= 0 && column < COLUMNS && row >= 0 && row < ROWS;

@@ -1,6 +1,7 @@
 package com.greatorator.tolkienmobs.world.registration;
 
 import com.mojang.serialization.MapCodec;
+import com.greatorator.tolkienmobs.init.TolkienBiomes;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.MapLike;
@@ -120,7 +121,8 @@ public class ArdaBiomeSource extends BiomeSource {
 
     /** Every biome the map can place, once each, in the order the codec writes them. */
     static List<ResourceKey<Biome>> keys() {
-        return Stream.concat(Stream.of(ArdaMap.Country.values()).map(ArdaMap.Country::biome), OVERLAYS.stream())
+        return Stream.concat(Stream.concat(Stream.of(ArdaMap.Country.values()).map(ArdaMap.Country::biome),
+                        OVERLAYS.stream()), Stream.of(TolkienBiomes.MORIA))
                 .distinct()
                 .toList();
     }
@@ -145,9 +147,14 @@ public class ArdaBiomeSource extends BiomeSource {
      */
     @Override
     public Holder<Biome> getNoiseBiome(int quartX, int quartY, int quartZ, Climate.Sampler sampler) {
-        ArdaMap.Sample sample = ArdaMap.sample(QuartPos.toBlock(quartX), QuartPos.toBlock(quartZ),
-                sampler.weirdness(), sampler.erosion());
-        Holder<Biome> biome = this.byKey.get(sample.biome());
+        int blockX = QuartPos.toBlock(quartX);
+        int blockZ = QuartPos.toBlock(quartZ);
+        ArdaMap.Sample sample = ArdaMap.sample(blockX, blockZ, sampler.weirdness(), sampler.erosion());
+        // Rock under the Misty crest is Moria's; the mountain over it stays the mountain.
+        boolean halls = sample.country() == ArdaMap.Country.HITHAEGLIR
+                && QuartPos.toBlock(quartY) < ArdaMap.moriaRoof()
+                && ArdaMap.underMoria(blockX, blockZ);
+        Holder<Biome> biome = this.byKey.get(halls ? TolkienBiomes.MORIA : sample.biome());
         if (biome == null) {
             throw new IllegalStateException("Arda's map named " + sample.biome().identifier()
                     + ", which is not in its biome list; add it to ArdaMap and the source together");
