@@ -1,6 +1,6 @@
 # The mod's commands
 
-Every command the pack registers, in the order a world-runner reaches for them. All five roots are for
+Every command the pack registers, in the order a world-runner reaches for them. All six roots are for
 arranging a world rather than for playing in one: each asks for **creative, or a gamemaster-level operator
 (op 2)**, and none of them is how a player plays the campaign. Nothing here reaches the world by a menu, so
 this file is also the only list of what the pack can be told to do.
@@ -74,6 +74,21 @@ type the verb first.
 
 Courage is earned in play; this exists because the rungs are a long climb by design, and trying what the
 fourth rung does to a Nazgul should not cost an afternoon.
+
+## `/tmtp` — the quick map
+
+A jump to any of the drawing's 49 countries, so a region can be walked while no build is pinned.
+
+| command | what it does |
+|---|---|
+| *(no argument)*, or `list` | Every region name, which is also what tab completion offers. |
+| `<region>` | Stands the caller in Arda at that country's middle, eight blocks over its ground - or over its water, for the three seas - moving them into the dimension from wherever they were. |
+
+The point is not typed: it is `ArdaMap.anchor`, the middle of the cells the country was drawn in, with the height read off the drawing itself. The table in `docs/arda-teleports.md` is the same set of points worked out by hand before the command existed, so the two agree - but only the command follows a fill that moves.
+
+A country whose build is settled wants the build, not its middle. Add one line to `LOCKED` in
+`TeleportCommands` - `"bree", new BlockPos(x, y, z)` - and that name lands on the build exactly, with no
+other change anywhere. That is how the quick map becomes a map of the world rather than of the poster.
 
 # Standing Rivendell in a world
 

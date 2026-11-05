@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **`/tmtp` jumps to any of the drawing's 49 countries.** A quick map for walking the regions while no
+  build is pinned: `/tmtp <region>` reads the country's middle from `ArdaMap.anchor`, puts the caller eight
+  blocks over its ground - over the water, for the three seas - and moves them into Arda from wherever they
+  were. Tab completion offers every name and `/tmtp list` prints them. The points are computed rather than
+  typed, so they follow the drawing when a fill moves; a country whose build is settled gets one line in
+  `TeleportCommands.LOCKED` and lands on the build instead. `docs/commands.md` records it, and
+  `docs/arda-teleports.md` points at it.
 - **The road's surface is specified: three widths, three bands, and a mix for each.** `docs/arda-roads.md`
   now records what a road will be laid in. Width is set per stretch as the builds are placed - wild at 7
   blocks, urban at 5, and rural at 3 for a spur - and the surface is chosen by distance from a pinned cell:

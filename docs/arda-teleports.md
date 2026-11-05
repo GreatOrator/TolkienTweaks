@@ -2,6 +2,7 @@
 
 One point per country of the drawing, at the middle of its largest block of cells, with the height the
 reference masks give that column plus eight blocks so the landing is above the ground.
+`/tmtp <region>` stands you on these same points without a coordinate typed - see `docs/commands.md`.
 Run them from anywhere; the dimension is `tolkienmobs:arda`. Each y is the mask height plus eight, so
 the landing is a few blocks above the ground. Minhiriath’s strip is drawn where the mask keeps only a
 narrow shelf of land, so its point is the first dry column of it rather than the middle of the patch.
