@@ -255,7 +255,7 @@ public class TolkienPlacedFeatures {
         // Two tries a chunk, on the sea's own floor rather than on the surface: the feature refuses any
         // column whose bed is dry or whose water is too shallow, so the marsh gets its dead only where
         // the drawing puts water and the bank stays empty.
-        context.register(PLACED_DEAD_BODIES, new PlacedFeature(features.getOrThrow(DEAD_BODIES_KEY), List.of(CountPlacement.of(2), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_OCEAN_FLOOR, BiomeFilter.biome())));
+        context.register(PLACED_DEAD_BODIES, new PlacedFeature(features.getOrThrow(DEAD_BODIES_KEY), List.of(CountPlacement.of(4), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_OCEAN_FLOOR, BiomeFilter.biome())));
         // Two pools a chunk, dug into the ground the marsh stands on. A pool is water the bodies laid later
         // in the same chunk can be found in, which is why neither the drawing nor the mask had to be cut.
         context.register(PLACED_MARSH_POOLS, new PlacedFeature(features.getOrThrow(MARSH_POOL_KEY), List.of(CountPlacement.of(2), InSquarePlacement.spread(), PlacementUtils.HEIGHTMAP_TOP_SOLID, BiomeFilter.biome())));

@@ -13,6 +13,9 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * The dead of the marshes: fell spirits lying in the water, and never on the dry ground.
  * <p>
@@ -31,7 +34,9 @@ public class DeadBodiesFeature extends Feature<NoneFeatureConfiguration> {
     /** How deep the water over a body has to stand, in blocks. */
     private static final int MIN_WATER = 2;
     /** How far from the placed column a bed is looked for, in blocks. */
-    private static final int SEARCH = 2;
+    private static final int SEARCH = 4;
+    /** How many of the marsh's dead one placement may lay, so a pool holds a few and not a single body. */
+    private static final int BODIES = 2;
     /** How far below the placed column a bed may be found and still belong to that placement. */
     private static final int DROP = 10;
 
@@ -42,13 +47,24 @@ public class DeadBodiesFeature extends Feature<NoneFeatureConfiguration> {
     @Override
     public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
         WorldGenLevel level = context.level();
-        BlockPos bed = findBed(level, context.origin());
-
-        if (bed == null) {
-            return false;
-        }
-
         RandomSource random = context.random();
+        List<BlockPos> laid = new ArrayList<>();
+
+        // A placement is a patch of marsh, not a single grave: the pool it finds is searched again for
+        // another bed, so the water holds a few of the dead rather than one and the rest of it empty.
+        for (int attempt = 0; attempt < BODIES; attempt++) {
+            BlockPos bed = findBed(level, context.origin(), random, laid);
+
+            if (bed == null || !lay(level, bed, random)) {
+                break;
+            }
+            laid.add(bed);
+        }
+        return !laid.isEmpty();
+    }
+
+    /** Lays one of the marsh's dead on a bed, and answers whether it was added to the level. */
+    private static boolean lay(WorldGenLevel level, BlockPos bed, RandomSource random) {
         FellSpiritEntity body = TolkienEntities.ENTITY_TTM_FELLSPIRIT.get()
                 .create(level.getLevel(), EntitySpawnReason.CHUNK_GENERATION);
         if (body == null) {
@@ -71,9 +87,16 @@ public class DeadBodiesFeature extends Feature<NoneFeatureConfiguration> {
      * the heightmap this placement was made from, so the heightmap's answer is the ground that was there
      * before the marsh was wet.
      */
-    private static BlockPos findBed(WorldGenLevel level, BlockPos origin) {
-        for (int dx = -SEARCH; dx <= SEARCH; dx++) {
-            for (int dz = -SEARCH; dz <= SEARCH; dz++) {
+    private static BlockPos findBed(WorldGenLevel level, BlockPos origin, RandomSource random,
+                                    List<BlockPos> used) {
+        // Walk the box from a random corner, so a second body in the same pool is not laid on the first.
+        int wayX = random.nextBoolean() ? 1 : -1;
+        int wayZ = random.nextBoolean() ? 1 : -1;
+
+        for (int ax = -SEARCH; ax <= SEARCH; ax++) {
+            for (int az = -SEARCH; az <= SEARCH; az++) {
+                int dx = ax * wayX;
+                int dz = az * wayZ;
                 for (int y = origin.getY() + 1; y >= origin.getY() - DROP; y--) {
                     BlockPos bed = new BlockPos(origin.getX() + dx, y, origin.getZ() + dz);
 
@@ -81,6 +104,9 @@ public class DeadBodiesFeature extends Feature<NoneFeatureConfiguration> {
                         continue;
                     }
 
+                    if (used.contains(bed)) {
+                        continue;
+                    }
                     if (waterDepth(level, bed) >= MIN_WATER) {
                         return bed;
                     }

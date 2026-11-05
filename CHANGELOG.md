@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **More of the drowned dead, and pools that hold a few of them.** A placement now searches nine blocks
+  around its column instead of five and lays up to two bodies on separate beds, and four placements are
+  rolled per chunk rather than two, so a deep pool is not left with a single corpse in it.
 - **The drowned dead are laid in the pools again.** The bodies feature had been reading the block the
   placement handed it as the bed, but that column is the block above the ground - so it was never solid,
   and no body was ever placed. It now finds the water itself, within two blocks of the placement and ten
