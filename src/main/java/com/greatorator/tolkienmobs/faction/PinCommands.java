@@ -253,7 +253,7 @@ public final class PinCommands {
 
     /** The line a source table would carry for this pin. */
     private static String line(String key, BlockPos at) {
-        return "\"" + key + "\", new BlockPos(" + at.getX() + ", " + at.getY() + ", " + at.getZ() + "),";
+        return "Map.entry(\"" + key + "\", new BlockPos(" + at.getX() + ", " + at.getY() + ", " + at.getZ() + ")),";
     }
 
     // ---- suggestions ----

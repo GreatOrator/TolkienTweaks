@@ -50,7 +50,7 @@ arrival and a hilltop template raised for a page, and so are Gundabad and Gloin'
 Every pin prints its own source line:
 
 ```
-For every world, add to Pins.SOURCE: "thorenhad", new BlockPos(4864, 157, -3328),
+For every world, add to Pins.SOURCE: Map.entry("thorenhad", new BlockPos(4864, 157, -3328)),
 ```
 
 Send that line back and it goes into `Pins.SOURCE`, which holds in every world including one nobody has
@@ -63,7 +63,7 @@ written into the build.
 
 | pages | location | pin as | what to look for |
 | --- | --- | --- | --- |
-| 1, 2, 5, 6, 7, 8, 12, 13, 14, 15 | Rivendell, where the Elves stand | `place rivendell` | ground in the vale under the mountains' western feet. No floor is cut for the city any more (`PLANTED = false` in `ArdaMap`), so the ground you choose is the drawn ground; **unblocks every page whose giver or turn-in is Elrond, Glorfindel or Legolas**, and chapter two's 2-1, 2-10 and 2-11 come back to the same city |
+| 1, 2, 5, 6, 7, 8, 12, 13, 14, 15 | Rivendell, where the Elves stand | `place rivendell` | pinned at **4628, 75, -3577** - the middle of the cut's own 554 by 512 footprint, planted from the corner 4352, 75, -3833 - on drawn ground, since no floor is cut for the city any more (`PLANTED = false`); **unblocks every page whose giver or turn-in is Elrond, Glorfindel or Legolas**, and chapter two's 2-1, 2-10 and 2-11 come back to the same city |
 | 2, 3, 4, 5, 8, 9, 10, 11, 12 | Thorenhad, Elladan's camp | `place thorenhad` | level ground a walk east of the valley, off the road |
 | 2, 4, 8 | Elladan's camp itself | `build camp` | 20 by 8 by 20; about 20 by 20 of level ground |
 | 3 | the wood ruin the black horse lies in | `build ruin` | a standing wall in the channels south of the road; about fourteen blocks across |

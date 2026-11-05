@@ -1,9 +1,14 @@
 # Rivendell - the build, the mountain and the water
 
-> **The city's own ground is laid aside (`PLANTED = false` in `ArdaMap`).** The dimension is now the
-> drawn height, rivers, lakes and mountains and nothing else. The valley floor at 74, the 318 rim, the
-> shoulder and the branch described below are the shape the city will be laid into at whatever site is
-> chosen for it - they are still in the source, behind one switch, and no longer generated.
+> **The city's own ground is laid aside (`PLANTED = false` in `ArdaMap`), and the valley is pinned.** The
+> dimension is the drawn height, rivers, lakes and mountains and nothing else, so the city stands on drawn
+> ground: `Pins.SOURCE` puts `rivendell` at **4628, 75, -3577**, the middle of its own 554 by 512 footprint,
+> with the cut planted from the corner **4352, 75, -3833**. The valley floor at 74, the 318 rim, the shoulder
+> and the branch described below are the shape the city would be laid into - still in the source, behind one
+> switch, and no longer generated.
+>
+> The campaign no longer lays the old square kit. A visit near the valley reads where `/tmcity` planted the
+> city, stands the build's own marks in it, and leaves the Elves on the pinned ground until a city is there.
 
 A state note, last written 2026-11-04. It records what the generator does now, what the map says, and
 what is still open, so the next session does not have to rebuild that from the commit log.

@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **Rivendell is pinned, and the valley stopped building its stand-in.** `Pins.SOURCE` holds
+  `Map.entry("rivendell", new BlockPos(4628, 75, -3577))` - the middle of the cut's own 554 by 512
+  footprint, planted from the corner 4352, 75, -3833 - and `Campaign` no longer lays the old square kit at
+  all: `standValley`, its pieces, their seating and their stone-naming are gone. A visit to the valley now
+  reads where `/tmcity` planted the city, stands the build's own marks and the crowd in it, and leaves the
+  Elves on the pinned ground until a city is there. `/tmpin` prints its source line as a `Map.entry(...)`,
+  which is the shape the table takes.
+- **The apron blends from the rim, not from the build's corner.** `Sites.apron` reads the highest dry
+  column on the ring just outside the footprint and ramps down from that, and it leaves wet columns alone so
+  a river leaving a build keeps its channel. On even ground the two datum agree; on a hillside the shoulder
+  now meets the highest ground at the wall instead of cutting a canyon - the trade is that a low side is
+  filled up to it.
 - **The Arda docs hold one copy of each fact again.** Rivendell's pages were listed differently in three
   places, and wrongly in all three: a page needs the city whenever its giver or turn-in is Elrond,
   Glorfindel or Legolas, which is 1, 2, 5, 6, 7, 8, 12, 13, 14, 15 and 2-1, 2-10, 2-11. The guide now

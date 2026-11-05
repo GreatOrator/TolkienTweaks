@@ -232,37 +232,6 @@ public final class Campaign extends SavedData {
             {313, 112, 246}, {315, 112, 186}, {320, 112, 216}, {323, 112, 181}, {358, 108, 266}};
 
     /**
-     * One piece of the valley: its template under {@code tolkienmobs:key_structures/}, and where the middle
-     * of its footprint sits relative to the middle of the place.
-     * <p>
-     * The offsets are written down rather than chosen, so that two players in two worlds walk into the same
-     * Rivendell: the square at the middle, the library off its western side, the guest house north of it,
-     * the second house east, and the gate on the southern road with a banner either side of it. The lamps
-     * stand at the square's four corners, which is where its roads leave it.
-     */
-    private record Part(String name, int dx, int dz) {
-    }
-
-    /**
-     * The valley as the pack first laid it: a square with a library, two houses, a gate, four lamps and a
-     * pair of banners, all on one floor. The hand-built city replaces this arrangement - it is the same
-     * valley, built properly - and these pieces stay in {@code key_structures} rather than being retired,
-     * because a smaller elven outpost somewhere else will want exactly this kit.
-     */
-    private static final List<Part> VALLEY_PARTS = List.of(
-            new Part("elven_square", 0, 0),
-            new Part("elven_library", -48, 0),
-            new Part("elven_house_1", -6, -26),
-            new Part("elven_house_2", 32, 0),
-            new Part("elven_gate", 0, 23),
-            new Part("elven_lamp", -17, -14),
-            new Part("elven_lamp", 16, -14),
-            new Part("elven_lamp", -17, 14),
-            new Part("elven_lamp", 16, 14),
-            new Part("elven_banner", -25, 23),
-            new Part("elven_banner", 25, 23));
-
-    /**
      * Where each of the three Elves of the line stands, as a step from the middle of the square: Glorfindel
      * out on its southern road where the stone is asked, Elrond at the door of the library he keeps, and
      * Legolas at the door of the guest house. The roads are the square's, so a stand point is paving rather
@@ -1993,117 +1962,6 @@ public final class Campaign extends SavedData {
         return true;
     }
 
-    /**
-     * Builds the valley the notes call the last homely house, out of the pieces the pack ships for it.
-     * <p>
-     * The tent's rules hold here: nothing is raised into a chunk that is not loaded, and laying a piece
-     * twice is laying the same blocks in the same place. What the valley adds is one floor for the whole
-     * of it - the square is seated on the highest ground under it and every other piece is laid at that
-     * same height, so the houses meet the paving rather than stepping up and down a hillside - and ground
-     * under each piece, so a building on the downhill side stands on dirt rather than on air.
-     */
-    private static boolean standValley(ServerLevel level, Places.Place valley) {
-        StructureTemplate square = valleyPiece(level, "elven_square");
-        if (square == null) return false;
-        int floor = seatOf(level, cornerOf(valley.centre(), 0, 0, square), square);
-        if (floor == Integer.MIN_VALUE) return false;
-        // The paving is laid into a hole rather than under a hill. The floor is the highest ground under
-        // the square, so on a slope the hillside above it hangs over the plaza and the trees come up
-        // through the middle of it: the air over the square's own footprint is taken out first, and the
-        // pieces then fill the floor that was cleared. It only ever runs on the visit that lays the
-        // valley, since a built valley is never laid again.
-        clearAbove(level, cornerOf(valley.centre(), 0, 0, square), square, floor);
-        boolean whole = true;
-        for (Part part : VALLEY_PARTS) {
-            StructureTemplate piece = valleyPiece(level, part.name());
-            if (piece == null) continue;
-            BlockPos corner = cornerOf(valley.centre(), part.dx(), part.dz(), piece);
-            // A piece whose ground is not loaded is left for a visit that can see it: the rest of the
-            // valley is already standing, and laying it again changes nothing.
-            if (seatOf(level, corner, piece) == Integer.MIN_VALUE) {
-                whole = false;
-                continue;
-            }
-            BlockPos at = new BlockPos(corner.getX(), floor, corner.getZ());
-            piece.placeInWorld(level, at, at, new StructurePlaceSettings(), level.getRandom(), 2);
-            underpin(level, at, piece.getSize().getX(), piece.getSize().getZ());
-        }
-        return whole;
-    }
-
-    /** One of the valley's templates, or null when the pack has no such piece. */
-    private static StructureTemplate valleyPiece(ServerLevel level, String name) {
-        Identifier id = Identifier.tryParse("tolkienmobs:key_structures/" + name);
-        return id == null ? null : level.getStructureManager().get(id).orElse(null);
-    }
-
-    /** The corner a piece is laid from, with its middle put at that step from the place's middle. */
-    private static BlockPos cornerOf(BlockPos centre, int dx, int dz, StructureTemplate piece) {
-        return centre.offset(dx - piece.getSize().getX() / 2, 0, dz - piece.getSize().getZ() / 2);
-    }
-
-    /**
-     * The highest ground under a piece's footprint, which is the height its floor is laid at, or
-     * {@code Integer.MIN_VALUE} when a corner of that footprint is in a chunk nobody has loaded - a block
-     * written into an unloaded chunk is quietly dropped, so that piece has to wait.
-     */
-    private static int seatOf(ServerLevel level, BlockPos corner, StructureTemplate piece) {
-        int wide = piece.getSize().getX();
-        int deep = piece.getSize().getZ();
-        if (wide <= 0 || deep <= 0) return Integer.MIN_VALUE;
-        if (!level.hasChunkAt(corner) || !level.hasChunkAt(corner.offset(wide, 0, deep))) {
-            return Integer.MIN_VALUE;
-        }
-        int floor = Integer.MIN_VALUE;
-        for (int dx = 0; dx <= wide; dx += Math.max(1, wide / 4)) {
-            for (int dz = 0; dz <= deep; dz += Math.max(1, deep / 4)) {
-                floor = Math.max(floor, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                        corner.getX() + dx, corner.getZ() + dz));
-            }
-        }
-        return floor;
-    }
-
-    /** How much air is kept over the square, in blocks: taller than any piece the valley lays. */
-    private static final int PLAZA_AIR = 16;
-
-    /**
-     * Takes the air over a piece's footprint, so a valley cut into a hillside has a plaza rather than a
-     * hillside with paving under it. Only the visit that lays the valley calls this, and that visit only
-     * happens where nothing of the valley stands yet, so nothing a player raised there is cleared later.
-     */
-    private static void clearAbove(ServerLevel level, BlockPos corner, StructureTemplate piece, int floor) {
-        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
-        int wide = piece.getSize().getX();
-        int deep = piece.getSize().getZ();
-        for (int dx = 0; dx < wide; dx++) {
-            for (int dz = 0; dz < deep; dz++) {
-                for (int dy = 1; dy <= PLAZA_AIR; dy++) {
-                    cursor.set(corner.getX() + dx, floor + dy, corner.getZ() + dz);
-                    if (!level.hasChunkAt(cursor)) continue;
-                    if (level.getBlockState(cursor).isAir()) continue;
-                    level.setBlock(cursor, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), 2);
-                }
-            }
-        }
-    }
-
-    /**
-     * Names whatever stones the valley's own templates carry. The stone's place in the square is written
-     * into the piece that stands there, which is where a building's middle is actually known, rather than
-     * into a coordinate here that goes stale the moment a piece is moved - and a piece with no stone in it
-     * simply names nothing.
-     */
-    private static void nameValleyStones(ServerLevel level, ServerPlayer player, Places.Place valley) {
-        String name = Component.translatable("place.tolkienmobs." + SUMMON_PLACE).getString();
-        for (Part part : VALLEY_PARTS) {
-            StructureTemplate piece = valleyPiece(level, part.name());
-            if (piece == null) continue;
-            Stones.nameLaid(level, cornerOf(valley.centre(), part.dx(), part.dz(), piece),
-                    piece.getSize(), name, player);
-        }
-    }
-
     /** Fills the ground under a piece that has been laid, so nothing on a slope stands on air. */
     private static void underpin(ServerLevel level, BlockPos corner, int wide, int deep) {
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
@@ -2119,35 +1977,24 @@ public final class Campaign extends SavedData {
     }
 
     /**
-     * Whether the valley is already standing. Its square is bedded on glowstone, which no ground grows by
-     * itself, so a run of glowstone under the middle of the place is that square and nothing else: the
-     * reading costs a few block reads and keeps a built valley from being laid again on every visit, which
-     * would put back anything a player had built inside it.
-     */
-    private static boolean valleyBuilt(ServerLevel level, Places.Place valley) {
-        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
-        for (int dy = -16; dy <= 12; dy++) {
-            cursor.set(valley.centre().getX(), valley.centre().getY() + dy, valley.centre().getZ());
-            if (level.getBlockState(cursor).is(net.minecraft.world.level.block.Blocks.GLOWSTONE)) return true;
-        }
-        return false;
-    }
-
-    /**
-     * Keeps the valley built and lived in while the player is close enough to see it: the buildings stood
-     * once, and the Elves who walk the square kept up to their number.
+     * Keeps the valley lived in while the player is close enough to see it.
+     * <p>
+     * Nothing here builds the city. Five hundred and fifty blocks across is forty million blocks, and
+     * writing that on a tick when somebody walks over a hill is not a thing this can do - the city is
+     * laid by hand with {@code /tmcity}. What this does is read where it was planted and dress it: the
+     * three Elves of the line on the build's own marks, and the city's people round them. Until a city
+     * is planted, the Elves and the walkers stand on the pinned ground, so the pages that need them can
+     * be walked before the build is there.
      */
     private static void keepValleyStanding(ServerPlayer player) {
         if (!(player.level() instanceof ServerLevel level)) return;
         Places.Place valley = Places.place(level, SUMMON_PLACE);
         if (valley == null || !valley.dimension().equals(level.dimension())) return;
         if (valley.centre().distToCenterSqr(player.position()) > VALLEY_REACH * VALLEY_REACH) return;
-        if (!valleyBuilt(level, valley)) {
-            standValley(level, valley);
-            // A stone the pieces carry is named by the visit that lays them, rather than planted at a
-            // coordinate the class has to know: the template says where the stone is, and this says
-            // what it is called.
-            nameValleyStones(level, player, valley);
+        BlockPos city = CityCommands.plantedCorner(level);
+        if (city != null) {
+            standCityFolk(level, city, CityCommands.plantedFolk());
+            return;
         }
         standValleyElves(level, valley);
         standValleyFolk(level, valley);

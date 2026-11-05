@@ -26,7 +26,7 @@ before they read the drawing:
 A line is a key and a block:
 
 ```java
-"thorenhad", new BlockPos(4864, 157, -3328),
+Map.entry("thorenhad", new BlockPos(4864, 157, -3328)),
 ```
 
 The y is the surface the scout stood on: a note, not a measurement, because a building is still seated by

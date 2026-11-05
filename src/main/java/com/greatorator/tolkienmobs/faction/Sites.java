@@ -761,44 +761,86 @@ public final class Sites extends SavedData {
     }
 
     /**
-     * Blends the ground around a footprint into the level a build stands at, which a template cannot do
-     * for itself: `beard_thin` and `beard_box` are worldgen jigsaw settings, read while chunks generate,
-     * and never run on a structure laid at runtime. So the shoulder is built here instead, as a ramp:
-     * the ground beside the walls is brought to the build's own base, and the difference is spent at
-     * {@link #APRON_SLOPE} per block walked out, so a hill is walked down - or a hollow built up - to
-     * meet the walls instead of being cut off at them. The ramp stops where it has met the ground it was
-     * walking toward, or at {@link #APRON_REACH}, and nothing beyond that is touched.
+     * Blends the ground around a footprint into the level the build's own rim stands at, which a
+     * template cannot do for itself: `beard_thin` and `beard_box` are worldgen jigsaw settings, read
+     * while chunks generate, and never run on a structure laid at runtime. So the shoulder is built
+     * here instead, as a ramp out from the walls.
+     * <p>
+     * It starts from {@link #rim} - the highest dry ground on the ring just outside the footprint -
+     * rather than from the build's lowest corner. That corner is a number about the cut, not about the
+     * country: on a hillside it is the downhill side's, and blending from it digs the uphill side away
+     * into a canyon with the build in the bottom of it. Measured from the rim, the shoulder meets the
+     * ground where the wall meets it, and the drop is spent at {@link #APRON_SLOPE} per block walked
+     * out. The trade is the other side of the same coin: on ground that falls away, the low side is
+     * filled up to the highest place the wall meets ground, so an uneven site terraces rather than
+     * shelves. The ramp stops where it has met the ground it was walking toward, or at
+     * {@link #APRON_REACH}, and water is left exactly as it was.
      */
     public static Apron apron(ServerLevel level, BlockPos corner, int wide, int deep, int base) {
         int[] counts = new int[3];
-        int rings = reach(level, corner, wide, deep, base);
+        int datum = rim(level, corner, wide, deep, base);
+        int rings = reach(level, corner, wide, deep, datum);
         for (int ring = 1; ring <= rings; ring++) {
             for (int dx = -ring; dx <= wide + ring; dx++) {
-                counts[side(level, corner, dx, -ring, base, ring)]++;
-                counts[side(level, corner, dx, deep + ring, base, ring)]++;
+                counts[side(level, corner, dx, -ring, datum, ring)]++;
+                counts[side(level, corner, dx, deep + ring, datum, ring)]++;
             }
             for (int dz = -ring + 1; dz < deep + ring; dz++) {
-                counts[side(level, corner, -ring, dz, base, ring)]++;
-                counts[side(level, corner, wide + ring, dz, base, ring)]++;
+                counts[side(level, corner, -ring, dz, datum, ring)]++;
+                counts[side(level, corner, wide + ring, dz, datum, ring)]++;
             }
         }
         return new Apron(counts[CUT], counts[FILLED], counts[UNTOUCHED]);
     }
 
     /**
-     * How many rings the ramp needs: the worst difference between the build's base and the ground right
-     * against its walls, divided by the slope a ring may spend, and two rings more so the ramp has met
+     * The level the shoulder starts from: the highest column of the ring just outside the walls that
+     * is dry ground, or the build's own base when the whole ring is water.
+     * <p>
+     * Water is skipped on purpose. A build at the water's edge - a city with a river leaving it - has a
+     * rim that is half channel, and the surface of a river is not the level a hillside is blended to.
+     * A ring with nothing dry on it answers with the number the caller passed, so a site in a lake
+     * behaves exactly as it did before there was a rim to read at all.
+     */
+    public static int rim(ServerLevel level, BlockPos corner, int wide, int deep, int fallback) {
+        int highest = Integer.MIN_VALUE;
+        for (int dx = -1; dx <= wide; dx++) {
+            highest = Math.max(highest, dry(level, corner.getX() + dx, corner.getZ() - 1));
+            highest = Math.max(highest, dry(level, corner.getX() + dx, corner.getZ() + deep));
+        }
+        for (int dz = 0; dz < deep; dz++) {
+            highest = Math.max(highest, dry(level, corner.getX() - 1, corner.getZ() + dz));
+            highest = Math.max(highest, dry(level, corner.getX() + wide, corner.getZ() + dz));
+        }
+        return highest == Integer.MIN_VALUE ? fallback : highest;
+    }
+
+    /** The top of a column when it is dry ground, or nothing when it is water or has no ground. */
+    private static int dry(ServerLevel level, int x, int z) {
+        int ground = height(level, x, z);
+        if (ground <= level.getMinY()) return Integer.MIN_VALUE;
+        return wet(level, x, ground, z) ? Integer.MIN_VALUE : ground;
+    }
+
+    /** Whether the block a column's height stands over is water, which the shoulder leaves alone. */
+    private static boolean wet(ServerLevel level, int x, int ground, int z) {
+        return !level.getBlockState(new BlockPos(x, ground - 1, z)).getFluidState().isEmpty();
+    }
+
+    /**
+     * How many rings the ramp needs: the worst difference between the rim's level and the ground right
+     * against the walls, divided by the slope a ring may spend, and two rings more so the ramp has met
      * the hillside rather than stopping a block short of it.
      */
-    private static int reach(ServerLevel level, BlockPos corner, int wide, int deep, int base) {
+    private static int reach(ServerLevel level, BlockPos corner, int wide, int deep, int datum) {
         int worst = 0;
         for (int dx = 0; dx <= wide; dx++) {
-            worst = Math.max(worst, Math.abs(height(level, corner.getX() + dx, corner.getZ() - 1) - base));
-            worst = Math.max(worst, Math.abs(height(level, corner.getX() + dx, corner.getZ() + deep) - base));
+            worst = Math.max(worst, Math.abs(height(level, corner.getX() + dx, corner.getZ() - 1) - datum));
+            worst = Math.max(worst, Math.abs(height(level, corner.getX() + dx, corner.getZ() + deep) - datum));
         }
         for (int dz = 1; dz < deep; dz++) {
-            worst = Math.max(worst, Math.abs(height(level, corner.getX() - 1, corner.getZ() + dz) - base));
-            worst = Math.max(worst, Math.abs(height(level, corner.getX() + wide, corner.getZ() + dz) - base));
+            worst = Math.max(worst, Math.abs(height(level, corner.getX() - 1, corner.getZ() + dz) - datum));
+            worst = Math.max(worst, Math.abs(height(level, corner.getX() + wide, corner.getZ() + dz) - datum));
         }
         int needed = (int) Math.ceil(worst / APRON_SLOPE) + 2;
         return Math.min(APRON_REACH, Math.max(needed, 4));
@@ -809,11 +851,14 @@ public final class Sites extends SavedData {
     }
 
     /** One column of one ring, brought to where the ramp has got to by that ring. */
-    private static int side(ServerLevel level, BlockPos corner, int dx, int dz, int base, int distance) {
+    private static int side(ServerLevel level, BlockPos corner, int dx, int dz, int datum, int distance) {
         int x = corner.getX() + dx;
         int z = corner.getZ() + dz;
         int ground = height(level, x, z);
-        int target = ramp(ground, base, distance);
+        // Water keeps its channel: the shoulder is ground, and filling a river to the hillside would
+        // put a shelf across water that was drawn to run out of the build.
+        if (wet(level, x, ground, z)) return UNTOUCHED;
+        int target = ramp(ground, datum, distance);
         if (target == ground) return UNTOUCHED;
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
         // What the column was paved with, so a shelf cut into a grass hill keeps its grass instead of
@@ -823,14 +868,13 @@ public final class Sites extends SavedData {
         boolean grassy = surface.is(Blocks.GRASS_BLOCK) || surface.is(Blocks.DIRT)
                 || surface.is(Blocks.PODZOL) || surface.is(Blocks.MYCELIUM)
                 || surface.is(Blocks.COARSE_DIRT);
-        boolean wet = !surface.getFluidState().isEmpty();
         if (target < ground) {
             for (int y = ground - 1; y >= target; y--) {
                 cursor.set(x, y, z);
                 if (level.getBlockState(cursor).isAir()) continue;
                 level.setBlock(cursor, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
             }
-            cap(level, cursor, x, target, z, grassy, wet);
+            cap(level, cursor, x, target, z, grassy, false);
             return CUT;
         }
         for (int y = ground; y < target; y++) {
@@ -838,7 +882,7 @@ public final class Sites extends SavedData {
             if (!level.getBlockState(cursor).isAir()) continue;
             level.setBlock(cursor, Blocks.DIRT.defaultBlockState(), Block.UPDATE_CLIENTS);
         }
-        cap(level, cursor, x, target, z, grassy, wet);
+        cap(level, cursor, x, target, z, grassy, false);
         return FILLED;
     }
 

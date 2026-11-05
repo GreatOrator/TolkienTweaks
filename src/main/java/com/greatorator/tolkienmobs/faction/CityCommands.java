@@ -208,6 +208,34 @@ public final class CityCommands {
         return spots;
     }
 
+    /**
+     * Where the city was planted in this world, or null when nothing is planted here.
+     * <p>
+     * This is what lets the campaign dress a city it did not build: the marker holds the corner the
+     * cut was laid from and the dimension it was laid in, so a body whose visit finds no city here is
+     * told so rather than walked to a frame that belongs to another country.
+     */
+    static BlockPos plantedCorner(ServerLevel level) {
+        try {
+            Mark mark = read(folder());
+            if (mark == null) return null;
+            String here = level.dimension().identifier().toString();
+            if (mark.dimension() != null && !mark.dimension().equals(here)) return null;
+            return mark.origin();
+        } catch (IOException unreadable) {
+            return null;
+        }
+    }
+
+    /** The city's people as the build's own table gives them, for a visit that dresses a planted city. */
+    static List<Campaign.FolkSpot> plantedFolk() {
+        try {
+            return folkSpots(folder());
+        } catch (IOException unreadable) {
+            return List.of();
+        }
+    }
+
     /** Plants the city's corner at the caller's feet, and forgets whatever was standing before. */
     private static int origin(CommandContext<CommandSourceStack> context) {
         return plant(context.getSource()) ? 1 : 0;
