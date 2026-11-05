@@ -232,15 +232,16 @@ public final class ArdaMap {
     /** Steps the channel's water is read at along its course, from the outlet to the ford. */
     private static final int BRUINEN_STEPS = 256;
     /**
-     * How wide the ground the branch leaves the valley through is, either side of its course, in blocks.
+     * How fast the ground climbs away from water, in blocks of height per block out.
      * <p>
-     * Where the branch crosses the massif's foot the rock would stand a bank across the water's own course,
-     * and the river would leave the city through a notch cut in a wall. The floor runs out along the course
-     * instead, over this many blocks, so the water leaves between two slopes.
+     * The massif stands at the city's own crown where its floor ends, which is right behind the build's walls
+     * and hidden by them - but a river at the floor's level at the foot of that crown is a slot with two
+     * hundred blocks of rock either side of it, not a river. Six tenths of a block of rise per block out is a
+     * mountainside's own grade, about thirty degrees, and it is what the rock falls away at beside any water.
      */
-    private static final int BRUINEN_CORRIDOR = 24;
-    /** How finely the corridor follows the course's bend. */
-    private static final int CORRIDOR_STEPS = 32;
+    private static final double MOUNTAIN_SLOPE = 0.6D;
+    /** How far out a column looks for a drawn river whose ground it has to give way to, in blocks. */
+    private static final int WATER_REACH = 64;
     /**
      * How far the branch wanders off its own course, and how many turns it makes on the way, in blocks and in
      * half turns. The wander falls to nothing at each corner, so the water is one channel rather than a
@@ -253,8 +254,6 @@ public final class ArdaMap {
      */
     private static final double BRUINEN_SNAKE = 18.0D;
     private static final double BRUINEN_TURNS = 1.5D;
-    /** How far out a column can be and still be measured against the course's bend. */
-    private static final double CORRIDOR_REACH = BRUINEN_CORRIDOR + BRUINEN_SNAKE;
     /**
      * The course the branch runs, in blocks: the city's mouth, out west of the wall, south round the valley's
      * own side, east below the city, and in to the drawn Bruinen.
@@ -610,11 +609,6 @@ public final class ArdaMap {
         // A distance from the floor's rectangle, not one from each of its four sides: the difference is
         // at the corners, where this rounds the mountain's foot instead of squaring it off.
         double beyond = beyond(blockX, blockZ);
-        // The branch leaves the valley through an opening rather than a notch: across its course the floor
-        // runs out and the climb fades back in over the corridor, so the water leaves the city between two
-        // slopes. Fading it, rather than cutting it off at the corridor's edge, is what keeps it a valley
-        // mouth instead of a trench with a wall beside it.
-        beyond *= smooth(Mth.clamp(corridor(blockX, blockZ) / BRUINEN_CORRIDOR, 0.0D, 1.0D));
         int x = (int) Math.floor(blockX);
         int z = (int) Math.floor(blockZ);
         // The ridge is not a ring at one height: it wanders in and out, and its summits rise and fall
@@ -643,7 +637,9 @@ public final class ArdaMap {
             double fell = Math.min(1.0D, (beyond - ridge) / (double) VALLEY_FALL);
             height = (int) Math.round(crest + (ground.height() - crest) * smooth(fell));
         }
-        return new Sample(country, height, false, false, ground.upland());
+        // Water at the foot of the crown is what turns a face into a wall: the ground falls away from any
+        // water it stands beside, so the massif opens into a valley wherever the rivers reach it.
+        return new Sample(country, giveWay(x, z, height), false, false, ground.upland());
     }
 
     /**
@@ -816,28 +812,56 @@ public final class ArdaMap {
 
 
     /**
-     * How far a column lies across the corridor the branch leaves the valley through, in blocks.
+     * The massif's own height, given way to the water it stands beside, in blocks.
      * <p>
-     * Measured to the nearest point of the bent course rather than to the straight line between its ends,
-     * because the water does not run straight and a corridor that did would wall the bend. A column beside
-     * the outlet is measured to the end it is beside, since it projects onto nothing - and one that kept the
-     * bank's full height next to the water would wall the mouth on its own side.
+     * The rock stands at the crown where the city's floor ends - which the build's own walls hide - but the
+     * drawn Bruinen runs past the valley's east side at the floor's level, and the branch out of the city
+     * meets it there: rock two hundred and forty blocks high beside water at seventy-four is not a valley a
+     * river runs through, it is a slot cut in a plateau. So the ground climbs away from any water at
+     * {@link #MOUNTAIN_SLOPE}, and both rivers open the massif into a valley instead of a trench.
+     * <p>
+     * The nearest water is the branch's own course, measured exactly, or the nearest drawn river column found
+     * in eight directions: the walk out to it is the bank's run, and its surface is the level the ground has
+     * to come down to. Nothing is done where the column already stands no higher than that.
      */
-    private static double corridor(double blockX, double blockZ) {
+    private static int giveWay(int blockX, int blockZ, int height) {
+        double run = Double.MAX_VALUE;
+        int level = height;
         double[] at = project(blockX, blockZ);
-        // The course's own bend can stand this far off the legs, so a column that is further out than both is
-        // beyond the corridor whichever way the bend went.
-        if (at[2] > CORRIDOR_REACH + BRUINEN_SNAKE) {
-            return at[2];
+        boolean course = at[5] < 0.5D && at[6] < 0.5D;
+        if (course) {
+            // Behind the mouth the city's own water is the level; past the join it is the Bruinen's.
+            run = at[2] - BRUINEN_RIGHT;
+            level = bruinenWater(at[0]);
         }
-        double nearest = at[2];
-        for (int step = 0; step <= CORRIDOR_STEPS; step++) {
-            double share = step / (double) CORRIDOR_STEPS;
-            double offsetX = blockX - courseX(share);
-            double offsetZ = blockZ - courseZ(share);
-            nearest = Math.min(nearest, Math.hypot(offsetX, offsetZ));
+        for (int step = 0; step < 8; step++) {
+            double dirX = Math.cos(step * Math.PI / 4.0D);
+            double dirZ = Math.sin(step * Math.PI / 4.0D);
+            for (int reach = 4; reach <= WATER_REACH; reach += 4) {
+                int px = blockX + (int) Math.round(dirX * reach);
+                int pz = blockZ + (int) Math.round(dirZ * reach);
+                if (!ArdaMasks.river(px, pz)) {
+                    continue;
+                }
+                double away = reach - 2.0D;
+                if (away < run) {
+                    course = false;
+                    run = away;
+                    level = Math.max(SEA_LEVEL, groundAt(px / (double) CELL + ORIGIN_COLUMN,
+                            pz / (double) CELL + ORIGIN_ROW, px, pz).height());
+                }
+                break;
+            }
         }
-        return nearest;
+        // The course's own distance is exact however far a column stands from it, so the rock can give way to
+        // the river the whole way up its bank. A drawn river is only found within the reach above, and a cone
+        // cut off at that reach would leave the step it was cut to remove - so the drawn river's own banks
+        // stay as they are until its distance can be read as far.
+        if (!course && run >= WATER_REACH) {
+            return height;
+        }
+        double limit = level + Math.max(0.0D, run) * MOUNTAIN_SLOPE;
+        return limit >= height ? height : (int) Math.round(limit);
     }
 
     /** Whether a cell of the map exists at all, since a search may walk off its edge. */

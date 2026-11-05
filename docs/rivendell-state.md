@@ -84,7 +84,15 @@ what is still open, so the next session does not have to rebuild that from the c
   to 4272, south to z -3256, east below the city to 4952, and in to the drawn water at **4995, -3311**:
   **1,104 blocks** in all, twelve wide with 5 left and 7 right of the middle. The ground is the vale's
   **74** the whole way, so the river falls the eight blocks from the city's water at the wall and then
-  arrives level with the drawn river.
+  arrives level with the drawn river. The massif gives way to the course at **0.6 blocks of height per block
+  out** (about thirty degrees) over the whole bank, so the water leaves through a valley mouth rather than a
+  slot, and the drop at the wall is the only fall on the way.
+- **Two faces are still to open.** The massif gives way to the branch only where the branch runs: the drawn
+  Bruinen's own banks, where it runs 96 blocks east of the walls with no branch beside it, still stand at
+  the crown to the water's edge, because a drawn river's distance is only read out to **64** blocks and a
+  cone cut off at 64 leaves the step it was cut to remove. And the city's spring - water at up to **317**
+  in the build's own upper levels, ending at the east wall over x 4860..4905, z -3521..-3480 - has no course
+  out of the build yet, so the ground outside it has nothing to slope to.
 - **The ford is a bridge.** Nothing places a road or a bridge over the Bruinen yet; the join is water and
   banks only.
 - **The join's step is closed.** The branch falls from the city's water to the vale's 74 on its way out

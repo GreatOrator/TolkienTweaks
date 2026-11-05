@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The massif gives way to the branch at a mountainside's grade, so the river no longer leaves the city
+  between two walls.** The rock stood at the crown wherever the city's floor rectangle ended - 318, against
+  the branch's water at 82 - and the water was cut through it as a slot whose walls went up at 1.2 blocks
+  for each block out until they met the plateau. The ground now climbs away from the branch's own course at
+  0.6 blocks of height per block, about thirty degrees, over the whole bank: the river leaves through a
+  valley mouth, and the rock either side of the join rises as a slope. The plateau is only lowered where the
+  slope would otherwise cut a step into it, which is what the removed corridor scaling failed to do.
+
 - **The river now leaves Rivendell where the build's water leaves it, and reaches the Bruinen.** The
   branch's course was a straight line from 4900, -3322 - a point with no build water within 48 blocks - to
   the ford. The city's water stands against its west wall at 82, so the course is four legs: out west of
