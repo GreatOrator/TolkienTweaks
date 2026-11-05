@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **Lake Evendim is there.** Nenuial was the one lake of the west the mask draws nothing for, and the
+  ground north of the Shire drains away to the Gulf at every level a contour could close at, so the lake
+  is drawn by hand at Annuminas: an ellipse filled to 95, 570 by 505 blocks, with its shore the land's own
+  contour and a bank outside it where the low ground would have let the water run west.
 - **The halls are Moria whatever the surface is called.** The rectangle the biome answers in lies under
   a cell the drawing gives to Lorinand, so the country check refused it and the chamber read as Lorinand;
   the rock below the roof is the halls' own now, and the surface keeps its biome.

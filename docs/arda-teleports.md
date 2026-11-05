@@ -75,9 +75,11 @@ the south, not where the 48 by 36 grid draws its hand-painted sea cells.
 | Lake at the Bruinen's head | 2828 | 137 | -3588 | x 2656..3024, z -3736..-3448 |
 | Far-eastern lake | 18836 | 179 | -4236 | x 18608..19048, z -4368..-4096 |
 | North-eastern lake, above Mirkwood's eaves | 11484 | 164 | -4916 | x 11424..11560, z -5120..-4696 |
+| Lake Evendim (Nenuial), at Annuminas - drawn by hand | -2500 | 103 | -2990 | x -2922..-2074, z -3224..-2720 |
 
-Annuminas has no lake: the mask draws nothing at Nenuial, so the city's water would have to be put in by
-hand.
+Lake Evendim is the one the mask has nothing for. Its water is a hand-drawn ellipse at Annuminas filled
+to a level, so what you see is the land's own contour at 95 rather than the ellipse: it came out 570
+by 505 blocks, every block of shore on rising ground.
 
 ## Marshes
 
