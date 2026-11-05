@@ -68,7 +68,9 @@ southern edges that the bake crops away. Each sheet is one water level, measured
 sheets rather than water following the rise and fall of the ground under them. Ground standing more than four
 blocks over a sheet's level is left as land rather than cut away - a headland, not a wall - and the water
 grades from one block deep at the mask's edge down to the full six inside it, so a sea shallows into its
-shore instead of showing terraces of bed through the water. The spread of each
+shore instead of showing terraces of bed through the water, and the land round the sheet - a headland in
+the middle of one included - stands a block over the water where it meets it and a block higher for each
+block further out, so a drawn hill ends in a beach rather than a cliff. The spread of each
 sheet over its own level is logged once at load, for tuning. A point is the middle of the
 drawn sheet and the span is the extent of it; the two great seas are in the east and
 the south, not where the 48 by 36 grid draws its hand-painted sea cells.

@@ -13,6 +13,10 @@ All notable changes to this project will be documented in this file.
   disc rather than the height of the one column the feature happened to start on, and the block or two of
   ground standing over that line is cut instead of left as an island: no more sheets standing above their
   shore, and no more dirt rings inside the water.
+- **A lake shore is a beach, not a wall.** A drawn headland, and the land just outside the sheet, now
+  stand one block over the water where they meet it and climb a block for every block further out, so the
+  rise in the middle of a lake and the ground along its edge walk down into the sheet instead of ending in
+  a cliff. The grade never undercuts the bank that holds the water in.
 - **Lake water shallows into its edge.** The bed is graded by how much of a column the drawn sheet covers,
   one block deep at the mask's edge and full depth inside it, instead of a flat shelf and a five-block wall
   that showed through the water as terraces; the lake id is also searched two cells out, so a rim column

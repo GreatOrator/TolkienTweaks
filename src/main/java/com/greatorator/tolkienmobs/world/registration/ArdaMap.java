@@ -709,10 +709,15 @@ public final class ArdaMap {
         // ground is raised to hold it, because a channel whose bank stands under the water it carries is
         // not a channel at all - the water runs out at the first tick and the country is flooded instead.
         int bank = bank(blockX, blockZ, ground.height());
-        if (bank > ground.height()) {
-            return new Sample(ground.country(), bank, false, ground.shore(), ground.upland());
+        int height = Math.max(ground.height(), bank);
+
+        // Land beside a drawn lake comes down to it as well: the bank only ever holds water in, so a shore
+        // that stands eight blocks over its own sheet kept a wall where the drawing had a hill. The grade
+        // never undercuts what the bank needs, and never reaches under the sea.
+        if (nearLake(blockX, blockZ)) {
+            height = Math.max(bank, Math.min(height, shoreGrade(blockX, blockZ)));
         }
-        return new Sample(ground.country(), ground.height(), false, ground.shore(), ground.upland());
+        return new Sample(ground.country(), height, false, ground.shore(), ground.upland());
     }
 
     /** How far a column lies beyond the floor's rectangle, in blocks: nothing on the floor itself. */
@@ -742,10 +747,13 @@ public final class ArdaMap {
             int sheet = ArdaMasks.lakeId(blockX, blockZ);
 
             // A column drawn as lake that stands well above the sheet is a headland, not water: cutting it
-            // down to the bed is what put a wall of stone at the edge of Nurnen. It stays land, and the
-            // sheet ends against it.
+            // down to the bed is what put a wall of stone at the edge of Nurnen. It stays land - but it walks
+            // down to the water rather than standing over it, so a rise inside the sheet ends in a shore.
             if (sheet > 0 && ground.height() > surface + LAKE_SHORE) {
-                return null;
+                int grade = shoreGrade(blockX, blockZ);
+
+                return new Sample(ground.country(), Math.min(ground.height(), grade), false,
+                        ground.shore(), ground.upland());
             }
 
             // The bed is graded by how much of the column the sheet covers, so the water goes from wading
@@ -838,6 +846,48 @@ public final class ArdaMap {
             }
         }
         return need;
+    }
+
+    /** Whether drawn lake water lies within a dozen blocks of a column, tested cheaply before the scan. */
+    private static boolean nearLake(int blockX, int blockZ) {
+        for (int step = 0; step < 8; step++) {
+            int px = blockX + (int) Math.round(Math.cos(step * Math.PI / 4.0D) * BANK_REACH);
+            int pz = blockZ + (int) Math.round(Math.sin(step * Math.PI / 4.0D) * BANK_REACH);
+            if (ArdaMasks.lake(px, pz)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * The highest a column of lake shore may stand and still meet its sheet as a shore, or
+     * {@link Integer#MAX_VALUE} where no lake water lies within {@link #BANK_REACH}.
+     * <p>
+     * A lake is one level, so its shore cannot be graded against the land's own slope: the number comes from
+     * the water instead, one block up where the water is met and one more for every block further out. That
+     * turns the wall a drawn headland used to end in into the beach its sheet should have had.
+     */
+    private static int shoreGrade(int blockX, int blockZ) {
+        for (int reach = 2; reach <= BANK_REACH; reach += 2) {
+            for (int step = 0; step < 8; step++) {
+                int px = blockX + (int) Math.round(Math.cos(step * Math.PI / 4.0D) * reach);
+                int pz = blockZ + (int) Math.round(Math.sin(step * Math.PI / 4.0D) * reach);
+
+                if (!ArdaMasks.lake(px, pz)) {
+                    continue;
+                }
+                int drawn = groundAt(px / (double) CELL + ORIGIN_COLUMN,
+                        pz / (double) CELL + ORIGIN_ROW, px, pz).height();
+
+                // A neighbour that is itself a headland is land, not the sheet: the shore is the water.
+                if (drawn > lakeLevel(px, pz, drawn) + LAKE_SHORE) {
+                    continue;
+                }
+                return lakeLevel(px, pz, drawn) + 1 + Math.max(0, reach - 2);
+            }
+        }
+        return Integer.MAX_VALUE;
     }
 
     /**
