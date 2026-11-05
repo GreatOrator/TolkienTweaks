@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **Barachen has a face of his own.** `middle-earth/barachen.png` is drawn and dropped into the named-giver
+  folder, which is where the renderer already looks for a giver whose name it knows: a body wearing the
+  West's work and the name "Barachen" is looked for as `barachen.png` before the alliance's cloth, so the
+  art applies with no code of its own. Nothing else moves; a pack without the file still falls back to the
+  West's giver skin in silence.
 - **Elladan's camp is a cut of its own.** `key_structures/elledancamp.nbt` - 20 by 8 by 20, 940 blocks,
   no entities - is `Sites.ELLADAN_CAMP`, canon'd to the Trollshaws and pinned to Thorenhad's cell, and
   `Campaign.CAMP_TENT` lays it at the named camp in place of the Rangers' tent. The tent keeps both of its
