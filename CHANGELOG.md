@@ -9,6 +9,11 @@ All notable changes to this project will be documented in this file.
   disc rather than the height of the one column the feature happened to start on, and the block or two of
   ground standing over that line is cut instead of left as an island: no more sheets standing above their
   shore, and no more dirt rings inside the water.
+- **A lake ends in a shore, not a cliff.** Ground more than four blocks over a sheet's level is left as
+  land instead of being cut down to the bed, and water within that band shallows to one block at the edge,
+  so Nurnen and Rhun meet their shores in water you can wade instead of a wall of stone. The load log now
+  reports, per sheet, its level, how far the drawn ground rises over it, and how much of it falls inside
+  that four-block band.
 - **Each drawn lake is one level.** The lakes are measured once per drawn sheet and laid at that sheet's
   own level, with the bed cut to it, so the Sea of Nurnen and the Sea of Rhun are sheets of water rather
   than waterfalls down the terrain under them. Baked by `tools/arda_lake_ids.py`.

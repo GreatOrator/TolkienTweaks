@@ -407,6 +407,13 @@ public final class ArdaMap {
 
     /** How deep a lake's bed lies under its water. */
     private static final int LAKE_DEPTH = 6;
+    /**
+     * How far a column drawn as lake may stand above its sheet's level and still be flooded. Ground higher
+     * than this is shore: it is left as land rather than cut away, which is what keeps a sea from ending in
+     * a cliff. The number is reported at load beside each sheet's spread, so it can be judged against real
+     * ground rather than guessed.
+     */
+    private static final int LAKE_SHORE = 4;
 
     /** The highest the drawing may raise the ground, leaving the world's ceiling room above it. */
     private static final int MOUNTAIN_CEILING = 420;
@@ -732,8 +739,22 @@ public final class ArdaMap {
             // player walks down like a waterfall. A lake is a level surface, so the level is measured once
             // per sheet and the bed under it is cut to it.
             int surface = lakeLevel(blockX, blockZ, ground.height());
-            return new Sample(ground.country(), Math.min(ground.height(), surface - LAKE_DEPTH), true,
-                    false, ground.upland(), surface);
+            int sheet = ArdaMasks.lakeId(blockX, blockZ);
+
+            // A column drawn as lake that stands well above the sheet is a headland, not water: cutting it
+            // down to the bed is what put a wall of stone at the edge of Nurnen. It stays land, and the
+            // sheet ends against it.
+            if (sheet > 0 && ground.height() > surface + LAKE_SHORE) {
+                return null;
+            }
+
+            // The water that is left shallows out to the land: a column standing at or over the level is cut
+            // only its last block, so the sheet meets the shore in water a person can wade, and the full
+            // depth is only under ground that was already below the level.
+            int bed = ground.height() >= surface
+                    ? surface - 1
+                    : Math.min(ground.height(), surface - LAKE_DEPTH);
+            return new Sample(ground.country(), bed, true, false, ground.upland(), surface);
         }
         if (ArdaMasks.river(blockX, blockZ)) {
             // Near a coast the ground's grade falls under the sea; held there, the last stretch of a
@@ -863,6 +884,40 @@ public final class ArdaMap {
             for (int id = 1; id <= highest; id++) {
                 if (counts[id] > 0) {
                     levels[id] = Math.max(SEA_LEVEL, (int) Math.round(sums[id] / (double) counts[id]));
+                }
+            }
+            // How far the drawn ground rises over each sheet's level: the number the shore band is tuned
+            // by. A sea whose ground climbs far over its own level is a sea on a hillside, and this says so
+            // once, at load, rather than leaving it to be found as a cliff.
+            int[] risen = new int[highest + 1];
+            int[] within = new int[highest + 1];
+            int[] seen = new int[highest + 1];
+            for (int row = 0; row < height; row += 16) {
+                for (int column = 0; column < width; column += 16) {
+                    int id = sheets[row * width + column] & 0xFF;
+
+                    if (id == 0) {
+                        continue;
+                    }
+
+                    int x = west + column * blocks;
+                    int z = north + row * blocks;
+                    int rise = groundAt(x / (double) CELL + ORIGIN_COLUMN, z / (double) CELL + ORIGIN_ROW, x, z).height()
+                            - levels[id];
+                    risen[id] = Math.max(risen[id], rise);
+                    seen[id]++;
+
+                    if (rise <= LAKE_SHORE) {
+                        within[id]++;
+                    }
+                }
+            }
+            for (int id = 1; id <= highest; id++) {
+                if (seen[id] > 0) {
+                    com.mojang.logging.LogUtils.getLogger().info(
+                            "Arda lake sheet {}: level {}, drawn ground rises to +{} over it, {}/{} samples ({}%) within {} blocks",
+                            id, levels[id], risen[id], within[id], seen[id],
+                            Math.round(100.0D * within[id] / seen[id]), LAKE_SHORE);
                 }
             }
             return levels;

@@ -232,7 +232,27 @@ final class ArdaMasks {
         if (column < 0 || column >= WIDTH || row < 0 || row >= HEIGHT) {
             return 0;
         }
-        return LAKE_SHEETS[row * WIDTH + column] & 0xFF;
+        int id = LAKE_SHEETS[row * WIDTH + column] & 0xFF;
+        if (id != 0) {
+            return id;
+        }
+        // The coverage test interpolates between cells, so a column can be water while the cell under it is
+        // dry. Reading only that cell would leave a rim of the sheet with no level, and a rim laid at the
+        // ground is the first step of the staircase this bake exists to remove.
+        for (int dz = -1; dz <= 1; dz++) {
+            for (int dx = -1; dx <= 1; dx++) {
+                int nearColumn = column + dx;
+                int nearRow = row + dz;
+                if (nearColumn < 0 || nearColumn >= WIDTH || nearRow < 0 || nearRow >= HEIGHT) {
+                    continue;
+                }
+                int near = LAKE_SHEETS[nearRow * WIDTH + nearColumn] & 0xFF;
+                if (near != 0) {
+                    return near;
+                }
+            }
+        }
+        return 0;
     }
 
     static byte[] lakeSheets() {

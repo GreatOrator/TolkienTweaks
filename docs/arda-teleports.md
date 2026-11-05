@@ -65,7 +65,10 @@ narrow shelf of land, so its point is the first dry column of it rather than the
 
 These are the lake mask's nine sheets: six inside the world frame, and three beyond its eastern and
 southern edges that the bake crops away. Each sheet is one water level, measured from the mean ground the sheet is drawn over, so the lakes are level
-sheets rather than water following the rise and fall of the ground under them. A point is the middle of the
+sheets rather than water following the rise and fall of the ground under them. Ground standing more than four
+blocks over a sheet's level is left as land rather than cut away - a headland, not a wall - and the water
+shallows to one block deep at that shore, so a sea ends in a beach rather than a cliff. The spread of each
+sheet over its own level is logged once at load, for tuning. A point is the middle of the
 drawn sheet and the span is the extent of it; the two great seas are in the east and
 the south, not where the 48 by 36 grid draws its hand-painted sea cells.
 
