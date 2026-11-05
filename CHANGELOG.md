@@ -16,6 +16,10 @@ All notable changes to this project will be documented in this file.
   disc rather than the height of the one column the feature happened to start on, and the block or two of
   ground standing over that line is cut instead of left as an island: no more sheets standing above their
   shore, and no more dirt rings inside the water.
+- **The Sea of Rhun ends in Rhun, not in the eastern waste.** The waste's fill runs the whole eastern edge
+  of the map and was painted after Rhun, so the three columns east of Rhun's own cells came out as waste and
+  the sea ended against it on that side. Columns 44-46, rows 16-22 - the shore east and north of the water -
+  are painted Rhun after everything else, so the sea is ringed by its own country.
 - **The drawing is measured against the reference the masks came from, and the offsets do not hold.** The
   table in `docs/arda-map-gaps.md` was measured from a map that is not in the repository; rendered over
   `Reference/ME_Terrain_albedo.png` - the painted terrain every mask is cut from - the eastern fills are

@@ -1704,6 +1704,13 @@ public final class ArdaMap {
         fill(map, Country.BELFALAS, 22, 31, 27, 33);
         fill(map, Country.KHAND, 43, 28, 46, 31);
 
+        // The Sea of Rhun's eastern shore is Rhun's own, and it is painted last of all because it is the
+        // one country whose cells were taken from it: the waste's fill runs the whole eastern edge of the
+        // map, and a shore painted before it ended up as waste on three sides of the water. The sea itself
+        // is at columns 41-46 and rows 17-22, so the shore is the columns east of Rhun's own fill and the
+        // row north of the sea's.
+        fill(map, Country.RHUN, 44, 16, 46, 22);
+
         bandSeas(map);
         return map;
     }
