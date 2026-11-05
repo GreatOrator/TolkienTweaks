@@ -16,6 +16,12 @@ All notable changes to this project will be documented in this file.
   disc rather than the height of the one column the feature happened to start on, and the block or two of
   ground standing over that line is cut instead of left as an island: no more sheets standing above their
   shore, and no more dirt rings inside the water.
+- **The drawn ground runs in curves, not a grid of squares.** The heightmap was interpolated between two
+  pixels, which turns every eight-block pixel into a flat facet whose contours run straight through it and
+  turn at its edge - the squared-off terraces any drawn hill showed, whatever shape the drawing had. The
+  ground is now a Catmull-Rom spline across four pixels, so each takes its slope from its neighbours and the
+  facets join without a crease; the answer is held between the four pixels a column stands between, so the
+  spline cannot overshoot a ridge or dig under a coast.
 - **A lake lies at its lowest ground, and the rest of the sheet keeps its cliffs.** The level was the mean
   of the ground the sheet is drawn over, which sits partway up the sheet's own slope: every column under it
   was cut away, so the sheet ended in a dam of its own making several blocks high all the way round,

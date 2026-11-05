@@ -297,9 +297,11 @@ final class ArdaMasks {
     /**
      * The heightmap at a block column, interpolated between its pixels, or {@link #NO_GROUND} at sea.
      * <p>
-     * The map is read at eight blocks to the pixel, so a value taken nearest would step the ground a
-     * pixel at a time and make terraces with an eight-block tread. Interpolation costs three multiplies
-     * and turns those steps into the slope the map actually draws.
+     * The map is read at eight blocks to the pixel, so a value taken nearest steps the ground a pixel at a
+     * time and makes terraces with an eight-block tread. Interpolating between two pixels removes the tread
+     * but makes every pixel a flat facet: the ground's contours run straight through a pixel and turn at its
+     * edge, and a drawn hill comes out squared off at eight blocks. A Catmull-Rom spline across four pixels
+     * takes each one's slope from its neighbours instead, so the facets join without a crease.
      */
     static int ground(int blockX, int blockZ) {
         if (GROUND.length == 0) {
@@ -312,14 +314,47 @@ final class ArdaMasks {
         }
         int west = (int) Math.floor(across);
         int north = (int) Math.floor(along);
-        int east = Math.min(WIDTH - 1, west + 1);
-        int south = Math.min(HEIGHT - 1, north + 1);
         double shareX = across - west;
         double shareZ = along - north;
-        double north1 = GROUND[north * WIDTH + west] * (1.0D - shareX) + GROUND[north * WIDTH + east] * shareX;
-        double south1 = GROUND[south * WIDTH + west] * (1.0D - shareX) + GROUND[south * WIDTH + east] * shareX;
-        double raw = north1 * (1.0D - shareZ) + south1 * shareZ;
+
+        int x0 = Math.max(0, west - 1);
+        int x1 = west;
+        int x2 = Math.min(WIDTH - 1, west + 1);
+        int x3 = Math.min(WIDTH - 1, west + 2);
+        int z0 = Math.max(0, north - 1);
+        int z1 = north;
+        int z2 = Math.min(HEIGHT - 1, north + 1);
+        int z3 = Math.min(HEIGHT - 1, north + 2);
+
+        double north2 = spline(z0, x0, x1, x2, x3, shareX);
+        double north1 = spline(z1, x0, x1, x2, x3, shareX);
+        double south1 = spline(z2, x0, x1, x2, x3, shareX);
+        double south2 = spline(z3, x0, x1, x2, x3, shareX);
+        double raw = spline(north2, north1, south1, south2, shareZ);
+
+        // A spline overshoots a ridge and undershoots a coast. The drawn ground is what it is, so the answer
+        // is held between the four pixels the column actually stands between.
+        double low = Math.min(Math.min(at(z1, x1), at(z1, x2)), Math.min(at(z2, x1), at(z2, x2)));
+        double high = Math.max(Math.max(at(z1, x1), at(z1, x2)), Math.max(at(z2, x1), at(z2, x2)));
+        raw = Math.min(high, Math.max(low, raw));
         return raw <= 0.5D ? NO_GROUND : (int) Math.round(raw);
+    }
+
+    /** One pixel of the height raster. */
+    private static double at(int row, int column) {
+        return GROUND[row * WIDTH + column];
+    }
+
+    /** A pixel row's worth of the raster, splined across the four pixels astride the column. */
+    private static double spline(int row, int x0, int x1, int x2, int x3, double t) {
+        return spline(at(row, x0), at(row, x1), at(row, x2), at(row, x3), t);
+    }
+
+    /** Catmull-Rom through four values: the curve from v1 to v2, with v0 and v3 setting their slopes. */
+    private static double spline(double v0, double v1, double v2, double v3, double t) {
+        return v1 + 0.5D * t * (v2 - v0)
+                + t * t * (2.0D * v0 - 5.0D * v1 + 4.0D * v2 - v3)
+                + 0.5D * t * t * t * (3.0D * (v1 - v2) + v3 - v0);
     }
 
     private static char[] ground(String name) {
