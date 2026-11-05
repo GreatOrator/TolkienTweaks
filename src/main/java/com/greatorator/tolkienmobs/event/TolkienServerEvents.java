@@ -95,8 +95,9 @@ public class TolkienServerEvents {
         }
 
         if (player.tickCount % 20 == 0) {
-            linger(player);
-            player.addEffect(new MobEffectInstance(TolkienMobEffects.MARSH_DREAD, 60, 0, true, false, true));
+            int lingerSeconds = linger(player);
+            player.addEffect(new MobEffectInstance(TolkienMobEffects.MARSH_DREAD, 60,
+                    dreadLevel(lingerSeconds), true, false, true));
         }
 
         if (player.tickCount % 10 == 0) {
@@ -157,12 +158,15 @@ public class TolkienServerEvents {
      * fought, only a shape standing still between the player and the murk - and as the minutes pass it
      * shows them more often. Stepping out of the marsh clears the count, so the marsh always starts by
      * hiding its dead and only gives them up to someone who stays.
+     * <p>
+     * The seconds are returned because the dread is deepened by the same count: one number describes how
+     * long a player has stood in the marsh, and both the vision and the weight of the place answer to it.
      */
-    private static void linger(ServerPlayer player) {
+    private static int linger(ServerPlayer player) {
         int seconds = LINGER.merge(player.getUUID(), 1, Integer::sum);
 
         if (seconds < LINGER_BEFORE_FIGURES) {
-            return;
+            return seconds;
         }
 
         int interval = seconds >= 180 ? 12 : seconds >= 120 ? 18 : 25;
@@ -170,6 +174,22 @@ public class TolkienServerEvents {
         if (seconds % interval == 0) {
             summonFigure(player);
         }
+
+        return seconds;
+    }
+
+    /**
+     * How heavy the marsh's dread is on a player who has been in it this long: nothing for the first half
+     * minute, one step after that, and two once a minute and a half has passed. Two is the ceiling on
+     * purpose - slowness and weakness are both at their third degree there, which is enough to make the
+     * marsh cost something without pinning a player in place while the rest of it works on them.
+     */
+    private static int dreadLevel(int seconds) {
+        if (seconds < 30) {
+            return 0;
+        }
+
+        return seconds < 90 ? 1 : 2;
     }
 
     /**

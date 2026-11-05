@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The Dead Marshes' dread deepens with the stay.** The dread now climbs a step at half a minute and
+  another at a minute and a half, to a ceiling of two, using the same timer that brings the figures; it
+  falls back to nothing when the player leaves and starts again from the bottom on returning.
 - **Marsh figures end for everyone.** A figure now comes apart for any player who gets within six blocks of
   it, and carries a saved mark so a figure read back from disk - after a restart or a chunk reload - is
   discarded on its first tick instead of being left standing in the marsh as a real spirit.

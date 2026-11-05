@@ -92,7 +92,9 @@ say. The wetwang and the Midgewater are the one marsh country - low ground with 
 trees. The Dead Marshes are their own country and their own biome: the same water, the pools and all, under a fog
 that closes at forty blocks, with fell spirits laid in it by the generation and none walking the bank.
 Standing in them lays a dread on you - the slowness and the weakness of fear, with no wither and no
-blindness, because nothing there is looking at you; it fades a moment after you leave.
+blindness, because nothing there is looking at you. It deepens the longer you stay: nothing for the first
+half minute, one step after thirty seconds, and two after ninety, which is where it holds. It fades a
+moment after you leave, and begins again from nothing if you come back.
 The marsh is also not quiet: corpse-lights stand on the pools within twenty blocks of a player, a cry comes
 out of the water every fifteen seconds or so, and the spirits under it stir every few seconds - bubbles and
 a low sound through the water, and a slow roll of the body where it lies.
