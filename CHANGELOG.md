@@ -13,6 +13,10 @@ All notable changes to this project will be documented in this file.
   disc rather than the height of the one column the feature happened to start on, and the block or two of
   ground standing over that line is cut instead of left as an island: no more sheets standing above their
   shore, and no more dirt rings inside the water.
+- **Lake water shallows into its edge.** The bed is graded by how much of a column the drawn sheet covers,
+  one block deep at the mask's edge and full depth inside it, instead of a flat shelf and a five-block wall
+  that showed through the water as terraces; the lake id is also searched two cells out, so a rim column
+  keeps its sheet's level instead of falling back to the ground it stands on.
 - **A lake ends in a shore, not a cliff.** Ground more than four blocks over a sheet's level is left as
   land instead of being cut down to the bed, and water within that band shallows to one block at the edge,
   so Nurnen and Rhun meet their shores in water you can wade instead of a wall of stone. The load log now

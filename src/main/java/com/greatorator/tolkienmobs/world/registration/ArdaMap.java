@@ -748,12 +748,13 @@ public final class ArdaMap {
                 return null;
             }
 
-            // The water that is left shallows out to the land: a column standing at or over the level is cut
-            // only its last block, so the sheet meets the shore in water a person can wade, and the full
-            // depth is only under ground that was already below the level.
-            int bed = ground.height() >= surface
-                    ? surface - 1
-                    : Math.min(ground.height(), surface - LAKE_DEPTH);
+            // The bed is graded by how much of the column the sheet covers, so the water goes from wading
+            // depth at the mask's edge to the full depth inside it over the sheet's own edge instead of
+            // stopping at a flat shelf and a wall. A bed cut to two values - shallow at the rim, deep in the
+            // middle - is what showed through the water as terraces.
+            double cover = Math.max(0.0D, Math.min(1.0D, ArdaMasks.lakeCoverage(blockX, blockZ)));
+            int depth = 1 + (int) Math.round(cover * (LAKE_DEPTH - 1));
+            int bed = Math.min(ground.height(), surface - depth);
             return new Sample(ground.country(), bed, true, false, ground.upland(), surface);
         }
         if (ArdaMasks.river(blockX, blockZ)) {

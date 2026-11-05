@@ -239,8 +239,8 @@ final class ArdaMasks {
         // The coverage test interpolates between cells, so a column can be water while the cell under it is
         // dry. Reading only that cell would leave a rim of the sheet with no level, and a rim laid at the
         // ground is the first step of the staircase this bake exists to remove.
-        for (int dz = -1; dz <= 1; dz++) {
-            for (int dx = -1; dx <= 1; dx++) {
+        for (int dz = -2; dz <= 2; dz++) {
+            for (int dx = -2; dx <= 2; dx++) {
                 int nearColumn = column + dx;
                 int nearRow = row + dz;
                 if (nearColumn < 0 || nearColumn >= WIDTH || nearRow < 0 || nearRow >= HEIGHT) {
@@ -277,6 +277,16 @@ final class ArdaMasks {
 
     static int maskBlocks() {
         return BLOCKS;
+    }
+
+    /**
+     * How much of a column the lake sheet covers, from 0 at the fen to 1 well inside it, read between cells.
+     * <p>
+     * The value ramps across the mask's own edge, which is the only measure of "how far into the lake" the
+     * game has without a distance field: used to grade the bed, it turns the sheet's edge into a slope.
+     */
+    static double lakeCoverage(int blockX, int blockZ) {
+        return cover(LAKES, blockX, blockZ);
     }
 
     /** Whether the lake mask covers a column. */
