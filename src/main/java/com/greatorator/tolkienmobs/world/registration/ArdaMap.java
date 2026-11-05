@@ -235,7 +235,7 @@ public final class ArdaMap {
      * band is wide cuts a canyon where the map draws a river - and undercuts the city's outlet where the
      * branch meets the drawn Bruinen. Sixteen is deep enough to be a real channel at any of those widths.
      */
-    private static final int RIVER_DEPTH_MAX = 16;
+    private static final int RIVER_DEPTH_MAX = 11;
 
     /**
      * How far from a drawn river or lake its bank is raised, and how many of those blocks the raise falls

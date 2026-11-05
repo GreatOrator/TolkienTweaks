@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **A river is at most eleven blocks deep.** With the channels a third narrower the old sixteen-block
+  cap was a canyon under a brook; the bed still follows the channel's width, up to eleven.
 - **The rivers are a third narrower.** The bake marks channels forty blocks across and more, which
   is a river with no banks worth the name; a sixth of the width is taken off each side, measured across
   the channel, down to a floor of three blocks.
