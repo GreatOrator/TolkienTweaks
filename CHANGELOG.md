@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **There is a teleport sheet for the map.** `docs/arda-teleports.md` lists one point per country,
+  at the middle of the largest block of cells it is drawn in, with the height the masks give that column
+  plus eight - so a region can be looked at from a command instead of by walking to it.
 - **Moria is ground of its own, under the mountain.** The poster puts the halls below the Misty
   Mountains, so the surface over the Dimrill Dale keeps the range's biome and its drawn ground and the
   rock beneath that crest, below its roof, reads as Moria: dark, dry, close-fogged, and reached by
