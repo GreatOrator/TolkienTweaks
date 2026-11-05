@@ -3,6 +3,8 @@ package com.greatorator.tolkienmobs.event;
 import com.greatorator.tolkienmobs.block.custom.SleepingBagBlock;
 import com.greatorator.tolkienmobs.init.TolkienBiomes;
 import com.greatorator.tolkienmobs.init.TolkienMobEffects;
+import com.greatorator.tolkienmobs.entity.monster.FellSpiritEntity;
+import com.greatorator.tolkienmobs.init.TolkienEntities;
 import com.greatorator.tolkienmobs.init.TolkienSounds;
 import com.greatorator.tolkienmobs.init.TolkienItems;
 import com.greatorator.tolkienmobs.init.TolkienPotions;
@@ -19,9 +21,17 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.material.Fluids;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -40,6 +50,17 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 public class TolkienServerEvents {
     private static final Set<BlockPos> HARVESTED_BLOCKS = new HashSet<>();
 
+    /** How long a player must stay in the Dead Marshes before the dead start standing out in the fog. */
+    private static final int LINGER_BEFORE_FIGURES = 60;
+
+    /** Seconds each player has stood in the marsh without leaving, dropped the moment they step out. */
+    private static final Map<UUID, Integer> LINGER = new HashMap<>();
+
+    /** The figure each player is being shown, if any: the entity's id and how many ticks it has left. */
+    private static final Map<UUID, Figure> FIGURES = new HashMap<>();
+
+    private record Figure(int entityId, int ticksLeft) {}
+
     /**
      * The backpack's magnet gathers drops around a player several times a second. It runs on the
      * server only: the drop is taken out of the world there, and the backpack it fills is the stack
@@ -50,6 +71,7 @@ public class TolkienServerEvents {
         if (event.getEntity() instanceof ServerPlayer player) {
             BackpackMagnet.tick(player);
             marshTick(player);
+            figureTick(player);
         }
     }
 
@@ -64,15 +86,16 @@ public class TolkienServerEvents {
      * builder flying over the marsh is not being haunted.
      */
     private static void marshTick(ServerPlayer player) {
-        if (player.isCreative() || player.isSpectator()) {
-            return;
-        }
+        boolean watching = !player.isCreative() && !player.isSpectator()
+                && player.level().getBiome(player.blockPosition()).is(TolkienBiomes.DEAD_MARSHES);
 
-        if (!player.level().getBiome(player.blockPosition()).is(TolkienBiomes.DEAD_MARSHES)) {
+        if (!watching) {
+            LINGER.remove(player.getUUID());
             return;
         }
 
         if (player.tickCount % 20 == 0) {
+            linger(player);
             player.addEffect(new MobEffectInstance(TolkienMobEffects.MARSH_DREAD, 60, 0, true, false, true));
         }
 
@@ -126,6 +149,123 @@ public class TolkienServerEvents {
 
         level.playSound(null, x, player.getY() + 1.0D, z, TolkienSounds.IDLE_BARROW.get(),
                 SoundSource.AMBIENT, 2.4F, 0.5F + random.nextFloat() * 0.2F);
+    }
+
+    /**
+     * The longer a player stands in the marsh, the more of its dead they see. After a minute the marsh
+     * starts showing them a figure out in the fog - not a real spirit, nothing that can be reached or
+     * fought, only a shape standing still between the player and the murk - and as the minutes pass it
+     * shows them more often. Stepping out of the marsh clears the count, so the marsh always starts by
+     * hiding its dead and only gives them up to someone who stays.
+     */
+    private static void linger(ServerPlayer player) {
+        int seconds = LINGER.merge(player.getUUID(), 1, Integer::sum);
+
+        if (seconds < LINGER_BEFORE_FIGURES) {
+            return;
+        }
+
+        int interval = seconds >= 180 ? 12 : seconds >= 120 ? 18 : 25;
+
+        if (seconds % interval == 0) {
+            summonFigure(player);
+        }
+    }
+
+    /**
+     * A figure at the edge of sight: far enough out that the marsh's fog eats most of it, close enough to
+     * be unmistakably a person standing in the water, and turned to face the player. It is a real fell
+     * spirit with its mind switched off - silent, invulnerable and unable to move - so it reads as one of
+     * the marsh's own rather than as a new apparition; the only thing that makes it a vision is that it
+     * vanishes when it is approached.
+     */
+    private static void summonFigure(ServerPlayer player) {
+        if (FIGURES.containsKey(player.getUUID())) {
+            return;
+        }
+
+        ServerLevel level = (ServerLevel) player.level();
+        RandomSource random = player.getRandom();
+        BlockPos origin = player.blockPosition();
+
+        for (int attempt = 0; attempt < 10; attempt++) {
+            double angle = random.nextDouble() * Math.PI * 2.0D;
+            double distance = 18.0D + random.nextDouble() * 8.0D;
+            int x = origin.getX() + (int) Math.round(Math.cos(angle) * distance);
+            int z = origin.getZ() + (int) Math.round(Math.sin(angle) * distance);
+            int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
+            BlockPos feet = new BlockPos(x, y, z);
+
+            if (!level.getBiome(feet).is(TolkienBiomes.DEAD_MARSHES)
+                    || !level.getBlockState(feet).isAir()
+                    || !level.getBlockState(feet.above()).isAir()) {
+                continue;
+            }
+
+            FellSpiritEntity figure = TolkienEntities.ENTITY_TTM_FELLSPIRIT.get().create(level, EntitySpawnReason.EVENT);
+
+            if (figure == null) {
+                return;
+            }
+
+            float yaw = (float) (Mth.atan2(player.getX() - (x + 0.5D), player.getZ() - (z + 0.5D)) * (180.0F / (float) Math.PI));
+            figure.snapTo(x + 0.5D, y, z + 0.5D, yaw, 0.0F);
+            figure.setNoAi(true);
+            figure.setSilent(true);
+            figure.setInvulnerable(true);
+            figure.setPersistenceRequired();
+
+            if (!level.addFreshEntity(figure)) {
+                return;
+            }
+
+            FIGURES.put(player.getUUID(), new Figure(figure.getId(), 240));
+            return;
+        }
+    }
+
+    /**
+     * Ages the player's figure a second at a time and takes it away when it has been seen long enough, when
+     * the player walks up to it, or when they are no longer in the marsh at all. A figure is never left
+     * standing in a marsh nobody is being haunted by.
+     */
+    private static void figureTick(ServerPlayer player) {
+        if (player.tickCount % 20 != 0) {
+            return;
+        }
+
+        Figure figure = FIGURES.get(player.getUUID());
+
+        if (figure == null) {
+            return;
+        }
+
+        Entity entity = player.level().getEntity(figure.entityId);
+
+        if (!(entity instanceof FellSpiritEntity spirit) || !spirit.isAlive()) {
+            FIGURES.remove(player.getUUID());
+            return;
+        }
+
+        boolean inMarsh = player.level().getBiome(player.blockPosition()).is(TolkienBiomes.DEAD_MARSHES);
+
+        if (!inMarsh || figure.ticksLeft <= 20 || player.distanceToSqr(spirit) < 36.0D) {
+            vanish(spirit);
+            FIGURES.remove(player.getUUID());
+            return;
+        }
+
+        FIGURES.put(player.getUUID(), new Figure(figure.entityId, figure.ticksLeft - 20));
+    }
+
+    /** What a figure does when it is approached: comes apart into the marsh's own light and is gone. */
+    private static void vanish(FellSpiritEntity spirit) {
+        ServerLevel level = (ServerLevel) spirit.level();
+        level.sendParticles(ParticleTypes.SOUL, spirit.getX(), spirit.getY() + 0.9D, spirit.getZ(),
+                10, 0.4D, 0.7D, 0.4D, 0.02D);
+        level.playSound(null, spirit.getX(), spirit.getY(), spirit.getZ(), TolkienSounds.IDLE_BARROW.get(),
+                SoundSource.AMBIENT, 0.4F, 0.45F);
+        spirit.discard();
     }
 
     @SubscribeEvent

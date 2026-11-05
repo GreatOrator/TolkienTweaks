@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The Dead Marshes keep their dead for those who linger.** After a minute in the marsh, figures of the
+  drowned begin to stand out in the fog eighteen to twenty-six blocks away, facing the player, and come apart
+  into soul-light when approached; they come more often the longer the stay lasts, and leaving resets it.
 - **The Dead Marshes are haunted.** Corpse-lights stand over the pools around a player, a cry comes out of
   the water now and then, and the drowned dead stir where they lie - bubbles, a low sound through the water
   and a slow roll of the body - without any of them ever leaving the bed.
