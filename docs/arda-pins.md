@@ -2,6 +2,8 @@
 
 Where a location stands, when somebody has walked the world and said so.
 
+The hands-on guide - every command, and the ground still to scout - is [`arda-pinning.md`](arda-pinning.md).
+
 ## Why this exists
 
 The campaign places ground by asking the drawing: a country's middle, then a cell's middle, then the

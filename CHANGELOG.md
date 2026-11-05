@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The pinning instructions are in one file.** `docs/arda-pinning.md` collects what was spread across
+  several conversations: the `/tmpin` commands and what each does to placement, the two kinds of key and who
+  reads them, the world-pin-over-source-pin order, the fifteen locations the two chapters ask for with what
+  ground each needs, which five quarries need no pin at all, and the traps worth knowing. `docs/arda-pins.md`
+  points at it rather than repeating the commands.
 - **The cast's faces are written down.** `docs/arda-faces.md` records the order the renderer asks in -
   keeper, named file, alliance cloth, variant face - the slug rule (`Gloin` is `gloin.png`), the cast and
   the file each wears, and what the faction folders are for. It also records that `maelgrin.png`,
