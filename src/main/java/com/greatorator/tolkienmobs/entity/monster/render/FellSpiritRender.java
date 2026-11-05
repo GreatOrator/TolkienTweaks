@@ -123,8 +123,10 @@ public class FellSpiritRender extends GeoEntityRenderer<FellSpiritEntity, Tolkie
             return;
         }
         poseStack.pushPose();
-        poseStack.translate(0.0F, 0.30F, 0.0F);
+        poseStack.translate(0.0F, 0.30F + Mth.sin(state.ageInTicks * 0.09F) * 0.02F, 0.0F);
         poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+        // A slow roll about the body's own length: not swimming, only the water moving it a little.
+        poseStack.mulPose(Axis.ZP.rotationDegrees(Mth.sin(state.ageInTicks * 0.06F) * 2.0F));
         super.submit(state, poseStack, submitNodeCollector, camera);
         poseStack.popPose();
     }

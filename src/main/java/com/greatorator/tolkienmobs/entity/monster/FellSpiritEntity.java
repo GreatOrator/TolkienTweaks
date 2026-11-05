@@ -10,7 +10,10 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -119,6 +122,30 @@ public class FellSpiritEntity extends TolkienMonsterEntity implements GeoEntity 
             return;
         }
         super.aiStep();
+    }
+
+    /**
+     * The dead under the marsh are not still. Every few seconds one of them shifts: a little water is
+     * disturbed around the body and a low sound comes up through it, which is the only thing that tells a
+     * player there is anything down there at all. It moves nothing - the body keeps its place on the bed.
+     */
+    @Override
+    public void tick() {
+        super.tick();
+
+        if (!this.isLying() || this.level().isClientSide() || this.random.nextInt(180) != 0) {
+            return;
+        }
+
+        if (!(this.level() instanceof ServerLevel server)) {
+            return;
+        }
+
+        double y = this.getY() + 0.15D;
+        server.sendParticles(ParticleTypes.BUBBLE, this.getX(), y, this.getZ(), 3, 0.3D, 0.05D, 0.3D, 0.02D);
+        server.sendParticles(ParticleTypes.SOUL, this.getX(), y + 0.1D, this.getZ(), 2, 0.25D, 0.1D, 0.25D, 0.01D);
+        server.playSound(null, this.getX(), y, this.getZ(), TolkienSounds.IDLE_BARROW.get(),
+                SoundSource.AMBIENT, 0.5F, 0.6F);
     }
 
     /** A body under the water is not drowning: it is where it belongs. */

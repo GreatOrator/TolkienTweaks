@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The Dead Marshes are haunted.** Corpse-lights stand over the pools around a player, a cry comes out of
+  the water now and then, and the drowned dead stir where they lie - bubbles, a low sound through the water
+  and a slow roll of the body - without any of them ever leaving the bed.
 - **The Dead Marshes weigh on you.** A dread of the marsh itself takes the speed from your legs and the
   strength from your arm while you stand in it, with no wither and no blindness: nothing here is looking
   at you, the dead are only lying under the water. It fades a moment after you step out.

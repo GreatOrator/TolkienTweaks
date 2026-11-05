@@ -93,6 +93,9 @@ trees. The Dead Marshes are their own country and their own biome: the same wate
 that closes at forty blocks, with fell spirits laid in it by the generation and none walking the bank.
 Standing in them lays a dread on you - the slowness and the weakness of fear, with no wither and no
 blindness, because nothing there is looking at you; it fades a moment after you leave.
+The marsh is also not quiet: corpse-lights stand on the pools within twenty blocks of a player, a cry comes
+out of the water every fifteen seconds or so, and the spirits under it stir every few seconds - bubbles and
+a low sound through the water, and a slow roll of the body where it lies.
 
 | Marsh | x | y | z | drawn cells |
 | --- | --- | --- | --- | --- |
