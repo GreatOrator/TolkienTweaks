@@ -50,7 +50,9 @@ what is still open, so the next session does not have to rebuild that from the c
 ## The valley
 
 - Floor **74**, and it is **544 by 502** centred on 4628, -3577: x 4356..4900, z -3828..-3326, which is
-  four to five blocks *inside* the 554 by 512 footprint. This is the shape the valley had at `82abe999`,
+  four to five blocks *inside* the 554 by 512 footprint. Those columns are the pre-pin planting's and are
+  kept as the shape that was measured, not as ground: no floor is generated any more (`PLANTED = false`),
+  and with the city on the pin this profile sits 468 east and 567 north of where the city now stands. This is the shape the valley had at `82abe999`,
   and the one that reads as a straight wall: the rock stands at the **crown, 318**, from the floor's own
   edge outward, so the city is embedded in the mountain rather than set down beside it and there is no
   strip of ground between the two to be a seam. The build's base band is flush with its footprint on all

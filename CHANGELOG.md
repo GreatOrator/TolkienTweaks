@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The unused valley floor says which planting it was cut for.** Its 544 by 502 profile, centred on
+  4628, -3577, is the shape the valley had before the pin; the doc now says so rather than leaving it
+  reading as ground the city stands on.
 - **The city's own columns follow the pin.** Every world coordinate the valley's water, its spring and
   the walkthrough were described at was measured from the planting at 4352, -3833; with the city on the
   pin they move 468 east and 567 north, so the branch's mouth is 4820, -2963, the spring ends over
