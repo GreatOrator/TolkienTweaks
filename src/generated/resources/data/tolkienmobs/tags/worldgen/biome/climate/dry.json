@@ -1,7 +1,11 @@
 {
   "values": [
     "tolkienmobs:ash_mountains",
+    "tolkienmobs:brown_lands",
+    "tolkienmobs:eastern_waste",
     "tolkienmobs:haradwaith",
+    "tolkienmobs:khand",
+    "tolkienmobs:rhun",
     {
       "id": "#tolkienmobs:desert",
       "required": false

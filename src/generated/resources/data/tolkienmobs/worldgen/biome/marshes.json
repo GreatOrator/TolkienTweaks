@@ -24,11 +24,11 @@
       }
     ],
     "minecraft:visual/fog_color": "#5b5f61",
-    "minecraft:visual/sky_color": "#78a7ff",
+    "minecraft:visual/sky_color": "#77a8ff",
     "minecraft:visual/water_fog_color": "#050533"
   },
   "carvers": [],
-  "downfall": 0.8,
+  "downfall": 0.9,
   "effects": {
     "foliage_color": "#606027",
     "grass_color": "#606027",
@@ -60,7 +60,7 @@
       "tolkienmobs:mud_splatter"
     ]
   ],
-  "has_precipitation": false,
+  "has_precipitation": true,
   "spawn_costs": {
     "tolkienmobs:entityttmcrebain": {
       "charge": 0.6,
@@ -125,5 +125,5 @@
     "water_ambient": [],
     "water_creature": []
   },
-  "temperature": 0.8
+  "temperature": 0.9
 }

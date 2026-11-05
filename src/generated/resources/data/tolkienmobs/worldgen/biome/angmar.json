@@ -24,7 +24,7 @@
     "minecraft:cave_extra_underground",
     "minecraft:canyon"
   ],
-  "downfall": 0.4,
+  "downfall": 0.3,
   "effects": {
     "foliage_color": "#5f6b4e",
     "grass_color": "#6b6f52",
@@ -80,6 +80,7 @@
     ],
     [],
     [
+      "minecraft:spring_water",
       "minecraft:spring_lava"
     ],
     [

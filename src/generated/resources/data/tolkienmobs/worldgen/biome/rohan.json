@@ -12,7 +12,7 @@
       }
     ],
     "minecraft:visual/fog_color": "#c0d8ff",
-    "minecraft:visual/sky_color": "#78a7ff",
+    "minecraft:visual/sky_color": "#76a9ff",
     "minecraft:visual/water_fog_color": "#a080a0"
   },
   "carvers": [
@@ -20,7 +20,7 @@
     "minecraft:cave_extra_underground",
     "minecraft:canyon"
   ],
-  "downfall": 0.5,
+  "downfall": 0.7,
   "effects": {
     "foliage_color": "#8fa83c",
     "grass_color": "#9ab54a",
@@ -30,7 +30,8 @@
     [],
     [
       "minecraft:lake_lava_underground",
-      "minecraft:lake_lava_surface"
+      "minecraft:lake_lava_surface",
+      "minecraft:spring_water"
     ],
     [],
     [
@@ -79,6 +80,7 @@
     ],
     [],
     [
+      "minecraft:spring_water",
       "minecraft:spring_lava"
     ],
     [
@@ -208,5 +210,5 @@
     "water_ambient": [],
     "water_creature": []
   },
-  "temperature": 0.8
+  "temperature": 1.1
 }

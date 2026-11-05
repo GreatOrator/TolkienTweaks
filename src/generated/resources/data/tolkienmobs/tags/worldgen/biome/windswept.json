@@ -2,6 +2,9 @@
   "values": [
     "tolkienmobs:angmar",
     "tolkienmobs:dunland",
+    "tolkienmobs:emyn_muil",
+    "tolkienmobs:ettenmoors",
+    "tolkienmobs:rhudaur",
     "tolkienmobs:trollshaws"
   ]
 }

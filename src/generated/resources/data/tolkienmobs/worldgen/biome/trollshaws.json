@@ -7,7 +7,7 @@
     "minecraft:visual/fog_color": "#8fa6b8",
     "minecraft:visual/fog_end_distance": 128.0,
     "minecraft:visual/fog_start_distance": 24.0,
-    "minecraft:visual/sky_color": "#7aa5ff",
+    "minecraft:visual/sky_color": "#7ba4ff",
     "minecraft:visual/sky_fog_end_distance": 128.0,
     "minecraft:visual/water_fog_color": "#1e3a4a"
   },
@@ -16,7 +16,7 @@
     "minecraft:cave_extra_underground",
     "minecraft:canyon"
   ],
-  "downfall": 0.75,
+  "downfall": 0.7,
   "effects": {
     "foliage_color": "#5f7c3f",
     "grass_color": "#6e8b4a",
@@ -75,6 +75,7 @@
     ],
     [],
     [
+      "minecraft:spring_water",
       "minecraft:spring_lava"
     ],
     [
@@ -204,5 +205,5 @@
     "water_ambient": [],
     "water_creature": []
   },
-  "temperature": 0.55
+  "temperature": 0.5
 }

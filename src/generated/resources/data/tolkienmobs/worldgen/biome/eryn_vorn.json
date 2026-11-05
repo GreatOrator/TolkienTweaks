@@ -1,0 +1,120 @@
+{
+  "attributes": {
+    "minecraft:visual/fog_color": "#5a5a5a",
+    "minecraft:visual/sky_color": "#78a7ff",
+    "minecraft:visual/water_fog_color": "#050533"
+  },
+  "carvers": [],
+  "downfall": 0.9,
+  "effects": {
+    "foliage_color": "#2a4f61",
+    "grass_color": "#37635a",
+    "water_color": "#3f76e4"
+  },
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "tolkienmobs:legacy_coal_ore",
+      "tolkienmobs:legacy_copper_ore",
+      "tolkienmobs:legacy_diamond_ore",
+      "tolkienmobs:legacy_gold_ore",
+      "tolkienmobs:legacy_iron_ore",
+      "tolkienmobs:legacy_lapis_ore",
+      "tolkienmobs:legacy_redstone_ore"
+    ],
+    [],
+    [],
+    [
+      "minecraft:patch_large_fern",
+      "minecraft:forest_flowers",
+      "minecraft:brown_mushroom_old_growth",
+      "minecraft:red_mushroom_old_growth",
+      "minecraft:patch_grass_forest",
+      "tolkienmobs:fangorn_fallen_leaves",
+      "tolkienmobs:fangorn_fallen_log",
+      "tolkienmobs:stumps"
+    ]
+  ],
+  "has_precipitation": true,
+  "spawn_costs": {
+    "minecraft:wolf": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmcrebain": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmfrog": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmhuron": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmsquirrel": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmthrush": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    }
+  },
+  "spawners": {
+    "ambient": [
+      {
+        "type": "tolkienmobs:entityttmcrebain",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 10
+      },
+      {
+        "type": "tolkienmobs:entityttmsquirrel",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 10
+      },
+      {
+        "type": "tolkienmobs:entityttmfrog",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 10
+      },
+      {
+        "type": "tolkienmobs:entityttmthrush",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 10
+      }
+    ],
+    "axolotls": [],
+    "creature": [
+      {
+        "type": "minecraft:wolf",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 20
+      }
+    ],
+    "misc": [],
+    "monster": [
+      {
+        "type": "tolkienmobs:entityttmhuron",
+        "maxCount": 5,
+        "minCount": 1,
+        "weight": 45
+      }
+    ],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "temperature": 0.8
+}

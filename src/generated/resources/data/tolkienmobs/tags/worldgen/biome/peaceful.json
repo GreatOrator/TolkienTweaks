@@ -1,14 +1,19 @@
 {
   "values": [
+    "tolkienmobs:belfalas",
     "tolkienmobs:blue_mountains",
+    "tolkienmobs:dale",
+    "tolkienmobs:eregion",
     "tolkienmobs:eriador",
     "tolkienmobs:forochel",
     "tolkienmobs:gladden",
     "tolkienmobs:gondor",
     "tolkienmobs:imladris",
     "tolkienmobs:iron_hills",
+    "tolkienmobs:ithilien",
     "tolkienmobs:lindon",
     "tolkienmobs:lorinand",
+    "tolkienmobs:rhun",
     "tolkienmobs:rohan",
     "tolkienmobs:shire"
   ]

@@ -13,7 +13,7 @@
     "minecraft:cave_extra_underground",
     "minecraft:canyon"
   ],
-  "downfall": 0.5,
+  "downfall": 0.4,
   "effects": {
     "water_color": "#3d57d6"
   },

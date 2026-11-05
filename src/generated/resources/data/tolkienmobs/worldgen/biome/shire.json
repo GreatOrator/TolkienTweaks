@@ -28,7 +28,9 @@
   },
   "features": [
     [],
-    [],
+    [
+      "minecraft:spring_water"
+    ],
     [],
     [],
     [],
@@ -184,5 +186,5 @@
     "water_ambient": [],
     "water_creature": []
   },
-  "temperature": 0.7
+  "temperature": 0.8
 }

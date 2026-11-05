@@ -24,7 +24,7 @@
       }
     ],
     "minecraft:visual/fog_color": "#c0d8ff",
-    "minecraft:visual/sky_color": "#76a8ff",
+    "minecraft:visual/sky_color": "#75aaff",
     "minecraft:visual/water_fog_color": "#5a4d33"
   },
   "carvers": [
@@ -32,7 +32,7 @@
     "minecraft:cave_extra_underground",
     "minecraft:canyon"
   ],
-  "downfall": 1.0,
+  "downfall": 0.2,
   "effects": {
     "foliage_color": "#8a9a4f",
     "grass_color": "#9baa5f",
@@ -70,7 +70,9 @@
       "tolkienmobs:morguliron_ore_placed"
     ],
     [],
-    [],
+    [
+      "minecraft:spring_water"
+    ],
     [
       "minecraft:glow_lichen",
       "minecraft:flower_plains",
@@ -81,7 +83,7 @@
       "tolkienmobs:random_rubble"
     ]
   ],
-  "has_precipitation": true,
+  "has_precipitation": false,
   "spawn_costs": {
     "minecraft:sheep": {
       "charge": 0.6,
@@ -173,5 +175,5 @@
     "water_ambient": [],
     "water_creature": []
   },
-  "temperature": 1.0
+  "temperature": 1.2
 }

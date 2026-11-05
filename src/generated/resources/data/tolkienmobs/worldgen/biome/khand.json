@@ -1,0 +1,95 @@
+{
+  "attributes": {
+    "minecraft:visual/fog_color": "#cccccc",
+    "minecraft:visual/sky_color": "#75aaff",
+    "minecraft:visual/water_fog_color": "#050533"
+  },
+  "carvers": [],
+  "downfall": 0.25,
+  "effects": {
+    "foliage_color": "#a2a498",
+    "grass_color": "#aeb193",
+    "water_color": "#3f76e4"
+  },
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [
+      "minecraft:desert_well"
+    ],
+    [],
+    [
+      "tolkienmobs:legacy_coal_ore",
+      "tolkienmobs:legacy_copper_ore",
+      "tolkienmobs:legacy_diamond_ore",
+      "tolkienmobs:legacy_gold_ore",
+      "tolkienmobs:legacy_iron_ore",
+      "tolkienmobs:legacy_lapis_ore",
+      "tolkienmobs:legacy_redstone_ore"
+    ],
+    [],
+    [],
+    [
+      "minecraft:patch_dry_grass_desert",
+      "minecraft:patch_dead_bush_2",
+      "minecraft:patch_sugar_cane_desert",
+      "minecraft:patch_pumpkin",
+      "minecraft:patch_cactus_desert"
+    ]
+  ],
+  "has_precipitation": false,
+  "spawn_costs": {
+    "tolkienmobs:entityttmcrebain": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmharadrim": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    },
+    "tolkienmobs:entityttmmumakil": {
+      "charge": 0.6,
+      "energy_budget": 0.15
+    }
+  },
+  "spawners": {
+    "ambient": [
+      {
+        "type": "tolkienmobs:entityttmcrebain",
+        "maxCount": 1,
+        "minCount": 1,
+        "weight": 15
+      }
+    ],
+    "axolotls": [],
+    "creature": [
+      {
+        "type": "tolkienmobs:entityttmmumakil",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 25
+      },
+      {
+        "type": "tolkienmobs:entityttmsouthron",
+        "maxCount": 2,
+        "minCount": 1,
+        "weight": 5
+      }
+    ],
+    "misc": [],
+    "monster": [
+      {
+        "type": "tolkienmobs:entityttmharadrim",
+        "maxCount": 4,
+        "minCount": 1,
+        "weight": 45
+      }
+    ],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "temperature": 1.2
+}

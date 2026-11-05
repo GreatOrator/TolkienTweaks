@@ -25,7 +25,7 @@
     "minecraft:visual/water_fog_color": "#00d2fb"
   },
   "carvers": [],
-  "downfall": 0.3,
+  "downfall": 0.7,
   "effects": {
     "foliage_color": "#4ead4e",
     "grass_color": "#4ead4e",

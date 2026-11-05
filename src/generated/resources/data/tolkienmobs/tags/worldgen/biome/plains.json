@@ -1,13 +1,20 @@
 {
   "values": [
+    "tolkienmobs:belfalas",
     "tolkienmobs:dagorlad",
+    "tolkienmobs:dale",
     "tolkienmobs:dunland",
+    "tolkienmobs:emyn_muil",
     "tolkienmobs:eriador",
+    "tolkienmobs:ettenmoors",
     "tolkienmobs:forochel",
     "tolkienmobs:gladden",
     "tolkienmobs:gondor",
+    "tolkienmobs:ithilien",
     "tolkienmobs:lindon",
     "tolkienmobs:nurn",
+    "tolkienmobs:rhudaur",
+    "tolkienmobs:rhun",
     "tolkienmobs:rohan",
     "tolkienmobs:shire"
   ]

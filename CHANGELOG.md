@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The map's weather follows the climate reference, and every biome now has its data.** Temperature and
+  rainfall are taken from the Koppen zones the climate map draws instead of being guessed per country: Cfb
+  oceanic down the western seaboard, Dfb continental across Mirkwood, Dale, Rhudaur and the Trollshaws, ET
+  tundra on the Blue Mountains, Angmar, the Ettenmoors, Ered Mithrin, the Iron Hills and the Misty crest,
+  Csa round Gondor, Ithilien and Belfalas, Cfa in Rohan, BSk in Rhun, the Brown Lands and the Dagorlad, and
+  BWh from Mordor through Khand to Harad. The generated biome data had gone stale with twelve biomes missing
+  from it entirely - a world using any of them would have failed to find the biome - and `runData` writes all
+  of them now.
 - **Ithilien, the Grey Mountains and Rhudaur stop borrowing a neighbour's ground.** Ithilien read as
   Firien's hills, Ered Mithrin as the Iron Hills and Rhudaur as the Barrow-downs, so three countries on the
   poster had no weather, colour or life of their own: a warm southern land between the Anduin and Mordor's

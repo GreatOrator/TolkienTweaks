@@ -1,9 +1,17 @@
 {
   "values": [
-    "tolkienmobs:ash_mountains",
+    "tolkienmobs:belfalas",
+    "tolkienmobs:eastern_waste",
+    "tolkienmobs:firien",
+    "tolkienmobs:gondor",
     "tolkienmobs:haradwaith",
+    "tolkienmobs:ithilien",
+    "tolkienmobs:khand",
+    "tolkienmobs:marshes",
     "tolkienmobs:mordor",
     "tolkienmobs:nurn",
+    "tolkienmobs:rhun",
+    "tolkienmobs:rohan",
     "tolkienmobs:mordor"
   ]
 }
