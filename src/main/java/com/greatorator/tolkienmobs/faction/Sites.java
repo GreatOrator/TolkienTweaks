@@ -897,6 +897,107 @@ public final class Sites extends SavedData {
     }
 
     /**
+     * How far a water line is followed out from the wall, in blocks. A bank has to reach the ground the
+     * water is going to land on, and the spring at the city's back stands 124 blocks over the shelf below
+     * it, so this is longer than {@link #APRON_REACH}.
+     */
+    private static final int WATER_REACH = 160;
+
+    /**
+     * How fast a bank's bed falls, in blocks per block walked out. One in one is steep enough to be a
+     * spillway rather than a hillside, and short enough that a hundred and twenty-four blocks of drop fit
+     * inside {@link #WATER_REACH}.
+     */
+    private static final double WATER_FALL = 1.0D;
+
+    /**
+     * How far the water has to stand over the ground before a bank is built under it. The city's mouth
+     * hangs eight blocks over the vale, which the branch falls on its own; a wall of dirt under that would
+     * be a dam across the drawn river, not a way out.
+     */
+    private static final int WATER_HANG = 12;
+
+    /**
+     * What a water line came to: the outlets found on the walls, and the columns built out into a bank
+     * under the ones that stood high enough to need it.
+     */
+    public record Spillway(int open, int filled) {
+    }
+
+    /**
+     * Gives the build's own water somewhere to land, which the shoulder cannot.
+     * <p>
+     * The apron reads dry columns only - {@link #rim} drops a wet one from the datum and {@link #side}
+     * leaves it exactly as it was - so where water leaves a wall the shoulder stops at the water's edge
+     * and the ground outside keeps whatever height it had. At the city's mouth that is enough: the branch
+     * falls eight blocks into a vale that is already at 74. At the spring it is not: its water leaves the
+     * east wall at 239 over a shelf at 115, and with no ground under it the water just hangs there.
+     * <p>
+     * So this reads the water instead of the ground. Every column of the footprint's own edge that is
+     * water is an outlet, and where that water stands more than {@link #WATER_HANG} blocks over the first
+     * dry ground outside it, the ground is built up into a bank under it - a bed starting one block below
+     * the water and falling at {@link #WATER_FALL} until it meets the ground, or at {@link #WATER_REACH}.
+     * Nothing is cut and no wet column is touched: the shoulder cuts, and a spillway is a bank for water
+     * that is already there.
+     */
+    public static Spillway waterline(ServerLevel level, BlockPos corner, int wide, int deep) {
+        int[] filled = new int[1];
+        int open = 0;
+        for (int dx = 0; dx < wide; dx++) {
+            if (spill(level, corner, dx, 0, 0, -1, filled)) open++;
+            if (spill(level, corner, dx, deep - 1, 0, 1, filled)) open++;
+        }
+        for (int dz = 0; dz < deep; dz++) {
+            if (spill(level, corner, 0, dz, -1, 0, filled)) open++;
+            if (spill(level, corner, wide - 1, dz, 1, 0, filled)) open++;
+        }
+        return new Spillway(open, filled[0]);
+    }
+
+    /**
+     * Builds one outlet's bank, and answers whether that column of the wall carried water at all.
+     * <p>
+     * The bed is measured from the first dry column past the water, so a channel that already runs some
+     * way out of the build is not counted as fall: the bank starts where the water meets ground, one block
+     * under the water, and comes down one block per block out until it reaches the ground.
+     */
+    private static boolean spill(ServerLevel level, BlockPos corner, int dx, int dz,
+                                 int stepX, int stepZ, int[] filled) {
+        int x = corner.getX() + dx;
+        int z = corner.getZ() + dz;
+        int top = height(level, x, z);
+        if (!wet(level, x, top, z)) return false;
+        int first = -1;
+        int ground = 0;
+        for (int out = 1; out <= WATER_REACH; out++) {
+            int at = height(level, x + stepX * out, z + stepZ * out);
+            if (wet(level, x + stepX * out, at, z + stepZ * out)) continue;
+            first = out;
+            ground = at;
+            break;
+        }
+        // The water already has somewhere to go: at grade it runs away by itself, and a fall of a few
+        // blocks is the river's own business rather than a wall to build a bank against.
+        if (first < 0 || top - 1 - ground <= WATER_HANG) return true;
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        for (int out = first; out <= WATER_REACH; out++) {
+            int ox = x + stepX * out;
+            int oz = z + stepZ * out;
+            int at = height(level, ox, oz);
+            if (wet(level, ox, at, oz)) continue;
+            int line = top - 1 - (int) Math.floor((out - first) * WATER_FALL);
+            if (line <= at) break;
+            for (int y = at; y < line; y++) {
+                cursor.set(ox, y, oz);
+                if (!level.getBlockState(cursor).isAir()) continue;
+                level.setBlock(cursor, Blocks.DIRT.defaultBlockState(), Block.UPDATE_CLIENTS);
+            }
+            filled[0]++;
+        }
+        return true;
+    }
+
+    /**
      * Where the ramp has got to at a given distance from the wall: the build's own level, lifted or
      * dropped toward the ground no faster than {@link #APRON_SLOPE} allows, and the ground itself once
      * the ramp has reached it.

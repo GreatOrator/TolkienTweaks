@@ -477,12 +477,14 @@ public final class CityCommands {
             }
             List<Part> parts = parts(folder);
             Sites.Apron done = skirt(level, parts, mark.origin());
+            Sites.Spillway water = waterline(level, parts, mark.origin());
             write(folder, new Mark(mark.origin(), mark.band(), true, mark.dimension()));
             // The count is the point of the report: a shoulder that moved nothing at all is a city that
             // reads as a block cut out of the ground, and no message that only says it ran would show that.
             source.sendSuccess(() -> Component.literal("Shoulder walked out from the walls: "
                     + done.cut() + " columns cut down, " + done.filled() + " built up, " + done.left()
-                    + " already standing on its line."), true);
+                    + " already standing on its line. Water line: " + water.open() + " outlets, "
+                    + water.filled() + " columns built out under the ones that stand high."), true);
             return 1;
         } catch (IOException failed) {
             source.sendFailure(Component.literal("The cut could not be read: " + failed.getMessage()));
@@ -577,6 +579,14 @@ public final class CityCommands {
             }
         }
         template.placeInWorld(level, at, at, new StructurePlaceSettings(), level.getRandom(), 2);
+    }
+
+    /** The water line of the whole city: the same box the shoulder is measured on. */
+    private static Sites.Spillway waterline(ServerLevel level, List<Part> parts, BlockPos origin) {
+        Box box = Box.of(parts, origin);
+        int wide = box.highX() - box.lowX() + 1;
+        int deep = box.highZ() - box.lowZ() + 1;
+        return Sites.waterline(level, new BlockPos(box.lowX(), box.lowY(), box.lowZ()), wide, deep);
     }
 
     /** The shoulder of the whole city: its own footprint, its own lowest corner, and the ground as base. */

@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The build's own water gets somewhere to land, which the shoulder cannot give it.** The apron reads dry
+  columns only - a wet one is dropped from the rim datum and left exactly as it was - so where water leaves
+  a wall the ground outside kept whatever height it had: the river leaves at 82 onto a vale already at 74,
+  which it falls on its own, while the spring reaches the east wall at 239 over a shelf 124 blocks below it
+  and simply hangs there. `/tmcity apron` now also runs a water line: every column of the footprint's edge
+  that carries water is an outlet, and where that water stands more than twelve blocks over the first dry
+  ground outside it, the ground is built up into a bank under it - a bed one block below the water, falling
+  one block per block out until it meets the ground, or 160 blocks out. Nothing is cut and no wet column is
+  touched. The report adds the outlets found and the columns built out.
 - **The three new camps come out of their builder's footing.** `elledancamp`, `wild_tent` and
   `snow_camp` carried a ring of white, purple, black and magenta wool round their floor - the pinks are
   magenta in the template - with a target block at each of two opposite corners, one block inside a

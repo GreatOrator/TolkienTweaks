@@ -130,9 +130,13 @@ message rather than laid.
 3. **Raise it.** `/tmcity summon` for the whole city in one word (long stall), or `/tmcity band 1` six times
    to watch it come up band by band from the bottom.
 4. **Stand its people.** `summon` does this already; otherwise `/tmcity folk`.
-5. **Blend the shoulder.** Automatic on the last band. `/tmcity apron` re-runs it and reports the counts —
+5. **Blend the shoulder and open the water.** `/tmcity apron` re-runs the shoulder and reports the counts —
    ground "already standing on its line" was level enough to need nothing, and a shoulder that moved nothing
-   on ground that was not level is one that did not run.
+   on ground that was not level is one that did not run. It then runs the water line: every column of the
+   build's edge that carries water is an outlet, and where that water stands more than twelve blocks over
+   the first dry ground outside it, a bank is built under it - a bed one block below the water, falling one
+   block per block out until it meets the ground. Nothing is cut. The report adds the outlets found and the
+   columns built out.
 6. **Walk it.** `/tmcity goto`, then `/tmcity status` for which band it is on and whether the shoulder is done.
 7. **After a re-cut.** Replace the folder, `/tmcity relay`, `/tmcity band 8`, and `/tmcity apron` again.
 

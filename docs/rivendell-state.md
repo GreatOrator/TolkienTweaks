@@ -103,12 +103,23 @@ what is still open, so the next session does not have to rebuild that from the c
   arrives level with the drawn river. The massif gives way to the course at **0.6 blocks of height per block
   out** (about thirty degrees) over the whole bank, so the water leaves through a valley mouth rather than a
   slot, and the drop at the wall is the only fall on the way.
-- **Two faces are still to open.** The massif gives way to the branch only where the branch runs: the drawn
+- **One face is still to open.** The massif gives way to the branch only where the branch runs: the drawn
   Bruinen's own banks, where it runs 96 blocks east of the walls with no branch beside it, still stand at
   the crown to the water's edge, because a drawn river's distance is only read out to **64** blocks and a
-  cone cut off at 64 leaves the step it was cut to remove. And the city's spring - water at up to **317**
-  in the build's own upper levels, ending at the east wall over x 5708..5753, z -3058..-3017 - has no course
-  out of the build yet, so the ground outside it has nothing to slope to.
+  cone cut off at 64 leaves the step it was cut to remove.
+- **The spring has a way out, and the shoulder could never have given it one.** The spring's water reaches
+  the east wall over x 5708..5753 by z -3058..-3017 - read off the save it tops at **239**, with a lower
+  basin at 184 and steps between - and the shelf outside it stands at **115**, a hundred and twenty-four
+  blocks under the water. The apron never saw any of that: `rim` drops a wet column from the datum and
+  `side` leaves it exactly as it was, so the ground outside a water column kept whatever height it had.
+  `Sites.waterline` reads the water instead of the ground: every column of the footprint's edge that
+  carries water is an outlet, and where that water stands more than `WATER_HANG` **twelve** blocks over
+  the first dry ground outside it, the ground is built up into a bank under it - a bed one block below the
+  water, falling **one block in one** until it meets the ground, or at `WATER_REACH` 160. Nothing is cut
+  and no wet column is touched. `/tmcity apron` runs it after the shoulder. The mouth does nothing at all,
+  hanging eight blocks over the vale's 74, which the branch falls on its own; the spring gets one bank for
+  each of its **thirty-two** edge columns at 239, eighty-seven to a hundred and six columns long and down
+  to the shelf at 115 - three thousand and ninety-two columns, about two hundred thousand blocks of dirt.
 - **The ford is a bridge.** Nothing places a road or a bridge over the Bruinen yet; the join is water and
   banks only.
 - **The join's step is closed.** The branch falls from the city's water to the vale's 74 on its way out
