@@ -295,6 +295,63 @@ public class BiomeMaker extends BiomeHelper{
                 .build();
     }
 
+    /** Ithilien: the warm green land between the Anduin and Mordor's western wall. */
+    public static Biome makeBiomeIthilien(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(true)
+                .temperature(1.0F)
+                .downfall(0.5F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(1.05F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(11184810))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(329011))
+                .specialEffects(new BiomeSpecialEffects.Builder()
+                        .waterColor(4159204)
+                        .foliageColorOverride(6328900)
+                        .grassColorOverride(8106000)
+                        .build())
+                .mobSpawnSettings(gondorSpawning().build())
+                .generationSettings(gondorGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
+
+    /** Ered Mithrin: the grey, cold range north of Mirkwood and above the Long Lake. */
+    public static Biome makeBiomeEredMithrin(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(true)
+                .temperature(0.05F)
+                .downfall(0.5F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(0.35F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(11184810))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(329011))
+                .specialEffects(new BiomeSpecialEffects.Builder()
+                        .waterColor(4020182)
+                        .foliageColorOverride(6974058)
+                        .grassColorOverride(10987431)
+                        .build())
+                .mobSpawnSettings(ironHillsSpawning().build())
+                .generationSettings(ironHillsGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
+
+    /** Rhudaur: the cold troll-fells between the Ettenmoors and the Trollshaws. */
+    public static Biome makeBiomeRhudaur(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(true)
+                .temperature(0.35F)
+                .downfall(0.5F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(0.55F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(11184810))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(329011))
+                .specialEffects(new BiomeSpecialEffects.Builder()
+                        .waterColor(4020182)
+                        .foliageColorOverride(5000268)
+                        .grassColorOverride(6058346)
+                        .build())
+                .mobSpawnSettings(barrowSpawning().build())
+                .generationSettings(barrowGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
+
 /**
      * Rhun: the dry steppe east of Mirkwood and round the inland sea, whose shore the drawn water lays.
      * <p>

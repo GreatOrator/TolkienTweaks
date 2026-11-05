@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **Ithilien, the Grey Mountains and Rhudaur stop borrowing a neighbour's ground.** Ithilien read as
+  Firien's hills, Ered Mithrin as the Iron Hills and Rhudaur as the Barrow-downs, so three countries on the
+  poster had no weather, colour or life of their own: a warm southern land between the Anduin and Mordor's
+  wall, a grey cold range north of Mirkwood, and cold troll-fells under the Ettenmoors.
 - **Nine countries and their biomes are on the map, and Rhun and the empty east get their own.** Dale below
   Erebor, Eregion west of the mountains, the Ettenmoors, Eryn Vorn, the Brown Lands, the Emyn Muil, Belfalas,
   Khand and the eastern waste were all on the poster and not in the dimension: they read as Eriador, Firien,

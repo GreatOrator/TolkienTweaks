@@ -35,6 +35,9 @@ public class TolkienBiomes {
     public static final ResourceKey<Biome> EASTERN_WASTE = createBiome("eastern_waste", BiomeMaker::makeBiomeEasternWaste, TolkienTags.Biomes.WASTELAND, TolkienTags.Biomes.DRY, TolkienTags.Biomes.HOSTILE, TolkienTags.Biomes.SPARSE);
     public static final ResourceKey<Biome> EREGION = createBiome("eregion", BiomeMaker::makeBiomeEregion, TolkienTags.Biomes.FOREST, TolkienTags.Biomes.TEMPERATE, TolkienTags.Biomes.PEACEFUL);
     public static final ResourceKey<Biome> DALE = createBiome("dale", BiomeMaker::makeBiomeDale, TolkienTags.Biomes.PLAINS, TolkienTags.Biomes.TEMPERATE, TolkienTags.Biomes.PEACEFUL);
+    public static final ResourceKey<Biome> ITHILIEN = createBiome("ithilien", BiomeMaker::makeBiomeIthilien, TolkienTags.Biomes.PLAINS, TolkienTags.Biomes.TEMPERATE, TolkienTags.Biomes.PEACEFUL);
+    public static final ResourceKey<Biome> ERED_MITHRIN = createBiome("ered_mithrin", BiomeMaker::makeBiomeEredMithrin, TolkienTags.Biomes.MOUNTAIN, TolkienTags.Biomes.COLD, TolkienTags.Biomes.HOSTILE);
+    public static final ResourceKey<Biome> RHUDAUR = createBiome("rhudaur", BiomeMaker::makeBiomeRhudaur, TolkienTags.Biomes.PLAINS, TolkienTags.Biomes.COLD, TolkienTags.Biomes.WINDSWEPT);
     public static final ResourceKey<Biome> ETTENMOORS = createBiome("ettenmoors", BiomeMaker::makeBiomeEttenmoors, TolkienTags.Biomes.PLAINS, TolkienTags.Biomes.COLD, TolkienTags.Biomes.WINDSWEPT);
     public static final ResourceKey<Biome> ERYN_VORN = createBiome("eryn_vorn", BiomeMaker::makeBiomeErynVorn, TolkienTags.Biomes.DARK_FOREST, TolkienTags.Biomes.TEMPERATE);
     public static final ResourceKey<Biome> BROWN_LANDS = createBiome("brown_lands", BiomeMaker::makeBiomeBrownLands, TolkienTags.Biomes.WASTELAND, TolkienTags.Biomes.DRY, TolkienTags.Biomes.SPARSE);
