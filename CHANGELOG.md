@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The marsh warns you when it deepens.** Each step of the dread puts a line on the action bar and a low
+  sound with it, so a player being worn down can tell before the slowness has them, rather than discovering
+  it at the bottom of the marsh with no idea how far in they are.
 - **The Dead Marshes' dread deepens with the stay.** The dread now climbs a step at half a minute and
   another at a minute and a half, to a ceiling of two, using the same timer that brings the figures; it
   falls back to nothing when the player leaves and starts again from the bottom on returning.

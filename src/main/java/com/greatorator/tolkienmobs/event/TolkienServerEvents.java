@@ -13,6 +13,7 @@ import com.greatorator.tolkienmobs.item.custom.DwarvenHammerItem;
 import com.greatorator.tolkienmobs.util.block.BackpackMagnet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -52,6 +53,10 @@ public class TolkienServerEvents {
 
     /** How long a player must stay in the Dead Marshes before the dead start standing out in the fog. */
     private static final int LINGER_BEFORE_FIGURES = 60;
+
+    /** The seconds a stay has to last before the dread takes its first and its second step. */
+    private static final int DREAD_FIRST_STEP = 30;
+    private static final int DREAD_LAST_STEP = 90;
 
     /** Seconds each player has stood in the marsh without leaving, dropped the moment they step out. */
     private static final Map<UUID, Integer> LINGER = new HashMap<>();
@@ -98,6 +103,7 @@ public class TolkienServerEvents {
             int lingerSeconds = linger(player);
             player.addEffect(new MobEffectInstance(TolkienMobEffects.MARSH_DREAD, 60,
                     dreadLevel(lingerSeconds), true, false, true));
+            announceDread(player, lingerSeconds);
         }
 
         if (player.tickCount % 10 == 0) {
@@ -185,11 +191,27 @@ public class TolkienServerEvents {
      * marsh cost something without pinning a player in place while the rest of it works on them.
      */
     private static int dreadLevel(int seconds) {
-        if (seconds < 30) {
+        if (seconds < DREAD_FIRST_STEP) {
             return 0;
         }
 
-        return seconds < 90 ? 1 : 2;
+        return seconds < DREAD_LAST_STEP ? 1 : 2;
+    }
+
+    /**
+     * Says so when the dread steps up. The warning goes to the action bar rather than the chat, because this
+     * is a warning about a state the player is in and not a line of history: it sits where they are already
+     * looking, does not scroll away, and is replaced by the next one. Nothing is said for the first step,
+     * since there is nothing to warn about yet - only the two steps that cost something are spoken.
+     */
+    private static void announceDread(ServerPlayer player, int seconds) {
+        if (seconds != DREAD_FIRST_STEP && seconds != DREAD_LAST_STEP) {
+            return;
+        }
+
+        int dread = dreadLevel(seconds);
+        player.sendOverlayMessage(Component.translatable("message.tolkienmobs.marsh_dread_" + dread));
+        player.playSound(TolkienSounds.IDLE_BARROW.get(), 0.4F, 0.55F);
     }
 
     /**

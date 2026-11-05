@@ -2003,6 +2003,8 @@
   "key.tolkienmobs.faction_ledger": "打开联盟名册",
   "key.tolkienmobs.open_backpack": "打开背包（饰品背部栏位）",
   "key.tolkienmobs.toggle_magnet": "切换背包磁铁",
+  "message.tolkienmobs.marsh_dread_1": "沼泽拖住了你的双腿。",
+  "message.tolkienmobs.marsh_dread_2": "沼泽抓住了你。离开这里，否则它不会放手。",
   "place.tolkienmobs.barachen": "巴拉亨的营地",
   "place.tolkienmobs.barachen.line": "巨魔荒野中一名斥候的营地",
   "place.tolkienmobs.barrows": "古冢岗",

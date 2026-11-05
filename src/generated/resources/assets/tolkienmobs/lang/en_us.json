@@ -2045,6 +2045,8 @@
   "key.tolkienmobs.faction_ledger": "Open Ledger of Alliances",
   "key.tolkienmobs.open_backpack": "Open Backpack (Curios back slot)",
   "key.tolkienmobs.toggle_magnet": "Toggle Backpack Magnet",
+  "message.tolkienmobs.marsh_dread_1": "The marsh is dragging at your legs.",
+  "message.tolkienmobs.marsh_dread_2": "The marsh has hold of you. Get out, or it will not let go.",
   "place.tolkienmobs.barachen": "Barachen's Camp",
   "place.tolkienmobs.barachen.line": "a scout's camp in the Trollshaws",
   "place.tolkienmobs.barrows": "The Barrow-downs",

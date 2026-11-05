@@ -718,6 +718,8 @@ public class TolkienLangProviderCN extends TolkienLangHelperCN {
             this.addEnchantmentDesc("hobbit_plow_key", "自动耕作一片 9x9 的区域，并设置所需的水源。");
             this.add("effect.tolkienmobs.elven_nimbleness.tooltip", " 跨步高度");
             this.add("effect.tolkienmobs.marsh_dread", "沼泽惊惧");
+            this.add("message.tolkienmobs.marsh_dread_1", "沼泽拖住了你的双腿。");
+            this.add("message.tolkienmobs.marsh_dread_2", "沼泽抓住了你。离开这里，否则它不会放手。");
 
         // Biomes
             this.add("biome.tolkienmobs.fangorn_forest", "范贡森林");
