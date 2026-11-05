@@ -414,6 +414,12 @@ public final class ArdaMap {
      * ground rather than guessed.
      */
     private static final int LAKE_SHORE = 4;
+    /**
+     * How far a shore may be cut down to meet its sheet. Ground standing higher than this over the water it
+     * faces keeps its own face: a lake at the bottom of its basin is meant to end against the hill, and
+     * lowering a hill to a ramp is what put a cone round every sheet instead of a shore.
+     */
+    private static final int SHORE_CUT = 6;
 
     /** The highest the drawing may raise the ground, leaving the world's ceiling room above it. */
     private static final int MOUNTAIN_CEILING = 420;
@@ -715,7 +721,11 @@ public final class ArdaMap {
         // that stands eight blocks over its own sheet kept a wall where the drawing had a hill. The grade
         // never undercuts what the bank needs, and never reaches under the sea.
         if (nearLake(blockX, blockZ)) {
-            height = Math.max(bank, Math.min(height, shoreGrade(blockX, blockZ)));
+            int grade = shoreGrade(blockX, blockZ);
+
+            if (grade < Integer.MAX_VALUE && height - grade <= SHORE_CUT) {
+                height = Math.max(bank, grade);
+            }
         }
         return new Sample(ground.country(), height, false, ground.shore(), ground.upland());
     }
@@ -751,9 +761,11 @@ public final class ArdaMap {
             // down to the water rather than standing over it, so a rise inside the sheet ends in a shore.
             if (sheet > 0 && ground.height() > surface + LAKE_SHORE) {
                 int grade = shoreGrade(blockX, blockZ);
+                int height = grade < Integer.MAX_VALUE && ground.height() - grade <= SHORE_CUT
+                        ? grade
+                        : ground.height();
 
-                return new Sample(ground.country(), Math.min(ground.height(), grade), false,
-                        ground.shore(), ground.upland());
+                return new Sample(ground.country(), height, false, ground.shore(), ground.upland());
             }
 
             // The bed is graded by how much of the column the sheet covers, so the water goes from wading
@@ -798,8 +810,7 @@ public final class ArdaMap {
     /**
      * The water level of a lake sheet, or the drawn ground where the sheet is one the bake does not know.
      * <p>
-     * The level is the mean drawn ground over the sheet, sampled at 64 blocks: high enough that most of the
-     * sheet is water and not a dry basin, low enough that the ground above it is cut rather than drowned.
+     * The level is the lowest drawn ground over the sheet, sampled at 128 blocks, so the water sits in the basin the drawing gives it.
      */
     private static int lakeLevel(int blockX, int blockZ, int fallback) {
         int id = ArdaMasks.lakeId(blockX, blockZ);
@@ -869,10 +880,14 @@ public final class ArdaMap {
      * turns the wall a drawn headland used to end in into the beach its sheet should have had.
      */
     private static int shoreGrade(int blockX, int blockZ) {
-        for (int reach = 2; reach <= BANK_REACH; reach += 2) {
-            for (int step = 0; step < 8; step++) {
-                int px = blockX + (int) Math.round(Math.cos(step * Math.PI / 4.0D) * reach);
-                int pz = blockZ + (int) Math.round(Math.sin(step * Math.PI / 4.0D) * reach);
+        // Sixteen directions, one block at a time. Eight rays read outward count a diagonal step as one
+        // rather than one and a half, and a ramp drawn on that is a square ring round the water however
+        // smooth the drawing under it is.
+        for (int reach = 1; reach <= BANK_REACH; reach++) {
+            for (int step = 0; step < 16; step++) {
+                double angle = step * Math.PI / 8.0D;
+                int px = blockX + (int) Math.round(Math.cos(angle) * reach);
+                int pz = blockZ + (int) Math.round(Math.sin(angle) * reach);
 
                 if (!ArdaMasks.lake(px, pz)) {
                     continue;
@@ -894,9 +909,7 @@ public final class ArdaMap {
      * One water level per drawn lake sheet, measured once from the ground the sheet lies on.
      * <p>
      * The map is sampled at 128 blocks rather than column by column, so a whole world's lakes are measured
-     * in one pass at a cost a chunk's worth of generation would not notice. The mean is used rather than the
-     * lowest ground: a level taken from the lowest point turns the rest of the sheet into a cliff, and one
-     * taken from the highest leaves most of it dry.
+     * in one pass at a cost a chunk's worth of generation would not notice. The level is the lowest ground the sheet is drawn over, not its mean: ground standing over it is land, and a level taken from higher up cuts the sheet into a dam.
      */
     private static final class LakeLevels {
         private static final int[] LEVELS = measure();
@@ -914,7 +927,8 @@ public final class ArdaMap {
                 highest = Math.max(highest, sheet & 0xFF);
             }
 
-            long[] sums = new long[highest + 1];
+            int[] lows = new int[highest + 1];
+            java.util.Arrays.fill(lows, Integer.MAX_VALUE);
             int[] counts = new int[highest + 1];
             for (int row = 0; row < height; row += 16) {
                 for (int column = 0; column < width; column += 16) {
@@ -926,7 +940,8 @@ public final class ArdaMap {
 
                     int x = west + column * blocks;
                     int z = north + row * blocks;
-                    sums[id] += groundAt(x / (double) CELL + ORIGIN_COLUMN, z / (double) CELL + ORIGIN_ROW, x, z).height();
+                    lows[id] = Math.min(lows[id], groundAt(x / (double) CELL + ORIGIN_COLUMN,
+                            z / (double) CELL + ORIGIN_ROW, x, z).height());
                     counts[id]++;
                 }
             }
@@ -934,7 +949,7 @@ public final class ArdaMap {
             int[] levels = new int[highest + 1];
             for (int id = 1; id <= highest; id++) {
                 if (counts[id] > 0) {
-                    levels[id] = Math.max(SEA_LEVEL, (int) Math.round(sums[id] / (double) counts[id]));
+                    levels[id] = Math.max(SEA_LEVEL, lows[id]);
                 }
             }
             // How far the drawn ground rises over each sheet's level: the number the shore band is tuned

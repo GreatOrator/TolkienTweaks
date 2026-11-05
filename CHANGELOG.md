@@ -16,6 +16,16 @@ All notable changes to this project will be documented in this file.
   disc rather than the height of the one column the feature happened to start on, and the block or two of
   ground standing over that line is cut instead of left as an island: no more sheets standing above their
   shore, and no more dirt rings inside the water.
+- **A lake lies at its lowest ground, and the rest of the sheet keeps its cliffs.** The level was the mean
+  of the ground the sheet is drawn over, which sits partway up the sheet's own slope: every column under it
+  was cut away, so the sheet ended in a dam of its own making several blocks high all the way round,
+  Nurnen's the worst of them. The level is now the lowest ground of the sheet, so the water fills the basin
+  the drawing gives it and the higher ground inside the mask is left as the land and the cliff it is.
+- **A lake shore is measured in sixteen directions, and only low ground is cut.** Eight rays counted a
+  diagonal step as one instead of one and a half, so the ramp's contours were square rings round the water
+  whatever shape the drawing had, and ground standing well over the sheet was pulled down to it, which put
+  a cone round every lake. The ramp is sixteen rays a block at a time, and a shore is only cut when it
+  stands within six blocks of the water it faces.
 - **A lake shore is a beach, not a wall.** A drawn headland, and the land just outside the sheet, now
   stand one block over the water where they meet it and climb a block for every block further out, so the
   rise in the middle of a lake and the ground along its edge walk down into the sheet instead of ending in

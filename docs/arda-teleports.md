@@ -64,9 +64,11 @@ narrow shelf of land, so its point is the first dry column of it rather than the
 ## Lakes
 
 These are the lake mask's nine sheets: six inside the world frame, and three beyond its eastern and
-southern edges that the bake crops away. Each sheet is one water level, measured from the mean ground the sheet is drawn over, so the lakes are level
+southern edges that the bake crops away. Each sheet is one water level, taken from the lowest ground the sheet is drawn over, so the water fills the
 sheets rather than water following the rise and fall of the ground under them. Ground standing more than four
-blocks over a sheet's level is left as land rather than cut away - a headland, not a wall - and the water
+basin the drawing gives it; ground standing over that level is left as land rather than cut away, so a sheet
+ends against the hill it lies under. Only low shore is graded - a face standing more than six blocks over the
+water keeps its own - and the water
 grades from one block deep at the mask's edge down to the full six inside it, so a sea shallows into its
 shore instead of showing terraces of bed through the water, and the land round the sheet - a headland in
 the middle of one included - stands a block over the water where it meets it and a block higher for each
