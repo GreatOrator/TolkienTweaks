@@ -299,18 +299,14 @@ public final class CityCommands {
             // In the valley the pin is where the ground was scouted, so the pin decides where the city
             // stands and the caller's feet decide it everywhere else. A corner planted a few blocks out
             // puts the whole build a few blocks out, and which block the caller happened to stand on is
-            // not a decision worth leaving to chance. The pin is the middle of the footprint, so the
-            // corner comes off it rather than the other way round.
+            // not a decision worth leaving to chance.
             BlockPos pin = TolkienDimensions.ARDA.equals(level.dimension())
                     ? Pins.at(level, Campaign.SUMMON_PLACE)
                     : null;
             if (pin != null) {
-                Box around = Box.of(parts, planted);
-                int wide = around.highX() - around.lowX() + 1;
-                int deep = around.highZ() - around.lowZ() + 1;
-                planted = planted.offset(pin.getX() - around.lowX() - wide / 2,
-                        pin.getY() - around.lowY(),
-                        pin.getZ() - around.lowZ() - deep / 2);
+                // The pin is the cut's own low corner rather than the middle of the city: the scout wrote
+                // down the block the corner goes on, so the corner is what the pin means.
+                planted = new BlockPos(pin.getX() - lowX, pin.getY() - lowY, pin.getZ() - lowZ);
             }
             // The marked spots are written in this same frame, so the folk know where they are the moment
             // the corner is planted - otherwise the city would stand empty of the people meant to live in it.
@@ -321,7 +317,7 @@ public final class CityCommands {
             int bands = bands(parts).size();
             int pieces = parts.size();
             source.sendSuccess(() -> Component.literal("City planted at " + spoken
-                    + (pin == null ? "" : ", centred on the pin")
+                    + (pin == null ? "" : ", corner on the pin")
                     + "; " + bands + " bands, " + pieces + " pieces. Run /tmcity band to lay it, /tmcity goto to stand in it."), true);
             // A city with a mountain in it is taller than the sky it is planted under, and the world does
             // not refuse blocks above its ceiling out loud - it drops them. Said here rather than after

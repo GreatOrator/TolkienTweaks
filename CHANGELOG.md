@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The pin is the corner, not the middle.** `rivendell` at 5097, 75, -3010 is the block the cut's low
+  corner goes on, so `/tmcity origin` and `summon` plant the corner there from whatever block the caller
+  is on, and the message says so. The city covers x 5097..5650 by z -3010..-2499 with its crown at
+  318; every column the valley prose names moved with the corner.
 - **The unused valley floor says which planting it was cut for.** Its 544 by 502 profile, centred on
   4628, -3577, is the shape the valley had before the pin; the doc now says so rather than leaving it
   reading as ground the city stands on.

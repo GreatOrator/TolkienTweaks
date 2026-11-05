@@ -120,9 +120,9 @@ message rather than laid.
    the 554 by 512 footprint, on ground the city was scouted against. No floor is cut for it any more
    (`PLANTED = false` in `ArdaMap`), so the drawn ground is what it stands on. To look at it, `/execute in
    tolkienmobs:arda run tp @s 5097 100 -3010` and let yourself fall. You do not have to stand on the corner:
-   in Arda the pin decides where the city goes, so `/tmcity origin` centres the 554 by 512 footprint on
-   5097, 75, -3010 from whatever block you are on, puts the cut's low corner at `4820, 75, -3266`, and the
-   crown at 318, one block under the ceiling. In any other world, pick flat ground with 554 x 512 clear and
+   in Arda the pin decides where the city goes, so `/tmcity origin` puts the cut's low corner on
+   5097, 75, -3010 from whatever block you are on: the 554 by 512 footprint covers x 5097..5650 by
+   z -3010..-2499, the crown at 318, one block under the ceiling. In any other world, pick flat ground with 554 x 512 clear and
    feet at or below 76.
 
 2. **Plant it.** `/tmcity origin`. Whatever ground was there stays around it; the city replaces its own box
