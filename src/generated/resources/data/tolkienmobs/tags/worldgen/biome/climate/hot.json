@@ -1,6 +1,7 @@
 {
   "values": [
     "tolkienmobs:belfalas",
+    "tolkienmobs:dorwinion",
     "tolkienmobs:eastern_waste",
     "tolkienmobs:firien",
     "tolkienmobs:gondor",
@@ -12,6 +13,7 @@
     "tolkienmobs:nurn",
     "tolkienmobs:rhun",
     "tolkienmobs:rohan",
+    "tolkienmobs:umbar",
     "tolkienmobs:mordor"
   ]
 }

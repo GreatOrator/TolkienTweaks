@@ -51,6 +51,11 @@ public final class ArdaMap {
     static final int COLUMNS = 48;
     static final int ROWS = 36;
 
+    /** How many quarter-cells a cell is cut into, and how many patches the patch grid has. */
+    static final int PATCHES_PER_CELL = 4;
+    static final int PATCH_COLUMNS = COLUMNS * PATCHES_PER_CELL;
+    static final int PATCH_ROWS = ROWS * PATCHES_PER_CELL;
+
     /**
      * The cell the Shire sits in. Its centre is block (0, 0), so the hobbits' country is where a
      * player who builds at the overworld's origin arrives, and every other country's place on the
@@ -393,6 +398,37 @@ public final class ArdaMap {
 
     private static final Country[][] GRID = draw();
 
+    /**
+     * A country smaller than a cell, painted on the quarter-cell grid.
+     * <p>
+     * A cell is 512 blocks, and some countries on the poster are smaller than that: painted as whole cells
+     * a haven becomes a county, and painted not at all it stays its neighbour. A patch answers for the
+     * country of the column it covers at 128 blocks, and every column between the patches still reads off
+     * the 48 by 36 grid, so the valley, the places and the canon cells keep their coordinates.
+     */
+    private record Patch(Country country, int fromColumn, int fromRow, int toColumn, int toRow) {
+    }
+
+    private static final Patch[] PATCHES = {
+            // The corsairs' haven and its dry hills, on the warm coast below Belfalas.
+            new Patch(Country.UMBAR, 100, 136, 119, 143),
+            // The vineyards of Dorwinion, at the Sea of Rhun's north-west corner.
+            new Patch(Country.DORWINION, 150, 34, 159, 43)
+    };
+
+    /** The patch country at a column of the drawing, or null where the cells answer. */
+    private static Country patchAt(double mapX, double mapZ) {
+        int column = (int) Math.floor(mapX * PATCHES_PER_CELL);
+        int row = (int) Math.floor(mapZ * PATCHES_PER_CELL);
+        for (Patch patch : PATCHES) {
+            if (column >= patch.fromColumn() && column <= patch.toColumn()
+                    && row >= patch.fromRow() && row <= patch.toRow()) {
+                return patch.country();
+            }
+        }
+        return null;
+    }
+
     private ArdaMap() {
     }
 
@@ -503,6 +539,9 @@ public final class ArdaMap {
         EMYN_MUIL(TolkienBiomes.EMYN_MUIL, 96, 22, true),
         BELFALAS(TolkienBiomes.BELFALAS, 68, 5, true),
         KHAND(TolkienBiomes.KHAND, 74, 8, true),
+        // The countries smaller than a cell, painted on the quarter-cell grid.
+        UMBAR(TolkienBiomes.UMBAR, 70, 8, true),
+        DORWINION(TolkienBiomes.DORWINION, 70, 6, true),
         EASTERN_WASTE(TolkienBiomes.EASTERN_WASTE, 76, 12, true);
 
         private final ResourceKey<Biome> biome;
@@ -971,7 +1010,23 @@ public final class ArdaMap {
         }
         // A country the drawing does not contain has no middle; the origin is the honest answer, and
         // the survey's own country test refuses it a moment later.
-        if (cells == 0) return BlockPos.ZERO;
+        if (cells == 0) {
+            // A country painted on the patch grid has no cell of its own: its middle is the middle of the
+            // patches it was drawn in, read back into blocks at the patch scale.
+            long patchColumns = 0;
+            long patchRows = 0;
+            int count = 0;
+            for (Patch patch : PATCHES) {
+                if (patch.country() != country) continue;
+                patchColumns += patch.fromColumn() + patch.toColumn() + 1;
+                patchRows += patch.fromRow() + patch.toRow() + 1;
+                count++;
+            }
+            if (count == 0) return BlockPos.ZERO;
+            int size = CELL / PATCHES_PER_CELL;
+            return new BlockPos((int) Math.round((patchColumns / (2.0D * count) - ORIGIN_COLUMN * PATCHES_PER_CELL) * size), 0,
+                    (int) Math.round((patchRows / (2.0D * count) - ORIGIN_ROW * PATCHES_PER_CELL) * size));
+        }
         int column = (int) Math.round((double) columns / cells);
         int row = (int) Math.round((double) rows / cells);
         return new BlockPos((column - ORIGIN_COLUMN) * CELL + CELL / 2, 0,
@@ -1035,14 +1090,16 @@ public final class ArdaMap {
 
         // Three octaves of the map's own hash noise: enough to break a drawn flat into country
         // without moving the country itself.
-        int relief = northWest.relief();
+        Country cover = patchAt(mapX, mapZ);
+        if (cover == null) cover = northWest;
+        int relief = cover.relief();
         double rough = fractal(blockX, blockZ, 192, 1) + 0.5D * fractal(blockX, blockZ, 96, 2)
                 + 0.25D * fractal(blockX, blockZ, 48, 3);
         // The ground is the reference heightmap where it has land, and the drawing where it has sea:
         // an ocean column is the drawing's, and the map's own zero would put it at the sea's height.
         int height = groundHeight(blockX, blockZ, drawn, relief, rough);
         boolean shore = seaInReach && Math.abs(drawn - SEA_LEVEL) <= BEACH_HEIGHT;
-        return new Ground(northWest, height, drawn, shore, upland);
+        return new Ground(cover, height, drawn, shore, upland);
     }
 
     /**

@@ -398,7 +398,45 @@ public class BiomeMaker extends BiomeHelper{
                 .build();
     }
 
-    /** Eregion, the holly country west of the mountains and south of the Trollshaws. */
+    /** Umbar: the corsairs' haven and its dry brown hills, on the warm coast below Belfalas. */
+    public static Biome makeBiomeUmbar(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(false)
+                .temperature(1.2F)
+                .downfall(0.3F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(1.2F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(13426175))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(329011))
+                .specialEffects(new BiomeSpecialEffects.Builder()
+                        .waterColor(4159204)
+                        .foliageColorOverride(7377486)
+                        .grassColorOverride(10066206)
+                        .build())
+                .mobSpawnSettings(gondorSpawning().build())
+                .generationSettings(gondorGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
+
+    /** Dorwinion: the vineyards and gardens on the Sea of Rhun's north-west shore. */
+    public static Biome makeBiomeDorwinion(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
+        return new Biome.BiomeBuilder()
+                .hasPrecipitation(true)
+                .temperature(1.1F)
+                .downfall(0.7F)
+                .setAttribute(EnvironmentAttributes.SKY_COLOR, ARGB.opaque(getSkyColorWithTemperatureModifier(1.1F)))
+                .setAttribute(EnvironmentAttributes.FOG_COLOR, ARGB.opaque(12638463))
+                .setAttribute(EnvironmentAttributes.WATER_FOG_COLOR, ARGB.opaque(329011))
+                .specialEffects(new BiomeSpecialEffects.Builder()
+                        .waterColor(4159204)
+                        .foliageColorOverride(6581840)
+                        .grassColorOverride(8106000)
+                        .build())
+                .mobSpawnSettings(gladdenSpawning().build())
+                .generationSettings(gladdenGen(placedFeatureGetter, carverGetter).build())
+                .build();
+    }
+
+/** Eregion, the holly country west of the mountains and south of the Trollshaws. */
     public static Biome makeBiomeEregion(HolderGetter<PlacedFeature> placedFeatureGetter, HolderGetter<ConfiguredWorldCarver<?>> carverGetter) {
         return new Biome.BiomeBuilder()
                 .hasPrecipitation(true)

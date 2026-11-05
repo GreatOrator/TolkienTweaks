@@ -3,6 +3,7 @@
     "tolkienmobs:belfalas",
     "tolkienmobs:dagorlad",
     "tolkienmobs:dale",
+    "tolkienmobs:dorwinion",
     "tolkienmobs:dunland",
     "tolkienmobs:emyn_muil",
     "tolkienmobs:eriador",
@@ -16,6 +17,7 @@
     "tolkienmobs:rhudaur",
     "tolkienmobs:rhun",
     "tolkienmobs:rohan",
-    "tolkienmobs:shire"
+    "tolkienmobs:shire",
+    "tolkienmobs:umbar"
   ]
 }

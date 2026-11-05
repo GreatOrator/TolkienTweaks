@@ -6,6 +6,7 @@
     "tolkienmobs:haradwaith",
     "tolkienmobs:khand",
     "tolkienmobs:rhun",
+    "tolkienmobs:umbar",
     {
       "id": "#tolkienmobs:desert",
       "required": false

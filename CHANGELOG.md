@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The drawing has quarter-cell patches, and Umbar and Dorwinion are on it.** A cell is 512 blocks, so
+  a haven or a shore of vineyards could only ever be a whole county: Dorwinion was Rhun's steppe and
+  Umbar the Haradwaith's dune. The same drawing is now also painted at 128 blocks, laid over the cells
+  for countries smaller than one, while the 48 by 36 grid keeps every calibrated coordinate - the valley,
+  the place spacing and the canon cells are untouched. Umbar is a dry warm coast with brown hills behind
+  it and Dorwinion a green warm shore on the Sea of Rhun's north-west corner.
 - **The map's weather follows the climate reference, and every biome now has its data.** Temperature and
   rainfall are taken from the Koppen zones the climate map draws instead of being guessed per country: Cfb
   oceanic down the western seaboard, Dfb continental across Mirkwood, Dale, Rhudaur and the Trollshaws, ET
