@@ -11,6 +11,8 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
+import java.util.Arrays;
+
 /**
  * A marsh pool: a shallow sheet of standing water lying in the fen's own hollows.
  * <p>
@@ -45,7 +47,7 @@ public class MarshPoolFeature extends Feature<NoneFeatureConfiguration> {
      * How far above the water line the ground inside the pool may stand and still be cut down to it. This
      * is the fen's own undulation, not a hillside: a column higher than this is the bank and is left alone.
      */
-    private static final int MAX_LIP = 2;
+    private static final int MAX_LIP = 3;
 
     public MarshPoolFeature(Codec<NoneFeatureConfiguration> codec) {
         super(codec);
@@ -67,18 +69,25 @@ public class MarshPoolFeature extends Feature<NoneFeatureConfiguration> {
         int centreX = origin.getX() - (origin.getX() & 15) + localX;
         int centreZ = origin.getZ() - (origin.getZ() & 15) + localZ;
 
-        // The lowest ground in the disc is the water line: a pool lies in the hollow it is dug into, and a
-        // line taken from one column would stand over the ground everywhere else.
-        int lowest = Integer.MAX_VALUE;
+        int[] grounds = new int[(2 * radius + 1) * (2 * radius + 1)];
+        int found = 0;
         for (int dx = -radius; dx <= radius; dx++) {
             for (int dz = -radius; dz <= radius; dz++) {
                 if (dx * dx + dz * dz > radius * radius) {
                     continue;
                 }
-                lowest = Math.min(lowest, groundAt(level, centreX + dx, centreZ + dz));
+                grounds[found++] = groundAt(level, centreX + dx, centreZ + dz);
             }
         }
-        if (lowest <= level.getMinY() + 1) {
+        if (found == 0) {
+            return false;
+        }
+        // The middle of the fen's own ground, not its lowest dip. A line taken from the lowest column sits
+        // under the rest of the disc and leaves a pool nobody can see, and one taken from a single column
+        // is a pond dug on a slope; the marsh is uneven enough that its middle is the honest line.
+        Arrays.sort(grounds, 0, found);
+        int line = grounds[found / 2];
+        if (line <= level.getMinY() + 2) {
             return false;
         }
 
@@ -95,22 +104,22 @@ public class MarshPoolFeature extends Feature<NoneFeatureConfiguration> {
                 int ground = groundAt(level, x, z);
                 // Ground well below the line is a channel or a pit of its own, and ground above the lip is
                 // the fen's bank; neither is part of this pool.
-                if (ground > lowest + MAX_LIP || ground < lowest - MAX_DEPTH - 2) {
+                if (ground > line + MAX_LIP || ground < line - MAX_DEPTH - 4) {
                     continue;
                 }
                 int depth = 1 + (int) Math.round((1.0D - reach) * (MAX_DEPTH - 1));
-                int floor = lowest - depth;
+                int floor = line - depth;
                 cursor.set(x, floor, z);
                 if (!level.getBlockState(cursor).isSolidRender()) {
                     continue;
                 }
                 // Cut the lip first, so nothing of the fen stands over the water, then lay the water from
                 // the bed up to the line.
-                for (int y = lowest + 1; y <= ground; y++) {
+                for (int y = line + 1; y <= ground; y++) {
                     cursor.set(x, y, z);
                     level.setBlock(cursor, Blocks.AIR.defaultBlockState(), 2);
                 }
-                for (int y = floor + 1; y <= lowest; y++) {
+                for (int y = floor + 1; y <= line; y++) {
                     cursor.set(x, y, z);
                     level.setBlock(cursor, Blocks.WATER.defaultBlockState(), 2);
                 }

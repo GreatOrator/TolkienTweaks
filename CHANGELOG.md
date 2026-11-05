@@ -5,7 +5,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
-- **Marsh pools lie in the fen instead of on it.** A pool's water line is now the lowest ground of its own
+- **The drowned dead are laid in the pools again.** The bodies feature had been reading the block the
+  placement handed it as the bed, but that column is the block above the ground - so it was never solid,
+  and no body was ever placed. It now finds the water itself, within two blocks of the placement and ten
+  blocks down, and asks a bed only to have two blocks of water over it.
+- **Marsh pools lie in the fen instead of on it.** A pool's water line is now the middle ground of its own
   disc rather than the height of the one column the feature happened to start on, and the block or two of
   ground standing over that line is cut instead of left as an island: no more sheets standing above their
   shore, and no more dirt rings inside the water.
