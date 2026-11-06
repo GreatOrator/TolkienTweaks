@@ -53,10 +53,10 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
  *   <li>The alignment is searched, not drawn. A weighted walk over the live heightmap prefers level ground
  *   and pays for every block of rise or fall, so it runs along the contours and switchbacks where the face
  *   is too steep to fall straight down - the same choice a road surveyor would make.</li>
- *   <li>The surface is a function of distance along that alignment, not of the ground under it. The profile
- *   is clamped to a maximum grade and eased to the ground where the cut or fill stays within budget, so the
- *   road leaves the path level, descends at a walkable grade, and arrives at the bridge on the deck's own
- *   level.</li>
+ *   <li>The surface follows the ground it crosses, smoothed. A moving average takes the bumps out over a
+ *   dozen blocks either way and every pass is pulled back within twelve blocks of the ground, so the road
+ *   cuts into the hillside above its line and stands on stone where the hill falls away instead of spanning
+ *   the valley, and it arrives at the bridge on the deck's own level.</li>
  * </ul>
  * The bridge is stood up from the cut's own pieces, {@code bridge_end} and {@code bridge_middle}, which are
  * shipped in the jar: two ends and four middles cover the fifty columns between the bank markers exactly.
@@ -116,8 +116,8 @@ public final class RoadCommands {
     private static final int WILD_HALF = 3;
     private static final int PAVED_HALF = 2;
 
-    /** The steepest a graded road may climb or fall, in blocks of height per block of travel. */
-    private static final double MAX_GRADE = 0.45;
+    /** How many passes of the smoothing filter the profile takes, each reaching one more station either way. */
+    private static final int PROFILE_PASSES = 8;
     /** The deepest cut or tallest fill one column may take before the road is held back to the ground. */
     private static final int CUT_FILL = 12;
     /** How far above the road a column's trunks and leaves are cleared, so no crown hangs over the grade. */
@@ -297,9 +297,8 @@ public final class RoadCommands {
      * heightmap, that prefers level ground and pays for every block of rise or fall.
      * <p>
      * That is what makes the road run away from the path and along the face instead of dropping off it. The
-     * cost of a step is its length, plus a penalty that grows with the square of the height it changes: a
-     * gentle fall is nearly free, a ten-block step costs more than walking a long way round, so the search
-     * switchbacks where the mountain is a wall and goes straight where it is a slope. Water is refused
+     * cost of a step is its length, plus three times the height it changes, so a long gentle line is cheaper
+     * than a short steep one and the search contours where the mountain is a wall. Water is refused
      * outright - the river is the bridge's - and so is the city's own footprint.
      * <p>
      * It falls back to the straight line if the search finds nothing, so the command always lays something.
@@ -343,8 +342,7 @@ public final class RoadCommands {
                     if (ground[at] == Integer.MIN_VALUE) ground[at] = surfaceAt(level, nx, nz);
                     if (ground[at] == WATER) continue;
                     int change = Math.abs(ground[at] - ground[node]);
-                    double cost = best[node] + Math.sqrt(dx * dx + dz * dz)
-                            + 2.2D * change + 0.25D * change * change;
+                    double cost = best[node] + Math.sqrt(dx * dx + dz * dz) + 3.0D * change;
                     if (cost >= best[at]) continue;
                     best[at] = cost;
                     from[at] = node;
@@ -393,20 +391,21 @@ public final class RoadCommands {
         }
         height[0] = startY;
         height[n - 1] = endY;
-        for (int pass = 0; pass < 4; pass++) {
-            // First the ground has its say, and only inside the cut-and-fill budget...
+        // The profile follows the ground and is only smoothed. A moving average takes the bumps out - a
+        // five-block stair becomes a ramp over a dozen blocks - and every pass is pulled back inside the
+        // cut-and-fill budget, so the road hugs the hillside rather than spanning it.
+        //
+        // A global grade between the two ends was tried first and is wrong here: where the mountain falls
+        // faster than any walkable ramp, the ramp stops being a road and becomes a causeway standing in the
+        // air on stone columns, and every column whose cut exceeds the budget is left as a hole in the road.
+        // The ground is what the road is cut into; the grade is what falls out of smoothing it.
+        for (int pass = 0; pass < PROFILE_PASSES; pass++) {
+            for (int i = 1; i < n - 1; i++) {
+                height[i] = (height[i - 1] + 2.0D * height[i] + height[i + 1]) / 4.0D;
+            }
             for (int i = 1; i < n - 1; i++) {
                 if (ground[i] == WATER) continue;
                 height[i] = Mth.clamp(height[i], ground[i] - CUT_FILL, ground[i] + CUT_FILL);
-            }
-            // ...and then the grade has the last word, so no step is steeper than the road allows. The
-            // order matters: clamping to the ground afterwards let a single step grow to eighteen blocks,
-            // which is exactly the cliff the grade exists to remove.
-            for (int i = 1; i < n; i++) {
-                height[i] = Mth.clamp(height[i], height[i - 1] - MAX_GRADE, height[i - 1] + MAX_GRADE);
-            }
-            for (int i = n - 2; i >= 0; i--) {
-                height[i] = Mth.clamp(height[i], height[i + 1] - MAX_GRADE, height[i + 1] + MAX_GRADE);
             }
             height[0] = startY;
             height[n - 1] = endY;

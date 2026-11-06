@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **The road hugs the hillside instead of spanning it.** Pinned between the path's 134 and the bridge's 76,
+  the graded profile became a ramp: where the mountain fell faster than the ramp the road stood in the air
+  on twelve-block stone columns, and every column whose cut exceeded the budget was left as a hole, so the
+  stretches over the water's edge were laid while solid ground under the same road was missing. The profile
+  now follows the ground - a moving average along the alignment takes the bumps out, and eight passes hold
+  the result within twelve blocks of the ground - and the descent search pays linearly for height change,
+  so a long gentle line is preferred to a short steep one.
+
 - **The road's corridor is cleared of canopy.** Cutting a road through the trollshaws' woods took the
   trunks away with the ground but left their crowns hanging over the grade, so a cut stretch sailed under
   a floating roof. Every column the road lays now has leaves and logs cleared from one block over its

@@ -179,18 +179,18 @@ at 134 and the water at 74, so the road has sixty blocks to lose over a hundred 
 that was a staircase down a cliff face - the ground six blocks out from the path is already at 109. The
 pass therefore finds its own way down: a weighted walk over the live heightmap that prefers level ground
 and pays for every block of rise or fall, so it contours and switchbacks where the face is a wall, and
-then it gives that alignment a grade of its own. The surface is a function of distance along the road,
-clamped to 0.45 blocks of rise per block of travel and eased back toward the ground wherever the cut or
-fill stays within twelve blocks: into the hill it cuts, and where the hill falls away it stands on stone.
+then it gives that alignment a grade of its own. The surface is the ground itself, smoothed: a moving average along the alignment takes the bumps out,
+and the result is held within twelve blocks of the ground - cutting into the hill above its line and
+standing on stone where the hill falls away.
 That is the reference's own road-flatten idea - which is also cut and fill - rather than the paint-only
 surface this document settles for worldgen.
 
 Two things the first graded run taught, both now in the pass. A heightmap answers with whatever stops
 motion, tree crowns included, so the first run read the valley as a forest roof and stood stone columns
-up to the leaves; the ground is now read past leaves and trunks to the soil under them. And the ground
-clamp had been applied after the grade clamp, which let a single step grow back to eighteen blocks - the
-cliff the grade exists to remove - so the ground now has its say first, inside the cut-and-fill budget,
-and the grade has the last word. Where the road meets water it carries its last verge columns over on
+up to the leaves; the ground is now read past leaves and trunks to the soil under them. A global grade between the two ends was tried next and was worse in another way: where the mountain
+falls faster than any walkable ramp, the ramp stands on stone columns the whole way and the road is
+missing wherever the cut would exceed the budget. The profile now follows the ground, smoothed and
+held within twelve blocks of it, so it hugs the hillside instead of spanning it. Where the road meets water it carries its last verge columns over on
 stone while its grade is above the water line, instead of stopping short of the bank and leaving a lip
 for the river to sit against.
 The corridor's own columns then have their trunks and leaves cleared for sixteen blocks above the
