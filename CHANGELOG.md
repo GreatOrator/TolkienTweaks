@@ -23,6 +23,12 @@ All notable changes to this project will be documented in this file.
   switchback stays tight at ten, since easing one wide would swing the road off the shelf it is on. The
   wider arc reaches ground the search never walked, so it is closed back until it stays off the river,
   out of the city's footprint, and on ground the corner's own cut and fill can answer for.
+- **A step's slab is the lip of the terrace above it, not the foot of the one below.** The half-step slab went
+  into the lower column, where a bottom slab fills the bottom of its cell: the walker dropped a block and a
+  half onto it and still had to jump to climb back. The slab is now the higher column's lip, half a block under
+  the terrace floor with the terrace below as the other half, so a fall walks as block, slab, block, slab in
+  both directions. Only the two positive neighbours were compared as well, which left the slabs as a sliver off
+  one corner of a diagonal step; the lip now follows every side of the terrace.
 
 - **The switchbacks are hairpins, not hinges.** The searched walk turns within a single block, so its
   corners were right angles a walker could not take. The alignment is simplified to the vertices that

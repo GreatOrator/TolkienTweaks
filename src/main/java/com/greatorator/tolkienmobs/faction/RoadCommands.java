@@ -739,19 +739,29 @@ public final class RoadCommands {
     }
 
     /**
-     * Turns the lower of two road columns that differ by one block into a bottom slab, so a rise is a half
-     * step. Only road columns count: a step beside a wall is the wall's business, not the road's.
+     * Turns the edge of a terrace that stands one block over the next into a bottom slab, so a step is made of
+     * two half steps. Only road columns count: a step beside a wall is the wall's business, not the road's.
+     * <p>
+     * The slab belongs to the higher column. A bottom slab fills the bottom of its cell, so in the lower column
+     * it sits a block and a half under the terrace above it: a walker drops a step and a half onto it, and then
+     * still has to jump to come back up. In the higher column it is a lip at the terrace's edge, half a block
+     * under the floor, and the terrace below the lip is the other half. Read either way along the road that is
+     * block, slab, block, slab - a stair a walker takes without breaking stride.
+     * <p>
+     * Every side of the terrace is checked. Comparing only the two positive ones put the slab on whichever side
+     * of the step happened to face the axes and none on the other two, so a diagonal step carried a sliver of
+     * slab off one corner instead of a lip along its whole edge.
      */
     private static int steps(ServerLevel level, Map<Long, Integer> tops) {
+        int[][] around = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
         int stepped = 0;
         for (Map.Entry<Long, Integer> entry : tops.entrySet()) {
             int x = (int) (entry.getKey() >> 32);
             int z = (int) (entry.getKey() & 0xFFFFFFFFL);
             int y = entry.getValue();
-            for (int[] beside : new int[][]{{x + 1, z}, {x, z + 1}}) {
-                Integer other = tops.get(key(beside[0], beside[1]));
-                if (other == null) continue;
-                if (Math.abs(y - other) != 1 || y > other) continue;
+            for (int[] beside : around) {
+                Integer other = tops.get(key(x + beside[0], z + beside[1]));
+                if (other == null || y != other + 1) continue;
                 level.setBlock(new BlockPos(x, y, z), Blocks.COBBLESTONE_SLAB.defaultBlockState(), 2);
                 stepped++;
                 break;

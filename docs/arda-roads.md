@@ -145,9 +145,13 @@ per-block scatter with no clumps, and a hash is the one form that survives a chu
 column gets the same block whichever chunk asks for it. Grass block is placed literally everywhere,
 including sand and snow: a Harad road will have green squares in it, which is the chosen look.
 
-**Steps.** Where two neighbouring road columns differ by exactly one block, the lower column's top becomes
-a bottom `minecraft:cobblestone_slab`, so the rise is a half step rather than a full drop. That needs one
-sample of the column ahead, which a road pass reads anyway. Gravel in the wild band is gravity-affected:
+**Steps.** Where two neighbouring road columns differ by exactly one block, the *higher* column's top
+becomes a bottom `minecraft:cobblestone_slab`. A bottom slab fills the bottom of its own cell, so it is the
+lip of the terrace, half a block under its floor, and the terrace below the lip is the other half - walked
+either way the step is two half steps, block, slab, block, slab. In the lower column the same slab would sit
+a block and a half under the terrace above it, which is a drop to fall down and a jump to climb back up.
+The lip is laid on every side of a terrace, so it runs along the whole edge of the step rather than off one
+corner of it. Gravel in the wild band is gravity-affected:
 a wild road's gravel falls if the ground under it is ever removed - a note, not a problem.
 
 ## What is not decided
