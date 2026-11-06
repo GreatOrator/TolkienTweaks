@@ -120,6 +120,11 @@ what is still open, so the next session does not have to rebuild that from the c
   hanging eight blocks over the vale's 74, which the branch falls on its own; the spring gets one bank for
   each of its **thirty-two** edge columns at 239, eighty-seven to a hundred and six columns long and down
   to the shelf at 115 - three thousand and ninety-two columns, about two hundred thousand blocks of dirt.
+- **The branch is cut again, at the new mouth.** `BRANCH` is on and the course runs from 5200, -3067 to
+  the drawn Bruinen at 5054, -3086 - a hundred and forty-seven blocks, the city's water at 82 at the wall
+  falling to the vale's 74 at the join - so the map cuts a twelve-wide channel through the massif and opens
+  the rock along it at 0.6 blocks of height per block out. The spring at the rear, water at 239 over a floor
+  at 74, still has no cut of its own.
 - **The ford is a bridge.** Nothing places a road or a bridge over the Bruinen yet; the join is water and
   banks only.
 - **The join's step is closed.** The branch falls from the city's water to the vale's 74 on its way out

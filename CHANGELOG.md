@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The branch runs again, from the new mouth to the drawn Bruinen.** With the planted ground laid, the
+  city's water still had no cut out of it: the massif stood at 318 across the hundred and forty-seven blocks
+  from the west wall at 5200, -3067 to the drawn river at 5054, -3086. `BRANCH` is on and the course is those
+  two columns - the city's water at 82 at the wall, the vale's 74 at the join - so the map cuts a twelve-wide
+  channel whose walls climb from the water at 1.2 blocks per block out, and opens the massif along it at 0.6.
+  The spring at the rear, 239 over a floor at 74, still has no cut of its own.
 - **The city's own ground is drawn round the pin again, and the river is what is left.** The planted valley
   - its floor at 74, its massif at the crown 318 from the footprint's edge outward, and its empty north-east
   corner filled with rock - was switched off and still keyed to the old pin at 4352, -3833, which is why the

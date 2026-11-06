@@ -87,7 +87,7 @@ public final class ArdaMap {
      * the rock stands where that channel will go. That is the one piece of the city's ground still to draw,
      * which is why it is a switch of its own rather than part of {@link #PLANTED}.
      */
-    private static final boolean BRANCH = false;
+    private static final boolean BRANCH = true;
 
     /**
      * The valley the map overrides rather than draws: its middle, the half-widths of its floor, and the
