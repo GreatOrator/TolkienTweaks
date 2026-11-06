@@ -210,6 +210,15 @@ what is still open, so the next session does not have to rebuild that from the c
   river.
 ## Commits behind this note (on main, none pushed)
 
+- **The far bank was measured against a pin, and left standing.** The user's pins put a knoll at
+  4963, 128, -3145 under its spruce canopy, the drawn Bruinen at 74 running x 5013..5063 fifty blocks west
+  of it, and the opposite bank at 5061, 75, -3136. Between them the ground climbs 74 to 135 over those fifty
+  blocks and 80 to 155 over the sixty-four east of the water. `mouthRise` over `MOUTH_RUN` 160 allows 131 at
+  the knoll's run, so the knoll stands three blocks *under* the curve the bank is drawn on rather than above
+  it: it is the shape the curve asks for, made by the drawn country, and `giveWay` has nothing to cut.
+  Shortening the run would raise that ceiling rather than lower it, and lengthening it to where it would
+  reach the knoll - four hundred - drops the massif's own west skirt to about 117 by x 5120, leaving the
+  drape to fill a two-hundred-block cliff thirty-two blocks from the wall. The far bank is left as it is.
 `7a78a5ec` the lift, `994f905b` the river profile read downstream, `c2f994e7` the vale,
 `e3482aa8` the heights visible to chunk threads, `d8faf61f` Arda back to 384, `7d35b2fb` the floor past
 the walls, `51823803` the mask out of the vale and the floor on the build, `fef98351` the rim climbs,
