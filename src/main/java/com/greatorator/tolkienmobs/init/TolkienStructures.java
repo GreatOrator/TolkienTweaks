@@ -1,5 +1,6 @@
 package com.greatorator.tolkienmobs.init;
 
+import com.greatorator.tolkienmobs.world.components.structure.PieceLayoutStructure;
 import com.greatorator.tolkienmobs.world.components.structure.PinnedStructure;
 import com.greatorator.tolkienmobs.world.components.structure.SurfaceStructures;
 import com.greatorator.tolkienmobs.world.components.structure.placement.PinnedStructurePlacement;
@@ -31,6 +32,8 @@ public class TolkienStructures {
     public static final ResourceKey<Structure> MAZE = key("maze");
     // Elladan's camp at Thorenhad: the first build pinned to a scouted block rather than scattered by a spread.
     public static final ResourceKey<Structure> THORENHAD_CAMP = key("thorenhad_camp");
+    // Rivendell: 584 pieces at the offsets the cut took them at, generating from the jar on one pinned anchor.
+    public static final ResourceKey<Structure> RIVENDELL = key("rivendell");
 
     public static final ResourceKey<Structure> BARROW = key("ttmbarrow");
     public static final ResourceKey<Structure> DARK_TOWER = key("ttmdark_tower");
@@ -79,6 +82,10 @@ public class TolkienStructures {
     /** One rigid NBT placed at a pinned block's chunk, seated on the ground under it. */
     public static final DeferredHolder<StructureType<?>, StructureType<PinnedStructure>> PINNED =
             STRUCTURE.register("pinned", () -> structureCodec(PinnedStructure.CODEC));
+
+    /** A build cut into many templates: every piece placed at its recorded offset from one corner. */
+    public static final DeferredHolder<StructureType<?>, StructureType<PieceLayoutStructure>> PIECE_LAYOUT =
+            STRUCTURE.register("piece_layout", () -> structureCodec(PieceLayoutStructure.CODEC));
 
     private static <T extends Structure> StructureType<T> structureCodec(MapCodec<T> structureCodec) {
         return () -> structureCodec;

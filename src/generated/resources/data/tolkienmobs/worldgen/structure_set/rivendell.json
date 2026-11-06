@@ -1,0 +1,16 @@
+{
+  "placement": {
+    "type": "tolkienmobs:pinned",
+    "at": [
+      5200,
+      75,
+      -3370
+    ]
+  },
+  "structures": [
+    {
+      "structure": "tolkienmobs:rivendell",
+      "weight": 1
+    }
+  ]
+}

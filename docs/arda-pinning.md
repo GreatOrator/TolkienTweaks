@@ -73,6 +73,15 @@ Thorenhad's own cell middle, **4864, 0, -3328**, in the Trollshaws. Every build 
 the same shape - one `Pinned` line in `TolkienStructureProvider.PINNED_BUILDS`, and the datagen writes the
 structure, its one-element pool, the set carrying the placement, and the `has_structure/` tag.
 
+**A build that is a whole cut** is pinned the same way, with `tolkienmobs:piece_layout` in place of
+`tolkienmobs:pinned`. That structure carries the cut's corner and its own piece table - a template and the step
+from the corner, for every piece - and places each one there with no ground reading, no rotation and no terrain
+adaptation, because the floor a cut was taken against is the build's and not the world's. The table is not
+transcribed: the data generator reads the cut's own `.parts` file out of the jar, the same file `CityCommands`
+lays bands from, so a piece goes on the same block whether a world generated it or an operator asked for it.
+Rivendell is the first - 584 pieces from **5200, 75, -3370**, tagged for Imladris and the Trollshaws - and its
+shoulder is the drape's business, run after the city is standing.
+
 ## Keeping a pin for every world
 
 Every pin prints its own source line:

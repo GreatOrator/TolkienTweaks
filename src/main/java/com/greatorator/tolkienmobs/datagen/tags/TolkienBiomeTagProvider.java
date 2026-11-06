@@ -35,6 +35,10 @@ public class TolkienBiomeTagProvider extends BiomeTagsProvider {
             var builder = tag(pinned.biomeTag());
             pinned.biomes().forEach(builder::add);
         });
+        TolkienStructureProvider.ASSEMBLIES.forEach(assembly -> {
+            var builder = tag(assembly.biomeTag());
+            assembly.biomes().forEach(builder::add);
+        });
         // Where each alliance's hall may stand, and the ground its guards walk. The West is the free
         // peoples' heartlands and the dwarves' two ranges; the East is Sauron's country and the wilds
         // that answer to it; Harad is its own desert. A biome in no tag here belongs to nobody, so a

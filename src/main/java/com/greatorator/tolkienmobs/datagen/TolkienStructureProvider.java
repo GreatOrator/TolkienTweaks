@@ -2,6 +2,7 @@ package com.greatorator.tolkienmobs.datagen;
 
 import com.greatorator.tolkienmobs.init.TolkienBiomes;
 import com.greatorator.tolkienmobs.init.TolkienStructures;
+import com.greatorator.tolkienmobs.world.components.structure.PieceLayoutStructure;
 import com.greatorator.tolkienmobs.world.components.structure.PinnedStructure;
 import com.greatorator.tolkienmobs.world.components.structure.placement.PinnedStructurePlacement;
 import com.greatorator.tolkienmobs.world.registration.ArdaMap;
@@ -25,6 +26,12 @@ import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadType;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -143,6 +150,23 @@ public final class TolkienStructureProvider {
                     List.of(TolkienBiomes.TROLLSHAWS), ArdaMap.centreOf(19, 13))
     );
 
+    /**
+     * Builds that are a cut's worth of pieces rather than one template: the city, and anything else cut the same way.
+     * <p>
+     * The piece table is not written out here. It is read from the cut's own {@code .parts} file inside the jar, which
+     * is the file {@code CityCommands} lays bands from, so the data generation and the hand cannot disagree about
+     * where a piece goes: the offsets in the generated structure are the cut's offsets, converted and nothing else.
+     * <p>
+     * The anchor is the block the cut's north-west bottom corner stands on, and the pieces are placed from it with no
+     * ground reading and no adaptation. A cut that was taken against ground the map draws stands on that ground in
+     * every world; a cut taken against a scouted hillside would need the shoulder dressed afterwards, which is what
+     * the drape does.
+     */
+    public static final List<Assembly> ASSEMBLIES = List.of(
+            new Assembly(TolkienStructures.RIVENDELL, new BlockPos(5200, 75, -3370), "rivendell",
+                    List.of(TolkienBiomes.IMLADRIS, TolkienBiomes.TROLLSHAWS))
+    );
+
     private TolkienStructureProvider() {}
 
     private static Definition site(ResourceKey<Structure> key, ResourceKey<Biome> biome,
@@ -189,6 +213,12 @@ public final class TolkienStructureProvider {
                     GenerationStep.Decoration.SURFACE_STRUCTURES, TerrainAdjustment.BEARD_THIN);
             context.register(pinned.key(), new PinnedStructure(settings, pools.getOrThrow(pinned.poolKey()),
                     pinned.offset()));
+        }
+        for (Assembly assembly : ASSEMBLIES) {
+            // No adaptation: the cut's own floor is the ground, and a beard over 584 pieces would fill the city.
+            var settings = new Structure.StructureSettings(biomes.getOrThrow(assembly.biomeTag()), Map.of(),
+                    GenerationStep.Decoration.SURFACE_STRUCTURES, TerrainAdjustment.NONE);
+            context.register(assembly.key(), new PieceLayoutStructure(settings, assembly.base(), assembly.pieces()));
         }
     }
 
@@ -244,6 +274,10 @@ public final class TolkienStructureProvider {
             context.register(pinned.setKey(), new StructureSet(structures.getOrThrow(pinned.key()),
                     new PinnedStructurePlacement(pinned.at())));
         }
+        for (Assembly assembly : ASSEMBLIES) {
+            context.register(assembly.setKey(), new StructureSet(structures.getOrThrow(assembly.key()),
+                    new PinnedStructurePlacement(assembly.base())));
+        }
         TolkienVillageProvider.bootstrapSet(context);
         context.register(ResourceKey.create(Registries.STRUCTURE_SET,
                         Identifier.fromNamespaceAndPath("tolkienmobs", "dagorlad_ruins")),
@@ -269,6 +303,59 @@ public final class TolkienStructureProvider {
         public static Layout barrows() {
             return new Layout(1, 5, Optional.empty(), Optional.empty(), 1, 3, true);
         }
+    }
+
+    /**
+     * A build that is a whole cut: its corner, the table of pieces taken from it, and the ground it may stand in.
+     */
+    public record Assembly(ResourceKey<Structure> key, BlockPos base, String cut, List<ResourceKey<Biome>> biomes) {
+        public Assembly {
+            biomes = List.copyOf(biomes);
+            if (biomes.isEmpty()) throw new IllegalArgumentException("A cut build needs at least one biome");
+        }
+
+        /** Every piece of the cut, in the order the cut wrote them: template id, and the step from the corner. */
+        public List<PieceLayoutStructure.Piece> pieces() {
+            return readCut(this.cut);
+        }
+
+        public ResourceKey<StructureSet> setKey() {
+            return ResourceKey.create(Registries.STRUCTURE_SET, key.identifier());
+        }
+
+        public TagKey<Biome> biomeTag() {
+            return TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(
+                    key.identifier().getNamespace(), "has_structure/" + key.identifier().getPath()));
+        }
+    }
+
+    /**
+     * A cut's piece table, read from the jar's own copy: one line a piece, named with the file it was written to and
+     * the offset its corner stands at. This is the same file the hand lays bands from, read here at data time.
+     */
+    private static List<PieceLayoutStructure.Piece> readCut(String cut) {
+        String table = "/data/tolkienmobs/structure/" + cut + "/" + cut + ".parts";
+        List<PieceLayoutStructure.Piece> pieces = new ArrayList<>();
+        try (InputStream in = TolkienStructureProvider.class.getResourceAsStream(table)) {
+            if (in == null) throw new IllegalStateException("no " + table + " in the jar to read the cut from");
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
+                for (String line = reader.readLine(); line != null; line = reader.readLine()) {
+                    String[] fields = line.trim().split("\\s+");
+                    if (fields.length < 4) continue;
+                    String name = fields[0].endsWith(".nbt")
+                            ? fields[0].substring(0, fields[0].length() - 4)
+                            : fields[0];
+                    pieces.add(new PieceLayoutStructure.Piece(
+                            Identifier.fromNamespaceAndPath("tolkienmobs", cut + "/" + name),
+                            new BlockPos(Integer.parseInt(fields[1]), Integer.parseInt(fields[2]),
+                                    Integer.parseInt(fields[3]))));
+                }
+            }
+        } catch (IOException failed) {
+            throw new IllegalStateException("the cut " + cut + " could not be read", failed);
+        }
+        if (pieces.isEmpty()) throw new IllegalStateException("the cut " + cut + " has no pieces");
+        return List.copyOf(pieces);
     }
 
     /**

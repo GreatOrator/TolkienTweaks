@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **The city generates from the jar, as a cut of 584 pieces.** A `tolkienmobs:piece_layout` structure carries a
+  cut's corner and its piece table - a template and the step from the corner, for each of them - and places every
+  piece there with no ground reading, no rotation and no terrain adaptation, so Rivendell stands from 5200, 75,
+  -3370 as it was scouted rather than waiting for an operator. The table is not transcribed: the data generator
+  reads the cut's own `.parts` file in the jar, so `worldgen/structure/rivendell.json` and `/tmcity band` put the
+  same piece on the same block. The pieces cost nothing at world start - each places itself as the chunk it
+  touches is made - and nothing is bearded under them, the floor being the map's own ground.
 - **The city ships with the mod.** The cut - 584 pieces, a hundred and four megabytes of them, with the two
   tables that place them - is in the jar under `data/tolkienmobs/structure/rivendell`, so a world gets Rivendell
   with nothing downloaded beside the pack. `CityCommands` asks the jar first and falls back to a file the jar
