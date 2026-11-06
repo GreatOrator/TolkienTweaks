@@ -379,6 +379,13 @@ public final class CityCommands {
                     laid++;
                 }
                 mark = new Mark(mark.origin(), mark.band() + 1, mark.apron(), mark.dimension());
+                // The mark is written band by band rather than once at the end: a run that stops partway -
+                // a relog, a crash, a stall long enough to be taken for one - then resumes at the band it
+                // reached instead of being redone from the bottom, and what is on the ground matches the
+                // number the next call reads.
+                write(folder, mark);
+                com.mojang.logging.LogUtils.getLogger().info("Rivendell: band {} of {} is down",
+                        mark.band(), bands.size());
             }
             // The ground is not walked out from the walls any more. The mountain's foot is drawn inside
             // the city's own footprint (see ArdaMap's valley), so the lowest band is laid into rising rock

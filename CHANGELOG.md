@@ -960,6 +960,12 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
   than from the 72-block corner the Trollshaws' own ground needed.
 
 ### Fixed
+- **A laying run that stops partway no longer has to be run twice.** The band mark was only written
+  after the whole call, so a run that ended early left the mark at the band it started from: the world
+  held bands the next call did not know about, and the pieces already down were laid again before it
+  could get to the ones that were missing. The mark is now written as each band goes down, and each band
+  logs `Rivendell: band N of M is down`, so a short run resumes at the band it reached and the log says
+  where the last one stopped.
 
 - **The map's ground is the ground, with no mountain left standing over it.** Arda cuts the noise's own
   terrain down to the height the drawing gives a column, but it did so by reading back the chunk's topmost
