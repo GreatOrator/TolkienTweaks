@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **The city ships with the mod.** The cut - 584 pieces, a hundred and four megabytes of them, with the two
+  tables that place them - is in the jar under `data/tolkienmobs/structure/rivendell`, so a world gets Rivendell
+  with nothing downloaded beside the pack. `CityCommands` asks the jar first and falls back to a file the jar
+  does not carry in `run/rivendell_art`, so a re-cut can still be dropped in and looked at without rebuilding,
+  while a folder left over from an old cut can no longer quietly win over the shipped one. The marker
+  `_laid.txt` stays in the game directory: it is where this world planted the city, not part of the cut.
 - **A build can be pinned into the world's own generation, and Elladan's camp is the first.** Every structure the
   mod generates was scattered by vanilla's random spread, which cannot be asked for a particular block - its
   cells are a hash of the seed - so a place a page walks to could only be planted by hand. A `tolkienmobs:pinned`

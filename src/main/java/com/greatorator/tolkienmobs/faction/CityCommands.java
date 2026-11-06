@@ -28,8 +28,11 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -44,11 +47,12 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 /**
  * The hand for standing the city up while it is still being cut.
  * <p>
- * The valley's own pieces are shipped in the jar, so the campaign can read them from any world at any
- * time. The city is not: three hundred and fifty-eight templates and ten megabytes of them, cut from a
- * world that is still being worked on, and copied into the pack only once the cut is final. Until then
- * this reads them from the folder the cut was written to - {@code run/rivendell_art}, beside the game
- * directory - so a re-cut is picked up by walking back to it rather than by rebuilding the jar.
+ * The city ships with the mod: five hundred and eighty-four templates, a hundred and four megabytes of them, under
+ * {@code data/tolkienmobs/structure/rivendell} in the jar, beside the two tables that say where each piece stands.
+ * A world therefore gets the city with nothing beside it. The folder the cut is worked out in - {@code
+ * run/rivendell_art}, beside the game directory - is still read, but only for a file the jar does not carry: a re-cut
+ * dropped there is picked up without rebuilding the pack, and the jar is asked first, so a shipped world is the cut
+ * the pack was tested with.
  * <p>
  * It exists for the two things that need a city in a world before the pack has one: looking at the
  * terrain, and walking the campaign's pages through a valley of the right size. One root,
@@ -79,8 +83,10 @@ public final class CityCommands {
                 || Commands.hasPermission(Commands.LEVEL_GAMEMASTERS).test(source);
     };
 
-    /** The folder the cut was written to, in the game directory, and the table of where each piece goes. */
+    /** The folder a re-cut is worked out in, beside the game directory. */
     private static final String FOLDER = "rivendell_art";
+    /** Where the cut ships: the pieces and the two tables that place them, in the jar. */
+    private static final String JAR_CUT = "/data/tolkienmobs/structure/rivendell/";
     private static final String PARTS = "rivendell.parts";
     /** Where the marker lives: how much of the city is standing, and where its corner was planted. */
     private static final String MARKER = "_laid.txt";
@@ -235,9 +241,7 @@ public final class CityCommands {
     /** The city's people as the build's own table gives them, or nothing when the cut carries no table. */
     private static List<Campaign.FolkSpot> folkSpots(Path folder) throws IOException {
         List<Campaign.FolkSpot> spots = new ArrayList<>();
-        Path table = folder.resolve(FOLK);
-        if (!Files.isRegularFile(table)) return spots;
-        for (String line : Files.readAllLines(table)) {
+        for (String line : lines(folder, FOLK)) {
             String[] fields = line.trim().split("\s+");
             if (fields.length < 4) continue;
             try {
@@ -874,9 +878,37 @@ public final class CityCommands {
         return new Drape(cut, filled, open);
     }
 
+    /**
+     * One file of the cut, from the jar first and a re-cut's folder second.
+     * <p>
+     * The city ships in the mod, so a world gets it with nothing beside it: the pieces and their tables are
+     * inside the jar. The folder is still asked, but only for a file the jar does not carry, because a re-cut
+     * is worked out in {@code run/rivendell_art} long before it is packed and dropping one there should not
+     * mean rebuilding the pack to look at it. The jar goes first so that a folder left over from an old cut
+     * cannot quietly win: a shipped world is the cut the pack was tested with.
+     */
+    private static InputStream cut(Path folder, String name) throws IOException {
+        InputStream packed = CityCommands.class.getResourceAsStream(JAR_CUT + name);
+        if (packed != null) return packed;
+        Path loose = folder.resolve(name);
+        if (Files.isRegularFile(loose)) return Files.newInputStream(loose);
+        return null;
+    }
+
+    /** Every line of one of the cut's two tables, from the jar or from a re-cut's folder, or nothing at all. */
+    private static List<String> lines(Path folder, String name) throws IOException {
+        try (InputStream in = cut(folder, name)) {
+            if (in == null) return List.of();
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
+                return reader.lines().toList();
+            }
+        }
+    }
+
     /** A piece's own NBT, as the cut wrote it, for a pass that has to know its shape rather than its size. */
     private static CompoundTag raw(Path folder, String name) throws IOException {
-        try (InputStream in = Files.newInputStream(folder.resolve(name))) {
+        try (InputStream in = cut(folder, name)) {
+            if (in == null) throw new IOException("no " + name + " in the cut");
             return NbtIo.readCompressed(in, NbtAccounter.unlimitedHeap());
         }
     }
@@ -886,7 +918,8 @@ public final class CityCommands {
         StructureTemplate cached = LOADED.get(name);
         if (cached != null) return cached;
         CompoundTag tag;
-        try (InputStream in = Files.newInputStream(folder.resolve(name))) {
+        try (InputStream in = cut(folder, name)) {
+            if (in == null) throw new IOException("no " + name + " in the cut");
             tag = NbtIo.readCompressed(in, NbtAccounter.unlimitedHeap());
         }
         StructureTemplate template = new StructureTemplate();
@@ -898,9 +931,7 @@ public final class CityCommands {
     /** The table of pieces, read in the order they are laid: lowest band first, then a sweep across it. */
     private static List<Part> parts(Path folder) throws IOException {
         List<Part> parts = new ArrayList<>();
-        Path table = folder.resolve(PARTS);
-        if (!Files.isRegularFile(table)) return parts;
-        for (String line : Files.readAllLines(table)) {
+        for (String line : lines(folder, PARTS)) {
             String[] fields = line.trim().split("\\s+");
             if (fields.length < 4) continue;
             try {

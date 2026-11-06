@@ -38,7 +38,10 @@ what is still open, so the next session does not have to rebuild that from the c
   none an earlier note claimed - which is the pool and channel inside the city. The ground round it is the
   generator's, so the two meet at the build's own mouth and the map does not get to choose where the city's
   water is.
-- The cut it is planted from lives in `run/rivendell_art` (`rivendell.parts`, `_laid.txt`, 584 pieces).
+- The cut it is planted from ships in the jar: 584 pieces under `data/tolkienmobs/structure/rivendell`, with
+  `rivendell.parts` and `rivendell.npcs` beside them. `run/rivendell_art` is still read for a file the jar does
+  not carry, so a re-cut can be dropped in without rebuilding the pack; `_laid.txt` stays in the game
+  directory, being world state rather than part of the cut.
 
 ## The world
 

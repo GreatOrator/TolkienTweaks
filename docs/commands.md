@@ -9,10 +9,13 @@ The last section is the walkthrough for standing the hand-built Rivendell up in 
 
 ## `/tmcity` — the hand-built city
 
-The build's own hand, for standing the city up while the cut still lives in a folder rather than in the jar.
-It reads `run/rivendell_art` beside the game directory: `rivendell.parts` (each piece and its offset),
-`rivendell.npcs` (the city's people), and `_laid.txt` (where the corner was planted, how far it has been
-laid, and in which dimension).
+The build's own hand, for standing the city up band by band when it has to be looked at while it goes. The
+cut ships in the mod - five hundred and eighty-four pieces and the two tables that place them, under
+`data/tolkienmobs/structure/rivendell` - so a world gets the city with nothing beside it. A file the jar does
+not carry is still read from `run/rivendell_art` beside the game directory, so a re-cut is picked up by
+dropping it there; the jar is asked first, so a shipped world is the cut the pack was tested with. The
+marker `_laid.txt` is always the game directory's, being world state rather than part of the cut: it says
+where the corner was planted, how far the city has been laid, and in which dimension.
 
 | hand | what it does |
 |---|---|
@@ -137,8 +140,8 @@ Arda only: the pin is read by the campaign's own placement, so the caller has to
 
 # Standing Rivendell in a world
 
-What it needs: the cut in `run/rivendell_art/` (584 pieces, `rivendell.parts`, `rivendell.npcs`), a world
-with cheats, and creative or op 2. The city is **554 x 244 x 512**, and its lowest corner is planted at the
+What it needs: the mod itself, which carries the cut (584 pieces, `rivendell.parts`, `rivendell.npcs`), a
+world with cheats, and creative or op 2. The city is **554 x 244 x 512**, and its lowest corner is planted at the
 caller's feet, so **the feet must be at y 76 or below**: above that the top bands are left out with a
 message rather than laid.
 
