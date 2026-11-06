@@ -25,6 +25,12 @@ laying the city a second time. `origin` and `summon` refuse to plant while a gen
 valley the corner comes from the pin and a planting would land on the same blocks. To lay a re-cut over a
 generated city, `relay` takes the generated corner as its own and puts the counter back at the bottom.
 
+The campaign reads the same city. Where a quest asks where the valley's city stands, the answer is the marker
+if there is one and the world's own generation if there is not, so a generated city gets its quest dressing
+instead of looking cityless. The lookup stays a tick-time one: it only ever reads a chunk that is already made,
+never makes one, and asks again at most once a second while the answer is no, because the valley is empty until
+a player walks into it.
+
 | hand | what it does |
 |---|---|
 | `origin` | Plants the cut's lowest corner at the caller's feet, in the dimension they stand in, forgetting any earlier plant. Answers with the ground the city covers and how many bands it has. |

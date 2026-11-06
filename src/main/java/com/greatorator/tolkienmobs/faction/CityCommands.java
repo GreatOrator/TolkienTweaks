@@ -17,6 +17,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.levelgen.Heightmap;
 import com.greatorator.tolkienmobs.world.components.structure.PieceLayoutStructure;
@@ -143,6 +144,18 @@ public final class CityCommands {
     /** The corner last read out of the marker, and the dimension it was read for. */
     private static BlockPos PLANTED;
     private static String PLANTED_IN;
+    /** The corner this dimension's own generation would put the city on, worked out once. */
+    private static BlockPos WOULD_BUILD;
+    private static String WOULD_BUILD_IN;
+    /**
+     * How often a "no city here" answer may be asked again, in ticks.
+     * <p>
+     * A generated city is not there when the world is new: the valley is empty until a player walks into it, so an
+     * answer read once and kept would lock the campaign out of a city it could have found the next minute. A second
+     * between asks is faster than anyone walks into a valley and cheap enough to be worth it.
+     */
+    private static final int RECHECK_TICKS = 20;
+    private static long ASK_AGAIN;
 
     /** One piece: its file, and where its corner sits in the frame the cut was taken in. */
     private record Part(String name, int dx, int dy, int dz, int wide, int deep, int tall) {
@@ -273,13 +286,18 @@ public final class CityCommands {
      * city, and reading the marker would answer nothing at all, since a generated world has none.
      */
     private static BlockPos generated(ServerLevel level, List<Part> parts) {
+        BlockPos corner = generatedCorner(level, parts);
+        return corner != null && cutStandsAt(level, corner, true) ? corner : null;
+    }
+
+    /** The corner the world would generate the city's cut at here, or null where it generates none. */
+    private static BlockPos generatedCorner(ServerLevel level, List<Part> parts) {
         if (!TolkienDimensions.ARDA.equals(level.dimension())) return null;
         BlockPos pin = Pins.at(level, Campaign.SUMMON_PLACE);
         if (pin == null) return null;
-        BlockPos corner = new BlockPos(pin.getX() - parts.stream().mapToInt(Part::dx).min().orElse(0),
+        return new BlockPos(pin.getX() - parts.stream().mapToInt(Part::dx).min().orElse(0),
                 pin.getY() - parts.stream().mapToInt(Part::dy).min().orElse(0),
                 pin.getZ() - parts.stream().mapToInt(Part::dz).min().orElse(0));
-        return cutStandsAt(level, corner) ? corner : null;
     }
 
     /**
@@ -290,8 +308,10 @@ public final class CityCommands {
      * will do the moment someone does - which is exactly the answer that would let a second planting go ahead. One
      * chunk is a small thing to make for a question this decides.
      */
-    private static boolean cutStandsAt(ServerLevel level, BlockPos corner) {
-        var chunk = level.getChunk(corner.getX() >> 4, corner.getZ() >> 4);
+    private static boolean cutStandsAt(ServerLevel level, BlockPos corner, boolean make) {
+        var chunk = make ? level.getChunk(corner.getX() >> 4, corner.getZ() >> 4)
+                : level.getChunkSource().getChunk(corner.getX() >> 4, corner.getZ() >> 4, ChunkStatus.FULL, false);
+        if (chunk == null) return false;
         for (var structure : chunk.getAllStarts().keySet()) {
             if (structure instanceof PieceLayoutStructure) return true;
         }
@@ -317,27 +337,62 @@ public final class CityCommands {
     }
 
     /**
-     * Where the city was planted in this world, or null when nothing is planted here.
+     * Where this world's city stands, or null when it has none.
      * <p>
-     * This is what lets the campaign dress a city it did not build: the marker holds the corner the
-     * cut was laid from and the dimension it was laid in, so a body whose visit finds no city here is
-     * told so rather than walked to a frame that belongs to another country.
+     * This is what lets the campaign dress a city it did not build: the marker holds the corner the cut was laid
+     * from and the dimension it was laid in, so a body whose visit finds no city here is told so rather than walked
+     * to a frame that belongs to another country. A city the world generated has no marker, so it is found the way
+     * the commands find it - the structure start in the chunk the pin falls in - and only in a chunk that is
+     * already made, which a player walking into the valley has just made.
      */
     static BlockPos plantedCorner(ServerLevel level) {
         // Read once and kept: this is asked on the tick, whenever a player is near the valley, and a file
         // read a second is not what walking into Rivendell should cost. Every write to the marker clears
         // it, so a city planted or re-cut by hand is picked up on the next visit either way.
         String here = level.dimension().identifier().toString();
-        if (here.equals(PLANTED_IN)) return PLANTED;
+        if (here.equals(PLANTED_IN) && PLANTED != null) return PLANTED;
+        // A world that generated the city has no marker to read, so the answer can legitimately be nothing yet:
+        // the valley is empty until someone walks into it, and that happens while the game is running. A "no" is
+        // therefore asked again rather than kept, at a rate too slow to matter and too fast to miss the walk in.
+        long now = level.getGameTime();
+        if (PLANTED == null && now < ASK_AGAIN) return null;
+        ASK_AGAIN = now + RECHECK_TICKS;
+        PLANTED_IN = here;
         try {
             Mark mark = read(folder());
             boolean mine = mark != null && (mark.dimension() == null || mark.dimension().equals(here));
-            PLANTED = mine ? mark.origin() : null;
+            BlockPos corner = mine ? mark.origin() : null;
+            if (corner == null) {
+                // The chunk is not made here, only looked for: a tick that ran whenever a player was anywhere near
+                // the valley must never generate a few hundred chunks of it to find out whether it holds a city.
+                BlockPos built = wouldGenerate(level);
+                if (built != null && cutStandsAt(level, built, false)) corner = built;
+            }
+            PLANTED = corner;
         } catch (IOException unreadable) {
             PLANTED = null;
         }
-        PLANTED_IN = here;
         return PLANTED;
+    }
+
+    /**
+     * The corner this dimension's own generation would put the city on, or null where it generates none.
+     * <p>
+     * Fixed rather than lived: the pin and the cut's low offsets do not change while the game runs, so this is worked
+     * out once and kept. Whether a city is actually there is a different question and is asked every time, because
+     * that answer changes as the valley is made.
+     */
+    private static BlockPos wouldGenerate(ServerLevel level) {
+        String here = level.dimension().identifier().toString();
+        if (here.equals(WOULD_BUILD_IN)) return WOULD_BUILD;
+        WOULD_BUILD_IN = here;
+        WOULD_BUILD = null;
+        try {
+            WOULD_BUILD = generatedCorner(level, parts(folder()));
+        } catch (IOException unreadable) {
+            WOULD_BUILD = null;
+        }
+        return WOULD_BUILD;
     }
 
     /** The city's people as the build's own table gives them, for a visit that dresses a planted city. */

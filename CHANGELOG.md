@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **The campaign finds a city the world generated.** `CityCommands.plantedCorner`, the tick-time answer to "where
+  does the valley's city stand", read only the marker, so a world that generated Rivendell looked cityless and a
+  body's visit found nothing to dress. It now falls back to the structure start in the chunk the pin falls in,
+  reading only a chunk that is already made and asking again at most once a second while the answer is no, since
+  the valley is empty until a player walks into it.
 - **`/tmcity` finds the city the world generated.** A generated world writes no `_laid.txt`, so every hand used to
   answer "no corner planted yet" - and planting at the pin would have laid a second copy of the same 584 pieces on
   the first. The commands now read the structure start in the chunk the pin falls in, and treat it as a city that
