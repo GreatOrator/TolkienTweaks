@@ -2,6 +2,10 @@ package com.greatorator.tolkienmobs.datagen;
 
 import com.greatorator.tolkienmobs.init.TolkienBiomes;
 import com.greatorator.tolkienmobs.init.TolkienStructures;
+import com.greatorator.tolkienmobs.world.components.structure.PinnedStructure;
+import com.greatorator.tolkienmobs.world.components.structure.placement.PinnedStructurePlacement;
+import com.greatorator.tolkienmobs.world.registration.ArdaMap;
+import net.minecraft.core.BlockPos;
 import com.greatorator.tolkienmobs.world.components.structure.SurfaceStructures;
 import com.greatorator.tolkienmobs.world.components.structure.TemplateLayoutStructure;
 import com.mojang.datafixers.util.Pair;
@@ -124,6 +128,21 @@ public final class TolkienStructureProvider {
                     Optional.of(Layout.single()))
     );
 
+    /**
+     * Builds that stand where they were scouted. Every other structure in this file is scattered by a spread, which
+     * is right for a tent met on the way somewhere and wrong for a place a page walks to: the city, Elladan's camp
+     * and everything the campaign names go on blocks a scout chose. A pinned build is one template, one anchor, the
+     * biome it may stand in, and its own structure set with the placement that answers for that anchor's chunk alone.
+     * <p>
+     * The anchor is a block, not a cell: a cell is the drawing's precision and a page needs the block. Thorenhad's
+     * is the middle of the cell the place is named in, which is where the survey would look for the camp anyway - the
+     * pin says it, so a world nobody has walked puts the camp there rather than where a survey happens to land.
+     */
+    public static final List<Pinned> PINNED_BUILDS = List.of(
+            new Pinned(TolkienStructures.THORENHAD_CAMP, "tolkienmobs:key_structures/elledancamp",
+                    List.of(TolkienBiomes.TROLLSHAWS), ArdaMap.centreOf(19, 13))
+    );
+
     private TolkienStructureProvider() {}
 
     private static Definition site(ResourceKey<Structure> key, ResourceKey<Biome> biome,
@@ -165,6 +184,12 @@ public final class TolkienStructureProvider {
                     ? SurfaceStructures.underground(settings, pool, definition.heightOffset(), depth)
                     : new SurfaceStructures(settings, pool, definition.heightOffset(), depth));
         }
+        for (Pinned pinned : PINNED_BUILDS) {
+            var settings = new Structure.StructureSettings(biomes.getOrThrow(pinned.biomeTag()), Map.of(),
+                    GenerationStep.Decoration.SURFACE_STRUCTURES, TerrainAdjustment.BEARD_THIN);
+            context.register(pinned.key(), new PinnedStructure(settings, pools.getOrThrow(pinned.poolKey()),
+                    pinned.offset()));
+        }
     }
 
     public static void bootstrapPools(BootstrapContext<StructureTemplatePool> context) {
@@ -191,6 +216,11 @@ public final class TolkienStructureProvider {
                         StructureTemplatePool.Projection.RIGID));
             });
         }
+        for (Pinned pinned : PINNED_BUILDS) {
+            context.register(pinned.poolKey(), new StructureTemplatePool(empty,
+                    List.of(Pair.of(StructurePoolElement.single(pinned.template()), 1)),
+                    StructureTemplatePool.Projection.RIGID));
+        }
     }
 
     public static void bootstrapSets(BootstrapContext<StructureSet> context) {
@@ -209,6 +239,10 @@ public final class TolkienStructureProvider {
             context.register(definition.setKey(), new StructureSet(structures.getOrThrow(definition.key()),
                     new RandomSpreadStructurePlacement(definition.spacing(), definition.separation(),
                             RandomSpreadType.LINEAR, definition.salt())));
+        }
+        for (Pinned pinned : PINNED_BUILDS) {
+            context.register(pinned.setKey(), new StructureSet(structures.getOrThrow(pinned.key()),
+                    new PinnedStructurePlacement(pinned.at())));
         }
         TolkienVillageProvider.bootstrapSet(context);
         context.register(ResourceKey.create(Registries.STRUCTURE_SET,
@@ -234,6 +268,38 @@ public final class TolkienStructureProvider {
         /** Up to five pieces on one circle, each one to three blocks from its neighbours. */
         public static Layout barrows() {
             return new Layout(1, 5, Optional.empty(), Optional.empty(), 1, 3, true);
+        }
+    }
+
+    /**
+     * A build that stands on a scouted block: one template, one anchor, the same ground in every world.
+     * <p>
+     * The anchor chooses the chunk; the pieces start at that chunk's corner, which is where a template is laid from,
+     * so {@link #offset()} is the anchor's place inside its chunk. Cell anchors are 512 blocks apart and centred, so
+     * their offset is nothing; a block pin anywhere else carries its own remainder.
+     */
+    public record Pinned(ResourceKey<Structure> key, String template, List<ResourceKey<Biome>> biomes, BlockPos at) {
+        public Pinned {
+            Identifier.parse(template);
+            biomes = List.copyOf(biomes);
+            if (biomes.isEmpty()) throw new IllegalArgumentException("A pinned build needs at least one biome");
+        }
+
+        public BlockPos offset() {
+            return new BlockPos(at.getX() & 15, 0, at.getZ() & 15);
+        }
+
+        public ResourceKey<StructureTemplatePool> poolKey() {
+            return ResourceKey.create(Registries.TEMPLATE_POOL, key.identifier());
+        }
+
+        public ResourceKey<StructureSet> setKey() {
+            return ResourceKey.create(Registries.STRUCTURE_SET, key.identifier());
+        }
+
+        public TagKey<Biome> biomeTag() {
+            return TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(
+                    key.identifier().getNamespace(), "has_structure/" + key.identifier().getPath()));
         }
     }
 

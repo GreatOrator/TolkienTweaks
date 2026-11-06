@@ -1,0 +1,16 @@
+{
+  "placement": {
+    "type": "tolkienmobs:pinned",
+    "at": [
+      4864,
+      0,
+      -3328
+    ]
+  },
+  "structures": [
+    {
+      "structure": "tolkienmobs:thorenhad_camp",
+      "weight": 1
+    }
+  ]
+}

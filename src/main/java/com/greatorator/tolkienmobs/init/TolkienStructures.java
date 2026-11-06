@@ -1,6 +1,8 @@
 package com.greatorator.tolkienmobs.init;
 
+import com.greatorator.tolkienmobs.world.components.structure.PinnedStructure;
 import com.greatorator.tolkienmobs.world.components.structure.SurfaceStructures;
+import com.greatorator.tolkienmobs.world.components.structure.placement.PinnedStructurePlacement;
 import com.greatorator.tolkienmobs.world.components.structure.TemplateLayoutStructure;
 import com.greatorator.tolkienmobs.world.components.structure.VillageStructure;
 import com.mojang.serialization.MapCodec;
@@ -9,6 +11,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
+import net.minecraft.world.level.levelgen.structure.placement.StructurePlacementType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -26,6 +29,8 @@ public class TolkienStructures {
     public static final ResourceKey<Structure> SHIRE_RUIN = key("shire_ruin");
     public static final ResourceKey<Structure> CAVE = key("cave");
     public static final ResourceKey<Structure> MAZE = key("maze");
+    // Elladan's camp at Thorenhad: the first build pinned to a scouted block rather than scattered by a spread.
+    public static final ResourceKey<Structure> THORENHAD_CAMP = key("thorenhad_camp");
 
     public static final ResourceKey<Structure> BARROW = key("ttmbarrow");
     public static final ResourceKey<Structure> DARK_TOWER = key("ttmdark_tower");
@@ -56,6 +61,11 @@ public class TolkienStructures {
     }
 
     public static final DeferredRegister<StructureType<?>> STRUCTURE = DeferredRegister.create(Registries.STRUCTURE_TYPE, MODID);
+    public static final DeferredRegister<StructurePlacementType<?>> PLACEMENT = DeferredRegister.create(Registries.STRUCTURE_PLACEMENT, MODID);
+
+    /** The placement that answers for one chunk: how a build stands where it was scouted. */
+    public static final DeferredHolder<StructurePlacementType<?>, StructurePlacementType<PinnedStructurePlacement>> PINNED_PLACEMENT =
+            PLACEMENT.register("pinned", () -> () -> PinnedStructurePlacement.CODEC);
 
     public static final DeferredHolder<StructureType<?>, StructureType<SurfaceStructures>> SURFACE_STRUCTURES = STRUCTURE.register("tolkien_surface_structures", () -> structureCodec(SurfaceStructures.CODEC));
 
@@ -65,6 +75,10 @@ public class TolkienStructures {
     /** Villages that may only start on grass instead of anywhere in their biome. */
     public static final DeferredHolder<StructureType<?>, StructureType<VillageStructure>> VILLAGE =
             STRUCTURE.register("village", () -> structureCodec(VillageStructure.CODEC));
+
+    /** One rigid NBT placed at a pinned block's chunk, seated on the ground under it. */
+    public static final DeferredHolder<StructureType<?>, StructureType<PinnedStructure>> PINNED =
+            STRUCTURE.register("pinned", () -> structureCodec(PinnedStructure.CODEC));
 
     private static <T extends Structure> StructureType<T> structureCodec(MapCodec<T> structureCodec) {
         return () -> structureCodec;

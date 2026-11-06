@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **A build can be pinned into the world's own generation, and Elladan's camp is the first.** Every structure the
+  mod generates was scattered by vanilla's random spread, which cannot be asked for a particular block - its
+  cells are a hash of the seed - so a place a page walks to could only be planted by hand. A `tolkienmobs:pinned`
+  placement now answers for exactly one chunk, the one holding its anchor, and a `tolkienmobs:pinned` structure
+  places a pool's pieces at that chunk's corner rounded out by the anchor's place inside it, seating them on the
+  ground under them. `tolkienmobs:thorenhad_camp` is Elladan's camp, `key_structures/elledancamp`, pinned at
+  Thorenhad's own cell middle, 4864, 0, -3328, in the Trollshaws; the anchor and the pieces are written from one
+  `Pinned` line in `TolkienStructureProvider`, so they cannot drift apart. Generation costs nothing at world
+  start, because a structure's pieces place themselves as the chunks they touch are made.
 - **The road out of Rivendell is settled, and the notes say what it does.** Three records still described the
   provisional pass - the road "painted straight in and straight out along the span's own line", its shape
   "still being argued about" - which stopped being true when the approach became a search with a graded

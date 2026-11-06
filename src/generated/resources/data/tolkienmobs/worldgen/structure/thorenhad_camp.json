@@ -1,0 +1,8 @@
+{
+  "type": "tolkienmobs:pinned",
+  "biomes": "#tolkienmobs:has_structure/thorenhad_camp",
+  "spawn_overrides": {},
+  "start_pool": "tolkienmobs:thorenhad_camp",
+  "step": "surface_structures",
+  "terrain_adaptation": "beard_thin"
+}

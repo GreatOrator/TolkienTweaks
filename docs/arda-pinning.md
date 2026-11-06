@@ -45,6 +45,34 @@ arrival and a hilltop template raised for a page, and so are Gundabad and Gloin'
 - **The y** is a note of the surface the scout stood on. It is not used to seat a building, so a y a block or
   two out is not an error.
 
+## A pin in the world's own generation
+
+The pins above are read while the game runs: `Places` and `Sites` ask for one when a page needs a location.
+A build can also be pinned into the world's **generation**, so it is standing in a world nobody has walked,
+with no command typed and no pass left to run.
+
+A pinned build is one template and one anchor block, placed by a structure type and a placement of its own:
+
+- **`tolkienmobs:pinned` structure** places the pieces of one pool at the chunk's own corner, rounded out by
+  the anchor's place inside that chunk, and seats them on the ground under them - the start is projected onto
+  `WORLD_SURFACE_WG` and bearded beneath. The same anchor therefore stands on the same hillside in every
+  world, because the ground under it is drawn rather than walked.
+- **`tolkienmobs:pinned` placement** answers for exactly one chunk, the one holding the anchor, and no other.
+  Vanilla's `random_spread` cannot be asked for a block at all: its cells are a hash of the seed, which is
+  why every scattered build in the mod is a scatter.
+- The anchor is a **block**, not a cell. A cell is the drawing's precision and a build needs the block; a
+  cell middle works anyway, being 512 blocks from its neighbour's and always on a chunk corner, which is how
+  Thorenhad's camp is pinned.
+
+What it costs the world: nothing at startup. A structure's start places its pieces as the chunks they touch
+are made, so a one-piece camp and a five-hundred-piece city both arrive the way the terrain around them does
+- when someone walks there.
+
+The first is `tolkienmobs:thorenhad_camp`: Elladan's camp, `key_structures/elledancamp`, pinned at
+Thorenhad's own cell middle, **4864, 0, -3328**, in the Trollshaws. Every build the campaign names follows
+the same shape - one `Pinned` line in `TolkienStructureProvider.PINNED_BUILDS`, and the datagen writes the
+structure, its one-element pool, the set carrying the placement, and the `has_structure/` tag.
+
 ## Keeping a pin for every world
 
 Every pin prints its own source line:
