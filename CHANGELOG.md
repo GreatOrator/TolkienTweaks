@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **The road switchbacks where the hill is too steep to follow.** The descent paid linearly for height
+  change, so on a uniform face it simply walked the fall line, and the fall line here is steeper than any
+  road: the profile was left choosing between holes in the grade and embankments of stone. A step now costs
+  its length, twelve times the square of any grade above a third of a block per block, and a little for
+  every change of direction - so the walk runs along the contours, turns where the face is too steep to
+  fall down, and comes back lower, and the road's profile is then the ground's own, smoothed.
+
 - **The road hugs the hillside instead of spanning it.** Pinned between the path's 134 and the bridge's 76,
   the graded profile became a ramp: where the mountain fell faster than the ramp the road stood in the air
   on twelve-block stone columns, and every column whose cut exceeded the budget was left as a hole, so the

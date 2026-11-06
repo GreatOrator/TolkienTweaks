@@ -122,6 +122,12 @@ public final class RoadCommands {
     private static final int CUT_FILL = 12;
     /** How far above the road a column's trunks and leaves are cleared, so no crown hangs over the grade. */
     private static final int CANOPY_CLEAR = 16;
+    /** The grade the descent aims for, in blocks of rise per block of travel; anything steeper is penalised. */
+    private static final double TARGET_GRADE = 0.35D;
+    /** What a block of grade above the target costs, squared: a wall face becomes expensive to fall down. */
+    private static final double GRADE_PENALTY = 12.0D;
+    /** What a change of direction costs, so the road runs in legs and turns at its own switchbacks. */
+    private static final double TURN_COST = 1.5D;
     /** A station's surface, as a sentinel, when the ground there is water: the river is the bridge's. */
     private static final int WATER = Integer.MIN_VALUE / 2;
 
@@ -297,8 +303,10 @@ public final class RoadCommands {
      * heightmap, that prefers level ground and pays for every block of rise or fall.
      * <p>
      * That is what makes the road run away from the path and along the face instead of dropping off it. The
-     * cost of a step is its length, plus three times the height it changes, so a long gentle line is cheaper
-     * than a short steep one and the search contours where the mountain is a wall. Water is refused
+     * cost of a step is its length, plus twelve times the square of any grade steeper than {@link #TARGET_GRADE},
+     * plus a little for every change of direction. A wall face is therefore not something the walk will fall
+     * down: it runs along the contours, turns where the fall line is too steep to take, and comes back lower - a
+     * switchback, which is the road alternative to a hole in the grade or an embankment forty blocks tall. Water is refused
      * outright - the river is the bridge's - and so is the city's own footprint.
      * <p>
      * It falls back to the straight line if the search finds nothing, so the command always lays something.
@@ -312,6 +320,8 @@ public final class RoadCommands {
         Arrays.fill(best, Double.MAX_VALUE);
         int[] from = new int[wide * deep];
         Arrays.fill(from, -1);
+        byte[] heading = new byte[wide * deep];
+        Arrays.fill(heading, (byte) -1);
         boolean[] settled = new boolean[wide * deep];
 
         int start = (PATH_X - x0) * deep + (PATH_Z - z0);
@@ -333,6 +343,7 @@ public final class RoadCommands {
             for (int dx = -1; dx <= 1; dx++) {
                 for (int dz = -1; dz <= 1; dz++) {
                     if (dx == 0 && dz == 0) continue;
+                    byte dir = (byte) ((dx + 1) * 3 + (dz + 1));
                     int nx = x + dx, nz = z + dz;
                     if (nx < x0 || nx > x1 || nz < z0 || nz > z1) continue;
                     // The road never runs through the city; it leaves from the path's own end.
@@ -342,10 +353,14 @@ public final class RoadCommands {
                     if (ground[at] == Integer.MIN_VALUE) ground[at] = surfaceAt(level, nx, nz);
                     if (ground[at] == WATER) continue;
                     int change = Math.abs(ground[at] - ground[node]);
-                    double cost = best[node] + Math.sqrt(dx * dx + dz * dz) + 3.0D * change;
+                    double length = Math.sqrt(dx * dx + dz * dz);
+                    double over = Math.max(0.0D, change - TARGET_GRADE * length);
+                    double cost = best[node] + length + GRADE_PENALTY * over * over;
+                    if (heading[node] != -1 && heading[node] != dir) cost += TURN_COST;
                     if (cost >= best[at]) continue;
                     best[at] = cost;
                     from[at] = node;
+                    heading[at] = dir;
                     double guess = Math.abs(BEND_X - nx) + Math.abs(BRIDGE_Z - nz);
                     open.add(new double[]{cost + guess, at});
                 }
