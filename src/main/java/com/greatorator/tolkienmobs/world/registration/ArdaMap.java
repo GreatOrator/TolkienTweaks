@@ -1023,6 +1023,13 @@ public final class ArdaMap {
         double crest = VALLEY_CREST + CREST_SWING * (fractal(x, z, CREST_SCALE, 43) - 0.5D) * 2.0D;
         // The crown rolls a little below its own height, so the summit is a surface and not a plane.
         double crown = VALLEY_CROWN - CROWN_ROLL * fractal(x, z, RIDGE_SCALE, 59);
+        // The build leaves one corner of its own footprint empty - no piece stands there above the lowest
+        // band - so the rock fills it at the crown rather than the floor: the city then reads as a massif
+        // with a city cut into it, rather than a lawn with a hole in one corner.
+        if (blockX >= SHOULDER_WEST && blockX <= SHOULDER_EAST
+                && blockZ >= SHOULDER_NORTH && blockZ <= SHOULDER_SOUTH) {
+            return new Sample(Country.IMLADRIS, SHOULDER_TOP, false, false, ground.upland());
+        }
         if (beyond > ridge + VALLEY_FALL) {
             return null;
         }
