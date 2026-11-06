@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **The switchbacks are hairpins, not hinges.** The searched walk turns within a single block, so its
+  corners were right angles a walker could not take. The alignment is simplified to the vertices that
+  carry its shape, and every corner left is now cut back ten blocks along both legs and joined by a curve;
+  the surface is widened by two blocks either side where the road is turning, so the inside of a hairpin
+  is an apron to walk round rather than a lip to fall off.
+
 - **The road switchbacks where the hill is too steep to follow.** The descent paid linearly for height
   change, so on a uniform face it simply walked the fall line, and the fall line here is steeper than any
   road: the profile was left choosing between holes in the grade and embankments of stone. A step now costs

@@ -182,7 +182,9 @@ and pays for every block of rise or fall - twelve times the square of any grade 
 per block, and a little for every change of direction - so it runs along the contours, turns where the
 face is too steep to fall down, and comes back lower. That turn is the switchback: the road's answer to
 a grade the mountain will not give, where the alternative was a hole in the road or an embankment forty
-blocks tall. The surface is the ground itself, smoothed: a moving average along the alignment takes the bumps out,
+blocks tall. The walk turns within a single block, so its corner is pulled straight and then cut
+back into a curve: a hairpin with a radius, widened by two blocks either side into an apron, rather
+than a hinge at right angles. The surface is the ground itself, smoothed: a moving average along the alignment takes the bumps out,
 and the result is held within twelve blocks of the ground - cutting into the hill above its line and
 standing on stone where the hill falls away.
 That is the reference's own road-flatten idea - which is also cut and fill - rather than the paint-only

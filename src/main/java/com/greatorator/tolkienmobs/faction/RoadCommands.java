@@ -128,6 +128,11 @@ public final class RoadCommands {
     private static final double GRADE_PENALTY = 12.0D;
     /** What a change of direction costs, so the road runs in legs and turns at its own switchbacks. */
     private static final double TURN_COST = 1.5D;
+    /** How far off a straight line the simplified alignment may wander, in blocks. */
+    private static final double SIMPLIFY_TOLERANCE = 1.5D;
+    /** How far back from a corner a hairpin is cut, and how many steps its curve is drawn in. */
+    private static final int FILLET = 10;
+    private static final int FILLET_STEPS = 12;
     /** A station's surface, as a sentinel, when the ground there is water: the river is the bridge's. */
     private static final int WATER = Integer.MIN_VALUE / 2;
 
@@ -161,6 +166,9 @@ public final class RoadCommands {
             // meeting it at an angle: there is no junction piece to dress a diagonal arrival.
             List<int[]> approach = new ArrayList<>(found);
             for (int x = BEND_X; x >= EAST_BANK_X + 1; x--) approach.add(new int[]{x, BRIDGE_Z});
+            // The search turns in a single block. The straight lines are pulled out of its staircase and
+            // every corner left is cut back into a curve, so the switchbacks are hairpins a walker can take.
+            approach = hairpins(simplify(approach));
             List<int[]> exit = new ArrayList<>();
             for (int x = WEST_BANK_X - 1; x >= WEST_BANK_X - EXIT_REACH; x--) exit.add(new int[]{x, BRIDGE_Z});
 
@@ -433,6 +441,8 @@ public final class RoadCommands {
             if (i > 0) steepest = Math.max(steepest, Math.abs(target - Mth.floor(height[i - 1])));
             int x = line.get(i)[0], z = line.get(i)[1];
             int half = fromWalls(x, z) <= TRANSITION_BAND ? PAVED_HALF : WILD_HALF;
+            // A hairpin is wider than a run: the apron gives the turn somewhere to be walked around.
+            if (turning(line, i)) half += 2;
             for (int dx = -half; dx <= half; dx++) {
                 for (int dz = -half; dz <= half; dz++) {
                     int at = x + dx;
@@ -495,6 +505,120 @@ public final class RoadCommands {
         }
         steps(level, tops);
         return new int[]{laid, cut, filled, open, steepest, cleared};
+    }
+
+    /**
+     * Pulls the straight lines out of the searched walk and rounds what is left into hairpins.
+     * <p>
+     * The search moves a block at a time and turns within a block, so raw it is an eight-direction staircase
+     * whose corners are right angles - nothing a walker can take at speed, and on a switchback it is a hinge.
+     * Two passes fix that: a Douglas-Peucker simplification keeps only the vertices that carry the shape, and
+     * every vertex left is cut back along both of its legs and joined by a curve, so a switchback becomes a
+     * hairpin with a radius.
+     */
+    private static List<int[]> hairpins(List<int[]> line) {
+        if (line.size() < 3) return line;
+        List<int[]> out = new ArrayList<>();
+        out.add(line.get(0));
+        for (int k = 1; k < line.size() - 1; k++) {
+            int[] back = line.get(k - 1);
+            int[] corner = line.get(k);
+            int[] next = line.get(k + 1);
+            double in = Math.hypot(corner[0] - back[0], corner[1] - back[1]);
+            double out2 = Math.hypot(next[0] - corner[0], next[1] - corner[1]);
+            int cut = (int) Math.max(1.0D, Math.min(FILLET, Math.min(in / 2.0D, out2 / 2.0D)));
+            int[] from = along(back, corner, cut);
+            int[] to = along(corner, next, cut);
+            walkTo(out, from[0], from[1]);
+            for (int s = 1; s <= FILLET_STEPS; s++) {
+                double t = (double) s / (FILLET_STEPS + 1);
+                double u = 1.0D - t;
+                walkTo(out,
+                        (int) Math.round(u * u * from[0] + 2.0D * u * t * corner[0] + t * t * to[0]),
+                        (int) Math.round(u * u * from[1] + 2.0D * u * t * corner[1] + t * t * to[1]));
+            }
+            walkTo(out, to[0], to[1]);
+        }
+        int[] last = line.get(line.size() - 1);
+        walkTo(out, last[0], last[1]);
+        return out;
+    }
+
+    /** The point {@code cut} blocks back from {@code b} along the line from {@code a} to {@code b}. */
+    private static int[] along(int[] a, int[] b, int cut) {
+        double length = Math.hypot(b[0] - a[0], b[1] - a[1]);
+        if (length < 1.0D) return new int[]{b[0], b[1]};
+        double t = Math.max(0.0D, 1.0D - cut / length);
+        return new int[]{(int) Math.round(a[0] + (b[0] - a[0]) * t),
+                (int) Math.round(a[1] + (b[1] - a[1]) * t)};
+    }
+
+    /** Steps from the road's current end to a point a block at a time, so the line has no gaps. */
+    private static void walkTo(List<int[]> line, int x, int z) {
+        int[] last = line.get(line.size() - 1);
+        int guard = 0;
+        while ((last[0] != x || last[1] != z) && guard++ < 8192) {
+            int[] step = {last[0] + Integer.signum(x - last[0]), last[1] + Integer.signum(z - last[1])};
+            line.add(step);
+            last = step;
+        }
+    }
+
+    /** Douglas-Peucker: the fewest vertices that still carry the alignment's shape. */
+    private static List<int[]> simplify(List<int[]> line) {
+        if (line.size() < 3) return line;
+        boolean[] keep = new boolean[line.size()];
+        keep[0] = true;
+        keep[line.size() - 1] = true;
+        simplify(line, 0, line.size() - 1, keep);
+        List<int[]> out = new ArrayList<>();
+        for (int i = 0; i < line.size(); i++) {
+            if (keep[i]) out.add(line.get(i));
+        }
+        return out;
+    }
+
+    private static void simplify(List<int[]> line, int from, int to, boolean[] keep) {
+        if (to <= from + 1) return;
+        int[] a = line.get(from);
+        int[] b = line.get(to);
+        double worst = -1.0D;
+        int at = -1;
+        for (int i = from + 1; i < to; i++) {
+            double off = offLine(line.get(i), a, b);
+            if (off > worst) {
+                worst = off;
+                at = i;
+            }
+        }
+        if (at > 0 && worst > SIMPLIFY_TOLERANCE) {
+            keep[at] = true;
+            simplify(line, from, at, keep);
+            simplify(line, at, to, keep);
+        }
+    }
+
+    /** How far a point stands off a line, in blocks. */
+    private static double offLine(int[] point, int[] a, int[] b) {
+        double dx = b[0] - a[0];
+        double dz = b[1] - a[1];
+        double length = Math.hypot(dx, dz);
+        if (length < 1.0E-6D) return Math.hypot(point[0] - a[0], point[1] - a[1]);
+        return Math.abs((point[0] - a[0]) * dz - (point[1] - a[1]) * dx) / length;
+    }
+
+    /** Whether the alignment is turning here, which is where the surface is widened into a hairpin's apron. */
+    private static boolean turning(List<int[]> line, int i) {
+        int back = Math.max(0, i - 3);
+        int forth = Math.min(line.size() - 1, i + 3);
+        int ax = line.get(i)[0] - line.get(back)[0];
+        int az = line.get(i)[1] - line.get(back)[1];
+        int bx = line.get(forth)[0] - line.get(i)[0];
+        int bz = line.get(forth)[1] - line.get(i)[1];
+        double la = Math.hypot(ax, az);
+        double lb = Math.hypot(bx, bz);
+        if (la < 2.0D || lb < 2.0D) return false;
+        return (ax * bx + az * bz) / (la * lb) < 0.85D;
     }
 
     /** The straight line from the path's end to the bend, for when the search finds no way down. */
