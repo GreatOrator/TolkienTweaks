@@ -31,6 +31,13 @@ instead of looking cityless. The lookup stays a tick-time one: it only ever read
 never makes one, and asks again at most once a second while the answer is no, because the valley is empty until
 a player walks into it.
 
+The ground and the road no longer wait for the hands. A world with a finished city in it - generated, or laid to
+its last band - has the ring of ground outside its walls draped to the build's own outline and the road carried
+across the Bruinen, done by the server a few pieces and a couple of chunks at a time so no tick pays for more than
+the game already pays for a chunk being made. `/tmcity drape` and `/tmroad build` are still there for looking at a
+city by hand, and run the same passes. What has been done is kept in `_dressed.txt` beside the cut's folder, by
+dimension and corner, so a world is dressed once rather than on every start.
+
 | hand | what it does |
 |---|---|
 | `origin` | Plants the cut's lowest corner at the caller's feet, in the dimension they stand in, forgetting any earlier plant. Answers with the ground the city covers and how many bands it has. |

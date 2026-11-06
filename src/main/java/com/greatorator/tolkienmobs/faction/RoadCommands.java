@@ -158,45 +158,23 @@ public final class RoadCommands {
                 .then(Commands.literal("build").executes(RoadCommands::build)));
     }
 
+    /** What a road pass came to, so the hand can say it and the world's own dressing can only log it. */
+    record Road(int cleared, int pieces, int pillars, int along, boolean searched, int[] graded, int[] far) {
+    }
+
     /** Stands the bridge, draws its pillars down, and grades the road either side of it. */
     private static int build(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
-        ServerLevel level = source.getLevel();
         try {
-            int cleared = sweep(level);
-            int pieces = bridge(level);
-            int pillars = pillars(level);
-
-            List<int[]> found = descent(level);
-            boolean searched = found != null;
-            if (!searched) found = straight();
-            // The last leg is on the span's own line, so the road walks onto the abutment square rather than
-            // meeting it at an angle: there is no junction piece to dress a diagonal arrival. Only that leg is
-            // forced. The search comes all the way to its far end, because ground a forced line crosses is
-            // ground the road must climb: the scouted valley stands a rock fin fifty-nine blocks tall on the
-            // bank, astride any longer straight run, and a profile that follows the ground walks up onto its
-            // top and plunges off the end sixteen blocks before the deck.
-            List<int[]> approach = new ArrayList<>(found);
-            for (int x = EAST_BANK_X + RUN_IN - 1; x >= EAST_BANK_X + 1; x--) {
-                approach.add(new int[]{x, BRIDGE_Z});
-            }
-            // The search turns in a single block. The straight lines are pulled out of its staircase and
-            // every corner left is cut back into a curve, so the switchbacks are hairpins a walker can take.
-            approach = hairpins(level, simplify(approach));
-            List<int[]> exit = new ArrayList<>();
-            for (int x = WEST_BANK_X - 1; x >= WEST_BANK_X - EXIT_REACH; x--) exit.add(new int[]{x, BRIDGE_Z});
-
-            int startY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, PATH_X, PATH_Z) - 1;
-            int endY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, WEST_BANK_X - EXIT_REACH, BRIDGE_Z) - 1;
-            int[] graded = grade(level, approach, startY, DECK_Y);
-            int[] far = grade(level, exit, DECK_Y, endY);
-
-            int along = approach.size();
-            String how = searched ? "searched" : "straight, the descent could not be searched";
-            source.sendSuccess(() -> Component.literal("Road to the valley: " + cleared
-                    + " old timbers cleared, bridge of " + pieces
+            Road laid = road(source.getLevel());
+            String how = laid.searched() ? "searched" : "straight, the descent could not be searched";
+            int[] graded = laid.graded();
+            int[] far = laid.far();
+            source.sendSuccess(() -> Component.literal("Road to the valley: " + laid.cleared()
+                    + " old timbers cleared, bridge of " + laid.pieces()
                     + " pieces from " + EAST_BANK_X + " to " + WEST_BANK_X + " on z " + BRIDGE_Z
-                    + ", pillars drawn down " + pillars + " blocks. Approach " + along + " blocks, " + how
+                    + ", pillars drawn down " + laid.pillars() + " blocks. Approach " + laid.along()
+                    + " blocks, " + how
                     + ", steepest graded step " + graded[4] + ": " + graded[0] + " columns laid, "
                     + graded[1] + " cut, " + graded[2] + " filled, " + graded[5] + " canopy cleared, "
                     + graded[3] + " left open."
@@ -207,6 +185,38 @@ public final class RoadCommands {
             source.sendFailure(Component.literal("The bridge could not be read: " + failed.getMessage()));
             return 0;
         }
+    }
+
+    /** The road itself, without a sender to answer: the pass the hand runs and the world runs for it. */
+    static Road road(ServerLevel level) throws IOException {
+        int cleared = sweep(level);
+        int pieces = bridge(level);
+        int pillars = pillars(level);
+
+        List<int[]> found = descent(level);
+        boolean searched = found != null;
+        if (!searched) found = straight();
+        // The last leg is on the span's own line, so the road walks onto the abutment square rather than
+        // meeting it at an angle: there is no junction piece to dress a diagonal arrival. Only that leg is
+        // forced. The search comes all the way to its far end, because ground a forced line crosses is
+        // ground the road must climb: the scouted valley stands a rock fin fifty-nine blocks tall on the
+        // bank, astride any longer straight run, and a profile that follows the ground walks up onto its
+        // top and plunges off the end sixteen blocks before the deck.
+        List<int[]> approach = new ArrayList<>(found);
+        for (int x = EAST_BANK_X + RUN_IN - 1; x >= EAST_BANK_X + 1; x--) {
+            approach.add(new int[]{x, BRIDGE_Z});
+        }
+        // The search turns in a single block. The straight lines are pulled out of its staircase and
+        // every corner left is cut back into a curve, so the switchbacks are hairpins a walker can take.
+        approach = hairpins(level, simplify(approach));
+        List<int[]> exit = new ArrayList<>();
+        for (int x = WEST_BANK_X - 1; x >= WEST_BANK_X - EXIT_REACH; x--) exit.add(new int[]{x, BRIDGE_Z});
+
+        int startY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, PATH_X, PATH_Z) - 1;
+        int endY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, WEST_BANK_X - EXIT_REACH, BRIDGE_Z) - 1;
+        int[] graded = grade(level, approach, startY, DECK_Y);
+        int[] far = grade(level, exit, DECK_Y, endY);
+        return new Road(cleared, pieces, pillars, approach.size(), searched, graded, far);
     }
 
     /**

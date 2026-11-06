@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **The ground and the road happen by themselves.** A finished city - generated, or laid to its last band - now has
+  the ring of ground outside its walls draped to the build's outline, and the road and bridge to the Bruinen built,
+  without a command. Neither runs whole: the drape reads the cut's outline four pieces a tick and dresses two chunks
+  of ring a tick, and the road goes down in one pass once the ground is dressed. What was done is recorded in
+  `_dressed.txt` by dimension and corner, so a restart does not repeat it, and `/tmcity drape` and `/tmroad build`
+  remain the same passes for an operator working by hand.
 - **The campaign finds a city the world generated.** `CityCommands.plantedCorner`, the tick-time answer to "where
   does the valley's city stand", read only the marker, so a world that generated Rivendell looked cityless and a
   body's visit found nothing to dress. It now falls back to the structure start in the chunk the pin falls in,
