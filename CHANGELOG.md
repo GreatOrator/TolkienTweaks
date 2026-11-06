@@ -969,6 +969,13 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
 
 ### Fixed
 
+- Spread the climb beside drawn water over a hundred and sixty blocks instead of ninety-six (`MOUTH_RUN`),
+  with `WATER_REACH` out to a hundred and seventy-six so the reach still passes the climb: the massif's
+  flank across the Bruinen stood at 319 within a hundred blocks of water at 74 and read as a wall, and
+  now rises over nearly twice the ground.
+- Hold the massif's line behind the city: `giveWay` opened the ground to any drawn river within a hundred
+  blocks, including the Bruinen past the valley's east side, which brought the eastern flank down to 74
+  and cut a valley the city has no mouth into. Only water on the branch's own side opens the massif now.
 - Double the drape's reach from thirty-two blocks to sixty-four, so the ground is settled further out from
   the walls before it eases back to the drawn country and artifacts near the build fall inside the ring.
 - Hold the spring in instead of letting it run out of the back of the build: water at the build's edge

@@ -304,7 +304,12 @@ public final class ArdaMap {
      * ground at one and a fifth blocks per block and the cone cut it at six, and the line where one gave
      * way to the other is a face two hundred blocks high. One curve for both ends the seam.
      */
-    private static final int MOUTH_RUN = 96;
+    /**
+     * The run over which the ground climbs from drawn water to the crown. Ninety-six put the massif's west
+     * flank at 319 within a hundred blocks of the Bruinen at 74, which reads across the river as a wall; a
+     * hundred and sixty spreads the same climb over nearly twice the ground.
+     */
+    private static final int MOUTH_RUN = 160;
     /**
      * How far the crown's own surface rolls below the crown, in blocks.
      * <p>
@@ -318,7 +323,11 @@ public final class ArdaMap {
      * than {@link #MOUTH_RUN}, so the climb is finished before the walk is and the ground past the walk
      * is the crown rather than the step the walk would otherwise leave.
      */
-    private static final int WATER_REACH = 100;
+    /**
+     * How far the walk for drawn water reaches. It must pass {@link #MOUTH_RUN}, or the climb would be cut off
+     * short of the crown and end in the step the climb was written to remove.
+     */
+    private static final int WATER_REACH = 176;
     /**
      * How far the branch wanders off its own course, and how many turns it makes on the way, in blocks and in
      * half turns. The wander falls to nothing at each corner, so the water is one channel rather than a
@@ -1314,6 +1323,14 @@ public final class ArdaMap {
             for (int reach = 4; reach <= WATER_REACH; reach += 4) {
                 int px = blockX + (int) Math.round(dirX * reach);
                 int pz = blockZ + (int) Math.round(dirZ * reach);
+                // Only water on the branch's own side of the valley opens the massif. The drawn Bruinen runs
+                // past the valley's east side as well, and giving way to it there brought the whole eastern
+                // flank down to the river - a valley the city has no mouth into, cut into the back of the
+                // rock. The valley drains west, where the branch leaves it, so drawn water east of its middle
+                // is water the massif stands over rather than water it opens to.
+                if (px > VALLEY_X) {
+                    break;
+                }
                 if (!ArdaMasks.river(px, pz)) {
                     continue;
                 }

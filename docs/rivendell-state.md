@@ -190,6 +190,13 @@ what is still open, so the next session does not have to rebuild that from the c
   it are the whole record. There is no save on disk newer than 3 November because the 4 November worlds
   were removed after testing, not because the test was old.
 
+- **The rock holds its line at the city's back.** `giveWay` walks a hundred blocks in eight directions looking
+  for drawn water and brings the ground down to whatever it finds, which is what opens the massif into a valley
+  round a river. The drawn Bruinen runs past the valley's east side as well, and giving way to it there brought
+  the whole eastern flank down to the river at 74 - a valley the city has no mouth into, cut into the back of
+  the rock. Only water on the branch's own side of the valley now opens the massif, measured against the
+  floor's middle: the valley drains west, so that is the one side the rock gives way to drawn water from, and
+  the east stands at the crown until `VALLEY_FALL` hands it back to the drawn country.
     ./gradlew runClient
     /execute in tolkienmobs:arda run tp @s 5477 120 -3114     the city's middle
     /tp @s 5200 92 -3067                                     the branch's mouth
@@ -198,6 +205,13 @@ what is still open, so the next session does not have to rebuild that from the c
     /tmcity band 8        repeat; /tmcity summon does all of it in one word
     /tmcity goto
 
+- **The mountain across the Bruinen is a bank, not a wall.** The ground beside drawn water climbs on
+  `mouthRise` over `MOUTH_RUN` blocks, and that run was ninety-six: from the Bruinen at 74 the massif's west
+  flank stood at 319 within a hundred blocks of the water, which reads across the river as a wall rather than
+  as the valley's own side. `MOUTH_RUN` is a hundred and sixty now, and `WATER_REACH` a hundred and
+  seventy-six so the walk still passes the climb: the bank leaves the water at 74 and keeps climbing, standing
+  about 180 sixty-five blocks out where it used to stand near 270, and reaching the crown only well beyond the
+  river.
 ## Commits behind this note (on main, none pushed)
 
 `7a78a5ec` the lift, `994f905b` the river profile read downstream, `c2f994e7` the vale,
