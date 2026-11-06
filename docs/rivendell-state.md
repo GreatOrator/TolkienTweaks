@@ -66,12 +66,12 @@ what is still open, so the next session does not have to rebuild that from the c
   slopes instead of through a notch in a wall. It was built in `1e3149f0`, softened in `c9d9f72f` and
   measured to the nearest point of the course in `3ac048cc`, then removed with the profile in `7ecabee0`;
   it is back beside the wall profile, which stays flush wherever the river does not run.
-- The rim **stands at the crown from the build's own edge outward.** The floor's rectangle is four blocks
-  inside the build's outside edge (`VALLEY_HALF_X` 272 of 277, `VALLEY_HALF_Z` 251 of 256), so the rock
-  meets the walls at 318 and holds that height out to `VALLEY_RIM = 96` blocks past them - a square, not a
-  ring, with `RIDGE_SWING` read at nothing - then falls to the vale over `VALLEY_FALL = 200`. It used to
-  climb from the floor over ninety blocks and hold the crown only out to 175, which is the bowl this was
-  drawn to replace.
+- The rim **stands at the crown from the first block outside the walls.** The floor is the build's own
+  footprint (`VALLEY_HALF_X` 277, `VALLEY_HALF_Z` 256), so the rock begins where the build ends, holds the
+  crown out to `VALLEY_RIM = 96` blocks past it - a square, not a ring, with `RIDGE_SWING` read at nothing -
+  and then falls to the vale over `VALLEY_FALL = 200`. It used to hold the crown only out to 175, and then
+  to stop the floor four blocks inside the walls, which left a strip of crown standing inside the build
+  that read as a wall of its own at every face the build leaves open - the river's mouth and the spring.
 - **The ground outside is dressed to the build once the last band is down.** The drape pass reads the
   cut's 584 templates rather than the world, takes the highest block of the build in each of the 554 by
   512 columns, and cuts or fills every column in a 32-block ring outside the footprint to its nearest

@@ -98,18 +98,19 @@ public final class ArdaMap {
      * blended back into them at its rim. Its middle is the middle of that city - the corner it is
      * planted from, plus half of its 554 by 512 footprint - so a city planted at 5200, -3370 stands in
      * the middle of the floor rather than against one of its walls. The floor is a few blocks smaller
-     * than the footprint on every side - 544 by 502 inside a 554 by 512 city - so the mountain's foot
-     * begins inside the build and the build embeds itself in it. There is no apron of flat ground in
-     * front of the walls for the join to be dressed across, because there is no join: the lowest band of
-     * the city is laid into the rock, and the stone that was there shows wherever the build has nothing
-     * of its own.
+     * is the footprint itself - 554 by 512 - so the rock's foot begins at the first block outside the
+     * walls rather than four blocks inside them. A strip of crown left standing inside the build is a wall
+     * of its own at every face the build leaves open, and that strip is what read as a four-block wall at
+     * the river's mouth and again at the spring. There is no apron of flat ground in front of the walls
+     * for the join to be dressed across, because there is no join: the lowest band of the city is laid on
+     * the floor, and what the ground does outside the walls is the drape's to shape.
      */
     private static final int CITY_WEST = 5200;
     private static final int CITY_NORTH = -3370;
     private static final int VALLEY_X = CITY_WEST + 276;
     private static final int VALLEY_Z = CITY_NORTH + 256;
-    private static final int VALLEY_HALF_X = 272;
-    private static final int VALLEY_HALF_Z = 251;
+    private static final int VALLEY_HALF_X = 277;
+    private static final int VALLEY_HALF_Z = 256;
 
     /**
      * The height the rock stands at where the massif meets the build: the crown of the city itself.

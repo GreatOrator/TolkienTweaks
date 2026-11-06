@@ -969,6 +969,11 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
 
 ### Fixed
 
+- Reach the valley's floor to the build's own outside edge: it stopped four blocks short, which left a
+  strip of crown standing inside the footprint at 318 and read as a four-block wall at the river's
+  mouth and again at the spring. The drape now takes that strip down on a world made before this,
+  and counts a column as a watercourse only where water is its own top - water buried in the build,
+  like the spring's aqueduct at 239, was leaving a hole in the draping in front of the wall.
 - Open the ground round the Bruinen at one curve instead of two grades: the water's bank and the massif's
   cone met in a two-hundred-block seam just outside the west wall, because the branch opened the ground
   at 1.2 blocks per block and the cone cut it at 6, and the line where one gave way to the other was a
