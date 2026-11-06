@@ -102,11 +102,11 @@ public final class CityCommands {
      */
     private static final int DRAPE_REACH = 32;
     /**
-     * How far in from the footprint's edge a column the build leaves empty is still the drape's: the strip
-     * of crown the valley kept inside the walls, and the only room the pass has to take that wall down on
-     * a world made before the floor reached the build's own edge.
+     * The height at or under which the build's own top is a deck and not a wall. The city's floor is at 74
+     * and its deck tiles lie on 75, so a column that tops out here has nothing built over it: the rock
+     * standing above such a column is the roofline over the city, not a wall at its edge.
      */
-    private static final int DRAPE_RIM = 6;
+    private static final int DECK_TOP = 76;
 
     /** What a drape did: columns cut down, columns built up, and columns left for the water. */
     private record Drape(int cut, int filled, int open) {
@@ -702,6 +702,12 @@ public final class CityCommands {
      * A column whose top is water is left exactly as it is - the channel the river runs in. Filling up to
      * a wall beside a river is what closes a river's mouth, and the mouth is the one thing the valley was
      * drawn round.
+     * <p>
+     * Where the build's own edge is a deck and not a wall - its floor tiles at 75, with nothing built over
+     * them - the ground outside is carried to the rock standing over that deck inside the box and is never
+     * cut. A deck is not a roofline: cutting a mountain down to it opened a trench two hundred blocks deep
+     * round every face the build leaves open, and the wall of that trench was the mountain's own shape -
+     * which is exactly what a wall round the city must not be.
      */
     private static Drape drape(ServerLevel level, Path folder, List<Part> parts, BlockPos origin, Box box)
             throws IOException {
@@ -735,10 +741,6 @@ public final class CityCommands {
                 if (y > outline[at]) outline[at] = y;
                 if (name.contains("water")) watered[at] = Math.max(watered[at], y);
             }
-        }
-        boolean[] empty = new boolean[wide * deep];
-        for (int i = 0; i < empty.length; i++) {
-            empty[i] = outline[i] == Integer.MIN_VALUE;
         }
         // A wall with a doorway in it is still a wall: a column the build leaves empty takes the height of
         // the columns beside it, so the drape follows the shape of the city rather than its holes.
@@ -791,6 +793,17 @@ public final class CityCommands {
                     open++;
                     continue;
                 }
+                // Where the build's edge is a deck and not a wall, the ground outside is made to meet the
+                // rock standing over that deck inside the box, and is never cut down to the deck itself.
+                // The deck sits at 75 under a roofline at 318: cutting to it opened a trench the depth of the
+                // mountain round every face the build leaves open, and the face of that trench was the
+                // mountain's own shape. The mountain at a deck's back is the city's back wall, not a peak.
+                boolean deck = wall <= DECK_TOP;
+                if (deck) {
+                    int inside = gx + box.lowX();
+                    int insideZ = gz + box.lowZ();
+                    wall = Math.max(wall, level.getHeight(Heightmap.Types.MOTION_BLOCKING, inside, insideZ) - 1);
+                }
                 int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1;
                 if (top <= level.getMinY()) continue;
                 BlockState skin = level.getBlockState(new BlockPos(x, top, z));
@@ -803,7 +816,7 @@ public final class CityCommands {
                 double share = Math.min(1.0D, Math.hypot(outX, outZ) / (double) DRAPE_REACH);
                 double ease = share * share * (3.0D - 2.0D * share);
                 int cap = (int) Math.round(wall + (top - wall) * ease);
-                if (top > cap) {
+                if (top > cap && !deck) {
                     for (int y = top; y > cap; y--) {
                         level.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
                     }
@@ -817,31 +830,6 @@ public final class CityCommands {
                             skin.isSolid() ? skin : Blocks.STONE.defaultBlockState(), 2);
                     filled++;
                 }
-            }
-        }
-        // The footprint's own rim: a column the build leaves empty this close to its outside edge is cut to
-        // the columns beside it, so the ground inside the walls and the ground outside them are one surface.
-        // Nothing is filled here - the city's own courtyards are inside the box - and nothing is cut where
-        // the ground already stands at or under the wall beside it.
-        for (int x = box.lowX(); x <= box.highX(); x++) {
-            for (int z = box.lowZ(); z <= box.highZ(); z++) {
-                int gx = x - box.lowX();
-                int gz = z - box.lowZ();
-                int at = gx + gz * wide;
-                if (!empty[at]) continue;
-                if (Math.min(Math.min(gx, wide - 1 - gx), Math.min(gz, deep - 1 - gz)) > DRAPE_RIM) continue;
-                int wall = outline[at];
-                if (wall == Integer.MIN_VALUE) continue;
-                int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1;
-                if (top <= wall) continue;
-                BlockState skin = level.getBlockState(new BlockPos(x, top, z));
-                for (int y = top; y > wall; y--) {
-                    level.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
-                }
-                if (skin.isSolid()) {
-                    level.setBlock(new BlockPos(x, wall, z), skin, 2);
-                }
-                cut++;
             }
         }
         return new Drape(cut, filled, open);

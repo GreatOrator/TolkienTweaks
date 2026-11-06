@@ -91,6 +91,12 @@ what is still open, so the next session does not have to rebuild that from the c
 - The mountain mask's ridge is sixteen blocks wide, and the vale's blend runs **after** the mask, so a
   lifted ridge cannot stand as a blade inside the valley (`51823803`).
 
+- **The rock over a deck is the roofline.** The build's edge is not always a wall: over much of the east
+  and west it is the floor's own tiles at 75, with nothing built above them, while the crown stands 243
+  blocks higher over that deck inside the box. Reading the deck as the wall cut the ground outside down to
+  75 and opened a trench round the city whose face was the mountain's own shape. A boundary column at or
+  under `DECK_TOP = 76` now takes the ground inside the box as its height and is only ever filled, never
+  cut: the mountain at a deck's back is the city's back wall.
 ## The water
 
 - **The drawn Bruinen is nearest the city's mouth at 5054, -3086**, a hundred and forty-seven blocks west of the build's

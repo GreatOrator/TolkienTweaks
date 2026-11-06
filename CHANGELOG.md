@@ -969,6 +969,10 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
 
 ### Fixed
 
+- Stop the drape cutting the ground down to a deck: where the build's edge is floor tiles at 75 and the
+  crown stands 243 above them, the outside ground was cut to 75 and the trench's face was the
+  mountain's own shape. A boundary column topping out at or under 76 now takes the ground inside the
+  box as its height and is filled, never cut - the wall the city is seen against is its roofline.
 - Reach the valley's floor to the build's own outside edge: it stopped four blocks short, which left a
   strip of crown standing inside the footprint at 318 and read as a four-block wall at the river's
   mouth and again at the spring. The drape now takes that strip down on a world made before this,
