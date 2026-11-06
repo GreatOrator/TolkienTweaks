@@ -120,6 +120,8 @@ public final class RoadCommands {
     private static final double MAX_GRADE = 0.45;
     /** The deepest cut or tallest fill one column may take before the road is held back to the ground. */
     private static final int CUT_FILL = 12;
+    /** How far above the road a column's trunks and leaves are cleared, so no crown hangs over the grade. */
+    private static final int CANOPY_CLEAR = 16;
     /** A station's surface, as a sentinel, when the ground there is water: the river is the bridge's. */
     private static final int WATER = Integer.MIN_VALUE / 2;
 
@@ -168,7 +170,8 @@ public final class RoadCommands {
                     + " pieces from " + EAST_BANK_X + " to " + WEST_BANK_X + " on z " + BRIDGE_Z
                     + ", pillars drawn down " + pillars + " blocks. Approach " + along + " blocks, " + how
                     + ", steepest graded step " + graded[4] + ": " + graded[0] + " columns laid, "
-                    + graded[1] + " cut, " + graded[2] + " filled, " + graded[3] + " left open."
+                    + graded[1] + " cut, " + graded[2] + " filled, " + graded[5] + " canopy cleared, "
+                    + graded[3] + " left open."
                     + " Far side " + far[0] + " columns laid, " + far[1] + " cut, " + far[2]
                     + " filled. Both ends walk in along the span's own line."), true);
             return 1;
@@ -409,7 +412,7 @@ public final class RoadCommands {
             height[n - 1] = endY;
         }
 
-        int laid = 0, cut = 0, filled = 0, open = 0, steepest = 0;
+        int laid = 0, cut = 0, filled = 0, open = 0, steepest = 0, cleared = 0;
         Map<Long, Integer> tops = new LinkedHashMap<>();
         for (int i = 0; i < n; i++) {
             int target = Mth.floor(height[i]);
@@ -463,11 +466,21 @@ public final class RoadCommands {
                     level.setBlock(column, surface(at, into), 2);
                     tops.put(key(at, into), target);
                     laid++;
+                    // A road cut through a wood leaves its canopy hanging: the trunks come away with the
+                    // ground, but the crowns above them do not, so a cut stretch sails under a floating
+                    // roof. Clear the corridor's own columns of leaves and logs above the road's surface.
+                    for (int y = target + 1; y <= target + CANOPY_CLEAR; y++) {
+                        BlockPos crown = new BlockPos(at, y, into);
+                        BlockState over = level.getBlockState(crown);
+                        if (!over.is(BlockTags.LEAVES) && !over.is(BlockTags.LOGS)) continue;
+                        level.setBlock(crown, Blocks.AIR.defaultBlockState(), 2);
+                        cleared++;
+                    }
                 }
             }
         }
         steps(level, tops);
-        return new int[]{laid, cut, filled, open, steepest};
+        return new int[]{laid, cut, filled, open, steepest, cleared};
     }
 
     /** The straight line from the path's end to the bend, for when the search finds no way down. */

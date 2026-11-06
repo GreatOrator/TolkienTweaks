@@ -193,6 +193,8 @@ cliff the grade exists to remove - so the ground now has its say first, inside t
 and the grade has the last word. Where the road meets water it carries its last verge columns over on
 stone while its grade is above the water line, instead of stopping short of the bank and leaving a lip
 for the river to sit against.
+The corridor's own columns then have their trunks and leaves cleared for sixteen blocks above the
+road's surface, so a cut through the wood leaves no crown hanging where its tree used to be.
 
 **Both ends are met along the span's own line.** The last leg of the approach is on z -3075, the line
 the bridge itself lies on, and the far side leaves along that same line. A road that arrived diagonally

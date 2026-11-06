@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **The road's corridor is cleared of canopy.** Cutting a road through the trollshaws' woods took the
+  trunks away with the ground but left their crowns hanging over the grade, so a cut stretch sailed under
+  a floating roof. Every column the road lays now has leaves and logs cleared from one block over its
+  surface to sixteen blocks above it, and the pass reports how many it took.
+
 - **The graded road reads the ground, not the canopy, and its grade has the last word.** The first graded
   run reported a steepest step of eighteen blocks and stood stone columns up to the treetops:
   `MOTION_BLOCKING` answers with leaves, and the ground clamp ran after the grade clamp, undoing it. The
