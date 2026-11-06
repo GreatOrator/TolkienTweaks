@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The city's own ground is drawn round the pin again, and the river is what is left.** The planted valley
+  - its floor at 74, its massif at the crown 318 from the footprint's edge outward, and its empty north-east
+  corner filled with rock - was switched off and still keyed to the old pin at 4352, -3833, which is why the
+  ground round the planted city was plain vale and `/tmcity apron` had to invent a shelf 153 blocks up. The
+  frame now follows the pinned corner 5200, -3370: its middle at 5476, -3114, the empty corner over
+  x 5645..5753 by z -3370..-3311, and the mouth at 5200, -3067. The ground is laid again, and the branch
+  from the mouth to the drawn Bruinen at 5054, -3086 is left uncut - the one piece of terrain still to draw.
 - **The shoulder and the water line open the chunks they read.** A heightmap is only filled for a chunk
   the world has opened, and the shoulder reads rings up to a hundred and twenty-eight blocks past the
   walls while the water line reads a hundred and sixty: from the middle of a city this size that is far

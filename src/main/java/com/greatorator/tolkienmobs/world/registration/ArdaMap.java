@@ -78,7 +78,16 @@ public final class ArdaMap {
      * city's own ground is kept rather than deleted: it is what will be laid at whatever site is chosen for
      * it, and the numbers below are its shape.
      */
-    private static final boolean PLANTED = false;
+    private static final boolean PLANTED = true;
+
+    /**
+     * Whether the river the city carries is cut out of that ground.
+     * <p>
+     * The massif and the floor are laid; the branch from the mouth to the drawn Bruinen is not cut yet, so
+     * the rock stands where that channel will go. That is the one piece of the city's ground still to draw,
+     * which is why it is a switch of its own rather than part of {@link #PLANTED}.
+     */
+    private static final boolean BRANCH = false;
 
     /**
      * The valley the map overrides rather than draws: its middle, the half-widths of its floor, and the
@@ -87,7 +96,7 @@ public final class ArdaMap {
      * A cell of the drawing is 512 blocks and the city that stands here is 554 across, so this ground
      * cannot be a country of the 48 by 36 grid: it is cut out of cells the drawing already fills and
      * blended back into them at its rim. Its middle is the middle of that city - the corner it is
-     * planted from, plus half of its 554 by 512 footprint - so a city planted at 4352, -3833 stands in
+     * planted from, plus half of its 554 by 512 footprint - so a city planted at 5200, -3370 stands in
      * the middle of the floor rather than against one of its walls. The floor is a few blocks smaller
      * than the footprint on every side - 544 by 502 inside a 554 by 512 city - so the mountain's foot
      * begins inside the build and the build embeds itself in it. There is no apron of flat ground in
@@ -95,8 +104,10 @@ public final class ArdaMap {
      * the city is laid into the rock, and the stone that was there shows wherever the build has nothing
      * of its own.
      */
-    private static final int VALLEY_X = 4628;
-    private static final int VALLEY_Z = -3577;
+    private static final int CITY_WEST = 5200;
+    private static final int CITY_NORTH = -3370;
+    private static final int VALLEY_X = CITY_WEST + 276;
+    private static final int VALLEY_Z = CITY_NORTH + 256;
     private static final int VALLEY_HALF_X = 272;
     private static final int VALLEY_HALF_Z = 251;
 
@@ -182,13 +193,13 @@ public final class ArdaMap {
      * The city's north-east corner: the rectangle the build itself leaves empty, the height the rock stood
      * at in it, and how far outside the walls that face runs before the massif's foot takes over.
      * <p>
-     * The gap is read off the cut rather than guessed: it has no piece at all in x 4797..4905 by z
-     * -3833..-3774 above the lowest band, and those are the two positions the build marks as its corners.
+     * The gap is read off the cut rather than guessed: it has no piece at all in x 5645..5753 by z
+     * -3370..-3311 above the lowest band, and those are the two positions the build marks as its corners.
      */
-    private static final int SHOULDER_WEST = 4797;
-    private static final int SHOULDER_EAST = 4905;
-    private static final int SHOULDER_NORTH = -3833;
-    private static final int SHOULDER_SOUTH = -3774;
+    private static final int SHOULDER_WEST = CITY_WEST + 445;
+    private static final int SHOULDER_EAST = CITY_WEST + 553;
+    private static final int SHOULDER_NORTH = CITY_NORTH;
+    private static final int SHOULDER_SOUTH = CITY_NORTH + 59;
     private static volatile int SHOULDER_TOP = VALLEY_CROWN;
     private static final int SHOULDER_RUN = 110;
 
@@ -196,19 +207,19 @@ public final class ArdaMap {
      * The Bruinen: where the city's own water leaves the walls, the water it feeds, and the course between.
      * <p>
      * The mouth is read off the build rather than guessed. Its 584 pieces carry 302,049 water blocks, and the
-     * water stands against the west wall over x 4352..4354, z -3536..-3525 with its surface at 82 - seven
+     * water stands against the west wall over x 5200..5201, z -3072..-3063 with its surface at 82 - seven
      * blocks above the valley's floor. The east wall's only water is an aqueduct at y 239, which is a spring
      * inside the city, not an outflow. So the branch leaves west, falls the eight blocks to the vale, and runs
-     * round the valley's south side to the drawn Bruinen: the nearest drawn water to the mouth is at 4996,
-     * -3308, 681 blocks off, and the straight line to it runs through the city.
+     * round the valley's south side to the drawn Bruinen: the nearest drawn water to the mouth is at 5054,
+     * -3086, 147 blocks west, and the straight line to it runs through the city.
      * <p>
      * The river is cut as its own channel rather than by the maps' own river lines - which flatten every
      * column they touch to a level 63 and met the massif's rock two hundred and thirty blocks over the water.
      * Its water is read off the ground as the course goes rather than set at either end, so it falls where the
      * ground falls and never runs uphill.
      */
-    private static final int BRUINEN_OUTLET_X = 4352;
-    private static final int BRUINEN_OUTLET_Z = -3530;
+    private static final int BRUINEN_OUTLET_X = CITY_WEST;
+    private static final int BRUINEN_OUTLET_Z = CITY_NORTH + 303;
     /**
      * The branch's water at the build's own mouth: the city carries its water out at {@link #PLANTED_FLOOR}
      * plus eight, seven blocks above the valley's floor, and this is that level, not the floor's. An
@@ -256,8 +267,8 @@ public final class ArdaMap {
      */
     private static final int BRUINEN_LEFT = 5;
     private static final int BRUINEN_RIGHT = 7;
-    private static final int BRUINEN_FORD_X = 4995;
-    private static final int BRUINEN_FORD_Z = -3311;
+    private static final int BRUINEN_FORD_X = 5054;
+    private static final int BRUINEN_FORD_Z = -3086;
     private static final double BRUINEN_BANK = 1.2D;
     private static final double BRUINEN_FORD_SHALLOW = 0.92D;
     /** Steps the channel's water is read at along its course, from the outlet to the ford. */
@@ -302,8 +313,8 @@ public final class ArdaMap {
      * The legs keep a corridor's width clear of the walls, so the corridor the valley is cut with does not eat
      * the city's foot.
      */
-    private static final int[] COURSE_X = {BRUINEN_OUTLET_X, 4272, 4272, 4952, BRUINEN_FORD_X};
-    private static final int[] COURSE_Z = {BRUINEN_OUTLET_Z, -3530, -3256, -3256, BRUINEN_FORD_Z};
+    private static final int[] COURSE_X = {BRUINEN_OUTLET_X, CITY_WEST - 70, BRUINEN_FORD_X};
+    private static final int[] COURSE_Z = {BRUINEN_OUTLET_Z, -3078, BRUINEN_FORD_Z};
     /** How long each leg is, where each leg starts along the course, and the whole course. */
     private static final double[] COURSE_LEG = new double[COURSE_X.length - 1];
     private static final double[] COURSE_START = new double[COURSE_X.length - 1];
@@ -693,7 +704,7 @@ public final class ArdaMap {
         // The Bruinen the city carries is cut into whatever the drawing and the valley answer, because it
         // runs through both: out of the valley's own floor, through the massif's flank, and into the country
         // beyond its ridge. With the city's ground not laid there is no branch to cut.
-        return PLANTED ? bruinen(blockX, blockZ, drawn) : drawn;
+        return PLANTED && BRANCH ? bruinen(blockX, blockZ, drawn) : drawn;
     }
 
     /** The drawing at a column, before the river the build carries is cut into it. */
@@ -1226,9 +1237,13 @@ public final class ArdaMap {
         // city's own water at the mouth and the Bruinen's at the join. Reading a column beyond an end as
         // having no water at all closed the massif over the river's own mouth, and the flat crown then
         // stood at 318 three blocks from water at 82 - the wall this cone was written to remove.
-        double[] at = project(blockX, blockZ);
-        double run = at[2] - BRUINEN_RIGHT;
-        int level = bruinenWater(at[0]);
+        double run = Double.MAX_VALUE;
+        int level = SEA_LEVEL;
+        if (BRANCH) {
+            double[] at = project(blockX, blockZ);
+            run = at[2] - BRUINEN_RIGHT;
+            level = bruinenWater(at[0]);
+        }
         boolean drawn = false;
         for (int step = 0; step < 8; step++) {
             double dirX = Math.cos(step * Math.PI / 4.0D);
