@@ -969,6 +969,9 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
 
 ### Fixed
 
+- Set the drape's ring back to thirty-two blocks: at sixty-four the pass reached past the branch the river
+  leaves the city by and overwrote the water, and the river left the build. Thirty-two keeps the settled
+  ring off the outflow.
 - Spread the climb beside drawn water over a hundred and sixty blocks instead of ninety-six (`MOUTH_RUN`),
   with `WATER_REACH` out to a hundred and seventy-six so the reach still passes the climb: the massif's
   flank across the Bruinen stood at 319 within a hundred blocks of water at 74 and read as a wall, and

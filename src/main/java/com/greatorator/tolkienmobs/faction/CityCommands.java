@@ -100,7 +100,13 @@ public final class CityCommands {
      * and filled up to it - and fades back into the drawn country over this distance, so neither end of
      * it is a step.
      */
-    private static final int DRAPE_REACH = 64;
+    /**
+     * Thirty-two, not sixty-four. At sixty-four the ring reached past the branch the river leaves the city
+     * by, and a pass that settles the ground over that much of the outflow overwrites the water: the river
+     * left the build. Thirty-two is where the settled ring still meets the drawn country without touching
+     * the branch.
+     */
+    private static final int DRAPE_REACH = 32;
     /**
      * The height at or under which the build's own top is a deck and not a wall. The city's floor is at 74
      * and its deck tiles lie on 75, so a column that tops out here has nothing built over it: the rock
