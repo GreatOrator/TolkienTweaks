@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **The third crag answers to its name as well.** `/tmpin checklist` had the last of the stone's three caves down
+  as "the third cave" while the page asks it as Sholdroth, so all three now read the names the notes give them -
+  Bandrith, Hoklond and Sholdroth - in the order the page asks them.
 - **The checklist calls the second cave by the name the page gives it.** The stone asks its three caves in the
   order the notes name them - Bandrith, Hoklond, Sholdroth - and `/tmpin checklist` had the middle one down as
   Sholdroth's, so a scout pinning ground off that list would have put the second crag where the third cave is

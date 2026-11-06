@@ -194,7 +194,7 @@ public final class Pins extends SavedData {
             new Need(Sites.WOOD_RUIN, "the wood ruin the black horse lies in"),
             new Need(Sites.TROLL_CAVE, "Bandrith's cave"),
             new Need(Sites.TROLL_CAVE_2, "Hoklond's cave"),
-            new Need(Sites.TROLL_CAVE_3, "the third cave"),
+            new Need(Sites.TROLL_CAVE_3, "Sholdroth's cave"),
             new Need(Sites.GLOIN_CAMP, "Gloin's camp at the pass mouth"),
             new Need(Sites.GUNDABAD, "Gundabad"),
             new Need(Sites.BOSS_CASTLE, "the Witch-king's castle"),

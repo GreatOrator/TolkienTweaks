@@ -107,4 +107,4 @@ the drawing.
 
 The stone's three caves are named in `Campaign.CAVE_NAMES` - **Bandrith**, **Hoklond**, **Sholdroth** - and
 asked in that order, so `cave`/`cave1` is Bandrith's and `cave2` Hoklond's, which is how `/tmpin checklist`
-labels them; `cave3` is Sholdroth's, the last the stone asks for, and the checklist calls it the third cave.
+labels them, and `cave3` is Sholdroth's, the last the stone asks for.
