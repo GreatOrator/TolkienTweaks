@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **The ground still to scout is written down in one place.** `docs/quest-locations.md` lists the fourteen
+  locations the pages walk to once Rivendell is set aside - the pin command for each, the cell the drawing
+  would use, the template's own footprint and what the sight of the ground should be - so a scouting pass can
+  be read in one window instead of put together out of two chapters of pages.
 - **The rider's ruin has moved in with the campaign's own ground.** `ttmruin_large_2` still stood in the worldgen
   folder although nothing generated it - no structure, pool or set named it - so the one template the Missing Rider
   page raises sat among the ruins the world scatters. It is `key_structures/ttmruin_large_2` now, beside the crags
