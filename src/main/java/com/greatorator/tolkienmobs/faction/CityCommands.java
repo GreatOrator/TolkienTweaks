@@ -10,9 +10,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.levelgen.Heightmap;
 import com.greatorator.tolkienmobs.world.registration.ArdaMap;
@@ -29,6 +33,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,13 +52,14 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
  * <p>
  * It exists for the two things that need a city in a world before the pack has one: looking at the
  * terrain, and walking the campaign's pages through a valley of the right size. One root,
- * {@code /tmcity}, with eight hands: {@code origin}, which plants the corner where the caller stands;
+ * {@code /tmcity}, with nine hands: {@code origin}, which plants the corner where the caller stands;
  * {@code summon}, which plants it, lays the whole city in one word and stands its people, for putting the
  * build alone into an empty world; {@code folk}, which stands the city's people where the build marks
  * them; {@code band [count]}, which lays the next band of the city and stops, because a whole
  * city is two thousand chunks and those are generated chunk by chunk; {@code relay}, which puts the counter back at
  * the bottom of the city it already stands in; {@code apron}, which blends the shoulder into the ground
- * once the last band is down; {@code goto}, which stands the caller on the middle of the city; and
+ * once the last band is down; {@code drape}, which cuts and fills the ground outside the walls to
+ * the city's own outline; {@code goto}, which stands the caller on the middle of the city; and
  * {@code status}, which says how much is standing.
  * <p>
  * Every number it prints is a world coordinate of the city itself rather than of the table the pieces
@@ -84,6 +90,21 @@ public final class CityCommands {
     private static final int TILE = 48;
     /** How deep under the lowest band the ground is filled, in blocks. */
     private static final int UNDERPIN = 24;
+    /**
+     * How far out from the city's own footprint the ground is dressed to it, in blocks.
+     * <p>
+     * The massif is drawn by a height function that has never heard of the build, so where it meets the
+     * city it is whatever the rules happened to make: rock above the roofline at one wall, a channel cut
+     * through the mountain at another, and a seam where a river's bank stopped applying four blocks from
+     * a wall. This pass makes the ground answer to the build instead - cut down to the city's own outline
+     * and filled up to it - and fades back into the drawn country over this distance, so neither end of
+     * it is a step.
+     */
+    private static final int DRAPE_REACH = 32;
+
+    /** What a drape did: columns cut down, columns built up, and columns left for the water. */
+    private record Drape(int cut, int filled, int open) {
+    }
     /** Templates already read this session, so the ten megabytes are parsed once. */
     private static final Map<String, StructureTemplate> LOADED = new HashMap<>();
     /** The corner last read out of the marker, and the dimension it was read for. */
@@ -156,6 +177,7 @@ public final class CityCommands {
                                 .executes(context -> band(context, IntegerArgumentType.getInteger(context, "count")))))
                 .then(Commands.literal("relay").executes(CityCommands::relay))
                 .then(Commands.literal("apron").executes(CityCommands::apron))
+                .then(Commands.literal("drape").executes(CityCommands::drape))
                 .then(Commands.literal("goto").executes(CityCommands::visit))
                 .then(Commands.literal("status").executes(CityCommands::status)));
     }
@@ -392,6 +414,11 @@ public final class CityCommands {
             // and a skirt cut round it would take away exactly the rock the build is meant to sit in.
             // /tmcity apron is still there, for a city planted on ground that does want bedding in.
             boolean finished = mark.band() >= bands.size();
+            // A city is only half standing if the mountain it was cut into is still arguing with it, so
+            // the ground is dressed the moment the last band is down rather than by a second word.
+            final Drape dressed = finished
+                    ? drapeOrSayWhy(level, folder, parts, mark.origin(), Box.of(parts, mark.origin()))
+                    : null;
             write(folder, mark);
             int soFar = laid;
             int skipped = over;
@@ -412,8 +439,12 @@ public final class CityCommands {
             // How many more bands are waiting, so nobody has to be told what to type next.
             String spoken = whole ? "; the whole city is down - /tmcity goto to stand in it"
                     : "; " + left + (left == 1 ? " band" : " bands") + " to go";
+            String dressedUp = dressed == null ? ""
+                    : "; the ground was dressed to the city's own outline: " + dressed.cut()
+                    + " columns cut down, " + dressed.filled() + " filled up, " + dressed.open()
+                    + " left for the water";
             source.sendSuccess(() -> Component.literal("Laid " + soFar + " pieces; " + which
-                    + " down" + sky + spoken), true);
+                    + " down" + sky + spoken + dressedUp), true);
             return laid;
         } catch (IOException failed) {
             source.sendFailure(Component.literal("The cut could not be read: " + failed.getMessage()));
@@ -603,6 +634,181 @@ public final class CityCommands {
         int deep = box.highZ() - box.lowZ() + 1;
         return Sites.apron(level, new BlockPos(box.lowX(), box.lowY(), box.lowZ()), wide, deep,
                 box.lowY());
+    }
+
+    /** Dresses the ground to the city's own outline, saying so in the log when it cannot rather than losing the band. */
+    private static Drape drapeOrSayWhy(ServerLevel level, Path folder, List<Part> parts, BlockPos origin, Box box) {
+        try {
+            return drape(level, folder, parts, origin, box);
+        } catch (IOException failed) {
+            com.mojang.logging.LogUtils.getLogger().warn("Rivendell: the ground was not dressed: {}",
+                    failed.getMessage());
+            return null;
+        }
+    }
+
+    /** Cuts and fills the ring of ground outside the city's footprint to the build's own outline. */
+    private static int drape(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        ServerLevel level = source.getLevel();
+        Path folder = folder();
+        try {
+            Mark mark = read(folder);
+            if (mark == null) {
+                source.sendFailure(Component.literal("No corner planted yet - run /tmcity origin where it should stand."));
+                return 0;
+            }
+            String elsewhere = elsewhere(mark, level);
+            if (elsewhere != null) {
+                source.sendFailure(Component.literal(elsewhere));
+                return 0;
+            }
+            List<Part> parts = parts(folder);
+            if (parts.isEmpty()) {
+                source.sendFailure(Component.literal("No pieces in " + folder + " - is the cut there?"));
+                return 0;
+            }
+            Drape done = drape(level, folder, parts, mark.origin(), Box.of(parts, mark.origin()));
+            source.sendSuccess(() -> Component.literal("Ground dressed to the city's own outline: "
+                    + done.cut() + " columns cut down, " + done.filled() + " built up, " + done.open()
+                    + " left for the water."), true);
+            return done.cut() + done.filled();
+        } catch (IOException failed) {
+            source.sendFailure(Component.literal("The cut could not be read: " + failed.getMessage()));
+            return 0;
+        }
+    }
+
+    /**
+     * Cuts and fills the ground round the city until it meets the build's own outline.
+     * <p>
+     * The outline is read from the cut rather than from the world: every piece's template is read, and the
+     * highest block of the build in each column is that column's outline. Reading the world instead would
+     * measure whatever the city is standing in - the rock it was laid into - and a drape drawn from that
+     * would agree with the mistake it is there to remove.
+     * <p>
+     * Each column outside the footprint is capped at its nearest outline column where the wall is, easing
+     * to what the ground already stands at {@link #DRAPE_REACH} out: the join at the wall is the build's
+     * shape and the join in the country is the country's. Above the cap is cut away and below it is
+     * filled, so a notch the river's corridor opened behind the walls is closed and a shelf the mountain
+     * left standing over the roofline comes down.
+     * <p>
+     * Water is left exactly as it is - the build's own carrying of it and the channel it runs in. Filling
+     * up to a wall beside a river is what closes a river's mouth, and the mouth is the one thing the
+     * valley was drawn round.
+     */
+    private static Drape drape(ServerLevel level, Path folder, List<Part> parts, BlockPos origin, Box box)
+            throws IOException {
+        int wide = box.highX() - box.lowX() + 1;
+        int deep = box.highZ() - box.lowZ() + 1;
+        int[] outline = new int[wide * deep];
+        Arrays.fill(outline, Integer.MIN_VALUE);
+        boolean[] water = new boolean[wide * deep];
+        for (Part part : parts) {
+            CompoundTag tag = raw(folder, part.name());
+            ListTag palette = tag.getList("palette").orElseGet(ListTag::new);
+            String[] names = new String[palette.size()];
+            for (int i = 0; i < palette.size(); i++) {
+                names[i] = palette.getCompoundOrEmpty(i).getStringOr("Name", "");
+            }
+            ListTag blocks = tag.getList("blocks").orElseGet(ListTag::new);
+            for (int i = 0; i < blocks.size(); i++) {
+                CompoundTag block = blocks.getCompoundOrEmpty(i);
+                int state = block.getIntOr("state", 0);
+                if (state < 0 || state >= names.length) continue;
+                String name = names[state];
+                if (name.endsWith(":air") || name.endsWith("cave_air") || name.endsWith("void_air")) continue;
+                ListTag pos = block.getList("pos").orElseGet(ListTag::new);
+                if (pos.size() < 3) continue;
+                int gx = origin.getX() + part.dx() + pos.getIntOr(0, 0) - box.lowX();
+                int gz = origin.getZ() + part.dz() + pos.getIntOr(2, 0) - box.lowZ();
+                if (gx < 0 || gx >= wide || gz < 0 || gz >= deep) continue;
+                int at = gx + gz * wide;
+                int y = origin.getY() + part.dy() + pos.getIntOr(1, 0);
+                if (y > outline[at]) outline[at] = y;
+                if (name.contains("water")) water[at] = true;
+            }
+        }
+        // A wall with a doorway in it is still a wall: a column the build leaves empty takes the height of
+        // the columns beside it, so the drape follows the shape of the city rather than its holes.
+        for (int pass = 0; pass < 2; pass++) {
+            int[] grown = outline.clone();
+            for (int gz = 0; gz < deep; gz++) {
+                for (int gx = 0; gx < wide; gx++) {
+                    int at = gx + gz * wide;
+                    if (outline[at] != Integer.MIN_VALUE) continue;
+                    int best = Integer.MIN_VALUE;
+                    for (int dx = -1; dx <= 1; dx++) {
+                        for (int dz = -1; dz <= 1; dz++) {
+                            int nx = gx + dx;
+                            int nz = gz + dz;
+                            if (nx < 0 || nx >= wide || nz < 0 || nz >= deep) continue;
+                            best = Math.max(best, outline[nx + nz * wide]);
+                        }
+                    }
+                    grown[at] = best;
+                }
+            }
+            outline = grown;
+        }
+        // Every chunk the ring touches is loaded first: a block written into a chunk that is not loaded is
+        // dropped without a word, which is the same fault the city's own pieces are loaded for.
+        for (int chunkX = (box.lowX() - DRAPE_REACH) >> 4; chunkX <= (box.highX() + DRAPE_REACH) >> 4; chunkX++) {
+            for (int chunkZ = (box.lowZ() - DRAPE_REACH) >> 4; chunkZ <= (box.highZ() + DRAPE_REACH) >> 4; chunkZ++) {
+                level.getChunk(chunkX, chunkZ);
+            }
+        }
+        int cut = 0;
+        int filled = 0;
+        int open = 0;
+        for (int x = box.lowX() - DRAPE_REACH; x <= box.highX() + DRAPE_REACH; x++) {
+            for (int z = box.lowZ() - DRAPE_REACH; z <= box.highZ() + DRAPE_REACH; z++) {
+                if (x >= box.lowX() && x <= box.highX() && z >= box.lowZ() && z <= box.highZ()) continue;
+                int gx = Mth.clamp(x, box.lowX(), box.highX()) - box.lowX();
+                int gz = Mth.clamp(z, box.lowZ(), box.highZ()) - box.lowZ();
+                int at = gx + gz * wide;
+                int wall = outline[at];
+                if (wall == Integer.MIN_VALUE) continue;
+                if (water[at]) {
+                    open++;
+                    continue;
+                }
+                int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1;
+                if (top <= level.getMinY()) continue;
+                BlockState skin = level.getBlockState(new BlockPos(x, top, z));
+                if (!skin.getFluidState().isEmpty()) {
+                    open++;
+                    continue;
+                }
+                int outX = Math.max(0, Math.max(box.lowX() - x, x - box.highX()));
+                int outZ = Math.max(0, Math.max(box.lowZ() - z, z - box.highZ()));
+                double share = Math.min(1.0D, Math.hypot(outX, outZ) / (double) DRAPE_REACH);
+                double ease = share * share * (3.0D - 2.0D * share);
+                int cap = (int) Math.round(wall + (top - wall) * ease);
+                if (top > cap) {
+                    for (int y = top; y > cap; y--) {
+                        level.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
+                    }
+                    level.setBlock(new BlockPos(x, cap, z), skin, 2);
+                    cut++;
+                } else if (top < cap) {
+                    for (int y = top + 1; y < cap; y++) {
+                        level.setBlock(new BlockPos(x, y, z), Blocks.STONE.defaultBlockState(), 2);
+                    }
+                    level.setBlock(new BlockPos(x, cap, z),
+                            skin.isSolid() ? skin : Blocks.STONE.defaultBlockState(), 2);
+                    filled++;
+                }
+            }
+        }
+        return new Drape(cut, filled, open);
+    }
+
+    /** A piece's own NBT, as the cut wrote it, for a pass that has to know its shape rather than its size. */
+    private static CompoundTag raw(Path folder, String name) throws IOException {
+        try (InputStream in = Files.newInputStream(folder.resolve(name))) {
+            return NbtIo.readCompressed(in, NbtAccounter.unlimitedHeap());
+        }
     }
 
     /** A piece's template, read from the cut the first time it is asked for. */

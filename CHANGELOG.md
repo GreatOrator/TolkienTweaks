@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The ground outside the walls is dressed to the build's own outline.** `/tmcity drape` - and the
+  end of `/tmcity band` and `summon`, so it is part of laying the city rather than a second word -
+  reads all 584 pieces' templates, takes the highest block of the build in each of the 554 by 512
+  columns, and then cuts every column in a 32-block ring outside the footprint down to its nearest
+  wall column and fills it up to it, easing back into the drawn country at the ring's edge.
+  Water columns are left exactly as they are, which is what keeps the river's mouth and the
+  spring's outlet open rather than filled to the walls. The outline comes from the cut, not from
+  the world, so it measures the city and not the rock the city stands in.
 - **The branch runs again, from the new mouth to the drawn Bruinen.** With the planted ground laid, the
   city's water still had no cut out of it: the massif stood at 318 across the hundred and forty-seven blocks
   from the west wall at 5200, -3067 to the drawn river at 5054, -3086. `BRANCH` is on and the course is those

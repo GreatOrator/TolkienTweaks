@@ -72,6 +72,13 @@ what is still open, so the next session does not have to rebuild that from the c
   ring, with `RIDGE_SWING` read at nothing - then falls to the vale over `VALLEY_FALL = 200`. It used to
   climb from the floor over ninety blocks and hold the crown only out to 175, which is the bowl this was
   drawn to replace.
+- **The ground outside is dressed to the build once the last band is down.** The drape pass reads the
+  cut's 584 templates rather than the world, takes the highest block of the build in each of the 554 by
+  512 columns, and cuts or fills every column in a 32-block ring outside the footprint to its nearest
+  wall column, easing back into the drawn country at the ring's edge. Water columns are left alone, so
+  the mouth and the spring stay open. The outline is what decides the join, and it is not the crown:
+  the west wall reads 82 at the outlet, 99 at z -3050, 141 at -3030 and 188 at -3010, so the ground
+  beside the river comes down to the build's own roofline there instead of standing at 318 beside it.
 - Past the massif's foot the country is blended toward the city's water level over `VALLEY_VALE = 900`
   blocks, settling back to the heightmap's 156-193 by **1,415** blocks out, so the foot itself stands on
   **74**, the city's own floor. It used to stand on 82, eight above the floor, which put the country's
