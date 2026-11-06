@@ -173,7 +173,7 @@ The Rivendell approach is the first road with ground under it, and its shape is 
 stays for now: the shape is a search over the live heightmap with a graded profile cut and filled into it,
 and chunk generation cannot search two hundred and forty square blocks of ground that do not exist yet.
 What ships is the pass itself, in the jar, beside the two bridge pieces, so any world gets the same road by
-running it on the same ground - every number below is a constant in `RoadCommands`, and a column's block is
+running it on the same ground - the numbers below are one `Route` in `Roads`, the valley's, and a column's block is
 decided by its coordinates, so nothing drifts between runs. It is also safe to run again: the bridge's own
 timbers are swept out of the water first, and every column in the band is written to what the pass decides
 it should be. This is the shape a generation rule will have to answer to, and the first thing such a rule
@@ -264,3 +264,16 @@ five deep, so as cut they stop in mid-air. Every column of the span that holds a
 carried down, through air and through water, to the first block that is neither - the bed under the span,
 or the bank under an abutment - capped at forty-eight blocks in case there is no bed to find. A bridge
 that stops at the water line is a bridge floating on the river.
+
+## A second build's road
+
+The numbers above are one line now rather than constants scattered through the pass: a `Route` in `Roads`,
+carrying the build's own footprint, the path's end, the two banks, the span's line and width, the deck height,
+the run-in and the exit, and the two pieces the bridge is stood up from. The valley's is the first entry. The
+dressing looks a city's route up by its footprint when it comes to lay the road, and leaves the ground alone if
+nobody has walked one for that build - a city with no road is better than a road laid to another city's numbers.
+`/tmroad build` lays the road of the build nearest the caller, which is what makes it usable beside a second site.
+
+What a route cannot carry is the alignment. Where the road goes between the path's end and the bank is searched on
+the live ground, so a new build's road needs its two ends surveyed - a start block and a bank - and nothing else
+about the country below it.

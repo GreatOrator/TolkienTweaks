@@ -75,40 +75,10 @@ public final class RoadCommands {
                 || Commands.hasPermission(Commands.LEVEL_GAMEMASTERS).test(source);
     };
 
-    /** The two pieces the bridge is stood up from, in the jar's own structure folder. */
-    private static final String BRIDGE_END = "bridge_end";
-    private static final String BRIDGE_MIDDLE = "bridge_middle";
 
-    /** The path's last block, and the two banks the bridge joins. */
-    private static final int PATH_X = 5200;
-    private static final int PATH_Z = -3034;
-    private static final int EAST_BANK_X = 5055;
-    private static final int WEST_BANK_X = 5006;
-    private static final int BRIDGE_Z = -3075;
-    /** The bridge is nine wide, as the pieces are, so four either side of its line. */
-    private static final int BRIDGE_HALF = 4;
-    /**
-     * Where the deck sits. Middles carry their planks two blocks up, so a base of 74 puts the walking surface
-     * at 76 - two over water that stands at 74. The ends carry a slab one block up instead, so they are placed
-     * one higher and meet the middle within half a block, which is the half step the road takes on every rise.
-     */
-    private static final int BRIDGE_BASE = 74;
-    private static final int BRIDGE_END_BASE = 75;
-    /** The walking surface at the abutments, which is where the road has to arrive. */
-    private static final int DECK_Y = 76;
     /** How far a pillar may be drawn down before the pass gives up on finding a bed, in blocks. */
     private static final int PILLAR_FLOOR = 48;
 
-    /** How much of the approach onto the deck is forced straight on the span's own line, in blocks. */
-    private static final int RUN_IN = 16;
-    /** How far the road runs on west of the far abutment, before it is left to the drawn country. */
-    private static final int EXIT_REACH = 32;
-
-    /** The city's own footprint, which the surface bands are measured from and the descent may not cross. */
-    private static final int CITY_X0 = 5200;
-    private static final int CITY_X1 = 5753;
-    private static final int CITY_Z0 = -3370;
-    private static final int CITY_Z1 = -2859;
     /** How close the ground has to be to the walls to count as the settlement's own ground, in blocks. */
     private static final int TOWN_BAND = 16;
     private static final int TRANSITION_BAND = 64;
@@ -165,14 +135,19 @@ public final class RoadCommands {
     /** Stands the bridge, draws its pillars down, and grades the road either side of it. */
     private static int build(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
+        Route route = Roads.nearest(BlockPos.containing(source.getPosition()));
+        if (route == null) {
+            source.sendFailure(Component.literal("No build has a road walked for it yet."));
+            return 0;
+        }
         try {
-            Road laid = road(source.getLevel());
+            Road laid = road(source.getLevel(), route);
             String how = laid.searched() ? "searched" : "straight, the descent could not be searched";
             int[] graded = laid.graded();
             int[] far = laid.far();
             source.sendSuccess(() -> Component.literal("Road to the valley: " + laid.cleared()
                     + " old timbers cleared, bridge of " + laid.pieces()
-                    + " pieces from " + EAST_BANK_X + " to " + WEST_BANK_X + " on z " + BRIDGE_Z
+                    + " pieces from " + route.eastBankX() + " to " + route.westBankX() + " on z " + route.bridgeZ()
                     + ", pillars drawn down " + laid.pillars() + " blocks. Approach " + laid.along()
                     + " blocks, " + how
                     + ", steepest graded step " + graded[4] + ": " + graded[0] + " columns laid, "
@@ -188,8 +163,8 @@ public final class RoadCommands {
     }
 
     /** The road itself, without a sender to answer: the pass the hand runs and the world runs for it. */
-    static Road road(ServerLevel level) throws IOException {
-        RoadJob job = plan();
+    static Road road(ServerLevel level, Route route) throws IOException {
+        RoadJob job = plan(route);
         while (job.step(level)) {
             // The hand asked for the road, not for the schedule of it.
         }
@@ -197,8 +172,8 @@ public final class RoadCommands {
     }
 
     /** A road pass waiting to be stepped, for a caller that has ticks rather than a command to answer. */
-    static RoadJob plan() {
-        return new RoadJob();
+    static RoadJob plan(Route route) {
+        return new RoadJob(route);
     }
 
     /** How many columns of the sweep and the pillars one step may take. */
@@ -224,12 +199,13 @@ public final class RoadCommands {
      * does, only when it does it.
      */
     static final class RoadJob {
+        private final Route route;
         private Stage stage = Stage.SWEEP;
-        private int swept = WEST_BANK_X - 1;
+        private int swept;
         private int cleared;
         private int pieces;
         private int pillarsDrawn;
-        private int pillarX = WEST_BANK_X;
+        private int pillarX;
         private Descent descent;
         private List<int[]> approach;
         private List<int[]> exit;
@@ -238,7 +214,10 @@ public final class RoadCommands {
         private boolean searched;
         private Road done;
 
-        private RoadJob() {
+        private RoadJob(Route route) {
+            this.route = route;
+            this.swept = route.westBankX() - 1;
+            this.pillarX = route.westBankX();
         }
 
         /** One step; false when the road is down and {@link #summary} has the answer. */
@@ -246,23 +225,23 @@ public final class RoadCommands {
             if (done != null) return false;
             switch (stage) {
                 case SWEEP -> {
-                    int upto = Math.min(EAST_BANK_X + 1, swept + COLUMNS_PER_STEP - 1);
-                    cleared += sweepColumns(level, swept, upto);
+                    int upto = Math.min(route.eastBankX() + 1, swept + COLUMNS_PER_STEP - 1);
+                    cleared += sweepColumns(level, route, swept, upto);
                     swept = upto + 1;
-                    if (swept > EAST_BANK_X + 1) stage = Stage.BRIDGE;
+                    if (swept > route.eastBankX() + 1) stage = Stage.BRIDGE;
                 }
                 case BRIDGE -> {
-                    pieces = bridge(level);
+                    pieces = bridge(level, route);
                     stage = Stage.PILLARS;
                 }
                 case PILLARS -> {
-                    int upto = Math.min(EAST_BANK_X, pillarX + COLUMNS_PER_STEP - 1);
-                    pillarsDrawn += pillarsColumns(level, pillarX, upto);
+                    int upto = Math.min(route.eastBankX(), pillarX + COLUMNS_PER_STEP - 1);
+                    pillarsDrawn += pillarsColumns(level, route, pillarX, upto);
                     pillarX = upto + 1;
-                    if (pillarX > EAST_BANK_X) stage = Stage.SEARCH;
+                    if (pillarX > route.eastBankX()) stage = Stage.SEARCH;
                 }
                 case SEARCH -> {
-                    if (descent == null) descent = new Descent();
+                    if (descent == null) descent = new Descent(route);
                     if (!descent.step(level, SEARCH_PER_STEP)) align(level);
                 }
                 case GRADE -> {
@@ -296,18 +275,18 @@ public final class RoadCommands {
         private void align(ServerLevel level) {
             List<int[]> found = descent.path();
             searched = found != null;
-            if (!searched) found = straight();
+            if (!searched) found = straight(route);
             List<int[]> line = new ArrayList<>(found);
-            for (int x = EAST_BANK_X + RUN_IN - 1; x >= EAST_BANK_X + 1; x--) {
-                line.add(new int[]{x, BRIDGE_Z});
+            for (int x = route.eastBankX() + route.runIn() - 1; x >= route.eastBankX() + 1; x--) {
+                line.add(new int[]{x, route.bridgeZ()});
             }
-            approach = hairpins(level, simplify(line));
+            approach = hairpins(level, route, simplify(line));
             exit = new ArrayList<>();
-            for (int x = WEST_BANK_X - 1; x >= WEST_BANK_X - EXIT_REACH; x--) exit.add(new int[]{x, BRIDGE_Z});
-            int startY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, PATH_X, PATH_Z) - 1;
-            int endY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, WEST_BANK_X - EXIT_REACH, BRIDGE_Z) - 1;
-            graded = new Graded(level, approach, startY, DECK_Y);
-            far = new Graded(level, exit, DECK_Y, endY);
+            for (int x = route.westBankX() - 1; x >= route.westBankX() - route.exitReach(); x--) exit.add(new int[]{x, route.bridgeZ()});
+            int startY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, route.pathX(), route.pathZ()) - 1;
+            int endY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, route.westBankX() - route.exitReach(), route.bridgeZ()) - 1;
+            graded = new Graded(level, route, approach, startY, route.deckY());
+            far = new Graded(level, route, exit, route.deckY(), endY);
             stage = Stage.GRADE;
         }
     }
@@ -322,16 +301,16 @@ public final class RoadCommands {
      * railings. Nothing but timber is touched, so the banks, the bed and the river are left exactly as they
      * are.
      */
-    private static int sweepColumns(ServerLevel level, int from, int to) {
+    private static int sweepColumns(ServerLevel level, Route route, int from, int to) {
         int cleared = 0;
-        int z0 = BRIDGE_Z - BRIDGE_HALF - 8;
-        int z1 = BRIDGE_Z + BRIDGE_HALF;
+        int z0 = route.bridgeZ() - route.half() - 8;
+        int z1 = route.bridgeZ() + route.half();
         for (int x = from; x <= to; x++) {
             for (int z = z0; z <= z1; z += 8) {
                 level.getChunk(x >> 4, z >> 4);
             }
             for (int z = z0; z <= z1; z++) {
-                for (int y = BRIDGE_BASE - PILLAR_FLOOR; y <= BRIDGE_BASE + 7; y++) {
+                for (int y = route.bridgeBase() - PILLAR_FLOOR; y <= route.bridgeBase() + 7; y++) {
                     BlockPos at = new BlockPos(x, y, z);
                     if (!timber(level.getBlockState(at))) continue;
                     level.setBlock(at, Blocks.AIR.defaultBlockState(), 2);
@@ -356,27 +335,27 @@ public final class RoadCommands {
      * ending at that position rather than the nine starting from it. The east end is therefore anchored on
      * 5055 and -3071, its own north-east corner, and the middles follow from that corner east to west.
      */
-    private static int bridge(ServerLevel level) throws IOException {
-        StructureTemplate end = template(level, BRIDGE_END);
-        StructureTemplate middle = template(level, BRIDGE_MIDDLE);
-        int z0 = BRIDGE_Z - BRIDGE_HALF;
+    private static int bridge(ServerLevel level, Route route) throws IOException {
+        StructureTemplate end = template(level, route.endPiece());
+        StructureTemplate middle = template(level, route.middlePiece());
+        int z0 = route.bridgeZ() - route.half();
         int endWide = end.getSize().getX();
 
-        lay(level, end, new BlockPos(EAST_BANK_X, BRIDGE_END_BASE, BRIDGE_Z + BRIDGE_HALF), Rotation.CLOCKWISE_180);
+        lay(level, end, new BlockPos(route.eastBankX(), route.endBase(), route.bridgeZ() + route.half()), Rotation.CLOCKWISE_180);
         int placed = 1;
 
         // Each middle is anchored on its own north-east corner too, so the piece's last column is the cursor
         // itself and the next free column is one further west. Only middles that leave room for the west end
         // are laid; the end then closes whatever is left.
-        int cursor = EAST_BANK_X - endWide;
+        int cursor = route.eastBankX() - endWide;
         // Room for one more middle and for the west end behind it: seventeen columns, not eighteen. Asking
         // for eighteen dropped the last middle and left a gap of open water in front of the far abutment.
-        while (cursor - WEST_BANK_X + 1 >= middle.getSize().getX() + endWide) {
-            lay(level, middle, new BlockPos(cursor - middle.getSize().getX() + 1, BRIDGE_BASE, z0), Rotation.NONE);
+        while (cursor - route.westBankX() + 1 >= middle.getSize().getX() + endWide) {
+            lay(level, middle, new BlockPos(cursor - middle.getSize().getX() + 1, route.bridgeBase(), z0), Rotation.NONE);
             cursor -= middle.getSize().getX();
             placed++;
         }
-        lay(level, end, new BlockPos(WEST_BANK_X, BRIDGE_END_BASE, z0), Rotation.NONE);
+        lay(level, end, new BlockPos(route.westBankX(), route.endBase(), z0), Rotation.NONE);
         return placed + 1;
     }
 
@@ -401,13 +380,13 @@ public final class RoadCommands {
      * column of the span; below it the column is filled with oak log while it is air or water, and the fill
      * stops at the first block that is neither - the bed, or the bank under an abutment.
      */
-    private static int pillarsColumns(ServerLevel level, int from, int to) {
+    private static int pillarsColumns(ServerLevel level, Route route, int from, int to) {
         int drawn = 0;
-        int z0 = BRIDGE_Z - BRIDGE_HALF;
+        int z0 = route.bridgeZ() - route.half();
         for (int x = from; x <= to; x++) {
-            for (int z = z0; z <= z0 + BRIDGE_HALF * 2; z++) {
+            for (int z = z0; z <= z0 + route.half() * 2; z++) {
                 int base = Integer.MIN_VALUE;
-                for (int y = BRIDGE_BASE + 6; y >= BRIDGE_BASE - 2; y--) {
+                for (int y = route.bridgeBase() + 6; y >= route.bridgeBase() - 2; y--) {
                     if (level.getBlockState(new BlockPos(x, y, z)).is(Blocks.OAK_LOG)) base = y;
                 }
                 if (base == Integer.MIN_VALUE) continue;
@@ -443,6 +422,7 @@ public final class RoadCommands {
         private static final int Z1 = -2995;
         private static final int DEEP = Z1 - Z0 + 1;
         private static final int LIMIT = 120000;
+        private final Route route;
         private final int[] ground = new int[(X1 - X0 + 1) * DEEP];
         private final double[] best = new double[(X1 - X0 + 1) * DEEP];
         private final int[] from = new int[(X1 - X0 + 1) * DEEP];
@@ -450,12 +430,15 @@ public final class RoadCommands {
         private final boolean[] settled = new boolean[(X1 - X0 + 1) * DEEP];
         private final PriorityQueue<double[]> open =
                 new PriorityQueue<>((left, right) -> Double.compare(left[0], right[0]));
-        private final int start = (PATH_X - X0) * DEEP + (PATH_Z - Z0);
-        private final int goal = (EAST_BANK_X + RUN_IN - X0) * DEEP + (BRIDGE_Z - Z0);
+        private final int start;
+        private final int goal;
         private int looked;
         private boolean done;
 
-        private Descent() {
+        private Descent(Route route) {
+            this.route = route;
+            this.start = (route.pathX() - X0) * DEEP + (route.pathZ() - Z0);
+            this.goal = (route.eastBankX() + route.runIn() - X0) * DEEP + (route.bridgeZ() - Z0);
             Arrays.fill(ground, Integer.MIN_VALUE);
             Arrays.fill(best, Double.MAX_VALUE);
             Arrays.fill(from, -1);
@@ -490,7 +473,7 @@ public final class RoadCommands {
                         int nx = x + dx, nz = z + dz;
                         if (nx < X0 || nx > X1 || nz < Z0 || nz > Z1) continue;
                         // The road never runs through the city; it leaves from the path's own end.
-                        if (nx >= CITY_X0 && nx <= CITY_X1 && nz >= CITY_Z0 && nz <= CITY_Z1) continue;
+                        if (nx >= route.cityX0() && nx <= route.cityX1() && nz >= route.cityZ0() && nz <= route.cityZ1()) continue;
                         int at = (nx - X0) * DEEP + (nz - Z0);
                         if (settled[at]) continue;
                         if (ground[at] == Integer.MIN_VALUE) ground[at] = surfaceAt(level, nx, nz);
@@ -504,7 +487,7 @@ public final class RoadCommands {
                         best[at] = cost;
                         from[at] = node;
                         heading[at] = dir;
-                        double guess = Math.abs(EAST_BANK_X + RUN_IN - nx) + Math.abs(BRIDGE_Z - nz);
+                        double guess = Math.abs(route.eastBankX() + route.runIn() - nx) + Math.abs(route.bridgeZ() - nz);
                         open.add(new double[]{cost + guess, at});
                     }
                 }
@@ -523,8 +506,8 @@ public final class RoadCommands {
             }
             Collections.reverse(path);
             // The alignment starts where the city's path ends, exactly once.
-            if (path.isEmpty() || path.get(0)[0] != PATH_X || path.get(0)[1] != PATH_Z) {
-                path.add(0, new int[]{PATH_X, PATH_Z});
+            if (path.isEmpty() || path.get(0)[0] != route.pathX() || path.get(0)[1] != route.pathZ()) {
+                path.add(0, new int[]{route.pathX(), route.pathZ()});
             }
             return path;
         }
@@ -543,6 +526,7 @@ public final class RoadCommands {
      * @return columns laid, cut down, filled up, and left open because the ground was too far off the grade
      */
     private static final class Graded {
+        private final Route route;
         private final List<int[]> line;
         private final int n;
         private final int[] ground;
@@ -556,7 +540,8 @@ public final class RoadCommands {
         private int steepest;
         private int cleared;
 
-        private Graded(ServerLevel level, List<int[]> line, int startY, int endY) {
+        private Graded(ServerLevel level, Route route, List<int[]> line, int startY, int endY) {
+            this.route = route;
             this.line = line;
             this.n = line.size();
             this.ground = new int[n];
@@ -614,7 +599,7 @@ public final class RoadCommands {
             int target = Mth.floor(height[i]);
             if (i > 0) steepest = Math.max(steepest, Math.abs(target - Mth.floor(height[i - 1])));
             int x = line.get(i)[0], z = line.get(i)[1];
-            int half = fromWalls(x, z) <= TRANSITION_BAND ? PAVED_HALF : WILD_HALF;
+            int half = fromWalls(route, x, z) <= TRANSITION_BAND ? PAVED_HALF : WILD_HALF;
             // A hairpin is wider than a run: the apron gives the turn somewhere to be walked around.
             if (turning(line, i)) half += 2;
             for (int dx = -half; dx <= half; dx++) {
@@ -640,7 +625,7 @@ public final class RoadCommands {
                             level.setBlock(new BlockPos(at, y, into), Blocks.STONE.defaultBlockState(), 2);
                             filled++;
                         }
-                        level.setBlock(new BlockPos(at, target, into), surface(at, into), 2);
+                        level.setBlock(new BlockPos(at, target, into), surface(route, at, into), 2);
                         tops.put(key(at, into), target);
                         laid++;
                         continue;
@@ -666,7 +651,7 @@ public final class RoadCommands {
                             filled++;
                         }
                     }
-                    level.setBlock(column, surface(at, into), 2);
+                    level.setBlock(column, surface(route, at, into), 2);
                     tops.put(key(at, into), target);
                     laid++;
                     // A road cut through a wood leaves its canopy hanging, so the corridor's own columns are
@@ -696,7 +681,7 @@ public final class RoadCommands {
      * switchback and stays tight at {@link #FILLET}, because easing one wide would swing the road off the shelf
      * the switchback exists to stay on.
      */
-    private static List<int[]> hairpins(ServerLevel level, List<int[]> line) {
+    private static List<int[]> hairpins(ServerLevel level, Route route, List<int[]> line) {
         if (line.size() < 3) return line;
         List<int[]> out = new ArrayList<>();
         out.add(line.get(0));
@@ -717,7 +702,7 @@ public final class RoadCommands {
             int cornerGround = surfaceAt(level, corner[0], corner[1]);
             int cut = widest;
             List<int[]> curve = eased(back, corner, next, cut);
-            while (cut > 1 && !clear(level, curve, cornerGround)) {
+            while (cut > 1 && !clear(level, route, curve, cornerGround)) {
                 cut = Math.max(1, cut / 2);
                 curve = eased(back, corner, next, cut);
             }
@@ -760,9 +745,9 @@ public final class RoadCommands {
      * is the bridge's, never the city's own footprint, and never ground so far above or below the corner that
      * meeting it would take more cut or fill than the corner itself stands on.
      */
-    private static boolean clear(ServerLevel level, List<int[]> curve, int cornerGround) {
+    private static boolean clear(ServerLevel level, Route route, List<int[]> curve, int cornerGround) {
         for (int[] at : curve) {
-            if (at[0] >= CITY_X0 && at[0] <= CITY_X1 && at[1] >= CITY_Z0 && at[1] <= CITY_Z1) return false;
+            if (at[0] >= route.cityX0() && at[0] <= route.cityX1() && at[1] >= route.cityZ0() && at[1] <= route.cityZ1()) return false;
             if (cornerGround == WATER) continue;
             int ground = surfaceAt(level, at[0], at[1]);
             if (ground == WATER) return false;
@@ -856,11 +841,11 @@ public final class RoadCommands {
     }
 
     /** The straight line from the path's end to the run-in, for when the search finds no way down. */
-    private static List<int[]> straight() {
+    private static List<int[]> straight(Route route) {
         List<int[]> line = new ArrayList<>();
-        int steps = PATH_X - EAST_BANK_X - RUN_IN + 1;
+        int steps = route.pathX() - route.eastBankX() - route.runIn() + 1;
         for (int i = 0; i < steps; i++) {
-            line.add(new int[]{PATH_X - i, PATH_Z + Math.round((float) (BRIDGE_Z - PATH_Z) * i / steps)});
+            line.add(new int[]{route.pathX() - i, route.pathZ() + Math.round((float) (route.bridgeZ() - route.pathZ()) * i / steps)});
         }
         return line;
     }
@@ -927,8 +912,8 @@ public final class RoadCommands {
      * The surface of one block: the three bands of `docs/arda-roads.md`, chosen per block from a hash of x
      * and z so that a chunk border never shows, and so the same column takes the same block whenever asked.
      */
-    private static BlockState surface(int x, int z) {
-        int near = fromWalls(x, z);
+    private static BlockState surface(Route route, int x, int z) {
+        int near = fromWalls(route, x, z);
         int roll = jitter(x, z) % 100;
         if (near <= TOWN_BAND) {
             if (roll < 50) return TolkienBlocks.STONE_PATH.get().defaultBlockState();
@@ -951,9 +936,9 @@ public final class RoadCommands {
     }
 
     /** How far outside the city's footprint a column stands, in blocks. */
-    private static int fromWalls(int x, int z) {
-        int dx = Math.max(0, Math.max(CITY_X0 - x, x - CITY_X1));
-        int dz = Math.max(0, Math.max(CITY_Z0 - z, z - CITY_Z1));
+    private static int fromWalls(Route route, int x, int z) {
+        int dx = Math.max(0, Math.max(route.cityX0() - x, x - route.cityX1()));
+        int dz = Math.max(0, Math.max(route.cityZ0() - z, z - route.cityZ1()));
         return (int) Math.round(Math.hypot(dx, dz));
     }
 

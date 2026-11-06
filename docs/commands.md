@@ -55,7 +55,7 @@ dimension and corner, so a world is dressed once rather than on every start.
 The marker lives in the game directory rather than in a save, so it survives being carried between worlds;
 the dimension is written down with it for the same reason.
 
-## `/tmroad` — the road out of the valley
+## `/tmroad` — the road out of the nearest build
 
 The first road with ground under it, and settled: from the last block of the city's own path, down the
 wall, across the Bruinen, and out the far side. It is a hand rather than a worldgen pass because the

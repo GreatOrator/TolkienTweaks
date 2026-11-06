@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **Each build carries its own road.** The road's valley numbers - the path's end, the two banks, the span's line
+  and width, the deck, the run-in and the exit, the two bridge pieces and the build's own footprint - are a `Route`
+  in `Roads` now rather than constants the pass happens to know. The dressing looks a city's route up by its
+  footprint and lays that road; a build nobody has walked a route for is draped and left alone rather than handed
+  another city's road. `/tmroad build` lays the road of the build nearest the caller.
 - **The world only dresses the valley while someone is in it.** The dressing pass now waits until a player is within
   320 blocks of the city's footprint before taking a step, and pauses again when they leave - so a generated world
   that nobody visits costs nothing, and the drape, the bridge and the road are all done on ground the game is

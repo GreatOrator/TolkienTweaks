@@ -392,7 +392,17 @@ public final class Dressing {
         /** One step of the road: the hand's own pass, taken a stage at a time so no tick carries it whole. */
         private void apply(ServerLevel level) {
             try {
-                if (laying == null) laying = RoadCommands.plan();
+                if (laying == null) {
+                    Route route = Roads.forGround(box.lowX(), box.lowZ(), box.highX(), box.highZ());
+                    if (route == null) {
+                        // A build nobody has walked a road for gets none: a road laid to another city's numbers
+                        // is worse than ground with no way down it.
+                        road = true;
+                        LOGGER.info("Rivendell: no road is walked for this build, so the ground is all it gets");
+                        return;
+                    }
+                    laying = RoadCommands.plan(route);
+                }
                 if (laying.step(level)) return;
                 RoadCommands.Road laid = laying.summary();
                 road = true;
