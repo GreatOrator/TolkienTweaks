@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **The road is graded, and the bridge stands where the markers are.** The first road followed the ground,
+  and the ground under the valley's own path is a wall face - 134 at the path's last block, 109 six blocks
+  out, 74 at the river - so painted it read as a staircase down a cliff. It now grades: the pass searches
+  its own way down the live heightmap with a weighted walk that prefers level ground and pays for every
+  block of rise or fall, so it contours and switchbacks where the face is a wall, then gives that line a
+  profile clamped to 0.45 blocks of rise per block of travel - cutting into the hillside above the line and
+  standing it on stone where the hill falls away, to a budget of twelve blocks either way. Two anchoring
+  errors in the bridge are fixed: a template turned through half a circle is anchored at the far corner of
+  its own box, so the east end now lands on 5055 instead of eight blocks out in the water, and the middles
+  are laid from the east cursor by their own width instead of from their west edge, which had left a gap of
+  open water before the far abutment.
+
 
 - **The road out of Rivendell, and the bridge over the Bruinen.** `/tmroad build` paints the approach
   from the path's last block at 5200, 134, -3034 down the wall and along z -3075, stands the bridge from

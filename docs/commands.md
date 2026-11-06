@@ -37,8 +37,11 @@ is - the ground under it is still being argued about, and a hand can be run agai
 | hand | what it does |
 |---|---|
 | `build` | Stands the bridge from the shipped `bridge_end` and `bridge_middle` pieces, draws every
-pillar the pieces carry down through air and water to the bed under it, and paints the approach and the
-far side. Answers with pieces laid, pillar blocks drawn, and columns laid and stepped either side. |
+pillar the pieces carry down through air and water to the bed under it, searches its own way down the
+mountain from the path's last block, and grades the road either side of the bridge - cutting the hillside
+down to its line and standing it on stone where the ground falls away. Answers with pieces laid, pillar
+blocks drawn, the approach's length and its steepest ground step, and columns laid, cut, filled and left
+open. |
 
 The waypoints are the ammolite markers walked in the scouted world: the path's last block at 5200, 134,
 -3034, and the two banks at 5055 and 5006 on z -3075. Both ends of the bridge are met along the span's

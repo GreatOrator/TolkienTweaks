@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,9 +27,14 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.function.Predicate;
 
 import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
@@ -36,25 +42,26 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
 /**
  * The road out of the valley, and the bridge that carries it over the Bruinen.
  * <p>
- * A road in this pack is a surface and nothing else: it follows the ground and replaces the top block,
- * so a slope is a staircase of half steps rather than a cut corridor. The bridge is the exception, because
- * shaped ground cannot span water - it is stood up from the cut's own two pieces, {@code bridge_end} and
- * {@code bridge_middle}, which are shipped in the jar.
+ * The road is not painted on the ground any more. Painted, it followed whatever the ground did, and the
+ * ground under the build's own path is a wall face: a hundred and thirty-four at the path's last block,
+ * a hundred and nine six blocks out, and the river at seventy-four. A road that follows that is a stone
+ * staircase down a cliff, which is what the first pass laid.
  * <p>
- * Three things about the ground here decided the shape of this pass, all of them measured in the scouted
- * world rather than guessed:
+ * So the pass grades instead: it finds its own way down the mountain, and then cuts and fills a shelf
+ * for itself along that way. Two things follow from grading:
  * <ul>
- *   <li>The city's west wall outside the built path stands at 134 and the Bruinen at 74, so the approach
- *   falls sixty blocks over a hundred and forty-five. Painted, that reads as a stepped road downhill.</li>
- *   <li>The drawn water is about forty-five blocks wide at the bank, and the two markers are fifty columns
- *   apart end to end, which is exactly two ends and four middles.</li>
- *   <li>The pieces carry their own pillars, but only six blocks of them, so every column that holds one has
- *   its log drawn down to the bed it stands on - through the water where the span crosses it. A bridge that
- *   stops at the water line is a bridge floating on the river.</li>
+ *   <li>The alignment is searched, not drawn. A weighted walk over the live heightmap prefers level ground
+ *   and pays for every block of rise or fall, so it runs along the contours and switchbacks where the face
+ *   is too steep to fall straight down - the same choice a road surveyor would make.</li>
+ *   <li>The surface is a function of distance along that alignment, not of the ground under it. The profile
+ *   is clamped to a maximum grade and eased to the ground where the cut or fill stays within budget, so the
+ *   road leaves the path level, descends at a walkable grade, and arrives at the bridge on the deck's own
+ *   level.</li>
  * </ul>
- * <p>
- * Both ends of the bridge are approached along the span's own axis, on one z, because a road that arrives
- * diagonally has to be modelled as a junction the pieces do not have.
+ * The bridge is stood up from the cut's own pieces, {@code bridge_end} and {@code bridge_middle}, which are
+ * shipped in the jar: two ends and four middles cover the fifty columns between the bank markers exactly.
+ * Their pillars are only six blocks long, so every column that carries one has its log drawn down to the bed
+ * it stands on - through the water where the span crosses it. Both ends are met along the span's own line.
  * <p>
  * The waypoints are the ammolite markers walked in the scouted world: the path's last block at 5200, 134,
  * -3034 and the two banks at 5055 and 5006 on -3075.
@@ -81,35 +88,23 @@ public final class RoadCommands {
     /** The bridge is nine wide, as the pieces are, so four either side of its line. */
     private static final int BRIDGE_HALF = 4;
     /**
-     * Where the deck sits. Middlies carry their planks two blocks up, so a base of 74 puts the walking
-     * surface at 76 - two over water that stands at 74. The ends carry a slab one block up instead, so they
-     * are placed one higher: the walking surface meets the middle's within half a block, which is the same
-     * half step the road takes everywhere else.
+     * Where the deck sits. Middles carry their planks two blocks up, so a base of 74 puts the walking surface
+     * at 76 - two over water that stands at 74. The ends carry a slab one block up instead, so they are placed
+     * one higher and meet the middle within half a block, which is the half step the road takes on every rise.
      */
     private static final int BRIDGE_BASE = 74;
     private static final int BRIDGE_END_BASE = 75;
+    /** The walking surface at the abutments, which is where the road has to arrive. */
+    private static final int DECK_Y = 76;
     /** How far a pillar may be drawn down before the pass gives up on finding a bed, in blocks. */
     private static final int PILLAR_FLOOR = 48;
 
-    /**
-     * The approach, in two legs: the fall from the wall, then a straight run along the bridge's line.
-     * <p>
-     * The last leg is the one that matters - it is on BRIDGE_Z and parallel to the span, so the road walks
-     * onto the abutment instead of meeting it at an angle. It stops one block short of the east bank, where
-     * the piece itself begins.
-     */
-    private static final int[][] APPROACH = {
-            {PATH_X, PATH_Z},
-            {5120, BRIDGE_Z},
-            {EAST_BANK_X + 1, BRIDGE_Z},
-    };
-    /** The far side: straight out of the span along the same line, then on to the drawn country. */
-    private static final int[][] EXIT = {
-            {WEST_BANK_X - 1, BRIDGE_Z},
-            {WEST_BANK_X - 32, BRIDGE_Z},
-    };
+    /** Where the searched descent ends and the straight run onto the bridge begins. */
+    private static final int BEND_X = 5120;
+    /** How far the road runs on west of the far abutment, before it is left to the drawn country. */
+    private static final int EXIT_REACH = 32;
 
-    /** The city's own footprint, which the surface bands are measured from. */
+    /** The city's own footprint, which the surface bands are measured from and the descent may not cross. */
     private static final int CITY_X0 = 5200;
     private static final int CITY_X1 = 5753;
     private static final int CITY_Z0 = -3370;
@@ -120,6 +115,13 @@ public final class RoadCommands {
     /** Half-widths: seven of wild road, five of paved. */
     private static final int WILD_HALF = 3;
     private static final int PAVED_HALF = 2;
+
+    /** The steepest a graded road may climb or fall, in blocks of height per block of travel. */
+    private static final double MAX_GRADE = 0.45;
+    /** The deepest cut or tallest fill one column may take before the road is held back to the ground. */
+    private static final int CUT_FILL = 12;
+    /** A station's surface, as a sentinel, when the ground there is water: the river is the bridge's. */
+    private static final int WATER = Integer.MIN_VALUE / 2;
 
     /** Templates already read this session, so a re-run does not parse them again. */
     private static final Map<String, StructureTemplate> LOADED = new HashMap<>();
@@ -135,20 +137,40 @@ public final class RoadCommands {
                 .then(Commands.literal("build").executes(RoadCommands::build)));
     }
 
-    /** Stands the bridge, draws its pillars down, and paints the road either side of it. */
+    /** Stands the bridge, draws its pillars down, and grades the road either side of it. */
     private static int build(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
         ServerLevel level = source.getLevel();
         try {
+            int cleared = sweep(level);
             int pieces = bridge(level);
             int pillars = pillars(level);
-            int[] approach = paint(level, APPROACH);
-            int[] exit = paint(level, EXIT);
-            source.sendSuccess(() -> Component.literal("Road to the valley: bridge of " + pieces
+
+            List<int[]> found = descent(level);
+            boolean searched = found != null;
+            if (!searched) found = straight();
+            // The last leg is on the span's own line, so the road walks onto the abutment square rather than
+            // meeting it at an angle: there is no junction piece to dress a diagonal arrival.
+            List<int[]> approach = new ArrayList<>(found);
+            for (int x = BEND_X; x >= EAST_BANK_X + 1; x--) approach.add(new int[]{x, BRIDGE_Z});
+            List<int[]> exit = new ArrayList<>();
+            for (int x = WEST_BANK_X - 1; x >= WEST_BANK_X - EXIT_REACH; x--) exit.add(new int[]{x, BRIDGE_Z});
+
+            int startY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, PATH_X, PATH_Z) - 1;
+            int endY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, WEST_BANK_X - EXIT_REACH, BRIDGE_Z) - 1;
+            int[] graded = grade(level, approach, startY, DECK_Y);
+            int[] far = grade(level, exit, DECK_Y, endY);
+
+            int along = approach.size();
+            String how = searched ? "searched" : "straight, the descent could not be searched";
+            source.sendSuccess(() -> Component.literal("Road to the valley: " + cleared
+                    + " old timbers cleared, bridge of " + pieces
                     + " pieces from " + EAST_BANK_X + " to " + WEST_BANK_X + " on z " + BRIDGE_Z
-                    + ", pillars drawn down " + pillars + " blocks; approach " + approach[0]
-                    + " columns laid, " + approach[1] + " stepped with slabs; far side " + exit[0]
-                    + " columns, " + exit[1] + " stepped. Both ends walk in along the span's own line."), true);
+                    + ", pillars drawn down " + pillars + " blocks. Approach " + along + " blocks, " + how
+                    + ", steepest graded step " + graded[4] + ": " + graded[0] + " columns laid, "
+                    + graded[1] + " cut, " + graded[2] + " filled, " + graded[3] + " left open."
+                    + " Far side " + far[0] + " columns laid, " + far[1] + " cut, " + far[2]
+                    + " filled. Both ends walk in along the span's own line."), true);
             return 1;
         } catch (IOException failed) {
             source.sendFailure(Component.literal("The bridge could not be read: " + failed.getMessage()));
@@ -157,20 +179,65 @@ public final class RoadCommands {
     }
 
     /**
-     * Stands the two ends and the middles between them, east end turned about so its abutment faces the
-     * city: the piece carries its abutment at its low x, and the road arrives from the east.
+     * Takes the bridge's own timbers out of the water before the pieces are laid again.
+     * <p>
+     * A pass that only places blocks cannot correct a piece that was placed in the wrong place: the first
+     * run's east end is still standing eight blocks north of the deck, and a re-run would leave it there for
+     * good. The sweep clears the piece's own woods - log, plank, slab, fence and stair - from the box a span
+     * and a mislaid end could occupy, from deep enough to catch the pillars under the water to the top of the
+     * railings. Nothing but timber is touched, so the banks, the bed and the river are left exactly as they
+     * are.
+     */
+    private static int sweep(ServerLevel level) {
+        int cleared = 0;
+        int z0 = BRIDGE_Z - BRIDGE_HALF - 8;
+        int z1 = BRIDGE_Z + BRIDGE_HALF;
+        for (int x = WEST_BANK_X - 1; x <= EAST_BANK_X + 1; x++) {
+            for (int z = z0; z <= z1; z += 8) {
+                level.getChunk(x >> 4, z >> 4);
+            }
+            for (int z = z0; z <= z1; z++) {
+                for (int y = BRIDGE_BASE - PILLAR_FLOOR; y <= BRIDGE_BASE + 7; y++) {
+                    BlockPos at = new BlockPos(x, y, z);
+                    if (!timber(level.getBlockState(at))) continue;
+                    level.setBlock(at, Blocks.AIR.defaultBlockState(), 2);
+                    cleared++;
+                }
+            }
+        }
+        return cleared;
+    }
+
+    /** The five woods the bridge's two pieces are made of. */
+    private static boolean timber(BlockState state) {
+        return state.is(Blocks.OAK_LOG) || state.is(Blocks.OAK_PLANKS) || state.is(Blocks.OAK_SLAB)
+                || state.is(Blocks.JUNGLE_SLAB) || state.is(Blocks.OAK_FENCE) || state.is(Blocks.OAK_STAIRS);
+    }
+
+    /**
+     * Stands the two ends and the middles between them, east end turned about so its abutment faces the city.
+     * <p>
+     * A turned template is anchored at its own far corner, not its near one: the placement settings rotate
+     * about the position handed in, so a nine-wide piece turned through half a circle occupies the nine columns
+     * ending at that position rather than the nine starting from it. The east end is therefore anchored on
+     * 5055 and -3071, its own north-east corner, and the middles follow from that corner east to west.
      */
     private static int bridge(ServerLevel level) throws IOException {
         StructureTemplate end = template(level, BRIDGE_END);
         StructureTemplate middle = template(level, BRIDGE_MIDDLE);
         int z0 = BRIDGE_Z - BRIDGE_HALF;
-        // East abutment: turned, so the piece's own low-x abutment lands on the city's side of the water.
-        lay(level, end, new BlockPos(EAST_BANK_X - end.getSize().getX() + 1, BRIDGE_END_BASE, z0),
-                Rotation.CLOCKWISE_180);
+        int endWide = end.getSize().getX();
+
+        lay(level, end, new BlockPos(EAST_BANK_X, BRIDGE_END_BASE, BRIDGE_Z + BRIDGE_HALF), Rotation.CLOCKWISE_180);
         int placed = 1;
-        // Middles walk west from the east abutment, eight columns each, until the west abutment's turn.
-        for (int at = EAST_BANK_X - end.getSize().getX(); at >= WEST_BANK_X + end.getSize().getX(); at -= 8) {
-            lay(level, middle, new BlockPos(at, BRIDGE_BASE, z0), Rotation.NONE);
+
+        // Each middle is anchored on its own north-east corner too, so the piece's last column is the cursor
+        // itself and the next free column is one further west. Only middles that leave room for the west end
+        // are laid; the end then closes whatever is left.
+        int cursor = EAST_BANK_X - endWide;
+        while (cursor - WEST_BANK_X + 1 >= 2 * endWide) {
+            lay(level, middle, new BlockPos(cursor - middle.getSize().getX() + 1, BRIDGE_BASE, z0), Rotation.NONE);
+            cursor -= middle.getSize().getX();
             placed++;
         }
         lay(level, end, new BlockPos(WEST_BANK_X, BRIDGE_END_BASE, z0), Rotation.NONE);
@@ -220,55 +287,174 @@ public final class RoadCommands {
         return drawn;
     }
 
-    /** Paints one polyline, and steps its rises, answering with columns laid and columns stepped. */
-    private static int[] paint(ServerLevel level, int[][] line) {
-        Map<Long, Integer> tops = new LinkedHashMap<>();
-        int columns = 0;
-        for (int leg = 0; leg + 1 < line.length; leg++) {
-            int x0 = line[leg][0];
-            int z0 = line[leg][1];
-            int x1 = line[leg + 1][0];
-            int z1 = line[leg + 1][1];
-            int steps = Math.max(Math.abs(x1 - x0), Math.abs(z1 - z0));
-            for (int i = 0; i <= steps; i++) {
-                int x = x0 + Math.round((x1 - x0) * (float) i / steps);
-                int z = z0 + Math.round((z1 - z0) * (float) i / steps);
-                columns += lay(level, x, z, tops);
-            }
-        }
-        return new int[]{columns, steps(level, tops)};
-    }
+    /**
+     * Finds the way down the mountain: an A* walk from the path's last block to the bend, over the live
+     * heightmap, that prefers level ground and pays for every block of rise or fall.
+     * <p>
+     * That is what makes the road run away from the path and along the face instead of dropping off it. The
+     * cost of a step is its length, plus a penalty that grows with the square of the height it changes: a
+     * gentle fall is nearly free, a ten-block step costs more than walking a long way round, so the search
+     * switchbacks where the mountain is a wall and goes straight where it is a slope. Water is refused
+     * outright - the river is the bridge's - and so is the city's own footprint.
+     * <p>
+     * It falls back to the straight line if the search finds nothing, so the command always lays something.
+     */
+    private static List<int[]> descent(ServerLevel level) {
+        final int x0 = 4985, x1 = 5225, z0 = -3135, z1 = -2995;
+        final int wide = x1 - x0 + 1, deep = z1 - z0 + 1;
+        int[] ground = new int[wide * deep];
+        Arrays.fill(ground, Integer.MIN_VALUE);
+        double[] best = new double[wide * deep];
+        Arrays.fill(best, Double.MAX_VALUE);
+        int[] from = new int[wide * deep];
+        Arrays.fill(from, -1);
+        boolean[] settled = new boolean[wide * deep];
 
-    /** Lays the road's own width over one point of the line: a square, ragged only on the wild band. */
-    private static int lay(ServerLevel level, int x, int z, Map<Long, Integer> tops) {
-        int half = fromWalls(x, z) <= TRANSITION_BAND ? PAVED_HALF : WILD_HALF;
-        int laid = 0;
-        for (int dx = -half; dx <= half; dx++) {
-            for (int dz = -half; dz <= half; dz++) {
-                int at = x + dx;
-                int into = z + dz;
-                // The wild band's edge is a block of hash jitter; the paved bands keep a clean edge.
-                if (half == WILD_HALF && (Math.abs(dx) == WILD_HALF || Math.abs(dz) == WILD_HALF)
-                        && jitter(at, into) % 3 != 0) {
-                    continue;
+        int start = (PATH_X - x0) * deep + (PATH_Z - z0);
+        int goal = (BEND_X - x0) * deep + (BRIDGE_Z - z0);
+        best[start] = 0.0D;
+        PriorityQueue<double[]> open = new PriorityQueue<>((left, right) -> Double.compare(left[0], right[0]));
+        open.add(new double[]{0.0D, start});
+        int looked = 0;
+
+        while (!open.isEmpty() && looked < 120000) {
+            int node = (int) open.poll()[1];
+            if (settled[node]) continue;
+            settled[node] = true;
+            looked++;
+            if (node == goal) break;
+            int x = x0 + node / deep, z = z0 + node % deep;
+            if (ground[node] == Integer.MIN_VALUE) ground[node] = surfaceAt(level, x, z);
+            if (ground[node] == WATER) continue;
+            for (int dx = -1; dx <= 1; dx++) {
+                for (int dz = -1; dz <= 1; dz++) {
+                    if (dx == 0 && dz == 0) continue;
+                    int nx = x + dx, nz = z + dz;
+                    if (nx < x0 || nx > x1 || nz < z0 || nz > z1) continue;
+                    // The road never runs through the city; it leaves from the path's own end.
+                    if (nx >= CITY_X0 && nx <= CITY_X1 && nz >= CITY_Z0 && nz <= CITY_Z1) continue;
+                    int at = (nx - x0) * deep + (nz - z0);
+                    if (settled[at]) continue;
+                    if (ground[at] == Integer.MIN_VALUE) ground[at] = surfaceAt(level, nx, nz);
+                    if (ground[at] == WATER) continue;
+                    int change = Math.abs(ground[at] - ground[node]);
+                    double cost = best[node] + Math.sqrt(dx * dx + dz * dz)
+                            + 2.2D * change + 0.25D * change * change;
+                    if (cost >= best[at]) continue;
+                    best[at] = cost;
+                    from[at] = node;
+                    double guess = Math.abs(BEND_X - nx) + Math.abs(BRIDGE_Z - nz);
+                    open.add(new double[]{cost + guess, at});
                 }
-                laid += column(level, at, into, tops);
             }
         }
-        return laid;
+
+        // Nothing settled the bend: the caller lays the straight line and says so, rather than this pass
+        // pretending that a search which never arrived had found anything.
+        if (goal != start && from[goal] == -1) return null;
+        List<int[]> path = new ArrayList<>();
+        int node = goal;
+        while (node >= 0) {
+            path.add(new int[]{x0 + node / deep, z0 + node % deep});
+            node = from[node];
+        }
+        Collections.reverse(path);
+        // The alignment starts where the city's path ends, exactly once.
+        if (path.isEmpty() || path.get(0)[0] != PATH_X || path.get(0)[1] != PATH_Z) {
+            path.add(0, new int[]{PATH_X, PATH_Z});
+        }
+        return path;
     }
 
-    /** Paints the top block of one column, unless the column is water, air or a tree's own body. */
-    private static int column(ServerLevel level, int x, int z, Map<Long, Integer> tops) {
-        int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1;
-        BlockPos at = new BlockPos(x, y, z);
-        level.getChunk(x >> 4, z >> 4);
-        BlockState under = level.getBlockState(at);
-        if (under.isAir() || !under.getFluidState().isEmpty()) return 0;
-        if (under.is(BlockTags.LEAVES) || under.is(BlockTags.LOGS)) return 0;
-        level.setBlock(at, surface(x, z), 2);
-        tops.put(key(x, z), y);
-        return 1;
+    /**
+     * Lays one graded road: heights along the alignment, clamped to a maximum grade, then eased back toward
+     * the ground wherever the cut or fill that would cost stays within budget.
+     * <p>
+     * The height is a property of the alignment rather than of the ground, which is the whole point: a road
+     * that reads as a road keeps its own grade while the ground does what it likes, cutting into the hillside
+     * above it and standing on a stone embankment below. The clamp is a pair of sweeps - forward, then back -
+     * so a wall face becomes a ramp instead of a step, and three of them settle the profile.
+     *
+     * @return columns laid, cut down, filled up, and left open because the ground was too far off the grade
+     */
+    private static int[] grade(ServerLevel level, List<int[]> line, int startY, int endY) {
+        int n = line.size();
+        if (n < 2) return new int[]{0, 0, 0, 0};
+        double[] height = new double[n];
+        int[] ground = new int[n];
+        for (int i = 0; i < n; i++) {
+            ground[i] = surfaceAt(level, line.get(i)[0], line.get(i)[1]);
+            height[i] = ground[i] == WATER ? startY : ground[i];
+        }
+        height[0] = startY;
+        height[n - 1] = endY;
+        for (int pass = 0; pass < 3; pass++) {
+            for (int i = 1; i < n; i++) {
+                height[i] = Mth.clamp(height[i], height[i - 1] - MAX_GRADE, height[i - 1] + MAX_GRADE);
+            }
+            for (int i = n - 2; i >= 0; i--) {
+                height[i] = Mth.clamp(height[i], height[i + 1] - MAX_GRADE, height[i + 1] + MAX_GRADE);
+            }
+            for (int i = 1; i < n - 1; i++) {
+                if (ground[i] == WATER) continue;
+                height[i] = Mth.clamp(height[i], ground[i] - CUT_FILL, ground[i] + CUT_FILL);
+            }
+        }
+
+        int laid = 0, cut = 0, filled = 0, open = 0, steepest = 0;
+        Map<Long, Integer> tops = new LinkedHashMap<>();
+        for (int i = 0; i < n; i++) {
+            int target = Mth.floor(height[i]);
+            if (i > 0) steepest = Math.max(steepest, Math.abs(target - Mth.floor(height[i - 1])));
+            int x = line.get(i)[0], z = line.get(i)[1];
+            int half = fromWalls(x, z) <= TRANSITION_BAND ? PAVED_HALF : WILD_HALF;
+            for (int dx = -half; dx <= half; dx++) {
+                for (int dz = -half; dz <= half; dz++) {
+                    int at = x + dx;
+                    int into = z + dz;
+                    if (half == WILD_HALF && (Math.abs(dx) == WILD_HALF || Math.abs(dz) == WILD_HALF)
+                            && jitter(at, into) % 3 != 0) {
+                        continue;
+                    }
+                    int groundAt = surfaceAt(level, at, into);
+                    if (groundAt == WATER) continue;
+                    int step = target - groundAt;
+                    if (Math.abs(step) > CUT_FILL) {
+                        open++;
+                        continue;
+                    }
+                    level.getChunk(at >> 4, into >> 4);
+                    BlockPos column = new BlockPos(at, target, into);
+                    // Cut the hillside down to the road, or stand the road up on its own embankment.
+                    if (step < 0) {
+                        for (int y = groundAt; y > target; y--) {
+                            level.setBlock(new BlockPos(at, y, into), Blocks.AIR.defaultBlockState(), 2);
+                            cut++;
+                        }
+                    } else if (step > 0) {
+                        for (int y = groundAt + 1; y < target; y++) {
+                            level.setBlock(new BlockPos(at, y, into), Blocks.STONE.defaultBlockState(), 2);
+                            filled++;
+                        }
+                    }
+                    level.setBlock(column, surface(at, into), 2);
+                    tops.put(key(at, into), target);
+                    laid++;
+                }
+            }
+        }
+        steps(level, tops);
+        return new int[]{laid, cut, filled, open, steepest};
+    }
+
+    /** The straight line from the path's end to the bend, for when the search finds no way down. */
+    private static List<int[]> straight() {
+        List<int[]> line = new ArrayList<>();
+        int steps = PATH_X - BEND_X;
+        for (int i = 0; i < steps; i++) {
+            line.add(new int[]{PATH_X - i, PATH_Z + Math.round((float) (BRIDGE_Z - PATH_Z) * i / steps)});
+        }
+        return line;
     }
 
     /**
@@ -280,12 +466,11 @@ public final class RoadCommands {
         for (Map.Entry<Long, Integer> entry : tops.entrySet()) {
             int x = (int) (entry.getKey() >> 32);
             int z = (int) (entry.getKey() & 0xFFFFFFFFL);
-            Integer y = entry.getValue();
+            int y = entry.getValue();
             for (int[] beside : new int[][]{{x + 1, z}, {x, z + 1}}) {
                 Integer other = tops.get(key(beside[0], beside[1]));
                 if (other == null) continue;
-                int lower = Math.min(y, other);
-                if (Math.abs(y - other) != 1 || lower != y) continue;
+                if (Math.abs(y - other) != 1 || y > other) continue;
                 level.setBlock(new BlockPos(x, y, z), Blocks.COBBLESTONE_SLAB.defaultBlockState(), 2);
                 stepped++;
                 break;
@@ -297,6 +482,14 @@ public final class RoadCommands {
     /** A column's key in the map of what this pass has laid, packed from its x and z. */
     private static long key(int x, int z) {
         return ((long) x << 32) | (z & 0xFFFFFFFFL);
+    }
+
+    /** The top block of a column, or {@link #WATER} when that block is the river. */
+    private static int surfaceAt(ServerLevel level, int x, int z) {
+        int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1;
+        BlockState state = level.getBlockState(new BlockPos(x, y, z));
+        if (!state.getFluidState().isEmpty()) return WATER;
+        return y;
     }
 
     /**

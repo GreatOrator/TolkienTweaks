@@ -50,9 +50,10 @@ block from that map would import that error with false precision. Cell waypoints
   road registry, no structure pass.
 - **Width and surface.** Settled together in *The surface, as decided* below: three widths, three bands by
   distance to a location, and one fixed per-block mix for each band.
-- **Cut, fill, or paint.** Settled as paint. The road follows the ground and replaces its top block; the
-  only ground it moves is a cobblestone slab on the low side of a one-block rise. Nothing cuts a corridor,
-  so a road on a slope is a staircase - of half steps, at least.
+- **Cut, fill, or paint.** Settled as paint for worldgen, because a generated pass cannot know what has
+  been built beside it. The first road built by hand is graded instead, cut into the hillside above its
+  line and filled below it, because the ground under the valley's own approach is a wall face and a
+  painted road there read as a staircase. Worldgen will have to answer the same question at this bank.
 - **Water.** Shaping ground cannot bridge a river. `docs/rivendell-state.md` already says the Ford is
   water and banks with no bridge — "nothing places a road or a bridge over the Bruinen yet". A route that
   crosses water needs a ford, a bridge structure, or to stop at the bank.
@@ -173,9 +174,16 @@ the path's last block at 5200, 134, -3034, the two side-by-side markers being th
 block outside the build; and the two banks at 5055, 74, -3075 and 5006, 74, -3075, one on either side of
 the water.
 
-**The fall is the approach.** The wall outside the built path stands at 134 and the water at 74, so the
-road drops sixty blocks over a hundred and forty-five. Painted, that is a staircase of half steps down
-the bank, which is the honest reading of a road cut into a hillside rather than a shelf bulldozed into it.
+**The fall is the approach, and it is graded rather than painted.** The wall outside the built path stands
+at 134 and the water at 74, so the road has sixty blocks to lose over a hundred and forty-five. Painted,
+that was a staircase down a cliff face - the ground six blocks out from the path is already at 109. The
+pass therefore finds its own way down: a weighted walk over the live heightmap that prefers level ground
+and pays for every block of rise or fall, so it contours and switchbacks where the face is a wall, and
+then it gives that alignment a grade of its own. The surface is a function of distance along the road,
+clamped to 0.45 blocks of rise per block of travel and eased back toward the ground wherever the cut or
+fill stays within twelve blocks: into the hill it cuts, and where the hill falls away it stands on stone.
+That is the reference's own road-flatten idea - which is also cut and fill - rather than the paint-only
+surface this document settles for worldgen.
 
 **Both ends are met along the span's own line.** The last leg of the approach is on z -3075, the line
 the bridge itself lies on, and the far side leaves along that same line. A road that arrived diagonally
@@ -187,6 +195,13 @@ bridge's axis, is the only approach the pieces can receive.
 and the two banks are at 5055 and 5006 - fifty columns end to end - so 9 + 4 x 8 + 9 lands the far
 abutment exactly on the far marker. The east end is turned about on y so that its own abutment, which the
 cut carries at its low x, faces the city and the road arrives onto it.
+
+A turned template is anchored at the far corner of its own box, not the near one: the first attempt
+anchored the east end at its near corner and the piece landed eight blocks west and eight north, in the
+water. It is now anchored on 5055, -3071, its own north-east corner. The middles had the same disease in
+another form - they were laid from their west edge, which put the whole run seven blocks east and left a
+gap of open water before the west abutment - so each is now anchored on the east cursor and the cursor
+walks west by the piece's own width.
 
 **The deck sits two over the water.** Middles carry their planks two blocks above their base, so at 74
 the walking surface is 76 over water at 74; the ends carry a slab one block up instead, so they are
