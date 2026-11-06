@@ -99,6 +99,11 @@ what is still open, so the next session does not have to rebuild that from the c
   cut: the mountain at a deck's back is the city's back wall.
 ## The water
 
+- **A pool out in the ring is ground.** The drape left every wet column alone, on the reading that water at
+  the rim is the city's channel - but the channel is answered before that test, so every pool and spring basin
+  out in the ring was skipped while the columns round it were cut and filled, leaving a pillar of ground
+  standing wherever one puddle reached the top of a column. A wet column that is not the channel is now read
+  down to the ground under it, and the cut begins at the water's surface so the pool goes with the ground.
 - **The drawn Bruinen is nearest the city's mouth at 5054, -3086**, a hundred and forty-seven blocks west of the build's
   outlet and running north-south at about 101 degrees, read from the mask's own resolution: the river
   layer is baked again at **three blocks to the pixel** over x 4200..5400 by z -4100..-2900
@@ -159,6 +164,19 @@ what is still open, so the next session does not have to rebuild that from the c
 - **The 90-block climb** (`VALLEY_STEEP`) is the number that decides whether the mountain reads as a
   hillside meeting the walls or as a bowl: 45 is steeper, 150 gentler.
 
+- **The spring is banked in, not drained out of the back.** Where a boundary column of the build carried
+  water high over the floor - the spring's basin at 239, its lower pool at 143 - the drape left the ground
+  outside alone entirely, and the water ran out of the wall and down the flank, cutting itself a false river
+  behind the build with the ring's ground still being cut to the spring's roofline around it. Water at the
+  edge more than `OUTLET_LIFT = 24` over the floor is now read as a spring held up in the build rather than
+  its outflow: the outside ground is banked to the water's own surface and never cut, so the pool is held
+  in. The city's own outflow, the branch eight blocks over the floor, is untouched and still runs out.
+- **The river comes down from the city instead of falling off it.** The surface was read off the ground
+  outright, and the ground under the outlet is the vale's 74 while the city's water stands at 82: the branch
+  left the wall at 82, fell eight blocks at the first block of its course and ran level from there, which
+  read as a waterfall at the city's own mouth. `BRUINEN_GRADE = 12` holds the fall to one block in twelve of
+  run, so the surface leaves the city at 82 and meets the vale ninety-six blocks down the course; the channel
+  and its walls follow the same level, because `mouthRise` and the bed are both read from it.
 ## How to look at it
 
 - **A world is only as new as its chunks.** Terrain is generated once per chunk, so a save written before

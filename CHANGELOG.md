@@ -969,6 +969,16 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
 
 ### Fixed
 
+- Hold the spring in instead of letting it run out of the back of the build: water at the build's edge
+  over `OUTLET_LIFT` above the floor is a spring, so the ground outside is banked to it and never cut,
+  where it used to be left open and the water cut itself a false river down the flank. The city's
+  outflow at the floor is still left open.
+- Stop the drape leaving a pillar of ground wherever a pool reached a column's top: water out in the ring
+  is a pool on the drawn ground and not the city's channel, so it is read down to the ground under it
+  and cut with it instead of being skipped.
+- Slope the river out of the city instead of dropping it at the wall: its surface fell the whole eight
+  blocks to the vale at the first block of its course, which is a waterfall at the city's mouth. It now
+  falls at most one block in twelve of run and meets the vale ninety-six blocks down the course.
 - Stop the drape cutting the ground down to a deck: where the build's edge is floor tiles at 75 and the
   crown stands 243 above them, the outside ground was cut to 75 and the trench's face was the
   mountain's own shape. A boundary column topping out at or under 76 now takes the ground inside the

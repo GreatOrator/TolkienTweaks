@@ -107,6 +107,12 @@ public final class CityCommands {
      * standing above such a column is the roofline over the city, not a wall at its edge.
      */
     private static final int DECK_TOP = 76;
+    /**
+     * How far over the city's floor water at the build's edge may stand and still be its outflow. The city
+     * drains at its floor, where the branch takes the water eight blocks over it; water at the edge above that
+     * is a spring held up in the build, and the ground outside it has to hold the water in.
+     */
+    private static final int OUTLET_LIFT = 24;
 
     /** What a drape did: columns cut down, columns built up, and columns left for the water. */
     private record Drape(int cut, int filled, int open) {
@@ -699,9 +705,13 @@ public final class CityCommands {
      * filled, so a notch the river's corridor opened behind the walls is closed and a shelf the mountain
      * left standing over the roofline comes down.
      * <p>
-     * A column whose top is water is left exactly as it is - the channel the river runs in. Filling up to
-     * a wall beside a river is what closes a river's mouth, and the mouth is the one thing the valley was
-     * drawn round.
+     * Water at the build's own edge is left exactly as it is where it is the city's outflow - the channel the
+     * river runs in - because filling beside a river is what closes its mouth, and the mouth is the one thing
+     * the valley was drawn round. Water at the edge standing above {@link #OUTLET_LIFT} over the floor is a
+     * spring held up in the build: the ground outside is banked to its surface and never cut, so the pool is
+     * held in rather than fed out down the flank. Water out in the ring is neither: it is a pool lying on the
+     * drawn ground, and the pass works on the ground under it, cutting from the pool's surface so the water
+     * goes with the ground beneath it.
      * <p>
      * Where the build's own edge is a deck and not a wall - its floor tiles at 75, with nothing built over
      * them - the ground outside is carried to the rock standing over that deck inside the box and is never
@@ -789,35 +799,58 @@ public final class CityCommands {
                 int at = gx + gz * wide;
                 int wall = outline[at];
                 if (wall == Integer.MIN_VALUE) continue;
-                if (channel[at]) {
-                    open++;
-                    continue;
-                }
-                // Where the build's edge is a deck and not a wall, the ground outside is made to meet the
-                // rock standing over that deck inside the box, and is never cut down to the deck itself.
-                // The deck sits at 75 under a roofline at 318: cutting to it opened a trench the depth of the
-                // mountain round every face the build leaves open, and the face of that trench was the
-                // mountain's own shape. The mountain at a deck's back is the city's back wall, not a peak.
-                boolean deck = wall <= DECK_TOP;
-                if (deck) {
+                // Whether the ground outside may only be built up here and never cut. Two edges answer so: a
+                // deck, which is a floor tile rather than a roofline, and a spring, whose water the ground
+                // outside has to hold rather than drain.
+                boolean banked = wall <= DECK_TOP;
+                if (banked) {
+                    // Where the build's edge is a deck and not a wall, the ground outside is made to meet the
+                    // rock standing over that deck inside the box, and is never cut down to the deck itself.
+                    // The deck sits at 75 under a roofline at 318: cutting to it opened a trench the depth of
+                    // the mountain round every face the build leaves open, and the face of that trench was the
+                    // mountain's own shape. The mountain at a deck's back is the city's back wall, not a peak.
                     int inside = gx + box.lowX();
                     int insideZ = gz + box.lowZ();
                     wall = Math.max(wall, level.getHeight(Heightmap.Types.MOTION_BLOCKING, inside, insideZ) - 1);
                 }
+                if (channel[at]) {
+                    if (watered[at] - (box.lowY() - 1) <= OUTLET_LIFT) {
+                        // The city's outflow: the branch takes the water out at the floor, so the ground beside
+                        // it is left exactly as the cut left it and the mouth stays open.
+                        open++;
+                        continue;
+                    }
+                    // Water standing this high in the build is a spring held up in it, not its outflow. The
+                    // ground outside is banked to the water's own surface and never cut, so the pool is held
+                    // in the build instead of finding a way out down the back of it - which is what cutting
+                    // the ring to a spring's edge did: a false river down the flank, fed from the top.
+                    banked = true;
+                }
                 int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1;
                 if (top <= level.getMinY()) continue;
+                // Everything standing in the column, water included: a pool is cut away with the ground it
+                // lies on, and the cut starts at the pool's own surface so no water is left over air.
+                int surface = top;
                 BlockState skin = level.getBlockState(new BlockPos(x, top, z));
                 if (!skin.getFluidState().isEmpty()) {
-                    open++;
-                    continue;
+                    // Water at the build's own edge is its channel, and was answered above. Water out here is a
+                    // pool lying on the drawn ground - a spring's basin, a hollow that holds the rain - so the
+                    // pass reads down to the ground under it. Skipping the column instead left a pillar of
+                    // ground standing in the ring wherever a single puddle reached the top of a column.
+                    while (top > level.getMinY() + 1
+                            && !level.getBlockState(new BlockPos(x, top, z)).getFluidState().isEmpty()) {
+                        top--;
+                    }
+                    skin = level.getBlockState(new BlockPos(x, top, z));
+                    if (!skin.getFluidState().isEmpty()) continue;
                 }
                 int outX = Math.max(0, Math.max(box.lowX() - x, x - box.highX()));
                 int outZ = Math.max(0, Math.max(box.lowZ() - z, z - box.highZ()));
                 double share = Math.min(1.0D, Math.hypot(outX, outZ) / (double) DRAPE_REACH);
                 double ease = share * share * (3.0D - 2.0D * share);
                 int cap = (int) Math.round(wall + (top - wall) * ease);
-                if (top > cap && !deck) {
-                    for (int y = top; y > cap; y--) {
+                if (top > cap && !banked) {
+                    for (int y = surface; y > cap; y--) {
                         level.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2);
                     }
                     level.setBlock(new BlockPos(x, cap, z), skin, 2);

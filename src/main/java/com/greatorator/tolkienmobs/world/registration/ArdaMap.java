@@ -282,6 +282,12 @@ public final class ArdaMap {
     /** Steps the channel's water is read at along its course, from the outlet to the ford. */
     private static final int BRUINEN_STEPS = 256;
     /**
+     * How gently the river may fall, in blocks of run to one block of fall. The city's water stands eight over
+     * the vale and the ground under the outlet is already the vale's, so a surface read off the ground fell all
+     * eight at the first block of the course - a waterfall at the city's own mouth.
+     */
+    private static final int BRUINEN_GRADE = 12;
+    /**
      * How far out from water the ground climbs back to the city's crown, in blocks.
      * <p>
      * The climb is one curve, not a grade: the ground leaves the water almost level, takes most of its
@@ -1166,12 +1172,21 @@ public final class ArdaMap {
         int[] profile = new int[BRUINEN_STEPS + 1];
         int lowest = BRUINEN_WATER;
         profile[0] = lowest;
+        double run = 0.0D;
+        int lastX = (int) Math.round(courseX(0.0D));
+        int lastZ = (int) Math.round(courseZ(0.0D));
         for (int step = 1; step <= BRUINEN_STEPS; step++) {
             double share = step / (double) BRUINEN_STEPS;
             int x = (int) Math.round(courseX(share));
             int z = (int) Math.round(courseZ(share));
-            lowest = Math.min(lowest,
-                    groundAt(x / (double) CELL + ORIGIN_COLUMN, z / (double) CELL + ORIGIN_ROW, x, z).height());
+            run += Math.hypot(x - lastX, z - lastZ);
+            lastX = x;
+            lastZ = z;
+            // The surface may fall no faster than the grade, so the eight blocks between the city's water and
+            // the vale are carried down the course rather than dropped at the wall.
+            int drawn = groundAt(x / (double) CELL + ORIGIN_COLUMN, z / (double) CELL + ORIGIN_ROW, x, z).height();
+            int grade = BRUINEN_WATER - (int) Math.floor(run / BRUINEN_GRADE);
+            lowest = Math.min(lowest, Math.max(drawn, grade));
             profile[step] = lowest;
         }
         return profile;
