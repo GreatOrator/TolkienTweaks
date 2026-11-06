@@ -186,7 +186,11 @@ blocks tall. The walk turns within a single block, so its corner is pulled strai
 back into a curve: a hairpin with a radius, widened by two blocks either side into an apron, rather
 than a hinge at right angles. The surface is the ground itself, smoothed: a moving average along the alignment takes the bumps out,
 and the result is held within twelve blocks of the ground - cutting into the hill above its line and
-standing on stone where the hill falls away.
+standing on stone where the hill falls away. It is also held to a step at a station: two sweeps pull
+every station within a block of its neighbours, so a fall is a stair of half-steps rather than a drop,
+and the column the alignment runs through is laid whatever the ground under it is doing - against a
+rock face the road narrows to its own line rather than stopping - so the surface walked on is never
+broken by a patch the pass declined to cut or fill.
 That is the reference's own road-flatten idea - which is also cut and fill - rather than the paint-only
 surface this document settles for worldgen.
 
@@ -206,6 +210,15 @@ the bridge itself lies on, and the far side leaves along that same line. A road 
 would meet the abutment at an angle, and the cut has no junction piece to dress that meeting: the two
 pieces are a straight span, nine wide, with an abutment at one end. Straight in, straight out, both on the
 bridge's axis, is the only approach the pieces can receive.
+
+**Only the launch onto the abutment is forced straight, though - sixteen blocks of it.** A longer
+forced line is not neutral ground. The first graded run forced sixty-five, and in a fresh generation
+met a rock fin fifty-nine blocks tall standing on the bank astride it: the profile followed the ground
+up onto the fin's top and plunged off its end sixteen blocks from the deck, which is a cliff in the road
+no amount of smoothing inside the budget could take out. The search therefore runs all the way to the
+far end of the run-in and walks round whatever the mountain puts in the way; only the last sixteen
+blocks are pinned to the span's line, and the fillet that rounds the corner into it leaves nine of them
+dead straight on the deck's axis.
 
 **The span is fifty columns: two ends and four middles.** `bridge_end` is 9 long, `bridge_middle` is 8,
 and the two banks are at 5055 and 5006 - fifty columns end to end - so 9 + 4 x 8 + 9 lands the far

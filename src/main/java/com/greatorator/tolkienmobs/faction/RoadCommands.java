@@ -99,8 +99,8 @@ public final class RoadCommands {
     /** How far a pillar may be drawn down before the pass gives up on finding a bed, in blocks. */
     private static final int PILLAR_FLOOR = 48;
 
-    /** Where the searched descent ends and the straight run onto the bridge begins. */
-    private static final int BEND_X = 5120;
+    /** How much of the approach onto the deck is forced straight on the span's own line, in blocks. */
+    private static final int RUN_IN = 16;
     /** How far the road runs on west of the far abutment, before it is left to the drawn country. */
     private static final int EXIT_REACH = 32;
 
@@ -120,6 +120,8 @@ public final class RoadCommands {
     private static final int PROFILE_PASSES = 8;
     /** The deepest cut or tallest fill one column may take before the road is held back to the ground. */
     private static final int CUT_FILL = 12;
+    /** The most one station's surface may rise or fall above the one before it, in blocks. */
+    private static final double MAX_STEP = 1.0D;
     /** How far above the road a column's trunks and leaves are cleared, so no crown hangs over the grade. */
     private static final int CANOPY_CLEAR = 16;
     /** The grade the descent aims for, in blocks of rise per block of travel; anything steeper is penalised. */
@@ -163,9 +165,15 @@ public final class RoadCommands {
             boolean searched = found != null;
             if (!searched) found = straight();
             // The last leg is on the span's own line, so the road walks onto the abutment square rather than
-            // meeting it at an angle: there is no junction piece to dress a diagonal arrival.
+            // meeting it at an angle: there is no junction piece to dress a diagonal arrival. Only that leg is
+            // forced. The search comes all the way to its far end, because ground a forced line crosses is
+            // ground the road must climb: the scouted valley stands a rock fin fifty-nine blocks tall on the
+            // bank, astride any longer straight run, and a profile that follows the ground walks up onto its
+            // top and plunges off the end sixteen blocks before the deck.
             List<int[]> approach = new ArrayList<>(found);
-            for (int x = BEND_X; x >= EAST_BANK_X + 1; x--) approach.add(new int[]{x, BRIDGE_Z});
+            for (int x = EAST_BANK_X + RUN_IN - 1; x >= EAST_BANK_X + 1; x--) {
+                approach.add(new int[]{x, BRIDGE_Z});
+            }
             // The search turns in a single block. The straight lines are pulled out of its staircase and
             // every corner left is cut back into a curve, so the switchbacks are hairpins a walker can take.
             approach = hairpins(simplify(approach));
@@ -307,8 +315,8 @@ public final class RoadCommands {
     }
 
     /**
-     * Finds the way down the mountain: an A* walk from the path's last block to the bend, over the live
-     * heightmap, that prefers level ground and pays for every block of rise or fall.
+     * Finds the way down the mountain: an A* walk from the path's last block to the run-in onto the bridge,
+     * over the live heightmap, that prefers level ground and pays for every block of rise or fall.
      * <p>
      * That is what makes the road run away from the path and along the face instead of dropping off it. The
      * cost of a step is its length, plus twelve times the square of any grade steeper than {@link #TARGET_GRADE},
@@ -333,7 +341,7 @@ public final class RoadCommands {
         boolean[] settled = new boolean[wide * deep];
 
         int start = (PATH_X - x0) * deep + (PATH_Z - z0);
-        int goal = (BEND_X - x0) * deep + (BRIDGE_Z - z0);
+        int goal = (EAST_BANK_X + RUN_IN - x0) * deep + (BRIDGE_Z - z0);
         best[start] = 0.0D;
         PriorityQueue<double[]> open = new PriorityQueue<>((left, right) -> Double.compare(left[0], right[0]));
         open.add(new double[]{0.0D, start});
@@ -369,7 +377,7 @@ public final class RoadCommands {
                     best[at] = cost;
                     from[at] = node;
                     heading[at] = dir;
-                    double guess = Math.abs(BEND_X - nx) + Math.abs(BRIDGE_Z - nz);
+                    double guess = Math.abs(EAST_BANK_X + RUN_IN - nx) + Math.abs(BRIDGE_Z - nz);
                     open.add(new double[]{cost + guess, at});
                 }
             }
@@ -393,13 +401,14 @@ public final class RoadCommands {
     }
 
     /**
-     * Lays one graded road: heights along the alignment, clamped to a maximum grade, then eased back toward
-     * the ground wherever the cut or fill that would cost stays within budget.
+     * Lays one graded road: heights along the alignment, smoothed, held to a step at a time, then eased back
+     * toward the ground wherever the cut or fill that would cost stays within budget.
      * <p>
      * The height is a property of the alignment rather than of the ground, which is the whole point: a road
      * that reads as a road keeps its own grade while the ground does what it likes, cutting into the hillside
-     * above it and standing on a stone embankment below. The clamp is a pair of sweeps - forward, then back -
-     * so a wall face becomes a ramp instead of a step, and three of them settle the profile.
+     * above it and standing on a stone embankment below. The step clamp is a pair of sweeps - forward, then
+     * back - so a wall face becomes a stair instead of a cliff, and {@link #PROFILE_PASSES} of them settle the
+     * profile.
      *
      * @return columns laid, cut down, filled up, and left open because the ground was too far off the grade
      */
@@ -425,6 +434,16 @@ public final class RoadCommands {
         for (int pass = 0; pass < PROFILE_PASSES; pass++) {
             for (int i = 1; i < n - 1; i++) {
                 height[i] = (height[i - 1] + 2.0D * height[i] + height[i + 1]) / 4.0D;
+            }
+            // A road does not drop. Smoothing rounds a bump, but nothing in it stops one station sitting ten
+            // blocks under the one before it where the ground does, so two sweeps pull every station within a
+            // step of its neighbours. The surface then falls as a stair of half-steps - the slabs see to the
+            // rest - rather than in drops, which is what a walker reads as a cliff in the road.
+            for (int i = 1; i < n; i++) {
+                height[i] = Mth.clamp(height[i], height[i - 1] - MAX_STEP, height[i - 1] + MAX_STEP);
+            }
+            for (int i = n - 2; i >= 0; i--) {
+                height[i] = Mth.clamp(height[i], height[i + 1] - MAX_STEP, height[i + 1] + MAX_STEP);
             }
             for (int i = 1; i < n - 1; i++) {
                 if (ground[i] == WATER) continue;
@@ -469,7 +488,12 @@ public final class RoadCommands {
                         continue;
                     }
                     int step = target - groundAt;
-                    if (Math.abs(step) > CUT_FILL) {
+                    // Ground this far off the grade is not cut or filled: the band loses that column and goes
+                    // on. The exception is the column the alignment itself runs through - the profile is held
+                    // within the budget of the ground under it, so it never needs more - and so the road
+                    // narrows against a rock face rather than breaking, which is what a hole in the surface
+                    // reads as.
+                    if (Math.abs(step) > CUT_FILL && (dx != 0 || dz != 0)) {
                         open++;
                         continue;
                     }
@@ -621,10 +645,10 @@ public final class RoadCommands {
         return (ax * bx + az * bz) / (la * lb) < 0.85D;
     }
 
-    /** The straight line from the path's end to the bend, for when the search finds no way down. */
+    /** The straight line from the path's end to the run-in, for when the search finds no way down. */
     private static List<int[]> straight() {
         List<int[]> line = new ArrayList<>();
-        int steps = PATH_X - BEND_X;
+        int steps = PATH_X - EAST_BANK_X - RUN_IN + 1;
         for (int i = 0; i < steps; i++) {
             line.add(new int[]{PATH_X - i, PATH_Z + Math.round((float) (BRIDGE_Z - PATH_Z) * i / steps)});
         }

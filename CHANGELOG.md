@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **The road no longer climbs what it cannot walk round, and no longer drops.** The bridge approach was
+  forced straight for sixty-five blocks; a fresh generation stands a fifty-nine-block rock fin on the bank
+  astride that line, so the graded road climbed the fin and plunged off its end sixteen blocks before the
+  deck. The search now runs all the way to the launch onto the abutment and only the last sixteen blocks
+  are pinned to the span's line, the profile is swept to at most one block of rise or fall a station so a
+  fall reads as half-steps rather than a drop, and the column the alignment runs through is laid whatever
+  the ground under it does, so the road narrows against a rock face instead of breaking over it.
+
 - **The switchbacks are hairpins, not hinges.** The searched walk turns within a single block, so its
   corners were right angles a walker could not take. The alignment is simplified to the vertices that
   carry its shape, and every corner left is now cut back ten blocks along both legs and joined by a curve;
