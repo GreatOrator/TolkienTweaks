@@ -168,10 +168,16 @@ a wild road's gravel falls if the ground under it is ever removed - a note, not 
 
 ## The first road, as built
 
-The Rivendell approach is the first road with ground under it. It is laid by hand for now, with
-`/tmroad build`, rather than by the worldgen pass the rest of this document describes: the whole road is
-still being argued about, and a hand can be run again while a generation rule can only be rebuilt. The
-shape it settles is the shape that rule will have to answer to.
+The Rivendell approach is the first road with ground under it, and its shape is settled. It is laid with
+`/tmroad build` rather than by the worldgen pass the rest of this document describes, and that is where it
+stays for now: the shape is a search over the live heightmap with a graded profile cut and filled into it,
+and chunk generation cannot search two hundred and forty square blocks of ground that do not exist yet.
+What ships is the pass itself, in the jar, beside the two bridge pieces, so any world gets the same road by
+running it on the same ground - every number below is a constant in `RoadCommands`, and a column's block is
+decided by its coordinates, so nothing drifts between runs. It is also safe to run again: the bridge's own
+timbers are swept out of the water first, and every column in the band is written to what the pass decides
+it should be. This is the shape a generation rule will have to answer to, and the first thing such a rule
+needs is an alignment it does not have to search.
 
 **The waypoints are the four ammolite markers walked in the scouted world**, not a line read off a map:
 the path's last block at 5200, 134, -3034, the two side-by-side markers being that block and the first

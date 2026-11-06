@@ -30,18 +30,25 @@ the dimension is written down with it for the same reason.
 
 ## `/tmroad` — the road out of the valley
 
-The first road with ground under it: from the last block of the city's own path, down the wall, across
-the Bruinen, and out the far side. It is a hand rather than a worldgen pass for the same reason the city
-is - the ground under it is still being argued about, and a hand can be run again.
+The first road with ground under it, and settled: from the last block of the city's own path, down the
+wall, across the Bruinen, and out the far side. It is a hand rather than a worldgen pass because the
+alignment is a search over the live heightmap, which chunk generation cannot run - but the pass itself
+ships in the jar, beside the bridge pieces, so any world gets the same road by running it on the same
+ground.
 
 | hand | what it does |
 |---|---|
-| `build` | Stands the bridge from the shipped `bridge_end` and `bridge_middle` pieces, draws every
-pillar the pieces carry down through air and water to the bed under it, searches its own way down the
-mountain from the path's last block, and grades the road either side of the bridge - cutting the hillside
-down to its line and standing it on stone where the ground falls away. Answers with pieces laid, pillar
-blocks drawn, the approach's length and its steepest ground step, and columns laid, cut, filled and left
-open. |
+| `build` | Sweeps any bridge timbers already in the water, stands the bridge from the shipped `bridge_end`
+and `bridge_middle` pieces, and draws every pillar the pieces carry down through air and water to the bed
+under it. Then it searches its own way down the mountain from the path's last block, rounds every corner
+into a curve - eased up to twenty-four blocks either way for an ordinary bend, ten for a switchback, and
+closed back until the arc stays off the river, out of the city and on ground a corner can answer for -
+widens the surface two blocks either side only at a switchback, grades the road either side of the bridge
+within twelve blocks of the ground and a step at a station, cutting the hillside down to its line and
+standing it on stone where the ground falls away, turns the higher column of every one-block step into a
+cobblestone-slab lip, and carries only the road's own three columns over water. Answers with pieces laid,
+pillar blocks drawn, the approach's length and its steepest graded step, and columns laid, cut, filled,
+cleared and left open. |
 
 The waypoints are the ammolite markers walked in the scouted world: the path's last block at 5200, 134,
 -3034, and the two banks at 5055 and 5006 on z -3075. Both ends of the bridge are met along the span's

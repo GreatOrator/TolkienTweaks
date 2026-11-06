@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **The road out of Rivendell is settled, and the notes say what it does.** Three records still described the
+  provisional pass - the road "painted straight in and straight out along the span's own line", its shape
+  "still being argued about" - which stopped being true when the approach became a search with a graded
+  profile, eased corners and a half-step lip. They now record the road as built and as shipped: the pass
+  lives in the jar beside the two bridge pieces, the alignment is the one thing a generation rule would have
+  to bring with it, and rerunning the hand on the same ground reproduces the road.
 - **The road no longer climbs what it cannot walk round, and no longer drops.** The bridge approach was
   forced straight for sixty-five blocks; a fresh generation stands a fifty-nine-block rock fin on the bank
   astride that line, so the graded road climbed the fin and plunged off its end sixteen blocks before the
