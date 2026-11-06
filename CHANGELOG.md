@@ -969,6 +969,8 @@ at 3850, 107, -7425, and the search is kept only for a build that names none. Wh
 
 ### Fixed
 
+- Double the drape's reach from thirty-two blocks to sixty-four, so the ground is settled further out from
+  the walls before it eases back to the drawn country and artifacts near the build fall inside the ring.
 - Hold the spring in instead of letting it run out of the back of the build: water at the build's edge
   over `OUTLET_LIFT` above the floor is a spring, so the ground outside is banked to it and never cut,
   where it used to be left open and the water cut itself a false river down the flank. The city's

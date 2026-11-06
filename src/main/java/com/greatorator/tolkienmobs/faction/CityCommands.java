@@ -100,7 +100,7 @@ public final class CityCommands {
      * and filled up to it - and fades back into the drawn country over this distance, so neither end of
      * it is a step.
      */
-    private static final int DRAPE_REACH = 32;
+    private static final int DRAPE_REACH = 64;
     /**
      * The height at or under which the build's own top is a deck and not a wall. The city's floor is at 74
      * and its deck tiles lie on 75, so a column that tops out here has nothing built over it: the rock

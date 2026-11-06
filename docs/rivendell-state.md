@@ -179,6 +179,11 @@ what is still open, so the next session does not have to rebuild that from the c
   and its walls follow the same level, because `mouthRise` and the bed are both read from it.
 ## How to look at it
 
+- **The ring is sixty-four blocks deep.** `DRAPE_REACH` doubles from thirty-two: the pass settles the ground
+  that far out from the walls before easing it back to the drawn country, so an artifact the mountain left
+  thirty blocks from the build now sits inside the ring instead of on its edge. The join at the wall is
+  unchanged - the first block out is still cut or filled to the build's own outline - only the distance over
+  which the ground is talked back round to itself is longer.
 - **A world is only as new as its chunks.** Terrain is generated once per chunk, so a save written before
   a bake shows the old ground however new the code is. The test worlds are deleted after each round, which
   is what keeps that honest - so a screenshot leaves no save behind to read back, and the F3 coordinates on
