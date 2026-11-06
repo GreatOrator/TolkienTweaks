@@ -18,7 +18,7 @@ import gzip
 import io
 import struct
 
-TEMPLATE = 'src/main/resources/data/tolkienmobs/structure/ttmruin_large_2.nbt'
+TEMPLATE = 'src/main/resources/data/tolkienmobs/structure/key_structures/ttmruin_large_2.nbt'
 LOOT_TABLE = 'tolkienmobs:chests/desolate_ruins'
 
 # ---- a typed NBT tree -------------------------------------------------------------------------------

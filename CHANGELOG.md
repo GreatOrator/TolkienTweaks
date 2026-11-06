@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **The rider's ruin has moved in with the campaign's own ground.** `ttmruin_large_2` still stood in the worldgen
+  folder although nothing generated it - no structure, pool or set named it - so the one template the Missing Rider
+  page raises sat among the ruins the world scatters. It is `key_structures/ttmruin_large_2` now, beside the crags
+  and the camps, and `Sites.WOOD_RUIN` names the new path.
+- **Barachen's camp is a build of its own, and the tent is the world generator's again.** The canvas the camp errand
+  used to pitch is `key_structures/barachans_camp` now, named in the Trollshaws in the cell Barachen's fire is
+  surveyed in; the traveller's tent keeps its own `wild_tent` template in the worldgen folder, and `Sites.WILD_TENT`
+  names that one, so the side errand and the scenery still raise the tent while the campaign's camp stands on ground
+  of its own.
 - **Each build carries its own road.** The road's valley numbers - the path's end, the two banks, the span's line
   and width, the deck, the run-in and the exit, the two bridge pieces and the build's own footprint - are a `Route`
   in `Roads` now rather than constants the pass happens to know. The dressing looks a city's route up by its

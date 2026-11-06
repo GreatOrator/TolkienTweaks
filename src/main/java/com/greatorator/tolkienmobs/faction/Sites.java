@@ -84,17 +84,25 @@ public final class Sites extends SavedData {
     private static final String SAVE_DATA_NAME = "sites";
     private static final Logger LOGGER = LoggerFactory.getLogger(Sites.class);
 
-    /** The tent the camp errand pitches, as a template the mod already ships. */
-    public static final String WILD_TENT = "tolkienmobs:key_structures/wild_tent";
+    /**
+     * The tent a camp errand pitches: the world generator's own canvas, cut as a piece of its own and
+     * raised where the errand is taken. The campaign's own camp is {@link #BARACHENS_CAMP}.
+     */
+    public static final String WILD_TENT = "tolkienmobs:wild_tent";
+    /**
+     * Barachen's camp, cut rather than pitched: the scout's fire the stone's line walks to once the caves
+     * have answered nothing, and the camp the catalogue names {@code barachen}. The campaign's own ground
+     * stands in the cell that name is surveyed in rather than wherever the page happened to be taken.
+     */
+    public static final String BARACHENS_CAMP = "tolkienmobs:key_structures/barachans_camp";
     /**
      * Elladan's own camp at Thorenhad, cut rather than pitched: sixteen by eight by sixteen, stone and
      * podzol under spruce with the rock of the hillside still in it - the shape of a camp the Dunedain
      * keep, not the canvas a traveller carries.
      * <p>
-     * It replaces the tent at Thorenhad and nowhere else. The tent keeps both of its jobs - the camp
-     * errand pitches it wherever that errand is taken, and the world generator stands it in the wilds
-     * as scenery - so this is ground only the chapter raises, named here and pinned to a cell like the
-     * rest of the chapter's own buildings.
+     * It replaces the tent at Thorenhad and nowhere else. The tent is the world generator's scenery now,
+     * and the campaign's own canvas ground is Barachen's camp - so this is ground only the chapter
+     * raises, named here and pinned to a cell like the rest of the chapter's own buildings.
      */
     public static final String ELLADAN_CAMP = "tolkienmobs:key_structures/elledancamp";
     /**
@@ -153,7 +161,7 @@ public final class Sites extends SavedData {
      * of many. This one is never generated - nothing but the page puts it anywhere - so the wall the
      * bridle is found at is that wall and no other.
      */
-    public static final String WOOD_RUIN = "tolkienmobs:ttmruin_large_2";
+    public static final String WOOD_RUIN = "tolkienmobs:key_structures/ttmruin_large_2";
     /**
      * The country each landmark stands in, where the books put it rather than where the page was taken.
      * <p>
@@ -175,6 +183,9 @@ public final class Sites extends SavedData {
             // players on one server get two of. They stand in the hills with the rest of the chapter,
             // on ground written down once.
             Map.entry(WILD_TENT, ArdaMap.Country.TROLLSHAWS),
+            // Barachen's fire is south of the road in the same hills, and the camp the page walks to
+            // stands in the cell that name is surveyed in.
+            Map.entry(BARACHENS_CAMP, ArdaMap.Country.TROLLSHAWS),
             // Elladan's own cut is the camp the rider's pages are heard at, a walk east of the
             // valley in the same hills rather than in the valley itself.
             Map.entry(ELLADAN_CAMP, ArdaMap.Country.TROLLSHAWS),
@@ -203,6 +214,8 @@ public final class Sites extends SavedData {
     private static final Map<String, int[]> CANON_CELL = Map.of(
             WOOD_RUIN, new int[]{19, 14},
             WILD_TENT, new int[]{17, 13},
+            // Barachen's fire, the same cell the place is named in: the camp stands where its page is heard.
+            BARACHENS_CAMP, new int[]{18, 14},
             // Thorenhad's own cell, which the place is named in too: the camp stands where its pages
             // are heard, a walk east of the valley and off the road.
             ELLADAN_CAMP, new int[]{19, 13},

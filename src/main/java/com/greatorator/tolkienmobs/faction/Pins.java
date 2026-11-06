@@ -51,7 +51,7 @@ public final class Pins extends SavedData {
     /**
      * The pins that hold for every world, keyed by whatever the code asks with: a place's id as the
      * catalogue writes it ({@code "rivendell"}, {@code "thorenhad"}), or a structure's template id as
-     * a page names it ({@code "tolkienmobs:key_structures/wild_tent"}).
+     * a page names it ({@code "tolkienmobs:key_structures/barachans_camp"}).
      * <p>
      * Empty is the normal state and a working one: a location with no pin is surveyed from the drawing
      * exactly as it was before any of this existed, so the campaign can be walked with an empty table.
@@ -64,7 +64,7 @@ public final class Pins extends SavedData {
             Map.entry("rivendell", new BlockPos(5200, 75, -3370))
             // The shape a line takes, for the next one: a comma and the slashes gone.
             // Map.entry("thorenhad", new BlockPos(4864, 157, -3328)),
-            // Map.entry("tolkienmobs:key_structures/wild_tent", new BlockPos(4864, 157, -3340))
+            // Map.entry("tolkienmobs:key_structures/barachans_camp", new BlockPos(4864, 157, -3340))
     ));
 
     /**
