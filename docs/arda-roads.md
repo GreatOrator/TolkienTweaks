@@ -183,10 +183,15 @@ per block, and a little for every change of direction - so it runs along the con
 face is too steep to fall down, and comes back lower. That turn is the switchback: the road's answer to
 a grade the mountain will not give, where the alternative was a hole in the road or an embankment forty
 blocks tall. The walk turns within a single block, so its corner is pulled straight and then cut
-back into a curve: a hairpin with a radius, widened by two blocks either side into an apron, rather
-than a hinge at right angles. Only a doubling back earns that apron: a road that is merely cornering -
-the right angle onto the bridge's own line, say - is laid at its ordinary width, so the bank stops
-bulging out over the river wherever the road changes direction. The surface is the ground itself, smoothed: a moving average along the alignment takes the bumps out,
+back into a curve, rather than left as a hinge at right angles. How far back depends on the corner: an
+ordinary bend is eased as widely as its legs allow - up to twenty-four blocks either way - so the road
+arcs round it and a walker carries speed through, while a doubling back is a switchback and stays tight,
+at most ten blocks, because easing one wide would swing the road off the shelf it was searched onto. An
+eased corner reaches ground the search never walked, so the arc is let out only as far as it stays off
+the river, out of the city's footprint, and on ground within a corner's own cut-and-fill budget, and is
+halved again until it does. Only a doubling back earns the apron with it: two blocks wider either side,
+a hairpin to walk round. A road that is merely cornering - the right angle onto the bridge's own line,
+say - keeps its ordinary width, so the bank stops bulging out over the river wherever the road turns. The surface is the ground itself, smoothed: a moving average along the alignment takes the bumps out,
 and the result is held within twelve blocks of the ground - cutting into the hill above its line and
 standing on stone where the hill falls away. The profile is also held to a step at a station: two sweeps pull
 every station within a block of its neighbours, so a fall is a stair of half-steps rather than a drop.

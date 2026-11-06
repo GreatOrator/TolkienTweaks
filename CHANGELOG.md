@@ -17,6 +17,12 @@ All notable changes to this project will be documented in this file.
   so an ordinary corner no longer widens the band out over the bank it is turning beside.
 - The road carries only its own three columns over water and leaves the rest of the band at the bank, instead of
   laying a stone-and-gravel shelf out onto the river at the wide stretches.
+- **An ordinary corner is eased rather than hinged.** Every corner was cut back at most ten blocks, which
+  is barely more than a hinge at walking speed. A bend now opens out as far as its legs allow, up to
+  twenty-four blocks either side, so the road arcs round it and a walker carries speed through; a
+  switchback stays tight at ten, since easing one wide would swing the road off the shelf it is on. The
+  wider arc reaches ground the search never walked, so it is closed back until it stays off the river,
+  out of the city's footprint, and on ground the corner's own cut and fill can answer for.
 
 - **The switchbacks are hairpins, not hinges.** The searched walk turns within a single block, so its
   corners were right angles a walker could not take. The alignment is simplified to the vertices that

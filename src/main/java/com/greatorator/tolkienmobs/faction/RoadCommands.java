@@ -134,9 +134,13 @@ public final class RoadCommands {
     private static final double TURN_COST = 1.5D;
     /** How far off a straight line the simplified alignment may wander, in blocks. */
     private static final double SIMPLIFY_TOLERANCE = 1.5D;
-    /** How far back from a corner a hairpin is cut, and how many steps its curve is drawn in. */
+    /** How far back from a switchback a hairpin is cut, and the least steps its curve is drawn in. */
     private static final int FILLET = 10;
     private static final int FILLET_STEPS = 12;
+    /** How far back an ordinary corner is cut, so a walker carries speed round it instead of slowing. */
+    private static final int EASE = 24;
+    /** Where a turn stops being a corner and starts doubling back, as the cosine of its angle. */
+    private static final double HAIRPIN = -0.3D;
     /** A station's surface, as a sentinel, when the ground there is water: the river is the bridge's. */
     private static final int WATER = Integer.MIN_VALUE / 2;
 
@@ -178,7 +182,7 @@ public final class RoadCommands {
             }
             // The search turns in a single block. The straight lines are pulled out of its staircase and
             // every corner left is cut back into a curve, so the switchbacks are hairpins a walker can take.
-            approach = hairpins(simplify(approach));
+            approach = hairpins(level, simplify(approach));
             List<int[]> exit = new ArrayList<>();
             for (int x = WEST_BANK_X - 1; x >= WEST_BANK_X - EXIT_REACH; x--) exit.add(new int[]{x, BRIDGE_Z});
 
@@ -553,15 +557,19 @@ public final class RoadCommands {
     }
 
     /**
-     * Pulls the straight lines out of the searched walk and rounds what is left into hairpins.
+     * Pulls the straight lines out of the searched walk and rounds what is left into corners a walker can take.
      * <p>
      * The search moves a block at a time and turns within a block, so raw it is an eight-direction staircase
-     * whose corners are right angles - nothing a walker can take at speed, and on a switchback it is a hinge.
-     * Two passes fix that: a Douglas-Peucker simplification keeps only the vertices that carry the shape, and
-     * every vertex left is cut back along both of its legs and joined by a curve, so a switchback becomes a
-     * hairpin with a radius.
+     * whose corners are right angles - nothing a walker can take at speed. Two passes fix that: a
+     * Douglas-Peucker simplification keeps only the vertices that carry the shape, and every vertex left is cut
+     * back along both of its legs and joined by a curve.
+     * <p>
+     * How far back is the difference between a road and a hinge. An ordinary bend is eased as wide as its legs
+     * allow, up to {@link #EASE}, so a walker carries speed round it; a corner that doubles back is a
+     * switchback and stays tight at {@link #FILLET}, because easing one wide would swing the road off the shelf
+     * the switchback exists to stay on.
      */
-    private static List<int[]> hairpins(List<int[]> line) {
+    private static List<int[]> hairpins(ServerLevel level, List<int[]> line) {
         if (line.size() < 3) return line;
         List<int[]> out = new ArrayList<>();
         out.add(line.get(0));
@@ -571,22 +579,69 @@ public final class RoadCommands {
             int[] next = line.get(k + 1);
             double in = Math.hypot(corner[0] - back[0], corner[1] - back[1]);
             double out2 = Math.hypot(next[0] - corner[0], next[1] - corner[1]);
-            int cut = (int) Math.max(1.0D, Math.min(FILLET, Math.min(in / 2.0D, out2 / 2.0D)));
-            int[] from = along(back, corner, cut);
-            int[] to = along(corner, next, cut);
-            walkTo(out, from[0], from[1]);
-            for (int s = 1; s <= FILLET_STEPS; s++) {
-                double t = (double) s / (FILLET_STEPS + 1);
-                double u = 1.0D - t;
-                walkTo(out,
-                        (int) Math.round(u * u * from[0] + 2.0D * u * t * corner[0] + t * t * to[0]),
-                        (int) Math.round(u * u * from[1] + 2.0D * u * t * corner[1] + t * t * to[1]));
+            if (in < 1.0D || out2 < 1.0D) continue;
+            boolean doubling = (corner[0] - back[0]) * (next[0] - corner[0])
+                    + (corner[1] - back[1]) * (next[1] - corner[1]) < HAIRPIN * in * out2;
+            int widest = (int) Math.max(1.0D,
+                    Math.min(doubling ? FILLET : EASE, Math.min(in / 2.0D, out2 / 2.0D)));
+            // An eased corner reaches ground the search never walked, so the arc goes out only as far as it
+            // can: closed back until it stays off the river, out of the city's footprint, and on ground a
+            // corner's own cut and fill could answer for.
+            int cornerGround = surfaceAt(level, corner[0], corner[1]);
+            int cut = widest;
+            List<int[]> curve = eased(back, corner, next, cut);
+            while (cut > 1 && !clear(level, curve, cornerGround)) {
+                cut = Math.max(1, cut / 2);
+                curve = eased(back, corner, next, cut);
             }
-            walkTo(out, to[0], to[1]);
+            for (int[] at : curve) walkTo(out, at[0], at[1]);
         }
         int[] last = line.get(line.size() - 1);
         walkTo(out, last[0], last[1]);
         return out;
+    }
+
+    /**
+     * One corner's stations: the last {@code cut} blocks of each leg replaced by the curve that joins them.
+     * <p>
+     * The curve is sampled finely enough that its chords are a couple of blocks long, so the road rounds the
+     * bend smoothly rather than in facets - and the samples only set the line, which {@link #walkTo} then fills
+     * in a block at a time.
+     */
+    private static List<int[]> eased(int[] back, int[] corner, int[] next, int cut) {
+        int[] from = along(back, corner, cut);
+        int[] to = along(corner, next, cut);
+        List<int[]> curve = new ArrayList<>();
+        curve.add(from);
+        int steps = Math.max(FILLET_STEPS, cut);
+        for (int s = 1; s <= steps; s++) {
+            double t = (double) s / (steps + 1);
+            double u = 1.0D - t;
+            curve.add(new int[]{
+                    (int) Math.round(u * u * from[0] + 2.0D * u * t * corner[0] + t * t * to[0]),
+                    (int) Math.round(u * u * from[1] + 2.0D * u * t * corner[1] + t * t * to[1])});
+        }
+        curve.add(to);
+        return curve;
+    }
+
+    /**
+     * Whether a corner's curve can be laid where it stands.
+     * <p>
+     * Easing a corner puts road where the search chose not to walk - across the inside of the bend - so the
+     * arc is only allowed as far as it reaches ground the road may be laid on at all: never the river, which
+     * is the bridge's, never the city's own footprint, and never ground so far above or below the corner that
+     * meeting it would take more cut or fill than the corner itself stands on.
+     */
+    private static boolean clear(ServerLevel level, List<int[]> curve, int cornerGround) {
+        for (int[] at : curve) {
+            if (at[0] >= CITY_X0 && at[0] <= CITY_X1 && at[1] >= CITY_Z0 && at[1] <= CITY_Z1) return false;
+            if (cornerGround == WATER) continue;
+            int ground = surfaceAt(level, at[0], at[1]);
+            if (ground == WATER) return false;
+            if (Math.abs(ground - cornerGround) > CUT_FILL) return false;
+        }
+        return true;
     }
 
     /** The point {@code cut} blocks back from {@code b} along the line from {@code a} to {@code b}. */
@@ -670,7 +725,7 @@ public final class RoadCommands {
         double la = Math.hypot(ax, az);
         double lb = Math.hypot(bx, bz);
         if (la < 2.0D || lb < 2.0D) return false;
-        return (ax * bx + az * bz) / (la * lb) < -0.3D;
+        return (ax * bx + az * bz) / (la * lb) < HAIRPIN;
     }
 
     /** The straight line from the path's end to the run-in, for when the search finds no way down. */
