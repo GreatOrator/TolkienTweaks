@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **The world only dresses the valley while someone is in it.** The dressing pass now waits until a player is within
+  320 blocks of the city's footprint before taking a step, and pauses again when they leave - so a generated world
+  that nobody visits costs nothing, and the drape, the bridge and the road are all done on ground the game is
+  already keeping loaded. The gate measures from the footprint rather than a corner, because the city is five
+  hundred blocks across and a corner is the wrong end to measure from.
 - **The road is laid in stages, like the rest of it.** The pass the hand runs in one word is a cursor for the world
   that runs it for itself: twelve columns of the old timbers swept, then six bridge templates in one step, twelve
   columns of pillars drawn down, four thousand settled candidates of the descent, and eight stations of each graded

@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -40,7 +41,9 @@ import static com.greatorator.tolkienmobs.TolkienMobsMain.MODID;
  * per tick is some thirty seconds of background work in all, and no tick in it is longer than the game already pays
  * for a chunk being made.
  * <p>
- * It begins when the city is whole and not before. A corner is written down when the first band is planted, and
+ * It begins when the city is whole and not before, and only while somebody is near enough to see it: a city nobody
+ * is looking at is not dressed, both because the ground is not worth changing unseen and because a ring of a
+ * thousand chunks loaded for no player is the idle cost this is meant to keep off a server. A corner is written down when the first band is planted, and
  * dressing the ground round a city that is one band high would cut the mountain down to a roofline that is not there
  * yet - so the city has to say it is finished, which a generated city does the moment its start exists and a planted
  * one does when its last band is down.
@@ -54,6 +57,14 @@ public final class Dressing {
 
     /** How often the world is asked whether it has a city that wants dressing, in ticks. */
     private static final int CHECK_EVERY = 20;
+    /**
+     * How close a player has to be to the city for the world to work on it, in blocks from its footprint.
+     * <p>
+     * Far enough to cover the ring and the bridge a player standing in the valley can see, near enough that no
+     * pass ever runs over chunks the game is not already keeping for somebody. It is the difference between a
+     * world that dresses its valley and a server that quietly generates a hundred thousand columns for nobody.
+     */
+    private static final int WORK_REACH = 320;
     /** How many pieces of the cut one tick reads while the outline is being taken. */
     private static final int PIECES_PER_TICK = 4;
     /** How many chunks of ring one tick dresses. */
@@ -86,6 +97,8 @@ public final class Dressing {
             job = start(level);
             if (job == null) return;
         }
+        // A city with nobody near it waits where it is, and resumes the moment someone walks back into the valley.
+        if (!watched(level, job.box)) return;
         if (!job.step(level)) {
             finished = job.key;
             job = null;
@@ -118,12 +131,16 @@ public final class Dressing {
         try {
             List<CityCommands.Part> parts = CityCommands.parts(folder);
             if (parts.isEmpty()) return null;
+            CityCommands.Box box = CityCommands.Box.of(parts, corner);
+            // Nobody near the valley means the game is not making its chunks, and a pass that loads them itself is
+            // exactly the idle work this whole gate exists to avoid.
+            if (!watched(level, box)) return null;
             boolean[] done = dressed(folder, level, corner);
             if (done[0] && done[1]) {
                 finished = key;
                 return null;
             }
-            return new Job(key, folder, parts, corner, CityCommands.Box.of(parts, corner), done[0], done[1]);
+            return new Job(key, folder, parts, corner, box, done[0], done[1]);
         } catch (IOException unreadable) {
             LOGGER.warn("Rivendell: the cut could not be read, so the ground is not dressed: {}",
                     unreadable.getMessage());
@@ -398,6 +415,24 @@ public final class Dressing {
                 LOGGER.warn("Rivendell: what was dressed could not be written: {}", unwritable.getMessage());
             }
         }
+    }
+
+    /**
+     * Whether anyone is near enough to the city for the world to work on it.
+     * <p>
+     * Measured from the footprint rather than from a corner: the city is five hundred blocks across, so a corner
+     * would call a player standing at the far wall a long way away and a player out in the ring next door. The ring
+     * and the bridge are both inside the reach, which is all a pass that writes ground in the city's own country
+     * needs - a player who can see the valley is a player whose chunks the game is already keeping.
+     */
+    private static boolean watched(ServerLevel level, CityCommands.Box box) {
+        for (ServerPlayer player : level.players()) {
+            BlockPos at = player.blockPosition();
+            int dx = Math.max(0, Math.max(box.lowX() - at.getX(), at.getX() - box.highX()));
+            int dz = Math.max(0, Math.max(box.lowZ() - at.getZ(), at.getZ() - box.highZ()));
+            if (Math.hypot(dx, dz) <= WORK_REACH) return true;
+        }
+        return false;
     }
 
     /** Whether this corner of this dimension has had its drape and its road, as {drape, road}. */

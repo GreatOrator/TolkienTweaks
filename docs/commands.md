@@ -35,7 +35,9 @@ The ground and the road no longer wait for the hands. A world with a finished ci
 its last band - has the ring of ground outside its walls draped to the build's own outline and the road carried
 across the Bruinen, done by the server a few pieces, a couple of chunks and one stage of the road at a time, so no
 tick pays for more than the game already pays for a chunk being made - the sweep of the span, the bridge, the
-pillars, the search for the way down and each graded road all take steps of their own. `/tmcity drape` and `/tmroad build` are still there for looking at a
+pillars, the search for the way down and each graded road all take steps of their own. Nothing is done while
+nobody is near the city: the passes wait until a player is within a few hundred blocks of its footprint, since a
+world that dresses unseen ground is a world loading a thousand chunks for nobody. `/tmcity drape` and `/tmroad build` are still there for looking at a
 city by hand, and run the same passes. What has been done is kept in `_dressed.txt` beside the cut's folder, by
 dimension and corner, so a world is dressed once rather than on every start.
 
