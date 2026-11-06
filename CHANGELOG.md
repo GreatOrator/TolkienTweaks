@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **The road is laid in stages, like the rest of it.** The pass the hand runs in one word is a cursor for the world
+  that runs it for itself: twelve columns of the old timbers swept, then six bridge templates in one step, twelve
+  columns of pillars drawn down, four thousand settled candidates of the descent, and eight stations of each graded
+  road a step. The search and the grade are the same arithmetic, only resumable, so a tick never carries the sweep,
+  the bridge, the search and a hundred-odd stations at once. The dressing also stops looking for a city every tick:
+  it looks once a second and works every tick, which is what makes two chunks of ring a tick mean half a minute
+  rather than ten.
 - **The ground and the road happen by themselves.** A finished city - generated, or laid to its last band - now has
   the ring of ground outside its walls draped to the build's outline, and the road and bridge to the Bruinen built,
   without a command. Neither runs whole: the drape reads the cut's outline four pieces a tick and dresses two chunks

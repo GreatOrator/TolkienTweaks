@@ -77,11 +77,16 @@ public final class Dressing {
 
     @SubscribeEvent
     public static void onServerTick(ServerTickEvent.Post event) {
-        if (event.getServer().getTickCount() % CHECK_EVERY != 0) return;
         ServerLevel level = event.getServer().getLevel(TolkienDimensions.ARDA);
         if (level == null) return;
-        if (job == null) job = start(level);
-        if (job != null && !job.step(level)) {
+        if (job == null) {
+            // Looking for a city is a table read, so it happens once a second; working on one happens every tick,
+            // because a step is what the whole job is made of.
+            if (event.getServer().getTickCount() % CHECK_EVERY != 0) return;
+            job = start(level);
+            if (job == null) return;
+        }
+        if (!job.step(level)) {
             finished = job.key;
             job = null;
         }
@@ -151,6 +156,8 @@ public final class Dressing {
         private boolean grown;
         private boolean dressed;
         private boolean road;
+        /** The road being laid, once the ground is dressed. */
+        private RoadCommands.RoadJob laying;
         private int cut;
         private int filled;
         private int open;
@@ -199,8 +206,9 @@ public final class Dressing {
                 write(level, true, road);
             }
             if (!road) {
-                road(level);
-                return true;
+                apply(level);
+                if (!road) return true;
+                write(level, true, true);
             }
             return false;
         }
@@ -364,17 +372,19 @@ public final class Dressing {
             }
         }
 
-        /** The road and the bridge, one pass: a road is a road from end to end rather than half a grade. */
-        private void road(ServerLevel level) {
-            road = true;
+        /** One step of the road: the hand's own pass, taken a stage at a time so no tick carries it whole. */
+        private void apply(ServerLevel level) {
             try {
-                RoadCommands.Road laid = RoadCommands.road(level);
+                if (laying == null) laying = RoadCommands.plan();
+                if (laying.step(level)) return;
+                RoadCommands.Road laid = laying.summary();
+                road = true;
                 LOGGER.info("Rivendell: the road is down - bridge of {} pieces, approach {} blocks, {} columns laid",
                         laid.pieces(), laid.along(), laid.graded()[0] + laid.far()[0]);
             } catch (IOException unreadable) {
+                road = true;
                 LOGGER.warn("Rivendell: the road could not be built: {}", unreadable.getMessage());
             }
-            write(level, true, true);
         }
 
         /** What this world has had dressed, written so a restart does not do it again. */
