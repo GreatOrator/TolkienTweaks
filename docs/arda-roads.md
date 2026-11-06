@@ -160,3 +160,41 @@ a wild road's gravel falls if the ground under it is ever removed - a note, not 
   approach being the obvious case.
 - Whether the campaign's own road (chapter two speaks of the road east of Mirkwood) is built first, since no
   ground under it exists yet and a page already sends players along it.
+
+## The first road, as built
+
+The Rivendell approach is the first road with ground under it. It is laid by hand for now, with
+`/tmroad build`, rather than by the worldgen pass the rest of this document describes: the whole road is
+still being argued about, and a hand can be run again while a generation rule can only be rebuilt. The
+shape it settles is the shape that rule will have to answer to.
+
+**The waypoints are the four ammolite markers walked in the scouted world**, not a line read off a map:
+the path's last block at 5200, 134, -3034, the two side-by-side markers being that block and the first
+block outside the build; and the two banks at 5055, 74, -3075 and 5006, 74, -3075, one on either side of
+the water.
+
+**The fall is the approach.** The wall outside the built path stands at 134 and the water at 74, so the
+road drops sixty blocks over a hundred and forty-five. Painted, that is a staircase of half steps down
+the bank, which is the honest reading of a road cut into a hillside rather than a shelf bulldozed into it.
+
+**Both ends are met along the span's own line.** The last leg of the approach is on z -3075, the line
+the bridge itself lies on, and the far side leaves along that same line. A road that arrived diagonally
+would meet the abutment at an angle, and the cut has no junction piece to dress that meeting: the two
+pieces are a straight span, nine wide, with an abutment at one end. Straight in, straight out, both on the
+bridge's axis, is the only approach the pieces can receive.
+
+**The span is fifty columns: two ends and four middles.** `bridge_end` is 9 long, `bridge_middle` is 8,
+and the two banks are at 5055 and 5006 - fifty columns end to end - so 9 + 4 x 8 + 9 lands the far
+abutment exactly on the far marker. The east end is turned about on y so that its own abutment, which the
+cut carries at its low x, faces the city and the road arrives onto it.
+
+**The deck sits two over the water.** Middles carry their planks two blocks above their base, so at 74
+the walking surface is 76 over water at 74; the ends carry a slab one block up instead, so they are
+placed one higher and meet the middle within half a block - the same half step the road takes everywhere
+else on a rise.
+
+**The pillars are drawn to the bed.** The pieces carry six blocks of support, and the Bruinen is four or
+five deep, so as cut they stop in mid-air. Every column of the span that holds an oak log has its log
+carried down, through air and through water, to the first block that is neither - the bed under the span,
+or the bank under an abutment - capped at forty-eight blocks in case there is no bed to find. A bridge
+that stops at the water line is a bridge floating on the river.

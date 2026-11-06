@@ -28,6 +28,22 @@ laid, and in which dimension).
 The marker lives in the game directory rather than in a save, so it survives being carried between worlds;
 the dimension is written down with it for the same reason.
 
+## `/tmroad` — the road out of the valley
+
+The first road with ground under it: from the last block of the city's own path, down the wall, across
+the Bruinen, and out the far side. It is a hand rather than a worldgen pass for the same reason the city
+is - the ground under it is still being argued about, and a hand can be run again.
+
+| hand | what it does |
+|---|---|
+| `build` | Stands the bridge from the shipped `bridge_end` and `bridge_middle` pieces, draws every
+pillar the pieces carry down through air and water to the bed under it, and paints the approach and the
+far side. Answers with pieces laid, pillar blocks drawn, and columns laid and stepped either side. |
+
+The waypoints are the ammolite markers walked in the scouted world: the path's last block at 5200, 134,
+-3034, and the two banks at 5055 and 5006 on z -3075. Both ends of the bridge are met along the span's
+own line, never diagonally, and the far side leaves along that same line.
+
 ## `/tmquest` — work, given by hand
 
 | command | what it does |

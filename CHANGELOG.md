@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 
+- **The road out of Rivendell, and the bridge over the Bruinen.** `/tmroad build` paints the approach
+  from the path's last block at 5200, 134, -3034 down the wall and along z -3075, stands the bridge from
+  the shipped `bridge_end` and `bridge_middle` pieces - two ends and four middles over the fifty columns
+  between the bank markers at 5055 and 5006 - draws every pillar the pieces carry down through air and
+  water to the bed under it, and carries the road straight out of the far abutment. Both ends are met on
+  the span's own line, because a road arriving diagonally would need junction pieces the cut does not
+  have. The surface is the one `docs/arda-roads.md` settled: three bands by distance from the walls, a
+  per-block hash, and a bottom slab on the low side of every one-block rise.
+
 - **The ground outside the walls is dressed to the build's own outline.** `/tmcity drape` - and the
   end of `/tmcity band` and `summon`, so it is part of laying the city rather than a second word -
   reads all 584 pieces' templates, takes the highest block of the build in each of the 554 by 512

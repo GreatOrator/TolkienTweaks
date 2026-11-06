@@ -152,8 +152,10 @@ what is still open, so the next session does not have to rebuild that from the c
   falling to the vale's 74 at the join - so the map cuts a twelve-wide channel through the massif and opens
   the rock along it on the same curve, over `MOUTH_RUN` blocks of climb from the middle of the channel. The spring at the rear, water at 239 over a floor
   at 74, still has no cut of its own.
-- **The ford is a bridge.** Nothing places a road or a bridge over the Bruinen yet; the join is water and
-  banks only.
+- **The ford is a bridge.** The join itself is still water and banks, but the Bruinen at the city's mouth is
+  no longer crossed on foot: `/tmroad build` stands the shipped `bridge_end` and `bridge_middle` pieces over
+  the fifty columns between the bank markers at 5055 and 5006 on z -3075, draws every pillar they carry down
+  to the bed, and paints the road straight in and straight out along the span's own line.
 - **The join's step is closed.** The branch falls from the city's water to the vale's 74 on its way out
   and the drawn Bruinen stands at 74 too, so the two meet at the same level; a step was possible while the
   branch was initialised under the floor.
