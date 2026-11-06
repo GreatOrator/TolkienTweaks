@@ -185,6 +185,15 @@ fill stays within twelve blocks: into the hill it cuts, and where the hill falls
 That is the reference's own road-flatten idea - which is also cut and fill - rather than the paint-only
 surface this document settles for worldgen.
 
+Two things the first graded run taught, both now in the pass. A heightmap answers with whatever stops
+motion, tree crowns included, so the first run read the valley as a forest roof and stood stone columns
+up to the leaves; the ground is now read past leaves and trunks to the soil under them. And the ground
+clamp had been applied after the grade clamp, which let a single step grow back to eighteen blocks - the
+cliff the grade exists to remove - so the ground now has its say first, inside the cut-and-fill budget,
+and the grade has the last word. Where the road meets water it carries its last verge columns over on
+stone while its grade is above the water line, instead of stopping short of the bank and leaving a lip
+for the river to sit against.
+
 **Both ends are met along the span's own line.** The last leg of the approach is on z -3075, the line
 the bridge itself lies on, and the far side leaves along that same line. A road that arrived diagonally
 would meet the abutment at an angle, and the cut has no junction piece to dress that meeting: the two

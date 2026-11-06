@@ -235,7 +235,9 @@ public final class RoadCommands {
         // itself and the next free column is one further west. Only middles that leave room for the west end
         // are laid; the end then closes whatever is left.
         int cursor = EAST_BANK_X - endWide;
-        while (cursor - WEST_BANK_X + 1 >= 2 * endWide) {
+        // Room for one more middle and for the west end behind it: seventeen columns, not eighteen. Asking
+        // for eighteen dropped the last middle and left a gap of open water in front of the far abutment.
+        while (cursor - WEST_BANK_X + 1 >= middle.getSize().getX() + endWide) {
             lay(level, middle, new BlockPos(cursor - middle.getSize().getX() + 1, BRIDGE_BASE, z0), Rotation.NONE);
             cursor -= middle.getSize().getX();
             placed++;
@@ -388,17 +390,23 @@ public final class RoadCommands {
         }
         height[0] = startY;
         height[n - 1] = endY;
-        for (int pass = 0; pass < 3; pass++) {
+        for (int pass = 0; pass < 4; pass++) {
+            // First the ground has its say, and only inside the cut-and-fill budget...
+            for (int i = 1; i < n - 1; i++) {
+                if (ground[i] == WATER) continue;
+                height[i] = Mth.clamp(height[i], ground[i] - CUT_FILL, ground[i] + CUT_FILL);
+            }
+            // ...and then the grade has the last word, so no step is steeper than the road allows. The
+            // order matters: clamping to the ground afterwards let a single step grow to eighteen blocks,
+            // which is exactly the cliff the grade exists to remove.
             for (int i = 1; i < n; i++) {
                 height[i] = Mth.clamp(height[i], height[i - 1] - MAX_GRADE, height[i - 1] + MAX_GRADE);
             }
             for (int i = n - 2; i >= 0; i--) {
                 height[i] = Mth.clamp(height[i], height[i + 1] - MAX_GRADE, height[i + 1] + MAX_GRADE);
             }
-            for (int i = 1; i < n - 1; i++) {
-                if (ground[i] == WATER) continue;
-                height[i] = Mth.clamp(height[i], ground[i] - CUT_FILL, ground[i] + CUT_FILL);
-            }
+            height[0] = startY;
+            height[n - 1] = endY;
         }
 
         int laid = 0, cut = 0, filled = 0, open = 0, steepest = 0;
@@ -417,7 +425,22 @@ public final class RoadCommands {
                         continue;
                     }
                     int groundAt = surfaceAt(level, at, into);
-                    if (groundAt == WATER) continue;
+                    if (groundAt == WATER) {
+                        // The river is the bridge's, but the road still walks to its edge. Where the grade is
+                        // above the water line the last verge columns are carried over on stone rather than
+                        // stopping short of the bank and leaving a lip for the water to sit against.
+                        int waterTop = level.getHeight(Heightmap.Types.MOTION_BLOCKING, at, into) - 1;
+                        if (target <= waterTop) continue;
+                        level.getChunk(at >> 4, into >> 4);
+                        for (int y = waterTop; y < target; y++) {
+                            level.setBlock(new BlockPos(at, y, into), Blocks.STONE.defaultBlockState(), 2);
+                            filled++;
+                        }
+                        level.setBlock(new BlockPos(at, target, into), surface(at, into), 2);
+                        tops.put(key(at, into), target);
+                        laid++;
+                        continue;
+                    }
                     int step = target - groundAt;
                     if (Math.abs(step) > CUT_FILL) {
                         open++;
@@ -484,10 +507,23 @@ public final class RoadCommands {
         return ((long) x << 32) | (z & 0xFFFFFFFFL);
     }
 
-    /** The top block of a column, or {@link #WATER} when that block is the river. */
+    /**
+     * The top block a road could stand on, or {@link #WATER} when that column is the river.
+     * <p>
+     * A heightmap answers with whatever stops motion, and that includes the crowns of the trees. Read that
+     * way, a valley road is a road laid on treetops: it stands up stone columns wherever the canopy was
+     * higher than the bank, and it grades against a forest roof instead of a hillside. This walks down past
+     * leaves and trunks to the ground the tree is growing on, and only then asks whether it is water.
+     */
     private static int surfaceAt(ServerLevel level, int x, int z) {
-        int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1;
-        BlockState state = level.getBlockState(new BlockPos(x, y, z));
+        int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1;
+        BlockPos at = new BlockPos(x, y, z);
+        BlockState state = level.getBlockState(at);
+        while (y > level.getMinY() && (state.isAir() || state.is(BlockTags.LOGS))) {
+            y--;
+            at = at.below();
+            state = level.getBlockState(at);
+        }
         if (!state.getFluidState().isEmpty()) return WATER;
         return y;
     }

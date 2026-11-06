@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- **The graded road reads the ground, not the canopy, and its grade has the last word.** The first graded
+  run reported a steepest step of eighteen blocks and stood stone columns up to the treetops:
+  `MOTION_BLOCKING` answers with leaves, and the ground clamp ran after the grade clamp, undoing it. The
+  road now reads past leaves and trunks to the soil, applies the cut-and-fill budget first and the grade
+  last, and carries its last verge columns over the water on stone while its grade is above the water
+  line rather than stopping short of the bank. The bridge also lost its last middle: the loop asked for
+  eighteen columns of room when a middle plus the far end need seventeen, so the run closed one piece
+  short and left open water in front of the far abutment.
+
 - **The road is graded, and the bridge stands where the markers are.** The first road followed the ground,
   and the ground under the valley's own path is a wall face - 134 at the path's last block, 109 six blocks
   out, 74 at the river - so painted it read as a staircase down a cliff. It now grades: the pass searches
